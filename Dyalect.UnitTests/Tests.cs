@@ -16,24 +16,33 @@ namespace Tests
 {
     public class Tests
     {
-        [Test] public void WhileTest1() => AssertEquals(33, RunTest());
+        [Test] public void WhileTest1() => ShouldBe(33);
 
-        [Test] public void WhileTest2() => AssertEquals(42, RunTest());
+        [Test] public void WhileTest2() => ShouldBe(42);
 
-        [Test] public void FizzbuzzTest() => AssertEquals("12fizz4buzzfizz78fizzbuzz", RunTest());
+        [Test] public void FizzbuzzTest() => ShouldBe("12fizz4buzzfizz78fizzbuzz");
 
-        [Test] public void IterTest() => AssertEquals(10, RunTest());
-        
+        [Test] public void IterTest() => ShouldBe(10);
+
+        [Test] public void FactTest() => ShouldBe(2432902008176640000);
+
+        [Test] public void PowerTest() => ShouldBe(1000);
+
+        [Test] public void BinaryConversionTest() => ShouldBe("10011101");
+
+        [Test] public void FibTest() => ShouldBe(89);
+
         #region Execution
-        private void AssertEquals(object expected, DyObject result)
+        private void ShouldBe(object expected, [CallerMemberName]string callerName = "")
         {
-            Assert.True(TypeConverter.ConvertFrom(expected, null).Equals(result), $"Expected {expected}, god {result}");
+            var res = RunTest(callerName);
+            Assert.True(TypeConverter.ConvertFrom(expected, null).Equals(res), $"Expected {expected}, got {res}");
         }
 
         private Dictionary<string, DyCodeModel> ast;
         private static string startupPath = Path.Combine(Path.GetDirectoryName(typeof(Tests).Assembly.Location), "Tests");
 
-        private DyObject RunTest([CallerMemberName]string name = "")
+        private DyObject RunTest(string name)
         {
             var testFile = FindFile("tests");
 

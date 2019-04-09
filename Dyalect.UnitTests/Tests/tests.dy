@@ -58,3 +58,63 @@ func iterTest()
     iter(10);
     return acc
 }
+
+func factTest() 
+{
+    func fact(n) {
+        if n == 1 {
+            1
+        }
+        else {
+            n * fact(n - 1)
+        }
+    }
+    return fact(20)
+}
+
+func powerTest()
+{
+    func pow(base, exponent) {
+        if exponent == 1 {
+            base
+        }
+        else if exponent == 0 {
+            1
+        }
+        else {
+            base * pow(base, exponent - 1)
+        }
+    }
+    return pow(10, 3)
+}
+
+func binaryConversionTest()
+{
+    var acc = "";
+
+    func bin(num)
+    {
+        if num != 0 {
+            const bin = (num % 2) + 10 * bin(num / 2);
+            acc += bin;
+            return 0;
+        }
+        else {
+            0
+        } 
+    }
+    bin(157);
+    return acc
+}
+
+func fibTest()
+{
+    func fib(n)
+    {
+        if n == 0 || n == 1 {
+            return n
+        }
+        fib(n - 1) + fib(n - 2)
+    }
+    return fib(11)
+}
