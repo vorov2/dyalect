@@ -1,0 +1,498 @@
+﻿COMPILER Dyalect
+
+CHARACTERS
+    cr = '\r'.
+    lf = '\n'.
+    newLine = cr + lf.
+    tab = '\t'.    
+    letter = 'A' .. 'Z' + 'a' .. 'z' + '_'.
+    digit = "0123456789".
+    notDigit = ANY - digit.
+    hexDigit = digit + "ABCDEFabcdef".
+    verbatimChar = ANY.
+    stringChar = ANY - '"' - '\\' - newLine.
+    char = ANY - "'" - '\\' - newLine.
+
+TOKENS
+    identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
+
+    intToken    = digit { digit } | ("0x"|"0X") hexDigit { hexDigit }.
+
+    floatToken  = "." digit { digit } [ ("e"|"E") [ "+" | "-" ] digit { digit } ]
+                    | digit { digit } 
+                        ( 
+                            "." digit { digit } [ ( "e" | "E" ) ["+" | "-" ] digit { digit } ]
+                            | ( "e" | "E") ["+" | "-" ] digit { digit }
+                        ).
+
+    stringToken = "\"" { stringChar
+                    | "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"
+                    | "\\u" hexDigit hexDigit hexDigit hexDigit
+                    }
+                "\"".
+    implicitToken = "$" digit { digit }.
+
+    varToken            = "var".
+    constToken          = "const".
+    funcToken           = "func".
+    returnToken         = "return".
+    continueToken       = "continue".
+    breakToken          = "break".
+    ifToken             = "if".
+    forToken            = "for".
+    whileToken          = "while".
+    switchToken         = "switch".
+    doToken             = "do".
+    typeToken           = "type".
+
+    arrowToken          = "=>".
+    dotToken            = ".".
+    commaToken          = ",".
+    semicolonToken      = ";".
+    colonToken          = ":".
+    equalToken          = "=".
+    parenLeftToken      = "(".
+    parenRightToken     = ")".
+    curlyLeftToken      = "{".
+    curlyRightToken     = "}".
+    squareLeftToken     = "[".
+    squareRightToken    = "]".
+    complexEqualToken   = ":=".
+
+COMMENTS FROM "/*" TO "*/"
+COMMENTS FROM "//" TO lf
+
+IGNORE cr + lf + tab
+
+PRODUCTIONS
+
+    Separator = ";".
+
+    StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!" | "#" 
+        | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
+
+    Qualident<out Qualident q> =
+        (. q = new Qualident(); .)
+        identToken (. q.AddName(t.val); .) [ "." identToken  (. q.AddName(t.val); .) ].
+
+    Import<out DNode node> =
+        "import"
+        (. var inc = new DImport(t); .)
+        identToken
+        (.
+            inc.ModuleName = t.val;
+            node = inc;
+        .)
+        [
+            "=" identToken
+            (.
+                inc.Alias = inc.ModuleName;
+                inc.ModuleName = t.val;
+            .)
+        ]
+        [
+            "(" stringToken (. inc.Dll = ParseString(); .) ")"
+        ].
+
+    Statement<out DNode node> =
+        (. node = null; .)
+        (
+              Binding<out node> Separator
+            | SimpleExpr<out node> Separator
+            | ControlFlow<out node> Separator
+            | Import<out node> Separator
+            | Block<out node>
+            | If<out node>
+            | Loops<out node>
+            | Function<out node>
+        ).
+
+    Block<out DNode node> =
+        (. node = null; .)
+        (
+            "{"
+                (. var block = new DBlock(t); .)
+                Statement<out node> (. block.Nodes.Add(node); .)
+                { Statement<out node> (. block.Nodes.Add(node); .) }
+                (. node = block; .)
+            "}"
+        ).
+
+    Function<out DNode node> =
+        (. node = null; .)
+        (
+            "func"
+            (. var f = new DFunctionDeclaration(t); .)
+            Qualident<out var q> (. f.Name = q.Local; .)
+            [ ( identToken | StandardOperators )
+                (.
+                    f.TypeName = q;
+                    f.Name = t.val;
+                .)  
+            ]
+            [ FunctionArguments<f> ]
+            (
+                  Block<out node>
+                | "=" Expr<out node> Separator
+            )
+            (.
+                f.Body = node;
+                node = f;
+            .)
+        ).
+
+    FunctionArguments<DFunctionDeclaration node> =
+        "("
+            [
+                identToken (. node.Parameters.Add(t.val); .)
+                { "," identToken (. node.Parameters.Add(t.val); .) }
+                [
+                    "..." (. node.Variadic = true; .)
+                ]
+            ]
+        ")".
+
+    Binding<out DNode node> = 
+        (
+            ( "var" | "const" )
+            (. var bin = new DBinding(t) { Constant = t.val == "const" }; .)
+            identToken (. bin.Name = t.val; .)
+            [ "=" Expr<out node> (. bin.Init = node; .) ]
+            (. node = bin; .)
+        ).
+
+    Expr<out DNode node> =
+        (. node = null; .)
+        (
+              SimpleExpr<out node>
+            | If<out node>
+            | Block<out node>
+            | Loops<out node>
+        ).
+
+    If<out DNode node> =
+        (. node = null; .)
+        (
+            "if"
+            (. var @if = new DIf(t); .)
+            Expr<out node> (. @if.Condition = node; .)
+            Block<out node>  (. @if.True = node; .)
+            [
+                "else"
+                (
+                    (
+                        Block<out node>
+                        (. @if.False = node; .)
+                    )
+                    |
+                    (
+                        If<out node>
+                        (. @if.False = node; .)
+                    )
+                )
+            ]
+            (. node = @if; .)
+        ).
+
+    Loops<out DNode node> =
+        (. node = null; .)
+        (
+            While<out node>
+        ).
+
+    While<out DNode node> =
+        (. node = null; .)
+        (
+            "while"
+            (. var @while = new DWhile(t); .)
+            Expr<out node> (. @while.Condition = node; .)
+            Block<out node>
+            (.
+                @while.Body = node;
+                node = @while;
+            .)
+        ).
+
+    ControlFlow<out DNode node> =
+        (. node = null; .)
+        (
+              Break<out node>
+            | Continue<out node>
+            | Return<out node>
+        ).
+
+    Break<out DNode node> = 
+        "break" 
+        (. var br = new DBreak(t); node = br; .)
+        [ Expr<out var exp> (. br.Expression = exp; .) ].
+
+    Return<out DNode node> = 
+        "return" 
+        (. var br = new DReturn(t); node = br; .)
+        [ Expr<out var exp> (. br.Expression = exp; .) ].
+
+    Continue<out DNode node> = "continue" (. node = new DContinue(t); .).
+
+    SimpleExpr<out DNode node> = Assignment<out node>.
+
+    Assignment<out DNode node> =
+        Or<out node>
+        [
+            (.
+                var ass = new DAssignment(t) { Target = node };
+                node = ass;
+                BinaryOperator? op = null;
+            .)
+            (
+                  "="
+                | "+="  (. op = BinaryOperator.Add; .)
+                | "-="  (. op = BinaryOperator.Sub; .)
+                | "*="  (. op = BinaryOperator.Mul; .)
+                | "/="  (. op = BinaryOperator.Div; .)
+                | "%="  (. op = BinaryOperator.Rem; .)
+                | "&="  (. op = BinaryOperator.And; .)
+                | "|="  (. op = BinaryOperator.Or; .)
+                | "^="  (. op = BinaryOperator.Xor; .)
+                | "<<=" (. op = BinaryOperator.ShiftLeft; .)
+                | ">>=" (. op = BinaryOperator.ShiftRight; .)
+            )
+            Expr<out node>
+            (.
+                ass.Value = node;
+                ass.AutoAssign = op;
+                node = ass;
+            .)
+        ].
+
+    Or<out DNode node> = 
+        And<out node>
+        {
+            "||" (. var ot = t; .) And<out DNode exp>
+            (. node = new DBinaryOperation(node, exp, BinaryOperator.Or, ot); .)
+        }.
+        
+    And<out DNode node> = 
+        Eq<out node>
+        {
+            "&&" (. var ot = t; .) Eq<out DNode exp>
+            (. node = new DBinaryOperation(node, exp, BinaryOperator.And, ot); .)
+        }.
+
+    Eq<out DNode node> = 
+        Shift<out node>
+        {
+            (.
+                var op = default(BinaryOperator);
+                var ot = default(Token);
+            .)
+            (
+                  ">"  (. ot = t; op = BinaryOperator.Gt; .)
+                | "<"  (. ot = t; op = BinaryOperator.Lt; .)
+                | ">=" (. ot = t; op = BinaryOperator.GtEq; .)
+                | "<=" (. ot = t; op = BinaryOperator.LtEq; .)
+                | "==" (. ot = t; op = BinaryOperator.Eq; .)
+                | "!=" (. ot = t; op = BinaryOperator.NotEq; .)
+            )
+            Shift<out DNode exp>
+            (. node = new DBinaryOperation(node, exp, op, ot); .)
+        }.
+
+    Shift<out DNode node> =
+        BitOr<out node>
+        {
+            (. 
+                var op = default(BinaryOperator);
+                var ot = default(Token);
+            .)
+            ( 
+                  "<<" (. ot = t; op = BinaryOperator.ShiftLeft; .)
+                | ">>" (. ot = t; op = BinaryOperator.ShiftRight; .)
+            )
+            BitOr<out DNode exp>
+            (. node = new DBinaryOperation(node, exp, op, ot); .)
+        }.
+        
+    BitOr<out DNode node> = 
+        Xor<out node>
+        {
+            "|" (. var ot = t; .) Xor<out DNode exp>
+            (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseOr, ot); .)
+        }.
+        
+    Xor<out DNode node> = 
+        BitAnd<out node>
+        {
+            "^" (. var ot = t; .) BitAnd<out DNode exp>
+            (. node = new DBinaryOperation(node, exp, BinaryOperator.Xor, ot); .)
+        }.
+        
+    BitAnd<out DNode node> = 
+        Add<out node>
+        {
+            "&" (. var ot = t; .) Add<out DNode exp>
+            (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseAnd, ot); .)
+        }.
+
+    Add<out DNode node> =
+        Mul<out node>
+        {
+            (. 
+                var op = default(BinaryOperator);
+                var ot = default(Token);
+            .)
+            ( 
+                  "+" (. ot = t; op = BinaryOperator.Add; .)
+                | "-" (. ot = t; op = BinaryOperator.Sub; .)
+            )
+            Mul<out DNode exp>
+            (. node = new DBinaryOperation(node, exp, op, ot); .)
+        }.
+
+    Mul<out DNode node> =
+        Unary<out node>
+        {
+            (. 
+                var op = default(BinaryOperator);
+                var ot = default(Token);
+            .)
+            ( 
+                  "*" (. ot = t; op = BinaryOperator.Mul; .)
+                | "/" (. ot = t; op = BinaryOperator.Div; .)
+                | "%" (. ot = t; op = BinaryOperator.Rem; .)
+            )
+            Unary<out var exp>
+            (. node = new DBinaryOperation(node, exp, op, ot); .)
+        }.
+
+    Unary<out DNode node> =
+        (.
+            node = null;
+            var op = default(UnaryOperator);
+            var ot = default(Token);
+        .)
+        (
+            [ 
+                  "!" (. ot = t; op = UnaryOperator.Not; .)
+                | "-" (. ot = t; op = UnaryOperator.Neg; .)
+                | "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
+                | "#" (. ot = t; op = UnaryOperator.Length; .)
+            ]
+            Application<out node>
+            (.
+                if (op != UnaryOperator.None)
+                    node = new DUnaryOperation(node, op, ot);
+            .)
+        ).
+
+    Application<out DNode node> =
+        (. node = null; .)
+        (
+            FieldOrIndex<out node>
+            {
+                (. var app = new DApplication(node, t); .)
+                ApplicationArguments<app>
+                (. node = app; .)
+            }
+        ).
+
+    ApplicationArguments<DApplication app> =
+        (. var node = default(DNode); .)
+        "("
+            [ Expr<out node> (. app.Arguments.Add(node); .) ]
+            { "," Expr<out node> (. app.Arguments.Add(node); .) }
+        ")".
+
+    FieldOrIndex<out DNode node> =
+        (
+            Literal<out node>
+            {
+                (
+                    "." (. var ot = t; .)
+                    Name<out var nam>
+                    (.
+                        var fld = new DIndexer(ot) { Target = node };
+                        fld.Index = nam;
+                        node = fld;
+                    .)
+                )
+                |
+                (
+                    ":" (. var ot = t; .)
+                    identToken
+                    (.
+                        var fld = new DMixin(ot) { Target = node };
+                        fld.Field = t.val;
+                        node = fld;
+                    .)
+                )
+                |
+                (
+                    "["
+                        (. var idx = new DIndexer(t) { Target = node }; .)
+                        Literal<out node>
+                        (. 
+                            idx.Index = node;
+                            node = idx;
+                        .)
+                    "]"
+                )
+            }
+        ).
+
+    Literal<out DNode node> =
+        (. node = null; .)
+        (
+              Name<out node>
+            | Integer<out node>
+            | Float<out node>
+            | String<out node>
+            | Bool<out node>
+            | Nil<out node>
+            | Group<out node>
+        ).
+
+    Group<out DNode node> =
+        (. node = null; .)
+        (
+            "(" Expr<out node> ")"
+        ).
+
+    Name<out DNode node> =
+        (
+            identToken
+            (. node = new DName(t) { Value = t.val }; .)
+        ).
+
+    Nil<out DNode node> = "nil" (. node = new DNilLiteral(t); .).
+
+    Integer<out DNode node> =
+        (
+            intToken
+            (. node = new DIntegerLiteral(t) { Value = ParseInteger() }; .)
+        ).
+
+    Float<out DNode node> =
+        (
+            floatToken
+            (. node = new DFloatLiteral(t) { Value = ParseFloat() }; .)
+        ).
+
+    String<out DNode node> =
+        (
+            stringToken
+            (. node = new DStringLiteral(t) { Value = ParseString() }; .)
+        ).
+
+    Bool<out DNode node> =
+        (
+            ("true"|"false")
+            (. node = new DBooleanLiteral(t) { Value = t.val == "true" }; .)
+        ).
+
+    Dyalect =
+        (
+            Statement<out var node> (. Root.Nodes.Add(node); .)
+            { Statement<out node> (. Root.Nodes.Add(node); .) }
+        ).
+
+END Dyalect.

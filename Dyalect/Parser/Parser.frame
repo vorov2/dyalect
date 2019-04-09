@@ -1,0 +1,62 @@
+﻿-->begin
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using Dyalect.Parser.Model;
+
+-->namespace
+namespace Dyalect.Parser
+{
+    partial class InternalParser
+    {
+-->constants
+
+-->declarations
+
+        private void Get() 
+        {
+            for (;;)
+            {
+                t = la;
+                la = scanner.Scan();
+            
+                if (la.kind <= maxT)
+                {
+                    ++errDist;
+                    break;
+                }
+-->pragmas
+                la = t;
+            }
+        }
+
+-->productions
+
+        public void Parse()
+        {
+            la = new Token();
+            la.val = "";
+            Get();
+-->parseRoot
+        }
+
+        static readonly bool[,] set = {
+-->initialization
+        };
+
+        private void SynErr(int line, int col, int n)
+        {
+            string s;
+
+            switch (n)
+            {
+-->errors
+                default:
+                    s = "unknown " + n;
+                    break;
+            }
+
+            AddError(s, n, line, col);
+        }
+    }
+}

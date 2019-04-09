@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>latest</LangVersion>
+      <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+      <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+      <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+      <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+      <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+      <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+      <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\Bin\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Bin\</OutputPath>
+  </PropertyGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="&quot;$(SolutionDir)Binaries\Coco.exe&quot; -N &quot;$(ProjectDir)Parser\Dyalect.atg&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <None Remove="Parser\Parser.cs.old" />
+    <None Remove="Parser\Scanner.cs.old" />
+  </ItemGroup>
+    
+    <ItemGroup>
+        
+      <Compile Update="Parser\Parser.cs">
+          <DependentUpon>Parser.frame</DependentUpon>
+      </Compile>
+      <Compile Update="Parser\Scanner.cs">
+          <DependentUpon>Scanner.frame</DependentUpon>
+      </Compile>
+      <Compile Update="Parser\Parser.Main.cs">
+          <DependentUpon>Parser.frame</DependentUpon>
+      </Compile>
+      <Compile Update="Parser\Scanner.Main.cs">
+          <DependentUpon>Scanner.frame</DependentUpon>
+      </Compile>
+      <Compile Update="Strings\CompilerErrors.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>CompilerErrors.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Strings\LinkerErrors.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>LinkerErrors.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Strings\RuntimeErrors.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>RuntimeErrors.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <EmbeddedResource Update="Strings\CompilerErrors.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>CompilerErrors.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Strings\LinkerErrors.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>LinkerErrors.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Strings\RuntimeErrors.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>RuntimeErrors.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+</Project>

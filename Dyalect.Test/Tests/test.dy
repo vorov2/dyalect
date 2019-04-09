@@ -1,0 +1,32 @@
+﻿func Integer + (n) {
+    self * n
+}
+
+func Integer toString() {
+    "[" + self + "]"
+}
+
+func Float multiply(x,y) {
+    var res = self * (x - y);
+
+    if res < 0 {
+        return -res;
+    }
+    else {
+        return res;
+    }
+}
+
+var x = 12.0;
+
+if x > 0 {
+    x *= 12.3456
+}
+
+{
+    var x = "Yeah-whooo!";
+    print(x)
+}
+
+
+x:multiply(2, 33.4)
