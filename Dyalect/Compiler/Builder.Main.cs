@@ -132,6 +132,9 @@ namespace Dyalect.Compiler
 
         private void Build(DReturn node, Hints hints, CompilerContext ctx)
         {
+            if (ctx.FunctionExit.IsEmpty())
+                AddError(CompilerError.ReturnNotAllowed, node.Location);
+
             if (node.Expression != null)
                 Build(node.Expression, hints, ctx);
             else

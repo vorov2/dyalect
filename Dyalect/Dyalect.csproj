@@ -29,6 +29,10 @@
     <None Remove="Parser\Parser.cs.old" />
     <None Remove="Parser\Scanner.cs.old" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Common\Meta.cs" Link="Properties\Meta.cs" />
+  </ItemGroup>
     
     <ItemGroup>
         

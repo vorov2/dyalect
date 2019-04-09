@@ -5,9 +5,16 @@ VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dyalect", "Dyalect\Dyalect.csproj", "{23F4BAA6-838A-4F92-8D80-1BFB09507B3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dyalect.Test", "Dyalect.Test\Dyalect.Test.csproj", "{E74ABA7B-5A82-46EE-9EBA-6EB0DB5792AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dyalect.Test", "Dyalect.Test\Dyalect.Test.csproj", "{E74ABA7B-5A82-46EE-9EBA-6EB0DB5792AA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dyalect.Library", "Dyalect.Library\Dyalect.Library.csproj", "{9BC82D77-54B0-44DF-B8B0-93E3A00365A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dyalect.UnitTests", "Dyalect.UnitTests\Dyalect.UnitTests.csproj", "{2B985463-1EFD-4AAF-9EB2-3A1C0FBA05AF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{F07E65FE-36DA-4666-84D4-5B5D9050EB30}"
+	ProjectSection(SolutionItems) = preProject
+		Common\Meta.cs = Common\Meta.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +34,10 @@ Global
 		{9BC82D77-54B0-44DF-B8B0-93E3A00365A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BC82D77-54B0-44DF-B8B0-93E3A00365A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BC82D77-54B0-44DF-B8B0-93E3A00365A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B985463-1EFD-4AAF-9EB2-3A1C0FBA05AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B985463-1EFD-4AAF-9EB2-3A1C0FBA05AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B985463-1EFD-4AAF-9EB2-3A1C0FBA05AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B985463-1EFD-4AAF-9EB2-3A1C0FBA05AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

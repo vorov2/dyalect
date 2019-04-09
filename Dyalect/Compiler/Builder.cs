@@ -87,7 +87,7 @@ namespace Dyalect.Compiler
         {
             try
             {
-                var ctx = new CompilerContext { FunctionExit = programEnd };
+                var ctx = new CompilerContext();
 
                 if (!options.NoLangModule)
                     Build(defaultInclude, None, ctx);

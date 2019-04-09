@@ -3,29 +3,32 @@
   <PropertyGroup>
       <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
       <TargetFramework>netcoreapp2.2</TargetFramework>
+      <LangVersion>latest</LangVersion>
       <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
       <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
       <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
       <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
       <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
       <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-      <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute> 
-  </PropertyGroup>
+      <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\Bin\</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\Bin\</OutputPath>
+      <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Common\Meta.cs" Link="Properties\Meta.cs" />
+    <PackageReference Include="nunit" Version="3.11.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Dyalect\Dyalect.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Tests\tests.dy">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

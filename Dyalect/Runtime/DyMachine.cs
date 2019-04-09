@@ -390,7 +390,6 @@ namespace Dyalect.Runtime
 
             try
             {
-                ctx.Caller = caller.FunctionName;
                 return fun.Call(ctx, arr);
             }
             catch (Exception ex)

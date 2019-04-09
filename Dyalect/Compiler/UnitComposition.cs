@@ -6,7 +6,7 @@ namespace Dyalect.Compiler
 {
     public sealed class UnitComposition
     {
-        internal UnitComposition(List<Unit> units)
+        public UnitComposition(List<Unit> units)
         {
             Units = units;
             Types = StandardType.All.Clone();

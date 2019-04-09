@@ -1,6 +1,8 @@
-﻿namespace Dyalect.Runtime.Types
+﻿using System;
+
+namespace Dyalect.Runtime.Types
 {
-    public abstract class DyObject
+    public abstract class DyObject : IEquatable<DyObject>
     {
         internal readonly int TypeId;
 
@@ -22,7 +24,7 @@
         public abstract object AsObject();
 
         protected abstract bool TestEquality(DyObject obj);
-        internal bool Equals(DyObject obj)
+        public bool Equals(DyObject obj)
         {
             if (TypeId != obj.TypeId)
                 return false;

@@ -3,7 +3,7 @@ using Dyalect.Runtime.Types;
 
 namespace Dyalect.Runtime
 {
-    internal static class TypeConverter
+    public static class TypeConverter
     {
         public static DyObject ConvertFrom(object obj, ExecutionContext ctx) => ConvertFrom(obj, obj?.GetType(), ctx);
 

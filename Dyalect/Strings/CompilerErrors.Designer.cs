@@ -70,6 +70,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Директива &quot;return&quot; недопустима в этом контексте..
+        /// </summary>
+        internal static string ReturnNotAllowed {
+            get {
+                return ResourceManager.GetString("ReturnNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Превышен лимит ошибок..
         /// </summary>
         internal static string TooManyErrors {

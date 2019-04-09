@@ -120,6 +120,9 @@
   <data name="NoEnclosingLoop" xml:space="preserve">
     <value>Отсутствует внешний цикл для прерывания или продолжения.</value>
   </data>
+  <data name="ReturnNotAllowed" xml:space="preserve">
+    <value>Директива "return" недопустима в этом контексте.</value>
+  </data>
   <data name="TooManyErrors" xml:space="preserve">
     <value>Превышен лимит ошибок.</value>
   </data>

@@ -2,7 +2,7 @@
 {
     public sealed class DyCodeModel
     {
-        internal DyCodeModel(DBlock root, string fileName)
+        public DyCodeModel(DBlock root, string fileName)
         {
             Root = root;
             FileName = fileName;

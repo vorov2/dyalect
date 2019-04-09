@@ -1,0 +1,60 @@
+﻿func whileTest1()
+{
+    var n = 100;
+    var x = while n > 0 {
+        if n == 33 {
+            break n
+        }
+        n = n - 1
+    }
+    return x
+}
+
+func whileTest2()
+{
+    var n = 100;
+    var x = while n > 0 {
+        if n == 33 {
+            break
+        }
+        n = n - 1
+    }
+    if !x {
+        x = 42
+    }
+    return x
+}
+
+func fizzbuzzTest() 
+{
+    var n = 1;
+    var acc = "";
+    while n < 11 {
+        if n % 15 == 0 {
+            acc = acc + "fizzbuzz"
+        } else if n % 3 == 0 {
+            acc = acc + "fizz"
+        } else if n % 5 == 0 {
+            acc = acc + "buzz"
+        } else {
+            acc = acc + n
+        }
+        n = n + 1
+    }
+    return "12fizz4buzzfizz78fizzbuzz"
+}
+
+func iterTest()
+{
+    var acc = 0;
+    func iter(n) {
+        if n == 0 {
+            0
+        } else {
+            acc = acc + 1;
+            iter(n - 1)
+        }
+    }
+    iter(10);
+    return acc
+}

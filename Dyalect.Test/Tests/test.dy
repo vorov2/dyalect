@@ -1,4 +1,4 @@
-﻿func Integer + (n) {
+﻿/*func Integer + (n) {
     self * n
 }
 
@@ -26,7 +26,8 @@ if x > 0 {
 {
     var x = "Yeah-whooo!";
     print(x)
-}
+}*/
 
-
-x:multiply(2, 33.4)
+var zoo = 12
+zoo = zoo + 4
+zoo

@@ -12,7 +12,7 @@ namespace Dyalect.Test
     {
         static void Main(string[] args)
         {
-            var res = Exe.Eval(SourceBuffer.FromFile(FindFile("tests")));
+            var res = Exe.Eval(SourceBuffer.FromFile(FindFile("test")));
             Console.WriteLine("Result: {0}", res);
         }
 

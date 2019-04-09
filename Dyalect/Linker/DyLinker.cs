@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Parser;
+using Dyalect.Parser.Model;
 using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System;
@@ -66,6 +67,21 @@ namespace Dyalect.Linker
             if (unit == null)
                 return Result.Create(default(UnitComposition), messages);
 
+            return Make(unit);
+        }
+
+        public Result<UnitComposition> Make(DyCodeModel codeModel)
+        {
+            var unit = CompileNodes(codeModel);
+
+            if (unit == null)
+                return Result.Create(default(UnitComposition), messages);
+
+            return Make(unit);
+        }
+
+        private Result<UnitComposition> Make(Unit unit)
+        {
             units[0] = unit;
             var asm = new UnitComposition(units);
             var mixins = new Dictionary<string, object>();
@@ -113,16 +129,21 @@ namespace Dyalect.Linker
                 return null;
             }
 
-            var compiler = new DyCompiler(options, this);
-            var cres = compiler.Compile(res.Value);
+            return CompileNodes(res.Value);
+        }
 
-            if (!cres.Success)
+        private Unit CompileNodes(DyCodeModel codeModel)
+        {
+            var compiler = new DyCompiler(options, this);
+            var res = compiler.Compile(codeModel);
+
+            if (!res.Success)
             {
-                messages.AddRange(cres.Messages);
+                messages.AddRange(res.Messages);
                 return null;
             }
 
-            return cres.Value;
+            return res.Value;
         }
 
         private Unit ProcessObjectFile(string fileName, Reference reference)

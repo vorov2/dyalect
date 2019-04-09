@@ -18,6 +18,8 @@
 
         UndefinedType = 207,
 
-        UndefinedModule = 208
+        UndefinedModule = 208,
+
+        ReturnNotAllowed = 209
     }
 }
