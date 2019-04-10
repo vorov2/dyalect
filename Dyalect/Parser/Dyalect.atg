@@ -57,7 +57,6 @@ TOKENS
     curlyRightToken     = "}".
     squareLeftToken     = "[".
     squareRightToken    = "]".
-    complexEqualToken   = ":=".
 
 COMMENTS FROM "/*" TO "*/"
 COMMENTS FROM "//" TO lf
@@ -456,25 +455,39 @@ PRODUCTIONS
             | String<out node>
             | Bool<out node>
             | Nil<out node>
+            | IF (IsTuple()) Tuple<out node>
             | Group<out node>
-            //| Record
         ).
 
-    /*Record =
+    Tuple<out DNode node> =
+        (. node = null; .)
         (
             "("
-                RecordField { "," RecordField }
+                (. var tup = new DTupleDeclaration(t); .)
+                TupleElement<out node> (. tup.Elements.Add(node); .)
+                { "," TupleElement<out node> (. tup.Elements.Add(node); .) }
+                (. node = tup; .)
             ")"
         ).
 
-    RecordField = 
+    TupleElement<out DNode node> = 
+        (. node = null; .)
         (
+            IF (IsNamedTupleElement())
             (
-                  identToken
-                | stringToken
+                (. string name = null; .)
+                (
+                      identToken (. name = t.val; .)
+                    | stringToken (. name = ParseString(); .)
+                )
+                ":"
+                (. var tag = new DNameTag(t) { Name = name }; .)
+                Expr<out node>
+                (. tag.Expression = node; node = tag; .)
             )
-            "=" Expr<out var node>
-        ).*/
+            |
+            Expr<out node>
+        ).
 
     Group<out DNode node> =
         (. node = null; .)

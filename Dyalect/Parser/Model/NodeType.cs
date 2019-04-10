@@ -28,6 +28,9 @@
 
         Function,
         Import,
+        Tuple,
+        NameTag,
+
         Type,
         Field
     }

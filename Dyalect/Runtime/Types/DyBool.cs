@@ -12,16 +12,6 @@
             this.value = value;
         }
 
-        public override int GetHashCode() => value.GetHashCode();
-
-        public override bool Equals(object obj)
-        {
-            if (obj is DyBool)
-                return ReferenceEquals(this, obj);
-            else
-                return false;
-        }
-
         protected override bool TestEquality(DyObject obj) => ReferenceEquals(this, obj);
 
         public override bool AsBool() => value;

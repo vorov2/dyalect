@@ -31,13 +31,9 @@ namespace Dyalect.Runtime.Types
             return TestEquality(obj);
         }
 
-        internal virtual DyObject GetItem(int index) => null;
+        internal virtual DyObject GetItem(DyObject index) => null;
 
-        internal virtual DyObject GetItem(string key) => null;
-
-        internal virtual bool SetItem(int index, DyObject value) => false;
-
-        internal virtual bool SetItem(string key, DyObject value) => false;
+        internal virtual bool SetItem(DyObject index, DyObject value) => false;
     }
 
     internal static class DyObjectExtensions

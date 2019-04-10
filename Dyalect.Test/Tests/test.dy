@@ -19,7 +19,7 @@ if x > 0 {
 {
     var x = "Yeah-whooo!";
     print(x)
-}*/
+}
 
 
 func Float multiply(x,y) {
@@ -36,3 +36,5 @@ func Float multiply(x,y) {
 var x = 12.0
 
 x.multiply(34, 26)
+*/
+

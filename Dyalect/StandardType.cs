@@ -14,6 +14,7 @@ namespace Dyalect
             DyStringTypeInfo.Instance,
             DyFunctionTypeInfo.Instance,
             DyTypeTypeInfo.Instance,
+            DyTupleTypeInfo.Instance
         };
 
         public const int Nil = 0;
@@ -23,6 +24,7 @@ namespace Dyalect
         public const int String = 4;
         public const int Function = 5;
         public const int Type = 6;
+        public const int Tuple = 7;
 
         public const string NilName = "Nil";
         public const string IntegerName = "Integer";
@@ -31,6 +33,7 @@ namespace Dyalect
         public const string StringName = "String";
         public const string FunctionName = "Function";
         public const string TypeName = "Type";
+        public const string TupleName = "Tuple";
 
         public static int GetTypeCodeByName(string name)
         {
@@ -43,6 +46,7 @@ namespace Dyalect
                 case StringName: return String;
                 case FunctionName: return Function;
                 case TypeName: return Type;
+                case TupleName: return Tuple;
                 default: return -1;
             }
         }

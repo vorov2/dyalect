@@ -121,7 +121,7 @@ namespace Dyalect.Parser
             if ((x = scanner.Peek()).kind != _identToken && x.kind != _stringToken)
                 return false;
 
-            if (scanner.Peek().kind != _complexEqualToken)
+            if (scanner.Peek().kind != _colonToken)
                 return false;
 
             return true;
@@ -137,10 +137,19 @@ namespace Dyalect.Parser
             if (scanner.Peek().kind != _stringToken)
                 return false;
 
-            if (scanner.Peek().kind != _complexEqualToken)
+            if (scanner.Peek().kind != _colonToken)
                 return false;
 
             return true;
+        }
+
+        private bool IsNamedTupleElement()
+        {
+            if (la.kind != _identToken && la.kind != _stringToken)
+                return false;
+
+            scanner.ResetPeek();
+            return scanner.Peek().kind == _colonToken;
         }
 
         private bool IsTuple()
@@ -154,7 +163,7 @@ namespace Dyalect.Parser
 
             while (x.kind != _parenRightToken)
             {
-                if (x.kind == _commaToken && balance == 1)
+                if ((x.kind == _commaToken || x.kind == _colonToken) && balance == 1)
                     return true;
 
                 if (x.kind == _parenLeftToken)

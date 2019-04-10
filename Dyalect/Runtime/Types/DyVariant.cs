@@ -17,12 +17,12 @@
 
         public override object AsObject() => this;
 
-        internal override DyObject GetItem(int index)
-        {
-            if (index < 0 || index >= Values.Length)
-                return null;
-            return Values[index];
-        }
+        //internal override DyObject GetItem(int index)
+        //{
+        //    if (index < 0 || index >= Values.Length)
+        //        return null;
+        //    return Values[index];
+        //}
 
         protected override bool TestEquality(DyObject obj)
         {
@@ -43,33 +43,33 @@
             return true;
         }
 
-        internal override DyObject GetItem(string key)
-        {
-            var i = GetOrdinal(key);
-            return GetItem(i);
-        }
+        //internal override DyObject GetItem(string key)
+        //{
+        //    var i = GetOrdinal(key);
+        //    return GetItem(i);
+        //}
 
-        internal override bool SetItem(int index, DyObject value)
-        {
-            if (index < 0 || index >= Values.Length)
-                return false;
-            Values[index] = value;
-            return true;
-        }
+        //internal override bool SetItem(int index, DyObject value)
+        //{
+        //    if (index < 0 || index >= Values.Length)
+        //        return false;
+        //    Values[index] = value;
+        //    return true;
+        //}
 
-        internal override bool SetItem(string key, DyObject value)
-        {
-            var i = GetOrdinal(key);
-            return SetItem(i, value);
-        }
+        //internal override bool SetItem(string key, DyObject value)
+        //{
+        //    var i = GetOrdinal(key);
+        //    return SetItem(i, value);
+        //}
 
-        private int GetOrdinal(string key)
-        {
-            for (var i = 0; i < Keys.Length; i++)
-                if (key == Keys[i])
-                    return i;
+        //private int GetOrdinal(string key)
+        //{
+        //    for (var i = 0; i < Keys.Length; i++)
+        //        if (key == Keys[i])
+        //            return i;
 
-            return -1;
-        }
+        //    return -1;
+        //}
     }
 }

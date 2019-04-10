@@ -286,8 +286,18 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Other Operations
-        internal DyObject GetOp(DyObject self, string name, ExecutionContext ctx)
+        internal DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
+            if (self.TypeId == StandardType.Tuple)
+            {
+                var t = self.GetItem(index);
+
+                if (t != null)
+                    return t;
+            }
+
+            var name = index.AsString();
+
             if (!traits.TryGetValue(name, out var value))
             {
                 value = Get(name, ctx);
