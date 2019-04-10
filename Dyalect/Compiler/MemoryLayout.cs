@@ -19,6 +19,6 @@
         public int Size { get; }
 
         //Адрес (смещение по ASM-коду)
-        public int Address { get; }
+        public int Address { get; internal set; }
     }
 }

@@ -23,17 +23,48 @@ namespace Dyalect
             };
 
             var lookup = FileLookup.Create(Path.GetDirectoryName(options.StartupPath), options.Paths);
-            var linker = new DyLinker(lookup, buildOptions);
+            var linker = new DyIncrementalLinker(lookup, buildOptions);
 
-            var made = linker.Make(SourceBuffer.FromFile(options.DefaultArgument));
+            if (options.DefaultArgument != null)
+            {
+                var made = linker.Make(SourceBuffer.FromFile(options.DefaultArgument));
 
-            if (!made.Success)
-                foreach (var m in made.Messages)
-                    Console.WriteLine(m);
+                if (!made.Success)
+                {
+                    foreach (var m in made.Messages)
+                        Console.WriteLine(m);
+                    return;
+                }
 
-            var dym = new DyMachine(made.Value);
-            var res = dym.Execute();
-            Console.WriteLine(res.Value);
+                var dym = new DyMachine(made.Value);
+                var res = dym.Execute();
+                Console.WriteLine(res.Value);
+            }
+            else
+            {
+                DyMachine dym = null;
+
+                while (true)
+                {
+                    Console.Write("dy>");
+
+                    var line = Console.ReadLine();
+                    var made = linker.Make(SourceBuffer.FromString(line));
+
+                    if (!made.Success)
+                    {
+                        foreach (var m in made.Messages)
+                            Console.WriteLine(m);
+                        continue;
+                    }
+
+                    if (dym == null)
+                        dym = new DyMachine(made.Value);
+
+                    var res = dym.Execute();
+                    Console.WriteLine(res.Value);
+                }
+            }
         }
     }
 }

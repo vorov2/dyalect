@@ -14,18 +14,21 @@ namespace Dyalect.Linker
         private const string EXT = ".dy";
         private const string OBJ = ".dyo";
         private readonly FileLookup lookup;
-        private readonly BuilderOptions options;
 
         private readonly Dictionary<string, Unit> unitMap = new Dictionary<string, Unit>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, Dictionary<string, Type>> asmMap = new Dictionary<string, Dictionary<string, Type>>(StringComparer.OrdinalIgnoreCase);
-        private readonly List<Unit> units = new List<Unit>();
-        private readonly List<BuildMessage> messages = new List<BuildMessage>();
+
+        protected List<Unit> Units { get; } = new List<Unit>();
+
+        protected List<BuildMessage> Messages { get; } = new List<BuildMessage>();
+
+        public BuilderOptions Options { get; }
 
         public DyLinker(FileLookup lookup, BuilderOptions options)
         {
             this.lookup = lookup;
-            this.options = options;
-            units.Add(null);
+            this.Options = options;
+            Units.Add(null);
         }
 
         protected internal virtual Result<Unit> Link(Reference mod)
@@ -41,7 +44,7 @@ namespace Dyalect.Linker
                 var path = FindModule(mod.ModuleName, mod);
 
                 if (path == null || unitMap.TryGetValue(path, out unit))
-                    return Result.Create(unit, messages);
+                    return Result.Create(unit, Messages);
 
                 if (string.Equals(Path.GetExtension(path), EXT))
                     unit = ProcessSourceFile(path, mod);
@@ -51,42 +54,46 @@ namespace Dyalect.Linker
 
             if (unit != null && !unitMap.ContainsKey(unit.FileName))
             {
-                unit.Id = units.Count;
-                units.Add(unit);
+                unit.Id = Units.Count;
+                Units.Add(unit);
                 unitMap.Add(unit.FileName, unit);
             }
 
-            var retval = Result.Create(unit, messages);
+            var retval = Result.Create(unit, Messages);
             return retval;
         }
 
-        public virtual Result<UnitComposition> Make(SourceBuffer buffer)
+        public Result<UnitComposition> Make(SourceBuffer buffer)
         {
-            var unit = ProcessBuffer(buffer);
+            var codeModel = ProcessBuffer(buffer);
 
-            if (unit == null)
-                return Result.Create(default(UnitComposition), messages);
+            if (codeModel == null)
+                return Result.Create(default(UnitComposition), Messages);
 
-            return Make(unit);
+            return Make(codeModel);
         }
 
         public Result<UnitComposition> Make(DyCodeModel codeModel)
         {
-            var unit = CompileNodes(codeModel);
+            var unit = CompileNodes(codeModel, root: true);
 
             if (unit == null)
-                return Result.Create(default(UnitComposition), messages);
+                return Result.Create(default(UnitComposition), Messages);
 
             return Make(unit);
         }
 
-        private Result<UnitComposition> Make(Unit unit)
+        protected virtual Result<UnitComposition> Make(Unit unit)
         {
-            units[0] = unit;
-            var asm = new UnitComposition(units);
-            var mixins = new Dictionary<string, object>();
+            Units[0] = unit;
+            var asm = new UnitComposition(Units);
+            ProcessUnits(asm);
+            return Result.Create(asm, Messages);
+        }
 
-            foreach (var u in units)
+        protected void ProcessUnits(UnitComposition asm)
+        {
+            foreach (var u in Units)
             {
                 for (var i = 0; i < u.References.Count; i++)
                     u.ModuleHandles[i] = u.References[i].Id;
@@ -97,8 +104,6 @@ namespace Dyalect.Linker
                     asm.Types.Add(new DyVariantTypeInfo(asm.Types.Count, u.TypeNames[i]));
                 }
             }
-
-            return Result.Create(asm, messages);
         }
 
         private Unit ProcessSourceFile(string fileName, Reference reference)
@@ -115,31 +120,32 @@ namespace Dyalect.Linker
                 return null;
             }
 
-            return ProcessBuffer(new StringBuffer(src, fileName));
+            var codeModel = ProcessBuffer(new StringBuffer(src, fileName));
+            return codeModel != null ? CompileNodes(codeModel, root: false) : null;
         }
 
-        private Unit ProcessBuffer(SourceBuffer buffer)
+        private DyCodeModel ProcessBuffer(SourceBuffer buffer)
         {
             var parser = new DyParser();
             var res = parser.Parse(buffer);
 
             if (!res.Success)
             {
-                messages.AddRange(res.Messages);
+                Messages.AddRange(res.Messages);
                 return null;
             }
 
-            return CompileNodes(res.Value);
+            return res.Value;
         }
 
-        private Unit CompileNodes(DyCodeModel codeModel)
+        protected virtual Unit CompileNodes(DyCodeModel codeModel, bool root)
         {
-            var compiler = new DyCompiler(options, this);
+            var compiler = new DyCompiler(Options, this);
             var res = compiler.Compile(codeModel);
 
             if (!res.Success)
             {
-                messages.AddRange(res.Messages);
+                Messages.AddRange(res.Messages);
                 return null;
             }
 
@@ -176,7 +182,7 @@ namespace Dyalect.Linker
             if (args != null)
                 str = string.Format(str, args);
 
-            messages.Add(new BuildMessage(str, BuildMessageType.Error, (int)error, loc.Line, loc.Column, fileName));
+            Messages.Add(new BuildMessage(str, BuildMessageType.Error, (int)error, loc.Line, loc.Column, fileName));
         }
     }
 }

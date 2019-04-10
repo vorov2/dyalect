@@ -16,6 +16,13 @@ namespace Dyalect.Compiler
             this.builder = new Builder(this.options, linker);
         }
 
+        public DyCompiler(DyCompiler compiler)
+        {
+            this.options = compiler.options;
+            this.linker = compiler.linker;
+            this.builder = new Builder(compiler.builder);
+        }
+
         public Result<Unit> Compile(DyCodeModel codeModel)
         {
             var unit = builder.Build(codeModel);

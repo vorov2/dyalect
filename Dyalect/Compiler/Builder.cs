@@ -12,6 +12,7 @@ namespace Dyalect.Compiler
     {
         private const int ERROR_LIMIT = 100;
 
+        private readonly bool iterative; //Построение идёт в интерактивном режиме
         private readonly BuilderOptions options; //Настройки сборки
         private readonly CodeWriter cw; //Хелпер для эмита
         private readonly DyLinker linker; //Линкер, который используется для пристыковки модулей
@@ -44,8 +45,10 @@ namespace Dyalect.Compiler
 
         public Builder(Builder builder)
         {
+            this.iterative = true;
             this.linker = builder.linker;
             this.counters = new Stack<int>();
+            this.options = builder.options;
             this.pdb = builder.pdb.Clone();
             this.unit = builder.unit.Clone(this.pdb.Symbols);
             this.cw = builder.cw.Clone(this.unit);
@@ -54,7 +57,7 @@ namespace Dyalect.Compiler
                 ? builder.currentScope.Clone() : this.globalScope;
             this.isDebug = builder.isDebug;
             this.lastLocation = builder.lastLocation;
-            this.Messages = new List<BuildMessage>(builder.Messages.ToArray());
+            this.Messages = new List<BuildMessage>();
             this.counters = new Stack<int>(builder.counters.ToArray());
             this.currentCounter = builder.currentCounter;
             this.programEnd = cw.DefineLabel();
@@ -89,7 +92,7 @@ namespace Dyalect.Compiler
             {
                 var ctx = new CompilerContext();
 
-                if (!options.NoLangModule)
+                if (!options.NoLangModule && !iterative)
                     Build(defaultInclude, None, ctx);
 
                 for (var i = 0; i < root.Nodes.Count; i++)

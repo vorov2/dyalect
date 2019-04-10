@@ -42,6 +42,16 @@ namespace Dyalect.Runtime
             }
 
             var lay0 = unit.Layouts[0];
+            
+            //Если да, то мы в интерактивном режиме и надо проверить, не менялся
+            //ли размер, выделенный под глобальные переменные основного модуля
+            if (modules[0] != null && lay0.Size > modules[0].Length)
+            {
+                var mems = new DyObject[lay0.Size];
+                Array.Copy(modules[0], mems, modules[0].Length);
+                modules[0] = mems;
+            }
+
             var evalStack = new EvalStack(lay0.StackSize);
             return ExecuteWithData(new DyFunction(moduleHandle, 0, 0, this, FastList<DyObject[]>.Empty), evalStack);
         }
@@ -61,7 +71,8 @@ namespace Dyalect.Runtime
             var ops = unit.Ops;
             var layout = unit.Layouts[function.Handle];
             var offset = layout.Address;
-            var locals = new DyObject[layout.Size];
+            var locals = function.Handle == 0 ? modules[function.UnitHandle] : new DyObject[layout.Size];
+            locals = locals ?? new DyObject[layout.Size];
             var captures = function.Captures;
 
             CYCLE:
