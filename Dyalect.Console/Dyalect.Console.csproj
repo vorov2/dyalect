@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+      <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+      <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+      <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+      <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+      <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+      <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+      <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+      <TargetFramework>netcoreapp2.2</TargetFramework>
+      <ApplicationIcon />
+      <OutputType>Exe</OutputType>
+      <StartupObject />
+      <AssemblyName>dya</AssemblyName>
+      <RootNamespace>Dyalect</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\Bin\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Bin\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Common\Meta.cs" Link="Properties\Meta.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dyalect.Library\Dyalect.Library.csproj" />
+    <ProjectReference Include="..\Dyalect\Dyalect.csproj" />
+  </ItemGroup>
+
+</Project>

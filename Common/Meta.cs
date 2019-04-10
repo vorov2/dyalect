@@ -8,7 +8,7 @@ internal static class Meta
 
     public const string Description = "Dyalect, a dynamic language for .NET Core";
 
-    public const string Copyright = "Copyright © Vasily Voronkov 2019";
+    public const string Copyright = "Copyright ï¿½ Vasily Voronkov 2019";
 
     public const string Trademark = "Vasily Voronkov";
 }
