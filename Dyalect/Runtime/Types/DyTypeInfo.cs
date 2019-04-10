@@ -4,16 +4,16 @@ using Dyalect.Compiler;
 
 namespace Dyalect.Runtime.Types
 {
-    public abstract class DyType : DyObject
+    public abstract class DyTypeInfo : DyObject
     {
         private readonly Dictionary<string, DyObject> mixins = new Dictionary<string, DyObject>();
 
-        public DyType() : base(StandardType.Type)
+        public DyTypeInfo() : base(StandardType.Type)
         {
 
         }
 
-        internal DyType(int typeCode) : base(StandardType.Type)
+        internal DyTypeInfo(int typeCode) : base(StandardType.Type)
         {
             TypeCode = typeCode;
         }
@@ -44,7 +44,7 @@ namespace Dyalect.Runtime.Types
 
         public override string AsString() => "[" + TypeName + "]";
 
-        protected override bool TestEquality(DyObject obj) => ((DyType)obj).TypeCode == TypeCode;
+        protected override bool TestEquality(DyObject obj) => ((DyTypeInfo)obj).TypeCode == TypeCode;
 
         public abstract string TypeName { get; }
 

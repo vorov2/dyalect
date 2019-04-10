@@ -3,11 +3,11 @@ using System;
 
 namespace Dyalect.Runtime.Types
 {
-    internal sealed class DyFloatType : DyType
+    internal sealed class DyFloatTypeInfo : DyTypeInfo
     {
-        public static readonly DyFloatType Instance = new DyFloatType();
+        public static readonly DyFloatTypeInfo Instance = new DyFloatTypeInfo();
 
-        private DyFloatType() : base(StandardType.Float)
+        private DyFloatTypeInfo() : base(StandardType.Float)
         {
 
         }

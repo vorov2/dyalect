@@ -28,6 +28,8 @@
 
         Function,
         Import,
+        Type,
+        Field
     }
 
 }

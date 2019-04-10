@@ -94,6 +94,23 @@ PRODUCTIONS
             "(" stringToken (. inc.Dll = ParseString(); .) ")"
         ].
 
+    Type<out DNode node> =
+        "type"
+        (.  
+            var typ = new DTypeDeclaration(t);
+            node = typ;
+        .)
+        identToken (. typ.Name = t.val; .)
+        [
+            "{"[
+                TypeField<out var fld> (. typ.Fields.Add(fld); .)
+                { "," identToken (. typ.Fields.Add(new DFieldDeclaration(t) { Name = t.val }); .) }
+            ]"}"
+        ].
+
+    TypeField<out DFieldDeclaration node> =
+        identToken (. node = new DFieldDeclaration(t) { Name = t.val }; .).
+
     Statement<out DNode node> =
         (. node = null; .)
         (
@@ -101,6 +118,7 @@ PRODUCTIONS
             | SimpleExpr<out node> Separator
             | ControlFlow<out node> Separator
             | Import<out node> Separator
+            | Type<out node> Separator
             | Block<out node>
             | If<out node>
             | Loops<out node>

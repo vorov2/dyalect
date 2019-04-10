@@ -10,7 +10,7 @@ namespace Dyalect.Runtime
     public sealed class DyMachine
     {
         private readonly DyObject[][] modules;
-        private readonly FastList<DyType> types;
+        private readonly FastList<DyTypeInfo> types;
 
         internal UnitComposition Assembly { get; }
         internal ExecutionContext ExecutionContext { get; }
@@ -306,7 +306,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.GetMx:
                         right = evalStack.Peek();
-                        evalStack.Replace(((DyType)right).GetMixin(unit.IndexedStrings[opd].Value, ctx));
+                        evalStack.Replace(((DyTypeInfo)right).GetMixin(unit.IndexedStrings[opd].Value, ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.SetMx:

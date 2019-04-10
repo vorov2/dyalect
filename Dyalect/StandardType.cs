@@ -5,15 +5,15 @@ namespace Dyalect
 {
     internal static class StandardType
     {
-        public static readonly FastList<DyType> All = new FastList<DyType>
+        public static readonly FastList<DyTypeInfo> All = new FastList<DyTypeInfo>
         {
-            DyNilType.Instance,
-            DyIntegerType.Instance,
-            DyFloatType.Instance,
-            DyBoolType.Instance,
-            DyStringType.Instance,
-            DyFunctionType.Instance,
-            DyTypeType.Instance,
+            DyNilTypeInfo.Instance,
+            DyIntegerTypeInfo.Instance,
+            DyFloatTypeInfo.Instance,
+            DyBoolTypeInfo.Instance,
+            DyStringTypeInfo.Instance,
+            DyFunctionTypeInfo.Instance,
+            DyTypeTypeInfo.Instance,
         };
 
         public const int Nil = 0;

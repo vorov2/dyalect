@@ -1,8 +1,8 @@
 ﻿namespace Dyalect.Runtime.Types
 {
-    internal sealed class DyVariantType : DyType
+    internal sealed class DyVariantTypeInfo : DyTypeInfo
     {
-        public DyVariantType(int typeCode, string typeName)
+        public DyVariantTypeInfo(int typeCode, string typeName)
         {
             TypeCode = typeCode;
             TypeName = typeName;

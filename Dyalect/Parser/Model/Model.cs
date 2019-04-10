@@ -4,30 +4,6 @@ using System.Text;
 
 namespace Dyalect.Parser.Model
 {
-    public abstract class DNode
-    {
-        protected DNode(NodeType type, Location loc)
-        {
-            NodeType = type;
-            Location = loc;
-        }
-
-        public NodeType NodeType { get; }
-
-        public Location Location { get; }
-
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            ToString(sb);
-            return sb.ToString();
-        }
-
-        internal protected virtual string GetName() => null;
-
-        internal abstract void ToString(StringBuilder sb);
-    }
-
     public sealed class DBlock : DNode
     {
         public DBlock(Location loc) : base(NodeType.Block, loc)
@@ -290,7 +266,7 @@ namespace Dyalect.Parser.Model
         internal override void ToString(StringBuilder sb)
         {
             Target.ToString(sb);
-            sb.Append('.');
+            sb.Append(':');
             sb.Append(Field);
         }
     }
@@ -306,12 +282,23 @@ namespace Dyalect.Parser.Model
 
         public DNode Index { get; set; }
 
+        protected internal override string GetName() => Index.GetName();
+
         internal override void ToString(StringBuilder sb)
         {
             Target.ToString(sb);
-            sb.Append('[');
-            Index.ToString(sb);
-            sb.Append(']');
+
+            if (Index.NodeType == NodeType.Name)
+            {
+                sb.Append('.');
+                Index.ToString(sb);
+            }
+            else
+            {
+                sb.Append('[');
+                Index.ToString(sb);
+                sb.Append(']');
+            }
         }
     }
 

@@ -3,11 +3,11 @@ using System;
 
 namespace Dyalect.Runtime.Types
 {
-    internal sealed class DyIntegerType : DyType
+    internal sealed class DyIntegerTypeInfo : DyTypeInfo
     {
-        public static readonly DyIntegerType Instance = new DyIntegerType();
+        public static readonly DyIntegerTypeInfo Instance = new DyIntegerTypeInfo();
 
-        private DyIntegerType() : base(StandardType.Integer)
+        private DyIntegerTypeInfo() : base(StandardType.Integer)
         {
 
         }

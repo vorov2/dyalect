@@ -67,7 +67,8 @@ namespace Dyalect.Parser
                 Get();
             else
             {
-                if (n == _semicolonToken && (la.kind == 0 || la.kind == _curlyRightToken || la.AfterEol))
+                if (n == _semicolonToken 
+                    && (t.kind == _curlyLeftToken || la.kind == 0 || la.kind == _curlyRightToken || la.AfterEol))
                     return;
 
                 SynErr(n);

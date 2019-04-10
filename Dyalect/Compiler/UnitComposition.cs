@@ -14,6 +14,6 @@ namespace Dyalect.Compiler
 
         public List<Unit> Units { get; }
 
-        public FastList<DyType> Types { get; }
+        public FastList<DyTypeInfo> Types { get; }
     }    
 }

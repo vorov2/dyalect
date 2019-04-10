@@ -94,7 +94,7 @@ namespace Dyalect.Linker
                 for (var i = 0; i < u.TypeHandles.Count; i++)
                 {
                     u.TypeHandles[i] = asm.Types.Count;
-                    asm.Types.Add(new DyVariantType(asm.Types.Count, u.TypeNames[i]));
+                    asm.Types.Add(new DyVariantTypeInfo(asm.Types.Count, u.TypeNames[i]));
                 }
             }
 

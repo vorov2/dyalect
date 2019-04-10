@@ -2,11 +2,11 @@
 
 namespace Dyalect.Runtime.Types
 {
-    internal sealed class DyFunctionType : DyType
+    internal sealed class DyFunctionTypeInfo : DyTypeInfo
     {
-        public static readonly DyFunctionType Instance = new DyFunctionType();
+        public static readonly DyFunctionTypeInfo Instance = new DyFunctionTypeInfo();
 
-        private DyFunctionType() : base(StandardType.Function)
+        private DyFunctionTypeInfo() : base(StandardType.Function)
         {
 
         }

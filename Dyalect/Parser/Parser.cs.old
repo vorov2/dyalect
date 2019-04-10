@@ -181,6 +181,33 @@ namespace Dyalect.Parser
 		}
 	}
 
+	void Type(out DNode node) {
+		Expect(17);
+		var typ = new DTypeDeclaration(t);
+		node = typ;
+		
+		Expect(1);
+		typ.Name = t.val; 
+		if (la.kind == 26) {
+			Get();
+			if (la.kind == 1) {
+				TypeField(out var fld);
+				typ.Fields.Add(fld); 
+				while (la.kind == 20) {
+					Get();
+					Expect(1);
+					typ.Fields.Add(new DFieldDeclaration(t) { Name = t.val }); 
+				}
+			}
+			Expect(27);
+		}
+	}
+
+	void TypeField(out DFieldDeclaration node) {
+		Expect(1);
+		node = new DFieldDeclaration(t) { Name = t.val }; 
+	}
+
 	void Statement(out DNode node) {
 		node = null; 
 		switch (la.kind) {
@@ -201,6 +228,11 @@ namespace Dyalect.Parser
 		}
 		case 50: {
 			Import(out node);
+			Separator();
+			break;
+		}
+		case 17: {
+			Type(out node);
 			Separator();
 			break;
 		}
@@ -795,7 +827,7 @@ namespace Dyalect.Parser
 
         static readonly bool[,] set = {
 		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x},
-		{_x,_T,_T,_T, _T,_x,_T,_T, _T,_T,_T,_T, _T,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_T,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_x},
+		{_x,_T,_T,_T, _T,_x,_T,_T, _T,_T,_T,_T, _T,_x,_T,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_x,_T,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_x},
 		{_x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x},
 		{_x,_T,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_x},
 		{_x,_T,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _T,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_T,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_x},

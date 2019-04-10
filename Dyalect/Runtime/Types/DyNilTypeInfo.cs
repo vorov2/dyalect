@@ -1,10 +1,10 @@
 ﻿namespace Dyalect.Runtime.Types
 {
-    internal sealed class DyNilType : DyType
+    internal sealed class DyNilTypeInfo : DyTypeInfo
     {
-        public static readonly DyNilType Instance = new DyNilType();
+        public static readonly DyNilTypeInfo Instance = new DyNilTypeInfo();
 
-        private DyNilType() : base(StandardType.Nil)
+        private DyNilTypeInfo() : base(StandardType.Nil)
         {
 
         }
