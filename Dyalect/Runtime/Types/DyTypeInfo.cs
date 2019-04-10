@@ -6,7 +6,7 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyTypeInfo : DyObject
     {
-        private readonly Dictionary<string, DyObject> mixins = new Dictionary<string, DyObject>();
+        private readonly Dictionary<string, DyFunction> traits = new Dictionary<string, DyFunction>();
 
         public DyTypeInfo() : base(StandardType.Type)
         {
@@ -50,59 +50,6 @@ namespace Dyalect.Runtime.Types
 
         public int TypeCode { get; internal set; }
 
-        internal DyObject GetMixin(string mixinName, ExecutionContext ctx)
-        {
-            if (!mixins.TryGetValue(mixinName, out var value))
-            {
-                value = InitializeMixin(mixinName, ctx);
-
-                if (value != null)
-                    mixins.Add(mixinName, value);
-            }
-
-            if (value != null)
-                return value;
-
-            return Err.OperationNotSupported(mixinName, TypeName).Set(ctx);
-        }
-
-        internal void SetMixin(string mixinName, DyObject value, ExecutionContext ctx)
-        {
-            var func = (DyFunction)value;
-
-            switch (mixinName)
-            {
-                case BuiltinMixins.AddName: add = func; break;
-                case BuiltinMixins.SubName: sub = func; break;
-                case BuiltinMixins.MulName: mul = func; break;
-                case BuiltinMixins.DivName: div = func; break;
-                case BuiltinMixins.RemName: rem = func; break;
-                case BuiltinMixins.ShlName: shl = func; break;
-                case BuiltinMixins.ShrName: shr = func; break;
-                case BuiltinMixins.AndName: and = func; break;
-                case BuiltinMixins.OrName:  or = func; break;
-                case BuiltinMixins.XorName: xor = func; break;
-                case BuiltinMixins.EqName:  eq = func; break;
-                case BuiltinMixins.NeqName: neq = func; break;
-                case BuiltinMixins.GtName:  gt = func; break;
-                case BuiltinMixins.LtName:  lt = func; break;
-                case BuiltinMixins.GteName: gte = func; break;
-                case BuiltinMixins.LteName: lte = func; break;
-                case BuiltinMixins.NegName: neg = func; break;
-                case BuiltinMixins.NotName: not = func; break;
-                case BuiltinMixins.BitName: bitnot = func; break;
-                case BuiltinMixins.LenName: len = func; break;
-                case BuiltinMixins.GetName: get = func; break;
-                case BuiltinMixins.SetName: set = func; break;
-                case BuiltinMixins.CoerceName: coerce = func; break;
-            }
-
-            mixins.Remove(mixinName);
-            mixins.Add(mixinName, func);
-        }
-
-        protected virtual DyObject InitializeMixin(string mixinName, ExecutionContext ctx) => null;
-
         #region Binary Operations
         //x + y
         private DyFunction add;
@@ -111,9 +58,8 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == StandardType.String)
                 return new DyString(left.AsString() + right.AsString());
 
-            return Err.OperationNotSupported(BuiltinMixins.AddName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            return Err.OperationNotSupported(Traits.AddName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         }
-
         internal DyObject Add(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (add != null)
@@ -124,7 +70,7 @@ namespace Dyalect.Runtime.Types
         //x - y
         private DyFunction sub;
         protected virtual DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx) => 
-            Err.OperationNotSupported(BuiltinMixins.SubName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.SubName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Sub(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (sub != null)
@@ -135,7 +81,7 @@ namespace Dyalect.Runtime.Types
         //x * y
         private DyFunction mul;
         protected virtual DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.MulName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.MulName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Mul(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (mul != null)
@@ -146,7 +92,7 @@ namespace Dyalect.Runtime.Types
         //x / y
         private DyFunction div;
         protected virtual DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx) => 
-            Err.OperationNotSupported(BuiltinMixins.DivName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.DivName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Div(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (div != null)
@@ -157,7 +103,7 @@ namespace Dyalect.Runtime.Types
         //x % y
         private DyFunction rem;
         protected virtual DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx) => 
-            Err.OperationNotSupported(BuiltinMixins.RemName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.RemName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Rem(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (rem != null)
@@ -168,7 +114,7 @@ namespace Dyalect.Runtime.Types
         //x << y
         private DyFunction shl;
         protected virtual DyObject ShiftLeftOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.ShlName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.ShlName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject ShiftLeft(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (shl != null)
@@ -179,7 +125,7 @@ namespace Dyalect.Runtime.Types
         //x >> y
         private DyFunction shr;
         protected virtual DyObject ShiftRightOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.ShrName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.ShrName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject ShiftRight(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (shr != null)
@@ -190,7 +136,7 @@ namespace Dyalect.Runtime.Types
         //x & y
         private DyFunction and;
         protected virtual DyObject AndOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.AndName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.AndName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject And(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (and != null)
@@ -201,7 +147,7 @@ namespace Dyalect.Runtime.Types
         //x | y
         private DyFunction or;
         protected virtual DyObject OrOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.OrName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.OrName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Or(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (or != null)
@@ -212,7 +158,7 @@ namespace Dyalect.Runtime.Types
         //x ^ y
         private DyFunction xor;
         protected virtual DyObject XorOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.XorName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.XorName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Xor(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (xor != null)
@@ -245,7 +191,7 @@ namespace Dyalect.Runtime.Types
         //x > y
         private DyFunction gt;
         protected virtual DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.GtName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.GtName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Gt(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (gt != null)
@@ -256,7 +202,7 @@ namespace Dyalect.Runtime.Types
         //x < y
         private DyFunction lt;
         protected virtual DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.LtName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.LtName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Lt(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (lt != null)
@@ -291,24 +237,13 @@ namespace Dyalect.Runtime.Types
                 return lte.Call2(left, right, ctx);
             return LteOp(left, right, ctx);
         }
-
-        //coerce
-        private DyFunction coerce;
-        protected virtual DyObject CoerceOp(DyObject left, DyObject right, ExecutionContext ctx) => 
-            Err.OperationNotSupported(BuiltinMixins.CoerceName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
-        internal DyObject Coerce(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (coerce != null)
-                return coerce.Call2(left, right, ctx);
-            return CoerceOp(left, right, ctx);
-        }
         #endregion
 
         #region Unary Operations
         //-x
         private DyFunction neg;
         protected virtual DyObject NegOp(DyObject arg, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.NegName, arg.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.NegName, arg.TypeName(ctx)).Set(ctx);
         internal DyObject Neg(DyObject arg, ExecutionContext ctx)
         {
             if (neg != null)
@@ -330,7 +265,7 @@ namespace Dyalect.Runtime.Types
         //~x
         private DyFunction bitnot;
         protected virtual DyObject BitwiseNotOp(DyObject arg, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.BitName, arg.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.BitName, arg.TypeName(ctx)).Set(ctx);
         internal DyObject BitwiseNot(DyObject arg, ExecutionContext ctx)
         {
             if (bitnot != null)
@@ -341,7 +276,7 @@ namespace Dyalect.Runtime.Types
         //#x
         private DyFunction len;
         protected virtual DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.LenName, arg.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Traits.LenName, arg.TypeName(ctx)).Set(ctx);
         internal DyObject Length(DyObject arg, ExecutionContext ctx)
         {
             if (len != null)
@@ -351,27 +286,55 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Other Operations
-        //x.f
-        private DyFunction get;
-        protected virtual DyObject GetOp(DyObject obj, DyObject index, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.GetName, obj.TypeName(ctx)).Set(ctx);
-        internal DyObject Get(DyObject obj, DyObject index, ExecutionContext ctx)
+        internal DyObject GetOp(DyObject self, string name, ExecutionContext ctx)
         {
-            if (get != null)
-                return get.Call2(obj, index, ctx);
-            return GetOp(obj, index, ctx);
+            if (!traits.TryGetValue(name, out var value))
+            {
+                value = Get(name, ctx);
+
+                if (value != null)
+                    traits.Add(name, value);
+            }
+
+            if (value != null)
+                return value.Clone(self);
+
+            return Err.OperationNotSupported(name, TypeName).Set(ctx);
         }
 
-        //x.f = y
-        private DyFunction set;
-        protected virtual void SetOp(DyObject obj, DyObject index, DyObject value, ExecutionContext ctx) =>
-            Err.OperationNotSupported(BuiltinMixins.SetName, obj.TypeName(ctx)).Set(ctx);
-        internal void Set(DyObject obj, DyObject index, DyObject value, ExecutionContext ctx)
+        internal void SetOp(string name, DyObject value, ExecutionContext ctx)
         {
-            if (set != null)
-                set.Call3(obj, index, value, ctx);
-            SetOp(obj, index, value, ctx);
+            var func = (DyFunction)value;
+
+            switch (name)
+            {
+                case Traits.AddName: add = func; break;
+                case Traits.SubName: sub = func; break;
+                case Traits.MulName: mul = func; break;
+                case Traits.DivName: div = func; break;
+                case Traits.RemName: rem = func; break;
+                case Traits.ShlName: shl = func; break;
+                case Traits.ShrName: shr = func; break;
+                case Traits.AndName: and = func; break;
+                case Traits.OrName: or = func; break;
+                case Traits.XorName: xor = func; break;
+                case Traits.EqName: eq = func; break;
+                case Traits.NeqName: neq = func; break;
+                case Traits.GtName: gt = func; break;
+                case Traits.LtName: lt = func; break;
+                case Traits.GteName: gte = func; break;
+                case Traits.LteName: lte = func; break;
+                case Traits.NegName: neg = func; break;
+                case Traits.NotName: not = func; break;
+                case Traits.BitName: bitnot = func; break;
+                case Traits.LenName: len = func; break;
+            }
+
+            traits.Remove(name);
+            traits.Add(name, func);
         }
+
+        protected virtual DyFunction Get(string mixinName, ExecutionContext ctx) => null;
         #endregion
     }
 }

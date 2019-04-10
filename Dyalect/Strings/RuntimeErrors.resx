@@ -121,16 +121,16 @@
     <value>Деление на ноль.</value>
   </data>
   <data name="ExternalFunctionFailure" xml:space="preserve">
-    <value>При вызове внешней функции %FunctionName% произошла ошибка: %Error%</value>
+    <value>При вызове внешней функции "%FunctionName%" произошла ошибка: %Error%</value>
   </data>
   <data name="IndexInvalidType" xml:space="preserve">
-    <value>Индексы типа %IndexTypeName% не поддерживаются контейнером типа %TypeName%.</value>
+    <value>Индексы типа "%IndexTypeName%" не поддерживаются контейнером типа "%TypeName%".</value>
   </data>
   <data name="NotFunction" xml:space="preserve">
-    <value>Объект типа %TypeName% не может быть применен как функция.</value>
+    <value>Объект типа "%TypeName%" не может быть применен как функция.</value>
   </data>
   <data name="OperationNotSupported" xml:space="preserve">
-    <value>Операция (%Operation%) не поддерживается типом или комбинацией типов %TypeName%.</value>
+    <value>Операция "%Operation%" не поддерживается типом или комбинацией типов "%TypeName%".</value>
   </data>
   <data name="StackCorrupted" xml:space="preserve">
     <value>Повреждён стек виртуальной машины.</value>

@@ -1,6 +1,6 @@
 ﻿namespace Dyalect.Compiler
 {
-    internal static class BuiltinMixins
+    internal static class Traits
     {
         public const int Nul = 0;
         public const int Add = 1;
@@ -23,9 +23,6 @@
         public const int Not = 18;
         public const int Bit = 19;
         public const int Len = 20;
-        public const int Get = 21;
-        public const int Set = 22;
-        public const int Coerce = 23;
 
         public const string AddName = "+";
         public const string SubName = "-";
@@ -47,9 +44,6 @@
         public const string NotName = "!";
         public const string BitName = "~";
         public const string LenName = "#";
-        public const string GetName = "get";
-        public const string SetName = "set";
-        public const string CoerceName = "coerce";
 
 
         public const string BoolAndName = "&&";

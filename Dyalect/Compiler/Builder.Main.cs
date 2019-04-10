@@ -73,7 +73,19 @@ namespace Dyalect.Compiler
                 case NodeType.Import:
                     Build((DImport)node, hints, ctx);
                     break;
+                case NodeType.Index:
+                    Build((DIndexer)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DIndexer node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Target, hints.Append(Push), ctx);
+            Build(node.Index, hints.Append(Push), ctx);
+            AddLinePragma(node);
+            cw.Get();
+            PopIf(hints);
         }
 
         private void Build(DImport node, Hints hints, CompilerContext ctx)
@@ -181,35 +193,13 @@ namespace Dyalect.Compiler
 
         private void Build(DApplication node, Hints hints, CompilerContext ctx)
         {
-            var argCount = node.Arguments.Count;
-            string mxName = null;
-            var sys = AddVariable();
-
-            if (node.Target.NodeType == NodeType.Mixin)
-            {
-                var fld = (DMixin)node.Target;
-                Build(fld.Target, hints.Append(Push), ctx);
-                cw.Dup();
-                cw.Type();
-                cw.PopVar(sys);
-                argCount++;
-                mxName = fld.Field;
-            }
-
             foreach (var a in node.Arguments)
                 Build(a, hints.Append(Push), ctx);
 
-            if (node.Target.NodeType == NodeType.Mixin)
-            {
-                cw.PushVar(new ScopeVar(sys));
-                cw.GetMx(mxName);
-            }
-            else
-                Build(node.Target, hints.Append(Push), ctx);
-
+            Build(node.Target, hints.Append(Push), ctx);
             AddLinePragma(node);
 
-            cw.Call(argCount);
+            cw.Call(node.Arguments.Count);
             PopIf(hints);
         }
 
@@ -263,6 +253,8 @@ namespace Dyalect.Compiler
             {
                 if ((sv.Data & VarFlags.This) == VarFlags.This)
                     cw.This();
+                else if ((sv.Data & VarFlags.Self) == VarFlags.Self)
+                    cw.Self();
                 else
                     cw.PushVar(sv);
 
@@ -453,7 +445,7 @@ namespace Dyalect.Compiler
                 {
                     cw.Push(node.Name);
                     var code = GetTypeHandle(node.TypeName, node.Location);
-                    cw.SetMx(code);
+                    cw.Set(code);
                 }
 
                 AddLinePragma(node);
@@ -505,13 +497,7 @@ namespace Dyalect.Compiler
             var address = cw.Offset;
 
             AddVariable("this", node, data: VarFlags.This | VarFlags.Const);
-
-            //Это функция, расширяющая тип. У неё есть неявный первый параметр - self.
-            if (node.IsMemberFunction)
-            {
-                var a = AddVariable("self", node, data: VarFlags.Argument | VarFlags.Const);
-                cw.PopVar(a);
-            }
+            AddVariable("self", node, data: VarFlags.Self | VarFlags.Const);
 
             //Инициализационная логика параметров
             for (var i = 0; i < args.Length; i++)

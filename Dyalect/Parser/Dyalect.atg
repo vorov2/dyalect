@@ -426,20 +426,10 @@ PRODUCTIONS
             {
                 (
                     "." (. var ot = t; .)
-                    Name<out var nam>
-                    (.
-                        var fld = new DIndexer(ot) { Target = node };
-                        fld.Index = nam;
-                        node = fld;
-                    .)
-                )
-                |
-                (
-                    ":" (. var ot = t; .)
                     identToken
                     (.
-                        var fld = new DMixin(ot) { Target = node };
-                        fld.Field = t.val;
+                        var fld = new DIndexer(ot) { Target = node };
+                        fld.Index = new DStringLiteral(t) { Value = t.val };
                         node = fld;
                     .)
                 )
@@ -467,7 +457,24 @@ PRODUCTIONS
             | Bool<out node>
             | Nil<out node>
             | Group<out node>
+            //| Record
         ).
+
+    /*Record =
+        (
+            "("
+                RecordField { "," RecordField }
+            ")"
+        ).
+
+    RecordField = 
+        (
+            (
+                  identToken
+                | stringToken
+            )
+            "=" Expr<out var node>
+        ).*/
 
     Group<out DNode node> =
         (. node = null; .)

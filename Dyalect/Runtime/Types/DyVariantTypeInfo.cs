@@ -34,24 +34,24 @@
             return new DyVariant(TypeCode, tag, null, null);
         }
 
-        protected override DyObject GetOp(DyObject obj, DyObject index, ExecutionContext ctx)
-        {
-            if (index.TypeId == StandardType.Integer)
-                return obj.GetItem((int)index.AsInteger()) ?? Err.IndexOutOfRange(TypeName, index).Set(ctx);
-            else if (index.TypeId == StandardType.String)
-                return obj.GetItem(index.AsString()) ?? Err.IndexOutOfRange(TypeName, index).Set(ctx);
-            else
-                return Err.IndexInvalidType(TypeName, ctx.Assembly.Types[index.TypeId].TypeName).Set(ctx);
-        }
+        //protected override DyObject GetOp(DyObject obj, DyObject index, ExecutionContext ctx)
+        //{
+        //    if (index.TypeId == StandardType.Integer)
+        //        return obj.GetItem((int)index.AsInteger()) ?? Err.IndexOutOfRange(TypeName, index).Set(ctx);
+        //    else if (index.TypeId == StandardType.String)
+        //        return obj.GetItem(index.AsString()) ?? Err.IndexOutOfRange(TypeName, index).Set(ctx);
+        //    else
+        //        return Err.IndexInvalidType(TypeName, ctx.Assembly.Types[index.TypeId].TypeName).Set(ctx);
+        //}
 
-        protected override void SetOp(DyObject obj, DyObject index, DyObject value, ExecutionContext ctx)
-        {
-            if (index.TypeId == StandardType.Integer && !obj.SetItem((int)index.AsInteger(), value))
-                ctx.Error = Err.IndexOutOfRange(TypeName, index);
-            else if (index.TypeId == StandardType.String && !obj.SetItem(index.AsString(), value))
-                ctx.Error = Err.IndexOutOfRange(TypeName, index);
-            else
-                ctx.Error = Err.IndexInvalidType(TypeName, ctx.Assembly.Types[index.TypeId].TypeName);
-        }
+        //protected override void SetOp(DyObject obj, DyObject index, DyObject value, ExecutionContext ctx)
+        //{
+        //    if (index.TypeId == StandardType.Integer && !obj.SetItem((int)index.AsInteger(), value))
+        //        ctx.Error = Err.IndexOutOfRange(TypeName, index);
+        //    else if (index.TypeId == StandardType.String && !obj.SetItem(index.AsString(), value))
+        //        ctx.Error = Err.IndexOutOfRange(TypeName, index);
+        //    else
+        //        ctx.Error = Err.IndexInvalidType(TypeName, ctx.Assembly.Types[index.TypeId].TypeName);
+        //}
     }
 }

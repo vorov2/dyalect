@@ -4,6 +4,7 @@
     {
         Nop = 0,    //0
 
+        Self,       //+1
         This,       //+1
         Pop,        //-1
         PushNil,    //+1
@@ -50,10 +51,8 @@
         Call,       //Dynamic
         NewFun,     //0
         NewFunV,    //0
-        Get,        //0
-        Set,        //-1
-        SetMx,      //-2
-        GetMx,      //0
+        Set,        //-2
+        Get,        //-1
         RunMod,     //+1
         Type,       //0
         Term,       //0

@@ -70,7 +70,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to При вызове внешней функции %FunctionName% произошла ошибка: %Error%.
+        ///   Looks up a localized string similar to При вызове внешней функции &quot;%FunctionName%&quot; произошла ошибка: %Error%.
         /// </summary>
         internal static string ExternalFunctionFailure {
             get {
@@ -79,7 +79,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Индексы типа %IndexTypeName% не поддерживаются контейнером типа %TypeName%..
+        ///   Looks up a localized string similar to Индексы типа &quot;%IndexTypeName%&quot; не поддерживаются контейнером типа &quot;%TypeName%&quot;..
         /// </summary>
         internal static string IndexInvalidType {
             get {
@@ -88,7 +88,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Объект типа %TypeName% не может быть применен как функция..
+        ///   Looks up a localized string similar to Объект типа &quot;%TypeName%&quot; не может быть применен как функция..
         /// </summary>
         internal static string NotFunction {
             get {
@@ -97,7 +97,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Операция (%Operation%) не поддерживается типом или комбинацией типов %TypeName%..
+        ///   Looks up a localized string similar to Операция &quot;%Operation%&quot; не поддерживается типом или комбинацией типов &quot;%TypeName%&quot;..
         /// </summary>
         internal static string OperationNotSupported {
             get {

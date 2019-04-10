@@ -49,6 +49,16 @@ namespace Dyalect.Runtime.Types
 
         public override object AsObject() => (CallHandler)Call;
 
+        internal DyObject Self { get; set; }
+
+        internal DyFunction Clone(DyObject arg)
+        {
+            return new DyFunction(UnitHandle, Handle, ParameterNumber, vm, Captures)
+            {
+                Self = arg
+            };
+        }
+
         public object Call(params object[] args)
         {
             var pars = new DyObject[args.Length];

@@ -164,15 +164,12 @@ namespace Dyalect.Compiler
         public void Br(Label lab) => Emit(OpCode.Br, lab);
         public void Brtrue(Label lab) => Emit(OpCode.Brtrue, lab);
         public void Brfalse(Label lab) => Emit(OpCode.Brfalse, lab);
-        public void SetMx(int type) => Emit(new Op(OpCode.SetMx, type));
-        public void GetMx(string name)
-        {
-            Emit(new Op(OpCode.GetMx, frame.IndexedStrings.Count));
-            frame.IndexedStrings.Add(new DyString(name));
-        }
+        public void Set(int type) => Emit(new Op(OpCode.Set, type));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
 
+        public void Get() => Emit(Op.Get);
         public void This() => Emit(Op.This);
+        public void Self() => Emit(Op.Self);
         public void Type() => Emit(Op.Type);
         public void PushNil() => Emit(Op.PushNil);
         public void Nop() => Emit(Op.Nop);

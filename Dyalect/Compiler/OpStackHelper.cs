@@ -5,6 +5,7 @@
         internal static int[] Op =
         {
             0,  //Nop
+            1,  //Self
             1,  //This
             -1, //Pop
             1,  //PushNil
@@ -51,10 +52,8 @@
             0,  //Call **dynamic
             0,  //NewFun
             0,  //NewFunV
-            0,  //Get
-            -1, //Set
-            -2, //SetMx
-            0,  //GetMx
+            -2, //Set
+            -1, //Get
             1,  //RunMod
             0,  //Type
             0,  //Term

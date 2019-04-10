@@ -88,6 +88,9 @@ namespace Dyalect.Runtime
                     case OpCode.This:
                         evalStack.Push(function);
                         break;
+                    case OpCode.Self:
+                        evalStack.Push(function.Self ?? DyNil.Instance);
+                        break;
                     case OpCode.Term:
                         if (evalStack.Size > 1) throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
                         modules[function.UnitHandle] = locals;
@@ -265,10 +268,6 @@ namespace Dyalect.Runtime
                         evalStack.Replace(types[right.TypeId].Length(right, ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
-                    case OpCode.Get:
-                        break;
-                    case OpCode.Set:
-                        break;
                     case OpCode.Dup:
                         evalStack.Dup();
                         break;
@@ -315,19 +314,20 @@ namespace Dyalect.Runtime
                                 ProcessError(ctx, function, ref offset, evalStack);
                         }
                         break;
-                    case OpCode.GetMx:
+                    case OpCode.Get:
+                        left = evalStack.Pop();
                         right = evalStack.Peek();
-                        evalStack.Replace(((DyTypeInfo)right).GetMixin(unit.IndexedStrings[opd].Value, ctx));
+                        evalStack.Replace(types[right.TypeId].GetOp(right, left.AsString(), ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
-                    case OpCode.SetMx:
+                    case OpCode.Set:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
                         if (opd >= StandardType.All.Count)
                             types[ctx.Assembly.Units[unit.ModuleHandles[opd & byte.MaxValue]].TypeHandles[opd >> 8]]
-                                .SetMixin(left.AsString(), right, ctx);
+                                .SetOp(left.AsString(), right, ctx);
                         else
-                            types[opd].SetMixin(left.AsString(), right, ctx);
+                            types[opd].SetOp(left.AsString(), right, ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.RunMod:

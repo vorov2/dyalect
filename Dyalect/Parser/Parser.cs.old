@@ -684,21 +684,13 @@ namespace Dyalect.Parser
 
 	void FieldOrIndex(out DNode node) {
 		Literal(out node);
-		while (la.kind == 19 || la.kind == 22 || la.kind == 28) {
+		while (la.kind == 19 || la.kind == 28) {
 			if (la.kind == 19) {
 				Get();
 				var ot = t; 
-				Name(out var nam);
-				var fld = new DIndexer(ot) { Target = node };
-				fld.Index = nam;
-				node = fld;
-				
-			} else if (la.kind == 22) {
-				Get();
-				var ot = t; 
 				Expect(1);
-				var fld = new DMixin(ot) { Target = node };
-				fld.Field = t.val;
+				var fld = new DIndexer(ot) { Target = node };
+				fld.Index = new DStringLiteral(t) { Value = t.val };
 				node = fld;
 				
 			} else {

@@ -25,24 +25,24 @@ namespace Dyalect.Parser.Model
         {
             switch (op)
             {
-                case BinaryOperator.Add: return BuiltinMixins.AddName;
-                case BinaryOperator.And: return BuiltinMixins.BoolAndName;
-                case BinaryOperator.Div: return BuiltinMixins.DivName;
-                case BinaryOperator.Eq: return BuiltinMixins.EqName;
-                case BinaryOperator.Gt: return BuiltinMixins.GtName;
-                case BinaryOperator.GtEq: return BuiltinMixins.GteName;
-                case BinaryOperator.Lt: return BuiltinMixins.LtName;
-                case BinaryOperator.LtEq: return BuiltinMixins.LteName;
-                case BinaryOperator.Mul: return BuiltinMixins.MulName;
-                case BinaryOperator.NotEq: return BuiltinMixins.NeqName;
-                case BinaryOperator.Or: return BuiltinMixins.BoolOrName;
-                case BinaryOperator.Rem: return BuiltinMixins.RemName;
-                case BinaryOperator.Sub: return BuiltinMixins.SubName;
-                case BinaryOperator.BitwiseAnd: return BuiltinMixins.AndName;
-                case BinaryOperator.BitwiseOr: return BuiltinMixins.OrName;
-                case BinaryOperator.Xor: return BuiltinMixins.XorName;
-                case BinaryOperator.ShiftLeft: return BuiltinMixins.ShlName;
-                case BinaryOperator.ShiftRight: return BuiltinMixins.ShrName;
+                case BinaryOperator.Add: return Traits.AddName;
+                case BinaryOperator.And: return Traits.BoolAndName;
+                case BinaryOperator.Div: return Traits.DivName;
+                case BinaryOperator.Eq: return Traits.EqName;
+                case BinaryOperator.Gt: return Traits.GtName;
+                case BinaryOperator.GtEq: return Traits.GteName;
+                case BinaryOperator.Lt: return Traits.LtName;
+                case BinaryOperator.LtEq: return Traits.LteName;
+                case BinaryOperator.Mul: return Traits.MulName;
+                case BinaryOperator.NotEq: return Traits.NeqName;
+                case BinaryOperator.Or: return Traits.BoolOrName;
+                case BinaryOperator.Rem: return Traits.RemName;
+                case BinaryOperator.Sub: return Traits.SubName;
+                case BinaryOperator.BitwiseAnd: return Traits.AndName;
+                case BinaryOperator.BitwiseOr: return Traits.OrName;
+                case BinaryOperator.Xor: return Traits.XorName;
+                case BinaryOperator.ShiftLeft: return Traits.ShlName;
+                case BinaryOperator.ShiftRight: return Traits.ShrName;
                 default: return "";
             }
         }
@@ -51,10 +51,10 @@ namespace Dyalect.Parser.Model
         {
             switch (op)
             {
-                case UnaryOperator.Neg: return BuiltinMixins.NegName;
-                case UnaryOperator.Not: return BuiltinMixins.NotName;
-                case UnaryOperator.BitwiseNot: return BuiltinMixins.BitName;
-                case UnaryOperator.Length: return BuiltinMixins.LenName;
+                case UnaryOperator.Neg: return Traits.NegName;
+                case UnaryOperator.Not: return Traits.NotName;
+                case UnaryOperator.BitwiseNot: return Traits.BitName;
+                case UnaryOperator.Length: return Traits.LenName;
                 default: return "";
             }
         }

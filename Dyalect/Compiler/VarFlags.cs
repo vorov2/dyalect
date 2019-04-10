@@ -11,5 +11,6 @@
         public const int Module = 0x20;
         public const int Exported = 0x40;
         public const int This = 0x80;
+        public const int Self = 0x100;
     }
 }
