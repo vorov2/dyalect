@@ -82,7 +82,14 @@ namespace Dyalect.Compiler
                 case NodeType.Array:
                     Build((DArrayLiteral)node, hints, ctx);
                     break;
+                case NodeType.Trait:
+                    Build((DTrait)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DTrait node, Hints hints, CompilerContext ctx)
+        {
         }
 
         private void Build(DTupleLiteral node, Hints hints, CompilerContext ctx)
@@ -130,16 +137,16 @@ namespace Dyalect.Compiler
 
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)
         {
-            Build(node.Target, hints.Append(Push), ctx);
+            //Build(node.Target, hints.Append(Push), ctx);
 
-            if (node.FieldName != null)
-                cw.Push(node.FieldName);
-            else
-                Build(node.Index, hints.Append(Push), ctx);
+            //if (node.FieldName != null)
+            //    cw.Push(node.FieldName);
+            //else
+            //    Build(node.Index, hints.Append(Push), ctx);
 
-            AddLinePragma(node);
-            cw.Get();
-            PopIf(hints);
+            //AddLinePragma(node);
+            //cw.Get();
+            //PopIf(hints);
         }
 
         private void Build(DImport node, Hints hints, CompilerContext ctx)
@@ -679,9 +686,9 @@ namespace Dyalect.Compiler
                     return name;
                 case NodeType.Index:
                     var idx = (DIndexer)node;
-                    if (idx.FieldName != null)
-                        return idx.FieldName;
-                    else
+                    //if (idx.FieldName != null)
+                    //    return idx.FieldName;
+                    //else
                         return GetExpressionName(idx.Index);
                 default:
                     AddError(CompilerError.ExpressionNoName, node.Location);
