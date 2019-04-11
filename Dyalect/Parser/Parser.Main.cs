@@ -197,7 +197,13 @@ namespace Dyalect.Parser
                 Errors.Add(new BuildMessage("", BuildMessageType.Error, 0, t.line, t.col, this.scanner.Buffer.FileName));
                 return t.val;
             }
-        }   
+        }
+
+        private string ParseChar()
+        {
+            return t.val.Substring(1, t.val.Length - 2)
+                .Replace("''", "'");
+        }
 
         private string ParseField()
         {

@@ -258,7 +258,7 @@ namespace Dyalect.Parser
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 15;}
 				else {t.kind = 3; break;}
 			case 16:
-				if (ch <= 9 || ch >= 11 && ch <= 12 || ch >= 14 && ch <= '!' || ch >= '#' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 16;}
+				if (ch <= '!' || ch >= '#' && ch <= '[' || ch >= ']' && ch <= 65535) {AddCh(); goto case 16;}
 				else if (ch == '"') {AddCh(); goto case 21;}
 				else if (ch == 92) {AddCh(); goto case 37;}
 				else {goto case 0;}

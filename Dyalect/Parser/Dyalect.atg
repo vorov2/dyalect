@@ -4,14 +4,13 @@ CHARACTERS
     cr = '\r'.
     lf = '\n'.
     newLine = cr + lf.
-    tab = '\t'.    
+    tab = '\t'.
     letter = 'A' .. 'Z' + 'a' .. 'z' + '_'.
     digit = "0123456789".
     notDigit = ANY - digit.
     hexDigit = digit + "ABCDEFabcdef".
-    verbatimChar = ANY.
-    stringChar = ANY - '"' - '\\' - newLine.
-    char = ANY - "'" - '\\' - newLine.
+    stringChar = ANY - '"' - '\\'.
+    char = ANY - "'" - newLine.
 
 TOKENS
     identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
@@ -30,6 +29,7 @@ TOKENS
                     | "\\u" hexDigit hexDigit hexDigit hexDigit
                     }
                 "\"".
+    charToken = "'" { char | "''" } "'".
     implicitToken = "$" digit { digit }.
 
     varToken            = "var".
@@ -67,6 +67,13 @@ PRODUCTIONS
 
     Separator = ";".
 
+    AnyString<out string val> =
+        (. val = null; .)
+        (
+            stringToken (. val = ParseString(); .)
+            | charToken (. val = ParseChar(); .)
+        ).
+
     StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!" | "#" 
         | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
 
@@ -90,7 +97,7 @@ PRODUCTIONS
             .)
         ]
         [
-            "(" stringToken (. inc.Dll = ParseString(); .) ")"
+            "(" AnyString<out var str> (. inc.Dll = str; .) ")"
         ].
 
     Type<out DNode node> =
@@ -478,7 +485,7 @@ PRODUCTIONS
                 (. string name = null; .)
                 (
                       identToken (. name = t.val; .)
-                    | stringToken (. name = ParseString(); .)
+                    | AnyString<out var str> (. name = str; .)
                 )
                 ":"
                 (. var tag = new DNameTag(t) { Name = name }; .)
@@ -517,8 +524,8 @@ PRODUCTIONS
 
     String<out DNode node> =
         (
-            stringToken
-            (. node = new DStringLiteral(t) { Value = ParseString() }; .)
+            AnyString<out var str>
+            (. node = new DStringLiteral(t) { Value = str }; .)
         ).
 
     Bool<out DNode node> =
