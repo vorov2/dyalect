@@ -288,7 +288,7 @@ namespace Dyalect.Runtime.Types
         #region Other Operations
         internal DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
-            if (self.TypeId == StandardType.Tuple)
+            if (TypeCode >= StandardType.Type)
             {
                 var t = self.GetItem(index);
 

@@ -332,8 +332,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.RunMod:
                         ExecuteModule(unit.ModuleHandles[opd]);
-                        evalStack.Push(DyNil.Instance);
-                        //evalStack.Push(new ZedModule(Assembly.Units[opd], modules[opd]));
+                        evalStack.Push(new DyModule(Assembly.Units[opd], modules[opd]));
                         break;
                     case OpCode.Type:
                         evalStack.Replace(types[evalStack.Peek().TypeId]);
