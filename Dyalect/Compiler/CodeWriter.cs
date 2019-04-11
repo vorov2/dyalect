@@ -158,6 +158,13 @@ namespace Dyalect.Compiler
                 Emit(new Op(OpCode.Popvar, address));
         }
 
+        public void Tag(string tag)
+        {
+            var idx = frame.IndexedStrings.Count;
+            frame.IndexedStrings.Add(tag);
+            Emit(new Op(OpCode.Tag, idx));
+        }
+
         public void Call(int args) => Emit(new Op(OpCode.Call, args), -args);
         public void NewFun(int funHandle) => Emit(new Op(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new Op(OpCode.NewFunV, funHandle));

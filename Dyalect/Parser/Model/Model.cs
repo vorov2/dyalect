@@ -4,23 +4,6 @@ using System.Text;
 
 namespace Dyalect.Parser.Model
 {
-    public sealed class DBlock : DNode
-    {
-        public DBlock(Location loc) : base(NodeType.Block, loc)
-        {
-
-        }
-
-        public List<DNode> Nodes { get; } = new List<DNode>();
-
-        internal override void ToString(StringBuilder sb)
-        {
-            sb.Append("{ ");
-            Nodes.ToString(sb, "");
-            sb.Append(" } ");
-        }
-    }
-
     public sealed class DIntegerLiteral : DNode
     {
         public DIntegerLiteral(Location loc) : base(NodeType.Integer, loc)
@@ -250,27 +233,6 @@ namespace Dyalect.Parser.Model
         }
     }
 
-    public sealed class DMixin : DNode
-    {
-        public DMixin(Location loc) : base(NodeType.Mixin, loc)
-        {
-
-        }
-
-        public DNode Target { get; set; }
-
-        public string Field { get; set; }
-
-        protected internal override string GetName() => Field;
-
-        internal override void ToString(StringBuilder sb)
-        {
-            Target.ToString(sb);
-            sb.Append(':');
-            sb.Append(Field);
-        }
-    }
-
     public sealed class DIndexer : DNode
     {
         public DIndexer(Location loc) : base(NodeType.Index, loc)
@@ -436,40 +398,6 @@ namespace Dyalect.Parser.Model
 
             sb.Append(") ");
             Body.ToString(sb);
-        }
-    }
-
-    public sealed class DImport : DNode
-    {
-        public DImport(Location loc) : base(NodeType.Import, loc)
-        {
-
-        }
-
-        public string Alias { get; set; }
-
-        public string ModuleName { get; set; }
-
-        public string Dll { get; set; }
-
-        internal override void ToString(StringBuilder sb)
-        {
-            sb.Append("import ");
-
-            if (Alias != null && Alias != ModuleName)
-            {
-                sb.Append(Alias);
-                sb.Append('=');
-            }
-
-            sb.Append(ModuleName);
-
-            if (Dll != null)
-            {
-                sb.Append('(');
-                sb.Append(Dll);
-                sb.Append(')');
-            }
         }
     }
 }

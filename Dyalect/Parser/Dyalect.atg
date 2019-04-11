@@ -470,7 +470,7 @@ PRODUCTIONS
         (. node = null; .)
         (
             "("
-                (. var tup = new DTupleDeclaration(t); .)
+                (. var tup = new DTupleLiteral(t); .)
                 TupleElement<out node> (. tup.Elements.Add(node); .)
                 { "," TupleElement<out node> (. tup.Elements.Add(node); .) }
                 (. node = tup; .)

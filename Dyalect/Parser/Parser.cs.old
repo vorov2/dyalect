@@ -789,7 +789,7 @@ namespace Dyalect.Parser
 	void Tuple(out DNode node) {
 		node = null; 
 		Expect(25);
-		var tup = new DTupleDeclaration(t); 
+		var tup = new DTupleLiteral(t); 
 		TupleElement(out node);
 		tup.Elements.Add(node); 
 		while (la.kind == 21) {

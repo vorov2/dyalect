@@ -23,6 +23,8 @@ namespace Dyalect.Runtime.Types
 
         public abstract object AsObject();
 
+        //public abstract DyTypeInfo GetTypeInfo();
+
         protected abstract bool TestEquality(DyObject obj);
         public bool Equals(DyObject obj)
         {

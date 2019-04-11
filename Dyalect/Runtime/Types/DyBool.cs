@@ -23,5 +23,10 @@
         public override object AsObject() => value;
 
         public override string AsString() => value ? "true" : "false";
+
+        //public override DyTypeInfo GetTypeInfo()
+        //{
+        //    throw new System.NotImplementedException();
+        //}
     }
 }

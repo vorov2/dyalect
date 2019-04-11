@@ -6,11 +6,13 @@ namespace Dyalect.Linker
     internal sealed class Lang : ForeignUnit
     {
         internal const string PrintName = "print";
+        internal const string CreateTupleName = "createTuple";
 
         public Lang()
         {
             FileName = "\\lang";
             RegisterGlobal<DyObject, DyObject>(PrintName, Print);
+            RegisterGlobal<DyObject, DyObject>(CreateTupleName, CreateTuple);
         }
 
         public static DyObject Print(DyObject[] args)
@@ -24,21 +26,22 @@ namespace Dyalect.Linker
 
         public static DyObject CreateTuple(DyObject[] args)
         {
-            return new DyTuple(new string[args.Length], args);
-        }
-
-        public static DyObject CreateRecord(DyObject[] args)
-        {
-            var len = args.Length / 2;
+            var len = args.Length;
             var keys = new string[len];
             var values = new DyObject[len];
 
             for (var i = 0; i < args.Length; i++)
             {
-                var key = args[0].TypeId == StandardType.Nil ? null : args[0].AsString();
-                keys[i] = key;
-                values[i] = args[1];
-                i++;
+                var v = args[i];
+
+                if (v.TypeId == StandardType.Tag)
+                {
+                    var tag = (DyTag)v;
+                    keys[i] = tag.Tag;
+                    values[i] = tag.Value;
+                }
+                else
+                    values[i] = v;
             }
 
             return new DyTuple(keys, values);

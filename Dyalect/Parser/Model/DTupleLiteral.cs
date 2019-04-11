@@ -3,9 +3,9 @@ using System.Text;
 
 namespace Dyalect.Parser.Model
 {
-    public sealed class DTupleDeclaration : DNode
+    public sealed class DTupleLiteral : DNode
     {
-        public DTupleDeclaration(Location loc) : base(NodeType.Tuple, loc)
+        public DTupleLiteral(Location loc) : base(NodeType.Tuple, loc)
         {
 
         }

@@ -76,7 +76,39 @@ namespace Dyalect.Compiler
                 case NodeType.Index:
                     Build((DIndexer)node, hints, ctx);
                     break;
+                case NodeType.Tuple:
+                    Build((DTupleLiteral)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DTupleLiteral node, Hints hints, CompilerContext ctx)
+        {
+            for (var i = 0; i < node.Elements.Count; i++)
+            {
+                var el = node.Elements[i];
+                string name;
+
+                if (el.NodeType == NodeType.NameTag)
+                {
+                    var tag = (DNameTag)el;
+                    Build(tag.Expression, hints.Append(Push), ctx);
+                    cw.Tag(tag.Name);
+                }
+                else
+                {
+                    Build(el, hints.Append(Push), ctx);
+
+                    if ((name = el.GetName()) != null)
+                        cw.Tag(name);
+                }
+            }
+
+            AddLinePragma(node);
+            var sv = GetVariable("createTuple", node);
+            cw.PushVar(sv);
+            cw.Call(node.Elements.Count);
+            PopIf(hints);
         }
 
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)

@@ -24,7 +24,6 @@
 
         Application,
         Index,
-        Mixin,
 
         Function,
         Import,
