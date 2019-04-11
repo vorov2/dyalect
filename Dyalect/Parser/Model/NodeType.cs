@@ -24,6 +24,7 @@
 
         Application,
         Index,
+        Trait,
 
         Function,
         Import,

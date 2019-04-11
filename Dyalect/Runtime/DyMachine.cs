@@ -314,13 +314,13 @@ namespace Dyalect.Runtime
                                 ProcessError(ctx, function, ref offset, evalStack);
                         }
                         break;
-                    case OpCode.Get:
+                    case OpCode.TraitG:
                         left = evalStack.Pop();
                         right = evalStack.Peek();
                         evalStack.Replace(types[right.TypeId].GetOp(right, left, ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
-                    case OpCode.Set:
+                    case OpCode.TraitS:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
                         if (opd >= StandardType.All.Count)

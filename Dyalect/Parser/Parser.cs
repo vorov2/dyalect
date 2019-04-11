@@ -687,6 +687,7 @@ namespace Dyalect.Parser
 		node = null; 
 		FieldOrIndex(out node);
 		while (la.kind == 25) {
+			if (la.AfterEol) return;
 			var app = new DApplication(node, t); 
 			
 			ApplicationArguments(app);
@@ -838,7 +839,7 @@ namespace Dyalect.Parser
 				name = str; 
 			} else SynErr(79);
 			Expect(23);
-			var tag = new DLabelLiteral(t) { Label = name }; 
+			var tag = new DNameTag(t) { Name = name }; 
 			Expr(out node);
 			tag.Expression = node; node = tag; 
 		} else if (StartOf(4)) {

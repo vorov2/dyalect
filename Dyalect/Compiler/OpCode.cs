@@ -51,8 +51,8 @@
         Call,       //Dynamic
         NewFun,     //0
         NewFunV,    //0
-        Set,        //-2
-        Get,        //-1
+        TraitS,     //-2
+        TraitG,     //-1
         RunMod,     //+1
         Type,       //0
         Tag,        //0

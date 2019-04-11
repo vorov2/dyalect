@@ -13,25 +13,14 @@ namespace Dyalect.Parser.Model
 
         public DNode Index { get; set; }
 
-        public string FieldName { get; set; }
-
-        protected internal override string GetName() => FieldName ?? Index.GetName();
+        protected internal override string GetName() => Index.GetName();
 
         internal override void ToString(StringBuilder sb)
         {
             Target.ToString(sb);
-
-            if (Index.NodeType == NodeType.Name)
-            {
-                sb.Append('.');
-                Index.ToString(sb);
-            }
-            else
-            {
-                sb.Append('[');
-                Index.ToString(sb);
-                sb.Append(']');
-            }
+            sb.Append('[');
+            Index.ToString(sb);
+            sb.Append(']');
         }
     }
 }
