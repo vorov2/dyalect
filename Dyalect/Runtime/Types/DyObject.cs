@@ -19,11 +19,11 @@ namespace Dyalect.Runtime.Types
 
         public virtual double AsFloat() => .0d;
 
-        public virtual string AsString() => "";
+        public virtual string AsString() => "[" + GetTypeInfo().TypeName + "]";
 
         public abstract object AsObject();
 
-        //public abstract DyTypeInfo GetTypeInfo();
+        public abstract DyTypeInfo GetTypeInfo();
 
         protected abstract bool TestEquality(DyObject obj);
         public bool Equals(DyObject obj)

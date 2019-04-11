@@ -24,9 +24,6 @@
 
         public override string AsString() => value ? "true" : "false";
 
-        //public override DyTypeInfo GetTypeInfo()
-        //{
-        //    throw new System.NotImplementedException();
-        //}
+        public override DyTypeInfo GetTypeInfo() => DyBoolTypeInfo.Instance;
     }
 }

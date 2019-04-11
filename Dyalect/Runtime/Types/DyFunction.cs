@@ -214,6 +214,8 @@ namespace Dyalect.Runtime.Types
 
         public override string AsString() => ToString();
 
+        public override DyTypeInfo GetTypeInfo() => DyFunctionTypeInfo.Instance;
+
         private string _functionName;
         public string FunctionName
         {

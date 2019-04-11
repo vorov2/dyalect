@@ -50,6 +50,8 @@ namespace Dyalect.Runtime.Types
 
         public int TypeCode { get; internal set; }
 
+        public override DyTypeInfo GetTypeInfo() => DyTypeTypeInfo.Instance;
+
         #region Binary Operations
         //x + y
         private DyFunction add;

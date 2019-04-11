@@ -23,5 +23,7 @@
         public override object AsObject() => Value.AsObject();
 
         public override string AsString() => Value.AsString();
+
+        public override DyTypeInfo GetTypeInfo() => DyTagTypeInfo.Instance;
     }
 }

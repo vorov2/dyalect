@@ -39,5 +39,7 @@
         public override long AsInteger() => (long)value;
 
         public override bool AsBool() => value > .00001d;
+
+        public override DyTypeInfo GetTypeInfo() => DyFloatTypeInfo.Instance;
     }
 }

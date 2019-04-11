@@ -17,6 +17,8 @@ namespace Dyalect.Runtime.Types
 
         public override object AsObject() => Values;
 
+        public override DyTypeInfo GetTypeInfo() => DyTupleTypeInfo.Instance;
+
         protected override bool TestEquality(DyObject obj)
         {
             var t = (DyTuple)obj;
