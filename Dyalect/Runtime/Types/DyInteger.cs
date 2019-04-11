@@ -6,6 +6,8 @@ namespace Dyalect.Runtime.Types
     {
         public static readonly DyInteger Zero = new DyInteger(0L);
         public static readonly DyInteger One = new DyInteger(1L);
+        public static readonly DyInteger Two = new DyInteger(2L);
+        public static readonly DyInteger Three = new DyInteger(3L);
         public static readonly DyInteger Max = new DyInteger(long.MaxValue);
         public static readonly DyInteger Min = new DyInteger(long.MinValue);
 
