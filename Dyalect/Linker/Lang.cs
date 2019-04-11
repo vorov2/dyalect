@@ -7,12 +7,14 @@ namespace Dyalect.Linker
     {
         internal const string PrintName = "print";
         internal const string CreateTupleName = "createTuple";
+        internal const string CreateArrayName = "createArray";
 
         public Lang()
         {
             FileName = "\\lang";
             RegisterGlobal<DyObject, DyObject>(PrintName, Print);
             RegisterGlobal<DyObject, DyObject>(CreateTupleName, CreateTuple);
+            RegisterGlobal<DyObject, DyObject>(CreateArrayName, CreateArray);
         }
 
         public static DyObject Print(DyObject[] args)
@@ -23,6 +25,8 @@ namespace Dyalect.Linker
             Console.WriteLine();
             return DyNil.Instance;
         }
+
+        public static DyObject CreateArray(DyObject[] args) => new DyArray(args);
 
         public static DyObject CreateTuple(DyObject[] args)
         {

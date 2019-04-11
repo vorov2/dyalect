@@ -16,7 +16,8 @@ namespace Dyalect
             DyTagTypeInfo.Instance,
             DyTypeTypeInfo.Instance,
             DyTupleTypeInfo.Instance,
-            DyModuleTypeInfo.Instance
+            DyModuleTypeInfo.Instance,
+            DyArrayTypeInfo.Instance
         };
 
         public const int Nil = 0;
@@ -29,6 +30,7 @@ namespace Dyalect
         public const int Type = 7;
         public const int Tuple = 8;
         public const int Module = 9;
+        public const int Array = 10;
 
         public const string NilName = "Nil";
         public const string IntegerName = "Integer";
@@ -40,6 +42,7 @@ namespace Dyalect
         public const string TypeName = "Type";
         public const string TupleName = "Tuple";
         public const string ModuleName = "Module";
+        public const string ArrayName = "Array";
 
         public static int GetTypeCodeByName(string name)
         {
@@ -55,6 +58,7 @@ namespace Dyalect
                 case TypeName: return Type;
                 case TupleName: return Tuple;
                 case ModuleName: return Module;
+                case ArrayName: return Array;
                 default: return -1;
             }
         }

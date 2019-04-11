@@ -463,7 +463,19 @@ PRODUCTIONS
             | Bool<out node>
             | Nil<out node>
             | IF (IsTuple()) Tuple<out node>
+            | Array<out node>
             | Group<out node>
+        ).
+
+    Array<out DNode node> =
+        (. node = null; .)
+        (
+            "["
+                (. var arr = new DArrayLiteral(t); .)
+                Expr<out node> (. arr.Elements.Add(node); .)
+                { "," Expr<out node> (. arr.Elements.Add(node); .) }
+                (. node = arr; .)
+            "]"
         ).
 
     Tuple<out DNode node> =

@@ -79,6 +79,9 @@ namespace Dyalect.Compiler
                 case NodeType.Tuple:
                     Build((DTupleLiteral)node, hints, ctx);
                     break;
+                case NodeType.Array:
+                    Build((DArrayLiteral)node, hints, ctx);
+                    break;
             }
         }
 
@@ -105,7 +108,21 @@ namespace Dyalect.Compiler
             }
 
             AddLinePragma(node);
-            var sv = GetVariable("createTuple", node);
+            var sv = GetVariable(Lang.CreateTupleName, node);
+            cw.PushVar(sv);
+            cw.Call(node.Elements.Count);
+            PopIf(hints);
+        }
+
+        private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
+        {
+            for (var i = 0; i < node.Elements.Count; i++)
+            {
+                Build(node.Elements[i], hints.Append(Push), ctx);
+            }
+
+            AddLinePragma(node);
+            var sv = GetVariable(Lang.CreateArrayName, node);
             cw.PushVar(sv);
             cw.Call(node.Elements.Count);
             PopIf(hints);

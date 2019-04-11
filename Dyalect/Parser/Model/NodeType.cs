@@ -28,6 +28,7 @@
         Function,
         Import,
         Tuple,
+        Array,
         NameTag,
 
         Type,
