@@ -4,22 +4,22 @@ using System.Text;
 
 namespace Dyalect.Parser.Model
 {
-    public sealed class DNameTag : DNode
+    public sealed class DLabelLiteral : DNode
     {
-        public DNameTag(Location loc) : base(NodeType.NameTag, loc)
+        public DLabelLiteral(Location loc) : base(NodeType.Label, loc)
         {
 
         }
 
-        public string Name { get; set; }
+        public string Label { get; set; }
 
         public DNode Expression { get; set; }
 
-        protected internal override string GetName() => Name;
+        protected internal override string GetName() => Label;
 
         internal override void ToString(StringBuilder sb)
         {
-            sb.Append(Name);
+            sb.Append(Label);
             sb.Append(": ");
             Expression.ToString(sb);
         }

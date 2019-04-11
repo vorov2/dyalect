@@ -92,11 +92,11 @@ namespace Dyalect.Compiler
                 var el = node.Elements[i];
                 string name;
 
-                if (el.NodeType == NodeType.NameTag)
+                if (el.NodeType == NodeType.Label)
                 {
-                    var tag = (DNameTag)el;
-                    Build(tag.Expression, hints.Append(Push), ctx);
-                    cw.Tag(tag.Name);
+                    var label = (DLabelLiteral)el;
+                    Build(label.Expression, hints.Append(Push), ctx);
+                    cw.Tag(label.Label);
                 }
                 else
                 {

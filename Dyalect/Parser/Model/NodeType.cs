@@ -29,7 +29,7 @@
         Import,
         Tuple,
         Array,
-        NameTag,
+        Label,
 
         Type,
         Field

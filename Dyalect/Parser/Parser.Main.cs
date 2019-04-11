@@ -27,7 +27,6 @@ namespace Dyalect.Parser
 
         private void AddError(string text, int code, int line, int col)
         {
-            //text = ErrorHelper.Translate(text);
             Errors.Add(new BuildMessage(text, BuildMessageType.Error, code, line, col, this.scanner.Buffer.FileName));
         }
 

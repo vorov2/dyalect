@@ -101,10 +101,6 @@ namespace Dyalect.Linker
 
         protected virtual void Complete(bool failed)
         {
-            Units.Clear();
-            Messages.Clear();
-            UnitMap.Clear();
-            AssemblyMap.Clear();
         }
 
         protected virtual Result<UnitComposition> Make(Unit unit)

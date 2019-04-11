@@ -38,11 +38,11 @@ namespace Dyalect.Linker
             {
                 var v = args[i];
 
-                if (v.TypeId == StandardType.Tag)
+                if (v.TypeId == StandardType.Label)
                 {
-                    var tag = (DyTag)v;
-                    keys[i] = tag.Tag;
-                    values[i] = tag.Value;
+                    var label = (DyLabel)v;
+                    keys[i] = label.Label;
+                    values[i] = label.Value;
                 }
                 else
                     values[i] = v;

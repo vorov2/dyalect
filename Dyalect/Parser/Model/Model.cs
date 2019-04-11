@@ -63,20 +63,7 @@ namespace Dyalect.Parser.Model
             sb.Append(Value ? "true" : "false");
         }
     }
-
-    public sealed class DNilLiteral : DNode
-    {
-        public DNilLiteral(Location loc) : base(NodeType.Nil, loc)
-        {
-
-        }
-
-        internal override void ToString(StringBuilder sb)
-        {
-            sb.Append("nil");
-        }
-    }
-
+    
     public sealed class DBinaryOperation : DNode
     {
         public DBinaryOperation(Location loc) : base(NodeType.Binary, loc)
@@ -159,32 +146,6 @@ namespace Dyalect.Parser.Model
             {
                 sb.Append(" = ");
                 Value.ToString(sb);
-            }
-        }
-    }
-
-    public sealed class DBinding : DNode
-    {
-        public DBinding(Location loc) : base(NodeType.Binding, loc)
-        {
-
-        }
-
-        public bool Constant { get; set; }
-
-        public string Name { get; internal set; }
-
-        public DNode Init { get; set; }
-
-        internal override void ToString(StringBuilder sb)
-        {
-            sb.Append(Constant ? "const " : "var ");
-            sb.Append(Name);
-
-            if (Init != null)
-            {
-                sb.Append(" = ");
-                Init.ToString(sb);
             }
         }
     }

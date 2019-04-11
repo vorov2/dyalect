@@ -413,7 +413,10 @@ PRODUCTIONS
         (
             FieldOrIndex<out node>
             {
-                (. var app = new DApplication(node, t); .)
+                (. 
+                    if (la.AfterEol) return;
+                    var app = new DApplication(node, t); 
+                .)
                 ApplicationArguments<app>
                 (. node = app; .)
             }

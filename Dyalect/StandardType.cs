@@ -13,7 +13,7 @@ namespace Dyalect
             DyBoolTypeInfo.Instance,
             DyStringTypeInfo.Instance,
             DyFunctionTypeInfo.Instance,
-            DyTagTypeInfo.Instance,
+            DyLabelTypeInfo.Instance,
             DyTypeTypeInfo.Instance,
             DyTupleTypeInfo.Instance,
             DyModuleTypeInfo.Instance,
@@ -26,7 +26,7 @@ namespace Dyalect
         public const int Bool = 3;
         public const int String = 4;
         public const int Function = 5;
-        public const int Tag = 6;
+        public const int Label = 6;
         public const int Type = 7;
         public const int Tuple = 8;
         public const int Module = 9;
@@ -38,7 +38,7 @@ namespace Dyalect
         public const string BoolName = "Bool";
         public const string StringName = "String";
         public const string FunctionName = "Function";
-        public const string TagName = "Tag";
+        public const string LabelName = "Label";
         public const string TypeName = "Type";
         public const string TupleName = "Tuple";
         public const string ModuleName = "Module";
@@ -54,7 +54,7 @@ namespace Dyalect
                 case BoolName: return Bool;
                 case StringName: return String;
                 case FunctionName: return Function;
-                case TagName: return Tag;
+                case LabelName: return Label;
                 case TypeName: return Type;
                 case TupleName: return Tuple;
                 case ModuleName: return Module;

@@ -687,7 +687,9 @@ namespace Dyalect.Parser
 		node = null; 
 		FieldOrIndex(out node);
 		while (la.kind == 25) {
+			if (la.AfterEol) return;
 			var app = new DApplication(node, t); 
+			
 			ApplicationArguments(app);
 			node = app; 
 		}

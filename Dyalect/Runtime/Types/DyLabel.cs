@@ -1,14 +1,14 @@
 ﻿namespace Dyalect.Runtime.Types
 {
-    public sealed class DyTag : DyObject
+    public sealed class DyLabel : DyObject
     {
-        public string Tag { get; }
+        public string Label { get; }
 
         public DyObject Value { get; }
 
-        public DyTag(string tag, DyObject value) : base(StandardType.Tag)
+        public DyLabel(string label, DyObject value) : base(StandardType.Label)
         {
-            Tag = tag;
+            Label = label;
             Value = value;
         }
 
@@ -24,6 +24,6 @@
 
         public override string AsString() => Value.AsString();
 
-        public override DyTypeInfo GetTypeInfo() => DyTagTypeInfo.Instance;
+        public override DyTypeInfo GetTypeInfo() => DyLabelTypeInfo.Instance;
     }
 }

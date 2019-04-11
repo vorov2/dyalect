@@ -338,7 +338,7 @@ namespace Dyalect.Runtime
                         evalStack.Replace(types[evalStack.Peek().TypeId]);
                         break;
                     case OpCode.Tag:
-                        evalStack.Replace(new DyTag(unit.IndexedStrings[opd].Value, evalStack.Peek()));
+                        evalStack.Replace(new DyLabel(unit.IndexedStrings[opd].Value, evalStack.Peek()));
                         break;
                 }
             }
