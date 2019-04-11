@@ -14,7 +14,7 @@ namespace Dyalect.Linker
             if (path == null)
                 return null;
 
-            if (!asmMap.TryGetValue(path, out Dictionary<string, Type> dict))
+            if (!AssemblyMap.TryGetValue(path, out Dictionary<string, Type> dict))
                 dict = LoadAssembly(path, mod);
 
             if (dict != null)
@@ -85,7 +85,7 @@ namespace Dyalect.Linker
                 }
             }
 
-            asmMap.Add(path, dict);
+            AssemblyMap.Add(path, dict);
             return dict;
         }
     }

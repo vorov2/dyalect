@@ -13,15 +13,34 @@ namespace Dyalect.Linker
         private UnitComposition composition;
         private int? startOffset;
 
+        private Dictionary<string, Unit> backupUnitMap;
+        private Dictionary<string, Dictionary<string, Type>> backupAssemblyMap;
+        private List<Unit> backupUnits;
+
         public DyIncrementalLinker(FileLookup lookup, BuilderOptions options) : base(lookup, options)
         {
 
         }
 
+        protected override void Prepare()
+        {
+            backupUnitMap = new Dictionary<string, Unit>(UnitMap);
+            backupAssemblyMap = new Dictionary<string, Dictionary<string, Type>>(AssemblyMap);
+            backupUnits = new List<Unit>(Units);
+        }
+
+        protected override void Complete(bool failed)
+        {
+            if (failed)
+            {
+                UnitMap = backupUnitMap;
+                AssemblyMap = backupAssemblyMap;
+                Units = backupUnits;
+            }
+        }
+
         protected override Result<UnitComposition> Make(Unit unit)
         {
-            Messages.Clear();
-
             if (composition == null)
                 composition = new UnitComposition(Units);
 
@@ -34,6 +53,8 @@ namespace Dyalect.Linker
         {
             if (!root)
                 return base.CompileNodes(codeModel, root);
+            else
+                Messages.Clear();
 
             var oldCompiler = compiler;
 

@@ -6,6 +6,7 @@ using Dyalect.Strings;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Dyalect.Linker
 {
@@ -15,10 +16,11 @@ namespace Dyalect.Linker
         private const string OBJ = ".dyo";
         private readonly FileLookup lookup;
 
-        private readonly Dictionary<string, Unit> unitMap = new Dictionary<string, Unit>(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<string, Dictionary<string, Type>> asmMap = new Dictionary<string, Dictionary<string, Type>>(StringComparer.OrdinalIgnoreCase);
+        protected Dictionary<string, Unit> UnitMap { get; set;  } = new Dictionary<string, Unit>(StringComparer.OrdinalIgnoreCase);
 
-        protected List<Unit> Units { get; } = new List<Unit>();
+        protected Dictionary<string, Dictionary<string, Type>> AssemblyMap { get; set; } = new Dictionary<string, Dictionary<string, Type>>(StringComparer.OrdinalIgnoreCase);
+
+        protected List<Unit> Units { get; set; } = new List<Unit>();
 
         protected List<BuildMessage> Messages { get; } = new List<BuildMessage>();
 
@@ -43,7 +45,7 @@ namespace Dyalect.Linker
             {
                 var path = FindModule(mod.ModuleName, mod);
 
-                if (path == null || unitMap.TryGetValue(path, out unit))
+                if (path == null || UnitMap.TryGetValue(path, out unit))
                     return Result.Create(unit, Messages);
 
                 if (string.Equals(Path.GetExtension(path), EXT))
@@ -52,11 +54,11 @@ namespace Dyalect.Linker
                     unit = ProcessObjectFile(path, mod);
             }
 
-            if (unit != null && !unitMap.ContainsKey(unit.FileName))
+            if (unit != null && !UnitMap.ContainsKey(unit.FileName))
             {
                 unit.Id = Units.Count;
                 Units.Add(unit);
-                unitMap.Add(unit.FileName, unit);
+                UnitMap.Add(unit.FileName, unit);
             }
 
             var retval = Result.Create(unit, Messages);
@@ -75,12 +77,34 @@ namespace Dyalect.Linker
 
         public Result<UnitComposition> Make(DyCodeModel codeModel)
         {
-            var unit = CompileNodes(codeModel, root: true);
+            Prepare();
 
-            if (unit == null)
-                return Result.Create(default(UnitComposition), Messages);
+            try
+            {
+                var unit = CompileNodes(codeModel, root: true);
 
-            return Make(unit);
+                if (unit == null)
+                    return Result.Create(default(UnitComposition), Messages);
+
+                return Make(unit);
+            }
+            finally
+            {
+                var failed = Messages.Any(m => m.Type == BuildMessageType.Error);
+                Complete(failed);
+            }
+        }
+
+        protected virtual void Prepare()
+        {
+        }
+
+        protected virtual void Complete(bool failed)
+        {
+            Units.Clear();
+            Messages.Clear();
+            UnitMap.Clear();
+            AssemblyMap.Clear();
         }
 
         protected virtual Result<UnitComposition> Make(Unit unit)

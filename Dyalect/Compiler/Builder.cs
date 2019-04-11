@@ -47,6 +47,9 @@ namespace Dyalect.Compiler
         {
             this.iterative = true;
             this.linker = builder.linker;
+            this.imports = builder.imports;
+            this.types = builder.types;
+            this.referencedUnits = builder.referencedUnits;
             this.counters = new Stack<int>();
             this.options = builder.options;
             this.pdb = builder.pdb.Clone();
