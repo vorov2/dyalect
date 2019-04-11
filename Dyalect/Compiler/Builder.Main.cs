@@ -90,6 +90,10 @@ namespace Dyalect.Compiler
 
         private void Build(DTrait node, Hints hints, CompilerContext ctx)
         {
+            Build(node.Target, hints.Append(Push), ctx);
+            AddLinePragma(node);
+            cw.TraitG(node.Name);
+            PopIf(hints);
         }
 
         private void Build(DTupleLiteral node, Hints hints, CompilerContext ctx)
@@ -684,12 +688,14 @@ namespace Dyalect.Compiler
                     var name = node.GetName();
                     GetVariable(name, node);
                     return name;
-                case NodeType.Index:
-                    var idx = (DIndexer)node;
+                case NodeType.Trait:
+                    return ((DTrait)node).Name;
+                //case NodeType.Index:
+                    //var idx = (DIndexer)node;
                     //if (idx.FieldName != null)
                     //    return idx.FieldName;
                     //else
-                        return GetExpressionName(idx.Index);
+                        //return GetExpressionName(idx.Index);
                 default:
                     AddError(CompilerError.ExpressionNoName, node.Location);
                     return "";

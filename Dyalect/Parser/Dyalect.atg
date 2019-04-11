@@ -437,8 +437,8 @@ PRODUCTIONS
                     "." (. var ot = t; .)
                     identToken
                     (.
-                        var fld = new DIndexer(ot) { Target = node };
-                        fld.FieldName = t.val;
+                        var fld = new DTrait(ot) { Target = node };
+                        fld.Name = t.val;
                         node = fld;
                     .)
                 )
@@ -503,7 +503,7 @@ PRODUCTIONS
                     | AnyString<out var str> (. name = str; .)
                 )
                 ":"
-                (. var tag = new DNameTag(t) { Name = name }; .)
+                (. var tag = new DLabelLiteral(t) { Label = name }; .)
                 Expr<out node>
                 (. tag.Expression = node; node = tag; .)
             )

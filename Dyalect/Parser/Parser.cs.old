@@ -687,6 +687,7 @@ namespace Dyalect.Parser
 		node = null; 
 		FieldOrIndex(out node);
 		while (la.kind == 25) {
+			if (la.AfterEol) return;
 			var app = new DApplication(node, t); 
 			
 			ApplicationArguments(app);
@@ -701,8 +702,8 @@ namespace Dyalect.Parser
 				Get();
 				var ot = t; 
 				Expect(1);
-				var fld = new DIndexer(ot) { Target = node };
-				fld.FieldName = t.val;
+				var fld = new DTrait(ot) { Target = node };
+				fld.Name = t.val;
 				node = fld;
 				
 			} else {

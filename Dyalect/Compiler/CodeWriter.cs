@@ -165,6 +165,13 @@ namespace Dyalect.Compiler
             Emit(new Op(OpCode.Tag, idx));
         }
 
+        public void TraitG(string name)
+        {
+            var idx = frame.IndexedStrings.Count;
+            frame.IndexedStrings.Add(name);
+            Emit(new Op(OpCode.TraitG, idx));
+        }
+
         public void Call(int args) => Emit(new Op(OpCode.Call, args), -args);
         public void NewFun(int funHandle) => Emit(new Op(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new Op(OpCode.NewFunV, funHandle));
@@ -174,7 +181,6 @@ namespace Dyalect.Compiler
         public void Set(int type) => Emit(new Op(OpCode.TraitS, type));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
 
-        public void Get() => Emit(Op.Get);
         public void This() => Emit(Op.This);
         public void Self() => Emit(Op.Self);
         public void Type() => Emit(Op.Type);

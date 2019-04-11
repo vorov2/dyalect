@@ -52,8 +52,8 @@
             1, //Call
             1, //NewFun
             1, //NewFunV
-            1, //Set
-            0, //Get
+            1, //TraitS
+            1, //TraitG
             1, //RunMod
             0, //Type
             1, //Tag

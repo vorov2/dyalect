@@ -53,7 +53,7 @@
             0,  //NewFun
             0,  //NewFunV
             -2, //Set
-            -1, //Get
+            0,  //TraitG
             1,  //RunMod
             0,  //Type
             0,  //Tag

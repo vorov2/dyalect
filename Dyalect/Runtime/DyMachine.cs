@@ -315,9 +315,8 @@ namespace Dyalect.Runtime
                         }
                         break;
                     case OpCode.TraitG:
-                        left = evalStack.Pop();
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].GetOp(right, left, ctx));
+                        evalStack.Replace(types[right.TypeId].GetTraitOp(right, unit.IndexedStrings[opd].Value, ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.TraitS:
@@ -325,9 +324,9 @@ namespace Dyalect.Runtime
                         right = evalStack.Pop();
                         if (opd >= StandardType.All.Count)
                             types[ctx.Assembly.Units[unit.ModuleHandles[opd & byte.MaxValue]].TypeHandles[opd >> 8]]
-                                .SetOp(left.AsString(), right, ctx);
+                                .SetTraitOp(left.AsString(), right, ctx);
                         else
-                            types[opd].SetOp(left.AsString(), right, ctx);
+                            types[opd].SetTraitOp(left.AsString(), right, ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.RunMod:

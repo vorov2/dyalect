@@ -33,12 +33,12 @@ namespace Dyalect.Runtime.Types
             return true;
         }
 
-        internal override DyObject GetItem(DyObject index)
+        internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == StandardType.Integer)
-                return GetItem((int)index.AsInteger());
+                return GetItem((int)index.AsInteger()) ?? Err.IndexOutOfRange(TypeName, index).Set(ctx);
             else
-                return null;
+                return Err.IndexInvalidType(TypeName, index.TypeName).Set(ctx);
         }
 
         private DyObject GetItem(int index)

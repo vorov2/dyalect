@@ -702,8 +702,8 @@ namespace Dyalect.Parser
 				Get();
 				var ot = t; 
 				Expect(1);
-				var fld = new DIndexer(ot) { Target = node };
-				fld.FieldName = t.val;
+				var fld = new DTrait(ot) { Target = node };
+				fld.Name = t.val;
 				node = fld;
 				
 			} else {
@@ -839,7 +839,7 @@ namespace Dyalect.Parser
 				name = str; 
 			} else SynErr(79);
 			Expect(23);
-			var tag = new DNameTag(t) { Name = name }; 
+			var tag = new DLabelLiteral(t) { Label = name }; 
 			Expr(out node);
 			tag.Expression = node; node = tag; 
 		} else if (StartOf(4)) {
