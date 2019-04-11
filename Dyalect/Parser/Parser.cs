@@ -701,7 +701,7 @@ namespace Dyalect.Parser
 				var ot = t; 
 				Expect(1);
 				var fld = new DIndexer(ot) { Target = node };
-				fld.Index = new DStringLiteral(t) { Value = t.val };
+				fld.FieldName = t.val;
 				node = fld;
 				
 			} else {

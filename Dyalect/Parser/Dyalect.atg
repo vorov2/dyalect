@@ -435,7 +435,7 @@ PRODUCTIONS
                     identToken
                     (.
                         var fld = new DIndexer(ot) { Target = node };
-                        fld.Index = new DStringLiteral(t) { Value = t.val };
+                        fld.FieldName = t.val;
                         node = fld;
                     .)
                 )

@@ -114,7 +114,12 @@ namespace Dyalect.Compiler
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)
         {
             Build(node.Target, hints.Append(Push), ctx);
-            Build(node.Index, hints.Append(Push), ctx);
+
+            if (node.FieldName != null)
+                cw.Push(node.FieldName);
+            else
+                Build(node.Index, hints.Append(Push), ctx);
+
             AddLinePragma(node);
             cw.Get();
             PopIf(hints);
@@ -237,11 +242,7 @@ namespace Dyalect.Compiler
                         return;
                     }
 
-                    var push = node.Arguments[0].GetName();
-
-                    if (push == null)
-                        AddError(CompilerError.ExpressionNoName, node.Location);
-
+                    var push = GetExpressionName(node.Arguments[0]);
                     cw.Push(push);
                     return;
                 }
@@ -648,6 +649,26 @@ namespace Dyalect.Compiler
 
                     return ui.Handle | ti << 8;
                 }
+            }
+        }
+
+        private string GetExpressionName(DNode node)
+        {
+            switch (node.NodeType)
+            {
+                case NodeType.Name:
+                    var name = node.GetName();
+                    GetVariable(name, node);
+                    return name;
+                case NodeType.Index:
+                    var idx = (DIndexer)node;
+                    if (idx.FieldName != null)
+                        return idx.FieldName;
+                    else
+                        return GetExpressionName(idx.Index);
+                default:
+                    AddError(CompilerError.ExpressionNoName, node.Location);
+                    return "";
             }
         }
     }

@@ -77,23 +77,6 @@ namespace Dyalect.Parser.Model
         }
     }
 
-    public sealed class DName : DNode
-    {
-        public DName(Location loc) : base(NodeType.Name, loc)
-        {
-
-        }
-
-        public string Value { get; set; }
-
-        protected internal override string GetName() => Value;
-
-        internal override void ToString(StringBuilder sb)
-        {
-            sb.Append(Value);
-        }
-    }
-
     public sealed class DBinaryOperation : DNode
     {
         public DBinaryOperation(Location loc) : base(NodeType.Binary, loc)
@@ -229,37 +212,6 @@ namespace Dyalect.Parser.Model
             {
                 sb.Append("else ");
                 False.ToString(sb);
-            }
-        }
-    }
-
-    public sealed class DIndexer : DNode
-    {
-        public DIndexer(Location loc) : base(NodeType.Index, loc)
-        {
-
-        }
-
-        public DNode Target { get; set; }
-
-        public DNode Index { get; set; }
-
-        protected internal override string GetName() => Index.GetName();
-
-        internal override void ToString(StringBuilder sb)
-        {
-            Target.ToString(sb);
-
-            if (Index.NodeType == NodeType.Name)
-            {
-                sb.Append('.');
-                Index.ToString(sb);
-            }
-            else
-            {
-                sb.Append('[');
-                Index.ToString(sb);
-                sb.Append(']');
             }
         }
     }
