@@ -296,6 +296,8 @@ namespace Dyalect.Runtime.Types
 
                 if (t != null)
                     return t;
+                if (index.TypeId == StandardType.Integer)
+                    return Err.IndexOutOfRange(TypeName, index).Set(ctx);
             }
 
             var name = index.AsString();

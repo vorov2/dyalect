@@ -6,7 +6,7 @@
 
         public DyObject Value { get; }
 
-        public DyTag(string tag, DyObject value) : base(StandardType.Bool)
+        public DyTag(string tag, DyObject value) : base(StandardType.Tag)
         {
             Tag = tag;
             Value = value;

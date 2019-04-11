@@ -4,7 +4,7 @@
     {
         public static readonly DyTupleTypeInfo Instance = new DyTupleTypeInfo();
 
-        private DyTupleTypeInfo() : base(StandardType.Bool)
+        private DyTupleTypeInfo() : base(StandardType.Tuple)
         {
 
         }
