@@ -20,6 +20,12 @@
 
         UndefinedModule = 208,
 
-        ReturnNotAllowed = 209
+        ReturnNotAllowed = 209,
+
+        InvalidNameOfOperator = 210,
+
+        ExpressionNoName = 211,
+
+        InvalidTypeOfOperator = 212
     }
 }

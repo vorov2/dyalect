@@ -117,6 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExpressionNoName" xml:space="preserve">
+    <value>У выражения нет имени.</value>
+  </data>
+  <data name="InvalidNameOfOperator" xml:space="preserve">
+    <value>Некорректное использование оператора "nameof".</value>
+  </data>
+  <data name="InvalidTypeOfOperator" xml:space="preserve">
+    <value>Некорректное использование оператора "typeof".</value>
+  </data>
   <data name="NoEnclosingLoop" xml:space="preserve">
     <value>Отсутствует внешний цикл для прерывания или продолжения.</value>
   </data>

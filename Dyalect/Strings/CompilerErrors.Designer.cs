@@ -61,6 +61,33 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to У выражения нет имени..
+        /// </summary>
+        internal static string ExpressionNoName {
+            get {
+                return ResourceManager.GetString("ExpressionNoName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Некорректное использование оператора &quot;nameof&quot;..
+        /// </summary>
+        internal static string InvalidNameOfOperator {
+            get {
+                return ResourceManager.GetString("InvalidNameOfOperator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Некорректное использование оператора &quot;typeof&quot;..
+        /// </summary>
+        internal static string InvalidTypeOfOperator {
+            get {
+                return ResourceManager.GetString("InvalidTypeOfOperator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Отсутствует внешний цикл для прерывания или продолжения..
         /// </summary>
         internal static string NoEnclosingLoop {

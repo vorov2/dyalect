@@ -193,12 +193,48 @@ namespace Dyalect.Compiler
 
         private void Build(DApplication node, Hints hints, CompilerContext ctx)
         {
+            var name = node.Target.NodeType == NodeType.Name ? node.Target.GetName() : null;
+            var sv = name != null ? GetVariable(name, node, err: false) : ScopeVar.Empty;
+
+            if (name != null && sv.IsEmpty())
+                if (name == "nameof")
+                {
+                    if (node.Arguments.Count != 1)
+                    {
+                        AddError(CompilerError.InvalidNameOfOperator, node.Location);
+                        return;
+                    }
+
+                    var push = node.Arguments[0].GetName();
+
+                    if (push == null)
+                        AddError(CompilerError.ExpressionNoName, node.Location);
+
+                    cw.Push(push);
+                    return;
+                }
+                else if (name == "typeof")
+                {
+                    if (node.Arguments.Count != 1)
+                    {
+                        AddError(CompilerError.InvalidTypeOfOperator, node.Location);
+                        return;
+                    }
+
+                    Build(node.Arguments[0], hints.Append(Push), ctx);
+                    cw.Type();
+                    return;
+                }
+
             foreach (var a in node.Arguments)
                 Build(a, hints.Append(Push), ctx);
 
-            Build(node.Target, hints.Append(Push), ctx);
-            AddLinePragma(node);
+            if (sv.IsEmpty())
+                Build(node.Target, hints.Append(Push), ctx);
+            else
+                cw.PushVar(sv);
 
+            AddLinePragma(node);
             cw.Call(node.Arguments.Count);
             PopIf(hints);
         }
