@@ -15,8 +15,6 @@ namespace Dyalect.Runtime.Types
 
         public override object AsObject() => Values;
 
-        public override DyTypeInfo GetTypeInfo() => DyArrayTypeInfo.Instance;
-
         protected override bool TestEquality(DyObject obj)
         {
             var t = (DyArray)obj;
@@ -36,9 +34,9 @@ namespace Dyalect.Runtime.Types
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == StandardType.Integer)
-                return GetItem((int)index.AsInteger()) ?? Err.IndexOutOfRange(TypeName, index).Set(ctx);
+                return GetItem((int)index.AsInteger()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
             else
-                return Err.IndexInvalidType(TypeName, index.TypeName).Set(ctx);
+                return Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
         }
 
         private DyObject GetItem(int index)

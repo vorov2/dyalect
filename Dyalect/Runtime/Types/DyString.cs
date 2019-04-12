@@ -53,7 +53,5 @@ namespace Dyalect.Runtime.Types
         public static implicit operator string(DyString str) => str.Value;
 
         public static implicit operator DyString(string str) => new DyString(str);
-
-        public override DyTypeInfo GetTypeInfo() => DyStringTypeInfo.Instance;
     }
 }

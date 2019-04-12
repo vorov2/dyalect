@@ -16,7 +16,5 @@ namespace Dyalect.Runtime.Types
         public override object AsObject() => unit;
 
         protected override bool TestEquality(DyObject obj) => ReferenceEquals(unit, ((DyModule)obj).unit);
-
-        public override DyTypeInfo GetTypeInfo() => DyModuleTypeInfo.Instance;
     }
 }

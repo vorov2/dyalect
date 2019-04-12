@@ -39,7 +39,5 @@ namespace Dyalect.Runtime.Types
         public override double AsFloat() => value;
 
         public override long AsInteger() => value;
-
-        public override DyTypeInfo GetTypeInfo() => DyIntegerTypeInfo.Instance;
     }
 }

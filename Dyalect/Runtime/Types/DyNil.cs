@@ -14,7 +14,5 @@
         public override bool AsBool() => false;
 
         protected override bool TestEquality(DyObject obj) => ReferenceEquals(this, obj);
-
-        public override DyTypeInfo GetTypeInfo() => DyNilTypeInfo.Instance;
     }
 }

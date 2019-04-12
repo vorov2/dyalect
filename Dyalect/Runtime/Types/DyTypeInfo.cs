@@ -50,8 +50,6 @@ namespace Dyalect.Runtime.Types
 
         public int TypeCode { get; internal set; }
 
-        public override DyTypeInfo GetTypeInfo() => DyTypeTypeInfo.Instance;
-
         #region Binary Operations
         //x + y
         private DyFunction add;
@@ -60,7 +58,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == StandardType.String)
                 return new DyString(left.AsString() + right.AsString());
 
-            return Err.OperationNotSupported(Traits.AddName, left.TypeName, right.TypeName).Set(ctx);
+            return Err.OperationNotSupported(Traits.AddName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         }
         internal DyObject Add(DyObject left, DyObject right, ExecutionContext ctx)
         {
@@ -72,7 +70,7 @@ namespace Dyalect.Runtime.Types
         //x - y
         private DyFunction sub;
         protected virtual DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx) => 
-            Err.OperationNotSupported(Traits.SubName, left.TypeName, right.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.SubName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Sub(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (sub != null)
@@ -83,7 +81,7 @@ namespace Dyalect.Runtime.Types
         //x * y
         private DyFunction mul;
         protected virtual DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.MulName, left.TypeName, right.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.MulName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Mul(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (mul != null)
@@ -94,7 +92,7 @@ namespace Dyalect.Runtime.Types
         //x / y
         private DyFunction div;
         protected virtual DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx) => 
-            Err.OperationNotSupported(Traits.DivName, left.TypeName, right.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.DivName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Div(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (div != null)
@@ -105,7 +103,7 @@ namespace Dyalect.Runtime.Types
         //x % y
         private DyFunction rem;
         protected virtual DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx) => 
-            Err.OperationNotSupported(Traits.RemName, left.TypeName, right.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.RemName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Rem(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (rem != null)
@@ -116,7 +114,7 @@ namespace Dyalect.Runtime.Types
         //x << y
         private DyFunction shl;
         protected virtual DyObject ShiftLeftOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.ShlName, left.TypeName, right.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.ShlName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject ShiftLeft(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (shl != null)
@@ -127,7 +125,7 @@ namespace Dyalect.Runtime.Types
         //x >> y
         private DyFunction shr;
         protected virtual DyObject ShiftRightOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.ShrName, left.TypeName, right.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.ShrName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject ShiftRight(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (shr != null)
@@ -138,7 +136,7 @@ namespace Dyalect.Runtime.Types
         //x & y
         private DyFunction and;
         protected virtual DyObject AndOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.AndName, left.TypeName, right.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.AndName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject And(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (and != null)
@@ -149,7 +147,7 @@ namespace Dyalect.Runtime.Types
         //x | y
         private DyFunction or;
         protected virtual DyObject OrOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.OrName, left.TypeName, right.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.OrName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Or(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (or != null)
@@ -160,7 +158,7 @@ namespace Dyalect.Runtime.Types
         //x ^ y
         private DyFunction xor;
         protected virtual DyObject XorOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.XorName, left.TypeName, right.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.XorName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Xor(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (xor != null)
@@ -193,7 +191,7 @@ namespace Dyalect.Runtime.Types
         //x > y
         private DyFunction gt;
         protected virtual DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.GtName, left.TypeName, right.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.GtName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Gt(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (gt != null)
@@ -204,7 +202,7 @@ namespace Dyalect.Runtime.Types
         //x < y
         private DyFunction lt;
         protected virtual DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.LtName, left.TypeName, right.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.LtName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Lt(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (lt != null)
@@ -245,7 +243,7 @@ namespace Dyalect.Runtime.Types
         //-x
         private DyFunction neg;
         protected virtual DyObject NegOp(DyObject arg, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.NegName, arg.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.NegName, arg.TypeName(ctx)).Set(ctx);
         internal DyObject Neg(DyObject arg, ExecutionContext ctx)
         {
             if (neg != null)
@@ -267,7 +265,7 @@ namespace Dyalect.Runtime.Types
         //~x
         private DyFunction bitnot;
         protected virtual DyObject BitwiseNotOp(DyObject arg, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.BitName, arg.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.BitName, arg.TypeName(ctx)).Set(ctx);
         internal DyObject BitwiseNot(DyObject arg, ExecutionContext ctx)
         {
             if (bitnot != null)
@@ -278,7 +276,7 @@ namespace Dyalect.Runtime.Types
         //#x
         private DyFunction len;
         protected virtual DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.LenName, arg.TypeName).Set(ctx);
+            Err.OperationNotSupported(Traits.LenName, arg.TypeName(ctx)).Set(ctx);
         internal DyObject Length(DyObject arg, ExecutionContext ctx)
         {
             if (len != null)

@@ -19,13 +19,9 @@ namespace Dyalect.Runtime.Types
 
         public virtual double AsFloat() => .0d;
 
-        public virtual string AsString() => "[" + GetTypeInfo().TypeName + "]";
+        public virtual string AsString() => "";
 
         public abstract object AsObject();
-
-        public abstract DyTypeInfo GetTypeInfo();
-
-        public string TypeName => GetTypeInfo().TypeName;
 
         protected abstract bool TestEquality(DyObject obj);
         public bool Equals(DyObject obj)
@@ -38,5 +34,10 @@ namespace Dyalect.Runtime.Types
         internal protected virtual DyObject GetItem(DyObject index, ExecutionContext ctx) => null;
 
         internal protected virtual bool SetItem(DyObject index, DyObject value, ExecutionContext ctx) => false;
+    }
+
+    internal static class DyObjectExtensions
+    {
+        public static string TypeName(this DyObject self, ExecutionContext ctx) => ctx.Assembly.Types[self.TypeId].TypeName;
     }
 }

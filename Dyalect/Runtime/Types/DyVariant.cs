@@ -17,8 +17,6 @@
 
         public override object AsObject() => this;
 
-        public override DyTypeInfo GetTypeInfo() => new DyVariantTypeInfo(base.TypeId, "");
-
         //internal override DyObject GetItem(int index)
         //{
         //    if (index < 0 || index >= Values.Length)
