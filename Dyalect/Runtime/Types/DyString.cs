@@ -53,5 +53,18 @@ namespace Dyalect.Runtime.Types
         public static implicit operator string(DyString str) => str.Value;
 
         public static implicit operator DyString(string str) => new DyString(str);
+
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
+        {
+            if (index.TypeId != StandardType.Integer)
+                return Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
+
+            var idx = (int)index.AsInteger();
+
+            if (idx < 0 || idx >= Value.Length)
+                return Err.IndexOutOfRange(this.TypeName(ctx), idx).Set(ctx);
+
+            return new DyString(Value[idx].ToString());
+        }
     }
 }
