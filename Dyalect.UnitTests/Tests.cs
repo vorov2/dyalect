@@ -32,6 +32,8 @@ namespace Tests
 
         [Test] public void FibTest() => ShouldBe(89);
 
+        [Test] public void PhoneParserTest() => ShouldBe("9645061112");
+
         #region Execution
         private void ShouldBe(object expected, [CallerMemberName]string callerName = "")
         {

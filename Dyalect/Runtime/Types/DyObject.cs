@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dyalect.Compiler;
+using System;
 
 namespace Dyalect.Runtime.Types
 {
@@ -31,9 +32,14 @@ namespace Dyalect.Runtime.Types
             return TestEquality(obj);
         }
 
-        internal protected virtual DyObject GetItem(DyObject index, ExecutionContext ctx) => null;
+        internal protected virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
+            Err.OperationNotSupported(Traits.GetName, this.TypeName(ctx)).Set(ctx);
 
-        internal protected virtual bool SetItem(DyObject index, DyObject value, ExecutionContext ctx) => false;
+        internal protected virtual bool SetItem(DyObject index, DyObject value, ExecutionContext ctx)
+        {
+            Err.OperationNotSupported(Traits.SetName, this.TypeName(ctx)).Set(ctx);
+            return false;
+        }
     }
 
     internal static class DyObjectExtensions

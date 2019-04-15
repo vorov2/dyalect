@@ -332,7 +332,7 @@ namespace Dyalect.Runtime
                     case OpCode.Get:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
-                        evalStack.Push(left.GetItem(right, ctx));
+                        evalStack.Push(right.GetItem(left, ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Set:

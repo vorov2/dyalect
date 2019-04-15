@@ -39,14 +39,41 @@ x.multiply(34, 26)
 */
 
 
-func Float.multiply(x,y)
-{
-    var res = self * (x - y);
+    func digit(c) {
+           c == "0"
+        || c == "1"
+        || c == "2"
+        || c == "3"
+        || c == "4"
+        || c == "5"
+        || c == "6"
+        || c == "7"
+        || c == "8"
+        || c == "9"
+    }
 
-    if res < 0 {
-        return -res;
+    func parse(str)
+    {
+        var max = #str
+        var i = 0;
+        var res = "";
+
+        while i < max {
+            const c = str[i]
+
+            if c == "+" {
+                i += 2
+                continue
+            }
+            
+            if digit(c) {
+                res += c
+            }
+
+            i += 1
+        }
+
+        res
     }
-    else {
-        return res;
-    }
-}
+
+    parse("+7 (964) 506-11-12")
