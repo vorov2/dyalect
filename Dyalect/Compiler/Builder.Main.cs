@@ -141,16 +141,19 @@ namespace Dyalect.Compiler
 
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)
         {
-            //Build(node.Target, hints.Append(Push), ctx);
+            var push = hints.Remove(Pop).Append(Push);
+            Build(node.Target, push, ctx);
+            Build(node.Index, push, ctx);
 
-            //if (node.FieldName != null)
-            //    cw.Push(node.FieldName);
-            //else
-            //    Build(node.Index, hints.Append(Push), ctx);
+            AddLinePragma(node);
 
-            //AddLinePragma(node);
-            //cw.Get();
-            //PopIf(hints);
+            if (!hints.Has(Pop))
+            {
+                cw.Get();
+                PopIf(hints);
+            }
+            else
+                cw.Set();
         }
 
         private void Build(DImport node, Hints hints, CompilerContext ctx)
@@ -346,7 +349,7 @@ namespace Dyalect.Compiler
             var sv = GetVariable(node.Value, node.Location);
             AddLinePragma(node);
 
-            if (hints.Has(Push))
+            if (!hints.Has(Pop))
             {
                 if ((sv.Data & VarFlags.This) == VarFlags.This)
                     cw.This();
@@ -413,13 +416,13 @@ namespace Dyalect.Compiler
             if (node.AutoAssign != null)
                 EmitBinaryOp(node.AutoAssign.Value);
 
-            if (node.Target.NodeType != NodeType.Name)// && node.Target.NodeType != DysNodeType.Field)
+            if (node.Target.NodeType != NodeType.Name && node.Target.NodeType != NodeType.Index)
                 AddError(CompilerError.UnableAssignExpression, node.Target.Location, node.Target);
 
             if (hints.Has(Push))
                 cw.Dup();
 
-            Build(node.Target, hints.Remove(Push), ctx);
+            Build(node.Target, hints.Append(Pop), ctx);
         }
 
         private void Build(DBinding node, Hints hints, CompilerContext ctx)

@@ -52,8 +52,10 @@
             0,  //Call **dynamic
             0,  //NewFun
             0,  //NewFunV
-            -2, //Set
+            -2, //TraitS
             0,  //TraitG
+            -1, //Get
+            -3, //Set
             1,  //RunMod
             0,  //Type
             0,  //Tag

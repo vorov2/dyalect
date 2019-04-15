@@ -54,6 +54,8 @@
             1, //NewFunV
             1, //TraitS
             1, //TraitG
+            0, //Get
+            0, //Set
             1, //RunMod
             0, //Type
             1, //Tag

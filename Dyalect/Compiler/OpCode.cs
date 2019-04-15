@@ -53,6 +53,8 @@
         NewFunV,    //0
         TraitS,     //-2
         TraitG,     //-1
+        Get,        //-1
+        Set,        //-3
         RunMod,     //+1
         Type,       //0
         Tag,        //0

@@ -329,6 +329,18 @@ namespace Dyalect.Runtime
                             types[opd].SetTraitOp(left.AsString(), right, ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
+                    case OpCode.Get:
+                        left = evalStack.Pop();
+                        right = evalStack.Pop();
+                        evalStack.Push(left.GetItem(right, ctx));
+                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                        break;
+                    case OpCode.Set:
+                        left = evalStack.Pop();
+                        right = evalStack.Pop();
+                        right.SetItem(left, evalStack.Pop(), ctx);
+                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                        break;
                     case OpCode.RunMod:
                         ExecuteModule(unit.ModuleHandles[opd]);
                         evalStack.Push(new DyModule(Assembly.Units[opd], modules[opd]));
