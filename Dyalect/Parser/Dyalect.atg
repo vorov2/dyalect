@@ -74,13 +74,17 @@ PRODUCTIONS
             | charToken (. val = ParseChar(); .)
         ).
 
-    StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!" | "#" 
-        | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
+    //StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!" | "#" 
+    //    | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
 
-    Qualident<out Qualident q> =
-        (. q = new Qualident(); .)
-        identToken (. q.AddName(t.val); .) [ "." identToken  (. q.AddName(t.val); .) ].
-
+    Qualident<out string s1, out string s2, out string s3> =
+        (. s1 = null; s2 = null; s3 = null; .)
+        identToken (. s1 = t.val; .) 
+        [ 
+            "." identToken  (. s2 = t.val; .) 
+            [ "." identToken (. s3 = t.val; .) ]
+        ].
+        
     Import<out DNode node> =
         "import"
         (. var inc = new DImport(t); .)
@@ -147,13 +151,21 @@ PRODUCTIONS
         (
             "func"
             (. var f = new DFunctionDeclaration(t); .)
-            Qualident<out var q> (. f.Name = q.Local; .)
-            [ ( identToken | StandardOperators )
-                (.
-                    f.TypeName = q;
-                    f.Name = t.val;
-                .)  
-            ]
+            Qualident<out var s1, out var s2, out var s3>
+            (.
+                if (s2 == null && s3 == null)
+                    f.Name = s1;
+                else if (s3 == null)
+                {
+                    f.Name = s2;
+                    f.TypeName = new Qualident(s1);
+                }
+                else
+                {
+                    f.Name = s3;
+                    f.TypeName = new Qualident(s1, s2);
+                }
+            .)
             [ FunctionArguments<f> ]
             (
                   Block<out node>
@@ -444,6 +456,7 @@ PRODUCTIONS
                 )
                 |
                 (
+                    (. if (la.AfterEol) return; .)
                     "["
                         (. var idx = new DIndexer(t) { Target = node }; .)
                         Literal<out node>

@@ -180,9 +180,24 @@ namespace Dyalect.Parser
             return false;
         }
 
-        private bool IsConstructor()
+        private bool IsTraitFunction()
         {
-            return la.kind == _dotToken;
+            if (la.kind != _squareLeftToken)
+                return false;
+
+            scanner.ResetPeek();
+            var x = la;
+
+            while (x.kind != _squareRightToken)
+            {
+                if (x.kind != _squareLeftToken && x.kind != _identToken && x.kind != _dotToken)
+                    return false;
+
+                x = scanner.Peek();
+            }
+
+            x = scanner.Peek();
+            return x.kind == _funcToken;
         }
 
         private string ParseString()

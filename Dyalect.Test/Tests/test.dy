@@ -38,6 +38,16 @@ var x = 12.0
 x.multiply(34, 26)
 */
 
-var t = (1,2)
-t[1] = "Hello!"
-t
+var arr = [Float] 
+
+func multiply(x,y)
+{
+    var res = self * (x - y);
+
+    if res < 0 {
+        return -res;
+    }
+    else {
+        return res;
+    }
+}

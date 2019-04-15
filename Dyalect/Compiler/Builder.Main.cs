@@ -693,12 +693,11 @@ namespace Dyalect.Compiler
                     return name;
                 case NodeType.Trait:
                     return ((DTrait)node).Name;
-                //case NodeType.Index:
-                    //var idx = (DIndexer)node;
-                    //if (idx.FieldName != null)
-                    //    return idx.FieldName;
-                    //else
-                        //return GetExpressionName(idx.Index);
+                case NodeType.Index:
+                    var idx = (DIndexer)node;
+                    return GetExpressionName(idx.Index);
+                case NodeType.String:
+                    return ((DStringLiteral)node).Value;
                 default:
                     AddError(CompilerError.ExpressionNoName, node.Location);
                     return "";

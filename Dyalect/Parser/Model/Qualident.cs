@@ -2,25 +2,19 @@
 {
     public sealed class Qualident
     {
-        internal Qualident()
+        internal Qualident(string local)
         {
-
+            Local = local;
         }
 
-        public string Parent { get; private set; }
-
-        public string Local { get; private set; }
-
-        internal void AddName(string name)
+        internal Qualident(string local, string parent) : this(local)
         {
-            if (Parent == null && Local == null)
-                Local = name;
-            else if (Local != null)
-            {
-                Parent = Local;
-                Local = name;
-            }
+            Parent = parent;
         }
+
+        public string Parent { get; }
+
+        public string Local { get; }
 
         public override string ToString() => Parent == null ? Local : Parent + "." + Local;
     }

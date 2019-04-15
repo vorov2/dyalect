@@ -1,6 +1,6 @@
 ﻿func whileTest1()
 {
-    var n = 100;
+    var n = 100
     var x = while n > 0 {
         if n == 33 {
             break n
@@ -12,7 +12,7 @@
 
 func whileTest2()
 {
-    var n = 100;
+    var n = 100
     var x = while n > 0 {
         if n == 33 {
             break
@@ -27,8 +27,8 @@ func whileTest2()
 
 func fizzbuzzTest() 
 {
-    var n = 1;
-    var acc = "";
+    var n = 1
+    var acc = ""
     while n < 11 {
         if n % 15 == 0 {
             acc = acc + "fizzbuzz"
@@ -41,12 +41,12 @@ func fizzbuzzTest()
         }
         n = n + 1
     }
-    return "12fizz4buzzfizz78fizzbuzz"
+    acc
 }
 
 func iterTest()
 {
-    var acc = 0;
+    var acc = 0
     func iter(n) {
         if n == 0 {
             0
@@ -55,8 +55,8 @@ func iterTest()
             iter(n - 1)
         }
     }
-    iter(10);
-    return acc
+    iter(10)
+    acc
 }
 
 func factTest() 
@@ -69,7 +69,7 @@ func factTest()
             n * fact(n - 1)
         }
     }
-    return fact(20)
+    fact(20)
 }
 
 func powerTest()
@@ -85,26 +85,24 @@ func powerTest()
             base * pow(base, exponent - 1)
         }
     }
-    return pow(10, 3)
+    pow(10, 3)
 }
 
 func binaryConversionTest()
 {
-    var acc = "";
-
-    func bin(num)
-    {
+    var acc = ""
+    func bin(num) {
         if num != 0 {
-            const bin = (num % 2) + 10 * bin(num / 2);
-            acc += bin;
-            return 0;
+            const bin = (num % 2) + 10 * bin(num / 2)
+            acc += bin
+            0
         }
         else {
             0
         } 
     }
-    bin(157);
-    return acc
+    bin(157)
+    acc
 }
 
 func fibTest()
@@ -116,5 +114,5 @@ func fibTest()
         }
         fib(n - 1) + fib(n - 2)
     }
-    return fib(11)
+    fib(11)
 }
