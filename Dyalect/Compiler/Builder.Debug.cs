@@ -19,7 +19,7 @@ namespace Dyalect.Compiler
         private void StartFun(string name, string[] pars, int parCount)
         {
             cw.StartFrame(parCount);
-            pdb.StartFunction(name ?? string.Empty, cw.Offset, pars);
+            pdb.StartFunction(name, cw.Offset, pars);
         }
 
         //Вызывается, когда компиляция функции завершается, чтобы создать

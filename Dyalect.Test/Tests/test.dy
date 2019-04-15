@@ -38,9 +38,8 @@ var x = 12.0
 x.multiply(34, 26)
 */
 
-var arr = [Float] 
 
-func multiply(x,y)
+func Float.multiply(x,y)
 {
     var res = self * (x - y);
 

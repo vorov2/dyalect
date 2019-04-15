@@ -177,6 +177,9 @@ PRODUCTIONS
             .)
         ).
 
+    FunctionArgument<DFunctionDeclaration node> =
+        identToken (. node.Parameters.Add(t.val); .).
+
     FunctionArguments<DFunctionDeclaration node> =
         "("
             [
@@ -269,7 +272,27 @@ PRODUCTIONS
 
     Continue<out DNode node> = "continue" (. node = new DContinue(t); .).
 
-    SimpleExpr<out DNode node> = Assignment<out node>.
+    SimpleExpr<out DNode node> = 
+        (. node = null; .)
+        (
+              IF (IsFunction()) FunctionExpr<out node>
+            | Assignment<out node>
+        ).
+
+    FunctionExpr<out DNode node> =
+        (. 
+            var f = new DFunctionDeclaration(t);
+            node = f;
+        .)
+        (
+            (
+                
+                  FunctionArgument<f>
+                | FunctionArguments<f>
+            )
+            "=>" Expr<out var exp>
+            (. f.Body = exp; .)
+        ).
 
     Assignment<out DNode node> =
         Or<out node>

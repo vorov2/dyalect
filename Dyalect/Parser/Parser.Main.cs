@@ -179,6 +179,38 @@ namespace Dyalect.Parser
 
             return false;
         }
+        private bool IsFunction()
+        {
+            if (la.kind != _parenLeftToken && la.kind != _identToken)
+                return false;
+
+            scanner.ResetPeek();
+            var x = la;
+
+            if (la.kind == _identToken)
+            {
+                x = scanner.Peek();
+                return x.kind == _arrowToken;
+            }
+
+            var balance = 0;
+
+            while (x.kind != _arrowToken)
+            {
+                if (x.kind == _parenLeftToken)
+                    balance++;
+                else if (x.kind == _parenRightToken)
+                {
+                    balance--;
+                    if (balance == 0)
+                        return scanner.Peek().kind == _arrowToken;
+                }
+
+                x = scanner.Peek();
+            }
+
+            return false;
+        }
 
         private bool IsTraitFunction()
         {

@@ -10,7 +10,7 @@ namespace Dyalect.Runtime.Types
 
         internal const int EXT_HANDLE = -1;
         internal const int OVL_HANDLE = -2;
-        private const string DEF_NAME = "<function>";
+        private const string DEF_NAME = "<func>";
         private readonly DyMachine vm;
         internal FastList<DyObject[]> Captures;
 
@@ -194,7 +194,7 @@ namespace Dyalect.Runtime.Types
                 var dr = new DebugReader(syms);
                 var fs = dr.GetFunSymByHandle(Handle);
 
-                if (fs != null && fs.Name != null)
+                if (fs != null)
                     return fs;
             }
 
