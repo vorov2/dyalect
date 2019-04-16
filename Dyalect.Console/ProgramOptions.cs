@@ -1,4 +1,4 @@
-﻿using Dyalect.Command;
+﻿using Dyalect.Util;
 
 namespace Dyalect
 {

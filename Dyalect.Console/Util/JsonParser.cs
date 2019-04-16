@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace Dyalect
+namespace Dyalect.Util
 {
     public sealed class JsonParser
     {

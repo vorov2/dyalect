@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Dyalect.Command
+namespace Dyalect.Util
 {
     public static class CommandLineReader
     {
         public static T Read<T>(string[] args) where T : new()
         {
-            var options = CommandLineParser.Parse(args);
+            var options = Parse(args);
             var bag = ProcessOptionBag<T>(options);
 
-            if (options.Count > 0 && options[0].Key != null)
-                throw new CommandException($"Unknown switch -{options[0].Key}.");
+            if (options.Count > 0 && options[0].key != null)
+                throw new DyaException($"Unknown switch -{options[0].value}.");
 
             return bag;
         }
 
-        private static T ProcessOptionBag<T>(List<Option> options) where T : new()
+        private static T ProcessOptionBag<T>(List<(string key,string value)> options) where T : new()
         {
             var bag = new T();
 
@@ -34,10 +34,10 @@ namespace Dyalect.Command
 
                 if (attr.Names == null || attr.Names.Length == 0 || (attr.Names.Length == 1 && attr.Names[0] == null))
                 {
-                    var opt = options.FirstOrDefault(o => o.Key == null);
+                    var opt = options.FirstOrDefault(o => o.key == null);
                     key = "<default>";
 
-                    if (opt != null)
+                    if (opt.value != null)
                     {
                         value = ConvertValue(opt, pi);
                         options.Remove(opt);
@@ -45,24 +45,24 @@ namespace Dyalect.Command
                 }
                 else
                 {
-                    var opts = options.Where(o => attr.Names.Contains(o.Key)).ToArray();
+                    var opts = options.Where(o => attr.Names.Contains(o.key)).ToArray();
 
                     if (opts.Length > 1)
                     {
                         if (!pi.PropertyType.IsArray)
-                            throw KeyNotArray(opts[0].Key);
+                            throw KeyNotArray(opts[0].key);
 
                         foreach (var o in opts)
                             options.Remove(o);
 
-                        value = CreateArray(pi, opts.Select(o => o.Value).ToArray());
-                        key = opts[0].Key;
+                        value = CreateArray(pi, opts.Select(o => o.value).ToArray());
+                        key = opts[0].key;
                     }
                     else if (opts.Length > 0)
                     {
                         options.Remove(opts[0]);
                         value = ConvertValue(opts[0], pi);
-                        key = opts[0].Key;
+                        key = opts[0].key;
                     }
                 }
 
@@ -82,9 +82,9 @@ namespace Dyalect.Command
             return bag;
         }
 
-        private static object ConvertValue(Option opt, PropertyInfo pi)
+        private static object ConvertValue((string key,string value) opt, PropertyInfo pi)
         {
-            var v = opt.Value;
+            var v = opt.value;
 
             if (pi.PropertyType.IsArray)
                 return CreateArray(pi, v);
@@ -97,7 +97,7 @@ namespace Dyalect.Command
             else if (pi.PropertyType.IsEnum && Enum.TryParse(pi.PropertyType, v, true, out var en))
                 return en;
             else
-                throw InvalidKeyValue(opt.Key);
+                throw InvalidKeyValue(opt.key);
         }
 
         private static Array CreateArray(PropertyInfo pi, params object[] elements)
@@ -110,8 +110,52 @@ namespace Dyalect.Command
             return arr;
         }
 
-        private static Exception InvalidKeyValue(string key) => new CommandException($"Invalid value for the command line switch -{key}.");
+        private static Exception InvalidKeyValue(string key) => new DyaException($"Invalid value for the command line switch -{key}.");
 
-        private static Exception KeyNotArray(string key) => new CommandException($"Command line switch -{key} doesn't support multiple values.");
+        private static Exception KeyNotArray(string key) => new DyaException($"Command line switch -{key} doesn't support multiple values.");
+
+        private static List<(string key,string value)> Parse(string[] args)
+        {
+            var options = new List<(string, string)>();
+            string opt = null;
+            string def = null;
+
+            void AddOption(string key, string val) => options.Add((key, val?.Trim('"')));
+
+            for (var i = 0; i < args.Length; i++)
+            {
+                var str = args[i].Trim(' ');
+                var iswitch = str[0] == '-';
+
+                if (!iswitch && opt == null)
+                {
+                    if (def != null)
+                        throw new DyaException($"A default command line argument is already specifid: {def}");
+
+                    AddOption(null, def = str);
+                    continue;
+                }
+
+                if (str.Length > 0 && iswitch)
+                {
+                    if (opt != null)
+                        AddOption(opt, null);
+                    opt = str.Substring(1);
+                    continue;
+                }
+
+                if (opt != null)
+                {
+                    AddOption(opt, str);
+                    opt = null;
+                    continue;
+                }
+            }
+
+            if (opt != null)
+                options.Add((opt, null));
+
+            return options;
+        }
     }
 }

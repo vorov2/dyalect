@@ -1,18 +1,18 @@
-﻿using Dyalect.Command;
-using Dyalect.Compiler;
+﻿using Dyalect.Compiler;
 using Dyalect.Linker;
 using Dyalect.Parser;
-using Dyalect.Parser.Model;
 using Dyalect.Runtime;
+using Dyalect.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Dyalect
 {
     public static class Program
     {
+        class Dya { }
+
         private const int ERR = -1;
         private const int OK = 0;
         private static ProgramOptions options;
@@ -33,7 +33,7 @@ namespace Dyalect
 
             Printer.Clear();
             Printer.Header(
-                $"Dya (Dyalect Interactive Console). Built {File.GetLastWriteTime(GetPathByType<Option>())}",
+                $"Dya (Dyalect Interactive Console). Built {File.GetLastWriteTime(GetPathByType<Dya>())}",
                 $"Dya version {Meta.Version}"
                 );
             Printer.LineFeed();
@@ -121,7 +121,7 @@ namespace Dyalect
             {
                 options = CommandLineReader.Read<ProgramOptions>(args);
             }
-            catch (CommandException ex)
+            catch (DyaException ex)
             {
                 Config.SetDefault();
                 Printer.Error(ex.Message);

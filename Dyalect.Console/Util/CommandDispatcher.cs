@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Dyalect.Command
+namespace Dyalect.Util
 {
     public static class CommandDispatcher
     {

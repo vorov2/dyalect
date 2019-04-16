@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dyalect.Command
+namespace Dyalect.Util
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public sealed class BindingAttribute : Attribute

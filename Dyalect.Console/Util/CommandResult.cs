@@ -1,4 +1,4 @@
-﻿namespace Dyalect.Command
+﻿namespace Dyalect.Util
 {
     public enum CommandResult
     {
