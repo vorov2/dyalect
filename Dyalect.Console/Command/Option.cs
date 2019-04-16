@@ -2,20 +2,20 @@
 {
     public sealed class Option
     {
-        public Option(string key) : this(key, true)
+        public Option(string key) : this(key, null)
         {
 
         }
 
-        public Option(string key, object value)
+        public Option(string key, string value)
         {
-            Key = key ?? "";
-            Value = value ?? new object();
+            Key = key;
+            Value = value;
         }
 
         public string Key { get; }
 
-        public object Value { get; }
+        public string Value { get; }
 
         public override string ToString() => $"-{Key} {Value}";
 

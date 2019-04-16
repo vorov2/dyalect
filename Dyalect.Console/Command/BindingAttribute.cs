@@ -3,7 +3,7 @@
 namespace Dyalect.Command
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public sealed class BindingAttribute : Attribute, IBindingInfo
+    public sealed class BindingAttribute : Attribute
     {
         public BindingAttribute(params string[] names)
         {

@@ -15,11 +15,11 @@ namespace Dyalect
     {
         private const int ERR = -1;
         private const int OK = 0;
-        private static OptionBag options;
+        private static ProgramOptions options;
 
         public static int Main(string[] args)
         {
-            if (!Prepare())
+            if (!Prepare(args))
                 return ERR;
 
             var buildOptions = new BuilderOptions
@@ -28,7 +28,7 @@ namespace Dyalect
                 NoLangModule = options.NoLang
             };
 
-            var lookup = FileLookup.Create(Path.GetDirectoryName(options.StartupPath), options.Paths);
+            var lookup = FileLookup.Create(Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]), options.Paths);
             var linker = new DyIncrementalLinker(lookup, buildOptions);
 
             Printer.Clear();
@@ -38,7 +38,7 @@ namespace Dyalect
                 );
             Printer.LineFeed();
 
-            if (options.DefaultArgument != null)
+            if (options.FileName != null)
                 return RunAndBye(linker) ? OK : ERR;
             else
             {
@@ -115,11 +115,11 @@ namespace Dyalect
                 return null;
         }
 
-        private static bool Prepare()
+        private static bool Prepare(string[] args)
         {
             try
             {
-                options = OptionDispatcher.Dispatch<OptionBag>();
+                options = CommandLineReader.Read<ProgramOptions>(args);
             }
             catch (CommandException ex)
             {
@@ -133,7 +133,7 @@ namespace Dyalect
 
         private static bool RunAndBye(DyLinker linker)
         {
-            var made = linker.Make(SourceBuffer.FromFile(options.DefaultArgument));
+            var made = linker.Make(SourceBuffer.FromFile(options.FileName));
 
             if (!made.Success)
             {
@@ -173,10 +173,10 @@ namespace Dyalect
             return Uri.UnescapeDataString(uri.Path);
         }
 
-        private static bool Initialize(OptionBag opts)
+        private static bool Initialize(ProgramOptions opts)
         {
             const string FILENAME = "config.json";
-            var path = Path.Combine(Path.GetDirectoryName(opts.StartupPath), FILENAME);
+            var path = Path.Combine(Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]), FILENAME);
 
             if (!File.Exists(path))
             {

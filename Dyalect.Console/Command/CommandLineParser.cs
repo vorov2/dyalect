@@ -1,53 +1,51 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace Dyalect.Command
 {
     public static class CommandLineParser
     {
-        public static CommandLine Parse()
+        public static List<Option> Parse(string[] args)
         {
-            var args = Environment.GetCommandLineArgs();
-            var cl = new CommandLine();
+            var options = new List<Option>();
             string opt = null;
+            string def = null;
+
+            void AddOption(string key, string val) => options.Add(new Option(key, val?.Trim('"')));
 
             for (var i = 0; i < args.Length; i++)
             {
                 var str = args[i].Trim(' ');
+                var iswitch = str[0] == '-';
 
-                if (i == 0)
+                if (!iswitch && opt == null)
                 {
-                    cl.StartupPath = str;
+                    if (def != null)
+                        throw new CommandException($"A default command line argument is already specifid: {def}");
+
+                    AddOption(null, def = str);
                     continue;
                 }
 
-                if (str.Length > 0 && str[0] == '-')
+                if (str.Length > 0 && iswitch)
                 {
                     if (opt != null)
-                        cl.Options.Add(new Option(opt));
+                        AddOption(opt, null);
                     opt = str.Substring(1);
                     continue;
                 }
 
                 if (opt != null)
                 {
-                    cl.Options.Add(new Option(opt,
-                          int.TryParse(str, out var i4) ? i4
-                        : bool.TryParse(str, out var i1) ? (object)i1
-                        : str.Trim('"')));
+                    AddOption(opt, str);
                     opt = null;
                     continue;
                 }
-
-                if (cl.DefaultArgument != null)
-                    throw new CommandException("Аргумент командной строки по умолчанию уже задан.");
-
-                cl.DefaultArgument = str.Trim('"');
             }
 
             if (opt != null)
-                cl.Options.Add(new Option(opt));
+                options.Add(new Option(opt));
 
-            return cl;
+            return options;
         }
     }
 }

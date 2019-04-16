@@ -2,7 +2,7 @@
   "profiles": {
     "Dyalect.Console": {
       "commandName": "Project",
-      "commandLineArgs": "-debug -path \"c:\\temp\" -path \"c:\\repos\\source\" -nolang"
+      "commandLineArgs": "\"C:\\repos\\source\\Dyalect\\Main\\Dyalect.Console\\config.json\" -debug -path \"c:\\temp\" -path \"c:\\repos\\source\" -nolang"
     }
   }
 }
