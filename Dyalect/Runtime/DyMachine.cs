@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using Dyalect.Linker;
 using Dyalect.Runtime.Types;
 using Dyalect.Strings;
@@ -26,6 +27,7 @@ namespace Dyalect.Runtime
 
         public ExecutionResult Execute()
         {
+            ExecutionContext.Error = null;
             var res = ExecuteModule(0);
             return ExecutionResult.Fetch(0, res);
         }
@@ -423,26 +425,26 @@ namespace Dyalect.Runtime
             }
         }
 
-        private static Stack<int> Dump(int offset, CallStack callStack)
+        private static Stack<StackPoint> Dump(CallStack callStack)
         {
-            var st = new Stack<int>();
+            var st = new Stack<StackPoint>();
 
             for (var i = 0; i < callStack.Count; i++)
             {
                 var cm = callStack[i];
-                st.Push(cm.ReturnAddress);
+                st.Push(new StackPoint(cm.ReturnAddress, cm.Function.UnitHandle));
             }
 
-            st.Push(offset);
             return st;
         }
 
         private DyCodeException CreateException(DyError err, int offset, int moduleHandle, ExecutionContext ctx, Exception ex = null)
         {
-            var dump = Dump(offset, ctx.CallStack);
-            var deb = new Debug.DyDebugger(Assembly, moduleHandle);
-            var cs = deb.BuildCallStack(offset, dump);
-            return new DyCodeException(err, cs.File, cs.Line, cs.Column, cs, ex);
+            var dump = Dump(ctx.CallStack);
+            dump.Push(new StackPoint(offset, moduleHandle));
+            var deb = new DyDebugger(Assembly);
+            var cs = deb.BuildCallStack(dump);
+            return new DyCodeException(err, cs, ex);
         }
     }
 }

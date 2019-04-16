@@ -1,0 +1,15 @@
+﻿(
+    "options": nil,
+    "colors": (
+        "Background": "Gray",
+        "Foreground": "Black",
+        "Prefix": "DarkBlue",
+        "Error": "Red",
+        "Warning": "Yellow",
+        "Info": "DarkGray",
+        "Header": "DarkMagenta",
+        "Subheader": "DarkGreen",
+        "Output": "Black",
+        "SupplementaryOutput": "DarkGray"
+    )
+)

@@ -10,19 +10,19 @@ namespace Dyalect.Runtime
     {
         None,
 
-        UserCode,
+        UserCode = 601,
 
-        NotFunction,
+        NotFunction = 602,
 
-        ExternalFunctionFailure,
+        ExternalFunctionFailure = 603,
 
-        OperationNotSupported,
+        OperationNotSupported = 604,
 
-        IndexOutOfRange,
+        IndexOutOfRange = 605,
 
-        IndexInvalidType,
+        IndexInvalidType = 606,
 
-        DivideByZero
+        DivideByZero = 607
     }
 
     public sealed class DyError

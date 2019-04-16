@@ -13,7 +13,7 @@
       <ApplicationIcon />
       <OutputType>Exe</OutputType>
       <StartupObject />
-      <AssemblyName>dya</AssemblyName>
+      <AssemblyName>Dyalect.Console</AssemblyName>
       <RootNamespace>Dyalect</RootNamespace>
   </PropertyGroup>
 
@@ -32,6 +32,15 @@
   <ItemGroup>
     <ProjectReference Include="..\Dyalect.Library\Dyalect.Library.csproj" />
     <ProjectReference Include="..\Dyalect\Dyalect.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="config.dy">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="dya.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

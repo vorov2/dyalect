@@ -5,13 +5,9 @@ namespace Dyalect.Runtime
 {
     public sealed class DyCodeException : DyRuntimeException
     {
-        public DyCodeException(DyError err, string file, int line, int column, CallStackTrace cs,
-            Exception innerException) : base(null, innerException)
+        public DyCodeException(DyError err, CallStackTrace cs, Exception innerException) : base(null, innerException)
         {
             Error = err;
-            File = file;
-            Line = line;
-            Column = column;
             CallStack = cs;
         }
 
@@ -19,23 +15,12 @@ namespace Dyalect.Runtime
 
         public DyError Error { get; private set; }
 
-        public string File { get; private set; }
-
-        public int Line { get; private set; }
-
-        public int Column { get; private set; }
-
         public CallStackTrace CallStack { get; private set; }
 
         public override string ToString()
         {
             var errCode = ((int)Error.Code).ToString().PadLeft(3, '0');
-            var baseStr = $"Runtime exception Dy{errCode}: {Message}\nLocation: {File}, line {Line}, column {Column}.";
-
-            if (CallStack.FrameCount > 0)
-                baseStr += $"\nStack trace:\n{CallStack}";
-
-            return baseStr;
+            return $"Runtime exception Dy{errCode}: {Message}\nStack trace:\n{CallStack}";
         }
     }
 }

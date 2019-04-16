@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Dyalect.Command
+﻿namespace Dyalect.Command
 {
     public sealed class OptionBag : IOptionBag
     {
-        [Binding("debug", "Производить компиляцию в режиме отладки.")]
+        private const string COMPILER = "Compiler settings";
+        private const string LINKER = "Linker settings";
+        private const string GENERAL = "General settings";
+
+        [Binding("debug", Help = "Compile in debug mode.", Category = COMPILER)]
         public bool Debug { get; set; }
 
-        [Binding("nolang", "Отключить неявный импорт модуля lang, содержащего базовые функции и примитивы.")]
+        [Binding("nolang", Help = "Do not import \"lang\" module that includes basic primitives and operations.", Category = COMPILER)]
         public bool NoLang { get; set; }
 
-        [Binding("path", "Путь, по которому линковщик будет искать подключаемые модули. Допускается указание этого ключа несколько раз.")]
+        [Binding("path", Help = "A path for linker where to look referenced modules. You can specify this switch multiple times.", Category = LINKER)]
         public string[] Paths { get; set; }
 
         public string StartupPath { get; set; }

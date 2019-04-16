@@ -2,14 +2,14 @@
 {
     public struct StackPoint
     {
-        internal StackPoint(int breakAddress, int moduleHandle)
+        internal StackPoint(int breakAddress, int unitHandle)
         {
             BreakAddress = breakAddress;
-            ModuleHandle = moduleHandle;
+            UnitHandle = unitHandle;
         }
 
         internal readonly int BreakAddress;
 
-        internal readonly int ModuleHandle;
+        internal readonly int UnitHandle;
     }
 }

@@ -8,13 +8,12 @@ namespace Dyalect.Debug
     {
         private const string FUNC = "<func>";
 
-        public DyDebugger(UnitComposition asm, int moduleHandle)
+        public DyDebugger(UnitComposition asm)
         {
             Composition = asm;
-            ModuleHandle = moduleHandle;
 
-            if (CodeUnit.Symbols.Lines.Count > 0)
-                Breakpoints = new List<Breakpoint>();
+            //if (CodeUnit.Symbols.Lines.Count > 0)
+            //    Breakpoints = new List<Breakpoint>();
         }
 
         //TODO: Debug Execution
@@ -25,64 +24,68 @@ namespace Dyalect.Debug
         //    return vm.Execute();
         //}
 
-        public CallStackTrace BuildCallStack(int currentOffset, Stack<int> callChain)
+        public CallStackTrace BuildCallStack(Stack<StackPoint> callChain)
         {
-            var syms = new DebugReader(CodeUnit.Symbols);
             var frames = new List<CallFrame>();
-            var lp = syms.FindLineSym(currentOffset);
-            var retval = new CallStackTrace(
-                    CodeUnit.FileName,
-                    lp != null ? lp.Line : 0,
-                    lp != null ? lp.Column : 0,
-                    frames
-                );
+            var retval = new CallStackTrace(frames);
 
             if (callChain == null || callChain.Count == 0)
                 return retval;
 
             do
             {
-                var mem = callChain.Pop() - 1;
-                syms = new DebugReader(CodeUnit.Symbols);
-                var funSym = syms.FindFunSym(mem);
-                var line = syms != null ? syms.FindLineSym(mem) : null;
-                frames.Add(new CallFrame(funSym == null,
-                    CodeUnit.FileName,
-                    funSym != null ? (funSym?.Name ?? FUNC) : "global",
-                    mem, line));
+                var mem = callChain.Pop();
+                var offset = mem.BreakAddress - 1;
+                var unit = Composition.Units[mem.UnitHandle];
+                var syms = new DebugReader(unit.Symbols);
+                var funSym = syms.FindFunSym(offset);
+                var line = syms?.FindLineSym(offset);
+                string codeBlockName = null;
+
+                if (funSym != null)
+                {
+                    codeBlockName = funSym.Name ?? FUNC;
+
+                    if (funSym.Parameters != null)
+                        codeBlockName += "(" + string.Join(",", funSym.Parameters) + ")";
+                    else
+                        codeBlockName += "(...)";
+                }
+
+                frames.Add(new CallFrame(
+                    moduleName: unit.FileName,
+                    codeBlockName: codeBlockName,
+                    offset: offset, 
+                    lineSym: line));
             }
             while (callChain.Count > 0);
 
             return retval;
         }
 
-        public bool AddBreakpoint(Breakpoint bp)
-        {
-            if (Breakpoints == null || !ResolveBreakpoint(bp))
-                return false;
+        //public bool AddBreakpoint(Breakpoint bp)
+        //{
+        //    if (Breakpoints == null || !ResolveBreakpoint(bp))
+        //        return false;
 
-            Breakpoints.Add(bp);
-            return true;
-        }
+        //    Breakpoints.Add(bp);
+        //    return true;
+        //}
 
-        public bool ResolveBreakpoint(Breakpoint bp)
-        {
-            var dr = new DebugReader(CodeUnit.Symbols);
-            var sym = dr.FindClosestLineSym(bp.Line, bp.Column);
+        //public bool ResolveBreakpoint(Breakpoint bp)
+        //{
+        //    var dr = new DebugReader(CodeUnit.Symbols);
+        //    var sym = dr.FindClosestLineSym(bp.Line, bp.Column);
 
-            if (sym == null)
-                return false;
+        //    if (sym == null)
+        //        return false;
 
-            bp.Offset = sym.Offset;
-            return true;
-        }
+        //    bp.Offset = sym.Offset;
+        //    return true;
+        //}
 
-        internal List<Breakpoint> Breakpoints { get; }
+        //internal List<Breakpoint> Breakpoints { get; }
 
         internal UnitComposition Composition { get; }
-
-        internal int ModuleHandle { get; }
-
-        internal Unit CodeUnit => Composition.Units[ModuleHandle];
     }
 }

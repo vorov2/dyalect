@@ -2,19 +2,25 @@
 using Dyalect.Compiler;
 using Dyalect.Linker;
 using Dyalect.Parser;
+using Dyalect.Parser.Model;
 using Dyalect.Runtime;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Dyalect
 {
     public static class Program
     {
+        private const int ERR = -1;
+        private const int OK = 0;
         private static OptionBag options;
 
-        static void Main(string[] args)
+        public static int Main(string[] args)
         {
-            options = OptionDispatcher.Dispatch<OptionBag>();
+            if (!Prepare())
+                return ERR;
 
             var buildOptions = new BuilderOptions
             {
@@ -25,36 +31,45 @@ namespace Dyalect
             var lookup = FileLookup.Create(Path.GetDirectoryName(options.StartupPath), options.Paths);
             var linker = new DyIncrementalLinker(lookup, buildOptions);
 
+            Printer.Clear();
+            Printer.Header(
+                $"Dya (Dyalect Interactive Console). Built {File.GetLastWriteTime(GetPathByType<Option>())}",
+                $"Dya version {Meta.Version}"
+                );
+            Printer.LineFeed();
+
             if (options.DefaultArgument != null)
-            {
-                var made = linker.Make(SourceBuffer.FromFile(options.DefaultArgument));
-
-                if (!made.Success)
-                {
-                    foreach (var m in made.Messages)
-                        Console.WriteLine(m);
-                    return;
-                }
-
-                var dym = new DyMachine(made.Value);
-                var res = dym.Execute();
-                Console.WriteLine(res.Value);
-            }
+                return RunAndBye(linker) ? OK : ERR;
             else
             {
                 DyMachine dym = null;
 
                 while (true)
                 {
-                    Console.Write("dy>");
+                    Printer.Prefix("dy>");
 
                     var line = Console.ReadLine();
+                    var cm = TryRunCommand(line);
+
+                    if (cm != null)
+                    {
+                        if (cm.Value == CommandResult.Reset)
+                        {
+                            linker = new DyIncrementalLinker(lookup, buildOptions);
+                            dym = null;
+                            Printer.Output("Virtual machine is reseted.");
+                        }
+                        else if (cm.Value == CommandResult.Exit)
+                            break;
+
+                        continue;
+                    }
+
                     var made = linker.Make(SourceBuffer.FromString(line));
 
                     if (!made.Success)
                     {
-                        foreach (var m in made.Messages)
-                            Console.WriteLine(m);
+                        PrintErrors(made.Messages);
                         continue;
                     }
 
@@ -64,17 +79,139 @@ namespace Dyalect
                     try
                     {
                         var res = dym.Execute();
-                        Console.WriteLine(res.Value);
+                        Printer.Output(res.Value.ToString());
                     }
                     catch (DyCodeException ex)
                     {
-                        Console.WriteLine(ex.ToString());
+                        Printer.Error(ex.ToString());
                     }
                     catch (DyRuntimeException ex)
                     {
-                        Console.WriteLine(ex.Message);
+                        Printer.Error(ex.Message);
                     }
                 }
+            }
+
+            return OK;
+        }
+
+        private static CommandResult? TryRunCommand(string cmd)
+        {
+            if (cmd.Length > 1 && cmd[0] == '.')
+            {
+                var command = cmd.Substring(1).Trim();
+                int idx;
+                object argument = null;
+
+                if ((idx = command.IndexOf(' ')) != -1)
+                {
+                    command = command.Substring(0, idx);
+                    argument = command.Substring(idx + 1, command.Length - idx - 1);
+                }
+
+                return CommandDispatcher.Dispatch(command, argument);
+            }
+            else
+                return null;
+        }
+
+        private static bool Prepare()
+        {
+            try
+            {
+                options = OptionDispatcher.Dispatch<OptionBag>();
+            }
+            catch (CommandException ex)
+            {
+                Config.SetDefault();
+                Printer.Error(ex.Message);
+                return false;
+            }
+
+            return Initialize(options);
+        }
+
+        private static bool RunAndBye(DyLinker linker)
+        {
+            var made = linker.Make(SourceBuffer.FromFile(options.DefaultArgument));
+
+            if (!made.Success)
+            {
+                PrintErrors(made.Messages);
+                return false;
+            }
+
+            var dym = new DyMachine(made.Value);
+            var res = dym.Execute();
+            Printer.Output(res.Value.ToString());
+            return true;
+        }
+
+        private static void PrintErrors(IEnumerable<BuildMessage> messages)
+        {
+            foreach (var m in messages)
+            {
+                if (m.Type == BuildMessageType.Error)
+                    Printer.Error(m.ToString());
+                else if (m.Type == BuildMessageType.Warning)
+                    Printer.Warning(m.ToString());
+                else
+                    Printer.Information(m.ToString());
+            }
+        }
+
+        private static string GetPathByType<T>()
+        {
+            var codeBase = typeof(T).Assembly.CodeBase;
+            var uri = new UriBuilder(codeBase);
+            return Uri.UnescapeDataString(uri.Path);
+        }
+
+        private static bool Initialize(OptionBag opts)
+        {
+            var path = Path.Combine(Path.GetDirectoryName(opts.StartupPath), "config.dy");
+
+            if (!File.Exists(path))
+            {
+                Config.SetDefault();
+                Printer.Error("Config file \"config.dy\" not found.");
+                return false;
+            }
+
+            try
+            {
+                var link = new DyLinker(FileLookup.Create(opts.StartupPath), BuilderOptions.Default);
+                var made = link.Make(SourceBuffer.FromFile(path));
+
+                if (!made.Success)
+                {
+                    PrintErrors(made.Messages);
+                    Printer.LineFeed();
+                    return false;
+                }
+
+                var res = new DyMachine(made.Value).Execute();
+
+                if (!(res.Value.AsObject() is IDictionary<string, object> dict))
+                {
+                    Printer.Error($"Invalid configuration file format.");
+                    return false;
+                }
+
+                if (!dict.TryGetValue("colors", out var colorObj) || !(colorObj is IDictionary<string, object> colors))
+                {
+                    Printer.Error("Missing console color information from configuration file.");
+                    return false;
+                }
+
+                Config.Read(colors);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Config.SetDefault();
+                Printer.Error($"Error reading configuration file: {ex.Message}");
+                return false;
             }
         }
     }

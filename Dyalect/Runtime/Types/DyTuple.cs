@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
@@ -13,7 +14,28 @@ namespace Dyalect.Runtime.Types
             Values = values;
         }
 
-        public override object AsObject() => Values;
+        public override object AsObject() => ToDictionary();
+
+        public IDictionary<string, object> ToDictionary()
+        {
+            var dict = new Dictionary<string, object>();
+
+            for (var i = 0; i < Keys.Length; i++)
+            {
+                var k = Keys[i] ?? Guid.NewGuid().ToString();
+
+                try
+                {
+                    dict.Add(k, Values[i].AsObject());
+                }
+                catch
+                {
+                    dict.Add(Guid.NewGuid().ToString(), Values[i].AsObject());
+                }
+            }
+
+            return dict;
+        }
 
         protected override bool TestEquality(DyObject obj)
         {

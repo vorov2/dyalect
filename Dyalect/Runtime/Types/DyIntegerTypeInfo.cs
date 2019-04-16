@@ -77,7 +77,14 @@ namespace Dyalect.Runtime.Types
         protected override DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right.TypeId == StandardType.Integer)
-                return new DyInteger(left.AsInteger() / right.AsInteger());
+            {
+                var i = right.AsInteger();
+
+                if (i == 0)
+                    return Err.DivideByZero().Set(ctx);
+
+                return new DyInteger(left.AsInteger() / i);
+            }
             else if (right.TypeId == StandardType.Float)
                 return new DyFloat(left.AsFloat() / right.AsFloat());
             else

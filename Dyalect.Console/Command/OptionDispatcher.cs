@@ -9,9 +9,19 @@ namespace Dyalect.Command
         public static T Dispatch<T>() where T : IOptionBag, new()
         {
             var cl = CommandLineParser.Parse();
-            var bag = new T();
+            var bag = ProcessOptionBag<T>(cl);
             bag.DefaultArgument = cl.DefaultArgument;
             bag.StartupPath = cl.StartupPath;
+
+            if (cl.Options.Count > 0)
+                throw new CommandException($"Неизвестный ключ \"{cl.Options[0].Key}\".");
+
+            return bag;
+        }
+
+        private static T ProcessOptionBag<T>(CommandLine cl) where T : IOptionBag, new()
+        {
+            var bag = new T();
 
             foreach (var pi in typeof(T).GetProperties())
             {
@@ -55,9 +65,6 @@ namespace Dyalect.Command
                     }
                 }
             }
-
-            if (cl.Options.Count > 0)
-                throw new CommandException($"Неизвестный ключ \"{cl.Options[0].Key}\".");
 
             return bag;
         }

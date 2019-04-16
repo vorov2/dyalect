@@ -4,18 +4,18 @@
     {
         None,
 
-        ModuleNotFound = 200,
+        ModuleNotFound = 400,
 
-        UnableReadModule = 201,
+        UnableReadModule = 401,
 
-        UnableLoadAssembly = 202,
+        UnableLoadAssembly = 402,
 
-        DuplicateModuleName = 203,
+        DuplicateModuleName = 403,
 
-        AssemblyModuleNotFound = 204,
+        AssemblyModuleNotFound = 404,
 
-        AssemblyModuleLoadError = 205,
+        AssemblyModuleLoadError = 405,
 
-        InvalidAssemblyModule = 206
+        InvalidAssemblyModule = 406
     }
 }

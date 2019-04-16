@@ -6,13 +6,10 @@ namespace Dyalect.Debug
 {
     public sealed class CallStackTrace : IEnumerable<CallFrame>
     {
-        private List<CallFrame> frames;
+        private readonly List<CallFrame> frames;
 
-        internal CallStackTrace(string currentFile, int currentLine, int currentCol, List<CallFrame> frames)
+        internal CallStackTrace(List<CallFrame> frames)
         {
-            File = currentFile;
-            Line = currentLine;
-            Column = currentCol;
             this.frames = frames;
         }
 
@@ -35,12 +32,6 @@ namespace Dyalect.Debug
         {
             get { return frames.Count; }
         }
-
-        public string File { get; private set; }
-
-        public int Line { get; private set; }
-
-        public int Column { get; private set; }
 
         public override string ToString()
         {

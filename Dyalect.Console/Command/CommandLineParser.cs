@@ -44,6 +44,9 @@ namespace Dyalect.Command
                 cl.DefaultArgument = str.Trim('"');
             }
 
+            if (opt != null)
+                cl.Options.Add(new Option(opt));
+
             return cl;
         }
     }

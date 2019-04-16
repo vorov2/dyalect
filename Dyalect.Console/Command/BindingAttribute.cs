@@ -13,5 +13,7 @@ namespace Dyalect.Command
         public string[] Names { get; }
 
         public string Help { get; set; }
+
+        public string Category { get; set; }
     }
 }
