@@ -15,7 +15,8 @@ namespace Dyalect
 
         private const int ERR = -1;
         private const int OK = 0;
-        private static ProgramOptions options;
+        private static DyaOptions options;
+        private static IDictionary<string, object> config;
 
         public static int Main(string[] args)
         {
@@ -69,7 +70,7 @@ namespace Dyalect
 
                     if (!made.Success)
                     {
-                        PrintErrors(made.Messages);
+                        Printer.PrintErrors(made.Messages);
                         continue;
                     }
 
@@ -119,7 +120,8 @@ namespace Dyalect
         {
             try
             {
-                options = CommandLineReader.Read<ProgramOptions>(args);
+                config = ConfigReader.Read();
+                options = CommandLineReader.Read<DyaOptions>(args, config);
             }
             catch (DyaException ex)
             {
@@ -128,7 +130,14 @@ namespace Dyalect
                 return false;
             }
 
-            return Initialize(options);
+            if (!config.TryGetValue("colors", out var colorObj) || !(colorObj is IDictionary<string, object> colors))
+            {
+                Printer.Error("Missing console color information from configuration file.");
+                return false;
+            }
+
+            Config.Read(colors);
+            return true;
         }
 
         private static bool RunAndBye(DyLinker linker)
@@ -137,7 +146,7 @@ namespace Dyalect
 
             if (!made.Success)
             {
-                PrintErrors(made.Messages);
+                Printer.PrintErrors(made.Messages);
                 return false;
             }
 
@@ -147,76 +156,11 @@ namespace Dyalect
             return true;
         }
 
-        private static void PrintErrors(IEnumerable<BuildMessage> messages)
-        {
-            foreach (var m in messages)
-            {
-                if (m.Type == BuildMessageType.Error)
-                    Printer.Error(m.ToString());
-                else if (m.Type == BuildMessageType.Warning)
-                    Printer.Warning(m.ToString());
-                else
-                    Printer.Information(m.ToString());
-            }
-        }
-
-        private static void PrintErrors(IEnumerable<JsonParser.Error> messages)
-        {
-            foreach (var m in messages)
-                Printer.Error(m.ToString());
-        }
-
         private static string GetPathByType<T>()
         {
             var codeBase = typeof(T).Assembly.CodeBase;
             var uri = new UriBuilder(codeBase);
             return Uri.UnescapeDataString(uri.Path);
-        }
-
-        private static bool Initialize(ProgramOptions opts)
-        {
-            const string FILENAME = "config.json";
-            var path = Path.Combine(Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]), FILENAME);
-
-            if (!File.Exists(path))
-            {
-                Config.SetDefault();
-                Printer.Error($"Config file \"{FILENAME}\" not found.");
-                return false;
-            }
-
-            try
-            {
-                var json = new JsonParser(File.ReadAllText(path));
-                var dict = json.Parse() as IDictionary<string, object>;
-
-                if (!json.Success)
-                {
-                    PrintErrors(json.Errors);
-                    return false;
-                }
-
-                if (dict == null)
-                {
-                    Printer.Error("Invalid configuration file format.");
-                    return false;
-                }
-
-                if (!dict.TryGetValue("colors", out var colorObj) || !(colorObj is IDictionary<string, object> colors))
-                {
-                    Printer.Error("Missing console color information from configuration file.");
-                    return false;
-                }
-
-                Config.Read(colors);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Config.SetDefault();
-                Printer.Error($"Error reading configuration file: {ex.Message}");
-                return false;
-            }
         }
     }
 }

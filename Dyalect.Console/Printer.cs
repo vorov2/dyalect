@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dyalect.Util;
+using System;
+using System.Collections.Generic;
 
 namespace Dyalect
 {
@@ -34,6 +36,25 @@ namespace Dyalect
         }
 
         public static void Subheader(string data) => WithColor(Config.Subheader, WriteLine(data));
+
+        public static void PrintErrors(IEnumerable<BuildMessage> messages)
+        {
+            foreach (var m in messages)
+            {
+                if (m.Type == BuildMessageType.Error)
+                    Error(m.ToString());
+                else if (m.Type == BuildMessageType.Warning)
+                    Warning(m.ToString());
+                else
+                    Information(m.ToString());
+            }
+        }
+
+        public static void PrintErrors(IEnumerable<JsonParser.Error> messages)
+        {
+            foreach (var m in messages)
+                Error(m.ToString());
+        }
 
         private static void WithColor(ConsoleColor col, Action act)
         {

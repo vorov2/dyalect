@@ -1,8 +1,9 @@
 ﻿using Dyalect.Util;
+using System.Collections.Generic;
 
 namespace Dyalect
 {
-    public sealed class ProgramOptions
+    public sealed class DyaOptions
     {
         private const string COMPILER = "Compiler settings";
         private const string LINKER = "Linker settings";
@@ -17,7 +18,7 @@ namespace Dyalect
         [Binding("nolang", Help = "Do not import \"lang\" module that includes basic primitives and operations.", Category = COMPILER)]
         public bool NoLang { get; set; }
 
-        [Binding("path", Help = "A path for linker where to look referenced modules. You can specify this switch multiple times.", Category = LINKER)]
+        [Binding("path", Help = "A path where linker would look for referenced modules. You can specify this switch multiple times.", Category = LINKER)]
         public string[] Paths { get; set; }
     }
 }

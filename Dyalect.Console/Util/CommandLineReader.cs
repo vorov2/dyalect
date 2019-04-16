@@ -1,24 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Dyalect.Util
 {
     public static class CommandLineReader
     {
-        public static T Read<T>(string[] args) where T : new()
+        class Value
         {
-            var options = Parse(args);
+            public bool IsDefault;
+        }
+
+        class StringValue : Value
+        {
+            public string Value;
+        }
+
+        class ArrayValue : Value
+        {
+            public ArrayValue(params string[] args)
+            {
+                if (args != null)
+                    Values.AddRange(args);
+                else
+                    Values.Add(null);
+            }
+            public List<string> Values = new List<string>();
+        }
+
+        public static T Read<T>(string[] args, IDictionary<string, object> config) where T : new()
+        {
+            var options = config.TryGetValue("options", out var obj) && obj is IDictionary<string, object> dict 
+                ? Parse(args, dict) : Parse(args, null);
+
             var bag = ProcessOptionBag<T>(options);
 
-            if (options.Count > 0 && options[0].key != null)
-                throw new DyaException($"Unknown switch -{options[0].value}.");
+            if (options.Count > 0 && options.First().Key != "$default")
+                throw new DyaException($"Unknown switch -{options.First().Key}.");
 
             return bag;
         }
 
-        private static T ProcessOptionBag<T>(List<(string key,string value)> options) where T : new()
+        private static T ProcessOptionBag<T>(Dictionary<string, Value> options) where T : new()
         {
             var bag = new T();
 
@@ -34,36 +57,60 @@ namespace Dyalect.Util
 
                 if (attr.Names == null || attr.Names.Length == 0 || (attr.Names.Length == 1 && attr.Names[0] == null))
                 {
-                    var opt = options.FirstOrDefault(o => o.key == null);
                     key = "<default>";
 
-                    if (opt.value != null)
+                    if (options.TryGetValue("$default", out var opt) && opt is StringValue str)
                     {
-                        value = ConvertValue(opt, pi);
-                        options.Remove(opt);
+                        value = ConvertValue(key, str.Value, pi.PropertyType);
+                        options.Remove("$default");
                     }
                 }
                 else
                 {
-                    var opts = options.Where(o => attr.Names.Contains(o.key)).ToArray();
+                    ArrayValue arr = null;
 
-                    if (opts.Length > 1)
+                    foreach (var n in attr.Names)
                     {
-                        if (!pi.PropertyType.IsArray)
-                            throw KeyNotArray(opts[0].key);
+                        if (options.TryGetValue(n, out var opt))
+                        {
+                            if (opt is ArrayValue carr)
+                            {
+                                if (arr == null)
+                                    arr = carr;
+                                else
+                                    arr.Values.AddRange(carr.Values);
+                            }
+                            else if (opt is StringValue cstr)
+                            {
+                                if (arr == null)
+                                    arr = new ArrayValue(cstr.Value);
+                                else
+                                    arr.Values.Add(cstr.Value);
+                            }
+                            else if (opt == null)
+                            {
+                                if (arr == null)
+                                    arr = new ArrayValue(null);
+                                else
+                                    arr.Values.Add(null);
+                            }
 
-                        foreach (var o in opts)
-                            options.Remove(o);
-
-                        value = CreateArray(pi, opts.Select(o => o.value).ToArray());
-                        key = opts[0].key;
+                            key = n;
+                            options.Remove(n);
+                        }
                     }
-                    else if (opts.Length > 0)
+
+                    if (key == null)
+                        continue;
+
+                    if (!pi.PropertyType.IsArray)
                     {
-                        options.Remove(opts[0]);
-                        value = ConvertValue(opts[0], pi);
-                        key = opts[0].key;
+                        if (arr.Values.Count > 1)
+                            throw KeyNotArray(key);
+                        value = ConvertValue(key, arr.Values[0], pi.PropertyType);
                     }
+                    else
+                        value = CreateArray(key, pi.PropertyType, arr.Values);
                 }
 
                 if (value != null)
@@ -82,30 +129,35 @@ namespace Dyalect.Util
             return bag;
         }
 
-        private static object ConvertValue((string key,string value) opt, PropertyInfo pi)
+        private static object ConvertValue(string key, string value, Type typ)
         {
-            var v = opt.value;
+            var v = value;
 
-            if (pi.PropertyType.IsArray)
-                return CreateArray(pi, v);
-            else if (pi.PropertyType == typeof(string))
+            if (typ.IsArray)
+            {
+                var lst = new List<string>(1);
+                lst.Add(v);
+                return CreateArray(key, typ, lst);
+            }
+            else if (typ == typeof(string))
                 return v;
-            else if (pi.PropertyType == typeof(int) && int.TryParse(v, out var i4))
+            else if (typ == typeof(int) && int.TryParse(v, out var i4))
                 return i4;
-            else if (pi.PropertyType == typeof(bool) && v == null || string.Equals(bool.TrueString, v, StringComparison.OrdinalIgnoreCase))
+            else if (typ == typeof(bool) && v == null || string.Equals(bool.TrueString, v, StringComparison.OrdinalIgnoreCase))
                 return true;
-            else if (pi.PropertyType.IsEnum && Enum.TryParse(pi.PropertyType, v, true, out var en))
+            else if (typ.IsEnum && Enum.TryParse(typ, v, true, out var en))
                 return en;
             else
-                throw InvalidKeyValue(opt.key);
+                throw InvalidKeyValue(key);
         }
 
-        private static Array CreateArray(PropertyInfo pi, params object[] elements)
+        private static Array CreateArray(string key, Type typ, List<string> elements)
         {
-            var arr = Array.CreateInstance(pi.PropertyType.GetElementType(), elements.Length);
+            var elType = typ.GetElementType();
+            var arr = Array.CreateInstance(elType, elements.Count);
 
-            for (var i = 0; i < elements.Length; i++)
-                arr.SetValue(elements[i], i);
+            for (var i = 0; i < elements.Count; i++)
+                arr.SetValue(ConvertValue(key, elements[i], elType), i);
 
             return arr;
         }
@@ -114,13 +166,36 @@ namespace Dyalect.Util
 
         private static Exception KeyNotArray(string key) => new DyaException($"Command line switch -{key} doesn't support multiple values.");
 
-        private static List<(string key,string value)> Parse(string[] args)
+        private static Dictionary<string, Value> Parse(string[] args, IDictionary<string, object> config)
         {
-            var options = new List<(string, string)>();
+            var options = new Dictionary<string, Value>();
             string opt = null;
             string def = null;
 
-            void AddOption(string key, string val) => options.Add((key, val?.Trim('"')));
+            if (config != null)
+                foreach (var kv in config)
+                    options.Add(kv.Key, new StringValue { Value = kv.Value.ToString(), IsDefault = true });
+
+            void AddOption(string key, string val)
+            {
+                key = key ?? "$default";
+                val = val?.Trim('"');
+
+                if (options.TryGetValue(key, out var oldval))
+                {
+                    if (oldval.IsDefault)
+                    {
+                        options.Remove(key);
+                        options.Add(key, new StringValue { Value = val });
+                    }
+                    else if (oldval is ArrayValue arr)
+                        arr.Values.Add(val);
+                    else if (oldval is StringValue str)
+                        options[key] = new ArrayValue(str.Value, val);
+                }
+                else
+                    options.Add(key, new StringValue { Value = val });
+            }
 
             for (var i = 0; i < args.Length; i++)
             {
@@ -153,7 +228,7 @@ namespace Dyalect.Util
             }
 
             if (opt != null)
-                options.Add((opt, null));
+                options.Add(opt, null);
 
             return options;
         }
