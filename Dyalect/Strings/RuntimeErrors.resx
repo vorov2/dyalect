@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DivideByZero" xml:space="preserve">
-    <value>Деление на ноль.</value>
+    <value>Division by zero.</value>
   </data>
   <data name="ExternalFunctionFailure" xml:space="preserve">
-    <value>При вызове внешней функции "%FunctionName%" произошла ошибка: %Error%</value>
+    <value>An unhandled exception occured during an execution of an external function "%FunctionName%": %Error%</value>
   </data>
   <data name="IndexInvalidType" xml:space="preserve">
-    <value>Индексы типа "%IndexTypeName%" не поддерживаются контейнером типа "%TypeName%".</value>
+    <value>Indices of type "%IndexTypeName%" are not supported by the containers of type "%TypeName%".</value>
   </data>
   <data name="NotFunction" xml:space="preserve">
-    <value>Объект типа "%TypeName%" не может быть применен как функция.</value>
+    <value>An object of type "%TypeName%" doesn't support a "call" operation.</value>
   </data>
   <data name="OperationNotSupported" xml:space="preserve">
-    <value>Операция "%Operation%" не поддерживается типом или комбинацией типов "%TypeName%".</value>
+    <value>Operation "%Operation%" is not supported by the following type(s): "%TypeName%".</value>
   </data>
   <data name="StackCorrupted" xml:space="preserve">
-    <value>Повреждён стек виртуальной машины.</value>
+    <value>Stack is corrupted.</value>
   </data>
 </root>

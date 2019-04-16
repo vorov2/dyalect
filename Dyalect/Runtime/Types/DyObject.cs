@@ -35,11 +35,8 @@ namespace Dyalect.Runtime.Types
         internal protected virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
             Err.OperationNotSupported(Traits.GetName, this.TypeName(ctx)).Set(ctx);
 
-        internal protected virtual bool SetItem(DyObject index, DyObject value, ExecutionContext ctx)
-        {
+        internal protected virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
             Err.OperationNotSupported(Traits.SetName, this.TypeName(ctx)).Set(ctx);
-            return false;
-        }
     }
 
     internal static class DyObjectExtensions

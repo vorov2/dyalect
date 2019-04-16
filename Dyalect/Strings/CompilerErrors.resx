@@ -118,39 +118,39 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExpressionNoName" xml:space="preserve">
-    <value>У выражения нет имени.</value>
+    <value>An expression doesn't have a name.</value>
   </data>
   <data name="InvalidNameOfOperator" xml:space="preserve">
-    <value>Некорректное использование оператора "nameof".</value>
+    <value>Invalid usage of the "nameof" operator.</value>
   </data>
   <data name="InvalidTypeOfOperator" xml:space="preserve">
-    <value>Некорректное использование оператора "typeof".</value>
+    <value>Invalid usage of the "typeof" operator.</value>
   </data>
   <data name="NoEnclosingLoop" xml:space="preserve">
-    <value>Отсутствует внешний цикл для прерывания или продолжения.</value>
+    <value>No enclosing loop out of which to break or continue.</value>
   </data>
   <data name="ReturnNotAllowed" xml:space="preserve">
-    <value>Директива "return" недопустима в этом контексте.</value>
+    <value>The "return" directive is supported only inside functions.</value>
   </data>
   <data name="TooManyErrors" xml:space="preserve">
-    <value>Превышен лимит ошибок.</value>
+    <value>Too many errors (error limit exceeded).</value>
   </data>
   <data name="UnableAssignConstant" xml:space="preserve">
-    <value>Невозможно изменить значение константы "{0}".</value>
+    <value>Unable to change a value of a constant "{0}".</value>
   </data>
   <data name="UnableAssignExpression" xml:space="preserve">
-    <value>Невозможно присвоить значение выражению ({0}).</value>
+    <value>Unable to assign a value to an expression: {0}.</value>
   </data>
   <data name="UndefinedModule" xml:space="preserve">
-    <value>Неизвестный модуль "{0}".</value>
+    <value>Unknown module "{0}".</value>
   </data>
   <data name="UndefinedType" xml:space="preserve">
-    <value>Неизвестный тип "{0}".</value>
+    <value>Unknown type "{0}".</value>
   </data>
   <data name="UndefinedVariable" xml:space="preserve">
-    <value>Необъявленная переменная "{0}".</value>
+    <value>Variable "{0}" is not declared.</value>
   </data>
   <data name="VariableAlreadyDeclared" xml:space="preserve">
-    <value>Переменная "{0}" уже определена.</value>
+    <value>Variable "{0}" is already declared.</value>
   </data>
 </root>

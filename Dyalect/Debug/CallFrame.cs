@@ -2,8 +2,8 @@
 {
     public sealed class CallFrame
     {
-        private const string FORMAT_LNG = "\tв {0} на строке: {1}, в столбце: {2}";
-        private const string FORMAT_SHT = "\tв {0} по смещению: {1}";
+        private const string FORMAT_LNG = "\tat {0} in {1}, line {2}, column {3}";
+        private const string FORMAT_SHT = "\tat {0} in {1}, offset {2}";
 
         internal CallFrame(bool global, string moduleName, string name, int offset, LineSym lineSym)
         {
@@ -17,8 +17,8 @@
         public override string ToString()
         {
             return LinePragma != null ?
-                string.Format(FORMAT_LNG, GetFullName(), LinePragma.Line, LinePragma.Column) :
-                string.Format(FORMAT_SHT, GetFullName(), Offset);
+                string.Format(FORMAT_LNG, GetFullName(), ModuleName, LinePragma.Line, LinePragma.Column) :
+                string.Format(FORMAT_SHT, GetFullName(), ModuleName, Offset);
         }
         
         private string GetFullName()

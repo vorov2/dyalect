@@ -61,7 +61,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Деление на ноль..
+        ///   Looks up a localized string similar to Division by zero..
         /// </summary>
         internal static string DivideByZero {
             get {
@@ -70,7 +70,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to При вызове внешней функции &quot;%FunctionName%&quot; произошла ошибка: %Error%.
+        ///   Looks up a localized string similar to An unhandled exception occured during an execution of an external function &quot;%FunctionName%&quot;: %Error%.
         /// </summary>
         internal static string ExternalFunctionFailure {
             get {
@@ -79,7 +79,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Индексы типа &quot;%IndexTypeName%&quot; не поддерживаются контейнером типа &quot;%TypeName%&quot;..
+        ///   Looks up a localized string similar to Indices of type &quot;%IndexTypeName%&quot; are not supported by the containers of type &quot;%TypeName%&quot;..
         /// </summary>
         internal static string IndexInvalidType {
             get {
@@ -88,7 +88,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Объект типа &quot;%TypeName%&quot; не может быть применен как функция..
+        ///   Looks up a localized string similar to An object of type &quot;%TypeName%&quot; doesn&apos;t support a &quot;call&quot; operation..
         /// </summary>
         internal static string NotFunction {
             get {
@@ -97,7 +97,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Операция &quot;%Operation%&quot; не поддерживается типом или комбинацией типов &quot;%TypeName%&quot;..
+        ///   Looks up a localized string similar to Operation &quot;%Operation%&quot; is not supported by the following type(s): &quot;%TypeName%&quot;..
         /// </summary>
         internal static string OperationNotSupported {
             get {
@@ -106,7 +106,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Повреждён стек виртуальной машины..
+        ///   Looks up a localized string similar to Stack is corrupted..
         /// </summary>
         internal static string StackCorrupted {
             get {

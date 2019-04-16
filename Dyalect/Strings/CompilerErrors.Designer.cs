@@ -61,7 +61,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to У выражения нет имени..
+        ///   Looks up a localized string similar to An expression doesn&apos;t have a name..
         /// </summary>
         internal static string ExpressionNoName {
             get {
@@ -70,7 +70,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Некорректное использование оператора &quot;nameof&quot;..
+        ///   Looks up a localized string similar to Invalid usage of the &quot;nameof&quot; operator..
         /// </summary>
         internal static string InvalidNameOfOperator {
             get {
@@ -79,7 +79,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Некорректное использование оператора &quot;typeof&quot;..
+        ///   Looks up a localized string similar to Invalid usage of the &quot;typeof&quot; operator..
         /// </summary>
         internal static string InvalidTypeOfOperator {
             get {
@@ -88,7 +88,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Отсутствует внешний цикл для прерывания или продолжения..
+        ///   Looks up a localized string similar to No enclosing loop out of which to break or continue..
         /// </summary>
         internal static string NoEnclosingLoop {
             get {
@@ -97,7 +97,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Директива &quot;return&quot; недопустима в этом контексте..
+        ///   Looks up a localized string similar to The &quot;return&quot; directive is supported only inside functions..
         /// </summary>
         internal static string ReturnNotAllowed {
             get {
@@ -106,7 +106,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Превышен лимит ошибок..
+        ///   Looks up a localized string similar to Too many errors (error limit exceeded)..
         /// </summary>
         internal static string TooManyErrors {
             get {
@@ -115,7 +115,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Невозможно изменить значение константы &quot;{0}&quot;..
+        ///   Looks up a localized string similar to Unable to change a value of a constant &quot;{0}&quot;..
         /// </summary>
         internal static string UnableAssignConstant {
             get {
@@ -124,7 +124,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Невозможно присвоить значение выражению ({0})..
+        ///   Looks up a localized string similar to Unable to assign a value to an expression: {0}..
         /// </summary>
         internal static string UnableAssignExpression {
             get {
@@ -133,7 +133,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Неизвестный модуль &quot;{0}&quot;..
+        ///   Looks up a localized string similar to Unknown module &quot;{0}&quot;..
         /// </summary>
         internal static string UndefinedModule {
             get {
@@ -142,7 +142,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Неизвестный тип &quot;{0}&quot;..
+        ///   Looks up a localized string similar to Unknown type &quot;{0}&quot;..
         /// </summary>
         internal static string UndefinedType {
             get {
@@ -151,7 +151,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Необъявленная переменная &quot;{0}&quot;..
+        ///   Looks up a localized string similar to Variable &quot;{0}&quot; is not declared..
         /// </summary>
         internal static string UndefinedVariable {
             get {
@@ -160,7 +160,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Переменная &quot;{0}&quot; уже определена..
+        ///   Looks up a localized string similar to Variable &quot;{0}&quot; is already declared..
         /// </summary>
         internal static string VariableAlreadyDeclared {
             get {

@@ -29,8 +29,13 @@ namespace Dyalect.Runtime
 
         public override string ToString()
         {
-            return string.Format("Ошибка времени исполнения Dy{1}: {2}{0}Место: {3}, строка: {4}, столбец: {5}{0}Трассировка:{0}{6}",
-                Environment.NewLine, (int)Error.Code, Message, File, Line, Column, CallStack);
+            var errCode = ((int)Error.Code).ToString().PadLeft(3, '0');
+            var baseStr = $"Runtime exception Dy{errCode}: {Message}\nLocation: {File}, line {Line}, column {Column}.";
+
+            if (CallStack.FrameCount > 0)
+                baseStr += $"\nStack trace:\n{CallStack}";
+
+            return baseStr;
         }
     }
 }

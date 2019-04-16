@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class LinkerErrors {
@@ -61,7 +61,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ошибка при загрузке модуля {0} из сборки {1}: {2}.
+        ///   Looks up a localized string similar to An error occured while loading module &quot;{0}&quot; from an assembly &quot;{1}&quot;: {2}.
         /// </summary>
         internal static string AssemblyModuleLoadError {
             get {
@@ -70,7 +70,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Модуль {0} не определён в сборке {1}..
+        ///   Looks up a localized string similar to Module &quot;{0}&quot; is not defined in an assembly &quot;{1}&quot;..
         /// </summary>
         internal static string AssemblyModuleNotFound {
             get {
@@ -79,7 +79,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Дублирующееся имя модуля {1}  в сборке {0}..
+        ///   Looks up a localized string similar to Duplicate name of a module &quot;{1}&quot; in an assembly &quot;{0}&quot;..
         /// </summary>
         internal static string DuplicateModuleName {
             get {
@@ -88,7 +88,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Неподдерживаемый тип модуля {0} из сборки {1}..
+        ///   Looks up a localized string similar to Unsupported type of a module &quot;{0}&quot; from an assembly &quot;{1}&quot;..
         /// </summary>
         internal static string InvalidAssemblyModule {
             get {
@@ -97,7 +97,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Не найден модуль {0}..
+        ///   Looks up a localized string similar to Unable to find module &quot;{0}&quot;..
         /// </summary>
         internal static string ModuleNotFound {
             get {
@@ -106,7 +106,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ошибка при загрузке сборки {0}: {1}.
+        ///   Looks up a localized string similar to An error occured while loading assembly &quot;{0}&quot;: {1}.
         /// </summary>
         internal static string UnableLoadAssembly {
             get {
@@ -115,7 +115,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ошибка при чтении файла модуля: {0}.
+        ///   Looks up a localized string similar to An error occured while reading module file &quot;{0}&quot;: {1}.
         /// </summary>
         internal static string UnableReadModule {
             get {

@@ -1,4 +1,5 @@
 ﻿using Dyalect.Parser;
+using Dyalect.Runtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,8 +13,15 @@ namespace Dyalect.Test
     {
         static void Main(string[] args)
         {
-            var res = Exe.Eval(SourceBuffer.FromFile(FindFile("test")));
-            Console.WriteLine("Result: {0}", res);
+            try
+            {
+                var res = Exe.Eval(SourceBuffer.FromFile(FindFile("test")));
+                Console.WriteLine("Result: {0}", res);
+            }
+            catch (DyCodeException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         static string ReadFile(string name)

@@ -38,42 +38,17 @@ var x = 12.0
 x.multiply(34, 26)
 */
 
-
-    func digit(c) {
-           c == "0"
-        || c == "1"
-        || c == "2"
-        || c == "3"
-        || c == "4"
-        || c == "5"
-        || c == "6"
-        || c == "7"
-        || c == "8"
-        || c == "9"
+func setterHelper(arr,i,val) {
+    if (i < 1000) {
+        arr[i] = val
     }
+}
 
-    func parse(str)
-    {
-        var max = #str
-        var i = 0;
-        var res = "";
 
-        while i < max {
-            const c = str[i]
+func setter(arr,i,val) {
+    setterHelper(arr,i,val)
+}
 
-            if c == "+" {
-                i += 2
-                continue
-            }
-            
-            if digit(c) {
-                res += c
-            }
+var t = (1,2,3)
 
-            i += 1
-        }
-
-        res
-    }
-
-    parse("+7 (964) 506-11-12")
+setter(t, 1, "oops")

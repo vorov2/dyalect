@@ -61,8 +61,19 @@ namespace Dyalect
                     if (dym == null)
                         dym = new DyMachine(made.Value);
 
-                    var res = dym.Execute();
-                    Console.WriteLine(res.Value);
+                    try
+                    {
+                        var res = dym.Execute();
+                        Console.WriteLine(res.Value);
+                    }
+                    catch (DyCodeException ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
+                    catch (DyRuntimeException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
                 }
             }
         }

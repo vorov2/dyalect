@@ -423,7 +423,7 @@ namespace Dyalect.Runtime
             }
         }
 
-        private static Stack<int> Dump(CallStack callStack)
+        private static Stack<int> Dump(int offset, CallStack callStack)
         {
             var st = new Stack<int>();
 
@@ -433,12 +433,13 @@ namespace Dyalect.Runtime
                 st.Push(cm.ReturnAddress);
             }
 
+            st.Push(offset);
             return st;
         }
 
         private DyCodeException CreateException(DyError err, int offset, int moduleHandle, ExecutionContext ctx, Exception ex = null)
         {
-            var dump = Dump(ctx.CallStack);
+            var dump = Dump(offset, ctx.CallStack);
             var deb = new Debug.DyDebugger(Assembly, moduleHandle);
             var cs = deb.BuildCallStack(offset, dump);
             return new DyCodeException(err, cs.File, cs.Line, cs.Column, cs, ex);

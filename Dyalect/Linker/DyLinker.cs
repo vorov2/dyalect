@@ -136,7 +136,7 @@ namespace Dyalect.Linker
             }
             catch (Exception ex)
             {
-                AddError(LinkerError.UnableReadModule, reference.SourceFileName, reference.SourceLocation, ex.Message);
+                AddError(LinkerError.UnableReadModule, reference.SourceFileName, reference.SourceLocation, fileName, ex.Message);
                 return null;
             }
 

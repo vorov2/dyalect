@@ -45,5 +45,20 @@ namespace Dyalect.Runtime.Types
                 return null;
             return Values[index];
         }
+
+        private void SetItem(int index, DyObject obj, ExecutionContext ctx)
+        {
+            if (index < 0 || index >= Values.Length)
+                Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+            Values[index] = obj;
+        }
+
+        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
+        {
+            if (index.TypeId != StandardType.Integer)
+                Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
+            else
+                SetItem((int)index.AsInteger(), value, ctx);
+        }
     }
 }
