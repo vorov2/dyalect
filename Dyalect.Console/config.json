@@ -1,6 +1,8 @@
-﻿(
-    "options": nil,
-    "colors": (
+﻿{
+    "options": {
+
+    },
+    "colors": {
         "Background": "Gray",
         "Foreground": "Black",
         "Prefix": "DarkBlue",
@@ -11,5 +13,5 @@
         "Subheader": "DarkGreen",
         "Output": "Black",
         "SupplementaryOutput": "DarkGray"
-    )
-)
+    }
+}

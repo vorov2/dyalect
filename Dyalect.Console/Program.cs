@@ -160,6 +160,12 @@ namespace Dyalect
             }
         }
 
+        private static void PrintErrors(IEnumerable<JsonParser.Error> messages)
+        {
+            foreach (var m in messages)
+                Printer.Error(m.ToString());
+        }
+
         private static string GetPathByType<T>()
         {
             var codeBase = typeof(T).Assembly.CodeBase;
@@ -169,32 +175,30 @@ namespace Dyalect
 
         private static bool Initialize(OptionBag opts)
         {
-            var path = Path.Combine(Path.GetDirectoryName(opts.StartupPath), "config.dy");
+            const string FILENAME = "config.json";
+            var path = Path.Combine(Path.GetDirectoryName(opts.StartupPath), FILENAME);
 
             if (!File.Exists(path))
             {
                 Config.SetDefault();
-                Printer.Error("Config file \"config.dy\" not found.");
+                Printer.Error($"Config file \"{FILENAME}\" not found.");
                 return false;
             }
 
             try
             {
-                var link = new DyLinker(FileLookup.Create(opts.StartupPath), BuilderOptions.Default);
-                var made = link.Make(SourceBuffer.FromFile(path));
+                var json = new JsonParser(File.ReadAllText(path));
+                var dict = json.Parse() as IDictionary<string, object>;
 
-                if (!made.Success)
+                if (!json.Success)
                 {
-                    PrintErrors(made.Messages);
-                    Printer.LineFeed();
+                    PrintErrors(json.Errors);
                     return false;
                 }
 
-                var res = new DyMachine(made.Value).Execute();
-
-                if (!(res.Value.AsObject() is IDictionary<string, object> dict))
+                if (dict == null)
                 {
-                    Printer.Error($"Invalid configuration file format.");
+                    Printer.Error("Invalid configuration file format.");
                     return false;
                 }
 

@@ -35,11 +35,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="config.dy">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="dya.sh">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
