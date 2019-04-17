@@ -284,7 +284,7 @@ namespace Dyalect.Runtime.Types
         {
             if (!traits.TryGetValue(name, out var value))
             {
-                value = GetTrait(name, ctx);
+                value = InternalGetTrait(name, ctx);
 
                 if (value != null)
                     traits.Add(name, value);
@@ -329,7 +329,15 @@ namespace Dyalect.Runtime.Types
             traits.Add(name, func);
         }
 
-        protected virtual DyFunction GetTrait(string mixinName, ExecutionContext ctx) => null;
+        private DyFunction InternalGetTrait(string name, ExecutionContext ctx)
+        {
+            if (name == "toString")
+                return DyFunction.Create(ToStringOp);
+
+            return GetTrait(name, ctx);
+        }
+
+        protected virtual DyFunction GetTrait(string name, ExecutionContext ctx) => null;
 
         internal protected virtual DyObject Get(DyObject obj, DyObject index, ExecutionContext ctx) => obj.GetItem(index, ctx);
 

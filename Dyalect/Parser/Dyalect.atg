@@ -75,7 +75,7 @@ PRODUCTIONS
         ).
 
     StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!" | "#" 
-        | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~" | "`".
+        | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
 
     FunctionName = identToken | StandardOperators.
 
@@ -437,7 +437,6 @@ PRODUCTIONS
                 | "-" (. ot = t; op = UnaryOperator.Neg; .)
                 | "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
                 | "#" (. ot = t; op = UnaryOperator.Length; .)
-                | "`" (. ot = t; op = UnaryOperator.ToString; .)
             ]
             Application<out node>
             (.

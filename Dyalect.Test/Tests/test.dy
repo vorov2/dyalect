@@ -53,8 +53,9 @@ var t = (1,2,3)
 setter(t, 1, "oops")
 */
 
-func Integer `() {
+func Integer.toString() {
     "Twenty two"
 }
 
-`22
+var fn = 22.toString
+fn()

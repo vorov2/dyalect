@@ -21,6 +21,22 @@ namespace Dyalect.Runtime.Types
             protected override Delegate GetDelegate() => this.fun;
         }
 
+        internal sealed class ArgUnary : CallAdapter
+        {
+            private readonly Func<DyObject, ExecutionContext, DyObject> fun;
+            internal ArgUnary(Func<DyObject, ExecutionContext, DyObject> fun) => this.fun = fun;
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => this.fun(args[0], ctx);
+            protected override Delegate GetDelegate() => this.fun;
+        }
+
+        internal sealed class ArgBinary : CallAdapter
+        {
+            private readonly Func<DyObject, DyObject, ExecutionContext, DyObject> fun;
+            internal ArgBinary(Func<DyObject, DyObject, ExecutionContext, DyObject> fun) => this.fun = fun;
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => this.fun(args[0], args[1], ctx);
+            protected override Delegate GetDelegate() => this.fun;
+        }
+
         internal sealed class Arg1 : CallAdapter
         {
             private readonly Func<DyObject, DyObject> fun;

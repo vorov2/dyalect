@@ -290,16 +290,30 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-            foreach (var a in node.Arguments)
-                Build(a, hints.Append(Push), ctx);
-
-            if (sv.IsEmpty())
-                Build(node.Target, hints.Append(Push), ctx);
+            //This is a special optimization for the 'toString' trait
+            //If we see that it is called directly we than emit a direct 'Str' instruction
+            if (node.Target.NodeType == NodeType.Trait
+                && ((DTrait)node.Target).Name == Traits.TosName
+                && node.Arguments.Count == 0)
+            {
+                Build(((DTrait)node.Target).Target, hints.Append(Push), ctx);
+                AddLinePragma(node);
+                cw.Str();
+            }
             else
-                cw.PushVar(sv);
+            {
+                foreach (var a in node.Arguments)
+                    Build(a, hints.Append(Push), ctx);
 
-            AddLinePragma(node);
-            cw.Call(node.Arguments.Count);
+                if (sv.IsEmpty())
+                    Build(node.Target, hints.Append(Push), ctx);
+                else
+                    cw.PushVar(sv);
+
+                AddLinePragma(node);
+                cw.Call(node.Arguments.Count);
+            }
+
             PopIf(hints);
         }
 
@@ -451,8 +465,6 @@ namespace Dyalect.Compiler
                 cw.BitNot();
             else if (node.Operator == UnaryOperator.Length)
                 cw.Len();
-            else if (node.Operator == UnaryOperator.ToString)
-                cw.Str();
 
             PopIf(hints);
         }

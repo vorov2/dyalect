@@ -243,6 +243,16 @@ namespace Dyalect.Runtime.Types
             return Create(fun, -1, name, new CallAdapter.ArgCtx(fun));
         }
 
+        public static DyFunction Create(Func<DyObject, ExecutionContext, DyObject> fun, string name = null)
+        {
+            return Create(fun, 0, name, new CallAdapter.ArgUnary(fun));
+        }
+
+        public static DyFunction Create(Func<DyObject, DyObject, ExecutionContext, DyObject> fun, string name = null)
+        {
+            return Create(fun, 0, name, new CallAdapter.ArgBinary(fun));
+        }
+
         public static DyFunction Create(Func<DyObject> fun, string name = null)
         {
             return Create(fun, 0, name, new CallAdapter.Arg0(fun));
