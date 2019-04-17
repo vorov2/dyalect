@@ -16,7 +16,7 @@ namespace Dyalect.Runtime.Types
 
         internal DyFunction(int moduleHandle, int handle, int pars, DyMachine vm, FastList<DyObject[]> captures) : base(StandardType.Function)
         {
-            UnitHandle = moduleHandle;
+            UnitId = moduleHandle;
             Handle = handle;
             this.ParameterNumber = pars;
             this.vm = vm;
@@ -33,13 +33,23 @@ namespace Dyalect.Runtime.Types
 
         }
 
+        internal static DyFunction Create(int unitId, int handle, int pars, DyMachine vm, FastList<DyObject[]> captures, DyObject[] locals, bool variadic = false)
+        {
+            var vars = new FastList<DyObject[]>(captures);
+            vars.Add(locals);
+            return new DyFunction(unitId, handle, pars, vm, vars)
+            {
+                Variadic = variadic
+            };
+        }
+
         protected override bool TestEquality(DyObject obj) => ReferenceEquals(this, obj);
 
         internal bool IsExternal => Handle == EXT_HANDLE;
 
         internal bool IsOverloaded => Handle == OVL_HANDLE;
 
-        internal int UnitHandle { get; }
+        internal int UnitId { get; }
 
         internal int Handle { get; set; }
 
@@ -53,7 +63,7 @@ namespace Dyalect.Runtime.Types
 
         internal DyFunction Clone(DyObject arg)
         {
-            return new DyFunction(UnitHandle, Handle, ParameterNumber, vm, Captures)
+            return new DyFunction(UnitId, Handle, ParameterNumber, vm, Captures)
             {
                 Self = arg
             };
@@ -90,7 +100,7 @@ namespace Dyalect.Runtime.Types
                 args = new DyObject[0];
 
             var opd = args.Length;
-            var layout = vm.Assembly.Units[UnitHandle].Layouts[Handle];
+            var layout = vm.Assembly.Units[UnitId].Layouts[Handle];
             var newStack = new EvalStack(layout.StackSize);
 
             //Здесь нам нужно выровнять либо стек либо параметры функции
@@ -127,7 +137,7 @@ namespace Dyalect.Runtime.Types
             if (vm == null)
                 return null;
 
-            var layout = vm.Assembly.Units[UnitHandle].Layouts[Handle];
+            var layout = vm.Assembly.Units[UnitId].Layouts[Handle];
             var newStack = new EvalStack(layout.StackSize);
             newStack.Push(arg3);
             newStack.Push(arg2);
@@ -140,7 +150,7 @@ namespace Dyalect.Runtime.Types
             if (vm == null)
                 return null;
 
-            var layout = vm.Assembly.Units[UnitHandle].Layouts[Handle];
+            var layout = vm.Assembly.Units[UnitId].Layouts[Handle];
             var newStack = new EvalStack(layout.StackSize);
             newStack.Push(right);
             newStack.Push(left);
@@ -152,7 +162,7 @@ namespace Dyalect.Runtime.Types
             if (vm == null)
                 return null;
 
-            var layout = vm.Assembly.Units[UnitHandle].Layouts[Handle];
+            var layout = vm.Assembly.Units[UnitId].Layouts[Handle];
             var newStack = new EvalStack(layout.StackSize);
             if (ParameterNumber > 1)
                 newStack.Push(DyNil.Instance);
@@ -186,7 +196,7 @@ namespace Dyalect.Runtime.Types
 
         private FunSym GetFunSym()
         {
-            var frame = vm?.Assembly.Units[UnitHandle];
+            var frame = vm?.Assembly.Units[UnitId];
             var syms = frame != null ? frame.Symbols : null;
 
             if (syms != null)
@@ -341,6 +351,11 @@ namespace Dyalect.Runtime.Types
         public static DyFunction Create<T1, T2>(Func<T1[], T2> fun, string name = null)
         {
             return Create(fun, -1, name, new CallAdapter.ArgAny<T1, T2>(fun));
+        }
+
+        public static DyFunction Create<T1, T2>(Func<ExecutionContext, T1[], T2> fun, string name = null)
+        {
+            return Create(fun, -1, name, new CallAdapter.ArgAnyCtx<T1, T2>(fun));
         }
 
         private static DyFunction Create(Delegate fun, int args, string name, CallAdapter adapter)
@@ -582,6 +597,22 @@ namespace Dyalect.Runtime.Types
                     arr[i] = TypeConverter.ConvertTo<T1>(args[i], ctx);
 
                 return TypeConverter.ConvertFrom<T2>(this.fun(arr), ctx);
+            }
+        }
+
+        internal sealed class ArgAnyCtx<T1, T2> : CallAdapter
+        {
+            private readonly Func<ExecutionContext, T1[], T2> fun;
+            internal ArgAnyCtx(Func<ExecutionContext, T1[], T2> fun) => this.fun = fun;
+            protected override Delegate GetDelegate() => this.fun;
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
+            {
+                var arr = new T1[args.Length];
+
+                for (var i = 0; i < args.Length; i++)
+                    arr[i] = TypeConverter.ConvertTo<T1>(args[i], ctx);
+
+                return TypeConverter.ConvertFrom<T2>(this.fun(ctx, arr), ctx);
             }
         }
 

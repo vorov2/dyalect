@@ -13,16 +13,19 @@ namespace Dyalect.Linker
         public Lang()
         {
             FileName = "\\lang";
-            RegisterGlobal<DyObject, DyObject>(PrintName, Print);
-            RegisterGlobal<DyObject, DyObject>(CreateTupleName, CreateTuple);
-            RegisterGlobal<DyObject, DyObject>(CreateArrayName, CreateArray);
+            RegisterGlobal(PrintName, Print);
+            RegisterGlobal(CreateTupleName, CreateTuple);
+            RegisterGlobal(CreateArrayName, CreateArray);
         }
 
         public static DyObject Print(ExecutionContext ctx, DyObject[] args)
         {
             foreach (var a in args)
             {
-                Console.Write(a.ToString(ctx));
+                if (a.TypeId == StandardType.String)
+                    Console.Write(a.GetString());
+                else
+                    Console.Write(a.ToString(ctx));
 
                 if (ctx.Error != null)
                     break;

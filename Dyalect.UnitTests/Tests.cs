@@ -16,6 +16,8 @@ namespace Tests
 {
     public class Tests
     {
+        [Test] public void MathTest1() => ShouldBe(38);
+
         [Test] public void WhileTest1() => ShouldBe(33);
 
         [Test] public void WhileTest2() => ShouldBe(42);

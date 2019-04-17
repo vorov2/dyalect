@@ -27,9 +27,18 @@ namespace Dyalect.Runtime
 
         public ExecutionResult Execute()
         {
+            ExecutionResult retval = null;
             ExecutionContext.Error = null;
             var res = ExecuteModule(0);
-            return ExecutionResult.Fetch(0, res, ExecutionContext);
+
+            var th = new System.Threading.Thread(() =>
+                {
+                    retval = ExecutionResult.Fetch(0, res, ExecutionContext);
+                }, 8 * 1024 * 1024);
+            th.Start();
+            th.Join();
+
+            return retval;
         }
 
         private DyObject ExecuteModule(int moduleHandle)
@@ -62,25 +71,20 @@ namespace Dyalect.Runtime
         {
             DyObject left;
             DyObject right;
-            CallPoint cp;
             Op op;
-            int opd;
-            DyFunction callFun;
             var ctx = ExecutionContext;
 
-            FPROLOG:
-            var unit = Assembly.Units[function.UnitHandle];
+            var unit = Assembly.Units[function.UnitId];
             var ops = unit.Ops;
             var layout = unit.Layouts[function.Handle];
             var offset = layout.Address;
-            var locals = function.Handle == 0 ? modules[function.UnitHandle] : new DyObject[layout.Size];
+            var locals = function.Handle == 0 ? modules[function.UnitId] : new DyObject[layout.Size];
             locals = locals ?? new DyObject[layout.Size];
             var captures = function.Captures;
 
             CYCLE:
             {
                 op = ops[offset];
-                opd = op.Data;
                 offset++;
 
                 switch (op.Code)
@@ -95,7 +99,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Term:
                         if (evalStack.Size > 1) throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
-                        modules[function.UnitHandle] = locals;
+                        modules[function.UnitId] = locals;
                         return evalStack.Pop();
                     case OpCode.Pop:
                         evalStack.PopVoid();
@@ -116,43 +120,43 @@ namespace Dyalect.Runtime
                         evalStack.Push(DyInteger.Zero);
                         break;
                     case OpCode.PushI8:
-                        evalStack.Push(unit.IndexedIntegers[opd]);
+                        evalStack.Push(unit.IndexedIntegers[op.Data]);
                         break;
                     case OpCode.PushR8_0:
                         evalStack.Push(DyFloat.Zero);
                         break;
                     case OpCode.PushR8:
-                        evalStack.Push(unit.IndexedFloats[opd]);
+                        evalStack.Push(unit.IndexedFloats[op.Data]);
                         break;
                     case OpCode.PushStr:
-                        evalStack.Push(unit.IndexedStrings[opd]);
+                        evalStack.Push(unit.IndexedStrings[op.Data]);
                         break;
                     case OpCode.Poploc:
-                        locals[opd] = evalStack.Pop();
+                        locals[op.Data] = evalStack.Pop();
                         break;
                     case OpCode.Pushloc:
-                        evalStack.Push(locals[opd]);
+                        evalStack.Push(locals[op.Data]);
                         break;
                     case OpCode.Pushvar:
-                        right = captures[captures.Count - (opd & byte.MaxValue)][opd >> 8];
+                        right = captures[captures.Count - (op.Data & byte.MaxValue)][op.Data >> 8];
                         evalStack.Push(right);
                         break;
                     case OpCode.Pushext:
-                        evalStack.Push(modules[unit.ModuleHandles[opd & byte.MaxValue]][opd >> 8]);
+                        evalStack.Push(modules[unit.ModuleHandles[op.Data & byte.MaxValue]][op.Data >> 8]);
                         break;
                     case OpCode.Popvar:
-                        captures[captures.Count - (opd & byte.MaxValue)][opd >> 8] = evalStack.Pop();
+                        captures[captures.Count - (op.Data & byte.MaxValue)][op.Data >> 8] = evalStack.Pop();
                         break;
                     case OpCode.Br:
-                        offset = opd;
+                        offset = op.Data;
                         break;
                     case OpCode.Brtrue:
                         if (evalStack.Pop().GetBool())
-                            offset = opd;
+                            offset = op.Data;
                         break;
                     case OpCode.Brfalse:
                         if (!evalStack.Pop().GetBool())
-                            offset = opd;
+                            offset = op.Data;
                         break;
                     case OpCode.Shl:
                         right = evalStack.Pop();
@@ -274,26 +278,19 @@ namespace Dyalect.Runtime
                         evalStack.Dup();
                         break;
                     case OpCode.Ret:
-                        right = evalStack.Pop();
-                        if (ctx.CallStack.Count == 0)
-                            return right;
-                        else
-                            goto FEPILOG;
+                        ctx.CallStack.Pop();
+                        return evalStack.Pop();
                     case OpCode.Fail:
                         ctx.Error = Err.UserCode(evalStack.Pop().ToString());
                         ProcessError(ctx, function, ref offset);
                         break; ;
                     case OpCode.NewFun:
                         right = evalStack.Peek();
-                        var lst = new FastList<DyObject[]>(captures);
-                        lst.Add(locals);
-                        evalStack.Replace(new DyFunction(function.UnitHandle, opd, (int)right.GetInteger(), this, lst));
+                        evalStack.Replace(DyFunction.Create(function.UnitId, op.Data, (int)right.GetInteger(), this, captures, locals));
                         break;
                     case OpCode.NewFunV:
                         right = evalStack.Peek();
-                        var lst1 = new FastList<DyObject[]>(captures);
-                        lst1.Add(locals); //-opd
-                        evalStack.Replace(new DyFunction(function.UnitHandle, opd, (int)right.GetInteger(), this, lst1) { Variadic = true });
+                        evalStack.Replace(DyFunction.Create(function.UnitId, op.Data, (int)right.GetInteger(), this, captures, locals, true));
                         break;
                     case OpCode.Call:
                         {
@@ -305,12 +302,34 @@ namespace Dyalect.Runtime
                                 break;
                             }
 
-                            callFun = (DyFunction)right;
+                            var callFun = (DyFunction)right;
 
                             if (callFun.IsExternal) //Если так, то функция не внутренняя, а внешняя, например, написанная на C#
-                                evalStack.Push(CallExternalFunction(opd, offset, evalStack, function, callFun, ctx));
+                                evalStack.Push(CallExternalFunction(op, offset, evalStack, function, callFun, ctx));
                             else
-                                goto FCALL;
+                            {
+                                layout = ctx.Assembly.Units[callFun.UnitId].Layouts[callFun.Handle];
+                                var newStack = new EvalStack(layout.StackSize);
+                                var max = op.Data > callFun.ParameterNumber ? callFun.ParameterNumber : op.Data;
+                                var tot = op.Data > callFun.ParameterNumber ? op.Data : callFun.ParameterNumber;
+
+                                //Надо выровнять либо стек, либо переданные аргументы
+                                for (var i = tot; i > 0; i--)
+                                {
+                                    if (i > op.Data)
+                                        newStack.Push(DyNil.Instance);
+                                    else
+                                    {
+                                        if (i <= max)
+                                            newStack.Push(evalStack.Pop());
+                                        else
+                                            evalStack.PopVoid();
+                                    }
+                                }
+
+                                ctx.CallStack.Push(new CallPoint(offset, function.UnitId));
+                                evalStack.Push(ExecuteWithData(callFun, newStack));
+                            }
 
                             if (ctx.Error != null)
                                 ProcessError(ctx, function, ref offset, evalStack);
@@ -318,17 +337,17 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.TraitG:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].GetTraitOp(right, unit.IndexedStrings[opd].Value, ctx));
+                        evalStack.Replace(types[right.TypeId].GetTraitOp(right, unit.IndexedStrings[op.Data].Value, ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.TraitS:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
-                        if (opd >= StandardType.All.Count)
-                            types[ctx.Assembly.Units[unit.ModuleHandles[opd & byte.MaxValue]].TypeHandles[opd >> 8]]
+                        if (op.Data >= StandardType.All.Count)
+                            types[ctx.Assembly.Units[unit.ModuleHandles[op.Data & byte.MaxValue]].TypeHandles[op.Data >> 8]]
                                 .SetTraitOp(left.GetString(), right, ctx);
                         else
-                            types[opd].SetTraitOp(left.GetString(), right, ctx);
+                            types[op.Data].SetTraitOp(left.GetString(), right, ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Get:
@@ -349,53 +368,17 @@ namespace Dyalect.Runtime
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.RunMod:
-                        ExecuteModule(unit.ModuleHandles[opd]);
-                        evalStack.Push(new DyModule(Assembly.Units[opd], modules[opd]));
+                        ExecuteModule(unit.ModuleHandles[op.Data]);
+                        evalStack.Push(new DyModule(Assembly.Units[op.Data], modules[op.Data]));
                         break;
                     case OpCode.Type:
                         evalStack.Replace(types[evalStack.Peek().TypeId]);
                         break;
                     case OpCode.Tag:
-                        evalStack.Replace(new DyLabel(unit.IndexedStrings[opd].Value, evalStack.Peek()));
+                        evalStack.Replace(new DyLabel(unit.IndexedStrings[op.Data].Value, evalStack.Peek()));
                         break;
                 }
             }
-            goto CYCLE;
-
-        FCALL:
-            layout = ctx.Assembly.Units[callFun.UnitHandle].Layouts[callFun.Handle];
-            var newStack = new EvalStack(layout.StackSize);
-            var max = opd > callFun.ParameterNumber ? callFun.ParameterNumber : opd;
-            var tot = opd > callFun.ParameterNumber ? opd : callFun.ParameterNumber;
-
-            //Надо выровнять либо стек, либо переданные аргументы
-            for (var i = tot; i > 0; i--)
-            {
-                if (i > opd)
-                    newStack.Push(DyNil.Instance);
-                else
-                {
-                    var v = evalStack.Pop();
-                    if (i <= max)
-                        newStack.Push(v);
-                }
-            }
-
-            ctx.CallStack.Push(new CallPoint(offset, evalStack, locals, function));
-            function = callFun;
-            evalStack = newStack;
-            goto FPROLOG;
-
-        FEPILOG:
-            cp = ctx.CallStack.Pop();
-            function = cp.Function;
-            unit = Assembly.Units[function.UnitHandle];
-            ops = unit.Ops;
-            offset = cp.ReturnAddress;
-            locals = cp.Locals;
-            captures = function.Captures;
-            evalStack = cp.Stack;
-            evalStack.Push(right);
             goto CYCLE;
         }
 
@@ -404,19 +387,19 @@ namespace Dyalect.Runtime
             if (evalStack != null)
                 evalStack.PopVoid();
 
-            throw CreateException(ctx.Error, offset, currentFunc.UnitHandle, ctx);
+            throw CreateException(ctx.Error, offset, currentFunc.UnitId, ctx);
         }
 
-        private DyObject CallExternalFunction(int opd, int offset, EvalStack evalStack, DyFunction caller, DyFunction fun, ExecutionContext ctx)
+        private DyObject CallExternalFunction(Op op, int offset, EvalStack evalStack, DyFunction caller, DyFunction fun, ExecutionContext ctx)
         {
-            var max = opd > fun.ParameterNumber ? opd : fun.ParameterNumber;
+            var max = op.Data > fun.ParameterNumber ? op.Data : fun.ParameterNumber;
             var arr = new DyObject[max];
-            for (var i = opd - 1; i > -1; i--)
+            for (var i = op.Data - 1; i > -1; i--)
                 arr[i] = evalStack.Pop();
 
             //Надо выровнять либо список параметров, либо переданные аргументы
-            if (opd < fun.ParameterNumber)
-                for (var i = opd; i < fun.ParameterNumber; i++)
+            if (op.Data < fun.ParameterNumber)
+                for (var i = op.Data; i < fun.ParameterNumber; i++)
                     arr[i] = DyNil.Instance;
 
             try
@@ -426,7 +409,7 @@ namespace Dyalect.Runtime
             catch (Exception ex)
             {
                 throw CreateException(Err.ExternalFunctionFailure(fun.FunctionName, ex.Message),
-                    offset - 1, caller.UnitHandle, ctx, ex);
+                    offset - 1, caller.UnitId, ctx, ex);
             }
         }
 
@@ -437,7 +420,7 @@ namespace Dyalect.Runtime
             for (var i = 0; i < callStack.Count; i++)
             {
                 var cm = callStack[i];
-                st.Push(new StackPoint(cm.ReturnAddress, cm.Function.UnitHandle));
+                st.Push(new StackPoint(cm.ReturnAddress, cm.UnitId));
             }
 
             return st;
