@@ -2,9 +2,7 @@
 {
     public enum TerminationReason
     {
-        None = 0,
-
-        Complete = 1,
+        Complete = 0,
 
         Abort = 2,
 

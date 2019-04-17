@@ -1,4 +1,6 @@
-﻿using Dyalect.Util;
+﻿using Dyalect.Runtime;
+using Dyalect.Runtime.Types;
+using Dyalect.Util;
 using System;
 using System.Collections.Generic;
 
@@ -26,6 +28,20 @@ namespace Dyalect
         public static void Information(string data) => WithColor(Theme.Info, WriteLine(data));
 
         public static void Output(string data) => WithColor(Theme.Output, WriteLine(data));
+
+        public static void Output(ExecutionResult res)
+        {
+            if (res.Reason != TerminationReason.Complete)
+            {
+                Error($"Terminated, reason: {res.Reason}");
+                return;
+            }
+
+            if (res.Value is DyString str)
+                Output(str.ToString());
+            else
+                Output(res.Value.Format(res.Context));
+        }
 
         public static void SupplementaryOutput(string data) => WithColor(Theme.SupplementaryOutput, WriteLine(data));
 

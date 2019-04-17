@@ -80,19 +80,7 @@ namespace Dyalect
                     if (dym == null)
                         dym = new DyMachine(made.Value);
 
-                    try
-                    {
-                        var res = dym.Execute();
-                        Printer.Output(res.Value.ToString());
-                    }
-                    catch (DyCodeException ex)
-                    {
-                        Printer.Error(ex.ToString());
-                    }
-                    catch (DyRuntimeException ex)
-                    {
-                        Printer.Error(ex.Message);
-                    }
+                    Execute(dym);
                 }
             }
 
@@ -171,8 +159,7 @@ namespace Dyalect
             }
 
             var dym = new DyMachine(made.Value);
-            var res = dym.Execute();
-            Printer.Output(res.Value.ToString());
+            Execute(dym);
             return true;
         }
 
@@ -181,6 +168,23 @@ namespace Dyalect
             var codeBase = typeof(T).Assembly.CodeBase;
             var uri = new UriBuilder(codeBase);
             return Uri.UnescapeDataString(uri.Path);
+        }
+
+        private static void Execute(DyMachine dym)
+        {
+            try
+            {
+                var res = dym.Execute();
+                Printer.Output(res);
+            }
+            catch (DyCodeException ex)
+            {
+                Printer.Error(ex.ToString());
+            }
+            catch (DyRuntimeException ex)
+            {
+                Printer.Error(ex.Message);
+            }
         }
     }
 }

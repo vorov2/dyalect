@@ -25,8 +25,12 @@ namespace Dyalect.Runtime.Types
         public override object ConvertTo(DyObject obj, Type type, ExecutionContext ctx) => obj.AsString();
 
         #region Operations
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) => 
-            new DyString(left.AsString() + right.AsString());
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            var str1 = left.TypeId == StandardType.String ? left.AsString() : left.ToString(ctx).Value;
+            var str2 = right.TypeId == StandardType.String ? right.AsString() : right.ToString(ctx).Value;
+            return new DyString(str1 + str2);
+        }
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
@@ -62,7 +66,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
-            var len = ((DyString)arg).Value.Length;
+            var len = arg.AsString().Length;
             return len == 0 ? DyInteger.Zero
                 : len == 1 ? DyInteger.One
                 : len == 2 ? DyInteger.Two

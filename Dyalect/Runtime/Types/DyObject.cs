@@ -39,8 +39,17 @@ namespace Dyalect.Runtime.Types
             Err.OperationNotSupported(Traits.SetName, this.TypeName(ctx)).Set(ctx);
     }
 
-    internal static class DyObjectExtensions
+    internal static class DyObjectInternalExtensions
     {
         public static string TypeName(this DyObject self, ExecutionContext ctx) => ctx.Assembly.Types[self.TypeId].TypeName;
+
+        public static DyTypeInfo Type(this DyObject self, ExecutionContext ctx) => ctx.Assembly.Types[self.TypeId];
+
+        public static DyString ToString(this DyObject self, ExecutionContext ctx) => ctx.Assembly.Types[self.TypeId].ToString(self, ctx);
+    }
+
+    public static class DyObjectExtensions
+    {
+        public static string Format(this DyObject self, ExecutionContext ctx) => ctx.Assembly.Types[self.TypeId].ToString(self, ctx).AsString();
     }
 }

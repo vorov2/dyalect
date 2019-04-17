@@ -92,7 +92,12 @@ namespace Dyalect.Compiler
         {
             Build(node.Target, hints.Append(Push), ctx);
             AddLinePragma(node);
-            cw.TraitG(node.Name);
+
+            if (node.Name == "toString")
+                cw.Str();
+            else
+                cw.TraitG(node.Name);
+
             PopIf(hints);
         }
 

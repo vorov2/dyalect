@@ -29,7 +29,7 @@ namespace Dyalect.Runtime
         {
             ExecutionContext.Error = null;
             var res = ExecuteModule(0);
-            return ExecutionResult.Fetch(0, res);
+            return ExecutionResult.Fetch(0, res, ExecutionContext);
         }
 
         private DyObject ExecuteModule(int moduleHandle)
@@ -341,6 +341,11 @@ namespace Dyalect.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Pop();
                         right.SetItem(left, evalStack.Pop(), ctx);
+                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                        break;
+                    case OpCode.Str:
+                        right = evalStack.Peek();
+                        evalStack.Replace(types[right.TypeId].ToString(ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.RunMod:

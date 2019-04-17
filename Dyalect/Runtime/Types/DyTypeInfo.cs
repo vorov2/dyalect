@@ -283,6 +283,20 @@ namespace Dyalect.Runtime.Types
                 return len.Call1(arg, ctx);
             return LengthOp(arg, ctx);
         }
+
+        //x.toString
+        private DyFunction tos;
+        protected virtual DyString ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.ToString());
+        internal DyString ToString(DyObject arg, ExecutionContext ctx)
+        {
+            if (tos != null)
+            {
+                var retval = tos.Call1(arg, ctx);
+                return retval.TypeId == StandardType.String ? (DyString)retval : DyString.Empty;
+            }
+
+            return ToStringOp(arg, ctx);
+        }
         #endregion
 
         #region Other Operations
@@ -328,6 +342,7 @@ namespace Dyalect.Runtime.Types
                 case Traits.NotName: not = func; break;
                 case Traits.BitName: bitnot = func; break;
                 case Traits.LenName: len = func; break;
+                case Traits.TosName: tos = func; break;
             }
 
             traits.Remove(name);

@@ -3,6 +3,7 @@
     internal sealed class Op
     {
         public static readonly Op Nop = new Op(OpCode.Nop);
+        public static readonly Op Str = new Op(OpCode.Str);
         public static readonly Op Get = new Op(OpCode.Get);
         public static readonly Op Set = new Op(OpCode.Set);
         public static readonly Op Self = new Op(OpCode.Self);

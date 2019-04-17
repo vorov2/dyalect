@@ -181,6 +181,7 @@ namespace Dyalect.Compiler
         public void Set(int type) => Emit(new Op(OpCode.TraitS, type));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
 
+        public void Str() => Emit(Op.Str);
         public void Get() => Emit(Op.Get);
         public void Set() => Emit(Op.Set);
         public void This() => Emit(Op.This);

@@ -5,6 +5,7 @@
         internal static int[] Op =
         {
             0,  //Nop
+            0,  //Str
             1,  //Self
             1,  //This
             -1, //Pop

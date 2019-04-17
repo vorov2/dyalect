@@ -25,6 +25,7 @@
         public const int Len = 20;
         public const int Get = 21;
         public const int Set = 22;
+        public const int Tos = 23;
 
         public const string AddName = "+";
         public const string SubName = "-";
@@ -48,6 +49,7 @@
         public const string LenName = "#";
         public const string GetName = "get";
         public const string SetName = "set";
+        public const string TosName = "toString";
 
         public const string BoolAndName = "&&";
         public const string BoolOrName = "||";

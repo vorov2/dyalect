@@ -1,4 +1,5 @@
-﻿using Dyalect.Runtime.Types;
+﻿using Dyalect.Runtime;
+using Dyalect.Runtime.Types;
 using System;
 
 namespace Dyalect.Linker
@@ -17,10 +18,15 @@ namespace Dyalect.Linker
             RegisterGlobal<DyObject, DyObject>(CreateArrayName, CreateArray);
         }
 
-        public static DyObject Print(DyObject[] args)
+        public static DyObject Print(ExecutionContext ctx, DyObject[] args)
         {
             foreach (var a in args)
-                Console.Write(a.AsString());
+            {
+                Console.Write(a.ToString(ctx));
+
+                if (ctx.Error != null)
+                    break;
+            }
 
             Console.WriteLine();
             return DyNil.Instance;

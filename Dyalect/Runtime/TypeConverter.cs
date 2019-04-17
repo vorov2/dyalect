@@ -60,10 +60,10 @@ namespace Dyalect.Runtime
                 case TypeCode.UInt16: return (ushort)obj.AsInteger();
                 case TypeCode.UInt32: return (uint)obj.AsInteger();
                 case TypeCode.UInt64: return (ulong)obj.AsInteger();
-                case TypeCode.String: return obj.AsString();
+                case TypeCode.String: return obj.ToString(ctx).AsString();
                 case TypeCode.Char:
                     {
-                        var str = obj.AsString();
+                        var str = obj.ToString(ctx).AsString();
                         return string.IsNullOrEmpty(str) ? '\0' : str[0];
                     }
                 case TypeCode.Single: return (float)obj.AsFloat();
