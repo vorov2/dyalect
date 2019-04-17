@@ -3,10 +3,10 @@
     "colors.foreground": "Black",
     "colors.prefix": "DarkBlue",
     "colors.error": "Red",
-    "colors.warning": "Yellow",
-    "colors.info": "DarkGray",
+    "colors.warning": "DarkYellow",
+    "colors.info": "DarkGreen",
     "colors.header": "DarkMagenta",
-    "colors.subheader": "DarkGreen",
-    "colors.output": "Black",
+    "colors.subheader": "DarkCyan",
+    "colors.output": "DarkYellow",
     "colors.supplementary": "DarkGray"
 }

@@ -49,7 +49,7 @@
         public const string LenName = "#";
         public const string GetName = "get";
         public const string SetName = "set";
-        public const string TosName = "toString";
+        public const string TosName = "`";
 
         public const string BoolAndName = "&&";
         public const string BoolOrName = "||";

@@ -345,7 +345,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Str:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].ToString(ctx));
+                        evalStack.Replace(types[right.TypeId].ToString(right, ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.RunMod:

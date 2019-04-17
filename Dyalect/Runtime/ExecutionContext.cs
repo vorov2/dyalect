@@ -14,6 +14,8 @@ namespace Dyalect.Runtime
 
         public UnitComposition Assembly { get; }
 
+        public bool HasErrors => Error != null;
+
         internal CallStack CallStack { get; }
 
         internal DyError Error { get; set; }

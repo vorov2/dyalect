@@ -37,10 +37,13 @@ namespace Dyalect
                 return;
             }
 
-            if (res.Value is DyString str)
-                Output(str.ToString());
-            else
-                Output(res.Value.Format(res.Context));
+            var fmt = res.Value.Format(res.Context);
+
+            if (res.Context.HasErrors)
+                fmt = res.Value.ToString();
+
+            fmt += " :: " + res.Value.TypeName(res.Context);
+            Output(fmt);
         }
 
         public static void SupplementaryOutput(string data) => WithColor(Theme.SupplementaryOutput, WriteLine(data));

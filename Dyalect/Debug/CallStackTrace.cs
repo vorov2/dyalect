@@ -38,7 +38,12 @@ namespace Dyalect.Debug
             var sb = new StringBuilder();
 
             foreach (var cf in this)
-                sb.AppendLine(cf.ToString());
+            {
+                if (sb.Length > 0)
+                    sb.AppendLine();
+
+                sb.Append(cf.ToString());
+            }
 
             return sb.ToString();
         }

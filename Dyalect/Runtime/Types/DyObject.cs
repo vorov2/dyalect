@@ -41,8 +41,6 @@ namespace Dyalect.Runtime.Types
 
     internal static class DyObjectInternalExtensions
     {
-        public static string TypeName(this DyObject self, ExecutionContext ctx) => ctx.Assembly.Types[self.TypeId].TypeName;
-
         public static DyTypeInfo Type(this DyObject self, ExecutionContext ctx) => ctx.Assembly.Types[self.TypeId];
 
         public static DyString ToString(this DyObject self, ExecutionContext ctx) => ctx.Assembly.Types[self.TypeId].ToString(self, ctx);
@@ -50,6 +48,9 @@ namespace Dyalect.Runtime.Types
 
     public static class DyObjectExtensions
     {
+        public static string TypeName(this DyObject self, ExecutionContext ctx) => 
+            ctx.Assembly.Types[self.TypeId].TypeName;
+
         public static string Format(this DyObject self, ExecutionContext ctx) => 
             ctx.Assembly.Types[self.TypeId].ToString(self, ctx).GetString();
     }

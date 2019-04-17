@@ -178,7 +178,7 @@ namespace Dyalect.Compiler
         public void Br(Label lab) => Emit(OpCode.Br, lab);
         public void Brtrue(Label lab) => Emit(OpCode.Brtrue, lab);
         public void Brfalse(Label lab) => Emit(OpCode.Brfalse, lab);
-        public void Set(int type) => Emit(new Op(OpCode.TraitS, type));
+        public void TraitS(int type) => Emit(new Op(OpCode.TraitS, type));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
 
         public void Str() => Emit(Op.Str);

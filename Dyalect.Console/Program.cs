@@ -40,7 +40,6 @@ namespace Dyalect
             Printer.Header($"Dya (Dyalect Interactive Console). Built {File.GetLastWriteTime(GetPathByType<Dya>())}");
             Printer.Subheader($"Dya version {Meta.Version}");
             Printer.Subheader($"Running {Environment.OSVersion}");
-            Printer.LineFeed();
 
             if (options.FileName != null)
                 return RunAndBye(linker) ? OK : ERR;
@@ -50,6 +49,7 @@ namespace Dyalect
 
                 while (true)
                 {
+                    Printer.LineFeed();
                     Printer.Prefix("dy>");
 
                     var line = Console.ReadLine();

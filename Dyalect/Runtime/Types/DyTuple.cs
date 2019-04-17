@@ -110,6 +110,9 @@ namespace Dyalect.Runtime.Types
 
             for (var i = 0; i < tup.Keys.Length; i++)
             {
+                if (i > 0)
+                    sb.Append(", ");
+
                 var k = tup.Keys[i];
                 var val = tup.Values[i].ToString(ctx);
 

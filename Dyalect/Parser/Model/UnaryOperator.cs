@@ -6,6 +6,7 @@
         Not,
         Neg,
         BitwiseNot,
-        Length
+        Length,
+        ToString
     }
 }

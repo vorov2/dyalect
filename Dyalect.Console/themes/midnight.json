@@ -1,0 +1,12 @@
+﻿{
+    "colors.background": "DarkBlue",
+    "colors.foreground": "White",
+    "colors.prefix": "Yellow",
+    "colors.error": "Red",
+    "colors.warning": "Yellow",
+    "colors.info": "Green",
+    "colors.header": "Cyan",
+    "colors.subheader": "DarkCyan",
+    "colors.output": "Gray",
+    "colors.supplementary": "DarkGray"
+}

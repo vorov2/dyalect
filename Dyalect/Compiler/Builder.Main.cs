@@ -92,12 +92,7 @@ namespace Dyalect.Compiler
         {
             Build(node.Target, hints.Append(Push), ctx);
             AddLinePragma(node);
-
-            if (node.Name == "toString")
-                cw.Str();
-            else
-                cw.TraitG(node.Name);
-
+            cw.TraitG(node.Name);
             PopIf(hints);
         }
 
@@ -456,6 +451,8 @@ namespace Dyalect.Compiler
                 cw.BitNot();
             else if (node.Operator == UnaryOperator.Length)
                 cw.Len();
+            else if (node.Operator == UnaryOperator.ToString)
+                cw.Str();
 
             PopIf(hints);
         }
@@ -548,9 +545,9 @@ namespace Dyalect.Compiler
 
                 if (node.IsMemberFunction)
                 {
-                    cw.Push(node.Name);
+                    cw.Push(node.Name == "-" && node.Parameters.Count == 0 ? "negate" : node.Name);
                     var code = GetTypeHandle(node.TypeName, node.Location);
-                    cw.Set(code);
+                    cw.TraitS(code);
                 }
 
                 AddLinePragma(node);
