@@ -8,7 +8,7 @@ namespace Dyalect
 {
     internal static class Printer
     {
-        public static bool NoColor { get; }
+        public static bool NoColors { get; set; }
 
         public static void Clear()
         {
@@ -79,12 +79,12 @@ namespace Dyalect
         {
             var curcol = Console.ForegroundColor;
 
-            if (!NoColor)
+            if (!NoColors)
                 Console.ForegroundColor = col;
 
             act();
 
-            if (!NoColor)
+            if (!NoColors)
                 Console.ForegroundColor = curcol;
         }
 

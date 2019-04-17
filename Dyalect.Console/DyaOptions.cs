@@ -21,6 +21,12 @@ namespace Dyalect
         [Binding("path", Help = "A path where linker would look for referenced modules. You can specify this switch multiple times.", Category = LINKER)]
         public string[] Paths { get; set; }
 
+        [Binding("nocol", Help = "Disable colors in console.", Category = GENERAL)]
+        public bool NoColors { get; set; }
+
+        [Binding("nologo", Help = "Do not show logo.", Category = GENERAL)]
+        public bool NoLogo { get; set; }
+
         [Binding("theme", Help = "Sets a name of Dyalect Console visual theme.", Category = GENERAL)]
         public string Theme { get; set; }
     }

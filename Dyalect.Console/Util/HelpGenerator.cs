@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Dyalect.Util
@@ -9,23 +10,28 @@ namespace Dyalect.Util
     {
         private const int HELP_LENGTH = 60;
 
-        public static string Generate<T>()
+        public static string Generate<T>(string prefix = "-", int defPad = 0) => Generate(typeof(T), prefix, defPad);
+
+        public static string Generate(Type type, string prefix = "-", int defPad = 0)
         {
             var sb = new StringBuilder();
             var names = new List<string>();
             var helps = new List<string>();
-            var props = typeof(T).GetProperties().Where(p => Attribute.IsDefined(p, typeof(BindingAttribute)));
+            var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance;
+            var props = type.GetProperties(flags)
+                .OfType<MemberInfo>()
+                .Concat(type.GetMethods(flags))
+                .Where(p => Attribute.IsDefined(p, typeof(BindingAttribute)));
 
             foreach (var ac in props)
             {
                 var attr = Attribute.GetCustomAttribute(ac, typeof(BindingAttribute)) as BindingAttribute;
-
                 var ln = new List<string>();
 
                 foreach (var n in attr.Names)
                     ln.Add(n);
 
-                var name = string.Join(", ", ln.Select(n => "-" + n));
+                var name = string.Join(", ", ln.Select(n => prefix + n));
 
                 if (string.IsNullOrEmpty(name))
                     name = "<default>";
@@ -35,14 +41,13 @@ namespace Dyalect.Util
                 helps.Add(help);
             }
 
-            var pad = names.Select(s => s.Length).Max();
+            var pad = defPad > 0 ? defPad : names.Any () ? names.Select(s => s.Length).Max() : 0;
 
             for (var i = 0; i < names.Count; i++)
             {
                 sb.AppendFormat("{0}{1}    ", names[i], new string(' ', pad - names[i].Length));
                 var h = helps[i];
                 SplitHelp(sb, pad, h);
-                sb.AppendLine();
             }
 
             return sb.ToString();

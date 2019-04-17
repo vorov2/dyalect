@@ -26,6 +26,8 @@ namespace Dyalect
             if (!Prepare(args))
                 return ERR;
 
+            Printer.NoColors = options.NoColors;
+
             var buildOptions = new BuilderOptions
             {
                 Debug = options.Debug,
@@ -37,9 +39,13 @@ namespace Dyalect
 
             Printer.Clear();
             Console.Title = $"Dyalect - {startupPath}";
-            Printer.Header($"Dya (Dyalect Interactive Console). Built {File.GetLastWriteTime(GetPathByType<Dya>())}");
-            Printer.Subheader($"Dya version {Meta.Version}");
-            Printer.Subheader($"Running {Environment.OSVersion}");
+
+            if (!options.NoLogo)
+            {
+                Printer.Header($"Dya (Dyalect Interactive Console). Built {File.GetLastWriteTime(GetPathByType<Dya>())}");
+                Printer.Subheader($"Dya version {Meta.Version}");
+                Printer.Subheader($"Running {Environment.OSVersion}");
+            }
 
             if (options.FileName != null)
                 return RunAndBye(linker) ? OK : ERR;
@@ -89,7 +95,7 @@ namespace Dyalect
 
         private static CommandResult? TryRunCommand(string cmd)
         {
-            if (cmd.Length > 1 && cmd[0] == '.')
+            if (cmd.Length > 1 && cmd[0] == CommandDispatcher.Prefix[0])
             {
                 var command = cmd.Substring(1).Trim();
                 int idx;
