@@ -106,5 +106,15 @@ namespace Dyalect.Runtime.Types
             sb.Append(']');
             return new DyString(sb.ToString());
         }
+
+        protected override DyFunction GetTrait(string name, ExecutionContext ctx)
+        {
+            if (name == "iterator")
+            {
+
+            }
+
+            return null;
+        }
     }
 }
