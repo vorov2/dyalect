@@ -16,12 +16,24 @@
 
         public override bool AsBool() => value;
 
-        public override long AsInteger() => value ? 1 : 0;
-
-        public override double AsFloat() => value ? 1d : .0d;
-
         public override object AsObject() => value;
+    }
 
-        public override string AsString() => value ? "true" : "false";
+    internal sealed class DyBoolTypeInfo : DyTypeInfo
+    {
+        public static readonly DyBoolTypeInfo Instance = new DyBoolTypeInfo();
+
+        private DyBoolTypeInfo() : base(StandardType.Bool)
+        {
+
+        }
+
+        public override string TypeName => StandardType.BoolName;
+
+        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
+            args.TakeOne(DyBool.False).AsBool() ? DyBool.True : DyBool.False;
+
+        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
+            ReferenceEquals(arg, DyBool.True) ? "true" : "false";
     }
 }

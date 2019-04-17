@@ -287,13 +287,13 @@ namespace Dyalect.Runtime
                         right = evalStack.Peek();
                         var lst = new FastList<DyObject[]>(captures);
                         lst.Add(locals);
-                        evalStack.Replace(new DyFunction(function.UnitHandle, opd, (int)right.AsInteger(), this, lst));
+                        evalStack.Replace(new DyFunction(function.UnitHandle, opd, (int)right.GetInteger(), this, lst));
                         break;
                     case OpCode.NewFunV:
                         right = evalStack.Peek();
                         var lst1 = new FastList<DyObject[]>(captures);
                         lst1.Add(locals); //-opd
-                        evalStack.Replace(new DyFunction(function.UnitHandle, opd, (int)right.AsInteger(), this, lst1) { Variadic = true });
+                        evalStack.Replace(new DyFunction(function.UnitHandle, opd, (int)right.GetInteger(), this, lst1) { Variadic = true });
                         break;
                     case OpCode.Call:
                         {
@@ -326,9 +326,9 @@ namespace Dyalect.Runtime
                         right = evalStack.Pop();
                         if (opd >= StandardType.All.Count)
                             types[ctx.Assembly.Units[unit.ModuleHandles[opd & byte.MaxValue]].TypeHandles[opd >> 8]]
-                                .SetTraitOp(left.AsString(), right, ctx);
+                                .SetTraitOp(left.GetString(), right, ctx);
                         else
-                            types[opd].SetTraitOp(left.AsString(), right, ctx);
+                            types[opd].SetTraitOp(left.GetString(), right, ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Get:

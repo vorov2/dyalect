@@ -33,10 +33,6 @@ namespace Dyalect.Runtime
                 case TypeCode.Empty: return DyNil.Instance;
             }
 
-            for (var i = StandardType.String + 1; i < ctx.Assembly.Types.Count; i++)
-                if (ctx.Assembly.Types[i].CanConvertFrom(type))
-                    return ctx.Assembly.Types[i].ConvertFrom(obj, type, ctx);
-
             throw new InvalidCastException();
         }
 
@@ -52,29 +48,25 @@ namespace Dyalect.Runtime
             switch (Type.GetTypeCode(type))
             {
                 case TypeCode.Boolean: return obj.AsBool();
-                case TypeCode.Byte: return (byte)obj.AsInteger();
-                case TypeCode.Int16: return (short)obj.AsInteger();
-                case TypeCode.Int32: return (int)obj.AsInteger();
-                case TypeCode.Int64: return obj.AsInteger();
-                case TypeCode.SByte: return (sbyte)obj.AsInteger();
-                case TypeCode.UInt16: return (ushort)obj.AsInteger();
-                case TypeCode.UInt32: return (uint)obj.AsInteger();
-                case TypeCode.UInt64: return (ulong)obj.AsInteger();
-                case TypeCode.String: return obj.ToString(ctx).AsString();
+                case TypeCode.Byte: return (byte)obj.GetInteger();
+                case TypeCode.Int16: return (short)obj.GetInteger();
+                case TypeCode.Int32: return (int)obj.GetInteger();
+                case TypeCode.Int64: return obj.GetInteger();
+                case TypeCode.SByte: return (sbyte)obj.GetInteger();
+                case TypeCode.UInt16: return (ushort)obj.GetInteger();
+                case TypeCode.UInt32: return (uint)obj.GetInteger();
+                case TypeCode.UInt64: return (ulong)obj.GetInteger();
+                case TypeCode.String: return obj.ToString(ctx).GetString();
                 case TypeCode.Char:
                     {
-                        var str = obj.ToString(ctx).AsString();
+                        var str = obj.ToString(ctx).GetString();
                         return string.IsNullOrEmpty(str) ? '\0' : str[0];
                     }
-                case TypeCode.Single: return (float)obj.AsFloat();
-                case TypeCode.Double: return obj.AsFloat();
-                case TypeCode.Decimal: return (decimal)obj.AsFloat();
+                case TypeCode.Single: return (float)obj.GetFloat();
+                case TypeCode.Double: return obj.GetFloat();
+                case TypeCode.Decimal: return (decimal)obj.GetFloat();
                 case TypeCode.Empty: return null;
             }
-
-            for (var i = StandardType.String + 1; i < ctx.Assembly.Types.Count; i++)
-                if (ctx.Assembly.Types[i].CanConvertTo(type))
-                    return ctx.Assembly.Types[i].ConvertTo(obj, type, ctx);
 
             throw new InvalidCastException();
         }

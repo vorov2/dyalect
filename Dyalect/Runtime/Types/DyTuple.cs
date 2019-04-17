@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
@@ -57,9 +58,9 @@ namespace Dyalect.Runtime.Types
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == StandardType.Integer)
-                return GetItem((int)index.AsInteger()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+                return GetItem((int)index.GetInteger()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
             else if (index.TypeId == StandardType.String)
-                return GetItem(index.AsString()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+                return GetItem(index.GetString()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
             else
                 return Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
         }
@@ -76,6 +77,56 @@ namespace Dyalect.Runtime.Types
         private DyObject GetItem(string index)
         {
             return GetItem(GetOrdinal(index));
+        }
+    }
+
+    internal sealed class DyTupleTypeInfo : DyTypeInfo
+    {
+        public static readonly DyTupleTypeInfo Instance = new DyTupleTypeInfo();
+
+        private DyTupleTypeInfo() : base(StandardType.Tuple)
+        {
+
+        }
+
+        public override string TypeName => StandardType.TupleName;
+
+        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) => new DyTuple(new string[args.Length], args);
+
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        {
+            var len = ((DyTuple)arg).Keys.Length;
+            return len == 1 ? DyInteger.One
+                : len == 2 ? DyInteger.Two
+                : len == 3 ? DyInteger.Three
+                : new DyInteger(len);
+        }
+
+        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx)
+        {
+            var tup = (DyTuple)arg;
+            var sb = new StringBuilder();
+            sb.Append('(');
+
+            for (var i = 0; i < tup.Keys.Length; i++)
+            {
+                var k = tup.Keys[i];
+                var val = tup.Values[i].ToString(ctx);
+
+                if (ctx.Error != null)
+                    return DyString.Empty;
+
+                if (k != null)
+                {
+                    sb.Append(k);
+                    sb.Append(": ");
+                }
+
+                sb.Append(val.GetString());
+            }
+
+            sb.Append(')');
+            return new DyString(sb.ToString());
         }
     }
 }

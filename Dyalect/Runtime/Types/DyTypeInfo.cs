@@ -18,31 +18,11 @@ namespace Dyalect.Runtime.Types
             TypeCode = typeCode;
         }
 
-        #region Conversion
-        public virtual bool CanConvertFrom(Type type) => false;
-
-        public bool CanConvertFrom<T>() => CanConvertFrom(typeof(T));
-
-        public T ConvertFrom<T>(T obj, ExecutionContext ctx) where T : DyObject => (T)ConvertFrom(obj, typeof(T), ctx);
-
-        public DyObject ConvertFrom(object obj, ExecutionContext ctx) => ConvertFrom(obj, obj?.GetType(), ctx);
-
-        public virtual DyObject ConvertFrom(object obj, Type type, ExecutionContext ctx) => throw new InvalidCastException();
-
-        public virtual bool CanConvertTo(Type type) => false;
-
-        public bool CanConvertTo<T>() => CanConvertTo(typeof(T));
-
-        public T ConvertTo<T>(DyObject obj, ExecutionContext ctx) => (T)ConvertTo(obj, typeof(T), ctx);
-
-        public virtual object ConvertTo(DyObject obj, Type type, ExecutionContext ctx) => throw new NotSupportedException();
-        #endregion
-
         public abstract DyObject Create(ExecutionContext ctx, params DyObject[] args);
 
         public override object AsObject() => this;
 
-        public override string AsString() => "[" + TypeName + "]";
+        public override string ToString() => "[" + TypeName + "]";
 
         protected override bool TestEquality(DyObject obj) => ((DyTypeInfo)obj).TypeCode == TypeCode;
 
@@ -56,7 +36,7 @@ namespace Dyalect.Runtime.Types
         protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right.TypeId == StandardType.String)
-                return new DyString(left.AsString() + right.AsString());
+                return new DyString(left.ToString(ctx).Value + right.GetString());
 
             return Err.OperationNotSupported(Traits.AddName, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         }
@@ -355,5 +335,23 @@ namespace Dyalect.Runtime.Types
 
         internal protected virtual void Set(DyObject obj, DyObject index, DyObject val, ExecutionContext ctx) => obj.SetItem(index, val, ctx);
         #endregion
+    }
+
+    internal sealed class DyTypeTypeInfo : DyTypeInfo
+    {
+        public static readonly DyTypeTypeInfo Instance = new DyTypeTypeInfo();
+
+        private DyTypeTypeInfo() : base(StandardType.Type)
+        {
+
+        }
+
+        public override string TypeName => StandardType.TypeName;
+
+        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
+            Err.OperationNotSupported(nameof(Create), TypeName).Set(ctx);
+
+        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
+            new DyString("[typeInfo " + TypeName + "]");
     }
 }

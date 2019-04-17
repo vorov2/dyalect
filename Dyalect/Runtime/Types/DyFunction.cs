@@ -212,8 +212,6 @@ namespace Dyalect.Runtime.Types
                 + ")";
         }
 
-        public override string AsString() => ToString();
-
         private string _functionName;
         public string FunctionName
         {
@@ -346,5 +344,23 @@ namespace Dyalect.Runtime.Types
             return ret;
         }
         #endregion
+    }
+
+    internal sealed class DyFunctionTypeInfo : DyTypeInfo
+    {
+        public static readonly DyFunctionTypeInfo Instance = new DyFunctionTypeInfo();
+
+        private DyFunctionTypeInfo() : base(StandardType.Function)
+        {
+
+        }
+
+        public override string TypeName => StandardType.FunctionName;
+
+        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
+            Err.OperationNotSupported(nameof(Create), TypeName).Set(ctx);
+
+        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
+            new DyString(((DyFunction)arg).ToString());
     }
 }

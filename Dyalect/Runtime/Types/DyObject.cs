@@ -12,15 +12,15 @@ namespace Dyalect.Runtime.Types
             TypeId = typeId;
         }
 
-        public override string ToString() => AsString();
+        public override string ToString() => $"[type:{TypeId}]";
 
         public virtual bool AsBool() => true;
 
-        public virtual long AsInteger() => 0L;
+        internal protected virtual long GetInteger() => throw new InvalidCastException();
 
-        public virtual double AsFloat() => .0d;
+        internal protected virtual double GetFloat() => throw new InvalidCastException();
 
-        public virtual string AsString() => "";
+        internal protected virtual string GetString() => throw new InvalidCastException();
 
         public abstract object AsObject();
 
@@ -50,6 +50,7 @@ namespace Dyalect.Runtime.Types
 
     public static class DyObjectExtensions
     {
-        public static string Format(this DyObject self, ExecutionContext ctx) => ctx.Assembly.Types[self.TypeId].ToString(self, ctx).AsString();
+        public static string Format(this DyObject self, ExecutionContext ctx) => 
+            ctx.Assembly.Types[self.TypeId].ToString(self, ctx).GetString();
     }
 }

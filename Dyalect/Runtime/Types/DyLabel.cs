@@ -16,12 +16,27 @@
 
         public override bool AsBool() => Value.AsBool();
 
-        public override long AsInteger() => Value.AsInteger();
-
-        public override double AsFloat() => Value.AsFloat();
-
         public override object AsObject() => Value.AsObject();
+    }
 
-        public override string AsString() => Value.AsString();
+    internal sealed class DyLabelTypeInfo : DyTypeInfo
+    {
+        public static readonly DyLabelTypeInfo Instance = new DyLabelTypeInfo();
+
+        private DyLabelTypeInfo() : base(StandardType.Label)
+        {
+
+        }
+
+        public override string TypeName => StandardType.LabelName;
+
+        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
+            Err.OperationNotSupported(nameof(Create), TypeName).Set(ctx);
+
+        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx)
+        {
+            var lab = (DyLabel)arg;
+            return lab.Label + " " + lab.Value.ToString(ctx).Value;
+        }
     }
 }
