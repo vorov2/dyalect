@@ -1,12 +1,9 @@
-﻿using Dyalect.Parser.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Dyalect
 {
-    internal static class Config
+    internal static class Theme
     {
         public static ConsoleColor Foreground { get; set; }
 
@@ -48,16 +45,16 @@ namespace Dyalect
             {
                 switch (kv.Key.ToLower())
                 {
-                    case "foreground": Foreground = Parse(kv.Value); break;
-                    case "background": Background = Parse(kv.Value); break;
-                    case "error": Error = Parse(kv.Value); break;
-                    case "warning": Warning = Parse(kv.Value); break;
-                    case "info": Info = Parse(kv.Value); break;
-                    case "output": Output = Parse(kv.Value); break;
-                    case "header": Header = Parse(kv.Value); break;
-                    case "subheader": Subheader = Parse(kv.Value); break;
-                    case "supplementaryoutput": SupplementaryOutput = Parse(kv.Value); break;
-                    case "prefix": Prefix = Parse(kv.Value); break;
+                    case "colors.foreground": Foreground = Parse(kv.Value); break;
+                    case "colors.background": Background = Parse(kv.Value); break;
+                    case "colors.error": Error = Parse(kv.Value); break;
+                    case "colors.warning": Warning = Parse(kv.Value); break;
+                    case "colors.info": Info = Parse(kv.Value); break;
+                    case "colors.output": Output = Parse(kv.Value); break;
+                    case "colors.header": Header = Parse(kv.Value); break;
+                    case "colors.subheader": Subheader = Parse(kv.Value); break;
+                    case "colors.supplementary": SupplementaryOutput = Parse(kv.Value); break;
+                    case "colors.prefix": Prefix = Parse(kv.Value); break;
                     default:
                         throw new Exception($"Unknown color code {kv.Key}.");
                 }

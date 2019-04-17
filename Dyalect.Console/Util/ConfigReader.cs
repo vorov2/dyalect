@@ -6,16 +6,12 @@ namespace Dyalect.Util
 {
     public static class ConfigReader
     {
-        private const string FILENAME = "config.json";
-
-        public static IDictionary<string, object> Read()
+        public static IDictionary<string, object> Read(string path)
         {
-            var path = Path.Combine(Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]), FILENAME);
-
             if (!File.Exists(path))
             {
-                Config.SetDefault();
-                Printer.Error($"Config file \"{FILENAME}\" not found.");
+                Theme.SetDefault();
+                Printer.Error($"Config file \"{path}\" not found.");
                 return null;
             }
 
@@ -40,7 +36,7 @@ namespace Dyalect.Util
             }
             catch (Exception ex)
             {
-                Config.SetDefault();
+                Theme.SetDefault();
                 Printer.Error($"Error reading configuration file: {ex.Message}");
                 return null;
             }

@@ -10,32 +10,32 @@ namespace Dyalect
 
         public static void Clear()
         {
-            Console.BackgroundColor = Config.Background;
-            Console.ForegroundColor = Config.Foreground;
+            Console.BackgroundColor = Theme.Background;
+            Console.ForegroundColor = Theme.Foreground;
             Console.Clear();
         }
 
         public static void LineFeed() => Console.WriteLine();
 
-        public static void Prefix(string data) => WithColor(Config.Prefix, Write(data));
+        public static void Prefix(string data) => WithColor(Theme.Prefix, Write(data));
 
-        public static void Error(string data) => WithColor(Config.Error, WriteLine(data));
+        public static void Error(string data) => WithColor(Theme.Error, WriteLine(data));
 
-        public static void Warning(string data) => WithColor(Config.Warning, WriteLine(data));
+        public static void Warning(string data) => WithColor(Theme.Warning, WriteLine(data));
 
-        public static void Information(string data) => WithColor(Config.Info, WriteLine(data));
+        public static void Information(string data) => WithColor(Theme.Info, WriteLine(data));
 
-        public static void Output(string data) => WithColor(Config.Output, WriteLine(data));
+        public static void Output(string data) => WithColor(Theme.Output, WriteLine(data));
 
-        public static void SupplementaryOutput(string data) => WithColor(Config.SupplementaryOutput, WriteLine(data));
+        public static void SupplementaryOutput(string data) => WithColor(Theme.SupplementaryOutput, WriteLine(data));
 
         public static void Header(params string[] lines)
         {
             foreach (var l in lines)
-                WithColor(Config.Header, WriteLine(l));
+                WithColor(Theme.Header, WriteLine(l));
         }
 
-        public static void Subheader(string data) => WithColor(Config.Subheader, WriteLine(data));
+        public static void Subheader(string data) => WithColor(Theme.Subheader, WriteLine(data));
 
         public static void PrintErrors(IEnumerable<BuildMessage> messages)
         {

@@ -30,8 +30,7 @@ namespace Dyalect.Util
 
         public static T Read<T>(string[] args, IDictionary<string, object> config) where T : new()
         {
-            var options = config.TryGetValue("options", out var obj) && obj is IDictionary<string, object> dict 
-                ? Parse(args, dict) : Parse(args, null);
+            var options = Parse(args, config);
 
             var bag = ProcessOptionBag<T>(options);
 

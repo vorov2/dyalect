@@ -17,9 +17,12 @@ namespace Dyalect
         private const int OK = 0;
         private static DyaOptions options;
         private static IDictionary<string, object> config;
+        private static string startupPath;
 
         public static int Main(string[] args)
         {
+            startupPath = Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
+
             if (!Prepare(args))
                 return ERR;
 
@@ -29,14 +32,14 @@ namespace Dyalect
                 NoLangModule = options.NoLang
             };
 
-            var lookup = FileLookup.Create(Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]), options.Paths);
+            var lookup = FileLookup.Create(startupPath, options.Paths);
             var linker = new DyIncrementalLinker(lookup, buildOptions);
 
             Printer.Clear();
-            Printer.Header(
-                $"Dya (Dyalect Interactive Console). Built {File.GetLastWriteTime(GetPathByType<Dya>())}",
-                $"Dya version {Meta.Version}"
-                );
+            Console.Title = $"Dyalect - {startupPath}";
+            Printer.Header($"Dya (Dyalect Interactive Console). Built {File.GetLastWriteTime(GetPathByType<Dya>())}");
+            Printer.Subheader($"Dya version {Meta.Version}");
+            Printer.Subheader($"Running {Environment.OSVersion}");
             Printer.LineFeed();
 
             if (options.FileName != null)
@@ -120,23 +123,40 @@ namespace Dyalect
         {
             try
             {
-                config = ConfigReader.Read();
+                config = ConfigReader.Read(Path.Combine(startupPath, "config.json"));
                 options = CommandLineReader.Read<DyaOptions>(args, config);
             }
             catch (DyaException ex)
             {
-                Config.SetDefault();
                 Printer.Error(ex.Message);
                 return false;
             }
 
-            if (!config.TryGetValue("colors", out var colorObj) || !(colorObj is IDictionary<string, object> colors))
+            try
             {
-                Printer.Error("Missing console color information from configuration file.");
+                if (!string.IsNullOrWhiteSpace(options.Theme))
+                {
+                    var fullPath = Path.Combine(startupPath, "themes", options.Theme + ".json");
+
+                    if (!File.Exists(fullPath))
+                    {
+                        Printer.Error($"Unable to find theme file: {fullPath}.");
+                        return false;
+                    }
+
+                    var colors = ConfigReader.Read(fullPath);
+                    Theme.Read(colors);
+                }
+                else
+                    Theme.SetDefault();
+            }
+            catch (DyaException ex)
+            {
+                Theme.SetDefault();
+                Printer.Error(ex.Message);
                 return false;
             }
 
-            Config.Read(colors);
             return true;
         }
 
