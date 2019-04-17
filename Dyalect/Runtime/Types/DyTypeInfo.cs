@@ -20,7 +20,7 @@ namespace Dyalect.Runtime.Types
 
         public abstract DyObject Create(ExecutionContext ctx, params DyObject[] args);
 
-        public override object AsObject() => this;
+        public override object ToObject() => this;
 
         public override string ToString() => "[" + TypeName + "]";
 
@@ -234,7 +234,7 @@ namespace Dyalect.Runtime.Types
         //!x
         private DyFunction not;
         protected virtual DyObject NotOp(DyObject arg, ExecutionContext ctx) =>
-            arg.AsBool() ? DyBool.False : DyBool.True;
+            arg.GetBool() ? DyBool.False : DyBool.True;
         internal DyObject Not(DyObject arg, ExecutionContext ctx)
         {
             if (not != null)

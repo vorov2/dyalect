@@ -14,9 +14,9 @@
 
         protected override bool TestEquality(DyObject obj) => ReferenceEquals(this, obj);
 
-        public override bool AsBool() => Value.AsBool();
+        protected internal override bool GetBool() => Value.GetBool();
 
-        public override object AsObject() => Value.AsObject();
+        public override object ToObject() => Value.ToObject();
     }
 
     internal sealed class DyLabelTypeInfo : DyTypeInfo

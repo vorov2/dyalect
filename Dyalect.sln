@@ -16,7 +16,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{F07E65
 		Common\Meta.cs = Common\Meta.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dyalect.Console", "Dyalect.Console\Dyalect.Console.csproj", "{35777D7A-C304-45E8-9323-088298491476}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dyalect.Console", "Dyalect.Console\Dyalect.Console.csproj", "{35777D7A-C304-45E8-9323-088298491476}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{CF92CF03-87D2-47AD-BCE7-2AA9A43D8E2D}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\Changes.md = Docs\Changes.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

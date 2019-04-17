@@ -9,9 +9,9 @@
             
         }
 
-        public override object AsObject() => null;
+        public override object ToObject() => null;
 
-        public override bool AsBool() => false;
+        protected internal override bool GetBool() => false;
 
         protected override bool TestEquality(DyObject obj) => ReferenceEquals(this, obj);
     }

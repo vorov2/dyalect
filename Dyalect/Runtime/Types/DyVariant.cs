@@ -15,7 +15,7 @@
 
         internal DyObject[] Values { get; }
 
-        public override object AsObject() => this;
+        public override object ToObject() => this;
 
         //internal override DyObject GetItem(int index)
         //{

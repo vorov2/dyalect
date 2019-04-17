@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
             Values = values;
         }
 
-        public override object AsObject() => ToDictionary();
+        public override object ToObject() => ToDictionary();
 
         public IDictionary<string, object> ToDictionary()
         {
@@ -27,11 +27,11 @@ namespace Dyalect.Runtime.Types
 
                 try
                 {
-                    dict.Add(k, Values[i].AsObject());
+                    dict.Add(k, Values[i].ToObject());
                 }
                 catch
                 {
-                    dict.Add(Guid.NewGuid().ToString(), Values[i].AsObject());
+                    dict.Add(Guid.NewGuid().ToString(), Values[i].ToObject());
                 }
             }
 

@@ -30,11 +30,11 @@
 
         protected override bool TestEquality(DyObject obj) => value == obj.GetFloat();
 
-        public override object AsObject() => value;
+        public override object ToObject() => value;
 
         internal protected override double GetFloat() => value;
 
-        public override bool AsBool() => value > .00001d;
+        protected internal override bool GetBool() => value > .00001d;
     }
 
     internal sealed class DyFloatTypeInfo : DyTypeInfo

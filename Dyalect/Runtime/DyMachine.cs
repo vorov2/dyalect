@@ -147,11 +147,11 @@ namespace Dyalect.Runtime
                         offset = opd;
                         break;
                     case OpCode.Brtrue:
-                        if (evalStack.Pop().AsBool())
+                        if (evalStack.Pop().GetBool())
                             offset = opd;
                         break;
                     case OpCode.Brfalse:
-                        if (!evalStack.Pop().AsBool())
+                        if (!evalStack.Pop().GetBool())
                             offset = opd;
                         break;
                     case OpCode.Shl:

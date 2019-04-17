@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
             this.globals = globals;
         }
 
-        public override object AsObject() => Unit;
+        public override object ToObject() => Unit;
 
         protected override bool TestEquality(DyObject obj) => ReferenceEquals(Unit, ((DyModule)obj).Unit);
     }

@@ -14,7 +14,7 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => $"[type:{TypeId}]";
 
-        public virtual bool AsBool() => true;
+        protected internal virtual bool GetBool() => true;
 
         internal protected virtual long GetInteger() => throw new InvalidCastException();
 
@@ -22,7 +22,7 @@ namespace Dyalect.Runtime.Types
 
         internal protected virtual string GetString() => throw new InvalidCastException();
 
-        public abstract object AsObject();
+        public abstract object ToObject();
 
         protected abstract bool TestEquality(DyObject obj);
         public bool Equals(DyObject obj)

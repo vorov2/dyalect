@@ -13,7 +13,7 @@ namespace Dyalect.Runtime.Types
             Value = str;
         }
 
-        public override object AsObject() => Value;
+        public override object ToObject() => Value;
 
         public override string ToString() => Value;
 

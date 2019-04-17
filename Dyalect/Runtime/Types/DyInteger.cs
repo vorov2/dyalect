@@ -30,9 +30,9 @@ namespace Dyalect.Runtime.Types
 
         protected override bool TestEquality(DyObject obj) => value == obj.GetInteger();
 
-        public override object AsObject() => value;
+        public override object ToObject() => value;
 
-        public override bool AsBool() => value != 0;
+        protected internal override bool GetBool() => value != 0;
 
         internal protected override double GetFloat() => value;
 

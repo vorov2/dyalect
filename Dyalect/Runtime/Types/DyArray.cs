@@ -14,7 +14,7 @@ namespace Dyalect.Runtime.Types
             Values = values;
         }
 
-        public override object AsObject() => Values;
+        public override object ToObject() => Values.Select(v => v.ToObject()).ToArray();
 
         protected override bool TestEquality(DyObject obj)
         {
