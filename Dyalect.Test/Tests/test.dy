@@ -65,7 +65,7 @@ func iter(n, act) {
 }
 
 iter(6000, n => print("Running ", n))
-*/
+
 
 var arr = makeList(1000000)
 var iter = arr.iterator()
@@ -77,3 +77,10 @@ while (el = iter())[0] {
 }
 
 print("Finished!")
+*/
+
+var arr = makeList(10)
+
+for x in arr {
+    print (x)
+}

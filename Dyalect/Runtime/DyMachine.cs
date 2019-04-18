@@ -98,7 +98,8 @@ namespace Dyalect.Runtime
                         evalStack.Push(function.Self ?? DyNil.Instance);
                         break;
                     case OpCode.Term:
-                        if (evalStack.Size > 1) throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
+                        if (evalStack.Size > 1 || evalStack.Size == 0)
+                            throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
                         modules[function.UnitId] = locals;
                         return evalStack.Pop();
                     case OpCode.Pop:

@@ -85,6 +85,9 @@ namespace Dyalect.Compiler
                 case NodeType.Trait:
                     Build((DTrait)node, hints, ctx);
                     break;
+                case NodeType.For:
+                    Build((DFor)node, hints, ctx);
+                    break;
             }
         }
 
@@ -271,27 +274,37 @@ namespace Dyalect.Compiler
             };
             StartScope(false, node.Location);
 
-            //Build(node.Target, hints.Append(Push), ctx);
+            var inc = AddVariable(node.Variable.Value, node.Variable, VarFlags.Const);
+            var sys = AddVariable();
+            Build(node.Target, hints.Append(Push), ctx);
+            cw.TraitG("iterator");
+            cw.Call(0);
+            cw.PopVar(sys);
 
+            var iter = cw.DefineLabel();
+            cw.MarkLabel(iter);
+            cw.PushVar(new ScopeVar(sys));
+            cw.Call(0);
+            cw.Dup();
+            cw.Push(0);
+            cw.Get();
+            cw.Brfalse(ctx.BlockExit);
 
-            //var iter = cw.DefineLabel();
+            cw.Push(1);
+            cw.Get();
+            cw.PopVar(inc);
 
-            //cw.MarkLabel(iter);
-            //Build(node.Variable, hints.Append(Pop), ctx);
+            Build(node.Body, hints.Remove(Push), ctx);
 
-            //Build(node.Condition, hints.Append(Push), ctx);
-            //cw.Brfalse(ctx.BlockExit);
+            cw.MarkLabel(ctx.BlockSkip);
+            cw.Br(iter);
 
-            //Build(node.Body, hints.Remove(Push), ctx);
-
-            //cw.MarkLabel(ctx.BlockSkip);
-            //cw.Br(iter);
-
-            //cw.MarkLabel(ctx.BlockExit);
-            //PushIf(hints);
-            //AddLinePragma(node);
-            //cw.MarkLabel(ctx.BlockBreakExit);
-            //cw.Nop();
+            cw.MarkLabel(ctx.BlockExit);
+            cw.Pop();
+            PushIf(hints);
+            AddLinePragma(node);
+            cw.MarkLabel(ctx.BlockBreakExit);
+            cw.Nop();
             EndScope();
         }
 

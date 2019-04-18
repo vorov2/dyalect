@@ -332,8 +332,8 @@ namespace Dyalect.Parser
 				Statement(out node);
 				block.Nodes.Add(node); 
 			}
-			node = block; 
 		}
+		node = block; 
 		Expect(28);
 	}
 
