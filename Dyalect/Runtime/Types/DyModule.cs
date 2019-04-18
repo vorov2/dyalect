@@ -16,8 +16,6 @@ namespace Dyalect.Runtime.Types
         }
 
         public override object ToObject() => Unit;
-
-        protected override bool TestEquality(DyObject obj) => ReferenceEquals(Unit, ((DyModule)obj).Unit);
     }
 
     internal sealed class DyModuleTypeInfo : DyTypeInfo

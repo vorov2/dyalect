@@ -94,20 +94,10 @@ namespace Dyalect.Runtime.Types
 
         protected internal override string GetKey(int index)
         {
-            throw new NotImplementedException();
-        }
+            if (index == 0)
+                return key1;
 
-        protected override bool TestEquality(DyObject obj)
-        {
-            var tup = (DyTuple)obj;
-
-            if (Count != tup.Count)
-                return false;
-
-            return key1 == tup.GetKey(0)
-                && value1.Equals(tup.GetItem(0))
-                && key2 == tup.GetKey(1)
-                && value2.Equals(tup.GetItem(1));
+            return key2;
         }
     }
 
@@ -143,23 +133,6 @@ namespace Dyalect.Runtime.Types
             }
 
             return dict;
-        }
-
-        protected override bool TestEquality(DyObject obj)
-        {
-            var t = (DyTuple)obj;
-
-            if (Count != t.Count)
-                return false;
-
-            for (var i = 0; i < keys.Length; i++)
-            {
-                if (keys[i] != t.GetKey(i)
-                    || values[i].Equals(t.GetItem(i)))
-                    return false;
-            }
-
-            return true;
         }
 
         protected internal override int GetOrdinal(string name) => Array.IndexOf(keys, name);

@@ -1,4 +1,16 @@
 # 0.2.0
+ * Added support for special `iterator` function which can be
+    implemented for any type. This function is used to iterate
+    through containers. It should another function (a closure)
+    which in turn should iterate over a collection by yielding
+    a tuple in a form `(bool, value)`, where `bool` if a
+    boolean flag which determines where a function has
+    returned something and `value` is an returned element 
+    (if any). This is pretty similar to `IEnumerator` from
+    .NET but uses a single closure instead of an interface
+    with two methods.
+ * A `for` cycle (based on the iterator functionality) is
+    implemented, e.g.: `for x in seq { doSomething(x) }`.
  * Multiple refactorings and optimizations in the function
     invocation code.
  * A bug fixed in standard `toString` function implementation

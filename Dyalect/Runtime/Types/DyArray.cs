@@ -17,22 +17,6 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => Values.Select(v => v.ToObject()).ToArray();
 
-        protected override bool TestEquality(DyObject obj)
-        {
-            var t = (DyArray)obj;
-
-            if (Values.Length != t.Values.Length)
-                return false;
-
-            for (var i = 0; i < Values.Length; i++)
-            {
-                if (Values[i].Equals(t.Values[i]))
-                    return false;
-            }
-
-            return true;
-        }
-
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == StandardType.Integer)

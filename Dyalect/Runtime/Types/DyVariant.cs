@@ -24,25 +24,6 @@
         //    return Values[index];
         //}
 
-        protected override bool TestEquality(DyObject obj)
-        {
-            if (obj.TypeId != TypeId)
-                return false;
-
-            var v = (DyVariant)obj;
-
-            if (v.Tag != Tag)
-                return false;
-
-            for (var i = 0; i < Keys.Length; i++)
-            {
-                if (Keys[i] != v.Keys[i] || !Values[i].Equals(v.Values[i]))
-                    return false;
-            }
-
-            return true;
-        }
-
         //internal override DyObject GetItem(string key)
         //{
         //    var i = GetOrdinal(key);

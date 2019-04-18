@@ -29,8 +29,6 @@ namespace Dyalect.Runtime.Types
                 return false;
         }
 
-        protected override bool TestEquality(DyObject obj) => Value == obj.GetString();
-
         internal protected override string GetString() => Value;
 
         public static implicit operator string(DyString str) => str.Value;

@@ -12,8 +12,6 @@
             Value = value;
         }
 
-        protected override bool TestEquality(DyObject obj) => ReferenceEquals(this, obj);
-
         protected internal override bool GetBool() => Value.GetBool();
 
         public override object ToObject() => Value.ToObject();

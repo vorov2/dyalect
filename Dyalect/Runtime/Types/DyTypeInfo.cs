@@ -24,8 +24,6 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => "[" + TypeName + "]";
 
-        protected override bool TestEquality(DyObject obj) => ((DyTypeInfo)obj).TypeCode == TypeCode;
-
         public abstract string TypeName { get; }
 
         public int TypeCode { get; internal set; }

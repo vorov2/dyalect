@@ -28,8 +28,6 @@ namespace Dyalect.Runtime.Types
                 return false;
         }
 
-        protected override bool TestEquality(DyObject obj) => value == obj.GetInteger();
-
         public override object ToObject() => value;
 
         protected internal override bool GetBool() => value != 0;

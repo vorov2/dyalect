@@ -12,8 +12,6 @@
             this.value = value;
         }
 
-        protected override bool TestEquality(DyObject obj) => ReferenceEquals(this, obj);
-
         protected internal override bool GetBool() => value;
 
         public override object ToObject() => value;

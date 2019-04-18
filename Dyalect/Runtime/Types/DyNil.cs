@@ -12,8 +12,6 @@
         public override object ToObject() => null;
 
         protected internal override bool GetBool() => false;
-
-        protected override bool TestEquality(DyObject obj) => ReferenceEquals(this, obj);
     }
 
     internal sealed class DyNilTypeInfo : DyTypeInfo

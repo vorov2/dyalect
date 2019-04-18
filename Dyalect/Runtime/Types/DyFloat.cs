@@ -28,8 +28,6 @@
                 return false;
         }
 
-        protected override bool TestEquality(DyObject obj) => value == obj.GetFloat();
-
         public override object ToObject() => value;
 
         internal protected override double GetFloat() => value;

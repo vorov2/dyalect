@@ -43,8 +43,6 @@ namespace Dyalect.Runtime.Types
             };
         }
 
-        protected override bool TestEquality(DyObject obj) => ReferenceEquals(this, obj);
-
         internal bool IsExternal => Handle == EXT_HANDLE;
 
         internal bool IsOverloaded => Handle == OVL_HANDLE;
