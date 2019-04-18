@@ -357,6 +357,16 @@ namespace Dyalect.Runtime
                         evalStack.Push(right.GetItem(left, ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
+                    case OpCode.Get0:
+                        right = evalStack.Pop();
+                        evalStack.Push(right.GetItem(DyInteger.Zero, ctx));
+                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                        break;
+                    case OpCode.Get1:
+                        right = evalStack.Pop();
+                        evalStack.Push(right.GetItem(DyInteger.One, ctx));
+                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                        break;
                     case OpCode.Set:
                         left = evalStack.Pop();
                         right = evalStack.Pop();

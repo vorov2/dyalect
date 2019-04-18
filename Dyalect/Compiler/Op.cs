@@ -5,6 +5,8 @@
         public static readonly Op Nop = new Op(OpCode.Nop);
         public static readonly Op Str = new Op(OpCode.Str);
         public static readonly Op Get = new Op(OpCode.Get);
+        public static readonly Op Get0 = new Op(OpCode.Get0);
+        public static readonly Op Get1 = new Op(OpCode.Get1);
         public static readonly Op Set = new Op(OpCode.Set);
         public static readonly Op Self = new Op(OpCode.Self);
         public static readonly Op This = new Op(OpCode.This);

@@ -286,12 +286,10 @@ namespace Dyalect.Compiler
             cw.PushVar(new ScopeVar(sys));
             cw.Call(0);
             cw.Dup();
-            cw.Push(0);
-            cw.Get();
+            cw.Get(0);
             cw.Brfalse(ctx.BlockExit);
 
-            cw.Push(1);
-            cw.Get();
+            cw.Get(1);
             cw.PopVar(inc);
 
             Build(node.Body, hints.Remove(Push), ctx);

@@ -180,6 +180,18 @@ namespace Dyalect.Compiler
         public void Brfalse(Label lab) => Emit(OpCode.Brfalse, lab);
         public void TraitS(int type) => Emit(new Op(OpCode.TraitS, type));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
+        public void Get(int n)
+        {
+            if (n == 0)
+                Emit(Op.Get0);
+            else if (n == 1)
+                Emit(Op.Get1);
+            else
+            {
+                Push(n);
+                Emit(Op.Get);
+            }
+        }
 
         public void Str() => Emit(Op.Str);
         public void Get() => Emit(Op.Get);
