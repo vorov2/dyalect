@@ -158,9 +158,6 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.TupleName;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) => 
-            DyTuple.Create(new string[args.Length], args);
-
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = ((DyTuple)arg).Count;

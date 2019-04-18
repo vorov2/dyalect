@@ -9,8 +9,7 @@ namespace Dyalect.Runtime.Types
         internal delegate object CallHandler(params object[] args);
 
         internal const int EXT_HANDLE = -1;
-        internal const int OVL_HANDLE = -2;
-        private const string DEF_NAME = "<func>";
+        internal const string DefaultName = "<func>";
         private readonly DyMachine vm;
         internal FastList<DyObject[]> Captures;
 
@@ -44,8 +43,6 @@ namespace Dyalect.Runtime.Types
         }
 
         internal bool IsExternal => Handle == EXT_HANDLE;
-
-        internal bool IsOverloaded => Handle == OVL_HANDLE;
 
         internal int UnitId { get; }
 
@@ -133,7 +130,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Call3(DyObject arg1, DyObject arg2, DyObject arg3, ExecutionContext ctx)
         {
             if (vm == null)
-                return null;
+                return Call(ctx, arg1, arg2, arg3);
 
             var layout = vm.Assembly.Units[UnitId].Layouts[Handle];
             var newStack = new EvalStack(layout.StackSize);
@@ -146,7 +143,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (vm == null)
-                return null;
+                return Call(ctx, left, right);
 
             var layout = vm.Assembly.Units[UnitId].Layouts[Handle];
             var newStack = new EvalStack(layout.StackSize);
@@ -158,7 +155,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Call1(DyObject obj, ExecutionContext ctx)
         {
             if (vm == null)
-                return null;
+                return Call(ctx, obj);
 
             var layout = vm.Assembly.Units[UnitId].Layouts[Handle];
             var newStack = new EvalStack(layout.StackSize);
@@ -168,7 +165,7 @@ namespace Dyalect.Runtime.Types
             return vm.ExecuteWithData(this, newStack);
         }
 
-        protected virtual string GetFunctionName() => GetFunSym()?.Name ?? DEF_NAME;
+        protected virtual string GetFunctionName() => GetFunSym()?.Name ?? DefaultName;
 
         public string[] GetParameterNames()
         {
@@ -228,7 +225,7 @@ namespace Dyalect.Runtime.Types
                 if (_functionName == null)
                     _functionName = GetFunctionName();
 
-                return _functionName ?? DEF_NAME;
+                return _functionName ?? DefaultName;
             }
         }
 
@@ -367,6 +364,27 @@ namespace Dyalect.Runtime.Types
             return ret;
         }
         #endregion
+    }
+
+    public abstract class DyForeignFunction : DyFunction
+    {
+        private readonly string name;
+
+        protected DyForeignFunction(string name, int pars) : base(0, EXT_HANDLE, pars, null, null)
+        {
+            this.name = name ?? DefaultName;
+        }
+
+        protected override string GetFunctionName() => name;
+
+        internal override DyFunction Clone(DyObject arg)
+        {
+            var clone = Clone();
+            clone.Self = arg;
+            return clone;
+        }
+
+        protected virtual DyFunction Clone() => (DyForeignFunction)MemberwiseClone();
     }
 
     internal sealed class DyDelegateFunction : DyFunction
@@ -664,9 +682,6 @@ namespace Dyalect.Runtime.Types
         }
 
         public override string TypeName => StandardType.FunctionName;
-
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            Err.OperationNotSupported(nameof(Create), TypeName).Set(ctx);
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(((DyFunction)arg).ToString());

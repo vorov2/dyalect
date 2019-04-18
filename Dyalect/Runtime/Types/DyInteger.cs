@@ -49,9 +49,6 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.IntegerName;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            new DyInteger(args.TakeOne(DyInteger.Zero).GetInteger());
-
         #region Binary Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {

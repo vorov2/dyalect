@@ -27,9 +27,6 @@
 
         protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            Err.OperationNotSupported(nameof(Create), TypeName).Set(ctx);
-
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
     }
 }

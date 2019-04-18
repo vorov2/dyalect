@@ -60,9 +60,6 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.StringName;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            new DyString(args.TakeOne(DyString.Empty).ToString(ctx));
-
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {

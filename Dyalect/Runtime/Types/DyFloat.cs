@@ -46,9 +46,6 @@
 
         public override string TypeName => StandardType.FloatName;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            new DyFloat(args.TakeOne(DyFloat.Zero).GetFloat());
-
         #region Binary Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {

@@ -56,8 +56,6 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.ArrayName;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) => new DyArray(args);
-
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = ((DyArray)arg).Values.Length;

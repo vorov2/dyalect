@@ -28,9 +28,6 @@
 
         public override string TypeName => StandardType.BoolName;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            args.TakeOne(DyBool.False).GetBool() ? DyBool.True : DyBool.False;
-
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
             ReferenceEquals(arg, DyBool.True) ? "true" : "false";
     }

@@ -28,9 +28,6 @@
 
         public override string TypeName => StandardType.LabelName;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            Err.OperationNotSupported(nameof(Create), TypeName).Set(ctx);
-
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var lab = (DyLabel)arg;

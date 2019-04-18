@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Dyalect.Compiler;
 using System.Collections.Generic;
-using Dyalect.Compiler;
 
 namespace Dyalect.Runtime.Types
 {
@@ -8,25 +7,18 @@ namespace Dyalect.Runtime.Types
     {
         private readonly Dictionary<string, DyFunction> traits = new Dictionary<string, DyFunction>();
 
-        public DyTypeInfo() : base(StandardType.Type)
-        {
+        public override object ToObject() => this;
 
-        }
+        public override string ToString() => TypeName.PutInBrackets();
+
+        public abstract string TypeName { get; }
+
+        public int TypeCode { get; internal set; }
 
         internal DyTypeInfo(int typeCode) : base(StandardType.Type)
         {
             TypeCode = typeCode;
         }
-
-        public abstract DyObject Create(ExecutionContext ctx, params DyObject[] args);
-
-        public override object ToObject() => this;
-
-        public override string ToString() => "[" + TypeName + "]";
-
-        public abstract string TypeName { get; }
-
-        public int TypeCode { get; internal set; }
 
         #region Binary Operations
         //x + y
@@ -275,28 +267,6 @@ namespace Dyalect.Runtime.Types
 
             return ToStringOp(arg, ctx);
         }
-
-        private DyFunction next;
-        protected virtual DyObject MoveNextOp(DyObject obj, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.NextName, obj.TypeName(ctx)).Set(ctx);
-        internal DyObject MoveNext(DyObject obj, ExecutionContext ctx)
-        {
-            if (next != null)
-                return next.Call1(obj, ctx);
-
-            return MoveNextOp(obj, ctx);
-        }
-
-        private DyFunction cur;
-        protected virtual DyObject GetCurrentOp(DyObject obj, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.NextName, obj.TypeName(ctx)).Set(ctx);
-        internal DyObject GetCurrent(DyObject obj, ExecutionContext ctx)
-        {
-            if (cur != null)
-                return cur.Call1(obj, ctx);
-
-            return GetCurrentOp(obj, ctx);
-        }
         #endregion
 
         #region Other Operations
@@ -376,10 +346,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.TypeName;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            Err.OperationNotSupported(nameof(Create), TypeName).Set(ctx);
-
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString("[typeInfo " + TypeName + "]");
+            new DyString(("typeInfo " + TypeName).PutInBrackets());
     }
 }

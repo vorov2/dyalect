@@ -56,37 +56,12 @@
 
     internal sealed class DyVariantTypeInfo : DyTypeInfo
     {
-        public DyVariantTypeInfo(int typeCode, string typeName)
+        public DyVariantTypeInfo(int typeCode, string typeName) : base(typeCode)
         {
-            TypeCode = typeCode;
             TypeName = typeName;
         }
 
         public override string TypeName { get; }
-
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args)
-        {
-            //Runtime guarantees that there is at least one arguments and
-            //this is a name handle (from IndexedStrings) of a constructor
-            var tag = (int)args[0].GetInteger();
-
-            if (args.Length > 1)
-            {
-                var size = (args.Length - 1) / 2;
-                var keys = new string[size];
-                var values = new DyObject[size];
-
-                for (var i = 1; i < args.Length; i += 2)
-                {
-                    keys[(i - 1) / 2] = args[i].ToString(ctx);
-                    values[(i - 1) / 2] = args[i + 1];
-                }
-
-                return new DyVariant(TypeCode, tag, keys, values);
-            }
-
-            return new DyVariant(TypeCode, tag, null, null);
-        }
 
         //protected override DyObject GetOp(DyObject obj, DyObject index, ExecutionContext ctx)
         //{

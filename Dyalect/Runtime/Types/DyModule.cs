@@ -29,9 +29,6 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.ModuleName;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            Err.OperationNotSupported(nameof(Create), TypeName).Set(ctx);
-
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => 
             "[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]";
     }
