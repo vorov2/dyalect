@@ -1,5 +1,7 @@
-﻿using Dyalect.Parser;
+﻿using Dyalect.Compiler;
+using Dyalect.Parser;
 using System;
+using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
@@ -113,6 +115,71 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => StringUtil.Escape(arg.GetString());
+
+        private DyObject GetIterator(DyObject obj, ExecutionContext ctx) => new DyStringIterator((DyString)obj);
+
+        protected override DyFunction GetTrait(string name, ExecutionContext ctx)
+        {
+            if (name == "iterator")
+                return new DyMemberFunction(name, GetIterator);
+
+            return null;
+        }
         #endregion
+    }
+
+    internal sealed class DyStringIterator : DyObject
+    {
+        internal DyString String { get; }
+
+        internal int Index { get; set; } = -1;
+
+        public DyStringIterator(DyString str) : base(StandardType.StringIterator)
+        {
+            String = str;
+        }
+
+        public override object ToObject() => ((IEnumerable<object>)String.ToObject()).GetEnumerator();
+
+        protected override bool TestEquality(DyObject obj) => String.Equals(((DyStringIterator)obj).String);
+    }
+
+    internal sealed class DyStringIteratorTypeInfo : DyTypeInfo
+    {
+        public static readonly DyTypeInfo Instance = new DyStringIteratorTypeInfo();
+
+        public DyStringIteratorTypeInfo() : base(StandardType.StringIterator)
+        {
+
+        }
+
+        protected override DyObject MoveNextOp(DyObject obj, ExecutionContext ctx)
+        {
+            var iter = (DyStringIterator)obj;
+            iter.Index++;
+            return iter.Index < iter.String.Value.Length ? DyBool.True : DyBool.False;
+        }
+
+        protected override DyObject GetCurrentOp(DyObject obj, ExecutionContext ctx)
+        {
+            var iter = (DyStringIterator)obj;
+            return new DyString(iter.String.Value[iter.Index].ToString());
+        }
+
+        protected override DyFunction GetTrait(string name, ExecutionContext ctx)
+        {
+            if (name == Traits.NextName)
+                return new DyMemberFunction(name, MoveNextOp);
+
+            if (name == Traits.CurName)
+                return new DyMemberFunction(name, GetCurrentOp);
+
+            return null;
+        }
+
+        public override string TypeName => StandardType.StringIteratorName;
+
+        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
+            throw new NotImplementedException();
     }
 }
