@@ -61,7 +61,7 @@ namespace Dyalect.Runtime.Types
 
         internal DyObject Self { get; set; }
 
-        internal DyFunction Clone(DyObject arg)
+        internal virtual DyFunction Clone(DyObject arg)
         {
             return new DyFunction(UnitId, Handle, ParameterNumber, vm, Captures)
             {
@@ -385,8 +385,39 @@ namespace Dyalect.Runtime.Types
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => adapter.Call(ctx, args);
 
         protected override string GetFunctionName() => name;
+
+        internal override DyFunction Clone(DyObject arg)
+        {
+            return new DyDelegateFunction(name, base.ParameterNumber, adapter)
+            {
+                Self = arg
+            };
+        }
     }
 
+    internal sealed class DyMemberFunction : DyFunction
+    {
+        private readonly string name;
+        private readonly Func<DyObject, ExecutionContext, DyObject> func;
+
+        internal DyMemberFunction(string name, Func<DyObject, ExecutionContext, DyObject> func) : base(0, EXT_HANDLE, 0, null, null)
+        {
+            this.name = name;
+            this.func = func;
+        }
+
+        protected override string GetFunctionName() => name;
+
+        public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => func(Self, ctx);
+
+        internal override DyFunction Clone(DyObject arg)
+        {
+            return new DyMemberFunction(name, func)
+            {
+                Self = arg
+            };
+        }
+    }
 
     internal abstract class CallAdapter
     {

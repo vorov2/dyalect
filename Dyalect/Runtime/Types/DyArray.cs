@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using System.Text;
+using Dyalect.Compiler;
 
 namespace Dyalect.Runtime.Types
 {
@@ -107,14 +108,69 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
+        private DyObject GetIterator(DyObject obj, ExecutionContext ctx) => new DyArrayIterator((DyArray)obj);
+
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
             if (name == "iterator")
-            {
-
-            }
+                return new DyMemberFunction(name, GetIterator);
 
             return null;
         }
+    }
+
+    internal sealed class DyArrayIterator : DyObject
+    {
+        internal DyArray Array { get; }
+
+        internal int Index { get; set; } = -1;
+
+        public DyArrayIterator(DyArray arr) : base(StandardType.ArrayIterator)
+        {
+            Array = arr;
+        }
+
+        public override object ToObject() => ((IEnumerable<object>)Array.ToObject()).GetEnumerator();
+
+        protected override bool TestEquality(DyObject obj) => Array.Equals(((DyArrayIterator)obj).Array);
+    }
+
+    internal sealed class DyArrayIteratorTypeInfo : DyTypeInfo
+    {
+        public static readonly DyTypeInfo Instance = new DyArrayIteratorTypeInfo();
+
+        public DyArrayIteratorTypeInfo() : base(StandardType.ArrayIterator)
+        {
+
+        }
+
+        protected override DyObject MoveNextOp(DyObject obj, ExecutionContext ctx)
+        {
+            var iter = (DyArrayIterator)obj;
+            iter.Index++;
+            return iter.Index < iter.Array.Values.Length ? DyBool.True : DyBool.False;
+        }
+
+        protected override DyObject GetCurrentOp(DyObject obj, ExecutionContext ctx)
+        {
+            var iter = (DyArrayIterator)obj;
+            return iter.Array.Values[iter.Index];
+        }
+
+        protected override DyFunction GetTrait(string name, ExecutionContext ctx)
+        {
+            if (name == Traits.NextName)
+                return new DyMemberFunction(name, MoveNextOp);
+
+            if (name == Traits.CurName)
+                return new DyMemberFunction(name, GetCurrentOp);
+
+            return null;
+        }
+
+        public override string TypeName => StandardType.ArrayIteratorName;
+
+        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
+            throw new NotImplementedException();
     }
 }

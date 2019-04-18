@@ -277,6 +277,28 @@ namespace Dyalect.Runtime.Types
 
             return ToStringOp(arg, ctx);
         }
+
+        private DyFunction next;
+        protected virtual DyObject MoveNextOp(DyObject obj, ExecutionContext ctx) =>
+            Err.OperationNotSupported(Traits.NextName, obj.TypeName(ctx)).Set(ctx);
+        internal DyObject MoveNext(DyObject obj, ExecutionContext ctx)
+        {
+            if (next != null)
+                return next.Call1(obj, ctx);
+
+            return MoveNextOp(obj, ctx);
+        }
+
+        private DyFunction cur;
+        protected virtual DyObject GetCurrentOp(DyObject obj, ExecutionContext ctx) =>
+            Err.OperationNotSupported(Traits.NextName, obj.TypeName(ctx)).Set(ctx);
+        internal DyObject GetCurrent(DyObject obj, ExecutionContext ctx)
+        {
+            if (cur != null)
+                return cur.Call1(obj, ctx);
+
+            return GetCurrentOp(obj, ctx);
+        }
         #endregion
 
         #region Other Operations
@@ -332,7 +354,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetTrait(string name, ExecutionContext ctx)
         {
             if (name == "toString")
-                return DyFunction.Create(ToStringOp);
+                return new DyMemberFunction(name, ToStringOp);
 
             return GetTrait(name, ctx);
         }
