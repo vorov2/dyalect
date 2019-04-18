@@ -5,6 +5,7 @@
     that could cause virtual machine to crash.
  * Fixed compilation logic for `while` loops (previous they
     didn't create a lexical scope).
+ * Empty blocks `{ }` are now allowed.
 
 # 0.1.0
 Initial release

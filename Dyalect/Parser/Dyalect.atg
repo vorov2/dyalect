@@ -142,8 +142,10 @@ PRODUCTIONS
         (
             "{"
                 (. var block = new DBlock(t); .)
-                Statement<out node> (. block.Nodes.Add(node); .)
-                { Statement<out node> (. block.Nodes.Add(node); .) }
+                [
+                    Statement<out node> (. block.Nodes.Add(node); .)
+                    { Statement<out node> (. block.Nodes.Add(node); .) }
+                ]
                 (. node = block; .)
             "}"
         ).

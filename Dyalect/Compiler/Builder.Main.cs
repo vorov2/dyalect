@@ -442,6 +442,13 @@ namespace Dyalect.Compiler
 
         private void Build(DBlock node, Hints hints, CompilerContext ctx)
         {
+            if (node.Nodes?.Count == 0)
+            {
+                if (hints.Has(Push))
+                    cw.PushNil();
+                return;
+            }
+
             //Начинаем лексический скоуп времени компиляции
             StartScope(fun: false, loc: node.Location);
 

@@ -325,11 +325,13 @@ namespace Dyalect.Parser
 		node = null; 
 		Expect(27);
 		var block = new DBlock(t); 
-		Statement(out node);
-		block.Nodes.Add(node); 
-		while (StartOf(4)) {
+		if (StartOf(4)) {
 			Statement(out node);
 			block.Nodes.Add(node); 
+			while (StartOf(4)) {
+				Statement(out node);
+				block.Nodes.Add(node); 
+			}
 		}
 		node = block; 
 		Expect(28);
