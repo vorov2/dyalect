@@ -377,16 +377,6 @@ namespace Dyalect.Runtime
                     case OpCode.Tag:
                         evalStack.Replace(new DyLabel(unit.IndexedStrings[op.Data].Value, evalStack.Peek()));
                         break;
-                    case OpCode.Next:
-                        right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].MoveNext(right, ctx));
-                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
-                        break;
-                    case OpCode.Cur:
-                        right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].GetCurrent(right, ctx));
-                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
-                        break;
                 }
             }
             goto CYCLE;

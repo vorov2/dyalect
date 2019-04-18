@@ -4,8 +4,6 @@
     {
         Nop = 0,    //0
 
-        Next,       //0
-        Cur,        //0
         Str,        //0
         Self,       //+1
         This,       //+1
