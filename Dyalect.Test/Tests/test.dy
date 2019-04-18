@@ -69,16 +69,9 @@ iter(6000, n => print("Running ", n))
 
 var arr = [0,1,2,3,4,5,6,7,8,9]
 var iter = arr.iterator()
+print(iter)
+var el
 
-while iter.next() {
-    print("Element ", iter.current())
-}
-
-var fn = 12.toString
-
-var str = "This is a relatively long string!"
-iter = str.iterator()
-
-while iter.next() {
-    print ("char: ", iter.current())
+while (el = iter())[0] {
+    print("Element ", el[1])
 }

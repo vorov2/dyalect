@@ -241,6 +241,7 @@ namespace Dyalect.Compiler
                 BlockExit = cw.DefineLabel(),
                 BlockBreakExit = cw.DefineLabel()
             };
+            StartScope(false, node.Location);
             var iter = cw.DefineLabel();
 
             cw.MarkLabel(iter);
@@ -257,6 +258,41 @@ namespace Dyalect.Compiler
             AddLinePragma(node);
             cw.MarkLabel(ctx.BlockBreakExit);
             cw.Nop();
+            EndScope();
+        }
+
+        private void Build(DFor node, Hints hints, CompilerContext ctx)
+        {
+            ctx = new CompilerContext(ctx)
+            {
+                BlockSkip = cw.DefineLabel(),
+                BlockExit = cw.DefineLabel(),
+                BlockBreakExit = cw.DefineLabel()
+            };
+            StartScope(false, node.Location);
+
+            //Build(node.Target, hints.Append(Push), ctx);
+
+
+            //var iter = cw.DefineLabel();
+
+            //cw.MarkLabel(iter);
+            //Build(node.Variable, hints.Append(Pop), ctx);
+
+            //Build(node.Condition, hints.Append(Push), ctx);
+            //cw.Brfalse(ctx.BlockExit);
+
+            //Build(node.Body, hints.Remove(Push), ctx);
+
+            //cw.MarkLabel(ctx.BlockSkip);
+            //cw.Br(iter);
+
+            //cw.MarkLabel(ctx.BlockExit);
+            //PushIf(hints);
+            //AddLinePragma(node);
+            //cw.MarkLabel(ctx.BlockBreakExit);
+            //cw.Nop();
+            EndScope();
         }
 
         private void Build(DApplication node, Hints hints, CompilerContext ctx)

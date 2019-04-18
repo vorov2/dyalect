@@ -238,7 +238,8 @@ PRODUCTIONS
     Loops<out DNode node> =
         (. node = null; .)
         (
-            While<out node>
+              While<out node>
+            | For<out node>
         ).
 
     While<out DNode node> =
@@ -251,6 +252,20 @@ PRODUCTIONS
             (.
                 @while.Body = node;
                 node = @while;
+            .)
+        ).
+
+    For<out DNode node> =
+        (. node = null; .)
+        (
+            "for"
+            (. var @for = new DFor(t); .)
+            Name<out node> (. @for.Variable = (DName)node; .)
+            "in" Expr<out node> (. @for.Target = node; .)
+            Block<out node>
+            (.
+                @for.Body = node;
+                node = @for;
             .)
         ).
 

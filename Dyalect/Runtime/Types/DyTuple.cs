@@ -9,6 +9,9 @@ namespace Dyalect.Runtime.Types
         internal readonly DyObject[] Values;
         internal readonly string[] Keys;
 
+        public static DyTuple Create(DyObject arg1, DyObject arg2) =>
+            new DyTuple(new string[] { null, null }, new DyObject[] { arg1, arg2 });
+
         internal DyTuple(string[] keys, DyObject[] values) : base(StandardType.Tuple)
         {
             Keys = keys;
