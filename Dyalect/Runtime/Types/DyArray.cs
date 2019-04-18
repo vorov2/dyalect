@@ -1,8 +1,5 @@
 ﻿using System.Linq;
-using System.Collections.Generic;
-using System;
 using System.Text;
-using Dyalect.Compiler;
 
 namespace Dyalect.Runtime.Types
 {
@@ -92,20 +89,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        private DyFunction GetIterator(DyObject obj, ExecutionContext ctx)
-        {
-            var idx = 0;
-            var arr = (DyArray)obj;
-
-            return DyFunction.Create( 
-                () =>
-                {
-                    if (idx < arr.Values.Length)
-                        return DyTuple.Create(DyBool.True, arr.Values[idx++]);
-
-                    return DyTuple.Create(DyBool.False, DyNil.Instance);
-                }, "iterator");
-        }
+        private DyFunction GetIterator(DyObject obj, ExecutionContext ctx) => new DyArrayIteratorFunction((DyArray)obj);
 
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
@@ -114,5 +98,34 @@ namespace Dyalect.Runtime.Types
 
             return null;
         }
+    }
+
+    //This function is implemented for optimization purposes.
+    internal sealed class DyArrayIteratorFunction : DyFunction
+    {
+        internal const string Name = "iterator";
+        private readonly DyArray arr;
+        private int idx;
+
+        internal DyArrayIteratorFunction(DyArray arr) : base(0, EXT_HANDLE, 0, null, null)
+        {
+            this.arr = arr;
+        }
+
+        protected override string GetFunctionName() => Name;
+
+        public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
+        {
+            if (idx < arr.Values.Length)
+                return DyTuple.Create(DyBool.True, arr.Values[idx++]);
+
+            return DyTuple.Create(DyBool.False, DyNil.Instance);
+        }
+
+        internal override DyFunction Clone(DyObject arg) =>
+            new DyArrayIteratorFunction(arr)
+            {
+                Self = arg
+            };
     }
 }
