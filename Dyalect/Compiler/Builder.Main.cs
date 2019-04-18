@@ -414,8 +414,6 @@ namespace Dyalect.Compiler
             {
                 if ((sv.Data & VarFlags.This) == VarFlags.This)
                     cw.This();
-                else if ((sv.Data & VarFlags.Self) == VarFlags.Self)
-                    cw.Self();
                 else
                     cw.PushVar(sv);
 
@@ -665,7 +663,13 @@ namespace Dyalect.Compiler
             var address = cw.Offset;
 
             AddVariable("this", node, data: VarFlags.This | VarFlags.Const);
-            AddVariable("self", node, data: VarFlags.Self | VarFlags.Const);
+
+            if (node.IsMemberFunction)
+            {
+                var va = AddVariable("self", node, data: VarFlags.Const);
+                cw.Self();
+                cw.PopVar(va);
+            }
 
             //Инициализационная логика параметров
             for (var i = 0; i < args.Length; i++)

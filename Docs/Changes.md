@@ -15,6 +15,9 @@
     invocation code.
  * A bug fixed in standard `toString` function implementation
     that could cause virtual machine to crash.
+ * A bug fixes with special `self` variable (available in
+    member functions) being incorrectly interpreted by
+    nested functions.
  * Fixed compilation logic for `while` loops (previous they
     didn't create a lexical scope).
  * Empty blocks `{ }` are now allowed.
