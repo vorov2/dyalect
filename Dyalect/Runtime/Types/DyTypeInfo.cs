@@ -322,7 +322,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetTrait(string name, ExecutionContext ctx)
         {
             if (name == "toString")
-                return new DyMemberFunction(name, ToStringOp);
+                return DyMemberFunction.Create(ToStringOp, name);
 
             return GetTrait(name, ctx);
         }

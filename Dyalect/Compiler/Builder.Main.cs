@@ -131,9 +131,7 @@ namespace Dyalect.Compiler
         private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
         {
             for (var i = 0; i < node.Elements.Count; i++)
-            {
                 Build(node.Elements[i], hints.Append(Push), ctx);
-            }
 
             AddLinePragma(node);
             var sv = GetVariable(Lang.CreateArrayName, node);

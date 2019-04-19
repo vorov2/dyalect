@@ -116,7 +116,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
             if (name == "iterator")
-                return new DyMemberFunction(name, GetIterator);
+                return DyMemberFunction.Create(GetIterator, name);
 
             return null;
         }

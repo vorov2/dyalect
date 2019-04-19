@@ -2,6 +2,7 @@
 using Dyalect.Runtime.Types;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dyalect.Linker
 {
@@ -45,10 +46,10 @@ namespace Dyalect.Linker
             while (n > 0)
                 lst.Add(new DyInteger(n--));
 
-            return new DyArray(lst.ToArray());
+            return new DyArray(lst);
         }
 
-        public static DyObject CreateArray(DyObject[] args) => new DyArray(args);
+        public static DyObject CreateArray(DyObject[] args) => new DyArray(args.ToList());
 
         public static DyObject CreateTuple(DyObject[] args)
         {

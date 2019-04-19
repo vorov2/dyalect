@@ -416,11 +416,41 @@ namespace Dyalect.Runtime.Types
         private readonly string name;
         private readonly Func<DyObject, ExecutionContext, DyObject> func;
 
-        internal DyMemberFunction(string name, Func<DyObject, ExecutionContext, DyObject> func) : base(0, EXT_HANDLE, 0, null, null)
+        internal sealed class BinaryFunction : DyFunction
+        {
+            private readonly string name;
+            private readonly Func<DyObject, DyObject, ExecutionContext, DyObject> func;
+
+            internal BinaryFunction(Func<DyObject, DyObject, ExecutionContext, DyObject> func, string name) : base(0, EXT_HANDLE, 0, null, null)
+            {
+                this.name = name;
+                this.func = func;
+            }
+
+            protected override string GetFunctionName() => name;
+
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => func(Self, args[0], ctx);
+
+            internal override DyFunction Clone(DyObject arg)
+            {
+                return new BinaryFunction(func, name)
+                {
+                    Self = arg
+                };
+            }
+        }
+
+        private DyMemberFunction(Func<DyObject, ExecutionContext, DyObject> func, string name) : base(0, EXT_HANDLE, 0, null, null)
         {
             this.name = name;
             this.func = func;
         }
+
+        public static DyFunction Create(Func<DyObject, ExecutionContext, DyObject> func, string name) =>
+            new DyMemberFunction(func, name);
+
+        public static DyFunction Create(Func<DyObject, DyObject, ExecutionContext, DyObject> func, string name) =>
+            new BinaryFunction(func, name);
 
         protected override string GetFunctionName() => name;
 
@@ -428,7 +458,7 @@ namespace Dyalect.Runtime.Types
 
         internal override DyFunction Clone(DyObject arg)
         {
-            return new DyMemberFunction(name, func)
+            return new DyMemberFunction(func, name)
             {
                 Self = arg
             };

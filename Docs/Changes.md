@@ -11,6 +11,8 @@
     with two methods.
  * A `for` cycle (based on the iterator functionality) is
     implemented, e.g.: `for x in seq { doSomething(x) }`.
+ * Arrays now supports methods `add`, `remove`, `removeAt`
+    and `addRange`.
  * Multiple refactorings and optimizations in the function
     invocation code.
  * A bug fixed in standard `toString` function implementation
