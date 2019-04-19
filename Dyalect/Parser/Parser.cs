@@ -873,15 +873,17 @@ namespace Dyalect.Parser
 	void Array(out DNode node) {
 		node = null; 
 		Expect(29);
-		var arr = new DArrayLiteral(t); 
-		Expr(out node);
-		arr.Elements.Add(node); 
-		while (la.kind == 21) {
-			Get();
+		if (StartOf(5)) {
+			var arr = new DArrayLiteral(t); 
 			Expr(out node);
 			arr.Elements.Add(node); 
+			while (la.kind == 21) {
+				Get();
+				Expr(out node);
+				arr.Elements.Add(node); 
+			}
+			node = arr; 
 		}
-		node = arr; 
 		Expect(30);
 	}
 

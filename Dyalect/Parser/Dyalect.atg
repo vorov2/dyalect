@@ -529,10 +529,12 @@ PRODUCTIONS
         (. node = null; .)
         (
             "["
-                (. var arr = new DArrayLiteral(t); .)
-                Expr<out node> (. arr.Elements.Add(node); .)
-                { "," Expr<out node> (. arr.Elements.Add(node); .) }
-                (. node = arr; .)
+                [
+                    (. var arr = new DArrayLiteral(t); .)
+                    Expr<out node> (. arr.Elements.Add(node); .)
+                    { "," Expr<out node> (. arr.Elements.Add(node); .) }
+                    (. node = arr; .)
+                ]
             "]"
         ).
 

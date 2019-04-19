@@ -20,6 +20,8 @@
     nested functions.
  * Fixed compilation logic for `while` loops (previous they
     didn't create a lexical scope).
+ * Bug fixes - interactive mode not restoring properly after
+    compilation errors.
  * Empty blocks `{ }` are now allowed.
 
 # 0.1.0
