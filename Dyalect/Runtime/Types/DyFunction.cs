@@ -411,58 +411,60 @@ namespace Dyalect.Runtime.Types
         }
     }
 
-    internal sealed class DyMemberFunction : DyFunction
+    internal abstract class DyMemberFunction : DyFunction
     {
-        private readonly string name;
-        private readonly Func<DyObject, ExecutionContext, DyObject> func;
+        protected string Name { get; }
 
-        internal sealed class BinaryFunction : DyFunction
+        private sealed class BinaryFunction : DyMemberFunction
         {
-            private readonly string name;
             private readonly Func<DyObject, DyObject, ExecutionContext, DyObject> func;
 
-            internal BinaryFunction(Func<DyObject, DyObject, ExecutionContext, DyObject> func, string name) : base(0, EXT_HANDLE, 0, null, null)
+            internal BinaryFunction(Func<DyObject, DyObject, ExecutionContext, DyObject> func, string name) : base(name)
             {
-                this.name = name;
                 this.func = func;
             }
-
-            protected override string GetFunctionName() => name;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => func(Self, args[0], ctx);
 
             internal override DyFunction Clone(DyObject arg)
             {
-                return new BinaryFunction(func, name)
+                return new BinaryFunction(func, Name)
                 {
                     Self = arg
                 };
             }
         }
 
-        private DyMemberFunction(Func<DyObject, ExecutionContext, DyObject> func, string name) : base(0, EXT_HANDLE, 0, null, null)
+        private sealed class UnaryFunction : DyMemberFunction
         {
-            this.name = name;
-            this.func = func;
+            private readonly Func<DyObject, ExecutionContext, DyObject> func;
+
+            internal UnaryFunction(Func<DyObject, ExecutionContext, DyObject> func, string name) : base(name)
+            {
+                this.func = func;
+            }
+
+            internal override DyFunction Clone(DyObject arg)
+            {
+                return new UnaryFunction(func, Name)
+                {
+                    Self = arg
+                };
+            }
         }
 
-        public static DyFunction Create(Func<DyObject, ExecutionContext, DyObject> func, string name) =>
-            new DyMemberFunction(func, name);
+        private DyMemberFunction(string name) : base(0, EXT_HANDLE, 0, null, null)
+        {
+            Name = name;
+        }
 
-        public static DyFunction Create(Func<DyObject, DyObject, ExecutionContext, DyObject> func, string name) =>
+        public new static DyFunction Create(Func<DyObject, ExecutionContext, DyObject> func, string name) =>
+            new UnaryFunction(func, name);
+
+        public new static DyFunction Create(Func<DyObject, DyObject, ExecutionContext, DyObject> func, string name) =>
             new BinaryFunction(func, name);
 
-        protected override string GetFunctionName() => name;
-
-        public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => func(Self, ctx);
-
-        internal override DyFunction Clone(DyObject arg)
-        {
-            return new DyMemberFunction(func, name)
-            {
-                Self = arg
-            };
-        }
+        protected override string GetFunctionName() => Name;
     }
 
     internal abstract class CallAdapter

@@ -12,7 +12,8 @@
  * A `for` cycle (based on the iterator functionality) is
     implemented, e.g.: `for x in seq { doSomething(x) }`.
  * Arrays now supports methods `add`, `remove`, `removeAt`
-    and `addRange`.
+    and `addRange`. The latter one accepts an iterator, e.g.
+    `var arr = []; arr.addRange("Hello, world!")`.
  * Multiple refactorings and optimizations in the function
     invocation code.
  * A bug fixed in standard `toString` function implementation
@@ -20,7 +21,7 @@
  * A bug fixes with special `self` variable (available in
     member functions) being incorrectly interpreted by
     nested functions.
- * Fixed compilation logic for `while` loops (previous they
+ * Fixed compilation logic for `while` loops (previously they
     didn't create a lexical scope).
  * Bug fixes - interactive mode not restoring properly after
     compilation errors.
