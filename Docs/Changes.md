@@ -1,3 +1,6 @@
+# 0.3.0
+to do
+
 # 0.2.0
  * Added support for special `iterator` function which can be
     implemented for any type. This function is used to iterate
