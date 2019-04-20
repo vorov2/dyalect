@@ -4,9 +4,9 @@ Dyalect is a dynamic programming language for .NET Core platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short) is
 written in C# and has zero dependencies except for standard .NET Core
 libraries, which means that it can seamlessly run on Windows, MacOS
-and Linux. Moreover you can the same binaries on any of these operative
-systems. Simply type `dotnet dya` in your terminal to run Dy's
-interactive environment.
+and Linux. Moreover you can run the same binaries on any of these 
+operative systems. Simply type `dotnet dya` in your terminal to run
+Dy's interactive environment.
 
 Dy doesn't use DLR nor does it compile to IL (.NET assembly). Instead
 it runs on the top of its own high performance virtual machine. It
