@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Dyalect.Console": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "\"Tests\\test.dy\""
     },
     "Debug": {
       "commandName": "Executable",

@@ -1,0 +1,11 @@
+﻿func iter(n) {
+    if n == 0 {
+        0
+    } else {
+        iter(n - 1)
+    }
+}
+
+func div(x, y) {
+    x / y
+}

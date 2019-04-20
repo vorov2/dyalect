@@ -29,14 +29,25 @@ namespace Dyalect.Runtime
         {
             ExecutionResult retval = null;
             ExecutionContext.Error = null;
+            Exception eex = null;
 
             var th = new System.Threading.Thread(() =>
             {
-                var res = ExecuteModule(0);
-                retval = ExecutionResult.Fetch(0, res, ExecutionContext);
+                try
+                {
+                    var res = ExecuteModule(0);
+                    retval = ExecutionResult.Fetch(0, res, ExecutionContext);
+                }
+                catch (Exception ex)
+                {
+                    eex = ex;
+                }
             }, 8 * 1024 * 1024);
             th.Start();
             th.Join();
+
+            if (eex != null)
+                throw eex;
 
             return retval;
         }

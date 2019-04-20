@@ -29,6 +29,8 @@
  * Bug fixes - interactive mode not restoring properly after
     compilation errors.
  * Fixes in grammar and parser.
+ * Fixes in interactive console exception handling not always
+    working correctly.
  * Empty blocks `{ }` are now allowed.
 
 # 0.1.0
