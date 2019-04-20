@@ -13,6 +13,18 @@ func mathTest3() { //6.6129032258064528
     12.3 / (0.64 + 1.22)
 }
 
+func mathTest4() { //11.256
+    23.456 % 12.2
+}
+
+func mathTest5() { //0.0099999999999997868
+   12.4 - 0.39 - 12.0
+}
+
+func mathTest6() { //783.59999999999991
+   12.0 * 65.3
+}
+
 func logicalTest1() {
     const x = 144
     x / 12 > 100 || x / 6 == 24
@@ -29,6 +41,18 @@ func comparisonTest1() {
 
 func comparisonTest2() {
     "string1" != "string2" && "string1" == "string1"
+}
+
+func toStringTest1 {
+    (1,2,3).toString()
+}
+
+func toStringTest2 {
+    [12.2, "string", true].toString()
+}
+
+func toStringTest3 {
+    (x:42,y:"foo").toString()
 }
 
 ///////////////////////////////////////////////
@@ -95,8 +119,7 @@ func factTest() {
     func fact(n) {
         if n == 1 {
             1
-        }
-        else {
+        } else {
             n * fact(n - 1)
         }
     }
@@ -107,11 +130,9 @@ func powerTest() {
     func pow(base, exponent) {
         if exponent == 1 {
             base
-        }
-        else if exponent == 0 {
+        } else if exponent == 0 {
             1
-        }
-        else {
+        } else {
             base * pow(base, exponent - 1)
         }
     }
@@ -125,8 +146,7 @@ func binaryConversionTest() {
             const bin = (num % 2) + 10 * bin(num / 2)
             acc += bin
             0
-        }
-        else {
+        } else {
             0
         } 
     }
@@ -158,31 +178,23 @@ func phoneParserTest() {
         || c == "8"
         || c == "9"
     }
-
-    func parse(str)
-    {
+    func parse(str) {
         var max = #str
         var i = 0;
         var res = "";
-
         while i < max {
             const c = str[i]
-
             if c == "+" {
                 i += 2
                 continue
             }
-            
             if digit(c) {
                 res += c
             }
-
             i += 1
         }
-
         res
     }
-
     parse("+7 (964) 506-11-12")
 }
 
@@ -191,21 +203,17 @@ func iteratorTest1() {
         yield 1
         yield 3
         yield 44.2
-
         if token {
             return
         }
-
         yield 68.6
     }
-
     var it = foo(false)
     it() + it() + it() + it()
 }
 
 func iteratorTest2() {
     var arr = [1,2,3,4,5,6,7,8]
-
     func sum(arr) {
         var acc = 0
         for x in arr {
@@ -213,13 +221,11 @@ func iteratorTest2() {
         }
         acc
     }
-
     sum(arr)
 }
 
 func iteratorTest3() {
     var arr = [1,2,3,4,5,6,7,8]
-
     func filter(arr, pred) {
         for x in arr {
             if pred(x) {
@@ -234,7 +240,6 @@ func iteratorTest3() {
         }
         acc
     }
-
     var filtered = filter(arr, x => x % 2 == 0)
     sum(filtered)
 }
@@ -260,4 +265,23 @@ func iteratorTest4() {
     }
     const arr = reverse("Hello")
     makeString(arr)
+}
+
+func iteratorTest5() {
+    func filter(arr, pred) {
+        for x in arr {
+            if pred(x) {
+                yield x
+            }
+        }
+    }
+    func toArray(seq) {
+        var arr = []
+        for x in seq {
+            arr.add(x)
+        }
+        arr
+    }
+    const arr = toArray( filter("hello", x => x == "l") )
+    arr[0] + arr[1]
 }
