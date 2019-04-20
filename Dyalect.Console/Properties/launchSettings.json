@@ -1,12 +1,11 @@
 {
   "profiles": {
     "Dyalect.Console": {
+      "commandName": "Project"
+    },
+    "Run file": {
       "commandName": "Project",
       "commandLineArgs": "\"Tests\\test.dy\""
-    },
-    "Debug": {
-      "commandName": "Executable",
-      "commandLineArgs": "\"C:\\repos\\source\\Dyalect\\Main\\Dyalect.Console\\config.json\" -debug -path \"c:\\temp\" -path \"c:\\repos\\source\" -nolang"
     }
   }
 }
