@@ -28,11 +28,9 @@ namespace Dyalect.Runtime.Types
                 return false;
         }
 
-        protected override bool TestEquality(DyObject obj) => value == obj.GetInteger();
+        public override object ToObject() => value;
 
-        public override object AsObject() => value;
-
-        public override bool AsBool() => value != 0;
+        protected internal override bool GetBool() => value != 0;
 
         internal protected override double GetFloat() => value;
 
@@ -50,9 +48,6 @@ namespace Dyalect.Runtime.Types
         }
 
         public override string TypeName => StandardType.IntegerName;
-
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            new DyInteger(args.TakeOne(DyInteger.Zero).GetInteger());
 
         #region Binary Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)

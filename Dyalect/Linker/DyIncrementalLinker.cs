@@ -35,7 +35,10 @@ namespace Dyalect.Linker
             {
                 UnitMap = backupUnitMap;
                 AssemblyMap = backupAssemblyMap;
-                Units = backupUnits;
+                Units.Clear();
+
+                for (var i = 0; i < backupUnits.Count; i++)
+                    Units.Add(backupUnits[i]);
             }
         }
 

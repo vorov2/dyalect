@@ -43,11 +43,11 @@ namespace Dyalect.Runtime
             if (type == typeof(DyObject))
                 return obj;
             else if (type == CliType.Object)
-                return obj.AsObject();
+                return obj.ToObject();
 
             switch (Type.GetTypeCode(type))
             {
-                case TypeCode.Boolean: return obj.AsBool();
+                case TypeCode.Boolean: return obj.GetBool();
                 case TypeCode.Byte: return (byte)obj.GetInteger();
                 case TypeCode.Int16: return (short)obj.GetInteger();
                 case TypeCode.Int32: return (int)obj.GetInteger();

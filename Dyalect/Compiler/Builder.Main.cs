@@ -85,7 +85,21 @@ namespace Dyalect.Compiler
                 case NodeType.Trait:
                     Build((DTrait)node, hints, ctx);
                     break;
+                case NodeType.For:
+                    Build((DFor)node, hints, ctx);
+                    break;
+                case NodeType.Yield:
+                    Build((DYield)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DYield node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Expression, hints.Append(Push), ctx);
+            AddLinePragma(node);
+            cw.Yield();
+            PushIf(hints);
         }
 
         private void Build(DTrait node, Hints hints, CompilerContext ctx)
@@ -128,9 +142,7 @@ namespace Dyalect.Compiler
         private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
         {
             for (var i = 0; i < node.Elements.Count; i++)
-            {
                 Build(node.Elements[i], hints.Append(Push), ctx);
-            }
 
             AddLinePragma(node);
             var sv = GetVariable(Lang.CreateArrayName, node);
@@ -241,6 +253,7 @@ namespace Dyalect.Compiler
                 BlockExit = cw.DefineLabel(),
                 BlockBreakExit = cw.DefineLabel()
             };
+            StartScope(false, node.Location);
             var iter = cw.DefineLabel();
 
             cw.MarkLabel(iter);
@@ -257,6 +270,51 @@ namespace Dyalect.Compiler
             AddLinePragma(node);
             cw.MarkLabel(ctx.BlockBreakExit);
             cw.Nop();
+            EndScope();
+        }
+
+        private void Build(DFor node, Hints hints, CompilerContext ctx)
+        {
+            ctx = new CompilerContext(ctx)
+            {
+                BlockSkip = cw.DefineLabel(),
+                BlockExit = cw.DefineLabel(),
+                BlockBreakExit = cw.DefineLabel()
+            };
+            StartScope(false, node.Location);
+
+            var inc = AddVariable(node.Variable.Value, node.Variable, VarFlags.Const);
+            var sys = AddVariable();
+            var skip = cw.DefineLabel();
+            Build(node.Target, hints.Append(Push), ctx);
+
+            cw.Briter(skip);
+
+            cw.TraitG("iterator");
+            cw.Call(0);
+            cw.MarkLabel(skip);
+            cw.PopVar(sys);
+
+            var iter = cw.DefineLabel();
+            cw.MarkLabel(iter);
+            cw.PushVar(new ScopeVar(sys));
+            cw.Call(0);
+            cw.Brterm(ctx.BlockExit);
+
+            cw.PopVar(inc);
+
+            Build(node.Body, hints.Remove(Push), ctx);
+
+            cw.MarkLabel(ctx.BlockSkip);
+            cw.Br(iter);
+
+            cw.MarkLabel(ctx.BlockExit);
+            cw.Pop();
+            PushIf(hints);
+            AddLinePragma(node);
+            cw.MarkLabel(ctx.BlockBreakExit);
+            cw.Nop();
+            EndScope();
         }
 
         private void Build(DApplication node, Hints hints, CompilerContext ctx)
@@ -367,8 +425,6 @@ namespace Dyalect.Compiler
             {
                 if ((sv.Data & VarFlags.This) == VarFlags.This)
                     cw.This();
-                else if ((sv.Data & VarFlags.Self) == VarFlags.Self)
-                    cw.Self();
                 else
                     cw.PushVar(sv);
 
@@ -406,6 +462,13 @@ namespace Dyalect.Compiler
 
         private void Build(DBlock node, Hints hints, CompilerContext ctx)
         {
+            if (node.Nodes?.Count == 0)
+            {
+                if (hints.Has(Push))
+                    cw.PushNil();
+                return;
+            }
+
             //Начинаем лексический скоуп времени компиляции
             StartScope(fun: false, loc: node.Location);
 
@@ -581,6 +644,7 @@ namespace Dyalect.Compiler
         private void BuildFunctionBody(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
             //Начинаем новый фрейм
+            var iter = hints.Has(Iterator);
             var args = node.Parameters.ToArray();
             var argCount = args.Length + (node.TypeName != null ? 1 : 0);
             StartFun(node.Name, args, argCount);
@@ -601,19 +665,23 @@ namespace Dyalect.Compiler
             //Actual start of a function
             cw.MarkLabel(startLabel);
 
-            //Начинаем реальный (а не времени компиляции) лексический скоуп для функции.
+            //Start of a physical (and not compiler time) lexical scope for a function
             StartScope(fun: true, loc: node.Location);
-
-            //Вот здесь реальный лексический скоуп и начинается
             StartSection();
 
             AddLinePragma(node);
             var address = cw.Offset;
 
             AddVariable("this", node, data: VarFlags.This | VarFlags.Const);
-            AddVariable("self", node, data: VarFlags.Self | VarFlags.Const);
 
-            //Инициализационная логика параметров
+            if (node.IsMemberFunction)
+            {
+                var va = AddVariable("self", node, data: VarFlags.Const);
+                cw.Self();
+                cw.PopVar(va);
+            }
+
+            //Initialize function arguments
             for (var i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
@@ -621,13 +689,27 @@ namespace Dyalect.Compiler
                 cw.PopVar(a);
             }
 
-            //Теперь компилируем тело функции
-            Build(node.Body, hints, ctx);
+            //Compile function body
+            if (node.IsIterator)
+            {
+                var dec = new DFunctionDeclaration(node.Location) { Name = node.Name, Body = node.Body };
+                Build(dec, hints.Append(Iterator), ctx);
+            }
+            else
+                Build(node.Body, hints, ctx);
 
             //Возвращаемся из функции. Кстати, любое исполнение функции доходит до сюда,
             //т.е. нельзя выйти раньше. Преждевременный return всё равно прыгает сюда, и здесь
             //уже исполняется реальный return (Ret). Т.е. это эпилог функции.
             cw.MarkLabel(funEndLabel);
+
+            //If this is an iterator function push a terminator at the end (and pop a normal value)
+            if (iter)
+            {
+                cw.Pop();
+                cw.PushNilT();
+            }
+
             cw.Ret();
             cw.MarkLabel(funSkipLabel);
 
@@ -640,13 +722,18 @@ namespace Dyalect.Compiler
             EndScope();
             EndSection();
 
-            //А здесь мы уже создаём функцию как значение (эмитится Newfun).
-            cw.Push(node.Variadic ? argCount - 1 : argCount);
-
-            if (node.Variadic)
-                cw.NewFunV(funHandle);
+            if (iter)
+                cw.NewIter(funHandle);
             else
-                cw.NewFun(funHandle);
+            {
+                //А здесь мы уже создаём функцию как значение (эмитится Newfun).
+                cw.Push(node.Variadic ? argCount - 1 : argCount);
+
+                if (node.Variadic)
+                    cw.NewFunV(funHandle);
+                else
+                    cw.NewFun(funHandle);
+            }
         }
 
         private int GetTypeHandle(Qualident name, Location loc)

@@ -1,9 +1,13 @@
-﻿using Dyalect.Parser;
+﻿using Dyalect.Compiler;
+using Dyalect.Parser;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyString : DyObject
+    public sealed class DyString : DyObject, IEnumerable<DyObject>
     {
         public static readonly DyString Empty = new DyString("");
         internal readonly string Value;
@@ -13,7 +17,7 @@ namespace Dyalect.Runtime.Types
             Value = str;
         }
 
-        public override object AsObject() => Value;
+        public override object ToObject() => Value;
 
         public override string ToString() => Value;
 
@@ -26,8 +30,6 @@ namespace Dyalect.Runtime.Types
             else
                 return false;
         }
-
-        protected override bool TestEquality(DyObject obj) => Value == obj.GetString();
 
         internal protected override string GetString() => Value;
 
@@ -47,6 +49,10 @@ namespace Dyalect.Runtime.Types
 
             return new DyString(Value[idx].ToString());
         }
+
+        public IEnumerator<DyObject> GetEnumerator() => Value.Select(c => new DyString(c.ToString())).GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     internal sealed class DyStringTypeInfo : DyTypeInfo
@@ -59,9 +65,6 @@ namespace Dyalect.Runtime.Types
         }
 
         public override string TypeName => StandardType.StringName;
-
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            new DyString(args.TakeOne(DyString.Empty).ToString(ctx));
 
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -113,6 +116,12 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => StringUtil.Escape(arg.GetString());
+
+        protected override DyFunction GetTrait(string name, ExecutionContext ctx)
+        {
+
+            return null;
+        }
         #endregion
     }
 }

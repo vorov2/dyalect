@@ -3,7 +3,7 @@ using System;
 
 namespace Dyalect.Runtime.Types
 {
-    public abstract class DyObject : IEquatable<DyObject>
+    public abstract class DyObject
     {
         internal readonly int TypeId;
 
@@ -14,7 +14,7 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => $"[type:{TypeId}]";
 
-        public virtual bool AsBool() => true;
+        protected internal virtual bool GetBool() => true;
 
         internal protected virtual long GetInteger() => throw new InvalidCastException();
 
@@ -22,15 +22,7 @@ namespace Dyalect.Runtime.Types
 
         internal protected virtual string GetString() => throw new InvalidCastException();
 
-        public abstract object AsObject();
-
-        protected abstract bool TestEquality(DyObject obj);
-        public bool Equals(DyObject obj)
-        {
-            if (TypeId != obj.TypeId)
-                return false;
-            return TestEquality(obj);
-        }
+        public abstract object ToObject();
 
         internal protected virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
             Err.OperationNotSupported(Traits.GetName, this.TypeName(ctx)).Set(ctx);

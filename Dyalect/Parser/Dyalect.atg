@@ -38,11 +38,10 @@ TOKENS
     returnToken         = "return".
     continueToken       = "continue".
     breakToken          = "break".
+    yieldToken          = "yield".
     ifToken             = "if".
     forToken            = "for".
     whileToken          = "while".
-    switchToken         = "switch".
-    doToken             = "do".
     typeToken           = "type".
 
     arrowToken          = "=>".
@@ -142,8 +141,10 @@ PRODUCTIONS
         (
             "{"
                 (. var block = new DBlock(t); .)
-                Statement<out node> (. block.Nodes.Add(node); .)
-                { Statement<out node> (. block.Nodes.Add(node); .) }
+                [
+                    Statement<out node> (. block.Nodes.Add(node); .)
+                    { Statement<out node> (. block.Nodes.Add(node); .) }
+                ]
                 (. node = block; .)
             "}"
         ).
@@ -152,7 +153,10 @@ PRODUCTIONS
         (. node = null; .)
         (
             "func"
-            (. var f = new DFunctionDeclaration(t); .)
+            (.
+                var f = new DFunctionDeclaration(t);
+                functions.Push(f);
+            .)
             Qualident<out var s1, out var s2, out var s3>
             (.
                 if (s2 == null && s3 == null)
@@ -176,6 +180,7 @@ PRODUCTIONS
             (.
                 f.Body = node;
                 node = f;
+                functions.Pop();
             .)
         ).
 
@@ -238,7 +243,8 @@ PRODUCTIONS
     Loops<out DNode node> =
         (. node = null; .)
         (
-            While<out node>
+              While<out node>
+            | For<out node>
         ).
 
     While<out DNode node> =
@@ -254,13 +260,37 @@ PRODUCTIONS
             .)
         ).
 
+    For<out DNode node> =
+        (. node = null; .)
+        (
+            "for"
+            (. var @for = new DFor(t); .)
+            Name<out node> (. @for.Variable = (DName)node; .)
+            "in" Expr<out node> (. @for.Target = node; .)
+            Block<out node>
+            (.
+                @for.Body = node;
+                node = @for;
+            .)
+        ).
+
     ControlFlow<out DNode node> =
         (. node = null; .)
         (
               Break<out node>
             | Continue<out node>
             | Return<out node>
+            | Yield<out node>
         ).
+
+    Yield<out DNode node> =
+        "yield" 
+        (. 
+            var yield = new DYield(t);
+            node = yield;
+            functions.Peek().IsIterator = true; 
+        .)
+        Expr<out var exp> (. yield.Expression = exp; .).
 
     Break<out DNode node> = 
         "break" 
@@ -438,33 +468,12 @@ PRODUCTIONS
                 | "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
                 | "#" (. ot = t; op = UnaryOperator.Length; .)
             ]
-            Application<out node>
+            FieldOrIndex<out node>
             (.
                 if (op != UnaryOperator.None)
                     node = new DUnaryOperation(node, op, ot);
             .)
         ).
-
-    Application<out DNode node> =
-        (. node = null; .)
-        (
-            FieldOrIndex<out node>
-            {
-                (. 
-                    if (la.AfterEol) return;
-                    var app = new DApplication(node, t); 
-                .)
-                ApplicationArguments<app>
-                (. node = app; .)
-            }
-        ).
-
-    ApplicationArguments<DApplication app> =
-        (. var node = default(DNode); .)
-        "("
-            [ Expr<out node> (. app.Arguments.Add(node); .) ]
-            { "," Expr<out node> (. app.Arguments.Add(node); .) }
-        ")".
 
     FieldOrIndex<out DNode node> =
         (
@@ -491,8 +500,24 @@ PRODUCTIONS
                         .)
                     "]"
                 )
+                |
+                (
+                    (. 
+                        if (la.AfterEol) return;
+                        var app = new DApplication(node, t); 
+                    .)
+                    "("
+                        [ ApplicationArguments<app> ]
+                        (. node = app; .)
+                    ")"
+                )
             }
         ).
+
+    ApplicationArguments<DApplication app> =
+        (. var node = default(DNode); .)
+        Expr<out node> (. app.Arguments.Add(node); .)
+        { "," Expr<out node> (. app.Arguments.Add(node); .) }.
 
     Literal<out DNode node> =
         (. node = null; .)
@@ -513,8 +538,10 @@ PRODUCTIONS
         (
             "["
                 (. var arr = new DArrayLiteral(t); .)
-                Expr<out node> (. arr.Elements.Add(node); .)
-                { "," Expr<out node> (. arr.Elements.Add(node); .) }
+                [
+                    Expr<out node> (. arr.Elements.Add(node); .)
+                    { "," Expr<out node> (. arr.Elements.Add(node); .) }
+                ]
                 (. node = arr; .)
             "]"
         ).

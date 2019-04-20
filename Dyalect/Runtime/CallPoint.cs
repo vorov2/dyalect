@@ -2,22 +2,16 @@
 
 namespace Dyalect.Runtime
 {
-    internal sealed class CallPoint
+    internal struct CallPoint
     {
-        internal CallPoint(int returnAddress, EvalStack stack, DyObject[] locals, DyFunction func)
+        public CallPoint(int returnAddress, int unitId)
         {
             ReturnAddress = returnAddress;
-            Locals = locals;
-            Stack = stack;
-            Function = func;
+            UnitId = unitId;
         }
 
-        public int ReturnAddress;
+        public readonly int ReturnAddress;
 
-        public readonly DyObject[] Locals;
-
-        public readonly DyFunction Function;
-
-        public readonly EvalStack Stack;
+        public readonly int UnitId;
     }
 }

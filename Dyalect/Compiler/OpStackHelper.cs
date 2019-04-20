@@ -53,14 +53,21 @@
             0,  //Call **dynamic
             0,  //NewFun
             0,  //NewFunV
+            1,  //NewIter
             -2, //TraitS
             0,  //TraitG
             -1, //Get
+            0,  //Get0
+            0,  //Get1
             -3, //Set
             1,  //RunMod
             0,  //Type
             0,  //Tag
             0,  //Term
+            -1, //Yield
+            1,  //PushNilT
+            0,  //Brterm
+            0,  //Briter
         };
     }
 }

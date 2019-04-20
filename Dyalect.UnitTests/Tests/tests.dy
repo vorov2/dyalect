@@ -1,4 +1,18 @@
-﻿func whileTest1()
+﻿///////////////////////////////////////////////
+//Basic tests
+///////////////////////////////////////////////
+func mathTest1()
+{
+    12 * 3 - 4 + 6
+}
+
+
+
+///////////////////////////////////////////////
+//Complex tests
+///////////////////////////////////////////////
+
+func whileTest1()
 {
     var n = 100
     var x = while n > 0 {
@@ -157,4 +171,22 @@ func phoneParserTest()
     }
 
     parse("+7 (964) 506-11-12")
+}
+
+func iteratorTest1()
+{
+    func foo(token) {
+        yield 1
+        yield 3
+        yield 44.2
+
+        if token {
+            return
+        }
+
+        yield 68.6
+    }
+
+    var it = foo(false)
+    it() + it() + it() + it()
 }

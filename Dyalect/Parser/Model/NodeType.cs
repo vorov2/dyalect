@@ -18,9 +18,11 @@
         Binding,
         If,
         While,
+        For,
         Break,
         Continue,
         Return,
+        Yield,
 
         Application,
         Index,

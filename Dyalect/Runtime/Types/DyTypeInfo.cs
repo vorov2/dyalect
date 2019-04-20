@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Dyalect.Compiler;
 using System.Collections.Generic;
-using Dyalect.Compiler;
 
 namespace Dyalect.Runtime.Types
 {
@@ -8,27 +7,18 @@ namespace Dyalect.Runtime.Types
     {
         private readonly Dictionary<string, DyFunction> traits = new Dictionary<string, DyFunction>();
 
-        public DyTypeInfo() : base(StandardType.Type)
-        {
+        public override object ToObject() => this;
 
-        }
+        public override string ToString() => TypeName.PutInBrackets();
+
+        public abstract string TypeName { get; }
+
+        public int TypeCode { get; internal set; }
 
         internal DyTypeInfo(int typeCode) : base(StandardType.Type)
         {
             TypeCode = typeCode;
         }
-
-        public abstract DyObject Create(ExecutionContext ctx, params DyObject[] args);
-
-        public override object AsObject() => this;
-
-        public override string ToString() => "[" + TypeName + "]";
-
-        protected override bool TestEquality(DyObject obj) => ((DyTypeInfo)obj).TypeCode == TypeCode;
-
-        public abstract string TypeName { get; }
-
-        public int TypeCode { get; internal set; }
 
         #region Binary Operations
         //x + y
@@ -234,7 +224,7 @@ namespace Dyalect.Runtime.Types
         //!x
         private DyFunction not;
         protected virtual DyObject NotOp(DyObject arg, ExecutionContext ctx) =>
-            arg.AsBool() ? DyBool.False : DyBool.True;
+            arg.GetBool() ? DyBool.False : DyBool.True;
         internal DyObject Not(DyObject arg, ExecutionContext ctx)
         {
             if (not != null)
@@ -332,9 +322,20 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetTrait(string name, ExecutionContext ctx)
         {
             if (name == "toString")
-                return DyFunction.Create(ToStringOp);
+                return DyMemberFunction.Create(ToStringOp, name);
+
+            if (name == "iterator")
+                return DyMemberFunction.Create(GetIterator, name);
 
             return GetTrait(name, ctx);
+        }
+
+        private DyObject GetIterator(DyObject arg, ExecutionContext ctx)
+        {
+            if (arg is IEnumerable<DyObject> en)
+                return new DyIterator(en.GetEnumerator());
+            else
+                return Err.OperationNotSupported("iterator", TypeName).Set(ctx);
         }
 
         protected virtual DyFunction GetTrait(string name, ExecutionContext ctx) => null;
@@ -356,10 +357,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.TypeName;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            Err.OperationNotSupported(nameof(Create), TypeName).Set(ctx);
-
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString("[typeInfo " + TypeName + "]");
+            new DyString(("typeInfo " + TypeName).PutInBrackets());
     }
 }

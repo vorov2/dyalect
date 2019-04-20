@@ -28,5 +28,18 @@ namespace Dyalect.Linker
         protected void RegisterGlobal<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string name, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9> value) => RegisterGlobal(name, DyFunction.Create(value, name));
         protected void RegisterGlobal<T1, T2>(string name, Func<T1[], T2> value) => RegisterGlobal(name, DyFunction.Create(value, name));
         protected void RegisterGlobal<T1, T2>(string name, Func<ExecutionContext, T1[], T2> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+
+        protected void RegisterGlobal(string name, Func<DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+        protected void RegisterGlobal(string name, Func<DyObject, DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+        protected void RegisterGlobal(string name, Func<DyObject, DyObject, DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+        protected void RegisterGlobal(string name, Func<DyObject, DyObject, DyObject, DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+        protected void RegisterGlobal(string name, Func<DyObject, DyObject, DyObject, DyObject, DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+        protected void RegisterGlobal(string name, Func<DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+        protected void RegisterGlobal(string name, Func<DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+        protected void RegisterGlobal(string name, Func<DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+        protected void RegisterGlobal(string name, Func<DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+        protected void RegisterGlobal(string name, Func<DyObject[], DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+        protected void RegisterGlobal(string name, Func<ExecutionContext, DyObject[], DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
+
     }
 }

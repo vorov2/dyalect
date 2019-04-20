@@ -48,7 +48,10 @@ namespace Dyalect
             }
 
             if (options.FileName != null)
+            {
+                Printer.LineFeed();
                 return RunAndBye(linker) ? OK : ERR;
+            }
             else
             {
                 DyMachine dym = null;
@@ -165,8 +168,7 @@ namespace Dyalect
             }
 
             var dym = new DyMachine(made.Value);
-            Execute(dym);
-            return true;
+            return Execute(dym);
         }
 
         private static string GetPathByType<T>()
@@ -176,20 +178,23 @@ namespace Dyalect
             return Uri.UnescapeDataString(uri.Path);
         }
 
-        private static void Execute(DyMachine dym)
+        private static bool Execute(DyMachine dym)
         {
             try
             {
                 var res = dym.Execute();
                 Printer.Output(res);
+                return true;
             }
             catch (DyCodeException ex)
             {
                 Printer.Error(ex.ToString());
+                return false;
             }
-            catch (DyRuntimeException ex)
+            catch (Exception ex)
             {
                 Printer.Error(ex.Message);
+                return false;
             }
         }
     }

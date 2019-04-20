@@ -28,13 +28,11 @@
                 return false;
         }
 
-        protected override bool TestEquality(DyObject obj) => value == obj.GetFloat();
-
-        public override object AsObject() => value;
+        public override object ToObject() => value;
 
         internal protected override double GetFloat() => value;
 
-        public override bool AsBool() => value > .00001d;
+        protected internal override bool GetBool() => value > .00001d;
     }
 
     internal sealed class DyFloatTypeInfo : DyTypeInfo
@@ -47,9 +45,6 @@
         }
 
         public override string TypeName => StandardType.FloatName;
-
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            new DyFloat(args.TakeOne(DyFloat.Zero).GetFloat());
 
         #region Binary Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)

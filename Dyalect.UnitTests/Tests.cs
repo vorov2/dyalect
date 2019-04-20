@@ -16,6 +16,8 @@ namespace Tests
 {
     public class Tests
     {
+        [Test] public void MathTest1() => ShouldBe(38);
+
         [Test] public void WhileTest1() => ShouldBe(33);
 
         [Test] public void WhileTest2() => ShouldBe(42);
@@ -34,11 +36,16 @@ namespace Tests
 
         [Test] public void PhoneParserTest() => ShouldBe("9645061112");
 
+        [Test] public void IteratorTest1() => ShouldBe(116.8);
+
         #region Execution
+        private void ShouldBe(int expected, [CallerMemberName]string callerName = "") =>
+            ShouldBe((long)expected, callerName);
+
         private void ShouldBe(object expected, [CallerMemberName]string callerName = "")
         {
-            var res = RunTest(callerName);
-            Assert.True(TypeConverter.ConvertFrom(expected, null).Equals(res), $"Expected {expected}, got {res}");
+            var res = RunTest(callerName).ToObject();
+            Assert.True(expected.Equals(res), $"Expected <<{expected}>>, got <<{res}>>.");
         }
 
         private Dictionary<string, DyCodeModel> ast;

@@ -26,6 +26,8 @@
         public const int Get = 21;
         public const int Set = 22;
         public const int Tos = 23;
+        public const int Next = 24;
+        public const int Cur = 25;
 
         public const string AddName = "+";
         public const string SubName = "-";
@@ -50,6 +52,8 @@
         public const string GetName = "get";
         public const string SetName = "set";
         public const string TosName = "toString";
+        public const string NextName = "next";
+        public const string CurName = "current";
 
         public const string BoolAndName = "&&";
         public const string BoolOrName = "||";

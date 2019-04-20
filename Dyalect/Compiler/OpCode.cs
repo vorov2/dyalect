@@ -52,13 +52,20 @@
         Call,       //Dynamic
         NewFun,     //0
         NewFunV,    //0
+        NewIter,    //0
         TraitS,     //-2
         TraitG,     //-1
         Get,        //-1
+        Get0,       //0
+        Get1,       //0
         Set,        //-3
         RunMod,     //+1
         Type,       //0
         Tag,        //0
         Term,       //0
+        Yield,      //-1
+        PushNilT,   //1
+        Brterm,     //0
+        Briter      //0
     }
 }

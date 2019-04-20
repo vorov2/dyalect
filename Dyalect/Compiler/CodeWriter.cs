@@ -175,12 +175,28 @@ namespace Dyalect.Compiler
         public void Call(int args) => Emit(new Op(OpCode.Call, args), -args);
         public void NewFun(int funHandle) => Emit(new Op(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new Op(OpCode.NewFunV, funHandle));
+        public void NewIter(int funHandle) => Emit(new Op(OpCode.NewIter, funHandle));
         public void Br(Label lab) => Emit(OpCode.Br, lab);
         public void Brtrue(Label lab) => Emit(OpCode.Brtrue, lab);
         public void Brfalse(Label lab) => Emit(OpCode.Brfalse, lab);
+        public void Brterm(Label lab) => Emit(OpCode.Brterm, lab);
+        public void Briter(Label lab) => Emit(OpCode.Briter, lab);
         public void TraitS(int type) => Emit(new Op(OpCode.TraitS, type));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
+        public void Get(int n)
+        {
+            if (n == 0)
+                Emit(Op.Get0);
+            else if (n == 1)
+                Emit(Op.Get1);
+            else
+            {
+                Push(n);
+                Emit(Op.Get);
+            }
+        }
 
+        public void Yield() => Emit(Op.Yield);
         public void Str() => Emit(Op.Str);
         public void Get() => Emit(Op.Get);
         public void Set() => Emit(Op.Set);
@@ -188,6 +204,7 @@ namespace Dyalect.Compiler
         public void Self() => Emit(Op.Self);
         public void Type() => Emit(Op.Type);
         public void PushNil() => Emit(Op.PushNil);
+        public void PushNilT() => Emit(Op.PushNilT);
         public void Nop() => Emit(Op.Nop);
         public void Pop() => Emit(Op.Pop);
         public void Shl() => Emit(Op.Shl);

@@ -37,14 +37,14 @@ namespace Dyalect.Runtime
             array = new CallPoint[initialSize];
         }
 
-        public CallPoint Pop()
+        public ref CallPoint Pop()
         {
-            return array[--Count];
+            return ref array[--Count];
         }
 
-        public CallPoint Peek()
+        public ref CallPoint Peek()
         {
-            return array[Count - 1];
+            return ref array[Count - 1];
         }
 
         public void Push(CallPoint val)

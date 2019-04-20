@@ -12,11 +12,9 @@
             this.value = value;
         }
 
-        protected override bool TestEquality(DyObject obj) => ReferenceEquals(this, obj);
+        protected internal override bool GetBool() => value;
 
-        public override bool AsBool() => value;
-
-        public override object AsObject() => value;
+        public override object ToObject() => value;
     }
 
     internal sealed class DyBoolTypeInfo : DyTypeInfo
@@ -29,9 +27,6 @@
         }
 
         public override string TypeName => StandardType.BoolName;
-
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            args.TakeOne(DyBool.False).AsBool() ? DyBool.True : DyBool.False;
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
             ReferenceEquals(arg, DyBool.True) ? "true" : "false";

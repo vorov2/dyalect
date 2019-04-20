@@ -1,19 +1,20 @@
 ﻿namespace Dyalect.Runtime.Types
 {
-    public sealed class DyNil : DyObject
+    public class DyNil : DyObject
     {
+        private sealed class DyTerminator : DyNil { }
+
         public static readonly DyNil Instance = new DyNil();
+        internal static readonly DyNil Terminator = new DyTerminator();
 
         private DyNil() : base(StandardType.Nil)
         {
             
         }
 
-        public override object AsObject() => null;
+        public override object ToObject() => null;
 
-        public override bool AsBool() => false;
-
-        protected override bool TestEquality(DyObject obj) => ReferenceEquals(this, obj);
+        protected internal override bool GetBool() => false;
     }
 
     internal sealed class DyNilTypeInfo : DyTypeInfo
@@ -27,10 +28,10 @@
 
         public override string TypeName => StandardType.NilName;
 
-        protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            left.TypeId == right.TypeId ? DyBool.True : DyBool.False;
 
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            Err.OperationNotSupported(nameof(Create), TypeName).Set(ctx);
+        protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
     }

@@ -15,9 +15,7 @@ namespace Dyalect.Runtime.Types
             this.globals = globals;
         }
 
-        public override object AsObject() => Unit;
-
-        protected override bool TestEquality(DyObject obj) => ReferenceEquals(Unit, ((DyModule)obj).Unit);
+        public override object ToObject() => Unit;
     }
 
     internal sealed class DyModuleTypeInfo : DyTypeInfo
@@ -30,9 +28,6 @@ namespace Dyalect.Runtime.Types
         }
 
         public override string TypeName => StandardType.ModuleName;
-
-        public override DyObject Create(ExecutionContext ctx, params DyObject[] args) =>
-            Err.OperationNotSupported(nameof(Create), TypeName).Set(ctx);
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => 
             "[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]";
