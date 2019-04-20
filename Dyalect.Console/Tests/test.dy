@@ -77,7 +77,6 @@ while (el = iter())[0] {
 }
 
 print("Finished!")
-*/
 
 var arr = makeList(100)
 
@@ -132,3 +131,39 @@ arr
     .print()
 
 arr(1,2,3)
+*/
+
+func fizzbuzzTest() {
+    var n = 1
+    var acc = ""
+    while n < 11 {
+        if n % 15 == 0 {
+            acc = acc + "fizzbuzz"
+        } else if n % 3 == 0 {
+            acc = acc + "fizz"
+        } else if n % 5 == 0 {
+            acc = acc + "buzz"
+        } else {
+            acc = acc + n
+        }
+        n = n + 1
+    }
+    acc
+}
+
+func fizzbuzzTest1() {
+    var n = 1
+    var acc = ""
+    while n < 11 {
+        acc = acc + 
+            "fizzbuzz" if n % 15 == 0 else
+            "fizz"     if n % 3  == 0 else
+            "buzz"     if n % 5  == 0 else
+            n
+        n += 1
+    }
+    acc
+}
+
+print(fizzbuzzTest())
+print(fizzbuzzTest1())

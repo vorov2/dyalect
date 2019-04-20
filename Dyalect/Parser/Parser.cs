@@ -393,7 +393,7 @@ namespace Dyalect.Parser
 		}
 		if (la.kind == 26) {
 			Block(out node);
-		} else if (la.kind == 23) {
+		} else if (la.kind == 18) {
 			Get();
 			Expr(out node);
 			Separator();
@@ -821,6 +821,15 @@ namespace Dyalect.Parser
 		} else if (la.kind == 24) {
 			Group(out node);
 		} else SynErr(81);
+		if (la.kind == 14) {
+			Get();
+			var @if = new DIf(t) { True = node }; 
+			Or(out node);
+			@if.Condition = node; 
+			Expect(51);
+			Literal(out node);
+			@if.False = node; node = @if; 
+		}
 	}
 
 	void ApplicationArguments(DApplication app) {

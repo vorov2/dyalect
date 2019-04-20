@@ -175,7 +175,7 @@ PRODUCTIONS
             [ FunctionArguments<f> ]
             (
                   Block<out node>
-                | "=" Expr<out node> Separator
+                | "=>" Expr<out node> Separator
             )
             (.
                 f.Body = node;
@@ -531,7 +531,14 @@ PRODUCTIONS
             | IF (IsTuple()) Tuple<out node>
             | Array<out node>
             | Group<out node>
-        ).
+        )
+        [
+            "if"
+            (. var @if = new DIf(t) { True = node }; .)
+            Or<out node> (. @if.Condition = node; .)
+            "else" Literal<out node>
+            (. @if.False = node; node = @if; .)
+        ].
 
     Array<out DNode node> =
         (. node = null; .)

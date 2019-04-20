@@ -1,5 +1,10 @@
 # 0.3.0
-to do
+ * A new guard expressions are added, e.g.
+    `res = x if cond else y`, which is equivalent to 
+    `res = if cond x else y`.
+ * A new syntax added for expression bodied functions, e.g.
+    `func sum(x, y) => x + y` instead of
+    `func sum(x, y) { x + y }`.
 
 # 0.2.0
  * Added support for special `iterator` function which can be
