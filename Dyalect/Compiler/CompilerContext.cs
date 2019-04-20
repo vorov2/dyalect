@@ -16,7 +16,7 @@
             BlockExit = Label.Empty;
             BlockSkip = Label.Empty;
         }
-        
+
         public Label FunctionExit { get; set; }
 
         public Label BlockBreakExit { get; set; }

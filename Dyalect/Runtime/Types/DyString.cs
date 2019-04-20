@@ -1,11 +1,13 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Parser;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyString : DyObject
+    public sealed class DyString : DyObject, IEnumerable<DyObject>
     {
         public static readonly DyString Empty = new DyString("");
         internal readonly string Value;
@@ -47,6 +49,10 @@ namespace Dyalect.Runtime.Types
 
             return new DyString(Value[idx].ToString());
         }
+
+        public IEnumerator<DyObject> GetEnumerator() => Value.Select(c => new DyString(c.ToString())).GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     internal sealed class DyStringTypeInfo : DyTypeInfo
@@ -111,44 +117,11 @@ namespace Dyalect.Runtime.Types
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => StringUtil.Escape(arg.GetString());
 
-        private DyFunction GetIterator(DyObject obj, ExecutionContext ctx) => new DyStringIteratorFunction((DyString)obj);
-
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
-            if (name == "iterator")
-                return DyMemberFunction.Create(GetIterator, name);
 
             return null;
         }
         #endregion
-    }
-
-    //This function is implemented for optimization purposes.
-    internal sealed class DyStringIteratorFunction : DyFunction
-    {
-        internal const string Name = "iterator";
-        private readonly DyString str;
-        private int idx;
-
-        internal DyStringIteratorFunction(DyString str) : base(0, EXT_HANDLE, 0, null, null)
-        {
-            this.str = str;
-        }
-
-        protected override string GetFunctionName() => Name;
-
-        public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
-        {
-            if (idx < str.Value.Length)
-                return DyTuple.Create(DyBool.True, new DyString(str.Value[idx++].ToString()));
-
-            return DyTuple.Create(DyBool.False, DyNil.Instance);
-        }
-
-        internal override DyFunction Clone(DyObject arg) =>
-            new DyStringIteratorFunction(str)
-            {
-                Self = arg
-            };
     }
 }

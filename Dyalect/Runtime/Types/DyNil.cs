@@ -1,8 +1,11 @@
 ﻿namespace Dyalect.Runtime.Types
 {
-    public sealed class DyNil : DyObject
+    public class DyNil : DyObject
     {
+        private sealed class DyTerminator : DyNil { }
+
         public static readonly DyNil Instance = new DyNil();
+        internal static readonly DyNil Terminator = new DyTerminator();
 
         private DyNil() : base(StandardType.Nil)
         {
@@ -24,6 +27,9 @@
         }
 
         public override string TypeName => StandardType.NilName;
+
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            left.TypeId == right.TypeId ? DyBool.True : DyBool.False;
 
         protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
 

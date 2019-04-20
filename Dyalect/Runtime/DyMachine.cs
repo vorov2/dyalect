@@ -10,7 +10,7 @@ namespace Dyalect.Runtime
 {
     public sealed class DyMachine
     {
-        private readonly DyObject[][] modules;
+        private readonly DyObject[][] units;
         private readonly FastList<DyTypeInfo> types;
 
         internal UnitComposition Assembly { get; }
@@ -21,7 +21,7 @@ namespace Dyalect.Runtime
             Assembly = asm;
             var callStack = new CallStack();
             ExecutionContext = new ExecutionContext(callStack, asm);
-            modules = new DyObject[Assembly.Units.Count][];
+            units = new DyObject[Assembly.Units.Count][];
             types = asm.Types;
         }
 
@@ -29,57 +29,69 @@ namespace Dyalect.Runtime
         {
             ExecutionResult retval = null;
             ExecutionContext.Error = null;
-            var res = ExecuteModule(0);
 
             var th = new System.Threading.Thread(() =>
-                {
-                    retval = ExecutionResult.Fetch(0, res, ExecutionContext);
-                }, 8 * 1024 * 1024);
+            {
+                var res = ExecuteModule(0);
+                retval = ExecutionResult.Fetch(0, res, ExecutionContext);
+            }, 8 * 1024 * 1024);
             th.Start();
             th.Join();
 
             return retval;
         }
 
-        private DyObject ExecuteModule(int moduleHandle)
+        private DyObject ExecuteModule(int unitId)
         {
-            var unit = Assembly.Units[moduleHandle];
+            var unit = Assembly.Units[unitId];
 
             if (unit.Layouts.Count == 0)
             {
                 var foreign = (ForeignUnit)unit;
-                modules[moduleHandle] = foreign.Values.ToArray();
+                units[unitId] = foreign.Values.ToArray();
                 return DyNil.Instance;
             }
 
-            var lay0 = unit.Layouts[0];
+            const int funcId = 0;
+            var lay0 = unit.Layouts[funcId];
             
             //Если да, то мы в интерактивном режиме и надо проверить, не менялся
             //ли размер, выделенный под глобальные переменные основного модуля
-            if (modules[0] != null && lay0.Size > modules[0].Length)
+            if (units[0] != null && lay0.Size > units[0].Length)
             {
                 var mems = new DyObject[lay0.Size];
-                Array.Copy(modules[0], mems, modules[0].Length);
-                modules[0] = mems;
+                Array.Copy(units[0], mems, units[0].Length);
+                units[0] = mems;
             }
 
+            units[unitId] = units[unitId] ?? new DyObject[lay0.Size];
             var evalStack = new EvalStack(lay0.StackSize);
-            return ExecuteWithData(new DyFunction(moduleHandle, 0, 0, this, FastList<DyObject[]>.Empty), evalStack);
+            return ExecuteWithData(new DyFunction(unitId, funcId, 0, this, FastList<DyObject[]>.Empty), evalStack);
         }
 
         internal DyObject ExecuteWithData(DyFunction function, EvalStack evalStack)
         {
             DyObject left;
             DyObject right;
+            DyObject[] locals;
             Op op;
             var ctx = ExecutionContext;
 
             var unit = Assembly.Units[function.UnitId];
             var ops = unit.Ops;
-            var layout = unit.Layouts[function.Handle];
+            var layout = unit.Layouts[function.FunctionId];
             var offset = layout.Address;
-            var locals = function.Handle == 0 ? modules[function.UnitId] : new DyObject[layout.Size];
-            locals = locals ?? new DyObject[layout.Size];
+
+            if (function.FunctionId == 0)
+                locals = units[function.UnitId];
+            else if (function.Locals != null)
+            {
+                locals = function.Locals;
+                offset = function.PreviousOffset;
+            }
+            else
+                locals = new DyObject[layout.Size];
+
             var captures = function.Captures;
 
             CYCLE:
@@ -100,13 +112,16 @@ namespace Dyalect.Runtime
                     case OpCode.Term:
                         if (evalStack.Size > 1 || evalStack.Size == 0)
                             throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
-                        modules[function.UnitId] = locals;
+                        units[function.UnitId] = locals;
                         return evalStack.Pop();
                     case OpCode.Pop:
                         evalStack.PopVoid();
                         break;
                     case OpCode.PushNil:
                         evalStack.Push(DyNil.Instance);
+                        break;
+                    case OpCode.PushNilT:
+                        evalStack.Push(DyNil.Terminator);
                         break;
                     case OpCode.PushI1_1:
                         evalStack.Push(DyBool.True);
@@ -143,7 +158,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(right);
                         break;
                     case OpCode.Pushext:
-                        evalStack.Push(modules[unit.ModuleHandles[op.Data & byte.MaxValue]][op.Data >> 8]);
+                        evalStack.Push(units[unit.ModuleHandles[op.Data & byte.MaxValue]][op.Data >> 8]);
                         break;
                     case OpCode.Popvar:
                         captures[captures.Count - (op.Data & byte.MaxValue)][op.Data >> 8] = evalStack.Pop();
@@ -279,6 +294,7 @@ namespace Dyalect.Runtime
                         evalStack.Dup();
                         break;
                     case OpCode.Ret:
+                        function.Locals = null;
                         ctx.CallStack.Pop();
                         return evalStack.Pop();
                     case OpCode.Fail:
@@ -309,7 +325,7 @@ namespace Dyalect.Runtime
                                 evalStack.Push(CallExternalFunction(op, offset, evalStack, function, callFun, ctx));
                             else
                             {
-                                layout = ctx.Assembly.Units[callFun.UnitId].Layouts[callFun.Handle];
+                                layout = ctx.Assembly.Units[callFun.UnitId].Layouts[callFun.FunctionId];
                                 var newStack = new EvalStack(layout.StackSize);
                                 var max = op.Data > callFun.ParameterNumber ? callFun.ParameterNumber : op.Data;
                                 var tot = op.Data > callFun.ParameterNumber ? op.Data : callFun.ParameterNumber;
@@ -380,13 +396,27 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.RunMod:
                         ExecuteModule(unit.ModuleHandles[op.Data]);
-                        evalStack.Push(new DyModule(Assembly.Units[op.Data], modules[op.Data]));
+                        evalStack.Push(new DyModule(Assembly.Units[op.Data], units[op.Data]));
                         break;
                     case OpCode.Type:
                         evalStack.Replace(types[evalStack.Peek().TypeId]);
                         break;
                     case OpCode.Tag:
                         evalStack.Replace(new DyLabel(unit.IndexedStrings[op.Data].Value, evalStack.Peek()));
+                        break;
+                    case OpCode.Yield:
+                        function.PreviousOffset = offset++;
+                        function.Locals = locals;
+                        ctx.CallStack.Pop();
+                        return evalStack.Pop();
+                    case OpCode.Brterm:
+                        if (ReferenceEquals(evalStack.Peek(), DyNil.Terminator))
+                            offset = op.Data;
+                        break;
+                    case OpCode.Briter:
+                        right = evalStack.Peek();
+                        if (right.TypeId == StandardType.Function && ((DyFunction)right).IsIterator)
+                            offset = op.Data;
                         break;
                 }
             }

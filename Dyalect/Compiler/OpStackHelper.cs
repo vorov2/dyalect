@@ -63,6 +63,10 @@
             0,  //Type
             0,  //Tag
             0,  //Term
+            -1, //Yield
+            1,  //PushNilT
+            0,  //Brterm
+            0,  //Briter
         };
     }
 }

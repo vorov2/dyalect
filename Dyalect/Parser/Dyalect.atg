@@ -154,7 +154,10 @@ PRODUCTIONS
         (. node = null; .)
         (
             "func"
-            (. var f = new DFunctionDeclaration(t); .)
+            (.
+                var f = new DFunctionDeclaration(t);
+                functions.Push(f);
+            .)
             Qualident<out var s1, out var s2, out var s3>
             (.
                 if (s2 == null && s3 == null)
@@ -178,6 +181,7 @@ PRODUCTIONS
             (.
                 f.Body = node;
                 node = f;
+                functions.Pop();
             .)
         ).
 
@@ -277,7 +281,17 @@ PRODUCTIONS
               Break<out node>
             | Continue<out node>
             | Return<out node>
+            | Yield<out node>
         ).
+
+    Yield<out DNode node> =
+        "yield" 
+        (. 
+            var yield = new DYield(t);
+            node = yield;
+            functions.Peek().IsIterator = true; 
+        .)
+        Expr<out var exp> (. yield.Expression = exp; .).
 
     Break<out DNode node> = 
         "break" 

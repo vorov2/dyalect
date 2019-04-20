@@ -324,7 +324,18 @@ namespace Dyalect.Runtime.Types
             if (name == "toString")
                 return DyMemberFunction.Create(ToStringOp, name);
 
+            if (name == "iterator")
+                return DyMemberFunction.Create(GetIterator, name);
+
             return GetTrait(name, ctx);
+        }
+
+        private DyObject GetIterator(DyObject arg, ExecutionContext ctx)
+        {
+            if (arg is IEnumerable<DyObject> en)
+                return new DyIteratorFunction(en.GetEnumerator());
+            else
+                return Err.OperationNotSupported("iterator", TypeName).Set(ctx);
         }
 
         protected virtual DyFunction GetTrait(string name, ExecutionContext ctx) => null;

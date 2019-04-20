@@ -20,6 +20,8 @@ namespace Dyalect.Parser
 
         public List<BuildMessage> Errors { get; } = new List<BuildMessage>();
 
+        private Stack<DFunctionDeclaration> functions = new Stack<DFunctionDeclaration>();
+
         public InternalParser(Scanner scanner)
         {
             this.scanner = scanner;

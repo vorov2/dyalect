@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace Dyalect.Parser.Model
 {
-
-
     public sealed class DFunctionDeclaration : DNode
     {
         public DFunctionDeclaration(Location loc) : base(NodeType.Function, loc)
@@ -20,6 +17,8 @@ namespace Dyalect.Parser.Model
         public string Name { get; set; }
 
         public bool Variadic { get; set; }
+
+        public bool IsIterator { get; set; }
 
         public List<string> Parameters { get; } = new List<string>();
 

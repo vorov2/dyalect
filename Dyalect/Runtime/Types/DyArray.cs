@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyArray : DyObject
+    public class DyArray : DyObject, IEnumerable<DyObject>
     {
         internal readonly List<DyObject> Values;
 
@@ -44,6 +45,10 @@ namespace Dyalect.Runtime.Types
             else
                 SetItem((int)index.GetInteger(), value, ctx);
         }
+
+        public IEnumerator<DyObject> GetEnumerator() => Values.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     internal sealed class DyArrayTypeInfo : DyTypeInfo
@@ -88,8 +93,6 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        private DyFunction GetIterator(DyObject obj, ExecutionContext ctx) => new DyArrayIteratorFunction((DyArray)obj);
-
         private DyObject AddItem(DyObject self, DyObject val, ExecutionContext ctx)
         {
             ((DyArray)self).Values.Add(val);
@@ -116,8 +119,8 @@ namespace Dyalect.Runtime.Types
                 if (ctx.HasErrors)
                     return DyNil.Instance;
 
-                if (res is DyTuple t && t.GetItem(0) == DyBool.True)
-                    arr.Values.Add(t.GetItem(1));
+                if (!ReferenceEquals(res, DyNil.Terminator))
+                    arr.Values.Add(res);
                 else
                     break;
             }
@@ -153,9 +156,6 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
-            if (name == "iterator")
-                return DyMemberFunction.Create(GetIterator, name);
-
             if (name == "add")
                 return DyMemberFunction.Create(AddItem, name);
 
@@ -173,34 +173,5 @@ namespace Dyalect.Runtime.Types
 
             return null;
         }
-    }
-
-    //This function is implemented for optimization purposes.
-    internal sealed class DyArrayIteratorFunction : DyFunction
-    {
-        internal const string Name = "iterator";
-        private readonly DyArray arr;
-        private int idx;
-
-        internal DyArrayIteratorFunction(DyArray arr) : base(0, EXT_HANDLE, 0, null, null)
-        {
-            this.arr = arr;
-        }
-
-        protected override string GetFunctionName() => Name;
-
-        public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
-        {
-            if (idx < arr.Values.Count)
-                return DyTuple.Create(DyBool.True, arr.Values[idx++]);
-
-            return DyTuple.Create(DyBool.False, DyNil.Instance);
-        }
-
-        internal override DyFunction Clone(DyObject arg) =>
-            new DyArrayIteratorFunction(arr)
-            {
-                Self = arg
-            };
     }
 }

@@ -62,5 +62,9 @@
         Type,       //0
         Tag,        //0
         Term,       //0
+        Yield,      //-1
+        PushNilT,   //1
+        Brterm,     //0
+        Briter      //0
     }
 }

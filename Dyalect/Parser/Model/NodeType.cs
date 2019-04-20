@@ -22,6 +22,7 @@
         Break,
         Continue,
         Return,
+        Yield,
 
         Application,
         Index,

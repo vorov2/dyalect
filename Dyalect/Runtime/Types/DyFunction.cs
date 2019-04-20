@@ -1,64 +1,80 @@
 ﻿using Dyalect.Debug;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Dyalect.Runtime.Types
 {
     public class DyFunction : DyObject
     {
+        internal const int VARIADIC = 0x02;
+        internal const int ITERATOR = 0x04;
+
         internal delegate object CallHandler(params object[] args);
 
-        internal const int EXT_HANDLE = -1;
+        internal const int ExternId = -1;
         internal const string DefaultName = "<func>";
         private readonly DyMachine vm;
-        internal FastList<DyObject[]> Captures;
 
-        internal DyFunction(int moduleHandle, int handle, int pars, DyMachine vm, FastList<DyObject[]> captures) : base(StandardType.Function)
+        internal FastList<DyObject[]> Captures;
+        internal DyObject[] Locals;
+        internal int PreviousOffset;
+
+        internal bool IsExternal => FunctionId == ExternId;
+        internal int UnitId { get; }
+        internal int FunctionId { get; set; }
+        internal byte Flags { get; set; }
+        internal DyObject Self { get; set; }
+
+        public int ParameterNumber { get; protected set; }
+        public bool IsVariadic => (Flags & VARIADIC) == VARIADIC;
+        public bool IsIterator => (Flags & ITERATOR) == ITERATOR;
+
+        internal DyFunction(int unitId, int funcId, int pars, DyMachine vm, FastList<DyObject[]> captures) : base(StandardType.Function)
         {
-            UnitId = moduleHandle;
-            Handle = handle;
+            UnitId = unitId;
+            FunctionId = funcId;
             this.ParameterNumber = pars;
             this.vm = vm;
             this.Captures = captures;
         }
 
-        internal DyFunction(int handle, int typeCode) : base(typeCode)
+        internal DyFunction(int funcId, int typeCode) : base(typeCode)
         {
-            Handle = handle;
+            FunctionId = funcId;
         }
 
-        internal DyFunction(int typeCode) : this(EXT_HANDLE, typeCode)
+        internal DyFunction(int typeCode) : this(ExternId, typeCode)
         {
 
         }
 
         internal static DyFunction Create(int unitId, int handle, int pars, DyMachine vm, FastList<DyObject[]> captures, DyObject[] locals, bool variadic = false)
         {
+            byte flags = 0;
+
+            if (variadic)
+                flags |= VARIADIC;
+
+            if (pars < 0)
+            {
+                flags |= ITERATOR;
+                pars = 0;
+            }
+
             var vars = new FastList<DyObject[]>(captures);
             vars.Add(locals);
             return new DyFunction(unitId, handle, pars, vm, vars)
             {
-                Variadic = variadic
+                Flags = flags
             };
         }
 
-        internal bool IsExternal => Handle == EXT_HANDLE;
-
-        internal int UnitId { get; }
-
-        internal int Handle { get; set; }
-
-        public int ParameterNumber { get; protected set; }
-
-        public bool Variadic { get; internal set; }
-
         public override object ToObject() => (CallHandler)Call;
-
-        internal DyObject Self { get; set; }
 
         internal virtual DyFunction Clone(DyObject arg)
         {
-            return new DyFunction(UnitId, Handle, ParameterNumber, vm, Captures)
+            return new DyFunction(UnitId, FunctionId, ParameterNumber, vm, Captures)
             {
                 Self = arg
             };
@@ -95,7 +111,7 @@ namespace Dyalect.Runtime.Types
                 args = new DyObject[0];
 
             var opd = args.Length;
-            var layout = vm.Assembly.Units[UnitId].Layouts[Handle];
+            var layout = vm.Assembly.Units[UnitId].Layouts[FunctionId];
             var newStack = new EvalStack(layout.StackSize);
 
             //Здесь нам нужно выровнять либо стек либо параметры функции
@@ -106,14 +122,14 @@ namespace Dyalect.Runtime.Types
             var c = 0;
             DyObject[] arr = null;
 
-            if (Variadic)
+            if (IsVariadic)
                 arr = new DyObject[opd - ParameterNumber];
 
             for (var i = opd - 1; i > -1; i--)
             {
                 if (++c > ParameterNumber)
                 {
-                    if (Variadic)
+                    if (IsVariadic)
                         arr[opd - ParameterNumber] = args[i];
                 }
                 else
@@ -132,7 +148,7 @@ namespace Dyalect.Runtime.Types
             if (vm == null)
                 return Call(ctx, arg1, arg2, arg3);
 
-            var layout = vm.Assembly.Units[UnitId].Layouts[Handle];
+            var layout = vm.Assembly.Units[UnitId].Layouts[FunctionId];
             var newStack = new EvalStack(layout.StackSize);
             newStack.Push(arg3);
             newStack.Push(arg2);
@@ -145,7 +161,7 @@ namespace Dyalect.Runtime.Types
             if (vm == null)
                 return Call(ctx, left, right);
 
-            var layout = vm.Assembly.Units[UnitId].Layouts[Handle];
+            var layout = vm.Assembly.Units[UnitId].Layouts[FunctionId];
             var newStack = new EvalStack(layout.StackSize);
             newStack.Push(right);
             newStack.Push(left);
@@ -157,7 +173,7 @@ namespace Dyalect.Runtime.Types
             if (vm == null)
                 return Call(ctx, obj);
 
-            var layout = vm.Assembly.Units[UnitId].Layouts[Handle];
+            var layout = vm.Assembly.Units[UnitId].Layouts[FunctionId];
             var newStack = new EvalStack(layout.StackSize);
             if (ParameterNumber > 1)
                 newStack.Push(DyNil.Instance);
@@ -197,7 +213,7 @@ namespace Dyalect.Runtime.Types
             if (syms != null)
             {
                 var dr = new DebugReader(syms);
-                var fs = dr.GetFunSymByHandle(Handle);
+                var fs = dr.GetFunSymByHandle(FunctionId);
 
                 if (fs != null)
                     return fs;
@@ -213,7 +229,7 @@ namespace Dyalect.Runtime.Types
             return nm
                 + "("
                 + string.Join(",", pars)
-                + (Variadic ? "..." : "")
+                + (IsVariadic ? "..." : "")
                 + ")";
         }
 
@@ -230,19 +246,6 @@ namespace Dyalect.Runtime.Types
         }
 
         #region Create
-        internal static DyFunction Create(int moduleHandle, int handle, int paramNumber, DyMachine vm, FastList<DyObject[]> captures, bool variadic)
-        {
-            return new DyFunction(moduleHandle, handle, paramNumber, vm, captures)
-            {
-                Variadic = variadic
-            };
-        }
-
-        internal static DyFunction Create(int moduleHandle, int handle, int paramNumber, DyMachine vm, FastList<DyObject[]> captures)
-        {
-            return new DyFunction(moduleHandle, handle, paramNumber, vm, captures);
-        }
-
         internal static DyFunction Create(Func<ExecutionContext, DyObject[], DyObject> fun, string name)
         {
             return Create(fun, -1, name, new CallAdapter.ArgCtx(fun));
@@ -359,7 +362,7 @@ namespace Dyalect.Runtime.Types
             var ret = new DyDelegateFunction(name, args < 0 ? 0 : args, adapter);
 
             if (args < 0)
-                ret.Variadic = true;
+                ret.Flags = VARIADIC;
 
             return ret;
         }
@@ -370,7 +373,7 @@ namespace Dyalect.Runtime.Types
     {
         private readonly string name;
 
-        protected DyForeignFunction(string name, int pars) : base(0, EXT_HANDLE, pars, null, null)
+        protected DyForeignFunction(string name, int pars) : base(0, ExternId, pars, null, null)
         {
             this.name = name ?? DefaultName;
         }
@@ -392,7 +395,7 @@ namespace Dyalect.Runtime.Types
         private readonly string name;
         private readonly CallAdapter adapter;
 
-        internal DyDelegateFunction(string name, int pars, CallAdapter adapter) : base(0, EXT_HANDLE, pars, null, null)
+        internal DyDelegateFunction(string name, int pars, CallAdapter adapter) : base(0, ExternId, pars, null, null)
         {
             this.name = name;
             this.adapter = adapter;
@@ -444,6 +447,8 @@ namespace Dyalect.Runtime.Types
                 this.func = func;
             }
 
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => func(Self, ctx);
+
             internal override DyFunction Clone(DyObject arg)
             {
                 return new UnaryFunction(func, Name)
@@ -453,7 +458,7 @@ namespace Dyalect.Runtime.Types
             }
         }
 
-        private DyMemberFunction(string name) : base(0, EXT_HANDLE, 0, null, null)
+        private DyMemberFunction(string name) : base(0, ExternId, 0, null, null)
         {
             Name = name;
         }
@@ -465,6 +470,29 @@ namespace Dyalect.Runtime.Types
             new BinaryFunction(func, name);
 
         protected override string GetFunctionName() => Name;
+    }
+
+    internal sealed class DyIteratorFunction : DyFunction
+    {
+        private readonly IEnumerator<DyObject> enumerator;
+
+        public DyIteratorFunction(IEnumerator<DyObject> enumerator) : base(0, ExternId, 0, null, null)
+        {
+            this.enumerator = enumerator;
+            Flags |= ITERATOR;
+        }
+
+        protected override string GetFunctionName() => "iterator";
+
+        public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
+        {
+            if (enumerator.MoveNext())
+                return enumerator.Current;
+            return DyNil.Terminator;
+        }
+
+        internal override DyFunction Clone(DyObject arg) =>
+            new DyIteratorFunction(enumerator) { Self = arg, Flags = Flags };
     }
 
     internal abstract class CallAdapter

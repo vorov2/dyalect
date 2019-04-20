@@ -17,7 +17,9 @@ namespace Dyalect.Compiler
 
         Function = 0x10,
 
-        Pop = 0x20
+        Pop = 0x20,
+
+        Iterator = 0x40
     }
 
     public static class HintsExtensions

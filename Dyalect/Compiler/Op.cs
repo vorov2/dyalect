@@ -43,6 +43,8 @@
         public static readonly Op SyncPoint = new Op(OpCode.SyncPoint);
         public static readonly Op Fail = new Op(OpCode.Fail);
         public static readonly Op Term = new Op(OpCode.Term);
+        public static readonly Op Yield = new Op(OpCode.Yield);
+        public static readonly Op PushNilT = new Op(OpCode.PushNilT);
 
         public Op(OpCode code)
         {

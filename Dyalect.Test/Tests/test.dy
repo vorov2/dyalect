@@ -79,8 +79,26 @@ while (el = iter())[0] {
 print("Finished!")
 */
 
-var arr = makeList(10)
+var arr = makeList(1000*1000)
+
+func testIter(n) {
+    yield 1
+    yield 22
+    yield 14
+    yield 3
+
+    while n > 0 {
+        n -= 1
+        yield n
+    }
+
+    print ("Basta!")
+}
+
+arr.addRange([1000,2000,3000,4000])
 
 for x in arr {
-    print (x)
+    //print(x)
 }
+
+print("Finish")

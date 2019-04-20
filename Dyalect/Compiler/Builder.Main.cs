@@ -88,7 +88,18 @@ namespace Dyalect.Compiler
                 case NodeType.For:
                     Build((DFor)node, hints, ctx);
                     break;
+                case NodeType.Yield:
+                    Build((DYield)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DYield node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Expression, hints.Append(Push), ctx);
+            AddLinePragma(node);
+            cw.Yield();
+            PushIf(hints);
         }
 
         private void Build(DTrait node, Hints hints, CompilerContext ctx)
@@ -274,20 +285,22 @@ namespace Dyalect.Compiler
 
             var inc = AddVariable(node.Variable.Value, node.Variable, VarFlags.Const);
             var sys = AddVariable();
+            var skip = cw.DefineLabel();
             Build(node.Target, hints.Append(Push), ctx);
+
+            cw.Briter(skip);
+
             cw.TraitG("iterator");
             cw.Call(0);
+            cw.MarkLabel(skip);
             cw.PopVar(sys);
 
             var iter = cw.DefineLabel();
             cw.MarkLabel(iter);
             cw.PushVar(new ScopeVar(sys));
             cw.Call(0);
-            cw.Dup();
-            cw.Get(0);
-            cw.Brfalse(ctx.BlockExit);
+            cw.Brterm(ctx.BlockExit);
 
-            cw.Get(1);
             cw.PopVar(inc);
 
             Build(node.Body, hints.Remove(Push), ctx);
@@ -631,6 +644,7 @@ namespace Dyalect.Compiler
         private void BuildFunctionBody(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
             //Начинаем новый фрейм
+            var iter = hints.Has(Iterator);
             var args = node.Parameters.ToArray();
             var argCount = args.Length + (node.TypeName != null ? 1 : 0);
             StartFun(node.Name, args, argCount);
@@ -651,10 +665,8 @@ namespace Dyalect.Compiler
             //Actual start of a function
             cw.MarkLabel(startLabel);
 
-            //Начинаем реальный (а не времени компиляции) лексический скоуп для функции.
+            //Start of a physical (and not compiler time) lexical scope for a function
             StartScope(fun: true, loc: node.Location);
-
-            //Вот здесь реальный лексический скоуп и начинается
             StartSection();
 
             AddLinePragma(node);
@@ -669,7 +681,7 @@ namespace Dyalect.Compiler
                 cw.PopVar(va);
             }
 
-            //Инициализационная логика параметров
+            //Initialize function arguments
             for (var i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
@@ -677,13 +689,27 @@ namespace Dyalect.Compiler
                 cw.PopVar(a);
             }
 
-            //Теперь компилируем тело функции
-            Build(node.Body, hints, ctx);
+            //Compile function body
+            if (node.IsIterator)
+            {
+                var dec = new DFunctionDeclaration(node.Location) { Name = node.Name, Body = node.Body };
+                Build(dec, hints.Append(Iterator), ctx);
+            }
+            else
+                Build(node.Body, hints, ctx);
 
             //Возвращаемся из функции. Кстати, любое исполнение функции доходит до сюда,
             //т.е. нельзя выйти раньше. Преждевременный return всё равно прыгает сюда, и здесь
             //уже исполняется реальный return (Ret). Т.е. это эпилог функции.
             cw.MarkLabel(funEndLabel);
+
+            //If this is an iterator function push a terminator at the end (and pop a normal value)
+            if (iter)
+            {
+                cw.Pop();
+                cw.PushNilT();
+            }
+
             cw.Ret();
             cw.MarkLabel(funSkipLabel);
 
@@ -697,7 +723,7 @@ namespace Dyalect.Compiler
             EndSection();
 
             //А здесь мы уже создаём функцию как значение (эмитится Newfun).
-            cw.Push(node.Variadic ? argCount - 1 : argCount);
+            cw.Push(node.Variadic || iter ? argCount - 1 : argCount);
 
             if (node.Variadic)
                 cw.NewFunV(funHandle);
