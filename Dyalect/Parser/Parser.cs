@@ -781,7 +781,7 @@ namespace Dyalect.Parser
 				if (la.AfterEol) return; 
 				Get();
 				var idx = new DIndexer(t) { Target = node }; 
-				Literal(out node);
+				Expr(out node);
 				idx.Index = node;
 				node = idx;
 				

@@ -493,7 +493,7 @@ PRODUCTIONS
                     (. if (la.AfterEol) return; .)
                     "["
                         (. var idx = new DIndexer(t) { Target = node }; .)
-                        Literal<out node>
+                        Expr<out node>
                         (. 
                             idx.Index = node;
                             node = idx;
