@@ -53,6 +53,7 @@
             1, //Call
             1, //NewFun
             1, //NewFunV
+            1, //NewIter
             1, //TraitS
             1, //TraitG
             0, //Get

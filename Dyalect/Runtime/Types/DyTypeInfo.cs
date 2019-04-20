@@ -333,7 +333,7 @@ namespace Dyalect.Runtime.Types
         private DyObject GetIterator(DyObject arg, ExecutionContext ctx)
         {
             if (arg is IEnumerable<DyObject> en)
-                return new DyIteratorFunction(en.GetEnumerator());
+                return new DyIterator(en.GetEnumerator());
             else
                 return Err.OperationNotSupported("iterator", TypeName).Set(ctx);
         }

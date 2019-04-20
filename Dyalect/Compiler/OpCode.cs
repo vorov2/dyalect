@@ -52,6 +52,7 @@
         Call,       //Dynamic
         NewFun,     //0
         NewFunV,    //0
+        NewIter,    //0
         TraitS,     //-2
         TraitG,     //-1
         Get,        //-1

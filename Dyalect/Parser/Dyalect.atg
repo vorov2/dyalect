@@ -38,11 +38,10 @@ TOKENS
     returnToken         = "return".
     continueToken       = "continue".
     breakToken          = "break".
+    yieldToken          = "yield".
     ifToken             = "if".
     forToken            = "for".
     whileToken          = "while".
-    switchToken         = "switch".
-    doToken             = "do".
     typeToken           = "type".
 
     arrowToken          = "=>".
@@ -469,33 +468,12 @@ PRODUCTIONS
                 | "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
                 | "#" (. ot = t; op = UnaryOperator.Length; .)
             ]
-            Application<out node>
+            FieldOrIndex<out node>
             (.
                 if (op != UnaryOperator.None)
                     node = new DUnaryOperation(node, op, ot);
             .)
         ).
-
-    Application<out DNode node> =
-        (. node = null; .)
-        (
-            FieldOrIndex<out node>
-            {
-                (. 
-                    if (la.AfterEol) return;
-                    var app = new DApplication(node, t); 
-                .)
-                ApplicationArguments<app>
-                (. node = app; .)
-            }
-        ).
-
-    ApplicationArguments<DApplication app> =
-        (. var node = default(DNode); .)
-        "("
-            [ Expr<out node> (. app.Arguments.Add(node); .) ]
-            { "," Expr<out node> (. app.Arguments.Add(node); .) }
-        ")".
 
     FieldOrIndex<out DNode node> =
         (
@@ -522,8 +500,24 @@ PRODUCTIONS
                         .)
                     "]"
                 )
+                |
+                (
+                    (. 
+                        if (la.AfterEol) return;
+                        var app = new DApplication(node, t); 
+                    .)
+                    "("
+                        [ ApplicationArguments<app> ]
+                        (. node = app; .)
+                    ")"
+                )
             }
         ).
+
+    ApplicationArguments<DApplication app> =
+        (. var node = default(DNode); .)
+        Expr<out node> (. app.Arguments.Add(node); .)
+        { "," Expr<out node> (. app.Arguments.Add(node); .) }.
 
     Literal<out DNode node> =
         (. node = null; .)

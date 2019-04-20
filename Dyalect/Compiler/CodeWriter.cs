@@ -175,6 +175,7 @@ namespace Dyalect.Compiler
         public void Call(int args) => Emit(new Op(OpCode.Call, args), -args);
         public void NewFun(int funHandle) => Emit(new Op(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new Op(OpCode.NewFunV, funHandle));
+        public void NewIter(int funHandle) => Emit(new Op(OpCode.NewIter, funHandle));
         public void Br(Label lab) => Emit(OpCode.Br, lab);
         public void Brtrue(Label lab) => Emit(OpCode.Brtrue, lab);
         public void Brfalse(Label lab) => Emit(OpCode.Brfalse, lab);

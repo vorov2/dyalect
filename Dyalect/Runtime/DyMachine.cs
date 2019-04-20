@@ -66,7 +66,7 @@ namespace Dyalect.Runtime
 
             units[unitId] = units[unitId] ?? new DyObject[lay0.Size];
             var evalStack = new EvalStack(lay0.StackSize);
-            return ExecuteWithData(new DyFunction(unitId, funcId, 0, this, FastList<DyObject[]>.Empty), evalStack);
+            return ExecuteWithData(new DyFunction(unitId, funcId, 0, this, FastList<DyObject[]>.Empty, StandardType.Function), evalStack);
         }
 
         internal DyObject ExecuteWithData(DyFunction function, EvalStack evalStack)
@@ -300,7 +300,11 @@ namespace Dyalect.Runtime
                     case OpCode.Fail:
                         ctx.Error = Err.UserCode(evalStack.Pop().ToString());
                         ProcessError(ctx, function, ref offset);
-                        break; ;
+                        break;
+                    case OpCode.NewIter:
+                        right = evalStack.Peek();
+                        evalStack.Replace(DyIterator.CreateIterator(function.UnitId, op.Data, this, captures, locals));
+                        break;
                     case OpCode.NewFun:
                         right = evalStack.Peek();
                         evalStack.Replace(DyFunction.Create(function.UnitId, op.Data, (int)right.GetInteger(), this, captures, locals));
@@ -312,7 +316,7 @@ namespace Dyalect.Runtime
                     case OpCode.Call:
                         {
                             right = evalStack.Pop();
-                            if (right.TypeId != StandardType.Function)
+                            if (right.TypeId != StandardType.Function && right.TypeId != StandardType.Iterator)
                             {
                                 ctx.Error = Err.NotFunction(types[right.TypeId].TypeName);
                                 ProcessError(ctx, function, ref offset);
@@ -414,8 +418,7 @@ namespace Dyalect.Runtime
                             offset = op.Data;
                         break;
                     case OpCode.Briter:
-                        right = evalStack.Peek();
-                        if (right.TypeId == StandardType.Function && ((DyFunction)right).IsIterator)
+                        if (evalStack.Peek().TypeId == StandardType.Iterator)
                             offset = op.Data;
                         break;
                 }

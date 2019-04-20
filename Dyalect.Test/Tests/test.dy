@@ -79,7 +79,7 @@ while (el = iter())[0] {
 print("Finished!")
 */
 
-var arr = makeList(1000*1000)
+var arr = makeList(100)
 
 func testIter(n) {
     yield 1
@@ -95,10 +95,38 @@ func testIter(n) {
     print ("Basta!")
 }
 
-arr.addRange([1000,2000,3000,4000])
-
-for x in arr {
-    //print(x)
+func Iterator.where(pred) {
+    for e in self {
+        if pred(e) {
+            yield e
+        }
+    }
 }
 
-print("Finish")
+func Iterator.select(fun) {
+    for e in self {
+        yield fun(e)
+    }
+}
+
+func Iterator.print() {
+    var str = "["
+    var fst = true
+    for e in self {
+        if !fst {
+            str += ","
+        }
+        str += e.toString()
+        fst = false
+    }
+
+    str += "]"
+}
+
+arr
+    .iterator()
+    .where(x => x % 2 == 0)
+    .select(x => x * 2)
+    .where(x => x > 100)
+    .select(x => "value:" + x)
+    .print()

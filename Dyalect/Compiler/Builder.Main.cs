@@ -722,13 +722,18 @@ namespace Dyalect.Compiler
             EndScope();
             EndSection();
 
-            //А здесь мы уже создаём функцию как значение (эмитится Newfun).
-            cw.Push(node.Variadic || iter ? argCount - 1 : argCount);
-
-            if (node.Variadic)
-                cw.NewFunV(funHandle);
+            if (iter)
+                cw.NewIter(funHandle);
             else
-                cw.NewFun(funHandle);
+            {
+                //А здесь мы уже создаём функцию как значение (эмитится Newfun).
+                cw.Push(node.Variadic ? argCount - 1 : argCount);
+
+                if (node.Variadic)
+                    cw.NewFunV(funHandle);
+                else
+                    cw.NewFun(funHandle);
+            }
         }
 
         private int GetTypeHandle(Qualident name, Location loc)

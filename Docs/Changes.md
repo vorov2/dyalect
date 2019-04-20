@@ -9,6 +9,9 @@
     (if any). This is pretty similar to `IEnumerator` from
     .NET but uses a single closure instead of an interface
     with two methods.
+ * Added a new type `Iterator` (which is actually a special
+    kind of function) which allows to implement non-strict
+    functions in a manner of LINQ.
  * A `for` cycle (based on the iterator functionality) is
     implemented, e.g.: `for x in seq { doSomething(x) }`.
  * Arrays now supports methods `add`, `remove`, `removeAt`
@@ -25,6 +28,7 @@
     didn't create a lexical scope).
  * Bug fixes - interactive mode not restoring properly after
     compilation errors.
+ * Fixes in grammar and parser.
  * Empty blocks `{ }` are now allowed.
 
 # 0.1.0
