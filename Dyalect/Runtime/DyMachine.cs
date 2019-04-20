@@ -29,6 +29,8 @@ namespace Dyalect.Runtime
         {
             ExecutionResult retval = null;
             ExecutionContext.Error = null;
+
+#if !DEBUG
             Exception eex = null;
 
             var th = new System.Threading.Thread(() =>
@@ -48,7 +50,10 @@ namespace Dyalect.Runtime
 
             if (eex != null)
                 throw eex;
-
+#else
+            var res = ExecuteModule(0);
+            retval = ExecutionResult.Fetch(0, res, ExecutionContext);
+#endif
             return retval;
         }
 
@@ -313,8 +318,7 @@ namespace Dyalect.Runtime
                         ProcessError(ctx, function, ref offset);
                         break;
                     case OpCode.NewIter:
-                        right = evalStack.Peek();
-                        evalStack.Replace(DyIterator.CreateIterator(function.UnitId, op.Data, this, captures, locals));
+                        evalStack.Push(DyIterator.CreateIterator(function.UnitId, op.Data, this, captures, locals));
                         break;
                     case OpCode.NewFun:
                         right = evalStack.Peek();

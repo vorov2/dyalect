@@ -36,6 +36,8 @@ namespace Tests
 
         [Test] public void PhoneParserTest() => ShouldBe("9645061112");
 
+        [Test] public void IteratorTest1() => ShouldBe(116.8);
+
         #region Execution
         private void ShouldBe(int expected, [CallerMemberName]string callerName = "") =>
             ShouldBe((long)expected, callerName);
@@ -43,7 +45,7 @@ namespace Tests
         private void ShouldBe(object expected, [CallerMemberName]string callerName = "")
         {
             var res = RunTest(callerName).ToObject();
-            Assert.True(expected.Equals(res), $"Expected {expected}, got {res}");
+            Assert.True(expected.Equals(res), $"Expected <<{expected}>>, got <<{res}>>.");
         }
 
         private Dictionary<string, DyCodeModel> ast;
