@@ -47,7 +47,7 @@ namespace Dyalect.Linker
             if (LookIn(fileName, startupPaths, out fullPath)
                 || LookIn(fileName, standardPaths, out fullPath)
                 || LookIn(fileName, systemPaths, out fullPath)
-                || LookIn(fileName, additionalPaths, out fullPath))                
+                || LookIn(fileName, additionalPaths, out fullPath))
                 return true;
 
             return false;

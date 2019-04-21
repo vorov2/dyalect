@@ -23,6 +23,12 @@
     e.g. `$1 if $0 < 3 else $0 * $x` is equivalent to:
     `(i,x) => if (i < 3) { x } else { i * x }`.
 
+# 0.2.2
+ * Code clean-ups
+ * A new constructor is added to tuple type for convinience.
+ * Some strings (related to error messages) are translated
+    into english.
+
 # 0.2.1
  * A bug fixed in parser that didn't allow to use expression
     in indexers (e.g. `arr[x - y]`).

@@ -12,6 +12,8 @@ namespace Dyalect.Runtime.Types
             new DyTuplePair(key1, arg1, key2, arg2);
         public static DyTuple Create(string[] keys, DyObject[] args) =>
             new DyTupleVariadic(keys, args);
+        public static DyTuple Create(DyObject[] args) =>
+            new DyTupleVariadic(new string[args.Length], args);
 
         protected DyTuple() : base(StandardType.Tuple)
         {

@@ -11,6 +11,7 @@ namespace Dyalect.Linker
         internal const string PrintName = "print";
         internal const string CreateTupleName = "createTuple";
         internal const string CreateArrayName = "createArray";
+        internal const string ToNumberName = "convertToNumber";
 
         public Lang()
         {
@@ -19,6 +20,24 @@ namespace Dyalect.Linker
             RegisterGlobal(CreateTupleName, CreateTuple);
             RegisterGlobal(CreateArrayName, CreateArray);
             RegisterGlobal("makeList", MakeList);
+            RegisterGlobal(ToNumberName, ToNumber);
+        }
+
+        private static DyObject ToNumber(DyObject arg)
+        {
+            if (arg.TypeId == StandardType.Integer || arg.TypeId == StandardType.Float)
+                return arg;
+            else if (arg.TypeId == StandardType.String)
+            {
+                var str = arg.GetString();
+                if (int.TryParse(str, out var i4))
+                    return new DyInteger(i4);
+                else if (double.TryParse(str, out var r8))
+                    return new DyFloat(r8);
+                
+            }
+
+            return DyInteger.Zero;
         }
 
         public static DyObject Print(ExecutionContext ctx, DyObject[] args)

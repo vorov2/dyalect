@@ -1,11 +1,8 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Linker;
 using Dyalect.Parser;
-using Dyalect.Parser.Model;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System.Collections.Generic;
-using System.IO;
 
 namespace Dyalect
 {
