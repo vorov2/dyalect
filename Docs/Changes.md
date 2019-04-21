@@ -6,6 +6,12 @@
     `func sum(x, y) => x + y` instead of
     `func sum(x, y) { x + y }`.
 
+# 0.2.1
+ * A bug fixed in parser that didn't allow to use expression
+    in indexers (e.g. `arr[x - y]`).
+ * A bug fixed in tuple initialization logic (reproducible
+    with pairs, e.g. `(2, 4)`).
+
 # 0.2.0
  * Added support for special `iterator` function which can be
     implemented for any type. This function is used to iterate

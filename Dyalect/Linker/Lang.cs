@@ -63,7 +63,7 @@ namespace Dyalect.Linker
                 return DyTuple.Create(
                     a1.TypeId == StandardType.Label ? (la1 = (DyLabel)a1).Label : null,
                     la1 != null ? la1.Value : a1,
-                    la2.TypeId == StandardType.Label ? (la2 = (DyLabel)a2).Label : null,
+                    a2.TypeId == StandardType.Label ? (la2 = (DyLabel)a2).Label : null,
                     la2 != null ? la2.Value : a2
                     );
             }

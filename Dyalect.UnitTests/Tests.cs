@@ -18,13 +18,37 @@ namespace Tests
     {
         [Test] public void MathTest1() => ShouldBe(38);
 
+        [Test] public void MathTest2() => ShouldBe(1.5919117647058822);
+
+        [Test] public void MathTest3() => ShouldBe(6.6129032258064528);
+
+        [Test] public void MathTest4() => ShouldBe(11.256);
+
+        [Test] public void MathTest5() => ShouldBe(0.0099999999999997868);
+
+        [Test] public void MathTest6() => ShouldBe(783.59999999999991);
+
+        [Test] public void LogicalTest1() => ShouldBe(true);
+
+        [Test] public void LogicalTest2() => ShouldBe(false);
+
+        [Test] public void ComparisonTest1() => ShouldBe(true);
+
+        [Test] public void ComparisonTest2() => ShouldBe(true);
+
+        [Test] public void ToStringTest1() => ShouldBe("(1, 2, 3)");
+
+        [Test] public void ToStringTest2() => ShouldBe("[12.2, \"string\", true]");
+
+        [Test] public void ToStringTest3() => ShouldBe("(x: 42, y: \"foo\")");
+
         [Test] public void WhileTest1() => ShouldBe(33);
 
         [Test] public void WhileTest2() => ShouldBe(42);
 
         [Test] public void FizzbuzzTest() => ShouldBe("12fizz4buzzfizz78fizzbuzz");
 
-        [Test] public void IterTest() => ShouldBe(10);
+        [Test] public void RecursionTest() => ShouldBe(10);
 
         [Test] public void FactTest() => ShouldBe(2432902008176640000);
 
@@ -37,6 +61,14 @@ namespace Tests
         [Test] public void PhoneParserTest() => ShouldBe("9645061112");
 
         [Test] public void IteratorTest1() => ShouldBe(116.8);
+
+        [Test] public void IteratorTest2() => ShouldBe(36);
+
+        [Test] public void IteratorTest3() => ShouldBe(20);
+
+        [Test] public void IteratorTest4() => ShouldBe("olleH");
+
+        [Test] public void IteratorTest5() => ShouldBe("ll");
 
         #region Execution
         private void ShouldBe(int expected, [CallerMemberName]string callerName = "") =>
