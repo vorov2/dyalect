@@ -388,16 +388,9 @@ namespace Dyalect.Parser
 		   f.TypeName = new Qualident(s1, s2);
 		}
 		
-		if (la.kind == 24) {
-			FunctionArguments(f);
-		}
-		if (la.kind == 26) {
-			Block(out node);
-		} else if (la.kind == 18) {
-			Get();
-			Expr(out node);
-			Separator();
-		} else SynErr(78);
+		FunctionArguments(f);
+		Expr(out node);
+		Separator();
 		f.Body = node;
 		node = f;
 		functions.Pop();
@@ -432,7 +425,7 @@ namespace Dyalect.Parser
 			Block(out node);
 		} else if (la.kind == 15 || la.kind == 16) {
 			Loops(out node);
-		} else SynErr(79);
+		} else SynErr(78);
 	}
 
 	void FunctionArgument(DFunctionDeclaration node) {
@@ -513,7 +506,7 @@ namespace Dyalect.Parser
 			FunctionArgument(f);
 		} else if (la.kind == 24) {
 			FunctionArguments(f);
-		} else SynErr(80);
+		} else SynErr(79);
 		Expect(18);
 		Expr(out var exp);
 		f.Body = exp; 
@@ -820,7 +813,7 @@ namespace Dyalect.Parser
 			Array(out node);
 		} else if (la.kind == 24) {
 			Group(out node);
-		} else SynErr(81);
+		} else SynErr(80);
 		if (la.kind == 14) {
 			Get();
 			var @if = new DIf(t) { True = node }; 
@@ -863,7 +856,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 67) {
 			Get();
-		} else SynErr(82);
+		} else SynErr(81);
 		node = new DBooleanLiteral(t) { Value = t.val == "true" }; 
 	}
 
@@ -921,14 +914,14 @@ namespace Dyalect.Parser
 			} else if (la.kind == 4 || la.kind == 5) {
 				AnyString(out var str);
 				name = str; 
-			} else SynErr(83);
+			} else SynErr(82);
 			Expect(22);
 			var tag = new DLabelLiteral(t) { Label = name }; 
 			Expr(out node);
 			tag.Expression = node; node = tag; 
 		} else if (StartOf(5)) {
 			Expr(out node);
-		} else SynErr(84);
+		} else SynErr(83);
 	}
 
 	void Dyalect() {
@@ -1049,13 +1042,12 @@ namespace Dyalect.Parser
 			case 75: s = "invalid ControlFlow"; break;
 			case 76: s = "invalid If"; break;
 			case 77: s = "invalid Loops"; break;
-			case 78: s = "invalid Function"; break;
-			case 79: s = "invalid Expr"; break;
-			case 80: s = "invalid FunctionExpr"; break;
-			case 81: s = "invalid Literal"; break;
-			case 82: s = "invalid Bool"; break;
+			case 78: s = "invalid Expr"; break;
+			case 79: s = "invalid FunctionExpr"; break;
+			case 80: s = "invalid Literal"; break;
+			case 81: s = "invalid Bool"; break;
+			case 82: s = "invalid TupleElement"; break;
 			case 83: s = "invalid TupleElement"; break;
-			case 84: s = "invalid TupleElement"; break;
 
                 default:
                     s = "unknown " + n;

@@ -3,8 +3,7 @@
     `res = x if cond else y`, which is equivalent to 
     `res = if cond x else y`.
  * A new syntax added for expression bodied functions, e.g.
-    `func sum(x, y) => x + y` instead of
-    `func sum(x, y) { x + y }`.
+    `func A(x, y) x + y` instead of `func A(x, y) { x + y }`.
 
 # 0.2.1
  * A bug fixed in parser that didn't allow to use expression

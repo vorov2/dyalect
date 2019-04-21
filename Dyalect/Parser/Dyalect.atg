@@ -172,10 +172,9 @@ PRODUCTIONS
                     f.TypeName = new Qualident(s1, s2);
                 }
             .)
-            [ FunctionArguments<f> ]
+            FunctionArguments<f>
             (
-                  Block<out node>
-                | "=>" Expr<out node> Separator
+                Expr<out node> Separator
             )
             (.
                 f.Body = node;
