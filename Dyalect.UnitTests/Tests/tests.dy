@@ -285,3 +285,92 @@ func iteratorTest5() {
     const arr = toArray( filter("hello", x => x == "l") )
     arr[0] + arr[1]
 }
+
+func calcETest() { //2.71828182845905
+    const epsilon = 1.0e-15
+    func abs(n) {
+        if n < 0 {
+            -n
+        } else {
+            n
+        }
+    }
+    var fact = 1
+    var e = 2.0
+    var e0
+    var n = 2
+    while true {
+        e0 = e
+        fact *= n
+        n += 1
+        e += 1.0 / fact
+
+        if abs(e - e0) < epsilon {
+            break
+        }
+    }
+    return e
+}
+
+func dammTest() {
+    const table = [
+        [0, 3, 1, 7, 5, 9, 8, 6, 4, 2],
+        [7, 0, 9, 2, 1, 5, 4, 8, 6, 3],
+        [4, 2, 0, 6, 8, 7, 1, 3, 5, 9],
+        [1, 7, 5, 0, 9, 8, 3, 4, 2, 6],
+        [6, 1, 2, 3, 0, 4, 5, 9, 7, 8],
+        [3, 6, 7, 4, 2, 0, 9, 5, 8, 1],
+        [5, 8, 6, 9, 7, 2, 0, 1, 3, 4],
+        [8, 9, 4, 5, 3, 6, 2, 0, 1, 7],
+        [9, 4, 3, 8, 6, 1, 7, 2, 0, 5],
+        [2, 5, 8, 1, 4, 3, 6, 7, 9, 0]
+    ] 
+    func damm(num) {
+        var interim = 0
+        for c in num.toString() {
+            interim = table[interim][convertToNumber(c)];
+        }
+        interim == 0
+    }
+    var numbers = [5724, 5727, 112946, 112949]
+    var results = []
+    for num in numbers {
+        var isValid = damm(num)
+        if isValid {
+            results.add("yes")
+        } else {
+            results.add("no")
+        }
+    }
+    var str = ""
+    for e in results {
+        str += e
+    }
+    str
+}
+
+func eulerTest() {
+    const T0 = 100.0
+    const TR = 20.0
+    const k = 0.07
+    const n = 100
+    func newtonCooling(t) {
+        -k * (t - TR)
+    } 
+    func euler(fn, y, n, h) {
+        var values = []
+        var x = 0
+        while x <= n {
+            values.add(x + "=" + y)
+            y += h * fn(y)
+            x += h
+        }
+        values
+    }
+    const arr = euler(newtonCooling, T0, n, 10.0)
+    var str = ""
+    for e in arr {
+        str += e + ";"
+    }
+    str
+}

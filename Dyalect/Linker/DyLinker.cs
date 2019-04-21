@@ -116,11 +116,11 @@ namespace Dyalect.Linker
             foreach (var u in Units)
             {
                 for (var i = 0; i < u.References.Count; i++)
-                    u.ModuleHandles[i] = u.References[i].Id;
+                    u.UnitIds[i] = u.References[i].Id;
 
-                for (var i = 0; i < u.TypeHandles.Count; i++)
+                for (var i = 0; i < u.TypeIds.Count; i++)
                 {
-                    u.TypeHandles[i] = asm.Types.Count;
+                    u.TypeIds[i] = asm.Types.Count;
                     asm.Types.Add(new DyVariantTypeInfo(asm.Types.Count, u.TypeNames[i]));
                 }
             }

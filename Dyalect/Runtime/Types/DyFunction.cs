@@ -1,6 +1,5 @@
 ﻿using Dyalect.Debug;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Dyalect.Runtime.Types
@@ -47,7 +46,7 @@ namespace Dyalect.Runtime.Types
 
         }
 
-        internal static DyFunction Create(int unitId, int handle, int pars, DyMachine vm, FastList<DyObject[]> captures, DyObject[] locals, bool variadic = false)
+        internal static DyFunction Create(int unitId, int funcId, int pars, DyMachine vm, FastList<DyObject[]> captures, DyObject[] locals, bool variadic = false)
         {
             byte flags = 0;
 
@@ -56,7 +55,7 @@ namespace Dyalect.Runtime.Types
 
             var vars = new FastList<DyObject[]>(captures);
             vars.Add(locals);
-            return new DyFunction(unitId, handle, pars, vm, vars, StandardType.Function)
+            return new DyFunction(unitId, funcId, pars, vm, vars, StandardType.Function)
             {
                 Flags = flags
             };
@@ -128,9 +127,8 @@ namespace Dyalect.Runtime.Types
                     newStack.Push(args[i]);
             }
 
-            //TODO: Variadic
-            //if (Variadic) 
-            //    newStack.Push(new DysTuple(arr));
+            if (IsVariadic)
+                newStack.Push(DyTuple.Create(arr));
 
             return Machine.ExecuteWithData(this, newStack);
         }
@@ -463,8 +461,6 @@ namespace Dyalect.Runtime.Types
 
         protected override string GetFunctionName() => Name;
     }
-
-    
 
     internal abstract class CallAdapter
     {

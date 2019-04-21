@@ -1,3 +1,9 @@
+# 0.2.2
+ * Code clean-ups
+ * A new constructor is added to tuple type for convinience.
+ * Some strings (related to error messages) are translated
+    into english.
+
 # 0.2.1
  * A bug fixed in parser that didn't allow to use expression
     in indexers (e.g. `arr[x - y]`).

@@ -4,8 +4,8 @@
     {
         Complete = 0,
 
-        Abort = 2,
+        Abort = 1,
 
-        Exception = 3
+        Exception = 2
     }
 }

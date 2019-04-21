@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace Dyalect.Parser.Model
 {
@@ -100,85 +98,6 @@ namespace Dyalect.Parser.Model
         {
             sb.Append(Operator.ToSymbol());
             Node.ToString(sb);
-        }
-    }
-
-    public sealed class DAssignment : DNode
-    {
-        public DAssignment(Location loc) : base(NodeType.Assignment, loc)
-        {
-
-        }
-
-        public BinaryOperator? AutoAssign { get; set; }
-
-        public DNode Target { get; set; }
-
-        public DNode Value { get; set; }
-
-        internal override void ToString(StringBuilder sb)
-        {
-            Target.ToString(sb);
-
-            if (AutoAssign != null)
-            {
-                sb.Append(' ');
-                sb.Append(AutoAssign.Value.ToSymbol());
-                sb.Append("= ");
-                Value.ToString(sb);
-            }
-            else
-            {
-                sb.Append(" = ");
-                Value.ToString(sb);
-            }
-        }
-    }
-
-    public sealed class DIf : DNode
-    {
-        public DIf(Location loc) : base(NodeType.If, loc)
-        {
-
-        }
-
-        public DNode Condition { get; set; }
-
-        public DNode True { get; set; }
-
-        public DNode False { get; set; }
-
-        internal override void ToString(StringBuilder sb)
-        {
-            sb.Append("if ");
-            Condition.ToString(sb);
-            True.ToString(sb);
-
-            if (False != null)
-            {
-                sb.Append("else ");
-                False.ToString(sb);
-            }
-        }
-    }
-
-    public sealed class DApplication : DNode
-    {
-        public DApplication(DNode target, Location loc) : base(NodeType.Application, loc)
-        {
-            Target = target;
-        }
-
-        public DNode Target { get; }
-
-        public List<DNode> Arguments { get; } = new List<DNode>();
-
-        internal override void ToString(StringBuilder sb)
-        {
-            Target.ToString(sb);
-            sb.Append('(');
-            Arguments.ToString(sb);
-            sb.Append(')');
         }
     }
 }

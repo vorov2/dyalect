@@ -40,6 +40,5 @@ namespace Dyalect.Linker
         protected void RegisterGlobal(string name, Func<DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
         protected void RegisterGlobal(string name, Func<DyObject[], DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
         protected void RegisterGlobal(string name, Func<ExecutionContext, DyObject[], DyObject> value) => RegisterGlobal(name, DyFunction.Create(value, name));
-
     }
 }

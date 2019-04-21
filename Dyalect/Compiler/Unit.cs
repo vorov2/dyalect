@@ -12,9 +12,9 @@ namespace Dyalect.Compiler
             Ops = new List<Op>();
             Layouts = new List<MemoryLayout>();
             ExportList = new List<PublishedName>();
-            ModuleHandles = new List<int>();
+            UnitIds = new List<int>();
             References = new List<Unit>();
-            TypeHandles = new List<int>();
+            TypeIds = new List<int>();
             TypeNames = new List<string>();
             IndexedStrings = new List<DyString>();
             IndexedIntegers = new List<DyInteger>();
@@ -31,9 +31,9 @@ namespace Dyalect.Compiler
 
             Layouts = unit.Layouts;
             ExportList = unit.ExportList;
-            ModuleHandles = unit.ModuleHandles;
+            UnitIds = unit.UnitIds;
             References = unit.References;
-            TypeHandles = unit.TypeHandles;
+            TypeIds = unit.TypeIds;
             TypeNames = unit.TypeNames;
             IndexedStrings = unit.IndexedStrings;
             IndexedIntegers = unit.IndexedIntegers;
@@ -46,14 +46,16 @@ namespace Dyalect.Compiler
 
         internal List<Unit> References { get; }
 
-        internal List<int> ModuleHandles { get; }
+        internal List<int> UnitIds { get; }
 
-        internal List<int> TypeHandles { get; }
+        internal List<int> TypeIds { get; }
 
         internal List<string> TypeNames { get; }
 
         internal List<DyString> IndexedStrings { get; }
+
         internal List<DyInteger> IndexedIntegers { get; }
+
         internal List<DyFloat> IndexedFloats { get; }
 
         internal List<Op> Ops { get; }

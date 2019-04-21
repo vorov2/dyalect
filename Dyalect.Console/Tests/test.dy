@@ -77,7 +77,6 @@ while (el = iter())[0] {
 }
 
 print("Finished!")
-*/
 
 var arr = makeList(100)
 
@@ -132,3 +131,10 @@ arr
     .print()
 
 arr(1,2,3)
+*/
+
+
+
+
+
+eulerTest()

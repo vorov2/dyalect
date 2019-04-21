@@ -16,9 +16,9 @@
 
         public override string ToString()
         {
-            var stype = Type == BuildMessageType.Error ? "Ошибка"
-                : Type == BuildMessageType.Warning ? "Предупреждение"
-                : Type == BuildMessageType.Hint ? "Подсказка"
+            var stype = Type == BuildMessageType.Error ? "Error"
+                : Type == BuildMessageType.Warning ? "Warning"
+                : Type == BuildMessageType.Hint ? "Information"
                 : "";
             var scode = Code.ToString().PadLeft(3, '0');
             return string.Format(ERR_FORMAT, GetFileName(), Line, Column, stype, scode, Message);

@@ -175,13 +175,13 @@ namespace Dyalect.Compiler
 
             if (res.Success)
             {
-                var referencedUnit = new UnitInfo(unit.ModuleHandles.Count, res.Value);
+                var referencedUnit = new UnitInfo(unit.UnitIds.Count, res.Value);
                 unit.References.Add(res.Value);
                 referencedUnits.Add(node.Alias ?? node.ModuleName, referencedUnit);
 
                 foreach (var n in res.Value.ExportList)
                 {
-                    var imp = new ImportedName(node.ModuleName, unit.ModuleHandles.Count, n);
+                    var imp = new ImportedName(node.ModuleName, unit.UnitIds.Count, n);
 
                     if (imports.ContainsKey(n.Name))
                         imports[n.Name] = imp;
@@ -192,7 +192,7 @@ namespace Dyalect.Compiler
                 for (var i = 0; i < res.Value.TypeNames.Count; i++)
                 {
                     var name = res.Value.TypeNames[i];
-                    var ti = new TypeInfo(res.Value.TypeHandles[i], referencedUnit);
+                    var ti = new TypeInfo(res.Value.TypeIds[i], referencedUnit);
 
                     if (types.ContainsKey(name))
                         types[name] = ti;
@@ -200,8 +200,8 @@ namespace Dyalect.Compiler
                         types.Add(name, ti);
                 }
 
-                cw.RunMod(unit.ModuleHandles.Count);
-                unit.ModuleHandles.Add(-1); //Реальные хэндлы добавляются линкером
+                cw.RunMod(unit.UnitIds.Count);
+                unit.UnitIds.Add(-1); //Реальные хэндлы добавляются линкером
 
                 var addr = AddVariable(node.Alias ?? node.ModuleName, node, VarFlags.Module);
                 cw.PopVar(addr);
@@ -767,11 +767,11 @@ namespace Dyalect.Compiler
                 {
                     var ti = -1;
 
-                    for (var i = 0; i < ui.Unit.TypeHandles.Count; ti++)
+                    for (var i = 0; i < ui.Unit.TypeIds.Count; ti++)
                     {
                         if (ui.Unit.TypeNames[i] == name.Local)
                         {
-                            ti = ui.Unit.TypeHandles[i];
+                            ti = ui.Unit.TypeIds[i];
                             break;
                         }
                     }

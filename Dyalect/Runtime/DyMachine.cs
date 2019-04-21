@@ -174,7 +174,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(right);
                         break;
                     case OpCode.Pushext:
-                        evalStack.Push(units[unit.ModuleHandles[op.Data & byte.MaxValue]][op.Data >> 8]);
+                        evalStack.Push(units[unit.UnitIds[op.Data & byte.MaxValue]][op.Data >> 8]);
                         break;
                     case OpCode.Popvar:
                         captures[captures.Count - (op.Data & byte.MaxValue)][op.Data >> 8] = evalStack.Pop();
@@ -380,7 +380,7 @@ namespace Dyalect.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Pop();
                         if (op.Data >= StandardType.All.Count)
-                            types[ctx.Assembly.Units[unit.ModuleHandles[op.Data & byte.MaxValue]].TypeHandles[op.Data >> 8]]
+                            types[ctx.Assembly.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
                                 .SetTraitOp(left.GetString(), right, ctx);
                         else
                             types[op.Data].SetTraitOp(left.GetString(), right, ctx);
@@ -414,7 +414,7 @@ namespace Dyalect.Runtime
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.RunMod:
-                        ExecuteModule(unit.ModuleHandles[op.Data]);
+                        ExecuteModule(unit.UnitIds[op.Data]);
                         evalStack.Push(new DyModule(Assembly.Units[op.Data], units[op.Data]));
                         break;
                     case OpCode.Type:
