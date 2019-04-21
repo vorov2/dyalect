@@ -6,6 +6,13 @@
     `func A(x, y) x + y` instead of `func A(x, y) { x + y }`.
  * An unary plus `+` operator is added (for built-in types it
     is an identity function, but can be overriden).
+ * Syntax for bitwise operator is changed from `|`, `&`, `^`,
+    `<<` and `>>` to `|||`, `&&&`, `^^^`, `<<<` and `>>>`.
+ * (Experimental) A support for guards is added to statements
+    `return`, `break`, `continue` and `yield`. Now instead of
+    writing e.g. `if n < 2 { return n }` one can write
+    `return n when n < 2` (the two statements are complete
+    equivalents).
 
 # 0.2.1
  * A bug fixed in parser that didn't allow to use expression
@@ -44,7 +51,7 @@
  * Bug fixes - interactive mode not restoring properly after
     compilation errors.
  * Fixes in grammar and parser.
- * Fixes in interactive console exception handling not always
+ * Fixes in interactive console exception handling not always 
     working correctly.
  * Empty blocks `{ }` are now allowed.
 

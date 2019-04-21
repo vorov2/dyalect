@@ -73,8 +73,8 @@ PRODUCTIONS
             | charToken (. val = ParseChar(); .)
         ).
 
-    StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!" | "#" 
-        | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
+    StandardOperators = "+" | "-" | "*" | "/" | "%" | "|||" | "&&&" | "!" | "#" 
+        | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^^^" | "<<<" | ">>>" | "~~~".
 
     FunctionName = identToken | StandardOperators.
 
@@ -280,7 +280,16 @@ PRODUCTIONS
             | Continue<out node>
             | Return<out node>
             | Yield<out node>
-        ).
+        )
+        [ 
+            "when" 
+            (. var @if = new DIf(t) { True = node }; .)
+            Expr<out node>
+            (.
+                @if.Condition = node;
+                node = @if;
+            .)
+        ].
 
     Yield<out DNode node> =
         "yield" 
@@ -340,11 +349,11 @@ PRODUCTIONS
                 | "*="  (. op = BinaryOperator.Mul; .)
                 | "/="  (. op = BinaryOperator.Div; .)
                 | "%="  (. op = BinaryOperator.Rem; .)
-                | "&="  (. op = BinaryOperator.And; .)
-                | "|="  (. op = BinaryOperator.Or; .)
-                | "^="  (. op = BinaryOperator.Xor; .)
-                | "<<=" (. op = BinaryOperator.ShiftLeft; .)
-                | ">>=" (. op = BinaryOperator.ShiftRight; .)
+                | "&&&="  (. op = BinaryOperator.And; .)
+                | "|||="  (. op = BinaryOperator.Or; .)
+                | "^^^="  (. op = BinaryOperator.Xor; .)
+                | "<<<=" (. op = BinaryOperator.ShiftLeft; .)
+                | ">>>=" (. op = BinaryOperator.ShiftRight; .)
             )
             Expr<out node>
             (.
@@ -395,8 +404,8 @@ PRODUCTIONS
                 var ot = default(Token);
             .)
             ( 
-                  "<<" (. ot = t; op = BinaryOperator.ShiftLeft; .)
-                | ">>" (. ot = t; op = BinaryOperator.ShiftRight; .)
+                  "<<<" (. ot = t; op = BinaryOperator.ShiftLeft; .)
+                | ">>>" (. ot = t; op = BinaryOperator.ShiftRight; .)
             )
             BitOr<out DNode exp>
             (. node = new DBinaryOperation(node, exp, op, ot); .)
@@ -405,21 +414,21 @@ PRODUCTIONS
     BitOr<out DNode node> = 
         Xor<out node>
         {
-            "|" (. var ot = t; .) Xor<out DNode exp>
+            "|||" (. var ot = t; .) Xor<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseOr, ot); .)
         }.
         
     Xor<out DNode node> = 
         BitAnd<out node>
         {
-            "^" (. var ot = t; .) BitAnd<out DNode exp>
+            "^^^" (. var ot = t; .) BitAnd<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.Xor, ot); .)
         }.
         
     BitAnd<out DNode node> = 
         Add<out node>
         {
-            "&" (. var ot = t; .) Add<out DNode exp>
+            "&&&" (. var ot = t; .) Add<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseAnd, ot); .)
         }.
 

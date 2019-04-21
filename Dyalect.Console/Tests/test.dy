@@ -168,4 +168,9 @@ print(fizzbuzzTest())
 print(fizzbuzzTest1())
 */
 
-12 -2
+func test(n) {
+    return n when n < 2
+    print("We're here")
+}
+
+test(2)
