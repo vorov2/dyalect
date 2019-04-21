@@ -22,6 +22,8 @@ namespace Dyalect.Parser
 
         private Stack<DFunctionDeclaration> functions = new Stack<DFunctionDeclaration>();
 
+        private List<int> implicits;
+
         public InternalParser(Scanner scanner)
         {
             this.scanner = scanner;

@@ -13,6 +13,15 @@
     writing e.g. `if n < 2 { return n }` one can write
     `return n when n < 2` (the two statements are complete
     equivalents).
+ * (Experimental) A support for implicit anonymous function
+    declaration is added. For short functions one can use the
+    following notation - instead of declaring a full lambda,
+    e.g. `x => x * 2` one can write `$0 * 2`. A `$` prefix
+    instructs the compiler that the whole expression is a
+    function, and all the dollar names are automatically
+    promoted as function arguments in the appropriate order,
+    e.g. `$1 if $0 < 3 else $0 * $x` is equivalent to:
+    `(i,x) => if (i < 3) { x } else { i * x }`.
 
 # 0.2.1
  * A bug fixed in parser that didn't allow to use expression

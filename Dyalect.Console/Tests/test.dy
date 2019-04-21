@@ -132,6 +132,33 @@ arr
 
 arr(1,2,3)
 
+
+func Iterator.select(fn) {
+    var idx = 0;
+    for x in self {
+        yield fn(idx, x)
+        idx += 1
+    }
+}
+
+func Iterator.toArray() {
+    var arr = []
+    for x in self {
+        arr.add(x)
+    }
+    arr
+}
+
+var arr = [1,2,3,4,5]
+
+arr
+    .iterator()
+    .select((i,x) => x if i < 6 else i * x) //$1 if $0 < 3 else $0 * $1)
+    .toArray()
+*/
+
+
+
 func fizzbuzzTest() {
     var n = 1
     var acc = ""
@@ -154,7 +181,7 @@ func fizzbuzzTest1() {
     var n = 1
     var acc = ""
     while n < 11 {
-        acc = acc + 
+        acc += 
             "fizzbuzz" if n % 15 == 0 else
             "fizz"     if n % 3  == 0 else
             "buzz"     if n % 5  == 0 else
@@ -166,11 +193,3 @@ func fizzbuzzTest1() {
 
 print(fizzbuzzTest())
 print(fizzbuzzTest1())
-*/
-
-func test(n) {
-    return n when n < 2
-    print("We're here")
-}
-
-test(2)
