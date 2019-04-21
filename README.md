@@ -22,7 +22,7 @@ A taste of Dy:
 
 ```
 func fib(n) {
-    if n == 0 || n == 1 {
+    if n < 2 {
         return n
     }
     fib(n - 1) + fib(n - 2)
