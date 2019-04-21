@@ -218,6 +218,7 @@ namespace Dyalect.Compiler
         public void Div() => Emit(Op.Div);
         public void Rem() => Emit(Op.Rem);
         public void Neg() => Emit(Op.Neg);
+        public void Plus() => Emit(Op.Plus);
         public void Not() => Emit(Op.Not);
         public void BitNot() => Emit(Op.BitNot);
         public void Len() => Emit(Op.Len);

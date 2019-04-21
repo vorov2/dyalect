@@ -28,6 +28,7 @@
         public const int Tos = 23;
         public const int Next = 24;
         public const int Cur = 25;
+        public const int Plus = 26;
 
         public const string AddName = "+";
         public const string SubName = "-";
@@ -46,6 +47,7 @@
         public const string GteName = ">=";
         public const string LteName = "<=";
         public const string NegName = "negate";
+        public const string PlusName = "plus";
         public const string NotName = "!";
         public const string BitName = "~";
         public const string LenName = "#";

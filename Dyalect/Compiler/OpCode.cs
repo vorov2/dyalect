@@ -31,6 +31,7 @@
         Div,        //-1
         Rem,        //-1
         Neg,        //0
+        Plus,       //0
         Not,        //0
         BitNot,     //0
         Len,        //0

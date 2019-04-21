@@ -29,6 +29,7 @@
         public static readonly Op Div = new Op(OpCode.Div);
         public static readonly Op Rem = new Op(OpCode.Rem);
         public static readonly Op Neg = new Op(OpCode.Neg);
+        public static readonly Op Plus = new Op(OpCode.Plus);
         public static readonly Op Not = new Op(OpCode.Not);
         public static readonly Op BitNot = new Op(OpCode.BitNot);
         public static readonly Op Len = new Op(OpCode.Len);

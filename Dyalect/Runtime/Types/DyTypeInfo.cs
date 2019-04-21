@@ -221,6 +221,17 @@ namespace Dyalect.Runtime.Types
             return NegOp(arg, ctx);
         }
 
+        //+x
+        private DyFunction plus;
+        protected virtual DyObject PlusOp(DyObject arg, ExecutionContext ctx) =>
+            Err.OperationNotSupported(Traits.PlusName, arg.TypeName(ctx)).Set(ctx);
+        internal DyObject Plus(DyObject arg, ExecutionContext ctx)
+        {
+            if (plus != null)
+                return plus.Call1(arg, ctx);
+            return PlusOp(arg, ctx);
+        }
+
         //!x
         private DyFunction not;
         protected virtual DyObject NotOp(DyObject arg, ExecutionContext ctx) =>
@@ -313,6 +324,7 @@ namespace Dyalect.Runtime.Types
                 case Traits.BitName: bitnot = func; break;
                 case Traits.LenName: len = func; break;
                 case Traits.TosName: tos = func; break;
+                case Traits.PlusName: plus = func; break;
             }
 
             traits.Remove(name);

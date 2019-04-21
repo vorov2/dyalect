@@ -211,6 +211,8 @@ namespace Dyalect.Runtime.Types
         #region Unary Operations
         protected override DyObject NegOp(DyObject arg, ExecutionContext ctx) => new DyInteger(-arg.GetInteger());
 
+        protected override DyObject PlusOp(DyObject arg, ExecutionContext ctx) => arg;
+
         protected override DyObject BitwiseNotOp(DyObject arg, ExecutionContext ctx) => new DyInteger(~arg.GetInteger());
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => 

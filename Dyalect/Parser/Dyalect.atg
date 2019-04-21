@@ -431,8 +431,15 @@ PRODUCTIONS
                 var ot = default(Token);
             .)
             ( 
-                  "+" (. ot = t; op = BinaryOperator.Add; .)
-                | "-" (. ot = t; op = BinaryOperator.Sub; .)
+                (
+                    (. if (la.AfterEol) return; .)
+                    "+" (. ot = t; op = BinaryOperator.Add; .)
+                )
+                |
+                (
+                    (. if (la.AfterEol) return; .)
+                    "-" (. ot = t; op = BinaryOperator.Sub; .)
+                )
             )
             Mul<out DNode exp>
             (. node = new DBinaryOperation(node, exp, op, ot); .)
@@ -464,6 +471,7 @@ PRODUCTIONS
             [ 
                   "!" (. ot = t; op = UnaryOperator.Not; .)
                 | "-" (. ot = t; op = UnaryOperator.Neg; .)
+                | "+" (. ot = t; op = UnaryOperator.Plus; .)
                 | "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
                 | "#" (. ot = t; op = UnaryOperator.Length; .)
             ]

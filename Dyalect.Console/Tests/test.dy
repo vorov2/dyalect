@@ -131,7 +131,6 @@ arr
     .print()
 
 arr(1,2,3)
-*/
 
 func fizzbuzzTest() {
     var n = 1
@@ -167,3 +166,6 @@ func fizzbuzzTest1() {
 
 print(fizzbuzzTest())
 print(fizzbuzzTest1())
+*/
+
+12 -2

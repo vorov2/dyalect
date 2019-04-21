@@ -139,6 +139,8 @@
         #region Unary Operations
         protected override DyObject NegOp(DyObject arg, ExecutionContext ctx) => new DyFloat(-arg.GetFloat());
 
+        protected override DyObject PlusOp(DyObject arg, ExecutionContext ctx) => arg;
+
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => arg.GetFloat().ToString(CI.NumberFormat);
         #endregion
     }

@@ -55,6 +55,7 @@ namespace Dyalect.Parser.Model
                 case UnaryOperator.Not: return Traits.NotName;
                 case UnaryOperator.BitwiseNot: return Traits.BitName;
                 case UnaryOperator.Length: return Traits.LenName;
+                case UnaryOperator.Plus: return Traits.PlusName;
                 default: return "";
             }
         }

@@ -4,6 +4,8 @@
     `res = if cond x else y`.
  * A new syntax added for expression bodied functions, e.g.
     `func A(x, y) x + y` instead of `func A(x, y) { x + y }`.
+ * An unary plus `+` operator is added (for built-in types it
+    is an identity function, but can be overriden).
 
 # 0.2.1
  * A bug fixed in parser that didn't allow to use expression
