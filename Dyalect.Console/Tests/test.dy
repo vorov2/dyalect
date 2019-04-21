@@ -182,9 +182,9 @@ func fizzbuzzTest1() {
     var acc = ""
     while n < 11 {
         acc += 
-            "fizzbuzz" if n % 15 == 0 else
-            "fizz"     if n % 3  == 0 else
-            "buzz"     if n % 5  == 0 else
+            "fizzbuzz" ? n % 15 == 0 :
+            "fizz"     ? n % 3  == 0 :
+            "buzz"     ? n % 5  == 0 :
             n
         n += 1
     }

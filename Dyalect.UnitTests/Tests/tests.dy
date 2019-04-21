@@ -43,15 +43,15 @@ func comparisonTest2() {
     "string1" != "string2" && "string1" == "string1"
 }
 
-func toStringTest1 {
+func toStringTest1() {
     (1,2,3).toString()
 }
 
-func toStringTest2 {
+func toStringTest2() {
     [12.2, "string", true].toString()
 }
 
-func toStringTest3 {
+func toStringTest3() {
     (x:42,y:"foo").toString()
 }
 

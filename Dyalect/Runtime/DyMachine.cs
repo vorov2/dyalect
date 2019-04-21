@@ -82,10 +82,10 @@ namespace Dyalect.Runtime
 
             units[unitId] = units[unitId] ?? new DyObject[lay0.Size];
             var evalStack = new EvalStack(lay0.StackSize);
-            return ExecuteWithData(new DyFunction(unitId, funcId, 0, this, FastList<DyObject[]>.Empty, StandardType.Function), evalStack);
+            return ExecuteWithData(new DyNativeFunction(unitId, funcId, 0, this, FastList<DyObject[]>.Empty, StandardType.Function), evalStack);
         }
 
-        internal DyObject ExecuteWithData(DyFunction function, EvalStack evalStack)
+        internal DyObject ExecuteWithData(DyNativeFunction function, EvalStack evalStack)
         {
             DyObject left;
             DyObject right;
@@ -338,11 +338,7 @@ namespace Dyalect.Runtime
                                 break;
                             }
 
-                            var callFun = (DyFunction)right;
-
-                            if (callFun.IsExternal) //Если так, то функция не внутренняя, а внешняя, например, написанная на C#
-                                evalStack.Push(CallExternalFunction(op, offset, evalStack, function, callFun, ctx));
-                            else
+                            if (right is DyNativeFunction callFun)
                             {
                                 layout = ctx.Assembly.Units[callFun.UnitId].Layouts[callFun.FunctionId];
                                 var newStack = new EvalStack(layout.StackSize);
@@ -366,6 +362,8 @@ namespace Dyalect.Runtime
                                 ctx.CallStack.Push(new CallPoint(offset, function.UnitId));
                                 evalStack.Push(ExecuteWithData(callFun, newStack));
                             }
+                            else
+                                evalStack.Push(CallExternalFunction(op, offset, evalStack, function, (DyFunction)right, ctx));
 
                             if (ctx.Error != null)
                                 ProcessError(ctx, function, ref offset, evalStack);
@@ -441,7 +439,7 @@ namespace Dyalect.Runtime
             goto CYCLE;
         }
 
-        private void ProcessError(ExecutionContext ctx, DyFunction currentFunc, ref int offset, EvalStack evalStack = null)
+        private void ProcessError(ExecutionContext ctx, DyNativeFunction currentFunc, ref int offset, EvalStack evalStack = null)
         {
             if (evalStack != null)
                 evalStack.PopVoid();
@@ -449,7 +447,7 @@ namespace Dyalect.Runtime
             throw CreateException(ctx.Error, offset, currentFunc.UnitId, ctx);
         }
 
-        private DyObject CallExternalFunction(Op op, int offset, EvalStack evalStack, DyFunction caller, DyFunction fun, ExecutionContext ctx)
+        private DyObject CallExternalFunction(Op op, int offset, EvalStack evalStack, DyNativeFunction caller, DyFunction fun, ExecutionContext ctx)
         {
             var max = op.Data > fun.ParameterNumber ? op.Data : fun.ParameterNumber;
             var arr = new DyObject[max];

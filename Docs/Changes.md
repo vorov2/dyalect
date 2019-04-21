@@ -6,8 +6,6 @@
     `func A(x, y) x + y` instead of `func A(x, y) { x + y }`.
  * An unary plus `+` operator is added (for built-in types it
     is an identity function, but can be overriden).
- * Syntax for bitwise operator is changed from `|`, `&`, `^`,
-    `<<` and `>>` to `|||`, `&&&`, `^^^`, `<<<` and `>>>`.
  * (Experimental) A support for guards is added to statements
     `return`, `break`, `continue` and `yield`. Now instead of
     writing e.g. `if n < 2 { return n }` one can write
@@ -22,6 +20,7 @@
     promoted as function arguments in the appropriate order,
     e.g. `$1 if $0 < 3 else $0 * $x` is equivalent to:
     `(i,x) => if (i < 3) { x } else { i * x }`.
+ * Optimizations in implementation of iterators.
 
 # 0.2.2
  * Code clean-ups

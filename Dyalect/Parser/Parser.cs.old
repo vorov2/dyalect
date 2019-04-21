@@ -243,7 +243,7 @@ namespace Dyalect.Parser
 			Separator();
 			break;
 		}
-		case 1: case 2: case 3: case 4: case 5: case 6: case 24: case 28: case 30: case 31: case 37: case 38: case 66: case 67: case 68: case 69: {
+		case 1: case 2: case 3: case 4: case 5: case 6: case 24: case 28: case 30: case 31: case 37: case 38: case 48: case 67: case 68: case 69: {
 			SimpleExpr(out node);
 			Separator();
 			break;
@@ -611,12 +611,12 @@ namespace Dyalect.Parser
 			And(out DNode exp);
 			node = new DBinaryOperation(node, exp, BinaryOperator.Or, ot); 
 		}
-		if (la.kind == 14) {
+		if (la.kind == 65) {
 			Get();
 			var @if = new DIf(t) { True = node }; 
 			Or(out node);
 			@if.Condition = node; 
-			Expect(51);
+			Expect(22);
 			Or(out node);
 			@if.False = node; node = @if; 
 		}
@@ -624,7 +624,7 @@ namespace Dyalect.Parser
 
 	void And(out DNode node) {
 		Eq(out node);
-		while (la.kind == 65) {
+		while (la.kind == 66) {
 			Get();
 			var ot = t; 
 			Eq(out DNode exp);
@@ -779,7 +779,7 @@ namespace Dyalect.Parser
 			} else if (la.kind == 30) {
 				Get();
 				ot = t; op = UnaryOperator.Plus; 
-			} else if (la.kind == 66) {
+			} else if (la.kind == 48) {
 				Get();
 				ot = t; op = UnaryOperator.BitwiseNot; 
 			} else {
@@ -986,12 +986,12 @@ namespace Dyalect.Parser
 		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
 		{_x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_T,_T,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _T,_x,_T,_T, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_x,_x},
-		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _T,_x,_T,_x, _T,_x,_T,_T, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_x,_x},
-		{_x,_T,_T,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _T,_x,_T,_x, _T,_x,_T,_T, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_x,_x},
+		{_x,_T,_T,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _T,_x,_T,_T, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_x,_x},
+		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _T,_x,_T,_x, _T,_x,_T,_T, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_x,_x},
+		{_x,_T,_T,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _T,_x,_T,_x, _T,_x,_T,_T, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x}
+		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x}
 
         };
 
@@ -1036,8 +1036,8 @@ namespace Dyalect.Parser
 			case 32: s = "\"*\" expected"; break;
 			case 33: s = "\"/\" expected"; break;
 			case 34: s = "\"%\" expected"; break;
-			case 35: s = "\"|||\" expected"; break;
-			case 36: s = "\"&&&\" expected"; break;
+			case 35: s = "\"|\" expected"; break;
+			case 36: s = "\"&\" expected"; break;
 			case 37: s = "\"!\" expected"; break;
 			case 38: s = "\"#\" expected"; break;
 			case 39: s = "\"==\" expected"; break;
@@ -1046,10 +1046,10 @@ namespace Dyalect.Parser
 			case 42: s = "\"<\" expected"; break;
 			case 43: s = "\">=\" expected"; break;
 			case 44: s = "\"<=\" expected"; break;
-			case 45: s = "\"^^^\" expected"; break;
-			case 46: s = "\"<<<\" expected"; break;
-			case 47: s = "\">>>\" expected"; break;
-			case 48: s = "\"~~~\" expected"; break;
+			case 45: s = "\"^\" expected"; break;
+			case 46: s = "\"<<\" expected"; break;
+			case 47: s = "\">>\" expected"; break;
+			case 48: s = "\"~\" expected"; break;
 			case 49: s = "\"import\" expected"; break;
 			case 50: s = "\"...\" expected"; break;
 			case 51: s = "\"else\" expected"; break;
@@ -1060,14 +1060,14 @@ namespace Dyalect.Parser
 			case 56: s = "\"*=\" expected"; break;
 			case 57: s = "\"/=\" expected"; break;
 			case 58: s = "\"%=\" expected"; break;
-			case 59: s = "\"&&&=\" expected"; break;
-			case 60: s = "\"|||=\" expected"; break;
-			case 61: s = "\"^^^=\" expected"; break;
-			case 62: s = "\"<<<=\" expected"; break;
-			case 63: s = "\">>>=\" expected"; break;
+			case 59: s = "\"&=\" expected"; break;
+			case 60: s = "\"|=\" expected"; break;
+			case 61: s = "\"^=\" expected"; break;
+			case 62: s = "\"<<=\" expected"; break;
+			case 63: s = "\">>=\" expected"; break;
 			case 64: s = "\"||\" expected"; break;
-			case 65: s = "\"&&\" expected"; break;
-			case 66: s = "\"~\" expected"; break;
+			case 65: s = "\"?\" expected"; break;
+			case 66: s = "\"&&\" expected"; break;
 			case 67: s = "\"nil\" expected"; break;
 			case 68: s = "\"true\" expected"; break;
 			case 69: s = "\"false\" expected"; break;
