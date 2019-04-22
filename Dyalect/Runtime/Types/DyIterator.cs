@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Dyalect.Compiler;
+using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     internal sealed class DyIterator : DyForeignFunction
     {
-        internal const string Name = "iterator";
         private readonly IEnumerator<DyObject> enumerator;
 
-        public DyIterator(IEnumerator<DyObject> enumerator) : base(Name, 0, StandardType.Iterator)
+        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, 0, StandardType.Iterator)
         {
             this.enumerator = enumerator;
         }
@@ -19,7 +19,7 @@ namespace Dyalect.Runtime.Types
             return new DyNativeIterator(unitId, handle, vm, vars);
         }
 
-        protected override string GetFunctionName() => Name;
+        protected override string GetFunctionName() => Builtins.Iterator;
 
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {
@@ -38,7 +38,7 @@ namespace Dyalect.Runtime.Types
 
         }
 
-        protected override string GetFunctionName() => DyIterator.Name;
+        protected override string GetFunctionName() => Builtins.Iterator;
 
         internal override DyFunction Clone(DyObject arg) =>
             new DyNativeIterator(UnitId, FunctionId, Machine, Captures) { Self = arg };
@@ -55,6 +55,6 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.BoolName;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => $"{DyIterator.Name}()";
+        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => $"{Builtins.Iterator}()";
     }
 }

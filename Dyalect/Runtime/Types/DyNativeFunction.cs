@@ -4,6 +4,8 @@ namespace Dyalect.Runtime.Types
 {
     internal class DyNativeFunction : DyFunction
     {
+        internal const int VARIADIC = 0x01;
+
         protected DyMachine Machine { get; }
 
         internal FastList<DyObject[]> Captures { get; set; }
@@ -27,6 +29,20 @@ namespace Dyalect.Runtime.Types
             ParameterNumber = pars;
             Machine = vm;
             Captures = captures;
+        }
+
+        public static DyNativeFunction Create(int unitId, int funcId, int pars, DyMachine vm, FastList<DyObject[]> captures, DyObject[] locals, bool variadic = false)
+        {
+            byte flags = 0;
+
+            if (variadic)
+                flags |= VARIADIC;
+
+            var vars = new FastList<DyObject[]>(captures) { locals };
+            return new DyNativeFunction(unitId, funcId, pars, vm, vars, StandardType.Function)
+            {
+                Flags = flags
+            };
         }
 
         internal override DyFunction Clone(DyObject arg)

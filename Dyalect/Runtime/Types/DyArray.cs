@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Dyalect.Compiler;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -100,6 +101,24 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject InsertItem(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+            var index = args.TakeOne(DyNil.Instance);
+
+            if (index.TypeId != StandardType.Integer)
+                return Err.IndexInvalidType(TypeName, index.TypeName(ctx)).Set(ctx);
+
+            var i = (int)index.GetInteger();
+            var value = args.TakeAt(1, DyNil.Instance);
+
+            if (i < 0 || i >= arr.Values.Count)
+                return Err.IndexOutOfRange(TypeName, i).Set(ctx);
+
+            arr.Values.Insert(i, value);
+            return DyNil.Instance;
+        }
+
         private DyObject AddRange(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var arr = (DyArray)self;
@@ -114,7 +133,7 @@ namespace Dyalect.Runtime.Types
                 iter = val as DyFunction;
             else
             {
-                iter = ctx.Assembly.Types[val.TypeId].GetTraitOp(val, "iterator", ctx) as DyFunction;
+                iter = ctx.Assembly.Types[val.TypeId].GetTraitOp(val, Builtins.Iterator, ctx) as DyFunction;
 
                 if (ctx.HasErrors)
                     return DyNil.Instance;
@@ -174,6 +193,9 @@ namespace Dyalect.Runtime.Types
         {
             if (name == "add")
                 return DyForeignFunction.Create(name, AddItem);
+
+            if (name == "insert")
+                return DyForeignFunction.Create(name, InsertItem);
 
             if (name == "addRange")
                 return DyForeignFunction.Create(name, AddRange);

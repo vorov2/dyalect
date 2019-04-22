@@ -290,7 +290,7 @@ namespace Dyalect.Compiler
 
             cw.Briter(skip);
 
-            cw.TraitG("iterator");
+            cw.TraitG(Builtins.Iterator);
             cw.Call(0);
             cw.MarkLabel(skip);
             cw.PopVar(sys);
@@ -351,7 +351,7 @@ namespace Dyalect.Compiler
             //This is a special optimization for the 'toString' trait
             //If we see that it is called directly we than emit a direct 'Str' instruction
             if (node.Target.NodeType == NodeType.Trait
-                && ((DTrait)node.Target).Name == Traits.TosName
+                && ((DTrait)node.Target).Name == Builtins.ToStr
                 && node.Arguments.Count == 0)
             {
                 Build(((DTrait)node.Target).Target, hints.Append(Push), ctx);

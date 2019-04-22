@@ -322,11 +322,11 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.NewFun:
                         right = evalStack.Peek();
-                        evalStack.Replace(DyFunction.Create(function.UnitId, op.Data, (int)right.GetInteger(), this, captures, locals));
+                        evalStack.Replace(DyNativeFunction.Create(function.UnitId, op.Data, (int)right.GetInteger(), this, captures, locals));
                         break;
                     case OpCode.NewFunV:
                         right = evalStack.Peek();
-                        evalStack.Replace(DyFunction.Create(function.UnitId, op.Data, (int)right.GetInteger(), this, captures, locals, true));
+                        evalStack.Replace(DyNativeFunction.Create(function.UnitId, op.Data, (int)right.GetInteger(), this, captures, locals, true));
                         break;
                     case OpCode.Call:
                         {

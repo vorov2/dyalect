@@ -25,10 +25,10 @@ namespace Dyalect.Runtime.Types
         public abstract object ToObject();
 
         internal protected virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.GetName, this.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Builtins.Get, this.TypeName(ctx)).Set(ctx);
 
         internal protected virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Traits.SetName, this.TypeName(ctx)).Set(ctx);
+            Err.OperationNotSupported(Builtins.Set, this.TypeName(ctx)).Set(ctx);
     }
 
     internal static class DyObjectInternalExtensions

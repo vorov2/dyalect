@@ -1,10 +1,11 @@
 # 0.3.0
   * An unary plus `+` operator is added (for built-in types it is an identity function, but can be overriden).
-  * **(Experimental)** A support for implicit anonymous function declaration is added. For short functions one can use the following notation - instead of declaring a full lambda, e.g. `x => x * 2` one can write `$0 * 2`. A `$` prefix instructs the compiler that the whole expression is a function, and all the dollar names are automatically promoted as function arguments in the appropriate order, e.g. `$1 if $0 < 3 else $0 * $x` is equivalent to: `(i,x) => if (i < 3) { x } else { i * x }`.
+  * **(Experimental)** A support for implicit anonymous function declaration is added. For short functions one can use the following notation - instead of declaring a full lambda, e.g. `x => x * 2` one can write `$0 * 2`. A `$` prefix instructs the compiler that the whole expression is a function, and all the dollar names are automatically promoted as function arguments in the appropriate order, e.g.: `$1 - $0` is equivalent to `(x,y) => y - x`.
  * Optimizations in implementation of iterators.
- * Refactoring in implementation of functions.
+ * Refactoring in implementation of functions, including the marshalling between Dy's functions and foreign functions.
  * A bug fixed in array indexing function that could cause virtual machine to crash.
  * Added missing message string for the `IndexOutOfRange` runtime error messge.
+ * A new `insert` function is added to the array prototype. This function accepts an index and a value and inserts a value at a given index. Only indices of type `Integer` are supported. If index is out of range an `IndexOutOfRange` exception is thrown.
 
 # 0.2.2
  * Code clean-ups
@@ -16,10 +17,19 @@
  * A bug fixed in tuple initialization logic (reproducible with pairs, e.g. `(2, 4)`).
 
 # 0.2.0
- * Added support for special `iterator` function which can be implemented for any type. This function is used to iterate through containers. It should another function (a closure) which in turn should iterate over a collection by yielding a tuple in a form `(bool, value)`, where `bool` if a boolean flag which determines where a function has returned something and `value` is an returned element (if any). This is pretty similar to `IEnumerator` from .NET but uses a single closure instead of an interface with two methods.
- * Added a new type `Iterator` (which is actually a special kind of function) which allows to implement non-strict functions in a manner of LINQ.
- * A `for` cycle (based on the iterator functionality) is implemented, e.g.: `for x in seq { doSomething(x) }`.
- * Arrays now supports methods `add`, `remove`, `removeAt` and `addRange`. The latter one accepts an iterator, e.g. `var arr = []; arr.addRange("Hello, world!")`.
+ * Added support for special `iterator` function which can be implemented for any type. This function is used to iterate through containers. It returns another function (a closure) which iterates over a collection by yielding values. This is pretty similar to `IEnumerator` from .NET but uses a single closure instead of an interface with two methods. In order to support this infrastructure a new `Iterator` type is added as well (which is actually a special kind of function).
+ * All foreign objects can now automatically support Dy's iterators as long as they implement `IEnumerable<DyObject>` interface.
+ * A `for` cycle (based on the iterator functionality) is implemented, e.g.: 
+    ```swift
+    for x in seq { 
+        doSomething(x) 
+    }
+    ```
+ * Arrays now supports methods `add`, `remove`, `removeAt` and `addRange`. The latter one accepts an iterator, e.g.:
+    ```swift
+    var arr = []
+    arr.addRange("Hello, world!")
+    ```
  * Multiple refactorings and optimizations in the function invocation code.
  * A bug fixed in standard `toString` function implementation that could cause virtual machine to crash.
  * A bug fixes with special `self` variable (available in member functions) being incorrectly interpreted by nested functions.

@@ -5,7 +5,6 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyFunction : DyObject
     {
-        internal const int VARIADIC = 0x02;
         internal const string DefaultName = "<func>";
 
         public int ParameterNumber { get; protected set; }
@@ -80,23 +79,6 @@ namespace Dyalect.Runtime.Types
                 return _functionName ?? DefaultName;
             }
         }
-
-        #region Create
-        internal static DyNativeFunction Create(int unitId, int funcId, int pars, DyMachine vm, FastList<DyObject[]> captures, DyObject[] locals, bool variadic = false)
-        {
-            byte flags = 0;
-
-            if (variadic)
-                flags |= VARIADIC;
-
-            var vars = new FastList<DyObject[]>(captures);
-            vars.Add(locals);
-            return new DyNativeFunction(unitId, funcId, pars, vm, vars, StandardType.Function)
-            {
-                Flags = flags
-            };
-        }
-        #endregion
     }
 
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
