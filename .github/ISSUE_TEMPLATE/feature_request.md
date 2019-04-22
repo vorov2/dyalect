@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: "[Enhancemenet]"
+title: "[Enhancement]"
 labels: enhancement
 assignees: vorov2
 
