@@ -193,6 +193,12 @@ print(fizzbuzzTest1())
 
 */
 
-for x in (1,2,3) {
-    print(x)
+func format(fmt, args...) {
+    var str = fmt
+    for x in args {
+        str += x + ","
+    }
+    str
 }
+
+format("Values are: ", 1,2,3,4,5,6,7)

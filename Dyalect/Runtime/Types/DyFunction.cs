@@ -16,7 +16,7 @@ namespace Dyalect.Runtime.Types
             ParameterNumber = pars;
         }
 
-        public override object ToObject() => (Func<DyObject[], DyObject>)Call;
+        public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
 
         internal abstract DyFunction Clone(DyObject arg);
 
@@ -24,33 +24,24 @@ namespace Dyalect.Runtime.Types
 
         public virtual DyObject Call(ExecutionContext ctx, params DyObject[] args) => Call(args);
         
-        internal virtual DyObject Call3(DyObject arg1, DyObject arg2, DyObject arg3, ExecutionContext ctx)
-        {
-            return Call(arg1, arg2, arg3);
-        }
+        internal virtual DyObject Call3(DyObject arg1, DyObject arg2, DyObject arg3, ExecutionContext ctx) => Call(arg1, arg2, arg3);
 
-        internal virtual DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            return Call(left, right);
-        }
+        internal virtual DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx) =>  Call(left, right);
 
-        internal virtual DyObject Call1(DyObject obj, ExecutionContext ctx)
-        {
-            return Call(obj);
-        }
+        internal virtual DyObject Call1(DyObject obj, ExecutionContext ctx) => Call(obj);
 
         protected abstract string GetFunctionName();
 
         public string[] GetParameterNames()
         {
-            var dynParameters = this.GetCustomParameterNames();
+            var dynParameters = GetCustomParameterNames();
 
             if (dynParameters != null)
                 return dynParameters;
 
-            var arr = new string[this.ParameterNumber];
+            var arr = new string[ParameterNumber];
 
-            for (var i = 0; i < this.ParameterNumber; i++)
+            for (var i = 0; i < ParameterNumber; i++)
                 arr[i] = "p" + i;
 
             return arr;
@@ -58,15 +49,8 @@ namespace Dyalect.Runtime.Types
 
         protected virtual string[] GetCustomParameterNames() => null;
 
-        public override string ToString()
-        {
-            var nm = GetFunctionName();
-            var pars = GetParameterNames();
-            return nm
-                + "("
-                + string.Join(",", pars)
-                + ")";
-        }
+        public override string ToString() => 
+            $"{GetFunctionName()}({string.Join(",", GetParameterNames())})";
 
         private string _functionName;
         public string FunctionName

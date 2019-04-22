@@ -620,7 +620,17 @@ namespace Dyalect.Compiler
 
                 if (node.IsMemberFunction)
                 {
-                    cw.Push(node.Name == "-" && node.Parameters.Count == 0 ? "negate" : node.Name);
+                    if (node.Parameters.Count == 0)
+                    {
+                        if (node.Name == Builtins.Sub)
+                            cw.Push(Builtins.Neg);
+                        else if (node.Name == Builtins.Add)
+                            cw.Push(Builtins.Plus);
+                        else
+                            cw.Push(node.Name);
+                    }
+                    else
+                        cw.Push(node.Name);
                     var code = GetTypeHandle(node.TypeName, node.Location);
                     cw.TraitS(code);
                 }
@@ -643,7 +653,6 @@ namespace Dyalect.Compiler
 
         private void BuildFunctionBody(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
-            //Начинаем новый фрейм
             var iter = hints.Has(Iterator);
             var args = node.Parameters.ToArray();
             var argCount = args.Length + (node.TypeName != null ? 1 : 0);
@@ -652,10 +661,9 @@ namespace Dyalect.Compiler
             var startLabel = cw.DefineLabel();
             var funEndLabel = cw.DefineLabel();
 
-            //Функции мы всегда компилируем по месту проживания, т.е. как наткнулись на функцию,
-            //тут её и компилируем. Поэтому, чтобы общий код фрейма исполнялся без сюрпризов,
-            //вставляем тут goto, который просто перепрыгнет через код функции.
-            //Зачем так делается? Ну функция у нас обычное значение, как строка или целое число.
+            //Functions are always compiled "in place": if we find a function while looping
+            //through AST node we compile right away. That is the reason why we need to emit an 
+            //additional goto so that we can jump over this function.
             var funSkipLabel = cw.DefineLabel();
             cw.Br(funSkipLabel);
 
@@ -672,8 +680,13 @@ namespace Dyalect.Compiler
             AddLinePragma(node);
             var address = cw.Offset;
 
+            //This special variable returns an instance of a function itself
+            //(not the same as this in C#)
             AddVariable("this", node, data: VarFlags.This | VarFlags.Const);
 
+            //If this is a trait function we add an additional system variable that
+            //would return an instance of an object to which this function is coupled
+            //(same as this in C#)
             if (node.IsMemberFunction)
             {
                 var va = AddVariable("self", node, data: VarFlags.Const);
@@ -715,18 +728,18 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
 
-            //Завершаем потихоньку, закрываем скоупы.
+            //Close all lexical scopes and debugging information
             var funHandle = unit.Layouts.Count;
             var ss = EndFun(funHandle);
             unit.Layouts.Add(new MemoryLayout(currentCounter, ss, address));
             EndScope();
             EndSection();
 
+            //Iterators are a separate type (based on function through)
             if (iter)
                 cw.NewIter(funHandle);
             else
             {
-                //А здесь мы уже создаём функцию как значение (эмитится Newfun).
                 cw.Push(node.Variadic ? argCount - 1 : argCount);
 
                 if (node.Variadic)

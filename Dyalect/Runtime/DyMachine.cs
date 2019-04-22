@@ -342,21 +342,29 @@ namespace Dyalect.Runtime
                             {
                                 layout = ctx.Assembly.Units[callFun.UnitId].Layouts[callFun.FunctionId];
                                 var newStack = new EvalStack(layout.StackSize);
-                                var max = op.Data > callFun.ParameterNumber ? callFun.ParameterNumber : op.Data;
-                                var tot = op.Data > callFun.ParameterNumber ? op.Data : callFun.ParameterNumber;
+
+                                if ((op.Data > callFun.ParameterNumber && !callFun.IsVariadic) || op.Data < callFun.ParameterNumber)
+                                {
+                                    ctx.Error = Err.WrongNumberOfArguments(callFun.FunctionName, callFun.ParameterNumber, op.Data);
+                                    ProcessError(ctx, function, ref offset);
+                                    break;
+                                }
+
+                                var arr = default(DyObject[]);
+
+                                if (callFun.IsVariadic)
+                                {
+                                    arr = new DyObject[op.Data - callFun.ParameterNumber];
+                                    newStack.Push(DyTuple.Create(arr));
+                                }
 
                                 //Надо выровнять либо стек, либо переданные аргументы
-                                for (var i = tot; i > 0; i--)
+                                for (var i = op.Data; i > 0; i--)
                                 {
-                                    if (i > op.Data)
-                                        newStack.Push(DyNil.Instance);
+                                    if (i <= callFun.ParameterNumber)
+                                        newStack.Push(evalStack.Pop());
                                     else
-                                    {
-                                        if (i <= max)
-                                            newStack.Push(evalStack.Pop());
-                                        else
-                                            evalStack.PopVoid();
-                                    }
+                                        arr[i - callFun.ParameterNumber - 1] = evalStack.Pop();
                                 }
 
                                 ctx.CallStack.Push(new CallPoint(offset, function.UnitId));
@@ -449,12 +457,10 @@ namespace Dyalect.Runtime
 
         private DyObject CallExternalFunction(Op op, int offset, EvalStack evalStack, DyNativeFunction caller, DyFunction fun, ExecutionContext ctx)
         {
-            var max = op.Data > fun.ParameterNumber ? op.Data : fun.ParameterNumber;
-            var arr = new DyObject[max];
+            var arr = new DyObject[op.Data];
             for (var i = op.Data - 1; i > -1; i--)
                 arr[i] = evalStack.Pop();
 
-            //Надо выровнять либо список параметров, либо переданные аргументы
             if (op.Data < fun.ParameterNumber)
                 for (var i = op.Data; i < fun.ParameterNumber; i++)
                     arr[i] = DyNil.Instance;

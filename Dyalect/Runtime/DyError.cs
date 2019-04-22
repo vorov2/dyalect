@@ -22,7 +22,9 @@ namespace Dyalect.Runtime
 
         IndexInvalidType = 606,
 
-        DivideByZero = 607
+        DivideByZero = 607,
+
+        WrongNumberOfArguments = 608
     }
 
     public sealed class DyError
@@ -98,6 +100,14 @@ namespace Dyalect.Runtime
         public static DyError DivideByZero()
         {
             return new DyError(DyErrorCode.DivideByZero);
+        }
+
+        public static DyError WrongNumberOfArguments(string functionName, int functionArguments, int passedArguments)
+        {
+            return new DyError(DyErrorCode.WrongNumberOfArguments,
+                ("FunctionName", functionName),
+                ("FunctionArguments", functionArguments),
+                ("PassedArguments", passedArguments));
         }
     }
 

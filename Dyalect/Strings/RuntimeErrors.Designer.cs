@@ -122,5 +122,14 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("StackCorrupted", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Function %FunctionName% accepts %FunctionArguments% argument(s) (%PassedArguments% given)..
+        /// </summary>
+        internal static string WrongNumberOfArguments {
+            get {
+                return ResourceManager.GetString("WrongNumberOfArguments", resourceCulture);
+            }
+        }
     }
 }

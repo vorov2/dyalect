@@ -191,7 +191,7 @@ namespace Dyalect
                 Printer.Error(ex.ToString());
                 return false;
             }
-            catch (Exception ex)
+            catch (DyRuntimeException ex)
             {
                 Printer.Error(ex.Message);
                 return false;
