@@ -56,7 +56,9 @@ namespace Tests
 
         [Test] public void BinaryConversionTest() => ShouldBe("10011101");
 
-        [Test] public void FibTest() => ShouldBe(89);
+        [Test] public void FibTest1() => ShouldBe(89);
+
+        [Test] public void FibTest2() => ShouldBe("0 1 1 2 3 5 8 13 21 34 55");
 
         [Test] public void PhoneParserTest() => ShouldBe("9645061112");
 
@@ -74,7 +76,11 @@ namespace Tests
 
         [Test] public void DammTest() => ShouldBe("yesnoyesno");
 
+        [Test] public void GcdTest() => ShouldBe(12);
+
         [Test] public void EulerTest() => ShouldBe("0=100;10=44;20=27.2;30=22.16;40=20.648;50=20.1944;60=20.05832;70=20.017496;80=20.0052488;90=20.00157464;100=20.000472392;");
+
+        [Test] public void AckTest() => ShouldBe(125);
 
         #region Execution
         private void ShouldBe(int expected, [CallerMemberName]string callerName = "") =>

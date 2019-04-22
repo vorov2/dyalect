@@ -154,15 +154,31 @@ func binaryConversionTest() {
     acc
 }
 
-func fibTest() {
-    func fib(n)
-    {
+func fibTest1() {
+    func fib(n) {
         if n == 0 || n == 1 {
             return n
         }
         fib(n - 1) + fib(n - 2)
     }
     fib(11)
+}
+
+func fibTest2() {
+    func fib(accum,a,b,nums) {
+        if nums > 0 {
+            accum = 
+                if accum {
+                    accum + " " + a
+                } else {
+                    a.toString()
+                }
+            fib(accum, b, a + b, nums - 1)
+        } else {
+            accum
+        }
+    }
+    fib(nil, 0, 1, 11)
 }
 
 func phoneParserTest() {
@@ -373,4 +389,41 @@ func eulerTest() {
         str += e + ";"
     }
     str
+}
+
+func gcdTest() {
+    func gcd(a, b) {
+        if a != 0 && b != 0 {
+            if a > b {
+                a %= b
+            } else {
+                b %= a
+            }
+        } else if a {
+            a
+        } else  {
+            b
+        }
+    }
+    gcd(24, 36)
+}
+
+func ackTest() {
+    func ack(m, n) {
+        if m > 0 {
+            if n > 0 {
+                ack(m - 1, ack(m, n - 1))
+            } else if n == 0 {
+                ack(m - 1, 1)
+            } else {
+                "OutOfRange"
+            }
+        }
+        else if m == 0 && n > 0 {
+            n + 1
+        } else {
+            "OutOfRange"
+        }
+    }
+    ack(3, 4)
 }
