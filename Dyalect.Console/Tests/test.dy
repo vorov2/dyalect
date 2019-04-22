@@ -193,25 +193,6 @@ print(fizzbuzzTest1())
 
 */
 
-func reverse(arr) {
-    var newArr = []
-    newArr.addRange(arr) //hack
-    var len = #newArr
-    var counter = 1
-    for x in arr {
-        print("len:",len)
-        print("counter:",counter)
-        newArr[len - counter] = x
-        counter += 1
-    }
-    newArr
+for x in (1,2,3) {
+    print(x)
 }
-func makeString(arr) {
-    var str = ""
-    for x in arr {
-        str += x
-    }
-    str
-}
-const arr = reverse("Hello")
-makeString(arr)

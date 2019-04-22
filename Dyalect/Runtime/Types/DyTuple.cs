@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public abstract class DyTuple : DyObject
+    public abstract class DyTuple : DyObject, IEnumerable<DyObject>
     {
         public static DyTuple Create(DyObject arg1, DyObject arg2) =>
             new DyTuplePair(null, arg1, null, arg2 );
@@ -45,6 +46,14 @@ namespace Dyalect.Runtime.Types
         private DyObject GetItem(string index) => GetItem(GetOrdinal(index));
 
         protected string DefaultKey() => Guid.NewGuid().ToString();
+
+        public IEnumerator<DyObject> GetEnumerator()
+        {
+            for (var i = 0; i < Count; i++)
+                yield return GetItem(i);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public abstract int Count { get; }
     }
