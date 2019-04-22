@@ -334,17 +334,17 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetTrait(string name, ExecutionContext ctx)
         {
             if (name == "toString")
-                return DyMemberFunction.Create(ToStringOp, name);
+                return DyForeignFunction.Create(name, (ct, self, args) => ToStringOp(self, ct));
 
             if (name == "iterator")
-                return DyMemberFunction.Create(GetIterator, name);
+                return DyForeignFunction.Create(name, GetIterator);
 
             return GetTrait(name, ctx);
         }
 
-        private DyObject GetIterator(DyObject arg, ExecutionContext ctx)
+        private DyObject GetIterator(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
-            if (arg is IEnumerable<DyObject> en)
+            if (self is IEnumerable<DyObject> en)
                 return new DyIterator(en.GetEnumerator());
             else
                 return Err.OperationNotSupported("iterator", TypeName).Set(ctx);

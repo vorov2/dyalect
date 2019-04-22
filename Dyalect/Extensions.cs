@@ -1,4 +1,6 @@
-﻿namespace Dyalect
+﻿using Dyalect.Runtime.Types;
+
+namespace Dyalect
 {
     public static class Extensions
     {

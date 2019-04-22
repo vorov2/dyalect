@@ -441,7 +441,7 @@ namespace Dyalect.Runtime
 
         private void ProcessError(ExecutionContext ctx, DyNativeFunction currentFunc, ref int offset, EvalStack evalStack = null)
         {
-            if (evalStack != null)
+            if (evalStack != null && evalStack.Size > 0)
                 evalStack.PopVoid();
 
             throw CreateException(ctx.Error, offset, currentFunc.UnitId, ctx);

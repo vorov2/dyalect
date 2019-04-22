@@ -281,7 +281,7 @@ PRODUCTIONS
             | Return<out node>
             | Yield<out node>
         )
-        [ 
+        /*[ 
             "when" 
             (. var @if = new DIf(t) { True = node }; .)
             Expr<out node>
@@ -289,7 +289,7 @@ PRODUCTIONS
                 @if.Condition = node;
                 node = @if;
             .)
-        ].
+        ]*/.
 
     Yield<out DNode node> =
         "yield" 
@@ -382,13 +382,13 @@ PRODUCTIONS
             "||" (. var ot = t; .) And<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.Or, ot); .)
         }
-        [
+        /*[
             "?"
             (. var @if = new DIf(t) { True = node }; .)
             Or<out node> (. @if.Condition = node; .)
             ":" Or<out node>
             (. @if.False = node; node = @if; .)
-        ].
+        ]*/.
         
     And<out DNode node> = 
         Eq<out node>

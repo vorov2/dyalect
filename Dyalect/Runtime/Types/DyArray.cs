@@ -35,7 +35,8 @@ namespace Dyalect.Runtime.Types
         {
             if (index < 0 || index >= Values.Count)
                 Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
-            Values[index] = obj;
+            else
+                Values[index] = obj;
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
@@ -93,21 +94,33 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        private DyObject AddItem(DyObject self, DyObject val, ExecutionContext ctx)
+        private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
-            ((DyArray)self).Values.Add(val);
+            ((DyArray)self).Values.Add(args.TakeOne(DyNil.Instance));
             return DyNil.Instance;
         }
 
-        private DyObject AddRange(DyObject self, DyObject val, ExecutionContext ctx)
+        private DyObject AddRange(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var arr = (DyArray)self;
-            var iter = ctx.Assembly.Types[val.TypeId].GetTraitOp(val, "iterator", ctx) as DyFunction;
-            
-            if (ctx.HasErrors)
+            var val = args.TakeOne(null);
+
+            if (val == null)
                 return DyNil.Instance;
 
-            iter = iter.Call(ctx) as DyFunction;
+            DyFunction iter = null;
+
+            if (val.TypeId == StandardType.Iterator)
+                iter = val as DyFunction;
+            else
+            {
+                iter = ctx.Assembly.Types[val.TypeId].GetTraitOp(val, "iterator", ctx) as DyFunction;
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                iter = iter.Call(ctx) as DyFunction;
+            }
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
@@ -128,13 +141,16 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject RemoveItem(DyObject self, DyObject val, ExecutionContext ctx)
+        private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
+            var val = args.TakeOne(DyNil.Instance);
             return ((DyArray)self).Values.Remove(val) ? DyBool.True : DyBool.False;
         }
 
-        private DyObject RemoveItemAt(DyObject self, DyObject index, ExecutionContext ctx)
+        private DyObject RemoveItemAt(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
+            var index = args.TakeOne(DyNil.Instance);
+
             if (index.TypeId != StandardType.Integer)
                 return Err.IndexInvalidType(TypeName, index.TypeName(ctx)).Set(ctx);
 
@@ -148,28 +164,28 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject ClearItems(DyObject obj, ExecutionContext ctx)
+        private DyObject ClearItems(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
-            ((DyArray)obj).Values.Clear();
+            ((DyArray)self).Values.Clear();
             return DyNil.Instance;
         }
 
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
             if (name == "add")
-                return DyMemberFunction.Create(AddItem, name);
+                return DyForeignFunction.Create(name, AddItem);
 
             if (name == "addRange")
-                return DyMemberFunction.Create(AddRange, name);
+                return DyForeignFunction.Create(name, AddRange);
 
             if (name == "remove")
-                return DyMemberFunction.Create(RemoveItem, name);
+                return DyForeignFunction.Create(name, RemoveItem);
 
             if (name == "removeAt")
-                return DyMemberFunction.Create(RemoveItemAt, name);
+                return DyForeignFunction.Create(name, RemoveItemAt);
 
             if (name == "clear")
-                return DyMemberFunction.Create(ClearItems, name);
+                return DyForeignFunction.Create(name, ClearItems);
 
             return null;
         }

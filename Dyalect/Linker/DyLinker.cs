@@ -15,6 +15,8 @@ namespace Dyalect.Linker
         private const string EXT = ".dy";
         private const string OBJ = ".dyo";
         private readonly FileLookup lookup;
+        private static Lang lang;
+        private static readonly object syncRoot = new object();
 
         protected Dictionary<string, Unit> UnitMap { get; set;  } = new Dictionary<string, Unit>(StringComparer.OrdinalIgnoreCase);
 
@@ -38,7 +40,13 @@ namespace Dyalect.Linker
             Unit unit = null;
 
             if (mod.ModuleName == "lang")
-                unit = new Lang();
+            {
+                if (lang == null)
+                    lock (syncRoot)
+                        if (lang == null)
+                            lang = new Lang();
+                unit = lang;
+            }
             else if (mod.DllName != null)
                 unit = LinkForeignModule(mod);
             else
