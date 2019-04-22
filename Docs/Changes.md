@@ -6,6 +6,7 @@
  * A bug fixed in array indexing function that could cause virtual machine to crash.
  * Added missing message string for the `IndexOutOfRange` runtime error messge.
  * A new `insert` function is added to the array prototype. This function accepts an index and a value and inserts a value at a given index. Only indices of type `Integer` are supported. If index is out of range an `IndexOutOfRange` exception is thrown.
+ * Functions `indexOf` (accepts a value and returns an index of first occurence or `-1`) and `lastIndexOf` (retuns an index of last occurence) are added to the array prototype.
 
 # 0.2.2
  * Code clean-ups

@@ -67,10 +67,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = ((DyArray)arg).Values.Count;
-            return len == 1 ? DyInteger.One
-                : len == 2 ? DyInteger.Two
-                : len == 3 ? DyInteger.Three
-                : new DyInteger(len);
+            return DyInteger.Get(len);
         }
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx)
@@ -189,6 +186,22 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject IndexOf(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+            var val = args.TakeOne(DyNil.Instance);
+            var i = arr.Values.IndexOf(val);
+            return DyInteger.Get(i);
+        }
+
+        private DyObject LastIndexOf(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+            var val = args.TakeOne(DyNil.Instance);
+            var i = arr.Values.LastIndexOf(val);
+            return DyInteger.Get(i);
+        }
+
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
             if (name == "add")
@@ -208,6 +221,12 @@ namespace Dyalect.Runtime.Types
 
             if (name == "clear")
                 return DyForeignFunction.Create(name, ClearItems);
+
+            if (name == "indexOf")
+                return DyForeignFunction.Create(name, IndexOf);
+
+            if (name == "lastIndexOf")
+                return DyForeignFunction.Create(name, LastIndexOf);
 
             return null;
         }
