@@ -653,7 +653,7 @@ namespace Dyalect.Compiler
         {
             var iter = hints.Has(Iterator);
             var args = node.Parameters.ToArray();
-            var argCount = args.Length + (node.TypeName != null ? 1 : 0);
+            var argCount = args.Length;
             StartFun(node.Name, args, argCount);
 
             var startLabel = cw.DefineLabel();

@@ -212,17 +212,20 @@ func fetch() {
 for x in fetch() {
     print(x)
 */
-
-
-func myIterator(x, y, z) {
-    x += y 
-    yield (x, y, z)
-    y -= z
-    yield (x, y, z)
-    z *= x
-    yield (x, y, z)
+func String.reverse () {
+    var len = #self
+    var ret = ""
+    while len > 0 {
+        ret += self[len - 1]
+        len -= 1
+    }
+    ret
 }
 
-var it = myIterator(7, 13, 42)
+func String.let(fn) {
+    fn(self)
+}
 
-(it(), it(), it())
+"original".let(str => {
+    
+})
