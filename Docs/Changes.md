@@ -23,6 +23,7 @@
     ```
     If the last argument ends with three dots `...` it would be initialized as tuple and receive all the other passed values.
  * Interactive console now supports multiline mode - simply end an input with an open curly bracket.
+ * A bug fixed in `TypeInfo` `toString` function.
 
 # 0.2.2
  * Code clean-ups

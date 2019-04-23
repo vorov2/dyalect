@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
 
         public int TypeCode { get; internal set; }
 
-        internal DyTypeInfo(int typeCode) : base(StandardType.Type)
+        internal DyTypeInfo(int typeCode) : base(StandardType.TypeInfo)
         {
             TypeCode = typeCode;
         }
@@ -362,14 +362,14 @@ namespace Dyalect.Runtime.Types
     {
         public static readonly DyTypeTypeInfo Instance = new DyTypeTypeInfo();
 
-        private DyTypeTypeInfo() : base(StandardType.Type)
+        private DyTypeTypeInfo() : base(StandardType.TypeInfo)
         {
 
         }
 
-        public override string TypeName => StandardType.TypeName;
+        public override string TypeName => StandardType.TypeInfoName;
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString(("typeInfo " + TypeName).PutInBrackets());
+            new DyString(("typeInfo " + ((DyTypeInfo)arg).TypeName).PutInBrackets());
     }
 }
