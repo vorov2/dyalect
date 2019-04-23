@@ -3,7 +3,7 @@
   * **(Experimental)** A support for implicit anonymous function declaration is added. For short functions one can use the following notation - instead of declaring a full lambda, e.g. `x => x * 2` one can write `$0 * 2`. A `$` prefix instructs the compiler that the whole expression is a function, and all the dollar names are automatically promoted as function arguments in the appropriate order, e.g.: `$1 - $0` is equivalent to `(x,y) => y - x`. Example:
     ```swift
     var arr = [1, 2, 3, 4, 5, 6]
-    var searchResult = arr.findBy($x % 2 == 0)
+    var searchResult = arr.findBy($0 % 2 == 0)
     ```
  * Optimizations in implementation of iterators.
  * Refactoring in implementation of functions, including the marshalling between Dy's functions and foreign functions.
@@ -18,10 +18,11 @@
     }
     //All of these are valid calls:
     format("foo")
-    format("foo {0}")
-    format("foo {0} {1}")
+    format("foo {0}", 2)
+    format("foo {0} {1}", 2, 4)
     ```
     If the last argument ends with three dots `...` it would be initialized as tuple and receive all the other passed values.
+ * Interactive console now supports multiline mode - simply end an input with an open curly bracket.
 
 # 0.2.2
  * Code clean-ups

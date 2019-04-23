@@ -201,4 +201,15 @@ func format(fmt, args...) {
     str
 }
 
-format("Values are: ", 1,2,3,4,5,6,7)
+//format("Values are: ", 1,2,3,4,5,6,7)
+
+func fetch() { 
+    yield 22 * 1.25
+    yield "Hello, world!"
+    yield (1,2,3)
+    yield true  
+}
+
+for x in fetch() {
+    print(x)
+}

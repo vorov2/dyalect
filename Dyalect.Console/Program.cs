@@ -6,6 +6,7 @@ using Dyalect.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Dyalect
 {
@@ -55,13 +56,17 @@ namespace Dyalect
             else
             {
                 DyMachine dym = null;
+                var sb = new StringBuilder();
+                var balance = 0;
 
                 while (true)
                 {
-                    Printer.LineFeed();
-                    Printer.Prefix("dy>");
+                    if (balance == 0)
+                        Printer.LineFeed();
 
-                    var line = Console.ReadLine();
+                    Printer.Prefix(balance == 0 ? "dy>" : "-->");
+
+                    var line = Console.ReadLine().Trim();
                     var cm = TryRunCommand(line);
 
                     if (cm != null)
@@ -78,7 +83,18 @@ namespace Dyalect
                         continue;
                     }
 
-                    var made = linker.Make(SourceBuffer.FromString(line));
+                    sb.AppendLine(line);
+
+                    if (line.EndsWith('{'))
+                        balance++;
+                    else if (line.EndsWith('}'))
+                        balance--;
+
+                    if (balance != 0)
+                        continue;
+
+                    var made = linker.Make(SourceBuffer.FromString(sb.ToString()));
+                    sb.Clear();
 
                     if (!made.Success)
                     {
