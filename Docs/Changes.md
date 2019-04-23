@@ -1,3 +1,8 @@
+# 0.2.3
+ * A bug fixed in parser - previously tuples may not be 
+    parsed correctly and could cause parser to fail for
+    the tuple with correct syntax.
+
 # 0.2.2
  * Code clean-ups
  * A new constructor is added to tuple type for convinience.
