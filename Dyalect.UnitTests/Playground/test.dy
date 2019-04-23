@@ -211,15 +211,18 @@ func fetch() {
 
 for x in fetch() {
     print(x)
-
 */
 
-var arr = [1,3,5,8]
 
-var x = 
-    for x in arr {
-        if x % 2 == 0 {
-            break x
-        }
-    }
-x
+func myIterator(x, y, z) {
+    x += y 
+    yield (x, y, z)
+    y -= z
+    yield (x, y, z)
+    z *= x
+    yield (x, y, z)
+}
+
+var it = myIterator(7, 13, 42)
+
+(it(), it(), it())

@@ -164,7 +164,7 @@ namespace Dyalect.Parser
             var x = la;
             var balance = 0;
 
-            while (x.kind != _parenRightToken)
+            while (true)
             {
                 if ((x.kind == _commaToken || x.kind == _colonToken) && balance == 1)
                     return true;
