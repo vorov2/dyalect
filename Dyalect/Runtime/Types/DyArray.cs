@@ -124,7 +124,7 @@ namespace Dyalect.Runtime.Types
             if (val == null)
                 return DyNil.Instance;
 
-            DyFunction iter = null;
+            DyFunction iter;
 
             if (val.TypeId == StandardType.Iterator)
                 iter = val as DyFunction;

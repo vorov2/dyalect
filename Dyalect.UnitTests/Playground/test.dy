@@ -191,7 +191,6 @@ func fizzbuzzTest1() {
 print(fizzbuzzTest())
 print(fizzbuzzTest1())
 
-*/
 
 func format(fmt, args...) {
     var str = fmt
@@ -212,4 +211,15 @@ func fetch() {
 
 for x in fetch() {
     print(x)
-}
+
+*/
+
+var arr = [1,3,5,8]
+
+var x = 
+    for x in arr {
+        if x % 2 == 0 {
+            break x
+        }
+    }
+x

@@ -253,7 +253,6 @@ namespace Dyalect.Compiler
                 BlockExit = cw.DefineLabel(),
                 BlockBreakExit = cw.DefineLabel()
             };
-            StartScope(false, node.Location);
             var iter = cw.DefineLabel();
 
             cw.MarkLabel(iter);
@@ -270,7 +269,6 @@ namespace Dyalect.Compiler
             AddLinePragma(node);
             cw.MarkLabel(ctx.BlockBreakExit);
             cw.Nop();
-            EndScope();
         }
 
         private void Build(DFor node, Hints hints, CompilerContext ctx)

@@ -72,6 +72,8 @@ namespace Tests
 
         [Test] public void IteratorTest5() => ShouldBe("ll");
 
+        [Test] public void IteratorTest6() => ShouldBe(8);
+
         [Test] public void CalcETest() => ShouldBe(2.7182818284590455);
 
         [Test] public void DammTest() => ShouldBe("yesnoyesno");
@@ -81,6 +83,8 @@ namespace Tests
         [Test] public void EulerTest() => ShouldBe("0=100;10=44;20=27.2;30=22.16;40=20.648;50=20.1944;60=20.05832;70=20.017496;80=20.0052488;90=20.00157464;100=20.000472392;");
 
         [Test] public void AckTest() => ShouldBe(125);
+
+        [Test] public void FoldTest() => ShouldBe(21);
 
         #region Execution
         private void ShouldBe(int expected, [CallerMemberName]string callerName = "") =>
