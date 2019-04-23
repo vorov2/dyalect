@@ -71,8 +71,8 @@ namespace Dyalect.Runtime
             const int funcId = 0;
             var lay0 = unit.Layouts[funcId];
             
-            //Если да, то мы в интерактивном режиме и надо проверить, не менялся
-            //ли размер, выделенный под глобальные переменные основного модуля
+            //if yes we are in interactive mode and need to check if the size
+            //of global layout (for global variables) has changes
             if (units[0] != null && lay0.Size > units[0].Length)
             {
                 var mems = new DyObject[lay0.Size];
