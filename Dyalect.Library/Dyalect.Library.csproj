@@ -2,7 +2,7 @@
 
   <PropertyGroup>
       <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-      <TargetFramework>netcoreapp2.2</TargetFramework>
+      <TargetFramework>netcoreapp2.0</TargetFramework>
       <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
       <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
       <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
