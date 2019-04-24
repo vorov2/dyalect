@@ -1,4 +1,4 @@
-# Dyalect [![version](https://img.shields.io/badge/version-0.2-blue.svg?cacheSeconds=600)](https://github.com/vorov2/dyalect/releases)
+# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/vorov2/dyalect.svg?color=blue&label=version)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
 
