@@ -22,9 +22,9 @@ namespace Dyalect.Parser
                 return new StringBuffer(sr.ReadToEnd(), file);
         }
 
-        public static SourceBuffer FromString(string str)
+        public static SourceBuffer FromString(string str, string file = null)
         {
-            return new StringBuffer(str, "<memory>");
+            return new StringBuffer(str, file ?? "<memory>");
         }
     }
 }

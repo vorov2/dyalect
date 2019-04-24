@@ -13,15 +13,16 @@ namespace Dyalect.Runtime
         private readonly DyObject[][] units;
         private readonly FastList<DyTypeInfo> types;
 
-        internal UnitComposition Assembly { get; }
-        internal ExecutionContext ExecutionContext { get; }
+        public UnitComposition Composition { get; }
+
+        public ExecutionContext ExecutionContext { get; }
 
         public DyMachine(UnitComposition asm)
         {
-            Assembly = asm;
+            Composition = asm;
             var callStack = new CallStack();
             ExecutionContext = new ExecutionContext(callStack, asm);
-            units = new DyObject[Assembly.Units.Count][];
+            units = new DyObject[Composition.Units.Count][];
             types = asm.Types;
         }
 
@@ -59,7 +60,7 @@ namespace Dyalect.Runtime
 
         private DyObject ExecuteModule(int unitId)
         {
-            var unit = Assembly.Units[unitId];
+            var unit = Composition.Units[unitId];
 
             if (unit.Layouts.Count == 0)
             {
@@ -93,7 +94,7 @@ namespace Dyalect.Runtime
             Op op;
             var ctx = ExecutionContext;
 
-            var unit = Assembly.Units[function.UnitId];
+            var unit = Composition.Units[function.UnitId];
             var ops = unit.Ops;
             var layout = unit.Layouts[function.FunctionId];
             var offset = layout.Address;
@@ -421,7 +422,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.RunMod:
                         ExecuteModule(unit.UnitIds[op.Data]);
-                        evalStack.Push(new DyModule(Assembly.Units[op.Data], units[op.Data]));
+                        evalStack.Push(new DyModule(Composition.Units[unit.UnitIds[op.Data]], units[unit.UnitIds[op.Data]]));
                         break;
                     case OpCode.Type:
                         evalStack.Replace(types[evalStack.Peek().TypeId]);
@@ -493,9 +494,15 @@ namespace Dyalect.Runtime
         {
             var dump = Dump(ctx.CallStack);
             dump.Push(new StackPoint(offset, moduleHandle));
-            var deb = new DyDebugger(Assembly);
+            var deb = new DyDebugger(Composition);
             var cs = deb.BuildCallStack(dump);
             return new DyCodeException(err, cs, ex);
+        }
+
+        public IEnumerable<RuntimeVar> DumpVariables()
+        {
+            foreach (var v in Composition.Units[0].GlobalScope.EnumerateVars())
+                yield return new RuntimeVar(v.Key, units[0][v.Value.Address]);
         }
     }
 }

@@ -12,107 +12,73 @@ namespace Dyalect
 {
     public static class Program
     {
-        class Dya { }
-
         private const int ERR = -1;
         private const int OK = 0;
-        private static DyaOptions options;
         private static IDictionary<string, object> config;
-        private static string startupPath;
+        private static CommandDispatcher dispatcher;
+        private static InteractiveContext ctx;
 
         public static int Main(string[] args)
         {
-            startupPath = Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
-
-            if (!Prepare(args))
+            if (!Prepare(args, out var options))
                 return ERR;
 
-            Printer.NoColors = options.NoColors;
+            Printer.Header();
 
-            var buildOptions = new BuilderOptions
-            {
-                Debug = options.Debug,
-                NoLangModule = options.NoLang
-            };
-
-            var lookup = FileLookup.Create(startupPath, options.Paths);
-            var linker = new DyIncrementalLinker(lookup, buildOptions);
-
-            Printer.Clear();
-            Console.Title = $"Dyalect - {startupPath}";
-
-            if (!options.NoLogo)
-            {
-                Printer.Header($"Dya (Dyalect Interactive Console). Built {File.GetLastWriteTime(GetPathByType<Dya>())}");
-                Printer.Subheader($"Dya version {Meta.Version}");
-                Printer.Subheader($"Running {Environment.OSVersion}");
-            }
+            ctx = new InteractiveContext(options);
+            dispatcher = new CommandDispatcher(ctx);
 
             if (options.FileName != null)
             {
                 Printer.LineFeed();
-                return RunAndBye(linker) ? OK : ERR;
+
+                if (!ctx.EvalFile(options.FileName))
+                    return ERR;
+
+                if (options.StayInInteractive)
+                    RunInteractive();
+                else
+                    return OK;
             }
             else
-            {
-                DyMachine dym = null;
-                var sb = new StringBuilder();
-                var balance = 0;
-
-                while (true)
-                {
-                    if (balance == 0)
-                        Printer.LineFeed();
-
-                    Printer.Prefix(balance == 0 ? "dy>" : "-->");
-
-                    var line = Console.ReadLine().Trim();
-                    var cm = TryRunCommand(line);
-
-                    if (cm != null)
-                    {
-                        if (cm.Value == CommandResult.Reset)
-                        {
-                            linker = new DyIncrementalLinker(lookup, buildOptions);
-                            dym = null;
-                            Printer.Output("Virtual machine is reseted.");
-                        }
-                        else if (cm.Value == CommandResult.Exit)
-                            break;
-
-                        continue;
-                    }
-
-                    sb.AppendLine(line);
-
-                    if (line.EndsWith('{'))
-                        balance++;
-                    else if (line.EndsWith('}'))
-                        balance--;
-
-                    if (balance != 0)
-                        continue;
-
-                    var made = linker.Make(SourceBuffer.FromString(sb.ToString()));
-                    sb.Clear();
-
-                    if (!made.Success)
-                    {
-                        Printer.PrintErrors(made.Messages);
-                        continue;
-                    }
-
-                    if (dym == null)
-                        dym = new DyMachine(made.Value);
-
-                    Execute(dym);
-                }
-            }
+                RunInteractive();
 
             return OK;
         }
 
-        private static CommandResult? TryRunCommand(string cmd)
+        private static void RunInteractive()
+        {
+            var sb = new StringBuilder();
+            var balance = 0;
+
+            while (true)
+            {
+                if (balance == 0)
+                    Printer.LineFeed();
+
+                Printer.Prefix(balance == 0 ? "dy>" : "-->");
+
+                var line = Console.ReadLine().Trim();
+
+                if (TryRunCommand(line))
+                    continue;
+
+                sb.AppendLine(line);
+
+                if (line.EndsWith('{'))
+                    balance++;
+                else if (balance > 0 && line.EndsWith('}'))
+                    balance--;
+
+                if (balance != 0)
+                    continue;
+
+                ctx.Eval(sb.ToString());
+                sb.Clear();
+            }
+        }
+
+        private static bool TryRunCommand(string cmd)
         {
             if (cmd.Length > 1 && cmd[0] == CommandDispatcher.Prefix[0])
             {
@@ -122,96 +88,36 @@ namespace Dyalect
 
                 if ((idx = command.IndexOf(' ')) != -1)
                 {
+                    var str = command;
                     command = command.Substring(0, idx);
-                    argument = command.Substring(idx + 1, command.Length - idx - 1);
+                    argument = str.Substring(idx + 1, str.Length - idx - 1);
                 }
 
-                return CommandDispatcher.Dispatch(command, argument);
+                dispatcher.Dispatch(command, argument);
+                return true;
             }
             else
-                return null;
+                return false;
         }
 
-        private static bool Prepare(string[] args)
+        private static bool Prepare(string[] args, out DyaOptions options)
         {
             try
             {
-                config = ConfigReader.Read(Path.Combine(startupPath, "config.json"));
+                var config = ConfigReader.Read(Path.Combine(FS.GetStartupPath(), "config.json"));
                 options = CommandLineReader.Read<DyaOptions>(args, config);
             }
             catch (DyaException ex)
             {
+                Printer.Header();
+                Printer.LineFeed();
                 Printer.Error(ex.Message);
+                options = null;
                 return false;
             }
 
-            try
-            {
-                if (!string.IsNullOrWhiteSpace(options.Theme))
-                {
-                    var fullPath = Path.Combine(startupPath, "themes", options.Theme + ".json");
-
-                    if (!File.Exists(fullPath))
-                    {
-                        Printer.Error($"Unable to find theme file: {fullPath}.");
-                        return false;
-                    }
-
-                    var colors = ConfigReader.Read(fullPath);
-                    Theme.Read(colors);
-                }
-                else
-                    Theme.SetDefault();
-            }
-            catch (DyaException ex)
-            {
-                Theme.SetDefault();
-                Printer.Error(ex.Message);
-                return false;
-            }
-
+            Printer.NoLogo = options.NoLogo;
             return true;
-        }
-
-        private static bool RunAndBye(DyLinker linker)
-        {
-            var made = linker.Make(SourceBuffer.FromFile(options.FileName));
-
-            if (!made.Success)
-            {
-                Printer.PrintErrors(made.Messages);
-                return false;
-            }
-
-            var dym = new DyMachine(made.Value);
-            return Execute(dym);
-        }
-
-        private static string GetPathByType<T>()
-        {
-            var codeBase = typeof(T).Assembly.CodeBase;
-            var uri = new UriBuilder(codeBase);
-            return Uri.UnescapeDataString(uri.Path);
-        }
-
-        private static bool Execute(DyMachine dym)
-        {
-            try
-            {
-                var res = dym.Execute();
-                Printer.Output(res);
-                return true;
-            }
-            catch (DyCodeException ex)
-            {
-                Printer.Error(ex.ToString());
-                return false;
-            }
-            catch (DyRuntimeException ex)
-            {
-                Printer.Error(ex.Message);
-                return false;
-            }
         }
     }
 }

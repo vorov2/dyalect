@@ -1,21 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 
 namespace Dyalect.Util
 {
-    public static class CommandDispatcher
+    public sealed class CommandDispatcher
     {
         public const string Prefix = ":";
 
-        private static Dictionary<string, Func<object, CommandResult>> commands;
+        private Dictionary<string, CommandCallBack> commands;
 
-        public static CommandResult Dispatch(string command, object argument)
+        private readonly InteractiveContext ctx;
+
+        internal delegate void CommandCallBack(object arg);
+
+        internal CommandDispatcher(InteractiveContext ctx)
+        {
+            this.ctx = ctx;
+        }
+
+        public void Dispatch(string command, object argument)
         {
             if (commands == null)
             {
-                commands = new Dictionary<string, Func<object, CommandResult>>(StringComparer.OrdinalIgnoreCase);
-                var mis = typeof(CommandDispatcher).GetMethods(BindingFlags.NonPublic | BindingFlags.Static);
+                commands = new Dictionary<string, CommandCallBack>(StringComparer.OrdinalIgnoreCase);
+                var mis = typeof(CommandDispatcher).GetMethods();
 
                 foreach (var m in mis)
                 {
@@ -24,7 +34,7 @@ namespace Dyalect.Util
                     if (attr == null)
                         continue;
 
-                    var act = (Func<object, CommandResult>)m.CreateDelegate(typeof(Func<object, CommandResult>));
+                    var act = (CommandCallBack)m.CreateDelegate(typeof(CommandCallBack), this);
 
                     foreach (var n in attr.Names)
                         commands.Add(n, act);
@@ -34,34 +44,34 @@ namespace Dyalect.Util
             if (!commands.TryGetValue(command, out var cmd))
             {
                 Printer.Error($"Unknown command .{command}.");
-                return CommandResult.None;
+                return;
             }
 
-            return cmd(argument);
+            cmd(argument);
         }
 
         [Binding("bye", "exit", Help = "Exits console.")]
-        private static CommandResult Exit(object arg)
+        public void Exit(object arg)
         {
             Printer.Output("Bye!");
-            return CommandResult.Exit;
+            Environment.Exit(0);
         }
 
         [Binding("cls", "clear", Help = "Clears the console window.")]
-        private static CommandResult Clear(object arg)
+        public void Clear(object arg)
         {
             Console.Clear();
-            return CommandResult.None;
         }
 
         [Binding("reset", Help = "Resets the interactive session.")]
-        private static CommandResult Reset(object arg)
+        public void Reset(object arg)
         {
-            return CommandResult.Reset;
+            ctx.Reset();
+            Printer.Output("Virtual machine is reseted.");
         }
 
-        [Binding("help", Help = "Displays this help screen")]
-        private static CommandResult Help(object arg)
+        [Binding("help", Help = "Displays this help screen.")]
+        public void Help(object arg)
         {
             var switches = HelpGenerator.Generate<DyaOptions>("-", 12).TrimEnd('\r', '\n');
             var commands = HelpGenerator.Generate(typeof(CommandDispatcher), Prefix, 12).TrimEnd('\r', '\n');
@@ -70,8 +80,37 @@ namespace Dyalect.Util
             Printer.Output(switches);
             Printer.Output("Commands:");
             Printer.Output(commands);
+        }
 
-            return CommandResult.None;
+        [Binding("options", Help = "Displays current console options.")]
+        public void ShowOptions(object arg)
+        {
+            Printer.Output("Current options:");
+            Printer.Output(ctx.Options.ToString());
+        }
+
+        [Binding("dump", Help = "Dumps global variables and prints their values.")]
+        public void Dump(object arg)
+        {
+            Printer.Output("Dump of globals:");
+
+            if (ctx.Machine == null)
+            {
+                Printer.Output("...none");
+                return;
+            }
+
+            foreach (var rv in ctx.Machine.DumpVariables())
+                Printer.Output($"{rv.Name} = {Printer.Format(rv.Value, ctx.Machine.ExecutionContext)}");
+        }
+
+        [Binding("eval", Help = "Evaluates a given file in a current interactive session.")]
+        public void Eval(object arg)
+        {
+            var str = arg?.ToString();
+
+            if (ctx.EvalFile(str))
+                Printer.Output($"File \"{Path.GetFileName(str)}\" successfully evaluated.");
         }
     }
 }

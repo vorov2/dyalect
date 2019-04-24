@@ -56,7 +56,7 @@ namespace Dyalect.Runtime.Types
         public override DyObject Call(params DyObject[] args)
         {
             var callStack = new CallStack();
-            var ctx = new ExecutionContext(callStack, Machine.Assembly);
+            var ctx = new ExecutionContext(callStack, Machine.Composition);
             var retval = Call(ctx, args);
             ctx.ThrowIf();
             return retval;
@@ -71,7 +71,7 @@ namespace Dyalect.Runtime.Types
                 args = new DyObject[0];
 
             var opd = args.Length;
-            var layout = Machine.Assembly.Units[UnitId].Layouts[FunctionId];
+            var layout = Machine.Composition.Units[UnitId].Layouts[FunctionId];
             var newStack = new EvalStack(layout.StackSize);
 
             if (opd < ParameterNumber)
@@ -103,7 +103,7 @@ namespace Dyalect.Runtime.Types
 
         internal override DyObject Call3(DyObject arg1, DyObject arg2, DyObject arg3, ExecutionContext ctx)
         {
-            var layout = Machine.Assembly.Units[UnitId].Layouts[FunctionId];
+            var layout = Machine.Composition.Units[UnitId].Layouts[FunctionId];
             var newStack = new EvalStack(layout.StackSize);
             newStack.Push(arg3);
             newStack.Push(arg2);
@@ -113,7 +113,7 @@ namespace Dyalect.Runtime.Types
 
         internal override DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            var layout = Machine.Assembly.Units[UnitId].Layouts[FunctionId];
+            var layout = Machine.Composition.Units[UnitId].Layouts[FunctionId];
             var newStack = new EvalStack(layout.StackSize);
             newStack.Push(right);
             newStack.Push(left);
@@ -122,7 +122,7 @@ namespace Dyalect.Runtime.Types
 
         internal override DyObject Call1(DyObject obj, ExecutionContext ctx)
         {
-            var layout = Machine.Assembly.Units[UnitId].Layouts[FunctionId];
+            var layout = Machine.Composition.Units[UnitId].Layouts[FunctionId];
             var newStack = new EvalStack(layout.StackSize);
             if (ParameterNumber > 1)
                 newStack.Push(DyNil.Instance);
@@ -134,7 +134,7 @@ namespace Dyalect.Runtime.Types
 
         private FunSym GetFunSym()
         {
-            var frame = Machine?.Assembly.Units[UnitId];
+            var frame = Machine?.Composition.Units[UnitId];
             var syms = frame != null ? frame.Symbols : null;
 
             if (syms != null)

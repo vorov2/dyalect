@@ -14,7 +14,6 @@ namespace Dyalect.Linker
     {
         private const string EXT = ".dy";
         private const string OBJ = ".dyo";
-        private readonly FileLookup lookup;
         private static Lang lang;
         private static readonly object syncRoot = new object();
 
@@ -26,12 +25,14 @@ namespace Dyalect.Linker
 
         protected List<BuildMessage> Messages { get; } = new List<BuildMessage>();
 
-        public BuilderOptions Options { get; }
+        public BuilderOptions BuilderOptions { get; }
+
+        public FileLookup Lookup { get; }
 
         public DyLinker(FileLookup lookup, BuilderOptions options)
         {
-            this.lookup = lookup;
-            this.Options = options;
+            this.Lookup = lookup;
+            this.BuilderOptions = options;
             Units.Add(null);
         }
 
@@ -39,13 +40,14 @@ namespace Dyalect.Linker
         {
             Unit unit = null;
 
-            if (mod.ModuleName == "lang")
+            if (mod.ModuleName == nameof(lang))
             {
                 if (lang == null)
                     lock (syncRoot)
                         if (lang == null)
                             lang = new Lang();
                 unit = lang;
+                unit.FileName = nameof(lang);
             }
             else if (mod.DllName != null)
                 unit = LinkForeignModule(mod);
@@ -168,7 +170,7 @@ namespace Dyalect.Linker
 
         protected virtual Unit CompileNodes(DyCodeModel codeModel, bool root)
         {
-            var compiler = new DyCompiler(Options, this);
+            var compiler = new DyCompiler(BuilderOptions, this);
             var res = compiler.Compile(codeModel);
 
             if (!res.Success)
@@ -195,7 +197,7 @@ namespace Dyalect.Linker
 
         private string FindModuleExact(string module, Reference mod)
         {
-            if (lookup.Find(module, out var fullPath))
+            if (Lookup.Find(module, out var fullPath))
                 return fullPath;
 
             AddError(LinkerError.ModuleNotFound, mod.SourceFileName, mod.SourceLocation, module);
