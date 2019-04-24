@@ -1,12 +1,8 @@
-# Dyalect
-
-[![Top language](https://img.shields.io/github/languages/top/vorov2/dyalect.svg)](https://github.com/vorov2/dyalect)
-[![License](https://img.shields.io/github/license/vorov2/dyalect.svg)](https://github.com/vorov2/dyalect/blob/master/LICENSE)
-[![version](https://img.shields.io/badge/version-0.2-blue.svg?cacheSeconds=600)](https://github.com/vorov2/dyalect/releases)
+# Dyalect [![version](https://img.shields.io/badge/version-0.2-blue.svg?cacheSeconds=600)](https://github.com/vorov2/dyalect/releases)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
 [![Alerts](https://img.shields.io/lgtm/alerts/g/vorov2/dyalect.svg)](https://lgtm.com/projects/g/vorov2/dyalect/alerts/)
-[![Commit activity](https://img.shields.io/github/commit-activity/m/vorov2/dyalect.svg)](https://github.com/vorov2/dyalect/pulse)
+[![Commit activity](https://img.shields.io/github/commit-activity/w/vorov2/dyalect.svg)](https://github.com/vorov2/dyalect/pulse)
 
 Dyalect is a dynamic programming language for .NET Core platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short) is
