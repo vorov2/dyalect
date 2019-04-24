@@ -1,5 +1,7 @@
 # Dyalect
 
+[![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
+
 Dyalect is a dynamic programming language for .NET Core platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short) is
 written in C# and has zero dependencies except for standard .NET Core
