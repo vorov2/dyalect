@@ -296,19 +296,6 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(iterate().GetEnumerator());
         }
 
-        private DyObject GetValues(ExecutionContext ctx, DyObject self, DyObject[] args)
-        {
-            var tup = (DyTuple)self;
-
-            IEnumerable<DyObject> iterate()
-            {
-                for (var i = 0; i < tup.Count; i++)
-                    yield return tup.GetItem(i);
-            }
-
-            return new DyIterator(iterate().GetEnumerator());
-        }
-
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
@@ -319,9 +306,6 @@ namespace Dyalect.Runtime.Types
 
             if (name == "keys")
                 return DyForeignFunction.Create(name, GetKeys);
-
-            if (name == "values")
-                return DyForeignFunction.Create(name, GetValues);
 
             return null;
         }
