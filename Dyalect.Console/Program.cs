@@ -1,10 +1,5 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Linker;
-using Dyalect.Parser;
-using Dyalect.Runtime;
-using Dyalect.Util;
+﻿using Dyalect.Util;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -14,7 +9,6 @@ namespace Dyalect
     {
         private const int ERR = -1;
         private const int OK = 0;
-        private static IDictionary<string, object> config;
         private static CommandDispatcher dispatcher;
         private static InteractiveContext ctx;
 
