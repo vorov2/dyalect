@@ -30,6 +30,8 @@ namespace Dyalect.Runtime.Types
 
         internal virtual DyObject Call1(DyObject obj, ExecutionContext ctx) => Call(obj);
 
+        internal virtual DyObject Call0(ExecutionContext ctx) => Call();
+
         protected abstract string GetFunctionName();
 
         public string[] GetParameterNames()

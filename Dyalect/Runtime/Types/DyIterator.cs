@@ -56,5 +56,33 @@ namespace Dyalect.Runtime.Types
         public override string TypeName => StandardType.BoolName;
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => $"{Builtins.Iterator}()";
+
+        private DyObject ToArray(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var fn = (DyFunction)self;
+            var arr = new List<DyObject>();
+            DyObject res = null;
+
+            while (!ReferenceEquals(res, DyNil.Terminator))
+            {
+                res = fn.Call0(ctx);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                if (!ReferenceEquals(res, DyNil.Terminator))
+                    arr.Add(res);
+            }
+
+            return new DyArray(arr);
+        }
+
+        protected override DyFunction GetTrait(string name, ExecutionContext ctx)
+        {
+            if (name == "toArray")
+                return DyForeignFunction.Create(name, ToArray);
+
+            return null;
+        }
     }
 }

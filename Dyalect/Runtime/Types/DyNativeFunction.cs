@@ -130,6 +130,12 @@ namespace Dyalect.Runtime.Types
             return Machine.ExecuteWithData(this, newStack);
         }
 
+        internal override DyObject Call0(ExecutionContext ctx)
+        {
+            var layout = Machine.Composition.Units[UnitId].Layouts[FunctionId];
+            return Machine.ExecuteWithData(this, new EvalStack(layout.StackSize));
+        }
+
         protected override string GetFunctionName() => GetFunSym()?.Name ?? DefaultName;
 
         private FunSym GetFunSym()

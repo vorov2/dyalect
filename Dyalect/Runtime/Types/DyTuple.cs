@@ -265,10 +265,63 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
+        private DyObject GetIndices(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var tup = (DyTuple)self;
+
+            IEnumerable<DyObject> iterate()
+            {
+                for (var i = 0; i < tup.Count; i++)
+                    yield return DyInteger.Get(i);
+            }
+
+            return new DyIterator(iterate().GetEnumerator());
+        }
+
+        private DyObject GetKeys(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var tup = (DyTuple)self;
+
+            IEnumerable<DyObject> iterate()
+            {
+                for (var i = 0; i < tup.Count; i++)
+                {
+                    var k = tup.GetKey(i);
+
+                    if (k != null)
+                        yield return new DyString(k);
+                }
+            }
+
+            return new DyIterator(iterate().GetEnumerator());
+        }
+
+        private DyObject GetValues(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var tup = (DyTuple)self;
+
+            IEnumerable<DyObject> iterate()
+            {
+                for (var i = 0; i < tup.Count; i++)
+                    yield return tup.GetItem(i);
+            }
+
+            return new DyIterator(iterate().GetEnumerator());
+        }
+
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
                 return DyForeignFunction.Create(name, LenAdapter);
+
+            if (name == "indices")
+                return DyForeignFunction.Create(name, GetIndices);
+
+            if (name == "keys")
+                return DyForeignFunction.Create(name, GetKeys);
+
+            if (name == "values")
+                return DyForeignFunction.Create(name, GetValues);
 
             return null;
         }

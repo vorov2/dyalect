@@ -202,6 +202,19 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(i);
         }
 
+        private DyObject GetIndices(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+
+            IEnumerable<DyObject> iterate()
+            {
+                for (var i = 0; i < arr.Values.Count; i++)
+                    yield return DyInteger.Get(i);
+            }
+
+            return new DyIterator(iterate().GetEnumerator());
+        }
+
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
@@ -230,6 +243,9 @@ namespace Dyalect.Runtime.Types
 
             if (name == "lastIndexOf")
                 return DyForeignFunction.Create(name, LastIndexOf);
+
+            if (name == "indices")
+                return DyForeignFunction.Create(name, GetIndices);
 
             return null;
         }
