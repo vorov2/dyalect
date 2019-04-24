@@ -1,1 +1,0 @@
-﻿dotnet test "C:\projects\dyalect\Dyalect.UnitTests\Dyalect.UnitTests.csproj" --configuration Debug

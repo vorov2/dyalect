@@ -75,5 +75,9 @@
         <LastGenOutput>RuntimeErrors.Designer.cs</LastGenOutput>
       </EmbeddedResource>
     </ItemGroup>
+    
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+      <Exec Command="&quot;$(SolutionDir)Binaries\Coco.exe&quot; -N &quot;$(ProjectDir)Parser\Dyalect.atg&quot;" />
+    </Target>
 
 </Project>
