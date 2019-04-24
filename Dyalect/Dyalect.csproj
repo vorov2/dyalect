@@ -21,10 +21,6 @@
     <OutputPath>..\Bin\</OutputPath>
   </PropertyGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="&quot;$(SolutionDir)Binaries\Coco.exe&quot; -N &quot;$(ProjectDir)Parser\Dyalect.atg&quot;" />
-  </Target>
-
   <ItemGroup>
     <None Remove="Parser\Parser.cs.old" />
     <None Remove="Parser\Scanner.cs.old" />
