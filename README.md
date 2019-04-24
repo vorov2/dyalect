@@ -1,6 +1,7 @@
 # Dyalect
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0f559c3b7d151e60b1e4/maintainability)](https://codeclimate.com/github/vorov2/dyalect/maintainability)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/vorov2/dyalect/blob/master/LICENSE)
 
 Dyalect is a dynamic programming language for .NET Core platform.
