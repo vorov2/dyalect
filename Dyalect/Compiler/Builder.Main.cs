@@ -346,29 +346,40 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-            //This is a special optimization for the 'toString' trait
-            //If we see that it is called directly we than emit a direct 'Str' instruction
-            if (node.Target.NodeType == NodeType.Trait
-                && ((DTrait)node.Target).Name == Builtins.ToStr
-                && node.Arguments.Count == 0)
+            //This is a special optimization for the 'toString' and 'len' traits
+            //If we see that it is called directly we than emit a direct Str or Len op code
+            if (node.Target.NodeType == NodeType.Trait)
             {
-                Build(((DTrait)node.Target).Target, hints.Append(Push), ctx);
-                AddLinePragma(node);
-                cw.Str();
+                var trait = (DTrait)node.Target;
+
+                if (trait.Name == Builtins.ToStr && node.Arguments.Count == 0)
+                {
+                    Build(trait.Target, hints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.Str();
+                    PopIf(hints);
+                    return;
+                }
+                else if (trait.Name == Builtins.Len && node.Arguments.Count == 0)
+                {
+                    Build(trait.Target, hints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.Len();
+                    PopIf(hints);
+                    return;
+                }
             }
+
+            foreach (var a in node.Arguments)
+                Build(a, hints.Append(Push), ctx);
+
+            if (sv.IsEmpty())
+                Build(node.Target, hints.Append(Push), ctx);
             else
-            {
-                foreach (var a in node.Arguments)
-                    Build(a, hints.Append(Push), ctx);
+                cw.PushVar(sv);
 
-                if (sv.IsEmpty())
-                    Build(node.Target, hints.Append(Push), ctx);
-                else
-                    cw.PushVar(sv);
-
-                AddLinePragma(node);
-                cw.Call(node.Arguments.Count);
-            }
+            AddLinePragma(node);
+            cw.Call(node.Arguments.Count);
 
             PopIf(hints);
         }
@@ -524,8 +535,6 @@ namespace Dyalect.Compiler
                 cw.Not();
             else if (node.Operator == UnaryOperator.BitwiseNot)
                 cw.BitNot();
-            else if (node.Operator == UnaryOperator.Length)
-                cw.Len();
 
             PopIf(hints);
         }

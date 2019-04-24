@@ -54,7 +54,6 @@ namespace Dyalect.Parser.Model
                 case UnaryOperator.Neg: return Builtins.Neg;
                 case UnaryOperator.Not: return Builtins.Not;
                 case UnaryOperator.BitwiseNot: return Builtins.BitNot;
-                case UnaryOperator.Length: return Builtins.Len;
                 case UnaryOperator.Plus: return Builtins.Plus;
                 default: return "";
             }

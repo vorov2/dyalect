@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dyalect.Compiler;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -262,6 +263,14 @@ namespace Dyalect.Runtime.Types
 
             sb.Append(')');
             return new DyString(sb.ToString());
+        }
+
+        protected override DyFunction GetTrait(string name, ExecutionContext ctx)
+        {
+            if (name == Builtins.Len)
+                return DyForeignFunction.Create(name, LenAdapter);
+
+            return null;
         }
     }
 }

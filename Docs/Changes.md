@@ -22,9 +22,12 @@
     format("foo {0} {1}", 2, 4)
     ```
     If the last argument ends with three dots `...` it would be initialized as tuple and receive all the other passed values.
+ * **(Breaking change)** Now functions would raise exception when called with inexact number of arguments (except for variable functions).
  * Interactive console now supports multiline mode - simply put a trailing bracket `{` at the end of a line. Interactive would than balance the brackets and execute code only when all brackets are matched.
  * A bug fixed in `TypeInfo` `toString` function.
  * Fixes, refactorings and multiple enhancements in interactive console. The following commands and switches are added: command `:options` that prints out current console options,  command `:dump` that prints out all global variables with their type and values, command `eval` that evaluates a given file in the current interactive session, support for command line switch `-i` that keeps console in interactive mode after evaluating a file. Also an ability to set colors (along with `-nocolor` switch) is temporary removed.
+ * **(Breaking change)** Operator "get length" `#` is decomissioned, now you should use a member function `len` instead.
+ * **(Breaking change)** Standard member function `iterator` is renamed to `iter`.
 
 # 0.2.2
  * Code clean-ups

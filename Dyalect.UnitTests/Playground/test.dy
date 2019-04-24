@@ -152,7 +152,7 @@ func Iterator.toArray() {
 var arr = [1,2,3,4,5]
 
 arr
-    .iterator()
+    .iter()
     .select((i,x) => x if i < 6 else i * x) //$1 if $0 < 3 else $0 * $1)
     .toArray()
 

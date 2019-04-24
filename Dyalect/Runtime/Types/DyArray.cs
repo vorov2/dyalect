@@ -204,6 +204,9 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
+            if (name == Builtins.Len)
+                return DyForeignFunction.Create(name, LenAdapter);
+
             if (name == "add")
                 return DyForeignFunction.Create(name, AddItem);
 

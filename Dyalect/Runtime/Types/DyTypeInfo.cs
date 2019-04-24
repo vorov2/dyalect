@@ -254,7 +254,7 @@ namespace Dyalect.Runtime.Types
             return BitwiseNotOp(arg, ctx);
         }
 
-        //#x
+        //x.len
         private DyFunction len;
         protected virtual DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             Err.OperationNotSupported(Builtins.Len, arg.TypeName(ctx)).Set(ctx);
@@ -264,6 +264,7 @@ namespace Dyalect.Runtime.Types
                 return len.Call1(arg, ctx);
             return LengthOp(arg, ctx);
         }
+        internal DyObject LenAdapter(ExecutionContext ctx, DyObject self, DyObject[] args) => LengthOp(self, ctx);
 
         //x.toString
         private DyFunction tos;
@@ -278,6 +279,7 @@ namespace Dyalect.Runtime.Types
 
             return ToStringOp(arg, ctx);
         }
+        internal DyObject ToStringAdapter(ExecutionContext ctx, DyObject self, DyObject[] args) => ToStringOp(self, ctx);
         #endregion
 
         #region Other Operations
@@ -334,7 +336,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetTrait(string name, ExecutionContext ctx)
         {
             if (name == Builtins.ToStr)
-                return DyForeignFunction.Create(name, (ct, self, args) => ToStringOp(self, ct));
+                return DyForeignFunction.Create(name, ToStringAdapter);
 
             if (name == Builtins.Iterator)
                 return DyForeignFunction.Create(name, GetIterator);

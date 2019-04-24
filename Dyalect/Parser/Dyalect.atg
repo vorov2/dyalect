@@ -73,7 +73,7 @@ PRODUCTIONS
             | charToken (. val = ParseChar(); .)
         ).
 
-    StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!" | "#" 
+    StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!"
         | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
 
     FunctionName = identToken | StandardOperators.
@@ -502,7 +502,6 @@ PRODUCTIONS
                 | "-" (. ot = t; op = UnaryOperator.Neg; .)
                 | "+" (. ot = t; op = UnaryOperator.Plus; .)
                 | "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
-                | "#" (. ot = t; op = UnaryOperator.Length; .)
             ]
             FieldOrIndex<out node>
             (.

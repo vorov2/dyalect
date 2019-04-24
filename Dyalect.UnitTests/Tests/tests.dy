@@ -195,7 +195,7 @@ func phoneParserTest() {
         || c == "9"
     }
     func parse(str) {
-        var max = #str
+        var max = str.len()
         var i = 0;
         var res = "";
         while i < max {
@@ -264,7 +264,7 @@ func iteratorTest4() {
     func reverse(arr) {
         var newArr = []
         newArr.addRange(arr) //hack
-        var len = #newArr
+        var len = newArr.len()
         var counter = 1
         for x in arr {
             newArr[len - counter] = x

@@ -22,11 +22,11 @@
         public const string Plus = "plus";
         public const string Not = "!";
         public const string BitNot = "~";
-        public const string Len = "#";
+        public const string Len = "len";
         public const string Get = "get";
         public const string Set = "set";
         public const string ToStr = "toString";
-        public const string Iterator = "iterator";
+        public const string Iterator = "iter";
 
         public const string BoolAnd = "&&";
         public const string BoolOr = "||";
