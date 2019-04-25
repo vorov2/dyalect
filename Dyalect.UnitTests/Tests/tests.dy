@@ -127,13 +127,13 @@ func factTest() {
 }
 
 func powerTest() {
-    func pow(base, exponent) {
+    func pow(basis, exponent) {
         if exponent == 1 {
-            base
+            basis
         } else if exponent == 0 {
             1
         } else {
-            base * pow(base, exponent - 1)
+            basis * pow(basis, exponent - 1)
         }
     }
     pow(10, 3)

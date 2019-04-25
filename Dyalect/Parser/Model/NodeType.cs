@@ -24,6 +24,9 @@
         Return,
         Yield,
 
+        Base,
+        This,
+
         Application,
         Index,
         Trait,

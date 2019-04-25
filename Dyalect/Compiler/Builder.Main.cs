@@ -91,6 +91,9 @@ namespace Dyalect.Compiler
                 case NodeType.Yield:
                     Build((DYield)node, hints, ctx);
                     break;
+                case NodeType.Base:
+                    Build((DBase)node, hints, ctx);
+                    break;
             }
         }
 
@@ -102,22 +105,16 @@ namespace Dyalect.Compiler
             PushIf(hints);
         }
 
+        private void Build(DBase node, Hints hints, CompilerContext ctx)
+        {
+            var sv = GetParentVariable(node.Name, node);
+            AddLinePragma(node);
+            cw.PushVar(sv);
+            PopIf(hints);
+        }
+
         private void Build(DTrait node, Hints hints, CompilerContext ctx)
         {
-            if (node.Target.NodeType == NodeType.Name)
-            {
-                var nm = (DName)node.Target;
-                
-                if (nm.Value == "base" && GetVariable(nm.Value, nm, err: false).IsEmpty())
-                {
-                    var sv = GetParentVariable(node.Name, node);
-                    AddLinePragma(node);
-                    cw.PushVar(sv);
-                    PopIf(hints);
-                    return;
-                }
-            }
-
             Build(node.Target, hints.Append(Push), ctx);
             AddLinePragma(node);
             cw.TraitG(node.Name);
