@@ -12,13 +12,11 @@ namespace Dyalect
 {
     public static class TestRunner
     {
-        private static string startupPath;
         private static List<string> commands = new List<string>();
         private static int failures;
 
         public static void Main()
         {
-            startupPath = Path.Combine(Path.GetDirectoryName(typeof(Tests).Assembly.Location), "Tests");
             var props = typeof(Tests).GetProperties();
             var obj = Activator.CreateInstance(typeof(Tests));
             var dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
@@ -67,6 +65,8 @@ namespace Dyalect
                 }
             }
 
+            Console.WriteLine($"Total tests: {expected.Count}. Failed: {failures}.");
+            Console.WriteLine();
             Submit();
         }
 
@@ -74,8 +74,15 @@ namespace Dyalect
         {
             Console.WriteLine("Submitting test results...");
 
-            foreach (var c in commands)
-                Process.Start("appveyor", c);
+            try
+            {
+                foreach (var c in commands)
+                    Process.Start("appveyor", c);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Submit failed: {ex.Message}");
+            }
         }
 
         private static void Failed(string name, string reason)
@@ -93,30 +100,31 @@ namespace Dyalect
 
         private static Dictionary<string, DyFunction> Run()
         {
-            var file = FindFile("tests");
-
-            var linker = new DyLinker(FileLookup.Create(startupPath), BuilderOptions.Default);
-            var cres = linker.Make(SourceBuffer.FromFile(file));
-
-            if (!cres.Success)
-                throw new DyBuildException(cres.Messages);
-
-            var m = new DyMachine(cres.Value);
-            m.Execute();
+            var startupPath = Path.Combine(Path.GetDirectoryName(typeof(Tests).Assembly.Location), "Tests"); ;
             var dict = new Dictionary<string, DyFunction>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var v in m.DumpVariables())
+            foreach (var file in Directory.EnumerateFiles(startupPath, "*.dy"))
             {
-                if (v.Value is DyFunction fn)
-                    dict.Add(v.Name, fn);
+                var linker = new DyLinker(FileLookup.Create(startupPath), BuilderOptions.Default);
+                var cres = linker.Make(SourceBuffer.FromFile(file));
+
+                if (!cres.Success)
+                    throw new DyBuildException(cres.Messages);
+
+                var m = new DyMachine(cres.Value);
+                m.Execute();
+
+                foreach (var v in m.DumpVariables())
+                {
+                    if (v.Value is DyFunction fn)
+                    {
+                        dict.Remove(v.Name);
+                        dict.Add(v.Name, fn);
+                    }
+                }
             }
 
             return dict;
-        }
-
-        private static string FindFile(string name)
-        {
-            return Path.Combine(startupPath, name + ".dy");
         }
     }
 }
