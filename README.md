@@ -1,6 +1,7 @@
-# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/vorov2/dyalect.svg?color=blue&label=version)
+# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.2-blue.svg)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
+![AppVeyor tests](https://img.shields.io/appveyor/tests/vorov2/dyalect.svg)
 
 Dyalect is a dynamic programming language for .NET Core platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short) is
