@@ -12,7 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace Tests
+namespace Dyalect
 {
     [TestClass]
     public class Tests
