@@ -121,9 +121,6 @@ namespace Dyalect.Runtime
                     case OpCode.Nop:
                         break;
                     case OpCode.This:
-                        evalStack.Push(function);
-                        break;
-                    case OpCode.Self:
                         evalStack.Push(function.Self ?? DyNil.Instance);
                         break;
                     case OpCode.Term:

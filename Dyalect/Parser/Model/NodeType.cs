@@ -25,7 +25,6 @@
         Yield,
 
         Base,
-        This,
 
         Application,
         Index,

@@ -17,6 +17,8 @@
             BlockSkip = Label.Empty;
         }
 
+        public ContextKind Kind { get; set; }
+
         public Label FunctionExit { get; set; }
 
         public Label BlockBreakExit { get; set; }
@@ -24,5 +26,12 @@
         public Label BlockExit { get; set; }
 
         public Label BlockSkip { get; set; }
+    }
+
+    internal enum ContextKind
+    {
+        Global = 0,
+        Function,
+        MemberFunction
     }
 }

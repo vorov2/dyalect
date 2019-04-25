@@ -228,13 +228,21 @@ func String.let(fn) {
 
 */
 
-var x = 12
-
-func check(x) {
-    {
-        var x = "Surprise!"
-        print(base.x)
+func Integer.iter() {
+    var i = 0
+    if this < 0 {
+        while i > this {
+            yield i
+            i -= 1
+        }
+    } else {
+        while i < this {
+            yield i
+            i += 1
+        }
     }
 }
 
-check(42)
+for x in 12 {
+    print(x)
+}

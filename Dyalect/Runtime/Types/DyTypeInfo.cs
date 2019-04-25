@@ -33,7 +33,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Add(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (add != null)
-                return add.Call2(left, right, ctx);
+                return add.Clone(left).Call1(right, ctx);
             return AddOp(left, right, ctx);
         }
 
@@ -44,7 +44,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Sub(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (sub != null)
-                return sub.Call2(left, right, ctx);
+                return sub.Clone(left).Call1(right, ctx);
             return SubOp(left, right, ctx);
         }
 
@@ -55,7 +55,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Mul(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (mul != null)
-                return mul.Call2(left, right, ctx);
+                return mul.Clone(left).Call1(right, ctx);
             return MulOp(left, right, ctx);
         }
 
@@ -66,7 +66,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Div(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (div != null)
-                return div.Call2(left, right, ctx);
+                return div.Clone(left).Call1(right, ctx);
             return DivOp(left, right, ctx);
         }
 
@@ -77,7 +77,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Rem(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (rem != null)
-                return rem.Call2(left, right, ctx);
+                return rem.Clone(left).Call1(right, ctx);
             return RemOp(left, right, ctx);
         }
 
@@ -88,7 +88,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject ShiftLeft(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (shl != null)
-                return shl.Call2(left, right, ctx);
+                return shl.Clone(left).Call1(right, ctx);
             return ShiftLeftOp(left, right, ctx);
         }
 
@@ -99,7 +99,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject ShiftRight(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (shr != null)
-                return shr.Call2(left, right, ctx);
+                return shr.Clone(left).Call1(right, ctx);
             return ShiftRightOp(left, right, ctx);
         }
 
@@ -110,7 +110,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject And(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (and != null)
-                return and.Call2(left, right, ctx);
+                return and.Clone(left).Call1(right, ctx);
             return AndOp(left, right, ctx);
         }
 
@@ -121,7 +121,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Or(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (or != null)
-                return or.Call2(left, right, ctx);
+                return or.Clone(left).Call1(right, ctx);
             return OrOp(left, right, ctx);
         }
 
@@ -132,7 +132,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Xor(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (xor != null)
-                return xor.Call2(left, right, ctx);
+                return xor.Clone(left).Call1(right, ctx);
             return XorOp(left, right, ctx);
         }
 
@@ -143,7 +143,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Eq(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (eq != null)
-                return eq.Call2(left, right, ctx);
+                return eq.Clone(left).Call1(right, ctx);
             return EqOp(left, right, ctx);
         }
 
@@ -154,7 +154,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Neq(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (neq != null)
-                return eq.Call2(left, right, ctx);
+                return eq.Clone(left).Call1(right, ctx);
             return NeqOp(left, right, ctx);
         }
 
@@ -165,7 +165,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Gt(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (gt != null)
-                return gt.Call2(left, right, ctx);
+                return gt.Clone(left).Call1(right, ctx);
             return GtOp(left, right, ctx);
         }
 
@@ -176,7 +176,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Lt(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (lt != null)
-                return lt.Call2(left, right, ctx);
+                return lt.Clone(left).Call1(right, ctx);
             return LtOp(left, right, ctx);
         }
 
@@ -190,7 +190,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Gte(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (gte != null)
-                return gte.Call2(left, right, ctx);
+                return gte.Clone(left).Call1(right, ctx);
             return GteOp(left, right, ctx);
         }
 
@@ -204,7 +204,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Lte(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (lte != null)
-                return lte.Call2(left, right, ctx);
+                return lte.Clone(left).Call1(right, ctx);
             return LteOp(left, right, ctx);
         }
         #endregion
@@ -217,7 +217,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Neg(DyObject arg, ExecutionContext ctx)
         {
             if (neg != null)
-                return neg.Call1(arg, ctx);
+                return neg.Clone(arg).Call0(ctx);
             return NegOp(arg, ctx);
         }
 
@@ -228,7 +228,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Plus(DyObject arg, ExecutionContext ctx)
         {
             if (plus != null)
-                return plus.Call1(arg, ctx);
+                return plus.Clone(arg).Call0(ctx);
             return PlusOp(arg, ctx);
         }
 
@@ -239,7 +239,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Not(DyObject arg, ExecutionContext ctx)
         {
             if (not != null)
-                return not.Call1(arg, ctx);
+                return not.Clone(arg).Call0(ctx);
             return NotOp(arg, ctx);
         }
 
@@ -250,7 +250,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject BitwiseNot(DyObject arg, ExecutionContext ctx)
         {
             if (bitnot != null)
-                return bitnot.Call1(arg, ctx);
+                return bitnot.Clone(arg).Call0(ctx);
             return BitwiseNotOp(arg, ctx);
         }
 
@@ -261,7 +261,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject Length(DyObject arg, ExecutionContext ctx)
         {
             if (len != null)
-                return len.Call1(arg, ctx);
+                return len.Clone(arg).Call0(ctx);
             return LengthOp(arg, ctx);
         }
         internal DyObject LenAdapter(ExecutionContext ctx, DyObject self, DyObject[] args) => LengthOp(self, ctx);
@@ -273,7 +273,7 @@ namespace Dyalect.Runtime.Types
         {
             if (tos != null)
             {
-                var retval = tos.Call1(arg, ctx);
+                var retval = tos.Clone(arg).Call0(ctx);
                 return retval.TypeId == StandardType.String ? (DyString)retval : DyString.Empty;
             }
 

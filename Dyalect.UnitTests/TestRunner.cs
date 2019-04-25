@@ -68,18 +68,18 @@ namespace Dyalect
             Console.WriteLine($"Total tests: {expected.Count}. Failed: {failures}.");
             Console.WriteLine();
             Submit();
+            Console.WriteLine();
         }
 
         private static void Submit()
         {
-            Console.WriteLine("Submitting test results:");
+            Console.WriteLine("Submitting test results...");
 
             try
             {
                 foreach (var c in commands)
                 {
                     Process.Start("appveyor", c);
-                    Console.Write(".");
                 }
             }
             catch (Exception ex)
