@@ -72,12 +72,15 @@ namespace Dyalect
 
         private static void Submit()
         {
-            Console.WriteLine("Submitting test results...");
+            Console.WriteLine("Submitting test results:");
 
             try
             {
                 foreach (var c in commands)
+                {
                     Process.Start("appveyor", c);
+                    Console.Write(".");
+                }
             }
             catch (Exception ex)
             {
