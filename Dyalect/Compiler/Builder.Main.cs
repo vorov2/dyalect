@@ -104,6 +104,20 @@ namespace Dyalect.Compiler
 
         private void Build(DTrait node, Hints hints, CompilerContext ctx)
         {
+            if (node.Target.NodeType == NodeType.Name)
+            {
+                var nm = (DName)node.Target;
+                
+                if (nm.Value == "base" && GetVariable(nm.Value, nm, err: false).IsEmpty())
+                {
+                    var sv = GetParentVariable(node.Name, node);
+                    AddLinePragma(node);
+                    cw.PushVar(sv);
+                    PopIf(hints);
+                    return;
+                }
+            }
+
             Build(node.Target, hints.Append(Push), ctx);
             AddLinePragma(node);
             cw.TraitG(node.Name);

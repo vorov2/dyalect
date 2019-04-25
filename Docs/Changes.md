@@ -28,6 +28,18 @@
  * Fixes, refactorings and multiple enhancements in interactive console. The following commands and switches are added: command `:options` that prints out current console options,  command `:dump` that prints out all global variables with their type and values, command `eval` that evaluates a given file in the current interactive session, support for command line switch `-i` that keeps console in interactive mode after evaluating a file. Also an ability to set colors (along with `-nocolor` switch) is temporary removed.
  * **(Breaking change)** Operator "get length" `#` is decomissioned, now you should use a member function `len` instead.
  * **(Breaking change)** Standard member function `iterator` is renamed to `iter`.
+ * Methods `indices` that returns an iterator with indices is added to array and tuple.
+ * Methods `keys` and `values` (return an iterator with keys if any and with all the values) are added to tuple.
+ * Method `toArray` is added to iterators (converts a given iterator to array).
+ * A support for special `base` compiler time object is added. You can obtain a value of a variable from the enclosing function (or a global scope) by referencing it through `base`, e.g.:
+    ```swift
+    var x = 12
+    func checkIt(x) {
+        print(base.x)
+    }
+    checkIt(42) //Would print 12
+    ```
+    `base` is not a keyword and is recognized by compiler only if no variables with the name `base` are introduced in the scope.
 
 # 0.2.2
  * Code clean-ups

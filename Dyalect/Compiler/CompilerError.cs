@@ -26,6 +26,8 @@
 
         ExpressionNoName = 211,
 
-        InvalidTypeOfOperator = 212
+        InvalidTypeOfOperator = 212,
+
+        UndefinedBaseVariable = 213
     }
 }

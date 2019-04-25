@@ -141,6 +141,9 @@
   <data name="UnableAssignExpression" xml:space="preserve">
     <value>Unable to assign a value to an expression: {0}.</value>
   </data>
+  <data name="UndefinedBaseVariable" xml:space="preserve">
+    <value>Variable "{0}" is not declared in a parent scope.</value>
+  </data>
   <data name="UndefinedModule" xml:space="preserve">
     <value>Unknown module "{0}".</value>
   </data>

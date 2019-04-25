@@ -211,7 +211,7 @@ func fetch() {
 
 for x in fetch() {
     print(x)
-*/
+
 func String.reverse () {
     var len = #self
     var ret = ""
@@ -226,6 +226,15 @@ func String.let(fn) {
     fn(self)
 }
 
-"original".let(str => {
-    
-})
+*/
+
+var x = 12
+
+func check(x) {
+    {
+        var x = "Surprise!"
+        print(base.x)
+    }
+}
+
+check(42)
