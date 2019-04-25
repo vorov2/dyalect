@@ -54,8 +54,6 @@ namespace Dyalect.Runtime.Types
             };
         }
 
-        public override DyObject Call(params DyObject[] args) => throw new NotSupportedException();
-
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {
             if (Machine == null)

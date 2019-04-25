@@ -13,6 +13,8 @@
       <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
 
       <IsPackable>false</IsPackable>
+
+      <StartupObject>Dyalect.TestRunner</StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

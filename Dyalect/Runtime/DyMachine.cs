@@ -312,7 +312,8 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Ret:
                         function.Locals = null;
-                        ctx.CallStack.Pop();
+                        if (ctx.CallStack.Count > 0)
+                            ctx.CallStack.Pop();
                         return evalStack.Pop();
                     case OpCode.Fail:
                         ctx.Error = Err.UserCode(evalStack.Pop().ToString());
