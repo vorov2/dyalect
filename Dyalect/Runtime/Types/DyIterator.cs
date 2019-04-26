@@ -29,6 +29,25 @@ namespace Dyalect.Runtime.Types
         }
 
         internal override DyFunction Clone(DyObject arg) => new DyIterator(enumerator) { Self = arg };
+
+        internal static DyFunction GetIterator(DyObject val, ExecutionContext ctx)
+        {
+            DyFunction iter;
+
+            if (val.TypeId == StandardType.Iterator)
+                iter = val as DyFunction;
+            else
+            {
+                iter = ctx.Assembly.Types[val.TypeId].GetTraitOp(val, Builtins.Iterator, ctx) as DyFunction;
+
+                if (ctx.HasErrors)
+                    return null;
+
+                iter = iter.Call0(ctx) as DyFunction;
+            }
+
+            return iter;
+        }
     }
 
     internal sealed class DyNativeIterator : DyNativeFunction

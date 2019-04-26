@@ -1,12 +1,7 @@
-﻿using Dyalect.Parser.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using static Dyalect.Compiler.Hints;
-using Dyalect.Linker;
-using Dyalect.Runtime.Types;
+﻿using Dyalect.Linker;
 using Dyalect.Parser;
-using System.Linq;
+using Dyalect.Parser.Model;
+using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
 {
@@ -682,7 +677,8 @@ namespace Dyalect.Compiler
             cw.Br(funSkipLabel);
 
             ctx = new CompilerContext {
-                Kind = node.IsMemberFunction ? ContextKind.MemberFunction : ContextKind.Function,
+                Kind = node.IsMemberFunction || ctx.Kind == ContextKind.MemberFunction
+                    ? ContextKind.MemberFunction : ContextKind.Function,
                 FunctionExit = funEndLabel
             };
             hints = Function | Push;
@@ -696,6 +692,7 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             var address = cw.Offset;
+            
             //If this is a trait function we add an additional system variable that
             //would return an instance of an object to which this function is coupled
             //(same as this in C#)
@@ -705,6 +702,7 @@ namespace Dyalect.Compiler
                 cw.This();
                 cw.PopVar(va);
             }
+
             //Initialize function arguments
             for (var i = 0; i < args.Length; i++)
             {

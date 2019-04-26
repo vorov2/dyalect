@@ -314,15 +314,15 @@ func iteratorTest6() {
 }
 
 func iteratorTest7() {
-    func toIter(num) {
+    func Integer.iter() {
         var i = 0
-        if num < 0 {
-            while i > num {
+        if this < 0 {
+            while i > this {
                 yield i
                 i -= 1
             }
         } else {
-            while i < num {
+            while i < this {
                 yield i
                 i += 1
             }

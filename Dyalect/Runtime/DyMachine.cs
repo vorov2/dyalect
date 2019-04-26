@@ -452,7 +452,9 @@ namespace Dyalect.Runtime
             if (evalStack != null && evalStack.Size > 0)
                 evalStack.PopVoid();
 
-            throw CreateException(ctx.Error, offset, currentFunc.UnitId, ctx);
+            var ex = CreateException(ctx.Error, offset, currentFunc.UnitId, ctx);
+            ctx.Error = null;
+            throw ex;
         }
 
         private DyObject CallExternalFunction(Op op, int offset, EvalStack evalStack, DyNativeFunction caller, DyFunction fun, ExecutionContext ctx)

@@ -60,7 +60,7 @@ namespace Dyalect
 
         public object IteratorTest6 => 8;
 
-        public object IteratorTest7 => "[1, 2, 3, 4, 5]";
+        public object IteratorTest7 => "[0, 1, 2, 3, 4]";
 
         public object CalcETest => 2.7182818284590455;
 
