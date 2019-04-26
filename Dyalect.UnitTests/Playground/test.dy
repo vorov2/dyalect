@@ -243,6 +243,4 @@ func Integer.iter() {
     }
 }
 
-for x in 12 {
-    print(x)
-}
+12.iter().toArray().toString()

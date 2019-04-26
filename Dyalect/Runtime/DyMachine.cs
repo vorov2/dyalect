@@ -431,7 +431,8 @@ namespace Dyalect.Runtime
                     case OpCode.Yield:
                         function.PreviousOffset = offset++;
                         function.Locals = locals;
-                        ctx.CallStack.Pop();
+                        if (ctx.CallStack.Count > 0)
+                            ctx.CallStack.Pop();
                         return evalStack.Pop();
                     case OpCode.Brterm:
                         if (ReferenceEquals(evalStack.Peek(), DyNil.Terminator))
