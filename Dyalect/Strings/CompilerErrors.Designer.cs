@@ -61,6 +61,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Keyword &quot;base&quot; is not available in the current context..
+        /// </summary>
+        internal static string BaseNotAllowed {
+            get {
+                return ResourceManager.GetString("BaseNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An expression doesn&apos;t have a name..
         /// </summary>
         internal static string ExpressionNoName {

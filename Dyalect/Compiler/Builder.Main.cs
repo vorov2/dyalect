@@ -102,6 +102,12 @@ namespace Dyalect.Compiler
 
         private void Build(DBase node, Hints hints, CompilerContext ctx)
         {
+            if (!hints.Has(Function))
+            {
+                AddError(CompilerError.BaseNotAllowed, node.Location);
+                return;
+            }
+
             var sv = GetParentVariable(node.Name, node);
             AddLinePragma(node);
             cw.PushVar(sv);
@@ -677,10 +683,9 @@ namespace Dyalect.Compiler
             cw.Br(funSkipLabel);
 
             ctx = new CompilerContext {
-                Kind = node.IsMemberFunction || ctx.Kind == ContextKind.MemberFunction
-                    ? ContextKind.MemberFunction : ContextKind.Function,
                 FunctionExit = funEndLabel
             };
+
             hints = Function | Push;
 
             //Actual start of a function

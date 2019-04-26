@@ -28,6 +28,8 @@
 
         InvalidTypeOfOperator = 212,
 
-        UndefinedBaseVariable = 213
+        UndefinedBaseVariable = 213,
+
+        BaseNotAllowed = 214
     }
 }
