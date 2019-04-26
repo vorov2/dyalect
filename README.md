@@ -19,7 +19,7 @@ programming.
 Dyalect offers modern syntax, inspired by such languages as C#, Swift,
 Go and Rust, first class functions, coroutines, expressive modules,
 a dynamic type system with an ability to extend existing types with
-new functions and much more. 
+new functions and much more.
 
 A taste of Dy:
 
