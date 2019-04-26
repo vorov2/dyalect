@@ -567,6 +567,16 @@ PRODUCTIONS
             | IF (IsTuple()) Tuple<out node>
             | Array<out node>
             | Group<out node>
+            | Base<out node>
+        ).
+
+    Base<out DNode node> =
+        (. node = null; .)
+        (
+            "base" 
+            (. var bs = new DBase(t); .)
+            "." identToken
+            (. bs.Name = t.val; node = bs; .)
         ).
 
     Array<out DNode node> =

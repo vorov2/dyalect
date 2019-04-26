@@ -121,9 +121,6 @@ namespace Dyalect.Runtime
                     case OpCode.Nop:
                         break;
                     case OpCode.This:
-                        evalStack.Push(function);
-                        break;
-                    case OpCode.Self:
                         evalStack.Push(function.Self ?? DyNil.Instance);
                         break;
                     case OpCode.Term:
@@ -312,7 +309,8 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Ret:
                         function.Locals = null;
-                        ctx.CallStack.Pop();
+                        if (ctx.CallStack.Count > 0)
+                            ctx.CallStack.Pop();
                         return evalStack.Pop();
                     case OpCode.Fail:
                         ctx.Error = Err.UserCode(evalStack.Pop().ToString());
@@ -433,7 +431,8 @@ namespace Dyalect.Runtime
                     case OpCode.Yield:
                         function.PreviousOffset = offset++;
                         function.Locals = locals;
-                        ctx.CallStack.Pop();
+                        if (ctx.CallStack.Count > 0)
+                            ctx.CallStack.Pop();
                         return evalStack.Pop();
                     case OpCode.Brterm:
                         if (ReferenceEquals(evalStack.Peek(), DyNil.Terminator))
@@ -453,7 +452,9 @@ namespace Dyalect.Runtime
             if (evalStack != null && evalStack.Size > 0)
                 evalStack.PopVoid();
 
-            throw CreateException(ctx.Error, offset, currentFunc.UnitId, ctx);
+            var ex = CreateException(ctx.Error, offset, currentFunc.UnitId, ctx);
+            ctx.Error = null;
+            throw ex;
         }
 
         private DyObject CallExternalFunction(Op op, int offset, EvalStack evalStack, DyNativeFunction caller, DyFunction fun, ExecutionContext ctx)

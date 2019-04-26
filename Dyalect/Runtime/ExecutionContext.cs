@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Dyalect.Compiler;
-using Dyalect.Runtime.Types;
+﻿using Dyalect.Compiler;
+using System.Collections.Generic;
 
 namespace Dyalect.Runtime
 {

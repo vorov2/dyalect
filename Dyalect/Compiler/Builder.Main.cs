@@ -1,12 +1,7 @@
-﻿using Dyalect.Parser.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using static Dyalect.Compiler.Hints;
-using Dyalect.Linker;
-using Dyalect.Runtime.Types;
+﻿using Dyalect.Linker;
 using Dyalect.Parser;
-using System.Linq;
+using Dyalect.Parser.Model;
+using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
 {
@@ -91,6 +86,9 @@ namespace Dyalect.Compiler
                 case NodeType.Yield:
                     Build((DYield)node, hints, ctx);
                     break;
+                case NodeType.Base:
+                    Build((DBase)node, hints, ctx);
+                    break;
             }
         }
 
@@ -100,6 +98,20 @@ namespace Dyalect.Compiler
             AddLinePragma(node);
             cw.Yield();
             PushIf(hints);
+        }
+
+        private void Build(DBase node, Hints hints, CompilerContext ctx)
+        {
+            if (!hints.Has(Function))
+            {
+                AddError(CompilerError.BaseNotAllowed, node.Location);
+                return;
+            }
+
+            var sv = GetParentVariable(node.Name, node);
+            AddLinePragma(node);
+            cw.PushVar(sv);
+            PopIf(hints);
         }
 
         private void Build(DTrait node, Hints hints, CompilerContext ctx)
@@ -432,11 +444,7 @@ namespace Dyalect.Compiler
 
             if (!hints.Has(Pop))
             {
-                if ((sv.Data & VarFlags.This) == VarFlags.This)
-                    cw.This();
-                else
-                    cw.PushVar(sv);
-
+                cw.PushVar(sv);
                 PopIf(hints);
             }
             else
@@ -674,7 +682,10 @@ namespace Dyalect.Compiler
             var funSkipLabel = cw.DefineLabel();
             cw.Br(funSkipLabel);
 
-            ctx = new CompilerContext { FunctionExit = funEndLabel };
+            ctx = new CompilerContext {
+                FunctionExit = funEndLabel
+            };
+
             hints = Function | Push;
 
             //Actual start of a function
@@ -686,18 +697,14 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             var address = cw.Offset;
-
-            //This special variable returns an instance of a function itself
-            //(not the same as this in C#)
-            AddVariable("this", node, data: VarFlags.This | VarFlags.Const);
-
+            
             //If this is a trait function we add an additional system variable that
             //would return an instance of an object to which this function is coupled
             //(same as this in C#)
             if (node.IsMemberFunction)
             {
-                var va = AddVariable("self", node, data: VarFlags.Const);
-                cw.Self();
+                var va = AddVariable("this", node, data: VarFlags.Const);
+                cw.This();
                 cw.PopVar(va);
             }
 

@@ -1,4 +1,6 @@
-﻿namespace Dyalect.Compiler
+﻿using System;
+
+namespace Dyalect.Compiler
 {
     internal sealed class CompilerContext
     {

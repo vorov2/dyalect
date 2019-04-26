@@ -124,19 +124,7 @@ namespace Dyalect.Runtime.Types
             if (val == null)
                 return DyNil.Instance;
 
-            DyFunction iter;
-
-            if (val.TypeId == StandardType.Iterator)
-                iter = val as DyFunction;
-            else
-            {
-                iter = ctx.Assembly.Types[val.TypeId].GetTraitOp(val, Builtins.Iterator, ctx) as DyFunction;
-
-                if (ctx.HasErrors)
-                    return DyNil.Instance;
-
-                iter = iter.Call(ctx) as DyFunction;
-            }
+            var iter = DyIterator.GetIterator(val, ctx);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;

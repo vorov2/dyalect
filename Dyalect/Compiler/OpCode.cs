@@ -5,7 +5,6 @@
         Nop = 0,    //0
 
         Str,        //0
-        Self,       //+1
         This,       //+1
         Pop,        //-1
         PushNil,    //+1

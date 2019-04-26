@@ -6,7 +6,6 @@
         {
             0,  //Nop
             0,  //Str
-            1,  //Self
             1,  //This
             -1, //Pop
             1,  //PushNil

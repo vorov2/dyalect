@@ -211,7 +211,7 @@ func fetch() {
 
 for x in fetch() {
     print(x)
-*/
+
 func String.reverse () {
     var len = #self
     var ret = ""
@@ -226,6 +226,21 @@ func String.let(fn) {
     fn(self)
 }
 
-"original".let(str => {
-    
-})
+*/
+
+func Integer.iter() {
+    var i = 0
+    if this < 0 {
+        while i > this {
+            yield i
+            i -= 1
+        }
+    } else {
+        while i < this {
+            yield i
+            i += 1
+        }
+    }
+}
+
+12.iter().toArray().toString()

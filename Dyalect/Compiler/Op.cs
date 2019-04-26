@@ -8,7 +8,6 @@
         public static readonly Op Get0 = new Op(OpCode.Get0);
         public static readonly Op Get1 = new Op(OpCode.Get1);
         public static readonly Op Set = new Op(OpCode.Set);
-        public static readonly Op Self = new Op(OpCode.Self);
         public static readonly Op This = new Op(OpCode.This);
         public static readonly Op Type = new Op(OpCode.Type);
         public static readonly Op Pop = new Op(OpCode.Pop);

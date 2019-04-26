@@ -55,6 +55,27 @@ func toStringTest3() {
     (x:42,y:"foo").toString()
 }
 
+func baseTest1() {
+    const x = 2
+    func inner() {
+        const x = 4
+        base.x
+    }
+    inner()
+}
+
+func baseTest2() {
+    const x = 2
+    func inner() {
+        const x = 4
+        if x == 4 {
+            var x = 8
+            base.x
+        }
+    }
+    inner()
+}
+
 ///////////////////////////////////////////////
 //Complex tests
 ///////////////////////////////////////////////
@@ -127,13 +148,13 @@ func factTest() {
 }
 
 func powerTest() {
-    func pow(base, exponent) {
+    func pow(basis, exponent) {
         if exponent == 1 {
-            base
+            basis
         } else if exponent == 0 {
             1
         } else {
-            base * pow(base, exponent - 1)
+            basis * pow(basis, exponent - 1)
         }
     }
     pow(10, 3)
@@ -311,6 +332,25 @@ func iteratorTest6() {
             }
         }
     x
+}
+
+func iteratorTest7() {
+    func Integer.iter() {
+        var i = 0
+        if this < 0 {
+            while i > this {
+                yield i
+                i -= 1
+            }
+        } else {
+            while i < this {
+                yield i
+                i += 1
+            }
+        }
+    }
+
+    5.iter().toArray().toString()
 }
 
 func calcETest() { //2.71828182845905

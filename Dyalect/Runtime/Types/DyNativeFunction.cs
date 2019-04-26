@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using System;
 
 namespace Dyalect.Runtime.Types
 {
@@ -51,15 +52,6 @@ namespace Dyalect.Runtime.Types
             {
                 Self = arg
             };
-        }
-
-        public override DyObject Call(params DyObject[] args)
-        {
-            var callStack = new CallStack();
-            var ctx = new ExecutionContext(callStack, Machine.Composition);
-            var retval = Call(ctx, args);
-            ctx.ThrowIf();
-            return retval;
         }
 
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args)

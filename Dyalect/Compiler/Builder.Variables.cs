@@ -56,30 +56,31 @@ namespace Dyalect.Compiler
         }
 
         //Ищем переменную по имени в глобальном скоупе
-        private ScopeVar GetGlobalVariable(string name, DNode node)
+        private ScopeVar GetParentVariable(string name, DNode node)
         {
-            return GetGlobalVariable(name, node.Location);
+            return GetParentVariable(name, node.Location);
         }
 
-        private ScopeVar GetGlobalVariable(string name, Location loc)
+        private ScopeVar GetParentVariable(string name, Location loc)
         {
             var cur = currentScope;
-            var shift = 0;
-            var var = ScopeVar.Empty;
 
-            //Rolls the scopes to find global
+            //Backtracks the scopes to find parent
             while (cur.Parent != null)
             {
                 if (cur.Function)
-                    shift++;
+                {
+                    cur = cur.Parent;
+                    break;
+                }
 
                 cur = cur.Parent;
             }
 
-            if (globalScope.Locals.TryGetValue(name, out var))
-                return new ScopeVar(shift | var.Address << 8, var.Data);
+            if (cur.Locals.TryGetValue(name, out var var))
+                return new ScopeVar(1 | var.Address << 8, var.Data);
 
-            AddError(CompilerError.UndefinedVariable, loc, name);
+            AddError(CompilerError.UndefinedBaseVariable, loc, name);
             return ScopeVar.Empty;
         }
 
