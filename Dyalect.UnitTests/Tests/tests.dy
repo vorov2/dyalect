@@ -55,6 +55,27 @@ func toStringTest3() {
     (x:42,y:"foo").toString()
 }
 
+func baseTest1() {
+    const x = 2
+    func inner() {
+        const x = 4
+        base.x
+    }
+    inner()
+}
+
+func baseTest2() {
+    const x = 2
+    func inner() {
+        const x = 4
+        if x == 4 {
+            var x = 8
+            base.x
+        }
+    }
+    inner()
+}
+
 ///////////////////////////////////////////////
 //Complex tests
 ///////////////////////////////////////////////

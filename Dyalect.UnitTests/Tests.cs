@@ -28,6 +28,10 @@ namespace Dyalect
 
         public object ToStringTest3 => "(x: 42, y: \"foo\")";
 
+        public object BaseTest1 => 2;
+
+        public object BaseTest2 => 2;
+
         public object WhileTest1 => 33;
 
         public object WhileTest2 => 42;
