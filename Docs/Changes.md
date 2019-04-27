@@ -40,7 +40,7 @@
     }
     checkIt(42) //Would print 12
     ```
- * A bug fixed - an error in execution context wasn't cleared after generating in exception (and therefore could be falsely raised one more time if instance of VM is cached).
+ * A bug fixed - an error in execution context wasn't cleared after generating an exception (and therefore could be falsely raised one more time if instance of VM is cached).
 
   <a name="0-2-3"></a>
 # 0.2.3
