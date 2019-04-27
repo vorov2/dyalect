@@ -1,3 +1,4 @@
+ <a name="0-3-0"></a>
 # 0.3.0
   * An unary plus `+` operator is added (for built-in types it is an identity function, but can be overriden).
   * **(Experimental)** A support for implicit anonymous function declaration is added. For short functions one can use the following notation - instead of declaring a full lambda, e.g. `x => x * 2` one can write `$0 * 2`. A `$` prefix instructs the compiler that the whole expression is a function, and all the dollar names are automatically promoted as function arguments in the appropriate order, e.g.: `$1 - $0` is equivalent to `(x,y) => y - x`. Example:
@@ -41,15 +42,18 @@
     ```
  * A bug fixed - an error in execution context wasn't cleared after generating in exception (and therefore could be falsely raised one more time if instance of VM is cached).
 
+  <a name="0-2-2"></a>
 # 0.2.2
  * Code clean-ups
  * A new constructor is added to tuple type for convinience.
  * Some strings (related to error messages) are translated into english.
 
+ <a name="0-2-1"></a>
 # 0.2.1
  * A bug fixed in parser that didn't allow to use expression in indexers (e.g. `arr[x - y]`).
  * A bug fixed in tuple initialization logic (reproducible with pairs, e.g. `(2, 4)`).
 
+ <a name="0-2-0"></a>
 # 0.2.0
  * Added support for special `iterator` function which can be implemented for any type. This function is used to iterate through containers. It returns another function (a closure) which iterates over a collection by yielding values. This is pretty similar to `IEnumerator` from .NET but uses a single closure instead of an interface with two methods. In order to support this infrastructure a new `Iterator` type is added as well (which is actually a special kind of function).
  * All foreign objects can now automatically support Dy's iterators as long as they implement `IEnumerable<DyObject>` interface.
@@ -73,5 +77,6 @@
  * Fixes in interactive console exception handling not always working correctly.
  * Empty blocks `{ }` are now allowed.
 
+ <a name="0-1-0"></a>
 # 0.1.0
 Initial release
