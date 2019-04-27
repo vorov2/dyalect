@@ -42,6 +42,12 @@
     ```
  * A bug fixed - an error in execution context wasn't cleared after generating in exception (and therefore could be falsely raised one more time if instance of VM is cached).
 
+  <a name="0-2-3"></a>
+# 0.2.3
+ * A bug fixed in parser - previously tuples may not be 
+    parsed correctly and could cause parser to fail for
+    the tuple with correct syntax.
+
   <a name="0-2-2"></a>
 # 0.2.2
  * Code clean-ups
