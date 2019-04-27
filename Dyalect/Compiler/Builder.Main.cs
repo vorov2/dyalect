@@ -1,12 +1,7 @@
-﻿using Dyalect.Parser.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using static Dyalect.Compiler.Hints;
-using Dyalect.Linker;
-using Dyalect.Runtime.Types;
+﻿using Dyalect.Linker;
 using Dyalect.Parser;
-using System.Linq;
+using Dyalect.Parser.Model;
+using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
 {
@@ -91,6 +86,9 @@ namespace Dyalect.Compiler
                 case NodeType.Yield:
                     Build((DYield)node, hints, ctx);
                     break;
+                case NodeType.Base:
+                    Build((DBase)node, hints, ctx);
+                    break;
             }
         }
 
@@ -100,6 +98,20 @@ namespace Dyalect.Compiler
             AddLinePragma(node);
             cw.Yield();
             PushIf(hints);
+        }
+
+        private void Build(DBase node, Hints hints, CompilerContext ctx)
+        {
+            if (!hints.Has(Function))
+            {
+                AddError(CompilerError.BaseNotAllowed, node.Location);
+                return;
+            }
+
+            var sv = GetParentVariable(node.Name, node);
+            AddLinePragma(node);
+            cw.PushVar(sv);
+            PopIf(hints);
         }
 
         private void Build(DTrait node, Hints hints, CompilerContext ctx)
@@ -253,7 +265,6 @@ namespace Dyalect.Compiler
                 BlockExit = cw.DefineLabel(),
                 BlockBreakExit = cw.DefineLabel()
             };
-            StartScope(false, node.Location);
             var iter = cw.DefineLabel();
 
             cw.MarkLabel(iter);
@@ -270,7 +281,6 @@ namespace Dyalect.Compiler
             AddLinePragma(node);
             cw.MarkLabel(ctx.BlockBreakExit);
             cw.Nop();
-            EndScope();
         }
 
         private void Build(DFor node, Hints hints, CompilerContext ctx)
@@ -290,7 +300,7 @@ namespace Dyalect.Compiler
 
             cw.Briter(skip);
 
-            cw.TraitG("iterator");
+            cw.TraitG(Builtins.Iterator);
             cw.Call(0);
             cw.MarkLabel(skip);
             cw.PopVar(sys);
@@ -348,29 +358,40 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-            //This is a special optimization for the 'toString' trait
-            //If we see that it is called directly we than emit a direct 'Str' instruction
-            if (node.Target.NodeType == NodeType.Trait
-                && ((DTrait)node.Target).Name == Traits.TosName
-                && node.Arguments.Count == 0)
+            //This is a special optimization for the 'toString' and 'len' traits
+            //If we see that it is called directly we than emit a direct Str or Len op code
+            if (node.Target.NodeType == NodeType.Trait)
             {
-                Build(((DTrait)node.Target).Target, hints.Append(Push), ctx);
-                AddLinePragma(node);
-                cw.Str();
+                var trait = (DTrait)node.Target;
+
+                if (trait.Name == Builtins.ToStr && node.Arguments.Count == 0)
+                {
+                    Build(trait.Target, hints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.Str();
+                    PopIf(hints);
+                    return;
+                }
+                else if (trait.Name == Builtins.Len && node.Arguments.Count == 0)
+                {
+                    Build(trait.Target, hints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.Len();
+                    PopIf(hints);
+                    return;
+                }
             }
+
+            foreach (var a in node.Arguments)
+                Build(a, hints.Append(Push), ctx);
+
+            if (sv.IsEmpty())
+                Build(node.Target, hints.Append(Push), ctx);
             else
-            {
-                foreach (var a in node.Arguments)
-                    Build(a, hints.Append(Push), ctx);
+                cw.PushVar(sv);
 
-                if (sv.IsEmpty())
-                    Build(node.Target, hints.Append(Push), ctx);
-                else
-                    cw.PushVar(sv);
-
-                AddLinePragma(node);
-                cw.Call(node.Arguments.Count);
-            }
+            AddLinePragma(node);
+            cw.Call(node.Arguments.Count);
 
             PopIf(hints);
         }
@@ -423,11 +444,7 @@ namespace Dyalect.Compiler
 
             if (!hints.Has(Pop))
             {
-                if ((sv.Data & VarFlags.This) == VarFlags.This)
-                    cw.This();
-                else
-                    cw.PushVar(sv);
-
+                cw.PushVar(sv);
                 PopIf(hints);
             }
             else
@@ -526,8 +543,6 @@ namespace Dyalect.Compiler
                 cw.Not();
             else if (node.Operator == UnaryOperator.BitwiseNot)
                 cw.BitNot();
-            else if (node.Operator == UnaryOperator.Length)
-                cw.Len();
 
             PopIf(hints);
         }
@@ -620,7 +635,17 @@ namespace Dyalect.Compiler
 
                 if (node.IsMemberFunction)
                 {
-                    cw.Push(node.Name == "-" && node.Parameters.Count == 0 ? "negate" : node.Name);
+                    if (node.Parameters.Count == 0)
+                    {
+                        if (node.Name == Builtins.Sub)
+                            cw.Push(Builtins.Neg);
+                        else if (node.Name == Builtins.Add)
+                            cw.Push(Builtins.Plus);
+                        else
+                            cw.Push(node.Name);
+                    }
+                    else
+                        cw.Push(node.Name);
                     var code = GetTypeHandle(node.TypeName, node.Location);
                     cw.TraitS(code);
                 }
@@ -643,23 +668,24 @@ namespace Dyalect.Compiler
 
         private void BuildFunctionBody(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
-            //Начинаем новый фрейм
             var iter = hints.Has(Iterator);
             var args = node.Parameters.ToArray();
-            var argCount = args.Length + (node.TypeName != null ? 1 : 0);
+            var argCount = args.Length;
             StartFun(node.Name, args, argCount);
 
             var startLabel = cw.DefineLabel();
             var funEndLabel = cw.DefineLabel();
 
-            //Функции мы всегда компилируем по месту проживания, т.е. как наткнулись на функцию,
-            //тут её и компилируем. Поэтому, чтобы общий код фрейма исполнялся без сюрпризов,
-            //вставляем тут goto, который просто перепрыгнет через код функции.
-            //Зачем так делается? Ну функция у нас обычное значение, как строка или целое число.
+            //Functions are always compiled "in place": if we find a function while looping
+            //through AST node we compile right away. That is the reason why we need to emit an 
+            //additional goto so that we can jump over this function.
             var funSkipLabel = cw.DefineLabel();
             cw.Br(funSkipLabel);
 
-            ctx = new CompilerContext { FunctionExit = funEndLabel };
+            ctx = new CompilerContext {
+                FunctionExit = funEndLabel
+            };
+
             hints = Function | Push;
 
             //Actual start of a function
@@ -671,13 +697,14 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             var address = cw.Offset;
-
-            AddVariable("this", node, data: VarFlags.This | VarFlags.Const);
-
+            
+            //If this is a trait function we add an additional system variable that
+            //would return an instance of an object to which this function is coupled
+            //(same as this in C#)
             if (node.IsMemberFunction)
             {
-                var va = AddVariable("self", node, data: VarFlags.Const);
-                cw.Self();
+                var va = AddVariable("this", node, data: VarFlags.Const);
+                cw.This();
                 cw.PopVar(va);
             }
 
@@ -715,18 +742,18 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
 
-            //Завершаем потихоньку, закрываем скоупы.
+            //Close all lexical scopes and debugging information
             var funHandle = unit.Layouts.Count;
             var ss = EndFun(funHandle);
             unit.Layouts.Add(new MemoryLayout(currentCounter, ss, address));
             EndScope();
             EndSection();
 
+            //Iterators are a separate type (based on function through)
             if (iter)
                 cw.NewIter(funHandle);
             else
             {
-                //А здесь мы уже создаём функцию как значение (эмитится Newfun).
                 cw.Push(node.Variadic ? argCount - 1 : argCount);
 
                 if (node.Variadic)

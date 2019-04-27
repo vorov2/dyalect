@@ -8,23 +8,22 @@ namespace Dyalect.Linker
 {
     internal sealed class Lang : ForeignUnit
     {
-        internal const string PrintName = "print";
-        internal const string CreateTupleName = "createTuple";
-        internal const string CreateArrayName = "createArray";
-        internal const string ToNumberName = "convertToNumber";
+        public const string CreateTupleName = "createTuple";
+        public const string CreateArrayName = "createArray";
 
         public Lang()
         {
-            FileName = "\\lang";
-            RegisterGlobal(PrintName, Print);
-            RegisterGlobal(CreateTupleName, CreateTuple);
-            RegisterGlobal(CreateArrayName, CreateArray);
-            RegisterGlobal("makeList", MakeList);
-            RegisterGlobal(ToNumberName, ToNumber);
+            FileName = "lang";
         }
 
-        private static DyObject ToNumber(DyObject arg)
+        [Function("convertToNumber")] 
+        public DyObject ToNumber(ExecutionContext ctx, DyObject[] args)
         {
+            if (args?.Length < 1)
+                return Default();
+
+            var arg = args[0];
+
             if (arg.TypeId == StandardType.Integer || arg.TypeId == StandardType.Float)
                 return arg;
             else if (arg.TypeId == StandardType.String)
@@ -40,7 +39,8 @@ namespace Dyalect.Linker
             return DyInteger.Zero;
         }
 
-        public static DyObject Print(ExecutionContext ctx, DyObject[] args)
+        [Function("print")]
+        public DyObject Print(ExecutionContext ctx, DyObject[] args)
         {
             foreach (var a in args)
             {
@@ -57,8 +57,10 @@ namespace Dyalect.Linker
             return DyNil.Instance;
         }
 
-        private static DyObject MakeList(DyObject size)
+        [Function("makeArray")]
+        public DyObject MakeArray(ExecutionContext ctx, DyObject[] args)
         {
+            var size = args[0];
             var n = size.GetInteger();
             var lst = new List<DyObject>();
 
@@ -68,9 +70,11 @@ namespace Dyalect.Linker
             return new DyArray(lst);
         }
 
-        public static DyObject CreateArray(DyObject[] args) => new DyArray(args.ToList());
+        [Function(CreateArrayName)]
+        public DyObject CreateArray(ExecutionContext ctx, DyObject[] args) => new DyArray(args.ToList());
 
-        public static DyObject CreateTuple(DyObject[] args)
+        [Function(CreateTupleName)]
+        public DyObject CreateTuple(ExecutionContext ctx, DyObject[] args)
         {
             var len = args.Length;
 
@@ -84,6 +88,22 @@ namespace Dyalect.Linker
                     la1 != null ? la1.Value : a1,
                     a2.TypeId == StandardType.Label ? (la2 = (DyLabel)a2).Label : null,
                     la2 != null ? la2.Value : a2
+                    );
+            }
+
+            if (len == 3)
+            {
+                var a1 = args[0];
+                var a2 = args[1];
+                var a3 = args[2];
+                DyLabel la1 = null, la2 = null, la3 = null;
+                return DyTuple.Create(
+                    a1.TypeId == StandardType.Label ? (la1 = (DyLabel)a1).Label : null,
+                    la1 != null ? la1.Value : a1,
+                    a2.TypeId == StandardType.Label ? (la2 = (DyLabel)a2).Label : null,
+                    la2 != null ? la2.Value : a2,
+                    a3.TypeId == StandardType.Label ? (la3 = (DyLabel)a3).Label : null,
+                    la3 != null ? la3.Value : a3
                     );
             }
 

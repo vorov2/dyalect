@@ -73,7 +73,7 @@ PRODUCTIONS
             | charToken (. val = ParseChar(); .)
         ).
 
-    StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!" | "#" 
+    StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!"
         | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
 
     FunctionName = identToken | StandardOperators.
@@ -172,10 +172,9 @@ PRODUCTIONS
                     f.TypeName = new Qualident(s1, s2);
                 }
             .)
-            [ FunctionArguments<f> ]
+            FunctionArguments<f>
             (
-                  Block<out node>
-                | "=" Expr<out node> Separator
+                Expr<out node> Separator
             )
             (.
                 f.Body = node;
@@ -281,7 +280,16 @@ PRODUCTIONS
             | Continue<out node>
             | Return<out node>
             | Yield<out node>
-        ).
+        )
+        /*[ 
+            "when" 
+            (. var @if = new DIf(t) { True = node }; .)
+            Expr<out node>
+            (.
+                @if.Condition = node;
+                node = @if;
+            .)
+        ]*/.
 
     Yield<out DNode node> =
         "yield" 
@@ -309,7 +317,20 @@ PRODUCTIONS
         (
               IF (IsFunction()) FunctionExpr<out node>
             | Assignment<out node>
-        ).
+        )
+        (.
+            if (implicits != null)
+            {
+                var func = new DFunctionDeclaration(node.Location)
+                {
+                    Body = node
+                };
+                implicits.Sort();
+                func.Parameters.AddRange(implicits.Distinct().Select(i => "p" + i));
+                node = func;
+                implicits = null;
+            }
+        .).
 
     FunctionExpr<out DNode node> =
         (. 
@@ -360,7 +381,14 @@ PRODUCTIONS
         {
             "||" (. var ot = t; .) And<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.Or, ot); .)
-        }.
+        }
+        /*[
+            "?"
+            (. var @if = new DIf(t) { True = node }; .)
+            Or<out node> (. @if.Condition = node; .)
+            ":" Or<out node>
+            (. @if.False = node; node = @if; .)
+        ]*/.
         
     And<out DNode node> = 
         Eq<out node>
@@ -432,8 +460,15 @@ PRODUCTIONS
                 var ot = default(Token);
             .)
             ( 
-                  "+" (. ot = t; op = BinaryOperator.Add; .)
-                | "-" (. ot = t; op = BinaryOperator.Sub; .)
+                (
+                    (. if (la.AfterEol) return; .)
+                    "+" (. ot = t; op = BinaryOperator.Add; .)
+                )
+                |
+                (
+                    (. if (la.AfterEol) return; .)
+                    "-" (. ot = t; op = BinaryOperator.Sub; .)
+                )
             )
             Mul<out DNode exp>
             (. node = new DBinaryOperation(node, exp, op, ot); .)
@@ -465,8 +500,8 @@ PRODUCTIONS
             [ 
                   "!" (. ot = t; op = UnaryOperator.Not; .)
                 | "-" (. ot = t; op = UnaryOperator.Neg; .)
+                | "+" (. ot = t; op = UnaryOperator.Plus; .)
                 | "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
-                | "#" (. ot = t; op = UnaryOperator.Length; .)
             ]
             FieldOrIndex<out node>
             (.
@@ -523,6 +558,7 @@ PRODUCTIONS
         (. node = null; .)
         (
               Name<out node>
+            | SpecialName<out node>
             | Integer<out node>
             | Float<out node>
             | String<out node>
@@ -531,6 +567,16 @@ PRODUCTIONS
             | IF (IsTuple()) Tuple<out node>
             | Array<out node>
             | Group<out node>
+            | Base<out node>
+        ).
+
+    Base<out DNode node> =
+        (. node = null; .)
+        (
+            "base" 
+            (. var bs = new DBase(t); .)
+            "." identToken
+            (. bs.Name = t.val; node = bs; .)
         ).
 
     Array<out DNode node> =
@@ -586,6 +632,18 @@ PRODUCTIONS
         (
             identToken
             (. node = new DName(t) { Value = t.val }; .)
+        ).
+
+    SpecialName<out DNode node> =
+        (
+            implicitToken
+            (.
+                var nm = int.Parse(t.val.Substring(1));
+                node = new DName(t) { Value = "p" + nm };
+                if (implicits == null)
+                    implicits = new List<int>();
+                implicits.Add(nm);
+            .)
         ).
 
     Nil<out DNode node> = "nil" (. node = new DNilLiteral(t); .).

@@ -5,6 +5,7 @@ namespace Dyalect.Runtime.Types
     public sealed class DyInteger : DyObject
     {
         public static readonly DyInteger Zero = new DyInteger(0L);
+        public static readonly DyInteger MinusOne = new DyInteger(-1L);
         public static readonly DyInteger One = new DyInteger(1L);
         public static readonly DyInteger Two = new DyInteger(2L);
         public static readonly DyInteger Three = new DyInteger(3L);
@@ -16,6 +17,21 @@ namespace Dyalect.Runtime.Types
         public DyInteger(long value) : base(StandardType.Integer)
         {
             this.value = value;
+        }
+
+        public static DyInteger Get(int i)
+        {
+            if (i == -1)
+                return MinusOne;
+            if (i == 0)
+                return Zero;
+            if (i == 1)
+                return One;
+            if (i == 2)
+                return Two;
+            if (i == 3)
+                return Three;
+            return new DyInteger(i);
         }
 
         public override int GetHashCode() => value.GetHashCode();
@@ -210,6 +226,8 @@ namespace Dyalect.Runtime.Types
 
         #region Unary Operations
         protected override DyObject NegOp(DyObject arg, ExecutionContext ctx) => new DyInteger(-arg.GetInteger());
+
+        protected override DyObject PlusOp(DyObject arg, ExecutionContext ctx) => arg;
 
         protected override DyObject BitwiseNotOp(DyObject arg, ExecutionContext ctx) => new DyInteger(~arg.GetInteger());
 

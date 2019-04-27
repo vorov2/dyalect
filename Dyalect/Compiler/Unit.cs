@@ -60,11 +60,11 @@ namespace Dyalect.Compiler
 
         internal List<Op> Ops { get; }
 
-        public string FileName { get; set; }
+        public string FileName { get; internal set; }
 
-        public DebugInfo Symbols { get; set; }
+        public DebugInfo Symbols { get; internal set; }
 
-        public Scope GlobalScope { get; set; }
+        public Scope GlobalScope { get; internal set; }
 
         public List<MemoryLayout> Layouts { get; }
 

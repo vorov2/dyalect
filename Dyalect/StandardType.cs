@@ -28,7 +28,7 @@ namespace Dyalect
         public const int String = 4;
         public const int Function = 5;
         public const int Label = 6;
-        public const int Type = 7;
+        public const int TypeInfo = 7;
         public const int Tuple = 8;
         public const int Module = 9;
         public const int Array = 10;
@@ -41,7 +41,7 @@ namespace Dyalect
         public const string StringName = "String";
         public const string FunctionName = "Function";
         public const string LabelName = "Label";
-        public const string TypeName = "Type";
+        public const string TypeInfoName = "TypeInfo";
         public const string TupleName = "Tuple";
         public const string ModuleName = "Module";
         public const string ArrayName = "Array";
@@ -58,7 +58,7 @@ namespace Dyalect
                 case StringName: return String;
                 case FunctionName: return Function;
                 case LabelName: return Label;
-                case TypeName: return Type;
+                case TypeInfoName: return TypeInfo;
                 case TupleName: return Tuple;
                 case ModuleName: return Module;
                 case ArrayName: return Array;

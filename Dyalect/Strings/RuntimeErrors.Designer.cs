@@ -88,6 +88,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An index %Index% is out of range for the instance of type &quot;%TypeName%&quot;..
+        /// </summary>
+        internal static string IndexOutOfRange {
+            get {
+                return ResourceManager.GetString("IndexOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An object of type &quot;%TypeName%&quot; doesn&apos;t support a &quot;call&quot; operation..
         /// </summary>
         internal static string NotFunction {
@@ -111,6 +120,15 @@ namespace Dyalect.Strings {
         internal static string StackCorrupted {
             get {
                 return ResourceManager.GetString("StackCorrupted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Function %FunctionName% accepts %FunctionArguments% argument(s) (%PassedArguments% given)..
+        /// </summary>
+        internal static string WrongNumberOfArguments {
+            get {
+                return ResourceManager.GetString("WrongNumberOfArguments", resourceCulture);
             }
         }
     }

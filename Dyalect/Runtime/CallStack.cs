@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime
@@ -39,6 +40,9 @@ namespace Dyalect.Runtime
 
         public ref CallPoint Pop()
         {
+            if (Count == 0)
+                throw new IndexOutOfRangeException();
+
             return ref array[--Count];
         }
 

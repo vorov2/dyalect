@@ -62,7 +62,7 @@ namespace Dyalect.Linker
             var oldCompiler = compiler;
 
             if (compiler == null)
-                compiler = new DyCompiler(Options, this);
+                compiler = new DyCompiler(BuilderOptions, this);
             else
             {
                 compiler = new DyCompiler(compiler);

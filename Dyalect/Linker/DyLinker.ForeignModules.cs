@@ -72,16 +72,16 @@ namespace Dyalect.Linker
 
             foreach (var t in asm.GetTypes())
             {
-                var attr = Attribute.GetCustomAttribute(t, typeof(DyModuleAttribute))
-                    as DyModuleAttribute;
+                var attr = Attribute.GetCustomAttribute(t, typeof(DyUnitAttribute))
+                    as DyUnitAttribute;
 
                 if (attr != null)
                 {
-                    if (dict.ContainsKey(attr.ModuleName))
+                    if (dict.ContainsKey(attr.Name))
                         AddError(LinkerError.DuplicateModuleName, mod.SourceFileName, mod.SourceLocation,
-                            mod.DllName, attr.ModuleName);
+                            mod.DllName, attr.Name);
                     else
-                        dict.Add(attr.ModuleName, t);
+                        dict.Add(attr.Name, t);
                 }
             }
 

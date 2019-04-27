@@ -6,7 +6,6 @@
         {
             0, //Nop
             0, //Str
-            0, //Self
             0, //This
             0, //Pop
             0, //PushNil
@@ -32,6 +31,7 @@
             0, //Div
             0, //Rem
             0, //Neg
+            0, //Plus
             0, //Not
             0, //BitNot
             0, //Len

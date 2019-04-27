@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Dyalect.Compiler;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,8 @@ namespace Dyalect.Runtime.Types
         {
             if (index < 0 || index >= Values.Count)
                 Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
-            Values[index] = obj;
+            else
+                Values[index] = obj;
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
@@ -65,10 +67,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = ((DyArray)arg).Values.Count;
-            return len == 1 ? DyInteger.One
-                : len == 2 ? DyInteger.Two
-                : len == 3 ? DyInteger.Three
-                : new DyInteger(len);
+            return DyInteger.Get(len);
         }
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx)
@@ -93,21 +92,39 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        private DyObject AddItem(DyObject self, DyObject val, ExecutionContext ctx)
+        private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
-            ((DyArray)self).Values.Add(val);
+            ((DyArray)self).Values.Add(args.TakeOne(DyNil.Instance));
             return DyNil.Instance;
         }
 
-        private DyObject AddRange(DyObject self, DyObject val, ExecutionContext ctx)
+        private DyObject InsertItem(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var arr = (DyArray)self;
-            var iter = ctx.Assembly.Types[val.TypeId].GetTraitOp(val, "iterator", ctx) as DyFunction;
-            
-            if (ctx.HasErrors)
+            var index = args.TakeOne(DyNil.Instance);
+
+            if (index.TypeId != StandardType.Integer)
+                return Err.IndexInvalidType(TypeName, index.TypeName(ctx)).Set(ctx);
+
+            var i = (int)index.GetInteger();
+            var value = args.TakeAt(1, DyNil.Instance);
+
+            if (i < 0 || i >= arr.Values.Count)
+                return Err.IndexOutOfRange(TypeName, i).Set(ctx);
+
+            arr.Values.Insert(i, value);
+            return DyNil.Instance;
+        }
+
+        private DyObject AddRange(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+            var val = args.TakeOne(null);
+
+            if (val == null)
                 return DyNil.Instance;
 
-            iter = iter.Call(ctx) as DyFunction;
+            var iter = DyIterator.GetIterator(val, ctx);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
@@ -128,13 +145,16 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject RemoveItem(DyObject self, DyObject val, ExecutionContext ctx)
+        private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
+            var val = args.TakeOne(DyNil.Instance);
             return ((DyArray)self).Values.Remove(val) ? DyBool.True : DyBool.False;
         }
 
-        private DyObject RemoveItemAt(DyObject self, DyObject index, ExecutionContext ctx)
+        private DyObject RemoveItemAt(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
+            var index = args.TakeOne(DyNil.Instance);
+
             if (index.TypeId != StandardType.Integer)
                 return Err.IndexInvalidType(TypeName, index.TypeName(ctx)).Set(ctx);
 
@@ -148,28 +168,72 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject ClearItems(DyObject obj, ExecutionContext ctx)
+        private DyObject ClearItems(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
-            ((DyArray)obj).Values.Clear();
+            ((DyArray)self).Values.Clear();
             return DyNil.Instance;
+        }
+
+        private DyObject IndexOf(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+            var val = args.TakeOne(DyNil.Instance);
+            var i = arr.Values.IndexOf(val);
+            return DyInteger.Get(i);
+        }
+
+        private DyObject LastIndexOf(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+            var val = args.TakeOne(DyNil.Instance);
+            var i = arr.Values.LastIndexOf(val);
+            return DyInteger.Get(i);
+        }
+
+        private DyObject GetIndices(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+
+            IEnumerable<DyObject> iterate()
+            {
+                for (var i = 0; i < arr.Values.Count; i++)
+                    yield return DyInteger.Get(i);
+            }
+
+            return new DyIterator(iterate().GetEnumerator());
         }
 
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
+            if (name == Builtins.Len)
+                return DyForeignFunction.Create(name, LenAdapter);
+
             if (name == "add")
-                return DyMemberFunction.Create(AddItem, name);
+                return DyForeignFunction.Create(name, AddItem);
+
+            if (name == "insert")
+                return DyForeignFunction.Create(name, InsertItem);
 
             if (name == "addRange")
-                return DyMemberFunction.Create(AddRange, name);
+                return DyForeignFunction.Create(name, AddRange);
 
             if (name == "remove")
-                return DyMemberFunction.Create(RemoveItem, name);
+                return DyForeignFunction.Create(name, RemoveItem);
 
             if (name == "removeAt")
-                return DyMemberFunction.Create(RemoveItemAt, name);
+                return DyForeignFunction.Create(name, RemoveItemAt);
 
             if (name == "clear")
-                return DyMemberFunction.Create(ClearItems, name);
+                return DyForeignFunction.Create(name, ClearItems);
+
+            if (name == "indexOf")
+                return DyForeignFunction.Create(name, IndexOf);
+
+            if (name == "lastIndexOf")
+                return DyForeignFunction.Create(name, LastIndexOf);
+
+            if (name == "indices")
+                return DyForeignFunction.Create(name, GetIndices);
 
             return null;
         }

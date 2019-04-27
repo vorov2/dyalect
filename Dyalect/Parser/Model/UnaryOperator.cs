@@ -5,7 +5,7 @@
         None,
         Not,
         Neg,
-        BitwiseNot,
-        Length
+        Plus,
+        BitwiseNot
     }
 }

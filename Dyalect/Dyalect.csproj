@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
       <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
       <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -18,12 +18,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\Bin\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
   </PropertyGroup>
-
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="&quot;$(SolutionDir)Binaries\Coco.exe&quot; -N &quot;$(ProjectDir)Parser\Dyalect.atg&quot;" />
-  </Target>
 
   <ItemGroup>
     <None Remove="Parser\Parser.cs.old" />
@@ -79,5 +75,9 @@
         <LastGenOutput>RuntimeErrors.Designer.cs</LastGenOutput>
       </EmbeddedResource>
     </ItemGroup>
+    
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+      <Exec Command="&quot;$(SolutionDir)Binaries\Coco.exe&quot; -N &quot;$(ProjectDir)Parser\Dyalect.atg&quot;" />
+    </Target>
 
 </Project>

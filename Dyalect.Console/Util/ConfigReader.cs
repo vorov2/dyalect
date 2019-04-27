@@ -10,7 +10,6 @@ namespace Dyalect.Util
         {
             if (!File.Exists(path))
             {
-                Theme.SetDefault();
                 Printer.Error($"Config file \"{path}\" not found.");
                 return null;
             }
@@ -36,7 +35,6 @@ namespace Dyalect.Util
             }
             catch (Exception ex)
             {
-                Theme.SetDefault();
                 Printer.Error($"Error reading configuration file: {ex.Message}");
                 return null;
             }

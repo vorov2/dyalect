@@ -15,11 +15,12 @@ namespace Dyalect.Compiler
 
         ExplicitBind = 0x08,
 
-        Function = 0x10,
+        Pop = 0x10,
 
-        Pop = 0x20,
+        Function = 0x20,
 
         Iterator = 0x40
+
     }
 
     public static class HintsExtensions

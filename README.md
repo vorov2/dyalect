@@ -31,7 +31,7 @@ func fib(n) {
     fib(n - 1) + fib(n - 2)
 }
 
-//Calculate the n-th fibonacchi number
+//Calculate the n-th fibonacci number
 fib(11)
 ```
 

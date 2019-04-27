@@ -201,7 +201,6 @@ namespace Dyalect.Compiler
         public void Get() => Emit(Op.Get);
         public void Set() => Emit(Op.Set);
         public void This() => Emit(Op.This);
-        public void Self() => Emit(Op.Self);
         public void Type() => Emit(Op.Type);
         public void PushNil() => Emit(Op.PushNil);
         public void PushNilT() => Emit(Op.PushNilT);
@@ -218,6 +217,7 @@ namespace Dyalect.Compiler
         public void Div() => Emit(Op.Div);
         public void Rem() => Emit(Op.Rem);
         public void Neg() => Emit(Op.Neg);
+        public void Plus() => Emit(Op.Plus);
         public void Not() => Emit(Op.Not);
         public void BitNot() => Emit(Op.BitNot);
         public void Len() => Emit(Op.Len);

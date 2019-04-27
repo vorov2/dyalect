@@ -1,15 +1,19 @@
-﻿using System;
+﻿using Dyalect.Compiler;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public abstract class DyTuple : DyObject
+    public abstract class DyTuple : DyObject, IEnumerable<DyObject>
     {
         public static DyTuple Create(DyObject arg1, DyObject arg2) =>
             new DyTuplePair(null, arg1, null, arg2 );
         public static DyTuple Create(string key1, DyObject arg1, string key2, DyObject arg2) =>
             new DyTuplePair(key1, arg1, key2, arg2);
+        public static DyTuple Create(string key1, DyObject arg1, string key2, DyObject arg2, string key3, DyObject arg3) =>
+            new DyTupleTriple(key1, arg1, key2, arg2, key3, arg3);
         public static DyTuple Create(string[] keys, DyObject[] args) =>
             new DyTupleVariadic(keys, args);
         public static DyTuple Create(DyObject[] args) =>
@@ -44,6 +48,14 @@ namespace Dyalect.Runtime.Types
 
         protected string DefaultKey() => Guid.NewGuid().ToString();
 
+        public IEnumerator<DyObject> GetEnumerator()
+        {
+            for (var i = 0; i < Count; i++)
+                yield return GetItem(i);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
         public abstract int Count { get; }
     }
 
@@ -76,10 +88,8 @@ namespace Dyalect.Runtime.Types
         {
             if (index == 0)
                 return value1;
-
             if (index == 1)
                 return value2;
-
             return null;
         }
 
@@ -87,10 +97,8 @@ namespace Dyalect.Runtime.Types
         {
             if (name == key1)
                 return 0;
-
             if (name == key2)
                 return 1;
-
             return -1;
         }
 
@@ -98,8 +106,69 @@ namespace Dyalect.Runtime.Types
         {
             if (index == 0)
                 return key1;
-
             return key2;
+        }
+    }
+
+    internal sealed class DyTupleTriple : DyTuple
+    {
+        private readonly string key1;
+        private readonly string key2;
+        private readonly string key3;
+        private readonly DyObject value1;
+        private readonly DyObject value2;
+        private readonly DyObject value3;
+
+        public override int Count => 3;
+
+        public DyTupleTriple(string key1, DyObject value1, string key2, DyObject value2, string key3, DyObject value3)
+        {
+            this.key1 = key1;
+            this.key2 = key2;
+            this.key3 = key3;
+            this.value1 = value1;
+            this.value2 = value2;
+            this.value3 = value3;
+        }
+
+        public override IDictionary<string, object> ToDictionary()
+        {
+            var dict = new Dictionary<string, object>();
+            dict.Add(key1 ?? DefaultKey(), value1);
+            dict.Add(key2 ?? DefaultKey(), value2);
+            dict.Add(key3 ?? DefaultKey(), value3);
+            return dict;
+        }
+
+        protected internal override DyObject GetItem(int index)
+        {
+            if (index == 0)
+                return value1;
+            if (index == 1)
+                return value2;
+            if (index == 2)
+                return value3;
+            return null;
+        }
+
+        protected internal override int GetOrdinal(string name)
+        {
+            if (name == key1)
+                return 0;
+            if (name == key2)
+                return 1;
+            if (name == key3)
+                return 2;
+            return -1;
+        }
+
+        protected internal override string GetKey(int index)
+        {
+            if (index == 0)
+                return key1;
+            if (index == 1)
+                return key2;
+            return key3;
         }
     }
 
@@ -163,10 +232,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = ((DyTuple)arg).Count;
-            return len == 1 ? DyInteger.One
-                : len == 2 ? DyInteger.Two
-                : len == 3 ? DyInteger.Three
-                : new DyInteger(len);
+            return DyInteger.Get(len);
         }
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx)
@@ -197,6 +263,51 @@ namespace Dyalect.Runtime.Types
 
             sb.Append(')');
             return new DyString(sb.ToString());
+        }
+
+        private DyObject GetIndices(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var tup = (DyTuple)self;
+
+            IEnumerable<DyObject> iterate()
+            {
+                for (var i = 0; i < tup.Count; i++)
+                    yield return DyInteger.Get(i);
+            }
+
+            return new DyIterator(iterate().GetEnumerator());
+        }
+
+        private DyObject GetKeys(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var tup = (DyTuple)self;
+
+            IEnumerable<DyObject> iterate()
+            {
+                for (var i = 0; i < tup.Count; i++)
+                {
+                    var k = tup.GetKey(i);
+
+                    if (k != null)
+                        yield return new DyString(k);
+                }
+            }
+
+            return new DyIterator(iterate().GetEnumerator());
+        }
+
+        protected override DyFunction GetTrait(string name, ExecutionContext ctx)
+        {
+            if (name == Builtins.Len)
+                return DyForeignFunction.Create(name, LenAdapter);
+
+            if (name == "indices")
+                return DyForeignFunction.Create(name, GetIndices);
+
+            if (name == "keys")
+                return DyForeignFunction.Create(name, GetKeys);
+
+            return null;
         }
     }
 }

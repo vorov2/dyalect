@@ -23,6 +23,8 @@ namespace Dyalect.Runtime.Types
 
         public override int GetHashCode() => Value.GetHashCode();
 
+        protected internal override bool GetBool() => !string.IsNullOrEmpty(Value);
+
         public override bool Equals(object obj)
         {
             if (obj is DyString s)
@@ -109,16 +111,15 @@ namespace Dyalect.Runtime.Types
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = arg.GetString().Length;
-            return len == 0 ? DyInteger.Zero
-                : len == 1 ? DyInteger.One
-                : len == 2 ? DyInteger.Two
-                : new DyInteger(len);
+            return DyInteger.Get(len);
         }
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => StringUtil.Escape(arg.GetString());
 
         protected override DyFunction GetTrait(string name, ExecutionContext ctx)
         {
+            if (name == Builtins.Len)
+                return DyForeignFunction.Create(name, LenAdapter);
 
             return null;
         }
