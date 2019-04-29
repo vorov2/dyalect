@@ -1,100 +1,98 @@
-﻿using System;
- 
-namespace LangtonAnt
-{
-    public readonly bool [,] IsBlack;
-    private Point _origin;
-    private Point _antPosition = new Point(0, 0);
-    public bool OutOfBounds { get; set;}
+﻿const xInc = [0, 1, -1, 0]
+const yInc = [-1, 0, 0, 1]
+const north = 0
+const east = 1
+const west = 2
+const south = 3
 
-    // I don't see any mention of what direction the ant is supposed to start out in
-    private Direction _antDirection = Direction.East;
+const leftTurns  = [ west, north, south, east ]
+const rightTurns = [ east, south, north, west ]
+const isBlack = []
 
-    private readonly Direction[] _leftTurn = new[] { Direction.West, Direction.North, Direction.South, Direction.East };
-    private readonly Direction[] _rightTurn = new[] { Direction.East, Direction.South, Direction.North, Direction.West };
-    private readonly int[] _xInc = new[] { 0, 1,-1, 0};
-    private readonly int[] _yInc = new[] {-1, 0, 0, 1};
- 
-    public Langton(int width, int height, Point origin)
-    {
-        _origin = origin;
-        IsBlack = new bool[width, height];
-        OutOfBounds = false;
-    }
-
-    public Langton(int width, int height) : this(width, height, new Point(width / 2, height / 2)) {}
-
-    private void MoveAnt()
-    {
-        _antPosition.X += _xInc[(int)_antDirection];
-        _antPosition.Y += _yInc[(int)_antDirection];
-    }
-
-    public Point Step()
-    {
-        if (OutOfBounds)
-        {
-            throw new InvalidOperationException("Trying to step after ant is out of bounds");
+func getArr(x, y) {
+    if x >= isBlack.len() {
+        while isBlack.len() < x + 1 {
+            isBlack.add([])
         }
-        Point ptCur = new Point(_antPosition.X + _origin.X, _antPosition.Y + _origin.Y);
-        bool leftTurn = IsBlack[ptCur.X, ptCur.Y];
-        int iDirection = (int) _antDirection;
-        _antDirection = leftTurn ? _leftTurn[iDirection] : _rightTurn[iDirection];
-        IsBlack[ptCur.X, ptCur.Y] = !IsBlack[ptCur.X, ptCur.Y];
-        MoveAnt();
-        ptCur = new Point(_antPosition.X + _origin.X, _antPosition.Y + _origin.Y);
-        OutOfBounds = 
-            ptCur.X < 0 ||
-            ptCur.X >= IsBlack.GetUpperBound(0) ||
-            ptCur.Y < 0 ||
-            ptCur.Y >= IsBlack.GetUpperBound(1);
-        return _antPosition;
     }
+    const xs = isBlack[x]
+    if y >= xs.len() {
+        while xs.len() < y + 1 {
+            xs.add(false)
+        }
+    }
+    xs
+}
+
+func getIsBlack(x, y) {
+    getArr(x, y)[y]
+}
+
+func setIsBlack(x, y, flag) {
+    const arr = getArr(x, y)
+    arr[y] = flag
+}
+
+func move(ant) {
+    ant["position"]["x"] += xInc[ant["direction"]];
+    ant["position"]["y"] += yInc[ant["direction"]];
 }
 
 func step(ant) {
-    var ptCur = (x: ant.x + ant.x, y: and.y + ant.origin.y);
-    bool leftTurn = IsBlack[ptCur.X, ptCur.Y];
-    int iDirection = (int) _antDirection;
-    _antDirection = leftTurn ? _leftTurn[iDirection] : _rightTurn[iDirection];
-    IsBlack[ptCur.X, ptCur.Y] = !IsBlack[ptCur.X, ptCur.Y];
-    MoveAnt();
-    ptCur = new Point(_antPosition.X + _origin.X, _antPosition.Y + _origin.Y);
-    OutOfBounds = 
-        ptCur.X < 0 ||
-        ptCur.X >= IsBlack.GetUpperBound(0) ||
-        ptCur.Y < 0 ||
-        ptCur.Y >= IsBlack.GetUpperBound(1);
-    return _antPosition;
+    var ptCur = (x: ant["x"] + ant["x"], y: ant["y"] + ant["origin"]["y"])
+    var leftTurn = getIsBlack(ptCur["x"], ptCur["y"])
+    ant["direction"] =
+        if leftTurn  {
+            leftTurns[ant["direction"]] 
+        } else {
+            rightTurns[ant["direction"]]
+        }
+    setIsBlack(ptCur["x"], ptCur["y"], !getIsBlack(ptCur["x"], ptCur["y"]))
+    move(ant)
+    ptCur = (x: ant["position"]["x"] + ant["origin"]["x"], ant["position"]["y"] + ant["origin"]["y"])
+    ant["outOfBounds"] = 
+        ptCur["x"] < 0 ||
+        ptCur["x"] >= isBlack.len() ||
+        ptCur["y"] < 0 ||
+        ptCur["y"] >= isBlack[0].len()
+    ant["position"]
+}
 
+func newAnt(width, height) {
+    (
+        x: 0,
+        y: 0,
+        position: (x: 0, y: 0),
+        origin: (x: width / 2, y: height / 2),
+        outOfBounds: false,
+        isBlack: [],
+        direction: east
+    )
 }
 
 func run() {
-    const ant = (x: 100, y: 100, origin: (x: 0, y: 0), outOfBounds: false)
+    const ant = newAnt(100, 100)
 
-    
-}
+    while !ant["outOfBounds"] {
+        step(ant)
+    }
 
+    var iRow = 0;
 
-
-    class Program
-    {
-        static void Main()
-        {
-            Langton ant = new Langton(x:100, 100);
- 
-            while (!ant.OutOfBounds) ant.Step();
- 
-            for (int iRow = 0; iRow < 100; iRow++)
-            {
-                for (int iCol = 0; iCol < 100; iCol++)
-                {
-                    Console.Write(ant.IsBlack[iCol, iRow] ? "#" : " ");
-                }
-                Console.WriteLine();
+    while iRow < 100 {
+        var iCol = 0;
+        var ln = ""
+        while iCol < 100 {
+            ln += if getIsBlack(iCol, iRow) {
+                " "
+            } else {
+                "#"
             }
- 
-            Console.ReadKey();
+            iCol += 1
         }
+        print(ln)
+        iRow += 1
     }
 }
+
+run()

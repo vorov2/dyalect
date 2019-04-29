@@ -38,6 +38,21 @@ namespace Dyalect.Runtime.Types
                 return Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
         }
 
+        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
+        {
+            if (index.TypeId == StandardType.Integer)
+                SetItem((int)index.GetInteger(), value, ctx);
+            else if (index.TypeId == StandardType.String)
+            {
+                var idx = GetOrdinal(index.GetString());
+                SetItem(idx, value, ctx);
+            }
+            else
+                Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
+        }
+
+        protected internal abstract void SetItem(int index, DyObject value, ExecutionContext ctx);
+
         protected internal abstract int GetOrdinal(string name);
 
         protected internal abstract DyObject GetItem(int index);
@@ -63,8 +78,8 @@ namespace Dyalect.Runtime.Types
     {
         private readonly string key1;
         private readonly string key2;
-        private readonly DyObject value1;
-        private readonly DyObject value2;
+        private DyObject value1;
+        private DyObject value2;
 
         public override int Count => 2;
 
@@ -108,6 +123,16 @@ namespace Dyalect.Runtime.Types
                 return key1;
             return key2;
         }
+
+        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx)
+        {
+            if (index == 0)
+                value1 = value;
+            else if (index == 1)
+                value2 = value;
+            else
+                Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+        }
     }
 
     internal sealed class DyTupleTriple : DyTuple
@@ -115,9 +140,9 @@ namespace Dyalect.Runtime.Types
         private readonly string key1;
         private readonly string key2;
         private readonly string key3;
-        private readonly DyObject value1;
-        private readonly DyObject value2;
-        private readonly DyObject value3;
+        private DyObject value1;
+        private DyObject value2;
+        private DyObject value3;
 
         public override int Count => 3;
 
@@ -170,6 +195,19 @@ namespace Dyalect.Runtime.Types
                 return key2;
             return key3;
         }
+
+        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx)
+        {
+            if (index == 0)
+                value1 = value;
+            else if (index == 1)
+                value2 = value;
+            else if (index == 2)
+                value3 = value;
+
+            else
+                Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+        }
     }
 
     internal sealed class DyTupleVariadic : DyTuple
@@ -216,6 +254,14 @@ namespace Dyalect.Runtime.Types
         }
 
         protected internal override string GetKey(int index) => keys[index];
+
+        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx)
+        {
+            if (index < 0 || index >= values.Length)
+                Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+            else
+                values[index] = value;
+        }
     }
 
     internal sealed class DyTupleTypeInfo : DyTypeInfo
