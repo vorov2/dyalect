@@ -25,7 +25,8 @@ func getArr(x, y) {
 }
 
 func getIsBlack(x, y) {
-    getArr(x, y)[y]
+    const arr = getArr(x, y)
+    arr[y]
 }
 
 func setIsBlack(x, y, flag) {
@@ -34,12 +35,12 @@ func setIsBlack(x, y, flag) {
 }
 
 func move(ant) {
-    ant["position"]["x"] += xInc[ant["direction"]];
-    ant["position"]["y"] += yInc[ant["direction"]];
+    ant["position"]["x"] += xInc[ant["direction"]]
+    ant["position"]["y"] += yInc[ant["direction"]]
 }
 
 func step(ant) {
-    var ptCur = (x: ant["x"] + ant["x"], y: ant["y"] + ant["origin"]["y"])
+    var ptCur = (x: ant["position"]["x"] + ant["origin"]["x"], y: ant["position"]["y"] + ant["origin"]["y"])
     var leftTurn = getIsBlack(ptCur["x"], ptCur["y"])
     ant["direction"] =
         if leftTurn  {
@@ -49,29 +50,31 @@ func step(ant) {
         }
     setIsBlack(ptCur["x"], ptCur["y"], !getIsBlack(ptCur["x"], ptCur["y"]))
     move(ant)
-    ptCur = (x: ant["position"]["x"] + ant["origin"]["x"], ant["position"]["y"] + ant["origin"]["y"])
+    ptCur = (x: ant["position"]["x"] + ant["origin"]["x"], y: ant["position"]["y"] + ant["origin"]["y"])
     ant["outOfBounds"] = 
         ptCur["x"] < 0 ||
-        ptCur["x"] >= isBlack.len() ||
+        ptCur["x"] >= ant["width"] ||
         ptCur["y"] < 0 ||
-        ptCur["y"] >= isBlack[0].len()
+        ptCur["y"] >= ant["height"]
     ant["position"]
 }
 
 func newAnt(width, height) {
     (
-        x: 0,
-        y: 0,
         position: (x: 0, y: 0),
         origin: (x: width / 2, y: height / 2),
         outOfBounds: false,
         isBlack: [],
-        direction: east
+        direction: east,
+        width: width,
+        height: height
     )
 }
 
 func run() {
-    const ant = newAnt(100, 100)
+    const w = 100
+    const h = 100
+    const ant = newAnt(w, h)
 
     while !ant["outOfBounds"] {
         step(ant)
@@ -79,14 +82,14 @@ func run() {
 
     var iRow = 0;
 
-    while iRow < 100 {
+    while iRow < w {
         var iCol = 0;
         var ln = ""
-        while iCol < 100 {
+        while iCol < h {
             ln += if getIsBlack(iCol, iRow) {
-                " "
-            } else {
                 "#"
+            } else {
+                " "
             }
             iCol += 1
         }
