@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args);
 
-            protected override DyFunction Clone() => new DyCallBackFunction(FunctionName, fun);
+            protected override DyFunction Clone(ExecutionContext ctx) => new DyCallBackFunction(GetFunctionName(ctx), fun);
         }
 
         private sealed class DyCallBackMemberFunction : DyForeignFunction
@@ -29,7 +29,7 @@ namespace Dyalect.Runtime.Types
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args);
 
-            protected override DyFunction Clone() => new DyCallBackMemberFunction(FunctionName, fun);
+            protected override DyFunction Clone(ExecutionContext ctx) => new DyCallBackMemberFunction(GetFunctionName(ctx), fun);
         }
 
         private readonly string name;
@@ -48,15 +48,15 @@ namespace Dyalect.Runtime.Types
 
         public static DyForeignFunction Create(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun) => new DyCallBackMemberFunction(name, fun);
 
-        protected override string GetFunctionName() => name;
+        protected override string GetCustomFunctionName(ExecutionContext ctx) => name;
 
-        internal override DyFunction Clone(DyObject arg)
+        internal override DyFunction Clone(ExecutionContext ctx, DyObject arg)
         {
-            var clone = Clone();
+            var clone = Clone(ctx);
             clone.Self = arg;
             return clone;
         }
 
-        protected virtual DyFunction Clone() => (DyForeignFunction)MemberwiseClone();
+        protected virtual DyFunction Clone(ExecutionContext ctx) => (DyForeignFunction)MemberwiseClone();
     }
 }

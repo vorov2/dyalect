@@ -25,7 +25,7 @@ namespace Dyalect
             Linker = new DyIncrementalLinker(lookup, buildOptions);
         }
 
-        public DyMachine Machine { get; private set; }
+        public ExecutionContext ExecutionContext { get; private set; }
 
         public DyLinker Linker { get; private set; }
 
@@ -33,7 +33,7 @@ namespace Dyalect
 
         public void Reset()
         {
-            Machine = null;
+            ExecutionContext = null;
             Linker = new DyIncrementalLinker(Linker.Lookup, Linker.BuilderOptions);
         }
 
@@ -47,8 +47,8 @@ namespace Dyalect
                 return false;
             }
 
-            if (Machine == null)
-                Machine = new DyMachine(made.Value);
+            if (ExecutionContext == null)
+                ExecutionContext = DyMachine.CreateExecutionContext(made.Value);
 
             return Eval();
         }
@@ -83,8 +83,8 @@ namespace Dyalect
 
             composition = made.Value;
 
-            if (Machine == null)
-                Machine = new DyMachine(composition);
+            if (ExecutionContext == null)
+                ExecutionContext = DyMachine.CreateExecutionContext(composition);
 
             return Eval();
         }
@@ -93,7 +93,7 @@ namespace Dyalect
         {
             try
             {
-                var res = Machine.Execute();
+                var res = DyMachine.Execute(ExecutionContext);
                 Printer.Output(res);
                 return true;
             }

@@ -39,6 +39,9 @@
     <None Update="Playground\test.dy">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Playground\test1.dy">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Tests\tests.dy">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

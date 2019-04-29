@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dyalect.Runtime;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -94,14 +95,14 @@ namespace Dyalect.Util
         {
             Printer.Output("Dump of globals:");
 
-            if (ctx.Machine == null)
+            if (ctx.ExecutionContext == null)
             {
                 Printer.Output("...none");
                 return;
             }
 
-            foreach (var rv in ctx.Machine.DumpVariables())
-                Printer.Output($"{rv.Name} = {Printer.Format(rv.Value, ctx.Machine.ExecutionContext)}");
+            foreach (var rv in DyMachine.DumpVariables(ctx.ExecutionContext))
+                Printer.Output($"{rv.Name} = {Printer.Format(rv.Value, ctx.ExecutionContext)}");
         }
 
         [Binding("eval", Help = "Evaluates a given file in a current interactive session.")]
