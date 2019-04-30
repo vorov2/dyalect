@@ -28,8 +28,8 @@ namespace Dyalect.Runtime
             {
                 try
                 {
-                    var res = ExecuteModule(0);
-                    retval = ExecutionResult.Fetch(0, res, ExecutionContext);
+                    var res = ExecuteModule(0, ctx);
+                    retval = ExecutionResult.Fetch(0, res, ctx);
                 }
                 catch (Exception ex)
                 {

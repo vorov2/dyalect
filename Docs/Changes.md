@@ -1,3 +1,6 @@
+# 0.3.2
+  * todo
+
 # 0.3.1
   * Code refactoring in virtual machine ([Issue #2](https://github.com/vorov2/dyalect/issues/2)).
   * Tuples now support both read on write operations on their fields.
