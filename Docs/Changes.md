@@ -1,3 +1,8 @@
+# 0.3.1
+  * Code refactoring in virtual machine ([Issue #2](https://github.com/vorov2/dyalect/issues/2)).
+  * Tuples now support both read on write operations on their fields.
+  * Several runtime error messages corrected.
+
 # 0.3.0
   * An unary plus `+` operator is added (for built-in types it is an identity function, but can be overriden).
   * **(Experimental)** A support for implicit anonymous function declaration is added. For short functions one can use the following notation - instead of declaring a full lambda, e.g. `x => x * 2` one can write `$0 * 2`. A `$` prefix instructs the compiler that the whole expression is a function, and all the dollar names are automatically promoted as function arguments in the appropriate order, e.g.: `$1 - $0` is equivalent to `(x,y) => y - x`. Example:

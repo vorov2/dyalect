@@ -16,8 +16,8 @@ namespace Dyalect
             if (!result.Success)
                 throw new DyBuildException(result.Messages);
 
-            var m = new DyMachine(result.Value);
-            var result2 = m.Execute();
+            var ctx = DyMachine.CreateExecutionContext(result.Value);
+            var result2 = DyMachine.Execute(ctx);
             return result2.Value;
         }
     }

@@ -136,9 +136,9 @@
     <value>Stack is corrupted.</value>
   </data>
   <data name="IndexOutOfRange" xml:space="preserve">
-    <value>An index %Index% is out of range for the instance of type "%TypeName%".</value>
+    <value>An index "%Index%" is out of range for the instance of type "%TypeName%".</value>
   </data>
   <data name="WrongNumberOfArguments" xml:space="preserve">
-    <value>Function %FunctionName% accepts %FunctionArguments% argument(s) (%PassedArguments% given).</value>
+    <value>Function "%FunctionName%" accepts %FunctionArguments% argument(s) (%PassedArguments% given).</value>
   </data>
 </root>

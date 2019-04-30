@@ -12,14 +12,14 @@ namespace Dyalect.Runtime.Types
             this.enumerator = enumerator;
         }
 
-        internal static DyFunction CreateIterator(int unitId, int handle, DyMachine vm, FastList<DyObject[]> captures, DyObject[] locals)
+        internal static DyFunction CreateIterator(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals)
         {
             var vars = new FastList<DyObject[]>(captures);
             vars.Add(locals);
-            return new DyNativeIterator(unitId, handle, vm, vars);
+            return new DyNativeIterator(unitId, handle, vars);
         }
 
-        protected override string GetFunctionName() => Builtins.Iterator;
+        protected override string GetCustomFunctionName(ExecutionContext ctx) => Builtins.Iterator;
 
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {
@@ -28,7 +28,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Terminator;
         }
 
-        internal override DyFunction Clone(DyObject arg) => new DyIterator(enumerator) { Self = arg };
+        internal override DyFunction Clone(ExecutionContext ctx, DyObject arg) => new DyIterator(enumerator) { Self = arg };
 
         internal static DyFunction GetIterator(DyObject val, ExecutionContext ctx)
         {
@@ -38,7 +38,7 @@ namespace Dyalect.Runtime.Types
                 iter = val as DyFunction;
             else
             {
-                iter = ctx.Assembly.Types[val.TypeId].GetTraitOp(val, Builtins.Iterator, ctx) as DyFunction;
+                iter = ctx.Composition.Types[val.TypeId].GetTraitOp(val, Builtins.Iterator, ctx) as DyFunction;
 
                 if (ctx.HasErrors)
                     return null;
@@ -52,15 +52,15 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyNativeIterator : DyNativeFunction
     {
-        public DyNativeIterator(int unitId, int funcId, DyMachine vm, FastList<DyObject[]> captures) : base(unitId, funcId, 0, vm, captures, StandardType.Iterator)
+        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(unitId, funcId, 0, captures, StandardType.Iterator)
         {
 
         }
 
-        protected override string GetFunctionName() => Builtins.Iterator;
+        protected override string GetCustomFunctionName(ExecutionContext ctx) => Builtins.Iterator;
 
-        internal override DyFunction Clone(DyObject arg) =>
-            new DyNativeIterator(UnitId, FunctionId, Machine, Captures) { Self = arg };
+        internal override DyFunction Clone(ExecutionContext ctx, DyObject arg) =>
+            new DyNativeIterator(UnitId, FunctionId, Captures) { Self = arg };
     }
 
     internal sealed class DyIteratorTypeInfo : DyTypeInfo

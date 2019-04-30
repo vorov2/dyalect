@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Reflection;
 
 namespace Dyalect.Runtime.Types
 {
     public abstract class DyFunction : DyObject
     {
         internal const string DefaultName = "<func>";
+        private static readonly DyObject[] noArgs = new DyObject[0];
 
         public int ParameterNumber { get; protected set; }
 
@@ -18,25 +18,23 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
 
-        internal abstract DyFunction Clone(DyObject arg);
+        internal abstract DyFunction Clone(ExecutionContext ctx, DyObject arg);
 
-        public virtual DyObject Call(params DyObject[] args) => Call(null, args);
-
-        public virtual DyObject Call(ExecutionContext ctx, params DyObject[] args) => Call(args);
+        public abstract DyObject Call(ExecutionContext ctx, params DyObject[] args);
         
-        internal virtual DyObject Call3(DyObject arg1, DyObject arg2, DyObject arg3, ExecutionContext ctx) => Call(arg1, arg2, arg3);
+        internal virtual DyObject Call3(DyObject arg1, DyObject arg2, DyObject arg3, ExecutionContext ctx) => Call(ctx, arg1, arg2, arg3);
 
-        internal virtual DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx) =>  Call(left, right);
+        internal virtual DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx) =>  Call(ctx, left, right);
 
-        internal virtual DyObject Call1(DyObject obj, ExecutionContext ctx) => Call(obj);
+        internal virtual DyObject Call1(DyObject obj, ExecutionContext ctx) => Call(ctx, obj);
 
-        internal virtual DyObject Call0(ExecutionContext ctx) => Call();
+        internal virtual DyObject Call0(ExecutionContext ctx) => Call(ctx, noArgs);
 
-        protected abstract string GetFunctionName();
+        protected abstract string GetCustomFunctionName(ExecutionContext ctx);
 
-        public string[] GetParameterNames()
+        public string[] GetParameterNames(ExecutionContext ctx)
         {
-            var dynParameters = GetCustomParameterNames();
+            var dynParameters = GetCustomParameterNames(ctx);
 
             if (dynParameters != null)
                 return dynParameters;
@@ -49,21 +47,18 @@ namespace Dyalect.Runtime.Types
             return arr;
         }
 
-        protected virtual string[] GetCustomParameterNames() => null;
+        protected virtual string[] GetCustomParameterNames(ExecutionContext ctx) => null;
 
-        public override string ToString() => 
-            $"{GetFunctionName()}({string.Join(",", GetParameterNames())})";
+        public string ToString(ExecutionContext ctx) => 
+            $"{GetFunctionName(ctx)}({string.Join(",", GetParameterNames(ctx))})";
 
         private string _functionName;
-        public string FunctionName
+        public string GetFunctionName(ExecutionContext ctx)
         {
-            get
-            {
-                if (_functionName == null)
-                    _functionName = GetFunctionName();
+            if (_functionName == null)
+                _functionName = GetCustomFunctionName(ctx);
 
-                return _functionName ?? DefaultName;
-            }
+            return _functionName ?? DefaultName;
         }
     }
 

@@ -39,24 +39,25 @@ namespace Dyalect
             catch (Exception ex)
             {
                 WriteLineWithColor(ConsoleColor.Red, $"Failure! {ex.Message}");
-                Analyze(dict, new Dictionary<string, DyFunction>());
+                Analyze(dict, new Dictionary<string, (ExecutionContext,DyFunction)>());
             }
         }
 
-        private static void Analyze(Dictionary<string, object> expected, Dictionary<string, DyFunction> funs)
+        private static void Analyze(Dictionary<string, object> expected, Dictionary<string, (ExecutionContext,DyFunction)> funs)
         {
             var passed = 0;
             var i = 0;
 
             foreach (var k in expected)
             {
-                if (funs.TryGetValue(k.Key, out var fn))
+                if (funs.TryGetValue(k.Key, out var cont))
                 {
+                    var fn = cont.Item2;
                     Console.Write($"[{(++i).ToString().PadLeft(3, '0')}] ");
 
                     try
                     {
-                        var res = fn.Call().ToObject();
+                        var res = fn.Call(cont.Item1).ToObject();
 
                         if (!res.Equals(k.Value))
                             Failed(k.Key, $"Expected <{k.Value}>, got <{res}>.");
@@ -117,14 +118,14 @@ namespace Dyalect
         {
             commands.Add($"AddTest {name} -Outcome Failed -Framework DUnit -FileName tests.dy");
             Console.Write($"{name}: ");
-            WriteLineWithColor(ConsoleColor.Red, @"Failed: {reason}");
+            WriteLineWithColor(ConsoleColor.Red, $"Failed: {reason}");
         }
 
         private static void Success(string name)
         {
             commands.Add($"AddTest {name} -Outcome Passed -Framework DUnit -FileName tests.dy");
             Console.Write($"{name}: ");
-            WriteLineWithColor(ConsoleColor.Green, @"Success");
+            WriteLineWithColor(ConsoleColor.Green, "Success");
         }
 
         private static void WriteLineWithColor(ConsoleColor col, string line)
@@ -143,10 +144,10 @@ namespace Dyalect
             Console.ForegroundColor = ocol;
         }
 
-        private static Dictionary<string, DyFunction> Run()
+        private static Dictionary<string, (ExecutionContext,DyFunction)> Run()
         {
             var startupPath = Path.Combine(Path.GetDirectoryName(typeof(Tests).Assembly.Location), "Tests"); ;
-            var dict = new Dictionary<string, DyFunction>(StringComparer.OrdinalIgnoreCase);
+            var dict = new Dictionary<string, (ExecutionContext,DyFunction)>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var file in Directory.EnumerateFiles(startupPath, "*.dy"))
             {
@@ -156,15 +157,15 @@ namespace Dyalect
                 if (!cres.Success)
                     throw new DyBuildException(cres.Messages);
 
-                var m = new DyMachine(cres.Value);
-                m.Execute();
+                var ctx = DyMachine.CreateExecutionContext(cres.Value);
+                DyMachine.Execute(ctx);
 
-                foreach (var v in m.DumpVariables())
+                foreach (var v in DyMachine.DumpVariables(ctx))
                 {
                     if (v.Value is DyFunction fn)
                     {
                         dict.Remove(v.Name);
-                        dict.Add(v.Name, fn);
+                        dict.Add(v.Name, (ctx, fn));
                     }
                 }
             }
