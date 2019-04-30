@@ -50,6 +50,10 @@ namespace Dyalect
 
         public object LiteralTest6 => 96;
 
+        public object ArrayTest1 => "[1, 1, 2]";
+
+        public object ArrayTest2 => "[11, 1, 2]";
+
         public object BaseTest1 => 2;
 
         public object BaseTest2 => 2;
@@ -103,5 +107,7 @@ namespace Dyalect
         public object FoldTest => 21;
 
         public object FactorsTest => "[1, 3, 9, 27]";
+
+        public object AntiprimeTest => 6;
     }
 }

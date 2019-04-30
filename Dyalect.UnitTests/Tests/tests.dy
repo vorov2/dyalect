@@ -127,6 +127,27 @@ func literalTest6() {
     0x40 + 0x20
 }
 
+func arrayTest1() {
+    var arr = []
+    arr.add(1)
+    arr.add(2)
+    arr.addRange([1,2,3])
+    arr.removeAt(1)
+    arr.remove(3)
+    arr.toString()
+}
+
+func arrayTest2() {
+    var arr = [1,2,3,4,5]
+    arr.clear()
+    arr.add(1)
+    arr.add(2)
+    arr.insert(0, 11)
+    arr.insert(0, 11)
+    arr.remove(11)
+    arr.toString()
+}
+
 ///////////////////////////////////////////////
 //Complex tests
 ///////////////////////////////////////////////
@@ -574,4 +595,22 @@ func factorsTest() {
         arr
     }
     factors(27).toString()
+}
+
+func antiprimeTest() {
+    func countDivisors(n) {
+        if n < 2 {
+            return 1
+        }
+        var count = 2
+        var i = 2
+        while i <= n / 2 {
+            if n % i == 0 {
+                count += 1
+            }
+            i += 1
+        }
+        count
+    }
+    countDivisors(20)
 }
