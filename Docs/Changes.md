@@ -1,5 +1,7 @@
 # 0.3.1
-  * Code refactoring in virtual machine (Issue #2).
+  * Code refactoring in virtual machine ([Issue #2](https://github.com/vorov2/dyalect/issues/2)).
+  * Tuples now support both read on write operations on their fields.
+  * Several runtime error messages corrected.
 
 # 0.3.0
   * An unary plus `+` operator is added (for built-in types it is an identity function, but can be overriden).

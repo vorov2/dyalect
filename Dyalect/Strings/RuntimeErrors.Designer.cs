@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class RuntimeErrors {
@@ -88,7 +88,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An index %Index% is out of range for the instance of type &quot;%TypeName%&quot;..
+        ///   Looks up a localized string similar to An index &quot;%Index%&quot; is out of range for the instance of type &quot;%TypeName%&quot;..
         /// </summary>
         internal static string IndexOutOfRange {
             get {
@@ -124,7 +124,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function %FunctionName% accepts %FunctionArguments% argument(s) (%PassedArguments% given)..
+        ///   Looks up a localized string similar to Function &quot;%FunctionName%&quot; accepts %FunctionArguments% argument(s) (%PassedArguments% given)..
         /// </summary>
         internal static string WrongNumberOfArguments {
             get {

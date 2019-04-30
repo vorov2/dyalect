@@ -33,7 +33,7 @@ namespace Dyalect.Runtime.Types
             if (index.TypeId == StandardType.Integer)
                 return GetItem((int)index.GetInteger()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
             else if (index.TypeId == StandardType.String)
-                return GetItem(index.GetString()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+                return GetItem(index.GetString()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index.GetString()).Set(ctx);
             else
                 return Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
         }
