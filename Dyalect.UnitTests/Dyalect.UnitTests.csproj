@@ -26,19 +26,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Playground\langtonsant.dy" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Playground\langtonsant.dy" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Dyalect\Dyalect.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Playground\fizzbuzz.dy">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Playground\langtonsant.dy">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Playground\library.dy">
