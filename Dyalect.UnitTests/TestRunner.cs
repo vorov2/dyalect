@@ -58,9 +58,16 @@ namespace Dyalect
                     try
                     {
                         var res = fn.Call(cont.Item1).ToObject();
+                        var kv = k.Value;
+                        var eq = false;
 
-                        if (!res.Equals(k.Value))
-                            Failed(k.Key, $"Expected <{k.Value}>, got <{res}>.");
+                        if (res is double && kv is double)
+                            eq = Math.Abs((double)res - (double)kv) < .0000001;
+                        else
+                            eq = res.Equals(kv);
+
+                        if (!eq)
+                            Failed(k.Key, $"Expected <{k.Value}({k.Value.GetType()})>, got <{res}({res.GetType()})>.");
                         else
                         {
                             Success(k.Key);

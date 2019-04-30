@@ -1,101 +1,13 @@
-﻿const xInc = [0, 1, -1, 0]
-const yInc = [-1, 0, 0, 1]
-const north = 0
-const east = 1
-const west = 2
-const south = 3
+﻿print("Enter the Number ")
+var num = convertToNumber(read())
+print("The Factors are : ")
 
-const leftTurns  = [ west, north, south, east ]
-const rightTurns = [ east, south, north, west ]
-const isBlack = []
+var x = 1
 
-func getArr(x, y) {
-    if x >= isBlack.len() {
-        while isBlack.len() < x + 1 {
-            isBlack.add([])
-        }
-    }
-    const xs = isBlack[x]
-    if y >= xs.len() {
-        while xs.len() < y + 1 {
-            xs.add(false)
-        }
-    }
-    xs
-}
-
-func getIsBlack(x, y) {
-    const arr = getArr(x, y)
-    arr[y]
-}
-
-func setIsBlack(x, y, flag) {
-    const arr = getArr(x, y)
-    arr[y] = flag
-}
-
-func move(ant) {
-    ant["position"]["x"] += xInc[ant["direction"]]
-    ant["position"]["y"] += yInc[ant["direction"]]
-}
-
-func step(ant) {
-    var ptCur = (x: ant["position"]["x"] + ant["origin"]["x"], y: ant["position"]["y"] + ant["origin"]["y"])
-    var leftTurn = getIsBlack(ptCur["x"], ptCur["y"])
-    ant["direction"] =
-        if leftTurn  {
-            leftTurns[ant["direction"]] 
-        } else {
-            rightTurns[ant["direction"]]
-        }
-    setIsBlack(ptCur["x"], ptCur["y"], !getIsBlack(ptCur["x"], ptCur["y"]))
-    move(ant)
-    ptCur = (x: ant["position"]["x"] + ant["origin"]["x"], y: ant["position"]["y"] + ant["origin"]["y"])
-    ant["outOfBounds"] = 
-        ptCur["x"] < 0 ||
-        ptCur["x"] >= ant["width"] ||
-        ptCur["y"] < 0 ||
-        ptCur["y"] >= ant["height"]
-    ant["position"]
-}
-
-func newAnt(width, height) {
-    (
-        position: (x: 0, y: 0),
-        origin: (x: width / 2, y: height / 2),
-        outOfBounds: false,
-        isBlack: [],
-        direction: east,
-        width: width,
-        height: height
-    )
-}
-
-func run() {
-    const w = 100
-    const h = 100
-    const ant = newAnt(w, h)
-
-    while !ant["outOfBounds"] {
-        step(ant)
+while x <= num {
+    if num % x == 0 {
+        print(x)
     }
 
-    var iRow = 0;
-
-    while iRow < w {
-        var iCol = 0;
-        var ln = ""
-        while iCol < h {
-            ln += if getIsBlack(iCol, iRow) {
-                "#"
-            } else {
-                " "
-            }
-            iCol += 1
-        }
-        print(ln)
-        iRow += 1
-    }
+    x += 1
 }
-
-run()
