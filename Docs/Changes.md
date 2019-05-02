@@ -1,5 +1,6 @@
 # 0.3.2
   * Dyalect byte code simplified (removed redundant instructions).
+  * Removed redundant code from parser.
 
 # 0.3.1
   * Code refactoring in virtual machine ([Issue #2](https://github.com/vorov2/dyalect/issues/2)).

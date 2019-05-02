@@ -118,8 +118,14 @@ namespace Dyalect.Compiler
         {
             Build(node.Target, hints.Append(Push), ctx);
             AddLinePragma(node);
-            cw.GetMember(node.Name);
-            PopIf(hints);
+
+            if (hints.Has(Pop))
+                cw.Set();
+            else
+            {
+                cw.GetMember(node.Name);
+                PopIf(hints);
+            }
         }
 
         private void Build(DTupleLiteral node, Hints hints, CompilerContext ctx)
@@ -372,7 +378,8 @@ namespace Dyalect.Compiler
                     PopIf(hints);
                     return;
                 }
-                else if (meth.Name == Builtins.Len && node.Arguments.Count == 0)
+
+                if (meth.Name == Builtins.Len && node.Arguments.Count == 0)
                 {
                     Build(meth.Target, hints.Append(Push), ctx);
                     AddLinePragma(node);
@@ -510,7 +517,9 @@ namespace Dyalect.Compiler
             if (node.AutoAssign != null)
                 EmitBinaryOp(node.AutoAssign.Value);
 
-            if (node.Target.NodeType != NodeType.Name && node.Target.NodeType != NodeType.Index)
+            if (node.Target.NodeType != NodeType.Name
+                && node.Target.NodeType != NodeType.Index
+                && node.Target.NodeType != NodeType.Access)
                 AddError(CompilerError.UnableAssignExpression, node.Target.Location, node.Target);
 
             if (hints.Has(Push))
