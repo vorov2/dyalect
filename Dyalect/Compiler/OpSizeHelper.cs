@@ -57,8 +57,6 @@
             1, //TraitS
             1, //TraitG
             0, //Get
-            0, //Get0
-            0, //Get1
             0, //Set
             1, //RunMod
             0, //Type

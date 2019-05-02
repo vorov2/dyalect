@@ -15,10 +15,11 @@ namespace Dyalect
             DyFunctionTypeInfo.Instance,
             DyLabelTypeInfo.Instance,
             DyTypeTypeInfo.Instance,
-            DyTupleTypeInfo.Instance,
             DyModuleTypeInfo.Instance,
             DyArrayTypeInfo.Instance,
-            DyIteratorTypeInfo.Instance
+            DyIteratorTypeInfo.Instance,
+
+            DyTupleTypeInfo.Instance
         };
 
         public const int Nil = 0;
@@ -29,10 +30,10 @@ namespace Dyalect
         public const int Function = 5;
         public const int Label = 6;
         public const int TypeInfo = 7;
-        public const int Tuple = 8;
-        public const int Module = 9;
-        public const int Array = 10;
-        public const int Iterator = 11;
+        public const int Module = 8;
+        public const int Array = 9;
+        public const int Iterator = 10;
+        public const int Tuple = 11;
 
         public const string NilName = "Nil";
         public const string IntegerName = "Integer";
@@ -42,10 +43,11 @@ namespace Dyalect
         public const string FunctionName = "Function";
         public const string LabelName = "Label";
         public const string TypeInfoName = "TypeInfo";
-        public const string TupleName = "Tuple";
         public const string ModuleName = "Module";
         public const string ArrayName = "Array";
         public const string IteratorName = "Iterator";
+
+        public const string TupleName = "Tuple";
 
         public static int GetTypeCodeByName(string name)
         {

@@ -285,6 +285,9 @@ namespace Dyalect.Runtime.Types
         #region Other Operations
         internal DyObject GetTraitOp(DyObject self, string name, ExecutionContext ctx)
         {
+            //if (self.TypeId >= StandardType.Tuple)
+            //    return self.GetItem(name, ctx);
+
             if (!traits.TryGetValue(name, out var value))
             {
                 value = InternalGetTrait(name, ctx);

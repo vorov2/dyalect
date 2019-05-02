@@ -1,5 +1,5 @@
 # 0.3.2
-  * todo
+  * Dyalect byte code simplified (removed redundant instructions).
 
 # 0.3.1
   * Code refactoring in virtual machine ([Issue #2](https://github.com/vorov2/dyalect/issues/2)).

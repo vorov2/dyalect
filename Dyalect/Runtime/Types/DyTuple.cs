@@ -33,7 +33,7 @@ namespace Dyalect.Runtime.Types
             if (index.TypeId == StandardType.Integer)
                 return GetItem((int)index.GetInteger()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
             else if (index.TypeId == StandardType.String)
-                return GetItem(index.GetString()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index.GetString()).Set(ctx);
+                return GetItem(index.GetString(), ctx);
             else
                 return Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
         }
@@ -43,13 +43,16 @@ namespace Dyalect.Runtime.Types
             if (index.TypeId == StandardType.Integer)
                 SetItem((int)index.GetInteger(), value, ctx);
             else if (index.TypeId == StandardType.String)
-            {
-                var idx = GetOrdinal(index.GetString());
-                SetItem(idx, value, ctx);
-            }
+                SetItem(index.GetString(), value, ctx);
             else
                 Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
         }
+
+        protected internal override DyObject GetItem(string name, ExecutionContext ctx) => 
+            GetItem(GetOrdinal(name)) ?? Err.IndexOutOfRange(this.TypeName(ctx), name).Set(ctx);
+
+        protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx) =>
+            SetItem(GetOrdinal(name), value, ctx);
 
         protected internal abstract void SetItem(int index, DyObject value, ExecutionContext ctx);
 
@@ -58,8 +61,6 @@ namespace Dyalect.Runtime.Types
         protected internal abstract DyObject GetItem(int index);
 
         protected internal abstract string GetKey(int index);
-
-        private DyObject GetItem(string index) => GetItem(GetOrdinal(index));
 
         protected string DefaultKey() => Guid.NewGuid().ToString();
 
