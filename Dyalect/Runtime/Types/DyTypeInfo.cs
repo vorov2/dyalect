@@ -5,7 +5,7 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyTypeInfo : DyObject
     {
-        private readonly Dictionary<string, DyFunction> traits = new Dictionary<string, DyFunction>();
+        private readonly Dictionary<string, DyFunction> members = new Dictionary<string, DyFunction>();
 
         public override object ToObject() => this;
 
@@ -283,17 +283,17 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Other Operations
-        internal DyObject GetTraitOp(DyObject self, string name, ExecutionContext ctx)
+        internal DyObject GetMemberOp(DyObject self, string name, ExecutionContext ctx)
         {
-            //if (self.TypeId >= StandardType.Tuple)
-            //    return self.GetItem(name, ctx);
+            if (self.TypeId >= StandardType.Tuple)
+                return self.GetItem(name, ctx);
 
-            if (!traits.TryGetValue(name, out var value))
+            if (!members.TryGetValue(name, out var value))
             {
-                value = InternalGetTrait(name, ctx);
+                value = InternalGetMember(name, ctx);
 
                 if (value != null)
-                    traits.Add(name, value);
+                    members.Add(name, value);
             }
 
             if (value != null)
@@ -302,7 +302,7 @@ namespace Dyalect.Runtime.Types
             return Err.OperationNotSupported(name, TypeName).Set(ctx);
         }
 
-        internal void SetTraitOp(string name, DyObject value, ExecutionContext ctx)
+        internal void SetMemberOp(string name, DyObject value, ExecutionContext ctx)
         {
             var func = (DyFunction)value;
 
@@ -332,11 +332,11 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Plus: plus = func; break;
             }
 
-            traits.Remove(name);
-            traits.Add(name, func);
+            members.Remove(name);
+            members.Add(name, func);
         }
 
-        private DyFunction InternalGetTrait(string name, ExecutionContext ctx)
+        private DyFunction InternalGetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.ToStr)
                 return DyForeignFunction.Create(name, ToStringAdapter);
@@ -344,7 +344,7 @@ namespace Dyalect.Runtime.Types
             if (name == Builtins.Iterator)
                 return DyForeignFunction.Create(name, GetIterator);
 
-            return GetTrait(name, ctx);
+            return GetMember(name, ctx);
         }
 
         private DyObject GetIterator(ExecutionContext ctx, DyObject self, DyObject[] args)
@@ -355,7 +355,7 @@ namespace Dyalect.Runtime.Types
                 return Err.OperationNotSupported(Builtins.Iterator, TypeName).Set(ctx);
         }
 
-        protected virtual DyFunction GetTrait(string name, ExecutionContext ctx) => null;
+        protected virtual DyFunction GetMember(string name, ExecutionContext ctx) => null;
 
         internal protected virtual DyObject Get(DyObject obj, DyObject index, ExecutionContext ctx) => obj.GetItem(index, ctx);
 

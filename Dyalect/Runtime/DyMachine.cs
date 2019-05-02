@@ -365,35 +365,25 @@ namespace Dyalect.Runtime
                                 ProcessError(ctx, function, ref offset, evalStack);
                         }
                         break;
-                    case OpCode.TraitG:
+                    case OpCode.GetMember:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].GetTraitOp(right, unit.IndexedStrings[op.Data].Value, ctx));
+                        evalStack.Replace(types[right.TypeId].GetMemberOp(right, unit.IndexedStrings[op.Data].Value, ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
-                    case OpCode.TraitS:
+                    case OpCode.SetMember:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
                         if (op.Data >= StandardType.All.Count)
                             types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
-                                .SetTraitOp(left.GetString(), right, ctx);
+                                .SetMemberOp(left.GetString(), right, ctx);
                         else
-                            types[op.Data].SetTraitOp(left.GetString(), right, ctx);
+                            types[op.Data].SetMemberOp(left.GetString(), right, ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Get:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
                         evalStack.Push(right.GetItem(left, ctx));
-                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
-                        break;
-                    case OpCode.Get0:
-                        right = evalStack.Pop();
-                        evalStack.Push(right.GetItem(DyInteger.Zero, ctx));
-                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
-                        break;
-                    case OpCode.Get1:
-                        right = evalStack.Pop();
-                        evalStack.Push(right.GetItem(DyInteger.One, ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Set:

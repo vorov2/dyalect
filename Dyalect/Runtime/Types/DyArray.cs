@@ -203,7 +203,7 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(iterate().GetEnumerator());
         }
 
-        protected override DyFunction GetTrait(string name, ExecutionContext ctx)
+        protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
                 return DyForeignFunction.Create(name, LenAdapter);

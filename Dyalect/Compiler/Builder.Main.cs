@@ -77,8 +77,8 @@ namespace Dyalect.Compiler
                 case NodeType.Array:
                     Build((DArrayLiteral)node, hints, ctx);
                     break;
-                case NodeType.Trait:
-                    Build((DTrait)node, hints, ctx);
+                case NodeType.Access:
+                    Build((DAccess)node, hints, ctx);
                     break;
                 case NodeType.For:
                     Build((DFor)node, hints, ctx);
@@ -114,11 +114,11 @@ namespace Dyalect.Compiler
             PopIf(hints);
         }
 
-        private void Build(DTrait node, Hints hints, CompilerContext ctx)
+        private void Build(DAccess node, Hints hints, CompilerContext ctx)
         {
             Build(node.Target, hints.Append(Push), ctx);
             AddLinePragma(node);
-            cw.TraitG(node.Name);
+            cw.GetMember(node.Name);
             PopIf(hints);
         }
 
@@ -300,7 +300,7 @@ namespace Dyalect.Compiler
 
             cw.Briter(skip);
 
-            cw.TraitG(Builtins.Iterator);
+            cw.GetMember(Builtins.Iterator);
             cw.Call(0);
             cw.MarkLabel(skip);
             cw.PopVar(sys);
@@ -358,23 +358,23 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-            //This is a special optimization for the 'toString' and 'len' traits
+            //This is a special optimization for the 'toString' and 'len' methods
             //If we see that it is called directly we than emit a direct Str or Len op code
-            if (node.Target.NodeType == NodeType.Trait)
+            if (node.Target.NodeType == NodeType.Access)
             {
-                var trait = (DTrait)node.Target;
+                var meth = (DAccess)node.Target;
 
-                if (trait.Name == Builtins.ToStr && node.Arguments.Count == 0)
+                if (meth.Name == Builtins.ToStr && node.Arguments.Count == 0)
                 {
-                    Build(trait.Target, hints.Append(Push), ctx);
+                    Build(meth.Target, hints.Append(Push), ctx);
                     AddLinePragma(node);
                     cw.Str();
                     PopIf(hints);
                     return;
                 }
-                else if (trait.Name == Builtins.Len && node.Arguments.Count == 0)
+                else if (meth.Name == Builtins.Len && node.Arguments.Count == 0)
                 {
-                    Build(trait.Target, hints.Append(Push), ctx);
+                    Build(meth.Target, hints.Append(Push), ctx);
                     AddLinePragma(node);
                     cw.Len();
                     PopIf(hints);
@@ -647,7 +647,7 @@ namespace Dyalect.Compiler
                     else
                         cw.Push(node.Name);
                     var code = GetTypeHandle(node.TypeName, node.Location);
-                    cw.TraitS(code);
+                    cw.SetMember(code);
                 }
 
                 AddLinePragma(node);
@@ -698,7 +698,7 @@ namespace Dyalect.Compiler
             AddLinePragma(node);
             var address = cw.Offset;
             
-            //If this is a trait function we add an additional system variable that
+            //If this is a member function we add an additional system variable that
             //would return an instance of an object to which this function is coupled
             //(same as this in C#)
             if (node.IsMemberFunction)
@@ -819,8 +819,8 @@ namespace Dyalect.Compiler
                     var name = node.GetName();
                     GetVariable(name, node);
                     return name;
-                case NodeType.Trait:
-                    return ((DTrait)node).Name;
+                case NodeType.Access:
+                    return ((DAccess)node).Name;
                 case NodeType.Index:
                     var idx = (DIndexer)node;
                     return GetExpressionName(idx.Index);

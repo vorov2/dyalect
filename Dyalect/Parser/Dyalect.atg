@@ -518,7 +518,7 @@ PRODUCTIONS
                     "." (. var ot = t; .)
                     identToken
                     (.
-                        var fld = new DTrait(ot) { Target = node };
+                        var fld = new DAccess(ot) { Target = node };
                         fld.Name = t.val;
                         node = fld;
                     .)

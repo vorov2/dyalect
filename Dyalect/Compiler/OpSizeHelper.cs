@@ -54,8 +54,8 @@
             1, //NewFun
             1, //NewFunV
             1, //NewIter
-            1, //TraitS
-            1, //TraitG
+            1, //SetMethod
+            1, //GetMethod
             0, //Get
             0, //Set
             1, //RunMod

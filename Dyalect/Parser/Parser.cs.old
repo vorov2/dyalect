@@ -776,7 +776,7 @@ namespace Dyalect.Parser
 				Get();
 				var ot = t; 
 				Expect(1);
-				var fld = new DTrait(ot) { Target = node };
+				var fld = new DAccess(ot) { Target = node };
 				fld.Name = t.val;
 				node = fld;
 				
