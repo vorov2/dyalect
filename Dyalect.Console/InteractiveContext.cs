@@ -91,12 +91,15 @@ namespace Dyalect
 
         public bool Eval()
         {
+#if !DEBUG
             try
+#endif
             {
                 var res = DyMachine.Execute(ExecutionContext);
                 Printer.Output(res);
                 return true;
             }
+#if !DEBUG
             catch (DyCodeException ex)
             {
                 Printer.Error(ex.ToString());
@@ -112,6 +115,7 @@ namespace Dyalect
                 Printer.Error($"Critical failure: {Environment.NewLine}{ex.ToString()}");
                 return false;
             }
+#endif
         }
     }
 }

@@ -54,73 +54,43 @@ namespace Dyalect.Runtime.Types
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {
             if (args == null)
-                args = new DyObject[0];
+                args = Statics.EmptyDyObjects;
 
-            var opd = args.Length;
             var layout = ctx.Composition.Units[UnitId].Layouts[FunctionId];
-            var newStack = new EvalStack(layout.StackSize);
+            Locals = new DyObject[layout.Size];
 
-            if (opd < ParameterNumber)
-                for (var i = opd; i < ParameterNumber; i++)
-                    newStack.Push(DyNil.Instance);
-
-            var c = 0;
-            DyObject[] arr = null;
+            for (var i = 0; i < ParameterNumber; i++)
+                Locals[i] = i >= args.Length ? DyNil.Instance : args[i];
 
             if (IsVariadic)
-                arr = new DyObject[opd - ParameterNumber];
-
-            for (var i = opd - 1; i > -1; i--)
             {
-                if (++c > ParameterNumber)
-                {
-                    if (IsVariadic)
-                        arr[opd - ParameterNumber] = args[i];
-                }
-                else
-                    newStack.Push(args[i]);
+                var arr = new DyObject[args.Length - ParameterNumber];
+
+                for (var i = ParameterNumber; i < args.Length; i++)
+                    arr[i - ParameterNumber] = args[i];
+
+                Locals[Locals.Length - 1] = DyTuple.Create(arr);
             }
 
-            if (IsVariadic)
-                newStack.Push(DyTuple.Create(arr));
-
-            return DyMachine.ExecuteWithData(this, newStack, ctx);
-        }
-
-        internal override DyObject Call3(DyObject arg1, DyObject arg2, DyObject arg3, ExecutionContext ctx)
-        {
-            var layout = ctx.Composition.Units[UnitId].Layouts[FunctionId];
-            var newStack = new EvalStack(layout.StackSize);
-            newStack.Push(arg3);
-            newStack.Push(arg2);
-            newStack.Push(arg1);
-            return DyMachine.ExecuteWithData(this, newStack, ctx);
+            return DyMachine.ExecuteWithData(this, ctx);
         }
 
         internal override DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            var layout = ctx.Composition.Units[UnitId].Layouts[FunctionId];
-            var newStack = new EvalStack(layout.StackSize);
-            newStack.Push(right);
-            newStack.Push(left);
-            return DyMachine.ExecuteWithData(this, newStack, ctx);
+            Locals = new DyObject[ctx.Composition.Units[UnitId].Layouts[FunctionId].Size];
+            Locals[0] = left;
+            Locals[1] = right;
+            return DyMachine.ExecuteWithData(this, ctx);
         }
 
         internal override DyObject Call1(DyObject obj, ExecutionContext ctx)
         {
-            var layout = ctx.Composition.Units[UnitId].Layouts[FunctionId];
-            var newStack = new EvalStack(layout.StackSize);
-            if (ParameterNumber > 1)
-                newStack.Push(DyNil.Instance);
-            newStack.Push(obj);
-            return DyMachine.ExecuteWithData(this, newStack, ctx);
+            Locals = new DyObject[ctx.Composition.Units[UnitId].Layouts[FunctionId].Size];
+            Locals[0] = obj;
+            return DyMachine.ExecuteWithData(this, ctx);
         }
 
-        internal override DyObject Call0(ExecutionContext ctx)
-        {
-            var layout = ctx.Composition.Units[UnitId].Layouts[FunctionId];
-            return DyMachine.ExecuteWithData(this, new EvalStack(layout.StackSize), ctx);
-        }
+        internal override DyObject Call0(ExecutionContext ctx) => DyMachine.ExecuteWithData(this, ctx);
 
         protected override string GetCustomFunctionName(ExecutionContext ctx) => GetFunSym(ctx)?.Name ?? DefaultName;
 

@@ -89,9 +89,9 @@ namespace Dyalect.Compiler
             ops.Add(op);
         }
 
-        public void StartFrame(int init)
+        public void StartFrame()
         {
-            locals.Push(new StackSize { Counter = init, Max = init });
+            locals.Push(new StackSize());
         }
 
         public int FinishFrame()

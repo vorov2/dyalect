@@ -18,7 +18,7 @@ namespace Dyalect.Compiler
         //Вызывается, чтобы создать первую часть символа FunSym.
         private void StartFun(string name, string[] pars, int parCount)
         {
-            cw.StartFrame(parCount);
+            cw.StartFrame();
             pdb.StartFunction(name, cw.Offset, pars);
         }
 

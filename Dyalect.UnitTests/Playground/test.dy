@@ -1,5 +1,17 @@
-﻿var t = (x: 12, y: 33, z: 144)
+﻿/*var acc = 0
+func iter(n) {
+    if n == 0 {
+        0
+    } else {
+        acc = acc + 1;
+        iter(n - 1)
+    }
+}
+iter(10)*/
 
-t.x = 13
 
-print("t.z = ", t.z)
+func testCall(x, y, z, other...) {
+    print((x,y,z), other)
+}
+
+testCall

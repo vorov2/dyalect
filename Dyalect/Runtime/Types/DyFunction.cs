@@ -5,7 +5,6 @@ namespace Dyalect.Runtime.Types
     public abstract class DyFunction : DyObject
     {
         internal const string DefaultName = "<func>";
-        private static readonly DyObject[] noArgs = new DyObject[0];
 
         public int ParameterNumber { get; protected set; }
 
@@ -21,14 +20,12 @@ namespace Dyalect.Runtime.Types
         internal abstract DyFunction Clone(ExecutionContext ctx, DyObject arg);
 
         public abstract DyObject Call(ExecutionContext ctx, params DyObject[] args);
-        
-        internal virtual DyObject Call3(DyObject arg1, DyObject arg2, DyObject arg3, ExecutionContext ctx) => Call(ctx, arg1, arg2, arg3);
 
         internal virtual DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx) =>  Call(ctx, left, right);
 
         internal virtual DyObject Call1(DyObject obj, ExecutionContext ctx) => Call(ctx, obj);
 
-        internal virtual DyObject Call0(ExecutionContext ctx) => Call(ctx, noArgs);
+        internal virtual DyObject Call0(ExecutionContext ctx) => Call(ctx, Statics.EmptyDyObjects);
 
         protected abstract string GetCustomFunctionName(ExecutionContext ctx);
 
