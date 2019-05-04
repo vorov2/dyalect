@@ -57,6 +57,12 @@ namespace Dyalect.Linker
             return DyNil.Instance;
         }
 
+        [Function("read")]
+        public DyObject Read(ExecutionContext ctx, DyObject[] args)
+        {
+            return new DyString(Console.ReadLine());
+        }
+
         [Function("makeArray")]
         public DyObject MakeArray(ExecutionContext ctx, DyObject[] args)
         {

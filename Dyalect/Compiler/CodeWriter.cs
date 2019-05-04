@@ -165,11 +165,11 @@ namespace Dyalect.Compiler
             Emit(new Op(OpCode.Tag, idx));
         }
 
-        public void TraitG(string name)
+        public void GetMember(string name)
         {
             var idx = frame.IndexedStrings.Count;
             frame.IndexedStrings.Add(name);
-            Emit(new Op(OpCode.TraitG, idx));
+            Emit(new Op(OpCode.GetMember, idx));
         }
 
         public void Call(int args) => Emit(new Op(OpCode.Call, args), -args);
@@ -181,20 +181,8 @@ namespace Dyalect.Compiler
         public void Brfalse(Label lab) => Emit(OpCode.Brfalse, lab);
         public void Brterm(Label lab) => Emit(OpCode.Brterm, lab);
         public void Briter(Label lab) => Emit(OpCode.Briter, lab);
-        public void TraitS(int type) => Emit(new Op(OpCode.TraitS, type));
+        public void SetMember(int type) => Emit(new Op(OpCode.SetMember, type));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
-        public void Get(int n)
-        {
-            if (n == 0)
-                Emit(Op.Get0);
-            else if (n == 1)
-                Emit(Op.Get1);
-            else
-            {
-                Push(n);
-                Emit(Op.Get);
-            }
-        }
 
         public void Yield() => Emit(Op.Yield);
         public void Str() => Emit(Op.Str);

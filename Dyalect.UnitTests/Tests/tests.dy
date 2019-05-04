@@ -25,6 +25,22 @@ func mathTest6() { //783.59999999999991
    12.0 * 65.3
 }
 
+func mathTest7() {
+    188.123 - 12.0004 * 5.667 - (12.2 / 0.134)
+}
+
+func mathTest8() {
+    -12 - 14.6
+}
+
+func mathTest9() {
+    199 % 44.12 * 2
+}
+
+func mathTest10() {
+    +16 - -22
+}
+
 func logicalTest1() {
     const x = 144
     x / 12 > 100 || x / 6 == 24
@@ -41,6 +57,12 @@ func comparisonTest1() {
 
 func comparisonTest2() {
     "string1" != "string2" && "string1" == "string1"
+}
+
+func comparisonTest3() {
+    const x = 12
+    const y = 9
+    !(x >= 12 && y <= 10 || x < -12)
 }
 
 func toStringTest1() {
@@ -74,6 +96,56 @@ func baseTest2() {
         }
     }
     inner()
+}
+
+func literalTest1() {
+    var tup = (
+        x: (x: 2, y: (y: 3)),
+        22
+    )
+    tup[1] + tup["x"]["x"] - tup["x"]["y"]["y"]
+}
+
+func literalTest2() {
+    var arr = [[1,2], [3,4,(5,6,a:[7,8])]]
+    arr[0][0] + arr[1][2]["a"][1]
+}
+
+func literalTest3() {
+    "some\tstring with\"inner quotes\" and such (and a buck \u0024)"
+}
+
+func literalTest4() {
+    'some string with ''quotes''!'
+}
+
+func literalTest5() {
+    1.234e-17
+}
+
+func literalTest6() {
+    0x40 + 0x20
+}
+
+func arrayTest1() {
+    var arr = []
+    arr.add(1)
+    arr.add(2)
+    arr.addRange([1,2,3])
+    arr.removeAt(1)
+    arr.remove(3)
+    arr.toString()
+}
+
+func arrayTest2() {
+    var arr = [1,2,3,4,5]
+    arr.clear()
+    arr.add(1)
+    arr.add(2)
+    arr.insert(0, 11)
+    arr.insert(0, 11)
+    arr.remove(11)
+    arr.toString()
 }
 
 ///////////////////////////////////////////////
@@ -459,6 +531,26 @@ func gcdTest() {
     gcd(24, 36)
 }
 
+func lcmTest() {
+    func gcd(a, b) {
+        if a != 0 && b != 0 {
+            if a > b {
+                a %= b
+            } else {
+                b %= a
+            }
+        } else if a {
+            a
+        } else  {
+            b
+        }
+    }
+    func lcm(a, b) {
+        a * b / gcd(a, b)
+    }
+    lcm(10, 135)
+}
+
 func ackTest() {
     func ack(m, n) {
         if m > 0 {
@@ -488,4 +580,37 @@ func foldTest() {
         accum
     }
     fold([1,2,3,4,5,6], (acc,x) => acc + x)
+}
+
+func factorsTest() {
+    func factors(num) {
+        const arr = []
+        var x = 1
+        while x <= num {
+            if num % x == 0 {
+                arr.add(x)
+            }
+            x += 1
+        }
+        arr
+    }
+    factors(27).toString()
+}
+
+func antiprimeTest() {
+    func countDivisors(n) {
+        if n < 2 {
+            return 1
+        }
+        var count = 2
+        var i = 2
+        while i <= n / 2 {
+            if n % i == 0 {
+                count += 1
+            }
+            i += 1
+        }
+        count
+    }
+    countDivisors(20)
 }

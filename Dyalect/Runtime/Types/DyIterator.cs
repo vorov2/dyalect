@@ -38,7 +38,7 @@ namespace Dyalect.Runtime.Types
                 iter = val as DyFunction;
             else
             {
-                iter = ctx.Composition.Types[val.TypeId].GetTraitOp(val, Builtins.Iterator, ctx) as DyFunction;
+                iter = ctx.Composition.Types[val.TypeId].GetMemberOp(val, Builtins.Iterator, ctx) as DyFunction;
 
                 if (ctx.HasErrors)
                     return null;
@@ -96,7 +96,7 @@ namespace Dyalect.Runtime.Types
             return new DyArray(arr);
         }
 
-        protected override DyFunction GetTrait(string name, ExecutionContext ctx)
+        protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == "toArray")
                 return DyForeignFunction.Create(name, ToArray);

@@ -2,9 +2,9 @@
 
 namespace Dyalect.Parser.Model
 {
-    public sealed class DTrait : DNode
+    public sealed class DAccess : DNode
     {
-        public DTrait(Location loc) : base(NodeType.Trait, loc)
+        public DAccess(Location loc) : base(NodeType.Access, loc)
         {
 
         }

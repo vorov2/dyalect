@@ -14,6 +14,14 @@ namespace Dyalect
 
         public object MathTest6 => 783.59999999999991;
 
+        public object MathTest7 => 29.071957080597016;
+
+        public object MathTest8 => -26.6;
+
+        public object MathTest9 => 45.04;
+        
+        public object MathTest10 => 38;
+
         public object LogicalTest1 => true;
 
         public object LogicalTest2 => false;
@@ -22,11 +30,29 @@ namespace Dyalect
 
         public object ComparisonTest2 => true;
 
+        public object ComparisonTest3 => false;
+
         public object ToStringTest1 => "(1, 2, 3)";
 
         public object ToStringTest2 => "[12.2, \"string\", true]";
 
         public object ToStringTest3 => "(x: 42, y: \"foo\")";
+
+        public object LiteralTest1 => 21;
+
+        public object LiteralTest2 => 9;
+
+        public object LiteralTest3 => "some\tstring with\"inner quotes\" and such (and a buck \u0024)";
+
+        public object LiteralTest4 => "some string with 'quotes'!";
+
+        public object LiteralTest5 => 1.234e-17;
+
+        public object LiteralTest6 => 96;
+
+        public object ArrayTest1 => "[1, 1, 2]";
+
+        public object ArrayTest2 => "[11, 1, 2]";
 
         public object BaseTest1 => 2;
 
@@ -72,10 +98,16 @@ namespace Dyalect
 
         public object GcdTest => 12;
 
+        public object LcmTest => 270;
+
         public object EulerTest => "0=100;10=44;20=27.2;30=22.16;40=20.648;50=20.1944;60=20.05832;70=20.017496;80=20.0052488;90=20.00157464;100=20.000472392;";
 
         public object AckTest => 125;
 
         public object FoldTest => 21;
+
+        public object FactorsTest => "[1, 3, 9, 27]";
+
+        public object AntiprimeTest => 6;
     }
 }

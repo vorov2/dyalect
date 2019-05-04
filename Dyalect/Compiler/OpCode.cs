@@ -53,11 +53,9 @@
         NewFun,     //0
         NewFunV,    //0
         NewIter,    //0
-        TraitS,     //-2
-        TraitG,     //-1
+        SetMember,  //-2
+        GetMember,  //-1
         Get,        //-1
-        Get0,       //0
-        Get1,       //0
         Set,        //-3
         RunMod,     //+1
         Type,       //0
