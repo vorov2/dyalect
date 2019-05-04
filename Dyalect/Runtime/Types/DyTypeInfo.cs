@@ -285,8 +285,8 @@ namespace Dyalect.Runtime.Types
         #region Other Operations
         internal DyObject GetMemberOp(DyObject self, string name, ExecutionContext ctx)
         {
-            if (self.TypeId >= StandardType.Tuple)
-                return self.GetItem(name, ctx);
+            //if (self.TypeId >= StandardType.Tuple)
+            //    return self.GetItem(name, ctx);
 
             if (!members.TryGetValue(name, out var value))
             {

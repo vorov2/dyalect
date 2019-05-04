@@ -519,7 +519,7 @@ namespace Dyalect.Compiler
 
             if (node.Target.NodeType != NodeType.Name
                 && node.Target.NodeType != NodeType.Index
-                && node.Target.NodeType != NodeType.Access)
+                /*&& node.Target.NodeType != NodeType.Access*/)
                 AddError(CompilerError.UnableAssignExpression, node.Target.Location, node.Target);
 
             if (hints.Has(Push))
