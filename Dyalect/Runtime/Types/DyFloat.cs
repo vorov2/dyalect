@@ -28,6 +28,8 @@
                 return false;
         }
 
+        public override string ToString() => value.ToString();
+
         public override object ToObject() => value;
 
         internal protected override double GetFloat() => value;

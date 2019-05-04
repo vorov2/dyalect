@@ -9,9 +9,16 @@ func iter(n) {
 }
 iter(10)*/
 
-
-func testCall(x, y, z, other...) {
-    print((x,y,z), other)
+func takeItAll(x, y, args...) {
+    var str = "x=" + y + ";y=" + y + ";other=["
+    var count = 0
+    for x in args {
+        if count > 1 {
+            str += ","
+        }
+        str += x
+        count += 1
+    }
+    str += "]"
 }
-
-testCall
+takeItAll(12, 33.4, "oops", true, [1], (x: 0.33, y: 1))

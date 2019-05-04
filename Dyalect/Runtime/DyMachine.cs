@@ -331,7 +331,6 @@ namespace Dyalect.Runtime
                             if (right is DyNativeFunction callFun)
                             {
                                 layout = ctx.Composition.Units[callFun.UnitId].Layouts[callFun.FunctionId];
-                                //var newStack = new EvalStack(layout.StackSize);
 
                                 if ((op.Data > callFun.ParameterNumber && !callFun.IsVariadic) || op.Data < callFun.ParameterNumber)
                                 {
@@ -348,7 +347,7 @@ namespace Dyalect.Runtime
                                 if (callFun.IsVariadic)
                                 {
                                     arr = new DyObject[op.Data - callFun.ParameterNumber];
-                                    callFun.Locals[layout.Size - 1] = DyTuple.Create(arr);
+                                    callFun.Locals[callFun.ParameterNumber] = DyTuple.Create(arr);
                                 }
 
                                 for (var i = op.Data; i > 0; i--)

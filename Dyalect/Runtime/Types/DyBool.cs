@@ -15,6 +15,8 @@
         protected internal override bool GetBool() => value;
 
         public override object ToObject() => value;
+
+        public override string ToString() => value.ToString();
     }
 
     internal sealed class DyBoolTypeInfo : DyTypeInfo
