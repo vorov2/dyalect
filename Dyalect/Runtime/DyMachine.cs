@@ -358,7 +358,7 @@ namespace Dyalect.Runtime
                                         arr[i - callFun.ParameterNumber - 1] = evalStack.Pop();
                                 }
 
-                                ctx.CallStack.Push(new CallPoint(offset, function.UnitId));
+                                ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
                                 evalStack.Push(ExecuteWithData(callFun, ctx));
                             }
                             else
@@ -471,7 +471,7 @@ namespace Dyalect.Runtime
             for (var i = 0; i < callStack.Count; i++)
             {
                 var cm = callStack[i];
-                st.Push(new StackPoint(cm.ReturnAddress, cm.UnitId));
+                st.Push(new StackPoint((int)(cm & int.MaxValue), (int)(cm >> 32)));
             }
 
             return st;

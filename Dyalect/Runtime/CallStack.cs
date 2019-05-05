@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace Dyalect.Runtime
 {
-    internal sealed class CallStack : IEnumerable<CallPoint>
+    internal sealed class CallStack : IEnumerable<long>
     {
         private const int DEFAULT_SIZE = 4;
-        private CallPoint[] array;
+        private long[] array;
         private int initialSize;
 
         public CallStack() : this(DEFAULT_SIZE)
@@ -18,10 +18,10 @@ namespace Dyalect.Runtime
         public CallStack(int size)
         {
             this.initialSize = size;
-            array = new CallPoint[size];
+            array = new long[size];
         }
 
-        public IEnumerator<CallPoint> GetEnumerator()
+        public IEnumerator<long> GetEnumerator()
         {
             for (var i = 0; i < Count; i++)
                 yield return array[i];
@@ -35,10 +35,10 @@ namespace Dyalect.Runtime
         public void Clear()
         {
             Count = 0;
-            array = new CallPoint[initialSize];
+            array = new long[initialSize];
         }
 
-        public ref CallPoint Pop()
+        public ref long Pop()
         {
             if (Count == 0)
                 throw new IndexOutOfRangeException();
@@ -46,16 +46,16 @@ namespace Dyalect.Runtime
             return ref array[--Count];
         }
 
-        public ref CallPoint Peek()
+        public ref long Peek()
         {
             return ref array[Count - 1];
         }
 
-        public void Push(CallPoint val)
+        public void Push(long val)
         {
             if (Count == array.Length)
             {
-                var dest = new CallPoint[array.Length * 2];
+                var dest = new long[array.Length * 2];
 
                 for (var i = 0; i < Count; i++)
                     dest[i] = array[i];
@@ -68,7 +68,7 @@ namespace Dyalect.Runtime
 
         public int Count;
 
-        public CallPoint this[int index]
+        public long this[int index]
         {
             get { return array[index]; }
             set { array[index] = value; }

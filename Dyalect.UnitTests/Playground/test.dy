@@ -1,24 +1,20 @@
-﻿/*var acc = 0
-func iter(n) {
-    if n == 0 {
-        0
-    } else {
-        acc = acc + 1;
-        iter(n - 1)
-    }
+﻿func fin(z) {
+    z / 0
 }
-iter(10)*/
 
-func takeItAll(x, y, args...) {
-    var str = "x=" + y + ";y=" + y + ";other=["
-    var count = 0
-    for x in args {
-        if count > 1 {
-            str += ","
-        }
-        str += x
-        count += 1
-    }
-    str += "]"
+func zoo(y) {
+    var z = y + y / 2
+    fin(z)
 }
-takeItAll(12, 33.4, "oops", true, [1], (x: 0.33, y: 1))
+
+func bar(x) {
+    var y = x * 2
+    zoo(y)
+}
+
+func foo() {
+    var x = 12
+    bar(x)
+}
+
+foo()

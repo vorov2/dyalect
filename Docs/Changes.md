@@ -1,5 +1,6 @@
 # 0.3.3
   * Logic, responsible for the implementation of function calls, is largely rewritten and optimized.
+  * Internal call stack structure is changed for better effeciency.
 
 # 0.3.2
   * Dyalect byte code simplified (removed redundant instructions).
