@@ -54,6 +54,46 @@ namespace Dyalect
 
         public object ArrayTest2 => "[11, 1, 2]";
 
+        public object ArrayTest3 => "[3, 4, 5]";
+
+        public object ArrayTest4 => "[1, 2, 3, 4, 5, 6]";
+
+        public object ArrayTest5 => "(0, 6)";
+
+        public object ArrayTest6 => "[0, 1, 2, 3, 4, 5]";
+
+        public object ArrayTest7 => "[1, 2, 3, 4, 5, 6]";
+
+        public object ArrayTest8 => 4;
+
+        public object TupleTest1 => 3;
+
+        public object TupleTest2 => 6;
+
+        public object TupleTest3 => "[\"x\", \"y\", \"z\"]";
+
+        public object TupleTest4 => "[0, 1, 2, 3, 4, 5]";
+
+        public object TupleTest5 => 37.44;
+
+        public object StringTest1 => 13;
+
+        public object StringTest2 => "(4, 8)";
+
+        public object StringTest3 => "(false, true)";
+
+        public object StringTest4 => "[\"Name\", \"John\", \"Surname\", \"Doe\", \"Age\", \"21\", \"Gender\", \"Male\"]";
+
+        public object StringTest5 => "fo";
+
+        public object StringTest6 => "fooBAR";
+
+        public object StringTest7 => true;
+
+        public object StringTest8 => true;
+
+        public object StringTest9 => "cdefty";
+
         public object BaseTest1 => 2;
 
         public object BaseTest2 => 2;

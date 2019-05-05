@@ -342,6 +342,16 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(iterate().GetEnumerator());
         }
 
+        private DyObject GetFirst(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            return ((DyTuple)self).GetItem(0);
+        }
+
+        private DyObject GetSecond(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            return ((DyTuple)self).GetItem(1);
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
@@ -352,6 +362,12 @@ namespace Dyalect.Runtime.Types
 
             if (name == "keys")
                 return DyForeignFunction.Create(name, GetKeys);
+
+            if (name == "fst")
+                return DyForeignFunction.Create(name, GetFirst);
+
+            if (name == "snd")
+                return DyForeignFunction.Create(name, GetSecond);
 
             return null;
         }

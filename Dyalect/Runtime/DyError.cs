@@ -24,7 +24,9 @@ namespace Dyalect.Runtime
 
         DivideByZero = 607,
 
-        WrongNumberOfArguments = 608
+        WrongNumberOfArguments = 608,
+
+        InvalidType = 609
     }
 
     public sealed class DyError
@@ -78,6 +80,13 @@ namespace Dyalect.Runtime
             return new DyError(DyErrorCode.IndexInvalidType,
                 ("TypeName", typeName),
                 ("IndexTypeName", indexTypeName));
+        }
+
+        public static DyError InvalidType(string expectedTypeName, string gotTypeName)
+        {
+            return new DyError(DyErrorCode.InvalidType,
+                ("Expected", expectedTypeName),
+                ("Got", gotTypeName));
         }
 
         public static DyError ExternalFunctionFailure(string functionName, string error)

@@ -20,6 +20,8 @@ namespace Dyalect.Runtime.Types
 
         internal protected virtual double GetFloat() => throw new InvalidCastException();
 
+        internal protected virtual char GetChar() => throw new InvalidCastException();
+
         internal protected virtual string GetString() => throw new InvalidCastException();
 
         public abstract object ToObject();
@@ -30,7 +32,7 @@ namespace Dyalect.Runtime.Types
         internal protected virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
             Err.OperationNotSupported(Builtins.Set, this.TypeName(ctx)).Set(ctx);
 
-        internal protected virtual DyObject GetItem(string name, ExecutionContext ctx) => DyNil.Instance;
+        internal protected virtual DyObject GetItem(string name, ExecutionContext ctx) => null;
 
         internal protected virtual void SetItem(string name, DyObject value, ExecutionContext ctx) { }
     }

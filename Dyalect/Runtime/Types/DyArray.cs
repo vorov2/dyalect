@@ -225,6 +225,47 @@ namespace Dyalect.Runtime.Types
             return new DyArray(new List<DyObject>(newArr));
         }
 
+        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+            var fun = args.TakeOne(null) as DyFunction;
+
+            if (fun == null)
+            {
+                return Err.InvalidType(StandardType.FunctionName, 
+                    args == null || args[0] == null ? StandardType.NilName : args[0].TypeName(ctx))
+                    .Set(ctx);
+            }
+
+            arr.Values.Sort((x, y) => {
+                var ret = fun.Call2(x, y, ctx);
+                return ret.TypeId != StandardType.Integer ? 0 : (int)ret.GetInteger();
+            });
+            return DyNil.Instance;
+        }
+
+        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+
+            if (arr.Values.Count == 0)
+                return DyNil.Instance;
+
+            var idx = 0;
+
+            while (idx < arr.Values.Count)
+            {
+                var e = arr.Values[idx];
+
+                if (ReferenceEquals(e, DyNil.Instance))
+                    arr.Values.RemoveAt(idx);
+                else
+                    idx++;
+            }
+
+            return DyNil.Instance;
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
@@ -259,6 +300,12 @@ namespace Dyalect.Runtime.Types
 
             if (name == "slice")
                 return DyForeignFunction.Create(name, GetSlice);
+
+            if (name == "sortBy")
+                return DyForeignFunction.Create(name, SortBy);
+
+            if (name == "compact")
+                return DyForeignFunction.Create(name, Compact);
 
             return null;
         }

@@ -141,4 +141,7 @@
   <data name="WrongNumberOfArguments" xml:space="preserve">
     <value>Function "%FunctionName%" accepts %FunctionArguments% argument(s) (%PassedArguments% given).</value>
   </data>
+  <data name="InvalidType" xml:space="preserve">
+    <value>Type error: expected type "%Expected%", got "%Got%".</value>
+  </data>
 </root>

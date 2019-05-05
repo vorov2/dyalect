@@ -1,11 +1,38 @@
-# 0.3.5
-  * A method `slice` added to the type `Array` ([Issue #19](https://github.com/vorov2/dyalect/issues/19)).
+# 0.4.0
+  * A method `slice` added to the type `Array` ([Issue #19](https://github.com/vorov2/dyalect/issues/19)). This method returns a slice of an array based on the provided indices:
+    ```swift
+    var arr = [1,2,3,4,5,6]
+    arr.slice(2,5) //returns [3,4,5]
+    ```
+  * A method `sortBy` added to the type `Array` ([Issue #14](https://github.com/vorov2/dyalect/issues/14)). This method allows to sort array in place with the help of a provided comparator:
+    ```swift
+    var arr = [4,6,1,3,2,5]
+    arr.sortBy((x,y) => x - y)
+    arr //arr is [1,2,3,4,5,6]
+    ```
+  * A method `compact` added to the type `Array` (removes all occurences of `nil` in place).
+  * Methods `fst` and `snd` (that returns first and second elements) are added to the type `Tuple`.
   * Now it is possible to access named values in containers (e.g. named items in tuples), using regular member access syntax:
     ```swift
     var tup = (x: 12, y: 14)
-    var x = tup.x //access
-    tup.y = 114 //write value
+    var x = tup.x //read a value from x
+    tup.y = 114 //write a value to y
+    ``` 
+  * Methods `indexOf` and `lastIndexOf` are added to the type `String`.
+  * A method `split` is added to the type `String` - it converts a string into an array of strings based on the provided separator(s):
+    ```swift    
+    var str = "Name=John;Surname=Doe"
+    var arr = str.split("=", ";")
+    arr //arr is ["Name", "John", "Surname", "Doe"]
     ```
+  * Methods `upper` and `lower` are added to the `String` data type, these methods trasforms a string into lower or upper case.
+  * Methods `startsWith` and `endsWith` are added to the `String` data type.
+  * A method `sub` is added to the type `String`, this method returns a substring of a string:
+    ```swift
+    "abcdef".sub(2, 4) //returns "cdef"
+    "qwerty".sub(4) //returns "ty"
+    ```
+  * A bug fixed - incorrect type info was generated for the values of type `String`.
 
 # 0.3.4
   * A bug fixed - incorrect type info was generated for the values of type `Array`.

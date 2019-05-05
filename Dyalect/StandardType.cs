@@ -11,6 +11,7 @@ namespace Dyalect
             DyIntegerTypeInfo.Instance,
             DyFloatTypeInfo.Instance,
             DyBoolTypeInfo.Instance,
+            null,//DyCharTypeInfo.Instance,
             DyStringTypeInfo.Instance,
             DyFunctionTypeInfo.Instance,
             DyLabelTypeInfo.Instance,
@@ -26,19 +27,21 @@ namespace Dyalect
         public const int Integer = 1;
         public const int Float = 2;
         public const int Bool = 3;
-        public const int String = 4;
-        public const int Function = 5;
-        public const int Label = 6;
-        public const int TypeInfo = 7;
-        public const int Module = 8;
-        public const int Array = 9;
-        public const int Iterator = 10;
-        public const int Tuple = 11;
+        public const int Char = 4;
+        public const int String = 5;
+        public const int Function = 6;
+        public const int Label = 7;
+        public const int TypeInfo = 8;
+        public const int Module = 9;
+        public const int Array = 10;
+        public const int Iterator = 11;
+        public const int Tuple = 12;
 
         public const string NilName = "Nil";
         public const string IntegerName = "Integer";
         public const string FloatName = "Float";
         public const string BoolName = "Bool";
+        public const string CharName = "Char";
         public const string StringName = "String";
         public const string FunctionName = "Function";
         public const string LabelName = "Label";
@@ -57,6 +60,7 @@ namespace Dyalect
                 case IntegerName: return Integer;
                 case FloatName: return Float;
                 case BoolName: return Bool;
+                case CharName: return Char;
                 case StringName: return String;
                 case FunctionName: return Function;
                 case LabelName: return Label;
