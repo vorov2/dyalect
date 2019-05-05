@@ -52,7 +52,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(Value[idx].ToString());
         }
 
-        public IEnumerator<DyObject> GetEnumerator() => Value.Select(c => new DyString(c.ToString())).GetEnumerator();
+        public IEnumerator<DyObject> GetEnumerator() => Value.Select(c => new DyChar(c)).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
@@ -71,8 +71,8 @@ namespace Dyalect.Runtime.Types
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            var str1 = left.TypeId == StandardType.String ? left.GetString() : left.ToString(ctx).Value;
-            var str2 = right.TypeId == StandardType.String ? right.GetString() : right.ToString(ctx).Value;
+            var str1 = left.TypeId == StandardType.String || left.TypeId == StandardType.Char ? left.GetString() : left.ToString(ctx).Value;
+            var str2 = right.TypeId == StandardType.String || right.TypeId == StandardType.Char ? right.GetString() : right.ToString(ctx).Value;
             return new DyString(str1 + str2);
         }
 

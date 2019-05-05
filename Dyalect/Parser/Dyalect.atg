@@ -29,7 +29,11 @@ TOKENS
                     | "\\u" hexDigit hexDigit hexDigit hexDigit
                     }
                 "\"".
-    charToken = "'" { char | "''" } "'".
+    charToken = "'" ( char
+                    | "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"
+                    | "\\u" hexDigit hexDigit hexDigit hexDigit
+                    )
+                "'".
     implicitToken = "$" digit { digit }.
 
     varToken            = "var".
@@ -66,13 +70,6 @@ PRODUCTIONS
 
     Separator = ";".
 
-    AnyString<out string val> =
-        (. val = null; .)
-        (
-            stringToken (. val = ParseString(); .)
-            | charToken (. val = ParseChar(); .)
-        ).
-
     StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!"
         | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
 
@@ -99,7 +96,7 @@ PRODUCTIONS
             .)
         ]
         [
-            "(" AnyString<out var str> (. inc.Dll = str; .) ")"
+            "(" stringToken (. inc.Dll = ParseString(); .) ")"
         ]
         (. Imports.Add(inc); .).
 
@@ -559,6 +556,7 @@ PRODUCTIONS
             | Integer<out node>
             | Float<out node>
             | String<out node>
+            | Char<out node>
             | Bool<out node>
             | Nil<out node>
             | IF (IsTuple()) Tuple<out node>
@@ -608,7 +606,7 @@ PRODUCTIONS
                 (. string name = null; .)
                 (
                       identToken (. name = t.val; .)
-                    | AnyString<out var str> (. name = str; .)
+                    | stringToken (. name = ParseString(); .)
                 )
                 ":"
                 (. var tag = new DLabelLiteral(t) { Label = name }; .)
@@ -645,6 +643,12 @@ PRODUCTIONS
 
     Nil<out DNode node> = "nil" (. node = new DNilLiteral(t); .).
 
+    Char<out DNode node> =
+        (
+            charToken
+            (. node = new DCharLiteral(t) { Value = ParseString()[0] }; .)
+        ).
+
     Integer<out DNode node> =
         (
             intToken
@@ -659,8 +663,8 @@ PRODUCTIONS
 
     String<out DNode node> =
         (
-            AnyString<out var str>
-            (. node = new DStringLiteral(t) { Value = str }; .)
+            stringToken
+            (. node = new DStringLiteral(t) { Value = ParseString() }; .)
         ).
 
     Bool<out DNode node> =

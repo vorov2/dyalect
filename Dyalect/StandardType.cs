@@ -11,7 +11,7 @@ namespace Dyalect
             DyIntegerTypeInfo.Instance,
             DyFloatTypeInfo.Instance,
             DyBoolTypeInfo.Instance,
-            null,//DyCharTypeInfo.Instance,
+            DyCharTypeInfo.Instance,
             DyStringTypeInfo.Instance,
             DyFunctionTypeInfo.Instance,
             DyLabelTypeInfo.Instance,

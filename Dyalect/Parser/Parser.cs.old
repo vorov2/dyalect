@@ -65,17 +65,6 @@ namespace Dyalect.Parser
 		Expect(21);
 	}
 
-	void AnyString(out string val) {
-		val = null; 
-		if (la.kind == 4) {
-			Get();
-			val = ParseString(); 
-		} else if (la.kind == 5) {
-			Get();
-			val = ParseChar(); 
-		} else SynErr(69);
-	}
-
 	void StandardOperators() {
 		switch (la.kind) {
 		case 30: {
@@ -150,7 +139,7 @@ namespace Dyalect.Parser
 			Get();
 			break;
 		}
-		default: SynErr(70); break;
+		default: SynErr(69); break;
 		}
 	}
 
@@ -159,7 +148,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (StartOf(1)) {
 			StandardOperators();
-		} else SynErr(71);
+		} else SynErr(70);
 	}
 
 	void Qualident(out string s1, out string s2, out string s3) {
@@ -196,8 +185,8 @@ namespace Dyalect.Parser
 		}
 		if (la.kind == 24) {
 			Get();
-			AnyString(out var str);
-			inc.Dll = str; 
+			Expect(4);
+			inc.Dll = ParseString(); 
 			Expect(25);
 		}
 		Imports.Add(inc); 
@@ -269,7 +258,7 @@ namespace Dyalect.Parser
 			Function(out node);
 			break;
 		}
-		default: SynErr(72); break;
+		default: SynErr(71); break;
 		}
 	}
 
@@ -278,7 +267,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 8) {
 			Get();
-		} else SynErr(73);
+		} else SynErr(72);
 		var bin = new DBinding(t) { Constant = t.val == "const" }; 
 		Expect(1);
 		bin.Name = t.val; 
@@ -296,7 +285,7 @@ namespace Dyalect.Parser
 			FunctionExpr(out node);
 		} else if (StartOf(3)) {
 			Assignment(out node);
-		} else SynErr(74);
+		} else SynErr(73);
 		if (implicits != null)
 		{
 		   var func = new DFunctionDeclaration(node.Location)
@@ -321,7 +310,7 @@ namespace Dyalect.Parser
 			Return(out node);
 		} else if (la.kind == 13) {
 			Yield(out node);
-		} else SynErr(75);
+		} else SynErr(74);
 	}
 
 	void Block(out DNode node) {
@@ -356,7 +345,7 @@ namespace Dyalect.Parser
 			} else if (la.kind == 14) {
 				If(out node);
 				@if.False = node; 
-			} else SynErr(76);
+			} else SynErr(75);
 		}
 		node = @if; 
 	}
@@ -367,7 +356,7 @@ namespace Dyalect.Parser
 			While(out node);
 		} else if (la.kind == 15) {
 			For(out node);
-		} else SynErr(77);
+		} else SynErr(76);
 	}
 
 	void Function(out DNode node) {
@@ -427,7 +416,7 @@ namespace Dyalect.Parser
 			Block(out node);
 		} else if (la.kind == 15 || la.kind == 16) {
 			Loops(out node);
-		} else SynErr(78);
+		} else SynErr(77);
 	}
 
 	void FunctionArgument(DFunctionDeclaration node) {
@@ -508,7 +497,7 @@ namespace Dyalect.Parser
 			FunctionArgument(f);
 		} else if (la.kind == 24) {
 			FunctionArguments(f);
-		} else SynErr(79);
+		} else SynErr(78);
 		Expect(18);
 		Expr(out var exp);
 		f.Body = exp; 
@@ -807,8 +796,10 @@ namespace Dyalect.Parser
 			Integer(out node);
 		} else if (la.kind == 3) {
 			Float(out node);
-		} else if (la.kind == 4 || la.kind == 5) {
+		} else if (la.kind == 4) {
 			String(out node);
+		} else if (la.kind == 5) {
+			Char(out node);
 		} else if (la.kind == 66 || la.kind == 67) {
 			Bool(out node);
 		} else if (la.kind == 65) {
@@ -821,7 +812,7 @@ namespace Dyalect.Parser
 			Group(out node);
 		} else if (la.kind == 64) {
 			Base(out node);
-		} else SynErr(80);
+		} else SynErr(79);
 	}
 
 	void ApplicationArguments(DApplication app) {
@@ -856,8 +847,13 @@ namespace Dyalect.Parser
 	}
 
 	void String(out DNode node) {
-		AnyString(out var str);
-		node = new DStringLiteral(t) { Value = str }; 
+		Expect(4);
+		node = new DStringLiteral(t) { Value = ParseString() }; 
+	}
+
+	void Char(out DNode node) {
+		Expect(5);
+		node = new DCharLiteral(t) { Value = ParseString()[0] }; 
 	}
 
 	void Bool(out DNode node) {
@@ -865,7 +861,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 67) {
 			Get();
-		} else SynErr(81);
+		} else SynErr(80);
 		node = new DBooleanLiteral(t) { Value = t.val == "true" }; 
 	}
 
@@ -929,17 +925,17 @@ namespace Dyalect.Parser
 			if (la.kind == 1) {
 				Get();
 				name = t.val; 
-			} else if (la.kind == 4 || la.kind == 5) {
-				AnyString(out var str);
-				name = str; 
-			} else SynErr(82);
+			} else if (la.kind == 4) {
+				Get();
+				name = ParseString(); 
+			} else SynErr(81);
 			Expect(22);
 			var tag = new DLabelLiteral(t) { Label = name }; 
 			Expr(out node);
 			tag.Expression = node; node = tag; 
 		} else if (StartOf(5)) {
 			Expr(out node);
-		} else SynErr(83);
+		} else SynErr(82);
 	}
 
 	void DyalectItem() {
@@ -949,7 +945,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 48) {
 			Import();
 			Separator();
-		} else SynErr(84);
+		} else SynErr(83);
 	}
 
 	void Dyalect() {
@@ -1060,22 +1056,21 @@ namespace Dyalect.Parser
 			case 66: s = "\"true\" expected"; break;
 			case 67: s = "\"false\" expected"; break;
 			case 68: s = "??? expected"; break;
-			case 69: s = "invalid AnyString"; break;
-			case 70: s = "invalid StandardOperators"; break;
-			case 71: s = "invalid FunctionName"; break;
-			case 72: s = "invalid Statement"; break;
-			case 73: s = "invalid Binding"; break;
-			case 74: s = "invalid SimpleExpr"; break;
-			case 75: s = "invalid ControlFlow"; break;
-			case 76: s = "invalid If"; break;
-			case 77: s = "invalid Loops"; break;
-			case 78: s = "invalid Expr"; break;
-			case 79: s = "invalid FunctionExpr"; break;
-			case 80: s = "invalid Literal"; break;
-			case 81: s = "invalid Bool"; break;
+			case 69: s = "invalid StandardOperators"; break;
+			case 70: s = "invalid FunctionName"; break;
+			case 71: s = "invalid Statement"; break;
+			case 72: s = "invalid Binding"; break;
+			case 73: s = "invalid SimpleExpr"; break;
+			case 74: s = "invalid ControlFlow"; break;
+			case 75: s = "invalid If"; break;
+			case 76: s = "invalid Loops"; break;
+			case 77: s = "invalid Expr"; break;
+			case 78: s = "invalid FunctionExpr"; break;
+			case 79: s = "invalid Literal"; break;
+			case 80: s = "invalid Bool"; break;
+			case 81: s = "invalid TupleElement"; break;
 			case 82: s = "invalid TupleElement"; break;
-			case 83: s = "invalid TupleElement"; break;
-			case 84: s = "invalid DyalectItem"; break;
+			case 83: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

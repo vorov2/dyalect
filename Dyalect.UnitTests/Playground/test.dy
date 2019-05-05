@@ -20,6 +20,4 @@ func foo() {
 foo() 
 */
 
-var arr = [1,2,3,4,5,6]
-
-arr.slice(2,5)
+'\'' + 'F' + '\''

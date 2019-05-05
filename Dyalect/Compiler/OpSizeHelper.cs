@@ -17,6 +17,7 @@
             1, //PushR8
             0, //PushR8_0
             1, //PushStr
+            1, //PushCh
             1, //Br
             1, //Brtrue
             1, //Brfalse

@@ -16,6 +16,7 @@
         PushR8,     //+1
         PushR8_0,   //+1
         PushStr,    //+1
+        PushCh,     //+1
         Br,         //0
         Brtrue,     //-1
         Brfalse,    //-1

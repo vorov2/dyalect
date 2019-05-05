@@ -116,7 +116,7 @@ func literalTest3() {
 }
 
 func literalTest4() {
-    'some string with ''quotes''!'
+    '\'' + 'F' + '\''
 }
 
 func literalTest5() {
@@ -493,7 +493,7 @@ func iteratorTest5() {
         }
         arr
     }
-    const arr = toArray( filter("hello", x => x == "l") )
+    const arr = toArray( filter("hello", x => x == 'l') )
     arr[0] + arr[1]
 }
 

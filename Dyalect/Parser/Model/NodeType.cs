@@ -8,6 +8,7 @@
         Integer,
         Float,
         String,
+        Char,
         Boolean,
         Nil,
 

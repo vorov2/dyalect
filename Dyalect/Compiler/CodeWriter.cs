@@ -145,6 +145,12 @@ namespace Dyalect.Compiler
                 Emit(Op.PushI1_0);
         }
 
+        public void Push(char val)
+        {
+            Emit(new Op(OpCode.PushCh, frame.IndexedChars.Count));
+            frame.IndexedChars.Add(new DyChar(val));
+        }
+
         public void PushVar(ScopeVar sv)
         {
             if ((sv.Data & VarFlags.External) == VarFlags.External)

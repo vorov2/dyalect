@@ -28,7 +28,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction add;
         protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.String)
+            if (right.TypeId == StandardType.String || right.TypeId == StandardType.Char)
                 return new DyString(left.ToString(ctx).Value + right.GetString());
 
             return Err.OperationNotSupported(Builtins.Add, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);

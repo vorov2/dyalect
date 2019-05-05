@@ -86,6 +86,9 @@ namespace Dyalect.Compiler
                 case NodeType.Base:
                     Build((DBase)node, hints, ctx);
                     break;
+                case NodeType.Char:
+                    Build((DCharLiteral)node, hints, ctx);
+                    break;
             }
         }
 
@@ -432,6 +435,13 @@ namespace Dyalect.Compiler
         }
 
         private void Build(DStringLiteral node, Hints hints, CompilerContext ctx)
+        {
+            AddLinePragma(node);
+            cw.Push(node.Value);
+            PopIf(hints);
+        }
+
+        private void Build(DCharLiteral node, Hints hints, CompilerContext ctx)
         {
             AddLinePragma(node);
             cw.Push(node.Value);

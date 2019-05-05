@@ -26,7 +26,7 @@ namespace Dyalect.Linker
 
             if (arg.TypeId == StandardType.Integer || arg.TypeId == StandardType.Float)
                 return arg;
-            else if (arg.TypeId == StandardType.String)
+            else if (arg.TypeId == StandardType.String || arg.TypeId == StandardType.Char)
             {
                 var str = arg.GetString();
                 if (int.TryParse(str, out var i4))

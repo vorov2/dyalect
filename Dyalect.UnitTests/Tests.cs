@@ -44,7 +44,7 @@ namespace Dyalect
 
         public object LiteralTest3 => "some\tstring with\"inner quotes\" and such (and a buck \u0024)";
 
-        public object LiteralTest4 => "some string with 'quotes'!";
+        public object LiteralTest4 => "'F'";
 
         public object LiteralTest5 => 1.234e-17;
 

@@ -128,6 +128,9 @@ namespace Dyalect.Runtime
                     case OpCode.PushNilT:
                         evalStack.Push(DyNil.Terminator);
                         break;
+                    case OpCode.PushCh:
+                        evalStack.Push(unit.IndexedChars[op.Data]);
+                        break;
                     case OpCode.PushI1_1:
                         evalStack.Push(DyBool.True);
                         break;

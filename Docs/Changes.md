@@ -1,4 +1,10 @@
 # 0.4.0
+  * Now it is possible to access named values in containers (e.g. named items in tuples), using regular member access syntax:
+    ```swift
+    var tup = (x: 12, y: 14)
+    var x = tup.x //read a value from x
+    tup.y = 114 //write a value to y
+    ``` 
   * A method `slice` added to the type `Array` ([Issue #19](https://github.com/vorov2/dyalect/issues/19)). This method returns a slice of an array based on the provided indices:
     ```swift
     var arr = [1,2,3,4,5,6]
@@ -11,13 +17,7 @@
     arr //arr is [1,2,3,4,5,6]
     ```
   * A method `compact` added to the type `Array` (removes all occurences of `nil` in place).
-  * Methods `fst` and `snd` (that returns first and second elements) are added to the type `Tuple`.
-  * Now it is possible to access named values in containers (e.g. named items in tuples), using regular member access syntax:
-    ```swift
-    var tup = (x: 12, y: 14)
-    var x = tup.x //read a value from x
-    tup.y = 114 //write a value to y
-    ``` 
+  * Methods `fst` and `snd` (that return first and second elements) are added to the type `Tuple`.
   * Methods `indexOf` and `lastIndexOf` are added to the type `String`.
   * A method `split` is added to the type `String` - it converts a string into an array of strings based on the provided separator(s):
     ```swift    
@@ -32,6 +32,13 @@
     "abcdef".sub(2, 4) //returns "cdef"
     "qwerty".sub(4) //returns "ty"
     ```
+  * **(Breaking change)** A new `Char` data type is added. Now double quoted literals create strings, while single quoted literals create chars (previously both would result in a string):
+    ```swift
+    var str = "Foo" //A string
+    var ch = 'F' //A char
+    ```
+    Chars support escape codes in a manner similar to strings. Also chars support method `toString`, comparison operators, equality operations and addition operator (the result of addition of two chars is a string).
+  * **(Breaking change)** Now string iterator returns a sequence of chars (instead of sequence of strings).
   * A bug fixed - incorrect type info was generated for the values of type `String`.
 
 # 0.3.4
