@@ -33,7 +33,7 @@ namespace Dyalect.Runtime.Types
             if (index.TypeId == StandardType.Integer)
                 return GetItem((int)index.GetInteger()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
             else if (index.TypeId == StandardType.String)
-                return GetItem(index.GetString(), ctx);
+                return GetItem(index.GetString(), ctx) ?? Err.IndexOutOfRange(this.TypeName(ctx), index.GetString()).Set(ctx);
             else
                 return Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
         }
@@ -48,8 +48,7 @@ namespace Dyalect.Runtime.Types
                 Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
         }
 
-        protected internal override DyObject GetItem(string name, ExecutionContext ctx) => 
-            GetItem(GetOrdinal(name)) ?? Err.IndexOutOfRange(this.TypeName(ctx), name).Set(ctx);
+        protected internal override DyObject GetItem(string name, ExecutionContext ctx) => GetItem(GetOrdinal(name));
 
         protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx) =>
             SetItem(GetOrdinal(name), value, ctx);

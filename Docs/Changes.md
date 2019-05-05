@@ -1,5 +1,8 @@
+# 0.3.5
+  * todo
+
 # 0.3.4
-  * A bug fixed - incorrect type info were generated for the values of type `Array`.
+  * A bug fixed - incorrect type info was generated for the values of type `Array`.
   * Runtime type system is refactored.
   * Optimizations in members functions execution.
   * Now module import directives are always compiled before the rest of the code.

@@ -20,12 +20,7 @@ func foo() {
 foo() 
 */
 
-func Integer + (other) {
-    this * other
-}
+var tup = (x: 12, y: 14)
 
-var res = 12 + 34
-typeof(res).__deleteMember("+")
-var res1 = 12 + 34
-
-(res, res1)
+tup.y = 144
+tup.y

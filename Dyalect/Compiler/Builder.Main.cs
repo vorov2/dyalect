@@ -113,12 +113,15 @@ namespace Dyalect.Compiler
 
         private void Build(DAccess node, Hints hints, CompilerContext ctx)
         {
-            Build(node.Target, hints.Append(Push), ctx);
+            Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
             AddLinePragma(node);
             var nameId = GetMemberNameId(node.Name);
 
             if (hints.Has(Pop))
+            {
+                cw.Push(node.Name);
                 cw.Set();
+            }
             else
             {
                 cw.GetMember(nameId);
@@ -517,7 +520,7 @@ namespace Dyalect.Compiler
 
             if (node.Target.NodeType != NodeType.Name
                 && node.Target.NodeType != NodeType.Index
-                /*&& node.Target.NodeType != NodeType.Access*/)
+                && node.Target.NodeType != NodeType.Access)
                 AddError(CompilerError.UnableAssignExpression, node.Target.Location, node.Target);
 
             if (hints.Has(Push))

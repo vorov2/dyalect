@@ -299,8 +299,13 @@ namespace Dyalect.Runtime.Types
 
         internal DyObject GetMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
         {
-            //if (SupportInstanceMembers)
-            //    return self.GetItem(name, ctx);
+            if (SupportInstanceMembers)
+            {
+                var ret = self.GetItem(ctx.Composition.Members[nameId], ctx);
+
+                if (ret != null)
+                    return ret;
+            }
 
             if (!members.TryGetValue(nameId, out var value))
             {
