@@ -54,7 +54,7 @@
             0,  //NewFun
             0,  //NewFunV
             1,  //NewIter
-            -2, //SetMethod
+            -1, //SetMethod
             0,  //GetMethod
             -1, //Get
             -3, //Set
@@ -66,6 +66,7 @@
             1,  //PushNilT
             0,  //Brterm
             0,  //Briter
+            0,  //Aux
         };
     }
 }

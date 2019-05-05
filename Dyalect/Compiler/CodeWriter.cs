@@ -102,10 +102,15 @@ namespace Dyalect.Compiler
 
         public int Offset => ops.Count;
 
+        public int IndexString(string val)
+        {
+            frame.IndexedStrings.Add(new DyString(val));
+            return frame.IndexedStrings.Count - 1;
+        }
+
         public void Push(string val)
         {
-            Emit(new Op(OpCode.PushStr, frame.IndexedStrings.Count));
-            frame.IndexedStrings.Add(new DyString(val));
+            Emit(new Op(OpCode.PushStr, IndexString(val)));
         }
 
         public void Push(double val)
@@ -165,11 +170,9 @@ namespace Dyalect.Compiler
             Emit(new Op(OpCode.Tag, idx));
         }
 
-        public void GetMember(string name)
+        public void GetMember(int nameId)
         {
-            var idx = frame.IndexedStrings.Count;
-            frame.IndexedStrings.Add(name);
-            Emit(new Op(OpCode.GetMember, idx));
+            Emit(new Op(OpCode.GetMember, nameId));
         }
 
         public void Call(int args) => Emit(new Op(OpCode.Call, args), -args);
@@ -183,6 +186,7 @@ namespace Dyalect.Compiler
         public void Briter(Label lab) => Emit(OpCode.Briter, lab);
         public void SetMember(int type) => Emit(new Op(OpCode.SetMember, type));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
+        public void Aux(int data) => Emit(new Op(OpCode.Aux, data));
 
         public void Yield() => Emit(Op.Yield);
         public void Str() => Emit(Op.Str);

@@ -22,7 +22,7 @@ namespace Dyalect.Runtime.Types
     {
         public static readonly DyModuleTypeInfo Instance = new DyModuleTypeInfo();
 
-        private DyModuleTypeInfo() : base(StandardType.Nil)
+        private DyModuleTypeInfo() : base(StandardType.Nil, false)
         {
 
         }

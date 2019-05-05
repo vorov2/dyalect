@@ -269,7 +269,7 @@ namespace Dyalect.Runtime.Types
     {
         public static readonly DyTupleTypeInfo Instance = new DyTupleTypeInfo();
 
-        private DyTupleTypeInfo() : base(StandardType.Tuple)
+        private DyTupleTypeInfo() : base(StandardType.Tuple, true)
         {
 
         }

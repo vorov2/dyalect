@@ -21,7 +21,7 @@
     {
         public static readonly DyLabelTypeInfo Instance = new DyLabelTypeInfo();
 
-        private DyLabelTypeInfo() : base(StandardType.Label)
+        private DyLabelTypeInfo() : base(StandardType.Label, false)
         {
 
         }

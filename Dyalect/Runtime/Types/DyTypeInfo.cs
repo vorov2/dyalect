@@ -5,7 +5,7 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyTypeInfo : DyObject
     {
-        private readonly Dictionary<string, DyFunction> members = new Dictionary<string, DyFunction>();
+        private readonly Dictionary<int, DyFunction> members = new Dictionary<int, DyFunction>();
 
         public override object ToObject() => this;
 
@@ -15,9 +15,12 @@ namespace Dyalect.Runtime.Types
 
         public int TypeCode { get; internal set; }
 
-        internal DyTypeInfo(int typeCode) : base(StandardType.TypeInfo)
+        public bool SupportInstanceMembers { get; }
+
+        internal DyTypeInfo(int typeCode, bool supportInstanceMembers) : base(StandardType.TypeInfo)
         {
             TypeCode = typeCode;
+            SupportInstanceMembers = supportInstanceMembers;
         }
 
         #region Binary Operations
@@ -283,29 +286,51 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Other Operations
-        internal DyObject GetMemberOp(DyObject self, string name, ExecutionContext ctx)
+        internal DyObject GetMemberOp(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
         {
-            //if (self.TypeId >= StandardType.Tuple)
+            nameId = unit.MemberIds[nameId];
+            var value = GetMemberDirect(self, nameId, ctx);
+
+            if (value != null)
+                return value;
+
+            return Err.OperationNotSupported(unit.IndexedStrings[nameId].GetString(), TypeName).Set(ctx);
+        }
+
+        internal DyObject GetMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
+        {
+            //if (SupportInstanceMembers)
             //    return self.GetItem(name, ctx);
 
-            if (!members.TryGetValue(name, out var value))
+            if (!members.TryGetValue(nameId, out var value))
             {
+                var name = ctx.Composition.Members[nameId];
                 value = InternalGetMember(name, ctx);
 
                 if (value != null)
-                    members.Add(name, value);
+                    members.Add(nameId, value);
             }
 
             if (value != null)
                 return value.Clone(ctx, self);
 
-            return Err.OperationNotSupported(name, TypeName).Set(ctx);
+            return value;
         }
 
-        internal void SetMemberOp(string name, DyObject value, ExecutionContext ctx)
+        internal void SetMemberOp(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
         {
-            var func = (DyFunction)value;
+            var func = value as DyFunction;
+            nameId = unit.MemberIds[nameId];
+            var name = ctx.Composition.Members[nameId];
+            SetBuiltin(name, func);
+            members.Remove(nameId);
 
+            if (func != null)
+                members.Add(nameId, func);
+        }
+
+        private void SetBuiltin(string name, DyFunction func)
+        {
             switch (name)
             {
                 case Builtins.Add: add = func; break;
@@ -331,9 +356,6 @@ namespace Dyalect.Runtime.Types
                 case Builtins.ToStr: tos = func; break;
                 case Builtins.Plus: plus = func; break;
             }
-
-            members.Remove(name);
-            members.Add(name, func);
         }
 
         private DyFunction InternalGetMember(string name, ExecutionContext ctx)
@@ -343,6 +365,18 @@ namespace Dyalect.Runtime.Types
 
             if (name == Builtins.Iterator)
                 return DyForeignFunction.Create(name, GetIterator);
+
+            if (name == "__deleteMember")
+                return DyForeignFunction.Create(name, (context, self, args) =>
+                {
+                    var nm = args.TakeOne(DyString.Empty).GetString();
+                    if (context.Composition.MembersMap.TryGetValue(nm, out var nameId)) {
+                        var ti = (DyTypeInfo)self;
+                        ti.SetBuiltin(nm, null);
+                        ti.members.Remove(nameId);
+                    }
+                    return DyNil.Instance;
+                });
 
             return GetMember(name, ctx);
         }
@@ -367,7 +401,7 @@ namespace Dyalect.Runtime.Types
     {
         public static readonly DyTypeTypeInfo Instance = new DyTypeTypeInfo();
 
-        private DyTypeTypeInfo() : base(StandardType.TypeInfo)
+        private DyTypeTypeInfo() : base(StandardType.TypeInfo, true)
         {
 
         }

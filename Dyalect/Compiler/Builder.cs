@@ -22,6 +22,7 @@ namespace Dyalect.Compiler
         private Label programEnd; //Лейбл, отмечающий конец программы
         private Dictionary<string, UnitInfo> referencedUnits = new Dictionary<string, UnitInfo>();
         private Dictionary<string, TypeInfo> types = new Dictionary<string, TypeInfo>();
+        private Dictionary<string, int> memberNames = new Dictionary<string, int>();
 
         private readonly static DImport defaultInclude = new DImport(default) { ModuleName = "lang" };
 
@@ -71,11 +72,14 @@ namespace Dyalect.Compiler
             Messages.Clear();
             unit.FileName = codeModel.FileName;
 
+            //It is used internally, so we need to add it even if the code doesn't reference it
+            GetMemberNameId(Builtins.Iterator);
+
             if (unit.Layouts.Count == 0)
                 unit.Layouts.Add(null); //A layout reserved for the top level
 
             cw.StartFrame(); //Start a new global frame
-            var res = TryBuild(codeModel.Root);
+            var res = TryBuild(codeModel);
 
             if (!res)
                 return null;
@@ -89,14 +93,19 @@ namespace Dyalect.Compiler
             return unit;
         }
 
-        private bool TryBuild(DBlock root)
+        private bool TryBuild(DyCodeModel codeModel)
         {
             try
             {
                 var ctx = new CompilerContext();
 
                 if (!options.NoLangModule && !iterative)
-                    Build(defaultInclude, None, ctx);
+                    BuildImport(defaultInclude, ctx);
+
+                foreach (var imp in codeModel.Imports)
+                    BuildImport(imp, ctx);
+
+                var root = codeModel.Root;
 
                 for (var i = 0; i < root.Nodes.Count; i++)
                 {

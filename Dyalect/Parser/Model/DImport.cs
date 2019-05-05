@@ -2,11 +2,11 @@
 
 namespace Dyalect.Parser.Model
 {
-    public sealed class DImport : DNode
+    public sealed class DImport
     {
-        public DImport(Location loc) : base(NodeType.Import, loc)
+        public DImport(Location loc)
         {
-
+            Location = loc;
         }
 
         public string Alias { get; set; }
@@ -15,24 +15,6 @@ namespace Dyalect.Parser.Model
 
         public string Dll { get; set; }
 
-        internal override void ToString(StringBuilder sb)
-        {
-            sb.Append("import ");
-
-            if (Alias != null && Alias != ModuleName)
-            {
-                sb.Append(Alias);
-                sb.Append('=');
-            }
-
-            sb.Append(ModuleName);
-
-            if (Dll != null)
-            {
-                sb.Append('(');
-                sb.Append(Dll);
-                sb.Append(')');
-            }
-        }
+        public Location Location { get; }
     }
 }

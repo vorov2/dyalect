@@ -56,7 +56,7 @@
 
     internal sealed class DyVariantTypeInfo : DyTypeInfo
     {
-        public DyVariantTypeInfo(int typeCode, string typeName) : base(typeCode)
+        public DyVariantTypeInfo(int typeCode, string typeName) : base(typeCode, true)
         {
             TypeName = typeName;
         }

@@ -64,6 +64,7 @@
         Yield,      //-1
         PushNilT,   //1
         Brterm,     //0
-        Briter      //0
+        Briter,     //0
+        Aux         //0
     }
 }

@@ -66,6 +66,7 @@
             0, //PushNilT
             1, //Brterm
             1, //Briter
+            1, //Aux
         };
     }
 }

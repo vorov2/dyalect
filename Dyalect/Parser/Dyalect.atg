@@ -86,14 +86,11 @@ PRODUCTIONS
             [ ["."] FunctionName (. s3 = t.val; .) ]
         ].
         
-    Import<out DNode node> =
+    Import =
         "import"
         (. var inc = new DImport(t); .)
         identToken
-        (.
-            inc.ModuleName = t.val;
-            node = inc;
-        .)
+        (. inc.ModuleName = t.val; .)
         [
             "=" identToken
             (.
@@ -103,7 +100,8 @@ PRODUCTIONS
         ]
         [
             "(" AnyString<out var str> (. inc.Dll = str; .) ")"
-        ].
+        ]
+        (. Imports.Add(inc); .).
 
     Type<out DNode node> =
         "type"
@@ -128,7 +126,6 @@ PRODUCTIONS
               Binding<out node> Separator
             | SimpleExpr<out node> Separator
             | ControlFlow<out node> Separator
-            | Import<out node> Separator
             | Type<out node> Separator
             | Block<out node>
             | If<out node>
@@ -672,10 +669,15 @@ PRODUCTIONS
             (. node = new DBooleanLiteral(t) { Value = t.val == "true" }; .)
         ).
 
+    DyalectItem =
+        (
+              ( Statement<out var node> (. Root.Nodes.Add(node); .) )
+            | ( Import Separator )
+        ).
+
     Dyalect =
         (
-            Statement<out var node> (. Root.Nodes.Add(node); .)
-            { Statement<out node> (. Root.Nodes.Add(node); .) }
+            DyalectItem { DyalectItem }
         ).
 
 END Dyalect.

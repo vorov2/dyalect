@@ -370,17 +370,16 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.GetMember:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].GetMemberOp(right, unit.IndexedStrings[op.Data].Value, ctx));
+                        evalStack.Replace(types[right.TypeId].GetMemberOp(right, op.Data, unit, ctx));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.SetMember:
-                        left = evalStack.Pop();
                         right = evalStack.Pop();
                         if (op.Data >= StandardType.All.Count)
                             types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
-                                .SetMemberOp(left.GetString(), right, ctx);
+                                .SetMemberOp(ctx.AUX, right, unit, ctx);
                         else
-                            types[op.Data].SetMemberOp(left.GetString(), right, ctx);
+                            types[op.Data].SetMemberOp(ctx.AUX, right, unit, ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Get:
@@ -423,6 +422,9 @@ namespace Dyalect.Runtime
                     case OpCode.Briter:
                         if (evalStack.Peek().TypeId == StandardType.Iterator)
                             offset = op.Data;
+                        break;
+                    case OpCode.Aux:
+                        ctx.AUX = op.Data;
                         break;
                 }
             }

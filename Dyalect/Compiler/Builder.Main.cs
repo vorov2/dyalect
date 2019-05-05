@@ -65,9 +65,6 @@ namespace Dyalect.Compiler
                 case NodeType.Function:
                     Build((DFunctionDeclaration)node, hints, ctx);
                     break;
-                case NodeType.Import:
-                    Build((DImport)node, hints, ctx);
-                    break;
                 case NodeType.Index:
                     Build((DIndexer)node, hints, ctx);
                     break;
@@ -118,12 +115,13 @@ namespace Dyalect.Compiler
         {
             Build(node.Target, hints.Append(Push), ctx);
             AddLinePragma(node);
+            var nameId = GetMemberNameId(node.Name);
 
             if (hints.Has(Pop))
                 cw.Set();
             else
             {
-                cw.GetMember(node.Name);
+                cw.GetMember(nameId);
                 PopIf(hints);
             }
         }
@@ -186,7 +184,7 @@ namespace Dyalect.Compiler
                 cw.Set();
         }
 
-        private void Build(DImport node, Hints hints, CompilerContext ctx)
+        private void BuildImport(DImport node, CompilerContext ctx)
         {
             var r = new Reference(node.ModuleName, node.Dll, node.Location, unit.FileName);
             var res = linker.Link(r);
@@ -221,7 +219,7 @@ namespace Dyalect.Compiler
                 cw.RunMod(unit.UnitIds.Count);
                 unit.UnitIds.Add(-1); //Реальные хэндлы добавляются линкером
 
-                var addr = AddVariable(node.Alias ?? node.ModuleName, node, VarFlags.Module);
+                var addr = AddVariable(node.Alias ?? node.ModuleName, node.Location, VarFlags.Module);
                 cw.PopVar(addr);
             }
         }
@@ -306,7 +304,7 @@ namespace Dyalect.Compiler
 
             cw.Briter(skip);
 
-            cw.GetMember(Builtins.Iterator);
+            cw.GetMember(GetMemberNameId(Builtins.Iterator));
             cw.Call(0);
             cw.MarkLabel(skip);
             cw.PopVar(sys);
@@ -627,6 +625,19 @@ namespace Dyalect.Compiler
             }
         }
 
+        private int GetMemberNameId(string name)
+        {
+            if (!memberNames.TryGetValue(name, out var id))
+            {
+                id = unit.MemberIds.Count;
+                memberNames.Add(name, id);
+                unit.MemberIds.Add(-1);
+                unit.MemberNames.Add(name);
+            }
+
+            return id;
+        }
+
         private void Build(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
             if (node.Name != null)
@@ -644,17 +655,18 @@ namespace Dyalect.Compiler
 
                 if (node.IsMemberFunction)
                 {
+                    var realName = node.Name;
+
                     if (node.Parameters.Count == 0)
                     {
                         if (node.Name == Builtins.Sub)
-                            cw.Push(Builtins.Neg);
+                            realName = Builtins.Neg;
                         else if (node.Name == Builtins.Add)
-                            cw.Push(Builtins.Plus);
-                        else
-                            cw.Push(node.Name);
+                            realName = Builtins.Plus;
                     }
-                    else
-                        cw.Push(node.Name);
+
+                    var nameId = GetMemberNameId(realName);
+                    cw.Aux(nameId);
                     var code = GetTypeHandle(node.TypeName, node.Location);
                     cw.SetMember(code);
                 }
@@ -706,7 +718,14 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             var address = cw.Offset;
-            
+
+            //Initialize function arguments
+            for (var i = 0; i < args.Length; i++)
+            {
+                var arg = args[i];
+                AddVariable(arg, node, data: VarFlags.Argument);
+            }
+
             //If this is a member function we add an additional system variable that
             //would return an instance of an object to which this function is coupled
             //(same as this in C#)
@@ -715,13 +734,6 @@ namespace Dyalect.Compiler
                 var va = AddVariable("this", node, data: VarFlags.Const);
                 cw.This();
                 cw.PopVar(va);
-            }
-
-            //Initialize function arguments
-            for (var i = 0; i < args.Length; i++)
-            {
-                var arg = args[i];
-                AddVariable(arg, node, data: VarFlags.Argument);
             }
 
             //Compile function body

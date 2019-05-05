@@ -57,7 +57,7 @@ namespace Dyalect.Runtime.Types
     {
         public static readonly DyArrayTypeInfo Instance = new DyArrayTypeInfo();
 
-        private DyArrayTypeInfo() : base(StandardType.Tuple)
+        private DyArrayTypeInfo() : base(StandardType.Array, false)
         {
 
         }

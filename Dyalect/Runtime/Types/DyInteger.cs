@@ -60,7 +60,7 @@ namespace Dyalect.Runtime.Types
     {
         public static readonly DyIntegerTypeInfo Instance = new DyIntegerTypeInfo();
 
-        private DyIntegerTypeInfo() : base(StandardType.Integer)
+        private DyIntegerTypeInfo() : base(StandardType.Integer, false)
         {
 
         }

@@ -121,17 +121,29 @@ namespace Dyalect.Linker
             return Result.Create(asm, Messages);
         }
 
-        protected void ProcessUnits(UnitComposition asm)
+        protected void ProcessUnits(UnitComposition composition)
         {
             foreach (var u in Units)
             {
                 for (var i = 0; i < u.References.Count; i++)
                     u.UnitIds[i] = u.References[i].Id;
 
+                for (var i = 0; i < u.MemberNames.Count; i++)
+                {
+                    if (!composition.MembersMap.TryGetValue(u.MemberNames[i], out var id))
+                    {
+                        id = composition.Members.Count;
+                        composition.Members.Add(u.MemberNames[i]);
+                        composition.MembersMap.Add(u.MemberNames[i], id);
+                    }
+
+                    u.MemberIds[i] = id;
+                }
+
                 for (var i = 0; i < u.TypeIds.Count; i++)
                 {
-                    u.TypeIds[i] = asm.Types.Count;
-                    asm.Types.Add(new DyVariantTypeInfo(asm.Types.Count, u.TypeNames[i]));
+                    u.TypeIds[i] = composition.Types.Count;
+                    composition.Types.Add(new DyVariantTypeInfo(composition.Types.Count, u.TypeNames[i]));
                 }
             }
         }
