@@ -1,5 +1,11 @@
 # 0.3.5
-  * todo
+  * A method `slice` added to the type `Array` ([Issue #19](https://github.com/vorov2/dyalect/issues/19)).
+  * Now it is possible to access named values in containers (e.g. named items in tuples), using regular member access syntax:
+    ```swift
+    var tup = (x: 12, y: 14)
+    var x = tup.x //access
+    tup.y = 114 //write value
+    ```
 
 # 0.3.4
   * A bug fixed - incorrect type info was generated for the values of type `Array`.

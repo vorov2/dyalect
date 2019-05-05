@@ -20,7 +20,6 @@ func foo() {
 foo() 
 */
 
-var tup = (x: 12, y: 14)
+var arr = [1,2,3,4,5,6]
 
-tup.y = 144
-tup.y
+arr.slice(2,5)

@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -203,6 +204,27 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(iterate().GetEnumerator());
         }
 
+        private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+
+            var start = (int)args.TakeOne(DyInteger.Zero).GetInteger();
+            var end = (int)(args.TakeAt(1, null) ?? DyInteger.Get(arr.Values.Count)).GetInteger();
+
+            if (start == 0 && start == end)
+                return self;
+
+            if (start < 0 || start >= arr.Values.Count)
+                return Err.IndexOutOfRange(TypeName, start).Set(ctx);
+
+            if (end < 0 || end >= arr.Values.Count)
+                return Err.IndexOutOfRange(TypeName, end).Set(ctx);
+
+            var newArr = new DyObject[end - start];
+            arr.Values.CopyTo(start, newArr, 0, end - start);
+            return new DyArray(new List<DyObject>(newArr));
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
@@ -234,6 +256,9 @@ namespace Dyalect.Runtime.Types
 
             if (name == "indices")
                 return DyForeignFunction.Create(name, GetIndices);
+
+            if (name == "slice")
+                return DyForeignFunction.Create(name, GetSlice);
 
             return null;
         }
