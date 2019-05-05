@@ -8,7 +8,7 @@
         {
             Tag = tag;
             Keys = keys ?? new string[0];
-            Values = values ?? new DyObject[0];
+            Values = values ?? Statics.EmptyDyObjects;
         }
 
         internal string[] Keys { get; }

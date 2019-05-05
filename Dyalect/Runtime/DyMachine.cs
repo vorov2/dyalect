@@ -71,11 +71,10 @@ namespace Dyalect.Runtime
             }
 
             ctx.Units[unitId] = ctx.Units[unitId] ?? new DyObject[lay0.Size];
-            var evalStack = new EvalStack(lay0.StackSize);
-            return ExecuteWithData(global, evalStack, ctx);
+            return ExecuteWithData(global, ctx);
         }
 
-        internal static DyObject ExecuteWithData(DyNativeFunction function, EvalStack evalStack, ExecutionContext ctx)
+        internal static DyObject ExecuteWithData(DyNativeFunction function, ExecutionContext ctx)
         {
             DyObject left;
             DyObject right;
@@ -87,13 +86,16 @@ namespace Dyalect.Runtime
             var ops = unit.Ops;
             var layout = unit.Layouts[function.FunctionId];
             var offset = layout.Address;
+            var evalStack = new EvalStack(layout.StackSize);
 
             if (function.FunctionId == 0)
                 locals = ctx.Units[function.UnitId];
             else if (function.Locals != null)
             {
                 locals = function.Locals;
-                offset = function.PreviousOffset;
+
+                if (function.TypeId == StandardType.Iterator)
+                    offset = function.PreviousOffset;
             }
             else
                 locals = new DyObject[layout.Size];
@@ -329,7 +331,6 @@ namespace Dyalect.Runtime
                             if (right is DyNativeFunction callFun)
                             {
                                 layout = ctx.Composition.Units[callFun.UnitId].Layouts[callFun.FunctionId];
-                                var newStack = new EvalStack(layout.StackSize);
 
                                 if ((op.Data > callFun.ParameterNumber && !callFun.IsVariadic) || op.Data < callFun.ParameterNumber)
                                 {
@@ -338,25 +339,27 @@ namespace Dyalect.Runtime
                                     break;
                                 }
 
+                                if (callFun.TypeId != StandardType.Iterator)
+                                    callFun.Locals = new DyObject[layout.Size];
+
                                 var arr = default(DyObject[]);
 
                                 if (callFun.IsVariadic)
                                 {
                                     arr = new DyObject[op.Data - callFun.ParameterNumber];
-                                    newStack.Push(DyTuple.Create(arr));
+                                    callFun.Locals[callFun.ParameterNumber] = DyTuple.Create(arr);
                                 }
 
-                                //Надо выровнять либо стек, либо переданные аргументы
                                 for (var i = op.Data; i > 0; i--)
                                 {
                                     if (i <= callFun.ParameterNumber)
-                                        newStack.Push(evalStack.Pop());
+                                        callFun.Locals[i - 1] = evalStack.Pop();
                                     else
                                         arr[i - callFun.ParameterNumber - 1] = evalStack.Pop();
                                 }
 
-                                ctx.CallStack.Push(new CallPoint(offset, function.UnitId));
-                                evalStack.Push(ExecuteWithData(callFun, newStack, ctx));
+                                ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
+                                evalStack.Push(ExecuteWithData(callFun, ctx));
                             }
                             else
                                 evalStack.Push(CallExternalFunction(op, offset, evalStack, function, (DyFunction)right, ctx));
@@ -446,15 +449,19 @@ namespace Dyalect.Runtime
                 for (var i = op.Data; i < fun.ParameterNumber; i++)
                     arr[i] = DyNil.Instance;
 
+#if !DEBUG
             try
+#endif
             {
                 return fun.Call(ctx, arr);
             }
+#if !DEBUG
             catch (Exception ex)
             {
                 throw CreateException(Err.ExternalFunctionFailure(fun.GetFunctionName(ctx), ex.Message),
                     offset - 1, caller.UnitId, ctx, ex);
             }
+#endif
         }
 
         private static Stack<StackPoint> Dump(CallStack callStack)
@@ -464,7 +471,7 @@ namespace Dyalect.Runtime
             for (var i = 0; i < callStack.Count; i++)
             {
                 var cm = callStack[i];
-                st.Push(new StackPoint(cm.ReturnAddress, cm.UnitId));
+                st.Push(new StackPoint((int)(cm & int.MaxValue), (int)(cm >> 32)));
             }
 
             return st;

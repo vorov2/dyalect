@@ -36,6 +36,8 @@ namespace Dyalect.Runtime.Types
 
         public override int GetHashCode() => value.GetHashCode();
 
+        public override string ToString() => value.ToString();
+
         public override bool Equals(object obj)
         {
             if (obj is DyInteger i)

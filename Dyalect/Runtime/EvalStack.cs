@@ -4,19 +4,11 @@ namespace Dyalect.Runtime
 {
     public sealed class EvalStack
     {
-        private const int DEFAULT_SIZE = 20;
         private readonly DyObject[] array;
         private int size;
-        private readonly int initialSize;
-
-        public EvalStack() : this(DEFAULT_SIZE)
-        {
-
-        }
 
         public EvalStack(int size)
         {
-            this.initialSize = size;
             array = new DyObject[size];
         }
 

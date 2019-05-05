@@ -721,8 +721,7 @@ namespace Dyalect.Compiler
             for (var i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
-                var a = AddVariable(arg, node, data: VarFlags.Argument);
-                cw.PopVar(a);
+                AddVariable(arg, node, data: VarFlags.Argument);
             }
 
             //Compile function body

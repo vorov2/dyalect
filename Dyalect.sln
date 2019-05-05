@@ -11,7 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dyalect.UnitTests", "Dyalec
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{F07E65FE-36DA-4666-84D4-5B5D9050EB30}"
 	ProjectSection(SolutionItems) = preProject
-		Common\dyalect-0.1.0.vsix = Common\dyalect-0.1.0.vsix
 		Common\Meta.cs = Common\Meta.cs
 	EndProjectSection
 EndProject

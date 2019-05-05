@@ -72,19 +72,19 @@ namespace Dyalect.Compiler
             unit.FileName = codeModel.FileName;
 
             if (unit.Layouts.Count == 0)
-                unit.Layouts.Add(null); //Разбивка для топ левела
+                unit.Layouts.Add(null); //A layout reserved for the top level
 
-            cw.StartFrame(0); //Начинаем новый глобальный фрейм
+            cw.StartFrame(); //Start a new global frame
             var res = TryBuild(codeModel.Root);
 
             if (!res)
                 return null;
 
             cw.MarkLabel(programEnd);
-            cw.Term(); //Программка всегда должна завершаться этим оп кодом
+            cw.Term(); //Program should always end with this op code
             cw.CompileOpList();
 
-            //Завершаем компиляцию, фиксим разбивку памяти для топ левела
+            //Finalizing compilation, fixing top level layout
             unit.Layouts[0] = new MemoryLayout(currentCounter, cw.FinishFrame(), 0);
             return unit;
         }

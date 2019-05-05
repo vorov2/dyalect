@@ -109,5 +109,11 @@ namespace Dyalect
         public object FactorsTest => "[1, 3, 9, 27]";
 
         public object AntiprimeTest => 6;
+
+        public object VariadicTest1 => "x=33.4;y=33.4;other=[oopstrue,[1],(x: 0.33, y: 1)]";
+
+        public object VariadicTest2 => "(1, 2, 44.42)";
+
+        public object VariadicTest3 => "x=14()";
     }
 }

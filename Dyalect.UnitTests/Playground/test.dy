@@ -1,5 +1,20 @@
-﻿var t = (x: 12, y: 33, z: 144)
+﻿func fin(z) {
+    z / 0
+}
 
-t.x = 13
+func zoo(y) {
+    var z = y + y / 2
+    fin(z)
+}
 
-print("t.z = ", t.z)
+func bar(x) {
+    var y = x * 2
+    zoo(y)
+}
+
+func foo() {
+    var x = 12
+    bar(x)
+}
+
+foo()

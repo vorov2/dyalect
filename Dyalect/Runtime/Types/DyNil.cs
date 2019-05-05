@@ -15,6 +15,8 @@
         public override object ToObject() => null;
 
         protected internal override bool GetBool() => false;
+
+        public override string ToString() => "nil";
     }
 
     internal sealed class DyNilTypeInfo : DyTypeInfo

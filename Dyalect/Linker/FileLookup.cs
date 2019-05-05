@@ -42,8 +42,6 @@ namespace Dyalect.Linker
 
         public bool Find(string fileName, out string fullPath)
         {
-            fullPath = null;
-
             if (LookIn(fileName, startupPaths, out fullPath)
                 || LookIn(fileName, standardPaths, out fullPath)
                 || LookIn(fileName, systemPaths, out fullPath)
