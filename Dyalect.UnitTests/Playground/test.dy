@@ -1,4 +1,4 @@
-﻿func fin(z) {
+﻿/*func fin(z) {
     z / 0
 }
 
@@ -17,4 +17,13 @@ func foo() {
     bar(x)
 }
 
-foo()
+foo() 
+*/
+
+    var arr = []
+    arr.add(1)
+    arr.add(2)
+    arr.addRange([1,2,3])
+    arr.removeAt(1)
+    arr.remove(3)
+    arr.toString()

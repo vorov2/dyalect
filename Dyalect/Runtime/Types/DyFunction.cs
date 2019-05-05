@@ -63,7 +63,7 @@ namespace Dyalect.Runtime.Types
     {
         public static readonly DyFunctionTypeInfo Instance = new DyFunctionTypeInfo();
 
-        private DyFunctionTypeInfo() : base(StandardType.Function)
+        private DyFunctionTypeInfo() : base(StandardType.Function, false)
         {
 
         }

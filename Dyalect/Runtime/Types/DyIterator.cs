@@ -38,9 +38,9 @@ namespace Dyalect.Runtime.Types
                 iter = val as DyFunction;
             else
             {
-                iter = ctx.Composition.Types[val.TypeId].GetMemberOp(val, Builtins.Iterator, ctx) as DyFunction;
+                iter = val.GetIterator(ctx) as DyFunction;
 
-                if (ctx.HasErrors)
+                if (ctx.HasErrors || iter == null)
                     return null;
 
                 iter = iter.Call0(ctx) as DyFunction;
@@ -67,7 +67,7 @@ namespace Dyalect.Runtime.Types
     {
         public static readonly DyIteratorTypeInfo Instance = new DyIteratorTypeInfo();
 
-        private DyIteratorTypeInfo() : base(StandardType.Bool)
+        private DyIteratorTypeInfo() : base(StandardType.Bool, false)
         {
 
         }

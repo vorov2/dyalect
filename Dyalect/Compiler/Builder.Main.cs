@@ -118,12 +118,13 @@ namespace Dyalect.Compiler
         {
             Build(node.Target, hints.Append(Push), ctx);
             AddLinePragma(node);
+            var nameId = GetMemberNameId(node.Name);
 
             if (hints.Has(Pop))
                 cw.Set();
             else
             {
-                cw.GetMember(node.Name);
+                cw.GetMember(nameId);
                 PopIf(hints);
             }
         }
@@ -306,7 +307,7 @@ namespace Dyalect.Compiler
 
             cw.Briter(skip);
 
-            cw.GetMember(Builtins.Iterator);
+            cw.GetMember(GetMemberNameId(Builtins.Iterator));
             cw.Call(0);
             cw.MarkLabel(skip);
             cw.PopVar(sys);
@@ -627,6 +628,19 @@ namespace Dyalect.Compiler
             }
         }
 
+        private int GetMemberNameId(string name)
+        {
+            if (!memberNames.TryGetValue(name, out var id))
+            {
+                id = unit.MemberIds.Count;
+                memberNames.Add(name, id);
+                unit.MemberIds.Add(-1);
+                unit.MemberNames.Add(name);
+            }
+
+            return id;
+        }
+
         private void Build(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
             if (node.Name != null)
@@ -644,17 +658,18 @@ namespace Dyalect.Compiler
 
                 if (node.IsMemberFunction)
                 {
+                    var realName = node.Name;
+
                     if (node.Parameters.Count == 0)
                     {
                         if (node.Name == Builtins.Sub)
-                            cw.Push(Builtins.Neg);
+                            realName = Builtins.Neg;
                         else if (node.Name == Builtins.Add)
-                            cw.Push(Builtins.Plus);
-                        else
-                            cw.Push(node.Name);
+                            realName = Builtins.Plus;
                     }
-                    else
-                        cw.Push(node.Name);
+
+                    var nameId = GetMemberNameId(realName);
+                    cw.Aux(nameId);
                     var code = GetTypeHandle(node.TypeName, node.Location);
                     cw.SetMember(code);
                 }

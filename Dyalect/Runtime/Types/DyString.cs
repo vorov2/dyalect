@@ -61,7 +61,7 @@ namespace Dyalect.Runtime.Types
     {
         public static readonly DyStringTypeInfo Instance = new DyStringTypeInfo();
 
-        private DyStringTypeInfo() : base(StandardType.Bool)
+        private DyStringTypeInfo() : base(StandardType.Bool, false)
         {
 
         }

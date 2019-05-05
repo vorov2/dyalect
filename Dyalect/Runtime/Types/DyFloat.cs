@@ -41,7 +41,7 @@
     {
         public static readonly DyFloatTypeInfo Instance = new DyFloatTypeInfo();
 
-        private DyFloatTypeInfo() : base(StandardType.Float)
+        private DyFloatTypeInfo() : base(StandardType.Float, false)
         {
 
         }

@@ -6,6 +6,8 @@ namespace Dyalect.Runtime
 {
     public sealed class ExecutionContext
     {
+        internal int AUX;
+
         internal ExecutionContext(CallStack callStack, UnitComposition composition)
         {
             CallStack = callStack;

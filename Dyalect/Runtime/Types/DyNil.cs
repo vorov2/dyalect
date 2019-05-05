@@ -23,7 +23,7 @@
     {
         public static readonly DyNilTypeInfo Instance = new DyNilTypeInfo();
 
-        private DyNilTypeInfo() : base(StandardType.Nil)
+        private DyNilTypeInfo() : base(StandardType.Nil, false)
         {
 
         }

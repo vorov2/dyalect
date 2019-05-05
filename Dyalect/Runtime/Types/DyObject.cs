@@ -40,6 +40,17 @@ namespace Dyalect.Runtime.Types
         public static DyTypeInfo Type(this DyObject self, ExecutionContext ctx) => ctx.Composition.Types[self.TypeId];
 
         public static DyString ToString(this DyObject self, ExecutionContext ctx) => ctx.Composition.Types[self.TypeId].ToString(self, ctx);
+
+        public static DyObject GetIterator(this DyObject self, ExecutionContext ctx)
+        {
+            var nameId = ctx.Composition.MembersMap[Builtins.Iterator];
+            var value = ctx.Composition.Types[self.TypeId].GetMemberDirect(self, nameId, ctx);
+
+            if (value == null)
+                return Err.OperationNotSupported(Builtins.Iterator, self.TypeName(ctx)).Set(ctx);
+
+            return value;
+        }
     }
 
     public static class DyObjectExtensions

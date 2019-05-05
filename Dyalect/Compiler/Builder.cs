@@ -22,6 +22,7 @@ namespace Dyalect.Compiler
         private Label programEnd; //Лейбл, отмечающий конец программы
         private Dictionary<string, UnitInfo> referencedUnits = new Dictionary<string, UnitInfo>();
         private Dictionary<string, TypeInfo> types = new Dictionary<string, TypeInfo>();
+        private Dictionary<string, int> memberNames = new Dictionary<string, int>();
 
         private readonly static DImport defaultInclude = new DImport(default) { ModuleName = "lang" };
 
@@ -70,6 +71,9 @@ namespace Dyalect.Compiler
         {
             Messages.Clear();
             unit.FileName = codeModel.FileName;
+
+            //It is used internally, so we need to add it even if the code doesn't reference it
+            GetMemberNameId(Builtins.Iterator);
 
             if (unit.Layouts.Count == 0)
                 unit.Layouts.Add(null); //A layout reserved for the top level

@@ -1,3 +1,8 @@
+# 0.3.4
+  * A bug fixed - incorrect type info were generated for the values of type `Array`.
+  * Runtime type system is refactored.
+  * Optimizations in members functions execution.
+
 # 0.3.3
   * Logic, responsible for the implementation of function calls, is largely rewritten and optimized.
   * Internal call stack structure is changed for better effeciency.

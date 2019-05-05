@@ -16,6 +16,8 @@ namespace Dyalect.Compiler
             References = new List<Unit>();
             TypeIds = new List<int>();
             TypeNames = new List<string>();
+            MemberIds = new List<int>();
+            MemberNames = new List<string>();
             IndexedStrings = new List<DyString>();
             IndexedIntegers = new List<DyInteger>();
             IndexedFloats = new List<DyFloat>();
@@ -35,6 +37,8 @@ namespace Dyalect.Compiler
             References = unit.References;
             TypeIds = unit.TypeIds;
             TypeNames = unit.TypeNames;
+            MemberIds = unit.MemberIds;
+            MemberNames = unit.MemberNames;
             IndexedStrings = unit.IndexedStrings;
             IndexedIntegers = unit.IndexedIntegers;
             IndexedFloats = unit.IndexedFloats;
@@ -51,6 +55,10 @@ namespace Dyalect.Compiler
         internal List<int> TypeIds { get; }
 
         internal List<string> TypeNames { get; }
+
+        internal List<int> MemberIds { get; }
+
+        internal List<string> MemberNames { get; }
 
         internal List<DyString> IndexedStrings { get; }
 

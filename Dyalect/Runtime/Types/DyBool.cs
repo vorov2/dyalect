@@ -23,7 +23,7 @@
     {
         public static readonly DyBoolTypeInfo Instance = new DyBoolTypeInfo();
 
-        private DyBoolTypeInfo() : base(StandardType.Bool)
+        private DyBoolTypeInfo() : base(StandardType.Bool, false)
         {
 
         }
