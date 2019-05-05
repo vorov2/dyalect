@@ -16,6 +16,8 @@ namespace Dyalect.Parser
         public Token la;
         private int errDist = minErrDist;
 
+        public List<DImport> Imports { get; } = new List<DImport>();
+
         public DBlock Root { get; } = new DBlock(new Location(0, 0));
 
         public List<BuildMessage> Errors { get; } = new List<BuildMessage>();

@@ -79,7 +79,7 @@ namespace Dyalect.Compiler
                 unit.Layouts.Add(null); //A layout reserved for the top level
 
             cw.StartFrame(); //Start a new global frame
-            var res = TryBuild(codeModel.Root);
+            var res = TryBuild(codeModel);
 
             if (!res)
                 return null;
@@ -93,14 +93,19 @@ namespace Dyalect.Compiler
             return unit;
         }
 
-        private bool TryBuild(DBlock root)
+        private bool TryBuild(DyCodeModel codeModel)
         {
             try
             {
                 var ctx = new CompilerContext();
 
                 if (!options.NoLangModule && !iterative)
-                    Build(defaultInclude, None, ctx);
+                    BuildImport(defaultInclude, ctx);
+
+                foreach (var imp in codeModel.Imports)
+                    BuildImport(imp, ctx);
+
+                var root = codeModel.Root;
 
                 for (var i = 0; i < root.Nodes.Count; i++)
                 {

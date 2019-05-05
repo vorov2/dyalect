@@ -27,23 +27,26 @@ namespace Dyalect.Compiler
             return AddVariable(name, null, -1);
         }
 
+        public int AddVariable(string name, DNode node, int data) =>
+            AddVariable(name, node != null ? node.Location : default, data);
+
         //Добавляем нормальные именованные переменные
-        private int AddVariable(string name, DNode node, int data)
+        private int AddVariable(string name, Location loc, int data)
         {
             //Смотрим, а не добавили ли мы уже такую в локальный скоуп
             if (currentScope.Locals.ContainsKey(name))
             {
-                AddError(CompilerError.VariableAlreadyDeclared, node.Location, name);
+                AddError(CompilerError.VariableAlreadyDeclared, loc, name);
                 return -1;
             }
 
             currentScope.Locals.Add(name, new ScopeVar(currentCounter, data));
 
             //Дополнительная отладочная информация генерируется только в дебуг режиме
-            if (isDebug && node != null)
+            if (isDebug && !loc.IsEmpty)
             {
                 AddVarPragma(name, currentCounter, cw.Offset, data);
-                AddLinePragma(node);
+                AddLinePragma(loc);
                 cw.Nop();
             }
 

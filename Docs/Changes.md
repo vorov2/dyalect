@@ -2,6 +2,7 @@
   * A bug fixed - incorrect type info were generated for the values of type `Array`.
   * Runtime type system is refactored.
   * Optimizations in members functions execution.
+  * Now module import directives are always compiled before the rest of the code.
 
 # 0.3.3
   * Logic, responsible for the implementation of function calls, is largely rewritten and optimized.

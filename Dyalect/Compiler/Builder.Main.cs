@@ -65,9 +65,6 @@ namespace Dyalect.Compiler
                 case NodeType.Function:
                     Build((DFunctionDeclaration)node, hints, ctx);
                     break;
-                case NodeType.Import:
-                    Build((DImport)node, hints, ctx);
-                    break;
                 case NodeType.Index:
                     Build((DIndexer)node, hints, ctx);
                     break;
@@ -187,7 +184,7 @@ namespace Dyalect.Compiler
                 cw.Set();
         }
 
-        private void Build(DImport node, Hints hints, CompilerContext ctx)
+        private void BuildImport(DImport node, CompilerContext ctx)
         {
             var r = new Reference(node.ModuleName, node.Dll, node.Location, unit.FileName);
             var res = linker.Link(r);
@@ -222,7 +219,7 @@ namespace Dyalect.Compiler
                 cw.RunMod(unit.UnitIds.Count);
                 unit.UnitIds.Add(-1); //Реальные хэндлы добавляются линкером
 
-                var addr = AddVariable(node.Alias ?? node.ModuleName, node, VarFlags.Module);
+                var addr = AddVariable(node.Alias ?? node.ModuleName, node.Location, VarFlags.Module);
                 cw.PopVar(addr);
             }
         }

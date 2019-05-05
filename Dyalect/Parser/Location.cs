@@ -10,5 +10,6 @@
 
         public readonly int Line;
         public readonly int Column;
+        public bool IsEmpty => Line == 0 && Column == 0;
     }
 }

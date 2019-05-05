@@ -31,7 +31,6 @@
         Access,
 
         Function,
-        Import,
         Tuple,
         Array,
         Label,
