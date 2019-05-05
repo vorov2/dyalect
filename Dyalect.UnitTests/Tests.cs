@@ -119,5 +119,7 @@ namespace Dyalect
         public object ComplexToStringTest1 => "even";
 
         public object ComplexToStringTest2 => "foonull";
+
+        public object MethodTest1 => true;
     }
 }

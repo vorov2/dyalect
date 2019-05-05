@@ -20,7 +20,12 @@ func foo() {
 foo() 
 */
 
-func Nil.toString() {
-    "null"
+func Integer + (other) {
+    this * other
 }
-"foo" + nil
+
+var res = 12 + 34
+typeof(res).__deleteMember("+")
+var res1 = 12 + 34
+
+(res, res1)

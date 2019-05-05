@@ -663,3 +663,12 @@ func complexToStringTest2() {
     }
     "foo" + nil
 }
+
+func methodTest1() {
+    func Integer +(other) {
+        this * other
+    }
+    var res = 3 + 3 == 3 * 3
+    typeof(res).__deleteMember("+")
+    res
+}

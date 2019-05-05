@@ -721,7 +721,14 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             var address = cw.Offset;
-            
+
+            //Initialize function arguments
+            for (var i = 0; i < args.Length; i++)
+            {
+                var arg = args[i];
+                AddVariable(arg, node, data: VarFlags.Argument);
+            }
+
             //If this is a member function we add an additional system variable that
             //would return an instance of an object to which this function is coupled
             //(same as this in C#)
@@ -730,13 +737,6 @@ namespace Dyalect.Compiler
                 var va = AddVariable("this", node, data: VarFlags.Const);
                 cw.This();
                 cw.PopVar(va);
-            }
-
-            //Initialize function arguments
-            for (var i = 0; i < args.Length; i++)
-            {
-                var arg = args[i];
-                AddVariable(arg, node, data: VarFlags.Argument);
             }
 
             //Compile function body

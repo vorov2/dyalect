@@ -319,10 +319,18 @@ namespace Dyalect.Runtime.Types
 
         internal void SetMemberOp(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
         {
-            var func = (DyFunction)value;
+            var func = value as DyFunction;
             nameId = unit.MemberIds[nameId];
             var name = ctx.Composition.Members[nameId];
+            SetBuiltin(name, func);
+            members.Remove(nameId);
 
+            if (func != null)
+                members.Add(nameId, func);
+        }
+
+        private void SetBuiltin(string name, DyFunction func)
+        {
             switch (name)
             {
                 case Builtins.Add: add = func; break;
@@ -348,9 +356,6 @@ namespace Dyalect.Runtime.Types
                 case Builtins.ToStr: tos = func; break;
                 case Builtins.Plus: plus = func; break;
             }
-
-            members.Remove(nameId);
-            members.Add(nameId, func);
         }
 
         private DyFunction InternalGetMember(string name, ExecutionContext ctx)
@@ -360,6 +365,18 @@ namespace Dyalect.Runtime.Types
 
             if (name == Builtins.Iterator)
                 return DyForeignFunction.Create(name, GetIterator);
+
+            if (name == "__deleteMember")
+                return DyForeignFunction.Create(name, (context, self, args) =>
+                {
+                    var nm = args.TakeOne(DyString.Empty).GetString();
+                    if (context.Composition.MembersMap.TryGetValue(nm, out var nameId)) {
+                        var ti = (DyTypeInfo)self;
+                        ti.SetBuiltin(nm, null);
+                        ti.members.Remove(nameId);
+                    }
+                    return DyNil.Instance;
+                });
 
             return GetMember(name, ctx);
         }
