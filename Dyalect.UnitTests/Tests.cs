@@ -115,5 +115,9 @@ namespace Dyalect
         public object VariadicTest2 => "(1, 2, 44.42)";
 
         public object VariadicTest3 => "x=14()";
+
+        public object ComplexToStringTest1 => "even";
+
+        public object ComplexToStringTest2 => "foonull";
     }
 }

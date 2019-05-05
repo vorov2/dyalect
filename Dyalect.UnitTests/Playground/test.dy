@@ -20,10 +20,7 @@ func foo() {
 foo() 
 */
 
-    var arr = []
-    arr.add(1)
-    arr.add(2)
-    arr.addRange([1,2,3])
-    arr.removeAt(1)
-    arr.remove(3)
-    arr.toString()
+func Nil.toString() {
+    "null"
+}
+"foo" + nil

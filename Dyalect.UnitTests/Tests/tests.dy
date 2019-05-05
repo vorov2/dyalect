@@ -645,3 +645,21 @@ func variadicTest3() {
     }
     take(14)
 }
+
+func complexToStringTest1() {
+    func Integer.toString() {
+        if this % 2 == 0 {
+            "even"
+        } else {
+            "odd"
+        }
+    }
+    12.toString()
+}
+
+func complexToStringTest2() {
+    func Nil.toString() {
+        "null"
+    }
+    "foo" + nil
+}
