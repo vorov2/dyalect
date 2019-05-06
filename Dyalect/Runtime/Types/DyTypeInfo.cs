@@ -436,9 +436,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyTypeTypeInfo : DyTypeInfo
     {
-        public static readonly DyTypeTypeInfo Instance = new DyTypeTypeInfo();
-
-        private DyTypeTypeInfo() : base(StandardType.TypeInfo, true)
+        public DyTypeTypeInfo() : base(StandardType.TypeInfo, true)
         {
 
         }

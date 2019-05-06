@@ -20,9 +20,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyCharTypeInfo : DyTypeInfo
     {
-        public static readonly DyCharTypeInfo Instance = new DyCharTypeInfo();
-
-        private DyCharTypeInfo() : base(StandardType.Char, false)
+        public DyCharTypeInfo() : base(StandardType.Char, false)
         {
 
         }

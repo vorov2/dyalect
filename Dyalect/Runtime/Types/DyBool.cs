@@ -33,9 +33,7 @@
 
     internal sealed class DyBoolTypeInfo : DyTypeInfo
     {
-        public static readonly DyBoolTypeInfo Instance = new DyBoolTypeInfo();
-
-        private DyBoolTypeInfo() : base(StandardType.Bool, false)
+        public DyBoolTypeInfo() : base(StandardType.Bool, false)
         {
 
         }

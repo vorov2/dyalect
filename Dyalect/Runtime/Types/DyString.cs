@@ -75,9 +75,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyStringTypeInfo : DyTypeInfo
     {
-        public static readonly DyStringTypeInfo Instance = new DyStringTypeInfo();
-
-        private DyStringTypeInfo() : base(StandardType.String, false)
+        public DyStringTypeInfo() : base(StandardType.String, false)
         {
 
         }

@@ -5,23 +5,23 @@ namespace Dyalect
 {
     internal static class StandardType
     {
-        public static readonly FastList<DyTypeInfo> All = new FastList<DyTypeInfo>
-        {
-            DyNilTypeInfo.Instance,
-            DyIntegerTypeInfo.Instance,
-            DyFloatTypeInfo.Instance,
-            DyBoolTypeInfo.Instance,
-            DyCharTypeInfo.Instance,
-            DyStringTypeInfo.Instance,
-            DyFunctionTypeInfo.Instance,
-            DyLabelTypeInfo.Instance,
-            DyTypeTypeInfo.Instance,
-            DyModuleTypeInfo.Instance,
-            DyArrayTypeInfo.Instance,
-            DyIteratorTypeInfo.Instance,
-
-            DyTupleTypeInfo.Instance
-        };
+        public static FastList<DyTypeInfo> GetAll() => 
+            new FastList<DyTypeInfo>
+            {
+                new DyNilTypeInfo(),
+                new DyIntegerTypeInfo(),
+                new DyFloatTypeInfo(),
+                new DyBoolTypeInfo(),
+                new DyCharTypeInfo(),
+                new DyStringTypeInfo(),
+                new DyFunctionTypeInfo(),
+                new DyLabelTypeInfo(),
+                new DyTypeTypeInfo(),
+                new DyModuleTypeInfo(),
+                new DyArrayTypeInfo(),
+                new DyIteratorTypeInfo(),
+                new DyTupleTypeInfo()
+            };
 
         public const int Nil = 0;
         public const int Integer = 1;
@@ -49,7 +49,6 @@ namespace Dyalect
         public const string ModuleName = "Module";
         public const string ArrayName = "Array";
         public const string IteratorName = "Iterator";
-
         public const string TupleName = "Tuple";
 
         public static int GetTypeCodeByName(string name)

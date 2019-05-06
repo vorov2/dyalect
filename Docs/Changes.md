@@ -49,6 +49,7 @@
   * A bug fixed - incorrect type info was generated for the values of type `String`.
   * Grammar for the `base` keyword is corrected, now compiler better handles the cases where `base` is not allowed (but it is still possible to report about that in a clear way).
   * Foreign modules now support regular value objects and not just functions.
+  * A bug fixed (_Dy type system and embedding_, [Issue #33](https://github.com/vorov2/dyalect/issues/33)).
 
 # 0.3.4
   * A bug fixed - incorrect type info was generated for the values of type `Array`.

@@ -65,9 +65,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyIteratorTypeInfo : DyTypeInfo
     {
-        public static readonly DyIteratorTypeInfo Instance = new DyIteratorTypeInfo();
-
-        private DyIteratorTypeInfo() : base(StandardType.Bool, false)
+        public DyIteratorTypeInfo() : base(StandardType.Bool, false)
         {
 
         }

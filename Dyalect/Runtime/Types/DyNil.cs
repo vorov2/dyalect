@@ -21,9 +21,7 @@
 
     internal sealed class DyNilTypeInfo : DyTypeInfo
     {
-        public static readonly DyNilTypeInfo Instance = new DyNilTypeInfo();
-
-        private DyNilTypeInfo() : base(StandardType.Nil, false)
+        public DyNilTypeInfo() : base(StandardType.Nil, false)
         {
 
         }

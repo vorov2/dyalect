@@ -56,9 +56,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyArrayTypeInfo : DyTypeInfo
     {
-        public static readonly DyArrayTypeInfo Instance = new DyArrayTypeInfo();
-
-        private DyArrayTypeInfo() : base(StandardType.Array, false)
+        public DyArrayTypeInfo() : base(StandardType.Array, false)
         {
 
         }

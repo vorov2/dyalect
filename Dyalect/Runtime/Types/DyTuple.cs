@@ -266,9 +266,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyTupleTypeInfo : DyTypeInfo
     {
-        public static readonly DyTupleTypeInfo Instance = new DyTupleTypeInfo();
-
-        private DyTupleTypeInfo() : base(StandardType.Tuple, true)
+        public DyTupleTypeInfo() : base(StandardType.Tuple, true)
         {
 
         }

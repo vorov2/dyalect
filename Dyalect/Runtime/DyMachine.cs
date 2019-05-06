@@ -387,7 +387,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.SetMemberS:
                         right = evalStack.Pop();
-                        if (op.Data >= StandardType.All.Count)
+                        if (op.Data >= ctx.Composition.StandardTypeCount)
                             types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
                                 .SetStaticMember(ctx.AUX, right, unit, ctx);
                         else
@@ -396,7 +396,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.SetMember:
                         right = evalStack.Pop();
-                        if (op.Data >= StandardType.All.Count)
+                        if (op.Data >= ctx.Composition.StandardTypeCount)
                             types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
                                 .SetMember(ctx.AUX, right, unit, ctx);
                         else
