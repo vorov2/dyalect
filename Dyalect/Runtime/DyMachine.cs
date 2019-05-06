@@ -375,18 +375,32 @@ namespace Dyalect.Runtime
                         right = evalStack.Peek();
                         evalStack.Replace(types[right.TypeId].HasMember(right, op.Data, unit, ctx));
                         break;
+                    case OpCode.GetMemberS:
+                        right = evalStack.Peek();
+                        evalStack.Replace(((DyTypeInfo)right).GetStaticMember(op.Data, unit, ctx));
+                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                        break;
                     case OpCode.GetMember:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].GetMemberOp(right, op.Data, unit, ctx));
+                        evalStack.Replace(types[right.TypeId].GetMember(right, op.Data, unit, ctx));
+                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                        break;
+                    case OpCode.SetMemberS:
+                        right = evalStack.Pop();
+                        if (op.Data >= StandardType.All.Count)
+                            types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
+                                .SetStaticMember(ctx.AUX, right, unit, ctx);
+                        else
+                            types[op.Data].SetStaticMember(ctx.AUX, right, unit, ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.SetMember:
                         right = evalStack.Pop();
                         if (op.Data >= StandardType.All.Count)
                             types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
-                                .SetMemberOp(ctx.AUX, right, unit, ctx);
+                                .SetMember(ctx.AUX, right, unit, ctx);
                         else
-                            types[op.Data].SetMemberOp(ctx.AUX, right, unit, ctx);
+                            types[op.Data].SetMember(ctx.AUX, right, unit, ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Get:

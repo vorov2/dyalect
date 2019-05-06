@@ -250,6 +250,10 @@ func stringTest9() {
     "abcdef".sub(2, 4) + "qwerty".sub(4)
 }
 
+func stringTest10() {
+    "camelCase".capitalize()
+}
+
 func memberCheckTest() {
     ("string".len?, 42.fooBar?).toString()
 }

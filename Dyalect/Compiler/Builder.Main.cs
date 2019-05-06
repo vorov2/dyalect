@@ -135,6 +135,7 @@ namespace Dyalect.Compiler
             }
 
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
+
             AddLinePragma(node);
             var nameId = GetMemberNameId(node.Name);
 
@@ -805,9 +806,9 @@ namespace Dyalect.Compiler
                 cw.NewIter(funHandle);
             else
             {
-                cw.Push(node.Variadic ? argCount - 1 : argCount);
+                cw.Push(node.IsVariadic ? argCount - 1 : argCount);
 
-                if (node.Variadic)
+                if (node.IsVariadic)
                     cw.NewFunV(funHandle);
                 else
                     cw.NewFun(funHandle);

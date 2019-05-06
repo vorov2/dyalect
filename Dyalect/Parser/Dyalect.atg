@@ -144,11 +144,11 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; .)
+        (. node = null; bool st = false; .)
         (
-            "func"
+            [ "static" (. st = true; .) ] "func"
             (.
-                var f = new DFunctionDeclaration(t);
+                var f = new DFunctionDeclaration(t) { IsStatic = st };
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>
@@ -186,7 +186,7 @@ PRODUCTIONS
                 identToken (. node.Parameters.Add(t.val); .)
                 { "," identToken (. node.Parameters.Add(t.val); .) }
                 [
-                    "..." (. node.Variadic = true; .)
+                    "..." (. node.IsVariadic = true; .)
                 ]
             ]
         ")".

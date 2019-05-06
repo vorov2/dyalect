@@ -209,6 +209,12 @@ namespace Dyalect.Runtime.Types
             return new DyArray(list);
         }
 
+        private DyObject Capitalize(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var str = self.GetString();
+            return str.Length == 0 ? DyString.Empty : new DyString(char.ToUpper(str[0]) + str.Substring(1));
+        }
+
         private DyObject Upper(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             return new DyString(self.GetString().ToUpper());
@@ -325,6 +331,9 @@ namespace Dyalect.Runtime.Types
 
             if (name == "sub")
                 return DyForeignFunction.Create(name, Substring);
+
+            if (name == "capitalize")
+                return DyForeignFunction.Create(name, Capitalize);
 
             return null;
         }

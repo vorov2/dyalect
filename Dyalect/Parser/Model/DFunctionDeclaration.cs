@@ -16,7 +16,9 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; }
 
-        public bool Variadic { get; set; }
+        public bool IsVariadic { get; set; }
+
+        public bool IsStatic { get; set; }
 
         public bool IsIterator { get; set; }
 
@@ -26,6 +28,9 @@ namespace Dyalect.Parser.Model
 
         internal override void ToString(StringBuilder sb)
         {
+            if (IsStatic)
+                sb.Append("static ");
+
             sb.Append("func ");
 
             if (TypeName != null)
@@ -40,7 +45,7 @@ namespace Dyalect.Parser.Model
             sb.Append('(');
             sb.Append(string.Join(",", Parameters));
 
-            if (Variadic)
+            if (IsVariadic)
                 sb.Append("...");
 
             sb.Append(") ");

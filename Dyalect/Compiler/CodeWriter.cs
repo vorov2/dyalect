@@ -176,16 +176,6 @@ namespace Dyalect.Compiler
             Emit(new Op(OpCode.Tag, idx));
         }
 
-        public void GetMember(int nameId)
-        {
-            Emit(new Op(OpCode.GetMember, nameId));
-        }
-
-        public void HasMember(int nameId)
-        {
-            Emit(new Op(OpCode.HasMember, nameId));
-        }
-
         public void Call(int args) => Emit(new Op(OpCode.Call, args), -args);
         public void NewFun(int funHandle) => Emit(new Op(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new Op(OpCode.NewFunV, funHandle));
@@ -196,6 +186,10 @@ namespace Dyalect.Compiler
         public void Brterm(Label lab) => Emit(OpCode.Brterm, lab);
         public void Briter(Label lab) => Emit(OpCode.Briter, lab);
         public void SetMember(int type) => Emit(new Op(OpCode.SetMember, type));
+        public void SetMemberS(int type) => Emit(new Op(OpCode.SetMemberS, type));
+        public void GetMember(int nameId) => Emit(new Op(OpCode.GetMember, nameId));
+        public void GetMemberS(int nameId) => Emit(new Op(OpCode.GetMemberS, nameId));
+        public void HasMember(int nameId) => Emit(new Op(OpCode.HasMember, nameId));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
         public void Aux(int data) => Emit(new Op(OpCode.Aux, data));
 

@@ -286,13 +286,39 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Other Operations
+        internal DyObject GetStaticMember(int nameId, Unit unit, ExecutionContext ctx)
+        {
+            nameId = unit.MemberIds[nameId];
+
+            if (!members.TryGetValue(nameId, out var value))
+            {
+                var name = ctx.Composition.Members[nameId];
+                value = InternalGetMember(name, ctx);
+
+                if (value != null)
+                    members.Add(nameId, value);
+            }
+
+            return value;
+        }
+
+        internal void SetStaticMember(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
+        {
+            var func = value as DyFunction;
+            nameId = unit.MemberIds[nameId];
+            members.Remove(nameId);
+
+            if (func != null)
+                members.Add(nameId, func);
+        }
+
         internal DyObject HasMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
         {
             nameId = unit.MemberIds[nameId];
             return GetMemberDirect(self, nameId, ctx) != null ? DyBool.True : DyBool.False;
         }
 
-        internal DyObject GetMemberOp(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
+        internal DyObject GetMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
         {
             nameId = unit.MemberIds[nameId];
             var value = GetMemberDirect(self, nameId, ctx);
@@ -328,7 +354,7 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        internal void SetMemberOp(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
+        internal void SetMember(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
         {
             var func = value as DyFunction;
             nameId = unit.MemberIds[nameId];

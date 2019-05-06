@@ -58,6 +58,8 @@
             -1, //SetMember
             0,  //GetMember
             0,  //HasMember
+            -1, //SetMemberS
+            0,  //GetMemberS
             -1, //Get
             -3, //Set
             1,  //RunMod
