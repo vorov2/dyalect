@@ -30,6 +30,8 @@
 
         UndefinedBaseVariable = 213,
 
-        BaseNotAllowed = 214
+        BaseNotAllowed = 214,
+
+        StaticOnlyMethods = 215
     }
 }

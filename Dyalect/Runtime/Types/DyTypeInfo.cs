@@ -6,6 +6,7 @@ namespace Dyalect.Runtime.Types
     public abstract class DyTypeInfo : DyObject
     {
         private readonly Dictionary<int, DyFunction> members = new Dictionary<int, DyFunction>();
+        private readonly Dictionary<int, DyFunction> staticMembers = new Dictionary<int, DyFunction>();
 
         public override object ToObject() => this;
 
@@ -290,26 +291,29 @@ namespace Dyalect.Runtime.Types
         {
             nameId = unit.MemberIds[nameId];
 
-            if (!members.TryGetValue(nameId, out var value))
+            if (!staticMembers.TryGetValue(nameId, out var value))
             {
                 var name = ctx.Composition.Members[nameId];
-                value = InternalGetMember(name, ctx);
+                value = InternalGetStaticMember(name, ctx);
 
                 if (value != null)
-                    members.Add(nameId, value);
+                    staticMembers.Add(nameId, value);
             }
 
-            return value;
+            if (value != null)
+                return value;
+
+            return Err.StaticOperationNotSupported(ctx.Composition.Members[nameId], TypeName).Set(ctx);
         }
 
         internal void SetStaticMember(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
         {
             var func = value as DyFunction;
             nameId = unit.MemberIds[nameId];
-            members.Remove(nameId);
+            staticMembers.Remove(nameId);
 
             if (func != null)
-                members.Add(nameId, func);
+                staticMembers.Add(nameId, func);
         }
 
         internal DyObject HasMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
@@ -326,7 +330,7 @@ namespace Dyalect.Runtime.Types
             if (value != null)
                 return value;
 
-            return Err.OperationNotSupported(unit.IndexedStrings[nameId].GetString(), TypeName).Set(ctx);
+            return Err.OperationNotSupported(ctx.Composition.Members[nameId], TypeName).Set(ctx);
         }
 
         internal DyObject GetMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
@@ -411,6 +415,7 @@ namespace Dyalect.Runtime.Types
                         var ti = (DyTypeInfo)self;
                         ti.SetBuiltin(nm, null);
                         ti.members.Remove(nameId);
+                        ti.staticMembers.Remove(nameId);
                     }
                     return DyNil.Instance;
                 });
@@ -427,6 +432,13 @@ namespace Dyalect.Runtime.Types
         }
 
         protected virtual DyFunction GetMember(string name, ExecutionContext ctx) => null;
+
+        private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx)
+        {
+            return GetStaticMember(name, ctx);
+        }
+
+        protected virtual DyFunction GetStaticMember(string name, ExecutionContext ctx) => null;
 
         internal protected virtual DyObject Get(DyObject obj, DyObject index, ExecutionContext ctx) => obj.GetItem(index, ctx);
 

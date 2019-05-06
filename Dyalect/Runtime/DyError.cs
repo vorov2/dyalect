@@ -26,7 +26,9 @@ namespace Dyalect.Runtime
 
         WrongNumberOfArguments = 608,
 
-        InvalidType = 609
+        InvalidType = 609,
+
+        StaticOperationNotSupported = 610
     }
 
     public sealed class DyError
@@ -54,6 +56,13 @@ namespace Dyalect.Runtime
 
     internal static class Err
     {
+        public static DyError StaticOperationNotSupported(string op, string typeName)
+        {
+            return new DyError(DyErrorCode.StaticOperationNotSupported,
+                ("Operation", op),
+                ("TypeName", typeName));
+        }
+
         public static DyError OperationNotSupported(string op, string typeName)
         {
             return new DyError(DyErrorCode.OperationNotSupported,

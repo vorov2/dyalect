@@ -20,5 +20,15 @@ func foo() {
 foo() 
 */
 
-typeof(12) == Integer
+static func Array.empty(size, item) {
+    var i = 0
+    const arr = []
+    while i < size {
+        arr.add(item)
+        i += 1
+    }
+    arr
+}
 
+var xs = [1]
+Array.empty(10, 12.2)

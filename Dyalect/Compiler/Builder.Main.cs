@@ -689,7 +689,7 @@ namespace Dyalect.Compiler
                 {
                     var realName = node.Name;
 
-                    if (node.Parameters.Count == 0)
+                    if (node.Parameters.Count == 0 && !node.IsStatic)
                     {
                         if (node.Name == Builtins.Sub)
                             realName = Builtins.Neg;
@@ -700,7 +700,11 @@ namespace Dyalect.Compiler
                     var nameId = GetMemberNameId(realName);
                     cw.Aux(nameId);
                     var code = GetTypeHandle(node.TypeName, node.Location);
-                    cw.SetMember(code);
+
+                    if (node.IsStatic)
+                        cw.SetMemberS(code);
+                    else
+                        cw.SetMember(code);
                 }
 
                 AddLinePragma(node);
@@ -725,6 +729,9 @@ namespace Dyalect.Compiler
             var args = node.Parameters.ToArray();
             var argCount = args.Length;
             StartFun(node.Name, args, argCount);
+
+            if (node.IsStatic && !node.IsMemberFunction)
+                AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name);
 
             var startLabel = cw.DefineLabel();
             var funEndLabel = cw.DefineLabel();
@@ -761,7 +768,7 @@ namespace Dyalect.Compiler
             //If this is a member function we add an additional system variable that
             //would return an instance of an object to which this function is coupled
             //(same as this in C#)
-            if (node.IsMemberFunction)
+            if (node.IsMemberFunction && !node.IsStatic)
             {
                 var va = AddVariable("this", node, data: VarFlags.Const);
                 cw.This();

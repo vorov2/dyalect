@@ -133,6 +133,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Static method &quot;%Operation%&quot; is not supported by the type &quot;%TypeName%&quot;..
+        /// </summary>
+        internal static string StaticOperationNotSupported {
+            get {
+                return ResourceManager.GetString("StaticOperationNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Function &quot;%FunctionName%&quot; accepts %FunctionArguments% argument(s) (%PassedArguments% given)..
         /// </summary>
         internal static string WrongNumberOfArguments {

@@ -144,4 +144,7 @@
   <data name="InvalidType" xml:space="preserve">
     <value>Type error: expected type "%Expected%", got "%Got%".</value>
   </data>
+  <data name="StaticOperationNotSupported" xml:space="preserve">
+    <value>Static method "%Operation%" is not supported by the type "%TypeName%".</value>
+  </data>
 </root>
