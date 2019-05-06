@@ -511,11 +511,25 @@ PRODUCTIONS
                 (
                     "." (. var ot = t; .)
                     identToken
-                    (.
-                        var fld = new DAccess(ot) { Target = node };
-                        fld.Name = t.val;
-                        node = fld;
-                    .)
+                    (. var nm = t.val; DMemberCheck chk = null; .)
+                    (
+                        [
+                            "?"
+                            (.
+                                chk = new DMemberCheck(ot) { Target = node };
+                                chk.Name = nm;
+                                node = chk;
+                            .)
+                        ]
+                        (.
+                            if (chk == null) 
+                            {
+                                var fld = new DAccess(ot) { Target = node };
+                                fld.Name = nm;
+                                node = fld;
+                            }
+                        .)
+                    )
                 )
                 |
                 (
@@ -566,13 +580,7 @@ PRODUCTIONS
         ).
 
     Base<out DNode node> =
-        (. node = null; .)
-        (
-            "base" 
-            (. var bs = new DBase(t); .)
-            "." identToken
-            (. bs.Name = t.val; node = bs; .)
-        ).
+        "base" (. node = new DBase(t); .).
 
     Array<out DNode node> =
         (. node = null; .)

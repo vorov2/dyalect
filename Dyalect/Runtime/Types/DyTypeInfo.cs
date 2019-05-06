@@ -286,6 +286,12 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Other Operations
+        internal DyObject HasMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
+        {
+            nameId = unit.MemberIds[nameId];
+            return GetMemberDirect(self, nameId, ctx) != null ? DyBool.True : DyBool.False;
+        }
+
         internal DyObject GetMemberOp(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
         {
             nameId = unit.MemberIds[nameId];

@@ -18,28 +18,35 @@
     ```
   * A method `compact` added to the type `Array` (removes all occurences of `nil` in place).
   * Methods `fst` and `snd` (that return first and second elements) are added to the type `Tuple`.
-  * Methods `indexOf` and `lastIndexOf` are added to the type `String`.
-  * A method `split` is added to the type `String` - it converts a string into an array of strings based on the provided separator(s):
+  * Methods `indexOf` and `lastIndexOf` are added to the type `String` (related to [Issue #20](https://github.com/vorov2/dyalect/issues/20)).
+  * A method `split` is added to the type `String` (related to [Issue #20](https://github.com/vorov2/dyalect/issues/20))- it converts a string into an array of strings based on the provided separator(s):
     ```swift    
     var str = "Name=John;Surname=Doe"
     var arr = str.split("=", ";")
     arr //arr is ["Name", "John", "Surname", "Doe"]
     ```
-  * Methods `upper` and `lower` are added to the `String` data type, these methods trasforms a string into lower or upper case.
-  * Methods `startsWith` and `endsWith` are added to the `String` data type.
-  * A method `sub` is added to the type `String`, this method returns a substring of a string:
+  * Methods `upper` and `lower` are added to the `String` data type (related to [Issue #20](https://github.com/vorov2/dyalect/issues/20)), these methods trasforms a string into lower or upper case.
+  * Methods `startsWith` and `endsWith` are added to the `String` data type (related to [Issue #20](https://github.com/vorov2/dyalect/issues/20)).
+  * A method `sub` is added to the type `String` (related to [Issue #20](https://github.com/vorov2/dyalect/issues/20)), this method returns a substring of a string:
     ```swift
     "abcdef".sub(2, 4) //returns "cdef"
     "qwerty".sub(4) //returns "ty"
     ```
-  * **(Breaking change)** A new `Char` data type is added. Now double quoted literals create strings, while single quoted literals create chars (previously both would result in a string):
+  * 
+  * **(Breaking change)** A new `Char` data type is added ([Issue #12](https://github.com/vorov2/dyalect/issues/12)). Now double quoted literals create strings, while single quoted literals create chars (previously both would result in a string):
     ```swift
     var str = "Foo" //A string
     var ch = 'F' //A char
     ```
     Chars support escape codes in a manner similar to strings. Also chars support method `toString`, comparison operators, equality operations and addition operator (the result of addition of two chars is a string).
   * **(Breaking change)** Now string iterator returns a sequence of chars (instead of sequence of strings).
+  * A _method presence check_ operator `?` is added ([Issue #25](https://github.com/vorov2/dyalect/issues/25)). Now it is possible to check whether a value has a certain method:
+    ```swift
+    42.toString? //evaluates to true
+    42.fooBar? //evaluates to false
+    ```
   * A bug fixed - incorrect type info was generated for the values of type `String`.
+  * Grammar for the `base` keyword is corrected, now compiler better handles the cases where `base` is not allowed (but it is still possible to report about that in a clear way).
 
 # 0.3.4
   * A bug fixed - incorrect type info was generated for the values of type `Array`.

@@ -94,6 +94,8 @@ namespace Dyalect
 
         public object StringTest9 => "cdefty";
 
+        public object MemberCheckTest => "(len: true, fooBar: false)";
+
         public object BaseTest1 => 2;
 
         public object BaseTest2 => 2;

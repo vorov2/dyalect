@@ -181,6 +181,11 @@ namespace Dyalect.Compiler
             Emit(new Op(OpCode.GetMember, nameId));
         }
 
+        public void HasMember(int nameId)
+        {
+            Emit(new Op(OpCode.HasMember, nameId));
+        }
+
         public void Call(int args) => Emit(new Op(OpCode.Call, args), -args);
         public void NewFun(int funHandle) => Emit(new Op(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new Op(OpCode.NewFunV, funHandle));

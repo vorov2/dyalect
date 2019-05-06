@@ -9,12 +9,9 @@ namespace Dyalect.Parser.Model
 
         }
 
-        public string Name { get; set; }
-
         internal override void ToString(StringBuilder sb)
         {
-            sb.Append("base.");
-            sb.Append(Name);
+            sb.Append("base");
         }
     }
 }

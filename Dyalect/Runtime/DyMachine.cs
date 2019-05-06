@@ -371,6 +371,10 @@ namespace Dyalect.Runtime
                                 ProcessError(ctx, function, ref offset, evalStack);
                         }
                         break;
+                    case OpCode.HasMember:
+                        right = evalStack.Peek();
+                        evalStack.Replace(types[right.TypeId].HasMember(right, op.Data, unit, ctx));
+                        break;
                     case OpCode.GetMember:
                         right = evalStack.Peek();
                         evalStack.Replace(types[right.TypeId].GetMemberOp(right, op.Data, unit, ctx));

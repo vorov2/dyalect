@@ -30,6 +30,7 @@
         Application,
         Index,
         Access,
+        MemberCheck,
 
         Function,
         Tuple,

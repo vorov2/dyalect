@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
@@ -38,6 +39,21 @@ namespace Dyalect.Runtime.Types
         public static implicit operator string(DyString str) => str.Value;
 
         public static implicit operator DyString(string str) => new DyString(str);
+
+        public static string ToString(DyObject value, ExecutionContext ctx)
+        {
+            var res = value;
+
+            while (res.TypeId != StandardType.String || res.TypeId != StandardType.Char)
+            {
+                res = res.ToString(ctx);
+
+                if (ctx.HasErrors)
+                    return null;
+            }
+
+            return res.GetString();
+        }
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
@@ -255,6 +271,30 @@ namespace Dyalect.Runtime.Types
                 return Err.IndexOutOfRange(self.TypeName(ctx), j).Set(ctx);
 
             return new DyString(self.GetString().Substring(i, j));
+        }
+
+        private DyObject Concat(ExecutionContext ctx, DyObject[] args)
+        {
+            var arr = new string[args.Length];
+
+            for (var i = 0; i < args.Length; i++)
+            {
+                var a = args[i];
+
+                if (a.TypeId == StandardType.String || a.TypeId == StandardType.Char)
+                    arr[i] = a.GetString();
+                else
+                {
+                    var res = DyString.ToString(a, ctx);
+
+                    if (ctx.HasErrors)
+                        return DyNil.Instance;
+
+                    arr[i] = res;
+                }
+            }
+
+            return new DyString(string.Concat(arr));
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)

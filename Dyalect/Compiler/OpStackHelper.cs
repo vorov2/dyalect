@@ -55,8 +55,9 @@
             0,  //NewFun
             0,  //NewFunV
             1,  //NewIter
-            -1, //SetMethod
-            0,  //GetMethod
+            -1, //SetMember
+            0,  //GetMember
+            0,  //HasMember
             -1, //Get
             -3, //Set
             1,  //RunMod

@@ -89,7 +89,19 @@ namespace Dyalect.Compiler
                 case NodeType.Char:
                     Build((DCharLiteral)node, hints, ctx);
                     break;
+                case NodeType.MemberCheck:
+                    Build((DMemberCheck)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DMemberCheck node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Target, hints.Append(Push), ctx);
+            AddLinePragma(node);
+            var nameId = GetMemberNameId(node.Name);
+            cw.HasMember(nameId);
+            PopIf(hints);
         }
 
         private void Build(DYield node, Hints hints, CompilerContext ctx)
@@ -102,20 +114,26 @@ namespace Dyalect.Compiler
 
         private void Build(DBase node, Hints hints, CompilerContext ctx)
         {
-            if (!hints.Has(Function))
-            {
-                AddError(CompilerError.BaseNotAllowed, node.Location);
-                return;
-            }
-
-            var sv = GetParentVariable(node.Name, node);
-            AddLinePragma(node);
-            cw.PushVar(sv);
-            PopIf(hints);
+            AddError(CompilerError.BaseNotAllowed, node.Location);
         }
 
         private void Build(DAccess node, Hints hints, CompilerContext ctx)
         {
+            if (node.Target.NodeType == NodeType.Base)
+            {
+                if (!hints.Has(Function))
+                {
+                    AddError(CompilerError.BaseNotAllowed, node.Location);
+                    return;
+                }
+
+                var sv = GetParentVariable(node.Name, node);
+                AddLinePragma(node);
+                cw.PushVar(sv);
+                PopIf(hints);
+                return;
+            }
+
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
             AddLinePragma(node);
             var nameId = GetMemberNameId(node.Name);
