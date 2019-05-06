@@ -16,6 +16,18 @@ namespace Dyalect.Linker
             FileName = "lang";
         }
 
+        protected override void Initialize()
+        {
+            for (var i = 0; i < StandardType.TypeNames.Length; i++)
+                Add(StandardType.TypeNames[i], DyNil.Instance);
+        }
+
+        public override void Execute(ExecutionContext ctx)
+        {
+            for (var i = 0; i < StandardType.TypeNames.Length; i++)
+                Modify(i, ctx.Types[i]);
+        }
+
         [Function("convertToNumber")] 
         public DyObject ToNumber(ExecutionContext ctx, DyObject[] args)
         {

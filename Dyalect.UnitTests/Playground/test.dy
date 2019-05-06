@@ -20,4 +20,5 @@ func foo() {
 foo() 
 */
 
-'\'' + 'F' + '\''
+typeof(12) == Integer
+

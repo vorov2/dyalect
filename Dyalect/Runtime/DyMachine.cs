@@ -55,6 +55,7 @@ namespace Dyalect.Runtime
             if (unit.Layouts.Count == 0)
             {
                 var foreign = (ForeignUnit)unit;
+                foreign.Execute(ctx);
                 ctx.Units[unitId] = foreign.Values.ToArray();
                 return DyNil.Instance;
             }
@@ -387,7 +388,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.SetMemberS:
                         right = evalStack.Pop();
-                        if (op.Data >= ctx.Composition.StandardTypeCount)
+                        if (op.Data >= StandardType.TypeNames.Length)
                             types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
                                 .SetStaticMember(ctx.AUX, right, unit, ctx);
                         else
@@ -396,7 +397,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.SetMember:
                         right = evalStack.Pop();
-                        if (op.Data >= ctx.Composition.StandardTypeCount)
+                        if (op.Data >= StandardType.TypeNames.Length)
                             types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
                                 .SetMember(ctx.AUX, right, unit, ctx);
                         else

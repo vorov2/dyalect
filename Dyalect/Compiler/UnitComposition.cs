@@ -7,7 +7,7 @@ namespace Dyalect.Compiler
 {
     public sealed class UnitComposition
     {
-        public Guid Id = Guid.NewGuid();
+        public Guid Id { get; }  = Guid.NewGuid();
 
         public UnitComposition(List<Unit> units)
         {
@@ -15,14 +15,11 @@ namespace Dyalect.Compiler
             Types = StandardType.GetAll();
             Members = new FastList<string>();
             MembersMap = new Dictionary<string, int>();
-            StandardTypeCount = Types.Count;
         }
 
         public List<Unit> Units { get; }
 
         public FastList<DyTypeInfo> Types { get; }
-
-        internal int StandardTypeCount { get; }
 
         internal FastList<string> Members { get; }
 

@@ -23,6 +23,24 @@ namespace Dyalect
                 new DyTupleTypeInfo()
             };
 
+        public static string[] TypeNames =
+            new []
+            {
+                NilName,
+                IntegerName,
+                FloatName,
+                BoolName,
+                CharName,
+                StringName,
+                FunctionName,
+                LabelName,
+                TypeInfoName,
+                ModuleName,
+                ArrayName,
+                IteratorName,
+                TupleName
+            };
+
         public const int Nil = 0;
         public const int Integer = 1;
         public const int Float = 2;
