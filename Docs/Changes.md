@@ -10,12 +10,13 @@
     var arr = [1,2,3,4,5,6]
     arr.slice(2,5) //returns [3,4,5]
     ```
-  * A method `sortBy` added to the type `Array` ([Issue #14](https://github.com/vorov2/dyalect/issues/14)). This method allows to sort array in place with the help of a provided comparator:
+  * Methods `sort` and `sortBy` are added to the type `Array` ([Issue #14](https://github.com/vorov2/dyalect/issues/14)). These method allows to sort array in place with the help of a provided comparator:
     ```swift
     var arr = [4,6,1,3,2,5]
     arr.sortBy((x,y) => x - y)
     arr //arr is [1,2,3,4,5,6]
     ```
+    Method `sort` uses a default comparer (it assumes that types implement operators `==`, `!=`, `>` and `<`).
   * A method `compact` added to the type `Array` (removes all occurences of `nil` in place).
   * Methods `fst` and `snd` (that return first and second elements) are added to the type `Tuple`.
   * Methods `indexOf` and `lastIndexOf` are added to the type `String` (related to [Issue #20](https://github.com/vorov2/dyalect/issues/20)).

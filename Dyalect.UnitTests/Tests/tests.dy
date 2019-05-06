@@ -181,6 +181,12 @@ func arrayTest8() {
     arr.len()
 }
 
+func arrayTest9() {
+    var arr = [7,4,6,1,3,2,5]
+    arr.sort()
+    arr.toString()
+}
+
 func tupleTest1() {
     var t = (1,2,3)
     t.len()

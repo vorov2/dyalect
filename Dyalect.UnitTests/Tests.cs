@@ -66,6 +66,8 @@ namespace Dyalect
 
         public object ArrayTest8 => 4;
 
+        public object ArrayTest9 => "[1, 2, 3, 4, 5, 6, 7]";
+
         public object TupleTest1 => 3;
 
         public object TupleTest2 => 6;

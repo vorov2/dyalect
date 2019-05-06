@@ -244,6 +244,19 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject Sort(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+
+            arr.Values.Sort((x, y) => {
+                var res = ctx.Types[x.TypeId].Gt(x, y, ctx);
+                return res == DyBool.True 
+                    ? 1 
+                    : ctx.Types[x.TypeId].Eq(x, y, ctx) == DyBool.True ? 0 : -1;
+            });
+            return DyNil.Instance;
+        }
+
         private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var arr = (DyArray)self;
@@ -300,6 +313,9 @@ namespace Dyalect.Runtime.Types
 
             if (name == "slice")
                 return DyForeignFunction.Create(name, GetSlice);
+
+            if (name == "sort")
+                return DyForeignFunction.Create(name, Sort);
 
             if (name == "sortBy")
                 return DyForeignFunction.Create(name, SortBy);
