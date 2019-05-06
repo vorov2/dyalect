@@ -260,6 +260,10 @@ func stringTest10() {
     "camelCase".capitalize()
 }
 
+func stringTest11() {
+    String.concat("one", "two", "three", 44)
+}
+
 func memberCheckTest() {
     ("string".len?, 42.fooBar?).toString()
 }
@@ -785,6 +789,6 @@ func methodTest1() {
         this * other
     }
     var res = 3 + 3 == 3 * 3
-    typeof(res).__deleteMember("+")
+    Integer.__deleteMember("+")
     res
 }

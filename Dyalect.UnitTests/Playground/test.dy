@@ -30,5 +30,4 @@ static func Array.empty(size, item) {
     arr
 }
 
-var xs = [1]
-Array.empty(10, 12.2)
+String.concat("one", "two", "three")

@@ -98,6 +98,8 @@ namespace Dyalect
 
         public object StringTest10 => "CamelCase";
 
+        public object StringTest11 => "onetwothree44";
+
         public object MemberCheckTest => "(len: true, fooBar: false)";
 
         public object BaseTest1 => 2;

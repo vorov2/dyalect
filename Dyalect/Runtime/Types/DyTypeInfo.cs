@@ -407,19 +407,6 @@ namespace Dyalect.Runtime.Types
             if (name == Builtins.Iterator)
                 return DyForeignFunction.Create(name, GetIterator);
 
-            if (name == "__deleteMember")
-                return DyForeignFunction.Create(name, (context, self, args) =>
-                {
-                    var nm = args.TakeOne(DyString.Empty).GetString();
-                    if (context.Composition.MembersMap.TryGetValue(nm, out var nameId)) {
-                        var ti = (DyTypeInfo)self;
-                        ti.SetBuiltin(nm, null);
-                        ti.members.Remove(nameId);
-                        ti.staticMembers.Remove(nameId);
-                    }
-                    return DyNil.Instance;
-                });
-
             return GetMember(name, ctx);
         }
 
@@ -435,6 +422,19 @@ namespace Dyalect.Runtime.Types
 
         private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx)
         {
+            if (name == "__deleteMember")
+                return DyForeignFunction.Create(name, (context, args) =>
+                {
+                    var nm = args.TakeOne(DyString.Empty).GetString();
+                    if (context.Composition.MembersMap.TryGetValue(nm, out var nameId))
+                    {
+                        SetBuiltin(nm, null);
+                        members.Remove(nameId);
+                        staticMembers.Remove(nameId);
+                    }
+                    return DyNil.Instance;
+                });
+
             return GetStaticMember(name, ctx);
         }
 

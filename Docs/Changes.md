@@ -51,6 +51,12 @@
   * Foreign modules now support regular value objects and not just functions.
   * A bug fixed (_Dy type system and embedding_, [Issue #33](https://github.com/vorov2/dyalect/issues/33)).
   * Implemented _Make types first class values_ ([Issue #31](https://github.com/vorov2/dyalect/issues/31)). Now all type names (e.g. `Integer`) are regular variables resolved to a `TypeInfo` instance that describes a type.
+  * Now it is possible to create static methods that can be called against types, not values ([Issue #27](https://github.com/vorov2/dyalect/issues/27)), e.g.:
+    ```swift
+    String.concat("one", "two", "three") //static method, String is a type
+    "foo".len() //instance method, "foo" is an instance
+    ```
+  * A new static method `concat` is added to a `String` data type ([Issue #29](https://github.com/vorov2/dyalect/issues/29)).
 
 # 0.3.4
   * A bug fixed - incorrect type info was generated for the values of type `Array`.
