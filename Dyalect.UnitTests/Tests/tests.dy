@@ -78,6 +78,16 @@ func comparisonTest3() {
     assert(false, !(x >= 12 && y <= 10 || x < -12))
 }
 
+func comparisonTest4() {
+    assert(true, 12.0 == 12)
+    assert(true, 12 == 12.0)
+}
+
+func comparisonTest5() {
+    assert(true, 12.2 > 12)
+    assert(true, 12 < 12.2)
+}
+
 func toStringTest1() {
     var res = (1,2,3).toString()
     assert("(1, 2, 3)", res)
