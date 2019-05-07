@@ -12,80 +12,55 @@ namespace Dyalect
 {
     public static class TestRunner
     {
+        class NoClass { }
+
         private static List<string> commands = new List<string>();
 
         public static void Main()
         {
-            var props = typeof(Tests).GetProperties();
-            var obj = Activator.CreateInstance(typeof(Tests));
-            var dict = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var pi in props)
-            {
-                var v = pi.GetValue(obj);
-
-                if (v is int)
-                    v = Convert.ToInt64(v);
-
-                dict.Add(pi.Name, v);
-            }
-
             try
             {
                 WriteLineWithColor(ConsoleColor.Cyan, "Running tests...");
                 var funs = Run();
-                Analyze(dict, funs);
+                Analyze(funs);
             }
             catch (Exception ex)
             {
                 WriteLineWithColor(ConsoleColor.Red, $"Failure! {ex.Message}");
-                Analyze(dict, new Dictionary<string, (ExecutionContext,DyFunction)>());
+                Analyze(new Dictionary<string, (ExecutionContext,DyFunction)>());
             }
         }
 
-        private static void Analyze(Dictionary<string, object> expected, Dictionary<string, (ExecutionContext,DyFunction)> funs)
+        private static void Analyze(Dictionary<string, (ExecutionContext,DyFunction)> funs)
         {
             var passed = 0;
             var i = 0;
 
-            foreach (var k in expected)
+            foreach (var kv in funs)
             {
-                if (funs.TryGetValue(k.Key, out var cont))
+                var cont = kv.Value;
+                var fn = cont.Item2;
+                Console.Write($"[{(++i).ToString().PadLeft(3, '0')}] ");
+
+                try
                 {
-                    var fn = cont.Item2;
-                    Console.Write($"[{(++i).ToString().PadLeft(3, '0')}] ");
+                    var res = fn.Call(cont.Item1).ToObject();
 
-                    try
-                    {
-                        var res = fn.Call(cont.Item1).ToObject();
-                        var kv = k.Value;
-                        var eq = false;
+                    if (res != null)
+                        throw new Exception("Not run.");
 
-                        if (res is double && kv is double)
-                            eq = Math.Abs((double)res - (double)kv) < .0000001;
-                        else
-                            eq = res.Equals(kv);
-
-                        if (!eq)
-                            Failed(k.Key, $"Expected <{k.Value}({k.Value.GetType()})>, got <{res}({res.GetType()})>.");
-                        else
-                        {
-                            Success(k.Key);
-                            passed++;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Failed(k.Key, ex.Message);
-                    }
+                    Success(kv.Key);
+                    passed++;
                 }
-                else
-                    Failed(k.Key, "Not run");
+                catch (Exception ex)
+                {
+                    Failed(kv.Key, ex.Message);
+                }
             }
 
             var err = Console.ForegroundColor;
 
-            if (passed != expected.Count)
+            if (passed != funs.Count)
                 err = ConsoleColor.Red;
 
 
@@ -97,7 +72,7 @@ namespace Dyalect
             Console.WriteLine(new string('-', 20));
             WriteWithColor(good, $"{passed}");
             Console.Write(" passed, ");
-            WriteWithColor(err, $"{expected.Count - passed}");
+            WriteWithColor(err, $"{funs.Count - passed}");
             Console.WriteLine(" failed");
             Console.WriteLine();
             Submit();
@@ -153,7 +128,7 @@ namespace Dyalect
 
         private static Dictionary<string, (ExecutionContext,DyFunction)> Run()
         {
-            var startupPath = Path.Combine(Path.GetDirectoryName(typeof(Tests).Assembly.Location), "Tests"); ;
+            var startupPath = Path.Combine(Path.GetDirectoryName(typeof(NoClass).Assembly.Location), "Tests"); ;
             var dict = new Dictionary<string, (ExecutionContext,DyFunction)>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var file in Directory.EnumerateFiles(startupPath, "*.dy"))

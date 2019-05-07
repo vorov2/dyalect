@@ -28,7 +28,7 @@
                 return false;
         }
 
-        public override string ToString() => value.ToString();
+        public override string ToString() => value.ToString(CI.NumberFormat);
 
         public override object ToObject() => value;
 

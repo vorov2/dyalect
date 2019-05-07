@@ -226,7 +226,7 @@ namespace Dyalect.Parser
                 return result;
             else
             {
-                Errors.Add(new BuildMessage("", BuildMessageType.Error, 0, t.line, t.col, this.scanner.Buffer.FileName));
+                Errors.Add(new BuildMessage("Unrecognized escape sequence.", BuildMessageType.Error, 0, t.line, t.col + code, this.scanner.Buffer.FileName));
                 return t.val;
             }
         }

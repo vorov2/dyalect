@@ -28,6 +28,8 @@ namespace Dyalect.Runtime.Types
 
         public abstract IDictionary<string, object> ToDictionary();
 
+        public abstract IList<object> ToList();
+
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == StandardType.Integer)
@@ -99,6 +101,8 @@ namespace Dyalect.Runtime.Types
             return dict;
         }
 
+        public override IList<object> ToList() => new object[] { value1, value2 };
+
         protected internal override DyObject GetItem(int index)
         {
             if (index == 0)
@@ -164,6 +168,8 @@ namespace Dyalect.Runtime.Types
             dict.Add(key3 ?? DefaultKey(), value3);
             return dict;
         }
+
+        public override IList<object> ToList() => new object[] { value1, value2, value3 };
 
         protected internal override DyObject GetItem(int index)
         {
@@ -243,6 +249,8 @@ namespace Dyalect.Runtime.Types
 
             return dict;
         }
+
+        public override IList<object> ToList() => values;
 
         protected internal override int GetOrdinal(string name) => Array.IndexOf(keys, name);
 

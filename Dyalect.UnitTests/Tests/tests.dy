@@ -2,79 +2,95 @@
 //Basic tests
 ///////////////////////////////////////////////
 func mathTest1() {
-    12 * 3 - 4 + 6
+    var x = 12 * 3 - 4 + 6
+    assert(38, x)
 }
 
 func mathTest2() { //1.5919117647058822
-    22 % 4 - 3.33 / 8.16
+    var x = 22 % 4 - 3.33 / 8.16
+    assert(1.5919117647058822, x)
 }
 
 func mathTest3() { //6.6129032258064528
-    12.3 / (0.64 + 1.22)
+    var x = 12.3 / (0.64 + 1.22)
+    assert(6.6129032258064528, x)
 }
 
 func mathTest4() { //11.256
-    23.456 % 12.2
+    var x = 23.456 % 12.2
+    assert(11.256, x)
 }
 
 func mathTest5() { //0.0099999999999997868
-   12.4 - 0.39 - 12.0
+   var x = 12.4 - 0.39 - 12.0
+   assert(0.0099999999999997868, x)
 }
 
 func mathTest6() { //783.59999999999991
-   12.0 * 65.3
+   var x = 12.0 * 65.3
+   assert(783.59999999999991, x)
 }
 
 func mathTest7() {
-    188.123 - 12.0004 * 5.667 - (12.2 / 0.134)
+    var x = 188.123 - 12.0004 * 5.667 - (12.2 / 0.134)
+    assert(29.071957080597016, x)
 }
 
 func mathTest8() {
-    -12 - 14.6
+    var x = -12 - 14.6
+    assert(-26.6, x)
 }
 
 func mathTest9() {
-    199 % 44.12 * 2
+    var x = 199 % 44.12 * 2
+    assert(45.04000000000002, x)
 }
 
 func mathTest10() {
-    +16 - -22
+    var x = +16 - -22
+    assert(38, x)
 }
 
 func logicalTest1() {
     const x = 144
-    x / 12 > 100 || x / 6 == 24
+    var res = x / 12 > 100 || x / 6 == 24
+    assert(true, res)
 }
 
 func logicalTest2() {
     const x = 144
-    x / 12 > 100 && x / 6 != 24
+    var res = x / 12 > 100 && x / 6 != 24
+    assert(false, res)
 }
 
 func comparisonTest1() {
-    12 > 11 && 12 <= 12 && 12 != 12.01 && 12 >= 12
+    var res = 12 > 11 && 12 <= 12 && 12 != 12.01 && 12 >= 12
+    assert(true, res)
 }
 
 func comparisonTest2() {
-    "string1" != "string2" && "string1" == "string1"
+    assert(true, "string1" != "string2" && "string1" == "string1")
 }
 
 func comparisonTest3() {
     const x = 12
     const y = 9
-    !(x >= 12 && y <= 10 || x < -12)
+    assert(false, !(x >= 12 && y <= 10 || x < -12))
 }
 
 func toStringTest1() {
-    (1,2,3).toString()
+    var res = (1,2,3).toString()
+    assert("(1, 2, 3)", res)
 }
 
 func toStringTest2() {
-    [12.2, "string", true].toString()
+    var res = [12.2, "string", true].toString()
+    assert("[12.2, \"string\", true]", res)
 }
 
 func toStringTest3() {
-    (x:42,y:"foo").toString()
+    var res = (x:42,y:"foo").toString()
+    assert("(x: 42, y: \"foo\")", res)
 }
 
 func baseTest1() {
@@ -83,7 +99,7 @@ func baseTest1() {
         const x = 4
         base.x
     }
-    inner()
+    assert(2, inner())
 }
 
 func baseTest2() {
@@ -95,7 +111,7 @@ func baseTest2() {
             base.x
         }
     }
-    inner()
+    assert(2, inner())
 }
 
 func literalTest1() {
@@ -103,28 +119,35 @@ func literalTest1() {
         x: (x: 2, y: (y: 3)),
         22
     )
-    tup[1] + tup["x"]["x"] - tup["x"]["y"]["y"]
+    var res = tup[1] + tup["x"]["x"] - tup["x"]["y"]["y"]
+    assert(21, res)
 }
 
 func literalTest2() {
     var arr = [[1,2], [3,4,(5,6,a:[7,8])]]
-    arr[0][0] + arr[1][2]["a"][1]
+    var res = arr[0][0] + arr[1][2]["a"][1]
+    assert(9, res)
 }
 
 func literalTest3() {
-    "some\tstring with\"inner quotes\" and such (and a buck \u0024)"
+    var fst = "some\tstring with\"inner quotes\" and such (and a buck \u0024)"
+    var snd = "some\u0009string with\u0022inner quotes\u0022 and such (and a buck $)"
+    assert(fst, snd)
 }
 
 func literalTest4() {
-    '\'' + 'F' + '\''
+    var res = '\'' + 'F' + '\''
+    assert("'F'", res)
 }
 
 func literalTest5() {
-    1.234e-17
+    var res = 1.234e-17
+    assert(0.00000000000000001234, res)
 }
 
 func literalTest6() {
-    0x40 + 0x20
+    var res = 0x40 + 0x20
+    assert(96, res)
 }
 
 func arrayTest1() {
@@ -134,7 +157,7 @@ func arrayTest1() {
     arr.addRange([1,2,3])
     arr.removeAt(1)
     arr.remove(3)
-    arr.toString()
+    assert([1, 1, 2], arr)
 }
 
 func arrayTest2() {
@@ -145,135 +168,152 @@ func arrayTest2() {
     arr.insert(0, 11)
     arr.insert(0, 11)
     arr.remove(11)
-    arr.toString()
+    assert([11, 1, 2], arr)
 }
 
 func arrayTest3() {
     var arr = [1,2,3,4,5,6]
     var newArr = arr.slice(2,5)
-    newArr.toString()
+    assert([3, 4, 5], newArr)
 }
 
 func arrayTest4() {
     var arr = [4,6,1,3,2,5]
     arr.sortBy((x,y) => x - y)
-    arr.toString()
+    assert([1, 2, 3, 4, 5, 6], arr)
 }
 
 func arrayTest5() {
     var arr = [1, 2, 3, 1, 4, 5, 1]
-    (arr.indexOf(1), arr.lastIndexOf(1)).toString()
+    assert(0, arr.indexOf(1))
+    assert(6, arr.lastIndexOf(1))
 }
 
 func arrayTest6() {
     var arr = [1,2,3,4,5,6]
-    arr.indices().toArray().toString()
+    var res = arr.indices().toArray()
+    assert([0, 1, 2, 3, 4, 5], res)
 }
 
 func arrayTest7() {
     var arr = [1,nil,2,nil,3,nil,nil,4,5,6]
     arr.compact()
-    arr.toString()
+    assert([1, 2, 3, 4, 5, 6], arr)
 }
 
 func arrayTest8() {
     var arr = [1,2,3,4]
-    arr.len()
+    assert(4, arr.len())
 }
 
 func arrayTest9() {
     var arr = [7,4,6,1,3,2,5]
     arr.sort()
-    arr.toString()
+    assert([1, 2, 3, 4, 5, 6, 7], arr)
 }
 
 func tupleTest1() {
     var t = (1,2,3)
-    t.len()
+    assert(3, t.len())
 }
 
 func tupleTest2() {
     var t = (x: 1, y: 2, z: 3)
-    t.x + t.y + t.z
+    assert(6, t.x + t.y + t.z)
 }
 
 func tupleTest3() {
     var t = (x: 1, y: 2, z: 3)
-    t.keys().toArray().toString()
+    var res = t.keys().toArray()
+    assert(["x", "y", "z"], res)
 }
 
 func tupleTest4() {
     var t = (1,2,3,4,5,6)
-    t.indices().toArray().toString()
+    var res = t.indices().toArray()
+    assert([0, 1, 2, 3, 4, 5], res)
 }
 
 func tupleTest5() {
     var t = (42, 4.56)
-    t.fst() - t.snd()
+    var res = t.fst() - t.snd()
+    assert(37.44, res)
 }
 
 func stringTest1() {
     var str = "Hello, world!"
-    str.len()
+    var res = str.len()
+    assert(13, res)
 }
 
 func stringTest2() {
     var str = "Hello, world!"
-    (str.indexOf("o"), 
-        str.lastIndexOf("o")).toString()
+    assert(4, str.indexOf("o"))
+    assert(8, str.lastIndexOf("o"))
 }
 
 func stringTest3() {
-    ("1" > "2", "1" < "2").toString()
+    assert(false, "1" > "2")
+    assert(true, "1" < "2")
 }
 
 func stringTest4() {
     var str = "Name=John;Surname=Doe;Age=21;Gender=Male"
     var arr = str.split('=', ';')
-    arr.toString()
+    assert(["Name","John","Surname","Doe","Age","21","Gender","Male"], arr)
 }
 
 func stringTest5() {
     var str = "foo"
-    str[0] + str[2]
+    var res = str[0] + str[2]
+    assert("fo", res)
 }
 
 func stringTest6() {
     var str1 = "FOO"
     var str2 = "bar"
-    str1.lower() + str2.upper()
+    var res = str1.lower() + str2.upper()
+    assert("fooBAR", res)
 }
 
 func stringTest7() {
-    "fooBar".startsWith("foo")
+    var res = "fooBar".startsWith("foo")
+    assert(true, res)
 }
 
 func stringTest8() {
-    "fooBar".endsWith("Bar")
+    var res = "fooBar".endsWith("Bar")
+    assert(true, res)
 }
 
 func stringTest9() {
-    "abcdef".sub(2, 4) + "qwerty".sub(4)
+    var res = "abcdef".sub(2, 4) + "qwerty".sub(4)
+    assert("cdefty", res)
 }
 
 func stringTest10() {
-    "camelCase".capitalize()
+    var res = "camelCase".capitalize()
+    assert("CamelCase", res)
 }
 
 func stringTest11() {
-    String.concat("one", "two", "three", 44)
+    var res = String.concat("one", "two", "three", 44)
+    assert("onetwothree44", res)
 }
 
 func stringTest12() {
-    "fooBar".contains("oBa")
+    var res = "fooBar".contains("oBa")
+    assert(true, res)
 }
 
 func stringTest13() {
-    " ss".trim() + "--dd--".trimStart('-') + "!ee!".trimEnd('!')
+    var res = " ss".trim() + "--dd--".trimStart('-') + "!ee!".trimEnd('!')
+    assert("ssdd--!ee", res)
 }
 
 func memberCheckTest() {
-    ("string".len?, 42.fooBar?).toString()
+    assert(true, "string".len?)
+    assert(false, 42.fooBar?)
 }
 
 ///////////////////////////////////////////////
@@ -287,7 +327,7 @@ func whileTest1() {
         }
         n = n - 1
     }
-    return x
+    assert(33, x)
 }
 
 func whileTest2() {
@@ -301,7 +341,7 @@ func whileTest2() {
     if !x {
         x = 42
     }
-    return x
+    assert(42, x)
 }
 
 func fizzbuzzTest() {
@@ -319,7 +359,7 @@ func fizzbuzzTest() {
         }
         n = n + 1
     }
-    acc
+    assert(acc, "12fizz4buzzfizz78fizzbuzz")
 }
 
 func recursionTest() {
@@ -333,7 +373,7 @@ func recursionTest() {
         }
     }
     iter(10)
-    acc
+    assert(acc, 10)
 }
 
 func factTest() {
@@ -344,7 +384,8 @@ func factTest() {
             n * fact(n - 1)
         }
     }
-    fact(20)
+    var res = fact(20)
+    assert(2432902008176640000, res)
 }
 
 func powerTest() {
@@ -357,7 +398,8 @@ func powerTest() {
             basis * pow(basis, exponent - 1)
         }
     }
-    pow(10, 3)
+    var x = pow(10, 3)
+    assert(x, 1000)
 }
 
 func binaryConversionTest() {
@@ -372,7 +414,7 @@ func binaryConversionTest() {
         } 
     }
     bin(157)
-    acc
+    assert("10011101", acc)
 }
 
 func fibTest1() {
@@ -382,7 +424,8 @@ func fibTest1() {
         }
         fib(n - 1) + fib(n - 2)
     }
-    fib(11)
+    var x = fib(11)
+    assert(x, 89)
 }
 
 func fibTest2() {
@@ -399,7 +442,8 @@ func fibTest2() {
             accum
         }
     }
-    fib(nil, 0, 1, 11)
+    var res = fib(nil, 0, 1, 11)
+    assert("0 1 1 2 3 5 8 13 21 34 55", res)
 }
 
 func phoneParserTest() {
@@ -432,7 +476,8 @@ func phoneParserTest() {
         }
         res
     }
-    parse("+7 (964) 506-11-12")
+    var res = parse("+7 (964) 506-11-12")
+    assert("9645061112", res)
 }
 
 func iteratorTest1() {
@@ -446,7 +491,8 @@ func iteratorTest1() {
         yield 68.6
     }
     var it = foo(false)
-    it() + it() + it() + it()
+    var res = it() + it() + it() + it()
+    assert(116.8, res)
 }
 
 func iteratorTest2() {
@@ -458,7 +504,8 @@ func iteratorTest2() {
         }
         acc
     }
-    sum(arr)
+    var res = sum(arr)
+    assert(36, res)
 }
 
 func iteratorTest3() {
@@ -478,7 +525,8 @@ func iteratorTest3() {
         acc
     }
     var filtered = filter(arr, x => x % 2 == 0)
-    sum(filtered)
+    var res = sum(filtered)
+    assert(20, res)
 }
 
 func iteratorTest4() {
@@ -501,7 +549,8 @@ func iteratorTest4() {
         str
     }
     const arr = reverse("Hello")
-    makeString(arr)
+    var res = makeString(arr)
+    assert("olleH", res)
 }
 
 func iteratorTest5() {
@@ -520,7 +569,8 @@ func iteratorTest5() {
         arr
     }
     const arr = toArray( filter("hello", x => x == 'l') )
-    arr[0] + arr[1]
+    var res = arr[0] + arr[1]
+    assert("ll", res)
 }
 
 func iteratorTest6() {
@@ -531,7 +581,7 @@ func iteratorTest6() {
                 break x
             }
         }
-    x
+    assert(8, x)
 }
 
 func iteratorTest7() {
@@ -550,7 +600,8 @@ func iteratorTest7() {
         }
     }
 
-    5.iter().toArray().toString()
+    var res = 5.iter().toArray()
+    assert([0,1,2,3,4], res)
 }
 
 func calcETest() { //2.71828182845905
@@ -576,7 +627,7 @@ func calcETest() { //2.71828182845905
             break
         }
     }
-    return e
+    assert(2.7182818284590455, e)
 }
 
 func dammTest() {
@@ -613,7 +664,7 @@ func dammTest() {
     for e in results {
         str += e
     }
-    str
+    assert("yesnoyesno", str)
 }
 
 func eulerTest() {
@@ -639,7 +690,7 @@ func eulerTest() {
     for e in arr {
         str += e + ";"
     }
-    str
+    assert("0=100;10=44;20=27.2;30=22.16;40=20.648;50=20.1944;60=20.05832;70=20.017496;80=20.0052488;90=20.00157464;100=20.000472392;", str)
 }
 
 func gcdTest() {
@@ -656,7 +707,8 @@ func gcdTest() {
             b
         }
     }
-    gcd(24, 36)
+    var x = gcd(24, 36)
+    assert(12, x)
 }
 
 func lcmTest() {
@@ -676,7 +728,8 @@ func lcmTest() {
     func lcm(a, b) {
         a * b / gcd(a, b)
     }
-    lcm(10, 135)
+    var x = lcm(10, 135)
+    assert(270, x)
 }
 
 func ackTest() {
@@ -696,7 +749,8 @@ func ackTest() {
             "OutOfRange"
         }
     }
-    ack(3, 4)
+    var x = ack(3, 4)
+    assert(125, x)
 }
 
 func foldTest() {
@@ -707,7 +761,8 @@ func foldTest() {
         }
         accum
     }
-    fold([1,2,3,4,5,6], (acc,x) => acc + x)
+    var x = fold([1,2,3,4,5,6], (acc,x) => acc + x)
+    assert(21, x)
 }
 
 func factorsTest() {
@@ -722,7 +777,8 @@ func factorsTest() {
         }
         arr
     }
-    factors(27).toString()
+    var x = factors(27)
+    assert([1, 3, 9, 27], x)
 }
 
 func antiprimeTest() {
@@ -740,7 +796,8 @@ func antiprimeTest() {
         }
         count
     }
-    countDivisors(20)
+    var x = countDivisors(20)
+    assert(6, x)
 }
 
 func variadicTest1() {
@@ -756,14 +813,16 @@ func variadicTest1() {
         }
         str += "]"
     }
-    takeItAll(12, 33.4, "oops", true, [1], (x: 0.33, y: 1))
+    var x = takeItAll(12, 33.4, "oops", true, [1], (x: 0.33, y: 1))
+    assert("x=33.4;y=33.4;other=[oopstrue,[1],(x: 0.33, y: 1)]", x)
 }
 
 func variadicTest2() {
     func take(args...) {
         args.toString()
     }
-    take(1,2,44.42)
+    var x = take(1,2,44.42)
+    assert("(1, 2, 44.42)", x)
 }
 
 func variadicTest3() {
@@ -771,7 +830,8 @@ func variadicTest3() {
         var str = "x=" + x
         str += args
     }
-    take(14)
+    var x = take(14)
+    assert("x=14()", x)
 }
 
 func complexToStringTest1() {
@@ -782,14 +842,15 @@ func complexToStringTest1() {
             "odd"
         }
     }
-    12.toString()
+    assert("even", 12.toString())
 }
 
 func complexToStringTest2() {
     func Nil.toString() {
         "null"
     }
-    "foo" + nil
+    var x = "foo" + nil
+    assert("foonull", x)
 }
 
 func methodTest1() {
@@ -798,5 +859,5 @@ func methodTest1() {
     }
     var res = 3 + 3 == 3 * 3
     Integer.__deleteMember("+")
-    res
+    assert(true, res)
 }

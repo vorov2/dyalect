@@ -147,4 +147,7 @@
   <data name="StaticOperationNotSupported" xml:space="preserve">
     <value>Static method "%Operation%" is not supported by the type "%TypeName%".</value>
   </data>
+  <data name="AssertFailed" xml:space="preserve">
+    <value>Assert failed: %Reason%.</value>
+  </data>
 </root>
