@@ -34,6 +34,11 @@
     "qwerty".sub(4) //returns "ty"
     ```
   * A method `capitalize` that converts a first letter to a capital letter is added to `String` data type (related to [Issue #20](https://github.com/vorov2/dyalect/issues/20)).
+  * Methods `trim`, `trimStart` and `trimEnd` are added to the `String` data type (related to [Issue #20](https://github.com/vorov2/dyalect/issues/20)):
+    ```swift
+    " str ".trim() //returns "str"
+    "!!str!!".trim('!') //returns "str"
+    ```
   * **(Breaking change)** A new `Char` data type is added ([Issue #12](https://github.com/vorov2/dyalect/issues/12)). Now double quoted literals create strings, while single quoted literals create chars (previously both would result in a string):
     ```swift
     var str = "Foo" //A string
