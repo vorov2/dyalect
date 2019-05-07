@@ -8,6 +8,7 @@
         Integer,
         Float,
         String,
+        Char,
         Boolean,
         Nil,
 
@@ -29,6 +30,7 @@
         Application,
         Index,
         Access,
+        MemberCheck,
 
         Function,
         Tuple,

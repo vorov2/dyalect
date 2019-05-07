@@ -14,9 +14,31 @@ namespace Dyalect.Linker
         protected ForeignUnit()
         {
             Initialize();
+            InitializeMethods();
         }
 
-        private void Initialize()
+        internal protected void Add(string name, DyObject obj)
+        {
+            ExportList.Add(new PublishedName(name, new ScopeVar(0 | ExportList.Count << 8, VarFlags.Foreign)));
+            Values.Add(obj);
+        }
+
+        internal void Modify(int id, DyObject obj)
+        {
+            Values[id] = obj;
+        }
+
+        protected virtual void Initialize()
+        {
+
+        }
+
+        public virtual void Execute(ExecutionContext ctx)
+        {
+
+        }
+
+        private void InitializeMethods()
         {
             var methods = GetType().GetMethods();
 
@@ -28,8 +50,7 @@ namespace Dyalect.Linker
                 {
                     var name = attr.ToString() ?? mi.Name;
                     var obj = ProcessMethod(name, mi);
-                    ExportList.Add(new PublishedName(name, new ScopeVar(0 | ExportList.Count << 8, VarFlags.Foreign)));
-                    Values.Add(obj);
+                    Add(name, obj);
                 }
             }
         }

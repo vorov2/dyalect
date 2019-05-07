@@ -87,7 +87,7 @@ namespace Dyalect.Compiler
             return ScopeVar.Empty;
         }
 
-        //Ищем переменную по имени, начиная с указанного скоупа
+        //Search a vriable by its name, starting from current lexical scope
         private ScopeVar GetVariable(string name, DNode node, bool err = true)
         {
             return GetVariable(name, currentScope, node.Location, err);
@@ -104,7 +104,7 @@ namespace Dyalect.Compiler
             var shift = 0;
             var var = ScopeVar.Empty;
 
-            //Рекурсивно проходим по всем скоупам
+            //Search all upper scopes recursively
             do
             {
                 if (cur.Locals.TryGetValue(name, out var))
@@ -118,7 +118,7 @@ namespace Dyalect.Compiler
             }
             while (cur != null);
 
-            //Не нашли. Смотрим, нет ли такого импортированного имени
+            //No luck. Need to check if this variable is imported from some module
             if (imports.TryGetValue(name, out ImportedName imp))
             {
                 return new ScopeVar(imp.ModuleHandle | (imp.PublishedName.Data.Address >> 8) << 8,

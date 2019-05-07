@@ -20,9 +20,9 @@ namespace Dyalect.Parser
 
         private const string regexEscapes = @"[\a\b\f\n\r\t\v\\""]";
 
-        public static string Escape(string value)
+        public static string Escape(string value, string quote = "\"")
         {
-            return "\"" + Regex.Replace(value, regexEscapes, Match) + "\"";
+            return quote + Regex.Replace(value, regexEscapes, Match) + quote;
         }
 
         private static string Match(Match m)

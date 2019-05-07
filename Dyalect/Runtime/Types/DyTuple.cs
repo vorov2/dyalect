@@ -33,7 +33,7 @@ namespace Dyalect.Runtime.Types
             if (index.TypeId == StandardType.Integer)
                 return GetItem((int)index.GetInteger()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
             else if (index.TypeId == StandardType.String)
-                return GetItem(index.GetString(), ctx);
+                return GetItem(index.GetString(), ctx) ?? Err.IndexOutOfRange(this.TypeName(ctx), index.GetString()).Set(ctx);
             else
                 return Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
         }
@@ -48,8 +48,7 @@ namespace Dyalect.Runtime.Types
                 Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
         }
 
-        protected internal override DyObject GetItem(string name, ExecutionContext ctx) => 
-            GetItem(GetOrdinal(name)) ?? Err.IndexOutOfRange(this.TypeName(ctx), name).Set(ctx);
+        protected internal override DyObject GetItem(string name, ExecutionContext ctx) => GetItem(GetOrdinal(name));
 
         protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx) =>
             SetItem(GetOrdinal(name), value, ctx);
@@ -267,9 +266,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyTupleTypeInfo : DyTypeInfo
     {
-        public static readonly DyTupleTypeInfo Instance = new DyTupleTypeInfo();
-
-        private DyTupleTypeInfo() : base(StandardType.Tuple, true)
+        public DyTupleTypeInfo() : base(StandardType.Tuple, true)
         {
 
         }
@@ -343,6 +340,16 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(iterate().GetEnumerator());
         }
 
+        private DyObject GetFirst(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            return ((DyTuple)self).GetItem(0);
+        }
+
+        private DyObject GetSecond(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            return ((DyTuple)self).GetItem(1);
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
@@ -353,6 +360,12 @@ namespace Dyalect.Runtime.Types
 
             if (name == "keys")
                 return DyForeignFunction.Create(name, GetKeys);
+
+            if (name == "fst")
+                return DyForeignFunction.Create(name, GetFirst);
+
+            if (name == "snd")
+                return DyForeignFunction.Create(name, GetSecond);
 
             return null;
         }

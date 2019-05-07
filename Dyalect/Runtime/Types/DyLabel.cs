@@ -19,9 +19,7 @@
 
     internal sealed class DyLabelTypeInfo : DyTypeInfo
     {
-        public static readonly DyLabelTypeInfo Instance = new DyLabelTypeInfo();
-
-        private DyLabelTypeInfo() : base(StandardType.Label, false)
+        public DyLabelTypeInfo() : base(StandardType.Label, false)
         {
 
         }

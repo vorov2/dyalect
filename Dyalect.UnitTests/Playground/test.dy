@@ -20,12 +20,14 @@ func foo() {
 foo() 
 */
 
-func Integer + (other) {
-    this * other
+static func Array.empty(size, item) {
+    var i = 0
+    const arr = []
+    while i < size {
+        arr.add(item)
+        i += 1
+    }
+    arr
 }
 
-var res = 12 + 34
-typeof(res).__deleteMember("+")
-var res1 = 12 + 34
-
-(res, res1)
+String.concat("one", "two", "three")

@@ -21,6 +21,7 @@ namespace Dyalect.Compiler
             IndexedStrings = new List<DyString>();
             IndexedIntegers = new List<DyInteger>();
             IndexedFloats = new List<DyFloat>();
+            IndexedChars = new List<DyChar>();
         }
 
         private Unit(Unit unit, DebugInfo di)
@@ -42,6 +43,7 @@ namespace Dyalect.Compiler
             IndexedStrings = unit.IndexedStrings;
             IndexedIntegers = unit.IndexedIntegers;
             IndexedFloats = unit.IndexedFloats;
+            IndexedChars = unit.IndexedChars;
         }
 
         internal Unit Clone(DebugInfo di) => new Unit(this, di);
@@ -65,6 +67,8 @@ namespace Dyalect.Compiler
         internal List<DyInteger> IndexedIntegers { get; }
 
         internal List<DyFloat> IndexedFloats { get; }
+
+        internal List<DyChar> IndexedChars { get; }
 
         internal List<Op> Ops { get; }
 

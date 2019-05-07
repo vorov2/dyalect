@@ -6,6 +6,7 @@ namespace Dyalect.Runtime.Types
     public abstract class DyTypeInfo : DyObject
     {
         private readonly Dictionary<int, DyFunction> members = new Dictionary<int, DyFunction>();
+        private readonly Dictionary<int, DyFunction> staticMembers = new Dictionary<int, DyFunction>();
 
         public override object ToObject() => this;
 
@@ -28,7 +29,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction add;
         protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.String)
+            if (right.TypeId == StandardType.String || right.TypeId == StandardType.Char)
                 return new DyString(left.ToString(ctx).Value + right.GetString());
 
             return Err.OperationNotSupported(Builtins.Add, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
@@ -286,7 +287,42 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Other Operations
-        internal DyObject GetMemberOp(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
+        internal DyObject GetStaticMember(int nameId, Unit unit, ExecutionContext ctx)
+        {
+            nameId = unit.MemberIds[nameId];
+
+            if (!staticMembers.TryGetValue(nameId, out var value))
+            {
+                var name = ctx.Composition.Members[nameId];
+                value = InternalGetStaticMember(name, ctx);
+
+                if (value != null)
+                    staticMembers.Add(nameId, value);
+            }
+
+            if (value != null)
+                return value;
+
+            return Err.StaticOperationNotSupported(ctx.Composition.Members[nameId], TypeName).Set(ctx);
+        }
+
+        internal void SetStaticMember(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
+        {
+            var func = value as DyFunction;
+            nameId = unit.MemberIds[nameId];
+            staticMembers.Remove(nameId);
+
+            if (func != null)
+                staticMembers.Add(nameId, func);
+        }
+
+        internal DyObject HasMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
+        {
+            nameId = unit.MemberIds[nameId];
+            return GetMemberDirect(self, nameId, ctx) != null ? DyBool.True : DyBool.False;
+        }
+
+        internal DyObject GetMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
         {
             nameId = unit.MemberIds[nameId];
             var value = GetMemberDirect(self, nameId, ctx);
@@ -294,13 +330,18 @@ namespace Dyalect.Runtime.Types
             if (value != null)
                 return value;
 
-            return Err.OperationNotSupported(unit.IndexedStrings[nameId].GetString(), TypeName).Set(ctx);
+            return Err.OperationNotSupported(ctx.Composition.Members[nameId], TypeName).Set(ctx);
         }
 
         internal DyObject GetMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
         {
-            //if (SupportInstanceMembers)
-            //    return self.GetItem(name, ctx);
+            if (SupportInstanceMembers)
+            {
+                var ret = self.GetItem(ctx.Composition.Members[nameId], ctx);
+
+                if (ret != null)
+                    return ret;
+            }
 
             if (!members.TryGetValue(nameId, out var value))
             {
@@ -317,7 +358,7 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        internal void SetMemberOp(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
+        internal void SetMember(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
         {
             var func = value as DyFunction;
             nameId = unit.MemberIds[nameId];
@@ -366,18 +407,6 @@ namespace Dyalect.Runtime.Types
             if (name == Builtins.Iterator)
                 return DyForeignFunction.Create(name, GetIterator);
 
-            if (name == "__deleteMember")
-                return DyForeignFunction.Create(name, (context, self, args) =>
-                {
-                    var nm = args.TakeOne(DyString.Empty).GetString();
-                    if (context.Composition.MembersMap.TryGetValue(nm, out var nameId)) {
-                        var ti = (DyTypeInfo)self;
-                        ti.SetBuiltin(nm, null);
-                        ti.members.Remove(nameId);
-                    }
-                    return DyNil.Instance;
-                });
-
             return GetMember(name, ctx);
         }
 
@@ -391,6 +420,26 @@ namespace Dyalect.Runtime.Types
 
         protected virtual DyFunction GetMember(string name, ExecutionContext ctx) => null;
 
+        private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx)
+        {
+            if (name == "__deleteMember")
+                return DyForeignFunction.Create(name, (context, args) =>
+                {
+                    var nm = args.TakeOne(DyString.Empty).GetString();
+                    if (context.Composition.MembersMap.TryGetValue(nm, out var nameId))
+                    {
+                        SetBuiltin(nm, null);
+                        members.Remove(nameId);
+                        staticMembers.Remove(nameId);
+                    }
+                    return DyNil.Instance;
+                });
+
+            return GetStaticMember(name, ctx);
+        }
+
+        protected virtual DyFunction GetStaticMember(string name, ExecutionContext ctx) => null;
+
         internal protected virtual DyObject Get(DyObject obj, DyObject index, ExecutionContext ctx) => obj.GetItem(index, ctx);
 
         internal protected virtual void Set(DyObject obj, DyObject index, DyObject val, ExecutionContext ctx) => obj.SetItem(index, val, ctx);
@@ -399,9 +448,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyTypeTypeInfo : DyTypeInfo
     {
-        public static readonly DyTypeTypeInfo Instance = new DyTypeTypeInfo();
-
-        private DyTypeTypeInfo() : base(StandardType.TypeInfo, true)
+        public DyTypeTypeInfo() : base(StandardType.TypeInfo, true)
         {
 
         }

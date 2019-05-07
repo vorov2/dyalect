@@ -86,7 +86,22 @@ namespace Dyalect.Compiler
                 case NodeType.Base:
                     Build((DBase)node, hints, ctx);
                     break;
+                case NodeType.Char:
+                    Build((DCharLiteral)node, hints, ctx);
+                    break;
+                case NodeType.MemberCheck:
+                    Build((DMemberCheck)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DMemberCheck node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Target, hints.Append(Push), ctx);
+            AddLinePragma(node);
+            var nameId = GetMemberNameId(node.Name);
+            cw.HasMember(nameId);
+            PopIf(hints);
         }
 
         private void Build(DYield node, Hints hints, CompilerContext ctx)
@@ -99,26 +114,36 @@ namespace Dyalect.Compiler
 
         private void Build(DBase node, Hints hints, CompilerContext ctx)
         {
-            if (!hints.Has(Function))
-            {
-                AddError(CompilerError.BaseNotAllowed, node.Location);
-                return;
-            }
-
-            var sv = GetParentVariable(node.Name, node);
-            AddLinePragma(node);
-            cw.PushVar(sv);
-            PopIf(hints);
+            AddError(CompilerError.BaseNotAllowed, node.Location);
         }
 
         private void Build(DAccess node, Hints hints, CompilerContext ctx)
         {
-            Build(node.Target, hints.Append(Push), ctx);
+            if (node.Target.NodeType == NodeType.Base)
+            {
+                if (!hints.Has(Function))
+                {
+                    AddError(CompilerError.BaseNotAllowed, node.Location);
+                    return;
+                }
+
+                var sv = GetParentVariable(node.Name, node);
+                AddLinePragma(node);
+                cw.PushVar(sv);
+                PopIf(hints);
+                return;
+            }
+
+            Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
+
             AddLinePragma(node);
             var nameId = GetMemberNameId(node.Name);
 
             if (hints.Has(Pop))
+            {
+                cw.Push(node.Name);
                 cw.Set();
+            }
             else
             {
                 cw.GetMember(nameId);
@@ -435,6 +460,13 @@ namespace Dyalect.Compiler
             PopIf(hints);
         }
 
+        private void Build(DCharLiteral node, Hints hints, CompilerContext ctx)
+        {
+            AddLinePragma(node);
+            cw.Push(node.Value);
+            PopIf(hints);
+        }
+
         private void Build(DFloatLiteral node, Hints hints, CompilerContext ctx)
         {
             AddLinePragma(node);
@@ -517,7 +549,7 @@ namespace Dyalect.Compiler
 
             if (node.Target.NodeType != NodeType.Name
                 && node.Target.NodeType != NodeType.Index
-                /*&& node.Target.NodeType != NodeType.Access*/)
+                && node.Target.NodeType != NodeType.Access)
                 AddError(CompilerError.UnableAssignExpression, node.Target.Location, node.Target);
 
             if (hints.Has(Push))
@@ -657,7 +689,7 @@ namespace Dyalect.Compiler
                 {
                     var realName = node.Name;
 
-                    if (node.Parameters.Count == 0)
+                    if (node.Parameters.Count == 0 && !node.IsStatic)
                     {
                         if (node.Name == Builtins.Sub)
                             realName = Builtins.Neg;
@@ -668,7 +700,11 @@ namespace Dyalect.Compiler
                     var nameId = GetMemberNameId(realName);
                     cw.Aux(nameId);
                     var code = GetTypeHandle(node.TypeName, node.Location);
-                    cw.SetMember(code);
+
+                    if (node.IsStatic)
+                        cw.SetMemberS(code);
+                    else
+                        cw.SetMember(code);
                 }
 
                 AddLinePragma(node);
@@ -693,6 +729,9 @@ namespace Dyalect.Compiler
             var args = node.Parameters.ToArray();
             var argCount = args.Length;
             StartFun(node.Name, args, argCount);
+
+            if (node.IsStatic && !node.IsMemberFunction)
+                AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name);
 
             var startLabel = cw.DefineLabel();
             var funEndLabel = cw.DefineLabel();
@@ -729,7 +768,7 @@ namespace Dyalect.Compiler
             //If this is a member function we add an additional system variable that
             //would return an instance of an object to which this function is coupled
             //(same as this in C#)
-            if (node.IsMemberFunction)
+            if (node.IsMemberFunction && !node.IsStatic)
             {
                 var va = AddVariable("this", node, data: VarFlags.Const);
                 cw.This();
@@ -774,9 +813,9 @@ namespace Dyalect.Compiler
                 cw.NewIter(funHandle);
             else
             {
-                cw.Push(node.Variadic ? argCount - 1 : argCount);
+                cw.Push(node.IsVariadic ? argCount - 1 : argCount);
 
-                if (node.Variadic)
+                if (node.IsVariadic)
                     cw.NewFunV(funHandle);
                 else
                     cw.NewFun(funHandle);

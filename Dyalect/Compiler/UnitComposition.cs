@@ -7,12 +7,12 @@ namespace Dyalect.Compiler
 {
     public sealed class UnitComposition
     {
-        public Guid Id = Guid.NewGuid();
+        public Guid Id { get; }  = Guid.NewGuid();
 
         public UnitComposition(List<Unit> units)
         {
             Units = units;
-            Types = StandardType.All.Clone();
+            Types = StandardType.GetAll();
             Members = new FastList<string>();
             MembersMap = new Dictionary<string, int>();
         }

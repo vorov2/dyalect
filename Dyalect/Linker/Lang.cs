@@ -16,6 +16,18 @@ namespace Dyalect.Linker
             FileName = "lang";
         }
 
+        protected override void Initialize()
+        {
+            for (var i = 0; i < StandardType.TypeNames.Length; i++)
+                Add(StandardType.TypeNames[i], DyNil.Instance);
+        }
+
+        public override void Execute(ExecutionContext ctx)
+        {
+            for (var i = 0; i < StandardType.TypeNames.Length; i++)
+                Modify(i, ctx.Types[i]);
+        }
+
         [Function("convertToNumber")] 
         public DyObject ToNumber(ExecutionContext ctx, DyObject[] args)
         {
@@ -26,7 +38,7 @@ namespace Dyalect.Linker
 
             if (arg.TypeId == StandardType.Integer || arg.TypeId == StandardType.Float)
                 return arg;
-            else if (arg.TypeId == StandardType.String)
+            else if (arg.TypeId == StandardType.String || arg.TypeId == StandardType.Char)
             {
                 var str = arg.GetString();
                 if (int.TryParse(str, out var i4))

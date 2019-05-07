@@ -17,6 +17,7 @@
             1, //PushR8
             0, //PushR8_0
             1, //PushStr
+            1, //PushCh
             1, //Br
             1, //Brtrue
             1, //Brfalse
@@ -54,8 +55,10 @@
             1, //NewFun
             1, //NewFunV
             1, //NewIter
-            1, //SetMethod
-            1, //GetMethod
+            1, //SetMember
+            1, //GetMember
+            1, //HasMember
+            1, //SetMemberS
             0, //Get
             0, //Set
             1, //RunMod

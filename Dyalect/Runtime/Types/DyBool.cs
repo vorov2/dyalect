@@ -1,29 +1,39 @@
 ﻿namespace Dyalect.Runtime.Types
 {
-    public sealed class DyBool : DyObject
+    public abstract class DyBool : DyObject
     {
-        public static readonly DyBool True = new DyBool(true);
-        public static readonly DyBool False = new DyBool(false);
+        public static readonly DyBool True = new TrueBool();
+        public static readonly DyBool False = new FalseBool();
 
-        private readonly bool value;
-
-        private DyBool(bool value) : base(StandardType.Bool)
+        private sealed class TrueBool : DyBool
         {
-            this.value = value;
+            protected internal override bool GetBool() => true;
+
+            public override object ToObject() => true;
+
+            public override string ToString() => bool.TrueString;
         }
 
-        protected internal override bool GetBool() => value;
+        private sealed class FalseBool : DyBool
+        {
+            protected internal override bool GetBool() => false;
 
-        public override object ToObject() => value;
+            public override object ToObject() => false;
 
-        public override string ToString() => value.ToString();
+            public override string ToString() => bool.FalseString;
+        }
+
+        private DyBool() : base(StandardType.Bool)
+        {
+
+        }
+
+        public override abstract object ToObject();
     }
 
     internal sealed class DyBoolTypeInfo : DyTypeInfo
     {
-        public static readonly DyBoolTypeInfo Instance = new DyBoolTypeInfo();
-
-        private DyBoolTypeInfo() : base(StandardType.Bool, false)
+        public DyBoolTypeInfo() : base(StandardType.Bool, false)
         {
 
         }

@@ -39,9 +39,7 @@
 
     internal sealed class DyFloatTypeInfo : DyTypeInfo
     {
-        public static readonly DyFloatTypeInfo Instance = new DyFloatTypeInfo();
-
-        private DyFloatTypeInfo() : base(StandardType.Float, false)
+        public DyFloatTypeInfo() : base(StandardType.Float, false)
         {
 
         }

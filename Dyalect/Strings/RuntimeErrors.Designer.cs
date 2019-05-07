@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class RuntimeErrors {
@@ -97,6 +97,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type error: expected type &quot;%Expected%&quot;, got &quot;%Got%&quot;..
+        /// </summary>
+        internal static string InvalidType {
+            get {
+                return ResourceManager.GetString("InvalidType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An object of type &quot;%TypeName%&quot; doesn&apos;t support a &quot;call&quot; operation..
         /// </summary>
         internal static string NotFunction {
@@ -120,6 +129,15 @@ namespace Dyalect.Strings {
         internal static string StackCorrupted {
             get {
                 return ResourceManager.GetString("StackCorrupted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Static method &quot;%Operation%&quot; is not supported by the type &quot;%TypeName%&quot;..
+        /// </summary>
+        internal static string StaticOperationNotSupported {
+            get {
+                return ResourceManager.GetString("StaticOperationNotSupported", resourceCulture);
             }
         }
         

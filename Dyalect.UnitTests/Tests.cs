@@ -44,7 +44,7 @@ namespace Dyalect
 
         public object LiteralTest3 => "some\tstring with\"inner quotes\" and such (and a buck \u0024)";
 
-        public object LiteralTest4 => "some string with 'quotes'!";
+        public object LiteralTest4 => "'F'";
 
         public object LiteralTest5 => 1.234e-17;
 
@@ -53,6 +53,58 @@ namespace Dyalect
         public object ArrayTest1 => "[1, 1, 2]";
 
         public object ArrayTest2 => "[11, 1, 2]";
+
+        public object ArrayTest3 => "[3, 4, 5]";
+
+        public object ArrayTest4 => "[1, 2, 3, 4, 5, 6]";
+
+        public object ArrayTest5 => "(0, 6)";
+
+        public object ArrayTest6 => "[0, 1, 2, 3, 4, 5]";
+
+        public object ArrayTest7 => "[1, 2, 3, 4, 5, 6]";
+
+        public object ArrayTest8 => 4;
+
+        public object ArrayTest9 => "[1, 2, 3, 4, 5, 6, 7]";
+
+        public object TupleTest1 => 3;
+
+        public object TupleTest2 => 6;
+
+        public object TupleTest3 => "[\"x\", \"y\", \"z\"]";
+
+        public object TupleTest4 => "[0, 1, 2, 3, 4, 5]";
+
+        public object TupleTest5 => 37.44;
+
+        public object StringTest1 => 13;
+
+        public object StringTest2 => "(4, 8)";
+
+        public object StringTest3 => "(false, true)";
+
+        public object StringTest4 => "[\"Name\", \"John\", \"Surname\", \"Doe\", \"Age\", \"21\", \"Gender\", \"Male\"]";
+
+        public object StringTest5 => "fo";
+
+        public object StringTest6 => "fooBAR";
+
+        public object StringTest7 => true;
+
+        public object StringTest8 => true;
+
+        public object StringTest9 => "cdefty";
+
+        public object StringTest10 => "CamelCase";
+
+        public object StringTest11 => "onetwothree44";
+
+        public object StringTest12 => true;
+
+        public object StringTest13 => "ssdd--!ee";
+
+        public object MemberCheckTest => "(len: true, fooBar: false)";
 
         public object BaseTest1 => 2;
 

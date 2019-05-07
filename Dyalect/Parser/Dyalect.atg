@@ -29,7 +29,11 @@ TOKENS
                     | "\\u" hexDigit hexDigit hexDigit hexDigit
                     }
                 "\"".
-    charToken = "'" { char | "''" } "'".
+    charToken = "'" ( char
+                    | "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"
+                    | "\\u" hexDigit hexDigit hexDigit hexDigit
+                    )
+                "'".
     implicitToken = "$" digit { digit }.
 
     varToken            = "var".
@@ -66,13 +70,6 @@ PRODUCTIONS
 
     Separator = ";".
 
-    AnyString<out string val> =
-        (. val = null; .)
-        (
-            stringToken (. val = ParseString(); .)
-            | charToken (. val = ParseChar(); .)
-        ).
-
     StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!"
         | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
 
@@ -99,7 +96,7 @@ PRODUCTIONS
             .)
         ]
         [
-            "(" AnyString<out var str> (. inc.Dll = str; .) ")"
+            "(" stringToken (. inc.Dll = ParseString(); .) ")"
         ]
         (. Imports.Add(inc); .).
 
@@ -147,11 +144,11 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; .)
+        (. node = null; bool st = false; .)
         (
-            "func"
+            [ "static" (. st = true; .) ] "func"
             (.
-                var f = new DFunctionDeclaration(t);
+                var f = new DFunctionDeclaration(t) { IsStatic = st };
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>
@@ -189,7 +186,7 @@ PRODUCTIONS
                 identToken (. node.Parameters.Add(t.val); .)
                 { "," identToken (. node.Parameters.Add(t.val); .) }
                 [
-                    "..." (. node.Variadic = true; .)
+                    "..." (. node.IsVariadic = true; .)
                 ]
             ]
         ")".
@@ -514,11 +511,25 @@ PRODUCTIONS
                 (
                     "." (. var ot = t; .)
                     identToken
-                    (.
-                        var fld = new DAccess(ot) { Target = node };
-                        fld.Name = t.val;
-                        node = fld;
-                    .)
+                    (. var nm = t.val; DMemberCheck chk = null; .)
+                    (
+                        [
+                            "?"
+                            (.
+                                chk = new DMemberCheck(ot) { Target = node };
+                                chk.Name = nm;
+                                node = chk;
+                            .)
+                        ]
+                        (.
+                            if (chk == null) 
+                            {
+                                var fld = new DAccess(ot) { Target = node };
+                                fld.Name = nm;
+                                node = fld;
+                            }
+                        .)
+                    )
                 )
                 |
                 (
@@ -559,6 +570,7 @@ PRODUCTIONS
             | Integer<out node>
             | Float<out node>
             | String<out node>
+            | Char<out node>
             | Bool<out node>
             | Nil<out node>
             | IF (IsTuple()) Tuple<out node>
@@ -568,13 +580,7 @@ PRODUCTIONS
         ).
 
     Base<out DNode node> =
-        (. node = null; .)
-        (
-            "base" 
-            (. var bs = new DBase(t); .)
-            "." identToken
-            (. bs.Name = t.val; node = bs; .)
-        ).
+        "base" (. node = new DBase(t); .).
 
     Array<out DNode node> =
         (. node = null; .)
@@ -608,7 +614,7 @@ PRODUCTIONS
                 (. string name = null; .)
                 (
                       identToken (. name = t.val; .)
-                    | AnyString<out var str> (. name = str; .)
+                    | stringToken (. name = ParseString(); .)
                 )
                 ":"
                 (. var tag = new DLabelLiteral(t) { Label = name }; .)
@@ -645,6 +651,12 @@ PRODUCTIONS
 
     Nil<out DNode node> = "nil" (. node = new DNilLiteral(t); .).
 
+    Char<out DNode node> =
+        (
+            charToken
+            (. node = new DCharLiteral(t) { Value = ParseString()[0] }; .)
+        ).
+
     Integer<out DNode node> =
         (
             intToken
@@ -659,8 +671,8 @@ PRODUCTIONS
 
     String<out DNode node> =
         (
-            AnyString<out var str>
-            (. node = new DStringLiteral(t) { Value = str }; .)
+            stringToken
+            (. node = new DStringLiteral(t) { Value = ParseString() }; .)
         ).
 
     Bool<out DNode node> =

@@ -24,7 +24,11 @@ namespace Dyalect.Runtime
 
         DivideByZero = 607,
 
-        WrongNumberOfArguments = 608
+        WrongNumberOfArguments = 608,
+
+        InvalidType = 609,
+
+        StaticOperationNotSupported = 610
     }
 
     public sealed class DyError
@@ -52,6 +56,13 @@ namespace Dyalect.Runtime
 
     internal static class Err
     {
+        public static DyError StaticOperationNotSupported(string op, string typeName)
+        {
+            return new DyError(DyErrorCode.StaticOperationNotSupported,
+                ("Operation", op),
+                ("TypeName", typeName));
+        }
+
         public static DyError OperationNotSupported(string op, string typeName)
         {
             return new DyError(DyErrorCode.OperationNotSupported,
@@ -78,6 +89,13 @@ namespace Dyalect.Runtime
             return new DyError(DyErrorCode.IndexInvalidType,
                 ("TypeName", typeName),
                 ("IndexTypeName", indexTypeName));
+        }
+
+        public static DyError InvalidType(string expectedTypeName, string gotTypeName)
+        {
+            return new DyError(DyErrorCode.InvalidType,
+                ("Expected", expectedTypeName),
+                ("Got", gotTypeName));
         }
 
         public static DyError ExternalFunctionFailure(string functionName, string error)

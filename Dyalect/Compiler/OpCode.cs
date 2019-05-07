@@ -16,6 +16,7 @@
         PushR8,     //+1
         PushR8_0,   //+1
         PushStr,    //+1
+        PushCh,     //+1
         Br,         //0
         Brtrue,     //-1
         Brfalse,    //-1
@@ -55,6 +56,8 @@
         NewIter,    //0
         SetMember,  //-2
         GetMember,  //-1
+        HasMember,  //-1
+        SetMemberS, //-2
         Get,        //-1
         Set,        //-3
         RunMod,     //+1

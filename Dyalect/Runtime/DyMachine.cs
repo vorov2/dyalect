@@ -55,6 +55,7 @@ namespace Dyalect.Runtime
             if (unit.Layouts.Count == 0)
             {
                 var foreign = (ForeignUnit)unit;
+                foreign.Execute(ctx);
                 ctx.Units[unitId] = foreign.Values.ToArray();
                 return DyNil.Instance;
             }
@@ -127,6 +128,9 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.PushNilT:
                         evalStack.Push(DyNil.Terminator);
+                        break;
+                    case OpCode.PushCh:
+                        evalStack.Push(unit.IndexedChars[op.Data]);
                         break;
                     case OpCode.PushI1_1:
                         evalStack.Push(DyBool.True);
@@ -368,18 +372,34 @@ namespace Dyalect.Runtime
                                 ProcessError(ctx, function, ref offset, evalStack);
                         }
                         break;
+                    case OpCode.HasMember:
+                        right = evalStack.Peek();
+                        evalStack.Replace(types[right.TypeId].HasMember(right, op.Data, unit, ctx));
+                        break;
                     case OpCode.GetMember:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].GetMemberOp(right, op.Data, unit, ctx));
+                        if (right.TypeId == StandardType.TypeInfo)
+                            evalStack.Replace(((DyTypeInfo)right).GetStaticMember(op.Data, unit, ctx));
+                        else
+                            evalStack.Replace(types[right.TypeId].GetMember(right, op.Data, unit, ctx));
+                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                        break;
+                    case OpCode.SetMemberS:
+                        right = evalStack.Pop();
+                        if (op.Data >= StandardType.TypeNames.Length)
+                            types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
+                                .SetStaticMember(ctx.AUX, right, unit, ctx);
+                        else
+                            types[op.Data].SetStaticMember(ctx.AUX, right, unit, ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.SetMember:
                         right = evalStack.Pop();
-                        if (op.Data >= StandardType.All.Count)
+                        if (op.Data >= StandardType.TypeNames.Length)
                             types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
-                                .SetMemberOp(ctx.AUX, right, unit, ctx);
+                                .SetMember(ctx.AUX, right, unit, ctx);
                         else
-                            types[op.Data].SetMemberOp(ctx.AUX, right, unit, ctx);
+                            types[op.Data].SetMember(ctx.AUX, right, unit, ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Get:

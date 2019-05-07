@@ -58,9 +58,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyIntegerTypeInfo : DyTypeInfo
     {
-        public static readonly DyIntegerTypeInfo Instance = new DyIntegerTypeInfo();
-
-        private DyIntegerTypeInfo() : base(StandardType.Integer, false)
+        public DyIntegerTypeInfo() : base(StandardType.Integer, false)
         {
 
         }
