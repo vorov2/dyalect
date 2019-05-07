@@ -88,6 +88,18 @@ namespace Dyalect.Linker
             return new DyArray(lst);
         }
 
+        [Function("assert")]
+        public DyObject Assert(ExecutionContext ctx, DyObject[] args)
+        {
+            var x = args.TakeOne(DyNil.Instance);
+            var y = args.TakeAt(1, DyNil.Instance);
+
+            if (!Equals(x.ToObject(), y.ToObject()))
+                throw new Exception($"Assert failed. Expected {x}, got {y}.");
+
+            return DyNil.Instance;
+        }
+
         [Function(CreateArrayName)]
         public DyObject CreateArray(ExecutionContext ctx, DyObject[] args) => new DyArray(args.ToList());
 

@@ -9,8 +9,9 @@ CHARACTERS
     digit = "0123456789".
     notDigit = ANY - digit.
     hexDigit = digit + "ABCDEFabcdef".
-    stringChar = ANY - '"' - '\\'.
+    stringChar = ANY - '"' - '\\' - newLine.
     char = ANY - "'" - newLine.
+    esc = digit + letter + "\"\\'~`:;,./][{}!@#$%^&*()-_=+?><|".
 
 TOKENS
     identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
@@ -24,16 +25,8 @@ TOKENS
                             | ( "e" | "E") ["+" | "-" ] digit { digit }
                         ).
 
-    stringToken = "\"" { stringChar
-                    | "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"
-                    | "\\u" hexDigit hexDigit hexDigit hexDigit
-                    }
-                "\"".
-    charToken = "'" ( char
-                    | "\\\"" | "\\\\" | "\\0" | "\\b" | "\\n" | "\\r" | "\\t" | "\\'"
-                    | "\\u" hexDigit hexDigit hexDigit hexDigit
-                    )
-                "'".
+    stringToken = "\"" { stringChar | "\\" esc }  "\"".
+    charToken = "'" ( char | "\\" esc ) "'".
     implicitToken = "$" digit { digit }.
 
     varToken            = "var".

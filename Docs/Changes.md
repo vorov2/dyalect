@@ -1,3 +1,6 @@
+# 0.4.1
+  * Now parser generates better error messages for the "unrecognized escape sequence" case.
+
 # 0.4.0
   * Now it is possible to access named values in containers (e.g. named items in tuples), using regular member access syntax:
     ```swift

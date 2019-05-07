@@ -20,14 +20,6 @@ func foo() {
 foo() 
 */
 
-static func Array.empty(size, item) {
-    var i = 0
-    const arr = []
-    while i < size {
-        arr.add(item)
-        i += 1
-    }
-    arr
-}
 
-String.concat("one", "two", "three")
+var y = "quotes\u0022 and such (and a buck $)"
+
