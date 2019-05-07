@@ -102,6 +102,8 @@ namespace Dyalect
 
         public object StringTest12 => true;
 
+        public object StringTest13 => "ssdd--!ee";
+
         public object MemberCheckTest => "(len: true, fooBar: false)";
 
         public object BaseTest1 => 2;

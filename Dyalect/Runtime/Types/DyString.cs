@@ -290,6 +290,41 @@ namespace Dyalect.Runtime.Types
             return new DyString(self.GetString().Substring(i, j));
         }
 
+        private DyObject Trim(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            return new DyString(self.GetString().Trim(GetChars(args, ctx)));
+        }
+
+        private DyObject TrimStart(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            return new DyString(self.GetString().TrimStart(GetChars(args, ctx)));
+        }
+
+        private DyObject TrimEnd(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            return new DyString(self.GetString().TrimEnd(GetChars(args, ctx)));
+        }
+
+        private char[] GetChars(DyObject[] args, ExecutionContext ctx)
+        {
+            if (args == null || args.Length == 0)
+                return Statics.EmptyChars;
+
+            var chs = new char[args.Length];
+
+            for (var i = 0; i < args.Length; i++)
+            {
+                if (args[i].TypeId != StandardType.Char)
+                {
+                    ctx.Error = Err.InvalidType(StandardType.CharName, args[i].TypeName(ctx));
+                    return Statics.EmptyChars;
+                }
+                chs[i] = args[i].GetChar();
+            }
+
+            return chs;
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             switch (name)
@@ -316,6 +351,12 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Create(name, Substring);
                 case "capitalize":
                     return DyForeignFunction.Create(name, Capitalize);
+                case "trim":
+                    return DyForeignFunction.Create(name, Trim);
+                case "trimStart":
+                    return DyForeignFunction.Create(name, TrimStart);
+                case "trimEnd":
+                    return DyForeignFunction.Create(name, TrimEnd);
                 default:
                     return null;
             }
