@@ -167,7 +167,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId == StandardType.Integer)
                 return left.GetInteger() == right.GetInteger() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == StandardType.Integer)
+            else if (right.TypeId == StandardType.Float)
                 return left.GetFloat() == right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.EqOp(left, right, ctx);
@@ -177,7 +177,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId == StandardType.Integer)
                 return left.GetInteger() != right.GetInteger() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == StandardType.Integer)
+            else if (right.TypeId == StandardType.Float)
                 return left.GetFloat() != right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.NeqOp(left, right, ctx);
@@ -187,7 +187,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId == StandardType.Integer)
                 return left.GetInteger() > right.GetInteger() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == StandardType.Integer)
+            else if (right.TypeId == StandardType.Float)
                 return left.GetFloat() > right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.GtOp(left, right, ctx);
@@ -197,7 +197,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId == StandardType.Integer)
                 return left.GetInteger() < right.GetInteger() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == StandardType.Integer)
+            else if (right.TypeId == StandardType.Float)
                 return left.GetFloat() < right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.LtOp(left, right, ctx);
@@ -207,7 +207,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId == StandardType.Integer)
                 return left.GetInteger() >= right.GetInteger() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == StandardType.Integer)
+            else if (right.TypeId == StandardType.Float)
                 return left.GetFloat() >= right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.GteOp(left, right, ctx);
@@ -217,7 +217,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId == StandardType.Integer)
                 return left.GetInteger() <= right.GetInteger() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == StandardType.Integer)
+            else if (right.TypeId == StandardType.Float)
                 return left.GetFloat() <= right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.LteOp(left, right, ctx);
