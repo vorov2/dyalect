@@ -28,7 +28,9 @@ namespace Dyalect.Runtime
 
         InvalidType = 609,
 
-        StaticOperationNotSupported = 610
+        StaticOperationNotSupported = 610,
+
+        AssertFailed = 611
     }
 
     public sealed class DyError
@@ -56,6 +58,12 @@ namespace Dyalect.Runtime
 
     internal static class Err
     {
+        public static DyError AssertFailed(string reason)
+        {
+            return new DyError(DyErrorCode.AssertFailed,
+                ("Reason", reason));
+        }
+
         public static DyError StaticOperationNotSupported(string op, string typeName)
         {
             return new DyError(DyErrorCode.StaticOperationNotSupported,

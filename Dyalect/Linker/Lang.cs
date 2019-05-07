@@ -1,6 +1,7 @@
 ﻿using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -94,10 +95,30 @@ namespace Dyalect.Linker
             var x = args.TakeOne(DyNil.Instance);
             var y = args.TakeAt(1, DyNil.Instance);
 
-            if (!Equals(x.ToObject(), y.ToObject()))
-                throw new Exception($"Assert failed. Expected {x}, got {y}.");
+            if (!Eq(x.ToObject(), y.ToObject()))
+                return Err.AssertFailed($"Expected {x.ToString(ctx)}, got {y.ToString(ctx)}").Set(ctx);
 
             return DyNil.Instance;
+        }
+
+        private bool Eq(object x, object y)
+        {
+            if (ReferenceEquals(x, y))
+                return true;
+
+            if (x is IList xs && y is IList ys)
+            {
+                if (xs.Count != ys.Count)
+                    return false;
+
+                for (var i = 0; i < xs.Count; i++)
+                    if (!Eq(xs[i], ys[i]))
+                        return false;
+
+                return true;
+            }
+
+            return Equals(x, y);
         }
 
         [Function(CreateArrayName)]

@@ -12,6 +12,8 @@ namespace Dyalect
 {
     public static class TestRunner
     {
+        class NoClass { }
+
         private static List<string> commands = new List<string>();
 
         public static void Main()
@@ -126,7 +128,7 @@ namespace Dyalect
 
         private static Dictionary<string, (ExecutionContext,DyFunction)> Run()
         {
-            var startupPath = Path.Combine(Path.GetDirectoryName(typeof(Tests).Assembly.Location), "Tests"); ;
+            var startupPath = Path.Combine(Path.GetDirectoryName(typeof(NoClass).Assembly.Location), "Tests"); ;
             var dict = new Dictionary<string, (ExecutionContext,DyFunction)>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var file in Directory.EnumerateFiles(startupPath, "*.dy"))
