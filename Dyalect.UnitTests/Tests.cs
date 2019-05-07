@@ -100,6 +100,8 @@ namespace Dyalect
 
         public object StringTest11 => "onetwothree44";
 
+        public object StringTest12 => true;
+
         public object MemberCheckTest => "(len: true, fooBar: false)";
 
         public object BaseTest1 => 2;

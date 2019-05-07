@@ -264,6 +264,10 @@ func stringTest11() {
     String.concat("one", "two", "three", 44)
 }
 
+func stringTest12() {
+    "fooBar".contains("oBa")
+}
+
 func memberCheckTest() {
     ("string".len?, 42.fooBar?).toString()
 }

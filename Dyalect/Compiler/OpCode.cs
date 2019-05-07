@@ -58,7 +58,6 @@
         GetMember,  //-1
         HasMember,  //-1
         SetMemberS, //-2
-        GetMemberS, //-1
         Get,        //-1
         Set,        //-3
         RunMod,     //+1

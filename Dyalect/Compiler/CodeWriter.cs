@@ -188,7 +188,6 @@ namespace Dyalect.Compiler
         public void SetMember(int type) => Emit(new Op(OpCode.SetMember, type));
         public void SetMemberS(int type) => Emit(new Op(OpCode.SetMemberS, type));
         public void GetMember(int nameId) => Emit(new Op(OpCode.GetMember, nameId));
-        public void GetMemberS(int nameId) => Emit(new Op(OpCode.GetMemberS, nameId));
         public void HasMember(int nameId) => Emit(new Op(OpCode.HasMember, nameId));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
         public void Aux(int data) => Emit(new Op(OpCode.Aux, data));

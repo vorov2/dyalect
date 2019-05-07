@@ -130,6 +130,19 @@ namespace Dyalect.Runtime.Types
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => StringUtil.Escape(arg.GetString());
 
+        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var a = args.TakeOne(DyNil.Instance);
+            var str = self.GetString();
+
+            if (a.TypeId == StandardType.String)
+                return str.Contains(a.GetString()) ? DyBool.True : DyBool.False;
+            else if (a.TypeId == StandardType.Char)
+                return str.Contains(a.GetChar()) ? DyBool.True : DyBool.False;
+            else
+                return Err.InvalidType(StandardType.CharName, a.TypeName(ctx)).Set(ctx);
+        }
+
         private DyObject IndexOf(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var a = args.TakeOne(DyNil.Instance);
@@ -279,37 +292,33 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            if (name == Builtins.Len)
-                return DyForeignFunction.Create(name, LenAdapter);
-
-            if (name == "indexOf")
-                return DyForeignFunction.Create(name, IndexOf);
-
-            if (name == "lastIndexOf")
-                return DyForeignFunction.Create(name, LastIndexOf);
-
-            if (name == "split")
-                return DyForeignFunction.Create(name, Split);
-
-            if (name == "upper")
-                return DyForeignFunction.Create(name, Upper);
-
-            if (name == "lower")
-                return DyForeignFunction.Create(name, Lower);
-
-            if (name == "startsWith")
-                return DyForeignFunction.Create(name, StartsWith);
-
-            if (name == "endsWith")
-                return DyForeignFunction.Create(name, EndsWith);
-
-            if (name == "sub")
-                return DyForeignFunction.Create(name, Substring);
-
-            if (name == "capitalize")
-                return DyForeignFunction.Create(name, Capitalize);
-
-            return null;
+            switch (name)
+            {
+                case Builtins.Len:
+                    return DyForeignFunction.Create(name, LenAdapter);
+                case "indexOf":
+                    return DyForeignFunction.Create(name, IndexOf);
+                case "contains":
+                    return DyForeignFunction.Create(name, Contains);
+                case "lastIndexOf":
+                    return DyForeignFunction.Create(name, LastIndexOf);
+                case "split":
+                    return DyForeignFunction.Create(name, Split);
+                case "upper":
+                    return DyForeignFunction.Create(name, Upper);
+                case "lower":
+                    return DyForeignFunction.Create(name, Lower);
+                case "startsWith":
+                    return DyForeignFunction.Create(name, StartsWith);
+                case "endsWith":
+                    return DyForeignFunction.Create(name, EndsWith);
+                case "sub":
+                    return DyForeignFunction.Create(name, Substring);
+                case "capitalize":
+                    return DyForeignFunction.Create(name, Capitalize);
+                default:
+                    return null;
+            }
         }
         #endregion
 
