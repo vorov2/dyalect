@@ -1,3 +1,6 @@
+# 0.4.2
+  * Now strings and characters support `\s` escape code (insert a space, `\u0020` character).
+
 # 0.4.1
   * Now parser generates better error messages for the "unrecognized escape sequence" case.
   * A standard `assert` function is added. This function accepts two values and raises and exception if these values are not equal.

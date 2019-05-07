@@ -27,6 +27,9 @@ namespace Dyalect.Parser
 
                         switch (cn)
                         {
+                            case 's':
+                                sb.Append('\u0020');
+                                break;
                             case 't':
                                 sb.Append('\t');
                                 break;
