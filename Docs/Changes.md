@@ -1,5 +1,8 @@
+# 0.4.3
+  * A bug fixed: Method overloading and concatenation ([Issue #44](https://github.com/vorov2/dyalect/issues/44)).
+
 # 0.4.2
-  * Now strings and characters support `\s` escape code (insert a space, `\u0020` character).
+  * Now strings and characters support `\s` escape code (inserts a space, `\u0020` character).
   * Fixed a number comparisons bug ([Issue #41](https://github.com/vorov2/dyalect/issues/41)).
 
 # 0.4.1
