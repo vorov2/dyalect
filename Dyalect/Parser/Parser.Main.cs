@@ -148,9 +148,9 @@ namespace Dyalect.Parser
             return true;
         }
 
-        private bool IsNamedTupleElement()
+        private bool IsLabel()
         {
-            if (la.kind != _identToken && la.kind != _stringToken)
+            if (la.kind != _identToken)
                 return false;
 
             scanner.ResetPeek();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dyalect.Debug;
+using System;
 
 namespace Dyalect.Runtime.Types
 {
@@ -29,25 +30,38 @@ namespace Dyalect.Runtime.Types
 
         protected abstract string GetCustomFunctionName(ExecutionContext ctx);
 
-        public string[] GetParameterNames(ExecutionContext ctx)
+        internal int GetParameterIndex(string name, ExecutionContext ctx)
+        {
+            var pars = GetParameters(ctx);
+
+            for (var i = 0; i < pars.Length; i++)
+            {
+                if (pars[i].Name == name)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public FunctionParameter[] GetParameters(ExecutionContext ctx)
         {
             var dynParameters = GetCustomParameterNames(ctx);
 
             if (dynParameters != null)
                 return dynParameters;
 
-            var arr = new string[ParameterNumber];
+            var arr = new FunctionParameter[ParameterNumber];
 
             for (var i = 0; i < ParameterNumber; i++)
-                arr[i] = "p" + i;
+                arr[i] = new FunctionParameter("p" + i, null, false);
 
             return arr;
         }
 
-        protected virtual string[] GetCustomParameterNames(ExecutionContext ctx) => null;
+        protected virtual FunctionParameter[] GetCustomParameterNames(ExecutionContext ctx) => null;
 
         public string ToString(ExecutionContext ctx) => 
-            $"{GetFunctionName(ctx)}({string.Join(",", GetParameterNames(ctx))})";
+            $"{GetFunctionName(ctx)}({string.Join(",", GetParameters(ctx))})";
 
         private string _functionName;
         public string GetFunctionName(ExecutionContext ctx)

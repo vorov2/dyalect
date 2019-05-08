@@ -29,6 +29,8 @@ namespace Dyalect.Runtime
 
         internal Stack<int> Sections { get; set; }
 
+        internal Stack<DyObject[]> Locals { get; } = new Stack<DyObject[]>();
+
         internal void ThrowIf()
         {
             if (Error != null)

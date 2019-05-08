@@ -1,6 +1,9 @@
-﻿using Dyalect.Linker;
+﻿using Dyalect.Debug;
+using Dyalect.Linker;
 using Dyalect.Parser;
 using Dyalect.Parser.Model;
+using Dyalect.Runtime.Types;
+using System.Collections.Generic;
 using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
@@ -357,6 +360,32 @@ namespace Dyalect.Compiler
         }
 
         private void Build(DApplication node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Target, hints.Append(Push), ctx);
+            cw.FunPrep(node.Arguments.Count);
+
+            for (var i = 0; i < node.Arguments.Count; i++)
+            {
+                var a = node.Arguments[i];
+
+                if (a.NodeType == NodeType.Label)
+                {
+                    var la = (DLabelLiteral)a;
+                    Build(la.Expression, hints.Append(Push), ctx);
+                    cw.FunArgNm(la.Label);
+                }
+                else
+                {
+                    Build(a, hints.Append(Push), ctx);
+                    cw.FunArgIx(i);
+                }
+            }
+
+            cw.FunCall(node.Arguments.Count);
+            PopIf(hints);
+        }
+
+        private void _Build(DApplication node, Hints hints, CompilerContext ctx)
         {
             var name = node.Target.NodeType == NodeType.Name ? node.Target.GetName() : null;
             var sv = name != null ? GetVariable(name, node, err: false) : ScopeVar.Empty;
@@ -723,10 +752,61 @@ namespace Dyalect.Compiler
             }
         }
 
+        private FunctionParameter[] CompileFunctionParameters(List<DParameter> pars)
+        {
+            var arr = new FunctionParameter[pars.Count];
+
+            for (var i = 0; i < pars.Count; i++)
+            {
+                var p = pars[i];
+
+                if (p.DefaultValue != null)
+                {
+                    if (p.IsVarArgs)
+                    {
+                        //TODO: Var args cannot have default values
+                    }
+
+                    DyObject val = null;
+
+                    switch (p.DefaultValue.NodeType)
+                    {
+                        case NodeType.Integer:
+                            val = new DyInteger(((DIntegerLiteral)p.DefaultValue).Value);
+                            break;
+                        case NodeType.Float:
+                            val = new DyFloat(((DFloatLiteral)p.DefaultValue).Value);
+                            break;
+                        case NodeType.Char:
+                            val = new DyChar(((DCharLiteral)p.DefaultValue).Value);
+                            break;
+                        case NodeType.Boolean:
+                            val = ((DBooleanLiteral)p.DefaultValue).Value ? DyBool.True : DyBool.False;
+                            break;
+                        case NodeType.String:
+                            val = new DyString(((DStringLiteral)p.DefaultValue).Value);
+                            break;
+                        case NodeType.Nil:
+                            val = DyNil.Instance;
+                            break;
+                        default:
+                            //Error: only primitive types are supported
+                            break;
+                    }
+
+                    arr[i] = new FunctionParameter(p.Name, val, false);
+                }
+                else
+                    arr[i] = new FunctionParameter(p.Name, null, p.IsVarArgs);
+            }
+
+            return arr;
+        }
+
         private void BuildFunctionBody(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
             var iter = hints.Has(Iterator);
-            var args = node.Parameters.ToArray();
+            var args = CompileFunctionParameters(node.Parameters);
             var argCount = args.Length;
             StartFun(node.Name, args, argCount);
 
@@ -762,7 +842,7 @@ namespace Dyalect.Compiler
             for (var i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
-                AddVariable(arg, node, data: VarFlags.Argument);
+                AddVariable(arg.Name, node, data: VarFlags.Argument);
             }
 
             //If this is a member function we add an additional system variable that
@@ -813,11 +893,13 @@ namespace Dyalect.Compiler
                 cw.NewIter(funHandle);
             else
             {
-                cw.Push(node.IsVariadic ? argCount - 1 : argCount);
+                cw.Push(argCount);
+                //TODO: Variadic
+                //cw.Push(node.IsVariadic ? argCount - 1 : argCount);
 
-                if (node.IsVariadic)
-                    cw.NewFunV(funHandle);
-                else
+                //if (node.IsVariadic)
+                //    cw.NewFunV(funHandle);
+                //else
                     cw.NewFun(funHandle);
             }
         }

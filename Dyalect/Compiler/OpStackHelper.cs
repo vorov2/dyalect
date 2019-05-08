@@ -70,6 +70,11 @@
             0,  //Brterm
             0,  //Briter
             0,  //Aux
+
+            0,  //FunPrep
+            -1, //FunArgIx
+            -1, //FunArgNm
+            0,  //FunCall
         };
     }
 }

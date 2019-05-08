@@ -176,6 +176,11 @@ namespace Dyalect.Compiler
             Emit(new Op(OpCode.Tag, idx));
         }
 
+        public void FunPrep(int argCount) => Emit(new Op(OpCode.FunPrep, argCount));
+        public void FunArgIx(int index) => Emit(new Op(OpCode.FunArgIx, index));
+        public void FunArgNm(string name) => Emit(new Op(OpCode.FunArgNm, IndexString(name)));
+        public void FunCall(int argCount) => Emit(new Op(OpCode.FunCall, argCount));
+
         public void Call(int args) => Emit(new Op(OpCode.Call, args), -args);
         public void NewFun(int funHandle) => Emit(new Op(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new Op(OpCode.NewFunV, funHandle));

@@ -68,6 +68,11 @@
         PushNilT,   //1
         Brterm,     //0
         Briter,     //0
-        Aux         //0
+        Aux,        //0
+
+        FunPrep,    //0
+        FunArgIx,   //-1
+        FunArgNm,   //-1
+        FunCall,    //0
     }
 }

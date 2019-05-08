@@ -16,13 +16,11 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; }
 
-        public bool IsVariadic { get; set; }
-
         public bool IsStatic { get; set; }
 
         public bool IsIterator { get; set; }
 
-        public List<string> Parameters { get; } = new List<string>();
+        public List<DParameter> Parameters { get; } = new List<DParameter>();
 
         public DNode Body { get; set; }
 
@@ -43,10 +41,7 @@ namespace Dyalect.Parser.Model
                 sb.Append(Name);
 
             sb.Append('(');
-            sb.Append(string.Join(",", Parameters));
-
-            if (IsVariadic)
-                sb.Append("...");
+            Parameters.ToString(sb);
 
             sb.Append(") ");
             Body.ToString(sb);

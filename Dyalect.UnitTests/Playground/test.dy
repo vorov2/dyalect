@@ -20,5 +20,9 @@ func foo() {
 foo() 
 */
 
+func foo(x, y, z) {
+    print("x=", x, ";y=", y, ";z=", z)
+}
 
+foo(z: 3, y: 2, x: 1)
 

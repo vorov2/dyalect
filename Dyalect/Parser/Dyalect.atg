@@ -170,17 +170,20 @@ PRODUCTIONS
             .)
         ).
 
-    FunctionArgument<DFunctionDeclaration node> =
-        identToken (. node.Parameters.Add(t.val); .).
+    FunctionArgument<out DParameter arg> =
+        (. arg = null; .)
+        identToken (. arg = new DParameter(t) { Name = t.val }; .)
+        [
+            "=" Expr<out var cnode>
+            (. arg.DefaultValue = cnode; .)
+        ]
+        [ "..." (. arg.IsVarArgs = true; .) ].
 
     FunctionArguments<DFunctionDeclaration node> =
         "("
             [
-                identToken (. node.Parameters.Add(t.val); .)
-                { "," identToken (. node.Parameters.Add(t.val); .) }
-                [
-                    "..." (. node.IsVariadic = true; .)
-                ]
+                FunctionArgument<out var arg> (. node.Parameters.Add(arg); .)
+                { "," FunctionArgument<out arg> (. node.Parameters.Add(arg); .) }
             ]
         ")".
 
@@ -303,6 +306,7 @@ PRODUCTIONS
         (. node = null; .)
         (
               IF (IsFunction()) FunctionExpr<out node>
+            | IF (IsLabel()) Label<out node>
             | Assignment<out node>
         )
         (.
@@ -313,7 +317,7 @@ PRODUCTIONS
                     Body = node
                 };
                 implicits.Sort();
-                func.Parameters.AddRange(implicits.Distinct().Select(i => "p" + i));
+                func.Parameters.AddRange(implicits.Distinct().Select(i => new DParameter(t) { Name = "p" + i }));
                 node = func;
                 implicits = null;
             }
@@ -327,7 +331,7 @@ PRODUCTIONS
         (
             (
                 
-                  FunctionArgument<f>
+                  ( FunctionArgument<out var a> (. f.Parameters.Add(a); .) )
                 | FunctionArguments<f>
             )
             "=>" Expr<out var exp>
@@ -368,14 +372,7 @@ PRODUCTIONS
         {
             "||" (. var ot = t; .) And<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.Or, ot); .)
-        }
-        /*[
-            "?"
-            (. var @if = new DIf(t) { True = node }; .)
-            Or<out node> (. @if.Condition = node; .)
-            ":" Or<out node>
-            (. @if.False = node; node = @if; .)
-        ]*/.
+        }.
         
     And<out DNode node> = 
         Eq<out node>
@@ -572,6 +569,15 @@ PRODUCTIONS
             | Base<out node>
         ).
 
+    Label<out DNode node> =
+        (. node = null; var name = ""; .)
+        (
+            identToken (. name = t.val; .)
+            ":" (. var ot = t; .)
+            Or<out node>
+            (. node = new DLabelLiteral(ot) { Label = name, Expression = node }; .)
+        ).
+
     Base<out DNode node> =
         "base" (. node = new DBase(t); .).
 
@@ -602,7 +608,7 @@ PRODUCTIONS
     TupleElement<out DNode node> = 
         (. node = null; .)
         (
-            IF (IsNamedTupleElement())
+            /*IF (IsNamedTupleElement())
             (
                 (. string name = null; .)
                 (
@@ -614,7 +620,7 @@ PRODUCTIONS
                 Expr<out node>
                 (. tag.Expression = node; node = tag; .)
             )
-            |
+            |*/
             Expr<out node>
         ).
 

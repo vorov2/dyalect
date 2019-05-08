@@ -36,6 +36,7 @@
         Tuple,
         Array,
         Label,
+        Parameter,
 
         Type,
         Field

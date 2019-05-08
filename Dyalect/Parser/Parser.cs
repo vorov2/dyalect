@@ -283,6 +283,8 @@ namespace Dyalect.Parser
 		node = null; 
 		if (IsFunction()) {
 			FunctionExpr(out node);
+		} else if (IsLabel()) {
+			Label(out node);
 		} else if (StartOf(3)) {
 			Assignment(out node);
 		} else SynErr(75);
@@ -293,7 +295,7 @@ namespace Dyalect.Parser
 		       Body = node
 		   };
 		   implicits.Sort();
-		   func.Parameters.AddRange(implicits.Distinct().Select(i => "p" + i));
+		   func.Parameters.AddRange(implicits.Distinct().Select(i => new DParameter(t) { Name = "p" + i }));
 		   node = func;
 		   implicits = null;
 		}
@@ -395,16 +397,12 @@ namespace Dyalect.Parser
 	void FunctionArguments(DFunctionDeclaration node) {
 		Expect(24);
 		if (la.kind == 1) {
-			Get();
-			node.Parameters.Add(t.val); 
+			FunctionArgument(out var arg);
+			node.Parameters.Add(arg); 
 			while (la.kind == 20) {
 				Get();
-				Expect(1);
-				node.Parameters.Add(t.val); 
-			}
-			if (la.kind == 50) {
-				Get();
-				node.IsVariadic = true; 
+				FunctionArgument(out arg);
+				node.Parameters.Add(arg); 
 			}
 		}
 		Expect(25);
@@ -423,9 +421,19 @@ namespace Dyalect.Parser
 		} else SynErr(79);
 	}
 
-	void FunctionArgument(DFunctionDeclaration node) {
+	void FunctionArgument(out DParameter arg) {
+		arg = null; 
 		Expect(1);
-		node.Parameters.Add(t.val); 
+		arg = new DParameter(t) { Name = t.val }; 
+		if (la.kind == 23) {
+			Get();
+			Expr(out var cnode);
+			arg.DefaultValue = cnode; 
+		}
+		if (la.kind == 50) {
+			Get();
+			arg.IsVarArgs = true; 
+		}
 	}
 
 	void While(out DNode node) {
@@ -498,13 +506,24 @@ namespace Dyalect.Parser
 		node = f;
 		
 		if (la.kind == 1) {
-			FunctionArgument(f);
+			FunctionArgument(out var a);
+			f.Parameters.Add(a); 
 		} else if (la.kind == 24) {
 			FunctionArguments(f);
 		} else SynErr(80);
 		Expect(18);
 		Expr(out var exp);
 		f.Body = exp; 
+	}
+
+	void Label(out DNode node) {
+		node = null; var name = ""; 
+		Expect(1);
+		name = t.val; 
+		Expect(22);
+		var ot = t; 
+		Or(out node);
+		node = new DLabelLiteral(ot) { Label = name, Expression = node }; 
 	}
 
 	void Assignment(out DNode node) {
@@ -931,22 +950,7 @@ namespace Dyalect.Parser
 
 	void TupleElement(out DNode node) {
 		node = null; 
-		if (IsNamedTupleElement()) {
-			string name = null; 
-			if (la.kind == 1) {
-				Get();
-				name = t.val; 
-			} else if (la.kind == 4) {
-				Get();
-				name = ParseString(); 
-			} else SynErr(83);
-			Expect(22);
-			var tag = new DLabelLiteral(t) { Label = name }; 
-			Expr(out node);
-			tag.Expression = node; node = tag; 
-		} else if (StartOf(5)) {
-			Expr(out node);
-		} else SynErr(84);
+		Expr(out node);
 	}
 
 	void DyalectItem() {
@@ -956,7 +960,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 48) {
 			Import();
 			Separator();
-		} else SynErr(85);
+		} else SynErr(83);
 	}
 
 	void Dyalect() {
@@ -1081,9 +1085,7 @@ namespace Dyalect.Parser
 			case 80: s = "invalid FunctionExpr"; break;
 			case 81: s = "invalid Literal"; break;
 			case 82: s = "invalid Bool"; break;
-			case 83: s = "invalid TupleElement"; break;
-			case 84: s = "invalid TupleElement"; break;
-			case 85: s = "invalid DyalectItem"; break;
+			case 83: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

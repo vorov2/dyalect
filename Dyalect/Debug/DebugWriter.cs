@@ -8,14 +8,14 @@ namespace Dyalect.Debug
         private Stack<ScopeSym> scopes;
         private Stack<FunSym> funs;
         private int scopeCount;
-        private readonly static string[] emptyPars = new string[0];
+        private readonly static FunctionParameter[] emptyPars = new FunctionParameter[0];
 
         public DebugWriter()
         {
             Symbols = new DebugInfo();
             scopes = new Stack<ScopeSym>();
             funs = new Stack<FunSym>();
-            var glob = new ScopeSym(0, 0, 0, 0, 0) { EndOffset = Int32.MaxValue };
+            var glob = new ScopeSym(0, 0, 0, 0, 0) { EndOffset = int.MaxValue };
             scopes.Push(glob);
             Symbols.Scopes.Add(glob);
         }
@@ -32,7 +32,7 @@ namespace Dyalect.Debug
             return new DebugWriter(this);
         }
 
-        public void StartFunction(string name, int offset, string[] pars = null)
+        public void StartFunction(string name, int offset, FunctionParameter[] pars = null)
         {
             funs.Push(new FunSym(name, offset, pars ?? emptyPars));
         }
