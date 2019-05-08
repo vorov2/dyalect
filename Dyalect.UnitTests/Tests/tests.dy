@@ -871,3 +871,27 @@ func methodTest1() {
     Integer.__deleteMember("+")
     assert(true, res)
 }
+
+func methodTest2() {
+    func Float +(other) {
+        this + " + " + other
+    }
+    var res = 12.2 + 0.4
+    Float.__deleteMember("+")
+    assert("12.2 + 0.4", res)
+}
+
+func functionTest1() {
+    func sum(x,y) {
+        if y == 2 {
+            x + y
+        } else {
+            var z = sum(y, 2)
+            x -= 1
+            x + z
+        }
+    }
+
+    var res = sum(2, 4)
+    assert(7, res)
+}

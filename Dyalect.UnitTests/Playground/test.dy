@@ -21,5 +21,4 @@ foo()
 */
 
 
-var y = "quotes\u0022 and such (and a buck $)"
 

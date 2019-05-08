@@ -16,6 +16,8 @@ namespace Dyalect.Runtime.Types
         protected internal override char GetChar() => Value;
 
         protected internal override string GetString() => Value.ToString();
+
+        public override string ToString() => Value.ToString();
     }
 
     internal sealed class DyCharTypeInfo : DyTypeInfo
@@ -32,9 +34,7 @@ namespace Dyalect.Runtime.Types
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            var str1 = left.TypeId == StandardType.Char || left.TypeId == StandardType.String ? left.GetString() : left.ToString(ctx).Value;
-            var str2 = right.TypeId == StandardType.Char || right.TypeId == StandardType.String ? right.GetString() : right.ToString(ctx).Value;
-            return new DyString(str1 + str2);
+            return new DyString(left.GetChar().ToString() + right.GetChar());
         }
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
