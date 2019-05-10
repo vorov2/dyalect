@@ -32,7 +32,9 @@ namespace Dyalect.Runtime
 
         AssertFailed = 611,
 
-        RequiredArgumentMissing = 612
+        RequiredArgumentMissing = 612,
+
+        ArgumentNotFound = 613
     }
 
     public sealed class DyError
@@ -141,6 +143,13 @@ namespace Dyalect.Runtime
         public static DyError RequiredArgumentMissing(string functionName, string argumentName)
         {
             return new DyError(DyErrorCode.RequiredArgumentMissing,
+                ("FunctionName", functionName),
+                ("ArgumentName", argumentName));
+        }
+
+        public static DyError ArgumentNotFound(string functionName, string argumentName)
+        {
+            return new DyError(DyErrorCode.ArgumentNotFound,
                 ("FunctionName", functionName),
                 ("ArgumentName", argumentName));
         }

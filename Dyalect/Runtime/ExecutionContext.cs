@@ -29,7 +29,7 @@ namespace Dyalect.Runtime
 
         internal Stack<int> Sections { get; set; }
 
-        internal Stack<DyObject[]> Locals { get; } = new Stack<DyObject[]>();
+        internal Stack<ArgContainer> Locals { get; } = new Stack<ArgContainer>(4);
 
         internal void ThrowIf()
         {
@@ -40,5 +40,12 @@ namespace Dyalect.Runtime
                 throw new DyRuntimeException(err.GetDescription());
             }
         }
+    }
+
+    internal struct ArgContainer
+    {
+        public DyObject[] Locals;
+        public FastList<DyObject> VarArgs;
+        public int VarArgsIndex;
     }
 }

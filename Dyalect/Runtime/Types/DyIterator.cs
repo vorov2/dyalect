@@ -7,7 +7,7 @@ namespace Dyalect.Runtime.Types
     {
         private readonly IEnumerator<DyObject> enumerator;
 
-        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, 0, StandardType.Iterator)
+        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Statics.EmptyParameters, StandardType.Iterator)
         {
             this.enumerator = enumerator;
         }
@@ -18,8 +18,6 @@ namespace Dyalect.Runtime.Types
             vars.Add(locals);
             return new DyNativeIterator(unitId, handle, vars);
         }
-
-        protected override string GetCustomFunctionName(ExecutionContext ctx) => Builtins.Iterator;
 
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {

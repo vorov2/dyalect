@@ -153,4 +153,7 @@
   <data name="RequiredArgumentMissing" xml:space="preserve">
     <value>No value provided for an argument "%ArgumentName%" of a function "%FunctionName%".</value>
   </data>
+  <data name="ArgumentNotFound" xml:space="preserve">
+    <value>Function "%FunctionName%" doesn't have an argument "%ArgumentName%".</value>
+  </data>
 </root>

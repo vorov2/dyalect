@@ -61,6 +61,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Function &quot;%FunctionName%&quot; doesn&apos;t have an argument &quot;%ArgumentName%&quot;..
+        /// </summary>
+        internal static string ArgumentNotFound {
+            get {
+                return ResourceManager.GetString("ArgumentNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assert failed: %Reason%..
         /// </summary>
         internal static string AssertFailed {

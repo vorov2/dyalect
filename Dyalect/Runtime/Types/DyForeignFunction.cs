@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject[], DyObject> fun;
 
-            public DyCallBackFunction(string name, Func<ExecutionContext, DyObject[], DyObject> fun) : base(name, 0)
+            public DyCallBackFunction(string name, Func<ExecutionContext, DyObject[], DyObject> fun) : base(name, null)
             {
                 this.fun = fun;
             }
@@ -23,7 +23,7 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject, DyObject[], DyObject> fun;
 
-            public DyCallBackMemberFunction(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun) : base(name, 0)
+            public DyCallBackMemberFunction(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun) : base(name, null)//TODO foreign function pars
             {
                 this.fun = fun;
             }

@@ -37,9 +37,8 @@ namespace Dyalect.Debug
                 var mem = callChain.Pop();
                 var offset = mem.BreakAddress - 1;
                 var unit = Composition.Units[mem.UnitHandle];
-                var syms = new DebugReader(unit.Symbols);
-                var funSym = syms.FindFunSym(offset);
-                var line = syms?.FindLineSym(offset);
+                var funSym = unit.Symbols.FindFunSym(offset);
+                var line = unit.Symbols.FindLineSym(offset);
                 string codeBlockName = null;
 
                 if (funSym != null)

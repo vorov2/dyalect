@@ -20,9 +20,9 @@ func foo() {
 foo() 
 */
 
-func foo(x, y, z) {
+func foo(x = 142, y, z) {
     print("x=", x, ";y=", y, ";z=", z)
 }
 
-foo(z: 3, y: 2)
+foo(z: 3, y1: 2)
 

@@ -5,21 +5,17 @@ namespace Dyalect.Runtime.Types
 {
     internal class DyNativeFunction : DyFunction
     {
-        internal const int VARIADIC = 0x01;
-
         internal FunSym Sym;
         internal FastList<DyObject[]> Captures;
         internal DyObject[] Locals;
         internal int PreviousOffset;
         internal int UnitId;
         internal int FunctionId;
-        internal byte Flags;
-
-        public bool IsVariadic => (Flags & VARIADIC) == VARIADIC;
+        internal int VarArgIndex;
 
         public override string FunctionName => Sym.Name;
 
-        public DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId) : base(typeId, sym.Parameters)
+        public DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId) : base(typeId, sym?.Parameters ?? Statics.EmptyParameters)
         {
             Sym = sym;
             UnitId = unitId;
@@ -27,17 +23,12 @@ namespace Dyalect.Runtime.Types
             Captures = captures;
         }
 
-        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, bool variadic = false)
+        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgsIndex = -1)
         {
-            byte flags = 0;
-
-            if (variadic)
-                flags |= VARIADIC;
-
             var vars = new FastList<DyObject[]>(captures) { locals };
             return new DyNativeFunction(sym, unitId, funcId, vars, StandardType.Function)
             {
-                Flags = flags
+                VarArgIndex = varArgsIndex
             };
         }
 
@@ -60,7 +51,7 @@ namespace Dyalect.Runtime.Types
             for (var i = 0; i < Parameters.Length; i++)
                 locs[i] = i >= args.Length ? DyNil.Instance : args[i];
 
-            if (IsVariadic)
+            if (VarArgIndex >= 0)
             {
                 var arr = new DyObject[args.Length - Parameters.Length];
 
