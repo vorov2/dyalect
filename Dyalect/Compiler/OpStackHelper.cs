@@ -52,8 +52,8 @@
             0,  //SyncPoint
             -1, //Fail
             0,  //Call **dynamic
-            0,  //NewFun
-            0,  //NewFunV
+            1,  //NewFun
+            1,  //NewFunV
             1,  //NewIter
             -1, //SetMember
             0,  //GetMember

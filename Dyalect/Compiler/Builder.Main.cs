@@ -333,14 +333,20 @@ namespace Dyalect.Compiler
             cw.Briter(skip);
 
             cw.GetMember(GetMemberNameId(Builtins.Iterator));
-            cw.Call(0);
+
+            cw.FunPrep(0);
+            cw.FunCall(0);
+
             cw.MarkLabel(skip);
             cw.PopVar(sys);
 
             var iter = cw.DefineLabel();
             cw.MarkLabel(iter);
             cw.PushVar(new ScopeVar(sys));
-            cw.Call(0);
+
+            cw.FunPrep(0);
+            cw.FunCall(0);
+
             cw.Brterm(ctx.BlockExit);
 
             cw.PopVar(inc);
@@ -837,11 +843,16 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             var address = cw.Offset;
+            var isVariadic = false;
 
             //Initialize function arguments
             for (var i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
+
+                if (arg.IsVarArg)
+                    isVariadic = true;
+
                 AddVariable(arg.Name, node, data: VarFlags.Argument);
             }
 
@@ -893,13 +904,13 @@ namespace Dyalect.Compiler
                 cw.NewIter(funHandle);
             else
             {
-                cw.Push(argCount);
+                //cw.Push(argCount);
                 //TODO: Variadic
                 //cw.Push(node.IsVariadic ? argCount - 1 : argCount);
 
-                //if (node.IsVariadic)
-                //    cw.NewFunV(funHandle);
-                //else
+                if (isVariadic)
+                    cw.NewFunV(funHandle);
+                else
                     cw.NewFun(funHandle);
             }
         }

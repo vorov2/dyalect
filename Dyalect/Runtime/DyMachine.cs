@@ -310,13 +310,10 @@ namespace Dyalect.Runtime
                         evalStack.Push(DyIterator.CreateIterator(function.UnitId, op.Data, captures, locals));
                         break;
                     case OpCode.NewFun:
-                        //TODO: param no longer needed
-                        //right = evalStack.Peek();
-                        evalStack.Replace(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, captures, locals));
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, captures, locals));
                         break;
-                    case OpCode.NewFunV://TODO: param no longer needed
-                        //right = evalStack.Peek();
-                        evalStack.Replace(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, captures, locals, ctx.AUX));
+                    case OpCode.NewFunV:
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, captures, locals, ctx.AUX));
                         break;
                     case OpCode.Call:
                         {
@@ -501,9 +498,9 @@ namespace Dyalect.Runtime
 
                             if (right is DyNativeFunction callFun)
                             {
-                                if (op.Data != callFun.Parameters.Length)
+                                if (op.Data != callFun.Parameters.Length || callFun.VarArgIndex > -1)
                                 {
-                                    FillDefaults(ctx.Locals.Peek().Locals, callFun, ctx);
+                                    FillDefaults(ctx.Locals.Peek(), callFun, ctx);
                                     if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                                 }
 
@@ -522,9 +519,13 @@ namespace Dyalect.Runtime
             goto CYCLE;
         }
 
-        private static void FillDefaults(DyObject[] locals, DyNativeFunction callFun, ExecutionContext ctx)
+        private static void FillDefaults(ArgContainer cont, DyNativeFunction callFun, ExecutionContext ctx)
         {
             var pars = callFun.Parameters;
+            var locals = cont.Locals;
+
+            if (callFun.VarArgIndex > -1)
+                locals[callFun.VarArgIndex] = DyTuple.Create(cont.VarArgs?.ToArray() ?? Statics.EmptyDyObjects);
 
             for (var i = 0; i < pars.Length; i++)
             {

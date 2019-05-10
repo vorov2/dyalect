@@ -24,5 +24,19 @@ func foo(x = 142, y, z) {
     print("x=", x, ";y=", y, ";z=", z)
 }
 
-foo(z: 3, y1: 2)
+func print(args..., separator = ",", terminator = "\n") {
+    var str = ""
+
+    for x in args.iter() {
+        if str.len() > 0 {
+            str += separator
+        }
+        str += x.toString()
+    }
+
+    str += terminator
+    str
+}
+
+print(1,2,3,separator:" ",terminator:".")
 
