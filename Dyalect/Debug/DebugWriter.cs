@@ -42,7 +42,7 @@ namespace Dyalect.Debug
             var f = funs.Pop();
             f.Handle = handle;
             f.EndOffset = offset;
-            Symbols.Functions.Add(f);
+            Symbols.Functions.Add(handle, f);
         }
 
         public void StartScope(int offset, int line, int col)

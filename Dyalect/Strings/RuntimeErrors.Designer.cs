@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class RuntimeErrors {
@@ -133,6 +133,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No value provided for an argument &quot;%ArgumentName%&quot; of a function &quot;%FunctionName%&quot;..
+        /// </summary>
+        internal static string RequiredArgumentMissing {
+            get {
+                return ResourceManager.GetString("RequiredArgumentMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stack is corrupted..
         /// </summary>
         internal static string StackCorrupted {
@@ -153,9 +162,9 @@ namespace Dyalect.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Function &quot;%FunctionName%&quot; accepts %FunctionArguments% argument(s) (%PassedArguments% given)..
         /// </summary>
-        internal static string WrongNumberOfArguments {
+        internal static string TooManyArguments {
             get {
-                return ResourceManager.GetString("WrongNumberOfArguments", resourceCulture);
+                return ResourceManager.GetString("TooManyArguments", resourceCulture);
             }
         }
     }

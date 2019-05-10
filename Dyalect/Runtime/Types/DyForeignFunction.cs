@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dyalect.Debug;
+using System;
 
 namespace Dyalect.Runtime.Types
 {
@@ -15,7 +16,7 @@ namespace Dyalect.Runtime.Types
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args);
 
-            protected override DyFunction Clone(ExecutionContext ctx) => new DyCallBackFunction(GetFunctionName(ctx), fun);
+            protected override DyFunction Clone(ExecutionContext ctx) => new DyCallBackFunction(FunctionName, fun);
         }
 
         private sealed class DyCallBackMemberFunction : DyForeignFunction
@@ -29,17 +30,17 @@ namespace Dyalect.Runtime.Types
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args);
 
-            protected override DyFunction Clone(ExecutionContext ctx) => new DyCallBackMemberFunction(GetFunctionName(ctx), fun);
+            protected override DyFunction Clone(ExecutionContext ctx) => new DyCallBackMemberFunction(FunctionName, fun);
         }
 
         private readonly string name;
 
-        protected DyForeignFunction(string name, int pars) : base(StandardType.Function, pars)
+        protected DyForeignFunction(string name, FunctionParameter[] pars) : base(StandardType.Function, pars)
         {
             this.name = name ?? DefaultName;
         }
 
-        internal DyForeignFunction(string name, int pars, int typeId) : base(typeId, pars)
+        internal DyForeignFunction(string name, FunctionParameter[] pars, int typeId) : base(typeId, pars)
         {
             this.name = name ?? DefaultName;
         }
@@ -48,7 +49,7 @@ namespace Dyalect.Runtime.Types
 
         public static DyForeignFunction Create(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun) => new DyCallBackMemberFunction(name, fun);
 
-        protected override string GetCustomFunctionName(ExecutionContext ctx) => name;
+        public override string FunctionName => name;
 
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg)
         {

@@ -24,13 +24,15 @@ namespace Dyalect.Runtime
 
         DivideByZero = 607,
 
-        WrongNumberOfArguments = 608,
+        TooManyArguments = 608,
 
         InvalidType = 609,
 
         StaticOperationNotSupported = 610,
 
-        AssertFailed = 611
+        AssertFailed = 611,
+
+        RequiredArgumentMissing = 612
     }
 
     public sealed class DyError
@@ -128,12 +130,19 @@ namespace Dyalect.Runtime
             return new DyError(DyErrorCode.DivideByZero);
         }
 
-        public static DyError WrongNumberOfArguments(string functionName, int functionArguments, int passedArguments)
+        public static DyError TooManyArguments(string functionName, int functionArguments, int passedArguments)
         {
-            return new DyError(DyErrorCode.WrongNumberOfArguments,
+            return new DyError(DyErrorCode.TooManyArguments,
                 ("FunctionName", functionName),
                 ("FunctionArguments", functionArguments),
                 ("PassedArguments", passedArguments));
+        }
+
+        public static DyError RequiredArgumentMissing(string functionName, string argumentName)
+        {
+            return new DyError(DyErrorCode.RequiredArgumentMissing,
+                ("FunctionName", functionName),
+                ("ArgumentName", argumentName));
         }
     }
 

@@ -9,7 +9,7 @@ namespace Dyalect.Debug
             Scopes = new List<ScopeSym>();
             Lines = new List<LineSym>();
             Vars = new List<VarSym>();
-            Functions = new List<FunSym>();
+            Functions = new Dictionary<int, FunSym>();
         }
 
         private DebugInfo(DebugInfo di)
@@ -18,7 +18,7 @@ namespace Dyalect.Debug
             Scopes = new List<ScopeSym>(di.Scopes.ToArray());
             Lines = new List<LineSym>(di.Lines.ToArray());
             Vars = new List<VarSym>(di.Vars.ToArray());
-            Functions = new List<FunSym>(di.Functions.ToArray());
+            Functions = new Dictionary<int, FunSym>(di.Functions);
         }
 
         public DebugInfo Clone()
@@ -34,6 +34,6 @@ namespace Dyalect.Debug
 
         public List<VarSym> Vars { get; private set; }
 
-        public List<FunSym> Functions { get; private set; }
+        public Dictionary<int, FunSym> Functions { get; private set; }
     }
 }

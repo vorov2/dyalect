@@ -52,13 +52,12 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyNativeIterator : DyNativeFunction
     {
-        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(unitId, funcId, 0, captures, StandardType.Iterator)
+        public override string FunctionName => "iter";
+
+        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(null, unitId, funcId, captures, StandardType.Iterator)
         {
 
         }
-
-        protected override string GetCustomFunctionName(ExecutionContext ctx) => Builtins.Iterator;
-
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg) =>
             new DyNativeIterator(UnitId, FunctionId, Captures) { Self = arg };
     }

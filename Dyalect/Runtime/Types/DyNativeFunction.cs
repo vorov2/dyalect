@@ -7,29 +7,27 @@ namespace Dyalect.Runtime.Types
     {
         internal const int VARIADIC = 0x01;
 
-        internal FastList<DyObject[]> Captures { get; set; }
-
-        internal DyObject[] Locals { get; set; }
-
-        internal int PreviousOffset { get; set; }
-
-        internal int UnitId { get; }
-
-        internal int FunctionId { get; set; }
-
-        internal byte Flags { get; set; }
+        internal FunSym Sym;
+        internal FastList<DyObject[]> Captures;
+        internal DyObject[] Locals;
+        internal int PreviousOffset;
+        internal int UnitId;
+        internal int FunctionId;
+        internal byte Flags;
 
         public bool IsVariadic => (Flags & VARIADIC) == VARIADIC;
 
-        public DyNativeFunction(int unitId, int funcId, int pars, FastList<DyObject[]> captures, int typeId) : base(typeId, pars)
+        public override string FunctionName => Sym.Name;
+
+        public DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId) : base(typeId, sym.Parameters)
         {
+            Sym = sym;
             UnitId = unitId;
             FunctionId = funcId;
-            ParameterNumber = pars;
             Captures = captures;
         }
 
-        public static DyNativeFunction Create(int unitId, int funcId, int pars, FastList<DyObject[]> captures, DyObject[] locals, bool variadic = false)
+        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, bool variadic = false)
         {
             byte flags = 0;
 
@@ -37,7 +35,7 @@ namespace Dyalect.Runtime.Types
                 flags |= VARIADIC;
 
             var vars = new FastList<DyObject[]>(captures) { locals };
-            return new DyNativeFunction(unitId, funcId, pars, vars, StandardType.Function)
+            return new DyNativeFunction(sym, unitId, funcId, vars, StandardType.Function)
             {
                 Flags = flags
             };
@@ -45,7 +43,7 @@ namespace Dyalect.Runtime.Types
 
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg)
         {
-            return new DyNativeFunction(UnitId, FunctionId, ParameterNumber, Captures, StandardType.Function)
+            return new DyNativeFunction(Sym, UnitId, FunctionId, Captures, StandardType.Function)
             {
                 Self = arg
             };
@@ -59,15 +57,15 @@ namespace Dyalect.Runtime.Types
             var layout = ctx.Composition.Units[UnitId].Layouts[FunctionId];
             var locs = new DyObject[layout.Size];
 
-            for (var i = 0; i < ParameterNumber; i++)
+            for (var i = 0; i < Parameters.Length; i++)
                 locs[i] = i >= args.Length ? DyNil.Instance : args[i];
 
             if (IsVariadic)
             {
-                var arr = new DyObject[args.Length - ParameterNumber];
+                var arr = new DyObject[args.Length - Parameters.Length];
 
-                for (var i = ParameterNumber; i < args.Length; i++)
-                    arr[i - ParameterNumber] = args[i];
+                for (var i = Parameters.Length; i < args.Length; i++)
+                    arr[i - Parameters.Length] = args[i];
 
                 locs[locs.Length - 1] = DyTuple.Create(arr);
             }
@@ -96,26 +94,5 @@ namespace Dyalect.Runtime.Types
             var locs = size == 0 ? Statics.EmptyDyObjects : new DyObject[size];
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
-
-        protected override string GetCustomFunctionName(ExecutionContext ctx) => GetFunSym(ctx)?.Name ?? DefaultName;
-
-        private FunSym GetFunSym(ExecutionContext ctx)
-        {
-            var frame = ctx?.Composition.Units[UnitId];
-            var syms = frame != null ? frame.Symbols : null;
-
-            if (syms != null)
-            {
-                var dr = new DebugReader(syms);
-                var fs = dr.GetFunSymByHandle(FunctionId);
-
-                if (fs != null)
-                    return fs;
-            }
-
-            return null;
-        }
-
-        protected override FunctionParameter[] GetCustomParameterNames(ExecutionContext ctx) => GetFunSym(ctx)?.Parameters;
     }
 }

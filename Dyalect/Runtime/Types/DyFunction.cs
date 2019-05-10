@@ -1,19 +1,18 @@
 ﻿using Dyalect.Debug;
 using System;
+using System.Linq;
 
 namespace Dyalect.Runtime.Types
 {
     public abstract class DyFunction : DyObject
     {
         internal const string DefaultName = "<func>";
+        internal DyObject Self;
+        internal FunctionParameter[] Parameters;
 
-        public int ParameterNumber { get; protected set; }
-
-        internal DyObject Self { get; set; }
-
-        protected DyFunction(int typeId, int pars) : base(typeId)
+        protected DyFunction(int typeId, FunctionParameter[] pars) : base(typeId)
         {
-            ParameterNumber = pars;
+            Parameters = pars;
         }
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
@@ -28,49 +27,21 @@ namespace Dyalect.Runtime.Types
 
         internal virtual DyObject Call0(ExecutionContext ctx) => Call(ctx, Statics.EmptyDyObjects);
 
-        protected abstract string GetCustomFunctionName(ExecutionContext ctx);
-
         internal int GetParameterIndex(string name, ExecutionContext ctx)
         {
-            var pars = GetParameters(ctx);
-
-            for (var i = 0; i < pars.Length; i++)
+            for (var i = 0; i < Parameters.Length; i++)
             {
-                if (pars[i].Name == name)
+                if (Parameters[i].Name == name)
                     return i;
             }
 
             return -1;
         }
 
-        public FunctionParameter[] GetParameters(ExecutionContext ctx)
-        {
-            var dynParameters = GetCustomParameterNames(ctx);
-
-            if (dynParameters != null)
-                return dynParameters;
-
-            var arr = new FunctionParameter[ParameterNumber];
-
-            for (var i = 0; i < ParameterNumber; i++)
-                arr[i] = new FunctionParameter("p" + i, null, false);
-
-            return arr;
-        }
-
-        protected virtual FunctionParameter[] GetCustomParameterNames(ExecutionContext ctx) => null;
-
         public string ToString(ExecutionContext ctx) => 
-            $"{GetFunctionName(ctx)}({string.Join(",", GetParameters(ctx))})";
+            $"{FunctionName}({string.Join(",", Parameters.Select(p => p.Name))})";
 
-        private string _functionName;
-        public string GetFunctionName(ExecutionContext ctx)
-        {
-            if (_functionName == null)
-                _functionName = GetCustomFunctionName(ctx);
-
-            return _functionName ?? DefaultName;
-        }
+        public abstract string FunctionName { get; }
     }
 
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
