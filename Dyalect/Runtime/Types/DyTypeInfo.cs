@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
@@ -403,10 +404,10 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.ToStr)
-                return DyForeignFunction.Create(name, ToStringAdapter);
+                return DyForeignFunction.Member(name, ToStringAdapter, Statics.EmptyParameters);
 
             if (name == Builtins.Iterator)
-                return DyForeignFunction.Create(name, GetIterator);
+                return DyForeignFunction.Member(name, GetIterator, Statics.EmptyParameters);
 
             return GetMember(name, ctx);
         }
@@ -424,7 +425,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "__deleteMember")
-                return DyForeignFunction.Create(name, (context, args) =>
+                return DyForeignFunction.Static(name, (context, args) =>
                 {
                     var nm = args.TakeOne(DyString.Empty).GetString();
                     if (context.Composition.MembersMap.TryGetValue(nm, out var nameId))
@@ -434,7 +435,7 @@ namespace Dyalect.Runtime.Types
                         staticMembers.Remove(nameId);
                     }
                     return DyNil.Instance;
-                });
+                }, new Par("name"));
 
             return GetStaticMember(name, ctx);
         }

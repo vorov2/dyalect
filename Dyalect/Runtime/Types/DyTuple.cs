@@ -361,19 +361,19 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
-                return DyForeignFunction.Create(name, LenAdapter);
+                return DyForeignFunction.Member(name, LenAdapter, Statics.EmptyParameters);
 
             if (name == "indices")
-                return DyForeignFunction.Create(name, GetIndices);
+                return DyForeignFunction.Member(name, GetIndices, Statics.EmptyParameters);
 
             if (name == "keys")
-                return DyForeignFunction.Create(name, GetKeys);
+                return DyForeignFunction.Member(name, GetKeys, Statics.EmptyParameters);
 
             if (name == "fst")
-                return DyForeignFunction.Create(name, GetFirst);
+                return DyForeignFunction.Member(name, GetFirst, Statics.EmptyParameters);
 
             if (name == "snd")
-                return DyForeignFunction.Create(name, GetSecond);
+                return DyForeignFunction.Member(name, GetSecond, Statics.EmptyParameters);
 
             return null;
         }

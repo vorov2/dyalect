@@ -9,6 +9,6 @@ namespace Dyalect
 
         public static char[] EmptyChars = new char[0];
 
-        public static FunctionParameter[] EmptyParameters = new FunctionParameter[0];
+        public static Par[] EmptyParameters = new Par[0];
     }
 }

@@ -8,7 +8,7 @@ namespace Dyalect.Debug
         private Stack<ScopeSym> scopes;
         private Stack<FunSym> funs;
         private int scopeCount;
-        private readonly static FunctionParameter[] emptyPars = new FunctionParameter[0];
+        private readonly static Par[] emptyPars = new Par[0];
 
         public DebugWriter()
         {
@@ -32,7 +32,7 @@ namespace Dyalect.Debug
             return new DebugWriter(this);
         }
 
-        public void StartFunction(string name, int offset, FunctionParameter[] pars = null)
+        public void StartFunction(string name, int offset, Par[] pars = null)
         {
             funs.Push(new FunSym(name, offset, pars ?? emptyPars));
         }

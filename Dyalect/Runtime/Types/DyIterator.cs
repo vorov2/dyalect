@@ -94,7 +94,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == "toArray")
-                return DyForeignFunction.Create(name, ToArray);
+                return DyForeignFunction.Member(name, ToArray, Statics.EmptyParameters);
 
             return null;
         }

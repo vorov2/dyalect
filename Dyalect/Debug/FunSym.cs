@@ -2,7 +2,7 @@
 {
     public sealed class FunSym
     {
-        public FunSym(string name, int offset, FunctionParameter[] pars)
+        public FunSym(string name, int offset, Par[] pars)
         {
             Name = name;
             StartOffset = offset;
@@ -16,7 +16,7 @@
 
         public string Name { get; set; }
 
-        public FunctionParameter[] Parameters { get; set; }
+        public Par[] Parameters { get; set; }
 
         public int Handle { get; set; }
 

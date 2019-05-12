@@ -758,9 +758,9 @@ namespace Dyalect.Compiler
             }
         }
 
-        private FunctionParameter[] CompileFunctionParameters(List<DParameter> pars)
+        private Par[] CompileFunctionParameters(List<DParameter> pars)
         {
-            var arr = new FunctionParameter[pars.Count];
+            var arr = new Par[pars.Count];
 
             for (var i = 0; i < pars.Count; i++)
             {
@@ -800,10 +800,10 @@ namespace Dyalect.Compiler
                             break;
                     }
 
-                    arr[i] = new FunctionParameter(p.Name, val, false);
+                    arr[i] = new Par(p.Name, val, false);
                 }
                 else
-                    arr[i] = new FunctionParameter(p.Name, null, p.IsVarArgs);
+                    arr[i] = new Par(p.Name, null, p.IsVarArgs);
             }
 
             return arr;

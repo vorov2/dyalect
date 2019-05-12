@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -207,7 +208,8 @@ namespace Dyalect.Runtime.Types
             var arr = (DyArray)self;
 
             var start = (int)args.TakeOne(DyInteger.Zero).GetInteger();
-            var end = (int)(args.TakeAt(1, null) ?? DyInteger.Get(arr.Values.Count)).GetInteger();
+            var endo = args.TakeAt(1, null);
+            var end = ReferenceEquals(endo, DyNil.Instance) ? arr.Values.Count : (int)endo.GetInteger();
 
             if (start == 0 && start == end)
                 return self;
@@ -226,7 +228,12 @@ namespace Dyalect.Runtime.Types
         private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var arr = (DyArray)self;
-            var fun = args.TakeOne(null) as DyFunction;
+            var argo = args.TakeOne(null);
+
+            if (ReferenceEquals(argo, DyNil.Instance))
+                return Sort(ctx, self, null);
+
+            var fun = argo as DyFunction;
 
             if (fun == null)
             {
@@ -280,46 +287,43 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
-                return DyForeignFunction.Create(name, LenAdapter);
+                return DyForeignFunction.Member(name, LenAdapter, Statics.EmptyParameters);
 
             if (name == "add")
-                return DyForeignFunction.Create(name, AddItem);
+                return DyForeignFunction.Member(name, AddItem, new Par("item"));
 
             if (name == "insert")
-                return DyForeignFunction.Create(name, InsertItem);
+                return DyForeignFunction.Member(name, InsertItem, new Par("index"), new Par("item"));
 
             if (name == "addRange")
-                return DyForeignFunction.Create(name, AddRange);
+                return DyForeignFunction.Member(name, AddRange, new Par("seq"));
 
             if (name == "remove")
-                return DyForeignFunction.Create(name, RemoveItem);
+                return DyForeignFunction.Member(name, RemoveItem, new Par("item"));
 
             if (name == "removeAt")
-                return DyForeignFunction.Create(name, RemoveItemAt);
+                return DyForeignFunction.Member(name, RemoveItemAt, new Par("index"));
 
             if (name == "clear")
-                return DyForeignFunction.Create(name, ClearItems);
+                return DyForeignFunction.Member(name, ClearItems, Statics.EmptyParameters);
 
             if (name == "indexOf")
-                return DyForeignFunction.Create(name, IndexOf);
+                return DyForeignFunction.Member(name, IndexOf, new Par("item"));
 
             if (name == "lastIndexOf")
-                return DyForeignFunction.Create(name, LastIndexOf);
+                return DyForeignFunction.Member(name, LastIndexOf, new Par("item"));
 
             if (name == "indices")
-                return DyForeignFunction.Create(name, GetIndices);
+                return DyForeignFunction.Member(name, GetIndices, Statics.EmptyParameters);
 
             if (name == "slice")
-                return DyForeignFunction.Create(name, GetSlice);
+                return DyForeignFunction.Member(name, GetSlice, new Par("start"), new Par("len", DyNil.Instance));
 
             if (name == "sort")
-                return DyForeignFunction.Create(name, Sort);
-
-            if (name == "sortBy")
-                return DyForeignFunction.Create(name, SortBy);
+                return DyForeignFunction.Member(name, SortBy, new Par("comparator", DyNil.Instance));
 
             if (name == "compact")
-                return DyForeignFunction.Create(name, Compact);
+                return DyForeignFunction.Member(name, Compact, Statics.EmptyParameters);
 
             return null;
         }

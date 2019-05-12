@@ -8,9 +8,9 @@ namespace Dyalect.Runtime.Types
     {
         internal const string DefaultName = "<func>";
         internal DyObject Self;
-        internal FunctionParameter[] Parameters;
+        internal Par[] Parameters;
 
-        protected DyFunction(int typeId, FunctionParameter[] pars) : base(typeId)
+        protected DyFunction(int typeId, Par[] pars) : base(typeId)
         {
             Parameters = pars;
         }
