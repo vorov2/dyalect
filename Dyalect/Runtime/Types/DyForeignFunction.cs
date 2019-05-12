@@ -5,20 +5,6 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyForeignFunction : DyFunction
     {
-        private sealed class DyCallBackFunction : DyForeignFunction
-        {
-            private readonly Func<ExecutionContext, DyObject[], DyObject> fun;
-
-            public DyCallBackFunction(string name, Func<ExecutionContext, DyObject[], DyObject> fun) : base(name, null)
-            {
-                this.fun = fun;
-            }
-
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args);
-
-            protected override DyFunction Clone(ExecutionContext ctx) => new DyCallBackFunction(FunctionName, fun);
-        }
-
         private sealed class MemberFunction : DyForeignFunction
         {
             private readonly Func<ExecutionContext, DyObject, DyObject[], DyObject> fun;
@@ -33,7 +19,16 @@ namespace Dyalect.Runtime.Types
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction(FunctionName, fun, Parameters);
         }
 
-        private sealed class StaticFunction : DyForeignFunction
+        private abstract class BaseStaticFunction : DyForeignFunction
+        {
+            protected BaseStaticFunction(string name, Par[] pars) : base(name, pars)
+            {
+            }
+
+            protected override DyFunction Clone(ExecutionContext ctx) => this;
+        }
+
+        private sealed class StaticFunction : BaseStaticFunction
         {
             private readonly Func<ExecutionContext, DyObject[], DyObject> fun;
 
@@ -43,8 +38,66 @@ namespace Dyalect.Runtime.Types
             }
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args);
+        }
 
-            protected override DyFunction Clone(ExecutionContext ctx) => new StaticFunction(FunctionName, fun, Parameters);
+        private sealed class StaticFunction0 : BaseStaticFunction
+        {
+            private readonly Func<ExecutionContext, DyObject> fun;
+
+            public StaticFunction0(string name, Func<ExecutionContext, DyObject> fun, Par[] pars) : base(name, pars)
+            {
+                this.fun = fun;
+            }
+
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx);
+        }
+
+        private sealed class StaticFunction1 : BaseStaticFunction
+        {
+            private readonly Func<ExecutionContext, DyObject, DyObject> fun;
+
+            public StaticFunction1(string name, Func<ExecutionContext, DyObject, DyObject> fun, Par[] pars) : base(name, pars)
+            {
+                this.fun = fun;
+            }
+
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0]);
+        }
+
+        private sealed class StaticFunction2 : BaseStaticFunction
+        {
+            private readonly Func<ExecutionContext, DyObject, DyObject, DyObject> fun;
+
+            public StaticFunction2(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars) : base(name, pars)
+            {
+                this.fun = fun;
+            }
+
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1]);
+        }
+
+        private sealed class StaticFunction3 : BaseStaticFunction
+        {
+            private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun;
+
+            public StaticFunction3(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars) : base(name, pars)
+            {
+                this.fun = fun;
+            }
+
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2]);
+        }
+
+        private sealed class StaticFunction4 : BaseStaticFunction
+        {
+            private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun;
+
+            public StaticFunction4(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars) : base(name, pars)
+            {
+                this.fun = fun;
+            }
+
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3]);
         }
 
         private readonly string name;
@@ -59,11 +112,19 @@ namespace Dyalect.Runtime.Types
             this.name = name ?? DefaultName;
         }
 
-        public static DyForeignFunction Create(string name, Func<ExecutionContext, DyObject[], DyObject> fun) => new DyCallBackFunction(name, fun);
-
         internal static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun, params Par[] pars) => new MemberFunction(name, fun, pars);
 
         internal static DyFunction Static(string name, Func<ExecutionContext, DyObject[], DyObject> fun, params Par[] pars) => new StaticFunction(name, fun, pars);
+
+        internal static DyFunction Static(string name, Func<ExecutionContext, DyObject> fun) => new StaticFunction0(name, fun, Statics.EmptyParameters);
+
+        internal static DyFunction Static(string name, Func<ExecutionContext, DyObject, DyObject> fun, params Par[] pars) => new StaticFunction1(name, fun, pars);
+
+        internal static DyFunction Static(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, params Par[] pars) => new StaticFunction2(name, fun, pars);
+
+        internal static DyFunction Static(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, params Par[] pars) => new StaticFunction3(name, fun, pars);
+
+        internal static DyFunction Static(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, params Par[] pars) => new StaticFunction4(name, fun, pars);
 
         public override string FunctionName => name;
 

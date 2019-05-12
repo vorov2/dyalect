@@ -30,18 +30,13 @@ namespace Dyalect.Linker
         }
 
         [Function("convertToNumber")] 
-        public DyObject ToNumber(ExecutionContext ctx, DyObject[] args)
+        public DyObject ToNumber(ExecutionContext ctx, DyObject value)
         {
-            if (args?.Length < 1)
-                return Default();
-
-            var arg = args[0];
-
-            if (arg.TypeId == StandardType.Integer || arg.TypeId == StandardType.Float)
-                return arg;
-            else if (arg.TypeId == StandardType.String || arg.TypeId == StandardType.Char)
+            if (value.TypeId == StandardType.Integer || value.TypeId == StandardType.Float)
+                return value;
+            else if (value.TypeId == StandardType.String || value.TypeId == StandardType.Char)
             {
-                var str = arg.GetString();
+                var str = value.GetString();
                 if (int.TryParse(str, out var i4))
                     return new DyInteger(i4);
                 else if (double.TryParse(str, out var r8))
@@ -53,9 +48,9 @@ namespace Dyalect.Linker
         }
 
         [Function("print")]
-        public DyObject Print(ExecutionContext ctx, DyObject[] args)
+        public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
         {
-            foreach (var a in args)
+            foreach (var a in (DyTuple)values)
             {
                 if (a.TypeId == StandardType.String)
                     Console.Write(a.GetString());
@@ -71,15 +66,14 @@ namespace Dyalect.Linker
         }
 
         [Function("read")]
-        public DyObject Read(ExecutionContext ctx, DyObject[] args)
+        public DyObject Read(ExecutionContext ctx)
         {
             return new DyString(Console.ReadLine());
         }
 
         [Function("makeArray")]
-        public DyObject MakeArray(ExecutionContext ctx, DyObject[] args)
+        public DyObject MakeArray(ExecutionContext ctx, DyObject size)
         {
-            var size = args[0];
             var n = size.GetInteger();
             var lst = new List<DyObject>();
 
@@ -90,13 +84,10 @@ namespace Dyalect.Linker
         }
 
         [Function("assert")]
-        public DyObject Assert(ExecutionContext ctx, DyObject[] args)
+        public DyObject Assert(ExecutionContext ctx, DyObject expected, DyObject got)
         {
-            var x = args.TakeOne(DyNil.Instance);
-            var y = args.TakeAt(1, DyNil.Instance);
-
-            if (!Eq(x.ToObject(), y.ToObject()))
-                return Err.AssertFailed($"Expected {x.ToString(ctx)}, got {y.ToString(ctx)}").Set(ctx);
+            if (!Eq(expected.ToObject(), got.ToObject()))
+                return Err.AssertFailed($"Expected {expected.ToString(ctx)}, got {got.ToString(ctx)}").Set(ctx);
 
             return DyNil.Instance;
         }
@@ -122,12 +113,13 @@ namespace Dyalect.Linker
         }
 
         [Function(CreateArrayName)]
-        public DyObject CreateArray(ExecutionContext ctx, DyObject[] args) => new DyArray(args.ToList());
+        public DyObject CreateArray(ExecutionContext ctx, [VarArg]DyObject items) => new DyArray(Enumerable.ToList((DyTuple)items));
 
         [Function(CreateTupleName)]
-        public DyObject CreateTuple(ExecutionContext ctx, DyObject[] args)
+        public DyObject CreateTuple(ExecutionContext ctx, [VarArg]DyObject items)
         {
-            var len = args.Length;
+            var args = Enumerable.ToList((DyTuple)items);
+            var len = args.Count;
 
             if (len == 2)
             {
@@ -161,7 +153,7 @@ namespace Dyalect.Linker
             var keys = new string[len];
             var values = new DyObject[len];
 
-            for (var i = 0; i < args.Length; i++)
+            for (var i = 0; i < args.Count; i++)
             {
                 var v = args[i];
 
