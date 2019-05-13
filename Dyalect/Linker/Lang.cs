@@ -49,18 +49,25 @@ namespace Dyalect.Linker
         [Function("print")]
         public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
         {
+            var fst = true;
+
             foreach (var a in (DyTuple)values)
             {
+                if (!fst)
+                    Console.Write(separator.TypeId == StandardType.String ? separator.GetString() : separator.ToString(ctx).ToString());
+
                 if (a.TypeId == StandardType.String)
                     Console.Write(a.GetString());
                 else
                     Console.Write(a.ToString(ctx));
 
+                fst = false;
+
                 if (ctx.Error != null)
                     break;
             }
 
-            Console.WriteLine();
+            Console.Write(terminator.TypeId == StandardType.String ? terminator.GetString() : terminator.ToString(ctx).ToString());
             return DyNil.Instance;
         }
 

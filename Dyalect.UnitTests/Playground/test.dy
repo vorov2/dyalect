@@ -40,6 +40,4 @@ func print(args..., separator = ",", terminator = "\n") {
 print(1,2,3,separator:" ",terminator:".")
 */
 
-var arr = [4,6,1,3,2,5]
-arr.sort((x,y) => x - y)
-assert([1, 2, 3, 4, 5, 6], arr)
+print(1,2,3,4,"foo", terminator: "!\n")
