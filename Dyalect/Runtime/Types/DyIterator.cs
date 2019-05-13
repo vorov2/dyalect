@@ -1,10 +1,35 @@
 ﻿using Dyalect.Compiler;
+using Dyalect.Debug;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     internal sealed class DyIterator : DyForeignFunction
     {
+        internal sealed class RangeEnumerator : IEnumerator<DyObject>
+        {
+            private readonly Func<DyObject> current;
+            private readonly Func<bool> next;
+
+            public RangeEnumerator(Func<DyObject> current, Func<bool> next)
+            {
+                this.current = current;
+                this.next = next;
+            }
+
+            public DyObject Current => current();
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() { }
+
+            public bool MoveNext() => next();
+
+            public void Reset() => throw new NotSupportedException();
+        }
+
         private readonly IEnumerator<DyObject> enumerator;
 
         public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Statics.EmptyParameters, StandardType.Iterator, -1)
@@ -56,6 +81,7 @@ namespace Dyalect.Runtime.Types
         {
 
         }
+
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg) =>
             new DyNativeIterator(UnitId, FunctionId, Captures) { Self = arg };
     }
@@ -95,6 +121,48 @@ namespace Dyalect.Runtime.Types
         {
             if (name == "toArray")
                 return DyForeignFunction.Member(name, ToArray, -1, Statics.EmptyParameters);
+
+            return null;
+        }
+
+        private DyObject Enum(ExecutionContext ctx, DyObject from, DyObject step, DyObject to)
+        {
+            var endless = to.IsNil();
+
+            if (from.TypeId == StandardType.Integer
+                && (step.TypeId == StandardType.Integer || step.IsNil())
+                && (to.TypeId == StandardType.Integer || endless))
+            {
+                var ifrom = from.GetInteger();
+                var istart = ifrom;
+                var istep = step.IsNil() ? 1 : step.GetInteger();
+                var ito = endless ? 0 : to.GetInteger();
+                
+                long current = ifrom;
+                return new DyIterator(new DyIterator.RangeEnumerator(
+                    () => DyInteger.Get(current),
+                    () =>
+                    {
+                        current = current + istep;
+
+                        if (endless)
+                            return true;
+
+                        if (ito > istart)
+                            return current < ito;
+
+                        return current > ito;
+                    }));
+            }
+
+            ctx.Error = Err.InvalidType(StandardType.IntegerName, from.TypeName(ctx));
+            return DyNil.Instance;
+        }
+
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        {
+            if (name == Builtins.Enum)
+                return DyForeignFunction.Static(name, Enum, -1, new Par("from"), new Par("step", DyNil.Instance), new Par("to", DyNil.Instance));
 
             return null;
         }

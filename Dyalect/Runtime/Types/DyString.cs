@@ -367,9 +367,9 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Statics
-        private DyObject Concat(ExecutionContext ctx, DyObject[] args)
+        private DyObject Concat(ExecutionContext ctx, DyObject tuple)
         {
-            var values = ((DyTuple)args[0]).Values;
+            var values = ((DyTuple)tuple).Values;
             var arr = new string[values.Length];
 
             for (var i = 0; i < values.Length; i++)

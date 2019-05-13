@@ -19,7 +19,7 @@ namespace Dyalect.Runtime.Types
             this.value = value;
         }
 
-        public static DyInteger Get(int i)
+        public static DyInteger Get(long i)
         {
             if (i == -1)
                 return MinusOne;

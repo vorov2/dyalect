@@ -465,15 +465,14 @@ namespace Dyalect.Runtime.Types
             return null;
         }
 
-        private DyObject New(ExecutionContext ctx, DyObject[] args)
+        private DyObject New(ExecutionContext ctx, DyObject tuple)
         {
-            return new DyArray(((DyTuple)args[0]).Values);
+            return new DyArray(((DyTuple)tuple).Values);
         }
 
-        private DyObject Empty(ExecutionContext ctx, DyObject[] args)
+        private DyObject Empty(ExecutionContext ctx, DyObject sizeObj, DyObject val)
         {
-            var size = args.TakeOne().GetInteger();
-            var val = args.TakeAt(1);
+            var size = sizeObj.GetInteger();
 
             var arr = new DyObject[size];
 

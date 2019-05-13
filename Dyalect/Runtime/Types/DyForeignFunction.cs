@@ -28,18 +28,6 @@ namespace Dyalect.Runtime.Types
             protected override DyFunction Clone(ExecutionContext ctx) => this;
         }
 
-        private sealed class StaticFunction : BaseStaticFunction
-        {
-            private readonly Func<ExecutionContext, DyObject[], DyObject> fun;
-
-            public StaticFunction(string name, Func<ExecutionContext, DyObject[], DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
-            {
-                this.fun = fun;
-            }
-
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args);
-        }
-
         private sealed class StaticFunction0 : BaseStaticFunction
         {
             private readonly Func<ExecutionContext, DyObject> fun;
@@ -168,8 +156,6 @@ namespace Dyalect.Runtime.Types
         }
 
         internal static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun, int varArgIndex, params Par[] pars) => new MemberFunction(name, fun, pars, varArgIndex);
-
-        internal static DyFunction Static(string name, Func<ExecutionContext, DyObject[], DyObject> fun, int varArgIndex, params Par[] pars) => new StaticFunction(name, fun, pars, varArgIndex);
 
         internal static DyFunction Static(string name, Func<ExecutionContext, DyObject> fun) => new StaticFunction0(name, fun, Statics.EmptyParameters);
 

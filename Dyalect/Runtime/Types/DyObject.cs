@@ -43,6 +43,8 @@ namespace Dyalect.Runtime.Types
 
     internal static class DyObjectInternalExtensions
     {
+        public static bool IsNil(this DyObject self) => ReferenceEquals(self, DyNil.Instance);
+
         public static DyTypeInfo Type(this DyObject self, ExecutionContext ctx) => ctx.Composition.Types[self.TypeId];
 
         public static DyString ToString(this DyObject self, ExecutionContext ctx) => ctx.Composition.Types[self.TypeId].ToString(self, ctx);

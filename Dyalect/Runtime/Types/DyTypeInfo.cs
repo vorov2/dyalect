@@ -425,9 +425,9 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "__deleteMember")
-                return DyForeignFunction.Static(name, (context, args) =>
+                return DyForeignFunction.Static(name, (context, strObj) =>
                 {
-                    var nm = args.TakeOne(DyString.Empty).GetString();
+                    var nm = strObj.GetString();
                     if (context.Composition.MembersMap.TryGetValue(nm, out var nameId))
                     {
                         SetBuiltin(nm, null);
