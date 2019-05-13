@@ -49,7 +49,18 @@ namespace Dyalect.Runtime.Types
                 this.fun = fun;
             }
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx);
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
+            {
+                try
+                {
+                    return fun(ctx);
+                }
+                catch (Exception ex)
+                {
+                    ctx.Error = Err.ExternalFunctionFailure(FunctionName, ex.Message);
+                    return DyNil.Instance;
+                }
+            }
         }
 
         private sealed class StaticFunction1 : BaseStaticFunction
@@ -61,7 +72,18 @@ namespace Dyalect.Runtime.Types
                 this.fun = fun;
             }
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0]);
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
+            {
+                try
+                {
+                    return fun(ctx, args[0]);
+                }
+                catch (Exception ex)
+                {
+                    ctx.Error = Err.ExternalFunctionFailure(FunctionName, ex.Message);
+                    return DyNil.Instance;
+                }
+            }
         }
 
         private sealed class StaticFunction2 : BaseStaticFunction
@@ -73,7 +95,18 @@ namespace Dyalect.Runtime.Types
                 this.fun = fun;
             }
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1]);
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
+            {
+                try
+                {
+                    return fun(ctx, args[0], args[1]);
+                }
+                catch (Exception ex)
+                {
+                    ctx.Error = Err.ExternalFunctionFailure(FunctionName, ex.Message);
+                    return DyNil.Instance;
+                }
+            }
         }
 
         private sealed class StaticFunction3 : BaseStaticFunction
@@ -85,7 +118,18 @@ namespace Dyalect.Runtime.Types
                 this.fun = fun;
             }
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2]);
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
+            {
+                try
+                {
+                    return fun(ctx, args[0], args[1], args[2]);
+                }
+                catch (Exception ex)
+                {
+                    ctx.Error = Err.ExternalFunctionFailure(FunctionName, ex.Message);
+                    return DyNil.Instance;
+                }
+            }
         }
 
         private sealed class StaticFunction4 : BaseStaticFunction
@@ -97,7 +141,18 @@ namespace Dyalect.Runtime.Types
                 this.fun = fun;
             }
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3]);
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
+            {
+                try
+                {
+                    return fun(ctx, args[0], args[1], args[2], args[3]);
+                }
+                catch (Exception ex)
+                {
+                    ctx.Error = Err.ExternalFunctionFailure(FunctionName, ex.Message);
+                    return DyNil.Instance;
+                }
+            }
         }
 
         private readonly string name;
@@ -136,5 +191,7 @@ namespace Dyalect.Runtime.Types
         }
 
         protected virtual DyFunction Clone(ExecutionContext ctx) => (DyForeignFunction)MemberwiseClone();
+
+        internal override DyObject[] CreateLocals(ExecutionContext ctx) => Parameters.Length == 0 ? Statics.EmptyDyObjects : new DyObject[Parameters.Length];
     }
 }

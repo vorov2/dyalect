@@ -1,4 +1,5 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System;
 
 namespace Dyalect.Runtime.Types
@@ -42,45 +43,57 @@ namespace Dyalect.Runtime.Types
             if (args == null)
                 args = Statics.EmptyDyObjects;
 
-            var layout = ctx.Composition.Units[UnitId].Layouts[FunctionId];
-            var locs = new DyObject[layout.Size];
+            var locs = CreateLocals(ctx);
+            var arr = default(DyObject[]);
 
             for (var i = 0; i < Parameters.Length; i++)
-                locs[i] = i >= args.Length ? DyNil.Instance : args[i];
-
-            if (VarArgIndex >= 0)
             {
-                var arr = new DyObject[args.Length - Parameters.Length];
+                if (VarArgIndex != -1 && i >= VarArgIndex)
+                {
+                    if (arr == null)
+                        arr = new DyObject[args.Length - i + 1];
 
-                for (var i = Parameters.Length; i < args.Length; i++)
-                    arr[i - Parameters.Length] = args[i];
+                    if (i < args.Length)
+                        arr[args.Length - i] = args[i];
+                }
 
-                locs[locs.Length - 1] = new DyTuple(arr);
+                locs[i] = i >= args.Length ? DyNil.Instance : args[i];
             }
 
+            ctx.CallStack.Dup();
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
         internal override DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            var locs = new DyObject[ctx.Composition.Units[UnitId].Layouts[FunctionId].Size];
+            var locs = CreateLocals(ctx);
             locs[0] = left;
             locs[1] = right;
+            ctx.CallStack.Dup();
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
         internal override DyObject Call1(DyObject obj, ExecutionContext ctx)
         {
-            var locs = new DyObject[ctx.Composition.Units[UnitId].Layouts[FunctionId].Size];
+            var locs = CreateLocals(ctx);
             locs[0] = obj;
+            ctx.CallStack.Dup();
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
         internal override DyObject Call0(ExecutionContext ctx)
         {
-            var size = ctx.Composition.Units[UnitId].Layouts[FunctionId].Size;
-            var locs = size == 0 ? Statics.EmptyDyObjects : new DyObject[size];
+            var locs = CreateLocals(ctx);
+            ctx.CallStack.Dup();
             return DyMachine.ExecuteWithData(this, locs, ctx);
+        }
+
+        internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.Composition.Units[UnitId].Layouts[FunctionId];
+
+        internal override DyObject[] CreateLocals(ExecutionContext ctx)
+        {
+            var size = GetLayout(ctx).Size;
+            return size == 0 ? Statics.EmptyDyObjects : new DyObject[size];
         }
     }
 }

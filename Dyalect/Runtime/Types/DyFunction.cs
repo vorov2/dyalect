@@ -1,4 +1,5 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System;
 using System.Linq;
 
@@ -44,6 +45,10 @@ namespace Dyalect.Runtime.Types
             $"{FunctionName}({string.Join(",", Parameters.Select(p => p.Name))})";
 
         public abstract string FunctionName { get; }
+
+        internal virtual MemoryLayout GetLayout(ExecutionContext ctx) => null;
+
+        internal abstract DyObject[] CreateLocals(ExecutionContext ctx);
     }
 
     internal sealed class DyFunctionTypeInfo : DyTypeInfo

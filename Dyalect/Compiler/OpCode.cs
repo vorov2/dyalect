@@ -50,7 +50,6 @@
         Dup,        //1
         SyncPoint,  //0
         Fail,       //-1
-        Call,       //Dynamic
         NewFun,     //0
         NewFunV,    //0
         NewIter,    //0

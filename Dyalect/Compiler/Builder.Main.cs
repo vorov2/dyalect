@@ -370,35 +370,10 @@ namespace Dyalect.Compiler
 
         private void Build(DApplication node, Hints hints, CompilerContext ctx)
         {
-            Build(node.Target, hints.Append(Push), ctx);
-            cw.FunPrep(node.Arguments.Count);
-
-            for (var i = 0; i < node.Arguments.Count; i++)
-            {
-                var a = node.Arguments[i];
-
-                if (a.NodeType == NodeType.Label)
-                {
-                    var la = (DLabelLiteral)a;
-                    Build(la.Expression, hints.Append(Push), ctx);
-                    cw.FunArgNm(la.Label);
-                }
-                else
-                {
-                    Build(a, hints.Append(Push), ctx);
-                    cw.FunArgIx(i);
-                }
-            }
-
-            cw.FunCall(node.Arguments.Count);
-            PopIf(hints);
-        }
-
-        private void _Build(DApplication node, Hints hints, CompilerContext ctx)
-        {
             var name = node.Target.NodeType == NodeType.Name ? node.Target.GetName() : null;
             var sv = name != null ? GetVariable(name, node, err: false) : ScopeVar.Empty;
 
+            //Check if an application is in fact a built-in operator call
             if (name != null && sv.IsEmpty())
                 if (name == "nameof")
                 {
@@ -450,17 +425,31 @@ namespace Dyalect.Compiler
                 }
             }
 
-            foreach (var a in node.Arguments)
-                Build(a, hints.Append(Push), ctx);
-
-            if (sv.IsEmpty())
-                Build(node.Target, hints.Append(Push), ctx);
-            else
+            if (!sv.IsEmpty())
                 cw.PushVar(sv);
+            else
+                Build(node.Target, hints.Append(Push), ctx);
 
-            AddLinePragma(node);
-            cw.Call(node.Arguments.Count);
+            cw.FunPrep(node.Arguments.Count);
 
+            for (var i = 0; i < node.Arguments.Count; i++)
+            {
+                var a = node.Arguments[i];
+
+                if (a.NodeType == NodeType.Label)
+                {
+                    var la = (DLabelLiteral)a;
+                    Build(la.Expression, hints.Append(Push), ctx);
+                    cw.FunArgNm(la.Label);
+                }
+                else
+                {
+                    Build(a, hints.Append(Push), ctx);
+                    cw.FunArgIx(i);
+                }
+            }
+
+            cw.FunCall(node.Arguments.Count);
             PopIf(hints);
         }
 
