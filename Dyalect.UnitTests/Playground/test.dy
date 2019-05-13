@@ -40,4 +40,6 @@ func print(args..., separator = ",", terminator = "\n") {
 print(1,2,3,separator:" ",terminator:".")
 */
 
-print(1,2,3,4,"foo", terminator: "!\n")
+
+var arr = []
+arr.addRange([1,2,3])

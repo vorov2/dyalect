@@ -198,10 +198,10 @@ namespace Dyalect.Runtime.Types
             }
 
             var arr = self.GetString().Split(xs, StringSplitOptions.RemoveEmptyEntries);
-            var list = new List<DyObject>(arr.Length);
+            var list = new DyObject[arr.Length];
 
             for (var i = 0; i < arr.Length; i++)
-                list.Add(new DyString(arr[i]));
+                list[i] = new DyString(arr[i]);
 
             return new DyArray(list);
         }
@@ -214,10 +214,10 @@ namespace Dyalect.Runtime.Types
                 xs[i] = args[i].GetChar();
 
             var arr = self.GetString().Split(xs, StringSplitOptions.RemoveEmptyEntries);
-            var list = new List<DyObject>(arr.Length);
+            var list = new DyObject[arr.Length];
 
             for (var i = 0; i < arr.Length; i++)
-                list.Add(new DyString(arr[i]));
+                list[i] = new DyString(arr[i]);
 
             return new DyArray(list);
         }

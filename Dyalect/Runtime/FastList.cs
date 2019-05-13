@@ -31,9 +31,11 @@ namespace Dyalect.Runtime
             size = list.size;
         }
 
-        internal void Normalize()
+        internal FastList(T[] arr)
         {
-            size = array.Length;
+            this.initialSize = arr.Length;
+            size = arr.Length;
+            array = arr;
         }
 
         public IEnumerator<T> GetEnumerator()

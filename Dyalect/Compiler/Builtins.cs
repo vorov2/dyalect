@@ -30,5 +30,7 @@
 
         public const string BoolAnd = "&&";
         public const string BoolOr = "||";
+
+        public const string New = "new";
     }
 }

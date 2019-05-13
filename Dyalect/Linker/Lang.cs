@@ -2,15 +2,11 @@
 using Dyalect.Runtime.Types;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Dyalect.Linker
 {
     internal sealed class Lang : ForeignUnit
     {
-        public const string CreateArrayName = "createArray";
-
         public Lang()
         {
             FileName = "lang";
@@ -77,18 +73,6 @@ namespace Dyalect.Linker
             return new DyString(Console.ReadLine());
         }
 
-        [Function("makeArray")]
-        public DyObject MakeArray(ExecutionContext ctx, DyObject size)
-        {
-            var n = size.GetInteger();
-            var lst = new List<DyObject>();
-
-            while (n > 0)
-                lst.Add(new DyInteger(n--));
-
-            return new DyArray(lst);
-        }
-
         [Function("assert")]
         public DyObject Assert(ExecutionContext ctx, DyObject expected, DyObject got)
         {
@@ -117,8 +101,5 @@ namespace Dyalect.Linker
 
             return Equals(x, y);
         }
-
-        [Function(CreateArrayName)]
-        public DyObject CreateArray(ExecutionContext ctx, [VarArg]DyObject items) => new DyArray(Enumerable.ToList((DyTuple)items));
     }
 }

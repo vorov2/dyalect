@@ -88,7 +88,7 @@ namespace Dyalect.Runtime.Types
                     arr.Add(res);
             }
 
-            return new DyArray(arr);
+            return new DyArray(arr.ToArray());
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)

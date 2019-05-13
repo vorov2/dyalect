@@ -183,8 +183,9 @@ namespace Dyalect.Compiler
 
         private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
         {
-            var sv = GetVariable(Lang.CreateArrayName, node);
+            var sv = GetVariable(StandardType.ArrayName, node);
             cw.PushVar(sv);
+            cw.GetMember(GetMemberNameId(Builtins.New));
             cw.FunPrep(node.Elements.Count);
 
             for (var i = 0; i < node.Elements.Count; i++)
