@@ -222,6 +222,15 @@ func arrayTest9() {
     assert([1, 2, 3, 4, 5, 6, 7], arr)
 }
 
+func arrayTest10() {
+    var arr = Array.empty(4, false)
+    assert([false, false, false, false], arr)
+    arr = Array.empty(3, 0)
+    assert([0, 0, 0], arr)
+    arr = Array.empty(2)
+    assert([nil, nil], arr)
+}
+
 func tupleTest1() {
     var t = (1,2,3)
     assert(3, t.len())

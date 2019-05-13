@@ -3,6 +3,8 @@
   * Now numeric literals can be negative, e.g. `-42`. Previously this would be always interpreted as `negation` operation.
   * Bug fixed: _Crush because of a debugger_ ([Issue #46](https://github.com/vorov2/dyalect/issues/46)).
   * Arrays are redesigned for better effeciency and flexibility.
+  * Feature implemented: _Redesign array creation_ ([Issue #47](https://github.com/vorov2/dyalect/issues/47)).
+  * Feature implemented: _Construct a empty array filled with values_ ([Issue #30](https://github.com/vorov2/dyalect/issues/30)).
 
 # 0.4.3
   * A bug fixed: Method overloading and concatenation ([Issue #44](https://github.com/vorov2/dyalect/issues/44)).

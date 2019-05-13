@@ -470,10 +470,26 @@ namespace Dyalect.Runtime.Types
             return new DyArray(((DyTuple)args[0]).Values);
         }
 
+        private DyObject Empty(ExecutionContext ctx, DyObject[] args)
+        {
+            var size = args.TakeOne().GetInteger();
+            var val = args.TakeAt(1);
+
+            var arr = new DyObject[size];
+
+            for (var i = 0; i < size; i++)
+                arr[i] = val;
+
+            return new DyArray(arr);
+        }
+
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "new")
                 return DyForeignFunction.Static(name, New, 0, new Par("values", true));
+
+            if (name == "empty")
+                return DyForeignFunction.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance));
 
             return null;
         }
