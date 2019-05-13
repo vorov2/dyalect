@@ -18,7 +18,6 @@ func foo() {
 }
 
 foo() 
-*/
 
 func foo(x = 142, y, z) {
     print("x=", x, ";y=", y, ";z=", z)
@@ -39,4 +38,8 @@ func print(args..., separator = ",", terminator = "\n") {
 }
 
 print(1,2,3,separator:" ",terminator:".")
+*/
+
+var res = [12.2, "string", true].toString()
+assert("[12.2, \"string\", true]", res)
 

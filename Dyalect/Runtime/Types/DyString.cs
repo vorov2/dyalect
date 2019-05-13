@@ -331,33 +331,33 @@ namespace Dyalect.Runtime.Types
             switch (name)
             {
                 case Builtins.Len:
-                    return DyForeignFunction.Member(name, LenAdapter, Statics.EmptyParameters);
+                    return DyForeignFunction.Member(name, LenAdapter, -1,Statics.EmptyParameters);
                 case "indexOf":
-                    return DyForeignFunction.Member(name, IndexOf, new Par("value"));
+                    return DyForeignFunction.Member(name, IndexOf, -1, new Par("value"));
                 case "contains":
-                    return DyForeignFunction.Member(name, Contains, new Par("value"));
+                    return DyForeignFunction.Member(name, Contains, -1, new Par("value"));
                 case "lastIndexOf":
-                    return DyForeignFunction.Member(name, LastIndexOf, new Par("value"));
+                    return DyForeignFunction.Member(name, LastIndexOf, -1, new Par("value"));
                 case "split":
-                    return DyForeignFunction.Member(name, Split, new Par("separators", true));
+                    return DyForeignFunction.Member(name, Split, -1, new Par("separators", true));
                 case "upper":
-                    return DyForeignFunction.Member(name, Upper, Statics.EmptyParameters);
+                    return DyForeignFunction.Member(name, Upper, -1, Statics.EmptyParameters);
                 case "lower":
-                    return DyForeignFunction.Member(name, Lower, Statics.EmptyParameters);
+                    return DyForeignFunction.Member(name, Lower, -1, Statics.EmptyParameters);
                 case "startsWith":
-                    return DyForeignFunction.Member(name, StartsWith, new Par("value"));
+                    return DyForeignFunction.Member(name, StartsWith, -1, new Par("value"));
                 case "endsWith":
-                    return DyForeignFunction.Member(name, EndsWith, new Par("value"));
+                    return DyForeignFunction.Member(name, EndsWith, -1, new Par("value"));
                 case "sub":
-                    return DyForeignFunction.Member(name, Substring, new Par("start"), new Par("len", DyNil.Instance));
+                    return DyForeignFunction.Member(name, Substring, -1, new Par("start"), new Par("len", DyNil.Instance));
                 case "capitalize":
-                    return DyForeignFunction.Member(name, Capitalize, Statics.EmptyParameters);
+                    return DyForeignFunction.Member(name, Capitalize, -1, Statics.EmptyParameters);
                 case "trim":
-                    return DyForeignFunction.Member(name, Trim, new Par("chars", true));
+                    return DyForeignFunction.Member(name, Trim, 0, new Par("chars", true));
                 case "trimStart":
-                    return DyForeignFunction.Member(name, TrimStart, new Par("chars", true));
+                    return DyForeignFunction.Member(name, TrimStart, 0, new Par("chars", true));
                 case "trimEnd":
-                    return DyForeignFunction.Member(name, TrimEnd, new Par("chars", true));
+                    return DyForeignFunction.Member(name, TrimEnd, 0, new Par("chars", true));
                 default:
                     return null;
             }
@@ -392,7 +392,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "concat")
-                return DyForeignFunction.Static(name, Concat, new Par("values", true));
+                return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
 
             return null;
         }

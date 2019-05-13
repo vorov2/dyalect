@@ -177,21 +177,24 @@ namespace Dyalect.Compiler
             }
 
             AddLinePragma(node);
-            var sv = GetVariable(Lang.CreateTupleName, node);
-            cw.PushVar(sv);
-            cw.Call(node.Elements.Count);
+            cw.NewTuple(node.Elements.Count);
             PopIf(hints);
         }
 
         private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
         {
-            for (var i = 0; i < node.Elements.Count; i++)
-                Build(node.Elements[i], hints.Append(Push), ctx);
-
-            AddLinePragma(node);
             var sv = GetVariable(Lang.CreateArrayName, node);
             cw.PushVar(sv);
-            cw.Call(node.Elements.Count);
+            cw.FunPrep(node.Elements.Count);
+
+            for (var i = 0; i < node.Elements.Count; i++)
+            {
+                Build(node.Elements[i], hints.Append(Push), ctx);
+                cw.FunArgIx(i);
+            }
+
+            AddLinePragma(node);
+            cw.FunCall(node.Elements.Count);
             PopIf(hints);
         }
 

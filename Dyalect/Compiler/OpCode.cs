@@ -74,5 +74,6 @@
         FunArgIx,   //-1
         FunArgNm,   //-1
         FunCall,    //0
+        NewTuple,   //Dynamic
     }
 }

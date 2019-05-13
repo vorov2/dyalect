@@ -9,7 +9,6 @@ namespace Dyalect.Linker
 {
     internal sealed class Lang : ForeignUnit
     {
-        public const string CreateTupleName = "createTuple";
         public const string CreateArrayName = "createArray";
 
         public Lang()
@@ -114,60 +113,5 @@ namespace Dyalect.Linker
 
         [Function(CreateArrayName)]
         public DyObject CreateArray(ExecutionContext ctx, [VarArg]DyObject items) => new DyArray(Enumerable.ToList((DyTuple)items));
-
-        [Function(CreateTupleName)]
-        public DyObject CreateTuple(ExecutionContext ctx, [VarArg]DyObject items)
-        {
-            var args = Enumerable.ToList((DyTuple)items);
-            var len = args.Count;
-
-            if (len == 2)
-            {
-                var a1 = args[0];
-                var a2 = args[1];
-                DyLabel la1 = null, la2 = null;
-                return DyTuple.Create(
-                    a1.TypeId == StandardType.Label ? (la1 = (DyLabel)a1).Label : null,
-                    la1 != null ? la1.Value : a1,
-                    a2.TypeId == StandardType.Label ? (la2 = (DyLabel)a2).Label : null,
-                    la2 != null ? la2.Value : a2
-                    );
-            }
-
-            if (len == 3)
-            {
-                var a1 = args[0];
-                var a2 = args[1];
-                var a3 = args[2];
-                DyLabel la1 = null, la2 = null, la3 = null;
-                return DyTuple.Create(
-                    a1.TypeId == StandardType.Label ? (la1 = (DyLabel)a1).Label : null,
-                    la1 != null ? la1.Value : a1,
-                    a2.TypeId == StandardType.Label ? (la2 = (DyLabel)a2).Label : null,
-                    la2 != null ? la2.Value : a2,
-                    a3.TypeId == StandardType.Label ? (la3 = (DyLabel)a3).Label : null,
-                    la3 != null ? la3.Value : a3
-                    );
-            }
-
-            var keys = new string[len];
-            var values = new DyObject[len];
-
-            for (var i = 0; i < args.Count; i++)
-            {
-                var v = args[i];
-
-                if (v.TypeId == StandardType.Label)
-                {
-                    var label = (DyLabel)v;
-                    keys[i] = label.Label;
-                    values[i] = label.Value;
-                }
-                else
-                    values[i] = v;
-            }
-
-            return DyTuple.Create(keys, values);
-        }
     }
 }

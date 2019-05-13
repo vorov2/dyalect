@@ -52,7 +52,7 @@ namespace Dyalect.Runtime.Types
     {
         public override string FunctionName => "iter";
 
-        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(null, unitId, funcId, captures, StandardType.Iterator)
+        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(null, unitId, funcId, captures, StandardType.Iterator, -1)
         {
 
         }
@@ -94,7 +94,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == "toArray")
-                return DyForeignFunction.Member(name, ToArray, Statics.EmptyParameters);
+                return DyForeignFunction.Member(name, ToArray, -1, Statics.EmptyParameters);
 
             return null;
         }

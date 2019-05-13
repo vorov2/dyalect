@@ -60,7 +60,7 @@ namespace Dyalect.Linker
         {
             var pars = mi.GetParameters();
             var parsMeta = pars.Length > 1 ? new Par[pars.Length - 1] : null;
-            var hasVarArgs = false;
+            var varArgIndex = -1;
 
             if (pars.Length < 0 || pars[0].ParameterType != typeof(ExecutionContext))
                 throw new DyException($"Method signature for method {mi.Name} is not supported. The first parameter should be of type ExecutionContext.");
@@ -76,10 +76,11 @@ namespace Dyalect.Linker
 
                 if (Attribute.IsDefined(p, typeof(VarArgAttribute)))
                 {
-                    if (hasVarArgs)
+                    if (varArgIndex != -1)
                         throw new DyException($"Duplicate [VarArgs] attribute for method {mi.Name}.");
 
                     va = true;
+                    varArgIndex = i - 1;
                 }
 
                 DyObject def = null;
@@ -96,16 +97,16 @@ namespace Dyalect.Linker
                 return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject>), this));
 
             if (parsMeta.Length == 1)
-                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject>), this), parsMeta);
+                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject>), this), varArgIndex, parsMeta);
 
             if (parsMeta.Length == 2)
-                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject>), this), parsMeta);
+                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
 
             if (parsMeta.Length == 3)
-                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject>), this), parsMeta);
+                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
 
             if (parsMeta.Length == 4)
-                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>), this), parsMeta);
+                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
 
             throw new DyException($"Method {mi.Name} has too many parameters.");
         }

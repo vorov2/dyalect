@@ -15,6 +15,8 @@
         protected internal override bool GetBool() => Value.GetBool();
 
         public override object ToObject() => Value.ToObject();
+
+        protected internal override string GetLabel() => Label;
     }
 
     internal sealed class DyLabelTypeInfo : DyTypeInfo

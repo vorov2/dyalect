@@ -75,6 +75,7 @@
             1, //FunArgIx
             1, //FunArgNm
             1, //FunCall
+            1, //NewTuple
         };
     }
 }

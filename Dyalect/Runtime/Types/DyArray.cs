@@ -287,43 +287,43 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
-                return DyForeignFunction.Member(name, LenAdapter, Statics.EmptyParameters);
+                return DyForeignFunction.Member(name, LenAdapter, -1, Statics.EmptyParameters);
 
             if (name == "add")
-                return DyForeignFunction.Member(name, AddItem, new Par("item"));
+                return DyForeignFunction.Member(name, AddItem, -1, new Par("item"));
 
             if (name == "insert")
-                return DyForeignFunction.Member(name, InsertItem, new Par("index"), new Par("item"));
+                return DyForeignFunction.Member(name, InsertItem, -1, new Par("index"), new Par("item"));
 
             if (name == "addRange")
-                return DyForeignFunction.Member(name, AddRange, new Par("seq"));
+                return DyForeignFunction.Member(name, AddRange, -1, new Par("seq"));
 
             if (name == "remove")
-                return DyForeignFunction.Member(name, RemoveItem, new Par("item"));
+                return DyForeignFunction.Member(name, RemoveItem, -1, new Par("item"));
 
             if (name == "removeAt")
-                return DyForeignFunction.Member(name, RemoveItemAt, new Par("index"));
+                return DyForeignFunction.Member(name, RemoveItemAt, -1, new Par("index"));
 
             if (name == "clear")
-                return DyForeignFunction.Member(name, ClearItems, Statics.EmptyParameters);
+                return DyForeignFunction.Member(name, ClearItems, -1, Statics.EmptyParameters);
 
             if (name == "indexOf")
-                return DyForeignFunction.Member(name, IndexOf, new Par("item"));
+                return DyForeignFunction.Member(name, IndexOf, -1, new Par("item"));
 
             if (name == "lastIndexOf")
-                return DyForeignFunction.Member(name, LastIndexOf, new Par("item"));
+                return DyForeignFunction.Member(name, LastIndexOf, -1, new Par("item"));
 
             if (name == "indices")
-                return DyForeignFunction.Member(name, GetIndices, Statics.EmptyParameters);
+                return DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters);
 
             if (name == "slice")
-                return DyForeignFunction.Member(name, GetSlice, new Par("start"), new Par("len", DyNil.Instance));
+                return DyForeignFunction.Member(name, GetSlice, -1, new Par("start"), new Par("len", DyNil.Instance));
 
             if (name == "sort")
-                return DyForeignFunction.Member(name, SortBy, new Par("comparator", DyNil.Instance));
+                return DyForeignFunction.Member(name, SortBy, -1,new Par("comparator", DyNil.Instance));
 
             if (name == "compact")
-                return DyForeignFunction.Member(name, Compact, Statics.EmptyParameters);
+                return DyForeignFunction.Member(name, Compact, -1, Statics.EmptyParameters);
 
             return null;
         }

@@ -9,10 +9,12 @@ namespace Dyalect.Runtime.Types
         internal const string DefaultName = "<func>";
         internal DyObject Self;
         internal Par[] Parameters;
+        internal int VarArgIndex;
 
-        protected DyFunction(int typeId, Par[] pars) : base(typeId)
+        protected DyFunction(int typeId, Par[] pars, int varArgIndex) : base(typeId)
         {
             Parameters = pars;
+            VarArgIndex = varArgIndex;
         }
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;

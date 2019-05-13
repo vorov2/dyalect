@@ -404,10 +404,10 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.ToStr)
-                return DyForeignFunction.Member(name, ToStringAdapter, Statics.EmptyParameters);
+                return DyForeignFunction.Member(name, ToStringAdapter, -1, Statics.EmptyParameters);
 
             if (name == Builtins.Iterator)
-                return DyForeignFunction.Member(name, GetIterator, Statics.EmptyParameters);
+                return DyForeignFunction.Member(name, GetIterator, -1, Statics.EmptyParameters);
 
             return GetMember(name, ctx);
         }
@@ -435,7 +435,7 @@ namespace Dyalect.Runtime.Types
                         staticMembers.Remove(nameId);
                     }
                     return DyNil.Instance;
-                }, new Par("name"));
+                }, -1, new Par("name"));
 
             return GetStaticMember(name, ctx);
         }

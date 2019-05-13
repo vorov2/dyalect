@@ -10,7 +10,7 @@ namespace Dyalect.Runtime
 {
     public static class DyMachine
     {
-        private static readonly DyNativeFunction global = new DyNativeFunction(null, 0, 0, FastList<DyObject[]>.Empty, StandardType.Function);
+        private static readonly DyNativeFunction global = new DyNativeFunction(null, 0, 0, FastList<DyObject[]>.Empty, StandardType.Function, -1);
 
         public static ExecutionContext CreateExecutionContext(UnitComposition composition)
         {
@@ -467,11 +467,16 @@ namespace Dyalect.Runtime
                                 });
                             }
                             else
-                                ctx.Locals.Push(new ArgContainer { Locals = new DyObject[op.Data], VarArgsIndex = int.MaxValue });
+                                ctx.Locals.Push(new ArgContainer {
+                                    Locals = new DyObject[op.Data],
+                                    VarArgsIndex = ((DyFunction)right).VarArgIndex,
+                                    VarArgs = ((DyFunction)right).VarArgIndex > -1 ? new FastList<DyObject>() : null
+                                });
                         }
                         break;
                     case OpCode.FunArgIx:
-                        if (op.Data >= ctx.Locals.Peek().VarArgsIndex)
+                        var vi = ctx.Locals.Peek().VarArgsIndex;
+                        if (vi > -1 && op.Data >= vi)
                         {
                             ctx.Locals.Peek().VarArgs.Add(evalStack.Pop());
                             break;
@@ -494,38 +499,53 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.FunCall:
                         {
-                            right = evalStack.Pop();
+                            var callFun = (DyFunction)evalStack.Pop();
 
-                            if (right is DyNativeFunction callFun)
+                            if (op.Data != callFun.Parameters.Length || callFun.VarArgIndex > -1)
                             {
-                                if (op.Data != callFun.Parameters.Length || callFun.VarArgIndex > -1)
-                                {
-                                    FillDefaults(ctx.Locals.Peek(), callFun, ctx);
-                                    if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
-                                }
-
-                                ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
-                                evalStack.Push(ExecuteWithData(callFun, ctx.Locals.Pop().Locals, ctx));
+                                FillDefaults(ctx.Locals.Peek(), callFun, ctx);
+                                if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                             }
+
+                            ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
+
+                            if (callFun is DyNativeFunction natFun)
+                                evalStack.Push(ExecuteWithData(natFun, ctx.Locals.Pop().Locals, ctx));
                             else
-                                evalStack.Push(CallExternalFunction2(op, offset, function, (DyFunction)right, ctx));
+                            {
+                                evalStack.Push(CallExternalFunction2(op, offset, function, callFun, ctx));
+                                ctx.CallStack.Pop();
+                            }
 
                             if (ctx.Error != null)
                                 ProcessError(ctx, function, ref offset, evalStack);
                         }
+                        break;
+                    case OpCode.NewTuple:
+                        evalStack.Push(MakeTuple(evalStack, op.Data));
                         break;
                 }
             }
             goto CYCLE;
         }
 
-        private static void FillDefaults(ArgContainer cont, DyNativeFunction callFun, ExecutionContext ctx)
+        private static DyTuple MakeTuple(EvalStack stack, int size)
+        {
+            var arr = new DyObject[size];
+
+            for (var i = 0; i < size; i++)
+                arr[arr.Length - i - 1] = stack.Pop();
+
+            return new DyTuple(arr);
+        }
+
+        private static void FillDefaults(ArgContainer cont, DyFunction callFun, ExecutionContext ctx)
         {
             var pars = callFun.Parameters;
             var locals = cont.Locals;
 
             if (callFun.VarArgIndex > -1)
-                locals[callFun.VarArgIndex] = DyTuple.Create(cont.VarArgs?.ToArray() ?? Statics.EmptyDyObjects);
+                locals[callFun.VarArgIndex] = new DyTuple(cont.VarArgs?.ToArray() ?? Statics.EmptyDyObjects);
 
             for (var i = 0; i < pars.Length; i++)
             {

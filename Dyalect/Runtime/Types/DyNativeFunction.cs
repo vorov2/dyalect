@@ -11,11 +11,11 @@ namespace Dyalect.Runtime.Types
         internal int PreviousOffset;
         internal int UnitId;
         internal int FunctionId;
-        internal int VarArgIndex;
 
         public override string FunctionName => Sym.Name;
 
-        public DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId) : base(typeId, sym?.Parameters ?? Statics.EmptyParameters)
+        internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) : 
+            base(typeId, sym?.Parameters ?? Statics.EmptyParameters, varArgIndex)
         {
             Sym = sym;
             UnitId = unitId;
@@ -23,18 +23,15 @@ namespace Dyalect.Runtime.Types
             Captures = captures;
         }
 
-        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgsIndex = -1)
+        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1)
         {
             var vars = new FastList<DyObject[]>(captures) { locals };
-            return new DyNativeFunction(sym, unitId, funcId, vars, StandardType.Function)
-            {
-                VarArgIndex = varArgsIndex
-            };
+            return new DyNativeFunction(sym, unitId, funcId, vars, StandardType.Function, varArgIndex);
         }
 
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg)
         {
-            return new DyNativeFunction(Sym, UnitId, FunctionId, Captures, StandardType.Function)
+            return new DyNativeFunction(Sym, UnitId, FunctionId, Captures, StandardType.Function, VarArgIndex)
             {
                 Self = arg
             };
@@ -58,7 +55,7 @@ namespace Dyalect.Runtime.Types
                 for (var i = Parameters.Length; i < args.Length; i++)
                     arr[i - Parameters.Length] = args[i];
 
-                locs[locs.Length - 1] = DyTuple.Create(arr);
+                locs[locs.Length - 1] = new DyTuple(arr);
             }
 
             return DyMachine.ExecuteWithData(this, locs, ctx);
