@@ -1,5 +1,7 @@
 # 0.5.0
-  * todo
+  * Implementation of tuples is heavily refactored and optimized.
+  * Now numeric literals can be negative, e.g. `-42`. Previously this would be always interpreted as `negation` operation.
+  * Bug fixed: _Crush because of a debugger_ ([Issue #46](https://github.com/vorov2/dyalect/issues/46)).
 
 # 0.4.3
   * A bug fixed: Method overloading and concatenation ([Issue #44](https://github.com/vorov2/dyalect/issues/44)).

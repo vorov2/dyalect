@@ -80,6 +80,7 @@ namespace Dyalect.Runtime
             DyObject left;
             DyObject right;
             Op op;
+            DyFunction callFun;
 
             var types = ctx.Types;
             var unit = ctx.Composition.Units[function.UnitId];
@@ -399,19 +400,19 @@ namespace Dyalect.Runtime
                                 break;
                             }
 
-                            var fun = (DyFunction)right;
+                            callFun = (DyFunction)right;
 
-                            if (op.Data > fun.Parameters.Length && fun.VarArgIndex == -1)
+                            if (op.Data > callFun.Parameters.Length && callFun.VarArgIndex == -1)
                             {
-                                ctx.Error = Err.TooManyArguments(fun.FunctionName, fun.Parameters.Length, op.Data);
+                                ctx.Error = Err.TooManyArguments(callFun.FunctionName, callFun.Parameters.Length, op.Data);
                                 ProcessError(ctx, function, ref offset);
                                 break;
                             }
 
                             ctx.Locals.Push(new ArgContainer {
-                                Locals = fun.CreateLocals(ctx),
-                                VarArgsIndex = fun.VarArgIndex,
-                                VarArgs = fun.VarArgIndex > -1 ? new FastList<DyObject>() : null
+                                Locals = callFun.CreateLocals(ctx),
+                                VarArgsIndex = callFun.VarArgIndex,
+                                VarArgs = callFun.VarArgIndex > -1 ? new FastList<DyObject>() : null
                             });
                         }
                         break;
@@ -440,7 +441,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.FunCall:
                         {
-                            var callFun = (DyFunction)evalStack.Pop();
+                            callFun = (DyFunction)evalStack.Pop();
 
                             if (op.Data != callFun.Parameters.Length || callFun.VarArgIndex > -1)
                             {
@@ -450,8 +451,8 @@ namespace Dyalect.Runtime
 
                             ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
 
-                            if (callFun is DyNativeFunction natFun)
-                                evalStack.Push(ExecuteWithData(natFun, ctx.Locals.Pop().Locals, ctx));
+                            if (!callFun.IsExternal)
+                                evalStack.Push(ExecuteWithData((DyNativeFunction)callFun, ctx.Locals.Pop().Locals, ctx));
                             else
                             {
                                 evalStack.Push(callFun.Call(ctx, ctx.Locals.Pop().Locals));

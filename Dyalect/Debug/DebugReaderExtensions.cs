@@ -15,6 +15,9 @@ namespace Dyalect.Debug
         
         public static LineSym FindLineSym(this DebugInfo syms, int offset)
         {
+            if (offset < 0)
+                return null;
+
             for (var i = 0; i < syms.Lines.Count; i++)
             {
                 var l = syms.Lines[i];

@@ -46,6 +46,8 @@ namespace Dyalect.Runtime.Types
 
         public abstract string FunctionName { get; }
 
+        public abstract bool IsExternal { get; }
+
         internal virtual MemoryLayout GetLayout(ExecutionContext ctx) => null;
 
         internal abstract DyObject[] CreateLocals(ExecutionContext ctx);

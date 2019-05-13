@@ -183,6 +183,8 @@ namespace Dyalect.Runtime.Types
 
         public override string FunctionName => name;
 
+        public override bool IsExternal => true;
+
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg)
         {
             var clone = Clone(ctx);

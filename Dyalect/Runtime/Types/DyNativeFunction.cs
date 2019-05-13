@@ -15,6 +15,8 @@ namespace Dyalect.Runtime.Types
 
         public override string FunctionName => Sym.Name;
 
+        public override bool IsExternal => false;
+
         internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) : 
             base(typeId, sym?.Parameters ?? Statics.EmptyParameters, varArgIndex)
         {
