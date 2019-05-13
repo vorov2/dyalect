@@ -173,15 +173,16 @@ namespace Dyalect.Runtime.Types
         private DyObject Split(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var allChars = true;
+            var values = ((DyTuple)args[0]).Values;
 
-            for (var i = 0; i < args.Length; i++)
-                if (args[i].TypeId != StandardType.Char)
+            for (var i = 0; i < values.Length; i++)
+                if (values[i].TypeId != StandardType.Char)
                 {
                     allChars = false;
                     break;
                 }
 
-            return allChars ? SplitByChars(ctx, self, args) : SplitByStrings(ctx, self, args);
+            return allChars ? SplitByChars(ctx, self, values) : SplitByStrings(ctx, self, values);
         }
 
         private DyObject SplitByStrings(ExecutionContext ctx, DyObject self, DyObject[] args)
@@ -308,19 +309,20 @@ namespace Dyalect.Runtime.Types
 
         private char[] GetChars(DyObject[] args, ExecutionContext ctx)
         {
-            if (args == null || args.Length == 0)
+            if (args[0] == null)
                 return Statics.EmptyChars;
 
-            var chs = new char[args.Length];
+            var values = ((DyTuple)args[0]).Values;
+            var chs = new char[values.Length];
 
-            for (var i = 0; i < args.Length; i++)
+            for (var i = 0; i < values.Length; i++)
             {
-                if (args[i].TypeId != StandardType.Char)
+                if (values[i].TypeId != StandardType.Char)
                 {
-                    ctx.Error = Err.InvalidType(StandardType.CharName, args[i].TypeName(ctx));
+                    ctx.Error = Err.InvalidType(StandardType.CharName, values[i].TypeName(ctx));
                     return Statics.EmptyChars;
                 }
-                chs[i] = args[i].GetChar();
+                chs[i] = values[i].GetChar();
             }
 
             return chs;
@@ -339,7 +341,7 @@ namespace Dyalect.Runtime.Types
                 case "lastIndexOf":
                     return DyForeignFunction.Member(name, LastIndexOf, -1, new Par("value"));
                 case "split":
-                    return DyForeignFunction.Member(name, Split, -1, new Par("separators", true));
+                    return DyForeignFunction.Member(name, Split, 0, new Par("separators", true));
                 case "upper":
                     return DyForeignFunction.Member(name, Upper, -1, Statics.EmptyParameters);
                 case "lower":
@@ -367,11 +369,12 @@ namespace Dyalect.Runtime.Types
         #region Statics
         private DyObject Concat(ExecutionContext ctx, DyObject[] args)
         {
-            var arr = new string[args.Length];
+            var values = ((DyTuple)args[0]).Values;
+            var arr = new string[values.Length];
 
-            for (var i = 0; i < args.Length; i++)
+            for (var i = 0; i < values.Length; i++)
             {
-                var a = args[i];
+                var a = values[i];
 
                 if (a.TypeId == StandardType.String || a.TypeId == StandardType.Char)
                     arr[i] = a.GetString();

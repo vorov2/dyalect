@@ -449,28 +449,29 @@ namespace Dyalect.Runtime
                                 break;
                             }
 
+                            var fun = (DyFunction)right;
+
+                            if (op.Data > fun.Parameters.Length && fun.VarArgIndex == -1)
+                            {
+                                ctx.Error = Err.TooManyArguments(fun.FunctionName, fun.Parameters.Length, op.Data);
+                                ProcessError(ctx, function, ref offset);
+                                break;
+                            }
+
                             if (right is DyNativeFunction callFun)
                             {
                                 layout = ctx.Composition.Units[callFun.UnitId].Layouts[callFun.FunctionId];
-
-                                if (op.Data > callFun.Parameters.Length && callFun.VarArgIndex == -1)
-                                {
-                                    ctx.Error = Err.TooManyArguments(callFun.FunctionName, callFun.Parameters.Length, op.Data);
-                                    ProcessError(ctx, function, ref offset);
-                                    break;
-                                }
-
                                 ctx.Locals.Push(new ArgContainer {
-                                    Locals = new DyObject[layout.Size],
+                                    Locals = layout.Size == 0 ? Statics.EmptyDyObjects : new DyObject[layout.Size],
                                     VarArgsIndex = callFun.VarArgIndex,
                                     VarArgs = callFun.VarArgIndex == -1 ? null : new FastList<DyObject>()
                                 });
                             }
                             else
                                 ctx.Locals.Push(new ArgContainer {
-                                    Locals = new DyObject[op.Data],
-                                    VarArgsIndex = ((DyFunction)right).VarArgIndex,
-                                    VarArgs = ((DyFunction)right).VarArgIndex > -1 ? new FastList<DyObject>() : null
+                                    Locals = new DyObject[fun.Parameters.Length],
+                                    VarArgsIndex = fun.VarArgIndex,
+                                    VarArgs = fun.VarArgIndex > -1 ? new FastList<DyObject>() : null
                                 });
                         }
                         break;
@@ -507,14 +508,14 @@ namespace Dyalect.Runtime
                                 if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                             }
 
-                            ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
+                            //ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
 
                             if (callFun is DyNativeFunction natFun)
                                 evalStack.Push(ExecuteWithData(natFun, ctx.Locals.Pop().Locals, ctx));
                             else
                             {
                                 evalStack.Push(CallExternalFunction2(op, offset, function, callFun, ctx));
-                                ctx.CallStack.Pop();
+                                //ctx.CallStack.Pop();
                             }
 
                             if (ctx.Error != null)
