@@ -40,6 +40,17 @@ func print(args..., separator = ",", terminator = "\n") {
 print(1,2,3,separator:" ",terminator:".")
 */
 
-var res = [12.2, "string", true].toString()
-assert("[12.2, \"string\", true]", res)
-
+func takeItAll(x, y, args...) {
+    var str = "x=" + y + ";y=" + y + ";other=["
+    var count = 0
+    for x in args {
+        if count > 1 {
+            str += ","
+        }
+        str += x
+        count += 1
+    }
+    str += "]"
+}
+var x = takeItAll(12, 33.4, "oops", true, [1], (x: 0.33, y: 1))
+assert("x=33.4;y=33.4;other=[oopstrue,[1],(x: 0.33, y: 1)]", x)

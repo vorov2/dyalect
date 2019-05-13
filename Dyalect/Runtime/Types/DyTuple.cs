@@ -9,23 +9,23 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyTuple : DyObject, IEnumerable<DyObject>
     {
-        private readonly DyObject[] values;
+        internal readonly DyObject[] Values;
 
-        public int Count => values.Length;
+        public int Count => Values.Length;
 
         public DyTuple(DyObject[] values) : base(StandardType.Tuple)
         {
-            if (values == null || values.Length < 1)
-                throw new DyException("Unable to create a tuple with less than two values.");
+            if (values == null)
+                throw new DyException("Unable to create a tuple with no values.");
 
-            this.values = values;
+            this.Values = values;
         }
 
         public override object ToObject() => ConvertToArray();
 
-        public IList<object> ConvertToList() => values.Select(e => e.ToObject()).ToList();
+        public IList<object> ConvertToList() => Values.Select(e => e.ToObject()).ToList();
 
-        public object[] ConvertToArray() => values.Select(e => e.ToObject()).ToArray();
+        public object[] ConvertToArray() => Values.Select(e => e.ToObject()).ToArray();
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
@@ -54,27 +54,32 @@ namespace Dyalect.Runtime.Types
 
         internal int GetOrdinal(string name)
         {
-            for (var i = 0; i < values.Length; i++)
-                if (values[i].GetLabel() == name)
+            for (var i = 0; i < Values.Length; i++)
+                if (Values[i].GetLabel() == name)
                     return i;
             return -1;
         }
 
         internal DyObject GetItem(int index)
         {
-            if (index < 0 || index >= values.Length)
+            if (index < 0 || index >= Values.Length)
                 return null;
-            return values[index];
+            return Values[index].TypeId == StandardType.Label ? Values[index].GetTaggedValue() : Values[index];
         }
 
-        internal string GetKey(int index) => values[index].GetLabel();
+        internal string GetKey(int index) => Values[index].GetLabel();
 
         internal void SetItem(int index, DyObject value, ExecutionContext ctx)
         {
-            if (index < 0 || index >= values.Length)
+            if (index < 0 || index >= Values.Length)
                 Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
             else
-                values[index] = value;
+            {
+                if (Values[index].TypeId == StandardType.Label)
+                    ((DyLabel)Values[index]).Value = value;
+                else
+                    Values[index] = value;
+            }
         }
 
         private string DefaultKey() => Guid.NewGuid().ToString();
@@ -171,7 +176,12 @@ namespace Dyalect.Runtime.Types
 
         private DyObject GetSecond(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
-            return ((DyTuple)self).GetItem(1);
+            var tup = (DyTuple)self;
+
+            if (tup.Values.Length < 2)
+                Err.IndexOutOfRange(TypeName, 1).Set(ctx);
+            
+            return tup.GetItem(1);
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)

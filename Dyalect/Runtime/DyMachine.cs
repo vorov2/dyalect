@@ -545,7 +545,8 @@ namespace Dyalect.Runtime
             var locals = cont.Locals;
 
             if (callFun.VarArgIndex > -1)
-                locals[callFun.VarArgIndex] = new DyTuple(cont.VarArgs?.ToArray() ?? Statics.EmptyDyObjects);
+                locals[callFun.VarArgIndex] = cont.VarArgs == null ? null :
+                    new DyTuple(cont.VarArgs.ToArray() ?? Statics.EmptyDyObjects);
 
             for (var i = 0; i < pars.Length; i++)
             {

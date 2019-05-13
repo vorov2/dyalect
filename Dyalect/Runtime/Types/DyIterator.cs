@@ -7,7 +7,7 @@ namespace Dyalect.Runtime.Types
     {
         private readonly IEnumerator<DyObject> enumerator;
 
-        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Statics.EmptyParameters, StandardType.Iterator)
+        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Statics.EmptyParameters, StandardType.Iterator, -1)
         {
             this.enumerator = enumerator;
         }

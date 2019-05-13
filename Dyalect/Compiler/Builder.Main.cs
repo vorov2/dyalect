@@ -846,7 +846,7 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             var address = cw.Offset;
-            var isVariadic = false;
+            var variadicIndex = -1;
 
             //Initialize function arguments
             for (var i = 0; i < args.Length; i++)
@@ -854,7 +854,7 @@ namespace Dyalect.Compiler
                 var arg = args[i];
 
                 if (arg.IsVarArg)
-                    isVariadic = true;
+                    variadicIndex = i;
 
                 AddVariable(arg.Name, node, data: VarFlags.Argument);
             }
@@ -911,8 +911,11 @@ namespace Dyalect.Compiler
                 //TODO: Variadic
                 //cw.Push(node.IsVariadic ? argCount - 1 : argCount);
 
-                if (isVariadic)
+                if (variadicIndex > -1)
+                {
+                    cw.Aux(variadicIndex);
                     cw.NewFunV(funHandle);
+                }
                 else
                     cw.NewFun(funHandle);
             }

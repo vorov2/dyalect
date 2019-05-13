@@ -189,7 +189,7 @@ func arrayTest3() {
 
 func arrayTest4() {
     var arr = [4,6,1,3,2,5]
-    arr.sortBy((x,y) => x - y)
+    arr.sort((x,y) => x - y)
     assert([1, 2, 3, 4, 5, 6], arr)
 }
 

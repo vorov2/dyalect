@@ -37,6 +37,8 @@ namespace Dyalect.Runtime.Types
         internal protected virtual void SetItem(string name, DyObject value, ExecutionContext ctx) { }
 
         internal protected virtual string GetLabel() => null;
+
+        internal protected virtual DyObject GetTaggedValue() => null;
     }
 
     internal static class DyObjectInternalExtensions
