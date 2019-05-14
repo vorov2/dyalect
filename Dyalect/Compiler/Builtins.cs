@@ -32,6 +32,5 @@
         public const string BoolOr = "||";
 
         public const string New = "new";
-        public const string Enum = "enum";
     }
 }

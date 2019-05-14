@@ -20,6 +20,7 @@
         If,
         While,
         For,
+        Range,
         Break,
         Continue,
         Return,

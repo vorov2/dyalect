@@ -19,6 +19,34 @@ namespace Dyalect.Runtime.Types
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction(FunctionName, fun, Parameters, VarArgIndex);
         }
 
+        private sealed class MemberFunction0 : DyForeignFunction
+        {
+            private readonly Func<ExecutionContext, DyObject, DyObject> fun;
+
+            public MemberFunction0(string name, Func<ExecutionContext, DyObject, DyObject> fun) : base(name, Statics.EmptyParameters, -1)
+            {
+                this.fun = fun;
+            }
+
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self);
+
+            protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction0(FunctionName, fun);
+        }
+
+        private sealed class MemberFunction1 : DyForeignFunction
+        {
+            private readonly Func<ExecutionContext, DyObject, DyObject, DyObject> fun;
+
+            public MemberFunction1(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
+            {
+                this.fun = fun;
+            }
+
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args[0]);
+
+            protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction1(FunctionName, fun, Parameters, VarArgIndex);
+        }
+
         private abstract class BaseStaticFunction : DyForeignFunction
         {
             protected BaseStaticFunction(string name, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
@@ -156,6 +184,10 @@ namespace Dyalect.Runtime.Types
         }
 
         internal static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun, int varArgIndex, params Par[] pars) => new MemberFunction(name, fun, pars, varArgIndex);
+
+        internal static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject> fun) => new MemberFunction0(name, fun);
+
+        internal static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, int varArgIndex, params Par[] pars) => new MemberFunction1(name, fun, pars, varArgIndex);
 
         internal static DyFunction Static(string name, Func<ExecutionContext, DyObject> fun) => new StaticFunction0(name, fun, Statics.EmptyParameters);
 

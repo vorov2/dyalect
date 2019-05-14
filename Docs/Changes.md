@@ -1,10 +1,40 @@
 # 0.5.0
+  * Now it is possible to pass function arguments by name, e.g.:
+    ```swift
+    func sum(x, y, z) {
+    }
+
+    sum(z: 3, x: 1, y: 2)
+    ```
+    Related issue: [#37](https://github.com/vorov2/dyalect/issues/37).
+  * Now it is possible to set a default value for a function argument:
+    ```swift
+    func sum(x, y, z = 3) {
+    }
+    sum(y: 2, x: 1)
+    ```
+    A default value is stored in metadata and can be of type `Integer`, `Float`, `Char`, `String`, `Boolean` or `Nil`. Related issue: [#37](https://github.com/vorov2/dyalect/issues/37).
   * Implementation of tuples is heavily refactored and optimized.
   * Now numeric literals can be negative, e.g. `-42`. Previously this would be always interpreted as `negation` operation.
   * Bug fixed: _Crush because of a debugger_ ([Issue #46](https://github.com/vorov2/dyalect/issues/46)).
+  * Bug fixed: _Incorrect type name for Char_ ([Issue #53](https://github.com/vorov2/dyalect/issues/53)).
   * Arrays are redesigned for better effeciency and flexibility.
   * Feature implemented: _Redesign array creation_ ([Issue #47](https://github.com/vorov2/dyalect/issues/47)).
   * Feature implemented: _Construct a empty array filled with values_ ([Issue #30](https://github.com/vorov2/dyalect/issues/30)).
+  * Now ranges are supported ([Issue #8](https://github.com/vorov2/dyalect/issues/8)). Support for ranges is implemented through the `to` method which has the following signature:
+    ```swift
+    func TypeName.to(value) {      
+    }
+    ```
+    This method returns an iterator and is currently implemented by data types `Integer`, `Float` and `Char`. Additionally a special syntax for ranges is now supported:
+    ```swift
+    var range = 10..1 //same as 10.to(1)
+    var alphaRange = 'a'..'z' //same as 'a'.to('z')
+    ```
+  * A static method `new` is added to an `Array` type. Now array literal is translated to a call of this method, e.g.:
+    ```swift
+    [1, 2, 3] //same as Array.new(1, 2, 3)
+    ```
 
 # 0.4.3
   * A bug fixed: Method overloading and concatenation ([Issue #44](https://github.com/vorov2/dyalect/issues/44)).

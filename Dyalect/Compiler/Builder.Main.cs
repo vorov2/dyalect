@@ -95,7 +95,23 @@ namespace Dyalect.Compiler
                 case NodeType.MemberCheck:
                     Build((DMemberCheck)node, hints, ctx);
                     break;
+                case NodeType.Range:
+                    Build((DRange)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DRange range, Hints hints, CompilerContext ctx)
+        {
+            Build(range.From, hints.Append(Push), ctx);
+            cw.GetMember(GetMemberNameId("to"));
+            cw.FunPrep(1);
+
+            Build(range.To, hints.Append(Push), ctx);
+            cw.FunArgIx(0);
+
+            AddLinePragma(range);
+            cw.FunCall(1);
         }
 
         private void Build(DMemberCheck node, Hints hints, CompilerContext ctx)

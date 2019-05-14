@@ -124,47 +124,5 @@ namespace Dyalect.Runtime.Types
 
             return null;
         }
-
-        private DyObject Enum(ExecutionContext ctx, DyObject from, DyObject step, DyObject to)
-        {
-            var endless = to.IsNil();
-
-            if (from.TypeId == StandardType.Integer
-                && (step.TypeId == StandardType.Integer || step.IsNil())
-                && (to.TypeId == StandardType.Integer || endless))
-            {
-                var ifrom = from.GetInteger();
-                var istart = ifrom;
-                var istep = step.IsNil() ? 1 : step.GetInteger();
-                var ito = endless ? 0 : to.GetInteger();
-                
-                long current = ifrom;
-                return new DyIterator(new DyIterator.RangeEnumerator(
-                    () => DyInteger.Get(current),
-                    () =>
-                    {
-                        current = current + istep;
-
-                        if (endless)
-                            return true;
-
-                        if (ito > istart)
-                            return current < ito;
-
-                        return current > ito;
-                    }));
-            }
-
-            ctx.Error = Err.InvalidType(StandardType.IntegerName, from.TypeName(ctx));
-            return DyNil.Instance;
-        }
-
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
-        {
-            if (name == Builtins.Enum)
-                return DyForeignFunction.Static(name, Enum, -1, new Par("from"), new Par("step", DyNil.Instance), new Par("to", DyNil.Instance));
-
-            return null;
-        }
     }
 }

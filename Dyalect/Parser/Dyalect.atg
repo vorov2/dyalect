@@ -487,11 +487,22 @@ PRODUCTIONS
                 | "+" (. ot = t; op = UnaryOperator.Plus; .)
                 | "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
             ]
-            FieldOrIndex<out node>
+            Range<out node>
             (.
                 if (op != UnaryOperator.None)
                     node = new DUnaryOperation(node, op, ot);
             .)
+        ).
+
+    Range<out DNode node> =
+        (. node = null; .)
+        (
+            FieldOrIndex<out node>
+            [
+                ".."  (. var range = new DRange(t) { From = node }; .)
+                FieldOrIndex<out node>
+                (. range.To = node; node = range; .)
+            ]
         ).
 
     FieldOrIndex<out DNode node> =
