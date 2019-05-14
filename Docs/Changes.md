@@ -40,6 +40,11 @@
     ```swift
     [1, 2, 3] //same as Array.new(1, 2, 3)
     ```
+  * Method `sortBy` is decomissioned. Now a single `sort` method should be used in all the cases. This method now has the following signature:
+    ```swift
+    func sort(comparator = nil) { }
+    ```
+    If an argument is not provided than a default comparator is used.
 
 # 0.4.3
   * A bug fixed: Method overloading and concatenation ([Issue #44](https://github.com/vorov2/dyalect/issues/44)).
