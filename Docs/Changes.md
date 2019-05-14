@@ -20,18 +20,23 @@
   * Bug fixed: _Incorrect type name for Char_ ([Issue #53](https://github.com/vorov2/dyalect/issues/53)).
   * Arrays are redesigned for better effeciency and flexibility.
   * Feature implemented: _Redesign array creation_ ([Issue #47](https://github.com/vorov2/dyalect/issues/47)).
-  * Feature implemented: _Construct a empty array filled with values_ ([Issue #30](https://github.com/vorov2/dyalect/issues/30)).
+  * Feature implemented: _Construct a empty array filled with values_ ([Issue #30](https://github.com/vorov2/dyalect/issues/30)). A new static method `empty` with the following signature is added to an `Array` type:
+    ```swift
+    static func Array.empty(size, default = nil) { ... }
+    //Usage:
+    Array.empty(3) //Result is [nil, nil, nil]
+    Array.empty(5, 0) //Result is [0, 0, 0, 0, 0]
+    ```
   * Now ranges are supported ([Issue #8](https://github.com/vorov2/dyalect/issues/8)). Support for ranges is implemented through the `to` method which has the following signature:
     ```swift
-    func TypeName.to(value) {      
-    }
+    func TypeName.to(value) { ... }
     ```
     This method returns an iterator and is currently implemented by data types `Integer`, `Float` and `Char`. Additionally a special syntax for ranges is now supported:
     ```swift
     var range = 10..1 //same as 10.to(1)
     var alphaRange = 'a'..'z' //same as 'a'.to('z')
     ```
-  * A static method `new` is added to an `Array` type. Now array literal is translated to a call of this method, e.g.:
+  * A static method `new` with a single `values` parameter is added to an `Array` type. Now array literal is translated to a call of this method, e.g.:
     ```swift
     [1, 2, 3] //same as Array.new(1, 2, 3)
     ```
