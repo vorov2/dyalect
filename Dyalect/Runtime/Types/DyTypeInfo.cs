@@ -150,6 +150,8 @@ namespace Dyalect.Runtime.Types
         {
             if (eq != null)
                 return eq.Clone(ctx, left).Call1(right, ctx);
+            if (right.TypeId == StandardType.Bool)
+                return left.GetBool() == right.GetBool() ? DyBool.True : DyBool.False;
             return EqOp(left, right, ctx);
         }
 

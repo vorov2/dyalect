@@ -45,6 +45,7 @@
     func sort(comparator = nil) { }
     ```
     If an argument is not provided than a default comparator is used.
+  * Bug fixed: _Incorrect boolean comparisons_ ([Issue #58](https://github.com/vorov2/dyalect/issues/58)).
 
 # 0.4.3
   * A bug fixed: Method overloading and concatenation ([Issue #44](https://github.com/vorov2/dyalect/issues/44)).
