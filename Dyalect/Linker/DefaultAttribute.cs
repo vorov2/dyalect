@@ -26,9 +26,9 @@ namespace Dyalect.Linker
             Value = new DyChar(value);
         }
 
-        public DefaultAttribute(DyNil value)
+        public DefaultAttribute()
         {
-            Value = value;
+            Value = DyNil.Instance;
         }
 
         public DefaultAttribute(bool value)

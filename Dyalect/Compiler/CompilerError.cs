@@ -32,6 +32,12 @@
 
         BaseNotAllowed = 214,
 
-        StaticOnlyMethods = 215
+        StaticOnlyMethods = 215,
+
+        CodeIslandMultipleExpressions = 216,
+
+        CodeIslandEmpty = 217,
+
+        CodeIslandInvalid = 218
     }
 }

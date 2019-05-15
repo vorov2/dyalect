@@ -89,7 +89,7 @@ PRODUCTIONS
             .)
         ]
         [
-            "(" stringToken (. inc.Dll = ParseString(); .) ")"
+            "(" stringToken (. inc.Dll = ParseSimpleString(); .) ")"
         ]
         (. Imports.Add(inc); .).
 
@@ -619,19 +619,6 @@ PRODUCTIONS
     TupleElement<out DNode node> = 
         (. node = null; .)
         (
-            /*IF (IsNamedTupleElement())
-            (
-                (. string name = null; .)
-                (
-                      identToken (. name = t.val; .)
-                    | stringToken (. name = ParseString(); .)
-                )
-                ":"
-                (. var tag = new DLabelLiteral(t) { Label = name }; .)
-                Expr<out node>
-                (. tag.Expression = node; node = tag; .)
-            )
-            |*/
             Expr<out node>
         ).
 
@@ -664,7 +651,7 @@ PRODUCTIONS
     Char<out DNode node> =
         (
             charToken
-            (. node = new DCharLiteral(t) { Value = ParseString()[0] }; .)
+            (. node = new DCharLiteral(t) { Value = ParseChar() }; .)
         ).
 
     Integer<out DNode node> =
@@ -682,7 +669,7 @@ PRODUCTIONS
     String<out DNode node> =
         (
             stringToken
-            (. node = new DStringLiteral(t) { Value = ParseString() }; .)
+            (. node = ParseString(); .)
         ).
 
     Bool<out DNode node> =

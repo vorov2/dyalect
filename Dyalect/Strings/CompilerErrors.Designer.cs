@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class CompilerErrors {
@@ -66,6 +66,33 @@ namespace Dyalect.Strings {
         internal static string BaseNotAllowed {
             get {
                 return ResourceManager.GetString("BaseNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty code islands are not supported..
+        /// </summary>
+        internal static string CodeIslandEmpty {
+            get {
+                return ResourceManager.GetString("CodeIslandEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid code island inside of a string literal: {0}.
+        /// </summary>
+        internal static string CodeIslandInvalid {
+            get {
+                return ResourceManager.GetString("CodeIslandInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple expressions are not supported in code islands..
+        /// </summary>
+        internal static string CodeIslandMultipleExpressions {
+            get {
+                return ResourceManager.GetString("CodeIslandMultipleExpressions", resourceCulture);
             }
         }
         

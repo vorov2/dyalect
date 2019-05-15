@@ -46,6 +46,12 @@
     ```
     If an argument is not provided than a default comparator is used.
   * Bug fixed: _Incorrect boolean comparisons_ ([Issue #58](https://github.com/vorov2/dyalect/issues/58)).
+  * Now Dy supports string interpolation ([Issue #3](https://github.com/vorov2/dyalect/issues/3)). String interpolation is implemented similar to Swift:
+    ```swift
+    var x = 42
+    var y = 12
+    "the value of (x + y) is \(x + y)" //Evaluates to "the value of (x + y) is 54"
+    ```
 
 # 0.4.3
   * A bug fixed: Method overloading and concatenation ([Issue #44](https://github.com/vorov2/dyalect/issues/44)).

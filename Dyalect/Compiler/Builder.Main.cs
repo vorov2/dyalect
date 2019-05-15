@@ -499,8 +499,51 @@ namespace Dyalect.Compiler
 
         private void Build(DStringLiteral node, Hints hints, CompilerContext ctx)
         {
-            AddLinePragma(node);
-            cw.Push(node.Value);
+            if (node.Chunks != null)
+            {
+                cw.PushVar(GetVariable(StandardType.StringName, node));
+                cw.GetMember(GetMemberNameId("concat"));
+                cw.FunPrep(node.Chunks.Count);
+
+                for (var i = 0; i < node.Chunks.Count; i++)
+                {
+                    var c = node.Chunks[i];
+
+                    if (c.IsCode)
+                    {
+                        var p = new InternalParser(new Scanner(SourceBuffer.FromString(c.GetContent())));
+                        p.Parse();
+
+                        if (p.Errors.Count > 0)
+                        {
+                            foreach (var e in p.Errors)
+                                AddError(CompilerError.CodeIslandInvalid, new Location(node.Location.Line, node.Location.Column + e.Column), e.Message);
+                        }
+                        else
+                        {
+                            if (p.Root.Nodes == null || p.Root.Nodes.Count == 0)
+                                AddError(CompilerError.CodeIslandEmpty, node.Location);
+                            else if (p.Root.Nodes.Count > 1)
+                                AddError(CompilerError.CodeIslandMultipleExpressions, node.Location);
+                            else
+                                Build(p.Root.Nodes[0], hints.Append(Push), ctx);
+                        }
+                    }
+                    else
+                        cw.Push(c.GetContent());
+
+                    cw.FunArgIx(i);
+                }
+
+                AddLinePragma(node);
+                cw.FunCall(node.Chunks.Count);
+            }
+            else
+            {
+                AddLinePragma(node);
+                cw.Push(node.Value);
+            }
+
             PopIf(hints);
         }
 
@@ -913,10 +956,6 @@ namespace Dyalect.Compiler
                 cw.NewIter(funHandle);
             else
             {
-                //cw.Push(argCount);
-                //TODO: Variadic
-                //cw.Push(node.IsVariadic ? argCount - 1 : argCount);
-
                 if (variadicIndex > -1)
                 {
                     cw.Aux(variadicIndex);

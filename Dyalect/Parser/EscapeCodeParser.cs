@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dyalect.Parser.Model;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -6,12 +8,13 @@ namespace Dyalect.Parser
 {
     internal static class EscapeCodeParser
     {
-        public static int Parse(string str, out string value)
+        public static bool Parse(string fileName, Location loc, string str, List<BuildMessage> messages, out string value, out List<StringChunk> chunks)
         {
             var buffer = str.ToCharArray(1, str.Length - 2);
             var len = buffer.Length;
             var sb = new StringBuilder(str.Length);
             value = null;
+            chunks = null;
 
             for (var i = 0; i < len; i++)
             {
@@ -54,6 +57,26 @@ namespace Dyalect.Parser
                             case '0':
                                 sb.Append('\0');
                                 break;
+                            case '(':
+                                {
+                                    if (chunks == null)
+                                        chunks = new List<StringChunk>();
+
+                                    if (sb.Length > 0)
+                                    {
+                                        chunks.Add(new PlainStringChunk(sb.ToString()));
+                                        sb.Clear();
+                                    }
+
+                                    var start = i;
+                                    var code = Balance(ref i, buffer);
+
+                                    if (string.IsNullOrWhiteSpace(code))
+                                        return InvalidCodeIsland(messages, loc, fileName, start);
+
+                                    chunks.Add(new CodeChunk(code));
+                                }
+                                break;
                             case 'u':
                                 {
                                     if (i + 3 < len)
@@ -62,11 +85,11 @@ namespace Dyalect.Parser
                                         var ci = 0;
 
                                         if (ns[0] == ' ' || ns[0] == '\t' || ns[3] == ' ' || ns[3] == '\t')
-                                            return i;
+                                            return InvalidLiteral(messages, loc, fileName, i);
 
                                         if (!int.TryParse(ns, NumberStyles.HexNumber,
                                             CI.Default.NumberFormat, out ci))
-                                            return i;
+                                            return InvalidLiteral(messages, loc, fileName, i);
                                         else
                                         {
                                             sb.Append((char)ci);
@@ -74,22 +97,58 @@ namespace Dyalect.Parser
                                         }
                                     }
                                     else
-                                        return i;
+                                        return InvalidLiteral(messages, loc, fileName, i);
                                 }
                                 break;
                             default:
-                                return i;
+                                return InvalidLiteral(messages, loc, fileName, i);
                         }
                     }
                     else
-                        return i;
+                        return InvalidLiteral(messages, loc, fileName, i);
                 }
                 else
                     sb.Append(c);
             }
 
-            value = sb.ToString();
-            return -1;
+            if (chunks != null && sb.Length > 0)
+                chunks.Add(new PlainStringChunk(sb.ToString()));
+            else
+                value = sb.ToString();
+            return true;
+        }
+
+        private static string Balance(ref int i, char[] buffer)
+        {
+            var b = 0;
+            var start = i;
+
+            for (; i < buffer.Length; i++)
+            {
+                var c = buffer[i];
+
+                if (c == '(')
+                    b++;
+                else if (c == ')')
+                    b--;
+
+                if (b == 0)
+                    return new string(buffer, start + 1, i - start - 1);
+            }
+
+            return null;
+        }
+
+        private static bool InvalidLiteral(List<BuildMessage> messages, Location baseLocation, string fileName, int offset)
+        {
+            messages.Add(new BuildMessage("Unrecognized escape sequence.", BuildMessageType.Error, 0, baseLocation.Line, baseLocation.Column + offset, fileName));
+            return false;
+        }
+
+        private static bool InvalidCodeIsland(List<BuildMessage> messages, Location baseLocation, string fileName, int offset)
+        {
+            messages.Add(new BuildMessage("Invalid code island inside of a string literal.", BuildMessageType.Error, 1, baseLocation.Line, baseLocation.Column + offset, fileName));
+            return false;
         }
     }
 }

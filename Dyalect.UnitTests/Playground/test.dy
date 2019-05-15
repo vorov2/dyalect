@@ -41,5 +41,7 @@ print(1,2,3,separator:" ",terminator:".")
 */
 
 
-var arr = []
-arr.addRange([1,2,3])
+var x = 42
+var y = 12
+
+"the value of (x + y) is \(x + y)"

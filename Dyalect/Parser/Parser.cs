@@ -186,7 +186,7 @@ namespace Dyalect.Parser
 		if (la.kind == 24) {
 			Get();
 			Expect(4);
-			inc.Dll = ParseString(); 
+			inc.Dll = ParseSimpleString(); 
 			Expect(25);
 		}
 		Imports.Add(inc); 
@@ -893,12 +893,12 @@ namespace Dyalect.Parser
 
 	void String(out DNode node) {
 		Expect(4);
-		node = new DStringLiteral(t) { Value = ParseString() }; 
+		node = ParseString(); 
 	}
 
 	void Char(out DNode node) {
 		Expect(5);
-		node = new DCharLiteral(t) { Value = ParseString()[0] }; 
+		node = new DCharLiteral(t) { Value = ParseChar() }; 
 	}
 
 	void Bool(out DNode node) {
