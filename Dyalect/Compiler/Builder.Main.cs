@@ -813,17 +813,24 @@ namespace Dyalect.Compiler
         private Par[] CompileFunctionParameters(List<DParameter> pars)
         {
             var arr = new Par[pars.Count];
+            var hasVarArg = false;
 
             for (var i = 0; i < pars.Count; i++)
             {
                 var p = pars[i];
 
+                if (p.IsVarArgs)
+                {
+                    if (hasVarArg)
+                        AddError(CompilerError.VarArgOnlyOne, p.Location);
+
+                    hasVarArg = true;
+                }
+
                 if (p.DefaultValue != null)
                 {
                     if (p.IsVarArgs)
-                    {
-                        //TODO: Var args cannot have default values
-                    }
+                        AddError(CompilerError.VarArgNoDefaultValue, p.Location);
 
                     DyObject val = null;
 

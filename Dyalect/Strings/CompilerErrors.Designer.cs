@@ -214,6 +214,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default values are not allowed for the argument lists..
+        /// </summary>
+        internal static string VarArgNoDefaultValue {
+            get {
+                return ResourceManager.GetString("VarArgNoDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only one parameter of type argument list is allowed..
+        /// </summary>
+        internal static string VarArgOnlyOne {
+            get {
+                return ResourceManager.GetString("VarArgOnlyOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable &quot;{0}&quot; is already declared..
         /// </summary>
         internal static string VariableAlreadyDeclared {

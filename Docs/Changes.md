@@ -1,3 +1,6 @@
+# 0.5.1
+  * todo
+
 # 0.5.0
   * Now it is possible to pass function arguments by name, e.g.:
     ```swift
