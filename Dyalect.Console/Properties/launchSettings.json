@@ -1,11 +1,15 @@
 {
   "profiles": {
-    "Dyalect.Console": {
-      "commandName": "Project"
-    },
     "Run file": {
       "commandName": "Project",
       "commandLineArgs": "\"..\\Dyalect.UnitTests\\Playground\\test.dy\""
+    },
+    "Run tests": {
+      "commandName": "Project",
+      "commandLineArgs": "Tests\\ -test"
+    },
+    "Interactive": {
+      "commandName": "Project"
     }
   }
 }

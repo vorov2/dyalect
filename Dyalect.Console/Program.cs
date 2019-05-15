@@ -22,7 +22,12 @@ namespace Dyalect
             ctx = new InteractiveContext(options);
             dispatcher = new CommandDispatcher(ctx);
 
-            if (options.FileName != null)
+            if (options.Test)
+            {
+                Printer.LineFeed();
+                return RunTests(options) ? OK : ERR;
+            }
+            else if (options.FileName != null)
             {
                 Printer.LineFeed();
 
@@ -38,6 +43,17 @@ namespace Dyalect
                 RunInteractive();
 
             return OK;
+        }
+
+        private static bool RunTests(DyaOptions options)
+        {
+            if (string.IsNullOrEmpty(options.FileName))
+            {
+                Printer.Error("File name not specified.");
+                return false;
+            }
+
+            return TestRunner.RunTests(options.FileName, options.AppVeyour);
         }
 
         private static void RunInteractive()

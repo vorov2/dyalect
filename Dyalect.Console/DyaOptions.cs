@@ -12,7 +12,7 @@ namespace Dyalect
         private const string LINKER = "Linker settings";
         private const string GENERAL = "General settings";
 
-        [Binding(Help = "A full path to the .dy file which should be executed.", Category = COMPILER)]
+        [Binding(Help = "A full path to the .dy file which should be executed (or to the file or directory with files in '-test' mode).", Category = COMPILER)]
         public string FileName { get; set; }
 
         [Binding("debug", Help = "Compile in debug mode.", Category = COMPILER)]
@@ -26,6 +26,12 @@ namespace Dyalect
 
         [Binding("nologo", Help = "Do not show logo.", Category = GENERAL)]
         public bool NoLogo { get; set; }
+
+        [Binding("test", Help = "Run unit tests from a file (or files if a path to a directory is specified). Usage: dya [path to file or directory] -test.", Category = GENERAL)]
+        public bool Test { get; set; }
+
+        [Binding("appveyor")]
+        public bool AppVeyour { get; set; }
 
         [Binding("i", Help = "Stay in interactive mode after executing a file.", Category = GENERAL)]
         public bool StayInInteractive { get; set; }
