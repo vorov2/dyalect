@@ -985,6 +985,11 @@ func rangeTest3() {
     assert(15, acc)
 }
 
+func rangeTest4() {
+    var chz = ('a'..'e')
+    assert(['a','b','c','d','e'], chz.toArray())
+}
+
 func interpolationTest1() {
     var x = 42
     var y = 12
@@ -999,4 +1004,11 @@ func interpolationTest2() {
     var foo = 13
     var res = "doubleMe(foo) = \(doubleMe(foo))"
     assert("doubleMe(foo) = 26", res)
+}
+
+func interpolationTest3() {
+    var x = 3
+    var y = 2
+    var res = "value = \((x * (2 + 3)) * y)"
+    assert("value = 30", res)
 }

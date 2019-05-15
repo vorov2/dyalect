@@ -171,4 +171,10 @@
   <data name="CodeIslandInvalid" xml:space="preserve">
     <value>Invalid code island inside of a string literal: {0}</value>
   </data>
+  <data name="VarArgNoDefaultValue" xml:space="preserve">
+    <value>Default values are not allowed for the argument lists.</value>
+  </data>
+  <data name="VarArgOnlyOne" xml:space="preserve">
+    <value>Only one parameter of type argument list is allowed.</value>
+  </data>
 </root>

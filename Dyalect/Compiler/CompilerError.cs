@@ -38,6 +38,10 @@
 
         CodeIslandEmpty = 217,
 
-        CodeIslandInvalid = 218
+        CodeIslandInvalid = 218,
+
+        VarArgNoDefaultValue = 219,
+
+        VarArgOnlyOne = 220
     }
 }
