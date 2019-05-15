@@ -138,7 +138,7 @@
   <data name="IndexOutOfRange" xml:space="preserve">
     <value>An index "%Index%" is out of range for the instance of type "%TypeName%".</value>
   </data>
-  <data name="WrongNumberOfArguments" xml:space="preserve">
+  <data name="TooManyArguments" xml:space="preserve">
     <value>Function "%FunctionName%" accepts %FunctionArguments% argument(s) (%PassedArguments% given).</value>
   </data>
   <data name="InvalidType" xml:space="preserve">
@@ -149,5 +149,11 @@
   </data>
   <data name="AssertFailed" xml:space="preserve">
     <value>Assert failed: %Reason%.</value>
+  </data>
+  <data name="RequiredArgumentMissing" xml:space="preserve">
+    <value>No value provided for an argument "%ArgumentName%" of a function "%FunctionName%".</value>
+  </data>
+  <data name="ArgumentNotFound" xml:space="preserve">
+    <value>Function "%FunctionName%" doesn't have an argument "%ArgumentName%".</value>
   </data>
 </root>

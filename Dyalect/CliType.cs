@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dyalect.Runtime.Types;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -27,5 +28,6 @@ namespace Dyalect
         public static readonly Type IDictionaryStringObject = typeof(IDictionary<string, object>);
         public static readonly Type ArrayObject = typeof(object[]);
         public static readonly Type ListObject = typeof(List<object>);
+        public static readonly Type DyObject = typeof(DyObject);
     }
 }

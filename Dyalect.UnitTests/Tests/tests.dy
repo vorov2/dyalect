@@ -88,6 +88,14 @@ func comparisonTest5() {
     assert(true, 12 < 12.2)
 }
 
+func comparisonTest6() {
+    var str1 = "x"
+    var str2 = ""
+    assert(true, str1 == true)
+    assert(false, str2 == true)
+    assert(true, str2 == false)
+}
+
 func toStringTest1() {
     var res = (1,2,3).toString()
     assert("(1, 2, 3)", res)
@@ -189,7 +197,7 @@ func arrayTest3() {
 
 func arrayTest4() {
     var arr = [4,6,1,3,2,5]
-    arr.sortBy((x,y) => x - y)
+    arr.sort((x,y) => x - y)
     assert([1, 2, 3, 4, 5, 6], arr)
 }
 
@@ -220,6 +228,20 @@ func arrayTest9() {
     var arr = [7,4,6,1,3,2,5]
     arr.sort()
     assert([1, 2, 3, 4, 5, 6, 7], arr)
+}
+
+func arrayTest10() {
+    var arr = Array.empty(4, false)
+    assert([false, false, false, false], arr)
+    arr = Array.empty(3, 0)
+    assert([0, 0, 0], arr)
+    arr = Array.empty(2)
+    assert([nil, nil], arr)
+}
+
+func arrayTest11() {
+    var arr = Array.new(1,2,3)
+    assert([1,2,3], arr)
 }
 
 func tupleTest1() {
@@ -324,6 +346,20 @@ func stringTest13() {
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
+}
+
+func nameofTest() {
+    assert("nameofTest", nameof(nameofTest))
+    assert("toString", nameof("".toString))
+    var tup = (x: 12)
+    assert("x", nameof(tup.x))
+}
+
+func typeofTest() {
+    assert(true, typeof(42) == Integer)
+    assert(true, typeof("") == String)
+    assert(true, typeof(42.01) == Float)
+    assert(true, typeof('\s') == Char)
 }
 
 ///////////////////////////////////////////////
@@ -853,6 +889,7 @@ func complexToStringTest1() {
         }
     }
     assert("even", 12.toString())
+    Integer.__deleteMember("toString")
 }
 
 func complexToStringTest2() {
@@ -894,4 +931,72 @@ func functionTest1() {
 
     var res = sum(2, 4)
     assert(7, res)
+}
+
+func functionTest2() {
+    func test(x, y, z) {
+        (x, y, z)
+    }
+    var res = test(z: 12, x: 3, y: 1)
+    assert((3, 1, 12), res)
+}
+
+func functionTest3() {
+    func test(x, x1 = 144, y, z, z1 = -3) {
+        (x, x1, y, z, z1)
+    }
+    var res = test(z: 12, x: 3, y: 1)
+    assert((3, 144, 1, 12, -3), res)
+}
+
+func functionTest4() {
+    func test(args..., separator = ",", terminator = "\n") {
+        [args, separator, terminator]
+    }
+    assert( [(1,2), ",", "\n"], test(1,2) )
+    assert( [(1,2), ",", "\r"], test(1,2, terminator: "\r") )
+    assert( [(1,2), ";", "\r"], test(1,2, terminator: "\r", separator: ";") )
+}
+
+func functionTest5() {
+    func test(optional = "foo") {
+        optional
+    }
+    assert("foo", test())
+    var arg = "bar"
+    assert(arg, test(arg))
+}
+
+func rangeTest1() {
+    var xs = 1..10
+    assert([1,2,3,4,5,6,7,8,9,10], xs.toArray())
+}
+
+func rangeTest2() {
+    var xs = 5..1
+    assert([5,4,3,2,1], xs.toArray())
+}
+
+func rangeTest3() {
+    var acc = 0
+    for x in 1..5 {
+        acc += x
+    }
+    assert(15, acc)
+}
+
+func interpolationTest1() {
+    var x = 42
+    var y = 12
+    var res = "the value of (x + y) is \(x + y)"
+    assert("the value of (x + y) is 54", res)
+}
+
+func interpolationTest2() {
+    func doubleMe(x) {
+        x + x
+    }
+    var foo = 13
+    var res = "doubleMe(foo) = \(doubleMe(foo))"
+    assert("doubleMe(foo) = 26", res)
 }

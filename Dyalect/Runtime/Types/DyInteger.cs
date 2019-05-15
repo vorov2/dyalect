@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
+using System.Numerics;
 
 namespace Dyalect.Runtime.Types
 {
@@ -19,7 +21,7 @@ namespace Dyalect.Runtime.Types
             this.value = value;
         }
 
-        public static DyInteger Get(int i)
+        public static DyInteger Get(long i)
         {
             if (i == -1)
                 return MinusOne;
@@ -234,5 +236,44 @@ namespace Dyalect.Runtime.Types
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => 
             new DyString(arg.GetInteger().ToString(CI.NumberFormat));
         #endregion
+
+        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
+        {
+            if (to.TypeId != StandardType.Integer)
+                return Err.InvalidType(StandardType.IntegerName, to.TypeName(ctx)).Set(ctx);
+
+            var ifrom = self.GetInteger();
+            var istart = ifrom;
+            var ito = to.GetInteger();
+            var fst = true;
+            var step = ito > ifrom ? 1 : -1;
+
+            long current = ifrom;
+            return new DyIterator(new DyIterator.RangeEnumerator(
+                () => DyInteger.Get(current),
+                () =>
+                {
+                    if (fst)
+                    {
+                        fst = false;
+                        return true;
+                    }
+
+                    current = current + step;
+
+                    if (ito > istart)
+                        return current <= ito;
+
+                    return current >= ito;
+                }));
+        }
+
+        protected override DyFunction GetMember(string name, ExecutionContext ctx)
+        {
+            if (name == "to")
+                return DyForeignFunction.Member(name, Range, -1, new Par("value"));
+
+            return null;
+        }
     }
 }

@@ -148,9 +148,9 @@ namespace Dyalect.Parser
             return true;
         }
 
-        private bool IsNamedTupleElement()
+        private bool IsLabel()
         {
-            if (la.kind != _identToken && la.kind != _stringToken)
+            if (la.kind != _identToken)
                 return false;
 
             scanner.ResetPeek();
@@ -218,31 +218,32 @@ namespace Dyalect.Parser
             return false;
         }
 
-        private string ParseString()
+        private DStringLiteral ParseString()
         {
-            var code = EscapeCodeParser.Parse(t.val, out var result);
+            if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
+                return null;
 
-            if (code < 0)
-                return result;
-            else
+            return new DStringLiteral(t) { Value = result, Chunks = chunks };
+        }
+
+        private string ParseSimpleString()
+        {
+            if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
+                return null;
+
+            if (chunks != null)
             {
-                Errors.Add(new BuildMessage("Unrecognized escape sequence.", BuildMessageType.Error, 0, t.line, t.col + code, this.scanner.Buffer.FileName));
-                return t.val;
+                Errors.Add(new BuildMessage("Code islands are not allowed.", BuildMessageType.Error, 2, t.line, t.col, scanner.Buffer.FileName));
+                return null;
             }
+
+            return result;
         }
 
-        private string ParseChar()
+        private char ParseChar()
         {
-            return t.val.Substring(1, t.val.Length - 2)
-                .Replace("''", "'");
-        }
-
-        private string ParseField()
-        {
-            if (t.val[0] != '\"')
-                return t.val;
-            else
-                return ParseString();
+            var str = ParseSimpleString();
+            return str == null ? '\0' : str[0];
         }
 
         private int GetImplicit()

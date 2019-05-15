@@ -1,13 +1,38 @@
 ﻿using Dyalect.Compiler;
+using Dyalect.Debug;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     internal sealed class DyIterator : DyForeignFunction
     {
+        internal sealed class RangeEnumerator : IEnumerator<DyObject>
+        {
+            private readonly Func<DyObject> current;
+            private readonly Func<bool> next;
+
+            public RangeEnumerator(Func<DyObject> current, Func<bool> next)
+            {
+                this.current = current;
+                this.next = next;
+            }
+
+            public DyObject Current => current();
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() { }
+
+            public bool MoveNext() => next();
+
+            public void Reset() => throw new NotSupportedException();
+        }
+
         private readonly IEnumerator<DyObject> enumerator;
 
-        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, 0, StandardType.Iterator)
+        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Statics.EmptyParameters, StandardType.Iterator, -1)
         {
             this.enumerator = enumerator;
         }
@@ -18,8 +43,6 @@ namespace Dyalect.Runtime.Types
             vars.Add(locals);
             return new DyNativeIterator(unitId, handle, vars);
         }
-
-        protected override string GetCustomFunctionName(ExecutionContext ctx) => Builtins.Iterator;
 
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {
@@ -52,12 +75,12 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyNativeIterator : DyNativeFunction
     {
-        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(unitId, funcId, 0, captures, StandardType.Iterator)
+        public override string FunctionName => "iter";
+
+        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(null, unitId, funcId, captures, StandardType.Iterator, -1)
         {
 
         }
-
-        protected override string GetCustomFunctionName(ExecutionContext ctx) => Builtins.Iterator;
 
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg) =>
             new DyNativeIterator(UnitId, FunctionId, Captures) { Self = arg };
@@ -91,13 +114,13 @@ namespace Dyalect.Runtime.Types
                     arr.Add(res);
             }
 
-            return new DyArray(arr);
+            return new DyArray(arr.ToArray());
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == "toArray")
-                return DyForeignFunction.Create(name, ToArray);
+                return DyForeignFunction.Member(name, ToArray, -1, Statics.EmptyParameters);
 
             return null;
         }

@@ -2,33 +2,30 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public abstract class DyTuple : DyObject, IEnumerable<DyObject>
+    public sealed class DyTuple : DyObject, IEnumerable<DyObject>
     {
-        public static DyTuple Create(DyObject arg1, DyObject arg2) =>
-            new DyTuplePair(null, arg1, null, arg2 );
-        public static DyTuple Create(string key1, DyObject arg1, string key2, DyObject arg2) =>
-            new DyTuplePair(key1, arg1, key2, arg2);
-        public static DyTuple Create(string key1, DyObject arg1, string key2, DyObject arg2, string key3, DyObject arg3) =>
-            new DyTupleTriple(key1, arg1, key2, arg2, key3, arg3);
-        public static DyTuple Create(string[] keys, DyObject[] args) =>
-            new DyTupleVariadic(keys, args);
-        public static DyTuple Create(DyObject[] args) =>
-            new DyTupleVariadic(new string[args.Length], args);
+        internal readonly DyObject[] Values;
 
-        protected DyTuple() : base(StandardType.Tuple)
+        public int Count => Values.Length;
+
+        public DyTuple(DyObject[] values) : base(StandardType.Tuple)
         {
+            if (values == null)
+                throw new DyException("Unable to create a tuple with no values.");
 
+            this.Values = values;
         }
 
-        public override object ToObject() => ToDictionary();
+        public override object ToObject() => ConvertToArray();
 
-        public abstract IDictionary<string, object> ToDictionary();
+        public IList<object> ConvertToList() => Values.Select(e => e.ToObject()).ToList();
 
-        public abstract IList<object> ToList();
+        public object[] ConvertToArray() => Values.Select(e => e.ToObject()).ToArray();
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
@@ -55,15 +52,37 @@ namespace Dyalect.Runtime.Types
         protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx) =>
             SetItem(GetOrdinal(name), value, ctx);
 
-        protected internal abstract void SetItem(int index, DyObject value, ExecutionContext ctx);
+        internal int GetOrdinal(string name)
+        {
+            for (var i = 0; i < Values.Length; i++)
+                if (Values[i].GetLabel() == name)
+                    return i;
+            return -1;
+        }
 
-        protected internal abstract int GetOrdinal(string name);
+        internal DyObject GetItem(int index)
+        {
+            if (index < 0 || index >= Values.Length)
+                return null;
+            return Values[index].TypeId == StandardType.Label ? Values[index].GetTaggedValue() : Values[index];
+        }
 
-        protected internal abstract DyObject GetItem(int index);
+        internal string GetKey(int index) => Values[index].GetLabel();
 
-        protected internal abstract string GetKey(int index);
+        internal void SetItem(int index, DyObject value, ExecutionContext ctx)
+        {
+            if (index < 0 || index >= Values.Length)
+                Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+            else
+            {
+                if (Values[index].TypeId == StandardType.Label)
+                    ((DyLabel)Values[index]).Value = value;
+                else
+                    Values[index] = value;
+            }
+        }
 
-        protected string DefaultKey() => Guid.NewGuid().ToString();
+        private string DefaultKey() => Guid.NewGuid().ToString();
 
         public IEnumerator<DyObject> GetEnumerator()
         {
@@ -72,204 +91,6 @@ namespace Dyalect.Runtime.Types
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public abstract int Count { get; }
-    }
-
-    internal sealed class DyTuplePair : DyTuple
-    {
-        private readonly string key1;
-        private readonly string key2;
-        private DyObject value1;
-        private DyObject value2;
-
-        public override int Count => 2;
-
-        public DyTuplePair(string key1, DyObject value1, string key2, DyObject value2)
-        {
-            this.key1 = key1;
-            this.key2 = key2;
-            this.value1 = value1;
-            this.value2 = value2;
-        }
-
-        public override IDictionary<string, object> ToDictionary()
-        {
-            var dict = new Dictionary<string, object>();
-            dict.Add(key1 ?? DefaultKey(), value1);
-            dict.Add(key2 ?? DefaultKey(), value2);
-            return dict;
-        }
-
-        public override IList<object> ToList() => new object[] { value1, value2 };
-
-        protected internal override DyObject GetItem(int index)
-        {
-            if (index == 0)
-                return value1;
-            if (index == 1)
-                return value2;
-            return null;
-        }
-
-        protected internal override int GetOrdinal(string name)
-        {
-            if (name == key1)
-                return 0;
-            if (name == key2)
-                return 1;
-            return -1;
-        }
-
-        protected internal override string GetKey(int index)
-        {
-            if (index == 0)
-                return key1;
-            return key2;
-        }
-
-        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx)
-        {
-            if (index == 0)
-                value1 = value;
-            else if (index == 1)
-                value2 = value;
-            else
-                Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
-        }
-    }
-
-    internal sealed class DyTupleTriple : DyTuple
-    {
-        private readonly string key1;
-        private readonly string key2;
-        private readonly string key3;
-        private DyObject value1;
-        private DyObject value2;
-        private DyObject value3;
-
-        public override int Count => 3;
-
-        public DyTupleTriple(string key1, DyObject value1, string key2, DyObject value2, string key3, DyObject value3)
-        {
-            this.key1 = key1;
-            this.key2 = key2;
-            this.key3 = key3;
-            this.value1 = value1;
-            this.value2 = value2;
-            this.value3 = value3;
-        }
-
-        public override IDictionary<string, object> ToDictionary()
-        {
-            var dict = new Dictionary<string, object>();
-            dict.Add(key1 ?? DefaultKey(), value1);
-            dict.Add(key2 ?? DefaultKey(), value2);
-            dict.Add(key3 ?? DefaultKey(), value3);
-            return dict;
-        }
-
-        public override IList<object> ToList() => new object[] { value1, value2, value3 };
-
-        protected internal override DyObject GetItem(int index)
-        {
-            if (index == 0)
-                return value1;
-            if (index == 1)
-                return value2;
-            if (index == 2)
-                return value3;
-            return null;
-        }
-
-        protected internal override int GetOrdinal(string name)
-        {
-            if (name == key1)
-                return 0;
-            if (name == key2)
-                return 1;
-            if (name == key3)
-                return 2;
-            return -1;
-        }
-
-        protected internal override string GetKey(int index)
-        {
-            if (index == 0)
-                return key1;
-            if (index == 1)
-                return key2;
-            return key3;
-        }
-
-        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx)
-        {
-            if (index == 0)
-                value1 = value;
-            else if (index == 1)
-                value2 = value;
-            else if (index == 2)
-                value3 = value;
-
-            else
-                Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
-        }
-    }
-
-    internal sealed class DyTupleVariadic : DyTuple
-    {
-        private readonly DyObject[] values;
-        private readonly string[] keys;
-
-        public override int Count => keys.Length;
-
-        internal DyTupleVariadic(string[] keys, DyObject[] values)
-        {
-            this.keys = keys;
-            this.values = values;
-        }
-
-        public override IDictionary<string, object> ToDictionary()
-        {
-            var dict = new Dictionary<string, object>();
-
-            for (var i = 0; i < keys.Length; i++)
-            {
-                var k = keys[i] ?? Guid.NewGuid().ToString();
-
-                try
-                {
-                    dict.Add(k, values[i].ToObject());
-                }
-                catch
-                {
-                    dict.Add(Guid.NewGuid().ToString(), values[i].ToObject());
-                }
-            }
-
-            return dict;
-        }
-
-        public override IList<object> ToList() => values;
-
-        protected internal override int GetOrdinal(string name) => Array.IndexOf(keys, name);
-
-        protected internal override DyObject GetItem(int index)
-        {
-            if (index < 0 || index >= values.Length)
-                return null;
-            return values[index];
-        }
-
-        protected internal override string GetKey(int index) => keys[index];
-
-        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx)
-        {
-            if (index < 0 || index >= values.Length)
-                Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
-            else
-                values[index] = value;
-        }
     }
 
     internal sealed class DyTupleTypeInfo : DyTypeInfo
@@ -355,25 +176,30 @@ namespace Dyalect.Runtime.Types
 
         private DyObject GetSecond(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
-            return ((DyTuple)self).GetItem(1);
+            var tup = (DyTuple)self;
+
+            if (tup.Values.Length < 2)
+                Err.IndexOutOfRange(TypeName, 1).Set(ctx);
+            
+            return tup.GetItem(1);
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
-                return DyForeignFunction.Create(name, LenAdapter);
+                return DyForeignFunction.Member(name, LenAdapter, -1, Statics.EmptyParameters);
 
             if (name == "indices")
-                return DyForeignFunction.Create(name, GetIndices);
+                return DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters);
 
             if (name == "keys")
-                return DyForeignFunction.Create(name, GetKeys);
+                return DyForeignFunction.Member(name, GetKeys, -1, Statics.EmptyParameters);
 
             if (name == "fst")
-                return DyForeignFunction.Create(name, GetFirst);
+                return DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters);
 
             if (name == "snd")
-                return DyForeignFunction.Create(name, GetSecond);
+                return DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters);
 
             return null;
         }

@@ -20,6 +20,7 @@
         If,
         While,
         For,
+        Range,
         Break,
         Continue,
         Return,
@@ -36,6 +37,7 @@
         Tuple,
         Array,
         Label,
+        Parameter,
 
         Type,
         Field

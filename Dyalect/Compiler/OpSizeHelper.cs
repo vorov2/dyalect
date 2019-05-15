@@ -51,7 +51,6 @@
             0, //Dup
             0, //SyncPoint
             0, //Fail
-            1, //Call
             1, //NewFun
             1, //NewFunV
             1, //NewIter
@@ -70,6 +69,12 @@
             1, //Brterm
             1, //Briter
             1, //Aux
+
+            1, //FunPrep
+            1, //FunArgIx
+            1, //FunArgNm
+            1, //FunCall
+            1, //NewTuple
         };
     }
 }

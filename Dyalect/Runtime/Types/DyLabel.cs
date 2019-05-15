@@ -4,7 +4,7 @@
     {
         public string Label { get; }
 
-        public DyObject Value { get; }
+        public DyObject Value { get; internal set; }
 
         public DyLabel(string label, DyObject value) : base(StandardType.Label)
         {
@@ -15,6 +15,10 @@
         protected internal override bool GetBool() => Value.GetBool();
 
         public override object ToObject() => Value.ToObject();
+
+        protected internal override string GetLabel() => Label;
+
+        protected internal override DyObject GetTaggedValue() => Value;
     }
 
     internal sealed class DyLabelTypeInfo : DyTypeInfo

@@ -1,4 +1,5 @@
-﻿using Dyalect.Runtime.Types;
+﻿using Dyalect.Debug;
+using Dyalect.Runtime.Types;
 
 namespace Dyalect
 {
@@ -7,5 +8,7 @@ namespace Dyalect
         public static DyObject[] EmptyDyObjects = new DyObject[0];
 
         public static char[] EmptyChars = new char[0];
+
+        public static Par[] EmptyParameters = new Par[0];
     }
 }

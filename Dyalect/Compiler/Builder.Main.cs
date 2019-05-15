@@ -1,6 +1,9 @@
-﻿using Dyalect.Linker;
+﻿using Dyalect.Debug;
+using Dyalect.Linker;
 using Dyalect.Parser;
 using Dyalect.Parser.Model;
+using Dyalect.Runtime.Types;
+using System.Collections.Generic;
 using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
@@ -92,7 +95,23 @@ namespace Dyalect.Compiler
                 case NodeType.MemberCheck:
                     Build((DMemberCheck)node, hints, ctx);
                     break;
+                case NodeType.Range:
+                    Build((DRange)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DRange range, Hints hints, CompilerContext ctx)
+        {
+            Build(range.From, hints.Append(Push), ctx);
+            cw.GetMember(GetMemberNameId("to"));
+            cw.FunPrep(1);
+
+            Build(range.To, hints.Append(Push), ctx);
+            cw.FunArgIx(0);
+
+            AddLinePragma(range);
+            cw.FunCall(1);
         }
 
         private void Build(DMemberCheck node, Hints hints, CompilerContext ctx)
@@ -174,21 +193,25 @@ namespace Dyalect.Compiler
             }
 
             AddLinePragma(node);
-            var sv = GetVariable(Lang.CreateTupleName, node);
-            cw.PushVar(sv);
-            cw.Call(node.Elements.Count);
+            cw.NewTuple(node.Elements.Count);
             PopIf(hints);
         }
 
         private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
         {
+            var sv = GetVariable(StandardType.ArrayName, node);
+            cw.PushVar(sv);
+            cw.GetMember(GetMemberNameId(Builtins.New));
+            cw.FunPrep(node.Elements.Count);
+
             for (var i = 0; i < node.Elements.Count; i++)
+            {
                 Build(node.Elements[i], hints.Append(Push), ctx);
+                cw.FunArgIx(i);
+            }
 
             AddLinePragma(node);
-            var sv = GetVariable(Lang.CreateArrayName, node);
-            cw.PushVar(sv);
-            cw.Call(node.Elements.Count);
+            cw.FunCall(node.Elements.Count);
             PopIf(hints);
         }
 
@@ -330,14 +353,20 @@ namespace Dyalect.Compiler
             cw.Briter(skip);
 
             cw.GetMember(GetMemberNameId(Builtins.Iterator));
-            cw.Call(0);
+
+            cw.FunPrep(0);
+            cw.FunCall(0);
+
             cw.MarkLabel(skip);
             cw.PopVar(sys);
 
             var iter = cw.DefineLabel();
             cw.MarkLabel(iter);
             cw.PushVar(new ScopeVar(sys));
-            cw.Call(0);
+
+            cw.FunPrep(0);
+            cw.FunCall(0);
+
             cw.Brterm(ctx.BlockExit);
 
             cw.PopVar(inc);
@@ -361,6 +390,7 @@ namespace Dyalect.Compiler
             var name = node.Target.NodeType == NodeType.Name ? node.Target.GetName() : null;
             var sv = name != null ? GetVariable(name, node, err: false) : ScopeVar.Empty;
 
+            //Check if an application is in fact a built-in operator call
             if (name != null && sv.IsEmpty())
                 if (name == "nameof")
                 {
@@ -412,17 +442,31 @@ namespace Dyalect.Compiler
                 }
             }
 
-            foreach (var a in node.Arguments)
-                Build(a, hints.Append(Push), ctx);
-
-            if (sv.IsEmpty())
-                Build(node.Target, hints.Append(Push), ctx);
-            else
+            if (!sv.IsEmpty())
                 cw.PushVar(sv);
+            else
+                Build(node.Target, hints.Append(Push), ctx);
 
-            AddLinePragma(node);
-            cw.Call(node.Arguments.Count);
+            cw.FunPrep(node.Arguments.Count);
 
+            for (var i = 0; i < node.Arguments.Count; i++)
+            {
+                var a = node.Arguments[i];
+
+                if (a.NodeType == NodeType.Label)
+                {
+                    var la = (DLabelLiteral)a;
+                    Build(la.Expression, hints.Append(Push), ctx);
+                    cw.FunArgNm(la.Label);
+                }
+                else
+                {
+                    Build(a, hints.Append(Push), ctx);
+                    cw.FunArgIx(i);
+                }
+            }
+
+            cw.FunCall(node.Arguments.Count);
             PopIf(hints);
         }
 
@@ -455,8 +499,51 @@ namespace Dyalect.Compiler
 
         private void Build(DStringLiteral node, Hints hints, CompilerContext ctx)
         {
-            AddLinePragma(node);
-            cw.Push(node.Value);
+            if (node.Chunks != null)
+            {
+                cw.PushVar(GetVariable(StandardType.StringName, node));
+                cw.GetMember(GetMemberNameId("concat"));
+                cw.FunPrep(node.Chunks.Count);
+
+                for (var i = 0; i < node.Chunks.Count; i++)
+                {
+                    var c = node.Chunks[i];
+
+                    if (c.IsCode)
+                    {
+                        var p = new InternalParser(new Scanner(SourceBuffer.FromString(c.GetContent())));
+                        p.Parse();
+
+                        if (p.Errors.Count > 0)
+                        {
+                            foreach (var e in p.Errors)
+                                AddError(CompilerError.CodeIslandInvalid, new Location(node.Location.Line, node.Location.Column + e.Column), e.Message);
+                        }
+                        else
+                        {
+                            if (p.Root.Nodes == null || p.Root.Nodes.Count == 0)
+                                AddError(CompilerError.CodeIslandEmpty, node.Location);
+                            else if (p.Root.Nodes.Count > 1)
+                                AddError(CompilerError.CodeIslandMultipleExpressions, node.Location);
+                            else
+                                Build(p.Root.Nodes[0], hints.Append(Push), ctx);
+                        }
+                    }
+                    else
+                        cw.Push(c.GetContent());
+
+                    cw.FunArgIx(i);
+                }
+
+                AddLinePragma(node);
+                cw.FunCall(node.Chunks.Count);
+            }
+            else
+            {
+                AddLinePragma(node);
+                cw.Push(node.Value);
+            }
+
             PopIf(hints);
         }
 
@@ -723,10 +810,61 @@ namespace Dyalect.Compiler
             }
         }
 
+        private Par[] CompileFunctionParameters(List<DParameter> pars)
+        {
+            var arr = new Par[pars.Count];
+
+            for (var i = 0; i < pars.Count; i++)
+            {
+                var p = pars[i];
+
+                if (p.DefaultValue != null)
+                {
+                    if (p.IsVarArgs)
+                    {
+                        //TODO: Var args cannot have default values
+                    }
+
+                    DyObject val = null;
+
+                    switch (p.DefaultValue.NodeType)
+                    {
+                        case NodeType.Integer:
+                            val = new DyInteger(((DIntegerLiteral)p.DefaultValue).Value);
+                            break;
+                        case NodeType.Float:
+                            val = new DyFloat(((DFloatLiteral)p.DefaultValue).Value);
+                            break;
+                        case NodeType.Char:
+                            val = new DyChar(((DCharLiteral)p.DefaultValue).Value);
+                            break;
+                        case NodeType.Boolean:
+                            val = ((DBooleanLiteral)p.DefaultValue).Value ? DyBool.True : DyBool.False;
+                            break;
+                        case NodeType.String:
+                            val = new DyString(((DStringLiteral)p.DefaultValue).Value);
+                            break;
+                        case NodeType.Nil:
+                            val = DyNil.Instance;
+                            break;
+                        default:
+                            //Error: only primitive types are supported
+                            break;
+                    }
+
+                    arr[i] = new Par(p.Name, val, false);
+                }
+                else
+                    arr[i] = new Par(p.Name, null, p.IsVarArgs);
+            }
+
+            return arr;
+        }
+
         private void BuildFunctionBody(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
             var iter = hints.Has(Iterator);
-            var args = node.Parameters.ToArray();
+            var args = CompileFunctionParameters(node.Parameters);
             var argCount = args.Length;
             StartFun(node.Name, args, argCount);
 
@@ -757,12 +895,17 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             var address = cw.Offset;
+            var variadicIndex = -1;
 
             //Initialize function arguments
             for (var i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
-                AddVariable(arg, node, data: VarFlags.Argument);
+
+                if (arg.IsVarArg)
+                    variadicIndex = i;
+
+                AddVariable(arg.Name, node, data: VarFlags.Argument);
             }
 
             //If this is a member function we add an additional system variable that
@@ -813,10 +956,11 @@ namespace Dyalect.Compiler
                 cw.NewIter(funHandle);
             else
             {
-                cw.Push(node.IsVariadic ? argCount - 1 : argCount);
-
-                if (node.IsVariadic)
+                if (variadicIndex > -1)
+                {
+                    cw.Aux(variadicIndex);
                     cw.NewFunV(funHandle);
+                }
                 else
                     cw.NewFun(funHandle);
             }

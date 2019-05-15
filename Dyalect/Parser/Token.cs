@@ -18,7 +18,7 @@
 
         public static implicit operator Location(Token t)
         {
-            return t != null ? t.GetLocation() : default(Location);
+            return t != null ? t.GetLocation() : default;
         }
     }
 }

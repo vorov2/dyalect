@@ -1,51 +1,40 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System;
 
 namespace Dyalect.Runtime.Types
 {
     internal class DyNativeFunction : DyFunction
     {
-        internal const int VARIADIC = 0x01;
+        internal FunSym Sym;
+        internal FastList<DyObject[]> Captures;
+        internal DyObject[] Locals;
+        internal int PreviousOffset;
+        internal int UnitId;
+        internal int FunctionId;
 
-        internal FastList<DyObject[]> Captures { get; set; }
+        public override string FunctionName => Sym.Name;
 
-        internal DyObject[] Locals { get; set; }
+        public override bool IsExternal => false;
 
-        internal int PreviousOffset { get; set; }
-
-        internal int UnitId { get; }
-
-        internal int FunctionId { get; set; }
-
-        internal byte Flags { get; set; }
-
-        public bool IsVariadic => (Flags & VARIADIC) == VARIADIC;
-
-        public DyNativeFunction(int unitId, int funcId, int pars, FastList<DyObject[]> captures, int typeId) : base(typeId, pars)
+        internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) : 
+            base(typeId, sym?.Parameters ?? Statics.EmptyParameters, varArgIndex)
         {
+            Sym = sym;
             UnitId = unitId;
             FunctionId = funcId;
-            ParameterNumber = pars;
             Captures = captures;
         }
 
-        public static DyNativeFunction Create(int unitId, int funcId, int pars, FastList<DyObject[]> captures, DyObject[] locals, bool variadic = false)
+        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1)
         {
-            byte flags = 0;
-
-            if (variadic)
-                flags |= VARIADIC;
-
             var vars = new FastList<DyObject[]>(captures) { locals };
-            return new DyNativeFunction(unitId, funcId, pars, vars, StandardType.Function)
-            {
-                Flags = flags
-            };
+            return new DyNativeFunction(sym, unitId, funcId, vars, StandardType.Function, varArgIndex);
         }
 
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg)
         {
-            return new DyNativeFunction(UnitId, FunctionId, ParameterNumber, Captures, StandardType.Function)
+            return new DyNativeFunction(Sym, UnitId, FunctionId, Captures, StandardType.Function, VarArgIndex)
             {
                 Self = arg
             };
@@ -56,61 +45,57 @@ namespace Dyalect.Runtime.Types
             if (args == null)
                 args = Statics.EmptyDyObjects;
 
-            var layout = ctx.Composition.Units[UnitId].Layouts[FunctionId];
-            Locals = new DyObject[layout.Size];
+            var locs = CreateLocals(ctx);
+            var arr = default(DyObject[]);
 
-            for (var i = 0; i < ParameterNumber; i++)
-                Locals[i] = i >= args.Length ? DyNil.Instance : args[i];
-
-            if (IsVariadic)
+            for (var i = 0; i < Parameters.Length; i++)
             {
-                var arr = new DyObject[args.Length - ParameterNumber];
+                if (VarArgIndex != -1 && i >= VarArgIndex)
+                {
+                    if (arr == null)
+                        arr = new DyObject[args.Length - i + 1];
 
-                for (var i = ParameterNumber; i < args.Length; i++)
-                    arr[i - ParameterNumber] = args[i];
+                    if (i < args.Length)
+                        arr[args.Length - i] = args[i];
+                }
 
-                Locals[Locals.Length - 1] = DyTuple.Create(arr);
+                locs[i] = i >= args.Length ? DyNil.Instance : args[i];
             }
 
-            return DyMachine.ExecuteWithData(this, ctx);
+            ctx.CallStack.Dup();
+            return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
         internal override DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            Locals = new DyObject[ctx.Composition.Units[UnitId].Layouts[FunctionId].Size];
-            Locals[0] = left;
-            Locals[1] = right;
-            return DyMachine.ExecuteWithData(this, ctx);
+            var locs = CreateLocals(ctx);
+            locs[0] = left;
+            locs[1] = right;
+            ctx.CallStack.Dup();
+            return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
         internal override DyObject Call1(DyObject obj, ExecutionContext ctx)
         {
-            Locals = new DyObject[ctx.Composition.Units[UnitId].Layouts[FunctionId].Size];
-            Locals[0] = obj;
-            return DyMachine.ExecuteWithData(this, ctx);
+            var locs = CreateLocals(ctx);
+            locs[0] = obj;
+            ctx.CallStack.Dup();
+            return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
-        internal override DyObject Call0(ExecutionContext ctx) => DyMachine.ExecuteWithData(this, ctx);
-
-        protected override string GetCustomFunctionName(ExecutionContext ctx) => GetFunSym(ctx)?.Name ?? DefaultName;
-
-        private FunSym GetFunSym(ExecutionContext ctx)
+        internal override DyObject Call0(ExecutionContext ctx)
         {
-            var frame = ctx?.Composition.Units[UnitId];
-            var syms = frame != null ? frame.Symbols : null;
-
-            if (syms != null)
-            {
-                var dr = new DebugReader(syms);
-                var fs = dr.GetFunSymByHandle(FunctionId);
-
-                if (fs != null)
-                    return fs;
-            }
-
-            return null;
+            var locs = CreateLocals(ctx);
+            ctx.CallStack.Dup();
+            return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
-        protected override string[] GetCustomParameterNames(ExecutionContext ctx) => GetFunSym(ctx)?.Parameters;
+        internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.Composition.Units[UnitId].Layouts[FunctionId];
+
+        internal override DyObject[] CreateLocals(ExecutionContext ctx)
+        {
+            var size = GetLayout(ctx).Size;
+            return size == 0 ? Statics.EmptyDyObjects : new DyObject[size];
+        }
     }
 }

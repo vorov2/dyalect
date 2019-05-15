@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using Dyalect.Runtime;
 using System.Reflection;
+using Dyalect.Debug;
 
 namespace Dyalect.Linker
 {
@@ -58,33 +59,56 @@ namespace Dyalect.Linker
         private DyObject ProcessMethod(string name, MethodInfo mi)
         {
             var pars = mi.GetParameters();
+            var parsMeta = pars.Length > 1 ? new Par[pars.Length - 1] : null;
+            var varArgIndex = -1;
 
-            if (pars.Length == 2
-                && pars[0].ParameterType == typeof(ExecutionContext)
-                && pars[1].ParameterType == typeof(DyObject[]))
-                return DyForeignFunction.Create(
-                    name,
-                    (Func<ExecutionContext, DyObject[], DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject[], DyObject>), this));
+            if (pars.Length < 0 || pars[0].ParameterType != typeof(ExecutionContext))
+                throw new DyException($"Method signature for method {mi.Name} is not supported. The first parameter should be of type ExecutionContext.");
 
-            Func<ExecutionContext, DyObject[], DyObject> invoker = (ctx, args) =>
+            for (var i = 1; i < pars.Length; i++)
             {
-                var newArgs = new object[args.Length];
+                var p = pars[i];
 
-                for (var i = 0; i < args.Length; i++)
+                if (p.ParameterType != CliType.DyObject)
+                    throw new DyException($"Parameter type {p.ParameterType} for method {mi.Name} is not supported.");
+
+                var va = false;
+
+                if (Attribute.IsDefined(p, typeof(VarArgAttribute)))
                 {
-                    var p = pars[i];
-                    var res = TypeConverter.ConvertTo(args[0], p.ParameterType, ctx);
+                    if (varArgIndex != -1)
+                        throw new DyException($"Duplicate [VarArgs] attribute for method {mi.Name}.");
 
-                    if (ctx.HasErrors)
-                        return DyNil.Instance;
-
-                    newArgs[i] = res;
+                    va = true;
+                    varArgIndex = i - 1;
                 }
 
-                var retval = mi.Invoke(this, newArgs);
-                return TypeConverter.ConvertFrom(retval, ctx);
-            };
-            return DyForeignFunction.Create(name, invoker);
+                DyObject def = null;
+
+                var defAttr = Attribute.GetCustomAttribute(p, typeof(DefaultAttribute)) as DefaultAttribute;
+
+                if (defAttr != null)
+                    def = defAttr.Value;
+
+                parsMeta[i - 1] = new Par(p.Name, def, va);
+            }
+
+            if (parsMeta == null)
+                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject>), this));
+
+            if (parsMeta.Length == 1)
+                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject>), this), varArgIndex, parsMeta);
+
+            if (parsMeta.Length == 2)
+                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
+
+            if (parsMeta.Length == 3)
+                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
+
+            if (parsMeta.Length == 4)
+                return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
+
+            throw new DyException($"Method {mi.Name} has too many parameters.");
         }
 
         protected DyObject Default() => DyNil.Instance;

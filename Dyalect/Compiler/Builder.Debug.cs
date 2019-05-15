@@ -16,7 +16,7 @@ namespace Dyalect.Compiler
         private bool isDebug; //Показывает, производим ли мы компиляцию в дебаг-режиме
 
         //Вызывается, чтобы создать первую часть символа FunSym.
-        private void StartFun(string name, string[] pars, int parCount)
+        private void StartFun(string name, Par[] pars, int parCount)
         {
             cw.StartFrame();
             pdb.StartFunction(name, cw.Offset, pars);

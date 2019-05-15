@@ -66,6 +66,14 @@ namespace Dyalect.Runtime
             array[Count++] = val;
         }
 
+        public void Dup()
+        {
+            if (Count > 0)
+                Push(Peek());
+            else
+                Push((long)0 | (long)0 << 32);
+        }
+
         public int Count;
 
         public long this[int index]

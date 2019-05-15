@@ -1,4 +1,5 @@
-﻿using Dyalect.Parser;
+﻿using Dyalect.Debug;
+using Dyalect.Parser;
 
 namespace Dyalect.Runtime.Types
 {
@@ -27,7 +28,7 @@ namespace Dyalect.Runtime.Types
 
         }
 
-        public override string TypeName => StandardType.LabelName;
+        public override string TypeName => StandardType.CharName;
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => StringUtil.Escape(arg.GetString(), "'");
 
@@ -68,11 +69,45 @@ namespace Dyalect.Runtime.Types
             else
                 return base.LtOp(left, right, ctx);
         }
+        #endregion
+
+        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
+        {
+            if (to.TypeId != StandardType.Char)
+                return Err.InvalidType(StandardType.CharName, to.TypeName(ctx)).Set(ctx);
+
+            var ifrom = self.GetChar();
+            var istart = ifrom;
+            var ito = to.GetChar();
+            var fst = true;
+            var step = ito > ifrom ? 1 : -1;
+
+            char current = ifrom;
+            return new DyIterator(new DyIterator.RangeEnumerator(
+                () => new DyChar(current),
+                () =>
+                {
+                    if (fst)
+                    {
+                        fst = false;
+                        return true;
+                    }
+
+                    current = (char)(current + step);
+
+                    if (ito > istart)
+                        return current <= ito;
+
+                    return current >= ito;
+                }));
+        }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
+            if (name == "to")
+                return DyForeignFunction.Member(name, Range, -1, new Par("value"));
+
             return null;
         }
-        #endregion
     }
 }

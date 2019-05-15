@@ -162,4 +162,13 @@
   <data name="StaticOnlyMethods" xml:space="preserve">
     <value>Function "{0}" cannot be declared as static. Only methods can be static.</value>
   </data>
+  <data name="CodeIslandEmpty" xml:space="preserve">
+    <value>Empty code islands are not supported.</value>
+  </data>
+  <data name="CodeIslandMultipleExpressions" xml:space="preserve">
+    <value>Multiple expressions are not supported in code islands.</value>
+  </data>
+  <data name="CodeIslandInvalid" xml:space="preserve">
+    <value>Invalid code island inside of a string literal: {0}</value>
+  </data>
 </root>

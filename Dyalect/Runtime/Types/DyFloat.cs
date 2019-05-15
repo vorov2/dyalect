@@ -1,4 +1,6 @@
-﻿namespace Dyalect.Runtime.Types
+﻿using Dyalect.Debug;
+
+namespace Dyalect.Runtime.Types
 {
     public sealed class DyFloat : DyObject
     {
@@ -143,5 +145,44 @@
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => arg.GetFloat().ToString(CI.NumberFormat);
         #endregion
+
+        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
+        {
+            if (to.TypeId != StandardType.Float)
+                return Err.InvalidType(StandardType.FloatName, to.TypeName(ctx)).Set(ctx);
+
+            var ifrom = self.GetFloat();
+            var istart = ifrom;
+            var ito = to.GetFloat();
+            var fst = true;
+            var step = ito > ifrom ? 1.0 : -1.0;
+
+            double current = ifrom;
+            return new DyIterator(new DyIterator.RangeEnumerator(
+                () => new DyFloat(current),
+                () =>
+                {
+                    if (fst)
+                    {
+                        fst = false;
+                        return true;
+                    }
+
+                    current = current + step;
+
+                    if (ito > istart)
+                        return current <= ito;
+
+                    return current >= ito;
+                }));
+        }
+
+        protected override DyFunction GetMember(string name, ExecutionContext ctx)
+        {
+            if (name == "to")
+                return DyForeignFunction.Member(name, Range, -1, new Par("value"));
+
+            return null;
+        }
     }
 }

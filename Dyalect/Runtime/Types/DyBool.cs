@@ -40,6 +40,9 @@
 
         public override string TypeName => StandardType.BoolName;
 
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            left.GetBool() == right.GetBool() ? DyBool.True : DyBool.False;
+
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
             ReferenceEquals(arg, DyBool.True) ? "true" : "false";
     }

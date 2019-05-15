@@ -51,9 +51,8 @@
             1,  //Dup
             0,  //SyncPoint
             -1, //Fail
-            0,  //Call **dynamic
-            0,  //NewFun
-            0,  //NewFunV
+            1,  //NewFun
+            1,  //NewFunV
             1,  //NewIter
             -1, //SetMember
             0,  //GetMember
@@ -70,6 +69,13 @@
             0,  //Brterm
             0,  //Briter
             0,  //Aux
+
+            0,  //FunPrep
+            -1, //FunArgIx
+            -1, //FunArgNm
+            0,  //FunCall
+
+            0,  //NewTuple **dynamic
         };
     }
 }

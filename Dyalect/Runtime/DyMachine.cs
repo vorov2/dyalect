@@ -10,7 +10,7 @@ namespace Dyalect.Runtime
 {
     public static class DyMachine
     {
-        private static readonly DyNativeFunction global = new DyNativeFunction(0, 0, 0, FastList<DyObject[]>.Empty, StandardType.Function);
+        private static readonly DyNativeFunction global = new DyNativeFunction(null, 0, 0, FastList<DyObject[]>.Empty, StandardType.Function, -1);
 
         public static ExecutionContext CreateExecutionContext(UnitComposition composition)
         {
@@ -72,15 +72,15 @@ namespace Dyalect.Runtime
             }
 
             ctx.Units[unitId] = ctx.Units[unitId] ?? new DyObject[lay0.Size];
-            return ExecuteWithData(global, ctx);
+            return ExecuteWithData(global, null, ctx);
         }
 
-        internal static DyObject ExecuteWithData(DyNativeFunction function, ExecutionContext ctx)
+        internal static DyObject ExecuteWithData(DyNativeFunction function, DyObject[] locals, ExecutionContext ctx)
         {
             DyObject left;
             DyObject right;
-            DyObject[] locals;
             Op op;
+            DyFunction callFun;
 
             var types = ctx.Types;
             var unit = ctx.Composition.Units[function.UnitId];
@@ -94,12 +94,8 @@ namespace Dyalect.Runtime
             else if (function.Locals != null)
             {
                 locals = function.Locals;
-
-                if (function.TypeId == StandardType.Iterator)
-                    offset = function.PreviousOffset;
+                offset = function.PreviousOffset;
             }
-            else
-                locals = new DyObject[layout.Size];
 
             var captures = function.Captures;
 
@@ -315,62 +311,10 @@ namespace Dyalect.Runtime
                         evalStack.Push(DyIterator.CreateIterator(function.UnitId, op.Data, captures, locals));
                         break;
                     case OpCode.NewFun:
-                        right = evalStack.Peek();
-                        evalStack.Replace(DyNativeFunction.Create(function.UnitId, op.Data, (int)right.GetInteger(), captures, locals));
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, captures, locals));
                         break;
                     case OpCode.NewFunV:
-                        right = evalStack.Peek();
-                        evalStack.Replace(DyNativeFunction.Create(function.UnitId, op.Data, (int)right.GetInteger(), captures, locals, true));
-                        break;
-                    case OpCode.Call:
-                        {
-                            right = evalStack.Pop();
-                            if (right.TypeId != StandardType.Function && right.TypeId != StandardType.Iterator)
-                            {
-                                ctx.Error = Err.NotFunction(types[right.TypeId].TypeName);
-                                ProcessError(ctx, function, ref offset);
-                                break;
-                            }
-
-                            if (right is DyNativeFunction callFun)
-                            {
-                                layout = ctx.Composition.Units[callFun.UnitId].Layouts[callFun.FunctionId];
-
-                                if ((op.Data > callFun.ParameterNumber && !callFun.IsVariadic) || op.Data < callFun.ParameterNumber)
-                                {
-                                    ctx.Error = Err.WrongNumberOfArguments(callFun.GetFunctionName(ctx), callFun.ParameterNumber, op.Data);
-                                    ProcessError(ctx, function, ref offset);
-                                    break;
-                                }
-
-                                if (callFun.TypeId != StandardType.Iterator)
-                                    callFun.Locals = new DyObject[layout.Size];
-
-                                var arr = default(DyObject[]);
-
-                                if (callFun.IsVariadic)
-                                {
-                                    arr = new DyObject[op.Data - callFun.ParameterNumber];
-                                    callFun.Locals[callFun.ParameterNumber] = DyTuple.Create(arr);
-                                }
-
-                                for (var i = op.Data; i > 0; i--)
-                                {
-                                    if (i <= callFun.ParameterNumber)
-                                        callFun.Locals[i - 1] = evalStack.Pop();
-                                    else
-                                        arr[i - callFun.ParameterNumber - 1] = evalStack.Pop();
-                                }
-
-                                ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
-                                evalStack.Push(ExecuteWithData(callFun, ctx));
-                            }
-                            else
-                                evalStack.Push(CallExternalFunction(op, offset, evalStack, function, (DyFunction)right, ctx));
-
-                            if (ctx.Error != null)
-                                ProcessError(ctx, function, ref offset, evalStack);
-                        }
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, captures, locals, ctx.AUX));
                         break;
                     case OpCode.HasMember:
                         right = evalStack.Peek();
@@ -446,9 +390,119 @@ namespace Dyalect.Runtime
                     case OpCode.Aux:
                         ctx.AUX = op.Data;
                         break;
+                    case OpCode.FunPrep:
+                        {
+                            right = evalStack.Peek();
+                            if (right.TypeId != StandardType.Function && right.TypeId != StandardType.Iterator)
+                            {
+                                ctx.Error = Err.NotFunction(types[right.TypeId].TypeName);
+                                ProcessError(ctx, function, ref offset);
+                                break;
+                            }
+
+                            callFun = (DyFunction)right;
+
+                            if (op.Data > callFun.Parameters.Length && callFun.VarArgIndex == -1)
+                            {
+                                ctx.Error = Err.TooManyArguments(callFun.FunctionName, callFun.Parameters.Length, op.Data);
+                                ProcessError(ctx, function, ref offset);
+                                break;
+                            }
+
+                            ctx.Locals.Push(new ArgContainer {
+                                Locals = callFun.CreateLocals(ctx),
+                                VarArgsIndex = callFun.VarArgIndex,
+                                VarArgs = callFun.VarArgIndex > -1 ? new FastList<DyObject>() : null
+                            });
+                        }
+                        break;
+                    case OpCode.FunArgIx:
+                        var vi = ctx.Locals.Peek().VarArgsIndex;
+                        if (vi > -1 && op.Data >= vi)
+                        {
+                            ctx.Locals.Peek().VarArgs.Add(evalStack.Pop());
+                            break;
+                        }
+
+                        ctx.Locals.Peek().Locals[op.Data] = evalStack.Pop();
+                        break;
+                    case OpCode.FunArgNm:
+                        {
+                            var idx = ((DyFunction)evalStack.Peek(2)).GetParameterIndex(unit.IndexedStrings[op.Data].Value, ctx);
+                            if (idx == -1)
+                            {
+                                ctx.Error = Err.ArgumentNotFound(((DyFunction)evalStack.Peek(2)).FunctionName, unit.IndexedStrings[op.Data].Value);
+                                ProcessError(ctx, function, ref offset, evalStack);
+                                break;
+                            }
+
+                            ctx.Locals.Peek().Locals[idx] = evalStack.Pop();
+                        }
+                        break;
+                    case OpCode.FunCall:
+                        {
+                            callFun = (DyFunction)evalStack.Pop();
+
+                            if (op.Data != callFun.Parameters.Length || callFun.VarArgIndex > -1)
+                            {
+                                FillDefaults(ctx.Locals.Peek(), callFun, ctx);
+                                if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                            }
+
+                            ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
+
+                            if (!callFun.IsExternal)
+                                evalStack.Push(ExecuteWithData((DyNativeFunction)callFun, ctx.Locals.Pop().Locals, ctx));
+                            else
+                            {
+                                evalStack.Push(callFun.Call(ctx, ctx.Locals.Pop().Locals));
+                                ctx.CallStack.Pop();
+                            }
+
+                            if (ctx.Error != null)
+                                ProcessError(ctx, function, ref offset, evalStack);
+                        }
+                        break;
+                    case OpCode.NewTuple:
+                        evalStack.Push(MakeTuple(evalStack, op.Data));
+                        break;
                 }
             }
             goto CYCLE;
+        }
+
+        private static DyTuple MakeTuple(EvalStack stack, int size)
+        {
+            var arr = new DyObject[size];
+
+            for (var i = 0; i < size; i++)
+                arr[arr.Length - i - 1] = stack.Pop();
+
+            return new DyTuple(arr);
+        }
+
+        private static void FillDefaults(ArgContainer cont, DyFunction callFun, ExecutionContext ctx)
+        {
+            var pars = callFun.Parameters;
+            var locals = cont.Locals;
+
+            if (callFun.VarArgIndex > -1)
+                locals[callFun.VarArgIndex] = cont.VarArgs == null ? null :
+                    new DyTuple(cont.VarArgs.ToArray() ?? Statics.EmptyDyObjects);
+
+            for (var i = 0; i < pars.Length; i++)
+            {
+                if (locals[i] == null)
+                {
+                    locals[i] = pars[i].Value;
+
+                    if (locals[i] == null)
+                    {
+                        ctx.Error = Err.RequiredArgumentMissing(callFun.FunctionName, pars[i].Name);
+                        return;
+                    }
+                }
+            }
         }
 
         private static void ProcessError(ExecutionContext ctx, DyNativeFunction currentFunc, ref int offset, EvalStack evalStack = null)
@@ -459,31 +513,6 @@ namespace Dyalect.Runtime
             var ex = CreateException(ctx.Error, offset, currentFunc.UnitId, ctx);
             ctx.Error = null;
             throw ex;
-        }
-
-        private static DyObject CallExternalFunction(Op op, int offset, EvalStack evalStack, DyNativeFunction caller, DyFunction fun, ExecutionContext ctx)
-        {
-            var arr = new DyObject[op.Data];
-            for (var i = op.Data - 1; i > -1; i--)
-                arr[i] = evalStack.Pop();
-
-            if (op.Data < fun.ParameterNumber)
-                for (var i = op.Data; i < fun.ParameterNumber; i++)
-                    arr[i] = DyNil.Instance;
-
-#if !DEBUG
-            try
-#endif
-            {
-                return fun.Call(ctx, arr);
-            }
-#if !DEBUG
-            catch (Exception ex)
-            {
-                throw CreateException(Err.ExternalFunctionFailure(fun.GetFunctionName(ctx), ex.Message),
-                    offset - 1, caller.UnitId, ctx, ex);
-            }
-#endif
         }
 
         private static Stack<StackPoint> Dump(CallStack callStack)
