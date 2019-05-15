@@ -74,8 +74,9 @@ namespace Dyalect
                 }
             }
 
-            Printer.SupplementaryOutput(new string('-', 60));
-            Printer.Output($"{passed} passed, {failed} failed");
+            Printer.LineFeed();
+            Printer.Output("Total:");
+            Printer.Output($"{passed} passed, {failed} failed in {funs.Count} file(s)");
 
             if (appveyor)
                 Submit();

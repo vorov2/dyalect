@@ -1,0 +1,406 @@
+﻿func mathTest1() {
+    var x = 12 * 3 - 4 + 6
+    assert(38, x)
+}
+
+func mathTest2() { //1.5919117647058822
+    var x = 22 % 4 - 3.33 / 8.16
+    assert(1.5919117647058822, x)
+}
+
+func mathTest3() { //6.6129032258064528
+    var x = 12.3 / (0.64 + 1.22)
+    assert(6.6129032258064528, x)
+}
+
+func mathTest4() { //11.256
+    var x = 23.456 % 12.2
+    assert(11.256, x)
+}
+
+func mathTest5() { //0.0099999999999997868
+   var x = 12.4 - 0.39 - 12.0
+   assert(0.0099999999999997868, x)
+}
+
+func mathTest6() { //783.59999999999991
+   var x = 12.0 * 65.3
+   assert(783.59999999999991, x)
+}
+
+func mathTest7() {
+    var x = 188.123 - 12.0004 * 5.667 - (12.2 / 0.134)
+    assert(29.071957080597016, x)
+}
+
+func mathTest8() {
+    var x = -12 - 14.6
+    assert(-26.6, x)
+}
+
+func mathTest9() {
+    var x = 199 % 44.12 * 2
+    assert(45.04000000000002, x)
+}
+
+func mathTest10() {
+    var x = +16 - -22
+    assert(38, x)
+}
+
+func logicalTest1() {
+    const x = 144
+    var res = x / 12 > 100 || x / 6 == 24
+    assert(true, res)
+}
+
+func logicalTest2() {
+    const x = 144
+    var res = x / 12 > 100 && x / 6 != 24
+    assert(false, res)
+}
+
+func comparisonTest1() {
+    var res = 12 > 11 && 12 <= 12 && 12 != 12.01 && 12 >= 12
+    assert(true, res)
+}
+
+func comparisonTest2() {
+    assert(true, "string1" != "string2" && "string1" == "string1")
+}
+
+func comparisonTest3() {
+    const x = 12
+    const y = 9
+    assert(false, !(x >= 12 && y <= 10 || x < -12))
+}
+
+func comparisonTest4() {
+    assert(true, 12.0 == 12)
+    assert(true, 12 == 12.0)
+}
+
+func comparisonTest5() {
+    assert(true, 12.2 > 12)
+    assert(true, 12 < 12.2)
+}
+
+func comparisonTest6() {
+    var str1 = "x"
+    var str2 = ""
+    assert(true, str1 == true)
+    assert(false, str2 == true)
+    assert(true, str2 == false)
+}
+
+func toStringTest1() {
+    var res = (1,2,3).toString()
+    assert("(1, 2, 3)", res)
+}
+
+func toStringTest2() {
+    var res = [12.2, "string", true].toString()
+    assert("[12.2, \"string\", true]", res)
+}
+
+func toStringTest3() {
+    var res = (x:42,y:"foo").toString()
+    assert("(x: 42, y: \"foo\")", res)
+}
+
+func baseTest1() {
+    const x = 2
+    func inner() {
+        const x = 4
+        base.x
+    }
+    assert(2, inner())
+}
+
+func baseTest2() {
+    const x = 2
+    func inner() {
+        const x = 4
+        if x == 4 {
+            var x = 8
+            base.x
+        }
+    }
+    assert(2, inner())
+}
+
+func literalTest1() {
+    var tup = (
+        x: (x: 2, y: (y: 3)),
+        22
+    )
+    var res = tup[1] + tup["x"]["x"] - tup["x"]["y"]["y"]
+    assert(21, res)
+}
+
+func literalTest2() {
+    var arr = [[1,2], [3,4,(5,6,a:[7,8])]]
+    var res = arr[0][0] + arr[1][2]["a"][1]
+    assert(9, res)
+}
+
+func literalTest3() {
+    var fst = "some\tstring with\"inner quotes\" and such (and a buck \u0024)"
+    var snd = "some\u0009string with\u0022inner quotes\u0022 and such (and a buck $)"
+    assert(fst, snd)
+}
+
+func literalTest4() {
+    var res = '\'' + 'F' + '\'' + '\s'
+    assert("'F' ", res)
+}
+
+func literalTest5() {
+    var res = 1.234e-17
+    assert(0.00000000000000001234, res)
+}
+
+func literalTest6() {
+    var res = 0x40 + 0x20
+    assert(96, res)
+}
+
+func arrayTest1() {
+    var arr = []
+    arr.add(1)
+    arr.add(2)
+    arr.addRange([1,2,3])
+    arr.removeAt(1)
+    arr.remove(3)
+    assert([1, 1, 2], arr)
+}
+
+func arrayTest2() {
+    var arr = [1,2,3,4,5]
+    arr.clear()
+    arr.add(1)
+    arr.add(2)
+    arr.insert(0, 11)
+    arr.insert(0, 11)
+    arr.remove(11)
+    assert([11, 1, 2], arr)
+}
+
+func arrayTest3() {
+    var arr = [1,2,3,4,5,6]
+    var newArr = arr.slice(2,5)
+    assert([3, 4, 5], newArr)
+}
+
+func arrayTest4() {
+    var arr = [4,6,1,3,2,5]
+    arr.sort((x,y) => x - y)
+    assert([1, 2, 3, 4, 5, 6], arr)
+}
+
+func arrayTest5() {
+    var arr = [1, 2, 3, 1, 4, 5, 1]
+    assert(0, arr.indexOf(1))
+    assert(6, arr.lastIndexOf(1))
+}
+
+func arrayTest6() {
+    var arr = [1,2,3,4,5,6]
+    var res = arr.indices().toArray()
+    assert([0, 1, 2, 3, 4, 5], res)
+}
+
+func arrayTest7() {
+    var arr = [1,nil,2,nil,3,nil,nil,4,5,6]
+    arr.compact()
+    assert([1, 2, 3, 4, 5, 6], arr)
+}
+
+func arrayTest8() {
+    var arr = [1,2,3,4]
+    assert(4, arr.len())
+}
+
+func arrayTest9() {
+    var arr = [7,4,6,1,3,2,5]
+    arr.sort()
+    assert([1, 2, 3, 4, 5, 6, 7], arr)
+}
+
+func arrayTest10() {
+    var arr = Array.empty(4, false)
+    assert([false, false, false, false], arr)
+    arr = Array.empty(3, 0)
+    assert([0, 0, 0], arr)
+    arr = Array.empty(2)
+    assert([nil, nil], arr)
+}
+
+func arrayTest11() {
+    var arr = Array.new(1,2,3)
+    assert([1,2,3], arr)
+}
+
+func tupleTest1() {
+    var t = (1,2,3)
+    assert(3, t.len())
+}
+
+func tupleTest2() {
+    var t = (x: 1, y: 2, z: 3)
+    assert(6, t.x + t.y + t.z)
+}
+
+func tupleTest3() {
+    var t = (x: 1, y: 2, z: 3)
+    var res = t.keys().toArray()
+    assert(["x", "y", "z"], res)
+}
+
+func tupleTest4() {
+    var t = (1,2,3,4,5,6)
+    var res = t.indices().toArray()
+    assert([0, 1, 2, 3, 4, 5], res)
+}
+
+func tupleTest5() {
+    var t = (42, 4.56)
+    var res = t.fst() - t.snd()
+    assert(37.44, res)
+}
+
+func stringTest1() {
+    var str = "Hello, world!"
+    var res = str.len()
+    assert(13, res)
+}
+
+func stringTest2() {
+    var str = "Hello, world!"
+    assert(4, str.indexOf("o"))
+    assert(8, str.lastIndexOf("o"))
+}
+
+func stringTest3() {
+    assert(false, "1" > "2")
+    assert(true, "1" < "2")
+}
+
+func stringTest4() {
+    var str = "Name=John;Surname=Doe;Age=21;Gender=Male"
+    var arr = str.split('=', ';')
+    assert(["Name","John","Surname","Doe","Age","21","Gender","Male"], arr)
+}
+
+func stringTest5() {
+    var str = "foo"
+    var res = str[0] + str[2]
+    assert("fo", res)
+}
+
+func stringTest6() {
+    var str1 = "FOO"
+    var str2 = "bar"
+    var res = str1.lower() + str2.upper()
+    assert("fooBAR", res)
+}
+
+func stringTest7() {
+    var res = "fooBar".startsWith("foo")
+    assert(true, res)
+}
+
+func stringTest8() {
+    var res = "fooBar".endsWith("Bar")
+    assert(true, res)
+}
+
+func stringTest9() {
+    var res = "abcdef".sub(2, 4) + "qwerty".sub(4)
+    assert("cdefty", res)
+}
+
+func stringTest10() {
+    var res = "camelCase".capitalize()
+    assert("CamelCase", res)
+}
+
+func stringTest11() {
+    var res = String.concat("one", "two", "three", 44)
+    assert("onetwothree44", res)
+}
+
+func stringTest12() {
+    var res = "fooBar".contains("oBa")
+    assert(true, res)
+}
+
+func stringTest13() {
+    var res = " ss".trim() + "--dd--".trimStart('-') + "!ee!".trimEnd('!')
+    assert("ssdd--!ee", res)
+}
+
+func memberCheckTest() {
+    assert(true, "string".len?)
+    assert(false, 42.fooBar?)
+}
+
+func nameofTest() {
+    assert("nameofTest", nameof(nameofTest))
+    assert("toString", nameof("".toString))
+    var tup = (x: 12)
+    assert("x", nameof(tup.x))
+}
+
+func typeofTest() {
+    assert(true, typeof(42) == Integer)
+    assert(true, typeof("") == String)
+    assert(true, typeof(42.01) == Float)
+    assert(true, typeof('\s') == Char)
+}
+
+func rangeTest1() {
+    var xs = 1..10
+    assert([1,2,3,4,5,6,7,8,9,10], xs.toArray())
+}
+
+func rangeTest2() {
+    var xs = 5..1
+    assert([5,4,3,2,1], xs.toArray())
+}
+
+func rangeTest3() {
+    var acc = 0
+    for x in 1..5 {
+        acc += x
+    }
+    assert(15, acc)
+}
+
+func rangeTest4() {
+    var chz = ('a'..'e')
+    assert(['a','b','c','d','e'], chz.toArray())
+}
+
+func interpolationTest1() {
+    var x = 42
+    var y = 12
+    var res = "the value of (x + y) is \(x + y)"
+    assert("the value of (x + y) is 54", res)
+}
+
+func interpolationTest2() {
+    func doubleMe(x) {
+        x + x
+    }
+    var foo = 13
+    var res = "doubleMe(foo) = \(doubleMe(foo))"
+    assert("doubleMe(foo) = 26", res)
+}
+
+func interpolationTest3() {
+    var x = 3
+    var y = 2
+    var res = "value = \((x * (2 + 3)) * y)"
+    assert("value = 30", res)
+}
