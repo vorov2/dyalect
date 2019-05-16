@@ -1,3 +1,6 @@
+# 0.5.4
+  * A bug fixed: _Multiline mode works incorrectly in console_ ([Issue #70](https://github.com/vorov2/dyalect/issues/70)).
+
 # 0.5.3
   * A bug fixed: _Previous errors are not always cleared in interactive console_ ([Issue #64](https://github.com/vorov2/dyalect/issues/64)).
   * Type system is refactored for better consistency.

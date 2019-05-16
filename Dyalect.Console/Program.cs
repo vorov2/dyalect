@@ -1,6 +1,7 @@
 ﻿using Dyalect.Util;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Dyalect
@@ -75,12 +76,10 @@ namespace Dyalect
 
                 sb.AppendLine(line);
 
-                if (line.EndsWith('{'))
-                    balance++;
-                else if (balance > 0 && line.EndsWith('}'))
-                    balance--;
+                balance += line.Count(c => c == '{');
+                balance -= line.Count(c => c == '}');
 
-                if (balance != 0)
+                if (balance > 0)
                     continue;
 
                 ctx.Eval(sb.ToString());
