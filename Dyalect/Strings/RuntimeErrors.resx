@@ -156,4 +156,7 @@
   <data name="ArgumentNotFound" xml:space="preserve">
     <value>Function "%FunctionName%" doesn't have an argument "%ArgumentName%".</value>
   </data>
+  <data name="FailedReadLiteral" xml:space="preserve">
+    <value>Failed to read literal: %Reason%</value>
+  </data>
 </root>

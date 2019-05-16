@@ -34,7 +34,9 @@ namespace Dyalect.Runtime
 
         RequiredArgumentMissing = 612,
 
-        ArgumentNotFound = 613
+        ArgumentNotFound = 613,
+
+        FailedReadLiteral = 614
     }
 
     public sealed class DyError
@@ -62,6 +64,12 @@ namespace Dyalect.Runtime
 
     internal static class Err
     {
+        public static DyError FailedReadLiteral(string reason)
+        {
+            return new DyError(DyErrorCode.FailedReadLiteral,
+                ("Reason", reason));
+        }
+
         public static DyError AssertFailed(string reason)
         {
             return new DyError(DyErrorCode.AssertFailed,

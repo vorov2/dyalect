@@ -340,6 +340,13 @@ func stringTest13() {
     assert("ssdd--!ee", res)
 }
 
+func stringTest14() {
+    assert(true, "".isEmpty())
+    assert(true, " \s ".isEmpty())
+    assert(true, " \t\r\n\t ".isEmpty())
+    assert(false, "hh".isEmpty())
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
@@ -403,4 +410,9 @@ func interpolationTest3() {
     var y = 2
     var res = "value = \((x * (2 + 3)) * y)"
     assert("value = 30", res)
+}
+
+func parseTest() {
+    var res = parse("[1,2,3,('c',true,23.4),nil]")
+    assert([1,2,3,('c',true,23.4),nil], res)
 }

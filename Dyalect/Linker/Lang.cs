@@ -1,7 +1,9 @@
-﻿using Dyalect.Runtime;
+﻿using Dyalect.Parser;
+using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
 using System.Collections;
+using System.Linq;
 
 namespace Dyalect.Linker
 {
@@ -100,6 +102,33 @@ namespace Dyalect.Linker
             }
 
             return Equals(x, y);
+        }
+
+        [Function("parse")]
+        public DyObject Parse(ExecutionContext ctx, DyObject expression)
+        {
+            if (expression.TypeId != StandardType.String)
+                return Err.InvalidType(StandardType.StringName, expression.TypeName(ctx)).Set(ctx);
+
+            try
+            {
+                var p = new DyParser();
+                var res = p.Parse(SourceBuffer.FromString(expression.GetString()));
+
+                if (!res.Success)
+                    return Err.FailedReadLiteral(res.Messages.First().ToString()).Set(ctx);
+
+                if (res.Value.Root == null || res.Value.Root.Nodes.Count == 0)
+                    return Err.FailedReadLiteral("Empty expression.").Set(ctx);
+                else if (res.Value.Root.Nodes.Count > 1)
+                    return Err.FailedReadLiteral("Only single expressions allowed.").Set(ctx);
+
+                return LiteralEvaluator.Eval(res.Value.Root.Nodes[0]);
+            }
+            catch (Exception ex)
+            {
+                return Err.FailedReadLiteral(ex.Message).Set(ctx);
+            }
         }
     }
 }
