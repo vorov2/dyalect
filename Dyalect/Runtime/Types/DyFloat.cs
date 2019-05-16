@@ -46,6 +46,12 @@ namespace Dyalect.Runtime.Types
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
+            | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
+            | SupportedOperations.Sub | SupportedOperations.Div | SupportedOperations.Mul | SupportedOperations.Rem
+            | SupportedOperations.Neg | SupportedOperations.Plus;
+
         public override string TypeName => StandardType.FloatName;
 
         #region Binary Operations
@@ -143,7 +149,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject PlusOp(DyObject arg, ExecutionContext ctx) => arg;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => arg.GetFloat().ToString(CI.NumberFormat);
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)arg.GetFloat().ToString(CI.NumberFormat);
         #endregion
 
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)

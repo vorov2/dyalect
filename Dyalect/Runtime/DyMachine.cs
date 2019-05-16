@@ -182,117 +182,117 @@ namespace Dyalect.Runtime
                     case OpCode.Shl:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].ShiftLeft(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].ShiftLeft(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Shr:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].ShiftRight(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].ShiftRight(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.And:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].And(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].And(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Or:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Or(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Or(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Xor:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Xor(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Xor(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Add:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Add(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Add(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Sub:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Sub(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Sub(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Mul:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Mul(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Mul(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Div:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Div(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Div(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Rem:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Rem(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Rem(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Eq:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Eq(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Eq(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.NotEq:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Neq(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Neq(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Gt:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Gt(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Gt(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Lt:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Lt(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Lt(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.GtEq:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Gte(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Gte(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.LtEq:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
-                        evalStack.Replace(types[left.TypeId].Lte(left, right, ctx));
+                        evalStack.Replace(types[left.TypeId].Lte(ctx, left, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Neg:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].Neg(right, ctx));
+                        evalStack.Replace(types[right.TypeId].Neg(ctx, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Not:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].Not(right, ctx));
+                        evalStack.Replace(types[right.TypeId].Not(ctx, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.BitNot:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].BitwiseNot(right, ctx));
+                        evalStack.Replace(types[right.TypeId].BitwiseNot(ctx, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Len:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].Length(right, ctx));
+                        evalStack.Replace(types[right.TypeId].Length(ctx, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.Dup:
@@ -360,7 +360,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Str:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].ToString(right, ctx));
+                        evalStack.Replace(types[right.TypeId].ToString(ctx, right));
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
                     case OpCode.RunMod:

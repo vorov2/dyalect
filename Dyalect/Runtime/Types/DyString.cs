@@ -81,6 +81,10 @@ namespace Dyalect.Runtime.Types
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
+            | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte;
+
         public override string TypeName => StandardType.StringName;
 
         #region Operations
@@ -129,7 +133,7 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(len);
         }
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => StringUtil.Escape(arg.GetString());
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)StringUtil.Escape(arg.GetString());
 
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
@@ -333,7 +337,7 @@ namespace Dyalect.Runtime.Types
             switch (name)
             {
                 case Builtins.Len:
-                    return DyForeignFunction.Member(name, LenAdapter, -1,Statics.EmptyParameters);
+                    return DyForeignFunction.Member(name, Length);
                 case "indexOf":
                     return DyForeignFunction.Member(name, IndexOf, -1, new Par("value"));
                 case "contains":

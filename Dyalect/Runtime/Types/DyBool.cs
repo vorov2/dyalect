@@ -38,12 +38,15 @@
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+
         public override string TypeName => StandardType.BoolName;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.GetBool() == right.GetBool() ? DyBool.True : DyBool.False;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            ReferenceEquals(arg, DyBool.True) ? "true" : "false";
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+            (DyString)(ReferenceEquals(arg, DyBool.True) ? "true" : "false");
     }
 }

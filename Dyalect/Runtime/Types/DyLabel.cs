@@ -28,12 +28,15 @@
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+
         public override string TypeName => StandardType.LabelName;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var lab = (DyLabel)arg;
-            return lab.Label + " " + lab.Value.ToString(ctx).Value;
+            return (DyString)(lab.Label + " " + lab.Value.ToString(ctx).Value);
         }
     }
 }

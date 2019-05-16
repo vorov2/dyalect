@@ -65,6 +65,13 @@ namespace Dyalect.Runtime.Types
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
+            | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
+            | SupportedOperations.Sub | SupportedOperations.Div | SupportedOperations.Mul | SupportedOperations.Rem
+            | SupportedOperations.Neg | SupportedOperations.Plus | SupportedOperations.And | SupportedOperations.Or
+            | SupportedOperations.Xor | SupportedOperations.BitNot | SupportedOperations.Shl | SupportedOperations.Shr;
+
         public override string TypeName => StandardType.IntegerName;
 
         #region Binary Operations
@@ -233,7 +240,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject BitwiseNotOp(DyObject arg, ExecutionContext ctx) => new DyInteger(~arg.GetInteger());
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => 
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => 
             new DyString(arg.GetInteger().ToString(CI.NumberFormat));
         #endregion
 

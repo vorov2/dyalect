@@ -100,6 +100,9 @@ namespace Dyalect.Runtime.Types
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+
         public override string TypeName => StandardType.TupleName;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
@@ -108,7 +111,7 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(len);
         }
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var tup = (DyTuple)arg;
             var sb = new StringBuilder();
@@ -187,7 +190,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
-                return DyForeignFunction.Member(name, LenAdapter, -1, Statics.EmptyParameters);
+                return DyForeignFunction.Member(name, Length);
 
             if (name == "indices")
                 return DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters);

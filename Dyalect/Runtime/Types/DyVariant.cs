@@ -61,6 +61,9 @@
             TypeName = typeName;
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+
         public override string TypeName { get; }
 
         //protected override DyObject GetOp(DyObject obj, DyObject index, ExecutionContext ctx)

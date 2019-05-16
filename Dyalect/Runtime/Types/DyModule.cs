@@ -25,9 +25,12 @@ namespace Dyalect.Runtime.Types
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+
         public override string TypeName => StandardType.ModuleName;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => 
-            "[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]";
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => 
+            (DyString)("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
     }
 }

@@ -26,6 +26,9 @@
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+
         public override string TypeName => StandardType.NilName;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
@@ -33,6 +36,6 @@
 
         protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
     }
 }
