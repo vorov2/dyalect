@@ -26,6 +26,10 @@ namespace Dyalect.Util
             foreach (var ac in props)
             {
                 var attr = Attribute.GetCustomAttribute(ac, typeof(BindingAttribute)) as BindingAttribute;
+
+                if (attr == null || attr.Help == null)
+                    continue;
+
                 var ln = new List<string>();
 
                 foreach (var n in attr.Names)
