@@ -6,6 +6,7 @@
     dy>parse("[1,2,3,('c',true,23.4),nil]")
     [1, 2, 3, ('c', true, 23.4), nil] :: Array
     ```
+  * Error handling refactored.
 
 # 0.5.3
   * A bug fixed: _Previous errors are not always cleared in interactive console_ ([Issue #64](https://github.com/vorov2/dyalect/issues/64)).

@@ -30,11 +30,11 @@ namespace Dyalect.Runtime.Types
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == StandardType.Integer)
-                return GetItem((int)index.GetInteger()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+                return GetItem((int)index.GetInteger()) ?? ctx.IndexOutOfRange(this.TypeName(ctx), index);
             else if (index.TypeId == StandardType.String)
-                return GetItem(index.GetString(), ctx) ?? Err.IndexOutOfRange(this.TypeName(ctx), index.GetString()).Set(ctx);
+                return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange(this.TypeName(ctx), index.GetString());
             else
-                return Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
+                return ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
@@ -44,7 +44,7 @@ namespace Dyalect.Runtime.Types
             else if (index.TypeId == StandardType.String)
                 SetItem(index.GetString(), value, ctx);
             else
-                Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
+                ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
         }
 
         protected internal override DyObject GetItem(string name, ExecutionContext ctx) => GetItem(GetOrdinal(name));
@@ -72,7 +72,7 @@ namespace Dyalect.Runtime.Types
         internal void SetItem(int index, DyObject value, ExecutionContext ctx)
         {
             if (index < 0 || index >= Values.Length)
-                Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+                ctx.IndexOutOfRange(this.TypeName(ctx), index);
             else
             {
                 if (Values[index].TypeId == StandardType.Label)
@@ -182,7 +182,7 @@ namespace Dyalect.Runtime.Types
             var tup = (DyTuple)self;
 
             if (tup.Values.Length < 2)
-                Err.IndexOutOfRange(TypeName, 1).Set(ctx);
+                ctx.IndexOutOfRange(TypeName, 1);
             
             return tup.GetItem(1);
         }

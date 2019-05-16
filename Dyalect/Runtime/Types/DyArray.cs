@@ -166,9 +166,9 @@ namespace Dyalect.Runtime.Types
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == StandardType.Integer)
-                return GetItem((int)index.GetInteger()) ?? Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+                return GetItem((int)index.GetInteger()) ?? ctx.IndexOutOfRange(this.TypeName(ctx), index);
             else
-                return Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
+                return ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
         }
 
         private DyObject GetItem(int index)
@@ -181,7 +181,7 @@ namespace Dyalect.Runtime.Types
         private void SetItem(int index, DyObject obj, ExecutionContext ctx)
         {
             if (index < 0 || index >= Count)
-                Err.IndexOutOfRange(this.TypeName(ctx), index).Set(ctx);
+                ctx.IndexOutOfRange(this.TypeName(ctx), index);
             else
                 values[index] = obj;
         }
@@ -189,7 +189,7 @@ namespace Dyalect.Runtime.Types
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
             if (index.TypeId != StandardType.Integer)
-                Err.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx)).Set(ctx);
+                ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
             else
                 SetItem((int)index.GetInteger(), value, ctx);
         }
@@ -251,13 +251,13 @@ namespace Dyalect.Runtime.Types
             var index = args.TakeOne(DyNil.Instance);
 
             if (index.TypeId != StandardType.Integer)
-                return Err.IndexInvalidType(TypeName, index.TypeName(ctx)).Set(ctx);
+                return ctx.IndexInvalidType(TypeName, index.TypeName(ctx));
 
             var i = (int)index.GetInteger();
             var value = args.TakeAt(1, DyNil.Instance);
 
             if (i < 0 || i >= arr.Count)
-                return Err.IndexOutOfRange(TypeName, i).Set(ctx);
+                return ctx.IndexOutOfRange(TypeName, i);
 
             arr.Insert(i, value);
             return DyNil.Instance;
@@ -303,13 +303,13 @@ namespace Dyalect.Runtime.Types
             var index = args.TakeOne(DyNil.Instance);
 
             if (index.TypeId != StandardType.Integer)
-                return Err.IndexInvalidType(TypeName, index.TypeName(ctx)).Set(ctx);
+                return ctx.IndexInvalidType(TypeName, index.TypeName(ctx));
 
             var idx = (int)index.GetInteger();
             var arr = (DyArray)self;
 
             if (idx < 0 || idx >= arr.Count)
-                return Err.IndexOutOfRange(TypeName, idx).Set(ctx);
+                return ctx.IndexOutOfRange(TypeName, idx);
 
             arr.RemoveAt(idx);
             return DyNil.Instance;
@@ -363,10 +363,10 @@ namespace Dyalect.Runtime.Types
                 return self;
 
             if (start < 0 || start >= dyArr.Count)
-                return Err.IndexOutOfRange(TypeName, start).Set(ctx);
+                return ctx.IndexOutOfRange(TypeName, start);
 
             if (end < 0 || end >= dyArr.Count)
-                return Err.IndexOutOfRange(TypeName, end).Set(ctx);
+                return ctx.IndexOutOfRange(TypeName, end);
 
             var newArr = new DyObject[end - start];
             Array.Copy(arr, start, newArr, 0, end - start);
@@ -385,9 +385,9 @@ namespace Dyalect.Runtime.Types
 
             if (fun == null)
             {
-                return Err.InvalidType(StandardType.FunctionName, 
+                return ctx.InvalidType(StandardType.FunctionName, 
                     args == null || args[0] == null ? StandardType.NilName : args[0].TypeName(ctx))
-                    .Set(ctx);
+                    ;
             }
 
             Array.Sort(arr.GetValues(), 0, arr.Count, new DyArray.Comparer(fun, ctx));

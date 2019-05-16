@@ -304,7 +304,7 @@ namespace Dyalect.Runtime
                             ctx.CallStack.Pop();
                         return evalStack.Pop();
                     case OpCode.Fail:
-                        ctx.Error = Err.UserCode(evalStack.Pop().ToString());
+                        ctx.UserCode(evalStack.Pop().ToString());
                         ProcessError(ctx, function, ref offset);
                         break;
                     case OpCode.NewIter:
@@ -395,7 +395,7 @@ namespace Dyalect.Runtime
                             right = evalStack.Peek();
                             if (right.TypeId != StandardType.Function && right.TypeId != StandardType.Iterator)
                             {
-                                ctx.Error = Err.NotFunction(types[right.TypeId].TypeName);
+                                ctx.NotFunction(types[right.TypeId].TypeName);
                                 ProcessError(ctx, function, ref offset);
                                 break;
                             }
@@ -404,7 +404,7 @@ namespace Dyalect.Runtime
 
                             if (op.Data > callFun.Parameters.Length && callFun.VarArgIndex == -1)
                             {
-                                ctx.Error = Err.TooManyArguments(callFun.FunctionName, callFun.Parameters.Length, op.Data);
+                                ctx.TooManyArguments(callFun.FunctionName, callFun.Parameters.Length, op.Data);
                                 ProcessError(ctx, function, ref offset);
                                 break;
                             }
@@ -431,7 +431,7 @@ namespace Dyalect.Runtime
                             var idx = ((DyFunction)evalStack.Peek(2)).GetParameterIndex(unit.IndexedStrings[op.Data].Value, ctx);
                             if (idx == -1)
                             {
-                                ctx.Error = Err.ArgumentNotFound(((DyFunction)evalStack.Peek(2)).FunctionName, unit.IndexedStrings[op.Data].Value);
+                                ctx.ArgumentNotFound(((DyFunction)evalStack.Peek(2)).FunctionName, unit.IndexedStrings[op.Data].Value);
                                 ProcessError(ctx, function, ref offset, evalStack);
                                 break;
                             }
@@ -498,7 +498,7 @@ namespace Dyalect.Runtime
 
                     if (locals[i] == null)
                     {
-                        ctx.Error = Err.RequiredArgumentMissing(callFun.FunctionName, pars[i].Name);
+                        ctx.RequiredArgumentMissing(callFun.FunctionName, pars[i].Name);
                         return;
                     }
                 }

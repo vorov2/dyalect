@@ -73,8 +73,7 @@ namespace Dyalect.Runtime.Types
                 }
                 catch (Exception ex)
                 {
-                    ctx.Error = Err.ExternalFunctionFailure(FunctionName, ex.Message);
-                    return DyNil.Instance;
+                    return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
                 }
             }
         }
@@ -96,8 +95,7 @@ namespace Dyalect.Runtime.Types
                 }
                 catch (Exception ex)
                 {
-                    ctx.Error = Err.ExternalFunctionFailure(FunctionName, ex.Message);
-                    return DyNil.Instance;
+                    return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
                 }
             }
         }
@@ -119,8 +117,7 @@ namespace Dyalect.Runtime.Types
                 }
                 catch (Exception ex)
                 {
-                    ctx.Error = Err.ExternalFunctionFailure(FunctionName, ex.Message);
-                    return DyNil.Instance;
+                    return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
                 }
             }
         }
@@ -142,8 +139,7 @@ namespace Dyalect.Runtime.Types
                 }
                 catch (Exception ex)
                 {
-                    ctx.Error = Err.ExternalFunctionFailure(FunctionName, ex.Message);
-                    return DyNil.Instance;
+                    return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
                 }
             }
         }
@@ -165,8 +161,7 @@ namespace Dyalect.Runtime.Types
                 }
                 catch (Exception ex)
                 {
-                    ctx.Error = Err.ExternalFunctionFailure(FunctionName, ex.Message);
-                    return DyNil.Instance;
+                    return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
                 }
             }
         }

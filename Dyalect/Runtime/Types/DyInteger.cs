@@ -112,7 +112,7 @@ namespace Dyalect.Runtime.Types
                 var i = right.GetInteger();
 
                 if (i == 0)
-                    return Err.DivideByZero().Set(ctx);
+                    return ctx.DivideByZero();
 
                 return new DyInteger(left.GetInteger() / i);
             }
@@ -247,7 +247,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
         {
             if (to.TypeId != StandardType.Integer)
-                return Err.InvalidType(StandardType.IntegerName, to.TypeName(ctx)).Set(ctx);
+                return ctx.InvalidType(StandardType.IntegerName, to.TypeName(ctx));
 
             var ifrom = self.GetInteger();
             var istart = ifrom;

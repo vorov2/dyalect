@@ -79,7 +79,7 @@ namespace Dyalect.Linker
         public DyObject Assert(ExecutionContext ctx, DyObject expected, DyObject got)
         {
             if (!Eq(expected.ToObject(), got.ToObject()))
-                return Err.AssertFailed($"Expected {expected.ToString(ctx)}, got {got.ToString(ctx)}").Set(ctx);
+                return ctx.AssertFailed($"Expected {expected.ToString(ctx)}, got {got.ToString(ctx)}");
 
             return DyNil.Instance;
         }
@@ -108,7 +108,7 @@ namespace Dyalect.Linker
         public DyObject Parse(ExecutionContext ctx, DyObject expression)
         {
             if (expression.TypeId != StandardType.String)
-                return Err.InvalidType(StandardType.StringName, expression.TypeName(ctx)).Set(ctx);
+                return ctx.InvalidType(StandardType.StringName, expression.TypeName(ctx));
 
             try
             {
@@ -116,18 +116,18 @@ namespace Dyalect.Linker
                 var res = p.Parse(SourceBuffer.FromString(expression.GetString()));
 
                 if (!res.Success)
-                    return Err.FailedReadLiteral(res.Messages.First().ToString()).Set(ctx);
+                    return ctx.FailedReadLiteral(res.Messages.First().ToString());
 
                 if (res.Value.Root == null || res.Value.Root.Nodes.Count == 0)
-                    return Err.FailedReadLiteral("Empty expression.").Set(ctx);
+                    return ctx.FailedReadLiteral("Empty expression.");
                 else if (res.Value.Root.Nodes.Count > 1)
-                    return Err.FailedReadLiteral("Only single expressions allowed.").Set(ctx);
+                    return ctx.FailedReadLiteral("Only single expressions allowed.");
 
                 return LiteralEvaluator.Eval(res.Value.Root.Nodes[0]);
             }
             catch (Exception ex)
             {
-                return Err.FailedReadLiteral(ex.Message).Set(ctx);
+                return ctx.FailedReadLiteral(ex.Message);
             }
         }
     }

@@ -62,112 +62,118 @@ namespace Dyalect.Runtime
         }
     }
 
-    internal static class Err
+    internal static class ExecutionContextExtensions
     {
-        public static DyError FailedReadLiteral(string reason)
+        public static DyObject FailedReadLiteral(this ExecutionContext ctx, string reason)
         {
-            return new DyError(DyErrorCode.FailedReadLiteral,
+            ctx.Error = new DyError(DyErrorCode.FailedReadLiteral,
                 ("Reason", reason));
+            return DyNil.Instance;
         }
 
-        public static DyError AssertFailed(string reason)
+        public static DyObject AssertFailed(this ExecutionContext ctx, string reason)
         {
-            return new DyError(DyErrorCode.AssertFailed,
+            ctx.Error = new DyError(DyErrorCode.AssertFailed,
                 ("Reason", reason));
+            return DyNil.Instance;
         }
 
-        public static DyError StaticOperationNotSupported(string op, string typeName)
+        public static DyObject StaticOperationNotSupported(this ExecutionContext ctx, string op, string typeName)
         {
-            return new DyError(DyErrorCode.StaticOperationNotSupported,
+            ctx.Error = new DyError(DyErrorCode.StaticOperationNotSupported,
                 ("Operation", op),
                 ("TypeName", typeName));
+            return DyNil.Instance;
         }
 
-        public static DyError OperationNotSupported(string op, string typeName)
+        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, string typeName)
         {
-            return new DyError(DyErrorCode.OperationNotSupported,
+            ctx.Error = new DyError(DyErrorCode.OperationNotSupported,
                 ("Operation", op),
                 ("TypeName", typeName));
+            return DyNil.Instance;
         }
 
-        public static DyError OperationNotSupported(string op, string typeName1, string typeName2)
+        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, string typeName1, string typeName2)
         {
-            return new DyError(DyErrorCode.OperationNotSupported,
+            ctx.Error = new DyError(DyErrorCode.OperationNotSupported,
                 ("Operation", op),
                 ("TypeName", "(" + typeName1 + "," + typeName2 + ")"));
+            return DyNil.Instance;
         }
 
-        public static DyError IndexOutOfRange(string typeName, object index)
+        public static DyObject IndexOutOfRange(this ExecutionContext ctx, string typeName, object index)
         {
-            return new DyError(DyErrorCode.IndexOutOfRange,
+            ctx.Error = new DyError(DyErrorCode.IndexOutOfRange,
                 ("TypeName", typeName),
                 ("Index", index));
+            return DyNil.Instance;
         }
 
-        public static DyError IndexInvalidType(string typeName, string indexTypeName)
+        public static DyObject IndexInvalidType(this ExecutionContext ctx, string typeName, string indexTypeName)
         {
-            return new DyError(DyErrorCode.IndexInvalidType,
+            ctx.Error = new DyError(DyErrorCode.IndexInvalidType,
                 ("TypeName", typeName),
                 ("IndexTypeName", indexTypeName));
+            return DyNil.Instance;
         }
 
-        public static DyError InvalidType(string expectedTypeName, string gotTypeName)
+        public static DyObject InvalidType(this ExecutionContext ctx, string expectedTypeName, string gotTypeName)
         {
-            return new DyError(DyErrorCode.InvalidType,
+            ctx.Error = new DyError(DyErrorCode.InvalidType,
                 ("Expected", expectedTypeName),
                 ("Got", gotTypeName));
+            return DyNil.Instance;
         }
 
-        public static DyError ExternalFunctionFailure(string functionName, string error)
+        public static DyObject ExternalFunctionFailure(this ExecutionContext ctx, string functionName, string error)
         {
-            return new DyError(DyErrorCode.ExternalFunctionFailure,
+            ctx.Error = new DyError(DyErrorCode.ExternalFunctionFailure,
                 ("FunctionName", functionName),
                 ("Error", error));
+            return DyNil.Instance;
         }
 
-        public static DyError UserCode(string error)
+        public static DyObject UserCode(this ExecutionContext ctx, string error)
         {
-            return new DyError(DyErrorCode.UserCode, ("Error", error));
+            ctx.Error = new DyError(DyErrorCode.UserCode, ("Error", error));
+            return DyNil.Instance;
         }
 
-        public static DyError NotFunction(string typeName)
+        public static DyObject NotFunction(this ExecutionContext ctx, string typeName)
         {
-            return new DyError(DyErrorCode.NotFunction, ("TypeName", typeName));
+            ctx.Error = new DyError(DyErrorCode.NotFunction, ("TypeName", typeName));
+            return DyNil.Instance;
         }
 
-        public static DyError DivideByZero()
+        public static DyObject DivideByZero(this ExecutionContext ctx)
         {
-            return new DyError(DyErrorCode.DivideByZero);
+            ctx.Error = new DyError(DyErrorCode.DivideByZero);
+            return DyNil.Instance;
         }
 
-        public static DyError TooManyArguments(string functionName, int functionArguments, int passedArguments)
+        public static DyObject TooManyArguments(this ExecutionContext ctx, string functionName, int functionArguments, int passedArguments)
         {
-            return new DyError(DyErrorCode.TooManyArguments,
+            ctx.Error = new DyError(DyErrorCode.TooManyArguments,
                 ("FunctionName", functionName),
                 ("FunctionArguments", functionArguments),
                 ("PassedArguments", passedArguments));
+            return DyNil.Instance;
         }
 
-        public static DyError RequiredArgumentMissing(string functionName, string argumentName)
+        public static DyObject RequiredArgumentMissing(this ExecutionContext ctx, string functionName, string argumentName)
         {
-            return new DyError(DyErrorCode.RequiredArgumentMissing,
+            ctx.Error = new DyError(DyErrorCode.RequiredArgumentMissing,
                 ("FunctionName", functionName),
                 ("ArgumentName", argumentName));
+            return DyNil.Instance;
         }
 
-        public static DyError ArgumentNotFound(string functionName, string argumentName)
+        public static DyObject ArgumentNotFound(this ExecutionContext ctx, string functionName, string argumentName)
         {
-            return new DyError(DyErrorCode.ArgumentNotFound,
+            ctx.Error = new DyError(DyErrorCode.ArgumentNotFound,
                 ("FunctionName", functionName),
                 ("ArgumentName", argumentName));
-        }
-    }
-
-    internal static class DyErrorExtensions
-    {
-        public static DyObject Set(this DyError err, ExecutionContext ctx)
-        {
-            ctx.Error = err;
             return DyNil.Instance;
         }
     }
