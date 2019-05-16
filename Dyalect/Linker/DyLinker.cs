@@ -77,6 +77,7 @@ namespace Dyalect.Linker
 
         public Result<UnitComposition> Make(SourceBuffer buffer)
         {
+            Messages.Clear();
             var codeModel = ProcessBuffer(buffer);
 
             if (codeModel == null)
