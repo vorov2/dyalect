@@ -46,7 +46,7 @@
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.GetBool() == right.GetBool() ? DyBool.True : DyBool.False;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            ReferenceEquals(arg, DyBool.True) ? "true" : "false";
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+            (DyString)(ReferenceEquals(arg, DyBool.True) ? "true" : "false");
     }
 }

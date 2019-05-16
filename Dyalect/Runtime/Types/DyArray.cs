@@ -60,10 +60,10 @@ namespace Dyalect.Runtime.Types
                     return ret.TypeId != StandardType.Integer ? 0 : (int)ret.GetInteger();
                 }
 
-                var res = ctx.Types[x.TypeId].Gt(x, y, ctx);
+                var res = ctx.Types[x.TypeId].Gt(ctx, x, y);
                 return res == DyBool.True
                     ? 1
-                    : ctx.Types[x.TypeId].Eq(x, y, ctx) == DyBool.True ? 0 : -1;
+                    : ctx.Types[x.TypeId].Eq(ctx, x, y) == DyBool.True ? 0 : -1;
             }
         }
 
@@ -217,7 +217,7 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(len);
         }
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var arr = (DyArray)arg;
             var sb = new StringBuilder();
@@ -426,7 +426,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.Len)
-                return DyForeignFunction.Member(name, LenAdapter, -1, Statics.EmptyParameters);
+                return DyForeignFunction.Member(name, Length);
 
             if (name == "add")
                 return DyForeignFunction.Member(name, AddItem, -1, new Par("item"));

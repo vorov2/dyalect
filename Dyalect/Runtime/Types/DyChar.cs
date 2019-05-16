@@ -34,7 +34,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.CharName;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => StringUtil.Escape(arg.GetString(), "'");
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)StringUtil.Escape(arg.GetString(), "'");
 
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)

@@ -149,7 +149,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject PlusOp(DyObject arg, ExecutionContext ctx) => arg;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => arg.GetFloat().ToString(CI.NumberFormat);
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)arg.GetFloat().ToString(CI.NumberFormat);
         #endregion
 
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)

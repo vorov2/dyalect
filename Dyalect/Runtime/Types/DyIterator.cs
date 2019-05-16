@@ -98,7 +98,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.BoolName;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => $"{Builtins.Iterator}()";
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)$"{Builtins.Iterator}()";
 
         private DyObject ToArray(ExecutionContext ctx, DyObject self, DyObject[] args)
         {

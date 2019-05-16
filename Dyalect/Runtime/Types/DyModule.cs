@@ -30,7 +30,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.ModuleName;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => 
-            "[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]";
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => 
+            (DyString)("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
     }
 }

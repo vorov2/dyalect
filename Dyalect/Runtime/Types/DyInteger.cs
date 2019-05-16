@@ -240,7 +240,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject BitwiseNotOp(DyObject arg, ExecutionContext ctx) => new DyInteger(~arg.GetInteger());
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => 
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => 
             new DyString(arg.GetInteger().ToString(CI.NumberFormat));
         #endregion
 

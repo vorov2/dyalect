@@ -1,5 +1,6 @@
 # 0.5.3
   * A bug fixed: _Previous errors are not always cleared in interactive console_ ([Issue #64](https://github.com/vorov2/dyalect/issues/64)).
+  * Type system is refactored for better consistency.
 
 # 0.5.2
   * A feature request implemented: _Unit testing in Dya console_ ([Issue #6](https://github.com/vorov2/dyalect/issues/6)).

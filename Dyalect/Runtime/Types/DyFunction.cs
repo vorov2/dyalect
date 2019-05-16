@@ -65,7 +65,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => StandardType.FunctionName;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(((DyFunction)arg).ToString());
     }
 }

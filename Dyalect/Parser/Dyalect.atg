@@ -54,6 +54,11 @@ TOKENS
     squareLeftToken     = "[".
     squareRightToken    = "]".
 
+    minus               = "-".
+    plus                = "+".
+    not                 = "!".
+    bitnot              = "~".
+
 COMMENTS FROM "/*" TO "*/"
 COMMENTS FROM "//" TO lf
 
@@ -398,7 +403,6 @@ PRODUCTIONS
             )
             (
                 Shift<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
-                | MemberCheck<node, out node>
             )
         }.
 
@@ -415,7 +419,6 @@ PRODUCTIONS
             )
             (
                 BitOr<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
-                | MemberCheck<node, out node>
             )
         }.
         
@@ -425,7 +428,6 @@ PRODUCTIONS
             "|" (. var ot = t; .) 
             (
                 Xor<out var exp> (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseOr, ot); .)
-                | MemberCheck<node, out node>
             )
         }.
         
@@ -436,7 +438,6 @@ PRODUCTIONS
             "^" (. var ot = t; .) 
             (
                 BitAnd<out exp> (. node = new DBinaryOperation(node, exp, BinaryOperator.Xor, ot); .)
-                | MemberCheck<node, out exp>
             )
         }.
         
@@ -446,7 +447,6 @@ PRODUCTIONS
             "&" (. var ot = t; .)
             (
                 Add<out var exp> (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseAnd, ot); .)
-                | MemberCheck<node, out node>
             )
         }.
 
@@ -470,7 +470,6 @@ PRODUCTIONS
             )
             (
                 Mul<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
-                | MemberCheck<node, out node>
             )
         }.
 
@@ -488,7 +487,6 @@ PRODUCTIONS
             )
             (
                 Unary<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
-                | MemberCheck<node, out node>
             )
         }.
 
@@ -536,18 +534,6 @@ PRODUCTIONS
                 FieldOrIndex<out node>
                 (. range.To = node; node = range; .)
             ]
-        ).
-
-    MemberCheck<DNode target, out DNode node> =
-        (. node = null; .)
-        (
-            (. var nm = t.val; .)
-            "?"
-            (.
-                var chk = new DMemberCheck(t) { Target = target };
-                chk.Name = nm;
-                node = chk;
-            .)
         ).
 
     FieldOrIndex<out DNode node> =

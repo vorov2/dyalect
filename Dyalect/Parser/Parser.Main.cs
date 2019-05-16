@@ -185,6 +185,10 @@ namespace Dyalect.Parser
 
             return false;
         }
+
+        private bool IsNextUnary() => la.kind == _minus || la.kind == _plus
+            || la.kind == _bitnot || la.kind == _not;
+
         private bool IsFunction()
         {
             if (la.kind != _parenLeftToken && la.kind != _identToken)

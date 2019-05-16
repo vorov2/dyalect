@@ -36,6 +36,6 @@
 
         protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
 
-        protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
     }
 }
