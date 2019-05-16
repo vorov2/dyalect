@@ -100,6 +100,9 @@ namespace Dyalect.Runtime.Types
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+
         public override string TypeName => StandardType.TupleName;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)

@@ -25,6 +25,9 @@ namespace Dyalect.Runtime.Types
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+
         public override string TypeName => StandardType.ModuleName;
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx) => 

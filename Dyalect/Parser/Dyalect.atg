@@ -396,8 +396,10 @@ PRODUCTIONS
                 | "==" (. ot = t; op = BinaryOperator.Eq; .)
                 | "!=" (. ot = t; op = BinaryOperator.NotEq; .)
             )
-            Shift<out DNode exp>
-            (. node = new DBinaryOperation(node, exp, op, ot); .)
+            (
+                Shift<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
+                | MemberCheck<node, out node>
+            )
         }.
 
     Shift<out DNode node> =
@@ -411,29 +413,41 @@ PRODUCTIONS
                   "<<" (. ot = t; op = BinaryOperator.ShiftLeft; .)
                 | ">>" (. ot = t; op = BinaryOperator.ShiftRight; .)
             )
-            BitOr<out DNode exp>
-            (. node = new DBinaryOperation(node, exp, op, ot); .)
+            (
+                BitOr<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
+                | MemberCheck<node, out node>
+            )
         }.
         
     BitOr<out DNode node> = 
         Xor<out node>
         {
-            "|" (. var ot = t; .) Xor<out DNode exp>
-            (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseOr, ot); .)
+            "|" (. var ot = t; .) 
+            (
+                Xor<out var exp> (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseOr, ot); .)
+                | MemberCheck<node, out node>
+            )
         }.
         
     Xor<out DNode node> = 
         BitAnd<out node>
         {
-            "^" (. var ot = t; .) BitAnd<out DNode exp>
-            (. node = new DBinaryOperation(node, exp, BinaryOperator.Xor, ot); .)
+            (. DNode exp = null; .)
+            "^" (. var ot = t; .) 
+            (
+                BitAnd<out exp> (. node = new DBinaryOperation(node, exp, BinaryOperator.Xor, ot); .)
+                | MemberCheck<node, out exp>
+            )
         }.
         
     BitAnd<out DNode node> = 
         Add<out node>
         {
-            "&" (. var ot = t; .) Add<out DNode exp>
-            (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseAnd, ot); .)
+            "&" (. var ot = t; .)
+            (
+                Add<out var exp> (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseAnd, ot); .)
+                | MemberCheck<node, out node>
+            )
         }.
 
     Add<out DNode node> =
@@ -454,8 +468,10 @@ PRODUCTIONS
                     "-" (. ot = t; op = BinaryOperator.Sub; .)
                 )
             )
-            Mul<out DNode exp>
-            (. node = new DBinaryOperation(node, exp, op, ot); .)
+            (
+                Mul<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
+                | MemberCheck<node, out node>
+            )
         }.
 
     Mul<out DNode node> =
@@ -470,8 +486,10 @@ PRODUCTIONS
                 | "/" (. ot = t; op = BinaryOperator.Div; .)
                 | "%" (. ot = t; op = BinaryOperator.Rem; .)
             )
-            Unary<out var exp>
-            (. node = new DBinaryOperation(node, exp, op, ot); .)
+            (
+                Unary<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
+                | MemberCheck<node, out node>
+            )
         }.
 
     Unary<out DNode node> =
@@ -481,17 +499,32 @@ PRODUCTIONS
             var ot = default(Token);
         .)
         (
-            [ 
-                  "!" (. ot = t; op = UnaryOperator.Not; .)
-                | "-" (. ot = t; op = UnaryOperator.Neg; .)
-                | "+" (. ot = t; op = UnaryOperator.Plus; .)
-                | "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
-            ]
-            Range<out node>
-            (.
-                if (op != UnaryOperator.None)
-                    node = new DUnaryOperation(node, op, ot);
-            .)
+            ( 
+                (
+                    "!" (. ot = t; op = UnaryOperator.Not; .) 
+                    Range<out node> 
+                    (. node = new DUnaryOperation(node, op, ot); .)
+                )
+                |
+                (
+                    "-" (. ot = t; op = UnaryOperator.Neg; .) 
+                    Range<out node> 
+                    (. node = new DUnaryOperation(node, op, ot); .)
+                )
+                | 
+                (
+                    "+" (. ot = t; op = UnaryOperator.Plus; .) 
+                    Range<out node> 
+                    (. node = new DUnaryOperation(node, op, ot); .) 
+                )
+                | 
+                (
+                    "~" (. ot = t; op = UnaryOperator.BitwiseNot; .) 
+                    Range<out node> 
+                    (. node = new DUnaryOperation(node, op, ot); .)
+                )
+                | Range<out node>
+            )
         ).
 
     Range<out DNode node> =
@@ -503,6 +536,18 @@ PRODUCTIONS
                 FieldOrIndex<out node>
                 (. range.To = node; node = range; .)
             ]
+        ).
+
+    MemberCheck<DNode target, out DNode node> =
+        (. node = null; .)
+        (
+            (. var nm = t.val; .)
+            "?"
+            (.
+                var chk = new DMemberCheck(t) { Target = target };
+                chk.Name = nm;
+                node = chk;
+            .)
         ).
 
     FieldOrIndex<out DNode node> =

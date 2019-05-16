@@ -1,11 +1,45 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
+using System;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     public abstract class DyTypeInfo : DyObject
     {
+        [Flags]
+        public enum SupportedOperations
+        {
+            Add = 0x01,
+            Sub = 0x02,
+            Mul = 0x04,
+            Div = 0x08,
+            Rem = 0x10,
+            Shl = 0x20,
+            Shr = 0x40,
+            And = 0x80,
+            Or  = 0x100,
+            Xor = 0x200,
+            Eq  = 0x400,
+            Neq = 0x800,
+            Gt  = 0x1000,
+            Lt  = 0x2000,
+            Gte = 0x4000,
+            Lte = 0x8000,
+            Neg = 0x10000,
+            BitNot = 0x20000,
+            Bit =  0x40000,
+            Plus = 0x80000,
+            Not =  0x100000
+        }
+
+        protected abstract SupportedOperations GetSupportedOperations();
+
+        private DyBool Support(SupportedOperations op)
+        {
+            return (GetSupportedOperations() & op) == op ? DyBool.True : DyBool.False;
+        }
+
         private readonly Dictionary<int, DyFunction> members = new Dictionary<int, DyFunction>();
         private readonly Dictionary<int, DyFunction> staticMembers = new Dictionary<int, DyFunction>();
 
@@ -28,10 +62,8 @@ namespace Dyalect.Runtime.Types
         #region Binary Operations
         //x + y
         private DyFunction add;
-        protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            return Err.OperationNotSupported(Builtins.Add, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
-        }
+        protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            Err.OperationNotSupported(Builtins.Add, left.TypeName(ctx), right.TypeName(ctx)).Set(ctx);
         internal DyObject Add(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right.TypeId == StandardType.String && TypeCode != StandardType.String)// || right.TypeId == StandardType.Char)
@@ -323,7 +355,33 @@ namespace Dyalect.Runtime.Types
         internal DyObject HasMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
         {
             nameId = unit.MemberIds[nameId];
-            return GetMemberDirect(self, nameId, ctx) != null ? DyBool.True : DyBool.False;
+            var name = ctx.Composition.Members[nameId];
+
+            switch (name)
+            {
+                case Builtins.Add: return Support(SupportedOperations.Add);
+                case Builtins.Sub: return Support(SupportedOperations.Sub);
+                case Builtins.Mul: return Support(SupportedOperations.Mul);
+                case Builtins.Div: return Support(SupportedOperations.Div);
+                case Builtins.Rem: return Support(SupportedOperations.Rem);
+                case Builtins.Shl: return Support(SupportedOperations.Shl);
+                case Builtins.Shr: return Support(SupportedOperations.Shr);
+                case Builtins.And: return Support(SupportedOperations.And);
+                case Builtins.Or: return Support(SupportedOperations.Or);
+                case Builtins.Xor: return Support(SupportedOperations.Xor);
+                case Builtins.Eq: return Support(SupportedOperations.Eq);
+                case Builtins.Neq: return Support(SupportedOperations.Neq);
+                case Builtins.Gt: return Support(SupportedOperations.Gt);
+                case Builtins.Lt: return Support(SupportedOperations.Lt);
+                case Builtins.Gte: return Support(SupportedOperations.Gte);
+                case Builtins.Lte: return Support(SupportedOperations.Lte);
+                case Builtins.Neg: return Support(SupportedOperations.Neg);
+                case Builtins.Not: return DyBool.True;
+                case Builtins.BitNot: return Support(SupportedOperations.BitNot);
+                case Builtins.Plus: return Support(SupportedOperations.Plus);
+                default:
+                    return GetMemberDirect(self, nameId, ctx) != null ? DyBool.True : DyBool.False;
+            }
         }
 
         internal DyObject GetMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
@@ -456,6 +514,9 @@ namespace Dyalect.Runtime.Types
         {
 
         }
+
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
         public override string TypeName => StandardType.TypeInfoName;
 

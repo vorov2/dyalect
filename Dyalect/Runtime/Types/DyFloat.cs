@@ -46,6 +46,12 @@ namespace Dyalect.Runtime.Types
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
+            | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
+            | SupportedOperations.Sub | SupportedOperations.Div | SupportedOperations.Mul | SupportedOperations.Rem
+            | SupportedOperations.Neg | SupportedOperations.Plus;
+
         public override string TypeName => StandardType.FloatName;
 
         #region Binary Operations

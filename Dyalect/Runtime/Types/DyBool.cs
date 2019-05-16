@@ -38,6 +38,9 @@
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+
         public override string TypeName => StandardType.BoolName;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>

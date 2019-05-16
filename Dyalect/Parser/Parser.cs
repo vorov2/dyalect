@@ -655,8 +655,12 @@ namespace Dyalect.Parser
 				break;
 			}
 			}
-			Shift(out DNode exp);
-			node = new DBinaryOperation(node, exp, op, ot); 
+			if (StartOf(3)) {
+				Shift(out var exp);
+				node = new DBinaryOperation(node, exp, op, ot); 
+			} else if (la.kind == 66) {
+				MemberCheck(node, out node);
+			} else SynErr(82);
 		}
 	}
 
@@ -673,9 +677,23 @@ namespace Dyalect.Parser
 				Get();
 				ot = t; op = BinaryOperator.ShiftRight; 
 			}
-			BitOr(out DNode exp);
-			node = new DBinaryOperation(node, exp, op, ot); 
+			if (StartOf(3)) {
+				BitOr(out var exp);
+				node = new DBinaryOperation(node, exp, op, ot); 
+			} else if (la.kind == 66) {
+				MemberCheck(node, out node);
+			} else SynErr(83);
 		}
+	}
+
+	void MemberCheck(DNode target, out DNode node) {
+		node = null; 
+		var nm = t.val; 
+		Expect(66);
+		var chk = new DMemberCheck(t) { Target = target };
+		chk.Name = nm;
+		node = chk;
+		
 	}
 
 	void BitOr(out DNode node) {
@@ -683,18 +701,27 @@ namespace Dyalect.Parser
 		while (la.kind == 35) {
 			Get();
 			var ot = t; 
-			Xor(out DNode exp);
-			node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseOr, ot); 
+			if (StartOf(3)) {
+				Xor(out var exp);
+				node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseOr, ot); 
+			} else if (la.kind == 66) {
+				MemberCheck(node, out node);
+			} else SynErr(84);
 		}
 	}
 
 	void Xor(out DNode node) {
 		BitAnd(out node);
 		while (la.kind == 44) {
+			DNode exp = null; 
 			Get();
 			var ot = t; 
-			BitAnd(out DNode exp);
-			node = new DBinaryOperation(node, exp, BinaryOperator.Xor, ot); 
+			if (StartOf(3)) {
+				BitAnd(out exp);
+				node = new DBinaryOperation(node, exp, BinaryOperator.Xor, ot); 
+			} else if (la.kind == 66) {
+				MemberCheck(node, out exp);
+			} else SynErr(85);
 		}
 	}
 
@@ -703,8 +730,12 @@ namespace Dyalect.Parser
 		while (la.kind == 36) {
 			Get();
 			var ot = t; 
-			Add(out DNode exp);
-			node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseAnd, ot); 
+			if (StartOf(3)) {
+				Add(out var exp);
+				node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseAnd, ot); 
+			} else if (la.kind == 66) {
+				MemberCheck(node, out node);
+			} else SynErr(86);
 		}
 	}
 
@@ -723,8 +754,12 @@ namespace Dyalect.Parser
 				Get();
 				ot = t; op = BinaryOperator.Sub; 
 			}
-			Mul(out DNode exp);
-			node = new DBinaryOperation(node, exp, op, ot); 
+			if (StartOf(3)) {
+				Mul(out var exp);
+				node = new DBinaryOperation(node, exp, op, ot); 
+			} else if (la.kind == 66) {
+				MemberCheck(node, out node);
+			} else SynErr(87);
 		}
 	}
 
@@ -744,8 +779,12 @@ namespace Dyalect.Parser
 				Get();
 				ot = t; op = BinaryOperator.Rem; 
 			}
-			Unary(out var exp);
-			node = new DBinaryOperation(node, exp, op, ot); 
+			if (StartOf(3)) {
+				Unary(out var exp);
+				node = new DBinaryOperation(node, exp, op, ot); 
+			} else if (la.kind == 66) {
+				MemberCheck(node, out node);
+			} else SynErr(88);
 		}
 	}
 
@@ -754,25 +793,29 @@ namespace Dyalect.Parser
 		var op = default(UnaryOperator);
 		var ot = default(Token);
 		
-		if (StartOf(8)) {
-			if (la.kind == 37) {
-				Get();
-				ot = t; op = UnaryOperator.Not; 
-			} else if (la.kind == 31) {
-				Get();
-				ot = t; op = UnaryOperator.Neg; 
-			} else if (la.kind == 30) {
-				Get();
-				ot = t; op = UnaryOperator.Plus; 
-			} else {
-				Get();
-				ot = t; op = UnaryOperator.BitwiseNot; 
-			}
-		}
-		Range(out node);
-		if (op != UnaryOperator.None)
-		   node = new DUnaryOperation(node, op, ot);
-		
+		if (la.kind == 37) {
+			Get();
+			ot = t; op = UnaryOperator.Not; 
+			Range(out node);
+			node = new DUnaryOperation(node, op, ot); 
+		} else if (la.kind == 31) {
+			Get();
+			ot = t; op = UnaryOperator.Neg; 
+			Range(out node);
+			node = new DUnaryOperation(node, op, ot); 
+		} else if (la.kind == 30) {
+			Get();
+			ot = t; op = UnaryOperator.Plus; 
+			Range(out node);
+			node = new DUnaryOperation(node, op, ot); 
+		} else if (la.kind == 47) {
+			Get();
+			ot = t; op = UnaryOperator.BitwiseNot; 
+			Range(out node);
+			node = new DUnaryOperation(node, op, ot); 
+		} else if (StartOf(8)) {
+			Range(out node);
+		} else SynErr(89);
 	}
 
 	void Range(out DNode node) {
@@ -857,7 +900,7 @@ namespace Dyalect.Parser
 			Group(out node);
 		} else if (la.kind == 67) {
 			Base(out node);
-		} else SynErr(82);
+		} else SynErr(90);
 	}
 
 	void ApplicationArguments(DApplication app) {
@@ -906,7 +949,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 70) {
 			Get();
-		} else SynErr(83);
+		} else SynErr(91);
 		node = new DBooleanLiteral(t) { Value = t.val == "true" }; 
 	}
 
@@ -971,7 +1014,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 48) {
 			Import();
 			Separator();
-		} else SynErr(84);
+		} else SynErr(92);
 	}
 
 	void Dyalect() {
@@ -1002,7 +1045,7 @@ namespace Dyalect.Parser
 		{_x,_T,_T,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _T,_x,_T,_x, _T,_x,_T,_T, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_T,_x, _x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x},
+		{_x,_T,_T,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_T,_x, _x},
 		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _T,_x,_T,_x, _T,_x,_T,_T, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_T,_x, _x}
 
         };
@@ -1095,9 +1138,17 @@ namespace Dyalect.Parser
 			case 79: s = "invalid Loops"; break;
 			case 80: s = "invalid Expr"; break;
 			case 81: s = "invalid FunctionExpr"; break;
-			case 82: s = "invalid Literal"; break;
-			case 83: s = "invalid Bool"; break;
-			case 84: s = "invalid DyalectItem"; break;
+			case 82: s = "invalid Eq"; break;
+			case 83: s = "invalid Shift"; break;
+			case 84: s = "invalid BitOr"; break;
+			case 85: s = "invalid Xor"; break;
+			case 86: s = "invalid BitAnd"; break;
+			case 87: s = "invalid Add"; break;
+			case 88: s = "invalid Mul"; break;
+			case 89: s = "invalid Unary"; break;
+			case 90: s = "invalid Literal"; break;
+			case 91: s = "invalid Bool"; break;
+			case 92: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

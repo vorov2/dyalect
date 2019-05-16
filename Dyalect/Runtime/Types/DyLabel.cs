@@ -28,6 +28,9 @@
 
         }
 
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+
         public override string TypeName => StandardType.LabelName;
 
         protected override DyString ToStringOp(DyObject arg, ExecutionContext ctx)
