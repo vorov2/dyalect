@@ -332,6 +332,11 @@ namespace Dyalect.Runtime.Types
             return chs;
         }
 
+        private DyObject IsEmpty(ExecutionContext ctx, DyObject self)
+        {
+            return string.IsNullOrWhiteSpace(self.GetString()) ? DyBool.True : DyBool.False;
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             switch (name)
@@ -364,6 +369,8 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Member(name, TrimStart, 0, new Par("chars", true));
                 case "trimEnd":
                     return DyForeignFunction.Member(name, TrimEnd, 0, new Par("chars", true));
+                case "isEmpty":
+                    return DyForeignFunction.Member(name, IsEmpty);
                 default:
                     return null;
             }

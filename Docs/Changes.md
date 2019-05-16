@@ -1,5 +1,6 @@
 # 0.5.4
   * A bug fixed: _Multiline mode works incorrectly in console_ ([Issue #70](https://github.com/vorov2/dyalect/issues/70)).
+  * A new method `isEmpty` is added to a `String` data ([Issue #68](https://github.com/vorov2/dyalect/issues/68)). This method returns `true` if a string consists of only white spaces, tabs or new lines characters.
 
 # 0.5.3
   * A bug fixed: _Previous errors are not always cleared in interactive console_ ([Issue #64](https://github.com/vorov2/dyalect/issues/64)).
