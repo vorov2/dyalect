@@ -1,3 +1,6 @@
+# 0.5.2
+  * A feature request implemented: _Unit testing in Dya console_ ([Issue #6](https://github.com/vorov2/dyalect/issues/6)).
+
 # 0.5.1
   * A bug fixed: _No default values for vararg parameter_ ([Issue #65](https://github.com/vorov2/dyalect/issues/65)).
   * A bug fixed: _Variadic functions behavior_ ([Issue #63](https://github.com/vorov2/dyalect/issues/63)).
