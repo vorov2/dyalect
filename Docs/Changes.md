@@ -1,3 +1,13 @@
+# 0.5.4
+  * A bug fixed: _Multiline mode works incorrectly in console_ ([Issue #70](https://github.com/vorov2/dyalect/issues/70)).
+  * A new method `isEmpty` is added to a `String` data ([Issue #68](https://github.com/vorov2/dyalect/issues/68)). This method returns `true` if a string consists of only white spaces, tabs or new lines characters.
+  * A new standard `parse` function is added ([Issue #57](https://github.com/vorov2/dyalect/issues/57)):
+    ```
+    dy>parse("[1,2,3,('c',true,23.4),nil]")
+    [1, 2, 3, ('c', true, 23.4), nil] :: Array
+    ```
+  * Error handling refactored.
+
 # 0.5.3
   * A bug fixed: _Previous errors are not always cleared in interactive console_ ([Issue #64](https://github.com/vorov2/dyalect/issues/64)).
   * Type system is refactored for better consistency.
@@ -14,7 +24,6 @@
     ```swift
     func sum(x, y, z) {
     }
-
     sum(z: 3, x: 1, y: 2)
     ```
     Related issue: [#37](https://github.com/vorov2/dyalect/issues/37).

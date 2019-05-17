@@ -27,10 +27,10 @@ namespace Dyalect.Runtime.Types
         public abstract object ToObject();
 
         internal protected virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Builtins.Get, this.TypeName(ctx)).Set(ctx);
+            ctx.OperationNotSupported(Builtins.Get, this.TypeName(ctx));
 
         internal protected virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
-            Err.OperationNotSupported(Builtins.Set, this.TypeName(ctx)).Set(ctx);
+            ctx.OperationNotSupported(Builtins.Set, this.TypeName(ctx));
 
         internal protected virtual DyObject GetItem(string name, ExecutionContext ctx) => null;
 
@@ -55,7 +55,7 @@ namespace Dyalect.Runtime.Types
             var value = ctx.Composition.Types[self.TypeId].GetMemberDirect(self, nameId, ctx);
 
             if (value == null)
-                return Err.OperationNotSupported(Builtins.Iterator, self.TypeName(ctx)).Set(ctx);
+                return ctx.OperationNotSupported(Builtins.Iterator, self.TypeName(ctx));
 
             return value;
         }

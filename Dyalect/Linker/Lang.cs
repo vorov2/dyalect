@@ -1,7 +1,9 @@
-﻿using Dyalect.Runtime;
+﻿using Dyalect.Parser;
+using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
 using System.Collections;
+using System.Linq;
 
 namespace Dyalect.Linker
 {
@@ -77,7 +79,7 @@ namespace Dyalect.Linker
         public DyObject Assert(ExecutionContext ctx, DyObject expected, DyObject got)
         {
             if (!Eq(expected.ToObject(), got.ToObject()))
-                return Err.AssertFailed($"Expected {expected.ToString(ctx)}, got {got.ToString(ctx)}").Set(ctx);
+                return ctx.AssertFailed($"Expected {expected.ToString(ctx)}, got {got.ToString(ctx)}");
 
             return DyNil.Instance;
         }
@@ -100,6 +102,33 @@ namespace Dyalect.Linker
             }
 
             return Equals(x, y);
+        }
+
+        [Function("parse")]
+        public DyObject Parse(ExecutionContext ctx, DyObject expression)
+        {
+            if (expression.TypeId != StandardType.String)
+                return ctx.InvalidType(StandardType.StringName, expression.TypeName(ctx));
+
+            try
+            {
+                var p = new DyParser();
+                var res = p.Parse(SourceBuffer.FromString(expression.GetString()));
+
+                if (!res.Success)
+                    return ctx.FailedReadLiteral(res.Messages.First().ToString());
+
+                if (res.Value.Root == null || res.Value.Root.Nodes.Count == 0)
+                    return ctx.FailedReadLiteral("Empty expression.");
+                else if (res.Value.Root.Nodes.Count > 1)
+                    return ctx.FailedReadLiteral("Only single expressions allowed.");
+
+                return LiteralEvaluator.Eval(res.Value.Root.Nodes[0]);
+            }
+            catch (Exception ex)
+            {
+                return ctx.FailedReadLiteral(ex.Message);
+            }
         }
     }
 }
