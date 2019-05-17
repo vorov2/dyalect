@@ -38,10 +38,89 @@ func print(args..., separator = ",", terminator = "\n") {
 }
 
 print(1,2,3,separator:" ",terminator:".")
+
+
+
+var i = 42
+var n = 0
+
+while n < 42 {
+    if isPrime(i) {
+        n += 1
+        print("n = \(n) \(i)")
+        i += i - 1
+    }
+    i += 1
+}
+
 */
+func isPrime(number) {
+    if number <= 1 {
+        return false
+    }
+    else if number % 2 == 0 {
+        return number == 2
+    }
 
+    var i = 3
 
-var x = 42
-var y = 12
+    while (i * i) < number {
+        if number % i == 0 {
+            return false
+        }
+        i += 2
+    }
 
-"the value of (x + y) is \(x + y)"
+    return true
+}
+
+func testPrimes() {
+    var i = 42
+    var n = 0
+
+    while n < 42 {
+        if isPrime(i) {
+            n += 1
+            print("n = \(n)\t\(i)")
+            i += i - 1
+        }
+        i += 1
+    }
+}
+
+func testFunCall() {
+    func sum(x,y,z) {x+y+z}
+
+    var iter = 1000*1000
+
+    while iter > 0 {
+        sum(1,2,3)
+        iter -= 1
+    }
+}
+
+func testIter() {
+    var xs = 1..(1000*1000)
+
+    const result =
+        for x in xs {
+            if x >= 1000*1000 {
+                break x
+            }
+        }
+
+    result
+}
+
+var acc = 0
+for x in 1..5 {
+    if x % 2 != 0 {
+        continue
+    }
+    for y in 6..10 {
+        if y % 2 == 0 {
+            continue
+        }
+        acc += x + y
+    }
+}

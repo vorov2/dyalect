@@ -27,6 +27,9 @@ namespace Dyalect
         [Binding("nologo", Help = "Do not show logo.", Category = GENERAL)]
         public bool NoLogo { get; set; }
 
+        [Binding("time", Help = "Measure execution time.", Category = GENERAL)]
+        public bool MeasureTime { get; set; }
+
         [Binding("test", Help = "Run unit tests from a file (or files if a path to a directory is specified). Usage: dya [path to file or directory] -test.", Category = GENERAL)]
         public bool Test { get; set; }
 

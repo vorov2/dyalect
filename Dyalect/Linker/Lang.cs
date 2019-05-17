@@ -104,6 +104,15 @@ namespace Dyalect.Linker
             return Equals(x, y);
         }
 
+        [Function("sqrt")]
+        public DyObject Sqrt(ExecutionContext ctx, DyObject n)
+        {
+            if (n.TypeId != StandardType.Float && n.TypeId != StandardType.Integer)
+                return ctx.InvalidType(StandardType.FloatName, n.TypeName(ctx));
+
+            return new DyFloat(Math.Sqrt(n.GetFloat()));
+        }
+
         [Function("parse")]
         public DyObject Parse(ExecutionContext ctx, DyObject expression)
         {

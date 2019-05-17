@@ -24,6 +24,39 @@ func whileTest2() {
     assert(42, x)
 }
 
+func forTest1() {
+    var str = ""
+    for i in 1..5 {
+        for _ in 1..i {
+            str += "*"
+        }
+        str += "\n"
+    }
+    var pattern = 
+        "*\n" +
+        "**\n" +
+        "***\n" +
+        "****\n" +
+        "*****\n"
+    assert(pattern, str)
+}
+
+func forTest2() {
+    var acc = 0
+    for x in 1..5 {
+        if x % 2 != 0 {
+            continue
+        }
+        for y in 6..10 {
+            if y % 2 == 0 {
+                continue
+            }
+            acc += x + y
+        }
+    }
+    assert(0, acc)
+}
+
 func fizzbuzzTest() {
     var n = 1
     var acc = ""
@@ -598,4 +631,19 @@ func functionTest5() {
     assert("foo", test())
     var arg = "bar"
     assert(arg, test(arg))
+}
+
+func functionTest6() {
+    func apply(fun, fst) { snd => fun(fst, snd) }
+    func sum(x, y) { x + y }
+    var sum2 = apply(sum, 2)
+    assert(5, sum2(3))
+}
+
+func functionTest7() {
+    func apply(fun, fst) { snd => fun(fst, snd) }
+    func flip(fun) { (y, x) => fun(x, y) }
+    func sub(x, y) { x - y }
+    var sub3 = apply(flip(sub), 3)
+    assert(6, sub3(9))
 }

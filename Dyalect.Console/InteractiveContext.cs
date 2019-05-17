@@ -50,10 +50,10 @@ namespace Dyalect
             if (ExecutionContext == null)
                 ExecutionContext = DyMachine.CreateExecutionContext(made.Value);
 
-            return Eval();
+            return Eval(measureTime: false);
         }
 
-        public bool EvalFile(string fileName)
+        public bool EvalFile(string fileName, bool measureTime)
         {
             UnitComposition composition = null;
             SourceBuffer buffer = null;
@@ -86,17 +86,22 @@ namespace Dyalect
             if (ExecutionContext == null)
                 ExecutionContext = DyMachine.CreateExecutionContext(composition);
 
-            return Eval();
+            return Eval(measureTime);
         }
 
-        public bool Eval()
+        public bool Eval(bool measureTime)
         {
 #if !DEBUG
             try
 #endif
             {
+                var dt = DateTime.Now;
                 var res = DyMachine.Execute(ExecutionContext);
                 Printer.Output(res);
+
+                if (measureTime)
+                    Printer.SupplementaryOutput($"Time taken: {DateTime.Now - dt}");
+
                 return true;
             }
 #if !DEBUG

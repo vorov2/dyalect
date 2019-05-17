@@ -110,7 +110,7 @@ namespace Dyalect.Util
         {
             var str = arg?.ToString();
 
-            if (ctx.EvalFile(str))
+            if (ctx.EvalFile(str, measureTime: false))
                 Printer.Output($"File \"{Path.GetFileName(str)}\" successfully evaluated.");
         }
     }
