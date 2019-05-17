@@ -2,6 +2,7 @@
   * A bug fixed: _VM crush: Stack is corrupted_ ([Issue #77](https://github.com/vorov2/dyalect/issues/77)).
   * A bug fixed: _VM crush & invalid break behavior_ ([Issue #78](https://github.com/vorov2/dyalect/issues/78)).
   * An issue is implemented: _Optimize compilation logic_ ([Issue #76](https://github.com/vorov2/dyalect/issues/76)).
+  * A bug fixed: _Invalid processing for default value_ ([Issue #79](https://github.com/vorov2/dyalect/issues/79)).
 
 # 0.5.5
   * Test runner in interactive console is correct (it didn't display the reason of a test failure).

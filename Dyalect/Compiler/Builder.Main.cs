@@ -875,7 +875,7 @@ namespace Dyalect.Compiler
                             val = DyNil.Instance;
                             break;
                         default:
-                            //Error: only primitive types are supported
+                            AddError(CompilerError.InvalidDefaultValue, p.DefaultValue.Location, p.Name);
                             break;
                     }
 

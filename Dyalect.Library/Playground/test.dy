@@ -113,12 +113,8 @@ func testIter() {
 
 */
 
-for x in 1..10 {
-    if x > 5 {
-        print(">>1")
-        break
-        print(">>2")
-        print(">>3")
-    }
-    print(x)
+func foo(x, y = [1,2,3]) {
+    print(x, y)
 }
+
+foo(42)
