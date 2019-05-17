@@ -51,10 +51,10 @@ namespace Dyalect.Parser.Model
         {
             switch (op)
             {
-                case UnaryOperator.Neg: return Builtins.Neg;
+                case UnaryOperator.Neg: return "-";
                 case UnaryOperator.Not: return Builtins.Not;
                 case UnaryOperator.BitwiseNot: return Builtins.BitNot;
-                case UnaryOperator.Plus: return Builtins.Plus;
+                case UnaryOperator.Plus: return "+";
                 default: return "";
             }
         }

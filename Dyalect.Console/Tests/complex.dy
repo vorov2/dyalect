@@ -54,7 +54,7 @@ func forTest2() {
             acc += x + y
         }
     }
-    assert(0, acc)
+    assert(44, acc)
 }
 
 func fizzbuzzTest() {

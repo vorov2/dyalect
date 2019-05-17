@@ -307,6 +307,7 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             cw.Br(ctx.BlockSkip);
+            PushIf(hints);
         }
 
         private void Build(DWhile node, Hints hints, CompilerContext ctx)

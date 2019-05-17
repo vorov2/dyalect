@@ -1,6 +1,8 @@
 # 0.5.5
   * Test runner in interactive console is correct (it didn't display the reason of a test failure).
   * Now interactive console supports a `-time` switch that displays execution time.
+  * Pretty print corrected for the unary operations.
+  * A bug fixed: _Critical VM failure_ ([Issue #74](https://github.com/vorov2/dyalect/issues/74)).
 
 # 0.5.4
   * A bug fixed: _Multiline mode works incorrectly in console_ ([Issue #70](https://github.com/vorov2/dyalect/issues/70)).

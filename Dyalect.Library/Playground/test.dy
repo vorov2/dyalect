@@ -53,7 +53,6 @@ while n < 42 {
     i += 1
 }
 
-*/
 func isPrime(number) {
     if number <= 1 {
         return false
@@ -112,15 +111,16 @@ func testIter() {
     result
 }
 
+*/
+
 var acc = 0
-for x in 1..5 {
-    if x % 2 != 0 {
+
+for y in 6..10 {
+    if y % 2 == 100 {
+        print("Never happen...")
         continue
     }
-    for y in 6..10 {
-        if y % 2 == 0 {
-            continue
-        }
-        acc += x + y
-    }
+    acc += 0 + y
 }
+
+
