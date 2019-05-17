@@ -103,7 +103,7 @@ namespace Dyalect
         private static void Failed(string name, string reason)
         {
             commands.Add($"AddTest {name} -Outcome Failed -Framework DUnit -FileName tests.dy");
-            Printer.Output($"{name}: Failed");
+            Printer.Output($"{name}: Failed: {reason}");
         }
 
         private static void Success(string name)

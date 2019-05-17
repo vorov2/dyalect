@@ -32,7 +32,7 @@ namespace Dyalect
             {
                 Printer.LineFeed();
 
-                if (!ctx.EvalFile(options.FileName))
+                if (!ctx.EvalFile(options.FileName, options.MeasureTime))
                     return ERR;
 
                 if (options.StayInInteractive)
