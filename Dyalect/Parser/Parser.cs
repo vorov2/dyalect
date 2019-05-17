@@ -476,6 +476,7 @@ namespace Dyalect.Parser
 		Expect(12);
 		var br = new DBreak(t); node = br; 
 		if (StartOf(5)) {
+			if (la.AfterEol) return; 
 			Expr(out var exp);
 			br.Expression = exp; 
 		}

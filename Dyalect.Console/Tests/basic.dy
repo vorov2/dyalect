@@ -389,6 +389,11 @@ func rangeTest4() {
     assert(['a','b','c','d','e'], chz.toArray())
 }
 
+func rangeTest5() {
+    1..10 //Check how ranges behave as statements, issue #77
+    assert(true, true)
+}
+
 func interpolationTest1() {
     var x = 42
     var y = 12

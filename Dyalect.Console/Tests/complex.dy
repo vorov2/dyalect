@@ -57,6 +57,19 @@ func forTest2() {
     assert(44, acc)
 }
 
+func forTest3() {
+    var acc = ""
+    for x in 1..10 {
+        if x > 5 {
+            acc += ">>1"
+            break
+            acc += ">>2"
+            acc += ">>3"
+        }
+    }
+    assert(">>1", acc)
+}
+
 func fizzbuzzTest() {
     var n = 1
     var acc = ""
