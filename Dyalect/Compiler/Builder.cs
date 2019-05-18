@@ -128,20 +128,33 @@ namespace Dyalect.Compiler
 #endif
         }
 
-        //Если некий блок кода обычно возвращает значение, но в данном контексте используется
-        //как выражение нам нужно снять вычисленное им значение со стека.
+        //If some code block usually yields a value but in this specific context
+        //we don't need it we have to pop it from stack
         private void PopIf(Hints hints)
         {
             if (!hints.Has(Push))
                 cw.Pop();
         }
 
-        //Если некий блок кода значение не возвращает сам по себе, но в данном контексте
-        //используется как выражение, мы эмулируем поведение выражения, поднимая на стек NIL
+        //If some code block usually don't yield a value but in this specific context
+        //we need a value we have to push a default 'nil' onto the stack
         private void PushIf(Hints hints)
         {
             if (hints.Has(Push))
                 cw.PushNil();
+        }
+
+        //This method is called to check if we really need to emit code
+        private bool NoPush(DNode node, Hints hints)
+        {
+            if (!hints.Has(Push))
+            {
+                AddLinePragma(node);
+                cw.Nop();
+                return true;
+            }
+
+            return false;
         }
 
         private Exception Ice(Exception ex = null)

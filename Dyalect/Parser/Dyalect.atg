@@ -275,16 +275,7 @@ PRODUCTIONS
             | Continue<out node>
             | Return<out node>
             | Yield<out node>
-        )
-        /*[ 
-            "when" 
-            (. var @if = new DIf(t) { True = node }; .)
-            Expr<out node>
-            (.
-                @if.Condition = node;
-                node = @if;
-            .)
-        ]*/.
+        ).
 
     Yield<out DNode node> =
         "yield" 
@@ -298,7 +289,10 @@ PRODUCTIONS
     Break<out DNode node> = 
         "break" 
         (. var br = new DBreak(t); node = br; .)
-        [ Expr<out var exp> (. br.Expression = exp; .) ].
+        [ 
+            (. if (la.AfterEol) return; .)
+            Expr<out var exp> (. br.Expression = exp; .) 
+        ].
 
     Return<out DNode node> = 
         "return" 

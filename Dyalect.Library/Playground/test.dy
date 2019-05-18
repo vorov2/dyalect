@@ -113,14 +113,8 @@ func testIter() {
 
 */
 
-var acc = 0
-
-for y in 6..10 {
-    if y % 2 == 100 {
-        print("Never happen...")
-        continue
-    }
-    acc += 0 + y
+func foo(x, y = [1,2,3]) {
+    print(x, y)
 }
 
-
+foo(42)

@@ -112,6 +112,8 @@ namespace Dyalect.Compiler
 
             AddLinePragma(range);
             cw.FunCall(1);
+
+            PopIf(hints);
         }
 
         private void Build(DMemberCheck node, Hints hints, CompilerContext ctx)
@@ -146,10 +148,12 @@ namespace Dyalect.Compiler
                     return;
                 }
 
+                if (NoPush(node, hints))
+                    return;
+
                 var sv = GetParentVariable(node.Name, node);
                 AddLinePragma(node);
                 cw.PushVar(sv);
-                PopIf(hints);
                 return;
             }
 
@@ -265,7 +269,7 @@ namespace Dyalect.Compiler
                 }
 
                 cw.RunMod(unit.UnitIds.Count);
-                unit.UnitIds.Add(-1); //Реальные хэндлы добавляются линкером
+                unit.UnitIds.Add(-1); //Real handles are added by a linker
 
                 var addr = AddVariable(node.Alias ?? node.ModuleName, node.Location, VarFlags.Module);
                 cw.PopVar(addr);
@@ -278,7 +282,7 @@ namespace Dyalect.Compiler
                 AddError(CompilerError.NoEnclosingLoop, node.Location);
 
             if (node.Expression != null)
-                Build(node.Expression, hints, ctx);
+                Build(node.Expression, hints.Append(Push), ctx);
             else
                 cw.PushNil();
 
@@ -500,6 +504,9 @@ namespace Dyalect.Compiler
 
         private void Build(DStringLiteral node, Hints hints, CompilerContext ctx)
         {
+            if (node.Chunks == null && NoPush(node, hints))
+                return;
+
             if (node.Chunks != null)
             {
                 cw.PushVar(GetVariable(StandardType.StringName, node));
@@ -550,16 +557,19 @@ namespace Dyalect.Compiler
 
         private void Build(DCharLiteral node, Hints hints, CompilerContext ctx)
         {
+            if (NoPush(node, hints))
+                return;
+
             AddLinePragma(node);
             cw.Push(node.Value);
-            PopIf(hints);
         }
 
         private void Build(DFloatLiteral node, Hints hints, CompilerContext ctx)
         {
+            if (NoPush(node, hints))
+                return;
             AddLinePragma(node);
             cw.Push(node.Value);
-            PopIf(hints);
         }
 
         private void Build(DName node, Hints hints, CompilerContext ctx)
@@ -569,8 +579,10 @@ namespace Dyalect.Compiler
 
             if (!hints.Has(Pop))
             {
+                if (NoPush(node, hints))
+                    return;
+
                 cw.PushVar(sv);
-                PopIf(hints);
             }
             else
             {
@@ -583,27 +595,35 @@ namespace Dyalect.Compiler
 
         private void Build(DIntegerLiteral node, Hints hints, CompilerContext ctx)
         {
+            if (NoPush(node, hints))
+                return;
+
             AddLinePragma(node);
             cw.Push(node.Value);
-            PopIf(hints);
         }
 
         private void Build(DBooleanLiteral node, Hints hints, CompilerContext ctx)
         {
+            if (NoPush(node, hints))
+                return;
+
             AddLinePragma(node);
             cw.Push(node.Value);
-            PopIf(hints);
         }
 
         private void Build(DNilLiteral node, Hints hints, CompilerContext ctx)
         {
+            if (NoPush(node, hints))
+                return;
+
             AddLinePragma(node);
             cw.PushNil();
-            PopIf(hints);
         }
 
         private void Build(DBlock node, Hints hints, CompilerContext ctx)
         {
+            var hasPush = hints.Has(Push);
+
             if (node.Nodes?.Count == 0)
             {
                 if (hints.Has(Push))
@@ -611,18 +631,17 @@ namespace Dyalect.Compiler
                 return;
             }
 
-            //Начинаем лексический скоуп времени компиляции
+            //Start a compile time lexical scope
             StartScope(fun: false, loc: node.Location);
 
             for (var i = 0; i < node.Nodes.Count; i++)
             {
                 var n = node.Nodes[i];
-                var push = i == node.Nodes.Count - 1 ? hints.Append(Push) : hints.Remove(Push);
+                var push = hasPush && i == node.Nodes.Count - 1 ? hints.Append(Push) : hints.Remove(Push);
                 Build(n, push, ctx);
             }
 
             EndScope();
-            PopIf(hints);
         }
 
         private void Build(DAssignment node, Hints hints, CompilerContext ctx)
@@ -856,7 +875,7 @@ namespace Dyalect.Compiler
                             val = DyNil.Instance;
                             break;
                         default:
-                            //Error: only primitive types are supported
+                            AddError(CompilerError.InvalidDefaultValue, p.DefaultValue.Location, p.Name);
                             break;
                     }
 

@@ -42,6 +42,8 @@
 
         VarArgNoDefaultValue = 219,
 
-        VarArgOnlyOne = 220
+        VarArgOnlyOne = 220,
+
+        InvalidDefaultValue = 221
     }
 }

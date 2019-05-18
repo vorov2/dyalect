@@ -177,4 +177,7 @@
   <data name="VarArgOnlyOne" xml:space="preserve">
     <value>Only one parameter of type argument list is allowed.</value>
   </data>
+  <data name="InvalidDefaultValue" xml:space="preserve">
+    <value>Default parameter value for '{0}' must be of a primitive type (integer, float, character, string or nil).</value>
+  </data>
 </root>

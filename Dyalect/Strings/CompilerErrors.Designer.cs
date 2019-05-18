@@ -106,6 +106,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default parameter value for &apos;{0}&apos; must be of a primitive type (integer, float, character, string or nil)..
+        /// </summary>
+        internal static string InvalidDefaultValue {
+            get {
+                return ResourceManager.GetString("InvalidDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid usage of the &quot;nameof&quot; operator..
         /// </summary>
         internal static string InvalidNameOfOperator {
