@@ -113,8 +113,36 @@ func testIter() {
 
 */
 
-func foo(x, y = [1,2,3]) {
-    print(x, y)
+var cache = [[1]]
+
+func min(x, y) {
+    if x < y {
+        x
+    } else {
+        y
+    }
 }
 
-foo(42)
+func namesOfGod(n) {
+    for l in cache.len()..n {
+        var r = [0]
+        for x in 1..l {
+            r.add(r[r.len() - 1] + cache[l - x][min(x, l-x)])
+        }
+        cache.add(r)
+    }
+    return cache[n]
+}
+
+func row(n) {
+    const r = namesOfGod(n)
+    var returnArray = []
+    for i in 0..(n - 1) {
+        returnArray.add(r[i + 1] - r[i])
+    }
+    return returnArray
+}
+
+for x in 1..25 {
+    print("\(x): \(row(x))")
+}
