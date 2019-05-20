@@ -101,7 +101,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeId == right.TypeId)
+            if (left.TypeId == right.TypeId || right.TypeId == StandardType.Char)
                 return left.GetString() == right.GetString() ? DyBool.True : DyBool.False;
             else
                 return base.EqOp(left, right, ctx);
@@ -109,7 +109,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeId == right.TypeId)
+            if (left.TypeId == right.TypeId || right.TypeId == StandardType.Char)
                 return left.GetString() != right.GetString() ? DyBool.True : DyBool.False;
             else
                 return base.NeqOp(left, right, ctx);
@@ -117,7 +117,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeId == right.TypeId)
+            if (left.TypeId == right.TypeId || right.TypeId == StandardType.Char)
                 return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
             else
                 return base.GtOp(left, right, ctx);
@@ -125,7 +125,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeId == right.TypeId)
+            if (left.TypeId == right.TypeId || right.TypeId == StandardType.Char)
                 return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
             else
                 return base.LtOp(left, right, ctx);
