@@ -397,10 +397,10 @@ namespace Dyalect.Runtime.Types
         {
             if (SupportInstanceMembers)
             {
-                var ret = self.GetItem(ctx.Composition.Members[nameId], ctx);
+                var ret = self.GetOrdinal(ctx.Composition.Members[nameId]);
 
-                if (ret != null)
-                    return ret;
+                if (ret != -1)
+                    return self.GetItem(ret, ctx);
             }
 
             if (!members.TryGetValue(nameId, out var value))
