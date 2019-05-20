@@ -1,3 +1,8 @@
+# 0.5.8
+  * A bug fixed: _String indexer returns a string instead of a char_ ([Issue #84](https://github.com/vorov2/dyalect/issues/84)).
+  * A bug fixed: _String indexation by a compiler_ ([Issue #83](https://github.com/vorov2/dyalect/issues/83)).
+  * A bug fixed: _String and char comparison_ ([Issue #85](https://github.com/vorov2/dyalect/issues/85)).
+
 # 0.5.7
   * A task is implemented: _Better parser error messages_ ([Issue #26](https://github.com/vorov2/dyalect/issues/26)).
 
