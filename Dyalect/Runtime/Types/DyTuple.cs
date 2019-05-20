@@ -121,7 +121,8 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not 
+            | SupportedOperations.Get | SupportedOperations.Set;
 
         public override string TypeName => StandardType.TupleName;
 

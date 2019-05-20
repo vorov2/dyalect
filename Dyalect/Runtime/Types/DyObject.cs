@@ -32,13 +32,17 @@ namespace Dyalect.Runtime.Types
         internal protected virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Set, this.TypeName(ctx));
 
-        internal protected virtual DyObject GetItem(string name, ExecutionContext ctx) => null;
+        internal protected virtual DyObject GetItem(string name, ExecutionContext ctx) =>
+            ctx.OperationNotSupported(Builtins.Get, this.TypeName(ctx));
 
-        internal protected virtual void SetItem(string name, DyObject value, ExecutionContext ctx) { }
+        internal protected virtual void SetItem(string name, DyObject value, ExecutionContext ctx) =>
+            ctx.OperationNotSupported(Builtins.Get, this.TypeName(ctx));
 
-        internal protected virtual DyObject GetItem(int index, ExecutionContext ctx) => null;
+        internal protected virtual DyObject GetItem(int index, ExecutionContext ctx) => 
+            ctx.OperationNotSupported(Builtins.Get, this.TypeName(ctx));
 
-        internal protected virtual void SetItem(int index, DyObject value, ExecutionContext ctx) { }
+        internal protected virtual void SetItem(int index, DyObject value, ExecutionContext ctx) =>
+            ctx.OperationNotSupported(Builtins.Set, this.TypeName(ctx));
 
         internal protected virtual bool HasItem(string name, ExecutionContext ctx) => false;
 

@@ -142,6 +142,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pattern &quot;{0}&quot; not supported in this context..
+        /// </summary>
+        internal static string PatternNotSupported {
+            get {
+                return ResourceManager.GetString("PatternNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The &quot;return&quot; directive is supported only inside functions..
         /// </summary>
         internal static string ReturnNotAllowed {

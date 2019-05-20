@@ -229,10 +229,21 @@ PRODUCTIONS
     MatchEntry<out DMatchEntry me> =
         (
             (. me = new DMatchEntry(t); .)
-            Pattern<out var p> 
+            RangePattern<out var p> 
             (. me.Pattern = p; .)
             [ "when" Expr<out var node> (. me.Guard = node; .)  ] 
             "=>" Expr<out var exp> (. me.Expression = exp; .)
+        ).
+
+    RangePattern<out DPattern node> =
+        (. node = null; .)
+        (
+            Pattern<out node>
+            [
+                (. var r = new DRangePattern(t) { From = node }; .)
+                ".." Pattern<out node>
+                (. r.To = node; node = r; .)
+            ]
         ).
 
     Pattern<out DPattern node> =
@@ -244,7 +255,21 @@ PRODUCTIONS
             | CharPattern<out node>
             | StringPattern<out node>
             | BooleanPattern<out node>
+            | NilPattern<out node>
+            | IF (IsRecordPattern()) RecordPattern<out node>
             | TuplePattern<out node>
+            | ArrayPattern<out node>
+        ).
+
+    ArrayPattern<out DPattern node> =
+        (. node = null; .)
+        (
+            "["
+                (. var tup = new DArrayPattern(t); .)
+                RangePattern<out node> (. tup.Elements.Add(node); .)
+                { "," RangePattern<out node> (. tup.Elements.Add(node); .) }
+                (. node = tup; .)
+            "]"
         ).
 
     TuplePattern<out DPattern node> =
@@ -252,28 +277,34 @@ PRODUCTIONS
         (
             "("
                 (. var tup = new DTuplePattern(t); .)
-                TuplePatternElement<out node> (. tup.Elements.Add(node); .)
-                { "," TuplePatternElement<out node> (. tup.Elements.Add(node); .) }
+                RangePattern<out node> (. tup.Elements.Add(node); .)
+                { "," RangePattern<out node> (. tup.Elements.Add(node); .) }
                 (. node = tup; .)
             ")"
         ).
-    TuplePatternElement<out DPattern node> =
+
+    RecordPattern<out DPattern node> =
         (. node = null; .)
         (
-              IF (IsLabel()) FieldPattern<out node>
-            | Pattern<out node>
+            "("
+                (. var rec = new DRecordPattern(t); .)
+                FieldPattern<out var lab> (. rec.Elements.Add(lab); .)
+                { "," FieldPattern<out lab> (. rec.Elements.Add(lab); .) }
+                (. node = rec; .)
+            ")"
         ).
 
-    FieldPattern<out DPattern node> =
+    FieldPattern<out DLabelPattern node> =
         (. node = null; .)
         (
             identToken 
             (. var la = new DLabelPattern(t) { Label = t.val }; .)
-            ":" Pattern<out node>
-            (. la.Pattern = node; node = la; .)
+            ":" RangePattern<out var pat>
+            (. la.Pattern = pat; node = la; .)
         ).
 
     NamePattern<out DPattern node> = identToken (. node = new DNamePattern(t) { Name = t.val }; .).
+    NilPattern<out DPattern node> = "nil" (. node = new DNilPattern(t); .).
     IntegerPattern<out DPattern node> = intToken (. node = new DIntegerPattern(t) { Value = ParseInteger() }; .).
     FloatPattern<out DPattern node> = floatToken (. node = new DFloatPattern(t) { Value = ParseFloat() }; .).
     CharPattern<out DPattern node> = charToken (. node = new DCharPattern(t) { Value = ParseChar() }; .).

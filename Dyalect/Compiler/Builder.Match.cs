@@ -19,11 +19,14 @@ namespace Dyalect.Compiler
                 MatchExit = cw.DefineLabel()
             };
 
+            var sys = AddVariable();
             var push = hints.Append(Push);
             Build(node.Expression, push, ctx);
+            cw.PopVar(sys);
+            var sysVar = new ScopeVar(sys);
 
             foreach (var e in node.Entries)
-                BuildEntry(e, push, ctx);
+                BuildEntry(e, sysVar, push, ctx);
 
             cw.Push("Match failed.");
             cw.Fail();
@@ -32,7 +35,7 @@ namespace Dyalect.Compiler
             EndScope();
         }
 
-        private void BuildEntry(DMatchEntry node, Hints hints, CompilerContext ctx)
+        private void BuildEntry(DMatchEntry node, ScopeVar sys, Hints hints, CompilerContext ctx)
         {
             StartScope(fun: false, node.Location);
             var skip = cw.DefineLabel();
@@ -43,10 +46,10 @@ namespace Dyalect.Compiler
                 cw.Brfalse(skip);
             }
 
+            cw.PushVar(sys);
             BuildPattern(node.Pattern, ctx);
             cw.Brfalse(skip);
 
-            cw.Pop();
             Build(node.Expression, hints, ctx);
             cw.Br(ctx.MatchExit);
             cw.MarkLabel(skip);
@@ -56,8 +59,6 @@ namespace Dyalect.Compiler
 
         private void BuildPattern(DPattern node, CompilerContext ctx)
         {
-            cw.Dup();
-
             switch (node.NodeType)
             {
                 case NodeType.NamePattern:
@@ -86,67 +87,151 @@ namespace Dyalect.Compiler
                     cw.Eq();
                     break;
                 case NodeType.TuplePattern:
-                    BuildTuple((DTuplePattern)node, ctx);
+                    BuildSequence(node, ((DTuplePattern)node).Elements, ctx);
+                    break;
+                case NodeType.RecordPattern:
+                    BuildRecord((DRecordPattern)node, ctx);
+                    break;
+                case NodeType.ArrayPattern:
+                    BuildSequence(node, ((DArrayPattern)node).Elements, ctx);
+                    break;
+                case NodeType.NilPattern:
+                    cw.PushNil();
+                    cw.Eq();
+                    break;
+                case NodeType.RangePattern:
+                    BuildRange((DRangePattern)node, ctx);
                     break;
             }
         }
 
-        private void BuildTuple(DTuplePattern node, CompilerContext ctx)
+        private void BuildRange(DRangePattern node, CompilerContext ctx)
+        {
+            var skip = cw.DefineLabel();
+            var exit = cw.DefineLabel();
+
+            cw.Dup(); //2 objs
+            cw.HasMember(GetMemberNameId("<"));
+            cw.Brfalse(skip); //1 left
+
+            cw.Dup(); //2 objs
+            cw.HasMember(GetMemberNameId(">"));
+            cw.Brfalse(skip); //1 left
+
+            cw.Dup(); //2 objs
+            BuildRangeElement(node.From);
+            cw.GtEq();
+            cw.Brfalse(skip); //1 left
+
+            cw.Dup(); //2 objs
+            BuildRangeElement(node.To);
+            cw.LtEq();
+            cw.Brfalse(skip); //1 left
+
+            cw.Push(true);
+            cw.Pop(); //0 left
+            cw.Br(exit);
+
+            cw.MarkLabel(skip);
+            cw.Pop(); //0 left
+            cw.Push(false);
+
+            cw.MarkLabel(exit);
+            cw.Nop();
+        }
+
+        private void BuildRangeElement(DPattern node)
+        {
+            switch (node.NodeType)
+            {
+                case NodeType.IntegerPattern:
+                    cw.Push(((DIntegerPattern)node).Value);
+                    break;
+                case NodeType.FloatPattern:
+                    cw.Push(((DFloatPattern)node).Value);
+                    break;
+                case NodeType.BooleanPattern:
+                    cw.Push(((DBooleanPattern)node).Value);
+                    break;
+                case NodeType.CharPattern:
+                    cw.Push(((DCharPattern)node).Value);
+                    break;
+                case NodeType.StringPattern:
+                    cw.Push(((DStringPattern)node).Value.Value);
+                    break;
+                case NodeType.NilPattern:
+                    cw.PushNil();
+                    break;
+                default:
+                    AddError(CompilerError.PatternNotSupported, node.Location, node);
+                    break;
+            }
+        }
+
+        private void BuildSequence(DPattern node, List<DPattern> elements, CompilerContext ctx)
         {
             var skip = cw.DefineLabel();
             var ok = cw.DefineLabel();
-            var hasPos = false;
 
-            foreach (var e in node.Elements)
+            cw.Dup(); //2 objs
+            cw.HasMember(GetMemberNameId("len"));
+            cw.Brfalse(skip); //1 obj left to pop
+            cw.Dup(); //2 objs
+            cw.HasMember(GetMemberNameId("get"));
+            cw.Brfalse(skip); //1 obj left to pop
+
+            cw.Dup(); //2 objs
+            cw.Len();
+            cw.Push(elements.Count);
+            if (node.NodeType == NodeType.TuplePattern) cw.Eq(); else cw.GtEq();
+            cw.Brfalse(skip); //1 obj left to pop
+
+            for (var i = 0; i < elements.Count; i++)
             {
-                if (e.NodeType != NodeType.LabelPattern)
-                {
-                    hasPos = true;
-                    break;
-                }
+                cw.Dup(); //2 objs
+                var e = elements[i];
+                cw.Get(i);
+                BuildPattern(e, ctx);
+                cw.Brfalse(skip); //1 obj left to pop
             }
 
-            if (hasPos)
-            {
-                cw.Len();
-                cw.Push(node.Elements.Count);
-                cw.Eq();
-                cw.Brtrue(ok);
-                cw.Push(false);
-                cw.Br(skip);
-                cw.MarkLabel(ok);
-                cw.Dup();
-            }
+            cw.Pop(); //0 objs
+            cw.Push(true);
+            cw.Br(ok);
+            cw.MarkLabel(skip);
+            cw.Pop(); //0 objs
+            cw.Push(false);
+            cw.MarkLabel(ok);
+            cw.Nop();
+        }
+
+        private void BuildRecord(DRecordPattern node, CompilerContext ctx)
+        {
+            var skip = cw.DefineLabel();
+            var ok = cw.DefineLabel();
 
             for (var i = 0; i < node.Elements.Count; i++)
             {
-                if (i > 0)
-                    cw.Dup();
+                cw.Dup(); //2 objs
 
                 var e = node.Elements[i];
-
-                if (e.NodeType == NodeType.Label)
-                {
-                    var lab = (DLabelPattern)e;
-                    cw.HasField(lab.Label);
-                    cw.Brfalse(skip);
-                    cw.Dup();
-                    cw.Push(lab.Label);
-                    cw.Get();
-                    BuildPattern(lab.Pattern, ctx);
-                }
-                else
-                {
-                    cw.Get(i);
-                    BuildPattern(e, ctx);
-                }
-
-                cw.Eq();
+                cw.HasField(e.Label);
                 cw.Brfalse(skip);
+
+                cw.Dup(); //2 objs
+                cw.Push(e.Label);
+                cw.Get();
+                BuildPattern(e.Pattern, ctx);
+                cw.Brfalse(skip); //1 obj left
             }
 
+            cw.Pop(); //0 objs
             cw.Push(true);
+            cw.Br(ok);
             cw.MarkLabel(skip);
+            cw.Pop(); //0 objs
+            cw.Push(false);
+            cw.MarkLabel(ok);
             cw.Nop();
         }
     }

@@ -209,7 +209,8 @@ namespace Dyalect.Runtime.Types
         public override string TypeName => StandardType.ArrayName;
 
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
+            | SupportedOperations.Get | SupportedOperations.Set;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {

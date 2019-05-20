@@ -153,6 +153,16 @@ namespace Dyalect.Parser
             return scanner.Peek().kind == _colonToken;
         }
 
+        private bool IsRecordPattern()
+        {
+            if (la.kind != _parenLeftToken)
+                return false;
+
+            scanner.ResetPeek();
+            return scanner.Peek().kind == _identToken
+                && scanner.Peek().kind == _colonToken;
+        }
+
         private bool IsTuple()
         {
             if (la.kind != _parenLeftToken)

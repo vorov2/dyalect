@@ -50,7 +50,11 @@
         BooleanPattern,
         CharPattern,
         StringPattern,
+        NilPattern,
+        ArrayPattern,
+        RangePattern,
         TuplePattern,
+        RecordPattern,
         LabelPattern
     }
 

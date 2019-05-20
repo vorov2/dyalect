@@ -81,7 +81,7 @@ namespace Dyalect.Parser
                     return;
                 }
 
-                var token = twoParts[1].Trim('\"');
+                var token = twoParts[0].Trim('\"');
 
                 if (tokens.TryGetValue(token, out var nt))
                     token = nt;

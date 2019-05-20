@@ -101,6 +101,19 @@ namespace Dyalect.Parser.Model
         }
     }
 
+    public sealed class DNilPattern : DPattern
+    {
+        public DNilPattern(Location loc) : base(loc, NodeType.StringPattern)
+        {
+
+        }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append("nil");
+        }
+    }
+
     public sealed class DTuplePattern : DPattern
     {
         public DTuplePattern(Location loc) : base(loc, NodeType.TuplePattern)
@@ -118,9 +131,60 @@ namespace Dyalect.Parser.Model
         }
     }
 
+    public sealed class DRecordPattern : DPattern
+    {
+        public DRecordPattern(Location loc) : base(loc, NodeType.RecordPattern)
+        {
+
+        }
+
+        public List<DLabelPattern> Elements { get; } = new List<DLabelPattern>();
+
+        internal override void ToString(StringBuilder sb)
+        {
+            Elements.ToString(sb);
+        }
+    }
+
+    public sealed class DArrayPattern : DPattern
+    {
+        public DArrayPattern(Location loc) : base(loc, NodeType.ArrayPattern)
+        {
+
+        }
+
+        public List<DPattern> Elements { get; } = new List<DPattern>();
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append('[');
+            Elements.ToString(sb);
+            sb.Append(']');
+        }
+    }
+
+    public sealed class DRangePattern : DPattern
+    {
+        public DRangePattern(Location loc) : base(loc, NodeType.RangePattern)
+        {
+
+        }
+
+        public DPattern From { get; set; }
+
+        public DPattern To { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            From.ToString(sb);
+            sb.Append("..");
+            To.ToString(sb);
+        }
+    }
+
     public sealed class DLabelPattern : DPattern
     {
-        public DLabelPattern(Location loc) : base(loc, NodeType.TuplePattern)
+        public DLabelPattern(Location loc) : base(loc, NodeType.LabelPattern)
         {
 
         }
@@ -132,7 +196,7 @@ namespace Dyalect.Parser.Model
         internal override void ToString(StringBuilder sb)
         {
             sb.Append(Label);
-            sb.Append(": ");
+            sb.Append(':');
             Pattern.ToString(sb);
         }
     }

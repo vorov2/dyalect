@@ -30,7 +30,9 @@ namespace Dyalect.Runtime.Types
             BitNot = 0x20000,
             Bit =  0x40000,
             Plus = 0x80000,
-            Not =  0x100000
+            Not =  0x100000,
+            Get =  0x200000,
+            Set =  0x400000
         }
 
         protected abstract SupportedOperations GetSupportedOperations();
@@ -377,6 +379,8 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Not: return DyBool.True;
                 case Builtins.BitNot: return Support(SupportedOperations.BitNot);
                 case Builtins.Plus: return Support(SupportedOperations.Plus);
+                case Builtins.Get: return Support(SupportedOperations.Get);
+                case Builtins.Set: return Support(SupportedOperations.Set);
                 default:
                     return GetMemberDirect(self, nameId, ctx) != null ? DyBool.True : DyBool.False;
             }
