@@ -112,20 +112,3 @@ func testIter() {
 }
 
 */
-
-func iexp(a, b) {
-    var y = 1
-
-    while true {
-        if (b & 1) != 0 {
-            y = a*y
-        }
-        b = b >> 1
-        if b == 0 {
-            return y
-        }
-        a *= a
-    }
-}
-
-iexp(12, 4)

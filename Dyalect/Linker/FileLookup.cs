@@ -6,7 +6,6 @@ namespace Dyalect.Linker
     public sealed class FileLookup
     {
         private const string LIBDIR = "lib";
-        private static readonly string[] empty = new string[0];
 
         private string[] startupPaths;
         private string[] standardPaths;
@@ -36,7 +35,7 @@ namespace Dyalect.Linker
                 startupPaths,
                 GetBasePaths(),
                 systemPaths,
-                additionalPaths ?? empty
+                additionalPaths ?? Statics.EmptyStrings
             );
         }
 

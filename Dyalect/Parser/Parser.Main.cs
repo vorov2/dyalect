@@ -1,4 +1,5 @@
 ﻿using Dyalect.Parser.Model;
+using Dyalect.Strings;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -31,9 +32,21 @@ namespace Dyalect.Parser
             this.scanner = scanner;
         }
 
-        private void AddError(string text, int code, int line, int col)
+        private void AddError(ParserError error, Location loc, params object[] args)
         {
-            Errors.Add(new BuildMessage(text, BuildMessageType.Error, code, line, col, this.scanner.Buffer.FileName));
+            var str = string.Format(ParserErrors.ResourceManager.GetString(error.ToString()) ?? error.ToString(), args);
+            AddError(new BuildMessage(str, BuildMessageType.Error, (int)error, loc.Line, loc.Column, this.scanner.Buffer.FileName));
+        }
+
+        private void AddError(string message, int line, int col)
+        {
+            ErrorProcessor.ProcessError(message, out var detail, out var code);
+            AddError(new BuildMessage(detail, BuildMessageType.Error, (int)code, line, col, this.scanner.Buffer.FileName));
+        }
+
+        private void AddError(BuildMessage msg)
+        {
+            Errors.Add(msg);
         }
 
         private void SynErr(int n)
@@ -53,7 +66,7 @@ namespace Dyalect.Parser
 
         private void SemErr(int line, int col, string s)
         {
-            AddError(s, 0, line, col);
+            AddError(ParserError.SemanticError, new Location(line, col), s);
         }
 
         private void Warning(int line, int col, string s)
@@ -115,23 +128,6 @@ namespace Dyalect.Parser
             }
         }
 
-        private bool IsRecord()
-        {
-            if (la.kind != _parenLeftToken)
-                return false;
-
-            scanner.ResetPeek();
-            Token x;
-
-            if ((x = scanner.Peek()).kind != _identToken && x.kind != _stringToken)
-                return false;
-
-            if (scanner.Peek().kind != _colonToken)
-                return false;
-
-            return true;
-        }
-
         private bool IsMap()
         {
             if (la.kind != _squareLeftToken)
@@ -186,9 +182,6 @@ namespace Dyalect.Parser
             return false;
         }
 
-        private bool IsNextUnary() => la.kind == _minus || la.kind == _plus
-            || la.kind == _bitnot || la.kind == _not;
-
         private bool IsFunction()
         {
             if (la.kind != _parenLeftToken && la.kind != _identToken)
@@ -237,7 +230,7 @@ namespace Dyalect.Parser
 
             if (chunks != null)
             {
-                Errors.Add(new BuildMessage("Code islands are not allowed.", BuildMessageType.Error, 2, t.line, t.col, scanner.Buffer.FileName));
+                AddError(ParserError.CodeIslandsNotAllowed, t);
                 return null;
             }
 

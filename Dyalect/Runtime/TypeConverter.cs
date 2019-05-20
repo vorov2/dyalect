@@ -42,7 +42,7 @@ namespace Dyalect.Runtime
         {
             if (type == typeof(DyObject))
                 return obj;
-            else if (type == CliType.Object)
+            else if (type == Dyalect.Types.Object)
                 return obj.ToObject();
 
             switch (Type.GetTypeCode(type))
