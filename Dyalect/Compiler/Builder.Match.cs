@@ -95,18 +95,18 @@ namespace Dyalect.Compiler
         {
             var skip = cw.DefineLabel();
             var ok = cw.DefineLabel();
-            //var hasLabel = false;
+            var hasPos = false;
 
-            //foreach (var e in node.Elements)
-            //{
-            //    if (e.NodeType == NodeType.LabelPattern)
-            //    {
-            //        hasLabel = true;
-            //        break;
-            //    }
-            //}
+            foreach (var e in node.Elements)
+            {
+                if (e.NodeType != NodeType.LabelPattern)
+                {
+                    hasPos = true;
+                    break;
+                }
+            }
 
-            //if (!hasLabel)
+            if (hasPos)
             {
                 cw.Len();
                 cw.Push(node.Elements.Count);
@@ -123,9 +123,24 @@ namespace Dyalect.Compiler
                 if (i > 0)
                     cw.Dup();
 
-                cw.Get(i);
                 var e = node.Elements[i];
-                BuildPattern(e, ctx);
+
+                if (e.NodeType == NodeType.Label)
+                {
+                    var lab = (DLabelPattern)e;
+                    cw.HasField(lab.Label);
+                    cw.Brfalse(skip);
+                    cw.Dup();
+                    cw.Push(lab.Label);
+                    cw.Get();
+                    BuildPattern(lab.Pattern, ctx);
+                }
+                else
+                {
+                    cw.Get(i);
+                    BuildPattern(e, ctx);
+                }
+
                 cw.Eq();
                 cw.Brfalse(skip);
             }

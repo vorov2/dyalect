@@ -42,6 +42,8 @@ namespace Dyalect.Runtime.Types
 
         internal protected virtual bool HasItem(string name, ExecutionContext ctx) => false;
 
+        internal protected virtual int GetOrdinal(string name) => -1;
+
         internal protected virtual string GetLabel() => null;
 
         internal protected virtual DyObject GetTaggedValue() => null;

@@ -67,7 +67,7 @@ namespace Dyalect.Runtime.Types
             SetItem(i, value, ctx);
         }
 
-        private int GetOrdinal(string name)
+        protected internal override int GetOrdinal(string name)
         {
             for (var i = 0; i < Values.Length; i++)
                 if (Values[i].GetLabel() == name)
