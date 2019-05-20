@@ -174,16 +174,16 @@ func fibTest2() {
 
 func phoneParserTest() {
     func digit(c) {
-           c == '0'
-        || c == '1'
-        || c == '2'
-        || c == '3'
-        || c == '4'
-        || c == '5'
-        || c == '6'
-        || c == '7'
-        || c == '8'
-        || c == '9'
+           c == "0"
+        || c == "1"
+        || c == "2"
+        || c == "3"
+        || c == "4"
+        || c == "5"
+        || c == "6"
+        || c == "7"
+        || c == "8"
+        || c == "9"
     }
     func parse(str) {
         var max = str.len()
@@ -191,7 +191,7 @@ func phoneParserTest() {
         var res = "";
         while i < max {
             const c = str[i]
-            if c == '+' {
+            if c == "+" {
                 i += 2
                 continue
             }
