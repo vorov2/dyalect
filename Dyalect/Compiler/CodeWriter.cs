@@ -10,6 +10,7 @@ namespace Dyalect.Compiler
         private Unit frame;
         private List<int> labels;
         private List<int> fixups;
+        private Dictionary<string, int> strings;
 
         private sealed class StackSize
         {
@@ -23,6 +24,7 @@ namespace Dyalect.Compiler
             this.locals = new Stack<StackSize>(cw.locals.ToArray());
             this.labels = new List<int>(cw.labels.ToArray());
             this.fixups = new List<int>(cw.fixups.ToArray());
+            this.strings = cw.strings;
             this.frame = unit;
         }
 
@@ -30,6 +32,7 @@ namespace Dyalect.Compiler
         {
             this.frame = frame;
             this.ops = frame.Ops;
+            strings = new Dictionary<string, int>();
             locals = new Stack<StackSize>();
             labels = new List<int>();
             fixups = new List<int>();
@@ -104,8 +107,14 @@ namespace Dyalect.Compiler
 
         public int IndexString(string val)
         {
-            frame.IndexedStrings.Add(new DyString(val));
-            return frame.IndexedStrings.Count - 1;
+            if (!strings.TryGetValue(val, out var idx))
+            {
+                frame.IndexedStrings.Add(new DyString(val));
+                idx = frame.IndexedStrings.Count - 1;
+                strings.Add(val, idx);
+            }
+
+            return idx;
         }
 
         public void Push(string val)
@@ -171,8 +180,7 @@ namespace Dyalect.Compiler
 
         public void Tag(string tag)
         {
-            var idx = frame.IndexedStrings.Count;
-            frame.IndexedStrings.Add(tag);
+            var idx = IndexString(tag);
             Emit(new Op(OpCode.Tag, idx));
         }
 
