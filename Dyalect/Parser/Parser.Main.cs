@@ -128,23 +128,6 @@ namespace Dyalect.Parser
             }
         }
 
-        private bool IsRecord()
-        {
-            if (la.kind != _parenLeftToken)
-                return false;
-
-            scanner.ResetPeek();
-            Token x;
-
-            if ((x = scanner.Peek()).kind != _identToken && x.kind != _stringToken)
-                return false;
-
-            if (scanner.Peek().kind != _colonToken)
-                return false;
-
-            return true;
-        }
-
         private bool IsMap()
         {
             if (la.kind != _squareLeftToken)
@@ -198,9 +181,6 @@ namespace Dyalect.Parser
 
             return false;
         }
-
-        private bool IsNextUnary() => la.kind == _minus || la.kind == _plus
-            || la.kind == _bitnot || la.kind == _not;
 
         private bool IsFunction()
         {

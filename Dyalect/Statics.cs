@@ -10,5 +10,7 @@ namespace Dyalect
         public static char[] EmptyChars = new char[0];
 
         public static Par[] EmptyParameters = new Par[0];
+
+        public static string[] EmptyStrings = new string[0];
     }
 }
