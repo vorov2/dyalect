@@ -66,7 +66,7 @@ namespace Dyalect.Runtime.Types
             if (idx < 0 || idx >= Value.Length)
                 return ctx.IndexOutOfRange(this.TypeName(ctx), idx);
 
-            return new DyString(Value[idx].ToString());
+            return new DyChar(Value[idx]);
         }
 
         public IEnumerator<DyObject> GetEnumerator() => Value.Select(c => new DyChar(c)).GetEnumerator();

@@ -1,3 +1,6 @@
+# 0.5.8
+  * A bug fixed: _String indexer returns a string instead of a char_ ([Issue #84](https://github.com/vorov2/dyalect/issues/84)).
+
 # 0.5.7
   * A task is implemented: _Better parser error messages_ ([Issue #26](https://github.com/vorov2/dyalect/issues/26)).
 
