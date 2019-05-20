@@ -1115,7 +1115,7 @@ namespace Dyalect.Parser
                     break;
             }
 
-            AddError(s, n, line, col);
+            AddError(s, line, col);
         }
     }
 }

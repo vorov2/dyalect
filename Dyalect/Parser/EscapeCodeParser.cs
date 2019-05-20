@@ -1,4 +1,5 @@
 ﻿using Dyalect.Parser.Model;
+using Dyalect.Strings;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -141,13 +142,13 @@ namespace Dyalect.Parser
 
         private static bool InvalidLiteral(List<BuildMessage> messages, Location baseLocation, string fileName, int offset)
         {
-            messages.Add(new BuildMessage("Unrecognized escape sequence.", BuildMessageType.Error, 0, baseLocation.Line, baseLocation.Column + offset, fileName));
+            messages.Add(new BuildMessage(ParserErrors.InvalidEscapeCode, BuildMessageType.Error, (int)ParserError.InvalidEscapeCode, baseLocation.Line, baseLocation.Column + offset, fileName));
             return false;
         }
 
         private static bool InvalidCodeIsland(List<BuildMessage> messages, Location baseLocation, string fileName, int offset)
         {
-            messages.Add(new BuildMessage("Invalid code island inside of a string literal.", BuildMessageType.Error, 1, baseLocation.Line, baseLocation.Column + offset, fileName));
+            messages.Add(new BuildMessage(ParserErrors.CodeIslandInvalid, BuildMessageType.Error, (int)ParserError.CodeIslandInvalid, baseLocation.Line, baseLocation.Column + offset, fileName));
             return false;
         }
     }

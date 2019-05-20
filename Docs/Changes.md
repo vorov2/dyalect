@@ -1,3 +1,6 @@
+# 0.5.7
+  * A task is implemented: _Better parser error messages_ ([Issue #26](https://github.com/vorov2/dyalect/issues/26)).
+
 # 0.5.6
   * A bug fixed: _VM crush: Stack is corrupted_ ([Issue #77](https://github.com/vorov2/dyalect/issues/77)).
   * A bug fixed: _VM crush & invalid break behavior_ ([Issue #78](https://github.com/vorov2/dyalect/issues/78)).
