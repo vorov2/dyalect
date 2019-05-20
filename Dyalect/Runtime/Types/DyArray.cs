@@ -166,19 +166,19 @@ namespace Dyalect.Runtime.Types
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == StandardType.Integer)
-                return GetItem((int)index.GetInteger()) ?? ctx.IndexOutOfRange(this.TypeName(ctx), index);
+                return GetItem((int)index.GetInteger(), ctx);
             else
                 return ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
         }
 
-        private DyObject GetItem(int index)
+        internal protected override DyObject GetItem(int index, ExecutionContext ctx)
         {
             if (index < 0 || index >= Count)
-                return null;
+                return ctx.IndexOutOfRange(StandardType.ArrayName, index);
             return values[index];
         }
 
-        private void SetItem(int index, DyObject obj, ExecutionContext ctx)
+        internal protected override void SetItem(int index, DyObject obj, ExecutionContext ctx)
         {
             if (index < 0 || index >= Count)
                 ctx.IndexOutOfRange(this.TypeName(ctx), index);

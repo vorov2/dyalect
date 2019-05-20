@@ -144,6 +144,9 @@
   <data name="InvalidLiteral" xml:space="preserve">
     <value>Invalid literal.</value>
   </data>
+  <data name="InvalidPattern" xml:space="preserve">
+    <value>Pattern is invalid.</value>
+  </data>
   <data name="InvalidStandardOperators" xml:space="preserve">
     <value>Invalid operator.</value>
   </data>

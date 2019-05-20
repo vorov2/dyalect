@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Dyalect.Compiler
+﻿namespace Dyalect.Compiler
 {
     internal sealed class CompilerContext
     {
@@ -9,14 +7,16 @@ namespace Dyalect.Compiler
             BlockExit = Label.Empty;
             BlockSkip = Label.Empty;
             FunctionExit = Label.Empty;
+            MatchExit = Label.Empty;
         }
 
         public CompilerContext(CompilerContext old)
         {
             FunctionExit = old.FunctionExit;
-            BlockBreakExit = Label.Empty;
-            BlockExit = Label.Empty;
-            BlockSkip = Label.Empty;
+            BlockBreakExit = old.BlockBreakExit;
+            BlockExit = old.BlockExit;
+            BlockSkip = old.BlockSkip;
+            MatchExit = old.MatchExit;
         }
 
         public Label FunctionExit { get; set; }
@@ -26,5 +26,7 @@ namespace Dyalect.Compiler
         public Label BlockExit { get; set; }
 
         public Label BlockSkip { get; set; }
+
+        public Label MatchExit { get; set; }
     }
 }

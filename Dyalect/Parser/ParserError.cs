@@ -33,5 +33,7 @@
         InvalidEscapeCode = 14,
 
         SemanticError = 15,
+
+        InvalidPattern = 16,
     }
 }

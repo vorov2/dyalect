@@ -208,7 +208,78 @@ PRODUCTIONS
             | If<out node>
             | Block<out node>
             | Loops<out node>
+            | Match<out node>
         ).
+
+    //Patterns
+    Match<out DNode node> =
+        (. node = null; .)
+        (
+            "match"
+            (. var m = new DMatch(t); .)
+            Expr<out node>
+            (. m.Expression = node; .)
+            "{"
+                MatchEntry<out var entry> (. m.Entries.Add(entry); .)
+                { "," MatchEntry<out entry>  (. m.Entries.Add(entry); .) }
+            "}"
+            (. node = m; .)
+        ).
+
+    MatchEntry<out DMatchEntry me> =
+        (
+            (. me = new DMatchEntry(t); .)
+            Pattern<out var p> 
+            (. me.Pattern = p; .)
+            [ "when" Expr<out var node> (. me.Guard = node; .)  ] 
+            "=>" Expr<out var exp> (. me.Expression = exp; .)
+        ).
+
+    Pattern<out DPattern node> =
+        (. node = null; .)
+        (
+              NamePattern<out node>
+            | IntegerPattern<out node>
+            | FloatPattern<out node>
+            | CharPattern<out node>
+            | StringPattern<out node>
+            | BooleanPattern<out node>
+            | TuplePattern<out node>
+        ).
+
+    TuplePattern<out DPattern node> =
+        (. node = null; .)
+        (
+            "("
+                (. var tup = new DTuplePattern(t); .)
+                TuplePatternElement<out node> (. tup.Elements.Add(node); .)
+                { "," TuplePatternElement<out node> (. tup.Elements.Add(node); .) }
+                (. node = tup; .)
+            ")"
+        ).
+    TuplePatternElement<out DPattern node> =
+        (. node = null; .)
+        (
+              IF (IsLabel()) FieldPattern<out node>
+            | Pattern<out node>
+        ).
+
+    FieldPattern<out DPattern node> =
+        (. node = null; .)
+        (
+            identToken 
+            (. var la = new DLabelPattern(t) { Label = t.val }; .)
+            ":" Pattern<out node>
+            (. la.Pattern = node; node = la; .)
+        ).
+
+    NamePattern<out DPattern node> = identToken (. node = new DNamePattern(t) { Name = t.val }; .).
+    IntegerPattern<out DPattern node> = intToken (. node = new DIntegerPattern(t) { Value = ParseInteger() }; .).
+    FloatPattern<out DPattern node> = floatToken (. node = new DFloatPattern(t) { Value = ParseFloat() }; .).
+    CharPattern<out DPattern node> = charToken (. node = new DCharPattern(t) { Value = ParseChar() }; .).
+    StringPattern<out DPattern node> = stringToken (. node = new DStringPattern(t) { Value = ParseString() }; .).
+    BooleanPattern<out DPattern node> = ("true"|"false") (. node = new DBooleanPattern(t) { Value = t.val == "true" }; .).
+    //End patterns
 
     If<out DNode node> =
         (. node = null; .)

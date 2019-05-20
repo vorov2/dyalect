@@ -25,6 +25,7 @@ namespace Dyalect.Parser
                 ,{ "invalid Bool", InvalidLiteral }
                 ,{ "invalid Literal", InvalidLiteral }
                 ,{ "invalid DyalectItem", InvalidStatement }
+                ,{ "invalid Pattern", InvalidPattern }
                 ,{ "??? expected", Undefined }
             };
 
@@ -80,7 +81,7 @@ namespace Dyalect.Parser
                     return;
                 }
 
-                var token = twoParts[0].Trim('\"');
+                var token = twoParts[1].Trim('\"');
 
                 if (tokens.TryGetValue(token, out var nt))
                     token = nt;

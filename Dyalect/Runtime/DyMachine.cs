@@ -358,6 +358,21 @@ namespace Dyalect.Runtime
                         right.SetItem(left, evalStack.Pop(), ctx);
                         if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                         break;
+                    case OpCode.GetIx:
+                        right = evalStack.Peek();
+                        evalStack.Replace(right.GetItem(op.Data, ctx));
+                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                        break;
+                    case OpCode.SetIx:
+                        right = evalStack.Pop();
+                        right.SetItem(op.Data, evalStack.Pop(), ctx);
+                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                        break;
+                    case OpCode.HasField:
+                        right = evalStack.Peek();
+                        evalStack.Replace(right.HasItem(unit.IndexedStrings[op.Data].Value, ctx) ? DyBool.True : DyBool.False);
+                        if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
+                        break;
                     case OpCode.Str:
                         right = evalStack.Peek();
                         evalStack.Replace(types[right.TypeId].ToString(ctx, right));

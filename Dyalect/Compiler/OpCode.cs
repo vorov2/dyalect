@@ -74,5 +74,8 @@
         FunArgNm,   //-1
         FunCall,    //0
         NewTuple,   //Dynamic
+        GetIx,      //0
+        SetIx,      //-2
+        HasField,   //0
     }
 }

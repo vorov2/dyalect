@@ -36,7 +36,9 @@ namespace Dyalect.Runtime
 
         ArgumentNotFound = 613,
 
-        FailedReadLiteral = 614
+        FailedReadLiteral = 614,
+
+        MatchFailed = 615
     }
 
     public sealed class DyError

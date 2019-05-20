@@ -30,7 +30,7 @@ namespace Dyalect.Runtime.Types
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == StandardType.Integer)
-                return GetItem((int)index.GetInteger()) ?? ctx.IndexOutOfRange(this.TypeName(ctx), index);
+                return GetItem((int)index.GetInteger(), ctx);
             else if (index.TypeId == StandardType.String)
                 return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange(this.TypeName(ctx), index.GetString());
             else
@@ -47,12 +47,27 @@ namespace Dyalect.Runtime.Types
                 ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
         }
 
-        protected internal override DyObject GetItem(string name, ExecutionContext ctx) => GetItem(GetOrdinal(name));
+        protected internal override DyObject GetItem(string name, ExecutionContext ctx)
+        {
+            var i = GetOrdinal(name);
 
-        protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx) =>
-            SetItem(GetOrdinal(name), value, ctx);
+            if (i == -1)
+                return ctx.IndexOutOfRange(StandardType.TupleName, name);
 
-        internal int GetOrdinal(string name)
+            return GetItem(i, ctx);
+        }
+
+        protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx)
+        {
+            var i = GetOrdinal(name);
+
+            if (i == -1)
+                ctx.IndexOutOfRange(StandardType.TupleName, name);
+
+            SetItem(i, value, ctx);
+        }
+
+        private int GetOrdinal(string name)
         {
             for (var i = 0; i < Values.Length; i++)
                 if (Values[i].GetLabel() == name)
@@ -60,16 +75,16 @@ namespace Dyalect.Runtime.Types
             return -1;
         }
 
-        internal DyObject GetItem(int index)
+        protected internal override DyObject GetItem(int index, ExecutionContext ctx)
         {
             if (index < 0 || index >= Values.Length)
-                return null;
+                return ctx.IndexOutOfRange(StandardType.TupleName, index);
             return Values[index].TypeId == StandardType.Label ? Values[index].GetTaggedValue() : Values[index];
         }
 
         internal string GetKey(int index) => Values[index].GetLabel();
 
-        internal void SetItem(int index, DyObject value, ExecutionContext ctx)
+        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx)
         {
             if (index < 0 || index >= Values.Length)
                 ctx.IndexOutOfRange(this.TypeName(ctx), index);
@@ -82,12 +97,17 @@ namespace Dyalect.Runtime.Types
             }
         }
 
+        protected internal override bool HasItem(string name, ExecutionContext ctx)
+        {
+            return GetOrdinal(name) != -1;
+        }
+
         private string DefaultKey() => Guid.NewGuid().ToString();
 
         public IEnumerator<DyObject> GetEnumerator()
         {
             for (var i = 0; i < Count; i++)
-                yield return GetItem(i);
+                yield return Values[i].TypeId == StandardType.Label ? Values[i].GetTaggedValue() : Values[i];
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -123,7 +143,7 @@ namespace Dyalect.Runtime.Types
                     sb.Append(", ");
 
                 var k = tup.GetKey(i);
-                var val = tup.GetItem(i).ToString(ctx);
+                var val = tup.GetItem(i, ctx).ToString(ctx);
 
                 if (ctx.Error != null)
                     return DyString.Empty;
@@ -174,17 +194,12 @@ namespace Dyalect.Runtime.Types
 
         private DyObject GetFirst(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
-            return ((DyTuple)self).GetItem(0);
+            return self.GetItem(0, ctx);
         }
 
         private DyObject GetSecond(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
-            var tup = (DyTuple)self;
-
-            if (tup.Values.Length < 2)
-                ctx.IndexOutOfRange(TypeName, 1);
-            
-            return tup.GetItem(1);
+            return self.GetItem(1, ctx);
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
