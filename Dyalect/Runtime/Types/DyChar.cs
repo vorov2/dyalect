@@ -46,18 +46,14 @@ namespace Dyalect.Runtime.Types
         {
             if (left.TypeId == right.TypeId)
                 return left.GetChar() == right.GetChar() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == StandardType.String)
-                return right.GetString().Length == 1 && left.GetChar() == right.GetString()[0] ? DyBool.True : DyBool.False;
             else
                 return base.EqOp(left, right, ctx);
         }
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeId == right.TypeId || right.TypeId == StandardType.String)
+            if (left.TypeId == right.TypeId)
                 return left.GetChar() != right.GetChar() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == StandardType.String)
-                return right.GetString().Length != 1 || left.GetChar() != right.GetString()[0] ? DyBool.True : DyBool.False;
             else
                 return base.NeqOp(left, right, ctx);
         }
@@ -66,8 +62,6 @@ namespace Dyalect.Runtime.Types
         {
             if (left.TypeId == right.TypeId)
                 return left.GetChar().CompareTo(right.GetChar()) > 0 ? DyBool.True : DyBool.False;
-            else if (right.TypeId == StandardType.String)
-                return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
             else
                 return base.GtOp(left, right, ctx);
         }
@@ -76,8 +70,6 @@ namespace Dyalect.Runtime.Types
         {
             if (left.TypeId == right.TypeId)
                 return left.GetChar().CompareTo(right.GetChar()) < 0 ? DyBool.True : DyBool.False;
-            else if (right.TypeId == StandardType.String)
-                return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
             else
                 return base.LtOp(left, right, ctx);
         }
