@@ -660,3 +660,53 @@ func functionTest7() {
     var sub3 = apply(flip(sub), 3)
     assert(6, sub3(9))
 }
+
+func namesOfGodTest() {
+    var cache = [[1]]
+    func min(x, y) {
+        if x < y {
+            x
+        } else {
+            y
+        }
+    }
+    func namesOfGod(n) {
+        for l in cache.len()..n {
+            var r = [0]
+            for x in 1..l {
+                r.add(r[r.len() - 1] + cache[l - x][min(x, l-x)])
+            }
+            cache.add(r)
+        }
+        return cache[n]
+    }
+    func row(n) {
+        const r = namesOfGod(n)
+        var returnArray = []
+        for i in 0..(n - 1) {
+            returnArray.add(r[i + 1] - r[i])
+        }
+        return returnArray
+    }
+    var res = row(10)
+    assert([1, 5, 8, 9, 7, 5, 3, 2, 1, 1], res)
+}
+
+func powTest() {
+    func pow(a, b) {
+        var y = 1
+
+        while true {
+            if (b & 1) != 0 {
+                y = a*y
+            }
+            b = b >> 1
+            if b == 0 {
+                return y
+            }
+            a *= a
+        }
+    }
+    var res = pow(12, 4)
+    assert(20736, res)
+}

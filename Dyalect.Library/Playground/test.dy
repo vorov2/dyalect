@@ -112,9 +112,3 @@ func testIter() {
 }
 
 */
-
-func foo(x, y = 0) {
-    print(x, y)
-}
-
-foo(42)
