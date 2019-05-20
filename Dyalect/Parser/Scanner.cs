@@ -9,8 +9,8 @@ namespace Dyalect.Parser
 {
     partial class Scanner 
     {
-	const int maxT = 71;
-	const int noSym = 71;
+	const int maxT = 73;
+	const int noSym = 73;
 
     
         static Scanner() 
@@ -153,12 +153,14 @@ namespace Dyalect.Parser
 			case "type": t.kind = 17; break;
 			case "import": t.kind = 48; break;
 			case "static": t.kind = 49; break;
-			case "else": t.kind = 51; break;
-			case "in": t.kind = 52; break;
-			case "base": t.kind = 67; break;
-			case "nil": t.kind = 68; break;
-			case "true": t.kind = 69; break;
-			case "false": t.kind = 70; break;
+			case "match": t.kind = 51; break;
+			case "when": t.kind = 52; break;
+			case "true": t.kind = 53; break;
+			case "false": t.kind = 54; break;
+			case "else": t.kind = 55; break;
+			case "in": t.kind = 56; break;
+			case "base": t.kind = 71; break;
+			case "nil": t.kind = 72; break;
 			default: break;
 		}
         }
@@ -352,31 +354,31 @@ namespace Dyalect.Parser
 			case 46:
 				{t.kind = 50; break;}
 			case 47:
-				{t.kind = 53; break;}
-			case 48:
-				{t.kind = 54; break;}
-			case 49:
-				{t.kind = 55; break;}
-			case 50:
-				{t.kind = 56; break;}
-			case 51:
 				{t.kind = 57; break;}
-			case 52:
+			case 48:
 				{t.kind = 58; break;}
-			case 53:
+			case 49:
 				{t.kind = 59; break;}
-			case 54:
+			case 50:
 				{t.kind = 60; break;}
-			case 55:
+			case 51:
 				{t.kind = 61; break;}
-			case 56:
+			case 52:
 				{t.kind = 62; break;}
-			case 57:
+			case 53:
 				{t.kind = 63; break;}
-			case 58:
+			case 54:
 				{t.kind = 64; break;}
-			case 59:
+			case 55:
+				{t.kind = 65; break;}
+			case 56:
 				{t.kind = 66; break;}
+			case 57:
+				{t.kind = 67; break;}
+			case 58:
+				{t.kind = 68; break;}
+			case 59:
+				{t.kind = 70; break;}
 			case 60:
 				recEnd = pos; recKind = 30;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 36;}
@@ -438,9 +440,9 @@ namespace Dyalect.Parser
 				if (ch == '=') {AddCh(); goto case 54;}
 				else {t.kind = 45; break;}
 			case 73:
-				recEnd = pos; recKind = 65;
+				recEnd = pos; recKind = 69;
 				if (ch == '.') {AddCh(); goto case 46;}
-				else {t.kind = 65; break;}
+				else {t.kind = 69; break;}
 			case 74:
 				recEnd = pos; recKind = 47;
 				if (ch == '=') {AddCh(); goto case 56;}

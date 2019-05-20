@@ -62,11 +62,15 @@ namespace Dyalect.Runtime.Types
                 return ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
 
             var idx = (int)index.GetInteger();
+            return GetItem(idx, ctx);
+        }
 
+        protected internal override DyObject GetItem(int idx, ExecutionContext ctx)
+        {
             if (idx < 0 || idx >= Value.Length)
                 return ctx.IndexOutOfRange(this.TypeName(ctx), idx);
 
-            return new DyString(Value[idx].ToString());
+            return new DyChar(Value[idx]);
         }
 
         public IEnumerator<DyObject> GetEnumerator() => Value.Select(c => new DyChar(c)).GetEnumerator();

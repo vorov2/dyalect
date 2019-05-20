@@ -40,7 +40,18 @@
         Parameter,
 
         Type,
-        Field
+        Field,
+
+        Match,
+        MatchEntry,
+        NamePattern,
+        IntegerPattern,
+        FloatPattern,
+        BooleanPattern,
+        CharPattern,
+        StringPattern,
+        TuplePattern,
+        LabelPattern
     }
 
 }

@@ -196,6 +196,9 @@ namespace Dyalect.Compiler
         public void HasMember(int nameId) => Emit(new Op(OpCode.HasMember, nameId));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
         public void Aux(int data) => Emit(new Op(OpCode.Aux, data));
+        public void Get(int index) => Emit(new Op(OpCode.GetIx, index));
+        public void Set(int index) => Emit(new Op(OpCode.SetIx, index));
+        public void HasField(string field) => Emit(new Op(OpCode.HasField, IndexString(field)));
 
         public void Yield() => Emit(Op.Yield);
         public void Str() => Emit(Op.Str);

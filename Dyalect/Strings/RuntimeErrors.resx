@@ -159,4 +159,10 @@
   <data name="FailedReadLiteral" xml:space="preserve">
     <value>Failed to read literal: %Reason%</value>
   </data>
+  <data name="MatchFailed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserCode" xml:space="preserve">
+    <value>%Error%</value>
+  </data>
 </root>

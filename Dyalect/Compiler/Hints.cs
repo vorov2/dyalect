@@ -30,6 +30,14 @@ namespace Dyalect.Compiler
             return (hints & val) == val;
         }
 
+        public static Hints Push(this Hints hints)
+        {
+            if ((hints & Hints.Push) != Hints.Push)
+                return hints | Hints.Push;
+            else
+                return hints;
+        }
+
         public static Hints Append(this Hints hints, Hints newHint)
         {
             if ((hints & newHint) != newHint)

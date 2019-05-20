@@ -133,6 +133,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string MatchFailed {
+            get {
+                return ResourceManager.GetString("MatchFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An object of type &quot;%TypeName%&quot; doesn&apos;t support a &quot;call&quot; operation..
         /// </summary>
         internal static string NotFunction {
@@ -183,6 +192,15 @@ namespace Dyalect.Strings {
         internal static string TooManyArguments {
             get {
                 return ResourceManager.GetString("TooManyArguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %Error%.
+        /// </summary>
+        internal static string UserCode {
+            get {
+                return ResourceManager.GetString("UserCode", resourceCulture);
             }
         }
     }

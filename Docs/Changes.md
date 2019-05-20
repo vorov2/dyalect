@@ -1,3 +1,6 @@
+# 0.6.0
+  * todo
+
 # 0.5.7
   * A task is implemented: _Better parser error messages_ ([Issue #26](https://github.com/vorov2/dyalect/issues/26)).
 

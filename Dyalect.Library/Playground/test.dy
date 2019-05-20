@@ -112,3 +112,15 @@ func testIter() {
 }
 
 */
+var x = (12, 34, "bar")
+
+var res = 
+    match x {
+        "true" => "No...",
+        12.2 => "No(2)",
+        12 => "Yes!",
+        (x, y, z, d) => z + ": " + (x + y),
+        'c' => "WTF?"
+    }
+
+res
