@@ -43,6 +43,7 @@
   * A bug fixed: _Incorrect type info is generated for iterator_ ([Issue #93](https://github.com/vorov2/dyalect/issues/93)).
   * A bug fixed: _Anonymous function and iterator_ ([Issue #94](https://github.com/vorov2/dyalect/issues/94)).
   * A bug fixed: _Array.slice - Index out of range_ ([Issue #97](https://github.com/vorov2/dyalect/issues/97)).
+  * A bug fixed: _Array.slice - index of invalid type crushed VM_ ([Issue #98](https://github.com/vorov2/dyalect/issues/98)).
 
 # 0.5.8
   * A bug fixed: _String indexer returns a string instead of a char_ ([Issue #84](https://github.com/vorov2/dyalect/issues/84)).
