@@ -336,26 +336,25 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(iterate().GetEnumerator());
         }
 
-        private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
         {
             var dyArr = (DyArray)self;
             var arr = dyArr.GetValues();
 
-            var start = (int)args.TakeOne(DyInteger.Zero).GetInteger();
-            var endo = args.TakeAt(1, null);
-            var end = ReferenceEquals(endo, DyNil.Instance) ? dyArr.Count : (int)endo.GetInteger();
+            var beg = (int)start.GetInteger();
+            var end = ReferenceEquals(len, DyNil.Instance) ? dyArr.Count : beg + (int)len.GetInteger();
 
-            if (start == 0 && start == end)
+            if (beg == 0 && beg == end)
                 return self;
 
-            if (start < 0 || start >= dyArr.Count)
-                return ctx.IndexOutOfRange(TypeName, start);
+            if (beg < 0 || beg >= dyArr.Count)
+                return ctx.IndexOutOfRange(TypeName, beg);
 
-            if (end < 0 || end >= dyArr.Count)
+            if (end < 0 || end > dyArr.Count)
                 return ctx.IndexOutOfRange(TypeName, end);
 
-            var newArr = new DyObject[end - start];
-            Array.Copy(arr, start, newArr, 0, end - start);
+            var newArr = new DyObject[end - beg];
+            Array.Copy(arr, beg, newArr, 0, end - beg);
             return new DyArray(newArr);
         }
 

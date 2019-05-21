@@ -188,7 +188,7 @@ func arrayTest2() {
 
 func arrayTest3() {
     var arr = [1,2,3,4,5,6]
-    var newArr = arr.slice(2,5)
+    var newArr = arr.slice(2,3)
     assert([3, 4, 5], newArr)
 }
 
@@ -242,17 +242,18 @@ func arrayTest11() {
 }
 
 func arrayTest12() {
-    var arr = [1,2,3] + [4,5,6]
-    assert([1,2,3,4,5,6], arr)
-}
-
-func arrayTest13() {
     func it() {
         yield "foo"
         yield "boo"
     }
     var arr = Array.concat([1,2,3], [4,5,6], (1,2), it())
     assert([1,2,3,4,5,6,1,2,"foo","boo"], arr)
+}
+
+func arrayTest13() {
+    var xs = (1..10).toArray()
+    var slice = xs.slice(4)
+    assert([5,6,7,8,9,10], slice)
 }
 
 func tupleTest1() {

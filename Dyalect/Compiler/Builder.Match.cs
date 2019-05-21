@@ -103,6 +103,7 @@ namespace Dyalect.Compiler
                     BuildRange((DRangePattern)node, ctx);
                     break;
                 case NodeType.WildcardPattern:
+                    cw.Pop();
                     cw.Push(true);
                     break;
                 case NodeType.AsPattern:

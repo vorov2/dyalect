@@ -183,4 +183,7 @@
   <data name="PatternNotSupported" xml:space="preserve">
     <value>Pattern "{0}" not supported in this context.</value>
   </data>
+  <data name="RangeIndexNotSupported" xml:space="preserve">
+    <value>Range is not supported in this context.</value>
+  </data>
 </root>

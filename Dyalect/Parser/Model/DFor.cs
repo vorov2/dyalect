@@ -8,7 +8,7 @@ namespace Dyalect.Parser.Model
         {
 
         }
-        public DName Variable { get; set; }
+        public DPattern Pattern { get; set; }
 
         public DNode Target { get; set; }
 
@@ -17,12 +17,7 @@ namespace Dyalect.Parser.Model
         internal override void ToString(StringBuilder sb)
         {
             sb.Append("for ");
-
-            if (Variable != null)
-                Variable.ToString(sb);
-            else
-                sb.Append('_');
-
+            Pattern.ToString(sb);
             sb.Append(" in ");
             Target.ToString(sb);
             Body.ToString(sb);

@@ -20,6 +20,8 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; }
 
+        protected internal override string GetName() => Name;
+
         internal override void ToString(StringBuilder sb)
         {
             sb.Append(Name);

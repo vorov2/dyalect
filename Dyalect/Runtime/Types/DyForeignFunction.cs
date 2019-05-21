@@ -47,6 +47,20 @@ namespace Dyalect.Runtime.Types
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction1(FunctionName, fun, Parameters, VarArgIndex);
         }
 
+        private sealed class MemberFunction2 : DyForeignFunction
+        {
+            private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun;
+
+            public MemberFunction2(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
+            {
+                this.fun = fun;
+            }
+
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args[0], args[1]);
+
+            protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction2(FunctionName, fun, Parameters, VarArgIndex);
+        }
+
         private abstract class BaseStaticFunction : DyForeignFunction
         {
             protected BaseStaticFunction(string name, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
@@ -183,6 +197,8 @@ namespace Dyalect.Runtime.Types
         internal static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject> fun) => new MemberFunction0(name, fun);
 
         internal static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, int varArgIndex, params Par[] pars) => new MemberFunction1(name, fun, pars, varArgIndex);
+
+        internal static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, int varArgIndex, params Par[] pars) => new MemberFunction2(name, fun, pars, varArgIndex);
 
         internal static DyFunction Static(string name, Func<ExecutionContext, DyObject> fun) => new StaticFunction0(name, fun, Statics.EmptyParameters);
 

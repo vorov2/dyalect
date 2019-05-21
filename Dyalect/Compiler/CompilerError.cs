@@ -46,6 +46,8 @@
 
         InvalidDefaultValue = 221,
 
-        PatternNotSupported = 222
+        PatternNotSupported = 222,
+
+        RangeIndexNotSupported = 223
     }
 }

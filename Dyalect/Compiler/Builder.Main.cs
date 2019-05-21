@@ -222,17 +222,32 @@ namespace Dyalect.Compiler
         {
             var push = hints.Remove(Pop).Append(Push);
             Build(node.Target, push, ctx);
-            Build(node.Index, push, ctx);
 
-            AddLinePragma(node);
-
-            if (!hints.Has(Pop))
+            if (node.Index.NodeType == NodeType.Range)
             {
-                cw.Get();
-                PopIf(hints);
+                if (hints.Has(Pop))
+                    AddError(CompilerError.RangeIndexNotSupported, node.Index.Location);
+
+                var r = (DRange)node.Index;
+                cw.FunPrep(2);
+                Build(r.From, hints.Append(Push), ctx);
+                cw.FunArgIx(0);
+                Build(r.From, hints.Append(Push), ctx);
+                cw.FunArgIx(1);
             }
             else
-                cw.Set();
+            {
+                Build(node.Index, push, ctx);
+                AddLinePragma(node);
+
+                if (!hints.Has(Pop))
+                {
+                    cw.Get();
+                    PopIf(hints);
+                }
+                else
+                    cw.Set();
+            }
         }
 
         private void BuildImport(DImport node, CompilerContext ctx)
@@ -351,8 +366,8 @@ namespace Dyalect.Compiler
 
             var inc = -1;
 
-            if (node.Variable != null)
-                inc = AddVariable(node.Variable.Value, node.Variable, VarFlags.Const);
+            if (node.Pattern.NodeType == NodeType.NamePattern)
+                inc = AddVariable(node.Pattern.GetName(), node.Pattern, VarFlags.Const);
 
             var sys = AddVariable();
             var skip = cw.DefineLabel();
@@ -380,7 +395,10 @@ namespace Dyalect.Compiler
             if (inc > -1)
                 cw.PopVar(inc);
             else
-                cw.Pop();
+            {
+                BuildPattern(node.Pattern, ctx);
+                cw.Brfalse(ctx.BlockSkip);
+            }
 
             Build(node.Body, hints.Remove(Push), ctx);
 

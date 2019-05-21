@@ -9,6 +9,13 @@
     }
     ```
     The following patterns are currently supported: "and" pattern (`&&`), "or" pattern (`||`), grouping pattern, tuple pattern, array pattern, name/field pattern, constant pattern, nil pattern, range pattern, biding-to-name pattern, type check pattern, "as" pattern.
+  * Pattern matching is supported inside `for` cycles. Instead of a plain loop variables it is possible to use patterns, including nested patterns (related issue: [Issue #4](https://github.com/vorov2/dyalect/issues/4)). If an element doesn't match it gets skipped, e.g. this code:
+    ```swift
+    for (x, 1) in [(2, 1), (3,3), (1, 1)] {
+        print(x)
+    }
+    ```
+    outputs `2` and `1`.
   * New static method `concat` is added to types `Iterator` and `Array` (related issue: [#37](https://github.com/vorov2/dyalect/issues/37)). This method has the following signature:
     ```swift
     static func concat(values...) { }
@@ -35,6 +42,7 @@
     ```
   * A bug fixed: _Incorrect type info is generated for iterator_ ([Issue #93](https://github.com/vorov2/dyalect/issues/93)).
   * A bug fixed: _Anonymous function and iterator_ ([Issue #94](https://github.com/vorov2/dyalect/issues/94)).
+  * A bug fixed: _Array.slice - Index out of range_ ([Issue #97](https://github.com/vorov2/dyalect/issues/97)).
 
 # 0.5.8
   * A bug fixed: _String indexer returns a string instead of a char_ ([Issue #84](https://github.com/vorov2/dyalect/issues/84)).

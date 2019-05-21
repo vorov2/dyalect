@@ -280,7 +280,6 @@ PRODUCTIONS
             | IF (IsTuplePattern()) TuplePattern<out node>
             | GroupPattern<out node>
             | ArrayPattern<out node>
-            | WildcardPattern<out node>
             | TypeTestPattern<out node>
         ) 
         [ 
@@ -301,8 +300,6 @@ PRODUCTIONS
                 node = new DTypeTestPattern(ot) { TypeName = q };
             .)
         ).
-
-    WildcardPattern<out DPattern node> = "_" (. node = new DWildcardPattern(t); .).
 
     GroupPattern<out DPattern node> =
         (. node = null; .)
@@ -352,7 +349,14 @@ PRODUCTIONS
             (. la.Pattern = pat; node = la; .)
         ).
 
-    NamePattern<out DPattern node> = identToken (. node = new DNamePattern(t) { Name = t.val }; .).
+    NamePattern<out DPattern node> = identToken 
+        (. 
+            if (t.val == "_") 
+                node = new DWildcardPattern(t);
+            else
+                node = new DNamePattern(t) { Name = t.val };
+        .).
+
     NilPattern<out DPattern node> = "nil" (. node = new DNilPattern(t); .).
     IntegerPattern<out DPattern node> = intToken (. node = new DIntegerPattern(t) { Value = ParseInteger() }; .).
     FloatPattern<out DPattern node> = floatToken (. node = new DFloatPattern(t) { Value = ParseFloat() }; .).
@@ -410,7 +414,7 @@ PRODUCTIONS
         (
             "for"
             (. var @for = new DFor(t); .)
-            ( Name<out node> (. @for.Variable = (DName)node; .) | "_" )
+            OrPattern<out var pattern> (. @for.Pattern = pattern; .)
             "in" Expr<out node> (. @for.Target = node; .)
             Block<out node>
             (.

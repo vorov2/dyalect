@@ -133,9 +133,6 @@ var res = match 7 {
 }
 */
 
-(() => {
-        yield 1
-        yield 2
-        yield 3
-        yield 4
-    })()
+var xs = (1..10).toArray()
+var slice = xs.slice(4, 3)
+slice
