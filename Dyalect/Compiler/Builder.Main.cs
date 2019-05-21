@@ -229,11 +229,18 @@ namespace Dyalect.Compiler
                     AddError(CompilerError.RangeIndexNotSupported, node.Index.Location);
 
                 var r = (DRange)node.Index;
+                cw.GetMember(GetMemberNameId("slice"));
                 cw.FunPrep(2);
                 Build(r.From, hints.Append(Push), ctx);
                 cw.FunArgIx(0);
+                Build(r.To, hints.Append(Push), ctx);
                 Build(r.From, hints.Append(Push), ctx);
+                cw.Sub();
                 cw.FunArgIx(1);
+
+                AddLinePragma(node);
+                cw.FunCall(2);
+                PopIf(hints);
             }
             else
             {

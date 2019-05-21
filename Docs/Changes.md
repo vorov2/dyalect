@@ -40,6 +40,15 @@
     dy>it()
     [Error evaluating result value: Division by zero.]
     ```
+  * Now it is possible to slice arrays using indexer syntax (related issue: [#59](https://github.com/vorov2/dyalect/issues/59)):
+    ```swift
+    var xs = [0,1,2,3,4,5,6,7,8,9]
+    xs[1..5] //evaluates to [1,2,3,4]
+    ```
+    Slicing is implemented by calling a `slice` method, so the code above is equivalent to:
+    ```swift
+    xs.slice(1, 4)
+    ```
   * A bug fixed: _Incorrect type info is generated for iterator_ ([Issue #93](https://github.com/vorov2/dyalect/issues/93)).
   * A bug fixed: _Anonymous function and iterator_ ([Issue #94](https://github.com/vorov2/dyalect/issues/94)).
   * A bug fixed: _Array.slice - Index out of range_ ([Issue #97](https://github.com/vorov2/dyalect/issues/97)).
