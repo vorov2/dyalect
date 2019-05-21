@@ -55,7 +55,12 @@
         RangePattern,
         TuplePattern,
         RecordPattern,
-        LabelPattern
+        LabelPattern,
+        AsPattern,
+        WildcardPattern,
+        TypeTestPattern,
+        AndPattern,
+        OrPattern
     }
 
 }

@@ -102,7 +102,62 @@ namespace Dyalect.Compiler
                 case NodeType.RangePattern:
                     BuildRange((DRangePattern)node, ctx);
                     break;
+                case NodeType.WildcardPattern:
+                    cw.Push(true);
+                    break;
+                case NodeType.AsPattern:
+                    {
+                        cw.Dup();
+                        var sv = AddVariable(((DAsPattern)node).Name, node, VarFlags.Const);
+                        cw.PopVar(sv);
+                    }
+                    break;
+                case NodeType.TypeTestPattern:
+                    cw.TypeCheck(GetTypeHandle(((DTypeTestPattern)node).TypeName, node.Location));
+                    break;
+                case NodeType.AndPattern:
+                    BuildAnd((DAndPattern)node, ctx);
+                    break;
+                case NodeType.OrPattern:
+                    BuildOr((DOrPattern)node, ctx);
+                    break;
             }
+        }
+
+        private void BuildAnd(DAndPattern node, CompilerContext ctx)
+        {
+            cw.Dup();
+            BuildPattern(node.Left, ctx);
+            var termLab = cw.DefineLabel();
+            var exitLab = cw.DefineLabel();
+            cw.Brfalse(termLab);
+            BuildPattern(node.Right, ctx);
+            AddLinePragma(node);
+            cw.Br(exitLab);
+            cw.MarkLabel(termLab);
+            cw.Pop();
+            AddLinePragma(node);
+            cw.Push(false);
+            cw.MarkLabel(exitLab);
+            cw.Nop();
+        }
+
+        private void BuildOr(DOrPattern node, CompilerContext ctx)
+        {
+            cw.Dup();
+            BuildPattern(node.Left, ctx);
+            var termLab = cw.DefineLabel();
+            var exitLab = cw.DefineLabel();
+            cw.Brtrue(termLab);
+            BuildPattern(node.Right, ctx);
+            AddLinePragma(node);
+            cw.Br(exitLab);
+            cw.MarkLabel(termLab);
+            cw.Pop();
+            AddLinePragma(node);
+            cw.Push(true);
+            cw.MarkLabel(exitLab);
+            cw.Nop();
         }
 
         private void BuildRange(DRangePattern node, CompilerContext ctx)

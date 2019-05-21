@@ -200,4 +200,90 @@ namespace Dyalect.Parser.Model
             Pattern.ToString(sb);
         }
     }
+
+    public sealed class DAsPattern : DPattern
+    {
+        public DAsPattern(Location loc) : base(loc, NodeType.AsPattern)
+        {
+
+        }
+
+        public string Name { get; set; }
+
+        public DPattern Pattern { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append(':');
+            Pattern.ToString(sb);
+            sb.Append(" as " + Name);
+        }
+    }
+
+    public sealed class DWildcardPattern : DPattern
+    {
+        public DWildcardPattern(Location loc) : base(loc, NodeType.WildcardPattern)
+        {
+
+        }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append('_');
+        }
+    }
+
+    public sealed class DTypeTestPattern : DPattern
+    {
+        public DTypeTestPattern(Location loc) : base(loc, NodeType.TypeTestPattern)
+        {
+
+        }
+
+        public Qualident TypeName { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append("is ");
+            sb.Append(TypeName.ToString());
+        }
+    }
+
+    public sealed class DAndPattern : DPattern
+    {
+        public DAndPattern(Location loc) : base(loc, NodeType.AndPattern)
+        {
+
+        }
+
+        public DPattern Left { get; set; }
+
+        public DPattern Right { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            Left.ToString(sb);
+            sb.Append(" && ");
+            Right.ToString(sb);
+        }
+    }
+
+    public sealed class DOrPattern : DPattern
+    {
+        public DOrPattern(Location loc) : base(loc, NodeType.OrPattern)
+        {
+
+        }
+
+        public DPattern Left { get; set; }
+
+        public DPattern Right { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            Left.ToString(sb);
+            sb.Append(" || ");
+            Right.ToString(sb);
+        }
+    }
 }

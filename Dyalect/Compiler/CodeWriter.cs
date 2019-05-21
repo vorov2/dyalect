@@ -198,6 +198,7 @@ namespace Dyalect.Compiler
         public void Brfalse(Label lab) => Emit(OpCode.Brfalse, lab);
         public void Brterm(Label lab) => Emit(OpCode.Brterm, lab);
         public void Briter(Label lab) => Emit(OpCode.Briter, lab);
+        public void TypeCheck(int type) => Emit(new Op(OpCode.TypeCheck, type));
         public void SetMember(int type) => Emit(new Op(OpCode.SetMember, type));
         public void SetMemberS(int type) => Emit(new Op(OpCode.SetMemberS, type));
         public void GetMember(int nameId) => Emit(new Op(OpCode.GetMember, nameId));

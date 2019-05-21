@@ -77,5 +77,6 @@
         GetIx,      //0
         SetIx,      //-2
         HasField,   //0
+        TypeCheck,  //0
     }
 }

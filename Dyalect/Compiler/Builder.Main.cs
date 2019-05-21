@@ -772,7 +772,7 @@ namespace Dyalect.Compiler
             if (name.Parent == null)
                 stdCode = StandardType.GetTypeCodeByName(name.Local);
 
-            if (stdCode >= 0)
+            if (stdCode > -1)
                 return stdCode;
 
             if (name.Parent == null)

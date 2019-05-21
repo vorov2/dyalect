@@ -128,7 +128,8 @@ var res =
     }*/
 
 var res = match 7 {
-    1..10 => "Yes!",
+    2..20 && ?Integer => "Eh?",
+    (1..10) as orig => "Yes! " + orig,
     24 => "no.."
 }
 

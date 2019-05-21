@@ -481,6 +481,13 @@ namespace Dyalect.Runtime
                     case OpCode.NewTuple:
                         evalStack.Push(MakeTuple(evalStack, op.Data));
                         break;
+                    case OpCode.TypeCheck:
+                        right = evalStack.Pop();
+                        if (op.Data >= StandardType.TypeNames.Length)
+                            evalStack.Push(right.TypeId == ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8] ? DyBool.True : DyBool.False);
+                        else
+                            evalStack.Push(right.TypeId == op.Data ? DyBool.True : DyBool.False);
+                        break;
                 }
             }
             goto CYCLE;
