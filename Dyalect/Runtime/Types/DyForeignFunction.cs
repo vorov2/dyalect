@@ -182,7 +182,7 @@ namespace Dyalect.Runtime.Types
 
         private readonly string name;
 
-        protected DyForeignFunction(string name, Par[] pars, int varArgIndex) : base(StandardType.Function, pars, varArgIndex)
+        protected DyForeignFunction(string name, Par[] pars, int varArgIndex) : base(DyType.Function, pars, varArgIndex)
         {
             this.name = name ?? DefaultName;
         }

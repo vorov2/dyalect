@@ -12,7 +12,7 @@ namespace Dyalect.Compiler
         public UnitComposition(List<Unit> units)
         {
             Units = units;
-            Types = StandardType.GetAll();
+            Types = DyType.GetAll();
             Members = new FastList<string>();
             MembersMap = new Dictionary<string, int>();
         }

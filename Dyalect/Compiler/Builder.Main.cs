@@ -202,7 +202,7 @@ namespace Dyalect.Compiler
 
         private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
         {
-            var sv = GetVariable(StandardType.ArrayName, node);
+            var sv = GetVariable(DyTypeNames.Array, node);
             cw.PushVar(sv);
             cw.GetMember(GetMemberNameId(Builtins.New));
             cw.FunPrep(node.Elements.Count);
@@ -533,7 +533,7 @@ namespace Dyalect.Compiler
 
             if (node.Chunks != null)
             {
-                cw.PushVar(GetVariable(StandardType.StringName, node));
+                cw.PushVar(GetVariable(DyTypeNames.String, node));
                 cw.GetMember(GetMemberNameId("concat"));
                 cw.FunPrep(node.Chunks.Count);
 
@@ -795,7 +795,7 @@ namespace Dyalect.Compiler
             var stdCode = -1;
 
             if (name.Parent == null)
-                stdCode = StandardType.GetTypeCodeByName(name.Local);
+                stdCode = DyType.GetTypeCodeByName(name.Local);
 
             if (stdCode > -1)
                 return stdCode;

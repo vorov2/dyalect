@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
 
         internal Unit Unit { get; }
 
-        public DyModule(Unit unit, DyObject[] globals) : base(StandardType.Module)
+        public DyModule(Unit unit, DyObject[] globals) : base(DyType.Module)
         {
             this.Unit = unit;
             this.globals = globals;
@@ -20,7 +20,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyModuleTypeInfo : DyTypeInfo
     {
-        public DyModuleTypeInfo() : base(StandardType.Nil, false)
+        public DyModuleTypeInfo() : base(DyType.Module, false)
         {
 
         }
@@ -28,7 +28,7 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-        public override string TypeName => StandardType.ModuleName;
+        public override string TypeName => DyTypeNames.Module;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => 
             (DyString)("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");

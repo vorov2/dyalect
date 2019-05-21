@@ -29,12 +29,12 @@ namespace Dyalect.Runtime.Types
         public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1)
         {
             var vars = new FastList<DyObject[]>(captures) { locals };
-            return new DyNativeFunction(sym, unitId, funcId, vars, StandardType.Function, varArgIndex);
+            return new DyNativeFunction(sym, unitId, funcId, vars, DyType.Function, varArgIndex);
         }
 
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg)
         {
-            return new DyNativeFunction(Sym, UnitId, FunctionId, Captures, StandardType.Function, VarArgIndex)
+            return new DyNativeFunction(Sym, UnitId, FunctionId, Captures, DyType.Function, VarArgIndex)
             {
                 Self = arg
             };

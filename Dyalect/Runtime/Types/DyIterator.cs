@@ -92,7 +92,7 @@ namespace Dyalect.Runtime.Types
 
         private readonly IEnumerator<DyObject> enumerator;
 
-        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Statics.EmptyParameters, StandardType.Iterator, -1)
+        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Statics.EmptyParameters, DyType.Iterator, -1)
         {
             this.enumerator = enumerator;
         }
@@ -117,7 +117,7 @@ namespace Dyalect.Runtime.Types
         {
             DyFunction iter;
 
-            if (val.TypeId == StandardType.Iterator)
+            if (val.TypeId == DyType.Iterator)
                 iter = (DyFunction)val;
             else
             {
@@ -128,7 +128,7 @@ namespace Dyalect.Runtime.Types
 
                 if (iter == null)
                 {
-                    ctx.InvalidType(StandardType.IteratorName, val.TypeName(ctx));
+                    ctx.InvalidType(DyTypeNames.Iterator, val);
                     return null;
                 }
 
@@ -140,11 +140,11 @@ namespace Dyalect.Runtime.Types
 
         internal static IEnumerable<DyObject> Run(ExecutionContext ctx, DyObject val)
         {
-            if (val.TypeId == StandardType.Array)
+            if (val.TypeId == DyType.Array)
                 return ((DyArray)val).Values;
-            else if (val.TypeId == StandardType.Tuple)
+            else if (val.TypeId == DyType.Tuple)
                 return ((DyTuple)val).Values;
-            else if (val.TypeId == StandardType.String)
+            else if (val.TypeId == DyType.String)
                 return (DyString)val;
             else
                 return InternalRun(ctx, val);
@@ -176,7 +176,7 @@ namespace Dyalect.Runtime.Types
     {
         public override string FunctionName => "iter";
 
-        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(null, unitId, funcId, captures, StandardType.Iterator, -1)
+        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(null, unitId, funcId, captures, DyType.Iterator, -1)
         {
 
         }
@@ -187,7 +187,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyIteratorTypeInfo : DyTypeInfo
     {
-        public DyIteratorTypeInfo() : base(StandardType.Iterator, false)
+        public DyIteratorTypeInfo() : base(DyType.Iterator, false)
         {
 
         }
@@ -195,7 +195,7 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-        public override string TypeName => StandardType.IteratorName;
+        public override string TypeName => DyTypeNames.Iterator;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {

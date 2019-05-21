@@ -27,22 +27,22 @@ namespace Dyalect.Runtime.Types
         public abstract object ToObject();
 
         internal protected virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Get, this.TypeName(ctx));
+            ctx.OperationNotSupported(Builtins.Get, this);
 
         internal protected virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Set, this.TypeName(ctx));
+            ctx.OperationNotSupported(Builtins.Set, this);
 
         internal protected virtual DyObject GetItem(string name, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Get, this.TypeName(ctx));
+            ctx.OperationNotSupported(Builtins.Get, this);
 
         internal protected virtual void SetItem(string name, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Get, this.TypeName(ctx));
+            ctx.OperationNotSupported(Builtins.Get, this);
 
         internal protected virtual DyObject GetItem(int index, ExecutionContext ctx) => 
-            ctx.OperationNotSupported(Builtins.Get, this.TypeName(ctx));
+            ctx.OperationNotSupported(Builtins.Get, this);
 
         internal protected virtual void SetItem(int index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Set, this.TypeName(ctx));
+            ctx.OperationNotSupported(Builtins.Set, this);
 
         internal protected virtual bool HasItem(string name, ExecutionContext ctx) => false;
 
@@ -67,7 +67,7 @@ namespace Dyalect.Runtime.Types
             var value = ctx.Composition.Types[self.TypeId].GetMemberDirect(self, nameId, ctx);
 
             if (value == null)
-                return ctx.OperationNotSupported(Builtins.Iterator, self.TypeName(ctx));
+                return ctx.OperationNotSupported(Builtins.Iterator, self);
 
             return value;
         }

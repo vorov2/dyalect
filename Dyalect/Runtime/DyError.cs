@@ -88,19 +88,19 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, string typeName)
+        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj)
         {
             ctx.Error = new DyError(DyErrorCode.OperationNotSupported,
                 ("Operation", op),
-                ("TypeName", typeName));
+                ("TypeName", obj.TypeName(ctx)));
             return DyNil.Instance;
         }
 
-        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, string typeName1, string typeName2)
+        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj1, DyObject obj2)
         {
             ctx.Error = new DyError(DyErrorCode.OperationNotSupported,
                 ("Operation", op),
-                ("TypeName", "(" + typeName1 + "," + typeName2 + ")"));
+                ("TypeName", "(" + obj1.TypeName(ctx) + "," + obj2.TypeName(ctx) + ")"));
             return DyNil.Instance;
         }
 
@@ -112,19 +112,19 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject IndexInvalidType(this ExecutionContext ctx, string typeName, string indexTypeName)
+        public static DyObject IndexInvalidType(this ExecutionContext ctx, string typeName, DyObject index)
         {
             ctx.Error = new DyError(DyErrorCode.IndexInvalidType,
                 ("TypeName", typeName),
-                ("IndexTypeName", indexTypeName));
+                ("IndexTypeName", index.TypeName(ctx)));
             return DyNil.Instance;
         }
 
-        public static DyObject InvalidType(this ExecutionContext ctx, string expectedTypeName, string gotTypeName)
+        public static DyObject InvalidType(this ExecutionContext ctx, string expectedTypeName, DyObject got)
         {
             ctx.Error = new DyError(DyErrorCode.InvalidType,
                 ("Expected", expectedTypeName),
-                ("Got", gotTypeName));
+                ("Got", got.TypeName(ctx)));
             return DyNil.Instance;
         }
 
@@ -142,9 +142,9 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject NotFunction(this ExecutionContext ctx, string typeName)
+        public static DyObject NotFunction(this ExecutionContext ctx, DyObject obj)
         {
-            ctx.Error = new DyError(DyErrorCode.NotFunction, ("TypeName", typeName));
+            ctx.Error = new DyError(DyErrorCode.NotFunction, ("TypeName", obj.TypeName(ctx)));
             return DyNil.Instance;
         }
 

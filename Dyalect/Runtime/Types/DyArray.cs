@@ -57,7 +57,7 @@ namespace Dyalect.Runtime.Types
                 if (fun != null)
                 {
                     var ret = fun.Call2(x, y, ctx);
-                    return ret.TypeId != StandardType.Integer ? 0 : (int)ret.GetInteger();
+                    return ret.TypeId != DyType.Integer ? 0 : (int)ret.GetInteger();
                 }
 
                 var res = ctx.Types[x.TypeId].Gt(ctx, x, y);
@@ -80,7 +80,7 @@ namespace Dyalect.Runtime.Types
 
         internal DyObject[] GetValues() => Values;
 
-        internal DyArray(DyObject[] values) : base(StandardType.Array)
+        internal DyArray(DyObject[] values) : base(DyType.Array)
         {
             this.Values = values;
             Count = values.Length;
@@ -165,16 +165,16 @@ namespace Dyalect.Runtime.Types
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId == StandardType.Integer)
+            if (index.TypeId == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
             else
-                return ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
+                return ctx.IndexInvalidType(this.TypeName(ctx), index);
         }
 
         internal protected override DyObject GetItem(int index, ExecutionContext ctx)
         {
             if (index < 0 || index >= Count)
-                return ctx.IndexOutOfRange(StandardType.ArrayName, index);
+                return ctx.IndexOutOfRange(DyTypeNames.Array, index);
             return Values[index];
         }
 
@@ -188,8 +188,8 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
-            if (index.TypeId != StandardType.Integer)
-                ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
+            if (index.TypeId != DyType.Integer)
+                ctx.IndexInvalidType(DyTypeNames.Integer, index);
             else
                 SetItem((int)index.GetInteger(), value, ctx);
         }
@@ -201,12 +201,12 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyArrayTypeInfo : DyTypeInfo
     {
-        public DyArrayTypeInfo() : base(StandardType.Array, false)
+        public DyArrayTypeInfo() : base(DyType.Array, false)
         {
 
         }
 
-        public override string TypeName => StandardType.ArrayName;
+        public override string TypeName => DyTypeNames.Array;
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -251,8 +251,8 @@ namespace Dyalect.Runtime.Types
             var arr = (DyArray)self;
             var index = args.TakeOne(DyNil.Instance);
 
-            if (index.TypeId != StandardType.Integer)
-                return ctx.IndexInvalidType(TypeName, index.TypeName(ctx));
+            if (index.TypeId != DyType.Integer)
+                return ctx.IndexInvalidType(TypeName, index);
 
             var i = (int)index.GetInteger();
             var value = args.TakeAt(1, DyNil.Instance);
@@ -288,8 +288,8 @@ namespace Dyalect.Runtime.Types
         {
             var index = args.TakeOne(DyNil.Instance);
 
-            if (index.TypeId != StandardType.Integer)
-                return ctx.IndexInvalidType(TypeName, index.TypeName(ctx));
+            if (index.TypeId != DyType.Integer)
+                return ctx.IndexInvalidType(TypeName, index);
 
             var idx = (int)index.GetInteger();
             var arr = (DyArray)self;
@@ -341,6 +341,12 @@ namespace Dyalect.Runtime.Types
             var dyArr = (DyArray)self;
             var arr = dyArr.GetValues();
 
+            if (start.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, start);
+
+            if (len.TypeId != DyType.Nil && len.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, len);
+
             var beg = (int)start.GetInteger();
             var end = ReferenceEquals(len, DyNil.Instance) ? dyArr.Count : beg + (int)len.GetInteger();
 
@@ -370,8 +376,8 @@ namespace Dyalect.Runtime.Types
 
             if (fun == null)
             {
-                return ctx.InvalidType(StandardType.FunctionName, 
-                    args == null || args[0] == null ? StandardType.NilName : args[0].TypeName(ctx))
+                return ctx.InvalidType(DyTypeNames.Function, 
+                    args == null || args[0] == null ? DyNil.Instance : args[0])
                     ;
             }
 

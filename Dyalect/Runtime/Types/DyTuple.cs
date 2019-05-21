@@ -13,7 +13,7 @@ namespace Dyalect.Runtime.Types
 
         public int Count => Values.Length;
 
-        public DyTuple(DyObject[] values) : base(StandardType.Tuple)
+        public DyTuple(DyObject[] values) : base(DyType.Tuple)
         {
             if (values == null)
                 throw new DyException("Unable to create a tuple with no values.");
@@ -29,22 +29,22 @@ namespace Dyalect.Runtime.Types
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId == StandardType.Integer)
+            if (index.TypeId == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
-            else if (index.TypeId == StandardType.String)
+            else if (index.TypeId == DyType.String)
                 return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange(this.TypeName(ctx), index.GetString());
             else
-                return ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
+                return ctx.IndexInvalidType(this.TypeName(ctx), index);
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
-            if (index.TypeId == StandardType.Integer)
+            if (index.TypeId == DyType.Integer)
                 SetItem((int)index.GetInteger(), value, ctx);
-            else if (index.TypeId == StandardType.String)
+            else if (index.TypeId == DyType.String)
                 SetItem(index.GetString(), value, ctx);
             else
-                ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
+                ctx.IndexInvalidType(this.TypeName(ctx), index);
         }
 
         protected internal override DyObject GetItem(string name, ExecutionContext ctx)
@@ -52,7 +52,7 @@ namespace Dyalect.Runtime.Types
             var i = GetOrdinal(name);
 
             if (i == -1)
-                return ctx.IndexOutOfRange(StandardType.TupleName, name);
+                return ctx.IndexOutOfRange(DyTypeNames.Tuple, name);
 
             return GetItem(i, ctx);
         }
@@ -62,7 +62,7 @@ namespace Dyalect.Runtime.Types
             var i = GetOrdinal(name);
 
             if (i == -1)
-                ctx.IndexOutOfRange(StandardType.TupleName, name);
+                ctx.IndexOutOfRange(DyTypeNames.Tuple, name);
 
             SetItem(i, value, ctx);
         }
@@ -78,8 +78,8 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetItem(int index, ExecutionContext ctx)
         {
             if (index < 0 || index >= Values.Length)
-                return ctx.IndexOutOfRange(StandardType.TupleName, index);
-            return Values[index].TypeId == StandardType.Label ? Values[index].GetTaggedValue() : Values[index];
+                return ctx.IndexOutOfRange(DyTypeNames.Tuple, index);
+            return Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
         }
 
         internal string GetKey(int index) => Values[index].GetLabel();
@@ -90,7 +90,7 @@ namespace Dyalect.Runtime.Types
                 ctx.IndexOutOfRange(this.TypeName(ctx), index);
             else
             {
-                if (Values[index].TypeId == StandardType.Label)
+                if (Values[index].TypeId == DyType.Label)
                     ((DyLabel)Values[index]).Value = value;
                 else
                     Values[index] = value;
@@ -107,7 +107,7 @@ namespace Dyalect.Runtime.Types
         public IEnumerator<DyObject> GetEnumerator()
         {
             for (var i = 0; i < Count; i++)
-                yield return Values[i].TypeId == StandardType.Label ? Values[i].GetTaggedValue() : Values[i];
+                yield return Values[i].TypeId == DyType.Label ? Values[i].GetTaggedValue() : Values[i];
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -115,7 +115,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyTupleTypeInfo : DyTypeInfo
     {
-        public DyTupleTypeInfo() : base(StandardType.Tuple, true)
+        public DyTupleTypeInfo() : base(DyType.Tuple, true)
         {
 
         }
@@ -124,7 +124,7 @@ namespace Dyalect.Runtime.Types
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not 
             | SupportedOperations.Get | SupportedOperations.Set;
 
-        public override string TypeName => StandardType.TupleName;
+        public override string TypeName => DyTypeNames.Tuple;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
