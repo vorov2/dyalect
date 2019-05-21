@@ -122,6 +122,7 @@ PRODUCTIONS
             | SimpleExpr<out node> Separator
             | ControlFlow<out node> Separator
             | Type<out node> Separator
+            | Match<out node>
             | Block<out node>
             | If<out node>
             | Loops<out node>
@@ -791,16 +792,10 @@ PRODUCTIONS
         (
             "("
                 (. var tup = new DTupleLiteral(t); .)
-                TupleElement<out node> (. tup.Elements.Add(node); .)
-                { "," TupleElement<out node> (. tup.Elements.Add(node); .) }
+                Expr<out node> (. tup.Elements.Add(node); .)
+                { "," Expr<out node> (. tup.Elements.Add(node); .) }
                 (. node = tup; .)
             ")"
-        ).
-
-    TupleElement<out DNode node> = 
-        (. node = null; .)
-        (
-            Expr<out node>
         ).
 
     Group<out DNode node> =
