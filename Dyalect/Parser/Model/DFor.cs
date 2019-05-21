@@ -17,7 +17,12 @@ namespace Dyalect.Parser.Model
         internal override void ToString(StringBuilder sb)
         {
             sb.Append("for ");
-            Variable.ToString(sb);
+
+            if (Variable != null)
+                Variable.ToString(sb);
+            else
+                sb.Append('_');
+
             sb.Append(" in ");
             Target.ToString(sb);
             Body.ToString(sb);

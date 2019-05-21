@@ -241,6 +241,20 @@ func arrayTest11() {
     assert([1,2,3], arr)
 }
 
+func arrayTest12() {
+    var arr = [1,2,3] + [4,5,6]
+    assert([1,2,3,4,5,6], arr)
+}
+
+func arrayTest13() {
+    func it() {
+        yield "foo"
+        yield "boo"
+    }
+    var arr = Array.concat([1,2,3], [4,5,6], (1,2), it())
+    assert([1,2,3,4,5,6,1,2,"foo","boo"], arr)
+}
+
 func tupleTest1() {
     var t = (1,2,3)
     assert(3, t.len())
@@ -347,9 +361,26 @@ func stringTest14() {
     assert(false, "hh".isEmpty())
 }
 
+func stringTest15() {
+    var str = "Hello!"
+    assert('H', str[0])
+    assert('!', str[str.len() - 1])
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
+}
+
+func charTest1() {
+    assert(true, 'c' == "c")
+    assert(true, "c" == 'c')
+    assert(false, 'c' == "cc")
+    assert(false, "cc" == 'c')
+    assert(false, 'c' > "cc")
+    assert(true, 'c' < "cc")
+    assert(true, "cc" > 'c')
+    assert(false, "cc" < 'c')
 }
 
 func nameofTest() {

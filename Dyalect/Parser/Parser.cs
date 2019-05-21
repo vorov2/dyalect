@@ -682,8 +682,12 @@ namespace Dyalect.Parser
 		node = null; 
 		Expect(15);
 		var @for = new DFor(t); 
-		Name(out node);
-		@for.Variable = (DName)node; 
+		if (la.kind == 1) {
+			Name(out node);
+			@for.Variable = (DName)node; 
+		} else if (la.kind == 58) {
+			Get();
+		} else SynErr(87);
 		Expect(63);
 		Expr(out node);
 		@for.Target = node; 
@@ -741,7 +745,7 @@ namespace Dyalect.Parser
 			f.Parameters.Add(a); 
 		} else if (la.kind == 24) {
 			FunctionArguments(f);
-		} else SynErr(87);
+		} else SynErr(88);
 		Expect(18);
 		Expr(out var exp);
 		f.Body = exp; 
@@ -1008,7 +1012,7 @@ namespace Dyalect.Parser
 			node = new DUnaryOperation(node, op, ot); 
 		} else if (StartOf(8)) {
 			Range(out node);
-		} else SynErr(88);
+		} else SynErr(89);
 	}
 
 	void Range(out DNode node) {
@@ -1093,7 +1097,7 @@ namespace Dyalect.Parser
 			Group(out node);
 		} else if (la.kind == 74) {
 			Base(out node);
-		} else SynErr(89);
+		} else SynErr(90);
 	}
 
 	void ApplicationArguments(DApplication app) {
@@ -1142,7 +1146,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 61) {
 			Get();
-		} else SynErr(90);
+		} else SynErr(91);
 		node = new DBooleanLiteral(t) { Value = t.val == "true" }; 
 	}
 
@@ -1207,7 +1211,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 48) {
 			Import();
 			Separator();
-		} else SynErr(91);
+		} else SynErr(92);
 	}
 
 	void Dyalect() {
@@ -1336,11 +1340,12 @@ namespace Dyalect.Parser
 			case 84: s = "invalid Expr"; break;
 			case 85: s = "invalid Pattern"; break;
 			case 86: s = "invalid BooleanPattern"; break;
-			case 87: s = "invalid FunctionExpr"; break;
-			case 88: s = "invalid Unary"; break;
-			case 89: s = "invalid Literal"; break;
-			case 90: s = "invalid Bool"; break;
-			case 91: s = "invalid DyalectItem"; break;
+			case 87: s = "invalid For"; break;
+			case 88: s = "invalid FunctionExpr"; break;
+			case 89: s = "invalid Unary"; break;
+			case 90: s = "invalid Literal"; break;
+			case 91: s = "invalid Bool"; break;
+			case 92: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

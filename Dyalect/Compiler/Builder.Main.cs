@@ -349,7 +349,11 @@ namespace Dyalect.Compiler
             };
             StartScope(false, node.Location);
 
-            var inc = AddVariable(node.Variable.Value, node.Variable, VarFlags.Const);
+            var inc = -1;
+
+            if (node.Variable != null)
+                inc = AddVariable(node.Variable.Value, node.Variable, VarFlags.Const);
+
             var sys = AddVariable();
             var skip = cw.DefineLabel();
             Build(node.Target, hints.Append(Push), ctx);
@@ -373,7 +377,10 @@ namespace Dyalect.Compiler
 
             cw.Brterm(ctx.BlockExit);
 
-            cw.PopVar(inc);
+            if (inc > -1)
+                cw.PopVar(inc);
+            else
+                cw.Pop();
 
             Build(node.Body, hints.Remove(Push), ctx);
 

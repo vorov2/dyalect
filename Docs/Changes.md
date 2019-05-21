@@ -1,3 +1,24 @@
+# 0.6.0
+  * Error reporting by parser is expanded and corrected.
+  * Implemented pattern matching using `match` expression ([Issue #4](https://github.com/vorov2/dyalect/issues/4)):
+    ```swift
+    match exp {
+        (1, x, 3) => x,
+        (_, 4, x) => x,
+        _ => 0
+    }
+    ```
+    The following patterns are currently supported: "and" pattern (`&&`), "or" pattern (`||`), grouping pattern, tuple pattern, array pattern, name/field pattern, constant pattern, nil pattern, range pattern, biding-to-name pattern, type check pattern, "as" pattern.
+  * New static method `concat` is added to types `Iterator` and `Array` (related issue: [#37](https://github.com/vorov2/dyalect/issues/37)). This method has the following signature:
+    ```swift
+    static func concat(values...) { }
+    ```
+    It accepts a variable number of objects that implement iterator pattern and returns either an array (for `Array` type) or a new combined iterator (for `Iterator` type). By the way string is always treated as iterator:
+    ```
+    dy>Array.concat("foo")
+    ['f', 'o', 'o'] :: Array
+    ```
+
 # 0.5.8
   * A bug fixed: _String indexer returns a string instead of a char_ ([Issue #84](https://github.com/vorov2/dyalect/issues/84)).
   * A bug fixed: _String indexation by a compiler_ ([Issue #83](https://github.com/vorov2/dyalect/issues/83)).

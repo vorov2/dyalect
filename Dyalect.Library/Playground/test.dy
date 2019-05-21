@@ -111,11 +111,11 @@ func testIter() {
     result
 }
 
-*/
+
 var x = (x: 12, y: 34, z: (name: "bar", age: 12))
 var arr = (1..10).toArray()
 
-/*
+
 var res = 
     match x {
         [1,2,3,xs] => x,
@@ -125,12 +125,15 @@ var res =
         12 => "Yes!",
         (z:(name: name, age: a)) when arr.len() > 30 => "name = \(name), age = \(a)",
         'c' => "WTF?"
-    }*/
-
+    }
 var res = match 7 {
     2..20 && ?Integer => "Eh?",
     (1..10) as orig => "Yes! " + orig,
     24 => "no.."
 }
+*/
 
-res
+var acc = 0
+for x in 1..5 {
+    acc = acc + x
+}

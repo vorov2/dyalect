@@ -169,6 +169,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error in expression or statement syntax: {0}.
+        /// </summary>
+        internal static string InvalidSyntax {
+            get {
+                return ResourceManager.GetString("InvalidSyntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid unary operator..
         /// </summary>
         internal static string InvalidUnary {

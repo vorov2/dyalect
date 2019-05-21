@@ -410,7 +410,7 @@ PRODUCTIONS
         (
             "for"
             (. var @for = new DFor(t); .)
-            Name<out node> (. @for.Variable = (DName)node; .)
+            ( Name<out node> (. @for.Variable = (DName)node; .) | "_" )
             "in" Expr<out node> (. @for.Target = node; .)
             Block<out node>
             (.

@@ -35,5 +35,7 @@
         SemanticError = 15,
 
         InvalidPattern = 16,
+
+        InvalidSyntax = 17
     }
 }
