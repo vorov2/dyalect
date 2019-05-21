@@ -484,6 +484,7 @@ PRODUCTIONS
                   ( FunctionArgument<out var a> (. f.Parameters.Add(a); .) )
                 | FunctionArguments<f>
             )
+            (. functions.Push(f); .)
             "=>" Expr<out var exp>
             (. f.Body = exp; .)
         ).

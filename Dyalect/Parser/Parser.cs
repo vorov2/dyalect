@@ -746,6 +746,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 24) {
 			FunctionArguments(f);
 		} else SynErr(88);
+		functions.Push(f); 
 		Expect(18);
 		Expr(out var exp);
 		f.Body = exp; 

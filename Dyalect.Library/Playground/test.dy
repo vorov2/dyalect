@@ -133,7 +133,9 @@ var res = match 7 {
 }
 */
 
-var acc = 0
-for x in 1..5 {
-    acc = acc + x
-}
+(() => {
+        yield 1
+        yield 2
+        yield 3
+        yield 4
+    })()
