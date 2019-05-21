@@ -289,6 +289,12 @@ func tupleTest5() {
     assert(37.44, res)
 }
 
+func tupleTest6() {
+    var t1 = (12, 3, 44, "string", false, 42.1)
+    var t2 = (12, 3, 44, "string", false, 42.1)
+    assert(true, t1 == t2)
+}
+
 func stringTest1() {
     var str = "Hello, world!"
     var res = str.len()

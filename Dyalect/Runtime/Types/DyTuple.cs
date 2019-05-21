@@ -162,6 +162,29 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (left.TypeId != right.TypeId)
+                return DyBool.False;
+
+            var t1 = (DyTuple)left;
+            var t2 = (DyTuple)right;
+
+            if (t1.Count != t2.Count)
+                return DyBool.False;
+
+            for (var i = 0; i < t1.Count; i++)
+            {
+                if (ctx.Types[t1.Values[i].TypeId].Eq(ctx, t1.Values[i], t2.Values[i]) == DyBool.False)
+                    return DyBool.False;
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+            }
+
+            return DyBool.True;
+        }
+
         private DyObject GetIndices(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var tup = (DyTuple)self;

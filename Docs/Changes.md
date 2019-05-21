@@ -40,6 +40,7 @@
     dy>it()
     [Error evaluating result value: Division by zero.]
     ```
+  * Structural equality for tuples is implemented (related issue: [#43](https://github.com/vorov2/dyalect/issues/43)).
   * Now it is possible to slice arrays using indexer syntax (related issue: [#59](https://github.com/vorov2/dyalect/issues/59)):
     ```swift
     var xs = [0,1,2,3,4,5,6,7,8,9]
