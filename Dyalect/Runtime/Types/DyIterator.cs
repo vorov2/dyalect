@@ -1,8 +1,8 @@
 ﻿using Dyalect.Compiler;
-using Dyalect.Debug;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
@@ -55,7 +55,7 @@ namespace Dyalect.Runtime.Types
                 {
                     if (iterators.Length > nextIterator)
                     {
-                        var it = RunIterator(ctx, iterators[nextIterator]);
+                        var it = Run(ctx, iterators[nextIterator]);
                         nextIterator++;
 
                         if (ctx.HasErrors)
@@ -138,7 +138,7 @@ namespace Dyalect.Runtime.Types
             return iter;
         }
 
-        internal static IEnumerable<DyObject> RunIterator(ExecutionContext ctx, DyObject val)
+        internal static IEnumerable<DyObject> Run(ExecutionContext ctx, DyObject val)
         {
             if (val.TypeId == StandardType.Array)
                 return ((DyArray)val).Values;
@@ -147,10 +147,10 @@ namespace Dyalect.Runtime.Types
             else if (val.TypeId == StandardType.String)
                 return (DyString)val;
             else
-                return InternalRunIterator(ctx, val);
+                return InternalRun(ctx, val);
         }
 
-        private static IEnumerable<DyObject> InternalRunIterator(ExecutionContext ctx, DyObject val)
+        private static IEnumerable<DyObject> InternalRun(ExecutionContext ctx, DyObject val)
         {
             var iter = GetIterator(ctx, val);
 
@@ -195,9 +195,35 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-        public override string TypeName => StandardType.BoolName;
+        public override string TypeName => StandardType.IteratorName;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)$"{Builtins.Iterator}()";
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        {
+            var seq = DyIterator.Run(ctx, arg);
+
+            if (ctx.HasErrors)
+                return DyString.Empty;
+
+            var sb = new StringBuilder();
+            sb.Append('{');
+            var fst = true;
+
+            foreach (var e in seq)
+            {
+                if (!fst)
+                    sb.Append(", ");
+                var str = e.ToString(ctx);
+
+                if (ctx.Error != null)
+                    return DyString.Empty;
+
+                sb.Append(str.GetString());
+                fst = false;
+            }
+
+            sb.Append('}');
+            return new DyString(sb.ToString());
+        }
 
         private DyObject ToArray(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
@@ -230,6 +256,11 @@ namespace Dyalect.Runtime.Types
             if (name == "toArray")
                 return DyForeignFunction.Member(name, ToArray, -1, Statics.EmptyParameters);
 
+            return null;
+        }
+
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        {
             if (name == "concat")
                 return DyForeignFunction.Static(name, Concat, -1, Statics.EmptyParameters);
 

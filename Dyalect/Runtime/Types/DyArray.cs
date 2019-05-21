@@ -268,7 +268,7 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyArray)self;
 
-            foreach (var o in DyIterator.RunIterator(ctx, val))
+            foreach (var o in DyIterator.Run(ctx, val))
             {
                 if (ctx.HasErrors)
                     break;
@@ -480,7 +480,7 @@ namespace Dyalect.Runtime.Types
 
             foreach (var v in vals)
             {
-                arr.AddRange(DyIterator.RunIterator(ctx, v));
+                arr.AddRange(DyIterator.Run(ctx, v));
 
                 if (ctx.HasErrors)
                     break;

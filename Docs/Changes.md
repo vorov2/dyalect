@@ -18,6 +18,23 @@
     dy>Array.concat("foo")
     ['f', 'o', 'o'] :: Array
     ```
+  * A bug fixed: _Incorrect type info is generated for iterator_ ([Issue #93](https://github.com/vorov2/dyalect/issues/93)).
+  * An implementation of `toString` method is changed for iterators - now `toString` execute an iterator and formats all of its values to a string:
+    ```
+    dy>(1..5).toString()
+    "{1, 2, 3, 4, 5}" :: String
+    ```
+  * Now interactive console displays a correct error message if an exception occurs while trying to format script output to a string:
+    ```
+    dy>func it() {
+    -->yield 1
+    -->var x = 2/0
+    -->}
+    [type:6] :: Function
+
+    dy>it()
+    [Error evaluating result value: Division by zero.]
+    ```
 
 # 0.5.8
   * A bug fixed: _String indexer returns a string instead of a char_ ([Issue #84](https://github.com/vorov2/dyalect/issues/84)).

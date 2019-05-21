@@ -31,6 +31,8 @@ namespace Dyalect.Runtime
 
         internal Stack<ArgContainer> Locals { get; } = new Stack<ArgContainer>(4);
 
+        public DyError GetError() => Error;
+
         internal void ThrowIf()
         {
             if (Error != null)
