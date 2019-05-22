@@ -232,16 +232,29 @@ namespace Dyalect.Compiler
             var sv = GetVariable(DyTypeNames.Array, node);
             cw.PushVar(sv);
             cw.GetMember(GetMemberNameId(Builtins.New));
-            cw.FunPrep(node.Elements.Count);
 
-            for (var i = 0; i < node.Elements.Count; i++)
+            if (node.Elements.Count == 1 && node.Elements[0].NodeType == NodeType.Range)
             {
-                Build(node.Elements[i], hints.Append(Push), ctx);
-                cw.FunArgIx(i);
+                Build(node.Elements[0], hints.Append(Push), ctx);
+                cw.GetMember(GetMemberNameId("toArray"));
+                cw.FunPrep(0);
+                AddLinePragma(node);
+                cw.FunCall(0);
+            }
+            else
+            {
+                cw.FunPrep(node.Elements.Count);
+
+                for (var i = 0; i < node.Elements.Count; i++)
+                {
+                    Build(node.Elements[i], hints.Append(Push), ctx);
+                    cw.FunArgIx(i);
+                }
+
+                AddLinePragma(node);
+                cw.FunCall(node.Elements.Count);
             }
 
-            AddLinePragma(node);
-            cw.FunCall(node.Elements.Count);
             PopIf(hints);
         }
 
