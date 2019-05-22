@@ -46,6 +46,7 @@
   * Now it is possible to create an array based on range using the following syntax: `[n..k]`. It is an equivalent to `(n..k).toArray()` (related issue: [#92](https://github.com/vorov2/dyalect/issues/92)).
   * Now iterators has a `len` method which returns a total number of elements in an interator (related issue: [#99](https://github.com/vorov2/dyalect/issues/99)).
   * A feature is implemented: _Integer: add standard methods_ ([Issue #54](https://github.com/vorov2/dyalect/issues/54)).
+  * A feature is implemented: _Float: add standard methods_ ([Issue #55](https://github.com/vorov2/dyalect/issues/55)).
   * A bug fixed: _Incorrect type info is generated for iterator_ ([Issue #93](https://github.com/vorov2/dyalect/issues/93)).
   * A bug fixed: _Anonymous function and iterator_ ([Issue #94](https://github.com/vorov2/dyalect/issues/94)).
   * A bug fixed: _Array.slice - Index out of range_ ([Issue #97](https://github.com/vorov2/dyalect/issues/97)).
