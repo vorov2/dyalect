@@ -55,7 +55,7 @@ func mathTest12() {
 
 func mathTest13() {
     var x = .0 / 0
-    assert(true, x.isNaN)
+    assert(true, x.isNaN())
 }
 
 func logicalTest1() {
