@@ -281,26 +281,11 @@ PRODUCTIONS
             | IF (IsTuplePattern()) TuplePattern<out node>
             | GroupPattern<out node>
             | ArrayPattern<out node>
-            | TypeTestPattern<out node>
         ) 
         [ 
             "as" (. var asp = new DAsPattern(t) { Pattern = node }; .) 
             identToken (. asp.Name = t.val; node = asp; .) 
         ].
-
-    TypeTestPattern<out DPattern node> =
-        (. node = null; string nm2 = null; .)
-        (
-            "?" (. var ot = t; .)
-            identToken 
-            (. var nm = t.val; .)
-            [ "." identToken (. nm2 = t.val; .) ]
-            (.
-                var q = nm2 == null ? new Qualident(nm)
-                    : new Qualident(nm2, nm);
-                node = new DTypeTestPattern(ot) { TypeName = q };
-            .)
-        ).
 
     GroupPattern<out DPattern node> =
         (. node = null; .)
@@ -350,13 +335,23 @@ PRODUCTIONS
             (. la.Pattern = pat; node = la; .)
         ).
 
-    NamePattern<out DPattern node> = identToken 
-        (. 
-            if (t.val == "_") 
-                node = new DWildcardPattern(t);
-            else
-                node = new DNamePattern(t) { Name = t.val };
-        .).
+    NamePattern<out DPattern node> = 
+        (. node = null; string nm2 = null; string nm1 = null; Token ot = null; .)
+        (
+            identToken (. nm1 = t.val; ot = t; .)
+            [ "." identToken (. nm2 = null; .) ]
+            (. 
+                if (nm2 == null) {
+                    if (t.val == "_") 
+                        node = new DWildcardPattern(ot);
+                    else
+                        node = new DNamePattern(ot) { Name = nm1 };
+                } else {
+                    var q = new Qualident(nm2, nm1);
+                    node = new DTypeTestPattern(ot) { TypeName = q };
+                }
+            .)
+        ).
 
     NilPattern<out DPattern node> = "nil" (. node = new DNilPattern(t); .).
     IntegerPattern<out DPattern node> = intToken (. node = new DIntegerPattern(t) { Value = ParseInteger() }; .).
@@ -417,6 +412,7 @@ PRODUCTIONS
             (. var @for = new DFor(t); .)
             OrPattern<out var pattern> (. @for.Pattern = pattern; .)
             "in" Expr<out node> (. @for.Target = node; .)
+            [ "when" Expr<out node> (. @for.Guard = node; .) ]
             Block<out node>
             (.
                 @for.Body = node;

@@ -86,6 +86,9 @@ namespace Dyalect.Compiler
             var ss = locals.Peek();
             ss.Counter += size;
 
+            if (ss.Counter < 0)
+                ss.Counter = 0;
+
             if (ss.Counter > ss.Max)
                 ss.Max = ss.Counter;
 

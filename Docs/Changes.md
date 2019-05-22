@@ -4,11 +4,11 @@
     ```swift
     match exp {
         (1, x, 3) => x,
-        (_, 4, x) => x,
+        (_, 4, x) when x % 2 == 0 => x,
         _ => 0
     }
     ```
-    The following patterns are currently supported: "and" pattern (`&&`), "or" pattern (`||`), grouping pattern, tuple pattern, array pattern, name/field pattern, constant pattern, nil pattern, range pattern, biding-to-name pattern, type check pattern, "as" pattern.
+    The following patterns are currently supported: "and" pattern (`&&`), "or" pattern (`||`), grouping pattern, tuple pattern, array pattern, name/field pattern, constant pattern, nil pattern, range pattern, biding-to-name pattern, type check pattern, "as" pattern. Guards are also supported.
   * Pattern matching is supported inside `for` cycles. Instead of a plain loop variables it is possible to use patterns, including nested patterns (related issue: [Issue #4](https://github.com/vorov2/dyalect/issues/4)). If an element doesn't match it gets skipped, e.g. this code:
     ```swift
     for (x, 1) in [(2, 1), (3,3), (1, 1)] {
@@ -16,6 +16,13 @@
     }
     ```
     outputs `2` and `1`.
+  * Now `for` cycle supports guards in the following manner:
+    ```swift
+    var arr = []
+    for x in [1,2,3,4,5,6,7,8,9,10] when x % 2 == 0 {
+        arr.add(x)
+    }
+    ```
   * New static method `concat` is added to types `Iterator` and `Array` (related issue: [#37](https://github.com/vorov2/dyalect/issues/37)). This method has the following signature:
     ```swift
     static func concat(values...) { }

@@ -133,5 +133,8 @@ var res = match 7 {
 }
 */
 
-var xs = [0,1,2,3,4,5,6,7,8,9]
-xs[1..5]
+var arr = []
+for Char in ['a', "str", 'b', 'c', 12] {
+    arr.add(0)
+}
+assert(['a','b','c'], arr)

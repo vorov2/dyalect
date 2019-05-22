@@ -1,0 +1,143 @@
+﻿func matchTest1() {
+    var res = match (1,2) {
+        (2, x) => "wrong1",
+        (x, y, z) => "wrong2",
+        (1, _, _) => "wrong3",
+        [1, 2, 3] => "wrong4",
+        2 => "wrong5",
+        (1, x) => x
+    }
+    assert(2, res)
+}
+
+func matchTest2() {
+    var res = match (1,2,"str") {
+        (1, 2, "strs") => "wrong",
+        [1, 2, "str"] => "right?",
+        (1, 2, "str") => "right!"
+    }
+    assert("right?", res)
+}
+
+func matchTest3() {
+    var res = match (1,2,"str") {
+        (1, 2, "strs") => "wrong",
+        Array && [1, 2, "str"] => "right?",
+        (1, 2, "str") as xs => xs
+    }
+    assert((1,2,"str"), res)
+}
+
+func matchTest4() {
+    var res = match (1,2) {
+        "clear fake" => "wrong1",
+        (x, 2) as xs when xs.fst() == 1 => xs
+    }
+    assert((1,2), res)
+}
+
+func matchTest5() {
+    func typeName(x) {
+        match x {
+            Integer => "Integer",
+            Float => "Float",
+            String => "String",
+            Char => "Char",
+            Bool => "Bool",
+            Nil => "Nil",
+            Tuple => "Tuple",
+            Array => "Array",
+            Function => "Function",
+            _ => "Unknown"
+        }
+        var xs = [
+            typeName(0),
+            typeName(.0),
+            typeName([]),
+            typeName((1,2)),
+            typeName(typeName),
+            typeName([].iter()),
+            typeName(false),
+            typeName(""),
+            typeName('\s'),
+            typeName(nil)
+        ]
+        var expected = [
+            "Integer",
+            "Float",
+            "Array",
+            "Tuple",
+            "Function",
+            "Unknown",
+            "Bool",
+            "String",
+            "Char",
+            "Nil"
+        ]
+        assert(expected, xs)
+    }
+}
+
+func matchTest6() {
+    var res = match 12 {
+        "24" || 24 as x => x,
+        "12" || 12 as x => x
+    }
+    assert(12, res)
+}
+
+func matchTest7() {
+    var res = match [1, 2, ('f', 'F', [34, 42.2]), "end"] {
+        [1, 2] as xs when xs.len() <= 3 => "wrong",
+        [1, 2, (_, _, [34, x])] when x > 42 => x
+    }
+    assert(42.2, res)
+}
+
+func matchTest8() {
+    var res = match (x: 12, y: 24) {
+        (x: 13, y: y) => y,
+        (x: x, y: 24) => x
+    }
+    assert(12, res)
+}
+
+func forMatchTest1() {
+    var arr = []
+    for (1, x) in [(1, 2), (2, 'F'), (3, 'S'), (1, 3), (1, 4), (1.01, true)] {
+        arr.add(x)
+    }
+    assert([2, 3, 4], arr)
+}
+
+func forMatchTest2() {
+    var arr = []
+    for Char as c in ['a', "str", 'b', 'c', 12] {
+        arr.add(c)
+    }
+    assert(['a','b','c'], arr)
+}
+
+func forMatchTest3() {
+    var arr = []
+    for Char in ['a', "str", 'b', 'c', 12] {
+        arr.add(0)
+    }
+    assert(3, arr.len())
+}
+
+func forMatchTest4() {
+    var arr = []
+    for (1, x) as xs in [(1, 2), (2, 'F'), (3, 'S'), (1, 3), (1, 4), (1.01, true)] {
+        arr.add(xs)
+    }
+    assert([(1,2), (1,3), (1,4)], arr)
+}
+
+func forMatchTest5() {
+    var arr = []
+    for x in [1,2,3,4,5,6,7,8,9,10] when x % 2 == 0 {
+        arr.add(x)
+    }
+    assert([2,4,6,8,10], arr)
+}

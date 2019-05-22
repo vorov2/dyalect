@@ -373,21 +373,22 @@ namespace Dyalect.Compiler
 
             var inc = -1;
 
-            if (node.Pattern.NodeType == NodeType.NamePattern)
+            if (node.Pattern.NodeType == NodeType.NamePattern 
+                && GetTypeHandle(null, node.Pattern.GetName(), out var _) != CompilerError.None) 
                 inc = AddVariable(node.Pattern.GetName(), node.Pattern, VarFlags.Const);
 
             var sys = AddVariable();
-            var skip = cw.DefineLabel();
+            var initSkip = cw.DefineLabel();
             Build(node.Target, hints.Append(Push), ctx);
 
-            cw.Briter(skip);
+            cw.Briter(initSkip);
 
             cw.GetMember(GetMemberNameId(Builtins.Iterator));
 
             cw.FunPrep(0);
             cw.FunCall(0);
 
-            cw.MarkLabel(skip);
+            cw.MarkLabel(initSkip);
             cw.PopVar(sys);
 
             var iter = cw.DefineLabel();
@@ -404,6 +405,12 @@ namespace Dyalect.Compiler
             else
             {
                 BuildPattern(node.Pattern, ctx);
+                cw.Brfalse(ctx.BlockSkip);
+            }
+
+            if (node.Guard != null)
+            {
+                Build(node.Guard, hints.Append(Push), ctx);
                 cw.Brfalse(ctx.BlockSkip);
             }
 
@@ -795,42 +802,49 @@ namespace Dyalect.Compiler
             }
         }
 
-
-
         private int GetTypeHandle(Qualident name, Location loc)
         {
-            var stdCode = -1;
+            var err = GetTypeHandle(name.Parent, name.Local, out var handle);
 
-            if (name.Parent == null)
-                stdCode = DyType.GetTypeCodeByName(name.Local);
+            if (err == CompilerError.UndefinedModule)
+                AddError(err, loc, name.Parent);
+            else if (err == CompilerError.UndefinedType)
+                AddError(err, loc, name.Local);
 
-            if (stdCode > -1)
-                return stdCode;
+            return handle;
+        }
 
-            if (name.Parent == null)
+        private CompilerError GetTypeHandle(string parent, string local, out int handle)
+        {
+            handle = -1;
+
+            if (parent == null)
+                handle = DyType.GetTypeCodeByName(local);
+
+            if (handle > -1)
+                return CompilerError.None;
+
+            if (parent == null)
             {
-                if (!types.TryGetValue(name.Local, out var ti))
-                {
-                    AddError(CompilerError.UndefinedType, loc, name.Local);
-                    return 0;
-                }
+                if (!types.TryGetValue(local, out var ti))
+                    return CompilerError.UndefinedType;
                 else
-                    return ti.Unit.Handle | ti.Handle << 8;
+                {
+                    handle = ti.Unit.Handle | ti.Handle << 8;
+                    return CompilerError.None;
+                }
             }
             else
             {
-                if (!referencedUnits.TryGetValue(name.Parent, out var ui))
-                {
-                    AddError(CompilerError.UndefinedModule, loc, name.Parent);
-                    return 0;
-                }
+                if (!referencedUnits.TryGetValue(parent, out var ui))
+                    return CompilerError.UndefinedModule;
                 else
                 {
                     var ti = -1;
 
                     for (var i = 0; i < ui.Unit.TypeIds.Count; ti++)
                     {
-                        if (ui.Unit.TypeNames[i] == name.Local)
+                        if (ui.Unit.TypeNames[i] == local)
                         {
                             ti = ui.Unit.TypeIds[i];
                             break;
@@ -838,9 +852,10 @@ namespace Dyalect.Compiler
                     }
 
                     if (ti == -1)
-                        AddError(CompilerError.UndefinedType, loc, name);
+                        return CompilerError.UndefinedType;
 
-                    return ui.Handle | ti << 8;
+                    handle = ui.Handle | ti << 8;
+                    return CompilerError.None;
                 }
             }
         }

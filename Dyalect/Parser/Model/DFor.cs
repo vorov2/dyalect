@@ -12,6 +12,8 @@ namespace Dyalect.Parser.Model
 
         public DNode Target { get; set; }
 
+        public DNode Guard { get; set; }
+
         public DNode Body { get; set; }
 
         internal override void ToString(StringBuilder sb)
@@ -20,6 +22,13 @@ namespace Dyalect.Parser.Model
             Pattern.ToString(sb);
             sb.Append(" in ");
             Target.ToString(sb);
+
+            if (Guard != null)
+            {
+                sb.Append(" when ");
+                Guard.ToString(sb);
+            }
+
             Body.ToString(sb);
         }
     }

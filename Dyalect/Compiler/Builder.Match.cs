@@ -40,15 +40,15 @@ namespace Dyalect.Compiler
             StartScope(fun: false, node.Location);
             var skip = cw.DefineLabel();
 
+            cw.PushVar(sys);
+            BuildPattern(node.Pattern, ctx);
+            cw.Brfalse(skip);
+
             if (node.Guard != null)
             {
                 Build(node.Guard, hints, ctx);
                 cw.Brfalse(skip);
             }
-
-            cw.PushVar(sys);
-            BuildPattern(node.Pattern, ctx);
-            cw.Brfalse(skip);
 
             Build(node.Expression, hints, ctx);
             cw.Br(ctx.MatchExit);
@@ -62,9 +62,7 @@ namespace Dyalect.Compiler
             switch (node.NodeType)
             {
                 case NodeType.NamePattern:
-                    var va = AddVariable(((DNamePattern)node).Name, node, VarFlags.None);
-                    cw.PopVar(va);
-                    cw.Push(true);
+                    BuildName((DNamePattern)node, ctx);
                     break;
                 case NodeType.IntegerPattern:
                     cw.Push(((DIntegerPattern)node).Value);
@@ -107,11 +105,7 @@ namespace Dyalect.Compiler
                     cw.Push(true);
                     break;
                 case NodeType.AsPattern:
-                    {
-                        cw.Dup();
-                        var sv = AddVariable(((DAsPattern)node).Name, node, VarFlags.Const);
-                        cw.PopVar(sv);
-                    }
+                    BuildAs((DAsPattern)node, ctx);
                     break;
                 case NodeType.TypeTestPattern:
                     cw.TypeCheck(GetTypeHandle(((DTypeTestPattern)node).TypeName, node.Location));
@@ -122,6 +116,41 @@ namespace Dyalect.Compiler
                 case NodeType.OrPattern:
                     BuildOr((DOrPattern)node, ctx);
                     break;
+            }
+        }
+
+        private void BuildAs(DAsPattern node, CompilerContext ctx)
+        {
+            cw.Dup();
+
+            BuildPattern(node.Pattern, ctx);
+            var bad = cw.DefineLabel();
+            var ok = cw.DefineLabel();
+            cw.Brfalse(bad);
+
+            var sv = AddVariable(node.Name, node, VarFlags.Const);
+            cw.PopVar(sv);
+
+            cw.Push(true);
+            cw.Br(ok);
+            cw.MarkLabel(bad);
+            cw.Pop();
+            cw.Push(false);
+            cw.MarkLabel(ok);
+            cw.Nop();
+        }
+
+        private void BuildName(DNamePattern node, CompilerContext ctx)
+        {
+            var err = GetTypeHandle(null, node.Name, out var handle);
+
+            if (err == CompilerError.None)
+                cw.TypeCheck(handle);
+            else
+            {
+                var va = AddVariable(node.Name, node, VarFlags.None);
+                cw.PopVar(va);
+                cw.Push(true);
             }
         }
 
