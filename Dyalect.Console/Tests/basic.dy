@@ -165,6 +165,12 @@ func literalTest6() {
     assert(96, res)
 }
 
+func literalTest7() {
+    //Test if a tuple is recognized correctly
+    var res = ([1,2,3].len() + 4) * 2
+    assert(14, res)
+}
+
 func arrayTest1() {
     var arr = []
     arr.add(1)
@@ -454,6 +460,11 @@ func iteratorLiteralTest2() {
     x -= 1
     y *= y
     assert(10, seq()())
+}
+
+func iteratorLiteralTest3() {
+    var xs = {& 1, 2, 3, 4, 5 }
+    assert(5, xs().len())
 }
 
 func interpolationTest1() {

@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -197,6 +198,11 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Iterator;
 
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        {
+            return GetCount(ctx, arg);
+        }
+
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var seq = DyIterator.Run(ctx, arg);
@@ -225,7 +231,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        private DyObject ToArray(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject ToArray(ExecutionContext ctx, DyObject self)
         {
             var fn = (DyFunction)self;
             var arr = new List<DyObject>();
@@ -245,6 +251,26 @@ namespace Dyalect.Runtime.Types
             return new DyArray(arr.ToArray());
         }
 
+        private DyObject GetCount(ExecutionContext ctx, DyObject self)
+        {
+            var fn = (DyFunction)self;
+            var count = 0;
+            DyObject res = null;
+
+            while (!ReferenceEquals(res, DyNil.Terminator))
+            {
+                res = fn.Call0(ctx);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                if (!ReferenceEquals(res, DyNil.Terminator))
+                    count++;
+            }
+
+            return DyInteger.Get(count);
+        }
+
         private DyObject Concat(ExecutionContext ctx, DyObject tuple)
         {
             var values = ((DyTuple)tuple).Values;
@@ -253,8 +279,11 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
+            if (name == Builtins.Len)
+                return DyForeignFunction.Member(name, GetCount);
+
             if (name == "toArray")
-                return DyForeignFunction.Member(name, ToArray, -1, Statics.EmptyParameters);
+                return DyForeignFunction.Member(name, ToArray);
 
             return null;
         }
@@ -262,7 +291,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "concat")
-                return DyForeignFunction.Static(name, Concat, -1, Statics.EmptyParameters);
+                return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
 
             return null;
         }

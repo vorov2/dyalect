@@ -133,11 +133,8 @@ var res = match 7 {
 }
 */
 
-var x = 2
-var y = 44
-var seq  = { (x + y).toString(), }
-
-x *= x
-y *= 2
-
-seq()
+var tup = (
+    x: (x: 2, y: (y: 3)),
+    22
+)
+var res = tup[1] + tup["x"]["x"] - tup["x"]["y"]["y"]

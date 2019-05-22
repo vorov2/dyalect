@@ -530,7 +530,7 @@ namespace Dyalect.Parser
 			NilPattern(out node);
 		} else if (IsRecordPattern()) {
 			RecordPattern(out node);
-		} else if (IsTuplePattern()) {
+		} else if (IsTuple(allowFields: false)) {
 			TuplePattern(out node);
 		} else if (la.kind == 25) {
 			GroupPattern(out node);

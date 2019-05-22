@@ -279,7 +279,7 @@ PRODUCTIONS
             | BooleanPattern<out node>
             | NilPattern<out node>
             | IF (IsRecordPattern()) RecordPattern<out node>
-            | IF (IsTuplePattern()) TuplePattern<out node>
+            | IF (IsTuple(allowFields: false)) TuplePattern<out node>
             | GroupPattern<out node>
             | ArrayPattern<out node>
         ) 
