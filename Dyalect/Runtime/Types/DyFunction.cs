@@ -55,7 +55,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
     {
-        public DyFunctionTypeInfo() : base(StandardType.Function, false)
+        public DyFunctionTypeInfo() : base(DyType.Function, false)
         {
 
         }
@@ -63,7 +63,7 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-        public override string TypeName => StandardType.FunctionName;
+        public override string TypeName => DyTypeNames.Function;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(((DyFunction)arg).ToString());

@@ -153,9 +153,19 @@ namespace Dyalect.Parser
             return scanner.Peek().kind == _colonToken;
         }
 
-        private bool IsTuple()
+        private bool IsRecordPattern()
         {
             if (la.kind != _parenLeftToken)
+                return false;
+
+            scanner.ResetPeek();
+            return scanner.Peek().kind == _identToken
+                && scanner.Peek().kind == _colonToken;
+        }
+
+        private bool IsIterator()
+        {
+            if (la.kind != _curlyLeftToken)
                 return false;
 
             scanner.ResetPeek();
@@ -164,12 +174,50 @@ namespace Dyalect.Parser
 
             while (true)
             {
-                if ((x.kind == _commaToken || x.kind == _colonToken) && balance == 1)
+                if (x.kind == _commaToken && balance == 1)
                     return true;
 
-                if (x.kind == _parenLeftToken)
+                if (x.kind == _parenLeftToken || x.kind == _curlyLeftToken || x.kind == _squareLeftToken)
                     balance++;
-                else if (x.kind == _parenRightToken)
+                else if (x.kind == _parenRightToken || x.kind == _curlyRightToken || x.kind == _squareRightToken)
+                {
+                    balance--;
+                    if (balance == 0)
+                        break;
+                }
+
+                x = scanner.Peek();
+            }
+
+            return false;
+        }
+
+        private bool IsTuple(bool allowFields = true)
+        {
+            if (la.kind != _parenLeftToken)
+                return false;
+
+            scanner.ResetPeek();
+
+            if (allowFields)
+            {
+                if (scanner.Peek().kind == _identToken
+                    && scanner.Peek().kind == _colonToken)
+                    return true;
+                scanner.ResetPeek();
+            }
+
+            var x = la;
+            var balance = 0;
+
+            while (true)
+            {
+                if (x.kind == _commaToken && balance == 1)
+                    return true;
+
+                if (x.kind == _parenLeftToken || x.kind == _curlyLeftToken || x.kind == _squareLeftToken)
+                    balance++;
+                else if (x.kind == _parenRightToken || x.kind == _curlyRightToken || x.kind == _squareRightToken)
                 {
                     balance--;
                     if (balance == 0)

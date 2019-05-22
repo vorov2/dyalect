@@ -180,4 +180,10 @@
   <data name="InvalidDefaultValue" xml:space="preserve">
     <value>Default parameter value for '{0}' must be of a primitive type (integer, float, character, string or nil).</value>
   </data>
+  <data name="PatternNotSupported" xml:space="preserve">
+    <value>Pattern "{0}" not supported in this context.</value>
+  </data>
+  <data name="RangeIndexNotSupported" xml:space="preserve">
+    <value>Range is not supported in this context.</value>
+  </data>
 </root>

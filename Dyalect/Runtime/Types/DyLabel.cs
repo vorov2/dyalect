@@ -6,7 +6,7 @@
 
         public DyObject Value { get; internal set; }
 
-        public DyLabel(string label, DyObject value) : base(StandardType.Label)
+        public DyLabel(string label, DyObject value) : base(DyType.Label)
         {
             Label = label;
             Value = value;
@@ -23,7 +23,7 @@
 
     internal sealed class DyLabelTypeInfo : DyTypeInfo
     {
-        public DyLabelTypeInfo() : base(StandardType.Label, false)
+        public DyLabelTypeInfo() : base(DyType.Label, false)
         {
 
         }
@@ -31,7 +31,7 @@
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-        public override string TypeName => StandardType.LabelName;
+        public override string TypeName => DyTypeNames.Label;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {

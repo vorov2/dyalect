@@ -1,3 +1,57 @@
+# 0.6.0
+  * Error reporting by parser is expanded and corrected.
+  * Implemented pattern matching using `match` expression ([Issue #4](https://github.com/vorov2/dyalect/issues/4)):
+    ```swift
+    match exp {
+        (1, x, 3) => x,
+        (_, 4, x) when x % 2 == 0 => x,
+        _ => 0
+    }
+    ```
+    The following patterns are currently supported: "and" pattern (`&&`), "or" pattern (`||`), grouping pattern, tuple pattern, array pattern, name/field pattern, constant pattern, nil pattern, range pattern, biding-to-name pattern, type check pattern, "as" pattern. Guards are also supported.
+  * Pattern matching is supported inside `for` cycles. Instead of a plain loop variables it is possible to use patterns, including nested patterns (related issue: [Issue #4](https://github.com/vorov2/dyalect/issues/4)). If an element doesn't match it gets skipped, e.g. this code:
+    ```swift
+    for (x, 1) in [(2, 1), (3,3), (1, 1)] {
+        print(x)
+    }
+    ```
+    outputs `2` and `1`.
+  * Now `for` cycle supports guards in the following manner:
+    ```swift
+    var arr = []
+    for x in [1,2,3,4,5,6,7,8,9,10] when x % 2 == 0 {
+        arr.add(x)
+    }
+    ```
+  * New static method `concat` is added to types `Iterator` and `Array` (related issue: [#37](https://github.com/vorov2/dyalect/issues/37)). This method has the following signature:
+    ```swift
+    static func concat(values...) { }
+    ```
+    It accepts a variable number of objects that implement iterator pattern and returns either an array (for `Array` type) or a new combined iterator (for `Iterator` type).
+  * An implementation of `toString` method is changed for iterators - now `toString` execute an iterator and formats all of its values to a string:
+    ```swift
+    (1..5).toString() == "{ 1, 2, 3, 4, 5}" //Evaluates to true
+    ```
+  * Now interactive console displays a correct error message if an exception occurs while trying to format script output to a string.
+  * Structural equality for tuples is implemented (related issue: [#43](https://github.com/vorov2/dyalect/issues/43)).
+  * Now it is possible to slice arrays using indexer syntax (related issue: [#59](https://github.com/vorov2/dyalect/issues/59)):
+    ```swift
+    var xs = [0,1,2,3,4,5,6,7,8,9]
+    xs[1..5] //evaluates to [1,2,3,4]
+    ```
+    Slicing is implemented by calling a `slice` method, so the code above is equivalent to:
+    ```swift
+    xs.slice(1, 4)
+    ```
+  * Now it is possible to create an array based on range using the following syntax: `[n..k]`. It is an equivalent to `(n..k).toArray()` (related issue: [#92](https://github.com/vorov2/dyalect/issues/92)).
+  * Now iterators has a `len` method which returns a total number of elements in an interator (related issue: [#99](https://github.com/vorov2/dyalect/issues/99)).
+  * A feature is implemented: _Integer: add standard methods_ ([Issue #54](https://github.com/vorov2/dyalect/issues/54)).
+  * A feature is implemented: _Float: add standard methods_ ([Issue #55](https://github.com/vorov2/dyalect/issues/55)).
+  * A bug fixed: _Incorrect type info is generated for iterator_ ([Issue #93](https://github.com/vorov2/dyalect/issues/93)).
+  * A bug fixed: _Anonymous function and iterator_ ([Issue #94](https://github.com/vorov2/dyalect/issues/94)).
+  * A bug fixed: _Array.slice - Index out of range_ ([Issue #97](https://github.com/vorov2/dyalect/issues/97)).
+  * A bug fixed: _Array.slice - index of invalid type crushed VM_ ([Issue #98](https://github.com/vorov2/dyalect/issues/98)).
+
 # 0.5.8
   * A bug fixed: _String indexer returns a string instead of a char_ ([Issue #84](https://github.com/vorov2/dyalect/issues/84)).
   * A bug fixed: _String indexation by a compiler_ ([Issue #83](https://github.com/vorov2/dyalect/issues/83)).

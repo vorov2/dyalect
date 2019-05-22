@@ -39,6 +39,7 @@ TOKENS
     ifToken             = "if".
     forToken            = "for".
     whileToken          = "while".
+    doToken             = "do".
     typeToken           = "type".
 
     arrowToken          = "=>".
@@ -119,9 +120,11 @@ PRODUCTIONS
         (. node = null; .)
         (
               Binding<out node> Separator
-            | SimpleExpr<out node> Separator
             | ControlFlow<out node> Separator
             | Type<out node> Separator
+            | Match<out node>
+            | SimpleExpr<out node> Separator
+            | IF (IsIterator()) Iterator<out node>
             | Block<out node>
             | If<out node>
             | Loops<out node>
@@ -166,7 +169,7 @@ PRODUCTIONS
             .)
             FunctionArguments<f>
             (
-                Expr<out node> Separator
+                Block<out node>
             )
             (.
                 f.Body = node;
@@ -204,8 +207,9 @@ PRODUCTIONS
     Expr<out DNode node> =
         (. node = null; .)
         (
-              SimpleExpr<out node>
-            | If<out node>
+              If<out node>
+            | SimpleExpr<out node>
+            | IF (IsIterator()) Iterator<out node>
             | Block<out node>
             | Loops<out node>
             | Match<out node>
@@ -229,10 +233,41 @@ PRODUCTIONS
     MatchEntry<out DMatchEntry me> =
         (
             (. me = new DMatchEntry(t); .)
-            Pattern<out var p> 
+            OrPattern<out var p> 
             (. me.Pattern = p; .)
             [ "when" Expr<out var node> (. me.Guard = node; .)  ] 
             "=>" Expr<out var exp> (. me.Expression = exp; .)
+        ).
+
+    OrPattern<out DPattern node> =
+        (. node = null; .)
+        AndPattern<out node>
+        {
+            (. var por = new DOrPattern(t) { Left = node }; .)
+            "||"
+            AndPattern<out node>
+            (. por.Right = node; node = por; .)
+        }.
+
+    AndPattern<out DPattern node> =
+        (. node = null; .)
+        RangePattern<out node>
+        {
+            (. var pa = new DAndPattern(t) { Left = node }; .)
+            "&&"
+            RangePattern<out node>
+            (. pa.Right = node; node = pa; .)
+        }.
+
+    RangePattern<out DPattern node> =
+        (. node = null; .)
+        (
+            Pattern<out node>
+            [
+                (. var r = new DRangePattern(t) { From = node }; .)
+                ".." Pattern<out node>
+                (. r.To = node; node = r; .)
+            ]
         ).
 
     Pattern<out DPattern node> =
@@ -244,7 +279,32 @@ PRODUCTIONS
             | CharPattern<out node>
             | StringPattern<out node>
             | BooleanPattern<out node>
-            | TuplePattern<out node>
+            | NilPattern<out node>
+            | IF (IsRecordPattern()) RecordPattern<out node>
+            | IF (IsTuple(allowFields: false)) TuplePattern<out node>
+            | GroupPattern<out node>
+            | ArrayPattern<out node>
+        ) 
+        [ 
+            "as" (. var asp = new DAsPattern(t) { Pattern = node }; .) 
+            identToken (. asp.Name = t.val; node = asp; .) 
+        ].
+
+    GroupPattern<out DPattern node> =
+        (. node = null; .)
+        (
+            "(" RangePattern<out node> ")"
+        ).
+
+    ArrayPattern<out DPattern node> =
+        (. node = null; .)
+        (
+            "["
+                (. var tup = new DArrayPattern(t); .)
+                RangePattern<out node> (. tup.Elements.Add(node); .)
+                { "," RangePattern<out node> (. tup.Elements.Add(node); .) }
+                (. node = tup; .)
+            "]"
         ).
 
     TuplePattern<out DPattern node> =
@@ -252,28 +312,51 @@ PRODUCTIONS
         (
             "("
                 (. var tup = new DTuplePattern(t); .)
-                TuplePatternElement<out node> (. tup.Elements.Add(node); .)
-                { "," TuplePatternElement<out node> (. tup.Elements.Add(node); .) }
+                RangePattern<out node> (. tup.Elements.Add(node); .)
+                { "," RangePattern<out node> (. tup.Elements.Add(node); .) }
                 (. node = tup; .)
             ")"
         ).
-    TuplePatternElement<out DPattern node> =
+
+    RecordPattern<out DPattern node> =
         (. node = null; .)
         (
-              IF (IsLabel()) FieldPattern<out node>
-            | Pattern<out node>
+            "("
+                (. var rec = new DRecordPattern(t); .)
+                FieldPattern<out var lab> (. rec.Elements.Add(lab); .)
+                { "," FieldPattern<out lab> (. rec.Elements.Add(lab); .) }
+                (. node = rec; .)
+            ")"
         ).
 
-    FieldPattern<out DPattern node> =
+    FieldPattern<out DLabelPattern node> =
         (. node = null; .)
         (
             identToken 
             (. var la = new DLabelPattern(t) { Label = t.val }; .)
-            ":" Pattern<out node>
-            (. la.Pattern = node; node = la; .)
+            ":" RangePattern<out var pat>
+            (. la.Pattern = pat; node = la; .)
         ).
 
-    NamePattern<out DPattern node> = identToken (. node = new DNamePattern(t) { Name = t.val }; .).
+    NamePattern<out DPattern node> = 
+        (. node = null; string nm2 = null; string nm1 = null; Token ot = null; .)
+        (
+            identToken (. nm1 = t.val; ot = t; .)
+            [ "." identToken (. nm2 = null; .) ]
+            (. 
+                if (nm2 == null) {
+                    if (t.val == "_") 
+                        node = new DWildcardPattern(ot);
+                    else
+                        node = new DNamePattern(ot) { Name = nm1 };
+                } else {
+                    var q = new Qualident(nm2, nm1);
+                    node = new DTypeTestPattern(ot) { TypeName = q };
+                }
+            .)
+        ).
+
+    NilPattern<out DPattern node> = "nil" (. node = new DNilPattern(t); .).
     IntegerPattern<out DPattern node> = intToken (. node = new DIntegerPattern(t) { Value = ParseInteger() }; .).
     FloatPattern<out DPattern node> = floatToken (. node = new DFloatPattern(t) { Value = ParseFloat() }; .).
     CharPattern<out DPattern node> = charToken (. node = new DCharPattern(t) { Value = ParseChar() }; .).
@@ -330,8 +413,9 @@ PRODUCTIONS
         (
             "for"
             (. var @for = new DFor(t); .)
-            Name<out node> (. @for.Variable = (DName)node; .)
+            OrPattern<out var pattern> (. @for.Pattern = pattern; .)
             "in" Expr<out node> (. @for.Target = node; .)
+            [ "when" Expr<out node> (. @for.Guard = node; .) ]
             Block<out node>
             (.
                 @for.Body = node;
@@ -404,6 +488,7 @@ PRODUCTIONS
                   ( FunctionArgument<out var a> (. f.Parameters.Add(a); .) )
                 | FunctionArguments<f>
             )
+            (. functions.Push(f); .)
             "=>" Expr<out var exp>
             (. f.Body = exp; .)
         ).
@@ -676,6 +761,23 @@ PRODUCTIONS
             | Base<out node>
         ).
 
+    Iterator<out DNode node> =
+        (. node = null; .)
+        (
+            "{"
+                (. 
+                    var it = new DIteratorLiteral(t);
+                    it.YieldBlock = new DYieldBlock(t);
+                .)
+                Expr<out node> (. it.YieldBlock.Elements.Add(node); .) ","
+                [
+                    Expr<out node> (. it.YieldBlock.Elements.Add(node); .)
+                    { "," Expr<out node> (. it.YieldBlock.Elements.Add(node); .) }
+                ]
+                (. node = it; .)
+            "}"
+        ).
+
     Label<out DNode node> =
         (. node = null; var name = ""; .)
         (
@@ -706,16 +808,10 @@ PRODUCTIONS
         (
             "("
                 (. var tup = new DTupleLiteral(t); .)
-                TupleElement<out node> (. tup.Elements.Add(node); .)
-                { "," TupleElement<out node> (. tup.Elements.Add(node); .) }
+                Expr<out node> (. tup.Elements.Add(node); .)
+                { "," Expr<out node> (. tup.Elements.Add(node); .) }
                 (. node = tup; .)
             ")"
-        ).
-
-    TupleElement<out DNode node> = 
-        (. node = null; .)
-        (
-            Expr<out node>
         ).
 
     Group<out DNode node> =

@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
 
         private readonly double value;
 
-        public DyFloat(double value) : base(StandardType.Float)
+        public DyFloat(double value) : base(DyType.Float)
         {
             this.value = value;
         }
@@ -41,7 +41,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyFloatTypeInfo : DyTypeInfo
     {
-        public DyFloatTypeInfo() : base(StandardType.Float, false)
+        public DyFloatTypeInfo() : base(DyType.Float, false)
         {
 
         }
@@ -52,12 +52,12 @@ namespace Dyalect.Runtime.Types
             | SupportedOperations.Sub | SupportedOperations.Div | SupportedOperations.Mul | SupportedOperations.Rem
             | SupportedOperations.Neg | SupportedOperations.Plus;
 
-        public override string TypeName => StandardType.FloatName;
+        public override string TypeName => DyTypeNames.Float;
 
         #region Binary Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.Float || right.TypeId == StandardType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return new DyFloat(left.GetFloat() + right.GetFloat());
             else
                 return base.AddOp(left, right, ctx);
@@ -65,7 +65,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.Float || right.TypeId == StandardType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return new DyFloat(left.GetFloat() - right.GetFloat());
             else
                 return base.SubOp(left, right, ctx);
@@ -73,7 +73,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.Float || right.TypeId == StandardType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return new DyFloat(left.GetFloat() * right.GetFloat());
             else
                 return base.MulOp(left, right, ctx);
@@ -81,7 +81,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.Float || right.TypeId == StandardType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return new DyFloat(left.GetFloat() / right.GetFloat());
             else
                 return base.DivOp(left, right, ctx);
@@ -89,7 +89,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.Float || right.TypeId == StandardType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return new DyFloat(left.GetFloat() % right.GetFloat());
             else
                 return base.RemOp(left, right, ctx);
@@ -97,7 +97,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.Float || right.TypeId == StandardType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() == right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.EqOp(left, right, ctx);
@@ -105,7 +105,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.Float || right.TypeId == StandardType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() != right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.NeqOp(left, right, ctx);
@@ -113,7 +113,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.Float || right.TypeId == StandardType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() > right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.GtOp(left, right, ctx);
@@ -121,7 +121,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.Float || right.TypeId == StandardType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() < right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.LtOp(left, right, ctx);
@@ -129,7 +129,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.Float || right.TypeId == StandardType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() >= right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.GteOp(left, right, ctx);
@@ -137,7 +137,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == StandardType.Float || right.TypeId == StandardType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() <= right.GetFloat() ? DyBool.True : DyBool.False;
             else
                 return base.LteOp(left, right, ctx);
@@ -149,13 +149,17 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject PlusOp(DyObject arg, ExecutionContext ctx) => arg;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)arg.GetFloat().ToString(CI.NumberFormat);
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        {
+            var f = arg.GetFloat();
+            return double.IsNaN(f) ? new DyString("NaN") : (DyString)f.ToString(CI.NumberFormat);
+        }
         #endregion
 
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
         {
-            if (to.TypeId != StandardType.Float)
-                return ctx.InvalidType(StandardType.FloatName, to.TypeName(ctx));
+            if (to.TypeId != DyType.Float)
+                return ctx.InvalidType(DyTypeNames.Float, to);
 
             var ifrom = self.GetFloat();
             var istart = ifrom;
@@ -187,6 +191,23 @@ namespace Dyalect.Runtime.Types
         {
             if (name == "to")
                 return DyForeignFunction.Member(name, Range, -1, new Par("value"));
+
+            if (name == "isNaN")
+                return DyForeignFunction.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False);
+
+            return null;
+        }
+
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        {
+            if (name == "max")
+                return DyForeignFunction.Static(name, c => new DyFloat(double.MaxValue));
+
+            if (name == "min")
+                return DyForeignFunction.Static(name, c => new DyFloat(double.MinValue));
+
+            if (name == "inf")
+                return DyForeignFunction.Static(name, c => new DyFloat(double.PositiveInfinity));
 
             return null;
         }

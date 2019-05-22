@@ -8,18 +8,27 @@ namespace Dyalect.Parser.Model
         {
 
         }
-        public DName Variable { get; set; }
+        public DPattern Pattern { get; set; }
 
         public DNode Target { get; set; }
+
+        public DNode Guard { get; set; }
 
         public DNode Body { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {
             sb.Append("for ");
-            Variable.ToString(sb);
+            Pattern.ToString(sb);
             sb.Append(" in ");
             Target.ToString(sb);
+
+            if (Guard != null)
+            {
+                sb.Append(" when ");
+                Guard.ToString(sb);
+            }
+
             Body.ToString(sb);
         }
     }

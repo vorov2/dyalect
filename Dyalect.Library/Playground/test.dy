@@ -111,16 +111,30 @@ func testIter() {
     result
 }
 
-*/
-var x = (12, 34, "bar")
+
+var x = (x: 12, y: 34, z: (name: "bar", age: 12))
+var arr = (1..10).toArray()
+
 
 var res = 
     match x {
+        [1,2,3,xs] => x,
+        (1,2) => "(1,2)",
         "true" => "No...",
         12.2 => "No(2)",
         12 => "Yes!",
-        (x, y, z, d) => z + ": " + (x + y),
+        (z:(name: name, age: a)) when arr.len() > 30 => "name = \(name), age = \(a)",
         'c' => "WTF?"
     }
+var res = match 7 {
+    2..20 && ?Integer => "Eh?",
+    (1..10) as orig => "Yes! " + orig,
+    24 => "no.."
+}
+*/
 
-res
+func variadic(args...) {
+    args.fst()
+}
+
+variadic()

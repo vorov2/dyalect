@@ -23,7 +23,7 @@
             public override string ToString() => bool.FalseString;
         }
 
-        private DyBool() : base(StandardType.Bool)
+        private DyBool() : base(DyType.Bool)
         {
 
         }
@@ -33,7 +33,7 @@
 
     internal sealed class DyBoolTypeInfo : DyTypeInfo
     {
-        public DyBoolTypeInfo() : base(StandardType.Bool, false)
+        public DyBoolTypeInfo() : base(DyType.Bool, false)
         {
 
         }
@@ -41,7 +41,7 @@
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-        public override string TypeName => StandardType.BoolName;
+        public override string TypeName => DyTypeNames.Bool;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.GetBool() == right.GetBool() ? DyBool.True : DyBool.False;

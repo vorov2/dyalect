@@ -48,6 +48,16 @@ func mathTest10() {
     assert(38, x)
 }
 
+func mathTest12() {
+    var x = 2.0 / 0
+    assert(true, x == Float.inf())
+}
+
+func mathTest13() {
+    var x = .0 / 0
+    assert(true, x.isNaN)
+}
+
 func logicalTest1() {
     const x = 144
     var res = x / 12 > 100 || x / 6 == 24
@@ -165,6 +175,12 @@ func literalTest6() {
     assert(96, res)
 }
 
+func literalTest7() {
+    //Test if a tuple is recognized correctly
+    var res = ([1,2,3].len() + 4) * 2
+    assert(14, res)
+}
+
 func arrayTest1() {
     var arr = []
     arr.add(1)
@@ -188,7 +204,7 @@ func arrayTest2() {
 
 func arrayTest3() {
     var arr = [1,2,3,4,5,6]
-    var newArr = arr.slice(2,5)
+    var newArr = arr.slice(2,3)
     assert([3, 4, 5], newArr)
 }
 
@@ -241,6 +257,31 @@ func arrayTest11() {
     assert([1,2,3], arr)
 }
 
+func arrayTest12() {
+    func it() {
+        yield "foo"
+        yield "boo"
+    }
+    var arr = Array.concat([1,2,3], [4,5,6], (1,2), it())
+    assert([1,2,3,4,5,6,1,2,"foo","boo"], arr)
+}
+
+func arrayTest13() {
+    var xs = (1..10).toArray()
+    var slice = xs.slice(4)
+    assert([5,6,7,8,9,10], slice)
+}
+
+func arrayTest14() {
+    var xs = [0,1,2,3,4,5,6,7,8,9]
+    assert([1,2,3,4], xs[1..5])
+}
+
+func arrayTest15() {
+    var xs = [1..10]
+    assert([1,2,3,4,5,6,7,8,9,10], xs)
+}
+
 func tupleTest1() {
     var t = (1,2,3)
     assert(3, t.len())
@@ -267,6 +308,12 @@ func tupleTest5() {
     var t = (42, 4.56)
     var res = t.fst() - t.snd()
     assert(37.44, res)
+}
+
+func tupleTest6() {
+    var t1 = (12, 3, 44, "string", false, 42.1)
+    var t2 = (12, 3, 44, "string", false, 42.1)
+    assert(true, t1 == t2)
 }
 
 func stringTest1() {
@@ -347,9 +394,26 @@ func stringTest14() {
     assert(false, "hh".isEmpty())
 }
 
+func stringTest15() {
+    var str = "Hello!"
+    assert('H', str[0])
+    assert('!', str[str.len() - 1])
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
+}
+
+func charTest1() {
+    assert(true, 'c' == "c")
+    assert(true, "c" == 'c')
+    assert(false, 'c' == "cc")
+    assert(false, "cc" == 'c')
+    assert(false, 'c' > "cc")
+    assert(true, 'c' < "cc")
+    assert(true, "cc" > 'c')
+    assert(false, "cc" < 'c')
 }
 
 func nameofTest() {
@@ -392,6 +456,25 @@ func rangeTest4() {
 func rangeTest5() {
     1..10 //Check how ranges behave as statements, issue #77
     assert(true, true)
+}
+
+func iteratorLiteralTest1() {
+    var seq = { 1,2,3 }
+    assert([1,2,3], seq().toArray())
+}
+
+func iteratorLiteralTest2() {
+    var x = 2
+    var y = 3
+    var seq = { x + y, }
+    x -= 1
+    y *= y
+    assert(10, seq()())
+}
+
+func iteratorLiteralTest3() {
+    var xs = { 1, 2, 3, 4, 5 }
+    assert(5, xs().len())
 }
 
 func interpolationTest1() {

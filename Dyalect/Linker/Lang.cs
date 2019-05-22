@@ -16,22 +16,22 @@ namespace Dyalect.Linker
 
         protected override void Initialize()
         {
-            for (var i = 0; i < StandardType.TypeNames.Length; i++)
-                Add(StandardType.TypeNames[i], DyNil.Instance);
+            for (var i = 0; i < DyTypeNames.All.Length; i++)
+                Add(DyTypeNames.All[i], DyNil.Instance);
         }
 
         public override void Execute(ExecutionContext ctx)
         {
-            for (var i = 0; i < StandardType.TypeNames.Length; i++)
+            for (var i = 0; i < DyTypeNames.All.Length; i++)
                 Modify(i, ctx.Types[i]);
         }
 
         [Function("convertToNumber")] 
         public DyObject ToNumber(ExecutionContext ctx, DyObject value)
         {
-            if (value.TypeId == StandardType.Integer || value.TypeId == StandardType.Float)
+            if (value.TypeId == DyType.Integer || value.TypeId == DyType.Float)
                 return value;
-            else if (value.TypeId == StandardType.String || value.TypeId == StandardType.Char)
+            else if (value.TypeId == DyType.String || value.TypeId == DyType.Char)
             {
                 var str = value.GetString();
                 if (int.TryParse(str, out var i4))
@@ -52,9 +52,9 @@ namespace Dyalect.Linker
             foreach (var a in (DyTuple)values)
             {
                 if (!fst)
-                    Console.Write(separator.TypeId == StandardType.String ? separator.GetString() : separator.ToString(ctx).ToString());
+                    Console.Write(separator.TypeId == DyType.String ? separator.GetString() : separator.ToString(ctx).ToString());
 
-                if (a.TypeId == StandardType.String)
+                if (a.TypeId == DyType.String)
                     Console.Write(a.GetString());
                 else
                     Console.Write(a.ToString(ctx));
@@ -65,7 +65,7 @@ namespace Dyalect.Linker
                     break;
             }
 
-            Console.Write(terminator.TypeId == StandardType.String ? terminator.GetString() : terminator.ToString(ctx).ToString());
+            Console.Write(terminator.TypeId == DyType.String ? terminator.GetString() : terminator.ToString(ctx).ToString());
             return DyNil.Instance;
         }
 
@@ -107,8 +107,8 @@ namespace Dyalect.Linker
         [Function("sqrt")]
         public DyObject Sqrt(ExecutionContext ctx, DyObject n)
         {
-            if (n.TypeId != StandardType.Float && n.TypeId != StandardType.Integer)
-                return ctx.InvalidType(StandardType.FloatName, n.TypeName(ctx));
+            if (n.TypeId != DyType.Float && n.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Float, n);
 
             return new DyFloat(Math.Sqrt(n.GetFloat()));
         }
@@ -116,8 +116,8 @@ namespace Dyalect.Linker
         [Function("parse")]
         public DyObject Parse(ExecutionContext ctx, DyObject expression)
         {
-            if (expression.TypeId != StandardType.String)
-                return ctx.InvalidType(StandardType.StringName, expression.TypeName(ctx));
+            if (expression.TypeId != DyType.String)
+                return ctx.InvalidType(DyTypeNames.String, expression);
 
             try
             {

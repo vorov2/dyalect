@@ -78,6 +78,7 @@
             1, //GetIx
             1, //SetIx
             1, //HasField
+            1, //TypeCheck
         };
     }
 }

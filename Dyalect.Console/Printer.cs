@@ -4,6 +4,7 @@ using Dyalect.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using static System.Console;
 
 namespace Dyalect
@@ -39,14 +40,20 @@ namespace Dyalect
             Output(fmt);
         }
 
-        public static string Format(DyObject obj, ExecutionContext ctx)
+        public static string Format(DyObject obj, ExecutionContext ctx, bool notype = false)
         {
-            var fmt = obj.Format(ctx);
+            string fmt;
 
-            if (ctx.HasErrors)
-                fmt = obj.ToString();
+            try
+            {
+                fmt = obj.Format(ctx);
+            }
+            catch (Exception ex)
+            {
+                return $"[Error evaluating result value: {ex.Message}]";
+            }
 
-            return fmt + " :: " + obj.TypeName(ctx);
+            return notype ? fmt : fmt + " :: " + obj.TypeName(ctx);
         }
 
         public static void SupplementaryOutput(string data) => WriteLine(data);

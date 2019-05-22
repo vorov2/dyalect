@@ -7,7 +7,7 @@
         public static readonly DyNil Instance = new DyNil();
         internal static readonly DyNil Terminator = new DyTerminator();
 
-        private DyNil() : base(StandardType.Nil)
+        private DyNil() : base(DyType.Nil)
         {
             
         }
@@ -21,7 +21,7 @@
 
     internal sealed class DyNilTypeInfo : DyTypeInfo
     {
-        public DyNilTypeInfo() : base(StandardType.Nil, false)
+        public DyNilTypeInfo() : base(DyType.Nil, false)
         {
 
         }
@@ -29,7 +29,7 @@
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-        public override string TypeName => StandardType.NilName;
+        public override string TypeName => DyTypeNames.Nil;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.TypeId == right.TypeId ? DyBool.True : DyBool.False;

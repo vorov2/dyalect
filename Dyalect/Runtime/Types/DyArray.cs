@@ -57,7 +57,7 @@ namespace Dyalect.Runtime.Types
                 if (fun != null)
                 {
                     var ret = fun.Call2(x, y, ctx);
-                    return ret.TypeId != StandardType.Integer ? 0 : (int)ret.GetInteger();
+                    return ret.TypeId != DyType.Integer ? 0 : (int)ret.GetInteger();
                 }
 
                 var res = ctx.Types[x.TypeId].Gt(ctx, x, y);
@@ -68,34 +68,34 @@ namespace Dyalect.Runtime.Types
         }
 
         private const int DEFAULT_SIZE = 4;
-        private DyObject[] values;
+        internal DyObject[] Values;
 
         public int Count { get; private set; }
 
         public DyObject this[int index]
         {
-            get { return values[index]; }
-            set { values[index] = value; }
+            get { return Values[index]; }
+            set { Values[index] = value; }
         }
 
-        internal DyObject[] GetValues() => values;
+        internal DyObject[] GetValues() => Values;
 
-        internal DyArray(DyObject[] values) : base(StandardType.Array)
+        internal DyArray(DyObject[] values) : base(DyType.Array)
         {
-            this.values = values;
+            this.Values = values;
             Count = values.Length;
         }
 
         public void Add(DyObject val)
         {
-            if (Count == values.Length)
+            if (Count == Values.Length)
             {
-                var dest = new DyObject[values.Length == 0 ? DEFAULT_SIZE : values.Length * 2];
-                Array.Copy(values, 0, dest, 0, Count);
-                values = dest;
+                var dest = new DyObject[Values.Length == 0 ? DEFAULT_SIZE : Values.Length * 2];
+                Array.Copy(Values, 0, dest, 0, Count);
+                Values = dest;
             }
 
-            values[Count++] = val;
+            Values[Count++] = val;
         }
 
         public void Insert(int index, DyObject item)
@@ -103,15 +103,15 @@ namespace Dyalect.Runtime.Types
             if (index > Count)
                 throw new IndexOutOfRangeException();
 
-            if (index == Count && values.Length > index)
+            if (index == Count && Values.Length > index)
             {
-                values[index] = item;
+                Values[index] = item;
                 Count++;
                 return;
             }
 
-            Array.Copy(values, index, values, index + 1, Count - index);
-            values[index] = item;
+            Array.Copy(Values, index, Values, index + 1, Count - index);
+            Values[index] = item;
             Count++;
         }
 
@@ -122,9 +122,9 @@ namespace Dyalect.Runtime.Types
                 Count--;
 
                 if (index < Count)
-                    Array.Copy(values, index + 1, values, index, Count - index);
+                    Array.Copy(Values, index + 1, Values, index, Count - index);
 
-                values[Count] = null;
+                Values[Count] = null;
                 return true;
             }
 
@@ -133,24 +133,24 @@ namespace Dyalect.Runtime.Types
 
         public bool Remove(DyObject val)
         {
-            var index = Array.IndexOf(values, val);
+            var index = Array.IndexOf(Values, val);
             return RemoveAt(index);
         }
 
         public void Clear()
         {
             Count = 0;
-            values = new DyObject[DEFAULT_SIZE];
+            Values = new DyObject[DEFAULT_SIZE];
         }
 
         public int IndexOf(DyObject elem)
         {
-            return Array.IndexOf(values, elem);
+            return Array.IndexOf(Values, elem);
         }
 
         public int LastIndexOf(DyObject elem)
         {
-            return Array.LastIndexOf(values, elem);
+            return Array.LastIndexOf(Values, elem);
         }
 
         public override object ToObject()
@@ -158,24 +158,24 @@ namespace Dyalect.Runtime.Types
             var newArr = new object[Count];
 
             for (var i = 0; i < newArr.Length; i++)
-                newArr[i] = values[i].ToObject();
+                newArr[i] = Values[i].ToObject();
 
             return newArr;
         }
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId == StandardType.Integer)
+            if (index.TypeId == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
             else
-                return ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
+                return ctx.IndexInvalidType(this.TypeName(ctx), index);
         }
 
         internal protected override DyObject GetItem(int index, ExecutionContext ctx)
         {
             if (index < 0 || index >= Count)
-                return ctx.IndexOutOfRange(StandardType.ArrayName, index);
-            return values[index];
+                return ctx.IndexOutOfRange(DyTypeNames.Array, index);
+            return Values[index];
         }
 
         internal protected override void SetItem(int index, DyObject obj, ExecutionContext ctx)
@@ -183,33 +183,34 @@ namespace Dyalect.Runtime.Types
             if (index < 0 || index >= Count)
                 ctx.IndexOutOfRange(this.TypeName(ctx), index);
             else
-                values[index] = obj;
+                Values[index] = obj;
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
-            if (index.TypeId != StandardType.Integer)
-                ctx.IndexInvalidType(this.TypeName(ctx), index.TypeName(ctx));
+            if (index.TypeId != DyType.Integer)
+                ctx.IndexInvalidType(DyTypeNames.Integer, index);
             else
                 SetItem((int)index.GetInteger(), value, ctx);
         }
 
-        public IEnumerator<DyObject> GetEnumerator() => new DyArrayEnumerator(values, Count);
+        public IEnumerator<DyObject> GetEnumerator() => new DyArrayEnumerator(Values, Count);
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     internal sealed class DyArrayTypeInfo : DyTypeInfo
     {
-        public DyArrayTypeInfo() : base(StandardType.Array, false)
+        public DyArrayTypeInfo() : base(DyType.Array, false)
         {
 
         }
 
-        public override string TypeName => StandardType.ArrayName;
+        public override string TypeName => DyTypeNames.Array;
 
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
+            | SupportedOperations.Get | SupportedOperations.Set;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
@@ -250,8 +251,8 @@ namespace Dyalect.Runtime.Types
             var arr = (DyArray)self;
             var index = args.TakeOne(DyNil.Instance);
 
-            if (index.TypeId != StandardType.Integer)
-                return ctx.IndexInvalidType(TypeName, index.TypeName(ctx));
+            if (index.TypeId != DyType.Integer)
+                return ctx.IndexInvalidType(TypeName, index);
 
             var i = (int)index.GetInteger();
             var value = args.TakeAt(1, DyNil.Instance);
@@ -263,30 +264,15 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject AddRange(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject AddRange(ExecutionContext ctx, DyObject self, DyObject val)
         {
             var arr = (DyArray)self;
-            var val = args.TakeOne(null);
 
-            if (val == null)
-                return DyNil.Instance;
-
-            var iter = DyIterator.GetIterator(val, ctx);
-
-            if (ctx.HasErrors)
-                return DyNil.Instance;
-
-            while (true)
+            foreach (var o in DyIterator.Run(ctx, val))
             {
-                var res = iter.Call(ctx);
-
                 if (ctx.HasErrors)
-                    return DyNil.Instance;
-
-                if (!ReferenceEquals(res, DyNil.Terminator))
-                    arr.Add(res);
-                else
                     break;
+                arr.Add(o);
             }
 
             return DyNil.Instance;
@@ -302,8 +288,8 @@ namespace Dyalect.Runtime.Types
         {
             var index = args.TakeOne(DyNil.Instance);
 
-            if (index.TypeId != StandardType.Integer)
-                return ctx.IndexInvalidType(TypeName, index.TypeName(ctx));
+            if (index.TypeId != DyType.Integer)
+                return ctx.IndexInvalidType(TypeName, index);
 
             var idx = (int)index.GetInteger();
             var arr = (DyArray)self;
@@ -350,26 +336,31 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(iterate().GetEnumerator());
         }
 
-        private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
         {
             var dyArr = (DyArray)self;
             var arr = dyArr.GetValues();
 
-            var start = (int)args.TakeOne(DyInteger.Zero).GetInteger();
-            var endo = args.TakeAt(1, null);
-            var end = ReferenceEquals(endo, DyNil.Instance) ? dyArr.Count : (int)endo.GetInteger();
+            if (start.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, start);
 
-            if (start == 0 && start == end)
+            if (len.TypeId != DyType.Nil && len.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, len);
+
+            var beg = (int)start.GetInteger();
+            var end = ReferenceEquals(len, DyNil.Instance) ? dyArr.Count : beg + (int)len.GetInteger();
+
+            if (beg == 0 && beg == end)
                 return self;
 
-            if (start < 0 || start >= dyArr.Count)
-                return ctx.IndexOutOfRange(TypeName, start);
+            if (beg < 0 || beg >= dyArr.Count)
+                return ctx.IndexOutOfRange(TypeName, beg);
 
-            if (end < 0 || end >= dyArr.Count)
+            if (end < 0 || end > dyArr.Count)
                 return ctx.IndexOutOfRange(TypeName, end);
 
-            var newArr = new DyObject[end - start];
-            Array.Copy(arr, start, newArr, 0, end - start);
+            var newArr = new DyObject[end - beg];
+            Array.Copy(arr, beg, newArr, 0, end - beg);
             return new DyArray(newArr);
         }
 
@@ -385,8 +376,8 @@ namespace Dyalect.Runtime.Types
 
             if (fun == null)
             {
-                return ctx.InvalidType(StandardType.FunctionName, 
-                    args == null || args[0] == null ? StandardType.NilName : args[0].TypeName(ctx))
+                return ctx.InvalidType(DyTypeNames.Function, 
+                    args == null || args[0] == null ? DyNil.Instance : args[0])
                     ;
             }
 
@@ -484,6 +475,25 @@ namespace Dyalect.Runtime.Types
             return new DyArray(arr);
         }
 
+        internal static DyObject Concat(ExecutionContext ctx, DyObject values)
+        {
+            if (values == null)
+                return DyNil.Instance;
+
+            var vals = ((DyTuple)values).Values;
+            var arr = new List<DyObject>();
+
+            foreach (var v in vals)
+            {
+                arr.AddRange(DyIterator.Run(ctx, v));
+
+                if (ctx.HasErrors)
+                    break;
+            }
+
+            return new DyArray(arr.ToArray());
+        }
+
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "new")
@@ -491,6 +501,9 @@ namespace Dyalect.Runtime.Types
 
             if (name == "empty")
                 return DyForeignFunction.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance));
+
+            if (name == "concat")
+                return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
 
             return null;
         }

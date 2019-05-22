@@ -97,7 +97,34 @@ namespace Dyalect.Compiler
                 case NodeType.Match:
                     Build((DMatch)node, hints, ctx);
                     break;
+                case NodeType.Iterator:
+                    Build((DIteratorLiteral)node, hints, ctx);
+                    break;
+                case NodeType.YieldBlock:
+                    Build((DYieldBlock)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DYieldBlock node, Hints hints, CompilerContext ctx)
+        {
+            for (var i = 0; i < node.Elements.Count; i++)
+            {
+                var n = node.Elements[i];
+                var last = i == node.Elements.Count - 1;
+                Build(n, hints.Append(Push), ctx);
+                AddLinePragma(node);
+                cw.Yield();
+
+                if (last)
+                    PushIf(hints);
+            }
+        }
+
+        private void Build(DIteratorLiteral node, Hints hints, CompilerContext ctx)
+        {
+            var dec = new DFunctionDeclaration(node.Location) { Body = node.YieldBlock, IsIterator = true };
+            Build(dec, hints, ctx);
         }
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
@@ -202,19 +229,32 @@ namespace Dyalect.Compiler
 
         private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
         {
-            var sv = GetVariable(StandardType.ArrayName, node);
+            var sv = GetVariable(DyTypeNames.Array, node);
             cw.PushVar(sv);
             cw.GetMember(GetMemberNameId(Builtins.New));
-            cw.FunPrep(node.Elements.Count);
 
-            for (var i = 0; i < node.Elements.Count; i++)
+            if (node.Elements.Count == 1 && node.Elements[0].NodeType == NodeType.Range)
             {
-                Build(node.Elements[i], hints.Append(Push), ctx);
-                cw.FunArgIx(i);
+                Build(node.Elements[0], hints.Append(Push), ctx);
+                cw.GetMember(GetMemberNameId("toArray"));
+                cw.FunPrep(0);
+                AddLinePragma(node);
+                cw.FunCall(0);
+            }
+            else
+            {
+                cw.FunPrep(node.Elements.Count);
+
+                for (var i = 0; i < node.Elements.Count; i++)
+                {
+                    Build(node.Elements[i], hints.Append(Push), ctx);
+                    cw.FunArgIx(i);
+                }
+
+                AddLinePragma(node);
+                cw.FunCall(node.Elements.Count);
             }
 
-            AddLinePragma(node);
-            cw.FunCall(node.Elements.Count);
             PopIf(hints);
         }
 
@@ -222,17 +262,39 @@ namespace Dyalect.Compiler
         {
             var push = hints.Remove(Pop).Append(Push);
             Build(node.Target, push, ctx);
-            Build(node.Index, push, ctx);
 
-            AddLinePragma(node);
-
-            if (!hints.Has(Pop))
+            if (node.Index.NodeType == NodeType.Range)
             {
-                cw.Get();
+                if (hints.Has(Pop))
+                    AddError(CompilerError.RangeIndexNotSupported, node.Index.Location);
+
+                var r = (DRange)node.Index;
+                cw.GetMember(GetMemberNameId("slice"));
+                cw.FunPrep(2);
+                Build(r.From, hints.Append(Push), ctx);
+                cw.FunArgIx(0);
+                Build(r.To, hints.Append(Push), ctx);
+                Build(r.From, hints.Append(Push), ctx);
+                cw.Sub();
+                cw.FunArgIx(1);
+
+                AddLinePragma(node);
+                cw.FunCall(2);
                 PopIf(hints);
             }
             else
-                cw.Set();
+            {
+                Build(node.Index, push, ctx);
+                AddLinePragma(node);
+
+                if (!hints.Has(Pop))
+                {
+                    cw.Get();
+                    PopIf(hints);
+                }
+                else
+                    cw.Set();
+            }
         }
 
         private void BuildImport(DImport node, CompilerContext ctx)
@@ -275,20 +337,6 @@ namespace Dyalect.Compiler
             }
         }
 
-        private void Build(DBreak node, Hints hints, CompilerContext ctx)
-        {
-            if (ctx.BlockBreakExit.IsEmpty())
-                AddError(CompilerError.NoEnclosingLoop, node.Location);
-
-            if (node.Expression != null)
-                Build(node.Expression, hints.Append(Push), ctx);
-            else
-                cw.PushNil();
-
-            AddLinePragma(node);
-            cw.Br(ctx.BlockBreakExit);
-        }
-
         private void Build(DReturn node, Hints hints, CompilerContext ctx)
         {
             if (ctx.FunctionExit.IsEmpty())
@@ -301,92 +349,6 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             cw.Br(ctx.FunctionExit);
-        }
-
-        private void Build(DContinue node, Hints hints, CompilerContext ctx)
-        {
-            if (ctx.BlockSkip.IsEmpty())
-                AddError(CompilerError.NoEnclosingLoop, node.Location);
-
-            AddLinePragma(node);
-            cw.Br(ctx.BlockSkip);
-            PushIf(hints);
-        }
-
-        private void Build(DWhile node, Hints hints, CompilerContext ctx)
-        {
-            ctx = new CompilerContext(ctx)
-            {
-                BlockSkip = cw.DefineLabel(),
-                BlockExit = cw.DefineLabel(),
-                BlockBreakExit = cw.DefineLabel()
-            };
-            var iter = cw.DefineLabel();
-
-            cw.MarkLabel(iter);
-            Build(node.Condition, hints.Append(Push), ctx);
-            cw.Brfalse(ctx.BlockExit);
-
-            Build(node.Body, hints.Remove(Push), ctx);
-
-            cw.MarkLabel(ctx.BlockSkip);
-            cw.Br(iter);
-
-            cw.MarkLabel(ctx.BlockExit);
-            PushIf(hints);
-            AddLinePragma(node);
-            cw.MarkLabel(ctx.BlockBreakExit);
-            cw.Nop();
-        }
-
-        private void Build(DFor node, Hints hints, CompilerContext ctx)
-        {
-            ctx = new CompilerContext(ctx)
-            {
-                BlockSkip = cw.DefineLabel(),
-                BlockExit = cw.DefineLabel(),
-                BlockBreakExit = cw.DefineLabel()
-            };
-            StartScope(false, node.Location);
-
-            var inc = AddVariable(node.Variable.Value, node.Variable, VarFlags.Const);
-            var sys = AddVariable();
-            var skip = cw.DefineLabel();
-            Build(node.Target, hints.Append(Push), ctx);
-
-            cw.Briter(skip);
-
-            cw.GetMember(GetMemberNameId(Builtins.Iterator));
-
-            cw.FunPrep(0);
-            cw.FunCall(0);
-
-            cw.MarkLabel(skip);
-            cw.PopVar(sys);
-
-            var iter = cw.DefineLabel();
-            cw.MarkLabel(iter);
-            cw.PushVar(new ScopeVar(sys));
-
-            cw.FunPrep(0);
-            cw.FunCall(0);
-
-            cw.Brterm(ctx.BlockExit);
-
-            cw.PopVar(inc);
-
-            Build(node.Body, hints.Remove(Push), ctx);
-
-            cw.MarkLabel(ctx.BlockSkip);
-            cw.Br(iter);
-
-            cw.MarkLabel(ctx.BlockExit);
-            cw.Pop();
-            PushIf(hints);
-            AddLinePragma(node);
-            cw.MarkLabel(ctx.BlockBreakExit);
-            cw.Nop();
-            EndScope();
         }
 
         private void Build(DApplication node, Hints hints, CompilerContext ctx)
@@ -508,7 +470,7 @@ namespace Dyalect.Compiler
 
             if (node.Chunks != null)
             {
-                cw.PushVar(GetVariable(StandardType.StringName, node));
+                cw.PushVar(GetVariable(DyTypeNames.String, node));
                 cw.GetMember(GetMemberNameId("concat"));
                 cw.FunPrep(node.Chunks.Count);
 
@@ -763,42 +725,49 @@ namespace Dyalect.Compiler
             }
         }
 
-
-
         private int GetTypeHandle(Qualident name, Location loc)
         {
-            var stdCode = -1;
+            var err = GetTypeHandle(name.Parent, name.Local, out var handle);
 
-            if (name.Parent == null)
-                stdCode = StandardType.GetTypeCodeByName(name.Local);
+            if (err == CompilerError.UndefinedModule)
+                AddError(err, loc, name.Parent);
+            else if (err == CompilerError.UndefinedType)
+                AddError(err, loc, name.Local);
 
-            if (stdCode >= 0)
-                return stdCode;
+            return handle;
+        }
 
-            if (name.Parent == null)
+        private CompilerError GetTypeHandle(string parent, string local, out int handle)
+        {
+            handle = -1;
+
+            if (parent == null)
+                handle = DyType.GetTypeCodeByName(local);
+
+            if (handle > -1)
+                return CompilerError.None;
+
+            if (parent == null)
             {
-                if (!types.TryGetValue(name.Local, out var ti))
-                {
-                    AddError(CompilerError.UndefinedType, loc, name.Local);
-                    return 0;
-                }
+                if (!types.TryGetValue(local, out var ti))
+                    return CompilerError.UndefinedType;
                 else
-                    return ti.Unit.Handle | ti.Handle << 8;
+                {
+                    handle = ti.Unit.Handle | ti.Handle << 8;
+                    return CompilerError.None;
+                }
             }
             else
             {
-                if (!referencedUnits.TryGetValue(name.Parent, out var ui))
-                {
-                    AddError(CompilerError.UndefinedModule, loc, name.Parent);
-                    return 0;
-                }
+                if (!referencedUnits.TryGetValue(parent, out var ui))
+                    return CompilerError.UndefinedModule;
                 else
                 {
                     var ti = -1;
 
                     for (var i = 0; i < ui.Unit.TypeIds.Count; ti++)
                     {
-                        if (ui.Unit.TypeNames[i] == name.Local)
+                        if (ui.Unit.TypeNames[i] == local)
                         {
                             ti = ui.Unit.TypeIds[i];
                             break;
@@ -806,9 +775,10 @@ namespace Dyalect.Compiler
                     }
 
                     if (ti == -1)
-                        AddError(CompilerError.UndefinedType, loc, name);
+                        return CompilerError.UndefinedType;
 
-                    return ui.Handle | ti << 8;
+                    handle = ui.Handle | ti << 8;
+                    return CompilerError.None;
                 }
             }
         }

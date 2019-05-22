@@ -153,6 +153,9 @@
   <data name="InvalidStatement" xml:space="preserve">
     <value>Invalid statement.</value>
   </data>
+  <data name="InvalidSyntax" xml:space="preserve">
+    <value>Error in expression or statement syntax: {0}</value>
+  </data>
   <data name="InvalidUnary" xml:space="preserve">
     <value>Invalid unary operator.</value>
   </data>

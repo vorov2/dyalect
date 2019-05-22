@@ -10,7 +10,7 @@ namespace Dyalect.Runtime
 {
     public static class DyMachine
     {
-        private static readonly DyNativeFunction global = new DyNativeFunction(null, 0, 0, FastList<DyObject[]>.Empty, StandardType.Function, -1);
+        private static readonly DyNativeFunction global = new DyNativeFunction(null, 0, 0, FastList<DyObject[]>.Empty, DyType.Function, -1);
 
         public static ExecutionContext CreateExecutionContext(UnitComposition composition)
         {
@@ -322,7 +322,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.GetMember:
                         right = evalStack.Peek();
-                        if (right.TypeId == StandardType.TypeInfo)
+                        if (right.TypeId == DyType.TypeInfo)
                             evalStack.Replace(((DyTypeInfo)right).GetStaticMember(op.Data, unit, ctx));
                         else
                             evalStack.Replace(types[right.TypeId].GetMember(right, op.Data, unit, ctx));
@@ -330,7 +330,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.SetMemberS:
                         right = evalStack.Pop();
-                        if (op.Data >= StandardType.TypeNames.Length)
+                        if (op.Data >= DyTypeNames.All.Length)
                             types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
                                 .SetStaticMember(ctx.AUX, right, unit, ctx);
                         else
@@ -339,7 +339,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.SetMember:
                         right = evalStack.Pop();
-                        if (op.Data >= StandardType.TypeNames.Length)
+                        if (op.Data >= DyTypeNames.All.Length)
                             types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]
                                 .SetMember(ctx.AUX, right, unit, ctx);
                         else
@@ -399,7 +399,7 @@ namespace Dyalect.Runtime
                             offset = op.Data;
                         break;
                     case OpCode.Briter:
-                        if (evalStack.Peek().TypeId == StandardType.Iterator)
+                        if (evalStack.Peek().TypeId == DyType.Iterator)
                             offset = op.Data;
                         break;
                     case OpCode.Aux:
@@ -408,9 +408,9 @@ namespace Dyalect.Runtime
                     case OpCode.FunPrep:
                         {
                             right = evalStack.Peek();
-                            if (right.TypeId != StandardType.Function && right.TypeId != StandardType.Iterator)
+                            if (right.TypeId != DyType.Function && right.TypeId != DyType.Iterator)
                             {
-                                ctx.NotFunction(types[right.TypeId].TypeName);
+                                ctx.NotFunction(right);
                                 ProcessError(ctx, function, ref offset);
                                 break;
                             }
@@ -480,6 +480,13 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.NewTuple:
                         evalStack.Push(MakeTuple(evalStack, op.Data));
+                        break;
+                    case OpCode.TypeCheck:
+                        right = evalStack.Pop();
+                        if (op.Data >= DyTypeNames.All.Length)
+                            evalStack.Push(right.TypeId == ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8] ? DyBool.True : DyBool.False);
+                        else
+                            evalStack.Push(right.TypeId == op.Data ? DyBool.True : DyBool.False);
                         break;
                 }
             }

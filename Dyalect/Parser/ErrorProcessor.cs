@@ -1,7 +1,6 @@
 ﻿using Dyalect.Strings;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using static Dyalect.Parser.ParserError;
 
 namespace Dyalect.Parser
@@ -26,6 +25,7 @@ namespace Dyalect.Parser
                 ,{ "invalid Literal", InvalidLiteral }
                 ,{ "invalid DyalectItem", InvalidStatement }
                 ,{ "invalid Pattern", InvalidPattern }
+                ,{ "invalid BooleanPattern", InvalidPattern }
                 ,{ "??? expected", Undefined }
             };
 
@@ -81,10 +81,16 @@ namespace Dyalect.Parser
                     return;
                 }
 
-                var token = twoParts[1].Trim('\"');
+                var token = twoParts[0].Trim('\"');
 
                 if (tokens.TryGetValue(token, out var nt))
                     token = nt;
+                else if (token == "invalid")
+                {
+                    error = InvalidSyntax;
+                    detail = string.Format(ParserErrors.InvalidSyntax, source);
+                    return;
+                }
 
                 error = TokenExpected;
                 detail = string.Format(ParserErrors.TokenExpected, token);

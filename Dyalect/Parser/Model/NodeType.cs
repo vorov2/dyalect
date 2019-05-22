@@ -36,6 +36,8 @@
         Function,
         Tuple,
         Array,
+        Iterator,
+        YieldBlock,
         Label,
         Parameter,
 
@@ -50,8 +52,17 @@
         BooleanPattern,
         CharPattern,
         StringPattern,
+        NilPattern,
+        ArrayPattern,
+        RangePattern,
         TuplePattern,
-        LabelPattern
+        RecordPattern,
+        LabelPattern,
+        AsPattern,
+        WildcardPattern,
+        TypeTestPattern,
+        AndPattern,
+        OrPattern
     }
 
 }

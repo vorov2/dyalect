@@ -20,6 +20,8 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; }
 
+        protected internal override string GetName() => Name;
+
         internal override void ToString(StringBuilder sb)
         {
             sb.Append(Name);
@@ -101,6 +103,19 @@ namespace Dyalect.Parser.Model
         }
     }
 
+    public sealed class DNilPattern : DPattern
+    {
+        public DNilPattern(Location loc) : base(loc, NodeType.StringPattern)
+        {
+
+        }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append("nil");
+        }
+    }
+
     public sealed class DTuplePattern : DPattern
     {
         public DTuplePattern(Location loc) : base(loc, NodeType.TuplePattern)
@@ -118,9 +133,60 @@ namespace Dyalect.Parser.Model
         }
     }
 
+    public sealed class DRecordPattern : DPattern
+    {
+        public DRecordPattern(Location loc) : base(loc, NodeType.RecordPattern)
+        {
+
+        }
+
+        public List<DLabelPattern> Elements { get; } = new List<DLabelPattern>();
+
+        internal override void ToString(StringBuilder sb)
+        {
+            Elements.ToString(sb);
+        }
+    }
+
+    public sealed class DArrayPattern : DPattern
+    {
+        public DArrayPattern(Location loc) : base(loc, NodeType.ArrayPattern)
+        {
+
+        }
+
+        public List<DPattern> Elements { get; } = new List<DPattern>();
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append('[');
+            Elements.ToString(sb);
+            sb.Append(']');
+        }
+    }
+
+    public sealed class DRangePattern : DPattern
+    {
+        public DRangePattern(Location loc) : base(loc, NodeType.RangePattern)
+        {
+
+        }
+
+        public DPattern From { get; set; }
+
+        public DPattern To { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            From.ToString(sb);
+            sb.Append("..");
+            To.ToString(sb);
+        }
+    }
+
     public sealed class DLabelPattern : DPattern
     {
-        public DLabelPattern(Location loc) : base(loc, NodeType.TuplePattern)
+        public DLabelPattern(Location loc) : base(loc, NodeType.LabelPattern)
         {
 
         }
@@ -132,8 +198,94 @@ namespace Dyalect.Parser.Model
         internal override void ToString(StringBuilder sb)
         {
             sb.Append(Label);
-            sb.Append(": ");
+            sb.Append(':');
             Pattern.ToString(sb);
+        }
+    }
+
+    public sealed class DAsPattern : DPattern
+    {
+        public DAsPattern(Location loc) : base(loc, NodeType.AsPattern)
+        {
+
+        }
+
+        public string Name { get; set; }
+
+        public DPattern Pattern { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append(':');
+            Pattern.ToString(sb);
+            sb.Append(" as " + Name);
+        }
+    }
+
+    public sealed class DWildcardPattern : DPattern
+    {
+        public DWildcardPattern(Location loc) : base(loc, NodeType.WildcardPattern)
+        {
+
+        }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append('_');
+        }
+    }
+
+    public sealed class DTypeTestPattern : DPattern
+    {
+        public DTypeTestPattern(Location loc) : base(loc, NodeType.TypeTestPattern)
+        {
+
+        }
+
+        public Qualident TypeName { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append("is ");
+            sb.Append(TypeName.ToString());
+        }
+    }
+
+    public sealed class DAndPattern : DPattern
+    {
+        public DAndPattern(Location loc) : base(loc, NodeType.AndPattern)
+        {
+
+        }
+
+        public DPattern Left { get; set; }
+
+        public DPattern Right { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            Left.ToString(sb);
+            sb.Append(" && ");
+            Right.ToString(sb);
+        }
+    }
+
+    public sealed class DOrPattern : DPattern
+    {
+        public DOrPattern(Location loc) : base(loc, NodeType.OrPattern)
+        {
+
+        }
+
+        public DPattern Left { get; set; }
+
+        public DPattern Right { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            Left.ToString(sb);
+            sb.Append(" || ");
+            Right.ToString(sb);
         }
     }
 }

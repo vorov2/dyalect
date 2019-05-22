@@ -1,5 +1,4 @@
-﻿///////////////////////////////////////////////
-func whileTest1() {
+﻿func whileTest1() {
     var n = 100
     var x = while n > 0 {
         if n == 33 {

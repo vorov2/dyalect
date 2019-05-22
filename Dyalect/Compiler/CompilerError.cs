@@ -44,6 +44,10 @@
 
         VarArgOnlyOne = 220,
 
-        InvalidDefaultValue = 221
+        InvalidDefaultValue = 221,
+
+        PatternNotSupported = 222,
+
+        RangeIndexNotSupported = 223
     }
 }
