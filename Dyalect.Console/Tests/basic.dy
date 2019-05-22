@@ -48,6 +48,16 @@ func mathTest10() {
     assert(38, x)
 }
 
+func mathTest12() {
+    var x = 2.0 / 0
+    assert(true, x == Float.inf())
+}
+
+func mathTest13() {
+    var x = .0 / 0
+    assert(true, x.isNaN)
+}
+
 func logicalTest1() {
     const x = 144
     var res = x / 12 > 100 || x / 6 == 24

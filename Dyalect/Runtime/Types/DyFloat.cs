@@ -149,7 +149,11 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject PlusOp(DyObject arg, ExecutionContext ctx) => arg;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)arg.GetFloat().ToString(CI.NumberFormat);
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        {
+            var f = arg.GetFloat();
+            return double.IsNaN(f) ? new DyString("NaN") : (DyString)f.ToString(CI.NumberFormat);
+        }
         #endregion
 
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
@@ -187,6 +191,23 @@ namespace Dyalect.Runtime.Types
         {
             if (name == "to")
                 return DyForeignFunction.Member(name, Range, -1, new Par("value"));
+
+            if (name == "isNaN")
+                return DyForeignFunction.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False);
+
+            return null;
+        }
+
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        {
+            if (name == "max")
+                return DyForeignFunction.Static(name, c => new DyFloat(double.MaxValue));
+
+            if (name == "min")
+                return DyForeignFunction.Static(name, c => new DyFloat(double.MinValue));
+
+            if (name == "inf")
+                return DyForeignFunction.Static(name, c => new DyFloat(double.PositiveInfinity));
 
             return null;
         }

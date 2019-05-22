@@ -27,26 +27,12 @@
     ```swift
     static func concat(values...) { }
     ```
-    It accepts a variable number of objects that implement iterator pattern and returns either an array (for `Array` type) or a new combined iterator (for `Iterator` type). By the way string is always treated as iterator:
-    ```
-    dy>Array.concat("foo")
-    ['f', 'o', 'o'] :: Array
-    ```
+    It accepts a variable number of objects that implement iterator pattern and returns either an array (for `Array` type) or a new combined iterator (for `Iterator` type).
   * An implementation of `toString` method is changed for iterators - now `toString` execute an iterator and formats all of its values to a string:
     ```swift
     (1..5).toString() == "{ 1, 2, 3, 4, 5}" //Evaluates to true
     ```
-  * Now interactive console displays a correct error message if an exception occurs while trying to format script output to a string:
-    ```
-    dy>func it() {
-    -->yield 1
-    -->var x = 2/0
-    -->}
-    [type:6] :: Function
-
-    dy>it()
-    [Error evaluating result value: Division by zero.]
-    ```
+  * Now interactive console displays a correct error message if an exception occurs while trying to format script output to a string.
   * Structural equality for tuples is implemented (related issue: [#43](https://github.com/vorov2/dyalect/issues/43)).
   * Now it is possible to slice arrays using indexer syntax (related issue: [#59](https://github.com/vorov2/dyalect/issues/59)):
     ```swift
@@ -58,6 +44,8 @@
     xs.slice(1, 4)
     ```
   * Now it is possible to create an array based on range using the following syntax: `[n..k]`. It is an equivalent to `(n..k).toArray()` (related issue: [#92](https://github.com/vorov2/dyalect/issues/92)).
+  * Now iterators has a `len` method which returns a total number of elements in an interator (related issue: [#99](https://github.com/vorov2/dyalect/issues/99)).
+  * A feature is implemented: _Integer: add standard methods_ ([Issue #54](https://github.com/vorov2/dyalect/issues/54)).
   * A bug fixed: _Incorrect type info is generated for iterator_ ([Issue #93](https://github.com/vorov2/dyalect/issues/93)).
   * A bug fixed: _Anonymous function and iterator_ ([Issue #94](https://github.com/vorov2/dyalect/issues/94)).
   * A bug fixed: _Array.slice - Index out of range_ ([Issue #97](https://github.com/vorov2/dyalect/issues/97)).
