@@ -34,7 +34,7 @@
     ```
   * An implementation of `toString` method is changed for iterators - now `toString` execute an iterator and formats all of its values to a string:
     ```swift
-    (1..5).toString() == "{1, 2, 3, 4, 5}" //Evaluates to true
+    (1..5).toString() == "{& 1, 2, 3, 4, 5}" //Evaluates to true
     ```
   * Now interactive console displays a correct error message if an exception occurs while trying to format script output to a string:
     ```

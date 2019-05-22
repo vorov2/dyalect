@@ -437,6 +437,20 @@ func rangeTest5() {
     assert(true, true)
 }
 
+func iteratorLiteralTest1() {
+    var seq = {& 1,2,3 }
+    assert([1,2,3], seq().toArray())
+}
+
+func iteratorLiteralTest2() {
+    var x = 2
+    var y = 3
+    var seq = {& x + y }
+    x -= 1
+    y *= y
+    assert(10, seq()())
+}
+
 func interpolationTest1() {
     var x = 42
     var y = 12

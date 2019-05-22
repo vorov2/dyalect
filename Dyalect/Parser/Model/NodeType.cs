@@ -36,6 +36,8 @@
         Function,
         Tuple,
         Array,
+        Iterator,
+        YieldBlock,
         Label,
         Parameter,
 

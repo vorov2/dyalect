@@ -163,6 +163,35 @@ namespace Dyalect.Parser
                 && scanner.Peek().kind == _colonToken;
         }
 
+        private bool IsIterator()
+        {
+            if (la.kind != _curlyLeftToken)
+                return false;
+
+            scanner.ResetPeek();
+            var x = la;
+            var balance = 0;
+
+            while (true)
+            {
+                if (x.kind == _commaToken && balance == 1)
+                    return true;
+
+                if (x.kind == _curlyLeftToken)
+                    balance++;
+                else if (x.kind == _curlyRightToken)
+                {
+                    balance--;
+                    if (balance == 0)
+                        break;
+                }
+
+                x = scanner.Peek();
+            }
+
+            return false;
+        }
+
         private bool IsTuplePattern()
         {
             if (la.kind != _parenLeftToken)

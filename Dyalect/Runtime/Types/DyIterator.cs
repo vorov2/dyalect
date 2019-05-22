@@ -205,7 +205,7 @@ namespace Dyalect.Runtime.Types
                 return DyString.Empty;
 
             var sb = new StringBuilder();
-            sb.Append('{');
+            sb.Append("{& ");
             var fst = true;
 
             foreach (var e in seq)

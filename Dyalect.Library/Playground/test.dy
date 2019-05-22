@@ -133,8 +133,11 @@ var res = match 7 {
 }
 */
 
-var arr = []
-for Char in ['a', "str", 'b', 'c', 12] {
-    arr.add(0)
-}
-assert(['a','b','c'], arr)
+var x = 2
+var y = 44
+var seq  = { (x + y).toString(), }
+
+x *= x
+y *= 2
+
+seq()
