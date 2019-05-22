@@ -449,21 +449,21 @@ func rangeTest5() {
 }
 
 func iteratorLiteralTest1() {
-    var seq = {& 1,2,3 }
+    var seq = { 1,2,3 }
     assert([1,2,3], seq().toArray())
 }
 
 func iteratorLiteralTest2() {
     var x = 2
     var y = 3
-    var seq = {& x + y }
+    var seq = { x + y, }
     x -= 1
     y *= y
     assert(10, seq()())
 }
 
 func iteratorLiteralTest3() {
-    var xs = {& 1, 2, 3, 4, 5 }
+    var xs = { 1, 2, 3, 4, 5 }
     assert(5, xs().len())
 }
 

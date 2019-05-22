@@ -133,8 +133,8 @@ var res = match 7 {
 }
 */
 
-var tup = (
-    x: (x: 2, y: (y: 3)),
-    22
-)
-var res = tup[1] + tup["x"]["x"] - tup["x"]["y"]["y"]
+func variadic(args...) {
+    args.fst()
+}
+
+variadic()
