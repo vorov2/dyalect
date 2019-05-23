@@ -637,11 +637,11 @@ func functionTest2() {
 }
 
 func functionTest3() {
-    func test(x, x1 = 144, y, z, z1 = -3) {
+    func test(x, x1 = 144, y, z, z1 = 33) {
         (x, x1, y, z, z1)
     }
     var res = test(z: 12, x: 3, y: 1)
-    assert((3, 144, 1, 12, -3), res)
+    assert((3, 144, 1, 12, 33), res)
 }
 
 func functionTest4() {

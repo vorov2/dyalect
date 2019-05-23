@@ -16,10 +16,10 @@ CHARACTERS
 TOKENS
     identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
 
-    intToken    = ["-"] digit { digit } | ("0x"|"0X") hexDigit { hexDigit }.
+    intToken    = digit { digit } | ("0x"|"0X") hexDigit { hexDigit }.
 
-    floatToken  = ["-"] "." digit { digit } [ ("e"|"E") [ "+" | "-" ] digit { digit } ]
-                    | ["-"] digit { digit } 
+    floatToken  = "." digit { digit } [ ("e"|"E") [ "+" | "-" ] digit { digit } ]
+                    | digit { digit } 
                         ( 
                             "." digit { digit } [ ( "e" | "E" ) ["+" | "-" ] digit { digit } ]
                             | ( "e" | "E") ["+" | "-" ] digit { digit }

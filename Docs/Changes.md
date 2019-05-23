@@ -1,5 +1,6 @@
 # 0.6.2
   * Done: _Array.empty should accept function as a default_ ([Issue #114](https://github.com/vorov2/dyalect/issues/114)).
+  * Fixed: _Negative literals and parser_ ([Issue #113](https://github.com/vorov2/dyalect/issues/113)). A minus sign `-` is no longer a part of numeric literals and is always treated as a negation operator.
 
 # 0.6.1
   * Fixed: _Stack is corruped and ranges_ ([Issue #108](https://github.com/vorov2/dyalect/issues/108)).
