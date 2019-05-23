@@ -1,3 +1,6 @@
+# 0.6.1
+  * Fixed: _Stack is corruped and ranges ([Issue #108](https://github.com/vorov2/dyalect/issues/108)).
+
 # 0.6.0
   * Error reporting by parser is expanded and corrected.
   * Implemented pattern matching using `match` expression ([Issue #4](https://github.com/vorov2/dyalect/issues/4)):
