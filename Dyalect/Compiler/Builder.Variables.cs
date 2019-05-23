@@ -30,10 +30,10 @@ namespace Dyalect.Compiler
         public int AddVariable(string name, DNode node, int data) =>
             AddVariable(name, node != null ? node.Location : default, data);
 
-        //Добавляем нормальные именованные переменные
+        //Add a regular named variable
         private int AddVariable(string name, Location loc, int data)
         {
-            //Смотрим, а не добавили ли мы уже такую в локальный скоуп
+            //Check if we already has such a variable in a local scope
             if (currentScope.Locals.ContainsKey(name))
             {
                 AddError(CompilerError.VariableAlreadyDeclared, loc, name);
@@ -42,7 +42,7 @@ namespace Dyalect.Compiler
 
             currentScope.Locals.Add(name, new ScopeVar(currentCounter, data));
 
-            //Дополнительная отладочная информация генерируется только в дебуг режиме
+            //An extended debug info is generated only in debug mode
             if (isDebug && !loc.IsEmpty)
             {
                 AddVarPragma(name, currentCounter, cw.Offset, data);
@@ -58,7 +58,7 @@ namespace Dyalect.Compiler
             return retval;
         }
 
-        //Ищем переменную по имени в глобальном скоупе
+        //Find a variable in a global scope
         private ScopeVar GetParentVariable(string name, DNode node)
         {
             return GetParentVariable(name, node.Location);
@@ -98,6 +98,19 @@ namespace Dyalect.Compiler
             return GetVariable(name, currentScope, loc, err);
         }
 
+        private bool GetLocalVariable(string name, out int var)
+        {
+            var = default;
+
+            if (currentScope.Locals.TryGetValue(name, out var sv))
+            {
+                var = 0 | sv.Address << 8;
+                return true;
+            }
+
+            return false;
+        }
+
         private ScopeVar GetVariable(string name, Scope startScope, Location loc, bool err)
         {
             var cur = startScope;
@@ -131,7 +144,7 @@ namespace Dyalect.Compiler
             return ScopeVar.Empty;
         }
 
-        //Ищем скоуп, где объявлена переменная. Возвращаем первый же, который подходит
+        //Look for the scope with such a variable, return the firt that match
         private Scope GetScope(string name)
         {
             var cur = currentScope;

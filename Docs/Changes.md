@@ -1,3 +1,8 @@
+# 0.6.1
+  * Fixed: _Stack is corruped and ranges_ ([Issue #108](https://github.com/vorov2/dyalect/issues/108)).
+  * Fixed: _Error in pattern grammar_ ([Issue #109](https://github.com/vorov2/dyalect/issues/109)).
+  * Fixed: _Allow variable rebinding in patterns_ ([Issue #110](https://github.com/vorov2/dyalect/issues/110)).
+
 # 0.6.0
   * Error reporting by parser is expanded and corrected.
   * Implemented pattern matching using `match` expression ([Issue #4](https://github.com/vorov2/dyalect/issues/4)):

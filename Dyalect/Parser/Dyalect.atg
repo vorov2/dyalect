@@ -293,7 +293,7 @@ PRODUCTIONS
     GroupPattern<out DPattern node> =
         (. node = null; .)
         (
-            "(" RangePattern<out node> ")"
+            "(" OrPattern<out node> ")"
         ).
 
     ArrayPattern<out DPattern node> =

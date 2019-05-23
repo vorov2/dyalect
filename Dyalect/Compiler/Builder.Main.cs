@@ -229,10 +229,6 @@ namespace Dyalect.Compiler
 
         private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
         {
-            var sv = GetVariable(DyTypeNames.Array, node);
-            cw.PushVar(sv);
-            cw.GetMember(GetMemberNameId(Builtins.New));
-
             if (node.Elements.Count == 1 && node.Elements[0].NodeType == NodeType.Range)
             {
                 Build(node.Elements[0], hints.Append(Push), ctx);
@@ -243,6 +239,9 @@ namespace Dyalect.Compiler
             }
             else
             {
+                var sv = GetVariable(DyTypeNames.Array, node);
+                cw.PushVar(sv);
+                cw.GetMember(GetMemberNameId(Builtins.New));
                 cw.FunPrep(node.Elements.Count);
 
                 for (var i = 0; i < node.Elements.Count; i++)

@@ -133,8 +133,4 @@ var res = match 7 {
 }
 */
 
-func variadic(args...) {
-    args.fst()
-}
-
-variadic()
+[1..10]

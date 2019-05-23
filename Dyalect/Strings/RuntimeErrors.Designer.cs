@@ -133,7 +133,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Match failed..
         /// </summary>
         internal static string MatchFailed {
             get {
