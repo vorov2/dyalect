@@ -638,7 +638,7 @@ namespace Dyalect.Parser
 	void GroupPattern(out DPattern node) {
 		node = null; 
 		Expect(25);
-		RangePattern(out node);
+		OrPattern(out node);
 		Expect(26);
 	}
 
