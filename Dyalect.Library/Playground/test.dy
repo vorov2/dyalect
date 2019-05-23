@@ -1,136 +1,52 @@
-﻿/*func fin(z) {
-    z / 0
-}
-
-func zoo(y) {
-    var z = y + y / 2
-    fin(z)
-}
-
-func bar(x) {
-    var y = x * 2
-    zoo(y)
-}
-
-func foo() {
-    var x = 12
-    bar(x)
-}
-
-foo() 
-
-func foo(x = 142, y, z) {
-    print("x=", x, ";y=", y, ";z=", z)
-}
-
-func print(args..., separator = ",", terminator = "\n") {
-    var str = ""
-
-    for x in args.iter() {
-        if str.len() > 0 {
-            str += separator
-        }
-        str += x.toString()
-    }
-
-    str += terminator
-    str
-}
-
-print(1,2,3,separator:" ",terminator:".")
-
-
-
-var i = 42
-var n = 0
-
-while n < 42 {
-    if isPrime(i) {
-        n += 1
-        print("n = \(n) \(i)")
-        i += i - 1
-    }
-    i += 1
-}
-
-func isPrime(number) {
-    if number <= 1 {
-        return false
-    }
-    else if number % 2 == 0 {
-        return number == 2
-    }
-
-    var i = 3
-
-    while (i * i) < number {
-        if number % i == 0 {
-            return false
-        }
-        i += 2
-    }
-
-    return true
-}
-
-func testPrimes() {
-    var i = 42
-    var n = 0
-
-    while n < 42 {
-        if isPrime(i) {
-            n += 1
-            print("n = \(n)\t\(i)")
-            i += i - 1
-        }
-        i += 1
+﻿func min(x, y) {
+    if x < y {
+        x
+    } else {
+        y
     }
 }
 
-func testFunCall() {
-    func sum(x,y,z) {x+y+z}
+func levenshtein(s, t) {
+    var n = s.len()
+    var m = t.len()
+    var d = Array.empty(n + 1, () => Array.empty(m + 1))
 
-    var iter = 1000*1000
-
-    while iter > 0 {
-        sum(1,2,3)
-        iter -= 1
+    if n == 0 {
+        return m
     }
-}
+ 
+    if (m == 0) {
+        return n
+    }
+ 
+    for i in 0..n {
+        d[i][0] = i
+    }
 
-func testIter() {
-    var xs = 1..(1000*1000)
-
-    const result =
-        for x in xs {
-            if x >= 1000*1000 {
-                break x
+    for j in 0..m {
+        d[0][j] = j
+    }
+ 
+    for j in 1..m {
+        for i in 1..n {
+            if s[i - 1] == t[j - 1] {
+                d[i][j] = d[i - 1][j - 1] //no operation
+            }
+            else {
+                d[i][j] = min(min(
+                    d[i - 1][j] + 1,    //a deletion
+                    d[i][j - 1] + 1),   //an insertion
+                    d[i - 1][j - 1] + 1 //a substitution
+                    )
             }
         }
-
-    result
-}
-
-
-var x = (x: 12, y: 34, z: (name: "bar", age: 12))
-var arr = (1..10).toArray()
-
-
-var res = 
-    match x {
-        [1,2,3,xs] => x,
-        (1,2) => "(1,2)",
-        "true" => "No...",
-        12.2 => "No(2)",
-        12 => "Yes!",
-        (z:(name: name, age: a)) when arr.len() > 30 => "name = \(name), age = \(a)",
-        'c' => "WTF?"
     }
-var res = match 7 {
-    2..20 && ?Integer => "Eh?",
-    (1..10) as orig => "Yes! " + orig,
-    24 => "no.."
-}
-*/
 
-[1..10]
+    d[n][m]
+}
+
+func run(x, y) {
+    print("\(x) -> \(y) = \(levenshtein(x, y))")
+}
+
+run("rosettacode", "raisethysword")

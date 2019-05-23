@@ -1,3 +1,6 @@
+# 0.6.2
+  * Done: _Array.empty should accept function as a default_ ([Issue #114](https://github.com/vorov2/dyalect/issues/114)).
+
 # 0.6.1
   * Fixed: _Stack is corruped and ranges_ ([Issue #108](https://github.com/vorov2/dyalect/issues/108)).
   * Fixed: _Error in pattern grammar_ ([Issue #109](https://github.com/vorov2/dyalect/issues/109)).

@@ -466,11 +466,25 @@ namespace Dyalect.Runtime.Types
         private DyObject Empty(ExecutionContext ctx, DyObject sizeObj, DyObject val)
         {
             var size = sizeObj.GetInteger();
-
             var arr = new DyObject[size];
 
-            for (var i = 0; i < size; i++)
-                arr[i] = val;
+            if (val is DyFunction func)
+            {
+                for (var i = 0; i < size; i++)
+                {
+                    var res = func.Call0(ctx);
+
+                    if (ctx.HasErrors)
+                        return DyNil.Instance;
+
+                    arr[i] = res;
+                }
+            }
+            else
+            {
+                for (var i = 0; i < size; i++)
+                    arr[i] = val;
+            }
 
             return new DyArray(arr);
         }
