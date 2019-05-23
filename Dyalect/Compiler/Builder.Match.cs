@@ -128,9 +128,10 @@ namespace Dyalect.Compiler
             var ok = cw.DefineLabel();
             cw.Brfalse(bad);
 
-            var sv = AddVariable(node.Name, node, VarFlags.Const);
-            cw.PopVar(sv);
+            if (!GetLocalVariable(node.Name, out var sv))
+                sv = AddVariable(node.Name, node, VarFlags.None);
 
+            cw.PopVar(sv);
             cw.Push(true);
             cw.Br(ok);
             cw.MarkLabel(bad);
@@ -148,8 +149,9 @@ namespace Dyalect.Compiler
                 cw.TypeCheck(handle);
             else
             {
-                var va = AddVariable(node.Name, node, VarFlags.None);
-                cw.PopVar(va);
+                if (!GetLocalVariable(node.Name, out var sv))
+                    sv = AddVariable(node.Name, node, VarFlags.None);
+                cw.PopVar(sv);
                 cw.Push(true);
             }
         }
