@@ -1,4 +1,5 @@
 # 0.7.0
+  * Done: _Cloning objects_ ([Issue #48](https://github.com/vorov2/dyalect/issues/48)).
   * Done: _Tuple: add static methods "pair" and "triple"_ ([Issue #103](https://github.com/vorov2/dyalect/issues/103)).
 
 # 0.6.2

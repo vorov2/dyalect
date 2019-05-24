@@ -463,6 +463,8 @@ namespace Dyalect.Runtime.Types
             }
         }
 
+        private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();
+
         private DyFunction InternalGetMember(string name, ExecutionContext ctx)
         {
             if (name == Builtins.ToStr)
@@ -470,6 +472,9 @@ namespace Dyalect.Runtime.Types
 
             if (name == Builtins.Iterator)
                 return DyForeignFunction.Member(name, GetIterator);
+
+            if (name == "clone")
+                return DyForeignFunction.Member(name, Clone);
 
             return GetMember(name, ctx);
         }

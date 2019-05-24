@@ -76,6 +76,8 @@ namespace Dyalect.Runtime.Types
         public IEnumerator<DyObject> GetEnumerator() => Value.Select(c => new DyChar(c)).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public override DyObject Clone() => this;
     }
 
     internal sealed class DyStringTypeInfo : DyTypeInfo

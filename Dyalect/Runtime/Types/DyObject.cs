@@ -51,6 +51,8 @@ namespace Dyalect.Runtime.Types
         internal protected virtual string GetLabel() => null;
 
         internal protected virtual DyObject GetTaggedValue() => null;
+
+        public virtual DyObject Clone() => (DyObject)MemberwiseClone();
     }
 
     internal static class DyObjectInternalExtensions

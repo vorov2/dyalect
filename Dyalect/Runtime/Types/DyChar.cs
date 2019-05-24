@@ -19,6 +19,8 @@ namespace Dyalect.Runtime.Types
         protected internal override string GetString() => Value.ToString();
 
         public override string ToString() => Value.ToString();
+
+        public override DyObject Clone() => this;
     }
 
     internal sealed class DyCharTypeInfo : DyTypeInfo

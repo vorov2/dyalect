@@ -29,6 +29,8 @@
         }
 
         public override abstract object ToObject();
+
+        public override DyObject Clone() => this;
     }
 
     internal sealed class DyBoolTypeInfo : DyTypeInfo
