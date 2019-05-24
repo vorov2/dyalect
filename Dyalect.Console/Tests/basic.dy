@@ -103,6 +103,11 @@ func comparisonTest6() {
     assert(true, str2 == false)
 }
 
+func comparisonTest7() {
+    assert(true, "".toString == "".toString)
+    assert(false, "".toString == '\0'.toString)
+}
+
 func toStringTest1() {
     var res = (1,2,3).toString()
     assert("(1, 2, 3)", res)

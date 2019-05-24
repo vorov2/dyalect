@@ -97,5 +97,8 @@ namespace Dyalect.Runtime.Types
             var size = GetLayout(ctx).Size;
             return size == 0 ? Statics.EmptyDyObjects : new DyObject[size];
         }
+
+        internal override bool Equals(DyFunction func) => func is DyNativeFunction m 
+            && m.UnitId == UnitId && m.FunctionId == FunctionId;
     }
 }

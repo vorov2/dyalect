@@ -17,6 +17,8 @@ namespace Dyalect.Runtime.Types
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args);
 
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction(FunctionName, fun, Parameters, VarArgIndex);
+
+            internal override bool Equals(DyFunction func) => func is MemberFunction m && m.fun.Equals(fun);
         }
 
         private sealed class MemberFunction0 : DyForeignFunction
@@ -31,6 +33,8 @@ namespace Dyalect.Runtime.Types
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self);
 
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction0(FunctionName, fun);
+
+            internal override bool Equals(DyFunction func) => func is MemberFunction0 m && m.fun.Equals(fun);
         }
 
         private sealed class MemberFunction1 : DyForeignFunction
@@ -45,6 +49,8 @@ namespace Dyalect.Runtime.Types
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args[0]);
 
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction1(FunctionName, fun, Parameters, VarArgIndex);
+
+            internal override bool Equals(DyFunction func) => func is MemberFunction1 m && m.fun.Equals(fun);
         }
 
         private sealed class MemberFunction2 : DyForeignFunction
@@ -59,6 +65,8 @@ namespace Dyalect.Runtime.Types
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args[0], args[1]);
 
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction2(FunctionName, fun, Parameters, VarArgIndex);
+
+            internal override bool Equals(DyFunction func) => func is MemberFunction2 m && m.fun.Equals(fun);
         }
 
         private abstract class BaseStaticFunction : DyForeignFunction
@@ -90,6 +98,8 @@ namespace Dyalect.Runtime.Types
                     return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
                 }
             }
+
+            internal override bool Equals(DyFunction func) => func is StaticFunction0 m && m.fun.Equals(fun);
         }
 
         private sealed class StaticFunction1 : BaseStaticFunction
@@ -112,6 +122,8 @@ namespace Dyalect.Runtime.Types
                     return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
                 }
             }
+
+            internal override bool Equals(DyFunction func) => func is StaticFunction1 m && m.fun.Equals(fun);
         }
 
         private sealed class StaticFunction2 : BaseStaticFunction
@@ -134,6 +146,8 @@ namespace Dyalect.Runtime.Types
                     return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
                 }
             }
+
+            internal override bool Equals(DyFunction func) => func is StaticFunction2 m && m.fun.Equals(fun);
         }
 
         private sealed class StaticFunction3 : BaseStaticFunction
@@ -156,6 +170,8 @@ namespace Dyalect.Runtime.Types
                     return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
                 }
             }
+
+            internal override bool Equals(DyFunction func) => func is StaticFunction3 m && m.fun.Equals(fun);
         }
 
         private sealed class StaticFunction4 : BaseStaticFunction
@@ -178,6 +194,8 @@ namespace Dyalect.Runtime.Types
                     return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
                 }
             }
+
+            internal override bool Equals(DyFunction func) => func is StaticFunction4 m && m.fun.Equals(fun);
         }
 
         private readonly string name;

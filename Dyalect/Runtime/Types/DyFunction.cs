@@ -51,6 +51,8 @@ namespace Dyalect.Runtime.Types
         internal virtual MemoryLayout GetLayout(ExecutionContext ctx) => null;
 
         internal abstract DyObject[] CreateLocals(ExecutionContext ctx);
+
+        internal abstract bool Equals(DyFunction func);
     }
 
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
@@ -67,5 +69,8 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(((DyFunction)arg).ToString());
+
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
     }
 }

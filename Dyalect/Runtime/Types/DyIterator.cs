@@ -171,6 +171,8 @@ namespace Dyalect.Runtime.Types
                     break;
             }
         }
+
+        internal override bool Equals(DyFunction func) => func is DyIterator m && m.enumerator.Equals(enumerator);
     }
 
     internal sealed class DyNativeIterator : DyNativeFunction
