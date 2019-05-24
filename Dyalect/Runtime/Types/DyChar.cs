@@ -123,5 +123,16 @@ namespace Dyalect.Runtime.Types
 
             return null;
         }
+
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        {
+            if (name == "max")
+                return DyForeignFunction.Static(name, c => new DyChar(char.MaxValue));
+
+            if (name == "min")
+                return DyForeignFunction.Static(name, c => new DyChar(char.MinValue));
+
+            return null;
+        }
     }
 }
