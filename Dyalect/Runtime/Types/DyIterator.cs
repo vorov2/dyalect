@@ -211,12 +211,12 @@ namespace Dyalect.Runtime.Types
                 return DyString.Empty;
 
             var sb = new StringBuilder();
-            sb.Append("{& ");
-            var fst = true;
+            sb.Append("{ ");
+            var c = 0;
 
             foreach (var e in seq)
             {
-                if (!fst)
+                if (c > 0)
                     sb.Append(", ");
                 var str = e.ToString(ctx);
 
@@ -224,8 +224,11 @@ namespace Dyalect.Runtime.Types
                     return DyString.Empty;
 
                 sb.Append(str.GetString());
-                fst = false;
+                c++;
             }
+
+            if (c == 1)
+                sb.Append(", ");
 
             sb.Append('}');
             return new DyString(sb.ToString());

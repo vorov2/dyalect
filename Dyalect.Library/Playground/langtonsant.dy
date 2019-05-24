@@ -7,56 +7,30 @@ const south = 3
 
 const leftTurns  = [ west, north, south, east ]
 const rightTurns = [ east, south, north, west ]
-const isBlack = []
-
-func getArr(x, y) {
-    if x >= isBlack.len() {
-        while isBlack.len() < x + 1 {
-            isBlack.add([])
-        }
-    }
-    const xs = isBlack[x]
-    if y >= xs.len() {
-        while xs.len() < y + 1 {
-            xs.add(false)
-        }
-    }
-    xs
-}
-
-func getIsBlack(x, y) {
-    const arr = getArr(x, y)
-    arr[y]
-}
-
-func setIsBlack(x, y, flag) {
-    const arr = getArr(x, y)
-    arr[y] = flag
-}
 
 func move(ant) {
-    ant["position"]["x"] += xInc[ant["direction"]]
-    ant["position"]["y"] += yInc[ant["direction"]]
+    ant.position.x += xInc[ant.direction]
+    ant.position.y += yInc[ant.direction]
 }
 
-func step(ant) {
-    var ptCur = (x: ant["position"]["x"] + ant["origin"]["x"], y: ant["position"]["y"] + ant["origin"]["y"])
-    var leftTurn = getIsBlack(ptCur["x"], ptCur["y"])
-    ant["direction"] =
+func Array.step(ant) {
+    var ptCur = (x: ant.position.x + ant.origin.x, y: ant.position.y + ant.origin.y)
+    var leftTurn = this[ptCur.x][ptCur.y]
+    ant.direction =
         if leftTurn  {
-            leftTurns[ant["direction"]] 
+            leftTurns[ant.direction] 
         } else {
-            rightTurns[ant["direction"]]
+            rightTurns[ant.direction]
         }
-    setIsBlack(ptCur["x"], ptCur["y"], !getIsBlack(ptCur["x"], ptCur["y"]))
+    this[ptCur.x][ptCur.y] = !this[ptCur.x][ptCur.y]
     move(ant)
-    ptCur = (x: ant["position"]["x"] + ant["origin"]["x"], y: ant["position"]["y"] + ant["origin"]["y"])
-    ant["outOfBounds"] = 
-        ptCur["x"] < 0 ||
-        ptCur["x"] >= ant["width"] ||
-        ptCur["y"] < 0 ||
-        ptCur["y"] >= ant["height"]
-    ant["position"]
+    ptCur = (x: ant.position.x + ant.origin.x, y: ant.position.y + ant.origin.y)
+    ant.outOfBounds = 
+        ptCur.x < 0 ||
+        ptCur.x >= ant["width"] ||
+        ptCur.y < 0 ||
+        ptCur.y >= ant["height"]
+    ant.position
 }
 
 func newAnt(width, height) {
@@ -74,10 +48,11 @@ func newAnt(width, height) {
 func run() {
     const w = 100
     const h = 100
+    const blacks = Array.empty(w, () => Array.empty(h, false))
     const ant = newAnt(w, h)
 
-    while !ant["outOfBounds"] {
-        step(ant)
+    while !ant.outOfBounds {
+        blacks.step(ant)
     }
 
     var iRow = 0;
@@ -86,7 +61,7 @@ func run() {
         var iCol = 0;
         var ln = ""
         while iCol < h {
-            ln += if getIsBlack(iCol, iRow) {
+            ln += if blacks[iCol][iRow] {
                 "#"
             } else {
                 " "

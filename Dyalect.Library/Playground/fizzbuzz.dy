@@ -20,3 +20,13 @@
 }
 
 play()
+
+func defaultValue() {
+    var i = 0
+    while true {
+        yield i
+        i += 1
+    }
+}
+
+Array.empty(100, defaultValue())
