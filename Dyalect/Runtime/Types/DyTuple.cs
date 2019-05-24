@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -242,6 +243,27 @@ namespace Dyalect.Runtime.Types
 
             if (name == "snd")
                 return DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters);
+
+            return null;
+        }
+
+        private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd)
+        {
+            return new DyTuple(new DyObject[] { fst, snd });
+        }
+
+        private DyObject GetTriple(ExecutionContext ctx, DyObject fst, DyObject snd, DyObject thd)
+        {
+            return new DyTuple(new DyObject[] { fst, snd, thd });
+        }
+
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        {
+            if (name == "pair")
+                return DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second"));
+
+            if (name == "triple")
+                return DyForeignFunction.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third"));
 
             return null;
         }

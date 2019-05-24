@@ -1,3 +1,6 @@
+# 0.7.0
+  * Done: _Tuple: add static methods "pair" and "triple"_ ([Issue #103](https://github.com/vorov2/dyalect/issues/103)).
+
 # 0.6.2
   * Done: _Array.empty should accept function as a default_ ([Issue #114](https://github.com/vorov2/dyalect/issues/114)).
   * Fixed: _Negative literals and parser_ ([Issue #113](https://github.com/vorov2/dyalect/issues/113)). A minus sign `-` is no longer a part of numeric literals and is always treated as a negation operator.
