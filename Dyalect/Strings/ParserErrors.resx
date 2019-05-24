@@ -126,6 +126,9 @@
   <data name="InvalidBinding" xml:space="preserve">
     <value>Invalid variable declaration.</value>
   </data>
+  <data name="InvalidCharLiteral" xml:space="preserve">
+    <value>Invalid character literal.</value>
+  </data>
   <data name="InvalidEscapeCode" xml:space="preserve">
     <value>Unrecognized escape sequence.</value>
   </data>

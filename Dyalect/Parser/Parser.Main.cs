@@ -288,7 +288,14 @@ namespace Dyalect.Parser
         private char ParseChar()
         {
             var str = ParseSimpleString();
-            return str == null ? '\0' : str[0];
+
+            if (str == null)
+                return '\0';
+
+            if (str.Length > 1)
+                AddError(ParserError.InvalidCharLiteral, new Location(t.line, t.col));
+
+            return str[0];
         }
 
         private int GetImplicit()

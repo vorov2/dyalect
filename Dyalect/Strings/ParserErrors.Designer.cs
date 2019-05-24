@@ -88,6 +88,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid character literal..
+        /// </summary>
+        internal static string InvalidCharLiteral {
+            get {
+                return ResourceManager.GetString("InvalidCharLiteral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unrecognized escape sequence..
         /// </summary>
         internal static string InvalidEscapeCode {

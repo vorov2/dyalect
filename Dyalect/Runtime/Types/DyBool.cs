@@ -31,6 +31,9 @@
         public override abstract object ToObject();
 
         public override DyObject Clone() => this;
+
+        public static implicit operator DyBool(bool v) => v ? True : False;
+        public static implicit operator bool(DyBool v) => ReferenceEquals(v, True);
     }
 
     internal sealed class DyBoolTypeInfo : DyTypeInfo

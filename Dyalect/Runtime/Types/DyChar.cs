@@ -121,6 +121,33 @@ namespace Dyalect.Runtime.Types
             if (name == "to")
                 return DyForeignFunction.Member(name, Range, -1, new Par("value"));
 
+            if (name == "isLower")
+                return DyForeignFunction.Member(name, (_,c) => (DyBool)char.IsLower(c.GetChar()));
+
+            if (name == "isUpper")
+                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsUpper(c.GetChar()));
+
+            if (name == "isControl")
+                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsControl(c.GetChar()));
+
+            if (name == "isDigit")
+                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsDigit(c.GetChar()));
+
+            if (name == "isLetter")
+                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLetter(c.GetChar()));
+
+            if (name == "isLetterOrDigit")
+                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLetterOrDigit(c.GetChar()));
+
+            if (name == "isWhiteSpace")
+                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsWhiteSpace(c.GetChar()));
+
+            if (name == "lower")
+                return DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToLower(c.GetChar())));
+
+            if (name == "upper")
+                return DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToUpper(c.GetChar())));
+
             return null;
         }
 

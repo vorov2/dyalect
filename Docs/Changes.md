@@ -2,7 +2,9 @@
   * Done: _Cloning objects_ ([Issue #48](https://github.com/vorov2/dyalect/issues/48)).
   * Done: _Tuple: add static methods "pair" and "triple"_ ([Issue #103](https://github.com/vorov2/dyalect/issues/103)).
   * Done: _Function composition_ ([Issue #104](https://github.com/vorov2/dyalect/issues/104)). A static `compose(first, second)` and instance `compose(with)` methods are added to a `Function` type.
+  * Done: _Char: add standard methods_ ([Issue #52](https://github.com/vorov2/dyalect/issues/52)).
   * Fixed: _Method comparison_ ([Issue #119](https://github.com/vorov2/dyalect/issues/119)).
+  * Fixed: _Char escape codes_ ([Issue #120](https://github.com/vorov2/dyalect/issues/120)).
 
 # 0.6.2
   * Done: _Array.empty should accept function as a default_ ([Issue #114](https://github.com/vorov2/dyalect/issues/114)).

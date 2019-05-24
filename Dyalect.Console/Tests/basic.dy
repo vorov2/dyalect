@@ -421,6 +421,31 @@ func charTest1() {
     assert(false, "cc" < 'c')
 }
 
+func charTest2() {
+    assert(true, 'c' == 'C'.lower())
+    assert(true, 'C' == 'c'.upper())
+    assert(true, 'c'.isLower())
+    assert(true, 'C'.isUpper())
+}
+
+func charTest3() {
+    assert(true, '\s'.isWhiteSpace())
+    assert(true, ' '.isWhiteSpace())
+    assert(true, '\u0020'.isWhiteSpace())
+    assert(true, ' '.isWhiteSpace())
+    assert(true, '\t'.isControl())
+    assert(false, 't'.isControl())
+}
+
+func charTest4() {
+    assert(true, '9'.isDigit())
+    assert(false, 'A'.isDigit())
+    assert(true, 'A'.isLetter())
+    assert(false, '1'.isLetter())
+    assert(true, '9'.isLetterOrDigit())
+    assert(true, 't'.isLetterOrDigit())
+}
+
 func nameofTest() {
     assert("nameofTest", nameof(nameofTest))
     assert("toString", nameof("".toString))

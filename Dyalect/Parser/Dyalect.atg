@@ -26,7 +26,7 @@ TOKENS
                         ).
 
     stringToken = "\"" { stringChar | "\\" esc }  "\"".
-    charToken = "'" ( char | "\\" esc ) "'".
+    charToken = "'" { char | "\\" esc } "'".
     implicitToken = "$" digit { digit }.
 
     varToken            = "var".
