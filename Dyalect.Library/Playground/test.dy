@@ -1,6 +1,18 @@
-﻿func fun(x, y = 0, z = 12.2, dsc = "Useless text") {
-    print("x=\(x), y=\(y), z=\(z), dsc=\(dsc)")
+﻿func C(i) {
+    () => i
 }
-
-fun(12, z: 24.4, dsc: "Foo", y: 3)
-fun(y: 42, x: 12)
+ 
+func A(k, x1, x2, x3, x4, x5) {
+    var b
+    b = () => {
+        k -= 1
+        A(k, b, x1, x2, x3, x4)
+    }
+    if k <= 0 {
+        x4() + x5()
+    } else {
+        b()
+    }
+}
+ 
+print(A(12, C(1), C(-1), C(-1), C(1), C(0)))

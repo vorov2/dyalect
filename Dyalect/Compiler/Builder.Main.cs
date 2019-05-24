@@ -432,6 +432,7 @@ namespace Dyalect.Compiler
             }
 
             cw.FunCall(node.Arguments.Count);
+
             PopIf(hints);
         }
 
@@ -583,6 +584,8 @@ namespace Dyalect.Compiler
         private void Build(DBlock node, Hints hints, CompilerContext ctx)
         {
             var hasPush = hints.Has(Push);
+            var hasLast = hints.Has(Last);
+            hints = hints.Remove(Last);
 
             if (node.Nodes?.Count == 0)
             {
@@ -597,8 +600,10 @@ namespace Dyalect.Compiler
             for (var i = 0; i < node.Nodes.Count; i++)
             {
                 var n = node.Nodes[i];
-                var push = hasPush && i == node.Nodes.Count - 1 ? hints.Append(Push) : hints.Remove(Push);
-                Build(n, push, ctx);
+                var last = i == node.Nodes.Count - 1;
+                var nh = hasPush && last ? hints.Append(Push) : hints.Remove(Push);
+                nh = hasLast && last ? nh.Append(Last) : nh;
+                Build(n, nh, ctx);
             }
 
             EndScope();

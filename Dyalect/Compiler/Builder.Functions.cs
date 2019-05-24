@@ -185,7 +185,7 @@ namespace Dyalect.Compiler
                 Build(dec, hints.Append(Iterator), ctx);
             }
             else
-                Build(node.Body, hints, ctx);
+                Build(node.Body, hints.Append(Last), ctx);
 
             //Возвращаемся из функции. Кстати, любое исполнение функции доходит до сюда,
             //т.е. нельзя выйти раньше. Преждевременный return всё равно прыгает сюда, и здесь
