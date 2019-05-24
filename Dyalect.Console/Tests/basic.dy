@@ -515,3 +515,15 @@ func cloneTest() {
     assert(true, xs == xs)
     assert(false, xs.clone() == xs)
 }
+
+func compositionTest() {
+    func sum(x, y) {
+        x + y
+    }
+    func fmt(res) {
+        "result: \(res)"
+    }
+    const fun = Function.compose(sum, fmt)
+    var res = fun(13, 14)
+    assert(res, "result: 27")
+}

@@ -5,6 +5,31 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyForeignFunction : DyFunction
     {
+        private sealed class CompositionContainer : DyForeignFunction
+        {
+            private readonly DyFunction first;
+            private readonly DyFunction second;
+
+            public CompositionContainer(DyFunction first, DyFunction second) : base(null, first.Parameters, first.TypeId, first.VarArgIndex)
+            {
+                this.first = first;
+                this.second = second;
+            }
+
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
+            {
+                var res = first.Call(ctx, args);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                return second.Call1(res, ctx);
+            }
+
+            internal override bool Equals(DyFunction func) => func is CompositionContainer cc
+                && cc.first.Equals(first) && cc.second.Equals(second);
+        }
+
         private sealed class MemberFunction : DyForeignFunction
         {
             private readonly Func<ExecutionContext, DyObject, DyObject[], DyObject> fun;
@@ -209,6 +234,8 @@ namespace Dyalect.Runtime.Types
         {
             this.name = name ?? DefaultName;
         }
+
+        internal static DyFunction Compose(DyFunction first, DyFunction second) => new CompositionContainer(first, second);
 
         internal static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun, int varArgIndex, params Par[] pars) => new MemberFunction(name, fun, pars, varArgIndex);
 

@@ -1,18 +1,10 @@
-﻿func C(i) {
-    () => i
+﻿func sum(x, y) {
+    x + y
 }
- 
-func A(k, x1, x2, x3, x4, x5) {
-    var b
-    b = () => {
-        k -= 1
-        A(k, b, x1, x2, x3, x4)
-    }
-    if k <= 0 {
-        x4() + x5()
-    } else {
-        b()
-    }
+
+func fmt(res) {
+    "result: \(res)"
 }
- 
-print(A(12, C(1), C(-1), C(-1), C(1), C(0)))
+
+const fun = Function.compose(sum, fmt)
+fun(13, 14)
