@@ -516,7 +516,7 @@ func cloneTest() {
     assert(false, xs.clone() == xs)
 }
 
-func compositionTest() {
+func compositionTest1() {
     func sum(x, y) {
         x + y
     }
@@ -524,6 +524,18 @@ func compositionTest() {
         "result: \(res)"
     }
     const fun = Function.compose(sum, fmt)
+    var res = fun(13, 14)
+    assert(res, "result: 27")
+}
+
+func compositionTest2() {
+    func sum(x, y) {
+        x + y
+    }
+    func fmt(res) {
+        "result: \(res)"
+    }
+    const fun = sum.compose(with: fmt)
     var res = fun(13, 14)
     assert(res, "result: 27")
 }

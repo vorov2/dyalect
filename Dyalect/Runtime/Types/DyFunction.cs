@@ -73,6 +73,14 @@ namespace Dyalect.Runtime.Types
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
 
+        protected override DyFunction GetMember(string name, ExecutionContext ctx)
+        {
+            if (name == "compose")
+                return DyForeignFunction.Member(name, Compose, -1, new Par("with"));
+
+            return null;
+        }
+
         private DyObject Compose(ExecutionContext ctx, DyObject first, DyObject second)
         {
             if (first is DyFunction f1)

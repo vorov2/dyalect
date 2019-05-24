@@ -6,5 +6,6 @@ func fmt(res) {
     "result: \(res)"
 }
 
-const fun = Function.compose(sum, fmt)
+//const fun = Function.compose(sum, fmt)
+const fun = sum.compose(with: fmt)
 fun(13, 14)
