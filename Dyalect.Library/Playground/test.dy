@@ -1,11 +1,19 @@
-﻿func sum(x, y) {
-    x + y
+﻿func fib(x) {
+    if x == 0 {
+        return 0
+    } else if x == 1 {
+        return 1
+    }
+    return fib(x-1) + fib(x-2)
 }
 
-func fmt(res) {
-    "result: \(res)"
+func fibt(n, a, b) {
+    if n == 0 {
+        return a
+    } else if n == 1 {
+        return b
+    }
+    return fibt(n-1, b, a+b)
 }
 
-//const fun = Function.compose(sum, fmt)
-const fun = sum.compose(with: fmt)
-fun(13, 14)
+fib(35)
