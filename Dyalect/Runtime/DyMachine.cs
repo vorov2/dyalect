@@ -81,8 +81,9 @@ namespace Dyalect.Runtime
             DyObject right;
             Op op;
             DyFunction callFun;
-
             var types = ctx.Types;
+
+            PROLOGUE:
             var unit = ctx.Composition.Units[function.UnitId];
             var ops = unit.Ops;
             var layout = unit.Layouts[function.FunctionId];
@@ -96,8 +97,6 @@ namespace Dyalect.Runtime
                 locals = function.Locals;
                 offset = function.PreviousOffset;
             }
-
-            var captures = function.Captures;
 
             CYCLE:
             {
@@ -159,14 +158,14 @@ namespace Dyalect.Runtime
                         evalStack.Push(locals[op.Data]);
                         break;
                     case OpCode.Pushvar:
-                        right = captures[captures.Count - (op.Data & byte.MaxValue)][op.Data >> 8];
+                        right = function.Captures[function.Captures.Count - (op.Data & byte.MaxValue)][op.Data >> 8];
                         evalStack.Push(right);
                         break;
                     case OpCode.Pushext:
                         evalStack.Push(ctx.Units[unit.UnitIds[op.Data & byte.MaxValue]][op.Data >> 8]);
                         break;
                     case OpCode.Popvar:
-                        captures[captures.Count - (op.Data & byte.MaxValue)][op.Data >> 8] = evalStack.Pop();
+                        function.Captures[function.Captures.Count - (op.Data & byte.MaxValue)][op.Data >> 8] = evalStack.Pop();
                         break;
                     case OpCode.Br:
                         offset = op.Data;
@@ -301,20 +300,31 @@ namespace Dyalect.Runtime
                     case OpCode.Ret:
                         function.Locals = null;
                         if (ctx.CallStack.Count > 0)
-                            ctx.CallStack.Pop();
-                        return evalStack.Pop();
+                        {
+                            var cp = ctx.CallStack.Pop();
+                            cp.EvalStack.Push(evalStack.Pop());
+                            function = cp.Function;
+                            locals = cp.Locals;
+                            offset = cp.Offset;
+                            unit = ctx.Composition.Units[function.UnitId];
+                            ops = unit.Ops;
+                            evalStack = cp.EvalStack;
+                            goto CYCLE;
+                        }
+                        else
+                            return evalStack.Pop();
                     case OpCode.Fail:
                         ctx.UserCode(evalStack.Pop().ToString());
                         ProcessError(ctx, function, ref offset);
                         break;
                     case OpCode.NewIter:
-                        evalStack.Push(DyIterator.CreateIterator(function.UnitId, op.Data, captures, locals));
+                        evalStack.Push(DyIterator.CreateIterator(function.UnitId, op.Data, function.Captures, locals));
                         break;
                     case OpCode.NewFun:
-                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, captures, locals));
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals));
                         break;
                     case OpCode.NewFunV:
-                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, captures, locals, ctx.AUX));
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, ctx.AUX));
                         break;
                     case OpCode.HasMember:
                         right = evalStack.Peek();
@@ -438,7 +448,6 @@ namespace Dyalect.Runtime
                             ctx.Locals.Peek().VarArgs.Add(evalStack.Pop());
                             break;
                         }
-
                         ctx.Locals.Peek().Locals[op.Data] = evalStack.Pop();
                         break;
                     case OpCode.FunArgNm:
@@ -450,7 +459,6 @@ namespace Dyalect.Runtime
                                 ProcessError(ctx, function, ref offset, evalStack);
                                 break;
                             }
-
                             ctx.Locals.Peek().Locals[idx] = evalStack.Pop();
                         }
                         break;
@@ -464,14 +472,26 @@ namespace Dyalect.Runtime
                                 if (ctx.Error != null) ProcessError(ctx, function, ref offset, evalStack);
                             }
 
-                            ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
+                            //ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
+                            ctx.CallStack.Push(new CallPoint { EvalStack = evalStack, Function = function, Locals = locals, Offset = offset });
 
                             if (!callFun.IsExternal)
-                                evalStack.Push(ExecuteWithData((DyNativeFunction)callFun, ctx.Locals.Pop().Locals, ctx));
+                            {
+                                function = (DyNativeFunction)callFun;
+                                locals = ctx.Locals.Pop().Locals;
+                                goto PROLOGUE;
+                                //evalStack.Push(ExecuteWithData((DyNativeFunction)callFun, ctx.Locals.Pop().Locals, ctx));
+                            }
                             else
                             {
-                                evalStack.Push(callFun.Call(ctx, ctx.Locals.Pop().Locals));
-                                ctx.CallStack.Pop();
+                                right = CallExternalFunction(callFun, ctx);
+                                if (ctx.Error != null)
+                                    ProcessError(ctx, function, ref offset, evalStack);
+                                else
+                                {
+                                    evalStack.Push(right);
+                                    ctx.CallStack.Pop();
+                                }
                             }
 
                             if (ctx.Error != null)
@@ -491,6 +511,19 @@ namespace Dyalect.Runtime
                 }
             }
             goto CYCLE;
+        }
+
+        private static DyObject CallExternalFunction(DyFunction func, ExecutionContext ctx)
+        {
+            try
+            {
+                return func.Call(ctx, ctx.Locals.Pop().Locals);
+            }
+            catch (Exception ex)
+            {
+                ctx.ExternalFunctionFailure(func.FunctionName, ex.Message);
+                return DyNil.Instance;
+            }
         }
 
         private static DyTuple MakeTuple(EvalStack stack, int size)
@@ -544,7 +577,7 @@ namespace Dyalect.Runtime
             for (var i = 0; i < callStack.Count; i++)
             {
                 var cm = callStack[i];
-                st.Push(new StackPoint((int)(cm & int.MaxValue), (int)(cm >> 32)));
+                st.Push(new StackPoint(cm.Offset, cm.Function.UnitId));
             }
 
             return st;

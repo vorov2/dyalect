@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Dyalect.Runtime.Types;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime
 {
-    internal sealed class CallStack : IEnumerable<long>
+    internal sealed class CallStack : IEnumerable<CallPoint>
     {
         private const int DEFAULT_SIZE = 4;
-        private long[] array;
+        private CallPoint[] array;
         private int initialSize;
 
         public CallStack() : this(DEFAULT_SIZE)
@@ -18,10 +19,10 @@ namespace Dyalect.Runtime
         public CallStack(int size)
         {
             this.initialSize = size;
-            array = new long[size];
+            array = new CallPoint[size];
         }
 
-        public IEnumerator<long> GetEnumerator()
+        public IEnumerator<CallPoint> GetEnumerator()
         {
             for (var i = 0; i < Count; i++)
                 yield return array[i];
@@ -35,27 +36,27 @@ namespace Dyalect.Runtime
         public void Clear()
         {
             Count = 0;
-            array = new long[initialSize];
+            array = new CallPoint[initialSize];
         }
 
-        public ref long Pop()
+        public CallPoint Pop()
         {
             if (Count == 0)
                 throw new IndexOutOfRangeException();
 
-            return ref array[--Count];
+            return array[--Count];
         }
 
-        public ref long Peek()
+        public CallPoint Peek()
         {
-            return ref array[Count - 1];
+            return array[Count - 1];
         }
 
-        public void Push(long val)
+        public void Push(CallPoint val)
         {
             if (Count == array.Length)
             {
-                var dest = new long[array.Length * 2];
+                var dest = new CallPoint[array.Length * 2];
 
                 for (var i = 0; i < Count; i++)
                     dest[i] = array[i];
@@ -71,17 +72,25 @@ namespace Dyalect.Runtime
             if (Count > 0)
                 Push(Peek());
             else
-                Push((long)0 | (long)0 << 32);
+                Push(default);
         }
 
         public CallStack Clone() => (CallStack)MemberwiseClone();
 
         public int Count;
 
-        public long this[int index]
+        public CallPoint this[int index]
         {
             get { return array[index]; }
             set { array[index] = value; }
         }
+    }
+
+    internal class CallPoint
+    {
+        public DyObject[] Locals;
+        public EvalStack EvalStack;
+        public int Offset;
+        public DyNativeFunction Function;
     }
 }
