@@ -74,6 +74,8 @@ namespace Dyalect.Runtime
                 Push((long)0 | (long)0 << 32);
         }
 
+        public CallStack Clone() => (CallStack)MemberwiseClone();
+
         public int Count;
 
         public long this[int index]

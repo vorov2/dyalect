@@ -5,17 +5,20 @@ namespace Dyalect.Runtime
 {
     public sealed class DyCodeException : DyRuntimeException
     {
-        public DyCodeException(DyError err, CallStackTrace cs, Exception innerException) : base(null, innerException)
+        internal DyCodeException(DyError err, CallStack callStack, CallStackTrace cs, Exception innerException) : base(null, innerException)
         {
             Error = err;
-            CallStack = cs;
+            CallTrace = cs;
+            CallStack = callStack;
         }
+
+        internal CallStack CallStack { get; }
 
         public override string Message => Error.GetDescription();
 
         public DyError Error { get; private set; }
 
-        public CallStackTrace CallStack { get; private set; }
+        public CallStackTrace CallTrace { get; private set; }
 
         public override string ToString()
         {

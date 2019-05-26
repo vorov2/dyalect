@@ -552,11 +552,11 @@ namespace Dyalect.Runtime
 
         private static DyCodeException CreateException(DyError err, int offset, int moduleHandle, ExecutionContext ctx, Exception ex = null)
         {
-            var dump = Dump(ctx.CallStack);
+            var dump = Dump(ctx.CallStack.Clone());
             dump.Push(new StackPoint(offset, moduleHandle));
             var deb = new DyDebugger(ctx.Composition);
             var cs = deb.BuildCallStack(dump);
-            return new DyCodeException(err, cs, ex);
+            return new DyCodeException(err, ctx.CallStack, cs, ex);
         }
 
         public static IEnumerable<RuntimeVar> DumpVariables(ExecutionContext ctx)
