@@ -123,11 +123,13 @@ namespace Dyalect.Compiler
 
             StartScope(false, node.Catch.Location);
 
-            if (node.BindVariable != null)
+            if (node.BindVariable != null && node.BindVariable != "_")
             {
                 var sv = AddVariable(node.BindVariable, node.Catch, VarFlags.Const);
                 cw.PopVar(sv);
             }
+            else if (node.BindVariable != null)
+                cw.Pop();
 
             Build(node.Catch, hints, ctx);
             EndScope();

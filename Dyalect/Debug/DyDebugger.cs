@@ -35,6 +35,13 @@ namespace Dyalect.Debug
             do
             {
                 var mem = callChain.Pop();
+
+                if (mem.External)
+                {
+                    frames.Add(CallFrame.External);
+                    continue;
+                }
+
                 var offset = mem.BreakAddress - 1;
                 var unit = Composition.Units[mem.UnitHandle];
                 var funSym = unit.Symbols.FindFunSym(offset);

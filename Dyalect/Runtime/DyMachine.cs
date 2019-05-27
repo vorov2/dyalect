@@ -47,7 +47,7 @@ namespace Dyalect.Runtime
                 ctx.Units[0] = mems;
             }
 
-            ctx.CallStack.Push(new CallPoint());
+            ctx.CallStack.Push(Caller.External);
             ctx.Units[unitId] = ctx.Units[unitId] ?? new DyObject[lay0.Size];
             return ExecuteWithData(Global, null, ctx);
         }
@@ -90,6 +90,7 @@ namespace Dyalect.Runtime
                     case OpCode.Term:
                         if (evalStack.Size > 1 || evalStack.Size == 0)
                             throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
+                        ctx.CallStack.Pop();
                         ctx.Units[function.UnitId] = locals;
                         return evalStack.Pop();
                     case OpCode.Pop:
@@ -280,7 +281,7 @@ namespace Dyalect.Runtime
                         {
                             var cp = ctx.CallStack.Pop();
 
-                            if (cp == CallPoint.External)
+                            if (cp == Caller.External)
                                 return evalStack.Pop();
 
                             cp.EvalStack.Push(evalStack.Pop());
@@ -386,7 +387,7 @@ namespace Dyalect.Runtime
                         {
                             var cp = ctx.CallStack.Pop();
 
-                            if (cp == CallPoint.External)
+                            if (cp == Caller.External)
                                 return evalStack.Pop();
 
                             cp.EvalStack.Push(evalStack.Pop());
@@ -468,15 +469,13 @@ namespace Dyalect.Runtime
                                 if (ctx.Error != null && ProcessError(ctx, function, offset)) goto CATCH;
                             }
 
-                            //ctx.CallStack.Push((long)offset | (long)function.UnitId << 32);
-                            ctx.CallStack.Push(new CallPoint { EvalStack = evalStack, Function = function, Locals = locals, Offset = offset });
+                            ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
 
                             if (!callFun.IsExternal)
                             {
                                 function = (DyNativeFunction)callFun;
                                 locals = ctx.Locals.Pop().Locals;
                                 goto PROLOGUE;
-                                //evalStack.Push(ExecuteWithData((DyNativeFunction)callFun, ctx.Locals.Pop().Locals, ctx));
                             }
                             else
                             {
@@ -502,12 +501,10 @@ namespace Dyalect.Runtime
                             evalStack.Push(right.TypeId == op.Data ? DyBool.True : DyBool.False);
                         break;
                     case OpCode.Start:
-                        ctx.CallStack.Peek().CatchMark = new CatchMark(op.Data) {
-                            Previous = ctx.CallStack.Peek().CatchMark
-                        };
+                        ctx.CatchMarks.Push(new CatchMark(op.Data, ctx.CallStack.Peek()));
                         break;
                     case OpCode.End:
-                        ctx.CallStack.Peek().CatchMark = ctx.CallStack.Peek().CatchMark.Previous;
+                        ctx.CatchMarks.Pop();
                         break;
                 }
             }
@@ -516,8 +513,7 @@ namespace Dyalect.Runtime
             {
                 evalStack.Clear();
                 var cp = ctx.CallStack.Peek();
-                offset = cp.CatchMark.Offset;
-                cp.CatchMark = cp.CatchMark.Previous;
+                offset = ctx.CatchMarks.Pop().Offset;
 
                 if (cp.Function != null)
                 {
@@ -594,7 +590,9 @@ namespace Dyalect.Runtime
             for (var i = 0; i < callStack.Count; i++)
             {
                 var cm = callStack[i];
-                if (cm.Function != null)
+                if (ReferenceEquals(cm, Caller.External))
+                    st.Push(new StackPoint(external: true));
+                else
                     st.Push(new StackPoint(cm.Offset, cm.Function.UnitId));
             }
 
@@ -628,14 +626,16 @@ namespace Dyalect.Runtime
 
         private static bool FindCatch(ExecutionContext ctx)
         {
+            if (ctx.CatchMarks.Count == 0)
+                return false;
+
+            var mark = ctx.CatchMarks.Peek();
+
             while (ctx.CallStack.Count > 0)
             {
                 var cp = ctx.CallStack.Pop();
 
-                if (cp == CallPoint.External)
-                    continue;
-
-                if (cp.CatchMark != null)
+                if (ReferenceEquals(mark.Caller, cp))
                 {
                     ctx.CallStack.Push(cp);
                     return true;

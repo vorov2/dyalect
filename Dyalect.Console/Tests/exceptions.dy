@@ -1,0 +1,35 @@
+﻿func catchTest1() {
+    var x
+    try {
+        x = 2
+    } catch e {
+        x = 22
+    }
+    //catch should be ignored
+    assert(2, x)
+}
+
+func catchTest2() {
+    var res =
+        try {
+            2 / 0
+        } catch e {
+            42
+        }
+    assert(42, res)
+}
+
+func catchTest3() {
+    var res =
+        try {
+            try {
+                2 / 0
+            }
+            catch e {
+                142
+            }
+        } catch e {
+            42
+        }
+    assert(142, res)
+}

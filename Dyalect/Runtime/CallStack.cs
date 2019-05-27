@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace Dyalect.Runtime
 {
-    internal sealed class CallStack : IEnumerable<CallPoint>
+    internal sealed class CallStack : IEnumerable<Caller>
     {
         private const int DEFAULT_SIZE = 4;
-        private CallPoint[] array;
+        private Caller[] array;
         private int initialSize;
 
         public CallStack() : this(DEFAULT_SIZE)
@@ -19,10 +19,10 @@ namespace Dyalect.Runtime
         public CallStack(int size)
         {
             this.initialSize = size;
-            array = new CallPoint[size];
+            array = new Caller[size];
         }
 
-        public IEnumerator<CallPoint> GetEnumerator()
+        public IEnumerator<Caller> GetEnumerator()
         {
             for (var i = 0; i < Count; i++)
                 yield return array[i];
@@ -36,10 +36,10 @@ namespace Dyalect.Runtime
         public void Clear()
         {
             Count = 0;
-            array = new CallPoint[initialSize];
+            array = new Caller[initialSize];
         }
 
-        public CallPoint Pop()
+        public Caller Pop()
         {
             if (Count == 0)
                 throw new IndexOutOfRangeException();
@@ -47,16 +47,16 @@ namespace Dyalect.Runtime
             return array[--Count];
         }
 
-        public CallPoint Peek()
+        public Caller Peek()
         {
             return array[Count - 1];
         }
 
-        public void Push(CallPoint val)
+        public void Push(Caller val)
         {
             if (Count == array.Length)
             {
-                var dest = new CallPoint[array.Length * 2];
+                var dest = new Caller[array.Length * 2];
 
                 for (var i = 0; i < Count; i++)
                     dest[i] = array[i];
@@ -71,32 +71,43 @@ namespace Dyalect.Runtime
 
         public int Count;
 
-        public CallPoint this[int index]
+        public Caller this[int index]
         {
             get { return array[index]; }
             set { array[index] = value; }
         }
     }
 
-    internal sealed class CallPoint
+    internal sealed class Caller
     {
-        public static readonly CallPoint External = new CallPoint { Locals = Statics.EmptyDyObjects, Function = DyMachine.Global };
+        public static readonly Caller External = new Caller();
 
-        public DyObject[] Locals;
-        public EvalStack EvalStack;
-        public int Offset;
-        public CatchMark CatchMark;
-        public DyNativeFunction Function;
+        private Caller() { }
+
+        public Caller(DyNativeFunction function, int offset, EvalStack evalStack, DyObject[] locals)
+        {
+            Function = function;
+            Offset = offset;
+            EvalStack = evalStack;
+            Locals = locals;
+        }
+
+        public readonly DyObject[] Locals;
+        public readonly EvalStack EvalStack;
+        public readonly int Offset;
+        public readonly DyNativeFunction Function;
     }
 
     internal sealed class CatchMark
     {
-        public CatchMark(int offset)
+        public CatchMark(int offset, Caller caller)
         {
             Offset = offset;
+            Caller = caller;
         }
 
         public readonly int Offset;
-        public CatchMark Previous;
+
+        public readonly Caller Caller;
     }
 }

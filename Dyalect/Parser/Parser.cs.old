@@ -853,7 +853,7 @@ namespace Dyalect.Parser
 			Get();
 			tc.BindVariable = t.val; 
 			Block(out node);
-			tc.Catch = node 
+			tc.Catch = node; 
 		} else SynErr(90);
 		node = tc; 
 	}

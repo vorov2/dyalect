@@ -60,8 +60,9 @@ namespace Dyalect.Runtime
         {
             var sb = new StringBuilder(RuntimeErrors.ResourceManager.GetString(Code.ToString()));
 
-            foreach (var dt in DataItems)
-                sb.Replace("%" + dt.Key + "%", dt.Value.ToString());
+            if (DataItems != null)
+                foreach (var dt in DataItems)
+                    sb.Replace("%" + dt.Key + "%", dt.Value.ToString());
 
             return sb.ToString();
         }
