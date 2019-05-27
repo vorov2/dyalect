@@ -331,6 +331,8 @@ func stringTest2() {
     var str = "Hello, world!"
     assert(4, str.indexOf("o"))
     assert(8, str.lastIndexOf("o"))
+    assert(8, str.indexOf("o", fromIndex: 7))
+    assert(3, str.lastIndexOf("l", fromIndex: 6, count: 4))
 }
 
 func stringTest3() {

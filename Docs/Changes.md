@@ -4,6 +4,7 @@
   * Done: _Function composition_ ([Issue #104](https://github.com/vorov2/dyalect/issues/104)). A static `compose(first, second)` and instance `compose(with)` methods are added to a `Function` type.
   * Done: _Char: add standard methods_ ([Issue #52](https://github.com/vorov2/dyalect/issues/52)).
   * Done: _Array copying_ ([Issue #36](https://github.com/vorov2/dyalect/issues/36)).
+  * Done: _Extend _String.indexOf_ functon_ ([Issue #112](https://github.com/vorov2/dyalect/issues/112)).
   * Fixed: _Method comparison_ ([Issue #119](https://github.com/vorov2/dyalect/issues/119)).
   * Fixed: _Char escape codes_ ([Issue #120](https://github.com/vorov2/dyalect/issues/120)).
 
