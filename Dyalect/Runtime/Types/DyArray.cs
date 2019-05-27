@@ -508,6 +508,54 @@ namespace Dyalect.Runtime.Types
             return new DyArray(arr.ToArray());
         }
 
+        private static DyObject Copy(ExecutionContext ctx, DyObject from, DyObject sourceIndex, DyObject to, DyObject destIndex, DyObject length)
+        {
+            if (sourceIndex.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, sourceIndex);
+
+            var iSourceIndex = sourceIndex.GetInteger();
+
+            if (destIndex.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, destIndex);
+
+            var iDestIndex = destIndex.GetInteger();
+
+            if (length.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, length);
+
+            var iLen = length.GetInteger();
+
+            if (from.TypeId != DyType.Array)
+                return ctx.InvalidType(DyTypeNames.Array, from);
+
+            var sourceArr = (DyArray)from;
+
+            if (to.TypeId != DyType.Array && to.TypeId != DyType.Nil)
+                return ctx.InvalidType(DyTypeNames.Array, to);
+
+            var destArr = to == DyNil.Instance ? new DyArray(new DyObject[iDestIndex + iLen]) : (DyArray)to;
+
+            if (iSourceIndex < 0 || iSourceIndex >= sourceArr.Count)
+                return ctx.IndexOutOfRange(DyTypeNames.Array, sourceIndex);
+
+            if (iDestIndex < 0 || iDestIndex >= destArr.Count)
+                return ctx.IndexOutOfRange(DyTypeNames.Array, destIndex);
+
+            if (iSourceIndex + iLen < 0 || iSourceIndex + iLen > sourceArr.Count)
+                return ctx.IndexOutOfRange(DyTypeNames.Array, iSourceIndex + iLen);
+
+            if (iDestIndex + iLen < 0 || iDestIndex + iLen > destArr.Count)
+                return ctx.IndexOutOfRange(DyTypeNames.Array, iDestIndex + iLen);
+
+            Array.Copy(sourceArr.Values, iSourceIndex, destArr.Values, iDestIndex, iLen);
+
+            if (iDestIndex != 0 && to == DyNil.Instance)
+                for (var i = 0; i < iDestIndex; i++)
+                    destArr[i] = DyNil.Instance;
+
+            return destArr;
+        }
+
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "new")
@@ -518,6 +566,9 @@ namespace Dyalect.Runtime.Types
 
             if (name == "concat")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
+
+            if (name == "copy")
+                return DyForeignFunction.Static(name, Copy, -1, new Par("from"), new Par("fromIndex", DyInteger.Get(0)), new Par("to", DyNil.Instance), new Par("toIndex", DyInteger.Get(0)), new Par("count"));
 
             return null;
         }

@@ -564,3 +564,29 @@ func compositionTest2() {
     var res = fun(13, 14)
     assert(res, "result: 27")
 }
+
+func arrayCopyTest1() {
+    var xs = [1, 2, 3, 4, 5, 6]
+    var ys = Array.empty(3)
+    Array.copy(xs, 1, ys, 0, 3)
+    assert([2,3,4], ys)
+}
+
+func arrayCopyTest2() {
+    var xs = [1, 2, 3, 4, 5, 6]
+    var ys = Array.copy(from: xs, fromIndex: 1, count: 3)
+    assert([2,3,4], ys)
+}
+
+func arrayCopyTest3() {
+    var xs = [1, 2, 3, 4, 5, 6]
+    var ys = [999, 999, 0, 0, 0]
+    ys = Array.copy(xs, 1, ys, 2, 3)
+    assert([999,999,2,3,4], ys)
+}
+
+func arrayCopyTest4() {
+    var xs = [1, 2, 3, 4, 5, 6]
+    var ys = Array.copy(xs, count: 3)
+    assert([1,2,3], ys)
+}
