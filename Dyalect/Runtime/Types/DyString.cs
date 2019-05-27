@@ -438,10 +438,12 @@ namespace Dyalect.Runtime.Types
                 if (a.TypeId == DyType.String || a.TypeId == DyType.Char)
                     strArr[i] = a.GetString();
                 else
+                {
                     strArr[i] = arr[i].ToString(ctx);
 
-                if (ctx.HasErrors)
-                    return DyNil.Instance;
+                    if (ctx.HasErrors)
+                        return DyNil.Instance;
+                }
             }
 
             return new DyString(string.Join(separator.GetString(), strArr));
