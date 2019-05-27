@@ -1,10 +1,11 @@
 # 0.7.0
   * Done: _Cloning objects_ ([Issue #48](https://github.com/vorov2/dyalect/issues/48)).
-  * Done: _Tuple: add static methods "pair" and "triple"_ ([Issue #103](https://github.com/vorov2/dyalect/issues/103)).
+  * Done: _Tuple: add static methods `pair` and `triple`_ ([Issue #103](https://github.com/vorov2/dyalect/issues/103)).
   * Done: _Function composition_ ([Issue #104](https://github.com/vorov2/dyalect/issues/104)). A static `compose(first, second)` and instance `compose(with)` methods are added to a `Function` type.
   * Done: _Char: add standard methods_ ([Issue #52](https://github.com/vorov2/dyalect/issues/52)).
   * Done: _Array copying_ ([Issue #36](https://github.com/vorov2/dyalect/issues/36)).
-  * Done: _Extend _String.indexOf_ functon_ ([Issue #112](https://github.com/vorov2/dyalect/issues/112)).
+  * Done: _Extend `String.indexOf` functon_ ([Issue #112](https://github.com/vorov2/dyalect/issues/112)).
+  * Done: _Add `String.join` method_ ([Issue #121](https://github.com/vorov2/dyalect/issues/121)).
   * Fixed: _Method comparison_ ([Issue #119](https://github.com/vorov2/dyalect/issues/119)).
   * Fixed: _Char escape codes_ ([Issue #120](https://github.com/vorov2/dyalect/issues/120)).
 

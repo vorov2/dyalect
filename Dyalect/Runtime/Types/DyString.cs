@@ -423,10 +423,37 @@ namespace Dyalect.Runtime.Types
             return new DyString(string.Concat(arr));
         }
 
+        private static DyObject Join(ExecutionContext ctx, DyObject values, DyObject separator)
+        {
+            if (separator.TypeId != DyType.String)
+                return ctx.InvalidType(DyTypeNames.String, separator);
+
+            var arr = ((DyTuple)values).Values;
+            var strArr = new string[arr.Length];
+
+            for (var i = 0; i < arr.Length; i++)
+            {
+                var a = arr[i];
+
+                if (a.TypeId == DyType.String || a.TypeId == DyType.Char)
+                    strArr[i] = a.GetString();
+                else
+                    strArr[i] = arr[i].ToString(ctx);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+            }
+
+            return new DyString(string.Join(separator.GetString(), strArr));
+        }
+
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "concat")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
+
+            if (name == "join")
+                return DyForeignFunction.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(",")));
 
             return null;
         }

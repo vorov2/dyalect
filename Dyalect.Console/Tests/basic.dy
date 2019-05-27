@@ -407,6 +407,11 @@ func stringTest15() {
     assert('!', str[str.len() - 1])
 }
 
+func stringTest16() {
+    var str = String.join("foo", 1, 3, 44, true, separator: ";")
+    assert("foo;1;3;44;true", str)
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
