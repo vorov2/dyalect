@@ -194,14 +194,5 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("TooManyArguments", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to %Error%.
-        /// </summary>
-        internal static string UserCode {
-            get {
-                return ResourceManager.GetString("UserCode", resourceCulture);
-            }
-        }
     }
 }

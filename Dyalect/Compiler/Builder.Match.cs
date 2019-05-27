@@ -31,7 +31,13 @@ namespace Dyalect.Compiler
             foreach (var e in node.Entries)
                 BuildEntry(e, sysVar, push, ctx);
 
-            cw.Push("Match failed.");
+            //It is some kind of a hack, but Expression can be null
+            //only if this match is inside try/catch
+            if (node.Expression != null)
+                cw.Push("Match failed.");
+            else
+                cw.PushVar(sysVar);
+
             cw.Fail();
             cw.MarkLabel(ctx.MatchExit);
             cw.Nop();

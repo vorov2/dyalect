@@ -296,9 +296,9 @@ namespace Dyalect.Runtime
                         else
                             return evalStack.Pop();
                     case OpCode.Fail:
-                        ctx.UserCode(evalStack.Pop().ToString());
-                        if (ctx.Error != null && ProcessError(ctx, function, offset)) goto CATCH;
-                        break;
+                        ctx.Error = new DyUserError(evalStack.Pop());
+                        ProcessError(ctx, function, offset);
+                        goto CATCH;
                     case OpCode.NewIter:
                         evalStack.Push(DyIterator.CreateIterator(function.UnitId, op.Data, function.Captures, locals));
                         break;
@@ -524,7 +524,7 @@ namespace Dyalect.Runtime
                     evalStack = cp.EvalStack;
                 }
 
-                evalStack.Push(new DyString(ctx.Error.GetDescription()));
+                evalStack.Push(ctx.Error.GetDyObject());
                 ctx.Error = null;
                 goto CYCLE;
             }

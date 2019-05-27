@@ -463,6 +463,7 @@ PRODUCTIONS
             | IF (IsLabel()) Label<out node>
             | Assignment<out node>
             | TryCatch<out node>
+            | Throw<out node>
         )
         (.
             if (implicits != null)
@@ -477,6 +478,14 @@ PRODUCTIONS
                 implicits = null;
             }
         .).
+
+    Throw<out DNode node> =
+        (. node = null; .)
+        (
+            "throw" (. var th = new DThrow(t); .)
+            Expr<out node>
+            (. th.Expression = node; node = th; .)
+        ).
 
     TryCatch<out DNode node> =
         (. node =  null; .)
@@ -494,7 +503,7 @@ PRODUCTIONS
                 )
                 |
                 (
-                    identToken (. tc.BindVariable = t.val; .)
+                    identToken (. tc.BindVariable = new DName(t) { Value = t.val }; .)
                     Block<out node> (. tc.Catch = node; .)
                 )
             )

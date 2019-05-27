@@ -162,7 +162,4 @@
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed.</value>
   </data>
-  <data name="UserCode" xml:space="preserve">
-    <value>%Error%</value>
-  </data>
 </root>

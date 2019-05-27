@@ -106,7 +106,17 @@ namespace Dyalect.Compiler
                 case NodeType.TryCatch:
                     Build((DTryCatch)node, hints, ctx);
                     break;
+                case NodeType.Throw:
+                    Build((DThrow)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DThrow node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Expression, hints.Append(Push), ctx);
+            AddLinePragma(node);
+            cw.Fail();
         }
 
         private void Build(DTryCatch node, Hints hints, CompilerContext ctx)
@@ -123,18 +133,24 @@ namespace Dyalect.Compiler
 
             StartScope(false, node.Catch.Location);
 
-            if (node.BindVariable != null && node.BindVariable != "_")
+            if (node.BindVariable != null)
             {
-                var sv = AddVariable(node.BindVariable, node.Catch, VarFlags.Const);
-                cw.PopVar(sv);
+                AddLinePragma(node.BindVariable);
+
+                if (node.BindVariable.Value != "_")
+                {
+                    var sv = AddVariable(node.BindVariable.Value, node.Catch, VarFlags.Const);
+                    cw.PopVar(sv);
+                }
+                else
+                    cw.Pop();
             }
-            else if (node.BindVariable != null)
-                cw.Pop();
 
             Build(node.Catch, hints, ctx);
             EndScope();
 
             cw.MarkLabel(skip);
+            AddLinePragma(node);
             cw.Nop();
         }
 

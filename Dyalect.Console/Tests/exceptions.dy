@@ -33,3 +33,76 @@ func catchTest3() {
         }
     assert(142, res)
 }
+
+func catchTest4() {
+    var res =
+        try {
+            throw "Error!"
+        } catch e {
+            e
+        }
+    assert("Error!", res)
+}
+
+func catchTest5() {
+    var res =
+        try {
+            try {
+                throw "Oops!"
+            }
+            catch e {
+                throw e
+            }
+        } catch e {
+            "caught:" + e
+        }
+    assert("caught:Oops!", res)
+}
+
+func catchTest6() {
+    var res =
+        try {
+            try {
+                throw 42
+            }
+            catch {
+                0 => 0,
+                1 => 1,
+                2 => 2
+            }
+        } catch e {
+            e
+        }
+    assert(42, res)
+}
+
+func catchTest7() {
+    func errorMaker() {
+        throw nameof(errorMaker)
+    }
+    func caller2() {
+        errorMaker()
+    }
+    func caller1() {
+        caller2()
+    }
+    func caller0(){
+        try {
+            caller1()
+        } catch e {
+            e
+        }
+    }
+    var res = caller0()
+    assert("errorMaker", res)
+}
+
+func catchTest8() {
+    func foo(x, y, z) { (x,y,z) }
+    var e = try {
+            foo(1, 2, 3, 4)
+        } catch e {
+            "foo"
+        }
+    assert("foo", e)
+}

@@ -1,5 +1,5 @@
-﻿try {
-    2 / 0.0
-} catch x {
-    print(x)
+﻿var t = (x: 1, y: 2, z: 3)
+
+for x in t.keys() {
+    print("\(x)=\(t[x])")
 }

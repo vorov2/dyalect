@@ -15,7 +15,7 @@ namespace Dyalect.Parser.Model
 
         public DNode Catch { get; set; }
 
-        public string BindVariable { get; set; }
+        public DName BindVariable { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {
@@ -25,7 +25,7 @@ namespace Dyalect.Parser.Model
 
             if (BindVariable != null)
             {
-                sb.Append(BindVariable);
+                BindVariable.ToString(sb);
                 sb.Append(' ');
             }
 

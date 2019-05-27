@@ -25,6 +25,7 @@
         Continue,
         Return,
         Yield,
+        Throw,
 
         Base,
 

@@ -25,7 +25,7 @@ namespace Dyalect
 
         public static bool RunTests(string fileName, bool appveyor)
         {
-            //try
+            try
             {
                 var funs = Compile(fileName);
                 Printer.Output($"Running tests from {funs.Count} file(s)...");
@@ -36,11 +36,11 @@ namespace Dyalect
                 Run(funs, appveyor);
                 return true;
             }
-            //catch (Exception ex)
-            //{
-            //    Printer.Error($"Failure! {ex.Message}");
-            //    return false;
-            //}
+            catch (Exception ex)
+            {
+                Printer.Error($"Failure! {ex.Message}");
+                return false;
+            }
         }
 
         private static void Run(IList<FunSet> funs, bool appveyor)
@@ -60,17 +60,17 @@ namespace Dyalect
                 {
                     Console.Write($"[{(++i).ToString().PadLeft(padLen, '0')}] ");
 
-                    //try
+                    try
                     {
                         var res = fn.Value.Call(funSet.Context).ToObject();
                         Success(fn.Key);
                         passed++;
                     }
-                    //catch (Exception ex)
-                    //{
-                    //    Failed(fn.Key, ex.Message);
-                    //    failed++;
-                    //}
+                    catch (Exception ex)
+                    {
+                        Failed(fn.Key, ex.Message);
+                        failed++;
+                    }
                 }
             }
 

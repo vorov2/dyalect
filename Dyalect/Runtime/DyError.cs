@@ -42,7 +42,7 @@ namespace Dyalect.Runtime
         MatchFailed = 615
     }
 
-    public sealed class DyError
+    public class DyError
     {
         internal DyError(DyErrorCode code, params (string, object)[] dataItems)
         {
@@ -56,7 +56,7 @@ namespace Dyalect.Runtime
 
         public IReadOnlyList<(string Key, object Value)> DataItems { get; }
 
-        public string GetDescription()
+        public virtual string GetDescription()
         {
             var sb = new StringBuilder(RuntimeErrors.ResourceManager.GetString(Code.ToString()));
 
@@ -66,6 +66,25 @@ namespace Dyalect.Runtime
 
             return sb.ToString();
         }
+
+        internal virtual DyObject GetDyObject()
+        {
+            return new DyString(GetDescription());
+        }
+    }
+
+    internal sealed class DyUserError : DyError
+    {
+        public DyUserError(DyObject data) : base(DyErrorCode.UserCode)
+        {
+            Data = data;
+        }
+
+        public DyObject Data { get; }
+
+        public override string GetDescription() => Data?.ToString() ?? "UserError";
+
+        internal override DyObject GetDyObject() => Data ?? DyNil.Instance;
     }
 
     internal static class ExecutionContextExtensions
@@ -137,12 +156,6 @@ namespace Dyalect.Runtime
             ctx.Error = new DyError(DyErrorCode.ExternalFunctionFailure,
                 ("FunctionName", functionName),
                 ("Error", error));
-            return DyNil.Instance;
-        }
-
-        public static DyObject UserCode(this ExecutionContext ctx, string error)
-        {
-            ctx.Error = new DyError(DyErrorCode.UserCode, ("Error", error));
             return DyNil.Instance;
         }
 
