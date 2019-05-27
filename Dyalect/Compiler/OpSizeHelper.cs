@@ -79,6 +79,8 @@
             1, //SetIx
             1, //HasField
             1, //TypeCheck
+            1, //Start
+            0, //End
         };
     }
 }

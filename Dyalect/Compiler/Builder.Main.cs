@@ -103,7 +103,37 @@ namespace Dyalect.Compiler
                 case NodeType.YieldBlock:
                     Build((DYieldBlock)node, hints, ctx);
                     break;
+                case NodeType.TryCatch:
+                    Build((DTryCatch)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DTryCatch node, Hints hints, CompilerContext ctx)
+        {
+            var gotcha = cw.DefineLabel();
+            cw.Start(gotcha);
+            Build(node.Expression, hints, ctx);
+
+            AddLinePragma(node);
+            cw.End();
+            var skip = cw.DefineLabel();
+            cw.Br(skip);
+            cw.MarkLabel(gotcha);
+
+            StartScope(false, node.Catch.Location);
+
+            if (node.BindVariable != null)
+            {
+                var sv = AddVariable(node.BindVariable, node.Catch, VarFlags.Const);
+                cw.PopVar(sv);
+            }
+
+            Build(node.Catch, hints, ctx);
+            EndScope();
+
+            cw.MarkLabel(skip);
+            cw.Nop();
         }
 
         private void Build(DYieldBlock node, Hints hints, CompilerContext ctx)

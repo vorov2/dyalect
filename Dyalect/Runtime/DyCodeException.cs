@@ -5,14 +5,11 @@ namespace Dyalect.Runtime
 {
     public sealed class DyCodeException : DyRuntimeException
     {
-        internal DyCodeException(DyError err, CallStack callStack, CallStackTrace cs, Exception innerException) : base(null, innerException)
+        internal DyCodeException(DyError err, CallStackTrace cs, Exception innerException) : base(null, innerException)
         {
             Error = err;
             CallTrace = cs;
-            CallStack = callStack;
         }
-
-        internal CallStack CallStack { get; }
 
         public override string Message => Error.GetDescription();
 
@@ -23,7 +20,7 @@ namespace Dyalect.Runtime
         public override string ToString()
         {
             var errCode = ((int)Error.Code).ToString().PadLeft(3, '0');
-            return $"Runtime exception Dy{errCode}: {Message}\nStack trace:\n{CallStack}";
+            return $"Runtime exception Dy{errCode}: {Message}\nStack trace:\n{CallTrace}";
         }
     }
 }

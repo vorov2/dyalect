@@ -462,6 +462,7 @@ PRODUCTIONS
               IF (IsFunction()) FunctionExpr<out node>
             | IF (IsLabel()) Label<out node>
             | Assignment<out node>
+            | TryCatch<out node>
         )
         (.
             if (implicits != null)
@@ -476,6 +477,29 @@ PRODUCTIONS
                 implicits = null;
             }
         .).
+
+    TryCatch<out DNode node> =
+        (. node =  null; .)
+        (
+            "try" (. var tc = new DTryCatch(t); .)
+            Block<out node> (. tc.Expression = node; .)
+            "catch" 
+            (
+                (
+                    (. var m = new DMatch(t); tc.Catch = m; .)
+                    "{"
+                        MatchEntry<out var entry> (. m.Entries.Add(entry); .)
+                        { "," MatchEntry<out entry>  (. m.Entries.Add(entry); .) }
+                    "}"
+                )
+                |
+                (
+                    identToken (. tc.BindVariable = t.val; .)
+                    Block<out node> (. tc.Catch = node; .)
+                )
+            )
+            (. node = tc; .)
+        ).
 
     FunctionExpr<out DNode node> =
         (. 

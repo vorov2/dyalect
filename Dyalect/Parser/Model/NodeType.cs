@@ -62,7 +62,9 @@
         WildcardPattern,
         TypeTestPattern,
         AndPattern,
-        OrPattern
+        OrPattern,
+
+        TryCatch
     }
 
 }

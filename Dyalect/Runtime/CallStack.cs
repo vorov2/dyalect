@@ -67,14 +67,6 @@ namespace Dyalect.Runtime
             array[Count++] = val;
         }
 
-        public void Dup()
-        {
-            if (Count > 0)
-                Push(Peek());
-            else
-                Push(default);
-        }
-
         public CallStack Clone() => (CallStack)MemberwiseClone();
 
         public int Count;
@@ -86,11 +78,25 @@ namespace Dyalect.Runtime
         }
     }
 
-    internal class CallPoint
+    internal sealed class CallPoint
     {
+        public static readonly CallPoint External = new CallPoint { Locals = Statics.EmptyDyObjects, Function = DyMachine.Global };
+
         public DyObject[] Locals;
         public EvalStack EvalStack;
         public int Offset;
+        public CatchMark CatchMark;
         public DyNativeFunction Function;
+    }
+
+    internal sealed class CatchMark
+    {
+        public CatchMark(int offset)
+        {
+            Offset = offset;
+        }
+
+        public readonly int Offset;
+        public CatchMark Previous;
     }
 }

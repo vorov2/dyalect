@@ -112,17 +112,7 @@ namespace Dyalect.Runtime.Types
                 this.fun = fun;
             }
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
-            {
-                try
-                {
-                    return fun(ctx);
-                }
-                catch (Exception ex)
-                {
-                    return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
-                }
-            }
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx);
 
             internal override bool Equals(DyFunction func) => func is StaticFunction0 m && m.fun.Equals(fun);
         }
@@ -136,17 +126,7 @@ namespace Dyalect.Runtime.Types
                 this.fun = fun;
             }
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
-            {
-                try
-                {
-                    return fun(ctx, args[0]);
-                }
-                catch (Exception ex)
-                {
-                    return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
-                }
-            }
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0]);
 
             internal override bool Equals(DyFunction func) => func is StaticFunction1 m && m.fun.Equals(fun);
         }
@@ -160,17 +140,7 @@ namespace Dyalect.Runtime.Types
                 this.fun = fun;
             }
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
-            {
-                try
-                {
-                    return fun(ctx, args[0], args[1]);
-                }
-                catch (Exception ex)
-                {
-                    return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
-                }
-            }
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1]);
 
             internal override bool Equals(DyFunction func) => func is StaticFunction2 m && m.fun.Equals(fun);
         }
@@ -184,17 +154,7 @@ namespace Dyalect.Runtime.Types
                 this.fun = fun;
             }
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
-            {
-                try
-                {
-                    return fun(ctx, args[0], args[1], args[2]);
-                }
-                catch (Exception ex)
-                {
-                    return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
-                }
-            }
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2]);
 
             internal override bool Equals(DyFunction func) => func is StaticFunction3 m && m.fun.Equals(fun);
         }
@@ -208,17 +168,7 @@ namespace Dyalect.Runtime.Types
                 this.fun = fun;
             }
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
-            {
-                try
-                {
-                    return fun(ctx, args[0], args[1], args[2], args[3]);
-                }
-                catch (Exception ex)
-                {
-                    return ctx.ExternalFunctionFailure(FunctionName, ex.Message);
-                }
-            }
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3]);
 
             internal override bool Equals(DyFunction func) => func is StaticFunction4 m && m.fun.Equals(fun);
         }

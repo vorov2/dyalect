@@ -78,5 +78,8 @@
         SetIx,      //-2
         HasField,   //0
         TypeCheck,  //0
+
+        Start,      //0
+        End,        //0
     }
 }

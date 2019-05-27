@@ -1,4 +1,5 @@
-﻿using Dyalect.Runtime.Types;
+﻿using Dyalect.Debug;
+using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -48,6 +49,8 @@ namespace Dyalect.Runtime
             Code = code;
             DataItems = new ReadOnlyCollection<(string, object)>(dataItems);
         }
+
+        internal Stack<StackPoint> Dump { get; set; }
 
         public DyErrorCode Code { get; }
 

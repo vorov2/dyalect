@@ -80,6 +80,8 @@
             -2, //SetIx
             0,  //HasField
             0,  //TypeCheck
+            0,  //Start
+            0,  //End
         };
     }
 }

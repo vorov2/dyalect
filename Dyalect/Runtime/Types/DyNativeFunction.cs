@@ -65,7 +65,7 @@ namespace Dyalect.Runtime.Types
             for (var i = 0; i < argCount; i++)
                 locs[i] = args[i];
 
-            ctx.CallStack.Dup();
+            ctx.CallStack.Push(CallPoint.External);
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
@@ -102,7 +102,7 @@ namespace Dyalect.Runtime.Types
 
             locs[0] = left;
             locs[1] = right;
-            ctx.CallStack.Dup();
+            ctx.CallStack.Push(CallPoint.External);
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
@@ -114,7 +114,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             locs[0] = obj;
-            ctx.CallStack.Dup();
+            ctx.CallStack.Push(CallPoint.External);
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
@@ -125,7 +125,7 @@ namespace Dyalect.Runtime.Types
             if (Parameters.Length != 0 && !ProcessArguments(ctx, locs, 2))
                 return DyNil.Instance;
 
-            ctx.CallStack.Dup();
+            ctx.CallStack.Push(CallPoint.External);
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 

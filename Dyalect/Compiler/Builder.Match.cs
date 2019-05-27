@@ -21,7 +21,10 @@ namespace Dyalect.Compiler
 
             var sys = AddVariable();
             var push = hints.Append(Push);
-            Build(node.Expression, push, ctx);
+
+            if (node.Expression != null)
+                Build(node.Expression, push, ctx);
+
             cw.PopVar(sys);
             var sysVar = new ScopeVar(sys);
 
