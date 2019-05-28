@@ -713,6 +713,16 @@ namespace Dyalect.Compiler
 
             switch (node.Operator)
             {
+                case BinaryOperator.Coalesce:
+                    exitLab = cw.DefineLabel();
+                    Build(node.Left, hints.Append(Push), ctx);
+                    cw.Dup();
+                    cw.Brtrue(exitLab);
+                    cw.Pop();
+                    Build(node.Right, hints.Append(Push), ctx);
+                    cw.MarkLabel(exitLab);
+                    cw.Nop();
+                    break;
                 case BinaryOperator.And:
                     Build(node.Left, hints.Append(Push), ctx);
                     termLab = cw.DefineLabel();

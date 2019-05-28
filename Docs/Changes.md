@@ -6,6 +6,7 @@
   * Done: _Array copying_ ([Issue #36](https://github.com/vorov2/dyalect/issues/36)).
   * Done: _Extend `String.indexOf` functon_ ([Issue #112](https://github.com/vorov2/dyalect/issues/112)).
   * Done: _Add `String.join` method_ ([Issue #121](https://github.com/vorov2/dyalect/issues/121)).
+  * Done: _Add coalesce operator_ ([Issue #100](https://github.com/vorov2/dyalect/issues/100)).
   * Fixed: _Method comparison_ ([Issue #119](https://github.com/vorov2/dyalect/issues/119)).
   * Fixed: _Char escape codes_ ([Issue #120](https://github.com/vorov2/dyalect/issues/120)).
 

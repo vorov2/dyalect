@@ -9,8 +9,8 @@ namespace Dyalect.Parser
 {
     partial class Scanner 
     {
-	const int maxT = 78;
-	const int noSym = 78;
+	const int maxT = 79;
+	const int noSym = 79;
 
     
         static Scanner() 
@@ -47,7 +47,7 @@ namespace Dyalect.Parser
 		start[62] = 68; 
 		start[60] = 69; 
 		start[94] = 70; 
-		start[63] = 57; 
+		start[63] = 71; 
 		start[Buffer.EOF] = -1;
 
         }
@@ -165,7 +165,7 @@ namespace Dyalect.Parser
 			case "throw": t.kind = 63; break;
 			case "try": t.kind = 64; break;
 			case "catch": t.kind = 65; break;
-			case "base": t.kind = 77; break;
+			case "base": t.kind = 78; break;
 			default: break;
 		}
         }
@@ -385,7 +385,7 @@ namespace Dyalect.Parser
 			case 58:
 				recEnd = pos; recKind = 20;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 4;}
-				else if (ch == '.') {AddCh(); goto case 71;}
+				else if (ch == '.') {AddCh(); goto case 72;}
 				else {t.kind = 20; break;}
 			case 59:
 				recEnd = pos; recKind = 24;
@@ -429,26 +429,30 @@ namespace Dyalect.Parser
 			case 68:
 				recEnd = pos; recKind = 42;
 				if (ch == '=') {AddCh(); goto case 42;}
-				else if (ch == '>') {AddCh(); goto case 72;}
+				else if (ch == '>') {AddCh(); goto case 73;}
 				else {t.kind = 42; break;}
 			case 69:
 				recEnd = pos; recKind = 43;
 				if (ch == '=') {AddCh(); goto case 43;}
-				else if (ch == '<') {AddCh(); goto case 73;}
+				else if (ch == '<') {AddCh(); goto case 74;}
 				else {t.kind = 43; break;}
 			case 70:
 				recEnd = pos; recKind = 46;
 				if (ch == '=') {AddCh(); goto case 54;}
 				else {t.kind = 46; break;}
 			case 71:
+				recEnd = pos; recKind = 77;
+				if (ch == '?') {AddCh(); goto case 57;}
+				else {t.kind = 77; break;}
+			case 72:
 				recEnd = pos; recKind = 56;
 				if (ch == '.') {AddCh(); goto case 44;}
 				else {t.kind = 56; break;}
-			case 72:
+			case 73:
 				recEnd = pos; recKind = 48;
 				if (ch == '=') {AddCh(); goto case 56;}
 				else {t.kind = 48; break;}
-			case 73:
+			case 74:
 				recEnd = pos; recKind = 47;
 				if (ch == '=') {AddCh(); goto case 55;}
 				else {t.kind = 47; break;}

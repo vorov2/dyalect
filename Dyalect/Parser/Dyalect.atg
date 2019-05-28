@@ -525,7 +525,7 @@ PRODUCTIONS
         ).
 
     Assignment<out DNode node> =
-        Or<out node>
+        Coalesce<out node>
         [
             (.
                 var ass = new DAssignment(t) { Target = node };
@@ -552,6 +552,13 @@ PRODUCTIONS
                 node = ass;
             .)
         ].
+
+    Coalesce<out DNode node> =
+        Or<out node>
+        {
+            "??" (. var ot = t; .) Or<out DNode exp>
+            (. node = new DBinaryOperation(node, exp, BinaryOperator.Coalesce, ot); .)
+        }.
 
     Or<out DNode node> = 
         And<out node>
@@ -814,7 +821,7 @@ PRODUCTIONS
         (
             identToken (. name = t.val; .)
             ":" (. var ot = t; .)
-            Or<out node>
+            Coalesce<out node>
             (. node = new DLabelLiteral(ot) { Label = name, Expression = node }; .)
         ).
 

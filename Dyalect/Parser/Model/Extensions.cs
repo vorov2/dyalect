@@ -43,6 +43,7 @@ namespace Dyalect.Parser.Model
                 case BinaryOperator.Xor: return Builtins.Xor;
                 case BinaryOperator.ShiftLeft: return Builtins.Shl;
                 case BinaryOperator.ShiftRight: return Builtins.Shr;
+                case BinaryOperator.Coalesce: return Builtins.Coalesce;
                 default: return "";
             }
         }

@@ -30,6 +30,7 @@
 
         public const string BoolAnd = "&&";
         public const string BoolOr = "||";
+        public const string Coalesce = "??";
 
         public const string New = "new";
     }
