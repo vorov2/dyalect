@@ -106,3 +106,32 @@ func catchTest8() {
         }
     assert("foo", e)
 }
+
+func catchMatchTest1() {
+    func foo() { throw ("err", 22) }
+    var e = try {
+            foo()
+        } catch {
+            ("err", 22, 1) => false,
+            ("err", 23) => false,
+            ("err", 22) => true
+        }
+    assert(true, e)
+}
+
+func catchMatchTest2() {
+    func foo() { throw ("err", 231) }
+    var e
+    e = try {
+        e = try {
+                foo()
+            } catch {
+                ("err", 22, 1) => false,
+                ("err", 23) => false,
+                ("err", 22) => true
+            }
+    } catch e {
+        142
+    }
+    assert(142, e)
+}

@@ -1,1 +1,8 @@
-﻿String.join("foo", 1, 3, 44, true, separator: ";")
+﻿func foo() { throw ("err", 22) }
+var e = try {
+        foo()
+    } catch {
+        ("err", 22, 1) => false,
+        ("err", 23) => false,
+        ("err", 22) => true
+    }

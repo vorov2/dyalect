@@ -235,7 +235,7 @@ PRODUCTIONS
             (. me = new DMatchEntry(t); .)
             OrPattern<out var p> 
             (. me.Pattern = p; .)
-            [ "when" Expr<out var node> (. me.Guard = node; .)  ] 
+            [ "when" Expr<out var node> (. me.Guard = node; .) ]
             "=>" Expr<out var exp> (. me.Expression = exp; .)
         ).
 
@@ -244,8 +244,7 @@ PRODUCTIONS
         AndPattern<out node>
         {
             (. var por = new DOrPattern(t) { Left = node }; .)
-            "||"
-            AndPattern<out node>
+            "||" AndPattern<out node>
             (. por.Right = node; node = por; .)
         }.
 
@@ -254,8 +253,7 @@ PRODUCTIONS
         RangePattern<out node>
         {
             (. var pa = new DAndPattern(t) { Left = node }; .)
-            "&&"
-            RangePattern<out node>
+            "&&" RangePattern<out node>
             (. pa.Right = node; node = pa; .)
         }.
 
@@ -312,8 +310,8 @@ PRODUCTIONS
         (
             "("
                 (. var tup = new DTuplePattern(t); .)
-                RangePattern<out node> (. tup.Elements.Add(node); .)
-                { "," RangePattern<out node> (. tup.Elements.Add(node); .) }
+                OrPattern<out node> (. tup.Elements.Add(node); .)
+                { "," OrPattern<out node> (. tup.Elements.Add(node); .) }
                 (. node = tup; .)
             ")"
         ).

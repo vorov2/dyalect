@@ -628,11 +628,11 @@ namespace Dyalect.Parser
 		node = null; 
 		Expect(25);
 		var tup = new DTuplePattern(t); 
-		RangePattern(out node);
+		OrPattern(out node);
 		tup.Elements.Add(node); 
 		while (la.kind == 21) {
 			Get();
-			RangePattern(out node);
+			OrPattern(out node);
 			tup.Elements.Add(node); 
 		}
 		node = tup; 
