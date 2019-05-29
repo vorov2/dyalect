@@ -207,11 +207,11 @@ namespace Dyalect.Compiler
             var exit = cw.DefineLabel();
 
             cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId("<"));
+            cw.HasMember(GetMemberNameId(Builtins.Lt));
             cw.Brfalse(skip); //1 left
 
             cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId(">"));
+            cw.HasMember(GetMemberNameId(Builtins.Gt));
             cw.Brfalse(skip); //1 left
 
             cw.Dup(); //2 objs
@@ -270,10 +270,10 @@ namespace Dyalect.Compiler
             var ok = cw.DefineLabel();
 
             cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId("len"));
+            cw.HasMember(GetMemberNameId(Builtins.Len));
             cw.Brfalse(skip); //1 obj left to pop
             cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId("get"));
+            cw.HasMember(GetMemberNameId(Builtins.Get));
             cw.Brfalse(skip); //1 obj left to pop
 
             cw.Dup(); //2 objs

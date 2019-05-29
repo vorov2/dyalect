@@ -28,13 +28,8 @@ namespace Dyalect.Compiler
                 {
                     var realName = node.Name;
 
-                    if (node.Parameters.Count == 0 && !node.IsStatic)
-                    {
-                        if (node.Name == Builtins.Sub)
-                            realName = Builtins.Neg;
-                        else if (node.Name == Builtins.Add)
-                            realName = Builtins.Plus;
-                    }
+                    if (!node.IsStatic)
+                        realName = GetMethodName(realName, node);
 
                     var nameId = GetMemberNameId(realName);
                     cw.Aux(nameId);
@@ -59,6 +54,32 @@ namespace Dyalect.Compiler
                 AddLinePragma(node);
                 cw.Nop();
                 PopIf(hints);
+            }
+        }
+
+        private string GetMethodName(string name, DFunctionDeclaration node)
+        {
+            switch (name)
+            {
+                case "+": return node.Parameters.Count == 0 ? Builtins.Plus : Builtins.Add;
+                case "-": return node.Parameters.Count == 0 ? Builtins.Neg : Builtins.Sub;
+                case "*": return Builtins.Mul;
+                case "/": return Builtins.Div;
+                case "%": return Builtins.Rem;
+                case "<<": return Builtins.Shl;
+                case ">>": return Builtins.Shr;
+                case "&&": return Builtins.And;
+                case "||": return Builtins.Or;
+                case "^": return Builtins.Xor;
+                case "==": return Builtins.Eq;
+                case "!=": return Builtins.Neq;
+                case ">": return Builtins.Gt;
+                case "<": return Builtins.Lt;
+                case ">=": return Builtins.Gte;
+                case "<=": return Builtins.Lte;
+                case "!": return Builtins.Not;
+                case "~": return Builtins.BitNot;
+                default: return name;
             }
         }
 

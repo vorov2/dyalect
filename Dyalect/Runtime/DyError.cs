@@ -58,7 +58,14 @@ namespace Dyalect.Runtime
 
         public virtual string GetDescription()
         {
-            var sb = new StringBuilder(RuntimeErrors.ResourceManager.GetString(Code.ToString()));
+            string key;
+
+            if (Code == DyErrorCode.OperationNotSupported && DataItems.Count == 3)
+                key = "OperationNotSupported2";
+            else
+                key = Code.ToString();
+
+            var sb = new StringBuilder(RuntimeErrors.ResourceManager.GetString(key));
 
             if (DataItems != null)
                 foreach (var dt in DataItems)
@@ -123,7 +130,8 @@ namespace Dyalect.Runtime
         {
             ctx.Error = new DyError(DyErrorCode.OperationNotSupported,
                 ("Operation", op),
-                ("TypeName", "(" + obj1.TypeName(ctx) + "," + obj2.TypeName(ctx) + ")"));
+                ("TypeName1", obj1.TypeName(ctx)),
+                ("TypeName2", obj2.TypeName(ctx)));
             return DyNil.Instance;
         }
 

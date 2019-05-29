@@ -356,7 +356,11 @@ namespace Dyalect.Runtime.Types
         {
             nameId = unit.MemberIds[nameId];
             var name = ctx.Composition.Members[nameId];
+            return HasMemberDirect(self, name, nameId, ctx);
+        }
 
+        private DyBool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
+        {
             switch (name)
             {
                 case Builtins.Add: return Support(SupportedOperations.Add);
@@ -376,13 +380,17 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Gte: return Support(SupportedOperations.Gte);
                 case Builtins.Lte: return Support(SupportedOperations.Lte);
                 case Builtins.Neg: return Support(SupportedOperations.Neg);
-                case Builtins.Not: return DyBool.True;
                 case Builtins.BitNot: return Support(SupportedOperations.BitNot);
                 case Builtins.Plus: return Support(SupportedOperations.Plus);
                 case Builtins.Get: return Support(SupportedOperations.Get);
                 case Builtins.Set: return Support(SupportedOperations.Set);
+                case Builtins.Not:
+                case Builtins.ToStr:
+                case Builtins.Clone:
+                case Builtins.Has:
+                    return DyBool.True;
                 default:
-                    return GetMemberDirect(self, nameId, ctx) != null ? DyBool.True : DyBool.False;
+                    return nameId != -1 && GetMemberDirect(self, nameId, ctx) != null ? DyBool.True : DyBool.False;
             }
         }
 
@@ -410,7 +418,7 @@ namespace Dyalect.Runtime.Types
             if (!members.TryGetValue(nameId, out var value))
             {
                 var name = ctx.Composition.Members[nameId];
-                value = InternalGetMember(name, ctx);
+                value = InternalGetMember(self, name, ctx);
 
                 if (value != null)
                     members.Add(nameId, value);
@@ -465,18 +473,50 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();
 
-        private DyFunction InternalGetMember(string name, ExecutionContext ctx)
+        private DyObject Has(ExecutionContext ctx, DyObject self, DyObject member)
         {
-            if (name == Builtins.ToStr)
-                return DyForeignFunction.Member(name, ToString);
+            if (member.TypeId != DyType.String)
+                return ctx.InvalidType(DyTypeNames.String, member);
+            var name = member.GetString();
+            if (ctx.Composition.MembersMap.TryGetValue(name, out var nameId))
+                return HasMemberDirect(self, name, nameId, ctx);
+            else
+                return HasMemberDirect(self, name, -1, ctx);
+        }
 
-            if (name == Builtins.Iterator)
-                return DyForeignFunction.Member(name, GetIterator);
-
-            if (name == "clone")
-                return DyForeignFunction.Member(name, Clone);
-
-            return GetMember(name, ctx);
+        private DyFunction InternalGetMember(DyObject self, string name, ExecutionContext ctx)
+        {
+            switch (name)
+            {
+                case Builtins.Add: return DyForeignFunction.Member(name, Add, -1, new Par("other"));
+                case Builtins.Sub: return DyForeignFunction.Member(name, Sub, -1, new Par("other"));
+                case Builtins.Mul: return DyForeignFunction.Member(name, Mul, -1, new Par("other"));
+                case Builtins.Div: return DyForeignFunction.Member(name, Div, -1, new Par("other"));
+                case Builtins.Rem: return DyForeignFunction.Member(name, Rem, -1, new Par("other"));
+                case Builtins.Shl: return DyForeignFunction.Member(name, ShiftLeft, -1, new Par("other"));
+                case Builtins.Shr: return DyForeignFunction.Member(name, ShiftRight, -1, new Par("other"));
+                case Builtins.And: return DyForeignFunction.Member(name, And, -1, new Par("other"));
+                case Builtins.Or:  return DyForeignFunction.Member(name, Or, -1, new Par("other"));
+                case Builtins.Xor: return DyForeignFunction.Member(name, Xor, -1, new Par("other"));
+                case Builtins.Eq:  return DyForeignFunction.Member(name, Eq, -1, new Par("other"));
+                case Builtins.Neq: return DyForeignFunction.Member(name, Neq, -1, new Par("other"));
+                case Builtins.Gt:  return DyForeignFunction.Member(name, Gt, -1, new Par("other"));
+                case Builtins.Lt:  return DyForeignFunction.Member(name, Lt, -1, new Par("other"));
+                case Builtins.Gte: return DyForeignFunction.Member(name, Gte, -1, new Par("other"));
+                case Builtins.Lte: return DyForeignFunction.Member(name, Lte, -1, new Par("other"));
+                case Builtins.Neg: return DyForeignFunction.Member(name, Neg);
+                case Builtins.Not: return DyForeignFunction.Member(name, Not);
+                case Builtins.BitNot: return DyForeignFunction.Member(name, BitwiseNot);
+                case Builtins.Plus: return DyForeignFunction.Member(name, Plus);
+                case Builtins.Get: return DyForeignFunction.Member(name, (context, s, index) => Get(s, index, context), -1, new Par("index"));
+                case Builtins.Set: return DyForeignFunction.Member(name, (context, s, index, val) => { Set(s, index, val, context); return DyNil.Instance; }, -1, new Par("index"), new Par("value"));
+                case Builtins.ToStr: return DyForeignFunction.Member(name, ToString);
+                case Builtins.Iterator: return self is IEnumerable<DyObject>  ? DyForeignFunction.Member(name, GetIterator) : null;
+                case Builtins.Clone: return DyForeignFunction.Member(name, Clone);
+                case Builtins.Has: return DyForeignFunction.Member(name, Has, -1, new Par("member"));
+                default:
+                    return GetMember(name, ctx);
+            }
         }
 
         private DyObject GetIterator(ExecutionContext ctx, DyObject self)

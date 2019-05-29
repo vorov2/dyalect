@@ -601,7 +601,7 @@ func methodTest1() {
         this * other
     }
     var res = 3 + 3 == 3 * 3
-    Integer.__deleteMember("+")
+    Integer.__deleteMember("op_add")
     assert(true, res)
 }
 
@@ -610,7 +610,7 @@ func methodTest2() {
         this + " + " + other
     }
     var res = 12.2 + 0.4
-    Float.__deleteMember("+")
+    Float.__deleteMember("op_add")
     assert("12.2 + 0.4", res)
 }
 
@@ -619,8 +619,11 @@ func functionTest1() {
         if y == 2 {
             x + y
         } else {
+            print(y)
             var z = sum(y, 2)
+            print(z)
             x -= 1
+            print(x)
             x + z
         }
     }

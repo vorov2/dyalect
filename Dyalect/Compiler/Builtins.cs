@@ -2,36 +2,34 @@
 {
     internal static class Builtins
     {
-        public const string Add = "+";
-        public const string Sub = "-";
-        public const string Mul = "*";
-        public const string Div = "/";
-        public const string Rem = "%";
-        public const string Shl = "<<";
-        public const string Shr = ">>";
-        public const string And = "&";
-        public const string Or = "|";
-        public const string Xor = "^";
-        public const string Eq = "==";
-        public const string Neq = "!=";
-        public const string Gt = ">";
-        public const string Lt = "<";
-        public const string Gte = ">=";
-        public const string Lte = "<=";
-        public const string Neg = "negate";
-        public const string Plus = "plus";
-        public const string Not = "!";
-        public const string BitNot = "~";
-        public const string Len = "len";
-        public const string Get = "get";
-        public const string Set = "set";
-        public const string ToStr = "toString";
-        public const string Iterator = "iter";
+        public const string Add         = "op_add";
+        public const string Sub         = "op_sub";
+        public const string Mul         = "op_mul";
+        public const string Div         = "op_div";
+        public const string Rem         = "op_rem";
+        public const string Shl         = "op_shl";
+        public const string Shr         = "op_shr";
+        public const string And         = "op_and";
+        public const string Or          = "op_or";
+        public const string Xor         = "op_xor";
+        public const string Eq          = "op_eq";
+        public const string Neq         = "op_neq";
+        public const string Gt          = "op_gt";
+        public const string Lt          = "op_lt";
+        public const string Gte         = "op_gte";
+        public const string Lte         = "op_lte";
+        public const string Neg         = "op_negate";
+        public const string Plus        = "op_plus";
+        public const string Not         = "op_not";
+        public const string BitNot      = "op_bitcomp";
+        public const string Get         = "op_get";
+        public const string Set         = "op_set";
 
-        public const string BoolAnd = "&&";
-        public const string BoolOr = "||";
-        public const string Coalesce = "??";
-
-        public const string New = "new";
+        public const string Len         = "len";
+        public const string ToStr       = "toString";
+        public const string Iterator    = "iter";
+        public const string Clone       = "clone";
+        public const string Has         = "has";
+        public const string New         = "new";
     }
 }

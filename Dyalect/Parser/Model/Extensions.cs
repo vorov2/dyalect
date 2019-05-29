@@ -1,6 +1,4 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Parser.Model;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace Dyalect.Parser.Model
@@ -25,25 +23,25 @@ namespace Dyalect.Parser.Model
         {
             switch (op)
             {
-                case BinaryOperator.Add: return Builtins.Add;
-                case BinaryOperator.And: return Builtins.BoolAnd;
-                case BinaryOperator.Div: return Builtins.Div;
-                case BinaryOperator.Eq: return Builtins.Eq;
-                case BinaryOperator.Gt: return Builtins.Gt;
-                case BinaryOperator.GtEq: return Builtins.Gte;
-                case BinaryOperator.Lt: return Builtins.Lt;
-                case BinaryOperator.LtEq: return Builtins.Lte;
-                case BinaryOperator.Mul: return Builtins.Mul;
-                case BinaryOperator.NotEq: return Builtins.Neq;
-                case BinaryOperator.Or: return Builtins.BoolOr;
-                case BinaryOperator.Rem: return Builtins.Rem;
-                case BinaryOperator.Sub: return Builtins.Sub;
-                case BinaryOperator.BitwiseAnd: return Builtins.And;
-                case BinaryOperator.BitwiseOr: return Builtins.Or;
-                case BinaryOperator.Xor: return Builtins.Xor;
-                case BinaryOperator.ShiftLeft: return Builtins.Shl;
-                case BinaryOperator.ShiftRight: return Builtins.Shr;
-                case BinaryOperator.Coalesce: return Builtins.Coalesce;
+                case BinaryOperator.Add:        return "+";
+                case BinaryOperator.And:        return "&&";
+                case BinaryOperator.Div:        return "/";
+                case BinaryOperator.Eq:         return "==";
+                case BinaryOperator.Gt:         return ">";
+                case BinaryOperator.GtEq:       return ">=";
+                case BinaryOperator.Lt:         return "<";
+                case BinaryOperator.LtEq:       return "<=";
+                case BinaryOperator.Mul:        return "*";
+                case BinaryOperator.NotEq:      return "!=";
+                case BinaryOperator.Or:         return "||";
+                case BinaryOperator.Rem:        return "%";
+                case BinaryOperator.Sub:        return "-";
+                case BinaryOperator.BitwiseAnd: return "&";
+                case BinaryOperator.BitwiseOr:  return "|";
+                case BinaryOperator.Xor:        return "^";
+                case BinaryOperator.ShiftLeft:  return "<<";
+                case BinaryOperator.ShiftRight: return ">>";
+                case BinaryOperator.Coalesce:   return "??";
                 default: return "";
             }
         }
@@ -52,10 +50,10 @@ namespace Dyalect.Parser.Model
         {
             switch (op)
             {
-                case UnaryOperator.Neg: return "-";
-                case UnaryOperator.Not: return Builtins.Not;
-                case UnaryOperator.BitwiseNot: return Builtins.BitNot;
-                case UnaryOperator.Plus: return "+";
+                case UnaryOperator.Neg:         return "-";
+                case UnaryOperator.Not:         return "!";
+                case UnaryOperator.BitwiseNot:  return "~";
+                case UnaryOperator.Plus:        return "+";
                 default: return "";
             }
         }
