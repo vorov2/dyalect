@@ -1,12 +1,13 @@
 # 0.7.0
-  * Done: _Cloning objects_ ([Issue #48](https://github.com/vorov2/dyalect/issues/48)).
-  * Done: _Tuple: add static methods `pair` and `triple`_ ([Issue #103](https://github.com/vorov2/dyalect/issues/103)).
-  * Done: _Function composition_ ([Issue #104](https://github.com/vorov2/dyalect/issues/104)). A static `compose(first, second)` and instance `compose(with)` methods are added to a `Function` type.
-  * Done: _Char: add standard methods_ ([Issue #52](https://github.com/vorov2/dyalect/issues/52)).
-  * Done: _Array copying_ ([Issue #36](https://github.com/vorov2/dyalect/issues/36)).
-  * Done: _Extend `String.indexOf` functon_ ([Issue #112](https://github.com/vorov2/dyalect/issues/112)).
-  * Done: _Add `String.join` method_ ([Issue #121](https://github.com/vorov2/dyalect/issues/121)).
-  * Done: _Add coalesce operator_ ([Issue #100](https://github.com/vorov2/dyalect/issues/100)).
+  * Done: _Cloning objects_ ([Issue #48](https://github.com/vorov2/dyalect/issues/48), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#clone)).
+  * Done: _Tuple: add static methods `pair` and `triple`_ ([Issue #103](https://github.com/vorov2/dyalect/issues/103), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#pair), [more docs](https://github.com/vorov2/dyalect/wiki/Tuple#triple)).
+  * Done: _Function composition_ ([Issue #104](https://github.com/vorov2/dyalect/issues/104), [docs](https://github.com/vorov2/dyalect/wiki/Functions#compose), [more docs](https://github.com/vorov2/dyalect/wiki/Functions#scompose)). A static `compose(first, second)` and instance `compose(with)` methods are added to a `Function` type.
+  * Done: _Char: add standard methods_ ([Issue #52](https://github.com/vorov2/dyalect/issues/52), [docs](https://github.com/vorov2/dyalect/wiki/Char#methods)).
+  * Done: _Array copying_ ([Issue #36](https://github.com/vorov2/dyalect/issues/36), [docs](https://github.com/vorov2/dyalect/wiki/Array#copy)).
+  * Done: _Extend `String.indexOf` functon_ ([Issue #112](https://github.com/vorov2/dyalect/issues/112), [docs](https://github.com/vorov2/dyalect/wiki/String#indexOf)).
+  * Done: _Add `String.join` method_ ([Issue #121](https://github.com/vorov2/dyalect/issues/121), [docs](https://github.com/vorov2/dyalect/wiki/String#join)).
+  * Done: _Add coalesce operator_ ([Issue #100](https://github.com/vorov2/dyalect/issues/100), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#coalesce)).
+  * Done: _Add `rnd` built-in function_ ([Issue #122](https://github.com/vorov2/dyalect/issues/122), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#rnd)).
   * Fixed: _Method comparison_ ([Issue #119](https://github.com/vorov2/dyalect/issues/119)).
   * Fixed: _Char escape codes_ ([Issue #120](https://github.com/vorov2/dyalect/issues/120)).
 
