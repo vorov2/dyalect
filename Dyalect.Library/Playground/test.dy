@@ -1,4 +1,4 @@
-﻿func test1() {
+﻿/*func test1() {
     func sorter(x, y) {
         if x > 10 {
             throw "No!"
@@ -16,3 +16,9 @@
 }
 
 test1()
+*/
+
+for x in 1..(1000*1000) {
+    x.has("iter")
+    x.iter?
+}
