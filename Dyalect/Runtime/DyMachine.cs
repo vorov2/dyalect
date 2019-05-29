@@ -47,7 +47,7 @@ namespace Dyalect.Runtime
                 ctx.Units[0] = mems;
             }
 
-            ctx.CallStack.Push(Caller.External);
+            //ctx.CallStack.Push(Caller.Root);
             ctx.Units[unitId] = ctx.Units[unitId] ?? new DyObject[lay0.Size];
             return ExecuteWithData(Global, null, ctx);
         }
@@ -90,7 +90,6 @@ namespace Dyalect.Runtime
                     case OpCode.Term:
                         if (evalStack.Size > 1 || evalStack.Size == 0)
                             throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
-                        ctx.CallStack.Pop();
                         ctx.Units[function.UnitId] = locals;
                         return evalStack.Pop();
                     case OpCode.Pop:
@@ -281,7 +280,7 @@ namespace Dyalect.Runtime
                         {
                             var cp = ctx.CallStack.Pop();
 
-                            if (cp == Caller.External)
+                            if (ReferenceEquals(cp, Caller.External))
                                 return evalStack.Pop();
 
                             cp.EvalStack.Push(evalStack.Pop());
@@ -387,7 +386,7 @@ namespace Dyalect.Runtime
                         {
                             var cp = ctx.CallStack.Pop();
 
-                            if (cp == Caller.External)
+                            if (ReferenceEquals(cp, Caller.External))
                                 return evalStack.Pop();
 
                             cp.EvalStack.Push(evalStack.Pop());
@@ -501,7 +500,7 @@ namespace Dyalect.Runtime
                             evalStack.Push(right.TypeId == op.Data ? DyBool.True : DyBool.False);
                         break;
                     case OpCode.Start:
-                        ctx.CatchMarks.Push(new CatchMark(op.Data, ctx.CallStack.Peek()));
+                        ctx.CatchMarks.Push(new CatchMark(op.Data, ctx.CallStack.Count));
                         break;
                     case OpCode.End:
                         ctx.CatchMarks.Pop();
@@ -512,10 +511,13 @@ namespace Dyalect.Runtime
         CATCH:
             {
                 evalStack.Clear();
-                var cp = ctx.CallStack.Peek();
                 offset = ctx.CatchMarks.Pop().Offset;
-                unit = ctx.Composition.Units[function.UnitId];
-                ops = unit.Ops;
+                if (ctx.CallStack.Count > 0)
+                {
+                    var cp = ctx.CallStack.Peek();
+                    unit = ctx.Composition.Units[function.UnitId];
+                    ops = unit.Ops;
+                }
                 evalStack.Push(ctx.Error.GetDyObject());
                 ctx.Error = null;
                 goto CYCLE;
@@ -530,9 +532,22 @@ namespace Dyalect.Runtime
             }
             catch (Exception ex)
             {
-                ctx.ExternalFunctionFailure(func.FunctionName, ex.Message);
+                var dy = GetCodeException(ex);
+                if (dy != null)
+                    ctx.Error = dy.Error;
+                else
+                    ctx.ExternalFunctionFailure(func.FunctionName, ex.Message);
                 return DyNil.Instance;
             }
+        }
+
+        private static DyCodeException GetCodeException(Exception ex)
+        {
+            if (ex is DyCodeException dy)
+                return dy;
+            if (ex.InnerException != null)
+                return GetCodeException(ex.InnerException);
+            return null;
         }
 
         private static DyTuple MakeTuple(EvalStack stack, int size)
@@ -582,6 +597,10 @@ namespace Dyalect.Runtime
             for (var i = 0; i < callStack.Count; i++)
             {
                 var cm = callStack[i];
+
+                if (ReferenceEquals(cm, Caller.Root))
+                    continue;
+
                 if (ReferenceEquals(cm, Caller.External))
                     st.Push(new StackPoint(external: true));
                 else
@@ -622,21 +641,24 @@ namespace Dyalect.Runtime
                 return false;
 
             var mark = ctx.CatchMarks.Peek();
+            var cp = default(Caller);
 
-            while (ctx.CallStack.Count > 0)
+            while (ctx.CallStack.Count > mark.StackOffset)
             {
-                var cp = ctx.CallStack.Peek();
+                cp = ctx.CallStack.Pop();
 
-                if (ReferenceEquals(mark.Caller, cp))
-                    return true;
+                if (ReferenceEquals(cp, Caller.External))
+                    return false;
+            }
 
+            if (cp != null)
+            {
                 function = cp.Function;
                 locals = cp.Locals;
                 evalStack = cp.EvalStack;
-                ctx.CallStack.Pop();
             }
 
-            return false;
+            return true;
         }
     }
 }

@@ -107,6 +107,23 @@ func catchTest8() {
     assert("foo", e)
 }
 
+func catchTest9() {
+    func sorter(x, y) {
+        if x > 10 {
+            throw "No!"
+        }
+        x - y
+    }
+    var arr = [1..11]
+    var ex
+    try {
+        arr.sort(sorter)
+    } catch e {
+        ex = e
+    }
+    assert("No!", ex)
+}
+
 func catchMatchTest1() {
     func foo() { throw ("err", 22) }
     var e = try {

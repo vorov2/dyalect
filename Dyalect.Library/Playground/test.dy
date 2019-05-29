@@ -1,8 +1,18 @@
-﻿func foo() { throw ("err", 22) }
-var e = try {
-        foo()
-    } catch {
-        ("err", 22, 1) => false,
-        ("err", 23) => false,
-        ("err", 22) => true
+﻿func test1() {
+    func sorter(x, y) {
+        if x > 10 {
+            throw "No!"
+        }
+        x - y
     }
+    var arr = [1..11]
+    var ex
+    try {
+        arr.sort(sorter)
+    } catch e {
+        ex = e
+    }
+    assert("No!", ex)
+}
+
+test1()
