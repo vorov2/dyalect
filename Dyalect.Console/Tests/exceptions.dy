@@ -127,6 +127,16 @@ func catchTest9() {
     assert([1,3,5,7,9,11,13,15,17,19], yielder(arr).toArray())
 }
 
+func catchTest10() {
+    var res =
+        try {
+            4 / 2
+        } catch e {
+            42
+        }
+    assert(2, res)
+}
+
 func catchMatchTest1() {
     func foo() { throw ("err", 22) }
     var e = try {
