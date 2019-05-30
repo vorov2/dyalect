@@ -68,8 +68,6 @@ namespace Dyalect.Compiler
                 case "%": return Builtins.Rem;
                 case "<<": return Builtins.Shl;
                 case ">>": return Builtins.Shr;
-                case "&&": return Builtins.And;
-                case "||": return Builtins.Or;
                 case "^": return Builtins.Xor;
                 case "==": return Builtins.Eq;
                 case "!=": return Builtins.Neq;

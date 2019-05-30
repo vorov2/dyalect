@@ -9,6 +9,7 @@
   * Done: _Add coalesce operator_ ([Issue #100](https://github.com/vorov2/dyalect/issues/100), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#coalesce)).
   * Done: _Add `rnd` built-in function_ ([Issue #122](https://github.com/vorov2/dyalect/issues/122), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#rnd)).
   * Done: _Exception handling_ ([Issue #24](https://github.com/vorov2/dyalect/issues/24), [docs](https://github.com/vorov2/dyalect/wiki/Exception-handling)).
+  * Done: _Check whether an operator is implemented_ ([Issue #67](https://github.com/vorov2/dyalect/issues/67), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#opmethods), [more docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#has)).
   * Fixed: _Method comparison_ ([Issue #119](https://github.com/vorov2/dyalect/issues/119)).
   * Fixed: _Char escape codes_ ([Issue #120](https://github.com/vorov2/dyalect/issues/120)).
 
