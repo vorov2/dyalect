@@ -38,6 +38,8 @@
 
         InvalidSyntax = 17,
 
-        InvalidCharLiteral = 18
+        InvalidCharLiteral = 18,
+
+        InvalidTryCatch = 19
     }
 }

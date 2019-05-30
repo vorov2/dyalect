@@ -9,6 +9,8 @@ namespace Dyalect.Parser.Model
 
         }
 
+        public bool Rebinding { get; set; }
+
         public bool Constant { get; set; }
 
         public DPattern Pattern { get; internal set; }
@@ -17,7 +19,11 @@ namespace Dyalect.Parser.Model
 
         internal override void ToString(StringBuilder sb)
         {
-            sb.Append(Constant ? "const " : "var ");
+            if (Rebinding)
+                sb.Append("set");
+            else
+                sb.Append(Constant ? "const " : "var ");
+
             Pattern.ToString(sb);
 
             if (Init != null)

@@ -187,6 +187,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid try/catch expression..
+        /// </summary>
+        internal static string InvalidTryCatch {
+            get {
+                return ResourceManager.GetString("InvalidTryCatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid unary operator..
         /// </summary>
         internal static string InvalidUnary {

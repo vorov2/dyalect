@@ -203,6 +203,15 @@ PRODUCTIONS
             (. node = bin; .)
         ).
 
+    Rebinding<out DNode node> = 
+        (
+            "set"
+            (. var bin = new DBinding(t) { Rebinding = true }; .)
+            OrPattern<out var pat> (. bin.Pattern = pat; .)
+            "=" Expr<out node> (. bin.Init = node; .)
+            (. node = bin; .)
+        ).
+
     Expr<out DNode node> =
         (. node = null; .)
         (
@@ -465,6 +474,7 @@ PRODUCTIONS
         (. node = null; .)
         (
               Binding<out node>
+            | Rebinding<out node>
             | IF (IsFunction()) FunctionExpr<out node>
             | IF (IsLabel()) Label<out node>
             | Assignment<out node>
