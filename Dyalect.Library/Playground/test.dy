@@ -18,7 +18,8 @@
 test1()
 */
 
-for x in 1..(1000*1000) {
-    x.has("iter")
-    x.iter?
+if var (x, y, z) = (1, 2) {
+    print(x)
+} else {
+    print("It didn't match and x is null")
 }

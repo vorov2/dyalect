@@ -686,8 +686,23 @@ namespace Dyalect.Compiler
                 cw.PushNil();
 
             var flags = currentScope.IsGlobal ? VarFlags.Exported :  VarFlags.None;
-            var a = AddVariable(node.Name, node, node.Constant ? flags | VarFlags.Const : flags);
-            cw.PopVar(a);
+
+            if (node.Pattern.NodeType == NodeType.NamePattern)
+            {
+                var a = AddVariable(node.Pattern.GetName(), node, node.Constant ? flags | VarFlags.Const : flags);
+                cw.PopVar(a);
+            }
+            else
+            {
+                BuildPattern(node.Pattern, ctx);
+                var skip = cw.DefineLabel();
+                cw.Brtrue(skip);
+                cw.Push("Match failed.");
+                cw.Fail();
+                cw.MarkLabel(skip);
+                cw.Nop();
+            }
+
             PushIf(hints);
         }
 

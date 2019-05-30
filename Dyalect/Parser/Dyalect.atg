@@ -119,8 +119,7 @@ PRODUCTIONS
     Statement<out DNode node> =
         (. node = null; .)
         (
-              Binding<out node> Separator
-            | ControlFlow<out node> Separator
+              ControlFlow<out node> Separator
             | Type<out node> Separator
             | Match<out node>
             | SimpleExpr<out node> Separator
@@ -199,7 +198,7 @@ PRODUCTIONS
         (
             ( "var" | "const" )
             (. var bin = new DBinding(t) { Constant = t.val == "const" }; .)
-            identToken (. bin.Name = t.val; .)
+            OrPattern<out var pat> (. bin.Pattern = pat; .)
             [ "=" Expr<out node> (. bin.Init = node; .) ]
             (. node = bin; .)
         ).
@@ -465,7 +464,8 @@ PRODUCTIONS
     SimpleExpr<out DNode node> = 
         (. node = null; .)
         (
-              IF (IsFunction()) FunctionExpr<out node>
+              Binding<out node>
+            | IF (IsFunction()) FunctionExpr<out node>
             | IF (IsLabel()) Label<out node>
             | Assignment<out node>
             | TryCatch<out node>

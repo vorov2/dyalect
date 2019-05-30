@@ -260,8 +260,8 @@ namespace Dyalect.Parser
 			Get();
 		} else SynErr(83);
 		var bin = new DBinding(t) { Constant = t.val == "const" }; 
-		Expect(1);
-		bin.Name = t.val; 
+		OrPattern(out var pat);
+		bin.Pattern = pat; 
 		if (la.kind == 24) {
 			Get();
 			Expr(out node);
@@ -474,6 +474,17 @@ namespace Dyalect.Parser
 		} else SynErr(88);
 	}
 
+	void OrPattern(out DPattern node) {
+		node = null; 
+		AndPattern(out node);
+		while (la.kind == 54) {
+			var por = new DOrPattern(t) { Left = node }; 
+			Get();
+			AndPattern(out node);
+			por.Right = node; node = por; 
+		}
+	}
+
 	void MatchEntry(out DMatchEntry me) {
 		me = new DMatchEntry(t); 
 		OrPattern(out var p);
@@ -486,17 +497,6 @@ namespace Dyalect.Parser
 		Expect(19);
 		Expr(out var exp);
 		me.Expression = exp; 
-	}
-
-	void OrPattern(out DPattern node) {
-		node = null; 
-		AndPattern(out node);
-		while (la.kind == 54) {
-			var por = new DOrPattern(t) { Left = node }; 
-			Get();
-			AndPattern(out node);
-			por.Right = node; node = por; 
-		}
 	}
 
 	void AndPattern(out DPattern node) {
