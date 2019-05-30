@@ -47,6 +47,12 @@ namespace Dyalect.Runtime
             return array[--Count];
         }
 
+        public bool PopLast()
+        {
+            array[--Count] = null;
+            return true;
+        }
+
         public Caller Peek()
         {
             return array[Count - 1];

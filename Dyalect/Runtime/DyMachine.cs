@@ -479,7 +479,7 @@ namespace Dyalect.Runtime
                             else
                             {
                                 right = CallExternalFunction(callFun, ctx);
-                                if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack))
+                                if (ctx.Error != null && ctx.CallStack.PopLast() && ProcessError(ctx, offset, ref function, ref locals, ref evalStack))
                                     goto CATCH;
                                 else
                                 {
@@ -610,7 +610,8 @@ namespace Dyalect.Runtime
             return st;
         }
 
-        private static bool ThrowIf(DyError err, int offset, int moduleHandle, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack, ExecutionContext ctx)
+        private static bool ThrowIf(DyError err, int offset, int moduleHandle, ref DyNativeFunction function, 
+            ref DyObject[] locals, ref EvalStack evalStack, ExecutionContext ctx)
         {
             var dump = Dump(ctx.CallStack.Clone());
             dump.Push(new StackPoint(offset, moduleHandle));
