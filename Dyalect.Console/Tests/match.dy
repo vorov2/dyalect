@@ -161,3 +161,37 @@ func forMatchTest5() {
     }
     assert([2,4,6,8,10], arr)
 }
+
+func rangeMatchTest1() {
+    var x = 5
+    var res = match x {
+        1..4 => false,
+        3..10 => true
+    }
+    assert(true, res)
+}
+
+func rangeMatchTest2() {
+    var x = 'c'
+    var res = match x {
+        'd'..'z' => 0,
+        'b'..'f' => 144
+    }
+    assert(144, res)
+}
+
+func hasMatchTest1() {
+    var res = match 12 {
+        .foo? => false,
+        .op_mul? => true
+    }
+    assert(true, res)
+}
+
+func hasMatchTest2() {
+    var res = match (12,3) {
+        .foo? => false,
+        .keys? => true
+    }
+    assert(true, res)
+}

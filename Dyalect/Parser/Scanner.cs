@@ -157,14 +157,14 @@ namespace Dyalect.Parser
 			case "match": t.kind = 52; break;
 			case "when": t.kind = 53; break;
 			case "as": t.kind = 57; break;
-			case "nil": t.kind = 58; break;
-			case "true": t.kind = 59; break;
-			case "false": t.kind = 60; break;
-			case "else": t.kind = 61; break;
-			case "in": t.kind = 62; break;
-			case "throw": t.kind = 63; break;
-			case "try": t.kind = 64; break;
-			case "catch": t.kind = 65; break;
+			case "nil": t.kind = 59; break;
+			case "true": t.kind = 60; break;
+			case "false": t.kind = 61; break;
+			case "else": t.kind = 62; break;
+			case "in": t.kind = 63; break;
+			case "throw": t.kind = 64; break;
+			case "try": t.kind = 65; break;
+			case "catch": t.kind = 66; break;
 			case "base": t.kind = 78; break;
 			default: break;
 		}
@@ -361,27 +361,27 @@ namespace Dyalect.Parser
 			case 46:
 				{t.kind = 55; break;}
 			case 47:
-				{t.kind = 66; break;}
-			case 48:
 				{t.kind = 67; break;}
-			case 49:
+			case 48:
 				{t.kind = 68; break;}
-			case 50:
+			case 49:
 				{t.kind = 69; break;}
-			case 51:
+			case 50:
 				{t.kind = 70; break;}
-			case 52:
+			case 51:
 				{t.kind = 71; break;}
-			case 53:
+			case 52:
 				{t.kind = 72; break;}
-			case 54:
+			case 53:
 				{t.kind = 73; break;}
-			case 55:
+			case 54:
 				{t.kind = 74; break;}
-			case 56:
+			case 55:
 				{t.kind = 75; break;}
-			case 57:
+			case 56:
 				{t.kind = 76; break;}
+			case 57:
+				{t.kind = 77; break;}
 			case 58:
 				recEnd = pos; recKind = 20;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 4;}
@@ -441,9 +441,9 @@ namespace Dyalect.Parser
 				if (ch == '=') {AddCh(); goto case 54;}
 				else {t.kind = 46; break;}
 			case 71:
-				recEnd = pos; recKind = 77;
+				recEnd = pos; recKind = 58;
 				if (ch == '?') {AddCh(); goto case 57;}
-				else {t.kind = 77; break;}
+				else {t.kind = 58; break;}
 			case 72:
 				recEnd = pos; recKind = 56;
 				if (ch == '.') {AddCh(); goto case 44;}

@@ -282,11 +282,19 @@ PRODUCTIONS
             | IF (IsTuple(allowFields: false)) TuplePattern<out node>
             | GroupPattern<out node>
             | ArrayPattern<out node>
+            | MethodCheckPattern<out node>
         ) 
         [ 
             "as" (. var asp = new DAsPattern(t) { Pattern = node }; .) 
             identToken (. asp.Name = t.val; node = asp; .) 
         ].
+
+    MethodCheckPattern<out DPattern node> =
+        (. node = null; .)
+        (
+            "." identToken (. node = new DMethodCheckPattern(t) { Name = t.val }; .)
+            "?"
+        ).
 
     GroupPattern<out DPattern node> =
         (. node = null; .)

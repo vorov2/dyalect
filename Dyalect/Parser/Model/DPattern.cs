@@ -222,6 +222,23 @@ namespace Dyalect.Parser.Model
         }
     }
 
+    public sealed class DMethodCheckPattern : DPattern
+    {
+        public DMethodCheckPattern(Location loc) : base(loc, NodeType.MethodCheckPattern)
+        {
+
+        }
+
+        public string Name { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append('.');
+            sb.Append(Name);
+            sb.Append('?');
+        }
+    }
+
     public sealed class DWildcardPattern : DPattern
     {
         public DWildcardPattern(Location loc) : base(loc, NodeType.WildcardPattern)

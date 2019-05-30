@@ -125,7 +125,17 @@ namespace Dyalect.Compiler
                 case NodeType.OrPattern:
                     BuildOr((DOrPattern)node, ctx);
                     break;
+                case NodeType.MethodCheckPattern:
+                    BuildMethodCheck((DMethodCheckPattern)node, ctx);
+                    break;
             }
+        }
+
+        private void BuildMethodCheck(DMethodCheckPattern node, CompilerContext ctx)
+        {
+            AddLinePragma(node);
+            var nameId = GetMemberNameId(node.Name);
+            cw.HasMember(nameId);
         }
 
         private void BuildAs(DAsPattern node, CompilerContext ctx)
