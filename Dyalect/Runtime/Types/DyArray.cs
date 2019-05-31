@@ -9,23 +9,25 @@ namespace Dyalect.Runtime.Types
 {
     public class DyArray : DyObject, IEnumerable<DyObject>
     {
-        private sealed class DyArrayEnumerator : IEnumerator<DyObject>
+        internal sealed class DyArrayEnumerator : IEnumerator<DyObject>
         {
             private readonly DyObject[] arr;
             private readonly int count;
             private readonly DyArray obj;
             private readonly int version;
+            private readonly int start;
             private int index = -1;
 
-            public DyArrayEnumerator(DyObject[] arr, int count, DyArray obj)
+            public DyArrayEnumerator(DyObject[] arr, int start, int count, DyArray obj)
             {
                 this.arr = arr;
+                this.start = start;
                 this.count = count;
                 this.obj = obj;
                 this.version = obj.version;
             }
 
-            public DyObject Current => arr[index];
+            public DyObject Current => arr[index + start];
 
             object IEnumerator.Current => Current;
 
@@ -207,7 +209,7 @@ namespace Dyalect.Runtime.Types
                 SetItem((int)index.GetInteger(), value, ctx);
         }
 
-        public IEnumerator<DyObject> GetEnumerator() => new DyArrayEnumerator(Values, Count, this);
+        public IEnumerator<DyObject> GetEnumerator() => new DyArrayEnumerator(Values, 0, Count, this);
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
@@ -352,7 +354,7 @@ namespace Dyalect.Runtime.Types
         private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
         {
             var dyArr = (DyArray)self;
-            var arr = dyArr.GetValues();
+            var arr = dyArr.Values;
 
             if (start.TypeId != DyType.Integer)
                 return ctx.InvalidType(DyTypeNames.Integer, start);
@@ -372,9 +374,10 @@ namespace Dyalect.Runtime.Types
             if (end < 0 || end > dyArr.Count)
                 return ctx.IndexOutOfRange(TypeName, end);
 
-            var newArr = new DyObject[end - beg];
-            Array.Copy(arr, beg, newArr, 0, end - beg);
-            return new DyArray(newArr);
+            //var newArr = new DyObject[end - beg];
+            //Array.Copy(arr, beg, newArr, 0, end - beg);
+            //return new DyArray(newArr);
+            return new DyIterator(new DyArray.DyArrayEnumerator(arr, beg, end - beg, dyArr));
         }
 
         private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject[] args)

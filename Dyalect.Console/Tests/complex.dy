@@ -619,11 +619,8 @@ func functionTest1() {
         if y == 2 {
             x + y
         } else {
-            print(y)
             var z = sum(y, 2)
-            print(z)
             x -= 1
-            print(x)
             x + z
         }
     }
