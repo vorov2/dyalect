@@ -39,7 +39,9 @@ namespace Dyalect.Runtime
 
         FailedReadLiteral = 614,
 
-        MatchFailed = 615
+        MatchFailed = 615,
+
+        CollectionModified = 616
     }
 
     public class DyError
@@ -96,6 +98,12 @@ namespace Dyalect.Runtime
 
     internal static class ExecutionContextExtensions
     {
+        public static DyObject CollectionModified(this ExecutionContext ctx)
+        {
+            ctx.Error = new DyError(DyErrorCode.CollectionModified);
+            return DyNil.Instance;
+        }
+
         public static DyObject FailedReadLiteral(this ExecutionContext ctx, string reason)
         {
             ctx.Error = new DyError(DyErrorCode.FailedReadLiteral,

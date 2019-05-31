@@ -13,6 +13,8 @@
   * Done: _Add a pattern to check if a method is implemented_ ([Issue #107](https://github.com/vorov2/dyalect/issues/107), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
   * Fixed: _Method comparison_ ([Issue #119](https://github.com/vorov2/dyalect/issues/119)).
   * Fixed: _Char escape codes_ ([Issue #120](https://github.com/vorov2/dyalect/issues/120)).
+  * Fixed: _`Array.addRange` and iterator literal_ ([Issue #125](https://github.com/vorov2/dyalect/issues/125)).
+  * Fixed: _Iterators and modifications_ ([Issue #124](https://github.com/vorov2/dyalect/issues/124)).
 
 # 0.6.2
   * Done: _Array.empty should accept function as a default_ ([Issue #114](https://github.com/vorov2/dyalect/issues/114)).

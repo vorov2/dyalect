@@ -13,12 +13,16 @@ namespace Dyalect.Runtime.Types
         {
             private readonly DyObject[] arr;
             private readonly int count;
+            private readonly DyArray obj;
+            private readonly int version;
             private int index = -1;
 
-            public DyArrayEnumerator(DyObject[] arr, int count)
+            public DyArrayEnumerator(DyObject[] arr, int count, DyArray obj)
             {
                 this.arr = arr;
                 this.count = count;
+                this.obj = obj;
+                this.version = obj.version;
             }
 
             public DyObject Current => arr[index];
@@ -29,6 +33,9 @@ namespace Dyalect.Runtime.Types
 
             public bool MoveNext()
             {
+                if (version != obj.version)
+                    throw new DyIterator.IterationException();
+
                 if (++index < count)
                     return true;
                 
@@ -69,6 +76,7 @@ namespace Dyalect.Runtime.Types
 
         private const int DEFAULT_SIZE = 4;
         internal DyObject[] Values;
+        private int version;
 
         public int Count { get; private set; }
 
@@ -96,6 +104,7 @@ namespace Dyalect.Runtime.Types
             }
 
             Values[Count++] = val;
+            version++;
         }
 
         public void Insert(int index, DyObject item)
@@ -107,12 +116,14 @@ namespace Dyalect.Runtime.Types
             {
                 Values[index] = item;
                 Count++;
+                version++;
                 return;
             }
 
             Array.Copy(Values, index, Values, index + 1, Count - index);
             Values[index] = item;
             Count++;
+            version++;
         }
 
         public bool RemoveAt(int index)
@@ -125,6 +136,7 @@ namespace Dyalect.Runtime.Types
                     Array.Copy(Values, index + 1, Values, index, Count - index);
 
                 Values[Count] = null;
+                version++;
                 return true;
             }
 
@@ -141,6 +153,7 @@ namespace Dyalect.Runtime.Types
         {
             Count = 0;
             Values = new DyObject[DEFAULT_SIZE];
+            version++;
         }
 
         public int IndexOf(DyObject elem)
@@ -194,7 +207,7 @@ namespace Dyalect.Runtime.Types
                 SetItem((int)index.GetInteger(), value, ctx);
         }
 
-        public IEnumerator<DyObject> GetEnumerator() => new DyArrayEnumerator(Values, Count);
+        public IEnumerator<DyObject> GetEnumerator() => new DyArrayEnumerator(Values, Count, this);
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }

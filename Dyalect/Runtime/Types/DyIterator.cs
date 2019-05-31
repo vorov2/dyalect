@@ -9,6 +9,8 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyIterator : DyForeignFunction
     {
+        internal sealed class IterationException : Exception { }
+
         internal sealed class RangeEnumerator : IEnumerator<DyObject>
         {
             private readonly Func<DyObject> current;
@@ -120,6 +122,20 @@ namespace Dyalect.Runtime.Types
 
             if (val.TypeId == DyType.Iterator)
                 iter = (DyFunction)val;
+            else if (val.TypeId == DyType.Function)
+            {
+                var obj = ((DyFunction)val).Call0(ctx);
+                iter = obj as DyFunction;
+
+                if (ctx.HasErrors)
+                    return null;
+
+                if (iter == null)
+                {
+                    ctx.InvalidType(DyTypeNames.Function, obj);
+                    return null;
+                }
+            }
             else
             {
                 iter = val.GetIterator(ctx) as DyFunction;

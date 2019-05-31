@@ -165,4 +165,7 @@
   <data name="OperationNotSupported2" xml:space="preserve">
     <value>Operation "%Operation%" is not supported by the types "%TypeName1%" and "%TypeName2%".</value>
   </data>
+  <data name="CollectionModified" xml:space="preserve">
+    <value>Collection was modified after the iterator was instantiated.</value>
+  </data>
 </root>

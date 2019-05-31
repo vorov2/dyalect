@@ -530,6 +530,10 @@ namespace Dyalect.Runtime
             {
                 return func.Call(ctx, ctx.Locals.Pop().Locals);
             }
+            catch (DyIterator.IterationException)
+            {
+                return ctx.CollectionModified();
+            }
             catch (Exception ex)
             {
                 var dy = GetCodeException(ex);

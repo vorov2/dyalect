@@ -215,3 +215,37 @@ func externalCatchTest3() {
         assert(2, e)
     }
 }
+
+func iteratorExceptionTest1() {
+    func test() {
+        var xs = [1..2]
+        var seq = xs.iter()
+        var x = seq()
+        xs.removeAt(1)
+        x = seq()
+        x + x
+    }
+    var b = try {
+        test()
+    } catch e {
+        e.contains("iterator")
+    }
+    assert(true, b)
+}
+
+func iteratorExceptionTest2() {
+    func test() {
+        var xs = [1..2]
+        var seq = xs.iter()
+        var x = seq()
+        xs.addRange({3, 4, 5})
+        x = seq()
+        x + x
+    }
+    var b = try {
+        test()
+    } catch e {
+        e.contains("iterator")
+    }
+    assert(true, b)
+}

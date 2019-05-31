@@ -295,6 +295,12 @@ func arrayTest15() {
     assert([1,2,3,4,5,6,7,8,9,10], xs)
 }
 
+func arrayTest18() {
+    var xs = []
+    xs.addRange({1,2,3,4,5})
+    assert([1,2,3,4,5], xs)
+}
+
 func tupleTest1() {
     var t = (1,2,3)
     assert(3, t.len())
