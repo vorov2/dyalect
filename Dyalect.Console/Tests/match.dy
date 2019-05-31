@@ -195,3 +195,55 @@ func hasMatchTest2() {
     }
     assert(true, res)
 }
+
+func setMatchTest1() {
+    var x = 1
+    var y = 2
+    set (x, y) = (y, x)
+    assert(2, x)
+    assert(1, y)
+}
+
+func setMatchTest2() {
+    var x
+    set [1, ('a', 'b'), x, 33] = [1, ('a', 'b'), 42, 33, 88]
+    assert(42, x)
+}
+
+func setMatchTest3() {
+    func foo() {
+        (41, 2, 3)
+    }
+    var x
+    var res = try {
+        set (x, 2) = foo()
+    } catch e {
+        e
+    }
+    assert("Match failed.", res)
+}
+
+func varMatchTest1() {
+    set (x, y) = (1, 11)
+    assert(1, x)
+    assert(11, y)
+}
+
+func varMatchTest2() {
+    var [1, ('a', 'b'), x, 33, y] = [1, ('a', 'b'), 42, 33, 88]
+    assert(42, x)
+    assert(88, y)
+}
+
+func varMatchTest3() {
+    func foo() {
+        (41, 2, 3)
+    }
+    var res = try {
+        var (x, 2) = foo()
+    } catch e {
+        e
+    }
+    assert("Match failed.", res)
+}
+ 
