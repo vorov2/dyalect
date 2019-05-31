@@ -13,7 +13,7 @@
   * Done: _Add a pattern to check if a method is implemented_ ([Issue #107](https://github.com/vorov2/dyalect/issues/107), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
   * Done: _Allow rebinding variables using patterns_ ([Issue #118](https://github.com/vorov2/dyalect/issues/118), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#set)).
   * Done: _Arrays: Make slices first class entities_ ([Issue #60](https://github.com/vorov2/dyalect/issues/60)).
-  * Done: _Pattern matching inside var_ ([Issue #106](https://github.com/vorov2/dyalect/issues/106, [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#var)).
+  * Done: _Pattern matching inside var_ ([Issue #106](https://github.com/vorov2/dyalect/issues/106), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#var)).
   * Fixed: _Method comparison_ ([Issue #119](https://github.com/vorov2/dyalect/issues/119)).
   * Fixed: _Char escape codes_ ([Issue #120](https://github.com/vorov2/dyalect/issues/120)).
   * Fixed: _`Array.addRange` and iterator literal_ ([Issue #125](https://github.com/vorov2/dyalect/issues/125)).
