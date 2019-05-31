@@ -488,7 +488,7 @@ namespace Dyalect.Parser
 
 	void Rebinding(out DNode node) {
 		Expect(52);
-		var bin = new DBinding(t) { Rebinding = true }; 
+		var bin = new DRebinding(t); 
 		OrPattern(out var pat);
 		bin.Pattern = pat; 
 		Expect(24);

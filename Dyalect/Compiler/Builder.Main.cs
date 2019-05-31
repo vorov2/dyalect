@@ -19,6 +19,9 @@ namespace Dyalect.Compiler
                 case NodeType.Binding:
                     Build((DBinding)node, hints, ctx);
                     break;
+                case NodeType.Rebinding:
+                    Build((DRebinding)node, hints, ctx);
+                    break;
                 case NodeType.Block:
                     Build((DBlock)node, hints, ctx);
                     break;
@@ -685,16 +688,15 @@ namespace Dyalect.Compiler
             else
                 cw.PushNil();
 
-            var flags = currentScope.IsGlobal ? VarFlags.Exported :  VarFlags.None;
-
-            if (node.Pattern.NodeType == NodeType.NamePattern && !node.Rebinding)
+            if (node.Pattern.NodeType == NodeType.NamePattern)
             {
+                var flags = currentScope.IsGlobal ? VarFlags.Exported : VarFlags.None;
                 var a = AddVariable(node.Pattern.GetName(), node, node.Constant ? flags | VarFlags.Const : flags);
                 cw.PopVar(a);
             }
             else
             {
-                BuildPattern(node.Pattern, ctx);
+                BuildPattern(node.Pattern, hints, ctx);
                 var skip = cw.DefineLabel();
                 cw.Brtrue(skip);
                 cw.Push("Match failed.");
@@ -703,6 +705,19 @@ namespace Dyalect.Compiler
                 cw.Nop();
             }
 
+            PushIf(hints);
+        }
+
+        private void Build(DRebinding node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Init, hints.Append(Push), ctx);
+            BuildPattern(node.Pattern, hints.Append(Rebind), ctx);
+            var skip = cw.DefineLabel();
+            cw.Brtrue(skip);
+            cw.Push("Match failed.");
+            cw.Fail();
+            cw.MarkLabel(skip);
+            cw.Nop();
             PushIf(hints);
         }
 

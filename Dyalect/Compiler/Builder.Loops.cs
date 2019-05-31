@@ -102,7 +102,7 @@ namespace Dyalect.Compiler
                 cw.PopVar(inc);
             else
             {
-                BuildPattern(node.Pattern, ctx);
+                BuildPattern(node.Pattern, hints, ctx);
                 cw.Brfalse(ctx.BlockSkip);
             }
 

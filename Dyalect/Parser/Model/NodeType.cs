@@ -17,6 +17,7 @@
         Unary,
         Assignment,
         Binding,
+        Rebinding,
         If,
         While,
         For,

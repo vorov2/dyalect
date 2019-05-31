@@ -206,7 +206,7 @@ PRODUCTIONS
     Rebinding<out DNode node> = 
         (
             "set"
-            (. var bin = new DBinding(t) { Rebinding = true }; .)
+            (. var bin = new DRebinding(t); .)
             OrPattern<out var pat> (. bin.Pattern = pat; .)
             "=" Expr<out node> (. bin.Init = node; .)
             (. node = bin; .)
