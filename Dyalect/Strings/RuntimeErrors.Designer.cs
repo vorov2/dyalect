@@ -79,6 +79,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collection was modified after the iterator was instantiated..
+        /// </summary>
+        internal static string CollectionModified {
+            get {
+                return ResourceManager.GetString("CollectionModified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Division by zero..
         /// </summary>
         internal static string DivideByZero {
@@ -151,11 +160,20 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operation &quot;%Operation%&quot; is not supported by the following type(s): &quot;%TypeName%&quot;..
+        ///   Looks up a localized string similar to Operation &quot;%Operation%&quot; is not supported by the type &quot;%TypeName%&quot;..
         /// </summary>
         internal static string OperationNotSupported {
             get {
                 return ResourceManager.GetString("OperationNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation &quot;%Operation%&quot; is not supported by the types &quot;%TypeName1%&quot; and &quot;%TypeName2%&quot;..
+        /// </summary>
+        internal static string OperationNotSupported2 {
+            get {
+                return ResourceManager.GetString("OperationNotSupported2", resourceCulture);
             }
         }
         
@@ -192,15 +210,6 @@ namespace Dyalect.Strings {
         internal static string TooManyArguments {
             get {
                 return ResourceManager.GetString("TooManyArguments", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to %Error%.
-        /// </summary>
-        internal static string UserCode {
-            get {
-                return ResourceManager.GetString("UserCode", resourceCulture);
             }
         }
     }

@@ -11,6 +11,7 @@ namespace Dyalect.Runtime
         internal ExecutionContext(CallStack callStack, UnitComposition composition)
         {
             CallStack = callStack;
+            CatchMarks = new Stack<CatchMark>();
             Composition = composition;
             Units = new DyObject[Composition.Units.Count][];
         }
@@ -24,6 +25,8 @@ namespace Dyalect.Runtime
         public bool HasErrors => Error != null;
 
         internal CallStack CallStack { get; }
+
+        internal Stack<CatchMark> CatchMarks { get; }
 
         internal DyError Error { get; set; }
 

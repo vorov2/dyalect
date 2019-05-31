@@ -130,7 +130,7 @@
     <value>An object of type "%TypeName%" doesn't support a "call" operation.</value>
   </data>
   <data name="OperationNotSupported" xml:space="preserve">
-    <value>Operation "%Operation%" is not supported by the following type(s): "%TypeName%".</value>
+    <value>Operation "%Operation%" is not supported by the type "%TypeName%".</value>
   </data>
   <data name="StackCorrupted" xml:space="preserve">
     <value>Stack is corrupted.</value>
@@ -162,7 +162,10 @@
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed.</value>
   </data>
-  <data name="UserCode" xml:space="preserve">
-    <value>%Error%</value>
+  <data name="OperationNotSupported2" xml:space="preserve">
+    <value>Operation "%Operation%" is not supported by the types "%TypeName1%" and "%TypeName2%".</value>
+  </data>
+  <data name="CollectionModified" xml:space="preserve">
+    <value>Collection was modified after the iterator was instantiated.</value>
   </data>
 </root>

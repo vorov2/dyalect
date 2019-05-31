@@ -24,6 +24,12 @@ namespace Dyalect.Runtime
 
         internal void PopVoid() => array[--size] = null;
 
+        internal void Clear()
+        {
+            while (size > 0)
+                array[--size] = null;
+        }
+
         internal DyObject Peek() => array[size - 1];
 
         internal DyObject Peek(int n) => array[size - n];

@@ -50,6 +50,7 @@
         Dup,        //1
         SyncPoint,  //0
         Fail,       //-1
+        FailSys,    //0
         NewFun,     //0
         NewFunV,    //0
         NewIter,    //0
@@ -78,5 +79,8 @@
         SetIx,      //-2
         HasField,   //0
         TypeCheck,  //0
+
+        Start,      //0
+        End,        //0
     }
 }

@@ -11,7 +11,7 @@ namespace Dyalect.Linker
             Value = new DyString(value);
         }
 
-        public DefaultAttribute(int value)
+        public DefaultAttribute(long value)
         {
             Value = DyInteger.Get(value);
         }

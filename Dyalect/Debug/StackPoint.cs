@@ -6,7 +6,17 @@
         {
             BreakAddress = breakAddress;
             UnitHandle = unitHandle;
+            External = false;
         }
+
+        internal StackPoint(bool external)
+        {
+            BreakAddress = 0;
+            UnitHandle = 0;
+            External = external;
+        }
+
+        internal readonly bool External;
 
         internal readonly int BreakAddress;
 

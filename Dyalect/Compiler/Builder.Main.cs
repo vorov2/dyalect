@@ -1,5 +1,6 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
+using Dyalect.Runtime;
 using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
@@ -18,6 +19,9 @@ namespace Dyalect.Compiler
                     break;
                 case NodeType.Binding:
                     Build((DBinding)node, hints, ctx);
+                    break;
+                case NodeType.Rebinding:
+                    Build((DRebinding)node, hints, ctx);
                     break;
                 case NodeType.Block:
                     Build((DBlock)node, hints, ctx);
@@ -103,7 +107,55 @@ namespace Dyalect.Compiler
                 case NodeType.YieldBlock:
                     Build((DYieldBlock)node, hints, ctx);
                     break;
+                case NodeType.TryCatch:
+                    Build((DTryCatch)node, hints, ctx);
+                    break;
+                case NodeType.Throw:
+                    Build((DThrow)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DThrow node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Expression, hints.Append(Push), ctx);
+            AddLinePragma(node);
+            cw.Fail();
+        }
+
+        private void Build(DTryCatch node, Hints hints, CompilerContext ctx)
+        {
+            var gotcha = cw.DefineLabel();
+            cw.Start(gotcha);
+            Build(node.Expression, hints, ctx);
+
+            AddLinePragma(node);
+            cw.End();
+            var skip = cw.DefineLabel();
+            cw.Br(skip);
+            cw.MarkLabel(gotcha);
+
+            StartScope(false, node.Catch.Location);
+
+            if (node.BindVariable != null)
+            {
+                AddLinePragma(node.BindVariable);
+
+                if (node.BindVariable.Value != "_")
+                {
+                    var sv = AddVariable(node.BindVariable.Value, node.Catch, VarFlags.Const);
+                    cw.PopVar(sv);
+                }
+                else
+                    cw.Pop();
+            }
+
+            Build(node.Catch, hints, ctx);
+            EndScope();
+
+            cw.MarkLabel(skip);
+            AddLinePragma(node);
+            cw.Nop();
         }
 
         private void Build(DYieldBlock node, Hints hints, CompilerContext ctx)
@@ -432,6 +484,7 @@ namespace Dyalect.Compiler
             }
 
             cw.FunCall(node.Arguments.Count);
+
             PopIf(hints);
         }
 
@@ -583,6 +636,8 @@ namespace Dyalect.Compiler
         private void Build(DBlock node, Hints hints, CompilerContext ctx)
         {
             var hasPush = hints.Has(Push);
+            var hasLast = hints.Has(Last);
+            hints = hints.Remove(Last);
 
             if (node.Nodes?.Count == 0)
             {
@@ -597,8 +652,10 @@ namespace Dyalect.Compiler
             for (var i = 0; i < node.Nodes.Count; i++)
             {
                 var n = node.Nodes[i];
-                var push = hasPush && i == node.Nodes.Count - 1 ? hints.Append(Push) : hints.Remove(Push);
-                Build(n, push, ctx);
+                var last = i == node.Nodes.Count - 1;
+                var nh = hasPush && last ? hints.Append(Push) : hints.Remove(Push);
+                nh = hasLast && last ? nh.Append(Last) : nh;
+                Build(n, nh, ctx);
             }
 
             EndScope();
@@ -632,9 +689,34 @@ namespace Dyalect.Compiler
             else
                 cw.PushNil();
 
-            var flags = currentScope.IsGlobal ? VarFlags.Exported :  VarFlags.None;
-            var a = AddVariable(node.Name, node, node.Constant ? flags | VarFlags.Const : flags);
-            cw.PopVar(a);
+            if (node.Pattern.NodeType == NodeType.NamePattern)
+            {
+                var flags = currentScope.IsGlobal ? VarFlags.Exported : VarFlags.None;
+                var a = AddVariable(node.Pattern.GetName(), node, node.Constant ? flags | VarFlags.Const : flags);
+                cw.PopVar(a);
+            }
+            else
+            {
+                BuildPattern(node.Pattern, hints, ctx);
+                var skip = cw.DefineLabel();
+                cw.Brtrue(skip);
+                cw.Fail(DyErrorCode.MatchFailed);
+                cw.MarkLabel(skip);
+                cw.Nop();
+            }
+
+            PushIf(hints);
+        }
+
+        private void Build(DRebinding node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Init, hints.Append(Push), ctx);
+            BuildPattern(node.Pattern, hints.Append(Rebind), ctx);
+            var skip = cw.DefineLabel();
+            cw.Brtrue(skip);
+            cw.Fail(DyErrorCode.MatchFailed);
+            cw.MarkLabel(skip);
+            cw.Nop();
             PushIf(hints);
         }
 
@@ -660,6 +742,16 @@ namespace Dyalect.Compiler
 
             switch (node.Operator)
             {
+                case BinaryOperator.Coalesce:
+                    exitLab = cw.DefineLabel();
+                    Build(node.Left, hints.Append(Push), ctx);
+                    cw.Dup();
+                    cw.Brtrue(exitLab);
+                    cw.Pop();
+                    Build(node.Right, hints.Append(Push), ctx);
+                    cw.MarkLabel(exitLab);
+                    cw.Nop();
+                    break;
                 case BinaryOperator.And:
                     Build(node.Left, hints.Append(Push), ctx);
                     termLab = cw.DefineLabel();

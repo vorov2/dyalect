@@ -11,14 +11,14 @@ namespace Dyalect.Parser.Model
 
         public bool Constant { get; set; }
 
-        public string Name { get; internal set; }
+        public DPattern Pattern { get; internal set; }
 
         public DNode Init { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {
             sb.Append(Constant ? "const " : "var ");
-            sb.Append(Name);
+            Pattern.ToString(sb);
 
             if (Init != null)
             {

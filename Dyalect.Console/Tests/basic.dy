@@ -103,6 +103,19 @@ func comparisonTest6() {
     assert(true, str2 == false)
 }
 
+func comparisonTest7() {
+    assert(true, "".toString == "".toString)
+    assert(false, "".toString == '\0'.toString)
+}
+
+func coalesceTest() {
+    var z = nil
+    var foo = "foo"
+    var obj = false
+    assert("foo", z ?? foo)
+    assert("foo", obj ?? z ?? foo)
+}
+
 func toStringTest1() {
     var res = (1,2,3).toString()
     assert("(1, 2, 3)", res)
@@ -204,7 +217,7 @@ func arrayTest2() {
 
 func arrayTest3() {
     var arr = [1,2,3,4,5,6]
-    var newArr = arr.slice(2,3)
+    var newArr = arr.slice(2,3).toArray()
     assert([3, 4, 5], newArr)
 }
 
@@ -268,18 +281,25 @@ func arrayTest12() {
 
 func arrayTest13() {
     var xs = (1..10).toArray()
-    var slice = xs.slice(4)
+    var slice = xs.slice(4).toArray()
     assert([5,6,7,8,9,10], slice)
 }
 
 func arrayTest14() {
     var xs = [0,1,2,3,4,5,6,7,8,9]
-    assert([1,2,3,4], xs[1..5])
+    var res = xs[1..5].toArray()
+    assert([1,2,3,4], res)
 }
 
 func arrayTest15() {
     var xs = [1..10]
     assert([1,2,3,4,5,6,7,8,9,10], xs)
+}
+
+func arrayTest18() {
+    var xs = []
+    xs.addRange({1,2,3,4,5})
+    assert([1,2,3,4,5], xs)
 }
 
 func tupleTest1() {
@@ -326,6 +346,8 @@ func stringTest2() {
     var str = "Hello, world!"
     assert(4, str.indexOf("o"))
     assert(8, str.lastIndexOf("o"))
+    assert(8, str.indexOf("o", fromIndex: 7))
+    assert(3, str.lastIndexOf("l", fromIndex: 6, count: 4))
 }
 
 func stringTest3() {
@@ -400,6 +422,11 @@ func stringTest15() {
     assert('!', str[str.len() - 1])
 }
 
+func stringTest16() {
+    var str = String.join("foo", 1, 3, 44, true, separator: ";")
+    assert("foo;1;3;44;true", str)
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
@@ -414,6 +441,31 @@ func charTest1() {
     assert(true, 'c' < "cc")
     assert(true, "cc" > 'c')
     assert(false, "cc" < 'c')
+}
+
+func charTest2() {
+    assert(true, 'c' == 'C'.lower())
+    assert(true, 'C' == 'c'.upper())
+    assert(true, 'c'.isLower())
+    assert(true, 'C'.isUpper())
+}
+
+func charTest3() {
+    assert(true, '\s'.isWhiteSpace())
+    assert(true, ' '.isWhiteSpace())
+    assert(true, '\u0020'.isWhiteSpace())
+    assert(true, ' '.isWhiteSpace())
+    assert(true, '\t'.isControl())
+    assert(false, 't'.isControl())
+}
+
+func charTest4() {
+    assert(true, '9'.isDigit())
+    assert(false, 'A'.isDigit())
+    assert(true, 'A'.isLetter())
+    assert(false, '1'.isLetter())
+    assert(true, '9'.isLetterOrDigit())
+    assert(true, 't'.isLetterOrDigit())
 }
 
 func nameofTest() {
@@ -503,4 +555,60 @@ func interpolationTest3() {
 func parseTest() {
     var res = parse("[1,2,3,('c',true,23.4),nil]")
     assert([1,2,3,('c',true,23.4),nil], res)
+}
+
+func cloneTest() {
+    var xs = [1,2,3]
+    assert(true, xs == xs)
+    assert(false, xs.clone() == xs)
+}
+
+func compositionTest1() {
+    func sum(x, y) {
+        x + y
+    }
+    func fmt(res) {
+        "result: \(res)"
+    }
+    const fun = Function.compose(sum, fmt)
+    var res = fun(13, 14)
+    assert(res, "result: 27")
+}
+
+func compositionTest2() {
+    func sum(x, y) {
+        x + y
+    }
+    func fmt(res) {
+        "result: \(res)"
+    }
+    const fun = sum.compose(with: fmt)
+    var res = fun(13, 14)
+    assert(res, "result: 27")
+}
+
+func arrayCopyTest1() {
+    var xs = [1, 2, 3, 4, 5, 6]
+    var ys = Array.empty(3)
+    Array.copy(xs, 1, ys, 0, 3)
+    assert([2,3,4], ys)
+}
+
+func arrayCopyTest2() {
+    var xs = [1, 2, 3, 4, 5, 6]
+    var ys = Array.copy(from: xs, fromIndex: 1, count: 3)
+    assert([2,3,4], ys)
+}
+
+func arrayCopyTest3() {
+    var xs = [1, 2, 3, 4, 5, 6]
+    var ys = [999, 999, 0, 0, 0]
+    ys = Array.copy(xs, 1, ys, 2, 3)
+    assert([999,999,2,3,4], ys)
+}
+
+func arrayCopyTest4() {
+    var xs = [1, 2, 3, 4, 5, 6]
+    var ys = Array.copy(xs, count: 3)
+    assert([1,2,3], ys)
 }

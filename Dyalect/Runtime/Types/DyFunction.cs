@@ -51,6 +51,8 @@ namespace Dyalect.Runtime.Types
         internal virtual MemoryLayout GetLayout(ExecutionContext ctx) => null;
 
         internal abstract DyObject[] CreateLocals(ExecutionContext ctx);
+
+        internal abstract bool Equals(DyFunction func);
     }
 
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
@@ -67,5 +69,39 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(((DyFunction)arg).ToString());
+
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
+
+        protected override DyFunction GetMember(string name, ExecutionContext ctx)
+        {
+            if (name == "compose")
+                return DyForeignFunction.Member(name, Compose, -1, new Par("with"));
+
+            return null;
+        }
+
+        private DyObject Compose(ExecutionContext ctx, DyObject first, DyObject second)
+        {
+            if (first is DyFunction f1)
+            {
+                if (second is DyFunction f2)
+                    return DyForeignFunction.Compose(f1, f2);
+                else
+                    ctx.InvalidType(DyTypeNames.Function, second);
+            }
+            else
+                ctx.InvalidType(DyTypeNames.Function, first);
+
+            return DyNil.Instance;
+        }
+
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        {
+            if (name == "compose")
+                return DyForeignFunction.Static(name, Compose, -1, new Par("first"), new Par("second"));
+
+            return null;
+        }
     }
 }

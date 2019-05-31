@@ -1,5 +1,6 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
+using Dyalect.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,15 +22,26 @@ namespace Dyalect.Compiler
 
             var sys = AddVariable();
             var push = hints.Append(Push);
-            Build(node.Expression, push, ctx);
+
+            if (node.Expression != null)
+                Build(node.Expression, push, ctx);
+
             cw.PopVar(sys);
             var sysVar = new ScopeVar(sys);
 
             foreach (var e in node.Entries)
                 BuildEntry(e, sysVar, push, ctx);
 
-            cw.Push("Match failed.");
-            cw.Fail();
+            //It is some kind of a hack, but Expression can be null
+            //only if this match is inside try/catch
+            if (node.Expression != null)
+                cw.Fail(DyErrorCode.MatchFailed);
+            else
+            {
+                cw.PushVar(sysVar);
+                cw.Fail();
+            }
+
             cw.MarkLabel(ctx.MatchExit);
             cw.Nop();
             EndScope();
@@ -41,7 +53,7 @@ namespace Dyalect.Compiler
             var skip = cw.DefineLabel();
 
             cw.PushVar(sys);
-            BuildPattern(node.Pattern, ctx);
+            BuildPattern(node.Pattern, hints, ctx);
             cw.Brfalse(skip);
 
             if (node.Guard != null)
@@ -57,12 +69,12 @@ namespace Dyalect.Compiler
             EndScope();
         }
 
-        private void BuildPattern(DPattern node, CompilerContext ctx)
+        private void BuildPattern(DPattern node, Hints hints, CompilerContext ctx)
         {
             switch (node.NodeType)
             {
                 case NodeType.NamePattern:
-                    BuildName((DNamePattern)node, ctx);
+                    BuildName((DNamePattern)node, hints, ctx);
                     break;
                 case NodeType.IntegerPattern:
                     cw.Push(((DIntegerPattern)node).Value);
@@ -85,50 +97,60 @@ namespace Dyalect.Compiler
                     cw.Eq();
                     break;
                 case NodeType.TuplePattern:
-                    BuildSequence(node, ((DTuplePattern)node).Elements, ctx);
+                    BuildSequence(node, ((DTuplePattern)node).Elements, hints, ctx);
                     break;
                 case NodeType.RecordPattern:
-                    BuildRecord((DRecordPattern)node, ctx);
+                    BuildRecord((DRecordPattern)node, hints, ctx);
                     break;
                 case NodeType.ArrayPattern:
-                    BuildSequence(node, ((DArrayPattern)node).Elements, ctx);
+                    BuildSequence(node, ((DArrayPattern)node).Elements, hints, ctx);
                     break;
                 case NodeType.NilPattern:
                     cw.PushNil();
                     cw.Eq();
                     break;
                 case NodeType.RangePattern:
-                    BuildRange((DRangePattern)node, ctx);
+                    BuildRange((DRangePattern)node, hints, ctx);
                     break;
                 case NodeType.WildcardPattern:
                     cw.Pop();
                     cw.Push(true);
                     break;
                 case NodeType.AsPattern:
-                    BuildAs((DAsPattern)node, ctx);
+                    BuildAs((DAsPattern)node, hints, ctx);
                     break;
                 case NodeType.TypeTestPattern:
                     cw.TypeCheck(GetTypeHandle(((DTypeTestPattern)node).TypeName, node.Location));
                     break;
                 case NodeType.AndPattern:
-                    BuildAnd((DAndPattern)node, ctx);
+                    BuildAnd((DAndPattern)node, hints, ctx);
                     break;
                 case NodeType.OrPattern:
-                    BuildOr((DOrPattern)node, ctx);
+                    BuildOr((DOrPattern)node, hints, ctx);
+                    break;
+                case NodeType.MethodCheckPattern:
+                    BuildMethodCheck((DMethodCheckPattern)node, hints, ctx);
                     break;
             }
         }
 
-        private void BuildAs(DAsPattern node, CompilerContext ctx)
+        private void BuildMethodCheck(DMethodCheckPattern node, Hints hints, CompilerContext ctx)
+        {
+            AddLinePragma(node);
+            var nameId = GetMemberNameId(node.Name);
+            cw.HasMember(nameId);
+        }
+
+        private void BuildAs(DAsPattern node, Hints hints, CompilerContext ctx)
         {
             cw.Dup();
 
-            BuildPattern(node.Pattern, ctx);
+            BuildPattern(node.Pattern, hints, ctx);
             var bad = cw.DefineLabel();
             var ok = cw.DefineLabel();
             cw.Brfalse(bad);
 
-            if (!GetLocalVariable(node.Name, out var sv))
+            if (!TryGetLocalVariable(node.Name, out var sv))
                 sv = AddVariable(node.Name, node, VarFlags.None);
 
             cw.PopVar(sv);
@@ -141,7 +163,7 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
-        private void BuildName(DNamePattern node, CompilerContext ctx)
+        private void BuildName(DNamePattern node, Hints hints, CompilerContext ctx)
         {
             var err = GetTypeHandle(null, node.Name, out var handle);
 
@@ -149,21 +171,27 @@ namespace Dyalect.Compiler
                 cw.TypeCheck(handle);
             else
             {
-                if (!GetLocalVariable(node.Name, out var sv))
+                int sv;
+                var found = hints.Has(Rebind)
+                    ? TryGetVariable(node.Name, out sv)
+                    : TryGetLocalVariable(node.Name, out sv);
+
+                if (!found)
                     sv = AddVariable(node.Name, node, VarFlags.None);
+
                 cw.PopVar(sv);
                 cw.Push(true);
             }
         }
 
-        private void BuildAnd(DAndPattern node, CompilerContext ctx)
+        private void BuildAnd(DAndPattern node, Hints hints, CompilerContext ctx)
         {
             cw.Dup();
-            BuildPattern(node.Left, ctx);
+            BuildPattern(node.Left, hints, ctx);
             var termLab = cw.DefineLabel();
             var exitLab = cw.DefineLabel();
             cw.Brfalse(termLab);
-            BuildPattern(node.Right, ctx);
+            BuildPattern(node.Right, hints, ctx);
             AddLinePragma(node);
             cw.Br(exitLab);
             cw.MarkLabel(termLab);
@@ -174,14 +202,14 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
-        private void BuildOr(DOrPattern node, CompilerContext ctx)
+        private void BuildOr(DOrPattern node, Hints hints, CompilerContext ctx)
         {
             cw.Dup();
-            BuildPattern(node.Left, ctx);
+            BuildPattern(node.Left, hints, ctx);
             var termLab = cw.DefineLabel();
             var exitLab = cw.DefineLabel();
             cw.Brtrue(termLab);
-            BuildPattern(node.Right, ctx);
+            BuildPattern(node.Right, hints, ctx);
             AddLinePragma(node);
             cw.Br(exitLab);
             cw.MarkLabel(termLab);
@@ -192,26 +220,26 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
-        private void BuildRange(DRangePattern node, CompilerContext ctx)
+        private void BuildRange(DRangePattern node, Hints hints, CompilerContext ctx)
         {
             var skip = cw.DefineLabel();
             var exit = cw.DefineLabel();
 
             cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId("<"));
+            cw.HasMember(GetMemberNameId(Builtins.Lt));
             cw.Brfalse(skip); //1 left
 
             cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId(">"));
+            cw.HasMember(GetMemberNameId(Builtins.Gt));
             cw.Brfalse(skip); //1 left
 
             cw.Dup(); //2 objs
-            BuildRangeElement(node.From);
+            BuildRangeElement(node.From, hints);
             cw.GtEq();
             cw.Brfalse(skip); //1 left
 
             cw.Dup(); //2 objs
-            BuildRangeElement(node.To);
+            BuildRangeElement(node.To, hints);
             cw.LtEq();
             cw.Brfalse(skip); //1 left
 
@@ -227,7 +255,7 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
-        private void BuildRangeElement(DPattern node)
+        private void BuildRangeElement(DPattern node, Hints hints)
         {
             switch (node.NodeType)
             {
@@ -255,16 +283,16 @@ namespace Dyalect.Compiler
             }
         }
 
-        private void BuildSequence(DPattern node, List<DPattern> elements, CompilerContext ctx)
+        private void BuildSequence(DPattern node, List<DPattern> elements, Hints hints, CompilerContext ctx)
         {
             var skip = cw.DefineLabel();
             var ok = cw.DefineLabel();
 
             cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId("len"));
+            cw.HasMember(GetMemberNameId(Builtins.Len));
             cw.Brfalse(skip); //1 obj left to pop
             cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId("get"));
+            cw.HasMember(GetMemberNameId(Builtins.Get));
             cw.Brfalse(skip); //1 obj left to pop
 
             cw.Dup(); //2 objs
@@ -278,7 +306,7 @@ namespace Dyalect.Compiler
                 cw.Dup(); //2 objs
                 var e = elements[i];
                 cw.Get(i);
-                BuildPattern(e, ctx);
+                BuildPattern(e, hints, ctx);
                 cw.Brfalse(skip); //1 obj left to pop
             }
 
@@ -292,7 +320,7 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
-        private void BuildRecord(DRecordPattern node, CompilerContext ctx)
+        private void BuildRecord(DRecordPattern node, Hints hints, CompilerContext ctx)
         {
             var skip = cw.DefineLabel();
             var ok = cw.DefineLabel();
@@ -308,7 +336,7 @@ namespace Dyalect.Compiler
                 cw.Dup(); //2 objs
                 cw.Push(e.Label);
                 cw.Get();
-                BuildPattern(e.Pattern, ctx);
+                BuildPattern(e.Pattern, hints, ctx);
                 cw.Brfalse(skip); //1 obj left
             }
 

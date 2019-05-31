@@ -19,6 +19,7 @@
         ShiftRight,
         BitwiseAnd,
         BitwiseOr,
-        Xor
+        Xor,
+        Coalesce
     }
 }

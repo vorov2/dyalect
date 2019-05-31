@@ -37,6 +37,8 @@ namespace Dyalect.Runtime.Types
         internal protected override double GetFloat() => value;
 
         protected internal override bool GetBool() => value > .00001d;
+
+        public override DyObject Clone() => this;
     }
 
     internal sealed class DyFloatTypeInfo : DyTypeInfo

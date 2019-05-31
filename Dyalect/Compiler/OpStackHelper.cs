@@ -51,6 +51,7 @@
             1,  //Dup
             0,  //SyncPoint
             -1, //Fail
+            0,  //FailSys
             1,  //NewFun
             1,  //NewFunV
             1,  //NewIter
@@ -80,6 +81,8 @@
             -2, //SetIx
             0,  //HasField
             0,  //TypeCheck
+            0,  //Start
+            0,  //End
         };
     }
 }

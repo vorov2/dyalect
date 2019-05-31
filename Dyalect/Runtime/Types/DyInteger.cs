@@ -55,6 +55,8 @@ namespace Dyalect.Runtime.Types
         internal protected override double GetFloat() => value;
 
         internal protected override long GetInteger() => value;
+
+        public override DyObject Clone() => this;
     }
 
 

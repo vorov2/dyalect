@@ -26,6 +26,7 @@ namespace Dyalect.Parser
                 ,{ "invalid DyalectItem", InvalidStatement }
                 ,{ "invalid Pattern", InvalidPattern }
                 ,{ "invalid BooleanPattern", InvalidPattern }
+                ,{ "invalid TryCatch", InvalidTryCatch }
                 ,{ "??? expected", Undefined }
             };
 

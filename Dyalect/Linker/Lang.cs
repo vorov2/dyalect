@@ -75,6 +75,24 @@ namespace Dyalect.Linker
             return new DyString(Console.ReadLine());
         }
 
+        [Function("rnd")]
+        public DyObject Randomize(ExecutionContext ctx, [Default(int.MaxValue)]DyObject max, [Default(0)]DyObject min, [Default]DyObject seed)
+        {
+            var iseed = 0;
+
+            if (seed.TypeId != DyType.Nil)
+                iseed = (int)seed.GetInteger();
+            else
+            {
+                var dt = DateTime.Now;
+                var dt2 = new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, 0, 0);
+                iseed = (int)(dt2 - dt).Ticks;
+            }
+
+            var rnd = new Random(iseed);
+            return DyInteger.Get(rnd.Next((int)min.GetInteger(), (int)max.GetInteger()));
+        }
+
         [Function("assert")]
         public DyObject Assert(ExecutionContext ctx, DyObject expected, DyObject got)
         {

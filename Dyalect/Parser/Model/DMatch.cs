@@ -16,9 +16,13 @@ namespace Dyalect.Parser.Model
 
         internal override void ToString(StringBuilder sb)
         {
-            sb.Append("match ");
-            Expression.ToString(sb);
-            sb.Append(' ');
+            if (Expression != null)
+            {
+                sb.Append("match ");
+                Expression.ToString(sb);
+                sb.Append(' ');
+            }
+
             sb.Append('{');
 
             foreach (var e in Entries)

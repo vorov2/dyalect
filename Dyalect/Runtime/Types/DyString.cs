@@ -76,6 +76,8 @@ namespace Dyalect.Runtime.Types
         public IEnumerator<DyObject> GetEnumerator() => Value.Select(c => new DyChar(c)).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public override DyObject Clone() => this;
     }
 
     internal sealed class DyStringTypeInfo : DyTypeInfo
@@ -152,26 +154,42 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(DyTypeNames.Char, value);
         }
 
-        private DyObject IndexOf(ExecutionContext ctx, DyObject self, DyObject value)
+        private DyObject IndexOf(ExecutionContext ctx, DyObject self, DyObject value, DyObject fromIndex, DyObject count)
         {
             var str = self.GetString();
+            var ifrom = (int)fromIndex.GetInteger();
+            var icount = count == DyNil.Instance ? str.Length - ifrom : (int)count.GetInteger();
+
+            if (ifrom < 0 || ifrom > str.Length)
+                return ctx.IndexOutOfRange(DyTypeNames.String, fromIndex);
+
+            if (icount < 0 || icount > str.Length - ifrom)
+                return ctx.IndexOutOfRange(DyTypeNames.String, count);
 
             if (value.TypeId == DyType.String)
-                return DyInteger.Get(str.IndexOf(value.GetString()));
+                return DyInteger.Get(str.IndexOf(value.GetString(), ifrom, icount));
             else if (value.TypeId == DyType.Char)
-                return DyInteger.Get(str.IndexOf(value.GetChar()));
+                return DyInteger.Get(str.IndexOf(value.GetChar(), ifrom, icount));
             else
                 return ctx.InvalidType(DyTypeNames.Char, value);
         }
 
-        private DyObject LastIndexOf(ExecutionContext ctx, DyObject self, DyObject value)
+        private DyObject LastIndexOf(ExecutionContext ctx, DyObject self, DyObject value, DyObject fromIndex, DyObject count)
         {
             var str = self.GetString();
+            var ifrom = fromIndex.TypeId == DyType.Nil ? str.Length - 1 : (int)fromIndex.GetInteger();
+            var icount = count == DyNil.Instance ? ifrom + 1 : (int)count.GetInteger();
+
+            if (ifrom < 0 || ifrom > str.Length)
+                return ctx.IndexOutOfRange(DyTypeNames.String, fromIndex);
+
+            if (icount < 0 || ifrom - icount + 1 < 0)
+                return ctx.IndexOutOfRange(DyTypeNames.String, fromIndex);
 
             if (value.TypeId == DyType.String)
-                return DyInteger.Get(str.LastIndexOf(value.GetString()));
+                return DyInteger.Get(str.LastIndexOf(value.GetString(), ifrom, icount));
             else if (value.TypeId == DyType.Char)
-                return DyInteger.Get(str.LastIndexOf(value.GetChar()));
+                return DyInteger.Get(str.LastIndexOf(value.GetChar(), ifrom, icount));
             else
                 return ctx.InvalidType(DyTypeNames.Char, value);
         }
@@ -346,11 +364,11 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Len:
                     return DyForeignFunction.Member(name, Length);
                 case "indexOf":
-                    return DyForeignFunction.Member(name, IndexOf, -1, new Par("value"));
+                    return DyForeignFunction.Member(name, IndexOf, -1, new Par("value"), new Par("fromIndex", DyInteger.Get(0)), new Par("count", DyNil.Instance));
+                case "lastIndexOf":
+                    return DyForeignFunction.Member(name, LastIndexOf, -1, new Par("value"), new Par("fromIndex", DyNil.Instance), new Par("count", DyNil.Instance));
                 case "contains":
                     return DyForeignFunction.Member(name, Contains, -1, new Par("value"));
-                case "lastIndexOf":
-                    return DyForeignFunction.Member(name, LastIndexOf, -1, new Par("value"));
                 case "split":
                     return DyForeignFunction.Member(name, Split, 0, new Par("separators", true));
                 case "upper":
@@ -405,10 +423,39 @@ namespace Dyalect.Runtime.Types
             return new DyString(string.Concat(arr));
         }
 
+        private static DyObject Join(ExecutionContext ctx, DyObject values, DyObject separator)
+        {
+            if (separator.TypeId != DyType.String)
+                return ctx.InvalidType(DyTypeNames.String, separator);
+
+            var arr = ((DyTuple)values).Values;
+            var strArr = new string[arr.Length];
+
+            for (var i = 0; i < arr.Length; i++)
+            {
+                var a = arr[i];
+
+                if (a.TypeId == DyType.String || a.TypeId == DyType.Char)
+                    strArr[i] = a.GetString();
+                else
+                {
+                    strArr[i] = arr[i].ToString(ctx);
+
+                    if (ctx.HasErrors)
+                        return DyNil.Instance;
+                }
+            }
+
+            return new DyString(string.Join(separator.GetString(), strArr));
+        }
+
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "concat")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
+
+            if (name == "join")
+                return DyForeignFunction.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(",")));
 
             return null;
         }

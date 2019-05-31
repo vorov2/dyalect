@@ -17,6 +17,7 @@
         Unary,
         Assignment,
         Binding,
+        Rebinding,
         If,
         While,
         For,
@@ -25,6 +26,7 @@
         Continue,
         Return,
         Yield,
+        Throw,
 
         Base,
 
@@ -62,7 +64,10 @@
         WildcardPattern,
         TypeTestPattern,
         AndPattern,
-        OrPattern
+        OrPattern,
+        MethodCheckPattern,
+
+        TryCatch
     }
 
 }

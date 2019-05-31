@@ -1,4 +1,5 @@
-﻿using Dyalect.Runtime.Types;
+﻿using Dyalect.Debug;
+using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -38,10 +39,12 @@ namespace Dyalect.Runtime
 
         FailedReadLiteral = 614,
 
-        MatchFailed = 615
+        MatchFailed = 615,
+
+        CollectionModified = 616
     }
 
-    public sealed class DyError
+    public class DyError
     {
         internal DyError(DyErrorCode code, params (string, object)[] dataItems)
         {
@@ -49,23 +52,58 @@ namespace Dyalect.Runtime
             DataItems = new ReadOnlyCollection<(string, object)>(dataItems);
         }
 
+        internal Stack<StackPoint> Dump { get; set; }
+
         public DyErrorCode Code { get; }
 
         public IReadOnlyList<(string Key, object Value)> DataItems { get; }
 
-        public string GetDescription()
+        public virtual string GetDescription()
         {
-            var sb = new StringBuilder(RuntimeErrors.ResourceManager.GetString(Code.ToString()));
+            string key;
 
-            foreach (var dt in DataItems)
-                sb.Replace("%" + dt.Key + "%", dt.Value.ToString());
+            if (Code == DyErrorCode.OperationNotSupported && DataItems.Count == 3)
+                key = "OperationNotSupported2";
+            else
+                key = Code.ToString();
+
+            var sb = new StringBuilder(RuntimeErrors.ResourceManager.GetString(key));
+
+            if (DataItems != null)
+                foreach (var dt in DataItems)
+                    sb.Replace("%" + dt.Key + "%", dt.Value.ToString());
 
             return sb.ToString();
         }
+
+        internal virtual DyObject GetDyObject()
+        {
+            return new DyString(GetDescription());
+        }
+    }
+
+    internal sealed class DyUserError : DyError
+    {
+        public DyUserError(DyObject data) : base(DyErrorCode.UserCode)
+        {
+            Data = data;
+        }
+
+        public DyObject Data { get; }
+
+        public override string GetDescription() => Data?.ToString() ?? "UserError";
+
+        internal override DyObject GetDyObject() => Data ?? DyNil.Instance;
     }
 
     internal static class ExecutionContextExtensions
     {
+        public static DyObject CollectionModified(this ExecutionContext ctx)
+        {
+            ctx.Error = new DyError(DyErrorCode.CollectionModified);
+            return DyNil.Instance;
+        }
+
         public static DyObject FailedReadLiteral(this ExecutionContext ctx, string reason)
         {
             ctx.Error = new DyError(DyErrorCode.FailedReadLiteral,
@@ -100,7 +138,8 @@ namespace Dyalect.Runtime
         {
             ctx.Error = new DyError(DyErrorCode.OperationNotSupported,
                 ("Operation", op),
-                ("TypeName", "(" + obj1.TypeName(ctx) + "," + obj2.TypeName(ctx) + ")"));
+                ("TypeName1", obj1.TypeName(ctx)),
+                ("TypeName2", obj2.TypeName(ctx)));
             return DyNil.Instance;
         }
 
@@ -133,12 +172,6 @@ namespace Dyalect.Runtime
             ctx.Error = new DyError(DyErrorCode.ExternalFunctionFailure,
                 ("FunctionName", functionName),
                 ("Error", error));
-            return DyNil.Instance;
-        }
-
-        public static DyObject UserCode(this ExecutionContext ctx, string error)
-        {
-            ctx.Error = new DyError(DyErrorCode.UserCode, ("Error", error));
             return DyNil.Instance;
         }
 

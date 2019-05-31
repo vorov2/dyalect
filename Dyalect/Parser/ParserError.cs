@@ -36,6 +36,10 @@
 
         InvalidPattern = 16,
 
-        InvalidSyntax = 17
+        InvalidSyntax = 17,
+
+        InvalidCharLiteral = 18,
+
+        InvalidTryCatch = 19
     }
 }

@@ -43,6 +43,7 @@
         public static readonly Op Term = new Op(OpCode.Term);
         public static readonly Op Yield = new Op(OpCode.Yield);
         public static readonly Op PushNilT = new Op(OpCode.PushNilT);
+        public static readonly Op End = new Op(OpCode.End);
 
         public Op(OpCode code)
         {

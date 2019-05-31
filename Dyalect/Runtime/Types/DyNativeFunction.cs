@@ -46,47 +46,86 @@ namespace Dyalect.Runtime.Types
                 args = Statics.EmptyDyObjects;
 
             var locs = CreateLocals(ctx);
-            var arr = default(DyObject[]);
-
-            for (var i = 0; i < Parameters.Length; i++)
+            var argCount = args.Length;
+            
+            if (VarArgIndex != -1 && args.Length >= VarArgIndex)
             {
-                if (VarArgIndex != -1 && i >= VarArgIndex)
-                {
-                    if (arr == null)
-                        arr = new DyObject[args.Length - i + 1];
+                var arr = default(DyObject[]);
+                locs[VarArgIndex] = new DyTuple(arr);
 
-                    if (i < args.Length)
-                        arr[args.Length - i] = args[i];
-                }
+                for (var i = VarArgIndex; i < args.Length; i++)
+                    arr[i] = args[i];
 
-                locs[i] = i >= args.Length ? DyNil.Instance : args[i];
+                argCount = VarArgIndex;
             }
 
-            ctx.CallStack.Dup();
+            if (Parameters.Length != argCount && !ProcessArguments(ctx, locs, argCount))
+                return DyNil.Instance;
+
+            for (var i = 0; i < argCount; i++)
+                locs[i] = args[i];
+
+            ctx.CallStack.Push(Caller.External);
             return DyMachine.ExecuteWithData(this, locs, ctx);
+        }
+
+        private bool ProcessArguments(ExecutionContext ctx, DyObject[] locs, int passed)
+        {
+            if (Parameters.Length < passed)
+            {
+                ctx.TooManyArguments(FunctionName, Parameters.Length, passed);
+                return false;
+            }
+            else
+            {
+                for (var i = 2; i < Parameters.Length; i++)
+                {
+                    if (Parameters[i].Value != null)
+                        locs[i] = Parameters[i].Value;
+                    else
+                    {
+                        ctx.RequiredArgumentMissing(FunctionName, Parameters[i].Name);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         internal override DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var locs = CreateLocals(ctx);
+
+            if (Parameters.Length != 2 && !ProcessArguments(ctx, locs, 2))
+                return DyNil.Instance;
+
             locs[0] = left;
             locs[1] = right;
-            ctx.CallStack.Dup();
+            ctx.CallStack.Push(Caller.External);
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
         internal override DyObject Call1(DyObject obj, ExecutionContext ctx)
         {
             var locs = CreateLocals(ctx);
+
+            if (Parameters.Length != 1 && !ProcessArguments(ctx, locs, 2))
+                return DyNil.Instance;
+
             locs[0] = obj;
-            ctx.CallStack.Dup();
+            ctx.CallStack.Push(Caller.External);
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
         internal override DyObject Call0(ExecutionContext ctx)
         {
             var locs = CreateLocals(ctx);
-            ctx.CallStack.Dup();
+
+            if (Parameters.Length != 0 && !ProcessArguments(ctx, locs, 2))
+                return DyNil.Instance;
+
+            ctx.CallStack.Push(Caller.External);
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
@@ -97,5 +136,8 @@ namespace Dyalect.Runtime.Types
             var size = GetLayout(ctx).Size;
             return size == 0 ? Statics.EmptyDyObjects : new DyObject[size];
         }
+
+        internal override bool Equals(DyFunction func) => func is DyNativeFunction m 
+            && m.UnitId == UnitId && m.FunctionId == FunctionId;
     }
 }

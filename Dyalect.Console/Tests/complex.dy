@@ -601,7 +601,7 @@ func methodTest1() {
         this * other
     }
     var res = 3 + 3 == 3 * 3
-    Integer.__deleteMember("+")
+    Integer.__deleteMember("op_add")
     assert(true, res)
 }
 
@@ -610,7 +610,7 @@ func methodTest2() {
         this + " + " + other
     }
     var res = 12.2 + 0.4
-    Float.__deleteMember("+")
+    Float.__deleteMember("op_add")
     assert("12.2 + 0.4", res)
 }
 
@@ -725,4 +725,20 @@ func powTest() {
     }
     var res = pow(12, 4)
     assert(20736, res)
+}
+
+func binaryToString() {
+    func Integer.toString() {
+        var s = ""
+        for x in 31..0 {
+            if this & (1 << x) != 0 {
+                s += "1"
+            } else if s != "" {
+                s += "0"
+            }
+        }
+        s
+    }
+    assert("10001100101000", 9000.toString())
+    Integer.__deleteMember("toString")
 }

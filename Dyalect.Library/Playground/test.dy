@@ -1,6 +1,65 @@
-﻿func fun(x, y = 0, z = 12.2, dsc = "Useless text") {
-    print("x=\(x), y=\(y), z=\(z), dsc=\(dsc)")
+﻿/*func test1() {
+    func sorter(x, y) {
+        if x > 10 {
+            throw "No!"
+        }
+        x - y
+    }
+    var arr = [1..11]
+    var ex
+    try {
+        arr.sort(sorter)
+    } catch e {
+        ex = e
+    }
+    assert("No!", ex)
 }
 
-fun(12, z: 24.4, dsc: "Foo", y: 3)
-fun(y: 42, x: 12)
+test1()
+
+
+func sigma(n) { 
+    if n == 1 { return 0 }          // definition of aliquot sum
+ 
+    var result = 1
+    const root = sqrt(n)
+ 
+    for div in 2..root {
+        if n % div == 0 {
+            result += div + n/div
+        }
+    }
+    if root*root == n { result -= root }
+ 
+    return (result)
+}
+ 
+func amicables (upTo) {
+    var aliquot = Array.empty(upTo+1, 0)
+ 
+    for i in 1 .. upTo {           // fill lookup array
+        aliquot[i] = sigma(i)
+    }
+ 
+ for i in 1 .. upTo {
+        const a = aliquot[i]
+        if a > upTo {continue}      //second part of pair out-of-bounds
+ 
+        if a == i {continue}        //skip perfect numbers
+ 
+        if i == aliquot[a] {
+            print("\((i, a))")
+            aliquot[a] = upTo+1     //prevent second display of pair
+        }
+    }
+}
+ 
+amicables(20000)
+*/
+
+var x = 2
+var y = 3
+
+set (x, 0) = (y, x)
+
+print(x, y)

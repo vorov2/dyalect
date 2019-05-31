@@ -1,6 +1,5 @@
 ﻿using Dyalect.Parser.Model;
 using Dyalect.Strings;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
