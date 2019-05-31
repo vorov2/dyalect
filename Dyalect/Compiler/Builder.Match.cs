@@ -1,5 +1,6 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
+using Dyalect.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,11 +35,13 @@ namespace Dyalect.Compiler
             //It is some kind of a hack, but Expression can be null
             //only if this match is inside try/catch
             if (node.Expression != null)
-                cw.Push("Match failed.");
+                cw.Fail(DyErrorCode.MatchFailed);
             else
+            {
                 cw.PushVar(sysVar);
+                cw.Fail();
+            }
 
-            cw.Fail();
             cw.MarkLabel(ctx.MatchExit);
             cw.Nop();
             EndScope();

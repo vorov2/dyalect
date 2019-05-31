@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 
 namespace Dyalect.Compiler
@@ -212,6 +213,7 @@ namespace Dyalect.Compiler
         public void Set(int index) => Emit(new Op(OpCode.SetIx, index));
         public void HasField(string field) => Emit(new Op(OpCode.HasField, IndexString(field)));
         public void Start(Label lab) => Emit(OpCode.Start, lab);
+        public void Fail(DyErrorCode code) => Emit(new Op(OpCode.FailSys, (int)code));
 
         public void End() => Emit(Op.End);
         public void Yield() => Emit(Op.Yield);

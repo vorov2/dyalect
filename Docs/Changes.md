@@ -11,6 +11,7 @@
   * Done: _Exception handling_ ([Issue #24](https://github.com/vorov2/dyalect/issues/24), [docs](https://github.com/vorov2/dyalect/wiki/Exception-handling)).
   * Done: _Check whether an operator is implemented_ ([Issue #67](https://github.com/vorov2/dyalect/issues/67), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#opmethods), [more docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#has)).
   * Done: _Add a pattern to check if a method is implemented_ ([Issue #107](https://github.com/vorov2/dyalect/issues/107), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
+  * Done: _Allow rebinding variables using patterns_ ([Issue #118](https://github.com/vorov2/dyalect/issues/118), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#set)).
   * Fixed: _Method comparison_ ([Issue #119](https://github.com/vorov2/dyalect/issues/119)).
   * Fixed: _Char escape codes_ ([Issue #120](https://github.com/vorov2/dyalect/issues/120)).
   * Fixed: _`Array.addRange` and iterator literal_ ([Issue #125](https://github.com/vorov2/dyalect/issues/125)).

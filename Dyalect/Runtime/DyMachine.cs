@@ -298,6 +298,10 @@ namespace Dyalect.Runtime
                         ctx.Error = new DyUserError(evalStack.Pop());
                         ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
                         goto CATCH;
+                    case OpCode.FailSys:
+                        ctx.Error = new DyError((DyErrorCode)op.Data);
+                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
+                        goto CATCH;
                     case OpCode.NewIter:
                         evalStack.Push(DyIterator.CreateIterator(function.UnitId, op.Data, function.Captures, locals));
                         break;

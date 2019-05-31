@@ -51,6 +51,7 @@
             0, //Dup
             0, //SyncPoint
             0, //Fail
+            1, //FailSys
             1, //NewFun
             1, //NewFunV
             1, //NewIter

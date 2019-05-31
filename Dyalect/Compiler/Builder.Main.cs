@@ -1,5 +1,6 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
+using Dyalect.Runtime;
 using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
@@ -699,8 +700,7 @@ namespace Dyalect.Compiler
                 BuildPattern(node.Pattern, hints, ctx);
                 var skip = cw.DefineLabel();
                 cw.Brtrue(skip);
-                cw.Push("Match failed.");
-                cw.Fail();
+                cw.Fail(DyErrorCode.MatchFailed);
                 cw.MarkLabel(skip);
                 cw.Nop();
             }
@@ -714,8 +714,7 @@ namespace Dyalect.Compiler
             BuildPattern(node.Pattern, hints.Append(Rebind), ctx);
             var skip = cw.DefineLabel();
             cw.Brtrue(skip);
-            cw.Push("Match failed.");
-            cw.Fail();
+            cw.Fail(DyErrorCode.MatchFailed);
             cw.MarkLabel(skip);
             cw.Nop();
             PushIf(hints);
