@@ -1,18 +1,4 @@
-﻿func bubbleSort(list) {
-    var done = false
-    while !done {
-        done = true
-        for i in 1..(list.len()-1) {
-            if list[i - 1] > list[i] {
-                var x = list[i]
-                list[i] = list[i - 1]
-                list[i - 1] = x
-                done = false
-            }
-        }
-    }
+﻿func test(args..., separator = ",", terminator = "\n") {
+    [args, separator, terminator]
 }
-
-var xs = [3,1,5,4,2,6]
-bubbleSort(xs)
-print(xs)
+assert( [(1,2), ",", "\r"], test(1,2, terminator: "\r") )

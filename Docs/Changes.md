@@ -1,3 +1,7 @@
+# 0.7.1
+  * Done: _Variadic functions and iterators_ ([Issue #127](https://github.com/vorov2/dyalect/issues/127)).
+  * Fixed: _Variadic functions and named arguments_ ([Issue #128](https://github.com/vorov2/dyalect/issues/128)).
+
 # 0.7.0
   * Done: _Cloning objects_ ([Issue #48](https://github.com/vorov2/dyalect/issues/48), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#clone)).
   * Done: _Tuple: add static methods `pair` and `triple`_ ([Issue #103](https://github.com/vorov2/dyalect/issues/103), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#pair), [more docs](https://github.com/vorov2/dyalect/wiki/Tuple#triple)).
