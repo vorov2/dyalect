@@ -1,6 +1,6 @@
 internal static class Meta
 {
-    public const string Version = "0.7.0";
+    public const string Version = "0.7.1";
 
     public const string Product = "Dyalect";
 

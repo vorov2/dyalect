@@ -122,6 +122,21 @@ func matchTest10() {
     assert(42, res)
 }
 
+func matchTest11() {
+    var res = match (42, 12) {
+        (42, x) when x > 15 => false,
+        (42, x) when x == 12 => true
+    }
+    assert(true, res)
+}
+
+func matchTest12() {
+    var res = match (42, 12) {
+        (x, y) && (_, 12) when x > y => x + y
+    }
+    assert(54, res)
+}
+
 func forMatchTest1() {
     var arr = []
     for (1, x) in [(1, 2), (2, 'F'), (3, 'S'), (1, 3), (1, 4), (1.01, true)] {

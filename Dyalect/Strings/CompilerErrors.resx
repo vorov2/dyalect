@@ -186,4 +186,7 @@
   <data name="RangeIndexNotSupported" xml:space="preserve">
     <value>Range is not supported in this context.</value>
   </data>
+  <data name="NamedArgumentMultipleTimes" xml:space="preserve">
+    <value>Named argument "{0}" cannot be specified multiple times.</value>
+  </data>
 </root>

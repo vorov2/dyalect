@@ -677,6 +677,24 @@ func functionTest7() {
     assert(6, sub3(9))
 }
 
+func functionTest8() {
+    var res
+    func variadic(args...) {
+        res = args.len()
+    }
+    variadic(args: (1,2,3))
+    assert(3, res)
+}
+
+func functionTest9() {
+    var res
+    func variadic(args...) {
+        res = args.len()
+    }
+    variadic([1,2,3,4])
+    assert(1, res)
+}
+
 func namesOfGodTest() {
     var cache = [[1]]
     func min(x, y) {

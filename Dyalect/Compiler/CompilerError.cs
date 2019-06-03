@@ -48,6 +48,8 @@
 
         PatternNotSupported = 222,
 
-        RangeIndexNotSupported = 223
+        RangeIndexNotSupported = 223,
+
+        NamedArgumentMultipleTimes = 224
     }
 }

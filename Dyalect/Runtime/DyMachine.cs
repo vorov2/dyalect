@@ -442,13 +442,15 @@ namespace Dyalect.Runtime
                         }
                         break;
                     case OpCode.FunArgIx:
-                        var vi = ctx.Locals.Peek().VarArgsIndex;
-                        if (vi > -1 && op.Data >= vi)
                         {
-                            ctx.Locals.Peek().VarArgs.Add(evalStack.Pop());
-                            break;
+                            var locs = ctx.Locals.Peek();
+                            if (locs.VarArgsIndex > -1 && op.Data >= locs.VarArgsIndex)
+                            {
+                                locs.VarArgs.Add(evalStack.Pop());
+                                break;
+                            }
+                            locs.Locals[op.Data] = evalStack.Pop();
                         }
-                        ctx.Locals.Peek().Locals[op.Data] = evalStack.Pop();
                         break;
                     case OpCode.FunArgNm:
                         {
@@ -459,7 +461,11 @@ namespace Dyalect.Runtime
                                 ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
                                 goto CATCH;
                             }
-                            ctx.Locals.Peek().Locals[idx] = evalStack.Pop();
+                            var locs = ctx.Locals.Peek();
+                            if (idx == locs.VarArgsIndex)
+                                Push(locs, evalStack.Pop());
+                            else
+                                locs.Locals[idx] = evalStack.Pop();
                         }
                         break;
                     case OpCode.FunCall:
@@ -526,6 +532,14 @@ namespace Dyalect.Runtime
                 ctx.Error = null;
                 goto CYCLE;
             }
+        }
+
+        private static void Push(ArgContainer container, DyObject value)
+        {
+            if (value.TypeId == DyType.Array || value.TypeId == DyType.Tuple)
+                container.VarArgs.AddRange((IEnumerable<DyObject>)value);
+            else
+                container.VarArgs.Add(value);
         }
 
         private static DyObject CallExternalFunction(DyFunction func, ExecutionContext ctx)
