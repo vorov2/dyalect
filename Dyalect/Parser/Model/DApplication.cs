@@ -10,7 +10,7 @@ namespace Dyalect.Parser.Model
             Target = target;
         }
 
-        public DNode Target { get; }
+        public DNode Target { get; internal set; }
 
         public List<DNode> Arguments { get; } = new List<DNode>();
 

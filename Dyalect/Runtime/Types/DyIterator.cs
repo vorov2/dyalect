@@ -229,7 +229,7 @@ namespace Dyalect.Runtime.Types
                 return DyString.Empty;
 
             var sb = new StringBuilder();
-            sb.Append("{ ");
+            sb.Append('{');
             var c = 0;
 
             foreach (var e in seq)

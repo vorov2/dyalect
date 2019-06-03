@@ -586,11 +586,20 @@ PRODUCTIONS
         }.
         
     And<out DNode node> = 
-        Eq<out node>
+        LeftPipe<out node>
         {
-            "&&" (. var ot = t; .) Eq<out DNode exp>
+            "&&" (. var ot = t; .) LeftPipe<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.And, ot); .)
         }.
+
+    LeftPipe<out DNode node> =
+        (. node = null; .)
+        Eq<out node>
+        [
+            (. var p = node is DApplication na ? na : new DApplication(node, t); .)
+            "<|" LeftPipe<out node>
+            (. p.Arguments.Add(node); node = p; .)
+        ].
 
     Eq<out DNode node> = 
         Shift<out node>

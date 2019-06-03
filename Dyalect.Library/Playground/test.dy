@@ -1,42 +1,13 @@
-﻿func getThree(n) {
-    var g3 = []
-    for i in 0..33 {
-        g3.add(rnd(max: n) + 1)
-    }
-    g3.sort()
-    g3.removeAt(0)
-    g3
-}
-
-func getSix() {
-    var g6 = []
-    for i in 0..5 {
-        g6.add(getThree(6).sum())
-    }
-    g6
-}
-
-func Array.sum() {
-    var acc = 0
-    for x in this {
-        acc += x
-    }
-    acc
-}
-
-func Array.findAll(pred) {
-    for x in this when pred(x) {
+﻿func where(pred, xs) {
+    for x in xs when pred(x) {
         yield x
     }
 }
- 
-var good = false
 
-while !good {
-    var gs = getSix()
-    var gss = gs.sum()
-    var hvc = gs.findAll(x => x > 14).len()
-    print("attribs: \(String.join(gs, separator: ", ")), sum=\(gss), (\(if gss >= 75 { "good" } else { "low" }) sum, high vals=\(hvc))", terminator: "")
-    good = gs.sum() >= 75 && hvc > 1
-    print(" - " + (if good { "success" } else { "failure" }))
+func select(fn, xs) {
+    for x in xs {
+        yield fn(x)
+    }
 }
+
+select(x => x * 2) <| where(x => x % 2 == 0) <| [1..20]
