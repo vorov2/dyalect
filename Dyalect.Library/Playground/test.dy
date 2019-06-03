@@ -1,5 +1,31 @@
-﻿func test(x, y = 0) {
-    print(x, y)
+﻿func String.tokenize(separator, escape) {
+    var buffer = []
+    var escaping = false
+    for c in this {
+        if escaping {
+            buffer.add(c)
+            escaping = false
+        } else if c == escape {
+            escaping = true
+        } else if c == separator {
+            yield buffer.flush();
+        } else {
+            buffer.add(c);
+        }
+    }
+
+    if buffer.len() > 0 || this[this.len() - 1] == separator {
+        yield buffer.flush()
+    }
+}
+ 
+func Array.flush() {
+    var str = String.concat(values: this)
+    this.clear()
+    str
 }
 
-test(x: 1, x: 2)
+const testcase = "one^|uno||three^^^^|four^^^|^cuatro|";
+for token in testcase.tokenize(separator: '|', escape: '^') {
+    print(": \(token)")
+}
