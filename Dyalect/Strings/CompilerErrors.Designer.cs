@@ -133,6 +133,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Named argument &quot;{0}&quot; cannot be specified multiple times..
+        /// </summary>
+        internal static string NamedArgumentMultipleTimes {
+            get {
+                return ResourceManager.GetString("NamedArgumentMultipleTimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No enclosing loop out of which to break or continue..
         /// </summary>
         internal static string NoEnclosingLoop {

@@ -1,6 +1,7 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
 using Dyalect.Runtime;
+using System.Collections.Generic;
 using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
@@ -465,6 +466,7 @@ namespace Dyalect.Compiler
                 Build(node.Target, hints.Append(Push), ctx);
 
             cw.FunPrep(node.Arguments.Count);
+            Dictionary<string, object> dict = null;
 
             for (var i = 0; i < node.Arguments.Count; i++)
             {
@@ -472,7 +474,15 @@ namespace Dyalect.Compiler
 
                 if (a.NodeType == NodeType.Label)
                 {
+                    if (dict == null)
+                        dict = new Dictionary<string, object>();
+
                     var la = (DLabelLiteral)a;
+                    if (dict.ContainsKey(la.Label))
+                        AddError(CompilerError.NamedArgumentMultipleTimes, la.Location, la.Label);
+                    else
+                        dict.Add(la.Label, null);
+
                     Build(la.Expression, hints.Append(Push), ctx);
                     cw.FunArgNm(la.Label);
                 }

@@ -462,7 +462,7 @@ namespace Dyalect.Runtime
                                 goto CATCH;
                             }
                             var locs = ctx.Locals.Peek();
-                            if (locs.VarArgsIndex > -1 && idx == locs.VarArgsIndex)
+                            if (idx == locs.VarArgsIndex)
                                 Push(locs, evalStack.Pop());
                             else
                                 locs.Locals[idx] = evalStack.Pop();
