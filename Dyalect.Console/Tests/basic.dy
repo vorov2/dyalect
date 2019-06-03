@@ -427,6 +427,15 @@ func stringTest16() {
     assert("foo;1;3;44;true", str)
 }
 
+func stringTest17() {
+    var str = "A \("string") inside."
+    assert("A string inside.", str)
+    str = "A \("bar"+"foo") inside."
+    assert("A barfoo inside.", str)
+    str = "A \("bar"+"foo") inside with len=\("barfoo".len())."
+    assert("A barfoo inside with len=6.", str)
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)

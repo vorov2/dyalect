@@ -11,7 +11,7 @@ CHARACTERS
     hexDigit = digit + "ABCDEFabcdef".
     stringChar = ANY - '"' - '\\' - newLine.
     char = ANY - "'" - newLine.
-    esc = digit + letter + "\"\\'~`:;,./][{}!@#$%^&*()-_=+?><|".
+    esc = digit + letter + "\"\\'~`:;,./][{}!@#$%^&*-_=+?><|".
 
 TOKENS
     identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
@@ -25,7 +25,7 @@ TOKENS
                             | ( "e" | "E") ["+" | "-" ] digit { digit }
                         ).
 
-    stringToken = "\"" { stringChar | "\\" esc }  "\"".
+    stringToken = "\"" { stringChar | "\\" esc | ("\\(" {stringChar|"\""} ")" ) }  "\"".
     charToken = "'" { char | "\\" esc } "'".
     implicitToken = "$" digit { digit }.
 

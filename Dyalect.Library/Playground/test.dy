@@ -1,31 +1,42 @@
-﻿func String.tokenize(separator, escape) {
-    var buffer = []
-    var escaping = false
-    for c in this {
-        if escaping {
-            buffer.add(c)
-            escaping = false
-        } else if c == escape {
-            escaping = true
-        } else if c == separator {
-            yield buffer.flush();
-        } else {
-            buffer.add(c);
-        }
+﻿func getThree(n) {
+    var g3 = []
+    for i in 0..33 {
+        g3.add(rnd(max: n) + 1)
     }
+    g3.sort()
+    g3.removeAt(0)
+    g3
+}
 
-    if buffer.len() > 0 || this[this.len() - 1] == separator {
-        yield buffer.flush()
+func getSix() {
+    var g6 = []
+    for i in 0..5 {
+        g6.add(getThree(6).sum())
+    }
+    g6
+}
+
+func Array.sum() {
+    var acc = 0
+    for x in this {
+        acc += x
+    }
+    acc
+}
+
+func Array.findAll(pred) {
+    for x in this when pred(x) {
+        yield x
     }
 }
  
-func Array.flush() {
-    var str = String.concat(values: this)
-    this.clear()
-    str
-}
+var good = false
 
-const testcase = "one^|uno||three^^^^|four^^^|^cuatro|";
-for token in testcase.tokenize(separator: '|', escape: '^') {
-    print(": \(token)")
+while !good {
+    var gs = getSix()
+    var gss = gs.sum()
+    var hvc = gs.findAll(x => x > 14).len()
+    print("attribs: \(String.join(gs, separator: ", ")), sum=\(gss), (\(if gss >= 75 { "good" } else { "low" }) sum, high vals=\(hvc))", terminator: "")
+    good = gs.sum() >= 75 && hvc > 1
+    print(" - " + (if good { "success" } else { "failure" }))
 }
