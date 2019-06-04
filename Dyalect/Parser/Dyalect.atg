@@ -123,8 +123,6 @@ PRODUCTIONS
             | Type<out node> Separator
             | Match<out node>
             | SimpleExpr<out node> Separator
-            | IF (IsIterator()) Iterator<out node>
-            | Block<out node>
             | If<out node>
             | Loops<out node>
             | Function<out node>
@@ -217,8 +215,6 @@ PRODUCTIONS
         (
               If<out node>
             | SimpleExpr<out node>
-            | IF (IsIterator()) Iterator<out node>
-            | Block<out node>
             | Loops<out node>
             | Match<out node>
         ).
@@ -824,6 +820,8 @@ PRODUCTIONS
             | Array<out node>
             | Group<out node>
             | Base<out node>
+            | IF (IsIterator()) Iterator<out node>
+            | Block<out node>
         ).
 
     Iterator<out DNode node> =

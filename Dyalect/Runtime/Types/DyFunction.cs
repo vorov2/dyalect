@@ -41,8 +41,7 @@ namespace Dyalect.Runtime.Types
             return -1;
         }
 
-        public string ToString(ExecutionContext ctx) => 
-            $"{FunctionName}({string.Join(",", Parameters.Select(p => p.Name))})";
+        public override string ToString() => $"{FunctionName}({string.Join(",", Parameters.Select(p => p.Name))})";
 
         public abstract string FunctionName { get; }
 
@@ -68,7 +67,7 @@ namespace Dyalect.Runtime.Types
         public override string TypeName => DyTypeNames.Function;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString(((DyFunction)arg).ToString());
+            new DyString(arg.ToString());
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
