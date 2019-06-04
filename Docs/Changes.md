@@ -1,3 +1,7 @@
+# 0.7.2
+  * Fixed: _Compiler indexing tables_ ([Issue #129](https://github.com/vorov2/dyalect/issues/129)).
+  * Fixed: _Quotes inside code islands (string interpolation)_ ([Issue #132](https://github.com/vorov2/dyalect/issues/132)).
+
 # 0.7.1
   * Done: _Variadic functions and iterators_ ([Issue #127](https://github.com/vorov2/dyalect/issues/127)).
   * Fixed: _Variadic functions and named arguments_ ([Issue #128](https://github.com/vorov2/dyalect/issues/128)).

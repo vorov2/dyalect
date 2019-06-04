@@ -1,5 +1,13 @@
-﻿func test(x, y = 0) {
-    print(x, y)
+﻿func where(pred, xs) {
+    for x in xs when pred(x) {
+        yield x
+    }
 }
 
-test(x: 1, x: 2)
+func select(fn, xs) {
+    for x in xs {
+        yield fn(x)
+    }
+}
+
+select(x => x * 2) <| where(x => x % 2 == 0) <| [1..20]

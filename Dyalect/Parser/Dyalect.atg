@@ -11,7 +11,7 @@ CHARACTERS
     hexDigit = digit + "ABCDEFabcdef".
     stringChar = ANY - '"' - '\\' - newLine.
     char = ANY - "'" - newLine.
-    esc = digit + letter + "\"\\'~`:;,./][{}!@#$%^&*()-_=+?><|".
+    esc = digit + letter + "\"\\'~`:;,./][{}!@#$%^&*-_=+?><|".
 
 TOKENS
     identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
@@ -25,7 +25,7 @@ TOKENS
                             | ( "e" | "E") ["+" | "-" ] digit { digit }
                         ).
 
-    stringToken = "\"" { stringChar | "\\" esc }  "\"".
+    stringToken = "\"" { stringChar | "\\" esc | ("\\(" {stringChar|"\""} ")" ) }  "\"".
     charToken = "'" { char | "\\" esc } "'".
     implicitToken = "$" digit { digit }.
 
@@ -591,6 +591,15 @@ PRODUCTIONS
             "&&" (. var ot = t; .) Eq<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.And, ot); .)
         }.
+
+    /*LeftPipe<out DNode node> =
+        (. node = null; .)
+        Eq<out node>
+        [
+            (. var p = node is DApplication na ? na : new DApplication(node, t); .)
+            "<|" LeftPipe<out node>
+            (. p.Arguments.Add(node); node = p; .)
+        ].*/
 
     Eq<out DNode node> = 
         Shift<out node>

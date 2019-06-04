@@ -29,7 +29,8 @@ namespace Dyalect.Parser.Model
             if (IsStatic)
                 sb.Append("static ");
 
-            sb.Append("func ");
+            if (Name != null)
+                sb.Append("func ");
 
             if (TypeName != null)
             {
@@ -40,10 +41,17 @@ namespace Dyalect.Parser.Model
             if (Name != null)
                 sb.Append(Name);
 
-            sb.Append('(');
+            if (Name != null || Parameters.Count > 1)
+                sb.Append('(');
+
             Parameters.ToString(sb);
 
-            sb.Append(") ");
+            if (Name != null || Parameters.Count > 1)
+                sb.Append(") ");
+
+            if (Name == null)
+                sb.Append(" => ");
+
             Body.ToString(sb);
         }
     }

@@ -12,6 +12,9 @@ namespace Dyalect.Compiler
         private List<int> labels;
         private List<int> fixups;
         private Dictionary<string, int> strings;
+        private Dictionary<double, int> floats;
+        private Dictionary<long, int> integers;
+        private Dictionary<char, int> chars;
 
         private sealed class StackSize
         {
@@ -26,6 +29,9 @@ namespace Dyalect.Compiler
             this.labels = new List<int>(cw.labels.ToArray());
             this.fixups = new List<int>(cw.fixups.ToArray());
             this.strings = cw.strings;
+            this.floats = cw.floats;
+            this.integers = cw.integers;
+            this.chars = cw.chars;
             this.frame = unit;
         }
 
@@ -34,6 +40,9 @@ namespace Dyalect.Compiler
             this.frame = frame;
             this.ops = frame.Ops;
             strings = new Dictionary<string, int>();
+            integers = new Dictionary<long, int>();
+            floats = new Dictionary<double, int>();
+            chars = new Dictionary<char, int>();
             locals = new Stack<StackSize>();
             labels = new List<int>();
             fixups = new List<int>();
@@ -121,6 +130,42 @@ namespace Dyalect.Compiler
             return idx;
         }
 
+        private int IndexFloat(double val)
+        {
+            if (!floats.TryGetValue(val, out var idx))
+            {
+                frame.IndexedFloats.Add(new DyFloat(val));
+                idx = frame.IndexedFloats.Count - 1;
+                floats.Add(val, idx);
+            }
+
+            return idx;
+        }
+
+        private int IndexInteger(long val)
+        {
+            if (!integers.TryGetValue(val, out var idx))
+            {
+                frame.IndexedIntegers.Add(DyInteger.Get(val));
+                idx = frame.IndexedIntegers.Count - 1;
+                integers.Add(val, idx);
+            }
+
+            return idx;
+        }
+
+        private int IndexChar(char val)
+        {
+            if (!chars.TryGetValue(val, out var idx))
+            {
+                frame.IndexedChars.Add(new DyChar(val));
+                idx = frame.IndexedChars.Count - 1;
+                chars.Add(val, idx);
+            }
+
+            return idx;
+        }
+
         public void Push(string val)
         {
             Emit(new Op(OpCode.PushStr, IndexString(val)));
@@ -131,10 +176,7 @@ namespace Dyalect.Compiler
             if (val == 0D)
                 Emit(Op.PushR8_0);
             else
-            {
-                Emit(new Op(OpCode.PushR8, frame.IndexedFloats.Count));
-                frame.IndexedFloats.Add(new DyFloat(val));
-            }
+                Emit(new Op(OpCode.PushR8, IndexFloat(val)));
         }
 
         public void Push(long val)
@@ -144,10 +186,7 @@ namespace Dyalect.Compiler
             else if (val == 1L)
                 Emit(Op.PushI8_1);
             else
-            {
-                Emit(new Op(OpCode.PushI8, frame.IndexedIntegers.Count));
-                frame.IndexedIntegers.Add(new DyInteger(val));
-            }
+                Emit(new Op(OpCode.PushI8, IndexInteger(val)));
         }
 
         public void Push(bool val)
@@ -160,8 +199,7 @@ namespace Dyalect.Compiler
 
         public void Push(char val)
         {
-            Emit(new Op(OpCode.PushCh, frame.IndexedChars.Count));
-            frame.IndexedChars.Add(new DyChar(val));
+            Emit(new Op(OpCode.PushCh, IndexChar(val)));
         }
 
         public void PushVar(ScopeVar sv)
