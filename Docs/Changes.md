@@ -1,8 +1,8 @@
 # 0.7.3
   * Done: _Restrict overriding `has`_ ([Issue #134](https://github.com/vorov2/dyalect/issues/134), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#has)).
   * Done: _Add `Array.insertRange` method_ ([Issue #135](https://github.com/vorov2/dyalect/issues/135), [docs](https://github.com/vorov2/dyalect/wiki/Array#insertRange)).
+  * Done: _Support "+" for array concatenation_ ([Issue #137](https://github.com/vorov2/dyalect/issues/137), [docs](https://github.com/vorov2/dyalect/wiki/Array#operators)).
   * Fixed: _`Array.insert` exception_ ([Issue #136](https://github.com/vorov2/dyalect/issues/136)).
-  * Fixed: _Support "+" for array concatenation_ ([Issue #137](https://github.com/vorov2/dyalect/issues/137), [docs](https://github.com/vorov2/dyalect/wiki/Array#operators)).
 
 # 0.7.2
   * Fixed: _Compiler indexing tables_ ([Issue #129](https://github.com/vorov2/dyalect/issues/129)).
