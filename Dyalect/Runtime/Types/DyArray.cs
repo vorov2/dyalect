@@ -122,10 +122,26 @@ namespace Dyalect.Runtime.Types
                 return;
             }
 
+            EnsureSize(Count + 1);
             Array.Copy(Values, index, Values, index + 1, Count - index);
             Values[index] = item;
             Count++;
             version++;
+        }
+
+        private void EnsureSize(int size)
+        {
+            if (size > Values.Length)
+            {
+                var exp = Values.Length * 2;
+
+                if (size > exp)
+                    exp = size;
+
+                var arr = new DyObject[exp];
+                Array.Copy(Values, arr, Values.Length);
+                Values = arr;
+            }
         }
 
         public bool RemoveAt(int index)
@@ -430,48 +446,63 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject InsertRange(ExecutionContext ctx, DyObject self, DyObject index, DyObject range)
+        {
+            if (index.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, index);
+
+            var arr = (DyArray)self;
+            var idx = (int)index.GetInteger();
+
+            if (idx < 0 || idx > arr.Count)
+                return ctx.IndexOutOfRange(DyTypeNames.Integer, index);
+
+            var coll = DyIterator.Run(ctx, range);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            foreach (var e in coll)
+                arr.Insert(idx++, e);
+
+            return DyNil.Instance;
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            if (name == Builtins.Len)
-                return DyForeignFunction.Member(name, Length);
-
-            if (name == "add")
-                return DyForeignFunction.Member(name, AddItem, -1, new Par("item"));
-
-            if (name == "insert")
-                return DyForeignFunction.Member(name, InsertItem, -1, new Par("index"), new Par("item"));
-
-            if (name == "addRange")
-                return DyForeignFunction.Member(name, AddRange, -1, new Par("seq"));
-
-            if (name == "remove")
-                return DyForeignFunction.Member(name, RemoveItem, -1, new Par("item"));
-
-            if (name == "removeAt")
-                return DyForeignFunction.Member(name, RemoveItemAt, -1, new Par("index"));
-
-            if (name == "clear")
-                return DyForeignFunction.Member(name, ClearItems, -1, Statics.EmptyParameters);
-
-            if (name == "indexOf")
-                return DyForeignFunction.Member(name, IndexOf, -1, new Par("item"));
-
-            if (name == "lastIndexOf")
-                return DyForeignFunction.Member(name, LastIndexOf, -1, new Par("item"));
-
-            if (name == "indices")
-                return DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters);
-
-            if (name == "slice")
-                return DyForeignFunction.Member(name, GetSlice, -1, new Par("start"), new Par("len", DyNil.Instance));
-
-            if (name == "sort")
-                return DyForeignFunction.Member(name, SortBy, -1,new Par("comparator", DyNil.Instance));
-
-            if (name == "compact")
-                return DyForeignFunction.Member(name, Compact, -1, Statics.EmptyParameters);
-
-            return null;
+            switch (name)
+            {
+                case Builtins.Len:
+                    return DyForeignFunction.Member(name, Length);
+                case "add":
+                    return DyForeignFunction.Member(name, AddItem, -1, new Par("item"));
+                case "insert":
+                    return DyForeignFunction.Member(name, InsertItem, -1, new Par("index"), new Par("item"));
+                case "insertRange":
+                    return DyForeignFunction.Member(name, InsertRange, -1, new Par("index"), new Par("items"));
+                case "addRange":
+                    return DyForeignFunction.Member(name, AddRange, -1, new Par("items"));
+                case "remove":
+                    return DyForeignFunction.Member(name, RemoveItem, -1, new Par("item"));
+                case "removeAt":
+                    return DyForeignFunction.Member(name, RemoveItemAt, -1, new Par("index"));
+                case "clear":
+                    return DyForeignFunction.Member(name, ClearItems, -1, Statics.EmptyParameters);
+                case "indexOf":
+                    return DyForeignFunction.Member(name, IndexOf, -1, new Par("item"));
+                case "lastIndexOf":
+                    return DyForeignFunction.Member(name, LastIndexOf, -1, new Par("item"));
+                case "indices":
+                    return DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters);
+                case "slice":
+                    return DyForeignFunction.Member(name, GetSlice, -1, new Par("start"), new Par("len", DyNil.Instance));
+                case "sort":
+                    return DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance));
+                case "compact":
+                    return DyForeignFunction.Member(name, Compact, -1, Statics.EmptyParameters);
+                default:
+                    return null;
+            }
         }
 
         private DyObject New(ExecutionContext ctx, DyObject tuple)
