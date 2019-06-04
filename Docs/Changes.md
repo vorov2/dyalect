@@ -3,7 +3,7 @@
   * Done: _Add `Array.insertRange` method_ ([Issue #135](https://github.com/vorov2/dyalect/issues/135), [docs](https://github.com/vorov2/dyalect/wiki/Array#insertRange)).
   * Done: _Support "+" for array concatenation_ ([Issue #137](https://github.com/vorov2/dyalect/issues/137), [docs](https://github.com/vorov2/dyalect/wiki/Array#operators)).
   * Fixed: _`Array.insert` exception_ ([Issue #136](https://github.com/vorov2/dyalect/issues/136)).
-  * Fixed: _`Iterator literal and methods_ ([Issue #138](https://github.com/vorov2/dyalect/issues/138)).
+  * Fixed: _`Iterator` literal and methods_ ([Issue #138](https://github.com/vorov2/dyalect/issues/138)).
   * Fixed: _Incorrect `toString` of a function_ ([Issue #139](https://github.com/vorov2/dyalect/issues/139)).
   * Fixed: _`Function.toString` insufficient details_ ([Issue #140](https://github.com/vorov2/dyalect/issues/140)).
   * Fixed: _`Iterator.concat` failure_ ([Issue #141](https://github.com/vorov2/dyalect/issues/141)).
