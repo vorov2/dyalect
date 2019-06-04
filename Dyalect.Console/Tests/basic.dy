@@ -131,6 +131,12 @@ func toStringTest3() {
     assert("(x: 42, y: \"foo\")", res)
 }
 
+func toStringTest4() {
+    func foo(args..., quotes=12) {}
+    const pat = "foo(args..., quotes = 12)";
+    assert(pat, foo.toString())
+}
+
 func baseTest1() {
     const x = 2
     func inner() {

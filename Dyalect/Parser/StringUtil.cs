@@ -15,7 +15,8 @@ namespace Dyalect.Parser
             { "\t", @"\t" },
             { "\v", @"\v" },
             { "\\", @"\\" },
-            { "\0", @"\0" }
+            { "\0", @"\0" },
+            { "\"", @"\""" }
         };
 
         private const string regexEscapes = @"[\a\b\f\n\r\t\v\\""]";

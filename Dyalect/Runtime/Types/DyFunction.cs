@@ -1,7 +1,8 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
+using Dyalect.Parser;
 using System;
-using System.Linq;
+using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
@@ -41,7 +42,46 @@ namespace Dyalect.Runtime.Types
             return -1;
         }
 
-        public override string ToString() => $"{FunctionName}({string.Join(",", Parameters.Select(p => p.Name))})";
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            if (FunctionName == null)
+                sb.Append(DefaultName);
+            else
+                sb.Append(FunctionName);
+
+            sb.Append('(');
+            var c = 0;
+
+            foreach (var p in Parameters)
+            {
+                if (c != 0)
+                    sb.Append(", ");
+
+                sb.Append(p.Name);
+
+                if (p.IsVarArg)
+                    sb.Append("...");
+
+                if (p.Value != null)
+                {
+                    sb.Append(" = ");
+                    if (p.Value.TypeId == DyType.String)
+                        sb.Append(StringUtil.Escape(p.Value.ToString()));
+                    else if (p.Value.TypeId == DyType.Char)
+                        sb.Append(StringUtil.Escape(p.Value.ToString(), "'"));
+                    else
+                        sb.Append(p.Value.ToString());
+                }
+
+                c++;
+            }
+
+            sb.Append(')');
+            var ret = sb.ToString();
+            return ret;
+        }
 
         public abstract string FunctionName { get; }
 

@@ -5,6 +5,7 @@
   * Fixed: _`Array.insert` exception_ ([Issue #136](https://github.com/vorov2/dyalect/issues/136)).
   * Fixed: _`Iterator literal and methods_ ([Issue #138](https://github.com/vorov2/dyalect/issues/138)).
   * Fixed: _Incorrect `toString` of a function_ ([Issue #139](https://github.com/vorov2/dyalect/issues/139)).
+  * Fixed: _`Function.toString` insufficient details ([Issue #140](https://github.com/vorov2/dyalect/issues/140)).
 
 # 0.7.2
   * Fixed: _Compiler indexing tables_ ([Issue #129](https://github.com/vorov2/dyalect/issues/129)).
