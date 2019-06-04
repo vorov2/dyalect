@@ -271,6 +271,18 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            var newArr = new List<DyObject>(((DyArray)left).Values);
+            var coll = DyIterator.Run(ctx, right);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            newArr.AddRange(coll);
+            return new DyArray(newArr.ToArray());
+        }
+
         private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             ((DyArray)self).Add(args.TakeOne(DyNil.Instance));
@@ -390,9 +402,6 @@ namespace Dyalect.Runtime.Types
             if (end < 0 || end > dyArr.Count)
                 return ctx.IndexOutOfRange(TypeName, end);
 
-            //var newArr = new DyObject[end - beg];
-            //Array.Copy(arr, beg, newArr, 0, end - beg);
-            //return new DyArray(newArr);
             return new DyIterator(new DyArray.DyArrayEnumerator(arr, beg, end - beg, dyArr));
         }
 
