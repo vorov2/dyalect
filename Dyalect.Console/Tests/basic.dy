@@ -546,7 +546,7 @@ func rangeTest5() {
 
 func iteratorLiteralTest1() {
     var seq = { 1,2,3 }
-    assert([1,2,3], seq().toArray())
+    assert([1,2,3], seq.toArray())
 }
 
 func iteratorLiteralTest2() {
@@ -555,12 +555,20 @@ func iteratorLiteralTest2() {
     var seq = { x + y, }
     x -= 1
     y *= y
-    assert(10, seq()())
+    assert(10, seq())
 }
 
 func iteratorLiteralTest3() {
     var xs = { 1, 2, 3, 4, 5 }
-    assert(5, xs().len())
+    assert(5, xs.len())
+}
+
+func iteratorLiteralTest4() {
+    var xs = { 1, 2, 3, 4, 5 }
+    assert(5, xs.len())
+    assert(5, xs.len())
+    xs()
+    assert(5, xs.len())
 }
 
 func interpolationTest1() {

@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
 {
     public class DyArray : DyObject, IEnumerable<DyObject>
     {
-        internal sealed class DyArrayEnumerator : IEnumerator<DyObject>
+        internal sealed class Enumerator : IEnumerator<DyObject>
         {
             private readonly DyObject[] arr;
             private readonly int count;
@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
             private readonly int start;
             private int index = -1;
 
-            public DyArrayEnumerator(DyObject[] arr, int start, int count, DyArray obj)
+            public Enumerator(DyObject[] arr, int start, int count, DyArray obj)
             {
                 this.arr = arr;
                 this.start = start;
@@ -48,6 +48,26 @@ namespace Dyalect.Runtime.Types
             {
                 index = -1;
             }
+        }
+
+        internal sealed class Enumerable : IEnumerable<DyObject>
+        {
+            private readonly DyObject[] arr;
+            private readonly int count;
+            private readonly DyArray obj;
+            private readonly int start;
+
+            public Enumerable(DyObject[] arr, int start, int count, DyArray obj)
+            {
+                this.arr = arr;
+                this.start = start;
+                this.count = count;
+                this.obj = obj;
+            }
+
+            public IEnumerator<DyObject> GetEnumerator() => new Enumerator(arr, start, count, obj);
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         }
 
         internal sealed class Comparer : IComparer<DyObject>
@@ -225,7 +245,7 @@ namespace Dyalect.Runtime.Types
                 SetItem((int)index.GetInteger(), value, ctx);
         }
 
-        public IEnumerator<DyObject> GetEnumerator() => new DyArrayEnumerator(Values, 0, Count, this);
+        public IEnumerator<DyObject> GetEnumerator() => new Enumerator(Values, 0, Count, this);
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
@@ -376,7 +396,7 @@ namespace Dyalect.Runtime.Types
                     yield return DyInteger.Get(i);
             }
 
-            return new DyIterator(iterate().GetEnumerator());
+            return new DyIterator(iterate());
         }
 
         private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
@@ -402,7 +422,7 @@ namespace Dyalect.Runtime.Types
             if (end < 0 || end > dyArr.Count)
                 return ctx.IndexOutOfRange(TypeName, end);
 
-            return new DyIterator(new DyArray.DyArrayEnumerator(arr, beg, end - beg, dyArr));
+            return new DyIterator(new DyArray.Enumerable(arr, beg, end - beg, dyArr));
         }
 
         private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject[] args)

@@ -17,6 +17,12 @@ namespace Dyalect.Runtime.Types
 
         public override bool IsExternal => false;
 
+        internal override void Reset(ExecutionContext ctx)
+        {
+            Locals = null;
+            PreviousOffset = ctx.Composition.Units[UnitId].Layouts[FunctionId].Size;
+        }
+
         internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) : 
             base(typeId, sym?.Parameters ?? Statics.EmptyParameters, varArgIndex)
         {

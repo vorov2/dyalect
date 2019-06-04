@@ -1,2 +1,3 @@
-﻿func foo(args..., quotes=12) {}
-foo.toString()
+﻿var xs = {1,2,3,4,5}
+xs()
+xs.len()

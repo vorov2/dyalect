@@ -92,6 +92,11 @@ namespace Dyalect.Runtime.Types
         internal abstract DyObject[] CreateLocals(ExecutionContext ctx);
 
         internal abstract bool Equals(DyFunction func);
+
+        internal virtual void Reset(ExecutionContext ctx)
+        {
+
+        }
     }
 
     internal sealed class DyFunctionTypeInfo : DyTypeInfo

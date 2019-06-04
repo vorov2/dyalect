@@ -176,8 +176,8 @@ namespace Dyalect.Compiler
 
         private void Build(DIteratorLiteral node, Hints hints, CompilerContext ctx)
         {
-            var dec = new DFunctionDeclaration(node.Location) { Body = node.YieldBlock, IsIterator = true };
-            Build(dec, hints, ctx);
+            var dec = new DFunctionDeclaration(node.Location) { Body = node.YieldBlock };
+            Build(dec, hints.Append(Iterator), ctx);
         }
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
