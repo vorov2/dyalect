@@ -50,6 +50,8 @@
 
         RangeIndexNotSupported = 223,
 
-        NamedArgumentMultipleTimes = 224
+        NamedArgumentMultipleTimes = 224,
+
+        OverrideNotAllowed = 225
     }
 }

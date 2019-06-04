@@ -1,13 +1,2 @@
-﻿func where(pred, xs) {
-    for x in xs when pred(x) {
-        yield x
-    }
+﻿func Integer.has(member){
 }
-
-func select(fn, xs) {
-    for x in xs {
-        yield fn(x)
-    }
-}
-
-select(x => x * 2) <| where(x => x % 2 == 0) <| [1..20]

@@ -189,4 +189,7 @@
   <data name="NamedArgumentMultipleTimes" xml:space="preserve">
     <value>Named argument "{0}" cannot be specified multiple times.</value>
   </data>
+  <data name="OverrideNotAllowed" xml:space="preserve">
+    <value>Overriding of "{0}" method is not allowed.</value>
+  </data>
 </root>

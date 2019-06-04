@@ -1,3 +1,6 @@
+# 0.7.3
+  * Done: _Restrict overriding `has`_ ([Issue #134](https://github.com/vorov2/dyalect/issues/134)).
+
 # 0.7.2
   * Fixed: _Compiler indexing tables_ ([Issue #129](https://github.com/vorov2/dyalect/issues/129)).
   * Fixed: _Quotes inside code islands (string interpolation)_ ([Issue #132](https://github.com/vorov2/dyalect/issues/132)).

@@ -31,6 +31,9 @@ namespace Dyalect.Compiler
                     if (!node.IsStatic)
                         realName = GetMethodName(realName, node);
 
+                    if (!node.IsStatic && node.Name == "has")
+                        AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
+
                     var nameId = GetMemberNameId(realName);
                     cw.Aux(nameId);
                     var code = GetTypeHandle(node.TypeName, node.Location);
