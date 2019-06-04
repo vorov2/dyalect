@@ -1,15 +1,15 @@
 # 0.7.3
-  * Done: _Restrict overriding `has`_ ([Issue #134](https://github.com/vorov2/dyalect/issues/134)).
+  * Done: _Restrict overriding `has`_ ([Issue #134](https://github.com/vorov2/dyalect/issues/134), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#has)).
   * Done: _Add `Array.insertRange` method_ ([Issue #135](https://github.com/vorov2/dyalect/issues/135), [docs](https://github.com/vorov2/dyalect/wiki/Array#insertRange)).
   * Fixed: _`Array.insert` exception_ ([Issue #136](https://github.com/vorov2/dyalect/issues/136)).
-  * Fixed: _Support "+" for array concatenation_ ([Issue #137](https://github.com/vorov2/dyalect/issues/137)).
+  * Fixed: _Support "+" for array concatenation_ ([Issue #137](https://github.com/vorov2/dyalect/issues/137), [docs](https://github.com/vorov2/dyalect/wiki/Array#operators)).
 
 # 0.7.2
   * Fixed: _Compiler indexing tables_ ([Issue #129](https://github.com/vorov2/dyalect/issues/129)).
   * Fixed: _Quotes inside code islands (string interpolation)_ ([Issue #132](https://github.com/vorov2/dyalect/issues/132)).
 
 # 0.7.1
-  * Done: _Variadic functions and iterators_ ([Issue #127](https://github.com/vorov2/dyalect/issues/127)).
+  * Done: _Variadic functions and iterators_ ([Issue #127](https://github.com/vorov2/dyalect/issues/127), [docs](https://github.com/vorov2/dyalect/wiki/Functions#variadic_functions)).
   * Fixed: _Variadic functions and named arguments_ ([Issue #128](https://github.com/vorov2/dyalect/issues/128)).
   * Fixed: _Named arguments and VM crush_ ([Issue #130](https://github.com/vorov2/dyalect/issues/130)).
 
