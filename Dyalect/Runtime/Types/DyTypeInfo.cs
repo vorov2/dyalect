@@ -522,7 +522,7 @@ namespace Dyalect.Runtime.Types
         private DyObject GetIterator(ExecutionContext ctx, DyObject self)
         {
             if (self is IEnumerable<DyObject> en)
-                return new DyIterator(en.GetEnumerator());
+                return new DyIterator(en);
             else
                 return ctx.OperationNotSupported(Builtins.Iterator, self);
         }

@@ -196,7 +196,7 @@ namespace Dyalect.Runtime.Types
                     yield return DyInteger.Get(i);
             }
 
-            return new DyIterator(iterate().GetEnumerator());
+            return new DyIterator(iterate());
         }
 
         private DyObject GetKeys(ExecutionContext ctx, DyObject self, DyObject[] args)
@@ -214,7 +214,7 @@ namespace Dyalect.Runtime.Types
                 }
             }
 
-            return new DyIterator(iterate().GetEnumerator());
+            return new DyIterator(iterate());
         }
 
         private DyObject GetFirst(ExecutionContext ctx, DyObject self, DyObject[] args)

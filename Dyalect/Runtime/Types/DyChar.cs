@@ -1,10 +1,60 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Parser;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     public sealed class DyChar : DyObject
     {
+        internal sealed class RangeEnumerator : IEnumerator<DyObject>
+        {
+            private char from;
+            private char start;
+            private char to;
+            private int step;
+            private bool fst;
+            private char current;
+
+            public RangeEnumerator(char from, char start, char to, int step)
+            {
+                this.from = from;
+                this.start = start;
+                this.to = to;
+                this.step = step;
+                this.fst = true;
+                this.current = from;
+            }
+
+            public DyObject Current => new DyChar(current);
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (fst)
+                {
+                    fst = false;
+                    return true;
+                }
+
+                current = (char)(current + step);
+
+                if (to > start)
+                    return current <= to;
+
+                return current >= to;
+            }
+
+            public void Reset()
+            {
+                current = from;
+                fst = true;
+            }
+        }
+
         internal readonly char Value;
 
         public DyChar(char value) : base(DyType.Char)
@@ -93,27 +143,8 @@ namespace Dyalect.Runtime.Types
             var ifrom = self.GetChar();
             var istart = ifrom;
             var ito = to.GetChar();
-            var fst = true;
             var step = ito > ifrom ? 1 : -1;
-
-            char current = ifrom;
-            return new DyIterator(new DyIterator.RangeEnumerator(
-                () => new DyChar(current),
-                () =>
-                {
-                    if (fst)
-                    {
-                        fst = false;
-                        return true;
-                    }
-
-                    current = (char)(current + step);
-
-                    if (ito > istart)
-                        return current <= ito;
-
-                    return current >= ito;
-                }));
+            return new DyIterator(new DyChar.RangeEnumerator(ifrom, istart, ito, step));
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)

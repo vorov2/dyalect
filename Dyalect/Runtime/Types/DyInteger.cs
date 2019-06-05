@@ -1,11 +1,61 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
+using System.Collections;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace Dyalect.Runtime.Types
 {
     public sealed class DyInteger : DyObject
     {
+        internal sealed class RangeEnumerator : IEnumerator<DyObject>
+        {
+            private long from;
+            private long start;
+            private long to;
+            private long step;
+            private bool fst;
+            private long current;
+
+            public RangeEnumerator(long from, long start, long to, long step)
+            {
+                this.from = from;
+                this.start = start;
+                this.to = to;
+                this.step = step;
+                this.fst = true;
+                this.current = from;
+            }
+
+            public DyObject Current => Get(current);
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (fst)
+                {
+                    fst = false;
+                    return true;
+                }
+
+                current = current + step;
+
+                if (to > start)
+                    return current <= to;
+
+                return current >= to;
+            }
+
+            public void Reset()
+            {
+                current = from;
+                fst = true;
+            }
+        }
+
         public static readonly DyInteger Zero = new DyInteger(0L);
         public static readonly DyInteger MinusOne = new DyInteger(-1L);
         public static readonly DyInteger One = new DyInteger(1L);
@@ -254,27 +304,8 @@ namespace Dyalect.Runtime.Types
             var ifrom = self.GetInteger();
             var istart = ifrom;
             var ito = to.GetInteger();
-            var fst = true;
             var step = ito > ifrom ? 1 : -1;
-
-            long current = ifrom;
-            return new DyIterator(new DyIterator.RangeEnumerator(
-                () => DyInteger.Get(current),
-                () =>
-                {
-                    if (fst)
-                    {
-                        fst = false;
-                        return true;
-                    }
-
-                    current = current + step;
-
-                    if (ito > istart)
-                        return current <= ito;
-
-                    return current >= ito;
-                }));
+            return new DyIterator(new DyInteger.RangeEnumerator(ifrom, istart, ito, step));
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)

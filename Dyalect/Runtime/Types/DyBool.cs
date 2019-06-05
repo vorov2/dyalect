@@ -11,7 +11,7 @@
 
             public override object ToObject() => true;
 
-            public override string ToString() => bool.TrueString;
+            public override string ToString() => "true";
         }
 
         private sealed class FalseBool : DyBool
@@ -20,7 +20,7 @@
 
             public override object ToObject() => false;
 
-            public override string ToString() => bool.FalseString;
+            public override string ToString() => "false";
         }
 
         private DyBool() : base(DyType.Bool)

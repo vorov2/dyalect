@@ -151,6 +151,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Overriding of &quot;{0}&quot; method is not allowed..
+        /// </summary>
+        internal static string OverrideNotAllowed {
+            get {
+                return ResourceManager.GetString("OverrideNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pattern &quot;{0}&quot; not supported in this context..
         /// </summary>
         internal static string PatternNotSupported {

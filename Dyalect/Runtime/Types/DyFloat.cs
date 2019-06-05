@@ -1,9 +1,59 @@
 ﻿using Dyalect.Debug;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     public sealed class DyFloat : DyObject
     {
+        internal sealed class RangeEnumerator : IEnumerator<DyObject>
+        {
+            private double from;
+            private double start;
+            private double to;
+            private double step;
+            private bool fst;
+            private double current;
+
+            public RangeEnumerator(double from, double start, double to, double step)
+            {
+                this.from = from;
+                this.start = start;
+                this.to = to;
+                this.step = step;
+                this.fst = true;
+                this.current = from;
+            }
+
+            public DyObject Current => new DyFloat(current);
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (fst)
+                {
+                    fst = false;
+                    return true;
+                }
+
+                current = current + step;
+
+                if (to > start)
+                    return current <= to;
+
+                return current >= to;
+            }
+
+            public void Reset()
+            {
+                current = from;
+                fst = true;
+            }
+        }
+
         public static readonly DyFloat Zero = new DyFloat(0D);
         public static readonly DyFloat One = new DyFloat(1D);
         public static readonly DyFloat NaN = new DyFloat(double.NaN);
@@ -166,27 +216,9 @@ namespace Dyalect.Runtime.Types
             var ifrom = self.GetFloat();
             var istart = ifrom;
             var ito = to.GetFloat();
-            var fst = true;
             var step = ito > ifrom ? 1.0 : -1.0;
 
-            double current = ifrom;
-            return new DyIterator(new DyIterator.RangeEnumerator(
-                () => new DyFloat(current),
-                () =>
-                {
-                    if (fst)
-                    {
-                        fst = false;
-                        return true;
-                    }
-
-                    current = current + step;
-
-                    if (ito > istart)
-                        return current <= ito;
-
-                    return current >= ito;
-                }));
+            return new DyIterator(new DyFloat.RangeEnumerator(ifrom, istart, ito, step));
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
