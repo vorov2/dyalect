@@ -1,3 +1,28 @@
-﻿var xs = {1,2,3,4,5}
-xs()
-xs.len()
+﻿func avg(xs) {
+    var acc = 0.0
+    var c = 0
+    for x in xs {
+        c += 1
+        acc += x
+    }
+    acc / c
+}
+
+func sma(p) {
+    var s = []
+    x => {
+        if s.len() >= p {
+            s.removeAt(0)
+        }
+        s.insert(s.len(), x)
+        avg(s)
+    };
+}
+
+var nums = Iterator.concat(1.0..5.0, 5.0..1.0)
+var sma3 = sma(3)
+var sma5 = sma(5)
+
+for n in nums {
+    print("\(n)\t(sma3) \(sma3(n))\t(sma5) \(sma5(n))")
+}

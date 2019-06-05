@@ -1,3 +1,6 @@
+# 0.7.4
+  * Fixed: _An error in `Array.insert`_ ([Issue #145](https://github.com/vorov2/dyalect/issues/145)).
+
 # 0.7.3
   * Done: _Restrict overriding `has`_ ([Issue #134](https://github.com/vorov2/dyalect/issues/134), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#has)).
   * Done: _Add `Array.insertRange` method_ ([Issue #135](https://github.com/vorov2/dyalect/issues/135), [docs](https://github.com/vorov2/dyalect/wiki/Array#insertRange)).
