@@ -55,6 +55,7 @@ namespace Dyalect.Runtime.Types
             }
         }
 
+        public static readonly DyChar Empty = new DyChar('\0');
         internal readonly char Value;
 
         public DyChar(char value) : base(DyType.Char)
@@ -149,37 +150,49 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            if (name == "to")
-                return DyForeignFunction.Member(name, Range, -1, new Par("value"));
+            switch (name) {
+                case "to":
+                    return DyForeignFunction.Member(name, Range, -1, new Par("value"));
+                case "isLower":
+                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLower(c.GetChar()));
+                case "isUpper":
+                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsUpper(c.GetChar()));
+                case "isControl":
+                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsControl(c.GetChar()));
+                case "isDigit":
+                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsDigit(c.GetChar()));
+                case "isLetter":
+                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLetter(c.GetChar()));
+                case "isLetterOrDigit":
+                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLetterOrDigit(c.GetChar()));
+                case "isWhiteSpace":
+                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsWhiteSpace(c.GetChar()));
+                case "lower":
+                    return DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToLower(c.GetChar())));
+                case "upper":
+                    return DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToUpper(c.GetChar())));
+                case "order":
+                    return DyForeignFunction.Member(name, (_, c) => DyInteger.Get(c.GetChar()));
+                default:
+                    return null;
+            }
+        }
 
-            if (name == "isLower")
-                return DyForeignFunction.Member(name, (_,c) => (DyBool)char.IsLower(c.GetChar()));
+        private DyObject CreateChar(ExecutionContext ctx, DyObject obj)
+        {
+            if (obj.TypeId == DyType.Char)
+                return obj;
 
-            if (name == "isUpper")
-                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsUpper(c.GetChar()));
+            if (obj.TypeId == DyType.String)
+            {
+                var str = obj.ToString();
+                return str.Length > 0 ? new DyChar(str[0]) : DyChar.Empty;
+            }
 
-            if (name == "isControl")
-                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsControl(c.GetChar()));
+            if (obj.TypeId == DyType.Integer)
+                return new DyChar((char)obj.GetInteger());
 
-            if (name == "isDigit")
-                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsDigit(c.GetChar()));
-
-            if (name == "isLetter")
-                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLetter(c.GetChar()));
-
-            if (name == "isLetterOrDigit")
-                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLetterOrDigit(c.GetChar()));
-
-            if (name == "isWhiteSpace")
-                return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsWhiteSpace(c.GetChar()));
-
-            if (name == "lower")
-                return DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToLower(c.GetChar())));
-
-            if (name == "upper")
-                return DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToUpper(c.GetChar())));
-
-            return null;
+            return ctx.InvalidType(DyTypeNames.Integer, obj);
         }
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
@@ -189,6 +202,9 @@ namespace Dyalect.Runtime.Types
 
             if (name == "min")
                 return DyForeignFunction.Static(name, c => new DyChar(char.MinValue));
+
+            if (name == "new")
+                return DyForeignFunction.Static(name, CreateChar, -1, new Par("value"));
 
             return null;
         }
