@@ -327,6 +327,13 @@ func arrayTest21() {
     assert([1,2,3,4,5,6], res)
 }
 
+func arrayTest22() { 
+    //Related to bug #145
+    var arr = []
+    arr.insert(0, 1)
+    assert([1], arr)
+}
+
 func tupleTest1() {
     var t = (1,2,3)
     assert(3, t.len())
