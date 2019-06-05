@@ -471,9 +471,9 @@ func stringTest17() {
 func stringTest18() {
     var foo = "12"
     assert("   12", foo.padLeft(5))
-    assert("00012", foo.padLeft(len: 5, with: '0'))
+    assert("00012", foo.padLeft(with: '0', to: 5))
     assert("12   ", foo.padRight(5))
-    assert("12000", foo.padRight(len: 5, with: '0'))
+    assert("12000", foo.padRight(with: '0', to: 5))
 }
 
 func memberCheckTest() {

@@ -416,9 +416,9 @@ namespace Dyalect.Runtime.Types
                 case "isEmpty":
                     return DyForeignFunction.Member(name, IsEmpty);
                 case "padLeft":
-                    return DyForeignFunction.Member(name, PadLeft, -1, new Par("len"), new Par("with", new DyChar(' ')));
+                    return DyForeignFunction.Member(name, PadLeft, -1, new Par("to"), new Par("with", new DyChar(' ')));
                 case "padRight":
-                    return DyForeignFunction.Member(name, PadRight, -1, new Par("len"), new Par("with", new DyChar(' ')));
+                    return DyForeignFunction.Member(name, PadRight, -1, new Par("to"), new Par("with", new DyChar(' ')));
                 default:
                     return null;
             }
