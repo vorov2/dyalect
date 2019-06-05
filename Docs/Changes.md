@@ -1,5 +1,6 @@
 # 0.7.4
   * Done: _Add an ability to convert a char to int and vice versa_ ([Issue #146](https://github.com/vorov2/dyalect/issues/146, [docs](https://github.com/vorov2/dyalect/wiki/Char#order), [more docs](https://github.com/vorov2/dyalect/wiki/Char#new))).
+  * Done: _Add padLeft/padRight methods to String_ ([Issue #144](https://github.com/vorov2/dyalect/issues/144 [docs](https://github.com/vorov2/dyalect/wiki/String#padLeft)).
   * Fixed: _An error in `Array.insert`_ ([Issue #145](https://github.com/vorov2/dyalect/issues/145)).
 
 # 0.7.3

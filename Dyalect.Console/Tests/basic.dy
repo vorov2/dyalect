@@ -468,6 +468,14 @@ func stringTest17() {
     assert("A barfoo inside with len=6.", str)
 }
 
+func stringTest18() {
+    var foo = "12"
+    assert("   12", foo.padLeft(5))
+    assert("00012", foo.padLeft(len: 5, with: '0'))
+    assert("12   ", foo.padRight(5))
+    assert("12000", foo.padRight(len: 5, with: '0'))
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
@@ -507,6 +515,19 @@ func charTest4() {
     assert(false, '1'.isLetter())
     assert(true, '9'.isLetterOrDigit())
     assert(true, 't'.isLetterOrDigit())
+}
+
+func charTest5() {
+    assert(65, 'A'.order())
+    assert(54, '6'.order())
+}
+
+func charTest6() {
+    assert('c', Char.new('c'))
+    assert('A', Char.new(65))
+    assert('6', Char.new('6'))
+    assert('\u0006', Char.new(6))
+    assert('f', Char.new("foo"))
 }
 
 func nameofTest() {
