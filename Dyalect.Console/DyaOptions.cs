@@ -18,6 +18,9 @@ namespace Dyalect
         [Binding("debug", Help = "Compile in debug mode.", Category = COMPILER)]
         public bool Debug { get; set; }
 
+        [Binding("nowarn", Help = "Do not generate warnings.", Category = COMPILER)]
+        public bool NoWarnings { get; set; }
+
         [Binding("nolang", Help = "Do not import \"lang\" module that includes basic primitives and operations.", Category = COMPILER)]
         public bool NoLang { get; set; }
 

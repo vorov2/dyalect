@@ -19,7 +19,8 @@ namespace Dyalect
             var buildOptions = new BuilderOptions
             {
                 Debug = options.Debug,
-                NoLangModule = options.NoLang
+                NoLangModule = options.NoLang,
+                NoWarnings = options.NoWarnings
             };
 
             var lookup = FileLookup.Create(FS.GetStartupPath(), options.Paths);
