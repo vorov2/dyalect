@@ -432,6 +432,7 @@ namespace Dyalect.Compiler
 
                     Build(node.Arguments[0], hints.Append(Push), ctx);
                     cw.Type();
+                    AddWarning(CompilerWarning.FunctionDeprecated, node.Location, name);
                     return;
                 }
 

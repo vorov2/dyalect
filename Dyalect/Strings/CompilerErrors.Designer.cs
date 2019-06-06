@@ -106,6 +106,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Function &quot;{0}&quot; is deprecated..
+        /// </summary>
+        internal static string FunctionDeprecated {
+            get {
+                return ResourceManager.GetString("FunctionDeprecated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default parameter value for &apos;{0}&apos; must be of a primitive type (integer, float, character, string or nil)..
         /// </summary>
         internal static string InvalidDefaultValue {
