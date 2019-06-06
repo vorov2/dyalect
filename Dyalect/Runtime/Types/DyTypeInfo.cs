@@ -514,6 +514,7 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Iterator: return self is IEnumerable<DyObject>  ? DyForeignFunction.Member(name, GetIterator) : null;
                 case Builtins.Clone: return DyForeignFunction.Member(name, Clone);
                 case Builtins.Has: return DyForeignFunction.Member(name, Has, -1, new Par("member"));
+                case Builtins.GetType: return DyForeignFunction.Member(name, (context, o) =>  context.Types[self.TypeId]);
                 default:
                     return GetMember(name, ctx);
             }
