@@ -357,6 +357,30 @@ namespace Dyalect.Runtime.Types
             return string.IsNullOrWhiteSpace(self.GetString()) ? DyBool.True : DyBool.False;
         }
 
+        private DyObject PadLeft(ExecutionContext ctx, DyObject self, DyObject len, DyObject with)
+        {
+            if (len.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, len);
+
+            if (with.TypeId != DyType.Char)
+                return ctx.InvalidType(DyTypeNames.Char, with);
+
+            var str = self.GetString();
+            return new DyString(str.PadLeft((int)len.GetInteger(), with.GetChar()));
+        }
+
+        private DyObject PadRight(ExecutionContext ctx, DyObject self, DyObject len, DyObject with)
+        {
+            if (len.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, len);
+
+            if (with.TypeId != DyType.Char)
+                return ctx.InvalidType(DyTypeNames.Char, with);
+
+            var str = self.GetString();
+            return new DyString(str.PadRight((int)len.GetInteger(), with.GetChar()));
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             switch (name)
@@ -391,6 +415,10 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Member(name, TrimEnd, 0, new Par("chars", true));
                 case "isEmpty":
                     return DyForeignFunction.Member(name, IsEmpty);
+                case "padLeft":
+                    return DyForeignFunction.Member(name, PadLeft, -1, new Par("to"), new Par("with", new DyChar(' ')));
+                case "padRight":
+                    return DyForeignFunction.Member(name, PadRight, -1, new Par("to"), new Par("with", new DyChar(' ')));
                 default:
                     return null;
             }

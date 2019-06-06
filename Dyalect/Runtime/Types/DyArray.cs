@@ -309,18 +309,16 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject InsertItem(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject InsertItem(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
             var arr = (DyArray)self;
-            var index = args.TakeOne(DyNil.Instance);
 
             if (index.TypeId != DyType.Integer)
                 return ctx.IndexInvalidType(TypeName, index);
 
             var i = (int)index.GetInteger();
-            var value = args.TakeAt(1, DyNil.Instance);
 
-            if (i < 0 || i >= arr.Count)
+            if (i < 0 || i > arr.Count)
                 return ctx.IndexOutOfRange(TypeName, i);
 
             arr.Insert(i, value);
