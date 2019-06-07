@@ -6,6 +6,7 @@
         {
             BlockExit = Label.Empty;
             BlockSkip = Label.Empty;
+            BlockBreakExit = Label.Empty;
             FunctionExit = Label.Empty;
             MatchExit = Label.Empty;
         }

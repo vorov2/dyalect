@@ -23,7 +23,9 @@ namespace Dyalect.Compiler
 
         Last = 0x80,
 
-        Rebind = 0x100
+        Rebind = 0x100,
+
+        ExpectPush = 0x200
     }
 
     public static class HintsExtensions

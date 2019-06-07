@@ -1,1 +1,19 @@
-﻿typeof(12)
+﻿func check(x) {
+    if x % 2 == 0 {
+        throw x
+    }
+}
+
+func yielder(arr) { 
+    for x in arr {
+        print(x)
+        try {
+            check(x)
+            yield x
+        } catch _ {
+            //Do nothing
+        }
+    }
+}
+var arr = [1..20]
+yielder(arr).toArray()

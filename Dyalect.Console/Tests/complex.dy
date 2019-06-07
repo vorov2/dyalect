@@ -326,6 +326,7 @@ func iteratorTest7() {
     }
 
     var res = 5.iter().toArray()
+    Integer.__deleteMember("iter")
     assert([0,1,2,3,4], res)
 }
 
@@ -766,4 +767,16 @@ func binaryToString() {
     }
     assert("10001100101000", 9000.toString())
     Integer.__deleteMember("toString")
+}
+
+func whileStackTest() {
+    //Related to bug #151
+    var i = 1
+    while true {
+        if i < 100 {
+            break
+        }
+        i += 1
+    }
+    assert(true, true)
 }
