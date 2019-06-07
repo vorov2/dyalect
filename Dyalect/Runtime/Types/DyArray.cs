@@ -630,7 +630,7 @@ namespace Dyalect.Runtime.Types
             return destArr;
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "new")
                 return DyForeignFunction.Static(name, New, 0, new Par("values", true));

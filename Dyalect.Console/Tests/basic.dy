@@ -682,3 +682,7 @@ func arrayCopyTest4() {
     var ys = Array.copy(xs, count: 3)
     assert([1,2,3], ys)
 }
+
+func getTypeTest() {
+
+}

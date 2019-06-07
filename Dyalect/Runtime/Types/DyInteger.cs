@@ -316,7 +316,7 @@ namespace Dyalect.Runtime.Types
             return null;
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "max")
                 return DyForeignFunction.Static(name, c => new DyInteger(long.MaxValue));

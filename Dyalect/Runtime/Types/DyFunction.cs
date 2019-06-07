@@ -140,7 +140,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "compose")
                 return DyForeignFunction.Static(name, Compose, -1, new Par("first"), new Par("second"));

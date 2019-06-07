@@ -48,7 +48,7 @@ namespace Dyalect.Runtime.Types
         }
 
         private readonly Dictionary<int, DyFunction> members = new Dictionary<int, DyFunction>();
-        private readonly Dictionary<int, DyFunction> staticMembers = new Dictionary<int, DyFunction>();
+        private readonly Dictionary<int, DyObject> staticMembers = new Dictionary<int, DyObject>();
 
         public override object ToObject() => this;
 
@@ -560,25 +560,29 @@ namespace Dyalect.Runtime.Types
 
         protected virtual DyFunction GetMember(string name, ExecutionContext ctx) => null;
 
-        private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx)
+        private DyObject InternalGetStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "__deleteMember")
-                return DyForeignFunction.Static(name, (context, strObj) =>
-                {
-                    var nm = strObj.GetString();
-                    if (context.Composition.MembersMap.TryGetValue(nm, out var nameId))
+            switch (name)
+            {
+                case "id": return DyInteger.Get(TypeCode);
+                case "name": return new DyString(TypeName);
+                case "__deleteMember":
+                    return DyForeignFunction.Static(name, (context, strObj) =>
                     {
-                        SetBuiltin(nm, null);
-                        members.Remove(nameId);
-                        staticMembers.Remove(nameId);
-                    }
-                    return DyNil.Instance;
-                }, -1, new Par("name"));
-
-            return GetStaticMember(name, ctx);
+                        var nm = strObj.GetString();
+                        if (context.Composition.MembersMap.TryGetValue(nm, out var nameId))
+                        {
+                            SetBuiltin(nm, null);
+                            members.Remove(nameId);
+                            staticMembers.Remove(nameId);
+                        }
+                        return DyNil.Instance;
+                    }, -1, new Par("name"));
+                default: return GetStaticMember(name, ctx);
+            }
         }
 
-        protected virtual DyFunction GetStaticMember(string name, ExecutionContext ctx) => null;
+        protected virtual DyObject GetStaticMember(string name, ExecutionContext ctx) => null;
 
         internal protected virtual DyObject Get(DyObject obj, DyObject index, ExecutionContext ctx) => obj.GetItem(index, ctx);
 

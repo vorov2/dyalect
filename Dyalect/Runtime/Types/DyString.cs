@@ -477,7 +477,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(string.Join(separator.GetString(), strArr));
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "concat")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));

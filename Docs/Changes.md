@@ -1,5 +1,6 @@
 # 0.7.5
   * Done: _Replace `typeof` with `getType` method_ ([Issue #142](https://github.com/vorov2/dyalect/issues/142), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#getType)).
+  * Done: _`TypeInfo` object and metadata_ ([Issue #150](https://github.com/vorov2/dyalect/issues/150), [docs](https://github.com/vorov2/dyalect/wiki/TypeInfo)).
   * Fixed: _Detection whether an object supports a standard method_ ([Issue #148](https://github.com/vorov2/dyalect/issues/148)).
 
 # 0.7.4
