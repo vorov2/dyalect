@@ -36,6 +36,15 @@ namespace Dyalect.Compiler
             AddMessage(new BuildMessage(str, BuildMessageType.Error, (int)error, loc.Line, loc.Column, unit.FileName));
         }
 
+        private void AddWarning(CompilerWarning warning, Location loc, params object[] args)
+        {
+            if (options.NoWarnings)
+                return;
+
+            var str = string.Format(CompilerErrors.ResourceManager.GetString(warning.ToString()) ?? warning.ToString(), args);
+            AddMessage(new BuildMessage(str, BuildMessageType.Warning, (int)warning, loc.Line, loc.Column, unit.FileName));
+        }
+
         public bool Success => ErrorCount == 0;
     }
 }

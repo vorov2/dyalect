@@ -133,7 +133,7 @@
     <value>Unrecognized escape sequence.</value>
   </data>
   <data name="InvalidExpression" xml:space="preserve">
-    <value>Invalid expression</value>
+    <value>Invalid expression.</value>
   </data>
   <data name="InvalidFunctionExpression" xml:space="preserve">
     <value>Invalid function expression.</value>

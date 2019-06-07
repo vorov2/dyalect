@@ -395,7 +395,7 @@ namespace Dyalect.Compiler
                 AddError(CompilerError.ReturnNotAllowed, node.Location);
 
             if (node.Expression != null)
-                Build(node.Expression, hints, ctx);
+                Build(node.Expression, hints.Append(Push), ctx);
             else
                 cw.PushNil();
 
@@ -432,6 +432,7 @@ namespace Dyalect.Compiler
 
                     Build(node.Arguments[0], hints.Append(Push), ctx);
                     cw.Type();
+                    AddWarning(CompilerWarning.FunctionDeprecated, node.Location, name);
                     return;
                 }
 
@@ -502,22 +503,17 @@ namespace Dyalect.Compiler
         {
             var falseLabel = cw.DefineLabel();
             var skipLabel = cw.DefineLabel();
-            var push = hints.Append(Push);
 
-            Build(node.Condition, push, ctx);
+            Build(node.Condition, hints.Append(Push), ctx);
             AddLinePragma(node);
             cw.Brfalse(falseLabel);
-            Build(node.True, push, ctx);
-            PopIf(hints);
+            Build(node.True, hints, ctx);
             AddLinePragma(node);
             cw.Br(skipLabel);
             cw.MarkLabel(falseLabel);
 
             if (node.False != null)
-            {
-                Build(node.False, push, ctx);
-                PopIf(hints);
-            }
+                Build(node.False, hints, ctx);
             else
                 PushIf(hints);
 

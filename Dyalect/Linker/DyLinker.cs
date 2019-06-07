@@ -186,11 +186,11 @@ namespace Dyalect.Linker
             var compiler = new DyCompiler(BuilderOptions, this);
             var res = compiler.Compile(codeModel);
 
-            if (!res.Success)
-            {
+            if (res.Messages.Any())
                 Messages.AddRange(res.Messages);
+
+            if (!res.Success)
                 return null;
-            }
 
             return res.Value;
         }

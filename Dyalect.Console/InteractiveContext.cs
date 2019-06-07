@@ -6,6 +6,7 @@ using Dyalect.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Dyalect
@@ -18,7 +19,8 @@ namespace Dyalect
             var buildOptions = new BuilderOptions
             {
                 Debug = options.Debug,
-                NoLangModule = options.NoLang
+                NoLangModule = options.NoLang,
+                NoWarnings = options.NoWarnings
             };
 
             var lookup = FileLookup.Create(FS.GetStartupPath(), options.Paths);
@@ -41,11 +43,11 @@ namespace Dyalect
         {
             var made = Linker.Make(SourceBuffer.FromString(source, "<stdio>"));
 
-            if (!made.Success)
-            {
+            if (made.Messages.Any())
                 Printer.PrintErrors(made.Messages);
+
+            if (!made.Success)
                 return false;
-            }
 
             if (ExecutionContext == null)
                 ExecutionContext = DyMachine.CreateExecutionContext(made.Value);
@@ -75,11 +77,11 @@ namespace Dyalect
 
             var made = Linker.Make(buffer);
 
-            if (!made.Success)
-            {
+            if (made.Messages.Any())
                 Printer.PrintErrors(made.Messages);
+
+            if (!made.Success)
                 return false;
-            }
 
             composition = made.Value;
 

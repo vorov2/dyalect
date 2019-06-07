@@ -1,7 +1,4 @@
 ﻿using Dyalect.Parser.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
@@ -11,12 +8,15 @@ namespace Dyalect.Compiler
     {
         private void Build(DBreak node, Hints hints, CompilerContext ctx)
         {
-            if (ctx.BlockBreakExit.IsEmpty())
+            if (ctx.BlockExit.IsEmpty())
                 AddError(CompilerError.NoEnclosingLoop, node.Location);
 
             if (node.Expression != null)
+            {
                 Build(node.Expression, hints.Append(Push), ctx);
-            else
+                if (!hints.Has(ExpectPush)) cw.Pop();
+            }
+            else if (hints.Has(ExpectPush))
                 cw.PushNil();
 
             AddLinePragma(node);
@@ -47,7 +47,8 @@ namespace Dyalect.Compiler
             Build(node.Condition, hints.Append(Push), ctx);
             cw.Brfalse(ctx.BlockExit);
 
-            Build(node.Body, hints.Remove(Push), ctx);
+            var nh = hints.Has(Push) ? hints.Remove(Push).Append(ExpectPush) : hints;
+            Build(node.Body, nh, ctx);
 
             cw.MarkLabel(ctx.BlockSkip);
             cw.Br(iter);
@@ -55,6 +56,7 @@ namespace Dyalect.Compiler
             cw.MarkLabel(ctx.BlockExit);
             PushIf(hints);
             AddLinePragma(node);
+
             cw.MarkLabel(ctx.BlockBreakExit);
             cw.Nop();
         }
@@ -112,7 +114,8 @@ namespace Dyalect.Compiler
                 cw.Brfalse(ctx.BlockSkip);
             }
 
-            Build(node.Body, hints.Remove(Push), ctx);
+            var nh = hints.Has(Push) ? hints.Remove(Push).Append(ExpectPush) : hints;
+            Build(node.Body, nh, ctx);
 
             cw.MarkLabel(ctx.BlockSkip);
             cw.Br(iter);
@@ -121,6 +124,7 @@ namespace Dyalect.Compiler
             cw.Pop();
             PushIf(hints);
             AddLinePragma(node);
+
             cw.MarkLabel(ctx.BlockBreakExit);
             cw.Nop();
             EndScope();

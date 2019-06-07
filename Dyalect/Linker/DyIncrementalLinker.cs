@@ -3,6 +3,7 @@ using Dyalect.Parser.Model;
 using Dyalect.Runtime.Types;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Dyalect.Linker
@@ -71,11 +72,13 @@ namespace Dyalect.Linker
 
             var res = compiler.Compile(codeModel);
 
+            if (res.Messages.Any())
+                Messages.AddRange(res.Messages);
+
             if (!res.Success)
             {
                 compiler = oldCompiler;
                 startOffset = null;
-                Messages.AddRange(res.Messages);
                 return null;
             }
 

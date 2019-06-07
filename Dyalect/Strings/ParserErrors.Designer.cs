@@ -106,7 +106,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid expression.
+        ///   Looks up a localized string similar to Invalid expression..
         /// </summary>
         internal static string InvalidExpression {
             get {

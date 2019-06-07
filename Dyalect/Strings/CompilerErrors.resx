@@ -192,4 +192,7 @@
   <data name="OverrideNotAllowed" xml:space="preserve">
     <value>Overriding of "{0}" method is not allowed.</value>
   </data>
+  <data name="FunctionDeprecated" xml:space="preserve">
+    <value>Function "{0}" is deprecated.</value>
+  </data>
 </root>

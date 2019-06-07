@@ -257,7 +257,7 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(new DyObject[] { fst, snd, thd });
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "pair")
                 return DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second"));
