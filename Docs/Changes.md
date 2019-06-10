@@ -1,3 +1,6 @@
+# 0.7.6
+  * Done: _Add Tuple.new static method ([Issue #153](https://github.com/vorov2/dyalect/issues/153), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#new)).
+
 # 0.7.5
   * Done: _Replace `typeof` with `getType` method_ ([Issue #142](https://github.com/vorov2/dyalect/issues/142), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#getType)).
   * Done: _`TypeInfo` object and metadata_ ([Issue #150](https://github.com/vorov2/dyalect/issues/150), [docs](https://github.com/vorov2/dyalect/wiki/TypeInfo)).
