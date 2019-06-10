@@ -68,6 +68,8 @@ namespace Dyalect.Compiler
             {
                 case "+": return node.Parameters.Count == 0 ? Builtins.Plus : Builtins.Add;
                 case "-": return node.Parameters.Count == 0 ? Builtins.Neg : Builtins.Sub;
+                case "get": return Builtins.Get;
+                case "set": return Builtins.Set;
                 case "*": return Builtins.Mul;
                 case "/": return Builtins.Div;
                 case "%": return Builtins.Rem;

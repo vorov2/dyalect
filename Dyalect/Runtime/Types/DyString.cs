@@ -142,6 +142,14 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)StringUtil.Escape(arg.GetString());
 
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+
+        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        {
+            self.SetItem(index, value, ctx);
+            return DyNil.Instance;
+        }
+
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var str = self.GetString();

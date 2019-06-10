@@ -328,6 +328,32 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Other Operations
+        //x[y]
+        private DyFunction get;
+        protected virtual DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) =>
+            ctx.OperationNotSupported(Builtins.Get, self, index);
+        internal DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
+        {
+            if (get != null)
+                return get.Clone(ctx, self).Call1(index, ctx);
+
+            return GetOp(self, index, ctx);
+        }
+
+        //x[y] = z
+        private DyFunction set;
+        protected virtual DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx) =>
+            ctx.OperationNotSupported(Builtins.Set, self, index);
+        internal DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
+        {
+            if (set != null)
+                return set.Clone(ctx, self).Call2(index, value, ctx);
+
+            return SetOp(self, index, value, ctx);
+        }
+        #endregion
+
+        #region Service code
         internal DyObject GetStaticMember(int nameId, Unit unit, ExecutionContext ctx)
         {
             nameId = unit.MemberIds[nameId];
@@ -535,10 +561,10 @@ namespace Dyalect.Runtime.Types
                     return Supp(SupportedOperations.Plus) ? DyForeignFunction.Member(name, Plus) : null;
                 case Builtins.Get:
                     return Supp(SupportedOperations.Get) 
-                        ? DyForeignFunction.Member(name, (context, s, index) => Get(s, index, context), -1, new Par("index")) : null;
+                        ? DyForeignFunction.Member(name, Get, -1, new Par("index")) : null;
                 case Builtins.Set:
                     return Supp(SupportedOperations.Set) 
-                        ? DyForeignFunction.Member(name, (context, s, index, val) => { Set(s, index, val, context); return DyNil.Instance; }, -1, new Par("index"), new Par("value"))
+                        ? DyForeignFunction.Member(name, Set, -1, new Par("index"), new Par("value"))
                         : null;
                 case Builtins.ToStr: return DyForeignFunction.Member(name, ToString);
                 case Builtins.Iterator: return self is IEnumerable<DyObject>  ? DyForeignFunction.Member(name, GetIterator) : null;
@@ -583,10 +609,6 @@ namespace Dyalect.Runtime.Types
         }
 
         protected virtual DyObject GetStaticMember(string name, ExecutionContext ctx) => null;
-
-        internal protected virtual DyObject Get(DyObject obj, DyObject index, ExecutionContext ctx) => obj.GetItem(index, ctx);
-
-        internal protected virtual void Set(DyObject obj, DyObject index, DyObject val, ExecutionContext ctx) => obj.SetItem(index, val, ctx);
         #endregion
     }
 
@@ -598,7 +620,7 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Get;
 
         public override string TypeName => DyTypeNames.TypeInfo;
 

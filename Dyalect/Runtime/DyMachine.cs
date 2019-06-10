@@ -344,13 +344,13 @@ namespace Dyalect.Runtime
                     case OpCode.Get:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
-                        evalStack.Push(right.GetItem(left, ctx));
+                        evalStack.Push(types[right.TypeId].Get(ctx, right, left));
                         if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
                         break;
                     case OpCode.Set:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
-                        right.SetItem(left, evalStack.Pop(), ctx);
+                        types[right.TypeId].Set(ctx, right, left, evalStack.Pop());
                         if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
                         break;
                     case OpCode.GetIx:

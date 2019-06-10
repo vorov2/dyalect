@@ -186,6 +186,14 @@ namespace Dyalect.Runtime.Types
             return DyBool.True;
         }
 
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+
+        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        {
+            self.SetItem(index, value, ctx);
+            return DyNil.Instance;
+        }
+
         private DyObject GetIndices(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var tup = (DyTuple)self;
