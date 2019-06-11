@@ -20,7 +20,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyModuleTypeInfo : DyTypeInfo
     {
-        public DyModuleTypeInfo() : base(DyType.Module, false)
+        public DyModuleTypeInfo() : base(DyType.Module)
         {
 
         }

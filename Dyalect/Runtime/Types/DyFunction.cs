@@ -101,7 +101,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
     {
-        public DyFunctionTypeInfo() : base(DyType.Function, false)
+        public DyFunctionTypeInfo() : base(DyType.Function)
         {
 
         }

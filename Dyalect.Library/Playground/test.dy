@@ -1,2 +1,5 @@
-﻿var tup = (x: 12, y: 33)
-tup.x
+﻿var t = (x: 1, y: 2)
+
+for n in 0..(3000*1000) {
+    t.x
+}

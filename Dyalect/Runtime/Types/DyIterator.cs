@@ -202,7 +202,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyIteratorTypeInfo : DyTypeInfo
     {
-        public DyIteratorTypeInfo() : base(DyType.Iterator, false)
+        public DyIteratorTypeInfo() : base(DyType.Iterator)
         {
 
         }

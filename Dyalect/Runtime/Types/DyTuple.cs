@@ -116,7 +116,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyTupleTypeInfo : DyTypeInfo
     {
-        public DyTupleTypeInfo() : base(DyType.Tuple, true)
+        public DyTupleTypeInfo() : base(DyType.Tuple)
         {
 
         }

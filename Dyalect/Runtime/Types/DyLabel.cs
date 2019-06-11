@@ -23,7 +23,7 @@
 
     internal sealed class DyLabelTypeInfo : DyTypeInfo
     {
-        public DyLabelTypeInfo() : base(DyType.Label, false)
+        public DyLabelTypeInfo() : base(DyType.Label)
         {
 
         }

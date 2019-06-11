@@ -112,7 +112,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyIntegerTypeInfo : DyTypeInfo
     {
-        public DyIntegerTypeInfo() : base(DyType.Integer, false)
+        public DyIntegerTypeInfo() : base(DyType.Integer)
         {
 
         }

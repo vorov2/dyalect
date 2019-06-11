@@ -76,7 +76,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyCharTypeInfo : DyTypeInfo
     {
-        public DyCharTypeInfo() : base(DyType.Char, false)
+        public DyCharTypeInfo() : base(DyType.Char)
         {
 
         }

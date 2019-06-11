@@ -82,7 +82,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyStringTypeInfo : DyTypeInfo
     {
-        public DyStringTypeInfo() : base(DyType.String, false)
+        public DyStringTypeInfo() : base(DyType.String)
         {
 
         }

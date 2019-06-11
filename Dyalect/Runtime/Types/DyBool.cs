@@ -38,7 +38,7 @@
 
     internal sealed class DyBoolTypeInfo : DyTypeInfo
     {
-        public DyBoolTypeInfo() : base(DyType.Bool, false)
+        public DyBoolTypeInfo() : base(DyType.Bool)
         {
 
         }

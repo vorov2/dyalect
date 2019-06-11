@@ -252,7 +252,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyArrayTypeInfo : DyTypeInfo
     {
-        public DyArrayTypeInfo() : base(DyType.Array, false)
+        public DyArrayTypeInfo() : base(DyType.Array)
         {
 
         }

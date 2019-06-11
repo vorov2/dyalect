@@ -23,7 +23,7 @@
 
     internal sealed class DyNilTypeInfo : DyTypeInfo
     {
-        public DyNilTypeInfo() : base(DyType.Nil, false)
+        public DyNilTypeInfo() : base(DyType.Nil)
         {
 
         }

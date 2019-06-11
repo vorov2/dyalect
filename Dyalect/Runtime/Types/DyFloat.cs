@@ -93,7 +93,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyFloatTypeInfo : DyTypeInfo
     {
-        public DyFloatTypeInfo() : base(DyType.Float, false)
+        public DyFloatTypeInfo() : base(DyType.Float)
         {
 
         }

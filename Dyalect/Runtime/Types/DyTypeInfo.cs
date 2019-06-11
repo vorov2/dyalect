@@ -58,12 +58,9 @@ namespace Dyalect.Runtime.Types
 
         public int TypeCode { get; internal set; }
 
-        public bool SupportInstanceMembers { get; }
-
-        internal DyTypeInfo(int typeCode, bool supportInstanceMembers) : base(DyType.TypeInfo)
+        internal DyTypeInfo(int typeCode) : base(DyType.TypeInfo)
         {
             TypeCode = typeCode;
-            SupportInstanceMembers = supportInstanceMembers;
         }
 
         #region Binary Operations
@@ -438,14 +435,6 @@ namespace Dyalect.Runtime.Types
 
         internal DyObject GetMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
         {
-            //if (SupportInstanceMembers)
-            //{
-            //    var ret = self.GetOrdinal(ctx.Composition.Members[nameId]);
-
-            //    if (ret != -1)
-            //        return self.GetItem(ret, ctx);
-            //}
-
             if (!members.TryGetValue(nameId, out var value))
             {
                 var name = ctx.Composition.Members[nameId];
@@ -614,7 +603,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyTypeTypeInfo : DyTypeInfo
     {
-        public DyTypeTypeInfo() : base(DyType.TypeInfo, true)
+        public DyTypeTypeInfo() : base(DyType.TypeInfo)
         {
 
         }
