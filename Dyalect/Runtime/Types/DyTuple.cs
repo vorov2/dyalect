@@ -237,22 +237,27 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            if (name == Builtins.Len)
-                return DyForeignFunction.Member(name, Length);
-
-            if (name == "indices")
-                return DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters);
-
-            if (name == "keys")
-                return DyForeignFunction.Member(name, GetKeys, -1, Statics.EmptyParameters);
-
-            if (name == "fst")
-                return DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters);
-
-            if (name == "snd")
-                return DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters);
-
-            return null;
+            switch (name)
+            {
+                case Builtins.Len:
+                    return DyForeignFunction.Member(name, Length);
+                case "indices":
+                    return DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters);
+                case "keys":
+                    return DyForeignFunction.Member(name, GetKeys, -1, Statics.EmptyParameters);
+                case "fst":
+                    return DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters);
+                case "snd":
+                    return DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters);
+                default:
+                    return DyForeignFunction.Static("$$$AutoInvoke", (c, self) =>
+                    {
+                        var idx = self.GetOrdinal(name);
+                        if (idx == -1)
+                            return ctx.OperationNotSupported(name, self);
+                        return self.GetItem(idx, ctx);
+                    }, -1, new Par("self"));
+            }
         }
 
         private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd)

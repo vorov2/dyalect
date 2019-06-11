@@ -438,13 +438,13 @@ namespace Dyalect.Runtime.Types
 
         internal DyObject GetMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
         {
-            if (SupportInstanceMembers)
-            {
-                var ret = self.GetOrdinal(ctx.Composition.Members[nameId]);
+            //if (SupportInstanceMembers)
+            //{
+            //    var ret = self.GetOrdinal(ctx.Composition.Members[nameId]);
 
-                if (ret != -1)
-                    return self.GetItem(ret, ctx);
-            }
+            //    if (ret != -1)
+            //        return self.GetItem(ret, ctx);
+            //}
 
             if (!members.TryGetValue(nameId, out var value))
             {
@@ -456,7 +456,7 @@ namespace Dyalect.Runtime.Types
             }
 
             if (value != null)
-                return value.Clone(ctx, self);
+                return value.FunctionName == "$$$AutoInvoke" ? value.Call1(self, ctx) : value.Clone(ctx, self);
 
             return value;
         }
