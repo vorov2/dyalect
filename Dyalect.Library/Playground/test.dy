@@ -1,5 +1,8 @@
-﻿var t = (x: 1, y: 2)
+﻿func Tuple.get(index) {
+    print("get at \(index)")
+}
 
-for n in 0..(3000*1000) {
-    t.x
+var t = (x:1,y:2,3)
+match t {
+    [x, y] => y
 }

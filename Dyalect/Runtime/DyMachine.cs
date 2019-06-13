@@ -355,12 +355,12 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.GetIx:
                         right = evalStack.Peek();
-                        evalStack.Replace(right.GetItem(op.Data, ctx));
+                        evalStack.Replace(types[right.TypeId].Get(ctx, right, op.Data));
                         if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
                         break;
                     case OpCode.SetIx:
                         right = evalStack.Pop();
-                        right.SetItem(op.Data, evalStack.Pop(), ctx);
+                        types[right.TypeId].Set(ctx, right, op.Data, evalStack.Pop());
                         if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
                         break;
                     case OpCode.HasField:

@@ -329,10 +329,19 @@ namespace Dyalect.Runtime.Types
         private DyFunction get;
         protected virtual DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Get, self, index);
+        protected virtual DyObject GetOp(DyObject self, int index, ExecutionContext ctx) =>
+            GetOp(self, DyInteger.Get(index), ctx);
         internal DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
         {
             if (get != null)
                 return get.Clone(ctx, self).Call1(index, ctx);
+
+            return GetOp(self, index, ctx);
+        }
+        internal DyObject Get(ExecutionContext ctx, DyObject self, int index)
+        {
+            if (get != null)
+                return get.Clone(ctx, self).Call1(DyInteger.Get(index), ctx);
 
             return GetOp(self, index, ctx);
         }
@@ -341,10 +350,19 @@ namespace Dyalect.Runtime.Types
         private DyFunction set;
         protected virtual DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Set, self, index);
+        protected virtual DyObject SetOp(DyObject self, int index, DyObject value, ExecutionContext ctx) =>
+            SetOp(self, DyInteger.Get(index), value, ctx);
         internal DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
             if (set != null)
                 return set.Clone(ctx, self).Call2(index, value, ctx);
+
+            return SetOp(self, index, value, ctx);
+        }
+        internal DyObject Set(ExecutionContext ctx, DyObject self, int index, DyObject value)
+        {
+            if (set != null)
+                return set.Clone(ctx, self).Call2(DyInteger.Get(index), value, ctx);
 
             return SetOp(self, index, value, ctx);
         }
@@ -488,6 +506,8 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Len: len = func; break;
                 case Builtins.ToStr: tos = func; break;
                 case Builtins.Plus: plus = func; break;
+                case Builtins.Set: set = func; break;
+                case Builtins.Get: get = func; break;
             }
         }
 
