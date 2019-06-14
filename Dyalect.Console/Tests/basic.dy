@@ -696,3 +696,23 @@ func getTypeTest() {
     assert(1, t.id)
     assert("Integer", t.name)
 }
+
+func hasTest1() {
+    var t = (1,2,3)
+    assert(false, t.has("foo"))
+    var foo = "foo"
+    assert(false, t.has(foo))
+    assert(true, t.has("keys"))
+    var keys = "keys"
+    assert(true, t.has(keys))
+}
+
+func hasTest2() {
+    var t = [1,2,3]
+    assert(false, t.has("foo"))
+    var foo = "foo"
+    assert(false, t.has(foo))
+    assert(true, t.has("indices"))
+    var indices = "indices"
+    assert(true, t.has(indices))
+}
