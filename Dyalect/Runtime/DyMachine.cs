@@ -10,7 +10,7 @@ namespace Dyalect.Runtime
 {
     public static class DyMachine
     {
-        internal static readonly DyNativeFunction Global = new DyNativeFunction(null, 0, 0, FastList<DyObject[]>.Empty, DyType.Function, -1);
+        internal static readonly DyNativeFunction Global = new DyNativeFunction(null, 0, 0, FastList<DyObject[]>.Empty, DyType.Function, -1, AutoKind.None);
 
         public static ExecutionContext CreateExecutionContext(UnitComposition composition)
         {

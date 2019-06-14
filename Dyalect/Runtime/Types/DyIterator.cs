@@ -191,7 +191,7 @@ namespace Dyalect.Runtime.Types
     {
         public override string FunctionName => "iter";
 
-        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(null, unitId, funcId, captures, DyType.Iterator, -1)
+        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(null, unitId, funcId, captures, DyType.Iterator, -1, auto: AutoKind.None)
         {
 
         }

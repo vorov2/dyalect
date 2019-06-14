@@ -13,10 +13,11 @@ namespace Dyalect.Runtime.Types
         internal Par[] Parameters;
         internal int VarArgIndex;
 
-        protected DyFunction(int typeId, Par[] pars, int varArgIndex) : base(typeId)
+        protected DyFunction(int typeId, Par[] pars, int varArgIndex, AutoKind auto) : base(typeId)
         {
             Parameters = pars;
             VarArgIndex = varArgIndex;
+            AutoKind = auto;
         }
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
@@ -83,6 +84,8 @@ namespace Dyalect.Runtime.Types
             return ret;
         }
 
+        internal AutoKind AutoKind { get; }
+
         public abstract string FunctionName { get; }
 
         public abstract bool IsExternal { get; }
@@ -147,5 +150,12 @@ namespace Dyalect.Runtime.Types
 
             return null;
         }
+    }
+
+    public enum AutoKind
+    {
+        None,
+        Generated,
+        Explicit
     }
 }

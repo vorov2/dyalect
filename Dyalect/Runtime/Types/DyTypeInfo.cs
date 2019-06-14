@@ -463,7 +463,7 @@ namespace Dyalect.Runtime.Types
             }
 
             if (value != null)
-                return value.FunctionName == "$$$AutoInvoke" ? value.Call1(self, ctx) : value.Clone(ctx, self);
+                return value.AutoKind != AutoKind.None ? value.Call1(self, ctx) : value.Clone(ctx, self);
 
             return value;
         }
@@ -475,7 +475,7 @@ namespace Dyalect.Runtime.Types
                 var name = ctx.Composition.Members[nameId];
                 value = InternalGetMember(self, name, ctx);
 
-                if (value != null && value.FunctionName != "$$$AutoInvoke")
+                if (value != null && value.AutoKind != AutoKind.Generated)
                 {
                     members.Add(nameId, value);
                     return true;
