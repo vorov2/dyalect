@@ -56,9 +56,11 @@
             1,  //NewFunV
             1,  //NewIter
             -1, //SetMember
+            -1, //SetMemberT
             0,  //GetMember
             0,  //HasMember
             -1, //SetMemberS
+            -1, //SetMemberST
             -1, //Get
             -3, //Set
             1,  //RunMod
@@ -81,8 +83,10 @@
             -2, //SetIx
             0,  //HasField
             0,  //TypeCheck
+            0,  //TypeCheckT
             0,  //Start
             0,  //End
+            0,  //NewType
         };
     }
 }

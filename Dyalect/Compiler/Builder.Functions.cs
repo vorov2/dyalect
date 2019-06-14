@@ -32,7 +32,7 @@ namespace Dyalect.Compiler
                         realName = GetMethodName(realName, node);
 
                     if (!node.IsStatic && 
-                        (node.Name == "has" || node.Name == "getType")
+                        (node.Name == Builtins.Has || node.Name == Builtins.GetType)
                         )
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
@@ -213,9 +213,9 @@ namespace Dyalect.Compiler
             else
                 Build(node.Body, hints.Append(Last), ctx);
 
-            //Возвращаемся из функции. Кстати, любое исполнение функции доходит до сюда,
-            //т.е. нельзя выйти раньше. Преждевременный return всё равно прыгает сюда, и здесь
-            //уже исполняется реальный return (Ret). Т.е. это эпилог функции.
+            //Return from a function. Any function execution should get here, it is not possible
+            //to break early. An early return would actually goto here, where a real return (OpCode.Ret)
+            //is executed. This is a function epilogue.
             cw.MarkLabel(funEndLabel);
 
             //If this is an iterator function push a terminator at the end (and pop a normal value)
@@ -223,6 +223,13 @@ namespace Dyalect.Compiler
             {
                 cw.Pop();
                 cw.PushNilT();
+            }
+
+            if (node.IsMemberFunction && node.IsStatic && node.Name == Builtins.New
+                && node.TypeName.Parent == null
+                && localTypes.TryGetValue(node.TypeName.Local, out var ti))
+            {
+                cw.NewType(ti.TypeId);
             }
 
             cw.Ret();

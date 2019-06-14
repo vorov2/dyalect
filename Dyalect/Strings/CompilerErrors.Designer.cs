@@ -214,6 +214,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Module already contains a definition for &quot;{0}&quot;..
+        /// </summary>
+        internal static string TypeAlreadyDeclared {
+            get {
+                return ResourceManager.GetString("TypeAlreadyDeclared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to change a value of a constant &quot;{0}&quot;..
         /// </summary>
         internal static string UnableAssignConstant {

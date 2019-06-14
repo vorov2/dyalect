@@ -33,7 +33,7 @@ namespace Dyalect.Compiler
         //Add a regular named variable
         private int AddVariable(string name, Location loc, int data)
         {
-            //Check if we already has such a variable in a local scope
+            //Check if we already have such a variable in the local scope
             if (currentScope.Locals.ContainsKey(name))
             {
                 AddError(CompilerError.VariableAlreadyDeclared, loc, name);

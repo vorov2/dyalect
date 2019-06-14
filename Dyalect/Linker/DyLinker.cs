@@ -144,7 +144,7 @@ namespace Dyalect.Linker
                 for (var i = 0; i < u.TypeIds.Count; i++)
                 {
                     u.TypeIds[i] = composition.Types.Count;
-                    composition.Types.Add(new DyVariantTypeInfo(composition.Types.Count, u.TypeNames[i]));
+                    composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, u.TypeNames[i]));
                 }
             }
         }

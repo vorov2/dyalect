@@ -1,3 +1,6 @@
+# 0.8.0
+  todo
+
 # 0.7.6
   * Done: _Add `Tuple.new` static method_ ([Issue #153](https://github.com/vorov2/dyalect/issues/153), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#new)).
   * Done: _`obj.Has(...)` optimization for simple cases_ ([Issue #156](https://github.com/vorov2/dyalect/issues/156)).

@@ -1,4 +1,12 @@
-﻿var arr = []
-for (1, x) in [(1, 2), (2, 'F'), (3, 'S'), (1, 3), (1, 4), (1.01, true)] {
-    arr.add(x)
+﻿type Foo
+
+static func Foo.new(x) {
+    x
 }
+
+func Foo.toString() {
+    "Foo" + this + "!"
+}
+
+var f = Foo.new(12)
+f

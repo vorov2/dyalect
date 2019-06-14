@@ -12,16 +12,19 @@ namespace Dyalect.Compiler
     {
         private const int ERROR_LIMIT = 100;
 
-        private readonly bool iterative; //Построение идёт в интерактивном режиме
-        private readonly BuilderOptions options; //Настройки сборки
-        private readonly CodeWriter cw; //Хелпер для эмита
-        private readonly DyLinker linker; //Линкер, который используется для пристыковки модулей
-        private Scope globalScope; //Глобальный скоуп для текущего фрейма
-        private Unit unit; //Фрейм, который мы сейчас компилируем
-        private Scope currentScope; //Текущий лексический скоуп
-        private Label programEnd; //Лейбл, отмечающий конец программы
+        private readonly bool iterative; //Compilation is performed in interactive mode
+        private readonly BuilderOptions options; //Build options
+        private readonly CodeWriter cw; //Helper for byte code emit
+        private readonly DyLinker linker; //Linker to link referenced modules
+        private Scope globalScope; //Global scope (for variables) of the current unit
+        private Unit unit; //Unit (file) that is beign compiler
+        private Scope currentScope; //Current lexical scope
+        private Label programEnd; //Label that marks an end of program
         private Dictionary<string, UnitInfo> referencedUnits = new Dictionary<string, UnitInfo>();
+
         private Dictionary<string, TypeInfo> types = new Dictionary<string, TypeInfo>();
+        private Dictionary<string, TypeInfo> localTypes = new Dictionary<string, TypeInfo>();
+
         private Dictionary<string, int> memberNames = new Dictionary<string, int>();
 
         private readonly static DImport defaultInclude = new DImport(default) { ModuleName = "lang" };
@@ -105,6 +108,7 @@ namespace Dyalect.Compiler
                 foreach (var imp in codeModel.Imports)
                     BuildImport(imp, ctx);
 
+                unit.UnitIds.Add(0);
                 var root = codeModel.Root;
 
                 for (var i = 0; i < root.Nodes.Count; i++)

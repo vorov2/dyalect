@@ -4,11 +4,11 @@
     {
         public TypeInfo(int handle, UnitInfo unit)
         {
-            Handle = handle;
+            TypeId = handle;
             Unit = unit;
         }
 
-        public int Handle { get; }
+        public int TypeId { get; }
 
         public UnitInfo Unit { get; }
     }

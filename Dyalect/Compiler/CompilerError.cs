@@ -52,6 +52,8 @@
 
         NamedArgumentMultipleTimes = 224,
 
-        OverrideNotAllowed = 225
+        OverrideNotAllowed = 225,
+
+        TypeAlreadyDeclared = 226
     }
 }

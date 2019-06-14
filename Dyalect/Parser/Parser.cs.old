@@ -203,25 +203,7 @@ namespace Dyalect.Parser
 		node = typ;
 		
 		Expect(1);
-		typ.Name = t.val; 
-		if (la.kind == 27) {
-			Get();
-			if (la.kind == 1) {
-				TypeField(out var fld);
-				typ.Fields.Add(fld); 
-				while (la.kind == 21) {
-					Get();
-					Expect(1);
-					typ.Fields.Add(new DFieldDeclaration(t) { Name = t.val }); 
-				}
-			}
-			Expect(28);
-		}
-	}
-
-	void TypeField(out DFieldDeclaration node) {
-		Expect(1);
-		node = new DFieldDeclaration(t) { Name = t.val }; 
+		typ.Name = t.val; node = typ; 
 	}
 
 	void Statement(out DNode node) {

@@ -165,10 +165,10 @@ namespace Dyalect.Compiler
 
         private void BuildName(DNamePattern node, Hints hints, CompilerContext ctx)
         {
-            var err = GetTypeHandle(null, node.Name, out var handle);
+            var err = GetTypeHandle(null, node.Name, out var handle, out var std);
 
             if (err == CompilerError.None)
-                cw.TypeCheck(handle);
+                cw.TypeCheck(new TypeHandle(handle, std));
             else
             {
                 int sv;

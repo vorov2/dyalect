@@ -114,6 +114,9 @@ namespace Dyalect.Compiler
                 case NodeType.Throw:
                     Build((DThrow)node, hints, ctx);
                     break;
+                case NodeType.Type:
+                    Build((DTypeDeclaration)node, hints, ctx);
+                    break;
             }
         }
 
@@ -831,64 +834,6 @@ namespace Dyalect.Compiler
                 case BinaryOperator.Xor: cw.Xor(); break;
                 default:
                     throw Ice();
-            }
-        }
-
-        private int GetTypeHandle(Qualident name, Location loc)
-        {
-            var err = GetTypeHandle(name.Parent, name.Local, out var handle);
-
-            if (err == CompilerError.UndefinedModule)
-                AddError(err, loc, name.Parent);
-            else if (err == CompilerError.UndefinedType)
-                AddError(err, loc, name.Local);
-
-            return handle;
-        }
-
-        private CompilerError GetTypeHandle(string parent, string local, out int handle)
-        {
-            handle = -1;
-
-            if (parent == null)
-                handle = DyType.GetTypeCodeByName(local);
-
-            if (handle > -1)
-                return CompilerError.None;
-
-            if (parent == null)
-            {
-                if (!types.TryGetValue(local, out var ti))
-                    return CompilerError.UndefinedType;
-                else
-                {
-                    handle = ti.Unit.Handle | ti.Handle << 8;
-                    return CompilerError.None;
-                }
-            }
-            else
-            {
-                if (!referencedUnits.TryGetValue(parent, out var ui))
-                    return CompilerError.UndefinedModule;
-                else
-                {
-                    var ti = -1;
-
-                    for (var i = 0; i < ui.Unit.TypeIds.Count; ti++)
-                    {
-                        if (ui.Unit.TypeNames[i] == local)
-                        {
-                            ti = ui.Unit.TypeIds[i];
-                            break;
-                        }
-                    }
-
-                    if (ti == -1)
-                        return CompilerError.UndefinedType;
-
-                    handle = ui.Handle | ti << 8;
-                    return CompilerError.None;
-                }
             }
         }
 

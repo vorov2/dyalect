@@ -195,4 +195,7 @@
   <data name="FunctionDeprecated" xml:space="preserve">
     <value>Function "{0}" is deprecated.</value>
   </data>
+  <data name="TypeAlreadyDeclared" xml:space="preserve">
+    <value>Module already contains a definition for "{0}".</value>
+  </data>
 </root>
