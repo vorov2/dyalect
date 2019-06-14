@@ -384,6 +384,12 @@ namespace Dyalect.Runtime
                     case OpCode.Type:
                         evalStack.Replace(types[evalStack.Peek().TypeId]);
                         break;
+                    case OpCode.TypeS:
+                        evalStack.Push(types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].TypeIds[op.Data >> 8]]);
+                        break;
+                    case OpCode.TypeST:
+                        evalStack.Push(types[op.Data]);
+                        break;
                     case OpCode.Tag:
                         evalStack.Replace(new DyLabel(unit.IndexedStrings[op.Data].Value, evalStack.Peek()));
                         break;

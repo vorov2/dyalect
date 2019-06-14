@@ -12,7 +12,8 @@ namespace Dyalect.Compiler
         private void Build(DTypeDeclaration node, Hints hints, CompilerContext ctx)
         {
             var typeId = unit.TypeIds.Count;
-            var ti = new TypeInfo(typeId, new UnitInfo(unit.UnitIds.Count - 1, unit));
+            var unitId = unit.UnitIds.Count - 1;
+            var ti = new TypeInfo(typeId, new UnitInfo(unitId, unit));
 
             if (localTypes.ContainsKey(node.Name))
             {
@@ -24,23 +25,18 @@ namespace Dyalect.Compiler
             types.Add(node.Name, ti);
             unit.TypeIds.Add(typeId);
             unit.TypeNames.Add(node.Name);
-
-            //Emit "type" variable
-            cw.PushNil();
-            cw.NewType(typeId);
-            cw.Type();
-            var addr = AddVariable(node.Name, node, VarFlags.Const);
-            cw.PopVar(addr);
         }
 
-        private TypeHandle GetTypeHandle(Qualident name, Location loc)
+        private TypeHandle GetTypeHandle(Qualident name, Location loc) => GetTypeHandle(name.Parent, name.Local, loc);
+
+        private TypeHandle GetTypeHandle(string parent, string local, Location loc)
         {
-            var err = GetTypeHandle(name.Parent, name.Local, out var handle, out var std);
+            var err = GetTypeHandle(parent, local, out var handle, out var std);
 
             if (err == CompilerError.UndefinedModule)
-                AddError(err, loc, name.Parent);
+                AddError(err, loc, parent);
             else if (err == CompilerError.UndefinedType)
-                AddError(err, loc, name.Local);
+                AddError(err, loc, local);
 
             return new TypeHandle(handle, std);
         }

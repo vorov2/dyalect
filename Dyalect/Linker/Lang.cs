@@ -16,14 +16,12 @@ namespace Dyalect.Linker
 
         protected override void Initialize()
         {
-            for (var i = 0; i < DyTypeNames.All.Length; i++)
-                Add(DyTypeNames.All[i], DyNil.Instance);
+            //idle
         }
 
         public override void Execute(ExecutionContext ctx)
         {
-            for (var i = 0; i < DyTypeNames.All.Length; i++)
-                Modify(i, ctx.Types[i]);
+            //idle
         }
 
         [Function("convertToNumber")] 

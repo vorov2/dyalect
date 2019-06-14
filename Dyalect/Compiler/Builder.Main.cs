@@ -295,8 +295,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                var sv = GetVariable(DyTypeNames.Array, node);
-                cw.PushVar(sv);
+                cw.Type(new TypeHandle(DyType.Array, true));
                 cw.GetMember(GetMemberNameId(Builtins.New));
                 cw.FunPrep(node.Elements.Count);
 
@@ -543,7 +542,7 @@ namespace Dyalect.Compiler
 
             if (node.Chunks != null)
             {
-                cw.PushVar(GetVariable(DyTypeNames.String, node));
+                cw.Type(new TypeHandle(DyType.String, true));
                 cw.GetMember(GetMemberNameId("concat"));
                 cw.FunPrep(node.Chunks.Count);
 
@@ -608,7 +607,20 @@ namespace Dyalect.Compiler
 
         private void Build(DName node, Hints hints, CompilerContext ctx)
         {
-            var sv = GetVariable(node.Value, node.Location);
+            var sv = GetVariable(node.Value, node.Location, err: false);
+
+            if (sv.IsEmpty())
+            {
+                var th = GetTypeHandle(null, node.Value, out var hdl, out var std);
+
+                if (th != CompilerError.None)
+                    AddError(CompilerError.UndefinedVariable, node.Location, node.Value);
+
+                AddLinePragma(node);
+                cw.Type(new TypeHandle(hdl, std));
+                return;
+            }
+
             AddLinePragma(node);
 
             if (!hints.Has(Pop))

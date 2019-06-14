@@ -87,6 +87,8 @@
             0,  //Start
             0,  //End
             0,  //NewType
+            1,  //TypeS
+            1,  //TypeST
         };
     }
 }

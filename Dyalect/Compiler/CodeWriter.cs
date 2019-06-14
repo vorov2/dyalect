@@ -250,6 +250,14 @@ namespace Dyalect.Compiler
                 Emit(new Op(OpCode.TypeCheck, type.TypeId));
         }
 
+        public void Type(TypeHandle type)
+        {
+            if (type.IsStandard)
+                Emit(new Op(OpCode.TypeST, type.TypeId));
+            else
+                Emit(new Op(OpCode.TypeS, type.TypeId));
+        }
+
         public void FunPrep(int argCount) => Emit(new Op(OpCode.FunPrep, argCount));
         public void FunArgIx(int index) => Emit(new Op(OpCode.FunArgIx, index));
         public void FunArgNm(string name) => Emit(new Op(OpCode.FunArgNm, IndexString(name)));

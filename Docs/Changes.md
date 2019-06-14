@@ -1,5 +1,5 @@
 # 0.8.0
-  todo
+  * Done: _Custom types_ ([Issue #5](https://github.com/vorov2/dyalect/issues/5), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
 
 # 0.7.6
   * Done: _Add `Tuple.new` static method_ ([Issue #153](https://github.com/vorov2/dyalect/issues/153), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#new)).
