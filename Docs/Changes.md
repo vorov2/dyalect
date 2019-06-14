@@ -1,5 +1,7 @@
 # 0.7.6
   * Done: _Add Tuple.new static method ([Issue #153](https://github.com/vorov2/dyalect/issues/153), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#new)).
+  * Done: _`obj.Has(...)` optimization for simple cases_ ([Issue #156](https://github.com/vorov2/dyalect/issues/156)).
+  * Fixed: _Regression for member check (`?`) operator_ ([Issue #157](https://github.com/vorov2/dyalect/issues/157)).
 
 # 0.7.5
   * Done: _Replace `typeof` with `getType` method_ ([Issue #142](https://github.com/vorov2/dyalect/issues/142), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#getType)).

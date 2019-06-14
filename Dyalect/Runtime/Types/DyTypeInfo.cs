@@ -436,7 +436,7 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Has:
                     return DyBool.True;
                 default:
-                    return nameId != -1 && GetMemberDirect(self, nameId, ctx) != null ? DyBool.True : DyBool.False;
+                    return nameId != -1 && CheckHasMemberDirect(self, nameId, ctx) ? DyBool.True : DyBool.False;
             }
         }
 
@@ -466,6 +466,25 @@ namespace Dyalect.Runtime.Types
                 return value.FunctionName == "$$$AutoInvoke" ? value.Call1(self, ctx) : value.Clone(ctx, self);
 
             return value;
+        }
+
+        private bool CheckHasMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
+        {
+            if (!members.TryGetValue(nameId, out var value))
+            {
+                var name = ctx.Composition.Members[nameId];
+                value = InternalGetMember(self, name, ctx);
+
+                if (value != null && value.FunctionName != "$$$AutoInvoke")
+                {
+                    members.Add(nameId, value);
+                    return true;
+                }
+                else
+                    return false;
+            }
+
+            return true;
         }
 
         internal void SetMember(int nameId, DyObject value, Unit unit, ExecutionContext ctx)

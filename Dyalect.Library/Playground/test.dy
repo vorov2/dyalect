@@ -1,8 +1,1 @@
-﻿func Tuple.get(index) {
-    print("get at \(index)")
-}
-
-var t = (x:1,y:2,3)
-match t {
-    [x, y] => y
-}
+﻿(1,2).foo?
