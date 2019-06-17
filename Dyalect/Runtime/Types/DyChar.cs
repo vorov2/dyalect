@@ -56,6 +56,8 @@ namespace Dyalect.Runtime.Types
         }
 
         public static readonly DyChar Empty = new DyChar('\0');
+        public static readonly DyChar Max = new DyChar(char.MaxValue);
+        public static readonly DyChar Min = new DyChar(char.MinValue);
         internal readonly char Value;
 
         public DyChar(char value) : base(DyType.Char)
@@ -195,13 +197,13 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(DyTypeNames.Integer, obj);
         }
 
-        protected override DyObject GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "max")
-                return DyForeignFunction.Static(name, c => new DyChar(char.MaxValue));
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyChar.Max);
 
             if (name == "min")
-                return DyForeignFunction.Static(name, c => new DyChar(char.MinValue));
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyChar.Min);
 
             if (name == "new")
                 return DyForeignFunction.Static(name, CreateChar, -1, new Par("value"));

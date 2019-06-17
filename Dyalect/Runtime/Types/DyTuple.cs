@@ -274,7 +274,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 
-        protected override DyObject GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "pair")
                 return DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second"));

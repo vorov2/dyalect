@@ -48,7 +48,7 @@ namespace Dyalect.Runtime.Types
         }
 
         private readonly Dictionary<int, DyFunction> members = new Dictionary<int, DyFunction>();
-        private readonly Dictionary<int, DyObject> staticMembers = new Dictionary<int, DyObject>();
+        private readonly Dictionary<int, DyFunction> staticMembers = new Dictionary<int, DyFunction>();
 
         public override object ToObject() => this;
 
@@ -383,7 +383,12 @@ namespace Dyalect.Runtime.Types
             }
 
             if (value != null)
-                return value;
+            {
+                if (value.AutoKind == AutoKind.None)
+                    return value;
+                else
+                    return value.Call0(ctx);
+            }
 
             return ctx.StaticOperationNotSupported(ctx.Composition.Members[nameId], TypeName);
         }
@@ -621,12 +626,12 @@ namespace Dyalect.Runtime.Types
 
         protected virtual DyFunction GetMember(string name, ExecutionContext ctx) => null;
 
-        private DyObject InternalGetStaticMember(string name, ExecutionContext ctx)
+        private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx)
         {
             switch (name)
             {
-                case "id": return DyInteger.Get(TypeCode);
-                case "name": return new DyString(TypeName);
+                case "id": return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyInteger.Get(TypeCode));
+                case "name": return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => new DyString(TypeName));
                 case "__deleteMember":
                     return DyForeignFunction.Static(name, (context, strObj) =>
                     {
@@ -639,11 +644,12 @@ namespace Dyalect.Runtime.Types
                         }
                         return DyNil.Instance;
                     }, -1, new Par("name"));
-                default: return GetStaticMember(name, ctx);
+                default:
+                    return GetStaticMember(name, ctx);
             }
         }
 
-        protected virtual DyObject GetStaticMember(string name, ExecutionContext ctx) => null;
+        protected virtual DyFunction GetStaticMember(string name, ExecutionContext ctx) => null;
         #endregion
     }
 

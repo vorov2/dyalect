@@ -75,6 +75,8 @@ namespace Dyalect.Runtime.Types
 
             internal override DyObject Call1(DyObject obj, ExecutionContext ctx) => fun(ctx, obj);
 
+            internal override DyObject Call0(ExecutionContext ctx) => fun(ctx, null);
+
             internal override bool Equals(DyFunction func) => func is AutoFunction m && m.fun.Equals(fun);
         }
 

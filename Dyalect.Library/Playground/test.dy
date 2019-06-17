@@ -13,4 +13,7 @@ auto func Foo.name() {
 }
 
 var f = Foo.new(12)
-f.name
+//f.name
+
+var x = 2.0 / 0
+assert(true, x == Float.inf)
