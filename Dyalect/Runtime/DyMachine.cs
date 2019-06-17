@@ -311,6 +311,9 @@ namespace Dyalect.Runtime
                     case OpCode.NewFunV:
                         evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, ctx.AUX));
                         break;
+                    case OpCode.NewFunA:
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, -1, AutoKind.Explicit));
+                        break;
                     case OpCode.HasMember:
                         right = evalStack.Peek();
                         evalStack.Replace(types[right.TypeId].HasMember(right, op.Data, unit, ctx));

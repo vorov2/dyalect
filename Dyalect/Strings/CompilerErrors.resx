@@ -198,4 +198,7 @@
   <data name="TypeAlreadyDeclared" xml:space="preserve">
     <value>Module already contains a definition for "{0}".</value>
   </data>
+  <data name="AutoOnlyMethod" xml:space="preserve">
+    <value>A modifier "auto" is only allowed on member functions.</value>
+  </data>
 </root>

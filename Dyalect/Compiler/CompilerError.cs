@@ -54,6 +54,8 @@
 
         OverrideNotAllowed = 225,
 
-        TypeAlreadyDeclared = 226
+        TypeAlreadyDeclared = 226,
+
+        AutoOnlyMethod = 227
     }
 }

@@ -53,6 +53,7 @@
         FailSys,    //0
         NewFun,     //0
         NewFunV,    //0
+        NewFunA,    //0
         NewIter,    //0
         SetMember,  //-2
         SetMemberT, //-2

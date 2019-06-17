@@ -254,6 +254,13 @@ namespace Dyalect.Compiler
                     cw.Aux(variadicIndex);
                     cw.NewFunV(funHandle);
                 }
+                else if (node.IsAuto)
+                {
+                    if (!node.IsMemberFunction)
+                        AddError(CompilerError.AutoOnlyMethod, node.Location);
+
+                    cw.NewFunA(funHandle);
+                }
                 else
                     cw.NewFun(funHandle);
             }

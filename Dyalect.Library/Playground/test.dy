@@ -8,5 +8,9 @@ func Foo.toString() {
     "Foo" + this + "!"
 }
 
+auto func Foo.name() {
+    "Name=\(this)"
+}
+
 var f = Foo.new(12)
-f
+f.name

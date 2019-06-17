@@ -463,7 +463,14 @@ namespace Dyalect.Runtime.Types
             }
 
             if (value != null)
-                return value.AutoKind != AutoKind.None ? value.Call1(self, ctx) : value.Clone(ctx, self);
+            {
+                if (value.AutoKind == AutoKind.None)
+                    return value.Clone(ctx, self);
+                else if (value.AutoKind == AutoKind.Generated)
+                    return value.Call1(self, ctx);
+                else
+                    return value.Clone(ctx, self).Call0(ctx);
+            }
 
             return value;
         }

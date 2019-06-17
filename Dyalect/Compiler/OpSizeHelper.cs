@@ -54,6 +54,7 @@
             1, //FailSys
             1, //NewFun
             1, //NewFunV
+            1, //NewFunA
             1, //NewIter
             1, //SetMember
             1, //SetMemberT
