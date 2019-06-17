@@ -259,6 +259,9 @@ namespace Dyalect.Compiler
                     if (!node.IsMemberFunction)
                         AddError(CompilerError.AutoOnlyMethod, node.Location);
 
+                    if (node.Parameters.Count > 0)
+                        AddError(CompilerError.AutoNoParams, node.Location);
+
                     cw.NewFunA(funHandle);
                 }
                 else

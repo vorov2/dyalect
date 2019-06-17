@@ -201,4 +201,7 @@
   <data name="AutoOnlyMethod" xml:space="preserve">
     <value>A modifier "auto" is only allowed on member functions.</value>
   </data>
+  <data name="AutoNoParams" xml:space="preserve">
+    <value>Functions declared with an "auto" modifier shouldn't accept any arguments.</value>
+  </data>
 </root>

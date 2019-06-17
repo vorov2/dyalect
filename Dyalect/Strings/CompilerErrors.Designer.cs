@@ -61,6 +61,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Functions declared with an &quot;auto&quot; modifier shouldn&apos;t accept any arguments..
+        /// </summary>
+        internal static string AutoNoParams {
+            get {
+                return ResourceManager.GetString("AutoNoParams", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A modifier &quot;auto&quot; is only allowed on member functions..
         /// </summary>
         internal static string AutoOnlyMethod {
