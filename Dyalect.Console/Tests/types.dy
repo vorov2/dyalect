@@ -1,0 +1,17 @@
+﻿func autoTest1() {
+    auto func Integer.magic() {
+        this * 42
+    }
+    assert(504, 12.magic)
+}
+
+func autoTest2() {
+    var x = 0
+    auto func Integer.magic() {
+        x += 1
+        x
+    }
+    assert(1, 12.magic)
+    assert(2, 12.magic)
+    assert(3, 12.magic)
+}
