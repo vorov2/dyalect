@@ -1,6 +1,6 @@
 ﻿type Foo
 
-ctor Foo.Bar(args...) {
+cons Foo.Bar(args...) {
     args
 }
 

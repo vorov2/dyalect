@@ -50,6 +50,7 @@ namespace Dyalect.Parser
                 ,{ "whileToken", "while" }
                 ,{ "typeToken", "type" }
                 ,{ "arrowToken", "=>" }
+                ,{ "doToken", "do" }
                 ,{ "dotToken", "." }
                 ,{ "commaToken", "," }
                 ,{ "semicolonToken", ";" }
@@ -61,6 +62,7 @@ namespace Dyalect.Parser
                 ,{ "curlyRightToken", "}" }
                 ,{ "squareLeftToken", "[" }
                 ,{ "squareRightToken", "]" }
+                ,{ "implicitToken", "implicit" }
                 ,{ "minus", "-" }
                 ,{ "plus", "+" }
                 ,{ "not", "!" }

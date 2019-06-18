@@ -1418,7 +1418,7 @@ namespace Dyalect.Parser
 			case 49: s = "\"import\" expected"; break;
 			case 50: s = "\"static\" expected"; break;
 			case 51: s = "\"auto\" expected"; break;
-			case 52: s = "\"ctor\" expected"; break;
+			case 52: s = "\"cons\" expected"; break;
 			case 53: s = "\"...\" expected"; break;
 			case 54: s = "\"set\" expected"; break;
 			case 55: s = "\"match\" expected"; break;
