@@ -108,14 +108,14 @@ PRODUCTIONS
         .)
         identToken (. typ.Name = t.val; node = typ; .)
         [
-            (. f = new DFunctionDeclaration(t) { Name = typ.Name }; .)
+            (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; .)
             FunctionArguments<f>
             (. typ.Constructors.Add(f); .)
         ]
         [
             "="
-            identToken (. f = new DFunctionDeclaration(t) { Name = t.val }; .) FunctionArguments<f> 
-            { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val }; .) FunctionArguments<f> }
+            identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f> 
+            { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
         ].
 
     Statement<out DNode node> =
@@ -287,24 +287,30 @@ PRODUCTIONS
     Pattern<out DPattern node> =
         (. node = null; .)
         (
-              IF (IsConstructor()) CtorPattern<out node>
-            | NamePattern<out node>
-            | IntegerPattern<out node>
-            | FloatPattern<out node>
-            | CharPattern<out node>
-            | StringPattern<out node>
-            | BooleanPattern<out node>
-            | NilPattern<out node>
-            | IF (IsRecordPattern()) RecordPattern<out node>
-            | IF (IsTuple(allowFields: false)) TuplePattern<out node>
-            | GroupPattern<out node>
-            | ArrayPattern<out node>
-            | MethodCheckPattern<out node>
-        )
-        [ 
-            "as" (. var asp = new DAsPattern(t) { Pattern = node }; .) 
+              IF (IsConstructor()) CtorPattern<out node> [ AsPattern<node, out node> ]
+            | IF (IsLabelPattern()) LabelPattern<out node>
+            | NamePattern<out node> [ AsPattern<node, out node> ]
+            | IntegerPattern<out node> [ AsPattern<node, out node> ]
+            | FloatPattern<out node> [ AsPattern<node, out node> ]
+            | CharPattern<out node> [ AsPattern<node, out node> ]
+            | StringPattern<out node> [ AsPattern<node, out node> ]
+            | BooleanPattern<out node> [ AsPattern<node, out node> ]
+            | NilPattern<out node> [ AsPattern<node, out node> ]
+            | IF (IsTuple(allowFields: false)) TuplePattern<out node> [ AsPattern<node, out node> ]
+            | GroupPattern<out node> [ AsPattern<node, out node> ]
+            | ArrayPattern<out node> [ AsPattern<node, out node> ]
+            | MethodCheckPattern<out node> [ AsPattern<node, out node> ]
+        ).
+
+    AsPattern<DPattern target, out DPattern node> =
+        (. node = null; .)
+        (
+            (.
+                if (la.AfterEol) { node = target; return; }
+                var asp = new DAsPattern(t) { Pattern = target };
+            .) 
             identToken (. asp.Name = t.val; node = asp; .) 
-        ].
+        ).
 
     CtorPattern<out DPattern node> =
         (. string s1 = null; string s2 = null; string s3 = null; .)
@@ -369,23 +375,12 @@ PRODUCTIONS
             ")"
         ).
 
-    RecordPattern<out DPattern node> =
-        (. node = null; .)
-        (
-            "("
-                (. var rec = new DRecordPattern(t); .)
-                FieldPattern<out var lab> (. rec.Elements.Add(lab); .)
-                { "," FieldPattern<out lab> (. rec.Elements.Add(lab); .) }
-                (. node = rec; .)
-            ")"
-        ).
-
-    FieldPattern<out DLabelPattern node> =
+    LabelPattern<out DPattern node> =
         (. node = null; .)
         (
             identToken 
             (. var la = new DLabelPattern(t) { Label = t.val }; .)
-            ":" RangePattern<out var pat>
+            ":" Pattern<out var pat>
             (. la.Pattern = pat; node = la; .)
         ).
 

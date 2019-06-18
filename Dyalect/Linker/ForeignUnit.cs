@@ -69,7 +69,7 @@ namespace Dyalect.Linker
             {
                 var p = pars[i];
 
-                if (p.ParameterType != Types.DyObject)
+                if (p.ParameterType != Dyalect.Types.DyObject)
                     throw new DyException($"Parameter type {p.ParameterType} for method {mi.Name} is not supported.");
 
                 var va = false;

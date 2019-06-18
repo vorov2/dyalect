@@ -133,21 +133,6 @@ namespace Dyalect.Parser.Model
         }
     }
 
-    public sealed class DRecordPattern : DPattern
-    {
-        public DRecordPattern(Location loc) : base(loc, NodeType.RecordPattern)
-        {
-
-        }
-
-        public List<DLabelPattern> Elements { get; } = new List<DLabelPattern>();
-
-        internal override void ToString(StringBuilder sb)
-        {
-            Elements.ToString(sb);
-        }
-    }
-
     public sealed class DArrayPattern : DPattern
     {
         public DArrayPattern(Location loc) : base(loc, NodeType.ArrayPattern)

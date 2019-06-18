@@ -81,6 +81,14 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Clone:
                 case Builtins.Has:
                     return DyBool.True;
+                case Builtins.Len:
+                    if (!autoGenMethods)
+                        goto default;
+                    return DyBool.True;
+                case Builtins.Get:
+                    if (!autoGenMethods)
+                        goto default;
+                    return DyBool.True;
                 default:
                     return nameId != -1 && CheckHasMemberDirect(self, nameId, ctx) ? DyBool.True : DyBool.False;
             }

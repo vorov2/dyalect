@@ -11,7 +11,7 @@ namespace Dyalect.Compiler
     {
         private void Build(DTypeDeclaration node, Hints hints, CompilerContext ctx)
         {
-            var typeId = unit.TypeIds.Count;
+            var typeId = unit.Types.Count;
             var unitId = unit.UnitIds.Count - 1;
             var ti = new TypeInfo(typeId, new UnitInfo(unitId, unit));
 
@@ -23,8 +23,13 @@ namespace Dyalect.Compiler
 
             localTypes.Add(node.Name, ti);
             types.Add(node.Name, ti);
-            unit.TypeIds.Add(typeId);
-            unit.TypeNames.Add(node.Name);
+            unit.Types.Add(new TypeDescriptor(node.Name, typeId, node.HasConstructors));
+
+            if (node.HasConstructors)
+            {
+                foreach (var c in node.Constructors)
+                    Build(c, hints, ctx);
+            }
         }
 
         private void GenerateConstructor(DFunctionDeclaration func, Hints hints, CompilerContext ctx)
@@ -33,6 +38,7 @@ namespace Dyalect.Compiler
             {
                 var p = func.Parameters[i];
                 var a = GetVariable(p.Name, p);
+                cw.PushVar(a);
                 cw.Tag(p.Name);
             }
 
@@ -87,11 +93,11 @@ namespace Dyalect.Compiler
                 {
                     var ti = -1;
 
-                    for (var i = 0; i < ui.Unit.TypeIds.Count; ti++)
+                    for (var i = 0; i < ui.Unit.Types.Count; ti++)
                     {
-                        if (ui.Unit.TypeNames[i] == local)
+                        if (ui.Unit.Types[i].Name == local)
                         {
-                            ti = ui.Unit.TypeIds[i];
+                            ti = ui.Unit.Types[i].Id;
                             break;
                         }
                     }

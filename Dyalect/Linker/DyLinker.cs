@@ -141,10 +141,11 @@ namespace Dyalect.Linker
                     u.MemberIds[i] = id;
                 }
 
-                for (var i = 0; i < u.TypeIds.Count; i++)
+                for (var i = 0; i < u.Types.Count; i++)
                 {
-                    u.TypeIds[i] = composition.Types.Count;
-                    composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, u.TypeNames[i], false));
+                    var td = u.Types[i];
+                    td.Id = composition.Types.Count;
+                    composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, td.Name, td.AutoGenConstructors));
                 }
             }
         }

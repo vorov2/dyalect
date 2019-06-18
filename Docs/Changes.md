@@ -2,6 +2,7 @@
   * Done: _Custom types_ ([Issue #5](https://github.com/vorov2/dyalect/issues/5), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
   * Done: _Auto-invoke functions_ ([Issue #159](https://github.com/vorov2/dyalect/issues/159), [docs](https://github.com/vorov2/dyalect/wiki/Functions#auto)).
   * Done: _Make `Integer.max`, `Integer.min`, `Float.max`, etc. static constants_ ([Issue #154](https://github.com/vorov2/dyalect/issues/154)).
+  * Done: _Change `as` pattern syntax_ ([Issue #163](https://github.com/vorov2/dyalect/issues/163), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
 
 # 0.7.6
   * Done: _Add `Tuple.new` static method_ ([Issue #153](https://github.com/vorov2/dyalect/issues/153), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#new)).

@@ -14,8 +14,7 @@ namespace Dyalect.Compiler
             ExportList = new List<PublishedName>();
             UnitIds = new List<int>();
             References = new List<Unit>();
-            TypeIds = new List<int>();
-            TypeNames = new List<string>();
+            Types = new List<TypeDescriptor>();
             MemberIds = new List<int>();
             MemberNames = new List<string>();
             IndexedStrings = new List<DyString>();
@@ -36,8 +35,7 @@ namespace Dyalect.Compiler
             ExportList = unit.ExportList;
             UnitIds = unit.UnitIds;
             References = unit.References;
-            TypeIds = unit.TypeIds;
-            TypeNames = unit.TypeNames;
+            Types = unit.Types;
             MemberIds = unit.MemberIds;
             MemberNames = unit.MemberNames;
             IndexedStrings = unit.IndexedStrings;
@@ -54,9 +52,7 @@ namespace Dyalect.Compiler
 
         internal List<int> UnitIds { get; }
 
-        internal List<int> TypeIds { get; }
-
-        internal List<string> TypeNames { get; }
+        internal List<TypeDescriptor> Types { get; }
 
         internal List<int> MemberIds { get; }
 

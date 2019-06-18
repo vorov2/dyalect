@@ -58,7 +58,6 @@
         ArrayPattern,
         RangePattern,
         TuplePattern,
-        RecordPattern,
         LabelPattern,
         AsPattern,
         WildcardPattern,

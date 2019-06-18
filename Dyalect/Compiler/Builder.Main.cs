@@ -372,15 +372,15 @@ namespace Dyalect.Compiler
                         imports.Add(n.Name, imp);
                 }
 
-                for (var i = 0; i < res.Value.TypeNames.Count; i++)
+                for (var i = 0; i < res.Value.Types.Count; i++)
                 {
-                    var name = res.Value.TypeNames[i];
-                    var ti = new TypeInfo(res.Value.TypeIds[i], referencedUnit);
+                    var td = res.Value.Types[i];
+                    var ti = new TypeInfo(td.Id, referencedUnit);
 
-                    if (types.ContainsKey(name))
-                        types[name] = ti;
+                    if (types.ContainsKey(td.Name))
+                        types[td.Name] = ti;
                     else
-                        types.Add(name, ti);
+                        types.Add(td.Name, ti);
                 }
 
                 cw.RunMod(unit.UnitIds.Count);

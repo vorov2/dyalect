@@ -12,7 +12,7 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; }
 
-        public bool HasConstructors => _constructors != null;
+        public bool HasConstructors => _constructors != null && _constructors.Count > 0;
 
         private List<DFunctionDeclaration> _constructors;
         public List<DFunctionDeclaration> Constructors
