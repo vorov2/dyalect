@@ -58,6 +58,8 @@
 
         AutoOnlyMethod = 227,
 
-        AutoNoParams = 228
+        AutoNoParams = 228,
+
+        CtorOnlyLocalType = 229
     }
 }

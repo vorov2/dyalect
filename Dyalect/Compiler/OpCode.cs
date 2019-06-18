@@ -90,5 +90,6 @@
 
         TypeS,      //1
         TypeST,     //1
+        CtorCheck,  //0
     }
 }

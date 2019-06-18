@@ -66,6 +66,7 @@
         AndPattern,
         OrPattern,
         MethodCheckPattern,
+        CtorPattern,
 
         TryCatch
     }

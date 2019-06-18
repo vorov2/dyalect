@@ -32,7 +32,7 @@ namespace Dyalect.Compiler
                         realName = GetMethodName(realName, node);
 
                     if (!node.IsStatic && 
-                        (node.Name == Builtins.Has || node.Name == Builtins.GetType)
+                        (node.Name == Builtins.Has || node.Name == Builtins.Type)
                         )
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
@@ -225,11 +225,15 @@ namespace Dyalect.Compiler
                 cw.PushNilT();
             }
 
-            if (node.IsMemberFunction && node.IsStatic && node.Name == Builtins.New
-                && node.TypeName.Parent == null
-                && localTypes.TryGetValue(node.TypeName.Local, out var ti))
+            if (node.IsMemberFunction && node.IsConstructor)
             {
-                cw.NewType(ti.TypeId);
+                if (node.TypeName.Parent == null && localTypes.TryGetValue(node.TypeName.Local, out var ti))
+                {
+                    cw.Aux(GetMemberNameId(node.Name));
+                    cw.NewType(ti.TypeId);
+                }
+                else
+                    AddError(CompilerError.CtorOnlyLocalType, node.Location, node.TypeName);
             }
 
             cw.Ret();

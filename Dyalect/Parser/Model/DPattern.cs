@@ -305,4 +305,29 @@ namespace Dyalect.Parser.Model
             Right.ToString(sb);
         }
     }
+
+    public sealed class DCtorPattern : DPattern
+    {
+        public DCtorPattern(Location loc) : base(loc, NodeType.CtorPattern)
+        {
+
+        }
+
+        public Qualident Type { get; set; }
+
+        public string Constructor { get; set; }
+
+        public List<DPattern> Arguments { get; } = new List<DPattern>();
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append(Type);
+            sb.Append('.');
+            sb.Append(Constructor);
+            sb.Append('(');
+            if (Arguments != null && Arguments.Count > 0)
+                Arguments.ToString(sb);
+            sb.Append(')');
+        }
+    }
 }

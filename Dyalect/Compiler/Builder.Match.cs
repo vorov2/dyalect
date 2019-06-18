@@ -131,7 +131,42 @@ namespace Dyalect.Compiler
                 case NodeType.MethodCheckPattern:
                     BuildMethodCheck((DMethodCheckPattern)node, hints, ctx);
                     break;
+                case NodeType.CtorPattern:
+                    BuildCtor((DCtorPattern)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void BuildCtor(DCtorPattern node, Hints hints, CompilerContext ctx)
+        {
+            var bad = cw.DefineLabel();
+            var ok = cw.DefineLabel();
+
+            cw.Dup();
+            cw.TypeCheck(GetTypeHandle(node.Type, node.Location));
+            cw.Brfalse(bad);
+
+            var nameId = GetMemberNameId(node.Constructor);
+            cw.Dup();
+            cw.CtorCheck(nameId);
+            cw.Brfalse(bad);
+
+            if (node.Arguments == null || node.Arguments.Count == 0)
+            {
+                cw.Pop();
+                cw.Push(true);
+            }
+            else
+                BuildSequence(node, node.Arguments, hints, ctx);
+
+            cw.Br(ok);
+
+            cw.MarkLabel(bad);
+            AddLinePragma(node);
+            cw.Pop();
+            cw.Push(false);
+
+            cw.MarkLabel(ok);
         }
 
         private void BuildMethodCheck(DMethodCheckPattern node, Hints hints, CompilerContext ctx)
@@ -298,7 +333,7 @@ namespace Dyalect.Compiler
             cw.Dup(); //2 objs
             cw.Len();
             cw.Push(elements.Count);
-            if (node.NodeType == NodeType.TuplePattern) cw.Eq(); else cw.GtEq();
+            if (node.NodeType == NodeType.TuplePattern || node.NodeType == NodeType.CtorPattern) cw.Eq(); else cw.GtEq();
             cw.Brfalse(skip); //1 obj left to pop
 
             for (var i = 0; i < elements.Count; i++)

@@ -1,19 +1,19 @@
 ﻿type Foo
 
-static func Foo.new(x) {
+ctor Foo.Bar(x) {
     x
 }
 
-func Foo.toString() {
-    "Foo" + this + "!"
+func Foo.len() {
+    1
 }
 
-auto func Foo.name() {
-    "Name=\(this)"
+func Foo.get(index) {
+    this
 }
 
-var f = Foo.new(12)
-//f.name
+var f = Foo.Bar(12)
 
-var x = 2.0 / 0
-assert(true, x == Float.inf)
+match f {
+    Foo.Bar(x) => x
+}

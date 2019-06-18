@@ -115,6 +115,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to define a constructor for a non-local type &quot;{0}&quot;..
+        /// </summary>
+        internal static string CtorOnlyLocalType {
+            get {
+                return ResourceManager.GetString("CtorOnlyLocalType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An expression doesn&apos;t have a name..
         /// </summary>
         internal static string ExpressionNoName {

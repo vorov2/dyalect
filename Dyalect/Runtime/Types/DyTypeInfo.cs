@@ -410,7 +410,7 @@ namespace Dyalect.Runtime.Types
             return HasMemberDirect(self, name, nameId, ctx);
         }
 
-        private DyBool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
+        protected virtual DyBool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
         {
             switch (name)
             {
@@ -480,7 +480,7 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        private bool CheckHasMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
+        internal bool CheckHasMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
         {
             if (!members.TryGetValue(nameId, out var value))
             {
@@ -610,7 +610,7 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Iterator: return self is IEnumerable<DyObject>  ? DyForeignFunction.Member(name, GetIterator) : null;
                 case Builtins.Clone: return DyForeignFunction.Member(name, Clone);
                 case Builtins.Has: return DyForeignFunction.Member(name, Has, -1, new Par("member"));
-                case Builtins.GetType: return DyForeignFunction.Member(name, (context, o) =>  context.Types[self.TypeId]);
+                case Builtins.Type: return DyForeignFunction.Member(name, (context, o) =>  context.Types[self.TypeId]);
                 default:
                     return GetMember(name, ctx);
             }

@@ -133,13 +133,21 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; bool st = false; bool auto = false; .)
+        (. node = null; bool st = false; bool auto = false; bool ctor = false; .)
         (
-            [ "static" (. st = true; .) ] 
-            [ "auto" (. auto = true; .) ]
-            "func"
+            (
+                (
+                    [ "static" (. st = true; .) ] 
+                    [ "auto" (. auto = true; .) ]
+                    "func"
+                )
+                |
+                (
+                    "ctor" (. st = true; ctor = true; .)
+                )
+            )
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st, IsAuto = auto };
+                var f = new DFunctionDeclaration(t) { IsStatic = st, IsConstructor = ctor, IsAuto = auto };
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>
@@ -268,7 +276,8 @@ PRODUCTIONS
     Pattern<out DPattern node> =
         (. node = null; .)
         (
-              NamePattern<out node>
+              IF (IsConstructor()) CtorPattern<out node>
+            | NamePattern<out node>
             | IntegerPattern<out node>
             | FloatPattern<out node>
             | CharPattern<out node>
@@ -280,11 +289,39 @@ PRODUCTIONS
             | GroupPattern<out node>
             | ArrayPattern<out node>
             | MethodCheckPattern<out node>
-        ) 
+        )
         [ 
             "as" (. var asp = new DAsPattern(t) { Pattern = node }; .) 
             identToken (. asp.Name = t.val; node = asp; .) 
         ].
+
+    CtorPattern<out DPattern node> =
+        (. string s1 = null; string s2 = null; string s3 = null; .)
+        (
+            identToken (. s1 = t.val; .)
+            "." identToken (. s2 = t.val; .)
+            [ "." identToken (. s3 = t.val; .) ]
+            (.
+                var ctor = new DCtorPattern(t);
+                if (s3 != null) 
+                {
+                    ctor.Constructor = s3;
+                    ctor.Type = new Qualident(s2, s1);
+                }
+                else
+                {
+                    ctor.Constructor = s2;
+                    ctor.Type = new Qualident(s1);
+                }
+            .)
+            "("
+                [ OrPattern<out node> (. ctor.Arguments.Add(node); .) ]
+                {
+                    "," OrPattern<out node> (. ctor.Arguments.Add(node); .)
+                }
+            ")"
+            (. node = ctor; .)
+        ).
 
     MethodCheckPattern<out DPattern node> =
         (. node = null; .)

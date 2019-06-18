@@ -90,6 +90,7 @@
             0,  //NewType
             1,  //TypeS
             1,  //TypeST
+            0,  //CtorCheck
         };
     }
 }

@@ -204,4 +204,7 @@
   <data name="AutoNoParams" xml:space="preserve">
     <value>Functions declared with an "auto" modifier shouldn't accept any arguments.</value>
   </data>
+  <data name="CtorOnlyLocalType" xml:space="preserve">
+    <value>Unable to define a constructor for a non-local type "{0}".</value>
+  </data>
 </root>

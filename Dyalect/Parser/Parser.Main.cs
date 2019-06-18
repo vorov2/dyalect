@@ -230,6 +230,38 @@ namespace Dyalect.Parser
             return false;
         }
 
+        private bool IsConstructor()
+        {
+            if (la.kind != _identToken)
+                return false;
+
+            scanner.ResetPeek();
+            var x = scanner.Peek();
+
+            if (x.kind != _dotToken)
+                return false;
+
+            x = scanner.Peek();
+
+            if (x.kind != _identToken)
+                return false;
+
+            x = scanner.Peek();
+
+            if (x.kind == _parenLeftToken)
+                return true;
+
+            if (x.kind != _dotToken)
+                return false;
+
+            x = scanner.Peek();
+
+            if (x.kind != _identToken)
+                return false;
+
+            return scanner.Peek().kind == _parenLeftToken;
+        }
+
         private bool IsFunction()
         {
             if (la.kind != _parenLeftToken && la.kind != _identToken)

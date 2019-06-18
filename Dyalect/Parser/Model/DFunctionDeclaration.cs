@@ -16,6 +16,8 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; }
 
+        public bool IsConstructor { get; set; }
+
         public bool IsAuto { get; set; }
 
         public bool IsStatic { get; set; }
@@ -28,14 +30,19 @@ namespace Dyalect.Parser.Model
 
         internal override void ToString(StringBuilder sb)
         {
-            if (IsStatic)
-                sb.Append("static ");
+            if (IsConstructor)
+                sb.Append("ctor ");
+            else
+            {
+                if (IsStatic)
+                    sb.Append("static ");
 
-            if (IsAuto)
-                sb.Append("auto ");
+                if (IsAuto)
+                    sb.Append("auto ");
 
-            if (Name != null)
-                sb.Append("func ");
+                if (Name != null)
+                    sb.Append("func ");
+            }
 
             if (TypeName != null)
             {

@@ -1,12 +1,17 @@
-﻿namespace Dyalect.Runtime.Types
+﻿using Dyalect.Compiler;
+
+namespace Dyalect.Runtime.Types
 {
     public sealed class DyCustomType : DyObject
     {
         internal DyObject Value { get; }
 
-        internal DyCustomType(int typeCode, DyObject value) : base(typeCode)
+        internal int ConstructorId { get; }
+
+        internal DyCustomType(int typeCode, int ctorId, DyObject value) : base(typeCode)
         {
             Value = value;
+            ConstructorId = ctorId;
         }
 
         public override object ToObject() => Value.ToObject();
@@ -31,5 +36,19 @@
         }
 
         public override string TypeName { get; }
+
+        protected override DyBool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
+        {
+            switch (name)
+            {
+                case Builtins.Not:
+                case Builtins.ToStr:
+                case Builtins.Clone:
+                case Builtins.Has:
+                    return DyBool.True;
+                default:
+                    return nameId != -1 && CheckHasMemberDirect(self, nameId, ctx) ? DyBool.True : DyBool.False;
+            }
+        }
     }
 }

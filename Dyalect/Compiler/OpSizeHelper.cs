@@ -89,6 +89,7 @@
             1, //NewType
             1, //TypeS
             1, //TypeST
+            1, //CtorCheck
         };
     }
 }
