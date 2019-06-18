@@ -30,8 +30,17 @@ namespace Dyalect.Parser.Model
 
         internal override void ToString(StringBuilder sb)
         {
+            if (Body == null)
+            {
+                sb.Append(Name);
+                sb.Append('(');
+                Parameters.ToString(sb);
+                sb.Append(')');
+                return;
+            }
+
             if (IsConstructor)
-                sb.Append("ctor ");
+                sb.Append("cons ");
             else
             {
                 if (IsStatic)

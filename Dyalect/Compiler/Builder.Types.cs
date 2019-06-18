@@ -27,6 +27,20 @@ namespace Dyalect.Compiler
             unit.TypeNames.Add(node.Name);
         }
 
+        private void GenerateConstructor(DFunctionDeclaration func, Hints hints, CompilerContext ctx)
+        {
+            for (var i = 0; i < func.Parameters.Count; i++)
+            {
+                var p = func.Parameters[i];
+                var a = GetVariable(p.Name, p);
+                cw.Tag(p.Name);
+            }
+
+            AddLinePragma(func);
+            cw.NewTuple(func.Parameters.Count);
+            PopIf(hints);
+        }
+
         private TypeHandle GetTypeHandle(Qualident name, Location loc) => GetTypeHandle(name.Parent, name.Local, loc);
 
         private TypeHandle GetTypeHandle(string parent, string local, Location loc)

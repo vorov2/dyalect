@@ -100,12 +100,23 @@ PRODUCTIONS
         (. Imports.Add(inc); .).
 
     Type<out DNode node> =
+        (. DFunctionDeclaration f = null; .)
         "type"
         (.  
             var typ = new DTypeDeclaration(t);
             node = typ;
         .)
-        identToken (. typ.Name = t.val; node = typ; .).
+        identToken (. typ.Name = t.val; node = typ; .)
+        [
+            (. f = new DFunctionDeclaration(t) { Name = typ.Name }; .)
+            FunctionArguments<f>
+            (. typ.Constructors.Add(f); .)
+        ]
+        [
+            "="
+            identToken (. f = new DFunctionDeclaration(t) { Name = t.val }; .) FunctionArguments<f> 
+            { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val }; .) FunctionArguments<f> }
+        ].
 
     Statement<out DNode node> =
         (. node = null; .)

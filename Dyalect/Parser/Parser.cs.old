@@ -198,12 +198,44 @@ namespace Dyalect.Parser
 	}
 
 	void Type(out DNode node) {
+		DFunctionDeclaration f = null; 
 		Expect(18);
 		var typ = new DTypeDeclaration(t);
 		node = typ;
 		
 		Expect(1);
 		typ.Name = t.val; node = typ; 
+		if (la.kind == 25) {
+			f = new DFunctionDeclaration(t) { Name = typ.Name }; 
+			FunctionArguments(f);
+			typ.Constructors.Add(f); 
+		}
+		if (la.kind == 24) {
+			Get();
+			Expect(1);
+			f = new DFunctionDeclaration(t) { Name = t.val }; 
+			FunctionArguments(f);
+			while (la.kind == 38) {
+				Get();
+				Expect(1);
+				f = new DFunctionDeclaration(t) { Name = t.val }; 
+				FunctionArguments(f);
+			}
+		}
+	}
+
+	void FunctionArguments(DFunctionDeclaration node) {
+		Expect(25);
+		if (la.kind == 1) {
+			FunctionArgument(out var arg);
+			node.Parameters.Add(arg); 
+			while (la.kind == 21) {
+				Get();
+				FunctionArgument(out arg);
+				node.Parameters.Add(arg); 
+			}
+		}
+		Expect(26);
 	}
 
 	void Statement(out DNode node) {
@@ -391,20 +423,6 @@ namespace Dyalect.Parser
 		}
 		node = block; 
 		Expect(28);
-	}
-
-	void FunctionArguments(DFunctionDeclaration node) {
-		Expect(25);
-		if (la.kind == 1) {
-			FunctionArgument(out var arg);
-			node.Parameters.Add(arg); 
-			while (la.kind == 21) {
-				Get();
-				FunctionArgument(out arg);
-				node.Parameters.Add(arg); 
-			}
-		}
-		Expect(26);
 	}
 
 	void FunctionArgument(out DParameter arg) {

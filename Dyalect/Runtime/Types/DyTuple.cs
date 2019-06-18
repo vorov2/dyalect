@@ -112,6 +112,8 @@ namespace Dyalect.Runtime.Types
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        internal override int GetCount() => Values.Length;
     }
 
     internal sealed class DyTupleTypeInfo : DyTypeInfo
