@@ -1,19 +1,19 @@
 ﻿type Foo
 
-ctor Foo.Bar(x) {
-    x
+ctor Foo.Bar(args...) {
+    args
 }
 
 func Foo.len() {
-    1
+    this.len()
 }
 
 func Foo.get(index) {
-    this
+    this[index]
 }
 
-var f = Foo.Bar(12)
+var f = Foo.Bar(12, "foobar", 3)
 
 match f {
-    Foo.Bar(x) => x
+    Foo.Bar(x, y, z) => x + z
 }
