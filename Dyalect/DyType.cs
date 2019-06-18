@@ -1,12 +1,13 @@
 ﻿using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
+using System.Collections.Generic;
 
 namespace Dyalect
 {
     internal static class DyType
     {
-        public static FastList<DyTypeInfo> GetAll() => 
-            new FastList<DyTypeInfo>
+        public static List<DyTypeInfo> GetAll() => 
+            new List<DyTypeInfo>
             {
                 new DyNilTypeInfo(),
                 new DyIntegerTypeInfo(),

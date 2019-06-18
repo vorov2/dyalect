@@ -99,9 +99,6 @@ namespace Dyalect.Compiler
                 case NodeType.TuplePattern:
                     BuildSequence(node, ((DTuplePattern)node).Elements, hints, ctx);
                     break;
-                case NodeType.RecordPattern:
-                    BuildRecord((DRecordPattern)node, hints, ctx);
-                    break;
                 case NodeType.ArrayPattern:
                     BuildSequence(node, ((DArrayPattern)node).Elements, hints, ctx);
                     break;
@@ -131,7 +128,45 @@ namespace Dyalect.Compiler
                 case NodeType.MethodCheckPattern:
                     BuildMethodCheck((DMethodCheckPattern)node, hints, ctx);
                     break;
+                case NodeType.CtorPattern:
+                    BuildCtor((DCtorPattern)node, hints, ctx);
+                    break;
+                case NodeType.LabelPattern:
+                    BuildLabel((DLabelPattern)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void BuildCtor(DCtorPattern node, Hints hints, CompilerContext ctx)
+        {
+            var bad = cw.DefineLabel();
+            var ok = cw.DefineLabel();
+
+            cw.Dup();
+            cw.TypeCheck(GetTypeHandle(node.Type, node.Location));
+            cw.Brfalse(bad);
+
+            var nameId = GetMemberNameId(node.Constructor);
+            cw.Dup();
+            cw.CtorCheck(nameId);
+            cw.Brfalse(bad);
+
+            if (node.Arguments == null || node.Arguments.Count == 0)
+            {
+                cw.Pop();
+                cw.Push(true);
+            }
+            else
+                BuildSequence(node, node.Arguments, hints, ctx);
+
+            cw.Br(ok);
+
+            cw.MarkLabel(bad);
+            AddLinePragma(node);
+            cw.Pop();
+            cw.Push(false);
+
+            cw.MarkLabel(ok);
         }
 
         private void BuildMethodCheck(DMethodCheckPattern node, Hints hints, CompilerContext ctx)
@@ -165,10 +200,10 @@ namespace Dyalect.Compiler
 
         private void BuildName(DNamePattern node, Hints hints, CompilerContext ctx)
         {
-            var err = GetTypeHandle(null, node.Name, out var handle);
+            var err = GetTypeHandle(null, node.Name, out var handle, out var std);
 
             if (err == CompilerError.None)
-                cw.TypeCheck(handle);
+                cw.TypeCheck(new TypeHandle(handle, std));
             else
             {
                 int sv;
@@ -298,15 +333,22 @@ namespace Dyalect.Compiler
             cw.Dup(); //2 objs
             cw.Len();
             cw.Push(elements.Count);
-            if (node.NodeType == NodeType.TuplePattern) cw.Eq(); else cw.GtEq();
+            if (node.NodeType == NodeType.TuplePattern || node.NodeType == NodeType.CtorPattern) cw.Eq(); else cw.GtEq();
             cw.Brfalse(skip); //1 obj left to pop
 
             for (var i = 0; i < elements.Count; i++)
             {
                 cw.Dup(); //2 objs
                 var e = elements[i];
-                cw.Get(i);
-                BuildPattern(e, hints, ctx);
+
+                if (e.NodeType == NodeType.LabelPattern)
+                    BuildLabel((DLabelPattern)e, hints, ctx);
+                else
+                {
+                    cw.Get(i);
+                    BuildPattern(e, hints, ctx);
+                }
+
                 cw.Brfalse(skip); //1 obj left to pop
             }
 
@@ -320,33 +362,22 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
-        private void BuildRecord(DRecordPattern node, Hints hints, CompilerContext ctx)
+        private void BuildLabel(DLabelPattern node, Hints hints, CompilerContext ctx)
         {
+            var bad = cw.DefineLabel();
             var skip = cw.DefineLabel();
-            var ok = cw.DefineLabel();
+            cw.HasField(node.Label);
+            cw.Brfalse(bad);
 
-            for (var i = 0; i < node.Elements.Count; i++)
-            {
-                cw.Dup(); //2 objs
+            cw.Dup();
+            cw.Push(node.Label);
+            cw.Get();
+            BuildPattern(node.Pattern, hints, ctx);
 
-                var e = node.Elements[i];
-                cw.HasField(e.Label);
-                cw.Brfalse(skip);
-
-                cw.Dup(); //2 objs
-                cw.Push(e.Label);
-                cw.Get();
-                BuildPattern(e.Pattern, hints, ctx);
-                cw.Brfalse(skip); //1 obj left
-            }
-
-            cw.Pop(); //0 objs
-            cw.Push(true);
-            cw.Br(ok);
-            cw.MarkLabel(skip);
-            cw.Pop(); //0 objs
+            cw.Br(skip);
+            cw.MarkLabel(bad);
             cw.Push(false);
-            cw.MarkLabel(ok);
+            cw.MarkLabel(skip);
             cw.Nop();
         }
     }

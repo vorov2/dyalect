@@ -48,7 +48,7 @@ namespace Dyalect.Runtime.Types
         }
 
         private readonly Dictionary<int, DyFunction> members = new Dictionary<int, DyFunction>();
-        private readonly Dictionary<int, DyObject> staticMembers = new Dictionary<int, DyObject>();
+        private readonly Dictionary<int, DyFunction> staticMembers = new Dictionary<int, DyFunction>();
 
         public override object ToObject() => this;
 
@@ -383,7 +383,12 @@ namespace Dyalect.Runtime.Types
             }
 
             if (value != null)
-                return value;
+            {
+                if (value.AutoKind == AutoKind.None)
+                    return value;
+                else
+                    return value.Call0(ctx);
+            }
 
             return ctx.StaticOperationNotSupported(ctx.Composition.Members[nameId], TypeName);
         }
@@ -405,7 +410,7 @@ namespace Dyalect.Runtime.Types
             return HasMemberDirect(self, name, nameId, ctx);
         }
 
-        private DyBool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
+        protected virtual DyBool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
         {
             switch (name)
             {
@@ -463,19 +468,26 @@ namespace Dyalect.Runtime.Types
             }
 
             if (value != null)
-                return value.FunctionName == "$$$AutoInvoke" ? value.Call1(self, ctx) : value.Clone(ctx, self);
+            {
+                if (value.AutoKind == AutoKind.None)
+                    return value.Clone(ctx, self);
+                else if (value.AutoKind == AutoKind.Generated)
+                    return value.Call1(self, ctx);
+                else
+                    return value.Clone(ctx, self).Call0(ctx);
+            }
 
             return value;
         }
 
-        private bool CheckHasMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
+        internal bool CheckHasMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
         {
             if (!members.TryGetValue(nameId, out var value))
             {
                 var name = ctx.Composition.Members[nameId];
                 value = InternalGetMember(self, name, ctx);
 
-                if (value != null && value.FunctionName != "$$$AutoInvoke")
+                if (value != null && value.AutoKind != AutoKind.Generated)
                 {
                     members.Add(nameId, value);
                     return true;
@@ -598,7 +610,7 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Iterator: return self is IEnumerable<DyObject>  ? DyForeignFunction.Member(name, GetIterator) : null;
                 case Builtins.Clone: return DyForeignFunction.Member(name, Clone);
                 case Builtins.Has: return DyForeignFunction.Member(name, Has, -1, new Par("member"));
-                case Builtins.GetType: return DyForeignFunction.Member(name, (context, o) =>  context.Types[self.TypeId]);
+                case Builtins.Type: return DyForeignFunction.Member(name, (context, o) =>  context.Types[self.TypeId]);
                 default:
                     return GetMember(name, ctx);
             }
@@ -614,12 +626,12 @@ namespace Dyalect.Runtime.Types
 
         protected virtual DyFunction GetMember(string name, ExecutionContext ctx) => null;
 
-        private DyObject InternalGetStaticMember(string name, ExecutionContext ctx)
+        private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx)
         {
             switch (name)
             {
-                case "id": return DyInteger.Get(TypeCode);
-                case "name": return new DyString(TypeName);
+                case "id": return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyInteger.Get(TypeCode));
+                case "name": return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => new DyString(TypeName));
                 case "__deleteMember":
                     return DyForeignFunction.Static(name, (context, strObj) =>
                     {
@@ -632,11 +644,12 @@ namespace Dyalect.Runtime.Types
                         }
                         return DyNil.Instance;
                     }, -1, new Par("name"));
-                default: return GetStaticMember(name, ctx);
+                default:
+                    return GetStaticMember(name, ctx);
             }
         }
 
-        protected virtual DyObject GetStaticMember(string name, ExecutionContext ctx) => null;
+        protected virtual DyFunction GetStaticMember(string name, ExecutionContext ctx) => null;
         #endregion
     }
 

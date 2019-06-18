@@ -1,1 +1,26 @@
-﻿(1,2).foo?
+﻿/*type Foo
+
+cons Foo.Bar(args...) {
+    args
+}
+
+func Foo.len() {
+    this.len()
+}
+
+func Foo.get(index) {
+    this[index]
+}
+
+type Foo = Bar(x, y, z)
+
+var f = Foo.Bar(12, "foobar", 3)
+
+match f {
+    Foo.Bar(x: xx, y: yy, z: zz) => "\(xx),\(yy)",
+    Foo.Bar(x, y, z) => x + z,
+    Foo.Bar() => "not quite"
+}
+
+*/
+

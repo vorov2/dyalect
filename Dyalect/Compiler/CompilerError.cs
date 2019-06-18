@@ -52,6 +52,14 @@
 
         NamedArgumentMultipleTimes = 224,
 
-        OverrideNotAllowed = 225
+        OverrideNotAllowed = 225,
+
+        TypeAlreadyDeclared = 226,
+
+        AutoOnlyMethod = 227,
+
+        AutoNoParams = 228,
+
+        CtorOnlyLocalType = 229
     }
 }

@@ -31,6 +31,6 @@
         public const string Clone       = "clone";
         public const string Has         = "has";
         public const string New         = "new";
-        public const string GetType     = "getType";
+        public const string Type        = "getType";
     }
 }

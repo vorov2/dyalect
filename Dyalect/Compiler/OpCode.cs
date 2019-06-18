@@ -53,11 +53,14 @@
         FailSys,    //0
         NewFun,     //0
         NewFunV,    //0
+        NewFunA,    //0
         NewIter,    //0
         SetMember,  //-2
+        SetMemberT, //-2
         GetMember,  //-1
         HasMember,  //-1
         SetMemberS, //-2
+        SetMemberST,//-2
         Get,        //-1
         Set,        //-3
         RunMod,     //+1
@@ -79,8 +82,14 @@
         SetIx,      //-2
         HasField,   //0
         TypeCheck,  //0
+        TypeCheckT, //0
 
         Start,      //0
         End,        //0
+        NewType,    //0
+
+        TypeS,      //1
+        TypeST,     //1
+        CtorCheck,  //0
     }
 }

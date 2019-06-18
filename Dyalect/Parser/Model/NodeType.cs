@@ -58,7 +58,6 @@
         ArrayPattern,
         RangePattern,
         TuplePattern,
-        RecordPattern,
         LabelPattern,
         AsPattern,
         WildcardPattern,
@@ -66,6 +65,7 @@
         AndPattern,
         OrPattern,
         MethodCheckPattern,
+        CtorPattern,
 
         TryCatch
     }

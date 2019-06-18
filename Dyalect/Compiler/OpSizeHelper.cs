@@ -54,11 +54,14 @@
             1, //FailSys
             1, //NewFun
             1, //NewFunV
+            1, //NewFunA
             1, //NewIter
             1, //SetMember
+            1, //SetMemberT
             1, //GetMember
             1, //HasMember
             1, //SetMemberS
+            1, //SetMemberST
             0, //Get
             0, //Set
             1, //RunMod
@@ -80,8 +83,13 @@
             1, //SetIx
             1, //HasField
             1, //TypeCheck
+            1, //TypeCheckT
             1, //Start
             0, //End
+            1, //NewType
+            1, //TypeS
+            1, //TypeST
+            1, //CtorCheck
         };
     }
 }

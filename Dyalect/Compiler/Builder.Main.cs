@@ -114,6 +114,9 @@ namespace Dyalect.Compiler
                 case NodeType.Throw:
                     Build((DThrow)node, hints, ctx);
                     break;
+                case NodeType.Type:
+                    Build((DTypeDeclaration)node, hints, ctx);
+                    break;
             }
         }
 
@@ -292,8 +295,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                var sv = GetVariable(DyTypeNames.Array, node);
-                cw.PushVar(sv);
+                cw.Type(new TypeHandle(DyType.Array, true));
                 cw.GetMember(GetMemberNameId(Builtins.New));
                 cw.FunPrep(node.Elements.Count);
 
@@ -370,15 +372,15 @@ namespace Dyalect.Compiler
                         imports.Add(n.Name, imp);
                 }
 
-                for (var i = 0; i < res.Value.TypeNames.Count; i++)
+                for (var i = 0; i < res.Value.Types.Count; i++)
                 {
-                    var name = res.Value.TypeNames[i];
-                    var ti = new TypeInfo(res.Value.TypeIds[i], referencedUnit);
+                    var td = res.Value.Types[i];
+                    var ti = new TypeInfo(td.Id, referencedUnit);
 
-                    if (types.ContainsKey(name))
-                        types[name] = ti;
+                    if (types.ContainsKey(td.Name))
+                        types[td.Name] = ti;
                     else
-                        types.Add(name, ti);
+                        types.Add(td.Name, ti);
                 }
 
                 cw.RunMod(unit.UnitIds.Count);
@@ -540,7 +542,7 @@ namespace Dyalect.Compiler
 
             if (node.Chunks != null)
             {
-                cw.PushVar(GetVariable(DyTypeNames.String, node));
+                cw.Type(new TypeHandle(DyType.String, true));
                 cw.GetMember(GetMemberNameId("concat"));
                 cw.FunPrep(node.Chunks.Count);
 
@@ -605,7 +607,20 @@ namespace Dyalect.Compiler
 
         private void Build(DName node, Hints hints, CompilerContext ctx)
         {
-            var sv = GetVariable(node.Value, node.Location);
+            var sv = GetVariable(node.Value, node.Location, err: false);
+
+            if (sv.IsEmpty())
+            {
+                var th = GetTypeHandle(null, node.Value, out var hdl, out var std);
+
+                if (th != CompilerError.None)
+                    AddError(CompilerError.UndefinedVariable, node.Location, node.Value);
+
+                AddLinePragma(node);
+                cw.Type(new TypeHandle(hdl, std));
+                return;
+            }
+
             AddLinePragma(node);
 
             if (!hints.Has(Pop))
@@ -831,64 +846,6 @@ namespace Dyalect.Compiler
                 case BinaryOperator.Xor: cw.Xor(); break;
                 default:
                     throw Ice();
-            }
-        }
-
-        private int GetTypeHandle(Qualident name, Location loc)
-        {
-            var err = GetTypeHandle(name.Parent, name.Local, out var handle);
-
-            if (err == CompilerError.UndefinedModule)
-                AddError(err, loc, name.Parent);
-            else if (err == CompilerError.UndefinedType)
-                AddError(err, loc, name.Local);
-
-            return handle;
-        }
-
-        private CompilerError GetTypeHandle(string parent, string local, out int handle)
-        {
-            handle = -1;
-
-            if (parent == null)
-                handle = DyType.GetTypeCodeByName(local);
-
-            if (handle > -1)
-                return CompilerError.None;
-
-            if (parent == null)
-            {
-                if (!types.TryGetValue(local, out var ti))
-                    return CompilerError.UndefinedType;
-                else
-                {
-                    handle = ti.Unit.Handle | ti.Handle << 8;
-                    return CompilerError.None;
-                }
-            }
-            else
-            {
-                if (!referencedUnits.TryGetValue(parent, out var ui))
-                    return CompilerError.UndefinedModule;
-                else
-                {
-                    var ti = -1;
-
-                    for (var i = 0; i < ui.Unit.TypeIds.Count; ti++)
-                    {
-                        if (ui.Unit.TypeNames[i] == local)
-                        {
-                            ti = ui.Unit.TypeIds[i];
-                            break;
-                        }
-                    }
-
-                    if (ti == -1)
-                        return CompilerError.UndefinedType;
-
-                    handle = ui.Handle | ti << 8;
-                    return CompilerError.None;
-                }
             }
         }
 

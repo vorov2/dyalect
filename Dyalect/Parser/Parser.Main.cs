@@ -153,14 +153,22 @@ namespace Dyalect.Parser
             return scanner.Peek().kind == _colonToken;
         }
 
-        private bool IsRecordPattern()
+        private bool IsEmptyParens()
         {
             if (la.kind != _parenLeftToken)
                 return false;
 
             scanner.ResetPeek();
-            return scanner.Peek().kind == _identToken
-                && scanner.Peek().kind == _colonToken;
+            return scanner.Peek().kind == _parenRightToken;
+        }
+
+        private bool IsLabelPattern()
+        {
+            if (la.kind != _identToken)
+                return false;
+
+            scanner.ResetPeek();
+            return scanner.Peek().kind == _colonToken;
         }
 
         private bool IsIterator()
@@ -228,6 +236,38 @@ namespace Dyalect.Parser
             }
 
             return false;
+        }
+
+        private bool IsConstructor()
+        {
+            if (la.kind != _identToken)
+                return false;
+
+            scanner.ResetPeek();
+            var x = scanner.Peek();
+
+            if (x.kind != _dotToken)
+                return false;
+
+            x = scanner.Peek();
+
+            if (x.kind != _identToken)
+                return false;
+
+            x = scanner.Peek();
+
+            if (x.kind == _parenLeftToken)
+                return true;
+
+            if (x.kind != _dotToken)
+                return false;
+
+            x = scanner.Peek();
+
+            if (x.kind != _identToken)
+                return false;
+
+            return scanner.Peek().kind == _parenLeftToken;
         }
 
         private bool IsFunction()

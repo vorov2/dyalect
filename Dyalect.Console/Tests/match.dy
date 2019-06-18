@@ -23,7 +23,7 @@ func matchTest3() {
     var res = match (1,2,"str") {
         (1, 2, "strs") => "wrong",
         Array && [1, 2, "str"] => "right?",
-        (1, 2, "str") as xs => xs
+        (1, 2, "str") xs => xs
     }
     assert((1,2,"str"), res)
 }
@@ -31,7 +31,7 @@ func matchTest3() {
 func matchTest4() {
     var res = match (1,2) {
         "clear fake" => "wrong1",
-        (x, 2) as xs when xs.fst() == 1 => xs
+        (x, 2) xs when xs.fst() == 1 => xs
     }
     assert((1,2), res)
 }
@@ -80,15 +80,15 @@ func matchTest5() {
 
 func matchTest6() {
     var res = match 12 {
-        "24" || 24 as x => x,
-        "12" || 12 as x => x
+        "24" || 24 x => x,
+        "12" || 12 x => x
     }
     assert(12, res)
 }
 
 func matchTest7() {
     var res = match [1, 2, ('f', 'F', [34, 42.2]), "end"] {
-        [1, 2] as xs when xs.len() <= 3 => "wrong",
+        [1, 2] xs when xs.len() <= 3 => "wrong",
         [1, 2, (_, _, [34, x])] when x > 42 => x
     }
     assert(42.2, res)
@@ -147,7 +147,7 @@ func forMatchTest1() {
 
 func forMatchTest2() {
     var arr = []
-    for Char as c in ['a', "str", 'b', 'c', 12] {
+    for Char c in ['a', "str", 'b', 'c', 12] {
         arr.add(c)
     }
     assert(['a','b','c'], arr)
@@ -163,7 +163,7 @@ func forMatchTest3() {
 
 func forMatchTest4() {
     var arr = []
-    for (1, x) as xs in [(1, 2), (2, 'F'), (3, 'S'), (1, 3), (1, 4), (1.01, true)] {
+    for (1, x) xs in [(1, 2), (2, 'F'), (3, 'S'), (1, 3), (1, 4), (1.01, true)] {
         arr.add(xs)
     }
     assert([(1,2), (1,3), (1,4)], arr)

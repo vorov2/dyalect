@@ -226,23 +226,54 @@ namespace Dyalect.Compiler
             Emit(new Op(OpCode.Tag, idx));
         }
 
+        public void SetMember(TypeHandle type)
+        {
+            if (type.IsStandard)
+                Emit(new Op(OpCode.SetMemberT, type.TypeId));
+            else
+                Emit(new Op(OpCode.SetMember, type.TypeId));
+        }
+
+        public void SetMemberS(TypeHandle type)
+        {
+            if (type.IsStandard)
+                Emit(new Op(OpCode.SetMemberST, type.TypeId));
+            else
+                Emit(new Op(OpCode.SetMemberS, type.TypeId));
+        }
+
+        public void TypeCheck(TypeHandle type)
+        {
+            if (type.IsStandard)
+                Emit(new Op(OpCode.TypeCheckT, type.TypeId));
+            else
+                Emit(new Op(OpCode.TypeCheck, type.TypeId));
+        }
+
+        public void Type(TypeHandle type)
+        {
+            if (type.IsStandard)
+                Emit(new Op(OpCode.TypeST, type.TypeId));
+            else
+                Emit(new Op(OpCode.TypeS, type.TypeId));
+        }
+
         public void FunPrep(int argCount) => Emit(new Op(OpCode.FunPrep, argCount));
         public void FunArgIx(int index) => Emit(new Op(OpCode.FunArgIx, index));
         public void FunArgNm(string name) => Emit(new Op(OpCode.FunArgNm, IndexString(name)));
         public void FunCall(int argCount) => Emit(new Op(OpCode.FunCall, argCount));
+        public void CtorCheck(int ctorId) => Emit(new Op(OpCode.CtorCheck, ctorId));
 
         public void NewTuple(int len) => Emit(new Op(OpCode.NewTuple, len), -len + 1);
         public void NewFun(int funHandle) => Emit(new Op(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new Op(OpCode.NewFunV, funHandle));
+        public void NewFunA(int funHandle) => Emit(new Op(OpCode.NewFunA, funHandle));
         public void NewIter(int funHandle) => Emit(new Op(OpCode.NewIter, funHandle));
         public void Br(Label lab) => Emit(OpCode.Br, lab);
         public void Brtrue(Label lab) => Emit(OpCode.Brtrue, lab);
         public void Brfalse(Label lab) => Emit(OpCode.Brfalse, lab);
         public void Brterm(Label lab) => Emit(OpCode.Brterm, lab);
         public void Briter(Label lab) => Emit(OpCode.Briter, lab);
-        public void TypeCheck(int type) => Emit(new Op(OpCode.TypeCheck, type));
-        public void SetMember(int type) => Emit(new Op(OpCode.SetMember, type));
-        public void SetMemberS(int type) => Emit(new Op(OpCode.SetMemberS, type));
         public void GetMember(int nameId) => Emit(new Op(OpCode.GetMember, nameId));
         public void HasMember(int nameId) => Emit(new Op(OpCode.HasMember, nameId));
         public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
@@ -252,6 +283,7 @@ namespace Dyalect.Compiler
         public void HasField(string field) => Emit(new Op(OpCode.HasField, IndexString(field)));
         public void Start(Label lab) => Emit(OpCode.Start, lab);
         public void Fail(DyErrorCode code) => Emit(new Op(OpCode.FailSys, (int)code));
+        public void NewType(int typeId) => Emit(new Op(OpCode.NewType, typeId));
 
         public void End() => Emit(Op.End);
         public void Yield() => Emit(Op.Yield);

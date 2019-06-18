@@ -61,6 +61,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Functions declared with an &quot;auto&quot; modifier shouldn&apos;t accept any arguments..
+        /// </summary>
+        internal static string AutoNoParams {
+            get {
+                return ResourceManager.GetString("AutoNoParams", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A modifier &quot;auto&quot; is only allowed on member functions..
+        /// </summary>
+        internal static string AutoOnlyMethod {
+            get {
+                return ResourceManager.GetString("AutoOnlyMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Keyword &quot;base&quot; is not available in the current context..
         /// </summary>
         internal static string BaseNotAllowed {
@@ -93,6 +111,15 @@ namespace Dyalect.Strings {
         internal static string CodeIslandMultipleExpressions {
             get {
                 return ResourceManager.GetString("CodeIslandMultipleExpressions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to define a constructor for a non-local type &quot;{0}&quot;..
+        /// </summary>
+        internal static string CtorOnlyLocalType {
+            get {
+                return ResourceManager.GetString("CtorOnlyLocalType", resourceCulture);
             }
         }
         
@@ -210,6 +237,15 @@ namespace Dyalect.Strings {
         internal static string TooManyErrors {
             get {
                 return ResourceManager.GetString("TooManyErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module already contains a definition for &quot;{0}&quot;..
+        /// </summary>
+        internal static string TypeAlreadyDeclared {
+            get {
+                return ResourceManager.GetString("TypeAlreadyDeclared", resourceCulture);
             }
         }
         

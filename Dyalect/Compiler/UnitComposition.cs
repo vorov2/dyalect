@@ -19,7 +19,7 @@ namespace Dyalect.Compiler
 
         public List<Unit> Units { get; }
 
-        public FastList<DyTypeInfo> Types { get; }
+        public List<DyTypeInfo> Types { get; }
 
         internal FastList<string> Members { get; }
 

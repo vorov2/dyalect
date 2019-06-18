@@ -232,16 +232,16 @@ namespace Dyalect.Runtime.Types
             return null;
         }
 
-        protected override DyObject GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "max")
-                return DyForeignFunction.Static(name, c => new DyFloat(double.MaxValue));
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.Max);
 
             if (name == "min")
-                return DyForeignFunction.Static(name, c => new DyFloat(double.MinValue));
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.Min);
 
             if (name == "inf")
-                return DyForeignFunction.Static(name, c => new DyFloat(double.PositiveInfinity));
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.PositiveInfinity);
 
             return null;
         }

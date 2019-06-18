@@ -18,7 +18,7 @@ namespace Dyalect.Runtime
 
         internal DyObject[][] Units { get; }
 
-        internal FastList<DyTypeInfo> Types => Composition.Types;
+        internal List<DyTypeInfo> Types => Composition.Types;
 
         public UnitComposition Composition { get; }
 

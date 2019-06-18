@@ -12,18 +12,40 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; }
 
-        public List<DFieldDeclaration> Fields { get; } = new List<DFieldDeclaration>();
+        public bool HasConstructors => _constructors != null && _constructors.Count > 0;
 
-        public DNode Body { get; set; }
+        private List<DFunctionDeclaration> _constructors;
+        public List<DFunctionDeclaration> Constructors
+        {
+            get
+            {
+                if (_constructors == null)
+                    _constructors = new List<DFunctionDeclaration>();
+                return _constructors;
+            }
+        }
 
         internal override void ToString(StringBuilder sb)
         {
             sb.Append("type ");
             sb.Append(Name);
-            sb.Append(' ');
-            sb.Append('{');
-            Fields.ToString(sb);
-            sb.Append('}');
+
+            if (HasConstructors)
+            {
+                sb.Append(" = ");
+                var fst = true;
+
+                foreach (var c in _constructors)
+                {
+                    if (!fst)
+                        sb.Append(" | ");
+
+                    sb.Append(c.Name);
+                    sb.Append('(');
+                    c.Parameters.ToString(sb);
+                    sb.Append(')');
+                }
+            }
         }
     }
 }

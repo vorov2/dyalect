@@ -112,6 +112,8 @@ namespace Dyalect.Runtime.Types
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        internal override int GetCount() => Values.Length;
     }
 
     internal sealed class DyTupleTypeInfo : DyTypeInfo
@@ -252,13 +254,13 @@ namespace Dyalect.Runtime.Types
                 case "snd":
                     return DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters);
                 default:
-                    return DyForeignFunction.Static("$$$AutoInvoke", (c, self) =>
+                    return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
                     {
                         var idx = self.GetOrdinal(name);
                         if (idx == -1)
-                            return ctx.OperationNotSupported(name, self);
+                            return ctx.IndexOutOfRange(DyTypeNames.Tuple, name);
                         return self.GetItem(idx, ctx);
-                    }, -1, new Par("self"));
+                    });
             }
         }
 
@@ -274,7 +276,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 
-        protected override DyObject GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "pair")
                 return DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second"));

@@ -133,21 +133,6 @@ namespace Dyalect.Parser.Model
         }
     }
 
-    public sealed class DRecordPattern : DPattern
-    {
-        public DRecordPattern(Location loc) : base(loc, NodeType.RecordPattern)
-        {
-
-        }
-
-        public List<DLabelPattern> Elements { get; } = new List<DLabelPattern>();
-
-        internal override void ToString(StringBuilder sb)
-        {
-            Elements.ToString(sb);
-        }
-    }
-
     public sealed class DArrayPattern : DPattern
     {
         public DArrayPattern(Location loc) : base(loc, NodeType.ArrayPattern)
@@ -303,6 +288,31 @@ namespace Dyalect.Parser.Model
             Left.ToString(sb);
             sb.Append(" || ");
             Right.ToString(sb);
+        }
+    }
+
+    public sealed class DCtorPattern : DPattern
+    {
+        public DCtorPattern(Location loc) : base(loc, NodeType.CtorPattern)
+        {
+
+        }
+
+        public Qualident Type { get; set; }
+
+        public string Constructor { get; set; }
+
+        public List<DPattern> Arguments { get; } = new List<DPattern>();
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append(Type);
+            sb.Append('.');
+            sb.Append(Constructor);
+            sb.Append('(');
+            if (Arguments != null && Arguments.Count > 0)
+                Arguments.ToString(sb);
+            sb.Append(')');
         }
     }
 }
