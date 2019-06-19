@@ -8,6 +8,7 @@
   * Done: _Change all standard `new` static methods to default constructors_ ([Issue #166](https://github.com/vorov2/dyalect/issues/166)).
   * Done: _Add default constructors to `Integer`, `Float`, etc._ ([Issue #169](https://github.com/vorov2/dyalect/issues/169)).
   * Done: _Make indexer overridable_ ([Issue #155](https://github.com/vorov2/dyalect/issues/155), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#oplist)).
+  * Done: _Add a common static `default` field_ ([Issue #167](https://github.com/vorov2/dyalect/issues/167)).
 
 # 0.7.6
   * Done: _Add `Tuple.new` static method_ ([Issue #153](https://github.com/vorov2/dyalect/issues/153), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#new)).

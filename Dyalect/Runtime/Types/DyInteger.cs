@@ -336,6 +336,9 @@ namespace Dyalect.Runtime.Types
             if (name == "min")
                 return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyInteger.Min);
 
+            if (name == "default")
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyInteger.Zero);
+
             if (name == "Integer")
                 return DyForeignFunction.Static(name, Convert, -1, new Par("value"));
 

@@ -487,6 +487,10 @@ func stringTest19() {
     assert("onetwothree44", res)
 }
 
+func stringTest20() {
+    assert("", String.default)
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
@@ -539,6 +543,13 @@ func charTest6() {
     assert('6', Char('6'))
     assert('\u0006', Char(6))
     assert('f', Char("foo"))
+}
+
+func charTest7() {
+    assert('\0', Char.default)
+    assert('\0', Char.min)
+    assert('\uffff', Char.max)
+    assert(true, Char.default == Char.min)
 }
 
 func nameofTest() {
@@ -753,23 +764,39 @@ func floatTest1() {
     assert(53.0, Float('5'))
 }
 
+func floatTest2() {
+    assert(0.0, Float.default)
+}
+
 func integerTest1() {
     assert(12, Integer(12.2))
     assert(1222, Integer(1222))
     assert(53, Integer('5'))
 }
 
-func nilTest() {
+func integerTest2() {
+    assert(0, Integer.default)
+}
+
+func nilTest1() {
     var x
     assert(nil, x)
     assert(nil, Nil())
     assert(true, nil == nil)
 }
 
-func boolTest() {
+func nilTest2() {
+    assert(nil, Nil.default)
+}
+
+func boolTest1() {
     assert(true, Bool(12))
     assert(false, Bool(0))
     assert(true, Bool("str"))
     assert(false, Bool(""))
     assert(false, Bool(nil))
+}
+
+func boolTest2() {
+    assert(false, Bool.default)
 }

@@ -498,6 +498,9 @@ namespace Dyalect.Runtime.Types
             if (name == "join")
                 return DyForeignFunction.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(",")));
 
+            if (name == "default")
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyString.Empty);
+
             return null;
         }
         #endregion

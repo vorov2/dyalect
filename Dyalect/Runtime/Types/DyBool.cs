@@ -61,6 +61,9 @@ namespace Dyalect.Runtime.Types
             if (name == "Bool")
                 return DyForeignFunction.Static(name, (c, obj) => (DyBool)obj.GetBool(), -1, new Par("value"));
 
+            if (name == "default")
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyBool.False);
+
             return null;
         }
     }

@@ -255,6 +255,9 @@ namespace Dyalect.Runtime.Types
             if (name == "inf")
                 return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.PositiveInfinity);
 
+            if (name == "default")
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.Zero);
+
             if (name == "Float")
                 return DyForeignFunction.Static(name, Convert, -1, new Par("value"));
 
