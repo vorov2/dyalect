@@ -560,7 +560,7 @@ PRODUCTIONS
         ).
 
     Assignment<out DNode node> =
-        Coalesce<out node>
+        Is<out node>
         [
             (.
                 var ass = new DAssignment(t) { Target = node };
@@ -587,6 +587,14 @@ PRODUCTIONS
                 node = ass;
             .)
         ].
+
+    Is<out DNode node> =
+        Coalesce<out node>
+        {
+            "is" (. var ot = t; .)
+            OrPattern<out var pat> 
+            (. node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); .)
+        }.
 
     Coalesce<out DNode node> =
         Or<out node>

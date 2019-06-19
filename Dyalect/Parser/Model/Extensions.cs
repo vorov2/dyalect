@@ -42,6 +42,7 @@ namespace Dyalect.Parser.Model
                 case BinaryOperator.ShiftLeft:  return "<<";
                 case BinaryOperator.ShiftRight: return ">>";
                 case BinaryOperator.Coalesce:   return "??";
+                case BinaryOperator.Is:         return "is";
                 default: return "";
             }
         }

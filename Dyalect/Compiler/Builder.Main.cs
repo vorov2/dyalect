@@ -815,6 +815,15 @@ namespace Dyalect.Compiler
                     cw.MarkLabel(exitLab);
                     cw.Nop();
                     break;
+                case BinaryOperator.Is:
+                    {
+                        var pat = (DPattern)node.Right;
+                        AddLinePragma(node);
+                        PreinitPattern(pat);
+                        Build(node.Left, hints.Append(Push), ctx);
+                        BuildPattern(pat, hints, ctx);
+                    }
+                    break;
                 default:
                     Build(node.Left, hints.Append(Push), ctx);
                     Build(node.Right, hints.Append(Push), ctx);

@@ -377,5 +377,122 @@ namespace Dyalect.Compiler
             cw.MarkLabel(skip);
             cw.Nop();
         }
+
+        private void PreinitPattern(DPattern node)
+        {
+            switch (node.NodeType)
+            {
+                case NodeType.NamePattern:
+                    PreinitName((DNamePattern)node);
+                    break;
+                case NodeType.IntegerPattern:
+                    break;
+                case NodeType.StringPattern:
+                    break;
+                case NodeType.FloatPattern:
+                    break;
+                case NodeType.CharPattern:
+                    break;
+                case NodeType.BooleanPattern:
+                    break;
+                case NodeType.TuplePattern:
+                    PreinitSequence(((DTuplePattern)node).Elements);
+                    break;
+                case NodeType.ArrayPattern:
+                    PreinitSequence(((DArrayPattern)node).Elements);
+                    break;
+                case NodeType.NilPattern:
+                    break;
+                case NodeType.RangePattern:
+                    break;
+                case NodeType.WildcardPattern:
+                    break;
+                case NodeType.AsPattern:
+                    PreinitAs((DAsPattern)node);
+                    break;
+                case NodeType.TypeTestPattern:
+                    break;
+                case NodeType.AndPattern:
+                    PreinitAnd((DAndPattern)node);
+                    break;
+                case NodeType.OrPattern:
+                    PreinitOr((DOrPattern)node);
+                    break;
+                case NodeType.MethodCheckPattern:
+                    break;
+                case NodeType.CtorPattern:
+                    PreinitCtor((DCtorPattern)node);
+                    break;
+                case NodeType.LabelPattern:
+                    PreinitLabel((DLabelPattern)node);
+                    break;
+            }
+        }
+
+        private void PreinitCtor(DCtorPattern node)
+        {
+            if (node.Arguments != null && node.Arguments.Count > 0)
+                PreinitSequence(node.Arguments);
+        }
+
+        private void PreinitAs(DAsPattern node)
+        {
+            PreinitPattern(node.Pattern);
+            
+            if (!TryGetLocalVariable(node.Name, out var sv))
+                sv = AddVariable(node.Name, node, VarFlags.None);
+
+            cw.PushNil();
+            cw.PopVar(sv);
+        }
+
+        private void PreinitName(DNamePattern node)
+        {
+            var err = GetTypeHandle(null, node.Name, out var handle, out var std);
+
+            if (err != CompilerError.None)
+            {
+                var found = TryGetLocalVariable(node.Name, out var sv);
+
+                if (!found)
+                    sv = AddVariable(node.Name, node, VarFlags.None);
+
+                cw.PushNil();
+                cw.PopVar(sv);
+            }
+        }
+
+        private void PreinitAnd(DAndPattern node)
+        {
+            PreinitPattern(node.Left);
+            PreinitPattern(node.Right);
+        }
+
+        private void PreinitOr(DOrPattern node)
+        {
+            PreinitPattern(node.Left);
+            PreinitPattern(node.Right);
+        }
+
+        private void PreinitSequence(List<DPattern> elements)
+        {
+            for (var i = 0; i < elements.Count; i++)
+            {
+                var e = elements[i];
+
+                if (e.NodeType == NodeType.LabelPattern)
+                    PreinitLabel((DLabelPattern)e);
+                else
+                {
+                    cw.Get(i);
+                    PreinitPattern(e);
+                }
+            }
+        }
+
+        private void PreinitLabel(DLabelPattern node)
+        {
+            PreinitPattern(node.Pattern);
+        }
     }
 }

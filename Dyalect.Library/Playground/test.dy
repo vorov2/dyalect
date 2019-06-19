@@ -24,7 +24,8 @@ match f {
 
 */
 
-type Point(x,y)
+var x = 12
 
-var p = Point(12, 24)
-p.x
+var res = x is Float f
+
+(res, f)
