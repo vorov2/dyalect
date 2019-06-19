@@ -20,6 +20,8 @@ namespace Dyalect.Runtime.Types
 
         internal override int GetCount() => Value.GetCount();
 
+        protected internal override int GetOrdinal(string name) => Value.GetOrdinal(name);
+
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) => Value.GetItem(index, ctx);
 
         protected internal override DyObject GetItem(int index, ExecutionContext ctx) => Value.GetItem(index, ctx);
@@ -94,6 +96,17 @@ namespace Dyalect.Runtime.Types
                 default:
                     return nameId != -1 && CheckHasMemberDirect(self, nameId, ctx) ? DyBool.True : DyBool.False;
             }
+        }
+
+        protected override DyFunction GetMember(string name, ExecutionContext ctx)
+        {
+            return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
+            {
+                var idx = self.GetOrdinal(name);
+                if (idx == -1)
+                    return ctx.IndexOutOfRange(DyTypeNames.Tuple, name);
+                return self.GetItem(idx, ctx);
+            });
         }
     }
 }

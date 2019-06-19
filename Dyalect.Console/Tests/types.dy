@@ -19,7 +19,16 @@ func autoTest2() {
     assert(3, 12.magic)
 }
 
+type Zoo()
 func autoTest3() {
+    auto func Zoo.name() {
+        "Zoo"
+    }
+    var f = Zoo()
+    assert("Zoo", f.name)
+}
+
+func autoTest4() {
     cons Foo.MakeFoo(obj) { obj }
     auto func Foo.magic() {
         this.magic
@@ -62,4 +71,129 @@ func extendTest2() {
         (x, y, z) => x + y + z
     }
     assert(6, res)
+}
+
+type Maybe = None() | Some(x)
+func autoConsTest1() {
+    var x = Maybe.Some(42)
+    var y = Maybe.None()
+    func doMatch(x) {
+        match x {
+            Some(x) => x,
+            None() => "None"
+        }
+    }
+    assert(42, doMatch(x))
+    assert("None", doMatch(y))
+}
+
+type Foo1 = Bar(x, y, z)
+func autoConsTest2() {
+    var f = Foo1.Bar(12, "foobar", 3)
+    var res = match f {
+        Bar(x: xx, y: yy, z: zz) => "\(xx),\(yy)",
+        Bar(x, y, z) => x + z,
+        Bar() => "not quite"
+    }
+    assert("12,foobar", res)
+}
+
+type Point(x, y)
+func autoConsTest3() {
+    var p = Point(12, 43)
+    assert(12, p[0])
+    assert(43, p[1])
+    assert(12, p.x)
+    assert(43, p.y)
+}
+
+type Nat
+func typeTest1() {
+    func fetch(x) {
+        if x < 0 {
+            x
+        } else {
+            Nat(x)
+        }
+    }
+    cons Nat.Nat(x) {
+        if x < 0 {
+            throw "Negative number."
+        }
+        x
+    }
+    func Nat.toInteger() {
+        this
+    }
+    func Nat + (other) {
+        fetch(this + other.toInteger())
+    }
+    func Nat - (other) {
+        fetch(this - other.toInteger())
+    }
+    func Nat * (other) {
+        fetch(this * other.toInteger())
+    }
+    func Nat / (other) {
+        fetch(this / other.toInteger())
+    }
+    func Nat == (other) {
+        this == other.toInteger()
+    }
+    var n = Nat(12)
+    assert(Nat(24), n + Nat(12))
+    assert(Nat(2), n - Nat(10))
+    assert(-8, n - Nat(20))
+    assert(Nat(24), n * Nat(2))
+    assert(Nat(6), n / Nat(2))
+    assert(Nat(6), n / Nat(2))
+}
+
+type Either = Left(x) | Right(x)
+func typeTest2() {
+    var x = Either.Left(12)
+    var y = Either.Right(24)
+    func doMatch(obj) {
+        match obj {
+            Left(x) => x,
+            Right(y) => y
+        }
+    }
+    assert(12, doMatch(x))
+    assert(24, doMatch(y))
+}
+
+type Cell
+func typeTest3() {
+    func ref(value) {
+        Cell((__value: value))
+    }
+    cons Cell.Cell(value) {
+        value
+    }
+    func Cell.setValue(value) {
+        this.__value = value
+    }
+    func Cell.getValue() {
+        this.__value
+    }
+    func Cell.get(index) {
+        if index != 0 {
+            throw "Index out of range."
+        }
+        this.__value
+    }
+    func Cell.len() {
+        1 
+    }
+    var c = ref(12)
+    assert(12, c.getValue())
+    assert(12, match c {
+        Cell(x) => x
+    })
+    c.setValue(24)
+    assert(24, c.getValue())
+    assert(24, match c {
+        Cell(x) => x
+    })
 }

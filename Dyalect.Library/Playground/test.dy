@@ -24,3 +24,7 @@ match f {
 
 */
 
+type Point(x,y)
+
+var p = Point(12, 24)
+p.x
