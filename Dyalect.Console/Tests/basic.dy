@@ -272,7 +272,7 @@ func arrayTest10() {
 }
 
 func arrayTest11() {
-    var arr = Array.new(1,2,3)
+    var arr = Array(1,2,3)
     assert([1,2,3], arr)
 }
 
@@ -369,7 +369,7 @@ func tupleTest6() {
 }
 
 func tupleTest7() {
-    var t = Tuple.new(1, 2, 3, "foo", "bar", 4, 5, 6)
+    var t = Tuple(1, 2, 3, "foo", "bar", 4, 5, 6)
     var t2 = (1, 2, 3, "foo", "bar", 4, 5, 6)
     assert(t2, t)
 }
@@ -529,11 +529,11 @@ func charTest5() {
 }
 
 func charTest6() {
-    assert('c', Char.new('c'))
-    assert('A', Char.new(65))
-    assert('6', Char.new('6'))
-    assert('\u0006', Char.new(6))
-    assert('f', Char.new("foo"))
+    assert('c', Char('c'))
+    assert('A', Char(65))
+    assert('6', Char('6'))
+    assert('\u0006', Char(6))
+    assert('f', Char("foo"))
 }
 
 func nameofTest() {

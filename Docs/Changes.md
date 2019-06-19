@@ -5,6 +5,7 @@
   * Done: _Change `as` pattern syntax_ ([Issue #163](https://github.com/vorov2/dyalect/issues/163), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
   * Done: _Shortcut syntax for a default constructor_ ([Issue #165](https://github.com/vorov2/dyalect/issues/165), [docs](https://github.com/vorov2/dyalect/wiki/Functions#static_methods)).
   * Done: _Add an ability to pattern match custom types_ ([Issue #161](https://github.com/vorov2/dyalect/issues/161), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
+  * Done: _Change all standard `new` static methods to default constructors_ ([Issue #166](https://github.com/vorov2/dyalect/issues/166)).
 
 # 0.7.6
   * Done: _Add `Tuple.new` static method_ ([Issue #153](https://github.com/vorov2/dyalect/issues/153), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#new)).
@@ -206,7 +207,7 @@
     ```
   * A static method `new` with a single `values` parameter is added to an `Array` type. Now array literal is translated to a call of this method, e.g.:
     ```swift
-    [1, 2, 3] //same as Array.new(1, 2, 3)
+    [1, 2, 3] //same as Array(1, 2, 3)
     ```
   * Method `sortBy` is decomissioned. Now a single `sort` method should be used in all the cases. This method now has the following signature:
     ```swift

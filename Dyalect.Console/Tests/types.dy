@@ -20,11 +20,11 @@ func autoTest2() {
 }
 
 func autoTest3() {
-    cons Foo.new(obj) { obj }
+    cons Foo.MakeFoo(obj) { obj }
     auto func Foo.magic() {
         this.magic
     }
-    var foo = Foo.new((magic: 133))
+    var foo = Foo.MakeFoo((magic: 133))
     assert(133, foo.magic)
 }
 
