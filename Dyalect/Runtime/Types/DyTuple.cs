@@ -284,7 +284,7 @@ namespace Dyalect.Runtime.Types
             if (name == "triple")
                 return DyForeignFunction.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third"));
 
-            if (name == "new")
+            if (name == "Tuple")
                 return DyForeignFunction.Static(name, MakeNew, 0, new Par("values"));
 
             return null;

@@ -1,4 +1,6 @@
-﻿namespace Dyalect.Runtime.Types
+﻿using Dyalect.Debug;
+
+namespace Dyalect.Runtime.Types
 {
     public abstract class DyBool : DyObject
     {
@@ -53,5 +55,16 @@
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             (DyString)(ReferenceEquals(arg, DyBool.True) ? "true" : "false");
+
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        {
+            if (name == "Bool")
+                return DyForeignFunction.Static(name, (c, obj) => (DyBool)obj.GetBool(), -1, new Par("value"));
+
+            if (name == "default")
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyBool.False);
+
+            return null;
+        }
     }
 }

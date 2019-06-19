@@ -489,11 +489,17 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
+            if (name == "String")
+                return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
+
             if (name == "concat")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
 
             if (name == "join")
                 return DyForeignFunction.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(",")));
+
+            if (name == "default")
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyString.Empty);
 
             return null;
         }

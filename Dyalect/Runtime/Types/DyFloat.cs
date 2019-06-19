@@ -232,6 +232,18 @@ namespace Dyalect.Runtime.Types
             return null;
         }
 
+        private DyObject Convert(ExecutionContext ctx, DyObject obj)
+        {
+            if (obj.TypeId == DyType.Float)
+                return obj;
+            else if (obj.TypeId == DyType.Integer)
+                return new DyFloat(obj.GetInteger());
+            else if (obj.TypeId == DyType.Char)
+                return new DyFloat(obj.GetChar());
+
+            return ctx.InvalidType(obj);
+        }
+
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "max")
@@ -242,6 +254,12 @@ namespace Dyalect.Runtime.Types
 
             if (name == "inf")
                 return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.PositiveInfinity);
+
+            if (name == "default")
+                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.Zero);
+
+            if (name == "Float")
+                return DyForeignFunction.Static(name, Convert, -1, new Par("value"));
 
             return null;
         }

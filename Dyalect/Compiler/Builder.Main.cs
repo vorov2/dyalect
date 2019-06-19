@@ -296,7 +296,7 @@ namespace Dyalect.Compiler
             else
             {
                 cw.Type(new TypeHandle(DyType.Array, true));
-                cw.GetMember(GetMemberNameId(Builtins.New));
+                cw.GetMember(GetMemberNameId(DyTypeNames.Array));
                 cw.FunPrep(node.Elements.Count);
 
                 for (var i = 0; i < node.Elements.Count; i++)
@@ -615,6 +615,8 @@ namespace Dyalect.Compiler
 
                 if (th != CompilerError.None)
                     AddError(CompilerError.UndefinedVariable, node.Location, node.Value);
+                else
+                    GetMemberNameId(node.Value);
 
                 AddLinePragma(node);
                 cw.Type(new TypeHandle(hdl, std));

@@ -272,7 +272,7 @@ func arrayTest10() {
 }
 
 func arrayTest11() {
-    var arr = Array.new(1,2,3)
+    var arr = Array(1,2,3)
     assert([1,2,3], arr)
 }
 
@@ -369,7 +369,7 @@ func tupleTest6() {
 }
 
 func tupleTest7() {
-    var t = Tuple.new(1, 2, 3, "foo", "bar", 4, 5, 6)
+    var t = Tuple(1, 2, 3, "foo", "bar", 4, 5, 6)
     var t2 = (1, 2, 3, "foo", "bar", 4, 5, 6)
     assert(t2, t)
 }
@@ -482,6 +482,15 @@ func stringTest18() {
     assert("12000", foo.padRight(with: '0', to: 5))
 }
 
+func stringTest19() {
+    var res = String("one", "two", "three", 44)
+    assert("onetwothree44", res)
+}
+
+func stringTest20() {
+    assert("", String.default)
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
@@ -529,11 +538,18 @@ func charTest5() {
 }
 
 func charTest6() {
-    assert('c', Char.new('c'))
-    assert('A', Char.new(65))
-    assert('6', Char.new('6'))
-    assert('\u0006', Char.new(6))
-    assert('f', Char.new("foo"))
+    assert('c', Char('c'))
+    assert('A', Char(65))
+    assert('6', Char('6'))
+    assert('\u0006', Char(6))
+    assert('f', Char("foo"))
+}
+
+func charTest7() {
+    assert('\0', Char.default)
+    assert('\0', Char.min)
+    assert('\uffff', Char.max)
+    assert(true, Char.default == Char.min)
 }
 
 func nameofTest() {
@@ -689,10 +705,18 @@ func arrayCopyTest4() {
     assert([1,2,3], ys)
 }
 
-func getTypeTest() {
+func getTypeTest1() {
     var x = 42
     assert(true, x.getType() == Integer)
     var t = x.getType()
+    assert(1, t.id)
+    assert("Integer", t.name)
+}
+
+func getTypeTest2() {
+    var x = 42
+    assert(true, TypeInfo(x) == Integer)
+    var t = TypeInfo(x)
     assert(1, t.id)
     assert("Integer", t.name)
 }
@@ -732,4 +756,47 @@ func fieldTest2() {
 func fieldTest3() {
     assert('\0', Char.min)
     assert('\uffff', Char.max)
+}
+
+func floatTest1() {
+    assert(12.2, Float(12.2))
+    assert(12.0, Float(12))
+    assert(53.0, Float('5'))
+}
+
+func floatTest2() {
+    assert(0.0, Float.default)
+}
+
+func integerTest1() {
+    assert(12, Integer(12.2))
+    assert(1222, Integer(1222))
+    assert(53, Integer('5'))
+}
+
+func integerTest2() {
+    assert(0, Integer.default)
+}
+
+func nilTest1() {
+    var x
+    assert(nil, x)
+    assert(nil, Nil())
+    assert(true, nil == nil)
+}
+
+func nilTest2() {
+    assert(nil, Nil.default)
+}
+
+func boolTest1() {
+    assert(true, Bool(12))
+    assert(false, Bool(0))
+    assert(true, Bool("str"))
+    assert(false, Bool(""))
+    assert(false, Bool(nil))
+}
+
+func boolTest2() {
+    assert(false, Bool.default)
 }

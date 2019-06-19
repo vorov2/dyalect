@@ -218,7 +218,7 @@ namespace Dyalect.Parser
 			while (la.kind == 38) {
 				Get();
 				Expect(1);
-				f = new DFunctionDeclaration(t) { Name = t.val, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);
+				f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);
 				FunctionArguments(f);
 			}
 		}
