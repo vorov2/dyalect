@@ -596,29 +596,8 @@ namespace Dyalect.Parser
 	}
 
 	void CtorPattern(out DPattern node) {
-		string s1 = null; string s2 = null; string s3 = null; 
 		Expect(1);
-		s1 = t.val; 
-		Expect(20);
-		Expect(1);
-		s2 = t.val; 
-		if (la.kind == 20) {
-			Get();
-			Expect(1);
-			s3 = t.val; 
-		}
-		var ctor = new DCtorPattern(t);
-		if (s3 != null) 
-		{
-		   ctor.Constructor = s3;
-		   ctor.Type = new Qualident(s2, s1);
-		}
-		else
-		{
-		   ctor.Constructor = s2;
-		   ctor.Type = new Qualident(s1);
-		}
-		
+		var ctor = new DCtorPattern(t) { Constructor = t.val }; 
 		Expect(25);
 		if (StartOf(6)) {
 			OrPattern(out node);

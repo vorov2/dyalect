@@ -313,24 +313,9 @@ PRODUCTIONS
         ).
 
     CtorPattern<out DPattern node> =
-        (. string s1 = null; string s2 = null; string s3 = null; .)
         (
-            identToken (. s1 = t.val; .)
-            "." identToken (. s2 = t.val; .)
-            [ "." identToken (. s3 = t.val; .) ]
-            (.
-                var ctor = new DCtorPattern(t);
-                if (s3 != null) 
-                {
-                    ctor.Constructor = s3;
-                    ctor.Type = new Qualident(s2, s1);
-                }
-                else
-                {
-                    ctor.Constructor = s2;
-                    ctor.Type = new Qualident(s1);
-                }
-            .)
+            identToken
+            (. var ctor = new DCtorPattern(t) { Constructor = t.val }; .)
             "("
                 [ OrPattern<out node> (. ctor.Arguments.Add(node); .) ]
                 {

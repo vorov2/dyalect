@@ -143,11 +143,8 @@ namespace Dyalect.Compiler
             var ok = cw.DefineLabel();
 
             cw.Dup();
-            cw.TypeCheck(GetTypeHandle(node.Type, node.Location));
-            cw.Brfalse(bad);
 
             var nameId = GetMemberNameId(node.Constructor);
-            cw.Dup();
             cw.CtorCheck(nameId);
             cw.Brfalse(bad);
 
