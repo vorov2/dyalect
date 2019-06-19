@@ -4,6 +4,7 @@
   * Done: _Make `Integer.max`, `Integer.min`, `Float.max`, etc. static constants_ ([Issue #154](https://github.com/vorov2/dyalect/issues/154)).
   * Done: _Change `as` pattern syntax_ ([Issue #163](https://github.com/vorov2/dyalect/issues/163), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
   * Done: _Shortcut syntax for a default constructor_ ([Issue #165](https://github.com/vorov2/dyalect/issues/165), [docs](https://github.com/vorov2/dyalect/wiki/Functions#static_methods)).
+  * Done: _Add an ability to pattern match custom types_ ([Issue #161](https://github.com/vorov2/dyalect/issues/161), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
 
 # 0.7.6
   * Done: _Add `Tuple.new` static method_ ([Issue #153](https://github.com/vorov2/dyalect/issues/153), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#new)).

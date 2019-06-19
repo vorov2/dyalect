@@ -25,6 +25,8 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetItem(int index, ExecutionContext ctx) => Value.GetItem(index, ctx);
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Value.HasItem(name, ctx);
+
+        internal override int GetConstructorId(ExecutionContext ctx) => ConstructorId;
     }
 
     internal sealed class DyCustomTypeInfo : DyTypeInfo

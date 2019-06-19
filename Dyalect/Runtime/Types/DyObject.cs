@@ -52,6 +52,9 @@ namespace Dyalect.Runtime.Types
 
         internal protected virtual DyObject GetTaggedValue() => null;
 
+        internal virtual int GetConstructorId(ExecutionContext ctx) => 
+            ctx.Composition.MembersMap.TryGetValue(ctx.Types[TypeId].TypeName, out var id) ? id : 0;
+
         public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 
         internal virtual DyObject GetSelf() => this;

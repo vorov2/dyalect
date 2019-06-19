@@ -244,29 +244,6 @@ namespace Dyalect.Parser
                 return false;
 
             scanner.ResetPeek();
-            var x = scanner.Peek();
-
-            if (x.kind != _dotToken)
-                return false;
-
-            x = scanner.Peek();
-
-            if (x.kind != _identToken)
-                return false;
-
-            x = scanner.Peek();
-
-            if (x.kind == _parenLeftToken)
-                return true;
-
-            if (x.kind != _dotToken)
-                return false;
-
-            x = scanner.Peek();
-
-            if (x.kind != _identToken)
-                return false;
-
             return scanner.Peek().kind == _parenLeftToken;
         }
 

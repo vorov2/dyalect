@@ -261,4 +261,26 @@ func varMatchTest3() {
     }
     assert("Match failed.", res)
 }
+
+func ctorMatchTest1() {
+    const Array(x, y, z) = [1, 2, 3]
+    assert(6, x + y + z)
+}
+
+func ctorMatchTest2() {
+    const Tuple(x, y, z) = (1, 2, 3)
+    assert(6, x + y + z)
+}
+
+func ctorMatchTest3() {
+    var res = match 42 {
+        Integer() => true
+    }
+    assert(true, res)
+}
+
+func ctorMatchTest4() {
+    const String(x, y, z) = "abc"
+    assert(['a','b','c'], [x,y,z])
+}
  

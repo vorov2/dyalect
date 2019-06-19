@@ -539,7 +539,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(right.TypeId == ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id ? DyBool.True : DyBool.False);
                         break;
                     case OpCode.CtorCheck:
-                        evalStack.Replace((DyBool)(((DyCustomType)evalStack.Peek()).ConstructorId == op.Data));
+                        evalStack.Replace((DyBool)(evalStack.Peek().GetConstructorId(ctx) == op.Data));
                         break;
                     case OpCode.Start:
                         ctx.CatchMarks.Push(new CatchMark(op.Data, ctx.CallStack.Count));
