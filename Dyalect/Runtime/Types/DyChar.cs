@@ -194,7 +194,10 @@ namespace Dyalect.Runtime.Types
             if (obj.TypeId == DyType.Integer)
                 return new DyChar((char)obj.GetInteger());
 
-            return ctx.InvalidType(DyTypeNames.Integer, obj);
+            if (obj.TypeId == DyType.Float)
+                return new DyChar((char)obj.GetFloat());
+
+            return ctx.InvalidType(obj);
         }
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)

@@ -482,6 +482,11 @@ func stringTest18() {
     assert("12000", foo.padRight(with: '0', to: 5))
 }
 
+func stringTest19() {
+    var res = String("one", "two", "three", 44)
+    assert("onetwothree44", res)
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
@@ -689,10 +694,18 @@ func arrayCopyTest4() {
     assert([1,2,3], ys)
 }
 
-func getTypeTest() {
+func getTypeTest1() {
     var x = 42
     assert(true, x.getType() == Integer)
     var t = x.getType()
+    assert(1, t.id)
+    assert("Integer", t.name)
+}
+
+func getTypeTest2() {
+    var x = 42
+    assert(true, TypeInfo(x) == Integer)
+    var t = TypeInfo(x)
     assert(1, t.id)
     assert("Integer", t.name)
 }
@@ -732,4 +745,31 @@ func fieldTest2() {
 func fieldTest3() {
     assert('\0', Char.min)
     assert('\uffff', Char.max)
+}
+
+func floatTest1() {
+    assert(12.2, Float(12.2))
+    assert(12.0, Float(12))
+    assert(53.0, Float('5'))
+}
+
+func integerTest1() {
+    assert(12, Integer(12.2))
+    assert(1222, Integer(1222))
+    assert(53, Integer('5'))
+}
+
+func nilTest() {
+    var x
+    assert(nil, x)
+    assert(nil, Nil())
+    assert(true, nil == nil)
+}
+
+func boolTest() {
+    assert(true, Bool(12))
+    assert(false, Bool(0))
+    assert(true, Bool("str"))
+    assert(false, Bool(""))
+    assert(false, Bool(nil))
 }

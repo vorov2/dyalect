@@ -337,6 +337,21 @@ func iteratorTest8() {
     assert(10, xs.len())
 }
 
+func iteratorTest9() {
+    var xs = 1..5
+    var ys = 6..10
+    var res = Iterator.concat(xs, ys)
+    assert([1..10], res.toArray())
+}
+
+
+func iteratorTest10() {
+    var xs = 1..5
+    var ys = 6..10
+    var res = Iterator(xs, ys)
+    assert([1..10], res.toArray())
+}
+
 func calcETest() { //2.71828182845905
     const epsilon = 1.0e-15
     func abs(n) {
@@ -701,6 +716,11 @@ func functionTest9() {
     }
     variadic([1,2,3,4])
     assert(1, res)
+}
+
+func functionTest10() {
+    var f = Function(12)
+    assert(12, f())
 }
 
 func namesOfGodTest() {

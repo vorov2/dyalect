@@ -142,6 +142,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type error: type &quot;%Got% is unexpected..
+        /// </summary>
+        internal static string InvalidType1 {
+            get {
+                return ResourceManager.GetString("InvalidType1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Match failed..
         /// </summary>
         internal static string MatchFailed {

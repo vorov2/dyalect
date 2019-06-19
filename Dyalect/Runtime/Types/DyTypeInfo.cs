@@ -632,6 +632,7 @@ namespace Dyalect.Runtime.Types
             {
                 case "id": return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyInteger.Get(TypeCode));
                 case "name": return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => new DyString(TypeName));
+                case "TypeInfo": return DyForeignFunction.Static(name, (c, obj) => c.Types[obj.TypeId], -1, new Par("value"));
                 case "__deleteMember":
                     return DyForeignFunction.Static(name, (context, strObj) =>
                     {

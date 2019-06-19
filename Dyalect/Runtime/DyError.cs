@@ -64,6 +64,8 @@ namespace Dyalect.Runtime
 
             if (Code == DyErrorCode.OperationNotSupported && DataItems.Count == 3)
                 key = "OperationNotSupported2";
+            else if (Code == DyErrorCode.InvalidType && DataItems.Count == 1)
+                key = "InvalidType1";
             else
                 key = Code.ToString();
 
@@ -163,6 +165,13 @@ namespace Dyalect.Runtime
         {
             ctx.Error = new DyError(DyErrorCode.InvalidType,
                 ("Expected", expectedTypeName),
+                ("Got", got.TypeName(ctx)));
+            return DyNil.Instance;
+        }
+
+        public static DyObject InvalidType(this ExecutionContext ctx, DyObject got)
+        {
+            ctx.Error = new DyError(DyErrorCode.InvalidType,
                 ("Got", got.TypeName(ctx)));
             return DyNil.Instance;
         }
