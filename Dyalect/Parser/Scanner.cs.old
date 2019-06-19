@@ -9,8 +9,8 @@ namespace Dyalect.Parser
 {
     partial class Scanner 
     {
-	const int maxT = 81;
-	const int noSym = 81;
+	const int maxT = 82;
+	const int noSym = 82;
 
     
         static Scanner() 
@@ -167,7 +167,8 @@ namespace Dyalect.Parser
 			case "throw": t.kind = 66; break;
 			case "try": t.kind = 67; break;
 			case "catch": t.kind = 68; break;
-			case "base": t.kind = 80; break;
+			case "is": t.kind = 79; break;
+			case "base": t.kind = 81; break;
 			default: break;
 		}
         }
@@ -398,7 +399,7 @@ namespace Dyalect.Parser
 			case 59:
 				{t.kind = 78; break;}
 			case 60:
-				{t.kind = 79; break;}
+				{t.kind = 80; break;}
 			case 61:
 				recEnd = pos; recKind = 20;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 4;}

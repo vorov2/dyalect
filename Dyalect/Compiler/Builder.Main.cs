@@ -424,19 +424,6 @@ namespace Dyalect.Compiler
                     cw.Push(push);
                     return;
                 }
-                else if (name == "typeof")
-                {
-                    if (node.Arguments.Count != 1)
-                    {
-                        AddError(CompilerError.InvalidTypeOfOperator, node.Location);
-                        return;
-                    }
-
-                    Build(node.Arguments[0], hints.Append(Push), ctx);
-                    cw.Type();
-                    AddWarning(CompilerWarning.FunctionDeprecated, node.Location, name);
-                    return;
-                }
 
             //This is a special optimization for the 'toString' and 'len' methods
             //If we see that it is called directly we than emit a direct Str or Len op code

@@ -559,11 +559,11 @@ func nameofTest() {
     assert("x", nameof(tup.x))
 }
 
-func typeofTest() {
-    assert(true, typeof(42) == Integer)
-    assert(true, typeof("") == String)
-    assert(true, typeof(42.01) == Float)
-    assert(true, typeof('\s') == Char)
+func getTypeTest() {
+    assert(true, 42.getType() == Integer)
+    assert(true, "".getType() == String)
+    assert(true, 42.01.getType() == Float)
+    assert(true, '\s'.getType() == Char)
 }
 
 func rangeTest1() {

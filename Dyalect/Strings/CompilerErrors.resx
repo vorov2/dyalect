@@ -126,9 +126,6 @@
   <data name="InvalidNameOfOperator" xml:space="preserve">
     <value>Invalid usage of the "nameof" operator.</value>
   </data>
-  <data name="InvalidTypeOfOperator" xml:space="preserve">
-    <value>Invalid usage of the "typeof" operator.</value>
-  </data>
   <data name="NoEnclosingLoop" xml:space="preserve">
     <value>No enclosing loop out of which to break or continue.</value>
   </data>

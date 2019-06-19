@@ -26,7 +26,7 @@
 
         ExpressionNoName = 211,
 
-        InvalidTypeOfOperator = 212,
+        // = 212,
 
         UndefinedBaseVariable = 213,
 

@@ -160,15 +160,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid usage of the &quot;typeof&quot; operator..
-        /// </summary>
-        internal static string InvalidTypeOfOperator {
-            get {
-                return ResourceManager.GetString("InvalidTypeOfOperator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Named argument &quot;{0}&quot; cannot be specified multiple times..
         /// </summary>
         internal static string NamedArgumentMultipleTimes {
