@@ -1,4 +1,7 @@
-﻿func autoTest1() {
+﻿type Foo
+type Bar
+
+func autoTest1() {
     auto func Integer.magic() {
         this * 42
     }
@@ -14,4 +17,49 @@ func autoTest2() {
     assert(1, 12.magic)
     assert(2, 12.magic)
     assert(3, 12.magic)
+}
+
+func autoTest3() {
+    cons Foo.new(obj) { obj }
+    auto func Foo.magic() {
+        this.magic
+    }
+    var foo = Foo.new((magic: 133))
+    assert(133, foo.magic)
+}
+
+func extendTest1() {
+    cons Bar.Bar(args...) {
+        args
+    }
+    func Bar.len() {
+        this.len()
+    }
+    func Bar.get(index) {
+        this[index]
+    }
+    var obj = Bar.Bar(1, 2, 3)
+    var res = match obj {
+        (x, y) => x + y,
+        (x, y, z) => x + y + z
+    }
+    assert(6, res)
+}
+
+func extendTest2() {
+    cons Bar.Bar(args...) {
+        args
+    }
+    func Bar.len() {
+        this.len()
+    }
+    func Bar.get(index) {
+        this[index]
+    }
+    var obj = Bar(1, 2, 3)
+    var res = match obj {
+        (x, y) => x + y,
+        (x, y, z) => x + y + z
+    }
+    assert(6, res)
 }

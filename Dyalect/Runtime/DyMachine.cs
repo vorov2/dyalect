@@ -433,6 +433,21 @@ namespace Dyalect.Runtime
                             right = evalStack.Peek();
                             if (right.TypeId != DyType.Function && right.TypeId != DyType.Iterator)
                             {
+                                if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti 
+                                    && ctx.Composition.MembersMap.TryGetValue(ti.TypeName, out var tid))
+                                {
+                                    right = ti.GetStaticMember(tid, unit, ctx);
+
+                                    if (ctx.HasErrors)
+                                    {
+                                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
+                                        goto CATCH;
+                                    }
+
+                                    evalStack.Replace(right);
+                                    goto  case OpCode.FunPrep;
+                                }
+
                                 ctx.NotFunction(right);
                                 ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
                                 goto CATCH;
