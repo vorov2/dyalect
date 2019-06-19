@@ -7,6 +7,7 @@
   * Done: _Add an ability to pattern match custom types_ ([Issue #161](https://github.com/vorov2/dyalect/issues/161), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
   * Done: _Change all standard `new` static methods to default constructors_ ([Issue #166](https://github.com/vorov2/dyalect/issues/166)).
   * Done: _Add default constructors to `Integer`, `Float`, etc._ ([Issue #169](https://github.com/vorov2/dyalect/issues/169)).
+  * Done: _Make indexer overridable_ ([Issue #155](https://github.com/vorov2/dyalect/issues/155), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#oplist)).
 
 # 0.7.6
   * Done: _Add `Tuple.new` static method_ ([Issue #153](https://github.com/vorov2/dyalect/issues/153), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#new)).
