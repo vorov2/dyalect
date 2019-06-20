@@ -53,7 +53,7 @@ namespace Dyalect.Compiler
             var retval = AddVariable();
 
             if ((data & VarFlags.Exported) == VarFlags.Exported)
-                unit.ExportList.Add(new PublishedName(name, new ScopeVar(retval, data)));
+                unit.ExportList.Add(name, new ScopeVar(retval, data));
 
             return retval;
         }
@@ -148,8 +148,8 @@ namespace Dyalect.Compiler
             //No luck. Need to check if this variable is imported from some module
             if (imports.TryGetValue(name, out ImportedName imp))
             {
-                return new ScopeVar(imp.ModuleHandle | (imp.PublishedName.Data.Address >> 8) << 8,
-                    imp.PublishedName.Data.Data | VarFlags.External);
+                return new ScopeVar(imp.ModuleHandle | (imp.Var.Address >> 8) << 8,
+                    imp.Var.Data | VarFlags.External);
             }
 
             if (err)
