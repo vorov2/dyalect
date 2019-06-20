@@ -713,8 +713,8 @@ namespace Dyalect.Compiler
 
             if (node.Pattern.NodeType == NodeType.NamePattern)
             {
-                var flags = currentScope.IsGlobal ? VarFlags.Exported : VarFlags.None;
-                var a = AddVariable(node.Pattern.GetName(), node, node.Constant ? flags | VarFlags.Const : flags);
+                var flags = node.Constant ? VarFlags.Const : VarFlags.None;
+                var a = AddVariable(node.Pattern.GetName(), node, flags);
                 cw.PopVar(a);
             }
             else

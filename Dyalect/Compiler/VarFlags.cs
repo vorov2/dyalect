@@ -9,7 +9,6 @@
         public const int External = 0x08;
         public const int Foreign = 0x10;
         public const int Module = 0x20;
-        public const int Exported = 0x40;
-        public const int This = 0x80;
+        public const int This = 0x40;
     }
 }

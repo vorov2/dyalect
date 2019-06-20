@@ -16,6 +16,35 @@ namespace Dyalect.Runtime.Types
         }
 
         public override object ToObject() => Unit;
+
+        protected internal override bool HasItem(string name, ExecutionContext ctx) =>
+            Unit.ExportList.ContainsKey(name);
+
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
+        {
+            if (index.TypeId != DyType.String)
+                return ctx.IndexInvalidType(DyTypeNames.String, index);
+
+            if (!Unit.ExportList.TryGetValue(index.GetString(), out var sv))
+                return ctx.IndexOutOfRange(DyTypeNames.Module, index);
+
+            return globals[sv.Address >> 8];
+        }
+
+        protected internal override DyObject GetItem(int index, ExecutionContext ctx) =>
+                ctx.IndexInvalidType(DyTypeNames.String, DyInteger.Get(index));
+
+        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
+        {
+            if (!Unit.ExportList.TryGetValue(name, out var sv))
+            {
+                value = null;
+                return false;
+            }
+
+            value = globals[sv.Address >> 8];
+            return true;
+        }
     }
 
     internal sealed class DyModuleTypeInfo : DyTypeInfo
@@ -32,5 +61,17 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => 
             (DyString)("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
+
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+
+        protected override DyFunction GetMember(string name, ExecutionContext ctx)
+        {
+            return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
+            {
+                if (!self.TryGetItem(name, c, out var value))
+                    return ctx.IndexOutOfRange(DyTypeNames.Tuple, name);
+                return value;
+            });
+        }
     }
 }

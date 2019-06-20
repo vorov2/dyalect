@@ -58,6 +58,20 @@ namespace Dyalect.Runtime.Types
             return GetItem(i, ctx);
         }
 
+        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
+        {
+            var i = GetOrdinal(name);
+
+            if (i == -1)
+            {
+                value = null;
+                return false;
+            }
+
+            value = GetItem(i, ctx);
+            return true;
+        }
+
         protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx)
         {
             var i = GetOrdinal(name);
@@ -68,7 +82,7 @@ namespace Dyalect.Runtime.Types
             SetItem(i, value, ctx);
         }
 
-        protected internal override int GetOrdinal(string name)
+        private int GetOrdinal(string name)
         {
             for (var i = 0; i < Values.Length; i++)
                 if (Values[i].GetLabel() == name)
@@ -256,10 +270,9 @@ namespace Dyalect.Runtime.Types
                 default:
                     return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
                     {
-                        var idx = self.GetOrdinal(name);
-                        if (idx == -1)
+                        if (!self.TryGetItem(name, c, out var value))
                             return ctx.IndexOutOfRange(DyTypeNames.Tuple, name);
-                        return self.GetItem(idx, ctx);
+                        return value;
                     });
             }
         }

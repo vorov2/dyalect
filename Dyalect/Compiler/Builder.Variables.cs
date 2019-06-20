@@ -52,7 +52,7 @@ namespace Dyalect.Compiler
 
             var retval = AddVariable();
 
-            if ((data & VarFlags.Exported) == VarFlags.Exported)
+            if (currentScope == globalScope)
                 unit.ExportList.Add(name, new ScopeVar(retval, data));
 
             return retval;

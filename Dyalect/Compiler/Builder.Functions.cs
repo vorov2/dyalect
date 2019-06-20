@@ -17,7 +17,7 @@ namespace Dyalect.Compiler
                 var addr = 0;
 
                 if (!node.IsMemberFunction)
-                    addr = AddVariable(node.Name, node, flags | VarFlags.Exported);
+                    addr = AddVariable(node.Name, node, flags);
 
                 BuildFunctionBody(node, hints, ctx);
 
