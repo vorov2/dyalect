@@ -1,1 +1,6 @@
-﻿var s; s = () => "var s; s = \"\(s())\"; print(s())"; print(s())
+﻿for i in 2..Integer.max {
+	if i * i % 1000000 == 269696 {
+		print("\(i) is the smallest number that ends with 269696")
+		break
+	}
+}
