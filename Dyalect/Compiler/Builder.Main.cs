@@ -238,6 +238,20 @@ namespace Dyalect.Compiler
                 cw.PushVar(sv);
                 return;
             }
+            else if (node.Target.NodeType == NodeType.Name)
+            {
+                var nm = node.Target.GetName();
+                var sv = GetVariable(nm, node.Target, err: false);
+
+                if ((sv.Data & VarFlags.Module) == VarFlags.Module
+                    && referencedUnits.TryGetValue(nm, out var ru)
+                    && ru.Unit.ExportList.TryGetValue(node.Name, out var var))
+                {
+                    AddLinePragma(node);
+                    cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
+                    return;
+                }
+            }
 
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
 

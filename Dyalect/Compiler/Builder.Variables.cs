@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace Dyalect.Compiler
 {
-    //Этот кусок отвечает за добавление и поиск переменных
+    //This part is responsible for adding/resolving variables
     partial class Builder
     {
         //Индексаторы переменных
-        private Stack<int> counters; //Стек индексов лексического скоупа
-        private int currentCounter; //Глобальный индексер
+        private Stack<int> counters; //Stack of indices for the lexical scope
+        private int currentCounter; //Global indexer
 
-        private Dictionary<string, ImportedName> imports = new Dictionary<string, ImportedName>(); //Все глобальные импорты имён
+        private Dictionary<string, ImportedName> imports = new Dictionary<string, ImportedName>(); //All global imports
 
         //Стандартная процедура добавления переменных. Используется, когда нужна безыменная переменная
         //private каких-нибудь тёмных внутренних дел
