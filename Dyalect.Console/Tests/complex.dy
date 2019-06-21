@@ -800,3 +800,13 @@ func whileStackTest() {
     }
     assert(true, true)
 }
+
+func bubbTest() {
+    var res =
+        for i in 2..Integer.max {
+            if i * i % 1000000 == 269696 {
+                break i
+            }
+        }
+    assert(25264, res)
+}
