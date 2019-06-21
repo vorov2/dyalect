@@ -491,6 +491,12 @@ func stringTest20() {
     assert("", String.default)
 }
 
+func stringTest21() {
+    assert("for gem gemetric", "for rem remetric".replace("rem", "gem"))
+    assert("foobar", "foobar".replace(value: "FOO", with: "ZOO"))
+    assert("ZOObar", "foobar".replace(value: "FOO", with: "ZOO", ignoreCase: true))
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
