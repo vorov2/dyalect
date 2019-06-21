@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace Dyalect.Compiler
 {
-    //Эта часть отвечает за генерацию ошибок, ворнингов и пр.
+    //This part is responsible for emitting warnings and errors
     partial class Builder
     {
-        internal List<BuildMessage> Messages { get; } = new List<BuildMessage>(); //Список всех сгенерированных при билде сообщений
-        internal int ErrorCount { get; private set; } //Текущее количество ошибок
+        internal List<BuildMessage> Messages { get; } = new List<BuildMessage>(); //A list of all generated messages
+        internal int ErrorCount { get; private set; } //Number of errors
 
         private void AddMessage(BuildMessage msg)
         {
@@ -18,11 +18,10 @@ namespace Dyalect.Compiler
             {
                 ErrorCount++;
 
-                //Лимит на ошибки, после которого мы уже не хотим продолжать компиляцию. Ибо
-                //и компилятору надо отдохнуть
+                //An error limit - if reached we stop compilation
                 if (Messages.Count >= ERROR_LIMIT)
                 {
-                    //Здесь мы генерируем сообщение 'Слишком много ошибок' и заканчиваем.
+                    //Generate "too many errors" error message and terminate
                     Messages.Add(new BuildMessage(CompilerErrors.TooManyErrors, BuildMessageType.Error,
                         (int)CompilerError.TooManyErrors, msg.Line, msg.Column, unit.FileName));
                     throw new TerminationException();

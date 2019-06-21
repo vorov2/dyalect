@@ -28,6 +28,9 @@ namespace Dyalect.Runtime.Types
             if (!Unit.ExportList.TryGetValue(index.GetString(), out var sv))
                 return ctx.IndexOutOfRange(DyTypeNames.Module, index);
 
+            if ((sv.Data & VarFlags.Private) == VarFlags.Private)
+                return ctx.PrivateNameAccess(index);
+
             return globals[sv.Address >> 8];
         }
 

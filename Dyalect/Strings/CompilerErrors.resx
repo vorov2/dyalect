@@ -204,4 +204,7 @@
   <data name="CtorOnlyLocalType" xml:space="preserve">
     <value>Unable to define a constructor for a non-local type "{0}".</value>
   </data>
+  <data name="PrivateNameAccess" xml:space="preserve">
+    <value>Unable to access a private module member "{0}".</value>
+  </data>
 </root>

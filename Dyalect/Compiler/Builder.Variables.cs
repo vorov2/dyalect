@@ -7,14 +7,14 @@ namespace Dyalect.Compiler
     //This part is responsible for adding/resolving variables
     partial class Builder
     {
-        //Индексаторы переменных
+        //Variables indexers
         private Stack<int> counters; //Stack of indices for the lexical scope
         private int currentCounter; //Global indexer
 
         private Dictionary<string, ImportedName> imports = new Dictionary<string, ImportedName>(); //All global imports
 
-        //Стандартная процедура добавления переменных. Используется, когда нужна безыменная переменная
-        //private каких-нибудь тёмных внутренних дел
+        //Standard routine to add variables, can be used when an internal unnamed variable is need
+        //which won't be visible to the user (for system purposes).
         private int AddVariable()
         {
             var ret = 0 | currentCounter << 8;
@@ -52,7 +52,7 @@ namespace Dyalect.Compiler
 
             var retval = AddVariable();
 
-            if (currentScope == globalScope)
+            if (currentScope == globalScope && (data & VarFlags.Function) == VarFlags.Function)
                 unit.ExportList.Add(name, new ScopeVar(retval, data));
 
             return retval;
@@ -148,6 +148,9 @@ namespace Dyalect.Compiler
             //No luck. Need to check if this variable is imported from some module
             if (imports.TryGetValue(name, out ImportedName imp))
             {
+                if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                    AddError(CompilerError.PrivateNameAccess, loc, name);
+
                 return new ScopeVar(imp.ModuleHandle | (imp.Var.Address >> 8) << 8,
                     imp.Var.Data | VarFlags.External);
             }

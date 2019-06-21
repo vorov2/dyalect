@@ -247,6 +247,9 @@ namespace Dyalect.Compiler
                     && referencedUnits.TryGetValue(nm, out var ru)
                     && ru.Unit.ExportList.TryGetValue(node.Name, out var var))
                 {
+                    if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                        AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
+
                     AddLinePragma(node);
                     cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
                     return;

@@ -41,7 +41,9 @@ namespace Dyalect.Runtime
 
         MatchFailed = 615,
 
-        CollectionModified = 616
+        CollectionModified = 616,
+
+        PrivateNameAccess = 617
     }
 
     public class DyError
@@ -125,6 +127,13 @@ namespace Dyalect.Runtime
             ctx.Error = new DyError(DyErrorCode.StaticOperationNotSupported,
                 ("Operation", op),
                 ("TypeName", typeName));
+            return DyNil.Instance;
+        }
+
+        public static DyObject PrivateNameAccess(this ExecutionContext ctx, DyObject obj)
+        {
+            ctx.Error = new DyError(DyErrorCode.PrivateNameAccess,
+                ("Name", obj.ToString()));
             return DyNil.Instance;
         }
 

@@ -196,6 +196,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to access a private module member &quot;{0}&quot;..
+        /// </summary>
+        internal static string PrivateNameAccess {
+            get {
+                return ResourceManager.GetString("PrivateNameAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Range is not supported in this context..
         /// </summary>
         internal static string RangeIndexNotSupported {

@@ -26,7 +26,7 @@
 
         ExpressionNoName = 211,
 
-        // = 212,
+        PrivateNameAccess = 212,
 
         UndefinedBaseVariable = 213,
 
