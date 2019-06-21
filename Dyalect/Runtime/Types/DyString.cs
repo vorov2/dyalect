@@ -391,6 +391,18 @@ namespace Dyalect.Runtime.Types
             return new DyString(str.PadRight((int)len.GetInteger(), with.GetChar()));
         }
 
+        private DyObject Replace(ExecutionContext ctx, DyObject self, DyObject oldValue, DyObject newValue, DyObject ignoreCase)
+        {
+            if (oldValue.TypeId != DyType.String && oldValue.TypeId != DyType.Char)
+                return ctx.InvalidType(oldValue);
+
+            if (newValue.TypeId != DyType.String && newValue.TypeId != DyType.Char)
+                return ctx.InvalidType(newValue);
+
+            return new DyString(self.GetString().Replace(oldValue.GetString(), newValue.GetString(),
+                ignoreCase.GetBool() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             switch (name)
@@ -429,6 +441,9 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Member(name, PadLeft, -1, new Par("to"), new Par("with", new DyChar(' ')));
                 case "padRight":
                     return DyForeignFunction.Member(name, PadRight, -1, new Par("to"), new Par("with", new DyChar(' ')));
+                case "replace":
+                    return DyForeignFunction.Member(name, Replace, -1, new Par("value"), new Par("with"), 
+                        new Par("ignoreCase", (DyObject)DyBool.False));
                 default:
                     return null;
             }

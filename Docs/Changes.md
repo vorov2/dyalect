@@ -1,3 +1,8 @@
+# 0.9.0
+  * Done: _Optimize qualified access to an external name_ ([Issue #174](https://github.com/vorov2/dyalect/issues/174))
+  * Done: _Add `String.replace` method_ ([Issue #175](https://github.com/vorov2/dyalect/issues/175), [docs](https://github.com/vorov2/dyalect/wiki/String#replace)).
+  * Done: _Remove an obsolete `typeof` operator_ ([Issue #171](https://github.com/vorov2/dyalect/issues/171)).
+
 # 0.8.0
   * Done: _Custom types_ ([Issue #5](https://github.com/vorov2/dyalect/issues/5), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
   * Done: _Auto-invoke functions_ ([Issue #159](https://github.com/vorov2/dyalect/issues/159), [docs](https://github.com/vorov2/dyalect/wiki/Functions#auto)).
