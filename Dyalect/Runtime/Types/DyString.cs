@@ -403,6 +403,28 @@ namespace Dyalect.Runtime.Types
                 ignoreCase.GetBool() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
         }
 
+        private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject from, DyObject count)
+        {
+            if (from.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, from);
+
+            int fri = (int)from.GetInteger();
+            int c;
+            var str = self.GetString();
+
+            if (count.TypeId == DyType.Integer)
+                c = (int)count.GetInteger();
+            else if (count.TypeId == DyType.Nil)
+                c = str.Length - fri;
+            else
+                return ctx.InvalidType(DyTypeNames.Integer, count);
+
+            if (fri + c > str.Length)
+                return ctx.IndexOutOfRange(DyTypeNames.String, fri + c);
+
+            return new DyString(str.Remove(fri, c));
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             switch (name)
@@ -444,6 +466,8 @@ namespace Dyalect.Runtime.Types
                 case "replace":
                     return DyForeignFunction.Member(name, Replace, -1, new Par("value"), new Par("with"), 
                         new Par("ignoreCase", (DyObject)DyBool.False));
+                case "remove":
+                    return DyForeignFunction.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance));
                 default:
                     return null;
             }

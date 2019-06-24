@@ -497,6 +497,14 @@ func stringTest21() {
     assert("ZOObar", "foobar".replace(value: "FOO", with: "ZOO", ignoreCase: true))
 }
 
+func stringTest22() {
+    var str = "from to"
+    assert("from", str.remove(4))
+    assert("from", str.remove(4, 3))
+    assert("from ", str.remove(5))
+    assert("froo", str.remove(3, 3))
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
