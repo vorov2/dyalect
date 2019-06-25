@@ -20,6 +20,7 @@
         BitwiseAnd,
         BitwiseOr,
         Xor,
-        Coalesce
+        Coalesce,
+        Is
     }
 }

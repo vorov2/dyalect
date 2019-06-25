@@ -238,6 +238,23 @@ namespace Dyalect.Compiler
                 cw.PushVar(sv);
                 return;
             }
+            else if (node.Target.NodeType == NodeType.Name)
+            {
+                var nm = node.Target.GetName();
+                var sv = GetVariable(nm, node.Target, err: false);
+
+                if ((sv.Data & VarFlags.Module) == VarFlags.Module
+                    && referencedUnits.TryGetValue(nm, out var ru)
+                    && ru.Unit.ExportList.TryGetValue(node.Name, out var var))
+                {
+                    if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                        AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
+
+                    AddLinePragma(node);
+                    cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
+                    return;
+                }
+            }
 
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
 
@@ -353,7 +370,7 @@ namespace Dyalect.Compiler
 
         private void BuildImport(DImport node, CompilerContext ctx)
         {
-            var r = new Reference(node.ModuleName, node.Dll, node.Location, unit.FileName);
+            var r = new Reference(node.ModuleName, node.LocalPath, node.Dll, node.Location, unit.FileName);
             var res = linker.Link(r);
 
             if (res.Success)
@@ -362,14 +379,14 @@ namespace Dyalect.Compiler
                 unit.References.Add(res.Value);
                 referencedUnits.Add(node.Alias ?? node.ModuleName, referencedUnit);
 
-                foreach (var n in res.Value.ExportList)
+                foreach (var kv in res.Value.ExportList)
                 {
-                    var imp = new ImportedName(node.ModuleName, unit.UnitIds.Count, n);
+                    var imp = new ImportedName(node.Alias ?? node.ModuleName, unit.UnitIds.Count, kv.Key, kv.Value);
 
-                    if (imports.ContainsKey(n.Name))
-                        imports[n.Name] = imp;
+                    if (imports.ContainsKey(kv.Key))
+                        imports[kv.Key] = imp;
                     else
-                        imports.Add(n.Name, imp);
+                        imports.Add(kv.Key, imp);
                 }
 
                 for (var i = 0; i < res.Value.Types.Count; i++)
@@ -422,19 +439,6 @@ namespace Dyalect.Compiler
 
                     var push = GetExpressionName(node.Arguments[0]);
                     cw.Push(push);
-                    return;
-                }
-                else if (name == "typeof")
-                {
-                    if (node.Arguments.Count != 1)
-                    {
-                        AddError(CompilerError.InvalidTypeOfOperator, node.Location);
-                        return;
-                    }
-
-                    Build(node.Arguments[0], hints.Append(Push), ctx);
-                    cw.Type();
-                    AddWarning(CompilerWarning.FunctionDeprecated, node.Location, name);
                     return;
                 }
 
@@ -518,6 +522,7 @@ namespace Dyalect.Compiler
             var falseLabel = cw.DefineLabel();
             var skipLabel = cw.DefineLabel();
 
+            StartScope(false, node.Location);
             Build(node.Condition, hints.Append(Push), ctx);
             AddLinePragma(node);
             cw.Brfalse(falseLabel);
@@ -533,6 +538,7 @@ namespace Dyalect.Compiler
 
             cw.MarkLabel(skipLabel);
             cw.Nop();
+            EndScope();
         }
 
         private void Build(DStringLiteral node, Hints hints, CompilerContext ctx)
@@ -726,8 +732,8 @@ namespace Dyalect.Compiler
 
             if (node.Pattern.NodeType == NodeType.NamePattern)
             {
-                var flags = currentScope.IsGlobal ? VarFlags.Exported : VarFlags.None;
-                var a = AddVariable(node.Pattern.GetName(), node, node.Constant ? flags | VarFlags.Const : flags);
+                var flags = node.Constant ? VarFlags.Const : VarFlags.None;
+                var a = AddVariable(node.Pattern.GetName(), node, flags);
                 cw.PopVar(a);
             }
             else
@@ -814,6 +820,15 @@ namespace Dyalect.Compiler
                     cw.Push(true);
                     cw.MarkLabel(exitLab);
                     cw.Nop();
+                    break;
+                case BinaryOperator.Is:
+                    {
+                        var pat = (DPattern)node.Right;
+                        AddLinePragma(node);
+                        PreinitPattern(pat);
+                        Build(node.Left, hints.Append(Push), ctx);
+                        BuildPattern(pat, hints, ctx);
+                    }
                     break;
                 default:
                     Build(node.Left, hints.Append(Push), ctx);

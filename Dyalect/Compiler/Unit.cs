@@ -11,7 +11,7 @@ namespace Dyalect.Compiler
             Layouts = new List<MemoryLayout>();
             Ops = new List<Op>();
             Layouts = new List<MemoryLayout>();
-            ExportList = new List<PublishedName>();
+            ExportList = new Dictionary<string, ScopeVar>();
             UnitIds = new List<int>();
             References = new List<Unit>();
             Types = new List<TypeDescriptor>();
@@ -76,6 +76,6 @@ namespace Dyalect.Compiler
 
         public List<MemoryLayout> Layouts { get; }
 
-        public List<PublishedName> ExportList { get; }
+        public Dictionary<string, ScopeVar> ExportList { get; }
     }
 }

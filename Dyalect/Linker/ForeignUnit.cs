@@ -20,7 +20,7 @@ namespace Dyalect.Linker
 
         internal protected void Add(string name, DyObject obj)
         {
-            ExportList.Add(new PublishedName(name, new ScopeVar(0 | ExportList.Count << 8, VarFlags.Foreign)));
+            ExportList.Add(name, new ScopeVar(0 | ExportList.Count << 8, VarFlags.Foreign));
             Values.Add(obj);
         }
 

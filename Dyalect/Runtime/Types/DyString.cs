@@ -391,6 +391,40 @@ namespace Dyalect.Runtime.Types
             return new DyString(str.PadRight((int)len.GetInteger(), with.GetChar()));
         }
 
+        private DyObject Replace(ExecutionContext ctx, DyObject self, DyObject oldValue, DyObject newValue, DyObject ignoreCase)
+        {
+            if (oldValue.TypeId != DyType.String && oldValue.TypeId != DyType.Char)
+                return ctx.InvalidType(oldValue);
+
+            if (newValue.TypeId != DyType.String && newValue.TypeId != DyType.Char)
+                return ctx.InvalidType(newValue);
+
+            return new DyString(self.GetString().Replace(oldValue.GetString(), newValue.GetString(),
+                ignoreCase.GetBool() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
+        }
+
+        private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject from, DyObject count)
+        {
+            if (from.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, from);
+
+            int fri = (int)from.GetInteger();
+            int c;
+            var str = self.GetString();
+
+            if (count.TypeId == DyType.Integer)
+                c = (int)count.GetInteger();
+            else if (count.TypeId == DyType.Nil)
+                c = str.Length - fri;
+            else
+                return ctx.InvalidType(DyTypeNames.Integer, count);
+
+            if (fri + c > str.Length)
+                return ctx.IndexOutOfRange(DyTypeNames.String, fri + c);
+
+            return new DyString(str.Remove(fri, c));
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             switch (name)
@@ -429,6 +463,11 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Member(name, PadLeft, -1, new Par("to"), new Par("with", new DyChar(' ')));
                 case "padRight":
                     return DyForeignFunction.Member(name, PadRight, -1, new Par("to"), new Par("with", new DyChar(' ')));
+                case "replace":
+                    return DyForeignFunction.Member(name, Replace, -1, new Par("value"), new Par("with"), 
+                        new Par("ignoreCase", (DyObject)DyBool.False));
+                case "remove":
+                    return DyForeignFunction.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance));
                 default:
                     return null;
             }

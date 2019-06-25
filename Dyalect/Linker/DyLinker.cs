@@ -53,7 +53,7 @@ namespace Dyalect.Linker
                 unit = LinkForeignModule(mod);
             else
             {
-                var path = FindModule(mod.ModuleName, mod);
+                var path = FindModule(mod.GetPath(), mod);
 
                 if (path == null || UnitMap.TryGetValue(path, out unit))
                     return Result.Create(unit, Messages);

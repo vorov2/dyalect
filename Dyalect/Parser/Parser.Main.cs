@@ -302,6 +302,14 @@ namespace Dyalect.Parser
             return result;
         }
 
+        private string ParseImport()
+        {
+            if (t.kind == _identToken)
+                return t.val;
+            else
+                return ParseSimpleString();
+        }
+
         private char ParseChar()
         {
             var str = ParseSimpleString();

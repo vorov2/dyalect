@@ -126,9 +126,6 @@
   <data name="InvalidNameOfOperator" xml:space="preserve">
     <value>Invalid usage of the "nameof" operator.</value>
   </data>
-  <data name="InvalidTypeOfOperator" xml:space="preserve">
-    <value>Invalid usage of the "typeof" operator.</value>
-  </data>
   <data name="NoEnclosingLoop" xml:space="preserve">
     <value>No enclosing loop out of which to break or continue.</value>
   </data>
@@ -206,5 +203,8 @@
   </data>
   <data name="CtorOnlyLocalType" xml:space="preserve">
     <value>Unable to define a constructor for a non-local type "{0}".</value>
+  </data>
+  <data name="PrivateNameAccess" xml:space="preserve">
+    <value>Unable to access a private module member "{0}".</value>
   </data>
 </root>

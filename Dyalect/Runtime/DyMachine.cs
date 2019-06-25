@@ -10,7 +10,8 @@ namespace Dyalect.Runtime
 {
     public static class DyMachine
     {
-        internal static readonly DyNativeFunction Global = new DyNativeFunction(null, 0, 0, FastList<DyObject[]>.Empty, DyType.Function, -1, AutoKind.None);
+        private static DyNativeFunction Global(int unitId) => 
+            new DyNativeFunction(null, unitId, 0, FastList<DyObject[]>.Empty, DyType.Function, -1, AutoKind.None);
 
         public static ExecutionContext CreateExecutionContext(UnitComposition composition)
         {
@@ -49,7 +50,7 @@ namespace Dyalect.Runtime
 
             //ctx.CallStack.Push(Caller.Root);
             ctx.Units[unitId] = ctx.Units[unitId] ?? new DyObject[lay0.Size];
-            return ExecuteWithData(Global, null, ctx);
+            return ExecuteWithData(Global(unitId), null, ctx);
         }
 
         internal static DyObject ExecuteWithData(DyNativeFunction function, DyObject[] locals, ExecutionContext ctx)

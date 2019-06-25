@@ -84,20 +84,30 @@ PRODUCTIONS
         
     Import =
         "import"
-        (. var inc = new DImport(t); .)
-        identToken
-        (. inc.ModuleName = t.val; .)
-        [
-            "=" identToken
+        (. var inc = new DImport(t); Imports.Add(inc); string lastName = null; .)
+        (identToken | stringToken) (. lastName = ParseImport(); .)
+        {
+            "."
+            (identToken | stringToken)
             (.
-                inc.Alias = inc.ModuleName;
-                inc.ModuleName = t.val;
+                if (inc.LocalPath != null)
+                    inc.LocalPath = string.Concat(inc.LocalPath, "/", lastName);
+                else
+                    inc.LocalPath = lastName;
+                lastName = ParseImport();
             .)
-        ]
+        }
+        (. inc.ModuleName = lastName; if (la.AfterEol) return; .)
         [
             "(" stringToken (. inc.Dll = ParseSimpleString(); .) ")"
         ]
-        (. Imports.Add(inc); .).
+        [
+            (. if (la.AfterEol) return; .)
+            identToken
+            (.
+                inc.Alias = t.val;
+            .)
+        ].
 
     Type<out DNode node> =
         (. DFunctionDeclaration f = null; .)
@@ -560,7 +570,7 @@ PRODUCTIONS
         ).
 
     Assignment<out DNode node> =
-        Coalesce<out node>
+        Is<out node>
         [
             (.
                 var ass = new DAssignment(t) { Target = node };
@@ -587,6 +597,14 @@ PRODUCTIONS
                 node = ass;
             .)
         ].
+
+    Is<out DNode node> =
+        Coalesce<out node>
+        {
+            "is" (. var ot = t; .)
+            OrPattern<out var pat> 
+            (. node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); .)
+        }.
 
     Coalesce<out DNode node> =
         Or<out node>

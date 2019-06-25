@@ -171,4 +171,7 @@
   <data name="InvalidType1" xml:space="preserve">
     <value>Type error: type "%Got% is unexpected.</value>
   </data>
+  <data name="PrivateNameAccess" xml:space="preserve">
+    <value>Unable to access a private module member "%Name%".</value>
+  </data>
 </root>

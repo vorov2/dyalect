@@ -187,6 +187,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to access a private module member &quot;%Name%&quot;..
+        /// </summary>
+        internal static string PrivateNameAccess {
+            get {
+                return ResourceManager.GetString("PrivateNameAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No value provided for an argument &quot;%ArgumentName%&quot; of a function &quot;%FunctionName%&quot;..
         /// </summary>
         internal static string RequiredArgumentMissing {

@@ -160,15 +160,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid usage of the &quot;typeof&quot; operator..
-        /// </summary>
-        internal static string InvalidTypeOfOperator {
-            get {
-                return ResourceManager.GetString("InvalidTypeOfOperator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Named argument &quot;{0}&quot; cannot be specified multiple times..
         /// </summary>
         internal static string NamedArgumentMultipleTimes {
@@ -201,6 +192,15 @@ namespace Dyalect.Strings {
         internal static string PatternNotSupported {
             get {
                 return ResourceManager.GetString("PatternNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to access a private module member &quot;{0}&quot;..
+        /// </summary>
+        internal static string PrivateNameAccess {
+            get {
+                return ResourceManager.GetString("PrivateNameAccess", resourceCulture);
             }
         }
         

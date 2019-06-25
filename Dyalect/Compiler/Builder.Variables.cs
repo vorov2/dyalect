@@ -4,17 +4,17 @@ using System.Collections.Generic;
 
 namespace Dyalect.Compiler
 {
-    //Этот кусок отвечает за добавление и поиск переменных
+    //This part is responsible for adding/resolving variables
     partial class Builder
     {
-        //Индексаторы переменных
-        private Stack<int> counters; //Стек индексов лексического скоупа
-        private int currentCounter; //Глобальный индексер
+        //Variables indexers
+        private Stack<int> counters; //Stack of indices for the lexical scope
+        private int currentCounter; //Global indexer
 
-        private Dictionary<string, ImportedName> imports = new Dictionary<string, ImportedName>(); //Все глобальные импорты имён
+        private Dictionary<string, ImportedName> imports = new Dictionary<string, ImportedName>(); //All global imports
 
-        //Стандартная процедура добавления переменных. Используется, когда нужна безыменная переменная
-        //private каких-нибудь тёмных внутренних дел
+        //Standard routine to add variables, can be used when an internal unnamed variable is need
+        //which won't be visible to the user (for system purposes).
         private int AddVariable()
         {
             var ret = 0 | currentCounter << 8;
@@ -52,8 +52,8 @@ namespace Dyalect.Compiler
 
             var retval = AddVariable();
 
-            if ((data & VarFlags.Exported) == VarFlags.Exported)
-                unit.ExportList.Add(new PublishedName(name, new ScopeVar(retval, data)));
+            if (currentScope == globalScope && (data & VarFlags.Function) == VarFlags.Function)
+                unit.ExportList.Add(name, new ScopeVar(retval, data));
 
             return retval;
         }
@@ -148,8 +148,11 @@ namespace Dyalect.Compiler
             //No luck. Need to check if this variable is imported from some module
             if (imports.TryGetValue(name, out ImportedName imp))
             {
-                return new ScopeVar(imp.ModuleHandle | (imp.PublishedName.Data.Address >> 8) << 8,
-                    imp.PublishedName.Data.Data | VarFlags.External);
+                if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                    AddError(CompilerError.PrivateNameAccess, loc, name);
+
+                return new ScopeVar(imp.ModuleHandle | (imp.Var.Address >> 8) << 8,
+                    imp.Var.Data | VarFlags.External);
             }
 
             if (err)

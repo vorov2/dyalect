@@ -1,6 +1,6 @@
 ﻿namespace Dyalect.Compiler
 {
-    public struct ScopeVar
+    public readonly struct ScopeVar
     {
         public static readonly ScopeVar Empty = new ScopeVar(-1, 0);
 

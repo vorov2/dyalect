@@ -283,4 +283,45 @@ func ctorMatchTest4() {
     const String(x, y, z) = "abc"
     assert(['a','b','c'], [x,y,z])
 }
- 
+
+func isTest1() {
+    var xs = (1, 2)
+    assert(true, xs is Tuple)
+    assert(false, xs is Array)
+    var b = xs is Tuple t
+    assert(true, b)
+    assert((1,2), t)
+}
+
+func isTest2() {
+    var xs = (1, 2, 3, ['a', 'b'])
+    var res
+    if xs is (1, _, 3, ['a', x]) {
+        res = true
+    }
+    assert(true, res)
+    var res1 = xs is (1, _, 3, ['a', x])
+    assert(true, res1)
+    assert('b', x)
+}
+
+func isTest3() {
+    var xs = (1, 2, 3)
+    var res = xs is (1, _, 3, ['a', x])
+    assert(false, res)
+    assert(nil, x)
+}
+
+func isTest4() {
+    func calcIt(xs) {
+        if xs is (x, y, z) {
+            x + y + z
+        } else {
+            0
+        }
+    }
+    var xs = (1, 2, 3)
+    var ys = (1, 2)
+    assert(6, calcIt(xs))
+    assert(0, calcIt(ys))
+}
