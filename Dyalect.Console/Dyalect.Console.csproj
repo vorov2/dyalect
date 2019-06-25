@@ -57,6 +57,12 @@
     <None Update="Tests\match.dy">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Tests\modules.dy">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Tests\refs\libtest.dy">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Tests\types.dy">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

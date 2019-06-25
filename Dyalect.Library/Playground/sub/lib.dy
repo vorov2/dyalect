@@ -9,3 +9,11 @@
 func div(x, y) {
     x / y
 }
+
+func sign(x) {
+    if x < 0 {
+        -1
+    } else {
+        0
+    }
+}

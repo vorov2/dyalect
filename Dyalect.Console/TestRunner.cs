@@ -129,7 +129,7 @@ namespace Dyalect
 
             foreach (var file in files)
             {
-                var linker = new DyLinker(FileLookup.Create(file), BuilderOptions.Default);
+                var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(file)), BuilderOptions.Default);
                 var cres = linker.Make(SourceBuffer.FromFile(file));
                 var funs = new FunSet();
                 funs.Funs = new Dictionary<string, DyFunction>(StringComparer.OrdinalIgnoreCase);
