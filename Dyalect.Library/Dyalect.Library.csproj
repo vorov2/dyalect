@@ -38,7 +38,7 @@
     <None Update="Playground\levenshtein.dy">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Playground\library.dy">
+    <None Update="Playground\sub\lib.dy">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Playground\test.dy">

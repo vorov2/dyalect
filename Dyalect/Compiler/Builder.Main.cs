@@ -370,7 +370,7 @@ namespace Dyalect.Compiler
 
         private void BuildImport(DImport node, CompilerContext ctx)
         {
-            var r = new Reference(node.ModuleName, node.Dll, node.Location, unit.FileName);
+            var r = new Reference(node.ModuleName, node.LocalPath, node.Dll, node.Location, unit.FileName);
             var res = linker.Link(r);
 
             if (res.Success)
@@ -381,7 +381,7 @@ namespace Dyalect.Compiler
 
                 foreach (var kv in res.Value.ExportList)
                 {
-                    var imp = new ImportedName(node.ModuleName, unit.UnitIds.Count, kv.Key, kv.Value);
+                    var imp = new ImportedName(node.Alias ?? node.ModuleName, unit.UnitIds.Count, kv.Key, kv.Value);
 
                     if (imports.ContainsKey(kv.Key))
                         imports[kv.Key] = imp;

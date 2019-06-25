@@ -178,23 +178,40 @@ namespace Dyalect.Parser
 
 	void Import() {
 		Expect(49);
-		var inc = new DImport(t); 
-		Expect(1);
-		inc.ModuleName = t.val; 
-		if (la.kind == 24) {
+		var inc = new DImport(t); Imports.Add(inc); string lastName = null; 
+		if (la.kind == 1) {
 			Get();
-			Expect(1);
-			inc.Alias = inc.ModuleName;
-			inc.ModuleName = t.val;
+		} else if (la.kind == 4) {
+			Get();
+		} else SynErr(85);
+		lastName = ParseImport(); 
+		while (la.kind == 20) {
+			Get();
+			if (la.kind == 1) {
+				Get();
+			} else if (la.kind == 4) {
+				Get();
+			} else SynErr(86);
+			if (inc.LocalPath != null)
+			   inc.LocalPath = string.Concat(inc.LocalPath, "/", lastName);
+			else
+			   inc.LocalPath = lastName;
+			lastName = ParseImport();
 			
 		}
+		inc.ModuleName = lastName; if (la.AfterEol) return; 
 		if (la.kind == 25) {
 			Get();
 			Expect(4);
 			inc.Dll = ParseSimpleString(); 
 			Expect(26);
 		}
-		Imports.Add(inc); 
+		if (la.kind == 1) {
+			if (la.AfterEol) return; 
+			Get();
+			inc.Alias = t.val;
+			
+		}
 	}
 
 	void Type(out DNode node) {
@@ -272,7 +289,7 @@ namespace Dyalect.Parser
 			Function(out node);
 			break;
 		}
-		default: SynErr(85); break;
+		default: SynErr(87); break;
 		}
 	}
 
@@ -286,7 +303,7 @@ namespace Dyalect.Parser
 			Return(out node);
 		} else if (la.kind == 13) {
 			Yield(out node);
-		} else SynErr(86);
+		} else SynErr(88);
 	}
 
 	void Match(out DNode node) {
@@ -323,7 +340,7 @@ namespace Dyalect.Parser
 			TryCatch(out node);
 		} else if (la.kind == 66) {
 			Throw(out node);
-		} else SynErr(87);
+		} else SynErr(89);
 		if (implicits != null)
 		{
 		   var func = new DFunctionDeclaration(node.Location)
@@ -354,7 +371,7 @@ namespace Dyalect.Parser
 			} else if (la.kind == 14) {
 				If(out node);
 				@if.False = node; 
-			} else SynErr(88);
+			} else SynErr(90);
 		}
 		node = @if; 
 	}
@@ -365,7 +382,7 @@ namespace Dyalect.Parser
 			While(out node);
 		} else if (la.kind == 15) {
 			For(out node);
-		} else SynErr(89);
+		} else SynErr(91);
 	}
 
 	void Function(out DNode node) {
@@ -383,7 +400,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 52) {
 			Get();
 			st = true; ctor = true; 
-		} else SynErr(90);
+		} else SynErr(92);
 		var f = new DFunctionDeclaration(t) { IsStatic = st, IsConstructor = ctor, IsAuto = auto };
 		functions.Push(f);
 		
@@ -450,7 +467,7 @@ namespace Dyalect.Parser
 			Loops(out node);
 		} else if (la.kind == 55) {
 			Match(out node);
-		} else SynErr(91);
+		} else SynErr(93);
 	}
 
 	void Binding(out DNode node) {
@@ -458,7 +475,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 8) {
 			Get();
-		} else SynErr(92);
+		} else SynErr(94);
 		var bin = new DBinding(t) { Constant = t.val == "const" }; 
 		OrPattern(out var pat);
 		bin.Pattern = pat; 
@@ -592,7 +609,7 @@ namespace Dyalect.Parser
 			if (la.kind == 1) {
 				AsPattern(node, out node);
 			}
-		} else SynErr(93);
+		} else SynErr(95);
 	}
 
 	void CtorPattern(out DPattern node) {
@@ -676,7 +693,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 63) {
 			Get();
-		} else SynErr(94);
+		} else SynErr(96);
 		node = new DBooleanPattern(t) { Value = t.val == "true" }; 
 	}
 
@@ -805,7 +822,7 @@ namespace Dyalect.Parser
 			f.Parameters.Add(a); 
 		} else if (la.kind == 25) {
 			FunctionArguments(f);
-		} else SynErr(95);
+		} else SynErr(97);
 		functions.Push(f); 
 		Expect(19);
 		Expr(out var exp);
@@ -916,7 +933,7 @@ namespace Dyalect.Parser
 			tc.BindVariable = new DName(t) { Value = t.val }; 
 			Block(out node);
 			tc.Catch = node; 
-		} else SynErr(96);
+		} else SynErr(98);
 		node = tc; 
 	}
 
@@ -1128,7 +1145,7 @@ namespace Dyalect.Parser
 			node = new DUnaryOperation(node, op, ot); 
 		} else if (StartOf(10)) {
 			Range(out node);
-		} else SynErr(97);
+		} else SynErr(99);
 	}
 
 	void Range(out DNode node) {
@@ -1217,7 +1234,7 @@ namespace Dyalect.Parser
 			Iterator(out node);
 		} else if (la.kind == 27) {
 			Block(out node);
-		} else SynErr(98);
+		} else SynErr(100);
 	}
 
 	void ApplicationArguments(DApplication app) {
@@ -1271,7 +1288,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 63) {
 			Get();
-		} else SynErr(99);
+		} else SynErr(101);
 		node = new DBooleanLiteral(t) { Value = t.val == "true" }; 
 	}
 
@@ -1353,7 +1370,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 49) {
 			Import();
 			Separator();
-		} else SynErr(100);
+		} else SynErr(102);
 	}
 
 	void Dyalect() {
@@ -1482,22 +1499,24 @@ namespace Dyalect.Parser
 			case 82: s = "??? expected"; break;
 			case 83: s = "invalid StandardOperators"; break;
 			case 84: s = "invalid FunctionName"; break;
-			case 85: s = "invalid Statement"; break;
-			case 86: s = "invalid ControlFlow"; break;
-			case 87: s = "invalid SimpleExpr"; break;
-			case 88: s = "invalid If"; break;
-			case 89: s = "invalid Loops"; break;
-			case 90: s = "invalid Function"; break;
-			case 91: s = "invalid Expr"; break;
-			case 92: s = "invalid Binding"; break;
-			case 93: s = "invalid Pattern"; break;
-			case 94: s = "invalid BooleanPattern"; break;
-			case 95: s = "invalid FunctionExpr"; break;
-			case 96: s = "invalid TryCatch"; break;
-			case 97: s = "invalid Unary"; break;
-			case 98: s = "invalid Literal"; break;
-			case 99: s = "invalid Bool"; break;
-			case 100: s = "invalid DyalectItem"; break;
+			case 85: s = "invalid Import"; break;
+			case 86: s = "invalid Import"; break;
+			case 87: s = "invalid Statement"; break;
+			case 88: s = "invalid ControlFlow"; break;
+			case 89: s = "invalid SimpleExpr"; break;
+			case 90: s = "invalid If"; break;
+			case 91: s = "invalid Loops"; break;
+			case 92: s = "invalid Function"; break;
+			case 93: s = "invalid Expr"; break;
+			case 94: s = "invalid Binding"; break;
+			case 95: s = "invalid Pattern"; break;
+			case 96: s = "invalid BooleanPattern"; break;
+			case 97: s = "invalid FunctionExpr"; break;
+			case 98: s = "invalid TryCatch"; break;
+			case 99: s = "invalid Unary"; break;
+			case 100: s = "invalid Literal"; break;
+			case 101: s = "invalid Bool"; break;
+			case 102: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

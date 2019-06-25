@@ -23,7 +23,7 @@ namespace Dyalect
                 NoWarnings = options.NoWarnings
             };
 
-            var lookup = FileLookup.Create(FS.GetStartupPath(), options.Paths);
+            var lookup = FileLookup.Create(Path.GetDirectoryName(options.FileName), options.Paths);
             Linker = new DyIncrementalLinker(lookup, buildOptions);
         }
 
