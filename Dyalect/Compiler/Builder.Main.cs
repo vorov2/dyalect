@@ -522,6 +522,7 @@ namespace Dyalect.Compiler
             var falseLabel = cw.DefineLabel();
             var skipLabel = cw.DefineLabel();
 
+            StartScope(false, node.Location);
             Build(node.Condition, hints.Append(Push), ctx);
             AddLinePragma(node);
             cw.Brfalse(falseLabel);
@@ -537,6 +538,7 @@ namespace Dyalect.Compiler
 
             cw.MarkLabel(skipLabel);
             cw.Nop();
+            EndScope();
         }
 
         private void Build(DStringLiteral node, Hints hints, CompilerContext ctx)

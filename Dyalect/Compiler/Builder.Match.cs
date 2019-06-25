@@ -483,10 +483,7 @@ namespace Dyalect.Compiler
                 if (e.NodeType == NodeType.LabelPattern)
                     PreinitLabel((DLabelPattern)e);
                 else
-                {
-                    cw.Get(i);
                     PreinitPattern(e);
-                }
             }
         }
 
