@@ -31,9 +31,13 @@ namespace Dyalect.Runtime
 
             if (unit.Layouts.Count == 0)
             {
-                var foreign = (ForeignUnit)unit;
-                foreign.Execute(ctx);
-                ctx.Units[unitId] = foreign.Values.ToArray();
+                if (ctx.Units[unitId] == null)
+                {
+                    var foreign = (ForeignUnit)unit;
+                    foreign.Execute(ctx);
+                    ctx.Units[unitId] = foreign.Values.ToArray();
+                }
+
                 return DyNil.Instance;
             }
 
