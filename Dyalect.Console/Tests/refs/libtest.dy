@@ -33,3 +33,7 @@ func max(x, y) {
         y
     }
 }
+
+private func id(x) {
+    x
+}

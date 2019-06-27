@@ -19,3 +19,8 @@ func moduleTest3() {
     }
     assert(-1, res)
 }
+
+func moduleTest4() {
+    var res = lib is (id: _)
+    assert(false, res)
+}

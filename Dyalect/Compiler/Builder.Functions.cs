@@ -16,6 +16,16 @@ namespace Dyalect.Compiler
                 var flags = VarFlags.Const | VarFlags.Function;
                 var addr = 0;
 
+                if (node.IsPrivate)
+                {
+                    flags |= VarFlags.Private;
+
+                    if (globalScope != currentScope)
+                        AddError(CompilerError.PrivateOnlyGlobal, node.Location);
+                    if (node.IsMemberFunction)
+                        AddError(CompilerError.PrivateMethod, node.Location);
+                }
+
                 if (!node.IsMemberFunction)
                     addr = AddVariable(node.Name, node, flags);
 

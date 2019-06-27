@@ -207,4 +207,10 @@
   <data name="PrivateNameAccess" xml:space="preserve">
     <value>Unable to access a private module member "{0}".</value>
   </data>
+  <data name="PrivateMethod" xml:space="preserve">
+    <value>A modifier "private" is only valid on regular functions.</value>
+  </data>
+  <data name="PrivateOnlyGlobal" xml:space="preserve">
+    <value>Private functions should be declared in global scope.</value>
+  </data>
 </root>

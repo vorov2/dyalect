@@ -196,11 +196,29 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A modifier &quot;private&quot; is only valid on regular functions..
+        /// </summary>
+        internal static string PrivateMethod {
+            get {
+                return ResourceManager.GetString("PrivateMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to access a private module member &quot;{0}&quot;..
         /// </summary>
         internal static string PrivateNameAccess {
             get {
                 return ResourceManager.GetString("PrivateNameAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private functions should be declared in global scope..
+        /// </summary>
+        internal static string PrivateOnlyGlobal {
+            get {
+                return ResourceManager.GetString("PrivateOnlyGlobal", resourceCulture);
             }
         }
         

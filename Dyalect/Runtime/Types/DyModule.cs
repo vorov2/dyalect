@@ -17,8 +17,13 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => Unit;
 
-        protected internal override bool HasItem(string name, ExecutionContext ctx) =>
-            Unit.ExportList.ContainsKey(name);
+        protected internal override bool HasItem(string name, ExecutionContext ctx)
+        {
+            if (!Unit.ExportList.TryGetValue(name, out var sv))
+                return false;
+
+            return (sv.Data & VarFlags.Private) != VarFlags.Private;
+        }
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {

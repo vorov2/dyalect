@@ -16,6 +16,8 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; }
 
+        public bool IsPrivate { get; set; }
+
         public bool IsConstructor { get; set; }
 
         public bool IsAuto { get; set; }
