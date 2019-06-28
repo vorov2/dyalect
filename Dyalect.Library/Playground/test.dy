@@ -1,5 +1,25 @@
-﻿import sub.lib lib
+﻿type List = Cons(x, next) | Nil()
 
-match lib {
-    (sign: fn) => fn(-12)
+func List.toString() {
+    func walk(xs) {
+        match xs {
+            Cons(x, Nil()) => x.toString(),
+            Cons(x, next) => x.toString() + "," + walk(next),
+            Nil() => ""
+        }
+    }
+    return "[" + walk(this) + "]"
 }
+
+static func List.List(values...) {
+    var xs = List.Nil()
+    for x in values {
+        xs = List.Cons(x, xs)
+    }
+    xs
+}
+
+
+//var xs = List.Cons(1, List.Cons(2, List.Cons(3, List.Cons(4, List.Nil()))))
+var xs = List(1,2,3,4)
+xs.toString()
