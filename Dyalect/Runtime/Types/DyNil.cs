@@ -19,6 +19,11 @@
         public override string ToString() => "nil";
 
         public override DyObject Clone() => this;
+
+        internal override int GetCount() => 0;
+
+        internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
+            ctx.IndexOutOfRange(DyTypeNames.Nil, index);
     }
 
     internal sealed class DyNilTypeInfo : DyTypeInfo

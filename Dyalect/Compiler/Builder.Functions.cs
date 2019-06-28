@@ -243,7 +243,7 @@ namespace Dyalect.Compiler
 
             if (node.IsMemberFunction && node.IsConstructor)
             {
-                if (node.TypeName.Parent == null && localTypes.TryGetValue(node.TypeName.Local, out var ti))
+                if (TryGetLocalType(node.TypeName, out var ti))
                 {
                     cw.Aux(GetMemberNameId(node.Name));
                     cw.NewType(ti.TypeId);

@@ -210,13 +210,13 @@ func typeTest4() {
         }
         return "[" + walk(this) + "]"
     }
-    var xs = List.Cons(1, List.Cons(2, List.Cons(3, List.Cons(4, List.Nil()))))
+    var xs = List.Cons(1, List.Cons(2, List.Cons(3, List.Cons(4, List.Empty()))))
     assert("[1,2,3,4]", xs.toString())
 }
 
 func typeTest5() {
     static func List.List(values...) {
-        var xs = List.Nil()
+        var xs = List.Empty()
         for x in values {
             xs = List.Cons(x, xs)
         }
@@ -235,4 +235,20 @@ func typeTest6() {
         }
     }
     assert("nil", x.toString())
+}
+
+type Zeta()
+func simpleTypeTest1() {
+    var z = Zeta()
+    var res = z.len()
+    assert(0, res)
+}
+
+type Beta(x)
+func simpleTestTest2() {
+    var b = Beta(12)
+    assert(1, b.len())
+    assert(12, b[0])
+    assert(12, b["x"])
+    assert(12, b.x)
 }

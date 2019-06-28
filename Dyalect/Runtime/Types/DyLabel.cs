@@ -19,6 +19,29 @@
         protected internal override string GetLabel() => Label;
 
         protected internal override DyObject GetTaggedValue() => Value;
+
+        internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
+            (index.TypeId == DyType.Integer && index.GetInteger() == 0) ||
+                (index.TypeId == DyType.String && index.GetString() == Label)
+                ? Value : ctx.IndexOutOfRange(this.TypeName(ctx), index);
+
+        internal protected override DyObject GetItem(string name, ExecutionContext ctx) =>
+            name == Label ? Value : ctx.IndexOutOfRange(this.TypeName(ctx), name);
+
+        internal protected override DyObject GetItem(int index, ExecutionContext ctx) =>
+            index == 0 ? Value : ctx.IndexOutOfRange(this.TypeName(ctx), index);
+
+        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
+        {
+            if (name == Label)
+            {
+                value = Value;
+                return true;
+            }
+
+            value = null;
+            return false;
+        }
     }
 
     internal sealed class DyLabelTypeInfo : DyTypeInfo

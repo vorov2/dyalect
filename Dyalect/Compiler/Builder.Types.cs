@@ -18,8 +18,8 @@ namespace Dyalect.Compiler
             if (localTypes.ContainsKey(node.Name))
             {
                 localTypes.Remove(node.Name);
+                types.Remove(node.Name);
                 AddError(CompilerError.TypeAlreadyDeclared, node.Location, node.Name);
-                return;
             }
 
             localTypes.Add(node.Name, ti);
@@ -39,6 +39,17 @@ namespace Dyalect.Compiler
             {
                 AddLinePragma(func);
                 cw.PushNil();
+                PopIf(hints);
+                return;
+            }
+
+            if (func.Parameters.Count == 1)
+            {
+                var p = func.Parameters[0];
+                var a = GetVariable(p.Name, p);
+                AddLinePragma(func);
+                cw.PushVar(a);
+                cw.Tag(p.Name);
                 PopIf(hints);
                 return;
             }
@@ -118,6 +129,12 @@ namespace Dyalect.Compiler
                     return CompilerError.None;
                 }
             }
+        }
+
+        private bool TryGetLocalType(Qualident q, out TypeInfo ti)
+        {
+            ti = null;
+            return q.Parent == null && localTypes.TryGetValue(q.Local, out ti);
         }
     }
 }
