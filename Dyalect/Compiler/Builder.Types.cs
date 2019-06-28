@@ -19,6 +19,7 @@ namespace Dyalect.Compiler
             {
                 localTypes.Remove(node.Name);
                 AddError(CompilerError.TypeAlreadyDeclared, node.Location, node.Name);
+                return;
             }
 
             localTypes.Add(node.Name, ti);
@@ -34,6 +35,14 @@ namespace Dyalect.Compiler
 
         private void GenerateConstructor(DFunctionDeclaration func, Hints hints, CompilerContext ctx)
         {
+            if (func.Parameters.Count == 0)
+            {
+                AddLinePragma(func);
+                cw.PushNil();
+                PopIf(hints);
+                return;
+            }
+
             for (var i = 0; i < func.Parameters.Count; i++)
             {
                 var p = func.Parameters[i];

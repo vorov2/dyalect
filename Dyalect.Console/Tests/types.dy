@@ -225,3 +225,14 @@ func typeTest5() {
     var xs = List(1,2,3,4)
     assert("[4,3,2,1]", xs.toString())
 }
+
+type Zoo1()
+func typeTest6() {
+    var x = Zoo1()
+    func Zoo1.toString() {
+        match this {
+            nil => "nil"
+        }
+    }
+    assert("nil", x.toString())
+}
