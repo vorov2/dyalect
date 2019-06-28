@@ -205,7 +205,7 @@ func typeTest4() {
     func List.toString() {
         func walk(xs) {
             match xs {
-                Cons(x, Nil()) => x.toString(),
+                Cons(x, Empty()) => x.toString(),
                 Cons(x, next) => x.toString() + "," + walk(next),
                 Empty() => ""
             }
