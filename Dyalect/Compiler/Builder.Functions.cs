@@ -210,7 +210,7 @@ namespace Dyalect.Compiler
             //(same as this in C#)
             if (node.IsMemberFunction && !node.IsStatic)
             {
-                var va = AddVariable("this", node, data: VarFlags.Const);
+                var va = AddVariable("this", node, data: VarFlags.Const | VarFlags.This);
                 cw.This();
                 cw.PopVar(va);
             }
