@@ -105,7 +105,7 @@ namespace Dyalect.Parser.Model
 
     public sealed class DNilPattern : DPattern
     {
-        public DNilPattern(Location loc) : base(loc, NodeType.StringPattern)
+        public DNilPattern(Location loc) : base(loc, NodeType.NilPattern)
         {
 
         }
