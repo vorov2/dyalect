@@ -7,6 +7,7 @@
         public static readonly Op Get = new Op(OpCode.Get);
         public static readonly Op Set = new Op(OpCode.Set);
         public static readonly Op This = new Op(OpCode.This);
+        public static readonly Op Unbox = new Op(OpCode.Unbox);
         public static readonly Op Type = new Op(OpCode.Type);
         public static readonly Op Pop = new Op(OpCode.Pop);
         public static readonly Op PushNil = new Op(OpCode.PushNil);

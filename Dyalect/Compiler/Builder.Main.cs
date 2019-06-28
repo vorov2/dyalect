@@ -428,17 +428,31 @@ namespace Dyalect.Compiler
             var sv = name != null ? GetVariable(name, node, err: false) : ScopeVar.Empty;
 
             //Check if an application is in fact a built-in operator call
-            if (name != null && sv.IsEmpty())
+            if (name != null && sv.IsEmpty() && node.Arguments.Count == 1)
                 if (name == "nameof")
                 {
-                    if (node.Arguments.Count != 1)
+                    var push = GetExpressionName(node.Arguments[0]);
+                    AddLinePragma(node);
+                    cw.Push(push);
+                    return;
+                }
+                else if (name == "new")
+                {
+                    if (ctx.Function?.TypeName == null)
                     {
-                        AddError(CompilerError.InvalidNameOfOperator, node.Location);
+                        AddError(CompilerError.CtorNoMethod, node.Location);
                         return;
                     }
 
-                    var push = GetExpressionName(node.Arguments[0]);
-                    cw.Push(push);
+                    if (!TryGetLocalType(ctx.Function.TypeName, out var ti))
+                    {
+                        AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName);
+                        return;
+                    }
+
+                    AddLinePragma(node);
+                    cw.Aux(GetMemberNameId(ctx.Function.Name));
+                    cw.NewType(ti.TypeId);
                     return;
                 }
 

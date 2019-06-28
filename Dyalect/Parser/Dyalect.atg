@@ -157,19 +157,13 @@ PRODUCTIONS
         (. node = null; bool st = false; bool auto = false; bool ctor = false; bool priv = false; .)
         (
             (
-                (
-                    [ "static" (. st = true; .) ] 
-                    [ "auto" (. auto = true; .) ]
-                    [ "private" (. priv = true; .) ]
-                    "func"
-                )
-                |
-                (
-                    "cons" (. st = true; ctor = true; .)
-                )
+                [ "static" (. st = true; .) ] 
+                [ "auto" (. auto = true; .) ]
+                [ "private" (. priv = true; .) ]
+                "func"
             )
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st, IsPrivate = priv, IsConstructor = ctor, IsAuto = auto };
+                var f = new DFunctionDeclaration(t) { IsStatic = st, IsPrivate = priv, IsAuto = auto };
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>

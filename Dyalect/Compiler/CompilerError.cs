@@ -22,7 +22,7 @@
 
         ReturnNotAllowed = 209,
 
-        InvalidNameOfOperator = 210,
+        CtorNoMethod = 210,
 
         ExpressionNoName = 211,
 

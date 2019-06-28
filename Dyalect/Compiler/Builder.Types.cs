@@ -39,32 +39,32 @@ namespace Dyalect.Compiler
             {
                 AddLinePragma(func);
                 cw.PushNil();
-                PopIf(hints);
-                return;
             }
-
-            if (func.Parameters.Count == 1)
+            else if (func.Parameters.Count == 1)
             {
                 var p = func.Parameters[0];
                 var a = GetVariable(p.Name, p);
                 AddLinePragma(func);
                 cw.PushVar(a);
                 cw.Tag(p.Name);
-                PopIf(hints);
-                return;
             }
-
-            for (var i = 0; i < func.Parameters.Count; i++)
+            else
             {
-                var p = func.Parameters[i];
-                var a = GetVariable(p.Name, p);
-                cw.PushVar(a);
-                cw.Tag(p.Name);
+                for (var i = 0; i < func.Parameters.Count; i++)
+                {
+                    var p = func.Parameters[i];
+                    var a = GetVariable(p.Name, p);
+                    cw.PushVar(a);
+                    cw.Tag(p.Name);
+                }
+
+                AddLinePragma(func);
+                cw.NewTuple(func.Parameters.Count);
             }
 
-            AddLinePragma(func);
-            cw.NewTuple(func.Parameters.Count);
-            PopIf(hints);
+            TryGetLocalType(func.TypeName, out var ti);
+            cw.Aux(GetMemberNameId(func.Name));
+            cw.NewType(ti.TypeId);
         }
 
         private TypeHandle GetTypeHandle(Qualident name, Location loc) => GetTypeHandle(name.Parent, name.Local, loc);

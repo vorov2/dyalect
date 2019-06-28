@@ -29,7 +29,9 @@ func autoTest3() {
 }
 
 func autoTest4() {
-    cons Foo.MakeFoo(obj) { obj }
+    static func Foo.MakeFoo(obj) { 
+        new(obj)
+    }
     auto func Foo.magic() {
         this.magic
     }
@@ -38,8 +40,8 @@ func autoTest4() {
 }
 
 func extendTest1() {
-    cons Bar.Bar(args...) {
-        args
+    static func Bar.Bar(args...) {
+        new(args) 
     }
     func Bar.len() {
         this.len()
@@ -56,8 +58,8 @@ func extendTest1() {
 }
 
 func extendTest2() {
-    cons Bar.Bar(args...) {
-        args
+    static func Bar.Bar(args...) {
+        new(args)
     }
     func Bar.len() {
         this.len()
@@ -116,11 +118,11 @@ func typeTest1() {
             Nat(x)
         }
     }
-    cons Nat.Nat(x) {
+    static func Nat.Nat(x) {
         if x < 0 {
             throw "Negative number."
         }
-        x
+        new(x)
     }
     func Nat.toInteger() {
         this
@@ -168,8 +170,8 @@ func typeTest3() {
     func ref(value) {
         Cell((__value: value))
     }
-    cons Cell.Cell(value) {
-        value
+    static func Cell.Cell(value) {
+        new(value)
     }
     func Cell.setValue(value) {
         this.__value = value
