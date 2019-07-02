@@ -33,7 +33,7 @@ func autoTest4() {
         new(obj)
     }
     auto func Foo.magic() {
-        this.magic
+        valueof(this).magic
     }
     var foo = Foo.MakeFoo((magic: 133))
     assert(133, foo.magic)
@@ -44,10 +44,10 @@ func extendTest1() {
         new(args) 
     }
     func Bar.len() {
-        this.len()
+        valueof(this).len()
     }
     func Bar.get(index) {
-        this[index]
+        valueof(this)[index]
     }
     var obj = Bar.Bar(1, 2, 3)
     var res = match obj {
@@ -62,10 +62,10 @@ func extendTest2() {
         new(args)
     }
     func Bar.len() {
-        this.len()
+        valueof(this).len()
     }
     func Bar.get(index) {
-        this[index]
+        valueof(this)[index]
     }
     var obj = Bar(1, 2, 3)
     var res = match obj {
@@ -125,22 +125,22 @@ func typeTest1() {
         new(x)
     }
     func Nat.toInteger() {
-        this
+        valueof(this)
     }
     func Nat + (other) {
-        fetch(this + other.toInteger())
+        fetch(valueof(this) + other.toInteger())
     }
     func Nat - (other) {
-        fetch(this - other.toInteger())
+        fetch(valueof(this) - other.toInteger())
     }
     func Nat * (other) {
-        fetch(this * other.toInteger())
+        fetch(valueof(this) * other.toInteger())
     }
     func Nat / (other) {
-        fetch(this / other.toInteger())
+        fetch(valueof(this) / other.toInteger())
     }
     func Nat == (other) {
-        this == other.toInteger()
+        valueof(this) == other.toInteger()
     }
     var n = Nat(12)
     assert(Nat(24), n + Nat(12))
@@ -174,16 +174,16 @@ func typeTest3() {
         new(value)
     }
     func Cell.setValue(value) {
-        this.__value = value
+        valueof(this).__value = value
     }
     func Cell.getValue() {
-        this.__value
+        valueof(this).__value
     }
     func Cell.get(index) {
         if index != 0 {
             throw "Index out of range."
         }
-        this.__value
+        valueof(this).__value
     }
     func Cell.len() {
         1 
@@ -232,7 +232,7 @@ type Zoo1()
 func typeTest6() {
     var x = Zoo1()
     func Zoo1.toString() {
-        match this {
+        match valueof(this) {
             nil => "nil"
         }
     }
