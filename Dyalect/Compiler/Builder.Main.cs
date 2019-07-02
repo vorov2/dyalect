@@ -450,6 +450,7 @@ namespace Dyalect.Compiler
                         return;
                     }
 
+                    Build(node.Arguments[0], hints.Append(Push), ctx);
                     AddLinePragma(node);
                     cw.Aux(GetMemberNameId(ctx.Function.Name));
                     cw.NewType(ti.TypeId);

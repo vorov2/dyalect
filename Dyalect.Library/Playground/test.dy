@@ -1,29 +1,7 @@
-﻿type List = Cons(x, next) | Nil()
+﻿type Foo
 
-func List.toString() {
-    func walk(xs) {
-        match xs {
-            (x, Nil() || nil) => x.toString(),
-            (x, next) => x.toString() + "," + walk(next),
-            Nil() || nil => ""
-        }
-    }
-    print(this.getType())
-    return "[" + walk(this) + "]"
+static func Foo.MakeFoo(obj) { 
+    new(obj)
 }
 
-static func List.List(values...) {
-    var xs = List.Nil()
-    for x in values {
-        xs = List.Cons(x, xs)
-    }
-    xs
-}
-
-
-//var xs = List.Cons(1, List.Cons(2, List.Cons(3, List.Cons(4, List.Nil()))))
-var xs = List(1,2,3,4)
-xs.toString()
-
-type Zoo
-type Zoo
+Foo.MakeFoo(133)
