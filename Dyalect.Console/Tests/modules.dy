@@ -1,4 +1,5 @@
 ﻿import refs.libtest lib
+import refs.libtest1 lib1
 
 func moduleTest1() {
     var abs = lib.abs(-12)
@@ -23,4 +24,16 @@ func moduleTest3() {
 func moduleTest4() {
     var res = lib is (id: _)
     assert(false, res)
+}
+
+func moduleTest5() {
+    var res = lib1.sayHello()
+    assert("Hello, User Jon", res)
+}
+
+func moduleTest6() {
+    var res = lib.double(2)
+    var res1 = lib1.double(2)
+    assert(4, res)
+    assert("double 2", res1)
 }

@@ -101,7 +101,7 @@ namespace Dyalect.Compiler
                     return CompilerError.UndefinedType;
                 else
                 {
-                    handle = ti.Unit.Handle | ti.TypeId << 8;
+                    handle = (byte)ti.Unit.Handle | ti.TypeId << 8;
                     return CompilerError.None;
                 }
             }
@@ -125,7 +125,7 @@ namespace Dyalect.Compiler
                     if (ti == -1)
                         return CompilerError.UndefinedType;
 
-                    handle = ui.Handle | ti << 8;
+                    handle = (byte)ui.Handle | ti << 8;
                     return CompilerError.None;
                 }
             }

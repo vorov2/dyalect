@@ -44,7 +44,7 @@ namespace Dyalect.Runtime
             var lay0 = unit.Layouts[0];
             
             //if yes we are in interactive mode and need to check if the size
-            //of global layout (for global variables) has changes
+            //of global layout (for global variables) has changed
             if (ctx.Units[0] != null && lay0.Size > ctx.Units[0].Length)
             {
                 var mems = new DyObject[lay0.Size];
@@ -52,7 +52,9 @@ namespace Dyalect.Runtime
                 ctx.Units[0] = mems;
             }
 
-            //ctx.CallStack.Push(Caller.Root);
+            if (unitId != 0 && ctx.Units[unitId] != null)
+                return null;
+
             ctx.Units[unitId] = ctx.Units[unitId] ?? new DyObject[lay0.Size];
             return ExecuteWithData(Global(unitId), null, ctx);
         }

@@ -371,23 +371,13 @@ namespace Dyalect.Compiler
         private void BuildImport(DImport node, CompilerContext ctx)
         {
             var r = new Reference(node.ModuleName, node.LocalPath, node.Dll, node.Location, unit.FileName);
-            var res = linker.Link(r);
+            var res = linker.Link(unit, r);
 
             if (res.Success)
             {
                 var referencedUnit = new UnitInfo(unit.UnitIds.Count, res.Value);
                 unit.References.Add(res.Value);
                 referencedUnits.Add(node.Alias ?? node.ModuleName, referencedUnit);
-
-                foreach (var kv in res.Value.ExportList)
-                {
-                    var imp = new ImportedName(node.Alias ?? node.ModuleName, unit.UnitIds.Count, kv.Key, kv.Value);
-
-                    if (imports.ContainsKey(kv.Key))
-                        imports[kv.Key] = imp;
-                    else
-                        imports.Add(kv.Key, imp);
-                }
 
                 for (var i = 0; i < res.Value.Types.Count; i++)
                 {

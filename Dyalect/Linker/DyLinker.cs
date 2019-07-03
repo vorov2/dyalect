@@ -14,7 +14,7 @@ namespace Dyalect.Linker
     {
         private const string EXT = ".dy";
         private const string OBJ = ".dyo";
-        private static Lang lang;
+        private static readonly Lang lang = new Lang { FileName = nameof(lang), Id = 1 };
         private static readonly object syncRoot = new object();
 
         protected Dictionary<string, Unit> UnitMap { get; set;  } = new Dictionary<string, Unit>(StringComparer.OrdinalIgnoreCase);
@@ -36,24 +36,27 @@ namespace Dyalect.Linker
             Units.Add(null);
         }
 
-        protected internal virtual Result<Unit> Link(Reference mod)
+        protected internal virtual Result<Unit> Link(Unit self, Reference mod)
         {
             Unit unit = null;
 
             if (mod.ModuleName == nameof(lang))
             {
-                if (lang == null)
-                    lock (syncRoot)
-                        if (lang == null)
-                            lang = new Lang();
                 unit = lang;
-                unit.FileName = nameof(lang);
+
+                if (!UnitMap.ContainsKey(unit.FileName))
+                {
+                    Units.Add(unit);
+                    UnitMap.Add(unit.FileName, unit);
+                }
+
+                return Result.Create(unit, Messages);
             }
             else if (mod.DllName != null)
-                unit = LinkForeignModule(mod);
+                unit = LinkForeignModule(self, mod);
             else
             {
-                var path = FindModule(mod.GetPath(), mod);
+                var path = FindModule(self, mod.GetPath(), mod);
 
                 if (path == null || UnitMap.TryGetValue(path, out unit))
                     return Result.Create(unit, Messages);
@@ -64,15 +67,14 @@ namespace Dyalect.Linker
                     unit = ProcessObjectFile(path, mod);
             }
 
-            if (unit != null && !UnitMap.ContainsKey(unit.FileName))
+            if (unit != null)
             {
                 unit.Id = Units.Count;
                 Units.Add(unit);
                 UnitMap.Add(unit.FileName, unit);
             }
 
-            var retval = Result.Create(unit, Messages);
-            return retval;
+            return Result.Create(unit, Messages);
         }
 
         public Result<UnitComposition> Make(SourceBuffer buffer)
@@ -204,18 +206,18 @@ namespace Dyalect.Linker
             throw new NotImplementedException();
         }
 
-        private string FindModule(string module, Reference mod)
+        private string FindModule(Unit self, string module, Reference mod)
         {
             if (!module.EndsWith(EXT, StringComparison.OrdinalIgnoreCase))
                 module += EXT;
 
-            return FindModuleExact(module, mod);
+            return FindModuleExact(self, module, mod);
         }
 
-        private string FindModuleExact(string module, Reference mod)
+        private string FindModuleExact(Unit self, string module, Reference mod)
         {
-            if (Lookup.Find(module, out var fullPath))
-                return fullPath;
+            if (Lookup.Find(Path.GetDirectoryName(self.FileName), module, out var fullPath))
+                return fullPath.Replace('\\', '/');
 
             AddError(LinkerError.ModuleNotFound, mod.SourceFileName, mod.SourceLocation, module);
             return null;

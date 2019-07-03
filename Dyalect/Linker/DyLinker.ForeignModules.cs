@@ -7,9 +7,9 @@ namespace Dyalect.Linker
 {
     partial class DyLinker
     {
-        private Unit LinkForeignModule(Reference mod)
+        private Unit LinkForeignModule(Unit self, Reference mod)
         {
-            var path = FindModuleExact(mod.DllName + ".dll", mod);
+            var path = FindModuleExact(self, mod.DllName + ".dll", mod);
 
             if (path == null)
                 return null;

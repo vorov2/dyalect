@@ -50,6 +50,9 @@ namespace Dyalect.Runtime.Types
                 return false;
             }
 
+            if ((sv.Data & VarFlags.Private) == VarFlags.Private)
+                ctx.PrivateNameAccess(new DyString(name));
+            
             value = Globals[sv.Address >> 8];
             return true;
         }
@@ -100,7 +103,7 @@ namespace Dyalect.Runtime.Types
             return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
             {
                 if (!self.TryGetItem(name, c, out var value))
-                    return ctx.IndexOutOfRange(DyTypeNames.Tuple, name);
+                    return ctx.IndexOutOfRange(DyTypeNames.Module, name);
                 return value;
             });
         }

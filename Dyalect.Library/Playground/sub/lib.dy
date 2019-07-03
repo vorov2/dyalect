@@ -1,4 +1,6 @@
-﻿func iter(n) {
+﻿import lib1
+
+func iter(n) {
     if n == 0 {
         0
     } else {
@@ -16,4 +18,8 @@ func sign(x) {
     } else {
         0
     }
+}
+
+private func id(x) {
+    x
 }

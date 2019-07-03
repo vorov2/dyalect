@@ -55,7 +55,6 @@ namespace Dyalect.Compiler
         {
             this.iterative = true;
             this.linker = builder.linker;
-            this.imports = builder.imports;
             this.types = builder.types;
             this.localTypes = builder.localTypes;
             this.memberNames = builder.memberNames;
@@ -114,8 +113,13 @@ namespace Dyalect.Compiler
                 foreach (var imp in codeModel.Imports)
                     BuildImport(imp, ctx);
 
+                //This is a self-reference to simplify type resolution
                 unit.UnitIds.Add(0);
                 var root = codeModel.Root;
+
+                //What if we have no code, only imports? Useless, but we shouldn't crush in this case
+                if (root.Nodes.Count == 0)
+                    cw.PushNil();
 
                 for (var i = 0; i < root.Nodes.Count; i++)
                 {

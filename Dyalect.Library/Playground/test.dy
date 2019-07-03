@@ -1,7 +1,2 @@
-﻿type Foo
-
-static func Foo.MakeFoo(obj) { 
-    new(obj)
-}
-
-Foo.MakeFoo(133)
+﻿import sub.lib
+import sub.lib1

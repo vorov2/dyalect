@@ -1,0 +1,5 @@
+﻿print("lib1")
+
+func sayHello() {
+    "Hello"
+}
