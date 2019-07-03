@@ -103,7 +103,7 @@ namespace Dyalect.Runtime.Types
             return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
             {
                 if (!self.TryGetItem(name, c, out var value))
-                    return ctx.IndexOutOfRange(DyTypeNames.Tuple, name);
+                    return ctx.IndexOutOfRange(DyTypeNames.Module, name);
                 return value;
             });
         }

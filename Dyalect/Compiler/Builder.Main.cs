@@ -379,16 +379,6 @@ namespace Dyalect.Compiler
                 unit.References.Add(res.Value);
                 referencedUnits.Add(node.Alias ?? node.ModuleName, referencedUnit);
 
-                foreach (var kv in res.Value.ExportList)
-                {
-                    var imp = new ImportedName(node.Alias ?? node.ModuleName, unit.UnitIds.Count, kv.Key, kv.Value);
-
-                    if (imports.ContainsKey(kv.Key))
-                        imports[kv.Key] = imp;
-                    else
-                        imports.Add(kv.Key, imp);
-                }
-
                 for (var i = 0; i < res.Value.Types.Count; i++)
                 {
                     var td = res.Value.Types[i];

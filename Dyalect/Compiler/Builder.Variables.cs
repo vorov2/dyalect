@@ -11,8 +11,6 @@ namespace Dyalect.Compiler
         private Stack<int> counters; //Stack of indices for the lexical scope
         private int currentCounter; //Global indexer
 
-        private Dictionary<string, ImportedName> imports = new Dictionary<string, ImportedName>(); //All global imports
-
         //Standard routine to add variables, can be used when an internal unnamed variable is need
         //which won't be visible to the user (for system purposes).
         private int AddVariable()
@@ -146,19 +144,34 @@ namespace Dyalect.Compiler
             while (cur != null);
 
             //No luck. Need to check if this variable is imported from some module
-            if (imports.TryGetValue(name, out ImportedName imp))
+            if (TryGetImport(name, out var sv, out var moduleHandle))
             {
-                if ((imp.Var.Data & VarFlags.Private) == VarFlags.Private)
+                if ((sv.Data & VarFlags.Private) == VarFlags.Private)
                     AddError(CompilerError.PrivateNameAccess, loc, name);
 
-                return new ScopeVar(imp.ModuleHandle | (imp.Var.Address >> 8) << 8,
-                    imp.Var.Data | VarFlags.External);
+                return new ScopeVar(moduleHandle | (sv.Address >> 8) << 8, sv.Data | VarFlags.External);
             }
 
             if (err)
                 AddError(CompilerError.UndefinedVariable, loc, name);
 
             return ScopeVar.Empty;
+        }
+
+        private bool TryGetImport(string name, out ScopeVar sv, out int moduleHandle)
+        {
+            foreach (var u in referencedUnits.Values)
+            {
+                if (u.Unit.ExportList.TryGetValue(name, out sv))
+                {
+                    moduleHandle = u.Handle;
+                    return true;
+                }
+            }
+
+            moduleHandle = default;
+            sv = default;
+            return false;
         }
 
         //Look for the scope with such a variable, return the firt that match

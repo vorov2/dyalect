@@ -14,7 +14,7 @@
 
         public StringBuffer(string value, string fileName) : this(value)
         {
-            this.fileName = fileName;
+            this.fileName = fileName.Replace('\\', '/');
         }
 
         internal protected override int Read()

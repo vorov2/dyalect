@@ -14,7 +14,7 @@ namespace Dyalect.Linker
     {
         private const string EXT = ".dy";
         private const string OBJ = ".dyo";
-        private static Lang lang;
+        private static readonly Lang lang = new Lang { FileName = nameof(lang), Id = 1 };
         private static readonly object syncRoot = new object();
 
         protected Dictionary<string, Unit> UnitMap { get; set;  } = new Dictionary<string, Unit>(StringComparer.OrdinalIgnoreCase);
@@ -42,12 +42,15 @@ namespace Dyalect.Linker
 
             if (mod.ModuleName == nameof(lang))
             {
-                if (lang == null)
-                    lock (syncRoot)
-                        if (lang == null)
-                            lang = new Lang();
                 unit = lang;
-                unit.FileName = nameof(lang);
+
+                if (!UnitMap.ContainsKey(unit.FileName))
+                {
+                    Units.Add(unit);
+                    UnitMap.Add(unit.FileName, unit);
+                }
+
+                return Result.Create(unit, Messages);
             }
             else if (mod.DllName != null)
                 unit = LinkForeignModule(self, mod);
@@ -64,15 +67,14 @@ namespace Dyalect.Linker
                     unit = ProcessObjectFile(path, mod);
             }
 
-            if (unit != null && !UnitMap.ContainsKey(unit.FileName))
+            if (unit != null)
             {
                 unit.Id = Units.Count;
                 Units.Add(unit);
                 UnitMap.Add(unit.FileName, unit);
             }
 
-            var retval = Result.Create(unit, Messages);
-            return retval;
+            return Result.Create(unit, Messages);
         }
 
         public Result<UnitComposition> Make(SourceBuffer buffer)
@@ -215,7 +217,7 @@ namespace Dyalect.Linker
         private string FindModuleExact(Unit self, string module, Reference mod)
         {
             if (Lookup.Find(Path.GetDirectoryName(self.FileName), module, out var fullPath))
-                return fullPath;
+                return fullPath.Replace('\\', '/');
 
             AddError(LinkerError.ModuleNotFound, mod.SourceFileName, mod.SourceLocation, module);
             return null;
