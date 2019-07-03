@@ -20,17 +20,21 @@ namespace Dyalect.Compiler
         private Unit unit; //Unit (file) that is beign compiler
         private Scope currentScope; //Current lexical scope
         private Label programEnd; //Label that marks an end of program
-        private Dictionary<string, UnitInfo> referencedUnits = new Dictionary<string, UnitInfo>();
+        private Dictionary<string, UnitInfo> referencedUnits;
 
-        private Dictionary<string, TypeInfo> types = new Dictionary<string, TypeInfo>();
-        private Dictionary<string, TypeInfo> localTypes = new Dictionary<string, TypeInfo>();
-
-        private Dictionary<string, int> memberNames = new Dictionary<string, int>();
+        private Dictionary<string, TypeInfo> types;
+        private Dictionary<string, TypeInfo> localTypes;
+        private Dictionary<string, int> memberNames;
 
         private readonly static DImport defaultInclude = new DImport(default) { ModuleName = "lang" };
 
         public Builder(BuilderOptions options, DyLinker linker)
         {
+            this.referencedUnits = new Dictionary<string, UnitInfo>();
+            this.types = new Dictionary<string, TypeInfo>();
+            this.localTypes = new Dictionary<string, TypeInfo>();
+            this.memberNames = new Dictionary<string, int>();
+
             this.options = options;
             this.linker = linker;
             counters = new Stack<int>();
@@ -53,6 +57,8 @@ namespace Dyalect.Compiler
             this.linker = builder.linker;
             this.imports = builder.imports;
             this.types = builder.types;
+            this.localTypes = builder.localTypes;
+            this.memberNames = builder.memberNames;
             this.referencedUnits = builder.referencedUnits;
             this.counters = new Stack<int>();
             this.options = builder.options;

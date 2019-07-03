@@ -29,23 +29,25 @@ func autoTest3() {
 }
 
 func autoTest4() {
-    cons Foo.MakeFoo(obj) { obj }
+    static func Foo.MakeFoo(obj) { 
+        new(obj)
+    }
     auto func Foo.magic() {
-        this.magic
+        valueof(this).magic
     }
     var foo = Foo.MakeFoo((magic: 133))
     assert(133, foo.magic)
 }
 
 func extendTest1() {
-    cons Bar.Bar(args...) {
-        args
+    static func Bar.Bar(args...) {
+        new(args) 
     }
     func Bar.len() {
-        this.len()
+        valueof(this).len()
     }
     func Bar.get(index) {
-        this[index]
+        valueof(this)[index]
     }
     var obj = Bar.Bar(1, 2, 3)
     var res = match obj {
@@ -56,14 +58,14 @@ func extendTest1() {
 }
 
 func extendTest2() {
-    cons Bar.Bar(args...) {
-        args
+    static func Bar.Bar(args...) {
+        new(args)
     }
     func Bar.len() {
-        this.len()
+        valueof(this).len()
     }
     func Bar.get(index) {
-        this[index]
+        valueof(this)[index]
     }
     var obj = Bar(1, 2, 3)
     var res = match obj {
@@ -116,29 +118,29 @@ func typeTest1() {
             Nat(x)
         }
     }
-    cons Nat.Nat(x) {
+    static func Nat.Nat(x) {
         if x < 0 {
             throw "Negative number."
         }
-        x
+        new(x)
     }
     func Nat.toInteger() {
-        this
+        valueof(this)
     }
     func Nat + (other) {
-        fetch(this + other.toInteger())
+        fetch(valueof(this) + other.toInteger())
     }
     func Nat - (other) {
-        fetch(this - other.toInteger())
+        fetch(valueof(this) - other.toInteger())
     }
     func Nat * (other) {
-        fetch(this * other.toInteger())
+        fetch(valueof(this) * other.toInteger())
     }
     func Nat / (other) {
-        fetch(this / other.toInteger())
+        fetch(valueof(this) / other.toInteger())
     }
     func Nat == (other) {
-        this == other.toInteger()
+        valueof(this) == other.toInteger()
     }
     var n = Nat(12)
     assert(Nat(24), n + Nat(12))
@@ -168,20 +170,20 @@ func typeTest3() {
     func ref(value) {
         Cell((__value: value))
     }
-    cons Cell.Cell(value) {
-        value
+    static func Cell.Cell(value) {
+        new(value)
     }
     func Cell.setValue(value) {
-        this.__value = value
+        valueof(this).__value = value
     }
     func Cell.getValue() {
-        this.__value
+        valueof(this).__value
     }
     func Cell.get(index) {
         if index != 0 {
             throw "Index out of range."
         }
-        this.__value
+        valueof(this).__value
     }
     func Cell.len() {
         1 
@@ -196,4 +198,59 @@ func typeTest3() {
     assert(24, match c {
         Cell(x) => x
     })
+}
+
+type List = Cons(x, next) | Empty()
+func typeTest4() {
+    func List.toString() {
+        func walk(xs) {
+            match xs {
+                Cons(x, Empty()) => x.toString(),
+                Cons(x, next) => x.toString() + "," + walk(next),
+                Empty() => ""
+            }
+        }
+        return "[" + walk(this) + "]"
+    }
+    var xs = List.Cons(1, List.Cons(2, List.Cons(3, List.Cons(4, List.Empty()))))
+    assert("[1,2,3,4]", xs.toString())
+}
+
+func typeTest5() {
+    static func List.List(values...) {
+        var xs = List.Empty()
+        for x in values {
+            xs = List.Cons(x, xs)
+        }
+        xs
+    }
+    var xs = List(1,2,3,4)
+    assert("[4,3,2,1]", xs.toString())
+}
+
+type Zoo1()
+func typeTest6() {
+    var x = Zoo1()
+    func Zoo1.toString() {
+        match valueof(this) {
+            nil => "nil"
+        }
+    }
+    assert("nil", x.toString())
+}
+
+type Zeta()
+func simpleTypeTest1() {
+    var z = Zeta()
+    var res = z.len()
+    assert(0, res)
+}
+
+type Beta(x)
+func simpleTestTest2() {
+    var b = Beta(12)
+    assert(1, b.len())
+    assert(12, b[0])
+    assert(12, b["x"])
+    assert(12, b.x)
 }

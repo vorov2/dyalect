@@ -363,16 +363,17 @@ namespace Dyalect.Compiler
         {
             var bad = cw.DefineLabel();
             var skip = cw.DefineLabel();
+            cw.Dup();
             cw.HasField(node.Label);
             cw.Brfalse(bad);
 
-            cw.Dup();
             cw.Push(node.Label);
             cw.Get();
             BuildPattern(node.Pattern, hints, ctx);
 
             cw.Br(skip);
             cw.MarkLabel(bad);
+            cw.Pop();
             cw.Push(false);
             cw.MarkLabel(skip);
             cw.Nop();

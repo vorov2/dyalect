@@ -31,9 +31,13 @@ namespace Dyalect.Runtime
 
             if (unit.Layouts.Count == 0)
             {
-                var foreign = (ForeignUnit)unit;
-                foreign.Execute(ctx);
-                ctx.Units[unitId] = foreign.Values.ToArray();
+                if (ctx.Units[unitId] == null)
+                {
+                    var foreign = (ForeignUnit)unit;
+                    foreign.Execute(ctx);
+                    ctx.Units[unitId] = foreign.Values.ToArray();
+                }
+
                 return DyNil.Instance;
             }
 
@@ -86,7 +90,10 @@ namespace Dyalect.Runtime
                     case OpCode.Nop:
                         break;
                     case OpCode.This:
-                        evalStack.Push(function.Self.GetSelf());
+                        evalStack.Push(function.Self);
+                        break;
+                    case OpCode.Unbox:
+                        evalStack.Replace(evalStack.Peek().GetSelf());
                         break;
                     case OpCode.Term:
                         if (evalStack.Size > 1 || evalStack.Size == 0)

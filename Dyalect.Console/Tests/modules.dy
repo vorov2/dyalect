@@ -1,0 +1,26 @@
+﻿import refs.libtest lib
+
+func moduleTest1() {
+    var abs = lib.abs(-12)
+    assert(12, abs)
+    assert(2, lib.abs(-2))
+}
+
+func moduleTest2() {
+    var a = abs(-12)
+    assert(12, a)
+    var b = min(2, 1)
+    assert(1, b)
+}
+
+func moduleTest3() {
+    var res = match lib {
+        sign: fn => fn(-12)
+    }
+    assert(-1, res)
+}
+
+func moduleTest4() {
+    var res = lib is (id: _)
+    assert(false, res)
+}

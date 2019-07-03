@@ -144,6 +144,9 @@ namespace Dyalect.Linker
                 for (var i = 0; i < u.Types.Count; i++)
                 {
                     var td = u.Types[i];
+                    if (td.Processed)
+                        continue;
+                    td.Processed = true;
                     td.Id = composition.Types.Count;
                     composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, td.Name, td.AutoGenConstructors));
                 }

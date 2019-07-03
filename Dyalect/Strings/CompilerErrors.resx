@@ -123,9 +123,6 @@
   <data name="ExpressionNoName" xml:space="preserve">
     <value>An expression doesn't have a name.</value>
   </data>
-  <data name="InvalidNameOfOperator" xml:space="preserve">
-    <value>Invalid usage of the "nameof" operator.</value>
-  </data>
   <data name="NoEnclosingLoop" xml:space="preserve">
     <value>No enclosing loop out of which to break or continue.</value>
   </data>
@@ -202,9 +199,18 @@
     <value>Functions declared with an "auto" modifier shouldn't accept any arguments.</value>
   </data>
   <data name="CtorOnlyLocalType" xml:space="preserve">
-    <value>Unable to define a constructor for a non-local type "{0}".</value>
+    <value>Unable to use "new" operator for a non local type "{0}".</value>
   </data>
   <data name="PrivateNameAccess" xml:space="preserve">
     <value>Unable to access a private module member "{0}".</value>
+  </data>
+  <data name="PrivateMethod" xml:space="preserve">
+    <value>A modifier "private" is only valid on regular functions.</value>
+  </data>
+  <data name="PrivateOnlyGlobal" xml:space="preserve">
+    <value>Private functions should be declared in global scope.</value>
+  </data>
+  <data name="CtorNoMethod" xml:space="preserve">
+    <value>Unable to use "new" operator outside of a method.</value>
   </data>
 </root>

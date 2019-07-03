@@ -1,3 +1,7 @@
-﻿import sub.lib foo
+﻿type Foo
 
-foo.div(12, 3)
+static func Foo.MakeFoo(obj) { 
+    new(obj)
+}
+
+Foo.MakeFoo(133)

@@ -17,8 +17,13 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => Unit;
 
-        protected internal override bool HasItem(string name, ExecutionContext ctx) =>
-            Unit.ExportList.ContainsKey(name);
+        protected internal override bool HasItem(string name, ExecutionContext ctx)
+        {
+            if (!Unit.ExportList.TryGetValue(name, out var sv))
+                return false;
+
+            return (sv.Data & VarFlags.Private) != VarFlags.Private;
+        }
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
@@ -58,7 +63,8 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
+            | SupportedOperations.Get | SupportedOperations.Set;
 
         public override string TypeName => DyTypeNames.Module;
 
@@ -67,7 +73,13 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
-            return DyInteger.Get(((DyModule)arg).Globals.Length);
+            var count = 0;
+
+            foreach (var g in ((DyModule)arg).Unit.ExportList)
+                if ((g.Value.Data & VarFlags.Private) != VarFlags.Private)
+                    count++;
+
+            return DyInteger.Get(count);
         }
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -82,6 +94,9 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
+            if (name == Builtins.Len)
+                return DyForeignFunction.Member(name, Length);
+
             return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
             {
                 if (!self.TryGetItem(name, c, out var value))

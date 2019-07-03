@@ -137,6 +137,14 @@ func matchTest12() {
     assert(54, res)
 }
 
+func matchTest13() {
+    var n = nil //Bug #178
+    var res = match n {
+        nil => true
+    }
+    assert(true, res)
+}
+
 func forMatchTest1() {
     var arr = []
     for (1, x) in [(1, 2), (2, 'F'), (3, 'S'), (1, 3), (1, 4), (1.01, true)] {

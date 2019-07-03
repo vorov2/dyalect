@@ -22,7 +22,7 @@
 
         ReturnNotAllowed = 209,
 
-        InvalidNameOfOperator = 210,
+        CtorNoMethod = 210,
 
         ExpressionNoName = 211,
 
@@ -60,6 +60,10 @@
 
         AutoNoParams = 228,
 
-        CtorOnlyLocalType = 229
+        CtorOnlyLocalType = 229,
+
+        PrivateMethod = 230,
+
+        PrivateOnlyGlobal = 231
     }
 }

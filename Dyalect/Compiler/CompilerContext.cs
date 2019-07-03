@@ -1,4 +1,6 @@
-﻿namespace Dyalect.Compiler
+﻿using Dyalect.Parser.Model;
+
+namespace Dyalect.Compiler
 {
     internal sealed class CompilerContext
     {
@@ -13,12 +15,15 @@
 
         public CompilerContext(CompilerContext old)
         {
+            Function = old.Function;
             FunctionExit = old.FunctionExit;
             BlockBreakExit = old.BlockBreakExit;
             BlockExit = old.BlockExit;
             BlockSkip = old.BlockSkip;
             MatchExit = old.MatchExit;
         }
+
+        public DFunctionDeclaration Function { get; set; }
 
         public Label FunctionExit { get; set; }
 

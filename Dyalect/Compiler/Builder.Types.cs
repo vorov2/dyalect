@@ -18,6 +18,7 @@ namespace Dyalect.Compiler
             if (localTypes.ContainsKey(node.Name))
             {
                 localTypes.Remove(node.Name);
+                types.Remove(node.Name);
                 AddError(CompilerError.TypeAlreadyDeclared, node.Location, node.Name);
             }
 
@@ -34,17 +35,36 @@ namespace Dyalect.Compiler
 
         private void GenerateConstructor(DFunctionDeclaration func, Hints hints, CompilerContext ctx)
         {
-            for (var i = 0; i < func.Parameters.Count; i++)
+            if (func.Parameters.Count == 0)
             {
-                var p = func.Parameters[i];
+                AddLinePragma(func);
+                cw.PushNil();
+            }
+            else if (func.Parameters.Count == 1)
+            {
+                var p = func.Parameters[0];
                 var a = GetVariable(p.Name, p);
+                AddLinePragma(func);
                 cw.PushVar(a);
                 cw.Tag(p.Name);
             }
+            else
+            {
+                for (var i = 0; i < func.Parameters.Count; i++)
+                {
+                    var p = func.Parameters[i];
+                    var a = GetVariable(p.Name, p);
+                    cw.PushVar(a);
+                    cw.Tag(p.Name);
+                }
 
-            AddLinePragma(func);
-            cw.NewTuple(func.Parameters.Count);
-            PopIf(hints);
+                AddLinePragma(func);
+                cw.NewTuple(func.Parameters.Count);
+            }
+
+            TryGetLocalType(func.TypeName, out var ti);
+            cw.Aux(GetMemberNameId(func.Name));
+            cw.NewType(ti.TypeId);
         }
 
         private TypeHandle GetTypeHandle(Qualident name, Location loc) => GetTypeHandle(name.Parent, name.Local, loc);
@@ -109,6 +129,12 @@ namespace Dyalect.Compiler
                     return CompilerError.None;
                 }
             }
+        }
+
+        private bool TryGetLocalType(Qualident q, out TypeInfo ti)
+        {
+            ti = null;
+            return q.Parent == null && localTypes.TryGetValue(q.Local, out ti);
         }
     }
 }

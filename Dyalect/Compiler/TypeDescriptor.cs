@@ -12,5 +12,6 @@
         public string Name { get; }
         public int Id { get; internal set; }
         public bool AutoGenConstructors { get; }
+        internal bool Processed { get; set; }
     }
 }

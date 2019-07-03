@@ -115,7 +115,16 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to define a constructor for a non-local type &quot;{0}&quot;..
+        ///   Looks up a localized string similar to Unable to use &quot;new&quot; operator outside of a method..
+        /// </summary>
+        internal static string CtorNoMethod {
+            get {
+                return ResourceManager.GetString("CtorNoMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to use &quot;new&quot; operator for a non local type &quot;{0}&quot;..
         /// </summary>
         internal static string CtorOnlyLocalType {
             get {
@@ -147,15 +156,6 @@ namespace Dyalect.Strings {
         internal static string InvalidDefaultValue {
             get {
                 return ResourceManager.GetString("InvalidDefaultValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid usage of the &quot;nameof&quot; operator..
-        /// </summary>
-        internal static string InvalidNameOfOperator {
-            get {
-                return ResourceManager.GetString("InvalidNameOfOperator", resourceCulture);
             }
         }
         
@@ -196,11 +196,29 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A modifier &quot;private&quot; is only valid on regular functions..
+        /// </summary>
+        internal static string PrivateMethod {
+            get {
+                return ResourceManager.GetString("PrivateMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to access a private module member &quot;{0}&quot;..
         /// </summary>
         internal static string PrivateNameAccess {
             get {
                 return ResourceManager.GetString("PrivateNameAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private functions should be declared in global scope..
+        /// </summary>
+        internal static string PrivateOnlyGlobal {
+            get {
+                return ResourceManager.GetString("PrivateOnlyGlobal", resourceCulture);
             }
         }
         
