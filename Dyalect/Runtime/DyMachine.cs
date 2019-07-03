@@ -93,7 +93,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(function.Self);
                         break;
                     case OpCode.Unbox:
-                        evalStack.Push(function.Self.GetSelf());
+                        evalStack.Replace(evalStack.Peek().GetSelf());
                         break;
                     case OpCode.Term:
                         if (evalStack.Size > 1 || evalStack.Size == 0)

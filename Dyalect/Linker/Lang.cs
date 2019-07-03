@@ -24,12 +24,6 @@ namespace Dyalect.Linker
             //idle
         }
 
-        [Function("valueof")]
-        public DyObject Valueof(ExecutionContext ctx, DyObject value)
-        {
-            return value.GetSelf();
-        }
-
         [Function("convertToNumber")] 
         public DyObject ToNumber(ExecutionContext ctx, DyObject value)
         {

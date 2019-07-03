@@ -1,5 +1,6 @@
 # 0.9.0
   * Done: _Modules as first class objects_ ([Issue #51](https://github.com/vorov2/dyalect/issues/51), [docs](https://github.com/vorov2/dyalect/wiki/Modules)).
+  * Done: _Change a way how a custom type is deconstructed_ ([Issue #185](https://github.com/vorov2/dyalect/issues/185), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types#methods)).
   * Done: _Add a support for relative paths in module imports_ ([Issue #173](https://github.com/vorov2/dyalect/issues/173), [docs](https://github.com/vorov2/dyalect/wiki/Modules)).
   * Done: _Access modifiers for functions_ ([Issue #50](https://github.com/vorov2/dyalect/issues/50), [docs](https://github.com/vorov2/dyalect/wiki/Functions#private_functions)).
   * Done: _Implement pattern matching with `is` operator_ ([Issue #172](https://github.com/vorov2/dyalect/issues/172), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#is)).

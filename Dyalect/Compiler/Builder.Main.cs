@@ -436,6 +436,13 @@ namespace Dyalect.Compiler
                     cw.Push(push);
                     return;
                 }
+                else if (name == "valueof")
+                {
+                    Build(node.Arguments[0], hints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.Unbox();
+                    return;
+                }
                 else if (name == "new")
                 {
                     if (ctx.Function?.TypeName == null)
