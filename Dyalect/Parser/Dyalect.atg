@@ -39,7 +39,6 @@ TOKENS
     ifToken             = "if".
     forToken            = "for".
     whileToken          = "while".
-    doToken             = "do".
     typeToken           = "type".
 
     arrowToken          = "=>".

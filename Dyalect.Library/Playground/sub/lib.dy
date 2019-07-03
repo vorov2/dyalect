@@ -1,4 +1,6 @@
-﻿func iter(n) {
+﻿import lib1
+
+func iter(n) {
     if n == 0 {
         0
     } else {

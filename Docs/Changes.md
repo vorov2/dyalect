@@ -1,5 +1,6 @@
 # 0.9.1
   * Fixed: _`private` modifier doesn't work_ ([Issue #187](https://github.com/vorov2/dyalect/issues/187)).
+  * Fixed: _`do` is recognized as a keyword_ ([Issue #188](https://github.com/vorov2/dyalect/issues/188)).
 
 # 0.9.0
   * Done: _Modules as first class objects_ ([Issue #51](https://github.com/vorov2/dyalect/issues/51), [docs](https://github.com/vorov2/dyalect/wiki/Modules)).
