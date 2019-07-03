@@ -1,9 +1,12 @@
+# 0.9.2
+ * Done: _Optimize compilation logic of referenced types and external functions_ ([Issue #193](https://github.com/vorov2/dyalect/issues/193)).
+
 # 0.9.1
   * Fixed: _`private` modifier doesn't work_ ([Issue #187](https://github.com/vorov2/dyalect/issues/187)).
   * Fixed: _`do` is recognized as a keyword_ ([Issue #188](https://github.com/vorov2/dyalect/issues/188)).
   * Fixed: _Reference resolution error_ ([Issue #189](https://github.com/vorov2/dyalect/issues/189)).
   * Fixed: _Stack corruption when module has only `import`-s_ ([Issue #190](https://github.com/vorov2/dyalect/issues/190)).
-  * Fixed: _Multiple references of the same module_ ([Issue #191](https://github.com/vorov2/dyalect/issues/191).
+  * Fixed: _Multiple references of the same module_ ([Issue #191](https://github.com/vorov2/dyalect/issues/191)).
 
 # 0.9.0
   * Done: _Modules as first class objects_ ([Issue #51](https://github.com/vorov2/dyalect/issues/51), [docs](https://github.com/vorov2/dyalect/wiki/Modules)).

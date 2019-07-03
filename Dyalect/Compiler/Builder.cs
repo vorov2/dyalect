@@ -23,7 +23,6 @@ namespace Dyalect.Compiler
         private Dictionary<string, UnitInfo> referencedUnits;
 
         private Dictionary<string, TypeInfo> types;
-        private Dictionary<string, TypeInfo> localTypes;
         private Dictionary<string, int> memberNames;
 
         private readonly static DImport defaultInclude = new DImport(default) { ModuleName = "lang" };
@@ -32,7 +31,6 @@ namespace Dyalect.Compiler
         {
             this.referencedUnits = new Dictionary<string, UnitInfo>();
             this.types = new Dictionary<string, TypeInfo>();
-            this.localTypes = new Dictionary<string, TypeInfo>();
             this.memberNames = new Dictionary<string, int>();
 
             this.options = options;
@@ -56,7 +54,6 @@ namespace Dyalect.Compiler
             this.iterative = true;
             this.linker = builder.linker;
             this.types = builder.types;
-            this.localTypes = builder.localTypes;
             this.memberNames = builder.memberNames;
             this.referencedUnits = builder.referencedUnits;
             this.counters = new Stack<int>();

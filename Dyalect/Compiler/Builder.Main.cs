@@ -379,17 +379,6 @@ namespace Dyalect.Compiler
                 unit.References.Add(res.Value);
                 referencedUnits.Add(node.Alias ?? node.ModuleName, referencedUnit);
 
-                for (var i = 0; i < res.Value.Types.Count; i++)
-                {
-                    var td = res.Value.Types[i];
-                    var ti = new TypeInfo(td.Id, referencedUnit);
-
-                    if (types.ContainsKey(td.Name))
-                        types[td.Name] = ti;
-                    else
-                        types.Add(td.Name, ti);
-                }
-
                 cw.RunMod(unit.UnitIds.Count);
                 unit.UnitIds.Add(-1); //Real handles are added by a linker
 
@@ -441,7 +430,8 @@ namespace Dyalect.Compiler
                         return;
                     }
 
-                    if (!TryGetLocalType(ctx.Function.TypeName, out var ti))
+                    if (ctx.Function.TypeName.Parent != null ||
+                        !TryGetLocalType(ctx.Function.TypeName.Local, out var ti))
                     {
                         AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName);
                         return;
