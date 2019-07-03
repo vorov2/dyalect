@@ -64,6 +64,8 @@
 
         PrivateMethod = 230,
 
-        PrivateOnlyGlobal = 231
+        PrivateOnlyGlobal = 231,
+
+        UnableToLinkModule = 232,
     }
 }

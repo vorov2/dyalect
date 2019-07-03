@@ -9,7 +9,8 @@
       "commandLineArgs": "Tests\\ -test"
     },
     "Interactive": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "-path \"..\\Dyalect.Library\\Playground\""
     }
   }
 }

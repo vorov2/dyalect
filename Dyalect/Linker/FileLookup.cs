@@ -62,7 +62,7 @@ namespace Dyalect.Linker
         {
             path = null;
 
-            foreach (var p in startupPaths)
+            foreach (var p in dirs)
                 if (File.Exists(path = Path.Combine(p, fileName)))
                     return true;
 

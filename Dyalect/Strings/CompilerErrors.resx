@@ -213,4 +213,7 @@
   <data name="CtorNoMethod" xml:space="preserve">
     <value>Unable to use "new" operator outside of a method.</value>
   </data>
+  <data name="UnableToLinkModule" xml:space="preserve">
+    <value>Unable to link module '{0}". Compilation terminated.</value>
+  </data>
 </root>

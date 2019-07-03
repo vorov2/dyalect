@@ -83,6 +83,12 @@ namespace Dyalect.Util
             Printer.Output(commands);
         }
 
+        [Binding("dir", Help = "Shows current working directory")]
+        public void Directory(object arg)
+        {
+            Printer.Output(Environment.CurrentDirectory);
+        }
+
         [Binding("options", Help = "Displays current console options.")]
         public void ShowOptions(object arg)
         {

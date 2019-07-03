@@ -385,6 +385,11 @@ namespace Dyalect.Compiler
                 var addr = AddVariable(node.Alias ?? node.ModuleName, node.Location, VarFlags.Module);
                 cw.PopVar(addr);
             }
+            else
+            {
+                AddError(CompilerError.UnableToLinkModule, node.Location, node.ModuleName);
+                throw new TerminationException();
+            }
         }
 
         private void Build(DReturn node, Hints hints, CompilerContext ctx)
