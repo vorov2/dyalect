@@ -371,7 +371,7 @@ namespace Dyalect.Compiler
         private void BuildImport(DImport node, CompilerContext ctx)
         {
             var r = new Reference(node.ModuleName, node.LocalPath, node.Dll, node.Location, unit.FileName);
-            var res = linker.Link(r);
+            var res = linker.Link(unit, r);
 
             if (res.Success)
             {

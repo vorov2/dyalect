@@ -44,8 +44,11 @@ namespace Dyalect.Linker
             );
         }
 
-        public bool Find(string fileName, out string fullPath)
+        public bool Find(string currentPath, string fileName, out string fullPath)
         {
+            if (File.Exists(fullPath = Path.Combine(currentPath, fileName)))
+                return true;
+
             if (LookIn(fileName, startupPaths, out fullPath)
                 || LookIn(fileName, standardPaths, out fullPath)
                 || LookIn(fileName, systemPaths, out fullPath)

@@ -117,6 +117,10 @@ namespace Dyalect.Compiler
                 unit.UnitIds.Add(0);
                 var root = codeModel.Root;
 
+                //What if we have no code, only imports? Useless, but we shouldn't crush in this case
+                if (root.Nodes.Count == 0)
+                    cw.PushNil();
+
                 for (var i = 0; i < root.Nodes.Count; i++)
                 {
                     var n = root.Nodes[i];

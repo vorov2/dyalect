@@ -36,7 +36,7 @@ namespace Dyalect.Linker
             Units.Add(null);
         }
 
-        protected internal virtual Result<Unit> Link(Reference mod)
+        protected internal virtual Result<Unit> Link(Unit self, Reference mod)
         {
             Unit unit = null;
 
@@ -50,10 +50,10 @@ namespace Dyalect.Linker
                 unit.FileName = nameof(lang);
             }
             else if (mod.DllName != null)
-                unit = LinkForeignModule(mod);
+                unit = LinkForeignModule(self, mod);
             else
             {
-                var path = FindModule(mod.GetPath(), mod);
+                var path = FindModule(self, mod.GetPath(), mod);
 
                 if (path == null || UnitMap.TryGetValue(path, out unit))
                     return Result.Create(unit, Messages);
@@ -204,17 +204,17 @@ namespace Dyalect.Linker
             throw new NotImplementedException();
         }
 
-        private string FindModule(string module, Reference mod)
+        private string FindModule(Unit self, string module, Reference mod)
         {
             if (!module.EndsWith(EXT, StringComparison.OrdinalIgnoreCase))
                 module += EXT;
 
-            return FindModuleExact(module, mod);
+            return FindModuleExact(self, module, mod);
         }
 
-        private string FindModuleExact(string module, Reference mod)
+        private string FindModuleExact(Unit self, string module, Reference mod)
         {
-            if (Lookup.Find(module, out var fullPath))
+            if (Lookup.Find(Path.GetDirectoryName(self.FileName), module, out var fullPath))
                 return fullPath;
 
             AddError(LinkerError.ModuleNotFound, mod.SourceFileName, mod.SourceLocation, module);
