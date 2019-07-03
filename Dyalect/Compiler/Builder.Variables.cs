@@ -148,7 +148,7 @@ namespace Dyalect.Compiler
             //No luck. Need to check if this variable is imported from some module
             if (imports.TryGetValue(name, out ImportedName imp))
             {
-                if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                if ((imp.Var.Data & VarFlags.Private) == VarFlags.Private)
                     AddError(CompilerError.PrivateNameAccess, loc, name);
 
                 return new ScopeVar(imp.ModuleHandle | (imp.Var.Address >> 8) << 8,

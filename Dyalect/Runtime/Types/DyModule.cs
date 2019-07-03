@@ -50,6 +50,9 @@ namespace Dyalect.Runtime.Types
                 return false;
             }
 
+            if ((sv.Data & VarFlags.Private) == VarFlags.Private)
+                ctx.PrivateNameAccess(new DyString(name));
+            
             value = Globals[sv.Address >> 8];
             return true;
         }

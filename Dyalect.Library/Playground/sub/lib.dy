@@ -17,3 +17,7 @@ func sign(x) {
         0
     }
 }
+
+private func id(x) {
+    x
+}

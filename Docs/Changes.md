@@ -1,3 +1,6 @@
+# 0.9.1
+  * Fixed: _`private` modifier doesn't work_ ([Issue #187](https://github.com/vorov2/dyalect/issues/187)).
+
 # 0.9.0
   * Done: _Modules as first class objects_ ([Issue #51](https://github.com/vorov2/dyalect/issues/51), [docs](https://github.com/vorov2/dyalect/wiki/Modules)).
   * Done: _Change a way how a custom type is deconstructed_ ([Issue #185](https://github.com/vorov2/dyalect/issues/185), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types#methods)).
