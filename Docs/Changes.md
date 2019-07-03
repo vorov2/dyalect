@@ -1,5 +1,5 @@
 # 0.9.2
- * Done: _Optimize compilation logic of referenced types and external functions_ ([Issue #193](https://github.com/vorov2/dyalect/issues/193)).
+  * Done: _Optimize compilation logic of referenced types and external functions_ ([Issue #193](https://github.com/vorov2/dyalect/issues/193)).
 
 # 0.9.1
   * Fixed: _`private` modifier doesn't work_ ([Issue #187](https://github.com/vorov2/dyalect/issues/187)).
