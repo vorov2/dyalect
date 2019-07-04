@@ -413,7 +413,7 @@ namespace Dyalect.Parser
 		else
 		{
 		   f.Name = s3;
-		   f.TypeName = new Qualident(s1, s2);
+		   f.TypeName = new Qualident(s2, s1);
 		}
 		
 		FunctionArguments(f);

@@ -286,6 +286,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to link module &apos;{0}&quot;. Compilation terminated..
+        /// </summary>
+        internal static string UnableToLinkModule {
+            get {
+                return ResourceManager.GetString("UnableToLinkModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable &quot;{0}&quot; is not declared in a parent scope..
         /// </summary>
         internal static string UndefinedBaseVariable {

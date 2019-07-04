@@ -41,3 +41,5 @@ private func id(x) {
 func userName(name) {
     "User " + name
 }
+
+type Foobar(x, y)

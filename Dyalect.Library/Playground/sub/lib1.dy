@@ -1,5 +1,3 @@
-﻿print("lib1")
-
-func sayHello() {
+﻿func sayHello() {
     "Hello"
 }

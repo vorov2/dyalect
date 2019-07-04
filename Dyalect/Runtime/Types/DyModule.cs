@@ -30,13 +30,10 @@ namespace Dyalect.Runtime.Types
             if (index.TypeId != DyType.String)
                 return ctx.IndexInvalidType(DyTypeNames.String, index);
 
-            if (!Unit.ExportList.TryGetValue(index.GetString(), out var sv))
+            if (!TryGetMember(index.GetString(), ctx, out var value))
                 return ctx.IndexOutOfRange(DyTypeNames.Module, index);
 
-            if ((sv.Data & VarFlags.Private) == VarFlags.Private)
-                return ctx.PrivateNameAccess(index);
-
-            return Globals[sv.Address >> 8];
+            return value;
         }
 
         protected internal override DyObject GetItem(int index, ExecutionContext ctx) =>
@@ -44,17 +41,37 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
         {
-            if (!Unit.ExportList.TryGetValue(name, out var sv))
+            if (!TryGetMember(name, ctx, out value))
             {
                 value = null;
                 return false;
             }
 
-            if ((sv.Data & VarFlags.Private) == VarFlags.Private)
-                ctx.PrivateNameAccess(new DyString(name));
-            
-            value = Globals[sv.Address >> 8];
             return true;
+        }
+
+        private bool TryGetMember(string name, ExecutionContext ctx, out DyObject value)
+        {
+            value = null;
+
+            if (!Unit.ExportList.TryGetValue(name, out var sv))
+            {
+                if (!Unit.TypeMap.TryGetValue(name, out var td))
+                    return false;
+                else
+                {
+                    value = ctx.Types[td.Id];
+                    return true;
+                }
+            }
+            else
+            {
+                if ((sv.Data & VarFlags.Private) == VarFlags.Private)
+                    ctx.PrivateNameAccess(new DyString(name));
+
+                value = Globals[sv.Address >> 8];
+                return true;
+            }
         }
     }
 

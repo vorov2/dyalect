@@ -126,10 +126,15 @@ namespace Dyalect.Linker
 
         protected void ProcessUnits(UnitComposition composition)
         {
-            foreach (var u in Units)
+            for (var uid = 0; uid < Units.Count; uid++)
             {
+                var u = Units[uid];
+
                 for (var i = 0; i < u.References.Count; i++)
                     u.UnitIds[i] = u.References[i].Id;
+
+                if (u.References.Count > 0)
+                    u.UnitIds[u.References.Count] = uid;
 
                 for (var i = 0; i < u.MemberNames.Count; i++)
                 {

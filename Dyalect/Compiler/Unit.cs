@@ -15,6 +15,7 @@ namespace Dyalect.Compiler
             UnitIds = new List<int>();
             References = new List<Unit>();
             Types = new List<TypeDescriptor>();
+            TypeMap = new Dictionary<string, TypeDescriptor>();
             MemberIds = new List<int>();
             MemberNames = new List<string>();
             IndexedStrings = new List<DyString>();
@@ -42,6 +43,7 @@ namespace Dyalect.Compiler
             IndexedIntegers = unit.IndexedIntegers;
             IndexedFloats = unit.IndexedFloats;
             IndexedChars = unit.IndexedChars;
+            TypeMap = unit.TypeMap;
         }
 
         internal Unit Clone(DebugInfo di) => new Unit(this, di);
@@ -53,6 +55,8 @@ namespace Dyalect.Compiler
         internal List<int> UnitIds { get; }
 
         internal List<TypeDescriptor> Types { get; }
+
+        internal Dictionary<string, TypeDescriptor> TypeMap { get; }
 
         internal List<int> MemberIds { get; }
 

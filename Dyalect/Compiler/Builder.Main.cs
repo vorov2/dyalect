@@ -243,16 +243,26 @@ namespace Dyalect.Compiler
                 var nm = node.Target.GetName();
                 var sv = GetVariable(nm, node.Target, err: false);
 
-                if ((sv.Data & VarFlags.Module) == VarFlags.Module
+                if ((sv.Data & VarFlags.Module) == VarFlags.Module 
                     && referencedUnits.TryGetValue(nm, out var ru)
-                    && ru.Unit.ExportList.TryGetValue(node.Name, out var var))
+                   )
                 {
-                    if ((var.Data & VarFlags.Private) == VarFlags.Private)
-                        AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
+                    if (ru.Unit.ExportList.TryGetValue(node.Name, out var var))
+                    {
+                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                            AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
 
-                    AddLinePragma(node);
-                    cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
-                    return;
+                        AddLinePragma(node);
+                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
+                        return;
+                    }
+                    else if (GetTypeHandle(nm, node.Name, out var handle, out var std) == CompilerError.None)
+                    {
+                        GetMemberNameId(node.Name);
+                        AddLinePragma(node);
+                        cw.Type(new TypeHandle(handle, std));
+                        return;
+                    }
                 }
             }
 
@@ -379,22 +389,16 @@ namespace Dyalect.Compiler
                 unit.References.Add(res.Value);
                 referencedUnits.Add(node.Alias ?? node.ModuleName, referencedUnit);
 
-                for (var i = 0; i < res.Value.Types.Count; i++)
-                {
-                    var td = res.Value.Types[i];
-                    var ti = new TypeInfo(td.Id, referencedUnit);
-
-                    if (types.ContainsKey(td.Name))
-                        types[td.Name] = ti;
-                    else
-                        types.Add(td.Name, ti);
-                }
-
                 cw.RunMod(unit.UnitIds.Count);
                 unit.UnitIds.Add(-1); //Real handles are added by a linker
 
                 var addr = AddVariable(node.Alias ?? node.ModuleName, node.Location, VarFlags.Module);
                 cw.PopVar(addr);
+            }
+            else
+            {
+                AddError(CompilerError.UnableToLinkModule, node.Location, node.ModuleName);
+                throw new TerminationException();
             }
         }
 
@@ -441,7 +445,8 @@ namespace Dyalect.Compiler
                         return;
                     }
 
-                    if (!TryGetLocalType(ctx.Function.TypeName, out var ti))
+                    if (ctx.Function.TypeName.Parent != null ||
+                        !TryGetLocalType(ctx.Function.TypeName.Local, out var ti))
                     {
                         AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName);
                         return;

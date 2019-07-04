@@ -62,7 +62,10 @@ namespace Dyalect
                         continue;
 
                     var key = attr.Names?.Length > 0 ? attr.Names[0] : "<file name>";
-                    list.Add((key, byt ? "" : val.ToString()));
+                    list.Add((key, byt ? "" 
+                        : val is System.Collections.IEnumerable 
+                            ? string.Join(';', ((System.Collections.IEnumerable)val).OfType<object>().Select(v => v.ToString()))
+                        : val.ToString()));
                 }
             }
 

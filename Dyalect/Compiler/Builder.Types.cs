@@ -1,8 +1,5 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Dyalect.Compiler
 {
@@ -15,16 +12,17 @@ namespace Dyalect.Compiler
             var unitId = unit.UnitIds.Count - 1;
             var ti = new TypeInfo(typeId, new UnitInfo(unitId, unit));
 
-            if (localTypes.ContainsKey(node.Name))
+            if (types.ContainsKey(node.Name))
             {
-                localTypes.Remove(node.Name);
                 types.Remove(node.Name);
                 AddError(CompilerError.TypeAlreadyDeclared, node.Location, node.Name);
             }
 
-            localTypes.Add(node.Name, ti);
             types.Add(node.Name, ti);
-            unit.Types.Add(new TypeDescriptor(node.Name, typeId, node.HasConstructors));
+
+            var td = new TypeDescriptor(node.Name, typeId, node.HasConstructors);
+            unit.Types.Add(td);
+            unit.TypeMap.Add(node.Name, td);
 
             if (node.HasConstructors)
             {
@@ -62,7 +60,7 @@ namespace Dyalect.Compiler
                 cw.NewTuple(func.Parameters.Count);
             }
 
-            TryGetLocalType(func.TypeName, out var ti);
+            TryGetLocalType(func.TypeName.Local, out var ti);
             cw.Aux(GetMemberNameId(func.Name));
             cw.NewType(ti.TypeId);
         }
@@ -97,7 +95,7 @@ namespace Dyalect.Compiler
 
             if (parent == null)
             {
-                if (!types.TryGetValue(local, out var ti))
+                if (!TryGetType(local, out var ti))
                     return CompilerError.UndefinedType;
                 else
                 {
@@ -111,30 +109,46 @@ namespace Dyalect.Compiler
                     return CompilerError.UndefinedModule;
                 else
                 {
-                    var ti = -1;
-
-                    for (var i = 0; i < ui.Unit.Types.Count; ti++)
-                    {
-                        if (ui.Unit.Types[i].Name == local)
-                        {
-                            ti = ui.Unit.Types[i].Id;
-                            break;
-                        }
-                    }
-
-                    if (ti == -1)
+                    if (!TryGetExternalType(ui, local, out var id))
                         return CompilerError.UndefinedType;
 
-                    handle = (byte)ui.Handle | ti << 8;
+                    handle = (byte)ui.Handle | id << 8;
                     return CompilerError.None;
                 }
             }
         }
 
-        private bool TryGetLocalType(Qualident q, out TypeInfo ti)
+        private bool TryGetType(string local, out TypeInfo ti)
         {
-            ti = null;
-            return q.Parent == null && localTypes.TryGetValue(q.Local, out ti);
+            if (TryGetLocalType(local, out ti))
+                return true;
+
+            foreach (var r in referencedUnits.Values)
+                if (TryGetExternalType(r, local, out var id))
+                {
+                    ti = new TypeInfo(id, r);
+                    return true;
+                }
+
+            return false;
+        }
+
+        private bool TryGetExternalType(UnitInfo ui, string typeName, out int id)
+        {
+            id = -1;
+
+            if (ui.Unit.TypeMap.TryGetValue(typeName, out var td))
+            {
+                id = td.Id;
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool TryGetLocalType(string typeName, out TypeInfo ti)
+        {
+            return types.TryGetValue(typeName, out ti);
         }
     }
 }
