@@ -810,3 +810,66 @@ func bubbTest() {
         }
     assert(25264, res)
 }
+
+func closureTest() {
+    var xs = []
+    const num = 10
+    for n in 0..(num-1) {
+        var elem = x => () => x * x
+        xs.add(elem(n))
+    }
+    var ys = []
+    for x in xs {
+        ys.add(x())
+    }
+    assert([0, 1, 4, 9, 16, 25, 36, 49, 64, 81], ys)
+}
+
+func rot13Test() {
+    func Char.rot13() {
+        if ('a' <= this && this <= 'm' || 'A' <= this && this <= 'M') {
+            return Char(this.order() + 13)
+        }
+        if ('n' <= this && this <= 'z' || 'N' <= this && this <= 'Z') {
+            return Char(this.order() - 13);
+        }
+        return this
+    }
+    func String.rot13() {
+        var cs = []
+        for c in this {
+            cs.add(c.rot13())
+        }
+        String.concat(values: cs)
+    }
+    var res = "ABJURER nowhere".rot13()
+    assert("NOWHERE abjurer", res)
+}
+
+func caesarCypherTest() {
+    func Char.encrypt(code) {
+        if !this.isLetter() {
+            return this
+        }
+        var offset = (if this.isUpper() {'A'} else {'a'}).order()
+        return Char((this.order() + code - offset) % 26 + offset)
+    }
+    func String.encrypt(code) {
+        var xs = []
+        for c in this {
+            xs.add(c.encrypt(code))
+        }
+        return String.concat(values: xs)
+    }
+    func String.decrypt(code) {
+        this.encrypt(26 - code);
+    }
+    var str = "Pack my box with five dozen liquor jugs."
+    var enc = str.encrypt(5)
+    var dec = enc.decrypt(5)
+    Char.__deleteMember("encrypt")
+    String.__deleteMember("encrypt")
+    String.__deleteMember("decrypt")
+    assert("Ufhp rd gtc bnym knaj itejs qnvztw ozlx.", enc)
+    assert("Pack my box with five dozen liquor jugs.", dec)
+}
