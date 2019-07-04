@@ -873,3 +873,21 @@ func caesarCypherTest() {
     assert("Ufhp rd gtc bnym knaj itejs qnvztw ozlx.", enc)
     assert("Pack my box with five dozen liquor jugs.", dec)
 }
+
+func countCoinsTest() {
+    func countCoins(coins, n) {
+        var xs = Array.empty(n + 1, 0)
+        xs[0] = 1
+        for c in coins {
+            var cj = c
+            while cj <= n {
+                xs[cj] += xs[cj - c]
+                cj += 1
+            }
+        }
+        return xs[n]
+    }
+    var coins = [1, 5, 10, 25]
+    var res = countCoins(coins, 100)
+    assert(242, res)
+}
