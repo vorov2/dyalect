@@ -1,2 +1,5 @@
 ﻿import sub.lib
-import sub.lib1
+
+
+var t = lib.Foobar
+t.name

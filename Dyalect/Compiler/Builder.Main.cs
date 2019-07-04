@@ -243,16 +243,26 @@ namespace Dyalect.Compiler
                 var nm = node.Target.GetName();
                 var sv = GetVariable(nm, node.Target, err: false);
 
-                if ((sv.Data & VarFlags.Module) == VarFlags.Module
+                if ((sv.Data & VarFlags.Module) == VarFlags.Module 
                     && referencedUnits.TryGetValue(nm, out var ru)
-                    && ru.Unit.ExportList.TryGetValue(node.Name, out var var))
+                   )
                 {
-                    if ((var.Data & VarFlags.Private) == VarFlags.Private)
-                        AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
+                    if (ru.Unit.ExportList.TryGetValue(node.Name, out var var))
+                    {
+                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                            AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
 
-                    AddLinePragma(node);
-                    cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
-                    return;
+                        AddLinePragma(node);
+                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
+                        return;
+                    }
+                    else if (GetTypeHandle(nm, node.Name, out var handle, out var std) == CompilerError.None)
+                    {
+                        GetMemberNameId(node.Name);
+                        AddLinePragma(node);
+                        cw.Type(new TypeHandle(handle, std));
+                        return;
+                    }
                 }
             }
 

@@ -19,7 +19,10 @@ namespace Dyalect.Compiler
             }
 
             types.Add(node.Name, ti);
-            unit.Types.Add(new TypeDescriptor(node.Name, typeId, node.HasConstructors));
+
+            var td = new TypeDescriptor(node.Name, typeId, node.HasConstructors);
+            unit.Types.Add(td);
+            unit.TypeMap.Add(node.Name, td);
 
             if (node.HasConstructors)
             {
@@ -134,13 +137,10 @@ namespace Dyalect.Compiler
         {
             id = -1;
 
-            for (var i = 0; i < ui.Unit.Types.Count; i++)
+            if (ui.Unit.TypeMap.TryGetValue(typeName, out var td))
             {
-                if (ui.Unit.Types[i].Name == typeName)
-                {
-                    id = ui.Unit.Types[i].Id;
-                    return true;
-                }
+                id = td.Id;
+                return true;
             }
 
             return false;
