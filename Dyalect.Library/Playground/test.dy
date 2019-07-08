@@ -1,5 +1,9 @@
-﻿import sub.lib
+﻿type Point(x,y)
 
+func Point.get(index) {
+    print(index)
+    
+}
 
-var t = lib.Foobar
-t.name
+var p = Point(12, 24)
+p["xyz"]

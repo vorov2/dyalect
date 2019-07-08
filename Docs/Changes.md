@@ -1,7 +1,10 @@
+# 0.9.3
+  * Done: _Argument names are lost in variadic functions_ ([Issue #200](https://github.com/vorov2/dyalect/issues/200)).
+
 # 0.9.2
   * Done: _Optimize compilation logic of referenced types and external functions_ ([Issue #193](https://github.com/vorov2/dyalect/issues/193)).
   * Fixed: _Linker doesn't look module in all the available paths_ ([Issue #195](https://github.com/vorov2/dyalect/issues/195)).
-  * Fixed: _Interactive console failure after error in "import"_ ([Issue #194](https://github.com/vorov2/dyalect/issues/194)).
+  * Fixed: _Interactive console failure after error in `import`_ ([Issue #194](https://github.com/vorov2/dyalect/issues/194)).
   * Fixed: _Fully qualified methods are not compiled correctly_ ([Issue #198](https://github.com/vorov2/dyalect/issues/198)).
   * Fixed: _Type constructors are not included into export list of a module_ ([Issue #197](https://github.com/vorov2/dyalect/issues/197)).
   * Fixed: _Fully qualified types from other modules do not work_ ([Issue #196](https://github.com/vorov2/dyalect/issues/196)).

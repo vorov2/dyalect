@@ -581,8 +581,10 @@ namespace Dyalect.Runtime
 
         private static void Push(ArgContainer container, DyObject value)
         {
-            if (value.TypeId == DyType.Array || value.TypeId == DyType.Tuple)
+            if (value.TypeId == DyType.Array)
                 container.VarArgs.AddRange((IEnumerable<DyObject>)value);
+            else if (value.TypeId == DyType.Tuple)
+                container.VarArgs.AddRange(((DyTuple)value).Values);
             else
                 container.VarArgs.Add(value);
         }
