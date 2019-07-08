@@ -1,5 +1,5 @@
 # 0.9.3
-todo
+  * Done: _Argument names are lost in variadic functions_ ([Issue #200](https://github.com/vorov2/dyalect/issues/200)).
 
 # 0.9.2
   * Done: _Optimize compilation logic of referenced types and external functions_ ([Issue #193](https://github.com/vorov2/dyalect/issues/193)).

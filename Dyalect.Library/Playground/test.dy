@@ -1,5 +1,10 @@
-﻿import sub.lib
-
-
-var t = lib.Foobar
-t.name
+﻿type Record
+static func Record.Record(values...) {
+    new(values)
+}
+/*func Record.get(index) {
+    print(valueof(this))
+    valueof(this)[index]
+}*/
+var p = Record(values: (name: "John", age: 33))
+p.name

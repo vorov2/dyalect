@@ -254,3 +254,13 @@ func simpleTestTest2() {
     assert(12, b["x"])
     assert(12, b.x)
 }
+
+type Record
+func accessorTest() {
+    static func Record.Record(values...) {
+        new(values)
+    }
+    var p = Record(values: (name: "John", age: 33))
+    assert("John", p.name)
+    assert(33, p.age)
+}
