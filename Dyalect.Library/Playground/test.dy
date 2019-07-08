@@ -1,10 +1,9 @@
-﻿type Record
-static func Record.Record(values...) {
-    new(values)
+﻿type Point(x,y)
+
+func Point.get(index) {
+    print(index)
+    
 }
-/*func Record.get(index) {
-    print(valueof(this))
-    valueof(this)[index]
-}*/
-var p = Record(values: (name: "John", age: 33))
-p.name
+
+var p = Point(12, 24)
+p["xyz"]
