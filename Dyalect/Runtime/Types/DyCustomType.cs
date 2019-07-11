@@ -43,7 +43,8 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+            (SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not)
+            | (autoGenMethods ? (SupportedOperations.Get | SupportedOperations.Set) : SupportedOperations.None);
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
@@ -97,16 +98,6 @@ namespace Dyalect.Runtime.Types
                 default:
                     return nameId != -1 && CheckHasMemberDirect(self, nameId, ctx) ? DyBool.True : DyBool.False;
             }
-        }
-
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
-            {
-                if (!self.TryGetItem(name, c, out var value))
-                    return ctx.IndexOutOfRange(self.TypeName(c), name);
-                return value;
-            });
         }
     }
 }
