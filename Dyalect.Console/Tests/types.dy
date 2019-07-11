@@ -271,3 +271,11 @@ func accessorTest() {
     assert("John", p.name)
     assert(33, p.age)
 }
+
+type UserInfo(name,age)
+func setterTest() {
+    var u = UserInfo("Jon", 17)
+    assert(17, u.age)
+    u.age = 39
+    assert(39, u.age)
+}

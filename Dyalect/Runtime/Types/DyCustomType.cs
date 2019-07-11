@@ -20,6 +20,15 @@ namespace Dyalect.Runtime.Types
 
         internal override int GetCount() => Value.GetCount();
 
+        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx) => 
+            Value.SetItem(index, value, ctx);
+
+        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx) =>
+            Value.SetItem(index, value, ctx);
+
+        protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx) =>
+            Value.SetItem(name, value, ctx);
+
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) => Value.GetItem(index, ctx);
 
         protected internal override DyObject GetItem(int index, ExecutionContext ctx) => Value.GetItem(index, ctx);
@@ -74,6 +83,28 @@ namespace Dyalect.Runtime.Types
                 return self.GetItem(index, ctx);
 
             return base.GetOp(self, index, ctx);
+        }
+
+        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        {
+            if (autoGenMethods)
+            {
+                self.SetItem(index, value, ctx);
+                return DyNil.Instance;
+            }
+
+            return base.SetOp(self, index, value, ctx);
+        }
+
+        protected override DyObject SetOp(DyObject self, int index, DyObject value, ExecutionContext ctx)
+        {
+            if (autoGenMethods)
+            {
+                self.SetItem(index, value, ctx);
+                return DyNil.Instance;
+            }
+
+            return base.SetOp(self, index, value, ctx);
         }
 
         public override string TypeName { get; }

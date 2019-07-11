@@ -1,4 +1,5 @@
 # 0.9.4
+  * Done: _Provide auto implementation of `set` for custom types_ ([Issue #203](https://github.com/vorov2/dyalect/issues/203)).
   * Fixed: _Member access and indexer overloading_ ([Issue #201](https://github.com/vorov2/dyalect/issues/201)).
 
 # 0.9.3
