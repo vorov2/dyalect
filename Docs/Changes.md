@@ -1,5 +1,9 @@
+# 0.9.4
+  * Done: _Provide auto implementation of `set` for custom types_ ([Issue #203](https://github.com/vorov2/dyalect/issues/203)).
+  * Fixed: _Member access and indexer overloading_ ([Issue #201](https://github.com/vorov2/dyalect/issues/201)).
+
 # 0.9.3
-  * Done: _Argument names are lost in variadic functions_ ([Issue #200](https://github.com/vorov2/dyalect/issues/200)).
+  * Fixed: _Argument names are lost in variadic functions_ ([Issue #200](https://github.com/vorov2/dyalect/issues/200)).
 
 # 0.9.2
   * Done: _Optimize compilation logic of referenced types and external functions_ ([Issue #193](https://github.com/vorov2/dyalect/issues/193)).

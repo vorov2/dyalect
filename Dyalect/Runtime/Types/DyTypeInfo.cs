@@ -10,6 +10,7 @@ namespace Dyalect.Runtime.Types
         [Flags]
         public enum SupportedOperations
         {
+            None = 0xFF,
             Add = 0x01,
             Sub = 0x02,
             Mul = 0x04,
@@ -612,7 +613,19 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Has: return DyForeignFunction.Member(name, Has, -1, new Par("member"));
                 case Builtins.Type: return DyForeignFunction.Member(name, (context, o) =>  context.Types[self.TypeId]);
                 default:
-                    return GetMember(name, ctx);
+                    {
+                        var ret = GetMember(name, ctx);
+
+                        if (ret == null && (Supp(SupportedOperations.Get) || get != null))
+                        {
+                            return DyForeignFunction.Auto(AutoKind.Generated, (c, sf) =>
+                            {
+                                return Get(c, sf, new DyString(name));
+                            });
+                        }
+
+                        return ret;
+                    }
             }
         }
 

@@ -637,6 +637,12 @@ func methodTest2() {
     assert("12.2 + 0.4", res)
 }
 
+func methodTest3() {
+    func Integer.get(index) { index }
+    assert("x", 12.x)
+    Integer.__deleteMember("op_get")
+}
+
 func functionTest1() {
     func sum(x,y) {
         if y == 2 {

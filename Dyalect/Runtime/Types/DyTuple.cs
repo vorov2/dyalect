@@ -268,12 +268,7 @@ namespace Dyalect.Runtime.Types
                 case "snd":
                     return DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters);
                 default:
-                    return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
-                    {
-                        if (!self.TryGetItem(name, c, out var value))
-                            return ctx.IndexOutOfRange(DyTypeNames.Tuple, name);
-                        return value;
-                    });
+                    return null;
             }
         }
 

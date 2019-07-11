@@ -20,6 +20,15 @@ namespace Dyalect.Runtime.Types
 
         internal override int GetCount() => Value.GetCount();
 
+        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx) => 
+            Value.SetItem(index, value, ctx);
+
+        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx) =>
+            Value.SetItem(index, value, ctx);
+
+        protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx) =>
+            Value.SetItem(name, value, ctx);
+
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) => Value.GetItem(index, ctx);
 
         protected internal override DyObject GetItem(int index, ExecutionContext ctx) => Value.GetItem(index, ctx);
@@ -43,7 +52,8 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+            (SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not)
+            | (autoGenMethods ? (SupportedOperations.Get | SupportedOperations.Set) : SupportedOperations.None);
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
@@ -75,6 +85,28 @@ namespace Dyalect.Runtime.Types
             return base.GetOp(self, index, ctx);
         }
 
+        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        {
+            if (autoGenMethods)
+            {
+                self.SetItem(index, value, ctx);
+                return DyNil.Instance;
+            }
+
+            return base.SetOp(self, index, value, ctx);
+        }
+
+        protected override DyObject SetOp(DyObject self, int index, DyObject value, ExecutionContext ctx)
+        {
+            if (autoGenMethods)
+            {
+                self.SetItem(index, value, ctx);
+                return DyNil.Instance;
+            }
+
+            return base.SetOp(self, index, value, ctx);
+        }
+
         public override string TypeName { get; }
 
         protected override DyBool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
@@ -97,16 +129,6 @@ namespace Dyalect.Runtime.Types
                 default:
                     return nameId != -1 && CheckHasMemberDirect(self, nameId, ctx) ? DyBool.True : DyBool.False;
             }
-        }
-
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
-            {
-                if (!self.TryGetItem(name, c, out var value))
-                    return ctx.IndexOutOfRange(self.TypeName(c), name);
-                return value;
-            });
         }
     }
 }

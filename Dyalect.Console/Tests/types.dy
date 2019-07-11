@@ -260,7 +260,22 @@ func accessorTest() {
     static func Record.Record(values...) {
         new(values)
     }
+    func Record.get(index) {
+        if index == "name" {
+            return valueof(this).name
+        } else if index == "age" {
+            return valueof(this).age
+        }
+    }
     var p = Record(values: (name: "John", age: 33))
     assert("John", p.name)
     assert(33, p.age)
+}
+
+type UserInfo(name,age)
+func setterTest() {
+    var u = UserInfo("Jon", 17)
+    assert(17, u.age)
+    u.age = 39
+    assert(39, u.age)
 }
