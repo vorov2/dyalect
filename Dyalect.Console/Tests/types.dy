@@ -297,3 +297,23 @@ func setterTest2() { //Bug #205
     assert(24, p.x)
     assert(68, p.y)
 }
+
+func complexMemberCheckTest1() {
+    var t = (x:2)
+    assert(true, t.x?)
+}
+
+func complexMemberCheckTest2() {
+    func Integer.foobar() {}
+    assert(true, 12.foobar?)
+    Integer.__deleteMember("foobar")
+}
+
+type X22(x,y)
+func complexMemberCheckTest3() {
+    func X22.foobar() {}
+    var p = X22(22,22)
+    assert(true, p.x?)
+    assert(true, p.y?)
+    assert(true, p.foobar?)
+}

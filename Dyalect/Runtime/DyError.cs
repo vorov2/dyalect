@@ -166,6 +166,7 @@ namespace Dyalect.Runtime
         {
             ctx.Error = new DyError(DyErrorCode.IndexInvalidType,
                 ("TypeName", typeName),
+                ("Index", index),
                 ("IndexTypeName", index.TypeName(ctx)));
             return DyNil.Instance;
         }

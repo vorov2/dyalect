@@ -115,7 +115,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Indices of type &quot;%IndexTypeName%&quot; are not supported by the containers of type &quot;%TypeName%&quot;..
+        ///   Looks up a localized string similar to Index &quot;%Index%&quot; of type &quot;%IndexTypeName%&quot; is not supported by an instance of type &quot;%TypeName%&quot;..
         /// </summary>
         internal static string IndexInvalidType {
             get {

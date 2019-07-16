@@ -124,7 +124,7 @@
     <value>An unhandled exception occured during an execution of an external function "%FunctionName%": %Error%</value>
   </data>
   <data name="IndexInvalidType" xml:space="preserve">
-    <value>Indices of type "%IndexTypeName%" are not supported by the containers of type "%TypeName%".</value>
+    <value>Index "%Index%" of type "%IndexTypeName%" is not supported by an instance of type "%TypeName%".</value>
   </data>
   <data name="NotFunction" xml:space="preserve">
     <value>An object of type "%TypeName%" doesn't support a "call" operation.</value>

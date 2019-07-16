@@ -109,7 +109,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName { get; }
 
-        protected override DyBool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
+        protected override bool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
         {
             switch (name)
             {
@@ -117,17 +117,17 @@ namespace Dyalect.Runtime.Types
                 case Builtins.ToStr:
                 case Builtins.Clone:
                 case Builtins.Has:
-                    return DyBool.True;
+                    return true;
                 case Builtins.Len:
                     if (!autoGenMethods)
                         goto default;
-                    return DyBool.True;
+                    return true;
                 case Builtins.Get:
                     if (!autoGenMethods)
                         goto default;
-                    return DyBool.True;
+                    return true;
                 default:
-                    return nameId != -1 && CheckHasMemberDirect(self, nameId, ctx) ? DyBool.True : DyBool.False;
+                    return nameId != -1 && CheckHasMemberDirect(self, nameId, ctx);
             }
         }
     }

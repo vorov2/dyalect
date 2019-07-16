@@ -1,6 +1,9 @@
 # 0.9.5
+  * Code clean-ups and refactorings.
   * Fixed: _Error when trying to override `set` operator_ ([Issue #205](https://github.com/vorov2/dyalect/issues/205)).
   * Fixed: _Method `String.capitalize` doesn't work correctly_ ([Issue #207](https://github.com/vorov2/dyalect/issues/207)).
+  * Fixed: _Member check operator doesn't always work correctly_ ([Issue #208](https://github.com/vorov2/dyalect/issues/208)).
+  * Change: _Exception message for `Index of invalid type` is updated to include more details and be less misleading.
 
 # 0.9.4
   * Done: _Provide auto implementation of `set` for custom types_ ([Issue #203](https://github.com/vorov2/dyalect/issues/203)).
