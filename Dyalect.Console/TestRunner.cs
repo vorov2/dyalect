@@ -25,7 +25,9 @@ namespace Dyalect
 
         public static bool RunTests(string fileName, bool appveyor)
         {
+#if !DEBUG
             try
+#endif
             {
                 var funs = Compile(fileName);
                 Printer.Output($"Running tests from {funs.Count} file(s)...");
@@ -36,11 +38,13 @@ namespace Dyalect
                 Run(funs, appveyor);
                 return true;
             }
+#if !DEBUG
             catch (Exception ex)
             {
                 Printer.Error($"Failure! {ex.Message}");
                 return false;
             }
+#endif
         }
 
         private static void Run(IList<FunSet> funs, bool appveyor)

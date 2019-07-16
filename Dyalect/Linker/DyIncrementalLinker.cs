@@ -14,7 +14,7 @@ namespace Dyalect.Linker
         private UnitComposition composition;
         private int? startOffset;
 
-        private Dictionary<string, Unit> backupUnitMap;
+        private Dictionary<Reference, Unit> backupUnitMap;
         private Dictionary<string, Dictionary<string, Type>> backupAssemblyMap;
         private List<Unit> backupUnits;
 
@@ -25,7 +25,7 @@ namespace Dyalect.Linker
 
         protected override void Prepare()
         {
-            backupUnitMap = new Dictionary<string, Unit>(UnitMap);
+            backupUnitMap = new Dictionary<Reference, Unit>(UnitMap);
             backupAssemblyMap = new Dictionary<string, Dictionary<string, Type>>(AssemblyMap);
             backupUnits = new List<Unit>(Units);
         }

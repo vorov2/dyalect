@@ -13,7 +13,7 @@ namespace Dyalect.Compiler
             Layouts = new List<MemoryLayout>();
             ExportList = new Dictionary<string, ScopeVar>();
             UnitIds = new List<int>();
-            References = new List<Unit>();
+            References = new List<Reference>();
             Types = new List<TypeDescriptor>();
             TypeMap = new Dictionary<string, TypeDescriptor>();
             MemberIds = new List<int>();
@@ -50,7 +50,7 @@ namespace Dyalect.Compiler
 
         internal int Id { get; set; }
 
-        internal List<Unit> References { get; }
+        internal List<Reference> References { get; }
 
         internal List<int> UnitIds { get; }
 

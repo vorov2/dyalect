@@ -1,5 +1,5 @@
 # 0.9.6
-  * todo
+  * Fixed: _Current linker logic needs redesign to support object files_ ([Issue #212](https://github.com/vorov2/dyalect/issues/212)).
 
 # 0.9.5
   * Code clean-ups and refactorings.

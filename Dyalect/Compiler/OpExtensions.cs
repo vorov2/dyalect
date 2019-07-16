@@ -1,15 +1,37 @@
-﻿namespace Dyalect.Compiler
+﻿using System.IO;
+
+namespace Dyalect.Compiler
 {
     public static class OpExtensions
     {
-        public static int GetSize(this OpCode op)
+        internal static int GetSize(this OpCode op)
         {
             return OpSizeHelper.Op[(int)op];
         }
 
-        public static int GetStack(this OpCode op)
+        internal static int GetStack(this OpCode op)
         {
             return OpStackHelper.Op[(int)op];
+        }
+
+        internal static void Serialize(this Op op, BinaryWriter writer)
+        {
+            writer.Write((byte)op.Code);
+            var size = GetSize(op.Code);
+
+            if (size != 0)
+                writer.Write(op.Data);
+        }
+
+        internal static Op Deserialize(this BinaryReader reader)
+        {
+            var opCode = (OpCode)reader.ReadByte();
+            var size = GetSize(opCode);
+
+            if (size == 0)
+                return Op.Ops[opCode];
+            else
+                return new Op(opCode, reader.ReadInt32());
         }
     }
 }
