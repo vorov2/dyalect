@@ -429,7 +429,7 @@ func stringTest9() {
 
 func stringTest10() {
     var res = "camelCase".capitalize()
-    assert("CamelCase", res)
+    assert("Camelcase", res)
 }
 
 func stringTest11() {
@@ -503,6 +503,11 @@ func stringTest22() {
     assert("from", str.remove(4, 3))
     assert("from ", str.remove(5))
     assert("froo", str.remove(3, 3))
+}
+
+func stringTest23() { //Bug #207
+    var str = "alphaBETA"
+    assert("Alphabeta", str.capitalize())
 }
 
 func memberCheckTest() {

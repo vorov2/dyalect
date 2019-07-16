@@ -273,9 +273,46 @@ func accessorTest() {
 }
 
 type UserInfo(name,age)
-func setterTest() {
+func setterTest1() {
     var u = UserInfo("Jon", 17)
     assert(17, u.age)
     u.age = 39
     assert(39, u.age)
+}
+
+type Point1
+func setterTest2() { //Bug #205
+    static func Point1.Point1(x, y) {
+        new((x, y))
+    }
+    func Point1.get(index) {
+        valueof(this)[index]
+    }
+    func Point1.set(index, value) {
+        valueof(this)[index] = value
+    }
+    var p = Point1(12, 34)
+    p.x += p.x
+    p.y += p.y
+    assert(24, p.x)
+    assert(68, p.y)
+}
+
+func complexMemberCheckTest1() {
+    var t = (x:2)
+    assert(true, t.x?)
+}
+
+func complexMemberCheckTest2() {
+    func Integer.foobar() {}
+    assert(true, 12.foobar?)
+    Integer.__deleteMember("foobar")
+}
+
+type X22(x)
+func complexMemberCheckTest3() {
+    func X22.foobar() {}
+    var p = X22(22)
+    assert(true, p.x?)
+    assert(true, p.foobar?)
 }

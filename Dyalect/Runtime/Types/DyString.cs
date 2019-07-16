@@ -259,7 +259,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Capitalize(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var str = self.GetString();
-            return str.Length == 0 ? DyString.Empty : new DyString(char.ToUpper(str[0]) + str.Substring(1));
+            return str.Length == 0 ? DyString.Empty : new DyString(char.ToUpper(str[0]) + str.Substring(1).ToLower());
         }
 
         private DyObject Upper(ExecutionContext ctx, DyObject self, DyObject[] args)

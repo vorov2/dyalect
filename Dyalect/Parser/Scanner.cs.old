@@ -151,11 +151,11 @@ namespace Dyalect.Parser
 			case "for": t.kind = 15; break;
 			case "while": t.kind = 16; break;
 			case "type": t.kind = 17; break;
-			case "import": t.kind = 48; break;
-			case "static": t.kind = 49; break;
-			case "auto": t.kind = 50; break;
-			case "private": t.kind = 51; break;
-			case "set": t.kind = 53; break;
+			case "set": t.kind = 48; break;
+			case "import": t.kind = 49; break;
+			case "static": t.kind = 50; break;
+			case "auto": t.kind = 51; break;
+			case "private": t.kind = 52; break;
 			case "match": t.kind = 54; break;
 			case "when": t.kind = 55; break;
 			case "nil": t.kind = 60; break;
@@ -372,7 +372,7 @@ namespace Dyalect.Parser
 			case 46:
 				{t.kind = 44; break;}
 			case 47:
-				{t.kind = 52; break;}
+				{t.kind = 53; break;}
 			case 48:
 				{t.kind = 56; break;}
 			case 49:
