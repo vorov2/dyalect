@@ -71,7 +71,7 @@ PRODUCTIONS
     StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!"
         | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
 
-    FunctionName = identToken | StandardOperators.
+    FunctionName = identToken | StandardOperators | "set".
 
     Qualident<out string s1, out string s2, out string s3> =
         (. s1 = null; s2 = null; s3 = null; .)

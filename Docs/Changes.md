@@ -1,3 +1,6 @@
+# 0.9.5
+  * Fixed: _Error when trying to override `set` operator_ ([Issue #205](https://github.com/vorov2/dyalect/issues/205)).
+
 # 0.9.4
   * Done: _Provide auto implementation of `set` for custom types_ ([Issue #203](https://github.com/vorov2/dyalect/issues/203)).
   * Fixed: _Member access and indexer overloading_ ([Issue #201](https://github.com/vorov2/dyalect/issues/201)).
