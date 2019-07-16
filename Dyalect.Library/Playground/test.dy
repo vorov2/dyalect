@@ -1,7 +1,8 @@
-﻿
-type Point(x, y)
-var p = Point(12, 43)
-assert(12, p[0])
-assert(43, p[1])
-assert(12, p.x)
-assert(43, p.y)
+﻿"123\n" +
+"345\n" +
+"3465\n" +
+"456\n" +
+"5645\n" +
+"56578\n" +
+"56\n" +
+"234".replace("\n", ",")

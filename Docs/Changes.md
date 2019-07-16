@@ -1,5 +1,6 @@
 # 0.9.5
   * Fixed: _Error when trying to override `set` operator_ ([Issue #205](https://github.com/vorov2/dyalect/issues/205)).
+  * Fixed: _Method `String.capitalize` doesn't work correctly_ ([Issue #207](https://github.com/vorov2/dyalect/issues/207)).
 
 # 0.9.4
   * Done: _Provide auto implementation of `set` for custom types_ ([Issue #203](https://github.com/vorov2/dyalect/issues/203)).
