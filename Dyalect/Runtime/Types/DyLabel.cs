@@ -31,6 +31,8 @@
         internal protected override DyObject GetItem(int index, ExecutionContext ctx) =>
             index == 0 ? Value : ctx.IndexOutOfRange(this.TypeName(ctx), index);
 
+        protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;
+
         protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
         {
             if (name == Label)

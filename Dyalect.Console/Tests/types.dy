@@ -309,11 +309,10 @@ func complexMemberCheckTest2() {
     Integer.__deleteMember("foobar")
 }
 
-type X22(x,y)
+type X22(x)
 func complexMemberCheckTest3() {
     func X22.foobar() {}
-    var p = X22(22,22)
+    var p = X22(22)
     assert(true, p.x?)
-    assert(true, p.y?)
     assert(true, p.foobar?)
 }

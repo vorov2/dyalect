@@ -1,5 +1,3 @@
-﻿
-type X22(x,y)
-    func X22.foobar() {}
-    var p = X22(22,1)
-    assert(true, p.x?)
+﻿type Foo(x)
+var f = Foo(12)
+f.x?
