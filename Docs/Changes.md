@@ -1,3 +1,6 @@
+# 0.9.6
+  * todo
+
 # 0.9.5
   * Code clean-ups and refactorings.
   * Fixed: _Error when trying to override `set` operator_ ([Issue #205](https://github.com/vorov2/dyalect/issues/205)).
@@ -78,7 +81,7 @@
 # 0.7.3
   * Done: _Restrict overriding `has`_ ([Issue #134](https://github.com/vorov2/dyalect/issues/134), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#has)).
   * Done: _Add `Array.insertRange` method_ ([Issue #135](https://github.com/vorov2/dyalect/issues/135), [docs](https://github.com/vorov2/dyalect/wiki/Array#insertRange)).
-  * Done: _Support "+" for array concatenation_ ([Issue #137](https://github.com/vorov2/dyalect/issues/137), [docs](https://github.com/vorov2/dyalect/wiki/Array#operators)).
+  * Done: _Support `+` for array concatenation_ ([Issue #137](https://github.com/vorov2/dyalect/issues/137), [docs](https://github.com/vorov2/dyalect/wiki/Array#operators)).
   * Fixed: _`Array.insert` exception_ ([Issue #136](https://github.com/vorov2/dyalect/issues/136)).
   * Fixed: _`Iterator` literal and methods_ ([Issue #138](https://github.com/vorov2/dyalect/issues/138)).
   * Fixed: _Incorrect `toString` of a function_ ([Issue #139](https://github.com/vorov2/dyalect/issues/139)).
