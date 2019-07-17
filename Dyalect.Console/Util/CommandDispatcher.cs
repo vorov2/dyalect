@@ -114,7 +114,7 @@ namespace Dyalect.Util
         [Binding("eval", Help = "Evaluates a given file in a current interactive session.")]
         public void Eval(object arg)
         {
-            var str = arg?.ToString();
+            var str = arg?.ToString()?.Trim('\"', '\'');
 
             if (ctx.EvalFile(str, measureTime: false))
                 Printer.Output($"File \"{Path.GetFileName(str)}\" successfully evaluated.");
