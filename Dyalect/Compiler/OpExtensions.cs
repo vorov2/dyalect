@@ -23,7 +23,7 @@ namespace Dyalect.Compiler
                 writer.Write(op.Data);
         }
 
-        internal static Op Deserialize(this BinaryReader reader)
+        internal static Op DeserializeOp(this BinaryReader reader)
         {
             var opCode = (OpCode)reader.ReadByte();
             var size = GetSize(opCode);

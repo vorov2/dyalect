@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace Dyalect.Compiler
 {
@@ -52,7 +53,7 @@ namespace Dyalect.Compiler
 
         static Op()
         {
-            foreach (var fi in typeof(Op).GetFields(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public))
+            foreach (var fi in typeof(Op).GetFields(BindingFlags.Static | BindingFlags.Public))
             {
                 var o = (Op)fi.GetValue(null);
                 Ops.Add(o.Code, o);
