@@ -17,7 +17,7 @@ namespace Dyalect.Linker
         private static readonly Lang lang = new Lang { FileName = nameof(lang), Id = 1 };
         private static readonly object syncRoot = new object();
 
-        protected Dictionary<string, Unit> UnitMap { get; set;  } = new Dictionary<string, Unit>(StringComparer.OrdinalIgnoreCase);
+        protected Dictionary<Reference, Unit> UnitMap { get; set;  } = new Dictionary<Reference, Unit>();
 
         protected Dictionary<string, Dictionary<string, Type>> AssemblyMap { get; set; } = new Dictionary<string, Dictionary<string, Type>>(StringComparer.OrdinalIgnoreCase);
 
@@ -40,38 +40,28 @@ namespace Dyalect.Linker
         {
             Unit unit = null;
 
-            if (mod.ModuleName == nameof(lang))
+            if (!UnitMap.TryGetValue(mod, out unit))
             {
-                unit = lang;
-
-                if (!UnitMap.ContainsKey(unit.FileName))
+                if (mod.ModuleName == nameof(lang))
+                    unit = lang;
+                else if (mod.DllName != null)
+                    unit = LinkForeignModule(self, mod);
+                else
                 {
-                    Units.Add(unit);
-                    UnitMap.Add(unit.FileName, unit);
+                    var path = FindModule(self, mod.GetPath(), mod);
+
+                    if (path != null && string.Equals(Path.GetExtension(path), EXT))
+                        unit = ProcessSourceFile(path, mod);
+                    else if (path != null)
+                        unit = ProcessObjectFile(path, mod);
                 }
 
-                return Result.Create(unit, Messages);
-            }
-            else if (mod.DllName != null)
-                unit = LinkForeignModule(self, mod);
-            else
-            {
-                var path = FindModule(self, mod.GetPath(), mod);
-
-                if (path == null || UnitMap.TryGetValue(path, out unit))
-                    return Result.Create(unit, Messages);
-
-                if (string.Equals(Path.GetExtension(path), EXT))
-                    unit = ProcessSourceFile(path, mod);
-                else
-                    unit = ProcessObjectFile(path, mod);
-            }
-
-            if (unit != null)
-            {
-                unit.Id = Units.Count;
-                Units.Add(unit);
-                UnitMap.Add(unit.FileName, unit);
+                if (unit != null)
+                {
+                    unit.Id = Units.Count;
+                    Units.Add(unit);
+                    UnitMap.Add(mod, unit);
+                }
             }
 
             return Result.Create(unit, Messages);
@@ -131,7 +121,10 @@ namespace Dyalect.Linker
                 var u = Units[uid];
 
                 for (var i = 0; i < u.References.Count; i++)
-                    u.UnitIds[i] = u.References[i].Id;
+                {
+                    var r = u.References[i];
+                    u.UnitIds[i] = UnitMap[r].Id;
+                }
 
                 if (u.References.Count > 0)
                     u.UnitIds[u.References.Count] = uid;

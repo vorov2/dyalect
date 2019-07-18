@@ -1,4 +1,7 @@
-﻿namespace Dyalect.Compiler
+﻿using System.Collections.Generic;
+using System.Reflection;
+
+namespace Dyalect.Compiler
 {
     internal sealed class Op
     {
@@ -45,6 +48,17 @@
         public static readonly Op Yield = new Op(OpCode.Yield);
         public static readonly Op PushNilT = new Op(OpCode.PushNilT);
         public static readonly Op End = new Op(OpCode.End);
+
+        internal static readonly Dictionary<OpCode, Op> Ops = new Dictionary<OpCode, Op>();
+
+        static Op()
+        {
+            foreach (var fi in typeof(Op).GetFields(BindingFlags.Static | BindingFlags.Public))
+            {
+                var o = (Op)fi.GetValue(null);
+                Ops.Add(o.Code, o);
+            }
+        }
 
         public Op(OpCode code)
         {

@@ -63,8 +63,8 @@ namespace Dyalect
             if (!NoLogo)
             {
                 Title = $"Dyalect - {FS.GetStartupPath()}";
-                Header($"Dya (Dyalect Interactive Console). Built {FS.GetAssembyTimeStamp()}");
-                Subheader($"Dya version {Meta.Version}");
+                Header($"Dya (Dyalect Console). Built {FS.GetAssembyTimeStamp()}");
+                Subheader($"Version {Meta.Version}");
                 Subheader($"Running {Environment.OSVersion}");
             }
         }
