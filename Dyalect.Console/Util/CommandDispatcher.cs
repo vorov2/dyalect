@@ -8,7 +8,7 @@ namespace Dyalect.Util
 {
     public sealed class CommandDispatcher
     {
-        public const string Prefix = ":";
+        public const string Prefix = "#";
 
         private Dictionary<string, CommandCallBack> commands;
 

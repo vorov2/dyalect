@@ -1,6 +1,7 @@
 # 0.9.6
   * Fixed: _Current linker logic needs redesign to support object files_ ([Issue #212](https://github.com/vorov2/dyalect/issues/212)).
   * Fixed: _Dya: eval doesn't aways correctly recognize file names_ ([Issue #213](https://github.com/vorov2/dyalect/issues/213)).
+  * Change: Prefix for commands in interactive console is changed from `:` to `#`, e.g. `#help` instead of `:help`.
 
 # 0.9.5
   * Code clean-ups and refactorings.
