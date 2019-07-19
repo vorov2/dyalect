@@ -1,6 +1,7 @@
 ﻿using Dyalect.Debug;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Dyalect.Runtime.Types
 {
@@ -89,6 +90,12 @@ namespace Dyalect.Runtime.Types
         protected internal override bool GetBool() => value > .00001d;
 
         public override DyObject Clone() => this;
+
+        internal override void Serialize(BinaryWriter writer)
+        {
+            writer.Write(TypeId);
+            writer.Write(value);
+        }
     }
 
     internal sealed class DyFloatTypeInfo : DyTypeInfo

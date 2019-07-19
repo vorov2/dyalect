@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using System;
+using System.IO;
 
 namespace Dyalect.Runtime.Types
 {
@@ -64,6 +65,8 @@ namespace Dyalect.Runtime.Types
         internal virtual DyObject GetSelf() => this;
 
         internal virtual int GetCount() => 1;
+
+        internal virtual void Serialize(BinaryWriter writer) => throw new NotSupportedException();
     }
 
     internal static class DyObjectInternalExtensions

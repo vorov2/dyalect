@@ -2,6 +2,7 @@
 using Dyalect.Debug;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 
 namespace Dyalect.Runtime.Types
@@ -107,6 +108,12 @@ namespace Dyalect.Runtime.Types
         internal protected override long GetInteger() => value;
 
         public override DyObject Clone() => this;
+
+        internal override void Serialize(BinaryWriter writer)
+        {
+            writer.Write(TypeId);
+            writer.Write(value);
+        }
     }
 
 
