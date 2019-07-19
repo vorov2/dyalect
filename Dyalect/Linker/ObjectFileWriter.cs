@@ -9,6 +9,13 @@ namespace Dyalect.Linker
 {
     internal static class ObjectFileWriter
     {
+        public static void Write(string fileName, Unit unit)
+        {
+            using (var stream = File.OpenWrite(fileName))
+            using (var writer = new BinaryWriter(stream))
+                Write(writer, unit);
+        }
+
         private static void Write(BinaryWriter writer, Unit unit)
         {
             WriteHeader(writer);
@@ -74,8 +81,8 @@ namespace Dyalect.Linker
 
             foreach (var m in layouts)
             {
-                writer.Write(m.StackSize);
                 writer.Write(m.Size);
+                writer.Write(m.StackSize);
                 writer.Write(m.Address);
             }
         }
@@ -110,8 +117,8 @@ namespace Dyalect.Linker
 
             foreach (var r in refs)
             {
-                writer.Write(r.LocalPath);
                 writer.Write(r.ModuleName);
+                writer.Write(r.LocalPath);
                 writer.Write(r.DllName);
                 writer.Write(r.SourceLocation.Line);
                 writer.Write(r.SourceLocation.Column);
