@@ -1,3 +1,6 @@
+# 0.9.8
+  * todo
+
 # 0.9.7
   * Fixed: _Tuples do not support indices of type `Char`_ ([Issue #217](https://github.com/vorov2/dyalect/issues/217)).
   * Fixed: _Tuple syntax: lambdas as elements_ ([Issue #216](https://github.com/vorov2/dyalect/issues/216)).
@@ -9,7 +12,7 @@
   * Change: _Prefix for commands in interactive console is changed from `:` to `#`, e.g. `#help` instead of `:help`._
 
 # 0.9.5
-  * Code clean-ups and refactorings.
+  * _Code clean-ups and refactorings._
   * Fixed: _Error when trying to override `set` operator_ ([Issue #205](https://github.com/vorov2/dyalect/issues/205)).
   * Fixed: _Method `String.capitalize` doesn't work correctly_ ([Issue #207](https://github.com/vorov2/dyalect/issues/207)).
   * Fixed: _Member check operator doesn't always work correctly_ ([Issue #208](https://github.com/vorov2/dyalect/issues/208)).
