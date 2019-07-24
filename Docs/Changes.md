@@ -1,7 +1,12 @@
+# 0.9.7
+  * Fixed: _Tuples do not support indices of type `Char`_ ([Issue #217](https://github.com/vorov2/dyalect/issues/217)).
+  * Fixed: _Tuple syntax: lambdas as elements_ ([Issue #216](https://github.com/vorov2/dyalect/issues/216)).
+  * Fixed: _Tuple syntax - strings as keys_ ([Issue #215](https://github.com/vorov2/dyalect/issues/215)).
+
 # 0.9.6
   * Fixed: _Current linker logic needs redesign to support object files_ ([Issue #212](https://github.com/vorov2/dyalect/issues/212)).
   * Fixed: _Dya: eval doesn't aways correctly recognize file names_ ([Issue #213](https://github.com/vorov2/dyalect/issues/213)).
-  * Change: Prefix for commands in interactive console is changed from `:` to `#`, e.g. `#help` instead of `:help`.
+  * Change: _Prefix for commands in interactive console is changed from `:` to `#`, e.g. `#help` instead of `:help`._
 
 # 0.9.5
   * Code clean-ups and refactorings.

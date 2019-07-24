@@ -1,4 +1,6 @@
-﻿namespace Dyalect.Runtime.Types
+﻿using System.IO;
+
+namespace Dyalect.Runtime.Types
 {
     public class DyNil : DyObject
     {
@@ -24,6 +26,11 @@
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
             ctx.IndexOutOfRange(DyTypeNames.Nil, index);
+
+        internal override void Serialize(BinaryWriter writer)
+        {
+            writer.Write(TypeId);
+        }
     }
 
     internal sealed class DyNilTypeInfo : DyTypeInfo

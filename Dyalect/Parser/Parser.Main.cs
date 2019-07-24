@@ -146,7 +146,7 @@ namespace Dyalect.Parser
 
         private bool IsLabel()
         {
-            if (la.kind != _identToken)
+            if (la.kind != _identToken && la.kind != _stringToken)
                 return false;
 
             scanner.ResetPeek();
@@ -164,7 +164,7 @@ namespace Dyalect.Parser
 
         private bool IsLabelPattern()
         {
-            if (la.kind != _identToken)
+            if (la.kind != _identToken && la.kind != _stringToken)
                 return false;
 
             scanner.ResetPeek();
@@ -209,7 +209,8 @@ namespace Dyalect.Parser
 
             if (allowFields)
             {
-                if (scanner.Peek().kind == _identToken
+                Token xt;
+                if (((xt = scanner.Peek()).kind == _identToken || xt.kind == _stringToken)
                     && scanner.Peek().kind == _colonToken)
                     return true;
                 scanner.ResetPeek();

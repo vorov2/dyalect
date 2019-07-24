@@ -1,4 +1,5 @@
-﻿using Dyalect.Debug;
+﻿using System.IO;
+using Dyalect.Debug;
 
 namespace Dyalect.Runtime.Types
 {
@@ -36,6 +37,12 @@ namespace Dyalect.Runtime.Types
 
         public static implicit operator DyBool(bool v) => v ? True : False;
         public static implicit operator bool(DyBool v) => ReferenceEquals(v, True);
+
+        internal override void Serialize(BinaryWriter writer)
+        {
+            writer.Write(TypeId);
+            writer.Write(this is TrueBool);
+        }
     }
 
     internal sealed class DyBoolTypeInfo : DyTypeInfo
