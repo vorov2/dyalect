@@ -526,6 +526,11 @@ func stringTest23() { //Bug #207
     assert("Alphabeta", str.capitalize())
 }
 
+func stringTest24() { //Bug #219
+    var str = String(values: {'a','b','c'})
+    assert("abc", str)
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)

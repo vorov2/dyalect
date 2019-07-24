@@ -587,10 +587,12 @@ namespace Dyalect.Compiler
                         {
                             if (p.Root.Nodes == null || p.Root.Nodes.Count == 0)
                                 AddError(CompilerError.CodeIslandEmpty, node.Location);
-                            else if (p.Root.Nodes.Count > 1)
-                                AddError(CompilerError.CodeIslandMultipleExpressions, node.Location);
                             else
+                            {
+                                corrections.Push(node.Location);
                                 Build(p.Root.Nodes[0], hints.Append(Push), ctx);
+                                corrections.Pop();
+                            }
                         }
                     }
                     else

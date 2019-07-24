@@ -1,6 +1,8 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Parser;
 using Dyalect.Parser.Model;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Dyalect.Compiler
 {
@@ -11,8 +13,29 @@ namespace Dyalect.Compiler
         //Used by method EndScope to emit location of scope end.
         private Location lastLocation;
 
+        //Corrections used for compilation of code islands inside strings
+        private Stack<Location> corrections = new Stack<Location>();
+
         private DebugWriter pdb; //Symbol writer
         private bool isDebug; //Determines if we need to generate extended debug info
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int Line(Location loc)
+        {
+            if (corrections.Count > 0)
+                return corrections.Peek().Line + loc.Line;
+            else
+                return loc.Line;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int Col(Location loc)
+        {
+            if (corrections.Count > 0)
+                return corrections.Peek().Column + loc.Column;
+            else
+                return loc.Column;
+        }
 
         //Call this to generate the first part of FunSym
         private void StartFun(string name, Par[] pars, int parCount)
@@ -34,7 +57,7 @@ namespace Dyalect.Compiler
             currentScope = new Scope(fun, currentScope);
 
             if (isDebug)
-                pdb.StartScope(cw.Offset, loc.Line, loc.Column);
+                pdb.StartScope(cw.Offset, Line(loc), Col(loc));
         }
 
         //Called when any lexical scope ends
@@ -43,7 +66,7 @@ namespace Dyalect.Compiler
             currentScope = currentScope.Parent != null ? currentScope.Parent : null;
 
             if (isDebug)
-                pdb.EndScope(cw.Offset, lastLocation.Line, lastLocation.Column);
+                pdb.EndScope(cw.Offset, Line(lastLocation), Col(lastLocation));
         }
 
         //Called after StartScope when lexcial code exists in runtime (such as lexical
@@ -64,13 +87,13 @@ namespace Dyalect.Compiler
         private void AddLinePragma(DNode node)
         {
             lastLocation = node.Location;
-            pdb.AddLineSym(cw.Offset, lastLocation.Line, lastLocation.Column);
+            pdb.AddLineSym(cw.Offset, Line(lastLocation), Col(lastLocation));
         }
 
         private void AddLinePragma(Location loc)
         {
             lastLocation = loc;
-            pdb.AddLineSym(cw.Offset, loc.Line, loc.Column);
+            pdb.AddLineSym(cw.Offset, Line(loc), Col(loc));
         }
 
         //Used only when extended debug info is generated

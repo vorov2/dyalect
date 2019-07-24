@@ -1,4 +1,6 @@
 # 0.9.8
+  * Change: _Compiler error `CodeIslandMultipleExpressions` is decomissioned, now multiple expressions are allowed in code islands inside strings._
+  * Fixed: _Incorrect location for errors inside interpolated strings_ ([Issue #220](https://github.com/vorov2/dyalect/issues/220)).
   * Fixed: _`String.concat` doesn't favor sequences_ ([Issue #219](https://github.com/vorov2/dyalect/issues/219)).
 
 # 0.9.7

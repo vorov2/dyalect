@@ -106,15 +106,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multiple expressions are not supported in code islands..
-        /// </summary>
-        internal static string CodeIslandMultipleExpressions {
-            get {
-                return ResourceManager.GetString("CodeIslandMultipleExpressions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unable to use &quot;new&quot; operator outside of a method..
         /// </summary>
         internal static string CtorNoMethod {

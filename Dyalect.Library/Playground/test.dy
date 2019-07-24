@@ -1,3 +1,4 @@
-﻿type Foo(x)
-var f = Foo(12)
-f.x?
+﻿var x = 2
+var y = 0
+print("\(x / y)")
+
