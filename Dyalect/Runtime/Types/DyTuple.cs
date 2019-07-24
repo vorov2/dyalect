@@ -32,7 +32,7 @@ namespace Dyalect.Runtime.Types
         {
             if (index.TypeId == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
-            else if (index.TypeId == DyType.String)
+            else if (index.TypeId == DyType.String || index.TypeId == DyType.Char)
                 return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange(this.TypeName(ctx), index.GetString());
             else
                 return ctx.IndexInvalidType(this.TypeName(ctx), index);

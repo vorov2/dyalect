@@ -1,4 +1,5 @@
 # 0.9.7
+  * Fixed: _Tuples do not support indices of type `Char`_ ([Issue #217](https://github.com/vorov2/dyalect/issues/217)).
   * Fixed: _Tuple syntax: lambdas as elements_ ([Issue #216](https://github.com/vorov2/dyalect/issues/216)).
   * Fixed: _Tuple syntax - strings as keys_ ([Issue #215](https://github.com/vorov2/dyalect/issues/215)).
 
