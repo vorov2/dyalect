@@ -1,4 +1,5 @@
 # 0.9.7
+  * Fixed: _Tuple syntax: lambdas as elements_ ([Issue #216](https://github.com/vorov2/dyalect/issues/216)).
   * Fixed: _Tuple syntax - strings as keys_ ([Issue #215](https://github.com/vorov2/dyalect/issues/215)).
 
 # 0.9.6

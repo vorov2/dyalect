@@ -879,7 +879,10 @@ PRODUCTIONS
         (
             ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
             ":" (. var ot = t; .)
-            FunctionExpr<out node>
+            (
+                  IF (IsFunction()) FunctionExpr<out node>
+                | Assignment<out node>
+            )
             (. node = new DLabelLiteral(ot) { Label = name, Expression = node }; .)
         ).
 

@@ -840,7 +840,7 @@ namespace Dyalect.Parser
 		} else SynErr(96);
 		Expect(22);
 		var ot = t; 
-		FunctionExpr(out node);
+		Assignment(out node);
 		node = new DLabelLiteral(ot) { Label = name, Expression = node }; 
 	}
 

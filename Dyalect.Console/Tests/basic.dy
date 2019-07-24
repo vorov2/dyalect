@@ -380,6 +380,11 @@ func tupleTest8() { //bug #215
     assert(34, t["+"])
 }
 
+func tupleTest9() { //bug #216
+    var t = (fn: x => x+x)
+    assert(42, t.fn(21))
+}
+
 func stringTest1() {
     var str = "Hello, world!"
     var res = str.len()
