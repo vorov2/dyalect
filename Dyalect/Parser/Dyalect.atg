@@ -153,7 +153,7 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; bool st = false; bool auto = false; bool ctor = false; bool priv = false; .)
+        (. node = null; bool st = false; bool auto = false; bool priv = false; .)
         (
             (
                 [ "static" (. st = true; .) ] 
@@ -877,9 +877,9 @@ PRODUCTIONS
     Label<out DNode node> =
         (. node = null; var name = ""; .)
         (
-            identToken (. name = t.val; .)
+            ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
             ":" (. var ot = t; .)
-            Coalesce<out node>
+            FunctionExpr<out node>
             (. node = new DLabelLiteral(ot) { Label = name, Expression = node }; .)
         ).
 

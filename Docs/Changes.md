@@ -1,5 +1,5 @@
 # 0.9.7
-  * todo
+  * Fixed: _Tuple syntax - strings as keys_ ([Issue #215](https://github.com/vorov2/dyalect/issues/215)).
 
 # 0.9.6
   * Fixed: _Current linker logic needs redesign to support object files_ ([Issue #212](https://github.com/vorov2/dyalect/issues/212)).

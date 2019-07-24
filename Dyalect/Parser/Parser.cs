@@ -387,7 +387,7 @@ namespace Dyalect.Parser
 	}
 
 	void Function(out DNode node) {
-		node = null; bool st = false; bool auto = false; bool ctor = false; bool priv = false; 
+		node = null; bool st = false; bool auto = false; bool priv = false; 
 		if (la.kind == 50) {
 			Get();
 			st = true; 
@@ -831,11 +831,16 @@ namespace Dyalect.Parser
 
 	void Label(out DNode node) {
 		node = null; var name = ""; 
-		Expect(1);
-		name = t.val; 
+		if (la.kind == 1) {
+			Get();
+			name = t.val; 
+		} else if (la.kind == 4) {
+			Get();
+			name = ParseSimpleString(); 
+		} else SynErr(96);
 		Expect(22);
 		var ot = t; 
-		Coalesce(out node);
+		FunctionExpr(out node);
 		node = new DLabelLiteral(ot) { Label = name, Expression = node }; 
 	}
 
@@ -933,7 +938,7 @@ namespace Dyalect.Parser
 			tc.BindVariable = new DName(t) { Value = t.val }; 
 			Block(out node);
 			tc.Catch = node; 
-		} else SynErr(96);
+		} else SynErr(97);
 		node = tc; 
 	}
 
@@ -1145,7 +1150,7 @@ namespace Dyalect.Parser
 			node = new DUnaryOperation(node, op, ot); 
 		} else if (StartOf(10)) {
 			Range(out node);
-		} else SynErr(97);
+		} else SynErr(98);
 	}
 
 	void Range(out DNode node) {
@@ -1234,7 +1239,7 @@ namespace Dyalect.Parser
 			Iterator(out node);
 		} else if (la.kind == 26) {
 			Block(out node);
-		} else SynErr(98);
+		} else SynErr(99);
 	}
 
 	void ApplicationArguments(DApplication app) {
@@ -1288,7 +1293,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 62) {
 			Get();
-		} else SynErr(99);
+		} else SynErr(100);
 		node = new DBooleanLiteral(t) { Value = t.val == "true" }; 
 	}
 
@@ -1370,7 +1375,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 49) {
 			Import();
 			Separator();
-		} else SynErr(100);
+		} else SynErr(101);
 	}
 
 	void Dyalect() {
@@ -1510,11 +1515,12 @@ namespace Dyalect.Parser
 			case 93: s = "invalid Pattern"; break;
 			case 94: s = "invalid BooleanPattern"; break;
 			case 95: s = "invalid FunctionExpr"; break;
-			case 96: s = "invalid TryCatch"; break;
-			case 97: s = "invalid Unary"; break;
-			case 98: s = "invalid Literal"; break;
-			case 99: s = "invalid Bool"; break;
-			case 100: s = "invalid DyalectItem"; break;
+			case 96: s = "invalid Label"; break;
+			case 97: s = "invalid TryCatch"; break;
+			case 98: s = "invalid Unary"; break;
+			case 99: s = "invalid Literal"; break;
+			case 100: s = "invalid Bool"; break;
+			case 101: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

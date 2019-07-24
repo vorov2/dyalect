@@ -374,6 +374,12 @@ func tupleTest7() {
     assert(t2, t)
 }
 
+func tupleTest8() { //bug #215
+    var t = ("long name": 12, "+": 34)
+    assert(12, t["long name"])
+    assert(34, t["+"])
+}
+
 func stringTest1() {
     var str = "Hello, world!"
     var res = str.len()
