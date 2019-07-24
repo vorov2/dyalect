@@ -1,5 +1,5 @@
 # 0.9.8
-  * todo
+  * Fixed: _`String.concat` doesn't favor sequences_ ([Issue #219](https://github.com/vorov2/dyalect/issues/219)).
 
 # 0.9.7
   * Fixed: _Tuples do not support indices of type `Char`_ ([Issue #217](https://github.com/vorov2/dyalect/issues/217)).
