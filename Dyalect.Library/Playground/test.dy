@@ -31,7 +31,11 @@ func normalize(range) {
 }
 
 for list in [
-    [ (s: 6.1, e: 7.2), (s: 7.2, e: 8.3) ]
+    [ (s: 1.1, e: 2.2) ],
+    [ (s: 6.1, e: 7.2), (s: 7.2, e: 8.3) ],
+    [ (s: 4.0, e: 3.0), (s: 2, e: 1) ],
+    [ (s: 4.0, e: 3.0), (s: 2, e: 1), (s: -1, e: 2), (s: 3.9, e: 10) ],
+    [ (s: 1.0, e: 3.0), (s: -6, e: -1), (s: -4, e: -5), (s: 8, e: 2), (s: -6, e: -6) ]
 ] {
     var z = list.len()-1
     while z >= 1 {
@@ -44,9 +48,10 @@ for list in [
         }
         z -= 1
     }
-    var ys = []
-    for x in list {
-        ys.add(normalize(x))
+    for i in list.indices() {
+        list[i] = normalize(list[i])
     }
-    print(ys)
+    print("before: \(list)")
+    list.sort((x,y) => x.s - y.s)
+    print(list)
 }

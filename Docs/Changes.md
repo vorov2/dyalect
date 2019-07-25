@@ -3,6 +3,7 @@
   * Fixed: _`Integer` constructor should accepts strings_ ([Issue #223](https://github.com/vorov2/dyalect/issues/223)).
   * Fixed: _Too many arguments runtime error causes runtime to crash_ ([Issue #224](https://github.com/vorov2/dyalect/issues/224)).
   * Fixed: _Runtime crash_ ([Issue #225](https://github.com/vorov2/dyalect/issues/225)).
+  * Fixed: _`Array.sort`: comparer always returns 0 if the result is of type `Float`_ ([Issue #226](https://github.com/vorov2/dyalect/issues/226)).
 
 # 0.9.8
   * Done: _Add String.repeat method_ ([Issue #221](https://github.com/vorov2/dyalect/issues/221), [docs](https://github.com/vorov2/dyalect/wiki/String#repeat)).
