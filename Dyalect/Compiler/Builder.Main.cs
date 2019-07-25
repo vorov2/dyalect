@@ -713,7 +713,7 @@ namespace Dyalect.Compiler
             {
                 var n = node.Nodes[i];
                 var last = i == node.Nodes.Count - 1;
-                var nh = hasPush && last ? hints.Append(Push) : hints.Remove(Push);
+                var nh = hasPush && last ? hints : hints.Remove(Push);
                 nh = hasLast && last ? nh.Append(Last) : nh;
                 Build(n, nh, ctx);
             }

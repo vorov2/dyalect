@@ -75,7 +75,7 @@ namespace Dyalect.Runtime
 
             if (DataItems != null)
                 foreach (var dt in DataItems)
-                    sb.Replace("%" + dt.Key + "%", dt.Value.ToString());
+                    sb.Replace("%" + dt.Key + "%", (dt.Value ?? "N/A").ToString());
 
             return sb.ToString();
         }
