@@ -533,21 +533,34 @@ namespace Dyalect.Runtime.Types
             return new DyString(string.Join(separator.GetString(), strArr));
         }
 
+        private static DyObject Repeat(ExecutionContext ctx, DyObject value, DyObject count)
+        {
+            if (count.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyTypeNames.Integer, count);
+
+            if (value.TypeId != DyType.Char)
+                return ctx.InvalidType(DyTypeNames.Char, value);
+
+            return new DyString(new string(value.GetChar(), (int)count.GetInteger()));
+        }
+
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "String")
-                return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
-
-            if (name == "concat")
-                return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
-
-            if (name == "join")
-                return DyForeignFunction.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(",")));
-
-            if (name == "default")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyString.Empty);
-
-            return null;
+            switch (name)
+            {
+                case "String":
+                    return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
+                case "concat":
+                    return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
+                case "join":
+                    return DyForeignFunction.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(",")));
+                case "default":
+                    return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyString.Empty);
+                case "repeat":
+                    return DyForeignFunction.Static(name, Repeat, -1, new Par("value"), new Par("count"));
+                default:
+                    return null;
+            }
         }
         #endregion
     }

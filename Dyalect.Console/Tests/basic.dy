@@ -531,6 +531,13 @@ func stringTest24() { //Bug #219
     assert("abc", str)
 }
 
+func stringTest25() {
+    var str = String.repeat('*', 5)
+    assert("*****", str)
+    str = String.repeat(value: '!', count: 3)
+    assert("!!!", str)
+}
+
 func memberCheckTest() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)

@@ -1,4 +1,5 @@
 # 0.9.8
+  * Done: _Add String.repeat method_ ([Issue #221](https://github.com/vorov2/dyalect/issues/221), [docs](https://github.com/vorov2/dyalect/wiki/String#repeat)).
   * Change: _Compiler error `CodeIslandMultipleExpressions` is decomissioned, now multiple expressions are allowed in code islands inside strings._
   * Fixed: _Incorrect location for errors inside interpolated strings_ ([Issue #220](https://github.com/vorov2/dyalect/issues/220)).
   * Fixed: _`String.concat` doesn't favor sequences_ ([Issue #219](https://github.com/vorov2/dyalect/issues/219)).
