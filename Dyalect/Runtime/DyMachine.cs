@@ -501,7 +501,10 @@ namespace Dyalect.Runtime
                             }
                             var locs = ctx.Locals.Peek();
                             if (idx == locs.VarArgsIndex)
-                                Push(locs, evalStack.Pop());
+                            {
+                                Push(locs, evalStack.Pop(), ctx);
+                                if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                            }
                             else
                                 locs.Locals[idx] = evalStack.Pop();
                         }
@@ -579,12 +582,14 @@ namespace Dyalect.Runtime
             }
         }
 
-        private static void Push(ArgContainer container, DyObject value)
+        private static void Push(ArgContainer container, DyObject value, ExecutionContext ctx)
         {
             if (value.TypeId == DyType.Array)
                 container.VarArgs.AddRange((IEnumerable<DyObject>)value);
             else if (value.TypeId == DyType.Tuple)
                 container.VarArgs.AddRange(((DyTuple)value).Values);
+            else if (value.TypeId == DyType.Iterator)
+                container.VarArgs.AddRange(DyIterator.Run(ctx, value));
             else
                 container.VarArgs.Add(value);
         }
