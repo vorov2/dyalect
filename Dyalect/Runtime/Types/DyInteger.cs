@@ -331,6 +331,11 @@ namespace Dyalect.Runtime.Types
                 return DyInteger.Get((long)obj.GetFloat());
             else if (obj.TypeId == DyType.Char)
                 return DyInteger.Get((long)obj.GetChar());
+            else if (obj.TypeId == DyType.String)
+            {
+                long.TryParse(obj.GetString(), out var i);
+                return DyInteger.Get(i);
+            }
 
             return ctx.InvalidType(obj);
         }

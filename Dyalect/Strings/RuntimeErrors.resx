@@ -169,7 +169,7 @@
     <value>Collection was modified after the iterator was instantiated.</value>
   </data>
   <data name="InvalidType1" xml:space="preserve">
-    <value>Type error: type "%Got% is unexpected.</value>
+    <value>Type error: type "%Got%" is unexpected.</value>
   </data>
   <data name="PrivateNameAccess" xml:space="preserve">
     <value>Unable to access a private module member "%Name%".</value>
