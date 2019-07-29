@@ -1,3 +1,6 @@
+# 0.9.10
+  * Done: _Incorrect location for the errors inside interpolated strings_ ([Issue #227](https://github.com/vorov2/dyalect/issues/227)).
+
 # 0.9.9
   * Fixed: _Error message for type error is corrected._
   * Fixed: _`Integer` constructor should accepts strings_ ([Issue #223](https://github.com/vorov2/dyalect/issues/223)).
