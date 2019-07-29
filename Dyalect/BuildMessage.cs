@@ -1,4 +1,6 @@
-﻿namespace Dyalect
+﻿using Dyalect.Parser;
+
+namespace Dyalect
 {
     public class BuildMessage
     {

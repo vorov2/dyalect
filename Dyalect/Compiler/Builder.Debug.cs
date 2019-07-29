@@ -23,7 +23,7 @@ namespace Dyalect.Compiler
         private int Line(Location loc)
         {
             if (corrections.Count > 0)
-                return corrections.Peek().Line + loc.Line;
+                return corrections.Peek().Line;
             else
                 return loc.Line;
         }
