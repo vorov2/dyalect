@@ -897,3 +897,54 @@ func countCoinsTest() {
     var res = countCoins(coins, 100)
     assert(242, res)
 }
+
+func consolidationTest() {
+    func max(x, y) {
+        if x > y {
+            x
+        } else {
+            y
+        }
+    }
+    func min(x, y) {
+        if x < y {
+            x
+        } else {
+            y
+        }
+    }
+    func overlap(left, right) {
+        if max(left.s, left.e) > max(right.s, right.e) {
+            max(right.s, right.e) >= min(left.s, left.e) 
+        } else {
+            max(left.s, left.e) >= min(right.s, right.e)
+        }
+    }
+    func consolidate(left, right) {
+        (s: min(min(left.s, left.e), min(right.s, right.e)), e: max(max(left.s, left.e), max(right.s, right.e)))
+    }
+    func normalize(range) {
+        (s: min(range.s, range.e), e: max(range.s, range.e))
+    }
+    for list in [
+        [ (s: 6.1, e: 7.2), (s: 7.2, e: 8.3) ]
+    ] {
+        var z = list.len()-1
+        while z >= 1 {
+            for y in (z - 1)..0 {
+                if overlap(list[z], list[y]) {
+                    list[y] = consolidate(list[z], list[y])
+                    list.removeAt(z)
+                    break
+                }
+            }
+            z -= 1
+        }
+        var ys = []
+        for x in list {
+            ys.add(normalize(x))
+        }
+        assert(6.1, ys[0].s)
+        assert(8.3, ys[0].e)
+    }
+}

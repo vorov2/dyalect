@@ -247,6 +247,11 @@ namespace Dyalect.Runtime.Types
                 return new DyFloat(obj.GetInteger());
             else if (obj.TypeId == DyType.Char)
                 return new DyFloat(obj.GetChar());
+            else if (obj.TypeId == DyType.String)
+            {
+                double.TryParse(obj.GetString(), out var i);
+                return new DyFloat(i);
+            }
 
             return ctx.InvalidType(obj);
         }

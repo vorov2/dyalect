@@ -114,7 +114,7 @@ namespace Dyalect.Compiler
                 cw.Brfalse(ctx.BlockSkip);
             }
 
-            var nh = hints.Has(Push) ? hints.Remove(Push).Append(ExpectPush) : hints;
+            var nh = hints.Has(Push) ? hints.Remove(Push).Append(ExpectPush) : hints.Remove(ExpectPush);
             Build(node.Body, nh, ctx);
 
             cw.MarkLabel(ctx.BlockSkip);

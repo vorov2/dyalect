@@ -334,6 +334,12 @@ func arrayTest22() {
     assert([1], arr)
 }
 
+func arrayTest23() { //Bug #226
+    var xs = [(s: 3.0, e: 4.0), (s: 1.0, e: 2.0)]
+    xs.sort((x,y) => x.s - y.s)
+    assert(1.0, xs[0].s)
+}
+
 func tupleTest1() {
     var t = (1,2,3)
     assert(3, t.len())

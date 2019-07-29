@@ -142,7 +142,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type error: type &quot;%Got% is unexpected..
+        ///   Looks up a localized string similar to Type error: type &quot;%Got%&quot; is unexpected..
         /// </summary>
         internal static string InvalidType1 {
             get {
