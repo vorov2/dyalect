@@ -12,8 +12,8 @@ namespace Dyalect
         private const string LINKER = "Linker settings";
         private const string GENERAL = "General settings";
 
-        [Binding(Help = "A full path to the .dy file which should be executed (or to the file or directory with files in '-test' mode).", Category = COMPILER)]
-        public string FileName { get; set; }
+        [Binding(Help = "A full path to the .dy file which should be executed (or to the file or directory with files in '-test' mode). Several files can be specified.", Category = COMPILER)]
+        public string[] FileNames { get; set; }
 
         [Binding("debug", Help = "Compile in debug mode.", Category = COMPILER)]
         public bool Debug { get; set; }

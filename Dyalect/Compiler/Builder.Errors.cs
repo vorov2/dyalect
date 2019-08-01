@@ -32,7 +32,7 @@ namespace Dyalect.Compiler
         private void AddError(CompilerError error, Location loc, params object[] args)
         {
             var str = string.Format(CompilerErrors.ResourceManager.GetString(error.ToString()) ?? error.ToString(), args);
-            AddMessage(new BuildMessage(str, BuildMessageType.Error, (int)error, loc.Line, loc.Column, unit.FileName));
+            AddMessage(new BuildMessage(str, BuildMessageType.Error, (int)error, Line(loc), Col(loc), unit.FileName));
         }
 
         private void AddWarning(CompilerWarning warning, Location loc, params object[] args)
@@ -41,7 +41,7 @@ namespace Dyalect.Compiler
                 return;
 
             var str = string.Format(CompilerErrors.ResourceManager.GetString(warning.ToString()) ?? warning.ToString(), args);
-            AddMessage(new BuildMessage(str, BuildMessageType.Warning, (int)warning, loc.Line, loc.Column, unit.FileName));
+            AddMessage(new BuildMessage(str, BuildMessageType.Warning, (int)warning, Line(loc), Col(loc), unit.FileName));
         }
 
         public bool Success => ErrorCount == 0;

@@ -66,3 +66,9 @@ The project is still in early development, however you can already
 download the binaries or study existing code.
 
 Please refer to [wiki](https://github.com/vorov2/dyalect/wiki) for more information.
+
+## Links
+
+* [SourceForge page](https://sourceforge.net/projects/dyalect/)
+* [Dyalect at RosettaCode](http://rosettacode.org/wiki/Category:Dyalect)
+* [Dyalect at OpenHub](https://www.openhub.net/p/dyalect)

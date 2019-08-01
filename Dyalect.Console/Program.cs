@@ -28,12 +28,20 @@ namespace Dyalect
                 Printer.LineFeed();
                 return RunTests(options) ? OK : ERR;
             }
-            else if (options.FileName != null)
+            else if (options.FileNames != null && options.FileNames.Length > 0)
             {
                 Printer.LineFeed();
 
-                if (!ctx.EvalFile(options.FileName, options.MeasureTime))
-                    return ERR;
+                for (var i = 0; i < options.FileNames.Length; i++)
+                {
+                    var f = options.FileNames[i];
+
+                    if (i > 0)
+                        ctx.Reset();
+
+                    if (!ctx.EvalFile(options.FileNames[0], options.MeasureTime))
+                        return ERR;
+                }
 
                 if (options.StayInInteractive)
                     RunInteractive();
@@ -48,13 +56,14 @@ namespace Dyalect
 
         private static bool RunTests(DyaOptions options)
         {
-            if (string.IsNullOrEmpty(options.FileName))
+            if (options.FileNames == null || options.FileNames.Length == 0 
+                || string.IsNullOrEmpty(options.FileNames[0]))
             {
-                Printer.Error("File name not specified.");
+                Printer.Error("File name(s) not specified.");
                 return false;
             }
 
-            return TestRunner.RunTests(options.FileName, options.AppVeyour);
+            return TestRunner.RunTests(options.FileNames, options.AppVeyour);
         }
 
         private static void RunInteractive()

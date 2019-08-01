@@ -24,9 +24,9 @@ namespace Dyalect
             };
 
             var lookup = FileLookup.Create(
-                string.IsNullOrWhiteSpace(options.FileName) 
+                options.FileNames == null || options.FileNames.Length == 0 || string.IsNullOrWhiteSpace(options.FileNames[0]) 
                     ? Environment.CurrentDirectory
-                    : Path.GetDirectoryName(options.FileName), options.Paths);
+                    : Path.GetDirectoryName(options.FileNames[0]), options.Paths);
             Linker = new DyIncrementalLinker(lookup, buildOptions);
         }
 

@@ -11,6 +11,10 @@
     "Interactive": {
       "commandName": "Project",
       "commandLineArgs": "-path \"..\\Dyalect.Library\\Playground\""
+    },
+    "Debug": {
+      "commandName": "Project",
+      "commandLineArgs": "\"c:\\folder\\file1.dy\" \"c:\\folder\\file2.dy\" \"c:\\folder\\file3.dy\""
     }
   }
 }
