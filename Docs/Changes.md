@@ -1,5 +1,6 @@
 # 0.9.10
-  * Done: _Incorrect location for the errors inside interpolated strings_ ([Issue #227](https://github.com/vorov2/dyalect/issues/227)).
+  * Done: _Allow to specify multiple files in Dyalect console_ ([Issue #228](https://github.com/vorov2/dyalect/issues/228)).
+  * Fixed: _Incorrect location for the errors inside interpolated strings_ ([Issue #227](https://github.com/vorov2/dyalect/issues/227)).
 
 # 0.9.9
   * Fixed: _Error message for type error is corrected._

@@ -58,9 +58,13 @@ namespace Dyalect.Util
                 {
                     key = "<default>";
 
-                    if (options.TryGetValue("$default", out var opt) && opt is StringValue str)
+                    if (options.TryGetValue("$default", out var opt))
                     {
-                        value = ConvertValue(key, str.Value, pi.PropertyType);
+                        if (opt is StringValue str)
+                            value = ConvertValue(key, str.Value, pi.PropertyType);
+                        else if (opt is ArrayValue arr)
+                            value = arr.Values.ToArray();
+
                         options.Remove("$default");
                     }
                 }
@@ -203,10 +207,7 @@ namespace Dyalect.Util
 
                 if (!iswitch && opt == null)
                 {
-                    if (def != null)
-                        throw new DyaException($"A default command line argument is already specifid: {def}");
-
-                    AddOption(null, def = str);
+                    AddOption(null, str);
                     continue;
                 }
 
