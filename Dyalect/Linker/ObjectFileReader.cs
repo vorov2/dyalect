@@ -82,7 +82,7 @@ namespace Dyalect.Linker
                 if (typeId == DyType.String)
                     yield return (T)(object)new DyString(reader.ReadString());
                 else if (typeId == DyType.Integer)
-                    yield return (T)(object)DyInteger.Get(reader.ReadInt32());
+                    yield return (T)(object)DyInteger.Get(reader.ReadInt64());
                 else if (typeId == DyType.Float)
                     yield return (T)(object)new DyFloat(reader.ReadDouble());
                 else if (typeId == DyType.Char)
@@ -190,6 +190,7 @@ namespace Dyalect.Linker
                 s.StartColumn = reader.ReadInt32();
                 s.EndLine = reader.ReadInt32();
                 s.EndColumn = reader.ReadInt32();
+                di.Scopes.Add(s);
             }
 
             var lines = reader.ReadInt32();
@@ -199,6 +200,7 @@ namespace Dyalect.Linker
                 l.Offset = reader.ReadInt32();
                 l.Line = reader.ReadInt32();
                 l.Column = reader.ReadInt32();
+                di.Lines.Add(l);
             }
 
             var vars = reader.ReadInt32();
@@ -211,6 +213,7 @@ namespace Dyalect.Linker
                 v.Scope = reader.ReadInt32();
                 v.Flags = reader.ReadInt32();
                 v.Data = reader.ReadInt32();
+                di.Vars.Add(v);
             }
 
             var funs = reader.ReadInt32();
@@ -232,6 +235,8 @@ namespace Dyalect.Linker
                     var p = new Par(name, value, va);
                     f.Parameters[j] = p;
                 }
+
+                di.Functions.Add(f.Handle, f);
             }
         }
     }

@@ -55,11 +55,27 @@ namespace Dyalect
             return Eval(measureTime: false);
         }
 
-        public bool Make(string fileName, out UnitComposition composition)
+        public bool Make(string fileName, out UnitComposition composition, bool recompile = false)
         {
             composition = null;
 
-            var made = Linker.Make(fileName);
+            var made = default(Result<UnitComposition>);
+
+            if (recompile)
+            {
+                try
+                {
+                    var buffer = SourceBuffer.FromFile(fileName);
+                    made = Linker.Make(buffer);
+                }
+                catch (Exception ex)
+                {
+                    Printer.Error($"Unable to read file \"{fileName}\": {ex.Message}");
+                    return false;
+                }
+            }
+            else
+                made = Linker.Make(fileName);
 
             if (made.Messages.Any())
                 Printer.PrintErrors(made.Messages);

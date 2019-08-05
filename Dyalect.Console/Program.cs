@@ -1,4 +1,5 @@
 ﻿using Dyalect.Linker;
+using Dyalect.Parser;
 using Dyalect.Util;
 using System;
 using System.IO;
@@ -103,7 +104,7 @@ namespace Dyalect
                 else if (Directory.Exists(outFile))
                     outFile = Path.Combine(outFile, Path.GetFileNameWithoutExtension(f) + ".dyo");
 
-                if (!ctx.Make(f, out var composition))
+                if (!File.Exists(f) || !ctx.Make(f, out var composition, recompile: true))
                 {
                     Printer.Error($"Compilation of file \"{f}\" skipped.");
                     continue;

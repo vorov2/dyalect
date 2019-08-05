@@ -246,7 +246,12 @@ namespace Dyalect.Linker
             try
 #endif
             {
-                return ObjectFileReader.Read(fileName);
+                var obj = ObjectFileReader.Read(fileName);
+
+                foreach (var o in obj.References)
+                    Link(obj, o);
+
+                return obj;
             }
 #if !DEBUG
             catch (Exception ex)
