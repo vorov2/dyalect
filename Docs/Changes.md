@@ -1,6 +1,8 @@
 # 0.9.11
+  * Change: _Default implementation of `toString` method for custom types is corrected for better output_.
   * Fixed: _Debug: Location is not generated for function application_ ([Issue #230](https://github.com/vorov2/dyalect/issues/230)).
   * Fixed: _Stack corruption_ ([Issue #231](https://github.com/vorov2/dyalect/issues/231)).
+  * Fixed: _Nested comments are not supported_ ([Issue #232](https://github.com/vorov2/dyalect/issues/232)).
 
 # 0.9.10
   * Done: _Allow to specify multiple files in Dyalect console_ ([Issue #228](https://github.com/vorov2/dyalect/issues/228)).

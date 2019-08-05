@@ -59,7 +59,7 @@ TOKENS
     not                 = "!".
     bitnot              = "~".
 
-COMMENTS FROM "/*" TO "*/"
+COMMENTS FROM "/*" TO "*/" NESTED
 COMMENTS FROM "//" TO lf
 
 IGNORE cr + lf + tab
