@@ -138,4 +138,7 @@
   <data name="UnableReadModule" xml:space="preserve">
     <value>An error occured while reading module file "{0}": {1}</value>
   </data>
+  <data name="UnableReadObjectFile" xml:space="preserve">
+    <value>Unable to read object file "{0}": {1}</value>
+  </data>
 </root>

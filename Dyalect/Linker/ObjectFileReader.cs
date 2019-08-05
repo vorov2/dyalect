@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Dyalect.Linker
 {
-    internal static class ObjectFileReader
+    public static class ObjectFileReader
     {
         public static Unit Read(string fileName)
         {
@@ -131,13 +131,14 @@ namespace Dyalect.Linker
         private static void ReadReferences(BinaryReader reader, Unit unit)
         {
             var refs = reader.ReadInt32();
+            var str = "";
 
             for (var i = 0; i < refs; i++)
             {
                 var r = new Reference(
                         reader.ReadString(),
-                        reader.ReadString(),
-                        reader.ReadString(),
+                        (str = reader.ReadString()).Length == 0 ? null : str,
+                        (str = reader.ReadString()).Length == 0 ? null : str,
                         new Parser.Location(reader.ReadInt32(), reader.ReadInt32()),
                         reader.ReadString()
                     );

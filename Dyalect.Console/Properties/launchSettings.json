@@ -13,7 +13,7 @@
     },
     "Debug": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\repos\\source\\Dyalect\\feature\\Dyalect.Library\\Playground\\sub\\\""
+      "commandLineArgs": "C:\\temp\\dyalect\\main.dy"
     }
   }
 }

@@ -16,6 +16,8 @@
 
         AssemblyModuleLoadError = 405,
 
-        InvalidAssemblyModule = 406
+        InvalidAssemblyModule = 406,
+
+        UnableReadObjectFile = 407
     }
 }

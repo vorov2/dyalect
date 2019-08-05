@@ -1,4 +1,5 @@
-﻿using Dyalect.Util;
+﻿using Dyalect.Linker;
+using Dyalect.Util;
 using System;
 using System.IO;
 using System.Linq;
@@ -18,6 +19,23 @@ namespace Dyalect
             if (!Prepare(args, out var options))
                 return ERR;
 
+#if !DEBUG
+            try
+#endif
+            {
+                return Run(options) ? OK : ERR;
+            }
+#if !DEBUG
+            catch (Exception ex)
+            {
+                Printer.Error(ex.Message);
+                return ERR;
+            }
+#endif
+        }
+
+        private static bool Run(DyaOptions options)
+        {
             Printer.Header();
 
             ctx = new InteractiveContext(options);
@@ -26,7 +44,12 @@ namespace Dyalect
             if (options.Test)
             {
                 Printer.LineFeed();
-                return RunTests(options) ? OK : ERR;
+                return RunTests(options);
+            }
+            else if (options.Compile)
+            {
+                Printer.LineFeed();
+                return Compile(options);
             }
             else if (options.FileNames != null && options.FileNames.Length > 0)
             {
@@ -39,7 +62,7 @@ namespace Dyalect
                         ctx.Reset();
 
                     if (!ctx.EvalFile(f, options.MeasureTime))
-                        return ERR;
+                        return false;
 
                     i++;
                 }
@@ -47,12 +70,12 @@ namespace Dyalect
                 if (options.StayInInteractive)
                     RunInteractive();
                 else
-                    return OK;
+                    return true;
             }
             else
                 RunInteractive();
 
-            return OK;
+            return true;
         }
 
         private static bool RunTests(DyaOptions options)
@@ -65,6 +88,45 @@ namespace Dyalect
             }
 
             return TestRunner.RunTests(options.GetFileNames(), options.AppVeyour);
+        }
+
+        private static bool Compile(DyaOptions options)
+        {
+            var ctx = new InteractiveContext(options);
+            
+            foreach (var f in options.GetFileNames())
+            {
+                var outFile = options.OutputDirectory;
+
+                if (string.IsNullOrWhiteSpace(outFile))
+                    outFile = Path.Combine(Path.GetDirectoryName(f), Path.GetFileNameWithoutExtension(f) + ".dyo");
+                else if (Directory.Exists(outFile))
+                    outFile = Path.Combine(outFile, Path.GetFileNameWithoutExtension(f) + ".dyo");
+
+                if (!ctx.Make(f, out var composition))
+                {
+                    Printer.Error($"Compilation of file \"{f}\" skipped.");
+                    continue;
+                }
+
+#if !DEBUG
+                try
+#endif
+                {
+                    ObjectFileWriter.Write(outFile, composition.Units[0]);
+                    Printer.Information($"Compilation completed. File saved: \"{outFile}\"");
+                }
+#if !DEBUG
+                catch (Exception ex)
+                {
+                    Printer.Error(ex.Message);
+                    Printer.Error($"Compilation of file \"{f}\" skipped.");
+                    continue;
+                }
+#endif
+            }
+
+            return true;
         }
 
         private static void RunInteractive()
