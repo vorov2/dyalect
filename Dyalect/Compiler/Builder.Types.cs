@@ -1,5 +1,6 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
+using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
 {
@@ -26,9 +27,13 @@ namespace Dyalect.Compiler
 
             if (node.HasConstructors)
             {
+                var nh = hints.Remove(Push).Remove(ExpectPush);
+
                 foreach (var c in node.Constructors)
-                    Build(c, hints, ctx);
+                    Build(c, nh, ctx);
             }
+
+            PushIf(hints);
         }
 
         private void GenerateConstructor(DFunctionDeclaration func, Hints hints, CompilerContext ctx)

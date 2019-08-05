@@ -1,5 +1,6 @@
 # 0.9.11
   * Fixed: _Debug: Location is not generated for function application_ ([Issue #230](https://github.com/vorov2/dyalect/issues/230)).
+  * Fixed: _Stack corruption_ ([Issue #231](https://github.com/vorov2/dyalect/issues/231)).
 
 # 0.9.10
   * Done: _Allow to specify multiple files in Dyalect console_ ([Issue #228](https://github.com/vorov2/dyalect/issues/228)).

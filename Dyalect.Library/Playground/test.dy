@@ -1,5 +1,3 @@
-﻿var fn = nil
+﻿type List = List(x) | Empty()
 
-var x = fn()
-
-x + x
+//List(12)
