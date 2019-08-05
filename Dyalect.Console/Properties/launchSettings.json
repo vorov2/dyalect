@@ -9,12 +9,11 @@
       "commandLineArgs": "Tests\\ -test"
     },
     "Interactive": {
-      "commandName": "Project",
-      "commandLineArgs": "-path \"..\\Dyalect.Library\\Playground\""
+      "commandName": "Project"
     },
     "Debug": {
       "commandName": "Project",
-      "commandLineArgs": "\"c:\\folder\\file1.dy\" \"c:\\folder\\file2.dy\" \"c:\\folder\\file3.dy\""
+      "commandLineArgs": "\"C:\\repos\\source\\Dyalect\\feature\\Dyalect.Library\\Playground\\sub\\\""
     }
   }
 }

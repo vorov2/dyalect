@@ -31,16 +31,17 @@ namespace Dyalect
             else if (options.FileNames != null && options.FileNames.Length > 0)
             {
                 Printer.LineFeed();
+                var i = 0;
 
-                for (var i = 0; i < options.FileNames.Length; i++)
+                foreach (var f in options.GetFileNames())
                 {
-                    var f = options.FileNames[i];
-
                     if (i > 0)
                         ctx.Reset();
 
-                    if (!ctx.EvalFile(options.FileNames[0], options.MeasureTime))
+                    if (!ctx.EvalFile(f, options.MeasureTime))
                         return ERR;
+
+                    i++;
                 }
 
                 if (options.StayInInteractive)
@@ -63,7 +64,7 @@ namespace Dyalect
                 return false;
             }
 
-            return TestRunner.RunTests(options.FileNames, options.AppVeyour);
+            return TestRunner.RunTests(options.GetFileNames(), options.AppVeyour);
         }
 
         private static void RunInteractive()

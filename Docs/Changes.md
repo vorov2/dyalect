@@ -1,3 +1,6 @@
+# 0.9.12
+  * Fixed: _Dyalect console: specify directory as well as file_ ([Issue #234](https://github.com/vorov2/dyalect/issues/234)).
+
 # 0.9.11
   * Change: _Default implementation of `toString` method for custom types is corrected for better output_.
   * Fixed: _Debug: Location is not generated for function application_ ([Issue #230](https://github.com/vorov2/dyalect/issues/230)).
