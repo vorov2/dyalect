@@ -127,6 +127,11 @@ namespace Dyalect.Parser
 						if (level == 0) { oldEols = line - line0; NextCh(); return true; }
 						NextCh();
 					}
+				} else if (ch == '/') {
+					NextCh();
+					if (ch == '*') {
+						level++; NextCh();
+					}
 				} else if (ch == Buffer.EOF) return false;
 				else NextCh();
 			}
