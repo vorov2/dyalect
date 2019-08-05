@@ -501,6 +501,7 @@ namespace Dyalect.Compiler
             else
                 Build(node.Target, hints.Append(Push), ctx);
 
+            AddLinePragma(node);
             cw.FunPrep(node.Arguments.Count);
             Dictionary<string, object> dict = null;
 
@@ -529,8 +530,8 @@ namespace Dyalect.Compiler
                 }
             }
 
+            AddLinePragma(node);
             cw.FunCall(node.Arguments.Count);
-
             PopIf(hints);
         }
 

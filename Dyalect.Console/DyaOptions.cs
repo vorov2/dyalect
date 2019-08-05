@@ -15,6 +15,9 @@ namespace Dyalect
         [Binding(Help = "A full path to the .dy file which should be executed (or to the file or directory with files in '-test' mode). Several files can be specified.", Category = COMPILER)]
         public string[] FileNames { get; set; }
 
+        [Binding("out", Help = "Specifies an output directory (e.g. for a compiled file).", Category = COMPILER)]
+        public string OutputDirectory { get; set; }
+
         [Binding("debug", Help = "Compile in debug mode.", Category = COMPILER)]
         public bool Debug { get; set; }
 
@@ -33,7 +36,7 @@ namespace Dyalect
         [Binding("time", Help = "Measure execution time.", Category = GENERAL)]
         public bool MeasureTime { get; set; }
 
-        [Binding("test", Help = "Run unit tests from a file (or files if a path to a directory is specified). Usage: dya [path to file or directory] -test.", Category = GENERAL)]
+        [Binding("test", Help = "Run unit tests from a file (or files if a path to a directory is specified). Usage: dya [path to a file or directory] -test.", Category = GENERAL)]
         public bool Test { get; set; }
 
         [Binding("appveyor")]

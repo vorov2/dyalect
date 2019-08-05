@@ -58,7 +58,12 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var cust = (DyCustomType)arg;
-            return new DyString($"{{{TypeName}: {cust.Value.ToString(ctx)}}}");
+            var ctorName = ctx.Composition.Members[cust.ConstructorId];
+
+            if (TypeName == ctorName)
+                return new DyString($"{{{TypeName}: {cust.Value.ToString(ctx)}}}");
+            else
+                return new DyString($"{{{TypeName}.{ctorName}: {cust.Value.ToString(ctx)}}}");
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
