@@ -394,7 +394,7 @@ func dammTest() {
     func damm(num) {
         var interim = 0
         for c in num.toString() {
-            interim = table[interim][convertToNumber(c)];
+            interim = table[interim][Integer(c)];
         }
         interim == 0
     }

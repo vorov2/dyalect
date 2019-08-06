@@ -24,7 +24,7 @@ namespace Dyalect.Linker
             //idle
         }
 
-        [Function("convertToNumber")] 
+        [Function("number")] 
         public DyObject ToNumber(ExecutionContext ctx, DyObject value)
         {
             if (value.TypeId == DyType.Integer || value.TypeId == DyType.Float)

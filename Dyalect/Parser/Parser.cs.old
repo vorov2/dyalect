@@ -437,7 +437,6 @@ namespace Dyalect.Parser
 		if (la.kind == 23) {
 			Get();
 			Expr(out var cnode);
-			cnode = ProcessImplicits(cnode); 
 			arg.DefaultValue = cnode; 
 		}
 		if (la.kind == 53) {
@@ -1240,11 +1239,11 @@ namespace Dyalect.Parser
 	void ApplicationArguments(DApplication app) {
 		var node = default(DNode); 
 		Expr(out node);
-		app.Arguments.Add(node); 
+		app.Arguments.Add(ProcessImplicits(node)); 
 		while (la.kind == 20) {
 			Get();
 			Expr(out node);
-			app.Arguments.Add(node); 
+			app.Arguments.Add(ProcessImplicits(node)); 
 		}
 	}
 
