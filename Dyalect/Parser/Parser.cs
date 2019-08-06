@@ -342,18 +342,6 @@ namespace Dyalect.Parser
 		} else if (la.kind == 65) {
 			Throw(out node);
 		} else SynErr(88);
-		if (implicits != null)
-		{
-		   var func = new DFunctionDeclaration(node.Location)
-		   {
-		       Body = node
-		   };
-		   implicits.Sort();
-		   func.Parameters.AddRange(implicits.Distinct().Select(i => new DParameter(t) { Name = "p" + i }));
-		   node = func;
-		   implicits = null;
-		}
-		
 	}
 
 	void If(out DNode node) {
@@ -482,6 +470,7 @@ namespace Dyalect.Parser
 		if (la.kind == 23) {
 			Get();
 			Expr(out node);
+			node = ProcessImplicits(node); 
 			bin.Init = node; 
 		}
 		node = bin; 
@@ -505,6 +494,7 @@ namespace Dyalect.Parser
 		bin.Pattern = pat; 
 		Expect(23);
 		Expr(out node);
+		node = ProcessImplicits(node); 
 		bin.Init = node; 
 		node = bin; 
 	}
@@ -1249,11 +1239,11 @@ namespace Dyalect.Parser
 	void ApplicationArguments(DApplication app) {
 		var node = default(DNode); 
 		Expr(out node);
-		app.Arguments.Add(node); 
+		app.Arguments.Add(ProcessImplicits(node)); 
 		while (la.kind == 20) {
 			Get();
 			Expr(out node);
-			app.Arguments.Add(node); 
+			app.Arguments.Add(ProcessImplicits(node)); 
 		}
 	}
 

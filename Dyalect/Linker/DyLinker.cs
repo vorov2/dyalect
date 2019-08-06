@@ -92,7 +92,7 @@ namespace Dyalect.Linker
 
             try
             {
-                buffer = SourceBuffer.FromString(fullPath);
+                buffer = SourceBuffer.FromFile(fullPath);
             }
             catch (Exception ex)
             {

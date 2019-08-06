@@ -1,6 +1,7 @@
 # 0.9.12
   * _Code clean-ups and refactorings._
   * Fixed: _Dyalect console: specify directory as well as file_ ([Issue #234](https://github.com/vorov2/dyalect/issues/234)).
+  * Fixed: _Shortcut syntax for functions_ ([Issue #236](https://github.com/vorov2/dyalect/issues/236)).
 
 # 0.9.11
   * Change: _Default implementation of `toString` method for custom types is corrected for better output_.

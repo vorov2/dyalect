@@ -729,6 +729,12 @@ func functionTest10() {
     assert(12, f())
 }
 
+func functionTest11() { //Bug #236
+    var f = if $0 > 10 { 10 } else { $0 }
+    var r = f(12)
+    assert(10, r)
+}
+
 func namesOfGodTest() {
     var cache = [[1]]
     func min(x, y) {
