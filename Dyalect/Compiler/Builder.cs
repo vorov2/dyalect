@@ -1,6 +1,5 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Linker;
-using Dyalect.Parser;
 using Dyalect.Parser.Model;
 using System;
 using System.Collections.Generic;
@@ -171,7 +170,7 @@ namespace Dyalect.Compiler
         private Exception Ice(Exception ex = null)
         {
             return new DyBuildException(
-                $"Внутренняя ошибка компилятора: {(ex != null ? ex.Message : "Недопустимая операция.")}", ex);
+                $"Internal compiler error: {(ex != null ? ex.Message : "Invalid operation.")}", ex);
         }
     }
 }

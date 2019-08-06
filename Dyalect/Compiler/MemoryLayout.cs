@@ -1,8 +1,7 @@
 ﻿namespace Dyalect.Compiler
 {
-    //Эта структура описывает разбивку памяти для реального лексического скоупа,
-    //который живёт в рантайме (например, глобальный или у функции). Используется
-    //для адресации
+    //Represents a memory structure for an actual (runtime) lexical scope (e.g. global
+    //or function). It is used for addressing.
     public sealed class MemoryLayout
     {
         internal MemoryLayout(int size, int stackSize, int address)
@@ -12,13 +11,13 @@
             Address = address;
         }
 
-        //Размер операционного стека
+        //Size of operational stack
         public int StackSize { get; }
 
-        //Количество локальных переменных
+        //Number of local variables
         public int Size { get; }
 
-        //Адрес (смещение по ASM-коду)
+        //Address (ASM code offset)
         public int Address { get; internal set; }
     }
 }
