@@ -814,7 +814,7 @@ func fieldTest3() {
 func floatTest1() {
     assert(12.2, Float(12.2))
     assert(12.0, Float(12))
-    assert(53.0, Float('5'))
+    assert(5.0, Float('5'))
 }
 
 func floatTest2() {
@@ -824,7 +824,7 @@ func floatTest2() {
 func integerTest1() {
     assert(12, Integer(12.2))
     assert(1222, Integer(1222))
-    assert(53, Integer('5'))
+    assert(5, Integer('5'))
 }
 
 func integerTest2() {

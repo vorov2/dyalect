@@ -69,6 +69,15 @@ func forTest3() {
     assert(">>1", acc)
 }
 
+func forTest4() { //Bug #238
+    var arr = []
+    for x in [1,2,3,4] {
+        x = x+x
+        arr.add(x)
+    }
+    assert([2,4,6,8], arr)
+}
+
 func fizzbuzzTest() {
     var n = 1
     var acc = ""

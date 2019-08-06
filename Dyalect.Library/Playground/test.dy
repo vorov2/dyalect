@@ -1,2 +1,4 @@
-﻿var f = if $0 > 10 { 10 } else { $0 }
-f(12)
+﻿for x in [1,2,3,4] {
+    x = x+x
+    print(x)
+}

@@ -3,6 +3,7 @@
   * Fixed: _Dyalect console: specify directory as well as file_ ([Issue #234](https://github.com/vorov2/dyalect/issues/234)).
   * Fixed: _Shortcut syntax for functions_ ([Issue #236](https://github.com/vorov2/dyalect/issues/236)).
   * Fixed: _`Integer` and `Float` constructors do not work correctly_ ([Issue #237](https://github.com/vorov2/dyalect/issues/237)).
+  * Fixed: _Illogical behavior of `for` loop_ ([Issue #238](https://github.com/vorov2/dyalect/issues/238)).
 
 # 0.9.11
   * Change: _Default implementation of `toString` method for custom types is corrected for better output_.
