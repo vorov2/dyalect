@@ -758,7 +758,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                var nh = hints;
+                var nh = hints.Append(OpenMatch);
 
                 if (node.Constant)
                     nh = nh.Append(Const);

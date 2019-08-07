@@ -206,10 +206,10 @@ namespace Dyalect.Compiler
                 cw.TypeCheck(new TypeHandle(handle, std));
             else
             {
-                ScopeVar sv;
+                ScopeVar sv = default;
                 var found = hints.Has(Rebind)
                     ? TryGetVariable(node.Name, out sv)
-                    : TryGetLocalVariable(node.Name, out sv);
+                    : hints.Has(OpenMatch) ? false : TryGetLocalVariable(node.Name, out sv);
                 var sva = sv.Address;
 
                 if (!found)

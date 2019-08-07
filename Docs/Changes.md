@@ -5,6 +5,7 @@
   * Fixed: _`Integer` and `Float` constructors do not work correctly_ ([Issue #237](https://github.com/vorov2/dyalect/issues/237)).
   * Fixed: _Illogical behavior of `for` loop_ ([Issue #238](https://github.com/vorov2/dyalect/issues/238)).
   * Fixed: _Pattern matching and `const`_ ([Issue #239](https://github.com/vorov2/dyalect/issues/239)).
+  * Fixed: _Binding through pattern matching and redefinition_ ([Issue #240](https://github.com/vorov2/dyalect/issues/240)).
 
 # 0.9.11
   * Change: _Default implementation of `toString` method for custom types is corrected for better output_.
