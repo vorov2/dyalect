@@ -96,27 +96,27 @@ namespace Dyalect.Compiler
             return GetVariable(name, currentScope, loc, err);
         }
 
-        private bool TryGetLocalVariable(string name, out int var)
+        private bool TryGetLocalVariable(string name, out ScopeVar var)
         {
             var = default;
 
             if (currentScope.Locals.TryGetValue(name, out var sv))
             {
-                var = 0 | sv.Address << 8;
+                var = new ScopeVar(0 | sv.Address << 8, sv.Data);
                 return true;
             }
 
             return false;
         }
 
-        private bool TryGetVariable(string name, out int var)
+        private bool TryGetVariable(string name, out ScopeVar var)
         {
-            var = -1;
+            var = default;
             var sv = GetVariable(name, currentScope, default, err: false);
 
             if (!sv.IsEmpty())
             {
-                var = sv.Address;
+                var = sv;
                 return true;
             }
             else

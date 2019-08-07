@@ -758,7 +758,12 @@ namespace Dyalect.Compiler
             }
             else
             {
-                BuildPattern(node.Pattern, hints, ctx);
+                var nh = hints;
+
+                if (node.Constant)
+                    nh = nh.Append(Const);
+
+                BuildPattern(node.Pattern, nh, ctx);
                 var skip = cw.DefineLabel();
                 cw.Brtrue(skip);
                 cw.Fail(DyErrorCode.MatchFailed);
@@ -845,7 +850,7 @@ namespace Dyalect.Compiler
                     {
                         var pat = (DPattern)node.Right;
                         AddLinePragma(node);
-                        PreinitPattern(pat);
+                        PreinitPattern(pat, hints);
                         Build(node.Left, hints.Append(Push), ctx);
                         BuildPattern(pat, hints, ctx);
                     }

@@ -181,11 +181,14 @@ namespace Dyalect.Compiler
             var bad = cw.DefineLabel();
             var ok = cw.DefineLabel();
             cw.Brfalse(bad);
+            var sva = -1;
 
             if (!TryGetLocalVariable(node.Name, out var sv))
-                sv = AddVariable(node.Name, node, VarFlags.None);
+                sva = AddVariable(node.Name, node, VarFlags.None);
+            else
+                sva = sv.Address;
 
-            cw.PopVar(sv);
+            cw.PopVar(sva);
             cw.Push(true);
             cw.Br(ok);
             cw.MarkLabel(bad);
@@ -203,15 +206,18 @@ namespace Dyalect.Compiler
                 cw.TypeCheck(new TypeHandle(handle, std));
             else
             {
-                int sv;
+                ScopeVar sv;
                 var found = hints.Has(Rebind)
                     ? TryGetVariable(node.Name, out sv)
                     : TryGetLocalVariable(node.Name, out sv);
+                var sva = sv.Address;
 
                 if (!found)
-                    sv = AddVariable(node.Name, node, VarFlags.None);
+                    sva = AddVariable(node.Name, node, hints.Has(Const) ? VarFlags.Const : VarFlags.None);
+                else if ((sv.Data & VarFlags.Const) == VarFlags.Const)
+                    AddError(CompilerError.UnableAssignConstant, node.Location, node.Name);
 
-                cw.PopVar(sv);
+                cw.PopVar(sva);
                 cw.Push(true);
             }
         }
@@ -379,12 +385,12 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
-        private void PreinitPattern(DPattern node)
+        private void PreinitPattern(DPattern node, Hints hints)
         {
             switch (node.NodeType)
             {
                 case NodeType.NamePattern:
-                    PreinitName((DNamePattern)node);
+                    PreinitName((DNamePattern)node, hints);
                     break;
                 case NodeType.IntegerPattern:
                     break;
@@ -397,10 +403,10 @@ namespace Dyalect.Compiler
                 case NodeType.BooleanPattern:
                     break;
                 case NodeType.TuplePattern:
-                    PreinitSequence(((DTuplePattern)node).Elements);
+                    PreinitSequence(((DTuplePattern)node).Elements, hints);
                     break;
                 case NodeType.ArrayPattern:
-                    PreinitSequence(((DArrayPattern)node).Elements);
+                    PreinitSequence(((DArrayPattern)node).Elements, hints);
                     break;
                 case NodeType.NilPattern:
                     break;
@@ -409,88 +415,94 @@ namespace Dyalect.Compiler
                 case NodeType.WildcardPattern:
                     break;
                 case NodeType.AsPattern:
-                    PreinitAs((DAsPattern)node);
+                    PreinitAs((DAsPattern)node, hints);
                     break;
                 case NodeType.TypeTestPattern:
                     break;
                 case NodeType.AndPattern:
-                    PreinitAnd((DAndPattern)node);
+                    PreinitAnd((DAndPattern)node, hints);
                     break;
                 case NodeType.OrPattern:
-                    PreinitOr((DOrPattern)node);
+                    PreinitOr((DOrPattern)node, hints);
                     break;
                 case NodeType.MethodCheckPattern:
                     break;
                 case NodeType.CtorPattern:
-                    PreinitCtor((DCtorPattern)node);
+                    PreinitCtor((DCtorPattern)node, hints);
                     break;
                 case NodeType.LabelPattern:
-                    PreinitLabel((DLabelPattern)node);
+                    PreinitLabel((DLabelPattern)node, hints);
                     break;
             }
         }
 
-        private void PreinitCtor(DCtorPattern node)
+        private void PreinitCtor(DCtorPattern node, Hints hints)
         {
             if (node.Arguments != null && node.Arguments.Count > 0)
-                PreinitSequence(node.Arguments);
+                PreinitSequence(node.Arguments, hints);
         }
 
-        private void PreinitAs(DAsPattern node)
+        private void PreinitAs(DAsPattern node, Hints hints)
         {
-            PreinitPattern(node.Pattern);
-            
+            PreinitPattern(node.Pattern, hints);
+            var sva = -1;
+
             if (!TryGetLocalVariable(node.Name, out var sv))
-                sv = AddVariable(node.Name, node, VarFlags.None);
+                sva = AddVariable(node.Name, node, VarFlags.None);
+            else
+                sva = sv.Address;
 
             cw.PushNil();
-            cw.PopVar(sv);
+            cw.PopVar(sva);
         }
 
-        private void PreinitName(DNamePattern node)
+        private void PreinitName(DNamePattern node, Hints hints)
         {
             var err = GetTypeHandle(null, node.Name, out var handle, out var std);
 
             if (err != CompilerError.None)
             {
                 var found = TryGetLocalVariable(node.Name, out var sv);
+                var sva = -1;
 
                 if (!found)
-                    sv = AddVariable(node.Name, node, VarFlags.None);
+                    sva = AddVariable(node.Name, node, hints.Has(Const) ? VarFlags.Const : VarFlags.None);
+                else
+                    sva = sv.Address;
 
                 cw.PushNil();
-                cw.PopVar(sv);
+                cw.PopVar(sva);
             }
         }
 
-        private void PreinitAnd(DAndPattern node)
+        private void PreinitAnd(DAndPattern node, Hints hints)
         {
-            PreinitPattern(node.Left);
-            PreinitPattern(node.Right);
+            PreinitPattern(node.Left, hints);
+            PreinitPattern(node.Right, hints);
         }
 
-        private void PreinitOr(DOrPattern node)
+        private void PreinitOr(DOrPattern node, Hints hints)
         {
-            PreinitPattern(node.Left);
-            PreinitPattern(node.Right);
+            PreinitPattern(node.Left, hints);
+            PreinitPattern(node.Right, hints);
         }
 
-        private void PreinitSequence(List<DPattern> elements)
+        private void PreinitSequence(List<DPattern> elements, Hints hints)
         {
             for (var i = 0; i < elements.Count; i++)
             {
                 var e = elements[i];
 
                 if (e.NodeType == NodeType.LabelPattern)
-                    PreinitLabel((DLabelPattern)e);
+                    PreinitLabel((DLabelPattern)e, hints);
                 else
-                    PreinitPattern(e);
+                    PreinitPattern(e, hints);
             }
         }
 
-        private void PreinitLabel(DLabelPattern node)
+        private void PreinitLabel(DLabelPattern node, Hints hints)
         {
-            PreinitPattern(node.Pattern);
+            PreinitPattern(node.Pattern, hints);
         }
     }
 }
