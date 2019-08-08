@@ -23,6 +23,8 @@ namespace Dyalect.Parser.Model
 
         internal protected virtual string GetName() => null;
 
+        internal protected virtual int GetElementCount() => -1;
+
         internal abstract void ToString(StringBuilder sb);
     }
 }

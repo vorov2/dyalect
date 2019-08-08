@@ -758,10 +758,16 @@ namespace Dyalect.Compiler
             }
             else
             {
+                if (node.Init == null)
+                    AddError(CompilerError.BindingPatternNoInit, node.Location);
+
                 var nh = hints.Append(OpenMatch);
 
                 if (node.Constant)
                     nh = nh.Append(Const);
+
+                if (node.Init != null)
+                    CheckPattern(node.Pattern, node.Init.GetElementCount(), node.Pattern.GetElementCount());
 
                 BuildPattern(node.Pattern, nh, ctx);
                 var skip = cw.DefineLabel();

@@ -125,6 +125,8 @@ namespace Dyalect.Parser.Model
 
         public List<DPattern> Elements { get; } = new List<DPattern>();
 
+        protected internal override int GetElementCount() => Elements.Count;
+
         internal override void ToString(StringBuilder sb)
         {
             sb.Append('(');
@@ -141,6 +143,8 @@ namespace Dyalect.Parser.Model
         }
 
         public List<DPattern> Elements { get; } = new List<DPattern>();
+
+        protected internal override int GetElementCount() => Elements.Count;
 
         internal override void ToString(StringBuilder sb)
         {

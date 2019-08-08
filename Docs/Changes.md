@@ -1,3 +1,7 @@
+# 0.9.13
+  * Done: _Pattern match validation_ ([Issue #241](https://github.com/vorov2/dyalect/issues/241)).
+  * Fixed: _Pattern matching in variable declaration_ ([Issue #245](https://github.com/vorov2/dyalect/issues/245)).
+
 # 0.9.12
   * _Code clean-ups and refactorings._
   * Fixed: _Dyalect console: specify directory as well as file_ ([Issue #234](https://github.com/vorov2/dyalect/issues/234)).

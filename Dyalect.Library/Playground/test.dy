@@ -1,7 +1,5 @@
-﻿func main() {
-    var x = 2
-    var (x,_) = (3,0)
-    print(x)
+﻿match nil {
+    x => x,
+    [1,2] => 3,
+    (1,2,3) => 6
 }
-
-main()

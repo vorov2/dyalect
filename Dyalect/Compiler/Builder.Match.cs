@@ -13,6 +13,7 @@ namespace Dyalect.Compiler
     {
         private void Build(DMatch node, Hints hints, CompilerContext ctx)
         {
+            ValidateMatch(node);
             StartScope(fun: false, node.Location);
 
             ctx = new CompilerContext(ctx)
@@ -503,6 +504,46 @@ namespace Dyalect.Compiler
         private void PreinitLabel(DLabelPattern node, Hints hints)
         {
             PreinitPattern(node.Pattern, hints);
+        }
+
+        private void ValidateMatch(DMatch match)
+        {
+            var irr = false;
+            var count = match.Expression.GetElementCount();
+
+            foreach (var e in match.Entries)
+            {
+                var patternCount = e.Pattern.GetElementCount();
+                var pt = e.Pattern.NodeType;
+
+                if (irr)
+                    AddWarning(CompilerWarning.UnreachableMatchEntry, e.Location, e.Pattern);
+                else
+                    CheckPattern(e.Pattern, count, patternCount);
+
+                irr = IsIrrefutable(e.Pattern) && e.Guard == null;
+            }
+        }
+
+        private void CheckPattern(DPattern e, int matchCount, int patternCount)
+        {
+            int c;
+            if (matchCount > -1 && (c = e.GetElementCount()) > -1)
+            {
+                if (e.NodeType == NodeType.TuplePattern && matchCount != c)
+                    AddWarning(CompilerWarning.PatternNeverMatch, e.Location, e);
+                if (e.NodeType == NodeType.ArrayPattern && matchCount < c)
+                    AddWarning(CompilerWarning.PatternNeverMatch, e.Location, e);
+            }
+        }
+
+        private bool IsIrrefutable(DPattern node)
+        {
+            return node.NodeType == NodeType.NamePattern
+                || node.NodeType == NodeType.WildcardPattern
+                || node is DAsPattern pas && IsIrrefutable(pas.Pattern)
+                || node is DAndPattern dand && IsIrrefutable(dand.Left) && IsIrrefutable(dand.Right)
+                || node is DOrPattern dor && IsIrrefutable(dor.Left) && IsIrrefutable(dor.Right);
         }
     }
 }
