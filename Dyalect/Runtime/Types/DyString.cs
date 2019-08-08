@@ -374,6 +374,15 @@ namespace Dyalect.Runtime.Types
             return string.IsNullOrWhiteSpace(self.GetString()) ? DyBool.True : DyBool.False;
         }
 
+        private DyObject Reverse(ExecutionContext ctx, DyObject self)
+        {
+            var str = self.GetString();
+            var sb = new StringBuilder(str.Length);
+            for (var i = 0; i < str.Length; i++)
+                sb.Append(str[str.Length - i - 1]);
+            return new DyString(sb.ToString());
+        }
+
         private DyObject PadLeft(ExecutionContext ctx, DyObject self, DyObject len, DyObject with)
         {
             if (len.TypeId != DyType.Integer)
@@ -475,6 +484,8 @@ namespace Dyalect.Runtime.Types
                         new Par("ignoreCase", (DyObject)DyBool.False));
                 case "remove":
                     return DyForeignFunction.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance));
+                case "reverse":
+                    return DyForeignFunction.Member(name, Reverse);
                 default:
                     return null;
             }
