@@ -333,3 +333,24 @@ func isTest4() {
     assert(6, calcIt(xs))
     assert(0, calcIt(ys))
 }
+
+func bindingMatch1() {
+    var (x,y) = (12, 2)
+    assert(14, x + y)
+    var (_, z) = (12, 222)
+    assert(222, z)
+}
+
+func bindingMatch2() {
+    var [x,y] = [12, 2]
+    assert(14, x + y)
+    var [_, z] = [12, 222]
+    assert(222, z)
+}
+
+func bindingMatch3() {
+    var (x,y) = [12, 2]
+    assert(14, x + y)
+    var (_, z) = [12, 222]
+    assert(222, z)
+}

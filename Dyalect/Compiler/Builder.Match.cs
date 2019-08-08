@@ -322,7 +322,7 @@ namespace Dyalect.Compiler
             }
         }
 
-        private void BuildSequence(DPattern node, List<DPattern> elements, Hints hints, CompilerContext ctx)
+        private void BuildSequence(DPattern node, List<DNode> elements, Hints hints, CompilerContext ctx)
         {
             var skip = cw.DefineLabel();
             var ok = cw.DefineLabel();
@@ -350,7 +350,7 @@ namespace Dyalect.Compiler
                 else
                 {
                     cw.Get(i);
-                    BuildPattern(e, hints, ctx);
+                    BuildPattern((DPattern)e, hints, ctx);
                 }
 
                 cw.Brfalse(skip); //1 obj left to pop
@@ -488,7 +488,7 @@ namespace Dyalect.Compiler
             PreinitPattern(node.Right, hints);
         }
 
-        private void PreinitSequence(List<DPattern> elements, Hints hints)
+        private void PreinitSequence(List<DNode> elements, Hints hints)
         {
             for (var i = 0; i < elements.Count; i++)
             {
@@ -497,7 +497,7 @@ namespace Dyalect.Compiler
                 if (e.NodeType == NodeType.LabelPattern)
                     PreinitLabel((DLabelPattern)e, hints);
                 else
-                    PreinitPattern(e, hints);
+                    PreinitPattern((DPattern)e, hints);
             }
         }
 
@@ -509,7 +509,7 @@ namespace Dyalect.Compiler
         private void ValidateMatch(DMatch match)
         {
             var irr = false;
-            var count = match.Expression.GetElementCount();
+            var count = match.Expression != null ? match.Expression.GetElementCount() : -1;
 
             foreach (var e in match.Entries)
             {
@@ -544,6 +544,14 @@ namespace Dyalect.Compiler
                 || node is DAsPattern pas && IsIrrefutable(pas.Pattern)
                 || node is DAndPattern dand && IsIrrefutable(dand.Left) && IsIrrefutable(dand.Right)
                 || node is DOrPattern dor && IsIrrefutable(dor.Left) && IsIrrefutable(dor.Right);
+        }
+
+        private bool IsPureBinding(DPattern node)
+        {
+            foreach (var n in node.ListElements())
+                if (n.NodeType != NodeType.NamePattern && n.NodeType != NodeType.WildcardPattern)
+                    return false;
+            return true;
         }
     }
 }

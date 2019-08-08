@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 
 namespace Dyalect.Parser.Model
 {
@@ -24,6 +25,8 @@ namespace Dyalect.Parser.Model
         internal protected virtual string GetName() => null;
 
         internal protected virtual int GetElementCount() => -1;
+
+        internal protected virtual List<DNode> ListElements() => null;
 
         internal abstract void ToString(StringBuilder sb);
     }

@@ -14,6 +14,8 @@ namespace Dyalect.Parser.Model
 
         internal protected override int GetElementCount() => Elements.Count;
 
+        internal protected override List<DNode> ListElements() => Elements;
+
         internal override void ToString(StringBuilder sb)
         {
             sb.Append('(');
