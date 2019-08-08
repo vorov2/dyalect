@@ -1,13 +1,13 @@
 # 0.9.13
   * Done: _Pattern match validation_ ([Issue #241](https://github.com/vorov2/dyalect/issues/241)).
   * Done: _Tuple pattern optimization_ ([Issue #244](https://github.com/vorov2/dyalect/issues/244)).
+  * Done: _Add `Array.reverse` method_ ([Issue #250](https://github.com/vorov2/dyalect/issues/250)).
+  * Done: _Add `String.reverse` method_ ([Issue #249](https://github.com/vorov2/dyalect/issues/249)).
   * Fixed: _Pattern matching in variable declaration_ ([Issue #245](https://github.com/vorov2/dyalect/issues/245)).
   * Fixed: _Debug info is not generated for variable binding_ ([Issue #246](https://github.com/vorov2/dyalect/issues/246)).
   * Fixed: _Index out of range exception_ ([Issue #247](https://github.com/vorov2/dyalect/issues/247)).
   * Fixed: _Formatting of custom types as exceptions_ ([Issue #248](https://github.com/vorov2/dyalect/issues/248)).
-  * Fixed: _Add `Array.reverse` method_ ([Issue #250](https://github.com/vorov2/dyalect/issues/250)).
-  * Fixed: _Add `String.reverse` method_ ([Issue #249](https://github.com/vorov2/dyalect/issues/249)).
-
+  
 # 0.9.12
   * _Code clean-ups and refactorings._
   * Fixed: _Dyalect console: specify directory as well as file_ ([Issue #234](https://github.com/vorov2/dyalect/issues/234)).
