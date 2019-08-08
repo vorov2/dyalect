@@ -6,6 +6,7 @@
   * Fixed: _Illogical behavior of `for` loop_ ([Issue #238](https://github.com/vorov2/dyalect/issues/238)).
   * Fixed: _Pattern matching and `const`_ ([Issue #239](https://github.com/vorov2/dyalect/issues/239)).
   * Fixed: _Binding through pattern matching and redefinition_ ([Issue #240](https://github.com/vorov2/dyalect/issues/240)).
+  * Fixed: _Interactive console: formatting of values_ ([Issue #242](https://github.com/vorov2/dyalect/issues/242)).
 
 # 0.9.11
   * Change: _Default implementation of `toString` method for custom types is corrected for better output_.
