@@ -45,6 +45,7 @@ namespace Dyalect.Compiler
 
             cw.MarkLabel(ctx.MatchExit);
             cw.Nop();
+            PopIf(hints);
             EndScope();
         }
 

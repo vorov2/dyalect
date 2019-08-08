@@ -1,5 +1,30 @@
-﻿match nil {
-    x => x,
-    [1,2] => 3,
-    (1,2,3) => 6
+﻿type U0()
+type U1()
+var bazCallCount = 0
+
+func baz() {
+    bazCallCount += 1
+    if bazCallCount == 1 {
+        throw U0()
+    } else if bazCallCount == 2 {
+        throw U1()
+    }
 }
+
+func bar() {
+    baz()
+}
+
+func foo() {
+    const calls = 2
+    while calls > 0 {
+        try {
+            bar()
+        } catch {
+            U0() => print("U0 caught.")
+        }
+    }
+}
+
+foo()
+

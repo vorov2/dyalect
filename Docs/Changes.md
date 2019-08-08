@@ -3,6 +3,7 @@
   * Done: _Tuple pattern optimization_ ([Issue #244](https://github.com/vorov2/dyalect/issues/244)).
   * Fixed: _Pattern matching in variable declaration_ ([Issue #245](https://github.com/vorov2/dyalect/issues/245)).
   * Fixed: _Debug info is not generated for variable binding_ ([Issue #246](https://github.com/vorov2/dyalect/issues/246)).
+  * Fixed: _Index out of range exception_ ([Issue #247](https://github.com/vorov2/dyalect/issues/247)).
 
 # 0.9.12
   * _Code clean-ups and refactorings._
