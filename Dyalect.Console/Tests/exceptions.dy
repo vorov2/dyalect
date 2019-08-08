@@ -249,3 +249,21 @@ func iteratorExceptionTest2() {
     }
     assert(true, b)
 }
+
+type U0()
+func customTypeException() { //Bug #248
+    func baz() {
+        throw U0()
+    }
+    func bar() {
+        baz()
+    }
+    func foo() {
+        try {
+            bar()
+        } catch {
+            U0() => "U0 caught."
+        }
+    }
+    assert("U0 caught.", foo())
+}

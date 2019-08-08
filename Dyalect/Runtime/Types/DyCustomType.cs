@@ -60,10 +60,14 @@ namespace Dyalect.Runtime.Types
             var cust = (DyCustomType)arg;
             var ctorName = ctx.Composition.Members[cust.ConstructorId];
 
-            if (TypeName == ctorName)
-                return new DyString($"{{{TypeName}: {cust.Value.ToString(ctx)}}}");
+            if (TypeName == ctorName && cust.Value == DyNil.Instance)
+                return new DyString($"{TypeName}");
+            else if (TypeName == ctorName)
+                return new DyString($"{TypeName}({cust.Value.ToString(ctx)})");
+            else if (cust.Value == DyNil.Instance)
+                return new DyString($"{TypeName}.{ctorName}");
             else
-                return new DyString($"{{{TypeName}.{ctorName}: {cust.Value.ToString(ctx)}}}");
+                return new DyString($"{TypeName}.{ctorName}({cust.Value.ToString(ctx)})");
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)

@@ -305,7 +305,10 @@ namespace Dyalect.Runtime
                         else
                             return evalStack.Pop();
                     case OpCode.Fail:
-                        ctx.Error = new DyUserError(evalStack.Pop());
+                        right = evalStack.Pop();
+                        DyError err = new DyUserError(right, right.ToString(ctx));
+                        if (!ctx.HasErrors)
+                            ctx.Error = err;
                         ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
                         goto CATCH;
                     case OpCode.FailSys:

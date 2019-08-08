@@ -16,15 +16,15 @@ func bar() {
 }
 
 func foo() {
-    const calls = 2
+    var calls = 2
     while calls > 0 {
         try {
             bar()
         } catch {
-            U0() => print("U0 caught.")
+            U0() => "U0 caught."
         }
+        calls -= 1
     }
 }
 
 foo()
-
