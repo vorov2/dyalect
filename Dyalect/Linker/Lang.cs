@@ -24,24 +24,6 @@ namespace Dyalect.Linker
             //idle
         }
 
-        [Function("convertToNumber")] 
-        public DyObject ToNumber(ExecutionContext ctx, DyObject value)
-        {
-            if (value.TypeId == DyType.Integer || value.TypeId == DyType.Float)
-                return value;
-            else if (value.TypeId == DyType.String || value.TypeId == DyType.Char)
-            {
-                var str = value.GetString();
-                if (int.TryParse(str, out var i4))
-                    return new DyInteger(i4);
-                else if (double.TryParse(str, out var r8))
-                    return new DyFloat(r8);
-                
-            }
-
-            return DyInteger.Zero;
-        }
-
         [Function("print")]
         public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
         {

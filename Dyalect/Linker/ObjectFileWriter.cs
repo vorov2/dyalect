@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Dyalect.Linker
 {
-    internal static class ObjectFileWriter
+    public static class ObjectFileWriter
     {
         public static void Write(string fileName, Unit unit)
         {
@@ -118,8 +118,8 @@ namespace Dyalect.Linker
             foreach (var r in refs)
             {
                 writer.Write(r.ModuleName);
-                writer.Write(r.LocalPath);
-                writer.Write(r.DllName);
+                writer.Write(r.LocalPath ?? "");
+                writer.Write(r.DllName ?? "");
                 writer.Write(r.SourceLocation.Line);
                 writer.Write(r.SourceLocation.Column);
                 writer.Write(r.SourceFileName);
@@ -148,7 +148,7 @@ namespace Dyalect.Linker
 
         private static void WriteSymbols(BinaryWriter writer, DebugInfo di)
         {
-            writer.Write(di.File);
+            writer.Write(di.File ?? "");
 
             writer.Write(di.Scopes.Count);
             foreach (var s in di.Scopes)

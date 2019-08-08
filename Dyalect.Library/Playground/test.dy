@@ -1,69 +1,7 @@
-﻿type List
-
-static func List.List(value, tail = nil) {
-    var n = tail
-    if !n {
-        n = List.Nil()
-    }
-    return new((value: value, tail: n))
+﻿func main() {
+    var x = 2
+    var (x,_) = (3,0)
+    print(x)
 }
 
-static func List.Nil() {
-    return new((value: nil, tail: nil))
-}
-
-static func List.fromArray(xs) {
-    var list = List.Nil()
-    var len = xs.len()
-    for i in (len-1)..0 {
-        list = List(xs[i], list)
-    }
-    return list
-}
-
-func List.head() {
-    return valueof(this).value
-}
-
-func List.tail() {
-    return valueof(this).tail
-}
-
-func List.iter() {
-    var xs = valueof(this)
-    while true {
-        if xs.tail is Nil {
-            break
-        }
-        yield xs.value
-        xs = xs.tail
-    }
-}
-
-func List.len() {
-    this.iter().len()
-}
-
-func List.toString() {
-    match this {
-        Nil => "Nil",
-        List(value, tail) => value + "," + tail,
-        List => throw valueof(this).toString()
-    }
-}
-
-func List.get(index) {
-    print("get: \(index)")
-    var count = 0
-    for x in this.iter() {
-        if count == index {
-            return x
-        }
-        count += 1
-    }
-    throw "Index out of range"
-}
-
-var xs = List.fromArray([1..10])
-
-xs.toString()
+main()

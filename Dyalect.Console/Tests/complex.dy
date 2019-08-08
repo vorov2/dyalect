@@ -69,6 +69,15 @@ func forTest3() {
     assert(">>1", acc)
 }
 
+func forTest4() { //Bug #238
+    var arr = []
+    for x in [1,2,3,4] {
+        x = x+x
+        arr.add(x)
+    }
+    assert([2,4,6,8], arr)
+}
+
 func fizzbuzzTest() {
     var n = 1
     var acc = ""
@@ -394,7 +403,7 @@ func dammTest() {
     func damm(num) {
         var interim = 0
         for c in num.toString() {
-            interim = table[interim][convertToNumber(c)];
+            interim = table[interim][Integer(c)];
         }
         interim == 0
     }
@@ -727,6 +736,12 @@ func functionTest9() {
 func functionTest10() {
     var f = Function(12)
     assert(12, f())
+}
+
+func functionTest11() { //Bug #236
+    var f = if $0 > 10 { 10 } else { $0 }
+    var r = f(12)
+    assert(10, r)
 }
 
 func namesOfGodTest() {

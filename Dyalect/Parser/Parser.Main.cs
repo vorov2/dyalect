@@ -2,6 +2,7 @@
 using Dyalect.Strings;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Dyalect.Parser
 {
@@ -340,6 +341,23 @@ namespace Dyalect.Parser
         private double ParseFloat()
         {
             return double.Parse(t.val, CI.NumberFormat);
+        }
+
+        private DNode ProcessImplicits(DNode node)
+        {
+            if (implicits != null)
+            {
+                var func = new DFunctionDeclaration(node.Location)
+                {
+                    Body = node
+                };
+                implicits.Sort();
+                func.Parameters.AddRange(implicits.Distinct().Select(i => new DParameter(t) { Name = "p" + i }));
+                implicits = null;
+                return func;
+            }
+
+            return node;
         }
     }
 }

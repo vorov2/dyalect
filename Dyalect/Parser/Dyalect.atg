@@ -213,7 +213,11 @@ PRODUCTIONS
             ( "var" | "const" )
             (. var bin = new DBinding(t) { Constant = t.val == "const" }; .)
             OrPattern<out var pat> (. bin.Pattern = pat; .)
-            [ "=" Expr<out node> (. bin.Init = node; .) ]
+            [ 
+                "=" Expr<out node>
+                (. node = ProcessImplicits(node); .)
+                (. bin.Init = node; .) 
+            ]
             (. node = bin; .)
         ).
 
@@ -222,7 +226,9 @@ PRODUCTIONS
             "set"
             (. var bin = new DRebinding(t); .)
             OrPattern<out var pat> (. bin.Pattern = pat; .)
-            "=" Expr<out node> (. bin.Init = node; .)
+            "=" Expr<out node> 
+            (. node = ProcessImplicits(node); .)
+            (. bin.Init = node; .)
             (. node = bin; .)
         ).
 
@@ -501,20 +507,7 @@ PRODUCTIONS
             | Assignment<out node>
             | TryCatch<out node>
             | Throw<out node>
-        )
-        (.
-            if (implicits != null)
-            {
-                var func = new DFunctionDeclaration(node.Location)
-                {
-                    Body = node
-                };
-                implicits.Sort();
-                func.Parameters.AddRange(implicits.Distinct().Select(i => new DParameter(t) { Name = "p" + i }));
-                node = func;
-                implicits = null;
-            }
-        .).
+        ).
 
     Throw<out DNode node> =
         (. node = null; .)
@@ -835,8 +828,8 @@ PRODUCTIONS
 
     ApplicationArguments<DApplication app> =
         (. var node = default(DNode); .)
-        Expr<out node> (. app.Arguments.Add(node); .)
-        { "," Expr<out node> (. app.Arguments.Add(node); .) }.
+        Expr<out node> (. app.Arguments.Add(ProcessImplicits(node)); .)
+        { "," Expr<out node> (. app.Arguments.Add(ProcessImplicits(node)); .) }.
 
     Literal<out DNode node> =
         (. node = null; .)

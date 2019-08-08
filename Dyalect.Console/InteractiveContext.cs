@@ -2,12 +2,9 @@
 using Dyalect.Linker;
 using Dyalect.Parser;
 using Dyalect.Runtime;
-using Dyalect.Util;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Dyalect
 {
@@ -58,27 +55,27 @@ namespace Dyalect
             return Eval(measureTime: false);
         }
 
-        public bool EvalFile(string fileName, bool measureTime)
+        public bool Make(string fileName, out UnitComposition composition, bool recompile = false)
         {
-            UnitComposition composition = null;
-            SourceBuffer buffer = null;
+            composition = null;
 
-            try
+            var made = default(Result<UnitComposition>);
+
+            if (recompile)
             {
-                if (!File.Exists(fileName))
+                try
                 {
-                    Printer.Error($"File {fileName} doesn't exist.");
+                    var buffer = SourceBuffer.FromFile(fileName);
+                    made = Linker.Make(buffer);
+                }
+                catch (Exception ex)
+                {
+                    Printer.Error($"Unable to read file \"{fileName}\": {ex.Message}");
                     return false;
                 }
-
-                buffer = SourceBuffer.FromFile(fileName);
             }
-            catch (Exception ex)
-            {
-                Printer.Error($"Error reading file: {ex.Message}");
-            }
-
-            var made = Linker.Make(buffer);
+            else
+                made = Linker.Make(fileName);
 
             if (made.Messages.Any())
                 Printer.PrintErrors(made.Messages);
@@ -87,6 +84,13 @@ namespace Dyalect
                 return false;
 
             composition = made.Value;
+            return true;
+        }
+
+        public bool EvalFile(string fileName, bool measureTime)
+        {
+            if (!Make(fileName, out var composition))
+                return false;
 
             if (ExecutionContext == null)
                 ExecutionContext = DyMachine.CreateExecutionContext(composition);

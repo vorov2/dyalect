@@ -23,7 +23,7 @@ namespace Dyalect
 
         private static List<string> commands = new List<string>();
 
-        public static bool RunTests(string[] fileNames, bool appveyor)
+        public static bool RunTests(IEnumerable<string> fileNames, bool appveyor)
         {
 #if !DEBUG
             try
@@ -116,23 +116,9 @@ namespace Dyalect
             Printer.Output($"{name}: Success");
         }
 
-        private static IList<FunSet> Compile(string[] fileNames)
+        private static IList<FunSet> Compile(IEnumerable<string> files)
         {
             var funColl = new List<FunSet>();
-            var files = new List<string>();
-
-            foreach (var fileName in fileNames)
-            {
-                if (File.Exists(fileName))
-                    files.Add(fileName);
-                else if (Directory.Exists(fileName))
-                    files.AddRange(Directory.EnumerateFiles(fileName, "*.dy"));
-                else
-                {
-                    Printer.Error($"File or directory {fileName} not found.");
-                    return null;
-                }
-            }
 
             foreach (var file in files)
             {

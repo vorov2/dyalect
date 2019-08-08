@@ -67,6 +67,47 @@ namespace Dyalect.Linker
             return Result.Create(unit, Messages);
         }
 
+        public Result<UnitComposition> Make(string filePath)
+        {
+            Messages.Clear();
+
+            if (!Lookup.Find(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + OBJ, out var fullPath))
+                if (!Lookup.Find(Path.GetDirectoryName(filePath), Path.GetFileName(filePath), out fullPath))
+                {
+                    AddError(LinkerError.ModuleNotFound, filePath, default, filePath);
+                    return Result.Create(default(UnitComposition), Messages);
+                }
+
+            if (fullPath.EndsWith(OBJ, StringComparison.OrdinalIgnoreCase))
+            {
+                var unit = ProcessObjectFile(fullPath, null);
+
+                if (unit == null)
+                    return Result.Create(default(UnitComposition), Messages);
+
+                return Make(unit);
+            }
+
+            SourceBuffer buffer;
+
+            try
+            {
+                buffer = SourceBuffer.FromFile(fullPath);
+            }
+            catch (Exception ex)
+            {
+                AddError(LinkerError.UnableReadModule, fullPath, default, fullPath, ex.Message);
+                return Result.Create(default(UnitComposition), Messages);
+            }
+
+            var codeModel = ProcessBuffer(buffer);
+
+            if (codeModel == null)
+                return Result.Create(default(UnitComposition), Messages);
+
+            return Make(codeModel);
+        }
+
         public Result<UnitComposition> Make(SourceBuffer buffer)
         {
             Messages.Clear();
@@ -201,24 +242,57 @@ namespace Dyalect.Linker
 
         private Unit ProcessObjectFile(string fileName, Reference reference)
         {
-            throw new NotImplementedException();
+#if !DEBUG
+            try
+#endif
+            {
+                var obj = ObjectFileReader.Read(fileName);
+
+                foreach (var o in obj.References)
+                    Link(obj, o);
+
+                return obj;
+            }
+#if !DEBUG
+            catch (Exception ex)
+            {
+                AddError(LinkerError.UnableReadObjectFile, fileName, 
+                    reference != null ? reference.SourceLocation : default, fileName, ex.Message);
+                return null;
+            }
+#endif
         }
 
         private string FindModule(Unit self, string module, Reference mod)
         {
+            var objModule = Path.Combine(Path.GetDirectoryName(module), Path.GetFileNameWithoutExtension(module) + OBJ);
+
+            if (FindModuleExact(self.FileName, objModule, mod, out var path))
+                return path;
+
             if (!module.EndsWith(EXT, StringComparison.OrdinalIgnoreCase))
                 module += EXT;
 
-            return FindModuleExact(self, module, mod);
+            if (!FindModuleExact(self.FileName, module, mod, out path))
+            {
+                AddError(LinkerError.ModuleNotFound, mod.SourceFileName, mod.SourceLocation, module);
+                return null;
+            }
+            else
+                return path;
         }
 
-        private string FindModuleExact(Unit self, string module, Reference mod)
+        private bool FindModuleExact(string workingDir, string module, Reference mod, out string path)
         {
-            if (Lookup.Find(Path.GetDirectoryName(self.FileName), module, out var fullPath))
-                return fullPath.Replace('\\', '/');
+            path = null;
 
-            AddError(LinkerError.ModuleNotFound, mod.SourceFileName, mod.SourceLocation, module);
-            return null;
+            if (Lookup.Find(Path.GetDirectoryName(workingDir), module, out var fullPath))
+            {
+                path = fullPath.Replace('\\', '/');
+                return true;
+            }
+            
+            return false;
         }
 
         private void AddError(LinkerError error, string fileName, Location loc, params object[] args)

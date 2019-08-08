@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace Dyalect
 {
@@ -12,11 +13,14 @@ namespace Dyalect
         private const string LINKER = "Linker settings";
         private const string GENERAL = "General settings";
 
-        [Binding(Help = "A full path to the .dy file which should be executed (or to the file or directory with files in '-test' mode). Several files can be specified.", Category = COMPILER)]
+        [Binding(Help = "A full path to the .dy file which should be executed, tested or compiled (or to the directory with files). Several files or directories can be specified.", Category = COMPILER)]
         public string[] FileNames { get; set; }
 
         [Binding("out", Help = "Specifies an output directory (e.g. for a compiled file).", Category = COMPILER)]
         public string OutputDirectory { get; set; }
+
+        [Binding("c", "compile", Help = "Compiles all provided files. By default an object file is placed in the same directory as compiled file (with a .dyo extension). In order to change an output directory, use -out switch.", Category = COMPILER)]
+        public bool Compile { get; set; }
 
         [Binding("debug", Help = "Compile in debug mode.", Category = COMPILER)]
         public bool Debug { get; set; }
@@ -85,6 +89,25 @@ namespace Dyalect
             }
 
             return sb.ToString();
+        }
+
+        public IEnumerable<string> GetFileNames()
+        {
+            if (FileNames == null || FileNames.Length == 0)
+                yield break;
+
+            foreach (var item in FileNames)
+            {
+                if (Directory.Exists(item))
+                {
+                    foreach (var f in Directory.GetFiles(item, "*.dy"))
+                        yield return f;
+                }
+                else
+                {
+                    yield return item;
+                }
+            }
         }
     }
 }

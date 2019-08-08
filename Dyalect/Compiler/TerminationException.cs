@@ -2,9 +2,9 @@
 
 namespace Dyalect.Compiler
 {
-    //Кидаем это исключение, когда нам надоедает компилировать. Например, выстрелил
-    //лимит на максимальное количество ошибок. Это исключение никогда не перебрасывается.
-    public sealed class TerminationException : Exception
+    //This exception is thrown to terminate compilation. For example, when we hit a maximum
+    //number of errors. This exception is never rethrown.
+    internal sealed class TerminationException : Exception
     {
     }
 }
