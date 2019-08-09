@@ -94,6 +94,8 @@ namespace Dyalect.Runtime.Types
         public static string TypeName(this DyObject self, ExecutionContext ctx) => 
             ctx.Composition.Types[self.TypeId].TypeName;
 
-        public static string Format(this DyObject self, ExecutionContext ctx) => self.ToString();
+        public static string Format(this DyObject self, ExecutionContext ctx) =>
+            ctx.Composition.Types[self.TypeId].ToString(ctx, self).GetString();
+
     }
 }

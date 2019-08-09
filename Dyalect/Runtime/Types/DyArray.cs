@@ -465,6 +465,13 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject Reverse(ExecutionContext ctx, DyObject self, DyObject[] args)
+        {
+            var arr = (DyArray)self;
+            Array.Reverse(arr.Values);
+            return DyNil.Instance;
+        }
+
         private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var arr = (DyArray)self;
@@ -541,6 +548,8 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance));
                 case "compact":
                     return DyForeignFunction.Member(name, Compact, -1, Statics.EmptyParameters);
+                case "reverse":
+                    return DyForeignFunction.Member(name, Reverse, -1, Statics.EmptyParameters);
                 default:
                     return null;
             }

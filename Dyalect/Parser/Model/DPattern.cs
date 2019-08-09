@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Dyalect.Parser.Model
@@ -123,7 +124,11 @@ namespace Dyalect.Parser.Model
 
         }
 
-        public List<DPattern> Elements { get; } = new List<DPattern>();
+        public List<DNode> Elements { get; } = new List<DNode>();
+
+        protected internal override int GetElementCount() => Elements.Count;
+
+        internal protected override List<DNode> ListElements() => Elements;
 
         internal override void ToString(StringBuilder sb)
         {
@@ -140,7 +145,11 @@ namespace Dyalect.Parser.Model
 
         }
 
-        public List<DPattern> Elements { get; } = new List<DPattern>();
+        public List<DNode> Elements { get; } = new List<DNode>();
+
+        protected internal override int GetElementCount() => Elements.Count;
+
+        internal protected override List<DNode> ListElements() => Elements;
 
         internal override void ToString(StringBuilder sb)
         {
@@ -300,7 +309,7 @@ namespace Dyalect.Parser.Model
 
         public string Constructor { get; set; }
 
-        public List<DPattern> Arguments { get; } = new List<DPattern>();
+        public List<DNode> Arguments { get; } = new List<DNode>();
 
         internal override void ToString(StringBuilder sb)
         {

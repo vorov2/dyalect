@@ -12,6 +12,10 @@ namespace Dyalect.Parser.Model
 
         public List<DNode> Elements { get; } = new List<DNode>();
 
+        internal protected override int GetElementCount() => Elements.Count;
+
+        internal protected override List<DNode> ListElements() => Elements;
+
         internal override void ToString(StringBuilder sb)
         {
             sb.Append('[');

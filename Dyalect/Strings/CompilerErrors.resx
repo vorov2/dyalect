@@ -213,4 +213,13 @@
   <data name="UnableToLinkModule" xml:space="preserve">
     <value>Unable to link module '{0}". Compilation terminated.</value>
   </data>
+  <data name="UnreachableMatchEntry" xml:space="preserve">
+    <value>Match entry "{0}" is unreachable.</value>
+  </data>
+  <data name="PatternNeverMatch" xml:space="preserve">
+    <value>Pattern "{0}" would never match.</value>
+  </data>
+  <data name="BindingPatternNoInit" xml:space="preserve">
+    <value>Pattern matching in variable binding requires initialization clause.</value>
+  </data>
 </root>

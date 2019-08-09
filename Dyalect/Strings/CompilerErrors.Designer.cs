@@ -88,6 +88,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pattern matching in variable binding requires initialization clause..
+        /// </summary>
+        internal static string BindingPatternNoInit {
+            get {
+                return ResourceManager.GetString("BindingPatternNoInit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty code islands are not supported..
         /// </summary>
         internal static string CodeIslandEmpty {
@@ -174,6 +183,15 @@ namespace Dyalect.Strings {
         internal static string OverrideNotAllowed {
             get {
                 return ResourceManager.GetString("OverrideNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pattern &quot;{0}&quot; would never match..
+        /// </summary>
+        internal static string PatternNeverMatch {
+            get {
+                return ResourceManager.GetString("PatternNeverMatch", resourceCulture);
             }
         }
         
@@ -318,6 +336,15 @@ namespace Dyalect.Strings {
         internal static string UndefinedVariable {
             get {
                 return ResourceManager.GetString("UndefinedVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Match entry &quot;{0}&quot; is unreachable..
+        /// </summary>
+        internal static string UnreachableMatchEntry {
+            get {
+                return ResourceManager.GetString("UnreachableMatchEntry", resourceCulture);
             }
         }
         

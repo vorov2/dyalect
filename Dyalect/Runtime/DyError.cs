@@ -88,14 +88,17 @@ namespace Dyalect.Runtime
 
     internal sealed class DyUserError : DyError
     {
-        public DyUserError(DyObject data) : base(DyErrorCode.UserCode)
+        private readonly string dsc;
+
+        public DyUserError(DyObject data, string dsc) : base(DyErrorCode.UserCode)
         {
             Data = data;
+            this.dsc = dsc;
         }
 
         public DyObject Data { get; }
 
-        public override string GetDescription() => Data?.ToString() ?? "UserError";
+        public override string GetDescription() => dsc;
 
         internal override DyObject GetDyObject() => Data ?? DyNil.Instance;
     }

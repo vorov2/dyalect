@@ -340,6 +340,12 @@ func arrayTest23() { //Bug #226
     assert(1.0, xs[0].s)
 }
 
+func arrayTest24() { //Issue #250
+    var xs = [1,2,3,4,5]
+    xs.reverse()
+    assert([5,4,3,2,1], xs)
+}
+
 func tupleTest1() {
     var t = (1,2,3)
     assert(3, t.len())
@@ -542,6 +548,11 @@ func stringTest25() {
     assert("*****", str)
     str = String.repeat(value: '!', count: 3)
     assert("!!!", str)
+}
+
+func stringTest26() { //Issue #249
+    var str = "foobar"
+    assert("raboof", str.reverse())
 }
 
 func memberCheckTest() {

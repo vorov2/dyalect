@@ -752,16 +752,53 @@ namespace Dyalect.Compiler
 
             if (node.Pattern.NodeType == NodeType.NamePattern)
             {
+                AddLinePragma(node);
                 var flags = node.Constant ? VarFlags.Const : VarFlags.None;
                 var a = AddVariable(node.Pattern.GetName(), node, flags);
                 cw.PopVar(a);
             }
             else
             {
+                if (node.Init == null)
+                    AddError(CompilerError.BindingPatternNoInit, node.Location);
+                else
+                {
+                    int n;
+                    if ((n = node.Pattern.GetElementCount()) == node.Init.GetElementCount() && n != -1
+                        && IsPureBinding(node.Pattern))
+                    {
+                        var xs = node.Pattern.ListElements();
+                        var ys = node.Init.ListElements();
+                        var flags = node.Constant ? VarFlags.Const : VarFlags.None;
+
+                        for (var i = 0; i < xs.Count; i++)
+                        {
+                            var x = xs[i];
+                            var y = ys[i];
+                            Build(y, hints.Append(Push), ctx);
+                            AddLinePragma(node);
+
+                            if (x.NodeType != NodeType.WildcardPattern)
+                            {
+                                var a = AddVariable(x.GetName(), node, flags);
+                                cw.PopVar(a);
+                            }
+                            else
+                                cw.Pop();
+                        }
+
+                        PushIf(hints);
+                        return;
+                    }
+                }
+
                 var nh = hints.Append(OpenMatch);
 
                 if (node.Constant)
                     nh = nh.Append(Const);
+
+                if (node.Init != null)
+                    CheckPattern(node.Pattern, node.Init.GetElementCount(), node.Pattern.GetElementCount());
 
                 BuildPattern(node.Pattern, nh, ctx);
                 var skip = cw.DefineLabel();

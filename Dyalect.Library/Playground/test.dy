@@ -1,7 +1,30 @@
-﻿func main() {
-    var x = 2
-    var (x,_) = (3,0)
-    print(x)
+﻿type U0()
+type U1()
+var bazCallCount = 0
+
+func baz() {
+    bazCallCount += 1
+    if bazCallCount == 1 {
+        throw U0()
+    } else if bazCallCount == 2 {
+        throw U1()
+    }
 }
 
-main()
+func bar() {
+    baz()
+}
+
+func foo() {
+    var calls = 2
+    while calls > 0 {
+        try {
+            bar()
+        } catch {
+            U0() => "U0 caught."
+        }
+        calls -= 1
+    }
+}
+
+foo()

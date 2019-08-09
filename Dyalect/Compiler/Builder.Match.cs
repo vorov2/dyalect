@@ -13,6 +13,7 @@ namespace Dyalect.Compiler
     {
         private void Build(DMatch node, Hints hints, CompilerContext ctx)
         {
+            ValidateMatch(node);
             StartScope(fun: false, node.Location);
 
             ctx = new CompilerContext(ctx)
@@ -44,6 +45,7 @@ namespace Dyalect.Compiler
 
             cw.MarkLabel(ctx.MatchExit);
             cw.Nop();
+            PopIf(hints);
             EndScope();
         }
 
@@ -321,7 +323,7 @@ namespace Dyalect.Compiler
             }
         }
 
-        private void BuildSequence(DPattern node, List<DPattern> elements, Hints hints, CompilerContext ctx)
+        private void BuildSequence(DPattern node, List<DNode> elements, Hints hints, CompilerContext ctx)
         {
             var skip = cw.DefineLabel();
             var ok = cw.DefineLabel();
@@ -349,7 +351,7 @@ namespace Dyalect.Compiler
                 else
                 {
                     cw.Get(i);
-                    BuildPattern(e, hints, ctx);
+                    BuildPattern((DPattern)e, hints, ctx);
                 }
 
                 cw.Brfalse(skip); //1 obj left to pop
@@ -487,7 +489,7 @@ namespace Dyalect.Compiler
             PreinitPattern(node.Right, hints);
         }
 
-        private void PreinitSequence(List<DPattern> elements, Hints hints)
+        private void PreinitSequence(List<DNode> elements, Hints hints)
         {
             for (var i = 0; i < elements.Count; i++)
             {
@@ -496,13 +498,61 @@ namespace Dyalect.Compiler
                 if (e.NodeType == NodeType.LabelPattern)
                     PreinitLabel((DLabelPattern)e, hints);
                 else
-                    PreinitPattern(e, hints);
+                    PreinitPattern((DPattern)e, hints);
             }
         }
 
         private void PreinitLabel(DLabelPattern node, Hints hints)
         {
             PreinitPattern(node.Pattern, hints);
+        }
+
+        private void ValidateMatch(DMatch match)
+        {
+            var irr = false;
+            var count = match.Expression != null ? match.Expression.GetElementCount() : -1;
+
+            foreach (var e in match.Entries)
+            {
+                var patternCount = e.Pattern.GetElementCount();
+                var pt = e.Pattern.NodeType;
+
+                if (irr)
+                    AddWarning(CompilerWarning.UnreachableMatchEntry, e.Location, e.Pattern);
+                else
+                    CheckPattern(e.Pattern, count, patternCount);
+
+                irr = IsIrrefutable(e.Pattern) && e.Guard == null;
+            }
+        }
+
+        private void CheckPattern(DPattern e, int matchCount, int patternCount)
+        {
+            int c;
+            if (matchCount > -1 && (c = e.GetElementCount()) > -1)
+            {
+                if (e.NodeType == NodeType.TuplePattern && matchCount != c)
+                    AddWarning(CompilerWarning.PatternNeverMatch, e.Location, e);
+                if (e.NodeType == NodeType.ArrayPattern && matchCount < c)
+                    AddWarning(CompilerWarning.PatternNeverMatch, e.Location, e);
+            }
+        }
+
+        private bool IsIrrefutable(DPattern node)
+        {
+            return node.NodeType == NodeType.NamePattern
+                || node.NodeType == NodeType.WildcardPattern
+                || node is DAsPattern pas && IsIrrefutable(pas.Pattern)
+                || node is DAndPattern dand && IsIrrefutable(dand.Left) && IsIrrefutable(dand.Right)
+                || node is DOrPattern dor && IsIrrefutable(dor.Left) && IsIrrefutable(dor.Right);
+        }
+
+        private bool IsPureBinding(DPattern node)
+        {
+            foreach (var n in node.ListElements())
+                if (n.NodeType != NodeType.NamePattern && n.NodeType != NodeType.WildcardPattern)
+                    return false;
+            return true;
         }
     }
 }

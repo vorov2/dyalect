@@ -67,5 +67,7 @@
         PrivateOnlyGlobal = 231,
 
         UnableToLinkModule = 232,
+
+        BindingPatternNoInit = 233,
     }
 }
