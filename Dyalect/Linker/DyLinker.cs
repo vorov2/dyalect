@@ -64,6 +64,11 @@ namespace Dyalect.Linker
                 }
             }
 
+            if (unit != null && mod.Checksum != 0 && mod.Checksum != unit.Checksum && !BuilderOptions.LinkerSkipChecksum)
+            {
+                AddError(LinkerError.ChecksumValidationFailed, mod.SourceFileName, mod.SourceLocation, mod.ModuleName, unit.FileName);
+            }
+
             return Result.Create(unit, Messages);
         }
 

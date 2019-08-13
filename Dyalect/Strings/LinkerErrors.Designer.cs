@@ -79,6 +79,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checksum validation of dependency &quot;{0}&quot; failed for module &quot;{1}&quot;. .
+        /// </summary>
+        internal static string ChecksumValidationFailed {
+            get {
+                return ResourceManager.GetString("ChecksumValidationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate name of a module &quot;{1}&quot; in an assembly &quot;{0}&quot;..
         /// </summary>
         internal static string DuplicateModuleName {

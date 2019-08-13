@@ -123,6 +123,9 @@
   <data name="AssemblyModuleNotFound" xml:space="preserve">
     <value>Module "{0}" is not defined in an assembly "{1}".</value>
   </data>
+  <data name="ChecksumValidationFailed" xml:space="preserve">
+    <value>Checksum validation of dependency "{0}" failed for module "{1}". </value>
+  </data>
   <data name="DuplicateModuleName" xml:space="preserve">
     <value>Duplicate name of a module "{1}" in an assembly "{0}".</value>
   </data>
