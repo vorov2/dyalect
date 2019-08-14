@@ -115,6 +115,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A newer version of source file is available for module &quot;{0}&quot;..
+        /// </summary>
+        internal static string NewerSourceFile {
+            get {
+                return ResourceManager.GetString("NewerSourceFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An error occured while loading assembly &quot;{0}&quot;: {1}.
         /// </summary>
         internal static string UnableLoadAssembly {

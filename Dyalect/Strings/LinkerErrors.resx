@@ -135,6 +135,9 @@
   <data name="ModuleNotFound" xml:space="preserve">
     <value>Unable to find module "{0}".</value>
   </data>
+  <data name="NewerSourceFile" xml:space="preserve">
+    <value>A newer version of source file is available for module "{0}".</value>
+  </data>
   <data name="UnableLoadAssembly" xml:space="preserve">
     <value>An error occured while loading assembly "{0}": {1}</value>
   </data>
