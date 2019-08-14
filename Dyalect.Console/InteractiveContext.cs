@@ -17,7 +17,8 @@ namespace Dyalect
             {
                 Debug = options.Debug,
                 NoLangModule = options.NoLang,
-                NoWarnings = options.NoWarnings
+                NoWarnings = options.NoWarnings,
+                NoWarningsLinker = options.NoWarningsLinker
             };
 
             var lookup = FileLookup.Create(

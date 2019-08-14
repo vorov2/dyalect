@@ -136,14 +136,15 @@ namespace Dyalect.Linker
 
             for (var i = 0; i < refs; i++)
             {
+                var checksum = reader.ReadInt32();
                 var r = new Reference(
-                        reader.ReadInt32(),
                         reader.ReadString(),
                         (str = reader.ReadString()).Length == 0 ? null : str,
                         (str = reader.ReadString()).Length == 0 ? null : str,
                         new Parser.Location(reader.ReadInt32(), reader.ReadInt32()),
                         reader.ReadString()
                     );
+                r.Checksum = checksum;
                 unit.References.Add(r);
             }
         }

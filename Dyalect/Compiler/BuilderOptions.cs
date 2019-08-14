@@ -7,6 +7,7 @@
             Debug = false,
             NoLangModule = false,
             NoWarnings = false,
+            NoWarningsLinker = false,
             LinkerSkipChecksum = false
         };
 
@@ -15,6 +16,8 @@
         public bool NoLangModule { get; set; }
 
         public bool NoWarnings { get; set; }
+
+        public bool NoWarningsLinker { get; set; }
 
         public bool LinkerSkipChecksum { get; set; }
     }

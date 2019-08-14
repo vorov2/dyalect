@@ -28,6 +28,9 @@ namespace Dyalect
         [Binding("nowarn", Help = "Do not generate warnings.", Category = COMPILER)]
         public bool NoWarnings { get; set; }
 
+        [Binding("nowarnlinker", Help = "Do not generate warnings by linker.", Category = LINKER)]
+        public bool NoWarningsLinker { get; set; }
+
         [Binding("nolang", Help = "Do not import \"lang\" module that includes basic primitives and operations.", Category = COMPILER)]
         public bool NoLang { get; set; }
 

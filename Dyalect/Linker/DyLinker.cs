@@ -293,10 +293,13 @@ namespace Dyalect.Linker
 
             if (Lookup.Find(Path.GetDirectoryName(workingDir), module, out var fullPath))
             {
-                var sf = Path.Combine(Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath) + ".dy");
+                if (!BuilderOptions.NoWarningsLinker)
+                {
+                    var sf = Path.Combine(Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath) + ".dy");
 
-                if (File.Exists(sf) && File.GetLastWriteTime(sf) != File.GetLastWriteTime(fullPath))
-                    AddWarning(LinkerWarning.NewerSourceFile, mod.SourceFileName, mod.SourceLocation, Path.GetFileNameWithoutExtension(fullPath));
+                    if (File.Exists(sf) && File.GetLastWriteTime(sf) != File.GetLastWriteTime(fullPath))
+                        AddWarning(LinkerWarning.NewerSourceFile, mod.SourceFileName, mod.SourceLocation, Path.GetFileNameWithoutExtension(fullPath));
+                }
 
                 path = fullPath.Replace('\\', '/');
                 return true;
