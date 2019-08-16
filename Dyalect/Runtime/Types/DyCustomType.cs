@@ -20,54 +20,28 @@ namespace Dyalect.Runtime.Types
 
         internal override int GetCount() => Value.GetCount();
 
-        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
-        {
+        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
             Value.SetItem(index, value, ctx);
-            CheckErrors(ctx);
-        }
 
-        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx)
-        {
+        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx) =>
             Value.SetItem(index, value, ctx);
-            CheckErrors(ctx);
-        }
 
-        protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx)
-        {
+        protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx) =>
             Value.SetItem(name, value, ctx);
-            CheckErrors(ctx);
-        }
 
-        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
-        {
-            var ret = Value.GetItem(index, ctx);
-            CheckErrors(ctx);
-            return ret;
-        }
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) => Value.GetItem(index, ctx);
 
-        protected internal override DyObject GetItem(int index, ExecutionContext ctx)
-        {
-            var ret = Value.GetItem(index, ctx);
-            CheckErrors(ctx);
-            return ret;
-        }
+        protected internal override DyObject GetItem(int index, ExecutionContext ctx) => Value.GetItem(index, ctx);
 
         protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value) =>
             Value.TryGetItem(name, ctx, out value);
 
+        protected internal override bool TryGetItem(int index, ExecutionContext ctx, out DyObject value) =>
+            Value.TryGetItem(index, ctx, out value);
+
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Value.HasItem(name, ctx);
 
         internal override int GetConstructorId(ExecutionContext ctx) => ConstructorId;
-
-        private void CheckErrors(ExecutionContext ctx)
-        {
-            if (ctx.HasErrors)
-            {
-                if (ctx.Error.Code == DyErrorCode.IndexOutOfRange
-                    || ctx.Error.Code == DyErrorCode.IndexInvalidType)
-                    ctx.Error.DataItems[0] = ("TypeName", this.TypeName(ctx));
-            }
-        }
     }
 
     internal sealed class DyCustomTypeInfo : DyTypeInfo

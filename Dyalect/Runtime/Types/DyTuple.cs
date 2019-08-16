@@ -33,9 +33,9 @@ namespace Dyalect.Runtime.Types
             if (index.TypeId == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
             else if (index.TypeId == DyType.String || index.TypeId == DyType.Char)
-                return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange(this.TypeName(ctx), index.GetString());
+                return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange(index.GetString());
             else
-                return ctx.IndexInvalidType(this.TypeName(ctx), index);
+                return ctx.IndexInvalidType(index);
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
@@ -45,7 +45,7 @@ namespace Dyalect.Runtime.Types
             else if (index.TypeId == DyType.String)
                 SetItem(index.GetString(), value, ctx);
             else
-                ctx.IndexInvalidType(this.TypeName(ctx), index);
+                ctx.IndexInvalidType(index);
         }
 
         protected internal override DyObject GetItem(string name, ExecutionContext ctx)
@@ -53,7 +53,7 @@ namespace Dyalect.Runtime.Types
             var i = GetOrdinal(name);
 
             if (i == -1)
-                return ctx.IndexOutOfRange(DyTypeNames.Tuple, name);
+                return ctx.IndexOutOfRange(name);
 
             return GetItem(i, ctx);
         }
@@ -89,7 +89,7 @@ namespace Dyalect.Runtime.Types
             var i = GetOrdinal(name);
 
             if (i == -1)
-                ctx.IndexOutOfRange(DyTypeNames.Tuple, name);
+                ctx.IndexOutOfRange(name);
 
             SetItem(i, value, ctx);
         }
@@ -105,7 +105,7 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetItem(int index, ExecutionContext ctx)
         {
             if (index < 0 || index >= Values.Length)
-                return ctx.IndexOutOfRange(DyTypeNames.Tuple, index);
+                return ctx.IndexOutOfRange(index);
             return Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
         }
 
@@ -114,7 +114,7 @@ namespace Dyalect.Runtime.Types
         protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx)
         {
             if (index < 0 || index >= Values.Length)
-                ctx.IndexOutOfRange(this.TypeName(ctx), index);
+                ctx.IndexOutOfRange(index);
             else
             {
                 if (Values[index].TypeId == DyType.Label)

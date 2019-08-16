@@ -218,7 +218,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
         {
             if (to.TypeId != DyType.Float)
-                return ctx.InvalidType(DyTypeNames.Float, to);
+                return ctx.InvalidType(to);
 
             var ifrom = self.GetFloat();
             var istart = ifrom;

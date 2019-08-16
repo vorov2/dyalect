@@ -324,7 +324,7 @@ namespace Dyalect.Linker
                 {
                     var sf = Path.Combine(Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath) + ".dy");
 
-                    if (File.Exists(sf) && File.GetLastWriteTime(sf) < File.GetLastWriteTime(fullPath))
+                    if (File.Exists(sf) && File.GetLastWriteTime(sf) > File.GetLastWriteTime(fullPath))
                         AddWarning(LinkerWarning.NewerSourceFile, mod.SourceFileName, mod.SourceLocation, Path.GetFileNameWithoutExtension(fullPath));
                 }
 

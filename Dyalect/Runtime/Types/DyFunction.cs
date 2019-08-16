@@ -135,10 +135,10 @@ namespace Dyalect.Runtime.Types
                 if (second is DyFunction f2)
                     return DyForeignFunction.Compose(f1, f2);
                 else
-                    ctx.InvalidType(DyTypeNames.Function, second);
+                    ctx.InvalidType(second);
             }
             else
-                ctx.InvalidType(DyTypeNames.Function, first);
+                ctx.InvalidType(first);
 
             return DyNil.Instance;
         }

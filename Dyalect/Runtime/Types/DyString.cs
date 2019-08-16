@@ -60,7 +60,7 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId != DyType.Integer)
-                return ctx.IndexInvalidType(this.TypeName(ctx), index);
+                return ctx.IndexInvalidType(index);
 
             var idx = (int)index.GetInteger();
             return GetItem(idx, ctx);
@@ -69,7 +69,7 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetItem(int idx, ExecutionContext ctx)
         {
             if (idx < 0 || idx >= Value.Length)
-                return ctx.IndexOutOfRange(this.TypeName(ctx), idx);
+                return ctx.IndexOutOfRange(idx);
 
             return new DyChar(Value[idx]);
         }
@@ -168,7 +168,7 @@ namespace Dyalect.Runtime.Types
             else if (value.TypeId == DyType.Char)
                 return str.Contains(value.GetChar()) ? DyBool.True : DyBool.False;
             else
-                return ctx.InvalidType(DyTypeNames.Char, value);
+                return ctx.InvalidType(value);
         }
 
         private DyObject IndexOf(ExecutionContext ctx, DyObject self, DyObject value, DyObject fromIndex, DyObject count)
@@ -178,17 +178,17 @@ namespace Dyalect.Runtime.Types
             var icount = count == DyNil.Instance ? str.Length - ifrom : (int)count.GetInteger();
 
             if (ifrom < 0 || ifrom > str.Length)
-                return ctx.IndexOutOfRange(DyTypeNames.String, fromIndex);
+                return ctx.IndexOutOfRange(fromIndex);
 
             if (icount < 0 || icount > str.Length - ifrom)
-                return ctx.IndexOutOfRange(DyTypeNames.String, count);
+                return ctx.IndexOutOfRange(count);
 
             if (value.TypeId == DyType.String)
                 return DyInteger.Get(str.IndexOf(value.GetString(), ifrom, icount));
             else if (value.TypeId == DyType.Char)
                 return DyInteger.Get(str.IndexOf(value.GetChar(), ifrom, icount));
             else
-                return ctx.InvalidType(DyTypeNames.Char, value);
+                return ctx.InvalidType(value);
         }
 
         private DyObject LastIndexOf(ExecutionContext ctx, DyObject self, DyObject value, DyObject fromIndex, DyObject count)
@@ -198,17 +198,17 @@ namespace Dyalect.Runtime.Types
             var icount = count == DyNil.Instance ? ifrom + 1 : (int)count.GetInteger();
 
             if (ifrom < 0 || ifrom > str.Length)
-                return ctx.IndexOutOfRange(DyTypeNames.String, fromIndex);
+                return ctx.IndexOutOfRange(fromIndex);
 
             if (icount < 0 || ifrom - icount + 1 < 0)
-                return ctx.IndexOutOfRange(DyTypeNames.String, fromIndex);
+                return ctx.IndexOutOfRange(fromIndex);
 
             if (value.TypeId == DyType.String)
                 return DyInteger.Get(str.LastIndexOf(value.GetString(), ifrom, icount));
             else if (value.TypeId == DyType.Char)
                 return DyInteger.Get(str.LastIndexOf(value.GetChar(), ifrom, icount));
             else
-                return ctx.InvalidType(DyTypeNames.Char, value);
+                return ctx.InvalidType(value);
         }
 
         private DyObject Split(ExecutionContext ctx, DyObject self, DyObject[] args)
@@ -233,7 +233,7 @@ namespace Dyalect.Runtime.Types
             for (var i = 0; i < args.Length; i++)
             {
                 if (args[i].TypeId != DyType.String)
-                    return ctx.InvalidType(DyTypeNames.String, args[i]);
+                    return ctx.InvalidType(args[i]);
 
                 xs[i] = args[i].GetString();
             }
@@ -289,7 +289,7 @@ namespace Dyalect.Runtime.Types
             if (a.TypeId == DyType.Char)
                 return self.GetString().StartsWith(a.GetChar()) ? DyBool.True : DyBool.False;
 
-            return ctx.InvalidType(DyTypeNames.String, a);
+            return ctx.InvalidType(a);
         }
 
         private DyObject EndsWith(ExecutionContext ctx, DyObject self, DyObject[] args)
@@ -302,7 +302,7 @@ namespace Dyalect.Runtime.Types
             if (a.TypeId == DyType.Char)
                 return self.GetString().EndsWith(a.GetChar()) ? DyBool.True : DyBool.False;
 
-            return ctx.InvalidType(DyTypeNames.String, a);
+            return ctx.InvalidType(a);
         }
 
         private DyObject Substring(ExecutionContext ctx, DyObject self, DyObject[] args)
@@ -311,16 +311,16 @@ namespace Dyalect.Runtime.Types
             var to = args.TakeAt(1, null);
 
             if (from.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyTypeNames.Integer, from);
+                return ctx.InvalidType(from);
 
             if (!ReferenceEquals(to, DyNil.Instance) && to.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyTypeNames.Integer, to);
+                return ctx.InvalidType(to);
 
             var str = self.GetString();
             var i = (int)from.GetInteger();
 
             if (i < 0 || i >= str.Length)
-                return ctx.IndexOutOfRange(self.TypeName(ctx), i);
+                return ctx.IndexOutOfRange(i);
 
             if (ReferenceEquals(to, DyNil.Instance))
                 return new DyString(str.Substring(i));
@@ -328,7 +328,7 @@ namespace Dyalect.Runtime.Types
             var j = (int)to.GetInteger();
 
             if (j < 0 || j + i > str.Length)
-                return ctx.IndexOutOfRange(self.TypeName(ctx), j);
+                return ctx.IndexOutOfRange(j);
 
             return new DyString(self.GetString().Substring(i, j));
         }
@@ -360,7 +360,7 @@ namespace Dyalect.Runtime.Types
             {
                 if (values[i].TypeId != DyType.Char)
                 {
-                    ctx.InvalidType(DyTypeNames.Char, values[i]);
+                    ctx.InvalidType(values[i]);
                     return Statics.EmptyChars;
                 }
                 chs[i] = values[i].GetChar();
@@ -386,10 +386,10 @@ namespace Dyalect.Runtime.Types
         private DyObject PadLeft(ExecutionContext ctx, DyObject self, DyObject len, DyObject with)
         {
             if (len.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyTypeNames.Integer, len);
+                return ctx.InvalidType(len);
 
             if (with.TypeId != DyType.Char)
-                return ctx.InvalidType(DyTypeNames.Char, with);
+                return ctx.InvalidType(with);
 
             var str = self.GetString();
             return new DyString(str.PadLeft((int)len.GetInteger(), with.GetChar()));
@@ -398,10 +398,10 @@ namespace Dyalect.Runtime.Types
         private DyObject PadRight(ExecutionContext ctx, DyObject self, DyObject len, DyObject with)
         {
             if (len.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyTypeNames.Integer, len);
+                return ctx.InvalidType(len);
 
             if (with.TypeId != DyType.Char)
-                return ctx.InvalidType(DyTypeNames.Char, with);
+                return ctx.InvalidType(with);
 
             var str = self.GetString();
             return new DyString(str.PadRight((int)len.GetInteger(), with.GetChar()));
@@ -422,7 +422,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject from, DyObject count)
         {
             if (from.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyTypeNames.Integer, from);
+                return ctx.InvalidType(from);
 
             int fri = (int)from.GetInteger();
             int c;
@@ -433,10 +433,10 @@ namespace Dyalect.Runtime.Types
             else if (count.TypeId == DyType.Nil)
                 c = str.Length - fri;
             else
-                return ctx.InvalidType(DyTypeNames.Integer, count);
+                return ctx.InvalidType(count);
 
             if (fri + c > str.Length)
-                return ctx.IndexOutOfRange(DyTypeNames.String, fri + c);
+                return ctx.IndexOutOfRange(fri + c);
 
             return new DyString(str.Remove(fri, c));
         }
@@ -521,7 +521,7 @@ namespace Dyalect.Runtime.Types
         private static DyObject Join(ExecutionContext ctx, DyObject values, DyObject separator)
         {
             if (separator.TypeId != DyType.String)
-                return ctx.InvalidType(DyTypeNames.String, separator);
+                return ctx.InvalidType(separator);
 
             var arr = ((DyTuple)values).Values;
             var strArr = new string[arr.Length];
@@ -547,10 +547,10 @@ namespace Dyalect.Runtime.Types
         private static DyObject Repeat(ExecutionContext ctx, DyObject value, DyObject count)
         {
             if (count.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyTypeNames.Integer, count);
+                return ctx.InvalidType(count);
 
             if (value.TypeId != DyType.Char)
-                return ctx.InvalidType(DyTypeNames.Char, value);
+                return ctx.InvalidType(value);
 
             return new DyString(new string(value.GetChar(), (int)count.GetInteger()));
         }

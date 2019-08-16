@@ -28,7 +28,7 @@ namespace Dyalect.Runtime.Types
         public abstract object ToObject();
 
         internal protected virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            index.TypeId == DyType.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange(this.TypeName(ctx), index);
+            index.TypeId == DyType.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange(index);
 
         internal protected virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Set, this);
@@ -37,7 +37,7 @@ namespace Dyalect.Runtime.Types
             GetItem((DyObject)new DyString(name), ctx);
 
         internal protected virtual DyObject GetItem(int index, ExecutionContext ctx) =>
-            index == 0 ? this : ctx.IndexOutOfRange(this.TypeName(ctx), index);
+            index == 0 ? this : ctx.IndexOutOfRange(index);
 
         internal protected virtual bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
         {
@@ -54,7 +54,7 @@ namespace Dyalect.Runtime.Types
             else
             {
                 value = null;
-                ctx.IndexInvalidType(DyTypeNames.String, index);
+                ctx.IndexInvalidType(index);
                 return false;
             }
         }

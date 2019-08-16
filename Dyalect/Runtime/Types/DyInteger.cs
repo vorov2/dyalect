@@ -306,7 +306,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
         {
             if (to.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyTypeNames.Integer, to);
+                return ctx.InvalidType(to);
 
             var ifrom = self.GetInteger();
             var istart = ifrom;

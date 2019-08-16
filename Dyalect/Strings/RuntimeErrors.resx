@@ -124,7 +124,7 @@
     <value>An unhandled exception occured during an execution of an external function "%FunctionName%": %Error%</value>
   </data>
   <data name="IndexInvalidType" xml:space="preserve">
-    <value>Index "%Index%" of type "%IndexTypeName%" is not supported by an instance of type "%TypeName%".</value>
+    <value>Indices of type "%IndexTypeName%" are not supported by the type. Failed index: "%Index%".</value>
   </data>
   <data name="NotFunction" xml:space="preserve">
     <value>An object of type "%TypeName%" doesn't support a "call" operation.</value>
@@ -136,13 +136,10 @@
     <value>Stack is corrupted.</value>
   </data>
   <data name="IndexOutOfRange" xml:space="preserve">
-    <value>An index "%Index%" is out of range for the instance of type "%TypeName%".</value>
+    <value>An index "%Index%" is out of range.</value>
   </data>
   <data name="TooManyArguments" xml:space="preserve">
     <value>Function "%FunctionName%" accepts %FunctionArguments% argument(s) (%PassedArguments% given).</value>
-  </data>
-  <data name="InvalidType" xml:space="preserve">
-    <value>Type error: expected type "%Expected%", got "%Got%".</value>
   </data>
   <data name="StaticOperationNotSupported" xml:space="preserve">
     <value>Static method "%Operation%" is not supported by the type "%TypeName%".</value>
@@ -162,14 +159,11 @@
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed.</value>
   </data>
-  <data name="OperationNotSupported2" xml:space="preserve">
-    <value>Operation "%Operation%" is not supported by the types "%TypeName1%" and "%TypeName2%".</value>
-  </data>
   <data name="CollectionModified" xml:space="preserve">
     <value>Collection was modified after the iterator was instantiated.</value>
   </data>
-  <data name="InvalidType1" xml:space="preserve">
-    <value>Type error: type "%Got%" is unexpected.</value>
+  <data name="InvalidType" xml:space="preserve">
+    <value>Type error: type "%TypeName%" is unexpected.</value>
   </data>
   <data name="PrivateNameAccess" xml:space="preserve">
     <value>Unable to access a private module member "%Name%".</value>

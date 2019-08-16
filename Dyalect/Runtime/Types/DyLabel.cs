@@ -23,13 +23,13 @@
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
             (index.TypeId == DyType.Integer && index.GetInteger() == 0) ||
                 (index.TypeId == DyType.String && index.GetString() == Label)
-                ? Value : ctx.IndexOutOfRange(this.TypeName(ctx), index);
+                ? Value : ctx.IndexOutOfRange(index);
 
         internal protected override DyObject GetItem(string name, ExecutionContext ctx) =>
-            name == Label ? Value : ctx.IndexOutOfRange(this.TypeName(ctx), name);
+            name == Label ? Value : ctx.IndexOutOfRange(name);
 
         internal protected override DyObject GetItem(int index, ExecutionContext ctx) =>
-            index == 0 ? Value : ctx.IndexOutOfRange(this.TypeName(ctx), index);
+            index == 0 ? Value : ctx.IndexOutOfRange(index);
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;
 
