@@ -1,5 +1,5 @@
 # 0.9.14
-  * Change: Multiple runtime error messages are corrected.
+  * Change: _Multiple runtime error messages are corrected._
   * Fixed: _Incorrect exception message for custom types for `IndexOutOfRange`_ ([Issue #253](https://github.com/vorov2/dyalect/issues/253)).
   
 # 0.9.13
