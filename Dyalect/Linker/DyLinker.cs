@@ -124,6 +124,33 @@ namespace Dyalect.Linker
             return Make(codeModel);
         }
 
+        public Result<Unit> Compile(SourceBuffer buffer)
+        {
+            Messages.Clear();
+            var codeModel = ProcessBuffer(buffer);
+
+            if (codeModel == null)
+                return Result.Create(default(Unit), Messages);
+
+            return Compile(codeModel);
+        }
+
+        public Result<Unit> Compile(DyCodeModel codeModel)
+        {
+            Prepare();
+
+            try
+            {
+                var unit = CompileNodes(codeModel, root: true);
+                return Result.Create(unit, Messages);
+            }
+            finally
+            {
+                var failed = Messages.Any(m => m.Type == BuildMessageType.Error);
+                Complete(failed);
+            }
+        }
+
         public Result<UnitComposition> Make(DyCodeModel codeModel)
         {
             Prepare();
@@ -297,7 +324,7 @@ namespace Dyalect.Linker
                 {
                     var sf = Path.Combine(Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath) + ".dy");
 
-                    if (File.Exists(sf) && File.GetLastWriteTime(sf) != File.GetLastWriteTime(fullPath))
+                    if (File.Exists(sf) && File.GetLastWriteTime(sf) < File.GetLastWriteTime(fullPath))
                         AddWarning(LinkerWarning.NewerSourceFile, mod.SourceFileName, mod.SourceLocation, Path.GetFileNameWithoutExtension(fullPath));
                 }
 

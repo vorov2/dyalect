@@ -51,22 +51,22 @@ namespace Dyalect.Runtime
         internal DyError(DyErrorCode code, params (string, object)[] dataItems)
         {
             Code = code;
-            DataItems = new ReadOnlyCollection<(string, object)>(dataItems);
+            DataItems = dataItems;
         }
 
         internal Stack<StackPoint> Dump { get; set; }
 
         public DyErrorCode Code { get; }
 
-        public IReadOnlyList<(string Key, object Value)> DataItems { get; }
+        public (string Key, object Value)[] DataItems { get; }
 
         public virtual string GetDescription()
         {
             string key;
 
-            if (Code == DyErrorCode.OperationNotSupported && DataItems.Count == 3)
+            if (Code == DyErrorCode.OperationNotSupported && DataItems.Length == 3)
                 key = "OperationNotSupported2";
-            else if (Code == DyErrorCode.InvalidType && DataItems.Count == 1)
+            else if (Code == DyErrorCode.InvalidType && DataItems.Length == 1)
                 key = "InvalidType1";
             else
                 key = Code.ToString();

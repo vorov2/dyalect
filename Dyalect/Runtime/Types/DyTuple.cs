@@ -72,6 +72,18 @@ namespace Dyalect.Runtime.Types
             return true;
         }
 
+        protected internal override bool TryGetItem(int index, ExecutionContext ctx, out DyObject value)
+        {
+            if (index < 0 || index >= Values.Length)
+            {
+                value = null;
+                return false;
+            }
+
+            value = GetItem(index, ctx);
+            return true;
+        }
+
         protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx)
         {
             var i = GetOrdinal(name);

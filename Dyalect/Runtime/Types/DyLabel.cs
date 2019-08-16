@@ -44,6 +44,18 @@
             value = null;
             return false;
         }
+
+        protected internal override bool TryGetItem(int index, ExecutionContext ctx, out DyObject value)
+        {
+            if (index != 0)
+            {
+                value = null;
+                return false;
+            }
+
+            value = Value;
+            return true;
+        }
     }
 
     internal sealed class DyLabelTypeInfo : DyTypeInfo
