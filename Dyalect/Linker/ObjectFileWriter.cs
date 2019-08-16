@@ -18,7 +18,7 @@ namespace Dyalect.Linker
 
         private static void Write(BinaryWriter writer, Unit unit)
         {
-            WriteHeader(writer);
+            WriteHeader(writer, unit);
 
             WriteReferences(writer, unit.References);
             writer.Write(unit.UnitIds.Count);
@@ -32,13 +32,25 @@ namespace Dyalect.Linker
             WriteExportList(writer, unit.ExportList);
         }
 
-        private static void WriteHeader(BinaryWriter writer)
+        private static void WriteHeader(BinaryWriter writer, Unit unit)
         {
             for (var i = 0; i < ObjectFile.BOM.Length; i++)
                 writer.Write(ObjectFile.BOM[i]);
 
             writer.Write(ObjectFile.Version);
             writer.Write(Meta.Version);
+            writer.Write(CalculateChecksum(unit.Ops));
+        }
+
+        private static int CalculateChecksum(List<Op> ops)
+        {
+            var checksum = 0;
+
+            foreach (var op in ops)
+                checksum += (byte)op.Code;
+
+            checksum &= 0xFF;
+            return checksum;
         }
 
         private static void WriteOps(BinaryWriter writer, List<Op> ops)
@@ -117,6 +129,7 @@ namespace Dyalect.Linker
 
             foreach (var r in refs)
             {
+                writer.Write(r.Checksum);
                 writer.Write(r.ModuleName);
                 writer.Write(r.LocalPath ?? "");
                 writer.Write(r.DllName ?? "");

@@ -115,7 +115,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Index &quot;%Index%&quot; of type &quot;%IndexTypeName%&quot; is not supported by an instance of type &quot;%TypeName%&quot;..
+        ///   Looks up a localized string similar to Indices of type &quot;%IndexTypeName%&quot; are not supported by the type. Failed index: &quot;%Index%&quot;..
         /// </summary>
         internal static string IndexInvalidType {
             get {
@@ -124,7 +124,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An index &quot;%Index%&quot; is out of range for the instance of type &quot;%TypeName%&quot;..
+        ///   Looks up a localized string similar to An index &quot;%Index%&quot; is out of range..
         /// </summary>
         internal static string IndexOutOfRange {
             get {
@@ -133,20 +133,11 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type error: expected type &quot;%Expected%&quot;, got &quot;%Got%&quot;..
+        ///   Looks up a localized string similar to Type error: type &quot;%TypeName%&quot; is unexpected..
         /// </summary>
         internal static string InvalidType {
             get {
                 return ResourceManager.GetString("InvalidType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Type error: type &quot;%Got%&quot; is unexpected..
-        /// </summary>
-        internal static string InvalidType1 {
-            get {
-                return ResourceManager.GetString("InvalidType1", resourceCulture);
             }
         }
         
@@ -174,15 +165,6 @@ namespace Dyalect.Strings {
         internal static string OperationNotSupported {
             get {
                 return ResourceManager.GetString("OperationNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Operation &quot;%Operation%&quot; is not supported by the types &quot;%TypeName1%&quot; and &quot;%TypeName2%&quot;..
-        /// </summary>
-        internal static string OperationNotSupported2 {
-            get {
-                return ResourceManager.GetString("OperationNotSupported2", resourceCulture);
             }
         }
         

@@ -22,7 +22,7 @@ namespace Dyalect.Linker
 
         private static void Read(BinaryReader reader, Unit unit)
         {
-            ReadHeader(reader);
+            ReadHeader(reader, unit);
 
             ReadReferences(reader, unit);
             unit.UnitIds.AddRange(Enumerable.Repeat(-1, reader.ReadInt32()));
@@ -36,7 +36,7 @@ namespace Dyalect.Linker
             ReadExportList(reader, unit);
         }
 
-        private static void ReadHeader(BinaryReader reader)
+        private static void ReadHeader(BinaryReader reader, Unit unit)
         {
             if (reader.BaseStream.Length < ObjectFile.BOM.Length)
                 throw new DyException("Invalid object file.");
@@ -49,6 +49,7 @@ namespace Dyalect.Linker
                 throw new DyException("Unsupported version of object file.");
 
             reader.ReadString();
+            unit.Checksum = reader.ReadInt32();
         }
 
         private static void ReadOps(BinaryReader reader, Unit unit)
@@ -135,6 +136,7 @@ namespace Dyalect.Linker
 
             for (var i = 0; i < refs; i++)
             {
+                var checksum = reader.ReadInt32();
                 var r = new Reference(
                         reader.ReadString(),
                         (str = reader.ReadString()).Length == 0 ? null : str,
@@ -142,6 +144,7 @@ namespace Dyalect.Linker
                         new Parser.Location(reader.ReadInt32(), reader.ReadInt32()),
                         reader.ReadString()
                     );
+                r.Checksum = checksum;
                 unit.References.Add(r);
             }
         }

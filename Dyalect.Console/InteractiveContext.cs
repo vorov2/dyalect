@@ -17,7 +17,8 @@ namespace Dyalect
             {
                 Debug = options.Debug,
                 NoLangModule = options.NoLang,
-                NoWarnings = options.NoWarnings
+                NoWarnings = options.NoWarnings,
+                NoWarningsLinker = options.NoWarningsLinker
             };
 
             var lookup = FileLookup.Create(
@@ -55,27 +56,37 @@ namespace Dyalect
             return Eval(measureTime: false);
         }
 
-        public bool Make(string fileName, out UnitComposition composition, bool recompile = false)
+        public bool Compile(string fileName, out Unit unit)
+        {
+            unit = null;
+
+            var made = default(Result<Unit>);
+
+            try
+            {
+                var buffer = SourceBuffer.FromFile(fileName);
+                made = Linker.Compile(buffer);
+            }
+            catch (Exception ex)
+            {
+                Printer.Error($"Unable to read file \"{fileName}\": {ex.Message}");
+                return false;
+            }
+
+            if (made.Messages.Any())
+                Printer.PrintErrors(made.Messages);
+
+            if (!made.Success)
+                return false;
+
+            unit = made.Value;
+            return true;
+        }
+
+        public bool Make(string fileName, out UnitComposition composition)
         {
             composition = null;
-
-            var made = default(Result<UnitComposition>);
-
-            if (recompile)
-            {
-                try
-                {
-                    var buffer = SourceBuffer.FromFile(fileName);
-                    made = Linker.Make(buffer);
-                }
-                catch (Exception ex)
-                {
-                    Printer.Error($"Unable to read file \"{fileName}\": {ex.Message}");
-                    return false;
-                }
-            }
-            else
-                made = Linker.Make(fileName);
+            var made = Linker.Make(fileName);
 
             if (made.Messages.Any())
                 Printer.PrintErrors(made.Messages);

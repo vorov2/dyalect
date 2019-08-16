@@ -148,7 +148,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
         {
             if (to.TypeId != DyType.Char)
-                return ctx.InvalidType(DyTypeNames.Char, to);
+                return ctx.InvalidType(to);
 
             var ifrom = self.GetChar();
             var istart = ifrom;

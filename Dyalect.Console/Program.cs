@@ -104,7 +104,7 @@ namespace Dyalect
                 else if (Directory.Exists(outFile))
                     outFile = Path.Combine(outFile, Path.GetFileNameWithoutExtension(f) + ".dyo");
 
-                if (!File.Exists(f) || !ctx.Make(f, out var composition, recompile: true))
+                if (!File.Exists(f) || !ctx.Compile(f, out var unit))
                 {
                     Printer.Error($"Compilation of file \"{f}\" skipped.");
                     continue;
@@ -114,7 +114,7 @@ namespace Dyalect
                 try
 #endif
                 {
-                    ObjectFileWriter.Write(outFile, composition.Units[0]);
+                    ObjectFileWriter.Write(outFile, unit);
                     Printer.Information($"Compilation completed. File saved: \"{outFile}\"");
                 }
 #if !DEBUG

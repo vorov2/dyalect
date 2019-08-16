@@ -51,25 +51,18 @@ namespace Dyalect.Runtime
         internal DyError(DyErrorCode code, params (string, object)[] dataItems)
         {
             Code = code;
-            DataItems = new ReadOnlyCollection<(string, object)>(dataItems);
+            DataItems = dataItems;
         }
 
         internal Stack<StackPoint> Dump { get; set; }
 
         public DyErrorCode Code { get; }
 
-        public IReadOnlyList<(string Key, object Value)> DataItems { get; }
+        public (string Key, object Value)[] DataItems { get; }
 
         public virtual string GetDescription()
         {
-            string key;
-
-            if (Code == DyErrorCode.OperationNotSupported && DataItems.Count == 3)
-                key = "OperationNotSupported2";
-            else if (Code == DyErrorCode.InvalidType && DataItems.Count == 1)
-                key = "InvalidType1";
-            else
-                key = Code.ToString();
+            var key = Code.ToString();
 
             var sb = new StringBuilder(RuntimeErrors.ResourceManager.GetString(key));
 
@@ -148,44 +141,25 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj1, DyObject obj2)
-        {
-            ctx.Error = new DyError(DyErrorCode.OperationNotSupported,
-                ("Operation", op),
-                ("TypeName1", obj1.TypeName(ctx)),
-                ("TypeName2", obj2.TypeName(ctx)));
-            return DyNil.Instance;
-        }
-
-        public static DyObject IndexOutOfRange(this ExecutionContext ctx, string typeName, object index)
+        public static DyObject IndexOutOfRange(this ExecutionContext ctx, object index)
         {
             ctx.Error = new DyError(DyErrorCode.IndexOutOfRange,
-                ("TypeName", typeName),
                 ("Index", index));
             return DyNil.Instance;
         }
 
-        public static DyObject IndexInvalidType(this ExecutionContext ctx, string typeName, DyObject index)
+        public static DyObject IndexInvalidType(this ExecutionContext ctx, DyObject index)
         {
             ctx.Error = new DyError(DyErrorCode.IndexInvalidType,
-                ("TypeName", typeName),
                 ("Index", index),
                 ("IndexTypeName", index.TypeName(ctx)));
             return DyNil.Instance;
         }
 
-        public static DyObject InvalidType(this ExecutionContext ctx, string expectedTypeName, DyObject got)
+        public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
         {
             ctx.Error = new DyError(DyErrorCode.InvalidType,
-                ("Expected", expectedTypeName),
-                ("Got", got.TypeName(ctx)));
-            return DyNil.Instance;
-        }
-
-        public static DyObject InvalidType(this ExecutionContext ctx, DyObject got)
-        {
-            ctx.Error = new DyError(DyErrorCode.InvalidType,
-                ("Got", got.TypeName(ctx)));
+                ("TypeName", value.TypeName(ctx)));
             return DyNil.Instance;
         }
 

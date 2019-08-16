@@ -42,6 +42,8 @@ namespace Dyalect.Compiler
             }
         }
 
+        internal int Checksum { get; set; }
+
         public string LocalPath { get; }
 
         public string ModuleName { get; }

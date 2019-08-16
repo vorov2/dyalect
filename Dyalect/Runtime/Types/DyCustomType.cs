@@ -20,7 +20,7 @@ namespace Dyalect.Runtime.Types
 
         internal override int GetCount() => Value.GetCount();
 
-        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx) => 
+        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
             Value.SetItem(index, value, ctx);
 
         protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx) =>
@@ -35,6 +35,9 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value) =>
             Value.TryGetItem(name, ctx, out value);
+
+        protected internal override bool TryGetItem(int index, ExecutionContext ctx, out DyObject value) =>
+            Value.TryGetItem(index, ctx, out value);
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Value.HasItem(name, ctx);
 

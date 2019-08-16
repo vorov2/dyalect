@@ -64,6 +64,11 @@ namespace Dyalect.Linker
                 }
             }
 
+            if (unit != null && mod.Checksum != 0 && mod.Checksum != unit.Checksum && !BuilderOptions.LinkerSkipChecksum)
+            {
+                AddError(LinkerError.ChecksumValidationFailed, mod.SourceFileName, mod.SourceLocation, mod.ModuleName, unit.FileName);
+            }
+
             return Result.Create(unit, Messages);
         }
 
@@ -117,6 +122,33 @@ namespace Dyalect.Linker
                 return Result.Create(default(UnitComposition), Messages);
 
             return Make(codeModel);
+        }
+
+        public Result<Unit> Compile(SourceBuffer buffer)
+        {
+            Messages.Clear();
+            var codeModel = ProcessBuffer(buffer);
+
+            if (codeModel == null)
+                return Result.Create(default(Unit), Messages);
+
+            return Compile(codeModel);
+        }
+
+        public Result<Unit> Compile(DyCodeModel codeModel)
+        {
+            Prepare();
+
+            try
+            {
+                var unit = CompileNodes(codeModel, root: true);
+                return Result.Create(unit, Messages);
+            }
+            finally
+            {
+                var failed = Messages.Any(m => m.Type == BuildMessageType.Error);
+                Complete(failed);
+            }
         }
 
         public Result<UnitComposition> Make(DyCodeModel codeModel)
@@ -288,6 +320,14 @@ namespace Dyalect.Linker
 
             if (Lookup.Find(Path.GetDirectoryName(workingDir), module, out var fullPath))
             {
+                if (!BuilderOptions.NoWarningsLinker)
+                {
+                    var sf = Path.Combine(Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath) + ".dy");
+
+                    if (File.Exists(sf) && File.GetLastWriteTime(sf) > File.GetLastWriteTime(fullPath))
+                        AddWarning(LinkerWarning.NewerSourceFile, mod.SourceFileName, mod.SourceLocation, Path.GetFileNameWithoutExtension(fullPath));
+                }
+
                 path = fullPath.Replace('\\', '/');
                 return true;
             }
@@ -297,13 +337,23 @@ namespace Dyalect.Linker
 
         private void AddError(LinkerError error, string fileName, Location loc, params object[] args)
         {
-            var str = LinkerErrors.ResourceManager.GetString(error.ToString());
-            str = str ?? error.ToString();
+            AddMessage(BuildMessageType.Error, (int)error, error.ToString(), fileName, loc, args);
+        }
+
+        private void AddWarning(LinkerWarning warn, string fileName, Location loc, params object[] args)
+        {
+            AddMessage(BuildMessageType.Warning, (int)warn, warn.ToString(), fileName, loc, args);
+        }
+
+        private void AddMessage(BuildMessageType type, int code, string codeName, string fileName, Location loc, params object[] args)
+        {
+            var str = LinkerErrors.ResourceManager.GetString(codeName);
+            str = str ?? codeName;
 
             if (args != null)
                 str = string.Format(str, args);
 
-            Messages.Add(new BuildMessage(str, BuildMessageType.Error, (int)error, loc.Line, loc.Column, fileName));
+            Messages.Add(new BuildMessage(str, type, code, loc.Line, loc.Column, fileName));
         }
     }
 }

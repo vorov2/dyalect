@@ -28,16 +28,16 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId != DyType.String)
-                return ctx.IndexInvalidType(DyTypeNames.String, index);
+                return ctx.IndexInvalidType(index);
 
             if (!TryGetMember(index.GetString(), ctx, out var value))
-                return ctx.IndexOutOfRange(DyTypeNames.Module, index);
+                return ctx.IndexOutOfRange(index);
 
             return value;
         }
 
         protected internal override DyObject GetItem(int index, ExecutionContext ctx) =>
-                ctx.IndexInvalidType(DyTypeNames.String, DyInteger.Get(index));
+                ctx.IndexInvalidType(DyInteger.Get(index));
 
         protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
         {
@@ -120,7 +120,7 @@ namespace Dyalect.Runtime.Types
             return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
             {
                 if (!self.TryGetItem(name, c, out var value))
-                    return ctx.IndexOutOfRange(DyTypeNames.Module, name);
+                    return ctx.IndexOutOfRange(name);
                 return value;
             });
         }

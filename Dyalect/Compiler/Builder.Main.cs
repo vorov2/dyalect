@@ -385,6 +385,7 @@ namespace Dyalect.Compiler
 
             if (res.Success)
             {
+                r.Checksum = res.Value.Checksum;
                 var referencedUnit = new UnitInfo(unit.UnitIds.Count, res.Value);
                 unit.References.Add(r);
                 referencedUnits.Add(node.Alias ?? node.ModuleName, referencedUnit);

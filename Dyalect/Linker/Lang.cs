@@ -106,7 +106,7 @@ namespace Dyalect.Linker
         public DyObject Sqrt(ExecutionContext ctx, DyObject n)
         {
             if (n.TypeId != DyType.Float && n.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyTypeNames.Float, n);
+                return ctx.InvalidType(n);
 
             return new DyFloat(Math.Sqrt(n.GetFloat()));
         }
@@ -115,7 +115,7 @@ namespace Dyalect.Linker
         public DyObject Parse(ExecutionContext ctx, DyObject expression)
         {
             if (expression.TypeId != DyType.String)
-                return ctx.InvalidType(DyTypeNames.String, expression);
+                return ctx.InvalidType(expression);
 
             try
             {

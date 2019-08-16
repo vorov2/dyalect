@@ -18,6 +18,8 @@
 
         InvalidAssemblyModule = 406,
 
-        UnableReadObjectFile = 407
+        UnableReadObjectFile = 407,
+
+        ChecksumValidationFailed = 408
     }
 }

@@ -123,6 +123,9 @@
   <data name="AssemblyModuleNotFound" xml:space="preserve">
     <value>Module "{0}" is not defined in an assembly "{1}".</value>
   </data>
+  <data name="ChecksumValidationFailed" xml:space="preserve">
+    <value>Checksum validation of dependency "{0}" failed for module "{1}". </value>
+  </data>
   <data name="DuplicateModuleName" xml:space="preserve">
     <value>Duplicate name of a module "{1}" in an assembly "{0}".</value>
   </data>
@@ -131,6 +134,9 @@
   </data>
   <data name="ModuleNotFound" xml:space="preserve">
     <value>Unable to find module "{0}".</value>
+  </data>
+  <data name="NewerSourceFile" xml:space="preserve">
+    <value>A newer version of source file is available for module "{0}".</value>
   </data>
   <data name="UnableLoadAssembly" xml:space="preserve">
     <value>An error occured while loading assembly "{0}": {1}</value>
