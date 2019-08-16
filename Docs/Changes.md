@@ -1,3 +1,6 @@
+# 0.10.0
+  * Done: _ Support for script arguments_ ([Issue #39](https://github.com/vorov2/dyalect/issues/39)).
+
 # 0.9.14
   * Change: _Multiple runtime error messages are corrected._
   * Fixed: _Incorrect exception message for custom types for `IndexOutOfRange`_ ([Issue #253](https://github.com/vorov2/dyalect/issues/253)).

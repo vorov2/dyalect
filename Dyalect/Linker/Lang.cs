@@ -9,14 +9,23 @@ namespace Dyalect.Linker
 {
     internal sealed class Lang : ForeignUnit
     {
-        public Lang()
+        private readonly DyTuple args;
+
+        public Lang() : this(null)
         {
-            FileName = "lang";
+
         }
 
-        protected override void Initialize()
+        public Lang(DyTuple args)
         {
-            //idle
+            FileName = "lang";
+            this.args = args;
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            Add("args", args ?? (DyObject)DyNil.Instance);
         }
 
         public override void Execute(ExecutionContext ctx)

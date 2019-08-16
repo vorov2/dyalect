@@ -1,5 +1,4 @@
 ﻿using Dyalect.Linker;
-using Dyalect.Parser;
 using Dyalect.Util;
 using System;
 using System.IO;

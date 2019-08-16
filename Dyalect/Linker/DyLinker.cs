@@ -14,7 +14,7 @@ namespace Dyalect.Linker
     {
         private const string EXT = ".dy";
         private const string OBJ = ".dyo";
-        private static readonly Lang lang = new Lang { FileName = nameof(lang), Id = 1 };
+        private readonly Lang lang;
         private static readonly object syncRoot = new object();
 
         protected Dictionary<Reference, Unit> UnitMap { get; set;  } = new Dictionary<Reference, Unit>();
@@ -29,10 +29,16 @@ namespace Dyalect.Linker
 
         public FileLookup Lookup { get; }
 
-        public DyLinker(FileLookup lookup, BuilderOptions options)
+        public DyLinker(FileLookup lookup, BuilderOptions options) : this(lookup, options, null)
+        {
+
+        }
+
+        public DyLinker(FileLookup lookup, BuilderOptions options, DyTuple args)
         {
             this.Lookup = lookup;
             this.BuilderOptions = options;
+            this.lang = new Lang(args) { FileName = nameof(lang), Id = 1 };
             Units.Add(null);
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dyalect.Runtime.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,14 +7,18 @@ namespace Dyalect.Util
 {
     public static class CommandLineReader
     {
-        class Value
+        abstract class Value
         {
             public bool IsDefault;
+
+            public abstract DyObject ToObject();
         }
 
         class StringValue : Value
         {
             public string Value;
+
+            public override DyObject ToObject() => new DyString(Value);
         }
 
         class ArrayValue : Value
@@ -25,17 +30,32 @@ namespace Dyalect.Util
                 else
                     Values.Add(null);
             }
+
             public List<string> Values = new List<string>();
+
+            public override DyObject ToObject() => new DyTuple(Values.Select(v => new DyString(v)).ToArray());
         }
 
-        public static T Read<T>(string[] args, IDictionary<string, object> config) where T : new()
+        public static T Read<T>(string[] args, IDictionary<string, object> config) where T : IOptionBag, new()
         {
             var options = Parse(args, config);
-
             var bag = ProcessOptionBag<T>(options);
 
-            if (options.Count > 0 && options.First().Key != "$default")
-                throw new DyaException($"Unknown switch -{options.First().Key}.");
+            if (options.Count > 0)
+            {
+                var arr = new DyObject[options.Count];
+                var cc = 0;
+
+                foreach (var kv in options)
+                {
+                    arr[cc++] = new DyLabel(kv.Key.TrimStart('-'), kv.Value.ToObject());
+
+                    if (kv.Key[0] != '-')
+                        throw new DyaException($"Unknown switch -{kv.Key}.");
+                }
+
+                bag.UserArguments = new DyTuple(arr);
+            }
 
             return bag;
         }
@@ -173,7 +193,6 @@ namespace Dyalect.Util
         {
             var options = new Dictionary<string, Value>();
             string opt = null;
-            string def = null;
 
             if (config != null)
                 foreach (var kv in config)

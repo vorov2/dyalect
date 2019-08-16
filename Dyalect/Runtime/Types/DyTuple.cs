@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyTuple : DyObject, IEnumerable<DyObject>
+    public class DyTuple : DyObject, IEnumerable<DyObject>
     {
         internal readonly DyObject[] Values;
 

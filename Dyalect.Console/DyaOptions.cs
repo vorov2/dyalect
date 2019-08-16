@@ -1,13 +1,14 @@
-﻿using Dyalect.Util;
+﻿using Dyalect.Runtime.Types;
+using Dyalect.Util;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Dyalect
 {
-    public sealed class DyaOptions
+    public sealed class DyaOptions : IOptionBag
     {
         private const string COMPILER = "Compiler settings";
         private const string LINKER = "Linker settings";
@@ -51,6 +52,8 @@ namespace Dyalect
 
         [Binding("i", Help = "Stay in interactive mode after executing a file.", Category = GENERAL)]
         public bool StayInInteractive { get; set; }
+
+        public DyTuple UserArguments { get; set; }
 
         public override string ToString()
         {
