@@ -1,10 +1,12 @@
 # 0.10.0
+  * Done: _Add a multiline string literal_ ([Issue #206](https://github.com/vorov2/dyalect/issues/206), [docs](https://github.com/vorov2/dyalect/wiki/String#multiline)).
+  * Done: _Object files_ ([Issue #49](https://github.com/vorov2/dyalect/issues/49)).
   * Done: _ Support for script arguments_ ([Issue #39](https://github.com/vorov2/dyalect/issues/39)).
 
 # 0.9.14
   * Change: _Multiple runtime error messages are corrected._
   * Fixed: _Incorrect exception message for custom types for `IndexOutOfRange`_ ([Issue #253](https://github.com/vorov2/dyalect/issues/253)).
-  
+
 # 0.9.13
   * Done: _Pattern match validation_ ([Issue #241](https://github.com/vorov2/dyalect/issues/241)).
   * Done: _Tuple pattern optimization_ ([Issue #244](https://github.com/vorov2/dyalect/issues/244)).
@@ -14,7 +16,7 @@
   * Fixed: _Debug info is not generated for variable binding_ ([Issue #246](https://github.com/vorov2/dyalect/issues/246)).
   * Fixed: _Index out of range exception_ ([Issue #247](https://github.com/vorov2/dyalect/issues/247)).
   * Fixed: _Formatting of custom types as exceptions_ ([Issue #248](https://github.com/vorov2/dyalect/issues/248)).
-  
+
 # 0.9.12
   * _Code clean-ups and refactorings._
   * Fixed: _Dyalect console: specify directory as well as file_ ([Issue #234](https://github.com/vorov2/dyalect/issues/234)).
@@ -105,7 +107,7 @@
   * Fixed: _Types with duplicate names in the same module causes compiler to crush_ ([Issue #180](https://github.com/vorov2/dyalect/issues/180)).
   * Fixed: _Type definitions can be duplicated in interactive mode_ ([Issue #181](https://github.com/vorov2/dyalect/issues/181)).
   * Fixed: _Type member names in interactive mode_ ([Issue #183](https://github.com/vorov2/dyalect/issues/183)).
-  
+
 # 0.8.0
   * Done: _Custom types_ ([Issue #5](https://github.com/vorov2/dyalect/issues/5), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
   * Done: _Auto-invoke functions_ ([Issue #159](https://github.com/vorov2/dyalect/issues/159), [docs](https://github.com/vorov2/dyalect/wiki/Functions#auto)).
@@ -134,7 +136,7 @@
   * Done: _Add an ability to convert a char to int and vice versa_ ([Issue #146](https://github.com/vorov2/dyalect/issues/146), [docs](https://github.com/vorov2/dyalect/wiki/Char#order), [more docs](https://github.com/vorov2/dyalect/wiki/Char#new))).
   * Done: _Add padLeft/padRight methods to String_ ([Issue #144](https://github.com/vorov2/dyalect/issues/144), [docs](https://github.com/vorov2/dyalect/wiki/String#padLeft)).
   * Fixed: _An error in `Array.insert`_ ([Issue #145](https://github.com/vorov2/dyalect/issues/145)).
-  
+
 # 0.7.3
   * Done: _Restrict overriding `has`_ ([Issue #134](https://github.com/vorov2/dyalect/issues/134), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#has)).
   * Done: _Add `Array.insertRange` method_ ([Issue #135](https://github.com/vorov2/dyalect/issues/135), [docs](https://github.com/vorov2/dyalect/wiki/Array#insertRange)).
@@ -350,7 +352,7 @@
     var tup = (x: 12, y: 14)
     var x = tup.x //read a value from x
     tup.y = 114 //write a value to y
-    ``` 
+    ```
   * A method `slice` added to the type `Array` ([Issue #19](https://github.com/vorov2/dyalect/issues/19)). This method returns a slice of an array based on the provided indices:
     ```swift
     var arr = [1,2,3,4,5,6]
@@ -367,7 +369,7 @@
   * Methods `fst` and `snd` (that return first and second elements) are added to the type `Tuple`.
   * Methods `contains`, `indexOf` and `lastIndexOf` are added to the type `String` (related to [Issue #20](https://github.com/vorov2/dyalect/issues/20)).
   * A method `split` is added to the type `String` (related to [Issue #20](https://github.com/vorov2/dyalect/issues/20))- it converts a string into an array of strings based on the provided separator(s):
-    ```swift    
+    ```swift
     var str = "Name=John;Surname=Doe"
     var arr = str.split("=", ";")
     arr //arr is ["Name", "John", "Surname", "Doe"]
@@ -472,7 +474,7 @@
  * A bug fixed - an error in execution context wasn't cleared after generating an exception (and therefore could be falsely raised one more time if instance of VM is cached).
 
 # 0.2.3
- * A bug fixed in parser - previously tuples may not be 
+ * A bug fixed in parser - previously tuples may not be
     parsed correctly and could cause parser to fail for
     the tuple with correct syntax.
 
@@ -488,10 +490,10 @@
 # 0.2.0
  * Added support for special `iterator` function which can be implemented for any type. This function is used to iterate through containers. It returns another function (a closure) which iterates over a collection by yielding values. This is pretty similar to `IEnumerator` from .NET but uses a single closure instead of an interface with two methods. In order to support this infrastructure a new `Iterator` type is added as well (which is actually a special kind of function).
  * All foreign objects can now automatically support Dy's iterators as long as they implement `IEnumerable<DyObject>` interface.
- * A `for` cycle (based on the iterator functionality) is implemented, e.g.: 
+ * A `for` cycle (based on the iterator functionality) is implemented, e.g.:
     ```swift
-    for x in seq { 
-        doSomething(x) 
+    for x in seq {
+        doSomething(x)
     }
     ```
  * Arrays now supports methods `add`, `remove`, `removeAt` and `addRange`. The latter one accepts an iterator, e.g.:
