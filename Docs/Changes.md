@@ -2,6 +2,7 @@
   * Done: _Add a multiline string literal_ ([Issue #206](https://github.com/vorov2/dyalect/issues/206), [docs](https://github.com/vorov2/dyalect/wiki/String#multiline)).
   * Done: _Object files_ ([Issue #49](https://github.com/vorov2/dyalect/issues/49)).
   * Done: _ Support for script arguments_ ([Issue #39](https://github.com/vorov2/dyalect/issues/39)).
+  * Done: _Code guards_ ([Issue #211](https://github.com/vorov2/dyalect/issues/211), [docs](https://github.com/vorov2/dyalect/wiki/Control-flow#guards)).
   * Fixed: _Correct default custom type `toString` implementation_ ([Issue #256](https://github.com/vorov2/dyalect/issues/256)).
 
 # 0.9.14
