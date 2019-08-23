@@ -73,7 +73,7 @@
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var lab = (DyLabel)arg;
-            return (DyString)(lab.Label + " " + lab.Value.ToString(ctx).Value);
+            return (DyString)(lab.Label + ": " + lab.Value.ToString(ctx).Value);
         }
     }
 }

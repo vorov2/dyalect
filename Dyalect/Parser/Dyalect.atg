@@ -133,13 +133,21 @@ PRODUCTIONS
     Statement<out DNode node> =
         (. node = null; .)
         (
-              ControlFlow<out node> Separator
+              ControlFlow<out node> [ Guard<node, out node> ] Separator
             | Type<out node> Separator
-            | Match<out node>
-            | SimpleExpr<out node> Separator
-            | If<out node>
-            | Loops<out node>
+            | Match<out node> [ Guard<node, out node> Separator ]
+            | SimpleExpr<out node> [ Guard<node, out node> ] Separator
+            | If<out node> [ Guard<node, out node> Separator ]
+            | Loops<out node> [ Guard<node, out node> Separator ]
             | Function<out node>
+        ).
+
+    Guard<DNode src, out DNode node> =
+        (. node = src; .)
+        (
+            (. var ot = t; .)
+            "when" SimpleExpr<out var cnode>
+            (. node = new DIf(ot) { Condition = cnode, True = src }; .)
         ).
 
     Block<out DNode node> =
