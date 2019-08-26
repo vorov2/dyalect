@@ -1,7 +1,7 @@
 # 0.10.0
   * Done: _Add a multiline string literal_ ([Issue #206](https://github.com/vorov2/dyalect/issues/206), [docs](https://github.com/vorov2/dyalect/wiki/String#multiline)).
   * Done: _Object files_ ([Issue #49](https://github.com/vorov2/dyalect/issues/49)).
-  * Done: _ Support for script arguments_ ([Issue #39](https://github.com/vorov2/dyalect/issues/39)).
+  * Done: _Support for script arguments_ ([Issue #39](https://github.com/vorov2/dyalect/issues/39)).
   * Done: _Code guards_ ([Issue #211](https://github.com/vorov2/dyalect/issues/211), [docs](https://github.com/vorov2/dyalect/wiki/Control-flow#guards)).
   * Done: _Add a standard `round` function_ ([Issue #257](https://github.com/vorov2/dyalect/issues/257), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#round)).
   * Done: _Add an ability to obtain a name of a function_ ([Issue #260](https://github.com/vorov2/dyalect/issues/260), [docs](https://github.com/vorov2/dyalect/wiki/Functions#name)).
