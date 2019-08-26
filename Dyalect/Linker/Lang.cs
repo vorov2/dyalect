@@ -114,8 +114,8 @@ namespace Dyalect.Linker
         [Function("assert")]
         public DyObject Assert(ExecutionContext ctx, DyObject expected, DyObject got)
         {
-            if (!Eq(expected.ToObject(), got.ToObject()))
-                return ctx.AssertFailed($"Expected {expected.ToString(ctx)}, got {got.ToString(ctx)}");
+            if (!Eq(expected?.ToObject(), got?.ToObject()))
+                return ctx.AssertFailed($"Expected {expected?.ToString(ctx)}, got {got?.ToString(ctx)}");
 
             return DyNil.Instance;
         }

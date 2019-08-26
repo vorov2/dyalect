@@ -6,7 +6,9 @@
   * Done: _Add a standard `round` function_ ([Issue #257](https://github.com/vorov2/dyalect/issues/257), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#round)).
   * Done: _Add an ability to obtain a name of a function_ ([Issue #260](https://github.com/vorov2/dyalect/issues/260), [docs](https://github.com/vorov2/dyalect/wiki/Functions#name)).
   * Done: _Add an ability to obtain a reference to a caller function and current function_ ([Issue #259](https://github.com/vorov2/dyalect/issues/260), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#current)).
+  * Done: _`do/while` loop_ ([Issue #32](https://github.com/vorov2/dyalect/issues/32), [docs](https://github.com/vorov2/dyalect/wiki/Control-flow#dowhile)).
   * Fixed: _Correct default custom type `toString` implementation_ ([Issue #256](https://github.com/vorov2/dyalect/issues/256)).
+  * Fixed: _`assert` function crushes the runtime if a `nil` is passed as one of the arguments_ ([Issue #261](https://github.com/vorov2/dyalect/issues/261)).
 
 # 0.9.14
   * Change: _Multiple runtime error messages are corrected._

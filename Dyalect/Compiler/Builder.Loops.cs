@@ -42,12 +42,15 @@ namespace Dyalect.Compiler
                 BlockBreakExit = cw.DefineLabel()
             };
             var iter = cw.DefineLabel();
+            var nh = hints.Has(Push) ? hints.Remove(Push).Append(ExpectPush) : hints;
+
+            if (node.DoWhile)
+                Build(node.Body, nh, ctx);
 
             cw.MarkLabel(iter);
             Build(node.Condition, hints.Append(Push), ctx);
             cw.Brfalse(ctx.BlockExit);
 
-            var nh = hints.Has(Push) ? hints.Remove(Push).Append(ExpectPush) : hints;
             Build(node.Body, nh, ctx);
 
             cw.MarkLabel(ctx.BlockSkip);

@@ -23,6 +23,51 @@ func whileTest2() {
     assert(42, x)
 }
 
+func doWhileTest1() {
+    var x = 1
+    do {
+        x -= 1
+    } while x > 0
+    assert(0, x)
+    do {
+        x += 1
+    } while false
+    assert(1, x)
+}
+
+func doWhileTest2() {
+    var x = 0
+    do {
+        x += 1
+    } while x < 10
+    assert(10, x)
+}
+
+func dowhileTest3() {
+    var x = 0
+    do {
+        x += 1
+        if x == 1 {
+            break
+        }
+    } while x < 10
+    assert(1, x)
+}
+
+func dowhileTest4() {
+    var x = 0
+    var iter = 0
+    do {
+        x += 1
+        if x == 1 || x == 5 {
+            continue
+        }
+        iter += 1
+    } while x < 10
+    assert(10, x)
+    assert(8, iter)
+}
+
 func forTest1() {
     var str = ""
     for i in 1..5 {

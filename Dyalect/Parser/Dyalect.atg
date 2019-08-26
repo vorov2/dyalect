@@ -445,6 +445,17 @@ PRODUCTIONS
         (
               While<out node>
             | For<out node>
+            | DoWhile<out node> Separator
+        ).
+
+    DoWhile<out DNode node> =
+        (. node = null; .)
+        (
+            (. var @while = new DWhile(t) { DoWhile = true }; .)
+            "do"
+            Block<out node> (. @while.Body = node; .)
+            "while" Expr<out node>
+            (. @while.Condition = node; node = @while; .)
         ).
 
     While<out DNode node> =
