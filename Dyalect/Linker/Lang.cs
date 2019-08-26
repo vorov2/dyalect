@@ -58,6 +58,17 @@ namespace Dyalect.Linker
             return DyNil.Instance;
         }
 
+        [Function("round")]
+        public DyObject Round(ExecutionContext ctx, DyObject number, [Default(2)]DyObject digits)
+        {
+            if (number.TypeId != DyType.Float)
+                ctx.InvalidType(number);
+            else if (digits.TypeId != DyType.Integer)
+                ctx.InvalidType(digits);
+
+            return new DyFloat(Math.Round(number.GetFloat(), (int)digits.GetInteger()));
+        }
+
         [Function("read")]
         public DyObject Read(ExecutionContext ctx)
         {
