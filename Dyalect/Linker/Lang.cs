@@ -58,6 +58,24 @@ namespace Dyalect.Linker
             return DyNil.Instance;
         }
 
+        [Function("caller")]
+        public DyObject Caller(ExecutionContext ctx)
+        {
+            if (ctx.CallStack.Count > 2)
+                return ctx.CallStack[ctx.CallStack.Count - 2].Function;
+
+            return DyNil.Instance;
+        }
+
+        [Function("current")]
+        public DyObject Current(ExecutionContext ctx)
+        {
+            if (ctx.CallStack.Count > 1)
+                return ctx.CallStack.Peek().Function;
+
+            return DyNil.Instance;
+        }
+
         [Function("round")]
         public DyObject Round(ExecutionContext ctx, DyObject number, [Default(2)]DyObject digits)
         {

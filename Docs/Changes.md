@@ -4,6 +4,8 @@
   * Done: _ Support for script arguments_ ([Issue #39](https://github.com/vorov2/dyalect/issues/39)).
   * Done: _Code guards_ ([Issue #211](https://github.com/vorov2/dyalect/issues/211), [docs](https://github.com/vorov2/dyalect/wiki/Control-flow#guards)).
   * Done: _Add a standard `round` function_ ([Issue #257](https://github.com/vorov2/dyalect/issues/257), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#round)).
+  * Done: _Add an ability to obtain a name of a function_ ([Issue #260](https://github.com/vorov2/dyalect/issues/260), [docs](https://github.com/vorov2/dyalect/wiki/Functions#name)).
+  * Done: _Add an ability to obtain a reference to a caller function and current function_ ([Issue #259](https://github.com/vorov2/dyalect/issues/260), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#current)).
   * Fixed: _Correct default custom type `toString` implementation_ ([Issue #256](https://github.com/vorov2/dyalect/issues/256)).
 
 # 0.9.14
