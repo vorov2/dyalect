@@ -10,6 +10,8 @@ CHARACTERS
     notDigit = ANY - digit.
     hexDigit = digit + "ABCDEFabcdef".
     stringChar = ANY - '"' - '\\' - newLine.
+    verbatimChar = ANY - ']'.
+    verbatimChar2 = ANY - '>'.
     char = ANY - "'" - newLine.
     esc = digit + letter + "\"\\'~`:;,./][{}!@#$%^&*-_=+?><|".
 
@@ -19,8 +21,8 @@ TOKENS
     intToken    = digit { digit } | ("0x"|"0X") hexDigit { hexDigit }.
 
     floatToken  = "." digit { digit } [ ("e"|"E") [ "+" | "-" ] digit { digit } ]
-                    | digit { digit } 
-                        ( 
+                    | digit { digit }
+                        (
                             "." digit { digit } [ ( "e" | "E" ) ["+" | "-" ] digit { digit } ]
                             | ( "e" | "E") ["+" | "-" ] digit { digit }
                         ).
@@ -28,6 +30,7 @@ TOKENS
     stringToken = "\"" { stringChar | "\\" esc | ("\\(" {stringChar|"\""} ")" ) }  "\"".
     charToken = "'" { char | "\\" esc } "'".
     implicitToken = "$" digit { digit }.
+    verbatimStringToken = "<[" { verbatimChar | ("]" verbatimChar2) | "]>]>" } "]>".
 
     varToken            = "var".
     constToken          = "const".
@@ -75,12 +78,12 @@ PRODUCTIONS
 
     Qualident<out string s1, out string s2, out string s3> =
         (. s1 = null; s2 = null; s3 = null; .)
-        FunctionName (. s1 = t.val; .) 
-        [ 
-            ["."] FunctionName  (. s2 = t.val; .) 
+        FunctionName (. s1 = t.val; .)
+        [
+            ["."] FunctionName  (. s2 = t.val; .)
             [ ["."] FunctionName (. s3 = t.val; .) ]
         ].
-        
+
     Import =
         "import"
         (. var inc = new DImport(t); Imports.Add(inc); string lastName = null; .)
@@ -111,7 +114,7 @@ PRODUCTIONS
     Type<out DNode node> =
         (. DFunctionDeclaration f = null; .)
         "type"
-        (.  
+        (.
             var typ = new DTypeDeclaration(t);
             node = typ;
         .)
@@ -123,20 +126,28 @@ PRODUCTIONS
         ]
         [
             "="
-            identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f> 
+            identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
             { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
         ].
 
     Statement<out DNode node> =
         (. node = null; .)
         (
-              ControlFlow<out node> Separator
+              ControlFlow<out node> [ Guard<node, out node> ] Separator
             | Type<out node> Separator
-            | Match<out node>
-            | SimpleExpr<out node> Separator
-            | If<out node>
-            | Loops<out node>
+            | Match<out node> [ Guard<node, out node> Separator ]
+            | SimpleExpr<out node> [ Guard<node, out node> ] Separator
+            | If<out node> [ Guard<node, out node> Separator ]
+            | Loops<out node> [ Guard<node, out node> Separator ]
             | Function<out node>
+        ).
+
+    Guard<DNode src, out DNode node> =
+        (. node = src; .)
+        (
+            (. var ot = t; .)
+            "when" SimpleExpr<out var cnode>
+            (. node = new DIf(ot) { Condition = cnode, True = src }; .)
         ).
 
     Block<out DNode node> =
@@ -156,7 +167,7 @@ PRODUCTIONS
         (. node = null; bool st = false; bool auto = false; bool priv = false; .)
         (
             (
-                [ "static" (. st = true; .) ] 
+                [ "static" (. st = true; .) ]
                 [ "auto" (. auto = true; .) ]
                 [ "private" (. priv = true; .) ]
                 "func"
@@ -208,25 +219,25 @@ PRODUCTIONS
             ]
         ")".
 
-    Binding<out DNode node> = 
+    Binding<out DNode node> =
         (
             ( "var" | "const" )
             (. var bin = new DBinding(t) { Constant = t.val == "const" }; .)
             OrPattern<out var pat> (. bin.Pattern = pat; .)
-            [ 
+            [
                 "=" Expr<out node>
                 (. node = ProcessImplicits(node); .)
-                (. bin.Init = node; .) 
+                (. bin.Init = node; .)
             ]
             (. node = bin; .)
         ).
 
-    Rebinding<out DNode node> = 
+    Rebinding<out DNode node> =
         (
             "set"
             (. var bin = new DRebinding(t); .)
             OrPattern<out var pat> (. bin.Pattern = pat; .)
-            "=" Expr<out node> 
+            "=" Expr<out node>
             (. node = ProcessImplicits(node); .)
             (. bin.Init = node; .)
             (. node = bin; .)
@@ -259,7 +270,7 @@ PRODUCTIONS
     MatchEntry<out DMatchEntry me> =
         (
             (. me = new DMatchEntry(t); .)
-            OrPattern<out var p> 
+            OrPattern<out var p>
             (. me.Pattern = p; .)
             [ "when" Expr<out var node> (. me.Guard = node; .) ]
             "=>" Expr<out var exp> (. me.Expression = exp; .)
@@ -318,8 +329,8 @@ PRODUCTIONS
             (.
                 if (la.AfterEol) { node = target; return; }
                 var asp = new DAsPattern(t) { Pattern = target };
-            .) 
-            identToken (. asp.Name = t.val; node = asp; .) 
+            .)
+            identToken (. asp.Name = t.val; node = asp; .)
         ).
 
     CtorPattern<out DPattern node> =
@@ -373,20 +384,20 @@ PRODUCTIONS
     LabelPattern<out DPattern node> =
         (. node = null; .)
         (
-            identToken 
+            identToken
             (. var la = new DLabelPattern(t) { Label = t.val }; .)
             ":" Pattern<out var pat>
             (. la.Pattern = pat; node = la; .)
         ).
 
-    NamePattern<out DPattern node> = 
+    NamePattern<out DPattern node> =
         (. node = null; string nm2 = null; string nm1 = null; Token ot = null; .)
         (
             identToken (. nm1 = t.val; ot = t; .)
             [ "." identToken (. nm2 = null; .) ]
-            (. 
+            (.
                 if (nm2 == null) {
-                    if (t.val == "_") 
+                    if (t.val == "_")
                         node = new DWildcardPattern(ot);
                     else
                         node = new DNamePattern(ot) { Name = nm1 };
@@ -434,6 +445,17 @@ PRODUCTIONS
         (
               While<out node>
             | For<out node>
+            | DoWhile<out node> Separator
+        ).
+
+    DoWhile<out DNode node> =
+        (. node = null; .)
+        (
+            (. var @while = new DWhile(t) { DoWhile = true }; .)
+            "do"
+            Block<out node> (. @while.Body = node; .)
+            "while" Expr<out node>
+            (. @while.Condition = node; node = @while; .)
         ).
 
     While<out DNode node> =
@@ -474,30 +496,30 @@ PRODUCTIONS
         ).
 
     Yield<out DNode node> =
-        "yield" 
-        (. 
+        "yield"
+        (.
             var yield = new DYield(t);
             node = yield;
-            functions.Peek().IsIterator = true; 
+            functions.Peek().IsIterator = true;
         .)
         Expr<out var exp> (. yield.Expression = exp; .).
 
-    Break<out DNode node> = 
-        "break" 
+    Break<out DNode node> =
+        "break"
         (. var br = new DBreak(t); node = br; .)
-        [ 
+        [
             (. if (la.AfterEol) return; .)
-            Expr<out var exp> (. br.Expression = exp; .) 
+            Expr<out var exp> (. br.Expression = exp; .)
         ].
 
-    Return<out DNode node> = 
-        "return" 
+    Return<out DNode node> =
+        "return"
         (. var br = new DReturn(t); node = br; .)
         [ Expr<out var exp> (. br.Expression = exp; .) ].
 
     Continue<out DNode node> = "continue" (. node = new DContinue(t); .).
 
-    SimpleExpr<out DNode node> = 
+    SimpleExpr<out DNode node> =
         (. node = null; .)
         (
               Binding<out node>
@@ -522,7 +544,7 @@ PRODUCTIONS
         (
             "try" (. var tc = new DTryCatch(t); .)
             Block<out node> (. tc.Expression = node; .)
-            "catch" 
+            "catch"
             (
                 (
                     (. var m = new DMatch(t); tc.Catch = m; .)
@@ -541,13 +563,13 @@ PRODUCTIONS
         ).
 
     FunctionExpr<out DNode node> =
-        (. 
+        (.
             var f = new DFunctionDeclaration(t);
             node = f;
         .)
         (
             (
-                
+
                   ( FunctionArgument<out var a> (. f.Parameters.Add(a); .) )
                 | FunctionArguments<f>
             )
@@ -589,7 +611,7 @@ PRODUCTIONS
         Coalesce<out node>
         {
             "is" (. var ot = t; .)
-            OrPattern<out var pat> 
+            OrPattern<out var pat>
             (. node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); .)
         }.
 
@@ -600,14 +622,14 @@ PRODUCTIONS
             (. node = new DBinaryOperation(node, exp, BinaryOperator.Coalesce, ot); .)
         }.
 
-    Or<out DNode node> = 
+    Or<out DNode node> =
         And<out node>
         {
             "||" (. var ot = t; .) And<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.Or, ot); .)
         }.
-        
-    And<out DNode node> = 
+
+    And<out DNode node> =
         Eq<out node>
         {
             "&&" (. var ot = t; .) Eq<out DNode exp>
@@ -623,7 +645,7 @@ PRODUCTIONS
             (. p.Arguments.Add(node); node = p; .)
         ].*/
 
-    Eq<out DNode node> = 
+    Eq<out DNode node> =
         Shift<out node>
         {
             (.
@@ -646,11 +668,11 @@ PRODUCTIONS
     Shift<out DNode node> =
         BitOr<out node>
         {
-            (. 
+            (.
                 var op = default(BinaryOperator);
                 var ot = default(Token);
             .)
-            ( 
+            (
                   "<<" (. ot = t; op = BinaryOperator.ShiftLeft; .)
                 | ">>" (. ot = t; op = BinaryOperator.ShiftRight; .)
             )
@@ -658,27 +680,27 @@ PRODUCTIONS
                 BitOr<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
             )
         }.
-        
-    BitOr<out DNode node> = 
+
+    BitOr<out DNode node> =
         Xor<out node>
         {
-            "|" (. var ot = t; .) 
+            "|" (. var ot = t; .)
             (
                 Xor<out var exp> (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseOr, ot); .)
             )
         }.
-        
-    Xor<out DNode node> = 
+
+    Xor<out DNode node> =
         BitAnd<out node>
         {
             (. DNode exp = null; .)
-            "^" (. var ot = t; .) 
+            "^" (. var ot = t; .)
             (
                 BitAnd<out exp> (. node = new DBinaryOperation(node, exp, BinaryOperator.Xor, ot); .)
             )
         }.
-        
-    BitAnd<out DNode node> = 
+
+    BitAnd<out DNode node> =
         Add<out node>
         {
             "&" (. var ot = t; .)
@@ -690,11 +712,11 @@ PRODUCTIONS
     Add<out DNode node> =
         Mul<out node>
         {
-            (. 
+            (.
                 var op = default(BinaryOperator);
                 var ot = default(Token);
             .)
-            ( 
+            (
                 (
                     (. if (la.AfterEol) return; .)
                     "+" (. ot = t; op = BinaryOperator.Add; .)
@@ -713,11 +735,11 @@ PRODUCTIONS
     Mul<out DNode node> =
         Unary<out node>
         {
-            (. 
+            (.
                 var op = default(BinaryOperator);
                 var ot = default(Token);
             .)
-            ( 
+            (
                   "*" (. ot = t; op = BinaryOperator.Mul; .)
                 | "/" (. ot = t; op = BinaryOperator.Div; .)
                 | "%" (. ot = t; op = BinaryOperator.Rem; .)
@@ -734,28 +756,28 @@ PRODUCTIONS
             var ot = default(Token);
         .)
         (
-            ( 
+            (
                 (
-                    "!" (. ot = t; op = UnaryOperator.Not; .) 
-                    Range<out node> 
+                    "!" (. ot = t; op = UnaryOperator.Not; .)
+                    Range<out node>
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
                 |
                 (
-                    "-" (. ot = t; op = UnaryOperator.Neg; .) 
-                    Range<out node> 
+                    "-" (. ot = t; op = UnaryOperator.Neg; .)
+                    Range<out node>
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
-                | 
+                |
                 (
-                    "+" (. ot = t; op = UnaryOperator.Plus; .) 
-                    Range<out node> 
-                    (. node = new DUnaryOperation(node, op, ot); .) 
+                    "+" (. ot = t; op = UnaryOperator.Plus; .)
+                    Range<out node>
+                    (. node = new DUnaryOperation(node, op, ot); .)
                 )
-                | 
+                |
                 (
-                    "~" (. ot = t; op = UnaryOperator.BitwiseNot; .) 
-                    Range<out node> 
+                    "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
+                    Range<out node>
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
                 | Range<out node>
@@ -791,7 +813,7 @@ PRODUCTIONS
                             .)
                         ]
                         (.
-                            if (chk == null) 
+                            if (chk == null)
                             {
                                 var fld = new DAccess(ot) { Target = node };
                                 fld.Name = nm;
@@ -806,7 +828,7 @@ PRODUCTIONS
                     "["
                         (. var idx = new DIndexer(t) { Target = node }; .)
                         Expr<out node>
-                        (. 
+                        (.
                             idx.Index = node;
                             node = idx;
                         .)
@@ -814,9 +836,9 @@ PRODUCTIONS
                 )
                 |
                 (
-                    (. 
+                    (.
                         if (la.AfterEol) return;
-                        var app = new DApplication(node, t); 
+                        var app = new DApplication(node, t);
                     .)
                     "("
                         [ ApplicationArguments<app> ]
@@ -854,7 +876,7 @@ PRODUCTIONS
         (. node = null; .)
         (
             "{"
-                (. 
+                (.
                     var it = new DIteratorLiteral(t);
                     it.YieldBlock = new DYieldBlock(t);
                 .)
@@ -951,9 +973,10 @@ PRODUCTIONS
         ).
 
     String<out DNode node> =
+        (. node = null; .)
         (
-            stringToken
-            (. node = ParseString(); .)
+            stringToken (. node = ParseString(); .)
+            | verbatimStringToken (. node = ParseVerbatimString(); .)
         ).
 
     Bool<out DNode node> =

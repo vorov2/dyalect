@@ -86,7 +86,7 @@ namespace Dyalect.Parser
                 Get();
             else
             {
-                if (n == _semicolonToken 
+                if (n == _semicolonToken
                     && (t.kind == _curlyLeftToken || la.kind == 0 || la.kind == _curlyRightToken || la.AfterEol))
                     return;
 
@@ -288,6 +288,11 @@ namespace Dyalect.Parser
                 return null;
 
             return new DStringLiteral(t) { Value = result, Chunks = chunks };
+        }
+
+        private DStringLiteral ParseVerbatimString()
+        {
+            return new DStringLiteral(t) { Value = t.val.Substring(2, t.val.Length - 4).Replace("]>]>", "]>") };
         }
 
         private string ParseSimpleString()

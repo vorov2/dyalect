@@ -25,7 +25,7 @@ namespace Dyalect
                 options.FileNames == null || options.FileNames.Length == 0 || string.IsNullOrWhiteSpace(options.FileNames[0]) 
                     ? Environment.CurrentDirectory
                     : Path.GetDirectoryName(options.FileNames[0]), options.Paths);
-            Linker = new DyIncrementalLinker(lookup, buildOptions);
+            Linker = new DyIncrementalLinker(lookup, buildOptions, options.UserArguments);
         }
 
         public ExecutionContext ExecutionContext { get; private set; }
@@ -37,7 +37,7 @@ namespace Dyalect
         public void Reset()
         {
             ExecutionContext = null;
-            Linker = new DyIncrementalLinker(Linker.Lookup, Linker.BuilderOptions);
+            Linker = new DyIncrementalLinker(Linker.Lookup, Linker.BuilderOptions, Options.UserArguments);
         }
 
         public bool Eval(string source)

@@ -14,7 +14,6 @@ namespace Dyalect.Linker
 
         protected ForeignUnit()
         {
-            Initialize();
             InitializeMethods();
         }
 
@@ -27,11 +26,6 @@ namespace Dyalect.Linker
         internal void Modify(int id, DyObject obj)
         {
             Values[id] = obj;
-        }
-
-        protected virtual void Initialize()
-        {
-
         }
 
         public virtual void Execute(ExecutionContext ctx)

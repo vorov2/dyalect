@@ -13,7 +13,7 @@ namespace Dyalect.Runtime.Types
         internal int UnitId;
         internal int FunctionId;
 
-        public override string FunctionName => Sym.Name;
+        public override string FunctionName => Sym?.Name != null ? Sym.Name : DefaultName;
 
         public override bool IsExternal => false;
 
@@ -23,7 +23,7 @@ namespace Dyalect.Runtime.Types
             PreviousOffset = ctx.Composition.Units[UnitId].Layouts[FunctionId].Size;
         }
 
-        internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex, AutoKind auto) : 
+        internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex, AutoKind auto) :
             base(typeId, sym?.Parameters ?? Statics.EmptyParameters, varArgIndex, auto)
         {
             Sym = sym;
@@ -53,7 +53,7 @@ namespace Dyalect.Runtime.Types
 
             var locs = CreateLocals(ctx);
             var argCount = args.Length;
-            
+
             if (VarArgIndex != -1 && args.Length >= VarArgIndex)
             {
                 var arr = default(DyObject[]);
@@ -143,7 +143,7 @@ namespace Dyalect.Runtime.Types
             return size == 0 ? Statics.EmptyDyObjects : new DyObject[size];
         }
 
-        internal override bool Equals(DyFunction func) => func is DyNativeFunction m 
+        internal override bool Equals(DyFunction func) => func is DyNativeFunction m
             && m.UnitId == UnitId && m.FunctionId == FunctionId;
     }
 }

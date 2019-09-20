@@ -13,11 +13,23 @@ namespace Dyalect.Parser.Model
 
         public DNode Body { get; set; }
 
+        public bool DoWhile { get; set; }
+
         internal override void ToString(StringBuilder sb)
         {
-            sb.Append("while ");
-            Condition.ToString(sb);
-            Body.ToString(sb);
+            if (DoWhile)
+            {
+                sb.Append("do ");
+                Body.ToString(sb);
+                sb.Append(" while ");
+                Condition.ToString(sb);
+            }
+            else
+            {
+                sb.Append("while ");
+                Condition.ToString(sb);
+                Body.ToString(sb);
+            }
         }
     }
 }

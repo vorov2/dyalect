@@ -9,14 +9,23 @@ namespace Dyalect.Linker
 {
     internal sealed class Lang : ForeignUnit
     {
-        public Lang()
+        private readonly DyTuple args;
+
+        public Lang() : this(null)
         {
-            FileName = "lang";
+
         }
 
-        protected override void Initialize()
+        public Lang(DyTuple args)
         {
-            //idle
+            FileName = "lang";
+            this.args = args;
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            Add("args", args ?? (DyObject)DyNil.Instance);
         }
 
         public override void Execute(ExecutionContext ctx)
@@ -49,6 +58,35 @@ namespace Dyalect.Linker
             return DyNil.Instance;
         }
 
+        [Function("caller")]
+        public DyObject Caller(ExecutionContext ctx)
+        {
+            if (ctx.CallStack.Count > 2)
+                return ctx.CallStack[ctx.CallStack.Count - 2].Function;
+
+            return DyNil.Instance;
+        }
+
+        [Function("current")]
+        public DyObject Current(ExecutionContext ctx)
+        {
+            if (ctx.CallStack.Count > 1)
+                return ctx.CallStack.Peek().Function;
+
+            return DyNil.Instance;
+        }
+
+        [Function("round")]
+        public DyObject Round(ExecutionContext ctx, DyObject number, [Default(2)]DyObject digits)
+        {
+            if (number.TypeId != DyType.Float)
+                ctx.InvalidType(number);
+            else if (digits.TypeId != DyType.Integer)
+                ctx.InvalidType(digits);
+
+            return new DyFloat(Math.Round(number.GetFloat(), (int)digits.GetInteger()));
+        }
+
         [Function("read")]
         public DyObject Read(ExecutionContext ctx)
         {
@@ -76,8 +114,8 @@ namespace Dyalect.Linker
         [Function("assert")]
         public DyObject Assert(ExecutionContext ctx, DyObject expected, DyObject got)
         {
-            if (!Eq(expected.ToObject(), got.ToObject()))
-                return ctx.AssertFailed($"Expected {expected.ToString(ctx)}, got {got.ToString(ctx)}");
+            if (!Eq(expected?.ToObject(), got?.ToObject()))
+                return ctx.AssertFailed($"Expected {expected?.ToString(ctx)}, got {got?.ToString(ctx)}");
 
             return DyNil.Instance;
         }

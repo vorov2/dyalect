@@ -327,7 +327,7 @@ func arrayTest21() {
     assert([1,2,3,4,5,6], res)
 }
 
-func arrayTest22() { 
+func arrayTest22() {
     //Related to bug #145
     var arr = []
     arr.insert(0, 1)
@@ -553,6 +553,22 @@ func stringTest25() {
 func stringTest26() { //Issue #249
     var str = "foobar"
     assert("raboof", str.reverse())
+}
+
+func verbatimStringTest1() {
+    var str = <[ first
+    second
+    third..]>
+    var pat = " first\n    second\n    third.."
+    assert(pat, str)
+}
+
+func verbatimStringTest2() {
+    var str = <[ first
+    <[second]>]>
+    third..]>
+    var pat = " first\n    <[second]>\n    third.."
+    assert(pat, str)
 }
 
 func memberCheckTest() {
