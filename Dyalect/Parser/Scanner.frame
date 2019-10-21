@@ -5,22 +5,22 @@ using System.Collections;
 using Buffer = Dyalect.Parser.SourceBuffer;
 
 -->namespace
-namespace Dyalect.Parser 
+namespace Dyalect.Parser
 {
-    partial class Scanner 
+    partial class Scanner
     {
 -->declarations
-    
-        static Scanner() 
+
+        static Scanner()
         {
             start = new Map(128);
 -->initialization
         }
-    
-        private void NextCh() 
+
+        private void NextCh()
         {
-            if (oldEols > 0) 
-            { 
+            if (oldEols > 0)
+            {
                 ch = EOL;
                 oldEols--;
             }
@@ -35,7 +35,7 @@ namespace Dyalect.Parser
                     ch = EOL;
 
                 if (ch == EOL)
-                { 
+                {
                     line++;
                     col = 0;
                 }
@@ -72,8 +72,8 @@ namespace Dyalect.Parser
             while (ch == ' ' ||
 -->scan1
             )
-            {   
-                if (ch == '\r' || ch == '\n') 
+            {
+                if (ch == '\r' || ch == '\n')
                     eol = true;
 
                 NextCh();
@@ -92,18 +92,18 @@ namespace Dyalect.Parser
             tlen = 0;
             AddCh();
 
-            switch (state) 
+            switch (state)
             {
                 case -1:
                     t.kind = EOFSYM;
-                    break; 
-                case 0: 
+                    break;
+                case 0:
                     if (recKind != noSym)
                     {
                         tlen = recEnd - t.pos;
                         SetScannerBehindT();
                     }
-                    
+
                     t.kind = recKind;
                     break;
     -->scan3

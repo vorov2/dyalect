@@ -243,7 +243,7 @@ namespace Dyalect.Compiler
                 var nm = node.Target.GetName();
                 var sv = GetVariable(nm, node.Target, err: false);
 
-                if ((sv.Data & VarFlags.Module) == VarFlags.Module 
+                if ((sv.Data & VarFlags.Module) == VarFlags.Module
                     && referencedUnits.TryGetValue(nm, out var ru)
                    )
                 {

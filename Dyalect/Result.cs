@@ -11,7 +11,7 @@ namespace Dyalect
             Success = !messages.Any(m => m.Type == BuildMessageType.Error);
         }
 
-        public static Result<T> Create<T>(T result, IEnumerable<BuildMessage> messages = null) => 
+        public static Result<T> Create<T>(T result, IEnumerable<BuildMessage> messages = null) =>
             new Result<T>(result, messages);
 
         public IEnumerable<BuildMessage> Messages { get; }

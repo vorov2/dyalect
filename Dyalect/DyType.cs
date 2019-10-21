@@ -6,7 +6,7 @@ namespace Dyalect
 {
     internal static class DyType
     {
-        public static List<DyTypeInfo> GetAll() => 
+        public static List<DyTypeInfo> GetAll() =>
             new List<DyTypeInfo>
             {
                 new DyNilTypeInfo(),

@@ -294,7 +294,7 @@ namespace Dyalect.Linker
 #if !DEBUG
             catch (Exception ex)
             {
-                AddError(LinkerError.UnableReadObjectFile, fileName, 
+                AddError(LinkerError.UnableReadObjectFile, fileName,
                     reference != null ? reference.SourceLocation : default, fileName, ex.Message);
                 return null;
             }
@@ -337,7 +337,7 @@ namespace Dyalect.Linker
                 path = fullPath.Replace('\\', '/');
                 return true;
             }
-            
+
             return false;
         }
 

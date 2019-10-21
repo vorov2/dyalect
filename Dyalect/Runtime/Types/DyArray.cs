@@ -40,7 +40,7 @@ namespace Dyalect.Runtime.Types
 
                 if (++index < count)
                     return true;
-                
+
                 return false;
             }
 
@@ -86,7 +86,7 @@ namespace Dyalect.Runtime.Types
                 if (fun != null)
                 {
                     var ret = fun.Call2(x, y, ctx);
-                    return ret.TypeId != DyType.Integer 
+                    return ret.TypeId != DyType.Integer
                         ? (ret.TypeId == DyType.Float ? (int)ret.GetFloat() : 0)
                         : (int)ret.GetInteger();
                 }

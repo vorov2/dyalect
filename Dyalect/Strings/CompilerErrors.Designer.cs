@@ -10,8 +10,8 @@
 
 namespace Dyalect.Strings {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace Dyalect.Strings {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class CompilerErrors {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal CompilerErrors() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace Dyalect.Strings {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace Dyalect.Strings {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Functions declared with an &quot;auto&quot; modifier shouldn&apos;t accept any arguments..
         /// </summary>
@@ -68,7 +68,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("AutoNoParams", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A modifier &quot;auto&quot; is only allowed on member functions..
         /// </summary>
@@ -77,7 +77,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("AutoOnlyMethod", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Keyword &quot;base&quot; is not available in the current context..
         /// </summary>
@@ -86,7 +86,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("BaseNotAllowed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pattern matching in variable binding requires initialization clause..
         /// </summary>
@@ -95,7 +95,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("BindingPatternNoInit", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Empty code islands are not supported..
         /// </summary>
@@ -104,7 +104,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("CodeIslandEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid code island inside of a string literal: {0}.
         /// </summary>
@@ -113,7 +113,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("CodeIslandInvalid", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to use &quot;new&quot; operator outside of a method..
         /// </summary>
@@ -122,7 +122,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("CtorNoMethod", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to use &quot;new&quot; operator for a non local type &quot;{0}&quot;..
         /// </summary>
@@ -131,7 +131,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("CtorOnlyLocalType", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to An expression doesn&apos;t have a name..
         /// </summary>
@@ -140,7 +140,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("ExpressionNoName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Function &quot;{0}&quot; is deprecated..
         /// </summary>
@@ -149,7 +149,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("FunctionDeprecated", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Default parameter value for &apos;{0}&apos; must be of a primitive type (integer, float, character, string or nil)..
         /// </summary>
@@ -158,7 +158,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidDefaultValue", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Named argument &quot;{0}&quot; cannot be specified multiple times..
         /// </summary>
@@ -167,7 +167,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("NamedArgumentMultipleTimes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No enclosing loop out of which to break or continue..
         /// </summary>
@@ -176,7 +176,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("NoEnclosingLoop", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Overriding of &quot;{0}&quot; method is not allowed..
         /// </summary>
@@ -185,7 +185,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("OverrideNotAllowed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pattern &quot;{0}&quot; would never match..
         /// </summary>
@@ -194,7 +194,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("PatternNeverMatch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pattern &quot;{0}&quot; not supported in this context..
         /// </summary>
@@ -203,7 +203,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("PatternNotSupported", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A modifier &quot;private&quot; is only valid on regular functions..
         /// </summary>
@@ -212,7 +212,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("PrivateMethod", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to access a private module member &quot;{0}&quot;..
         /// </summary>
@@ -221,7 +221,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("PrivateNameAccess", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Private functions should be declared in global scope..
         /// </summary>
@@ -230,7 +230,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("PrivateOnlyGlobal", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Range is not supported in this context..
         /// </summary>
@@ -239,7 +239,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("RangeIndexNotSupported", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The &quot;return&quot; directive is supported only inside functions..
         /// </summary>
@@ -248,7 +248,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("ReturnNotAllowed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Function &quot;{0}&quot; cannot be declared as static. Only methods can be static..
         /// </summary>
@@ -257,7 +257,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("StaticOnlyMethods", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Too many errors (error limit exceeded)..
         /// </summary>
@@ -266,7 +266,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("TooManyErrors", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Module already contains a definition for &quot;{0}&quot;..
         /// </summary>
@@ -275,7 +275,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("TypeAlreadyDeclared", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to change a value of a constant &quot;{0}&quot;..
         /// </summary>
@@ -284,7 +284,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("UnableAssignConstant", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to assign a value to an expression: {0}..
         /// </summary>
@@ -293,7 +293,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("UnableAssignExpression", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to link module &apos;{0}&quot;. Compilation terminated..
         /// </summary>
@@ -302,7 +302,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("UnableToLinkModule", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Variable &quot;{0}&quot; is not declared in a parent scope..
         /// </summary>
@@ -311,7 +311,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("UndefinedBaseVariable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unknown module &quot;{0}&quot;..
         /// </summary>
@@ -320,7 +320,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("UndefinedModule", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unknown type &quot;{0}&quot;..
         /// </summary>
@@ -329,7 +329,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("UndefinedType", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Variable &quot;{0}&quot; is not declared..
         /// </summary>
@@ -338,7 +338,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("UndefinedVariable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Match entry &quot;{0}&quot; is unreachable..
         /// </summary>
@@ -347,7 +347,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("UnreachableMatchEntry", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Default values are not allowed for the argument lists..
         /// </summary>
@@ -356,7 +356,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("VarArgNoDefaultValue", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Only one parameter of type argument list is allowed..
         /// </summary>
@@ -365,7 +365,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("VarArgOnlyOne", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Variable &quot;{0}&quot; is already declared..
         /// </summary>

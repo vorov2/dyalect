@@ -61,7 +61,7 @@ namespace Dyalect.Debug
                 frames.Add(new CallFrame(
                     moduleName: unit.FileName,
                     codeBlockName: codeBlockName,
-                    offset: offset, 
+                    offset: offset,
                     lineSym: line));
             }
             while (callChain.Count > 0);

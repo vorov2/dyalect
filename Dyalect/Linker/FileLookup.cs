@@ -32,8 +32,8 @@ namespace Dyalect.Linker
 
             systemPath = Path.GetDirectoryName(systemPath);
             var systemPaths = new string[] { systemPath, Path.Combine(systemPath, LIBDIR) };
-
-            var startupPaths = new string[] { startupPath, Path.Combine(startupPath, LIBDIR) };
+            var startupPaths = startupPath != null ? new string[] { startupPath, Path.Combine(startupPath, LIBDIR) }
+                : new string[0];
 
             return new FileLookup
             (

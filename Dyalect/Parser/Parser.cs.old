@@ -49,13 +49,13 @@ namespace Dyalect.Parser
 
 
 
-        private void Get() 
+        private void Get()
         {
             for (;;)
             {
                 t = la;
                 la = scanner.Scan();
-            
+
                 if (la.kind <= maxT)
                 {
                     ++errDist;

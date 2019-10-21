@@ -77,7 +77,7 @@ namespace Dyalect.Runtime.Types
 
         //x - y
         private DyFunction sub;
-        protected virtual DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx) => 
+        protected virtual DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Sub, left);
         internal DyObject Sub(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -88,7 +88,7 @@ namespace Dyalect.Runtime.Types
 
         //x * y
         private DyFunction mul;
-        protected virtual DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx) => 
+        protected virtual DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Mul, left);
         internal DyObject Mul(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -99,7 +99,7 @@ namespace Dyalect.Runtime.Types
 
         //x / y
         private DyFunction div;
-        protected virtual DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx) => 
+        protected virtual DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Div, left);
         internal DyObject Div(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -110,7 +110,7 @@ namespace Dyalect.Runtime.Types
 
         //x % y
         private DyFunction rem;
-        protected virtual DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx) => 
+        protected virtual DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Rem, left);
         internal DyObject Rem(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -601,10 +601,10 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Plus:
                     return Support(SupportedOperations.Plus) ? DyForeignFunction.Member(name, Plus) : null;
                 case Builtins.Get:
-                    return Support(SupportedOperations.Get) 
+                    return Support(SupportedOperations.Get)
                         ? DyForeignFunction.Member(name, Get, -1, new Par("index")) : null;
                 case Builtins.Set:
-                    return Support(SupportedOperations.Set) 
+                    return Support(SupportedOperations.Set)
                         ? DyForeignFunction.Member(name, Set, -1, new Par("index"), new Par("value"))
                         : null;
                 case Builtins.ToStr: return DyForeignFunction.Member(name, ToString);
