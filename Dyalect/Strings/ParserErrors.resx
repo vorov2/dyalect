@@ -144,6 +144,12 @@
   <data name="InvalidIf" xml:space="preserve">
     <value>Invalid conditional operator.</value>
   </data>
+  <data name="InvalidImport" xml:space="preserve">
+    <value>Invalid import statement.</value>
+  </data>
+  <data name="InvalidLabel" xml:space="preserve">
+    <value>Invalid syntax for a label.</value>
+  </data>
   <data name="InvalidLiteral" xml:space="preserve">
     <value>Invalid literal.</value>
   </data>

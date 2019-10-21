@@ -40,6 +40,10 @@
 
         InvalidCharLiteral = 18,
 
-        InvalidTryCatch = 19
+        InvalidTryCatch = 19,
+
+        InvalidLabel = 20,
+
+        InvalidImport = 21
     }
 }
