@@ -124,7 +124,7 @@ namespace Dyalect.Linker
             for (var i = 0; i < count; i++)
             {
                 var name = reader.ReadString();
-                unit.ExportList.Add(name, 
+                unit.ExportList.Add(name,
                     new ScopeVar(reader.ReadInt32(), reader.ReadInt32()));
             }
         }
@@ -156,8 +156,8 @@ namespace Dyalect.Linker
             for (var i = 0; i < types; i++)
             {
                 var td = new TypeDescriptor(
-                    reader.ReadString(), 
-                    reader.ReadInt32(), 
+                    reader.ReadString(),
+                    reader.ReadInt32(),
                     reader.ReadBoolean());
                 unit.Types.Add(td);
                 unit.TypeMap.Add(td.Name, td);

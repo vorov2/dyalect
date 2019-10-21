@@ -480,7 +480,7 @@ namespace Dyalect.Runtime.Types
                 case "padRight":
                     return DyForeignFunction.Member(name, PadRight, -1, new Par("to"), new Par("with", new DyChar(' ')));
                 case "replace":
-                    return DyForeignFunction.Member(name, Replace, -1, new Par("value"), new Par("with"), 
+                    return DyForeignFunction.Member(name, Replace, -1, new Par("value"), new Par("with"),
                         new Par("ignoreCase", (DyObject)DyBool.False));
                 case "remove":
                     return DyForeignFunction.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance));

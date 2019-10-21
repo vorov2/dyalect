@@ -5,57 +5,57 @@ using System.Collections;
 using Buffer = Dyalect.Parser.SourceBuffer;
 
 
-namespace Dyalect.Parser 
+namespace Dyalect.Parser
 {
-    partial class Scanner 
+    partial class Scanner
     {
 	const int maxT = 83;
 	const int noSym = 83;
 
-    
-        static Scanner() 
+
+        static Scanner()
         {
             start = new Map(128);
 		for (int i = 65; i <= 90; ++i) start[i] = 1;
 		for (int i = 97; i <= 122; ++i) start[i] = 1;
 		for (int i = 49; i <= 57; ++i) start[i] = 36;
-		start[95] = 37; 
-		start[48] = 38; 
-		start[46] = 65; 
-		start[34] = 16; 
-		start[39] = 19; 
-		start[36] = 21; 
-		start[60] = 66; 
-		start[61] = 67; 
-		start[44] = 26; 
-		start[59] = 27; 
-		start[58] = 28; 
-		start[40] = 29; 
-		start[41] = 30; 
-		start[123] = 31; 
-		start[125] = 32; 
-		start[91] = 33; 
-		start[93] = 34; 
-		start[45] = 68; 
-		start[43] = 69; 
-		start[33] = 70; 
-		start[126] = 35; 
-		start[42] = 71; 
-		start[47] = 72; 
-		start[37] = 73; 
-		start[124] = 74; 
-		start[38] = 75; 
-		start[62] = 76; 
-		start[94] = 77; 
-		start[63] = 78; 
+		start[95] = 37;
+		start[48] = 38;
+		start[46] = 65;
+		start[34] = 16;
+		start[39] = 19;
+		start[36] = 21;
+		start[60] = 66;
+		start[61] = 67;
+		start[44] = 26;
+		start[59] = 27;
+		start[58] = 28;
+		start[40] = 29;
+		start[41] = 30;
+		start[123] = 31;
+		start[125] = 32;
+		start[91] = 33;
+		start[93] = 34;
+		start[45] = 68;
+		start[43] = 69;
+		start[33] = 70;
+		start[126] = 35;
+		start[42] = 71;
+		start[47] = 72;
+		start[37] = 73;
+		start[124] = 74;
+		start[38] = 75;
+		start[62] = 76;
+		start[94] = 77;
+		start[63] = 78;
 		start[Buffer.EOF] = -1;
 
         }
-    
-        private void NextCh() 
+
+        private void NextCh()
         {
-            if (oldEols > 0) 
-            { 
+            if (oldEols > 0)
+            {
                 ch = EOL;
                 oldEols--;
             }
@@ -70,7 +70,7 @@ namespace Dyalect.Parser
                     ch = EOL;
 
                 if (ch == EOL)
-                { 
+                {
                     line++;
                     col = 0;
                 }
@@ -184,8 +184,8 @@ namespace Dyalect.Parser
             while (ch == ' ' ||
 			ch >= 9 && ch <= 10 || ch == 13
             )
-            {   
-                if (ch == '\r' || ch == '\n') 
+            {
+                if (ch == '\r' || ch == '\n')
                     eol = true;
 
                 NextCh();
@@ -204,18 +204,18 @@ namespace Dyalect.Parser
             tlen = 0;
             AddCh();
 
-            switch (state) 
+            switch (state)
             {
                 case -1:
                     t.kind = EOFSYM;
-                    break; 
-                case 0: 
+                    break;
+                case 0:
                     if (recKind != noSym)
                     {
                         tlen = recEnd - t.pos;
                         SetScannerBehindT();
                     }
-                    
+
                     t.kind = recKind;
                     break;
     			case 1:

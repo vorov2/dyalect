@@ -12,7 +12,7 @@ namespace Dyalect.Debug
                     return f;
             return null;
         }
-        
+
         public static LineSym FindLineSym(this DebugInfo syms, int offset)
         {
             if (offset < 0)
@@ -28,7 +28,7 @@ namespace Dyalect.Debug
 
             return offset == 0 ? null : FindLineSym(syms, offset - 1);
         }
-        
+
         public static LineSym FindClosestLineSym(this DebugInfo syms, int line, int column)
         {
             var ln = default(LineSym);
@@ -75,7 +75,7 @@ namespace Dyalect.Debug
 
             return ln;
         }
-        
+
         public static ScopeSym GetScopeSymByIndex(this DebugInfo syms, int scopeIndex)
         {
             for (var i = 0; i < syms.Scopes.Count; i++)
@@ -84,7 +84,7 @@ namespace Dyalect.Debug
 
             return null;
         }
-        
+
         public static ScopeSym FindScopeSym(this DebugInfo syms, int offset)
         {
             var scope = default(ScopeSym);
@@ -99,7 +99,7 @@ namespace Dyalect.Debug
 
             return scope;
         }
-        
+
         public static ScopeSym FindScopeSym(this DebugInfo syms, int line, int column)
         {
             for (var i = 0; i < syms.Scopes.Count; i++)
@@ -114,7 +114,7 @@ namespace Dyalect.Debug
 
             return null;
         }
-        
+
         public static VarSym FindVarSym(this DebugInfo syms, int address, int scopeIndex)
         {
             for (var i = 0; i < syms.Vars.Count; i++)
@@ -127,7 +127,7 @@ namespace Dyalect.Debug
 
             return default(VarSym);
         }
-        
+
         public static IEnumerable<VarSym> FindVarSyms(this DebugInfo syms, int offset, ScopeSym scope)
         {
             for (var i = 0; i < syms.Vars.Count; i++)

@@ -41,7 +41,7 @@ namespace Dyalect.Compiler
                     if (!node.IsStatic)
                         realName = GetMethodName(realName, node);
 
-                    if (!node.IsStatic && 
+                    if (!node.IsStatic &&
                         (node.Name == Builtins.Has || node.Name == Builtins.Type)
                         )
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
@@ -170,7 +170,7 @@ namespace Dyalect.Compiler
             var funEndLabel = cw.DefineLabel();
 
             //Functions are always compiled "in place": if we find a function while looping
-            //through AST node we compile right away. That is the reason why we need to emit an 
+            //through AST node we compile right away. That is the reason why we need to emit an
             //additional goto so that we can jump over this function.
             var funSkipLabel = cw.DefineLabel();
             cw.Br(funSkipLabel);

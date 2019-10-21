@@ -20,12 +20,12 @@
             Offset = offset;
             LinePragma = lineSym;
         }
-        
+
         public override string ToString() =>
-            LinePragma != null 
+            LinePragma != null
                 ? string.Format(FORMAT_LNG, GetName(), ModuleName, LinePragma.Line, LinePragma.Column)
                 : string.Format(FORMAT_SHT, GetName(), ModuleName, Offset);
-        
+
         private string GetName() => CodeBlockName ?? "<global>";
 
         public string CodeBlockName { get; }

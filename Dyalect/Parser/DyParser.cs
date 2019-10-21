@@ -11,8 +11,8 @@ namespace Dyalect.Parser
             var ip = new InternalParser(new Scanner(buffer));
             ip.Parse();
             var cd = new DyCodeModel(ip.Root, ip.Imports.ToArray(), buffer.FileName ?? MEMORY);
-            return ip.Errors.Count == 0 
-                ? Result.Create(cd) 
+            return ip.Errors.Count == 0
+                ? Result.Create(cd)
                 : Result.Create(cd, ip.Errors);
         }
     }

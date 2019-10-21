@@ -10,8 +10,8 @@
 
 namespace Dyalect.Strings {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace Dyalect.Strings {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ParserErrors {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal ParserErrors() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace Dyalect.Strings {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace Dyalect.Strings {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid code island inside of a string literal..
         /// </summary>
@@ -68,7 +68,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("CodeIslandInvalid", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Code islands are not allowed..
         /// </summary>
@@ -77,7 +77,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("CodeIslandsNotAllowed", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid variable declaration..
         /// </summary>
@@ -86,7 +86,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidBinding", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid character literal..
         /// </summary>
@@ -95,7 +95,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidCharLiteral", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unrecognized escape sequence..
         /// </summary>
@@ -104,7 +104,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidEscapeCode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid expression..
         /// </summary>
@@ -113,7 +113,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidExpression", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid function expression..
         /// </summary>
@@ -122,7 +122,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidFunctionExpression", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid function name..
         /// </summary>
@@ -131,7 +131,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidFunctionName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid conditional operator..
         /// </summary>
@@ -140,7 +140,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidIf", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid import statement..
         /// </summary>
@@ -149,7 +149,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidImport", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid syntax for a label..
         /// </summary>
@@ -158,7 +158,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid literal..
         /// </summary>
@@ -167,7 +167,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidLiteral", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pattern is invalid..
         /// </summary>
@@ -176,7 +176,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidPattern", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid operator..
         /// </summary>
@@ -185,7 +185,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidStandardOperators", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid statement..
         /// </summary>
@@ -194,7 +194,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidStatement", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error in expression or statement syntax: {0}.
         /// </summary>
@@ -203,7 +203,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidSyntax", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid try/catch expression..
         /// </summary>
@@ -212,7 +212,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidTryCatch", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid unary operator..
         /// </summary>
@@ -221,7 +221,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidUnary", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Semantic error: {0}.
         /// </summary>
@@ -230,7 +230,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("SemanticError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} expected..
         /// </summary>
@@ -239,7 +239,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("TokenExpected", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Undefined parser error..
         /// </summary>

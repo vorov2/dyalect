@@ -21,20 +21,20 @@ namespace Dyalect.Compiler
 
             return var;
         }
-        
+
         public Scope Clone()
         {
             var ret = new Scope(Function, Parent);
             ret.Locals = new Dictionary<String, ScopeVar>(Locals);
             return ret;
         }
-        
+
         public IEnumerable<string> EnumerateNames()
         {
             foreach (var kv in Locals)
                 yield return kv.Key;
         }
-        
+
         public IEnumerable<KeyValuePair<string, ScopeVar>> EnumerateVars()
         {
             foreach (var kv in Locals)

@@ -19,7 +19,7 @@ namespace Dyalect.Parser.Model
         internal override void ToString(StringBuilder sb)
         {
             Pattern.ToString(sb);
-            
+
             if (Guard != null)
             {
                 sb.Append(" when ");

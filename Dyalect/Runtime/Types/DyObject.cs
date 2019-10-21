@@ -77,7 +77,7 @@ namespace Dyalect.Runtime.Types
 
         internal protected virtual DyObject GetTaggedValue() => null;
 
-        internal virtual int GetConstructorId(ExecutionContext ctx) => 
+        internal virtual int GetConstructorId(ExecutionContext ctx) =>
             ctx.Composition.MembersMap.TryGetValue(ctx.Types[TypeId].TypeName, out var id) ? id : 0;
 
         public virtual DyObject Clone() => (DyObject)MemberwiseClone();
@@ -111,7 +111,7 @@ namespace Dyalect.Runtime.Types
 
     public static class DyObjectExtensions
     {
-        public static string TypeName(this DyObject self, ExecutionContext ctx) => 
+        public static string TypeName(this DyObject self, ExecutionContext ctx) =>
             ctx.Composition.Types[self.TypeId].TypeName;
 
         public static string Format(this DyObject self, ExecutionContext ctx) =>

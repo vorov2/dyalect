@@ -10,7 +10,7 @@ namespace Dyalect.Runtime
 {
     public static class DyMachine
     {
-        private static DyNativeFunction Global(int unitId) => 
+        private static DyNativeFunction Global(int unitId) =>
             new DyNativeFunction(null, unitId, 0, FastList<DyObject[]>.Empty, DyType.Function, -1, AutoKind.None);
 
         public static ExecutionContext CreateExecutionContext(UnitComposition composition)
@@ -42,7 +42,7 @@ namespace Dyalect.Runtime
             }
 
             var lay0 = unit.Layouts[0];
-            
+
             //if yes we are in interactive mode and need to check if the size
             //of global layout (for global variables) has changed
             if (ctx.Units[0] != null && lay0.Size > ctx.Units[0].Length)
@@ -446,7 +446,7 @@ namespace Dyalect.Runtime
                             right = evalStack.Peek();
                             if (right.TypeId != DyType.Function && right.TypeId != DyType.Iterator)
                             {
-                                if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti 
+                                if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti
                                     && ctx.Composition.MembersMap.TryGetValue(ti.TypeName, out var tid))
                                 {
                                     right = ti.GetStaticMember(tid, unit, ctx);
@@ -687,7 +687,7 @@ namespace Dyalect.Runtime
             return st;
         }
 
-        private static bool ThrowIf(DyError err, int offset, int moduleHandle, ref DyNativeFunction function, 
+        private static bool ThrowIf(DyError err, int offset, int moduleHandle, ref DyNativeFunction function,
             ref DyObject[] locals, ref EvalStack evalStack, ExecutionContext ctx)
         {
             var dump = Dump(ctx.CallStack.Clone());
