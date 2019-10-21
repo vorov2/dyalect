@@ -701,6 +701,15 @@ func iteratorLiteralTest4() {
     assert(5, xs.len())
 }
 
+func iteratorLiteralTest5() {
+    var str = String.concat(values: {
+        22 + 1.25,
+        "Hello, world!",
+        true
+    })
+    assert("23.25Hello, world!true", str)
+}
+
 func interpolationTest1() {
     var x = 42
     var y = 12

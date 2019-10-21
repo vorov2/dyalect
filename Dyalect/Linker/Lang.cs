@@ -87,7 +87,7 @@ namespace Dyalect.Linker
             return new DyFloat(Math.Round(number.GetFloat(), (int)digits.GetInteger()));
         }
 
-        [Function("read")]
+        [Function("readLine")]
         public DyObject Read(ExecutionContext ctx)
         {
             return new DyString(Console.ReadLine());
