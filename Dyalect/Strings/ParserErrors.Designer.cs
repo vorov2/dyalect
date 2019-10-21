@@ -142,6 +142,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid import statement..
+        /// </summary>
+        internal static string InvalidImport {
+            get {
+                return ResourceManager.GetString("InvalidImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid syntax for a label..
+        /// </summary>
+        internal static string InvalidLabel {
+            get {
+                return ResourceManager.GetString("InvalidLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid literal..
         /// </summary>
         internal static string InvalidLiteral {

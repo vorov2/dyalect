@@ -1,3 +1,6 @@
+# 0.10.1
+  * Done: _Parser error messages are corrected in according to the language changes._
+
 # 0.10.0
   * Done: _Add a multiline string literal_ ([Issue #206](https://github.com/vorov2/dyalect/issues/206), [docs](https://github.com/vorov2/dyalect/wiki/String#multiline)).
   * Done: _Object files_ ([Issue #49](https://github.com/vorov2/dyalect/issues/49)).
