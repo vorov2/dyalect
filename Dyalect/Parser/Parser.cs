@@ -159,34 +159,34 @@ namespace Dyalect.Parser
 	}
 
 	void Qualident(out string s1, out string s2, out string s3) {
-		s1 = null; s2 = null; s3 = null;
+		s1 = null; s2 = null; s3 = null; 
 		FunctionName();
-		s1 = t.val;
+		s1 = t.val; 
 		if (StartOf(2)) {
 			if (la.kind == 20) {
 				Get();
 			}
 			FunctionName();
-			s2 = t.val;
+			s2 = t.val; 
 			if (StartOf(2)) {
 				if (la.kind == 20) {
 					Get();
 				}
 				FunctionName();
-				s3 = t.val;
+				s3 = t.val; 
 			}
 		}
 	}
 
 	void Import() {
 		Expect(50);
-		var inc = new DImport(t); Imports.Add(inc); string lastName = null;
+		var inc = new DImport(t); Imports.Add(inc); string lastName = null; 
 		if (la.kind == 1) {
 			Get();
 		} else if (la.kind == 4) {
 			Get();
 		} else SynErr(86);
-		lastName = ParseImport();
+		lastName = ParseImport(); 
 		while (la.kind == 20) {
 			Get();
 			if (la.kind == 1) {
@@ -199,40 +199,40 @@ namespace Dyalect.Parser
 			else
 			   inc.LocalPath = lastName;
 			lastName = ParseImport();
-
+			
 		}
-		inc.ModuleName = lastName; if (la.AfterEol) return;
+		inc.ModuleName = lastName; if (la.AfterEol) return; 
 		if (la.kind == 25) {
 			Get();
 			Expect(4);
-			inc.Dll = ParseSimpleString();
+			inc.Dll = ParseSimpleString(); 
 			Expect(26);
 		}
 		if (la.kind == 1) {
-			if (la.AfterEol) return;
+			if (la.AfterEol) return; 
 			Get();
 			inc.Alias = t.val;
-
+			
 		}
 	}
 
 	void Type(out DNode node) {
-		DFunctionDeclaration f = null;
+		DFunctionDeclaration f = null; 
 		Expect(18);
 		var typ = new DTypeDeclaration(t);
 		node = typ;
-
+		
 		Expect(1);
-		typ.Name = t.val; node = typ;
+		typ.Name = t.val; node = typ; 
 		if (la.kind == 25) {
-			f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) };
+			f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; 
 			FunctionArguments(f);
-			typ.Constructors.Add(f);
+			typ.Constructors.Add(f); 
 		}
 		if (la.kind == 24) {
 			Get();
 			Expect(1);
-			f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);
+			f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); 
 			FunctionArguments(f);
 			while (la.kind == 38) {
 				Get();
@@ -247,18 +247,18 @@ namespace Dyalect.Parser
 		Expect(25);
 		if (la.kind == 1) {
 			FunctionArgument(out var arg);
-			node.Parameters.Add(arg);
+			node.Parameters.Add(arg); 
 			while (la.kind == 21) {
 				Get();
 				FunctionArgument(out arg);
-				node.Parameters.Add(arg);
+				node.Parameters.Add(arg); 
 			}
 		}
 		Expect(26);
 	}
 
 	void Statement(out DNode node) {
-		node = null;
+		node = null; 
 		switch (la.kind) {
 		case 11: case 12: case 13: case 14: {
 			ControlFlow(out node);
@@ -314,7 +314,7 @@ namespace Dyalect.Parser
 	}
 
 	void ControlFlow(out DNode node) {
-		node = null;
+		node = null; 
 		if (la.kind == 13) {
 			Break(out node);
 		} else if (la.kind == 12) {
@@ -327,33 +327,33 @@ namespace Dyalect.Parser
 	}
 
 	void Guard(DNode src, out DNode node) {
-		node = src;
-		var ot = t;
+		node = src; 
+		var ot = t; 
 		Expect(51);
 		SimpleExpr(out var cnode);
-		node = new DIf(ot) { Condition = cnode, True = src };
+		node = new DIf(ot) { Condition = cnode, True = src }; 
 	}
 
 	void Match(out DNode node) {
-		node = null;
+		node = null; 
 		Expect(56);
-		var m = new DMatch(t);
+		var m = new DMatch(t); 
 		Expr(out node);
-		m.Expression = node;
+		m.Expression = node; 
 		Expect(27);
 		MatchEntry(out var entry);
-		m.Entries.Add(entry);
+		m.Entries.Add(entry); 
 		while (la.kind == 21) {
 			Get();
 			MatchEntry(out entry);
-			m.Entries.Add(entry);
+			m.Entries.Add(entry); 
 		}
 		Expect(28);
-		node = m;
+		node = m; 
 	}
 
 	void SimpleExpr(out DNode node) {
-		node = null;
+		node = null; 
 		if (la.kind == 8 || la.kind == 9) {
 			Binding(out node);
 		} else if (la.kind == 49) {
@@ -372,28 +372,28 @@ namespace Dyalect.Parser
 	}
 
 	void If(out DNode node) {
-		node = null;
+		node = null; 
 		Expect(15);
-		var @if = new DIf(t);
+		var @if = new DIf(t); 
 		Expr(out node);
-		@if.Condition = node;
+		@if.Condition = node; 
 		Block(out node);
-		@if.True = node;
+		@if.True = node; 
 		if (la.kind == 64) {
 			Get();
 			if (la.kind == 27) {
 				Block(out node);
-				@if.False = node;
+				@if.False = node; 
 			} else if (la.kind == 15) {
 				If(out node);
-				@if.False = node;
+				@if.False = node; 
 			} else SynErr(91);
 		}
-		node = @if;
+		node = @if; 
 	}
 
 	void Loops(out DNode node) {
-		node = null;
+		node = null; 
 		if (la.kind == 17) {
 			While(out node);
 		} else if (la.kind == 16) {
@@ -405,23 +405,23 @@ namespace Dyalect.Parser
 	}
 
 	void Function(out DNode node) {
-		node = null; bool st = false; bool auto = false; bool priv = false;
+		node = null; bool st = false; bool auto = false; bool priv = false; 
 		if (la.kind == 52) {
 			Get();
-			st = true;
+			st = true; 
 		}
 		if (la.kind == 53) {
 			Get();
-			auto = true;
+			auto = true; 
 		}
 		if (la.kind == 54) {
 			Get();
-			priv = true;
+			priv = true; 
 		}
 		Expect(10);
 		var f = new DFunctionDeclaration(t) { IsStatic = st, IsPrivate = priv, IsAuto = auto };
 		functions.Push(f);
-
+		
 		Qualident(out var s1, out var s2, out var s3);
 		if (s2 == null && s3 == null)
 		   f.Name = s1;
@@ -435,48 +435,48 @@ namespace Dyalect.Parser
 		   f.Name = s3;
 		   f.TypeName = new Qualident(s2, s1);
 		}
-
+		
 		FunctionArguments(f);
 		Block(out node);
 		f.Body = node;
 		node = f;
 		functions.Pop();
-
+		
 	}
 
 	void Block(out DNode node) {
-		node = null;
+		node = null; 
 		Expect(27);
-		var block = new DBlock(t);
+		var block = new DBlock(t); 
 		if (StartOf(4)) {
 			Statement(out node);
-			block.Nodes.Add(node);
+			block.Nodes.Add(node); 
 			while (StartOf(4)) {
 				Statement(out node);
-				block.Nodes.Add(node);
+				block.Nodes.Add(node); 
 			}
 		}
-		node = block;
+		node = block; 
 		Expect(28);
 	}
 
 	void FunctionArgument(out DParameter arg) {
-		arg = null;
+		arg = null; 
 		Expect(1);
-		arg = new DParameter(t) { Name = t.val };
+		arg = new DParameter(t) { Name = t.val }; 
 		if (la.kind == 24) {
 			Get();
 			Expr(out var cnode);
-			arg.DefaultValue = cnode;
+			arg.DefaultValue = cnode; 
 		}
 		if (la.kind == 55) {
 			Get();
-			arg.IsVarArgs = true;
+			arg.IsVarArgs = true; 
 		}
 	}
 
 	void Expr(out DNode node) {
-		node = null;
+		node = null; 
 		if (la.kind == 15) {
 			If(out node);
 		} else if (StartOf(5)) {
@@ -494,79 +494,79 @@ namespace Dyalect.Parser
 		} else if (la.kind == 9) {
 			Get();
 		} else SynErr(94);
-		var bin = new DBinding(t) { Constant = t.val == "const" };
+		var bin = new DBinding(t) { Constant = t.val == "const" }; 
 		OrPattern(out var pat);
-		bin.Pattern = pat;
+		bin.Pattern = pat; 
 		if (la.kind == 24) {
 			Get();
 			Expr(out node);
-			node = ProcessImplicits(node);
-			bin.Init = node;
+			node = ProcessImplicits(node); 
+			bin.Init = node; 
 		}
-		node = bin;
+		node = bin; 
 	}
 
 	void OrPattern(out DPattern node) {
-		node = null;
+		node = null; 
 		AndPattern(out node);
 		while (la.kind == 57) {
-			var por = new DOrPattern(t) { Left = node };
+			var por = new DOrPattern(t) { Left = node }; 
 			Get();
 			AndPattern(out node);
-			por.Right = node; node = por;
+			por.Right = node; node = por; 
 		}
 	}
 
 	void Rebinding(out DNode node) {
 		Expect(49);
-		var bin = new DRebinding(t);
+		var bin = new DRebinding(t); 
 		OrPattern(out var pat);
-		bin.Pattern = pat;
+		bin.Pattern = pat; 
 		Expect(24);
 		Expr(out node);
-		node = ProcessImplicits(node);
-		bin.Init = node;
-		node = bin;
+		node = ProcessImplicits(node); 
+		bin.Init = node; 
+		node = bin; 
 	}
 
 	void MatchEntry(out DMatchEntry me) {
-		me = new DMatchEntry(t);
+		me = new DMatchEntry(t); 
 		OrPattern(out var p);
-		me.Pattern = p;
+		me.Pattern = p; 
 		if (la.kind == 51) {
 			Get();
 			Expr(out var node);
-			me.Guard = node;
+			me.Guard = node; 
 		}
 		Expect(19);
 		Expr(out var exp);
-		me.Expression = exp;
+		me.Expression = exp; 
 	}
 
 	void AndPattern(out DPattern node) {
-		node = null;
+		node = null; 
 		RangePattern(out node);
 		while (la.kind == 58) {
-			var pa = new DAndPattern(t) { Left = node };
+			var pa = new DAndPattern(t) { Left = node }; 
 			Get();
 			RangePattern(out node);
-			pa.Right = node; node = pa;
+			pa.Right = node; node = pa; 
 		}
 	}
 
 	void RangePattern(out DPattern node) {
-		node = null;
+		node = null; 
 		Pattern(out node);
 		if (la.kind == 59) {
-			var r = new DRangePattern(t) { From = node };
+			var r = new DRangePattern(t) { From = node }; 
 			Get();
 			Pattern(out node);
-			r.To = node; node = r;
+			r.To = node; node = r; 
 		}
 	}
 
 	void Pattern(out DPattern node) {
-		node = null;
+		node = null; 
 		if (IsConstructor()) {
 			CtorPattern(out node);
 			if (la.kind == 1) {
@@ -634,47 +634,47 @@ namespace Dyalect.Parser
 
 	void CtorPattern(out DPattern node) {
 		Expect(1);
-		var ctor = new DCtorPattern(t) { Constructor = t.val };
+		var ctor = new DCtorPattern(t) { Constructor = t.val }; 
 		Expect(25);
 		if (StartOf(6)) {
 			OrPattern(out node);
-			ctor.Arguments.Add(node);
+			ctor.Arguments.Add(node); 
 		}
 		while (la.kind == 21) {
 			Get();
 			OrPattern(out node);
-			ctor.Arguments.Add(node);
+			ctor.Arguments.Add(node); 
 		}
 		Expect(26);
-		node = ctor;
+		node = ctor; 
 	}
 
 	void AsPattern(DPattern target, out DPattern node) {
-		node = null;
+		node = null; 
 		if (la.AfterEol) { node = target; return; }
 		var asp = new DAsPattern(t) { Pattern = target };
-
+		
 		Expect(1);
-		asp.Name = t.val; node = asp;
+		asp.Name = t.val; node = asp; 
 	}
 
 	void LabelPattern(out DPattern node) {
-		node = null;
+		node = null; 
 		Expect(1);
-		var la = new DLabelPattern(t) { Label = t.val };
+		var la = new DLabelPattern(t) { Label = t.val }; 
 		Expect(23);
 		Pattern(out var pat);
-		la.Pattern = pat; node = la;
+		la.Pattern = pat; node = la; 
 	}
 
 	void NamePattern(out DPattern node) {
-		node = null; string nm2 = null; string nm1 = null; Token ot = null;
+		node = null; string nm2 = null; string nm1 = null; Token ot = null; 
 		Expect(1);
-		nm1 = t.val; ot = t;
+		nm1 = t.val; ot = t; 
 		if (la.kind == 20) {
 			Get();
 			Expect(1);
-			nm2 = null;
+			nm2 = null; 
 		}
 		if (nm2 == null) {
 		   if (t.val == "_")
@@ -685,27 +685,27 @@ namespace Dyalect.Parser
 		   var q = new Qualident(nm2, nm1);
 		   node = new DTypeTestPattern(ot) { TypeName = q };
 		}
-
+		
 	}
 
 	void IntegerPattern(out DPattern node) {
 		Expect(2);
-		node = new DIntegerPattern(t) { Value = ParseInteger() };
+		node = new DIntegerPattern(t) { Value = ParseInteger() }; 
 	}
 
 	void FloatPattern(out DPattern node) {
 		Expect(3);
-		node = new DFloatPattern(t) { Value = ParseFloat() };
+		node = new DFloatPattern(t) { Value = ParseFloat() }; 
 	}
 
 	void CharPattern(out DPattern node) {
 		Expect(5);
-		node = new DCharPattern(t) { Value = ParseChar() };
+		node = new DCharPattern(t) { Value = ParseChar() }; 
 	}
 
 	void StringPattern(out DPattern node) {
 		Expect(4);
-		node = new DStringPattern(t) { Value = ParseString() };
+		node = new DStringPattern(t) { Value = ParseString() }; 
 	}
 
 	void BooleanPattern(out DPattern node) {
@@ -714,123 +714,125 @@ namespace Dyalect.Parser
 		} else if (la.kind == 63) {
 			Get();
 		} else SynErr(96);
-		node = new DBooleanPattern(t) { Value = t.val == "true" };
+		node = new DBooleanPattern(t) { Value = t.val == "true" }; 
 	}
 
 	void NilPattern(out DPattern node) {
 		Expect(61);
-		node = new DNilPattern(t);
+		node = new DNilPattern(t); 
 	}
 
 	void TuplePattern(out DPattern node) {
-		node = null;
+		node = null; 
 		Expect(25);
-		var tup = new DTuplePattern(t);
+		var tup = new DTuplePattern(t); 
 		OrPattern(out node);
-		tup.Elements.Add(node);
+		tup.Elements.Add(node); 
 		while (la.kind == 21) {
 			Get();
 			OrPattern(out node);
-			tup.Elements.Add(node);
+			tup.Elements.Add(node); 
 		}
-		node = tup;
+		node = tup; 
 		Expect(26);
 	}
 
 	void GroupPattern(out DPattern node) {
-		node = null;
+		node = null; 
 		Expect(25);
 		OrPattern(out node);
 		Expect(26);
 	}
 
 	void ArrayPattern(out DPattern node) {
-		node = null;
+		node = null; 
 		Expect(29);
-		var tup = new DArrayPattern(t);
+		var tup = new DArrayPattern(t); 
 		RangePattern(out node);
-		tup.Elements.Add(node);
+		tup.Elements.Add(node); 
 		while (la.kind == 21) {
 			Get();
 			RangePattern(out node);
-			tup.Elements.Add(node);
+			tup.Elements.Add(node); 
 		}
-		node = tup;
+		node = tup; 
 		Expect(30);
 	}
 
 	void MethodCheckPattern(out DPattern node) {
-		node = null;
+		node = null; 
 		Expect(20);
 		Expect(1);
-		node = new DMethodCheckPattern(t) { Name = t.val };
+		node = new DMethodCheckPattern(t) { Name = t.val }; 
 		Expect(60);
 	}
 
 	void While(out DNode node) {
-		node = null;
+		node = null; 
 		Expect(17);
-		var @while = new DWhile(t);
+		var @while = new DWhile(t); 
 		Expr(out node);
-		@while.Condition = node;
+		@while.Condition = node; 
 		Block(out node);
 		@while.Body = node;
 		node = @while;
-
+		
 	}
 
 	void For(out DNode node) {
-		node = null;
+		node = null; 
 		Expect(16);
-		var @for = new DFor(t);
+		var @for = new DFor(t); 
 		OrPattern(out var pattern);
-		@for.Pattern = pattern;
+		@for.Pattern = pattern; 
 		Expect(66);
 		Expr(out node);
-		@for.Target = node;
+		@for.Target = node; 
 		if (la.kind == 51) {
 			Get();
 			Expr(out node);
-			@for.Guard = node;
+			@for.Guard = node; 
 		}
 		Block(out node);
 		@for.Body = node;
 		node = @for;
-
+		
 	}
 
 	void DoWhile(out DNode node) {
-		node = null;
-		var @while = new DWhile(t) { DoWhile = true };
+		node = null; 
+		var @while = new DWhile(t) { DoWhile = true }; 
 		Expect(65);
 		Block(out node);
-		@while.Body = node;
+		@while.Body = node; 
 		Expect(17);
 		Expr(out node);
-		@while.Condition = node; node = @while;
+		@while.Condition = node; node = @while; 
 	}
 
 	void Break(out DNode node) {
 		Expect(13);
-		var br = new DBreak(t); node = br;
+		var br = new DBreak(t); node = br; 
 		if (StartOf(7)) {
-			if (la.AfterEol) return;
+			if (la.AfterEol) return; 
 			Expr(out var exp);
-			br.Expression = exp;
+			br.Expression = exp; 
 		}
 	}
 
 	void Continue(out DNode node) {
 		Expect(12);
-		node = new DContinue(t);
+		node = new DContinue(t); 
 	}
 
 	void Return(out DNode node) {
 		Expect(11);
 		var br = new DReturn(t); node = br;
+		if (la.AfterEol) return;
+		
 		if (StartOf(7)) {
 			Expr(out var exp);
-			br.Expression = exp;
+			br.Expression = exp; 
 		}
 	}
 
@@ -839,44 +841,44 @@ namespace Dyalect.Parser
 		var yield = new DYield(t);
 		node = yield;
 		functions.Peek().IsIterator = true;
-
+		
 		Expr(out var exp);
-		yield.Expression = exp;
+		yield.Expression = exp; 
 	}
 
 	void FunctionExpr(out DNode node) {
 		var f = new DFunctionDeclaration(t);
 		node = f;
-
+		
 		if (la.kind == 1) {
 			FunctionArgument(out var a);
-			f.Parameters.Add(a);
+			f.Parameters.Add(a); 
 		} else if (la.kind == 25) {
 			FunctionArguments(f);
 		} else SynErr(97);
-		functions.Push(f);
+		functions.Push(f); 
 		Expect(19);
 		Expr(out var exp);
-		f.Body = exp;
+		f.Body = exp; 
 	}
 
 	void Label(out DNode node) {
-		node = null; var name = "";
+		node = null; var name = ""; 
 		if (la.kind == 1) {
 			Get();
-			name = t.val;
+			name = t.val; 
 		} else if (la.kind == 4) {
 			Get();
-			name = ParseSimpleString();
+			name = ParseSimpleString(); 
 		} else SynErr(98);
 		Expect(23);
-		var ot = t;
+		var ot = t; 
 		if (IsFunction()) {
 			FunctionExpr(out node);
 		} else if (StartOf(3)) {
 			Assignment(out node);
 		} else SynErr(99);
-		node = new DLabelLiteral(ot) { Label = name, Expression = node };
+		node = new DLabelLiteral(ot) { Label = name, Expression = node }; 
 	}
 
 	void Assignment(out DNode node) {
@@ -885,7 +887,7 @@ namespace Dyalect.Parser
 			var ass = new DAssignment(t) { Target = node };
 			node = ass;
 			BinaryOperator? op = null;
-
+			
 			switch (la.kind) {
 			case 24: {
 				Get();
@@ -893,52 +895,52 @@ namespace Dyalect.Parser
 			}
 			case 70: {
 				Get();
-				op = BinaryOperator.Add;
+				op = BinaryOperator.Add; 
 				break;
 			}
 			case 71: {
 				Get();
-				op = BinaryOperator.Sub;
+				op = BinaryOperator.Sub; 
 				break;
 			}
 			case 72: {
 				Get();
-				op = BinaryOperator.Mul;
+				op = BinaryOperator.Mul; 
 				break;
 			}
 			case 73: {
 				Get();
-				op = BinaryOperator.Div;
+				op = BinaryOperator.Div; 
 				break;
 			}
 			case 74: {
 				Get();
-				op = BinaryOperator.Rem;
+				op = BinaryOperator.Rem; 
 				break;
 			}
 			case 75: {
 				Get();
-				op = BinaryOperator.And;
+				op = BinaryOperator.And; 
 				break;
 			}
 			case 76: {
 				Get();
-				op = BinaryOperator.Or;
+				op = BinaryOperator.Or; 
 				break;
 			}
 			case 77: {
 				Get();
-				op = BinaryOperator.Xor;
+				op = BinaryOperator.Xor; 
 				break;
 			}
 			case 78: {
 				Get();
-				op = BinaryOperator.ShiftLeft;
+				op = BinaryOperator.ShiftLeft; 
 				break;
 			}
 			case 79: {
 				Get();
-				op = BinaryOperator.ShiftRight;
+				op = BinaryOperator.ShiftRight; 
 				break;
 			}
 			}
@@ -946,52 +948,52 @@ namespace Dyalect.Parser
 			ass.Value = node;
 			ass.AutoAssign = op;
 			node = ass;
-
+			
 		}
 	}
 
 	void TryCatch(out DNode node) {
-		node =  null;
+		node =  null; 
 		Expect(68);
-		var tc = new DTryCatch(t);
+		var tc = new DTryCatch(t); 
 		Block(out node);
-		tc.Expression = node;
+		tc.Expression = node; 
 		Expect(69);
 		if (la.kind == 27) {
-			var m = new DMatch(t); tc.Catch = m;
+			var m = new DMatch(t); tc.Catch = m; 
 			Get();
 			MatchEntry(out var entry);
-			m.Entries.Add(entry);
+			m.Entries.Add(entry); 
 			while (la.kind == 21) {
 				Get();
 				MatchEntry(out entry);
-				m.Entries.Add(entry);
+				m.Entries.Add(entry); 
 			}
 			Expect(28);
 		} else if (la.kind == 1) {
 			Get();
-			tc.BindVariable = new DName(t) { Value = t.val };
+			tc.BindVariable = new DName(t) { Value = t.val }; 
 			Block(out node);
-			tc.Catch = node;
+			tc.Catch = node; 
 		} else SynErr(100);
-		node = tc;
+		node = tc; 
 	}
 
 	void Throw(out DNode node) {
-		node = null;
+		node = null; 
 		Expect(67);
-		var th = new DThrow(t);
+		var th = new DThrow(t); 
 		Expr(out node);
-		th.Expression = node; node = th;
+		th.Expression = node; node = th; 
 	}
 
 	void Is(out DNode node) {
 		Coalesce(out node);
 		while (la.kind == 80) {
 			Get();
-			var ot = t;
+			var ot = t; 
 			OrPattern(out var pat);
-			node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot);
+			node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); 
 		}
 	}
 
@@ -999,9 +1001,9 @@ namespace Dyalect.Parser
 		Or(out node);
 		while (la.kind == 81) {
 			Get();
-			var ot = t;
+			var ot = t; 
 			Or(out DNode exp);
-			node = new DBinaryOperation(node, exp, BinaryOperator.Coalesce, ot);
+			node = new DBinaryOperation(node, exp, BinaryOperator.Coalesce, ot); 
 		}
 	}
 
@@ -1009,9 +1011,9 @@ namespace Dyalect.Parser
 		And(out node);
 		while (la.kind == 57) {
 			Get();
-			var ot = t;
+			var ot = t; 
 			And(out DNode exp);
-			node = new DBinaryOperation(node, exp, BinaryOperator.Or, ot);
+			node = new DBinaryOperation(node, exp, BinaryOperator.Or, ot); 
 		}
 	}
 
@@ -1019,9 +1021,9 @@ namespace Dyalect.Parser
 		Eq(out node);
 		while (la.kind == 58) {
 			Get();
-			var ot = t;
+			var ot = t; 
 			Eq(out DNode exp);
-			node = new DBinaryOperation(node, exp, BinaryOperator.And, ot);
+			node = new DBinaryOperation(node, exp, BinaryOperator.And, ot); 
 		}
 	}
 
@@ -1030,41 +1032,41 @@ namespace Dyalect.Parser
 		while (StartOf(9)) {
 			var op = default(BinaryOperator);
 			var ot = default(Token);
-
+			
 			switch (la.kind) {
 			case 42: {
 				Get();
-				ot = t; op = BinaryOperator.Gt;
+				ot = t; op = BinaryOperator.Gt; 
 				break;
 			}
 			case 43: {
 				Get();
-				ot = t; op = BinaryOperator.Lt;
+				ot = t; op = BinaryOperator.Lt; 
 				break;
 			}
 			case 44: {
 				Get();
-				ot = t; op = BinaryOperator.GtEq;
+				ot = t; op = BinaryOperator.GtEq; 
 				break;
 			}
 			case 45: {
 				Get();
-				ot = t; op = BinaryOperator.LtEq;
+				ot = t; op = BinaryOperator.LtEq; 
 				break;
 			}
 			case 40: {
 				Get();
-				ot = t; op = BinaryOperator.Eq;
+				ot = t; op = BinaryOperator.Eq; 
 				break;
 			}
 			case 41: {
 				Get();
-				ot = t; op = BinaryOperator.NotEq;
+				ot = t; op = BinaryOperator.NotEq; 
 				break;
 			}
 			}
 			Shift(out var exp);
-			node = new DBinaryOperation(node, exp, op, ot);
+			node = new DBinaryOperation(node, exp, op, ot); 
 		}
 	}
 
@@ -1073,16 +1075,16 @@ namespace Dyalect.Parser
 		while (la.kind == 47 || la.kind == 48) {
 			var op = default(BinaryOperator);
 			var ot = default(Token);
-
+			
 			if (la.kind == 47) {
 				Get();
-				ot = t; op = BinaryOperator.ShiftLeft;
+				ot = t; op = BinaryOperator.ShiftLeft; 
 			} else {
 				Get();
-				ot = t; op = BinaryOperator.ShiftRight;
+				ot = t; op = BinaryOperator.ShiftRight; 
 			}
 			BitOr(out var exp);
-			node = new DBinaryOperation(node, exp, op, ot);
+			node = new DBinaryOperation(node, exp, op, ot); 
 		}
 	}
 
@@ -1090,20 +1092,20 @@ namespace Dyalect.Parser
 		Xor(out node);
 		while (la.kind == 38) {
 			Get();
-			var ot = t;
+			var ot = t; 
 			Xor(out var exp);
-			node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseOr, ot);
+			node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseOr, ot); 
 		}
 	}
 
 	void Xor(out DNode node) {
 		BitAnd(out node);
 		while (la.kind == 46) {
-			DNode exp = null;
+			DNode exp = null; 
 			Get();
-			var ot = t;
+			var ot = t; 
 			BitAnd(out exp);
-			node = new DBinaryOperation(node, exp, BinaryOperator.Xor, ot);
+			node = new DBinaryOperation(node, exp, BinaryOperator.Xor, ot); 
 		}
 	}
 
@@ -1111,9 +1113,9 @@ namespace Dyalect.Parser
 		Add(out node);
 		while (la.kind == 39) {
 			Get();
-			var ot = t;
+			var ot = t; 
 			Add(out var exp);
-			node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseAnd, ot);
+			node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseAnd, ot); 
 		}
 	}
 
@@ -1122,18 +1124,18 @@ namespace Dyalect.Parser
 		while (la.kind == 31 || la.kind == 32) {
 			var op = default(BinaryOperator);
 			var ot = default(Token);
-
+			
 			if (la.kind == 32) {
-				if (la.AfterEol) return;
+				if (la.AfterEol) return; 
 				Get();
-				ot = t; op = BinaryOperator.Add;
+				ot = t; op = BinaryOperator.Add; 
 			} else {
-				if (la.AfterEol) return;
+				if (la.AfterEol) return; 
 				Get();
-				ot = t; op = BinaryOperator.Sub;
+				ot = t; op = BinaryOperator.Sub; 
 			}
 			Mul(out var exp);
-			node = new DBinaryOperation(node, exp, op, ot);
+			node = new DBinaryOperation(node, exp, op, ot); 
 		}
 	}
 
@@ -1142,19 +1144,19 @@ namespace Dyalect.Parser
 		while (la.kind == 35 || la.kind == 36 || la.kind == 37) {
 			var op = default(BinaryOperator);
 			var ot = default(Token);
-
+			
 			if (la.kind == 35) {
 				Get();
-				ot = t; op = BinaryOperator.Mul;
+				ot = t; op = BinaryOperator.Mul; 
 			} else if (la.kind == 36) {
 				Get();
-				ot = t; op = BinaryOperator.Div;
+				ot = t; op = BinaryOperator.Div; 
 			} else {
 				Get();
-				ot = t; op = BinaryOperator.Rem;
+				ot = t; op = BinaryOperator.Rem; 
 			}
 			Unary(out var exp);
-			node = new DBinaryOperation(node, exp, op, ot);
+			node = new DBinaryOperation(node, exp, op, ot); 
 		}
 	}
 
@@ -1162,40 +1164,40 @@ namespace Dyalect.Parser
 		node = null;
 		var op = default(UnaryOperator);
 		var ot = default(Token);
-
+		
 		if (la.kind == 33) {
 			Get();
-			ot = t; op = UnaryOperator.Not;
+			ot = t; op = UnaryOperator.Not; 
 			Range(out node);
-			node = new DUnaryOperation(node, op, ot);
+			node = new DUnaryOperation(node, op, ot); 
 		} else if (la.kind == 31) {
 			Get();
-			ot = t; op = UnaryOperator.Neg;
+			ot = t; op = UnaryOperator.Neg; 
 			Range(out node);
-			node = new DUnaryOperation(node, op, ot);
+			node = new DUnaryOperation(node, op, ot); 
 		} else if (la.kind == 32) {
 			Get();
-			ot = t; op = UnaryOperator.Plus;
+			ot = t; op = UnaryOperator.Plus; 
 			Range(out node);
-			node = new DUnaryOperation(node, op, ot);
+			node = new DUnaryOperation(node, op, ot); 
 		} else if (la.kind == 34) {
 			Get();
-			ot = t; op = UnaryOperator.BitwiseNot;
+			ot = t; op = UnaryOperator.BitwiseNot; 
 			Range(out node);
-			node = new DUnaryOperation(node, op, ot);
+			node = new DUnaryOperation(node, op, ot); 
 		} else if (StartOf(10)) {
 			Range(out node);
 		} else SynErr(101);
 	}
 
 	void Range(out DNode node) {
-		node = null;
+		node = null; 
 		FieldOrIndex(out node);
 		if (la.kind == 59) {
 			Get();
-			var range = new DRange(t) { From = node };
+			var range = new DRange(t) { From = node }; 
 			FieldOrIndex(out node);
-			range.To = node; node = range;
+			range.To = node; node = range; 
 		}
 	}
 
@@ -1204,15 +1206,15 @@ namespace Dyalect.Parser
 		while (la.kind == 20 || la.kind == 25 || la.kind == 29) {
 			if (la.kind == 20) {
 				Get();
-				var ot = t;
+				var ot = t; 
 				Expect(1);
-				var nm = t.val; DMemberCheck chk = null;
+				var nm = t.val; DMemberCheck chk = null; 
 				if (la.kind == 60) {
 					Get();
 					chk = new DMemberCheck(ot) { Target = node };
 					chk.Name = nm;
 					node = chk;
-
+					
 				}
 				if (chk == null)
 				{
@@ -1220,32 +1222,32 @@ namespace Dyalect.Parser
 				   fld.Name = nm;
 				   node = fld;
 				}
-
+				
 			} else if (la.kind == 29) {
-				if (la.AfterEol) return;
+				if (la.AfterEol) return; 
 				Get();
-				var idx = new DIndexer(t) { Target = node };
+				var idx = new DIndexer(t) { Target = node }; 
 				Expr(out node);
 				idx.Index = node;
 				node = idx;
-
+				
 				Expect(30);
 			} else {
 				if (la.AfterEol) return;
 				var app = new DApplication(node, t);
-
+				
 				Get();
 				if (StartOf(7)) {
 					ApplicationArguments(app);
 				}
-				node = app;
+				node = app; 
 				Expect(26);
 			}
 		}
 	}
 
 	void Literal(out DNode node) {
-		node = null;
+		node = null; 
 		if (la.kind == 1) {
 			Name(out node);
 		} else if (la.kind == 6) {
@@ -1278,19 +1280,19 @@ namespace Dyalect.Parser
 	}
 
 	void ApplicationArguments(DApplication app) {
-		var node = default(DNode);
+		var node = default(DNode); 
 		Expr(out node);
-		app.Arguments.Add(ProcessImplicits(node));
+		app.Arguments.Add(ProcessImplicits(node)); 
 		while (la.kind == 21) {
 			Get();
 			Expr(out node);
-			app.Arguments.Add(ProcessImplicits(node));
+			app.Arguments.Add(ProcessImplicits(node)); 
 		}
 	}
 
 	void Name(out DNode node) {
 		Expect(1);
-		node = new DName(t) { Value = t.val };
+		node = new DName(t) { Value = t.val }; 
 	}
 
 	void SpecialName(out DNode node) {
@@ -1300,33 +1302,33 @@ namespace Dyalect.Parser
 		if (implicits == null)
 		   implicits = new List<int>();
 		implicits.Add(nm);
-
+		
 	}
 
 	void Integer(out DNode node) {
 		Expect(2);
-		node = new DIntegerLiteral(t) { Value = ParseInteger() };
+		node = new DIntegerLiteral(t) { Value = ParseInteger() }; 
 	}
 
 	void Float(out DNode node) {
 		Expect(3);
-		node = new DFloatLiteral(t) { Value = ParseFloat() };
+		node = new DFloatLiteral(t) { Value = ParseFloat() }; 
 	}
 
 	void String(out DNode node) {
-		node = null;
+		node = null; 
 		if (la.kind == 4) {
 			Get();
-			node = ParseString();
+			node = ParseString(); 
 		} else if (la.kind == 7) {
 			Get();
-			node = ParseVerbatimString();
+			node = ParseVerbatimString(); 
 		} else SynErr(103);
 	}
 
 	void Char(out DNode node) {
 		Expect(5);
-		node = new DCharLiteral(t) { Value = ParseChar() };
+		node = new DCharLiteral(t) { Value = ParseChar() }; 
 	}
 
 	void Bool(out DNode node) {
@@ -1335,48 +1337,48 @@ namespace Dyalect.Parser
 		} else if (la.kind == 63) {
 			Get();
 		} else SynErr(104);
-		node = new DBooleanLiteral(t) { Value = t.val == "true" };
+		node = new DBooleanLiteral(t) { Value = t.val == "true" }; 
 	}
 
 	void Nil(out DNode node) {
 		Expect(61);
-		node = new DNilLiteral(t);
+		node = new DNilLiteral(t); 
 	}
 
 	void Tuple(out DNode node) {
-		node = null;
+		node = null; 
 		Expect(25);
-		var tup = new DTupleLiteral(t);
+		var tup = new DTupleLiteral(t); 
 		Expr(out node);
-		tup.Elements.Add(node);
+		tup.Elements.Add(node); 
 		while (la.kind == 21) {
 			Get();
 			Expr(out node);
-			tup.Elements.Add(node);
+			tup.Elements.Add(node); 
 		}
-		node = tup;
+		node = tup; 
 		Expect(26);
 	}
 
 	void Array(out DNode node) {
-		node = null;
+		node = null; 
 		Expect(29);
-		var arr = new DArrayLiteral(t);
+		var arr = new DArrayLiteral(t); 
 		if (StartOf(7)) {
 			Expr(out node);
-			arr.Elements.Add(node);
+			arr.Elements.Add(node); 
 			while (la.kind == 21) {
 				Get();
 				Expr(out node);
-				arr.Elements.Add(node);
+				arr.Elements.Add(node); 
 			}
 		}
-		node = arr;
+		node = arr; 
 		Expect(30);
 	}
 
 	void Group(out DNode node) {
-		node = null;
+		node = null; 
 		Expect(25);
 		Expr(out node);
 		Expect(26);
@@ -1384,35 +1386,35 @@ namespace Dyalect.Parser
 
 	void Base(out DNode node) {
 		Expect(82);
-		node = new DBase(t);
+		node = new DBase(t); 
 	}
 
 	void Iterator(out DNode node) {
-		node = null;
+		node = null; 
 		Expect(27);
 		var it = new DIteratorLiteral(t);
 		it.YieldBlock = new DYieldBlock(t);
-
+		
 		Expr(out node);
-		it.YieldBlock.Elements.Add(node);
+		it.YieldBlock.Elements.Add(node); 
 		Expect(21);
 		if (StartOf(7)) {
 			Expr(out node);
-			it.YieldBlock.Elements.Add(node);
+			it.YieldBlock.Elements.Add(node); 
 			while (la.kind == 21) {
 				Get();
 				Expr(out node);
-				it.YieldBlock.Elements.Add(node);
+				it.YieldBlock.Elements.Add(node); 
 			}
 		}
-		node = it;
+		node = it; 
 		Expect(28);
 	}
 
 	void DyalectItem() {
 		if (StartOf(4)) {
 			Statement(out var node);
-			Root.Nodes.Add(node);
+			Root.Nodes.Add(node); 
 		} else if (la.kind == 50) {
 			Import();
 			Separator();

@@ -827,7 +827,9 @@ namespace Dyalect.Parser
 
 	void Return(out DNode node) {
 		Expect(11);
-		var br = new DReturn(t); node = br; 
+		var br = new DReturn(t); node = br;
+		if (la.AfterEol) return;
+		
 		if (StartOf(7)) {
 			Expr(out var exp);
 			br.Expression = exp; 
