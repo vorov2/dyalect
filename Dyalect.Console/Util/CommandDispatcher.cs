@@ -74,8 +74,8 @@ namespace Dyalect.Util
         [Binding("help", Help = "Displays this help screen.")]
         public void Help(object arg)
         {
-            var switches = HelpGenerator.Generate<DyaOptions>("-", 12).TrimEnd('\r', '\n');
-            var commands = HelpGenerator.Generate(typeof(CommandDispatcher), Prefix, 12).TrimEnd('\r', '\n');
+            var switches = HelpGenerator.Generate<DyaOptions>("-").TrimEnd('\r', '\n');
+            var commands = HelpGenerator.Generate(typeof(CommandDispatcher), Prefix).TrimEnd('\r', '\n');
 
             Printer.Output("Command line switches:");
             Printer.Output(switches);

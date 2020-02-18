@@ -1,6 +1,6 @@
 internal static class Meta
 {
-    public const string Version = "0.10.1";
+    public const string Version = "0.10.2";
 
     public const string Product = "Dyalect";
 
@@ -8,7 +8,7 @@ internal static class Meta
 
     public const string Description = "Dyalect, a dynamic language for .NET Core";
 
-    public const string Copyright = "Copyright (c) Vasily Voronkov 2019";
+    public const string Copyright = "Copyright (c) Vasily Voronkov 2019-2020";
 
     public const string Trademark = "Vasily Voronkov";
 }

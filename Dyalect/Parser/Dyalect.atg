@@ -514,7 +514,10 @@ PRODUCTIONS
 
     Return<out DNode node> =
         "return"
-        (. var br = new DReturn(t); node = br; .)
+        (.
+            var br = new DReturn(t); node = br;
+            if (la.AfterEol) return;
+        .)
         [ Expr<out var exp> (. br.Expression = exp; .) ].
 
     Continue<out DNode node> = "continue" (. node = new DContinue(t); .).

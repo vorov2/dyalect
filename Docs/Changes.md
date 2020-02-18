@@ -1,3 +1,7 @@
+# 0.10.2
+  * Fixed: _Parsing logic of `return` operator_ ([Issue #266](https://github.com/vorov2/dyalect/issues/266)).
+  * Fixed: _Help command (#help) causes Dyalect Interactive to crush_ ([Issue #267](https://github.com/vorov2/dyalect/issues/267)).
+
 # 0.10.1
   * Done: _Parser error messages are corrected in according to the language changes._
   * Done: _Add `readLine` built-in function_ ([Issue #263](https://github.com/vorov2/dyalect/issues/263)).

@@ -10,9 +10,9 @@ namespace Dyalect.Util
     {
         private const int HELP_LENGTH = 60;
 
-        public static string Generate<T>(string prefix = "-", int defPad = 0) => Generate(typeof(T), prefix, defPad);
+        public static string Generate<T>(string prefix = "-") => Generate(typeof(T), prefix);
 
-        public static string Generate(Type type, string prefix = "-", int defPad = 0)
+        public static string Generate(Type type, string prefix = "-")
         {
             var sb = new StringBuilder();
             var names = new List<string>();
@@ -45,7 +45,7 @@ namespace Dyalect.Util
                 helps.Add(help);
             }
 
-            var pad = defPad > 0 ? defPad : names.Any () ? names.Select(s => s.Length).Max() : 0;
+            var pad = names.Any () ? names.Select(s => s.Length).Max(): 0;
 
             for (var i = 0; i < names.Count; i++)
             {

@@ -912,3 +912,15 @@ func guardsTest3() {
     x += 1 when x < 0
     assert(0, x)
 }
+
+func returnTest() {//Issue 266
+    func foo() {
+        return 2
+    }
+    func bar() {
+        return
+        22
+    }
+    assert(2, foo())
+    assert(nil, bar())
+}
