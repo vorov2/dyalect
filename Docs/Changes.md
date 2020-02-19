@@ -1,3 +1,7 @@
+# 0.11.0
+  * Change: Enhancements and amendments to the .NET API.
+  * Done: _Add a built-in `eval` function_ ([Issue #269](https://github.com/vorov2/dyalect/issues/269), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#eval)).
+
 # 0.10.2
   * Fixed: _Parsing logic of `return` operator_ ([Issue #266](https://github.com/vorov2/dyalect/issues/266)).
   * Fixed: _Help command (#help) causes Dyalect Interactive to crush_ ([Issue #267](https://github.com/vorov2/dyalect/issues/267)).

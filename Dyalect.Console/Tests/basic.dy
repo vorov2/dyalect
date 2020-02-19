@@ -933,3 +933,8 @@ func returnTest() {//Issue 266
     assert(2, foo())
     assert(nil, bar())
 }
+
+func evalTest() { //Issue 269
+    var z = eval("x + y", (x: 2, y: 3) )
+    assert(5, z)
+}

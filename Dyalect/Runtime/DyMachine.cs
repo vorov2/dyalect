@@ -475,7 +475,7 @@ namespace Dyalect.Runtime
                                 goto CATCH;
                             }
 
-                            ctx.Locals.Push(new ArgContainer {
+                            ctx.Arguments.Push(new ArgContainer {
                                 Locals = callFun.CreateLocals(ctx),
                                 VarArgsIndex = callFun.VarArgIndex,
                                 VarArgs = callFun.VarArgIndex > -1 ? new FastList<DyObject>() : null
@@ -484,7 +484,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.FunArgIx:
                         {
-                            var locs = ctx.Locals.Peek();
+                            var locs = ctx.Arguments.Peek();
                             if (locs.VarArgsIndex > -1 && op.Data >= locs.VarArgsIndex)
                             {
                                 locs.VarArgs.Add(evalStack.Pop());
@@ -502,7 +502,7 @@ namespace Dyalect.Runtime
                                 ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
                                 goto CATCH;
                             }
-                            var locs = ctx.Locals.Peek();
+                            var locs = ctx.Arguments.Peek();
                             if (idx == locs.VarArgsIndex)
                             {
                                 Push(locs, evalStack.Pop(), ctx);
@@ -518,7 +518,7 @@ namespace Dyalect.Runtime
 
                             if (op.Data != callFun.Parameters.Length || callFun.VarArgIndex > -1)
                             {
-                                FillDefaults(ctx.Locals.Peek(), callFun, ctx);
+                                FillDefaults(ctx.Arguments.Peek(), callFun, ctx);
                                 if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
                             }
 
@@ -527,7 +527,7 @@ namespace Dyalect.Runtime
                             if (!callFun.IsExternal)
                             {
                                 function = (DyNativeFunction)callFun;
-                                locals = ctx.Locals.Pop().Locals;
+                                locals = ctx.Arguments.Pop().Locals;
                                 goto PROLOGUE;
                             }
                             else
@@ -601,7 +601,7 @@ namespace Dyalect.Runtime
         {
             try
             {
-                return func.Call(ctx, ctx.Locals.Pop().Locals);
+                return func.Call(ctx, ctx.Arguments.Pop().Locals);
             }
             catch (DyIterator.IterationException)
             {

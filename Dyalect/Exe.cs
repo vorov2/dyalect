@@ -8,9 +8,9 @@ namespace Dyalect
 {
     public static class Exe
     {
-        public static DyObject Eval(string sourceCode, BuilderOptions options = null)
+        public static DyObject Eval(string sourceCode, DyTuple args = null, BuilderOptions options = null)
         {
-            var linker = new DyLinker(null, options ?? BuilderOptions.Default);
+            var linker = new DyLinker(null, options ?? BuilderOptions.Default, args);
             var result = linker.Make(SourceBuffer.FromString(sourceCode));
 
             if (!result.Success)
