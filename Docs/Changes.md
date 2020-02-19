@@ -1,6 +1,9 @@
 # 0.11.0
   * Change: Enhancements and amendments to the .NET API.
   * Done: _Add a built-in `eval` function_ ([Issue #269](https://github.com/vorov2/dyalect/issues/269), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#eval)).
+  * Fixed: _Member check operator `?` doesn't work with static members ([Issue #270](https://github.com/vorov2/dyalect/issues/270)).
+  * Fixed: _Method "has" doesn't always work correctly_ ([Issue #271](https://github.com/vorov2/dyalect/issues/271)).
+  * Fixed: _Type descriptors do not support method `has`_ ([Issue #272](https://github.com/vorov2/dyalect/issues/272)).
 
 # 0.10.2
   * Fixed: _Parsing logic of `return` operator_ ([Issue #266](https://github.com/vorov2/dyalect/issues/266)).

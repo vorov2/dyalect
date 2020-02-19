@@ -693,6 +693,8 @@ namespace Dyalect.Runtime.Types
                         }
                         return DyNil.Instance;
                     }, -1, new Par("name"));
+                case "has":
+                    return DyForeignFunction.Member(name, Has, -1, new Par("member"));
                 default:
                     return GetStaticMember(name, ctx);
             }

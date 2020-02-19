@@ -590,6 +590,13 @@ func memberCheckTest3() { //#271
     assert(true, "".has("split"))
 }
 
+func memberCheckTest4() { //#272
+    assert(true, String.has("join"))
+    assert(false, String.has("split"))
+    assert(true, String.has("id"))
+    assert(true, String.has("name"))
+}
+
 func charTest1() {
     assert(true, 'c' == "c")
     assert(true, "c" == 'c')
