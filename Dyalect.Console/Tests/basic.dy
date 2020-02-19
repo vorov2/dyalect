@@ -913,6 +913,15 @@ func guardsTest3() {
     assert(0, x)
 }
 
+func guardsTest4() {
+    func safeDiv(x, y) {
+        return when y == 0
+        return x / y
+    }
+    var res = safeDiv(10, 0)
+    assert(nil, res)
+}
+
 func returnTest() {//Issue 266
     func foo() {
         return 2

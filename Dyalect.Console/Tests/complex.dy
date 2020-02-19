@@ -818,6 +818,17 @@ func functionTest15() {
     assert("<func>", f.name)
 }
 
+func functionTest16() {
+    func foo() {
+        return "\(current().name) is called by \(caller().name)"
+    }
+    func bar() {
+        foo()
+    }
+    var s = bar()
+    assert("foo is called by bar", s)
+}
+
 func namesOfGodTest() {
     var cache = [[1]]
     func min(x, y) {
