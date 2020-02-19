@@ -490,6 +490,19 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject Swap(ExecutionContext ctx, DyObject self, DyObject idx1, DyObject idx2)
+        {
+            var arr = (DyArray)self;
+            var fst = arr.GetItem(idx1, ctx);
+            if (ctx.HasErrors) return DyNil.Instance;
+            var snd = arr.GetItem(idx2, ctx);
+            if (ctx.HasErrors) return DyNil.Instance;
+
+            arr.SetItem(idx1, snd, ctx);
+            arr.SetItem(idx2, fst, ctx);
+            return DyNil.Instance;
+        }
+
         private DyObject InsertRange(ExecutionContext ctx, DyObject self, DyObject index, DyObject range)
         {
             if (index.TypeId != DyType.Integer)
@@ -542,6 +555,8 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Member(name, GetSlice, -1, new Par("start"), new Par("len", DyNil.Instance));
                 case "sort":
                     return DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance));
+                case "swap":
+                    return DyForeignFunction.Member(name, Swap, -1, new Par("fst"), new Par("snd"));
                 case "compact":
                     return DyForeignFunction.Member(name, Compact, -1, Statics.EmptyParameters);
                 case "reverse":

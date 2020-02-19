@@ -346,6 +346,12 @@ func arrayTest24() { //Issue #250
     assert([5,4,3,2,1], xs)
 }
 
+func arrayTest25() { //#273
+    var xs = [1,2,3]
+    xs.swap(1,2)
+    assert([1,3,2], xs)
+}
+
 func tupleTest1() {
     var t = (1,2,3)
     assert(3, t.len())
