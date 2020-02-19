@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Dyalect.Runtime.Types
 {
-    public abstract class DyObject
+    public abstract class DyObject : IEquatable<DyObject>
     {
         internal readonly int TypeId;
 
@@ -87,6 +87,21 @@ namespace Dyalect.Runtime.Types
         internal virtual int GetCount() => 1;
 
         internal virtual void Serialize(BinaryWriter writer) => throw new NotSupportedException();
+
+        public virtual bool Equals(DyObject other) => ReferenceEquals(this, other);
+
+        public override bool Equals(object obj) => obj is DyObject dyo ? Equals(dyo) : false;
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + TypeId.GetHashCode();
+                hash = hash * 23 + base.GetHashCode();
+                return hash;
+            }
+        }
     }
 
     internal static class DyObjectInternalExtensions

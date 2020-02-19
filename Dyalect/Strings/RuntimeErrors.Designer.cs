@@ -10,8 +10,8 @@
 
 namespace Dyalect.Strings {
     using System;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace Dyalect.Strings {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class RuntimeErrors {
-
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal RuntimeErrors() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace Dyalect.Strings {
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace Dyalect.Strings {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Function &quot;%FunctionName%&quot; doesn&apos;t have an argument &quot;%ArgumentName%&quot;..
         /// </summary>
@@ -68,7 +68,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("ArgumentNotFound", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Assert failed: %Reason%..
         /// </summary>
@@ -77,7 +77,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("AssertFailed", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Collection was modified after the iterator was instantiated..
         /// </summary>
@@ -86,7 +86,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("CollectionModified", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Division by zero..
         /// </summary>
@@ -95,7 +95,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("DivideByZero", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to An unhandled exception occured during an execution of an external function &quot;%FunctionName%&quot;: %Error%.
         /// </summary>
@@ -104,7 +104,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("ExternalFunctionFailure", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Failed to read literal: %Reason%.
         /// </summary>
@@ -113,7 +113,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("FailedReadLiteral", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Indices of type &quot;%IndexTypeName%&quot; are not supported by the type. Failed index: &quot;%Index%&quot;..
         /// </summary>
@@ -122,7 +122,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("IndexInvalidType", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to An index &quot;%Index%&quot; is out of range..
         /// </summary>
@@ -131,7 +131,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("IndexOutOfRange", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Type error: type &quot;%TypeName%&quot; is unexpected..
         /// </summary>
@@ -140,7 +140,25 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidType", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key &quot;%Key%&quot; is already present in the dictionary..
+        /// </summary>
+        internal static string KeyAlreadyPresent {
+            get {
+                return ResourceManager.GetString("KeyAlreadyPresent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The key &quot;%Key%&quot; is not present in the dictionary..
+        /// </summary>
+        internal static string KeyNotFound {
+            get {
+                return ResourceManager.GetString("KeyNotFound", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Match failed..
         /// </summary>
@@ -149,7 +167,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("MatchFailed", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to An object of type &quot;%TypeName%&quot; doesn&apos;t support a &quot;call&quot; operation..
         /// </summary>
@@ -158,7 +176,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("NotFunction", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Operation &quot;%Operation%&quot; is not supported by the type &quot;%TypeName%&quot;..
         /// </summary>
@@ -167,7 +185,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("OperationNotSupported", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Unable to access a private module member &quot;%Name%&quot;..
         /// </summary>
@@ -176,7 +194,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("PrivateNameAccess", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to No value provided for an argument &quot;%ArgumentName%&quot; of a function &quot;%FunctionName%&quot;..
         /// </summary>
@@ -185,7 +203,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("RequiredArgumentMissing", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Stack is corrupted..
         /// </summary>
@@ -194,7 +212,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("StackCorrupted", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Static method &quot;%Operation%&quot; is not supported by the type &quot;%TypeName%&quot;..
         /// </summary>
@@ -203,7 +221,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("StaticOperationNotSupported", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Function &quot;%FunctionName%&quot; accepts %FunctionArguments% argument(s) (%PassedArguments% given)..
         /// </summary>

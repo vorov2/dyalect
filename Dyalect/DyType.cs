@@ -21,7 +21,8 @@ namespace Dyalect
                 new DyModuleTypeInfo(),
                 new DyArrayTypeInfo(),
                 new DyIteratorTypeInfo(),
-                new DyTupleTypeInfo()
+                new DyTupleTypeInfo(),
+                new DyMapTypeInfo()
             };
 
         public const int Nil = 0;
@@ -37,6 +38,7 @@ namespace Dyalect
         public const int Array = 10;
         public const int Iterator = 11;
         public const int Tuple = 12;
+        public const int Map = 13;
 
         public static int GetTypeCodeByName(string name)
         {
@@ -55,6 +57,7 @@ namespace Dyalect
                 case DyTypeNames.Module: return Module;
                 case DyTypeNames.Array: return Array;
                 case DyTypeNames.Iterator: return Iterator;
+                case DyTypeNames.Map: return Map;
                 default: return -1;
             }
         }
@@ -77,7 +80,8 @@ namespace Dyalect
                 Module,
                 Array,
                 Iterator,
-                Tuple
+                Tuple,
+                Map
             };
 
         public const string Nil = "Nil";
@@ -93,5 +97,6 @@ namespace Dyalect
         public const string Array = "Array";
         public const string Iterator = "Iterator";
         public const string Tuple = "Tuple";
+        public const string Map = "Map";
     }
 }

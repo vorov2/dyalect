@@ -16,10 +16,7 @@ namespace Dyalect.Runtime.Types
 
         public DyTuple(DyObject[] values) : base(DyType.Tuple)
         {
-            if (values == null)
-                throw new DyException("Unable to create a tuple with no values.");
-
-            this.Values = values;
+            this.Values = values ?? throw new DyException("Unable to create a tuple with no values.");
         }
 
         public override object ToObject() => ConvertToArray();
@@ -27,6 +24,19 @@ namespace Dyalect.Runtime.Types
         public IList<object> ConvertToList() => Values.Select(e => e.ToObject()).ToList();
 
         public object[] ConvertToArray() => Values.Select(e => e.ToObject()).ToArray();
+
+        public IDictionary<DyObject, DyObject> ConvertToDictionary()
+        {
+            var dict = new Dictionary<DyObject, DyObject>();
+
+            foreach (var obj in Values)
+            {
+                if (!(obj is DyLabel lab) || !dict.TryAdd(new DyString(lab.Label), lab.Value))
+                    dict.Add(new DyString(DefaultKey()), obj);
+            }
+
+            return dict;
+        }
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
