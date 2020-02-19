@@ -365,6 +365,20 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Service code
+        internal bool CheckStaticMember(int nameId, Unit unit, ExecutionContext ctx)
+        {
+            nameId = unit.MemberIds[nameId];
+
+            if (!staticMembers.ContainsKey(nameId))
+            {
+                var name = ctx.Composition.Members[nameId];
+                return InternalGetStaticMember(name, ctx) != null;
+            }
+
+            return true;
+        }
+
+
         internal DyObject GetStaticMember(int nameId, Unit unit, ExecutionContext ctx)
         {
             nameId = unit.MemberIds[nameId];
@@ -406,6 +420,11 @@ namespace Dyalect.Runtime.Types
             return (DyBool)HasMemberDirect(self, name, nameId, ctx);
         }
 
+        internal DyObject HasStaticMember(int nameId, Unit unit, ExecutionContext ctx)
+        {
+            return (DyBool)CheckStaticMember(nameId, unit, ctx);
+        }
+
         protected virtual bool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
         {
             switch (name)
@@ -437,7 +456,9 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Has:
                     return true;
                 default:
-                    return nameId != -1 && CheckHasMemberDirect(self, nameId, ctx);
+                    return nameId == -1
+                        ? CheckHasMemberDirect(self, name, ctx)
+                        : CheckHasMemberDirect(self, nameId, ctx);
             }
         }
 
@@ -498,6 +519,20 @@ namespace Dyalect.Runtime.Types
             }
 
             return true;
+        }
+
+        internal bool CheckHasMemberDirect(DyObject self, string name, ExecutionContext ctx)
+        {
+            var value = InternalGetMember(self, name, ctx);
+
+            if (value != null && value.AutoKind != AutoKind.Generated)
+                return true;
+            else
+            {
+                if (!Support(SupportedOperations.Get) && get == null)
+                    return false;
+                return self.HasItem(name, ctx);
+            }
         }
 
         internal void SetMember(int nameId, DyObject value, Unit unit, ExecutionContext ctx)

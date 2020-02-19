@@ -329,7 +329,10 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.HasMember:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].HasMember(right, op.Data, unit, ctx));
+                        if (right.TypeId == DyType.TypeInfo)
+                            evalStack.Replace(((DyTypeInfo)right).HasStaticMember(op.Data, unit, ctx));
+                        else
+                            evalStack.Replace(types[right.TypeId].HasMember(right, op.Data, unit, ctx));
                         break;
                     case OpCode.GetMember:
                         right = evalStack.Peek();

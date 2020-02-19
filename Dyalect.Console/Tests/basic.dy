@@ -571,9 +571,23 @@ func verbatimStringTest2() {
     assert(pat, str)
 }
 
-func memberCheckTest() {
+func memberCheckTest1() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
+}
+
+func memberCheckTest2() { //#270
+    assert(true, String.join?)
+    assert(false, String.foo?)
+    assert(true, "".split?)
+    assert(false, "".join?)
+}
+
+func memberCheckTest3() { //#271
+    var nm = "split"
+    assert(true, "".has(nm))
+    assert(true, "".split?)
+    assert(true, "".has("split"))
 }
 
 func charTest1() {
