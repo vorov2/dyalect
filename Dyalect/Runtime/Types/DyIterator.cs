@@ -110,6 +110,8 @@ namespace Dyalect.Runtime.Types
                 this.enumerator.Reset();
         }
 
+        public override int GetHashCode() => enumerator.GetHashCode();
+
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg) => new DyIterator(enumerable) { Self = arg };
 
         internal static DyFunction GetIterator(ExecutionContext ctx, DyObject val)

@@ -28,13 +28,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool GetBool() => !string.IsNullOrEmpty(Value);
 
-        public override bool Equals(object obj)
-        {
-            if (obj is DyString s)
-                return Value.Equals(s.Value);
-            else
-                return false;
-        }
+        public override bool Equals(DyObject obj) => Value == ((DyString)obj).Value;
 
         internal protected override string GetString() => Value;
 

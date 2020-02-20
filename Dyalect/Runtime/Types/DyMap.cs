@@ -87,13 +87,36 @@ namespace Dyalect.Runtime.Types
             this.Map = new Dictionary<DyObject, DyObject>(dict);
         }
 
-        public void Add(DyObject key, DyObject value) => Map.Add(key, value);
+        public void Add(DyObject key, DyObject value)
+        {
+            version++;
+            Map.Add(key, value);
+        }
 
-        public bool Remove(DyObject key) => Map.Remove(key);
+        public bool TryAdd(DyObject key, DyObject value)
+        {
+            version++;
+            return Map.TryAdd(key, value);
+        }
+
+        public bool TryGet(DyObject key, out DyObject value)
+        {
+            return Map.TryGetValue(key, out value);
+        }
+
+        public bool Remove(DyObject key)
+        {
+            version++;
+            return Map.Remove(key);
+        }
 
         public bool ContainsKey(DyObject key) => Map.ContainsKey(key);
 
-        public void Clear() => Map.Clear();
+        public void Clear()
+        {
+            version++;
+            Map.Clear();
+        }
 
         public override object ToObject() => Map;
 
@@ -113,7 +136,9 @@ namespace Dyalect.Runtime.Types
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
             if (!Map.TryAdd(index, value))
-                ctx.KeyAlreadyPresent(index);
+                Map[index] = value;
+            else
+                version++;
         }
 
         public IEnumerator<DyObject> GetEnumerator() => new Enumerator(this);
@@ -121,6 +146,8 @@ namespace Dyalect.Runtime.Types
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         internal override int GetCount() => Map.Count;
+
+        public override int GetHashCode() => Map.GetHashCode();
     }
 
     internal sealed class DyMapTypeInfo : DyTypeInfo
@@ -173,7 +200,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject key, DyObject value)
         {
-            var map = ((DyMap)self).Map;
+            var map = (DyMap)self;
             if (!map.TryAdd(key, value))
                 return ctx.KeyAlreadyPresent(key);
             return DyNil.Instance;
@@ -181,7 +208,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject TryAddItem(ExecutionContext ctx, DyObject self, DyObject key, DyObject value)
         {
-            var map = ((DyMap)self).Map;
+            var map = (DyMap)self;
             if (!map.TryAdd(key, value))
                 return DyBool.False;
             return DyBool.True;
@@ -189,8 +216,8 @@ namespace Dyalect.Runtime.Types
 
         private DyObject TryGetItem(ExecutionContext ctx, DyObject self, DyObject key)
         {
-            var map = ((DyMap)self).Map;
-            if (!map.TryGetValue(key, out var value))
+            var map = (DyMap)self;
+            if (!map.TryGet(key, out var value))
                 return DyNil.Instance;
             return value;
         }
@@ -241,6 +268,8 @@ namespace Dyalect.Runtime.Types
         {
             if (name == "Map")
                 return DyForeignFunction.Static(name, New, -1, new Par("values", DyNil.Instance));
+            else if (name == "fromTuple")
+                return DyForeignFunction.Static(name, New, -1, new Par("values"));
 
             return null;
         }

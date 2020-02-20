@@ -31,6 +31,8 @@ namespace Dyalect.Runtime.Types
         {
             writer.Write(TypeId);
         }
+
+        public override int GetHashCode() => 0;
     }
 
     internal sealed class DyNilTypeInfo : DyTypeInfo

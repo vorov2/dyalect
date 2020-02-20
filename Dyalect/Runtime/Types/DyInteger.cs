@@ -91,13 +91,7 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => value.ToString(CI.Default);
 
-        public override bool Equals(object obj)
-        {
-            if (obj is DyInteger i)
-                return value == i.value;
-            else
-                return false;
-        }
+        public override bool Equals(DyObject obj) => value == ((DyInteger)obj).value;
 
         public override object ToObject() => value;
 

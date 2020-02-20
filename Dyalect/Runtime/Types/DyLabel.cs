@@ -56,6 +56,8 @@
             value = Value;
             return true;
         }
+
+        public override int GetHashCode() => Value.GetHashCode();
     }
 
     internal sealed class DyLabelTypeInfo : DyTypeInfo

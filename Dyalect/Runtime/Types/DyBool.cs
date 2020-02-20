@@ -15,6 +15,8 @@ namespace Dyalect.Runtime.Types
             public override object ToObject() => true;
 
             public override string ToString() => "true";
+
+            public override int GetHashCode() => 1;
         }
 
         private sealed class FalseBool : DyBool
@@ -24,6 +26,8 @@ namespace Dyalect.Runtime.Types
             public override object ToObject() => false;
 
             public override string ToString() => "false";
+
+            public override int GetHashCode() => 0;
         }
 
         private DyBool() : base(DyType.Bool)

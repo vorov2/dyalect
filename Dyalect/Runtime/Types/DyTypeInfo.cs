@@ -701,6 +701,8 @@ namespace Dyalect.Runtime.Types
         }
 
         protected virtual DyFunction GetStaticMember(string name, ExecutionContext ctx) => null;
+
+        public override int GetHashCode() => TypeCode.GetHashCode();
         #endregion
     }
 

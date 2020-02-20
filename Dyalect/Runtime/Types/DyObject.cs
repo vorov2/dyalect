@@ -90,7 +90,7 @@ namespace Dyalect.Runtime.Types
 
         public virtual bool Equals(DyObject other) => ReferenceEquals(this, other);
 
-        public override bool Equals(object obj) => obj is DyObject dyo ? Equals(dyo) : false;
+        public override sealed bool Equals(object obj) => obj is DyObject dyo ? Equals(dyo) : false;
 
         public override int GetHashCode()
         {

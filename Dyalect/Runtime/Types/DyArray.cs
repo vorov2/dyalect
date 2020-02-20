@@ -252,6 +252,8 @@ namespace Dyalect.Runtime.Types
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         internal override int GetCount() => Values.Length;
+
+        public override int GetHashCode() => Values.GetHashCode();
     }
 
     internal sealed class DyArrayTypeInfo : DyTypeInfo

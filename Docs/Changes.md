@@ -6,6 +6,7 @@
   * Fixed: _Type descriptors do not support method `has`_ ([Issue #272](https://github.com/vorov2/dyalect/issues/272)).
   * Done: _Add a built-in `eval` function_ ([Issue #269](https://github.com/vorov2/dyalect/issues/269), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#eval)).
   * Done: _Add `Array.swap` method_ ([Issue #273](https://github.com/vorov2/dyalect/issues/273), [docs](https://github.com/vorov2/dyalect/wiki/Array#swap)).
+  * Done: _Implement "Map" data type_ ([Issue #235](https://github.com/vorov2/dyalect/issues/235), [docs](https://github.com/vorov2/dyalect/wiki/Map)).
 
 # 0.10.2
   * Fixed: _Parsing logic of `return` operator_ ([Issue #266](https://github.com/vorov2/dyalect/issues/266)).
