@@ -117,6 +117,9 @@ namespace Dyalect.Compiler
                 case NodeType.Type:
                     Build((DTypeDeclaration)node, hints, ctx);
                     break;
+                case NodeType.Label:
+                    AddError(CompilerError.InvalidLabel, node.Location);
+                    break;
             }
         }
 

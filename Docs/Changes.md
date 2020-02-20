@@ -2,6 +2,7 @@
   * Change: Enhancements and amendments to the .NET API.
   * Fixed: _Member check operator `?` doesn't work with static members ([Issue #270](https://github.com/vorov2/dyalect/issues/270)).
   * Fixed: _Method "has" doesn't always work correctly_ ([Issue #271](https://github.com/vorov2/dyalect/issues/271)).
+  * Fixed: _Label syntax and virtual machine crush_ ([Issue #274](https://github.com/vorov2/dyalect/issues/274)).
   * Fixed: _Type descriptors do not support method `has`_ ([Issue #272](https://github.com/vorov2/dyalect/issues/272)).
   * Done: _Add a built-in `eval` function_ ([Issue #269](https://github.com/vorov2/dyalect/issues/269), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#eval)).
   * Done: _Add `Array.swap` method_ ([Issue #273](https://github.com/vorov2/dyalect/issues/273), [docs](https://github.com/vorov2/dyalect/wiki/Array#swap)).
