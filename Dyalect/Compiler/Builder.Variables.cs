@@ -91,9 +91,24 @@ namespace Dyalect.Compiler
             return GetVariable(name, currentScope, node.Location, err);
         }
 
+        private int GetVariableToAssign(string name, DNode node, bool err = true)
+        {
+            return GetVariableToAssign(name, node.Location, err);
+        }
+
         private ScopeVar GetVariable(string name, Location loc, bool err = true)
         {
             return GetVariable(name, currentScope, loc, err);
+        }
+
+        private int GetVariableToAssign(string name, Location loc, bool err = true)
+        {
+            var sv = GetVariable(name, currentScope, loc, err);
+
+            if ((sv.Data & VarFlags.Const) == VarFlags.Const)
+                AddError(CompilerError.UnableAssignConstant, loc, loc);
+
+            return sv.Address;
         }
 
         private bool TryGetLocalVariable(string name, out ScopeVar var)

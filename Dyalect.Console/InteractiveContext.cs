@@ -16,13 +16,14 @@ namespace Dyalect
             var buildOptions = new BuilderOptions
             {
                 Debug = options.Debug,
+                NoOptimizations = options.NoOptimizations,
                 NoLangModule = options.NoLang,
                 NoWarnings = options.NoWarnings,
                 NoWarningsLinker = options.NoWarningsLinker
             };
 
             var lookup = FileLookup.Create(
-                options.FileNames == null || options.FileNames.Length == 0 || string.IsNullOrWhiteSpace(options.FileNames[0]) 
+                options.FileNames == null || options.FileNames.Length == 0 || string.IsNullOrWhiteSpace(options.FileNames[0])
                     ? Environment.CurrentDirectory
                     : Path.GetDirectoryName(options.FileNames[0]), options.Paths);
             Linker = new DyIncrementalLinker(lookup, buildOptions, options.UserArguments);

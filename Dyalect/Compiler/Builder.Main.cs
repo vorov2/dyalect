@@ -463,13 +463,13 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-            //This is a special optimization for the 'toString' and 'len' methods
-            //If we see that it is called directly we than emit a direct Str or Len op code
+            //This is a special optimization for the 'toString', 'has' and 'len' methods
+            //If we see that it is called directly we than emit a direct op code
             if (node.Target.NodeType == NodeType.Access)
             {
                 var meth = (DAccess)node.Target;
 
-                if (meth.Name == Builtins.ToStr && node.Arguments.Count == 0)
+                if (meth.Name == Builtins.ToStr && node.Arguments.Count == 0 && !options.NoOptimizations)
                 {
                     Build(meth.Target, hints.Append(Push), ctx);
                     AddLinePragma(node);
@@ -478,26 +478,27 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-                //if (meth.Name == Builtins.Len && node.Arguments.Count == 0)
-                //{
-                //    Build(meth.Target, hints.Append(Push), ctx);
-                //    AddLinePragma(node);
-                //    cw.Len();
-                //    PopIf(hints);
-                //    return;
-                //}
+                if (meth.Name == Builtins.Len && node.Arguments.Count == 0 && !options.NoOptimizations)
+                {
+                    Build(meth.Target, hints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.Len();
+                    PopIf(hints);
+                    return;
+                }
 
-                //if (meth.Name == Builtins.Has && node.Arguments.Count == 1
-                //    && node.Arguments[0].NodeType == NodeType.String
-                //    && node.Arguments[0] is DStringLiteral str
-                //    && str.Chunks == null)
-                //{
-                //    Build(meth.Target, hints.Append(Push), ctx);
-                //    AddLinePragma(node);
-                //    cw.HasMember(GetMemberNameId(str.Value));
-                //    PopIf(hints);
-                //    return;
-                //}
+                if (meth.Name == Builtins.Has && node.Arguments.Count == 1
+                    && node.Arguments[0].NodeType == NodeType.String
+                    && node.Arguments[0] is DStringLiteral str
+                    && str.Chunks == null
+                    && !options.NoOptimizations)
+                {
+                    Build(meth.Target, hints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.HasMember(GetMemberNameId(str.Value));
+                    PopIf(hints);
+                    return;
+                }
             }
 
             if (!sv.IsEmpty())
@@ -631,6 +632,7 @@ namespace Dyalect.Compiler
         {
             if (NoPush(node, hints))
                 return;
+
             AddLinePragma(node);
             cw.Push(node.Value);
         }
@@ -749,6 +751,12 @@ namespace Dyalect.Compiler
 
         private void Build(DBinding node, Hints hints, CompilerContext ctx)
         {
+            if (CanBeOptimized(node, hints, ctx))
+            {
+                PushIf(hints);
+                return;
+            }
+
             if (node.Init != null)
                 Build(node.Init, hints.Append(Push), ctx);
             else
@@ -817,14 +825,53 @@ namespace Dyalect.Compiler
 
         private void Build(DRebinding node, Hints hints, CompilerContext ctx)
         {
-            Build(node.Init, hints.Append(Push), ctx);
-            BuildPattern(node.Pattern, hints.Append(Rebind), ctx);
-            var skip = cw.DefineLabel();
-            cw.Brtrue(skip);
-            cw.Fail(DyErrorCode.MatchFailed);
-            cw.MarkLabel(skip);
-            cw.Nop();
+            if (!CanBeOptimized(node, hints, ctx))
+            {
+                Build(node.Init, hints.Append(Push), ctx);
+                BuildPattern(node.Pattern, hints.Append(Rebind), ctx);
+                var skip = cw.DefineLabel();
+                cw.Brtrue(skip);
+                cw.Fail(DyErrorCode.MatchFailed);
+                cw.MarkLabel(skip);
+                cw.Nop();
+            }
+
             PushIf(hints);
+        }
+
+        private bool CanBeOptimized(DBindingBase node, Hints hints, CompilerContext ctx)
+        {
+            if (!options.NoOptimizations
+                && node.Init != null
+                && node.Init.NodeType == NodeType.Tuple
+                && node.Pattern.NodeType == NodeType.TuplePattern
+                && node.Init.GetElementCount() == node.Pattern.GetElementCount())
+            {
+                var init = (DTupleLiteral)node.Init;
+                var pat = (DTuplePattern)node.Pattern;
+
+                for (var i = 0; i < pat.Elements.Count; i++)
+                    if (pat.Elements[i].NodeType != NodeType.NamePattern)
+                        return false;
+
+                for (var i = 0; i < init.Elements.Count; i++)
+                    Build(init.Elements[i], hints.Append(Push), ctx);
+
+                for (var i = 0; i < pat.Elements.Count; i++)
+                {
+                    var e = pat.Elements[pat.Elements.Count - i - 1];
+                    var addr = node.NodeType == NodeType.Binding
+                        ? AddVariable(e.GetName(), e, VarFlags.None)
+                        : GetVariableToAssign(e.GetName(), e, false);
+                    if (addr == -1 && node.NodeType == NodeType.Rebinding)
+                        addr = AddVariable(e.GetName(), e, VarFlags.None);
+                    cw.PopVar(addr);
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         private void Build(DUnaryOperation node, Hints hints, CompilerContext ctx)

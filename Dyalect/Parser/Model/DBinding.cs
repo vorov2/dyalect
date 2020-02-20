@@ -2,7 +2,7 @@
 
 namespace Dyalect.Parser.Model
 {
-    public sealed class DBinding : DNode
+    public sealed class DBinding : DBindingBase
     {
         public DBinding(Location loc) : base(NodeType.Binding, loc)
         {
@@ -10,10 +10,6 @@ namespace Dyalect.Parser.Model
         }
 
         public bool Constant { get; set; }
-
-        public DPattern Pattern { get; internal set; }
-
-        public DNode Init { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {

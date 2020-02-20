@@ -1,13 +1,15 @@
 # 0.11.0
-  * Change: Enhancements and amendments to the .NET API.
+  * Change: _Enhancements and amendments to the .NET API and internal object model._
   * Fixed: _Member check operator `?` doesn't work with static members ([Issue #270](https://github.com/vorov2/dyalect/issues/270)).
-  * Fixed: _Method "has" doesn't always work correctly_ ([Issue #271](https://github.com/vorov2/dyalect/issues/271)).
+  * Fixed: _Method `has` doesn't always work correctly_ ([Issue #271](https://github.com/vorov2/dyalect/issues/271)).
   * Fixed: _Label syntax and virtual machine crush_ ([Issue #274](https://github.com/vorov2/dyalect/issues/274)).
   * Fixed: _Type descriptors do not support method `has`_ ([Issue #272](https://github.com/vorov2/dyalect/issues/272)).
   * Fixed: _Function `len` is not fully supported by custom types_ ([Issue #276](https://github.com/vorov2/dyalect/issues/276)).
   * Done: _Add a built-in `eval` function_ ([Issue #269](https://github.com/vorov2/dyalect/issues/269), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#eval)).
   * Done: _Add `Array.swap` method_ ([Issue #273](https://github.com/vorov2/dyalect/issues/273), [docs](https://github.com/vorov2/dyalect/wiki/Array#swap)).
-  * Done: _Implement "Map" data type_ ([Issue #235](https://github.com/vorov2/dyalect/issues/235), [docs](https://github.com/vorov2/dyalect/wiki/Map)).
+  * Done: _Implement `Map` data type_ ([Issue #235](https://github.com/vorov2/dyalect/issues/235), [docs](https://github.com/vorov2/dyalect/wiki/Map)).
+  * Done: _Add a compiler switch to disable optimizations_ ([Issue #277](https://github.com/vorov2/dyalect/issues/277)).
+  * Done: _Optimization of assignments using tuples_ ([Issue #278](https://github.com/vorov2/dyalect/issues/278)).
 
 # 0.10.2
   * Fixed: _Parsing logic of `return` operator_ ([Issue #266](https://github.com/vorov2/dyalect/issues/266)).

@@ -2,16 +2,12 @@
 
 namespace Dyalect.Parser.Model
 {
-    public sealed class DRebinding : DNode
+    public sealed class DRebinding : DBindingBase
     {
         public DRebinding(Location loc) : base(NodeType.Rebinding, loc)
         {
 
         }
-
-        public DPattern Pattern { get; internal set; }
-
-        public DNode Init { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {
