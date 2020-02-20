@@ -1,5 +1,6 @@
 # Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.10-blue.svg)
 
+![.NET Core](https://github.com/vorov2/dyalect/workflows/.NET%20Core/badge.svg)
 [![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
 ![AppVeyor tests](https://img.shields.io/appveyor/tests/vorov2/dyalect.svg)
 
