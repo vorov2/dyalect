@@ -73,7 +73,8 @@ namespace Dyalect.Runtime.Types
 
         public override int GetHashCode() => value.GetHashCode();
 
-        public override bool Equals(DyObject obj) => value == ((DyFloat)obj).value;
+        public override bool Equals(DyObject obj) =>
+            obj is DyFloat f && value == f.value;
 
         public override string ToString() => value.ToString(CI.NumberFormat);
 

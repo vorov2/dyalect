@@ -14,11 +14,11 @@ func levenshtein(s, t) {
     if n == 0 {
         return m
     }
- 
+
     if (m == 0) {
         return n
     }
- 
+
     for i in 0..n {
         d[i][0] = i
     }
@@ -26,7 +26,7 @@ func levenshtein(s, t) {
     for j in 0..m {
         d[0][j] = j
     }
- 
+
     for j in 1..m {
         for i in 1..n {
             if s[i - 1] == t[j - 1] {

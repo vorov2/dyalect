@@ -161,7 +161,7 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set;
+            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
@@ -237,8 +237,6 @@ namespace Dyalect.Runtime.Types
         {
             switch (name)
             {
-                case Builtins.Len:
-                    return DyForeignFunction.Member(name, Length);
                 case "add":
                     return DyForeignFunction.Member(name, AddItem, -1, new Par("key"), new Par("value"));
                 case "tryAdd":

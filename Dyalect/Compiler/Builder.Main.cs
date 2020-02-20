@@ -478,26 +478,26 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-                if (meth.Name == Builtins.Len && node.Arguments.Count == 0)
-                {
-                    Build(meth.Target, hints.Append(Push), ctx);
-                    AddLinePragma(node);
-                    cw.Len();
-                    PopIf(hints);
-                    return;
-                }
+                //if (meth.Name == Builtins.Len && node.Arguments.Count == 0)
+                //{
+                //    Build(meth.Target, hints.Append(Push), ctx);
+                //    AddLinePragma(node);
+                //    cw.Len();
+                //    PopIf(hints);
+                //    return;
+                //}
 
-                if (meth.Name == Builtins.Has && node.Arguments.Count == 1
-                    && node.Arguments[0].NodeType == NodeType.String
-                    && node.Arguments[0] is DStringLiteral str
-                    && str.Chunks == null)
-                {
-                    Build(meth.Target, hints.Append(Push), ctx);
-                    AddLinePragma(node);
-                    cw.HasMember(GetMemberNameId(str.Value));
-                    PopIf(hints);
-                    return;
-                }
+                //if (meth.Name == Builtins.Has && node.Arguments.Count == 1
+                //    && node.Arguments[0].NodeType == NodeType.String
+                //    && node.Arguments[0] is DStringLiteral str
+                //    && str.Chunks == null)
+                //{
+                //    Build(meth.Target, hints.Append(Push), ctx);
+                //    AddLinePragma(node);
+                //    cw.HasMember(GetMemberNameId(str.Value));
+                //    PopIf(hints);
+                //    return;
+                //}
             }
 
             if (!sv.IsEmpty())

@@ -28,7 +28,8 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool GetBool() => !string.IsNullOrEmpty(Value);
 
-        public override bool Equals(DyObject obj) => Value == ((DyString)obj).Value;
+        public override bool Equals(DyObject obj) =>
+            obj is DyString s && Value == s.Value;
 
         internal protected override string GetString() => Value;
 
@@ -91,7 +92,7 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
             | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
-            | SupportedOperations.Get;
+            | SupportedOperations.Get | SupportedOperations.Len;
 
         public override string TypeName => DyTypeNames.String;
 
@@ -439,8 +440,6 @@ namespace Dyalect.Runtime.Types
         {
             switch (name)
             {
-                case Builtins.Len:
-                    return DyForeignFunction.Member(name, Length);
                 case "indexOf":
                     return DyForeignFunction.Member(name, IndexOf, -1, new Par("value"), new Par("fromIndex", DyInteger.Get(0)), new Par("count", DyNil.Instance));
                 case "lastIndexOf":

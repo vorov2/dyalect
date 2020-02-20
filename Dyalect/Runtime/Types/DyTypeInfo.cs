@@ -33,7 +33,8 @@ namespace Dyalect.Runtime.Types
             Plus = 0x80000,
             Not =  0x100000,
             Get =  0x200000,
-            Set =  0x400000
+            Set =  0x400000,
+            Len =  0x800000
         }
 
         protected abstract SupportedOperations GetSupportedOperations();
@@ -378,6 +379,10 @@ namespace Dyalect.Runtime.Types
             return true;
         }
 
+        internal bool CheckStaticMember(string name, ExecutionContext ctx)
+        {
+            return InternalGetStaticMember(name, ctx) != null;
+        }
 
         internal DyObject GetStaticMember(int nameId, Unit unit, ExecutionContext ctx)
         {
@@ -425,6 +430,11 @@ namespace Dyalect.Runtime.Types
             return (DyBool)CheckStaticMember(nameId, unit, ctx);
         }
 
+        internal DyObject HasStaticMember(string name, ExecutionContext ctx)
+        {
+            return (DyBool)CheckStaticMember(name, ctx);
+        }
+
         protected virtual bool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
         {
             switch (name)
@@ -450,6 +460,7 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Plus: return Support(SupportedOperations.Plus);
                 case Builtins.Get: return Support(SupportedOperations.Get);
                 case Builtins.Set: return Support(SupportedOperations.Set);
+                case Builtins.Len: return Support(SupportedOperations.Len);
                 case Builtins.Not:
                 case Builtins.ToStr:
                 case Builtins.Clone:
@@ -585,7 +596,10 @@ namespace Dyalect.Runtime.Types
             if (member.TypeId != DyType.String)
                 return ctx.InvalidType(member);
             var name = member.GetString();
-            if (ctx.Composition.MembersMap.TryGetValue(name, out var nameId))
+
+            if (self == null) //We're calling against type itself
+                return HasStaticMember(name, ctx);
+            else if (ctx.Composition.MembersMap.TryGetValue(name, out var nameId))
                 return (DyBool)HasMemberDirect(self, name, nameId, ctx);
             else
                 return (DyBool)HasMemberDirect(self, name, -1, ctx);
@@ -641,6 +655,10 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Set:
                     return Support(SupportedOperations.Set)
                         ? DyForeignFunction.Member(name, Set, -1, new Par("index"), new Par("value"))
+                        : null;
+                case Builtins.Len:
+                    return Support(SupportedOperations.Len)
+                        ? DyForeignFunction.Member(name, Length)
                         : null;
                 case Builtins.ToStr: return DyForeignFunction.Member(name, ToString);
                 case Builtins.Iterator: return self is IEnumerable<DyObject>  ? DyForeignFunction.Member(name, GetIterator) : null;

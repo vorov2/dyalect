@@ -29,7 +29,7 @@ func autoTest3() {
 }
 
 func autoTest4() {
-    static func Foo.MakeFoo(obj) { 
+    static func Foo.MakeFoo(obj) {
         new(obj)
     }
     auto func Foo.magic() {
@@ -41,7 +41,7 @@ func autoTest4() {
 
 func extendTest1() {
     static func Bar.Bar(args...) {
-        new(args) 
+        new(args)
     }
     func Bar.len() {
         valueof(this).len()
@@ -186,7 +186,7 @@ func typeTest3() {
         valueof(this).__value
     }
     func Cell.len() {
-        1 
+        1
     }
     var c = ref(12)
     assert(12, c.getValue())

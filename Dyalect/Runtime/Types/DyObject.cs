@@ -13,7 +13,7 @@ namespace Dyalect.Runtime.Types
             TypeId = typeId;
         }
 
-        public override string ToString() => $"[type:{TypeId}]";
+        public override string ToString() => $"[type:{DyType.GetTypeNameByCode(TypeId)}]";
 
         protected internal virtual bool GetBool() => true;
 

@@ -61,6 +61,28 @@ namespace Dyalect
                 default: return -1;
             }
         }
+
+        public static string GetTypeNameByCode(int code)
+        {
+            switch (code)
+            {
+                case Nil: return DyTypeNames.Nil;
+                case Integer: return DyTypeNames.Integer;
+                case Float: return DyTypeNames.Float;
+                case Bool: return DyTypeNames.Bool;
+                case Char: return DyTypeNames.Char;
+                case String: return DyTypeNames.String;
+                case Function: return DyTypeNames.Function;
+                case Label: return DyTypeNames.Label;
+                case TypeInfo: return DyTypeNames.TypeInfo;
+                case Tuple: return DyTypeNames.Tuple;
+                case Module: return DyTypeNames.Module;
+                case Array: return DyTypeNames.Array;
+                case Iterator: return DyTypeNames.Iterator;
+                case Map: return DyTypeNames.Map;
+                default: return code.ToString();
+            }
+        }
     }
 
     internal static class DyTypeNames

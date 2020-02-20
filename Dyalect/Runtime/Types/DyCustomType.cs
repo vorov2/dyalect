@@ -57,8 +57,9 @@ namespace Dyalect.Runtime.Types
 
         public override bool Equals(DyObject other)
         {
-            var ct = (DyCustomType)other;
-            return ct.ConstructorId == ConstructorId
+            return
+                other is DyCustomType ct
+                && ct.ConstructorId == ConstructorId
                 && (ReferenceEquals(ct.Value, Value) ||
                     (!ReferenceEquals(ct.Value, null) && ct.Value.Equals(Value)));
         }
@@ -76,7 +77,8 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             (SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not)
-            | (autoGenMethods ? (SupportedOperations.Get | SupportedOperations.Set) : SupportedOperations.None);
+            | (autoGenMethods ? (SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len)
+                : SupportedOperations.None);
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
@@ -159,7 +161,9 @@ namespace Dyalect.Runtime.Types
                         goto default;
                     return true;
                 default:
-                    return nameId != -1 && CheckHasMemberDirect(self, nameId, ctx);
+                    return nameId != -1
+                        ? CheckHasMemberDirect(self, nameId, ctx)
+                        : CheckHasMemberDirect(self, name, ctx);
             }
         }
     }

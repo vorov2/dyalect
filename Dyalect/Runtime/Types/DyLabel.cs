@@ -58,6 +58,21 @@
         }
 
         public override int GetHashCode() => Value.GetHashCode();
+
+        public override bool Equals(DyObject other)
+        {
+            if (!(other is DyLabel lab))
+                return false;
+
+            if (lab.Label != Label)
+                return false;
+
+            if (ReferenceEquals(lab.Value, Value)
+                || (!ReferenceEquals(lab.Value, null) && lab.Value.Equals(Value)))
+                return true;
+
+            return false;
+        }
     }
 
     internal sealed class DyLabelTypeInfo : DyTypeInfo
