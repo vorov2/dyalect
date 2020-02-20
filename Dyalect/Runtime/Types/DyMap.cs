@@ -179,6 +179,22 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject TryAddItem(ExecutionContext ctx, DyObject self, DyObject key, DyObject value)
+        {
+            var map = ((DyMap)self).Map;
+            if (!map.TryAdd(key, value))
+                return DyBool.False;
+            return DyBool.True;
+        }
+
+        private DyObject TryGetItem(ExecutionContext ctx, DyObject self, DyObject key)
+        {
+            var map = ((DyMap)self).Map;
+            if (!map.TryGetValue(key, out var value))
+                return DyNil.Instance;
+            return value;
+        }
+
         private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject key)
         {
             return ((DyMap)self).Remove(key) ? DyBool.True : DyBool.False;
@@ -198,6 +214,10 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Member(name, Length);
                 case "add":
                     return DyForeignFunction.Member(name, AddItem, -1, new Par("key"), new Par("value"));
+                case "tryAdd":
+                    return DyForeignFunction.Member(name, TryAddItem, -1, new Par("key"), new Par("value"));
+                case "tryGet":
+                    return DyForeignFunction.Member(name, TryGetItem, -1, new Par("key"));
                 case "remove":
                     return DyForeignFunction.Member(name, RemoveItem, -1, new Par("key"));
                 case "clear":
