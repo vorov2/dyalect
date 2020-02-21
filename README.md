@@ -26,9 +26,7 @@ A taste of Dy:
 
 ```swift
 func fib(n) {
-    if n < 2 {
-        return n
-    }
+    return n when n < 2
     fib(n - 1) + fib(n - 2)
 }
 
@@ -62,9 +60,6 @@ true
 
 Dy is shipped with a crossplatform interactive console which can
 help you to familiarize yourself with the language.
-
-The project is still in early development, however you can already
-download the binaries or study existing code.
 
 Please refer to [wiki](https://github.com/vorov2/dyalect/wiki) for more information.
 
