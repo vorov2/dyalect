@@ -59,10 +59,8 @@ And a small example with iterators (coroutines):
 
 ```swift
 func fetch() { 
-    yield 22 * 1.25
     yield "Hello, world!"
-    yield (1,2,3)
-    yield true  
+    yield 22 * 1.25
 }
 
 for x in fetch() {
@@ -73,10 +71,8 @@ for x in fetch() {
 Outputs:
 
 ```
-27.5
 Hello, world!
-(1, 2, 3)
-true
+27.5
 ```
 
 Dy is shipped with a crossplatform interactive console which can
