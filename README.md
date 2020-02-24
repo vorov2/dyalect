@@ -1,5 +1,6 @@
-# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.10-blue.svg)
+# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.11-blue.svg)
 
+![.NET Core](https://github.com/vorov2/dyalect/workflows/.NET%20Core/badge.svg)
 [![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
 ![AppVeyor tests](https://img.shields.io/appveyor/tests/vorov2/dyalect.svg)
 
@@ -25,9 +26,7 @@ A taste of Dy:
 
 ```swift
 func fib(n) {
-    if n < 2 {
-        return n
-    }
+    return n when n < 2
     fib(n - 1) + fib(n - 2)
 }
 
@@ -35,14 +34,33 @@ func fib(n) {
 fib(11)
 ```
 
+Extending standard types:
+
+```swift
+func Float.pow(n) {
+    var result = 1.0
+    if n > 0 {
+        for i in 1..n {
+            result *= this
+        }
+    }
+    else if n < 0 {
+        for i in (-1)..n {
+            result /= this
+        }
+    }
+    result
+}
+
+20.12.pow(3) //Outputs: 8144.865728
+```
+
 And a small example with iterators (coroutines):
 
 ```swift
 func fetch() { 
-    yield 22 * 1.25
     yield "Hello, world!"
-    yield (1,2,3)
-    yield true  
+    yield 22 * 1.25
 }
 
 for x in fetch() {
@@ -53,17 +71,12 @@ for x in fetch() {
 Outputs:
 
 ```
-27.5
 Hello, world!
-(1, 2, 3)
-true
+27.5
 ```
 
 Dy is shipped with a crossplatform interactive console which can
 help you to familiarize yourself with the language.
-
-The project is still in early development, however you can already
-download the binaries or study existing code.
 
 Please refer to [wiki](https://github.com/vorov2/dyalect/wiki) for more information.
 

@@ -19,6 +19,8 @@
 
         public bool NoWarningsLinker { get; set; }
 
+        public bool NoOptimizations { get; set; }
+
         public bool LinkerSkipChecksum { get; set; }
     }
 }

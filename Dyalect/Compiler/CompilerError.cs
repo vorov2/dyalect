@@ -69,5 +69,7 @@
         UnableToLinkModule = 232,
 
         BindingPatternNoInit = 233,
+
+        InvalidLabel = 234
     }
 }

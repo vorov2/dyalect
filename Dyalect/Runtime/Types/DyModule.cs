@@ -84,7 +84,7 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set;
+            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
 
         public override string TypeName => DyTypeNames.Module;
 
@@ -114,9 +114,6 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            if (name == Builtins.Len)
-                return DyForeignFunction.Member(name, Length);
-
             return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
             {
                 if (!self.TryGetItem(name, c, out var value))

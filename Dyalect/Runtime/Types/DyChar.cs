@@ -81,6 +81,8 @@ namespace Dyalect.Runtime.Types
             writer.Write(TypeId);
             writer.Write(Value);
         }
+
+        public override int GetHashCode() => Value.GetHashCode();
     }
 
     internal sealed class DyCharTypeInfo : DyTypeInfo

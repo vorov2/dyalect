@@ -32,7 +32,7 @@ namespace Dyalect.Runtime
 
         internal Stack<int> Sections { get; set; }
 
-        internal Stack<ArgContainer> Locals { get; } = new Stack<ArgContainer>(4);
+        internal Stack<ArgContainer> Arguments { get; } = new Stack<ArgContainer>(4);
 
         public DyError GetError() => Error;
 

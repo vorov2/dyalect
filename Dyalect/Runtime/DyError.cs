@@ -43,7 +43,11 @@ namespace Dyalect.Runtime
 
         CollectionModified = 616,
 
-        PrivateNameAccess = 617
+        PrivateNameAccess = 617,
+
+        KeyNotFound = 618,
+
+        KeyAlreadyPresent = 619
     }
 
     public class DyError
@@ -153,6 +157,18 @@ namespace Dyalect.Runtime
             ctx.Error = new DyError(DyErrorCode.IndexInvalidType,
                 ("Index", index),
                 ("IndexTypeName", index.TypeName(ctx)));
+            return DyNil.Instance;
+        }
+
+        public static DyObject KeyNotFound(this ExecutionContext ctx, DyObject key)
+        {
+            ctx.Error = new DyError(DyErrorCode.KeyNotFound, ("Key", key));
+            return DyNil.Instance;
+        }
+
+        public static DyObject KeyAlreadyPresent(this ExecutionContext ctx, DyObject key)
+        {
+            ctx.Error = new DyError(DyErrorCode.KeyAlreadyPresent, ("Key", key));
             return DyNil.Instance;
         }
 

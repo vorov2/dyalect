@@ -26,6 +26,9 @@ namespace Dyalect
         [Binding("debug", Help = "Compile in debug mode.", Category = COMPILER)]
         public bool Debug { get; set; }
 
+        [Binding("nopt", Help = "Disable all compiler optimizations.", Category = COMPILER)]
+        public bool NoOptimizations { get; set; }
+
         [Binding("nowarn", Help = "Do not generate warnings.", Category = COMPILER)]
         public bool NoWarnings { get; set; }
 
@@ -58,7 +61,7 @@ namespace Dyalect
         public override string ToString()
         {
             var list = new List<(string, string)>();
-            
+
             foreach (var pi in typeof(DyaOptions).GetProperties())
             {
                 var attr = Attribute.GetCustomAttribute(pi, typeof(BindingAttribute)) as BindingAttribute;
@@ -75,8 +78,8 @@ namespace Dyalect
                         continue;
 
                     var key = attr.Names?.Length > 0 ? attr.Names[0] : "<file name>";
-                    list.Add((key, byt ? "" 
-                        : val is System.Collections.IEnumerable 
+                    list.Add((key, byt ? ""
+                        : val is System.Collections.IEnumerable
                             ? string.Join(';', ((System.Collections.IEnumerable)val).OfType<object>().Select(v => v.ToString()))
                         : val.ToString()));
                 }

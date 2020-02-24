@@ -346,6 +346,67 @@ func arrayTest24() { //Issue #250
     assert([5,4,3,2,1], xs)
 }
 
+func arrayTest25() { //#273
+    var xs = [1,2,3]
+    xs.swap(1,2)
+    assert([1,3,2], xs)
+}
+
+func mapTest1() {
+    var map = Map()
+    map.add("x", 1)
+    map.add("y", 2)
+    assert(1, map["x"])
+    assert(2, map["y"])
+}
+
+func mapTest2() {
+    var map = Map()
+    map.add(("x",1), 1)
+    map.add(("y",2), 2)
+    assert(1, map[("x",1)])
+    assert(2, map[("y",2)])
+}
+
+func mapTest3() {
+    var map = Map.fromTuple( (foo: "foo", bar: "bar") )
+    assert("foo", map.foo)
+    assert("bar", map.bar)
+}
+
+func mapTest4() {
+    var map = Map()
+    map[42] = 420
+    map[42] = map[42] * 2
+    assert(840, map[42])
+}
+
+func mapTest5() {
+    var map = Map()
+    map.add(12, 12)
+    if !map.tryAdd(12, 12) {
+        map.remove(12)
+    }
+    var res = map.tryGet(12)
+    assert(nil, res)
+}
+
+func mapTest6() {
+    var map = Map()
+    map.add("x", 1)
+    map["x"] = 2
+    map["y"] = 3
+    assert(2, map.len())
+    map.clear()
+    assert(0, map.len())
+}
+
+func mapTest7() {
+    var map = Map()
+    map[[1,2,3]] = [4,5,6]
+    assert([4,5,6], map[[1,2,3]])
+}
+
 func tupleTest1() {
     var t = (1,2,3)
     assert(3, t.len())
@@ -571,9 +632,30 @@ func verbatimStringTest2() {
     assert(pat, str)
 }
 
-func memberCheckTest() {
+func memberCheckTest1() {
     assert(true, "string".len?)
     assert(false, 42.fooBar?)
+}
+
+func memberCheckTest2() { //#270
+    assert(true, String.join?)
+    assert(false, String.foo?)
+    assert(true, "".split?)
+    assert(false, "".join?)
+}
+
+func memberCheckTest3() { //#271
+    var nm = "split"
+    assert(true, "".has(nm))
+    assert(true, "".split?)
+    assert(true, "".has("split"))
+}
+
+func memberCheckTest4() { //#272
+    assert(true, String.has("join"))
+    assert(false, String.has("split"))
+    assert(true, String.has("id"))
+    assert(true, String.has("name"))
 }
 
 func charTest1() {
@@ -913,6 +995,15 @@ func guardsTest3() {
     assert(0, x)
 }
 
+func guardsTest4() {
+    func safeDiv(x, y) {
+        return when y == 0
+        return x / y
+    }
+    var res = safeDiv(10, 0)
+    assert(nil, res)
+}
+
 func returnTest() {//Issue 266
     func foo() {
         return 2
@@ -923,4 +1014,9 @@ func returnTest() {//Issue 266
     }
     assert(2, foo())
     assert(nil, bar())
+}
+
+func evalTest() { //Issue 269
+    var z = eval("x + y", (x: 2, y: 3) )
+    assert(5, z)
 }

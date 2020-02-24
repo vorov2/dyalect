@@ -168,4 +168,10 @@
   <data name="PrivateNameAccess" xml:space="preserve">
     <value>Unable to access a private module member "%Name%".</value>
   </data>
+  <data name="KeyNotFound" xml:space="preserve">
+    <value>The key "%Key%" is not present in the dictionary.</value>
+  </data>
+  <data name="KeyAlreadyPresent" xml:space="preserve">
+    <value>Key "%Key%" is already present in the dictionary.</value>
+  </data>
 </root>

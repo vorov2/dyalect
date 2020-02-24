@@ -1,9 +1,12 @@
-﻿using Dyalect.Parser;
+﻿using Dyalect.Compiler;
+using Dyalect.Parser;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Dyalect.Linker
 {
@@ -174,6 +177,66 @@ namespace Dyalect.Linker
             {
                 return ctx.FailedReadLiteral(ex.Message);
             }
+        }
+
+        [Function("eval")]
+        public DyObject Eval(ExecutionContext ctx, DyObject source, DyObject args)
+        {
+            var strObj = source as DyString;
+
+            if (strObj == null)
+                return ctx.InvalidType(source);
+
+            var tup = args as DyTuple;
+            var code = strObj.Value;
+
+            var sb = new StringBuilder();
+            sb.Append("func __x12(");
+
+            if (tup != null)
+            {
+                for (var i = 0; i < tup.Count; i++)
+                {
+                    var o = tup.Values[i];
+
+                    if (o is DyLabel lab)
+                    {
+                        if (i > 0)
+                            sb.Append(',');
+
+                        sb.Append(lab.Label);
+                    }
+                }
+            }
+
+            sb.Append("){");
+            sb.Append(code);
+            sb.Append('}');
+            sb.Append("__x12");
+
+            var linker = new DyLinker(null, BuilderOptions.Default);
+            var result = linker.Make(SourceBuffer.FromString(sb.ToString()));
+
+            if (!result.Success)
+                throw new DyBuildException(result.Messages);
+
+            var newctx = DyMachine.CreateExecutionContext(result.Value);
+            var result2 = DyMachine.Execute(newctx);
+            var func = result2.Value as DyFunction;
+            var argsList = new List<DyObject>();
+
+            if (tup != null)
+            {
+                for (var i = 0; i < tup.Count; i++)
+                {
+                    var o = tup.Values[i];
+
+                    if (o is DyLabel lab)
+                        argsList.Add(lab.Value);
+                }
+            }
+
+            return func.Call(newctx, argsList.ToArray());
         }
     }
 }

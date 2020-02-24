@@ -1,14 +1,12 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Debug;
+﻿using Dyalect.Debug;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyTuple : DyObject, IEnumerable<DyObject>
+    public class DyTuple : DyCollection, IEnumerable<DyObject>
     {
         internal readonly DyObject[] Values;
 
@@ -16,10 +14,7 @@ namespace Dyalect.Runtime.Types
 
         public DyTuple(DyObject[] values) : base(DyType.Tuple)
         {
-            if (values == null)
-                throw new DyException("Unable to create a tuple with no values.");
-
-            this.Values = values;
+            this.Values = values ?? throw new DyException("Unable to create a tuple with no values.");
         }
 
         public override object ToObject() => ConvertToArray();
@@ -27,6 +22,19 @@ namespace Dyalect.Runtime.Types
         public IList<object> ConvertToList() => Values.Select(e => e.ToObject()).ToList();
 
         public object[] ConvertToArray() => Values.Select(e => e.ToObject()).ToArray();
+
+        public IDictionary<DyObject, DyObject> ConvertToDictionary()
+        {
+            var dict = new Dictionary<DyObject, DyObject>();
+
+            foreach (var obj in Values)
+            {
+                if (!(obj is DyLabel lab) || !dict.TryAdd(new DyString(lab.Label), lab.Value))
+                    dict.Add(new DyString(DefaultKey()), obj);
+            }
+
+            return dict;
+        }
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
@@ -131,15 +139,15 @@ namespace Dyalect.Runtime.Types
 
         private string DefaultKey() => Guid.NewGuid().ToString();
 
-        public IEnumerator<DyObject> GetEnumerator()
+        public override IEnumerator<DyObject> GetEnumerator()
         {
             for (var i = 0; i < Count; i++)
                 yield return Values[i].TypeId == DyType.Label ? Values[i].GetTaggedValue() : Values[i];
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        internal override int GetCount() => Count;
 
-        internal override int GetCount() => Values.Length;
+        internal override DyObject GetValue(int index) => Values[index];
     }
 
     internal sealed class DyTupleTypeInfo : DyTypeInfo
@@ -151,7 +159,7 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set;
+            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
 
         public override string TypeName => DyTypeNames.Tuple;
 
@@ -269,8 +277,6 @@ namespace Dyalect.Runtime.Types
         {
             switch (name)
             {
-                case Builtins.Len:
-                    return DyForeignFunction.Member(name, Length);
                 case "indices":
                     return DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters);
                 case "keys":

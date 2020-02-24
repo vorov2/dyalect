@@ -110,6 +110,8 @@ namespace Dyalect.Runtime.Types
                 this.enumerator.Reset();
         }
 
+        public override int GetHashCode() => enumerator.GetHashCode();
+
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg) => new DyIterator(enumerable) { Self = arg };
 
         internal static DyFunction GetIterator(ExecutionContext ctx, DyObject val)
@@ -208,7 +210,7 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Len;
 
         public override string TypeName => DyTypeNames.Iterator;
 
@@ -312,9 +314,6 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            if (name == Builtins.Len)
-                return DyForeignFunction.Member(name, GetCount);
-
             if (name == "toArray")
                 return DyForeignFunction.Member(name, ToArray);
 

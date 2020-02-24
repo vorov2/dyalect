@@ -42,6 +42,27 @@ namespace Dyalect.Runtime.Types
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Value.HasItem(name, ctx);
 
         internal override int GetConstructorId(ExecutionContext ctx) => ConstructorId;
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + ConstructorId.GetHashCode();
+                if (Value != null)
+                    hash = hash * 23 + Value.GetHashCode();
+                return hash;
+            }
+        }
+
+        public override bool Equals(DyObject other)
+        {
+            return
+                other is DyCustomType ct
+                && ct.ConstructorId == ConstructorId
+                && (ReferenceEquals(ct.Value, Value) ||
+                    (!ReferenceEquals(ct.Value, null) && ct.Value.Equals(Value)));
+        }
     }
 
     internal sealed class DyCustomTypeInfo : DyTypeInfo
@@ -56,7 +77,8 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             (SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not)
-            | (autoGenMethods ? (SupportedOperations.Get | SupportedOperations.Set) : SupportedOperations.None);
+            | (autoGenMethods ? (SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len)
+                : SupportedOperations.None);
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
@@ -139,7 +161,9 @@ namespace Dyalect.Runtime.Types
                         goto default;
                     return true;
                 default:
-                    return nameId != -1 && CheckHasMemberDirect(self, nameId, ctx);
+                    return nameId != -1
+                        ? CheckHasMemberDirect(self, nameId, ctx)
+                        : CheckHasMemberDirect(self, name, ctx);
             }
         }
     }

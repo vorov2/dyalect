@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyArray : DyObject, IEnumerable<DyObject>
+    public class DyArray : DyCollection, IEnumerable<DyObject>
     {
         internal sealed class Enumerator : IEnumerator<DyObject>
         {
@@ -99,8 +99,9 @@ namespace Dyalect.Runtime.Types
         }
 
         private const int DEFAULT_SIZE = 4;
-        internal DyObject[] Values;
         private int version;
+
+        internal DyObject[] Values;
 
         public int Count { get; private set; }
 
@@ -109,8 +110,6 @@ namespace Dyalect.Runtime.Types
             get { return Values[index]; }
             set { Values[index] = value; }
         }
-
-        internal DyObject[] GetValues() => Values;
 
         internal DyArray(DyObject[] values) : base(DyType.Array)
         {
@@ -247,11 +246,11 @@ namespace Dyalect.Runtime.Types
                 SetItem((int)index.GetInteger(), value, ctx);
         }
 
-        public IEnumerator<DyObject> GetEnumerator() => new Enumerator(Values, 0, Count, this);
+        public override IEnumerator<DyObject> GetEnumerator() => new Enumerator(Values, 0, Count, this);
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        internal override int GetCount() => Count;
 
-        internal override int GetCount() => Values.Length;
+        internal override DyObject GetValue(int index) => Values[index];
     }
 
     internal sealed class DyArrayTypeInfo : DyTypeInfo
@@ -265,7 +264,7 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set;
+            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
@@ -450,14 +449,14 @@ namespace Dyalect.Runtime.Types
             if (fun == null)
                 return ctx.InvalidType(args == null || args[0] == null ? DyNil.Instance : args[0]);
 
-            Array.Sort(arr.GetValues(), 0, arr.Count, new DyArray.Comparer(fun, ctx));
+            Array.Sort(arr.Values, 0, arr.Count, new DyArray.Comparer(fun, ctx));
             return DyNil.Instance;
         }
 
         private DyObject Sort(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var arr = (DyArray)self;
-            Array.Sort(arr.GetValues(), 0, arr.Count, new DyArray.Comparer(null, ctx));
+            Array.Sort(arr.Values, 0, arr.Count, new DyArray.Comparer(null, ctx));
             return DyNil.Instance;
         }
 
@@ -490,6 +489,19 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject Swap(ExecutionContext ctx, DyObject self, DyObject idx1, DyObject idx2)
+        {
+            var arr = (DyArray)self;
+            var fst = arr.GetItem(idx1, ctx);
+            if (ctx.HasErrors) return DyNil.Instance;
+            var snd = arr.GetItem(idx2, ctx);
+            if (ctx.HasErrors) return DyNil.Instance;
+
+            arr.SetItem(idx1, snd, ctx);
+            arr.SetItem(idx2, fst, ctx);
+            return DyNil.Instance;
+        }
+
         private DyObject InsertRange(ExecutionContext ctx, DyObject self, DyObject index, DyObject range)
         {
             if (index.TypeId != DyType.Integer)
@@ -516,8 +528,6 @@ namespace Dyalect.Runtime.Types
         {
             switch (name)
             {
-                case Builtins.Len:
-                    return DyForeignFunction.Member(name, Length);
                 case "add":
                     return DyForeignFunction.Member(name, AddItem, -1, new Par("item"));
                 case "insert":
@@ -542,6 +552,8 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Member(name, GetSlice, -1, new Par("start"), new Par("len", DyNil.Instance));
                 case "sort":
                     return DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance));
+                case "swap":
+                    return DyForeignFunction.Member(name, Swap, -1, new Par("fst"), new Par("snd"));
                 case "compact":
                     return DyForeignFunction.Member(name, Compact, -1, Statics.EmptyParameters);
                 case "reverse":

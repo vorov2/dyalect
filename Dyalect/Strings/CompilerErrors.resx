@@ -222,4 +222,7 @@
   <data name="BindingPatternNoInit" xml:space="preserve">
     <value>Pattern matching in variable binding requires initialization clause.</value>
   </data>
+  <data name="InvalidLabel" xml:space="preserve">
+    <value>Label is not valid in this context.</value>
+  </data>
 </root>
