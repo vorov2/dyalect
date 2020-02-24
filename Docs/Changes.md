@@ -1,6 +1,9 @@
+# 0.11.1
+  * todo
+
 # 0.11.0
   * Change: _Enhancements and amendments to the .NET API and internal object model._
-  * Fixed: _Member check operator `?` doesn't work with static members ([Issue #270](https://github.com/vorov2/dyalect/issues/270)).
+  * Fixed: _Member check operator `?` doesn't work with static members_ ([Issue #270](https://github.com/vorov2/dyalect/issues/270)).
   * Fixed: _Method `has` doesn't always work correctly_ ([Issue #271](https://github.com/vorov2/dyalect/issues/271)).
   * Fixed: _Label syntax and virtual machine crush_ ([Issue #274](https://github.com/vorov2/dyalect/issues/274)).
   * Fixed: _Type descriptors do not support method `has`_ ([Issue #272](https://github.com/vorov2/dyalect/issues/272)).
