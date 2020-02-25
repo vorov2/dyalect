@@ -1020,3 +1020,51 @@ func evalTest() { //Issue 269
     var z = eval("x + y", (x: 2, y: 3) )
     assert(5, z)
 }
+
+func tailRecursion1() {
+    var xs = []
+    func loop(n, max) {
+        func loop(i) {
+            if i < max {
+                xs.add(i)
+                loop(i + 1)
+            }
+        }
+        loop(n)
+    }
+    loop(0, 10)
+    assert([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], xs)
+}
+
+func tailRecursion2() {
+    func foo(a, b) {
+        func foo(a, b, c) {
+            if a + b == 0 {
+                c
+            } else {
+                var x = caller()(a + b, -(a + b))
+                foo(x, -x, x + a + b - c)
+            }
+        }
+        if a + b == 0 {
+            42
+        } else {
+            foo(a, b, a + b)
+        }
+    }
+    var res = foo(1, 2)
+    assert(42, res)
+}
+
+func tailRecursion3() {
+    func withpm(obj) {
+        match obj {
+            (x, y) => withpm(42),
+            (x, y, z) => withpm(84),
+            42 => "foo",
+            84 => "bar"
+        }
+    }
+    var res = withpm((1,2))
+    assert(res, "foo")
+}

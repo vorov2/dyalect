@@ -30,6 +30,17 @@ namespace Dyalect.Parser.Model
 
         public DNode Body { get; set; }
 
+        public bool IsVariadic()
+        {
+            for (var i = 0; i < Parameters.Count; i++)
+            {
+                if (Parameters[i].IsVarArgs)
+                    return true;
+            }
+
+            return false;
+        }
+
         internal override void ToString(StringBuilder sb)
         {
             if (Body == null)

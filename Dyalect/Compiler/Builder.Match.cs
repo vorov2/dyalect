@@ -25,7 +25,7 @@ namespace Dyalect.Compiler
             var push = hints.Append(Push);
 
             if (node.Expression != null)
-                Build(node.Expression, push, ctx);
+                Build(node.Expression, push.Remove(Last), ctx);
 
             cw.PopVar(sys);
             var sysVar = new ScopeVar(sys);
@@ -55,12 +55,12 @@ namespace Dyalect.Compiler
             var skip = cw.DefineLabel();
 
             cw.PushVar(sys);
-            BuildPattern(node.Pattern, hints, ctx);
+            BuildPattern(node.Pattern, hints.Remove(Last), ctx);
             cw.Brfalse(skip);
 
             if (node.Guard != null)
             {
-                Build(node.Guard, hints, ctx);
+                Build(node.Guard, hints.Remove(Last), ctx);
                 cw.Brfalse(skip);
             }
 

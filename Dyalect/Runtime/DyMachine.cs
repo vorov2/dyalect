@@ -461,7 +461,7 @@ namespace Dyalect.Runtime
                                     }
 
                                     evalStack.Replace(right);
-                                    goto  case OpCode.FunPrep;
+                                    goto case OpCode.FunPrep;
                                 }
 
                                 ctx.NotFunction(right);

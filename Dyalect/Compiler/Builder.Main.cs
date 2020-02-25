@@ -424,6 +424,7 @@ namespace Dyalect.Compiler
         {
             var name = node.Target.NodeType == NodeType.Name ? node.Target.GetName() : null;
             var sv = name != null ? GetVariable(name, node, err: false) : ScopeVar.Empty;
+            var newHints = hints.Remove(Last);
 
             //Check if an application is in fact a built-in operator call
             if (name != null && sv.IsEmpty() && node.Arguments.Count == 1)
@@ -436,7 +437,7 @@ namespace Dyalect.Compiler
                 }
                 else if (name == "valueof")
                 {
-                    Build(node.Arguments[0], hints.Append(Push), ctx);
+                    Build(node.Arguments[0], newHints.Append(Push), ctx);
                     AddLinePragma(node);
                     cw.Unbox();
                     return;
@@ -456,7 +457,7 @@ namespace Dyalect.Compiler
                         return;
                     }
 
-                    Build(node.Arguments[0], hints.Append(Push), ctx);
+                    Build(node.Arguments[0], newHints.Append(Push), ctx);
                     AddLinePragma(node);
                     cw.Aux(GetMemberNameId(ctx.Function.Name));
                     cw.NewType(ti.TypeId);
@@ -471,7 +472,7 @@ namespace Dyalect.Compiler
 
                 if (meth.Name == Builtins.ToStr && node.Arguments.Count == 0 && !options.NoOptimizations)
                 {
-                    Build(meth.Target, hints.Append(Push), ctx);
+                    Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
                     cw.Str();
                     PopIf(hints);
@@ -480,7 +481,7 @@ namespace Dyalect.Compiler
 
                 if (meth.Name == Builtins.Len && node.Arguments.Count == 0 && !options.NoOptimizations)
                 {
-                    Build(meth.Target, hints.Append(Push), ctx);
+                    Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
                     cw.Len();
                     PopIf(hints);
@@ -493,7 +494,7 @@ namespace Dyalect.Compiler
                     && str.Chunks == null
                     && !options.NoOptimizations)
                 {
-                    Build(meth.Target, hints.Append(Push), ctx);
+                    Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
                     cw.HasMember(GetMemberNameId(str.Value));
                     PopIf(hints);
@@ -501,43 +502,79 @@ namespace Dyalect.Compiler
                 }
             }
 
-            if (!sv.IsEmpty())
-                cw.PushVar(sv);
-            else
-                Build(node.Target, hints.Append(Push), ctx);
-
-            AddLinePragma(node);
-            cw.FunPrep(node.Arguments.Count);
-            Dictionary<string, object> dict = null;
-
-            for (var i = 0; i < node.Arguments.Count; i++)
+            if (!options.NoOptimizations && hints.Has(Last)
+                && !sv.IsEmpty() && ctx.Function != null
+                && !ctx.Function.IsMemberFunction && !ctx.Function.IsIterator
+                && name == ctx.Function.Name && node.Arguments.Count == ctx.Function.Parameters.Count
+                && !ctx.Function.IsVariadic() && !HasLabels(node.Arguments))
             {
-                var a = node.Arguments[i];
-
-                if (a.NodeType == NodeType.Label)
+                for (var i = 0; i < node.Arguments.Count; i++)
                 {
-                    if (dict == null)
-                        dict = new Dictionary<string, object>();
-
-                    var la = (DLabelLiteral)a;
-                    if (dict.ContainsKey(la.Label))
-                        AddError(CompilerError.NamedArgumentMultipleTimes, la.Location, la.Label);
-                    else
-                        dict.Add(la.Label, null);
-
-                    Build(la.Expression, hints.Append(Push), ctx);
-                    cw.FunArgNm(la.Label);
+                    Build(node.Arguments[i], newHints.Append(Push), ctx);
                 }
+
+                for (var i = 0; i < ctx.Function.Parameters.Count; i++)
+                {
+                    var p = ctx.Function.Parameters[ctx.Function.Parameters.Count - i - 1];
+                    var pv = GetVariable(p.Name, p);
+                    cw.PopVar(pv.Address);
+                }
+
+                AddLinePragma(node);
+                cw.Br(ctx.FunctionStart);
+            }
+            else
+            {
+                if (!sv.IsEmpty())
+                    cw.PushVar(sv);
                 else
+                    Build(node.Target, newHints.Append(Push), ctx);
+
+                AddLinePragma(node);
+                cw.FunPrep(node.Arguments.Count);
+                Dictionary<string, object> dict = null;
+
+                for (var i = 0; i < node.Arguments.Count; i++)
                 {
-                    Build(a, hints.Append(Push), ctx);
-                    cw.FunArgIx(i);
+                    var a = node.Arguments[i];
+
+                    if (a.NodeType == NodeType.Label)
+                    {
+                        if (dict == null)
+                            dict = new Dictionary<string, object>();
+
+                        var la = (DLabelLiteral)a;
+                        if (dict.ContainsKey(la.Label))
+                            AddError(CompilerError.NamedArgumentMultipleTimes, la.Location, la.Label);
+                        else
+                            dict.Add(la.Label, null);
+
+                        Build(la.Expression, newHints.Append(Push), ctx);
+                        cw.FunArgNm(la.Label);
+                    }
+                    else
+                    {
+                        Build(a, newHints.Append(Push), ctx);
+                        cw.FunArgIx(i);
+                    }
                 }
+
+                AddLinePragma(node);
+                cw.FunCall(node.Arguments.Count);
             }
 
-            AddLinePragma(node);
-            cw.FunCall(node.Arguments.Count);
             PopIf(hints);
+        }
+
+        private bool HasLabels(List<DNode> nodes)
+        {
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i].NodeType == NodeType.Label)
+                    return true;
+            }
+
+            return false;
         }
 
         private void Build(DIf node, Hints hints, CompilerContext ctx)
@@ -546,7 +583,7 @@ namespace Dyalect.Compiler
             var skipLabel = cw.DefineLabel();
 
             StartScope(false, node.Location);
-            Build(node.Condition, hints.Append(Push), ctx);
+            Build(node.Condition, hints.Remove(Last).Append(Push), ctx);
             AddLinePragma(node);
             cw.Brfalse(falseLabel);
             Build(node.True, hints, ctx);
@@ -898,7 +935,7 @@ namespace Dyalect.Compiler
             {
                 case BinaryOperator.Coalesce:
                     exitLab = cw.DefineLabel();
-                    Build(node.Left, hints.Append(Push), ctx);
+                    Build(node.Left, hints.Remove(Last).Append(Push), ctx);
                     cw.Dup();
                     cw.Brtrue(exitLab);
                     cw.Pop();
@@ -907,11 +944,11 @@ namespace Dyalect.Compiler
                     cw.Nop();
                     break;
                 case BinaryOperator.And:
-                    Build(node.Left, hints.Append(Push), ctx);
+                    Build(node.Left, hints.Remove(Last).Append(Push), ctx);
                     termLab = cw.DefineLabel();
                     exitLab = cw.DefineLabel();
                     cw.Brfalse(termLab);
-                    Build(node.Right, hints.Append(Push), ctx);
+                    Build(node.Right, hints.Remove(Last).Append(Push), ctx);
                     AddLinePragma(node);
                     cw.Br(exitLab);
                     cw.MarkLabel(termLab);
@@ -921,11 +958,11 @@ namespace Dyalect.Compiler
                     cw.Nop();
                     break;
                 case BinaryOperator.Or:
-                    Build(node.Left, hints.Append(Push), ctx);
+                    Build(node.Left, hints.Remove(Last).Append(Push), ctx);
                     termLab = cw.DefineLabel();
                     exitLab = cw.DefineLabel();
                     cw.Brtrue(termLab);
-                    Build(node.Right, hints.Append(Push), ctx);
+                    Build(node.Right, hints.Remove(Last).Append(Push), ctx);
                     AddLinePragma(node);
                     cw.Br(exitLab);
                     cw.MarkLabel(termLab);
@@ -938,14 +975,14 @@ namespace Dyalect.Compiler
                     {
                         var pat = (DPattern)node.Right;
                         AddLinePragma(node);
-                        PreinitPattern(pat, hints);
-                        Build(node.Left, hints.Append(Push), ctx);
+                        PreinitPattern(pat, hints.Remove(Last));
+                        Build(node.Left, hints.Remove(Last).Append(Push), ctx);
                         BuildPattern(pat, hints, ctx);
                     }
                     break;
                 default:
-                    Build(node.Left, hints.Append(Push), ctx);
-                    Build(node.Right, hints.Append(Push), ctx);
+                    Build(node.Left, hints.Remove(Last).Append(Push), ctx);
+                    Build(node.Right, hints.Remove(Last).Append(Push), ctx);
                     AddLinePragma(node);
                     EmitBinaryOp(node.Operator);
                     break;
