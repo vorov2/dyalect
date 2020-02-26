@@ -7,6 +7,8 @@ namespace Dyalect.Compiler
     //This part is responsible for emitting warnings and errors
     partial class Builder
     {
+        private Dictionary<int, object> disabledWarnings = new Dictionary<int, object>();
+
         internal List<BuildMessage> Messages { get; } = new List<BuildMessage>(); //A list of all generated messages
         internal int ErrorCount { get; private set; } //Number of errors
 
@@ -38,6 +40,9 @@ namespace Dyalect.Compiler
         private void AddWarning(CompilerWarning warning, Location loc, params object[] args)
         {
             if (options.NoWarnings)
+                return;
+
+            if (disabledWarnings.ContainsKey((int)warning))
                 return;
 
             var str = string.Format(CompilerErrors.ResourceManager.GetString(warning.ToString()) ?? warning.ToString(), args);

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Dyalect
 {
@@ -29,13 +30,22 @@ namespace Dyalect
             try
 #endif
             {
-                var funs = Compile(fileNames);
+                var funs = Compile(fileNames, out var warns);
                 Printer.Output($"Running tests from {funs.Count} file(s)...");
 
                 if (funs == null)
                     return false;
 
                 Run(funs, appveyor);
+
+                if (warns.Count > 0)
+                {
+                    Printer.Output("");
+                    Printer.Output($"Warnings:");
+                    foreach (var w in warns)
+                        Printer.Output(w.ToString());
+                }
+
                 return true;
             }
 #if !DEBUG
@@ -116,9 +126,10 @@ namespace Dyalect
             Printer.Output($"{name}: Success");
         }
 
-        private static IList<FunSet> Compile(IEnumerable<string> files)
+        private static IList<FunSet> Compile(IEnumerable<string> files, out List<BuildMessage> warns)
         {
             var funColl = new List<FunSet>();
+            warns = new List<BuildMessage>();
 
             foreach (var file in files)
             {
@@ -131,6 +142,7 @@ namespace Dyalect
                 if (!cres.Success)
                     throw new DyBuildException(cres.Messages);
 
+                warns.AddRange(cres.Messages.Where(m => m.Type == BuildMessageType.Warning));
                 var ctx = DyMachine.CreateExecutionContext(cres.Value);
                 funs.Context = ctx;
                 DyMachine.Execute(ctx);

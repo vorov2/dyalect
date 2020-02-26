@@ -169,6 +169,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid format for preprocessor directive &quot;{0}&quot;..
+        /// </summary>
+        internal static string InvalidPreprocessor {
+            get {
+                return ResourceManager.GetString("InvalidPreprocessor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Named argument &quot;{0}&quot; cannot be specified multiple times..
         /// </summary>
         internal static string NamedArgumentMultipleTimes {
@@ -345,6 +354,15 @@ namespace Dyalect.Strings {
         internal static string UndefinedVariable {
             get {
                 return ResourceManager.GetString("UndefinedVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown preprocessor directive &quot;{0}&quot;..
+        /// </summary>
+        internal static string UnknownPreprocessor {
+            get {
+                return ResourceManager.GetString("UnknownPreprocessor", resourceCulture);
             }
         }
         

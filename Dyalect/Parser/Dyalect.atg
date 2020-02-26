@@ -18,6 +18,8 @@ CHARACTERS
 TOKENS
     identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
 
+    preprocessor = "#" (letter { letter | digit } | "_" letter { letter | digit  }).
+
     intToken    = digit { digit } | ("0x"|"0X") hexDigit { hexDigit }.
 
     floatToken  = "." digit { digit } [ ("e"|"E") [ "+" | "-" ] digit { digit } ]
@@ -873,6 +875,7 @@ PRODUCTIONS
             | Base<out node>
             | IF (IsIterator()) Iterator<out node>
             | Block<out node>
+            | Preprocessor<out node>
         ).
 
     Iterator<out DNode node> =
@@ -986,6 +989,23 @@ PRODUCTIONS
         (
             ("true"|"false")
             (. node = new DBooleanLiteral(t) { Value = t.val == "true" }; .)
+        ).
+
+    Preprocessor<out DNode node> =
+        (
+            preprocessor
+            (. var pp = new DPreprocessor(t) { Key = t.val.Substring(1) }; node = pp; .)
+            "("
+                    {
+                          stringToken (. pp.Attributes.Add(ParseSimpleString()); .)
+                        | intToken (. pp.Attributes.Add(ParseInteger()); .)
+                        | floatToken (. pp.Attributes.Add(ParseFloat()); .)
+                        | charToken (. pp.Attributes.Add(ParseChar()); .)
+                        | "true" (. pp.Attributes.Add(true); .)
+                        | "false" (. pp.Attributes.Add(false); .)
+                        | identToken (. pp.Attributes.Add(t.val); .)
+                    }
+            ")"
         ).
 
     DyalectItem =

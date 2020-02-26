@@ -509,20 +509,29 @@ namespace Dyalect.Compiler
 
         private void ValidateMatch(DMatch match)
         {
-            var irr = false;
             var count = match.Expression != null ? match.Expression.GetElementCount() : -1;
 
-            foreach (var e in match.Entries)
+            for (var i = 0; i < match.Entries.Count; i++)
             {
-                var patternCount = e.Pattern.GetElementCount();
-                var pt = e.Pattern.NodeType;
+                var e = match.Entries[i];
 
-                if (irr)
-                    AddWarning(CompilerWarning.UnreachableMatchEntry, e.Location, e.Pattern);
-                else
-                    CheckPattern(e.Pattern, count, patternCount);
+                if (e.Guard == null)
+                {
+                    var j = i;
+                    while (j > 0)
+                    {
+                        j--;
+                        var prev = match.Entries[j];
 
-                irr = IsIrrefutable(e.Pattern) && e.Guard == null;
+                        if (prev.Guard != null && !CanFollow(e.Pattern, prev.Pattern))
+                        {
+                            AddWarning(CompilerWarning.UnreachableMatchEntry, e.Location, e.Pattern);
+                            break;
+                        }
+                    }
+                }
+
+                CheckPattern(e.Pattern, count, e.Pattern.GetElementCount());
             }
         }
 
@@ -553,6 +562,174 @@ namespace Dyalect.Compiler
                 if (n.NodeType != NodeType.NamePattern && n.NodeType != NodeType.WildcardPattern)
                     return false;
             return true;
+        }
+
+        private bool CanFollow(List<DNode> now, List<DNode> prev)
+        {
+            var len = prev.Count < now.Count ? prev.Count : now.Count;
+
+            for (var i = 0; i < len; i++)
+            {
+                if (CanFollow((DPattern)now[i], (DPattern)prev[i]))
+                    return true;
+            }
+
+            return true;
+        }
+
+        private bool CanFollow(DSequencePattern seq, DStringPattern str)
+        {
+            for (var i = 0; i < seq.Elements.Count; i++)
+            {
+                var t = seq.Elements[i];
+
+                if (t.NodeType != NodeType.CharPattern || ((DCharPattern)t).Value != str.Value.Value[i])
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool CanFollow(DPattern now, DPattern prev)
+        {
+            switch (prev.NodeType)
+            {
+                case NodeType.NamePattern: return false;
+                case NodeType.WildcardPattern: return false;
+                case NodeType.AsPattern:
+                    return CanFollow(now, ((DAsPattern)prev).Pattern);
+                case NodeType.TuplePattern:
+                case NodeType.ArrayPattern:
+                    {
+                        var prevSeq = (DSequencePattern)prev;
+
+                        if (now.NodeType == NodeType.TuplePattern || now.NodeType == NodeType.ArrayPattern)
+                        {
+                            var nowTuple = (DSequencePattern)now;
+
+                            if (nowTuple.Elements.Count != prevSeq.Elements.Count)
+                                return true;
+
+                            return CanFollow(nowTuple.Elements, prevSeq.Elements);
+                        }
+                        else if (now.NodeType == NodeType.StringPattern)
+                        {
+                            var str = (DStringPattern)now;
+
+                            if ((prevSeq.NodeType == NodeType.TuplePattern && prevSeq.Elements.Count != str.Value.Value.Length)
+                                || (prevSeq.NodeType == NodeType.ArrayPattern && prevSeq.Elements.Count > str.Value.Value.Length))
+                                return true;
+
+                            return CanFollow(prevSeq, str);
+                        }
+                        else
+                            return true;
+                    }
+                case NodeType.LabelPattern:
+                    {
+                        if (now.NodeType != NodeType.LabelPattern)
+                            return true;
+                        return ((DLabelPattern)prev).Label != ((DLabelPattern)now).Label
+                            || CanFollow(((DLabelPattern)prev).Pattern, ((DLabelPattern)now).Pattern);
+                    }
+                case NodeType.OrPattern:
+                    {
+                        if (now.NodeType != NodeType.OrPattern)
+                            return true;
+                        var andNow = (DOrPattern)now;
+                        var andPrev = (DOrPattern)prev;
+                        return CanFollow(andNow.Left, andPrev.Left) && CanFollow(andNow.Right, andPrev.Right);
+                    }
+                case NodeType.AndPattern:
+                    {
+                        if (now.NodeType != NodeType.AndPattern)
+                            return true;
+                        var andNow = (DAndPattern)now;
+                        var andPrev = (DAndPattern)prev;
+                        return CanFollow(andNow.Left, andPrev.Left) && CanFollow(andNow.Right, andPrev.Right);
+                    }
+                case NodeType.RangePattern:
+                    {
+                        if (now.NodeType != NodeType.RangePattern)
+                            return true;
+                        var rngNow = (DRangePattern)now;
+                        var rngPrev = (DRangePattern)prev;
+                        return !rngNow.From.Equals(rngPrev.From) || !rngNow.To.Equals(rngPrev.To);
+                    }
+                case NodeType.NilPattern:
+                    return now.NodeType != NodeType.NilPattern;
+                case NodeType.StringPattern:
+                    {
+                        var prevStr = (DStringPattern)prev;
+                        if (now.NodeType == NodeType.StringPattern)
+                        {
+                            var str = (DStringPattern)now;
+                            return str.Value.Value != prevStr.Value.Value;
+                        }
+                        else if (now.NodeType == NodeType.TuplePattern)
+                        {
+                            var tup = (DTuplePattern)now;
+                            if (tup.Elements.Count != prevStr.Value.Value.Length)
+                                return true;
+                            return CanFollow(tup, prevStr);
+                        }
+                        else if (now.NodeType == NodeType.ArrayPattern)
+                        {
+                            var arr = (DArrayPattern)now;
+                            if (arr.Elements.Count > prevStr.Value.Value.Length)
+                                return true;
+                            return CanFollow(arr, prevStr);
+                        }
+                        else
+                            return true;
+                    }
+                case NodeType.IntegerPattern:
+                    return now.NodeType != NodeType.IntegerPattern;
+                case NodeType.FloatPattern:
+                    return now.NodeType != NodeType.FloatPattern;
+                case NodeType.CharPattern:
+                    return now.NodeType != NodeType.CharPattern;
+                case NodeType.BooleanPattern:
+                    return now.NodeType != NodeType.BooleanPattern;
+                case NodeType.TypeTestPattern:
+                    {
+                        if (now.NodeType != NodeType.TypeTestPattern)
+                            return true;
+                        return !((DTypeTestPattern)prev).TypeName.IsPossibleEquality(((DTypeTestPattern)now).TypeName);
+                    }
+                case NodeType.MethodCheckPattern:
+                    {
+                        if (now.NodeType != NodeType.MethodCheckPattern)
+                            return true;
+                        return ((DMethodCheckPattern)prev).Name != ((DMethodCheckPattern)now).Name;
+                    }
+                case NodeType.CtorPattern:
+                    {
+                        if (now.NodeType != NodeType.CtorPattern)
+                            return true;
+
+                        var ctor = (DCtorPattern)prev;
+                        var nowc = (DCtorPattern)now;
+
+                        if (ctor.Constructor != nowc.Constructor)
+                            return true;
+
+                        if (ctor.Arguments == null || ctor.Arguments.Count == 0)
+                            return false;
+
+                        if (ctor.Arguments.Count != nowc.Arguments.Count)
+                            return true;
+
+                        for (var i = 0; i < ctor.Arguments.Count; i++)
+                        {
+                            if (CanFollow((DPattern)ctor.Arguments[i], (DPattern)nowc.Arguments[i]))
+                                return true;
+                        }
+
+                        return false;
+                    }
+                default: throw Ice();
+            }
         }
     }
 }

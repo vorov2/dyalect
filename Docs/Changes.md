@@ -1,5 +1,5 @@
 # 0.11.1
-  * todo
+  * Change: _Now "test runner" mode in Dya prints compilation warnings if any._
 
 # 0.11.0
   * Change: _Enhancements and amendments to the .NET API and internal object model._

@@ -8,6 +8,7 @@ namespace Dyalect.Parser.Model
         {
 
         }
+
         public DPattern Pattern { get; set; }
 
         public DNode Target { get; set; }

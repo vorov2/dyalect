@@ -2,6 +2,7 @@
 using Dyalect.Parser.Model;
 using Dyalect.Runtime;
 using System.Collections.Generic;
+using System.Linq;
 using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
@@ -12,6 +13,9 @@ namespace Dyalect.Compiler
         {
             switch (node.NodeType)
             {
+                case NodeType.Preprocessor:
+                    Build((DPreprocessor)node, hints, ctx);
+                    break;
                 case NodeType.Assignment:
                     Build((DAssignment)node, hints, ctx);
                     break;
@@ -119,6 +123,33 @@ namespace Dyalect.Compiler
                     break;
                 case NodeType.Label:
                     AddError(CompilerError.InvalidLabel, node.Location);
+                    break;
+            }
+        }
+
+        private void Build(DPreprocessor node, Hints hints, CompilerContext ctx)
+        {
+            switch (node.Key)
+            {
+                case "warning":
+                    if (node.Attributes.Count < 2)
+                    {
+                        AddError(CompilerError.InvalidPreprocessor, node.Location, node.Key);
+                        return;
+                    }
+                    if (node.Attributes[0] as string == "disable")
+                    {
+                        foreach (var i in node.Attributes.Skip(1).OfType<long>())
+                            disabledWarnings.TryAdd((int)i, null);
+                    }
+                    else if (node.Attributes[0] as string == "enable")
+                    {
+                        foreach (var i in node.Attributes.Skip(1).OfType<long>())
+                            disabledWarnings.Remove((int)i);
+                    }
+                    break;
+                default:
+                    AddError(CompilerError.UnknownPreprocessor, node.Location, node.Key);
                     break;
             }
         }

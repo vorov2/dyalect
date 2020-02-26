@@ -70,6 +70,10 @@
 
         BindingPatternNoInit = 233,
 
-        InvalidLabel = 234
+        InvalidLabel = 234,
+
+        UnknownPreprocessor = 235,
+
+        InvalidPreprocessor = 236
     }
 }
