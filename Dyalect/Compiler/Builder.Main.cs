@@ -140,7 +140,8 @@ namespace Dyalect.Compiler
                     if (node.Attributes[0] as string == "disable")
                     {
                         foreach (var i in node.Attributes.Skip(1).OfType<long>())
-                            disabledWarnings.TryAdd((int)i, null);
+                            if (disabledWarnings.Contains((int)i))
+                                disabledWarnings.Add((int)i);
                     }
                     else if (node.Attributes[0] as string == "enable")
                     {

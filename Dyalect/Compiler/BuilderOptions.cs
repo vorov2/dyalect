@@ -1,15 +1,20 @@
-﻿namespace Dyalect.Compiler
+﻿using System.Collections.Generic;
+
+namespace Dyalect.Compiler
 {
     public sealed class BuilderOptions
     {
-        public readonly static BuilderOptions Default = new BuilderOptions
-        {
-            Debug = false,
-            NoLangModule = false,
-            NoWarnings = false,
-            NoWarningsLinker = false,
-            LinkerSkipChecksum = false
-        };
+        public static BuilderOptions Default() =>
+            new BuilderOptions
+            {
+                Debug = false,
+                NoLangModule = false,
+                NoWarnings = false,
+                NoWarningsLinker = false,
+                LinkerSkipChecksum = false
+            };
+
+        public HashSet<int> IgnoreWarnings { get; } = new HashSet<int>();
 
         public bool Debug { get; set; }
 

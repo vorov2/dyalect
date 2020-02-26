@@ -1,5 +1,4 @@
 ﻿func matchTest1() {
-#warning (disable 302)
     var res = match (1,2) {
         (2, x) => "wrong1",
         (x, y, z) => "wrong2",
@@ -8,7 +7,6 @@
         2 => "wrong5",
         (1, x) => x
     }
-#warning (enable 302)
     assert(2, res)
 }
 
@@ -106,7 +104,6 @@ func matchTest8() {
 
 func matchTest9() {
     var arr = []
-#warning (disable 302)
     match [1..5] {
         [1, 3, x] => nil,
         [1, 2, 3, 4, 5, x] => nil,
@@ -115,7 +112,6 @@ func matchTest9() {
             arr.add(y)
         }
     }
-#warning (enable 302)
     assert([2,4], arr)
 }
 

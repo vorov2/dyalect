@@ -10,7 +10,7 @@ namespace Dyalect
     {
         public static DyObject Eval(string sourceCode, DyTuple args = null, BuilderOptions options = null)
         {
-            var linker = new DyLinker(null, options ?? BuilderOptions.Default, args);
+            var linker = new DyLinker(null, options ?? BuilderOptions.Default(), args);
             var result = linker.Make(SourceBuffer.FromString(sourceCode));
 
             if (!result.Success)

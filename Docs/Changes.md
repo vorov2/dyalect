@@ -1,5 +1,6 @@
 # 0.11.1
-  * Change: _Now "test runner" mode in Dya prints compilation warnings if any._
+  * Fixed: _Dyalect console doesn't print warnings when running tests_ ([Issue #283](https://github.com/vorov2/dyalect/issues/283)).
+  * Fixed: _Dyalect console ignores build settings when running tests_ ([Issue #284](https://github.com/vorov2/dyalect/issues/284)).
 
 # 0.11.0
   * Change: _Enhancements and amendments to the .NET API and internal object model._

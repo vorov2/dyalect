@@ -32,6 +32,9 @@ namespace Dyalect
         [Binding("nowarn", Help = "Do not generate warnings.", Category = COMPILER)]
         public bool NoWarnings { get; set; }
 
+        [Binding("ignore", Help = "Ignore specific warnings (works for both compiler and linker). You can specify this switch multiple times, e.g.: -ignore 301 -ignore 302.", Category = GENERAL)]
+        public int[] IgnoreWarnings { get; set; }
+
         [Binding("nowarnlinker", Help = "Do not generate warnings by linker.", Category = LINKER)]
         public bool NoWarningsLinker { get; set; }
 

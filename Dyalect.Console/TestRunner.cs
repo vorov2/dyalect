@@ -24,13 +24,13 @@ namespace Dyalect
 
         private static List<string> commands = new List<string>();
 
-        public static bool RunTests(IEnumerable<string> fileNames, bool appveyor)
+        public static bool RunTests(IEnumerable<string> fileNames, bool appveyor, BuilderOptions buildOptions)
         {
 #if !DEBUG
             try
 #endif
             {
-                var funs = Compile(fileNames, out var warns);
+                var funs = Compile(fileNames, buildOptions, out var warns);
                 Printer.Output($"Running tests from {funs.Count} file(s)...");
 
                 if (funs == null)
@@ -126,14 +126,14 @@ namespace Dyalect
             Printer.Output($"{name}: Success");
         }
 
-        private static IList<FunSet> Compile(IEnumerable<string> files, out List<BuildMessage> warns)
+        private static IList<FunSet> Compile(IEnumerable<string> files, BuilderOptions buildOptions, out List<BuildMessage> warns)
         {
             var funColl = new List<FunSet>();
             warns = new List<BuildMessage>();
 
             foreach (var file in files)
             {
-                var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(file)), BuilderOptions.Default);
+                var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(file)), buildOptions);
                 var cres = linker.Make(SourceBuffer.FromFile(file));
                 var funs = new FunSet();
                 funs.Funs = new Dictionary<string, DyFunction>(StringComparer.OrdinalIgnoreCase);
