@@ -352,6 +352,32 @@ func arrayTest25() { //#273
     assert([1,3,2], xs)
 }
 
+func arrayTest26() { //#285
+    var xs = [1..10]
+    xs.removeRangeAt(3, 7)
+    assert([1,2,3], xs)
+    xs = [1..10]
+    xs.removeRangeAt(4)
+    assert([1,2,3,4], xs)
+}
+
+func arrayTest27() { //#285
+    var xs = [1..10]
+    xs.removeRange([1..5])
+    assert([6,7,8,9,10], xs)
+}
+
+func arrayTest28() { //#285
+    var xs = [1..10]
+    func filter() {
+        for x in xs when x % 2 == 0 {
+            yield x
+        }
+    }
+    xs.removeRange(filter())
+    assert([1,3,5,7,9], xs)
+}
+
 func mapTest1() {
     var map = Map()
     map.add("x", 1)

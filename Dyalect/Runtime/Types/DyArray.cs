@@ -3,6 +3,7 @@ using Dyalect.Debug;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -115,6 +116,15 @@ namespace Dyalect.Runtime.Types
         {
             this.Values = values;
             Count = values.Length;
+        }
+
+        public void RemoveRange(int start, int count)
+        {
+            var lst = new List<DyObject>(Values);
+            lst.RemoveRange(start, count);
+            Values = lst.ToArray();
+            Count = Values.Length;
+            version++;
         }
 
         public void Add(DyObject val)
@@ -524,6 +534,50 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject RemoveRange(ExecutionContext ctx, DyObject self, DyObject items)
+        {
+            var arr = (DyArray)self;
+            var coll = DyIterator.Run(ctx, items);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            var strict = coll.ToArray();
+
+            foreach (var e in strict)
+                arr.Remove(e);
+
+            return DyNil.Instance;
+        }
+
+        private DyObject RemoveRangeAt(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
+        {
+            var arr = (DyArray)self;
+
+            if (start.TypeId != DyType.Integer)
+                return ctx.InvalidType(start);
+
+            var sti = (int)start.GetInteger();
+
+            if (sti < 0 || sti >= arr.Count)
+                return ctx.IndexOutOfRange(sti);
+
+            var le = 0;
+
+            if (len == DyNil.Instance)
+                le = arr.Count - sti;
+            else if (len.TypeId != DyType.Integer)
+                return ctx.InvalidType(len);
+            else
+                le = (int)len.GetInteger();
+
+            if (sti + le > arr.Count)
+                return ctx.IndexOutOfRange(le);
+
+            arr.RemoveRange(sti, le);
+            return DyNil.Instance;
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             switch (name)
@@ -540,6 +594,10 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Member(name, RemoveItem, -1, new Par("item"));
                 case "removeAt":
                     return DyForeignFunction.Member(name, RemoveItemAt, -1, new Par("index"));
+                case "removeRange":
+                    return DyForeignFunction.Member(name, RemoveRange, -1, new Par("items"));
+                case "removeRangeAt":
+                    return DyForeignFunction.Member(name, RemoveRangeAt, -1, new Par("start"), new Par("len", null));
                 case "clear":
                     return DyForeignFunction.Member(name, ClearItems, -1, Statics.EmptyParameters);
                 case "indexOf":
