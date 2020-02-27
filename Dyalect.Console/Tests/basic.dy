@@ -378,6 +378,12 @@ func arrayTest28() { //#285
     assert([1,3,5,7,9], xs)
 }
 
+func arrayTest29() { //#286
+    var xs = [1..10]
+    xs.removeAll(x => x % 2 == 0)
+    assert([1,3,5,7,9], xs)
+}
+
 func mapTest1() {
     var map = Map()
     map.add("x", 1)

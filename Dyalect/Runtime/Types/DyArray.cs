@@ -578,6 +578,30 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject RemoveAll(ExecutionContext ctx, DyObject self, DyObject arg)
+        {
+            if (!(arg is DyFunction fun))
+                return ctx.InvalidType(arg);
+
+            var arr = (DyArray)self;
+            var toDelete = new List<DyObject>();
+
+            foreach (var o in arr)
+            {
+                var res = fun.Call1(o, ctx);
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                if (res.GetBool())
+                    toDelete.Add(o);
+            }
+
+            foreach (var o in toDelete)
+                arr.Remove(o);
+
+            return DyNil.Instance;
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             switch (name)
@@ -598,6 +622,8 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Member(name, RemoveRange, -1, new Par("items"));
                 case "removeRangeAt":
                     return DyForeignFunction.Member(name, RemoveRangeAt, -1, new Par("start"), new Par("len", null));
+                case "removeAll":
+                    return DyForeignFunction.Member(name, RemoveAll, -1, new Par("predicate"));
                 case "clear":
                     return DyForeignFunction.Member(name, ClearItems, -1, Statics.EmptyParameters);
                 case "indexOf":

@@ -1,5 +1,6 @@
-# 0.12
+# 0.12.0
   * Done: _Add `Array.removeRange(items)` method_ ([Issue #285](https://github.com/vorov2/dyalect/issues/285), [docs](https://github.com/vorov2/dyalect/wiki/Array#removeRange)).
+  * Done: _Add `Array.removeAll(predicate)` method_ ([Issue #286](https://github.com/vorov2/dyalect/issues/286), [docs](https://github.com/vorov2/dyalect/wiki/Array#removeAll)).
   * Fixed: _Dyalect console doesn't print warnings when running tests_ ([Issue #283](https://github.com/vorov2/dyalect/issues/283)).
   * Fixed: _Dyalect console ignores build settings when running tests_ ([Issue #284](https://github.com/vorov2/dyalect/issues/284)).
 
