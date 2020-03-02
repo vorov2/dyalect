@@ -8,6 +8,7 @@
   * Done: _Add a static `Array.sort` method_ ([Issue #291](https://github.com/vorov2/dyalect/issues/291), [docs](https://github.com/vorov2/dyalect/wiki/Array#ssort)).
   * Done: _Implement tuple sorting_ ([Issue #290](https://github.com/vorov2/dyalect/issues/290), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#sort)).
   * Done: _Allow to create tuples with one element using traling comma_ ([Issue #293](https://github.com/vorov2/dyalect/issues/293), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#overview)).
+  * Done: _Tail call recursion optimization_ ([Issue #62](https://github.com/vorov2/dyalect/issues/62).
   * Fixed: _Dyalect console doesn't print warnings when running tests_ ([Issue #283](https://github.com/vorov2/dyalect/issues/283)).
   * Fixed: _Dyalect console ignores build settings when running tests_ ([Issue #284](https://github.com/vorov2/dyalect/issues/284)).
   * Fixed: _Invalid treatment of shortcut function syntax_ ([Issue #294](https://github.com/vorov2/dyalect/issues/294)).

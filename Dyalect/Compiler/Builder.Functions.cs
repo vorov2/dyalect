@@ -29,7 +29,7 @@ namespace Dyalect.Compiler
                 if (!node.IsMemberFunction)
                     addr = AddVariable(node.Name, node, flags);
 
-                BuildFunctionBody(node, hints, ctx);
+                BuildFunctionBody(addr, node, hints, ctx);
 
                 if (hints.Has(Push))
                     cw.Dup();
@@ -63,7 +63,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                BuildFunctionBody(node, hints, ctx);
+                BuildFunctionBody(-1, node, hints, ctx);
                 AddLinePragma(node);
                 cw.Nop();
                 PopIf(hints);
@@ -154,7 +154,7 @@ namespace Dyalect.Compiler
             return arr;
         }
 
-        private void BuildFunctionBody(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
+        private void BuildFunctionBody(int addr, DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
             var iter = hints.Has(Iterator);
             var args = CompileFunctionParameters(node.Parameters);
@@ -175,6 +175,7 @@ namespace Dyalect.Compiler
 
             ctx = new CompilerContext
             {
+                FunctionAddress = counters.Count | (addr >> 8) << 8,
                 FunctionStart = startLabel,
                 FunctionExit = funEndLabel,
                 Function = node

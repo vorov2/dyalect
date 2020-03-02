@@ -498,11 +498,11 @@ namespace Dyalect.Compiler
 
             //This is a special optimization for the 'toString', 'has' and 'len' methods
             //If we see that it is called directly we than emit a direct op code
-            if (node.Target.NodeType == NodeType.Access)
+            if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations)
             {
                 var meth = (DAccess)node.Target;
 
-                if (meth.Name == Builtins.ToStr && node.Arguments.Count == 0 && !options.NoOptimizations)
+                if (meth.Name == Builtins.ToStr && node.Arguments.Count == 0)
                 {
                     Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
@@ -511,7 +511,7 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-                if (meth.Name == Builtins.Len && node.Arguments.Count == 0 && !options.NoOptimizations)
+                if (meth.Name == Builtins.Len && node.Arguments.Count == 0)
                 {
                     Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
@@ -523,8 +523,7 @@ namespace Dyalect.Compiler
                 if (meth.Name == Builtins.Has && node.Arguments.Count == 1
                     && node.Arguments[0].NodeType == NodeType.String
                     && node.Arguments[0] is DStringLiteral str
-                    && str.Chunks == null
-                    && !options.NoOptimizations)
+                    && str.Chunks == null)
                 {
                     Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
@@ -534,16 +533,17 @@ namespace Dyalect.Compiler
                 }
             }
 
+            //Tail recursion optimization
             if (!options.NoOptimizations && hints.Has(Last)
                 && !sv.IsEmpty() && ctx.Function != null
                 && !ctx.Function.IsMemberFunction && !ctx.Function.IsIterator
                 && name == ctx.Function.Name && node.Arguments.Count == ctx.Function.Parameters.Count
+                && (ctx.FunctionAddress >> 8) == (sv.Address >> 8)
+                && (ctx.FunctionAddress & byte.MaxValue) == (counters.Count - (sv.Address & byte.MaxValue))
                 && !ctx.Function.IsVariadic() && !HasLabels(node.Arguments))
             {
                 for (var i = 0; i < node.Arguments.Count; i++)
-                {
                     Build(node.Arguments[i], newHints.Append(Push), ctx);
-                }
 
                 for (var i = 0; i < ctx.Function.Parameters.Count; i++)
                 {
