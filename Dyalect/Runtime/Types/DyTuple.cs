@@ -1,5 +1,6 @@
 ﻿using Dyalect.Debug;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,18 +11,12 @@ namespace Dyalect.Runtime.Types
     {
         internal readonly DyObject[] Values;
 
-        public int Count => Values.Length;
+        public override int Count => Values.Length;
 
         public DyTuple(DyObject[] values) : base(DyType.Tuple)
         {
             this.Values = values ?? throw new DyException("Unable to create a tuple with no values.");
         }
-
-        public override object ToObject() => ConvertToArray();
-
-        public IList<object> ConvertToList() => Values.Select(e => e.ToObject()).ToList();
-
-        public object[] ConvertToArray() => Values.Select(e => e.ToObject()).ToArray();
 
         public IDictionary<DyObject, DyObject> ConvertToDictionary()
         {
@@ -145,12 +140,12 @@ namespace Dyalect.Runtime.Types
                 yield return Values[i].TypeId == DyType.Label ? Values[i].GetTaggedValue() : Values[i];
         }
 
-        internal override int GetCount() => Count;
-
         internal override DyObject GetValue(int index) => Values[index];
+
+        internal override DyObject[] GetValues() => Values;
     }
 
-    internal sealed class DyTupleTypeInfo : DyTypeInfo
+    internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
     {
         public DyTupleTypeInfo() : base(DyType.Tuple)
         {
@@ -232,19 +227,6 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject GetIndices(ExecutionContext ctx, DyObject self, DyObject[] args)
-        {
-            var tup = (DyTuple)self;
-
-            IEnumerable<DyObject> iterate()
-            {
-                for (var i = 0; i < tup.Count; i++)
-                    yield return DyInteger.Get(i);
-            }
-
-            return new DyIterator(iterate());
-        }
-
         private DyObject GetKeys(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var tup = (DyTuple)self;
@@ -277,8 +259,6 @@ namespace Dyalect.Runtime.Types
         {
             switch (name)
             {
-                case "indices":
-                    return DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters);
                 case "keys":
                     return DyForeignFunction.Member(name, GetKeys, -1, Statics.EmptyParameters);
                 case "fst":
@@ -286,7 +266,7 @@ namespace Dyalect.Runtime.Types
                 case "snd":
                     return DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters);
                 default:
-                    return null;
+                    return base.GetMember(name, ctx);
             }
         }
 

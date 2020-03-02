@@ -1,7 +1,10 @@
 # 0.12.0
+  * Change: _Internal collection (arrays and tuples) object model refactoring._
   * Done: _Add `Array.removeRange(items)` method_ ([Issue #285](https://github.com/vorov2/dyalect/issues/285), [docs](https://github.com/vorov2/dyalect/wiki/Array#removeRange)).
   * Done: _Add `Array.removeAll(predicate)` method_ ([Issue #286](https://github.com/vorov2/dyalect/issues/286), [docs](https://github.com/vorov2/dyalect/wiki/Array#removeAll)).
   * Done: _Add an ability to disable specific warnings (through command line)_ ([Issue #282](https://github.com/vorov2/dyalect/issues/282)).
+  * Done: _Iterators to support `toTuple` method_ ([Issue #289](https://github.com/vorov2/dyalect/issues/289), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#toTuple)).
+  * Done: _Tuple slicing_ ([Issue #287](https://github.com/vorov2/dyalect/issues/287), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#slice)).
   * Fixed: _Dyalect console doesn't print warnings when running tests_ ([Issue #283](https://github.com/vorov2/dyalect/issues/283)).
   * Fixed: _Dyalect console ignores build settings when running tests_ ([Issue #284](https://github.com/vorov2/dyalect/issues/284)).
 

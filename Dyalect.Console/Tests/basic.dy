@@ -495,6 +495,18 @@ func tupleTest10() { //bug #217
     assert(33, t['x'])
 }
 
+func tupleTest11() { //#287
+    var xs = (1..10).toTuple()
+    var slice = xs.slice(4).toTuple()
+    assert((5,6,7,8,9,10), slice)
+}
+
+func tupleTest12() { //#287
+    var xs = [0,1,2,3,4,5,6,7,8,9]
+    var res = xs[1..5].toTuple()
+    assert((1,2,3,4), res)
+}
+
 func stringTest1() {
     var str = "Hello, world!"
     var res = str.len()
