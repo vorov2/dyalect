@@ -10,34 +10,6 @@ namespace Dyalect.Runtime.Types
 {
     public class DyArray : DyCollection, IEnumerable<DyObject>
     {
-        internal sealed class Comparer : IComparer<DyObject>
-        {
-            private readonly DyFunction fun;
-            private readonly ExecutionContext ctx;
-
-            public Comparer(DyFunction fun, ExecutionContext ctx)
-            {
-                this.fun = fun;
-                this.ctx = ctx;
-            }
-
-            public int Compare(DyObject x, DyObject y)
-            {
-                if (fun != null)
-                {
-                    var ret = fun.Call2(x, y, ctx);
-                    return ret.TypeId != DyType.Integer
-                        ? (ret.TypeId == DyType.Float ? (int)ret.GetFloat() : 0)
-                        : (int)ret.GetInteger();
-                }
-
-                var res = ctx.Types[x.TypeId].Gt(ctx, x, y);
-                return res == DyBool.True
-                    ? 1
-                    : ctx.Types[x.TypeId].Eq(ctx, x, y) == DyBool.True ? 0 : -1;
-            }
-        }
-
         private const int DEFAULT_SIZE = 4;
 
         internal DyObject[] Values;
@@ -331,27 +303,11 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(i);
         }
 
-        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject fun)
         {
             var arr = (DyArray)self;
-            var argo = args.TakeOne(null);
-
-            if (ReferenceEquals(argo, DyNil.Instance))
-                return Sort(ctx, self, null);
-
-            var fun = argo as DyFunction;
-
-            if (fun == null)
-                return ctx.InvalidType(args == null || args[0] == null ? DyNil.Instance : args[0]);
-
-            Array.Sort(arr.Values, 0, arr.Count, new DyArray.Comparer(fun, ctx));
-            return DyNil.Instance;
-        }
-
-        private DyObject Sort(ExecutionContext ctx, DyObject self, DyObject[] args)
-        {
-            var arr = (DyArray)self;
-            Array.Sort(arr.Values, 0, arr.Count, new DyArray.Comparer(null, ctx));
+            var comparer = new DySortComparer(fun as DyFunction, ctx);
+            Array.Sort(arr.Values, 0, arr.Count, comparer);
             return DyNil.Instance;
         }
 
@@ -630,6 +586,9 @@ namespace Dyalect.Runtime.Types
         {
             if (name == "Array")
                 return DyForeignFunction.Static(name, New, 0, new Par("values", true));
+
+            if (name == "sort")
+                return DyForeignFunction.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance));
 
             if (name == "empty")
                 return DyForeignFunction.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance));

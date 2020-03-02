@@ -5,6 +5,8 @@
   * Done: _Add an ability to disable specific warnings (through command line)_ ([Issue #282](https://github.com/vorov2/dyalect/issues/282)).
   * Done: _Iterators to support `toTuple` method_ ([Issue #289](https://github.com/vorov2/dyalect/issues/289), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#toTuple)).
   * Done: _Tuple slicing_ ([Issue #287](https://github.com/vorov2/dyalect/issues/287), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#slice)).
+  * Done: _Add a static `Array.sort` method_ ([Issue #291](https://github.com/vorov2/dyalect/issues/291), [docs](https://github.com/vorov2/dyalect/wiki/Array#ssort)).
+  * Done: _Implement tuple sorting_ ([Issue #290](https://github.com/vorov2/dyalect/issues/290), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#sort)).
   * Fixed: _Dyalect console doesn't print warnings when running tests_ ([Issue #283](https://github.com/vorov2/dyalect/issues/283)).
   * Fixed: _Dyalect console ignores build settings when running tests_ ([Issue #284](https://github.com/vorov2/dyalect/issues/284)).
 

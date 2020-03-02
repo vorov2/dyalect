@@ -255,6 +255,16 @@ namespace Dyalect.Runtime.Types
             return self.GetItem(1, ctx);
         }
 
+        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject fun)
+        {
+            var tup = (DyTuple)self;
+            var comparer = new DySortComparer(fun as DyFunction, ctx);
+            var newArr = new DyObject[tup.Count];
+            Array.Copy(tup.Values, newArr, newArr.Length);
+            Array.Sort(newArr, 0, newArr.Length, comparer);
+            return new DyTuple(newArr);
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             switch (name)
@@ -265,6 +275,8 @@ namespace Dyalect.Runtime.Types
                     return DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters);
                 case "snd":
                     return DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters);
+                case "sort":
+                    return DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance));
                 default:
                     return base.GetMember(name, ctx);
             }
@@ -284,6 +296,9 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
+            if (name == "sort")
+                return DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance));
+
             if (name == "pair")
                 return DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second"));
 
