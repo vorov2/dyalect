@@ -537,6 +537,15 @@ func tupleTest16() { //#290
     assert((1, 2, 3, 4, 5, 6, 7), ys)
 }
 
+func tupleTest17() { //#293
+    var xx = (1,)
+    assert((1,), xx)
+    var (x,) = (2,)
+    assert(x, 2)
+    set (x,) = (3,)
+    assert(x, 3)
+}
+
 func stringTest1() {
     var str = "Hello, world!"
     var res = str.len()

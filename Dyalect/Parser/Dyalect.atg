@@ -378,7 +378,7 @@ PRODUCTIONS
             "("
                 (. var tup = new DTuplePattern(t); .)
                 OrPattern<out node> (. tup.Elements.Add(node); .)
-                { "," OrPattern<out node> (. tup.Elements.Add(node); .) }
+                { "," [ OrPattern<out node> (. tup.Elements.Add(node); .) ] }
                 (. node = tup; .)
             ")"
         ).
@@ -929,7 +929,7 @@ PRODUCTIONS
             "("
                 (. var tup = new DTupleLiteral(t); .)
                 Expr<out node> (. tup.Elements.Add(node); .)
-                { "," Expr<out node> (. tup.Elements.Add(node); .) }
+                { "," [ Expr<out node> (. tup.Elements.Add(node); .) ] }
                 (. node = tup; .)
             ")"
         ).

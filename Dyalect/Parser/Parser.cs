@@ -731,8 +731,10 @@ namespace Dyalect.Parser
 		tup.Elements.Add(node); 
 		while (la.kind == 22) {
 			Get();
-			OrPattern(out node);
-			tup.Elements.Add(node); 
+			if (StartOf(6)) {
+				OrPattern(out node);
+				tup.Elements.Add(node); 
+			}
 		}
 		node = tup; 
 		Expect(27);
@@ -1356,8 +1358,10 @@ namespace Dyalect.Parser
 		tup.Elements.Add(node); 
 		while (la.kind == 22) {
 			Get();
-			Expr(out node);
-			tup.Elements.Add(node); 
+			if (StartOf(7)) {
+				Expr(out node);
+				tup.Elements.Add(node); 
+			}
 		}
 		node = tup; 
 		Expect(27);
