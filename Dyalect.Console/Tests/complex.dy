@@ -788,10 +788,10 @@ func functionTest10() {
     assert(12, f())
 }
 
-func functionTest11() { //Bug #236
-    var f = if $0 > 10 { 10 } else { $0 }
-    var r = f(12)
-    assert(10, r)
+func functionTest11() {
+    var f = $0 ?? 22
+    assert(12, f(12))
+    assert(22, f(0))
 }
 
 func functionTest12() {
@@ -832,6 +832,11 @@ func functionTest16() {
     }
     var s = bar()
     assert("foo is called by bar", s)
+}
+
+func functionTest17() { //#294
+    $0 + $1
+    assert(true, true)
 }
 
 func namesOfGodTest() {

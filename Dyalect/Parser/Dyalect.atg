@@ -142,7 +142,8 @@ PRODUCTIONS
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
             | Function<out node>
-        ).
+        )
+        (. node = ProcessImplicits(node); .).
 
     Guard<DNode src, out DNode node> =
         (. node = src; .)
@@ -228,7 +229,6 @@ PRODUCTIONS
             OrPattern<out var pat> (. bin.Pattern = pat; .)
             [
                 "=" Expr<out node>
-                (. node = ProcessImplicits(node); .)
                 (. bin.Init = node; .)
             ]
             (. node = bin; .)
@@ -240,7 +240,6 @@ PRODUCTIONS
             (. var bin = new DRebinding(t); .)
             OrPattern<out var pat> (. bin.Pattern = pat; .)
             "=" Expr<out node>
-            (. node = ProcessImplicits(node); .)
             (. bin.Init = node; .)
             (. node = bin; .)
         ).
@@ -252,7 +251,8 @@ PRODUCTIONS
             | SimpleExpr<out node>
             | Loops<out node>
             | Match<out node>
-        ).
+        )
+        (. node = ProcessImplicits(node); .).
 
     //Patterns
     Match<out DNode node> =
@@ -855,8 +855,8 @@ PRODUCTIONS
 
     ApplicationArguments<DApplication app> =
         (. var node = default(DNode); .)
-        Expr<out node> (. app.Arguments.Add(ProcessImplicits(node)); .)
-        { "," Expr<out node> (. app.Arguments.Add(ProcessImplicits(node)); .) }.
+        Expr<out node> (. app.Arguments.Add(node); .)
+        { "," Expr<out node> (. app.Arguments.Add(node); .) }.
 
     Literal<out DNode node> =
         (. node = null; .)
@@ -1010,7 +1010,12 @@ PRODUCTIONS
 
     DyalectItem =
         (
-              ( Statement<out var node> (. Root.Nodes.Add(node); .) )
+              (
+                Statement<out var node>
+                (.
+                    Root.Nodes.Add(node);
+                .)
+              )
             | ( Import Separator )
         ).
 
