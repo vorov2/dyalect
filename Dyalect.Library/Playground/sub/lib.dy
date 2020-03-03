@@ -1,3 +1,0 @@
-﻿type Foobar(x, y)
-
-print("lib.dy")
