@@ -6,7 +6,7 @@
     },
     "Run tests": {
       "commandName": "Project",
-      "commandLineArgs": "Tests\\ -test -ignore 301 -ignore 302"
+      "commandLineArgs": "..\\Dyalect.UnitTests\\Tests\\ -test -ignore 301 -ignore 302"
     },
     "Interactive": {
       "commandName": "Project"
