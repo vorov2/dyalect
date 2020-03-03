@@ -330,11 +330,6 @@ namespace Dyalect.Parser
             return str[0];
         }
 
-        private int GetImplicit()
-        {
-            return int.Parse(t.val.Substring(1));
-        }
-
         private long ParseInteger()
         {
             if (t.val.Length > 2 && t.val[0] == '0' && char.ToUpper(t.val[1]) == 'X')
@@ -345,6 +340,11 @@ namespace Dyalect.Parser
 
         private double ParseFloat()
         {
+            var c = t.val[t.val.Length - 1];
+
+            if (c == 'f' || c == 'F')
+                return double.Parse(t.val.Substring(0, t.val.Length - 1), CI.NumberFormat);
+
             return double.Parse(t.val, CI.NumberFormat);
         }
 

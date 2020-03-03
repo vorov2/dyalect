@@ -22,12 +22,13 @@ TOKENS
 
     intToken    = digit { digit } | ("0x"|"0X") hexDigit { hexDigit }.
 
-    floatToken  = "." digit { digit } [ ("e"|"E") [ "+" | "-" ] digit { digit } ]
+    floatToken  = "." digit { digit } [ ("e"|"E") [ "+" | "-" ] digit { digit } ] [("F"|"f")]
+                    | digit { digit } ("F"|"f")
                     | digit { digit }
                         (
                             "." digit { digit } [ ( "e" | "E" ) ["+" | "-" ] digit { digit } ]
                             | ( "e" | "E") ["+" | "-" ] digit { digit }
-                        ).
+                        ) [("F"|"f")].
 
     stringToken = "\"" { stringChar | "\\" esc | ("\\(" {stringChar|"\""} ")" ) }  "\"".
     charToken = "'" { char | "\\" esc } "'".

@@ -1,5 +1,6 @@
 # 0.12.0
   * Change: _Internal collection (arrays and tuples) object model refactoring._
+  * Change: _Optimizations in compiler and virtual machine._
   * Done: _Migrate Dyalect to .NET Core 3.0_ ([Issue #295](https://github.com/vorov2/dyalect/issues/295)).
   * Done: _Add `Array.removeRange(items)` method_ ([Issue #285](https://github.com/vorov2/dyalect/issues/285), [docs](https://github.com/vorov2/dyalect/wiki/Array#removeRange)).
   * Done: _Add `Array.removeAll(predicate)` method_ ([Issue #286](https://github.com/vorov2/dyalect/issues/286), [docs](https://github.com/vorov2/dyalect/wiki/Array#removeAll)).
@@ -10,6 +11,7 @@
   * Done: _Implement tuple sorting_ ([Issue #290](https://github.com/vorov2/dyalect/issues/290), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#sort)).
   * Done: _Allow to create tuples with one element using traling comma_ ([Issue #293](https://github.com/vorov2/dyalect/issues/293), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#overview)).
   * Done: _Tail call recursion optimization_ ([Issue #62](https://github.com/vorov2/dyalect/issues/62)).
+  * Done: _There is not suffix to distinguish integers from floats_ ([Issue #297](https://github.com/vorov2/dyalect/issues/297), [docs](https://github.com/vorov2/dyalect/wiki/Float#overview)).
   * Fixed: _Dyalect console doesn't print warnings when running tests_ ([Issue #283](https://github.com/vorov2/dyalect/issues/283)).
   * Fixed: _Dyalect console ignores build settings when running tests_ ([Issue #284](https://github.com/vorov2/dyalect/issues/284)).
   * Fixed: _Invalid treatment of shortcut function syntax_ ([Issue #294](https://github.com/vorov2/dyalect/issues/294)).

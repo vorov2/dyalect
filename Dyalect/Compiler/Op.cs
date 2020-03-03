@@ -19,6 +19,7 @@ namespace Dyalect.Compiler
         public static readonly Op PushI8_0 = new Op(OpCode.PushI8_0);
         public static readonly Op PushI8_1 = new Op(OpCode.PushI8_1);
         public static readonly Op PushR8_0 = new Op(OpCode.PushR8_0);
+        public static readonly Op PushR8_1 = new Op(OpCode.PushR8_1);
         public static readonly Op Shl = new Op(OpCode.Shl);
         public static readonly Op Shr = new Op(OpCode.Shr);
         public static readonly Op And = new Op(OpCode.And);

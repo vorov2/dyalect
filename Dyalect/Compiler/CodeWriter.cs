@@ -118,7 +118,7 @@ namespace Dyalect.Compiler
 
         public int Offset => ops.Count;
 
-        public int IndexString(string val)
+        private int IndexString(string val)
         {
             if (!strings.TryGetValue(val, out var idx))
             {
@@ -175,6 +175,8 @@ namespace Dyalect.Compiler
         {
             if (val == 0D)
                 Emit(Op.PushR8_0);
+            else if (val == 1D)
+                Emit(Op.PushR8_1);
             else
                 Emit(new Op(OpCode.PushR8, IndexFloat(val)));
         }

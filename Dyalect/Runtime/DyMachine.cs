@@ -132,6 +132,9 @@ namespace Dyalect.Runtime
                     case OpCode.PushR8_0:
                         evalStack.Push(DyFloat.Zero);
                         break;
+                    case OpCode.PushR8_1:
+                        evalStack.Push(DyFloat.One);
+                        break;
                     case OpCode.PushR8:
                         evalStack.Push(unit.IndexedFloats[op.Data]);
                         break;
