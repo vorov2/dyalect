@@ -1,0 +1,77 @@
+﻿import refs.libtest lib
+import refs.libtest1 lib1
+
+func moduleTest1() {
+    var abs = lib.abs(-12)
+    assert(12, abs)
+    assert(2, lib.abs(-2))
+}
+
+func moduleTest2() {
+    var a = abs(-12)
+    assert(12, a)
+    var b = min(2, 1)
+    assert(1, b)
+}
+
+func moduleTest3() {
+    var res = match lib {
+        sign: fn => fn(-12)
+    }
+    assert(-1, res)
+}
+
+func moduleTest4() {
+    var res = lib is (id: _)
+    assert(false, res)
+}
+
+func moduleTest5() {
+    var res = lib1.sayHello()
+    assert("Hello, User Jon", res)
+}
+
+func moduleTest6() {
+    var res = lib.double(2)
+    var res1 = lib1.double(2)
+    assert(4, res)
+    assert("double 2", res1)
+}
+
+func moduleTypeTest1() {
+    var fb = Foobar(12, 2)
+    assert(12, fb.x)
+    assert(2, fb.y)
+}
+
+func moduleTypeTest2() {
+    var fb = lib.Foobar(12, 2)
+    assert(12, fb[0])
+    assert(2, fb[1])
+}
+
+func moduleTypeTest3() {
+    func Foobar.getVal1() {
+        "Foobar"
+    }
+    var fb = Foobar(1, 2)
+    assert("Foobar", fb.getVal1())
+}
+
+func moduleTypeTest4() {
+    func lib.Foobar.getVal2() {
+        "Foobar"
+    }
+    var fb = lib.Foobar(1, 2)
+    assert("Foobar", fb.getVal2())
+}
+
+func moduleTypeTest5() {
+    var t = Foobar
+    assert("Foobar", t.name)
+}
+
+func moduleTypeTest6() {
+    var t = lib.Foobar
+    assert("Foobar", t.name)
+}

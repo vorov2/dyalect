@@ -9,8 +9,8 @@ namespace Dyalect.Parser
 {
     partial class Scanner
     {
-	const int maxT = 85;
-	const int noSym = 85;
+	const int maxT = 84;
+	const int noSym = 84;
 
 
         static Scanner()
@@ -160,7 +160,7 @@ namespace Dyalect.Parser
 			case "set": t.kind = 50; break;
 			case "import": t.kind = 51; break;
 			case "when": t.kind = 52; break;
-			case "otherwise": t.kind = 53; break;
+			case "else": t.kind = 53; break;
 			case "static": t.kind = 54; break;
 			case "auto": t.kind = 55; break;
 			case "private": t.kind = 56; break;
@@ -168,14 +168,13 @@ namespace Dyalect.Parser
 			case "nil": t.kind = 63; break;
 			case "true": t.kind = 64; break;
 			case "false": t.kind = 65; break;
-			case "else": t.kind = 66; break;
-			case "do": t.kind = 67; break;
-			case "in": t.kind = 68; break;
-			case "throw": t.kind = 69; break;
-			case "try": t.kind = 70; break;
-			case "catch": t.kind = 71; break;
-			case "is": t.kind = 82; break;
-			case "base": t.kind = 84; break;
+			case "do": t.kind = 66; break;
+			case "in": t.kind = 67; break;
+			case "throw": t.kind = 68; break;
+			case "try": t.kind = 69; break;
+			case "catch": t.kind = 70; break;
+			case "is": t.kind = 81; break;
+			case "base": t.kind = 83; break;
 			default: break;
 		}
         }
@@ -418,27 +417,27 @@ namespace Dyalect.Parser
 			case 57:
 				{t.kind = 60; break;}
 			case 58:
-				{t.kind = 72; break;}
+				{t.kind = 71; break;}
 			case 59:
-				{t.kind = 73; break;}
+				{t.kind = 72; break;}
 			case 60:
-				{t.kind = 74; break;}
+				{t.kind = 73; break;}
 			case 61:
-				{t.kind = 75; break;}
+				{t.kind = 74; break;}
 			case 62:
-				{t.kind = 76; break;}
+				{t.kind = 75; break;}
 			case 63:
-				{t.kind = 77; break;}
+				{t.kind = 76; break;}
 			case 64:
-				{t.kind = 78; break;}
+				{t.kind = 77; break;}
 			case 65:
-				{t.kind = 79; break;}
+				{t.kind = 78; break;}
 			case 66:
-				{t.kind = 80; break;}
+				{t.kind = 79; break;}
 			case 67:
-				{t.kind = 81; break;}
+				{t.kind = 80; break;}
 			case 68:
-				{t.kind = 83; break;}
+				{t.kind = 82; break;}
 			case 69:
 				recEnd = pos; recKind = 21;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 6;}

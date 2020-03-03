@@ -160,14 +160,14 @@ namespace Dyalect.Parser
 			case "set": t.kind = 50; break;
 			case "import": t.kind = 51; break;
 			case "when": t.kind = 52; break;
-			case "else": t.kind = 53; break;
-			case "static": t.kind = 54; break;
-			case "auto": t.kind = 55; break;
-			case "private": t.kind = 56; break;
-			case "match": t.kind = 58; break;
-			case "nil": t.kind = 63; break;
-			case "true": t.kind = 64; break;
-			case "false": t.kind = 65; break;
+			case "static": t.kind = 53; break;
+			case "auto": t.kind = 54; break;
+			case "private": t.kind = 55; break;
+			case "match": t.kind = 57; break;
+			case "nil": t.kind = 62; break;
+			case "true": t.kind = 63; break;
+			case "false": t.kind = 64; break;
+			case "else": t.kind = 65; break;
 			case "do": t.kind = 66; break;
 			case "in": t.kind = 67; break;
 			case "throw": t.kind = 68; break;
@@ -411,11 +411,11 @@ namespace Dyalect.Parser
 			case 54:
 				{t.kind = 46; break;}
 			case 55:
-				{t.kind = 57; break;}
+				{t.kind = 56; break;}
 			case 56:
-				{t.kind = 59; break;}
+				{t.kind = 58; break;}
 			case 57:
-				{t.kind = 60; break;}
+				{t.kind = 59; break;}
 			case 58:
 				{t.kind = 71; break;}
 			case 59:
@@ -498,13 +498,13 @@ namespace Dyalect.Parser
 				if (ch == '=') {AddCh(); goto case 65;}
 				else {t.kind = 47; break;}
 			case 82:
-				recEnd = pos; recKind = 62;
-				if (ch == '?') {AddCh(); goto case 68;}
-				else {t.kind = 62; break;}
-			case 83:
 				recEnd = pos; recKind = 61;
-				if (ch == '.') {AddCh(); goto case 55;}
+				if (ch == '?') {AddCh(); goto case 68;}
 				else {t.kind = 61; break;}
+			case 83:
+				recEnd = pos; recKind = 60;
+				if (ch == '.') {AddCh(); goto case 55;}
+				else {t.kind = 60; break;}
 			case 84:
 				recEnd = pos; recKind = 48;
 				if (ch == '=') {AddCh(); goto case 66;}
