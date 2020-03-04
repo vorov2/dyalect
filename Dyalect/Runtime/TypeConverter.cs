@@ -5,12 +5,15 @@ namespace Dyalect.Runtime
 {
     public static class TypeConverter
     {
-        public static DyObject ConvertFrom(object obj, ExecutionContext ctx) => ConvertFrom(obj, obj?.GetType(), ctx);
+        public static DyObject ConvertFrom<T>(T obj) => ConvertFrom(obj, typeof(T), null);
 
-        public static DyObject ConvertFrom<T>(T obj, ExecutionContext ctx) => ConvertFrom(obj, typeof(T), ctx);
+        public static DyObject ConvertFrom(object obj) => ConvertFrom(obj, obj?.GetType(), null);
 
-        public static DyObject ConvertFrom(object obj, Type type, ExecutionContext ctx)
+        internal static DyObject ConvertFrom(object obj, Type type, ExecutionContext ctx)
         {
+            if (ReferenceEquals(obj, null))
+                return DyNil.Instance;
+            
             if (obj is DyObject retval)
                 return retval;
 

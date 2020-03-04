@@ -1,6 +1,7 @@
 # 0.12.0
   * Change: _Internal collection (arrays and tuples) object model refactoring._
   * Change: _Optimizations in compiler and virtual machine._
+  * Change: _Embedding API is enhanced and refactored._
   * Done: _Migrate Dyalect to .NET Core 3.0_ ([Issue #295](https://github.com/vorov2/dyalect/issues/295)).
   * Done: _Add `Array.removeRange(items)` method_ ([Issue #285](https://github.com/vorov2/dyalect/issues/285), [docs](https://github.com/vorov2/dyalect/wiki/Array#removeRange)).
   * Done: _Add `Array.removeAll(predicate)` method_ ([Issue #286](https://github.com/vorov2/dyalect/issues/286), [docs](https://github.com/vorov2/dyalect/wiki/Array#removeAll)).
