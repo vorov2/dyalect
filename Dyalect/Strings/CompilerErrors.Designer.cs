@@ -367,7 +367,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Match entry &quot;{0}&quot; is unreachable..
+        ///   Looks up a localized string similar to Match entry &quot;{0}&quot; is unreachable. The preceding entry &quot;{1}&quot; would match first..
         /// </summary>
         internal static string UnreachableMatchEntry {
             get {

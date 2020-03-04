@@ -515,6 +515,9 @@ namespace Dyalect.Compiler
             {
                 var e = match.Entries[i];
 
+                if (e.Guard == null && e.Pattern is DNamePattern name)
+                    name.IsConstructor = IsTypeExists(name.Name);
+
                 if (e.Guard == null)
                 {
                     var j = i;
@@ -523,9 +526,9 @@ namespace Dyalect.Compiler
                         j--;
                         var prev = match.Entries[j];
 
-                        if (prev.Guard != null && !CanFollow(e.Pattern, prev.Pattern))
+                        if (prev.Guard == null && !CanFollow(e.Pattern, prev.Pattern))
                         {
-                            AddWarning(CompilerWarning.UnreachableMatchEntry, e.Location, e.Pattern);
+                            AddWarning(CompilerWarning.UnreachableMatchEntry, e.Location, e.Pattern, prev.Pattern);
                             break;
                         }
                     }
@@ -574,16 +577,16 @@ namespace Dyalect.Compiler
                     return true;
             }
 
-            return true;
+            return false;
         }
 
-        private bool CanFollow(DSequencePattern seq, DStringPattern str)
+        private bool CanFollow(DStringPattern now, DSequencePattern prev)
         {
-            for (var i = 0; i < seq.Elements.Count; i++)
+            for (var i = 0; i < prev.Elements.Count; i++)
             {
-                var t = seq.Elements[i];
+                var t = prev.Elements[i];
 
-                if (t.NodeType != NodeType.CharPattern || ((DCharPattern)t).Value != str.Value.Value[i])
+                if (t.NodeType != NodeType.CharPattern || ((DCharPattern)t).Value != now.Value.Value[i])
                     return true;
             }
 
@@ -594,7 +597,18 @@ namespace Dyalect.Compiler
         {
             switch (prev.NodeType)
             {
-                case NodeType.NamePattern: return false;
+                case NodeType.NamePattern:
+                    {
+                        var nm = (DNamePattern)prev;
+                        if (!nm.IsConstructor)
+                            return false;
+                        if (now.NodeType == NodeType.NamePattern)
+                        {
+                            var nmn = (DNamePattern)now;
+                            return !nmn.IsConstructor || nmn.Name != nm.Name;
+                        }
+                        return true;
+                    }
                 case NodeType.WildcardPattern: return false;
                 case NodeType.AsPattern:
                     return CanFollow(now, ((DAsPattern)prev).Pattern);
@@ -620,7 +634,7 @@ namespace Dyalect.Compiler
                                 || (prevSeq.NodeType == NodeType.ArrayPattern && prevSeq.Elements.Count > str.Value.Value.Length))
                                 return true;
 
-                            return CanFollow(prevSeq, str);
+                            return CanFollow(str, prevSeq);
                         }
                         else
                             return true;
@@ -630,7 +644,7 @@ namespace Dyalect.Compiler
                         if (now.NodeType != NodeType.LabelPattern)
                             return true;
                         return ((DLabelPattern)prev).Label != ((DLabelPattern)now).Label
-                            || CanFollow(((DLabelPattern)prev).Pattern, ((DLabelPattern)now).Pattern);
+                            || CanFollow(((DLabelPattern)now).Pattern, ((DLabelPattern)prev).Pattern);
                     }
                 case NodeType.OrPattern:
                     {
@@ -671,26 +685,30 @@ namespace Dyalect.Compiler
                             var tup = (DTuplePattern)now;
                             if (tup.Elements.Count != prevStr.Value.Value.Length)
                                 return true;
-                            return CanFollow(tup, prevStr);
+                            return CanFollow(prevStr, tup);
                         }
                         else if (now.NodeType == NodeType.ArrayPattern)
                         {
                             var arr = (DArrayPattern)now;
                             if (arr.Elements.Count > prevStr.Value.Value.Length)
                                 return true;
-                            return CanFollow(arr, prevStr);
+                            return CanFollow(prevStr, arr);
                         }
                         else
                             return true;
                     }
                 case NodeType.IntegerPattern:
-                    return now.NodeType != NodeType.IntegerPattern;
+                    return now.NodeType != NodeType.IntegerPattern
+                        || ((DIntegerPattern)now).Value != ((DIntegerPattern)prev).Value;
                 case NodeType.FloatPattern:
-                    return now.NodeType != NodeType.FloatPattern;
+                    return now.NodeType != NodeType.FloatPattern
+                        || ((DFloatPattern)now).Value != ((DFloatPattern)prev).Value;
                 case NodeType.CharPattern:
-                    return now.NodeType != NodeType.CharPattern;
+                    return now.NodeType != NodeType.CharPattern
+                        || ((DCharPattern)now).Value != ((DCharPattern)prev).Value; ;
                 case NodeType.BooleanPattern:
-                    return now.NodeType != NodeType.BooleanPattern;
+                    return now.NodeType != NodeType.BooleanPattern
+                        || ((DBooleanPattern)now).Value != ((DBooleanPattern)prev).Value; ;
                 case NodeType.TypeTestPattern:
                     {
                         if (now.NodeType != NodeType.TypeTestPattern)
@@ -708,21 +726,21 @@ namespace Dyalect.Compiler
                         if (now.NodeType != NodeType.CtorPattern)
                             return true;
 
-                        var ctor = (DCtorPattern)prev;
+                        var prevc = (DCtorPattern)prev;
                         var nowc = (DCtorPattern)now;
 
-                        if (ctor.Constructor != nowc.Constructor)
+                        if (prevc.Constructor != nowc.Constructor)
                             return true;
 
-                        if (ctor.Arguments == null || ctor.Arguments.Count == 0)
+                        if (prevc.Arguments == null || prevc.Arguments.Count == 0)
                             return false;
 
-                        if (ctor.Arguments.Count != nowc.Arguments.Count)
+                        if (prevc.Arguments.Count != nowc.Arguments.Count)
                             return true;
 
-                        for (var i = 0; i < ctor.Arguments.Count; i++)
+                        for (var i = 0; i < prevc.Arguments.Count; i++)
                         {
-                            if (CanFollow((DPattern)ctor.Arguments[i], (DPattern)nowc.Arguments[i]))
+                            if (CanFollow((DPattern)nowc.Arguments[i], (DPattern)prevc.Arguments[i]))
                                 return true;
                         }
 

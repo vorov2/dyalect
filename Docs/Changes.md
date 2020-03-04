@@ -15,6 +15,7 @@
   * Done: _There is no suffix to distinguish integers from floats_ ([Issue #297](https://github.com/vorov2/dyalect/issues/297), [docs](https://github.com/vorov2/dyalect/wiki/Float#overview)).
   * Done: _Support for compiler directives_ ([Issue #149](https://github.com/vorov2/dyalect/issues/149), [docs](https://github.com/vorov2/dyalect/wiki/Compiler-directives)).
   * Done: _Add an ability to disable specific warnings using compiler directives_ ([Issue #281](https://github.com/vorov2/dyalect/issues/281), [docs](https://github.com/vorov2/dyalect/wiki/Compiler-directives#warning)).
+  * Done: _Match analysis is not powerful enough_ ([Issue #280](https://github.com/vorov2/dyalect/issues/280)).
   * Fixed: _Dyalect console doesn't print warnings when running tests_ ([Issue #283](https://github.com/vorov2/dyalect/issues/283)).
   * Fixed: _Dyalect console ignores build settings when running tests_ ([Issue #284](https://github.com/vorov2/dyalect/issues/284)).
   * Fixed: _Invalid treatment of shortcut function syntax_ ([Issue #294](https://github.com/vorov2/dyalect/issues/294)).
