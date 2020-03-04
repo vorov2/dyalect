@@ -70,6 +70,10 @@
 
         BindingPatternNoInit = 233,
 
-        InvalidLabel = 234
+        InvalidLabel = 234,
+
+        UnknownDirective = 235,
+
+        InvalidDirective = 236
     }
 }

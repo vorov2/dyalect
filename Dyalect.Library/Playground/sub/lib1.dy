@@ -1,5 +1,0 @@
-﻿func sayHello() {
-    "Hello"
-}
-
-print("lib1.dy")

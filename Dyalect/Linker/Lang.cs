@@ -214,7 +214,7 @@ namespace Dyalect.Linker
             sb.Append('}');
             sb.Append("__x12");
 
-            var linker = new DyLinker(null, BuilderOptions.Default);
+            var linker = new DyLinker(null, BuilderOptions.Default());
             var result = linker.Make(SourceBuffer.FromString(sb.ToString()));
 
             if (!result.Success)

@@ -256,13 +256,13 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        private DyObject ToArray(ExecutionContext ctx, DyObject self)
+        private List<DyObject> ConvertToArray(ExecutionContext ctx, DyObject self)
         {
             var fn = (DyFunction)self;
             fn.Reset(ctx);
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return null;
 
             var arr = new List<DyObject>();
             DyObject res = null;
@@ -272,13 +272,27 @@ namespace Dyalect.Runtime.Types
                 res = fn.Call0(ctx);
 
                 if (ctx.HasErrors)
-                    return DyNil.Instance;
+                    return null;
 
                 if (!ReferenceEquals(res, DyNil.Terminator))
                     arr.Add(res);
             }
 
-            return new DyArray(arr.ToArray());
+            return arr;
+        }
+
+        private DyObject ToArray(ExecutionContext ctx, DyObject self)
+        {
+            var res = ConvertToArray(ctx, self);
+            return res == null ? DyNil.Instance
+                : (DyObject)new DyArray(res.ToArray());
+        }
+
+        private DyObject ToTuple(ExecutionContext ctx, DyObject self)
+        {
+            var res = ConvertToArray(ctx, self);
+            return res == null ? DyNil.Instance
+                : (DyObject)new DyTuple(res.ToArray());
         }
 
         private DyObject GetCount(ExecutionContext ctx, DyObject self)
@@ -316,6 +330,8 @@ namespace Dyalect.Runtime.Types
         {
             if (name == "toArray")
                 return DyForeignFunction.Member(name, ToArray);
+            else if (name == "toTuple")
+                return DyForeignFunction.Member(name, ToTuple);
 
             return null;
         }

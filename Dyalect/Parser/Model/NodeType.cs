@@ -28,6 +28,8 @@
         Yield,
         Throw,
 
+        Directive,
+
         Base,
 
         Application,

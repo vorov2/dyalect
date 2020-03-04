@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{CF92CF03-8
 		Docs\Changes.md = Docs\Changes.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dyalect.UnitTests", "Dyalect.UnitTests\Dyalect.UnitTests.csproj", "{52B56E24-8E1B-4953-B5D0-470A85089FB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{35777D7A-C304-45E8-9323-088298491476}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35777D7A-C304-45E8-9323-088298491476}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35777D7A-C304-45E8-9323-088298491476}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52B56E24-8E1B-4953-B5D0-470A85089FB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52B56E24-8E1B-4953-B5D0-470A85089FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52B56E24-8E1B-4953-B5D0-470A85089FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52B56E24-8E1B-4953-B5D0-470A85089FB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -140,8 +140,8 @@ func fizzbuzzTest() {
     }
     assert(acc, "12fizz4buzzfizz78fizzbuzz")
 }
-
-func recursionTest() {
+/*
+func recursionTest1() { //#62
     var acc = 0
     func iter(n) {
         if n == 0 {
@@ -153,6 +153,15 @@ func recursionTest() {
     }
     iter(10)
     assert(acc, 10)
+}*/
+
+func recursionTest2() { //#62
+    func foo(x, y) {
+        var foo = (x, y) => x - y
+        foo(x, y)
+    }
+    var res = foo(12, 2)
+    assert(res, 10)
 }
 
 func factTest() {
@@ -398,12 +407,17 @@ func iteratorTest9() {
     assert([1..10], res.toArray())
 }
 
-
 func iteratorTest10() {
     var xs = 1..5
     var ys = 6..10
     var res = Iterator(xs, ys)
     assert([1..10], res.toArray())
+}
+
+func iteratorTest11() { //#289
+    var xs = 1..5
+    var res = Iterator(xs)
+    assert((1,2,3,4,5), res.toTuple())
 }
 
 func calcETest() { //2.71828182845905
@@ -783,10 +797,10 @@ func functionTest10() {
     assert(12, f())
 }
 
-func functionTest11() { //Bug #236
-    var f = if $0 > 10 { 10 } else { $0 }
-    var r = f(12)
-    assert(10, r)
+func functionTest11() {
+    var f = $0 ?? 22
+    assert(12, f(12))
+    assert(22, f(0))
 }
 
 func functionTest12() {
@@ -827,6 +841,11 @@ func functionTest16() {
     }
     var s = bar()
     assert("foo is called by bar", s)
+}
+
+func functionTest17() { //#294
+    $0 + $1
+    assert(true, true)
 }
 
 func namesOfGodTest() {

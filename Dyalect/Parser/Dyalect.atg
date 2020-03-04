@@ -18,14 +18,17 @@ CHARACTERS
 TOKENS
     identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
 
+    directive = "#" (letter { letter | digit } | "_" letter { letter | digit  }).
+
     intToken    = digit { digit } | ("0x"|"0X") hexDigit { hexDigit }.
 
-    floatToken  = "." digit { digit } [ ("e"|"E") [ "+" | "-" ] digit { digit } ]
+    floatToken  = "." digit { digit } [ ("e"|"E") [ "+" | "-" ] digit { digit } ] [("F"|"f")]
+                    | digit { digit } ("F"|"f")
                     | digit { digit }
                         (
                             "." digit { digit } [ ( "e" | "E" ) ["+" | "-" ] digit { digit } ]
                             | ( "e" | "E") ["+" | "-" ] digit { digit }
-                        ).
+                        ) [("F"|"f")].
 
     stringToken = "\"" { stringChar | "\\" esc | ("\\(" {stringChar|"\""} ")" ) }  "\"".
     charToken = "'" { char | "\\" esc } "'".
@@ -140,6 +143,26 @@ PRODUCTIONS
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
             | Function<out node>
+            | Directive<out node> Separator
+        )
+        (. node = ProcessImplicits(node); .).
+
+    Directive<out DNode node> =
+        (
+            directive
+            (. var pp = new DDirective(t) { Key = t.val.Substring(1) }; node = pp; .)
+            {
+                (. if (la.AfterEol) return; .)
+                (
+                      stringToken (. pp.Attributes.Add(ParseSimpleString()); .)
+                    | intToken (. pp.Attributes.Add(ParseInteger()); .)
+                    | floatToken (. pp.Attributes.Add(ParseFloat()); .)
+                    | charToken (. pp.Attributes.Add(ParseChar()); .)
+                    | "true" (. pp.Attributes.Add(true); .)
+                    | "false" (. pp.Attributes.Add(false); .)
+                    | identToken (. pp.Attributes.Add(t.val); .)
+                )
+            }
         ).
 
     Guard<DNode src, out DNode node> =
@@ -226,7 +249,6 @@ PRODUCTIONS
             OrPattern<out var pat> (. bin.Pattern = pat; .)
             [
                 "=" Expr<out node>
-                (. node = ProcessImplicits(node); .)
                 (. bin.Init = node; .)
             ]
             (. node = bin; .)
@@ -238,7 +260,6 @@ PRODUCTIONS
             (. var bin = new DRebinding(t); .)
             OrPattern<out var pat> (. bin.Pattern = pat; .)
             "=" Expr<out node>
-            (. node = ProcessImplicits(node); .)
             (. bin.Init = node; .)
             (. node = bin; .)
         ).
@@ -250,7 +271,8 @@ PRODUCTIONS
             | SimpleExpr<out node>
             | Loops<out node>
             | Match<out node>
-        ).
+        )
+        (. node = ProcessImplicits(node); .).
 
     //Patterns
     Match<out DNode node> =
@@ -376,7 +398,7 @@ PRODUCTIONS
             "("
                 (. var tup = new DTuplePattern(t); .)
                 OrPattern<out node> (. tup.Elements.Add(node); .)
-                { "," OrPattern<out node> (. tup.Elements.Add(node); .) }
+                { "," [ OrPattern<out node> (. tup.Elements.Add(node); .) ] }
                 (. node = tup; .)
             ")"
         ).
@@ -853,8 +875,8 @@ PRODUCTIONS
 
     ApplicationArguments<DApplication app> =
         (. var node = default(DNode); .)
-        Expr<out node> (. app.Arguments.Add(ProcessImplicits(node)); .)
-        { "," Expr<out node> (. app.Arguments.Add(ProcessImplicits(node)); .) }.
+        Expr<out node> (. app.Arguments.Add(node); .)
+        { "," Expr<out node> (. app.Arguments.Add(node); .) }.
 
     Literal<out DNode node> =
         (. node = null; .)
@@ -926,7 +948,7 @@ PRODUCTIONS
             "("
                 (. var tup = new DTupleLiteral(t); .)
                 Expr<out node> (. tup.Elements.Add(node); .)
-                { "," Expr<out node> (. tup.Elements.Add(node); .) }
+                { "," [ Expr<out node> (. tup.Elements.Add(node); .) ] }
                 (. node = tup; .)
             ")"
         ).
@@ -990,7 +1012,12 @@ PRODUCTIONS
 
     DyalectItem =
         (
-              ( Statement<out var node> (. Root.Nodes.Add(node); .) )
+              (
+                Statement<out var node>
+                (.
+                    Root.Nodes.Add(node);
+                .)
+              )
             | ( Import Separator )
         ).
 

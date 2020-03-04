@@ -2,10 +2,12 @@
 {
     public enum CompilerWarning
     {
-        FunctionDeprecated = 300,
+        UserWarning = 300,
 
-        UnreachableMatchEntry = 301,
+        FunctionDeprecated = 301,
 
-        PatternNeverMatch = 302
+        UnreachableMatchEntry = 302,
+
+        PatternNeverMatch = 303
     }
 }

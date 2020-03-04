@@ -42,6 +42,7 @@ namespace Dyalect.Compiler
                 BlockBreakExit = cw.DefineLabel()
             };
             var iter = cw.DefineLabel();
+            hints = hints.Remove(Last);
             var nh = hints.Has(Push) ? hints.Remove(Push).Append(ExpectPush) : hints;
 
             if (node.DoWhile)
@@ -73,6 +74,7 @@ namespace Dyalect.Compiler
                 BlockBreakExit = cw.DefineLabel()
             };
             StartScope(false, node.Location);
+            hints = hints.Remove(Last);
 
             var inc = -1;
 

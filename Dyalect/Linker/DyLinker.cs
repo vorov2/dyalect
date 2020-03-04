@@ -326,7 +326,7 @@ namespace Dyalect.Linker
 
             if (Lookup.Find(Path.GetDirectoryName(workingDir), module, out var fullPath))
             {
-                if (!BuilderOptions.NoWarningsLinker)
+                if (NeedReport((int)LinkerWarning.NewerSourceFile))
                 {
                     var sf = Path.Combine(Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath) + ".dy");
 
@@ -353,6 +353,9 @@ namespace Dyalect.Linker
 
         private void AddMessage(BuildMessageType type, int code, string codeName, string fileName, Location loc, params object[] args)
         {
+            if (type == BuildMessageType.Warning || NeedReport(code))
+                return;
+
             var str = LinkerErrors.ResourceManager.GetString(codeName);
             str = str ?? codeName;
 
@@ -360,6 +363,11 @@ namespace Dyalect.Linker
                 str = string.Format(str, args);
 
             Messages.Add(new BuildMessage(str, type, code, loc.Line, loc.Column, fileName));
+        }
+
+        private bool NeedReport(int warn)
+        {
+            return BuilderOptions.NoWarningsLinker || BuilderOptions.IgnoreWarnings.Contains(warn);
         }
     }
 }

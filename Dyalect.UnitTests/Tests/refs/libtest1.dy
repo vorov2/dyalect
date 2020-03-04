@@ -1,0 +1,9 @@
+﻿import libtest
+
+func sayHello() {
+    "Hello, \(userName("Jon"))"
+}
+
+func double(x) {
+    "double " + x
+}

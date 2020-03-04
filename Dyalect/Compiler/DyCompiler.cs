@@ -11,7 +11,7 @@ namespace Dyalect.Compiler
 
         public DyCompiler(BuilderOptions options, DyLinker linker)
         {
-            this.options = options ?? BuilderOptions.Default;
+            this.options = options ?? BuilderOptions.Default();
             this.linker = linker;
             this.builder = new Builder(this.options, linker);
         }

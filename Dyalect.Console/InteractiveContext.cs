@@ -13,7 +13,18 @@ namespace Dyalect
         public InteractiveContext(DyaOptions options)
         {
             Options = options;
-            var buildOptions = new BuilderOptions
+            BuildOptions = CreateBuildOptions(options);
+
+            var lookup = FileLookup.Create(
+                options.FileNames == null || options.FileNames.Length == 0 || string.IsNullOrWhiteSpace(options.FileNames[0])
+                    ? Environment.CurrentDirectory
+                    : Path.GetDirectoryName(options.FileNames[0]), options.Paths);
+            Linker = new DyIncrementalLinker(lookup, BuildOptions, options.UserArguments);
+        }
+
+        public static BuilderOptions CreateBuildOptions(DyaOptions options)
+        {
+            var ret = new BuilderOptions
             {
                 Debug = options.Debug,
                 NoOptimizations = options.NoOptimizations,
@@ -22,12 +33,15 @@ namespace Dyalect
                 NoWarningsLinker = options.NoWarningsLinker
             };
 
-            var lookup = FileLookup.Create(
-                options.FileNames == null || options.FileNames.Length == 0 || string.IsNullOrWhiteSpace(options.FileNames[0])
-                    ? Environment.CurrentDirectory
-                    : Path.GetDirectoryName(options.FileNames[0]), options.Paths);
-            Linker = new DyIncrementalLinker(lookup, buildOptions, options.UserArguments);
+            if (options.IgnoreWarnings != null)
+                foreach (var i in options.IgnoreWarnings)
+                    if (!ret.IgnoreWarnings.Contains(i))
+                        ret.IgnoreWarnings.Add(i);
+
+            return ret;
         }
+
+        public BuilderOptions BuildOptions { get; private set; }
 
         public ExecutionContext ExecutionContext { get; private set; }
 

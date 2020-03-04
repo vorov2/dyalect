@@ -25,7 +25,7 @@ namespace Dyalect.Debug
         public Par(string name, DyObject value)
         {
             Name = name;
-            Value = value;
+            Value = value ?? DyNil.Instance;
             IsVarArg = false;
         }
 

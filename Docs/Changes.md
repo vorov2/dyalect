@@ -1,6 +1,28 @@
+# 0.12.0
+  * Change: _Internal collection (arrays and tuples) object model refactoring._
+  * Change: _Optimizations in compiler and virtual machine._
+  * Change: _Embedding API is enhanced and refactored._
+  * Done: _Migrate Dyalect to .NET Core 3.0_ ([Issue #295](https://github.com/vorov2/dyalect/issues/295)).
+  * Done: _Add `Array.removeRange(items)` method_ ([Issue #285](https://github.com/vorov2/dyalect/issues/285), [docs](https://github.com/vorov2/dyalect/wiki/Array#removeRange)).
+  * Done: _Add `Array.removeAll(predicate)` method_ ([Issue #286](https://github.com/vorov2/dyalect/issues/286), [docs](https://github.com/vorov2/dyalect/wiki/Array#removeAll)).
+  * Done: _Add an ability to disable specific warnings (through command line)_ ([Issue #282](https://github.com/vorov2/dyalect/issues/282)).
+  * Done: _Iterators to support `toTuple` method_ ([Issue #289](https://github.com/vorov2/dyalect/issues/289), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#toTuple)).
+  * Done: _Tuple slicing_ ([Issue #287](https://github.com/vorov2/dyalect/issues/287), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#slice)).
+  * Done: _Add a static `Array.sort` method_ ([Issue #291](https://github.com/vorov2/dyalect/issues/291), [docs](https://github.com/vorov2/dyalect/wiki/Array#ssort)).
+  * Done: _Implement tuple sorting_ ([Issue #290](https://github.com/vorov2/dyalect/issues/290), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#sort)).
+  * Done: _Allow to create tuples with one element using traling comma_ ([Issue #293](https://github.com/vorov2/dyalect/issues/293), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#overview)).
+  * Done: _Tail call recursion optimization_ ([Issue #62](https://github.com/vorov2/dyalect/issues/62)).
+  * Done: _There is no suffix to distinguish integers from floats_ ([Issue #297](https://github.com/vorov2/dyalect/issues/297), [docs](https://github.com/vorov2/dyalect/wiki/Float#overview)).
+  * Done: _Support for compiler directives_ ([Issue #149](https://github.com/vorov2/dyalect/issues/149), [docs](https://github.com/vorov2/dyalect/wiki/Compiler-directives)).
+  * Done: _Add an ability to disable specific warnings using compiler directives_ ([Issue #281](https://github.com/vorov2/dyalect/issues/281), [docs](https://github.com/vorov2/dyalect/wiki/Compiler-directives#warning)).
+  * Done: _Match analysis is not powerful enough_ ([Issue #280](https://github.com/vorov2/dyalect/issues/280)).
+  * Fixed: _Dyalect console doesn't print warnings when running tests_ ([Issue #283](https://github.com/vorov2/dyalect/issues/283)).
+  * Fixed: _Dyalect console ignores build settings when running tests_ ([Issue #284](https://github.com/vorov2/dyalect/issues/284)).
+  * Fixed: _Invalid treatment of shortcut function syntax_ ([Issue #294](https://github.com/vorov2/dyalect/issues/294)).
+
 # 0.11.0
   * Change: _Enhancements and amendments to the .NET API and internal object model._
-  * Fixed: _Member check operator `?` doesn't work with static members ([Issue #270](https://github.com/vorov2/dyalect/issues/270)).
+  * Fixed: _Member check operator `?` doesn't work with static members_ ([Issue #270](https://github.com/vorov2/dyalect/issues/270)).
   * Fixed: _Method `has` doesn't always work correctly_ ([Issue #271](https://github.com/vorov2/dyalect/issues/271)).
   * Fixed: _Label syntax and virtual machine crush_ ([Issue #274](https://github.com/vorov2/dyalect/issues/274)).
   * Fixed: _Type descriptors do not support method `has`_ ([Issue #272](https://github.com/vorov2/dyalect/issues/272)).

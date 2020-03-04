@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class CompilerErrors {
@@ -156,6 +156,15 @@ namespace Dyalect.Strings {
         internal static string InvalidDefaultValue {
             get {
                 return ResourceManager.GetString("InvalidDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid format for preprocessor directive &quot;{0}&quot;..
+        /// </summary>
+        internal static string InvalidDirective {
+            get {
+                return ResourceManager.GetString("InvalidDirective", resourceCulture);
             }
         }
         
@@ -349,11 +358,29 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Match entry &quot;{0}&quot; is unreachable..
+        ///   Looks up a localized string similar to Unknown preprocessor directive &quot;{0}&quot;..
+        /// </summary>
+        internal static string UnknownDirective {
+            get {
+                return ResourceManager.GetString("UnknownDirective", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Match entry &quot;{0}&quot; is unreachable. The preceding entry &quot;{1}&quot; would match first..
         /// </summary>
         internal static string UnreachableMatchEntry {
             get {
                 return ResourceManager.GetString("UnreachableMatchEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.
+        /// </summary>
+        internal static string UserWarning {
+            get {
+                return ResourceManager.GetString("UserWarning", resourceCulture);
             }
         }
         

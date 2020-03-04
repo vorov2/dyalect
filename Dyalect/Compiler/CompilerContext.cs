@@ -6,16 +6,20 @@ namespace Dyalect.Compiler
     {
         public CompilerContext()
         {
+            FunctionAddress = -1;
             BlockExit = Label.Empty;
             BlockSkip = Label.Empty;
             BlockBreakExit = Label.Empty;
+            FunctionStart = Label.Empty;
             FunctionExit = Label.Empty;
             MatchExit = Label.Empty;
         }
 
         public CompilerContext(CompilerContext old)
         {
+            FunctionAddress = old.FunctionAddress;
             Function = old.Function;
+            FunctionStart = old.FunctionStart;
             FunctionExit = old.FunctionExit;
             BlockBreakExit = old.BlockBreakExit;
             BlockExit = old.BlockExit;
@@ -24,6 +28,10 @@ namespace Dyalect.Compiler
         }
 
         public DFunctionDeclaration Function { get; set; }
+
+        public int FunctionAddress { get; set; }
+
+        public Label FunctionStart { get; set; }
 
         public Label FunctionExit { get; set; }
 

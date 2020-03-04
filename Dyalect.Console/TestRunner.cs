@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Dyalect
 {
@@ -23,19 +24,28 @@ namespace Dyalect
 
         private static List<string> commands = new List<string>();
 
-        public static bool RunTests(IEnumerable<string> fileNames, bool appveyor)
+        public static bool RunTests(IEnumerable<string> fileNames, bool appveyor, BuilderOptions buildOptions)
         {
 #if !DEBUG
             try
 #endif
             {
-                var funs = Compile(fileNames);
+                var funs = Compile(fileNames, buildOptions, out var warns);
                 Printer.Output($"Running tests from {funs.Count} file(s)...");
 
                 if (funs == null)
                     return false;
 
                 Run(funs, appveyor);
+
+                if (warns.Count > 0)
+                {
+                    Printer.Output("");
+                    Printer.Output($"Warnings:");
+                    foreach (var w in warns)
+                        Printer.Output(w.ToString());
+                }
+
                 return true;
             }
 #if !DEBUG
@@ -116,13 +126,14 @@ namespace Dyalect
             Printer.Output($"{name}: Success");
         }
 
-        private static IList<FunSet> Compile(IEnumerable<string> files)
+        private static IList<FunSet> Compile(IEnumerable<string> files, BuilderOptions buildOptions, out List<BuildMessage> warns)
         {
             var funColl = new List<FunSet>();
+            warns = new List<BuildMessage>();
 
             foreach (var file in files)
             {
-                var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(file)), BuilderOptions.Default);
+                var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(file)), buildOptions);
                 var cres = linker.Make(SourceBuffer.FromFile(file));
                 var funs = new FunSet();
                 funs.Funs = new Dictionary<string, DyFunction>(StringComparer.OrdinalIgnoreCase);
@@ -131,6 +142,7 @@ namespace Dyalect
                 if (!cres.Success)
                     throw new DyBuildException(cres.Messages);
 
+                warns.AddRange(cres.Messages.Where(m => m.Type == BuildMessageType.Warning));
                 var ctx = DyMachine.CreateExecutionContext(cres.Value);
                 funs.Context = ctx;
                 DyMachine.Execute(ctx);

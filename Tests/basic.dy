@@ -352,6 +352,44 @@ func arrayTest25() { //#273
     assert([1,3,2], xs)
 }
 
+func arrayTest26() { //#285
+    var xs = [1..10]
+    xs.removeRangeAt(3, 7)
+    assert([1,2,3], xs)
+    xs = [1..10]
+    xs.removeRangeAt(4)
+    assert([1,2,3,4], xs)
+}
+
+func arrayTest27() { //#285
+    var xs = [1..10]
+    xs.removeRange([1..5])
+    assert([6,7,8,9,10], xs)
+}
+
+func arrayTest28() { //#285
+    var xs = [1..10]
+    func filter() {
+        for x in xs when x % 2 == 0 {
+            yield x
+        }
+    }
+    xs.removeRange(filter())
+    assert([1,3,5,7,9], xs)
+}
+
+func arrayTest29() { //#286
+    var xs = [1..10]
+    xs.removeAll(x => x % 2 == 0)
+    assert([1,3,5,7,9], xs)
+}
+
+func arrayTest30() { //#291
+    var arr = [4,6,1,3,2,5]
+    Array.sort(arr, (x,y) => x - y)
+    assert([1, 2, 3, 4, 5, 6], arr)
+}
+
 func mapTest1() {
     var map = Map()
     map.add("x", 1)
@@ -461,6 +499,51 @@ func tupleTest9() { //bug #216
 func tupleTest10() { //bug #217
     var t = (x: 33)
     assert(33, t['x'])
+}
+
+func tupleTest11() { //#287
+    var xs = (1..10).toTuple()
+    var slice = xs.slice(4).toTuple()
+    assert((5,6,7,8,9,10), slice)
+}
+
+func tupleTest12() { //#287
+    var xs = [0,1,2,3,4,5,6,7,8,9]
+    var res = xs[1..5].toTuple()
+    assert((1,2,3,4), res)
+}
+
+func tupleTest13() { //#290
+    var xs = (4,6,1,3,2,5)
+    var ys = xs.sort((x,y) => x - y)
+    assert((1, 2, 3, 4, 5, 6), ys)
+}
+
+func tupleTest14() { //#290
+    var xs = (7,4,6,1,3,2,5)
+    var ys = xs.sort()
+    assert((1, 2, 3, 4, 5, 6, 7), ys)
+}
+
+func tupleTest15() { //#290
+    var xs = (4,6,1,3,2,5)
+    var ys = Tuple.sort(xs, (x,y) => x - y)
+    assert((1, 2, 3, 4, 5, 6), ys)
+}
+
+func tupleTest16() { //#290
+    var xs = (7,4,6,1,3,2,5)
+    var ys = Tuple.sort(xs)
+    assert((1, 2, 3, 4, 5, 6, 7), ys)
+}
+
+func tupleTest17() { //#293
+    var xx = (1,)
+    assert((1,), xx)
+    var (x,) = (2,)
+    assert(x, 2)
+    set (x,) = (3,)
+    assert(x, 3)
 }
 
 func stringTest1() {
@@ -1019,4 +1102,52 @@ func returnTest() {//Issue 266
 func evalTest() { //Issue 269
     var z = eval("x + y", (x: 2, y: 3) )
     assert(5, z)
+}
+
+func tailRecursion1() {
+    var xs = []
+    func loop(n, max) {
+        func loop(i) {
+            if i < max {
+                xs.add(i)
+                loop(i + 1)
+            }
+        }
+        loop(n)
+    }
+    loop(0, 10)
+    assert([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], xs)
+}
+
+func tailRecursion2() {
+    func foo(a, b) {
+        func foo(a, b, c) {
+            if a + b == 0 {
+                c
+            } else {
+                var x = caller()(a + b, -(a + b))
+                foo(x, -x, x + a + b - c)
+            }
+        }
+        if a + b == 0 {
+            42
+        } else {
+            foo(a, b, a + b)
+        }
+    }
+    var res = foo(1, 2)
+    assert(42, res)
+}
+
+func tailRecursion3() {
+    func withpm(obj) {
+        match obj {
+            (x, y) => withpm(42),
+            (x, y, z) => withpm(84),
+            42 => "foo",
+            84 => "bar"
+        }
+    }
+    var res = withpm((1,2))
+    assert(res, "foo")
 }

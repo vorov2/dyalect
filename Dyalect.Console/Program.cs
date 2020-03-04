@@ -80,20 +80,21 @@ namespace Dyalect
 
         private static bool RunTests(DyaOptions options)
         {
-            if (options.FileNames == null || options.FileNames.Length == 0 
+            if (options.FileNames == null || options.FileNames.Length == 0
                 || string.IsNullOrEmpty(options.FileNames[0]))
             {
                 Printer.Error("File name(s) not specified.");
                 return false;
             }
 
-            return TestRunner.RunTests(options.GetFileNames(), options.AppVeyour);
+            return TestRunner.RunTests(options.GetFileNames(), options.AppVeyour,
+                InteractiveContext.CreateBuildOptions(options));
         }
 
         private static bool Compile(DyaOptions options)
         {
             var ctx = new InteractiveContext(options);
-            
+
             foreach (var f in options.GetFileNames())
             {
                 var outFile = options.OutputDirectory;
