@@ -18,7 +18,7 @@ CHARACTERS
 TOKENS
     identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
 
-    preprocessor = "#" (letter { letter | digit } | "_" letter { letter | digit  }).
+    directive = "#" (letter { letter | digit } | "_" letter { letter | digit  }).
 
     intToken    = digit { digit } | ("0x"|"0X") hexDigit { hexDigit }.
 
@@ -143,8 +143,27 @@ PRODUCTIONS
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
             | Function<out node>
+            | Directive<out node> Separator
         )
         (. node = ProcessImplicits(node); .).
+
+    Directive<out DNode node> =
+        (
+            directive
+            (. var pp = new DDirective(t) { Key = t.val.Substring(1) }; node = pp; .)
+            {
+                (. if (la.AfterEol) return; .)
+                (
+                      stringToken (. pp.Attributes.Add(ParseSimpleString()); .)
+                    | intToken (. pp.Attributes.Add(ParseInteger()); .)
+                    | floatToken (. pp.Attributes.Add(ParseFloat()); .)
+                    | charToken (. pp.Attributes.Add(ParseChar()); .)
+                    | "true" (. pp.Attributes.Add(true); .)
+                    | "false" (. pp.Attributes.Add(false); .)
+                    | identToken (. pp.Attributes.Add(t.val); .)
+                )
+            }
+        ).
 
     Guard<DNode src, out DNode node> =
         (. node = src; .)
@@ -876,7 +895,6 @@ PRODUCTIONS
             | Base<out node>
             | IF (IsIterator()) Iterator<out node>
             | Block<out node>
-            | Preprocessor<out node>
         ).
 
     Iterator<out DNode node> =
@@ -990,25 +1008,6 @@ PRODUCTIONS
         (
             ("true"|"false")
             (. node = new DBooleanLiteral(t) { Value = t.val == "true" }; .)
-        ).
-
-    Preprocessor<out DNode node> =
-        (
-            preprocessor
-            (. var pp = new DPreprocessor(t) { Key = t.val.Substring(1) }; node = pp; .)
-            {
-                (. if (la.AfterEol) return; .)
-                (
-                      stringToken (. pp.Attributes.Add(ParseSimpleString()); .)
-                    | intToken (. pp.Attributes.Add(ParseInteger()); .)
-                    | floatToken (. pp.Attributes.Add(ParseFloat()); .)
-                    | charToken (. pp.Attributes.Add(ParseChar()); .)
-                    | "true" (. pp.Attributes.Add(true); .)
-                    | "false" (. pp.Attributes.Add(false); .)
-                    | identToken (. pp.Attributes.Add(t.val); .)
-                )
-            }
-            Separator
         ).
 
     DyalectItem =

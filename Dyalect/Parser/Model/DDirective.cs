@@ -3,9 +3,9 @@ using System.Text;
 
 namespace Dyalect.Parser.Model
 {
-    public sealed class DPreprocessor : DNode
+    public sealed class DDirective : DNode
     {
-        public DPreprocessor(Location loc) : base(NodeType.Preprocessor, loc)
+        public DDirective(Location loc) : base(NodeType.Directive, loc)
         {
 
         }

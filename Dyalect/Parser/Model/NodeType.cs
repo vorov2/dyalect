@@ -28,7 +28,7 @@
         Yield,
         Throw,
 
-        Preprocessor,
+        Directive,
 
         Base,
 

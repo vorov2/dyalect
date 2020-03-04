@@ -8,6 +8,7 @@ namespace Dyalect.Compiler
     partial class Builder
     {
         private HashSet<int> disabledWarnings = new HashSet<int>();
+        private HashSet<int> enabledWarnings = new HashSet<int>();
 
         internal List<BuildMessage> Messages { get; } = new List<BuildMessage>(); //A list of all generated messages
         internal int ErrorCount { get; private set; } //Number of errors
@@ -42,8 +43,8 @@ namespace Dyalect.Compiler
             if (options.NoWarnings)
                 return;
 
-            if (options.IgnoreWarnings.Contains((int)warning)
-                || disabledWarnings.Contains((int)warning))
+            if ((options.IgnoreWarnings.Contains((int)warning) || disabledWarnings.Contains((int)warning))
+                && !enabledWarnings.Contains((int)warning))
                 return;
 
             var str = string.Format(CompilerErrors.ResourceManager.GetString(warning.ToString()) ?? warning.ToString(), args);

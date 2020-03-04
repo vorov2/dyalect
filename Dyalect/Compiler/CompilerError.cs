@@ -72,8 +72,8 @@
 
         InvalidLabel = 234,
 
-        UnknownPreprocessor = 235,
+        UnknownDirective = 235,
 
-        InvalidPreprocessor = 236
+        InvalidDirective = 236
     }
 }

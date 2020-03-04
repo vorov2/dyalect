@@ -13,8 +13,8 @@ namespace Dyalect.Compiler
         {
             switch (node.NodeType)
             {
-                case NodeType.Preprocessor:
-                    Build((DPreprocessor)node, hints, ctx);
+                case NodeType.Directive:
+                    Build((DDirective)node, hints, ctx);
                     break;
                 case NodeType.Assignment:
                     Build((DAssignment)node, hints, ctx);
@@ -127,32 +127,66 @@ namespace Dyalect.Compiler
             }
         }
 
-        private void Build(DPreprocessor node, Hints hints, CompilerContext ctx)
+        private void Build(DDirective node, Hints hints, CompilerContext ctx)
         {
             switch (node.Key)
             {
                 case "warning":
-                    if (node.Attributes.Count < 2)
                     {
-                        AddError(CompilerError.InvalidPreprocessor, node.Location, node.Key);
-                        return;
+                        if (node.Attributes.Count < 2)
+                        {
+                            AddError(CompilerError.InvalidDirective, node.Location, node.Key);
+                            return;
+                        }
+
+                        var pragma = node.Attributes[0] as string;
+
+                        switch (pragma)
+                        {
+                            case "disable":
+                                foreach (var i in node.Attributes.Skip(1).OfType<long>())
+                                    if (disabledWarnings.Contains((int)i))
+                                        disabledWarnings.Add((int)i);
+                                break;
+                            case "enable":
+                                foreach (var i in node.Attributes.Skip(1).OfType<long>())
+                                {
+                                    disabledWarnings.Remove((int)i);
+                                    enabledWarnings.Add((int)i);
+                                }
+                                break;
+                            case "report":
+                                {
+                                    var msg = node.Attributes.Skip(1).Take(1).FirstOrDefault();
+                                    AddWarning(CompilerWarning.UserWarning, node.Location, msg ?? "");
+                                }
+                                break;
+                        }
                     }
-                    if (node.Attributes[0] as string == "disable")
+                    break;
+                case "optimizer":
                     {
-                        foreach (var i in node.Attributes.Skip(1).OfType<long>())
-                            if (disabledWarnings.Contains((int)i))
-                                disabledWarnings.Add((int)i);
-                    }
-                    else if (node.Attributes[0] as string == "enable")
-                    {
-                        foreach (var i in node.Attributes.Skip(1).OfType<long>())
-                            disabledWarnings.Remove((int)i);
+                        if (node.Attributes.Count < 1)
+                        {
+                            AddError(CompilerError.InvalidDirective, node.Location, node.Key);
+                            return;
+                        }
+
+                        var pragma = node.Attributes[0] as string;
+
+                        switch (pragma)
+                        {
+                            case "enable": options.NoOptimizations = false; break;
+                            case "disable": options.NoOptimizations = true; break;
+                        }
                     }
                     break;
                 default:
-                    AddError(CompilerError.UnknownPreprocessor, node.Location, node.Key);
+                    AddError(CompilerError.UnknownDirective, node.Location, node.Key);
                     break;
             }
+
+            PushIf(hints);
         }
 
         private void Build(DThrow node, Hints hints, CompilerContext ctx)

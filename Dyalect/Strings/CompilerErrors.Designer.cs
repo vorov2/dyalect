@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class CompilerErrors {
@@ -160,20 +160,20 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid format for preprocessor directive &quot;{0}&quot;..
+        /// </summary>
+        internal static string InvalidDirective {
+            get {
+                return ResourceManager.GetString("InvalidDirective", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Label is not valid in this context..
         /// </summary>
         internal static string InvalidLabel {
             get {
                 return ResourceManager.GetString("InvalidLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid format for preprocessor directive &quot;{0}&quot;..
-        /// </summary>
-        internal static string InvalidPreprocessor {
-            get {
-                return ResourceManager.GetString("InvalidPreprocessor", resourceCulture);
             }
         }
         
@@ -360,9 +360,9 @@ namespace Dyalect.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Unknown preprocessor directive &quot;{0}&quot;..
         /// </summary>
-        internal static string UnknownPreprocessor {
+        internal static string UnknownDirective {
             get {
-                return ResourceManager.GetString("UnknownPreprocessor", resourceCulture);
+                return ResourceManager.GetString("UnknownDirective", resourceCulture);
             }
         }
         
@@ -372,6 +372,15 @@ namespace Dyalect.Strings {
         internal static string UnreachableMatchEntry {
             get {
                 return ResourceManager.GetString("UnreachableMatchEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.
+        /// </summary>
+        internal static string UserWarning {
+            get {
+                return ResourceManager.GetString("UserWarning", resourceCulture);
             }
         }
         

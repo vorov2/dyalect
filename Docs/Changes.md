@@ -12,6 +12,7 @@
   * Done: _Allow to create tuples with one element using traling comma_ ([Issue #293](https://github.com/vorov2/dyalect/issues/293), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#overview)).
   * Done: _Tail call recursion optimization_ ([Issue #62](https://github.com/vorov2/dyalect/issues/62)).
   * Done: _There is no suffix to distinguish integers from floats_ ([Issue #297](https://github.com/vorov2/dyalect/issues/297), [docs](https://github.com/vorov2/dyalect/wiki/Float#overview)).
+  * Done: _Support for compiler directives_  ([Issue #149](https://github.com/vorov2/dyalect/issues/149), [docs](https://github.com/vorov2/dyalect/wiki/Compiler-directives)).
   * Fixed: _Dyalect console doesn't print warnings when running tests_ ([Issue #283](https://github.com/vorov2/dyalect/issues/283)).
   * Fixed: _Dyalect console ignores build settings when running tests_ ([Issue #284](https://github.com/vorov2/dyalect/issues/284)).
   * Fixed: _Invalid treatment of shortcut function syntax_ ([Issue #294](https://github.com/vorov2/dyalect/issues/294)).

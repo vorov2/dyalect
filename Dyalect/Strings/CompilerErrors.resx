@@ -225,10 +225,13 @@
   <data name="InvalidLabel" xml:space="preserve">
     <value>Label is not valid in this context.</value>
   </data>
-  <data name="InvalidPreprocessor" xml:space="preserve">
+  <data name="InvalidDirective" xml:space="preserve">
     <value>Invalid format for preprocessor directive "{0}".</value>
   </data>
-  <data name="UnknownPreprocessor" xml:space="preserve">
+  <data name="UnknownDirective" xml:space="preserve">
     <value>Unknown preprocessor directive "{0}".</value>
+  </data>
+  <data name="UserWarning" xml:space="preserve">
+    <value>{0}</value>
   </data>
 </root>
