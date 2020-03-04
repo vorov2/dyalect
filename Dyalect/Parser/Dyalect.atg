@@ -996,17 +996,19 @@ PRODUCTIONS
         (
             preprocessor
             (. var pp = new DPreprocessor(t) { Key = t.val.Substring(1) }; node = pp; .)
-            "("
-                    {
-                          stringToken (. pp.Attributes.Add(ParseSimpleString()); .)
-                        | intToken (. pp.Attributes.Add(ParseInteger()); .)
-                        | floatToken (. pp.Attributes.Add(ParseFloat()); .)
-                        | charToken (. pp.Attributes.Add(ParseChar()); .)
-                        | "true" (. pp.Attributes.Add(true); .)
-                        | "false" (. pp.Attributes.Add(false); .)
-                        | identToken (. pp.Attributes.Add(t.val); .)
-                    }
-            ")"
+            {
+                (. if (la.AfterEol) return; .)
+                (
+                      stringToken (. pp.Attributes.Add(ParseSimpleString()); .)
+                    | intToken (. pp.Attributes.Add(ParseInteger()); .)
+                    | floatToken (. pp.Attributes.Add(ParseFloat()); .)
+                    | charToken (. pp.Attributes.Add(ParseChar()); .)
+                    | "true" (. pp.Attributes.Add(true); .)
+                    | "false" (. pp.Attributes.Add(false); .)
+                    | identToken (. pp.Attributes.Add(t.val); .)
+                )
+            }
+            Separator
         ).
 
     DyalectItem =

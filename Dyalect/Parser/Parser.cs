@@ -1421,8 +1421,8 @@ namespace Dyalect.Parser
 	void Preprocessor(out DNode node) {
 		Expect(2);
 		var pp = new DPreprocessor(t) { Key = t.val.Substring(1) }; node = pp; 
-		Expect(26);
 		while (StartOf(11)) {
+			if (la.AfterEol) return; 
 			switch (la.kind) {
 			case 5: {
 				Get();
@@ -1461,7 +1461,7 @@ namespace Dyalect.Parser
 			}
 			}
 		}
-		Expect(27);
+		Separator();
 	}
 
 	void DyalectItem() {
