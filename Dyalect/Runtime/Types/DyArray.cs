@@ -1,7 +1,5 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Debug;
+﻿using Dyalect.Debug;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -445,43 +443,26 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            switch (name)
+            return name switch
             {
-                case "add":
-                    return DyForeignFunction.Member(name, AddItem, -1, new Par("item"));
-                case "insert":
-                    return DyForeignFunction.Member(name, InsertItem, -1, new Par("index"), new Par("item"));
-                case "insertRange":
-                    return DyForeignFunction.Member(name, InsertRange, -1, new Par("index"), new Par("items"));
-                case "addRange":
-                    return DyForeignFunction.Member(name, AddRange, -1, new Par("items"));
-                case "remove":
-                    return DyForeignFunction.Member(name, RemoveItem, -1, new Par("item"));
-                case "removeAt":
-                    return DyForeignFunction.Member(name, RemoveItemAt, -1, new Par("index"));
-                case "removeRange":
-                    return DyForeignFunction.Member(name, RemoveRange, -1, new Par("items"));
-                case "removeRangeAt":
-                    return DyForeignFunction.Member(name, RemoveRangeAt, -1, new Par("start"), new Par("len", null));
-                case "removeAll":
-                    return DyForeignFunction.Member(name, RemoveAll, -1, new Par("predicate"));
-                case "clear":
-                    return DyForeignFunction.Member(name, ClearItems, -1, Statics.EmptyParameters);
-                case "indexOf":
-                    return DyForeignFunction.Member(name, IndexOf, -1, new Par("item"));
-                case "lastIndexOf":
-                    return DyForeignFunction.Member(name, LastIndexOf, -1, new Par("item"));
-                case "sort":
-                    return DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance));
-                case "swap":
-                    return DyForeignFunction.Member(name, Swap, -1, new Par("fst"), new Par("snd"));
-                case "compact":
-                    return DyForeignFunction.Member(name, Compact, -1, Statics.EmptyParameters);
-                case "reverse":
-                    return DyForeignFunction.Member(name, Reverse, -1, Statics.EmptyParameters);
-                default:
-                    return base.GetMember(name, ctx);
-            }
+                "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
+                "insert" => DyForeignFunction.Member(name, InsertItem, -1, new Par("index"), new Par("item")),
+                "insertRange" => DyForeignFunction.Member(name, InsertRange, -1, new Par("index"), new Par("items")),
+                "addRange" => DyForeignFunction.Member(name, AddRange, -1, new Par("items")),
+                "remove" => DyForeignFunction.Member(name, RemoveItem, -1, new Par("item")),
+                "removeAt" => DyForeignFunction.Member(name, RemoveItemAt, -1, new Par("index")),
+                "removeRange" => DyForeignFunction.Member(name, RemoveRange, -1, new Par("items")),
+                "removeRangeAt" => DyForeignFunction.Member(name, RemoveRangeAt, -1, new Par("start"), new Par("len", null)),
+                "removeAll" => DyForeignFunction.Member(name, RemoveAll, -1, new Par("predicate")),
+                "clear" => DyForeignFunction.Member(name, ClearItems, -1, Statics.EmptyParameters),
+                "indexOf" => DyForeignFunction.Member(name, IndexOf, -1, new Par("item")),
+                "lastIndexOf" => DyForeignFunction.Member(name, LastIndexOf, -1, new Par("item")),
+                "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
+                "swap" => DyForeignFunction.Member(name, Swap, -1, new Par("fst"), new Par("snd")),
+                "compact" => DyForeignFunction.Member(name, Compact, -1, Statics.EmptyParameters),
+                "reverse" => DyForeignFunction.Member(name, Reverse, -1, Statics.EmptyParameters),
+                _ => base.GetMember(name, ctx),
+            };
         }
 
         private DyObject New(ExecutionContext ctx, DyObject tuple)

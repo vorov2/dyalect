@@ -9,14 +9,28 @@ using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyString : DyObject, IEnumerable<DyObject>
+    public sealed class DyString : DyCollection, IEnumerable<DyObject>
     {
         public static readonly DyString Empty = new DyString("");
         internal readonly string Value;
 
+        public override int Count => Value.Length;
+
         public DyString(string str) : base(DyType.String)
         {
             Value = str;
+        }
+
+        internal override DyObject GetValue(int index) => GetItem(index, ExecutionContext.Default);
+
+        internal override DyObject[] GetValues()
+        {
+            var arr = new DyObject[Value.Length];
+
+            for (var i = 0; i < Value.Length; i++)
+                arr[i] = new DyChar(Value[i]);
+
+            return arr;
         }
 
         public override object ToObject() => Value;
@@ -28,7 +42,7 @@ namespace Dyalect.Runtime.Types
         protected internal override bool GetBool() => !string.IsNullOrEmpty(Value);
 
         public override bool Equals(DyObject obj) =>
-            obj is DyString s && Value == s.Value;
+            obj is DyString s ? Value == s.Value : base.Equals(obj);
 
         internal protected override string GetString() => Value;
 
@@ -67,10 +81,6 @@ namespace Dyalect.Runtime.Types
 
             return new DyChar(Value[idx]);
         }
-
-        public IEnumerator<DyObject> GetEnumerator() => Value.Select(c => new DyChar(c)).GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public override DyObject Clone() => this;
 

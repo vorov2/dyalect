@@ -1,3 +1,6 @@
+# 0.13.0
+  * Fixed: _Disabling warnings through compiler directive doesn't work_ ([Issue #300](https://github.com/vorov2/dyalect/issues/300)).
+
 # 0.12.0
   * Change: _Internal collection (arrays and tuples) object model refactoring._
   * Change: _Optimizations in compiler and virtual machine._

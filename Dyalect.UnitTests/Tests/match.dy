@@ -1,4 +1,7 @@
-﻿func matchTest1() {
+﻿#warning disable 302
+#warning disable 303
+
+func matchTest1() {
     var res = match (1,2) {
         (2, x) => "wrong1",
         (x, y, z) => "wrong2",

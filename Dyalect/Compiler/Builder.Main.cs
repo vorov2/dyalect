@@ -145,7 +145,7 @@ namespace Dyalect.Compiler
                         {
                             case "disable":
                                 foreach (var i in node.Attributes.Skip(1).OfType<long>())
-                                    if (disabledWarnings.Contains((int)i))
+                                    if (!disabledWarnings.Contains((int)i))
                                         disabledWarnings.Add((int)i);
                                 break;
                             case "enable":

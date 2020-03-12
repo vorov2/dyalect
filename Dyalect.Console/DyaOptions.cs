@@ -13,6 +13,7 @@ namespace Dyalect
         private const string COMPILER = "Compiler settings";
         private const string LINKER = "Linker settings";
         private const string GENERAL = "General settings";
+        private const string TEST = "Testing settings";
 
         [Binding(Help = "A full path to the .dy file which should be executed, tested or compiled (or to the directory with files). Several files or directories can be specified.", Category = COMPILER)]
         public string[] FileNames { get; set; }
@@ -50,8 +51,11 @@ namespace Dyalect
         [Binding("time", Help = "Measure execution time.", Category = GENERAL)]
         public bool MeasureTime { get; set; }
 
-        [Binding("test", Help = "Run unit tests from a file (or files if a path to a directory is specified). Usage: dya [path to a file or directory] -test.", Category = GENERAL)]
+        [Binding("test", Help = "Run unit tests from a file (or files if a path to a directory is specified). Usage: dya [path to a file or directory] -test.", Category = TEST)]
         public bool Test { get; set; }
+
+        [Binding("onlyfailed", Help = "Show only failed tests (the default behavior is to report about all executed tests).", Category = TEST)]
+        public bool ShowOnlyFailedTests { get; set; }
 
         [Binding("appveyor")]
         public bool AppVeyour { get; set; }
