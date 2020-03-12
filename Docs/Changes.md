@@ -1,4 +1,5 @@
 # 0.13.0
+  * Done: _Arrays, tuples and strings: negative indices_ ([Issue #301](https://github.com/vorov2/dyalect/issues/301), [docs](https://github.com/vorov2/dyalect/wiki/Array#overview), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#overview), [docs](https://github.com/vorov2/dyalect/wiki/String#overview)).
   * Fixed: _Disabling warnings through compiler directive doesn't work_ ([Issue #300](https://github.com/vorov2/dyalect/issues/300)).
 
 # 0.12.0

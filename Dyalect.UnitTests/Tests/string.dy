@@ -195,3 +195,9 @@ func interpolationTest3() {
     var res = "value = \((x * (2 + 3)) * y)"
     assert("value = 30", res)
 }
+
+func stringIndexing() { //#301
+    var xs = "abcde"
+    assert('e', xs[-1])
+    assert('a', xs[-5])
+}

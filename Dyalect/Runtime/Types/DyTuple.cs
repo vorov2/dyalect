@@ -75,18 +75,6 @@ namespace Dyalect.Runtime.Types
             return true;
         }
 
-        protected internal override bool TryGetItem(int index, ExecutionContext ctx, out DyObject value)
-        {
-            if (index < 0 || index >= Values.Length)
-            {
-                value = null;
-                return false;
-            }
-
-            value = GetItem(index, ctx);
-            return true;
-        }
-
         protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx)
         {
             var i = GetOrdinal(name);
@@ -105,26 +93,19 @@ namespace Dyalect.Runtime.Types
             return -1;
         }
 
-        protected internal override DyObject GetItem(int index, ExecutionContext ctx)
+        protected override DyObject CollectionGetItem(int index, ExecutionContext ctx)
         {
-            if (index < 0 || index >= Values.Length)
-                return ctx.IndexOutOfRange(index);
             return Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
         }
 
         internal string GetKey(int index) => Values[index].GetLabel();
 
-        protected internal override void SetItem(int index, DyObject value, ExecutionContext ctx)
+        protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
         {
-            if (index < 0 || index >= Values.Length)
-                ctx.IndexOutOfRange(index);
+            if (Values[index].TypeId == DyType.Label)
+                ((DyLabel)Values[index]).Value = value;
             else
-            {
-                if (Values[index].TypeId == DyType.Label)
-                    ((DyLabel)Values[index]).Value = value;
-                else
-                    Values[index] = value;
-            }
+                Values[index] = value;
         }
 
         protected internal override bool HasItem(string name, ExecutionContext ctx)

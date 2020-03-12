@@ -74,12 +74,14 @@ namespace Dyalect.Runtime.Types
             return GetItem(idx, ctx);
         }
 
-        protected internal override DyObject GetItem(int idx, ExecutionContext ctx)
+        protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx)
         {
-            if (idx < 0 || idx >= Value.Length)
-                return ctx.IndexOutOfRange(idx);
-
             return new DyChar(Value[idx]);
+        }
+
+        protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
+        {
+            ctx.OperationNotSupported("set", this);
         }
 
         public override DyObject Clone() => this;

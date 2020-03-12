@@ -14,8 +14,8 @@ namespace Dyalect.Runtime.Types
 
         public DyObject this[int index]
         {
-            get { return Values[index]; }
-            set { Values[index] = value; }
+            get { return Values[CorrectIndex(index)]; }
+            set { Values[CorrectIndex(index)] = value; }
         }
 
         internal DyArray(DyObject[] values) : base(DyType.Array)
@@ -48,6 +48,8 @@ namespace Dyalect.Runtime.Types
 
         public void Insert(int index, DyObject item)
         {
+            index = CorrectIndex(index);
+
             if (index > Count)
                 throw new IndexOutOfRangeException();
 
@@ -83,6 +85,8 @@ namespace Dyalect.Runtime.Types
 
         public bool RemoveAt(int index)
         {
+            index = CorrectIndex(index);
+
             if (index >= 0 && index < Count)
             {
                 Count--;
@@ -129,19 +133,11 @@ namespace Dyalect.Runtime.Types
                 return ctx.IndexInvalidType(index);
         }
 
-        internal protected override DyObject GetItem(int index, ExecutionContext ctx)
-        {
-            if (index < 0 || index >= Count)
-                return ctx.IndexOutOfRange(index);
-            return Values[index];
-        }
+        protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) => Values[index];
 
-        internal protected override void SetItem(int index, DyObject obj, ExecutionContext ctx)
+        protected override void CollectionSetItem(int index, DyObject obj, ExecutionContext ctx)
         {
-            if (index < 0 || index >= Count)
-                ctx.IndexOutOfRange(index);
-            else
-                Values[index] = obj;
+            Values[index] = obj;
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
@@ -152,7 +148,7 @@ namespace Dyalect.Runtime.Types
                 SetItem((int)index.GetInteger(), value, ctx);
         }
 
-        internal override DyObject GetValue(int index) => Values[index];
+        internal override DyObject GetValue(int index) => Values[CorrectIndex(index)];
 
         internal override DyObject[] GetValues() => Values;
     }

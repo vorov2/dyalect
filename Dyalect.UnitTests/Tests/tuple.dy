@@ -113,3 +113,9 @@ func tupleTest17() { //#293
     set (x,) = (3,)
     assert(x, 3)
 }
+
+func tupleIndexing() { //#301
+    var xs = (1,2,3,4,5)
+    assert(5, xs[-1])
+    assert(1, xs[-5])
+}
