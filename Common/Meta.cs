@@ -6,7 +6,7 @@ internal static class Meta
 
     public const string Company = "Vasily Voronkov";
 
-    public const string Description = "Dyalect, a dynamic language for .NET Core";
+    public const string Description = "Dyalect, a dynamic language for .NET Core.";
 
     public const string Copyright = "Copyright (c) Vasily Voronkov 2019-2020";
 
