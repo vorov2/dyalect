@@ -273,7 +273,7 @@ namespace Dyalect.Runtime.Types
         private DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
         {
             if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(index);
+                return ctx.IndexInvalidType(index);
 
             var t = (DyTuple)self;
 
@@ -300,11 +300,43 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(arr);
         }
 
+        private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
+        {
+            if (index.TypeId != DyType.Integer)
+                return ctx.IndexInvalidType(index);
+
+            var tuple = (DyTuple)self;
+
+            var idx = (int)index.GetInteger();
+            idx = idx < 0 ? tuple.Count + idx : idx;
+
+            if (idx < 0 || idx > tuple.Count)
+                return ctx.IndexOutOfRange(index);
+
+            var arr = new DyObject[tuple.Count + 1];
+            arr[idx] = value;
+
+            if (idx == 0)
+                Array.Copy(tuple.Values, 0, arr, 1, tuple.Count);
+            else if (idx == tuple.Count)
+                Array.Copy(tuple.Values, 0, arr, 0, tuple.Count);
+            else
+            {
+                Array.Copy(tuple.Values, 0, arr, 0, idx);
+                Array.Copy(tuple.Values, idx, arr, idx + 1, tuple.Count - idx);
+            }
+
+            return new DyTuple(arr);
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             return name switch
             {
                 "add" => DyForeignFunction.Member(name, Add, -1, new Par("item")),
+                "remove" => DyForeignFunction.Member(name, Remove, -1, new Par("item")),
+                "removeAt" => DyForeignFunction.Member(name, RemoveAt, -1, new Par("index")),
+                "insert" => DyForeignFunction.Member(name, Insert, -1, new Par("index"), new Par("item")),
                 "keys" => DyForeignFunction.Member(name, GetKeys, -1, Statics.EmptyParameters),
                 "fst" => DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters),
                 "snd" => DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters),
