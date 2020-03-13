@@ -102,9 +102,11 @@ namespace Dyalect.Runtime.Types
             return false;
         }
 
-        public bool Remove(DyObject val)
+        public bool Remove(ExecutionContext ctx, DyObject val)
         {
-            var index = Array.IndexOf(Values, val);
+            var index = IndexOf(ctx, val);
+            if (index < 0)
+                return false;
             return RemoveAt(index);
         }
 
@@ -115,14 +117,38 @@ namespace Dyalect.Runtime.Types
             Version++;
         }
 
-        public int IndexOf(DyObject elem)
+        internal int IndexOf(ExecutionContext ctx, DyObject elem)
         {
-            return Array.IndexOf(Values, elem);
-        }
+            for (var i = 0; i < Values.Length; i++)
+            {
+                var e = Values[i];
 
-        public int LastIndexOf(DyObject elem)
+                if (ctx.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
+                    return i;
+
+                if (ctx.HasErrors)
+                    return -1;
+            }
+
+            return -1;
+        }
+        
+        public int LastIndexOf(ExecutionContext ctx, DyObject elem)
         {
-            return Array.LastIndexOf(Values, elem);
+            var index = -1;
+
+            for (var i = 0; i < Values.Length; i++)
+            {
+                var e = Values[i];
+
+                if (ctx.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
+                    index = i;
+
+                if (ctx.HasErrors)
+                    return -1;
+            }
+
+            return index;
         }
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
@@ -252,10 +278,9 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject val)
         {
-            var val = args.TakeOne(DyNil.Instance);
-            return ((DyArray)self).Remove(val) ? DyBool.True : DyBool.False;
+            return ((DyArray)self).Remove(ctx, val) ? DyBool.True : DyBool.False;
         }
 
         private DyObject RemoveItemAt(ExecutionContext ctx, DyObject self, DyObject[] args)
@@ -285,7 +310,7 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyArray)self;
             var val = args.TakeOne(DyNil.Instance);
-            var i = arr.IndexOf(val);
+            var i = arr.IndexOf(ctx, val);
             return DyInteger.Get(i);
         }
 
@@ -293,7 +318,7 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyArray)self;
             var val = args.TakeOne(DyNil.Instance);
-            var i = arr.LastIndexOf(val);
+            var i = arr.LastIndexOf(ctx, val);
             return DyInteger.Get(i);
         }
 
@@ -380,7 +405,12 @@ namespace Dyalect.Runtime.Types
             var strict = coll.ToArray();
 
             foreach (var e in strict)
-                arr.Remove(e);
+            {
+                arr.Remove(ctx, e);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+            }
 
             return DyNil.Instance;
         }
@@ -432,7 +462,12 @@ namespace Dyalect.Runtime.Types
             }
 
             foreach (var o in toDelete)
-                arr.Remove(o);
+            {
+                arr.Remove(ctx, o);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+            }
 
             return DyNil.Instance;
         }

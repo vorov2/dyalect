@@ -246,21 +246,71 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(newArr);
         }
 
+        private DyObject Add(ExecutionContext ctx, DyObject self, DyObject item)
+        {
+            var t = (DyTuple)self;
+            var arr = new DyObject[t.Count + 1];
+            Array.Copy(t.Values, arr, t.Count);
+            arr[arr.Length - 1] = item;
+            return new DyTuple(arr);
+        }
+
+        private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject item)
+        {
+            var t = (DyTuple)self;
+
+            for (var i = 0; i < t.Values.Length; i++)
+            {
+                var e = t.Values[i];
+
+                if (ctx.Types[e.TypeId].Eq(ctx, e, item).GetBool())
+                    return RemoveAt(ctx, t, i);
+            }
+
+            return self;
+        }
+
+        private DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
+        {
+            if (index.TypeId != DyType.Integer)
+                return ctx.InvalidType(index);
+
+            var t = (DyTuple)self;
+
+            var idx = (int)index.GetInteger();
+            idx = idx < 0 ? t.Count + idx : idx;
+
+            if (idx < 0 || idx >= t.Count)
+                return ctx.IndexOutOfRange(index);
+
+            return RemoveAt(ctx, t, idx);
+        }
+
+        private DyTuple RemoveAt(ExecutionContext ctx, DyTuple self, int index)
+        {
+            var arr = new DyObject[self.Count - 1];
+            var c = 0;
+
+            for (var i = 0; i < self.Values.Length; i++)
+            {
+                if (i != index)
+                    arr[c++] = self.Values[i];
+            }
+
+            return new DyTuple(arr);
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            switch (name)
+            return name switch
             {
-                case "keys":
-                    return DyForeignFunction.Member(name, GetKeys, -1, Statics.EmptyParameters);
-                case "fst":
-                    return DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters);
-                case "snd":
-                    return DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters);
-                case "sort":
-                    return DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance));
-                default:
-                    return base.GetMember(name, ctx);
-            }
+                "add" => DyForeignFunction.Member(name, Add, -1, new Par("item")),
+                "keys" => DyForeignFunction.Member(name, GetKeys, -1, Statics.EmptyParameters),
+                "fst" => DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters),
+                "snd" => DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters),
+                "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
+                _ => base.GetMember(name, ctx),
+            };
         }
 
         private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd)

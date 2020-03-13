@@ -225,3 +225,13 @@ func arrayIndexing() { //#301
     assert(5, xs[-1])
     assert(1, xs[-5])
 }
+
+func complexEquality1() { //#301
+    type Foo(x)
+    func Foo == (other) { other is Foo() }
+    var res = Foo(0) == Foo(12)
+    assert(true, res)
+    var xs = [Foo(0)]
+    xs.remove(Foo(3))
+    assert([], xs)
+}
