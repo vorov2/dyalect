@@ -1,5 +1,6 @@
 # 0.13.0
   * Change: _Collection object model refactoring._
+  * Done: _A Dyalect Console option to show only failed tests_ ([Issue #299](https://github.com/vorov2/dyalect/issues/299)).
   * Done: _Arrays, tuples and strings: negative indices_ ([Issue #301](https://github.com/vorov2/dyalect/issues/301), [docs](https://github.com/vorov2/dyalect/wiki/Array#overview), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#overview), [docs](https://github.com/vorov2/dyalect/wiki/String#overview)).
   * Done: _Tuples: modification (add, insert, remove) methods_ ([Issue #292](https://github.com/vorov2/dyalect/issues/292), [docs](https://github.com/vorov2/dyalect/wiki/Array#add)).
   * Fixed: _Disabling warnings through compiler directive doesn't work_ ([Issue #300](https://github.com/vorov2/dyalect/issues/300)).
