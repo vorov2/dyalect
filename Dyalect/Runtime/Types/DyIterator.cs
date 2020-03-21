@@ -3,6 +3,7 @@ using Dyalect.Debug;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -180,7 +181,20 @@ namespace Dyalect.Runtime.Types
                     yield break;
 
                 if (!ReferenceEquals(res, DyNil.Terminator))
-                    yield return res;
+                {
+                    if (res.TypeId == DyType.Iterator)
+                    {
+                        foreach (var o in InternalRun(ctx, res))
+                        {
+                            yield return o;
+
+                            if (ctx.HasErrors)
+                                yield break;
+                        }
+                    }
+                    else
+                        yield return res;
+                }
                 else
                     break;
             }
@@ -264,21 +278,12 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return null;
 
-            var arr = new List<DyObject>();
-            DyObject res = null;
+            var seq = DyIterator.Run(ctx, self);
 
-            while (!ReferenceEquals(res, DyNil.Terminator))
-            {
-                res = fn.Call0(ctx);
+            if (ctx.HasErrors)
+                return null;
 
-                if (ctx.HasErrors)
-                    return null;
-
-                if (!ReferenceEquals(res, DyNil.Terminator))
-                    arr.Add(res);
-            }
-
-            return arr;
+            return seq.ToList();
         }
 
         private DyObject ToArray(ExecutionContext ctx, DyObject self)
