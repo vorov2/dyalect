@@ -131,6 +131,5 @@ namespace Dyalect.Runtime.Types
 
         public static string Format(this DyObject self, ExecutionContext ctx) =>
             ctx.Composition.Types[self.TypeId].ToString(ctx, self).GetString();
-
     }
 }

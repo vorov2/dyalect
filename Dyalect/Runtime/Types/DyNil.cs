@@ -62,7 +62,7 @@ namespace Dyalect.Runtime.Types
             if (name == "default")
                 return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyNil.Instance);
 
-            return null;
+            return base.GetStaticMember(name, ctx);
         }
     }
 }

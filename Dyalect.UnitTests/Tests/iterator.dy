@@ -186,3 +186,74 @@ func iteratorTest11() { //#289
     var res = Iterator(xs)
     assert((1,2,3,4,5), res.toTuple())
 }
+
+func yieldManyTest1() { //#96
+    func bar() {
+        yield 31
+        yield 32
+        yield 33
+    }
+    func foo() {
+        yield 1
+        yield 2
+        yield 3
+        yield bar()
+        yield 4
+        yield 5
+    }
+    var seq = foo().toArray()
+    assert([1,2,3,31,32,33,4,5],seq)
+}
+
+func yieldManyTest2() { //#96
+    func zoo() {
+        yield 31
+        yield 32
+    }
+    func bar() {
+        yield 21
+        yield 22
+    }
+    func foo() {
+        yield 1
+        yield 2
+        yield bar()
+        yield 3
+        yield zoo()
+        yield 4
+    }
+    var seq = foo().toArray()
+    assert([1,2,21,22,3,31,32,4],seq)
+}
+
+func yieldManyTest3() { //#96
+    func zoo() {
+        yield 31
+        yield 32
+    }
+    func bar() {
+        yield 21
+        yield 22
+    }
+    func foo() {
+        yield 1
+        yield 2
+        yield bar()
+        yield 3
+        yield zoo()
+        yield 4
+        yield bar()
+        yield zoo()
+    }
+    var seq = foo().toArray()
+    assert([1,2,21,22,3,31,32,4,21,22,31,32],seq)
+}
+
+func yieldManyTest4() { //#96
+    func foo() {
+        yield 1
+        yield [2,3]
+    }
+    var arr = foo().toArray()
+    assert([1,[2,3]], arr)
+}

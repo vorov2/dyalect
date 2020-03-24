@@ -161,32 +161,21 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            switch (name) {
-                case "to":
-                    return DyForeignFunction.Member(name, Range, -1, new Par("value"));
-                case "isLower":
-                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLower(c.GetChar()));
-                case "isUpper":
-                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsUpper(c.GetChar()));
-                case "isControl":
-                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsControl(c.GetChar()));
-                case "isDigit":
-                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsDigit(c.GetChar()));
-                case "isLetter":
-                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLetter(c.GetChar()));
-                case "isLetterOrDigit":
-                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLetterOrDigit(c.GetChar()));
-                case "isWhiteSpace":
-                    return DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsWhiteSpace(c.GetChar()));
-                case "lower":
-                    return DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToLower(c.GetChar())));
-                case "upper":
-                    return DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToUpper(c.GetChar())));
-                case "order":
-                    return DyForeignFunction.Member(name, (_, c) => DyInteger.Get(c.GetChar()));
-                default:
-                    return null;
-            }
+            return name switch
+            {
+                "to" => DyForeignFunction.Member(name, Range, -1, new Par("value")),
+                "isLower" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLower(c.GetChar())),
+                "isUpper" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsUpper(c.GetChar())),
+                "isControl" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsControl(c.GetChar())),
+                "isDigit" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsDigit(c.GetChar())),
+                "isLetter" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLetter(c.GetChar())),
+                "isLetterOrDigit" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLetterOrDigit(c.GetChar())),
+                "isWhiteSpace" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsWhiteSpace(c.GetChar())),
+                "lower" => DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToLower(c.GetChar()))),
+                "upper" => DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToUpper(c.GetChar()))),
+                "order" => DyForeignFunction.Member(name, (_, c) => DyInteger.Get(c.GetChar())),
+                _ => base.GetMember(name, ctx),
+            };
         }
 
         private DyObject CreateChar(ExecutionContext ctx, DyObject obj)
@@ -211,19 +200,14 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "max")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyChar.Max);
-
-            if (name == "min")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyChar.Min);
-
-            if (name == "default")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyChar.Empty);
-
-            if (name == "Char")
-                return DyForeignFunction.Static(name, CreateChar, -1, new Par("value"));
-
-            return null;
+            return name switch
+            {
+                "max" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyChar.Max),
+                "min" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyChar.Min),
+                "default" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyChar.Empty),
+                "Char" => DyForeignFunction.Static(name, CreateChar, -1, new Par("value")),
+                _ => base.GetStaticMember(name, ctx)
+            };
         }
     }
 }

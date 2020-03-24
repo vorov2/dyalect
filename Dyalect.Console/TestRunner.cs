@@ -24,23 +24,24 @@ namespace Dyalect
 
         private static List<string> commands = new List<string>();
 
-        public static bool RunTests(IEnumerable<string> fileNames, bool appveyor, BuilderOptions buildOptions)
+        public static bool RunTests(IEnumerable<string> fileNames, DyaOptions dyaOptions, BuilderOptions buildOptions)
         {
 #if !DEBUG
             try
 #endif
             {
                 var funs = Compile(fileNames, buildOptions, out var warns);
-                Printer.Output($"Running tests from {funs.Count} file(s)...");
+                Printer.Output($"Running tests from {funs.Count} file(s):");
+                Printer.Output(string.Join(' ', funs.Select(f => Path.GetFileName(f.FileName))));
 
                 if (funs == null)
                     return false;
 
-                Run(funs, appveyor);
+                Run(funs, dyaOptions);
 
                 if (warns.Count > 0)
                 {
-                    Printer.Output("");
+                    Printer.LineFeed();
                     Printer.Output($"Warnings:");
                     foreach (var w in warns)
                         Printer.Output(w.ToString());
@@ -57,32 +58,45 @@ namespace Dyalect
 #endif
         }
 
-        private static void Run(IList<FunSet> funs, bool appveyor)
+        private static void Run(IList<FunSet> funs, DyaOptions options)
         {
             var passed = 0;
             var failed = 0;
             var i = 0;
-            var fi = 0;
 
             foreach (var funSet in funs)
             {
-                Printer.LineFeed();
-                Printer.Output($"{++fi}. {funSet.FileName}:");
                 var padLen = funSet.Funs.Count.ToString().Length;
+                var hasHeader = false;
+
+                void printIt(int i, bool failed)
+                {
+                    if (!hasHeader && (failed || !options.ShowOnlyFailedTests))
+                    {
+                        Printer.LineFeed();
+                        Printer.Output($"{Path.GetFileName(funSet.FileName)}:");
+                        hasHeader = true;
+                    }
+
+                    if (failed || !options.ShowOnlyFailedTests)
+                        Console.Write($"[{i.ToString().PadLeft(padLen, '0')}] ");
+                }
 
                 foreach (var fn in funSet.Funs)
                 {
-                    Console.Write($"[{(++i).ToString().PadLeft(padLen, '0')}] ");
+                    i++;
 
                     try
                     {
                         var res = fn.Value.Call(funSet.Context).ToObject();
-                        Success(fn.Key);
+                        printIt(i, false);
+                        Success(options, fn.Key, funSet.FileName);
                         passed++;
                     }
                     catch (Exception ex)
                     {
-                        Failed(fn.Key, ex.Message);
+                        printIt(i, true);
+                        Failed(options, fn.Key, ex.Message, funSet.FileName);
                         failed++;
                     }
                 }
@@ -92,7 +106,7 @@ namespace Dyalect
             Printer.Output("Total:");
             Printer.Output($"{passed} passed, {failed} failed in {funs.Count} file(s)");
 
-            if (appveyor)
+            if (options.AppVeyour)
                 Submit();
         }
 
@@ -114,16 +128,17 @@ namespace Dyalect
             }
         }
 
-        private static void Failed(string name, string reason)
+        private static void Failed(DyaOptions options, string name, string reason, string fileName)
         {
-            commands.Add($"AddTest {name} -Outcome Failed -Framework DUnit -FileName tests.dy");
+            commands.Add($"AddTest {name} -Outcome Failed -Framework DyaUnit -FileName {fileName}");
             Printer.Output($"{name}: Failed: {reason}");
         }
 
-        private static void Success(string name)
+        private static void Success(DyaOptions options, string name, string fileName)
         {
-            commands.Add($"AddTest {name} -Outcome Passed -Framework DUnit -FileName tests.dy");
-            Printer.Output($"{name}: Success");
+            commands.Add($"AddTest {name} -Outcome Passed -Framework DyaUnit -FileName {fileName}");
+            if (!options.ShowOnlyFailedTests)
+                Printer.Output($"{name}: Success");
         }
 
         private static IList<FunSet> Compile(IEnumerable<string> files, BuilderOptions buildOptions, out List<BuildMessage> warns)

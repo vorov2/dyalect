@@ -1,6 +1,5 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
-using System;
 
 namespace Dyalect.Runtime.Types
 {

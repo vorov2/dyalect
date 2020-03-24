@@ -235,21 +235,15 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            switch (name)
+            return name switch
             {
-                case "add":
-                    return DyForeignFunction.Member(name, AddItem, -1, new Par("key"), new Par("value"));
-                case "tryAdd":
-                    return DyForeignFunction.Member(name, TryAddItem, -1, new Par("key"), new Par("value"));
-                case "tryGet":
-                    return DyForeignFunction.Member(name, TryGetItem, -1, new Par("key"));
-                case "remove":
-                    return DyForeignFunction.Member(name, RemoveItem, -1, new Par("key"));
-                case "clear":
-                    return DyForeignFunction.Member(name, ClearItems);
-                default:
-                    return null;
-            }
+                "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("key"), new Par("value")),
+                "tryAdd" => DyForeignFunction.Member(name, TryAddItem, -1, new Par("key"), new Par("value")),
+                "tryGet" => DyForeignFunction.Member(name, TryGetItem, -1, new Par("key")),
+                "remove" => DyForeignFunction.Member(name, RemoveItem, -1, new Par("key")),
+                "clear" => DyForeignFunction.Member(name, ClearItems),
+                _ => base.GetMember(name, ctx),
+            };
         }
 
         private DyObject New(ExecutionContext ctx, DyObject values)
@@ -269,7 +263,7 @@ namespace Dyalect.Runtime.Types
             else if (name == "fromTuple")
                 return DyForeignFunction.Static(name, New, -1, new Par("values"));
 
-            return null;
+            return base.GetStaticMember(name, ctx);
         }
     }
 }

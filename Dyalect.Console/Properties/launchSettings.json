@@ -6,7 +6,7 @@
     },
     "Run tests": {
       "commandName": "Project",
-      "commandLineArgs": "..\\Dyalect.UnitTests\\Tests\\ -test -ignore 302 -ignore 303"
+      "commandLineArgs": "..\\Dyalect.UnitTests\\Tests\\ -test -onlyfailed"
     },
     "Interactive": {
       "commandName": "Project"

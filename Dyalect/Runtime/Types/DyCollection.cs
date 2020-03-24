@@ -15,6 +15,48 @@ namespace Dyalect.Runtime.Types
 
         }
 
+        #region Indexing
+        protected int CorrectIndex(int index) => index < 0 ? Count + index : index;
+
+        protected internal sealed override DyObject GetItem(int index, ExecutionContext ctx)
+        {
+            index = CorrectIndex(index);
+            
+            if (index < 0 || index >= Count)
+                return ctx.IndexOutOfRange(index);
+            
+            return CollectionGetItem(index, ctx);
+        }
+
+        protected abstract DyObject CollectionGetItem(int index, ExecutionContext ctx);
+
+        protected internal sealed override bool TryGetItem(int index, ExecutionContext ctx, out DyObject value)
+        {
+            index = CorrectIndex(index);
+
+            if (index < 0 || index >= Count)
+            {
+                value = null;
+                return false;
+            }
+
+            value = CollectionGetItem(index, ctx);
+            return true;
+        }
+
+        protected internal sealed override void SetItem(int index, DyObject value, ExecutionContext ctx)
+        {
+            index = CorrectIndex(index);
+
+            if (index < 0 || index >= Count)
+                ctx.IndexOutOfRange(index);
+            else
+                CollectionSetItem(index, value, ctx);
+        }
+
+        protected abstract void CollectionSetItem(int index, DyObject value, ExecutionContext ctx);
+        #endregion
+
         public override object ToObject() => ConvertToArray();
 
         public IList<object> ConvertToList() => new List<object>(ConvertToArray());
@@ -123,15 +165,12 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            switch (name)
+            return name switch
             {
-                case "indices":
-                    return DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters);
-                case "slice":
-                    return DyForeignFunction.Member(name, GetSlice, -1, new Par("start"), new Par("len", DyNil.Instance));
-                default:
-                    return null;
-            }
+                "indices" => DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters),
+                "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("start"), new Par("len", DyNil.Instance)),
+                _ => base.GetMember(name, ctx)
+            };
         }
     }
 }

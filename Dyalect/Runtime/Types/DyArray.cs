@@ -1,7 +1,5 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Debug;
+﻿using Dyalect.Debug;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,8 +14,8 @@ namespace Dyalect.Runtime.Types
 
         public DyObject this[int index]
         {
-            get { return Values[index]; }
-            set { Values[index] = value; }
+            get { return Values[CorrectIndex(index)]; }
+            set { Values[CorrectIndex(index)] = value; }
         }
 
         internal DyArray(DyObject[] values) : base(DyType.Array)
@@ -50,6 +48,8 @@ namespace Dyalect.Runtime.Types
 
         public void Insert(int index, DyObject item)
         {
+            index = CorrectIndex(index);
+
             if (index > Count)
                 throw new IndexOutOfRangeException();
 
@@ -85,6 +85,8 @@ namespace Dyalect.Runtime.Types
 
         public bool RemoveAt(int index)
         {
+            index = CorrectIndex(index);
+
             if (index >= 0 && index < Count)
             {
                 Count--;
@@ -100,9 +102,11 @@ namespace Dyalect.Runtime.Types
             return false;
         }
 
-        public bool Remove(DyObject val)
+        public bool Remove(ExecutionContext ctx, DyObject val)
         {
-            var index = Array.IndexOf(Values, val);
+            var index = IndexOf(ctx, val);
+            if (index < 0)
+                return false;
             return RemoveAt(index);
         }
 
@@ -113,14 +117,38 @@ namespace Dyalect.Runtime.Types
             Version++;
         }
 
-        public int IndexOf(DyObject elem)
+        internal int IndexOf(ExecutionContext ctx, DyObject elem)
         {
-            return Array.IndexOf(Values, elem);
-        }
+            for (var i = 0; i < Values.Length; i++)
+            {
+                var e = Values[i];
 
-        public int LastIndexOf(DyObject elem)
+                if (ctx.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
+                    return i;
+
+                if (ctx.HasErrors)
+                    return -1;
+            }
+
+            return -1;
+        }
+        
+        public int LastIndexOf(ExecutionContext ctx, DyObject elem)
         {
-            return Array.LastIndexOf(Values, elem);
+            var index = -1;
+
+            for (var i = 0; i < Values.Length; i++)
+            {
+                var e = Values[i];
+
+                if (ctx.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
+                    index = i;
+
+                if (ctx.HasErrors)
+                    return -1;
+            }
+
+            return index;
         }
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
@@ -131,19 +159,11 @@ namespace Dyalect.Runtime.Types
                 return ctx.IndexInvalidType(index);
         }
 
-        internal protected override DyObject GetItem(int index, ExecutionContext ctx)
-        {
-            if (index < 0 || index >= Count)
-                return ctx.IndexOutOfRange(index);
-            return Values[index];
-        }
+        protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) => Values[index];
 
-        internal protected override void SetItem(int index, DyObject obj, ExecutionContext ctx)
+        protected override void CollectionSetItem(int index, DyObject obj, ExecutionContext ctx)
         {
-            if (index < 0 || index >= Count)
-                ctx.IndexOutOfRange(index);
-            else
-                Values[index] = obj;
+            Values[index] = obj;
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
@@ -154,7 +174,7 @@ namespace Dyalect.Runtime.Types
                 SetItem((int)index.GetInteger(), value, ctx);
         }
 
-        internal override DyObject GetValue(int index) => Values[index];
+        internal override DyObject GetValue(int index) => Values[CorrectIndex(index)];
 
         internal override DyObject[] GetValues() => Values;
     }
@@ -258,10 +278,9 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject val)
         {
-            var val = args.TakeOne(DyNil.Instance);
-            return ((DyArray)self).Remove(val) ? DyBool.True : DyBool.False;
+            return ((DyArray)self).Remove(ctx, val) ? DyBool.True : DyBool.False;
         }
 
         private DyObject RemoveItemAt(ExecutionContext ctx, DyObject self, DyObject[] args)
@@ -291,7 +310,7 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyArray)self;
             var val = args.TakeOne(DyNil.Instance);
-            var i = arr.IndexOf(val);
+            var i = arr.IndexOf(ctx, val);
             return DyInteger.Get(i);
         }
 
@@ -299,7 +318,7 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyArray)self;
             var val = args.TakeOne(DyNil.Instance);
-            var i = arr.LastIndexOf(val);
+            var i = arr.LastIndexOf(ctx, val);
             return DyInteger.Get(i);
         }
 
@@ -386,7 +405,12 @@ namespace Dyalect.Runtime.Types
             var strict = coll.ToArray();
 
             foreach (var e in strict)
-                arr.Remove(e);
+            {
+                arr.Remove(ctx, e);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+            }
 
             return DyNil.Instance;
         }
@@ -438,50 +462,38 @@ namespace Dyalect.Runtime.Types
             }
 
             foreach (var o in toDelete)
-                arr.Remove(o);
+            {
+                arr.Remove(ctx, o);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+            }
 
             return DyNil.Instance;
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            switch (name)
+            return name switch
             {
-                case "add":
-                    return DyForeignFunction.Member(name, AddItem, -1, new Par("item"));
-                case "insert":
-                    return DyForeignFunction.Member(name, InsertItem, -1, new Par("index"), new Par("item"));
-                case "insertRange":
-                    return DyForeignFunction.Member(name, InsertRange, -1, new Par("index"), new Par("items"));
-                case "addRange":
-                    return DyForeignFunction.Member(name, AddRange, -1, new Par("items"));
-                case "remove":
-                    return DyForeignFunction.Member(name, RemoveItem, -1, new Par("item"));
-                case "removeAt":
-                    return DyForeignFunction.Member(name, RemoveItemAt, -1, new Par("index"));
-                case "removeRange":
-                    return DyForeignFunction.Member(name, RemoveRange, -1, new Par("items"));
-                case "removeRangeAt":
-                    return DyForeignFunction.Member(name, RemoveRangeAt, -1, new Par("start"), new Par("len", null));
-                case "removeAll":
-                    return DyForeignFunction.Member(name, RemoveAll, -1, new Par("predicate"));
-                case "clear":
-                    return DyForeignFunction.Member(name, ClearItems, -1, Statics.EmptyParameters);
-                case "indexOf":
-                    return DyForeignFunction.Member(name, IndexOf, -1, new Par("item"));
-                case "lastIndexOf":
-                    return DyForeignFunction.Member(name, LastIndexOf, -1, new Par("item"));
-                case "sort":
-                    return DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance));
-                case "swap":
-                    return DyForeignFunction.Member(name, Swap, -1, new Par("fst"), new Par("snd"));
-                case "compact":
-                    return DyForeignFunction.Member(name, Compact, -1, Statics.EmptyParameters);
-                case "reverse":
-                    return DyForeignFunction.Member(name, Reverse, -1, Statics.EmptyParameters);
-                default:
-                    return base.GetMember(name, ctx);
-            }
+                "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
+                "insert" => DyForeignFunction.Member(name, InsertItem, -1, new Par("index"), new Par("item")),
+                "insertRange" => DyForeignFunction.Member(name, InsertRange, -1, new Par("index"), new Par("items")),
+                "addRange" => DyForeignFunction.Member(name, AddRange, -1, new Par("items")),
+                "remove" => DyForeignFunction.Member(name, RemoveItem, -1, new Par("item")),
+                "removeAt" => DyForeignFunction.Member(name, RemoveItemAt, -1, new Par("index")),
+                "removeRange" => DyForeignFunction.Member(name, RemoveRange, -1, new Par("items")),
+                "removeRangeAt" => DyForeignFunction.Member(name, RemoveRangeAt, -1, new Par("start"), new Par("len", null)),
+                "removeAll" => DyForeignFunction.Member(name, RemoveAll, -1, new Par("predicate")),
+                "clear" => DyForeignFunction.Member(name, ClearItems, -1, Statics.EmptyParameters),
+                "indexOf" => DyForeignFunction.Member(name, IndexOf, -1, new Par("item")),
+                "lastIndexOf" => DyForeignFunction.Member(name, LastIndexOf, -1, new Par("item")),
+                "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
+                "swap" => DyForeignFunction.Member(name, Swap, -1, new Par("fst"), new Par("snd")),
+                "compact" => DyForeignFunction.Member(name, Compact, -1, Statics.EmptyParameters),
+                "reverse" => DyForeignFunction.Member(name, Reverse, -1, Statics.EmptyParameters),
+                _ => base.GetMember(name, ctx),
+            };
         }
 
         private DyObject New(ExecutionContext ctx, DyObject tuple)
@@ -584,22 +596,17 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "Array")
-                return DyForeignFunction.Static(name, New, 0, new Par("values", true));
-
-            if (name == "sort")
-                return DyForeignFunction.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance));
-
-            if (name == "empty")
-                return DyForeignFunction.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance));
-
-            if (name == "concat")
-                return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
-
-            if (name == "copy")
-                return DyForeignFunction.Static(name, Copy, -1, new Par("from"), new Par("fromIndex", DyInteger.Get(0)), new Par("to", DyNil.Instance), new Par("toIndex", DyInteger.Get(0)), new Par("count"));
-
-            return null;
+            return name switch
+            {
+                "Array" => DyForeignFunction.Static(name, New, 0, new Par("values", true)),
+                "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance)),
+                "empty" => DyForeignFunction.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance)),
+                "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
+                "copy" => DyForeignFunction.Static(name, Copy, -1, new Par("from"), 
+                    new Par("fromIndex", DyInteger.Get(0)), new Par("to", DyNil.Instance), 
+                    new Par("toIndex", DyInteger.Get(0)), new Par("count")),
+                _ => base.GetStaticMember(name, ctx)
+            };
         }
     }
 }

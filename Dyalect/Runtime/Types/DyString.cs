@@ -1,22 +1,34 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Parser;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyString : DyObject, IEnumerable<DyObject>
+    public sealed class DyString : DyCollection, IEnumerable<DyObject>
     {
         public static readonly DyString Empty = new DyString("");
         internal readonly string Value;
 
+        public override int Count => Value.Length;
+
         public DyString(string str) : base(DyType.String)
         {
             Value = str;
+        }
+
+        internal override DyObject GetValue(int index) => GetItem(index, ExecutionContext.Default);
+
+        internal override DyObject[] GetValues()
+        {
+            var arr = new DyObject[Value.Length];
+
+            for (var i = 0; i < Value.Length; i++)
+                arr[i] = new DyChar(Value[i]);
+
+            return arr;
         }
 
         public override object ToObject() => Value;
@@ -28,7 +40,7 @@ namespace Dyalect.Runtime.Types
         protected internal override bool GetBool() => !string.IsNullOrEmpty(Value);
 
         public override bool Equals(DyObject obj) =>
-            obj is DyString s && Value == s.Value;
+            obj is DyString s ? Value == s.Value : base.Equals(obj);
 
         internal protected override string GetString() => Value;
 
@@ -60,17 +72,15 @@ namespace Dyalect.Runtime.Types
             return GetItem(idx, ctx);
         }
 
-        protected internal override DyObject GetItem(int idx, ExecutionContext ctx)
+        protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx)
         {
-            if (idx < 0 || idx >= Value.Length)
-                return ctx.IndexOutOfRange(idx);
-
             return new DyChar(Value[idx]);
         }
 
-        public IEnumerator<DyObject> GetEnumerator() => Value.Select(c => new DyChar(c)).GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
+        {
+            ctx.OperationNotSupported("set", this);
+        }
 
         public override DyObject Clone() => this;
 
@@ -437,50 +447,32 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            switch (name)
+            return name switch
             {
-                case "indexOf":
-                    return DyForeignFunction.Member(name, IndexOf, -1, new Par("value"), new Par("fromIndex", DyInteger.Get(0)), new Par("count", DyNil.Instance));
-                case "lastIndexOf":
-                    return DyForeignFunction.Member(name, LastIndexOf, -1, new Par("value"), new Par("fromIndex", DyNil.Instance), new Par("count", DyNil.Instance));
-                case "contains":
-                    return DyForeignFunction.Member(name, Contains, -1, new Par("value"));
-                case "split":
-                    return DyForeignFunction.Member(name, Split, 0, new Par("separators", true));
-                case "upper":
-                    return DyForeignFunction.Member(name, Upper, -1, Statics.EmptyParameters);
-                case "lower":
-                    return DyForeignFunction.Member(name, Lower, -1, Statics.EmptyParameters);
-                case "startsWith":
-                    return DyForeignFunction.Member(name, StartsWith, -1, new Par("value"));
-                case "endsWith":
-                    return DyForeignFunction.Member(name, EndsWith, -1, new Par("value"));
-                case "sub":
-                    return DyForeignFunction.Member(name, Substring, -1, new Par("start"), new Par("len", DyNil.Instance));
-                case "capitalize":
-                    return DyForeignFunction.Member(name, Capitalize, -1, Statics.EmptyParameters);
-                case "trim":
-                    return DyForeignFunction.Member(name, Trim, 0, new Par("chars", true));
-                case "trimStart":
-                    return DyForeignFunction.Member(name, TrimStart, 0, new Par("chars", true));
-                case "trimEnd":
-                    return DyForeignFunction.Member(name, TrimEnd, 0, new Par("chars", true));
-                case "isEmpty":
-                    return DyForeignFunction.Member(name, IsEmpty);
-                case "padLeft":
-                    return DyForeignFunction.Member(name, PadLeft, -1, new Par("to"), new Par("with", new DyChar(' ')));
-                case "padRight":
-                    return DyForeignFunction.Member(name, PadRight, -1, new Par("to"), new Par("with", new DyChar(' ')));
-                case "replace":
-                    return DyForeignFunction.Member(name, Replace, -1, new Par("value"), new Par("with"),
-                        new Par("ignoreCase", (DyObject)DyBool.False));
-                case "remove":
-                    return DyForeignFunction.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance));
-                case "reverse":
-                    return DyForeignFunction.Member(name, Reverse);
-                default:
-                    return null;
-            }
+                "indexOf" => DyForeignFunction.Member(name, IndexOf, -1, new Par("value"), 
+                    new Par("fromIndex", DyInteger.Get(0)), new Par("count", DyNil.Instance)),
+                "lastIndexOf" => DyForeignFunction.Member(name, LastIndexOf, -1, new Par("value"), 
+                    new Par("fromIndex", DyNil.Instance), new Par("count", DyNil.Instance)),
+                "contains" => DyForeignFunction.Member(name, Contains, -1, new Par("value")),
+                "split" => DyForeignFunction.Member(name, Split, 0, new Par("separators", true)),
+                "upper" => DyForeignFunction.Member(name, Upper, -1, Statics.EmptyParameters),
+                "lower" => DyForeignFunction.Member(name, Lower, -1, Statics.EmptyParameters),
+                "startsWith" => DyForeignFunction.Member(name, StartsWith, -1, new Par("value")),
+                "endsWith" => DyForeignFunction.Member(name, EndsWith, -1, new Par("value")),
+                "sub" => DyForeignFunction.Member(name, Substring, -1, new Par("start"), new Par("len", DyNil.Instance)),
+                "capitalize" => DyForeignFunction.Member(name, Capitalize, -1, Statics.EmptyParameters),
+                "trim" => DyForeignFunction.Member(name, Trim, 0, new Par("chars", true)),
+                "trimStart" => DyForeignFunction.Member(name, TrimStart, 0, new Par("chars", true)),
+                "trimEnd" => DyForeignFunction.Member(name, TrimEnd, 0, new Par("chars", true)),
+                "isEmpty" => DyForeignFunction.Member(name, IsEmpty),
+                "padLeft" => DyForeignFunction.Member(name, PadLeft, -1, new Par("to"), new Par("with", new DyChar(' '))),
+                "padRight" => DyForeignFunction.Member(name, PadRight, -1, new Par("to"), new Par("with", new DyChar(' '))),
+                "replace" => DyForeignFunction.Member(name, Replace, -1, new Par("value"), new Par("with"),
+                    new Par("ignoreCase", (DyObject)DyBool.False)),
+                "remove" => DyForeignFunction.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance)),
+                "reverse" => DyForeignFunction.Member(name, Reverse),
+                _ => base.GetMember(name, ctx),
+            };
         }
         #endregion
 
@@ -549,21 +541,15 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
-            switch (name)
+            return name switch
             {
-                case "String":
-                    return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
-                case "concat":
-                    return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
-                case "join":
-                    return DyForeignFunction.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(",")));
-                case "default":
-                    return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyString.Empty);
-                case "repeat":
-                    return DyForeignFunction.Static(name, Repeat, -1, new Par("value"), new Par("count"));
-                default:
-                    return null;
-            }
+                "String" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
+                "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
+                "join" => DyForeignFunction.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(","))),
+                "default" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyString.Empty),
+                "repeat" => DyForeignFunction.Static(name, Repeat, -1, new Par("value"), new Par("count")),
+                _ => base.GetStaticMember(name, ctx),
+            };
         }
         #endregion
     }

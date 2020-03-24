@@ -219,3 +219,41 @@ func arrayCopyTest4() {
     var ys = Array.copy(xs, count: 3)
     assert([1,2,3], ys)
 }
+
+func arrayIndexing() { //#301
+    var xs = [1,2,3,4,5]
+    assert(5, xs[-1])
+    assert(1, xs[-5])
+}
+
+//Start:  #301
+type __Foo(x)
+func __Foo == (other) { other is __Foo() }
+func complexEquality1() {
+    var res = __Foo(0) == __Foo(12)
+    assert(true, res)
+    var xs = [__Foo(0)]
+    xs.remove(__Foo(3))
+    assert([], xs)
+}
+
+func complexEquality2() {
+    var xs = [12, "foo", __Foo(12), __Foo(0)]
+    var res = xs.indexOf(__Foo(42))
+    assert(res, 2)
+    res = xs.indexOf(__Foo(0))
+    assert(res, 2)
+}
+
+func complexEquality3() {
+    var xs = [12, "foo", __Foo(12), __Foo(0)]
+    var res = xs.lastIndexOf(__Foo(12))
+    assert(res, 3)
+}
+
+func complexEquality4() {
+    var xs = [__Foo(1), __Foo(2), __Foo(3), __Foo(4)]
+    xs.removeRange([__Foo(0)])
+    assert([__Foo(2), __Foo(3), __Foo(4)], xs)
+}
+//End: #301

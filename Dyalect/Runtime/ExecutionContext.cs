@@ -8,6 +8,8 @@ namespace Dyalect.Runtime
     {
         internal int AUX;
 
+        internal static readonly ExecutionContext Default = new ExecutionContext(new CallStack(), new UnitComposition(new List<Unit>()));
+
         internal ExecutionContext(CallStack callStack, UnitComposition composition)
         {
             CallStack = callStack;

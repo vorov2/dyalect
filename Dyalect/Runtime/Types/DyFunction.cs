@@ -128,7 +128,7 @@ namespace Dyalect.Runtime.Types
             if (name == "name")
                 return DyForeignFunction.Auto(AutoKind.Generated, (ct, o) => new DyString(((DyFunction)o).FunctionName));
 
-            return null;
+            return base.GetMember(name, ctx);
         }
 
         private DyObject Compose(ExecutionContext ctx, DyObject first, DyObject second)
@@ -154,7 +154,7 @@ namespace Dyalect.Runtime.Types
             if (name == "Function")
                 return DyForeignFunction.Static(name, (c, obj) => DyForeignFunction.Static("id", _ => obj), -1, new Par("value"));
 
-            return null;
+            return base.GetStaticMember(name, ctx);
         }
     }
 
