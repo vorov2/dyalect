@@ -127,7 +127,7 @@ namespace Dyalect.Runtime.Types
             if (name == "Module")
                 return DyForeignFunction.Static(name, c => new DyModule(c.Composition.Units[0], c.Units[0]));
 
-            return null;
+            return base.GetStaticMember(name, ctx);
         }
     }
 }

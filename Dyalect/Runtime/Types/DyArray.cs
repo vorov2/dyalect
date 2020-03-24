@@ -596,22 +596,17 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "Array")
-                return DyForeignFunction.Static(name, New, 0, new Par("values", true));
-
-            if (name == "sort")
-                return DyForeignFunction.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance));
-
-            if (name == "empty")
-                return DyForeignFunction.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance));
-
-            if (name == "concat")
-                return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
-
-            if (name == "copy")
-                return DyForeignFunction.Static(name, Copy, -1, new Par("from"), new Par("fromIndex", DyInteger.Get(0)), new Par("to", DyNil.Instance), new Par("toIndex", DyInteger.Get(0)), new Par("count"));
-
-            return null;
+            return name switch
+            {
+                "Array" => DyForeignFunction.Static(name, New, 0, new Par("values", true)),
+                "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance)),
+                "empty" => DyForeignFunction.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance)),
+                "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
+                "copy" => DyForeignFunction.Static(name, Copy, -1, new Par("from"), 
+                    new Par("fromIndex", DyInteger.Get(0)), new Par("to", DyNil.Instance), 
+                    new Par("toIndex", DyInteger.Get(0)), new Par("count")),
+                _ => base.GetStaticMember(name, ctx)
+            };
         }
     }
 }

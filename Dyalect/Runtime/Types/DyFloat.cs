@@ -231,7 +231,7 @@ namespace Dyalect.Runtime.Types
             if (name == "isNaN")
                 return DyForeignFunction.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False);
 
-            return null;
+            return base.GetMember(name, ctx);
         }
 
         private DyObject Convert(ExecutionContext ctx, DyObject obj)
@@ -266,7 +266,7 @@ namespace Dyalect.Runtime.Types
             if (name == "Float")
                 return DyForeignFunction.Static(name, Convert, -1, new Par("value"));
 
-            return null;
+            return base.GetStaticMember(name, ctx);
         }
     }
 }

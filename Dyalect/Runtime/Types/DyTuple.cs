@@ -1,8 +1,6 @@
 ﻿using Dyalect.Debug;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -246,7 +244,7 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(newArr);
         }
 
-        private DyObject Add(ExecutionContext ctx, DyObject self, DyObject item)
+        private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject item)
         {
             var t = (DyTuple)self;
             var arr = new DyObject[t.Count + 1];
@@ -333,7 +331,7 @@ namespace Dyalect.Runtime.Types
         {
             return name switch
             {
-                "add" => DyForeignFunction.Member(name, Add, -1, new Par("item")),
+                "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
                 "remove" => DyForeignFunction.Member(name, Remove, -1, new Par("item")),
                 "removeAt" => DyForeignFunction.Member(name, RemoveAt, -1, new Par("index")),
                 "insert" => DyForeignFunction.Member(name, Insert, -1, new Par("index"), new Par("item")),
@@ -341,7 +339,7 @@ namespace Dyalect.Runtime.Types
                 "fst" => DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters),
                 "snd" => DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters),
                 "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
-                _ => base.GetMember(name, ctx),
+                _ => base.GetMember(name, ctx)
             };
         }
 
@@ -359,19 +357,14 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "sort")
-                return DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance));
-
-            if (name == "pair")
-                return DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second"));
-
-            if (name == "triple")
-                return DyForeignFunction.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third"));
-
-            if (name == "Tuple")
-                return DyForeignFunction.Static(name, MakeNew, 0, new Par("values"));
-
-            return null;
+            return name switch
+            {
+                "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
+                "pair" => DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second")),
+                "triple" => DyForeignFunction.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
+                "Tuple" => DyForeignFunction.Static(name, MakeNew, 0, new Par("values")),
+                _ => base.GetStaticMember(name, ctx)
+            };
         }
     }
 }

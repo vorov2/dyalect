@@ -315,7 +315,7 @@ namespace Dyalect.Runtime.Types
             if (name == "to")
                 return DyForeignFunction.Member(name, Range, -1, new Par("value"));
 
-            return null;
+            return base.GetMember(name, ctx);
         }
 
         private DyObject Convert(ExecutionContext ctx, DyObject obj)
@@ -347,7 +347,7 @@ namespace Dyalect.Runtime.Types
             if (name == "Integer")
                 return DyForeignFunction.Static(name, Convert, -1, new Par("value"));
 
-            return null;
+            return base.GetStaticMember(name, ctx);
         }
     }
 }

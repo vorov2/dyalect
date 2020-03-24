@@ -207,7 +207,8 @@ namespace Dyalect.Runtime.Types
     {
         public override string FunctionName => "iter";
 
-        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) : base(null, unitId, funcId, captures, DyType.Iterator, -1, auto: AutoKind.None)
+        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) 
+            : base(null, unitId, funcId, captures, DyType.Iterator, -1, auto: AutoKind.None)
         {
 
         }
@@ -335,7 +336,8 @@ namespace Dyalect.Runtime.Types
         {
             if (name == "toArray")
                 return DyForeignFunction.Member(name, ToArray);
-            else if (name == "toTuple")
+            
+            if (name == "toTuple")
                 return DyForeignFunction.Member(name, ToTuple);
 
             return null;
