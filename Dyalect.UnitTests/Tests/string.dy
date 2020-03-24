@@ -18,7 +18,7 @@ func stringTest2() {
     assert(3, str.lastIndexOf("l", fromIndex: 6, count: 4))
 }
 
-func stringTest3() {
+func stringTest3() { 
     assert(false, "1" > "2")
     assert(true, "1" < "2")
 }
