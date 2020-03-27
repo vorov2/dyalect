@@ -99,7 +99,7 @@ namespace Dyalect.Linker
         [Function("rnd")]
         public DyObject Randomize(ExecutionContext ctx, [Default(int.MaxValue)]DyObject max, [Default(0)]DyObject min, [Default]DyObject seed)
         {
-            var iseed = 0;
+            int iseed;
 
             if (seed.TypeId != DyType.Nil)
                 iseed = (int)seed.GetInteger();
