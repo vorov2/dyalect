@@ -4,6 +4,6 @@
     {
         public dynamic Func;
 
-        public int ArgumentCount;
+        public System.Type[] Types;
     }
 }

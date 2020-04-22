@@ -18,6 +18,7 @@ namespace Dyalect
         public static readonly Type UInt64 = typeof(ulong);
         public static readonly Type Single = typeof(float);
         public static readonly Type Double = typeof(double);
+        public static readonly Type Float = typeof(float);
         public static readonly Type Decimal = typeof(decimal);
         public static readonly Type Char = typeof(char);
         public static readonly Type String = typeof(string);

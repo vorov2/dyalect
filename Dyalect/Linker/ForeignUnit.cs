@@ -104,6 +104,41 @@ namespace Dyalect.Linker
             throw new DyException(LinkerErrors.TooManyParameters.Format(mi.Name));
         }
 
+        private (Delegate,Type[]) CreateDelegate(MethodInfo self, ParameterInfo[] pars, object instance)
+        {
+            var types = new Type[pars.Length + 1];
+
+            for (var i = 0; i < pars.Length; i++)
+                types[i] = pars[i].ParameterType;
+
+            types[^1] = self.ReturnType;
+
+            var func = types.Length switch
+            {
+                1 => typeof(Func<>),
+                2 => typeof(Func<,>),
+                3 => typeof(Func<,,>),
+                4 => typeof(Func<,,,>),
+                5 => typeof(Func<,,,,>),
+                6 => typeof(Func<,,,,,>),
+                7 => typeof(Func<,,,,,,>),
+                8 => typeof(Func<,,,,,,,>),
+                9 => typeof(Func<,,,,,,,,>),
+                10 => typeof(Func<,,,,,,,,,>),
+                11 => typeof(Func<,,,,,,,,,,>),
+                12 => typeof(Func<,,,,,,,,,,,>),
+                13 => typeof(Func<,,,,,,,,,,,,>),
+                14 => typeof(Func<,,,,,,,,,,,,,>),
+                15 => typeof(Func<,,,,,,,,,,,,,,>),
+                16 => typeof(Func<,,,,,,,,,,,,,,,>),
+                17 => typeof(Func<,,,,,,,,,,,,,,,,>),
+                _ => throw new Exception("Method not supported. Too many arguments.")
+            };
+
+            var dt = func.MakeGenericType(types);
+            return (self.CreateDelegate(dt, instance), types);
+        }
+
         protected DyObject Default() => DyNil.Instance;
     }
 }

@@ -16,25 +16,27 @@ namespace Dyalect.Linker
 
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {
-            return fun.ArgumentCount switch
+            object val(int i) => args[i].ChangeType(fun.Types[i]);
+
+            return fun.Types.Length - 1 switch
             {
                 0  => fun.Func(),
-                1  => fun.Func((dynamic)args[0]),
-                2  => fun.Func((dynamic)args[0], (dynamic)args[1]),
-                3  => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2]),
-                4  => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3]),
-                5  => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4]),
-                6  => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4], (dynamic)args[5]),
-                7  => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4], (dynamic)args[5], (dynamic)args[6]),
-                8  => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4], (dynamic)args[5], (dynamic)args[6], (dynamic)args[7]),
-                9  => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4], (dynamic)args[5], (dynamic)args[6], (dynamic)args[7], (dynamic)args[8]),
-                10 => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4], (dynamic)args[5], (dynamic)args[6], (dynamic)args[7], (dynamic)args[8], (dynamic)args[9]),
-                11 => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4], (dynamic)args[5], (dynamic)args[6], (dynamic)args[7], (dynamic)args[8], (dynamic)args[9], (dynamic)args[10]),
-                12 => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4], (dynamic)args[5], (dynamic)args[6], (dynamic)args[7], (dynamic)args[8], (dynamic)args[9], (dynamic)args[10], (dynamic)args[11]),
-                13 => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4], (dynamic)args[5], (dynamic)args[6], (dynamic)args[7], (dynamic)args[8], (dynamic)args[9], (dynamic)args[10], (dynamic)args[11], (dynamic)args[12]),
-                14 => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4], (dynamic)args[5], (dynamic)args[6], (dynamic)args[7], (dynamic)args[8], (dynamic)args[9], (dynamic)args[10], (dynamic)args[11], (dynamic)args[12], (dynamic)args[13]),
-                15 => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4], (dynamic)args[5], (dynamic)args[6], (dynamic)args[7], (dynamic)args[8], (dynamic)args[9], (dynamic)args[10], (dynamic)args[11], (dynamic)args[12], (dynamic)args[13], (dynamic)args[14]),
-                16 => fun.Func((dynamic)args[0], (dynamic)args[1], (dynamic)args[2], (dynamic)args[3], (dynamic)args[4], (dynamic)args[5], (dynamic)args[6], (dynamic)args[7], (dynamic)args[8], (dynamic)args[9], (dynamic)args[10], (dynamic)args[11], (dynamic)args[12], (dynamic)args[13], (dynamic)args[14], (dynamic)args[15]),
+                1  => fun.Func(val(0)),
+                2  => fun.Func(val(0), val(1)),
+                3  => fun.Func(val(0), val(1), val(2)),
+                4  => fun.Func(val(0), val(1), val(2), val(3)),
+                5  => fun.Func(val(0), val(1), val(2), val(3), val(4)),
+                6  => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5)),
+                7  => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6)),
+                8  => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7)),
+                9  => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8)),
+                10 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9)),
+                11 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10)),
+                12 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11)),
+                13 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12)),
+                14 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13)),
+                15 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13), val(14)),
+                16 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13), val(14), val(15)),
                 _  => throw new NotSupportedException()
             };
         }

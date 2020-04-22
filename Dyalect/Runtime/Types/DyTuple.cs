@@ -122,8 +122,6 @@ namespace Dyalect.Runtime.Types
         internal override DyObject GetValue(int index) => Values[index];
 
         internal override DyObject[] GetValues() => Values;
-
-        public static implicit operator object[](DyTuple tuple) => tuple.ConvertToArray();
     }
 
     internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo

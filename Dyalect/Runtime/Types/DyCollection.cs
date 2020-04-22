@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -117,6 +118,24 @@ namespace Dyalect.Runtime.Types
         }
 
         internal override int GetCount() => Count;
+
+        public override object ChangeType(Type type)
+        {
+            if (type == Dyalect.Types.ArrayObject)
+                return ConvertToArray();
+            else if (type.IsArray)
+            {
+                var et = type.GetElementType();
+                var arr = Array.CreateInstance(et, Count);
+
+                for (var i = 0; i < arr.Length; i++)
+                    arr.SetValue(GetValue(i).ChangeType(et), i);
+
+                return arr;
+            }
+            else
+                return base.ChangeType(type);
+        }
     }
 
     internal abstract class DyCollectionTypeInfo : DyTypeInfo
