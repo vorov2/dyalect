@@ -54,20 +54,29 @@ namespace Dyalect.Linker
         private DyObject ProcessMethod(string name, MethodInfo mi)
         {
             var pars = mi.GetParameters();
-            var parsMeta = pars.Length > 1 ? new Par[pars.Length - 1] : null;
+            var hasContext = pars[0].ParameterType == typeof(ExecutionContext);
+            Par[] parsMeta = null;
+            
+            if (hasContext && pars.Length > 1)
+                parsMeta = new Par[pars.Length - 1];
+            else if (!hasContext && pars.Length > 0)
+                parsMeta = new Par[pars.Length];
+            
             var varArgIndex = -1;
             var simpleSignature = true;
-            var expectContext = true;
 
             if (pars.Length == 0 || pars[0].ParameterType != typeof(ExecutionContext))
                 simpleSignature = false;
 
             for (var i = 0; i < pars.Length; i++)
             {
+                if (i == 0 && hasContext)
+                    continue;
+
                 var p = pars[i];
 
                 if (p.ParameterType != Dyalect.Types.DyObject)
-                    expectContext = simpleSignature = false;
+                    simpleSignature = false;
                 else
                     continue; 
 
@@ -89,7 +98,7 @@ namespace Dyalect.Linker
                 else if (p.HasDefaultValue)
                     def = TypeConverter.ConvertFrom(p.DefaultValue, p.ParameterType, ExecutionContext.Default);
 
-                parsMeta[i - (expectContext ? 1 : 0)] = new Par(p.Name, def, va);
+                parsMeta[i - (hasContext ? 1 : 0)] = new Par(p.Name, def, va);
             }
 
             if (simpleSignature)
@@ -114,7 +123,7 @@ namespace Dyalect.Linker
             else
             {
                 var (fun, types) = CreateDelegate(mi, pars, this);
-                return new ForeignFunction(name, new FunctionDescriptor { Func = fun, Types = types }, parsMeta, varArgIndex, expectContext);
+                return new ForeignFunction(name, new FunctionDescriptor { Func = fun, Types = types }, parsMeta, varArgIndex, hasContext);
             }
         }
 
