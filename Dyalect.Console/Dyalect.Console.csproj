@@ -13,7 +13,7 @@
       <ApplicationIcon />
       <OutputType>Exe</OutputType>
       <StartupObject />
-      <AssemblyName>Dyalect.Console</AssemblyName>
+      <AssemblyName>dya</AssemblyName>
       <RootNamespace>Dyalect</RootNamespace>
       <PackageProjectUrl>https://github.com/vorov2/dyalect</PackageProjectUrl>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -39,12 +39,6 @@
 
   <ItemGroup>
     <None Update="config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="dya.bat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="dya.sh">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

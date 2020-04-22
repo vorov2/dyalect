@@ -10,6 +10,8 @@ namespace Dyalect.Runtime.Types
 
         public virtual int Count { get; protected set; }
 
+        public virtual DyObject this[int index] => GetValue(index);
+
         internal DyCollection(int typeId) : base(typeId)
         {
 

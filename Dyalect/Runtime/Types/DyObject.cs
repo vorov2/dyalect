@@ -92,16 +92,7 @@ namespace Dyalect.Runtime.Types
 
         public override sealed bool Equals(object obj) => obj is DyObject dyo ? Equals(dyo) : false;
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + TypeId.GetHashCode();
-                hash = hash * 23 + base.GetHashCode();
-                return hash;
-            }
-        }
+        public override int GetHashCode() => HashCode.Combine(TypeId);
     }
 
     internal static class DyObjectInternalExtensions

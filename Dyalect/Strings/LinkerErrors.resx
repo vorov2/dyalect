@@ -129,14 +129,26 @@
   <data name="DuplicateModuleName" xml:space="preserve">
     <value>Duplicate name of a module "{1}" in an assembly "{0}".</value>
   </data>
+  <data name="DuplicateVarArgs" xml:space="preserve">
+    <value>Duplicate [VarArgs] attribute for method "{0}".</value>
+  </data>
   <data name="InvalidAssemblyModule" xml:space="preserve">
     <value>Unsupported type of a module "{0}" from an assembly "{1}".</value>
+  </data>
+  <data name="MethodNotSupported" xml:space="preserve">
+    <value>Method signature for method "{0}" is not supported. The first parameter should be of type ExecutionContext.</value>
   </data>
   <data name="ModuleNotFound" xml:space="preserve">
     <value>Unable to find module "{0}".</value>
   </data>
   <data name="NewerSourceFile" xml:space="preserve">
     <value>A newer version of source file is available for module "{0}".</value>
+  </data>
+  <data name="ParameterNotSupported" xml:space="preserve">
+    <value>Parameter type "{0}" for method "{1}" is not supported.</value>
+  </data>
+  <data name="TooManyParameters" xml:space="preserve">
+    <value>Method "{0}" has too many parameters.</value>
   </data>
   <data name="UnableLoadAssembly" xml:space="preserve">
     <value>An error occured while loading assembly "{0}": {1}</value>

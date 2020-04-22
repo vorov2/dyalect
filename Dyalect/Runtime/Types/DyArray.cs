@@ -12,7 +12,7 @@ namespace Dyalect.Runtime.Types
 
         internal DyObject[] Values;
 
-        public DyObject this[int index]
+        public new DyObject this[int index]
         {
             get { return Values[CorrectIndex(index)]; }
             set { Values[CorrectIndex(index)] = value; }
@@ -427,7 +427,7 @@ namespace Dyalect.Runtime.Types
             if (sti < 0 || sti >= arr.Count)
                 return ctx.IndexOutOfRange(sti);
 
-            var le = 0;
+            int le;
 
             if (len == DyNil.Instance)
                 le = arr.Count - sti;

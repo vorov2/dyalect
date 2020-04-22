@@ -10,8 +10,8 @@
 
 namespace Dyalect.Strings {
     using System;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,19 +19,19 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class LinkerErrors {
-
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal LinkerErrors() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace Dyalect.Strings {
                 return resourceMan;
             }
         }
-
+        
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace Dyalect.Strings {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to An error occured while loading module &quot;{0}&quot; from an assembly &quot;{1}&quot;: {2}.
         /// </summary>
@@ -68,7 +68,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("AssemblyModuleLoadError", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Module &quot;{0}&quot; is not defined in an assembly &quot;{1}&quot;..
         /// </summary>
@@ -77,7 +77,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("AssemblyModuleNotFound", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Checksum validation of dependency &quot;{0}&quot; failed for module &quot;{1}&quot;. .
         /// </summary>
@@ -86,7 +86,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("ChecksumValidationFailed", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Duplicate name of a module &quot;{1}&quot; in an assembly &quot;{0}&quot;..
         /// </summary>
@@ -95,7 +95,16 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("DuplicateModuleName", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate [VarArgs] attribute for method &quot;{0}&quot;..
+        /// </summary>
+        internal static string DuplicateVarArgs {
+            get {
+                return ResourceManager.GetString("DuplicateVarArgs", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Unsupported type of a module &quot;{0}&quot; from an assembly &quot;{1}&quot;..
         /// </summary>
@@ -104,7 +113,16 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("InvalidAssemblyModule", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method signature for method &quot;{0}&quot; is not supported. The first parameter should be of type ExecutionContext..
+        /// </summary>
+        internal static string MethodNotSupported {
+            get {
+                return ResourceManager.GetString("MethodNotSupported", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Unable to find module &quot;{0}&quot;..
         /// </summary>
@@ -113,7 +131,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("ModuleNotFound", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to A newer version of source file is available for module &quot;{0}&quot;..
         /// </summary>
@@ -122,7 +140,25 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("NewerSourceFile", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parameter type &quot;{0}&quot; for method &quot;{1}&quot; is not supported..
+        /// </summary>
+        internal static string ParameterNotSupported {
+            get {
+                return ResourceManager.GetString("ParameterNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &quot;{0}&quot; has too many parameters..
+        /// </summary>
+        internal static string TooManyParameters {
+            get {
+                return ResourceManager.GetString("TooManyParameters", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to An error occured while loading assembly &quot;{0}&quot;: {1}.
         /// </summary>
@@ -131,7 +167,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("UnableLoadAssembly", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to An error occured while reading module file &quot;{0}&quot;: {1}.
         /// </summary>
@@ -140,7 +176,7 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("UnableReadModule", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Unable to read object file &quot;{0}&quot;: {1}.
         /// </summary>

@@ -1,5 +1,6 @@
 # 0.14.0
-  * todo
+  * Change: _Refactorings and enhancements in linker foreign unit infrastructure._
+  * Change: _General code clean-ups and optimizations._
 
 # 0.13.0
   * Change: _Collection object model refactoring._

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.WebSockets;
 using Dyalect.Runtime.Types;
 
 namespace Dyalect.Runtime
@@ -11,7 +12,7 @@ namespace Dyalect.Runtime
 
         internal static DyObject ConvertFrom(object obj, Type type, ExecutionContext ctx)
         {
-            if (ReferenceEquals(obj, null))
+            if (obj is null)
                 return DyNil.Instance;
             
             if (obj is DyObject retval)
@@ -34,6 +35,18 @@ namespace Dyalect.Runtime
                 case TypeCode.Double: return new DyFloat((double)obj);
                 case TypeCode.Decimal: return new DyFloat((double)(decimal)obj);
                 case TypeCode.Empty: return DyNil.Instance;
+                default:
+                    if (type.IsArray)
+                    {
+                        var arr = (Array)obj;
+                        var newArr = new DyObject[arr.Length];
+                        
+                        for (var i = 0; i < arr.Length; i++)
+                            newArr[i] = ConvertFrom(arr.GetValue(i), arr.GetValue(i)?.GetType(), ctx);
+
+                        return new DyArray(newArr);
+                    }
+                    break;
             }
 
             throw new InvalidCastException();
@@ -43,10 +56,12 @@ namespace Dyalect.Runtime
 
         public static object ConvertTo(DyObject obj, Type type, ExecutionContext ctx)
         {
-            if (type == typeof(DyObject))
+            if (type == Dyalect.Types.DyObject)
                 return obj;
             else if (type == Dyalect.Types.Object)
                 return obj.ToObject();
+            else if (Dyalect.Types.DyObject.IsAssignableFrom(type))
+                return Convert.ChangeType(obj, type);
 
             switch (Type.GetTypeCode(type))
             {
@@ -69,6 +84,21 @@ namespace Dyalect.Runtime
                 case TypeCode.Double: return obj.GetFloat();
                 case TypeCode.Decimal: return (decimal)obj.GetFloat();
                 case TypeCode.Empty: return null;
+                default:
+                    if (type.IsArray && obj is DyCollection coll)
+                    {
+                        var et = type.GetElementType();
+                        var arr = Array.CreateInstance(et, coll.Count);
+
+                        for (var i = 0; i < coll.Count; i++)
+                        {
+                            var c = coll[i];
+                            arr.SetValue(ConvertTo(c, et, ctx), i);
+                        }
+
+                        return arr;
+                    }
+                    break;
             }
 
             throw new InvalidCastException();

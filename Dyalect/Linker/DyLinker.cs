@@ -15,7 +15,6 @@ namespace Dyalect.Linker
         private const string EXT = ".dy";
         private const string OBJ = ".dyo";
         private readonly Lang lang;
-        private static readonly object syncRoot = new object();
 
         protected Dictionary<Reference, Unit> UnitMap { get; set;  } = new Dictionary<Reference, Unit>();
 
@@ -44,9 +43,7 @@ namespace Dyalect.Linker
 
         protected internal virtual Result<Unit> Link(Unit self, Reference mod)
         {
-            Unit unit = null;
-
-            if (!UnitMap.TryGetValue(mod, out unit))
+            if (!UnitMap.TryGetValue(mod, out Unit unit))
             {
                 if (mod.ModuleName == nameof(lang))
                     unit = lang;
@@ -357,7 +354,7 @@ namespace Dyalect.Linker
                 return;
 
             var str = LinkerErrors.ResourceManager.GetString(codeName);
-            str = str ?? codeName;
+            str ??= codeName;
 
             if (args != null)
                 str = string.Format(str, args);

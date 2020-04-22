@@ -5,6 +5,7 @@ using System;
 using Dyalect.Runtime;
 using System.Reflection;
 using Dyalect.Debug;
+using Dyalect.Strings;
 
 namespace Dyalect.Linker
 {
@@ -14,7 +15,7 @@ namespace Dyalect.Linker
 
         protected ForeignUnit()
         {
-            InitializeMethods();
+            InitializeMembers();
         }
 
         internal protected void Add(string name, DyObject obj)
@@ -33,7 +34,7 @@ namespace Dyalect.Linker
 
         }
 
-        private void InitializeMethods()
+        protected virtual void InitializeMembers()
         {
             var methods = GetType().GetMethods();
 
@@ -56,22 +57,22 @@ namespace Dyalect.Linker
             var parsMeta = pars.Length > 1 ? new Par[pars.Length - 1] : null;
             var varArgIndex = -1;
 
-            if (pars.Length < 0 || pars[0].ParameterType != typeof(ExecutionContext))
-                throw new DyException($"Method signature for method {mi.Name} is not supported. The first parameter should be of type ExecutionContext.");
+            if (pars.Length == 0 || pars[0].ParameterType != typeof(ExecutionContext))
+                throw new DyException(LinkerErrors.MethodNotSupported.Format(mi.Name));
 
             for (var i = 1; i < pars.Length; i++)
             {
                 var p = pars[i];
 
                 if (p.ParameterType != Dyalect.Types.DyObject)
-                    throw new DyException($"Parameter type {p.ParameterType} for method {mi.Name} is not supported.");
+                    throw new DyException(LinkerErrors.ParameterNotSupported.Format(p.ParameterType, mi.Name));
 
                 var va = false;
 
                 if (Attribute.IsDefined(p, typeof(VarArgAttribute)))
                 {
                     if (varArgIndex != -1)
-                        throw new DyException($"Duplicate [VarArgs] attribute for method {mi.Name}.");
+                        throw new DyException(LinkerErrors.DuplicateVarArgs.Format(mi.Name));
 
                     va = true;
                     varArgIndex = i - 1;
@@ -79,9 +80,7 @@ namespace Dyalect.Linker
 
                 DyObject def = null;
 
-                var defAttr = Attribute.GetCustomAttribute(p, typeof(DefaultAttribute)) as DefaultAttribute;
-
-                if (defAttr != null)
+                if (Attribute.GetCustomAttribute(p, typeof(DefaultAttribute)) is DefaultAttribute defAttr)
                     def = defAttr.Value;
 
                 parsMeta[i - 1] = new Par(p.Name, def, va);
@@ -102,7 +101,7 @@ namespace Dyalect.Linker
             if (parsMeta.Length == 4)
                 return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
 
-            throw new DyException($"Method {mi.Name} has too many parameters.");
+            throw new DyException(LinkerErrors.TooManyParameters.Format(mi.Name));
         }
 
         protected DyObject Default() => DyNil.Instance;

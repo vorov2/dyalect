@@ -70,10 +70,7 @@ namespace Dyalect.Linker
 
             foreach (var t in asm.GetTypes())
             {
-                var attr = Attribute.GetCustomAttribute(t, typeof(DyUnitAttribute))
-                    as DyUnitAttribute;
-
-                if (attr != null)
+                if (Attribute.GetCustomAttribute(t, typeof(DyUnitAttribute)) is DyUnitAttribute attr)
                 {
                     if (dict.ContainsKey(attr.Name))
                         AddError(LinkerError.DuplicateModuleName, mod.SourceFileName, mod.SourceLocation,

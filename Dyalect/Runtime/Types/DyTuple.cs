@@ -122,6 +122,8 @@ namespace Dyalect.Runtime.Types
         internal override DyObject GetValue(int index) => Values[index];
 
         internal override DyObject[] GetValues() => Values;
+
+        public static implicit operator object[](DyTuple tuple) => tuple.ConvertToArray();
     }
 
     internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
@@ -249,7 +251,7 @@ namespace Dyalect.Runtime.Types
             var t = (DyTuple)self;
             var arr = new DyObject[t.Count + 1];
             Array.Copy(t.Values, arr, t.Count);
-            arr[arr.Length - 1] = item;
+            arr[^1] = item;
             return new DyTuple(arr);
         }
 
@@ -284,7 +286,7 @@ namespace Dyalect.Runtime.Types
             return RemoveAt(ctx, t, idx);
         }
 
-        private DyTuple RemoveAt(ExecutionContext ctx, DyTuple self, int index)
+        private DyTuple RemoveAt(ExecutionContext _, DyTuple self, int index)
         {
             var arr = new DyObject[self.Count - 1];
             var c = 0;

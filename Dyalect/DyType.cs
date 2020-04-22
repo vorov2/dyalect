@@ -39,49 +39,45 @@ namespace Dyalect
         public const int Tuple = 12;
         public const int Map = 13;
 
-        public static int GetTypeCodeByName(string name)
-        {
-            switch (name)
+        public static int GetTypeCodeByName(string name) =>
+            name switch
             {
-                case DyTypeNames.Nil: return Nil;
-                case DyTypeNames.Integer: return Integer;
-                case DyTypeNames.Float: return Float;
-                case DyTypeNames.Bool: return Bool;
-                case DyTypeNames.Char: return Char;
-                case DyTypeNames.String: return String;
-                case DyTypeNames.Function: return Function;
-                case DyTypeNames.Label: return Label;
-                case DyTypeNames.TypeInfo: return TypeInfo;
-                case DyTypeNames.Tuple: return Tuple;
-                case DyTypeNames.Module: return Module;
-                case DyTypeNames.Array: return Array;
-                case DyTypeNames.Iterator: return Iterator;
-                case DyTypeNames.Map: return Map;
-                default: return -1;
-            }
-        }
+                DyTypeNames.Nil => Nil,
+                DyTypeNames.Integer => Integer,
+                DyTypeNames.Float => Float,
+                DyTypeNames.Bool => Bool,
+                DyTypeNames.Char => Char,
+                DyTypeNames.String => String,
+                DyTypeNames.Function => Function,
+                DyTypeNames.Label => Label,
+                DyTypeNames.TypeInfo => TypeInfo,
+                DyTypeNames.Tuple => Tuple,
+                DyTypeNames.Module => Module,
+                DyTypeNames.Array => Array,
+                DyTypeNames.Iterator => Iterator,
+                DyTypeNames.Map => Map,
+                _ => -1,
+            };
 
-        public static string GetTypeNameByCode(int code)
-        {
-            switch (code)
+        public static string GetTypeNameByCode(int code) =>
+            code switch
             {
-                case Nil: return DyTypeNames.Nil;
-                case Integer: return DyTypeNames.Integer;
-                case Float: return DyTypeNames.Float;
-                case Bool: return DyTypeNames.Bool;
-                case Char: return DyTypeNames.Char;
-                case String: return DyTypeNames.String;
-                case Function: return DyTypeNames.Function;
-                case Label: return DyTypeNames.Label;
-                case TypeInfo: return DyTypeNames.TypeInfo;
-                case Tuple: return DyTypeNames.Tuple;
-                case Module: return DyTypeNames.Module;
-                case Array: return DyTypeNames.Array;
-                case Iterator: return DyTypeNames.Iterator;
-                case Map: return DyTypeNames.Map;
-                default: return code.ToString();
-            }
-        }
+                Nil => DyTypeNames.Nil,
+                Integer => DyTypeNames.Integer,
+                Float => DyTypeNames.Float,
+                Bool => DyTypeNames.Bool,
+                Char => DyTypeNames.Char,
+                String => DyTypeNames.String,
+                Function => DyTypeNames.Function,
+                Label => DyTypeNames.Label,
+                TypeInfo => DyTypeNames.TypeInfo,
+                Tuple => DyTypeNames.Tuple,
+                Module => DyTypeNames.Module,
+                Array => DyTypeNames.Array,
+                Iterator => DyTypeNames.Iterator,
+                Map => DyTypeNames.Map,
+                _ => code.ToString(),
+            };
     }
 
     internal static class DyTypeNames

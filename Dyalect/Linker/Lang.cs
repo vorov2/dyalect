@@ -23,17 +23,11 @@ namespace Dyalect.Linker
         {
             FileName = "lang";
             this.args = args;
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            Add("args", args ?? (DyObject)DyNil.Instance);
         }
 
         public override void Execute(ExecutionContext ctx)
         {
-            //idle
+            Add("args", args ?? (DyObject)DyNil.Instance);
         }
 
         [Function("print")]
@@ -91,13 +85,13 @@ namespace Dyalect.Linker
         }
 
         [Function("readLine")]
-        public DyObject Read(ExecutionContext ctx)
+        public DyObject Read(ExecutionContext _)
         {
             return new DyString(Console.ReadLine());
         }
 
         [Function("rnd")]
-        public DyObject Randomize(ExecutionContext ctx, [Default(int.MaxValue)]DyObject max, [Default(0)]DyObject min, [Default]DyObject seed)
+        public DyObject Randomize(ExecutionContext _, [Default(int.MaxValue)]DyObject max, [Default(0)]DyObject min, [Default]DyObject seed)
         {
             int iseed;
 
@@ -182,9 +176,7 @@ namespace Dyalect.Linker
         [Function("eval")]
         public DyObject Eval(ExecutionContext ctx, DyObject source, DyObject args)
         {
-            var strObj = source as DyString;
-
-            if (strObj == null)
+            if (!(source is DyString strObj))
                 return ctx.InvalidType(source);
 
             var tup = args as DyTuple;
