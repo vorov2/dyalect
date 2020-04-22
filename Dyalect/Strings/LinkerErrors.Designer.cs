@@ -115,15 +115,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method signature for method &quot;{0}&quot; is not supported. The first parameter should be of type ExecutionContext..
-        /// </summary>
-        internal static string MethodNotSupported {
-            get {
-                return ResourceManager.GetString("MethodNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unable to find module &quot;{0}&quot;..
         /// </summary>
         internal static string ModuleNotFound {
@@ -138,15 +129,6 @@ namespace Dyalect.Strings {
         internal static string NewerSourceFile {
             get {
                 return ResourceManager.GetString("NewerSourceFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Parameter type &quot;{0}&quot; for method &quot;{1}&quot; is not supported..
-        /// </summary>
-        internal static string ParameterNotSupported {
-            get {
-                return ResourceManager.GetString("ParameterNotSupported", resourceCulture);
             }
         }
         

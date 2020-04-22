@@ -1,6 +1,7 @@
 # 0.14.0
   * Change: _Refactorings and enhancements in linker foreign unit infrastructure._
   * Change: _General code clean-ups and optimizations._
+  * Fixed: _Parser may crush when processing `import`_ ([Issue #307](https://github.com/vorov2/dyalect/issues/307)).
 
 # 0.13.0
   * Change: _Collection object model refactoring._

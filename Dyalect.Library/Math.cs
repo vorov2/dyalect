@@ -1,13 +1,9 @@
 ﻿using Dyalect.Linker;
-using Dyalect.Runtime;
-using Dyalect.Runtime.Types;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using M = System.Math;
 
 namespace Dyalect.Library
 {
+    [DyUnit("Math")]
     public sealed class Math : ForeignUnit
     {
         [Function("pow")]
