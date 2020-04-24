@@ -27,7 +27,7 @@ func iteratorLiteralTest4() {
 }
 
 func iteratorLiteralTest5() {
-    var str = String.concat(values: {
+    var str = String.concat(values = {
         22 + 1.25,
         "Hello, world!",
         true

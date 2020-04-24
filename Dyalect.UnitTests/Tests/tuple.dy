@@ -6,7 +6,7 @@
 
 func tupleLiteralTest2() {
     var tup = (
-        x: (x: 2, y: (y: 3)),
+        x = (x = 2, y = (y = 3)),
         22
     )
     var res = tup[1] + tup["x"]["x"] - tup["x"]["y"]["y"]
@@ -19,12 +19,12 @@ func tupleTest1() {
 }
 
 func tupleTest2() {
-    var t = (x: 1, y: 2, z: 3)
+    var t = (x = 1, y = 2, z = 3)
     assert(6, t.x + t.y + t.z)
 }
 
 func tupleTest3() {
-    var t = (x: 1, y: 2, z: 3)
+    var t = (x = 1, y = 2, z = 3)
     var res = t.keys().toArray()
     assert(["x", "y", "z"], res)
 }
@@ -54,18 +54,18 @@ func tupleTest7() {
 }
 
 func tupleTest8() { //bug #215
-    var t = ("long name": 12, "+": 34)
+    var t = ("long name" = 12, "+" = 34)
     assert(12, t["long name"])
     assert(34, t["+"])
 }
 
 func tupleTest9() { //bug #216
-    var t = (fn: x => x+x)
+    var t = (fn = x => x+x)
     assert(42, t.fn(21))
 }
 
 func tupleTest10() { //bug #217
-    var t = (x: 33)
+    var t = (x = 33)
     assert(33, t['x'])
 }
 
@@ -120,7 +120,7 @@ func tupleIndexing() { //#301
     assert(1, xs[-5])
 }
 
-//Start: #292
+//Start #292
 func tupleAdd() {
     var xs = (1,)
     xs = xs.add(2)
@@ -153,4 +153,4 @@ func tupleInsert() {
     xs = xs.insert(3, 2.5)
     assert((0,1,2,2.5,3,4), xs)
 }
-//End: #292
+//End #292

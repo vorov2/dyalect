@@ -51,7 +51,6 @@ TOKENS
     dotToken            = ".".
     commaToken          = ",".
     semicolonToken      = ";".
-    colonToken          = ":".
     equalToken          = "=".
     parenLeftToken      = "(".
     parenRightToken     = ")".
@@ -379,7 +378,6 @@ PRODUCTIONS
         (. node = null; .)
         (
               IF (IsConstructor()) CtorPattern<out node> [ AsPattern<node, out node> ]
-            | IF (IsLabelPattern()) LabelPattern<out node>
             | NamePattern<out node> [ AsPattern<node, out node> ]
             | IntegerPattern<out node> [ AsPattern<node, out node> ]
             | FloatPattern<out node> [ AsPattern<node, out node> ]
@@ -404,13 +402,25 @@ PRODUCTIONS
         ).
 
     CtorPattern<out DPattern node> =
+        (. node = null; .)
         (
             identToken
             (. var ctor = new DCtorPattern(t) { Constructor = t.val }; .)
             "("
-                [ OrPattern<out node> (. ctor.Arguments.Add(node); .) ]
+                [ 
+                    (
+                          IF (IsLabelPattern()) LabelPattern<out node>
+                        | OrPattern<out node>
+                    )
+                    (. ctor.Arguments.Add(node); .)
+                ]
                 {
-                    "," OrPattern<out node> (. ctor.Arguments.Add(node); .)
+                    "," 
+                    (
+                          IF (IsLabelPattern()) LabelPattern<out node>
+                        | OrPattern<out node>
+                    )
+                    (. ctor.Arguments.Add(node); .)
                 }
             ")"
             (. node = ctor; .)
@@ -445,8 +455,21 @@ PRODUCTIONS
         (
             "("
                 (. var tup = new DTuplePattern(t); .)
-                OrPattern<out node> (. tup.Elements.Add(node); .)
-                { "," [ OrPattern<out node> (. tup.Elements.Add(node); .) ] }
+                (
+                      IF (IsLabelPattern()) LabelPattern<out node>
+                    | OrPattern<out node>
+                )
+                (. tup.Elements.Add(node); .)
+                {
+                    ","
+                    [ 
+                        (
+                              IF (IsLabelPattern()) LabelPattern<out node>
+                            | OrPattern<out node>
+                        )
+                        (. tup.Elements.Add(node); .)
+                    ]
+                }
                 (. node = tup; .)
             ")"
         ).
@@ -456,7 +479,7 @@ PRODUCTIONS
         (
             identToken
             (. var la = new DLabelPattern(t) { Label = t.val }; .)
-            ":" Pattern<out var pat>
+            "=" Pattern<out var pat>
             (. la.Pattern = pat; node = la; .)
         ).
 
@@ -596,7 +619,6 @@ PRODUCTIONS
         (. node = null; .)
         (
               IF (IsFunction()) FunctionExpr<out node>
-            | IF (IsLabel()) Label<out node>
             | Is<out node>
             | TryCatch<out node>
             | Throw<out node>
@@ -892,8 +914,19 @@ PRODUCTIONS
 
     ApplicationArguments<DApplication app> =
         (. var node = default(DNode); .)
-        Expr<out node> (. app.Arguments.Add(node); .)
-        { "," Expr<out node> (. app.Arguments.Add(node); .) }.
+        (
+              IF (IsLabel()) Label<out node>
+            | Expr<out node> 
+        )
+        (. app.Arguments.Add(node); .)
+        {
+            ","
+            (
+                  IF (IsLabel()) Label<out node>
+                | Expr<out node> 
+            )
+            (. app.Arguments.Add(node); .)
+        }.
 
     Literal<out DNode node> =
         (. node = null; .)
@@ -935,7 +968,7 @@ PRODUCTIONS
         (. node = null; var name = ""; .)
         (
             ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
-            ":" (. var ot = t; .)
+            "=" (. var ot = t; .)
             (
                   IF (IsFunction()) FunctionExpr<out node>
                 | Is<out node>
@@ -964,8 +997,21 @@ PRODUCTIONS
         (
             "("
                 (. var tup = new DTupleLiteral(t); .)
-                Expr<out node> (. tup.Elements.Add(node); .)
-                { "," [ Expr<out node> (. tup.Elements.Add(node); .) ] }
+                (
+                      IF (IsLabel()) Label<out node>
+                    | Expr<out node> 
+                )
+                (. tup.Elements.Add(node); .)
+                { 
+                    ","
+                    [
+                        (
+                              IF (IsLabel()) Label<out node>
+                            | Expr<out node> 
+                        )
+                        (. tup.Elements.Add(node); .)
+                    ] 
+                }
                 (. node = tup; .)
             ")"
         ).

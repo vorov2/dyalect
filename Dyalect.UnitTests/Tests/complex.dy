@@ -429,7 +429,7 @@ func rot13Test() {
         for c in this {
             cs.add(c.rot13())
         }
-        String.concat(values: cs)
+        String.concat(values = cs)
     }
     var res = "ABJURER nowhere".rot13()
     assert("NOWHERE abjurer", res)
@@ -448,7 +448,7 @@ func caesarCypherTest() {
         for c in this {
             xs.add(c.encrypt(code))
         }
-        return String.concat(values: xs)
+        return String.concat(values= xs)
     }
     func String.decrypt(code) {
         this.encrypt(26 - code);
@@ -504,13 +504,13 @@ func consolidationTest() {
         }
     }
     func consolidate(left, right) {
-        (s: min(min(left.s, left.e), min(right.s, right.e)), e: max(max(left.s, left.e), max(right.s, right.e)))
+        (s = min(min(left.s, left.e), min(right.s, right.e)), e = max(max(left.s, left.e), max(right.s, right.e)))
     }
     func normalize(range) {
-        (s: min(range.s, range.e), e: max(range.s, range.e))
+        (s = min(range.s, range.e), e = max(range.s, range.e))
     }
     for list in [
-        [ (s: 6.1, e: 7.2), (s: 7.2, e: 8.3) ]
+        [ (s = 6.1, e = 7.2), (s = 7.2, e = 8.3) ]
     ] {
         var z = list.len()-1
         while z >= 1 {

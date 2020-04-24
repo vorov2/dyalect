@@ -1,5 +1,5 @@
 ﻿func arrayLiteralTest() {
-    var arr = [[1,2], [3,4,(5,6,a:[7,8])]]
+    var arr = [[1,2], [3,4,(5,6,a=[7,8])]]
     var res = arr[0][0] + arr[1][2]["a"][1]
     assert(9, res)
 }
@@ -139,7 +139,7 @@ func arrayTest22() {
 }
 
 func arrayTest23() { //Bug #226
-    var xs = [(s: 3.0, e: 4.0), (s: 1.0, e: 2.0)]
+    var xs = [(s = 3.0, e = 4.0), (s = 1.0, e = 2.0)]
     xs.sort((x,y) => x.s - y.s)
     assert(1.0, xs[0].s)
 }
@@ -203,7 +203,7 @@ func arrayCopyTest1() {
 
 func arrayCopyTest2() {
     var xs = [1, 2, 3, 4, 5, 6]
-    var ys = Array.copy(from: xs, fromIndex: 1, count: 3)
+    var ys = Array.copy(from = xs, fromIndex = 1, count = 3)
     assert([2,3,4], ys)
 }
 
@@ -216,7 +216,7 @@ func arrayCopyTest3() {
 
 func arrayCopyTest4() {
     var xs = [1, 2, 3, 4, 5, 6]
-    var ys = Array.copy(xs, count: 3)
+    var ys = Array.copy(xs, count = 3)
     assert([1,2,3], ys)
 }
 
@@ -226,7 +226,7 @@ func arrayIndexing() { //#301
     assert(1, xs[-5])
 }
 
-//Start:  #301
+//Start  #301
 type __Foo(x)
 func __Foo == (other) { other is __Foo() }
 func complexEquality1() {
@@ -256,4 +256,4 @@ func complexEquality4() {
     xs.removeRange([__Foo(0)])
     assert([__Foo(2), __Foo(3), __Foo(4)], xs)
 }
-//End: #301
+//End #301

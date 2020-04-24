@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace Dyalect.Parser.Model
 {
@@ -20,7 +18,7 @@ namespace Dyalect.Parser.Model
         internal override void ToString(StringBuilder sb)
         {
             sb.Append(Label);
-            sb.Append(": ");
+            sb.Append(" = ");
             Expression.ToString(sb);
         }
     }

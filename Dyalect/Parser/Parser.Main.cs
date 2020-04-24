@@ -139,7 +139,7 @@ namespace Dyalect.Parser
             if (scanner.Peek().kind != _stringToken)
                 return false;
 
-            if (scanner.Peek().kind != _colonToken)
+            if (scanner.Peek().kind != _equalToken)
                 return false;
 
             return true;
@@ -151,7 +151,7 @@ namespace Dyalect.Parser
                 return false;
 
             scanner.ResetPeek();
-            return scanner.Peek().kind == _colonToken;
+            return scanner.Peek().kind == _equalToken;
         }
 
         private bool IsEmptyParens()
@@ -169,7 +169,7 @@ namespace Dyalect.Parser
                 return false;
 
             scanner.ResetPeek();
-            return scanner.Peek().kind == _colonToken;
+            return scanner.Peek().kind == _equalToken;
         }
 
         private bool IsIterator()
@@ -212,7 +212,7 @@ namespace Dyalect.Parser
             {
                 Token xt;
                 if (((xt = scanner.Peek()).kind == _identToken || xt.kind == _stringToken)
-                    && scanner.Peek().kind == _colonToken)
+                    && scanner.Peek().kind == _equalToken)
                     return true;
                 scanner.ResetPeek();
             }

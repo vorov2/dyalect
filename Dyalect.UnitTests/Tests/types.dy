@@ -35,7 +35,7 @@ func autoTest4() {
     auto func Foo.magic() {
         valueof(this).magic
     }
-    var foo = Foo.MakeFoo((magic: 133))
+    var foo = Foo.MakeFoo((magic = 133))
     assert(133, foo.magic)
 }
 
@@ -93,7 +93,7 @@ type Foo1 = Bar(x, y, z)
 func autoConsTest2() {
     var f = Foo1.Bar(12, "foobar", 3)
     var res = match f {
-        Bar(x: xx, y: yy, z: zz) => "\(xx),\(yy)",
+        Bar(x = xx, y = yy, z = zz) => "\(xx),\(yy)",
         Bar(x, y, z) => x + z,
         Bar() => "not quite"
     }
@@ -168,7 +168,7 @@ func typeTest2() {
 type Cell
 func typeTest3() {
     func ref(value) {
-        Cell((__value: value))
+        Cell((__value = value))
     }
     static func Cell.Cell(value) {
         new(value)
@@ -267,7 +267,7 @@ func accessorTest() {
             return valueof(this).age
         }
     }
-    var p = Record(values: (name: "John", age: 33))
+    var p = Record(values = (name = "John", age = 33))
     assert("John", p.name)
     assert(33, p.age)
 }
@@ -299,7 +299,7 @@ func setterTest2() { //Bug #205
 }
 
 func complexMemberCheckTest1() {
-    var t = (x:2)
+    var t = (x =2)
     assert(true, t.x?)
 }
 

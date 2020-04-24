@@ -135,8 +135,8 @@ func toStringTest2() {
 }
 
 func toStringTest3() {
-    var res = (x:42,y:"foo").toString()
-    assert("(x: 42, y: \"foo\")", res)
+    var res = (x=42,y="foo").toString()
+    assert("(x = 42, y = \"foo\")", res)
 }
 
 func toStringTest4() {
@@ -205,7 +205,7 @@ func memberCheckTest4() { //#272
 func nameofTest() {
     assert("nameofTest", nameof(nameofTest))
     assert("toString", nameof("".toString))
-    var tup = (x: 12)
+    var tup = (x= 12)
     assert("x", nameof(tup.x))
 }
 
@@ -232,11 +232,11 @@ func compositionTest1() {
         x + y
     }
     func fmt(res) {
-        "result: \(res)"
+        "result= \(res)"
     }
     const fun = Function.compose(sum, fmt)
     var res = fun(13, 14)
-    assert(res, "result: 27")
+    assert(res, "result= 27")
 }
 
 func compositionTest2() {
@@ -244,11 +244,11 @@ func compositionTest2() {
         x + y
     }
     func fmt(res) {
-        "result: \(res)"
+        "result= \(res)"
     }
-    const fun = sum.compose(with: fmt)
+    const fun = sum.compose(with= fmt)
     var res = fun(13, 14)
-    assert(res, "result: 27")
+    assert(res, "result= 27")
 }
 
 func getTypeTest1() {
@@ -392,6 +392,6 @@ func returnTest() {//Issue 266
 }
 
 func evalTest() { //Issue 269
-    var z = eval("x + y", (x: 2, y: 3) )
+    var z = eval("x + y", (x= 2, y= 3) )
     assert(5, z)
 }

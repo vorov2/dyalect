@@ -325,21 +325,37 @@ namespace Dyalect.Compiler
 
         private void BuildSequence(DPattern node, List<DNode> elements, Hints hints, CompilerContext ctx)
         {
+            var onlyLabels = true;
+
+            for (var i = 0; i < elements.Count; i++)
+                if (elements[i].NodeType != NodeType.LabelPattern)
+                {
+                    onlyLabels = false;
+                    break;
+                }
+
             var skip = cw.DefineLabel();
             var ok = cw.DefineLabel();
 
-            cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId(Builtins.Len));
-            cw.Brfalse(skip); //1 obj left to pop
+            if (!onlyLabels)
+            {
+                cw.Dup(); //2 objs
+                cw.HasMember(GetMemberNameId(Builtins.Len));
+                cw.Brfalse(skip); //1 obj left to pop
+            }
+
             cw.Dup(); //2 objs
             cw.HasMember(GetMemberNameId(Builtins.Get));
             cw.Brfalse(skip); //1 obj left to pop
 
-            cw.Dup(); //2 objs
-            cw.Len();
-            cw.Push(elements.Count);
-            if (node.NodeType == NodeType.TuplePattern || node.NodeType == NodeType.CtorPattern) cw.Eq(); else cw.GtEq();
-            cw.Brfalse(skip); //1 obj left to pop
+            if (!onlyLabels)
+            {
+                cw.Dup(); //2 objs
+                cw.Len();
+                cw.Push(elements.Count);
+                if (node.NodeType == NodeType.TuplePattern || node.NodeType == NodeType.CtorPattern) cw.Eq(); else cw.GtEq();
+                cw.Brfalse(skip); //1 obj left to pop
+            }
 
             for (var i = 0; i < elements.Count; i++)
             {
