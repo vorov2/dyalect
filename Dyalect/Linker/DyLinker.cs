@@ -323,7 +323,8 @@ namespace Dyalect.Linker
 
             if (Lookup.Find(Path.GetDirectoryName(workingDir), module, out var fullPath))
             {
-                if (NeedReport((int)LinkerWarning.NewerSourceFile))
+                if (NeedReport((int)LinkerWarning.NewerSourceFile)
+                    && !string.Equals(Path.GetExtension(module), ".DLL", StringComparison.OrdinalIgnoreCase))
                 {
                     var sf = Path.Combine(Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath) + ".dy");
 
