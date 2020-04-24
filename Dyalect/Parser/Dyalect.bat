@@ -1,2 +1,1 @@
-﻿cd ..\..\Binaries\
-Coco.exe -N ..\Dyalect\Parser\Dyalect.atg
+..\..\Binaries\Coco.exe -N Dyalect.atg

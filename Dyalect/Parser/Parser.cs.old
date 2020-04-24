@@ -203,11 +203,16 @@ namespace Dyalect.Parser
 			
 		}
 		inc.ModuleName = lastName; if (la.AfterEol) return; 
-		if (la.kind == 26) {
-			Get();
-			Expect(5);
-			inc.Dll = ParseSimpleString(); 
-			Expect(27);
+		if (la.kind == 1 || la.kind == 26) {
+			if (la.kind == 26) {
+				Get();
+				Expect(5);
+				inc.Dll = ParseSimpleString(); 
+			} else {
+				Get();
+				inc.Dll = t.val; 
+				Expect(27);
+			}
 		}
 		if (la.kind == 1) {
 			if (la.AfterEol) return; 
@@ -312,6 +317,7 @@ namespace Dyalect.Parser
 		}
 		case 2: {
 			Directive(out node);
+			Separator();
 			break;
 		}
 		default: SynErr(89); break;

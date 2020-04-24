@@ -104,7 +104,12 @@ PRODUCTIONS
         }
         (. inc.ModuleName = lastName; if (la.AfterEol) return; .)
         [
-            "(" stringToken (. inc.Dll = ParseSimpleString(); .) ")"
+            "("
+                (
+                      stringToken (. inc.Dll = ParseSimpleString(); .)
+                    | identToken (. inc.Dll = t.val; .)
+                )
+            ")"
         ]
         [
             (. if (la.AfterEol) return; .)
