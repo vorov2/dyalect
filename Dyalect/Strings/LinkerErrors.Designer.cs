@@ -79,6 +79,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to find an assembly &quot;{0}&quot; (for a reference module &quot;{1}&quot;). .
+        /// </summary>
+        internal static string AssemblyNotFound {
+            get {
+                return ResourceManager.GetString("AssemblyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checksum validation of dependency &quot;{0}&quot; failed for module &quot;{1}&quot;. .
         /// </summary>
         internal static string ChecksumValidationFailed {

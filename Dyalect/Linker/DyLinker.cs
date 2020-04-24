@@ -48,7 +48,12 @@ namespace Dyalect.Linker
                 if (mod.ModuleName == nameof(lang))
                     unit = lang;
                 else if (mod.DllName != null)
+                {
                     unit = LinkForeignModule(self, mod);
+
+                    if (unit == null)
+                        AddError(LinkerError.AssemblyNotFound, mod.SourceFileName, mod.SourceLocation, mod.DllName, mod.ModuleName);
+                }
                 else
                 {
                     var path = FindModule(self, mod.GetPath(), mod);

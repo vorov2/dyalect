@@ -3,6 +3,7 @@
   * Change: _General code clean-ups and optimizations._
   * Done: _Implement a foreign module interface with support for type conversion_ ([Issue #308](https://github.com/vorov2/dyalect/issues/308)).
   * Fixed: _Parser may crush when processing `import`_ ([Issue #307](https://github.com/vorov2/dyalect/issues/307)).
+  * Fixed: _Dyalect crushes when it cannot find a DLL of a foreign module_ ([Issue #310](https://github.com/vorov2/dyalect/issues/310)).
 
 # 0.13.0
   * Change: _Collection object model refactoring._
