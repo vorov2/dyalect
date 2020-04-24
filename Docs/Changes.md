@@ -3,6 +3,7 @@
   * Change: _General code clean-ups and optimizations._
   * Done: _Implement a foreign module interface with support for type conversion_ ([Issue #308](https://github.com/vorov2/dyalect/issues/308)).
   * Done: _Add a compound `??=` assignment operator_ ([Issue #306](https://github.com/vorov2/dyalect/issues/306), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#compound_assignment)).
+  * Done: _Support an easier way to reference modules in standard library_ ([Issue #309](https://github.com/vorov2/dyalect/issues/309), [docs](https://github.com/vorov2/dyalect/wiki/Modules#foreign_modules)).
   * Fixed: _Parser may crush when processing `import`_ ([Issue #307](https://github.com/vorov2/dyalect/issues/307)).
   * Fixed: _Dyalect crushes when it cannot find a DLL of a foreign module_ ([Issue #310](https://github.com/vorov2/dyalect/issues/310)).
 
