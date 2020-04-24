@@ -849,10 +849,10 @@ namespace Dyalect.Compiler
             if (node.AutoAssign != null)
                 EmitBinaryOp(node.AutoAssign.Value);
 
-            if (hints.Has(Push))
-                cw.Dup();
-
             Build(node.Target, hints.Append(Pop), ctx);
+
+            if (hints.Has(Push))
+                cw.PushNil();
         }
 
         private void CheckTarget(DNode target)

@@ -214,8 +214,10 @@ func gcdTest() {
         if a != 0 && b != 0 {
             if a > b {
                 a %= b
+                a
             } else {
                 b %= a
+                b
             }
         } else if a {
             a
@@ -232,8 +234,10 @@ func lcmTest() {
         if a != 0 && b != 0 {
             if a > b {
                 a %= b
+                a
             } else {
                 b %= a
+                b
             }
         } else if a {
             a

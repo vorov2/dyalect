@@ -220,6 +220,7 @@ func variadicTest1() {
             count += 1
         }
         str += "]"
+        str
     }
     var x = takeItAll(12, 33.4, "oops", true, [1], (x: 0.33, y: 1))
     assert("x=33.4;y=33.4;other=[oopstrue,[1],(x: 0.33, y: 1)]", x)
@@ -237,6 +238,7 @@ func variadicTest3() {
     func take(x, args...) {
         var str = "x=" + x
         str += args
+        str
     }
     var x = take(14)
     assert("x=14()", x)

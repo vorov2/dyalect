@@ -59,11 +59,22 @@ TOKENS
     curlyRightToken     = "}".
     squareLeftToken     = "[".
     squareRightToken    = "]".
-
+    eq_coa              = "??=".
+    eq_add              = "+=".
+    eq_sub              = "-=".
+    eq_mul              = "*=".
+    eq_div              = "/=".
+    eq_rem              = "%=".
+    eq_and              = "&=".
+    eq_or               = "|=".
+    eq_xor              = "^=".
+    eq_lsh              = "<<=".
+    eq_rsh              = ">>=".
     minus               = "-".
     plus                = "+".
     not                 = "!".
     bitnot              = "~".
+    coalesce            = "??".
 
 COMMENTS FROM "/*" TO "*/" NESTED
 COMMENTS FROM "//" TO lf
@@ -141,16 +152,48 @@ PRODUCTIONS
     Statement<out DNode node> =
         (. node = null; .)
         (
-              ControlFlow<out node> [ Guard<node, out node> ] Separator
+              Binding<out node> Separator
+            | Rebinding<out node> Separator
+            | ControlFlow<out node> [ Guard<node, out node> ] Separator
             | Type<out node> Separator
             | Match<out node> [ Guard<node, out node> Separator ]
-            | SimpleExpr<out node> [ Guard<node, out node> ] Separator
+            | StatementExpr<out node> [ Guard<node, out node> ] Separator
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
             | Function<out node>
             | Directive<out node> Separator
         )
         (. node = ProcessImplicits(node); .).
+
+    StatementExpr<out DNode node> =
+        SimpleExpr<out node>
+        [
+            (.
+                var ass = new DAssignment(t) { Target = node };
+                node = ass;
+                BinaryOperator? op = null;
+            .)
+            (
+                  "="
+                | "??=" (. op = BinaryOperator.Coalesce; .)
+                | "+="  (. op = BinaryOperator.Add; .)
+                | "-="  (. op = BinaryOperator.Sub; .)
+                | "*="  (. op = BinaryOperator.Mul; .)
+                | "/="  (. op = BinaryOperator.Div; .)
+                | "%="  (. op = BinaryOperator.Rem; .)
+                | "&="  (. op = BinaryOperator.And; .)
+                | "|="  (. op = BinaryOperator.Or; .)
+                | "^="  (. op = BinaryOperator.Xor; .)
+                | "<<=" (. op = BinaryOperator.ShiftLeft; .)
+                | ">>=" (. op = BinaryOperator.ShiftRight; .)
+            )
+            Expr<out node>
+            (.
+                ass.Value = node;
+                ass.AutoAssign = op;
+                node = ass;
+            .)
+        ].
 
     Directive<out DNode node> =
         (
@@ -552,11 +595,9 @@ PRODUCTIONS
     SimpleExpr<out DNode node> =
         (. node = null; .)
         (
-              Binding<out node>
-            | Rebinding<out node>
-            | IF (IsFunction()) FunctionExpr<out node>
+              IF (IsFunction()) FunctionExpr<out node>
             | IF (IsLabel()) Label<out node>
-            | Assignment<out node>
+            | Is<out node>
             | TryCatch<out node>
             | Throw<out node>
         ).
@@ -607,36 +648,6 @@ PRODUCTIONS
             "=>" Expr<out var exp>
             (. f.Body = exp; .)
         ).
-
-    Assignment<out DNode node> =
-        Is<out node>
-        [
-            (.
-                var ass = new DAssignment(t) { Target = node };
-                node = ass;
-                BinaryOperator? op = null;
-            .)
-            (
-                  "="
-                | "??=" (. op = BinaryOperator.Coalesce; .)
-                | "+="  (. op = BinaryOperator.Add; .)
-                | "-="  (. op = BinaryOperator.Sub; .)
-                | "*="  (. op = BinaryOperator.Mul; .)
-                | "/="  (. op = BinaryOperator.Div; .)
-                | "%="  (. op = BinaryOperator.Rem; .)
-                | "&="  (. op = BinaryOperator.And; .)
-                | "|="  (. op = BinaryOperator.Or; .)
-                | "^="  (. op = BinaryOperator.Xor; .)
-                | "<<=" (. op = BinaryOperator.ShiftLeft; .)
-                | ">>=" (. op = BinaryOperator.ShiftRight; .)
-            )
-            Expr<out node>
-            (.
-                ass.Value = node;
-                ass.AutoAssign = op;
-                node = ass;
-            .)
-        ].
 
     Is<out DNode node> =
         Coalesce<out node>
@@ -927,7 +938,7 @@ PRODUCTIONS
             ":" (. var ot = t; .)
             (
                   IF (IsFunction()) FunctionExpr<out node>
-                | Assignment<out node>
+                | Is<out node>
             )
             (. node = new DLabelLiteral(ot) { Label = name, Expression = node }; .)
         ).
