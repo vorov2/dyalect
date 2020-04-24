@@ -9,8 +9,8 @@ namespace Dyalect.Parser
 {
     partial class Scanner
     {
-	const int maxT = 84;
-	const int noSym = 84;
+	const int maxT = 85;
+	const int noSym = 85;
 
 
         static Scanner()
@@ -173,8 +173,8 @@ namespace Dyalect.Parser
 			case "throw": t.kind = 68; break;
 			case "try": t.kind = 69; break;
 			case "catch": t.kind = 70; break;
-			case "is": t.kind = 81; break;
-			case "base": t.kind = 83; break;
+			case "is": t.kind = 82; break;
+			case "base": t.kind = 84; break;
 			default: break;
 		}
         }
@@ -446,7 +446,7 @@ namespace Dyalect.Parser
 			case 68:
 				{t.kind = 80; break;}
 			case 69:
-				{t.kind = 82; break;}
+				{t.kind = 81; break;}
 			case 70:
 				recEnd = pos; recKind = 21;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 6;}
@@ -465,11 +465,11 @@ namespace Dyalect.Parser
 				else {t.kind = 25; break;}
 			case 73:
 				recEnd = pos; recKind = 32;
-				if (ch == '=') {AddCh(); goto case 60;}
+				if (ch == '=') {AddCh(); goto case 61;}
 				else {t.kind = 32; break;}
 			case 74:
 				recEnd = pos; recKind = 33;
-				if (ch == '=') {AddCh(); goto case 59;}
+				if (ch == '=') {AddCh(); goto case 60;}
 				else {t.kind = 33; break;}
 			case 75:
 				recEnd = pos; recKind = 34;
@@ -477,25 +477,25 @@ namespace Dyalect.Parser
 				else {t.kind = 34; break;}
 			case 76:
 				recEnd = pos; recKind = 36;
-				if (ch == '=') {AddCh(); goto case 61;}
+				if (ch == '=') {AddCh(); goto case 62;}
 				else {t.kind = 36; break;}
 			case 77:
 				recEnd = pos; recKind = 37;
-				if (ch == '=') {AddCh(); goto case 62;}
+				if (ch == '=') {AddCh(); goto case 63;}
 				else {t.kind = 37; break;}
 			case 78:
 				recEnd = pos; recKind = 38;
-				if (ch == '=') {AddCh(); goto case 63;}
+				if (ch == '=') {AddCh(); goto case 64;}
 				else {t.kind = 38; break;}
 			case 79:
 				recEnd = pos; recKind = 39;
 				if (ch == '|') {AddCh(); goto case 57;}
-				else if (ch == '=') {AddCh(); goto case 65;}
+				else if (ch == '=') {AddCh(); goto case 66;}
 				else {t.kind = 39; break;}
 			case 80:
 				recEnd = pos; recKind = 40;
 				if (ch == '&') {AddCh(); goto case 58;}
-				else if (ch == '=') {AddCh(); goto case 64;}
+				else if (ch == '=') {AddCh(); goto case 65;}
 				else {t.kind = 40; break;}
 			case 81:
 				recEnd = pos; recKind = 43;
@@ -504,11 +504,11 @@ namespace Dyalect.Parser
 				else {t.kind = 43; break;}
 			case 82:
 				recEnd = pos; recKind = 47;
-				if (ch == '=') {AddCh(); goto case 66;}
+				if (ch == '=') {AddCh(); goto case 67;}
 				else {t.kind = 47; break;}
 			case 83:
 				recEnd = pos; recKind = 63;
-				if (ch == '?') {AddCh(); goto case 69;}
+				if (ch == '?') {AddCh(); goto case 87;}
 				else {t.kind = 63; break;}
 			case 84:
 				recEnd = pos; recKind = 62;
@@ -516,12 +516,16 @@ namespace Dyalect.Parser
 				else {t.kind = 62; break;}
 			case 85:
 				recEnd = pos; recKind = 48;
-				if (ch == '=') {AddCh(); goto case 67;}
+				if (ch == '=') {AddCh(); goto case 68;}
 				else {t.kind = 48; break;}
 			case 86:
 				recEnd = pos; recKind = 49;
-				if (ch == '=') {AddCh(); goto case 68;}
+				if (ch == '=') {AddCh(); goto case 69;}
 				else {t.kind = 49; break;}
+			case 87:
+				recEnd = pos; recKind = 83;
+				if (ch == '=') {AddCh(); goto case 59;}
+				else {t.kind = 83; break;}
 
             }
 

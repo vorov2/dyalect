@@ -108,12 +108,20 @@ func comparisonTest7() {
     assert(false, "".toString == '\0'.toString)
 }
 
-func coalesceTest() {
+func coalesceTest1() {
     var z = nil
     var foo = "foo"
     var obj = false
     assert("foo", z ?? foo)
     assert("foo", obj ?? z ?? foo)
+}
+
+func coalesceTest2() { //#306
+    var x = 2
+    var y
+    x ??= 3
+    y ??= 133
+    assert((2, 133),(x,y))
 }
 
 func toStringTest1() {

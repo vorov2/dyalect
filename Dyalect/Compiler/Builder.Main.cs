@@ -833,6 +833,14 @@ namespace Dyalect.Compiler
 
         private void Build(DAssignment node, Hints hints, CompilerContext ctx)
         {
+            CheckTarget(node.Target);
+
+            if (node.AutoAssign == BinaryOperator.Coalesce)
+            {
+                BuildCoalesce(node, hints, ctx);
+                return;
+            }
+
             if (node.AutoAssign != null)
                 Build(node.Target, hints.Append(Push), ctx);
 
@@ -841,15 +849,34 @@ namespace Dyalect.Compiler
             if (node.AutoAssign != null)
                 EmitBinaryOp(node.AutoAssign.Value);
 
-            if (node.Target.NodeType != NodeType.Name
-                && node.Target.NodeType != NodeType.Index
-                && node.Target.NodeType != NodeType.Access)
-                AddError(CompilerError.UnableAssignExpression, node.Target.Location, node.Target);
-
             if (hints.Has(Push))
                 cw.Dup();
 
             Build(node.Target, hints.Append(Pop), ctx);
+        }
+
+        private void CheckTarget(DNode target)
+        {
+            if (target.NodeType != NodeType.Name
+                && target.NodeType != NodeType.Index
+                && target.NodeType != NodeType.Access)
+                AddError(CompilerError.UnableAssignExpression, target.Location, target);
+        }
+
+        private void BuildCoalesce(DAssignment node, Hints hints, CompilerContext ctx)
+        {
+            CheckTarget(node.Target);
+
+            var exitLab = cw.DefineLabel();
+            Build(node.Target, hints.Remove(Last).Append(Push), ctx);
+            cw.Brtrue(exitLab);
+            Build(node.Value, hints.Append(Push), ctx);
+            Build(node.Target, hints.Append(Pop), ctx);
+            cw.MarkLabel(exitLab);
+            cw.Nop();
+
+            if (hints.Has(Push))
+                cw.Dup();
         }
 
         private void Build(DBinding node, Hints hints, CompilerContext ctx)

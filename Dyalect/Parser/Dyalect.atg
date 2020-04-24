@@ -618,6 +618,7 @@ PRODUCTIONS
             .)
             (
                   "="
+                | "??=" (. op = BinaryOperator.Coalesce; .)
                 | "+="  (. op = BinaryOperator.Add; .)
                 | "-="  (. op = BinaryOperator.Sub; .)
                 | "*="  (. op = BinaryOperator.Mul; .)

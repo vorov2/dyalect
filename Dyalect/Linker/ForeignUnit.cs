@@ -77,8 +77,6 @@ namespace Dyalect.Linker
 
                 if (p.ParameterType != Dyalect.Types.DyObject)
                     simpleSignature = false;
-                else
-                    continue; 
 
                 var va = false;
 
