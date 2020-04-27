@@ -40,8 +40,8 @@ func moduleTest6() {
 
 func moduleTypeTest1() {
     var fb = Foobar(12, 2)
-    assert(12, fb.x)
-    assert(2, fb.y)
+    assert(12, fb:x)
+    assert(2, fb:y)
 }
 
 func moduleTypeTest2() {

@@ -666,19 +666,7 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Has: return DyForeignFunction.Member(name, Has, -1, new Par("member"));
                 case Builtins.Type: return DyForeignFunction.Member(name, (context, o) =>  context.Types[self.TypeId]);
                 default:
-                    {
-                        var ret = GetMember(name, ctx);
-
-                        if (ret == null && (Support(SupportedOperations.Get) || get != null))
-                        {
-                            return DyForeignFunction.Auto(AutoKind.Generated, (c, sf) =>
-                            {
-                                return Get(c, sf, new DyString(name));
-                            });
-                        }
-
-                        return ret;
-                    }
+                    return GetMember(name, ctx);
             }
         }
 
@@ -692,15 +680,14 @@ namespace Dyalect.Runtime.Types
 
         protected virtual DyFunction GetMember(string name, ExecutionContext ctx) => null;
 
-        private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx)
-        {
-            switch (name)
+        private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx) =>
+            name switch
             {
-                case "id": return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyInteger.Get(TypeCode));
-                case "name": return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => new DyString(TypeName));
-                case "TypeInfo": return DyForeignFunction.Static(name, (c, obj) => c.Types[obj.TypeId], -1, new Par("value"));
-                case "__deleteMember":
-                    return DyForeignFunction.Static(name, (context, strObj) =>
+                "id" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyInteger.Get(TypeCode)),
+                "name" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => new DyString(TypeName)),
+                "TypeInfo" => DyForeignFunction.Static(name, (c, obj) => c.Types[obj.TypeId], -1, new Par("value")),
+                "__deleteMember" => DyForeignFunction.Static(name,
+                    (context, strObj) =>
                     {
                         var nm = strObj.GetString();
                         if (context.Composition.MembersMap.TryGetValue(nm, out var nameId))
@@ -710,13 +697,10 @@ namespace Dyalect.Runtime.Types
                             staticMembers.Remove(nameId);
                         }
                         return DyNil.Instance;
-                    }, -1, new Par("name"));
-                case "has":
-                    return DyForeignFunction.Member(name, Has, -1, new Par("member"));
-                default:
-                    return GetStaticMember(name, ctx);
-            }
-        }
+                    }, -1, new Par("name")),
+                "has" => DyForeignFunction.Member(name, Has, -1, new Par("member")),
+                _ => GetStaticMember(name, ctx),
+            };
 
         protected virtual DyFunction GetStaticMember(string name, ExecutionContext ctx) => null;
 

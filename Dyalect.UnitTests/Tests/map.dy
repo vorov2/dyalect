@@ -16,8 +16,8 @@ func mapTest2() {
 
 func mapTest3() {
     var map = Map.fromTuple( (foo = "foo", bar = "bar") )
-    assert("foo", map.foo)
-    assert("bar", map.bar)
+    assert("foo", map:foo)
+    assert("bar", map:bar)
 }
 
 func mapTest4() {

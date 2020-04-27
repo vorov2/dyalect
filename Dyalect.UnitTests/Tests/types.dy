@@ -33,7 +33,7 @@ func autoTest4() {
         new(obj)
     }
     auto func Foo.magic() {
-        valueof(this).magic
+        valueof(this):magic
     }
     var foo = Foo.MakeFoo((magic = 133))
     assert(133, foo.magic)
@@ -105,8 +105,8 @@ func autoConsTest3() {
     var p = Point(12, 43)
     assert(12, p[0])
     assert(43, p[1])
-    assert(12, p.x)
-    assert(43, p.y)
+    assert(12, p:x)
+    assert(43, p:y)
 }
 
 type Nat
@@ -174,16 +174,16 @@ func typeTest3() {
         new(value)
     }
     func Cell.setValue(value) {
-        valueof(this).__value = value
+        valueof(this):__value = value
     }
     func Cell.getValue() {
-        valueof(this).__value
+        valueof(this):__value
     }
     func Cell.get(index) {
         if index != 0 {
             throw "Index out of range."
         }
-        valueof(this).__value
+        valueof(this):__value
     }
     func Cell.len() {
         1
@@ -247,12 +247,12 @@ func simpleTypeTest1() {
 }
 
 type Beta(x)
-func simpleTestTest2() {
+func simpleTypeTest2() {
     var b = Beta(12)
     assert(1, b.len())
     assert(12, b[0])
     assert(12, b["x"])
-    assert(12, b.x)
+    assert(12, b:x)
 }
 
 type Record
@@ -262,22 +262,22 @@ func accessorTest() {
     }
     func Record.get(index) {
         if index == "name" {
-            return valueof(this).name
+            return valueof(this):name
         } else if index == "age" {
-            return valueof(this).age
+            return valueof(this):age
         }
     }
     var p = Record(values = (name = "John", age = 33))
-    assert("John", p.name)
-    assert(33, p.age)
+    assert("John", p:name)
+    assert(33, p:age)
 }
 
 type UserInfo(name,age)
 func setterTest1() {
     var u = UserInfo("Jon", 17)
-    assert(17, u.age)
-    u.age = 39
-    assert(39, u.age)
+    assert(17, u:age)
+    u:age = 39
+    assert(39, u:age)
 }
 
 type Point1
@@ -292,10 +292,10 @@ func setterTest2() { //Bug #205
         valueof(this)[index] = value
     }
     var p = Point1(12, 34)
-    p.x += p.x
-    p.y += p.y
-    assert(24, p.x)
-    assert(68, p.y)
+    p:x += p:x
+    p:y += p:y
+    assert(24, p:x)
+    assert(68, p:y)
 }
 
 func complexMemberCheckTest1() {

@@ -888,6 +888,14 @@ PRODUCTIONS
                 )
                 |
                 (
+                    ":" (. var ot = t; .)
+                    identToken
+                    (.
+                        node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
+                    .)
+                )
+                |
+                (
                     (. if (la.AfterEol) return; .)
                     "["
                         (. var idx = new DIndexer(t) { Target = node }; .)

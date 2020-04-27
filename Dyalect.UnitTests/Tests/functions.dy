@@ -283,8 +283,9 @@ func methodTest2() {
 }
 
 func methodTest3() {
+    var x = 11
     func Integer.get(index) { index }
-    assert("x", 12.x)
+    assert(11, 12[x])
     Integer.__deleteMember("op_get")
 }
 

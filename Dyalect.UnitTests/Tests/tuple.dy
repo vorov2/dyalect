@@ -20,7 +20,7 @@ func tupleTest1() {
 
 func tupleTest2() {
     var t = (x = 1, y = 2, z = 3)
-    assert(6, t.x + t.y + t.z)
+    assert(6, t:x + t:y + t:z)
 }
 
 func tupleTest3() {
@@ -61,7 +61,7 @@ func tupleTest8() { //bug #215
 
 func tupleTest9() { //bug #216
     var t = (fn = x => x+x)
-    assert(42, t.fn(21))
+    assert(42, t:fn(21))
 }
 
 func tupleTest10() { //bug #217

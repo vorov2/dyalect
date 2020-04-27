@@ -413,7 +413,19 @@ namespace Dyalect.Compiler
             var push = hints.Remove(Pop).Append(Push);
             Build(node.Target, push, ctx);
 
-            if (node.Index.NodeType == NodeType.Range)
+            if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks == null)
+            {
+                cw.Push(str.Value);
+
+                if (!hints.Has(Pop))
+                {
+                    cw.Get();
+                    PopIf(hints);
+                }
+                else
+                    cw.Set();
+            }
+            else if (node.Index.NodeType == NodeType.Range)
             {
                 if (hints.Has(Pop))
                     AddError(CompilerError.RangeIndexNotSupported, node.Index.Location);

@@ -778,6 +778,7 @@ namespace Dyalect.Parser
 	}
 
 	void CtorPattern(out DPattern node) {
+		node = null; 
 		Expect(1);
 		var ctor = new DCtorPattern(t) { Constructor = t.val }; 
 		Expect(25);
