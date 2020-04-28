@@ -325,6 +325,8 @@ namespace Dyalect.Runtime.Types
         //x[y]
         private DyFunction get;
         protected virtual DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) =>
+            index.TypeId == DyType.String ? GetOp(self, index.GetString(), ctx) : ctx.OperationNotSupported(Builtins.Get, self);
+        protected virtual DyObject GetOp(DyObject self, string index, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Get, self);
         protected virtual DyObject GetOp(DyObject self, int index, ExecutionContext ctx) =>
             GetOp(self, DyInteger.Get(index), ctx);
@@ -605,70 +607,39 @@ namespace Dyalect.Runtime.Types
                 return (DyBool)HasMemberDirect(self, name, -1, ctx);
         }
 
-        private DyFunction InternalGetMember(DyObject self, string name, ExecutionContext ctx)
-        {
-            switch (name)
+        private DyFunction InternalGetMember(DyObject self, string name, ExecutionContext ctx) =>
+            name switch
             {
-                case Builtins.Add:
-                    return Support(SupportedOperations.Add) ? DyForeignFunction.Member(name, Add, -1, new Par("other")) : null;
-                case Builtins.Sub:
-                    return Support(SupportedOperations.Sub) ? DyForeignFunction.Member(name, Sub, -1, new Par("other")) : null;
-                case Builtins.Mul:
-                    return Support(SupportedOperations.Mul) ? DyForeignFunction.Member(name, Mul, -1, new Par("other")) : null;
-                case Builtins.Div:
-                    return Support(SupportedOperations.Div) ? DyForeignFunction.Member(name, Div, -1, new Par("other")) : null;
-                case Builtins.Rem:
-                    return Support(SupportedOperations.Rem) ? DyForeignFunction.Member(name, Rem, -1, new Par("other")) : null;
-                case Builtins.Shl:
-                    return Support(SupportedOperations.Shl) ? DyForeignFunction.Member(name, ShiftLeft, -1, new Par("other")) : null;
-                case Builtins.Shr:
-                    return Support(SupportedOperations.Shr) ? DyForeignFunction.Member(name, ShiftRight, -1, new Par("other")) : null;
-                case Builtins.And:
-                    return Support(SupportedOperations.And) ? DyForeignFunction.Member(name, And, -1, new Par("other")) : null;
-                case Builtins.Or:
-                    return Support(SupportedOperations.Or) ? DyForeignFunction.Member(name, Or, -1, new Par("other")) : null;
-                case Builtins.Xor:
-                    return Support(SupportedOperations.Xor) ? DyForeignFunction.Member(name, Xor, -1, new Par("other")) : null;
-                case Builtins.Eq:
-                    return DyForeignFunction.Member(name, Eq, -1, new Par("other"));
-                case Builtins.Neq:
-                    return DyForeignFunction.Member(name, Neq, -1, new Par("other"));
-                case Builtins.Gt:
-                    return Support(SupportedOperations.Gt) ? DyForeignFunction.Member(name, Gt, -1, new Par("other")) : null;
-                case Builtins.Lt:
-                    return Support(SupportedOperations.Lt) ? DyForeignFunction.Member(name, Lt, -1, new Par("other")) : null;
-                case Builtins.Gte:
-                    return Support(SupportedOperations.Gte) ? DyForeignFunction.Member(name, Gte, -1, new Par("other")) : null;
-                case Builtins.Lte:
-                    return Support(SupportedOperations.Lte) ? DyForeignFunction.Member(name, Lte, -1, new Par("other")) : null;
-                case Builtins.Neg:
-                    return Support(SupportedOperations.Neg) ? DyForeignFunction.Member(name, Neg) : null;
-                case Builtins.Not:
-                    return DyForeignFunction.Member(name, Not);
-                case Builtins.BitNot:
-                    return Support(SupportedOperations.BitNot) ? DyForeignFunction.Member(name, BitwiseNot) : null;
-                case Builtins.Plus:
-                    return Support(SupportedOperations.Plus) ? DyForeignFunction.Member(name, Plus) : null;
-                case Builtins.Get:
-                    return Support(SupportedOperations.Get)
-                        ? DyForeignFunction.Member(name, Get, -1, new Par("index")) : null;
-                case Builtins.Set:
-                    return Support(SupportedOperations.Set)
-                        ? DyForeignFunction.Member(name, Set, -1, new Par("index"), new Par("value"))
-                        : null;
-                case Builtins.Len:
-                    return Support(SupportedOperations.Len)
-                        ? DyForeignFunction.Member(name, Length)
-                        : null;
-                case Builtins.ToStr: return DyForeignFunction.Member(name, ToString);
-                case Builtins.Iterator: return self is IEnumerable<DyObject>  ? DyForeignFunction.Member(name, GetIterator) : null;
-                case Builtins.Clone: return DyForeignFunction.Member(name, Clone);
-                case Builtins.Has: return DyForeignFunction.Member(name, Has, -1, new Par("member"));
-                case Builtins.Type: return DyForeignFunction.Member(name, (context, o) =>  context.Types[self.TypeId]);
-                default:
-                    return GetMember(name, ctx);
-            }
-        }
+                Builtins.Add => Support(SupportedOperations.Add) ? DyForeignFunction.Member(name, Add, -1, new Par("other")) : null,
+                Builtins.Sub => Support(SupportedOperations.Sub) ? DyForeignFunction.Member(name, Sub, -1, new Par("other")) : null,
+                Builtins.Mul => Support(SupportedOperations.Mul) ? DyForeignFunction.Member(name, Mul, -1, new Par("other")) : null,
+                Builtins.Div => Support(SupportedOperations.Div) ? DyForeignFunction.Member(name, Div, -1, new Par("other")) : null,
+                Builtins.Rem => Support(SupportedOperations.Rem) ? DyForeignFunction.Member(name, Rem, -1, new Par("other")) : null,
+                Builtins.Shl => Support(SupportedOperations.Shl) ? DyForeignFunction.Member(name, ShiftLeft, -1, new Par("other")) : null,
+                Builtins.Shr => Support(SupportedOperations.Shr) ? DyForeignFunction.Member(name, ShiftRight, -1, new Par("other")) : null,
+                Builtins.And => Support(SupportedOperations.And) ? DyForeignFunction.Member(name, And, -1, new Par("other")) : null,
+                Builtins.Or => Support(SupportedOperations.Or) ? DyForeignFunction.Member(name, Or, -1, new Par("other")) : null,
+                Builtins.Xor => Support(SupportedOperations.Xor) ? DyForeignFunction.Member(name, Xor, -1, new Par("other")) : null,
+                Builtins.Eq => DyForeignFunction.Member(name, Eq, -1, new Par("other")),
+                Builtins.Neq => DyForeignFunction.Member(name, Neq, -1, new Par("other")),
+                Builtins.Gt => Support(SupportedOperations.Gt) ? DyForeignFunction.Member(name, Gt, -1, new Par("other")) : null,
+                Builtins.Lt => Support(SupportedOperations.Lt) ? DyForeignFunction.Member(name, Lt, -1, new Par("other")) : null,
+                Builtins.Gte => Support(SupportedOperations.Gte) ? DyForeignFunction.Member(name, Gte, -1, new Par("other")) : null,
+                Builtins.Lte => Support(SupportedOperations.Lte) ? DyForeignFunction.Member(name, Lte, -1, new Par("other")) : null,
+                Builtins.Neg => Support(SupportedOperations.Neg) ? DyForeignFunction.Member(name, Neg) : null,
+                Builtins.Not => DyForeignFunction.Member(name, Not),
+                Builtins.BitNot => Support(SupportedOperations.BitNot) ? DyForeignFunction.Member(name, BitwiseNot) : null,
+                Builtins.Plus => Support(SupportedOperations.Plus) ? DyForeignFunction.Member(name, Plus) : null,
+                Builtins.Get => Support(SupportedOperations.Get) ? DyForeignFunction.Member(name, Get, -1, new Par("index")) : null,
+                Builtins.Set => Support(SupportedOperations.Set) ? DyForeignFunction.Member(name, Set, -1, new Par("index"), new Par("value")) : null,
+                Builtins.Len => Support(SupportedOperations.Len) ? DyForeignFunction.Member(name, Length) : null,
+                Builtins.ToStr => DyForeignFunction.Member(name, ToString),
+                Builtins.Iterator => self is IEnumerable<DyObject> ? DyForeignFunction.Member(name, GetIterator) : null,
+                Builtins.Clone => DyForeignFunction.Member(name, Clone),
+                Builtins.Has => DyForeignFunction.Member(name, Has, -1, new Par("member")),
+                Builtins.Type => DyForeignFunction.Member(name, (context, o) => context.Types[self.TypeId]),
+                _ => GetMember(name, ctx)
+            };
 
         private DyObject GetIterator(ExecutionContext ctx, DyObject self)
         {
@@ -683,8 +654,6 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "id" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyInteger.Get(TypeCode)),
-                "name" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => new DyString(TypeName)),
                 "TypeInfo" => DyForeignFunction.Static(name, (c, obj) => c.Types[obj.TypeId], -1, new Par("value")),
                 "__deleteMember" => DyForeignFunction.Static(name,
                     (context, strObj) =>
@@ -719,6 +688,14 @@ namespace Dyalect.Runtime.Types
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Get;
 
         public override string TypeName => DyTypeNames.TypeInfo;
+
+        protected override DyObject GetOp(DyObject self, string index, ExecutionContext ctx) =>
+            index switch
+            {
+                "id" => DyInteger.Get(((DyTypeInfo)self).TypeCode),
+                "name" => new DyString(((DyTypeInfo)self).TypeName),
+                _ => base.GetOp(self, index, ctx)
+            };
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(("typeInfo " + ((DyTypeInfo)arg).TypeName).PutInBrackets());

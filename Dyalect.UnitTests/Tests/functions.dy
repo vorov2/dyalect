@@ -165,8 +165,8 @@ func functionTest11() {
 
 func functionTest12() {
     func foo() {
-        assert("foo", current().name)
-        assert("bar", caller().name)
+        assert("foo", current():name)
+        assert("bar", caller():name)
     }
     func bar() {
         foo()
@@ -175,7 +175,7 @@ func functionTest12() {
 }
 
 func functionTest13() {
-    assert(functionTest13.name, current().name)
+    assert(functionTest13:name, current():name)
     assert(nil, caller())
 }
 
@@ -184,17 +184,17 @@ func functionTest14() {
     func snd() { thy() }
     func fst() { snd() }
     var s = fst()
-    assert("snd", s.name)
+    assert("snd", s:name)
 }
 
 func functionTest15() {
     const f = x => x * x
-    assert("<func>", f.name)
+    assert("<func>", f:name)
 }
 
 func functionTest16() {
     func foo() {
-        return "\(current().name) is called by \(caller().name)"
+        return "\(current():name) is called by \(caller():name)"
     }
     func bar() {
         foo()

@@ -68,10 +68,10 @@ func moduleTypeTest4() {
 
 func moduleTypeTest5() {
     var t = Foobar
-    assert("Foobar", t.name)
+    assert("Foobar", t:name)
 }
 
 func moduleTypeTest6() {
     var t = lib.Foobar
-    assert("Foobar", t.name)
+    assert("Foobar", t:name)
 }

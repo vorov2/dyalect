@@ -125,11 +125,15 @@ namespace Dyalect.Runtime.Types
             if (name == "compose")
                 return DyForeignFunction.Member(name, Compose, -1, new Par("with"));
 
-            if (name == "name")
-                return DyForeignFunction.Auto(AutoKind.Generated, (ct, o) => new DyString(((DyFunction)o).FunctionName));
-
             return base.GetMember(name, ctx);
         }
+
+        protected override DyObject GetOp(DyObject self, string index, ExecutionContext ctx) =>
+            index switch
+            {
+                "name" => new DyString(((DyFunction)self).FunctionName),
+                _ => ctx.IndexOutOfRange(index)
+            };
 
         private DyObject Compose(ExecutionContext ctx, DyObject first, DyObject second)
         {
