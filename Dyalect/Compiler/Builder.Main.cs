@@ -411,10 +411,10 @@ namespace Dyalect.Compiler
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)
         {
             var push = hints.Remove(Pop).Append(Push);
-            Build(node.Target, push, ctx);
-
+            
             if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks == null)
             {
+                Build(node.Target, push, ctx);
                 cw.Push(str.Value);
 
                 if (!hints.Has(Pop))
@@ -424,8 +424,13 @@ namespace Dyalect.Compiler
                 }
                 else
                     cw.Set();
+
+                return;
             }
-            else if (node.Index.NodeType == NodeType.Range)
+
+            Build(node.Target, push, ctx);
+
+            if (node.Index.NodeType == NodeType.Range)
             {
                 if (hints.Has(Pop))
                     AddError(CompilerError.RangeIndexNotSupported, node.Index.Location);
