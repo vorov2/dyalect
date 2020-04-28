@@ -38,6 +38,20 @@ func moduleTest6() {
     assert("double 2", res1)
 }
 
+func moduleTest7() {
+    var libMod = lib
+    var f = libMod.double
+    assert(4, f(2))
+}
+
+func moduleTest8() {
+    var libMod = lib
+    var f = libMod:double
+    assert(4, f(2))
+    var f1 = lib:double
+    assert(4, f1(2))
+}
+
 func moduleTypeTest1() {
     var fb = Foobar(12, 2)
     assert(12, fb:x)
