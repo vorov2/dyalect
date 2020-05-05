@@ -56,9 +56,9 @@
 
         TypeAlreadyDeclared = 226,
 
-        AutoOnlyMethod = 227,
+        // = 227,
 
-        AutoNoParams = 228,
+        // = 228,
 
         CtorOnlyLocalType = 229,
 

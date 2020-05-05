@@ -70,10 +70,10 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Bool")
-                return DyForeignFunction.Static(name, (c, obj) => (DyBool)obj.GetBool(), -1, new Par("value"));
+                return DyForeignFunction.Static(name, (_, obj) => (DyBool)obj.GetBool(), -1, new Par("value"));
 
             if (name == "default")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyBool.False);
+                return DyForeignFunction.Static(name, _ => DyBool.False);
 
             return base.GetStaticMember(name, ctx);
         }

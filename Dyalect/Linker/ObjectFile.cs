@@ -7,7 +7,7 @@ namespace Dyalect.Linker
     internal static class ObjectFile
     {
         public static readonly byte[] BOM = { 67, 12, 43 };
-        public const int Version = 3;
+        public const int Version = 4;
 
         public static DyObject DeserializeObject(BinaryReader reader)
         {

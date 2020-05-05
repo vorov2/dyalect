@@ -1,44 +1,6 @@
 ﻿type Foo
 type Bar
 
-func autoTest1() {
-    auto func Integer.magic() {
-        this * 42
-    }
-    assert(504, 12.magic)
-}
-
-func autoTest2() {
-    var x = 0
-    auto func Integer.magic() {
-        x += 1
-        x
-    }
-    assert(1, 12.magic)
-    assert(2, 12.magic)
-    assert(3, 12.magic)
-}
-
-type Zoo()
-func autoTest3() {
-    auto func Zoo.name() {
-        "Zoo"
-    }
-    var f = Zoo()
-    assert("Zoo", f.name)
-}
-
-func autoTest4() {
-    static func Foo.MakeFoo(obj) {
-        new(obj)
-    }
-    auto func Foo.magic() {
-        valueof(this):magic
-    }
-    var foo = Foo.MakeFoo((magic = 133))
-    assert(133, foo.magic)
-}
-
 func extendTest1() {
     static func Bar.Bar(args...) {
         new(args)
@@ -300,7 +262,7 @@ func setterTest2() { //Bug #205
 
 func complexMemberCheckTest1() {
     var t = (x =2)
-    assert(true, t.x?)
+    assert(false, t.x?)
 }
 
 func complexMemberCheckTest2() {
@@ -313,6 +275,6 @@ type X22(x)
 func complexMemberCheckTest3() {
     func X22.foobar() {}
     var p = X22(22)
-    assert(true, p.x?)
+    assert(false, p.x?)
     assert(true, p.foobar?)
 }

@@ -199,7 +199,7 @@ namespace Dyalect.Parser
 			Get();
 		} else SynErr(88);
 		lastName = ParseImport(); 
-		while (la.kind == 21) {
+		while (la.kind == 48) {
 			Get();
 			if (la.kind == 1) {
 				Get();

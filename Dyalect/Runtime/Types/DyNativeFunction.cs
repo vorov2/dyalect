@@ -22,8 +22,8 @@ namespace Dyalect.Runtime.Types
             PreviousOffset = ctx.Composition.Units[UnitId].Layouts[FunctionId].Size;
         }
 
-        internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex, AutoKind auto) :
-            base(typeId, sym?.Parameters ?? Statics.EmptyParameters, varArgIndex, auto)
+        internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) :
+            base(typeId, sym?.Parameters ?? Statics.EmptyParameters, varArgIndex)
         {
             Sym = sym;
             UnitId = unitId;
@@ -31,15 +31,15 @@ namespace Dyalect.Runtime.Types
             Captures = captures;
         }
 
-        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1, AutoKind auto = AutoKind.None)
+        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1)
         {
             var vars = new FastList<DyObject[]>(captures) { locals };
-            return new DyNativeFunction(sym, unitId, funcId, vars, DyType.Function, varArgIndex, auto);
+            return new DyNativeFunction(sym, unitId, funcId, vars, DyType.Function, varArgIndex);
         }
 
         internal override DyFunction Clone(ExecutionContext ctx, DyObject arg)
         {
-            return new DyNativeFunction(Sym, UnitId, FunctionId, Captures, DyType.Function, VarArgIndex, AutoKind)
+            return new DyNativeFunction(Sym, UnitId, FunctionId, Captures, DyType.Function, VarArgIndex)
             {
                 Self = arg
             };

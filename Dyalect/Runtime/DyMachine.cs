@@ -11,7 +11,7 @@ namespace Dyalect.Runtime
     public static class DyMachine
     {
         private static DyNativeFunction Global(int unitId) =>
-            new DyNativeFunction(null, unitId, 0, FastList<DyObject[]>.Empty, DyType.Function, -1, AutoKind.None);
+            new DyNativeFunction(null, unitId, 0, FastList<DyObject[]>.Empty, DyType.Function, -1);
 
         public static ExecutionContext CreateExecutionContext(UnitComposition composition)
         {
@@ -326,9 +326,6 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.NewFunV:
                         evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, ctx.AUX));
-                        break;
-                    case OpCode.NewFunA:
-                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, -1, AutoKind.Explicit));
                         break;
                     case OpCode.HasMember:
                         right = evalStack.Peek();

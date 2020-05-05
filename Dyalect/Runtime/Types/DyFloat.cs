@@ -251,10 +251,10 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "max" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.Max),
-                "min" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.Min),
-                "inf" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.PositiveInfinity),
-                "default" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.Zero),
+                "max" => DyForeignFunction.Static(name, _ => DyFloat.Max),
+                "min" => DyForeignFunction.Static(name, _ => DyFloat.Min),
+                "inf" => DyForeignFunction.Static(name, _ => DyFloat.PositiveInfinity),
+                "default" => DyForeignFunction.Static(name, _ => DyFloat.Zero),
                 "Float" => DyForeignFunction.Static(name, Convert, -1, new Par("value")),
                 _ => base.GetStaticMember(name, ctx)
             };

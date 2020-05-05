@@ -401,12 +401,7 @@ namespace Dyalect.Runtime.Types
             }
 
             if (value != null)
-            {
-                if (value.AutoKind == AutoKind.None)
-                    return value;
-                else
-                    return value.Call0(ctx);
-            }
+                return value;
 
             return ctx.StaticOperationNotSupported(ctx.Composition.Members[nameId], TypeName);
         }
@@ -499,14 +494,7 @@ namespace Dyalect.Runtime.Types
             }
 
             if (value != null)
-            {
-                if (value.AutoKind == AutoKind.None)
-                    return value.Clone(ctx, self);
-                else if (value.AutoKind == AutoKind.Generated)
-                    return value.Call1(self, ctx);
-                else
-                    return value.Clone(ctx, self).Call0(ctx);
-            }
+                return value.Clone(ctx, self);
 
             return value;
         }
@@ -518,36 +506,19 @@ namespace Dyalect.Runtime.Types
                 var name = ctx.Composition.Members[nameId];
                 value = InternalGetMember(self, name, ctx);
 
-                if (value != null && value.AutoKind != AutoKind.Generated)
+                if (value != null)
                 {
                     members.Add(nameId, value);
                     return true;
                 }
                 else
-                {
-                    if (!Support(SupportedOperations.Get) && get == null)
-                        return false;
-
-                    return self.HasItem(name, ctx);
-                }
+                    return false;
             }
 
             return true;
         }
 
-        internal bool CheckHasMemberDirect(DyObject self, string name, ExecutionContext ctx)
-        {
-            var value = InternalGetMember(self, name, ctx);
-
-            if (value != null && value.AutoKind != AutoKind.Generated)
-                return true;
-            else
-            {
-                if (!Support(SupportedOperations.Get) && get == null)
-                    return false;
-                return self.HasItem(name, ctx);
-            }
-        }
+        internal bool CheckHasMemberDirect(DyObject self, string name, ExecutionContext ctx) => InternalGetMember(self, name, ctx) != null;
 
         internal void SetMember(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
         {

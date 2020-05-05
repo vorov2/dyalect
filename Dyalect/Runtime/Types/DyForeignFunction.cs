@@ -62,24 +62,6 @@ namespace Dyalect.Runtime.Types
             internal override bool Equals(DyFunction func) => func is MemberFunction0 m && m.fun.Equals(fun);
         }
 
-        private sealed class AutoFunction : DyForeignFunction
-        {
-            private readonly Func<ExecutionContext, DyObject, DyObject> fun;
-
-            public AutoFunction(AutoKind kind, Func<ExecutionContext, DyObject, DyObject> fun) : base(null, Statics.EmptyParameters, -1, kind)
-            {
-                this.fun = fun;
-            }
-
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0]);
-
-            internal override DyObject Call1(DyObject obj, ExecutionContext ctx) => fun(ctx, obj);
-
-            internal override DyObject Call0(ExecutionContext ctx) => fun(ctx, null);
-
-            internal override bool Equals(DyFunction func) => func is AutoFunction m && m.fun.Equals(fun);
-        }
-
         private sealed class MemberFunction1 : DyForeignFunction
         {
             private readonly Func<ExecutionContext, DyObject, DyObject, DyObject> fun;
@@ -134,10 +116,6 @@ namespace Dyalect.Runtime.Types
             {
             }
 
-            protected BaseStaticFunction(string name, Par[] pars, int varArgIndex, AutoKind auto) : base(name, pars, varArgIndex, auto)
-            {
-            }
-
             protected override DyFunction Clone(ExecutionContext ctx) => this;
         }
 
@@ -159,7 +137,7 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject> fun;
 
-            public StaticAutoFunction(Func<ExecutionContext, DyObject> fun, Par[] pars) : base(null, pars, -1, AutoKind.None)
+            public StaticAutoFunction(Func<ExecutionContext, DyObject> fun, Par[] pars) : base(null, pars, -1)
             {
                 this.fun = fun;
             }
@@ -241,24 +219,17 @@ namespace Dyalect.Runtime.Types
 
         private readonly string name;
 
-        protected DyForeignFunction(string name, Par[] pars, int varArgIndex) : base(DyType.Function, pars, varArgIndex, auto: AutoKind.None)
+        protected DyForeignFunction(string name, Par[] pars, int varArgIndex) : base(DyType.Function, pars, varArgIndex)
         {
             this.name = name ?? DefaultName;
         }
 
-        protected DyForeignFunction(string name, Par[] pars, int varArgIndex, AutoKind auto) : base(DyType.Function, pars, varArgIndex, auto)
-        {
-            this.name = name ?? DefaultName;
-        }
-
-        internal DyForeignFunction(string name, Par[] pars, int typeId, int varArgIndex) : base(typeId, pars, varArgIndex, auto: AutoKind.None)
+        internal DyForeignFunction(string name, Par[] pars, int typeId, int varArgIndex) : base(typeId, pars, varArgIndex)
         {
             this.name = name ?? DefaultName;
         }
 
         internal static DyFunction Compose(DyFunction first, DyFunction second) => new CompositionContainer(first, second);
-
-        internal static DyFunction Auto(AutoKind kind, Func<ExecutionContext, DyObject, DyObject> fun) => new AutoFunction(kind, fun);
 
         internal static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun, int varArgIndex, params Par[] pars) => new MemberFunction(name, fun, pars, varArgIndex);
 

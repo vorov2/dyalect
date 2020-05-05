@@ -234,16 +234,15 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; bool st = false; bool auto = false; bool priv = false; .)
+        (. node = null; bool st = false; bool priv = false; .)
         (
             (
                 [ "static" (. st = true; .) ]
-                [ "auto" (. auto = true; .) ]
                 [ "private" (. priv = true; .) ]
                 "func"
             )
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st, IsPrivate = priv, IsAuto = auto };
+                var f = new DFunctionDeclaration(t) { IsStatic = st, IsPrivate = priv };
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>

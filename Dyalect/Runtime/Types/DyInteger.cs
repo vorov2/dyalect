@@ -333,21 +333,14 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(obj);
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
-        {
-            if (name == "max")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyInteger.Max);
-
-            if (name == "min")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyInteger.Min);
-
-            if (name == "default")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyInteger.Zero);
-
-            if (name == "Integer")
-                return DyForeignFunction.Static(name, Convert, -1, new Par("value"));
-
-            return base.GetStaticMember(name, ctx);
-        }
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx) =>
+            name switch
+            {
+                "max" => DyForeignFunction.Static(name, _ => DyInteger.Max),
+                "min" => DyForeignFunction.Static(name, _ => DyInteger.Min),
+                "default" => DyForeignFunction.Static(name, _ => DyInteger.Zero),
+                "Integer" => DyForeignFunction.Static(name, Convert, -1, new Par("value")),
+                _ => base.GetStaticMember(name, ctx)
+            };
     }
 }

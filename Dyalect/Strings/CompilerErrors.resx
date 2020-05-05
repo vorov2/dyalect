@@ -189,12 +189,6 @@
   <data name="TypeAlreadyDeclared" xml:space="preserve">
     <value>Module already contains a definition for "{0}".</value>
   </data>
-  <data name="AutoOnlyMethod" xml:space="preserve">
-    <value>A modifier "auto" is only allowed on member functions.</value>
-  </data>
-  <data name="AutoNoParams" xml:space="preserve">
-    <value>Functions declared with an "auto" modifier shouldn't accept any arguments.</value>
-  </data>
   <data name="CtorOnlyLocalType" xml:space="preserve">
     <value>Unable to use "new" operator for a non local type "{0}".</value>
   </data>
