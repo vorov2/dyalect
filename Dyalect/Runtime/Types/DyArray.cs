@@ -220,17 +220,8 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            var newArr = new List<DyObject>(((DyArray)left).Values);
-            var coll = DyIterator.Run(ctx, right);
-
-            if (ctx.HasErrors)
-                return DyNil.Instance;
-
-            newArr.AddRange(coll);
-            return new DyArray(newArr.ToArray());
-        }
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) => 
+            new DyArray(((DyCollection)left).Concat(ctx, right));
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
@@ -472,9 +463,8 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            return name switch
+        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
                 "insert" => DyForeignFunction.Member(name, InsertItem, -1, new Par("index"), new Par("item")),
@@ -494,7 +484,6 @@ namespace Dyalect.Runtime.Types
                 "reverse" => DyForeignFunction.Member(name, Reverse, -1, Statics.EmptyParameters),
                 _ => base.GetMember(name, ctx),
             };
-        }
 
         private DyObject New(ExecutionContext ctx, DyObject tuple)
         {

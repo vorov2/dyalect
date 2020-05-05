@@ -7,6 +7,8 @@
   * Done: _Make assignment a statement other than an expression_ ([Issue #311](https://github.com/vorov2/dyalect/issues/311), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#assignment)).
   * Done: _Change syntax for tuples and named arguments_ ([Issue #312](https://github.com/vorov2/dyalect/issues/312)).
   * Done: _Change field access syntax_ ([Issue #313](https://github.com/vorov2/dyalect/issues/313), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#access)).
+  * Done: _String concatenation and `+` operator_ ([Issue #315](https://github.com/vorov2/dyalect/issues/315)).
+  * Done: _Tuples: add a support for `+` operator_ ([Issue #316](https://github.com/vorov2/dyalect/issues/316), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#operators)).
   * Fixed: _Parser may crush when processing `import`_ ([Issue #307](https://github.com/vorov2/dyalect/issues/307)).
   * Fixed: _Dyalect crushes when it cannot find a DLL of a foreign module_ ([Issue #310](https://github.com/vorov2/dyalect/issues/310)).
 

@@ -275,7 +275,7 @@ func methodTest1() {
 
 func methodTest2() {
     func Float +(other) {
-        this + " + " + other
+        this.toString() + " + " + other.toString()
     }
     var res = 12.2 + 0.4
     Float.__deleteMember("op_add")

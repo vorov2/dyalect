@@ -1,6 +1,8 @@
 ﻿using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -133,9 +135,13 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
+            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
+            | SupportedOperations.Add;
 
         public override string TypeName => DyTypeNames.Tuple;
+
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            new DyTuple(((DyCollection)left).Concat(ctx, right));
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
@@ -204,6 +210,17 @@ namespace Dyalect.Runtime.Types
         {
             self.SetItem(index, value, ctx);
             return DyNil.Instance;
+        }
+
+        private DyObject Concat(ExecutionContext ctx, DyObject left, DyObject right)
+        {
+            var self = (DyTuple)left;
+            var seq = DyIterator.Run(ctx, right);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            return new DyTuple(self.Values.Concat(seq).ToArray());
         }
 
         private DyObject GetKeys(ExecutionContext ctx, DyObject self, DyObject[] args)
@@ -339,6 +356,7 @@ namespace Dyalect.Runtime.Types
                 "fst" => DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters),
                 "snd" => DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters),
                 "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
+                "concat" => DyForeignFunction.Member(name, Concat, -1, new Par("other")),
                 _ => base.GetMember(name, ctx)
             };
         }
@@ -355,16 +373,15 @@ namespace Dyalect.Runtime.Types
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
-        {
-            return name switch
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
                 "pair" => DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second")),
                 "triple" => DyForeignFunction.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
+                "concat" => DyForeignFunction.Static(name, Concat, -1, new Par("first"), new Par("second")),
                 "Tuple" => DyForeignFunction.Static(name, MakeNew, 0, new Par("values")),
                 _ => base.GetStaticMember(name, ctx)
             };
-        }
     }
 }

@@ -136,6 +136,18 @@ namespace Dyalect.Runtime.Types
             else
                 return base.ChangeType(type);
         }
+
+        internal DyObject[] Concat(ExecutionContext ctx, DyObject right)
+        {
+            var newArr = new List<DyObject>(GetValues());
+            var coll = DyIterator.Run(ctx, right);
+
+            if (ctx.HasErrors)
+                return Statics.EmptyDyObjects;
+
+            newArr.AddRange(coll);
+            return newArr.ToArray();
+        }
     }
 
     internal abstract class DyCollectionTypeInfo : DyTypeInfo

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace Dyalect
 {
@@ -14,6 +12,14 @@ namespace Dyalect
                 return defaultValue;
 
             return arr[pos];
+        }
+
+        public static T[] Concat<T>(this T[] arr, T[] otherArr)
+        {
+            var newArr = new T[arr.Length + otherArr.Length];
+            Array.Copy(arr, newArr, arr.Length);
+            Array.Copy(otherArr, 0, newArr, arr.Length, otherArr.Length);
+            return newArr;
         }
 
         public static string Format(this string self, params object[] args) => string.Format(self, args);

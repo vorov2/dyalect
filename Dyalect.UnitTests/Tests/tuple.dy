@@ -154,3 +154,20 @@ func tupleInsert() {
     assert((0,1,2,2.5,3,4), xs)
 }
 //End #292
+
+func tupleAddOp1() {
+    var xs = (1,2,3)
+    var ys = (4,5,6)
+    var res = xs + ys
+    assert((1,2,3,4,5,6), res)
+    res = xs + [5,6]
+    assert((1,2,3,5,6), res)
+    res = xs + {11,22}
+    assert((1,2,3,11,22), res)
+}
+
+func tupleAddOp2() { //#315
+    var xs = (1,2,3)
+    var res = xs + "abc"
+    assert((1,2,3,'a','b','c'), res)
+}
