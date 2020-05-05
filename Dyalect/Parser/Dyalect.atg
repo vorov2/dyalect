@@ -102,7 +102,7 @@ PRODUCTIONS
         (. var inc = new DImport(t); Imports.Add(inc); string lastName = null; .)
         (identToken | stringToken) (. lastName = ParseImport(); .)
         {
-            "."
+            "/"
             (identToken | stringToken)
             (.
                 if (inc.LocalPath != null)

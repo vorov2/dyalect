@@ -1,10 +1,10 @@
-﻿import refs.libtest lib
-import refs.libtest1 lib1
+﻿import refs/libtest lib
+import refs/libtest1 lib1
 
 func moduleTest1() {
-    var abs = lib.abs(-12)
+    var abs = lib:abs(-12)
     assert(12, abs)
-    assert(2, lib.abs(-2))
+    assert(2, lib:abs(-2))
 }
 
 func moduleTest2() {
@@ -27,20 +27,20 @@ func moduleTest4() {
 }
 
 func moduleTest5() {
-    var res = lib1.sayHello()
+    var res = lib1:sayHello()
     assert("Hello, User Jon", res)
 }
 
 func moduleTest6() {
-    var res = lib.double(2)
-    var res1 = lib1.double(2)
+    var res = lib:double(2)
+    var res1 = lib1:double(2)
     assert(4, res)
     assert("double 2", res1)
 }
 
 func moduleTest7() {
     var libMod = lib
-    var f = libMod.double
+    var f = libMod:double
     assert(4, f(2))
 }
 
@@ -59,7 +59,7 @@ func moduleTypeTest1() {
 }
 
 func moduleTypeTest2() {
-    var fb = lib.Foobar(12, 2)
+    var fb = lib:Foobar(12, 2)
     assert(12, fb[0])
     assert(2, fb[1])
 }
@@ -76,7 +76,7 @@ func moduleTypeTest4() {
     func lib.Foobar.getVal2() {
         "Foobar"
     }
-    var fb = lib.Foobar(1, 2)
+    var fb = lib:Foobar(1, 2)
     assert("Foobar", fb.getVal2())
 }
 
@@ -86,6 +86,6 @@ func moduleTypeTest5() {
 }
 
 func moduleTypeTest6() {
-    var t = lib.Foobar
+    var t = lib:Foobar
     assert("Foobar", t:name)
 }

@@ -307,33 +307,6 @@ namespace Dyalect.Compiler
                 cw.PushVar(sv);
                 return;
             }
-            else if (node.Target.NodeType == NodeType.Name)
-            {
-                var nm = node.Target.GetName();
-                var sv = GetVariable(nm, node.Target, err: false);
-
-                if ((sv.Data & VarFlags.Module) == VarFlags.Module
-                    && referencedUnits.TryGetValue(nm, out var ru)
-                   )
-                {
-                    if (ru.Unit.ExportList.TryGetValue(node.Name, out var var))
-                    {
-                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
-                            AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
-
-                        AddLinePragma(node);
-                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
-                        return;
-                    }
-                    else if (GetTypeHandle(nm, node.Name, out var handle, out var std) == CompilerError.None)
-                    {
-                        GetMemberNameId(node.Name);
-                        AddLinePragma(node);
-                        cw.Type(new TypeHandle(handle, std));
-                        return;
-                    }
-                }
-            }
 
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
 
@@ -414,6 +387,32 @@ namespace Dyalect.Compiler
             
             if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks == null)
             {
+                if (node.Target.NodeType == NodeType.Name)
+                {
+                    var nm = node.Target.GetName();
+                    var sv = GetVariable(nm, node.Target, err: false);
+
+                    if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
+                    {
+                        if (ru.Unit.ExportList.TryGetValue(str.Value, out var var))
+                        {
+                            if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                                AddError(CompilerError.PrivateNameAccess, node.Location, str.Value);
+
+                            AddLinePragma(node);
+                            cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
+                            return;
+                        }
+                        else if (GetTypeHandle(nm, str.Value, out var handle, out var std) == CompilerError.None)
+                        {
+                            GetMemberNameId(str.Value);
+                            AddLinePragma(node);
+                            cw.Type(new TypeHandle(handle, std));
+                            return;
+                        }
+                    }
+                }
+
                 Build(node.Target, push, ctx);
                 cw.Push(str.Value);
 
