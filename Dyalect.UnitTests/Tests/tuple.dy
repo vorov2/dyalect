@@ -171,3 +171,12 @@ func tupleAddOp2() { //#315
     var res = xs + "abc"
     assert((1,2,3,'a','b','c'), res)
 }
+
+func tupleConcat() { //#317
+    func it() {
+        yield "foo"
+        yield "boo"
+    }
+    var arr = Tuple.concat((1,2,3), (4,5,6), [1,2], it())
+    assert((1,2,3,4,5,6,1,2,"foo","boo"), arr)
+}

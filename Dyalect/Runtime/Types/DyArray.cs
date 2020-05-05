@@ -516,24 +516,8 @@ namespace Dyalect.Runtime.Types
             return new DyArray(arr);
         }
 
-        internal static DyObject Concat(ExecutionContext ctx, DyObject values)
-        {
-            if (values == null)
-                return DyNil.Instance;
-
-            var vals = ((DyTuple)values).Values;
-            var arr = new List<DyObject>();
-
-            foreach (var v in vals)
-            {
-                arr.AddRange(DyIterator.Run(ctx, v));
-
-                if (ctx.HasErrors)
-                    break;
-            }
-
-            return new DyArray(arr.ToArray());
-        }
+        internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
+            new DyArray(DyCollection.ConcatValues(ctx, values));
 
         private static DyObject Copy(ExecutionContext ctx, DyObject from, DyObject sourceIndex, DyObject to, DyObject destIndex, DyObject length)
         {

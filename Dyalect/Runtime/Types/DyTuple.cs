@@ -212,16 +212,8 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject Concat(ExecutionContext ctx, DyObject left, DyObject right)
-        {
-            var self = (DyTuple)left;
-            var seq = DyIterator.Run(ctx, right);
-
-            if (ctx.HasErrors)
-                return DyNil.Instance;
-
-            return new DyTuple(self.Values.Concat(seq).ToArray());
-        }
+        internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
+            new DyTuple(DyCollection.ConcatValues(ctx, values));
 
         private DyObject GetKeys(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
@@ -356,7 +348,6 @@ namespace Dyalect.Runtime.Types
                 "fst" => DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters),
                 "snd" => DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters),
                 "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
-                "concat" => DyForeignFunction.Member(name, Concat, -1, new Par("other")),
                 _ => base.GetMember(name, ctx)
             };
         }
@@ -379,7 +370,7 @@ namespace Dyalect.Runtime.Types
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
                 "pair" => DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second")),
                 "triple" => DyForeignFunction.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
-                "concat" => DyForeignFunction.Static(name, Concat, -1, new Par("first"), new Par("second")),
+                "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
                 "Tuple" => DyForeignFunction.Static(name, MakeNew, 0, new Par("values")),
                 _ => base.GetStaticMember(name, ctx)
             };

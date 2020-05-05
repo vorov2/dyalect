@@ -9,6 +9,7 @@
   * Done: _Change field access syntax_ ([Issue #313](https://github.com/vorov2/dyalect/issues/313), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#access)).
   * Done: _String concatenation and `+` operator_ ([Issue #315](https://github.com/vorov2/dyalect/issues/315)).
   * Done: _Tuples: add a support for `+` operator_ ([Issue #316](https://github.com/vorov2/dyalect/issues/316), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#operators)).
+  * Done: _Tuples: add `Concat` method_ ([Issue #317](https://github.com/vorov2/dyalect/issues/317), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#concat)).
   * Fixed: _Parser may crush when processing `import`_ ([Issue #307](https://github.com/vorov2/dyalect/issues/307)).
   * Fixed: _Dyalect crushes when it cannot find a DLL of a foreign module_ ([Issue #310](https://github.com/vorov2/dyalect/issues/310)).
 

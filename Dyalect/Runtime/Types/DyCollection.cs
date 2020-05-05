@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 
 namespace Dyalect.Runtime.Types
 {
@@ -147,6 +148,25 @@ namespace Dyalect.Runtime.Types
 
             newArr.AddRange(coll);
             return newArr.ToArray();
+        }
+
+        internal static DyObject[] ConcatValues(ExecutionContext ctx, DyObject values)
+        {
+            if (values == null)
+                return Statics.EmptyDyObjects;
+
+            var arr = new List<DyObject>();
+            var vals = ((DyTuple)values).Values;
+
+            foreach (var v in vals)
+            {
+                arr.AddRange(DyIterator.Run(ctx, v));
+
+                if (ctx.HasErrors)
+                    break;
+            }
+
+            return arr.ToArray();
         }
     }
 
