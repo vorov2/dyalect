@@ -89,3 +89,8 @@ func moduleTypeTest6() {
     var t = lib:Foobar
     assert("Foobar", t:name)
 }
+
+func moduleConstAccess() {
+    assert(3.14, pi)
+    assert(3.14, lib:pi)
+}

@@ -56,9 +56,9 @@
 
         TypeAlreadyDeclared = 226,
 
-        // = 227,
+        PrivateScopeOnlyGlobal = 227,
 
-        // = 228,
+        PrivateScopeNested = 228,
 
         CtorOnlyLocalType = 229,
 

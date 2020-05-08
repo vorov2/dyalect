@@ -39,6 +39,7 @@ TOKENS
     constToken          = "const".
     funcToken           = "func".
     returnToken         = "return".
+    privateToken        = "private".
     continueToken       = "continue".
     breakToken          = "break".
     yieldToken          = "yield".
@@ -159,10 +160,21 @@ PRODUCTIONS
             | StatementExpr<out node> [ Guard<node, out node> ] Separator
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
+            | IF (IsPrivateScope()) PrivateScope<out node>
             | Function<out node>
             | Directive<out node> Separator
         )
         (. node = ProcessImplicits(node); .).
+
+    PrivateScope<out DNode node> =
+        (. node = null; .)
+        (
+            "private" (. var ot = t; .)
+            Block<out node>
+            (.
+                node = new DPrivateScope(ot) { Block = (DBlock)node };
+            .)
+        ).
 
     StatementExpr<out DNode node> =
         SimpleExpr<out node>

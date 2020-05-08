@@ -13,6 +13,9 @@ namespace Dyalect.Compiler
         {
             switch (node.NodeType)
             {
+                case NodeType.PrivateScope:
+                    Build((DPrivateScope)node, hints, ctx);
+                    break;
                 case NodeType.Directive:
                     Build((DDirective)node, hints, ctx);
                     break;
@@ -125,6 +128,19 @@ namespace Dyalect.Compiler
                     AddError(CompilerError.InvalidLabel, node.Location);
                     break;
             }
+        }
+
+        private void Build(DPrivateScope node, Hints hints, CompilerContext ctx)
+        {
+            if (privateScope)
+                AddError(CompilerError.PrivateScopeNested, node.Location);
+
+            if (currentScope != globalScope)
+                AddError(CompilerError.PrivateScopeOnlyGlobal, node.Location);
+
+            privateScope = true;
+            Build(node.Block, hints.Append(NoScope), ctx);
+            privateScope = false;
         }
 
         private void Build(DDirective node, Hints hints, CompilerContext ctx)
@@ -833,7 +849,8 @@ namespace Dyalect.Compiler
             }
 
             //Start a compile time lexical scope
-            StartScope(fun: false, loc: node.Location);
+            if (!hints.Has(NoScope))
+                StartScope(fun: false, loc: node.Location);
 
             for (var i = 0; i < node.Nodes.Count; i++)
             {
@@ -844,7 +861,8 @@ namespace Dyalect.Compiler
                 Build(n, nh, ctx);
             }
 
-            EndScope();
+            if (!hints.Has(NoScope))
+                EndScope();
         }
 
         private void Build(DAssignment node, Hints hints, CompilerContext ctx)

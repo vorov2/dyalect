@@ -43,3 +43,5 @@ func userName(name) {
 }
 
 type Foobar(x, y)
+
+const pi = 3.14

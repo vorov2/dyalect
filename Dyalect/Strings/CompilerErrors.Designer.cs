@@ -232,6 +232,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nested private blocks are not allowed..
+        /// </summary>
+        internal static string PrivateScopeNested {
+            get {
+                return ResourceManager.GetString("PrivateScopeNested", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private blocks can be declared only in global scope..
+        /// </summary>
+        internal static string PrivateScopeOnlyGlobal {
+            get {
+                return ResourceManager.GetString("PrivateScopeOnlyGlobal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Range is not supported in this context..
         /// </summary>
         internal static string RangeIndexNotSupported {

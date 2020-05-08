@@ -27,7 +27,9 @@ namespace Dyalect.Compiler
 
         ExpectPush = 0x200,
 
-        OpenMatch = 0x400
+        OpenMatch = 0x400,
+
+        NoScope = 0x800
     }
 
     public static class HintsExtensions

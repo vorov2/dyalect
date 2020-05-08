@@ -13,6 +13,7 @@
   * Done: _Modules should use a field access syntax_ ([Issue #314](https://github.com/vorov2/dyalect/issues/314), [docs](https://github.com/vorov2/dyalect/wiki/Modules)).
   * Done: _Use backslash instead of dot for module namespacing_ ([Issue #321](https://github.com/vorov2/dyalect/issues/321), [docs](https://github.com/vorov2/dyalect/wiki/Modules)).
   * Done: _Redesign assignment operators and field access syntax_ ([Issue #305](https://github.com/vorov2/dyalect/issues/305)).
+  * Done: _Allow modules to import fields as well as methods_ ([Issue #323](https://github.com/vorov2/dyalect/issues/323), [docs](https://github.com/vorov2/dyalect/wiki/Modules#export)).
   * Fixed: _Parser may crush when processing `import`_ ([Issue #307](https://github.com/vorov2/dyalect/issues/307)).
   * Fixed: _Dyalect crushes when it cannot find a DLL of a foreign module_ ([Issue #310](https://github.com/vorov2/dyalect/issues/310)).
 

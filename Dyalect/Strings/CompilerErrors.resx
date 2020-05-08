@@ -228,4 +228,10 @@
   <data name="UnreachableMatchEntry" xml:space="preserve">
     <value>Match entry "{0}" is unreachable. The preceding entry "{1}" would match first.</value>
   </data>
+  <data name="PrivateScopeNested" xml:space="preserve">
+    <value>Nested private blocks are not allowed.</value>
+  </data>
+  <data name="PrivateScopeOnlyGlobal" xml:space="preserve">
+    <value>Private blocks can be declared only in global scope.</value>
+  </data>
 </root>

@@ -145,6 +145,15 @@ namespace Dyalect.Parser
             return true;
         }
 
+        private bool IsPrivateScope()
+        {
+            if (la.kind != _privateToken)
+                return false;
+
+            scanner.ResetPeek();
+            return scanner.Peek().kind == _curlyLeftToken;
+        }
+
         private bool IsLabel()
         {
             if (la.kind != _identToken && la.kind != _stringToken)

@@ -4,6 +4,7 @@
     {
         None,
         Block,
+        PrivateScope,
 
         Integer,
         Float,
