@@ -666,7 +666,7 @@ namespace Dyalect.Runtime.Types
             {
                 "id" => DyInteger.Get(((DyTypeInfo)self).TypeCode),
                 "name" => new DyString(((DyTypeInfo)self).TypeName),
-                _ => base.GetOp(self, index, ctx)
+                _ => ctx.IndexOutOfRange(index)
             };
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>

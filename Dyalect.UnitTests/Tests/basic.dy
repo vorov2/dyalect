@@ -50,7 +50,7 @@ func mathTest10() {
 
 func mathTest12() {
     var x = 2.0 / 0
-    assert(true, x == Float.inf)
+    assert(true, x == Float.inf())
 }
 
 func mathTest13() {
@@ -287,21 +287,21 @@ func hasTest2() {
     assert(true, t.has(indices))
 }
 
-func fieldTest1() {
-    assert(9223372036854775807, Integer.max)
-    assert(-9223372036854775807, Integer.min + 1)
+func typeConstantsTest1() {
+    assert(9223372036854775807, Integer.max())
+    assert(-9223372036854775807, Integer.min() + 1)
 }
 
-func fieldTest2() {
-    assert(1.7976931348623157E+308, Float.max)
-    assert(-1.7976931348623157E+308, Float.min)
-    var d = Float.inf + (-Float.inf)
+func typeConstantsTest2() {
+    assert(1.7976931348623157E+308, Float.max())
+    assert(-1.7976931348623157E+308, Float.min())
+    var d = Float.inf() + (-Float.inf())
     assert(true, d.isNaN())
 }
 
-func fieldTest3() {
-    assert('\0', Char.min)
-    assert('\uffff', Char.max)
+func typeConstantsTest3() {
+    assert('\0', Char.min())
+    assert('\uffff', Char.max())
 }
 
 func floatTest1() {
@@ -311,7 +311,7 @@ func floatTest1() {
 }
 
 func floatTest2() {
-    assert(0.0, Float.default)
+    assert(0.0, Float.default())
 }
 
 func integerTest1() {
@@ -321,7 +321,7 @@ func integerTest1() {
 }
 
 func integerTest2() {
-    assert(0, Integer.default)
+    assert(0, Integer.default())
 }
 
 func nilTest1() {
@@ -332,7 +332,7 @@ func nilTest1() {
 }
 
 func nilTest2() {
-    assert(nil, Nil.default)
+    assert(nil, Nil.default())
 }
 
 func boolTest1() {
@@ -344,7 +344,7 @@ func boolTest1() {
 }
 
 func boolTest2() {
-    assert(false, Bool.default)
+    assert(false, Bool.default())
 }
 
 func guardsTest1() {

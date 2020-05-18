@@ -118,7 +118,7 @@ func stringTest19() {
 }
 
 func stringTest20() {
-    assert("", String.default)
+    assert("", String.default())
 }
 
 func stringTest21() {

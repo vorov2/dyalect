@@ -406,7 +406,7 @@ func binaryToString() {
 
 func bubbTest() {
     var res =
-        for i in 2..Integer.max {
+        for i in 2..Integer.max() {
             if i * i % 1000000 == 269696 {
                 break i
             }
