@@ -17,6 +17,7 @@
   * Done: _Remove `auto` methods_ ([Issue #320](https://github.com/vorov2/dyalect/issues/320)).
   * Done: _Enhance parser error processing_ ([Issue #325](https://github.com/vorov2/dyalect/issues/325)).
   * Done: _Consider removing `private` modifier for functions_ ([Issue #324](https://github.com/vorov2/dyalect/issues/324)).
+  * Done: _Static fields should be converted to static methods to maintain consistency_ ([Issue #318](https://github.com/vorov2/dyalect/issues/318)).
   * Fixed: _Parser may crush when processing `import`_ ([Issue #307](https://github.com/vorov2/dyalect/issues/307)).
   * Fixed: _Dyalect crushes when it cannot find a DLL of a foreign module_ ([Issue #310](https://github.com/vorov2/dyalect/issues/310)).
 
