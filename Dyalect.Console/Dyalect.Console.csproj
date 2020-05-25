@@ -10,7 +10,7 @@
       <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
       <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
       <TargetFramework>netcoreapp3.1</TargetFramework>
-      <ApplicationIcon />
+      <ApplicationIcon>dya.ico</ApplicationIcon>
       <OutputType>Exe</OutputType>
       <StartupObject />
       <AssemblyName>dya</AssemblyName>
