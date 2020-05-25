@@ -34,8 +34,10 @@ func max(x, y) {
     }
 }
 
-private func id(x) {
-    x
+private {
+    func id(x) {
+        x
+    }
 }
 
 func userName(name) {

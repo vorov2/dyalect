@@ -318,7 +318,7 @@ namespace Dyalect.Parser
 			}
 		} else if (IsPrivateScope()) {
 			PrivateScope(out node);
-		} else if (la.kind == 11 || la.kind == 13 || la.kind == 67) {
+		} else if (la.kind == 11 || la.kind == 67) {
 			Function(out node);
 		} else if (la.kind == 2) {
 			Directive(out node);
@@ -508,22 +508,18 @@ namespace Dyalect.Parser
 		Expect(13);
 		var ot = t; 
 		Block(out node);
-		node = new DPrivateScope(ot) { Block = node };
+		node = new DPrivateScope(ot) { Block = (DBlock)node };
 		
 	}
 
 	void Function(out DNode node) {
-		node = null; bool st = false; bool priv = false; 
+		node = null; bool st = false; 
 		if (la.kind == 67) {
 			Get();
 			st = true; 
 		}
-		if (la.kind == 13) {
-			Get();
-			priv = true; 
-		}
 		Expect(11);
-		var f = new DFunctionDeclaration(t) { IsStatic = st, IsPrivate = priv };
+		var f = new DFunctionDeclaration(t) { IsStatic = st };
 		functions.Push(f);
 		
 		Qualident(out var s1, out var s2, out var s3);

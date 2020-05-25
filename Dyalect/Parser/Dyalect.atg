@@ -160,7 +160,7 @@ PRODUCTIONS
             | StatementExpr<out node> [ Guard<node, out node> ] Separator
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
-            | IF (IsPrivateScope()) PrivateScope<out node>
+            | PrivateScope<out node>
             | Function<out node>
             | Directive<out node> Separator
         )
@@ -246,15 +246,14 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; bool st = false; bool priv = false; .)
+        (. node = null; bool st = false; .)
         (
             (
                 [ "static" (. st = true; .) ]
-                [ "private" (. priv = true; .) ]
                 "func"
             )
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st, IsPrivate = priv };
+                var f = new DFunctionDeclaration(t) { IsStatic = st };
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>
