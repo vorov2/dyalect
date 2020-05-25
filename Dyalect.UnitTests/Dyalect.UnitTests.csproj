@@ -8,6 +8,9 @@
     <None Update="Tests\basic.dy">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Tests\builtins.dy">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Tests\complex.dy">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

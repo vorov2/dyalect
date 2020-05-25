@@ -1,0 +1,44 @@
+﻿func roundTest() {
+    var x = round(42.12345) //Evaluates to 42.12
+    var y = round(42.12345, 4) //Evaluates to 42.1234
+    assert(42.12, x)
+    assert(42.1234, y)
+}
+
+func minTest() {
+    var x = min(12, 2)
+    assert(2, x)
+    x = min(2, 24)
+    assert(2, x)
+    x = min(12, 12)
+    assert(12, x)
+    x = min(-12, 0)
+    assert(-12, x)
+}
+
+func maxTest() {
+    var x = max(12, 2)
+    assert(12, x)
+    x = max(2, 24)
+    assert(24, x)
+    x = max(12, 12)
+    assert(12, x)
+    x = max(-12, 0)
+    assert(0, x)
+}
+
+func signTest() {
+    var x = sign(123)
+    assert(1, x)
+    x = sign(-668)
+    assert(-1, x)
+    x = sign(0)
+    assert(0, x)
+}
+
+func sqrtTest() {
+    var x = sqrt(246)
+    x = round(x, 4)
+    assert(15.6844, x)
+}
+

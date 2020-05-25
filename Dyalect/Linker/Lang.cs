@@ -73,17 +73,6 @@ namespace Dyalect.Linker
             return DyNil.Instance;
         }
 
-        [Function("round")]
-        public DyObject Round(ExecutionContext ctx, DyObject number, [Default(2)]DyObject digits)
-        {
-            if (number.TypeId != DyType.Float)
-                ctx.InvalidType(number);
-            else if (digits.TypeId != DyType.Integer)
-                ctx.InvalidType(digits);
-
-            return new DyFloat(Math.Round(number.GetFloat(), (int)digits.GetInteger()));
-        }
-
         [Function("readLine")]
         public DyObject Read(ExecutionContext _)
         {
@@ -144,6 +133,47 @@ namespace Dyalect.Linker
                 return ctx.InvalidType(n);
 
             return new DyFloat(Math.Sqrt(n.GetFloat()));
+        }
+
+        [Function("min")]
+        public DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
+        {
+            if (x.Type(ctx).Lt(ctx, x, y).GetBool())
+                return x;
+            else
+                return y;
+        }
+
+        [Function("max")]
+        public DyObject Max(ExecutionContext ctx, DyObject x, DyObject y)
+        {
+            if (x.Type(ctx).Gt(ctx, x, y).GetBool())
+                return x;
+            else
+                return y;
+        }
+
+        [Function("round")]
+        public DyObject Round(ExecutionContext ctx, DyObject number, [Default(2)]DyObject digits)
+        {
+            if (number.TypeId != DyType.Float)
+                ctx.InvalidType(number);
+            else if (digits.TypeId != DyType.Integer)
+                ctx.InvalidType(digits);
+
+            return new DyFloat(Math.Round(number.GetFloat(), (int)digits.GetInteger()));
+        }
+
+        [Function("sign")]
+        public DyObject Sign(ExecutionContext ctx, DyObject x)
+        {
+            if (x == DyInteger.Zero)
+                return DyInteger.Zero;
+
+            if (x.Type(ctx).Lt(ctx, x, DyInteger.Zero).GetBool())
+                return DyInteger.MinusOne;
+            else 
+                return DyInteger.One;
         }
 
         [Function("parse")]
