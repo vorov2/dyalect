@@ -13,6 +13,9 @@ namespace Dyalect.Compiler
         {
             switch (node.NodeType)
             {
+                case NodeType.PrivateScope:
+                    Build((DPrivateScope)node, hints, ctx);
+                    break;
                 case NodeType.Directive:
                     Build((DDirective)node, hints, ctx);
                     break;
@@ -125,6 +128,19 @@ namespace Dyalect.Compiler
                     AddError(CompilerError.InvalidLabel, node.Location);
                     break;
             }
+        }
+
+        private void Build(DPrivateScope node, Hints hints, CompilerContext ctx)
+        {
+            if (privateScope)
+                AddError(CompilerError.PrivateScopeNested, node.Location);
+
+            if (currentScope != globalScope)
+                AddError(CompilerError.PrivateScopeOnlyGlobal, node.Location);
+
+            privateScope = true;
+            Build(node.Block, hints.Append(NoScope), ctx);
+            privateScope = false;
         }
 
         private void Build(DDirective node, Hints hints, CompilerContext ctx)
@@ -307,33 +323,6 @@ namespace Dyalect.Compiler
                 cw.PushVar(sv);
                 return;
             }
-            else if (node.Target.NodeType == NodeType.Name)
-            {
-                var nm = node.Target.GetName();
-                var sv = GetVariable(nm, node.Target, err: false);
-
-                if ((sv.Data & VarFlags.Module) == VarFlags.Module
-                    && referencedUnits.TryGetValue(nm, out var ru)
-                   )
-                {
-                    if (ru.Unit.ExportList.TryGetValue(node.Name, out var var))
-                    {
-                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
-                            AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
-
-                        AddLinePragma(node);
-                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
-                        return;
-                    }
-                    else if (GetTypeHandle(nm, node.Name, out var handle, out var std) == CompilerError.None)
-                    {
-                        GetMemberNameId(node.Name);
-                        AddLinePragma(node);
-                        cw.Type(new TypeHandle(handle, std));
-                        return;
-                    }
-                }
-            }
 
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
 
@@ -411,6 +400,49 @@ namespace Dyalect.Compiler
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)
         {
             var push = hints.Remove(Pop).Append(Push);
+            
+            if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks == null)
+            {
+                if (node.Target.NodeType == NodeType.Name)
+                {
+                    var nm = node.Target.GetName();
+                    var sv = GetVariable(nm, node.Target, err: false);
+
+                    if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
+                    {
+                        if (ru.Unit.ExportList.TryGetValue(str.Value, out var var))
+                        {
+                            if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                                AddError(CompilerError.PrivateNameAccess, node.Location, str.Value);
+
+                            AddLinePragma(node);
+                            cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
+                            return;
+                        }
+                        else if (GetTypeHandle(nm, str.Value, out var handle, out var std) == CompilerError.None)
+                        {
+                            GetMemberNameId(str.Value);
+                            AddLinePragma(node);
+                            cw.Type(new TypeHandle(handle, std));
+                            return;
+                        }
+                    }
+                }
+
+                Build(node.Target, push, ctx);
+                cw.Push(str.Value);
+
+                if (!hints.Has(Pop))
+                {
+                    cw.Get();
+                    PopIf(hints);
+                }
+                else
+                    cw.Set();
+
+                return;
+            }
+
             Build(node.Target, push, ctx);
 
             if (node.Index.NodeType == NodeType.Range)
@@ -817,7 +849,8 @@ namespace Dyalect.Compiler
             }
 
             //Start a compile time lexical scope
-            StartScope(fun: false, loc: node.Location);
+            if (!hints.Has(NoScope))
+                StartScope(fun: false, loc: node.Location);
 
             for (var i = 0; i < node.Nodes.Count; i++)
             {
@@ -828,11 +861,20 @@ namespace Dyalect.Compiler
                 Build(n, nh, ctx);
             }
 
-            EndScope();
+            if (!hints.Has(NoScope))
+                EndScope();
         }
 
         private void Build(DAssignment node, Hints hints, CompilerContext ctx)
         {
+            CheckTarget(node.Target);
+
+            if (node.AutoAssign == BinaryOperator.Coalesce)
+            {
+                BuildCoalesce(node, hints, ctx);
+                return;
+            }
+
             if (node.AutoAssign != null)
                 Build(node.Target, hints.Append(Push), ctx);
 
@@ -841,15 +883,34 @@ namespace Dyalect.Compiler
             if (node.AutoAssign != null)
                 EmitBinaryOp(node.AutoAssign.Value);
 
-            if (node.Target.NodeType != NodeType.Name
-                && node.Target.NodeType != NodeType.Index
-                && node.Target.NodeType != NodeType.Access)
-                AddError(CompilerError.UnableAssignExpression, node.Target.Location, node.Target);
+            Build(node.Target, hints.Append(Pop), ctx);
+
+            if (hints.Has(Push))
+                cw.PushNil();
+        }
+
+        private void CheckTarget(DNode target)
+        {
+            if (target.NodeType != NodeType.Name
+                && target.NodeType != NodeType.Index
+                && target.NodeType != NodeType.Access)
+                AddError(CompilerError.UnableAssignExpression, target.Location, target);
+        }
+
+        private void BuildCoalesce(DAssignment node, Hints hints, CompilerContext ctx)
+        {
+            CheckTarget(node.Target);
+
+            var exitLab = cw.DefineLabel();
+            Build(node.Target, hints.Remove(Last).Append(Push), ctx);
+            cw.Brtrue(exitLab);
+            Build(node.Value, hints.Append(Push), ctx);
+            Build(node.Target, hints.Append(Pop), ctx);
+            cw.MarkLabel(exitLab);
+            cw.Nop();
 
             if (hints.Has(Push))
                 cw.Dup();
-
-            Build(node.Target, hints.Append(Pop), ctx);
         }
 
         private void Build(DBinding node, Hints hints, CompilerContext ctx)

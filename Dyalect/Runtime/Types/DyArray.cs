@@ -12,7 +12,7 @@ namespace Dyalect.Runtime.Types
 
         internal DyObject[] Values;
 
-        public DyObject this[int index]
+        public new DyObject this[int index]
         {
             get { return Values[CorrectIndex(index)]; }
             set { Values[CorrectIndex(index)] = value; }
@@ -220,17 +220,8 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            var newArr = new List<DyObject>(((DyArray)left).Values);
-            var coll = DyIterator.Run(ctx, right);
-
-            if (ctx.HasErrors)
-                return DyNil.Instance;
-
-            newArr.AddRange(coll);
-            return new DyArray(newArr.ToArray());
-        }
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) => 
+            new DyArray(((DyCollection)left).Concat(ctx, right));
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
@@ -427,7 +418,7 @@ namespace Dyalect.Runtime.Types
             if (sti < 0 || sti >= arr.Count)
                 return ctx.IndexOutOfRange(sti);
 
-            var le = 0;
+            int le;
 
             if (len == DyNil.Instance)
                 le = arr.Count - sti;
@@ -472,9 +463,8 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            return name switch
+        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
                 "insert" => DyForeignFunction.Member(name, InsertItem, -1, new Par("index"), new Par("item")),
@@ -494,7 +484,6 @@ namespace Dyalect.Runtime.Types
                 "reverse" => DyForeignFunction.Member(name, Reverse, -1, Statics.EmptyParameters),
                 _ => base.GetMember(name, ctx),
             };
-        }
 
         private DyObject New(ExecutionContext ctx, DyObject tuple)
         {
@@ -527,24 +516,8 @@ namespace Dyalect.Runtime.Types
             return new DyArray(arr);
         }
 
-        internal static DyObject Concat(ExecutionContext ctx, DyObject values)
-        {
-            if (values == null)
-                return DyNil.Instance;
-
-            var vals = ((DyTuple)values).Values;
-            var arr = new List<DyObject>();
-
-            foreach (var v in vals)
-            {
-                arr.AddRange(DyIterator.Run(ctx, v));
-
-                if (ctx.HasErrors)
-                    break;
-            }
-
-            return new DyArray(arr.ToArray());
-        }
+        internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
+            new DyArray(DyCollection.ConcatValues(ctx, values));
 
         private static DyObject Copy(ExecutionContext ctx, DyObject from, DyObject sourceIndex, DyObject to, DyObject destIndex, DyObject length)
         {

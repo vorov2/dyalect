@@ -92,15 +92,28 @@ namespace Dyalect.Runtime.Types
 
         public override sealed bool Equals(object obj) => obj is DyObject dyo ? Equals(dyo) : false;
 
-        public override int GetHashCode()
+        public override int GetHashCode() => HashCode.Combine(TypeId);
+
+        public virtual object ChangeType(Type type)
         {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + TypeId.GetHashCode();
-                hash = hash * 23 + base.GetHashCode();
-                return hash;
-            }
+            if (type == Dyalect.Types.Boolean)
+                return GetBool();
+            else if (type == Dyalect.Types.Char)
+                return GetChar();
+            else if (type == Dyalect.Types.String)
+                return GetString();
+            else if (type == Dyalect.Types.Int32)
+                return (int)GetInteger();
+            else if (type == Dyalect.Types.Int64)
+                return GetInteger();
+            else if (type == Dyalect.Types.Double)
+                return GetFloat();
+            else if (type == Dyalect.Types.Float)
+                return (float)GetFloat();
+            else if (type == Dyalect.Types.Object)
+                return ToObject();
+
+            throw new InvalidCastException();
         }
     }
 

@@ -44,6 +44,8 @@
 
         InvalidLabel = 20,
 
-        InvalidImport = 21
+        InvalidImport = 21,
+
+        InvalidApplicationArguments = 22
     }
 }

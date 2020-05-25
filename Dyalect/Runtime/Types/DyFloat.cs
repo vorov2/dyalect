@@ -82,6 +82,8 @@ namespace Dyalect.Runtime.Types
 
         internal protected override double GetFloat() => value;
 
+        protected internal override long GetInteger() => (long)value;
+
         protected internal override bool GetBool() => value > .00001d;
 
         public override DyObject Clone() => this;
@@ -223,16 +225,13 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(new DyFloat.RangeEnumerator(ifrom, istart, ito, step));
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            if (name == "to")
-                return DyForeignFunction.Member(name, Range, -1, new Par("value"));
-
-            if (name == "isNaN")
-                return DyForeignFunction.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False);
-
-            return base.GetMember(name, ctx);
-        }
+        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+            name switch
+            {
+                "to" => DyForeignFunction.Member(name, Range, -1, new Par("value")),
+                "isNaN" => DyForeignFunction.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
+                _ => base.GetMember(name, ctx)
+            };
 
         private DyObject Convert(ExecutionContext ctx, DyObject obj)
         {
@@ -249,24 +248,15 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(obj);
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
-        {
-            if (name == "max")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.Max);
-
-            if (name == "min")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.Min);
-
-            if (name == "inf")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.PositiveInfinity);
-
-            if (name == "default")
-                return DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyFloat.Zero);
-
-            if (name == "Float")
-                return DyForeignFunction.Static(name, Convert, -1, new Par("value"));
-
-            return base.GetStaticMember(name, ctx);
-        }
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx) =>
+            name switch
+            {
+                "max" => DyForeignFunction.Static(name, _ => DyFloat.Max),
+                "min" => DyForeignFunction.Static(name, _ => DyFloat.Min),
+                "inf" => DyForeignFunction.Static(name, _ => DyFloat.PositiveInfinity),
+                "default" => DyForeignFunction.Static(name, _ => DyFloat.Zero),
+                "Float" => DyForeignFunction.Static(name, Convert, -1, new Par("value")),
+                _ => base.GetStaticMember(name, ctx)
+            };
     }
 }

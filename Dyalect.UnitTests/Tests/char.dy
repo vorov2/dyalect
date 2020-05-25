@@ -53,8 +53,8 @@ func charTest6() {
 }
 
 func charTest7() {
-    assert('\0', Char.default)
-    assert('\0', Char.min)
-    assert('\uffff', Char.max)
-    assert(true, Char.default == Char.min)
+    assert('\0', Char.default())
+    assert('\0', Char.min())
+    assert('\uffff', Char.max())
+    assert(true, Char.default() == Char.min())
 }

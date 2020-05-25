@@ -13,11 +13,10 @@ namespace Dyalect.Runtime.Types
         internal Par[] Parameters;
         internal int VarArgIndex;
 
-        protected DyFunction(int typeId, Par[] pars, int varArgIndex, AutoKind auto) : base(typeId)
+        protected DyFunction(int typeId, Par[] pars, int varArgIndex) : base(typeId)
         {
             Parameters = pars;
             VarArgIndex = varArgIndex;
-            AutoKind = auto;
         }
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
@@ -84,8 +83,6 @@ namespace Dyalect.Runtime.Types
             return ret;
         }
 
-        internal AutoKind AutoKind { get; }
-
         public abstract string FunctionName { get; }
 
         public abstract bool IsExternal { get; }
@@ -125,11 +122,15 @@ namespace Dyalect.Runtime.Types
             if (name == "compose")
                 return DyForeignFunction.Member(name, Compose, -1, new Par("with"));
 
-            if (name == "name")
-                return DyForeignFunction.Auto(AutoKind.Generated, (ct, o) => new DyString(((DyFunction)o).FunctionName));
-
             return base.GetMember(name, ctx);
         }
+
+        protected override DyObject GetOp(DyObject self, string index, ExecutionContext ctx) =>
+            index switch
+            {
+                "name" => new DyString(((DyFunction)self).FunctionName),
+                _ => ctx.IndexOutOfRange(index)
+            };
 
         private DyObject Compose(ExecutionContext ctx, DyObject first, DyObject second)
         {
@@ -156,12 +157,5 @@ namespace Dyalect.Runtime.Types
 
             return base.GetStaticMember(name, ctx);
         }
-    }
-
-    public enum AutoKind
-    {
-        None,
-        Generated,
-        Explicit
     }
 }

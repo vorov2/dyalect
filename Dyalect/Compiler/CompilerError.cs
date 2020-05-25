@@ -56,15 +56,15 @@
 
         TypeAlreadyDeclared = 226,
 
-        AutoOnlyMethod = 227,
+        PrivateScopeOnlyGlobal = 227,
 
-        AutoNoParams = 228,
+        PrivateScopeNested = 228,
 
         CtorOnlyLocalType = 229,
 
         PrivateMethod = 230,
 
-        PrivateOnlyGlobal = 231,
+        // = 231,
 
         UnableToLinkModule = 232,
 

@@ -539,18 +539,16 @@ namespace Dyalect.Runtime.Types
             return new DyString(new string(value.GetChar(), (int)count.GetInteger()));
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
-        {
-            return name switch
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "String" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
                 "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
                 "join" => DyForeignFunction.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(","))),
-                "default" => DyForeignFunction.Auto(AutoKind.Generated, (c, _) => DyString.Empty),
+                "default" => DyForeignFunction.Static(name, _ => DyString.Empty),
                 "repeat" => DyForeignFunction.Static(name, Repeat, -1, new Par("value"), new Par("count")),
                 _ => base.GetStaticMember(name, ctx),
             };
-        }
         #endregion
     }
 }

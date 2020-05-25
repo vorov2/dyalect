@@ -1,6 +1,7 @@
 ﻿using Dyalect.Strings;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static Dyalect.Parser.ParserError;
 
 namespace Dyalect.Parser
@@ -22,13 +23,18 @@ namespace Dyalect.Parser
                 ,{ "invalid FunctionExpr", InvalidFunctionExpression }
                 ,{ "invalid Unary", InvalidUnary }
                 ,{ "invalid Bool", InvalidLiteral }
+                ,{ "invalid String", InvalidLiteral }
+                ,{ "invalid Tuple", InvalidLiteral }
                 ,{ "invalid Literal", InvalidLiteral }
                 ,{ "invalid DyalectItem", InvalidStatement }
                 ,{ "invalid Pattern", InvalidPattern }
                 ,{ "invalid BooleanPattern", InvalidPattern }
+                ,{ "invalid CtorPattern", InvalidPattern }
+                ,{ "invalid TuplePattern", InvalidPattern }
                 ,{ "invalid TryCatch", InvalidTryCatch }
                 ,{ "invalid Label", InvalidLabel }
                 ,{ "invalid Import", InvalidImport }
+                ,{ "invalid ApplicationArguments", InvalidApplicationArguments }
                 ,{ "??? expected", Undefined }
             };
 
@@ -36,10 +42,13 @@ namespace Dyalect.Parser
             new Dictionary<string, string>
             {
                  { "identToken", "identifier" }
+                ,{ "directive", "compiler directive" }
                 ,{ "intToken", "integer literal" }
                 ,{ "floatToken", "float literal" }
                 ,{ "stringToken", "string literal" }
+                ,{ "verbatimStringToken", "multiline string literal" }
                 ,{ "charToken", "char literal" }
+                ,{ "implicitToken", "implicit" }
                 ,{ "varToken", "var" }
                 ,{ "constToken", "const" }
                 ,{ "funcToken", "func" }
@@ -64,11 +73,22 @@ namespace Dyalect.Parser
                 ,{ "curlyRightToken", "}" }
                 ,{ "squareLeftToken", "[" }
                 ,{ "squareRightToken", "]" }
-                ,{ "implicitToken", "implicit" }
+                ,{ "eq_coa", "??=" }
+                ,{ "eq_add", "+=" }
+                ,{ "eq_sub", "-=" }
+                ,{ "eq_mul", "*=" }
+                ,{ "eq_div", "/=" }
+                ,{ "eq_rem", "%=" }
+                ,{ "eq_and", "&=" }
+                ,{ "eq_or", "|=" }
+                ,{ "eq_xor", "^=" }
+                ,{ "eq_lsh", "<<=" }
+                ,{ "eq_rsh", ">>=" }
                 ,{ "minus", "-" }
                 ,{ "plus", "+" }
                 ,{ "not", "!" }
                 ,{ "bitnot", "~" }
+                ,{ "coalesce", "??" }
             };
 
         public static void ProcessError(string source, out string detail, out ParserError error)
@@ -96,6 +116,9 @@ namespace Dyalect.Parser
                     detail = string.Format(ParserErrors.InvalidSyntax, source);
                     return;
                 }
+
+                if (!token.All(c => char.IsLetter(c)))
+                    token = "\"" + token + "\"";
 
                 error = TokenExpected;
                 detail = string.Format(ParserErrors.TokenExpected, token);

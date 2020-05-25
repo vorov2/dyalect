@@ -39,6 +39,7 @@ TOKENS
     constToken          = "const".
     funcToken           = "func".
     returnToken         = "return".
+    privateToken        = "private".
     continueToken       = "continue".
     breakToken          = "break".
     yieldToken          = "yield".
@@ -51,7 +52,6 @@ TOKENS
     dotToken            = ".".
     commaToken          = ",".
     semicolonToken      = ";".
-    colonToken          = ":".
     equalToken          = "=".
     parenLeftToken      = "(".
     parenRightToken     = ")".
@@ -59,11 +59,22 @@ TOKENS
     curlyRightToken     = "}".
     squareLeftToken     = "[".
     squareRightToken    = "]".
-
+    eq_coa              = "??=".
+    eq_add              = "+=".
+    eq_sub              = "-=".
+    eq_mul              = "*=".
+    eq_div              = "/=".
+    eq_rem              = "%=".
+    eq_and              = "&=".
+    eq_or               = "|=".
+    eq_xor              = "^=".
+    eq_lsh              = "<<=".
+    eq_rsh              = ">>=".
     minus               = "-".
     plus                = "+".
     not                 = "!".
     bitnot              = "~".
+    coalesce            = "??".
 
 COMMENTS FROM "/*" TO "*/" NESTED
 COMMENTS FROM "//" TO lf
@@ -92,7 +103,7 @@ PRODUCTIONS
         (. var inc = new DImport(t); Imports.Add(inc); string lastName = null; .)
         (identToken | stringToken) (. lastName = ParseImport(); .)
         {
-            "."
+            "/"
             (identToken | stringToken)
             (.
                 if (inc.LocalPath != null)
@@ -104,7 +115,12 @@ PRODUCTIONS
         }
         (. inc.ModuleName = lastName; if (la.AfterEol) return; .)
         [
-            "(" stringToken (. inc.Dll = ParseSimpleString(); .) ")"
+            "("
+                (
+                      stringToken (. inc.Dll = ParseSimpleString(); .)
+                    | identToken (. inc.Dll = t.val; .)
+                )
+            ")"
         ]
         [
             (. if (la.AfterEol) return; .)
@@ -136,16 +152,59 @@ PRODUCTIONS
     Statement<out DNode node> =
         (. node = null; .)
         (
-              ControlFlow<out node> [ Guard<node, out node> ] Separator
+              Binding<out node> Separator
+            | Rebinding<out node> Separator
+            | ControlFlow<out node> [ Guard<node, out node> ] Separator
             | Type<out node> Separator
             | Match<out node> [ Guard<node, out node> Separator ]
-            | SimpleExpr<out node> [ Guard<node, out node> ] Separator
+            | StatementExpr<out node> [ Guard<node, out node> ] Separator
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
+            | PrivateScope<out node>
             | Function<out node>
             | Directive<out node> Separator
         )
         (. node = ProcessImplicits(node); .).
+
+    PrivateScope<out DNode node> =
+        (. node = null; .)
+        (
+            "private" (. var ot = t; .)
+            Block<out node>
+            (.
+                node = new DPrivateScope(ot) { Block = (DBlock)node };
+            .)
+        ).
+
+    StatementExpr<out DNode node> =
+        SimpleExpr<out node>
+        [
+            (.
+                var ass = new DAssignment(t) { Target = node };
+                node = ass;
+                BinaryOperator? op = null;
+            .)
+            (
+                  "="
+                | "??=" (. op = BinaryOperator.Coalesce; .)
+                | "+="  (. op = BinaryOperator.Add; .)
+                | "-="  (. op = BinaryOperator.Sub; .)
+                | "*="  (. op = BinaryOperator.Mul; .)
+                | "/="  (. op = BinaryOperator.Div; .)
+                | "%="  (. op = BinaryOperator.Rem; .)
+                | "&="  (. op = BinaryOperator.And; .)
+                | "|="  (. op = BinaryOperator.Or; .)
+                | "^="  (. op = BinaryOperator.Xor; .)
+                | "<<=" (. op = BinaryOperator.ShiftLeft; .)
+                | ">>=" (. op = BinaryOperator.ShiftRight; .)
+            )
+            Expr<out node>
+            (.
+                ass.Value = node;
+                ass.AutoAssign = op;
+                node = ass;
+            .)
+        ].
 
     Directive<out DNode node> =
         (
@@ -187,16 +246,14 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; bool st = false; bool auto = false; bool priv = false; .)
+        (. node = null; bool st = false; .)
         (
             (
                 [ "static" (. st = true; .) ]
-                [ "auto" (. auto = true; .) ]
-                [ "private" (. priv = true; .) ]
                 "func"
             )
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st, IsPrivate = priv, IsAuto = auto };
+                var f = new DFunctionDeclaration(t) { IsStatic = st };
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>
@@ -331,7 +388,6 @@ PRODUCTIONS
         (. node = null; .)
         (
               IF (IsConstructor()) CtorPattern<out node> [ AsPattern<node, out node> ]
-            | IF (IsLabelPattern()) LabelPattern<out node>
             | NamePattern<out node> [ AsPattern<node, out node> ]
             | IntegerPattern<out node> [ AsPattern<node, out node> ]
             | FloatPattern<out node> [ AsPattern<node, out node> ]
@@ -356,13 +412,25 @@ PRODUCTIONS
         ).
 
     CtorPattern<out DPattern node> =
+        (. node = null; .)
         (
             identToken
             (. var ctor = new DCtorPattern(t) { Constructor = t.val }; .)
             "("
-                [ OrPattern<out node> (. ctor.Arguments.Add(node); .) ]
+                [ 
+                    (
+                          IF (IsLabelPattern()) LabelPattern<out node>
+                        | OrPattern<out node>
+                    )
+                    (. ctor.Arguments.Add(node); .)
+                ]
                 {
-                    "," OrPattern<out node> (. ctor.Arguments.Add(node); .)
+                    "," 
+                    (
+                          IF (IsLabelPattern()) LabelPattern<out node>
+                        | OrPattern<out node>
+                    )
+                    (. ctor.Arguments.Add(node); .)
                 }
             ")"
             (. node = ctor; .)
@@ -397,8 +465,21 @@ PRODUCTIONS
         (
             "("
                 (. var tup = new DTuplePattern(t); .)
-                OrPattern<out node> (. tup.Elements.Add(node); .)
-                { "," [ OrPattern<out node> (. tup.Elements.Add(node); .) ] }
+                (
+                      IF (IsLabelPattern()) LabelPattern<out node>
+                    | OrPattern<out node>
+                )
+                (. tup.Elements.Add(node); .)
+                {
+                    ","
+                    [ 
+                        (
+                              IF (IsLabelPattern()) LabelPattern<out node>
+                            | OrPattern<out node>
+                        )
+                        (. tup.Elements.Add(node); .)
+                    ]
+                }
                 (. node = tup; .)
             ")"
         ).
@@ -408,7 +489,7 @@ PRODUCTIONS
         (
             identToken
             (. var la = new DLabelPattern(t) { Label = t.val }; .)
-            ":" Pattern<out var pat>
+            "=" Pattern<out var pat>
             (. la.Pattern = pat; node = la; .)
         ).
 
@@ -547,11 +628,8 @@ PRODUCTIONS
     SimpleExpr<out DNode node> =
         (. node = null; .)
         (
-              Binding<out node>
-            | Rebinding<out node>
-            | IF (IsFunction()) FunctionExpr<out node>
-            | IF (IsLabel()) Label<out node>
-            | Assignment<out node>
+              IF (IsFunction()) FunctionExpr<out node>
+            | Is<out node>
             | TryCatch<out node>
             | Throw<out node>
         ).
@@ -602,35 +680,6 @@ PRODUCTIONS
             "=>" Expr<out var exp>
             (. f.Body = exp; .)
         ).
-
-    Assignment<out DNode node> =
-        Is<out node>
-        [
-            (.
-                var ass = new DAssignment(t) { Target = node };
-                node = ass;
-                BinaryOperator? op = null;
-            .)
-            (
-                  "="
-                | "+="  (. op = BinaryOperator.Add; .)
-                | "-="  (. op = BinaryOperator.Sub; .)
-                | "*="  (. op = BinaryOperator.Mul; .)
-                | "/="  (. op = BinaryOperator.Div; .)
-                | "%="  (. op = BinaryOperator.Rem; .)
-                | "&="  (. op = BinaryOperator.And; .)
-                | "|="  (. op = BinaryOperator.Or; .)
-                | "^="  (. op = BinaryOperator.Xor; .)
-                | "<<=" (. op = BinaryOperator.ShiftLeft; .)
-                | ">>=" (. op = BinaryOperator.ShiftRight; .)
-            )
-            Expr<out node>
-            (.
-                ass.Value = node;
-                ass.AutoAssign = op;
-                node = ass;
-            .)
-        ].
 
     Is<out DNode node> =
         Coalesce<out node>
@@ -849,6 +898,14 @@ PRODUCTIONS
                 )
                 |
                 (
+                    ":" (. var ot = t; .)
+                    identToken
+                    (.
+                        node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
+                    .)
+                )
+                |
+                (
                     (. if (la.AfterEol) return; .)
                     "["
                         (. var idx = new DIndexer(t) { Target = node }; .)
@@ -875,8 +932,19 @@ PRODUCTIONS
 
     ApplicationArguments<DApplication app> =
         (. var node = default(DNode); .)
-        Expr<out node> (. app.Arguments.Add(node); .)
-        { "," Expr<out node> (. app.Arguments.Add(node); .) }.
+        (
+              IF (IsLabel()) Label<out node>
+            | Expr<out node> 
+        )
+        (. app.Arguments.Add(node); .)
+        {
+            ","
+            (
+                  IF (IsLabel()) Label<out node>
+                | Expr<out node> 
+            )
+            (. app.Arguments.Add(node); .)
+        }.
 
     Literal<out DNode node> =
         (. node = null; .)
@@ -918,10 +986,10 @@ PRODUCTIONS
         (. node = null; var name = ""; .)
         (
             ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
-            ":" (. var ot = t; .)
+            "=" (. var ot = t; .)
             (
                   IF (IsFunction()) FunctionExpr<out node>
-                | Assignment<out node>
+                | Is<out node>
             )
             (. node = new DLabelLiteral(ot) { Label = name, Expression = node }; .)
         ).
@@ -947,8 +1015,21 @@ PRODUCTIONS
         (
             "("
                 (. var tup = new DTupleLiteral(t); .)
-                Expr<out node> (. tup.Elements.Add(node); .)
-                { "," [ Expr<out node> (. tup.Elements.Add(node); .) ] }
+                (
+                      IF (IsLabel()) Label<out node>
+                    | Expr<out node> 
+                )
+                (. tup.Elements.Add(node); .)
+                { 
+                    ","
+                    [
+                        (
+                              IF (IsLabel()) Label<out node>
+                            | Expr<out node> 
+                        )
+                        (. tup.Elements.Add(node); .)
+                    ] 
+                }
                 (. node = tup; .)
             ")"
         ).

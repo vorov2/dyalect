@@ -34,8 +34,10 @@ func max(x, y) {
     }
 }
 
-private func id(x) {
-    x
+private {
+    func id(x) {
+        x
+    }
 }
 
 func userName(name) {
@@ -43,3 +45,5 @@ func userName(name) {
 }
 
 type Foobar(x, y)
+
+const pi = 3.14

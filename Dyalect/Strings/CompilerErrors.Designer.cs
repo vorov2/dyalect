@@ -61,24 +61,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Functions declared with an &quot;auto&quot; modifier shouldn&apos;t accept any arguments..
-        /// </summary>
-        internal static string AutoNoParams {
-            get {
-                return ResourceManager.GetString("AutoNoParams", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A modifier &quot;auto&quot; is only allowed on member functions..
-        /// </summary>
-        internal static string AutoOnlyMethod {
-            get {
-                return ResourceManager.GetString("AutoOnlyMethod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Keyword &quot;base&quot; is not available in the current context..
         /// </summary>
         internal static string BaseNotAllowed {
@@ -223,7 +205,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A modifier &quot;private&quot; is only valid on regular functions..
+        ///   Looks up a localized string similar to Methods cannot be declared inside a &quot;private&quot; scope..
         /// </summary>
         internal static string PrivateMethod {
             get {
@@ -241,11 +223,20 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Private functions should be declared in global scope..
+        ///   Looks up a localized string similar to Nested private blocks are not allowed..
         /// </summary>
-        internal static string PrivateOnlyGlobal {
+        internal static string PrivateScopeNested {
             get {
-                return ResourceManager.GetString("PrivateOnlyGlobal", resourceCulture);
+                return ResourceManager.GetString("PrivateScopeNested", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private blocks can be declared only in global scope..
+        /// </summary>
+        internal static string PrivateScopeOnlyGlobal {
+            get {
+                return ResourceManager.GetString("PrivateScopeOnlyGlobal", resourceCulture);
             }
         }
         

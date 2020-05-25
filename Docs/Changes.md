@@ -1,3 +1,28 @@
+# 0.14.0
+  * Change: _Refactorings and enhancements in linker foreign unit infrastructure._
+  * Change: _General code clean-ups and optimizations._
+  * Done: _Implement a foreign module interface with support for type conversion_ ([Issue #308](https://github.com/vorov2/dyalect/issues/308)).
+  * Done: _Add a compound `??=` assignment operator_ ([Issue #306](https://github.com/vorov2/dyalect/issues/306), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#compound_assignment)).
+  * Done: _Support an easier way to reference modules in standard library_ ([Issue #309](https://github.com/vorov2/dyalect/issues/309), [docs](https://github.com/vorov2/dyalect/wiki/Modules#foreign_modules)).
+  * Done: _Make assignment a statement other than an expression_ ([Issue #311](https://github.com/vorov2/dyalect/issues/311), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#assignment)).
+  * Done: _Change syntax for tuples and named arguments_ ([Issue #312](https://github.com/vorov2/dyalect/issues/312)).
+  * Done: _Change field access syntax_ ([Issue #313](https://github.com/vorov2/dyalect/issues/313), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#access)).
+  * Done: _String concatenation and `+` operator_ ([Issue #315](https://github.com/vorov2/dyalect/issues/315)).
+  * Done: _Tuples: add a support for `+` operator_ ([Issue #316](https://github.com/vorov2/dyalect/issues/316), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#operators)).
+  * Done: _Tuples: add `Concat` method_ ([Issue #317](https://github.com/vorov2/dyalect/issues/317), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#concat)).
+  * Done: _Modules should use a field access syntax_ ([Issue #314](https://github.com/vorov2/dyalect/issues/314), [docs](https://github.com/vorov2/dyalect/wiki/Modules)).
+  * Done: _Use backslash instead of dot for module namespacing_ ([Issue #321](https://github.com/vorov2/dyalect/issues/321), [docs](https://github.com/vorov2/dyalect/wiki/Modules)).
+  * Done: _Redesign assignment operators and field access syntax_ ([Issue #305](https://github.com/vorov2/dyalect/issues/305)).
+  * Done: _Allow modules to import fields as well as methods_ ([Issue #323](https://github.com/vorov2/dyalect/issues/323), [docs](https://github.com/vorov2/dyalect/wiki/Modules#export)).
+  * Done: _Remove `auto` methods_ ([Issue #320](https://github.com/vorov2/dyalect/issues/320)).
+  * Done: _Enhance parser error processing_ ([Issue #325](https://github.com/vorov2/dyalect/issues/325)).
+  * Done: _Consider removing `private` modifier for functions_ ([Issue #324](https://github.com/vorov2/dyalect/issues/324)).
+  * Done: _Static fields should be converted to static methods to maintain consistency_ ([Issue #318](https://github.com/vorov2/dyalect/issues/318)).
+  * Done: _Add `min` and `max` built-in functions_ ([Issue #326](https://github.com/vorov2/dyalect/issues/326), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#min), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#max)).
+  * Done: _Add `sign` and `sqrt` built-in functions_ ([Issue #327](https://github.com/vorov2/dyalect/issues/327), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#sign), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#sqrt)).
+  * Fixed: _Parser may crush when processing `import`_ ([Issue #307](https://github.com/vorov2/dyalect/issues/307)).
+  * Fixed: _Dyalect crushes when it cannot find a DLL of a foreign module_ ([Issue #310](https://github.com/vorov2/dyalect/issues/310)).
+
 # 0.13.0
   * Change: _Collection object model refactoring._
   * Done: _A Dyalect Console option to show only failed tests_ ([Issue #299](https://github.com/vorov2/dyalect/issues/299)).

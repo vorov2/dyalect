@@ -16,18 +16,10 @@ namespace Dyalect.Compiler
                 var flags = VarFlags.Const | VarFlags.Function;
                 var addr = 0;
 
-                if (node.IsPrivate)
-                {
-                    flags |= VarFlags.Private;
-
-                    if (globalScope != currentScope)
-                        AddError(CompilerError.PrivateOnlyGlobal, node.Location);
-                    if (node.IsMemberFunction)
-                        AddError(CompilerError.PrivateMethod, node.Location);
-                }
-
                 if (!node.IsMemberFunction)
                     addr = AddVariable(node.Name, node, flags);
+                else if (privateScope)
+                    AddError(CompilerError.PrivateMethod, node.Location);
 
                 BuildFunctionBody(addr, node, hints, ctx);
 
@@ -263,16 +255,6 @@ namespace Dyalect.Compiler
                 {
                     cw.Aux(variadicIndex);
                     cw.NewFunV(funHandle);
-                }
-                else if (node.IsAuto)
-                {
-                    if (!node.IsMemberFunction)
-                        AddError(CompilerError.AutoOnlyMethod, node.Location);
-
-                    if (node.Parameters.Count > 0)
-                        AddError(CompilerError.AutoNoParams, node.Location);
-
-                    cw.NewFunA(funHandle);
                 }
                 else
                     cw.NewFun(funHandle);

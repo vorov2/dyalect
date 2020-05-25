@@ -112,16 +112,6 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            return DyForeignFunction.Auto(AutoKind.Generated, (c, self) =>
-            {
-                if (!self.TryGetItem(name, c, out var value))
-                    return ctx.IndexOutOfRange(name);
-                return value;
-            });
-        }
-
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Module")

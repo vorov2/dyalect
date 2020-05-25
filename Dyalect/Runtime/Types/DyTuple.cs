@@ -1,6 +1,8 @@
 ﻿using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -133,9 +135,13 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
+            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
+            | SupportedOperations.Add;
 
         public override string TypeName => DyTypeNames.Tuple;
+
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            new DyTuple(((DyCollection)left).Concat(ctx, right));
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
@@ -163,7 +169,7 @@ namespace Dyalect.Runtime.Types
                 if (k != null)
                 {
                     sb.Append(k);
-                    sb.Append(": ");
+                    sb.Append(" = ");
                 }
 
                 sb.Append(val.GetString());
@@ -205,6 +211,9 @@ namespace Dyalect.Runtime.Types
             self.SetItem(index, value, ctx);
             return DyNil.Instance;
         }
+
+        internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
+            new DyTuple(DyCollection.ConcatValues(ctx, values));
 
         private DyObject GetKeys(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
@@ -249,7 +258,7 @@ namespace Dyalect.Runtime.Types
             var t = (DyTuple)self;
             var arr = new DyObject[t.Count + 1];
             Array.Copy(t.Values, arr, t.Count);
-            arr[arr.Length - 1] = item;
+            arr[^1] = item;
             return new DyTuple(arr);
         }
 
@@ -284,7 +293,7 @@ namespace Dyalect.Runtime.Types
             return RemoveAt(ctx, t, idx);
         }
 
-        private DyTuple RemoveAt(ExecutionContext ctx, DyTuple self, int index)
+        private DyTuple RemoveAt(ExecutionContext _, DyTuple self, int index)
         {
             var arr = new DyObject[self.Count - 1];
             var c = 0;
@@ -355,16 +364,15 @@ namespace Dyalect.Runtime.Types
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
-        {
-            return name switch
+        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
                 "pair" => DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second")),
                 "triple" => DyForeignFunction.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
+                "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
                 "Tuple" => DyForeignFunction.Static(name, MakeNew, 0, new Par("values")),
                 _ => base.GetStaticMember(name, ctx)
             };
-        }
     }
 }

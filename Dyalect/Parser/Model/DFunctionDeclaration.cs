@@ -16,10 +16,6 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; }
 
-        public bool IsPrivate { get; set; }
-
-        public bool IsAuto { get; set; }
-
         internal bool IsConstructor { get; set; }
 
         public bool IsStatic { get; set; }
@@ -54,9 +50,6 @@ namespace Dyalect.Parser.Model
 
             if (IsStatic)
                 sb.Append("static ");
-
-            if (IsAuto)
-                sb.Append("auto ");
 
             if (Name != null)
                 sb.Append("func ");

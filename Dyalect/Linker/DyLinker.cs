@@ -15,7 +15,6 @@ namespace Dyalect.Linker
         private const string EXT = ".dy";
         private const string OBJ = ".dyo";
         private readonly Lang lang;
-        private static readonly object syncRoot = new object();
 
         protected Dictionary<Reference, Unit> UnitMap { get; set;  } = new Dictionary<Reference, Unit>();
 
@@ -44,14 +43,17 @@ namespace Dyalect.Linker
 
         protected internal virtual Result<Unit> Link(Unit self, Reference mod)
         {
-            Unit unit = null;
-
-            if (!UnitMap.TryGetValue(mod, out unit))
+            if (!UnitMap.TryGetValue(mod, out Unit unit))
             {
                 if (mod.ModuleName == nameof(lang))
                     unit = lang;
                 else if (mod.DllName != null)
+                {
                     unit = LinkForeignModule(self, mod);
+
+                    if (unit == null)
+                        AddError(LinkerError.AssemblyNotFound, mod.SourceFileName, mod.SourceLocation, mod.DllName, mod.ModuleName);
+                }
                 else
                 {
                     var path = FindModule(self, mod.GetPath(), mod);
@@ -326,7 +328,8 @@ namespace Dyalect.Linker
 
             if (Lookup.Find(Path.GetDirectoryName(workingDir), module, out var fullPath))
             {
-                if (NeedReport((int)LinkerWarning.NewerSourceFile))
+                if (NeedReport((int)LinkerWarning.NewerSourceFile)
+                    && !string.Equals(Path.GetExtension(module), ".DLL", StringComparison.OrdinalIgnoreCase))
                 {
                     var sf = Path.Combine(Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath) + ".dy");
 
@@ -357,7 +360,7 @@ namespace Dyalect.Linker
                 return;
 
             var str = LinkerErrors.ResourceManager.GetString(codeName);
-            str = str ?? codeName;
+            str ??= codeName;
 
             if (args != null)
                 str = string.Format(str, args);

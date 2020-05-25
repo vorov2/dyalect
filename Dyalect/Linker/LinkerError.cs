@@ -20,6 +20,8 @@
 
         UnableReadObjectFile = 407,
 
-        ChecksumValidationFailed = 408
+        ChecksumValidationFailed = 408,
+
+        AssemblyNotFound = 409
     }
 }

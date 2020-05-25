@@ -11,6 +11,8 @@ namespace Dyalect.Compiler
         private Stack<int> counters; //Stack of indices for the lexical scope
         private int currentCounter; //Global indexer
 
+        private bool privateScope; //Identifies that a current scope is private
+
         //Standard routine to add variables, can be used when an internal unnamed variable is need
         //which won't be visible to the user (for system purposes).
         private int AddVariable()
@@ -20,10 +22,7 @@ namespace Dyalect.Compiler
             return ret;
         }
 
-        private int AddSystemVariable(string name)
-        {
-            return AddVariable(name, null, -1);
-        }
+        private int AddSystemVariable(string name) => AddVariable(name, null, -1);
 
         public int AddVariable(string name, DNode node, int data) =>
             AddVariable(name, node != null ? node.Location : default, data);
@@ -50,17 +49,20 @@ namespace Dyalect.Compiler
 
             var retval = AddVariable();
 
-            if (currentScope == globalScope && (data & VarFlags.Function) == VarFlags.Function)
+            if (currentScope == globalScope && (data & VarFlags.Const) == VarFlags.Const)
+            {
+                if (privateScope)
+                    data |= VarFlags.Private;
+
                 unit.ExportList.Add(name, new ScopeVar(retval, data));
+            }
 
             return retval;
         }
 
         //Find a variable in a global scope
-        private ScopeVar GetParentVariable(string name, DNode node)
-        {
-            return GetParentVariable(name, node.Location);
-        }
+        private ScopeVar GetParentVariable(string name, DNode node) =>
+            GetParentVariable(name, node.Location);
 
         private ScopeVar GetParentVariable(string name, Location loc)
         {
@@ -86,20 +88,14 @@ namespace Dyalect.Compiler
         }
 
         //Search a vriable by its name, starting from current lexical scope
-        private ScopeVar GetVariable(string name, DNode node, bool err = true)
-        {
-            return GetVariable(name, currentScope, node.Location, err);
-        }
+        private ScopeVar GetVariable(string name, DNode node, bool err = true) =>
+            GetVariable(name, currentScope, node.Location, err);
 
-        private int GetVariableToAssign(string name, DNode node, bool err = true)
-        {
-            return GetVariableToAssign(name, node.Location, err);
-        }
+        private int GetVariableToAssign(string name, DNode node, bool err = true) =>
+            GetVariableToAssign(name, node.Location, err);
 
-        private ScopeVar GetVariable(string name, Location loc, bool err = true)
-        {
-            return GetVariable(name, currentScope, loc, err);
-        }
+        private ScopeVar GetVariable(string name, Location loc, bool err = true) =>
+            GetVariable(name, currentScope, loc, err);
 
         private int GetVariableToAssign(string name, Location loc, bool err = true)
         {

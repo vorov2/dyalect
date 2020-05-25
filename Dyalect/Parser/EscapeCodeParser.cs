@@ -10,6 +10,13 @@ namespace Dyalect.Parser
     {
         public static bool Parse(string fileName, Location loc, string str, List<BuildMessage> messages, out string value, out List<StringChunk> chunks)
         {
+            if (str?.Length < 2)
+            {
+                value = str;
+                chunks = null;
+                return true;
+            }
+
             var buffer = str.ToCharArray(1, str.Length - 2);
             var len = buffer.Length;
             var sb = new StringBuilder(str.Length);

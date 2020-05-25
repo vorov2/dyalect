@@ -123,6 +123,9 @@
   <data name="CodeIslandsNotAllowed" xml:space="preserve">
     <value>Code islands are not allowed.</value>
   </data>
+  <data name="InvalidApplicationArguments" xml:space="preserve">
+    <value>Invalid argument list for a function call expression.</value>
+  </data>
   <data name="InvalidBinding" xml:space="preserve">
     <value>Invalid variable declaration.</value>
   </data>
@@ -175,7 +178,7 @@
     <value>Semantic error: {0}</value>
   </data>
   <data name="TokenExpected" xml:space="preserve">
-    <value>{0} expected.</value>
+    <value>Expected token {0}.</value>
   </data>
   <data name="Undefined" xml:space="preserve">
     <value>Undefined parser error.</value>

@@ -23,17 +23,11 @@ namespace Dyalect.Linker
         {
             FileName = "lang";
             this.args = args;
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            Add("args", args ?? (DyObject)DyNil.Instance);
         }
 
         public override void Execute(ExecutionContext ctx)
         {
-            //idle
+            Add("args", args ?? (DyObject)DyNil.Instance);
         }
 
         [Function("print")]
@@ -79,27 +73,16 @@ namespace Dyalect.Linker
             return DyNil.Instance;
         }
 
-        [Function("round")]
-        public DyObject Round(ExecutionContext ctx, DyObject number, [Default(2)]DyObject digits)
-        {
-            if (number.TypeId != DyType.Float)
-                ctx.InvalidType(number);
-            else if (digits.TypeId != DyType.Integer)
-                ctx.InvalidType(digits);
-
-            return new DyFloat(Math.Round(number.GetFloat(), (int)digits.GetInteger()));
-        }
-
         [Function("readLine")]
-        public DyObject Read(ExecutionContext ctx)
+        public DyObject Read(ExecutionContext _)
         {
             return new DyString(Console.ReadLine());
         }
 
         [Function("rnd")]
-        public DyObject Randomize(ExecutionContext ctx, [Default(int.MaxValue)]DyObject max, [Default(0)]DyObject min, [Default]DyObject seed)
+        public DyObject Randomize(ExecutionContext _, [Default(int.MaxValue)]DyObject max, [Default(0)]DyObject min, [Default]DyObject seed)
         {
-            var iseed = 0;
+            int iseed;
 
             if (seed.TypeId != DyType.Nil)
                 iseed = (int)seed.GetInteger();
@@ -152,6 +135,47 @@ namespace Dyalect.Linker
             return new DyFloat(Math.Sqrt(n.GetFloat()));
         }
 
+        [Function("min")]
+        public DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
+        {
+            if (x.Type(ctx).Lt(ctx, x, y).GetBool())
+                return x;
+            else
+                return y;
+        }
+
+        [Function("max")]
+        public DyObject Max(ExecutionContext ctx, DyObject x, DyObject y)
+        {
+            if (x.Type(ctx).Gt(ctx, x, y).GetBool())
+                return x;
+            else
+                return y;
+        }
+
+        [Function("round")]
+        public DyObject Round(ExecutionContext ctx, DyObject number, [Default(2)]DyObject digits)
+        {
+            if (number.TypeId != DyType.Float)
+                ctx.InvalidType(number);
+            else if (digits.TypeId != DyType.Integer)
+                ctx.InvalidType(digits);
+
+            return new DyFloat(Math.Round(number.GetFloat(), (int)digits.GetInteger()));
+        }
+
+        [Function("sign")]
+        public DyObject Sign(ExecutionContext ctx, DyObject x)
+        {
+            if (x == DyInteger.Zero)
+                return DyInteger.Zero;
+
+            if (x.Type(ctx).Lt(ctx, x, DyInteger.Zero).GetBool())
+                return DyInteger.MinusOne;
+            else 
+                return DyInteger.One;
+        }
+
         [Function("parse")]
         public DyObject Parse(ExecutionContext ctx, DyObject expression)
         {
@@ -182,9 +206,7 @@ namespace Dyalect.Linker
         [Function("eval")]
         public DyObject Eval(ExecutionContext ctx, DyObject source, DyObject args)
         {
-            var strObj = source as DyString;
-
-            if (strObj == null)
+            if (!(source is DyString strObj))
                 return ctx.InvalidType(source);
 
             var tup = args as DyTuple;

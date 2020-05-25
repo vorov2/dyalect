@@ -1,6 +1,8 @@
 ﻿using Dyalect.Debug;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 
 namespace Dyalect.Runtime.Types
 {
@@ -9,6 +11,8 @@ namespace Dyalect.Runtime.Types
         public int Version { get; protected set; }
 
         public virtual int Count { get; protected set; }
+
+        public virtual DyObject this[int index] => GetValue(index);
 
         internal DyCollection(int typeId) : base(typeId)
         {
@@ -115,6 +119,55 @@ namespace Dyalect.Runtime.Types
         }
 
         internal override int GetCount() => Count;
+
+        public override object ChangeType(Type type)
+        {
+            if (type == Dyalect.Types.ArrayObject)
+                return ConvertToArray();
+            else if (type.IsArray)
+            {
+                var et = type.GetElementType();
+                var arr = Array.CreateInstance(et, Count);
+
+                for (var i = 0; i < arr.Length; i++)
+                    arr.SetValue(GetValue(i).ChangeType(et), i);
+
+                return arr;
+            }
+            else
+                return base.ChangeType(type);
+        }
+
+        internal DyObject[] Concat(ExecutionContext ctx, DyObject right)
+        {
+            var newArr = new List<DyObject>(GetValues());
+            var coll = DyIterator.Run(ctx, right);
+
+            if (ctx.HasErrors)
+                return Statics.EmptyDyObjects;
+
+            newArr.AddRange(coll);
+            return newArr.ToArray();
+        }
+
+        internal static DyObject[] ConcatValues(ExecutionContext ctx, DyObject values)
+        {
+            if (values == null)
+                return Statics.EmptyDyObjects;
+
+            var arr = new List<DyObject>();
+            var vals = ((DyTuple)values).Values;
+
+            foreach (var v in vals)
+            {
+                arr.AddRange(DyIterator.Run(ctx, v));
+
+                if (ctx.HasErrors)
+                    break;
+            }
+
+            return arr.ToArray();
+        }
     }
 
     internal abstract class DyCollectionTypeInfo : DyTypeInfo
