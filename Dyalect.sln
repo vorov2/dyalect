@@ -10,7 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{F07E65FE-36DA-4666-84D4-5B5D9050EB30}"
 	ProjectSection(SolutionItems) = preProject
 		Common\dy.png = Common\dy.png
+		Common\Dyalect.nuspec = Common\Dyalect.nuspec
 		Common\Meta.cs = Common\Meta.cs
+		Common\nuspec.bat = Common\nuspec.bat
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dyalect.Console", "Dyalect.Console\Dyalect.Console.csproj", "{35777D7A-C304-45E8-9323-088298491476}"
