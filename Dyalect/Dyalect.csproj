@@ -11,6 +11,14 @@
       <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
       <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
       <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+      <Version>0.14.0</Version>
+      <Copyright></Copyright>
+      <PackageLicenseExpression>MIT</PackageLicenseExpression>
+      <PackageProjectUrl>https://github.com/vorov2/dyalect</PackageProjectUrl>
+      <PackageIcon>dy.png</PackageIcon>
+      <PackageIconUrl />
+      <RepositoryUrl>https://github.com/vorov2/dyalect</RepositoryUrl>
+      <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -24,6 +32,10 @@
   <ItemGroup>
     <None Remove="Parser\Parser.cs.old" />
     <None Remove="Parser\Scanner.cs.old" />
+    <None Include="..\Common\dy.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
