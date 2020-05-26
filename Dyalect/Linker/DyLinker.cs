@@ -229,7 +229,11 @@ namespace Dyalect.Linker
                         continue;
                     td.Processed = true;
                     td.Id = composition.Types.Count;
-                    composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, td.Name, td.AutoGenConstructors));
+
+                    if (td.TypeInfoActivator == null)
+                        composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, td.Name, td.AutoGenConstructors));
+                    else
+                        composition.Types.Add(td.TypeInfoActivator(composition.Types.Count));
                 }
             }
         }

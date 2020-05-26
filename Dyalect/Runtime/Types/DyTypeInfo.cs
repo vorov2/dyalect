@@ -55,7 +55,7 @@ namespace Dyalect.Runtime.Types
 
         public int TypeCode { get; internal set; }
 
-        internal DyTypeInfo(int typeCode) : base(DyType.TypeInfo)
+        protected DyTypeInfo(int typeCode) : base(DyType.TypeInfo)
         {
             TypeCode = typeCode;
         }
