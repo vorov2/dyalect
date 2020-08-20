@@ -46,6 +46,14 @@ namespace Dyalect.Compiler
             TypeMap = unit.TypeMap;
         }
 
+        protected TypeDescriptor QueryType(string name)
+        {
+            if (!TypeMap.TryGetValue(name, out var t))
+                t = null;
+
+            return t;
+        }
+
         internal int Checksum { get; set; }
 
         internal Unit Clone(DebugInfo di) => new Unit(this, di);

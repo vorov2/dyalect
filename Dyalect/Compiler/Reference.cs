@@ -18,7 +18,7 @@ namespace Dyalect.Compiler
             LocalPath == null ? ModuleName : LocalPath + "/" + ModuleName;
 
         public bool Equals(Reference other) =>
-            !ReferenceEquals(other, null)
+            !(other is null)
             && string.Equals(LocalPath, other.LocalPath, StringComparison.OrdinalIgnoreCase)
             && string.Equals(DllName, other.DllName, StringComparison.OrdinalIgnoreCase)
             && string.Equals(ModuleName, other.ModuleName, StringComparison.OrdinalIgnoreCase);

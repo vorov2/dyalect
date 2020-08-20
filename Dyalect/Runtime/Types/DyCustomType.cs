@@ -61,7 +61,7 @@ namespace Dyalect.Runtime.Types
                 other is DyCustomType ct
                 && ct.ConstructorId == ConstructorId
                 && (ReferenceEquals(ct.Value, Value) ||
-                    (!ReferenceEquals(ct.Value, null) && ct.Value.Equals(Value)));
+                    (!(ct.Value is null) && ct.Value.Equals(Value)));
         }
     }
 

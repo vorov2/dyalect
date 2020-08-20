@@ -81,7 +81,7 @@ namespace Dyalect
 
                     if ((byt && !(bool)val)
                         || (i4 && (int)val == 0)
-                        || ReferenceEquals(val, null))
+                        || val is null)
                         continue;
 
                     var key = attr.Names?.Length > 0 ? attr.Names[0] : "<file name>";

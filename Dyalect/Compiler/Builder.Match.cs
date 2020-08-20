@@ -71,6 +71,7 @@ namespace Dyalect.Compiler
             EndScope();
         }
 
+        //Main compilation switch with all patterns
         private void BuildPattern(DPattern node, Hints hints, CompilerContext ctx)
         {
             switch (node.NodeType)
@@ -403,6 +404,8 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
+        //This is done to initialize all variables in patterns (if needed)
+        //before executing the patterns
         private void PreinitPattern(DPattern node, Hints hints)
         {
             switch (node.NodeType)
@@ -609,6 +612,7 @@ namespace Dyalect.Compiler
             return false;
         }
 
+        //Simple match consistency check
         private bool CanFollow(DPattern now, DPattern prev)
         {
             switch (prev.NodeType)

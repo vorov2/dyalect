@@ -6,6 +6,8 @@ using Dyalect.Runtime;
 using System.Reflection;
 using Dyalect.Debug;
 using Dyalect.Strings;
+using DC = Dyalect.Compiler;
+using System.Linq;
 
 namespace Dyalect.Linker
 {
@@ -22,6 +24,15 @@ namespace Dyalect.Linker
         {
             ExportList.Add(name, new ScopeVar(0 | ExportList.Count << 8, VarFlags.Foreign));
             Values.Add(obj);
+        }
+
+        internal protected void AddType<T>(Func<int, DyTypeInfo> typeActivator) where T : DyObject
+        {
+            var type = typeof(T);
+            var typeId = Types.Count;
+            var td = new TypeDescriptor(type.Name, typeId, true, typeActivator);
+            Types.Add(td);
+            TypeMap.Add(type.Name, td);
         }
 
         internal void Modify(int id, DyObject obj)
@@ -54,13 +65,15 @@ namespace Dyalect.Linker
         private DyObject ProcessMethod(string name, MethodInfo mi)
         {
             var pars = mi.GetParameters();
-            var hasContext = pars[0].ParameterType == typeof(ExecutionContext);
+            var hasContext = pars.Length > 0 && pars[0].ParameterType == typeof(ExecutionContext);
             Par[] parsMeta = null;
-            
+
             if (hasContext && pars.Length > 1)
                 parsMeta = new Par[pars.Length - 1];
             else if (!hasContext && pars.Length > 0)
                 parsMeta = new Par[pars.Length];
+            else if (pars.Length == 0)
+                parsMeta = Statics.EmptyParameters;
             
             var varArgIndex = -1;
             var simpleSignature = true;

@@ -3,6 +3,7 @@ using Dyalect.Linker;
 using Dyalect.Parser.Model;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
@@ -97,6 +98,7 @@ namespace Dyalect.Compiler
             return unit;
         }
 
+        //Main build cycle with error handling logic
         private bool TryBuild(DyCodeModel codeModel)
         {
             try
@@ -126,6 +128,7 @@ namespace Dyalect.Compiler
 
                 return Success;
             }
+            //This is thrown when an error limit is exceeded
             catch (TerminationException)
             {
                 return false;
@@ -140,6 +143,7 @@ namespace Dyalect.Compiler
 
         //If some code block usually yields a value but in this specific context
         //we don't need it we have to pop it from stack
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void PopIf(Hints hints)
         {
             if (!hints.Has(Push))
@@ -148,6 +152,7 @@ namespace Dyalect.Compiler
 
         //If some code block usually don't yield a value but in this specific context
         //we need a value we have to push a default 'nil' onto the stack
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void PushIf(Hints hints)
         {
             if (hints.Has(Push))
@@ -155,6 +160,7 @@ namespace Dyalect.Compiler
         }
 
         //This method is called to check if we really need to emit code
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool NoPush(DNode node, Hints hints)
         {
             if (!hints.Has(Push))
@@ -170,7 +176,7 @@ namespace Dyalect.Compiler
         private Exception Ice(Exception ex = null)
         {
             return new DyBuildException(
-                $"Internal compiler error: {(ex != null ? ex.Message : "Invalid operation.")}", ex);
+                $"Internal compiler error: {(ex != null ? ex.Message : "Unknown error.")}", ex);
         }
     }
 }

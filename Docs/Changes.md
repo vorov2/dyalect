@@ -1,3 +1,7 @@
+# 0.14.1
+  * Change: Code _clean-ups and optimizations._
+  * Fix: _Dyalect crushes for foreign functions without parameters_ ([Issue #340](https://github.com/vorov2/dyalect/issues/340)).
+
 # 0.14.0
   * Change: _Refactorings and enhancements in linker foreign unit infrastructure._
   * Change: _General code clean-ups and optimizations._

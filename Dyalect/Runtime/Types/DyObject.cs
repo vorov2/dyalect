@@ -8,7 +8,7 @@ namespace Dyalect.Runtime.Types
     {
         internal readonly int TypeId;
 
-        internal DyObject(int typeId)
+        protected DyObject(int typeId)
         {
             TypeId = typeId;
         }

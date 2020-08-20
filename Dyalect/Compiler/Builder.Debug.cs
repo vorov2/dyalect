@@ -38,6 +38,7 @@ namespace Dyalect.Compiler
         }
 
         //Call this to generate the first part of FunSym
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void StartFun(string name, Par[] pars, int parCount)
         {
             cw.StartFrame();
@@ -45,6 +46,7 @@ namespace Dyalect.Compiler
         }
 
         //Call this to finalized generation of FunSym
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int EndFun(int handle)
         {
             pdb.EndFunction(handle, cw.Offset);
@@ -52,6 +54,7 @@ namespace Dyalect.Compiler
         }
 
         //Generates start of any scope
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void StartScope(bool fun, Location loc)
         {
             currentScope = new Scope(fun, currentScope);
@@ -61,6 +64,7 @@ namespace Dyalect.Compiler
         }
 
         //Called when any lexical scope ends
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EndScope()
         {
             currentScope = currentScope.Parent != null ? currentScope.Parent : null;
@@ -71,6 +75,7 @@ namespace Dyalect.Compiler
 
         //Called after StartScope when lexcial code exists in runtime (such as lexical
         //scope of a function).
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void StartSection()
         {
             counters.Push(currentCounter);
@@ -78,18 +83,21 @@ namespace Dyalect.Compiler
         }
 
         //Called when actual (runtime) lexical scope ends
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EndSection()
         {
             currentCounter = counters.Pop();
         }
 
         //Generate line pragma for a string and remembers last position
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AddLinePragma(DNode node)
         {
             lastLocation = node.Location;
             pdb.AddLineSym(cw.Offset, Line(lastLocation), Col(lastLocation));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AddLinePragma(Location loc)
         {
             lastLocation = loc;
@@ -97,6 +105,7 @@ namespace Dyalect.Compiler
         }
 
         //Used only when extended debug info is generated
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AddVarPragma(string name, int address, int offset, int data)
         {
             if (isDebug)

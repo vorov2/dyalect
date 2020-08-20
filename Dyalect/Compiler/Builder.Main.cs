@@ -9,6 +9,7 @@ namespace Dyalect.Compiler
 {
     partial class Builder
     {
+        //The main compilation switch that processes all types of AST nodes
         private void Build(DNode node, Hints hints, CompilerContext ctx)
         {
             switch (node.NodeType)
