@@ -1,7 +1,7 @@
 # 0.15.0
   * Change: _[import] Change import syntax for foreign modules_ ([Issue #343](https://github.com/vorov2/dyalect/issues/343)).
   * Change: _[import] Import aliases_ ([Issue #345](https://github.com/vorov2/dyalect/issues/345)).
-  * Change: _[import] Importing modules from standard library_ ([Issue #345](https://github.com/vorov2/dyalect/issues/344)).
+  * Change: _[import] Importing modules from standard library_ ([Issue #345](https://github.com/vorov2/dyalect/issues/344  )).
 
 # 0.14.1
   * Change: Code _clean-ups and optimizations._
