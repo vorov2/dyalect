@@ -62,6 +62,8 @@ namespace Dyalect.Compiler
             }
         }
 
+        //Converts symbolic names (used when overriding operators) to special internal
+        //names, e.g. "*" becomes "op_mul"
         private string GetMethodName(string name, DFunctionDeclaration node)
         {
             switch (name)
@@ -88,6 +90,8 @@ namespace Dyalect.Compiler
             }
         }
 
+        //Compilation of function parameters with support for variable
+        //arguments and default values
         private Par[] CompileFunctionParameters(List<DParameter> pars)
         {
             var arr = new Par[pars.Count];
@@ -196,7 +200,7 @@ namespace Dyalect.Compiler
 
             //If this is a member function we add an additional system variable that
             //would return an instance of an object to which this function is coupled
-            //(same as this in C#)
+            //(same as "this" in C#)
             if (node.IsMemberFunction && !node.IsStatic)
             {
                 var va = AddVariable("this", node, data: VarFlags.Const | VarFlags.This);

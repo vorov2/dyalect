@@ -68,7 +68,7 @@
                 return false;
 
             if (ReferenceEquals(lab.Value, Value)
-                || (!ReferenceEquals(lab.Value, null) && lab.Value.Equals(Value)))
+                || (!(lab.Value is null) && lab.Value.Equals(Value)))
                 return true;
 
             return false;

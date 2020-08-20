@@ -1,6 +1,7 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Dyalect.Compiler
 {
@@ -15,6 +16,7 @@ namespace Dyalect.Compiler
 
         //Standard routine to add variables, can be used when an internal unnamed variable is need
         //which won't be visible to the user (for system purposes).
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int AddVariable()
         {
             var ret = 0 | currentCounter << 8;
@@ -22,12 +24,12 @@ namespace Dyalect.Compiler
             return ret;
         }
 
-        private int AddSystemVariable(string name) => AddVariable(name, null, -1);
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int AddVariable(string name, DNode node, int data) =>
             AddVariable(name, node != null ? node.Location : default, data);
 
         //Add a regular named variable
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int AddVariable(string name, Location loc, int data)
         {
             //Check if we already have such a variable in the local scope
@@ -88,15 +90,19 @@ namespace Dyalect.Compiler
         }
 
         //Search a vriable by its name, starting from current lexical scope
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ScopeVar GetVariable(string name, DNode node, bool err = true) =>
             GetVariable(name, currentScope, node.Location, err);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetVariableToAssign(string name, DNode node, bool err = true) =>
             GetVariableToAssign(name, node.Location, err);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ScopeVar GetVariable(string name, Location loc, bool err = true) =>
             GetVariable(name, currentScope, loc, err);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetVariableToAssign(string name, Location loc, bool err = true)
         {
             var sv = GetVariable(name, currentScope, loc, err);
@@ -134,6 +140,7 @@ namespace Dyalect.Compiler
                 return false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ScopeVar GetVariable(string name, Scope startScope, Location loc, bool err)
         {
             var cur = startScope;
@@ -183,23 +190,6 @@ namespace Dyalect.Compiler
             moduleHandle = default;
             sv = default;
             return false;
-        }
-
-        //Look for the scope with such a variable, return the firt that match
-        private Scope GetScope(string name)
-        {
-            var cur = currentScope;
-
-            do
-            {
-                if (cur.Locals.ContainsKey(name))
-                    return cur;
-
-                cur = cur.Parent;
-            }
-            while (cur != null);
-
-            return null;
         }
     }
 }
