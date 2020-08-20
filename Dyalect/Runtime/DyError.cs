@@ -100,7 +100,7 @@ namespace Dyalect.Runtime
         internal override DyObject GetDyObject() => Data ?? DyNil.Instance;
     }
 
-    internal static class ExecutionContextExtensions
+    public static class ExecutionContextExtensions
     {
         public static DyObject CollectionModified(this ExecutionContext ctx)
         {

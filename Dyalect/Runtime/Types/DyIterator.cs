@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    internal sealed class DyIterator : DyForeignFunction
+    public sealed class DyIterator : DyForeignFunction
     {
         internal sealed class IterationException : Exception { }
 
@@ -154,7 +154,7 @@ namespace Dyalect.Runtime.Types
             return iter;
         }
 
-        internal static IEnumerable<DyObject> Run(ExecutionContext ctx, DyObject val)
+        public static IEnumerable<DyObject> Run(ExecutionContext ctx, DyObject val)
         {
             if (val.TypeId == DyType.Array)
                 return ((DyArray)val).Values;

@@ -6,7 +6,7 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyObject : IEquatable<DyObject>
     {
-        internal readonly int TypeId;
+        public readonly int TypeId;
 
         protected DyObject(int typeId)
         {
