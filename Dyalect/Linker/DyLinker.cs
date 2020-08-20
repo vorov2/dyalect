@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Dyalect.Linker
 {
@@ -15,6 +16,7 @@ namespace Dyalect.Linker
         private const string EXT = ".dy";
         private const string OBJ = ".dyo";
         private readonly Lang lang;
+        private IReadOnlyDictionary<string, Type> std;
 
         protected Dictionary<Reference, Unit> UnitMap { get; set;  } = new Dictionary<Reference, Unit>();
 
@@ -41,12 +43,44 @@ namespace Dyalect.Linker
             Units.Add(null);
         }
 
+
+        private bool IsStd(string mod)
+        {
+            if (std is null)
+            {
+                Assembly asm = default;
+
+                try
+                {
+                    asm = Assembly.Load("Dyalect.Library");
+                }
+                catch (FileNotFoundException) { }
+
+                if (asm is null)
+                    std = new Dictionary<string, Type>();
+                else
+                {
+                    var t = asm.GetType("LibraryMeta");
+                    std = (IReadOnlyDictionary<string, Type>)t.GetField("Modules").GetValue(null);
+                }
+            }
+
+            return std.ContainsKey(mod);
+        }
+
         protected internal virtual Result<Unit> Link(Unit self, Reference mod)
         {
             if (!UnitMap.TryGetValue(mod, out Unit unit))
             {
                 if (mod.ModuleName == nameof(lang))
-                    unit = lang;
+                    unit = lang; 
+                else if (mod.DllName is null && mod.LocalPath is null && IsStd(mod.ModuleName))
+                {
+                    unit = LinkForeignModule(self, mod, "Dyalect.Library.dll");
+
+                    if (unit == null)
+                        AddError(LinkerError.AssemblyNotFound, mod.SourceFileName, mod.SourceLocation, mod.DllName, mod.ModuleName);
+                }
                 else if (mod.DllName != null)
                 {
                     unit = LinkForeignModule(self, mod);
