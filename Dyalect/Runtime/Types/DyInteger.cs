@@ -1,10 +1,8 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Debug;
+﻿using Dyalect.Debug;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Numerics;
 
 namespace Dyalect.Runtime.Types
 {
@@ -14,12 +12,12 @@ namespace Dyalect.Runtime.Types
         {
             private readonly long from;
             private readonly long start;
-            private readonly long to;
+            private readonly long? to;
             private readonly long step;
             private bool fst;
             private long current;
 
-            public RangeEnumerator(long from, long start, long to, long step)
+            public RangeEnumerator(long from, long start, long? to, long step)
             {
                 this.from = from;
                 this.start = start;
@@ -44,6 +42,9 @@ namespace Dyalect.Runtime.Types
                 }
 
                 current += step;
+
+                if (to == null)
+                    return true;
 
                 if (to > start)
                     return current <= to;
@@ -301,16 +302,16 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to, DyObject step)
         {
-            if (to.TypeId != DyType.Integer)
+            if (to.TypeId != DyType.Integer && to.TypeId != DyType.Nil)
                 return ctx.InvalidType(to);
 
             var ifrom = self.GetInteger();
             var istart = ifrom;
-            var ito = to.GetInteger();
-            var istep = step is DyNil ? 1L : step.GetInteger();
+            var ito = to.TypeId != DyType.Nil ? (long?)to.GetInteger() : null;
+            var istep = step.TypeId == DyType.Nil ? 1L : step.GetInteger();
 
             if (ito <= ifrom)
-                istep = -istep;
+                istep = -Math.Abs(istep);
 
             return new DyIterator(new DyInteger.RangeEnumerator(ifrom, istart, ito, istep));
         }
@@ -318,7 +319,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == "to")
-                return DyForeignFunction.Member(name, Range, -1, new Par("max"), new Par("step", DyNil.Instance));
+                return DyForeignFunction.Member(name, Range, -1, new Par("max", DyNil.Instance), new Par("step", DyNil.Instance));
 
             return base.GetMember(name, ctx);
         }
