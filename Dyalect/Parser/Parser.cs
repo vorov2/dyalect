@@ -210,9 +210,16 @@ namespace Dyalect.Parser
 
 	void Import() {
 		Expect(64);
-		var inc = new DImport(t); Imports.Add(inc); string lastName = null; 
+		var inc = new DImport(t); Imports.Add(inc); 
 		ImportToken(out var str);
-		lastName = str; 
+		var lastName = str; 
+		if (la.kind == 26) {
+			Get();
+			ImportToken(out str);
+			inc.Alias = lastName;
+			lastName = str;
+			
+		}
 		while (la.kind == 50) {
 			Get();
 			ImportToken(out str);
@@ -223,13 +230,7 @@ namespace Dyalect.Parser
 			lastName = str;
 			
 		}
-		inc.ModuleName = lastName; if (la.AfterEol) return; 
-		if (la.kind == 1) {
-			if (la.AfterEol) return; 
-			Get();
-			inc.Alias = t.val;
-			
-		}
+		inc.ModuleName = lastName; 
 	}
 
 	void Type(out DNode node) {

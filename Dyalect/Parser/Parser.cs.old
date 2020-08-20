@@ -193,17 +193,17 @@ namespace Dyalect.Parser
 	}
 
 	void ImportToken(out string str) {
-		string val = ""; 
+		str = ""; 
 		if (la.kind == 5) {
 			Get();
-			val = ParseSimpleString(); 
+			str = ParseSimpleString(); 
 		} else if (la.kind == 1) {
 			Get();
-			val = t.val; 
+			str = t.val; 
 			while (la.kind == 23) {
 				Get();
 				Expect(1);
-				val += string.Concat(".", t.val); 
+				str += string.Concat(".", t.val); 
 			}
 		} else SynErr(87);
 	}
@@ -213,6 +213,13 @@ namespace Dyalect.Parser
 		var inc = new DImport(t); Imports.Add(inc); string lastName = null; 
 		ImportToken(out var str);
 		lastName = str; 
+		if (la.kind == 26) {
+			Get();
+			ImportToken(out str);
+			inc.Alias = lastName;
+			lastName = str;
+			
+		}
 		while (la.kind == 50) {
 			Get();
 			ImportToken(out str);
@@ -221,13 +228,6 @@ namespace Dyalect.Parser
 			else
 			   inc.LocalPath = lastName;
 			lastName = str;
-			
-		}
-		inc.ModuleName = lastName; if (la.AfterEol) return; 
-		if (la.kind == 1) {
-			if (la.AfterEol) return; 
-			Get();
-			inc.Alias = t.val;
 			
 		}
 	}

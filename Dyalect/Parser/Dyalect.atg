@@ -115,8 +115,16 @@ PRODUCTIONS
 
     Import =
         "import"
-        (. var inc = new DImport(t); Imports.Add(inc); string lastName = null; .)
-        ImportToken<out var str> (. lastName = str; .)
+        (. var inc = new DImport(t); Imports.Add(inc); .)
+        ImportToken<out var str> (. var lastName = str; .)
+        [
+            "="
+            ImportToken<out str>
+            (.
+                inc.Alias = lastName;
+                lastName = str;
+            .)
+        ]
         {
             "/"
             ImportToken<out str>
@@ -128,14 +136,7 @@ PRODUCTIONS
                 lastName = str;
             .)
         }
-        (. inc.ModuleName = lastName; if (la.AfterEol) return; .)
-        [
-            (. if (la.AfterEol) return; .)
-            identToken
-            (.
-                inc.Alias = t.val;
-            .)
-        ].
+        (. inc.ModuleName = lastName; .).
 
     Type<out DNode node> =
         (. DFunctionDeclaration f = null; .)
