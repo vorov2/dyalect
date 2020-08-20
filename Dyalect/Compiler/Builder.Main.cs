@@ -1,7 +1,9 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
 using Dyalect.Runtime;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using static Dyalect.Compiler.Hints;
 
@@ -482,7 +484,26 @@ namespace Dyalect.Compiler
 
         private void BuildImport(DImport node, CompilerContext ctx)
         {
-            var r = new Reference(node.ModuleName, node.LocalPath, node.Dll, node.Location, unit.FileName);
+            var localPath = node.LocalPath;
+            string dll = default;
+
+            if (!(localPath is null) && localPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+            {
+                var idx = localPath.LastIndexOf('/');
+                
+                if (idx != -1)
+                {
+                    dll = localPath.Substring(idx + 1);
+                    localPath = localPath.Substring(0, idx);
+                }
+                else
+                {
+                    dll = localPath;
+                    localPath = null;
+                }
+            }
+
+            var r = new Reference(node.ModuleName, localPath, dll, node.Location, unit.FileName);
             var res = linker.Link(unit, r);
 
             if (res.Success)

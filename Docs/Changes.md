@@ -1,3 +1,6 @@
+# 0.15.0
+  * Change: _[import] Change import syntax for foreign modules_ ([Issue #343](https://github.com/vorov2/dyalect/issues/343)).
+
 # 0.14.1
   * Change: Code _clean-ups and optimizations._
   * Fix: _Dyalect crushes for foreign functions without parameters_ ([Issue #340](https://github.com/vorov2/dyalect/issues/340)).

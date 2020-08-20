@@ -124,7 +124,7 @@
     <value>Module "{0}" is not defined in an assembly "{1}".</value>
   </data>
   <data name="AssemblyNotFound" xml:space="preserve">
-    <value>Unable to find an assembly "{0}" (for a reference module "{1}"). </value>
+    <value>Unable to find an assembly "{0}" (for a referenced module "{1}"). </value>
   </data>
   <data name="ChecksumValidationFailed" xml:space="preserve">
     <value>Checksum validation of dependency "{0}" failed for module "{1}". </value>

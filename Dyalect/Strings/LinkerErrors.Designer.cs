@@ -79,7 +79,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to find an assembly &quot;{0}&quot; (for a reference module &quot;{1}&quot;). .
+        ///   Looks up a localized string similar to Unable to find an assembly &quot;{0}&quot; (for a referenced module &quot;{1}&quot;). .
         /// </summary>
         internal static string AssemblyNotFound {
             get {
