@@ -2,6 +2,7 @@
 using Dyalect.Debug;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Numerics;
 
@@ -298,7 +299,7 @@ namespace Dyalect.Runtime.Types
             new DyString(arg.GetInteger().ToString(CI.NumberFormat));
         #endregion
 
-        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
+        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to, DyObject step)
         {
             if (to.TypeId != DyType.Integer)
                 return ctx.InvalidType(to);
@@ -306,14 +307,18 @@ namespace Dyalect.Runtime.Types
             var ifrom = self.GetInteger();
             var istart = ifrom;
             var ito = to.GetInteger();
-            var step = ito > ifrom ? 1 : -1;
-            return new DyIterator(new DyInteger.RangeEnumerator(ifrom, istart, ito, step));
+            var istep = step is DyNil ? 1L : step.GetInteger();
+
+            if (ito <= ifrom)
+                istep = -istep;
+
+            return new DyIterator(new DyInteger.RangeEnumerator(ifrom, istart, ito, istep));
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == "to")
-                return DyForeignFunction.Member(name, Range, -1, new Par("value"));
+                return DyForeignFunction.Member(name, Range, -1, new Par("max"), new Par("step", DyNil.Instance));
 
             return base.GetMember(name, ctx);
         }

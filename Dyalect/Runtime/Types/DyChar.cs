@@ -147,7 +147,7 @@ namespace Dyalect.Runtime.Types
         }
         #endregion
 
-        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
+        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to, DyObject step)
         {
             if (to.TypeId != DyType.Char)
                 return ctx.InvalidType(to);
@@ -155,15 +155,19 @@ namespace Dyalect.Runtime.Types
             var ifrom = self.GetChar();
             var istart = ifrom;
             var ito = to.GetChar();
-            var step = ito > ifrom ? 1 : -1;
-            return new DyIterator(new DyChar.RangeEnumerator(ifrom, istart, ito, step));
+            var istep = step is DyNil ? 1 : (int)step.GetInteger();
+
+            if (ito <= ifrom)
+                istep = -istep;
+
+            return new DyIterator(new DyChar.RangeEnumerator(ifrom, istart, ito, istep));
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             return name switch
             {
-                "to" => DyForeignFunction.Member(name, Range, -1, new Par("value")),
+                "to" => DyForeignFunction.Member(name, Range, -1, new Par("max"), new Par("step", DyNil.Instance)),
                 "isLower" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLower(c.GetChar())),
                 "isUpper" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsUpper(c.GetChar())),
                 "isControl" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsControl(c.GetChar())),

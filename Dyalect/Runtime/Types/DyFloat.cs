@@ -212,23 +212,26 @@ namespace Dyalect.Runtime.Types
         }
         #endregion
 
-        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
+        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to, DyObject step)
         {
-            if (to.TypeId != DyType.Float)
+            if (to.TypeId != DyType.Float && to.TypeId != DyType.Integer)
                 return ctx.InvalidType(to);
 
             var ifrom = self.GetFloat();
             var istart = ifrom;
             var ito = to.GetFloat();
-            var step = ito > ifrom ? 1.0 : -1.0;
+            var istep = step is DyNil ? 1.0D : step.GetFloat();
 
-            return new DyIterator(new DyFloat.RangeEnumerator(ifrom, istart, ito, step));
+            if (ito <= ifrom)
+                istep = -istep;
+
+            return new DyIterator(new DyFloat.RangeEnumerator(ifrom, istart, ito, istep));
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "to" => DyForeignFunction.Member(name, Range, -1, new Par("value")),
+                "to" => DyForeignFunction.Member(name, Range, -1, new Par("max"), new Par("step", DyNil.Instance)),
                 "isNaN" => DyForeignFunction.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
                 _ => base.GetMember(name, ctx)
             };

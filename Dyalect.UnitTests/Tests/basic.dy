@@ -395,3 +395,13 @@ func evalTest() { //Issue 269
     var z = eval("x + y", (x= 2, y= 3) )
     assert(5, z)
 }
+
+func intRangeTest1() {
+    assert([0,1,2,3,4,5], 0.to(5).toArray())
+    assert([0,2,4], 0.to(5, 2).toArray())
+}
+
+func floatRangeTest1() {
+    assert([0.0,1.0,2.0,3.0,4.0,5.0], 0.0.to(5).toArray())
+    assert([0.0,0.02,0.04], 0.0.to(0.05, 0.02).toArray())
+}
