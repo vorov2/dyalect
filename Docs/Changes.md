@@ -3,6 +3,7 @@
   * Change: _[import] Import aliases_ ([Issue #345](https://github.com/vorov2/dyalect/issues/345)).
   * Change: _[import] Importing modules from standard library_ ([Issue #344](https://github.com/vorov2/dyalect/issues/344)).
   * Change: _Extend support for ranges to be able to specify a step_ ([Issue #346](https://github.com/vorov2/dyalect/issues/346)).
+  * Add: _Add a support for exporting new data types from C# foreign modules_ ([Issue #339](https://github.com/vorov2/dyalect/issues/339)).
 
 # 0.14.1
   * Change: Code _clean-ups and optimizations._
