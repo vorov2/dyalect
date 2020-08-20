@@ -12,10 +12,10 @@ namespace Dyalect.Runtime.Types
     {
         internal sealed class RangeEnumerator : IEnumerator<DyObject>
         {
-            private long from;
-            private long start;
-            private long to;
-            private long step;
+            private readonly long from;
+            private readonly long start;
+            private readonly long to;
+            private readonly long step;
             private bool fst;
             private long current;
 
@@ -43,7 +43,7 @@ namespace Dyalect.Runtime.Types
                     return true;
                 }
 
-                current = current + step;
+                current += step;
 
                 if (to > start)
                     return current <= to;

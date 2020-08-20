@@ -89,13 +89,13 @@ namespace Dyalect.Parser
                                     if (i + 3 < len)
                                     {
                                         var ns = new string(buffer, i + 1, 4);
-                                        var ci = 0;
-
+                                        
                                         if (ns[0] == ' ' || ns[0] == '\t' || ns[3] == ' ' || ns[3] == '\t')
                                             return InvalidLiteral(messages, loc, fileName, i);
 
-                                        if (!int.TryParse(ns, NumberStyles.HexNumber,
-                                            CI.Default.NumberFormat, out ci))
+                                        int ci;
+
+                                        if (!int.TryParse(ns, NumberStyles.HexNumber, CI.Default.NumberFormat, out ci))
                                             return InvalidLiteral(messages, loc, fileName, i);
                                         else
                                         {

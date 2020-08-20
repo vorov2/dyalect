@@ -51,10 +51,12 @@ namespace Dyalect.Runtime
 
         public FastList<T> Clone()
         {
-            var list = new FastList<T>();
-            list.array = (T[])array.Clone();
-            list.size = size;
-            list.initialSize = initialSize;
+            var list = new FastList<T>
+            {
+                array = (T[])array.Clone(),
+                size = size,
+                initialSize = initialSize
+            };
             return list;
         }
 
@@ -129,7 +131,7 @@ namespace Dyalect.Runtime
                 if (index < size)
                     Array.Copy(array, index + 1, array, index, size - index);
 
-                array[size] = default(T);
+                array[size] = default;
                 return true;
             }
 

@@ -31,7 +31,7 @@ namespace Dyalect.Runtime.Types
 
         internal virtual DyObject Call0(ExecutionContext ctx) => Call(ctx, Statics.EmptyDyObjects);
 
-        internal int GetParameterIndex(string name, ExecutionContext ctx)
+        internal int GetParameterIndex(string name)
         {
             for (var i = 0; i < Parameters.Length; i++)
             {

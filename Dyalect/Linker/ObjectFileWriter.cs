@@ -11,9 +11,9 @@ namespace Dyalect.Linker
     {
         public static void Write(string fileName, Unit unit)
         {
-            using (var stream = File.OpenWrite(fileName))
-            using (var writer = new BinaryWriter(stream))
-                Write(writer, unit);
+            using var stream = File.OpenWrite(fileName);
+            using var writer = new BinaryWriter(stream);
+            Write(writer, unit);
         }
 
         private static void Write(BinaryWriter writer, Unit unit)
@@ -71,7 +71,6 @@ namespace Dyalect.Linker
 
         private static void WriteIndex(BinaryWriter writer, IEnumerable<DyObject> table)
         {
-            var len = table.Count();
             writer.Write(table.Count());
 
             foreach (var o in table)

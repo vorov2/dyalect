@@ -406,7 +406,7 @@ namespace Dyalect.Runtime.Types
             return ctx.StaticOperationNotSupported(ctx.Composition.Members[nameId], TypeName);
         }
 
-        internal void SetStaticMember(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
+        internal void SetStaticMember(int nameId, DyObject value, Unit unit, ExecutionContext _)
         {
             var func = value as DyFunction;
             nameId = unit.MemberIds[nameId];

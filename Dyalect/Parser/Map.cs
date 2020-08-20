@@ -4,7 +4,7 @@ namespace Dyalect.Parser
 {
     internal sealed class Map
     {
-        private Dictionary<int, int> map;
+        private readonly Dictionary<int, int> map;
 
         public Map(int capacity)
         {

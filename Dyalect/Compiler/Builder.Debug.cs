@@ -14,10 +14,10 @@ namespace Dyalect.Compiler
         private Location lastLocation;
 
         //Corrections used for compilation of code islands inside strings
-        private Stack<Location> corrections = new Stack<Location>();
+        private readonly Stack<Location> corrections = new Stack<Location>();
 
-        private DebugWriter pdb; //Symbol writer
-        private bool isDebug; //Determines if we need to generate extended debug info
+        private readonly DebugWriter pdb; //Symbol writer
+        private readonly bool isDebug; //Determines if we need to generate extended debug info
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int Line(Location loc)
@@ -39,7 +39,7 @@ namespace Dyalect.Compiler
 
         //Call this to generate the first part of FunSym
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void StartFun(string name, Par[] pars, int parCount)
+        private void StartFun(string name, Par[] pars)
         {
             cw.StartFrame();
             pdb.StartFunction(name, cw.Offset, pars);
@@ -67,7 +67,7 @@ namespace Dyalect.Compiler
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EndScope()
         {
-            currentScope = currentScope.Parent != null ? currentScope.Parent : null;
+            currentScope = currentScope.Parent ?? null;
 
             if (isDebug)
                 pdb.EndScope(cw.Offset, Line(lastLocation), Col(lastLocation));

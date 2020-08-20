@@ -251,7 +251,7 @@ namespace Dyalect.Runtime.Types
             return new DyArray(list);
         }
 
-        private DyObject SplitByChars(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject SplitByChars(ExecutionContext _, DyObject self, DyObject[] args)
         {
             var xs = new char[args.Length];
 

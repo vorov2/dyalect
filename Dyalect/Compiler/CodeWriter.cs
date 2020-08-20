@@ -6,15 +6,15 @@ namespace Dyalect.Compiler
 {
     internal sealed class CodeWriter
     {
-        private List<Op> ops;
-        private Stack<StackSize> locals;
-        private Unit frame;
-        private List<int> labels;
-        private List<int> fixups;
-        private Dictionary<string, int> strings;
-        private Dictionary<double, int> floats;
-        private Dictionary<long, int> integers;
-        private Dictionary<char, int> chars;
+        private readonly List<Op> ops;
+        private readonly Stack<StackSize> locals;
+        private readonly Unit frame;
+        private readonly List<int> labels;
+        private readonly List<int> fixups;
+        private readonly Dictionary<string, int> strings;
+        private readonly Dictionary<double, int> floats;
+        private readonly Dictionary<long, int> integers;
+        private readonly Dictionary<char, int> chars;
 
         private sealed class StackSize
         {

@@ -10,10 +10,10 @@ namespace Dyalect.Runtime.Types
     {
         internal sealed class RangeEnumerator : IEnumerator<DyObject>
         {
-            private char from;
-            private char start;
-            private char to;
-            private int step;
+            private readonly char from;
+            private readonly char start;
+            private readonly char to;
+            private readonly int step;
             private bool fst;
             private char current;
 

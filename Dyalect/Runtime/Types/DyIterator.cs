@@ -17,7 +17,7 @@ namespace Dyalect.Runtime.Types
             private readonly DyObject[] iterators;
             private int nextIterator = 0;
             private IEnumerator<DyObject> current;
-            private ExecutionContext ctx;
+            private readonly ExecutionContext ctx;
 
             public MultiPartEnumerator(ExecutionContext ctx, params DyObject[] iterators)
             {
@@ -91,8 +91,10 @@ namespace Dyalect.Runtime.Types
 
         internal static DyFunction CreateIterator(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals)
         {
-            var vars = new FastList<DyObject[]>(captures);
-            vars.Add(locals);
+            var vars = new FastList<DyObject[]>(captures)
+            {
+                locals
+            };
             return new DyNativeIterator(unitId, handle, vars);
         }
 

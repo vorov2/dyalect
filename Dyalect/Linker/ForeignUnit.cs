@@ -1,13 +1,11 @@
 ﻿using Dyalect.Compiler;
-using Dyalect.Runtime.Types;
-using System.Collections.Generic;
-using System;
-using Dyalect.Runtime;
-using System.Reflection;
 using Dyalect.Debug;
+using Dyalect.Runtime;
+using Dyalect.Runtime.Types;
 using Dyalect.Strings;
-using DC = Dyalect.Compiler;
-using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Dyalect.Linker
 {

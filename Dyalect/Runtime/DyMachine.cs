@@ -148,14 +148,14 @@ namespace Dyalect.Runtime
                         evalStack.Push(locals[op.Data]);
                         break;
                     case OpCode.Pushvar:
-                        right = function.Captures[function.Captures.Count - (op.Data & byte.MaxValue)][op.Data >> 8];
+                        right = function.Captures[^(op.Data & byte.MaxValue)][op.Data >> 8];
                         evalStack.Push(right);
                         break;
                     case OpCode.Pushext:
                         evalStack.Push(ctx.Units[unit.UnitIds[op.Data & byte.MaxValue]][op.Data >> 8]);
                         break;
                     case OpCode.Popvar:
-                        function.Captures[function.Captures.Count - (op.Data & byte.MaxValue)][op.Data >> 8] = evalStack.Pop();
+                        function.Captures[^(op.Data & byte.MaxValue)][op.Data >> 8] = evalStack.Pop();
                         break;
                     case OpCode.Br:
                         offset = op.Data;
@@ -498,7 +498,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.FunArgNm:
                         {
-                            var idx = ((DyFunction)evalStack.Peek(2)).GetParameterIndex(unit.IndexedStrings[op.Data].Value, ctx);
+                            var idx = ((DyFunction)evalStack.Peek(2)).GetParameterIndex(unit.IndexedStrings[op.Data].Value);
                             if (idx == -1)
                             {
                                 ctx.ArgumentNotFound(((DyFunction)evalStack.Peek(2)).FunctionName, unit.IndexedStrings[op.Data].Value);

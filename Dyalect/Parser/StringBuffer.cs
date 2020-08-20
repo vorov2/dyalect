@@ -59,7 +59,7 @@
             }
         }
 
-        private string fileName;
+        private readonly string fileName;
         public override string FileName => fileName;
     }
 }

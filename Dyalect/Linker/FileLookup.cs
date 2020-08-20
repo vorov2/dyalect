@@ -7,10 +7,10 @@ namespace Dyalect.Linker
     {
         private const string LIBDIR = "lib";
 
-        private string[] startupPaths;
-        private string[] standardPaths;
-        private string[] systemPaths;
-        private string[] additionalPaths;
+        private readonly string[] startupPaths;
+        private readonly string[] standardPaths;
+        private readonly string[] systemPaths;
+        private readonly string[] additionalPaths;
 
         private FileLookup(string[] startupPaths, string[] standardPaths, string[] systemPaths, string[] additionalPaths)
         {

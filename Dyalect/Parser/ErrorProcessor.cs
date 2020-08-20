@@ -8,7 +8,7 @@ namespace Dyalect.Parser
 {
     internal static class ErrorProcessor
     {
-        private static Dictionary<string, ParserError> errors =
+        private static readonly Dictionary<string, ParserError> errors =
             new Dictionary<string, ParserError>
             {
                  { "invalid StandardOperators", InvalidStandardOperators }
@@ -38,7 +38,7 @@ namespace Dyalect.Parser
                 ,{ "??? expected", Undefined }
             };
 
-        private static Dictionary<string, string> tokens =
+        private static readonly Dictionary<string, string> tokens =
             new Dictionary<string, string>
             {
                  { "identToken", "identifier" }
@@ -49,6 +49,7 @@ namespace Dyalect.Parser
                 ,{ "verbatimStringToken", "multiline string literal" }
                 ,{ "charToken", "char literal" }
                 ,{ "implicitToken", "implicit" }
+                ,{ "inToken", "in" }
                 ,{ "varToken", "var" }
                 ,{ "constToken", "const" }
                 ,{ "funcToken", "func" }

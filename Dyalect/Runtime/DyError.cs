@@ -2,7 +2,6 @@
 using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
 
 namespace Dyalect.Runtime

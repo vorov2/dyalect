@@ -62,13 +62,13 @@ namespace Dyalect.Linker
 
         private static void ReadIndices(BinaryReader reader, Unit unit)
         {
-            unit.IndexedStrings.AddRange(ReadIndex<DyString>(reader, unit));
-            unit.IndexedIntegers.AddRange(ReadIndex<DyInteger>(reader, unit));
-            unit.IndexedFloats.AddRange(ReadIndex<DyFloat>(reader, unit));
-            unit.IndexedChars.AddRange(ReadIndex<DyChar>(reader, unit));
+            unit.IndexedStrings.AddRange(ReadIndex<DyString>(reader));
+            unit.IndexedIntegers.AddRange(ReadIndex<DyInteger>(reader));
+            unit.IndexedFloats.AddRange(ReadIndex<DyFloat>(reader));
+            unit.IndexedChars.AddRange(ReadIndex<DyChar>(reader));
         }
 
-        private static IEnumerable<T> ReadIndex<T>(BinaryReader reader, Unit unit) where T : DyObject
+        private static IEnumerable<T> ReadIndex<T>(BinaryReader reader) where T : DyObject
         {
             var count = reader.ReadInt32();
 
@@ -108,7 +108,7 @@ namespace Dyalect.Linker
         private static void ReadGlobalScope(BinaryReader reader, Unit unit)
         {
             var count = reader.ReadInt32();
-            unit.GlobalScope = new Scope(false, default(Scope));
+            unit.GlobalScope = new Scope(false, default);
 
             for (var i = 0; i < count; i++)
             {
@@ -132,19 +132,20 @@ namespace Dyalect.Linker
         private static void ReadReferences(BinaryReader reader, Unit unit)
         {
             var refs = reader.ReadInt32();
-            var str = "";
-
             for (var i = 0; i < refs; i++)
             {
                 var checksum = reader.ReadInt32();
+                string str;
                 var r = new Reference(
-                        reader.ReadString(),
-                        (str = reader.ReadString()).Length == 0 ? null : str,
-                        (str = reader.ReadString()).Length == 0 ? null : str,
-                        new Parser.Location(reader.ReadInt32(), reader.ReadInt32()),
-                        reader.ReadString()
-                    );
-                r.Checksum = checksum;
+                    reader.ReadString(),
+                    (str = reader.ReadString()).Length == 0 ? null : str,
+                    (str = reader.ReadString()).Length == 0 ? null : str,
+                    new Parser.Location(reader.ReadInt32(), reader.ReadInt32()),
+                    reader.ReadString()
+                )
+                {
+                    Checksum = checksum
+                };
                 unit.References.Add(r);
             }
         }
@@ -184,49 +185,57 @@ namespace Dyalect.Linker
             var scopes = reader.ReadInt32();
             for (var i = 0; i < scopes; i++)
             {
-                var s = new ScopeSym();
-                s.Index = reader.ReadInt32();
-                s.ParentIndex = reader.ReadInt32();
-                s.StartOffset = reader.ReadInt32();
-                s.EndOffset = reader.ReadInt32();
-                s.StartLine = reader.ReadInt32();
-                s.StartColumn = reader.ReadInt32();
-                s.EndLine = reader.ReadInt32();
-                s.EndColumn = reader.ReadInt32();
+                var s = new ScopeSym
+                {
+                    Index = reader.ReadInt32(),
+                    ParentIndex = reader.ReadInt32(),
+                    StartOffset = reader.ReadInt32(),
+                    EndOffset = reader.ReadInt32(),
+                    StartLine = reader.ReadInt32(),
+                    StartColumn = reader.ReadInt32(),
+                    EndLine = reader.ReadInt32(),
+                    EndColumn = reader.ReadInt32()
+                };
                 di.Scopes.Add(s);
             }
 
             var lines = reader.ReadInt32();
             for (var i = 0; i < lines; i++)
             {
-                var l = new LineSym();
-                l.Offset = reader.ReadInt32();
-                l.Line = reader.ReadInt32();
-                l.Column = reader.ReadInt32();
+                var l = new LineSym
+                {
+                    Offset = reader.ReadInt32(),
+                    Line = reader.ReadInt32(),
+                    Column = reader.ReadInt32()
+                };
                 di.Lines.Add(l);
             }
 
             var vars = reader.ReadInt32();
             for (var i = 0; i < vars; i++)
             {
-                var v = new VarSym();
-                v.Name = reader.ReadString();
-                v.Address = reader.ReadInt32();
-                v.Offset = reader.ReadInt32();
-                v.Scope = reader.ReadInt32();
-                v.Flags = reader.ReadInt32();
-                v.Data = reader.ReadInt32();
+                var v = new VarSym
+                {
+                    Name = reader.ReadString(),
+                    Address = reader.ReadInt32(),
+                    Offset = reader.ReadInt32(),
+                    Scope = reader.ReadInt32(),
+                    Flags = reader.ReadInt32(),
+                    Data = reader.ReadInt32()
+                };
                 di.Vars.Add(v);
             }
 
             var funs = reader.ReadInt32();
             for (var i = 0; i < funs; i++)
             {
-                var f = new FunSym();
-                f.Name = reader.ReadString();
-                f.Handle = reader.ReadInt32();
-                f.StartOffset = reader.ReadInt32();
-                f.EndOffset = reader.ReadInt32();
+                var f = new FunSym
+                {
+                    Name = reader.ReadString(),
+                    Handle = reader.ReadInt32(),
+                    StartOffset = reader.ReadInt32(),
+                    EndOffset = reader.ReadInt32()
+                };
 
                 var pars = reader.ReadInt32();
                 f.Parameters = new Par[pars];
