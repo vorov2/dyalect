@@ -13,12 +13,12 @@ namespace Dyalect.Runtime.Types
         {
             private readonly char from;
             private readonly char start;
-            private readonly char? to;
+            private readonly char to;
             private readonly int step;
             private bool fst;
             private char current;
 
-            public RangeEnumerator(char from, char start, char? to, int step)
+            public RangeEnumerator(char from, char start, char to, int step)
             {
                 this.from = from;
                 this.start = start;
@@ -43,9 +43,6 @@ namespace Dyalect.Runtime.Types
                 }
 
                 current = (char)(current + step);
-
-                if (to == null)
-                    return true;
 
                 if (to > start)
                     return current <= to;
@@ -153,20 +150,20 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to, DyObject step)
         {
-            if (to.TypeId != DyType.Char && to.TypeId != DyType.Nil)
+            if (to.TypeId != DyType.Char)
                 return ctx.InvalidType(to);
 
             var ifrom = self.GetChar();
             var istart = ifrom;
-            var ito = to.TypeId == DyType.Nil ? null : (char?)to.GetChar();
+            var ito = to.GetChar();
             var istep = step.TypeId == DyType.Nil ? 1 : (int)step.GetInteger();
 
             if (ito <= ifrom)
                 istep = -Math.Abs(istep);
             
             if (istep == 0
-                || (istep < 0 && ito != null && ito > ifrom)
-                || (istep > 0 && ito != null && ito < ifrom))
+                || (istep < 0 && ito > ifrom)
+                || (istep > 0 && ito < ifrom))
                 return ctx.InvalidRange();
 
             return new DyIterator(new DyChar.RangeEnumerator(ifrom, istart, ito, istep));
