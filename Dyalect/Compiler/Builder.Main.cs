@@ -501,6 +501,11 @@ namespace Dyalect.Compiler
                     localPath = null;
                 }
             }
+            else if (localPath == "std")
+            {
+                dll = "Dyalect.Library.dll";
+                localPath = null;
+            }
 
             var r = new Reference(node.ModuleName, localPath, dll, node.Location, unit.FileName);
             var res = linker.Link(unit, r);

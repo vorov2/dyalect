@@ -14,10 +14,4 @@ internal static class LibraryMeta
     public const string Copyright = "Copyright (c) Vasily Voronkov 2020";
 
     public const string Trademark = "Vasily Voronkov";
-
-    public static readonly IReadOnlyDictionary<string, System.Type> Modules = new Dictionary<string, System.Type>
-    {
-         { "core", typeof(Core) }
-        ,{ "math", typeof(Math) }
-    };
 }

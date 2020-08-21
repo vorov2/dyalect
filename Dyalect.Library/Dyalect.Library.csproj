@@ -9,7 +9,8 @@
       <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
       <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
       <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-      <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute> 
+      <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+      <AssemblyName>Dyalect.Library</AssemblyName> 
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
