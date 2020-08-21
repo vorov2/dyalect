@@ -340,18 +340,15 @@ func antiprimeTest() {
 
 func namesOfGodTest() {
     var cache = [[1]]
-    func min(x, y) {
-        if x < y {
-            x
-        } else {
-            y
-        }
-    }
     func namesOfGod(n) {
         for l in cache.len()..n {
             var r = [0]
-            for x in 1..l {
-                r.add(r[r.len() - 1] + cache[l - x][min(x, l-x)])
+            if l == 1 {
+                r.add(r[r.len() - 1] + cache[0][0])
+            } else {
+                for x in 1..l {
+                    r.add(r[r.len() - 1] + cache[l - x][min(x, l-x)])
+                }
             }
             cache.add(r)
         }

@@ -35,5 +35,7 @@ namespace Dyalect.Debug
             Value = null;
             IsVarArg = false;
         }
+
+        public override string ToString() => Name;
     }
 }

@@ -46,7 +46,9 @@ namespace Dyalect.Runtime
 
         KeyNotFound = 618,
 
-        KeyAlreadyPresent = 619
+        KeyAlreadyPresent = 619,
+
+        InvalidRange = 620
     }
 
     public class DyError
@@ -175,6 +177,12 @@ namespace Dyalect.Runtime
         {
             ctx.Error = new DyError(DyErrorCode.InvalidType,
                 ("TypeName", value.TypeName(ctx)));
+            return DyNil.Instance;
+        }
+
+        public static DyObject InvalidRange(this ExecutionContext ctx)
+        {
+            ctx.Error = new DyError(DyErrorCode.InvalidRange);
             return DyNil.Instance;
         }
 

@@ -229,6 +229,11 @@ namespace Dyalect.Runtime.Types
             if (ito <= ifrom)
                 istep = -Math.Abs(istep);
 
+            if (istep == 0
+                || (istep < 0 && ito != null && ito > ifrom)
+                || (istep > 0 && ito != null && ito < ifrom))
+                return ctx.InvalidRange();
+
             return new DyIterator(new DyFloat.RangeEnumerator(ifrom, istart, ito, istep));
         }
 

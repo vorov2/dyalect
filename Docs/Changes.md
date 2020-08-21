@@ -4,10 +4,11 @@
   * Change: _[import] Importing modules from standard library_ ([Issue #344](https://github.com/vorov2/dyalect/issues/344)).
   * Change: _Extend support for ranges to be able to specify a step_ ([Issue #346](https://github.com/vorov2/dyalect/issues/346)).
   * Add: _Add a support for exporting new data types from C# foreign modules_ ([Issue #339](https://github.com/vorov2/dyalect/issues/339)).
+  * Fixed: _Ranges are not checked for consistency_ ([Issue #349](https://github.com/vorov2/dyalect/issues/349)).
 
 # 0.14.1
   * Change: Code _clean-ups and optimizations._
-  * Fix: _Dyalect crushes for foreign functions without parameters_ ([Issue #340](https://github.com/vorov2/dyalect/issues/340)).
+  * Fixed: _Dyalect crushes for foreign functions without parameters_ ([Issue #340](https://github.com/vorov2/dyalect/issues/340)).
 
 # 0.14.0
   * Change: _Refactorings and enhancements in linker foreign unit infrastructure._

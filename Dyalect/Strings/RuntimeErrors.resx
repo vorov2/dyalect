@@ -174,4 +174,7 @@
   <data name="KeyAlreadyPresent" xml:space="preserve">
     <value>Key "%Key%" is already present in the dictionary.</value>
   </data>
+  <data name="InvalidRange" xml:space="preserve">
+    <value>Range is invalid.</value>
+  </data>
 </root>
