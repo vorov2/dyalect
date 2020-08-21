@@ -101,8 +101,13 @@ namespace Dyalect
 
                 if (string.IsNullOrWhiteSpace(outFile))
                     outFile = Path.Combine(Path.GetDirectoryName(f), Path.GetFileNameWithoutExtension(f) + ".dyo");
-                else if (Directory.Exists(outFile))
+                else
+                {
+                    if (!Directory.Exists(outFile))
+                        Directory.CreateDirectory(outFile);
+
                     outFile = Path.Combine(outFile, Path.GetFileNameWithoutExtension(f) + ".dyo");
+                }
 
                 if (!File.Exists(f) || !ctx.Compile(f, out var unit))
                 {
