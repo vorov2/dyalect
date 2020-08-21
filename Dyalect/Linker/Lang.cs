@@ -30,6 +30,11 @@ namespace Dyalect.Linker
             Add("args", args ?? (DyObject)DyNil.Instance);
         }
 
+        //public DyObject Enum(ExecutionContext ctx, DyObject from, DyObject to, [Default]DyObject step)
+        //{
+
+        //}
+
         [Function("print")]
         public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
         {
@@ -151,6 +156,17 @@ namespace Dyalect.Linker
                 return x;
             else
                 return y;
+        }
+
+        [Function("abs")]
+        public DyObject Abs(ExecutionContext ctx, DyObject value)
+        {
+            if (value.TypeId == DyType.Integer)
+                return new DyInteger(Math.Abs(value.GetInteger()));
+            else if (value.TypeId == DyType.Float)
+                return new DyFloat(Math.Abs(value.GetFloat()));
+            else
+                return ctx.InvalidType(value);
         }
 
         [Function("round")]
