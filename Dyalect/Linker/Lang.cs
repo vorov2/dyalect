@@ -30,6 +30,7 @@ namespace Dyalect.Linker
             Add("args", args ?? (DyObject)DyNil.Instance);
         }
 
+        //[Function("enum")]
         //public DyObject Enum(ExecutionContext ctx, DyObject from, DyObject to, [Default]DyObject step)
         //{
 
