@@ -36,7 +36,7 @@ namespace Dyalect.Compiler
             PushIf(hints);
         }
 
-        private void GenerateConstructor(DFunctionDeclaration func, Hints hints, CompilerContext ctx)
+        private void GenerateConstructor(DFunctionDeclaration func)
         {
             if (func.Parameters.Count == 0)
             {

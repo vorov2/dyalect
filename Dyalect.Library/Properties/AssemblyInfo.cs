@@ -1,16 +1,17 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Dyalect.Library")]
-[assembly: AssemblyDescription(Meta.Description)]
+[assembly: AssemblyDescription(LibraryMeta.Description)]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany(Meta.Company)]
-[assembly: AssemblyProduct(Meta.Product)]
-[assembly: AssemblyCopyright(Meta.Copyright)]
-[assembly: AssemblyTrademark(Meta.Trademark)]
+[assembly: AssemblyCompany(LibraryMeta.Company)]
+[assembly: AssemblyProduct(LibraryMeta.Product)]
+[assembly: AssemblyCopyright(LibraryMeta.Copyright)]
+[assembly: AssemblyTrademark(LibraryMeta.Trademark)]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -31,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(Meta.Version)]
-[assembly: AssemblyFileVersion(Meta.Version)]
+[assembly: AssemblyVersion(LibraryMeta.Version)]
+[assembly: AssemblyFileVersion(LibraryMeta.Version)]

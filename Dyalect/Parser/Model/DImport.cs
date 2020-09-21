@@ -15,7 +15,7 @@ namespace Dyalect.Parser.Model
 
         public string LocalPath { get; set; }
 
-        public string Dll { get; set; }
+        //public string Dll { get; set; }
 
         public Location Location { get; }
     }

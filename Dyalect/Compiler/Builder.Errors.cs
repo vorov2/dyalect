@@ -7,8 +7,8 @@ namespace Dyalect.Compiler
     //This part is responsible for emitting warnings and errors
     partial class Builder
     {
-        private HashSet<int> disabledWarnings = new HashSet<int>();
-        private HashSet<int> enabledWarnings = new HashSet<int>();
+        private readonly HashSet<int> disabledWarnings = new HashSet<int>();
+        private readonly HashSet<int> enabledWarnings = new HashSet<int>();
 
         internal List<BuildMessage> Messages { get; } = new List<BuildMessage>(); //A list of all generated messages
         internal int ErrorCount { get; private set; } //Number of errors

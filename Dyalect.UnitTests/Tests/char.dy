@@ -58,3 +58,8 @@ func charTest7() {
     assert('\uffff', Char.max())
     assert(true, Char.default() == Char.min())
 }
+
+func charTest8() {
+    assert(['a','b','c','d'], 'a'.to('d').toArray())
+    assert(['a', 'c', 'e'], 'a'.to('f', 2).toArray())
+}

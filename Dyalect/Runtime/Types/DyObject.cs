@@ -6,7 +6,7 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyObject : IEquatable<DyObject>
     {
-        internal readonly int TypeId;
+        public readonly int TypeId;
 
         protected DyObject(int typeId)
         {
@@ -90,7 +90,7 @@ namespace Dyalect.Runtime.Types
 
         public virtual bool Equals(DyObject other) => ReferenceEquals(this, other);
 
-        public override sealed bool Equals(object obj) => obj is DyObject dyo ? Equals(dyo) : false;
+        public override sealed bool Equals(object obj) => obj is DyObject dyo && Equals(dyo);
 
         public override int GetHashCode() => HashCode.Combine(TypeId);
 

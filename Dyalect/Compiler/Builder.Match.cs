@@ -77,7 +77,7 @@ namespace Dyalect.Compiler
             switch (node.NodeType)
             {
                 case NodeType.NamePattern:
-                    BuildName((DNamePattern)node, hints, ctx);
+                    BuildName((DNamePattern)node, hints);
                     break;
                 case NodeType.IntegerPattern:
                     cw.Push(((DIntegerPattern)node).Value);
@@ -110,7 +110,7 @@ namespace Dyalect.Compiler
                     cw.Eq();
                     break;
                 case NodeType.RangePattern:
-                    BuildRange((DRangePattern)node, hints, ctx);
+                    BuildRange((DRangePattern)node);
                     break;
                 case NodeType.WildcardPattern:
                     cw.Pop();
@@ -129,7 +129,7 @@ namespace Dyalect.Compiler
                     BuildOr((DOrPattern)node, hints, ctx);
                     break;
                 case NodeType.MethodCheckPattern:
-                    BuildMethodCheck((DMethodCheckPattern)node, hints, ctx);
+                    BuildMethodCheck((DMethodCheckPattern)node);
                     break;
                 case NodeType.CtorPattern:
                     BuildCtor((DCtorPattern)node, hints, ctx);
@@ -169,7 +169,7 @@ namespace Dyalect.Compiler
             cw.MarkLabel(ok);
         }
 
-        private void BuildMethodCheck(DMethodCheckPattern node, Hints hints, CompilerContext ctx)
+        private void BuildMethodCheck(DMethodCheckPattern node)
         {
             AddLinePragma(node);
             var nameId = GetMemberNameId(node.Name);
@@ -184,7 +184,7 @@ namespace Dyalect.Compiler
             var bad = cw.DefineLabel();
             var ok = cw.DefineLabel();
             cw.Brfalse(bad);
-            var sva = -1;
+            int sva;
 
             if (!TryGetLocalVariable(node.Name, out var sv))
                 sva = AddVariable(node.Name, node, VarFlags.None);
@@ -201,7 +201,7 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
-        private void BuildName(DNamePattern node, Hints hints, CompilerContext ctx)
+        private void BuildName(DNamePattern node, Hints hints)
         {
             var err = GetTypeHandle(null, node.Name, out var handle, out var std);
 
@@ -212,7 +212,7 @@ namespace Dyalect.Compiler
                 ScopeVar sv = default;
                 var found = hints.Has(Rebind)
                     ? TryGetVariable(node.Name, out sv)
-                    : hints.Has(OpenMatch) ? false : TryGetLocalVariable(node.Name, out sv);
+                    : !hints.Has(OpenMatch) && TryGetLocalVariable(node.Name, out sv);
                 var sva = sv.Address;
 
                 if (!found)
@@ -261,7 +261,7 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
-        private void BuildRange(DRangePattern node, Hints hints, CompilerContext ctx)
+        private void BuildRange(DRangePattern node)
         {
             var skip = cw.DefineLabel();
             var exit = cw.DefineLabel();
@@ -275,12 +275,12 @@ namespace Dyalect.Compiler
             cw.Brfalse(skip); //1 left
 
             cw.Dup(); //2 objs
-            BuildRangeElement(node.From, hints);
+            BuildRangeElement(node.From);
             cw.GtEq();
             cw.Brfalse(skip); //1 left
 
             cw.Dup(); //2 objs
-            BuildRangeElement(node.To, hints);
+            BuildRangeElement(node.To);
             cw.LtEq();
             cw.Brfalse(skip); //1 left
 
@@ -296,7 +296,7 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
-        private void BuildRangeElement(DPattern node, Hints hints)
+        private void BuildRangeElement(DPattern node)
         {
             switch (node.NodeType)
             {
@@ -466,7 +466,7 @@ namespace Dyalect.Compiler
         private void PreinitAs(DAsPattern node, Hints hints)
         {
             PreinitPattern(node.Pattern, hints);
-            var sva = -1;
+            int sva;
 
             if (!TryGetLocalVariable(node.Name, out var sv))
                 sva = AddVariable(node.Name, node, VarFlags.None);
@@ -479,12 +479,12 @@ namespace Dyalect.Compiler
 
         private void PreinitName(DNamePattern node, Hints hints)
         {
-            var err = GetTypeHandle(null, node.Name, out var handle, out var std);
+            var err = GetTypeHandle(null, node.Name, out _, out _);
 
             if (err != CompilerError.None)
             {
                 var found = TryGetLocalVariable(node.Name, out var sv);
-                var sva = -1;
+                int sva;
 
                 if (!found)
                     sva = AddVariable(node.Name, node, hints.Has(Const) ? VarFlags.Const : VarFlags.None);
@@ -553,11 +553,11 @@ namespace Dyalect.Compiler
                     }
                 }
 
-                CheckPattern(e.Pattern, count, e.Pattern.GetElementCount());
+                CheckPattern(e.Pattern, count);
             }
         }
 
-        private void CheckPattern(DPattern e, int matchCount, int patternCount)
+        private void CheckPattern(DPattern e, int matchCount)
         {
             int c;
             if (matchCount > -1 && (c = e.GetElementCount()) > -1)

@@ -9,7 +9,7 @@ namespace Dyalect.Runtime
     {
         private const int DEFAULT_SIZE = 4;
         private Caller[] array;
-        private int initialSize;
+        private readonly int initialSize;
 
         public CallStack() : this(DEFAULT_SIZE)
         {

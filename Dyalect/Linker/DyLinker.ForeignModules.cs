@@ -9,9 +9,7 @@ namespace Dyalect.Linker
     {
         private Unit LinkForeignModule(Unit self, Reference mod)
         {
-            var dll = string.Equals(mod.DllName, "std", StringComparison.OrdinalIgnoreCase) ? "Dyalect.Library" : mod.DllName;
-
-            if (!FindModuleExact(self.FileName, dll + ".dll", mod, out var path))
+            if (!FindModuleExact(self.FileName, mod.DllName, mod, out var path))
                 return null;
 
             if (!AssemblyMap.TryGetValue(path, out Dictionary<string, Type> dict))

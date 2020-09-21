@@ -28,7 +28,7 @@ namespace Dyalect
 
         protected string GetFileName()
         {
-            return File == null ? "<memory>" : File;
+            return File ?? "<memory>";
         }
 
         public string File { get; internal set; }

@@ -2,7 +2,6 @@
 using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Text;
 
 namespace Dyalect.Runtime
@@ -47,7 +46,9 @@ namespace Dyalect.Runtime
 
         KeyNotFound = 618,
 
-        KeyAlreadyPresent = 619
+        KeyAlreadyPresent = 619,
+
+        InvalidRange = 620
     }
 
     public class DyError
@@ -100,7 +101,7 @@ namespace Dyalect.Runtime
         internal override DyObject GetDyObject() => Data ?? DyNil.Instance;
     }
 
-    internal static class ExecutionContextExtensions
+    public static class ExecutionContextExtensions
     {
         public static DyObject CollectionModified(this ExecutionContext ctx)
         {
@@ -176,6 +177,12 @@ namespace Dyalect.Runtime
         {
             ctx.Error = new DyError(DyErrorCode.InvalidType,
                 ("TypeName", value.TypeName(ctx)));
+            return DyNil.Instance;
+        }
+
+        public static DyObject InvalidRange(this ExecutionContext ctx)
+        {
+            ctx.Error = new DyError(DyErrorCode.InvalidRange);
             return DyNil.Instance;
         }
 

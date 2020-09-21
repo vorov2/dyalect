@@ -7,7 +7,7 @@ namespace Dyalect.Compiler
 {
     public sealed class UnitComposition
     {
-        public Guid Id { get; }  = Guid.NewGuid();
+        public Guid Id { get; } = Guid.NewGuid();
 
         public UnitComposition(List<Unit> units)
         {

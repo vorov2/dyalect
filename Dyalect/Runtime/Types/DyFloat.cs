@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,10 +10,10 @@ namespace Dyalect.Runtime.Types
     {
         internal sealed class RangeEnumerator : IEnumerator<DyObject>
         {
-            private double from;
-            private double start;
-            private double to;
-            private double step;
+            private readonly double from;
+            private readonly double start;
+            private readonly double to;
+            private readonly double step;
             private bool fst;
             private double current;
 
@@ -40,7 +41,7 @@ namespace Dyalect.Runtime.Types
                     return true;
                 }
 
-                current = current + step;
+                current += step;
 
                 if (to > start)
                     return current <= to;
@@ -212,23 +213,31 @@ namespace Dyalect.Runtime.Types
         }
         #endregion
 
-        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to)
+        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to, DyObject step)
         {
-            if (to.TypeId != DyType.Float)
+            if (to.TypeId != DyType.Float && to.TypeId != DyType.Integer)
                 return ctx.InvalidType(to);
 
             var ifrom = self.GetFloat();
             var istart = ifrom;
             var ito = to.GetFloat();
-            var step = ito > ifrom ? 1.0 : -1.0;
+            var istep = step.TypeId == DyType.Nil ? 1.0D : step.GetFloat();
 
-            return new DyIterator(new DyFloat.RangeEnumerator(ifrom, istart, ito, step));
+            if (ito <= ifrom)
+                istep = -Math.Abs(istep);
+
+            if (istep == 0
+                || (istep < 0 && ito > ifrom)
+                || (istep > 0 && ito < ifrom))
+                return ctx.InvalidRange();
+
+            return new DyIterator(new DyFloat.RangeEnumerator(ifrom, istart, ito, istep));
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "to" => DyForeignFunction.Member(name, Range, -1, new Par("value")),
+                "to" => DyForeignFunction.Member(name, Range, -1, new Par("max"), new Par("step", DyNil.Instance)),
                 "isNaN" => DyForeignFunction.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
                 _ => base.GetMember(name, ctx)
             };

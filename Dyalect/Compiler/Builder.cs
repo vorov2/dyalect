@@ -16,14 +16,14 @@ namespace Dyalect.Compiler
         private readonly BuilderOptions options; //Build options
         private readonly CodeWriter cw; //Helper for byte code emit
         private readonly DyLinker linker; //Linker to link referenced modules
-        private Scope globalScope; //Global scope (for variables) of the current unit
-        private Unit unit; //Unit (file) that is beign compiler
+        private readonly Scope globalScope; //Global scope (for variables) of the current unit
+        private readonly Unit unit; //Unit (file) that is beign compiler
         private Scope currentScope; //Current lexical scope
         private Label programEnd; //Label that marks an end of program
-        private Dictionary<string, UnitInfo> referencedUnits;
+        private readonly Dictionary<string, UnitInfo> referencedUnits;
 
-        private Dictionary<string, TypeInfo> types;
-        private Dictionary<string, int> memberNames;
+        private readonly Dictionary<string, TypeInfo> types;
+        private readonly Dictionary<string, int> memberNames;
 
         private readonly static DImport defaultInclude = new DImport(default) { ModuleName = "lang" };
 
@@ -106,10 +106,10 @@ namespace Dyalect.Compiler
                 var ctx = new CompilerContext();
 
                 if (!options.NoLangModule && !iterative)
-                    BuildImport(defaultInclude, ctx);
+                    BuildImport(defaultInclude);
 
                 foreach (var imp in codeModel.Imports)
-                    BuildImport(imp, ctx);
+                    BuildImport(imp);
 
                 //This is a self-reference to simplify type resolution
                 unit.UnitIds.Add(0);

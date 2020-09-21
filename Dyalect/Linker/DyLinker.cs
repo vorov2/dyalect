@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Dyalect.Linker
 {
@@ -15,6 +16,7 @@ namespace Dyalect.Linker
         private const string EXT = ".dy";
         private const string OBJ = ".dyo";
         private readonly Lang lang;
+        private IReadOnlyDictionary<string, Type> std;
 
         protected Dictionary<Reference, Unit> UnitMap { get; set;  } = new Dictionary<Reference, Unit>();
 
@@ -46,7 +48,7 @@ namespace Dyalect.Linker
             if (!UnitMap.TryGetValue(mod, out Unit unit))
             {
                 if (mod.ModuleName == nameof(lang))
-                    unit = lang;
+                    unit = lang; 
                 else if (mod.DllName != null)
                 {
                     unit = LinkForeignModule(self, mod);

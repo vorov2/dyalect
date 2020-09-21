@@ -47,6 +47,7 @@ TOKENS
     forToken            = "for".
     whileToken          = "while".
     typeToken           = "type".
+    inToken             = "in".
 
     arrowToken          = "=>".
     dotToken            = ".".
@@ -98,37 +99,44 @@ PRODUCTIONS
             [ ["."] FunctionName (. s3 = t.val; .) ]
         ].
 
+    ImportToken<out string str> =
+        (. str = ""; .)
+        (
+            stringToken (. str = ParseSimpleString(); .)
+            |
+            (
+                identToken (. str = t.val; .)
+                {
+                    "." identToken
+                    (. str += string.Concat(".", t.val); .)
+                }
+            )
+        ).
+
     Import =
         "import"
-        (. var inc = new DImport(t); Imports.Add(inc); string lastName = null; .)
-        (identToken | stringToken) (. lastName = ParseImport(); .)
+        (. var inc = new DImport(t); Imports.Add(inc); .)
+        ImportToken<out var str> (. var lastName = str; .)
+        [
+            "="
+            ImportToken<out str>
+            (.
+                inc.Alias = lastName;
+                lastName = str;
+            .)
+        ]
         {
             "/"
-            (identToken | stringToken)
+            ImportToken<out str>
             (.
                 if (inc.LocalPath != null)
                     inc.LocalPath = string.Concat(inc.LocalPath, "/", lastName);
                 else
                     inc.LocalPath = lastName;
-                lastName = ParseImport();
+                lastName = str;
             .)
         }
-        (. inc.ModuleName = lastName; if (la.AfterEol) return; .)
-        [
-            "("
-                (
-                      stringToken (. inc.Dll = ParseSimpleString(); .)
-                    | identToken (. inc.Dll = t.val; .)
-                )
-            ")"
-        ]
-        [
-            (. if (la.AfterEol) return; .)
-            identToken
-            (.
-                inc.Alias = t.val;
-            .)
-        ].
+        (. inc.ModuleName = lastName; .).
 
     Type<out DNode node> =
         (. DFunctionDeclaration f = null; .)

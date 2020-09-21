@@ -3,6 +3,7 @@ using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Dyalect.Library
@@ -15,10 +16,10 @@ namespace Dyalect.Library
             AddType<ByteArray>(i => new ByteArrayTypeInfo(i));
         }
 
-        [Function("ByteArray")]
-        public DyObject ByteArray()
+        [Function("NewByteArray")]
+        public DyObject ByteArray(int[] arr)
         {
-            return new ByteArray(QueryType(nameof(ByteArray)).Id);
+            return new ByteArray(QueryType(nameof(ByteArray)).Id, arr.Select(i => (byte)i).ToArray());
         }
     }
 }

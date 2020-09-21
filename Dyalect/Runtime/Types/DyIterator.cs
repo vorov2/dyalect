@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    internal sealed class DyIterator : DyForeignFunction
+    public sealed class DyIterator : DyForeignFunction
     {
         internal sealed class IterationException : Exception { }
 
@@ -17,7 +17,7 @@ namespace Dyalect.Runtime.Types
             private readonly DyObject[] iterators;
             private int nextIterator = 0;
             private IEnumerator<DyObject> current;
-            private ExecutionContext ctx;
+            private readonly ExecutionContext ctx;
 
             public MultiPartEnumerator(ExecutionContext ctx, params DyObject[] iterators)
             {
@@ -91,8 +91,10 @@ namespace Dyalect.Runtime.Types
 
         internal static DyFunction CreateIterator(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals)
         {
-            var vars = new FastList<DyObject[]>(captures);
-            vars.Add(locals);
+            var vars = new FastList<DyObject[]>(captures)
+            {
+                locals
+            };
             return new DyNativeIterator(unitId, handle, vars);
         }
 
@@ -154,7 +156,7 @@ namespace Dyalect.Runtime.Types
             return iter;
         }
 
-        internal static IEnumerable<DyObject> Run(ExecutionContext ctx, DyObject val)
+        public static IEnumerable<DyObject> Run(ExecutionContext ctx, DyObject val)
         {
             if (val.TypeId == DyType.Array)
                 return ((DyArray)val).Values;

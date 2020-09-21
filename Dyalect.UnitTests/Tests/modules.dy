@@ -1,5 +1,5 @@
-﻿import refs/libtest lib
-import refs/libtest1 lib1
+﻿import lib = refs/libtest
+import lib1 = refs/libtest1
 
 func moduleTest1() {
     var abs = lib:abs(-12)

@@ -9,7 +9,8 @@
       <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
       <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
       <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-      <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute> 
+      <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+      <AssemblyName>Dyalect.Library</AssemblyName> 
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -19,10 +20,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\bin\</OutputPath>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="..\Common\Meta.cs" Link="Properties\Meta.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Dyalect\Dyalect.csproj" />

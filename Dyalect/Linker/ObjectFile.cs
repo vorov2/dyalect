@@ -11,17 +11,17 @@ namespace Dyalect.Linker
 
         public static DyObject DeserializeObject(BinaryReader reader)
         {
-            switch (reader.ReadInt32())
+            return (reader.ReadInt32()) switch
             {
-                case -1: return null;
-                case DyType.Nil: return DyNil.Instance;
-                case DyType.Integer: return DyInteger.Get(reader.ReadInt32());
-                case DyType.Float: return new DyFloat(reader.ReadDouble());
-                case DyType.String: return new DyString(reader.ReadString());
-                case DyType.Char: return new DyChar(reader.ReadChar());
-                case DyType.Bool: return (DyBool)reader.ReadBoolean();
-                default: throw new NotSupportedException();
-            }
+                -1 => null,
+                DyType.Nil => DyNil.Instance,
+                DyType.Integer => DyInteger.Get(reader.ReadInt32()),
+                DyType.Float => new DyFloat(reader.ReadDouble()),
+                DyType.String => new DyString(reader.ReadString()),
+                DyType.Char => new DyChar(reader.ReadChar()),
+                DyType.Bool => (DyBool)reader.ReadBoolean(),
+                _ => throw new NotSupportedException(),
+            };
         }
     }
 }

@@ -3,7 +3,7 @@ using M = System.Math;
 
 namespace Dyalect.Library
 {
-    [DyUnit("Math")]
+    [DyUnit("math")]
     public sealed class Math : ForeignUnit
     {
         [Function("pow")]

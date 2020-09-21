@@ -9,7 +9,7 @@ namespace Dyalect.Compiler
     partial class Builder
     {
         //Variables indexers
-        private Stack<int> counters; //Stack of indices for the lexical scope
+        private readonly Stack<int> counters; //Stack of indices for the lexical scope
         private int currentCounter; //Global indexer
 
         private bool privateScope; //Identifies that a current scope is private
@@ -145,18 +145,16 @@ namespace Dyalect.Compiler
         {
             var cur = startScope;
             var shift = 0;
-            var var = ScopeVar.Empty;
 
             //Search all upper scopes recursively
             do
             {
-                if (cur.Locals.TryGetValue(name, out var))
+                if (cur.Locals.TryGetValue(name, out var var))
                     return new ScopeVar(shift | var.Address << 8, var.Data);
 
                 if (cur.Function)
                     shift++;
 
-                var = ScopeVar.Empty;
                 cur = cur.Parent;
             }
             while (cur != null);

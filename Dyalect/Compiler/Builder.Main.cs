@@ -1,6 +1,7 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
 using Dyalect.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using static Dyalect.Compiler.Hints;
@@ -18,7 +19,7 @@ namespace Dyalect.Compiler
                     Build((DPrivateScope)node, hints, ctx);
                     break;
                 case NodeType.Directive:
-                    Build((DDirective)node, hints, ctx);
+                    Build((DDirective)node, hints);
                     break;
                 case NodeType.Assignment:
                     Build((DAssignment)node, hints, ctx);
@@ -36,25 +37,25 @@ namespace Dyalect.Compiler
                     Build((DBlock)node, hints, ctx);
                     break;
                 case NodeType.Boolean:
-                    Build((DBooleanLiteral)node, hints, ctx);
+                    Build((DBooleanLiteral)node, hints);
                     break;
                 case NodeType.Float:
-                    Build((DFloatLiteral)node, hints, ctx);
+                    Build((DFloatLiteral)node, hints);
                     break;
                 case NodeType.If:
                     Build((DIf)node, hints, ctx);
                     break;
                 case NodeType.Integer:
-                    Build((DIntegerLiteral)node, hints, ctx);
+                    Build((DIntegerLiteral)node, hints);
                     break;
                 case NodeType.Name:
-                    Build((DName)node, hints, ctx);
+                    Build((DName)node, hints);
                     break;
                 case NodeType.String:
                     Build((DStringLiteral)node, hints, ctx);
                     break;
                 case NodeType.Nil:
-                    Build((DNilLiteral)node, hints, ctx);
+                    Build((DNilLiteral)node, hints);
                     break;
                 case NodeType.Unary:
                     Build((DUnaryOperation)node, hints, ctx);
@@ -96,10 +97,10 @@ namespace Dyalect.Compiler
                     Build((DYield)node, hints, ctx);
                     break;
                 case NodeType.Base:
-                    Build((DBase)node, hints, ctx);
+                    Build((DBase)node);
                     break;
                 case NodeType.Char:
-                    Build((DCharLiteral)node, hints, ctx);
+                    Build((DCharLiteral)node, hints);
                     break;
                 case NodeType.MemberCheck:
                     Build((DMemberCheck)node, hints, ctx);
@@ -144,7 +145,7 @@ namespace Dyalect.Compiler
             privateScope = false;
         }
 
-        private void Build(DDirective node, Hints hints, CompilerContext ctx)
+        private void Build(DDirective node, Hints hints)
         {
             switch (node.Key)
             {
@@ -301,7 +302,7 @@ namespace Dyalect.Compiler
             PushIf(hints);
         }
 
-        private void Build(DBase node, Hints hints, CompilerContext ctx)
+        private void Build(DBase node)
         {
             AddError(CompilerError.BaseNotAllowed, node.Location);
         }
@@ -480,9 +481,33 @@ namespace Dyalect.Compiler
             }
         }
 
-        private void BuildImport(DImport node, CompilerContext ctx)
+        private void BuildImport(DImport node)
         {
-            var r = new Reference(node.ModuleName, node.LocalPath, node.Dll, node.Location, unit.FileName);
+            var localPath = node.LocalPath;
+            string dll = default;
+
+            if (!(localPath is null) && localPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+            {
+                var idx = localPath.LastIndexOf('/');
+                
+                if (idx != -1)
+                {
+                    dll = localPath.Substring(idx + 1);
+                    localPath = localPath.Substring(0, idx);
+                }
+                else
+                {
+                    dll = localPath;
+                    localPath = null;
+                }
+            }
+            else if (localPath == "std")
+            {
+                dll = "Dyalect.Library.dll";
+                localPath = null;
+            }
+
+            var r = new Reference(node.ModuleName, localPath, dll, node.Location, unit.FileName);
             var res = linker.Link(unit, r);
 
             if (res.Success)
@@ -755,7 +780,7 @@ namespace Dyalect.Compiler
             PopIf(hints);
         }
 
-        private void Build(DCharLiteral node, Hints hints, CompilerContext ctx)
+        private void Build(DCharLiteral node, Hints hints)
         {
             if (NoPush(node, hints))
                 return;
@@ -764,7 +789,7 @@ namespace Dyalect.Compiler
             cw.Push(node.Value);
         }
 
-        private void Build(DFloatLiteral node, Hints hints, CompilerContext ctx)
+        private void Build(DFloatLiteral node, Hints hints)
         {
             if (NoPush(node, hints))
                 return;
@@ -773,7 +798,7 @@ namespace Dyalect.Compiler
             cw.Push(node.Value);
         }
 
-        private void Build(DName node, Hints hints, CompilerContext ctx)
+        private void Build(DName node, Hints hints)
         {
             var sv = GetVariable(node.Value, node.Location, err: false);
 
@@ -809,7 +834,7 @@ namespace Dyalect.Compiler
             }
         }
 
-        private void Build(DIntegerLiteral node, Hints hints, CompilerContext ctx)
+        private void Build(DIntegerLiteral node, Hints hints)
         {
             if (NoPush(node, hints))
                 return;
@@ -818,7 +843,7 @@ namespace Dyalect.Compiler
             cw.Push(node.Value);
         }
 
-        private void Build(DBooleanLiteral node, Hints hints, CompilerContext ctx)
+        private void Build(DBooleanLiteral node, Hints hints)
         {
             if (NoPush(node, hints))
                 return;
@@ -827,7 +852,7 @@ namespace Dyalect.Compiler
             cw.Push(node.Value);
         }
 
-        private void Build(DNilLiteral node, Hints hints, CompilerContext ctx)
+        private void Build(DNilLiteral node, Hints hints)
         {
             if (NoPush(node, hints))
                 return;
@@ -975,7 +1000,7 @@ namespace Dyalect.Compiler
                     nh = nh.Append(Const);
 
                 if (node.Init != null)
-                    CheckPattern(node.Pattern, node.Init.GetElementCount(), node.Pattern.GetElementCount());
+                    CheckPattern(node.Pattern, node.Init.GetElementCount());
 
                 BuildPattern(node.Pattern, nh, ctx);
                 var skip = cw.DefineLabel();
@@ -1056,8 +1081,8 @@ namespace Dyalect.Compiler
 
         private void Build(DBinaryOperation node, Hints hints, CompilerContext ctx)
         {
-            var termLab = default(Label);
-            var exitLab = default(Label);
+            Label termLab;
+            Label exitLab;
 
             switch (node.Operator)
             {
