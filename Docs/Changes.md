@@ -3,6 +3,7 @@
   * Change: _Serialization of maps to string is updated to match other types._
   * Change: _Signature for methods `Integer.to`, `Float.to` and `Char.to` is updated. Also these methods are renamed to `range`._
   * Add: _Add methods to `Iterator` type_ ([Issue #355](https://github.com/vorov2/dyalect/issues/355)).
+  * Add: _Infinite ranges_ ([Issue #348](https://github.com/vorov2/dyalect/issues/348)).
   * Fixed: _Crush because of `??=` operator_ ([Issue #354](https://github.com/vorov2/dyalect/issues/354)).
 
 # 0.15.1
