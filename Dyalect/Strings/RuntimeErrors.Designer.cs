@@ -151,6 +151,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A value &quot;%Value%&quot; causes an invalid behavior..
+        /// </summary>
+        internal static string InvalidValue {
+            get {
+                return ResourceManager.GetString("InvalidValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Key &quot;%Key%&quot; is already present in the dictionary..
         /// </summary>
         internal static string KeyAlreadyPresent {

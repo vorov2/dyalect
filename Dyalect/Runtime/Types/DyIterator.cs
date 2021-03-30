@@ -328,22 +328,59 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(count);
         }
 
+        private DyObject Take(ExecutionContext ctx, DyObject self, DyObject count)
+        {
+            if (count.TypeId != DyType.Integer)
+                return ctx.InvalidType(self);
+
+            var i = (int)count.GetInteger();
+
+            if (i < 0)
+                return ctx.InvalidValue(count);
+
+            return new DyIterator(DyIterator.Run(ctx, self).Take(i));
+        }
+
+        private DyObject Skip(ExecutionContext ctx, DyObject self, DyObject count)
+        {
+            if (count.TypeId != DyType.Integer)
+                return ctx.InvalidType(self);
+
+            var i = (int)count.GetInteger();
+
+            if (i < 0)
+                return ctx.InvalidValue(count);
+
+            return new DyIterator(DyIterator.Run(ctx, self).Skip(i));
+        }
+
+        private DyObject First(ExecutionContext ctx, DyObject self)
+        {
+            return DyIterator.Run(ctx, self).FirstOrDefault() ?? DyNil.Instance;
+        }
+
+        private DyObject Last(ExecutionContext ctx, DyObject self)
+        {
+            return DyIterator.Run(ctx, self).LastOrDefault() ?? DyNil.Instance;
+        }
+
         private DyObject Concat(ExecutionContext ctx, DyObject tuple)
         {
             var values = ((DyTuple)tuple).Values;
             return new DyIterator(new DyIterator.MultiPartEnumerable(ctx, values));
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            if (name == "toArray")
-                return DyForeignFunction.Member(name, ToArray);
-            
-            if (name == "toTuple")
-                return DyForeignFunction.Member(name, ToTuple);
-
-            return null;
-        }
+        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+            name switch
+            {
+                "toArray" => DyForeignFunction.Member(name, ToArray),
+                "toTuple" => DyForeignFunction.Member(name, ToTuple),
+                "take" => DyForeignFunction.Member(name, Take, -1, new Par("count")),
+                "skip" => DyForeignFunction.Member(name, Skip, -1, new Par("count")),
+                "first" => DyForeignFunction.Member(name, First),
+                "last" => DyForeignFunction.Member(name, Last),
+                _ => null
+            };
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {

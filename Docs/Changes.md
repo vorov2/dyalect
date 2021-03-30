@@ -1,7 +1,8 @@
 # 0.16.0
   * Change: _All code migrated to .NET 5.0._
   * Change: _Serialization of maps to string is updated to match other types._
-  * Change: _Signature for methods `Integer.to`, `Float.to` and `Char.to` is updated._
+  * Change: _Signature for methods `Integer.to`, `Float.to` and `Char.to` is updated. Also these methods are renamed to `range`._
+  * Add: _Add methods to `Iterator` type_ ([Issue #355](https://github.com/vorov2/dyalect/issues/355)).
   * Fixed: _Crush because of `??=` operator_ ([Issue #354](https://github.com/vorov2/dyalect/issues/354)).
 
 # 0.15.1

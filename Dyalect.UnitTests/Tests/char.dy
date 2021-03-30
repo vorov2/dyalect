@@ -60,6 +60,6 @@ func charTest7() {
 }
 
 func charTest8() {
-    assert(['a','b','c','d'], 'a'.to('d').toArray())
-    assert(['a', 'c', 'e'], 'a'.to('f', 2).toArray())
+    assert(['a','b','c','d'], 'a'.range('d').toArray())
+    assert(['a', 'c', 'e'], 'a'.range('f', 2).toArray())
 }
