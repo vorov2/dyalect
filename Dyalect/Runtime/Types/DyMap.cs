@@ -180,7 +180,7 @@ namespace Dyalect.Runtime.Types
             {
                 if (i > 0)
                     sb.Append(", ");
-                sb.Append(kv.Key.ToString(ctx) + ": " + kv.Value.ToString(ctx));
+                sb.Append(kv.Key.ToString(ctx) + " = " + kv.Value.ToString(ctx));
                 i++;
             }
 
