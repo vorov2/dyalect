@@ -936,7 +936,7 @@ namespace Dyalect.Compiler
             cw.Nop();
 
             if (hints.Has(Push))
-                cw.Dup();
+                cw.PushNil();
         }
 
         private void Build(DBinding node, Hints hints, CompilerContext ctx)

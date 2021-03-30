@@ -1,5 +1,6 @@
 # 0.16.0
   * Change: _All code migrated to .NET 5.0._
+  * Fixed: _Crush because of `??=` operator_ ([Issue #354](https://github.com/vorov2/dyalect/issues/354)).
 
 # 0.15.1
   * Change: Code _clean-ups and optimizations._
