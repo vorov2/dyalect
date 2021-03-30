@@ -22,7 +22,7 @@ namespace Dyalect
             public Dictionary<string, DyFunction> Funs { get; set; }
         }
 
-        private static List<string> commands = new List<string>();
+        private static readonly List<string> commands = new List<string>();
 
         public static bool RunTests(IEnumerable<string> fileNames, DyaOptions dyaOptions, BuilderOptions buildOptions)
         {

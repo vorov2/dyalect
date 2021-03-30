@@ -1,4 +1,5 @@
 # 0.15.1
+  * Change: Code _clean-ups and optimizations._
   * Fixed: _Interactive mode crushes when trying to re-declare variable_ ([Issue #352](https://github.com/vorov2/dyalect/issues/352)).
 
 # 0.15.0

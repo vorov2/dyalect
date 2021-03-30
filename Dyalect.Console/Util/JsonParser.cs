@@ -318,7 +318,6 @@ namespace Dyalect.Util
 
         private int ParseLiteral(int pos, out object val)
         {
-            var start = pos;
             val = null;
 
             for (; pos < len; pos++)
@@ -327,8 +326,7 @@ namespace Dyalect.Util
 
                 if (c == '{')
                 {
-                    Dictionary<string, object> obj;
-                    pos = ParseObject(pos + 1, out obj);
+                    pos = ParseObject(pos + 1, out var obj);
                     val = obj;
                     return pos;
                 }
@@ -341,8 +339,7 @@ namespace Dyalect.Util
                 }
                 else if (c == '"')
                 {
-                    string str;
-                    pos = ParseString(pos + 1, out str);
+                    pos = ParseString(pos + 1, out var str);
                     val = str;
                     return pos;
                 }
@@ -353,15 +350,13 @@ namespace Dyalect.Util
                 }
                 else if (c == 't' || c == 'f')
                 {
-                    bool byt;
-                    pos = ParseBool(pos, out byt);
+                    pos = ParseBool(pos, out var byt);
                     val = byt;
                     return pos;
                 }
                 else if (IsNumeric(c))
                 {
-                    double dbl;
-                    pos = ParseNumber(pos, out dbl);
+                    pos = ParseNumber(pos, out var dbl);
                     val = dbl;
                     return pos;
                 }
