@@ -4,6 +4,7 @@
   * Change: _Signature for methods `Integer.to`, `Float.to` and `Char.to` is updated. Also these methods are renamed to `range`._
   * Add: _Add methods to `Iterator` type_ ([Issue #355](https://github.com/vorov2/dyalect/issues/355)).
   * Add: _Infinite ranges_ ([Issue #348](https://github.com/vorov2/dyalect/issues/348)).
+  * Add: _Update methods `String.concat` and `String.join` to work with all sequences_ ([Issue #356](https://github.com/vorov2/dyalect/issues/356)).
   * Fixed: _Crush because of `??=` operator_ ([Issue #354](https://github.com/vorov2/dyalect/issues/354)).
 
 # 0.15.1
