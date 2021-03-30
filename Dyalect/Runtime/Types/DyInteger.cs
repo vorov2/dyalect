@@ -321,7 +321,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
             if (name == "to")
-                return DyForeignFunction.Member(name, Range, -1, new Par("max"), new Par("step", DyNil.Instance));
+                return DyForeignFunction.Member(name, Range, -1, new Par("end"), new Par("step", DyNil.Instance));
 
             return base.GetMember(name, ctx);
         }

@@ -237,7 +237,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "to" => DyForeignFunction.Member(name, Range, -1, new Par("max"), new Par("step", DyNil.Instance)),
+                "to" => DyForeignFunction.Member(name, Range, -1, new Par("end"), new Par("step", DyNil.Instance)),
                 "isNaN" => DyForeignFunction.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
                 _ => base.GetMember(name, ctx)
             };

@@ -173,7 +173,7 @@ namespace Dyalect.Runtime.Types
         {
             return name switch
             {
-                "to" => DyForeignFunction.Member(name, Range, -1, new Par("max"), new Par("step", DyNil.Instance)),
+                "to" => DyForeignFunction.Member(name, Range, -1, new Par("end"), new Par("step", DyNil.Instance)),
                 "isLower" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLower(c.GetChar())),
                 "isUpper" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsUpper(c.GetChar())),
                 "isControl" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsControl(c.GetChar())),
