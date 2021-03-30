@@ -146,14 +146,12 @@ namespace Dyalect
                     Printer.LineFeed();
 
                 Printer.Prefix(balance == 0 ? "dy>" : "-->");
-
                 var line = Console.ReadLine().Trim();
 
                 if (TryRunCommand(line))
                     continue;
 
                 sb.AppendLine(line);
-
                 balance += line.Count(c => c == '{');
                 balance -= line.Count(c => c == '}');
 

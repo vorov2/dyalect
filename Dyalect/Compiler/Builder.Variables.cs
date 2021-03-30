@@ -56,6 +56,7 @@ namespace Dyalect.Compiler
                 if (privateScope)
                     data |= VarFlags.Private;
 
+                unit.ExportList.Remove(name);
                 unit.ExportList.Add(name, new ScopeVar(retval, data));
             }
 

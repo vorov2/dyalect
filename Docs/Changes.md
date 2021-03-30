@@ -1,3 +1,7 @@
+# 0.15.1
+  * Change: Code _clean-ups and optimizations._
+  * Fixed: _Interactive mode crushes when trying to re-declare variable_ ([Issue #352](https://github.com/vorov2/dyalect/issues/352)).
+
 # 0.15.0
   * Change: _[import] Change import syntax for foreign modules_ ([Issue #343](https://github.com/vorov2/dyalect/issues/343)).
   * Change: _[import] Import aliases_ ([Issue #345](https://github.com/vorov2/dyalect/issues/345)).
