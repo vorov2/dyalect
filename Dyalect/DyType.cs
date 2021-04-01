@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Dyalect
 {
-    internal static class DyType
+    public static class DyType
     {
-        public static List<DyTypeInfo> GetAll() =>
+        internal static List<DyTypeInfo> GetAll() =>
             new List<DyTypeInfo>
             {
                 new DyNilTypeInfo(),
@@ -59,7 +59,7 @@ namespace Dyalect
                 _ => -1,
             };
 
-        public static string GetTypeNameByCode(int code) =>
+        internal static string GetTypeNameByCode(int code) =>
             code switch
             {
                 Nil => DyTypeNames.Nil,

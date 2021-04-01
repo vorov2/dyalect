@@ -50,7 +50,9 @@ namespace Dyalect.Runtime
 
         InvalidRange = 620,
 
-        InvalidValue = 621
+        InvalidValue = 621,
+
+        ValueOutOfRange = 622
     }
 
     public class DyError
@@ -152,6 +154,13 @@ namespace Dyalect.Runtime
         {
             ctx.Error = new DyError(DyErrorCode.IndexOutOfRange,
                 ("Index", index));
+            return DyNil.Instance;
+        }
+
+        public static DyObject ValueOutOfRange(this ExecutionContext ctx, object value)
+        {
+            ctx.Error = new DyError(DyErrorCode.ValueOutOfRange,
+                ("Value", value));
             return DyNil.Instance;
         }
 

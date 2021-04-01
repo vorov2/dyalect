@@ -24,13 +24,12 @@ namespace Dyalect.Linker
             Values.Add(obj);
         }
 
-        internal protected void AddType<T>(Func<int, DyTypeInfo> typeActivator) where T : DyObject
+        internal protected void AddType(string name, Func<int, DyTypeInfo> typeActivator)
         {
-            var type = typeof(T);
             var typeId = Types.Count;
-            var td = new TypeDescriptor(type.Name, typeId, true, typeActivator);
+            var td = new TypeDescriptor(name, typeId, true, typeActivator);
             Types.Add(td);
-            TypeMap.Add(type.Name, td);
+            TypeMap[name] = td;
         }
 
         internal void Modify(int id, DyObject obj)
