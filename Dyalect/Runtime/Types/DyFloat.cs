@@ -14,14 +14,16 @@ namespace Dyalect.Runtime.Types
             private readonly double start;
             private readonly double to;
             private readonly double step;
+            private readonly bool inf;
             private bool fst;
             private double current;
 
-            public RangeEnumerator(double from, double start, double to, double step)
+            public RangeEnumerator(double from, double start, double? to, double step)
             {
                 this.from = from;
                 this.start = start;
-                this.to = to;
+                this.to = to ?? 0;
+                this.inf = to == null;
                 this.step = step;
                 this.fst = true;
                 this.current = from;
@@ -42,6 +44,9 @@ namespace Dyalect.Runtime.Types
                 }
 
                 current += step;
+
+                if (inf)
+                    return true;
 
                 if (to > start)
                     return current <= to;
@@ -215,13 +220,17 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to, DyObject step)
         {
-            if (to.TypeId != DyType.Float && to.TypeId != DyType.Integer)
+            if (to.TypeId != DyType.Float && to.TypeId != DyType.Integer && to.TypeId != DyType.Nil)
                 return ctx.InvalidType(to);
 
             var ifrom = self.GetFloat();
             var istart = ifrom;
-            var ito = to.GetFloat();
             var istep = step.TypeId == DyType.Nil ? 1.0D : step.GetFloat();
+
+            if (to == DyNil.Instance)
+                return new DyIterator(new DyFloat.RangeEnumerator(ifrom, istart, null, istep));
+
+            var ito = to.GetFloat();
 
             if (ito <= ifrom)
                 istep = -Math.Abs(istep);
@@ -237,7 +246,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "to" => DyForeignFunction.Member(name, Range, -1, new Par("max"), new Par("step", DyNil.Instance)),
+                "range" => DyForeignFunction.Member(name, Range, -1, new Par("to", DyNil.Instance), new Par("step", DyNil.Instance)),
                 "isNaN" => DyForeignFunction.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
                 _ => base.GetMember(name, ctx)
             };

@@ -65,6 +65,8 @@ func stringTest10() {
 func stringTest11() {
     var res = String.concat("one", "two", "three", 44)
     assert("onetwothree44", res)
+    res = String.concat(12, true, "bool")
+    assert("12truebool", res)
 }
 
 func stringTest12() {

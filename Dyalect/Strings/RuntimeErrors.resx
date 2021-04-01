@@ -177,4 +177,7 @@
   <data name="InvalidRange" xml:space="preserve">
     <value>Range is invalid.</value>
   </data>
+  <data name="InvalidValue" xml:space="preserve">
+    <value>A value "%Value%" causes an invalid behavior.</value>
+  </data>
 </root>

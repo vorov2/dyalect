@@ -273,7 +273,7 @@ namespace Dyalect.Compiler
         private void Build(DRange range, Hints hints, CompilerContext ctx)
         {
             Build(range.From, hints.Append(Push), ctx);
-            cw.GetMember(GetMemberNameId("to"));
+            cw.GetMember(GetMemberNameId("range"));
             cw.FunPrep(1);
 
             Build(range.To, hints.Append(Push), ctx);
@@ -936,7 +936,7 @@ namespace Dyalect.Compiler
             cw.Nop();
 
             if (hints.Has(Push))
-                cw.Dup();
+                cw.PushNil();
         }
 
         private void Build(DBinding node, Hints hints, CompilerContext ctx)

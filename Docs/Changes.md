@@ -1,3 +1,12 @@
+# 0.16.0
+  * Change: _All code migrated to .NET 5.0._
+  * Change: _Serialization of maps to string is updated to match other types._
+  * Change: _Signature for methods `Integer.to`, `Float.to` and `Char.to` is updated. Also these methods are renamed to `range`._
+  * Add: _Add methods to `Iterator` type_ ([Issue #355](https://github.com/vorov2/dyalect/issues/355)).
+  * Add: _Infinite ranges_ ([Issue #348](https://github.com/vorov2/dyalect/issues/348)).
+  * Add: _Update methods `String.concat` and `String.join` to work with all sequences_ ([Issue #356](https://github.com/vorov2/dyalect/issues/356)).
+  * Fixed: _Crush because of `??=` operator_ ([Issue #354](https://github.com/vorov2/dyalect/issues/354)).
+
 # 0.15.1
   * Change: Code _clean-ups and optimizations._
   * Fixed: _Interactive mode crushes when trying to re-declare variable_ ([Issue #352](https://github.com/vorov2/dyalect/issues/352)).

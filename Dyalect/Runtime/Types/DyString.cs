@@ -3,6 +3,7 @@ using Dyalect.Parser;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -480,26 +481,41 @@ namespace Dyalect.Runtime.Types
         private DyObject Concat(ExecutionContext ctx, DyObject tuple)
         {
             var values = ((DyTuple)tuple).Values;
-            var arr = new string[values.Length];
+            var arr = new List<string>();
+
+            if (!Collect(ctx, values, arr))
+                return DyNil.Instance;
+
+            return new DyString(string.Concat(arr));
+        }
+
+        private static bool Collect(ExecutionContext ctx, DyObject[] values, List<string> arr)
+        {
+            if (ctx.HasErrors)
+                return false;
 
             for (var i = 0; i < values.Length; i++)
             {
                 var a = values[i];
 
                 if (a.TypeId == DyType.String || a.TypeId == DyType.Char)
-                    arr[i] = a.GetString();
+                    arr.Add(a.GetString()); 
+                else if (a is IEnumerable<DyObject> seq)
+                    Collect(ctx, seq.ToArray(), arr);
+                else if (a.TypeId == DyType.Iterator)
+                    Collect(ctx, DyIterator.Run(ctx, a).ToArray(), arr);
                 else
                 {
                     var res = DyString.ToString(a, ctx);
 
                     if (ctx.HasErrors)
-                        return DyNil.Instance;
+                        return false;
 
-                    arr[i] = res;
+                    arr.Add(res);
                 }
             }
 
-            return new DyString(string.Concat(arr));
+            return true;
         }
 
         private static DyObject Join(ExecutionContext ctx, DyObject values, DyObject separator)
@@ -508,22 +524,10 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(separator);
 
             var arr = ((DyTuple)values).Values;
-            var strArr = new string[arr.Length];
+            var strArr = new List<string>();
 
-            for (var i = 0; i < arr.Length; i++)
-            {
-                var a = arr[i];
-
-                if (a.TypeId == DyType.String || a.TypeId == DyType.Char)
-                    strArr[i] = a.GetString();
-                else
-                {
-                    strArr[i] = arr[i].ToString(ctx);
-
-                    if (ctx.HasErrors)
-                        return DyNil.Instance;
-                }
-            }
+            if (!Collect(ctx, arr, strArr))
+                return DyNil.Instance;
 
             return new DyString(string.Join(separator.GetString(), strArr));
         }

@@ -15,15 +15,17 @@ namespace Dyalect.Runtime.Types
             private readonly char start;
             private readonly char to;
             private readonly int step;
+            private bool inf;
             private bool fst;
             private char current;
 
-            public RangeEnumerator(char from, char start, char to, int step)
+            public RangeEnumerator(char from, char start, char? to, int step)
             {
                 this.from = from;
                 this.start = start;
-                this.to = to;
+                this.to = to ?? '\0';
                 this.step = step;
+                this.inf = to == null;
                 this.fst = true;
                 this.current = from;
             }
@@ -43,6 +45,9 @@ namespace Dyalect.Runtime.Types
                 }
 
                 current = (char)(current + step);
+
+                if (inf)
+                    return true;
 
                 if (to > start)
                     return current <= to;
@@ -150,13 +155,17 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to, DyObject step)
         {
-            if (to.TypeId != DyType.Char)
+            if (to.TypeId != DyType.Char && to.TypeId != DyType.Nil)
                 return ctx.InvalidType(to);
 
             var ifrom = self.GetChar();
             var istart = ifrom;
-            var ito = to.GetChar();
             var istep = step.TypeId == DyType.Nil ? 1 : (int)step.GetInteger();
+
+            if (to == DyNil.Instance)
+                return new DyIterator(new DyChar.RangeEnumerator(ifrom, istart, null, istep));
+
+            var ito = to.GetChar();
 
             if (ito <= ifrom)
                 istep = -Math.Abs(istep);
@@ -173,7 +182,7 @@ namespace Dyalect.Runtime.Types
         {
             return name switch
             {
-                "to" => DyForeignFunction.Member(name, Range, -1, new Par("max"), new Par("step", DyNil.Instance)),
+                "range" => DyForeignFunction.Member(name, Range, -1, new Par("to", DyNil.Instance), new Par("step", DyNil.Instance)),
                 "isLower" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLower(c.GetChar())),
                 "isUpper" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsUpper(c.GetChar())),
                 "isControl" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsControl(c.GetChar())),
