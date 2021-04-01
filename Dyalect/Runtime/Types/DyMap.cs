@@ -173,7 +173,7 @@ namespace Dyalect.Runtime.Types
         {
             var map = (DyMap)arg;
             var sb = new StringBuilder();
-            sb.Append("Map{");
+            sb.Append("Map {");
             var i = 0;
 
             foreach (var kv in map.Map)
