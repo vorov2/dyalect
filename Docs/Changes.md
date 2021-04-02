@@ -1,5 +1,5 @@
 # 0.17.0
-  * Change: Code _clean-ups and optimizations._
+  * Change: _Code clean-ups and optimizations._
   * Add: _Add a generic `Object` type which can be used for interop_ ([Issue #359](https://github.com/vorov2/dyalect/issues/359)).
   * Add: _`StringBuilder`_ ([Issue #22](https://github.com/vorov2/dyalect/issues/22)).
 
@@ -13,7 +13,7 @@
   * Fixed: _Crush because of `??=` operator_ ([Issue #354](https://github.com/vorov2/dyalect/issues/354)).
 
 # 0.15.1
-  * Change: Code _clean-ups and optimizations._
+  * Change: _Code clean-ups and optimizations._
   * Fixed: _Interactive mode crushes when trying to re-declare variable_ ([Issue #352](https://github.com/vorov2/dyalect/issues/352)).
 
 # 0.15.0
@@ -25,7 +25,7 @@
   * Fixed: _Ranges are not checked for consistency_ ([Issue #349](https://github.com/vorov2/dyalect/issues/349)).
 
 # 0.14.1
-  * Change: Code _clean-ups and optimizations._
+  * Change: _Code clean-ups and optimizations._
   * Fixed: _Dyalect crushes for foreign functions without parameters_ ([Issue #340](https://github.com/vorov2/dyalect/issues/340)).
 
 # 0.14.0
