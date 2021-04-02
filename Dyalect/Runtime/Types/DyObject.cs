@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Dyalect.Runtime.Types
@@ -112,6 +113,9 @@ namespace Dyalect.Runtime.Types
                 return (float)GetFloat();
             else if (type == Dyalect.Types.Object)
                 return ToObject();
+            //else if (type == Dyalect.Types.ArrayObject 
+            //    && this is IEnumerable<DyObject> seq)
+
 
             throw new InvalidCastException();
         }

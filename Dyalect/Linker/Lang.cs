@@ -193,6 +193,25 @@ namespace Dyalect.Linker
                 return DyInteger.One;
         }
 
+        [Function("makeObject")]
+        public DyObject MakeObject(ExecutionContext ctx, DyObject arg)
+        {
+            var dict = new Dictionary<string, DyObject>();
+
+            if (arg is DyTuple tuple)
+            {
+                foreach (var obj in tuple.Values)
+                {
+                    var key = obj.GetLabel();
+
+                    if (key != null)
+                        dict[key] = obj.GetTaggedValue();
+                }
+            }
+
+            return new DyCustomObject(dict);
+        }
+
         [Function("parse")]
         public DyObject Parse(ExecutionContext ctx, DyObject expression)
         {
