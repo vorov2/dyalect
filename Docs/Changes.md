@@ -1,3 +1,8 @@
+# 0.17.0
+  * Change: Code _clean-ups and optimizations._
+  * Add: _Add a generic `Object` type which can be used for interop_ ([Issue #359](https://github.com/vorov2/dyalect/issues/359)).
+  * Add: _`StringBuilder`_ ([Issue #22](https://github.com/vorov2/dyalect/issues/22)).
+
 # 0.16.0
   * Change: _All code migrated to .NET 5.0._
   * Change: _Serialization of maps to string is updated to match other types._

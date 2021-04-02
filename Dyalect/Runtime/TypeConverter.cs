@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.WebSockets;
 using Dyalect.Runtime.Types;
 
@@ -74,10 +75,11 @@ namespace Dyalect.Runtime
                 case TypeCode.UInt16: return (ushort)obj.GetInteger();
                 case TypeCode.UInt32: return (uint)obj.GetInteger();
                 case TypeCode.UInt64: return (ulong)obj.GetInteger();
-                case TypeCode.String: return obj.ToString(ctx).GetString();
+                case TypeCode.String: 
+                    return ctx != null ? obj.ToString(ctx).GetString() : obj.GetString();
                 case TypeCode.Char:
                     {
-                        var str = obj.ToString(ctx).GetString();
+                        var str = ctx != null ? obj.ToString(ctx).GetString() : obj.GetString();
                         return string.IsNullOrEmpty(str) ? '\0' : str[0];
                     }
                 case TypeCode.Single: return (float)obj.GetFloat();
@@ -85,18 +87,25 @@ namespace Dyalect.Runtime
                 case TypeCode.Decimal: return (decimal)obj.GetFloat();
                 case TypeCode.Empty: return null;
                 default:
-                    if (type.IsArray && obj is DyCollection coll)
+                    if (obj is DyCollection coll)
                     {
-                        var et = type.GetElementType();
-                        var arr = Array.CreateInstance(et, coll.Count);
-
-                        for (var i = 0; i < coll.Count; i++)
+                        if (type == typeof(object[]))
+                            return coll.ConvertToArray();
+                        else if (type == typeof(List<object>))
+                            return coll.ConvertToList();
+                        else if (type.IsArray)
                         {
-                            var c = coll[i];
-                            arr.SetValue(ConvertTo(c, et, ctx), i);
-                        }
+                            var et = type.GetElementType();
+                            var arr = Array.CreateInstance(et, coll.Count);
 
-                        return arr;
+                            for (var i = 0; i < coll.Count; i++)
+                            {
+                                var c = coll[i];
+                                arr.SetValue(ConvertTo(c, et, ctx), i);
+                            }
+
+                            return arr;
+                        }
                     }
                     break;
             }

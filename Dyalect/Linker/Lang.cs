@@ -117,6 +117,13 @@ namespace Dyalect.Linker
             if (ReferenceEquals(x, y))
                 return true;
 
+            if (x is string a && y is string b)
+            {
+                a = a.Replace("\r\n", "\n");
+                b = b.Replace("\r\n", "\n");
+                return Equals(a, b);
+            }
+
             if (x is IList xs && y is IList ys)
             {
                 if (xs.Count != ys.Count)
