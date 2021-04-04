@@ -1,6 +1,7 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Runtime.Types;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dyalect.Runtime
 {
@@ -47,6 +48,7 @@ namespace Dyalect.Runtime
                 throw new DyRuntimeException(err.GetDescription());
             }
         }
+
     }
 
     internal struct ArgContainer

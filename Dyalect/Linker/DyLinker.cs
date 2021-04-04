@@ -52,8 +52,15 @@ namespace Dyalect.Linker
                 {
                     unit = LinkForeignModule(self, mod);
 
-                    if (unit == null)
+                    if (unit is null)
                         AddError(LinkerError.AssemblyNotFound, mod.SourceFileName, mod.SourceLocation, mod.DllName, mod.ModuleName);
+                    else
+                        foreach (var rf in unit.References)
+                        {
+                            var res = Link(self, rf);
+                            if (!res.Success)
+                                return res;
+                        }
                 }
                 else
                 {

@@ -16,6 +16,7 @@ namespace Dyalect.Linker
         protected ForeignUnit()
         {
             InitializeMembers();
+            UnitIds.Add(0); //Self reference, to mimic the behavior of regular units
         }
 
         internal protected void Add(string name, DyObject obj)
@@ -30,6 +31,19 @@ namespace Dyalect.Linker
             var td = new TypeDescriptor(name, typeId, true, typeActivator);
             Types.Add(td);
             TypeMap[name] = td;
+        }
+
+        internal protected void AddReference<T>() where T : ForeignUnit
+        {
+            var ti = typeof(T);
+            var attr = Attribute.GetCustomAttribute(ti, typeof(DyUnitAttribute)) as DyUnitAttribute;
+
+            if (attr is null)
+                throw new Exception("Invalid reference.");
+
+            var rf = new Reference(attr.Name, null, ti.Assembly.GetName().Name + ".dll", default, null);
+            UnitIds.Add(-1); //Real handles are added by a linker
+            References.Add(rf);
         }
 
         internal void Modify(int id, DyObject obj)

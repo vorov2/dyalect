@@ -105,8 +105,14 @@ namespace Dyalect.Runtime
         internal override DyObject GetDyObject() => Data ?? DyNil.Instance;
     }
 
-    public static class ExecutionContextExtensions
+    partial class ExecutionContextExtensions
     {
+        public static DyObject Fail(this ExecutionContext ctx, string detail)
+        {
+            ctx.Error = new DyUserError(null, detail);
+            return DyNil.Instance;
+        }
+
         public static DyObject CollectionModified(this ExecutionContext ctx)
         {
             ctx.Error = new DyError(DyErrorCode.CollectionModified);
