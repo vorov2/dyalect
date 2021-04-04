@@ -1,8 +1,6 @@
 ﻿using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -18,13 +16,13 @@ namespace Dyalect.Runtime.Types
             this.Values = values ?? throw new DyException("Unable to create a tuple with no values.");
         }
 
-        public IDictionary<DyObject, DyObject> ConvertToDictionary()
+        public Dictionary<DyObject, DyObject> ConvertToDictionary()
         {
             var dict = new Dictionary<DyObject, DyObject>();
 
             foreach (var obj in Values)
             {
-                if (!(obj is DyLabel lab) || !dict.TryAdd(new DyString(lab.Label), lab.Value))
+                if (obj is not DyLabel lab || !dict.TryAdd(new DyString(lab.Label), lab.Value))
                     dict.Add(new DyString(DefaultKey()), obj);
             }
 
@@ -113,7 +111,7 @@ namespace Dyalect.Runtime.Types
             return GetOrdinal(name) != -1;
         }
 
-        private string DefaultKey() => Guid.NewGuid().ToString();
+        private static string DefaultKey() => Guid.NewGuid().ToString();
 
         public override IEnumerator<DyObject> GetEnumerator()
         {
@@ -293,7 +291,7 @@ namespace Dyalect.Runtime.Types
             return RemoveAt(ctx, t, idx);
         }
 
-        private DyTuple RemoveAt(ExecutionContext _, DyTuple self, int index)
+        private static DyTuple RemoveAt(ExecutionContext _, DyTuple self, int index)
         {
             var arr = new DyObject[self.Count - 1];
             var c = 0;

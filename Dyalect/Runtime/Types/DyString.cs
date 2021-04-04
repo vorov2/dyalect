@@ -10,7 +10,7 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyString : DyCollection, IEnumerable<DyObject>
     {
-        public static readonly DyString Empty = new DyString("");
+        public static readonly DyString Empty = new("");
         internal readonly string Value;
 
         public override int Count => Value.Length;
@@ -47,7 +47,7 @@ namespace Dyalect.Runtime.Types
 
         public static implicit operator string(DyString str) => str.Value;
 
-        public static implicit operator DyString(string str) => new DyString(str);
+        public static implicit operator DyString(string str) => new(str);
 
         public static string ToString(DyObject value, ExecutionContext ctx)
         {
@@ -231,7 +231,7 @@ namespace Dyalect.Runtime.Types
             return allChars ? SplitByChars(ctx, self, values) : SplitByStrings(ctx, self, values);
         }
 
-        private DyObject SplitByStrings(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private static DyObject SplitByStrings(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var xs = new string[args.Length];
 
@@ -252,7 +252,7 @@ namespace Dyalect.Runtime.Types
             return new DyArray(list);
         }
 
-        private DyObject SplitByChars(ExecutionContext _, DyObject self, DyObject[] args)
+        private static DyObject SplitByChars(ExecutionContext _, DyObject self, DyObject[] args)
         {
             var xs = new char[args.Length];
 
@@ -271,7 +271,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Capitalize(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var str = self.GetString();
-            return str.Length == 0 ? DyString.Empty : new DyString(char.ToUpper(str[0]) + str.Substring(1).ToLower());
+            return str.Length == 0 ? DyString.Empty : new DyString(char.ToUpper(str[0]) + str[1..].ToLower());
         }
 
         private DyObject Upper(ExecutionContext ctx, DyObject self, DyObject[] args)
@@ -328,7 +328,7 @@ namespace Dyalect.Runtime.Types
                 return ctx.IndexOutOfRange(i);
 
             if (ReferenceEquals(to, DyNil.Instance))
-                return new DyString(str.Substring(i));
+                return new DyString(str[i..]);
 
             var j = (int)to.GetInteger();
 
@@ -353,7 +353,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(self.GetString().TrimEnd(GetChars(args, ctx)));
         }
 
-        private char[] GetChars(DyObject[] args, ExecutionContext ctx)
+        private static char[] GetChars(DyObject[] args, ExecutionContext ctx)
         {
             if (args[0] == null)
                 return Statics.EmptyChars;

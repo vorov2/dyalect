@@ -104,7 +104,7 @@ namespace Dyalect.Linker
                 if (Attribute.GetCustomAttribute(p, typeof(DefaultAttribute)) is DefaultAttribute defAttr)
                     def = defAttr.Value;
                 else if (p.HasDefaultValue)
-                    def = TypeConverter.ConvertFrom(p.DefaultValue, p.ParameterType, ExecutionContext.Default);
+                    def = TypeConverter.ConvertFrom(p.DefaultValue, p.ParameterType);
 
                 parsMeta[i - (hasContext ? 1 : 0)] = new Par(p.Name, def, va);
             }

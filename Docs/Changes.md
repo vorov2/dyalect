@@ -1,7 +1,8 @@
 # 0.17.0
   * Change: _Code clean-ups and optimizations._
   * Add: _Add a generic `Object` type which can be used for interop_ ([Issue #359](https://github.com/vorov2/dyalect/issues/359)).
-  * Add: _`StringBuilder`_ ([Issue #22](https://github.com/vorov2/dyalect/issues/22)).
+  * Add: _StringBuilder_ ([Issue #22](https://github.com/vorov2/dyalect/issues/22)).
+  * Add: _Add automatic conversion to/from Dictionary_ ([Issue #360](https://github.com/vorov2/dyalect/issues/360)).
 
 # 0.16.0
   * Change: _All code migrated to .NET 5.0._

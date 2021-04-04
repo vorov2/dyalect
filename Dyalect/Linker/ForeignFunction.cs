@@ -18,7 +18,7 @@ namespace Dyalect.Linker
 
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {
-            dynamic val(int i) => TypeConverter.ConvertTo(args[i], fun.Types[i], ctx);
+            dynamic val(int i) => TypeConverter.ConvertTo(args[i], fun.Types[i]);
             object retval;
 
             if (expectContext)
@@ -70,7 +70,7 @@ namespace Dyalect.Linker
                 };
             }
 
-            return TypeConverter.ConvertFrom(retval, fun.Types[^1], ctx);
+            return TypeConverter.ConvertFrom(retval, fun.Types[^1]);
         }
 
         internal override bool Equals(DyFunction func) => func is ForeignFunction m && m.fun.Equals(fun);

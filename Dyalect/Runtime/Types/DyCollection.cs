@@ -102,7 +102,7 @@ namespace Dyalect.Runtime.Types
 
         public override bool Equals(DyObject other)
         {
-            if (!(other is DyCollection arr))
+            if (other is not DyCollection arr)
                 return false;
 
             var c = GetCount();

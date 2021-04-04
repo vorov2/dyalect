@@ -44,8 +44,8 @@ namespace Dyalect.Runtime.Types
             return (GetSupportedOperations() & op) == op;
         }
 
-        private readonly Dictionary<int, DyFunction> members = new Dictionary<int, DyFunction>();
-        private readonly Dictionary<int, DyFunction> staticMembers = new Dictionary<int, DyFunction>();
+        private readonly Dictionary<int, DyFunction> members = new();
+        private readonly Dictionary<int, DyFunction> staticMembers = new();
 
         public override object ToObject() => this;
 
@@ -400,7 +400,7 @@ namespace Dyalect.Runtime.Types
                     staticMembers.Add(nameId, value);
             }
 
-            if (value != null)
+            if (value is not null)
                 return value;
 
             return ctx.StaticOperationNotSupported(ctx.Composition.Members[nameId], TypeName);
@@ -408,11 +408,10 @@ namespace Dyalect.Runtime.Types
 
         internal void SetStaticMember(int nameId, DyObject value, Unit unit, ExecutionContext _)
         {
-            var func = value as DyFunction;
             nameId = unit.MemberIds[nameId];
             staticMembers.Remove(nameId);
 
-            if (func != null)
+            if (value is DyFunction func)
                 staticMembers.Add(nameId, func);
         }
 
@@ -433,43 +432,35 @@ namespace Dyalect.Runtime.Types
             return (DyBool)CheckStaticMember(name, ctx);
         }
 
-        protected virtual bool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
-        {
-            switch (name)
+        protected virtual bool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx) =>
+            name switch
             {
-                case Builtins.Add: return Support(SupportedOperations.Add);
-                case Builtins.Sub: return Support(SupportedOperations.Sub);
-                case Builtins.Mul: return Support(SupportedOperations.Mul);
-                case Builtins.Div: return Support(SupportedOperations.Div);
-                case Builtins.Rem: return Support(SupportedOperations.Rem);
-                case Builtins.Shl: return Support(SupportedOperations.Shl);
-                case Builtins.Shr: return Support(SupportedOperations.Shr);
-                case Builtins.And: return Support(SupportedOperations.And);
-                case Builtins.Or: return Support(SupportedOperations.Or);
-                case Builtins.Xor: return Support(SupportedOperations.Xor);
-                case Builtins.Eq: return Support(SupportedOperations.Eq);
-                case Builtins.Neq: return Support(SupportedOperations.Neq);
-                case Builtins.Gt: return Support(SupportedOperations.Gt);
-                case Builtins.Lt: return Support(SupportedOperations.Lt);
-                case Builtins.Gte: return Support(SupportedOperations.Gte);
-                case Builtins.Lte: return Support(SupportedOperations.Lte);
-                case Builtins.Neg: return Support(SupportedOperations.Neg);
-                case Builtins.BitNot: return Support(SupportedOperations.BitNot);
-                case Builtins.Plus: return Support(SupportedOperations.Plus);
-                case Builtins.Get: return Support(SupportedOperations.Get);
-                case Builtins.Set: return Support(SupportedOperations.Set);
-                case Builtins.Len: return Support(SupportedOperations.Len);
-                case Builtins.Not:
-                case Builtins.ToStr:
-                case Builtins.Clone:
-                case Builtins.Has:
-                    return true;
-                default:
-                    return nameId == -1
-                        ? CheckHasMemberDirect(self, name, ctx)
-                        : CheckHasMemberDirect(self, nameId, ctx);
-            }
-        }
+                Builtins.Add => Support(SupportedOperations.Add),
+                Builtins.Sub => Support(SupportedOperations.Sub),
+                Builtins.Mul => Support(SupportedOperations.Mul),
+                Builtins.Div => Support(SupportedOperations.Div),
+                Builtins.Rem => Support(SupportedOperations.Rem),
+                Builtins.Shl => Support(SupportedOperations.Shl),
+                Builtins.Shr => Support(SupportedOperations.Shr),
+                Builtins.And => Support(SupportedOperations.And),
+                Builtins.Or => Support(SupportedOperations.Or),
+                Builtins.Xor => Support(SupportedOperations.Xor),
+                Builtins.Eq => Support(SupportedOperations.Eq),
+                Builtins.Neq => Support(SupportedOperations.Neq),
+                Builtins.Gt => Support(SupportedOperations.Gt),
+                Builtins.Lt => Support(SupportedOperations.Lt),
+                Builtins.Gte => Support(SupportedOperations.Gte),
+                Builtins.Lte => Support(SupportedOperations.Lte),
+                Builtins.Neg => Support(SupportedOperations.Neg),
+                Builtins.BitNot => Support(SupportedOperations.BitNot),
+                Builtins.Plus => Support(SupportedOperations.Plus),
+                Builtins.Get => Support(SupportedOperations.Get),
+                Builtins.Set => Support(SupportedOperations.Set),
+                Builtins.Len => Support(SupportedOperations.Len),
+                Builtins.Not or Builtins.ToStr or Builtins.Clone or Builtins.Has => true,
+                _ => nameId == -1 ? CheckHasMemberDirect(self, name, ctx)
+                    : CheckHasMemberDirect(self, nameId, ctx),
+            };
 
         internal DyObject GetMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
         {
@@ -501,10 +492,10 @@ namespace Dyalect.Runtime.Types
 
         internal bool CheckHasMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
         {
-            if (!members.TryGetValue(nameId, out var value))
+            if (!members.TryGetValue(nameId, out _))
             {
                 var name = ctx.Composition.Members[nameId];
-                value = InternalGetMember(self, name, ctx);
+                var value = InternalGetMember(self, name, ctx);
 
                 if (value != null)
                 {
