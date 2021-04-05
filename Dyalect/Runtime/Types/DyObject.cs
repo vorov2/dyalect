@@ -78,7 +78,7 @@ namespace Dyalect.Runtime.Types
         internal protected virtual DyObject GetTaggedValue() => null;
 
         internal virtual int GetConstructorId(ExecutionContext ctx) =>
-            ctx.Composition.MembersMap.TryGetValue(ctx.Types[TypeId].TypeName, out var id) ? id : 0;
+            ctx.RuntimeContext.Composition.MembersMap.TryGetValue(ctx.RuntimeContext.Types[TypeId].TypeName, out var id) ? id : 0;
 
         public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 
@@ -99,14 +99,13 @@ namespace Dyalect.Runtime.Types
     {
         public static bool IsNil(this DyObject self) => ReferenceEquals(self, DyNil.Instance);
 
-        public static DyTypeInfo Type(this DyObject self, ExecutionContext ctx) => ctx.Composition.Types[self.TypeId];
-
-        public static DyString ToString(this DyObject self, ExecutionContext ctx) => (DyString)ctx.Composition.Types[self.TypeId].ToString(ctx, self);
+        public static DyString ToString(this DyObject self, ExecutionContext ctx) => 
+            (DyString)ctx.RuntimeContext.Composition.Types[self.TypeId].ToString(ctx, self);
 
         public static DyObject GetIterator(this DyObject self, ExecutionContext ctx)
         {
-            var nameId = ctx.Composition.MembersMap[Builtins.Iterator];
-            var value = ctx.Composition.Types[self.TypeId].GetMemberDirect(self, nameId, ctx);
+            var nameId = ctx.RuntimeContext.Composition.MembersMap[Builtins.Iterator];
+            var value = ctx.RuntimeContext.Composition.Types[self.TypeId].GetMemberDirect(self, nameId, ctx);
 
             if (value == null)
                 return ctx.OperationNotSupported(Builtins.Iterator, self);
@@ -117,10 +116,13 @@ namespace Dyalect.Runtime.Types
 
     public static class DyObjectExtensions
     {
-        public static string TypeName(this DyObject self, ExecutionContext ctx) =>
-            ctx.Composition.Types[self.TypeId].TypeName;
+        public static DyTypeInfo GetTypeInfo(this DyObject self, ExecutionContext ctx) =>
+            ctx.RuntimeContext.Composition.Types[self.TypeId];
+
+        public static string GetTypeName(this DyObject self, ExecutionContext ctx) =>
+            ctx.RuntimeContext.Composition.Types[self.TypeId].TypeName;
 
         public static string Format(this DyObject self, ExecutionContext ctx) =>
-            ctx.Composition.Types[self.TypeId].ToString(ctx, self).GetString();
+            ctx.RuntimeContext.Composition.Types[self.TypeId].ToString(ctx, self).GetString();
     }
 }

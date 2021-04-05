@@ -238,10 +238,23 @@ namespace Dyalect.Linker
                     td.Processed = true;
                     td.Id = composition.Types.Count;
 
-                    if (td.TypeInfoActivator == null)
+                    if (td.ForeignTypeInfo is null)
                         composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, td.Name, td.AutoGenConstructors));
                     else
-                        composition.Types.Add(td.TypeInfoActivator(composition.Types.Count));
+                    {
+                        var guid = td.ForeignTypeInfo.GetAttribute<ForeignTypeAttribute>()?.Guid;
+
+                        if (guid is null)
+                        {
+                            guid = Guid.NewGuid();
+                            AddError(LinkerError.InvalidForeignModule, u.FileName, default, td.Name);
+                        }
+
+                        var ti = (ForeignTypeInfo)Activator.CreateInstance(td.ForeignTypeInfo);
+                        ti.TypeCode = composition.Types.Count;
+                        composition.Types.Add(ti);
+                        composition.TypeCodes.Add(guid.Value, ti.TypeCode);
+                    }
                 }
             }
         }

@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace Dyalect.Library.Types
 {
-    public sealed class DyByteArray : DyObject
+    public sealed class DyByteArray : DyForeignObject<DyByteArrayTypeInfo>
     {
         internal readonly byte[] Buffer;
 
-        public DyByteArray(int typeCode, byte[] buffer) : base(typeCode)
+        public DyByteArray(RuntimeContext rtx, byte[] buffer) : base(rtx)
         {
             this.Buffer = buffer;
         }

@@ -20,7 +20,7 @@ namespace Dyalect.Runtime.Types
             Value = str;
         }
 
-        internal override DyObject GetValue(int index) => GetItem(index, ExecutionContext.Default);
+        internal override DyObject GetValue(int index) => new DyChar(Value[index]);
 
         internal override DyObject[] GetValues()
         {

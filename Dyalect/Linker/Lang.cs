@@ -25,7 +25,7 @@ namespace Dyalect.Linker
             this.args = args;
         }
 
-        public override void Execute(ExecutionContext ctx)
+        protected override void Execute(ExecutionContext ctx)
         {
             Add("args", args ?? (DyObject)DyNil.Instance);
         }
@@ -145,7 +145,7 @@ namespace Dyalect.Linker
         [Function("min")]
         public DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.Type(ctx).Lt(ctx, x, y).GetBool())
+            if (x.GetTypeInfo(ctx).Lt(ctx, x, y).GetBool())
                 return x;
             else
                 return y;
@@ -154,7 +154,7 @@ namespace Dyalect.Linker
         [Function("max")]
         public DyObject Max(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.Type(ctx).Gt(ctx, x, y).GetBool())
+            if (x.GetTypeInfo(ctx).Gt(ctx, x, y).GetBool())
                 return x;
             else
                 return y;
@@ -175,9 +175,9 @@ namespace Dyalect.Linker
         public DyObject Round(ExecutionContext ctx, DyObject number, [Default(2)]DyObject digits)
         {
             if (number.TypeId != DyType.Float)
-                ctx.InvalidType(number);
+                return ctx.InvalidType(number);
             else if (digits.TypeId != DyType.Integer)
-                ctx.InvalidType(digits);
+                return ctx.InvalidType(digits);
 
             return new DyFloat(Math.Round(number.GetFloat(), (int)digits.GetInteger()));
         }
@@ -188,7 +188,7 @@ namespace Dyalect.Linker
             if (x == DyInteger.Zero)
                 return DyInteger.Zero;
 
-            if (x.Type(ctx).Lt(ctx, x, DyInteger.Zero).GetBool())
+            if (x.GetTypeInfo(ctx).Lt(ctx, x, DyInteger.Zero).GetBool())
                 return DyInteger.MinusOne;
             else 
                 return DyInteger.One;
@@ -243,7 +243,7 @@ namespace Dyalect.Linker
         [Function("eval")]
         public DyObject Eval(ExecutionContext ctx, DyObject source, DyObject args)
         {
-            if (!(source is DyString strObj))
+            if (source is not DyString strObj)
                 return ctx.InvalidType(source);
 
             var tup = args as DyTuple;

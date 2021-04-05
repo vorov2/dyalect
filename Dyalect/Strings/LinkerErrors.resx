@@ -138,6 +138,9 @@
   <data name="InvalidAssemblyModule" xml:space="preserve">
     <value>Unsupported type of a module "{0}" from an assembly "{1}".</value>
   </data>
+  <data name="InvalidForeignModule" xml:space="preserve">
+    <value>Foreign module "{0}" is missing GUID attribute.</value>
+  </data>
   <data name="ModuleNotFound" xml:space="preserve">
     <value>Unable to find module "{0}".</value>
   </data>

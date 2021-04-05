@@ -1,7 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Runtime.Types;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Dyalect.Runtime
 {
@@ -9,21 +8,14 @@ namespace Dyalect.Runtime
     {
         internal int AUX;
 
-        internal static readonly ExecutionContext Default = new ExecutionContext(new CallStack(), new UnitComposition(new List<Unit>()));
-
-        internal ExecutionContext(CallStack callStack, UnitComposition composition)
+        internal ExecutionContext(CallStack callStack, RuntimeContext rtx)
         {
             CallStack = callStack;
             CatchMarks = new Stack<CatchMark>();
-            Composition = composition;
-            Units = new DyObject[Composition.Units.Count][];
+            RuntimeContext = rtx;
         }
 
-        internal DyObject[][] Units { get; }
-
-        internal List<DyTypeInfo> Types => Composition.Types;
-
-        public UnitComposition Composition { get; }
+        public RuntimeContext RuntimeContext { get; }
 
         public bool HasErrors => Error != null;
 

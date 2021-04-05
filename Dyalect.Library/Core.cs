@@ -10,8 +10,8 @@ namespace Dyalect.Library
     {
         public Core()
         {
-            AddType("ByteArray", i => new DyByteArrayTypeInfo(i));
-            AddType("StringBuilder", i => new DyStringBuilderTypeInfo(i));
+            AddType<DyByteArrayTypeInfo>("ByteArray");
+            AddType<DyStringBuilderTypeInfo>("StringBuilder");
         }
 
         [Function("NewByteArray")]

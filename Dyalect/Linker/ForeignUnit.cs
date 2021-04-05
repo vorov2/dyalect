@@ -13,6 +13,8 @@ namespace Dyalect.Linker
     {
         internal List<DyObject> Values { get; } = new List<DyObject>();
 
+        protected RuntimeContext RuntimeContext { get; private set; }
+
         protected ForeignUnit()
         {
             InitializeMembers();
@@ -25,10 +27,10 @@ namespace Dyalect.Linker
             Values.Add(obj);
         }
 
-        internal protected void AddType(string name, Func<int, DyTypeInfo> typeActivator)
+        internal protected void AddType<T>(string name) where T : ForeignTypeInfo
         {
             var typeId = Types.Count;
-            var td = new TypeDescriptor(name, typeId, true, typeActivator);
+            var td = new TypeDescriptor(name, typeId, true, typeof(T));
             Types.Add(td);
             TypeMap[name] = td;
         }
@@ -36,10 +38,9 @@ namespace Dyalect.Linker
         internal protected void AddReference<T>() where T : ForeignUnit
         {
             var ti = typeof(T);
-            var attr = Attribute.GetCustomAttribute(ti, typeof(DyUnitAttribute)) as DyUnitAttribute;
 
-            if (attr is null)
-                throw new Exception("Invalid reference.");
+            if (Attribute.GetCustomAttribute(ti, typeof(DyUnitAttribute)) is not DyUnitAttribute attr)
+                throw new DyException("Invalid reference.");
 
             var rf = new Reference(attr.Name, null, ti.Assembly.GetName().Name + ".dll", default, null);
             UnitIds.Add(-1); //Real handles are added by a linker
@@ -51,7 +52,13 @@ namespace Dyalect.Linker
             Values[id] = obj;
         }
 
-        public virtual void Execute(ExecutionContext ctx)
+        public void Initialize(ExecutionContext ctx)
+        {
+            RuntimeContext = ctx.RuntimeContext;
+            Execute(ctx);
+        }
+
+        protected virtual void Execute(ExecutionContext ctx)
         {
 
         }

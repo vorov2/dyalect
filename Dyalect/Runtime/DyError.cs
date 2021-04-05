@@ -152,7 +152,7 @@ namespace Dyalect.Runtime
         {
             ctx.Error = new DyError(DyErrorCode.OperationNotSupported,
                 ("Operation", op),
-                ("TypeName", obj.TypeName(ctx)));
+                ("TypeName", obj.GetTypeName(ctx)));
             return DyNil.Instance;
         }
 
@@ -174,7 +174,7 @@ namespace Dyalect.Runtime
         {
             ctx.Error = new DyError(DyErrorCode.IndexInvalidType,
                 ("Index", index),
-                ("IndexTypeName", index.TypeName(ctx)));
+                ("IndexTypeName", index.GetTypeName(ctx)));
             return DyNil.Instance;
         }
 
@@ -193,7 +193,7 @@ namespace Dyalect.Runtime
         public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
         {
             ctx.Error = new DyError(DyErrorCode.InvalidType,
-                ("TypeName", value.TypeName(ctx)));
+                ("TypeName", value.GetTypeName(ctx)));
             return DyNil.Instance;
         }
 
@@ -220,7 +220,7 @@ namespace Dyalect.Runtime
 
         public static DyObject NotFunction(this ExecutionContext ctx, DyObject obj)
         {
-            ctx.Error = new DyError(DyErrorCode.NotFunction, ("TypeName", obj.TypeName(ctx)));
+            ctx.Error = new DyError(DyErrorCode.NotFunction, ("TypeName", obj.GetTypeName(ctx)));
             return DyNil.Instance;
         }
 

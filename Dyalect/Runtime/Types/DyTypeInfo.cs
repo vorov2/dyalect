@@ -66,7 +66,7 @@ namespace Dyalect.Runtime.Types
         protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right.TypeId == DyType.String && TypeCode != DyType.String)
-                return ctx.Types[DyType.String].Add(ctx, left, right);
+                return ctx.RuntimeContext.Types[DyType.String].Add(ctx, left, right);
             return ctx.OperationNotSupported(Builtins.Add, left);
         }
         public DyObject Add(ExecutionContext ctx, DyObject left, DyObject right)
@@ -375,7 +375,7 @@ namespace Dyalect.Runtime.Types
 
             if (!staticMembers.ContainsKey(nameId))
             {
-                var name = ctx.Composition.Members[nameId];
+                var name = ctx.RuntimeContext.Composition.Members[nameId];
                 return InternalGetStaticMember(name, ctx) != null;
             }
 
@@ -393,7 +393,7 @@ namespace Dyalect.Runtime.Types
 
             if (!staticMembers.TryGetValue(nameId, out var value))
             {
-                var name = ctx.Composition.Members[nameId];
+                var name = ctx.RuntimeContext.Composition.Members[nameId];
                 value = InternalGetStaticMember(name, ctx);
 
                 if (value != null)
@@ -403,7 +403,7 @@ namespace Dyalect.Runtime.Types
             if (value is not null)
                 return value;
 
-            return ctx.StaticOperationNotSupported(ctx.Composition.Members[nameId], TypeName);
+            return ctx.StaticOperationNotSupported(ctx.RuntimeContext.Composition.Members[nameId], TypeName);
         }
 
         internal void SetStaticMember(int nameId, DyObject value, Unit unit, ExecutionContext _)
@@ -418,7 +418,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject HasMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
         {
             nameId = unit.MemberIds[nameId];
-            var name = ctx.Composition.Members[nameId];
+            var name = ctx.RuntimeContext.Composition.Members[nameId];
             return (DyBool)HasMemberDirect(self, name, nameId, ctx);
         }
 
@@ -470,14 +470,14 @@ namespace Dyalect.Runtime.Types
             if (value != null)
                 return value;
 
-            return ctx.OperationNotSupported(ctx.Composition.Members[nameId], self);
+            return ctx.OperationNotSupported(ctx.RuntimeContext.Composition.Members[nameId], self);
         }
 
         internal DyObject GetMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
         {
             if (!members.TryGetValue(nameId, out var value))
             {
-                var name = ctx.Composition.Members[nameId];
+                var name = ctx.RuntimeContext.Composition.Members[nameId];
                 value = InternalGetMember(self, name, ctx);
 
                 if (value != null)
@@ -494,7 +494,7 @@ namespace Dyalect.Runtime.Types
         {
             if (!members.TryGetValue(nameId, out _))
             {
-                var name = ctx.Composition.Members[nameId];
+                var name = ctx.RuntimeContext.Composition.Members[nameId];
                 var value = InternalGetMember(self, name, ctx);
 
                 if (value != null)
@@ -515,7 +515,7 @@ namespace Dyalect.Runtime.Types
         {
             var func = value as DyFunction;
             nameId = unit.MemberIds[nameId];
-            var name = ctx.Composition.Members[nameId];
+            var name = ctx.RuntimeContext.Composition.Members[nameId];
             SetBuiltin(name, func);
             members.Remove(nameId);
 
@@ -564,7 +564,7 @@ namespace Dyalect.Runtime.Types
 
             if (self == null) //We're calling against type itself
                 return HasStaticMember(name, ctx);
-            else if (ctx.Composition.MembersMap.TryGetValue(name, out var nameId))
+            else if (ctx.RuntimeContext.Composition.MembersMap.TryGetValue(name, out var nameId))
                 return (DyBool)HasMemberDirect(self, name, nameId, ctx);
             else
                 return (DyBool)HasMemberDirect(self, name, -1, ctx);
@@ -600,7 +600,7 @@ namespace Dyalect.Runtime.Types
                 Builtins.Iterator => self is IEnumerable<DyObject> ? DyForeignFunction.Member(name, GetIterator) : null,
                 Builtins.Clone => DyForeignFunction.Member(name, Clone),
                 Builtins.Has => DyForeignFunction.Member(name, Has, -1, new Par("member")),
-                Builtins.Type => DyForeignFunction.Member(name, (context, o) => context.Types[self.TypeId]),
+                Builtins.Type => DyForeignFunction.Member(name, (context, o) => context.RuntimeContext.Types[self.TypeId]),
                 _ => GetMember(name, ctx)
             };
 
@@ -617,12 +617,12 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "TypeInfo" => DyForeignFunction.Static(name, (c, obj) => c.Types[obj.TypeId], -1, new Par("value")),
+                "TypeInfo" => DyForeignFunction.Static(name, (c, obj) => c.RuntimeContext.Types[obj.TypeId], -1, new Par("value")),
                 "__deleteMember" => DyForeignFunction.Static(name,
                     (context, strObj) =>
                     {
                         var nm = strObj.GetString();
-                        if (context.Composition.MembersMap.TryGetValue(nm, out var nameId))
+                        if (context.RuntimeContext.Composition.MembersMap.TryGetValue(nm, out var nameId))
                         {
                             SetBuiltin(nm, null);
                             members.Remove(nameId);
