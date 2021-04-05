@@ -962,14 +962,16 @@ namespace Dyalect.Compiler
                     ? VarFlags.Const | VarFlags.Auto
                     : node.Constant ? VarFlags.Const : VarFlags.None;
                 var a = AddVariable(node.Pattern.GetName(), node, flags);
-                cw.PopVar(a);
 
                 if (node.AutoClose)
                 {
                     if (!node.Constant)
                         AddError(CompilerError.AutoOnlyConst, node.Location);
-                    currentScope.Autos.Push(a);
+                    cw.PopAuto(a);
+
                 }
+                else
+                    cw.PopVar(a);
             }
             else
             {

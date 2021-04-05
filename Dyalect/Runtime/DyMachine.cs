@@ -144,6 +144,18 @@ namespace Dyalect.Runtime
                     case OpCode.Poploc:
                         locals[op.Data] = evalStack.Pop();
                         break;
+                    case OpCode.PopAuto:
+                        {
+                            locals[op.Data] = evalStack.Pop();
+                            var cp = ctx.CallStack.Peek();
+                            if (cp.Autos == null)
+                                cp.Autos = new();
+                            cp.Autos.Push(locals[op.Data]);
+                        }
+                        break;
+                    case OpCode.CloseAuto:
+                        CloseAutos(ctx, ctx.CallStack.Peek());
+                        break;
                     case OpCode.Pushloc:
                         evalStack.Push(locals[op.Data]);
                         break;
@@ -588,6 +600,27 @@ namespace Dyalect.Runtime
             }
         }
 
+        private static void CloseAutos(ExecutionContext ctx, Caller cp)
+        {
+            if (cp.Autos is null)
+                return;
+
+            var unit = ctx.RuntimeContext.Composition.Units[cp.Function.UnitId];
+
+            while (cp.Autos.Count > 0)
+            {
+                var newctx = new ExecutionContext(new CallStack(), ctx.RuntimeContext);
+                var a = cp.Autos.Pop();
+                var mid = ctx.RuntimeContext.Composition.MembersMap["close"];
+                var member = ctx.RuntimeContext.Types[a.TypeId].GetMember(a, mid, unit, ctx);
+
+                if (member is DyFunction fn)
+                {
+                    fn.Call0(newctx);
+                }
+            }
+        }
+
         private static void Push(ArgContainer container, DyObject value, ExecutionContext ctx)
         {
             if (value.TypeId == DyType.Array)
@@ -718,15 +751,16 @@ namespace Dyalect.Runtime
 
         private static bool FindCatch(ExecutionContext ctx, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
         {
-            if (ctx.CatchMarks.Count == 0)
-                return false;
+            var has = ctx.CatchMarks.Count > 0;
 
-            var mark = ctx.CatchMarks.Peek();
+            CloseAutos(ctx, ctx.CallStack.Peek());
+            var mark = ctx.CatchMarks.Count > 0 ? ctx.CatchMarks.Peek() : new CatchMark(0, 0);
             var cp = default(Caller);
 
             while (ctx.CallStack.Count > mark.StackOffset)
             {
                 cp = ctx.CallStack.Pop();
+                CloseAutos(ctx, cp);
 
                 if (ReferenceEquals(cp, Caller.External))
                     return false;
@@ -739,7 +773,7 @@ namespace Dyalect.Runtime
                 evalStack = cp.EvalStack;
             }
 
-            return true;
+            return has;
         }
     }
 }

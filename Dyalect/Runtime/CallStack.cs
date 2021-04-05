@@ -99,6 +99,7 @@ namespace Dyalect.Runtime
             Locals = locals;
         }
 
+        public Stack<DyObject> Autos;
         public readonly DyObject[] Locals;
         public readonly EvalStack EvalStack;
         public readonly int Offset;
