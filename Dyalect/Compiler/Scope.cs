@@ -10,24 +10,23 @@ namespace Dyalect.Compiler
             Function = fun;
             Parent = parent;
             Locals = new Dictionary<string, ScopeVar>();
+            Autos = new Stack<int>();
         }
 
         public ScopeVar GetVariable(string name)
         {
-            var var = default(ScopeVar);
-
-            if (!Locals.TryGetValue(name, out var))
+            if (!Locals.TryGetValue(name, out ScopeVar var))
                 var = ScopeVar.Empty;
 
             return var;
         }
 
-        public Scope Clone()
-        {
-            var ret = new Scope(Function, Parent);
-            ret.Locals = new Dictionary<String, ScopeVar>(Locals);
-            return ret;
-        }
+        public Scope Clone() => 
+            new (Function, Parent)
+            {
+                Locals = new (Locals),
+                Autos = new (Autos)
+            };
 
         public IEnumerable<string> EnumerateNames()
         {
@@ -86,6 +85,8 @@ namespace Dyalect.Compiler
         public Scope Parent { get; set; }
 
         public Dictionary<string, ScopeVar> Locals { get; private set; }
+
+        public Stack<int> Autos { get; private set; }
 
         public bool Function { get; private set; }
     }

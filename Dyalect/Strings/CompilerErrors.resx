@@ -231,4 +231,10 @@
   <data name="PrivateScopeOnlyGlobal" xml:space="preserve">
     <value>Private blocks can be declared only in global scope.</value>
   </data>
+  <data name="AutoNotSupported" xml:space="preserve">
+    <value>Auto directive is not supported for bindings with pattern matching.</value>
+  </data>
+  <data name="AutoOnlyConst" xml:space="preserve">
+    <value>Auto directive is supported only for "const" declarations.</value>
+  </data>
 </root>

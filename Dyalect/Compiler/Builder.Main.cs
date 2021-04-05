@@ -540,6 +540,7 @@ namespace Dyalect.Compiler
             else
                 cw.PushNil();
 
+            CallAutos();
             AddLinePragma(node);
             cw.Br(ctx.FunctionExit);
         }
@@ -887,6 +888,8 @@ namespace Dyalect.Compiler
                 Build(n, nh, ctx);
             }
 
+            CallAutos();
+
             if (!hints.Has(NoScope))
                 EndScope();
         }
@@ -955,12 +958,24 @@ namespace Dyalect.Compiler
             if (node.Pattern.NodeType == NodeType.NamePattern)
             {
                 AddLinePragma(node);
-                var flags = node.Constant ? VarFlags.Const : VarFlags.None;
+                var flags = node.Constant & node.AutoClose
+                    ? VarFlags.Const | VarFlags.Auto
+                    : node.Constant ? VarFlags.Const : VarFlags.None;
                 var a = AddVariable(node.Pattern.GetName(), node, flags);
                 cw.PopVar(a);
+
+                if (node.AutoClose)
+                {
+                    if (!node.Constant)
+                        AddError(CompilerError.AutoOnlyConst, node.Location);
+                    currentScope.Autos.Push(a);
+                }
             }
             else
             {
+                if (node.AutoClose)
+                    AddError(CompilerError.AutoNotSupported, node.Location);
+
                 if (node.Init == null)
                     AddError(CompilerError.BindingPatternNoInit, node.Location);
                 else

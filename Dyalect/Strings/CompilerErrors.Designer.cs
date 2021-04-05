@@ -61,6 +61,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto directive is not supported for bindings with pattern matching..
+        /// </summary>
+        internal static string AutoNotSupported {
+            get {
+                return ResourceManager.GetString("AutoNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto directive is supported only for &quot;const&quot; declarations..
+        /// </summary>
+        internal static string AutoOnlyConst {
+            get {
+                return ResourceManager.GetString("AutoOnlyConst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Keyword &quot;base&quot; is not available in the current context..
         /// </summary>
         internal static string BaseNotAllowed {

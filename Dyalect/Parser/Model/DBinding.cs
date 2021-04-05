@@ -9,10 +9,15 @@ namespace Dyalect.Parser.Model
 
         }
 
+        public bool AutoClose { get; set; }
+
         public bool Constant { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {
+            if (AutoClose)
+                sb.Append("auto ");
+
             sb.Append(Constant ? "const " : "var ");
             Pattern.ToString(sb);
 

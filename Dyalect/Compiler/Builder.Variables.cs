@@ -24,6 +24,20 @@ namespace Dyalect.Compiler
             return ret;
         }
 
+        //Call close for all variables in this scope, registered as autos
+        private void CallAutos()
+        {
+            while (currentScope.Autos.Count > 0)
+            {
+                var a = currentScope.Autos.Pop();
+                cw.PushVar(new ScopeVar(a));
+                cw.GetMember(GetMemberNameId("close"));
+                cw.FunPrep(0);
+                cw.FunCall(0);
+                cw.Pop();
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int AddVariable(string name, DNode node, int data) =>
             AddVariable(name, node != null ? node.Location : default, data);
