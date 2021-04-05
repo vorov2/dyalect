@@ -76,8 +76,8 @@ namespace Dyalect.Runtime
             var sb = new StringBuilder(RuntimeErrors.ResourceManager.GetString(key));
 
             if (DataItems != null)
-                foreach (var dt in DataItems)
-                    sb.Replace("%" + dt.Key + "%", (dt.Value ?? "N/A").ToString());
+                foreach (var (Key, Value) in DataItems)
+                    sb.Replace("%" + Key + "%", (Value ?? "N/A").ToString());
 
             return sb.ToString();
         }

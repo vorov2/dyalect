@@ -7,7 +7,7 @@ namespace Dyalect.Runtime
     public sealed class RuntimeContext
     {
         internal RuntimeContext(UnitComposition composition) =>
-            (Composition, Units) = (composition, new DyObject[Composition.Units.Count][]);
+            (Composition, Units) = (composition, new DyObject[composition.Units.Count][]);
 
         internal DyObject[][] Units { get; }
 

@@ -40,12 +40,7 @@ namespace Dyalect.Library
             if (arg.TypeId != DyType.String)
                 return ctx.InvalidType(arg);
 
-            var ti = ctx.QueryType<DyByteArrayTypeInfo>();
-
-            if (ti is null)
-                return ctx.Fail("Unable to find type ByteArray.");
-
-            return new DyByteArray(ti.TypeCode, File.ReadAllBytes((string)arg.ToObject()));
+            return new DyByteArray(RuntimeContext, File.ReadAllBytes((string)arg.ToObject()));
         }
 
         [Function("writeAllBytes")]

@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using Dyalect.Linker;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
@@ -15,14 +16,20 @@ namespace Dyalect.Library.Types
             this.Buffer = buffer;
         }
 
+        internal DyByteArray(int typeId, byte[] buffer) : base(typeId)
+        {
+            this.Buffer = buffer;
+        }
+
         public override object ToObject() => Buffer;
 
         public override DyObject Clone() => new DyByteArray(TypeId, (byte[])Buffer.Clone());
     }
 
-    public sealed class DyByteArrayTypeInfo : DyTypeInfo
+    [ForeignType("8B01A32B-C575-45CC-B6B8-4DA5A14F7206")]
+    public sealed class DyByteArrayTypeInfo : ForeignTypeInfo
     {
-        public DyByteArrayTypeInfo(int typeCode) : base(typeCode)
+        public DyByteArrayTypeInfo()
         {
 
         }

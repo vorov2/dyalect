@@ -29,10 +29,10 @@ namespace Dyalect.Runtime.Types
                     : (int)ret.GetInteger();
             }
 
-            var res = ctx.Types[x.TypeId].Gt(ctx, x, y);
+            var res = ctx.RuntimeContext.Types[x.TypeId].Gt(ctx, x, y);
             return res == DyBool.True
                 ? 1
-                : ctx.Types[x.TypeId].Eq(ctx, x, y) == DyBool.True ? 0 : -1;
+                : ctx.RuntimeContext.Types[x.TypeId].Eq(ctx, x, y) == DyBool.True ? 0 : -1;
         }
     }
 }

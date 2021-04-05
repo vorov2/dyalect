@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using Dyalect.Linker;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System.Linq;
@@ -6,11 +7,16 @@ using System.Text;
 
 namespace Dyalect.Library.Types
 {
-    public sealed class DyStringBuilder : DyObject
+    public sealed class DyStringBuilder : DyForeignObject<DyStringBuilderTypeInfo>
     {
         internal readonly StringBuilder Builder;
 
-        public DyStringBuilder(int typeCode, StringBuilder builder) : base(typeCode)
+        public DyStringBuilder(RuntimeContext rtx, StringBuilder builder) : base(rtx)
+        {
+            this.Builder = builder;
+        }
+
+        internal DyStringBuilder(int typeId, StringBuilder builder) : base(typeId)
         {
             this.Builder = builder;
         }
@@ -26,9 +32,10 @@ namespace Dyalect.Library.Types
         public override DyObject Clone() => new DyStringBuilder(TypeId, new StringBuilder(Builder.ToString()));
     }
 
-    public sealed class DyStringBuilderTypeInfo : DyTypeInfo
+    [ForeignType("1E732E28-7057-45CB-A979-B4C5662E5C35")]
+    public sealed class DyStringBuilderTypeInfo : ForeignTypeInfo
     {
-        public DyStringBuilderTypeInfo(int typeCode) : base(typeCode)
+        public DyStringBuilderTypeInfo() : base()
         {
 
         }

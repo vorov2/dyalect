@@ -21,5 +21,10 @@ namespace Dyalect.Runtime.Types
         {
 
         }
+
+        protected DyForeignObject(int typeId) : base(typeId)
+        {
+
+        }
     }
 }

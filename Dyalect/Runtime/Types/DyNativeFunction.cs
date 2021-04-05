@@ -19,7 +19,7 @@ namespace Dyalect.Runtime.Types
         internal override void Reset(ExecutionContext ctx)
         {
             Locals = null;
-            PreviousOffset = ctx.Composition.Units[UnitId].Layouts[FunctionId].Size;
+            PreviousOffset = ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId].Size;
         }
 
         internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) :
@@ -134,7 +134,7 @@ namespace Dyalect.Runtime.Types
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
-        internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.Composition.Units[UnitId].Layouts[FunctionId];
+        internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId];
 
         internal override DyObject[] CreateLocals(ExecutionContext ctx)
         {

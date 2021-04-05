@@ -195,7 +195,7 @@ namespace Dyalect.Linker
         }
 
         [Function("makeObject")]
-        public DyObject MakeObject(ExecutionContext ctx, DyObject arg)
+        public DyObject MakeObject(ExecutionContext _, DyObject arg)
         {
             var dict = new Dictionary<string, DyObject>();
 

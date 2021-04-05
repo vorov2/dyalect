@@ -123,7 +123,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = Values[i];
 
-                if (ctx.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
+                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
                     return i;
 
                 if (ctx.HasErrors)
@@ -141,7 +141,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = Values[i];
 
-                if (ctx.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
+                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
                     index = i;
 
                 if (ctx.HasErrors)

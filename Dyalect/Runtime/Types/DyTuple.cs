@@ -190,7 +190,7 @@ namespace Dyalect.Runtime.Types
 
             for (var i = 0; i < t1.Count; i++)
             {
-                if (ctx.Types[t1.Values[i].TypeId].Eq(ctx, t1.Values[i], t2.Values[i]) == DyBool.False)
+                if (ctx.RuntimeContext.Types[t1.Values[i].TypeId].Eq(ctx, t1.Values[i], t2.Values[i]) == DyBool.False)
                     return DyBool.False;
 
                 if (ctx.HasErrors)
@@ -268,7 +268,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = t.Values[i];
 
-                if (ctx.Types[e.TypeId].Eq(ctx, e, item).GetBool())
+                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, item).GetBool())
                     return RemoveAt(ctx, t, i);
             }
 
