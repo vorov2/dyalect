@@ -1,8 +1,6 @@
 ﻿using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -18,13 +16,13 @@ namespace Dyalect.Runtime.Types
             this.Values = values ?? throw new DyException("Unable to create a tuple with no values.");
         }
 
-        public IDictionary<DyObject, DyObject> ConvertToDictionary()
+        public Dictionary<DyObject, DyObject> ConvertToDictionary()
         {
             var dict = new Dictionary<DyObject, DyObject>();
 
             foreach (var obj in Values)
             {
-                if (!(obj is DyLabel lab) || !dict.TryAdd(new DyString(lab.Label), lab.Value))
+                if (obj is not DyLabel lab || !dict.TryAdd(new DyString(lab.Label), lab.Value))
                     dict.Add(new DyString(DefaultKey()), obj);
             }
 
@@ -113,7 +111,7 @@ namespace Dyalect.Runtime.Types
             return GetOrdinal(name) != -1;
         }
 
-        private string DefaultKey() => Guid.NewGuid().ToString();
+        private static string DefaultKey() => Guid.NewGuid().ToString();
 
         public override IEnumerator<DyObject> GetEnumerator()
         {
@@ -192,7 +190,7 @@ namespace Dyalect.Runtime.Types
 
             for (var i = 0; i < t1.Count; i++)
             {
-                if (ctx.Types[t1.Values[i].TypeId].Eq(ctx, t1.Values[i], t2.Values[i]) == DyBool.False)
+                if (ctx.RuntimeContext.Types[t1.Values[i].TypeId].Eq(ctx, t1.Values[i], t2.Values[i]) == DyBool.False)
                     return DyBool.False;
 
                 if (ctx.HasErrors)
@@ -270,7 +268,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = t.Values[i];
 
-                if (ctx.Types[e.TypeId].Eq(ctx, e, item).GetBool())
+                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, item).GetBool())
                     return RemoveAt(ctx, t, i);
             }
 
@@ -293,7 +291,7 @@ namespace Dyalect.Runtime.Types
             return RemoveAt(ctx, t, idx);
         }
 
-        private DyTuple RemoveAt(ExecutionContext _, DyTuple self, int index)
+        private static DyTuple RemoveAt(ExecutionContext _, DyTuple self, int index)
         {
             var arr = new DyObject[self.Count - 1];
             var c = 0;

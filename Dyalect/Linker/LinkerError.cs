@@ -22,6 +22,8 @@
 
         ChecksumValidationFailed = 408,
 
-        AssemblyNotFound = 409
+        AssemblyNotFound = 409,
+
+        InvalidForeignModule = 410
     }
 }

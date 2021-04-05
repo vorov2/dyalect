@@ -44,8 +44,8 @@ namespace Dyalect.Runtime.Types
             return (GetSupportedOperations() & op) == op;
         }
 
-        private readonly Dictionary<int, DyFunction> members = new Dictionary<int, DyFunction>();
-        private readonly Dictionary<int, DyFunction> staticMembers = new Dictionary<int, DyFunction>();
+        private readonly Dictionary<int, DyFunction> members = new();
+        private readonly Dictionary<int, DyFunction> staticMembers = new();
 
         public override object ToObject() => this;
 
@@ -66,10 +66,10 @@ namespace Dyalect.Runtime.Types
         protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right.TypeId == DyType.String && TypeCode != DyType.String)
-                return ctx.Types[DyType.String].Add(ctx, left, right);
+                return ctx.RuntimeContext.Types[DyType.String].Add(ctx, left, right);
             return ctx.OperationNotSupported(Builtins.Add, left);
         }
-        internal DyObject Add(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Add(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (add != null)
                 return add.Clone(ctx, left).Call1(right, ctx);
@@ -81,7 +81,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction sub;
         protected virtual DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Sub, left);
-        internal DyObject Sub(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Sub(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (sub != null)
                 return sub.Clone(ctx, left).Call1(right, ctx);
@@ -92,7 +92,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction mul;
         protected virtual DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Mul, left);
-        internal DyObject Mul(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Mul(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (mul != null)
                 return mul.Clone(ctx, left).Call1(right, ctx);
@@ -103,7 +103,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction div;
         protected virtual DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Div, left);
-        internal DyObject Div(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Div(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (div != null)
                 return div.Clone(ctx, left).Call1(right, ctx);
@@ -114,7 +114,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction rem;
         protected virtual DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Rem, left);
-        internal DyObject Rem(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Rem(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (rem != null)
                 return rem.Clone(ctx, left).Call1(right, ctx);
@@ -125,7 +125,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction shl;
         protected virtual DyObject ShiftLeftOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Shl, left);
-        internal DyObject ShiftLeft(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject ShiftLeft(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (shl != null)
                 return shl.Clone(ctx, left).Call1(right, ctx);
@@ -136,7 +136,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction shr;
         protected virtual DyObject ShiftRightOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Shr, left);
-        internal DyObject ShiftRight(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject ShiftRight(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (shr != null)
                 return shr.Clone(ctx, left).Call1(right, ctx);
@@ -147,7 +147,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction and;
         protected virtual DyObject AndOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.And, left);
-        internal DyObject And(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject And(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (and != null)
                 return and.Clone(ctx, left).Call1(right, ctx);
@@ -158,7 +158,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction or;
         protected virtual DyObject OrOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Or, left);
-        internal DyObject Or(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Or(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (or != null)
                 return or.Clone(ctx, left).Call1(right, ctx);
@@ -169,7 +169,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction xor;
         protected virtual DyObject XorOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Xor, left);
-        internal DyObject Xor(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Xor(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (xor != null)
                 return xor.Clone(ctx, left).Call1(right, ctx);
@@ -180,7 +180,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction eq;
         protected virtual DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ReferenceEquals(left, right) ? DyBool.True : DyBool.False;
-        internal DyObject Eq(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Eq(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (eq != null)
                 return eq.Clone(ctx, left).Call1(right, ctx);
@@ -193,7 +193,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction neq;
         protected virtual DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             Eq(ctx, left, right) == DyBool.True ? DyBool.False : DyBool.True;
-        internal DyObject Neq(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Neq(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (neq != null)
                 return eq.Clone(ctx, left).Call1(right, ctx);
@@ -204,7 +204,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction gt;
         protected virtual DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Gt, left);
-        internal DyObject Gt(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Gt(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (gt != null)
                 return gt.Clone(ctx, left).Call1(right, ctx);
@@ -215,7 +215,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction lt;
         protected virtual DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Lt, left);
-        internal DyObject Lt(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Lt(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (lt != null)
                 return lt.Clone(ctx, left).Call1(right, ctx);
@@ -229,7 +229,7 @@ namespace Dyalect.Runtime.Types
             var ret = Gt(ctx, left, right) == DyBool.True || Eq(ctx, left, right) == DyBool.True;
             return ret ? DyBool.True : DyBool.False;
         }
-        internal DyObject Gte(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Gte(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (gte != null)
                 return gte.Clone(ctx, left).Call1(right, ctx);
@@ -243,7 +243,7 @@ namespace Dyalect.Runtime.Types
             var ret = Lt(ctx, left, right) == DyBool.True || Eq(ctx, left, right) == DyBool.True;
             return ret ? DyBool.True : DyBool.False;
         }
-        internal DyObject Lte(ExecutionContext ctx, DyObject left, DyObject right)
+        public DyObject Lte(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (lte != null)
                 return lte.Clone(ctx, left).Call1(right, ctx);
@@ -256,7 +256,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction neg;
         protected virtual DyObject NegOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Neg, arg);
-        internal DyObject Neg(ExecutionContext ctx, DyObject arg)
+        public DyObject Neg(ExecutionContext ctx, DyObject arg)
         {
             if (neg != null)
                 return neg.Clone(ctx, arg).Call0(ctx);
@@ -267,7 +267,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction plus;
         protected virtual DyObject PlusOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Plus, arg);
-        internal DyObject Plus(ExecutionContext ctx, DyObject arg)
+        public DyObject Plus(ExecutionContext ctx, DyObject arg)
         {
             if (plus != null)
                 return plus.Clone(ctx, arg).Call0(ctx);
@@ -278,7 +278,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction not;
         protected virtual DyObject NotOp(DyObject arg, ExecutionContext ctx) =>
             arg.GetBool() ? DyBool.False : DyBool.True;
-        internal DyObject Not(ExecutionContext ctx, DyObject arg)
+        public DyObject Not(ExecutionContext ctx, DyObject arg)
         {
             if (not != null)
                 return not.Clone(ctx, arg).Call0(ctx);
@@ -289,7 +289,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction bitnot;
         protected virtual DyObject BitwiseNotOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.BitNot, arg);
-        internal DyObject BitwiseNot(ExecutionContext ctx, DyObject arg)
+        public DyObject BitwiseNot(ExecutionContext ctx, DyObject arg)
         {
             if (bitnot != null)
                 return bitnot.Clone(ctx, arg).Call0(ctx);
@@ -300,7 +300,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction len;
         protected virtual DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Len, arg);
-        internal DyObject Length(ExecutionContext ctx, DyObject arg)
+        public DyObject Length(ExecutionContext ctx, DyObject arg)
         {
             if (len != null)
                 return len.Clone(ctx, arg).Call0(ctx);
@@ -310,7 +310,7 @@ namespace Dyalect.Runtime.Types
         //x.toString
         private DyFunction tos;
         protected virtual DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.ToString());
-        internal DyObject ToString(ExecutionContext ctx, DyObject arg)
+        public DyObject ToString(ExecutionContext ctx, DyObject arg)
         {
             if (tos != null)
             {
@@ -331,14 +331,14 @@ namespace Dyalect.Runtime.Types
             ctx.OperationNotSupported(Builtins.Get, self);
         protected virtual DyObject GetOp(DyObject self, int index, ExecutionContext ctx) =>
             GetOp(self, DyInteger.Get(index), ctx);
-        internal DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
+        public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
         {
             if (get != null)
                 return get.Clone(ctx, self).Call1(index, ctx);
 
             return GetOp(self, index, ctx);
         }
-        internal DyObject Get(ExecutionContext ctx, DyObject self, int index)
+        public DyObject Get(ExecutionContext ctx, DyObject self, int index)
         {
             if (get != null)
                 return get.Clone(ctx, self).Call1(DyInteger.Get(index), ctx);
@@ -352,14 +352,14 @@ namespace Dyalect.Runtime.Types
             ctx.OperationNotSupported(Builtins.Set, self);
         protected virtual DyObject SetOp(DyObject self, int index, DyObject value, ExecutionContext ctx) =>
             SetOp(self, DyInteger.Get(index), value, ctx);
-        internal DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
+        public DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
             if (set != null)
                 return set.Clone(ctx, self).Call2(index, value, ctx);
 
             return SetOp(self, index, value, ctx);
         }
-        internal DyObject Set(ExecutionContext ctx, DyObject self, int index, DyObject value)
+        public DyObject Set(ExecutionContext ctx, DyObject self, int index, DyObject value)
         {
             if (set != null)
                 return set.Clone(ctx, self).Call2(DyInteger.Get(index), value, ctx);
@@ -375,7 +375,7 @@ namespace Dyalect.Runtime.Types
 
             if (!staticMembers.ContainsKey(nameId))
             {
-                var name = ctx.Composition.Members[nameId];
+                var name = ctx.RuntimeContext.Composition.Members[nameId];
                 return InternalGetStaticMember(name, ctx) != null;
             }
 
@@ -393,33 +393,32 @@ namespace Dyalect.Runtime.Types
 
             if (!staticMembers.TryGetValue(nameId, out var value))
             {
-                var name = ctx.Composition.Members[nameId];
+                var name = ctx.RuntimeContext.Composition.Members[nameId];
                 value = InternalGetStaticMember(name, ctx);
 
                 if (value != null)
                     staticMembers.Add(nameId, value);
             }
 
-            if (value != null)
+            if (value is not null)
                 return value;
 
-            return ctx.StaticOperationNotSupported(ctx.Composition.Members[nameId], TypeName);
+            return ctx.StaticOperationNotSupported(ctx.RuntimeContext.Composition.Members[nameId], TypeName);
         }
 
         internal void SetStaticMember(int nameId, DyObject value, Unit unit, ExecutionContext _)
         {
-            var func = value as DyFunction;
             nameId = unit.MemberIds[nameId];
             staticMembers.Remove(nameId);
 
-            if (func != null)
+            if (value is DyFunction func)
                 staticMembers.Add(nameId, func);
         }
 
         internal DyObject HasMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
         {
             nameId = unit.MemberIds[nameId];
-            var name = ctx.Composition.Members[nameId];
+            var name = ctx.RuntimeContext.Composition.Members[nameId];
             return (DyBool)HasMemberDirect(self, name, nameId, ctx);
         }
 
@@ -433,43 +432,35 @@ namespace Dyalect.Runtime.Types
             return (DyBool)CheckStaticMember(name, ctx);
         }
 
-        protected virtual bool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
-        {
-            switch (name)
+        protected virtual bool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx) =>
+            name switch
             {
-                case Builtins.Add: return Support(SupportedOperations.Add);
-                case Builtins.Sub: return Support(SupportedOperations.Sub);
-                case Builtins.Mul: return Support(SupportedOperations.Mul);
-                case Builtins.Div: return Support(SupportedOperations.Div);
-                case Builtins.Rem: return Support(SupportedOperations.Rem);
-                case Builtins.Shl: return Support(SupportedOperations.Shl);
-                case Builtins.Shr: return Support(SupportedOperations.Shr);
-                case Builtins.And: return Support(SupportedOperations.And);
-                case Builtins.Or: return Support(SupportedOperations.Or);
-                case Builtins.Xor: return Support(SupportedOperations.Xor);
-                case Builtins.Eq: return Support(SupportedOperations.Eq);
-                case Builtins.Neq: return Support(SupportedOperations.Neq);
-                case Builtins.Gt: return Support(SupportedOperations.Gt);
-                case Builtins.Lt: return Support(SupportedOperations.Lt);
-                case Builtins.Gte: return Support(SupportedOperations.Gte);
-                case Builtins.Lte: return Support(SupportedOperations.Lte);
-                case Builtins.Neg: return Support(SupportedOperations.Neg);
-                case Builtins.BitNot: return Support(SupportedOperations.BitNot);
-                case Builtins.Plus: return Support(SupportedOperations.Plus);
-                case Builtins.Get: return Support(SupportedOperations.Get);
-                case Builtins.Set: return Support(SupportedOperations.Set);
-                case Builtins.Len: return Support(SupportedOperations.Len);
-                case Builtins.Not:
-                case Builtins.ToStr:
-                case Builtins.Clone:
-                case Builtins.Has:
-                    return true;
-                default:
-                    return nameId == -1
-                        ? CheckHasMemberDirect(self, name, ctx)
-                        : CheckHasMemberDirect(self, nameId, ctx);
-            }
-        }
+                Builtins.Add => Support(SupportedOperations.Add),
+                Builtins.Sub => Support(SupportedOperations.Sub),
+                Builtins.Mul => Support(SupportedOperations.Mul),
+                Builtins.Div => Support(SupportedOperations.Div),
+                Builtins.Rem => Support(SupportedOperations.Rem),
+                Builtins.Shl => Support(SupportedOperations.Shl),
+                Builtins.Shr => Support(SupportedOperations.Shr),
+                Builtins.And => Support(SupportedOperations.And),
+                Builtins.Or => Support(SupportedOperations.Or),
+                Builtins.Xor => Support(SupportedOperations.Xor),
+                Builtins.Eq => Support(SupportedOperations.Eq),
+                Builtins.Neq => Support(SupportedOperations.Neq),
+                Builtins.Gt => Support(SupportedOperations.Gt),
+                Builtins.Lt => Support(SupportedOperations.Lt),
+                Builtins.Gte => Support(SupportedOperations.Gte),
+                Builtins.Lte => Support(SupportedOperations.Lte),
+                Builtins.Neg => Support(SupportedOperations.Neg),
+                Builtins.BitNot => Support(SupportedOperations.BitNot),
+                Builtins.Plus => Support(SupportedOperations.Plus),
+                Builtins.Get => Support(SupportedOperations.Get),
+                Builtins.Set => Support(SupportedOperations.Set),
+                Builtins.Len => Support(SupportedOperations.Len),
+                Builtins.Not or Builtins.ToStr or Builtins.Clone or Builtins.Has => true,
+                _ => nameId == -1 ? CheckHasMemberDirect(self, name, ctx)
+                    : CheckHasMemberDirect(self, nameId, ctx),
+            };
 
         internal DyObject GetMember(DyObject self, int nameId, Unit unit, ExecutionContext ctx)
         {
@@ -479,14 +470,14 @@ namespace Dyalect.Runtime.Types
             if (value != null)
                 return value;
 
-            return ctx.OperationNotSupported(ctx.Composition.Members[nameId], self);
+            return ctx.OperationNotSupported(ctx.RuntimeContext.Composition.Members[nameId], self);
         }
 
         internal DyObject GetMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
         {
             if (!members.TryGetValue(nameId, out var value))
             {
-                var name = ctx.Composition.Members[nameId];
+                var name = ctx.RuntimeContext.Composition.Members[nameId];
                 value = InternalGetMember(self, name, ctx);
 
                 if (value != null)
@@ -501,10 +492,10 @@ namespace Dyalect.Runtime.Types
 
         internal bool CheckHasMemberDirect(DyObject self, int nameId, ExecutionContext ctx)
         {
-            if (!members.TryGetValue(nameId, out var value))
+            if (!members.TryGetValue(nameId, out _))
             {
-                var name = ctx.Composition.Members[nameId];
-                value = InternalGetMember(self, name, ctx);
+                var name = ctx.RuntimeContext.Composition.Members[nameId];
+                var value = InternalGetMember(self, name, ctx);
 
                 if (value != null)
                 {
@@ -524,7 +515,7 @@ namespace Dyalect.Runtime.Types
         {
             var func = value as DyFunction;
             nameId = unit.MemberIds[nameId];
-            var name = ctx.Composition.Members[nameId];
+            var name = ctx.RuntimeContext.Composition.Members[nameId];
             SetBuiltin(name, func);
             members.Remove(nameId);
 
@@ -573,7 +564,7 @@ namespace Dyalect.Runtime.Types
 
             if (self == null) //We're calling against type itself
                 return HasStaticMember(name, ctx);
-            else if (ctx.Composition.MembersMap.TryGetValue(name, out var nameId))
+            else if (ctx.RuntimeContext.Composition.MembersMap.TryGetValue(name, out var nameId))
                 return (DyBool)HasMemberDirect(self, name, nameId, ctx);
             else
                 return (DyBool)HasMemberDirect(self, name, -1, ctx);
@@ -609,7 +600,7 @@ namespace Dyalect.Runtime.Types
                 Builtins.Iterator => self is IEnumerable<DyObject> ? DyForeignFunction.Member(name, GetIterator) : null,
                 Builtins.Clone => DyForeignFunction.Member(name, Clone),
                 Builtins.Has => DyForeignFunction.Member(name, Has, -1, new Par("member")),
-                Builtins.Type => DyForeignFunction.Member(name, (context, o) => context.Types[self.TypeId]),
+                Builtins.Type => DyForeignFunction.Member(name, (context, o) => context.RuntimeContext.Types[self.TypeId]),
                 _ => GetMember(name, ctx)
             };
 
@@ -626,12 +617,12 @@ namespace Dyalect.Runtime.Types
         private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "TypeInfo" => DyForeignFunction.Static(name, (c, obj) => c.Types[obj.TypeId], -1, new Par("value")),
+                "TypeInfo" => DyForeignFunction.Static(name, (c, obj) => c.RuntimeContext.Types[obj.TypeId], -1, new Par("value")),
                 "__deleteMember" => DyForeignFunction.Static(name,
                     (context, strObj) =>
                     {
                         var nm = strObj.GetString();
-                        if (context.Composition.MembersMap.TryGetValue(nm, out var nameId))
+                        if (context.RuntimeContext.Composition.MembersMap.TryGetValue(nm, out var nameId))
                         {
                             SetBuiltin(nm, null);
                             members.Remove(nameId);

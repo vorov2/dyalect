@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net.WebSockets;
 using Dyalect.Runtime.Types;
 
@@ -6,11 +9,11 @@ namespace Dyalect.Runtime
 {
     public static class TypeConverter
     {
-        public static DyObject ConvertFrom<T>(T obj) => ConvertFrom(obj, typeof(T), null);
+        public static DyObject ConvertFrom<T>(T obj) => ConvertFrom(obj, typeof(T));
 
-        public static DyObject ConvertFrom(object obj) => ConvertFrom(obj, obj?.GetType(), null);
+        public static DyObject ConvertFrom(object obj) => ConvertFrom(obj, obj?.GetType());
 
-        internal static DyObject ConvertFrom(object obj, Type type, ExecutionContext ctx)
+        internal static DyObject ConvertFrom(object obj, Type type)
         {
             if (obj is null)
                 return DyNil.Instance;
@@ -36,25 +39,32 @@ namespace Dyalect.Runtime
                 case TypeCode.Decimal: return new DyFloat((double)(decimal)obj);
                 case TypeCode.Empty: return DyNil.Instance;
                 default:
-                    if (type.IsArray)
+                    if (obj is IDictionary map)
+                    {
+                        var dict = new Dictionary<DyObject, DyObject>();
+                        foreach (DictionaryEntry kv in map)
+                            dict[ConvertFrom(kv.Key)] =
+                                kv.Value is null ? DyNil.Instance : ConvertFrom(kv.Value);
+                        return new DyMap(dict);
+                    }
+                    else if (obj is IEnumerable seq)
+                        return new DyArray(seq.OfType<object>().Select(o => ConvertFrom(o)).ToArray());
+                    else if (type.IsArray)
                     {
                         var arr = (Array)obj;
                         var newArr = new DyObject[arr.Length];
-                        
                         for (var i = 0; i < arr.Length; i++)
-                            newArr[i] = ConvertFrom(arr.GetValue(i), arr.GetValue(i)?.GetType(), ctx);
-
+                            newArr[i] = ConvertFrom(arr.GetValue(i), arr.GetValue(i)?.GetType());
                         return new DyArray(newArr);
                     }
-                    break;
+                    else
+                        return new DyReflectionObject(obj);
             }
-
-            throw new InvalidCastException();
         }
 
-        public static T ConvertTo<T>(DyObject obj, ExecutionContext ctx) => (T)ConvertTo(obj, typeof(T), ctx);
+        public static T ConvertTo<T>(DyObject obj) => (T)ConvertTo(obj, typeof(T));
 
-        public static object ConvertTo(DyObject obj, Type type, ExecutionContext ctx)
+        public static object ConvertTo(DyObject obj, Type type)
         {
             if (type == Dyalect.Types.DyObject)
                 return obj;
@@ -74,10 +84,10 @@ namespace Dyalect.Runtime
                 case TypeCode.UInt16: return (ushort)obj.GetInteger();
                 case TypeCode.UInt32: return (uint)obj.GetInteger();
                 case TypeCode.UInt64: return (ulong)obj.GetInteger();
-                case TypeCode.String: return obj.ToString(ctx).GetString();
+                case TypeCode.String: return obj.GetString();
                 case TypeCode.Char:
                     {
-                        var str = obj.ToString(ctx).GetString();
+                        var str = obj.GetString();
                         return string.IsNullOrEmpty(str) ? '\0' : str[0];
                     }
                 case TypeCode.Single: return (float)obj.GetFloat();
@@ -85,18 +95,34 @@ namespace Dyalect.Runtime
                 case TypeCode.Decimal: return (decimal)obj.GetFloat();
                 case TypeCode.Empty: return null;
                 default:
-                    if (type.IsArray && obj is DyCollection coll)
+                    if (obj is DyMap map)
                     {
-                        var et = type.GetElementType();
-                        var arr = Array.CreateInstance(et, coll.Count);
+                        var ret = new Dictionary<object, object>();
 
-                        for (var i = 0; i < coll.Count; i++)
+                        foreach (var kv in map.Map)
+                            ret[kv.Key.ToObject()] = kv.Value.ToObject();
+
+                        return ret;
+                    }
+                    else if (obj is DyCollection coll)
+                    {
+                        if (type == typeof(object[]))
+                            return coll.ConvertToArray();
+                        else if (type == typeof(List<object>))
+                            return coll.ConvertToList();
+                        else if (type.IsArray)
                         {
-                            var c = coll[i];
-                            arr.SetValue(ConvertTo(c, et, ctx), i);
-                        }
+                            var et = type.GetElementType();
+                            var arr = Array.CreateInstance(et, coll.Count);
 
-                        return arr;
+                            for (var i = 0; i < coll.Count; i++)
+                            {
+                                var c = coll[i];
+                                arr.SetValue(ConvertTo(c, et), i);
+                            }
+
+                            return arr;
+                        }
                     }
                     break;
             }

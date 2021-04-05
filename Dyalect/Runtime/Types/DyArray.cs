@@ -123,7 +123,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = Values[i];
 
-                if (ctx.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
+                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
                     return i;
 
                 if (ctx.HasErrors)
@@ -141,7 +141,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = Values[i];
 
-                if (ctx.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
+                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
                     index = i;
 
                 if (ctx.HasErrors)
@@ -436,7 +436,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject RemoveAll(ExecutionContext ctx, DyObject self, DyObject arg)
         {
-            if (!(arg is DyFunction fun))
+            if (arg is not DyFunction fun)
                 return ctx.InvalidType(arg);
 
             var arr = (DyArray)self;

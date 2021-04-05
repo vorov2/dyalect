@@ -61,7 +61,7 @@
 
         public override bool Equals(DyObject other)
         {
-            if (!(other is DyLabel lab))
+            if (other is not DyLabel lab)
                 return false;
 
             if (lab.Label != Label)

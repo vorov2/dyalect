@@ -1,6 +1,4 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Debug;
-using System;
+﻿using Dyalect.Debug;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -82,9 +80,9 @@ namespace Dyalect.Runtime.Types
             this.Map = new Dictionary<DyObject, DyObject>();
         }
 
-        internal DyMap(IDictionary<DyObject, DyObject> dict) : base(DyType.Map)
+        internal DyMap(Dictionary<DyObject, DyObject> dict) : base(DyType.Map)
         {
-            this.Map = new Dictionary<DyObject, DyObject>(dict);
+            this.Map = dict;
         }
 
         public void Add(DyObject key, DyObject value)

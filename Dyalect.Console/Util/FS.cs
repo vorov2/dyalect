@@ -11,7 +11,7 @@ namespace Dyalect.Util
 
         public static string GetPathByType<T>()
         {
-            var codeBase = typeof(T).Assembly.CodeBase;
+            var codeBase = typeof(T).Assembly.Location;
             var uri = new UriBuilder(codeBase);
             return Uri.UnescapeDataString(uri.Path);
         }

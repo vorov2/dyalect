@@ -61,14 +61,14 @@ namespace Dyalect.Runtime.Types
             }
         }
 
-        public static readonly DyFloat Zero = new DyFloat(0D);
-        public static readonly DyFloat One = new DyFloat(1D);
-        public static readonly DyFloat NaN = new DyFloat(double.NaN);
-        public static readonly DyFloat PositiveInfinity = new DyFloat(double.PositiveInfinity);
-        public static readonly DyFloat NegativeInfinity = new DyFloat(double.NegativeInfinity);
-        public static readonly DyFloat Epsilon = new DyFloat(double.Epsilon);
-        public static readonly DyFloat Min = new DyFloat(double.MinValue);
-        public static readonly DyFloat Max = new DyFloat(double.MaxValue);
+        public static readonly DyFloat Zero = new(0D);
+        public static readonly DyFloat One = new(1D);
+        public static readonly DyFloat NaN = new(double.NaN);
+        public static readonly DyFloat PositiveInfinity = new(double.PositiveInfinity);
+        public static readonly DyFloat NegativeInfinity = new(double.NegativeInfinity);
+        public static readonly DyFloat Epsilon = new(double.Epsilon);
+        public static readonly DyFloat Min = new(double.MinValue);
+        public static readonly DyFloat Max = new(double.MaxValue);
 
         private readonly double value;
 
@@ -259,7 +259,7 @@ namespace Dyalect.Runtime.Types
                 return new DyFloat(obj.GetInteger());
             else if (obj.TypeId == DyType.Char || obj.TypeId == DyType.String)
             {
-                double.TryParse(obj.GetString(), out var i);
+                _ = double.TryParse(obj.GetString(), out var i);
                 return new DyFloat(i);
             }
 

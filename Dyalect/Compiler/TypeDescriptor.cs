@@ -5,10 +5,10 @@ namespace Dyalect.Compiler
 {
     public sealed class TypeDescriptor
     {
-        public TypeDescriptor(string name, int id, bool autoGenCons, Func<int, DyTypeInfo> act) :
+        public TypeDescriptor(string name, int id, bool autoGenCons, Type foreignTypeInfo) :
             this(name, id, autoGenCons)
         {
-            TypeInfoActivator = act;
+            ForeignTypeInfo = foreignTypeInfo;
         }
 
         public TypeDescriptor(string name, int id, bool autoGenCons)
@@ -18,10 +18,14 @@ namespace Dyalect.Compiler
             AutoGenConstructors = autoGenCons;
         }
 
-        public string Name { get; }
-        public int Id { get; internal set; }
-        public bool AutoGenConstructors { get; }
         internal bool Processed { get; set; }
-        public Func<int, DyTypeInfo> TypeInfoActivator { get; }
+        
+        public string Name { get; }
+        
+        public int Id { get; internal set; }
+        
+        public bool AutoGenConstructors { get; }
+
+        public Type ForeignTypeInfo { get; }
     }
 }

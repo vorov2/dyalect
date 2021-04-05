@@ -15,7 +15,7 @@ namespace Dyalect.Runtime
 
         public static ExecutionContext CreateExecutionContext(UnitComposition composition)
         {
-            return new ExecutionContext(new CallStack(), composition);
+            return new ExecutionContext(new CallStack(), new RuntimeContext(composition));
         }
 
         public static ExecutionResult Execute(ExecutionContext ctx)
@@ -27,15 +27,15 @@ namespace Dyalect.Runtime
 
         private static DyObject ExecuteModule(int unitId, ExecutionContext ctx)
         {
-            var unit = ctx.Composition.Units[unitId];
+            var unit = ctx.RuntimeContext.Composition.Units[unitId];
 
-            if (unit.Layouts.Count == 0)
+            if (unit.Layouts.Count == 0) //This is a foreign module
             {
-                if (ctx.Units[unitId] == null)
+                if (ctx.RuntimeContext.Units[unitId] == null)
                 {
                     var foreign = (ForeignUnit)unit;
-                    foreign.Execute(ctx);
-                    ctx.Units[unitId] = foreign.Values.ToArray();
+                    foreign.Initialize(ctx);
+                    ctx.RuntimeContext.Units[unitId] = foreign.Values.ToArray();
                 }
 
                 return DyNil.Instance;
@@ -45,17 +45,17 @@ namespace Dyalect.Runtime
 
             //if yes we are in interactive mode and need to check if the size
             //of global layout (for global variables) has changed
-            if (ctx.Units[0] != null && lay0.Size > ctx.Units[0].Length)
+            if (ctx.RuntimeContext.Units[0] != null && lay0.Size > ctx.RuntimeContext.Units[0].Length)
             {
                 var mems = new DyObject[lay0.Size];
-                Array.Copy(ctx.Units[0], mems, ctx.Units[0].Length);
-                ctx.Units[0] = mems;
+                Array.Copy(ctx.RuntimeContext.Units[0], mems, ctx.RuntimeContext.Units[0].Length);
+                ctx.RuntimeContext.Units[0] = mems;
             }
 
-            if (unitId != 0 && ctx.Units[unitId] != null)
+            if (unitId != 0 && ctx.RuntimeContext.Units[unitId] != null)
                 return null;
 
-            ctx.Units[unitId] = ctx.Units[unitId] ?? new DyObject[lay0.Size];
+            ctx.RuntimeContext.Units[unitId] = ctx.RuntimeContext.Units[unitId] ?? new DyObject[lay0.Size];
             return ExecuteWithData(Global(unitId), null, ctx);
         }
 
@@ -65,17 +65,17 @@ namespace Dyalect.Runtime
             DyObject right;
             Op op;
             DyFunction callFun;
-            var types = ctx.Types;
+            var types = ctx.RuntimeContext.Types;
 
             PROLOGUE:
-            var unit = ctx.Composition.Units[function.UnitId];
+            var unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
             var ops = unit.Ops;
             var layout = unit.Layouts[function.FunctionId];
             var offset = layout.Address;
             var evalStack = new EvalStack(layout.StackSize);
 
             if (function.FunctionId == 0)
-                locals = ctx.Units[function.UnitId];
+                locals = ctx.RuntimeContext.Units[function.UnitId];
             else if (function.Locals != null)
             {
                 locals = function.Locals;
@@ -100,7 +100,7 @@ namespace Dyalect.Runtime
                     case OpCode.Term:
                         if (evalStack.Size > 1 || evalStack.Size == 0)
                             throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
-                        ctx.Units[function.UnitId] = locals;
+                        ctx.RuntimeContext.Units[function.UnitId] = locals;
                         return evalStack.Pop();
                     case OpCode.Pop:
                         evalStack.PopVoid();
@@ -152,7 +152,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(right);
                         break;
                     case OpCode.Pushext:
-                        evalStack.Push(ctx.Units[unit.UnitIds[op.Data & byte.MaxValue]][op.Data >> 8]);
+                        evalStack.Push(ctx.RuntimeContext.Units[unit.UnitIds[op.Data & byte.MaxValue]][op.Data >> 8]);
                         break;
                     case OpCode.Popvar:
                         function.Captures[^(op.Data & byte.MaxValue)][op.Data >> 8] = evalStack.Pop();
@@ -300,7 +300,7 @@ namespace Dyalect.Runtime
                             function = cp.Function;
                             locals = cp.Locals;
                             offset = cp.Offset;
-                            unit = ctx.Composition.Units[function.UnitId];
+                            unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
                             ops = unit.Ops;
                             evalStack = cp.EvalStack;
                             goto CYCLE;
@@ -344,7 +344,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.SetMemberS:
                         right = evalStack.Pop();
-                        types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
+                        types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
                             .SetStaticMember(ctx.AUX, right, unit, ctx);
                         if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
                         break;
@@ -355,7 +355,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.SetMember:
                         right = evalStack.Pop();
-                        types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
+                        types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
                             .SetMember(ctx.AUX, right, unit, ctx);
                         if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
                         break;
@@ -398,13 +398,13 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.RunMod:
                         ExecuteModule(unit.UnitIds[op.Data], ctx);
-                        evalStack.Push(new DyModule(ctx.Composition.Units[unit.UnitIds[op.Data]], ctx.Units[unit.UnitIds[op.Data]]));
+                        evalStack.Push(new DyModule(ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data]], ctx.RuntimeContext.Units[unit.UnitIds[op.Data]]));
                         break;
                     case OpCode.Type:
                         evalStack.Replace(types[evalStack.Peek().TypeId]);
                         break;
                     case OpCode.TypeS:
-                        evalStack.Push(types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]);
+                        evalStack.Push(types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]);
                         break;
                     case OpCode.TypeST:
                         evalStack.Push(types[op.Data]);
@@ -426,7 +426,7 @@ namespace Dyalect.Runtime
                             function = cp.Function;
                             locals = cp.Locals;
                             offset = cp.Offset;
-                            unit = ctx.Composition.Units[function.UnitId];
+                            unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
                             ops = unit.Ops;
                             evalStack = cp.EvalStack;
                             goto CYCLE;
@@ -450,7 +450,7 @@ namespace Dyalect.Runtime
                             if (right.TypeId != DyType.Function && right.TypeId != DyType.Iterator)
                             {
                                 if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti
-                                    && ctx.Composition.MembersMap.TryGetValue(ti.TypeName, out var tid))
+                                    && ctx.RuntimeContext.Composition.MembersMap.TryGetValue(ti.TypeName, out var tid))
                                 {
                                     right = ti.GetStaticMember(tid, unit, ctx);
 
@@ -555,7 +555,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.TypeCheck:
                         right = evalStack.Pop();
-                        evalStack.Push(right.TypeId == ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id ? DyBool.True : DyBool.False);
+                        evalStack.Push(right.TypeId == ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id ? DyBool.True : DyBool.False);
                         break;
                     case OpCode.CtorCheck:
                         evalStack.Replace((DyBool)(evalStack.Peek().GetConstructorId(ctx) == op.Data));
@@ -579,7 +579,7 @@ namespace Dyalect.Runtime
                 if (ctx.CallStack.Count > 0)
                 {
                     var cp = ctx.CallStack.Peek();
-                    unit = ctx.Composition.Units[function.UnitId];
+                    unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
                     ops = unit.Ops;
                 }
                 evalStack.Push(ctx.Error.GetDyObject());
@@ -704,7 +704,7 @@ namespace Dyalect.Runtime
             else
             {
                 ctx.Error = null;
-                var deb = new DyDebugger(ctx.Composition);
+                var deb = new DyDebugger(ctx.RuntimeContext.Composition);
                 var cs = deb.BuildCallStack(dump);
                 throw new DyCodeException(err, cs, null);
             }
@@ -712,8 +712,8 @@ namespace Dyalect.Runtime
 
         public static IEnumerable<RuntimeVar> DumpVariables(ExecutionContext ctx)
         {
-            foreach (var v in ctx.Composition.Units[0].GlobalScope.EnumerateVars())
-                yield return new RuntimeVar(v.Key, ctx.Units[0][v.Value.Address]);
+            foreach (var v in ctx.RuntimeContext.Composition.Units[0].GlobalScope.EnumerateVars())
+                yield return new RuntimeVar(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
         }
 
         private static bool FindCatch(ExecutionContext ctx, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)

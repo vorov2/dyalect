@@ -25,16 +25,10 @@ namespace Dyalect.Linker
             this.args = args;
         }
 
-        public override void Execute(ExecutionContext ctx)
+        protected override void Execute(ExecutionContext ctx)
         {
             Add("args", args ?? (DyObject)DyNil.Instance);
         }
-
-        //[Function("enum")]
-        //public DyObject Enum(ExecutionContext ctx, DyObject from, DyObject to, [Default]DyObject step)
-        //{
-
-        //}
 
         [Function("print")]
         public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
@@ -117,6 +111,13 @@ namespace Dyalect.Linker
             if (ReferenceEquals(x, y))
                 return true;
 
+            if (x is string a && y is string b)
+            {
+                a = a.Replace("\r\n", "\n");
+                b = b.Replace("\r\n", "\n");
+                return Equals(a, b);
+            }
+
             if (x is IList xs && y is IList ys)
             {
                 if (xs.Count != ys.Count)
@@ -144,7 +145,7 @@ namespace Dyalect.Linker
         [Function("min")]
         public DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.Type(ctx).Lt(ctx, x, y).GetBool())
+            if (x.GetTypeInfo(ctx).Lt(ctx, x, y).GetBool())
                 return x;
             else
                 return y;
@@ -153,7 +154,7 @@ namespace Dyalect.Linker
         [Function("max")]
         public DyObject Max(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.Type(ctx).Gt(ctx, x, y).GetBool())
+            if (x.GetTypeInfo(ctx).Gt(ctx, x, y).GetBool())
                 return x;
             else
                 return y;
@@ -174,9 +175,9 @@ namespace Dyalect.Linker
         public DyObject Round(ExecutionContext ctx, DyObject number, [Default(2)]DyObject digits)
         {
             if (number.TypeId != DyType.Float)
-                ctx.InvalidType(number);
+                return ctx.InvalidType(number);
             else if (digits.TypeId != DyType.Integer)
-                ctx.InvalidType(digits);
+                return ctx.InvalidType(digits);
 
             return new DyFloat(Math.Round(number.GetFloat(), (int)digits.GetInteger()));
         }
@@ -187,10 +188,29 @@ namespace Dyalect.Linker
             if (x == DyInteger.Zero)
                 return DyInteger.Zero;
 
-            if (x.Type(ctx).Lt(ctx, x, DyInteger.Zero).GetBool())
+            if (x.GetTypeInfo(ctx).Lt(ctx, x, DyInteger.Zero).GetBool())
                 return DyInteger.MinusOne;
             else 
                 return DyInteger.One;
+        }
+
+        [Function("makeObject")]
+        public DyObject MakeObject(ExecutionContext _, DyObject arg)
+        {
+            var dict = new Dictionary<string, DyObject>();
+
+            if (arg is DyTuple tuple)
+            {
+                foreach (var obj in tuple.Values)
+                {
+                    var key = obj.GetLabel();
+
+                    if (key != null)
+                        dict[key] = obj.GetTaggedValue();
+                }
+            }
+
+            return new DyCustomObject(dict);
         }
 
         [Function("parse")]
@@ -223,7 +243,7 @@ namespace Dyalect.Linker
         [Function("eval")]
         public DyObject Eval(ExecutionContext ctx, DyObject source, DyObject args)
         {
-            if (!(source is DyString strObj))
+            if (source is not DyString strObj)
                 return ctx.InvalidType(source);
 
             var tup = args as DyTuple;

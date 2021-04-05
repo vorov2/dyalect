@@ -1,3 +1,11 @@
+# 0.17.0
+  * Change: _Code clean-ups and optimizations._
+  * Change: _Global foreign module subsystem refactoring._
+  * Add: _Add a generic `Object` type which can be used for interop_ ([Issue #359](https://github.com/vorov2/dyalect/issues/359)).
+  * Add: _StringBuilder_ ([Issue #22](https://github.com/vorov2/dyalect/issues/22)).
+  * Add: _Add automatic conversion to/from Dictionary_ ([Issue #360](https://github.com/vorov2/dyalect/issues/360)).
+  * Add: _Implement module dependencies for foreign modules_ ([Issue #361](https://github.com/vorov2/dyalect/issues/361)).
+
 # 0.16.0
   * Change: _All code migrated to .NET 5.0._
   * Change: _Serialization of maps to string is updated to match other types._
@@ -8,7 +16,7 @@
   * Fixed: _Crush because of `??=` operator_ ([Issue #354](https://github.com/vorov2/dyalect/issues/354)).
 
 # 0.15.1
-  * Change: Code _clean-ups and optimizations._
+  * Change: _Code clean-ups and optimizations._
   * Fixed: _Interactive mode crushes when trying to re-declare variable_ ([Issue #352](https://github.com/vorov2/dyalect/issues/352)).
 
 # 0.15.0
@@ -20,7 +28,7 @@
   * Fixed: _Ranges are not checked for consistency_ ([Issue #349](https://github.com/vorov2/dyalect/issues/349)).
 
 # 0.14.1
-  * Change: Code _clean-ups and optimizations._
+  * Change: _Code clean-ups and optimizations._
   * Fixed: _Dyalect crushes for foreign functions without parameters_ ([Issue #340](https://github.com/vorov2/dyalect/issues/340)).
 
 # 0.14.0

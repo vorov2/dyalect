@@ -60,7 +60,7 @@ namespace Dyalect.Runtime.Types
                     return false;
                 else
                 {
-                    value = ctx.Types[td.Id];
+                    value = ctx.RuntimeContext.Types[td.Id];
                     return true;
                 }
             }
@@ -115,7 +115,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Module")
-                return DyForeignFunction.Static(name, c => new DyModule(c.Composition.Units[0], c.Units[0]));
+                return DyForeignFunction.Static(name, c => new DyModule(c.RuntimeContext.Composition.Units[0], c.RuntimeContext.Units[0]));
 
             return base.GetStaticMember(name, ctx);
         }
