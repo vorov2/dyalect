@@ -217,6 +217,9 @@ namespace Dyalect.Compiler
             }
             else
             {
+                if (!hints.Has(Catch))
+                    AddError(CompilerError.InvalidRethrow, node.Location);
+
                 AddLinePragma(node);
                 cw.Rethrow();
             }
@@ -249,7 +252,7 @@ namespace Dyalect.Compiler
                     cw.Pop();
             }
 
-            Build(node.Catch, hints, ctx);
+            Build(node.Catch, hints.Append(Catch), ctx);
             EndScope();
 
             cw.MarkLabel(skip);

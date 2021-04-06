@@ -237,4 +237,7 @@
   <data name="AutoOnlyConst" xml:space="preserve">
     <value>Auto directive is supported only for "const" declarations.</value>
   </data>
+  <data name="InvalidRethrow" xml:space="preserve">
+    <value>A "throw" statement with no arguments is only valid inside a "catch" block.</value>
+  </data>
 </root>

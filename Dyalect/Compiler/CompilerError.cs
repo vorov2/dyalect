@@ -76,6 +76,8 @@
 
         InvalidDirective = 236,
 
-        AutoOnlyConst = 237
+        AutoOnlyConst = 237,
+
+        InvalidRethrow = 238
     }
 }
