@@ -81,12 +81,7 @@ namespace Dyalect.Compiler
                 System.Console.WriteLine($"shift:{shift},address:{a}");
                 var sv = new ScopeVar(shift | a.Item1 << 8);
                 cw.PushVar(sv);
-                if (shift == 0 
-                    && a.Item1 >= currentScope.Locals.Count)
-                    {
-
-                }
-                    cw.GetMember(GetMemberNameId("close"));
+                cw.GetMember(GetMemberNameId("close"));
                 cw.FunPrep(0);
                 cw.FunCall(0);
                 cw.Pop();

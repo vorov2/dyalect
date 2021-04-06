@@ -98,10 +98,10 @@ namespace Dyalect.Runtime
                         evalStack.Replace(evalStack.Peek().GetSelf());
                         break;
                     case OpCode.Term:
-                        //if (evalStack.Size > 1 || evalStack.Size == 0)
-                          //  throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
+                        if (evalStack.Size > 1 || evalStack.Size == 0)
+                            throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
                         ctx.RuntimeContext.Units[function.UnitId] = locals;
-                        return evalStack.Size>0?evalStack.Pop():null;
+                        return evalStack.Pop();
                     case OpCode.Pop:
                         evalStack.PopVoid();
                         break;
