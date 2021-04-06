@@ -84,7 +84,7 @@ namespace Dyalect.Compiler
 
         public Scope Parent { get; set; }
 
-        public Queue<int> Autos { get; private set; }
+        public Queue<(int, string)> Autos { get; private set; }
 
         public Dictionary<string, ScopeVar> Locals { get; private set; }
 

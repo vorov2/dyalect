@@ -11,6 +11,5 @@
         public const int Module = 0x20;
         public const int This = 0x40;
         public const int Private = 0x80;
-        public const int Auto = 0x100;
     }
 }

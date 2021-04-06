@@ -64,7 +64,7 @@
 
         PrivateMethod = 230,
 
-        AutoNotSupported = 231,
+        // = 231,
 
         UnableToLinkModule = 232,
 
@@ -75,8 +75,8 @@
         UnknownDirective = 235,
 
         InvalidDirective = 236,
-
-        AutoOnlyConst = 237,
+        
+        // = 237,
 
         InvalidRethrow = 238
     }

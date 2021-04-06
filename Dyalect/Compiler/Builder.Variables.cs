@@ -25,32 +25,41 @@ namespace Dyalect.Compiler
         }
 
         //Call close for all variables in this scope, registered as autos
-        private void CallAutos() => PopAutos(currentScope);
-
-        private void PopAutos(Scope scope)
+        private void CallAutos()
         {
-            while (scope.Autos.Count > 0)
+            System.Console.WriteLine($"***Here for LOCALS");
+            PeekAutos(currentScope);
+            currentScope.Autos.Clear();
+        }
+
+        bool hasAutos()
+        {
+            var s = currentScope;
+            do
             {
-                var a = scope.Autos.Dequeue();
-                cw.PushVar(new ScopeVar(a));
-                cw.GetMember(GetMemberNameId("close"));
-                cw.FunPrep(0);
-                cw.FunCall(0);
-                cw.Pop();
+                if (s.Autos.Count > 0)
+                    return true;
+                s = s.Parent;
             }
+            while (s != globalScope);
+            return false;
         }
 
         private void CallAutosForKind(ScopeKind kind)
         {
+            if (!hasAutos()) return ;
+
+            System.Console.WriteLine($"***Here for {kind}");
             var scope = currentScope;
             var last = false;
+            var shift = 0;
 
             while (true)
             {
-                if (kind == ScopeKind.Loop)
-                    PeekAutos(scope);
-                else
-                    PopAutos(scope);
+                PeekAutos(scope, shift);
+
+                if (kind != ScopeKind.Loop)
+                    scope.Autos.Clear();
 
                 if (last)
                     break;
@@ -59,15 +68,25 @@ namespace Dyalect.Compiler
 
                 if (scope.Kind == kind)
                     last = true;
+
+                if (scope.Kind == ScopeKind.Function)
+                    shift++;
             }
         }
 
-        private void PeekAutos(Scope scope)
+        private void PeekAutos(Scope scope, int shift = 0)
         {
             foreach (var a in scope.Autos)
             {
-                cw.PushVar(new ScopeVar(a));
-                cw.GetMember(GetMemberNameId("close"));
+                System.Console.WriteLine($"shift:{shift},address:{a}");
+                var sv = new ScopeVar(shift | a.Item1 << 8);
+                cw.PushVar(sv);
+                if (shift == 0 
+                    && a.Item1 >= currentScope.Locals.Count)
+                    {
+
+                }
+                    cw.GetMember(GetMemberNameId("close"));
                 cw.FunPrep(0);
                 cw.FunCall(0);
                 cw.Pop();

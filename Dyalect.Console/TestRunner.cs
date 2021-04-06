@@ -93,7 +93,7 @@ namespace Dyalect
                         Success(options, fn.Key, funSet.FileName);
                         passed++;
                     }
-                    catch (Exception ex)
+                    catch (AccessViolationException ex)
                     {
                         printIt(i, true);
                         Failed(options, fn.Key, ex.Message, funSet.FileName);

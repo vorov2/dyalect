@@ -3,7 +3,7 @@ const boxCollector = []
 func Box.close() {
     boxCollector.add(this:key)
 }
-
+/*
 func autosSimple1() {
     boxCollector.clear()
     {
@@ -24,7 +24,7 @@ func autosSimple2() {
         }
     }
     assert(["wait.foo", "wait.bar", "bar", "foo"], boxCollector)
-}
+}*/
 
 func autosSimple3() {
     boxCollector.clear()
@@ -39,7 +39,23 @@ func autosSimple3() {
     }
     assert([1,2,3,4,5,6], boxCollector)
 }
+func autosFunc3() {
+    boxCollector.clear()
+    func testFn() {
+        auto xxxx = Box("x")
+        {
+            auto y = Box("y")
+            if true {
+                auto z = Box("z")
+                return
+            }
+        }
+    }
+    testFn()
+    assert(["x","y","z"], boxCollector)
+}
 
+/*
 func autosFunc1() {
     boxCollector.clear()
     func run() {
@@ -65,14 +81,30 @@ func autosFunc2() {
     assert([1,2,3,"fin"], boxCollector)
 }
 
+func autosFunc3() {
+    boxCollector.clear()
+    func testFn() {
+        auto x = Box("x")
+        {
+            auto y = Box("y")
+            if true {
+                auto z = Box("z")
+                return
+            }
+        }
+    }
+    testFn()
+    assert(["x","y","z"], boxCollector)
+}
+
 func autosExceptions1() {
     boxCollector.clear()
-    func test() {
+    func testE() {
         auto x = Box(12)
         throw "err"
     }
     try {
-        test()
+        testE()
     } catch _ {
         assert([12], boxCollector)
     }
@@ -109,4 +141,4 @@ func autosExceptions3() {
         boxCollector.add(e)
     }
     assert([42,84], boxCollector)
-}
+}*/

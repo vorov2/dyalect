@@ -998,24 +998,18 @@ namespace Dyalect.Compiler
             if (node.Pattern.NodeType == NodeType.NamePattern)
             {
                 AddLinePragma(node);
-                var flags = node.Constant & node.AutoClose
-                    ? VarFlags.Const | VarFlags.Auto
-                    : node.Constant ? VarFlags.Const : VarFlags.None;
-                var a = AddVariable(node.Pattern.GetName(), node, flags);
+                var flags = node.Constant ? VarFlags.Const : VarFlags.None;
+                var nam = node.Pattern.GetName();
+                var a = AddVariable(nam, node, flags);
                 cw.PopVar(a);
 
                 if (node.AutoClose)
                 {
-                    if (!node.Constant)
-                        AddError(CompilerError.AutoOnlyConst, node.Location);
-                    currentScope.Autos.Enqueue(a);
+                    currentScope.Autos.Enqueue((a >> 8, nam));
                 }
             }
             else
             {
-                if (node.AutoClose)
-                    AddError(CompilerError.AutoNotSupported, node.Location);
-
                 if (node.Init == null)
                     AddError(CompilerError.BindingPatternNoInit, node.Location);
                 else
