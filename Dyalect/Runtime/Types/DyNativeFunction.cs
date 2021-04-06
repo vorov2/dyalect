@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
         internal FunSym Sym;
         internal FastList<DyObject[]> Captures;
         internal DyObject[] Locals;
-        internal Stack<int> CatchMarks;
+        internal Stack<CatchMark> CatchMarks;
         internal int PreviousOffset;
         internal int UnitId;
         internal int FunctionId;

@@ -76,6 +76,7 @@ namespace Dyalect.Runtime
             var layout = unit.Layouts[function.FunctionId];
             var offset = layout.Address;
             var evalStack = new EvalStack(layout.StackSize);
+            ctx.CatchMarks.Push(function.CatchMarks ?? new()); //Makes sense for iterators
 
             if (function.FunctionId == 0)
                 locals = ctx.RuntimeContext.Units[function.UnitId];
@@ -547,15 +548,12 @@ namespace Dyalect.Runtime
                             if (!callFun.IsExternal)
                             {
                                 function = (DyNativeFunction)callFun;
-                                ctx.CatchMarks.Push(function.CatchMarks ?? new ()); //Makes sense for iterators
                                 locals = ctx.Arguments.Pop().Locals;
                                 goto PROLOGUE;
                             }
                             else
                             {
-                                ctx.CatchMarks.Push(new());
                                 right = CallExternalFunction(callFun, ctx);
-                                ctx.CatchMarks.Pop();
                                 if (ctx.Error != null && ctx.CallStack.PopLast() && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper))
                                     goto CATCH;
                                 else
@@ -583,7 +581,7 @@ namespace Dyalect.Runtime
                     case OpCode.Start:
                         {
                             var cm = ctx.CatchMarks.Peek();
-                            cm.Push(op.Data);
+                            cm.Push(new(op.Data, ctx.CallStack.Count));
                         }
                         break;
                     case OpCode.End:
@@ -748,41 +746,44 @@ namespace Dyalect.Runtime
 
         private static int FindCatch(ExecutionContext ctx, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
         {
-            var idx = 0;
-            var fix = -1;
-            Stack<int> cm = default;
+            CatchMark mark = default;
+            Stack<CatchMark> cm = default;
 
             foreach (var c in ctx.CatchMarks)
             {
                 if (c.Count > 0)
                 {
-                    fix = idx;
+                    mark = c.Peek();
                     cm = c;
                     break;
                 }
-
-                idx++;
             }
 
-            if (fix < 0)
-                return fix;
+            if (mark.Offset == 0)
+                return -1;
 
             Caller cp = null;
 
-            while (fix > 0)
+            while (ctx.CallStack.Count > mark.StackOffset)
             {
                 cp = ctx.CallStack.Pop();
-                fix--;
+
+                //It means that this function was called from an external
+                //context and we have to terminate our search
+                if (ReferenceEquals(cp, Caller.External))
+                    return -1;
             }
 
-            if (cp is not null)
+            cm.Pop();
+
+            if (cp != null)
             {
                 function = cp.Function;
                 locals = cp.Locals;
                 evalStack = cp.EvalStack;
             }
 
-            return cm.Pop();
+            return mark.Offset;
         }
     }
 }

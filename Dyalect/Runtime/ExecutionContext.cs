@@ -21,7 +21,8 @@ namespace Dyalect.Runtime
 
         internal CallStack CallStack { get; }
 
-        internal Stack<Stack<int>> CatchMarks { get; }
+        internal Stack<Stack<CatchMark>> CatchMarks { get; }
+
         internal DyError OldError { get; set; }
         
         internal DyError Error { get; set; }
