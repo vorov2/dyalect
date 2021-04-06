@@ -279,3 +279,17 @@ func lastTest1() {
     var seq = { 1,2,3,4,5}
     assert(seq.last(), 5)
 }
+
+func tryCatchBug() { //bug #365
+    var val = 0
+    func iter() {
+        try {
+            yield 1
+            throw "oops"
+            yield 2
+        } catch e {
+            val = 42
+        }
+    }
+    assert(val, 42)
+}

@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
+using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
@@ -8,6 +9,7 @@ namespace Dyalect.Runtime.Types
         internal FunSym Sym;
         internal FastList<DyObject[]> Captures;
         internal DyObject[] Locals;
+        internal Stack<int> CatchMarks;
         internal int PreviousOffset;
         internal int UnitId;
         internal int FunctionId;

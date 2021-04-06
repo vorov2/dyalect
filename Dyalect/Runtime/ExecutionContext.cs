@@ -11,7 +11,7 @@ namespace Dyalect.Runtime
         internal ExecutionContext(CallStack callStack, RuntimeContext rtx)
         {
             CallStack = callStack;
-            CatchMarks = new Stack<CatchMark>();
+            CatchMarks = new();
             RuntimeContext = rtx;
         }
 
@@ -21,8 +21,7 @@ namespace Dyalect.Runtime
 
         internal CallStack CallStack { get; }
 
-        internal Stack<CatchMark> CatchMarks { get; }
-
+        internal Stack<Stack<int>> CatchMarks { get; }
         internal DyError OldError { get; set; }
         
         internal DyError Error { get; set; }

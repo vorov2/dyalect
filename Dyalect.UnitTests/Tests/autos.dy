@@ -3,7 +3,7 @@ const boxCollector = []
 func Box.close() {
     boxCollector.add(this:key)
 }
-/*
+
 func autosSimple1() {
     boxCollector.clear()
     {
@@ -24,7 +24,7 @@ func autosSimple2() {
         }
     }
     assert(["wait.foo", "wait.bar", "bar", "foo"], boxCollector)
-}*/
+}
 
 func autosSimple3() {
     boxCollector.clear()
@@ -39,23 +39,7 @@ func autosSimple3() {
     }
     assert([1,2,3,4,5,6], boxCollector)
 }
-func autosFunc3() {
-    boxCollector.clear()
-    func testFn() {
-        auto xxxx = Box("x")
-        {
-            auto y = Box("y")
-            if true {
-                auto z = Box("z")
-                return
-            }
-        }
-    }
-    testFn()
-    assert(["x","y","z"], boxCollector)
-}
 
-/*
 func autosFunc1() {
     boxCollector.clear()
     func run() {
@@ -94,7 +78,7 @@ func autosFunc3() {
         }
     }
     testFn()
-    assert(["x","y","z"], boxCollector)
+    assert(["z","y","x"], boxCollector)
 }
 
 func autosExceptions1() {
@@ -141,4 +125,4 @@ func autosExceptions3() {
         boxCollector.add(e)
     }
     assert([42,84], boxCollector)
-}*/
+}

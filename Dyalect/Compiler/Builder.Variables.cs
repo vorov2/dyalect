@@ -27,29 +27,12 @@ namespace Dyalect.Compiler
         //Call close for all variables in this scope, registered as autos
         private void CallAutos()
         {
-            System.Console.WriteLine($"***Here for LOCALS");
             PeekAutos(currentScope);
             currentScope.Autos.Clear();
         }
 
-        bool hasAutos()
-        {
-            var s = currentScope;
-            do
-            {
-                if (s.Autos.Count > 0)
-                    return true;
-                s = s.Parent;
-            }
-            while (s != globalScope);
-            return false;
-        }
-
         private void CallAutosForKind(ScopeKind kind)
         {
-            if (!hasAutos()) return ;
-
-            System.Console.WriteLine($"***Here for {kind}");
             var scope = currentScope;
             var last = false;
             var shift = 0;
@@ -78,7 +61,6 @@ namespace Dyalect.Compiler
         {
             foreach (var a in scope.Autos)
             {
-                System.Console.WriteLine($"shift:{shift},address:{a}");
                 var sv = new ScopeVar(shift | a.Item1 << 8);
                 cw.PushVar(sv);
                 cw.GetMember(GetMemberNameId("close"));
