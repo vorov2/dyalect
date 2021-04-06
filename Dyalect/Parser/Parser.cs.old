@@ -352,25 +352,31 @@ namespace Dyalect.Parser
 	}
 
 	void Binding(out DNode node) {
-		var auto = false; 
-		if (la.kind == 9) {
+		node = null; 
+		if (la.kind == 10 || la.kind == 11) {
+			if (la.kind == 10) {
+				Get();
+			} else {
+				Get();
+			}
+			var bin = new DBinding(t) { Constant = t.val == "const" }; 
+			OrPattern(out var pat);
+			bin.Pattern = pat; 
+			if (la.kind == 27) {
+				Get();
+				Expr(out node);
+				bin.Init = node; 
+			}
+			node = bin; 
+		} else if (la.kind == 9) {
 			Get();
-			auto = true; 
-		}
-		if (la.kind == 10) {
-			Get();
-		} else if (la.kind == 11) {
-			Get();
-		} else SynErr(90);
-		var bin = new DBinding(t) { AutoClose = auto, Constant = t.val == "const" }; 
-		OrPattern(out var pat);
-		bin.Pattern = pat; 
-		if (la.kind == 27) {
-			Get();
+			var bin = new DBinding(t) { AutoClose = auto, Constant = true }; 
+			NamePattern(out var pat);
+			bin.Pattern = pat; 
+			Expect(27);
 			Expr(out node);
-			bin.Init = node; 
-		}
-		node = bin; 
+			bin.Init = node; node = bin; 
+		} else SynErr(90);
 	}
 
 	void Rebinding(out DNode node) {
@@ -644,6 +650,7 @@ namespace Dyalect.Parser
 			TryCatch(out node);
 		} else if (la.kind == 79) {
 			Throw(out node);
+			Separator();
 		} else SynErr(94);
 	}
 
@@ -685,6 +692,27 @@ namespace Dyalect.Parser
 			AndPattern(out node);
 			por.Right = node; node = por; 
 		}
+	}
+
+	void NamePattern(out DPattern node) {
+		node = null; string nm2 = null; string nm1 = null; Token ot = null; 
+		Expect(1);
+		nm1 = t.val; ot = t; 
+		if (la.kind == 24) {
+			Get();
+			Expect(1);
+			nm2 = null; 
+		}
+		if (nm2 == null) {
+		   if (t.val == "_")
+		       node = new DWildcardPattern(ot);
+		   else
+		       node = new DNamePattern(ot) { Name = nm1 };
+		} else {
+		   var q = new Qualident(nm2, nm1);
+		   node = new DTypeTestPattern(ot) { TypeName = q };
+		}
+		
 	}
 
 	void MatchEntry(out DMatchEntry me) {
@@ -821,27 +849,6 @@ namespace Dyalect.Parser
 		
 		Expect(1);
 		asp.Name = t.val; node = asp; 
-	}
-
-	void NamePattern(out DPattern node) {
-		node = null; string nm2 = null; string nm1 = null; Token ot = null; 
-		Expect(1);
-		nm1 = t.val; ot = t; 
-		if (la.kind == 24) {
-			Get();
-			Expect(1);
-			nm2 = null; 
-		}
-		if (nm2 == null) {
-		   if (t.val == "_")
-		       node = new DWildcardPattern(ot);
-		   else
-		       node = new DNamePattern(ot) { Name = nm1 };
-		} else {
-		   var q = new Qualident(nm2, nm1);
-		   node = new DTypeTestPattern(ot) { TypeName = q };
-		}
-		
 	}
 
 	void IntegerPattern(out DPattern node) {
@@ -1079,10 +1086,10 @@ namespace Dyalect.Parser
 		Expect(79);
 		var th = new DThrow(t);
 		node = th;
-		//if (la.AfterEol) return;
+		if (la.AfterEol) return;
 		
-		Expr(out node);
-		th.Expression = node; 
+		Expr(out var cexp);
+		th.Expression = cexp; 
 	}
 
 	void Coalesce(out DNode node) {

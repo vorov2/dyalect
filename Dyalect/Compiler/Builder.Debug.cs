@@ -55,9 +55,9 @@ namespace Dyalect.Compiler
 
         //Generates start of any scope
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void StartScope(bool fun, Location loc)
+        private void StartScope(ScopeKind kind, Location loc)
         {
-            currentScope = new Scope(fun, currentScope);
+            currentScope = new Scope(kind, currentScope);
 
             if (isDebug)
                 pdb.StartScope(cw.Offset, Line(loc), Col(loc));

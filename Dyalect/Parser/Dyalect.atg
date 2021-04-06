@@ -309,17 +309,26 @@ PRODUCTIONS
         ")".
 
     Binding<out DNode node> =
-        (. var auto = false; .)
+        (. node = null; .)
         (
-            [ "auto" (. auto = true; .) ]
-            ( "var" | "const" )
-            (. var bin = new DBinding(t) { AutoClose = auto, Constant = t.val == "const" }; .)
-            OrPattern<out var pat> (. bin.Pattern = pat; .)
-            [
+            (
+                ( "var" | "const" )
+                (. var bin = new DBinding(t) { Constant = t.val == "const" }; .)
+                OrPattern<out var pat> (. bin.Pattern = pat; .)
+                [
+                    "=" Expr<out node>
+                    (. bin.Init = node; .)
+                ]
+                (. node = bin; .)
+            )
+            |
+            (
+                "auto"
+                (. var bin = new DBinding(t) { AutoClose = true, Constant = true }; .)
+                NamePattern<out var pat> (. bin.Pattern = pat; .)
                 "=" Expr<out node>
-                (. bin.Init = node; .)
-            ]
-            (. node = bin; .)
+                (. bin.Init = node; node = bin; .)
+            )
         ).
 
     Rebinding<out DNode node> =

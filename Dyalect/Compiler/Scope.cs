@@ -5,12 +5,12 @@ namespace Dyalect.Compiler
 {
     public sealed class Scope
     {
-        public Scope(bool fun, Scope parent)
+        public Scope(ScopeKind kind, Scope parent)
         {
-            Function = fun;
+            Kind = kind;
             Parent = parent;
-            Locals = new Dictionary<string, ScopeVar>();
-            Autos = new Stack<int>();
+            Locals = new ();
+            Autos = new ();
         }
 
         public ScopeVar GetVariable(string name)
@@ -22,7 +22,7 @@ namespace Dyalect.Compiler
         }
 
         public Scope Clone() => 
-            new (Function, Parent)
+            new (Kind, Parent)
             {
                 Locals = new (Locals),
                 Autos = new (Autos)
@@ -42,7 +42,7 @@ namespace Dyalect.Compiler
 
         public bool LocalOrParent(string var)
         {
-            if (Function)
+            if (Kind == ScopeKind.Function)
                 return Locals.ContainsKey(var);
 
             var s = this;
@@ -54,7 +54,7 @@ namespace Dyalect.Compiler
 
                 s = s.Parent;
             }
-            while (s != null && !s.Function);
+            while (s != null && s.Kind != ScopeKind.Function);
 
             return false;
         }
@@ -84,10 +84,17 @@ namespace Dyalect.Compiler
 
         public Scope Parent { get; set; }
 
-        public Stack<int> Autos { get; private set; }
+        public Queue<int> Autos { get; private set; }
 
         public Dictionary<string, ScopeVar> Locals { get; private set; }
 
-        public bool Function { get; private set; }
+        public ScopeKind Kind { get; private set; }
+    }
+
+    public enum ScopeKind
+    {
+        Lexical = 0,
+        Function,
+        Loop
     }
 }

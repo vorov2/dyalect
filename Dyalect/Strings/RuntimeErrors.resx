@@ -183,7 +183,4 @@
   <data name="ValueOutOfRange" xml:space="preserve">
     <value>Value "%Value%" is out of range.</value>
   </data>
-  <data name="InvalidRethrow" xml:space="preserve">
-    <value>Unable to re-throw an exception in this context.</value>
-  </data>
 </root>

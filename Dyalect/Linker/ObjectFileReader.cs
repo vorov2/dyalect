@@ -108,7 +108,7 @@ namespace Dyalect.Linker
         private static void ReadGlobalScope(BinaryReader reader, Unit unit)
         {
             var count = reader.ReadInt32();
-            unit.GlobalScope = new Scope(false, default);
+            unit.GlobalScope = new Scope(ScopeKind.Lexical, default);
 
             for (var i = 0; i < count; i++)
             {

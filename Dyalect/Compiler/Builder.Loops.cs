@@ -19,6 +19,7 @@ namespace Dyalect.Compiler
             else if (hints.Has(ExpectPush))
                 cw.PushNil();
 
+            CallAutosForKind(ScopeKind.Loop);
             AddLinePragma(node);
             cw.Br(ctx.BlockBreakExit);
         }
@@ -28,6 +29,7 @@ namespace Dyalect.Compiler
             if (ctx.BlockSkip.IsEmpty())
                 AddError(CompilerError.NoEnclosingLoop, node.Location);
 
+            CallAutosForKind(ScopeKind.Loop); 
             AddLinePragma(node);
             cw.Br(ctx.BlockSkip);
             PushIf(hints);
@@ -41,6 +43,7 @@ namespace Dyalect.Compiler
                 BlockExit = cw.DefineLabel(),
                 BlockBreakExit = cw.DefineLabel()
             };
+            StartScope(ScopeKind.Loop, node.Location);
             var iter = cw.DefineLabel();
             hints = hints.Remove(Last);
             var nh = hints.Has(Push) ? hints.Remove(Push).Append(ExpectPush) : hints;
@@ -63,6 +66,7 @@ namespace Dyalect.Compiler
 
             cw.MarkLabel(ctx.BlockBreakExit);
             cw.Nop();
+            EndScope();
         }
 
         private void Build(DFor node, Hints hints, CompilerContext ctx)
@@ -73,7 +77,7 @@ namespace Dyalect.Compiler
                 BlockExit = cw.DefineLabel(),
                 BlockBreakExit = cw.DefineLabel()
             };
-            StartScope(false, node.Location);
+            StartScope(ScopeKind.Loop, node.Location);
             hints = hints.Remove(Last);
 
             var inc = -1;

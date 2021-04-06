@@ -312,11 +312,10 @@ namespace Dyalect.Runtime
                         {
                             ctx.Error = ctx.OldError;
                             ctx.OldError = null;
+                            ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
+                            goto CATCH;
                         }
-                        else
-                            ctx.InvalidRethrow();
-                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
-                        goto CATCH;
+                        break;
                     case OpCode.Fail:
                         right = evalStack.Pop();
                         DyError err = new DyUserError(right, right.ToString(ctx));

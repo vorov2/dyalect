@@ -14,7 +14,7 @@ namespace Dyalect.Compiler
         private void Build(DMatch node, Hints hints, CompilerContext ctx)
         {
             ValidateMatch(node);
-            StartScope(fun: false, node.Location);
+            StartScope(ScopeKind.Lexical, node.Location);
 
             ctx = new CompilerContext(ctx)
             {
@@ -51,7 +51,7 @@ namespace Dyalect.Compiler
 
         private void BuildEntry(DMatchEntry node, ScopeVar sys, Hints hints, CompilerContext ctx)
         {
-            StartScope(fun: false, node.Location);
+            StartScope(ScopeKind.Lexical, node.Location);
             var skip = cw.DefineLabel();
 
             cw.PushVar(sys);

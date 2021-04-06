@@ -38,7 +38,7 @@ namespace Dyalect.Compiler
             counters = new Stack<int>();
             pdb = new DebugWriter();
             isDebug = options.Debug;
-            globalScope = new Scope(true, null);
+            globalScope = new Scope(ScopeKind.Function, null);
             unit = new Unit
             {
                 GlobalScope = globalScope,
