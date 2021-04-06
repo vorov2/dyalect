@@ -644,6 +644,7 @@ namespace Dyalect.Parser
 			TryCatch(out node);
 		} else if (la.kind == 79) {
 			Throw(out node);
+			Separator();
 		} else SynErr(94);
 	}
 
@@ -1077,9 +1078,12 @@ namespace Dyalect.Parser
 	void Throw(out DNode node) {
 		node = null; 
 		Expect(79);
-		var th = new DThrow(t); 
-		Expr(out node);
-		th.Expression = node; node = th; 
+		var th = new DThrow(t);
+		node = th;
+		if (la.AfterEol) return;
+		
+		Expr(out var cexp);
+		th.Expression = cexp; 
 	}
 
 	void Coalesce(out DNode node) {

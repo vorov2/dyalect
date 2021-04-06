@@ -27,7 +27,15 @@ namespace Dyalect.Compiler
         //Call close for all variables in this scope, registered as autos
         private void CallAutos()
         {
-            cw.CloseAuto();
+            while (currentScope.Autos.Count > 0)
+            {
+                var a = currentScope.Autos.Pop();
+                cw.PushVar(new ScopeVar(a));
+                cw.GetMember(GetMemberNameId("close"));
+                cw.FunPrep(0);
+                cw.FunCall(0);
+                cw.Pop();
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

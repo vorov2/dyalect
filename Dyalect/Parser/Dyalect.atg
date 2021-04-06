@@ -642,15 +642,19 @@ PRODUCTIONS
               IF (IsFunction()) FunctionExpr<out node>
             | Is<out node>
             | TryCatch<out node>
-            | Throw<out node>
+            | Throw<out node> Separator
         ).
 
     Throw<out DNode node> =
         (. node = null; .)
         (
-            "throw" (. var th = new DThrow(t); .)
-            Expr<out node>
-            (. th.Expression = node; node = th; .)
+            "throw" 
+            (. 
+                var th = new DThrow(t);
+                node = th;
+                if (la.AfterEol) return;
+            .)
+            Expr<out var cexp> (. th.Expression = cexp; .)
         ).
 
     TryCatch<out DNode node> =

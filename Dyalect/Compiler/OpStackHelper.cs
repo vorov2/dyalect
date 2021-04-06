@@ -92,8 +92,7 @@
             1,  //TypeST
             0,  //CtorCheck
             1,  //Unbox
-            -1, //PopAuto
-            0,  //CloseAuto
+            0, //Rethrow
         };
     }
 }

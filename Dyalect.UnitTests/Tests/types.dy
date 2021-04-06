@@ -278,3 +278,17 @@ func complexMemberCheckTest3() {
     assert(false, p.x?)
     assert(true, p.foobar?)
 }
+
+func objectTypeTest() {
+    var obj = makeObject( (name = "Vasily", age = 41) )
+    var res1 = match obj {
+        (x, y) => "x=\(x),y=\(y)",
+        _ => "No."
+    }
+    assert("No.", res1)
+    var res2 = match obj {
+        (name = x, age = y) => "x=\(x),y=\(y)",
+        _ => "No."
+    }
+    assert("x=Vasily,y=41", res2)
+}

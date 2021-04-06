@@ -98,10 +98,10 @@ namespace Dyalect.Runtime
                         evalStack.Replace(evalStack.Peek().GetSelf());
                         break;
                     case OpCode.Term:
-                        if (evalStack.Size > 1 || evalStack.Size == 0)
-                            throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
+                        //if (evalStack.Size > 1 || evalStack.Size == 0)
+                          //  throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
                         ctx.RuntimeContext.Units[function.UnitId] = locals;
-                        return evalStack.Pop();
+                        return evalStack.Size>0?evalStack.Pop():null;
                     case OpCode.Pop:
                         evalStack.PopVoid();
                         break;
@@ -143,18 +143,6 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Poploc:
                         locals[op.Data] = evalStack.Pop();
-                        break;
-                    case OpCode.PopAuto:
-                        {
-                            locals[op.Data] = evalStack.Pop();
-                            var cp = ctx.CallStack.Peek();
-                            if (cp.Autos == null)
-                                cp.Autos = new();
-                            cp.Autos.Push(locals[op.Data]);
-                        }
-                        break;
-                    case OpCode.CloseAuto:
-                        CloseAutos(ctx, ctx.CallStack.Peek());
                         break;
                     case OpCode.Pushloc:
                         evalStack.Push(locals[op.Data]);
@@ -319,6 +307,16 @@ namespace Dyalect.Runtime
                         }
                         else
                             return evalStack.Pop();
+                    case OpCode.Rethrow:
+                        if (ctx.OldError is not null)
+                        {
+                            ctx.Error = ctx.OldError;
+                            ctx.OldError = null;
+                        }
+                        else
+                            ctx.InvalidRethrow();
+                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
+                        goto CATCH;
                     case OpCode.Fail:
                         right = evalStack.Pop();
                         DyError err = new DyUserError(right, right.ToString(ctx));
@@ -595,29 +593,9 @@ namespace Dyalect.Runtime
                     ops = unit.Ops;
                 }
                 evalStack.Push(ctx.Error.GetDyObject());
+                ctx.OldError = ctx.Error;
                 ctx.Error = null;
                 goto CYCLE;
-            }
-        }
-
-        private static void CloseAutos(ExecutionContext ctx, Caller cp)
-        {
-            if (cp.Autos is null)
-                return;
-
-            var unit = ctx.RuntimeContext.Composition.Units[cp.Function.UnitId];
-
-            while (cp.Autos.Count > 0)
-            {
-                var newctx = new ExecutionContext(new CallStack(), ctx.RuntimeContext);
-                var a = cp.Autos.Pop();
-                var mid = ctx.RuntimeContext.Composition.MembersMap["close"];
-                var member = ctx.RuntimeContext.Types[a.TypeId].GetMember(a, mid, unit, ctx);
-
-                if (member is DyFunction fn)
-                {
-                    fn.Call0(newctx);
-                }
             }
         }
 
@@ -726,8 +704,14 @@ namespace Dyalect.Runtime
         private static bool ThrowIf(DyError err, int offset, int moduleHandle, ref DyNativeFunction function,
             ref DyObject[] locals, ref EvalStack evalStack, ExecutionContext ctx)
         {
-            var dump = Dump(ctx.CallStack.Clone());
-            dump.Push(new StackPoint(offset, moduleHandle));
+            Stack<StackPoint> dump;
+            if (err.Dump is null)
+            {
+                dump = Dump(ctx.CallStack.Clone());
+                dump.Push(new StackPoint(offset, moduleHandle));
+            }
+            else
+                dump = err.Dump;
 
             if (FindCatch(ctx, ref function, ref locals, ref evalStack))
             {
@@ -751,16 +735,15 @@ namespace Dyalect.Runtime
 
         private static bool FindCatch(ExecutionContext ctx, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
         {
-            var has = ctx.CatchMarks.Count > 0;
+            if (ctx.CatchMarks.Count == 0)
+                return false;
 
-            CloseAutos(ctx, ctx.CallStack.Peek());
-            var mark = ctx.CatchMarks.Count > 0 ? ctx.CatchMarks.Peek() : new CatchMark(0, 0);
+            var mark = ctx.CatchMarks.Peek();
             var cp = default(Caller);
 
             while (ctx.CallStack.Count > mark.StackOffset)
             {
                 cp = ctx.CallStack.Pop();
-                CloseAutos(ctx, cp);
 
                 if (ReferenceEquals(cp, Caller.External))
                     return false;
@@ -773,7 +756,7 @@ namespace Dyalect.Runtime
                 evalStack = cp.EvalStack;
             }
 
-            return has;
+            return true;
         }
     }
 }

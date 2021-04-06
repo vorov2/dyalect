@@ -222,11 +222,6 @@ namespace Dyalect.Compiler
                 Emit(new Op(OpCode.Popvar, address));
         }
 
-        public void PopAuto(int address)
-        {
-            Emit(new Op(OpCode.PopAuto, address >> 8));
-        }
-
         public void Tag(string tag)
         {
             var idx = IndexString(tag);
@@ -329,6 +324,6 @@ namespace Dyalect.Compiler
         public void SyncPoint() => Emit(Op.SyncPoint);
         public void Fail() => Emit(Op.Fail);
         public void Term() => Emit(Op.Term);
-        public void CloseAuto() => Emit(Op.CloseAuto);
+        public void Rethrow() => Emit(Op.Rethrow);
     }
 }

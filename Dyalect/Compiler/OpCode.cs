@@ -92,7 +92,6 @@
         TypeST,     //1
         CtorCheck,  //0
         Unbox,      //1
-        PopAuto,    //-1
-        CloseAuto,  //0
+        Rethrow,    //0
     }
 }

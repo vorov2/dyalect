@@ -10,6 +10,7 @@ namespace Dyalect.Compiler
             Function = fun;
             Parent = parent;
             Locals = new Dictionary<string, ScopeVar>();
+            Autos = new Stack<int>();
         }
 
         public ScopeVar GetVariable(string name)
@@ -23,7 +24,8 @@ namespace Dyalect.Compiler
         public Scope Clone() => 
             new (Function, Parent)
             {
-                Locals = new (Locals)
+                Locals = new (Locals),
+                Autos = new (Autos)
             };
 
         public IEnumerable<string> EnumerateNames()
@@ -81,6 +83,8 @@ namespace Dyalect.Compiler
         public bool IsGlobal => Parent == null;
 
         public Scope Parent { get; set; }
+
+        public Stack<int> Autos { get; private set; }
 
         public Dictionary<string, ScopeVar> Locals { get; private set; }
 

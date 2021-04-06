@@ -209,9 +209,17 @@ namespace Dyalect.Compiler
 
         private void Build(DThrow node, Hints hints, CompilerContext ctx)
         {
-            Build(node.Expression, hints.Append(Push), ctx);
-            AddLinePragma(node);
-            cw.Fail();
+            if (node.Expression is not null)
+            {
+                Build(node.Expression, hints.Append(Push), ctx);
+                AddLinePragma(node);
+                cw.Fail();
+            }
+            else
+            {
+                AddLinePragma(node);
+                cw.Rethrow();
+            }
         }
 
         private void Build(DTryCatch node, Hints hints, CompilerContext ctx)
@@ -962,16 +970,14 @@ namespace Dyalect.Compiler
                     ? VarFlags.Const | VarFlags.Auto
                     : node.Constant ? VarFlags.Const : VarFlags.None;
                 var a = AddVariable(node.Pattern.GetName(), node, flags);
+                cw.PopVar(a);
 
                 if (node.AutoClose)
                 {
                     if (!node.Constant)
                         AddError(CompilerError.AutoOnlyConst, node.Location);
-                    cw.PopAuto(a);
-
+                    currentScope.Autos.Push(a);
                 }
-                else
-                    cw.PopVar(a);
             }
             else
             {

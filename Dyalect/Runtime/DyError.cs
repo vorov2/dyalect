@@ -52,7 +52,9 @@ namespace Dyalect.Runtime
 
         InvalidValue = 621,
 
-        ValueOutOfRange = 622
+        ValueOutOfRange = 622,
+
+        InvalidRethrow = 623
     }
 
     public class DyError
@@ -72,7 +74,6 @@ namespace Dyalect.Runtime
         public virtual string GetDescription()
         {
             var key = Code.ToString();
-
             var sb = new StringBuilder(RuntimeErrors.ResourceManager.GetString(key));
 
             if (DataItems != null)
@@ -107,6 +108,12 @@ namespace Dyalect.Runtime
 
     partial class ExecutionContextExtensions
     {
+        public static DyObject InvalidRethrow(this ExecutionContext ctx)
+        {
+            ctx.Error = new DyError(DyErrorCode.InvalidRethrow);
+            return DyNil.Instance;
+        }
+        
         public static DyObject Fail(this ExecutionContext ctx, string detail)
         {
             ctx.Error = new DyUserError(null, detail);

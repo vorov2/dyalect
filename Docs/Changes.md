@@ -5,6 +5,7 @@
   * Add: _StringBuilder_ ([Issue #22](https://github.com/vorov2/dyalect/issues/22)).
   * Add: _Add automatic conversion to/from Dictionary_ ([Issue #360](https://github.com/vorov2/dyalect/issues/360)).
   * Add: _Implement module dependencies for foreign modules_ ([Issue #361](https://github.com/vorov2/dyalect/issues/361)).
+  * Add: _Add an ability to re-throw an exception for a catch block_ ([Issue #364](https://github.com/vorov2/dyalect/issues/364), [docs](https://github.com/vorov2/dyalect/wiki/Exception-handling#throw)).
   * Add: _Add an automatic resource disposal_ ([Issue #363](https://github.com/vorov2/dyalect/issues/363), [docs](https://github.com/vorov2/dyalect/wiki/Variables#autos)).
 
 # 0.16.0

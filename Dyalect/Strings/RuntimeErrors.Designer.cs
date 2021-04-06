@@ -142,6 +142,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to re-throw an exception in this context..
+        /// </summary>
+        internal static string InvalidRethrow {
+            get {
+                return ResourceManager.GetString("InvalidRethrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type error: type &quot;%TypeName%&quot; is unexpected..
         /// </summary>
         internal static string InvalidType {
