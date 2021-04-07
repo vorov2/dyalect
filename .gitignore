@@ -223,6 +223,7 @@ ClientBin/
 *.pfx
 *.vsix
 *.publishsettings
+*.key
 orleans.codegen.cs
 
 # Including strong name files can present a security risk
