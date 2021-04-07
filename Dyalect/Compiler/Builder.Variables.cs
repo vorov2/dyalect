@@ -59,11 +59,17 @@ namespace Dyalect.Compiler
             foreach (var a in scope.Autos)
             {
                 var sv = new ScopeVar(shift | a.Item1 << 8);
+                var escape = cw.DefineLabel();
+                cw.PushVar(sv);
+                cw.ChNoInit();
+                cw.Brtrue(escape);
                 cw.PushVar(sv);
                 cw.GetMember(GetMemberNameId("dispose"));
                 cw.FunPrep(0);
                 cw.FunCall(0);
                 cw.Pop();
+                cw.MarkLabel(escape);
+                cw.Nop();
             }
         }
 

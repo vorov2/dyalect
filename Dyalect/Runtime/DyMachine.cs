@@ -311,6 +311,9 @@ namespace Dyalect.Runtime
                         }
                         else
                             return evalStack.Pop();
+                    case OpCode.ChNoInit:
+                        evalStack.Push((DyBool)(evalStack.Pop() is null));
+                        break;
                     case OpCode.Rethrow:
                         if (ctx.OldError is not null)
                         {

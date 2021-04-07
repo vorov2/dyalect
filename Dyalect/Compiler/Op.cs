@@ -51,6 +51,7 @@ namespace Dyalect.Compiler
         public static readonly Op End = new Op(OpCode.End);
         public static readonly Op Rethrow = new Op(OpCode.Rethrow);
         public static readonly Op CloseSect = new Op(OpCode.CloseSect);
+        public static readonly Op ChNoInit = new Op(OpCode.ChNoInit);
 
         internal static readonly Dictionary<OpCode, Op> Ops = new Dictionary<OpCode, Op>();
 

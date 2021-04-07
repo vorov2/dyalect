@@ -326,5 +326,6 @@ namespace Dyalect.Compiler
         public void Term() => Emit(Op.Term);
         public void Rethrow() => Emit(Op.Rethrow);
         public void CloseSect() => Emit(Op.CloseSect);
+        public void ChNoInit() => Emit(Op.ChNoInit);
     }
 }

@@ -1,5 +1,7 @@
 # 0.17.1
   * Fixed: _Autos are not processed correctly_ ([Issue #367](https://github.com/vorov2/dyalect/issues/367)).
+  * Fixed: _`auto` inside a `catch` block rethrows an exception_ ([Issue #370](https://github.com/vorov2/dyalect/issues/370)).
+  * Fixed: _VM crush_ ([Issue #369](https://github.com/vorov2/dyalect/issues/369)).
 
 # 0.17.0
   * Change: _Code clean-ups and optimizations._
@@ -10,7 +12,7 @@
   * Add: _Implement module dependencies for foreign modules_ ([Issue #361](https://github.com/vorov2/dyalect/issues/361)).
   * Add: _Add an ability to re-throw an exception for a catch block_ ([Issue #364](https://github.com/vorov2/dyalect/issues/364), [docs](https://github.com/vorov2/dyalect/wiki/Exception-handling#throw)).
   * Add: _Add an automatic resource disposal_ ([Issue #363](https://github.com/vorov2/dyalect/issues/363), [docs](https://github.com/vorov2/dyalect/wiki/Variables#autos)).
-  * Fixed: _`try/catch` sections may leave VM in an invalid state bug_ ([Issue #365](https://github.com/vorov2/dyalect/issues/365)).
+  * Fixed: _`try/catch` sections may leave VM in an invalid state_ ([Issue #365](https://github.com/vorov2/dyalect/issues/365)).
 
 # 0.16.0
   * Change: _All code migrated to .NET 5.0._

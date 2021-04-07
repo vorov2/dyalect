@@ -230,6 +230,7 @@ func autosCatch1() { //Bug #370
 }
 
 func autosCatch2() { //Bug #370
+    boxCollector.clear()
     func inner() {
         try {
             throw "err"
