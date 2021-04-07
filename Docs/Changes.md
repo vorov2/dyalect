@@ -1,3 +1,6 @@
+# 0.17.1
+  * Fixed: _Autos are not processed correctly_ ([Issue #367](https://github.com/vorov2/dyalect/issues/367)).
+
 # 0.17.0
   * Change: _Code clean-ups and optimizations._
   * Change: _Infrastructure for foreign modules is completely refactored._

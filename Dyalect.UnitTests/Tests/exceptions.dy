@@ -267,3 +267,49 @@ func customTypeException() { //Bug #248
     }
     assert("U0 caught.", foo())
 }
+
+func chainCatch1() {
+    func zoo() {
+        throw 1024
+    }
+    func bar() {
+        zoo()
+    }
+    func foo() {
+        try {
+            bar()
+        } catch e {
+            if e == 1024 {
+                throw
+            }
+        }
+    }
+    var x
+    try {
+        foo()
+    } catch e {
+        x = e
+    }
+    assert(1024, x)
+}
+
+func rightCatch() {
+    func checkit() {
+        try {
+            return
+        } catch _ {
+            throw "Invalid catch."
+        }
+    }
+    func run() {
+        checkit()
+        throw 12
+    }
+    var x
+    try {
+        run()
+    } catch e {
+        x = e
+    }
+    assert(12, x)
+}

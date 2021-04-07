@@ -42,3 +42,29 @@ func sqrtTest() {
     assert(15.6844, x)
 }
 
+func absTest() {
+    assert(12, abs(-12))
+    assert(42, abs(42))
+    const x = -14.102
+    assert(14.102, abs(x))
+}
+
+func rndTest() {
+    const x = rnd(max = 10, min = 3)
+    assert(true, x <= 10 && x >= 3)
+}
+
+func parseTest() {
+    assert(true, parse("true"))
+    assert((1,2), parse("(1,2)"))
+    assert([1,2,3], parse("[1,2,3]"))
+    var xs = parse("[12.0, true, (1,2)]")
+    var pat = [12.0, true, (1,2)]
+    assert(pat, xs)
+}
+
+func evalTest() {
+    const src = "x + y * z"
+    var res = eval(src, (x = 2, y = 12, z = 3) )
+    assert(38, res)
+}

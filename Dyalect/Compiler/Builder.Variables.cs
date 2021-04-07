@@ -41,9 +41,6 @@ namespace Dyalect.Compiler
             {
                 PeekAutos(scope, shift);
 
-                if (kind != ScopeKind.Loop)
-                    scope.Autos.Clear();
-
                 if (last)
                     break;
 
