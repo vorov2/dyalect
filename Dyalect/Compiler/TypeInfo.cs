@@ -2,11 +2,7 @@
 {
     internal sealed class TypeInfo
     {
-        public TypeInfo(int handle, UnitInfo unit)
-        {
-            TypeId = handle;
-            Unit = unit;
-        }
+        public TypeInfo(int handle, UnitInfo unit) => (TypeId, Unit) = (handle, unit);
 
         public int TypeId { get; }
 

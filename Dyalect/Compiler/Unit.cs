@@ -8,28 +8,28 @@ namespace Dyalect.Compiler
     {
         internal Unit()
         {
-            Layouts = new List<MemoryLayout>();
-            Ops = new List<Op>();
-            Layouts = new List<MemoryLayout>();
-            ExportList = new Dictionary<string, ScopeVar>();
-            UnitIds = new List<int>();
-            References = new List<Reference>();
-            Types = new List<TypeDescriptor>();
-            TypeMap = new Dictionary<string, TypeDescriptor>();
-            MemberIds = new List<int>();
-            MemberNames = new List<string>();
-            IndexedStrings = new List<DyString>();
-            IndexedIntegers = new List<DyInteger>();
-            IndexedFloats = new List<DyFloat>();
-            IndexedChars = new List<DyChar>();
+            Layouts = new();
+            Ops = new();
+            Layouts = new();
+            ExportList = new();
+            UnitIds = new();
+            References = new();
+            Types = new();
+            TypeMap = new();
+            MemberIds = new();
+            MemberNames = new();
+            IndexedStrings = new();
+            IndexedIntegers = new();
+            IndexedFloats = new();
+            IndexedChars = new();
         }
 
         private Unit(Unit unit, DebugInfo di)
         {
-            Ops = new List<Op>(unit.Ops.ToArray());
+            Ops = new(unit.Ops.ToArray());
             Symbols = di;
 
-            if (unit.GlobalScope != null)
+            if (unit.GlobalScope is not null)
                 GlobalScope = unit.GlobalScope.Clone();
 
             Layouts = unit.Layouts;

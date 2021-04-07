@@ -6,25 +6,22 @@ namespace Dyalect.Debug
     {
         public DebugInfo()
         {
-            Scopes = new List<ScopeSym>();
-            Lines = new List<LineSym>();
-            Vars = new List<VarSym>();
-            Functions = new Dictionary<int, FunSym>();
+            Scopes = new();
+            Lines = new();
+            Vars = new();
+            Functions = new();
         }
 
         private DebugInfo(DebugInfo di)
         {
             File = di.File;
-            Scopes = new List<ScopeSym>(di.Scopes.ToArray());
-            Lines = new List<LineSym>(di.Lines.ToArray());
-            Vars = new List<VarSym>(di.Vars.ToArray());
-            Functions = new Dictionary<int, FunSym>(di.Functions);
+            Scopes = new(di.Scopes.ToArray());
+            Lines = new(di.Lines.ToArray());
+            Vars = new(di.Vars.ToArray());
+            Functions = new(di.Functions);
         }
 
-        public DebugInfo Clone()
-        {
-            return new DebugInfo(this);
-        }
+        public DebugInfo Clone() => new DebugInfo(this);
 
         public string File { get; set; }
 

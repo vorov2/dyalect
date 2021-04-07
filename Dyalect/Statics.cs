@@ -1,16 +1,17 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Runtime.Types;
+using System;
 
 namespace Dyalect
 {
     internal static class Statics
     {
-        public static DyObject[] EmptyDyObjects = new DyObject[0];
+        public static DyObject[] EmptyDyObjects = Array.Empty<DyObject>();
 
-        public static char[] EmptyChars = new char[0];
+        public static char[] EmptyChars = Array.Empty<char>();
 
-        public static Par[] EmptyParameters = new Par[0];
+        public static Par[] EmptyParameters = Array.Empty<Par>();
 
-        public static string[] EmptyStrings = new string[0];
+        public static string[] EmptyStrings = Array.Empty<string>();
     }
 }

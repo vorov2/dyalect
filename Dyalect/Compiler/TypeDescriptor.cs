@@ -1,22 +1,14 @@
-﻿using Dyalect.Runtime.Types;
-using System;
+﻿using System;
 
 namespace Dyalect.Compiler
 {
     public sealed class TypeDescriptor
     {
         public TypeDescriptor(string name, int id, bool autoGenCons, Type foreignTypeInfo) :
-            this(name, id, autoGenCons)
-        {
-            ForeignTypeInfo = foreignTypeInfo;
-        }
+            this(name, id, autoGenCons) => ForeignTypeInfo = foreignTypeInfo;
 
-        public TypeDescriptor(string name, int id, bool autoGenCons)
-        {
-            Name = name;
-            Id = id;
-            AutoGenConstructors = autoGenCons;
-        }
+        public TypeDescriptor(string name, int id, bool autoGenCons) =>
+            (Name, Id, AutoGenConstructors) = (name, id, autoGenCons);
 
         internal bool Processed { get; set; }
         

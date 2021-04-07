@@ -2,17 +2,10 @@
 {
     public sealed class LineSym
     {
-        public LineSym(int offset, int line, int column)
-        {
-            Offset = offset;
-            Line = line;
-            Column = column;
-        }
+        public LineSym() { }
 
-        public LineSym()
-        {
-
-        }
+        public LineSym(int offset, int line, int column) => 
+            (Offset, Line, Column) = (offset, line, column);
 
         public int Offset { get; set; }
 
