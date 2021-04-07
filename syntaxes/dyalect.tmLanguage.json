@@ -1,0 +1,400 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Dyalect",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#numeric"
+		},
+		{
+			"include": "#boolean"
+		},
+		{
+			"include": "#nil"
+		},
+		{
+			"include": "#comments"
+		}
+	],
+	"repository": {	
+		"keywords": {
+			"patterns": [
+				{
+					"match": "(?<!\\.)\\b(?:if|else|match|is|when)\\b",
+					"name": "keyword.control.branch.dyalect"
+				},
+				{
+					"match": "(?<!\\.)\\b(?:continue|break|yield|return)\\b",
+					"name": "keyword.control.transfer.dyalect"
+				},
+				{
+					"match": "(?<!\\.)\\b(?:do|while|for|in)\\b",
+					"name": "keyword.control.loop.dyalect"
+				},
+				{
+					"match": "(?<!\\.)\\b(?:catch|try|throw)\\b|\\btry[?!]\\B",
+					"name": "keyword.control.exception.dyalect"
+				},
+				{
+					"match": "(?<!\\.)\\b(?:const|var|set)\\b",
+					"name": "keyword.other.declaration-specifier.dyalect"
+				},
+				{
+					"match": "(?<!\\.)\\b(type)\\b",
+					"name": "storage.type.dyalect"
+				},
+				{
+					"match": "(?<!\\.)\\b(?:private)\\b",
+					"name": "storage.modifier.dyalect"
+				},
+				{
+					"match": "(?<!\\.)\\b(?:func|static)\\b",
+					"name": "storage.type.function.dyalect"
+				},
+				{
+					"match": "(?<!\\.)\\b(?:nameof|typeof)\\b",
+					"name": "storage.type.builtins"
+				},
+				{
+					"match": "(?<!\\.)\\b(?:base|this)\\b",
+					"name": "variable.language.dyalect"
+				},
+				{
+					"match": "(?<!\\.)\\b(import)\\b",
+					"name": "keyword.control.import.dyalect"
+				}
+			]
+		},
+		"strings": {
+			"patterns": [
+				{
+					"begin": "\"\"\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.dyalect"
+						}
+					},
+					"comment": "SE-0168: Multi-Line String Literals",
+					"end": "\"\"\"",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.dyalect"
+						}
+					},
+					"name": "string.quoted.double.block.dyalect",
+					"patterns": [
+						{
+							"match": "\\G.+(?=\"\"\")|\\G.+",
+							"name": "invalid.illegal.content-after-opening-delimiter.dyalect"
+						},
+						{
+							"match": "\\\\\\s*\\n",
+							"name": "constant.character.escape.newline.dyalect"
+						},
+						{
+							"include": "#string-guts"
+						},
+						{
+							"comment": "Allow \\(\"\"\"...\"\"\") to appear inside a block string",
+							"match": "\\S((?!\\\\\\().)*(?=\"\"\")",
+							"name": "invalid.illegal.content-before-closing-delimiter.dyalect"
+						}
+					]
+				},
+				{
+					"begin": "\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.dyalect"
+						}
+					},
+					"end": "\"",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.dyalect"
+						}
+					},
+					"name": "string.quoted.double.single-line.dyalect",
+					"patterns": [
+						{
+							"match": "\\r|\\n",
+							"name": "invalid.illegal.returns-not-allowed.dyalect"
+						},
+						{
+							"include": "#string-guts"
+						}
+					]
+				},
+				{
+					"begin": "'",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.dyalect"
+						}
+					},
+					"end": "'",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.dyalect"
+						}
+					},
+					"name": "string.quoted.single.dyalect"
+				}
+			],
+			"repository": {
+				"string-guts": {
+					"patterns": [
+						{
+							"match": "\\\\[0\\\\tnr\"']",
+							"name": "constant.character.escape.dyalect"
+						},
+						{
+							"match": "\\\\u\\{[0-9a-fA-F]{1,8}\\}",
+							"name": "constant.character.escape.unicode.dyalect"
+						},
+						{
+							"begin": "\\\\\\(",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.section.embedded.begin.dyalect"
+								}
+							},
+							"contentName": "source.dyalect",
+							"end": "(\\))",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.section.embedded.end.dyalect"
+								},
+								"1": {
+									"name": "source.dyalect"
+								}
+							},
+							"name": "meta.embedded.line.dyalect",
+							"patterns": [
+								{
+									"include": "$self"
+								},
+								{
+									"begin": "\\(",
+									"comment": "Nested parens",
+									"end": "\\)"
+								}
+							]
+						},
+						{
+							"match": "\\\\.",
+							"name": "invalid.illegal.escape-not-recognized"
+						}
+					]
+				}
+			}
+		},		
+		"numeric": {
+			"patterns": [
+				{
+					"comment": "0.1, -4_2.5, 6.022e23, 10E-5",
+					"match": "(\\B\\-|\\b)(?<![\\[\\](){}\\p{L}_\\p{N}\\p{M}]\\.)[0-9][0-9_]*(?=\\.[0-9]|[eE])(?:\\.[0-9][0-9_]*)?(?:[eE][-+]?[0-9][0-9_]*)?\\b(?!\\.[0-9])",
+					"name": "constant.numeric.float.decimal.dyalect"
+				},
+				{
+					"comment": "-0x1.ap2_3, 0x31p-4",
+					"match": "(\\B\\-|\\b)(?<![\\[\\](){}\\p{L}_\\p{N}\\p{M}]\\.)(0x[0-9a-fA-F][0-9a-fA-F_]*)(?:\\.[0-9a-fA-F][0-9a-fA-F_]*)?[pP][-+]?[0-9][0-9_]*\\b(?!\\.[0-9])",
+					"name": "constant.numeric.float.hexadecimal.dyalect"
+				},
+				{
+					"comment": "0x1p, 0x1p_2, 0x1.5pa, 0x1.1p+1f, 0x1pz",
+					"match": "(\\B\\-|\\b)(?<![\\[\\](){}\\p{L}_\\p{N}\\p{M}]\\.)(0x[0-9a-fA-F][0-9a-fA-F_]*)(?:\\.[0-9a-fA-F][0-9a-fA-F_]*)?(?:[pP][-+]?\\w*)\\b(?!\\.[0-9])",
+					"name": "invalid.illegal.numeric.float.invalid-exponent.dyalect"
+				},
+				{
+					"comment": "0x1.5w (note that 0x1.f may be a valid expression)",
+					"match": "(\\B\\-|\\b)(?<![\\[\\](){}\\p{L}_\\p{N}\\p{M}]\\.)(0x[0-9a-fA-F][0-9a-fA-F_]*)\\.[0-9][\\w.]*",
+					"name": "invalid.illegal.numeric.float.missing-exponent.dyalect"
+				},
+				{
+					"comment": "-.5, .2f (note that 1.-.5 may be a valid expression)",
+					"match": "(?<=\\s|^)\\-?\\.[0-9][\\w.]*",
+					"name": "invalid.illegal.numeric.float.missing-leading-zero.dyalect"
+				},
+				{
+					"comment": "0b_0_1, 0x_1p+3q",
+					"match": "(\\B\\-|\\b)0[box]_[0-9a-fA-F_]*(?:[pPeE][+-]?\\w+)?[\\w.]+",
+					"name": "invalid.illegal.numeric.leading-underscore.dyalect"
+				},
+				{
+					"comment": "tuple positional member: not really a numeric literal, but not invalid",
+					"match": "(?<=[\\[\\](){}\\p{L}_\\p{N}\\p{M}]\\.)[0-9]+\\b"
+				},
+				{
+					"comment": "0b010, 0b1_0",
+					"match": "(\\B\\-|\\b)(?<![\\[\\](){}\\p{L}_\\p{N}\\p{M}]\\.)0b[01][01_]*\\b(?!\\.[0-9])",
+					"name": "constant.numeric.integer.binary.dyalect"
+				},
+				{
+					"comment": "0o1, 0o7_3",
+					"match": "(\\B\\-|\\b)(?<![\\[\\](){}\\p{L}_\\p{N}\\p{M}]\\.)0o[0-7][0-7_]*\\b(?!\\.[0-9])",
+					"name": "constant.numeric.integer.octal.dyalect"
+				},
+				{
+					"comment": "02, 3_456",
+					"match": "(\\B\\-|\\b)(?<![\\[\\](){}\\p{L}_\\p{N}\\p{M}]\\.)[0-9][0-9_]*\\b(?!\\.[0-9])",
+					"name": "constant.numeric.integer.decimal.dyalect"
+				},
+				{
+					"comment": "0x4, 0xF_7",
+					"match": "(\\B\\-|\\b)(?<![\\[\\](){}\\p{L}_\\p{N}\\p{M}]\\.)0x[0-9a-fA-F][0-9a-fA-F_]*\\b(?!\\.[0-9])",
+					"name": "constant.numeric.integer.hexadecimal.dyalect"
+				},
+				{
+					"match": "(\\B\\-|\\b)[0-9][\\w.]*",
+					"name": "invalid.illegal.numeric.other.dyalect"
+				}
+			]
+		},		
+		"boolean": {
+			"match": "\\b(true|false)\\b",
+			"name": "constant.language.boolean.dyalect",
+			"patterns": []
+		},		
+		"nil": {
+			"match": "\\b(nil)\\b",
+			"name": "constant.language.nil.dyalect",
+			"patterns": []
+		},
+		"comments": {
+			"patterns": [
+				{
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.comment.dyalect"
+						}
+					},
+					"match": "\\A^(#!).*$\\n?",
+					"name": "comment.line.number-sign.dyalect"
+				},
+				{
+					"begin": "/\\*\\*(?!/)",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.begin.dyalect"
+						}
+					},
+					"end": "\\*/",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.end.dyalect"
+						}
+					},
+					"name": "comment.block.documentation.dyalect",
+					"patterns": [
+						{
+							"include": "#nested"
+						}
+					]
+				},
+				{
+					"begin": "/\\*:",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.begin.dyalect"
+						}
+					},
+					"end": "\\*/",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.end.dyalect"
+						}
+					},
+					"name": "comment.block.documentation.playground.dyalect",
+					"patterns": [
+						{
+							"include": "#nested"
+						}
+					]
+				},
+				{
+					"begin": "/\\*",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.begin.dyalect"
+						}
+					},
+					"end": "\\*/",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.end.dyalect"
+						}
+					},
+					"name": "comment.block.dyalect",
+					"patterns": [
+						{
+							"include": "#nested"
+						}
+					]
+				},
+				{
+					"match": "\\*/",
+					"name": "invalid.illegal.unexpected-end-of-block-comment.dyalect"
+				},
+				{
+					"begin": "(^[ \\t]+)?(?=//)",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.whitespace.comment.leading.dyalect"
+						}
+					},
+					"end": "(?!\\G)",
+					"patterns": [
+						{
+							"begin": "///",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.definition.comment.dyalect"
+								}
+							},
+							"end": "^",
+							"name": "comment.line.triple-slash.documentation.dyalect"
+						},
+						{
+							"begin": "//:",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.definition.comment.dyalect"
+								}
+							},
+							"end": "^",
+							"name": "comment.line.double-slash.documentation.dyalect"
+						},
+						{
+							"begin": "//",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.definition.comment.dyalect"
+								}
+							},
+							"end": "^",
+							"name": "comment.line.double-slash.dyalect"
+						}
+					]
+				}
+			],
+			"repository": {
+				"nested": {
+					"begin": "/\\*",
+					"end": "\\*/",
+					"patterns": [
+						{
+							"include": "#nested"
+						}
+					]
+				}
+			}
+		}
+	},
+	"scopeName": "source.dyalect"
+}

@@ -1,0 +1,128 @@
+{
+    "name": "dyalect",
+    "displayName": "Dyalect",
+    "description": "VS Code support for Dyalect, a dynamic language for .NET Core",
+    "version": "0.3.0",
+    "icon": "images/dy.png",
+    "publisher": "vorov2",
+    "engines": {
+        "vscode": "^1.33.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "dyalect",
+                "aliases": [
+                    "Dyalect",
+                    "dyalect"
+                ],
+                "extensions": [
+                    ".dy"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "dyalect",
+                "scopeName": "source.dyalect",
+                "path": "./syntaxes/dyalect.tmLanguage.json"
+            }
+        ],
+        "commands": [
+            {
+                "command": "dyalect.evalFile",
+                "title": "Eval file",
+                "category": "Dyalect"
+            },
+            {
+                "command": "dyalect.compileFile",
+                "title": "Compile file",
+                "category": "Dyalect"
+            }
+        ],
+        "keybindings": [
+            {
+              "command": "dyalect.evalFile",
+              "key": "ctrl+d e",
+              "mac": "cmd+d e"
+            },
+            {
+              "command": "dyalect.compileFile",
+              "key": "ctrl+d c",
+              "mac": "cmd+d c"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "resourceLangId == dyalect",
+                    "command": "dyalect.evalFile",
+                    "group": "commands"
+                },
+                {
+                    "when": "resourceLangId == dyalect",
+                    "command": "dyalect.compileFile",
+                    "group": "commands"
+                }
+            ]
+        },
+        "configuration":{
+            "title": "Dyalect",
+            "properties": {
+                "dyalect.path": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to the Dyalect installation directory."
+                },
+                "dyalect.disableOptimizations": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Disable all compiler optimizations."
+                },
+                "dyalect.disableCompilerWarnings": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Disable all compiler warnings."
+                },
+                "dyalect.disableLinkerWarnings": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Disable all linker warnings."
+                },
+                "dyalect.lookupPaths": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default":[],
+                    "description": "A list of directories where linker should look for referenced modules."
+                }
+            }
+        }
+    },
+    "main": "./out/extension.js",
+    "activationEvents": [
+        "onCommand:dyalect.evalFile",
+        "onCommand:dyalect.compileFile"
+    ],
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+		"postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "devDependencies": {
+        "@types/node": "^8.10.25",
+        "tslint": "^5.11.0",
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.22"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/vorov2/dyalect.git"
+    }
+}
