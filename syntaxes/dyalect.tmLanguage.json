@@ -41,7 +41,7 @@
 					"name": "keyword.control.exception.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:const|var|set)\\b",
+					"match": "(?<!\\.)\\b(?:const|var|set|auto)\\b",
 					"name": "keyword.other.declaration-specifier.dyalect"
 				},
 				{
@@ -57,8 +57,8 @@
 					"name": "storage.type.function.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:nameof|typeof)\\b",
-					"name": "storage.type.builtins"
+					"match": "(?<!\\.)\\b(?:nameof|typeof|valueof|new)\\b",
+					"name": "keyword.other.builtins"
 				},
 				{
 					"match": "(?<!\\.)\\b(?:base|this)\\b",

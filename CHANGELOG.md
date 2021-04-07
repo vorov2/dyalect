@@ -1,3 +1,6 @@
+# 0.4.0
+* Syntax highlighting updated according to language changes
+
 # 0.3.0
 * Syntax highlighting fixes
 * A bug fixed in `Eval file` command - a wrong Dyalect file could be evaluated
