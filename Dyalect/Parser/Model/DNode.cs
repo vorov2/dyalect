@@ -28,6 +28,8 @@ namespace Dyalect.Parser.Model
 
         internal protected virtual List<DNode> ListElements() => null;
 
+        internal protected virtual bool HasAuto() => false;
+
         internal abstract void ToString(StringBuilder sb);
     }
 }

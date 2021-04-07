@@ -1,43 +1,54 @@
 ﻿using Dyalect.Debug;
+using Dyalect.Linker;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
 using System.Linq;
 
-namespace Dyalect.Library
+namespace Dyalect.Library.Types
 {
-    public sealed class ByteArray : DyObject
+    public sealed class DyByteArray : DyForeignObject<DyByteArrayTypeInfo>
     {
         internal readonly byte[] Buffer;
 
-        public ByteArray(int typeCode, byte[] buffer) : base(typeCode)
+        public DyByteArray(RuntimeContext rtx, byte[] buffer) : base(rtx)
         {
             this.Buffer = buffer;
         }
 
-        public override object ToObject()
+        internal DyByteArray(int typeId, byte[] buffer) : base(typeId)
         {
-            throw new NotImplementedException();
+            this.Buffer = buffer;
         }
+
+        public override object ToObject() => Buffer;
+
+        public override DyObject Clone() => new DyByteArray(TypeId, (byte[])Buffer.Clone());
     }
 
-    public sealed class ByteArrayTypeInfo : DyTypeInfo
+    [ForeignType("8B01A32B-C575-45CC-B6B8-4DA5A14F7206")]
+    public sealed class DyByteArrayTypeInfo : ForeignTypeInfo
     {
-        public ByteArrayTypeInfo(int typeCode) : base(typeCode)
+        public DyByteArrayTypeInfo()
         {
 
         }
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
-            return new DyString("ByteArray[" + string.Join(",", ((ByteArray)arg).Buffer) + "]");
+            return new DyString("ByteArray [" + string.Join(",", ((DyByteArray)arg).Buffer) + "]");
         }
 
-        public override string TypeName => nameof(ByteArray);
+        public override string TypeName => "ByteArray";
 
-        protected override SupportedOperations GetSupportedOperations()
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
+            | SupportedOperations.Len;
+
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
-            throw new NotImplementedException();
+            var self = (DyByteArray)arg;
+            return DyInteger.Get(self.Buffer.Length);
         }
 
         private DyObject Concat(ExecutionContext ctx, DyObject fst, DyObject snd)
@@ -48,19 +59,19 @@ namespace Dyalect.Library
             if (snd.TypeId != TypeCode)
                 return ctx.InvalidType(snd);
 
-            var a1 = ((ByteArray)fst).Buffer;
-            var a2 = ((ByteArray)snd).Buffer;
+            var a1 = ((DyByteArray)fst).Buffer;
+            var a2 = ((DyByteArray)snd).Buffer;
             var a3 = new byte[a1.Length + a2.Length];
             Array.Copy(a1, a3, a1.Length);
             Array.Copy(a2, 0, a3, a1.Length, a2.Length);
-            return new ByteArray(TypeCode, a3);
+            return new DyByteArray(TypeCode, a3);
         }
 
         private DyObject New(ExecutionContext ctx, DyObject arg)
         {
             var vals = DyIterator.Run(ctx, arg);
             var arr =  vals.Select(o => o.ToObject()).Select(Convert.ToByte).ToArray();
-            return new ByteArray(TypeCode, arr);
+            return new DyByteArray(TypeCode, arr);
         }
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)

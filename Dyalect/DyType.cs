@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace Dyalect
 {
-    internal static class DyType
+    public static class DyType
     {
-        public static List<DyTypeInfo> GetAll() =>
-            new List<DyTypeInfo>
+        internal static List<DyTypeInfo> GetAll() =>
+            new()
             {
                 new DyNilTypeInfo(),
                 new DyIntegerTypeInfo(),
@@ -21,7 +21,8 @@ namespace Dyalect
                 new DyArrayTypeInfo(),
                 new DyIteratorTypeInfo(),
                 new DyTupleTypeInfo(),
-                new DyMapTypeInfo()
+                new DyMapTypeInfo(),
+                new DyCustomObjectTypeInfo(),
             };
 
         public const int Nil = 0;
@@ -38,6 +39,7 @@ namespace Dyalect
         public const int Iterator = 11;
         public const int Tuple = 12;
         public const int Map = 13;
+        public const int Object = 14;
 
         public static int GetTypeCodeByName(string name) =>
             name switch
@@ -56,10 +58,11 @@ namespace Dyalect
                 DyTypeNames.Array => Array,
                 DyTypeNames.Iterator => Iterator,
                 DyTypeNames.Map => Map,
+                DyTypeNames.Object => Object,
                 _ => -1,
             };
 
-        public static string GetTypeNameByCode(int code) =>
+        internal static string GetTypeNameByCode(int code) =>
             code switch
             {
                 Nil => DyTypeNames.Nil,
@@ -76,6 +79,7 @@ namespace Dyalect
                 Array => DyTypeNames.Array,
                 Iterator => DyTypeNames.Iterator,
                 Map => DyTypeNames.Map,
+                Object => DyTypeNames.Object,
                 _ => code.ToString(),
             };
     }
@@ -98,7 +102,8 @@ namespace Dyalect
                 Array,
                 Iterator,
                 Tuple,
-                Map
+                Map,
+                Object
             };
 
         public const string Nil = "Nil";
@@ -115,5 +120,6 @@ namespace Dyalect
         public const string Iterator = "Iterator";
         public const string Tuple = "Tuple";
         public const string Map = "Map";
+        public const string Object = "Object";
     }
 }

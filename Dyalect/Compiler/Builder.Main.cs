@@ -209,9 +209,20 @@ namespace Dyalect.Compiler
 
         private void Build(DThrow node, Hints hints, CompilerContext ctx)
         {
-            Build(node.Expression, hints.Append(Push), ctx);
-            AddLinePragma(node);
-            cw.Fail();
+            if (node.Expression is not null)
+            {
+                Build(node.Expression, hints.Append(Push), ctx);
+                AddLinePragma(node);
+                cw.Fail();
+            }
+            else
+            {
+                if (!hints.Has(Catch))
+                    AddError(CompilerError.InvalidRethrow, node.Location);
+
+                AddLinePragma(node);
+                cw.Rethrow();
+            }
         }
 
         private void Build(DTryCatch node, Hints hints, CompilerContext ctx)
@@ -226,7 +237,7 @@ namespace Dyalect.Compiler
             cw.Br(skip);
             cw.MarkLabel(gotcha);
 
-            StartScope(false, node.Catch.Location);
+            StartScope(ScopeKind.Lexical, node.Catch.Location);
 
             if (node.BindVariable != null)
             {
@@ -241,7 +252,7 @@ namespace Dyalect.Compiler
                     cw.Pop();
             }
 
-            Build(node.Catch, hints, ctx);
+            Build(node.Catch, hints.Append(Catch), ctx);
             EndScope();
 
             cw.MarkLabel(skip);
@@ -540,6 +551,7 @@ namespace Dyalect.Compiler
             else
                 cw.PushNil();
 
+            CallAutosForKind(ScopeKind.Function);
             AddLinePragma(node);
             cw.Br(ctx.FunctionExit);
         }
@@ -706,7 +718,7 @@ namespace Dyalect.Compiler
             var falseLabel = cw.DefineLabel();
             var skipLabel = cw.DefineLabel();
 
-            StartScope(false, node.Location);
+            StartScope(ScopeKind.Lexical, node.Location);
             Build(node.Condition, hints.Remove(Last).Append(Push), ctx);
             AddLinePragma(node);
             cw.Brfalse(falseLabel);
@@ -861,6 +873,17 @@ namespace Dyalect.Compiler
             cw.PushNil();
         }
 
+        private bool HasAuto(List<DNode> nodes)
+        {
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i].HasAuto())
+                    return true;
+            }
+
+            return false;
+        }
+
         private void Build(DBlock node, Hints hints, CompilerContext ctx)
         {
             var hasPush = hints.Has(Push);
@@ -874,9 +897,21 @@ namespace Dyalect.Compiler
                 return;
             }
 
+            Label gotcha = default;
+            var hasAuto = false;
+
             //Start a compile time lexical scope
             if (!hints.Has(NoScope))
-                StartScope(fun: false, loc: node.Location);
+            {
+                hasAuto = HasAuto(node.Nodes);
+                if (hasAuto)
+                {
+                    gotcha = cw.DefineLabel();
+                    cw.Start(gotcha);
+                }
+
+                StartScope(ScopeKind.Lexical, loc: node.Location);
+            }
 
             for (var i = 0; i < node.Nodes.Count; i++)
             {
@@ -885,6 +920,14 @@ namespace Dyalect.Compiler
                 var nh = hasPush && last ? hints : hints.Remove(Push);
                 nh = hasLast && last ? nh.Append(Last) : nh;
                 Build(n, nh, ctx);
+            }
+
+            if (hasAuto)
+            {
+                cw.End();
+                cw.MarkLabel(gotcha);
+                CallAutos();
+                cw.Rethrow();
             }
 
             if (!hints.Has(NoScope))
@@ -956,8 +999,14 @@ namespace Dyalect.Compiler
             {
                 AddLinePragma(node);
                 var flags = node.Constant ? VarFlags.Const : VarFlags.None;
-                var a = AddVariable(node.Pattern.GetName(), node, flags);
+                var nam = node.Pattern.GetName();
+                var a = AddVariable(nam, node, flags);
                 cw.PopVar(a);
+
+                if (node.AutoClose)
+                {
+                    currentScope.Autos.Enqueue((a >> 8, nam));
+                }
             }
             else
             {

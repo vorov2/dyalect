@@ -124,6 +124,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Foreign module &quot;{0}&quot; is missing GUID attribute..
+        /// </summary>
+        internal static string InvalidForeignModule {
+            get {
+                return ResourceManager.GetString("InvalidForeignModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to find module &quot;{0}&quot;..
         /// </summary>
         internal static string ModuleNotFound {

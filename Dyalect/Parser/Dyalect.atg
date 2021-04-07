@@ -35,6 +35,7 @@ TOKENS
     implicitToken = "$" digit { digit }.
     verbatimStringToken = "<[" { verbatimChar | ("]" verbatimChar2) | "]>]>" } "]>".
 
+    autoToken           = "auto".
     varToken            = "var".
     constToken          = "const".
     funcToken           = "func".
@@ -308,15 +309,26 @@ PRODUCTIONS
         ")".
 
     Binding<out DNode node> =
+        (. node = null; .)
         (
-            ( "var" | "const" )
-            (. var bin = new DBinding(t) { Constant = t.val == "const" }; .)
-            OrPattern<out var pat> (. bin.Pattern = pat; .)
-            [
+            (
+                ( "var" | "const" )
+                (. var bin = new DBinding(t) { Constant = t.val == "const" }; .)
+                OrPattern<out var pat> (. bin.Pattern = pat; .)
+                [
+                    "=" Expr<out node>
+                    (. bin.Init = node; .)
+                ]
+                (. node = bin; .)
+            )
+            |
+            (
+                "auto"
+                (. var bin = new DBinding(t) { AutoClose = true, Constant = true }; .)
+                NamePattern<out var pat> (. bin.Pattern = pat; .)
                 "=" Expr<out node>
-                (. bin.Init = node; .)
-            ]
-            (. node = bin; .)
+                (. bin.Init = node; node = bin; .)
+            )
         ).
 
     Rebinding<out DNode node> =
@@ -639,15 +651,19 @@ PRODUCTIONS
               IF (IsFunction()) FunctionExpr<out node>
             | Is<out node>
             | TryCatch<out node>
-            | Throw<out node>
+            | Throw<out node> Separator
         ).
 
     Throw<out DNode node> =
         (. node = null; .)
         (
-            "throw" (. var th = new DThrow(t); .)
-            Expr<out node>
-            (. th.Expression = node; node = th; .)
+            "throw" 
+            (. 
+                var th = new DThrow(t);
+                node = th;
+                if (la.AfterEol) return;
+            .)
+            Expr<out var cexp> (. th.Expression = cexp; .)
         ).
 
     TryCatch<out DNode node> =

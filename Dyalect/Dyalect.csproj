@@ -28,6 +28,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\bin\</OutputPath>
+    <NoWarn>1701;1702;CA1822</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

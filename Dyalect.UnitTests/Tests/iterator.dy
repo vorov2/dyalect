@@ -272,10 +272,25 @@ func skipTest1() {
 
 func firstTest1() {
     var seq = { 1,2,3,4,5}
-    assert(seq.first(), 1)
+    assert(1, seq.first())
 }
 
 func lastTest1() {
     var seq = { 1,2,3,4,5}
-    assert(seq.last(), 5)
+    assert(5, seq.last())
+}
+
+func tryCatchBug() { //bug #365
+    var val = 0
+    func iter() {
+        try {
+            yield 1
+            throw "oops"
+            yield 2
+        } catch e {
+            val = 42
+        }
+    }
+    for _ in iter() { }
+    assert(42, val)
 }

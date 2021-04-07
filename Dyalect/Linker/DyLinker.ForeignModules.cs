@@ -37,7 +37,7 @@ namespace Dyalect.Linker
                     return null;
                 }
 
-                if (!(module is Unit unit))
+                if (module is not Unit unit)
                 {
                     AddError(LinkerError.InvalidAssemblyModule, mod.SourceFileName, mod.SourceLocation,
                         mod.ModuleName, mod.DllName);

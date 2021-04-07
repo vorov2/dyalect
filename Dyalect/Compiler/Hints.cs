@@ -29,7 +29,9 @@ namespace Dyalect.Compiler
 
         OpenMatch = 0x400,
 
-        NoScope = 0x800
+        NoScope = 0x800,
+
+        Catch = 0x1000
     }
 
     public static class HintsExtensions

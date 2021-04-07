@@ -16,7 +16,6 @@ namespace Dyalect.Linker
         private const string EXT = ".dy";
         private const string OBJ = ".dyo";
         private readonly Lang lang;
-        private IReadOnlyDictionary<string, Type> std;
 
         protected Dictionary<Reference, Unit> UnitMap { get; set;  } = new Dictionary<Reference, Unit>();
 
@@ -53,8 +52,15 @@ namespace Dyalect.Linker
                 {
                     unit = LinkForeignModule(self, mod);
 
-                    if (unit == null)
+                    if (unit is null)
                         AddError(LinkerError.AssemblyNotFound, mod.SourceFileName, mod.SourceLocation, mod.DllName, mod.ModuleName);
+                    else
+                        foreach (var rf in unit.References)
+                        {
+                            var res = Link(self, rf);
+                            if (!res.Success)
+                                return res;
+                        }
                 }
                 else
                 {
@@ -232,10 +238,23 @@ namespace Dyalect.Linker
                     td.Processed = true;
                     td.Id = composition.Types.Count;
 
-                    if (td.TypeInfoActivator == null)
+                    if (td.ForeignTypeInfo is null)
                         composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, td.Name, td.AutoGenConstructors));
                     else
-                        composition.Types.Add(td.TypeInfoActivator(composition.Types.Count));
+                    {
+                        var guid = td.ForeignTypeInfo.GetAttribute<ForeignTypeAttribute>()?.Guid;
+
+                        if (guid is null)
+                        {
+                            guid = Guid.NewGuid();
+                            AddError(LinkerError.InvalidForeignModule, u.FileName, default, td.Name);
+                        }
+
+                        var ti = (ForeignTypeInfo)Activator.CreateInstance(td.ForeignTypeInfo);
+                        ti.TypeCode = composition.Types.Count;
+                        composition.Types.Add(ti);
+                        composition.TypeCodes.Add(guid.Value, ti.TypeCode);
+                    }
                 }
             }
         }

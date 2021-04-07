@@ -74,6 +74,10 @@
 
         UnknownDirective = 235,
 
-        InvalidDirective = 236
+        InvalidDirective = 236,
+        
+        // = 237,
+
+        InvalidRethrow = 238
     }
 }

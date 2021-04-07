@@ -179,7 +179,7 @@ namespace Dyalect.Compiler
             hints = Function | Push;
 
             //Start of a physical (and not compiler time) lexical scope for a function
-            StartScope(fun: true, loc: node.Location);
+            StartScope(ScopeKind.Function, loc: node.Location);
             StartSection();
 
             AddLinePragma(node);

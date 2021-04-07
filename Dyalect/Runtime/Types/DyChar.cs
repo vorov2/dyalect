@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
             private readonly char start;
             private readonly char to;
             private readonly int step;
-            private bool inf;
+            private readonly bool inf;
             private bool fst;
             private char current;
 
@@ -62,9 +62,9 @@ namespace Dyalect.Runtime.Types
             }
         }
 
-        public static readonly DyChar Empty = new DyChar('\0');
-        public static readonly DyChar Max = new DyChar(char.MaxValue);
-        public static readonly DyChar Min = new DyChar(char.MinValue);
+        public static readonly DyChar Empty = new('\0');
+        public static readonly DyChar Max = new(char.MaxValue);
+        public static readonly DyChar Min = new(char.MinValue);
         internal readonly char Value;
 
         public DyChar(char value) : base(DyType.Char)

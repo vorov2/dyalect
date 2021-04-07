@@ -24,6 +24,52 @@ namespace Dyalect.Compiler
             return ret;
         }
 
+        //Call close for all variables in this scope, registered as autos
+        private void CallAutos()
+        {
+            PeekAutos(currentScope);
+            currentScope.Autos.Clear();
+        }
+
+        private void CallAutosForKind(ScopeKind kind)
+        {
+            var scope = currentScope;
+            var last = false;
+            var shift = 0;
+
+            while (true)
+            {
+                PeekAutos(scope, shift);
+
+                if (kind != ScopeKind.Loop)
+                    scope.Autos.Clear();
+
+                if (last)
+                    break;
+
+                scope = scope.Parent;
+
+                if (scope.Kind == kind)
+                    last = true;
+
+                if (scope.Kind == ScopeKind.Function)
+                    shift++;
+            }
+        }
+
+        private void PeekAutos(Scope scope, int shift = 0)
+        {
+            foreach (var a in scope.Autos)
+            {
+                var sv = new ScopeVar(shift | a.Item1 << 8);
+                cw.PushVar(sv);
+                cw.GetMember(GetMemberNameId("dispose"));
+                cw.FunPrep(0);
+                cw.FunCall(0);
+                cw.Pop();
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int AddVariable(string name, DNode node, int data) =>
             AddVariable(name, node != null ? node.Location : default, data);
@@ -74,7 +120,7 @@ namespace Dyalect.Compiler
             //Backtracks the scopes to find parent
             while (cur.Parent != null)
             {
-                if (cur.Function)
+                if (cur.Kind == ScopeKind.Function)
                 {
                     cur = cur.Parent;
                     break;
@@ -153,7 +199,7 @@ namespace Dyalect.Compiler
                 if (cur.Locals.TryGetValue(name, out var var))
                     return new ScopeVar(shift | var.Address << 8, var.Data);
 
-                if (cur.Function)
+                if (cur.Kind == ScopeKind.Function)
                     shift++;
 
                 cur = cur.Parent;

@@ -231,4 +231,7 @@
   <data name="PrivateScopeOnlyGlobal" xml:space="preserve">
     <value>Private blocks can be declared only in global scope.</value>
   </data>
+  <data name="InvalidRethrow" xml:space="preserve">
+    <value>A "throw" statement with no arguments is only valid inside a "catch" block.</value>
+  </data>
 </root>

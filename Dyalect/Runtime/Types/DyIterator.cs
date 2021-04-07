@@ -273,7 +273,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        private List<DyObject> ConvertToArray(ExecutionContext ctx, DyObject self)
+        private static List<DyObject> ConvertToArray(ExecutionContext ctx, DyObject self)
         {
             var fn = (DyFunction)self;
             fn.Reset(ctx);
@@ -303,7 +303,7 @@ namespace Dyalect.Runtime.Types
                 : (DyObject)new DyTuple(res.ToArray());
         }
 
-        private DyObject GetCount(ExecutionContext ctx, DyObject self)
+        private static DyObject GetCount(ExecutionContext ctx, DyObject self)
         {
             var fn = (DyFunction)self;
             fn.Reset(ctx);

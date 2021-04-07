@@ -1,3 +1,14 @@
+# 0.17.0
+  * Change: _Code clean-ups and optimizations._
+  * Change: _Infrastructure for foreign modules is completely refactored._
+  * Change: _Implementation of exceptions is rethought and refactored._
+  * Add: _Add a generic `Object` type which can be used for interop_ ([Issue #359](https://github.com/vorov2/dyalect/issues/359)).
+  * Add: _Add automatic conversion to/from Dictionary_ ([Issue #360](https://github.com/vorov2/dyalect/issues/360)).
+  * Add: _Implement module dependencies for foreign modules_ ([Issue #361](https://github.com/vorov2/dyalect/issues/361)).
+  * Add: _Add an ability to re-throw an exception for a catch block_ ([Issue #364](https://github.com/vorov2/dyalect/issues/364), [docs](https://github.com/vorov2/dyalect/wiki/Exception-handling#throw)).
+  * Add: _Add an automatic resource disposal_ ([Issue #363](https://github.com/vorov2/dyalect/issues/363), [docs](https://github.com/vorov2/dyalect/wiki/Variables#autos)).
+  * Fixed: _`try/catch` sections may leave VM in an invalid state bug_ ([Issue #365](https://github.com/vorov2/dyalect/issues/365)).
+
 # 0.16.0
   * Change: _All code migrated to .NET 5.0._
   * Change: _Serialization of maps to string is updated to match other types._
@@ -8,7 +19,7 @@
   * Fixed: _Crush because of `??=` operator_ ([Issue #354](https://github.com/vorov2/dyalect/issues/354)).
 
 # 0.15.1
-  * Change: Code _clean-ups and optimizations._
+  * Change: _Code clean-ups and optimizations._
   * Fixed: _Interactive mode crushes when trying to re-declare variable_ ([Issue #352](https://github.com/vorov2/dyalect/issues/352)).
 
 # 0.15.0
@@ -20,7 +31,7 @@
   * Fixed: _Ranges are not checked for consistency_ ([Issue #349](https://github.com/vorov2/dyalect/issues/349)).
 
 # 0.14.1
-  * Change: Code _clean-ups and optimizations._
+  * Change: _Code clean-ups and optimizations._
   * Fixed: _Dyalect crushes for foreign functions without parameters_ ([Issue #340](https://github.com/vorov2/dyalect/issues/340)).
 
 # 0.14.0

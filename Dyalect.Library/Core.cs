@@ -1,10 +1,7 @@
-﻿using Dyalect.Linker;
-using Dyalect.Runtime;
+﻿using Dyalect.Library.Types;
+using Dyalect.Linker;
 using Dyalect.Runtime.Types;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Dyalect.Library
 {
@@ -13,13 +10,20 @@ namespace Dyalect.Library
     {
         public Core()
         {
-            AddType<ByteArray>(i => new ByteArrayTypeInfo(i));
+            AddType<DyByteArrayTypeInfo>("ByteArray");
+            AddType<DyStringBuilderTypeInfo>("StringBuilder");
         }
 
         [Function("NewByteArray")]
         public DyObject ByteArray(int[] arr)
         {
-            return new ByteArray(QueryType(nameof(ByteArray)).Id, arr.Select(i => (byte)i).ToArray());
+            return new DyByteArray(RuntimeContext, arr.Select(i => (byte)i).ToArray());
+        }
+
+        [Function("NewStringBuilder")]
+        public DyObject NewStringBuilder()
+        {
+            return new DyStringBuilder(RuntimeContext, new System.Text.StringBuilder());
         }
     }
 }

@@ -50,6 +50,7 @@ namespace Dyalect.Parser
                 ,{ "charToken", "char literal" }
                 ,{ "implicitToken", "implicit" }
                 ,{ "inToken", "in" }
+                ,{ "autoToken", "auto" }
                 ,{ "varToken", "var" }
                 ,{ "constToken", "const" }
                 ,{ "funcToken", "func" }

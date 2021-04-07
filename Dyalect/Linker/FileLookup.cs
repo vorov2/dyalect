@@ -23,7 +23,7 @@ namespace Dyalect.Linker
         public static FileLookup Create(string startupPath, string[] additionalPaths = null)
         {
             var asm = typeof(FileLookup).Assembly;
-            var codeBase = asm.CodeBase;
+            var codeBase = asm.Location;//asm.CodeBase;
             var uri = new UriBuilder(codeBase);
             var systemPath = Uri.UnescapeDataString(uri.Path);
 

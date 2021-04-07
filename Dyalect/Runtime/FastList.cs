@@ -6,7 +6,7 @@ namespace Dyalect.Runtime
 {
     public sealed class FastList<T> : IEnumerable<T>
     {
-        internal static readonly FastList<T> Empty = new FastList<T>();
+        internal static readonly FastList<T> Empty = new();
         private T[] array;
         private const int DEFAULT_SIZE = 4;
         private int size;

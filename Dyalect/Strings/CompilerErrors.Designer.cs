@@ -160,6 +160,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A &quot;throw&quot; statement with no arguments is only valid inside a &quot;catch&quot; block..
+        /// </summary>
+        internal static string InvalidRethrow {
+            get {
+                return ResourceManager.GetString("InvalidRethrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Named argument &quot;{0}&quot; cannot be specified multiple times..
         /// </summary>
         internal static string NamedArgumentMultipleTimes {

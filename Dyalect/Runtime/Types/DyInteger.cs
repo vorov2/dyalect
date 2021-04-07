@@ -14,7 +14,7 @@ namespace Dyalect.Runtime.Types
             private readonly long start;
             private readonly long to;
             private readonly long step;
-            private bool inf;
+            private readonly bool inf;
             private bool fst;
             private long current;
 
@@ -61,13 +61,13 @@ namespace Dyalect.Runtime.Types
             }
         }
 
-        public static readonly DyInteger Zero = new DyInteger(0L);
-        public static readonly DyInteger MinusOne = new DyInteger(-1L);
-        public static readonly DyInteger One = new DyInteger(1L);
-        public static readonly DyInteger Two = new DyInteger(2L);
-        public static readonly DyInteger Three = new DyInteger(3L);
-        public static readonly DyInteger Max = new DyInteger(long.MaxValue);
-        public static readonly DyInteger Min = new DyInteger(long.MinValue);
+        public static readonly DyInteger Zero = new(0L);
+        public static readonly DyInteger MinusOne = new(-1L);
+        public static readonly DyInteger One = new(1L);
+        public static readonly DyInteger Two = new(2L);
+        public static readonly DyInteger Three = new(3L);
+        public static readonly DyInteger Max = new(long.MaxValue);
+        public static readonly DyInteger Min = new(long.MinValue);
 
         private readonly long value;
 
@@ -343,7 +343,7 @@ namespace Dyalect.Runtime.Types
                 return DyInteger.Get((long)obj.GetFloat());
             else if (obj.TypeId == DyType.Char || obj.TypeId == DyType.String)
             {
-                long.TryParse(obj.GetString(), out var i);
+                _ = long.TryParse(obj.GetString(), out var i);
                 return DyInteger.Get(i);
             }
 

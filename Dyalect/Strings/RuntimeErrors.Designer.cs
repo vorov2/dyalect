@@ -248,5 +248,14 @@ namespace Dyalect.Strings {
                 return ResourceManager.GetString("TooManyArguments", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value &quot;%Value%&quot; is out of range..
+        /// </summary>
+        internal static string ValueOutOfRange {
+            get {
+                return ResourceManager.GetString("ValueOutOfRange", resourceCulture);
+            }
+        }
     }
 }

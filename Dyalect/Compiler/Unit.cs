@@ -56,7 +56,7 @@ namespace Dyalect.Compiler
 
         internal int Checksum { get; set; }
 
-        internal Unit Clone(DebugInfo di) => new Unit(this, di);
+        internal Unit Clone(DebugInfo di) => new(this, di);
 
         internal int Id { get; set; }
 

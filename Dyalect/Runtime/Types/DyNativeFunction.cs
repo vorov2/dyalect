@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
+using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
@@ -8,6 +9,7 @@ namespace Dyalect.Runtime.Types
         internal FunSym Sym;
         internal FastList<DyObject[]> Captures;
         internal DyObject[] Locals;
+        internal Stack<CatchMark> CatchMarks;
         internal int PreviousOffset;
         internal int UnitId;
         internal int FunctionId;
@@ -19,7 +21,7 @@ namespace Dyalect.Runtime.Types
         internal override void Reset(ExecutionContext ctx)
         {
             Locals = null;
-            PreviousOffset = ctx.Composition.Units[UnitId].Layouts[FunctionId].Size;
+            PreviousOffset = ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId].Size;
         }
 
         internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) :
@@ -134,7 +136,7 @@ namespace Dyalect.Runtime.Types
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
-        internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.Composition.Units[UnitId].Layouts[FunctionId];
+        internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId];
 
         internal override DyObject[] CreateLocals(ExecutionContext ctx)
         {

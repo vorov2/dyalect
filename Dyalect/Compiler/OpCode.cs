@@ -92,5 +92,6 @@
         TypeST,     //1
         CtorCheck,  //0
         Unbox,      //1
+        Rethrow,    //0
     }
 }

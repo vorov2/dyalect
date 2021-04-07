@@ -15,7 +15,7 @@ namespace Dyalect.Runtime
 
         public static ExecutionContext CreateExecutionContext(UnitComposition composition)
         {
-            return new ExecutionContext(new CallStack(), composition);
+            return new ExecutionContext(new CallStack(), new RuntimeContext(composition));
         }
 
         public static ExecutionResult Execute(ExecutionContext ctx)
@@ -27,15 +27,15 @@ namespace Dyalect.Runtime
 
         private static DyObject ExecuteModule(int unitId, ExecutionContext ctx)
         {
-            var unit = ctx.Composition.Units[unitId];
+            var unit = ctx.RuntimeContext.Composition.Units[unitId];
 
-            if (unit.Layouts.Count == 0)
+            if (unit.Layouts.Count == 0) //This is a foreign module
             {
-                if (ctx.Units[unitId] == null)
+                if (ctx.RuntimeContext.Units[unitId] is null)
                 {
                     var foreign = (ForeignUnit)unit;
-                    foreign.Execute(ctx);
-                    ctx.Units[unitId] = foreign.Values.ToArray();
+                    foreign.Initialize(ctx);
+                    ctx.RuntimeContext.Units[unitId] = foreign.Values.ToArray();
                 }
 
                 return DyNil.Instance;
@@ -45,17 +45,18 @@ namespace Dyalect.Runtime
 
             //if yes we are in interactive mode and need to check if the size
             //of global layout (for global variables) has changed
-            if (ctx.Units[0] != null && lay0.Size > ctx.Units[0].Length)
+            if (ctx.RuntimeContext.Units[0] is not null && lay0.Size > ctx.RuntimeContext.Units[0].Length)
             {
                 var mems = new DyObject[lay0.Size];
-                Array.Copy(ctx.Units[0], mems, ctx.Units[0].Length);
-                ctx.Units[0] = mems;
+                Array.Copy(ctx.RuntimeContext.Units[0], mems, ctx.RuntimeContext.Units[0].Length);
+                ctx.RuntimeContext.Units[0] = mems;
             }
 
-            if (unitId != 0 && ctx.Units[unitId] != null)
+            if (unitId != 0 && ctx.RuntimeContext.Units[unitId] is not null)
                 return null;
 
-            ctx.Units[unitId] = ctx.Units[unitId] ?? new DyObject[lay0.Size];
+            ctx.CatchMarks.Push(null);
+            ctx.RuntimeContext.Units[unitId] = ctx.RuntimeContext.Units[unitId] ?? new DyObject[lay0.Size];
             return ExecuteWithData(Global(unitId), null, ctx);
         }
 
@@ -65,18 +66,20 @@ namespace Dyalect.Runtime
             DyObject right;
             Op op;
             DyFunction callFun;
-            var types = ctx.Types;
+            var types = ctx.RuntimeContext.Types;
 
             PROLOGUE:
-            var unit = ctx.Composition.Units[function.UnitId];
+            var jumper = -1;
+            var unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
             var ops = unit.Ops;
             var layout = unit.Layouts[function.FunctionId];
             var offset = layout.Address;
             var evalStack = new EvalStack(layout.StackSize);
+            ctx.CatchMarks.Push(function.CatchMarks); //Makes sense for iterators
 
             if (function.FunctionId == 0)
-                locals = ctx.Units[function.UnitId];
-            else if (function.Locals != null)
+                locals = ctx.RuntimeContext.Units[function.UnitId];
+            else if (function.Locals is not null)
             {
                 locals = function.Locals;
                 offset = function.PreviousOffset;
@@ -100,7 +103,7 @@ namespace Dyalect.Runtime
                     case OpCode.Term:
                         if (evalStack.Size > 1 || evalStack.Size == 0)
                             throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
-                        ctx.Units[function.UnitId] = locals;
+                        ctx.RuntimeContext.Units[function.UnitId] = locals;
                         return evalStack.Pop();
                     case OpCode.Pop:
                         evalStack.PopVoid();
@@ -152,7 +155,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(right);
                         break;
                     case OpCode.Pushext:
-                        evalStack.Push(ctx.Units[unit.UnitIds[op.Data & byte.MaxValue]][op.Data >> 8]);
+                        evalStack.Push(ctx.RuntimeContext.Units[unit.UnitIds[op.Data & byte.MaxValue]][op.Data >> 8]);
                         break;
                     case OpCode.Popvar:
                         function.Captures[^(op.Data & byte.MaxValue)][op.Data >> 8] = evalStack.Pop();
@@ -172,122 +175,123 @@ namespace Dyalect.Runtime
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].ShiftLeft(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Shr:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].ShiftRight(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.And:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].And(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Or:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Or(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Xor:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Xor(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Add:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Add(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Sub:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Sub(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Mul:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Mul(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Div:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Div(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Rem:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Rem(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH; ;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH; ;
                         break;
                     case OpCode.Eq:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Eq(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.NotEq:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Neq(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Gt:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Gt(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Lt:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Lt(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.GtEq:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Gte(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.LtEq:
                         right = evalStack.Pop();
                         left = evalStack.Peek();
                         evalStack.Replace(types[left.TypeId].Lte(ctx, left, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Neg:
                         right = evalStack.Peek();
                         evalStack.Replace(types[right.TypeId].Neg(ctx, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Not:
                         right = evalStack.Peek();
                         evalStack.Replace(types[right.TypeId].Not(ctx, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.BitNot:
                         right = evalStack.Peek();
                         evalStack.Replace(types[right.TypeId].BitwiseNot(ctx, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Len:
                         right = evalStack.Peek();
                         evalStack.Replace(types[right.TypeId].Length(ctx, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Dup:
                         evalStack.Dup();
                         break;
                     case OpCode.Ret:
+                        ctx.CatchMarks.Pop();
                         function.Locals = null;
                         if (ctx.CallStack.Count > 0)
                         {
@@ -300,23 +304,32 @@ namespace Dyalect.Runtime
                             function = cp.Function;
                             locals = cp.Locals;
                             offset = cp.Offset;
-                            unit = ctx.Composition.Units[function.UnitId];
+                            unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
                             ops = unit.Ops;
                             evalStack = cp.EvalStack;
                             goto CYCLE;
                         }
                         else
                             return evalStack.Pop();
+                    case OpCode.Rethrow:
+                        if (ctx.OldError is not null)
+                        {
+                            ctx.Error = ctx.OldError;
+                            ctx.OldError = null;
+                            ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                            goto CATCH;
+                        }
+                        break;
                     case OpCode.Fail:
                         right = evalStack.Pop();
                         DyError err = new DyUserError(right, right.ToString(ctx));
                         if (!ctx.HasErrors)
                             ctx.Error = err;
-                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
+                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                         goto CATCH;
                     case OpCode.FailSys:
                         ctx.Error = new DyError((DyErrorCode)op.Data);
-                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
+                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                         goto CATCH;
                     case OpCode.NewIter:
                         evalStack.Push(DyIterator.CreateIterator(function.UnitId, op.Data, function.Captures, locals));
@@ -340,71 +353,71 @@ namespace Dyalect.Runtime
                             evalStack.Replace(((DyTypeInfo)right).GetStaticMember(op.Data, unit, ctx));
                         else
                             evalStack.Replace(types[right.TypeId].GetMember(right, op.Data, unit, ctx));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMemberS:
                         right = evalStack.Pop();
-                        types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
+                        types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
                             .SetStaticMember(ctx.AUX, right, unit, ctx);
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMemberST:
                         right = evalStack.Pop();
                         types[op.Data].SetStaticMember(ctx.AUX, right, unit, ctx);
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMember:
                         right = evalStack.Pop();
-                        types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
+                        types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
                             .SetMember(ctx.AUX, right, unit, ctx);
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMemberT:
                         right = evalStack.Pop();
                         types[op.Data].SetMember(ctx.AUX, right, unit, ctx);
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Get:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
                         evalStack.Push(types[right.TypeId].Get(ctx, right, left));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Set:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
                         types[right.TypeId].Set(ctx, right, left, evalStack.Pop());
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.GetIx:
                         right = evalStack.Peek();
                         evalStack.Replace(types[right.TypeId].Get(ctx, right, op.Data));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetIx:
                         right = evalStack.Pop();
                         types[right.TypeId].Set(ctx, right, op.Data, evalStack.Pop());
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.HasField:
                         right = evalStack.Peek();
                         evalStack.Replace(right.HasItem(unit.IndexedStrings[op.Data].Value, ctx) ? DyBool.True : DyBool.False);
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Str:
                         right = evalStack.Peek();
                         evalStack.Replace(types[right.TypeId].ToString(ctx, right));
-                        if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.RunMod:
                         ExecuteModule(unit.UnitIds[op.Data], ctx);
-                        evalStack.Push(new DyModule(ctx.Composition.Units[unit.UnitIds[op.Data]], ctx.Units[unit.UnitIds[op.Data]]));
+                        evalStack.Push(new DyModule(ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data]], ctx.RuntimeContext.Units[unit.UnitIds[op.Data]]));
                         break;
                     case OpCode.Type:
                         evalStack.Replace(types[evalStack.Peek().TypeId]);
                         break;
                     case OpCode.TypeS:
-                        evalStack.Push(types[ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]);
+                        evalStack.Push(types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]);
                         break;
                     case OpCode.TypeST:
                         evalStack.Push(types[op.Data]);
@@ -418,6 +431,7 @@ namespace Dyalect.Runtime
                         if (ctx.CallStack.Count > 0)
                         {
                             var cp = ctx.CallStack.Pop();
+                            function.CatchMarks = ctx.CatchMarks.Pop();
 
                             if (ReferenceEquals(cp, Caller.External))
                                 return evalStack.Pop();
@@ -426,7 +440,7 @@ namespace Dyalect.Runtime
                             function = cp.Function;
                             locals = cp.Locals;
                             offset = cp.Offset;
-                            unit = ctx.Composition.Units[function.UnitId];
+                            unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
                             ops = unit.Ops;
                             evalStack = cp.EvalStack;
                             goto CYCLE;
@@ -450,13 +464,13 @@ namespace Dyalect.Runtime
                             if (right.TypeId != DyType.Function && right.TypeId != DyType.Iterator)
                             {
                                 if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti
-                                    && ctx.Composition.MembersMap.TryGetValue(ti.TypeName, out var tid))
+                                    && ctx.RuntimeContext.Composition.MembersMap.TryGetValue(ti.TypeName, out var tid))
                                 {
                                     right = ti.GetStaticMember(tid, unit, ctx);
 
                                     if (ctx.HasErrors)
                                     {
-                                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
+                                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                                         goto CATCH;
                                     }
 
@@ -465,7 +479,7 @@ namespace Dyalect.Runtime
                                 }
 
                                 ctx.NotFunction(right);
-                                ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
+                                ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                                 goto CATCH;
                             }
 
@@ -474,7 +488,7 @@ namespace Dyalect.Runtime
                             if (op.Data > callFun.Parameters.Length && callFun.VarArgIndex == -1)
                             {
                                 ctx.TooManyArguments(callFun.FunctionName, callFun.Parameters.Length, op.Data);
-                                ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
+                                ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                                 goto CATCH;
                             }
 
@@ -502,14 +516,15 @@ namespace Dyalect.Runtime
                             if (idx == -1)
                             {
                                 ctx.ArgumentNotFound(((DyFunction)evalStack.Peek(2)).FunctionName, unit.IndexedStrings[op.Data].Value);
-                                ProcessError(ctx, offset, ref function, ref locals, ref evalStack);
+                                ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                                 goto CATCH;
                             }
                             var locs = ctx.Arguments.Peek();
                             if (idx == locs.VarArgsIndex)
                             {
                                 Push(locs, evalStack.Pop(), ctx);
-                                if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                                if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper))
+                                    goto CATCH;
                             }
                             else
                                 locs.Locals[idx] = evalStack.Pop();
@@ -522,10 +537,11 @@ namespace Dyalect.Runtime
                             if (op.Data != callFun.Parameters.Length || callFun.VarArgIndex > -1)
                             {
                                 FillDefaults(ctx.Arguments.Peek(), callFun, ctx);
-                                if (ctx.Error != null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack)) goto CATCH;
+                                if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                             }
 
-                            ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
+                            var cp = new Caller(function, offset, evalStack, locals);
+                            ctx.CallStack.Push(cp);
 
                             if (!callFun.IsExternal)
                             {
@@ -536,7 +552,7 @@ namespace Dyalect.Runtime
                             else
                             {
                                 right = CallExternalFunction(callFun, ctx);
-                                if (ctx.Error != null && ctx.CallStack.PopLast() && ProcessError(ctx, offset, ref function, ref locals, ref evalStack))
+                                if (ctx.Error is not null && ctx.CallStack.PopLast() && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper))
                                     goto CATCH;
                                 else
                                 {
@@ -555,16 +571,21 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.TypeCheck:
                         right = evalStack.Pop();
-                        evalStack.Push(right.TypeId == ctx.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id ? DyBool.True : DyBool.False);
+                        evalStack.Push(right.TypeId == ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id ? DyBool.True : DyBool.False);
                         break;
                     case OpCode.CtorCheck:
                         evalStack.Replace((DyBool)(evalStack.Peek().GetConstructorId(ctx) == op.Data));
                         break;
                     case OpCode.Start:
-                        ctx.CatchMarks.Push(new CatchMark(op.Data, ctx.CallStack.Count));
+                        {
+                            var cm = ctx.CatchMarks.Peek();
+                            if (cm is null)
+                                ctx.CatchMarks.Replace(cm = new());
+                            cm.Push(new(op.Data, ctx.CallStack.Count));
+                        }
                         break;
                     case OpCode.End:
-                        ctx.CatchMarks.Pop();
+                        ctx.CatchMarks.Peek().Pop();
                         break;
                     case OpCode.NewType:
                         evalStack.Replace(new DyCustomType(unit.Types[op.Data].Id, ctx.AUX, evalStack.Peek()));
@@ -575,14 +596,11 @@ namespace Dyalect.Runtime
         CATCH:
             {
                 evalStack.Clear();
-                offset = ctx.CatchMarks.Pop().Offset;
-                if (ctx.CallStack.Count > 0)
-                {
-                    var cp = ctx.CallStack.Peek();
-                    unit = ctx.Composition.Units[function.UnitId];
-                    ops = unit.Ops;
-                }
+                offset = jumper;
+                unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
+                ops = unit.Ops;
                 evalStack.Push(ctx.Error.GetDyObject());
+                ctx.OldError = ctx.Error;
                 ctx.Error = null;
                 goto CYCLE;
             }
@@ -613,7 +631,7 @@ namespace Dyalect.Runtime
             catch (Exception ex)
             {
                 var dy = GetCodeException(ex);
-                if (dy != null)
+                if (dy is not null)
                     ctx.Error = dy.Error;
                 else
                     ctx.ExternalFunctionFailure(func.FunctionName, ex.Message);
@@ -625,7 +643,7 @@ namespace Dyalect.Runtime
         {
             if (ex is DyCodeException dy)
                 return dy;
-            if (ex.InnerException != null)
+            if (ex.InnerException is not null)
                 return GetCodeException(ex.InnerException);
             return null;
         }
@@ -646,16 +664,16 @@ namespace Dyalect.Runtime
             var locals = cont.Locals;
 
             if (callFun.VarArgIndex > -1)
-                locals[callFun.VarArgIndex] = cont.VarArgs == null ? null :
+                locals[callFun.VarArgIndex] = cont.VarArgs is null ? null :
                     new DyTuple(cont.VarArgs.ToArray() ?? Statics.EmptyDyObjects);
 
             for (var i = 0; i < pars.Length; i++)
             {
-                if (locals[i] == null)
+                if (locals[i] is null)
                 {
                     locals[i] = pars[i].Value;
 
-                    if (locals[i] == null)
+                    if (locals[i] is null)
                     {
                         ctx.RequiredArgumentMissing(callFun.FunctionName, pars[i].Name);
                         return;
@@ -664,10 +682,12 @@ namespace Dyalect.Runtime
             }
         }
 
-        private static bool ProcessError(ExecutionContext ctx, int offset, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
+        private static bool ProcessError(ExecutionContext ctx, int offset, ref DyNativeFunction function, 
+            ref DyObject[] locals, ref EvalStack evalStack, ref int jumper)
         {
             var err = ctx.Error;
-            return ThrowIf(err, offset, function.UnitId, ref function, ref locals, ref evalStack, ctx);
+            jumper = ThrowIf(err, offset, function.UnitId, ref function, ref locals, ref evalStack, ctx);
+            return jumper > -1;
         }
 
         private static Stack<StackPoint> Dump(CallStack callStack)
@@ -690,21 +710,29 @@ namespace Dyalect.Runtime
             return st;
         }
 
-        private static bool ThrowIf(DyError err, int offset, int moduleHandle, ref DyNativeFunction function,
+        private static int ThrowIf(DyError err, int offset, int moduleHandle, ref DyNativeFunction function,
             ref DyObject[] locals, ref EvalStack evalStack, ExecutionContext ctx)
         {
-            var dump = Dump(ctx.CallStack.Clone());
-            dump.Push(new StackPoint(offset, moduleHandle));
+            Stack<StackPoint> dump;
+            if (err.Dump is null)
+            {
+                dump = Dump(ctx.CallStack.Clone());
+                dump.Push(new StackPoint(offset, moduleHandle));
+            }
+            else
+                dump = err.Dump;
 
-            if (FindCatch(ctx, ref function, ref locals, ref evalStack))
+            int jumper;
+
+            if ((jumper = FindCatch(ctx, ref function, ref locals, ref evalStack)) > -1)
             {
                 ctx.Error.Dump = dump;
-                return true;
+                return jumper;
             }
             else
             {
                 ctx.Error = null;
-                var deb = new DyDebugger(ctx.Composition);
+                var deb = new DyDebugger(ctx.RuntimeContext.Composition);
                 var cs = deb.BuildCallStack(dump);
                 throw new DyCodeException(err, cs, null);
             }
@@ -712,34 +740,50 @@ namespace Dyalect.Runtime
 
         public static IEnumerable<RuntimeVar> DumpVariables(ExecutionContext ctx)
         {
-            foreach (var v in ctx.Composition.Units[0].GlobalScope.EnumerateVars())
-                yield return new RuntimeVar(v.Key, ctx.Units[0][v.Value.Address]);
+            foreach (var v in ctx.RuntimeContext.Composition.Units[0].GlobalScope.EnumerateVars())
+                yield return new RuntimeVar(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
         }
 
-        private static bool FindCatch(ExecutionContext ctx, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
+        private static int FindCatch(ExecutionContext ctx, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
         {
-            if (ctx.CatchMarks.Count == 0)
-                return false;
+            CatchMark mark = default;
+            Stack<CatchMark> cm;
+            var idx = 1;
 
-            var mark = ctx.CatchMarks.Peek();
-            var cp = default(Caller);
+            while (ctx.CatchMarks.TryPeek(idx++, out cm))
+            {
+                if (cm is not null && cm.Count > 0)
+                {
+                    mark = cm.Peek();
+                    break;
+                }
+            }
+
+            if (mark.Offset == 0)
+                return -1;
+
+            Caller cp = null;
 
             while (ctx.CallStack.Count > mark.StackOffset)
             {
                 cp = ctx.CallStack.Pop();
 
+                //It means that this function was called from an external
+                //context and we have to terminate our search
                 if (ReferenceEquals(cp, Caller.External))
-                    return false;
+                    return -1;
             }
 
-            if (cp != null)
+            cm.Pop();
+
+            if (cp is not null)
             {
                 function = cp.Function;
                 locals = cp.Locals;
                 evalStack = cp.EvalStack;
             }
 
-            return true;
+            return mark.Offset;
         }
     }
 }

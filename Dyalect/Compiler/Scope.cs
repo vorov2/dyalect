@@ -5,29 +5,28 @@ namespace Dyalect.Compiler
 {
     public sealed class Scope
     {
-        public Scope(bool fun, Scope parent)
+        public Scope(ScopeKind kind, Scope parent)
         {
-            Function = fun;
+            Kind = kind;
             Parent = parent;
-            Locals = new Dictionary<string, ScopeVar>();
+            Locals = new ();
+            Autos = new ();
         }
 
         public ScopeVar GetVariable(string name)
         {
-            var var = default(ScopeVar);
-
-            if (!Locals.TryGetValue(name, out var))
+            if (!Locals.TryGetValue(name, out ScopeVar var))
                 var = ScopeVar.Empty;
 
             return var;
         }
 
-        public Scope Clone()
-        {
-            var ret = new Scope(Function, Parent);
-            ret.Locals = new Dictionary<String, ScopeVar>(Locals);
-            return ret;
-        }
+        public Scope Clone() => 
+            new (Kind, Parent)
+            {
+                Locals = new (Locals),
+                Autos = new (Autos)
+            };
 
         public IEnumerable<string> EnumerateNames()
         {
@@ -43,7 +42,7 @@ namespace Dyalect.Compiler
 
         public bool LocalOrParent(string var)
         {
-            if (Function)
+            if (Kind == ScopeKind.Function)
                 return Locals.ContainsKey(var);
 
             var s = this;
@@ -55,7 +54,7 @@ namespace Dyalect.Compiler
 
                 s = s.Parent;
             }
-            while (s != null && !s.Function);
+            while (s != null && s.Kind != ScopeKind.Function);
 
             return false;
         }
@@ -85,8 +84,17 @@ namespace Dyalect.Compiler
 
         public Scope Parent { get; set; }
 
+        public Queue<(int, string)> Autos { get; private set; }
+
         public Dictionary<string, ScopeVar> Locals { get; private set; }
 
-        public bool Function { get; private set; }
+        public ScopeKind Kind { get; private set; }
+    }
+
+    public enum ScopeKind
+    {
+        Lexical = 0,
+        Function,
+        Loop
     }
 }

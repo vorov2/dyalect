@@ -180,4 +180,7 @@
   <data name="InvalidValue" xml:space="preserve">
     <value>A value "%Value%" causes an invalid behavior.</value>
   </data>
+  <data name="ValueOutOfRange" xml:space="preserve">
+    <value>Value "%Value%" is out of range.</value>
+  </data>
 </root>

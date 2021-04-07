@@ -50,7 +50,9 @@ namespace Dyalect.Runtime
 
         InvalidRange = 620,
 
-        InvalidValue = 621
+        InvalidValue = 621,
+
+        ValueOutOfRange = 622,
     }
 
     public class DyError
@@ -70,12 +72,11 @@ namespace Dyalect.Runtime
         public virtual string GetDescription()
         {
             var key = Code.ToString();
-
             var sb = new StringBuilder(RuntimeErrors.ResourceManager.GetString(key));
 
             if (DataItems != null)
-                foreach (var dt in DataItems)
-                    sb.Replace("%" + dt.Key + "%", (dt.Value ?? "N/A").ToString());
+                foreach (var (Key, Value) in DataItems)
+                    sb.Replace("%" + Key + "%", (Value ?? "N/A").ToString());
 
             return sb.ToString();
         }
@@ -103,8 +104,14 @@ namespace Dyalect.Runtime
         internal override DyObject GetDyObject() => Data ?? DyNil.Instance;
     }
 
-    public static class ExecutionContextExtensions
+    partial class ExecutionContextExtensions
     {
+        public static DyObject Fail(this ExecutionContext ctx, string detail)
+        {
+            ctx.Error = new DyUserError(null, detail);
+            return DyNil.Instance;
+        }
+
         public static DyObject CollectionModified(this ExecutionContext ctx)
         {
             ctx.Error = new DyError(DyErrorCode.CollectionModified);
@@ -144,7 +151,7 @@ namespace Dyalect.Runtime
         {
             ctx.Error = new DyError(DyErrorCode.OperationNotSupported,
                 ("Operation", op),
-                ("TypeName", obj.TypeName(ctx)));
+                ("TypeName", obj.GetTypeName(ctx)));
             return DyNil.Instance;
         }
 
@@ -155,11 +162,18 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject ValueOutOfRange(this ExecutionContext ctx, object value)
+        {
+            ctx.Error = new DyError(DyErrorCode.ValueOutOfRange,
+                ("Value", value));
+            return DyNil.Instance;
+        }
+
         public static DyObject IndexInvalidType(this ExecutionContext ctx, DyObject index)
         {
             ctx.Error = new DyError(DyErrorCode.IndexInvalidType,
                 ("Index", index),
-                ("IndexTypeName", index.TypeName(ctx)));
+                ("IndexTypeName", index.GetTypeName(ctx)));
             return DyNil.Instance;
         }
 
@@ -178,7 +192,7 @@ namespace Dyalect.Runtime
         public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
         {
             ctx.Error = new DyError(DyErrorCode.InvalidType,
-                ("TypeName", value.TypeName(ctx)));
+                ("TypeName", value.GetTypeName(ctx)));
             return DyNil.Instance;
         }
 
@@ -205,7 +219,7 @@ namespace Dyalect.Runtime
 
         public static DyObject NotFunction(this ExecutionContext ctx, DyObject obj)
         {
-            ctx.Error = new DyError(DyErrorCode.NotFunction, ("TypeName", obj.TypeName(ctx)));
+            ctx.Error = new DyError(DyErrorCode.NotFunction, ("TypeName", obj.GetTypeName(ctx)));
             return DyNil.Instance;
         }
 
