@@ -1,8 +1,8 @@
 # 0.17.0
   * Change: _Code clean-ups and optimizations._
-  * Change: _Global foreign module subsystem refactoring._
+  * Change: _Infrastructure for foreign modules is completely refactored._
+  * Change: _Implementation of exceptions is rethought and refactored._
   * Add: _Add a generic `Object` type which can be used for interop_ ([Issue #359](https://github.com/vorov2/dyalect/issues/359)).
-  * Add: _StringBuilder_ ([Issue #22](https://github.com/vorov2/dyalect/issues/22)).
   * Add: _Add automatic conversion to/from Dictionary_ ([Issue #360](https://github.com/vorov2/dyalect/issues/360)).
   * Add: _Implement module dependencies for foreign modules_ ([Issue #361](https://github.com/vorov2/dyalect/issues/361)).
   * Add: _Add an ability to re-throw an exception for a catch block_ ([Issue #364](https://github.com/vorov2/dyalect/issues/364), [docs](https://github.com/vorov2/dyalect/wiki/Exception-handling#throw)).
