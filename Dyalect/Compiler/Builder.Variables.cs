@@ -63,7 +63,7 @@ namespace Dyalect.Compiler
             {
                 var sv = new ScopeVar(shift | a.Item1 << 8);
                 cw.PushVar(sv);
-                cw.GetMember(GetMemberNameId("close"));
+                cw.GetMember(GetMemberNameId("dispose"));
                 cw.FunPrep(0);
                 cw.FunCall(0);
                 cw.Pop();

@@ -5,7 +5,6 @@ using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Dyalect.Runtime
 {

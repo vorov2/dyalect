@@ -1,6 +1,6 @@
 ﻿type Box(key)
 const boxCollector = []
-func Box.close() {
+func Box.dispose() {
     boxCollector.add(this:key)
 }
 
