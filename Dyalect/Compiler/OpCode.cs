@@ -93,5 +93,6 @@
         CtorCheck,  //0
         Unbox,      //1
         Rethrow,    //0
+        CloseSect,  //0 
     }
 }

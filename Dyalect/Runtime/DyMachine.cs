@@ -320,6 +320,9 @@ namespace Dyalect.Runtime
                             goto CATCH;
                         }
                         break;
+                    case OpCode.CloseSect:
+                        ctx.OldError = null;
+                        break;
                     case OpCode.Fail:
                         right = evalStack.Pop();
                         DyError err = new DyUserError(right, right.ToString(ctx));

@@ -189,5 +189,59 @@ func autosExceptions3() {
 
 func autosExceptions4() {
     boxCollector.clear()
+    func divide(x, y) {
+        auto def = Box(-100)
+        try {
+            auto box = Box(12)
+            return x / y
+        } catch _ {
+            return def:key
+        }
+    }
+    var xs = [divide(10, 2), divide(2, 0)]
+    assert([5, -100], xs)
+    assert([12, -100, 12, -100], boxCollector)
+}
 
+func autosExceptions5() {
+    boxCollector.clear()
+    func doit() {
+        var x = {
+            throw 24
+            auto b = Box(12)
+        }
+    }
+    try {
+        doit()
+    } catch e {
+        auto b = Box(e)
+    }
+    assert([24], boxCollector)
+}
+
+func autosCatch1() { //Bug #370
+    boxCollector.clear()
+    try {
+        throw "err"
+    } catch e {
+        auto b = Box(1)
+    }
+    assert([1], boxCollector)
+}
+
+func autosCatch2() { //Bug #370
+    func inner() {
+        try {
+            throw "err"
+        } catch e {
+            auto b = Box(1)
+            throw
+        }
+    }
+    try {
+        inner()
+    } catch e {
+        assert(e, "err")
+        assert([1], boxCollector)
+    }
 }

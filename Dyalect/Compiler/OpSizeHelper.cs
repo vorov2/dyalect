@@ -92,6 +92,7 @@
             1, //CtorCheck
             0, //Unbox
             0, //Rethrow
+            0, //CloseSect
         };
     }
 }

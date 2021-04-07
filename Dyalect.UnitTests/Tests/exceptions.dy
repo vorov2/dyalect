@@ -313,3 +313,20 @@ func rightCatch() {
     }
     assert(12, x)
 }
+
+func rethrowTest() {
+    func work() {
+        try {
+            throw 42
+        } catch _ {
+            throw
+        }
+    }
+    var x
+    try {
+        work()
+    } catch e {
+        x = e
+    }
+    assert(42, x)
+}

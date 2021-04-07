@@ -922,6 +922,9 @@ namespace Dyalect.Compiler
                 Build(n, nh, ctx);
             }
 
+            if (hints.Has(Catch))
+                cw.CloseSect();
+
             if (hasAuto)
             {
                 cw.End();
