@@ -219,6 +219,20 @@ func autosExceptions5() {
     assert([24], boxCollector)
 }
 
+func autosExceptions6() {
+    boxCollector.clear()
+    func doit() {
+        throw {
+            auto b = Box(22)
+        }
+        auto c = Box(2)
+    }
+    try {
+        doit()
+    } catch _ { }
+    assert([22], boxCollector)
+}
+
 func autosCatch1() { //Bug #370
     boxCollector.clear()
     try {
