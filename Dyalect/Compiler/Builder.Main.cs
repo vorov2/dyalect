@@ -928,15 +928,15 @@ namespace Dyalect.Compiler
             if (hasAuto)
             {
                 var (skip, exit) = (cw.DefineLabel(), cw.DefineLabel());
-                cw.Br(skip);
-                cw.MarkLabel(gotcha);
-                CallAutos(cls: false);
-                cw.Rethrow();
-                cw.Br(exit);
-                cw.MarkLabel(skip);
-                cw.End();
-                CallAutos(cls: true);
-                cw.MarkLabel(exit);
+                cw.Br(skip);            //goto: regular
+                cw.MarkLabel(gotcha);   //|"catch" section
+                CallAutos(cls: false);  //|"catch" section
+                cw.Rethrow();           //|"catch" section
+                cw.Br(exit);            //goto: exit
+                cw.MarkLabel(skip);     //|regular section
+                cw.End();               //|regular section
+                CallAutos(cls: true);   //|regular section
+                cw.MarkLabel(exit);     //exit
                 cw.Nop();
             }
 

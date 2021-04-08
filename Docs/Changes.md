@@ -1,3 +1,7 @@
+# 0.17.2
+  * Fixed: _Regression in method `Array.removeRangeAt`_ ([Issue #374](https://github.com/vorov2/dyalect/issues/374)).
+  * Fixed: _Invalid behavior of `throw` in nested `try/catch`_ ([Issue #373](https://github.com/vorov2/dyalect/issues/373)).
+
 # 0.17.1
   * Change: _Code clean-ups and optimizations._
   * Fixed: _Autos are not processed correctly_ ([Issue #367](https://github.com/vorov2/dyalect/issues/367)).

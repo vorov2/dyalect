@@ -353,7 +353,7 @@ func nestedExceptions() {
     assert("exc.1", dat)
 }
 
-func multipleThrowFromCatch() {
+func multipleThrowFromCatc() {
     var x 
     try {
        try {
@@ -366,4 +366,3 @@ func multipleThrowFromCatch() {
     }
     assert("exc.1", x)
 }
-

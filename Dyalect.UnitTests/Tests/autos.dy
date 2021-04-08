@@ -260,3 +260,23 @@ func autosCatch2() { //Bug #370
         assert([1], boxCollector)
     }
 }
+
+func autosCatch3() {
+    boxCollector.clear()
+    func inside() {
+        try {
+            throw 'a'
+        } catch _ {
+            auto b = Box("auto")
+            throw 'b'
+            throw
+        }
+    }
+    var x
+    try {
+        inside()
+    } catch e {
+        x = e
+    }
+    print('b', x)
+}
