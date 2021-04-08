@@ -23,7 +23,7 @@ namespace Dyalect.Runtime
 
         internal SectionStack CatchMarks { get; }
 
-        internal DyError OldError { get; set; }
+        internal Stack<DyError> Errors { get; } = new Stack<DyError>();
         
         internal DyError Error { get; set; }
 
