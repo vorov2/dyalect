@@ -25,10 +25,11 @@ namespace Dyalect.Compiler
         }
 
         //Call close for all variables in this scope, registered as autos
-        private void CallAutos()
+        private void CallAutos(bool cls = false)
         {
             PeekAutos(currentScope);
-            currentScope.Autos.Clear();
+            if (cls)
+                currentScope.Autos.Clear();
         }
 
         private void CallAutosForKind(ScopeKind kind)

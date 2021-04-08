@@ -330,3 +330,39 @@ func rethrowTest() {
     }
     assert(42, x)
 }
+
+func nestedExceptions() {
+    func foo() {
+        try {
+            throw "exc.1"
+        } catch _ {
+            try {
+                throw "exc.2"
+            } catch _ {
+                //do nothing
+            }
+            throw
+        }
+    }
+    var dat
+    try {
+        foo()
+    } catch e {
+        dat = e
+    }
+    assert("exc.1", dat)
+}
+
+func multipleThrowFromCatc() {
+    var x 
+    try {
+       try {
+            throw "err"
+        } catch _ {
+            throw "exc.1"
+        }
+    } catch e {
+        x = e
+    }
+    assert("exc.1", x)
+}

@@ -890,7 +890,7 @@ namespace Dyalect.Compiler
             var hasLast = hints.Has(Last);
             hints = hints.Remove(Last);
 
-            if (node.Nodes?.Count == 0)
+            if (node.Nodes?.Count == 0 && !hints.Has(Catch))
             {
                 if (hints.Has(Push))
                     cw.PushNil();
@@ -923,14 +923,21 @@ namespace Dyalect.Compiler
             }
 
             if (hints.Has(Catch))
-                cw.CloseSect();
+                cw.PopErr();
 
             if (hasAuto)
             {
-                cw.End();
-                cw.MarkLabel(gotcha);
-                CallAutos();
-                cw.Rethrow();
+                var (skip, exit) = (cw.DefineLabel(), cw.DefineLabel());
+                cw.Br(skip);            //goto: regular
+                cw.MarkLabel(gotcha);   //|"catch" section
+                CallAutos(cls: false);  //|"catch" section
+                cw.Rethrow();           //|"catch" section
+                cw.Br(exit);            //goto: exit
+                cw.MarkLabel(skip);     //|regular section
+                cw.End();               //|regular section
+                CallAutos(cls: true);   //|regular section
+                cw.MarkLabel(exit);     //exit
+                cw.Nop();
             }
 
             if (!hints.Has(NoScope))

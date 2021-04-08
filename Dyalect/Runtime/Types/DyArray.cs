@@ -473,7 +473,7 @@ namespace Dyalect.Runtime.Types
                 "remove" => DyForeignFunction.Member(name, RemoveItem, -1, new Par("item")),
                 "removeAt" => DyForeignFunction.Member(name, RemoveItemAt, -1, new Par("index")),
                 "removeRange" => DyForeignFunction.Member(name, RemoveRange, -1, new Par("items")),
-                "removeRangeAt" => DyForeignFunction.Member(name, RemoveRangeAt, -1, new Par("start"), new Par("len", null)),
+                "removeRangeAt" => DyForeignFunction.Member(name, RemoveRangeAt, -1, new Par("start"), new Par("len", DyNil.Instance)),
                 "removeAll" => DyForeignFunction.Member(name, RemoveAll, -1, new Par("predicate")),
                 "clear" => DyForeignFunction.Member(name, ClearItems, -1, Statics.EmptyParameters),
                 "indexOf" => DyForeignFunction.Member(name, IndexOf, -1, new Par("item")),

@@ -315,16 +315,11 @@ namespace Dyalect.Runtime
                         evalStack.Push((DyBool)(evalStack.Pop() is null));
                         break;
                     case OpCode.Rethrow:
-                        if (ctx.OldError is not null)
-                        {
-                            ctx.Error = ctx.OldError;
-                            ctx.OldError = null;
-                            ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
-                            goto CATCH;
-                        }
-                        break;
-                    case OpCode.CloseSect:
-                        ctx.OldError = null;
+                        ctx.Error = ctx.Errors.Pop();
+                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                        goto CATCH;
+                    case OpCode.PopErr:
+                        ctx.Errors.Pop();
                         break;
                     case OpCode.Fail:
                         right = evalStack.Pop();
@@ -606,7 +601,7 @@ namespace Dyalect.Runtime
                 unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
                 ops = unit.Ops;
                 evalStack.Push(ctx.Error.GetDyObject());
-                ctx.OldError = ctx.Error;
+                ctx.Errors.Push(ctx.Error);
                 ctx.Error = null;
                 goto CYCLE;
             }
