@@ -2,19 +2,11 @@
 {
     public struct StackPoint
     {
-        internal StackPoint(int breakAddress, int unitHandle)
-        {
-            BreakAddress = breakAddress;
-            UnitHandle = unitHandle;
-            External = false;
-        }
+        internal StackPoint(int breakAddress, int unitHandle) => 
+            (BreakAddress, UnitHandle, External) = (breakAddress, unitHandle, false);
 
-        internal StackPoint(bool external)
-        {
-            BreakAddress = 0;
-            UnitHandle = 0;
-            External = external;
-        }
+        internal StackPoint(bool external) => 
+            (BreakAddress, UnitHandle, External) = (0, 0, external);
 
         internal readonly bool External;
 

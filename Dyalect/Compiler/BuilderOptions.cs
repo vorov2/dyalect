@@ -5,7 +5,7 @@ namespace Dyalect.Compiler
     public sealed class BuilderOptions
     {
         public static BuilderOptions Default() =>
-            new BuilderOptions
+            new()
             {
                 Debug = false,
                 NoLangModule = false,
@@ -14,7 +14,7 @@ namespace Dyalect.Compiler
                 LinkerSkipChecksum = false
             };
 
-        public HashSet<int> IgnoreWarnings { get; } = new HashSet<int>();
+        public HashSet<int> IgnoreWarnings { get; } = new();
 
         public bool Debug { get; set; }
 

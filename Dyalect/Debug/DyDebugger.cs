@@ -1,5 +1,4 @@
 ﻿using Dyalect.Compiler;
-using System;
 using System.Collections.Generic;
 
 namespace Dyalect.Debug
@@ -29,7 +28,7 @@ namespace Dyalect.Debug
             var frames = new List<CallFrame>();
             var retval = new CallStackTrace(frames);
 
-            if (callChain == null || callChain.Count == 0)
+            if (callChain is null || callChain.Count == 0)
                 return retval;
 
             do
@@ -52,7 +51,7 @@ namespace Dyalect.Debug
                 {
                     codeBlockName = funSym.Name ?? FUNC;
 
-                    if (funSym.Parameters != null)
+                    if (funSym.Parameters is not null)
                         codeBlockName += "(" + string.Join(",", funSym.Parameters) + ")";
                     else
                         codeBlockName += "(...)";

@@ -2,17 +2,9 @@
 {
     public sealed class FunSym
     {
-        public FunSym(string name, int offset, Par[] pars)
-        {
-            Name = name;
-            StartOffset = offset;
-            Parameters = pars;
-        }
+        public FunSym() { }
 
-        public FunSym()
-        {
-
-        }
+        public FunSym(string name, int offset, Par[] pars) => (Name, StartOffset, Parameters) = (name, offset, pars);
 
         public string Name { get; set; }
 

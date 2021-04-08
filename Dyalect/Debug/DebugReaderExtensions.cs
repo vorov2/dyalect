@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static System.Math;
 
 namespace Dyalect.Debug
 {
@@ -44,32 +45,27 @@ namespace Dyalect.Debug
                     ln = l;
                     break;
                 }
-                else if (Math.Abs(l.Line - line) < minDiffLine)
+                else if (Abs(l.Line - line) < minDiffLine)
                 {
-                    minDiffLine = Math.Abs(l.Line - line);
-                    minDiffCol = Math.Abs(l.Column - column);
+                    minDiffLine = Abs(l.Line - line);
+                    minDiffCol = Abs(l.Column - column);
                     ln = l;
                 }
-                else if (Math.Abs(l.Line - line) == minDiffLine && Math.Abs(l.Column - column) < minDiffCol)
+                else if (Abs(l.Line - line) == minDiffLine && Abs(l.Column - column) < minDiffCol)
                 {
-                    minDiffCol = Math.Abs(l.Column - column);
+                    minDiffCol = Abs(l.Column - column);
                     ln = l;
                 }
             }
 
             if (ln != null)
             {
-                var maxOff = ln.Offset;
-
                 for (var i = 0; i < syms.Lines.Count; i++)
                 {
                     var l = syms.Lines[i];
 
                     if (l.Line == ln.Line && l.Column == ln.Column && l.Offset > ln.Offset)
-                    {
                         ln = l;
-                        maxOff = ln.Offset;
-                    }
                 }
             }
 
@@ -125,7 +121,7 @@ namespace Dyalect.Debug
                     return v;
             }
 
-            return default(VarSym);
+            return default;
         }
 
         public static IEnumerable<VarSym> FindVarSyms(this DebugInfo syms, int offset, ScopeSym scope)

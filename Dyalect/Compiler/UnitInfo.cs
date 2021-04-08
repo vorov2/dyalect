@@ -2,11 +2,7 @@
 {
     internal sealed class UnitInfo
     {
-        public UnitInfo(int handle, Unit unit)
-        {
-            Handle = handle;
-            Unit = unit;
-        }
+        public UnitInfo(int handle, Unit unit) => (Handle, Unit) = (handle, unit);
 
         public int Handle { get; }
 

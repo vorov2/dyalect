@@ -27,37 +27,15 @@ namespace Dyalect.Debug
 
         internal int Offset { get; set; }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hash = 17;
-                hash = hash * 31 + Line.GetHashCode();
-                hash = hash * 31 + Column.GetHashCode();
-                return hash;
-            }
-        }
+        public override int GetHashCode() => HashCode.Combine(Line, Column);
 
-        public static bool Equals(Breakpoint fst, Breakpoint snd)
-        {
-            return object.ReferenceEquals(fst, snd)
-                || (fst.Line == snd.Line && fst.Column == snd.Column);
-        }
+        public static bool Equals(Breakpoint fst, Breakpoint snd) =>
+            ReferenceEquals(fst, snd) || (fst.Line == snd.Line && fst.Column == snd.Column);
 
-        public bool Equals(Breakpoint other)
-        {
-            return Equals(this, other);
-        }
+        public bool Equals(Breakpoint other) => Equals(this, other);
 
-        public override bool Equals(object obj)
-        {
-            var bp = obj as Breakpoint;
-            return Equals(this, bp);
-        }
+        public override bool Equals(object obj) => obj is Breakpoint b && Equals(this, b);
 
-        public override string ToString()
-        {
-            return $"{(Temporary ? "#" : "")}{Line}:{Column}";
-        }
+        public override string ToString() => $"{(Temporary ? "#" : "")}{Line}:{Column}";
     }
 }

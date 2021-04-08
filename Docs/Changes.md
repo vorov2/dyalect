@@ -1,4 +1,5 @@
 # 0.17.1
+  * Change: _Code clean-ups and optimizations._
   * Fixed: _Autos are not processed correctly_ ([Issue #367](https://github.com/vorov2/dyalect/issues/367)).
   * Fixed: _`auto` inside a `catch` block rethrows an exception_ ([Issue #370](https://github.com/vorov2/dyalect/issues/370)).
   * Fixed: _VM crush_ ([Issue #369](https://github.com/vorov2/dyalect/issues/369)).

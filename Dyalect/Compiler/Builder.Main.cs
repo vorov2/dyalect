@@ -503,7 +503,7 @@ namespace Dyalect.Compiler
                 
                 if (idx != -1)
                 {
-                    dll = localPath.Substring(idx + 1);
+                    dll = localPath[(idx + 1)..];
                     localPath = localPath.Substring(0, idx);
                 }
                 else

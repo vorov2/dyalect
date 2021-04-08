@@ -5,16 +5,15 @@ namespace Dyalect.Debug
 {
     public sealed class DebugWriter
     {
-        private Stack<ScopeSym> scopes;
-        private Stack<FunSym> funs;
+        private readonly Stack<ScopeSym> scopes;
+        private readonly Stack<FunSym> funs;
         private int scopeCount;
-        private readonly static Par[] emptyPars = new Par[0];
 
         public DebugWriter()
         {
-            Symbols = new DebugInfo();
-            scopes = new Stack<ScopeSym>();
-            funs = new Stack<FunSym>();
+            Symbols = new();
+            scopes = new();
+            funs = new();
             var glob = new ScopeSym(0, 0, 0, 0, 0) { EndOffset = int.MaxValue };
             scopes.Push(glob);
             Symbols.Scopes.Add(glob);
@@ -23,20 +22,15 @@ namespace Dyalect.Debug
         private DebugWriter(DebugWriter dw)
         {
             Symbols = dw.Symbols.Clone();
-            scopes = new Stack<ScopeSym>(dw.scopes.ToArray());
-            funs = new Stack<FunSym>(dw.funs.ToArray());
+            scopes = new(dw.scopes.ToArray());
+            funs = new(dw.funs.ToArray());
         }
 
-        public DebugWriter Clone()
-        {
-            return new DebugWriter(this);
-        }
+        public DebugWriter Clone() => new DebugWriter(this);
 
-        public void StartFunction(string name, int offset, Par[] pars = null)
-        {
-            funs.Push(new FunSym(name, offset, pars ?? emptyPars));
-        }
-
+        public void StartFunction(string name, int offset, Par[] pars = null) =>
+            funs.Push(new FunSym(name, offset, pars ?? Array.Empty<Par>()));
+        
         public void EndFunction(int handle, int offset)
         {
             var f = funs.Pop();
@@ -60,16 +54,12 @@ namespace Dyalect.Debug
             Symbols.Scopes.Add(s);
         }
 
-        public void AddVarSym(string name, int address, int offset, int flags, int data)
-        {
+        public void AddVarSym(string name, int address, int offset, int flags, int data) =>
             Symbols.Vars.Add(LastVarSym = new VarSym(name, address, offset, scopes.Peek().Index, flags, data));
-        }
-
-        public void AddLineSym(int offset, int line, int col)
-        {
+        
+        public void AddLineSym(int offset, int line, int col) =>
             Symbols.Lines.Add(new LineSym(offset, line, col));
-        }
-
+        
         public DebugInfo Symbols { get; private set; }
 
         public VarSym LastVarSym { get; private set; }
