@@ -92,6 +92,6 @@
         TypeST,     //1
         CtorCheck,  //0
         Unbox,      //1
-        ChNoInit    //0
+        IsNull      //0
     }
 }

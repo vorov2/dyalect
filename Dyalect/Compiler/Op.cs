@@ -49,7 +49,7 @@ namespace Dyalect.Compiler
         public static readonly Op Yield = new(OpCode.Yield);
         public static readonly Op PushNilT = new(OpCode.PushNilT);
         public static readonly Op End = new(OpCode.End);
-        public static readonly Op ChNoInit = new(OpCode.ChNoInit);
+        public static readonly Op IsNull = new(OpCode.IsNull);
 
         internal static readonly Dictionary<OpCode, Op> Ops = new();
 

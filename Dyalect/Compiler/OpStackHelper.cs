@@ -94,7 +94,7 @@
             1,  //Unbox
             0, //Rethrow
             0, //PopErr
-            0, //ChNoInit
+            0, //IsNull
         };
     }
 }

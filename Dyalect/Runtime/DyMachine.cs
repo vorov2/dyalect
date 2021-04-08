@@ -308,7 +308,7 @@ namespace Dyalect.Runtime
                         }
                         else
                             return evalStack.Pop();
-                    case OpCode.ChNoInit:
+                    case OpCode.IsNull:
                         evalStack.Push((DyBool)(evalStack.Pop() is null));
                         break;
                     case OpCode.Fail:

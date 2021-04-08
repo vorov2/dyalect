@@ -1019,9 +1019,7 @@ namespace Dyalect.Compiler
                 cw.PopVar(a);
 
                 if (node.AutoClose)
-                {
                     currentScope.Autos.Enqueue((a >> 8, nam));
-                }
             }
             else
             {
