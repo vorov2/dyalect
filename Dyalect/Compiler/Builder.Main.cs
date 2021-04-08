@@ -217,11 +217,12 @@ namespace Dyalect.Compiler
             }
             else
             {
-                if (!hints.Has(Catch))
+                if (!hints.Has(Catch) || ctx.Errors.Count == 0)
                     AddError(CompilerError.InvalidRethrow, node.Location);
 
+                cw.PushVar(new ScopeVar(ctx.Errors.Peek()));
                 AddLinePragma(node);
-                cw.Rethrow();
+                cw.Fail();
             }
         }
 
@@ -238,6 +239,12 @@ namespace Dyalect.Compiler
             cw.MarkLabel(gotcha);
 
             StartScope(ScopeKind.Lexical, node.Catch.Location);
+            //We are inside a catch, we need preserve an exception object for
+            //possible rethrows
+            cw.Dup();
+            var a = AddVariable();
+            cw.PopVar(a);
+            ctx.Errors.Push(a);
 
             if (node.BindVariable != null)
             {
@@ -253,6 +260,7 @@ namespace Dyalect.Compiler
             }
 
             Build(node.Catch, hints.Append(Catch), ctx);
+            ctx.Errors.Pop();
             EndScope();
 
             cw.MarkLabel(skip);
@@ -922,16 +930,13 @@ namespace Dyalect.Compiler
                 Build(n, nh, ctx);
             }
 
-            if (hints.Has(Catch))
-                cw.PopErr();
-
             if (hasAuto)
             {
                 var (skip, exit) = (cw.DefineLabel(), cw.DefineLabel());
                 cw.Br(skip);            //goto: regular
                 cw.MarkLabel(gotcha);   //|"catch" section
                 CallAutos(cls: false);  //|"catch" section
-                cw.Rethrow();           //|"catch" section
+                cw.Fail();              //|"catch" section
                 cw.Br(exit);            //goto: exit
                 cw.MarkLabel(skip);     //|regular section
                 cw.End();               //|regular section

@@ -1,6 +1,5 @@
 ﻿using Dyalect.Linker;
 using Dyalect.Runtime.Types;
-using System.Linq;
 
 namespace Dyalect.Runtime
 {

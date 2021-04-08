@@ -1,4 +1,5 @@
 ﻿using Dyalect.Parser.Model;
+using System.Collections.Generic;
 
 namespace Dyalect.Compiler
 {
@@ -26,6 +27,8 @@ namespace Dyalect.Compiler
             BlockSkip = old.BlockSkip;
             MatchExit = old.MatchExit;
         }
+
+        public Stack<int> Errors { get; } = new Stack<int>();
 
         public DFunctionDeclaration Function { get; set; }
 

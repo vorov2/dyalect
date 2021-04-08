@@ -324,8 +324,6 @@ namespace Dyalect.Compiler
         public void SyncPoint() => Emit(Op.SyncPoint);
         public void Fail() => Emit(Op.Fail);
         public void Term() => Emit(Op.Term);
-        public void Rethrow() => Emit(Op.Rethrow);
-        public void PopErr() => Emit(Op.PopErr);
         public void ChNoInit() => Emit(Op.ChNoInit);
     }
 }
