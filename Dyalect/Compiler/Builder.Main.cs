@@ -503,7 +503,7 @@ namespace Dyalect.Compiler
                 
                 if (idx != -1)
                 {
-                    dll = localPath.Substring(idx + 1);
+                    dll = localPath[(idx + 1)..];
                     localPath = localPath.Substring(0, idx);
                 }
                 else
@@ -921,6 +921,9 @@ namespace Dyalect.Compiler
                 nh = hasLast && last ? nh.Append(Last) : nh;
                 Build(n, nh, ctx);
             }
+
+            if (hints.Has(Catch))
+                cw.CloseSect();
 
             if (hasAuto)
             {

@@ -14,7 +14,7 @@ namespace Dyalect.Compiler
         private Location lastLocation;
 
         //Corrections used for compilation of code islands inside strings
-        private readonly Stack<Location> corrections = new Stack<Location>();
+        private readonly Stack<Location> corrections = new();
 
         private readonly DebugWriter pdb; //Symbol writer
         private readonly bool isDebug; //Determines if we need to generate extended debug info

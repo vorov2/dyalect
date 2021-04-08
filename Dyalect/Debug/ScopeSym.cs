@@ -2,6 +2,8 @@
 {
     public sealed class ScopeSym
     {
+        public ScopeSym() { }
+
         public ScopeSym(int index, int parentIndex, int startOffset, int startLine, int startColumn)
         {
             Index = index;
@@ -9,11 +11,6 @@
             StartOffset = startOffset;
             StartLine = startLine;
             StartColumn = startColumn;
-        }
-
-        public ScopeSym()
-        {
-
         }
 
         public int Index { get; set; }

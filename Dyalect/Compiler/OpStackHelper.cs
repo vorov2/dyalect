@@ -93,6 +93,8 @@
             0,  //CtorCheck
             1,  //Unbox
             0, //Rethrow
+            0, //CloseSect
+            0, //ChNoInit
         };
     }
 }

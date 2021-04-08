@@ -12,7 +12,7 @@ namespace Dyalect
         }
 
         public static Result<T> Create<T>(T result, IEnumerable<BuildMessage> messages = null) =>
-            new Result<T>(result, messages);
+            new(result, messages);
 
         public IEnumerable<BuildMessage> Messages { get; }
 

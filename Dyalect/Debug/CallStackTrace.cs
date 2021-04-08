@@ -8,29 +8,20 @@ namespace Dyalect.Debug
     {
         private readonly List<CallFrame> frames;
 
-        internal CallStackTrace(List<CallFrame> frames)
-        {
-            this.frames = frames;
-        }
+        internal CallStackTrace(List<CallFrame> frames) => this.frames = frames;
 
-        public IEnumerator<CallFrame> GetEnumerator()
-        {
-            return frames.GetEnumerator();
-        }
+        public IEnumerator<CallFrame> GetEnumerator() => frames.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public CallFrame this[int index]
         {
-            get { return frames[index]; }
+            get => frames[index];
         }
 
         public int FrameCount
         {
-            get { return frames.Count; }
+            get => frames.Count;
         }
 
         public override string ToString()

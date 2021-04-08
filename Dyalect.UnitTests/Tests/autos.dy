@@ -40,6 +40,37 @@ func autosSimple3() {
     assert([1,2,3,4,5,6], boxCollector)
 }
 
+func autosSimple4() {
+    boxCollector.clear()
+    func doit(b) {
+        if b {
+            auto a = Box(2)
+        } else {
+            auto b = Box(4)
+        }
+        auto c = Box(100)
+    }
+    doit(true)
+    doit(false)
+    assert([2, 100, 4, 100], boxCollector)
+}
+
+func autosSimple5() {
+    boxCollector.clear()
+    var x = 5
+    while x > 0 {
+        auto a = Box(x)
+        if x == 1 {
+            break
+        }
+        x = x - 1
+        if x == 3 {
+            continue
+        }
+    }
+    assert([5,4,3,2,1], boxCollector)
+}
+
 func autosFunc1() {
     boxCollector.clear()
     func run() {
@@ -79,6 +110,35 @@ func autosFunc3() {
     }
     testFn()
     assert(["z","y","x"], boxCollector)
+}
+
+func autosFunc4() { //Bug #367
+    boxCollector.clear()
+    func foobar(flag) {
+        auto a = Box('a')
+        if flag {
+            return
+        }
+        auto b = Box('b')
+    }
+    foobar(flag = true)
+    foobar(flag = false)
+    foobar(flag = true)
+    assert(['a', 'a', 'b', 'a'], boxCollector)
+}
+
+func autosFunc5() {
+    boxCollector.clear()
+    func iter() {
+        auto a = Box(10)
+        yield { auto a = Box(2) }
+        yield { auto a = Box(4) }
+        yield { auto a = Box(6) }
+        yield { auto a = Box(8) }
+        { auto a = Box(9) }
+    }
+    for _ in iter() { }
+    assert([2,4,6,8,9,10], boxCollector)
 }
 
 func autosExceptions1() {
@@ -125,4 +185,78 @@ func autosExceptions3() {
         boxCollector.add(e)
     }
     assert([42,84], boxCollector)
+}
+
+func autosExceptions4() {
+    boxCollector.clear()
+    func divide(x, y) {
+        auto def = Box(-100)
+        try {
+            auto box = Box(12)
+            return x / y
+        } catch _ {
+            return def:key
+        }
+    }
+    var xs = [divide(10, 2), divide(2, 0)]
+    assert([5, -100], xs)
+    assert([12, -100, 12, -100], boxCollector)
+}
+
+func autosExceptions5() {
+    boxCollector.clear()
+    func doit() {
+        var x = {
+            throw 24
+            auto b = Box(12)
+        }
+    }
+    try {
+        doit()
+    } catch e {
+        auto b = Box(e)
+    }
+    assert([24], boxCollector)
+}
+
+func autosExceptions6() {
+    boxCollector.clear()
+    func doit() {
+        throw {
+            auto b = Box(22)
+        }
+        auto c = Box(2)
+    }
+    try {
+        doit()
+    } catch _ { }
+    assert([22], boxCollector)
+}
+
+func autosCatch1() { //Bug #370
+    boxCollector.clear()
+    try {
+        throw "err"
+    } catch e {
+        auto b = Box(1)
+    }
+    assert([1], boxCollector)
+}
+
+func autosCatch2() { //Bug #370
+    boxCollector.clear()
+    func inner() {
+        try {
+            throw "err"
+        } catch e {
+            auto b = Box(1)
+            throw
+        }
+    }
+    try {
+        inner()
+    } catch e {
+        assert(e, "err")
+        assert([1], boxCollector)
+    }
 }

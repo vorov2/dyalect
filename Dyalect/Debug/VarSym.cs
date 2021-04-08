@@ -2,6 +2,8 @@
 {
     public sealed class VarSym
     {
+        public VarSym() { }
+
         public VarSym(string name, int address, int offset, int scope, int flags, int data)
         {
             Name = name;
@@ -12,15 +14,7 @@
             Data = data;
         }
 
-        public VarSym()
-        {
-
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => Name;
 
         public string Name { get; set; }
 

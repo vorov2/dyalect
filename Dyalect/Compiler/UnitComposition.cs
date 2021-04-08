@@ -13,9 +13,9 @@ namespace Dyalect.Compiler
         {
             Units = units;
             Types = DyType.GetAll();
-            TypeCodes = new Dictionary<Guid, int>();
-            Members = new FastList<string>();
-            MembersMap = new Dictionary<string, int>();
+            TypeCodes = new();
+            Members = new();
+            MembersMap = new();
         }
 
         public List<Unit> Units { get; }
