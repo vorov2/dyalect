@@ -1,5 +1,6 @@
 # 0.17.4
   * Fixed: _`throw` might cause interactive console to crush_ ([Issue #381](https://github.com/vorov2/dyalect/issues/381)).
+  * Fixed: _`auto` declared in global scope not disposed_ ([Issue #382](https://github.com/vorov2/dyalect/issues/382)).
 
 # 0.17.3
   * Changed: _Exceptions are heavily reworked and optimized._
