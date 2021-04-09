@@ -1,3 +1,6 @@
+# 0.17.4
+  * Fixed: _`throw` might cause interactive console to crush_ ([Issue #381](https://github.com/vorov2/dyalect/issues/381)).
+
 # 0.17.3
   * Changed: _Exceptions are heavily reworked and optimized._
   * Fixed: _Pretty printing of `try/catch`_ ([Issue #377](https://github.com/vorov2/dyalect/issues/377)).

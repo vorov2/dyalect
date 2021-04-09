@@ -219,8 +219,9 @@ namespace Dyalect.Compiler
             {
                 if (!hints.Has(Catch) || ctx.Errors.Count == 0)
                     AddError(CompilerError.InvalidRethrow, node.Location);
+                else
+                    cw.PushVar(new ScopeVar(ctx.Errors.Peek()));
 
-                cw.PushVar(new ScopeVar(ctx.Errors.Peek()));
                 AddLinePragma(node);
                 cw.Fail();
             }
