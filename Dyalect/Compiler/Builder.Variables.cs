@@ -62,7 +62,7 @@ namespace Dyalect.Compiler
                 var sv = new ScopeVar(shift | a.Item1 << 8);
                 var escape = cw.DefineLabel();
                 cw.PushVar(sv);
-                cw.ChNoInit();
+                cw.IsNull();
                 cw.Brtrue(escape);
                 cw.PushVar(sv);
                 cw.GetMember(GetMemberNameId("dispose"));

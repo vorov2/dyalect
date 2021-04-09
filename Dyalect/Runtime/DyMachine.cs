@@ -1,5 +1,4 @@
 ﻿using Dyalect.Compiler;
-using Dyalect.Debug;
 using Dyalect.Linker;
 using Dyalect.Runtime.Types;
 using Dyalect.Strings;
@@ -8,15 +7,13 @@ using System.Collections.Generic;
 
 namespace Dyalect.Runtime
 {
-    public static class DyMachine
+    public static partial class DyMachine
     {
         private static DyNativeFunction Global(int unitId) =>
-            new DyNativeFunction(null, unitId, 0, FastList<DyObject[]>.Empty, DyType.Function, -1);
+            new(null, unitId, 0, FastList<DyObject[]>.Empty, DyType.Function, -1);
 
-        public static ExecutionContext CreateExecutionContext(UnitComposition composition)
-        {
-            return new ExecutionContext(new CallStack(), new RuntimeContext(composition));
-        }
+        public static ExecutionContext CreateExecutionContext(UnitComposition composition) =>
+            new(new(), new(composition));
 
         public static ExecutionResult Execute(ExecutionContext ctx)
         {
@@ -311,23 +308,16 @@ namespace Dyalect.Runtime
                         }
                         else
                             return evalStack.Pop();
-                    case OpCode.ChNoInit:
+                    case OpCode.IsNull:
                         evalStack.Push((DyBool)(evalStack.Pop() is null));
                         break;
-                    case OpCode.Rethrow:
-                        ctx.Error = ctx.Errors.Pop();
-                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
-                        goto CATCH;
-                    case OpCode.PopErr:
-                        ctx.Errors.Pop();
-                        break;
                     case OpCode.Fail:
-                        right = evalStack.Pop();
-                        DyError err = new DyUserError(right, right.ToString(ctx));
-                        if (!ctx.HasErrors)
-                            ctx.Error = err;
-                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
-                        goto CATCH;
+                        {
+                            right = evalStack.Pop();
+                            ctx.Error = right is DyError e ? e : new DyUserError(right);
+                            ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                            goto CATCH;
+                        }
                     case OpCode.FailSys:
                         ctx.Error = new DyError((DyErrorCode)op.Data);
                         ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
@@ -600,8 +590,7 @@ namespace Dyalect.Runtime
                 offset = jumper;
                 unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
                 ops = unit.Ops;
-                evalStack.Push(ctx.Error.GetDyObject());
-                ctx.Errors.Push(ctx.Error);
+                evalStack.Push(ctx.Error);
                 ctx.Error = null;
                 goto CYCLE;
             }
@@ -640,15 +629,6 @@ namespace Dyalect.Runtime
             }
         }
 
-        private static DyCodeException GetCodeException(Exception ex)
-        {
-            if (ex is DyCodeException dy)
-                return dy;
-            if (ex.InnerException is not null)
-                return GetCodeException(ex.InnerException);
-            return null;
-        }
-
         private static DyTuple MakeTuple(EvalStack stack, int size)
         {
             var arr = new DyObject[size];
@@ -683,108 +663,6 @@ namespace Dyalect.Runtime
             }
         }
 
-        private static bool ProcessError(ExecutionContext ctx, int offset, ref DyNativeFunction function, 
-            ref DyObject[] locals, ref EvalStack evalStack, ref int jumper)
-        {
-            var err = ctx.Error;
-            jumper = ThrowIf(err, offset, function.UnitId, ref function, ref locals, ref evalStack, ctx);
-            return jumper > -1;
-        }
-
-        private static Stack<StackPoint> Dump(CallStack callStack)
-        {
-            var st = new Stack<StackPoint>();
-
-            for (var i = 0; i < callStack.Count; i++)
-            {
-                var cm = callStack[i];
-
-                if (ReferenceEquals(cm, Caller.Root))
-                    continue;
-
-                if (ReferenceEquals(cm, Caller.External))
-                    st.Push(new StackPoint(external: true));
-                else
-                    st.Push(new StackPoint(cm.Offset, cm.Function.UnitId));
-            }
-
-            return st;
-        }
-
-        private static int ThrowIf(DyError err, int offset, int moduleHandle, ref DyNativeFunction function,
-            ref DyObject[] locals, ref EvalStack evalStack, ExecutionContext ctx)
-        {
-            Stack<StackPoint> dump;
-            if (err.Dump is null)
-            {
-                dump = Dump(ctx.CallStack.Clone());
-                dump.Push(new StackPoint(offset, moduleHandle));
-            }
-            else
-                dump = err.Dump;
-
-            int jumper;
-
-            if ((jumper = FindCatch(ctx, ref function, ref locals, ref evalStack)) > -1)
-            {
-                ctx.Error.Dump = dump;
-                return jumper;
-            }
-            else
-            {
-                ctx.Error = null;
-                var deb = new DyDebugger(ctx.RuntimeContext.Composition);
-                var cs = deb.BuildCallStack(dump);
-                throw new DyCodeException(err, cs, null);
-            }
-        }
-
-        public static IEnumerable<RuntimeVar> DumpVariables(ExecutionContext ctx)
-        {
-            foreach (var v in ctx.RuntimeContext.Composition.Units[0].GlobalScope.EnumerateVars())
-                yield return new RuntimeVar(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
-        }
-
-        private static int FindCatch(ExecutionContext ctx, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
-        {
-            CatchMark mark = default;
-            Stack<CatchMark> cm;
-            var idx = 1;
-
-            while (ctx.CatchMarks.TryPeek(idx++, out cm))
-            {
-                if (cm is not null && cm.Count > 0)
-                {
-                    mark = cm.Peek();
-                    break;
-                }
-            }
-
-            if (mark.Offset == 0)
-                return -1;
-
-            Caller cp = null;
-
-            while (ctx.CallStack.Count > mark.StackOffset)
-            {
-                cp = ctx.CallStack.Pop();
-
-                //It means that this function was called from an external
-                //context and we have to terminate our search
-                if (ReferenceEquals(cp, Caller.External))
-                    return -1;
-            }
-
-            cm.Pop();
-
-            if (cp is not null)
-            {
-                function = cp.Function;
-                locals = cp.Locals;
-                evalStack = cp.EvalStack;
-            }
-
-            return mark.Offset;
-        }
+        
     }
 }

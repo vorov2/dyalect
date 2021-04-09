@@ -1,3 +1,8 @@
+# 0.17.3
+  * Changed: _Exceptions are heavily reworked and optimized._
+  * Fixed: _Pretty printing of `try/catch`_ ([Issue #377](https://github.com/vorov2/dyalect/issues/377)).
+  * Fixed: _Op code `Fail` has an incorrect stack size_ ([Issue #378](https://github.com/vorov2/dyalect/issues/378)).
+
 # 0.17.2
   * Fixed: _Regression in method `Array.removeRangeAt`_ ([Issue #374](https://github.com/vorov2/dyalect/issues/374)).
   * Fixed: _Invalid behavior of `throw` in nested `try/catch`_ ([Issue #373](https://github.com/vorov2/dyalect/issues/373)).

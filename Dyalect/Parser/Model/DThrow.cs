@@ -14,7 +14,7 @@ namespace Dyalect.Parser.Model
         internal override void ToString(StringBuilder sb)
         {
             sb.Append("throw ");
-            Expression.ToString(sb);
+            Expression?.ToString(sb);
         }
     }
 }
