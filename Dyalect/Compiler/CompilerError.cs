@@ -64,7 +64,7 @@
 
         PrivateMethod = 230,
 
-        // = 231,
+        CtorAutoGen = 231,
 
         UnableToLinkModule = 232,
 

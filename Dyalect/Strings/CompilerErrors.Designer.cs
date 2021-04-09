@@ -97,6 +97,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to define custom constructors for a type with auto-generated constructors (type &quot;{0}&quot;)..
+        /// </summary>
+        internal static string CtorAutoGen {
+            get {
+                return ResourceManager.GetString("CtorAutoGen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to use &quot;new&quot; operator outside of a method..
         /// </summary>
         internal static string CtorNoMethod {
@@ -106,7 +115,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to use &quot;new&quot; operator for a non local type &quot;{0}&quot;..
+        ///   Looks up a localized string similar to Unable to use &quot;new&quot; operator for a non-local type &quot;{0}&quot;..
         /// </summary>
         internal static string CtorOnlyLocalType {
             get {

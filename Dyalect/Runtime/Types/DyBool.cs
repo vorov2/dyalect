@@ -30,17 +30,15 @@ namespace Dyalect.Runtime.Types
             public override int GetHashCode() => 0;
         }
 
-        private DyBool() : base(DyType.Bool)
-        {
-
-        }
+        private DyBool() : base(DyType.Bool) { }
 
         public override abstract object ToObject();
 
         public override DyObject Clone() => this;
 
-        public static implicit operator DyBool(bool v) => v ? True : False;
-        public static implicit operator bool(DyBool v) => ReferenceEquals(v, True);
+        public static explicit operator DyBool(bool v) => v ? True : False;
+
+        public static explicit operator bool(DyBool v) => ReferenceEquals(v, True);
 
         internal override void Serialize(BinaryWriter writer)
         {
@@ -51,10 +49,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyBoolTypeInfo : DyTypeInfo
     {
-        public DyBoolTypeInfo() : base(DyType.Bool)
-        {
-
-        }
+        public DyBoolTypeInfo() : base(DyType.Bool) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;

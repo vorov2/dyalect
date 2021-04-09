@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Dyalect.Runtime.Types
 {
@@ -9,10 +10,7 @@ namespace Dyalect.Runtime.Types
         public static readonly DyNil Instance = new();
         internal static readonly DyNil Terminator = new DyTerminator();
 
-        private DyNil() : base(DyType.Nil)
-        {
-
-        }
+        private DyNil() : base(DyType.Nil) { }
 
         public override object ToObject() => null;
 
@@ -27,20 +25,14 @@ namespace Dyalect.Runtime.Types
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
             ctx.IndexOutOfRange(index);
 
-        internal override void Serialize(BinaryWriter writer)
-        {
-            writer.Write(TypeId);
-        }
+        internal override void Serialize(BinaryWriter writer) => writer.Write(TypeId);
 
-        public override int GetHashCode() => 0;
+        public override int GetHashCode() => HashCode.Combine(Instance);
     }
 
     internal sealed class DyNilTypeInfo : DyTypeInfo
     {
-        public DyNilTypeInfo() : base(DyType.Nil)
-        {
-
-        }
+        public DyNilTypeInfo() : base(DyType.Nil) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;

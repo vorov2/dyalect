@@ -602,6 +602,11 @@ namespace Dyalect.Compiler
                         return;
                     }
 
+                    var td = unit.Types[ti.TypeId];
+
+                    if (td.AutoGenConstructors)
+                        AddError(CompilerError.CtorAutoGen, node.Location, td.Name);
+
                     Build(node.Arguments[0], newHints.Append(Push), ctx);
                     AddLinePragma(node);
                     cw.Aux(GetMemberNameId(ctx.Function.Name));

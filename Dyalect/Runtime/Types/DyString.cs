@@ -45,9 +45,9 @@ namespace Dyalect.Runtime.Types
 
         internal protected override string GetString() => Value;
 
-        public static implicit operator string(DyString str) => str.Value;
+        public static explicit operator string(DyString str) => str.Value;
 
-        public static implicit operator DyString(string str) => new(str);
+        public static explicit operator DyString(string str) => new(str);
 
         public static string ToString(DyObject value, ExecutionContext ctx)
         {

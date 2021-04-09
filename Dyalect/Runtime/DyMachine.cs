@@ -309,7 +309,7 @@ namespace Dyalect.Runtime
                         else
                             return evalStack.Pop();
                     case OpCode.IsNull:
-                        evalStack.Push((DyBool)(evalStack.Pop() is null));
+                        evalStack.Push(evalStack.Pop() is null);
                         break;
                     case OpCode.Fail:
                         {
@@ -392,7 +392,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.HasField:
                         right = evalStack.Peek();
-                        evalStack.Replace(right.HasItem(unit.IndexedStrings[op.Data].Value, ctx) ? DyBool.True : DyBool.False);
+                        evalStack.Replace(right.HasItem(unit.IndexedStrings[op.Data].Value, ctx));
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Str:
@@ -558,14 +558,14 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.TypeCheckT:
                         right = evalStack.Pop();
-                        evalStack.Push(right.TypeId == op.Data ? DyBool.True : DyBool.False);
+                        evalStack.Push(right.TypeId == op.Data);
                         break;
                     case OpCode.TypeCheck:
                         right = evalStack.Pop();
-                        evalStack.Push(right.TypeId == ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id ? DyBool.True : DyBool.False);
+                        evalStack.Push(right.TypeId == ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id);
                         break;
                     case OpCode.CtorCheck:
-                        evalStack.Replace((DyBool)(evalStack.Peek().GetConstructorId(ctx) == op.Data));
+                        evalStack.Replace(evalStack.Peek().GetConstructorId(ctx) == op.Data);
                         break;
                     case OpCode.Start:
                         {

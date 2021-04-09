@@ -67,10 +67,7 @@ namespace Dyalect.Runtime.Types
         public static readonly DyChar Min = new(char.MinValue);
         internal readonly char Value;
 
-        public DyChar(char value) : base(DyType.Char)
-        {
-            Value = value;
-        }
+        public DyChar(char value) : base(DyType.Char) => Value = value;
 
         public override object ToObject() => Value;
 
@@ -93,10 +90,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyCharTypeInfo : DyTypeInfo
     {
-        public DyCharTypeInfo() : base(DyType.Char)
-        {
-
-        }
+        public DyCharTypeInfo() : base(DyType.Char) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
@@ -107,10 +101,8 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)StringUtil.Escape(arg.GetString(), "'");
 
         #region Operations
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            return new DyString(left.GetChar().ToString() + right.GetChar());
-        }
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            new DyString(left.GetChar().ToString() + right.GetChar());
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
