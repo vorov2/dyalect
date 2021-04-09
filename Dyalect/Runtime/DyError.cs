@@ -55,9 +55,9 @@ namespace Dyalect.Runtime
         ValueOutOfRange = 622,
     }
 
-    public class DyError
+    public class DyError : DyObject
     {
-        internal DyError(DyErrorCode code, params (string, object)[] dataItems)
+        internal DyError(DyErrorCode code, params (string, object)[] dataItems) : base(DyType.Object)
         {
             Code = code;
             DataItems = dataItems;
@@ -81,25 +81,53 @@ namespace Dyalect.Runtime
             return sb.ToString();
         }
 
-        internal virtual DyObject GetDyObject()
+        internal virtual DyObject GetDyObject() => new DyString(GetDescription());
+
+        public override object ToObject() => GetDescription();
+
+        public override string ToString() => GetDescription();
+
+        protected internal override DyObject GetItem(string name, ExecutionContext ctx)
         {
-            return new DyString(GetDescription());
+            if (!TryGetItem(name, ctx, out var value))
+                return ctx.IndexOutOfRange(name);
+
+            return value;
         }
+
+        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
+        {
+            if (name == "code")
+            {
+                value = new DyInteger((int)Code);
+                return true;
+            }
+            else if (name == "detail")
+            {
+                value = GetDyObject();
+                return true;
+            }
+            else
+            {
+                value = null;
+                return false;
+            }
+        }
+
+        protected internal override bool HasItem(string name, ExecutionContext ctx) =>
+            name == "code" || name == "detail";
     }
 
     internal sealed class DyUserError : DyError
     {
-        private readonly string dsc;
-
-        public DyUserError(DyObject data, string dsc) : base(DyErrorCode.UserCode)
+        public DyUserError(DyObject data) : base(DyErrorCode.UserCode)
         {
             Data = data;
-            this.dsc = dsc;
         }
 
         public DyObject Data { get; }
 
-        public override string GetDescription() => dsc;
+        public override string GetDescription() => Data.ToObject()?.ToString();
 
         internal override DyObject GetDyObject() => Data ?? DyNil.Instance;
     }
@@ -108,7 +136,7 @@ namespace Dyalect.Runtime
     {
         public static DyObject Fail(this ExecutionContext ctx, string detail)
         {
-            ctx.Error = new DyUserError(null, detail);
+            ctx.Error = new DyUserError(new DyString(detail));
             return DyNil.Instance;
         }
 

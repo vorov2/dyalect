@@ -51,7 +51,7 @@
             -1, //Ret
             1,  //Dup
             0,  //SyncPoint
-            -1, //Fail
+            0,  //Fail
             0,  //FailSys
             1,  //NewFun
             1,  //NewFunV
@@ -94,7 +94,7 @@
             1,  //Unbox
             0, //Rethrow
             0, //PopErr
-            0, //ChNoInit
+            0, //IsNull
         };
     }
 }
