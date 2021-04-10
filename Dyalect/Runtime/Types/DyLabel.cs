@@ -6,11 +6,8 @@
 
         public DyObject Value { get; internal set; }
 
-        public DyLabel(string label, DyObject value) : base(DyType.Label)
-        {
-            Label = label;
-            Value = value;
-        }
+        public DyLabel(string label, DyObject value) : base(DyType.Label) =>
+            (Label, Value) = (label, value);
 
         protected internal override bool GetBool() => Value.GetBool();
 
@@ -77,10 +74,7 @@
 
     internal sealed class DyLabelTypeInfo : DyTypeInfo
     {
-        public DyLabelTypeInfo() : base(DyType.Label)
-        {
-
-        }
+        public DyLabelTypeInfo() : base(DyType.Label) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;

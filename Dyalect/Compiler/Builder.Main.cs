@@ -219,8 +219,9 @@ namespace Dyalect.Compiler
             {
                 if (!hints.Has(Catch) || ctx.Errors.Count == 0)
                     AddError(CompilerError.InvalidRethrow, node.Location);
+                else
+                    cw.PushVar(new ScopeVar(ctx.Errors.Peek()));
 
-                cw.PushVar(new ScopeVar(ctx.Errors.Peek()));
                 AddLinePragma(node);
                 cw.Fail();
             }
@@ -600,6 +601,11 @@ namespace Dyalect.Compiler
                         AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName);
                         return;
                     }
+
+                    var td = unit.Types[ti.TypeId];
+
+                    if (td.AutoGenConstructors)
+                        AddError(CompilerError.CtorAutoGen, node.Location, td.Name);
 
                     Build(node.Arguments[0], newHints.Append(Push), ctx);
                     AddLinePragma(node);
