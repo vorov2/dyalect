@@ -68,13 +68,13 @@ namespace Dyalect.Util
             {
                 var attr = Attribute.GetCustomAttribute(pi, typeof(BindingAttribute)) as BindingAttribute;
 
-                if (attr == null)
+                if (attr is null)
                     continue;
 
                 object value = null;
                 string key = null;
 
-                if (attr.Names == null || attr.Names.Length == 0 || (attr.Names.Length == 1 && attr.Names[0] == null))
+                if (attr.Names is null || attr.Names.Length == 0 || (attr.Names.Length == 1 && attr.Names[0] is null ))
                 {
                     key = "<default>";
 
@@ -98,21 +98,21 @@ namespace Dyalect.Util
                         {
                             if (opt is ArrayValue carr)
                             {
-                                if (arr == null)
+                                if (arr is null)
                                     arr = carr;
                                 else
                                     arr.Values.AddRange(carr.Values);
                             }
                             else if (opt is StringValue cstr)
                             {
-                                if (arr == null)
+                                if (arr is null)
                                     arr = new ArrayValue(cstr.Value);
                                 else
                                     arr.Values.Add(cstr.Value);
                             }
                             else if (opt == null)
                             {
-                                if (arr == null)
+                                if (arr is null)
                                     arr = new ArrayValue(null);
                                 else
                                     arr.Values.Add(null);
@@ -123,7 +123,7 @@ namespace Dyalect.Util
                         }
                     }
 
-                    if (key == null)
+                    if (key is null)
                         continue;
 
                     if (!pi.PropertyType.IsArray)
@@ -136,7 +136,7 @@ namespace Dyalect.Util
                         value = CreateArray(key, pi.PropertyType, arr.Values);
                 }
 
-                if (value != null)
+                if (value is not null)
                 {
                     try
                     {
@@ -158,15 +158,14 @@ namespace Dyalect.Util
 
             if (typ.IsArray)
             {
-                var lst = new List<string>(1);
-                lst.Add(v);
+                var lst = new List<string>(1) { v };
                 return CreateArray(key, typ, lst);
             }
             else if (typ == typeof(string))
                 return v;
             else if (typ == typeof(int) && int.TryParse(v, out var i4))
                 return i4;
-            else if (typ == typeof(bool) && v == null || string.Equals(bool.TrueString, v, StringComparison.OrdinalIgnoreCase))
+            else if (typ == typeof(bool) && v is null || string.Equals(bool.TrueString, v, StringComparison.OrdinalIgnoreCase))
                 return true;
             else if (typ.IsEnum && Enum.TryParse(typ, v, true, out var en))
                 return en;
@@ -200,7 +199,7 @@ namespace Dyalect.Util
 
             void AddOption(string key, string val)
             {
-                key = key ?? "$default";
+                key ??= "$default";
                 val = val?.Trim('"');
 
                 if (options.TryGetValue(key, out var oldval))
@@ -224,7 +223,7 @@ namespace Dyalect.Util
                 var str = args[i].Trim(' ');
                 var iswitch = str[0] == '-';
 
-                if (!iswitch && opt == null)
+                if (!iswitch && opt is null)
                 {
                     AddOption(null, str);
                     continue;
@@ -238,7 +237,7 @@ namespace Dyalect.Util
                     continue;
                 }
 
-                if (opt != null)
+                if (opt is not null)
                 {
                     AddOption(opt, str);
                     opt = null;
@@ -246,7 +245,7 @@ namespace Dyalect.Util
                 }
             }
 
-            if (opt != null)
+            if (opt is not null)
                 options.Add(opt, null);
 
             return options;

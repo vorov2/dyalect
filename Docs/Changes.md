@@ -1,5 +1,5 @@
 # 0.17.5
-  *
+  * Change: _Code optimization and refactoring._
 
 # 0.17.4
   * Fixed: _`throw` might cause interactive console to crush_ ([Issue #381](https://github.com/vorov2/dyalect/issues/381)).

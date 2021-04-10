@@ -12,12 +12,12 @@ namespace Dyalect.Linker
             if (!FindModuleExact(self.FileName, mod.DllName, mod, out var path))
                 return null;
 
-            if (!AssemblyMap.TryGetValue(path, out Dictionary<string, Type> dict))
+            if (!AssemblyMap.TryGetValue(path, out var dict))
                 dict = LoadAssembly(path, mod);
 
             if (dict is not null)
             {
-                if (!dict.TryGetValue(mod.ModuleName, out Type sysType))
+                if (!dict.TryGetValue(mod.ModuleName, out var sysType))
                 {
                     AddError(LinkerError.AssemblyModuleNotFound, mod.SourceFileName, mod.SourceLocation,
                         mod.ModuleName, mod.DllName);

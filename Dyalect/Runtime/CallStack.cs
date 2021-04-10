@@ -72,8 +72,13 @@ namespace Dyalect.Runtime
 
     internal sealed class Caller
     {
-        public static readonly Caller Root = new Caller();
-        public static readonly Caller External = new Caller();
+        public static readonly Caller Root = new();
+        public static readonly Caller External = new();
+
+        public readonly DyObject[] Locals;
+        public readonly EvalStack EvalStack;
+        public readonly int Offset;
+        public readonly DyNativeFunction Function;
 
         private Caller() { }
 
@@ -84,11 +89,6 @@ namespace Dyalect.Runtime
             EvalStack = evalStack;
             Locals = locals;
         }
-
-        public readonly DyObject[] Locals;
-        public readonly EvalStack EvalStack;
-        public readonly int Offset;
-        public readonly DyNativeFunction Function;
     }
 
     internal readonly struct CatchMark

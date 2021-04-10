@@ -62,17 +62,15 @@ namespace Dyalect.Compiler
         public void AddData(string name, int data)
         {
             var sv = Locals[name];
-            sv = new ScopeVar(sv.Address, data);
+            sv = new(sv.Address, data);
             Locals[name] = sv;
         }
 
         public int TryChangeVariable(string name)
         {
-            var v = default(ScopeVar);
-
-            if (Locals.TryGetValue(name, out v))
+            if (Locals.TryGetValue(name, out var v))
             {
-                v = new ScopeVar(v.Address, -1);
+                v = new(v.Address, -1);
                 Locals[name] = v;
                 return v.Address;
             }

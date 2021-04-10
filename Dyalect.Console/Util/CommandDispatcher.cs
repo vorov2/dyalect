@@ -23,7 +23,7 @@ namespace Dyalect.Util
 
         public void Dispatch(string command, object argument)
         {
-            if (commands == null)
+            if (commands is null)
             {
                 commands = new Dictionary<string, CommandCallBack>(StringComparer.OrdinalIgnoreCase);
                 var mis = typeof(CommandDispatcher).GetMethods();
@@ -32,7 +32,7 @@ namespace Dyalect.Util
                 {
                     var attr = Attribute.GetCustomAttribute(m, typeof(BindingAttribute)) as BindingAttribute;
 
-                    if (attr == null)
+                    if (attr is null)
                         continue;
 
                     var act = (CommandCallBack)m.CreateDelegate(typeof(CommandCallBack), this);
@@ -52,27 +52,27 @@ namespace Dyalect.Util
         }
 
         [Binding("bye", "exit", Help = "Exits console.")]
-        public void Exit(object arg)
+        public void Exit(object _)
         {
             Printer.Output("Bye!");
             Environment.Exit(0);
         }
 
         [Binding("cls", "clear", Help = "Clears the console window.")]
-        public void Clear(object arg)
+        public void Clear(object _)
         {
             Console.Clear();
         }
 
         [Binding("reset", Help = "Resets the interactive session.")]
-        public void Reset(object arg)
+        public void Reset(object _)
         {
             ctx.Reset();
             Printer.Output("Virtual machine is reseted.");
         }
 
         [Binding("help", Help = "Displays this help screen.")]
-        public void Help(object arg)
+        public void Help(object _)
         {
             var switches = HelpGenerator.Generate<DyaOptions>("-").TrimEnd('\r', '\n');
             var commands = HelpGenerator.Generate(typeof(CommandDispatcher), Prefix).TrimEnd('\r', '\n');
@@ -84,20 +84,20 @@ namespace Dyalect.Util
         }
 
         [Binding("dir", Help = "Shows current working directory")]
-        public void Directory(object arg)
+        public void Directory(object _)
         {
             Printer.Output(Environment.CurrentDirectory);
         }
 
         [Binding("options", Help = "Displays current console options.")]
-        public void ShowOptions(object arg)
+        public void ShowOptions(object _)
         {
             Printer.Output("Current options:");
             Printer.Output(ctx.Options.ToString());
         }
 
         [Binding("dump", Help = "Dumps global variables and prints their values.")]
-        public void Dump(object arg)
+        public void Dump(object _)
         {
             Printer.Output("Dump of globals:");
 

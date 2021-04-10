@@ -24,9 +24,7 @@ namespace Dyalect
 
         public static string Format(this string self, params object[] args) => string.Format(self, args);
 
-        public static T GetAttribute<T>(this Type self) where T : Attribute
-        {
-            return Attribute.GetCustomAttribute(self, typeof(T)) as T;
-        }
+        public static T GetAttribute<T>(this Type self) where T : Attribute =>
+            Attribute.GetCustomAttribute(self, typeof(T)) as T;
     }
 }

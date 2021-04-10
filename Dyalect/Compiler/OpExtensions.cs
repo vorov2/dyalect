@@ -4,15 +4,9 @@ namespace Dyalect.Compiler
 {
     public static class OpExtensions
     {
-        internal static int GetSize(this OpCode op)
-        {
-            return OpSizeHelper.Op[(int)op];
-        }
+        internal static int GetSize(this OpCode op) => OpSizeHelper.Op[(int)op];
 
-        internal static int GetStack(this OpCode op)
-        {
-            return OpStackHelper.Op[(int)op];
-        }
+        internal static int GetStack(this OpCode op) => OpStackHelper.Op[(int)op];
 
         internal static void Serialize(this Op op, BinaryWriter writer)
         {

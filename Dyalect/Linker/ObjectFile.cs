@@ -9,9 +9,8 @@ namespace Dyalect.Linker
         public static readonly byte[] BOM = { 67, 12, 43 };
         public const int Version = 4;
 
-        public static DyObject DeserializeObject(BinaryReader reader)
-        {
-            return (reader.ReadInt32()) switch
+        public static DyObject DeserializeObject(BinaryReader reader) =>
+            reader.ReadInt32() switch
             {
                 -1 => null,
                 DyType.Nil => DyNil.Instance,
@@ -22,6 +21,5 @@ namespace Dyalect.Linker
                 DyType.Bool => (DyBool)reader.ReadBoolean(),
                 _ => throw new NotSupportedException(),
             };
-        }
     }
 }

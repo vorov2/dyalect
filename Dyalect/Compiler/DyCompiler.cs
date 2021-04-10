@@ -13,14 +13,14 @@ namespace Dyalect.Compiler
         {
             this.options = options ?? BuilderOptions.Default();
             this.linker = linker;
-            this.builder = new Builder(this.options, linker);
+            builder = new(this.options, linker);
         }
 
         public DyCompiler(DyCompiler compiler)
         {
-            this.options = compiler.options;
-            this.linker = compiler.linker;
-            this.builder = new Builder(compiler.builder);
+            options = compiler.options;
+            linker = compiler.linker;
+            builder = new(compiler.builder);
         }
 
         public Result<Unit> Compile(DyCodeModel codeModel)

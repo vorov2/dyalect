@@ -53,6 +53,10 @@ namespace Dyalect.Compiler
 
         internal static readonly Dictionary<OpCode, Op> Ops = new();
 
+        public readonly OpCode Code;
+        
+        public int Data;
+
         static Op()
         {
             foreach (var fi in typeof(Op).GetFields(BindingFlags.Static | BindingFlags.Public))
@@ -62,19 +66,9 @@ namespace Dyalect.Compiler
             }
         }
 
-        public Op(OpCode code)
-        {
-            Code = code;
-        }
+        public Op(OpCode code) => Code = code;
 
-        public Op(OpCode code, int data)
-        {
-            Code = code;
-            Data = data;
-        }
-
-        public readonly OpCode Code;
-        public int Data;
+        public Op(OpCode code, int data) => (Code, Data) = (code, data);
 
         public override string ToString() => Code.ToString();
     }

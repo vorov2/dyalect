@@ -15,32 +15,15 @@ namespace Dyalect.Compiler
         }
 
         public string GetPath() =>
-            LocalPath == null ? ModuleName : LocalPath + "/" + ModuleName;
+            LocalPath is null ? ModuleName : LocalPath + "/" + ModuleName;
 
         public bool Equals(Reference other) =>
-            !(other is null)
+            other is not null
             && string.Equals(LocalPath, other.LocalPath, StringComparison.OrdinalIgnoreCase)
             && string.Equals(DllName, other.DllName, StringComparison.OrdinalIgnoreCase)
             && string.Equals(ModuleName, other.ModuleName, StringComparison.OrdinalIgnoreCase);
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hash = 17;
-
-                if (LocalPath != null)
-                    hash = hash * 23 + LocalPath.GetHashCode();
-
-                if (DllName != null)
-                    hash = hash * 23 + DllName.GetHashCode();
-
-                if (ModuleName != null)
-                    hash = hash * 23 + ModuleName.GetHashCode();
-
-                return hash;
-            }
-        }
+        public override int GetHashCode() => HashCode.Combine(LocalPath, DllName, ModuleName);
 
         internal int Checksum { get; set; }
 

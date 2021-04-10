@@ -29,16 +29,13 @@ namespace Dyalect.Linker
 
         public FileLookup Lookup { get; }
 
-        public DyLinker(FileLookup lookup, BuilderOptions options) : this(lookup, options, null)
-        {
-
-        }
+        public DyLinker(FileLookup lookup, BuilderOptions options) : this(lookup, options, null) { }
 
         public DyLinker(FileLookup lookup, BuilderOptions options, DyTuple args)
         {
-            this.Lookup = lookup;
-            this.BuilderOptions = options;
-            this.lang = new Lang(args) { FileName = nameof(lang), Id = 1 };
+            Lookup = lookup;
+            BuilderOptions = options;
+            lang = new Lang(args) { FileName = nameof(lang), Id = 1 };
             Units.Add(null);
         }
 
@@ -81,9 +78,7 @@ namespace Dyalect.Linker
             }
 
             if (unit != null && mod.Checksum != 0 && mod.Checksum != unit.Checksum && !BuilderOptions.LinkerSkipChecksum)
-            {
                 AddError(LinkerError.ChecksumValidationFailed, mod.SourceFileName, mod.SourceLocation, mod.ModuleName, unit.FileName);
-            }
 
             return Result.Create(unit, Messages);
         }
@@ -187,13 +182,9 @@ namespace Dyalect.Linker
             }
         }
 
-        protected virtual void Prepare()
-        {
-        }
+        protected virtual void Prepare() { }
 
-        protected virtual void Complete(bool failed)
-        {
-        }
+        protected virtual void Complete(bool failed) { }
 
         protected virtual Result<UnitComposition> Make(Unit unit)
         {
@@ -274,7 +265,7 @@ namespace Dyalect.Linker
             }
 
             var codeModel = ProcessBuffer(new StringBuffer(src, fileName));
-            return codeModel != null ? CompileNodes(codeModel, root: false) : null;
+            return codeModel is not null ? CompileNodes(codeModel, root: false) : null;
         }
 
         private DyCodeModel ProcessBuffer(SourceBuffer buffer)
@@ -368,15 +359,11 @@ namespace Dyalect.Linker
             return false;
         }
 
-        private void AddError(LinkerError error, string fileName, Location loc, params object[] args)
-        {
+        private void AddError(LinkerError error, string fileName, Location loc, params object[] args) =>
             AddMessage(BuildMessageType.Error, (int)error, error.ToString(), fileName, loc, args);
-        }
 
-        private void AddWarning(LinkerWarning warn, string fileName, Location loc, params object[] args)
-        {
+        private void AddWarning(LinkerWarning warn, string fileName, Location loc, params object[] args) =>
             AddMessage(BuildMessageType.Warning, (int)warn, warn.ToString(), fileName, loc, args);
-        }
 
         private void AddMessage(BuildMessageType type, int code, string codeName, string fileName, Location loc, params object[] args)
         {
@@ -392,9 +379,7 @@ namespace Dyalect.Linker
             Messages.Add(new BuildMessage(str, type, code, loc.Line, loc.Column, fileName));
         }
 
-        private bool NeedReport(int warn)
-        {
-            return BuilderOptions.NoWarningsLinker || BuilderOptions.IgnoreWarnings.Contains(warn);
-        }
+        private bool NeedReport(int warn) =>
+            BuilderOptions.NoWarningsLinker || BuilderOptions.IgnoreWarnings.Contains(warn);
     }
 }

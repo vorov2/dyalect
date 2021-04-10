@@ -22,7 +22,7 @@ namespace Dyalect
             public Dictionary<string, DyFunction> Funs { get; set; }
         }
 
-        private static readonly List<string> commands = new List<string>();
+        private static readonly List<string> commands = new();
 
         public static bool RunTests(IEnumerable<string> fileNames, DyaOptions dyaOptions, BuilderOptions buildOptions)
         {
@@ -34,7 +34,7 @@ namespace Dyalect
                 Printer.Output($"Running tests from {funs.Count} file(s):");
                 Printer.Output(string.Join(' ', funs.Select(f => Path.GetFileName(f.FileName))));
 
-                if (funs == null)
+                if (funs is null)
                     return false;
 
                 Run(funs, dyaOptions);
@@ -128,7 +128,7 @@ namespace Dyalect
             }
         }
 
-        private static void Failed(DyaOptions options, string name, string reason, string fileName)
+        private static void Failed(DyaOptions _, string name, string reason, string fileName)
         {
             commands.Add($"AddTest {name} -Outcome Failed -Framework DyaUnit -FileName {fileName}");
             Printer.Output($"{name}: Failed: {reason}");
@@ -144,15 +144,17 @@ namespace Dyalect
         private static IList<FunSet> Compile(IEnumerable<string> files, BuilderOptions buildOptions, out List<BuildMessage> warns)
         {
             var funColl = new List<FunSet>();
-            warns = new List<BuildMessage>();
+            warns = new();
 
             foreach (var file in files)
             {
                 var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(file)), buildOptions);
                 var cres = linker.Make(SourceBuffer.FromFile(file));
-                var funs = new FunSet();
-                funs.Funs = new Dictionary<string, DyFunction>(StringComparer.OrdinalIgnoreCase);
-                funs.FileName = file;
+                var funs = new FunSet
+                {
+                    Funs = new(StringComparer.OrdinalIgnoreCase),
+                    FileName = file
+                };
 
                 if (!cres.Success)
                     throw new DyBuildException(cres.Messages);

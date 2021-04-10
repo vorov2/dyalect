@@ -11,7 +11,7 @@ namespace Dyalect.Linker
 {
     public abstract class ForeignUnit : Unit
     {
-        internal List<DyObject> Values { get; } = new List<DyObject>();
+        internal List<DyObject> Values { get; } = new();
 
         protected RuntimeContext RuntimeContext { get; private set; }
 
@@ -47,10 +47,7 @@ namespace Dyalect.Linker
             References.Add(rf);
         }
 
-        internal void Modify(int id, DyObject obj)
-        {
-            Values[id] = obj;
-        }
+        internal void Modify(int id, DyObject obj) => Values[id] = obj;
 
         public void Initialize(ExecutionContext ctx)
         {

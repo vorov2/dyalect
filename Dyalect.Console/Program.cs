@@ -38,8 +38,8 @@ namespace Dyalect
         {
             Printer.Header();
 
-            ctx = new InteractiveContext(options);
-            dispatcher = new CommandDispatcher(ctx);
+            ctx = new(options);
+            dispatcher = new(ctx);
 
             if (options.Test)
             {
@@ -167,7 +167,7 @@ namespace Dyalect
         {
             if (cmd.Length > 1 && cmd[0] == CommandDispatcher.Prefix[0])
             {
-                var command = cmd.Substring(1).Trim();
+                var command = cmd[1..].Trim();
                 int idx;
                 object argument = null;
 
