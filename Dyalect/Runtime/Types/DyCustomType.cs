@@ -8,11 +8,8 @@ namespace Dyalect.Runtime.Types
 
         internal int ConstructorId { get; }
 
-        internal DyCustomType(int typeCode, int ctorId, DyObject value) : base(typeCode)
-        {
-            Value = value;
-            ConstructorId = ctorId;
-        }
+        internal DyCustomType(int typeCode, int ctorId, DyObject value) : base(typeCode) =>
+            (Value, ConstructorId) = (value, ctorId);
 
         public override object ToObject() => Value.ToObject();
 
@@ -55,14 +52,10 @@ namespace Dyalect.Runtime.Types
             }
         }
 
-        public override bool Equals(DyObject other)
-        {
-            return
-                other is DyCustomType ct
-                && ct.ConstructorId == ConstructorId
-                && (ReferenceEquals(ct.Value, Value) ||
-                    (!(ct.Value is null) && ct.Value.Equals(Value)));
-        }
+        public override bool Equals(DyObject other) =>
+            other is DyCustomType ct
+            && ct.ConstructorId == ConstructorId
+            && (ReferenceEquals(ct.Value, Value) || (ct.Value is not null && ct.Value.Equals(Value)));
     }
 
     internal sealed class DyCustomTypeInfo : DyTypeInfo

@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
 
         public DyCustomObject(params ValueTuple<string, object>[] fields) : base(DyType.Object)
         {
-            this.map = new Dictionary<string, DyObject>();
+            map = new Dictionary<string, DyObject>();
 
             foreach (var fld in fields)
                 map[fld.Item1] = TypeConverter.ConvertFrom(fld.Item2);
@@ -38,23 +38,16 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
-        {
-            return map.TryGetValue(name, out value);
-        }
+        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value) =>
+            map.TryGetValue(name, out value);
 
-        protected internal override bool HasItem(string name, ExecutionContext ctx)
-        {
-            return map.ContainsKey(name);
-        }
+        protected internal override bool HasItem(string name, ExecutionContext ctx) =>
+            map.ContainsKey(name);
     }
 
     public sealed class DyReflectionObject : DyCustomObject
     {
-        public DyReflectionObject(object instance) : base(Convert(instance))
-        {
-
-        }
+        public DyReflectionObject(object instance) : base(Convert(instance)) { }
 
         private static Dictionary<string, DyObject> Convert(object instance)
         {
@@ -73,10 +66,7 @@ namespace Dyalect.Runtime.Types
 
     public class DyCustomObjectTypeInfo : DyTypeInfo
     {
-        public DyCustomObjectTypeInfo() : base(DyType.Object)
-        {
-
-        }
+        public DyCustomObjectTypeInfo() : base(DyType.Object) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not

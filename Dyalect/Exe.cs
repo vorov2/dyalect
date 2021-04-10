@@ -13,7 +13,7 @@ namespace Dyalect
         {
             DyTuple tup = null;
 
-            if (args != null)
+            if (args is not null)
             {
                 var arr = args.GetType().GetProperties().Select(pi => 
                     new DyLabel(pi.Name, TypeConverter.ConvertFrom(pi.GetValue(args)))).ToArray();

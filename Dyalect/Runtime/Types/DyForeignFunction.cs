@@ -34,10 +34,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject, DyObject[], DyObject> fun;
 
-            public MemberFunction(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
-            {
-                this.fun = fun;
-            }
+            public MemberFunction(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun, Par[] pars, int varArgIndex) 
+                : base(name, pars, varArgIndex) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args);
 
@@ -50,10 +48,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject, DyObject> fun;
 
-            public MemberFunction0(string name, Func<ExecutionContext, DyObject, DyObject> fun) : base(name, Statics.EmptyParameters, -1)
-            {
-                this.fun = fun;
-            }
+            public MemberFunction0(string name, Func<ExecutionContext, DyObject, DyObject> fun)
+                : base(name, Statics.EmptyParameters, -1) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self);
 
@@ -66,10 +62,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject, DyObject, DyObject> fun;
 
-            public MemberFunction1(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
-            {
-                this.fun = fun;
-            }
+            public MemberFunction1(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex) 
+                : base(name, pars, varArgIndex) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args[0]);
 
@@ -82,10 +76,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun;
 
-            public MemberFunction2(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
-            {
-                this.fun = fun;
-            }
+            public MemberFunction2(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+                : base(name, pars, varArgIndex) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args[0], args[1]);
 
@@ -98,10 +90,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun;
 
-            public MemberFunction3(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
-            {
-                this.fun = fun;
-            }
+            public MemberFunction3(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+                : base(name, pars, varArgIndex) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args[0], args[1], args[2]);
 
@@ -112,9 +102,7 @@ namespace Dyalect.Runtime.Types
 
         private abstract class BaseStaticFunction : DyForeignFunction
         {
-            protected BaseStaticFunction(string name, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
-            {
-            }
+            protected BaseStaticFunction(string name, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex) { }
 
             protected override DyFunction Clone(ExecutionContext ctx) => this;
         }
@@ -123,10 +111,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject> fun;
 
-            public StaticFunction0(string name, Func<ExecutionContext, DyObject> fun, Par[] pars) : base(name, pars, -1)
-            {
-                this.fun = fun;
-            }
+            public StaticFunction0(string name, Func<ExecutionContext, DyObject> fun, Par[] pars)
+                : base(name, pars, -1) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx);
 
@@ -137,10 +123,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject> fun;
 
-            public StaticAutoFunction(Func<ExecutionContext, DyObject> fun, Par[] pars) : base(null, pars, -1)
-            {
-                this.fun = fun;
-            }
+            public StaticAutoFunction(Func<ExecutionContext, DyObject> fun, Par[] pars)
+                : base(null, pars, -1) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx);
 
@@ -151,10 +135,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject, DyObject> fun;
 
-            public StaticFunction1(string name, Func<ExecutionContext, DyObject, DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
-            {
-                this.fun = fun;
-            }
+            public StaticFunction1(string name, Func<ExecutionContext, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+                : base(name, pars, varArgIndex) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0]);
 
@@ -165,10 +147,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject, DyObject, DyObject> fun;
 
-            public StaticFunction2(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
-            {
-                this.fun = fun;
-            }
+            public StaticFunction2(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+                : base(name, pars, varArgIndex) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1]);
 
@@ -179,10 +159,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun;
 
-            public StaticFunction3(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
-            {
-                this.fun = fun;
-            }
+            public StaticFunction3(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+                : base(name, pars, varArgIndex) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2]);
 
@@ -193,10 +171,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun;
 
-            public StaticFunction4(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
-            {
-                this.fun = fun;
-            }
+            public StaticFunction4(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+                : base(name, pars, varArgIndex) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3]);
 
@@ -207,10 +183,8 @@ namespace Dyalect.Runtime.Types
         {
             private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun;
 
-            public StaticFunction5(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex)
-            {
-                this.fun = fun;
-            }
+            public StaticFunction5(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+                : base(name, pars, varArgIndex) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3], args[4]);
 
@@ -219,15 +193,11 @@ namespace Dyalect.Runtime.Types
 
         private readonly string name;
 
-        protected DyForeignFunction(string name, Par[] pars, int varArgIndex) : base(DyType.Function, pars, varArgIndex)
-        {
-            this.name = name ?? DefaultName;
-        }
+        protected DyForeignFunction(string name, Par[] pars, int varArgIndex)
+            : base(DyType.Function, pars, varArgIndex) => this.name = name ?? DefaultName;
 
-        internal DyForeignFunction(string name, Par[] pars, int typeId, int varArgIndex) : base(typeId, pars, varArgIndex)
-        {
+        internal DyForeignFunction(string name, Par[] pars, int typeId, int varArgIndex) : base(typeId, pars, varArgIndex) =>
             this.name = name ?? DefaultName;
-        }
 
         internal static DyFunction Compose(DyFunction first, DyFunction second) => new CompositionContainer(first, second);
 

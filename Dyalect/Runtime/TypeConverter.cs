@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using Dyalect.Runtime.Types;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.WebSockets;
-using Dyalect.Runtime.Types;
+using System.Linq;
 
 namespace Dyalect.Runtime
 {

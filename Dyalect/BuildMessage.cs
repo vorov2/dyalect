@@ -1,6 +1,4 @@
-﻿using Dyalect.Parser;
-
-namespace Dyalect
+﻿namespace Dyalect
 {
     public class BuildMessage
     {
@@ -26,10 +24,7 @@ namespace Dyalect
             return string.Format(ERR_FORMAT, GetFileName(), Line, Column, stype, scode, Message);
         }
 
-        protected string GetFileName()
-        {
-            return File ?? "<memory>";
-        }
+        protected string GetFileName() => File ?? "<memory>";
 
         public string File { get; internal set; }
 

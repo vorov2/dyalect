@@ -14,15 +14,11 @@ namespace Dyalect.Runtime.Types
 
         public new DyObject this[int index]
         {
-            get { return Values[CorrectIndex(index)]; }
-            set { Values[CorrectIndex(index)] = value; }
+            get => Values[CorrectIndex(index)];
+            set => Values[CorrectIndex(index)] = value;
         }
 
-        internal DyArray(DyObject[] values) : base(DyType.Array)
-        {
-            this.Values = values;
-            Count = values.Length;
-        }
+        internal DyArray(DyObject[] values) : base(DyType.Array) => (Values, Count) = (values, values.Length);
 
         public void RemoveRange(int start, int count)
         {
@@ -105,8 +101,10 @@ namespace Dyalect.Runtime.Types
         public bool Remove(ExecutionContext ctx, DyObject val)
         {
             var index = IndexOf(ctx, val);
+
             if (index < 0)
                 return false;
+
             return RemoveAt(index);
         }
 
@@ -161,11 +159,9 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) => Values[index];
 
-        protected override void CollectionSetItem(int index, DyObject obj, ExecutionContext ctx)
-        {
+        protected override void CollectionSetItem(int index, DyObject obj, ExecutionContext ctx) =>
             Values[index] = obj;
-        }
-
+        
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
             if (index.TypeId != DyType.Integer)
@@ -181,10 +177,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
     {
-        public DyArrayTypeInfo() : base(DyType.Array)
-        {
-
-        }
+        public DyArrayTypeInfo() : base(DyType.Array) { }
 
         public override string TypeName => DyTypeNames.Array;
 
@@ -192,11 +185,8 @@ namespace Dyalect.Runtime.Types
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
 
-        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
-        {
-            var len = ((DyArray)arg).Count;
-            return DyInteger.Get(len);
-        }
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+            DyInteger.Get(((DyArray)arg).Count);
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
@@ -269,10 +259,8 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject val)
-        {
-            return ((DyArray)self).Remove(ctx, val) ? DyBool.True : DyBool.False;
-        }
+        private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject val) =>
+            ((DyArray)self).Remove(ctx, val) ? DyBool.True : DyBool.False;
 
         private DyObject RemoveItemAt(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
@@ -354,9 +342,14 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyArray)self;
             var fst = arr.GetItem(idx1, ctx);
-            if (ctx.HasErrors) return DyNil.Instance;
+            
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+            
             var snd = arr.GetItem(idx2, ctx);
-            if (ctx.HasErrors) return DyNil.Instance;
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
 
             arr.SetItem(idx1, snd, ctx);
             arr.SetItem(idx2, fst, ctx);
@@ -485,10 +478,7 @@ namespace Dyalect.Runtime.Types
                 _ => base.GetMember(name, ctx),
             };
 
-        private DyObject New(ExecutionContext ctx, DyObject tuple)
-        {
-            return new DyArray(((DyTuple)tuple).Values);
-        }
+        private DyObject New(ExecutionContext ctx, DyObject tuple) => new DyArray(((DyTuple)tuple).Values);
 
         private DyObject Empty(ExecutionContext ctx, DyObject sizeObj, DyObject val)
         {

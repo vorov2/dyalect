@@ -11,10 +11,7 @@ namespace Dyalect.Runtime
         private Caller[] array;
         private readonly int initialSize;
 
-        public CallStack() : this(DEFAULT_SIZE)
-        {
-
-        }
+        public CallStack() : this(DEFAULT_SIZE) { }
 
         public CallStack(int size)
         {
@@ -28,10 +25,7 @@ namespace Dyalect.Runtime
                 yield return array[i];
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public void Clear()
         {
@@ -39,13 +33,8 @@ namespace Dyalect.Runtime
             array = new Caller[initialSize];
         }
 
-        public Caller Pop()
-        {
-            if (Count == 0)
-                throw new IndexOutOfRangeException();
-
-            return array[--Count];
-        }
+        public Caller Pop() =>
+            Count == 0 ? throw new IndexOutOfRangeException() : array[--Count];
 
         public bool PopLast()
         {
@@ -53,10 +42,7 @@ namespace Dyalect.Runtime
             return true;
         }
 
-        public Caller Peek()
-        {
-            return array[Count - 1];
-        }
+        public Caller Peek() => array[Count - 1];
 
         public void Push(Caller val)
         {
@@ -107,11 +93,8 @@ namespace Dyalect.Runtime
 
     internal readonly struct CatchMark
     {
-        public CatchMark(int offset, int stackOffset)
-        {
-            Offset = offset;
-            StackOffset = stackOffset;
-        }
+        public CatchMark(int offset, int stackOffset) =>
+            (Offset, StackOffset) = (offset, stackOffset);
 
         public readonly int Offset;
 

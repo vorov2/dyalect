@@ -13,10 +13,7 @@ namespace Dyalect.Runtime.Types
 
         public virtual DyObject this[int index] => GetValue(index);
 
-        internal DyCollection(int typeId) : base(typeId)
-        {
-
-        }
+        internal DyCollection(int typeId) : base(typeId) { }
 
         #region Indexing
         protected int CorrectIndex(int index) => index < 0 ? Count + index : index;
@@ -153,10 +150,7 @@ namespace Dyalect.Runtime.Types
 
     internal abstract class DyCollectionTypeInfo : DyTypeInfo
     {
-        protected DyCollectionTypeInfo(int typeId) : base(typeId)
-        {
-
-        }
+        protected DyCollectionTypeInfo(int typeId) : base(typeId) { }
 
         protected DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
         {
@@ -197,14 +191,12 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(iterate());
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            return name switch
+        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "indices" => DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters),
                 "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("start"), new Par("len", DyNil.Instance)),
                 _ => base.GetMember(name, ctx)
             };
-        }
     }
 }

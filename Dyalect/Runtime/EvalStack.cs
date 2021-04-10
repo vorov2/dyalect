@@ -7,10 +7,7 @@ namespace Dyalect.Runtime
         private readonly DyObject[] array;
         private int size;
 
-        public EvalStack(int size)
-        {
-            array = new DyObject[size];
-        }
+        public EvalStack(int size) => array = new DyObject[size];
 
         internal void Dup() => array[size++] = array[size - 2];
 

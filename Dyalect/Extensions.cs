@@ -8,7 +8,7 @@ namespace Dyalect
 
         public static T TakeAt<T>(this T[] arr, int pos, T defaultValue = default)
         {
-            if (arr == null || arr.Length <= pos)
+            if (arr is null || arr.Length <= pos)
                 return defaultValue;
 
             return arr[pos];

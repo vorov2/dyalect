@@ -22,10 +22,11 @@ namespace Dyalect.Runtime
             ref DyObject[] locals, ref EvalStack evalStack, ExecutionContext ctx)
         {
             Stack<StackPoint> dump;
+
             if (err.Dump is null)
             {
                 dump = Dump(ctx.CallStack.Clone());
-                dump.Push(new StackPoint(offset, moduleHandle));
+                dump.Push(new(offset, moduleHandle));
             }
             else
                 dump = err.Dump;
@@ -100,9 +101,9 @@ namespace Dyalect.Runtime
                     continue;
 
                 if (ReferenceEquals(cm, Caller.External))
-                    st.Push(new StackPoint(external: true));
+                    st.Push(new(external: true));
                 else
-                    st.Push(new StackPoint(cm.Offset, cm.Function.UnitId));
+                    st.Push(new(cm.Offset, cm.Function.UnitId));
             }
 
             return st;
@@ -111,15 +112,17 @@ namespace Dyalect.Runtime
         public static IEnumerable<RuntimeVar> DumpVariables(ExecutionContext ctx)
         {
             foreach (var v in ctx.RuntimeContext.Composition.Units[0].GlobalScope.EnumerateVars())
-                yield return new RuntimeVar(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
+                yield return new(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
         }
 
         private static DyCodeException GetCodeException(Exception ex)
         {
             if (ex is DyCodeException dy)
                 return dy;
+            
             if (ex.InnerException is not null)
                 return GetCodeException(ex.InnerException);
+
             return null;
         }
     }

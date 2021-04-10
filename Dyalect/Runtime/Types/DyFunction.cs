@@ -93,18 +93,12 @@ namespace Dyalect.Runtime.Types
 
         internal abstract bool Equals(DyFunction func);
 
-        internal virtual void Reset(ExecutionContext ctx)
-        {
-
-        }
+        internal virtual void Reset(ExecutionContext ctx) { }
     }
 
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
     {
-        public DyFunctionTypeInfo() : base(DyType.Function)
-        {
-
-        }
+        public DyFunctionTypeInfo() : base(DyType.Function) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
