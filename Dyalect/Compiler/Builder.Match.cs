@@ -206,7 +206,7 @@ namespace Dyalect.Compiler
             var err = GetTypeHandle(null, node.Name, out var handle, out var std);
 
             if (err == CompilerError.None)
-                cw.TypeCheck(new TypeHandle(handle, std));
+                cw.TypeCheck(new(handle, std));
             else
             {
                 ScopeVar sv = default;
@@ -528,24 +528,25 @@ namespace Dyalect.Compiler
 
         private void ValidateMatch(DMatch match)
         {
-            var count = match.Expression != null ? match.Expression.GetElementCount() : -1;
+            var count = match.Expression is not null ? match.Expression.GetElementCount() : -1;
 
             for (var i = 0; i < match.Entries.Count; i++)
             {
                 var e = match.Entries[i];
 
-                if (e.Guard == null && e.Pattern is DNamePattern name)
+                if (e.Guard is null && e.Pattern is DNamePattern name)
                     name.IsConstructor = IsTypeExists(name.Name);
 
-                if (e.Guard == null)
+                if (e.Guard is null)
                 {
                     var j = i;
+
                     while (j > 0)
                     {
                         j--;
                         var prev = match.Entries[j];
 
-                        if (prev.Guard == null && !CanFollow(e.Pattern, prev.Pattern))
+                        if (prev.Guard is null && !CanFollow(e.Pattern, prev.Pattern))
                         {
                             AddWarning(CompilerWarning.UnreachableMatchEntry, e.Location, e.Pattern, prev.Pattern);
                             break;
@@ -569,14 +570,12 @@ namespace Dyalect.Compiler
             }
         }
 
-        private bool IsIrrefutable(DPattern node)
-        {
-            return node.NodeType == NodeType.NamePattern
+        private bool IsIrrefutable(DPattern node) =>
+            node.NodeType == NodeType.NamePattern
                 || node.NodeType == NodeType.WildcardPattern
                 || node is DAsPattern pas && IsIrrefutable(pas.Pattern)
                 || node is DAndPattern dand && IsIrrefutable(dand.Left) && IsIrrefutable(dand.Right)
                 || node is DOrPattern dor && IsIrrefutable(dor.Left) && IsIrrefutable(dor.Right);
-        }
 
         private bool IsPureBinding(DPattern node)
         {

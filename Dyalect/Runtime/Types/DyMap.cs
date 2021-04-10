@@ -16,8 +16,8 @@ namespace Dyalect.Runtime.Types
             public Enumerator(DyMap obj)
             {
                 this.obj = obj;
-                this.version = obj.version;
-                this.enumerator = obj.Map.GetEnumerator();
+                version = obj.version;
+                enumerator = obj.Map.GetEnumerator();
             }
 
             public DyObject Current
@@ -36,28 +36,17 @@ namespace Dyalect.Runtime.Types
 
             public void Dispose() { }
 
-            public bool MoveNext()
-            {
-                if (version != obj.version)
-                    throw new DyIterator.IterationException();
+            public bool MoveNext() =>
+                version != obj.version ? throw new DyIterator.IterationException() : enumerator.MoveNext();
 
-                return enumerator.MoveNext();
-            }
-
-            public void Reset()
-            {
-                enumerator.Reset();
-            }
+            public void Reset() => enumerator.Reset();
         }
 
         internal sealed class Enumerable : IEnumerable<DyObject>
         {
             private readonly DyMap obj;
 
-            public Enumerable(DyMap obj)
-            {
-                this.obj = obj;
-            }
+            public Enumerable(DyMap obj) => this.obj = obj;
 
             public IEnumerator<DyObject> GetEnumerator() => new Enumerator(obj);
 
@@ -71,19 +60,15 @@ namespace Dyalect.Runtime.Types
 
         public DyObject this[DyObject key]
         {
-            get { return Map[key]; }
-            set { Map[key] = value; }
+            get => Map[key];
+            set => Map[key] = value;
         }
 
-        internal DyMap() : base(DyType.Map)
-        {
-            this.Map = new Dictionary<DyObject, DyObject>();
-        }
+        internal DyMap() : base(DyType.Map) =>
+            Map = new Dictionary<DyObject, DyObject>();
 
-        internal DyMap(Dictionary<DyObject, DyObject> dict) : base(DyType.Map)
-        {
-            this.Map = dict;
-        }
+        internal DyMap(Dictionary<DyObject, DyObject> dict) : base(DyType.Map) =>
+            Map = dict;
 
         public void Add(DyObject key, DyObject value)
         {
@@ -97,10 +82,8 @@ namespace Dyalect.Runtime.Types
             return Map.TryAdd(key, value);
         }
 
-        public bool TryGet(DyObject key, out DyObject value)
-        {
-            return Map.TryGetValue(key, out value);
-        }
+        public bool TryGet(DyObject key, out DyObject value) =>
+            Map.TryGetValue(key, out value);
 
         public bool Remove(DyObject key)
         {
@@ -150,10 +133,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyMapTypeInfo : DyTypeInfo
     {
-        public DyMapTypeInfo() : base(DyType.Map)
-        {
-
-        }
+        public DyMapTypeInfo() : base(DyType.Map) { }
 
         public override string TypeName => DyTypeNames.Map;
 
@@ -220,10 +200,8 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject key)
-        {
-            return ((DyMap)self).Remove(key) ? DyBool.True : DyBool.False;
-        }
+        private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject key) =>
+            ((DyMap)self).Remove(key) ? DyBool.True : DyBool.False;
 
         private DyObject ClearItems(ExecutionContext ctx, DyObject self)
         {

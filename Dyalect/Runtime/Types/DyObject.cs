@@ -8,10 +8,7 @@ namespace Dyalect.Runtime.Types
     {
         public readonly int TypeId;
 
-        protected DyObject(int typeId)
-        {
-            TypeId = typeId;
-        }
+        protected DyObject(int typeId) => TypeId = typeId;
 
         public override string ToString() => $"[type:{DyType.GetTypeNameByCode(TypeId)}]";
 
@@ -34,7 +31,7 @@ namespace Dyalect.Runtime.Types
             ctx.OperationNotSupported(Builtins.Set, this);
 
         internal protected virtual DyObject GetItem(string name, ExecutionContext ctx) =>
-            GetItem((DyObject)new DyString(name), ctx);
+            GetItem(new DyString(name), ctx);
 
         internal protected virtual DyObject GetItem(int index, ExecutionContext ctx) =>
             index == 0 ? this : ctx.IndexOutOfRange(index);

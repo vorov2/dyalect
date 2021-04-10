@@ -2,13 +2,13 @@
 
 namespace Dyalect.Parser
 {
-    public sealed class DyParser
+    public static class DyParser
     {
         private const string MEMORY = "<memory>";
 
-        public Result<DyCodeModel> Parse(SourceBuffer buffer)
+        public static Result<DyCodeModel> Parse(SourceBuffer buffer)
         {
-            var ip = new InternalParser(new Scanner(buffer));
+            var ip = new InternalParser(new(buffer));
             ip.Parse();
             var cd = new DyCodeModel(ip.Root, ip.Imports.ToArray(), buffer.FileName ?? MEMORY);
             return ip.Errors.Count == 0

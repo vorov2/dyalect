@@ -58,10 +58,7 @@ namespace Dyalect.Linker
             Execute(ctx);
         }
 
-        protected virtual void Execute(ExecutionContext ctx)
-        {
-
-        }
+        protected virtual void Execute(ExecutionContext ctx) { }
 
         protected virtual void InitializeMembers()
         {
@@ -71,7 +68,7 @@ namespace Dyalect.Linker
             {
                 var attr = Attribute.GetCustomAttribute(mi, typeof(FunctionAttribute));
 
-                if (attr != null)
+                if (attr is not null)
                 {
                     var name = attr.ToString() ?? mi.Name;
                     var obj = ProcessMethod(name, mi);

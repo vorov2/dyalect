@@ -279,8 +279,7 @@ namespace Dyalect.Linker
 
         private DyCodeModel ProcessBuffer(SourceBuffer buffer)
         {
-            var parser = new DyParser();
-            var res = parser.Parse(buffer);
+            var res = DyParser.Parse(buffer);
 
             if (!res.Success)
             {

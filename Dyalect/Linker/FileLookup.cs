@@ -23,7 +23,7 @@ namespace Dyalect.Linker
         public static FileLookup Create(string startupPath, string[] additionalPaths = null)
         {
             var asm = typeof(FileLookup).Assembly;
-            var codeBase = asm.Location;//asm.CodeBase;
+            var codeBase = asm.Location;
             var uri = new UriBuilder(codeBase);
             var systemPath = Uri.UnescapeDataString(uri.Path);
 
@@ -33,7 +33,7 @@ namespace Dyalect.Linker
             systemPath = Path.GetDirectoryName(systemPath);
             var systemPaths = new string[] { systemPath, Path.Combine(systemPath, LIBDIR) };
             var startupPaths = startupPath != null ? new string[] { startupPath, Path.Combine(startupPath, LIBDIR) }
-                : new string[0];
+                : Array.Empty<string>();
 
             return new FileLookup
             (
@@ -74,9 +74,9 @@ namespace Dyalect.Linker
             var var = Environment.GetEnvironmentVariable("DYALECT_LIBS");
 
             if (string.IsNullOrEmpty(var))
-                return new string[0];
+                return Array.Empty<string>();
             else
-                return var.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                return var.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

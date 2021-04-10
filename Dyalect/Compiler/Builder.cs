@@ -29,47 +29,47 @@ namespace Dyalect.Compiler
 
         public Builder(BuilderOptions options, DyLinker linker)
         {
-            this.referencedUnits = new Dictionary<string, UnitInfo>();
-            this.types = new Dictionary<string, TypeInfo>();
-            this.memberNames = new Dictionary<string, int>();
+            referencedUnits = new();
+            types = new();
+            memberNames = new();
 
             this.options = options;
             this.linker = linker;
-            counters = new Stack<int>();
-            pdb = new DebugWriter();
+            counters = new();
+            pdb = new();
             isDebug = options.Debug;
-            globalScope = new Scope(ScopeKind.Function, null);
-            unit = new Unit
+            globalScope = new(ScopeKind.Function, null);
+            unit = new()
             {
                 GlobalScope = globalScope,
                 Symbols = pdb.Symbols
             };
-            cw = new CodeWriter(unit);
+            cw = new(unit);
             currentScope = globalScope;
             programEnd = cw.DefineLabel();
         }
 
         public Builder(Builder builder)
         {
-            this.iterative = true;
-            this.linker = builder.linker;
-            this.types = builder.types;
-            this.memberNames = builder.memberNames;
-            this.referencedUnits = builder.referencedUnits;
-            this.counters = new Stack<int>();
-            this.options = builder.options;
-            this.pdb = builder.pdb.Clone();
-            this.unit = builder.unit.Clone(this.pdb.Symbols);
-            this.cw = builder.cw.Clone(this.unit);
-            this.globalScope = unit.GlobalScope;
-            this.currentScope = builder.currentScope != builder.globalScope
-                ? builder.currentScope.Clone() : this.globalScope;
-            this.isDebug = builder.isDebug;
-            this.lastLocation = builder.lastLocation;
-            this.Messages = new List<BuildMessage>();
-            this.counters = new Stack<int>(builder.counters.ToArray());
-            this.currentCounter = builder.currentCounter;
-            this.programEnd = cw.DefineLabel();
+            iterative = true;
+            linker = builder.linker;
+            types = builder.types;
+            memberNames = builder.memberNames;
+            referencedUnits = builder.referencedUnits;
+            counters = new();
+            options = builder.options;
+            pdb = builder.pdb.Clone();
+            unit = builder.unit.Clone(pdb.Symbols);
+            cw = builder.cw.Clone(unit);
+            globalScope = unit.GlobalScope;
+            currentScope = builder.currentScope != builder.globalScope
+                ? builder.currentScope.Clone() : globalScope;
+            isDebug = builder.isDebug;
+            lastLocation = builder.lastLocation;
+            Messages = new();
+            counters = new(builder.counters.ToArray());
+            currentCounter = builder.currentCounter;
+            programEnd = cw.DefineLabel();
         }
 
         public Unit Build(DyCodeModel codeModel)
@@ -94,7 +94,7 @@ namespace Dyalect.Compiler
             cw.CompileOpList();
 
             //Finalizing compilation, fixing top level layout
-            unit.Layouts[0] = new MemoryLayout(currentCounter, cw.FinishFrame(), 0);
+            unit.Layouts[0] = new(currentCounter, cw.FinishFrame(), 0);
             return unit;
         }
 
@@ -176,10 +176,8 @@ namespace Dyalect.Compiler
             return false;
         }
 
-        private Exception Ice(Exception ex = null)
-        {
-            return new DyBuildException(
+        private Exception Ice(Exception ex = null) =>
+            new DyBuildException(
                 $"Internal compiler error: {(ex != null ? ex.Message : "Unknown error.")}", ex);
-        }
     }
 }

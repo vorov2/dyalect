@@ -5,11 +5,7 @@
         public readonly int Line;
         public readonly int Column;
 
-        public Location(int line, int column)
-        {
-            Line = line;
-            Column = column;
-        }
+        public Location(int line, int column) => (Line, Column) = (line, column);
 
         public bool IsEmpty => Line == 0 && Column == 0;
     }

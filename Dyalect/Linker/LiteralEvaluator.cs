@@ -23,15 +23,9 @@ namespace Dyalect.Linker
                 case NodeType.Nil:
                     return DyNil.Instance;
                 case NodeType.Tuple:
-                    {
-                        var t = (DTupleLiteral)node;
-                        return new DyTuple(GetArray(t.Elements, allowLabels: true));
-                    }
+                    return new DyTuple(GetArray(((DTupleLiteral)node).Elements, allowLabels: true));
                 case NodeType.Array:
-                    {
-                        var t = (DArrayLiteral)node;
-                        return new DyArray(GetArray(t.Elements, allowLabels: false));
-                    }
+                    return new DyArray(GetArray(((DArrayLiteral)node).Elements, allowLabels: false));
                 default:
                     throw new DyException($"Node of type {node.NodeType} is not supported.");
             }

@@ -30,9 +30,9 @@ namespace Dyalect.Runtime.Types
             }
 
             var res = ctx.RuntimeContext.Types[x.TypeId].Gt(ctx, x, y);
-            return res == DyBool.True
+            return ReferenceEquals(res, DyBool.True)
                 ? 1
-                : ctx.RuntimeContext.Types[x.TypeId].Eq(ctx, x, y) == DyBool.True ? 0 : -1;
+                : ReferenceEquals(ctx.RuntimeContext.Types[x.TypeId].Eq(ctx, x, y), DyBool.True) ? 0 : -1;
         }
     }
 }

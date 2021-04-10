@@ -57,7 +57,7 @@ namespace Dyalect.Debug
                         codeBlockName += "(...)";
                 }
 
-                frames.Add(new CallFrame(
+                frames.Add(new(
                     moduleName: unit.FileName,
                     codeBlockName: codeBlockName,
                     offset: offset,

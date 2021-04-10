@@ -18,13 +18,11 @@ namespace Dyalect.Parser
 
         public static SourceBuffer FromFile(string file)
         {
-            using (var sr = new StreamReader(File.OpenRead(file)))
-                return new StringBuffer(sr.ReadToEnd(), file);
+            using var sr = new StreamReader(File.OpenRead(file));
+            return new StringBuffer(sr.ReadToEnd(), file);
         }
 
-        public static SourceBuffer FromString(string str, string file = null)
-        {
-            return new StringBuffer(str, file ?? "<memory>");
-        }
+        public static SourceBuffer FromString(string str, string file = null) =>
+            new StringBuffer(str, file ?? "<memory>");
     }
 }

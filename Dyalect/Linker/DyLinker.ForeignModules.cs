@@ -15,7 +15,7 @@ namespace Dyalect.Linker
             if (!AssemblyMap.TryGetValue(path, out Dictionary<string, Type> dict))
                 dict = LoadAssembly(path, mod);
 
-            if (dict != null)
+            if (dict is not null)
             {
                 if (!dict.TryGetValue(mod.ModuleName, out Type sysType))
                 {

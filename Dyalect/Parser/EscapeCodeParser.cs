@@ -140,7 +140,7 @@ namespace Dyalect.Parser
                     b--;
 
                 if (b == 0)
-                    return new string(buffer, start + 1, i - start - 1);
+                    return new(buffer, start + 1, i - start - 1);
             }
 
             return null;

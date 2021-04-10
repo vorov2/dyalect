@@ -26,10 +26,10 @@ namespace Dyalect.Debug
             funs = new(dw.funs.ToArray());
         }
 
-        public DebugWriter Clone() => new DebugWriter(this);
+        public DebugWriter Clone() => new(this);
 
         public void StartFunction(string name, int offset, Par[] pars = null) =>
-            funs.Push(new FunSym(name, offset, pars ?? Array.Empty<Par>()));
+            funs.Push(new(name, offset, pars ?? Array.Empty<Par>()));
         
         public void EndFunction(int handle, int offset)
         {
@@ -42,7 +42,7 @@ namespace Dyalect.Debug
         public void StartScope(int offset, int line, int col)
         {
             var index = ++scopeCount;
-            scopes.Push(new ScopeSym(index, scopes.Peek().Index, offset, line, col));
+            scopes.Push(new(index, scopes.Peek().Index, offset, line, col));
         }
 
         public void EndScope(int offset, int line, int col)
@@ -55,10 +55,10 @@ namespace Dyalect.Debug
         }
 
         public void AddVarSym(string name, int address, int offset, int flags, int data) =>
-            Symbols.Vars.Add(LastVarSym = new VarSym(name, address, offset, scopes.Peek().Index, flags, data));
+            Symbols.Vars.Add(LastVarSym = new(name, address, offset, scopes.Peek().Index, flags, data));
         
         public void AddLineSym(int offset, int line, int col) =>
-            Symbols.Lines.Add(new LineSym(offset, line, col));
+            Symbols.Lines.Add(new(offset, line, col));
         
         public DebugInfo Symbols { get; private set; }
 
