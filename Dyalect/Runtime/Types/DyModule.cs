@@ -11,8 +11,8 @@ namespace Dyalect.Runtime.Types
 
         public DyModule(Unit unit, DyObject[] globals) : base(DyType.Module)
         {
-            this.Unit = unit;
-            this.Globals = globals;
+            Unit = unit;
+            Globals = globals;
         }
 
         public override object ToObject() => Unit;
@@ -77,10 +77,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyModuleTypeInfo : DyTypeInfo
     {
-        public DyModuleTypeInfo() : base(DyType.Module)
-        {
-
-        }
+        public DyModuleTypeInfo() : base(DyType.Module) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not

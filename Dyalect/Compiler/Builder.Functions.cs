@@ -64,9 +64,8 @@ namespace Dyalect.Compiler
 
         //Converts symbolic names (used when overriding operators) to special internal
         //names, e.g. "*" becomes "op_mul"
-        private string GetMethodName(string name, DFunctionDeclaration node)
-        {
-            return name switch
+        private string GetMethodName(string name, DFunctionDeclaration node) =>
+            name switch
             {
                 "+" => node.Parameters.Count == 0 ? Builtins.Plus : Builtins.Add,
                 "-" => node.Parameters.Count == 0 ? Builtins.Neg : Builtins.Sub,
@@ -88,7 +87,6 @@ namespace Dyalect.Compiler
                 "~" => Builtins.BitNot,
                 _ => name,
             };
-        }
 
         //Compilation of function parameters with support for variable
         //arguments and default values

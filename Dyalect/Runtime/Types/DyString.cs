@@ -15,10 +15,7 @@ namespace Dyalect.Runtime.Types
 
         public override int Count => Value.Length;
 
-        public DyString(string str) : base(DyType.String)
-        {
-            Value = str;
-        }
+        public DyString(string str) : base(DyType.String) => Value = str;
 
         internal override DyObject GetValue(int index) => new DyChar(Value[index]);
 
@@ -73,15 +70,11 @@ namespace Dyalect.Runtime.Types
             return GetItem(idx, ctx);
         }
 
-        protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx)
-        {
-            return new DyChar(Value[idx]);
-        }
+        protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) =>
+            new DyChar(Value[idx]);
 
-        protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
-        {
+        protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx) =>
             ctx.OperationNotSupported("set", this);
-        }
 
         public override DyObject Clone() => this;
 
@@ -94,10 +87,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyStringTypeInfo : DyTypeInfo
     {
-        public DyStringTypeInfo() : base(DyType.String)
-        {
-
-        }
+        public DyStringTypeInfo() : base(DyType.String) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
@@ -274,15 +264,11 @@ namespace Dyalect.Runtime.Types
             return str.Length == 0 ? DyString.Empty : new DyString(char.ToUpper(str[0]) + str[1..].ToLower());
         }
 
-        private DyObject Upper(ExecutionContext ctx, DyObject self, DyObject[] args)
-        {
-            return new DyString(self.GetString().ToUpper());
-        }
+        private DyObject Upper(ExecutionContext ctx, DyObject self, DyObject[] args) =>
+            new DyString(self.GetString().ToUpper());
 
-        private DyObject Lower(ExecutionContext ctx, DyObject self, DyObject[] args)
-        {
-            return new DyString(self.GetString().ToLower());
-        }
+        private DyObject Lower(ExecutionContext ctx, DyObject self, DyObject[] args) =>
+            new DyString(self.GetString().ToLower());
 
         private DyObject StartsWith(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
@@ -338,20 +324,14 @@ namespace Dyalect.Runtime.Types
             return new DyString(self.GetString().Substring(i, j));
         }
 
-        private DyObject Trim(ExecutionContext ctx, DyObject self, DyObject[] args)
-        {
-            return new DyString(self.GetString().Trim(GetChars(args, ctx)));
-        }
+        private DyObject Trim(ExecutionContext ctx, DyObject self, DyObject[] args) =>
+            new DyString(self.GetString().Trim(GetChars(args, ctx)));
 
-        private DyObject TrimStart(ExecutionContext ctx, DyObject self, DyObject[] args)
-        {
-            return new DyString(self.GetString().TrimStart(GetChars(args, ctx)));
-        }
+        private DyObject TrimStart(ExecutionContext ctx, DyObject self, DyObject[] args) =>
+            new DyString(self.GetString().TrimStart(GetChars(args, ctx)));
 
-        private DyObject TrimEnd(ExecutionContext ctx, DyObject self, DyObject[] args)
-        {
-            return new DyString(self.GetString().TrimEnd(GetChars(args, ctx)));
-        }
+        private DyObject TrimEnd(ExecutionContext ctx, DyObject self, DyObject[] args) =>
+            new DyString(self.GetString().TrimEnd(GetChars(args, ctx)));
 
         private static char[] GetChars(DyObject[] args, ExecutionContext ctx)
         {
@@ -374,10 +354,8 @@ namespace Dyalect.Runtime.Types
             return chs;
         }
 
-        private DyObject IsEmpty(ExecutionContext ctx, DyObject self)
-        {
-            return string.IsNullOrWhiteSpace(self.GetString()) ? DyBool.True : DyBool.False;
-        }
+        private DyObject IsEmpty(ExecutionContext ctx, DyObject self) =>
+            string.IsNullOrWhiteSpace(self.GetString()) ? DyBool.True : DyBool.False;
 
         private DyObject Reverse(ExecutionContext ctx, DyObject self)
         {
@@ -446,9 +424,8 @@ namespace Dyalect.Runtime.Types
             return new DyString(str.Remove(fri, c));
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            return name switch
+        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "indexOf" => DyForeignFunction.Member(name, IndexOf, -1, new Par("value"), 
                     new Par("fromIndex", DyInteger.Get(0)), new Par("count", DyNil.Instance)),
@@ -474,7 +451,6 @@ namespace Dyalect.Runtime.Types
                 "reverse" => DyForeignFunction.Member(name, Reverse),
                 _ => base.GetMember(name, ctx),
             };
-        }
         #endregion
 
         #region Statics

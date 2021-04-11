@@ -142,27 +142,27 @@ namespace Dyalect.Runtime
 
         public static DyObject CollectionModified(this ExecutionContext ctx)
         {
-            ctx.Error = new DyError(DyErrorCode.CollectionModified);
+            ctx.Error = new(DyErrorCode.CollectionModified);
             return DyNil.Instance;
         }
 
         public static DyObject FailedReadLiteral(this ExecutionContext ctx, string reason)
         {
-            ctx.Error = new DyError(DyErrorCode.FailedReadLiteral,
+            ctx.Error = new(DyErrorCode.FailedReadLiteral,
                 ("Reason", reason));
             return DyNil.Instance;
         }
 
         public static DyObject AssertFailed(this ExecutionContext ctx, string reason)
         {
-            ctx.Error = new DyError(DyErrorCode.AssertFailed,
+            ctx.Error = new(DyErrorCode.AssertFailed,
                 ("Reason", reason));
             return DyNil.Instance;
         }
 
         public static DyObject StaticOperationNotSupported(this ExecutionContext ctx, string op, string typeName)
         {
-            ctx.Error = new DyError(DyErrorCode.StaticOperationNotSupported,
+            ctx.Error = new(DyErrorCode.StaticOperationNotSupported,
                 ("Operation", op),
                 ("TypeName", typeName));
             return DyNil.Instance;
@@ -170,14 +170,14 @@ namespace Dyalect.Runtime
 
         public static DyObject PrivateNameAccess(this ExecutionContext ctx, DyObject obj)
         {
-            ctx.Error = new DyError(DyErrorCode.PrivateNameAccess,
+            ctx.Error = new(DyErrorCode.PrivateNameAccess,
                 ("Name", obj.ToString()));
             return DyNil.Instance;
         }
 
         public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj)
         {
-            ctx.Error = new DyError(DyErrorCode.OperationNotSupported,
+            ctx.Error = new(DyErrorCode.OperationNotSupported,
                 ("Operation", op),
                 ("TypeName", obj.GetTypeName(ctx)));
             return DyNil.Instance;
@@ -185,21 +185,21 @@ namespace Dyalect.Runtime
 
         public static DyObject IndexOutOfRange(this ExecutionContext ctx, object index)
         {
-            ctx.Error = new DyError(DyErrorCode.IndexOutOfRange,
+            ctx.Error = new(DyErrorCode.IndexOutOfRange,
                 ("Index", index));
             return DyNil.Instance;
         }
 
         public static DyObject ValueOutOfRange(this ExecutionContext ctx, object value)
         {
-            ctx.Error = new DyError(DyErrorCode.ValueOutOfRange,
+            ctx.Error = new(DyErrorCode.ValueOutOfRange,
                 ("Value", value));
             return DyNil.Instance;
         }
 
         public static DyObject IndexInvalidType(this ExecutionContext ctx, DyObject index)
         {
-            ctx.Error = new DyError(DyErrorCode.IndexInvalidType,
+            ctx.Error = new(DyErrorCode.IndexInvalidType,
                 ("Index", index),
                 ("IndexTypeName", index.GetTypeName(ctx)));
             return DyNil.Instance;
@@ -207,39 +207,39 @@ namespace Dyalect.Runtime
 
         public static DyObject KeyNotFound(this ExecutionContext ctx, DyObject key)
         {
-            ctx.Error = new DyError(DyErrorCode.KeyNotFound, ("Key", key));
+            ctx.Error = new(DyErrorCode.KeyNotFound, ("Key", key));
             return DyNil.Instance;
         }
 
         public static DyObject KeyAlreadyPresent(this ExecutionContext ctx, DyObject key)
         {
-            ctx.Error = new DyError(DyErrorCode.KeyAlreadyPresent, ("Key", key));
+            ctx.Error = new(DyErrorCode.KeyAlreadyPresent, ("Key", key));
             return DyNil.Instance;
         }
 
         public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
         {
-            ctx.Error = new DyError(DyErrorCode.InvalidType,
+            ctx.Error = new(DyErrorCode.InvalidType,
                 ("TypeName", value.GetTypeName(ctx)));
             return DyNil.Instance;
         }
 
         public static DyObject InvalidValue(this ExecutionContext ctx, DyObject value)
         {
-            ctx.Error = new DyError(DyErrorCode.InvalidValue,
+            ctx.Error = new(DyErrorCode.InvalidValue,
                 ("Value", value.ToString(ctx)));
             return DyNil.Instance;
         }
 
         public static DyObject InvalidRange(this ExecutionContext ctx)
         {
-            ctx.Error = new DyError(DyErrorCode.InvalidRange);
+            ctx.Error = new(DyErrorCode.InvalidRange);
             return DyNil.Instance;
         }
 
         public static DyObject ExternalFunctionFailure(this ExecutionContext ctx, string functionName, string error)
         {
-            ctx.Error = new DyError(DyErrorCode.ExternalFunctionFailure,
+            ctx.Error = new(DyErrorCode.ExternalFunctionFailure,
                 ("FunctionName", functionName),
                 ("Error", error));
             return DyNil.Instance;
@@ -247,19 +247,19 @@ namespace Dyalect.Runtime
 
         public static DyObject NotFunction(this ExecutionContext ctx, DyObject obj)
         {
-            ctx.Error = new DyError(DyErrorCode.NotFunction, ("TypeName", obj.GetTypeName(ctx)));
+            ctx.Error = new(DyErrorCode.NotFunction, ("TypeName", obj.GetTypeName(ctx)));
             return DyNil.Instance;
         }
 
         public static DyObject DivideByZero(this ExecutionContext ctx)
         {
-            ctx.Error = new DyError(DyErrorCode.DivideByZero);
+            ctx.Error = new(DyErrorCode.DivideByZero);
             return DyNil.Instance;
         }
 
         public static DyObject TooManyArguments(this ExecutionContext ctx, string functionName, int functionArguments, int passedArguments)
         {
-            ctx.Error = new DyError(DyErrorCode.TooManyArguments,
+            ctx.Error = new(DyErrorCode.TooManyArguments,
                 ("FunctionName", functionName),
                 ("FunctionArguments", functionArguments),
                 ("PassedArguments", passedArguments));
@@ -268,7 +268,7 @@ namespace Dyalect.Runtime
 
         public static DyObject RequiredArgumentMissing(this ExecutionContext ctx, string functionName, string argumentName)
         {
-            ctx.Error = new DyError(DyErrorCode.RequiredArgumentMissing,
+            ctx.Error = new(DyErrorCode.RequiredArgumentMissing,
                 ("FunctionName", functionName),
                 ("ArgumentName", argumentName));
             return DyNil.Instance;
@@ -276,7 +276,7 @@ namespace Dyalect.Runtime
 
         public static DyObject ArgumentNotFound(this ExecutionContext ctx, string functionName, string argumentName)
         {
-            ctx.Error = new DyError(DyErrorCode.ArgumentNotFound,
+            ctx.Error = new(DyErrorCode.ArgumentNotFound,
                 ("FunctionName", functionName),
                 ("ArgumentName", argumentName));
             return DyNil.Instance;

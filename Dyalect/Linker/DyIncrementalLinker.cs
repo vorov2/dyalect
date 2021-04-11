@@ -4,7 +4,6 @@ using Dyalect.Runtime.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Dyalect.Linker
 {
@@ -18,15 +17,9 @@ namespace Dyalect.Linker
         private Dictionary<string, Dictionary<string, Type>> backupAssemblyMap;
         private List<Unit> backupUnits;
 
-        public DyIncrementalLinker(FileLookup lookup, BuilderOptions options) : base(lookup, options)
-        {
+        public DyIncrementalLinker(FileLookup lookup, BuilderOptions options) : base(lookup, options) { }
 
-        }
-
-        public DyIncrementalLinker(FileLookup lookup, BuilderOptions options, DyTuple args) : base(lookup, options, args)
-        {
-
-        }
+        public DyIncrementalLinker(FileLookup lookup, BuilderOptions options, DyTuple args) : base(lookup, options, args) { }
 
         protected override void Prepare()
         {
@@ -50,7 +43,7 @@ namespace Dyalect.Linker
 
         protected override Result<UnitComposition> Make(Unit unit)
         {
-            if (composition == null)
+            if (composition is null)
                 composition = new UnitComposition(Units);
 
             Units[0] = unit;
@@ -68,10 +61,10 @@ namespace Dyalect.Linker
             var oldCompiler = compiler;
 
             if (compiler == null)
-                compiler = new DyCompiler(BuilderOptions, this);
+                compiler = new(BuilderOptions, this);
             else
             {
-                compiler = new DyCompiler(compiler);
+                compiler = new(compiler);
                 startOffset = composition.Units[0].Ops.Count;
             }
 
@@ -87,7 +80,7 @@ namespace Dyalect.Linker
                 return null;
             }
 
-            if (startOffset != null)
+            if (startOffset is not null)
                 res.Value.Layouts[0].Address = startOffset.Value;
 
             return res.Value;

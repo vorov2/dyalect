@@ -55,10 +55,8 @@ namespace Dyalect.Runtime.Types
 
         public int TypeCode { get; internal set; }
 
-        protected DyTypeInfo(int typeCode) : base(DyType.TypeInfo)
-        {
+        protected DyTypeInfo(int typeCode) : base(DyType.TypeInfo) =>
             TypeCode = typeCode;
-        }
 
         #region Binary Operations
         //x + y
@@ -422,15 +420,11 @@ namespace Dyalect.Runtime.Types
             return (DyBool)HasMemberDirect(self, name, nameId, ctx);
         }
 
-        internal DyObject HasStaticMember(int nameId, Unit unit, ExecutionContext ctx)
-        {
-            return (DyBool)CheckStaticMember(nameId, unit, ctx);
-        }
+        internal DyObject HasStaticMember(int nameId, Unit unit, ExecutionContext ctx) =>
+            (DyBool)CheckStaticMember(nameId, unit, ctx);
 
-        internal DyObject HasStaticMember(string name, ExecutionContext ctx)
-        {
-            return (DyBool)CheckStaticMember(name, ctx);
-        }
+        internal DyObject HasStaticMember(string name, ExecutionContext ctx) =>
+            (DyBool)CheckStaticMember(name, ctx);
 
         protected virtual bool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx) =>
             name switch
@@ -642,10 +636,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyTypeTypeInfo : DyTypeInfo
     {
-        public DyTypeTypeInfo() : base(DyType.TypeInfo)
-        {
-
-        }
+        public DyTypeTypeInfo() : base(DyType.TypeInfo) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Get;

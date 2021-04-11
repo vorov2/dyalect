@@ -1,4 +1,4 @@
-﻿using Dyalect.Parser;
+﻿ using Dyalect.Parser;
 using Dyalect.Parser.Model;
 using static Dyalect.Compiler.Hints;
 
@@ -157,9 +157,7 @@ namespace Dyalect.Compiler
             return false;
         }
 
-        private bool TryGetLocalType(string typeName, out TypeInfo ti)
-        {
-            return types.TryGetValue(typeName, out ti);
-        }
+        private bool TryGetLocalType(string typeName, out TypeInfo ti) =>
+            types.TryGetValue(typeName, out ti);
     }
 }

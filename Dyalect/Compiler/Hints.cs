@@ -36,10 +36,7 @@ namespace Dyalect.Compiler
 
     public static class HintsExtensions
     {
-        public static bool Has(this Hints hints, Hints val)
-        {
-            return (hints & val) == val;
-        }
+        public static bool Has(this Hints hints, Hints val) => (hints & val) == val;
 
         public static Hints Push(this Hints hints)
         {

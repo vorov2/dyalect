@@ -89,7 +89,7 @@ namespace Dyalect.Compiler
                 return -1;
             }
 
-            currentScope.Locals.Add(name, new ScopeVar(currentCounter, data));
+            currentScope.Locals.Add(name, new(currentCounter, data));
 
             //An extended debug info is generated only in debug mode
             if (isDebug && !loc.IsEmpty)
@@ -107,7 +107,7 @@ namespace Dyalect.Compiler
                     data |= VarFlags.Private;
 
                 unit.ExportList.Remove(name);
-                unit.ExportList.Add(name, new ScopeVar(retval, data));
+                unit.ExportList.Add(name, new(retval, data));
             }
 
             return retval;
@@ -134,7 +134,7 @@ namespace Dyalect.Compiler
             }
 
             if (cur.Locals.TryGetValue(name, out var var))
-                return new ScopeVar(1 | var.Address << 8, var.Data);
+                return new(1 | var.Address << 8, var.Data);
 
             AddError(CompilerError.UndefinedBaseVariable, loc, name);
             return ScopeVar.Empty;
@@ -170,7 +170,7 @@ namespace Dyalect.Compiler
 
             if (currentScope.Locals.TryGetValue(name, out var sv))
             {
-                var = new ScopeVar(0 | sv.Address << 8, sv.Data);
+                var = new(0 | sv.Address << 8, sv.Data);
                 return true;
             }
 
@@ -201,7 +201,7 @@ namespace Dyalect.Compiler
             do
             {
                 if (cur.Locals.TryGetValue(name, out var var))
-                    return new ScopeVar(shift | var.Address << 8, var.Data);
+                    return new(shift | var.Address << 8, var.Data);
 
                 if (cur.Kind == ScopeKind.Function)
                     shift++;
@@ -216,7 +216,7 @@ namespace Dyalect.Compiler
                 if ((sv.Data & VarFlags.Private) == VarFlags.Private)
                     AddError(CompilerError.PrivateNameAccess, loc, name);
 
-                return new ScopeVar(moduleHandle | (sv.Address >> 8) << 8, sv.Data | VarFlags.External);
+                return new(moduleHandle | (sv.Address >> 8) << 8, sv.Data | VarFlags.External);
             }
 
             if (err)

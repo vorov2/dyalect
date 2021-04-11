@@ -7,10 +7,6 @@ namespace Dyalect.Runtime
         public readonly string Name;
         public readonly DyObject Value;
 
-        public RuntimeVar(string name, DyObject value)
-        {
-            Name = name;
-            Value = value;
-        }
+        public RuntimeVar(string name, DyObject value) => (Name, Value) = (name, value);
     }
 }

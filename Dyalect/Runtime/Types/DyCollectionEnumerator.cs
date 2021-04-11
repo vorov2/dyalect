@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
             this.start = start;
             this.count = count;
             this.obj = obj;
-            this.version = obj.Version;
+            version = obj.Version;
         }
 
         public DyObject Current => arr[index + start];
@@ -27,20 +27,9 @@ namespace Dyalect.Runtime.Types
 
         public void Dispose() { }
 
-        public bool MoveNext()
-        {
-            if (version != obj.Version)
-                throw new DyIterator.IterationException();
+        public bool MoveNext() =>
+            version != obj.Version ? throw new DyIterator.IterationException() : ++index < count;
 
-            if (++index < count)
-                return true;
-
-            return false;
-        }
-
-        public void Reset()
-        {
-            index = -1;
-        }
+        public void Reset() => index = -1;
     }
 }

@@ -6,36 +6,19 @@ namespace Dyalect.Linker
 {
     internal static class LiteralEvaluator
     {
-        public static DyObject Eval(DNode node)
-        {
-            switch (node.NodeType)
+        public static DyObject Eval(DNode node) =>
+            node.NodeType switch
             {
-                case NodeType.String:
-                    return new DyString(((DStringLiteral)node).Value);
-                case NodeType.Integer:
-                    return DyInteger.Get(((DIntegerLiteral)node).Value);
-                case NodeType.Float:
-                    return new DyFloat(((DFloatLiteral)node).Value);
-                case NodeType.Char:
-                    return new DyChar(((DCharLiteral)node).Value);
-                case NodeType.Boolean:
-                    return ((DBooleanLiteral)node).Value ? DyBool.True : DyBool.False;
-                case NodeType.Nil:
-                    return DyNil.Instance;
-                case NodeType.Tuple:
-                    {
-                        var t = (DTupleLiteral)node;
-                        return new DyTuple(GetArray(t.Elements, allowLabels: true));
-                    }
-                case NodeType.Array:
-                    {
-                        var t = (DArrayLiteral)node;
-                        return new DyArray(GetArray(t.Elements, allowLabels: false));
-                    }
-                default:
-                    throw new DyException($"Node of type {node.NodeType} is not supported.");
-            }
-        }
+                NodeType.String => new DyString(((DStringLiteral)node).Value),
+                NodeType.Integer => DyInteger.Get(((DIntegerLiteral)node).Value),
+                NodeType.Float => new DyFloat(((DFloatLiteral)node).Value),
+                NodeType.Char => new DyChar(((DCharLiteral)node).Value),
+                NodeType.Boolean => ((DBooleanLiteral)node).Value ? DyBool.True : DyBool.False,
+                NodeType.Nil => DyNil.Instance,
+                NodeType.Tuple => new DyTuple(GetArray(((DTupleLiteral)node).Elements, allowLabels: true)),
+                NodeType.Array => new DyArray(GetArray(((DArrayLiteral)node).Elements, allowLabels: false)),
+                _ => throw new DyException($"Node of type {node.NodeType} is not supported."),
+            };
 
         private static DyObject[] GetArray(List<DNode> nodes, bool allowLabels)
         {

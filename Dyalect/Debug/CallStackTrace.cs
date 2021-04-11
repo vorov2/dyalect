@@ -14,15 +14,9 @@ namespace Dyalect.Debug
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public CallFrame this[int index]
-        {
-            get => frames[index];
-        }
+        public CallFrame this[int index] => frames[index];
 
-        public int FrameCount
-        {
-            get => frames.Count;
-        }
+        public int FrameCount => frames.Count;
 
         public override string ToString()
         {

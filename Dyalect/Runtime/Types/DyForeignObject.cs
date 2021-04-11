@@ -17,14 +17,8 @@ namespace Dyalect.Runtime.Types
             return id;
         }
 
-        protected DyForeignObject(RuntimeContext rtx) : base(GetTypeId(rtx))
-        {
+        protected DyForeignObject(RuntimeContext rtx) : base(GetTypeId(rtx)) { }
 
-        }
-
-        protected DyForeignObject(int typeId) : base(typeId)
-        {
-
-        }
+        protected DyForeignObject(int typeId) : base(typeId) { }
     }
 }

@@ -71,10 +71,8 @@ namespace Dyalect.Runtime.Types
 
         private readonly long value;
 
-        public DyInteger(long value) : base(DyType.Integer)
-        {
+        public DyInteger(long value) : base(DyType.Integer) =>
             this.value = value;
-        }
 
         public static DyInteger Get(long i)
         {
@@ -115,13 +113,9 @@ namespace Dyalect.Runtime.Types
         }
     }
 
-
     internal sealed class DyIntegerTypeInfo : DyTypeInfo
     {
-        public DyIntegerTypeInfo() : base(DyType.Integer)
-        {
-
-        }
+        public DyIntegerTypeInfo() : base(DyType.Integer) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add

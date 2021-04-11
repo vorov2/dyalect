@@ -41,7 +41,7 @@ namespace Dyalect
             return ret;
         }
 
-        public BuilderOptions BuildOptions { get; private set; }
+        public BuilderOptions BuildOptions { get; }
 
         public ExecutionContext ExecutionContext { get; private set; }
 
@@ -74,8 +74,7 @@ namespace Dyalect
         public bool Compile(string fileName, out Unit unit)
         {
             unit = null;
-
-            var made = default(Result<Unit>);
+            Result<Unit> made;
 
             try
             {

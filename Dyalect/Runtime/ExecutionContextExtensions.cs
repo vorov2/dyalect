@@ -17,6 +17,5 @@ namespace Dyalect.Runtime
 
             return self.RuntimeContext.Composition.Types[id];
         }
-
     }
 }

@@ -4,12 +4,8 @@
     //or function). It is used for addressing.
     public sealed class MemoryLayout
     {
-        internal MemoryLayout(int size, int stackSize, int address)
-        {
-            Size = size;
-            StackSize = stackSize;
-            Address = address;
-        }
+        internal MemoryLayout(int size, int stackSize, int address) =>
+            (Size, StackSize, Address) = (size, stackSize, address);
 
         //Size of operational stack
         public int StackSize { get; }

@@ -319,7 +319,7 @@ namespace Dyalect.Runtime
                             goto CATCH;
                         }
                     case OpCode.FailSys:
-                        ctx.Error = new DyError((DyErrorCode)op.Data);
+                        ctx.Error = new((DyErrorCode)op.Data);
                         ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                         goto CATCH;
                     case OpCode.NewIter:
@@ -486,7 +486,7 @@ namespace Dyalect.Runtime
                             ctx.Arguments.Push(new ArgContainer {
                                 Locals = callFun.CreateLocals(ctx),
                                 VarArgsIndex = callFun.VarArgIndex,
-                                VarArgs = callFun.VarArgIndex > -1 ? new FastList<DyObject>() : null
+                                VarArgs = callFun.VarArgIndex > -1 ? new() : null
                             });
                         }
                         break;
@@ -662,7 +662,5 @@ namespace Dyalect.Runtime
                 }
             }
         }
-
-        
     }
 }

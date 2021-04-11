@@ -25,9 +25,9 @@ namespace Dyalect.Runtime.Types
                 this.start = start;
                 this.to = to ?? '\0';
                 this.step = step;
-                this.inf = to == null;
-                this.fst = true;
-                this.current = from;
+                inf = to == null;
+                fst = true;
+                current = from;
             }
 
             public DyObject Current => new DyChar(current);
@@ -170,9 +170,8 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(new DyChar.RangeEnumerator(ifrom, istart, ito, istep));
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            return name switch
+        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "range" => DyForeignFunction.Member(name, Range, -1, new Par("to", DyNil.Instance), new Par("step", DyNil.Instance)),
                 "isLower" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLower(c.GetChar())),
@@ -187,7 +186,6 @@ namespace Dyalect.Runtime.Types
                 "order" => DyForeignFunction.Member(name, (_, c) => DyInteger.Get(c.GetChar())),
                 _ => base.GetMember(name, ctx),
             };
-        }
 
         private DyObject CreateChar(ExecutionContext ctx, DyObject obj)
         {

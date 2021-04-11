@@ -27,13 +27,13 @@ namespace Dyalect.Runtime
 
         internal Stack<int> Sections { get; set; }
 
-        internal Stack<ArgContainer> Arguments { get; } = new Stack<ArgContainer>(4);
+        internal Stack<ArgContainer> Arguments { get; } = new(4);
 
         public DyError GetError() => Error;
 
         internal void ThrowIf()
         {
-            if (Error != null)
+            if (Error is not null)
             {
                 var err = Error;
                 Error = null;

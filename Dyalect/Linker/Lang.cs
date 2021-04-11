@@ -14,10 +14,7 @@ namespace Dyalect.Linker
     {
         private readonly DyTuple args;
 
-        public Lang() : this(null)
-        {
-
-        }
+        public Lang() : this(null) { }
 
         public Lang(DyTuple args)
         {
@@ -25,10 +22,8 @@ namespace Dyalect.Linker
             this.args = args;
         }
 
-        protected override void Execute(ExecutionContext ctx)
-        {
+        protected override void Execute(ExecutionContext ctx) =>
             Add("args", args ?? (DyObject)DyNil.Instance);
-        }
 
         [Function("print")]
         public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
@@ -74,10 +69,7 @@ namespace Dyalect.Linker
         }
 
         [Function("readLine")]
-        public DyObject Read(ExecutionContext _)
-        {
-            return new DyString(Console.ReadLine());
-        }
+        public DyObject Read(ExecutionContext _) => new DyString(Console.ReadLine());
 
         [Function("rnd")]
         public DyObject Randomize(ExecutionContext _, [Default(int.MaxValue)]DyObject max, [Default(0)]DyObject min, [Default]DyObject seed)
@@ -221,8 +213,7 @@ namespace Dyalect.Linker
 
             try
             {
-                var p = new DyParser();
-                var res = p.Parse(SourceBuffer.FromString(expression.GetString()));
+                var res = DyParser.Parse(SourceBuffer.FromString(expression.GetString()));
 
                 if (!res.Success)
                     return ctx.FailedReadLiteral(res.Messages.First().ToString());

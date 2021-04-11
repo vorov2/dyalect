@@ -24,34 +24,31 @@ namespace Dyalect.Compiler
 
         private CodeWriter(CodeWriter cw, Unit unit)
         {
-            this.ops = unit.Ops;
-            this.locals = new Stack<StackSize>(cw.locals.ToArray());
-            this.labels = new List<int>(cw.labels.ToArray());
-            this.fixups = new List<int>(cw.fixups.ToArray());
-            this.strings = cw.strings;
-            this.floats = cw.floats;
-            this.integers = cw.integers;
-            this.chars = cw.chars;
-            this.frame = unit;
+            ops = unit.Ops;
+            locals = new(cw.locals.ToArray());
+            labels = new(cw.labels.ToArray());
+            fixups = new(cw.fixups.ToArray());
+            strings = cw.strings;
+            floats = cw.floats;
+            integers = cw.integers;
+            chars = cw.chars;
+            frame = unit;
         }
 
         public CodeWriter(Unit frame)
         {
             this.frame = frame;
-            this.ops = frame.Ops;
-            strings = new Dictionary<string, int>();
-            integers = new Dictionary<long, int>();
-            floats = new Dictionary<double, int>();
-            chars = new Dictionary<char, int>();
-            locals = new Stack<StackSize>();
-            labels = new List<int>();
-            fixups = new List<int>();
+            ops = frame.Ops;
+            strings = new();
+            integers = new();
+            floats = new();
+            chars = new();
+            locals = new();
+            labels = new();
+            fixups = new();
         }
 
-        public CodeWriter Clone(Unit frame)
-        {
-            return new CodeWriter(this, frame);
-        }
+        public CodeWriter Clone(Unit frame) => new(this, frame);
 
         public void CompileOpList()
         {
@@ -69,20 +66,18 @@ namespace Dyalect.Compiler
             return lab;
         }
 
-        public void MarkLabel(Label label)
-        {
+        public void MarkLabel(Label label) =>
             labels[label.GetIndex()] = ops.Count;
-        }
 
         public void Emit(OpCode op, Label label)
         {
             if (!label.IsEmpty())
             {
                 fixups.Add(ops.Count);
-                Emit(new Op(op, label.GetIndex()));
+                Emit(new(op, label.GetIndex()));
             }
             else
-                Emit(new Op(op, 0));
+                Emit(new(op, 0));
         }
 
         private void Emit(Op op)
@@ -105,16 +100,9 @@ namespace Dyalect.Compiler
             ops.Add(op);
         }
 
-        public void StartFrame()
-        {
-            locals.Push(new StackSize());
-        }
+        public void StartFrame() => locals.Push(new());
 
-        public int FinishFrame()
-        {
-            var ret = locals.Pop();
-            return ret.Max;
-        }
+        public int FinishFrame() => locals.Pop().Max;
 
         public int Offset => ops.Count;
 
@@ -122,7 +110,7 @@ namespace Dyalect.Compiler
         {
             if (!strings.TryGetValue(val, out var idx))
             {
-                frame.IndexedStrings.Add(new DyString(val));
+                frame.IndexedStrings.Add(new(val));
                 idx = frame.IndexedStrings.Count - 1;
                 strings.Add(val, idx);
             }
@@ -134,7 +122,7 @@ namespace Dyalect.Compiler
         {
             if (!floats.TryGetValue(val, out var idx))
             {
-                frame.IndexedFloats.Add(new DyFloat(val));
+                frame.IndexedFloats.Add(new(val));
                 idx = frame.IndexedFloats.Count - 1;
                 floats.Add(val, idx);
             }
@@ -158,7 +146,7 @@ namespace Dyalect.Compiler
         {
             if (!chars.TryGetValue(val, out var idx))
             {
-                frame.IndexedChars.Add(new DyChar(val));
+                frame.IndexedChars.Add(new(val));
                 idx = frame.IndexedChars.Count - 1;
                 chars.Add(val, idx);
             }
@@ -168,7 +156,7 @@ namespace Dyalect.Compiler
 
         public void Push(string val)
         {
-            Emit(new Op(OpCode.PushStr, IndexString(val)));
+            Emit(new(OpCode.PushStr, IndexString(val)));
         }
 
         public void Push(double val)
@@ -178,7 +166,7 @@ namespace Dyalect.Compiler
             else if (val == 1D)
                 Emit(Op.PushR8_1);
             else
-                Emit(new Op(OpCode.PushR8, IndexFloat(val)));
+                Emit(new(OpCode.PushR8, IndexFloat(val)));
         }
 
         public void Push(long val)
@@ -188,7 +176,7 @@ namespace Dyalect.Compiler
             else if (val == 1L)
                 Emit(Op.PushI8_1);
             else
-                Emit(new Op(OpCode.PushI8, IndexInteger(val)));
+                Emit(new(OpCode.PushI8, IndexInteger(val)));
         }
 
         public void Push(bool val)
@@ -201,90 +189,90 @@ namespace Dyalect.Compiler
 
         public void Push(char val)
         {
-            Emit(new Op(OpCode.PushCh, IndexChar(val)));
+            Emit(new(OpCode.PushCh, IndexChar(val)));
         }
 
         public void PushVar(ScopeVar sv)
         {
             if ((sv.Data & VarFlags.External) == VarFlags.External)
-                Emit(new Op(OpCode.Pushext, sv.Address));
+                Emit(new(OpCode.Pushext, sv.Address));
             else if ((sv.Address & byte.MaxValue) == 0)
-                Emit(new Op(OpCode.Pushloc, sv.Address >> 8));
+                Emit(new(OpCode.Pushloc, sv.Address >> 8));
             else
-                Emit(new Op(OpCode.Pushvar, sv.Address));
+                Emit(new(OpCode.Pushvar, sv.Address));
         }
 
         public void PopVar(int address)
         {
             if ((address & byte.MaxValue) == 0)
-                Emit(new Op(OpCode.Poploc, address >> 8));
+                Emit(new(OpCode.Poploc, address >> 8));
             else
-                Emit(new Op(OpCode.Popvar, address));
+                Emit(new(OpCode.Popvar, address));
         }
 
         public void Tag(string tag)
         {
             var idx = IndexString(tag);
-            Emit(new Op(OpCode.Tag, idx));
+            Emit(new(OpCode.Tag, idx));
         }
 
         public void SetMember(TypeHandle type)
         {
             if (type.IsStandard)
-                Emit(new Op(OpCode.SetMemberT, type.TypeId));
+                Emit(new(OpCode.SetMemberT, type.TypeId));
             else
-                Emit(new Op(OpCode.SetMember, type.TypeId));
+                Emit(new(OpCode.SetMember, type.TypeId));
         }
 
         public void SetMemberS(TypeHandle type)
         {
             if (type.IsStandard)
-                Emit(new Op(OpCode.SetMemberST, type.TypeId));
+                Emit(new(OpCode.SetMemberST, type.TypeId));
             else
-                Emit(new Op(OpCode.SetMemberS, type.TypeId));
+                Emit(new(OpCode.SetMemberS, type.TypeId));
         }
 
         public void TypeCheck(TypeHandle type)
         {
             if (type.IsStandard)
-                Emit(new Op(OpCode.TypeCheckT, type.TypeId));
+                Emit(new(OpCode.TypeCheckT, type.TypeId));
             else
-                Emit(new Op(OpCode.TypeCheck, type.TypeId));
+                Emit(new(OpCode.TypeCheck, type.TypeId));
         }
 
         public void Type(TypeHandle type)
         {
             if (type.IsStandard)
-                Emit(new Op(OpCode.TypeST, type.TypeId));
+                Emit(new(OpCode.TypeST, type.TypeId));
             else
-                Emit(new Op(OpCode.TypeS, type.TypeId));
+                Emit(new(OpCode.TypeS, type.TypeId));
         }
 
-        public void FunPrep(int argCount) => Emit(new Op(OpCode.FunPrep, argCount));
-        public void FunArgIx(int index) => Emit(new Op(OpCode.FunArgIx, index));
-        public void FunArgNm(string name) => Emit(new Op(OpCode.FunArgNm, IndexString(name)));
-        public void FunCall(int argCount) => Emit(new Op(OpCode.FunCall, argCount));
-        public void CtorCheck(int ctorId) => Emit(new Op(OpCode.CtorCheck, ctorId));
+        public void FunPrep(int argCount) => Emit(new(OpCode.FunPrep, argCount));
+        public void FunArgIx(int index) => Emit(new(OpCode.FunArgIx, index));
+        public void FunArgNm(string name) => Emit(new(OpCode.FunArgNm, IndexString(name)));
+        public void FunCall(int argCount) => Emit(new(OpCode.FunCall, argCount));
+        public void CtorCheck(int ctorId) => Emit(new(OpCode.CtorCheck, ctorId));
 
-        public void NewTuple(int len) => Emit(new Op(OpCode.NewTuple, len), -len + 1);
-        public void NewFun(int funHandle) => Emit(new Op(OpCode.NewFun, funHandle));
-        public void NewFunV(int funHandle) => Emit(new Op(OpCode.NewFunV, funHandle));
-        public void NewIter(int funHandle) => Emit(new Op(OpCode.NewIter, funHandle));
+        public void NewTuple(int len) => Emit(new(OpCode.NewTuple, len), -len + 1);
+        public void NewFun(int funHandle) => Emit(new(OpCode.NewFun, funHandle));
+        public void NewFunV(int funHandle) => Emit(new(OpCode.NewFunV, funHandle));
+        public void NewIter(int funHandle) => Emit(new(OpCode.NewIter, funHandle));
         public void Br(Label lab) => Emit(OpCode.Br, lab);
         public void Brtrue(Label lab) => Emit(OpCode.Brtrue, lab);
         public void Brfalse(Label lab) => Emit(OpCode.Brfalse, lab);
         public void Brterm(Label lab) => Emit(OpCode.Brterm, lab);
         public void Briter(Label lab) => Emit(OpCode.Briter, lab);
-        public void GetMember(int nameId) => Emit(new Op(OpCode.GetMember, nameId));
-        public void HasMember(int nameId) => Emit(new Op(OpCode.HasMember, nameId));
-        public void RunMod(int code) => Emit(new Op(OpCode.RunMod, code));
-        public void Aux(int data) => Emit(new Op(OpCode.Aux, data));
-        public void Get(int index) => Emit(new Op(OpCode.GetIx, index));
-        public void Set(int index) => Emit(new Op(OpCode.SetIx, index));
-        public void HasField(string field) => Emit(new Op(OpCode.HasField, IndexString(field)));
+        public void GetMember(int nameId) => Emit(new(OpCode.GetMember, nameId));
+        public void HasMember(int nameId) => Emit(new(OpCode.HasMember, nameId));
+        public void RunMod(int code) => Emit(new(OpCode.RunMod, code));
+        public void Aux(int data) => Emit(new(OpCode.Aux, data));
+        public void Get(int index) => Emit(new(OpCode.GetIx, index));
+        public void Set(int index) => Emit(new(OpCode.SetIx, index));
+        public void HasField(string field) => Emit(new(OpCode.HasField, IndexString(field)));
         public void Start(Label lab) => Emit(OpCode.Start, lab);
-        public void Fail(DyErrorCode code) => Emit(new Op(OpCode.FailSys, (int)code));
-        public void NewType(int typeId) => Emit(new Op(OpCode.NewType, typeId));
+        public void Fail(DyErrorCode code) => Emit(new(OpCode.FailSys, (int)code));
+        public void NewType(int typeId) => Emit(new(OpCode.NewType, typeId));
 
         public void End() => Emit(Op.End);
         public void Yield() => Emit(Op.Yield);

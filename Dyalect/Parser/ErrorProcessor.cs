@@ -9,7 +9,7 @@ namespace Dyalect.Parser
     internal static class ErrorProcessor
     {
         private static readonly Dictionary<string, ParserError> errors =
-            new Dictionary<string, ParserError>
+            new()
             {
                  { "invalid StandardOperators", InvalidStandardOperators }
                 ,{ "invalid FunctionName", InvalidFunctionName}
@@ -39,7 +39,7 @@ namespace Dyalect.Parser
             };
 
         private static readonly Dictionary<string, string> tokens =
-            new Dictionary<string, string>
+            new()
             {
                  { "identToken", "identifier" }
                 ,{ "directive", "compiler directive" }

@@ -402,7 +402,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                cw.Type(new TypeHandle(DyType.Array, true));
+                cw.Type(new(DyType.Array, true));
                 cw.GetMember(GetMemberNameId(DyTypeNames.Array));
                 cw.FunPrep(node.Elements.Count);
 
@@ -506,7 +506,7 @@ namespace Dyalect.Compiler
             var localPath = node.LocalPath;
             string dll = default;
 
-            if (!(localPath is null) && localPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+            if (localPath is not null && localPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
             {
                 var idx = localPath.LastIndexOf('/');
                 
@@ -568,7 +568,7 @@ namespace Dyalect.Compiler
         private void Build(DApplication node, Hints hints, CompilerContext ctx)
         {
             var name = node.Target.NodeType == NodeType.Name ? node.Target.GetName() : null;
-            var sv = name != null ? GetVariable(name, node, err: false) : ScopeVar.Empty;
+            var sv = name is not null ? GetVariable(name, node, err: false) : ScopeVar.Empty;
             var newHints = hints.Remove(Last);
 
             //Check if an application is in fact a built-in operator call
@@ -691,7 +691,7 @@ namespace Dyalect.Compiler
                     if (a.NodeType == NodeType.Label)
                     {
                         if (dict == null)
-                            dict = new Dictionary<string, object>();
+                            dict = new();
 
                         var la = (DLabelLiteral)a;
                         if (dict.ContainsKey(la.Label))
@@ -753,12 +753,12 @@ namespace Dyalect.Compiler
 
         private void Build(DStringLiteral node, Hints hints, CompilerContext ctx)
         {
-            if (node.Chunks == null && NoPush(node, hints))
+            if (node.Chunks is null && NoPush(node, hints))
                 return;
 
-            if (node.Chunks != null)
+            if (node.Chunks is not null)
             {
-                cw.Type(new TypeHandle(DyType.String, true));
+                cw.Type(new(DyType.String, true));
                 cw.GetMember(GetMemberNameId("concat"));
                 cw.FunPrep(node.Chunks.Count);
 
@@ -768,7 +768,7 @@ namespace Dyalect.Compiler
 
                     if (c.IsCode)
                     {
-                        var p = new InternalParser(new Scanner(SourceBuffer.FromString(c.GetContent())));
+                        var p = new InternalParser(new(SourceBuffer.FromString(c.GetContent())));
                         p.Parse();
 
                         if (p.Errors.Count > 0)
@@ -838,7 +838,7 @@ namespace Dyalect.Compiler
                     GetMemberNameId(node.Value);
 
                 AddLinePragma(node);
-                cw.Type(new TypeHandle(hdl, std));
+                cw.Type(new(hdl, std));
                 return;
             }
 

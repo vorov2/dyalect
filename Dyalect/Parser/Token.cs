@@ -11,14 +11,9 @@
         public Token next;  // ML 2005-03-11 Tokens are kept in linked list
         public bool AfterEol;
 
-        public Location GetLocation()
-        {
-            return new Location(line, col);
-        }
+        public Location GetLocation() => new Location(line, col);
 
-        public static implicit operator Location(Token t)
-        {
-            return t != null ? t.GetLocation() : default;
-        }
+        public static implicit operator Location(Token t) =>
+            t != null ? t.GetLocation() : default;
     }
 }

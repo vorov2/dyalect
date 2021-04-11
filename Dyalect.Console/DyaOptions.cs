@@ -71,9 +71,7 @@ namespace Dyalect
 
             foreach (var pi in typeof(DyaOptions).GetProperties())
             {
-                var attr = Attribute.GetCustomAttribute(pi, typeof(BindingAttribute)) as BindingAttribute;
-
-                if (attr != null)
+                if (Attribute.GetCustomAttribute(pi, typeof(BindingAttribute)) is BindingAttribute attr)
                 {
                     var val = pi.GetValue(this);
                     var byt = pi.PropertyType == typeof(bool);
@@ -86,8 +84,8 @@ namespace Dyalect
 
                     var key = attr.Names?.Length > 0 ? attr.Names[0] : "<file name>";
                     list.Add((key, byt ? ""
-                        : val is System.Collections.IEnumerable
-                            ? string.Join(';', ((System.Collections.IEnumerable)val).OfType<object>().Select(v => v.ToString()))
+                        : val is System.Collections.IEnumerable seq
+                            ? string.Join(';', seq.OfType<object>().Select(v => v.ToString()))
                         : val.ToString()));
                 }
             }
@@ -109,7 +107,7 @@ namespace Dyalect
 
         public IEnumerable<string> GetFileNames()
         {
-            if (FileNames == null || FileNames.Length == 0)
+            if (FileNames is null || FileNames.Length == 0)
                 yield break;
 
             foreach (var item in FileNames)
@@ -120,9 +118,7 @@ namespace Dyalect
                         yield return f;
                 }
                 else
-                {
                     yield return item;
-                }
             }
         }
     }

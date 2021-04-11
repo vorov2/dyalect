@@ -13,14 +13,11 @@ namespace Dyalect.Runtime
         private readonly int initialSize;
         public int Count;
 
-        public SectionStack() : this(DEFAULT_SIZE)
-        {
-
-        }
+        public SectionStack() : this(DEFAULT_SIZE) { }
 
         public SectionStack(int size)
         {
-            this.initialSize = size;
+            initialSize = size;
             array = new CatchMarks[size];
         }
 
@@ -32,10 +29,7 @@ namespace Dyalect.Runtime
                 yield return array[--c];
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public void Clear()
         {
@@ -43,18 +37,9 @@ namespace Dyalect.Runtime
             array = new CatchMarks[initialSize];
         }
 
-        public CatchMarks Pop()
-        {
-            if (Count == 0)
-                throw new IndexOutOfRangeException();
+        public CatchMarks Pop() => Count == 0 ? throw new IndexOutOfRangeException() : array[--Count];
 
-            return array[--Count];
-        }
-
-        public CatchMarks Peek()
-        {
-            return array[Count - 1];
-        }
+        public CatchMarks Peek() => array[Count - 1];
 
         public bool TryPeek(int i, out CatchMarks val)
         {
@@ -83,15 +68,12 @@ namespace Dyalect.Runtime
             array[Count++] = val;
         }
 
-        public void Replace(CatchMarks val)
-        {
-            array[Count - 1] = val;
-        }
+        public void Replace(CatchMarks val) => array[Count - 1] = val;
 
         public CatchMarks this[int index]
         {
-            get { return array[index]; }
-            set { array[index] = value; }
+            get => array[index];
+            set => array[index] = value;
         }
     }
 }

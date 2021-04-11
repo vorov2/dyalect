@@ -28,7 +28,7 @@ namespace Dyalect.Compiler
             MatchExit = old.MatchExit;
         }
 
-        public Stack<int> Errors { get; } = new Stack<int>();
+        public Stack<int> Errors { get; } = new();
 
         public DFunctionDeclaration Function { get; set; }
 

@@ -4,10 +4,7 @@ namespace Dyalect.Debug
 {
     public sealed class Breakpoint : IEquatable<Breakpoint>
     {
-        public Breakpoint(int line, int column) : this(line, column, false)
-        {
-
-        }
+        public Breakpoint(int line, int column) : this(line, column, false) { }
 
         public Breakpoint(int line, int column, bool temp)
         {

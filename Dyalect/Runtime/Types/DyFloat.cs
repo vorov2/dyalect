@@ -72,10 +72,8 @@ namespace Dyalect.Runtime.Types
 
         private readonly double value;
 
-        public DyFloat(double value) : base(DyType.Float)
-        {
+        public DyFloat(double value) : base(DyType.Float) =>
             this.value = value;
-        }
 
         public override int GetHashCode() => value.GetHashCode();
 
@@ -103,10 +101,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyFloatTypeInfo : DyTypeInfo
     {
-        public DyFloatTypeInfo() : base(DyType.Float)
-        {
-
-        }
+        public DyFloatTypeInfo() : base(DyType.Float) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add

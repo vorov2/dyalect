@@ -12,11 +12,7 @@ namespace Dyalect.Runtime
         private int size;
         private int initialSize;
 
-        public FastList()
-            : this(DEFAULT_SIZE)
-        {
-
-        }
+        public FastList() : this(DEFAULT_SIZE) { }
 
         internal FastList(int size)
         {
@@ -44,10 +40,7 @@ namespace Dyalect.Runtime
                 yield return array[i];
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public FastList<T> Clone()
         {
@@ -76,15 +69,9 @@ namespace Dyalect.Runtime
             return arr;
         }
 
-        public int IndexOf(T elem)
-        {
-            return Array.IndexOf(array, elem);
-        }
+        public int IndexOf(T elem) => Array.IndexOf(array, elem);
 
-        internal T[] GetRawArray()
-        {
-            return array;
-        }
+        internal T[] GetRawArray() => array;
 
         internal void Clear()
         {
@@ -138,11 +125,7 @@ namespace Dyalect.Runtime
             return false;
         }
 
-        internal bool Remove(T val)
-        {
-            var index = Array.IndexOf(array, val);
-            return RemoveAt(index);
-        }
+        internal bool Remove(T val) => RemoveAt(Array.IndexOf(array, val));
 
         internal void Trim()
         {
@@ -154,15 +137,12 @@ namespace Dyalect.Runtime
             }
         }
 
-        public int Count
-        {
-            get { return size; }
-        }
+        public int Count => size;
 
         public T this[int index]
         {
-            get { return array[index]; }
-            internal set { array[index] = value; }
+            get => array[index];
+            internal set => array[index] = value;
         }
     }
 }

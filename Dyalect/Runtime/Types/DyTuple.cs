@@ -11,10 +11,8 @@ namespace Dyalect.Runtime.Types
 
         public override int Count => Values.Length;
 
-        public DyTuple(DyObject[] values) : base(DyType.Tuple)
-        {
-            this.Values = values ?? throw new DyException("Unable to create a tuple with no values.");
-        }
+        public DyTuple(DyObject[] values) : base(DyType.Tuple) =>
+            Values = values ?? throw new DyException("Unable to create a tuple with no values.");
 
         public Dictionary<DyObject, DyObject> ConvertToDictionary()
         {
@@ -91,10 +89,8 @@ namespace Dyalect.Runtime.Types
             return -1;
         }
 
-        protected override DyObject CollectionGetItem(int index, ExecutionContext ctx)
-        {
-            return Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
-        }
+        protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
+            Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
 
         internal string GetKey(int index) => Values[index].GetLabel();
 
@@ -106,10 +102,8 @@ namespace Dyalect.Runtime.Types
                 Values[index] = value;
         }
 
-        protected internal override bool HasItem(string name, ExecutionContext ctx)
-        {
-            return GetOrdinal(name) != -1;
-        }
+        protected internal override bool HasItem(string name, ExecutionContext ctx) =>
+            GetOrdinal(name) != -1;
 
         private static string DefaultKey() => Guid.NewGuid().ToString();
 
@@ -126,10 +120,7 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
     {
-        public DyTupleTypeInfo() : base(DyType.Tuple)
-        {
-
-        }
+        public DyTupleTypeInfo() : base(DyType.Tuple) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -231,15 +222,11 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(iterate());
         }
 
-        private DyObject GetFirst(ExecutionContext ctx, DyObject self, DyObject[] args)
-        {
-            return self.GetItem(0, ctx);
-        }
+        private DyObject GetFirst(ExecutionContext ctx, DyObject self, DyObject[] args) =>
+            self.GetItem(0, ctx);
 
-        private DyObject GetSecond(ExecutionContext ctx, DyObject self, DyObject[] args)
-        {
-            return self.GetItem(1, ctx);
-        }
+        private DyObject GetSecond(ExecutionContext ctx, DyObject self, DyObject[] args) =>
+            self.GetItem(1, ctx);
 
         private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject fun)
         {
@@ -334,9 +321,8 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(arr);
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            return name switch
+        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
                 "remove" => DyForeignFunction.Member(name, Remove, -1, new Par("item")),
@@ -348,17 +334,12 @@ namespace Dyalect.Runtime.Types
                 "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
                 _ => base.GetMember(name, ctx)
             };
-        }
 
-        private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd)
-        {
-            return new DyTuple(new DyObject[] { fst, snd });
-        }
+        private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
+            new DyTuple(new DyObject[] { fst, snd });
 
-        private DyObject GetTriple(ExecutionContext ctx, DyObject fst, DyObject snd, DyObject thd)
-        {
-            return new DyTuple(new DyObject[] { fst, snd, thd });
-        }
+        private DyObject GetTriple(ExecutionContext ctx, DyObject fst, DyObject snd, DyObject thd) =>
+            new DyTuple(new DyObject[] { fst, snd, thd });
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 

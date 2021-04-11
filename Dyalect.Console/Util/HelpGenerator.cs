@@ -27,7 +27,7 @@ namespace Dyalect.Util
             {
                 var attr = Attribute.GetCustomAttribute(ac, typeof(BindingAttribute)) as BindingAttribute;
 
-                if (attr == null || attr.Help == null)
+                if (attr is null || attr.Help is null)
                     continue;
 
                 var ln = new List<string>();
@@ -69,8 +69,8 @@ namespace Dyalect.Util
 
                 if (lastIdx > 0)
                 {
-                    var ch = h.Substring(0, lastIdx);
-                    h = h.Substring(lastIdx).Trim();
+                    var ch = h[0..lastIdx];
+                    h = h[lastIdx..].Trim();
 
                     sb.AppendLine(ch);
                     sb.Append(new string(' ', pad + 4));

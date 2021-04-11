@@ -71,7 +71,6 @@ namespace Dyalect.Linker
         private static IEnumerable<T> ReadIndex<T>(BinaryReader reader) where T : DyObject
         {
             var count = reader.ReadInt32();
-
             var typeId =
                 typeof(T) == typeof(DyString) ? DyType.String
                 : typeof(T) == typeof(DyInteger) ? DyType.Integer
@@ -96,24 +95,21 @@ namespace Dyalect.Linker
             var count = reader.ReadInt32();
 
             for (var i = 0; i < count; i++)
-            {
-                var mem = new MemoryLayout(
+                unit.Layouts.Add(new(
                     reader.ReadInt32(),
                     reader.ReadInt32(),
-                    reader.ReadInt32());
-                unit.Layouts.Add(mem);
-            }
+                    reader.ReadInt32()));
         }
 
         private static void ReadGlobalScope(BinaryReader reader, Unit unit)
         {
             var count = reader.ReadInt32();
-            unit.GlobalScope = new Scope(ScopeKind.Lexical, default);
+            unit.GlobalScope = new(ScopeKind.Lexical, default);
 
             for (var i = 0; i < count; i++)
             {
                 unit.GlobalScope.Locals.Add(reader.ReadString(),
-                    new ScopeVar(reader.ReadInt32(), reader.ReadInt32()));
+                    new(reader.ReadInt32(), reader.ReadInt32()));
             }
         }
 
@@ -125,7 +121,7 @@ namespace Dyalect.Linker
             {
                 var name = reader.ReadString();
                 unit.ExportList.Add(name,
-                    new ScopeVar(reader.ReadInt32(), reader.ReadInt32()));
+                    new(reader.ReadInt32(), reader.ReadInt32()));
             }
         }
 
@@ -140,7 +136,7 @@ namespace Dyalect.Linker
                     reader.ReadString(),
                     (str = reader.ReadString()).Length == 0 ? null : str,
                     (str = reader.ReadString()).Length == 0 ? null : str,
-                    new Parser.Location(reader.ReadInt32(), reader.ReadInt32()),
+                    new(reader.ReadInt32(), reader.ReadInt32()),
                     reader.ReadString()
                 )
                 {
@@ -184,8 +180,7 @@ namespace Dyalect.Linker
 
             var scopes = reader.ReadInt32();
             for (var i = 0; i < scopes; i++)
-            {
-                var s = new ScopeSym
+                di.Scopes.Add(new()
                 {
                     Index = reader.ReadInt32(),
                     ParentIndex = reader.ReadInt32(),
@@ -195,26 +190,23 @@ namespace Dyalect.Linker
                     StartColumn = reader.ReadInt32(),
                     EndLine = reader.ReadInt32(),
                     EndColumn = reader.ReadInt32()
-                };
-                di.Scopes.Add(s);
-            }
+                });
 
             var lines = reader.ReadInt32();
             for (var i = 0; i < lines; i++)
             {
-                var l = new LineSym
+                di.Lines.Add(new()
                 {
                     Offset = reader.ReadInt32(),
                     Line = reader.ReadInt32(),
                     Column = reader.ReadInt32()
-                };
-                di.Lines.Add(l);
+                });
             }
 
             var vars = reader.ReadInt32();
             for (var i = 0; i < vars; i++)
             {
-                var v = new VarSym
+                di.Vars.Add(new()
                 {
                     Name = reader.ReadString(),
                     Address = reader.ReadInt32(),
@@ -222,8 +214,7 @@ namespace Dyalect.Linker
                     Scope = reader.ReadInt32(),
                     Flags = reader.ReadInt32(),
                     Data = reader.ReadInt32()
-                };
-                di.Vars.Add(v);
+                });
             }
 
             var funs = reader.ReadInt32();

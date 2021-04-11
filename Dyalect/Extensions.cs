@@ -8,7 +8,7 @@ namespace Dyalect
 
         public static T TakeAt<T>(this T[] arr, int pos, T defaultValue = default)
         {
-            if (arr == null || arr.Length <= pos)
+            if (arr is null || arr.Length <= pos)
                 return defaultValue;
 
             return arr[pos];
@@ -24,9 +24,7 @@ namespace Dyalect
 
         public static string Format(this string self, params object[] args) => string.Format(self, args);
 
-        public static T GetAttribute<T>(this Type self) where T : Attribute
-        {
-            return Attribute.GetCustomAttribute(self, typeof(T)) as T;
-        }
+        public static T GetAttribute<T>(this Type self) where T : Attribute =>
+            Attribute.GetCustomAttribute(self, typeof(T)) as T;
     }
 }

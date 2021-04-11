@@ -51,8 +51,7 @@ namespace Dyalect.Util
                     if (obj != null)
                         Unexpected(pos, c.ToString());
 
-                    Dictionary<string, object> dict;
-                    pos = ParseObject(pos + 1, out dict);
+                    pos = ParseObject(pos + 1, out var dict);
                     obj = dict;
                 }
                 else if (c == '[')
@@ -60,8 +59,7 @@ namespace Dyalect.Util
                     if (obj != null)
                         Unexpected(pos, c.ToString());
 
-                    List<object> list;
-                    pos = ParseList(pos, out list);
+                    pos = ParseList(pos, out var list);
                     obj = list;
                 }
                 else
@@ -81,8 +79,8 @@ namespace Dyalect.Util
         private int ParseObject(int pos, out Dictionary<string, object> obj)
         {
             obj = DictionaryComparer != null
-                ? new Dictionary<string, object>(DictionaryComparer)
-                : new Dictionary<string, object>();
+                ? new(DictionaryComparer)
+                : new();
             var key = "";
             var val = default(object);
 
@@ -139,8 +137,8 @@ namespace Dyalect.Util
 
         private int ParseList(int pos, out List<object> obj)
         {
-            obj = new List<object>();
-            var val = default(object);
+            obj = new();
+            object val = null;
 
             for (; pos < len; pos++)
             {
@@ -181,9 +179,9 @@ namespace Dyalect.Util
             return pos;
         }
 
-        private bool IsSep(char c) => char.IsWhiteSpace(c) || c == '\t' || c == '\r' || c == '\n';
+        private static bool IsSep(char c) => char.IsWhiteSpace(c) || c == '\t' || c == '\r' || c == '\n';
 
-        private bool IsNumeric(char c) => char.IsNumber(c) || c == '-' || c == '+' || c == 'e' || c == 'E' || c == '.';
+        private static bool IsNumeric(char c) => char.IsNumber(c) || c == '-' || c == '+' || c == 'e' || c == 'E' || c == '.';
 
         private int ParseString(int pos, out string key)
         {
@@ -332,8 +330,7 @@ namespace Dyalect.Util
                 }
                 else if (c == '[')
                 {
-                    List<object> obj;
-                    pos = ParseList(pos, out obj);
+                    pos = ParseList(pos, out var obj);
                     val = obj;
                     return pos;
                 }
@@ -449,7 +446,8 @@ namespace Dyalect.Util
             ConvertPos(pos, out var line, out var col);
 
             if (Errors == null)
-                _errors = new List<Error>();
+                _errors = new();
+
             _errors.Add(new Error(message, line, col));
         }
 
@@ -458,7 +456,7 @@ namespace Dyalect.Util
             var subs = source.Substring(0, pos + 1);
             var arr = subs.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             line = arr.Length;
-            col = arr[arr.Length - 1].Length;
+            col = arr[^1].Length;
         }
 
         private static char Lookup(char[] buffer, int pos)
@@ -472,7 +470,7 @@ namespace Dyalect.Util
         private List<Error> _errors;
         public IEnumerable<Error> Errors
         {
-            get { return _errors ?? Enumerable.Empty<Error>(); }
+            get => _errors ?? Enumerable.Empty<Error>();
         }
 
         public bool Success => _errors == null;
