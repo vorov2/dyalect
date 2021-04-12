@@ -9,7 +9,7 @@ namespace Dyalect.Compiler
     //Contains function related compilation logic
     partial class Builder
     {
-        private void Build(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
+        private void Build(DFunctionDeclaration node, Hints hints, CompilerContext _)
         {
             if (node.Name != null)
             {

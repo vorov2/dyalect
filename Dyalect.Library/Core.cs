@@ -12,6 +12,7 @@ namespace Dyalect.Library
         {
             AddType<DyByteArrayTypeInfo>("ByteArray");
             AddType<DyStringBuilderTypeInfo>("StringBuilder");
+            AddType<DyResultTypeInfo>("Result");
         }
 
         [Function("NewByteArray")]

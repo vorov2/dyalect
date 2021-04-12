@@ -4,7 +4,7 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyForeignObject<T> : DyObject where T : ForeignTypeInfo
     {
-        private static int GetTypeId(RuntimeContext rtx)
+        protected static int GetTypeId(RuntimeContext rtx)
         {
             var guid = typeof(T).GetAttribute<ForeignTypeAttribute>()?.Guid;
 
