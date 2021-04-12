@@ -38,7 +38,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Value.HasItem(name, ctx);
 
-        internal override int GetConstructorId(ExecutionContext ctx) => ConstructorId;
+        public override int GetConstructorId(ExecutionContext ctx) => ConstructorId;
 
         public override int GetHashCode()
         {

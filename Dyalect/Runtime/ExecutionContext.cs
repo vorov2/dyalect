@@ -19,6 +19,8 @@ namespace Dyalect.Runtime
 
         public bool HasErrors => Error != null;
 
+        public ExecutionContext Clone() => new(CallStack, RuntimeContext);
+
         internal CallStack CallStack { get; }
 
         internal SectionStack CatchMarks { get; }

@@ -233,7 +233,8 @@ namespace Dyalect.Linker
                         composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, td.Name, td.AutoGenConstructors));
                     else
                     {
-                        var guid = td.ForeignTypeInfo.GetAttribute<ForeignTypeAttribute>()?.Guid;
+                        var fat = td.ForeignTypeInfo.GetAttribute<ForeignTypeAttribute>();
+                        var guid = fat?.Guid;
 
                         if (guid is null)
                         {
@@ -245,6 +246,16 @@ namespace Dyalect.Linker
                         ti.TypeCode = composition.Types.Count;
                         composition.Types.Add(ti);
                         composition.TypeCodes.Add(guid.Value, ti.TypeCode);
+
+                        if (fat.Constructors is not null)
+                            foreach (var c in fat.Constructors)
+                            {
+                                if (!composition.MembersMap.TryGetValue(c, out var cid))
+                                {
+                                    composition.MembersMap.Add(c, composition.Members.Count);
+                                    composition.Members.Add(c);
+                                }
+                            }
                     }
                 }
             }
