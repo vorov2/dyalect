@@ -13,10 +13,6 @@ namespace Dyalect.Runtime.Types
             }
 
             var elem = from;
-
-            if (step.TypeId == DyType.Nil)
-                step = DyInteger.One;
-
             var inf = to.TypeId == DyType.Nil;
 
             if (inf)
@@ -30,22 +26,21 @@ namespace Dyalect.Runtime.Types
                         yield break;
                 }
             }
-            else
+
+            var up = ctx.RuntimeContext.Types[step.TypeId].Gt(ctx, step, DyInteger.Zero) == DyBool.True;
+
+            if (ctx.HasErrors)
+                yield break;
+
+            var types = ctx.RuntimeContext.Types[from.TypeId];
+
+            while ((up ? types.Lte(ctx, elem, to) : types.Gte(ctx, elem, to)) == DyBool.True)
             {
-                var up = ctx.RuntimeContext.Types[step.TypeId].Gt(ctx, step, DyInteger.Zero).GetBool();
+                yield return elem;
+                elem = ctx.RuntimeContext.Types[elem.TypeId].Add(ctx, elem, step);
 
                 if (ctx.HasErrors)
                     yield break;
-
-                var types = ctx.RuntimeContext.Types[from.TypeId];
-                while ((up ? types.Lte(ctx, elem, to) : types.Gte(ctx, elem, to)).GetBool())
-                {
-                    yield return elem;
-                    elem = ctx.RuntimeContext.Types[elem.TypeId].Add(ctx, elem, step);
-
-                    if (ctx.HasErrors)
-                        yield break;
-                }
             }
         }
     }
