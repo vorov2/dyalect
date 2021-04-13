@@ -1,6 +1,7 @@
 # 0.18.0
   * Change: _Refactoring and redesign of internal compiler infrastructure and foreign module infrastructure._
   * Add: _Add an ability to create types with constructors in foreign modules_ ([Issue #395](https://github.com/vorov2/dyalect/issues/395)).
+  * Add: _Callable objects_ ([Issue #389](https://github.com/vorov2/dyalect/issues/389)).
 
 # 0.17.5
   * Change: _Code optimization and refactoring._
