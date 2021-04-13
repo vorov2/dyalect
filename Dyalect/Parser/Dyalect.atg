@@ -893,71 +893,88 @@ PRODUCTIONS
             (
                 FieldOrIndex<out node>
                 [
+                    //[ "," SimpleLiteral<out node> ]
                     ".."  (. var range = new DRange(t) { From = node }; node = range; .)
-                    FieldOrIndex<out cnode> (. range.To = cnode; .)
+                    [ SimpleFieldOrIndex<out cnode> (. range.To = cnode; .) ]
                 ]
             )
         ).
 
+    SimpleFieldOrIndex<out DNode node> =
+        (
+            SimpleLiteral<out node> 
+            {
+                FieldOrIndexBody<node, out var cnode>
+                (. node = cnode; .)
+            }
+        ).
+
     FieldOrIndex<out DNode node> =
         (
-            Literal<out node>
+            Literal<out node> 
             {
-                (
-                    "." (. var ot = t; .)
-                    identToken
-                    (. var nm = t.val; DMemberCheck chk = null; .)
-                    (
-                        [
-                            "?"
-                            (.
-                                chk = new DMemberCheck(ot) { Target = node };
-                                chk.Name = nm;
-                                node = chk;
-                            .)
-                        ]
-                        (.
-                            if (chk == null)
-                            {
-                                var fld = new DAccess(ot) { Target = node };
-                                fld.Name = nm;
-                                node = fld;
-                            }
-                        .)
-                    )
-                )
-                |
-                (
-                    ":" (. var ot = t; .)
-                    identToken
-                    (.
-                        node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
-                    .)
-                )
-                |
-                (
-                    (. if (la.AfterEol) return; .)
-                    "["
-                        (. var idx = new DIndexer(t) { Target = node }; .)
-                        Expr<out node>
-                        (.
-                            idx.Index = node;
-                            node = idx;
-                        .)
-                    "]"
-                )
-                |
-                (
-                    (.
-                        if (la.AfterEol) return;
-                        var app = new DApplication(node, t);
-                    .)
-                    "("
-                        [ ApplicationArguments<app> ]
-                        (. node = app; .)
-                    ")"
-                )
+                FieldOrIndexBody<node, out var cnode>
+                (. node = cnode; .)
             }
+        ).
+
+    FieldOrIndexBody<DNode exp, out DNode node> = 
+        (. node = null; .)
+        (
+            (
+                "." (. var ot = t; .)
+                identToken
+                (. var nm = t.val; DMemberCheck chk = null; .)
+                (
+                    [
+                        "?"
+                        (.
+                            chk = new DMemberCheck(ot) { Target = exp };
+                            chk.Name = nm;
+                            node = chk;
+                        .)
+                    ]
+                    (.
+                        if (chk == null)
+                        {
+                            var fld = new DAccess(ot) { Target = exp };
+                            fld.Name = nm;
+                            node = fld;
+                        }
+                    .)
+                )
+            )
+            |
+            (
+                ":" (. var ot = t; .)
+                identToken
+                (.
+                    node = new DIndexer(t) { Target = exp, Index = new DStringLiteral(ot) { Value = t.val } };
+                .)
+            )
+            |
+            (
+                (. if (la.AfterEol) return; .)
+                "["
+                    (. var idx = new DIndexer(t) { Target = exp }; .)
+                    Expr<out node>
+                    (.
+                        idx.Index = node;
+                        node = idx;
+                    .)
+                "]"
+            )
+            |
+            (
+                (.
+                    if (la.AfterEol) return;
+                    var app = new DApplication(exp, t);
+                .)
+                "("
+                    [ ApplicationArguments<app> ]
+                    (. node = app; .)
+                ")"
+            )
         ).
 
     ApplicationArguments<DApplication app> =
@@ -979,6 +996,14 @@ PRODUCTIONS
     Literal<out DNode node> =
         (. node = null; .)
         (
+              SimpleLiteral<out node>
+            | IF (IsIterator()) Iterator<out node>
+            | Block<out node>
+        ).
+
+    SimpleLiteral<out DNode node> =
+        (. node = null; .)
+        (
               Name<out node>
             | SpecialName<out node>
             | Integer<out node>
@@ -988,11 +1013,9 @@ PRODUCTIONS
             | Bool<out node>
             | Nil<out node>
             | IF (IsTuple()) Tuple<out node>
-            | Array<out node>
             | Group<out node>
             | Base<out node>
-            | IF (IsIterator()) Iterator<out node>
-            | Block<out node>
+            | Array<out node>
         ).
 
     Iterator<out DNode node> =
