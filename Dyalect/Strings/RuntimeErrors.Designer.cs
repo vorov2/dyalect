@@ -187,6 +187,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type &quot;%Type%&quot; doesn&apos;t support open ranges..
+        /// </summary>
+        internal static string OpenRangeNotSupported {
+            get {
+                return ResourceManager.GetString("OpenRangeNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation &quot;%Operation%&quot; is not supported by the type &quot;%TypeName%&quot;..
         /// </summary>
         internal static string OperationNotSupported {

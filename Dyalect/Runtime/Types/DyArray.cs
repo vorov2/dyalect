@@ -557,27 +557,17 @@ namespace Dyalect.Runtime.Types
             return destArr;
         }
 
-        private static DyObject Range(ExecutionContext ctx, DyObject from, DyObject to, DyObject step)
+        private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step)
         {
-            if (to.TypeId != from.TypeId && from.TypeId != to.TypeId)
-                return ctx.InvalidType(to);
+            if (to.TypeId == DyType.Nil)
+                return ctx.OpenRangeNotSupported(DyTypeNames.Array);
 
-            var elem = from;
-            var arr = new List<DyObject>();
+            var seq = Range.GenerateRange(ctx, from, to, step);
 
-            if (step.TypeId == DyType.Nil)
-                step = DyInteger.One;
+            if (ctx.HasErrors)
+                return DyNil.Instance;
 
-            while (ctx.RuntimeContext.Types[from.TypeId].Lte(ctx, elem, to).GetBool())
-            {
-                arr.Add(elem);
-                elem = ctx.RuntimeContext.Types[elem.TypeId].Add(ctx, elem, step);
-
-                if (ctx.HasErrors)
-                    return DyNil.Instance;
-            }
-
-            return new DyArray(arr.ToArray());
+            return new DyArray(seq.ToArray());
         }
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
@@ -585,7 +575,7 @@ namespace Dyalect.Runtime.Types
             return name switch
             {
                 "Array" => DyForeignFunction.Static(name, New, 0, new Par("values", true)),
-                "range" => DyForeignFunction.Static(name, Range, -1, new Par("from"), new Par("to", DyNil.Instance), new Par("step", DyInteger.One)),
+                "range" => DyForeignFunction.Static(name, MakeRange, -1, new Par("from"), new Par("to", DyNil.Instance), new Par("step", DyInteger.One)),
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance)),
                 "empty" => DyForeignFunction.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance)),
                 "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),

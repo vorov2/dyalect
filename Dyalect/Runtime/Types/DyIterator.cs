@@ -362,14 +362,24 @@ namespace Dyalect.Runtime.Types
                 _ => null
             };
 
+        private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step)
+        {
+            var seq = Range.GenerateRange(ctx, from, to, step);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            return new DyIterator(seq);
+        }
+
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Iterator")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
-
             if (name == "concat")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
-
+            if (name == "range")
+                return DyForeignFunction.Static(name, MakeRange, -1, new Par("from"), new Par("to", DyNil.Instance), new Par("step", DyInteger.One));
             return null;
         }
     }

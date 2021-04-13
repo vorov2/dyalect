@@ -180,4 +180,7 @@
   <data name="ValueOutOfRange" xml:space="preserve">
     <value>Value "%Value%" is out of range.</value>
   </data>
+  <data name="OpenRangeNotSupported" xml:space="preserve">
+    <value>Type "%Type%" doesn't support open ranges.</value>
+  </data>
 </root>
