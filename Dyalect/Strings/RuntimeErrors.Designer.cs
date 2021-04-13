@@ -187,15 +187,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An object of type &quot;%TypeName%&quot; doesn&apos;t support a &quot;call&quot; operation..
-        /// </summary>
-        internal static string NotFunction {
-            get {
-                return ResourceManager.GetString("NotFunction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Operation &quot;%Operation%&quot; is not supported by the type &quot;%TypeName%&quot;..
         /// </summary>
         internal static string OperationNotSupported {

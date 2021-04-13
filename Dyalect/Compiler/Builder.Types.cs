@@ -66,7 +66,7 @@ namespace Dyalect.Compiler
             }
 
             TryGetLocalType(func.TypeName.Local, out var ti);
-            cw.Aux(GetMemberNameId(func.Name));
+            cw.Aux(unit.GetMemberId(func.Name));
             cw.NewType(ti.TypeId);
         }
 

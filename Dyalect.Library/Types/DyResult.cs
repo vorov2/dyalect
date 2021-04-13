@@ -1,5 +1,5 @@
-﻿using Dyalect.Debug;
-using Dyalect.Linker;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 
@@ -9,7 +9,7 @@ namespace Dyalect.Library.Types
     {
         internal readonly DyObject Value;
 
-        public DyResult(RuntimeContext rtx, string ctor, DyObject value) : base(rtx, ctor) =>
+        public DyResult(RuntimeContext rtx, Unit unit, string ctor, DyObject value) : base(rtx, unit, ctor) =>
             Value = value;
 
         public override object ToObject() => this;
@@ -70,16 +70,16 @@ namespace Dyalect.Library.Types
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx)
         {
-            if (name == "unbox")
+            if (name == "value")
                 return DyForeignFunction.Member(name, TryGet);
             return base.GetMember(name, ctx);
         }
 
         private DyObject Success(ExecutionContext ctx, DyObject arg) =>
-            new DyResult(ctx.RuntimeContext, "Success", arg);
+            new DyResult(ctx.RuntimeContext, DeclaringUnit, "Success", arg);
 
         private DyObject Failure(ExecutionContext ctx, DyObject arg) =>
-            new DyResult(ctx.RuntimeContext, "Failure", arg);
+            new DyResult(ctx.RuntimeContext, DeclaringUnit, "Failure", arg);
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {

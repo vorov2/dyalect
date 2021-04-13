@@ -36,7 +36,7 @@ namespace Dyalect.Compiler
                     if (node.Name == Builtins.Has || (!node.IsStatic && node.Name == Builtins.Type))
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
-                    var nameId = GetMemberNameId(realName);
+                    var nameId = unit.GetMemberId(realName);
                     cw.Aux(nameId);
                     var code = GetTypeHandle(node.TypeName, node.Location);
 
@@ -260,19 +260,6 @@ namespace Dyalect.Compiler
                 else
                     cw.NewFun(funHandle);
             }
-        }
-
-        private int GetMemberNameId(string name)
-        {
-            if (!memberNames.TryGetValue(name, out var id))
-            {
-                id = unit.MemberIds.Count;
-                memberNames.Add(name, id);
-                unit.MemberIds.Add(-1);
-                unit.MemberNames.Add(name);
-            }
-
-            return id;
         }
     }
 }

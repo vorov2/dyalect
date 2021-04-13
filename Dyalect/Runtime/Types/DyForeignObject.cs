@@ -1,4 +1,5 @@
-﻿using Dyalect.Linker;
+﻿using Dyalect.Compiler;
+using Dyalect.Linker;
 
 namespace Dyalect.Runtime.Types
 {
@@ -14,16 +15,26 @@ namespace Dyalect.Runtime.Types
             return id;
         }
 
-        protected DyForeignObject(RuntimeContext rtx) : base(GetTypeId(rtx)) { }
+        protected DyForeignObject(RuntimeContext rtx, Unit unit) : this(rtx, unit, null) { }
 
-        protected DyForeignObject(RuntimeContext rtx, string ctor) : base(GetTypeId(rtx)) =>
-            (RuntimeContext, Constructor) = (rtx, ctor);
+        protected DyForeignObject(RuntimeContext rtx, Unit unit, string ctor) : base(GetTypeId(rtx)) =>
+            (RuntimeContext, DeclaringUnit, Constructor) = (rtx, unit,ctor);
 
         public RuntimeContext RuntimeContext { get; }
 
+        public Unit DeclaringUnit { get; }
+
         public string Constructor { get; }
 
-        public override int GetConstructorId(ExecutionContext ctx) =>
-            string.IsNullOrEmpty(Constructor) ? base.GetConstructorId(ctx) : RuntimeContext.GetMemberId(Constructor);
+        public override int GetConstructorId(ExecutionContext ctx)
+        {
+            if (string.IsNullOrEmpty(Constructor))
+                return base.GetConstructorId(ctx);
+
+            var id = DeclaringUnit.GetMemberId(Constructor);
+            var gid = RuntimeContext.Composition.GetMemberId(Constructor);
+            DeclaringUnit.MemberIds[id] = gid;
+            return gid;
+        }
     }
 }

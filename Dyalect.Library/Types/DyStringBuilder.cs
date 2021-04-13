@@ -1,4 +1,5 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using Dyalect.Linker;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
@@ -11,7 +12,7 @@ namespace Dyalect.Library.Types
     {
         internal StringBuilder Builder;
 
-        public DyStringBuilder(RuntimeContext rtx, StringBuilder builder) : base(rtx) => Builder = builder;
+        public DyStringBuilder(RuntimeContext rtx, Unit unit, StringBuilder builder) : base(rtx, unit) => Builder = builder;
 
         public override bool Equals(DyObject other) =>
             other is DyString || other is DyStringBuilder ? Builder.ToString() == other.ToString() 
@@ -149,10 +150,10 @@ namespace Dyalect.Library.Types
                 var vals = DyIterator.Run(ctx, arg);
                 var arr = vals.Select(o => DyString.ToString(o, ctx)).ToArray();
                 var sb = new StringBuilder(string.Join("", arr));
-                return new DyStringBuilder(ctx.RuntimeContext, sb);
+                return new DyStringBuilder(ctx.RuntimeContext, DeclaringUnit, sb);
             }
             else
-                return new DyStringBuilder(ctx.RuntimeContext, new StringBuilder());
+                return new DyStringBuilder(ctx.RuntimeContext, DeclaringUnit, new StringBuilder());
         }
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)

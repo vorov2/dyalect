@@ -209,16 +209,16 @@ namespace Dyalect.Linker
                 if (u.References.Count > 0)
                     u.UnitIds[u.References.Count] = uid;
 
-                for (var i = 0; i < u.MemberNames.Count; i++)
+                foreach (var mi in u.MemberNames)
                 {
-                    if (!composition.MembersMap.TryGetValue(u.MemberNames[i], out var id))
+                    if (!composition.MembersMap.TryGetValue(mi.Key, out var id))
                     {
                         id = composition.Members.Count;
-                        composition.Members.Add(u.MemberNames[i]);
-                        composition.MembersMap.Add(u.MemberNames[i], id);
+                        composition.Members.Add(mi.Key);
+                        composition.MembersMap.Add(mi.Key, id);
                     }
 
-                    u.MemberIds[i] = id;
+                    u.MemberIds[mi.Value] = id;
                 }
 
                 for (var i = 0; i < u.Types.Count; i++)
@@ -234,6 +234,7 @@ namespace Dyalect.Linker
                     else
                     {
                         var ti = (ForeignTypeInfo)Activator.CreateInstance(td.ForeignTypeInfo);
+                        ti.DeclaringUnit = u;
                         ti.TypeCode = composition.Types.Count;
                         composition.Types.Add(ti);
                         composition.TypeCodes.Add(td.ForeignTypeInfo.GUID, ti.TypeCode);

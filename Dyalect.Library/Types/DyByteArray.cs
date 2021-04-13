@@ -1,5 +1,5 @@
-﻿using Dyalect.Debug;
-using Dyalect.Linker;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
@@ -11,7 +11,7 @@ namespace Dyalect.Library.Types
     {
         internal byte[] Buffer;
 
-        public DyByteArray(RuntimeContext rtx, byte[] buffer) : base(rtx) => Buffer = buffer;
+        public DyByteArray(RuntimeContext rtx, Unit unit, byte[] buffer) : base(rtx, unit) => Buffer = buffer;
 
         public override object ToObject() => Buffer;
 
@@ -52,14 +52,14 @@ namespace Dyalect.Library.Types
             var a3 = new byte[a1.Length + a2.Length];
             Array.Copy(a1, a3, a1.Length);
             Array.Copy(a2, 0, a3, a1.Length, a2.Length);
-            return new DyByteArray(ctx.RuntimeContext, a3);
+            return new DyByteArray(ctx.RuntimeContext, DeclaringUnit, a3);
         }
 
         private DyObject New(ExecutionContext ctx, DyObject arg)
         {
             var vals = DyIterator.Run(ctx, arg);
             var arr =  vals.Select(o => o.ToObject()).Select(Convert.ToByte).ToArray();
-            return new DyByteArray(ctx.RuntimeContext, arr);
+            return new DyByteArray(ctx.RuntimeContext, DeclaringUnit, arr);
         }
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)

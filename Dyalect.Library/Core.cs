@@ -18,13 +18,13 @@ namespace Dyalect.Library
         [Function("NewByteArray")]
         public DyObject ByteArray(int[] arr)
         {
-            return new DyByteArray(RuntimeContext, arr.Select(i => (byte)i).ToArray());
+            return new DyByteArray(RuntimeContext, this, arr.Select(i => (byte)i).ToArray());
         }
 
         [Function("NewStringBuilder")]
         public DyObject NewStringBuilder()
         {
-            return new DyStringBuilder(RuntimeContext, new System.Text.StringBuilder());
+            return new DyStringBuilder(RuntimeContext, this, new System.Text.StringBuilder());
         }
     }
 }

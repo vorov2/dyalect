@@ -168,7 +168,7 @@ namespace Dyalect.Linker
             for (var i = 0; i < members; i++)
             {
                 unit.MemberIds.Add(-1);
-                unit.MemberNames.Add(reader.ReadString());
+                unit.MemberNames.Add(reader.ReadString(), reader.ReadInt32());
             }
         }
 
