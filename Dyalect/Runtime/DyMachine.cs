@@ -471,7 +471,7 @@ namespace Dyalect.Runtime
                                 
                                 right = types[right.TypeId].GetMember(right, 
                                     ctx.RuntimeContext.Composition.MembersMap[Builtins.Call], unit, ctx);
-                                if (right.TypeId != DyType.Function) ctx.InvalidType(right);
+                                if (!ctx.HasErrors && right.TypeId != DyType.Function) ctx.InvalidType(right);
                                 if (ctx.HasErrors)
                                 {
                                     ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
