@@ -557,11 +557,35 @@ namespace Dyalect.Runtime.Types
             return destArr;
         }
 
+        private static DyObject Range(ExecutionContext ctx, DyObject from, DyObject to, DyObject step)
+        {
+            if (to.TypeId != from.TypeId && from.TypeId != to.TypeId)
+                return ctx.InvalidType(to);
+
+            var elem = from;
+            var arr = new List<DyObject>();
+
+            if (step.TypeId == DyType.Nil)
+                step = DyInteger.One;
+
+            while (ctx.RuntimeContext.Types[from.TypeId].Lte(ctx, elem, to).GetBool())
+            {
+                arr.Add(elem);
+                elem = ctx.RuntimeContext.Types[elem.TypeId].Add(ctx, elem, step);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+            }
+
+            return new DyArray(arr.ToArray());
+        }
+
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             return name switch
             {
                 "Array" => DyForeignFunction.Static(name, New, 0, new Par("values", true)),
+                "range" => DyForeignFunction.Static(name, Range, -1, new Par("from"), new Par("to", DyNil.Instance), new Par("step", DyInteger.One)),
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance)),
                 "empty" => DyForeignFunction.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance)),
                 "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),

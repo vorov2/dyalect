@@ -63,3 +63,12 @@ func charTest8() {
     assert(['a','b','c','d'], 'a'.range('d').toArray())
     assert(['a', 'c', 'e'], 'a'.range('f', 2).toArray())
 }
+
+func charMath1() {
+    const a = 'a'
+    const b = 'b'
+    assert('b', a + 1)
+    assert('a', b - 1)
+    assert("ab", a + b)
+    assert("abcdef", a + b + "cdef")
+}

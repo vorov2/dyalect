@@ -281,15 +281,13 @@ namespace Dyalect.Runtime.Types
         private DyObject ToArray(ExecutionContext ctx, DyObject self)
         {
             var res = ConvertToArray(ctx, self);
-            return res == null ? DyNil.Instance
-                : (DyObject)new DyArray(res.ToArray());
+            return res == null ? DyNil.Instance : new DyArray(res.ToArray());
         }
 
         private DyObject ToTuple(ExecutionContext ctx, DyObject self)
         {
             var res = ConvertToArray(ctx, self);
-            return res == null ? DyNil.Instance
-                : new DyTuple(res.ToArray());
+            return res == null ? DyNil.Instance : new DyTuple(res.ToArray());
         }
 
         private static DyObject GetCount(ExecutionContext ctx, DyObject self)
