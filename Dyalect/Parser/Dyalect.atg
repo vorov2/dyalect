@@ -883,14 +883,20 @@ PRODUCTIONS
         ).
 
     Range<out DNode node> =
-        (. node = null; .)
+        (. node = null; DNode cnode = null; .)
         (
-            FieldOrIndex<out node>
-            [
-                ".."  (. var range = new DRange(t) { From = node }; .)
+            (
+                ".."  (. var range = new DRange(t) { From = node }; node = range; .)
+                FieldOrIndex<out cnode> (. range.To = cnode; .)
+            )
+            |
+            (
                 FieldOrIndex<out node>
-                (. range.To = node; node = range; .)
-            ]
+                [
+                    ".."  (. var range = new DRange(t) { From = node }; node = range; .)
+                    FieldOrIndex<out cnode> (. range.To = cnode; .)
+                ]
+            )
         ).
 
     FieldOrIndex<out DNode node> =

@@ -49,3 +49,11 @@ func rangeTest6() {
     xs = take(seq, 5)
     assert(['a', 'b', 'c', 'd', 'e'], xs)
 }
+
+func stringRange1() {
+    const str = "hello,world!"
+    const new1 = String(str[0..5])
+    assert("hello", new1)
+    const new2 = String(str[6..11])
+    assert("world", new2)
+}
