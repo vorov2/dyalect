@@ -233,29 +233,10 @@ namespace Dyalect.Linker
                         composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, td.Name, td.AutoGenConstructors));
                     else
                     {
-                        var fat = td.ForeignTypeInfo.GetAttribute<ForeignTypeAttribute>();
-                        var guid = fat?.Guid;
-
-                        if (guid is null)
-                        {
-                            guid = Guid.NewGuid();
-                            AddError(LinkerError.InvalidForeignModule, u.FileName, default, td.Name);
-                        }
-
                         var ti = (ForeignTypeInfo)Activator.CreateInstance(td.ForeignTypeInfo);
                         ti.TypeCode = composition.Types.Count;
                         composition.Types.Add(ti);
-                        composition.TypeCodes.Add(guid.Value, ti.TypeCode);
-
-                        if (fat.Constructors is not null)
-                            foreach (var c in fat.Constructors)
-                            {
-                                if (!composition.MembersMap.TryGetValue(c, out var cid))
-                                {
-                                    composition.MembersMap.Add(c, composition.Members.Count);
-                                    composition.Members.Add(c);
-                                }
-                            }
+                        composition.TypeCodes.Add(td.ForeignTypeInfo.GUID, ti.TypeCode);
                     }
                 }
             }

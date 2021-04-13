@@ -8,26 +8,13 @@ namespace Dyalect.Library.Types
     public sealed class DyResult : DyForeignObject<DyResultTypeInfo>
     {
         internal readonly DyObject Value;
-        internal readonly string Constructor;
 
-        public DyResult(RuntimeContext rtx, string ctor, DyObject value) 
-            : this(GetTypeId(rtx), ctor, value) { }
-
-        public DyResult(int typeId, string ctor, DyObject value) : base(typeId) => 
-            (Constructor, Value) = (ctor, value);
+        public DyResult(RuntimeContext rtx, string ctor, DyObject value) : base(rtx, ctor) =>
+            Value = value;
 
         public override object ToObject() => this;
-
-        public override int GetConstructorId(ExecutionContext ctx)
-        {
-            if (ctx.RuntimeContext.QueryMemberId(Constructor, out var id))
-                return id;
-
-            return base.GetConstructorId(ctx);
-        }
     }
 
-    [ForeignType("221D6334-76F1-49C3-A46E-B9A361D82849", "Success", "Failure")]
     public sealed class DyResultTypeInfo : ForeignTypeInfo
     {
         public DyResultTypeInfo() { }
@@ -88,9 +75,11 @@ namespace Dyalect.Library.Types
             return base.GetMember(name, ctx);
         }
 
-        private DyObject Success(ExecutionContext _, DyObject arg) => new DyResult(TypeCode, "Success", arg);
+        private DyObject Success(ExecutionContext ctx, DyObject arg) =>
+            new DyResult(ctx.RuntimeContext, "Success", arg);
 
-        private DyObject Failure(ExecutionContext _, DyObject arg) => new DyResult(TypeCode, "Failure", arg);
+        private DyObject Failure(ExecutionContext ctx, DyObject arg) =>
+            new DyResult(ctx.RuntimeContext, "Failure", arg);
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {

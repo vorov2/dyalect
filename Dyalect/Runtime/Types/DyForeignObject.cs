@@ -4,14 +4,11 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyForeignObject<T> : DyObject where T : ForeignTypeInfo
     {
-        protected static int GetTypeId(RuntimeContext rtx)
+        private static int GetTypeId(RuntimeContext rtx)
         {
-            var guid = typeof(T).GetAttribute<ForeignTypeAttribute>()?.Guid;
+            var guid = typeof(T).GUID;
 
-            if (guid is null)
-                throw new DyException($"Missing required [{nameof(ForeignTypeAttribute)}].");
-
-            if (!rtx.Composition.TypeCodes.TryGetValue(guid.Value, out var id))
+            if (!rtx.Composition.TypeCodes.TryGetValue(guid, out var id))
                 throw new DyException($"Unable to find type {nameof(T)}.");
 
             return id;
@@ -19,6 +16,14 @@ namespace Dyalect.Runtime.Types
 
         protected DyForeignObject(RuntimeContext rtx) : base(GetTypeId(rtx)) { }
 
-        protected DyForeignObject(int typeId) : base(typeId) { }
+        protected DyForeignObject(RuntimeContext rtx, string ctor) : base(GetTypeId(rtx)) =>
+            (RuntimeContext, Constructor) = (rtx, ctor);
+
+        public RuntimeContext RuntimeContext { get; }
+
+        public string Constructor { get; }
+
+        public override int GetConstructorId(ExecutionContext ctx) =>
+            string.IsNullOrEmpty(Constructor) ? base.GetConstructorId(ctx) : RuntimeContext.GetMemberId(Constructor);
     }
 }
