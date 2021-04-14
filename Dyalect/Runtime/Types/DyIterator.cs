@@ -182,17 +182,17 @@ namespace Dyalect.Runtime.Types
 
                 if (!ReferenceEquals(res, DyNil.Terminator))
                 {
-                    if (res.TypeId == DyType.Iterator)
-                    {
-                        foreach (var o in InternalRun(ctx, res))
-                        {
-                            yield return o;
+                    //if (res.TypeId == DyType.Iterator)
+                    //{
+                    //    foreach (var o in InternalRun(ctx, res))
+                    //    {
+                    //        yield return o;
 
-                            if (ctx.HasErrors)
-                                yield break;
-                        }
-                    }
-                    else
+                    //        if (ctx.HasErrors)
+                    //            yield break;
+                    //    }
+                    //}
+                    //else
                         yield return res;
                 }
                 else
