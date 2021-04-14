@@ -116,6 +116,8 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId == DyType.Integer)
                 return new DyChar((char)(left.GetChar() - right.GetInteger()));
+            else if (right.TypeId == DyType.Char)
+                return DyInteger.Get(left.GetChar() - right.GetChar());
             else
                 return ctx.InvalidType(right);
         }

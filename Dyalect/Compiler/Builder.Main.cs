@@ -298,15 +298,38 @@ namespace Dyalect.Compiler
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
         {
-            Build(range.From, hints.Append(Push), ctx);
-            cw.GetMember(unit.GetMemberId("range"));
-            cw.FunPrep(1);
+            //Build(range.From, hints.Append(Push), ctx);
+            //cw.GetMember(unit.GetMemberId("range"));
+            //cw.FunPrep(1);
 
-            Build(range.To, hints.Append(Push), ctx);
+            //Build(range.To, hints.Append(Push), ctx);
+            //cw.FunArgIx(0);
+
+            //AddLinePragma(range);
+            //cw.FunCall(1);
+            //PopIf(hints);
+
+            cw.Type(new TypeHandle(DyType.GetTypeCodeByName(DyTypeNames.Iterator), true));
+            cw.GetMember(unit.GetMemberId("range"));
+            cw.FunPrep(3);
+
+            if (range.From is not null)
+                Build(range.From, hints.Append(Push), ctx);
+            else
+                cw.Push(0);
+
             cw.FunArgIx(0);
 
+            if (range.To is not null)
+                Build(range.To, hints.Append(Push), ctx);
+            else
+                cw.PushNil();
+
+            cw.FunArgIx(1);
+            cw.Push(1);
+            cw.FunArgIx(2);
             AddLinePragma(range);
-            cw.FunCall(1);
+            cw.FunCall(3);
             PopIf(hints);
         }
 

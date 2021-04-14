@@ -1,3 +1,6 @@
+# 0.19.0
+  *
+
 # 0.18.0
   * Change: _Refactoring and redesign of internal compiler infrastructure and foreign module infrastructure._
   * Fixed: _Adding an integer to a char causes a crush_ ([Issue #397](https://github.com/vorov2/dyalect/issues397)).

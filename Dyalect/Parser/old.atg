@@ -876,55 +876,29 @@ PRODUCTIONS
             (
                 (
                     "!" (. ot = t; op = UnaryOperator.Not; .)
-                    Range<out node>
+                    Index<out node>
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
                 |
                 (
                     "-" (. ot = t; op = UnaryOperator.Neg; .)
-                    Range<out node>
+                    Index<out node>
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
                 |
                 (
                     "+" (. ot = t; op = UnaryOperator.Plus; .)
-                    Range<out node>
+                    Index<out node>
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
                 |
                 (
                     "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
-                    Range<out node>
+                    Index<out node>
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
-                | Range<out node>
+                | Index<out node>
             )
-        ).
-
-    Range<out DNode node> =
-        (. node = null; DNode cnode = null; .)
-        (
-            (
-                ".."  (. var range = new DRange(t) { From = node }; node = range; .)
-                Index<out cnode> (. range.To = cnode; .)
-            )
-            |
-            (
-                Index<out node>
-                [
-                    ".."  (. var range = new DRange(t) { From = node }; node = range; .)
-                    [ SimpleIndex<out cnode> (. range.To = cnode; .) ]
-                ]
-            )
-        ).
-
-    SimpleIndex<out DNode node> =
-        (
-            SimpleLiteral<out node> 
-            {
-                IndexBody<node, out var cnode>
-                (. node = cnode; .)
-            }
         ).
 
     Index<out DNode node> =
@@ -1034,6 +1008,26 @@ PRODUCTIONS
             | Group<out node>
             | Base<out node>
             | Array<out node>
+            | Range<out node>
+        ).
+
+    Range<out DNode node> =
+        (. node = null; DNode cnode = null; .)
+        (
+            "<"
+                (
+                    (
+                        ".."  (. var range = new DRange(t) { From = node }; node = range; .)
+                        Index<out cnode> (. range.To = cnode; .)
+                    )
+                    |
+                    (
+                        Index<out node> [ "," Index<out node> ]
+                        ".."  (. var range = new DRange(t) { From = node }; node = range; .)
+                        [ Index<out cnode> (. range.To = cnode; .) ]
+                    )
+                )
+            ">"
         ).
 
     Iterator<out DNode node> =

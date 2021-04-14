@@ -503,7 +503,8 @@ namespace Dyalect.Runtime.Types
             return true;
         }
 
-        internal bool CheckHasMemberDirect(DyObject self, string name, ExecutionContext ctx) => InternalGetMember(self, name, ctx) != null;
+        internal bool CheckHasMemberDirect(DyObject self, string name, ExecutionContext ctx) =>
+            InternalGetMember(self, name, ctx) is not null;
 
         internal void SetMember(int nameId, DyObject value, Unit unit, ExecutionContext ctx)
         {
