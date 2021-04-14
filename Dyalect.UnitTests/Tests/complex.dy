@@ -509,7 +509,7 @@ func consolidationTest() {
     for list in [
         [ (s = 6.1, e = 7.2), (s = 7.2, e = 8.3) ]
     ] {
-        var z = list.len()-1
+        var z = list.len() - 1
         while z >= 1 {
             for y in (z - 1)..0 {
                 if overlap(list[z], list[y]) {

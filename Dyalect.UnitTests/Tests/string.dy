@@ -203,3 +203,9 @@ func stringIndexing() { //#301
     assert('e', xs[-1])
     assert('a', xs[-5])
 }
+
+func stringSplice1() { 
+    var story = "Dyalect is going to be great!"
+    var res = String( story[-6..] ) 
+    assert("great!", res)
+}

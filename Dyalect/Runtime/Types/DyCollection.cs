@@ -169,10 +169,16 @@ namespace Dyalect.Runtime.Types
             if (beg == 0 && beg == end)
                 return self;
 
-            if (beg < 0 || beg >= coll.Count)
+            if (beg < 0)
+                beg = coll.Count + beg;
+
+            if (beg >= coll.Count)
                 return ctx.IndexOutOfRange(beg);
 
-            if (end < 0 || end > coll.Count)
+            if (end < 0)
+                end = coll.Count + end;
+
+            if (end > coll.Count)
                 return ctx.IndexOutOfRange(end);
 
             return new DyIterator(new DyCollectionEnumerable(arr, beg, end - beg, coll));
