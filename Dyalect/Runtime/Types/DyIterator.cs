@@ -295,6 +295,26 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        {
+            if (index.TypeId != DyType.Integer)
+                return ctx.IndexInvalidType(index);
+
+            var i = (int)index.GetInteger();
+
+            try
+            {
+                if (i < 0)
+                    return DyIterator.Run(ctx, self).Reverse().ElementAt(-i);
+                else
+                    return DyIterator.Run(ctx, self).ElementAt(i);
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return ctx.IndexOutOfRange(index);
+            }
+        }
+
         private static List<DyObject> ConvertToArray(ExecutionContext ctx, DyObject self)
         {
             var fn = (DyFunction)self;
@@ -429,6 +449,7 @@ namespace Dyalect.Runtime.Types
                 "last" => DyForeignFunction.Member(name, Last),
                 "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
                 "by" => DyForeignFunction.Member(name, SetStep, -1, new Par("value")),
+                //"element" => DyForeignFunction.Member(name, ElementAt, -1, new Par("at")),
                 _ => null
             };
 
