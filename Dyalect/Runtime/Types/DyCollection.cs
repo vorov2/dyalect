@@ -152,7 +152,7 @@ namespace Dyalect.Runtime.Types
     {
         protected DyCollectionTypeInfo(int typeId) : base(typeId) { }
 
-        protected DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
+        protected virtual DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
         {
             var coll = (DyCollection)self;
             var arr = coll.GetValues();

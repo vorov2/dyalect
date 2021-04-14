@@ -3,6 +3,7 @@
   * Add: _Iterator should support `slice`_ ([Issue #409](https://github.com/vorov2/dyalect/issues409)).
   * Add: _Iterators should support indexer_ ([Issue #410](https://github.com/vorov2/dyalect/issues410)).
   * Add: _Ranges with negative indices and parser_ ([Issue #412](https://github.com/vorov2/dyalect/issues412)).
+  * Add: _Enhance slicing operator_ ([Issue #371](https://github.com/vorov2/dyalect/issues371)).
 
 # 0.18.0
   * Change: _Refactoring and redesign of internal compiler infrastructure and foreign module infrastructure._

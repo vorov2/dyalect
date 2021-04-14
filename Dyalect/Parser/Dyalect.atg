@@ -906,7 +906,7 @@ PRODUCTIONS
         (
             (
                 ".."  (. var range = new DRange(t) { From = node }; node = range; .)
-                SimpleIndex<out cnode> (. range.To = cnode; .)
+                [ SimpleIndex<out cnode> (. range.To = cnode; .) ]
             )
             |
             (

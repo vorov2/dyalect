@@ -39,13 +39,13 @@ func rangeTest6() {
         }
         return arr
     }
-    var seq = 12.range(step = 5)
+    var seq = (12..).by(5)
     var xs = take(seq, 10)
     assert([12, 17, 22, 27, 32, 37, 42, 47, 52, 57], xs)
-    seq = 1.0.range(step = 0.1)
+    seq = (1.0..).by(0.1)
     xs = take(seq, 5)
     assert([1.0, 1.1, 1.2000000000000002, 1.3000000000000003, 1.4000000000000004], xs)
-    seq = 'a'.range()
+    seq = ('a'..)
     xs = take(seq, 5)
     assert(['a', 'b', 'c', 'd', 'e'], xs)
 }
@@ -56,4 +56,16 @@ func stringRange1() {
     assert("hello", new1)
     const new2 = String(str[6..11])
     assert("world", new2)
+}
+
+func slice1() {
+    var xs = ["Firefly", "Cowboy Bebop", "Samurai Champloo"]
+    assert(["Cowboy Bebop", "Samurai Champloo"], xs[-2..].toArray())
+    assert(["Samurai Champloo"], xs[-1..].toArray())
+}
+
+func slice2() {
+    var cities = ["Kolkata", "Hyderabad", "Bangalore", "London", "Moscow", "London", "New York"]
+    assert("New York", cities[-1])
+    assert(["Kolkata", "Hyderabad", "Bangalore", "London"], cities[0..4].toArray())
 }

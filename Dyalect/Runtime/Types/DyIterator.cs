@@ -200,12 +200,6 @@ namespace Dyalect.Runtime.Types
 
         private IEnumerable<DyObject> GenerateIterator(ExecutionContext ctx, DyObject from, DyObject to)
         {
-            if (to.TypeId != DyType.Nil && from.TypeId != to.TypeId)
-            {
-                ctx.InvalidType(to);
-                yield break;
-            }
-
             var elem = from;
             var inf = to.TypeId == DyType.Nil;
 
@@ -466,10 +460,7 @@ namespace Dyalect.Runtime.Types
                 _ => null
             };
 
-        private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step)
-        {
-            return new DyRange(ctx, from, to, step);
-        }
+        private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step) => new DyRange(ctx, from, to, step);
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
@@ -478,7 +469,7 @@ namespace Dyalect.Runtime.Types
             if (name == "concat")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
             if (name == "range")
-                return DyForeignFunction.Static(name, MakeRange, -1, new Par("from"), new Par("to", DyNil.Instance), new Par("by", DyInteger.One));
+                return DyForeignFunction.Static(name, MakeRange, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance), new Par("by", DyInteger.One));
             return null;
         }
     }

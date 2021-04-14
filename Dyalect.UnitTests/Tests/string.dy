@@ -204,8 +204,16 @@ func stringIndexing() { //#301
     assert('a', xs[-5])
 }
 
-func stringSplice1() { 
+func stringSlice1() { 
     var story = "Dyalect is going to be great!"
-    var res = String( story[-6..] ) 
+    var res = story[-6..]
     assert("great!", res)
+}
+
+func stringSplice2() {
+    var str = "the quick brown fox jumped over the lazy dogs"
+    assert("lazy dogs",  str[-9..])
+    assert("lazy dogs",  str[36..])
+    assert("the quick",  str[..9])
+    assert(str,  str[..])
 }

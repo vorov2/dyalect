@@ -9,59 +9,6 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyChar : DyObject
     {
-        internal sealed class RangeEnumerator : IEnumerator<DyObject>
-        {
-            private readonly char from;
-            private readonly char start;
-            private readonly char to;
-            private readonly int step;
-            private readonly bool inf;
-            private bool fst;
-            private char current;
-
-            public RangeEnumerator(char from, char start, char? to, int step)
-            {
-                this.from = from;
-                this.start = start;
-                this.to = to ?? '\0';
-                this.step = step;
-                inf = to == null;
-                fst = true;
-                current = from;
-            }
-
-            public DyObject Current => new DyChar(current);
-
-            object IEnumerator.Current => Current;
-
-            public void Dispose() { }
-
-            public bool MoveNext()
-            {
-                if (fst)
-                {
-                    fst = false;
-                    return true;
-                }
-
-                current = (char)(current + step);
-
-                if (inf)
-                    return true;
-
-                if (to > start)
-                    return current <= to;
-
-                return current >= to;
-            }
-
-            public void Reset()
-            {
-                current = from;
-                fst = true;
-            }
-        }
-
         public static readonly DyChar Empty = new('\0');
         public static readonly DyChar Max = new(char.MaxValue);
         public static readonly DyChar Min = new(char.MinValue);
@@ -163,35 +110,9 @@ namespace Dyalect.Runtime.Types
         }
         #endregion
 
-        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to, DyObject step)
-        {
-            if (to.TypeId != DyType.Char && to.TypeId != DyType.Nil)
-                return ctx.InvalidType(to);
-
-            var ifrom = self.GetChar();
-            var istart = ifrom;
-            var istep = step.TypeId == DyType.Nil ? 1 : (int)step.GetInteger();
-
-            if (to == DyNil.Instance)
-                return new DyIterator(new DyChar.RangeEnumerator(ifrom, istart, null, istep));
-
-            var ito = to.GetChar();
-
-            if (ito <= ifrom)
-                istep = -Math.Abs(istep);
-            
-            if (istep == 0
-                || (istep < 0 && ito > ifrom)
-                || (istep > 0 && ito < ifrom))
-                return ctx.InvalidRange();
-
-            return new DyIterator(new DyChar.RangeEnumerator(ifrom, istart, ito, istep));
-        }
-
         protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "range" => DyForeignFunction.Member(name, Range, -1, new Par("to", DyNil.Instance), new Par("step", DyNil.Instance)),
                 "isLower" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLower(c.GetChar())),
                 "isUpper" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsUpper(c.GetChar())),
                 "isControl" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsControl(c.GetChar())),
