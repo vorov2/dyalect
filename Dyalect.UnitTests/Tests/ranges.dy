@@ -4,7 +4,7 @@
 }
 
 func rangeTest2() {
-    var xs = 5..1
+    var xs = (5..1).by(-1)
     assert([5,4,3,2,1], xs.toArray())
 }
 

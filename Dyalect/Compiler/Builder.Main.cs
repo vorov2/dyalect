@@ -569,7 +569,6 @@ namespace Dyalect.Compiler
                     cw.PushNil();
 
                 cw.FunArgIx(1);
-
                 AddLinePragma(node);
                 cw.FunCall(2);
                 PopIf(hints);

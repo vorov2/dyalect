@@ -393,6 +393,31 @@ namespace Dyalect.Runtime.Types
             return self;
         }
 
+        private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
+        {
+            var seq =  DyIterator.Run(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            if (start.TypeId != DyType.Integer)
+                return ctx.InvalidType(start);
+
+            if (len.TypeId != DyType.Nil && len.TypeId != DyType.Integer)
+                return ctx.InvalidType(len);
+
+            var beg = (int)start.GetInteger();
+            var leni = ReferenceEquals(len, DyNil.Instance) ? -1 : (int)len.GetInteger();
+
+            if (beg == 0 && leni == -1)
+                return self;
+
+            if (leni > 0)
+                return new DyIterator(seq.Skip(beg).Take(leni));
+            else
+                return new DyIterator(seq.Skip(beg));
+        }
+
         protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
             name switch
             {
@@ -402,6 +427,7 @@ namespace Dyalect.Runtime.Types
                 "skip" => DyForeignFunction.Member(name, Skip, -1, new Par("count")),
                 "first" => DyForeignFunction.Member(name, First),
                 "last" => DyForeignFunction.Member(name, Last),
+                "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
                 "by" => DyForeignFunction.Member(name, SetStep, -1, new Par("value")),
                 _ => null
             };
