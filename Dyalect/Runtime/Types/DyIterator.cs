@@ -177,7 +177,10 @@ namespace Dyalect.Runtime.Types
                 if (!ReferenceEquals(res, DyNil.Terminator))
                     yield return res;
                 else
+                {
+                    iter.Reset(ctx);
                     break;
+                }
             }
         }
 
@@ -427,15 +430,25 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(len);
 
             var beg = (int)start.GetInteger();
-            var leni = ReferenceEquals(len, DyNil.Instance) ? -1 : (int)len.GetInteger();
+            int? count = null;
 
-            if (beg == 0 && leni == -1)
-                return self;
+            if (beg < 0)
+                beg = (count ??= seq.Count()) + beg;
 
-            if (leni > 0)
-                return new DyIterator(seq.Skip(beg).Take(leni));
-            else
-                return new DyIterator(seq.Skip(beg));
+            if (ReferenceEquals(len, DyNil.Instance))
+            {
+                if (beg == 0)
+                    return self;
+
+                return new DyIterator(seq.Skip(beg)); 
+            }
+            
+            var leni = (int)len.GetInteger();
+
+            if (leni < 0)
+                leni = (count ?? seq.Count()) + leni;
+
+            return new DyIterator(seq.Skip(beg).Take(leni));
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
