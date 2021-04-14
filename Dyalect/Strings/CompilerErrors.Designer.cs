@@ -268,7 +268,16 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &quot;return&quot; directive is supported only inside functions..
+        ///   Looks up a localized string similar to Statement &quot;return&quot; is not allowed in iterators. Use &quot;yield break&quot; to terminate an iterator..
+        /// </summary>
+        internal static string ReturnInIterator {
+            get {
+                return ResourceManager.GetString("ReturnInIterator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Statement &quot;return&quot; is only supported inside functions..
         /// </summary>
         internal static string ReturnNotAllowed {
             get {

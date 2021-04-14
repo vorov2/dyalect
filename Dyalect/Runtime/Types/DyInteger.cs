@@ -261,7 +261,7 @@ namespace Dyalect.Runtime.Types
             else if (right.TypeId == DyType.Float)
                 return left.GetFloat() < right.GetFloat() ? DyBool.True : DyBool.False;
             else
-                return base.LtOp(left, right, ctx);
+                return ctx.InvalidType(right);
         }
 
         protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)

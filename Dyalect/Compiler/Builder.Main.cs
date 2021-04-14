@@ -96,6 +96,12 @@ namespace Dyalect.Compiler
                 case NodeType.Yield:
                     Build((DYield)node, hints, ctx);
                     break;
+                case NodeType.YieldMany:
+                    Build((DYieldMany)node, hints, ctx);
+                    break;
+                case NodeType.YieldBreak:
+                    Build((DYieldBreak)node, hints, ctx);
+                    break;
                 case NodeType.Base:
                     Build((DBase)node);
                     break;
@@ -287,13 +293,13 @@ namespace Dyalect.Compiler
         private void Build(DIteratorLiteral node, Hints hints, CompilerContext ctx)
         {
             var dec = new DFunctionDeclaration(node.Location) { Body = node.YieldBlock };
-            Build(dec, hints.Append(Iterator), ctx);
+            Build(dec, hints.Append(IteratorBody), ctx);
         }
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
         {
             Build(range.From, hints.Append(Push), ctx);
-            cw.GetMember(GetMemberNameId("range"));
+            cw.GetMember(unit.GetMemberId("range"));
             cw.FunPrep(1);
 
             Build(range.To, hints.Append(Push), ctx);
@@ -301,7 +307,6 @@ namespace Dyalect.Compiler
 
             AddLinePragma(range);
             cw.FunCall(1);
-
             PopIf(hints);
         }
 
@@ -309,7 +314,7 @@ namespace Dyalect.Compiler
         {
             Build(node.Target, hints.Append(Push), ctx);
             AddLinePragma(node);
-            var nameId = GetMemberNameId(node.Name);
+            var nameId = unit.GetMemberId(node.Name);
             cw.HasMember(nameId);
             PopIf(hints);
         }
@@ -320,6 +325,43 @@ namespace Dyalect.Compiler
             AddLinePragma(node);
             cw.Yield();
             PushIf(hints);
+        }
+
+        private void Build(DYieldMany node, Hints hints, CompilerContext ctx)
+        {
+            var sys = AddVariable();
+            var initSkip = cw.DefineLabel();
+            var exit = cw.DefineLabel();
+
+            Build(node.Expression, hints.Append(Push), ctx);
+            cw.Briter(initSkip);
+            cw.GetMember(unit.GetMemberId(Builtins.Iterator));
+            cw.FunPrep(0);
+            cw.FunCall(0);
+
+            cw.MarkLabel(initSkip);
+            AddLinePragma(node);
+            cw.PopVar(sys);
+
+            var iter = cw.DefineLabel();
+            cw.MarkLabel(iter);
+            cw.PushVar(new ScopeVar(sys));
+            cw.FunPrep(0);
+            cw.FunCall(0);
+            cw.Brterm(exit);
+            cw.Yield();
+            cw.Br(iter);
+
+            cw.MarkLabel(exit);
+            cw.Pop();
+            PushIf(hints);
+        }
+
+        private void Build(DYieldBreak node, Hints hints, CompilerContext ctx)
+        {
+            AddLinePragma(node);
+            cw.PushNil();
+            cw.Br(ctx.FunctionExit);
         }
 
         private void Build(DBase node)
@@ -349,7 +391,7 @@ namespace Dyalect.Compiler
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
 
             AddLinePragma(node);
-            var nameId = GetMemberNameId(node.Name);
+            var nameId = unit.GetMemberId(node.Name);
 
             if (hints.Has(Pop))
             {
@@ -395,7 +437,7 @@ namespace Dyalect.Compiler
             if (node.Elements.Count == 1 && node.Elements[0].NodeType == NodeType.Range)
             {
                 Build(node.Elements[0], hints.Append(Push), ctx);
-                cw.GetMember(GetMemberNameId("toArray"));
+                cw.GetMember(unit.GetMemberId("toArray"));
                 cw.FunPrep(0);
                 AddLinePragma(node);
                 cw.FunCall(0);
@@ -403,7 +445,7 @@ namespace Dyalect.Compiler
             else
             {
                 cw.Type(new(DyType.Array, true));
-                cw.GetMember(GetMemberNameId(DyTypeNames.Array));
+                cw.GetMember(unit.GetMemberId(DyTypeNames.Array));
                 cw.FunPrep(node.Elements.Count);
 
                 for (var i = 0; i < node.Elements.Count; i++)
@@ -443,7 +485,7 @@ namespace Dyalect.Compiler
                         }
                         else if (GetTypeHandle(nm, str.Value, out var handle, out var std) == CompilerError.None)
                         {
-                            GetMemberNameId(str.Value);
+                            unit.GetMemberId(str.Value);
                             AddLinePragma(node);
                             cw.Type(new TypeHandle(handle, std));
                             return;
@@ -473,7 +515,7 @@ namespace Dyalect.Compiler
                     AddError(CompilerError.RangeIndexNotSupported, node.Index.Location);
 
                 var r = (DRange)node.Index;
-                cw.GetMember(GetMemberNameId("slice"));
+                cw.GetMember(unit.GetMemberId("slice"));
                 cw.FunPrep(2);
                 Build(r.From, hints.Append(Push), ctx);
                 cw.FunArgIx(0);
@@ -555,6 +597,9 @@ namespace Dyalect.Compiler
             if (ctx.FunctionExit.IsEmpty())
                 AddError(CompilerError.ReturnNotAllowed, node.Location);
 
+            if (hints.Has(IteratorBody))
+                AddError(CompilerError.ReturnInIterator, node.Location);
+
             if (node.Expression != null)
                 Build(node.Expression, hints.Append(Push), ctx);
             else
@@ -609,7 +654,7 @@ namespace Dyalect.Compiler
 
                     Build(node.Arguments[0], newHints.Append(Push), ctx);
                     AddLinePragma(node);
-                    cw.Aux(GetMemberNameId(ctx.Function.Name));
+                    cw.Aux(unit.GetMemberId(ctx.Function.Name));
                     cw.NewType(ti.TypeId);
                     return;
                 }
@@ -645,7 +690,7 @@ namespace Dyalect.Compiler
                 {
                     Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
-                    cw.HasMember(GetMemberNameId(str.Value));
+                    cw.HasMember(unit.GetMemberId(str.Value));
                     PopIf(hints);
                     return;
                 }
@@ -759,7 +804,7 @@ namespace Dyalect.Compiler
             if (node.Chunks is not null)
             {
                 cw.Type(new(DyType.String, true));
-                cw.GetMember(GetMemberNameId("concat"));
+                cw.GetMember(unit.GetMemberId("concat"));
                 cw.FunPrep(node.Chunks.Count);
 
                 for (var i = 0; i < node.Chunks.Count; i++)
@@ -835,7 +880,7 @@ namespace Dyalect.Compiler
                 if (th != CompilerError.None)
                     AddError(CompilerError.UndefinedVariable, node.Location, node.Value);
                 else
-                    GetMemberNameId(node.Value);
+                    unit.GetMemberId(node.Value);
 
                 AddLinePragma(node);
                 cw.Type(new(hdl, std));

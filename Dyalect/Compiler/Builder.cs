@@ -23,7 +23,6 @@ namespace Dyalect.Compiler
         private readonly Dictionary<string, UnitInfo> referencedUnits;
 
         private readonly Dictionary<string, TypeInfo> types;
-        private readonly Dictionary<string, int> memberNames;
 
         private readonly static DImport defaultInclude = new(default) { ModuleName = "lang" };
 
@@ -31,7 +30,6 @@ namespace Dyalect.Compiler
         {
             referencedUnits = new();
             types = new();
-            memberNames = new();
 
             this.options = options;
             this.linker = linker;
@@ -54,7 +52,6 @@ namespace Dyalect.Compiler
             iterative = true;
             linker = builder.linker;
             types = builder.types;
-            memberNames = builder.memberNames;
             referencedUnits = builder.referencedUnits;
             counters = new();
             options = builder.options;
@@ -78,7 +75,8 @@ namespace Dyalect.Compiler
             unit.FileName = codeModel.FileName;
 
             //It is used internally, so we need to add it even if the code doesn't reference it
-            GetMemberNameId(Builtins.Iterator);
+            unit.GetMemberId(Builtins.Iterator);
+            unit.GetMemberId(Builtins.Call);
 
             if (unit.Layouts.Count == 0)
                 unit.Layouts.Add(null); //A layout reserved for the top level

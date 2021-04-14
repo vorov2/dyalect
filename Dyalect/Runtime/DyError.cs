@@ -12,7 +12,7 @@ namespace Dyalect.Runtime
 
         UserCode = 601,
 
-        NotFunction = 602,
+        //= 602,
 
         ExternalFunctionFailure = 603,
 
@@ -53,6 +53,8 @@ namespace Dyalect.Runtime
         InvalidValue = 621,
 
         ValueOutOfRange = 622,
+
+        OpenRangeNotSupported = 623,
     }
 
     public class DyError : DyObject
@@ -143,6 +145,13 @@ namespace Dyalect.Runtime
         public static DyObject CollectionModified(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.CollectionModified);
+            return DyNil.Instance;
+        }
+
+        public static DyObject OpenRangeNotSupported(this ExecutionContext ctx, string typeName)
+        {
+            ctx.Error = new(DyErrorCode.OpenRangeNotSupported,
+                ("Type", typeName));
             return DyNil.Instance;
         }
 
@@ -242,12 +251,6 @@ namespace Dyalect.Runtime
             ctx.Error = new(DyErrorCode.ExternalFunctionFailure,
                 ("FunctionName", functionName),
                 ("Error", error));
-            return DyNil.Instance;
-        }
-
-        public static DyObject NotFunction(this ExecutionContext ctx, DyObject obj)
-        {
-            ctx.Error = new(DyErrorCode.NotFunction, ("TypeName", obj.GetTypeName(ctx)));
             return DyNil.Instance;
         }
 

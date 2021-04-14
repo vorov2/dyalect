@@ -147,7 +147,7 @@ namespace Dyalect.Compiler
 
             cw.Dup();
 
-            var nameId = GetMemberNameId(node.Constructor);
+            var nameId = unit.GetMemberId(node.Constructor);
             cw.CtorCheck(nameId);
             cw.Brfalse(bad);
 
@@ -172,7 +172,7 @@ namespace Dyalect.Compiler
         private void BuildMethodCheck(DMethodCheckPattern node)
         {
             AddLinePragma(node);
-            var nameId = GetMemberNameId(node.Name);
+            var nameId = unit.GetMemberId(node.Name);
             cw.HasMember(nameId);
         }
 
@@ -267,11 +267,11 @@ namespace Dyalect.Compiler
             var exit = cw.DefineLabel();
 
             cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId(Builtins.Lt));
+            cw.HasMember(unit.GetMemberId(Builtins.Lt));
             cw.Brfalse(skip); //1 left
 
             cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId(Builtins.Gt));
+            cw.HasMember(unit.GetMemberId(Builtins.Gt));
             cw.Brfalse(skip); //1 left
 
             cw.Dup(); //2 objs
@@ -341,12 +341,12 @@ namespace Dyalect.Compiler
             if (!onlyLabels)
             {
                 cw.Dup(); //2 objs
-                cw.HasMember(GetMemberNameId(Builtins.Len));
+                cw.HasMember(unit.GetMemberId(Builtins.Len));
                 cw.Brfalse(skip); //1 obj left to pop
             }
 
             cw.Dup(); //2 objs
-            cw.HasMember(GetMemberNameId(Builtins.Get));
+            cw.HasMember(unit.GetMemberId(Builtins.Get));
             cw.Brfalse(skip); //1 obj left to pop
 
             if (!onlyLabels)

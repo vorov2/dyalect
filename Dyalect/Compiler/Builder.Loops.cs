@@ -92,7 +92,7 @@ namespace Dyalect.Compiler
 
             cw.Briter(initSkip);
 
-            cw.GetMember(GetMemberNameId(Builtins.Iterator));
+            cw.GetMember(unit.GetMemberId(Builtins.Iterator));
 
             cw.FunPrep(0);
             cw.FunCall(0);

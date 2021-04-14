@@ -93,7 +93,8 @@ namespace Dyalect.Runtime.Types
         public DyCharTypeInfo() : base(DyType.Char) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not 
+            | SupportedOperations.Add | SupportedOperations.Sub
             | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte;
 
         public override string TypeName => DyTypeNames.Char;
@@ -101,8 +102,23 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)StringUtil.Escape(arg.GetString(), "'");
 
         #region Operations
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            new DyString(left.GetChar().ToString() + right.GetChar());
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (right.TypeId == DyType.Integer)
+                return new DyChar((char)(left.GetChar() + right.GetInteger()));
+            else if (right.TypeId == DyType.Char || right.TypeId == DyType.String)
+                return new DyString(left.GetString() + right.GetString());
+            else
+                return ctx.InvalidType(right);
+        }
+
+        protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (right.TypeId == DyType.Integer)
+                return new DyChar((char)(left.GetChar() - right.GetInteger()));
+            else
+                return ctx.InvalidType(right);
+        }
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {

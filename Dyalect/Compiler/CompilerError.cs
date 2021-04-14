@@ -34,7 +34,7 @@
 
         StaticOnlyMethods = 215,
 
-        // = 216,
+        ReturnInIterator = 216,
 
         CodeIslandEmpty = 217,
 

@@ -19,7 +19,7 @@ namespace Dyalect.Compiler
 
         Function = 0x20,
 
-        Iterator = 0x40,
+        IteratorBody = 0x40,
 
         Last = 0x80,
 

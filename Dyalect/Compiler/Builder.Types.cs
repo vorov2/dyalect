@@ -66,7 +66,7 @@ namespace Dyalect.Compiler
             }
 
             TryGetLocalType(func.TypeName.Local, out var ti);
-            cw.Aux(GetMemberNameId(func.Name));
+            cw.Aux(unit.GetMemberId(func.Name));
             cw.NewType(ti.TypeId);
         }
 
@@ -84,11 +84,8 @@ namespace Dyalect.Compiler
             return new TypeHandle(handle, std);
         }
 
-        private bool IsTypeExists(string name)
-        {
-            var err = GetTypeHandle(null, name, out var _, out var _);
-            return err == CompilerError.None;
-        }
+        private bool IsTypeExists(string name) =>
+            GetTypeHandle(null, name, out var _, out var _) == CompilerError.None;
 
         private CompilerError GetTypeHandle(string parent, string local, out int handle, out bool std)
         {

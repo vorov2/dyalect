@@ -187,11 +187,11 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An object of type &quot;%TypeName%&quot; doesn&apos;t support a &quot;call&quot; operation..
+        ///   Looks up a localized string similar to Type &quot;%Type%&quot; doesn&apos;t support open ranges..
         /// </summary>
-        internal static string NotFunction {
+        internal static string OpenRangeNotSupported {
             get {
-                return ResourceManager.GetString("NotFunction", resourceCulture);
+                return ResourceManager.GetString("OpenRangeNotSupported", resourceCulture);
             }
         }
         

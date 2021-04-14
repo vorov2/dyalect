@@ -9,7 +9,7 @@ namespace Dyalect.Compiler
     //Contains function related compilation logic
     partial class Builder
     {
-        private void Build(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
+        private void Build(DFunctionDeclaration node, Hints hints, CompilerContext _)
         {
             if (node.Name != null)
             {
@@ -36,7 +36,7 @@ namespace Dyalect.Compiler
                     if (node.Name == Builtins.Has || (!node.IsStatic && node.Name == Builtins.Type))
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
-                    var nameId = GetMemberNameId(realName);
+                    var nameId = unit.GetMemberId(realName);
                     cw.Aux(nameId);
                     var code = GetTypeHandle(node.TypeName, node.Location);
 
@@ -74,8 +74,8 @@ namespace Dyalect.Compiler
                 "*" => Builtins.Mul,
                 "/" => Builtins.Div,
                 "%" => Builtins.Rem,
-                "<<" => Builtins.Shl,
-                ">>" => Builtins.Shr,
+                "<<<" => Builtins.Shl,
+                ">>>" => Builtins.Shr,
                 "^" => Builtins.Xor,
                 "==" => Builtins.Eq,
                 "!=" => Builtins.Neq,
@@ -84,7 +84,7 @@ namespace Dyalect.Compiler
                 ">=" => Builtins.Gte,
                 "<=" => Builtins.Lte,
                 "!" => Builtins.Not,
-                "~" => Builtins.BitNot,
+                "~~~" => Builtins.BitNot,
                 _ => name,
             };
 
@@ -150,7 +150,7 @@ namespace Dyalect.Compiler
 
         private void BuildFunctionBody(int addr, DFunctionDeclaration node, Hints hints)
         {
-            var iter = hints.Has(Iterator);
+            var iter = hints.Has(IteratorBody);
             var args = CompileFunctionParameters(node.Parameters);
             StartFun(node.Name, args);
 
@@ -174,7 +174,7 @@ namespace Dyalect.Compiler
                 Function = node
             };
 
-            hints = Function | Push;
+            hints = Function | Push | (iter ? IteratorBody : None);
 
             //Start of a physical (and not compiler time) lexical scope for a function
             StartScope(ScopeKind.Function, loc: node.Location);
@@ -217,7 +217,7 @@ namespace Dyalect.Compiler
                 if (node.IsIterator)
                 {
                     var dec = new DFunctionDeclaration(node.Location) { Name = node.Name, Body = node.Body };
-                    Build(dec, hints.Append(Iterator), ctx);
+                    Build(dec, hints.Append(IteratorBody), ctx);
                 }
                 else
                     Build(node.Body, hints.Append(Last), ctx);
@@ -260,19 +260,6 @@ namespace Dyalect.Compiler
                 else
                     cw.NewFun(funHandle);
             }
-        }
-
-        private int GetMemberNameId(string name)
-        {
-            if (!memberNames.TryGetValue(name, out var id))
-            {
-                id = unit.MemberIds.Count;
-                memberNames.Add(name, id);
-                unit.MemberIds.Add(-1);
-                unit.MemberNames.Add(name);
-            }
-
-            return id;
         }
     }
 }

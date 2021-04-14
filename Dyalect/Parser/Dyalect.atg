@@ -70,8 +70,8 @@ TOKENS
     eq_and              = "&=".
     eq_or               = "|=".
     eq_xor              = "^=".
-    eq_lsh              = "<<=".
-    eq_rsh              = ">>=".
+    eq_lsh              = "<<<=".
+    eq_rsh              = ">>>=".
     minus               = "-".
     plus                = "+".
     not                 = "!".
@@ -87,8 +87,8 @@ PRODUCTIONS
 
     Separator = ";".
 
-    StandardOperators = "+" | "-" | "*" | "/" | "%" | "|" | "&" | "!"
-        | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^" | "<<" | ">>" | "~".
+    StandardOperators = "+" | "-" | "*" | "/" | "%" | "|||" | "&&&" | "!"
+        | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^^^" | "<<<" | ">>>" | "~~~".
 
     FunctionName = identToken | StandardOperators | "set".
 
@@ -204,8 +204,8 @@ PRODUCTIONS
                 | "&="  (. op = BinaryOperator.And; .)
                 | "|="  (. op = BinaryOperator.Or; .)
                 | "^="  (. op = BinaryOperator.Xor; .)
-                | "<<=" (. op = BinaryOperator.ShiftLeft; .)
-                | ">>=" (. op = BinaryOperator.ShiftRight; .)
+                | "<<<=" (. op = BinaryOperator.ShiftLeft; .)
+                | ">>>=" (. op = BinaryOperator.ShiftRight; .)
             )
             Expr<out node>
             (.
@@ -619,13 +619,32 @@ PRODUCTIONS
         ).
 
     Yield<out DNode node> =
-        "yield"
+        "yield" 
         (.
-            var yield = new DYield(t);
-            node = yield;
+            var ot = t;
+            node = null;
             functions.Peek().IsIterator = true;
         .)
-        Expr<out var exp> (. yield.Expression = exp; .).
+        (
+            ( "break" (. node = new DYieldBreak(ot); .) )
+            |
+            (
+                "many"
+                (.
+                    var yield = new DYieldMany(t);
+                    node = yield;
+                .)
+                Expr<out var exp> (. yield.Expression = exp; .)
+            )
+            |
+            (
+                (.
+                    var yield = new DYield(t);
+                    node = yield;
+                .)
+                Expr<out var exp> (. yield.Expression = exp; .)
+            )
+        ).
 
     Break<out DNode node> =
         "break"
@@ -771,8 +790,8 @@ PRODUCTIONS
                 var ot = default(Token);
             .)
             (
-                  "<<" (. ot = t; op = BinaryOperator.ShiftLeft; .)
-                | ">>" (. ot = t; op = BinaryOperator.ShiftRight; .)
+                  "<<<" (. ot = t; op = BinaryOperator.ShiftLeft; .)
+                | ">>>" (. ot = t; op = BinaryOperator.ShiftRight; .)
             )
             (
                 BitOr<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
@@ -782,7 +801,7 @@ PRODUCTIONS
     BitOr<out DNode node> =
         Xor<out node>
         {
-            "|" (. var ot = t; .)
+            "|||" (. var ot = t; .)
             (
                 Xor<out var exp> (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseOr, ot); .)
             )
@@ -792,7 +811,7 @@ PRODUCTIONS
         BitAnd<out node>
         {
             (. DNode exp = null; .)
-            "^" (. var ot = t; .)
+            "^^^" (. var ot = t; .)
             (
                 BitAnd<out exp> (. node = new DBinaryOperation(node, exp, BinaryOperator.Xor, ot); .)
             )
@@ -801,7 +820,7 @@ PRODUCTIONS
     BitAnd<out DNode node> =
         Add<out node>
         {
-            "&" (. var ot = t; .)
+            "&&&" (. var ot = t; .)
             (
                 Add<out var exp> (. node = new DBinaryOperation(node, exp, BinaryOperator.BitwiseAnd, ot); .)
             )
@@ -883,75 +902,98 @@ PRODUCTIONS
         ).
 
     Range<out DNode node> =
-        (. node = null; .)
+        (. node = null; DNode cnode = null; .)
         (
-            FieldOrIndex<out node>
-            [
-                ".."  (. var range = new DRange(t) { From = node }; .)
+            (
+                ".."  (. var range = new DRange(t) { From = node }; node = range; .)
+                FieldOrIndex<out cnode> (. range.To = cnode; .)
+            )
+            |
+            (
                 FieldOrIndex<out node>
-                (. range.To = node; node = range; .)
-            ]
+                [
+                    //[ "," SimpleLiteral<out node> ]
+                    ".."  (. var range = new DRange(t) { From = node }; node = range; .)
+                    [ SimpleFieldOrIndex<out cnode> (. range.To = cnode; .) ]
+                ]
+            )
+        ).
+
+    SimpleFieldOrIndex<out DNode node> =
+        (
+            SimpleLiteral<out node> 
+            {
+                FieldOrIndexBody<node, out var cnode>
+                (. node = cnode; .)
+            }
         ).
 
     FieldOrIndex<out DNode node> =
         (
-            Literal<out node>
+            Literal<out node> 
             {
-                (
-                    "." (. var ot = t; .)
-                    identToken
-                    (. var nm = t.val; DMemberCheck chk = null; .)
-                    (
-                        [
-                            "?"
-                            (.
-                                chk = new DMemberCheck(ot) { Target = node };
-                                chk.Name = nm;
-                                node = chk;
-                            .)
-                        ]
-                        (.
-                            if (chk == null)
-                            {
-                                var fld = new DAccess(ot) { Target = node };
-                                fld.Name = nm;
-                                node = fld;
-                            }
-                        .)
-                    )
-                )
-                |
-                (
-                    ":" (. var ot = t; .)
-                    identToken
-                    (.
-                        node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
-                    .)
-                )
-                |
-                (
-                    (. if (la.AfterEol) return; .)
-                    "["
-                        (. var idx = new DIndexer(t) { Target = node }; .)
-                        Expr<out node>
-                        (.
-                            idx.Index = node;
-                            node = idx;
-                        .)
-                    "]"
-                )
-                |
-                (
-                    (.
-                        if (la.AfterEol) return;
-                        var app = new DApplication(node, t);
-                    .)
-                    "("
-                        [ ApplicationArguments<app> ]
-                        (. node = app; .)
-                    ")"
-                )
+                FieldOrIndexBody<node, out var cnode>
+                (. node = cnode; .)
             }
+        ).
+
+    FieldOrIndexBody<DNode exp, out DNode node> = 
+        (. node = null; .)
+        (
+            (
+                "." (. var ot = t; .)
+                identToken
+                (. var nm = t.val; DMemberCheck chk = null; .)
+                (
+                    [
+                        "?"
+                        (.
+                            chk = new DMemberCheck(ot) { Target = exp };
+                            chk.Name = nm;
+                            node = chk;
+                        .)
+                    ]
+                    (.
+                        if (chk == null)
+                        {
+                            var fld = new DAccess(ot) { Target = exp };
+                            fld.Name = nm;
+                            node = fld;
+                        }
+                    .)
+                )
+            )
+            |
+            (
+                ":" (. var ot = t; .)
+                identToken
+                (.
+                    node = new DIndexer(t) { Target = exp, Index = new DStringLiteral(ot) { Value = t.val } };
+                .)
+            )
+            |
+            (
+                (. if (la.AfterEol) return; .)
+                "["
+                    (. var idx = new DIndexer(t) { Target = exp }; .)
+                    Expr<out node>
+                    (.
+                        idx.Index = node;
+                        node = idx;
+                    .)
+                "]"
+            )
+            |
+            (
+                (.
+                    if (la.AfterEol) return;
+                    var app = new DApplication(exp, t);
+                .)
+                "("
+                    [ ApplicationArguments<app> ]
+                    (. node = app; .)
+                ")"
+            )
         ).
 
     ApplicationArguments<DApplication app> =
@@ -973,6 +1015,14 @@ PRODUCTIONS
     Literal<out DNode node> =
         (. node = null; .)
         (
+              SimpleLiteral<out node>
+            | IF (IsIterator()) Iterator<out node>
+            | Block<out node>
+        ).
+
+    SimpleLiteral<out DNode node> =
+        (. node = null; .)
+        (
               Name<out node>
             | SpecialName<out node>
             | Integer<out node>
@@ -982,11 +1032,9 @@ PRODUCTIONS
             | Bool<out node>
             | Nil<out node>
             | IF (IsTuple()) Tuple<out node>
-            | Array<out node>
             | Group<out node>
             | Base<out node>
-            | IF (IsIterator()) Iterator<out node>
-            | Block<out node>
+            | Array<out node>
         ).
 
     Iterator<out DNode node> =
@@ -1111,7 +1159,7 @@ PRODUCTIONS
 
     Bool<out DNode node> =
         (
-            ("true"|"false")
+            ( "true" | "false" )
             (. node = new DBooleanLiteral(t) { Value = t.val == "true" }; .)
         ).
 

@@ -27,6 +27,8 @@
         Continue,
         Return,
         Yield,
+        YieldBreak,
+        YieldMany,
         Throw,
 
         Directive,

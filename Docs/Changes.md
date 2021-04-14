@@ -1,3 +1,14 @@
+# 0.18.0
+  * Change: _Refactoring and redesign of internal compiler infrastructure and foreign module infrastructure._
+  * Fixed: _Adding an integer to a char causes a crush_ ([Issue #397](https://github.com/vorov2/dyalect/issues397)).
+  * Fixed: _Inconsistent behavior of nested iterators_ ([Issue #401](https://github.com/vorov2/dyalect/issues401)).
+  * Add: _Add an ability to create types with constructors in foreign modules_ ([Issue #395](https://github.com/vorov2/dyalect/issues/395)).
+  * Add: _Callable objects_ ([Issue #389](https://github.com/vorov2/dyalect/issues/389), [docs](https://github.com/vorov2/dyalect/wiki/Functions#callable)).
+  * Add: _String should support slicing operator_ ([Issue #396](https://github.com/vorov2/dyalect/issues/396)).
+  * Add: _Add a support for `yield break`_ ([Issue #399](https://github.com/vorov2/dyalect/issues/399), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#return)).
+  * Add: _`return` shouldn't be allowed in iterators_ ([Issue #400](https://github.com/vorov2/dyalect/issues/400)).
+  * Add: _Implement support for `yield many`_ ([Issue #402](https://github.com/vorov2/dyalect/issues/402), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#nested)).
+
 # 0.17.5
   * Change: _Code optimization and refactoring._
 

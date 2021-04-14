@@ -126,9 +126,6 @@
   <data name="IndexInvalidType" xml:space="preserve">
     <value>Indices of type "%IndexTypeName%" are not supported by the type. Failed index: "%Index%".</value>
   </data>
-  <data name="NotFunction" xml:space="preserve">
-    <value>An object of type "%TypeName%" doesn't support a "call" operation.</value>
-  </data>
   <data name="OperationNotSupported" xml:space="preserve">
     <value>Operation "%Operation%" is not supported by the type "%TypeName%".</value>
   </data>
@@ -182,5 +179,8 @@
   </data>
   <data name="ValueOutOfRange" xml:space="preserve">
     <value>Value "%Value%" is out of range.</value>
+  </data>
+  <data name="OpenRangeNotSupported" xml:space="preserve">
+    <value>Type "%Type%" doesn't support open ranges.</value>
   </data>
 </root>

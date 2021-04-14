@@ -182,17 +182,17 @@ namespace Dyalect.Runtime.Types
 
                 if (!ReferenceEquals(res, DyNil.Terminator))
                 {
-                    if (res.TypeId == DyType.Iterator)
-                    {
-                        foreach (var o in InternalRun(ctx, res))
-                        {
-                            yield return o;
+                    //if (res.TypeId == DyType.Iterator)
+                    //{
+                    //    foreach (var o in InternalRun(ctx, res))
+                    //    {
+                    //        yield return o;
 
-                            if (ctx.HasErrors)
-                                yield break;
-                        }
-                    }
-                    else
+                    //        if (ctx.HasErrors)
+                    //            yield break;
+                    //    }
+                    //}
+                    //else
                         yield return res;
                 }
                 else
@@ -281,15 +281,13 @@ namespace Dyalect.Runtime.Types
         private DyObject ToArray(ExecutionContext ctx, DyObject self)
         {
             var res = ConvertToArray(ctx, self);
-            return res == null ? DyNil.Instance
-                : (DyObject)new DyArray(res.ToArray());
+            return res == null ? DyNil.Instance : new DyArray(res.ToArray());
         }
 
         private DyObject ToTuple(ExecutionContext ctx, DyObject self)
         {
             var res = ConvertToArray(ctx, self);
-            return res == null ? DyNil.Instance
-                : new DyTuple(res.ToArray());
+            return res == null ? DyNil.Instance : new DyTuple(res.ToArray());
         }
 
         private static DyObject GetCount(ExecutionContext ctx, DyObject self)
@@ -364,14 +362,24 @@ namespace Dyalect.Runtime.Types
                 _ => null
             };
 
+        private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step)
+        {
+            var seq = Range.GenerateRange(ctx, from, to, step);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            return new DyIterator(seq);
+        }
+
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Iterator")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
-
             if (name == "concat")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
-
+            if (name == "range")
+                return DyForeignFunction.Static(name, MakeRange, -1, new Par("from"), new Par("to", DyNil.Instance), new Par("step", DyInteger.One));
             return null;
         }
     }

@@ -85,7 +85,7 @@ namespace Dyalect.Runtime.Types
         }
     }
 
-    internal sealed class DyStringTypeInfo : DyTypeInfo
+    internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
     {
         public DyStringTypeInfo() : base(DyType.String) { }
 

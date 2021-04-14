@@ -155,7 +155,10 @@ namespace Dyalect.Linker
             writer.Write(unit.MemberIds.Count);
 
             foreach (var m in unit.MemberNames)
-                writer.Write(m);
+            {
+                writer.Write(m.Key);
+                writer.Write(m.Value);
+            }
         }
 
         private static void WriteSymbols(BinaryWriter writer, DebugInfo di)

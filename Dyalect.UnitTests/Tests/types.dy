@@ -292,3 +292,22 @@ func objectTypeTest() {
     }
     assert("x=Vasily,y=41", res2)
 }
+
+type X23(x)
+func callableTest1() {
+    func X23.call(y, z) {
+        this:x + y * z 
+    }
+    var x = X23(12)
+    var res = x(44.5, 67.07)
+    assert(2996.615, res)
+}
+
+func callablTest2() {
+    func Integer.call() {
+        this + this
+    }
+    var res = 14()
+    Integer.__deleteMember("call")
+    assert(28, res)
+}

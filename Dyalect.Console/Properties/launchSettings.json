@@ -2,7 +2,7 @@
   "profiles": {
     "Run file": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\temp\\dyalect\\main.dy --arg arg0 --foo foobar --arg arg1"
+      "commandLineArgs": "C:\\temp\\dyalect\\main.dy -time --arg arg0 --foo foobar --arg arg1"
     },
     "Run tests": {
       "commandName": "Project",

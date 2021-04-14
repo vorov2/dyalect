@@ -126,9 +126,6 @@
   <data name="NoEnclosingLoop" xml:space="preserve">
     <value>No enclosing loop out of which to break or continue.</value>
   </data>
-  <data name="ReturnNotAllowed" xml:space="preserve">
-    <value>The "return" directive is supported only inside functions.</value>
-  </data>
   <data name="TooManyErrors" xml:space="preserve">
     <value>Too many errors (error limit exceeded).</value>
   </data>
@@ -236,5 +233,11 @@
   </data>
   <data name="CtorAutoGen" xml:space="preserve">
     <value>Unable to define custom constructors for a type with auto-generated constructors (type "{0}").</value>
+  </data>
+  <data name="ReturnInIterator" xml:space="preserve">
+    <value>Statement "return" is not allowed in iterators. Use "yield break" to terminate an iterator.</value>
+  </data>
+  <data name="ReturnNotAllowed" xml:space="preserve">
+    <value>Statement "return" is only supported inside functions.</value>
   </data>
 </root>

@@ -195,7 +195,7 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 "indices" => DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters),
-                "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("start"), new Par("len", DyNil.Instance)),
+                "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
                 _ => base.GetMember(name, ctx)
             };
     }

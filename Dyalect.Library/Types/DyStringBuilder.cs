@@ -1,4 +1,5 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using Dyalect.Linker;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
@@ -9,17 +10,9 @@ namespace Dyalect.Library.Types
 {
     public sealed class DyStringBuilder : DyForeignObject<DyStringBuilderTypeInfo>
     {
-        internal readonly StringBuilder Builder;
+        internal StringBuilder Builder;
 
-        public DyStringBuilder(RuntimeContext rtx, StringBuilder builder) : base(rtx)
-        {
-            this.Builder = builder;
-        }
-
-        internal DyStringBuilder(int typeId, StringBuilder builder) : base(typeId)
-        {
-            this.Builder = builder;
-        }
+        public DyStringBuilder(RuntimeContext rtx, Unit unit, StringBuilder builder) : base(rtx, unit) => Builder = builder;
 
         public override bool Equals(DyObject other) =>
             other is DyString || other is DyStringBuilder ? Builder.ToString() == other.ToString() 
@@ -29,16 +22,17 @@ namespace Dyalect.Library.Types
 
         public override string ToString() => Builder.ToString();
 
-        public override DyObject Clone() => new DyStringBuilder(TypeId, new StringBuilder(Builder.ToString()));
+        public override DyObject Clone()
+        {
+            var clone = (DyStringBuilder)MemberwiseClone();
+            clone.Builder = new StringBuilder(Builder.ToString());
+            return clone;
+        }
     }
 
-    [ForeignType("1E732E28-7057-45CB-A979-B4C5662E5C35")]
     public sealed class DyStringBuilderTypeInfo : ForeignTypeInfo
     {
-        public DyStringBuilderTypeInfo() : base()
-        {
-
-        }
+        public DyStringBuilderTypeInfo() : base() { }
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(((DyStringBuilder)arg).ToString());
@@ -50,11 +44,8 @@ namespace Dyalect.Library.Types
             | SupportedOperations.Not | SupportedOperations.Len;
 
 
-        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
-        {
-            var sb = ((DyStringBuilder)arg).Builder;
-            return DyInteger.Get(sb.Length);
-        }
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+            DyInteger.Get(((DyStringBuilder)arg).Builder.Length);
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
@@ -159,10 +150,10 @@ namespace Dyalect.Library.Types
                 var vals = DyIterator.Run(ctx, arg);
                 var arr = vals.Select(o => DyString.ToString(o, ctx)).ToArray();
                 var sb = new StringBuilder(string.Join("", arr));
-                return new DyStringBuilder(TypeCode, sb);
+                return new DyStringBuilder(ctx.RuntimeContext, DeclaringUnit, sb);
             }
             else
-                return new DyStringBuilder(TypeCode, new StringBuilder());
+                return new DyStringBuilder(ctx.RuntimeContext, DeclaringUnit, new StringBuilder());
         }
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)

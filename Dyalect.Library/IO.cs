@@ -40,7 +40,7 @@ namespace Dyalect.Library
             if (arg.TypeId != DyType.String)
                 return ctx.InvalidType(arg);
 
-            return new DyByteArray(RuntimeContext, File.ReadAllBytes((string)arg.ToObject()));
+            return new DyByteArray(RuntimeContext, this, File.ReadAllBytes((string)arg.ToObject()));
         }
 
         [Function("writeAllBytes")]

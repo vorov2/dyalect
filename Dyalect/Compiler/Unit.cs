@@ -70,7 +70,7 @@ namespace Dyalect.Compiler
 
         internal List<int> MemberIds { get; }
 
-        internal List<string> MemberNames { get; }
+        internal Dictionary<string, int> MemberNames { get; }
 
         internal List<DyString> IndexedStrings { get; }
 

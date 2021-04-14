@@ -65,7 +65,7 @@ namespace Dyalect.Compiler
                 cw.IsNull();
                 cw.Brtrue(escape);
                 cw.PushVar(sv);
-                cw.GetMember(GetMemberNameId("dispose"));
+                cw.GetMember(unit.GetMemberId("dispose"));
                 cw.FunPrep(0);
                 cw.FunCall(0);
                 cw.Pop();

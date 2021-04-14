@@ -1,4 +1,5 @@
-﻿using Dyalect.Linker;
+﻿using Dyalect.Compiler;
+using Dyalect.Linker;
 
 namespace Dyalect.Runtime.Types
 {
@@ -6,19 +7,34 @@ namespace Dyalect.Runtime.Types
     {
         private static int GetTypeId(RuntimeContext rtx)
         {
-            var guid = typeof(T).GetAttribute<ForeignTypeAttribute>()?.Guid;
+            var guid = typeof(T).GUID;
 
-            if (guid is null)
-                throw new DyException($"Missing required [{nameof(ForeignTypeAttribute)}].");
-
-            if (!rtx.Composition.TypeCodes.TryGetValue(guid.Value, out var id))
+            if (!rtx.Composition.TypeCodes.TryGetValue(guid, out var id))
                 throw new DyException($"Unable to find type {nameof(T)}.");
 
             return id;
         }
 
-        protected DyForeignObject(RuntimeContext rtx) : base(GetTypeId(rtx)) { }
+        protected DyForeignObject(RuntimeContext rtx, Unit unit) : this(rtx, unit, null) { }
 
-        protected DyForeignObject(int typeId) : base(typeId) { }
+        protected DyForeignObject(RuntimeContext rtx, Unit unit, string ctor) : base(GetTypeId(rtx)) =>
+            (RuntimeContext, DeclaringUnit, Constructor) = (rtx, unit,ctor);
+
+        public RuntimeContext RuntimeContext { get; }
+
+        public Unit DeclaringUnit { get; }
+
+        public string Constructor { get; }
+
+        public override int GetConstructorId(ExecutionContext ctx)
+        {
+            if (string.IsNullOrEmpty(Constructor))
+                return base.GetConstructorId(ctx);
+
+            var id = DeclaringUnit.GetMemberId(Constructor);
+            var gid = RuntimeContext.Composition.GetMemberId(Constructor);
+            DeclaringUnit.MemberIds[id] = gid;
+            return gid;
+        }
     }
 }
