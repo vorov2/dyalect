@@ -39,8 +39,8 @@ namespace Dyalect.Parser.Model
                 case BinaryOperator.BitwiseAnd: return "&";
                 case BinaryOperator.BitwiseOr:  return "|";
                 case BinaryOperator.Xor:        return "^";
-                case BinaryOperator.ShiftLeft:  return "<<";
-                case BinaryOperator.ShiftRight: return ">>";
+                case BinaryOperator.ShiftLeft:  return "<<<";
+                case BinaryOperator.ShiftRight: return ">>>";
                 case BinaryOperator.Coalesce:   return "??";
                 case BinaryOperator.Is:         return "is";
                 default: return "";

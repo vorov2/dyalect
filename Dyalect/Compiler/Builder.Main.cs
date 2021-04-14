@@ -96,6 +96,9 @@ namespace Dyalect.Compiler
                 case NodeType.Yield:
                     Build((DYield)node, hints, ctx);
                     break;
+                case NodeType.YieldBreak:
+                    Build((DYieldBreak)node, hints, ctx);
+                    break;
                 case NodeType.Base:
                     Build((DBase)node);
                     break;
@@ -287,7 +290,7 @@ namespace Dyalect.Compiler
         private void Build(DIteratorLiteral node, Hints hints, CompilerContext ctx)
         {
             var dec = new DFunctionDeclaration(node.Location) { Body = node.YieldBlock };
-            Build(dec, hints.Append(Iterator), ctx);
+            Build(dec, hints.Append(IteratorBody), ctx);
         }
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
@@ -320,6 +323,13 @@ namespace Dyalect.Compiler
             AddLinePragma(node);
             cw.Yield();
             PushIf(hints);
+        }
+
+        private void Build(DYieldBreak node, Hints hints, CompilerContext ctx)
+        {
+            AddLinePragma(node);
+            cw.PushNil();
+            cw.Br(ctx.FunctionExit);
         }
 
         private void Build(DBase node)
@@ -554,6 +564,9 @@ namespace Dyalect.Compiler
         {
             if (ctx.FunctionExit.IsEmpty())
                 AddError(CompilerError.ReturnNotAllowed, node.Location);
+
+            if (hints.Has(IteratorBody))
+                AddError(CompilerError.ReturnInIterator, node.Location);
 
             if (node.Expression != null)
                 Build(node.Expression, hints.Append(Push), ctx);

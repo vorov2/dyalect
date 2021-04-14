@@ -20,12 +20,15 @@ namespace Dyalect.Parser
                 ,{ "invalid If", InvalidIf }
                 ,{ "invalid Loops", InvalidStatement }
                 ,{ "invalid Expr", InvalidExpression }
+                ,{ "invalid FieldOrIndex", InvalidExpression }
+                ,{ "invalid SimpleFieldOrIndex", InvalidExpression }
                 ,{ "invalid FunctionExpr", InvalidFunctionExpression }
                 ,{ "invalid Unary", InvalidUnary }
                 ,{ "invalid Bool", InvalidLiteral }
                 ,{ "invalid String", InvalidLiteral }
                 ,{ "invalid Tuple", InvalidLiteral }
                 ,{ "invalid Literal", InvalidLiteral }
+                ,{ "invalid SimpleLiteral", InvalidLiteral }
                 ,{ "invalid DyalectItem", InvalidStatement }
                 ,{ "invalid Pattern", InvalidPattern }
                 ,{ "invalid BooleanPattern", InvalidPattern }
@@ -84,8 +87,8 @@ namespace Dyalect.Parser
                 ,{ "eq_and", "&=" }
                 ,{ "eq_or", "|=" }
                 ,{ "eq_xor", "^=" }
-                ,{ "eq_lsh", "<<=" }
-                ,{ "eq_rsh", ">>=" }
+                ,{ "eq_lsh", "<<<=" }
+                ,{ "eq_rsh", ">>>=" }
                 ,{ "minus", "-" }
                 ,{ "plus", "+" }
                 ,{ "not", "!" }

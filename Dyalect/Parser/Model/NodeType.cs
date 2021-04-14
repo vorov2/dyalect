@@ -27,6 +27,7 @@
         Continue,
         Return,
         Yield,
+        YieldBreak,
         Throw,
 
         Directive,

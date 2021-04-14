@@ -41,7 +41,7 @@ func iteratorTest1() {
         yield 3
         yield 44.2
         if token {
-            return
+            yield break
         }
         yield 68.6
     }
@@ -293,4 +293,22 @@ func tryCatchBug() { //bug #365
     }
     for _ in iter() { }
     assert(42, val)
+}
+
+func yieldBreakTest1() { // #399
+    func seq() {
+    var x = 100
+    while x > 0 {
+            yield x
+            x -= 1
+            if x == 87 {
+                yield break
+            }
+        }
+    }
+    var xs = []
+    for x in seq() {
+        xs.add(x)
+    }
+    assert([100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88], xs)
 }
