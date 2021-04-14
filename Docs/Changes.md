@@ -1,5 +1,5 @@
 # 0.19.0
-  *
+  * Add: _Tuples and ranges_ ([Issue #408](https://github.com/vorov2/dyalect/issues408)).
 
 # 0.18.0
   * Change: _Refactoring and redesign of internal compiler infrastructure and foreign module infrastructure._

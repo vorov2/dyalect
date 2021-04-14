@@ -557,25 +557,11 @@ namespace Dyalect.Runtime.Types
             return destArr;
         }
 
-        private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step)
-        {
-            if (to.TypeId == DyType.Nil)
-                return ctx.OpenRangeNotSupported(DyTypeNames.Array);
-
-            var seq = Range.GenerateRange(ctx, from, to, step);
-
-            if (ctx.HasErrors)
-                return DyNil.Instance;
-
-            return new DyArray(seq.ToArray());
-        }
-
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
         {
             return name switch
             {
                 "Array" => DyForeignFunction.Static(name, New, 0, new Par("values", true)),
-                "range" => DyForeignFunction.Static(name, MakeRange, -1, new Par("from"), new Par("to", DyNil.Instance), new Par("step", DyInteger.One)),
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance)),
                 "empty" => DyForeignFunction.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance)),
                 "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),

@@ -918,81 +918,126 @@ PRODUCTIONS
             )
         ).
 
-    SimpleIndex<out DNode node> =
-        (
-            SimpleLiteral<out node> 
-            {
-                IndexBody<node, out var cnode>
-                (. node = cnode; .)
-            }
-        ).
-
     Index<out DNode node> =
         (
             Literal<out node> 
             {
-                IndexBody<node, out var cnode>
-                (. node = cnode; .)
+                (
+                    "." (. var ot = t; .)
+                    identToken
+                    (. var nm = t.val; DMemberCheck chk = null; .)
+                    (
+                        [
+                            "?"
+                            (.
+                                chk = new DMemberCheck(ot) { Target = node };
+                                chk.Name = nm;
+                                node = chk;
+                            .)
+                        ]
+                        (.
+                            if (chk == null)
+                            {
+                                var fld = new DAccess(ot) { Target = node };
+                                fld.Name = nm;
+                                node = fld;
+                            }
+                        .)
+                    )
+                )
+                |
+                (
+                    ":" (. var ot = t; .)
+                    identToken
+                    (.
+                        node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
+                    .)
+                )
+                |
+                (
+                    (. if (la.AfterEol) return; .)
+                    "["
+                        (. var idx = new DIndexer(t) { Target = node }; .)
+                        Expr<out node>
+                        (.
+                            idx.Index = node;
+                            node = idx;
+                        .)
+                    "]"
+                )
+                |
+                (
+                    (.
+                        if (la.AfterEol) return;
+                        var app = new DApplication(node, t);
+                    .)
+                    "("
+                        [ ApplicationArguments<app> ]
+                        (. node = app; .)
+                    ")"
+                )
             }
         ).
 
-    IndexBody<DNode exp, out DNode node> = 
-        (. node = null; .)
+    SimpleIndex<out DNode node> =
         (
-            (
-                "." (. var ot = t; .)
-                identToken
-                (. var nm = t.val; DMemberCheck chk = null; .)
+            SimpleLiteral<out node> 
+            {
                 (
-                    [
-                        "?"
+                    "." (. var ot = t; .)
+                    identToken
+                    (. var nm = t.val; DMemberCheck chk = null; .)
+                    (
+                        [
+                            "?"
+                            (.
+                                chk = new DMemberCheck(ot) { Target = node };
+                                chk.Name = nm;
+                                node = chk;
+                            .)
+                        ]
                         (.
-                            chk = new DMemberCheck(ot) { Target = exp };
-                            chk.Name = nm;
-                            node = chk;
+                            if (chk == null)
+                            {
+                                var fld = new DAccess(ot) { Target = node };
+                                fld.Name = nm;
+                                node = fld;
+                            }
                         .)
-                    ]
+                    )
+                )
+                |
+                (
+                    ":" (. var ot = t; .)
+                    identToken
                     (.
-                        if (chk == null)
-                        {
-                            var fld = new DAccess(ot) { Target = exp };
-                            fld.Name = nm;
-                            node = fld;
-                        }
+                        node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
                     .)
                 )
-            )
-            |
-            (
-                ":" (. var ot = t; .)
-                identToken
-                (.
-                    node = new DIndexer(t) { Target = exp, Index = new DStringLiteral(ot) { Value = t.val } };
-                .)
-            )
-            |
-            (
-                (. if (la.AfterEol) return; .)
-                "["
-                    (. var idx = new DIndexer(t) { Target = exp }; .)
-                    Expr<out node>
+                |
+                (
+                    (. if (la.AfterEol) return; .)
+                    "["
+                        (. var idx = new DIndexer(t) { Target = node }; .)
+                        Expr<out node>
+                        (.
+                            idx.Index = node;
+                            node = idx;
+                        .)
+                    "]"
+                )
+                |
+                (
                     (.
-                        idx.Index = node;
-                        node = idx;
+                        if (la.AfterEol) return;
+                        var app = new DApplication(node, t);
                     .)
-                "]"
-            )
-            |
-            (
-                (.
-                    if (la.AfterEol) return;
-                    var app = new DApplication(exp, t);
-                .)
-                "("
-                    [ ApplicationArguments<app> ]
-                    (. node = app; .)
-                ")"
-            )
+                    "("
+                        [ ApplicationArguments<app> ]
+                        (. node = app; .)
+                    ")"
+                )
+            }
         ).
 
     ApplicationArguments<DApplication app> =

@@ -298,17 +298,6 @@ namespace Dyalect.Compiler
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
         {
-            //Build(range.From, hints.Append(Push), ctx);
-            //cw.GetMember(unit.GetMemberId("range"));
-            //cw.FunPrep(1);
-
-            //Build(range.To, hints.Append(Push), ctx);
-            //cw.FunArgIx(0);
-
-            //AddLinePragma(range);
-            //cw.FunCall(1);
-            //PopIf(hints);
-
             cw.Type(new TypeHandle(DyType.GetTypeCodeByName(DyTypeNames.Iterator), true));
             cw.GetMember(unit.GetMemberId("range"));
             cw.FunPrep(3);
@@ -430,28 +419,40 @@ namespace Dyalect.Compiler
 
         private void Build(DTupleLiteral node, Hints hints, CompilerContext ctx)
         {
-            for (var i = 0; i < node.Elements.Count; i++)
+            if (node.Elements.Count == 1 && node.Elements[0].NodeType == NodeType.Range)
             {
-                var el = node.Elements[i];
-                string name;
-
-                if (el.NodeType == NodeType.Label)
+                Build(node.Elements[0], hints.Append(Push), ctx);
+                cw.GetMember(unit.GetMemberId("toTuple"));
+                cw.FunPrep(0);
+                AddLinePragma(node);
+                cw.FunCall(0);
+            }
+            else
+            {
+                for (var i = 0; i < node.Elements.Count; i++)
                 {
-                    var label = (DLabelLiteral)el;
-                    Build(label.Expression, hints.Append(Push), ctx);
-                    cw.Tag(label.Label);
-                }
-                else
-                {
-                    Build(el, hints.Append(Push), ctx);
+                    var el = node.Elements[i];
+                    string name;
 
-                    if ((name = el.GetName()) != null)
-                        cw.Tag(name);
+                    if (el.NodeType == NodeType.Label)
+                    {
+                        var label = (DLabelLiteral)el;
+                        Build(label.Expression, hints.Append(Push), ctx);
+                        cw.Tag(label.Label);
+                    }
+                    else
+                    {
+                        Build(el, hints.Append(Push), ctx);
+
+                        if ((name = el.GetName()) != null)
+                            cw.Tag(name);
+                    }
                 }
+
+                AddLinePragma(node);
+                cw.NewTuple(node.Elements.Count);
             }
 
-            AddLinePragma(node);
-            cw.NewTuple(node.Elements.Count);
             PopIf(hints);
         }
 

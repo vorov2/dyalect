@@ -154,15 +154,6 @@ namespace Dyalect.Parser
             return scanner.Peek().kind == _equalToken;
         }
 
-        private bool IsEmptyParens()
-        {
-            if (la.kind != _parenLeftToken)
-                return false;
-
-            scanner.ResetPeek();
-            return scanner.Peek().kind == _parenRightToken;
-        }
-
         private bool IsLabelPattern()
         {
             if (la.kind != _identToken && la.kind != _stringToken)
