@@ -292,8 +292,16 @@ namespace Dyalect.Compiler
 
         private void Build(DIteratorLiteral node, Hints hints, CompilerContext ctx)
         {
-            var dec = new DFunctionDeclaration(node.Location) { Body = node.YieldBlock };
-            Build(dec, hints.Append(IteratorBody), ctx);
+            if (node.YieldBlock.Elements.Count == 1 && node.YieldBlock.Elements[0].NodeType == NodeType.Range)
+            {
+                Build(node.YieldBlock.Elements[0], hints.Append(Push), ctx);
+                PopIf(hints);
+            }
+            else
+            {
+                var dec = new DFunctionDeclaration(node.Location) { Body = node.YieldBlock };
+                Build(dec, hints.Append(IteratorBody), ctx);
+            }
         }
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
@@ -541,11 +549,25 @@ namespace Dyalect.Compiler
                 var r = (DRange)node.Index;
                 cw.GetMember(unit.GetMemberId("slice"));
                 cw.FunPrep(2);
-                Build(r.From, hints.Append(Push), ctx);
+                
+                if (r.From is null)
+                    cw.Push(0);
+                else
+                    Build(r.From, hints.Append(Push), ctx);
+                
                 cw.FunArgIx(0);
-                Build(r.To, hints.Append(Push), ctx);
-                Build(r.From, hints.Append(Push), ctx);
-                cw.Sub();
+
+                if (r.To is not null && r.From is not null)
+                {
+                    Build(r.To, hints.Append(Push), ctx);
+                    Build(r.From, hints.Append(Push), ctx);
+                    cw.Sub();
+                }
+                else if (r.To is not null)
+                    Build(r.To, hints.Append(Push), ctx);
+                else
+                    cw.PushNil();
+
                 cw.FunArgIx(1);
 
                 AddLinePragma(node);
