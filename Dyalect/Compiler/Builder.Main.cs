@@ -96,6 +96,9 @@ namespace Dyalect.Compiler
                 case NodeType.Yield:
                     Build((DYield)node, hints, ctx);
                     break;
+                case NodeType.YieldMany:
+                    Build((DYieldMany)node, hints, ctx);
+                    break;
                 case NodeType.YieldBreak:
                     Build((DYieldBreak)node, hints, ctx);
                     break;
@@ -304,7 +307,6 @@ namespace Dyalect.Compiler
 
             AddLinePragma(range);
             cw.FunCall(1);
-
             PopIf(hints);
         }
 
@@ -322,6 +324,36 @@ namespace Dyalect.Compiler
             Build(node.Expression, hints.Append(Push), ctx);
             AddLinePragma(node);
             cw.Yield();
+            PushIf(hints);
+        }
+
+        private void Build(DYieldMany node, Hints hints, CompilerContext ctx)
+        {
+            var sys = AddVariable();
+            var initSkip = cw.DefineLabel();
+            var exit = cw.DefineLabel();
+
+            Build(node.Expression, hints.Append(Push), ctx);
+            cw.Briter(initSkip);
+            cw.GetMember(unit.GetMemberId(Builtins.Iterator));
+            cw.FunPrep(0);
+            cw.FunCall(0);
+
+            cw.MarkLabel(initSkip);
+            AddLinePragma(node);
+            cw.PopVar(sys);
+
+            var iter = cw.DefineLabel();
+            cw.MarkLabel(iter);
+            cw.PushVar(new ScopeVar(sys));
+            cw.FunPrep(0);
+            cw.FunCall(0);
+            cw.Brterm(exit);
+            cw.Yield();
+            cw.Br(iter);
+
+            cw.MarkLabel(exit);
+            cw.Pop();
             PushIf(hints);
         }
 

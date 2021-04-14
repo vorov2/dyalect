@@ -629,6 +629,15 @@ PRODUCTIONS
             ( "break" (. node = new DYieldBreak(ot); .) )
             |
             (
+                "many"
+                (.
+                    var yield = new DYieldMany(t);
+                    node = yield;
+                .)
+                Expr<out var exp> (. yield.Expression = exp; .)
+            )
+            |
+            (
                 (.
                     var yield = new DYield(t);
                     node = yield;

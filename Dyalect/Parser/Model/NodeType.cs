@@ -28,6 +28,7 @@
         Return,
         Yield,
         YieldBreak,
+        YieldMany,
         Throw,
 
         Directive,

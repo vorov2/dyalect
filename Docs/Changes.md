@@ -7,6 +7,7 @@
   * Add: _String should support slicing operator_ ([Issue #396](https://github.com/vorov2/dyalect/issues/396)).
   * Add: _Add a support for `yield break`_ ([Issue #399](https://github.com/vorov2/dyalect/issues/399), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#return)).
   * Add: _`return` shouldn't be allowed in iterators_ ([Issue #400](https://github.com/vorov2/dyalect/issues/400)).
+  * Add: _Implement support for `yield many _ ([Issue #402](https://github.com/vorov2/dyalect/issues/402), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#nested)).
 
 # 0.17.5
   * Change: _Code optimization and refactoring._

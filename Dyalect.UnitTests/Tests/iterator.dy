@@ -187,8 +187,23 @@ func iteratorTest11() { //#289
     assert((1,2,3,4,5), res.toTuple())
 }
 
-/*
-func yieldManyTest1() { //#96
+func yieldManyTest1() {
+    func bar() {
+        yield 4
+        yield 5
+        yield 6
+    }
+    func foo() {
+        yield 1
+        yield 2
+        yield 3
+        yield many bar()
+    }
+    var seq = foo().toArray()
+    assert([1,2,3,4,5,6],seq)
+}
+
+func yieldManyTest2() {
     func bar() {
         yield 31
         yield 32
@@ -198,33 +213,12 @@ func yieldManyTest1() { //#96
         yield 1
         yield 2
         yield 3
-        yield bar()
+        yield many bar()
         yield 4
         yield 5
     }
     var seq = foo().toArray()
     assert([1,2,3,31,32,33,4,5],seq)
-}
-
-func yieldManyTest2() { //#96
-    func zoo() {
-        yield 31
-        yield 32
-    }
-    func bar() {
-        yield 21
-        yield 22
-    }
-    func foo() {
-        yield 1
-        yield 2
-        yield bar()
-        yield 3
-        yield zoo()
-        yield 4
-    }
-    var seq = foo().toArray()
-    assert([1,2,21,22,3,31,32,4],seq)
 }
 
 func yieldManyTest3() { //#96
@@ -239,25 +233,50 @@ func yieldManyTest3() { //#96
     func foo() {
         yield 1
         yield 2
-        yield bar()
+        yield many bar()
         yield 3
-        yield zoo()
+        yield many zoo()
         yield 4
-        yield bar()
-        yield zoo()
+    }
+    var seq = foo().toArray()
+    assert([1,2,21,22,3,31,32,4],seq)
+}
+
+func yieldManyTest4() { //#96
+    func zoo() {
+        yield 31
+        yield 32
+    }
+    func bar() {
+        yield 21
+        yield 22
+    }
+    func foo() {
+        yield 1
+        yield 2
+        yield many bar()
+        yield 3
+        yield many zoo()
+        yield 4
+        yield many bar()
+        yield many zoo()
     }
     var seq = foo().toArray()
     assert([1,2,21,22,3,31,32,4,21,22,31,32],seq)
 }
-*/
 
-func yieldManyTest4() { //#96
+func yieldManyTest5() { //#96
+    func bar() {
+        yield 2
+        yield 3
+    }
     func foo() {
         yield 1
-        yield [2,3]
+        yield bar()
     }
     var arr = foo().toArray()
-    assert([1,[2,3]], arr)
+    assert(1, arr[0])
+    assert([2,3], arr[1].toArray())
 }
 
 func takeTest1() {

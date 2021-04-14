@@ -1020,14 +1020,16 @@ namespace Dyalect.Parser
 
 	void Yield(out DNode node) {
 		Expect(17);
-		var ot = t; node = null; 
+		var ot = t;
+		node = null;
+		functions.Peek().IsIterator = true;
+		
 		if (la.kind == 16) {
 			Get();
 			node = new DYieldBreak(ot); 
 		} else if (StartOf(9)) {
 			var yield = new DYield(t);
 			node = yield;
-			functions.Peek().IsIterator = true;
 			
 			Expr(out var exp);
 			yield.Expression = exp; 
@@ -1703,8 +1705,8 @@ namespace Dyalect.Parser
 			case 59: s = "\">=\" expected"; break;
 			case 60: s = "\"<=\" expected"; break;
 			case 61: s = "\"^^^\" expected"; break;
-			case 62: s = "\"<<\" expected"; break;
-			case 63: s = "\">>\" expected"; break;
+			case 62: s = "\"<<<\" expected"; break;
+			case 63: s = "\">>>\" expected"; break;
 			case 64: s = "\"~~~\" expected"; break;
 			case 65: s = "\"set\" expected"; break;
 			case 66: s = "\"import\" expected"; break;
