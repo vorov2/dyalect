@@ -154,21 +154,21 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
+        protected override DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
         {
             var str = (DyString)self;
             var arr = str.GetValues();
 
-            if (start.TypeId != DyType.Integer)
-                return ctx.InvalidType(start);
+            if (fromElem.TypeId != DyType.Integer)
+                return ctx.InvalidType(fromElem);
 
-            if (len.TypeId != DyType.Nil && len.TypeId != DyType.Integer)
-                return ctx.InvalidType(len);
+            if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
+                return ctx.InvalidType(toElem);
 
-            var beg = (int)start.GetInteger();
-            var end = ReferenceEquals(len, DyNil.Instance) ? str.Count : beg + (int)len.GetInteger();
+            var beg = (int)fromElem.GetInteger();
+            var end = ReferenceEquals(toElem, DyNil.Instance) ? str.Count - 1 : (int)toElem.GetInteger();
 
-            if (beg == 0 && beg == end)
+            if (beg == 0 && end == str.Count - 1)
                 return self;
 
             if (beg < 0)
@@ -178,12 +178,20 @@ namespace Dyalect.Runtime.Types
                 return ctx.IndexOutOfRange(beg);
 
             if (end < 0)
-                end = str.Count + end;
+                end = str.Count + end - 1;
 
-            if (end > str.Count)
+            if (end >= str.Count)
                 return ctx.IndexOutOfRange(end);
 
-            return new DyString(str.Value.Substring(beg, end - beg));
+            var len = end - beg + 1;
+
+            if (len < 0)
+                return ctx.IndexOutOfRange(toElem);
+
+            if (len == 0)
+                return DyString.Empty;
+
+            return new DyString(str.Value.Substring(beg, len));
         }
 
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject value)

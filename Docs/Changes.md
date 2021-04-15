@@ -4,6 +4,8 @@
   * Add: _Iterators should support indexer_ ([Issue #410](https://github.com/vorov2/dyalect/issues410)).
   * Add: _Ranges with negative indices and parser_ ([Issue #412](https://github.com/vorov2/dyalect/issues412)).
   * Add: _Enhance slicing operator_ ([Issue #371](https://github.com/vorov2/dyalect/issues371)).
+  * Add: _Rethink current ranges implementation_ ([Issue #350](https://github.com/vorov2/dyalect/issues/350), [docs](https://github.com/vorov2/dyalect/wiki/Ranges)).
+  * Add: _Extend syntax for ranges_ ([Issue #348](https://github.com/vorov2/dyalect/issues347)).
 
 # 0.18.0
   * Change: _Refactoring and redesign of internal compiler infrastructure and foreign module infrastructure._

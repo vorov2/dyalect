@@ -27,8 +27,12 @@ func arrayTest2() {
 
 func arrayTest3() {
     var arr = [1,2,3,4,5,6]
-    var newArr = arr.slice(2,3).toArray()
+    var newArr = arr.slice(2,4).toArray()
     assert([3, 4, 5], newArr)
+    newArr = arr.slice(2, 5).toArray()
+    assert([3, 4, 5, 6], newArr)
+    newArr = arr.slice(2).toArray()
+    assert([3, 4, 5, 6], newArr)
 }
 
 func arrayTest4() {
@@ -98,7 +102,7 @@ func arrayTest13() {
 func arrayTest14() {
     var xs = [0,1,2,3,4,5,6,7,8,9]
     var res = xs[1..5].toArray()
-    assert([1,2,3,4], res)
+    assert([1,2,3,4,5], res)
 }
 
 func arrayTest15() {

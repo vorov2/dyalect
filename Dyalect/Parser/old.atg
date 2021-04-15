@@ -850,7 +850,7 @@ PRODUCTIONS
         }.
 
     Mul<out DNode node> =
-        Unary<out node>
+        Range<out node>
         {
             (.
                 var op = default(BinaryOperator);
@@ -893,7 +893,7 @@ PRODUCTIONS
                 )
                 |
                 (
-                    "~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
+                    "~~~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
                     Index<out node>
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
@@ -901,72 +901,180 @@ PRODUCTIONS
             )
         ).
 
+    Range<out DNode node> =
+        (. node = null; DNode cnode = null; bool exclu = false; .)
+        (
+            (
+                ( ".." | "..<" (. exclu = true; .) )
+                (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
+                [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+            )
+            |
+            (
+                Unary<out node>
+                [
+                    ( ".." | "..<" (. exclu = true; .) )
+                    (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
+                    [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+                ]
+            )
+        ).
+
     Index<out DNode node> =
         (
             Literal<out node> 
             {
-                IndexBody<node, out var cnode>
-                (. node = cnode; .)
+                (
+                    "." (. var ot = t; .)
+                    identToken
+                    (. var nm = t.val; DMemberCheck chk = null; .)
+                    (
+                        [
+                            "?"
+                            (.
+                                chk = new DMemberCheck(ot) { Target = node };
+                                chk.Name = nm;
+                                node = chk;
+                            .)
+                        ]
+                        (.
+                            if (chk == null)
+                            {
+                                var fld = new DAccess(ot) { Target = node };
+                                fld.Name = nm;
+                                node = fld;
+                            }
+                        .)
+                    )
+                )
+                |
+                (
+                    ":" (. var ot = t; .)
+                    identToken
+                    (.
+                        node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
+                    .)
+                )
+                |
+                (
+                    (. if (la.AfterEol) return; .)
+                    "["
+                        (. var idx = new DIndexer(t) { Target = node }; .)
+                        Expr<out node>
+                        (.
+                            idx.Index = node;
+                            node = idx;
+                        .)
+                    "]"
+                )
+                |
+                (
+                    (.
+                        if (la.AfterEol) return;
+                        var app = new DApplication(node, t);
+                    .)
+                    "("
+                        [ ApplicationArguments<app> ]
+                        (. node = app; .)
+                    ")"
+                )
             }
         ).
 
-    IndexBody<DNode exp, out DNode node> = 
-        (. node = null; .)
+    SimpleUnary<out DNode node> =
+        (.
+            node = null;
+            var op = default(UnaryOperator);
+            var ot = default(Token);
+        .)
         (
             (
-                "." (. var ot = t; .)
-                identToken
-                (. var nm = t.val; DMemberCheck chk = null; .)
                 (
-                    [
-                        "?"
+                    "!" (. ot = t; op = UnaryOperator.Not; .)
+                    SimpleIndex<out node>
+                    (. node = new DUnaryOperation(node, op, ot); .)
+                )
+                |
+                (
+                    "-" (. ot = t; op = UnaryOperator.Neg; .)
+                    SimpleIndex<out node>
+                    (. node = new DUnaryOperation(node, op, ot); .)
+                )
+                |
+                (
+                    "+" (. ot = t; op = UnaryOperator.Plus; .)
+                    SimpleIndex<out node>
+                    (. node = new DUnaryOperation(node, op, ot); .)
+                )
+                |
+                (
+                    "~~~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
+                    SimpleIndex<out node>
+                    (. node = new DUnaryOperation(node, op, ot); .)
+                )
+                | SimpleIndex<out node>
+            )
+        ).
+
+    SimpleIndex<out DNode node> =
+        (
+            SimpleLiteral<out node> 
+            {
+                (
+                    "." (. var ot = t; .)
+                    identToken
+                    (. var nm = t.val; DMemberCheck chk = null; .)
+                    (
+                        [
+                            "?"
+                            (.
+                                chk = new DMemberCheck(ot) { Target = node };
+                                chk.Name = nm;
+                                node = chk;
+                            .)
+                        ]
                         (.
-                            chk = new DMemberCheck(ot) { Target = exp };
-                            chk.Name = nm;
-                            node = chk;
+                            if (chk == null)
+                            {
+                                var fld = new DAccess(ot) { Target = node };
+                                fld.Name = nm;
+                                node = fld;
+                            }
                         .)
-                    ]
+                    )
+                )
+                |
+                (
+                    ":" (. var ot = t; .)
+                    identToken
                     (.
-                        if (chk == null)
-                        {
-                            var fld = new DAccess(ot) { Target = exp };
-                            fld.Name = nm;
-                            node = fld;
-                        }
+                        node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
                     .)
                 )
-            )
-            |
-            (
-                ":" (. var ot = t; .)
-                identToken
-                (.
-                    node = new DIndexer(t) { Target = exp, Index = new DStringLiteral(ot) { Value = t.val } };
-                .)
-            )
-            |
-            (
-                (. if (la.AfterEol) return; .)
-                "["
-                    (. var idx = new DIndexer(t) { Target = exp }; .)
-                    Expr<out node>
+                |
+                (
+                    (. if (la.AfterEol) return; .)
+                    "["
+                        (. var idx = new DIndexer(t) { Target = node }; .)
+                        Expr<out node>
+                        (.
+                            idx.Index = node;
+                            node = idx;
+                        .)
+                    "]"
+                )
+                |
+                (
                     (.
-                        idx.Index = node;
-                        node = idx;
+                        if (la.AfterEol) return;
+                        var app = new DApplication(node, t);
                     .)
-                "]"
-            )
-            |
-            (
-                (.
-                    if (la.AfterEol) return;
-                    var app = new DApplication(exp, t);
-                .)
-                "("
-                    [ ApplicationArguments<app> ]
-                    (. node = app; .)
-                ")"
-            )
+                    "("
+                        [ ApplicationArguments<app> ]
+                        (. node = app; .)
+                    ")"
+                )
+            }
         ).
 
     ApplicationArguments<DApplication app> =
@@ -1008,26 +1116,6 @@ PRODUCTIONS
             | Group<out node>
             | Base<out node>
             | Array<out node>
-            | Range<out node>
-        ).
-
-    Range<out DNode node> =
-        (. node = null; DNode cnode = null; .)
-        (
-            "<"
-                (
-                    (
-                        ".."  (. var range = new DRange(t) { From = node }; node = range; .)
-                        Index<out cnode> (. range.To = cnode; .)
-                    )
-                    |
-                    (
-                        Index<out node> [ "," Index<out node> ]
-                        ".."  (. var range = new DRange(t) { From = node }; node = range; .)
-                        [ Index<out cnode> (. range.To = cnode; .) ]
-                    )
-                )
-            ">"
         ).
 
     Iterator<out DNode node> =

@@ -308,7 +308,7 @@ namespace Dyalect.Compiler
         {
             cw.Type(new TypeHandle(DyType.GetTypeCodeByName(DyTypeNames.Iterator), true));
             cw.GetMember(unit.GetMemberId("range"));
-            cw.FunPrep(3);
+            cw.FunPrep(4);
 
             if (range.From is not null)
                 Build(range.From, hints.Append(Push), ctx);
@@ -325,8 +325,10 @@ namespace Dyalect.Compiler
             cw.FunArgIx(1);
             cw.Push(1);
             cw.FunArgIx(2);
+            cw.Push(range.Exclusive);
+            cw.FunArgIx(3);
             AddLinePragma(range);
-            cw.FunCall(3);
+            cw.FunCall(4);
             PopIf(hints);
         }
 
@@ -557,13 +559,7 @@ namespace Dyalect.Compiler
                 
                 cw.FunArgIx(0);
 
-                if (r.To is not null && r.From is not null)
-                {
-                    Build(r.To, hints.Append(Push), ctx);
-                    Build(r.From, hints.Append(Push), ctx);
-                    cw.Sub();
-                }
-                else if (r.To is not null)
+                if (r.To is not null)
                     Build(r.To, hints.Append(Push), ctx);
                 else
                     cw.PushNil();

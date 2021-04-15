@@ -733,11 +733,30 @@ PRODUCTIONS
         }.
 
     Coalesce<out DNode node> =
-        Or<out node>
+        Range<out node>
         {
             "??" (. var ot = t; .) Or<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.Coalesce, ot); .)
         }.
+
+    Range<out DNode node> =
+        (. node = null; DNode cnode = null; bool exclu = false; .)
+        (
+            (
+                ( ".." | "..<" (. exclu = true; .) )
+                (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
+                [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+            )
+            |
+            (
+                Or<out node>
+                [
+                    ( ".." | "..<" (. exclu = true; .) )
+                    (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
+                    [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+                ]
+            )
+        ).
 
     Or<out DNode node> =
         And<out node>
@@ -850,7 +869,7 @@ PRODUCTIONS
         }.
 
     Mul<out DNode node> =
-        Range<out node>
+        Unary<out node>
         {
             (.
                 var op = default(BinaryOperator);
@@ -862,7 +881,7 @@ PRODUCTIONS
                 | "%" (. ot = t; op = BinaryOperator.Rem; .)
             )
             (
-                Range<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
+                Unary<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
             )
         }.
 
@@ -898,23 +917,6 @@ PRODUCTIONS
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
                 | Index<out node>
-            )
-        ).
-
-    Range<out DNode node> =
-        (. node = null; DNode cnode = null; .)
-        (
-            (
-                ".."  (. var range = new DRange(t) { From = node }; node = range; .)
-                [ SimpleIndex<out cnode> (. range.To = cnode; .) ]
-            )
-            |
-            (
-                Unary<out node>
-                [
-                    ".."  (. var range = new DRange(t) { From = node }; node = range; .)
-                    [ SimpleIndex<out cnode> (. range.To = cnode; .) ]
-                ]
             )
         ).
 
@@ -977,6 +979,41 @@ PRODUCTIONS
                     ")"
                 )
             }
+        ).
+
+    SimpleUnary<out DNode node> =
+        (.
+            node = null;
+            var op = default(UnaryOperator);
+            var ot = default(Token);
+        .)
+        (
+            (
+                (
+                    "!" (. ot = t; op = UnaryOperator.Not; .)
+                    SimpleIndex<out node>
+                    (. node = new DUnaryOperation(node, op, ot); .)
+                )
+                |
+                (
+                    "-" (. ot = t; op = UnaryOperator.Neg; .)
+                    SimpleIndex<out node>
+                    (. node = new DUnaryOperation(node, op, ot); .)
+                )
+                |
+                (
+                    "+" (. ot = t; op = UnaryOperator.Plus; .)
+                    SimpleIndex<out node>
+                    (. node = new DUnaryOperation(node, op, ot); .)
+                )
+                |
+                (
+                    "~~~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
+                    SimpleIndex<out node>
+                    (. node = new DUnaryOperation(node, op, ot); .)
+                )
+                | SimpleIndex<out node>
+            )
         ).
 
     SimpleIndex<out DNode node> =

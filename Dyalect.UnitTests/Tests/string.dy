@@ -214,6 +214,6 @@ func stringSplice2() {
     var str = "the quick brown fox jumped over the lazy dogs"
     assert("lazy dogs",  str[-9..])
     assert("lazy dogs",  str[36..])
-    assert("the quick",  str[..9])
+    assert("the quick",  str[..8])
     assert(str,  str[..])
 }
