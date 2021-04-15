@@ -1,6 +1,6 @@
 internal static class Meta
 {
-    public static readonly System.DateTime Epoch = new System.DateTime(2019, 4, 17);
+    public static readonly System.DateTime Epoch = new(2019, 4, 17);
 
     public const string Version = "0.19.0";
 
