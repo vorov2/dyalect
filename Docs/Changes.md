@@ -1,3 +1,14 @@
+# 0.19.0
+  * Add: _Tuples and ranges_ ([Issue #408](https://github.com/vorov2/dyalect/issues408)).
+  * Add: _Iterator should support `slice`_ ([Issue #409](https://github.com/vorov2/dyalect/issues409)).
+  * Add: _Iterators should support indexer_ ([Issue #410](https://github.com/vorov2/dyalect/issues410)).
+  * Add: _Ranges with negative indices and parser_ ([Issue #412](https://github.com/vorov2/dyalect/issues412)).
+  * Add: _Enhance slicing operator_ ([Issue #371](https://github.com/vorov2/dyalect/issues371)).
+  * Add: _Rethink current ranges implementation_ ([Issue #350](https://github.com/vorov2/dyalect/issues/350), [docs](https://github.com/vorov2/dyalect/wiki/Ranges)).
+  * Add: _Extend syntax for ranges_ ([Issue #348](https://github.com/vorov2/dyalect/issues347)).
+  * Change: _Dyalect Console updated and now uses JSON parser implementation from Dyalect standard library._
+  * Fix: _Entering ^Z crushes Dyalect console_ ([Issue #416](https://github.com/vorov2/dyalect/issues416)). 
+
 # 0.18.0
   * Change: _Refactoring and redesign of internal compiler infrastructure and foreign module infrastructure._
   * Fixed: _Adding an integer to a char causes a crush_ ([Issue #397](https://github.com/vorov2/dyalect/issues397)).

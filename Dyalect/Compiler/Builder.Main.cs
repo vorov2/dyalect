@@ -292,21 +292,48 @@ namespace Dyalect.Compiler
 
         private void Build(DIteratorLiteral node, Hints hints, CompilerContext ctx)
         {
-            var dec = new DFunctionDeclaration(node.Location) { Body = node.YieldBlock };
-            Build(dec, hints.Append(IteratorBody), ctx);
+            if (node.YieldBlock.Elements.Count == 1 && node.YieldBlock.Elements[0].NodeType == NodeType.Range)
+            {
+                Build(node.YieldBlock.Elements[0], hints.Append(Push), ctx);
+                PopIf(hints);
+            }
+            else
+            {
+                var dec = new DFunctionDeclaration(node.Location) { Body = node.YieldBlock };
+                Build(dec, hints.Append(IteratorBody), ctx);
+            }
         }
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
         {
-            Build(range.From, hints.Append(Push), ctx);
+            cw.Type(new TypeHandle(DyType.GetTypeCodeByName(DyTypeNames.Iterator), true));
             cw.GetMember(unit.GetMemberId("range"));
-            cw.FunPrep(1);
+            cw.FunPrep(4);
 
-            Build(range.To, hints.Append(Push), ctx);
+            if (range.From is not null)
+                Build(range.From, hints.Append(Push), ctx);
+            else
+                cw.Push(0);
+
             cw.FunArgIx(0);
 
+            if (range.To is not null)
+                Build(range.To, hints.Append(Push), ctx);
+            else
+                cw.PushNil();
+
+            cw.FunArgIx(1);
+
+            if (range.Step is not null)
+                Build(range.Step, hints.Append(Push), ctx);
+            else
+                cw.Push(1);
+            
+            cw.FunArgIx(2);
+            cw.Push(range.Exclusive);
+            cw.FunArgIx(3);
             AddLinePragma(range);
-            cw.FunCall(1);
+            cw.FunCall(4);
             PopIf(hints);
         }
 
@@ -407,28 +434,40 @@ namespace Dyalect.Compiler
 
         private void Build(DTupleLiteral node, Hints hints, CompilerContext ctx)
         {
-            for (var i = 0; i < node.Elements.Count; i++)
+            if (node.Elements.Count == 1 && node.Elements[0].NodeType == NodeType.Range)
             {
-                var el = node.Elements[i];
-                string name;
-
-                if (el.NodeType == NodeType.Label)
+                Build(node.Elements[0], hints.Append(Push), ctx);
+                cw.GetMember(unit.GetMemberId("toTuple"));
+                cw.FunPrep(0);
+                AddLinePragma(node);
+                cw.FunCall(0);
+            }
+            else
+            {
+                for (var i = 0; i < node.Elements.Count; i++)
                 {
-                    var label = (DLabelLiteral)el;
-                    Build(label.Expression, hints.Append(Push), ctx);
-                    cw.Tag(label.Label);
-                }
-                else
-                {
-                    Build(el, hints.Append(Push), ctx);
+                    var el = node.Elements[i];
+                    string name;
 
-                    if ((name = el.GetName()) != null)
-                        cw.Tag(name);
+                    if (el.NodeType == NodeType.Label)
+                    {
+                        var label = (DLabelLiteral)el;
+                        Build(label.Expression, hints.Append(Push), ctx);
+                        cw.Tag(label.Label);
+                    }
+                    else
+                    {
+                        Build(el, hints.Append(Push), ctx);
+
+                        if ((name = el.GetName()) != null)
+                            cw.Tag(name);
+                    }
                 }
+
+                AddLinePragma(node);
+                cw.NewTuple(node.Elements.Count);
             }
 
-            AddLinePragma(node);
-            cw.NewTuple(node.Elements.Count);
             PopIf(hints);
         }
 
@@ -512,18 +551,29 @@ namespace Dyalect.Compiler
             if (node.Index.NodeType == NodeType.Range)
             {
                 if (hints.Has(Pop))
-                    AddError(CompilerError.RangeIndexNotSupported, node.Index.Location);
+                    AddError(CompilerError.SliceNotSupported, node.Index.Location);
 
                 var r = (DRange)node.Index;
+
+                if (r.Step is not null || r.Exclusive)
+                    AddError(CompilerError.InvalidSlice, r.Location);
+
                 cw.GetMember(unit.GetMemberId("slice"));
                 cw.FunPrep(2);
-                Build(r.From, hints.Append(Push), ctx);
+                
+                if (r.From is null)
+                    cw.Push(0);
+                else
+                    Build(r.From, hints.Append(Push), ctx);
+                
                 cw.FunArgIx(0);
-                Build(r.To, hints.Append(Push), ctx);
-                Build(r.From, hints.Append(Push), ctx);
-                cw.Sub();
-                cw.FunArgIx(1);
 
+                if (r.To is not null)
+                    Build(r.To, hints.Append(Push), ctx);
+                else
+                    cw.PushNil();
+
+                cw.FunArgIx(1);
                 AddLinePragma(node);
                 cw.FunCall(2);
                 PopIf(hints);

@@ -343,25 +343,11 @@ namespace Dyalect.Runtime.Types
             new DyTuple(new DyObject[] { fst, snd, thd });
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
-        
-        private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step)
-        {
-            if (to.TypeId == DyType.Nil)
-                return ctx.OpenRangeNotSupported(DyTypeNames.Tuple);
-
-            var seq = Range.GenerateRange(ctx, from, to, step);
-
-            if (ctx.HasErrors)
-                return DyNil.Instance;
-
-            return new DyTuple(seq.ToArray());
-        }
 
         protected override DyFunction GetStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
-                "range" => DyForeignFunction.Static(name, MakeRange, -1, new Par("from"), new Par("to", DyNil.Instance), new Par("step", DyInteger.One)),
                 "pair" => DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second")),
                 "triple" => DyForeignFunction.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
                 "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),

@@ -154,6 +154,46 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        protected override DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
+        {
+            var str = (DyString)self;
+            var arr = str.GetValues();
+
+            if (fromElem.TypeId != DyType.Integer)
+                return ctx.InvalidType(fromElem);
+
+            if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
+                return ctx.InvalidType(toElem);
+
+            var beg = (int)fromElem.GetInteger();
+            var end = ReferenceEquals(toElem, DyNil.Instance) ? str.Count - 1 : (int)toElem.GetInteger();
+
+            if (beg == 0 && end == str.Count - 1)
+                return self;
+
+            if (beg < 0)
+                beg = str.Count + beg;
+
+            if (beg >= str.Count)
+                return ctx.IndexOutOfRange(beg);
+
+            if (end < 0)
+                end = str.Count + end - 1;
+
+            if (end >= str.Count)
+                return ctx.IndexOutOfRange(end);
+
+            var len = end - beg + 1;
+
+            if (len < 0)
+                return ctx.IndexOutOfRange(toElem);
+
+            if (len == 0)
+                return DyString.Empty;
+
+            return new DyString(str.Value.Substring(beg, len));
+        }
+
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var str = self.GetString();

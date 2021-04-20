@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dyalect.Library.Json;
 using static System.Console;
 
 namespace Dyalect
@@ -62,8 +63,9 @@ namespace Dyalect
         {
             if (!NoLogo)
             {
+                var ts = FS.GetAssembyTimeStamp();
                 Title = $"Dyalect - {FS.GetStartupPath()}";
-                Header($"Dya (Dyalect Console). Built {FS.GetAssembyTimeStamp()}");
+                Header($"Dya (Dyalect Console). Build {(int)(ts - Meta.Epoch).TotalSeconds} ({ts})");
                 Subheader($"Version {Meta.Version}");
                 Subheader($"Running {Environment.OSVersion}");
             }
@@ -90,7 +92,7 @@ namespace Dyalect
             }
         }
 
-        public static void PrintErrors(IEnumerable<JsonParser.Error> messages)
+        public static void PrintErrors(IEnumerable<JsonError> messages)
         {
             foreach (var m in messages)
                 Error(m.ToString());

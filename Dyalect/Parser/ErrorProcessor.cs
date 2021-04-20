@@ -20,8 +20,9 @@ namespace Dyalect.Parser
                 ,{ "invalid If", InvalidIf }
                 ,{ "invalid Loops", InvalidStatement }
                 ,{ "invalid Expr", InvalidExpression }
-                ,{ "invalid FieldOrIndex", InvalidExpression }
-                ,{ "invalid SimpleFieldOrIndex", InvalidExpression }
+                ,{ "invalid Index", InvalidExpression }
+                ,{ "invalid SimpleIndex", InvalidExpression }
+                ,{ "invalid IndexBody", InvalidExpression }
                 ,{ "invalid FunctionExpr", InvalidFunctionExpression }
                 ,{ "invalid Unary", InvalidUnary }
                 ,{ "invalid Bool", InvalidLiteral }

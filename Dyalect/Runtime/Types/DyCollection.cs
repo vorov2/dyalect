@@ -152,30 +152,41 @@ namespace Dyalect.Runtime.Types
     {
         protected DyCollectionTypeInfo(int typeId) : base(typeId) { }
 
-        protected DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
+        protected virtual DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
         {
             var coll = (DyCollection)self;
             var arr = coll.GetValues();
 
-            if (start.TypeId != DyType.Integer)
-                return ctx.InvalidType(start);
+            if (fromElem.TypeId != DyType.Integer)
+                return ctx.InvalidType(fromElem);
 
-            if (len.TypeId != DyType.Nil && len.TypeId != DyType.Integer)
-                return ctx.InvalidType(len);
+            if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
+                return ctx.InvalidType(toElem);
 
-            var beg = (int)start.GetInteger();
-            var end = ReferenceEquals(len, DyNil.Instance) ? coll.Count : beg + (int)len.GetInteger();
+            var beg = (int)fromElem.GetInteger();
+            var end = ReferenceEquals(toElem, DyNil.Instance) ? coll.Count - 1 : (int)toElem.GetInteger();
 
-            if (beg == 0 && beg == end)
+            if (beg == 0 && end == coll.Count - 1)
                 return self;
 
-            if (beg < 0 || beg >= coll.Count)
+            if (beg < 0)
+                beg = coll.Count + beg;
+
+            if (beg >= coll.Count)
                 return ctx.IndexOutOfRange(beg);
 
-            if (end < 0 || end > coll.Count)
+            if (end < 0)
+                end = coll.Count + end - 1;
+
+            if (end >= coll.Count || end < 0)
                 return ctx.IndexOutOfRange(end);
 
-            return new DyIterator(new DyCollectionEnumerable(arr, beg, end - beg, coll));
+            var len = end - beg + 1;
+
+            if (len < 0)
+                return ctx.IndexOutOfRange(toElem);
+
+            return new DyIterator(new DyCollectionEnumerable(arr, beg, len, coll));
         }
 
         protected DyObject GetIndices(ExecutionContext ctx, DyObject self, DyObject[] args)

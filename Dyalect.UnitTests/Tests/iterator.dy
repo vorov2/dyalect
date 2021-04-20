@@ -333,3 +333,9 @@ func yieldBreakTest1() { // #399
     }
     assert([100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88], xs)
 }
+
+func sliceTest1() { // #409
+    var seq = 1..10
+    var xs = seq[5..].toArray()
+    assert([6, 7, 8, 9, 10], xs)
+}

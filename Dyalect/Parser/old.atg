@@ -733,37 +733,11 @@ PRODUCTIONS
         }.
 
     Coalesce<out DNode node> =
-        Range<out node>
+        Or<out node>
         {
             "??" (. var ot = t; .) Or<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.Coalesce, ot); .)
         }.
-
-    Range<out DNode node> =
-        (. node = null; DNode snode = null; DNode cnode = null; bool exclu = false; .)
-        (
-            (
-                "^" SimpleUnary<out snode>
-                ( ".." | "..<" (. exclu = true; .) )
-                (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
-            )
-            |
-            (
-                ( ".." | "..<" (. exclu = true; .) )
-                (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
-                [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
-            )
-            |
-            (
-                Or<out node> [ "^" SimpleUnary<out snode> ]
-                [
-                    ( ".." | "..<" (. exclu = true; .) )
-                    (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                    [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
-                ]
-            )
-        ).
 
     Or<out DNode node> =
         And<out node>
@@ -876,7 +850,7 @@ PRODUCTIONS
         }.
 
     Mul<out DNode node> =
-        Unary<out node>
+        Range<out node>
         {
             (.
                 var op = default(BinaryOperator);
@@ -924,6 +898,25 @@ PRODUCTIONS
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
                 | Index<out node>
+            )
+        ).
+
+    Range<out DNode node> =
+        (. node = null; DNode cnode = null; bool exclu = false; .)
+        (
+            (
+                ( ".." | "..<" (. exclu = true; .) )
+                (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
+                [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+            )
+            |
+            (
+                Unary<out node>
+                [
+                    ( ".." | "..<" (. exclu = true; .) )
+                    (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
+                    [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+                ]
             )
         ).
 

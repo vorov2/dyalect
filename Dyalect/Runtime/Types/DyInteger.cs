@@ -8,59 +8,6 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyInteger : DyObject
     {
-        internal sealed class RangeEnumerator : IEnumerator<DyObject>
-        {
-            private readonly long from;
-            private readonly long start;
-            private readonly long to;
-            private readonly long step;
-            private readonly bool inf;
-            private bool fst;
-            private long current;
-
-            public RangeEnumerator(long from, long start, long? to, long step)
-            {
-                this.from = from;
-                this.start = start;
-                this.to = to ?? 0;
-                this.inf = to == null;
-                this.step = step;
-                this.fst = true;
-                this.current = from;
-            }
-
-            public DyObject Current => Get(current);
-
-            object IEnumerator.Current => Current;
-
-            public void Dispose() { }
-
-            public bool MoveNext()
-            {
-                if (fst)
-                {
-                    fst = false;
-                    return true;
-                }
-
-                current += step;
-
-                if (inf)
-                    return true;
-
-                if (to > start)
-                    return current <= to;
-
-                return current >= to;
-            }
-
-            public void Reset()
-            {
-                current = from;
-                fst = true;
-            }
-        }
-
         public static readonly DyInteger Zero = new(0L);
         public static readonly DyInteger MinusOne = new(-1L);
         public static readonly DyInteger One = new(1L);
@@ -295,39 +242,6 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.GetInteger().ToString(CI.NumberFormat));
         #endregion
-
-        private DyObject Range(ExecutionContext ctx, DyObject self, DyObject to, DyObject step)
-        {
-            if (to.TypeId != DyType.Integer && to.TypeId != DyType.Nil)
-                return ctx.InvalidType(to);
-
-            var ifrom = self.GetInteger();
-            var istart = ifrom;
-            var istep = step.TypeId == DyType.Nil ? 1L : step.GetInteger();
-
-            if (to == DyNil.Instance)
-                return new DyIterator(new DyInteger.RangeEnumerator(ifrom, istart, null, istep));
-
-            var ito = to.GetInteger();
-
-            if (ito <= ifrom)
-                istep = -Math.Abs(istep);
-
-            if (istep == 0
-                || (istep < 0 && ito > ifrom)
-                || (istep > 0 && ito < ifrom))
-                return ctx.InvalidRange();
-
-            return new DyIterator(new DyInteger.RangeEnumerator(ifrom, istart, ito, istep));
-        }
-
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
-        {
-            if (name == "range")
-                return DyForeignFunction.Member(name, Range, -1, new Par("to", DyNil.Instance), new Par("step", DyNil.Instance));
-
-            return base.GetMember(name, ctx);
-        }
 
         private DyObject Convert(ExecutionContext ctx, DyObject obj)
         {

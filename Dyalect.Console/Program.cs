@@ -146,9 +146,9 @@ namespace Dyalect
                     Printer.LineFeed();
 
                 Printer.Prefix(balance == 0 ? "dy>" : "-->");
-                var line = Console.ReadLine().Trim();
+                var line = Console.ReadLine()?.Trim();
 
-                if (TryRunCommand(line))
+                if (line is null || TryRunCommand(line))
                     continue;
 
                 sb.AppendLine(line);

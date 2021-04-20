@@ -118,8 +118,8 @@ namespace Dyalect.Library.Json
 
         private int ParseList(int pos, out List<object> obj)
         {
-            obj = new List<object>();
-            var val = default(object);
+            obj = new();
+            object val = null;
 
             for (; pos < len; pos++)
             {
@@ -133,7 +133,7 @@ namespace Dyalect.Library.Json
                         Unexpected(pos, ",");
                     else
                     {
-                        if (val != null || !SkipNulls)
+                        if (val is not null || !SkipNulls)
                             obj.Add(val);
 
                         pos = ParseLiteral(pos + 1, out val);
@@ -160,15 +160,9 @@ namespace Dyalect.Library.Json
             return pos;
         }
 
-        private bool IsSep(char c)
-        {
-            return char.IsWhiteSpace(c) || c == '\t' || c == '\r' || c == '\n';
-        }
+        private static bool IsSep(char c) => char.IsWhiteSpace(c) || c is '\t' or '\r' or '\n';
 
-        private bool IsNumeric(char c)
-        {
-            return char.IsNumber(c) || c == '-' || c == '+' || c == 'e' || c == 'E' || c == '.';
-        }
+        private static bool IsNumeric(char c) => char.IsNumber(c) || c is '-' or '+' or 'e' or 'E' or '.';
 
         private int ParseString(int pos, out string key)
         {
@@ -221,7 +215,7 @@ namespace Dyalect.Library.Json
                     else
                         EscapeSequence(pos);
                 }
-                else if (lc == '\\' || lc == '"' || lc == '/')
+                else if (lc is '\\' or '"' or '/')
                     sb.Append(lc);
                 else if (lc == 'b')
                     sb.Append('\b');
@@ -252,7 +246,7 @@ namespace Dyalect.Library.Json
                 var c = buffer[pos];
                 var ws = IsSep(c);
 
-                if (c == ']' || c == '}' || c == ',' || ws)
+                if (c is ']' or '}' or ',' || ws)
                 {
                     var str = new string(buffer, start, pos - start);
 
@@ -276,8 +270,10 @@ namespace Dyalect.Library.Json
                 && buffer.Lookup(pos + 1) == 'u'
                 && buffer.Lookup(pos + 2) == 'l'
                 && buffer.Lookup(pos + 3) == 'l';
+            
             if (!nl)
                 InvalidLiteral(pos, "null");
+            
             return pos + 3;
         }
 
@@ -389,8 +385,12 @@ namespace Dyalect.Library.Json
                 return pos;
 
             var ns = buffer.Lookup(pos + 1);
-            return ns == '*' ? ParseComment(pos + 2) :
-                ns == '/' ? ParseComment2(pos + 2) : pos;
+            return ns switch
+            {
+                '*' => ParseComment(pos + 2),
+                '/' => ParseComment2(pos + 2),
+                _ => pos
+            };
         }
 
         private int ParseComment(int pos)
@@ -413,32 +413,20 @@ namespace Dyalect.Library.Json
             {
                 var c = buffer[pos];
 
-                if (c == '\r' || c == '\n')
+                if (c is '\r' or '\n')
                     return pos;
             }
             
             return pos;
         }
 
-        private void EscapeSequence(int pos)
-        {
-            Failure(pos, "Invalid escape sequence");
-        }
+        private void EscapeSequence(int pos) => Failure(pos, "Invalid escape sequence");
 
-        private void Expected(int pos, string sym)
-        {
-            Failure(pos, $"Expected {sym}");
-        }
+        private void Expected(int pos, string sym) => Failure(pos, $"Expected {sym}");
 
-        private void Unexpected(int pos, string sym)
-        {
-            Failure(pos, $"Unexpected {sym}");
-        }
+        private void Unexpected(int pos, string sym) => Failure(pos, $"Unexpected {sym}");
 
-        private void InvalidLiteral(int pos, string literal)
-        {
-            Failure(pos, $"Invalid {literal} literal");
-        }
+        private void InvalidLiteral(int pos, string literal) => Failure(pos, $"Invalid {literal} literal");
 
         private void Failure(int pos, string message)
         {
@@ -446,32 +434,28 @@ namespace Dyalect.Library.Json
 
             if (ThrowErrors)
                 throw new JsonParserException(message, t.Line, t.Col);
-            else
-            {
-                if (Errors == null)
-                    _errors = new List<JsonError>();
-                _errors.Add(new JsonError(message, t));
-            }
+            
+            errors ??= new();
+            errors.Add(new(message, t));
         }
 
         private Location ConvertPos(int pos)
         {
-            var subs = source.Substring(0, pos + 1);
-            var arr = subs.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var subs = source[..(pos + 1)];
+            var arr = subs.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var line = arr.Length;
             var col = arr[^1].Length;
-            return new Location(line, col);
+            return new(line, col);
         }
 
-        private List<JsonError> _errors;
-        public IEnumerable<JsonError> Errors
-        {
-            get { return _errors; }
-        }
+        private List<JsonError> errors;
+        public IEnumerable<JsonError> Errors => errors;
 
         public bool ThrowErrors { get; set; } = true;
 
         public bool SkipNulls { get; set; } = true;
+
+        public bool IsSuccess => errors is null || errors.Count == 0;
 
         public IEqualityComparer<string> DictionaryComparer { get; set; }
     }
