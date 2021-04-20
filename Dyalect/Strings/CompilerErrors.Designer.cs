@@ -178,6 +178,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Slice is invalid (step and exclusivity sign are not supported in slices)..
+        /// </summary>
+        internal static string InvalidSlice {
+            get {
+                return ResourceManager.GetString("InvalidSlice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Named argument &quot;{0}&quot; cannot be specified multiple times..
         /// </summary>
         internal static string NamedArgumentMultipleTimes {
@@ -259,15 +268,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Range is not supported in this context..
-        /// </summary>
-        internal static string RangeIndexNotSupported {
-            get {
-                return ResourceManager.GetString("RangeIndexNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Statement &quot;return&quot; is not allowed in iterators. Use &quot;yield break&quot; to terminate an iterator..
         /// </summary>
         internal static string ReturnInIterator {
@@ -282,6 +282,15 @@ namespace Dyalect.Strings {
         internal static string ReturnNotAllowed {
             get {
                 return ResourceManager.GetString("ReturnNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slicing is not supported in this context..
+        /// </summary>
+        internal static string SliceNotSupported {
+            get {
+                return ResourceManager.GetString("SliceNotSupported", resourceCulture);
             }
         }
         

@@ -171,8 +171,8 @@
   <data name="PatternNotSupported" xml:space="preserve">
     <value>Pattern "{0}" not supported in this context.</value>
   </data>
-  <data name="RangeIndexNotSupported" xml:space="preserve">
-    <value>Range is not supported in this context.</value>
+  <data name="SliceNotSupported" xml:space="preserve">
+    <value>Slicing is not supported in this context.</value>
   </data>
   <data name="NamedArgumentMultipleTimes" xml:space="preserve">
     <value>Named argument "{0}" cannot be specified multiple times.</value>
@@ -239,5 +239,8 @@
   </data>
   <data name="ReturnNotAllowed" xml:space="preserve">
     <value>Statement "return" is only supported inside functions.</value>
+  </data>
+  <data name="InvalidSlice" xml:space="preserve">
+    <value>Slice is invalid (step and exclusivity sign are not supported in slices).</value>
   </data>
 </root>

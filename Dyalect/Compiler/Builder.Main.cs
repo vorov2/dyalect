@@ -551,9 +551,13 @@ namespace Dyalect.Compiler
             if (node.Index.NodeType == NodeType.Range)
             {
                 if (hints.Has(Pop))
-                    AddError(CompilerError.RangeIndexNotSupported, node.Index.Location);
+                    AddError(CompilerError.SliceNotSupported, node.Index.Location);
 
                 var r = (DRange)node.Index;
+
+                if (r.Step is not null || r.Exclusive)
+                    AddError(CompilerError.InvalidSlice, r.Location);
+
                 cw.GetMember(unit.GetMemberId("slice"));
                 cw.FunPrep(2);
                 

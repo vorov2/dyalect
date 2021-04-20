@@ -48,7 +48,7 @@
 
         PatternNotSupported = 222,
 
-        RangeIndexNotSupported = 223,
+        SliceNotSupported = 223,
 
         NamedArgumentMultipleTimes = 224,
 
@@ -76,7 +76,7 @@
 
         InvalidDirective = 236,
         
-        // = 237,
+        InvalidSlice = 237,
 
         InvalidRethrow = 238
     }
