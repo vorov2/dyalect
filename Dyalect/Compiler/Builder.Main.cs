@@ -323,7 +323,12 @@ namespace Dyalect.Compiler
                 cw.PushNil();
 
             cw.FunArgIx(1);
-            cw.Push(1);
+
+            if (range.Step is not null)
+                Build(range.Step, hints.Append(Push), ctx);
+            else
+                cw.Push(1);
+            
             cw.FunArgIx(2);
             cw.Push(range.Exclusive);
             cw.FunArgIx(3);

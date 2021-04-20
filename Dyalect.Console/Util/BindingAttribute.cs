@@ -2,7 +2,7 @@
 
 namespace Dyalect.Util
 {
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, Inherited = false)]
     public sealed class BindingAttribute : Attribute
     {
         public BindingAttribute(params string[] names) => Names = names;

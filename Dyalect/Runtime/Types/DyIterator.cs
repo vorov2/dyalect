@@ -12,7 +12,7 @@ namespace Dyalect.Runtime.Types
     {
         internal sealed class IterationException : Exception { }
 
-        internal sealed class MultiPartEnumerator : IEnumerator<DyObject>
+        private sealed class MultiPartEnumerator : IEnumerator<DyObject>
         {
             private readonly DyObject[] iterators;
             private int nextIterator = 0;
@@ -85,8 +85,8 @@ namespace Dyalect.Runtime.Types
         public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Statics.EmptyParameters, DyType.Iterator, -1) =>
             this.enumerator = enumerator;
 
-        internal void SetEnumerable(IEnumerable<DyObject> enumerable) =>
-            (this.enumerable, enumerator) = (enumerable, enumerable.GetEnumerator());
+        internal void SetEnumerable(IEnumerable<DyObject> enu) =>
+            (enumerable, enumerator) = (enu, enu.GetEnumerator());
 
         internal static DyFunction CreateIterator(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals)
         {

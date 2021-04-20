@@ -455,6 +455,8 @@ namespace Dyalect.Library.Json
 
         public bool SkipNulls { get; set; } = true;
 
+        public bool IsSuccess => errors is null || errors.Count == 0;
+
         public IEqualityComparer<string> DictionaryComparer { get; set; }
     }
 }

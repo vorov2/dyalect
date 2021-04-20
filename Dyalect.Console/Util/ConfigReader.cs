@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Dyalect.Library.Json;
 
 namespace Dyalect.Util
 {
@@ -19,19 +21,17 @@ namespace Dyalect.Util
                 var json = new JsonParser(File.ReadAllText(path));
                 var dict = json.Parse() as IDictionary<string, object>;
 
-                if (!json.Success)
+                if (!json.IsSuccess)
                 {
                     Printer.PrintErrors(json.Errors);
                     return null;
                 }
 
-                if (dict == null)
-                {
-                    Printer.Error("Invalid configuration file format.");
-                    return null;
-                }
-
-                return dict;
+                if (dict is not null)
+                    return dict;
+                
+                Printer.Error("Invalid configuration file format.");
+                return null;
             }
             catch (Exception ex)
             {

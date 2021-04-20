@@ -740,8 +740,15 @@ PRODUCTIONS
         }.
 
     Range<out DNode node> =
-        (. node = null; DNode cnode = null; bool exclu = false; .)
+        (. node = null; DNode snode = null; DNode cnode = null; bool exclu = false; .)
         (
+            (
+                "^" SimpleUnary<out snode>
+                ( ".." | "..<" (. exclu = true; .) )
+                (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
+                [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+            )
+            |
             (
                 ( ".." | "..<" (. exclu = true; .) )
                 (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
@@ -749,10 +756,10 @@ PRODUCTIONS
             )
             |
             (
-                Or<out node>
+                Or<out node> [ "^" SimpleUnary<out snode> ]
                 [
                     ( ".." | "..<" (. exclu = true; .) )
-                    (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
+                    (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
                     [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
                 ]
             )
