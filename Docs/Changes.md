@@ -1,3 +1,6 @@
+# 0.19.1
+  * Fix: _Inconsistent type errors_ ([Issue #398](https://github.com/vorov2/dyalect/issues398)).
+
 # 0.19.0
   * Add: _Tuples and ranges_ ([Issue #408](https://github.com/vorov2/dyalect/issues408)).
   * Add: _Iterator should support `slice`_ ([Issue #409](https://github.com/vorov2/dyalect/issues409)).

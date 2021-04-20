@@ -5,25 +5,14 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DTypeDeclaration : DNode
     {
-        public DTypeDeclaration(Location loc) : base(NodeType.Type, loc)
-        {
-
-        }
+        public DTypeDeclaration(Location loc) : base(NodeType.Type, loc) { }
 
         public string Name { get; set; }
 
-        public bool HasConstructors => _constructors != null && _constructors.Count > 0;
+        public bool HasConstructors => constructors is not null && constructors.Count > 0;
 
-        private List<DFunctionDeclaration> _constructors;
-        public List<DFunctionDeclaration> Constructors
-        {
-            get
-            {
-                if (_constructors == null)
-                    _constructors = new List<DFunctionDeclaration>();
-                return _constructors;
-            }
-        }
+        private List<DFunctionDeclaration> constructors;
+        public List<DFunctionDeclaration> Constructors => constructors ??= new();
 
         internal override void ToString(StringBuilder sb)
         {
@@ -35,7 +24,7 @@ namespace Dyalect.Parser.Model
                 sb.Append(" = ");
                 var fst = true;
 
-                foreach (var c in _constructors)
+                foreach (var c in constructors)
                 {
                     if (!fst)
                         sb.Append(" | ");

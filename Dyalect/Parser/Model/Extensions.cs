@@ -19,44 +19,40 @@ namespace Dyalect.Parser.Model
             }
         }
 
-        public static string ToSymbol(this BinaryOperator op)
-        {
-            switch (op)
+        public static string ToSymbol(this BinaryOperator op) =>
+            op switch
             {
-                case BinaryOperator.Add:        return "+";
-                case BinaryOperator.And:        return "&&";
-                case BinaryOperator.Div:        return "/";
-                case BinaryOperator.Eq:         return "==";
-                case BinaryOperator.Gt:         return ">";
-                case BinaryOperator.GtEq:       return ">=";
-                case BinaryOperator.Lt:         return "<";
-                case BinaryOperator.LtEq:       return "<=";
-                case BinaryOperator.Mul:        return "*";
-                case BinaryOperator.NotEq:      return "!=";
-                case BinaryOperator.Or:         return "||";
-                case BinaryOperator.Rem:        return "%";
-                case BinaryOperator.Sub:        return "-";
-                case BinaryOperator.BitwiseAnd: return "&";
-                case BinaryOperator.BitwiseOr:  return "|";
-                case BinaryOperator.Xor:        return "^";
-                case BinaryOperator.ShiftLeft:  return "<<<";
-                case BinaryOperator.ShiftRight: return ">>>";
-                case BinaryOperator.Coalesce:   return "??";
-                case BinaryOperator.Is:         return "is";
-                default: return "";
-            }
-        }
+                BinaryOperator.Add => "+",
+                BinaryOperator.And => "&&",
+                BinaryOperator.Div => "/",
+                BinaryOperator.Eq => "==",
+                BinaryOperator.Gt => ">",
+                BinaryOperator.GtEq => ">=",
+                BinaryOperator.Lt => "<",
+                BinaryOperator.LtEq => "<=",
+                BinaryOperator.Mul => "*",
+                BinaryOperator.NotEq => "!=",
+                BinaryOperator.Or => "||",
+                BinaryOperator.Rem => "%",
+                BinaryOperator.Sub => "-",
+                BinaryOperator.BitwiseAnd => "&",
+                BinaryOperator.BitwiseOr => "|",
+                BinaryOperator.Xor => "^",
+                BinaryOperator.ShiftLeft => "<<<",
+                BinaryOperator.ShiftRight => ">>>",
+                BinaryOperator.Coalesce => "??",
+                BinaryOperator.Is => "is",
+                _ => "",
+            };
 
-        public static string ToSymbol(this UnaryOperator op)
-        {
-            switch (op)
+        public static string ToSymbol(this UnaryOperator op) =>
+            op switch
             {
-                case UnaryOperator.Neg:         return "-";
-                case UnaryOperator.Not:         return "!";
-                case UnaryOperator.BitwiseNot:  return "~";
-                case UnaryOperator.Plus:        return "+";
-                default: return "";
-            }
-        }
+                UnaryOperator.Neg => "-",
+                UnaryOperator.Not => "!",
+                UnaryOperator.BitwiseNot => "~",
+                UnaryOperator.Plus => "+",
+                _ => "",
+            };
     }
 }

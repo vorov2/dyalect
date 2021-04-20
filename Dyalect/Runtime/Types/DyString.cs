@@ -100,6 +100,10 @@ namespace Dyalect.Runtime.Types
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var str1 = left.TypeId == DyType.String || left.TypeId == DyType.Char ? left.GetString() : left.ToString(ctx).Value;
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
             var str2 = right.TypeId == DyType.String || right.TypeId == DyType.Char ? right.GetString() : right.ToString(ctx).Value;
             return new DyString(str1 + str2);
         }
@@ -108,32 +112,28 @@ namespace Dyalect.Runtime.Types
         {
             if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString() == right.GetString() ? DyBool.True : DyBool.False;
-            else
-                return base.EqOp(left, right, ctx);
+            return base.EqOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString() != right.GetString() ? DyBool.True : DyBool.False;
-            else
-                return base.NeqOp(left, right, ctx);
+            return base.NeqOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
-            else
-                return base.GtOp(left, right, ctx);
+            return ctx.InvalidType(right);
         }
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
-            else
-                return base.LtOp(left, right, ctx);
+            return ctx.InvalidType(right);
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)

@@ -5,10 +5,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DParameter : DNode
     {
-        public DParameter(Location loc) : base(NodeType.Parameter, loc)
-        {
-
-        }
+        public DParameter(Location loc) : base(NodeType.Parameter, loc) { }
 
         public string Name { get; set; }
 
@@ -22,7 +19,7 @@ namespace Dyalect.Parser.Model
         {
             sb.Append(Name);
 
-            if (DefaultValue != null)
+            if (DefaultValue is not null)
             {
                 sb.Append(" = ");
                 DefaultValue.ToString(sb);

@@ -5,11 +5,7 @@ namespace Dyalect.Parser.Model
 {
     public abstract class DNode
     {
-        protected DNode(NodeType type, Location loc)
-        {
-            NodeType = type;
-            Location = loc;
-        }
+        protected DNode(NodeType type, Location loc) => (NodeType, Location) = (type, loc);
 
         public NodeType NodeType { get; }
 

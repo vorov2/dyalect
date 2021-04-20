@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DFor : DNode
     {
-        public DFor(Location loc) : base(NodeType.For, loc)
-        {
-
-        }
+        public DFor(Location loc) : base(NodeType.For, loc) { }
 
         public DPattern Pattern { get; set; }
 
@@ -24,7 +21,7 @@ namespace Dyalect.Parser.Model
             sb.Append(" in ");
             Target.ToString(sb);
 
-            if (Guard != null)
+            if (Guard is not null)
             {
                 sb.Append(" when ");
                 Guard.ToString(sb);

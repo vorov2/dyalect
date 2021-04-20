@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DIf : DNode
     {
-        public DIf(Location loc) : base(NodeType.If, loc)
-        {
-
-        }
+        public DIf(Location loc) : base(NodeType.If, loc) { }
 
         public DNode Condition { get; set; }
 
@@ -21,7 +18,7 @@ namespace Dyalect.Parser.Model
             Condition.ToString(sb);
             True.ToString(sb);
 
-            if (False != null)
+            if (False is not null)
             {
                 sb.Append("else ");
                 False.ToString(sb);

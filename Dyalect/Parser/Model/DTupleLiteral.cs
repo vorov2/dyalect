@@ -5,12 +5,9 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DTupleLiteral : DNode
     {
-        public DTupleLiteral(Location loc) : base(NodeType.Tuple, loc)
-        {
+        public DTupleLiteral(Location loc) : base(NodeType.Tuple, loc) { }
 
-        }
-
-        public List<DNode> Elements { get; } = new List<DNode>();
+        public List<DNode> Elements { get; } = new();
 
         internal protected override int GetElementCount() => Elements.Count;
 

@@ -23,10 +23,7 @@ namespace Dyalect.Runtime.Types
                 this.map[kv.Key] = TypeConverter.ConvertFrom(kv.Value);
         }
 
-        internal DyCustomObject(Dictionary<string, DyObject> map) : base(DyType.Object)
-        {
-            this.map = map;
-        }
+        internal DyCustomObject(Dictionary<string, DyObject> map) : base(DyType.Object) => this.map = map;
 
         public override object ToObject() => map;
 
@@ -76,7 +73,7 @@ namespace Dyalect.Runtime.Types
         {
             if (index.TypeId != DyType.String)
                 return ctx.IndexInvalidType(index);
-            
+
             return self.GetItem(index.GetString(), ctx);
         }
 

@@ -6,10 +6,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DFieldDeclaration : DNode
     {
-        public DFieldDeclaration(Location loc) : base(NodeType.Field, loc)
-        {
-
-        }
+        public DFieldDeclaration(Location loc) : base(NodeType.Field, loc) { }
 
         public bool IsPrivate => Name?.Length > 0 && Name[0] == '_';
 
@@ -17,9 +14,6 @@ namespace Dyalect.Parser.Model
 
         protected internal override string GetName() => Name;
 
-        internal override void ToString(StringBuilder sb)
-        {
-            sb.Append(Name);
-        }
+        internal override void ToString(StringBuilder sb) => sb.Append(Name);
     }
 }

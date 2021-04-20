@@ -76,7 +76,7 @@ namespace Dyalect.Runtime.Types
             else if (right.TypeId == DyType.String)
                 return right.GetString().Length == 1 && left.GetChar() == right.GetString()[0] ? DyBool.True : DyBool.False;
             else
-                return base.EqOp(left, right, ctx);
+                return base.EqOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -86,7 +86,7 @@ namespace Dyalect.Runtime.Types
             else if (right.TypeId == DyType.String)
                 return right.GetString().Length != 1 || left.GetChar() != right.GetString()[0] ? DyBool.True : DyBool.False;
             else
-                return base.NeqOp(left, right, ctx);
+                return base.NeqOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -96,7 +96,7 @@ namespace Dyalect.Runtime.Types
             else if (right.TypeId == DyType.String)
                 return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
             else
-                return base.GtOp(left, right, ctx);
+                return ctx.InvalidType(right);
         }
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -106,7 +106,7 @@ namespace Dyalect.Runtime.Types
             else if (right.TypeId == DyType.String)
                 return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
             else
-                return base.LtOp(left, right, ctx);
+                return ctx.InvalidType(right);
         }
         #endregion
 

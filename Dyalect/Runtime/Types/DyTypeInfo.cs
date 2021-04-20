@@ -61,12 +61,8 @@ namespace Dyalect.Runtime.Types
         #region Binary Operations
         //x + y
         private DyFunction add;
-        protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (right.TypeId == DyType.String && TypeCode != DyType.String)
-                return ctx.RuntimeContext.Types[DyType.String].Add(ctx, left, right);
-            return ctx.OperationNotSupported(Builtins.Add, left);
-        }
+        protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            ctx.OperationNotSupported(Builtins.Add, left);
         public DyObject Add(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (add != null)

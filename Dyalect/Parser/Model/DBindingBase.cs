@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public abstract class DBindingBase : DNode
     {
-        protected DBindingBase(NodeType type, Location loc) : base(type, loc)
-        {
-
-        }
+        protected DBindingBase(NodeType type, Location loc) : base(type, loc) { }
 
         public DPattern Pattern { get; internal set; }
 

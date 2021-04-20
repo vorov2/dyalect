@@ -13,11 +13,8 @@ namespace Dyalect.Runtime.Types
         internal Par[] Parameters;
         internal int VarArgIndex;
 
-        protected DyFunction(int typeId, Par[] pars, int varArgIndex) : base(typeId)
-        {
-            Parameters = pars;
-            VarArgIndex = varArgIndex;
-        }
+        protected DyFunction(int typeId, Par[] pars, int varArgIndex) : base(typeId) =>
+            (Parameters, VarArgIndex) = (pars, varArgIndex);
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
 

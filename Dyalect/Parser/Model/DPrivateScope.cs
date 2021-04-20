@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DPrivateScope : DNode
     {
-        public DPrivateScope(Location loc) : base(NodeType.PrivateScope, loc)
-        {
-
-        }
+        public DPrivateScope(Location loc) : base(NodeType.PrivateScope, loc) { }
 
         public DBlock Block { get; set; }
 

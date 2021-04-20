@@ -5,10 +5,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DMatchEntry : DNode
     {
-        public DMatchEntry(Location loc) : base(NodeType.MatchEntry, loc)
-        {
-
-        }
+        public DMatchEntry(Location loc) : base(NodeType.MatchEntry, loc) { }
 
         public DPattern Pattern { get; set; }
 
@@ -20,7 +17,7 @@ namespace Dyalect.Parser.Model
         {
             Pattern.ToString(sb);
 
-            if (Guard != null)
+            if (Guard is not null)
             {
                 sb.Append(" when ");
                 Guard.ToString(sb);

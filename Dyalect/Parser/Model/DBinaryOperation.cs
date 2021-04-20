@@ -4,17 +4,10 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DBinaryOperation : DNode
     {
-        public DBinaryOperation(Location loc) : base(NodeType.Binary, loc)
-        {
+        public DBinaryOperation(Location loc) : base(NodeType.Binary, loc) { }
 
-        }
-
-        public DBinaryOperation(DNode left, DNode right, BinaryOperator op, Location loc) : this(loc)
-        {
-            Left = left;
-            Right = right;
-            Operator = op;
-        }
+        public DBinaryOperation(DNode left, DNode right, BinaryOperator op, Location loc) : this(loc) =>
+            (Left, Right, Operator) = (left, right, op);
 
         public DNode Left { get; set; }
 
