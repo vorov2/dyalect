@@ -152,7 +152,7 @@ namespace Dyalect.Util
                         Unexpected(pos, ",");
                     else
                     {
-                        if (val != null || !SkipNulls)
+                        if (val is not null || !SkipNulls)
                             obj.Add(val);
 
                         pos = ParseLiteral(pos + 1, out val);
@@ -265,7 +265,7 @@ namespace Dyalect.Util
                 var c = buffer[pos];
                 var ws = IsSep(c);
 
-                if (c == ']' || c == '}' || c == ',' || ws)
+                if (c is ']' or '}' or ',' || ws)
                 {
                     var str = new string(buffer, start, pos - start);
 
@@ -468,10 +468,7 @@ namespace Dyalect.Util
         }
 
         private List<Error> _errors;
-        public IEnumerable<Error> Errors
-        {
-            get => _errors ?? Enumerable.Empty<Error>();
-        }
+        public IEnumerable<Error> Errors => _errors ?? Enumerable.Empty<Error>();
 
         public bool Success => _errors == null;
 
