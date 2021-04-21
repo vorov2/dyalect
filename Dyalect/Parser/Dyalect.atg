@@ -1127,7 +1127,7 @@ PRODUCTIONS
         (. node = null; .)
         (
               SimpleLiteral<out node>
-            | IF (IsIterator()) Iterator<out node>
+            //| IF (IsIterator()) Iterator<out node>
             | Block<out node>
         ).
 
@@ -1146,12 +1146,13 @@ PRODUCTIONS
             | Group<out node>
             | Base<out node>
             | Array<out node>
+            | Iterator<out node>
         ).
 
     Iterator<out DNode node> =
         (. node = null; .)
         (
-            "{"
+            "\\{"
                 (.
                     var it = new DIteratorLiteral(t);
                     it.YieldBlock = new DYieldBlock(t);
