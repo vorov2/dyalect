@@ -183,4 +183,7 @@
   <data name="Undefined" xml:space="preserve">
     <value>Undefined parser error.</value>
   </data>
+  <data name="Deprecated" xml:space="preserve">
+    <value>Deprecated syntax: {0}.</value>
+  </data>
 </root>

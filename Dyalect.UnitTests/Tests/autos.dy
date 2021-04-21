@@ -1,5 +1,5 @@
 ﻿type Box(key)
-const boxCollector = []
+let boxCollector = []
 func Box.dispose() {
     boxCollector.add(this:key)
 }
@@ -167,7 +167,7 @@ func autosExceptions2() {
         auto old = Box("x")
         test1()
     }
-    const msg = try {
+    let msg = try {
         run()
     } catch e {
         e

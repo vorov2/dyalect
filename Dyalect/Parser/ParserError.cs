@@ -46,6 +46,8 @@
 
         InvalidImport = 21,
 
-        InvalidApplicationArguments = 22
+        InvalidApplicationArguments = 22,
+        
+        Deprecated = 23
     }
 }

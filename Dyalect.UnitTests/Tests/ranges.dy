@@ -51,10 +51,10 @@ func rangeTest6() {
 }
 
 func stringRange1() {
-    const str = "hello,world!"
-    const new1 = str[0..4]
+    let str = "hello,world!"
+    let new1 = str[0..4]
     assert("hello", new1)
-    const new2 = str[6..10]
+    let new2 = str[6..10]
     assert("world", new2)
 }
 

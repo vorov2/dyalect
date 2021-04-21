@@ -1,6 +1,6 @@
 ﻿import libtest
 
-const PI = 3.14
+let PI = 3.14
 
 func sayHello() {
     "Hello, \(userName("Jon"))"

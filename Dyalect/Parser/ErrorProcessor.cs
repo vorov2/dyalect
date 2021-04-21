@@ -53,10 +53,12 @@ namespace Dyalect.Parser
                 ,{ "verbatimStringToken", "multiline string literal" }
                 ,{ "charToken", "char literal" }
                 ,{ "implicitToken", "implicit" }
+                ,{ "privateToken", "private" }
                 ,{ "inToken", "in" }
                 ,{ "autoToken", "auto" }
                 ,{ "varToken", "var" }
-                ,{ "constToken", "const" }
+                ,{ "autoToken", "auto" }
+                ,{ "letToken", "let" }
                 ,{ "funcToken", "func" }
                 ,{ "returnToken", "return" }
                 ,{ "continueToken", "continue" }
@@ -85,15 +87,15 @@ namespace Dyalect.Parser
                 ,{ "eq_mul", "*=" }
                 ,{ "eq_div", "/=" }
                 ,{ "eq_rem", "%=" }
-                ,{ "eq_and", "&=" }
-                ,{ "eq_or", "|=" }
+                ,{ "eq_and", "&&&=" }
+                ,{ "eq_or", "|||=" }
                 ,{ "eq_xor", "^=" }
                 ,{ "eq_lsh", "<<<=" }
                 ,{ "eq_rsh", ">>>=" }
                 ,{ "minus", "-" }
                 ,{ "plus", "+" }
                 ,{ "not", "!" }
-                ,{ "bitnot", "~" }
+                ,{ "bitnot", "~~~" }
                 ,{ "coalesce", "??" }
             };
 

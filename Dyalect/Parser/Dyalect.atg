@@ -37,7 +37,7 @@ TOKENS
 
     autoToken           = "auto".
     varToken            = "var".
-    constToken          = "const".
+    letToken            = "let".
     funcToken           = "func".
     returnToken         = "return".
     privateToken        = "private".
@@ -312,8 +312,8 @@ PRODUCTIONS
         (. node = null; .)
         (
             (
-                ( "var" | "const" )
-                (. var bin = new DBinding(t) { Constant = t.val == "const" }; .)
+                ( "var" | "let" | "const" (. Deprecated("const"); .) )
+                (. var bin = new DBinding(t) { Constant = t.val == "let" }; .)
                 OrPattern<out var pat> (. bin.Pattern = pat; .)
                 [
                     "=" Expr<out node>

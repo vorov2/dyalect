@@ -39,6 +39,13 @@ namespace Dyalect.Parser
             AddError(new BuildMessage(str, BuildMessageType.Error, (int)error, loc.Line, loc.Column, this.scanner.Buffer.FileName));
         }
 
+        private void Deprecated(string exp)
+        {
+            var detail = string.Format(ParserErrors.Deprecated, exp);
+            AddError(new BuildMessage(detail, BuildMessageType.Error, (int)ParserError.Deprecated,
+                t.line, t.col, this.scanner.Buffer.FileName));
+        }
+
         private void AddError(string message, int line, int col)
         {
             ErrorProcessor.ProcessError(message, out var detail, out var code);

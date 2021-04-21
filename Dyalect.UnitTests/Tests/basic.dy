@@ -59,13 +59,13 @@ func mathTest13() {
 }
 
 func logicalTest1() {
-    const x = 144
+    let x = 144
     var res = x / 12 > 100 || x / 6 == 24
     assert(true, res)
 }
 
 func logicalTest2() {
-    const x = 144
+    let x = 144
     var res = x / 12 > 100 && x / 6 != 24
     assert(false, res)
 }
@@ -80,8 +80,8 @@ func comparisonTest2() {
 }
 
 func comparisonTest3() {
-    const x = 12
-    const y = 9
+    let x = 12
+    let y = 9
     assert(false, !(x >= 12 && y <= 10 || x < -12))
 }
 
@@ -141,23 +141,23 @@ func toStringTest3() {
 
 func toStringTest4() {
     func foo(args..., quotes=12) {}
-    const pat = "foo(args..., quotes = 12)";
+    let pat = "foo(args..., quotes = 12)";
     assert(pat, foo.toString())
 }
 
 func baseTest1() {
-    const x = 2
+    let x = 2
     func inner() {
-        const x = 4
+        let x = 4
         base.x
     }
     assert(2, inner())
 }
 
 func baseTest2() {
-    const x = 2
+    let x = 2
     func inner() {
-        const x = 4
+        let x = 4
         if x == 4 {
             var x = 8
             base.x
@@ -227,7 +227,7 @@ func compositionTest1() {
     func fmt(res) {
         "result= \(res)"
     }
-    const fun = Function.compose(sum, fmt)
+    let fun = Function.compose(sum, fmt)
     var res = fun(13, 14)
     assert(res, "result= 27")
 }
@@ -239,7 +239,7 @@ func compositionTest2() {
     func fmt(res) {
         "result= \(res)"
     }
-    const fun = sum.compose(with= fmt)
+    let fun = sum.compose(with= fmt)
     var res = fun(13, 14)
     assert(res, "result= 27")
 }

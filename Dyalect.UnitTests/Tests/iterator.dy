@@ -103,7 +103,7 @@ func iteratorTest4() {
         }
         str
     }
-    const arr = reverse("Hello")
+    let arr = reverse("Hello")
     var res = makeString(arr)
     assert("olleH", res)
 }
@@ -123,7 +123,7 @@ func iteratorTest5() {
         }
         arr
     }
-    const arr = toArray( filter("hello", x => x == 'l') )
+    let arr = toArray( filter("hello", x => x == 'l') )
     var res = arr[0] + arr[1]
     assert("ll", res)
 }

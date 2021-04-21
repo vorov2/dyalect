@@ -188,7 +188,7 @@ func functionTest14() {
 }
 
 func functionTest15() {
-    const f = x => x * x
+    let f = x => x * x
     assert("<func>", f:name)
 }
 
@@ -291,7 +291,7 @@ func methodTest3() {
 
 func closureTest() {
     var xs = []
-    const num = 10
+    let num = 10
     for n in 0..(num-1) {
         var elem = x => () => x * x
         xs.add(elem(n))

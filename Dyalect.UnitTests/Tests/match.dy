@@ -283,12 +283,12 @@ func varMatchTest3() {
 }
 
 func ctorMatchTest1() {
-    const Array(x, y, z) = [1, 2, 3]
+    let Array(x, y, z) = [1, 2, 3]
     assert(6, x + y + z)
 }
 
 func ctorMatchTest2() {
-    const Tuple(x, y, z) = (1, 2, 3)
+    let Tuple(x, y, z) = (1, 2, 3)
     assert(6, x + y + z)
 }
 
@@ -300,7 +300,7 @@ func ctorMatchTest3() {
 }
 
 func ctorMatchTest4() {
-    const String(x, y, z) = "abc"
+    let String(x, y, z) = "abc"
     assert(['a','b','c'], [x,y,z])
 }
 
