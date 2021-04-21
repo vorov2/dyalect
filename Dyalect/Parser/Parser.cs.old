@@ -1181,8 +1181,10 @@ namespace Dyalect.Parser
 		node = null; 
 		SimpleUnary(out node);
 		while (la.kind == 47) {
+			var app = new DApplication(node, t); 
 			Get();
 			SimpleUnary(out node);
+			app.Arguments.Add(node); node = app; 
 		}
 	}
 
