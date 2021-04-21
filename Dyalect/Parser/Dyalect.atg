@@ -743,24 +743,24 @@ PRODUCTIONS
         (. node = null; DNode snode = null; DNode cnode = null; bool exclu = false; .)
         (
             (
-                "^" SimpleUnary<out snode>
+                "^" SimpleFunctionApplication<out snode>
                 ( ".." | "..<" (. exclu = true; .) )
                 (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+                [ SimpleFunctionApplication<out cnode> (. range.To = cnode; .) ]
             )
             |
             (
                 ( ".." | "..<" (. exclu = true; .) )
                 (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
-                [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+                [ SimpleFunctionApplication<out cnode> (. range.To = cnode; .) ]
             )
             |
             (
-                Or<out node> [ "^" SimpleUnary<out snode> ]
+                Or<out node> [ "^" SimpleFunctionApplication<out snode> ]
                 [
                     ( ".." | "..<" (. exclu = true; .) )
                     (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                    [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+                    [ SimpleFunctionApplication<out cnode> (. range.To = cnode; .) ]
                 ]
             )
         ).
@@ -876,7 +876,7 @@ PRODUCTIONS
         }.
 
     Mul<out DNode node> =
-        Unary<out node>
+        FunctionApplication<out node>
         {
             (.
                 var op = default(BinaryOperator);
@@ -888,9 +888,31 @@ PRODUCTIONS
                 | "%" (. ot = t; op = BinaryOperator.Rem; .)
             )
             (
-                Unary<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
+                FunctionApplication<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
             )
         }.
+
+    FunctionApplication<out DNode node> =
+        (. node = null; .)
+        (
+            Unary<out node>
+            {
+                (. var app = new DApplication(node, t); .)
+                "!" Unary<out node>
+                (. app.Arguments.Add(node); node = app; .)
+            }
+        ).
+
+    SimpleFunctionApplication<out DNode node> =
+        (. node = null; .)
+        (
+            SimpleUnary<out node>
+            {
+                (. var app = new DApplication(node, t); .)
+                "!" SimpleUnary<out node>
+                (. app.Arguments.Add(node); node = app; .)
+            }
+        ).
 
     Unary<out DNode node> =
         (.

@@ -1,5 +1,8 @@
+# 0.20.0
+  * Add: _Special syntax for application of a function to a single argument_ ([Issue #420](https://github.com/vorov2/dyalect/issues/420)).
+
 # 0.19.1
-  * Fix: _Inconsistent type errors_ ([Issue #398](https://github.com/vorov2/dyalect/issues398)).
+  * Fix: _Inconsistent type errors_ ([Issue #398](https://github.com/vorov2/dyalect/issues/398)).
 
 # 0.19.0
   * Add: _Tuples and ranges_ ([Issue #408](https://github.com/vorov2/dyalect/issues408)).
