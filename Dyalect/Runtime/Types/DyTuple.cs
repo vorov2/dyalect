@@ -1,7 +1,6 @@
 ﻿using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -28,14 +27,15 @@ namespace Dyalect.Runtime.Types
             return dict;
         }
 
-        internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
-            else if (index.TypeId == DyType.String || index.TypeId == DyType.Char)
+            
+            if (index.TypeId == DyType.String || index.TypeId == DyType.Char)
                 return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange(index.GetString());
-            else
-                return ctx.IndexInvalidType(index);
+            
+            return ctx.IndexInvalidType(index);
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
@@ -130,8 +130,8 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Tuple;
 
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            new DyTuple(((DyCollection)left).Concat(ctx, right));
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) => 
+            new DyTuple(((DyCollection) left).Concat(ctx, right));
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
@@ -295,7 +295,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
-            if (index.TypeId != DyType.Integer)
+            if (index.TypeId is not DyType.Integer)
                 return ctx.IndexInvalidType(index);
 
             var tuple = (DyTuple)self;

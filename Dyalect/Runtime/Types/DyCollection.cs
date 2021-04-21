@@ -193,13 +193,13 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyCollection)self;
 
-            IEnumerable<DyObject> iterate()
+            IEnumerable<DyObject> Iterate()
             {
                 for (var i = 0; i < arr.Count; i++)
                     yield return DyInteger.Get(i);
             }
 
-            return new DyIterator(iterate());
+            return new DyIterator(Iterate());
         }
 
         protected override DyFunction GetMember(string name, ExecutionContext ctx) =>

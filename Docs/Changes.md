@@ -5,20 +5,20 @@
   * Fix: _Inconsistent type errors_ ([Issue #398](https://github.com/vorov2/dyalect/issues/398)).
 
 # 0.19.0
-  * Add: _Tuples and ranges_ ([Issue #408](https://github.com/vorov2/dyalect/issues408)).
-  * Add: _Iterator should support `slice`_ ([Issue #409](https://github.com/vorov2/dyalect/issues409)).
-  * Add: _Iterators should support indexer_ ([Issue #410](https://github.com/vorov2/dyalect/issues410)).
-  * Add: _Ranges with negative indices and parser_ ([Issue #412](https://github.com/vorov2/dyalect/issues412)).
-  * Add: _Enhance slicing operator_ ([Issue #371](https://github.com/vorov2/dyalect/issues371)).
+  * Add: _Tuples and ranges_ ([Issue #408](https://github.com/vorov2/dyalect/issues/408)).
+  * Add: _Iterator should support `slice`_ ([Issue #409](https://github.com/vorov2/dyalect/issues/409)).
+  * Add: _Iterators should support indexer_ ([Issue #410](https://github.com/vorov2/dyalect/issues/410)).
+  * Add: _Ranges with negative indices and parser_ ([Issue #412](https://github.com/vorov2/dyalect/issues/412)).
+  * Add: _Enhance slicing operator_ ([Issue #371](https://github.com/vorov2/dyalect/issues/371)).
   * Add: _Rethink current ranges implementation_ ([Issue #350](https://github.com/vorov2/dyalect/issues/350), [docs](https://github.com/vorov2/dyalect/wiki/Ranges)).
-  * Add: _Extend syntax for ranges_ ([Issue #348](https://github.com/vorov2/dyalect/issues347)).
+  * Add: _Extend syntax for ranges_ ([Issue #348](https://github.com/vorov2/dyalect/issues/347)).
   * Change: _Dyalect Console updated and now uses JSON parser implementation from Dyalect standard library._
-  * Fix: _Entering ^Z crushes Dyalect console_ ([Issue #416](https://github.com/vorov2/dyalect/issues416)). 
+  * Fix: _Entering ^Z crushes Dyalect console_ ([Issue #416](https://github.com/vorov2/dyalect/issues/416)). 
 
 # 0.18.0
   * Change: _Refactoring and redesign of internal compiler infrastructure and foreign module infrastructure._
-  * Fixed: _Adding an integer to a char causes a crush_ ([Issue #397](https://github.com/vorov2/dyalect/issues397)).
-  * Fixed: _Inconsistent behavior of nested iterators_ ([Issue #401](https://github.com/vorov2/dyalect/issues401)).
+  * Fixed: _Adding an integer to a char causes a crush_ ([Issue #397](https://github.com/vorov2/dyalect/issues/397)).
+  * Fixed: _Inconsistent behavior of nested iterators_ ([Issue #401](https://github.com/vorov2/dyalect/issues/401)).
   * Add: _Add an ability to create types with constructors in foreign modules_ ([Issue #395](https://github.com/vorov2/dyalect/issues/395)).
   * Add: _Callable objects_ ([Issue #389](https://github.com/vorov2/dyalect/issues/389), [docs](https://github.com/vorov2/dyalect/wiki/Functions#callable)).
   * Add: _String should support slicing operator_ ([Issue #396](https://github.com/vorov2/dyalect/issues/396)).

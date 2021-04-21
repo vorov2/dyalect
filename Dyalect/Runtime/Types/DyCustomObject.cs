@@ -9,18 +9,18 @@ namespace Dyalect.Runtime.Types
 
         public DyCustomObject(params ValueTuple<string, object>[] fields) : base(DyType.Object)
         {
-            map = new Dictionary<string, DyObject>();
+            map = new();
 
-            foreach (var fld in fields)
-                map[fld.Item1] = TypeConverter.ConvertFrom(fld.Item2);
+            foreach (var (fld, val) in fields)
+                map[fld] = TypeConverter.ConvertFrom(val);
         }
 
-        public DyCustomObject(IDictionary<string, object> map) : base(DyType.Object)
+        public DyCustomObject(IDictionary<string, object> dict) : base(DyType.Object)
         {
-            this.map = new Dictionary<string, DyObject>();
+            map = new();
 
-            foreach (var kv in map)
-                this.map[kv.Key] = TypeConverter.ConvertFrom(kv.Value);
+            foreach (var (fld, val) in dict)
+                this.map[fld] = TypeConverter.ConvertFrom(val);
         }
 
         internal DyCustomObject(Dictionary<string, DyObject> map) : base(DyType.Object) => this.map = map;

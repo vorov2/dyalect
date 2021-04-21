@@ -217,3 +217,24 @@ func stringSplice2() {
     assert("the quick",  str[..8])
     assert(str,  str[..])
 }
+
+func concatTest1() {
+    var str = "str"
+    assert("1str", 1 + str)
+    assert("2.1str", 2.1 + str)
+    assert("truestr", true + str)
+    assert("nilstr", nil + str)
+    func sum(x,y) { x + y }
+    assert("sum(x, y)str", sum + str)
+}
+
+type __Dummy()
+func concatTest2() {
+    func __Dummy.toString() { "!dummy!" }
+    var x = __Dummy()
+    var str = "str" + x
+    assert("str!dummy!", str)
+    str = x + "str"
+    assert("!dummy!str", str)
+    __Dummy.__deleteMember("toString")
+}

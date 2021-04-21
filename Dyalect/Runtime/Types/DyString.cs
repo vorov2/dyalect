@@ -40,7 +40,7 @@ namespace Dyalect.Runtime.Types
         public override bool Equals(DyObject obj) =>
             obj is DyString s ? Value == s.Value : base.Equals(obj);
 
-        internal protected override string GetString() => Value;
+        protected internal override string GetString() => Value;
 
         public static explicit operator string(DyString str) => str.Value;
 

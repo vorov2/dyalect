@@ -12,27 +12,27 @@ namespace Dyalect.Runtime.Types
         public static readonly DyChar Empty = new('\0');
         public static readonly DyChar Max = new(char.MaxValue);
         public static readonly DyChar Min = new(char.MinValue);
-        internal readonly char Value;
+        private readonly char value;
 
-        public DyChar(char value) : base(DyType.Char) => Value = value;
+        public DyChar(char value) : base(DyType.Char) => this.value = value;
 
-        public override object ToObject() => Value;
+        public override object ToObject() => GetChar();
 
-        protected internal override char GetChar() => Value;
+        protected internal override char GetChar() => value;
 
-        protected internal override string GetString() => Value.ToString();
+        protected internal override string GetString() => value.ToString();
 
-        public override string ToString() => Value.ToString();
+        public override string ToString() => GetString();
 
         public override DyObject Clone() => this;
 
         internal override void Serialize(BinaryWriter writer)
         {
             writer.Write(TypeId);
-            writer.Write(Value);
+            writer.Write(value);
         }
 
-        public override int GetHashCode() => Value.GetHashCode();
+        public override int GetHashCode() => value.GetHashCode();
     }
 
     internal sealed class DyCharTypeInfo : DyTypeInfo
@@ -46,67 +46,80 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Char;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)StringUtil.Escape(arg.GetString(), "'");
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+            (DyString)StringUtil.Escape(arg.GetString(), "'");
 
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == DyType.Integer)
+            if (right.TypeId is DyType.Integer)
                 return new DyChar((char)(left.GetChar() + right.GetInteger()));
-            else if (right.TypeId == DyType.Char || right.TypeId == DyType.String)
+
+            if (right.TypeId is DyType.Char)
                 return new DyString(left.GetString() + right.GetString());
-            else
-                return ctx.InvalidType(right);
+
+            return base.AddOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == DyType.Integer)
+            if (right.TypeId is DyType.Integer)
                 return new DyChar((char)(left.GetChar() - right.GetInteger()));
-            else if (right.TypeId == DyType.Char)
+            
+            if (right.TypeId is DyType.Char)
                 return DyInteger.Get(left.GetChar() - right.GetChar());
-            else
-                return ctx.InvalidType(right);
+            
+            return ctx.InvalidType(right);
         }
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId)
                 return left.GetChar() == right.GetChar() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == DyType.String)
-                return right.GetString().Length == 1 && left.GetChar() == right.GetString()[0] ? DyBool.True : DyBool.False;
-            else
-                return base.EqOp(left, right, ctx); //Important! Should redirect to base
+            
+            if (right.TypeId is DyType.String)
+            {
+                var str = right.GetString();
+                return str.Length == 1 && left.GetChar() == str[0] ? DyBool.True : DyBool.False;
+            }
+            
+            return base.EqOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeId == right.TypeId || right.TypeId == DyType.String)
+            if (left.TypeId == right.TypeId)
                 return left.GetChar() != right.GetChar() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == DyType.String)
-                return right.GetString().Length != 1 || left.GetChar() != right.GetString()[0] ? DyBool.True : DyBool.False;
-            else
-                return base.NeqOp(left, right, ctx); //Important! Should redirect to base
+            
+            if (right.TypeId is DyType.String)
+            {
+                var str = right.GetString();
+                return str.Length != 1 || left.GetChar() != str[0] ? DyBool.True : DyBool.False;
+            }
+            
+            return base.NeqOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId)
                 return left.GetChar().CompareTo(right.GetChar()) > 0 ? DyBool.True : DyBool.False;
-            else if (right.TypeId == DyType.String)
+            
+            if (right.TypeId == DyType.String)
                 return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
-            else
-                return ctx.InvalidType(right);
+            
+            return ctx.InvalidType(right);
         }
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId)
                 return left.GetChar().CompareTo(right.GetChar()) < 0 ? DyBool.True : DyBool.False;
-            else if (right.TypeId == DyType.String)
+            
+            if (right.TypeId == DyType.String)
                 return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
-            else
-                return ctx.InvalidType(right);
+            
+            return ctx.InvalidType(right);
         }
         #endregion
 
@@ -128,19 +141,19 @@ namespace Dyalect.Runtime.Types
 
         private DyObject CreateChar(ExecutionContext ctx, DyObject obj)
         {
-            if (obj.TypeId == DyType.Char)
+            if (obj.TypeId is DyType.Char)
                 return obj;
 
-            if (obj.TypeId == DyType.String)
+            if (obj.TypeId is DyType.String)
             {
                 var str = obj.ToString();
                 return str.Length > 0 ? new DyChar(str[0]) : DyChar.Empty;
             }
 
-            if (obj.TypeId == DyType.Integer)
+            if (obj.TypeId is DyType.Integer)
                 return new DyChar((char)obj.GetInteger());
 
-            if (obj.TypeId == DyType.Float)
+            if (obj.TypeId is DyType.Float)
                 return new DyChar((char)obj.GetFloat());
 
             return ctx.InvalidType(obj);
