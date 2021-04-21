@@ -32,7 +32,7 @@ namespace Dyalect.Runtime.Types
 
         private DyBool() : base(DyType.Bool) { }
 
-        public override abstract object ToObject();
+        public abstract override object ToObject();
 
         public override DyObject Clone() => this;
 

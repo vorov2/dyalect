@@ -51,42 +51,46 @@ namespace Dyalect.Runtime.Types
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == DyType.Integer)
+            if (right.TypeId is DyType.Integer)
                 return new DyChar((char)(left.GetChar() + right.GetInteger()));
-            else if (right.TypeId == DyType.Char || right.TypeId == DyType.String)
+
+            if (right.TypeId is DyType.Char)
                 return new DyString(left.GetString() + right.GetString());
-            else
-                return ctx.InvalidType(right);
+
+            return base.AddOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == DyType.Integer)
+            if (right.TypeId is DyType.Integer)
                 return new DyChar((char)(left.GetChar() - right.GetInteger()));
-            else if (right.TypeId == DyType.Char)
+            
+            if (right.TypeId is DyType.Char)
                 return DyInteger.Get(left.GetChar() - right.GetChar());
-            else
-                return ctx.InvalidType(right);
+            
+            return ctx.InvalidType(right);
         }
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId)
                 return left.GetChar() == right.GetChar() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == DyType.String)
+            
+            if (right.TypeId is DyType.String)
                 return right.GetString().Length == 1 && left.GetChar() == right.GetString()[0] ? DyBool.True : DyBool.False;
-            else
-                return base.EqOp(left, right, ctx); //Important! Should redirect to base
+            
+            return base.EqOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId || right.TypeId == DyType.String)
                 return left.GetChar() != right.GetChar() ? DyBool.True : DyBool.False;
-            else if (right.TypeId == DyType.String)
+            
+            if (right.TypeId == DyType.String)
                 return right.GetString().Length != 1 || left.GetChar() != right.GetString()[0] ? DyBool.True : DyBool.False;
-            else
-                return base.NeqOp(left, right, ctx); //Important! Should redirect to base
+            
+            return base.NeqOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dyalect.Parser.Model;
 
 namespace Dyalect.Runtime.Types
 {
@@ -130,8 +131,8 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Tuple;
 
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            new DyTuple(((DyCollection)left).Concat(ctx, right));
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) => 
+            new DyTuple(((DyCollection) left).Concat(ctx, right));
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
