@@ -4,7 +4,7 @@
 }
 
 func rangeTest2() {
-    var xs = (5..1).by(-1)
+    var xs = (5^-1..1)
     assert([5,4,3,2,1], xs.toArray())
 }
 
@@ -39,10 +39,10 @@ func rangeTest6() {
         }
         return arr
     }
-    var seq = (12..).by(5)
+    var seq = (12^5..)
     var xs = take(seq, 10)
     assert([12, 17, 22, 27, 32, 37, 42, 47, 52, 57], xs)
-    seq = (1.0..).by(0.1)
+    seq = (1.0^0.1..)
     xs = take(seq, 5)
     assert([1.0, 1.1, 1.2000000000000002, 1.3000000000000003, 1.4000000000000004], xs)
     seq = ('a'..)

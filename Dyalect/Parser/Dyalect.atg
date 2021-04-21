@@ -54,6 +54,7 @@ TOKENS
     dotToken            = ".".
     commaToken          = ",".
     semicolonToken      = ";".
+    colonToken          = ":".
     equalToken          = "=".
     parenLeftToken      = "(".
     parenRightToken     = ")".
@@ -509,7 +510,7 @@ PRODUCTIONS
         (
             identToken
             (. var la = new DLabelPattern(t) { Label = t.val }; .)
-            "=" Pattern<out var pat>
+            ":" Pattern<out var pat>
             (. la.Pattern = pat; node = la; .)
         ).
 
@@ -978,7 +979,7 @@ PRODUCTIONS
                 )
                 |
                 (
-                    ":" (. var ot = t; .)
+                    "\\" (. var ot = t; .)
                     identToken
                     (.
                         node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
@@ -1074,7 +1075,7 @@ PRODUCTIONS
                 )
                 |
                 (
-                    ":" (. var ot = t; .)
+                    "\\" (. var ot = t; .)
                     identToken
                     (.
                         node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
@@ -1168,7 +1169,7 @@ PRODUCTIONS
         (. node = null; var name = ""; .)
         (
             ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
-            "=" (. var ot = t; .)
+            ":" (. var ot = t; .)
             (
                   IF (IsFunction()) FunctionExpr<out node>
                 | Is<out node>

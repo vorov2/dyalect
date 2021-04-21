@@ -1,5 +1,5 @@
 ﻿func arrayLiteralTest() {
-    var arr = [[1,2], [3,4,(5,6,a=[7,8])]]
+    var arr = [[1,2], [3,4,(5,6,a: [7,8])]]
     var res = arr[0][0] + arr[1][2]["a"][1]
     assert(9, res)
 }
@@ -147,9 +147,9 @@ func arrayTest22() {
 }
 
 func arrayTest23() { //Bug #226
-    var xs = [(s = 3.0, e = 4.0), (s = 1.0, e = 2.0)]
-    xs.sort((x,y) => x:s - y:s)
-    assert(1.0, xs[0]:s)
+    var xs = [(s: 3.0, e: 4.0), (s: 1.0, e: 2.0)]
+    xs.sort((x,y) => x\s - y\s)
+    assert(1.0, xs[0]\s)
 }
 
 func arrayTest24() { //Issue #250
@@ -217,7 +217,7 @@ func arrayCopyTest1() {
 
 func arrayCopyTest2() {
     var xs = [1, 2, 3, 4, 5, 6]
-    var ys = Array.copy(from = xs, fromIndex = 1, count = 3)
+    var ys = Array.copy(from: xs, fromIndex: 1, count: 3)
     assert([2,3,4], ys)
 }
 
@@ -230,7 +230,7 @@ func arrayCopyTest3() {
 
 func arrayCopyTest4() {
     var xs = [1, 2, 3, 4, 5, 6]
-    var ys = Array.copy(xs, count = 3)
+    var ys = Array.copy(xs, count: 3)
     assert([1,2,3], ys)
 }
 

@@ -89,7 +89,7 @@ func functionTest2() {
     func test(x, y, z) {
         (x, y, z)
     }
-    var res = test(z = 12, x = 3, y = 1)
+    var res = test(z: 12, x: 3, y: 1)
     assert((3, 1, 12), res)
 }
 
@@ -97,7 +97,7 @@ func functionTest3() {
     func test(x, x1 = 144, y, z, z1 = 33) {
         (x, x1, y, z, z1)
     }
-    var res = test(z = 12, x = 3, y = 1)
+    var res = test(z: 12, x: 3, y: 1)
     assert((3, 144, 1, 12, 33), res)
 }
 
@@ -106,8 +106,8 @@ func functionTest4() {
         [args, separator, terminator]
     }
     assert( [(1,2), ",", "\n"], test(1,2) )
-    assert( [(1,2), ",", "\r"], test(1,2, terminator = "\r") )
-    assert( [(1,2), ";", "\r"], test(1,2, terminator = "\r", separator = ";") )
+    assert( [(1,2), ",", "\r"], test(1,2, terminator: "\r") )
+    assert( [(1,2), ";", "\r"], test(1,2, terminator: "\r", separator: ";") )
 }
 
 func functionTest5() {
@@ -139,7 +139,7 @@ func functionTest8() {
     func variadic(args...) {
         res = args.len()
     }
-    variadic(args = (1,2,3))
+    variadic(args: (1,2,3))
     assert(3, res)
 }
 
@@ -165,8 +165,8 @@ func functionTest11() {
 
 func functionTest12() {
     func foo() {
-        assert("foo", current():name)
-        assert("bar", caller():name)
+        assert("foo", current()\name)
+        assert("bar", caller()\name)
     }
     func bar() {
         foo()
@@ -175,7 +175,7 @@ func functionTest12() {
 }
 
 func functionTest13() {
-    assert(functionTest13:name, current():name)
+    assert(functionTest13\name, current()\name)
     assert(nil, caller())
 }
 
@@ -184,17 +184,17 @@ func functionTest14() {
     func snd() { thy() }
     func fst() { snd() }
     var s = fst()
-    assert("snd", s:name)
+    assert("snd", s\name)
 }
 
 func functionTest15() {
     let f = x => x * x
-    assert("<func>", f:name)
+    assert("<func>", f\name)
 }
 
 func functionTest16() {
     func foo() {
-        return "\(current():name) is called by \(caller():name)"
+        return "\(current()\name) is called by \(caller()\name)"
     }
     func bar() {
         foo()
@@ -222,8 +222,8 @@ func variadicTest1() {
         str += "]"
         str
     }
-    var x = takeItAll(12, 33.4, "oops", true, [1], (x = 0.33, y = 1))
-    assert("x=33.4;y=33.4;other=[oopstrue,[1],(x = 0.33, y = 1)]", x)
+    var x = takeItAll(12, 33.4, "oops", true, [1], (x: 0.33, y: 1))
+    assert("x=33.4;y=33.4;other=[oopstrue,[1],(x: 0.33, y: 1)]", x)
 }
 
 func variadicTest2() {
@@ -292,7 +292,7 @@ func methodTest3() {
 func closureTest() {
     var xs = []
     let num = 10
-    for n in 0..(num-1) {
+    for n in 0..<num {
         var elem = x => () => x * x
         xs.add(elem(n))
     }

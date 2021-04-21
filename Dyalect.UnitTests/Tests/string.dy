@@ -14,8 +14,8 @@ func stringTest2() {
     var str = "Hello, world!"
     assert(4, str.indexOf("o"))
     assert(8, str.lastIndexOf("o"))
-    assert(8, str.indexOf("o", fromIndex = 7))
-    assert(3, str.lastIndexOf("l", fromIndex = 6, count = 4))
+    assert(8, str.indexOf("o", fromIndex: 7))
+    assert(3, str.lastIndexOf("l", fromIndex: 6, count: 4))
 }
 
 func stringTest3() {  
@@ -93,7 +93,7 @@ func stringTest15() {
 }
 
 func stringTest16() {
-    var str = String.join("foo", 1, 3, 44, true, separator = ";")
+    var str = String.join("foo", 1, 3, 44, true, separator: ";")
     assert("foo;1;3;44;true", str)
 }
 
@@ -109,9 +109,9 @@ func stringTest17() {
 func stringTest18() {
     var foo = "12"
     assert("   12", foo.padLeft(5))
-    assert("00012", foo.padLeft(with = '0', to = 5))
+    assert("00012", foo.padLeft(with: '0', to: 5))
     assert("12   ", foo.padRight(5))
-    assert("12000", foo.padRight(with = '0', to = 5))
+    assert("12000", foo.padRight(with: '0', to: 5))
 }
 
 func stringTest19() {
@@ -125,8 +125,8 @@ func stringTest20() {
 
 func stringTest21() {
     assert("for gem gemetric", "for rem remetric".replace("rem", "gem"))
-    assert("foobar", "foobar".replace(value = "FOO", with = "ZOO"))
-    assert("ZOObar", "foobar".replace(value = "FOO", with = "ZOO", ignoreCase = true))
+    assert("foobar", "foobar".replace(value: "FOO", with: "ZOO"))
+    assert("ZOObar", "foobar".replace(value: "FOO", with: "ZOO", ignoreCase: true))
 }
 
 func stringTest22() {
@@ -143,14 +143,14 @@ func stringTest23() { //Bug #207
 }
 
 func stringTest24() { //Bug #219
-    var str = String(values = {'a','b','c'})
+    var str = String(values: {'a','b','c'})
     assert("abc", str)
 }
 
 func stringTest25() {
     var str = String.repeat('*', 5)
     assert("*****", str)
-    str = String.repeat(value = '!', count = 3)
+    str = String.repeat(value: '!', count: 3)
     assert("!!!", str)
 }
 

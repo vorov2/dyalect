@@ -136,6 +136,7 @@ namespace Dyalect.Parser
             }
         }
 
+        //not used!
         private bool IsMap()
         {
             if (la.kind != _squareLeftToken)
@@ -158,7 +159,7 @@ namespace Dyalect.Parser
                 return false;
 
             scanner.ResetPeek();
-            return scanner.Peek().kind == _equalToken;
+            return scanner.Peek().kind == _colonToken;
         }
 
         private bool IsLabelPattern()
@@ -167,7 +168,7 @@ namespace Dyalect.Parser
                 return false;
 
             scanner.ResetPeek();
-            return scanner.Peek().kind == _equalToken;
+            return scanner.Peek().kind == _colonToken;
         }
 
         private bool IsIterator()
@@ -210,7 +211,7 @@ namespace Dyalect.Parser
             {
                 Token xt;
                 if (((xt = scanner.Peek()).kind == _identToken || xt.kind == _stringToken)
-                    && scanner.Peek().kind == _equalToken)
+                    && scanner.Peek().kind == _colonToken)
                     return true;
                 scanner.ResetPeek();
             }

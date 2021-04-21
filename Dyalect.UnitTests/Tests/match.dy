@@ -98,9 +98,9 @@ func matchTest7() {
 }
 
 func matchTest8() {
-    var res = match (x = 12, y = 24) {
-        (x = 13, y = y) => y,
-        (x = x, y = 24) => x
+    var res = match (x: 12, y: 24) {
+        (x: 13, y: y) => y,
+        (x: x, y: 24) => x
     }
     assert(12, res)
 }
@@ -149,9 +149,9 @@ func matchTest13() {
 }
 
 func matchTest14() {
-    var res = match (x = 12,) {
-        (x = 13,) => 13,
-        (x = x,) => x
+    var res = match (x: 12,) {
+        (x: 13,) => 13,
+        (x: x,) => x
     }
     assert(12, res)
 }

@@ -159,7 +159,7 @@ namespace Dyalect.Runtime.Types
                 if (k != null)
                 {
                     sb.Append(k);
-                    sb.Append(" = ");
+                    sb.Append(": ");
                 }
 
                 sb.Append(val.GetString());

@@ -50,7 +50,7 @@ func absTest() {
 }
 
 func rndTest() {
-    let x = rnd(max = 10, min = 3)
+    let x = rnd(max: 10, min: 3)
     assert(true, x <= 10 && x >= 3)
 }
 
@@ -65,6 +65,6 @@ func parseTest() {
 
 func evalTest() {
     let src = "x + y * z"
-    var res = eval(src, (x = 2, y = 12, z = 3) )
+    var res = eval(src, (x: 2, y: 12, z: 3) )
     assert(38, res)
 }

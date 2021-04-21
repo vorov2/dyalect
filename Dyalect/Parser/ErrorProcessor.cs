@@ -57,7 +57,6 @@ namespace Dyalect.Parser
                 ,{ "inToken", "in" }
                 ,{ "autoToken", "auto" }
                 ,{ "varToken", "var" }
-                ,{ "autoToken", "auto" }
                 ,{ "letToken", "let" }
                 ,{ "funcToken", "func" }
                 ,{ "returnToken", "return" }
