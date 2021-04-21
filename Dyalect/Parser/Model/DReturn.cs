@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DReturn : DNode
     {
-        public DReturn(Location loc) : base(NodeType.Return, loc)
-        {
-
-        }
+        public DReturn(Location loc) : base(NodeType.Return, loc) { }
 
         public DNode Expression { get; set; }
 
@@ -15,7 +12,7 @@ namespace Dyalect.Parser.Model
         {
             sb.Append("return");
 
-            if (Expression != null)
+            if (Expression is not null)
             {
                 sb.Append(' ');
                 Expression.ToString(sb);

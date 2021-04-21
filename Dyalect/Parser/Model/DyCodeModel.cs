@@ -1,15 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace Dyalect.Parser.Model
+﻿namespace Dyalect.Parser.Model
 {
     public sealed class DyCodeModel
     {
-        public DyCodeModel(DBlock root, DImport[] imports, string fileName)
-        {
-            Root = root;
-            Imports = imports;
-            FileName = fileName;
-        }
+        public DyCodeModel(DBlock root, DImport[] imports, string fileName) =>
+            (Root, Imports, FileName) = (root, imports, fileName);
 
         public DImport[] Imports { get; }
 

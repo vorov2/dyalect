@@ -152,12 +152,14 @@ namespace Dyalect.Runtime.Types
         {
             if (val.TypeId == DyType.Array)
                 return ((DyArray)val).Values;
-            else if (val.TypeId == DyType.Tuple)
+            
+            if (val.TypeId == DyType.Tuple)
                 return ((DyTuple)val).Values;
-            else if (val.TypeId == DyType.String)
+            
+            if (val.TypeId == DyType.String)
                 return (DyString)val;
-            else
-                return InternalRun(ctx, val);
+            
+            return InternalRun(ctx, val);
         }
 
         private static IEnumerable<DyObject> InternalRun(ExecutionContext ctx, DyObject val)
@@ -215,7 +217,8 @@ namespace Dyalect.Runtime.Types
                 }
             }
 
-            var up = ctx.RuntimeContext.Types[Step.TypeId].Gt(ctx, Step, DyInteger.Zero) == DyBool.True;
+            var up = ReferenceEquals(ctx.RuntimeContext.Types[Step.TypeId].Gt(ctx, Step, DyInteger.Zero),
+                DyBool.True);
 
             if (ctx.HasErrors)
                 yield break;
@@ -225,7 +228,7 @@ namespace Dyalect.Runtime.Types
                 up && exclusive ? types.Lt : up ? types.Lte
                 : exclusive ? types.Gt : types.Gte;
 
-            while (predicate(ctx, elem, to) == DyBool.True)
+            while (ReferenceEquals(predicate(ctx, elem, to), DyBool.True))
             {
                 yield return elem;
                 elem = ctx.RuntimeContext.Types[elem.TypeId].Add(ctx, elem, Step);
@@ -297,7 +300,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId != DyType.Integer)
+            if (index.TypeId is not DyType.Integer)
                 return ctx.IndexInvalidType(index);
 
             var i = (int)index.GetInteger();
@@ -306,8 +309,8 @@ namespace Dyalect.Runtime.Types
             {
                 if (i < 0)
                     return DyIterator.Run(ctx, self).Reverse().ElementAt(-i);
-                else
-                    return DyIterator.Run(ctx, self).ElementAt(i);
+                
+                return DyIterator.Run(ctx, self).ElementAt(i);
             }
             catch (IndexOutOfRangeException)
             {
@@ -324,23 +327,19 @@ namespace Dyalect.Runtime.Types
                 return null;
 
             var seq = DyIterator.Run(ctx, self);
-
-            if (ctx.HasErrors)
-                return null;
-
-            return seq.ToList();
+            return ctx.HasErrors ? null : seq.ToList();
         }
 
         private DyObject ToArray(ExecutionContext ctx, DyObject self)
         {
             var res = ConvertToArray(ctx, self);
-            return res == null ? DyNil.Instance : new DyArray(res.ToArray());
+            return res is null ? DyNil.Instance : new DyArray(res.ToArray());
         }
 
         private DyObject ToTuple(ExecutionContext ctx, DyObject self)
         {
             var res = ConvertToArray(ctx, self);
-            return res == null ? DyNil.Instance : new DyTuple(res.ToArray());
+            return res is null ? DyNil.Instance : new DyTuple(res.ToArray());
         }
 
         private static DyObject GetCount(ExecutionContext ctx, DyObject self)
@@ -370,7 +369,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Take(ExecutionContext ctx, DyObject self, DyObject count)
         {
-            if (count.TypeId != DyType.Integer)
+            if (count.TypeId is not DyType.Integer)
                 return ctx.InvalidType(self);
 
             var i = (int)count.GetInteger();
@@ -383,15 +382,11 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Skip(ExecutionContext ctx, DyObject self, DyObject count)
         {
-            if (count.TypeId != DyType.Integer)
+            if (count.TypeId is not DyType.Integer)
                 return ctx.InvalidType(self);
 
             var i = (int)count.GetInteger();
-
-            if (i < 0)
-                return ctx.InvalidValue(count);
-
-            return new DyIterator(DyIterator.Run(ctx, self).Skip(i));
+            return i < 0 ? ctx.InvalidValue(count) : new DyIterator(DyIterator.Run(ctx, self).Skip(i));
         }
 
         private DyObject First(ExecutionContext ctx, DyObject self) =>

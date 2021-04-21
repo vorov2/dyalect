@@ -54,7 +54,7 @@ namespace Dyalect.Runtime
 
         ValueOutOfRange = 622,
 
-        OpenRangeNotSupported = 623,
+        OpenRangeNotSupported = 623
     }
 
     public class DyError : DyObject

@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DBreak : DNode
     {
-        public DBreak(Location loc) : base(NodeType.Break, loc)
-        {
-
-        }
+        public DBreak(Location loc) : base(NodeType.Break, loc) { }
 
         public DNode Expression { get; set; }
 
@@ -15,7 +12,7 @@ namespace Dyalect.Parser.Model
         {
             sb.Append("break");
 
-            if (Expression != null)
+            if (Expression is not null)
             {
                 sb.Append(' ');
                 Expression.ToString(sb);

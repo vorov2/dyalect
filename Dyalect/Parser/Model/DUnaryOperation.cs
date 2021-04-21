@@ -4,16 +4,10 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DUnaryOperation : DNode
     {
-        public DUnaryOperation(Location loc) : base(NodeType.Unary, loc)
-        {
+        public DUnaryOperation(Location loc) : base(NodeType.Unary, loc) { }
 
-        }
-
-        public DUnaryOperation(DNode node, UnaryOperator op, Location loc) : this(loc)
-        {
-            Node = node;
-            Operator = op;
-        }
+        public DUnaryOperation(DNode node, UnaryOperator op, Location loc) : this(loc) =>
+            (Node, Operator) = (node, op);
 
         public DNode Node { get; set; }
 

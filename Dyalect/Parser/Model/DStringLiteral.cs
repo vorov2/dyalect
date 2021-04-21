@@ -5,10 +5,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DStringLiteral : DNode
     {
-        public DStringLiteral(Location loc) : base(NodeType.String, loc)
-        {
-
-        }
+        public DStringLiteral(Location loc) : base(NodeType.String, loc) { }
 
         public string Value { get; set; }
 
@@ -16,7 +13,7 @@ namespace Dyalect.Parser.Model
 
         internal override void ToString(StringBuilder sb)
         {
-            if (Chunks != null)
+            if (Chunks is not null)
             {
                 var newSb = new StringBuilder();
 
@@ -50,10 +47,7 @@ namespace Dyalect.Parser.Model
     {
         private readonly string value;
 
-        internal PlainStringChunk(string value)
-        {
-            this.value = value;
-        }
+        internal PlainStringChunk(string value) => this.value = value;
 
         public override bool IsCode => false;
 
@@ -64,10 +58,7 @@ namespace Dyalect.Parser.Model
     {
         private readonly string code;
 
-        internal CodeChunk(string code)
-        {
-            this.code = code;
-        }
+        internal CodeChunk(string code) => this.code = code;
 
         public override bool IsCode => true;
 

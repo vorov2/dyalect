@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DBinding : DBindingBase
     {
-        public DBinding(Location loc) : base(NodeType.Binding, loc)
-        {
-
-        }
+        public DBinding(Location loc) : base(NodeType.Binding, loc) { }
 
         public bool AutoClose { get; set; }
 
@@ -23,7 +20,7 @@ namespace Dyalect.Parser.Model
             sb.Append(Constant ? "const " : "var ");
             Pattern.ToString(sb);
 
-            if (Init != null)
+            if (Init is not null)
             {
                 sb.Append(" = ");
                 Init.ToString(sb);

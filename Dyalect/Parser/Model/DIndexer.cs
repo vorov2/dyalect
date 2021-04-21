@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DIndexer : DNode
     {
-        public DIndexer(Location loc) : base(NodeType.Index, loc)
-        {
-
-        }
+        public DIndexer(Location loc) : base(NodeType.Index, loc) { }
 
         public DNode Target { get; set; }
 

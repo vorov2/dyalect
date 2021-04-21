@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DRebinding : DBindingBase
     {
-        public DRebinding(Location loc) : base(NodeType.Rebinding, loc)
-        {
-
-        }
+        public DRebinding(Location loc) : base(NodeType.Rebinding, loc) { }
 
         internal override void ToString(StringBuilder sb)
         {

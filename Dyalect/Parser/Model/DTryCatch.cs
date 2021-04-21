@@ -6,10 +6,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DTryCatch : DNode
     {
-        public DTryCatch(Location loc) : base(NodeType.TryCatch, loc)
-        {
-
-        }
+        public DTryCatch(Location loc) : base(NodeType.TryCatch, loc) { }
 
         public DNode Expression { get; set; }
 
@@ -23,7 +20,7 @@ namespace Dyalect.Parser.Model
             Expression.ToString(sb);
             sb.Append("catch ");
 
-            if (BindVariable != null)
+            if (BindVariable is not null)
             {
                 BindVariable.ToString(sb);
                 sb.Append(' ');

@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DAssignment : DNode
     {
-        public DAssignment(Location loc) : base(NodeType.Assignment, loc)
-        {
-
-        }
+        public DAssignment(Location loc) : base(NodeType.Assignment, loc) { }
 
         public BinaryOperator? AutoAssign { get; set; }
 
@@ -19,7 +16,7 @@ namespace Dyalect.Parser.Model
         {
             Target.ToString(sb);
 
-            if (AutoAssign != null)
+            if (AutoAssign is not null)
             {
                 sb.Append(' ');
                 sb.Append(AutoAssign.Value.ToSymbol());

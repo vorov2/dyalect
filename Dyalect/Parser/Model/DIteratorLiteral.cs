@@ -5,16 +5,13 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DIteratorLiteral : DNode
     {
-        public DIteratorLiteral(Location loc) : base(NodeType.Iterator, loc)
-        {
-
-        }
+        public DIteratorLiteral(Location loc) : base(NodeType.Iterator, loc) { }
 
         public DYieldBlock YieldBlock { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {
-            sb.Append("..{");
+            sb.Append('{');
             YieldBlock.ToString(sb);
             sb.Append('}');
         }
@@ -22,16 +19,10 @@ namespace Dyalect.Parser.Model
 
     public sealed class DYieldBlock : DNode
     {
-        public DYieldBlock(Location loc) : base(NodeType.YieldBlock, loc)
-        {
+        public DYieldBlock(Location loc) : base(NodeType.YieldBlock, loc) { }
 
-        }
+        public List<DNode> Elements { get; } = new();
 
-        public List<DNode> Elements { get; } = new List<DNode>();
-
-        internal override void ToString(StringBuilder sb)
-        {
-            Elements.ToString(sb);
-        }
+        internal override void ToString(StringBuilder sb) => Elements.ToString(sb);
     }
 }

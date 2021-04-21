@@ -5,12 +5,9 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DArrayLiteral : DNode
     {
-        public DArrayLiteral(Location loc) : base(NodeType.Array, loc)
-        {
+        public DArrayLiteral(Location loc) : base(NodeType.Array, loc) { }
 
-        }
-
-        public List<DNode> Elements { get; } = new List<DNode>();
+        public List<DNode> Elements { get; } = new();
 
         internal protected override int GetElementCount() => 
             Elements.Count == 1 && Elements[0].NodeType == NodeType.Range ? -1 : Elements.Count;

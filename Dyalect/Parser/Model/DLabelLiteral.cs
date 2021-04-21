@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DLabelLiteral : DNode
     {
-        public DLabelLiteral(Location loc) : base(NodeType.Label, loc)
-        {
-
-        }
+        public DLabelLiteral(Location loc) : base(NodeType.Label, loc) { }
 
         public string Label { get; set; }
 

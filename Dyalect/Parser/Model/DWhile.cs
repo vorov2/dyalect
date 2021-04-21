@@ -4,10 +4,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DWhile : DNode
     {
-        public DWhile(Location loc) : base(NodeType.While, loc)
-        {
-
-        }
+        public DWhile(Location loc) : base(NodeType.While, loc) { }
 
         public DNode Condition { get; set; }
 

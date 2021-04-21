@@ -5,14 +5,11 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DDirective : DNode
     {
-        public DDirective(Location loc) : base(NodeType.Directive, loc)
-        {
-
-        }
+        public DDirective(Location loc) : base(NodeType.Directive, loc) { }
 
         public string Key { get; set; }
 
-        public List<object> Attributes { get; } = new List<object>();
+        public List<object> Attributes { get; } = new();
 
         internal override void ToString(StringBuilder sb)
         {

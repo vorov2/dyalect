@@ -5,10 +5,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DFunctionDeclaration : DNode
     {
-        public DFunctionDeclaration(Location loc) : base(NodeType.Function, loc)
-        {
-
-        }
+        public DFunctionDeclaration(Location loc) : base(NodeType.Function, loc) { }
 
         public bool IsMemberFunction => TypeName != null;
 
@@ -22,7 +19,7 @@ namespace Dyalect.Parser.Model
 
         public bool IsIterator { get; set; }
 
-        public List<DParameter> Parameters { get; } = new List<DParameter>();
+        public List<DParameter> Parameters { get; } = new();
 
         public DNode Body { get; set; }
 
@@ -39,7 +36,7 @@ namespace Dyalect.Parser.Model
 
         internal override void ToString(StringBuilder sb)
         {
-            if (Body == null)
+            if (Body is null)
             {
                 sb.Append(Name);
                 sb.Append('(');
@@ -51,27 +48,27 @@ namespace Dyalect.Parser.Model
             if (IsStatic)
                 sb.Append("static ");
 
-            if (Name != null)
+            if (Name is not null)
                 sb.Append("func ");
 
-            if (TypeName != null)
+            if (TypeName is not null)
             {
                 sb.Append(TypeName);
                 sb.Append('.');
             }
 
-            if (Name != null)
+            if (Name is not null)
                 sb.Append(Name);
 
-            if (Name != null || Parameters.Count > 1)
+            if (Name is not null || Parameters.Count > 1)
                 sb.Append('(');
 
             Parameters.ToString(sb);
 
-            if (Name != null || Parameters.Count > 1)
+            if (Name is not null || Parameters.Count > 1)
                 sb.Append(") ");
 
-            if (Name == null)
+            if (Name is null)
                 sb.Append(" => ");
 
             Body.ToString(sb);

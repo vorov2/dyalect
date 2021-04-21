@@ -12,27 +12,23 @@ namespace Dyalect.Runtime.Types
         {
             protected internal override bool GetBool() => true;
 
-            public override object ToObject() => true;
-
             public override string ToString() => "true";
 
-            public override int GetHashCode() => 1;
+            public override int GetHashCode() => true.GetHashCode();
         }
 
         private sealed class FalseBool : DyBool
         {
             protected internal override bool GetBool() => false;
 
-            public override object ToObject() => false;
-
             public override string ToString() => "false";
 
-            public override int GetHashCode() => 0;
+            public override int GetHashCode() => false.GetHashCode();
         }
 
         private DyBool() : base(DyType.Bool) { }
 
-        public override abstract object ToObject();
+        public override object ToObject() => GetBool();
 
         public override DyObject Clone() => this;
 
