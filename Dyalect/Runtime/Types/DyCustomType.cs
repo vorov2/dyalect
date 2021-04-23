@@ -80,13 +80,12 @@ namespace Dyalect.Runtime.Types
         {
             var cust = (DyCustomType)arg;
             var ctorName = ctx.RuntimeContext.Composition.Members[cust.ConstructorId];
-
             if (TypeName == ctorName && ReferenceEquals(cust.Value, DyNil.Instance))
-                return new DyString($"{TypeName}");
+                return new DyString($"{TypeName}()");
             else if (TypeName == ctorName)
                 return new DyString($"{TypeName}({cust.Value.ToString(ctx)})");
             else if (ReferenceEquals(cust.Value, DyNil.Instance))
-                return new DyString($"{TypeName}.{ctorName}");
+                return new DyString($"{TypeName}.{ctorName}()");
             else
                 return new DyString($"{TypeName}.{ctorName}({cust.Value.ToString(ctx)})");
         }

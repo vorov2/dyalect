@@ -667,22 +667,22 @@ namespace Dyalect.Compiler
             var newHints = hints.Remove(Last);
 
             //Check if an application is in fact a built-in operator call
-            if (name != null && sv.IsEmpty() && node.Arguments.Count == 1)
-                if (name == "nameof")
+            if (name != null && sv.IsEmpty())
+                if (name == "nameof" && node.Arguments.Count == 1)
                 {
                     var push = GetExpressionName(node.Arguments[0]);
                     AddLinePragma(node);
                     cw.Push(push);
                     return;
                 }
-                else if (name == "valueof")
+                else if (name == "valueof" && node.Arguments.Count == 1)
                 {
                     Build(node.Arguments[0], newHints.Append(Push), ctx);
                     AddLinePragma(node);
                     cw.Unbox();
                     return;
                 }
-                else if (name == "new")
+                else if (name == "new" && node.Arguments.Count <= 1)
                 {
                     if (ctx.Function?.TypeName == null)
                     {
@@ -702,7 +702,11 @@ namespace Dyalect.Compiler
                     if (td.AutoGenConstructors)
                         AddError(CompilerError.CtorAutoGen, node.Location, td.Name);
 
-                    Build(node.Arguments[0], newHints.Append(Push), ctx);
+                    if (node.Arguments.Count > 0)
+                        Build(node.Arguments[0], newHints.Append(Push), ctx);
+                    else
+                        cw.PushNil();
+                    
                     AddLinePragma(node);
                     cw.Aux(unit.GetMemberId(ctx.Function.Name));
                     cw.NewType(ti.TypeId);
