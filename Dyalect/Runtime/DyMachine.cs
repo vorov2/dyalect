@@ -572,7 +572,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(right.TypeId == ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id);
                         break;
                     case OpCode.CtorCheck:
-                        evalStack.Replace(evalStack.Peek().GetConstructorId(ctx) == op.Data);
+                        evalStack.Replace(evalStack.Peek().GetConstructorId(ctx) == unit.MemberIds[op.Data]);
                         break;
                     case OpCode.Start:
                         {
@@ -586,7 +586,7 @@ namespace Dyalect.Runtime
                         ctx.CatchMarks.Peek().Pop();
                         break;
                     case OpCode.NewType:
-                        evalStack.Replace(new DyCustomType(unit.Types[op.Data].Id, ctx.AUX, evalStack.Peek()));
+                        evalStack.Replace(new DyCustomType(unit.Types[op.Data].Id, ctx.AUX, evalStack.Peek(), unit));
                         break;
                 }
             }

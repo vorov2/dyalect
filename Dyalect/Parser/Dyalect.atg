@@ -979,7 +979,7 @@ PRODUCTIONS
                 )
                 |
                 (
-                    "\\" (. var ot = t; .)
+                    "|" (. var ot = t; .)
                     identToken
                     (.
                         node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
@@ -1075,7 +1075,7 @@ PRODUCTIONS
                 )
                 |
                 (
-                    "\\" (. var ot = t; .)
+                    "|" (. var ot = t; .)
                     identToken
                     (.
                         node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };

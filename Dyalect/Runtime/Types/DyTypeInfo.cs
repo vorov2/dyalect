@@ -607,7 +607,13 @@ namespace Dyalect.Runtime.Types
                 return ctx.OperationNotSupported(Builtins.Iterator, self);
         }
 
-        protected virtual DyFunction GetMember(string name, ExecutionContext ctx) => null;
+        protected virtual DyFunction GetMember(string name, ExecutionContext ctx) =>
+            name switch
+            {
+                "__getConstructorId" => DyForeignFunction.Member(name,
+                    (ctx, _) => DyInteger.Get(GetConstructorId(ctx))),
+                _ => null
+            };
 
         private DyFunction InternalGetStaticMember(string name, ExecutionContext ctx) =>
             name switch

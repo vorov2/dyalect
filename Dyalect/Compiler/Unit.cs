@@ -91,5 +91,17 @@ namespace Dyalect.Compiler
         public List<MemoryLayout> Layouts { get; }
 
         public Dictionary<string, ScopeVar> ExportList { get; }
+
+        internal int GetMemberId(string name)
+        {
+            if (!MemberNames.TryGetValue(name, out var id))
+            {
+                id = MemberIds.Count;
+                MemberIds.Add(-1);
+                MemberNames.Add(name, id);
+            }
+
+            return id;
+        }
     }
 }
