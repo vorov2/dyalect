@@ -205,28 +205,26 @@ namespace Dyalect.Runtime.Types
         internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
             new DyTuple(DyCollection.ConcatValues(ctx, values));
 
-        private DyObject GetKeys(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject GetKeys(ExecutionContext _, DyObject self)
         {
-            var tup = (DyTuple)self;
-
-            IEnumerable<DyObject> iterate()
+            IEnumerable<DyObject> Iterate()
             {
+                var tup = (DyTuple)self;
                 for (var i = 0; i < tup.Count; i++)
                 {
                     var k = tup.GetKey(i);
-
-                    if (k != null)
+                    if (k is not null)
                         yield return new DyString(k);
                 }
             }
 
-            return new DyIterator(iterate());
+            return new DyIterator(Iterate());
         }
 
-        private DyObject GetFirst(ExecutionContext ctx, DyObject self, DyObject[] args) =>
+        private DyObject GetFirst(ExecutionContext ctx, DyObject self) =>
             self.GetItem(0, ctx);
 
-        private DyObject GetSecond(ExecutionContext ctx, DyObject self, DyObject[] args) =>
+        private DyObject GetSecond(ExecutionContext ctx, DyObject self) =>
             self.GetItem(1, ctx);
 
         private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject fun)
@@ -329,9 +327,9 @@ namespace Dyalect.Runtime.Types
                 "remove" => DyForeignFunction.Member(name, Remove, -1, new Par("item")),
                 "removeAt" => DyForeignFunction.Member(name, RemoveAt, -1, new Par("index")),
                 "insert" => DyForeignFunction.Member(name, Insert, -1, new Par("index"), new Par("item")),
-                "keys" => DyForeignFunction.Member(name, GetKeys, -1, Statics.EmptyParameters),
-                "fst" => DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters),
-                "snd" => DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters),
+                "keys" => DyForeignFunction.Member(name, GetKeys),
+                "fst" => DyForeignFunction.Member(name, GetFirst),
+                "snd" => DyForeignFunction.Member(name, GetSecond),
                 "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
                 _ => base.GetMember(name, ctx)
             };
