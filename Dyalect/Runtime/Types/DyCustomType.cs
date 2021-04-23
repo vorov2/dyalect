@@ -6,10 +6,12 @@ namespace Dyalect.Runtime.Types
     {
         internal DyObject Value { get; }
 
+        internal Unit DeclaringUnit { get; }
+
         internal int ConstructorId { get; }
 
-        internal DyCustomType(int typeCode, int ctorId, DyObject value) : base(typeCode) =>
-            (Value, ConstructorId) = (value, ctorId);
+        internal DyCustomType(int typeCode, int ctorId, DyObject value, Unit unit) : base(typeCode) =>
+            (Value, ConstructorId, DeclaringUnit) = (value, ctorId, unit);
 
         public override object ToObject() => Value.ToObject();
 
@@ -38,7 +40,8 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Value.HasItem(name, ctx);
 
-        public override int GetConstructorId(ExecutionContext ctx) => ConstructorId;
+        public override int GetConstructorId(ExecutionContext ctx) =>
+            DeclaringUnit.MemberIds[ConstructorId];
 
         public override int GetHashCode()
         {
