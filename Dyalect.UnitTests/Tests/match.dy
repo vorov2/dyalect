@@ -283,24 +283,26 @@ func varMatchTest3() {
 }
 
 func ctorMatchTest1() {
-    let Array(x, y, z) = [1, 2, 3]
+    let Array? && (x, y, z) = [1, 2, 3]
     assert(6, x + y + z)
+    let Array? && [xx, yy, zz] = [1, 2, 3, 4, 5]
+    assert(6, xx + yy + zz)
 }
 
 func ctorMatchTest2() {
-    let Tuple(x, y, z) = (1, 2, 3)
+    let Tuple? && (x, y, z) = (1, 2, 3)
     assert(6, x + y + z)
 }
 
 func ctorMatchTest3() {
     var res = match 42 {
-        Integer() => true
+        Integer? => true
     }
     assert(true, res)
 }
 
 func ctorMatchTest4() {
-    let String(x, y, z) = "abc"
+    let String? && (x, y, z) = "abc"
     assert(['a','b','c'], [x,y,z])
 }
 

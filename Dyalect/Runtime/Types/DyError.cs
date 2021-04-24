@@ -7,8 +7,6 @@ namespace Dyalect.Runtime.Types
 {
     public class DyError : DyObject
     {
-        private int? constructorId;
-        
         internal DyError(DyErrorCode code, params (string, object)[] dataItems) : base(DyType.Object)
         {
             Code = code;
@@ -69,16 +67,7 @@ namespace Dyalect.Runtime.Types
         protected internal override bool HasItem(string name, ExecutionContext ctx) =>
             name == "code" || name == "detail";
 
-        public override int GetConstructorId(ExecutionContext ctx)
-        {
-            if (constructorId is not null)
-                return constructorId.Value;
-
-            var ctor = Code.ToString();
-            var gid = ctx.RuntimeContext.Composition.GetMemberId(ctor);
-            constructorId = gid;
-            return gid;
-        }
+        public override string GetConstructor(ExecutionContext ctx) => Code.ToString();
     }
 
     internal sealed class DyUserError : DyError

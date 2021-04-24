@@ -86,12 +86,12 @@ namespace Dyalect.Library.Types
             return new DyRegex(TypeCode, (string)arg.ToObject());
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Regex")
                 return DyForeignFunction.Static(name, New, -1, new Par("pattern"));
 
-            return base.GetStaticMember(name, ctx);
+            return base.InitializeStaticMember(name, ctx);
         }
     }
 }

@@ -252,7 +252,7 @@ namespace Dyalect.Compiler
         public void FunArgIx(int index) => Emit(new(OpCode.FunArgIx, index));
         public void FunArgNm(string name) => Emit(new(OpCode.FunArgNm, IndexString(name)));
         public void FunCall(int argCount) => Emit(new(OpCode.FunCall, argCount));
-        public void CtorCheck(int ctorId) => Emit(new(OpCode.CtorCheck, ctorId));
+        public void CtorCheck(string ctor) => Emit(new(OpCode.CtorCheck, IndexString(ctor)));
 
         public void NewTuple(int len) => Emit(new(OpCode.NewTuple, len), -len + 1);
         public void NewFun(int funHandle) => Emit(new(OpCode.NewFun, funHandle));
@@ -263,9 +263,10 @@ namespace Dyalect.Compiler
         public void Brfalse(Label lab) => Emit(OpCode.Brfalse, lab);
         public void Brterm(Label lab) => Emit(OpCode.Brterm, lab);
         public void Briter(Label lab) => Emit(OpCode.Briter, lab);
-        public void GetMember(int nameId) => Emit(new(OpCode.GetMember, nameId));
-        public void HasMember(int nameId) => Emit(new(OpCode.HasMember, nameId));
+        public void GetMember(string name) => Emit(new(OpCode.GetMember, IndexString(name)));
+        public void HasMember(string name) => Emit(new(OpCode.HasMember, IndexString(name)));
         public void RunMod(int code) => Emit(new(OpCode.RunMod, code));
+        public void Aux(string value) => Emit(new(OpCode.Aux, IndexString(value)));
         public void Aux(int data) => Emit(new(OpCode.Aux, data));
         public void Get(int index) => Emit(new(OpCode.GetIx, index));
         public void Set(int index) => Emit(new(OpCode.SetIx, index));

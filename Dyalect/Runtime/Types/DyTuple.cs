@@ -126,7 +126,7 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
-            | SupportedOperations.Add;
+            | SupportedOperations.Add | SupportedOperations.Iter;
 
         public override string TypeName => DyTypeNames.Tuple;
 
@@ -320,7 +320,7 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(arr);
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
@@ -331,7 +331,7 @@ namespace Dyalect.Runtime.Types
                 "fst" => DyForeignFunction.Member(name, GetFirst),
                 "snd" => DyForeignFunction.Member(name, GetSecond),
                 "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
-                _ => base.GetMember(name, ctx)
+                _ => base.InitializeInstanceMember(name, ctx)
             };
 
         private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
@@ -342,7 +342,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
@@ -350,7 +350,7 @@ namespace Dyalect.Runtime.Types
                 "triple" => DyForeignFunction.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
                 "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
                 "Tuple" => DyForeignFunction.Static(name, MakeNew, 0, new Par("values")),
-                _ => base.GetStaticMember(name, ctx)
+                _ => base.InitializeStaticMember(name, ctx)
             };
     }
 }

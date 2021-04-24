@@ -202,12 +202,12 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(Iterate());
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "indices" => DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters),
                 "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
-                _ => base.GetMember(name, ctx)
+                _ => base.InitializeInstanceMember(name, ctx)
             };
     }
 }

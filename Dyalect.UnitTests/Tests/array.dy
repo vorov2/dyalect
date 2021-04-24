@@ -112,7 +112,7 @@ func arrayTest15() {
 
 func arrayTest18() {
     var xs = []
-    xs.addRange({1,2,3,4,5})
+    xs.addRange(<(1,2,3,4,5)>)
     assert([1,2,3,4,5], xs)
 }
 
@@ -135,7 +135,7 @@ func arrayTest21() {
     assert([1,2,3,4,5,6], res)
     res = xs + (5,6)
     assert([1,2,3,5,6], res)
-    res = xs + {11,22}
+    res = xs + <(11,22)>
     assert([1,2,3,11,22], res)
 }
 

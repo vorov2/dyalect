@@ -515,19 +515,28 @@ PRODUCTIONS
         ).
 
     NamePattern<out DPattern node> =
-        (. node = null; string nm2 = null; string nm1 = null; Token ot = null; .)
+        (. node = null; string nm2 = null; string nm1 = null; Token ot = null; bool typeCheck = false; .)
         (
             identToken (. nm1 = t.val; ot = t; .)
             [ "." identToken (. nm2 = null; .) ]
+            [ "?" (. typeCheck = true; .) ]
             (.
-                if (nm2 == null) {
-                    if (t.val == "_")
+                if (typeCheck)
+                    node = new DTypeTestPattern(ot) {
+                        TypeName = nm2 is null ? new Qualident(nm1) : new Qualident(nm2, nm1) 
+                    };
+                else {
+                    if (nm2 is not null) {
+                        //TODO: error here
+                    }
+                    else if (nm1 == "_") {
                         node = new DWildcardPattern(ot);
-                    else
-                        node = new DNamePattern(ot) { Name = nm1 };
-                } else {
-                    var q = new Qualident(nm2, nm1);
-                    node = new DTypeTestPattern(ot) { TypeName = q };
+                    }
+                    else {
+                        node = new DNamePattern(ot) {
+                            Name = nm1
+                        };
+                    }
                 }
             .)
         ).
@@ -979,7 +988,7 @@ PRODUCTIONS
                 )
                 |
                 (
-                    "|" (. var ot = t; .)
+                    "\\" (. var ot = t; .)
                     identToken
                     (.
                         node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
@@ -1127,7 +1136,6 @@ PRODUCTIONS
         (. node = null; .)
         (
               SimpleLiteral<out node>
-            //| IF (IsIterator()) Iterator<out node>
             | Block<out node>
         ).
 
@@ -1152,18 +1160,15 @@ PRODUCTIONS
     Iterator<out DNode node> =
         (. node = null; .)
         (
-            "\\{"
+            "<("
                 (.
                     var it = new DIteratorLiteral(t);
                     it.YieldBlock = new DYieldBlock(t);
                 .)
-                Expr<out node> (. it.YieldBlock.Elements.Add(node); .) ","
-                [
-                    Expr<out node> (. it.YieldBlock.Elements.Add(node); .)
-                    { "," Expr<out node> (. it.YieldBlock.Elements.Add(node); .) }
-                ]
+                Expr<out node> (. it.YieldBlock.Elements.Add(node); .)
+                { "," Expr<out node> (. it.YieldBlock.Elements.Add(node); .) }
                 (. node = it; .)
-            "}"
+            ")>"
         ).
 
     Label<out DNode node> =

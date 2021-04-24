@@ -62,14 +62,14 @@ namespace Dyalect.Library.Types
             return new DyByteArray(ctx.RuntimeContext, DeclaringUnit, arr);
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "ByteArray")
                 return DyForeignFunction.Static(name, New, -1, new Par("values"));
             if (name == "concat")
                 return DyForeignFunction.Static(name, Concat, -1, new Par("fst"), new Par("snd"));
 
-            return base.GetStaticMember(name, ctx);
+            return base.InitializeStaticMember(name, ctx);
         }
     }
 }

@@ -209,7 +209,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx)
+        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx)
         {
             return name switch
             {
@@ -218,7 +218,7 @@ namespace Dyalect.Runtime.Types
                 "tryGet" => DyForeignFunction.Member(name, TryGetItem, -1, new Par("key")),
                 "remove" => DyForeignFunction.Member(name, RemoveItem, -1, new Par("key")),
                 "clear" => DyForeignFunction.Member(name, ClearItems),
-                _ => base.GetMember(name, ctx),
+                _ => base.InitializeInstanceMember(name, ctx),
             };
         }
 
@@ -232,14 +232,14 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(values);
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Map")
                 return DyForeignFunction.Static(name, New, -1, new Par("values", DyNil.Instance));
             else if (name == "fromTuple")
                 return DyForeignFunction.Static(name, New, -1, new Par("values"));
 
-            return base.GetStaticMember(name, ctx);
+            return base.InitializeStaticMember(name, ctx);
         }
     }
 }

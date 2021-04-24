@@ -36,8 +36,7 @@ namespace Dyalect.Compiler
                     if (node.Name == Builtins.Has || (!node.IsStatic && node.Name == Builtins.Type))
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
-                    var nameId = unit.GetMemberId(realName);
-                    cw.Aux(nameId);
+                    cw.Aux(realName);
                     var code = GetTypeHandle(node.TypeName, node.Location);
 
                     if (node.IsStatic)

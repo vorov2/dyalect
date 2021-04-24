@@ -74,8 +74,7 @@ namespace Dyalect.Runtime.Types
 
         internal protected virtual DyObject GetTaggedValue() => null;
 
-        public virtual int GetConstructorId(ExecutionContext ctx) =>
-            ctx.RuntimeContext.Composition.MembersMap.TryGetValue(ctx.RuntimeContext.Types[TypeId].TypeName, out var id) ? id : 0;
+        public virtual string GetConstructor(ExecutionContext ctx) => null;
 
         public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 
@@ -96,16 +95,8 @@ namespace Dyalect.Runtime.Types
     {
         public static bool IsNil(this DyObject self) => ReferenceEquals(self, DyNil.Instance);
 
-        public static DyObject GetIterator(this DyObject self, ExecutionContext ctx)
-        {
-            var nameId = ctx.RuntimeContext.Composition.MembersMap[Builtins.Iterator];
-            var value = ctx.RuntimeContext.Composition.Types[self.TypeId].GetMemberDirect(self, nameId, ctx);
-
-            if (value == null)
-                return ctx.OperationNotSupported(Builtins.Iterator, self);
-
-            return value;
-        }
+        public static DyObject GetIterator(this DyObject self, ExecutionContext ctx) =>
+            ctx.RuntimeContext.Composition.Types[self.TypeId].GetInstanceMember(self, Builtins.Iterator, ctx);
     }
 
     public static class DyObjectExtensions

@@ -334,38 +334,38 @@ namespace Dyalect.Runtime
                     case OpCode.HasMember:
                         right = evalStack.Peek();
                         if (right.TypeId == DyType.TypeInfo)
-                            evalStack.Replace(((DyTypeInfo)right).HasStaticMember(op.Data, unit, ctx));
+                            evalStack.Replace(((DyTypeInfo)right).HasStaticMember(unit.IndexedStrings[op.Data].Value, ctx));
                         else
-                            evalStack.Replace(types[right.TypeId].HasMember(right, op.Data, unit, ctx));
+                            evalStack.Replace(types[right.TypeId].HasInstanceMember(unit.IndexedStrings[op.Data].Value, ctx));
                         break;
                     case OpCode.GetMember:
                         right = evalStack.Peek();
                         if (right.TypeId == DyType.TypeInfo)
-                            evalStack.Replace(((DyTypeInfo)right).GetStaticMember(op.Data, unit, ctx));
+                            evalStack.Replace(((DyTypeInfo)right).GetStaticMember(unit.IndexedStrings[op.Data].Value, ctx));
                         else
-                            evalStack.Replace(types[right.TypeId].GetMember(right, op.Data, unit, ctx));
+                            evalStack.Replace(types[right.TypeId].GetInstanceMember(right, unit.IndexedStrings[op.Data].Value, ctx));
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMemberS:
                         right = evalStack.Pop();
                         types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
-                            .SetStaticMember(ctx.AUX, right, unit, ctx);
+                            .SetStaticMember(unit.IndexedStrings[ctx.AUX].Value, right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMemberST:
                         right = evalStack.Pop();
-                        types[op.Data].SetStaticMember(ctx.AUX, right, unit, ctx);
+                        types[op.Data].SetStaticMember(unit.IndexedStrings[ctx.AUX].Value, right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMember:
                         right = evalStack.Pop();
                         types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
-                            .SetMember(ctx.AUX, right, unit, ctx);
+                            .SetInstanceMember(unit.IndexedStrings[ctx.AUX].Value, right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMemberT:
                         right = evalStack.Pop();
-                        types[op.Data].SetMember(ctx.AUX, right, unit, ctx);
+                        types[op.Data].SetInstanceMember(unit.IndexedStrings[ctx.AUX].Value, right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Get:
@@ -454,10 +454,9 @@ namespace Dyalect.Runtime
                             right = evalStack.Peek();
                             if (right.TypeId != DyType.Function && right.TypeId != DyType.Iterator)
                             {
-                                if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti
-                                    && ctx.RuntimeContext.Composition.MembersMap.TryGetValue(ti.TypeName, out var tid))
+                                if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti)
                                 {
-                                    right = ti.GetStaticMember(tid, unit, ctx);
+                                    right = ti.GetStaticMember(ti.TypeName, ctx);
 
                                     if (ctx.HasErrors)
                                     {
@@ -469,8 +468,7 @@ namespace Dyalect.Runtime
                                     goto case OpCode.FunPrep;
                                 }
                                 
-                                right = types[right.TypeId].GetMember(right, 
-                                    ctx.RuntimeContext.Composition.MembersMap[Builtins.Call], unit, ctx);
+                                right = types[right.TypeId].GetInstanceMember(right, Builtins.Call, ctx);
                                 if (!ctx.HasErrors && right.TypeId != DyType.Function) ctx.InvalidType(right);
                                 if (ctx.HasErrors)
                                 {
@@ -572,7 +570,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(right.TypeId == ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id);
                         break;
                     case OpCode.CtorCheck:
-                        evalStack.Replace(evalStack.Peek().GetConstructorId(ctx) == unit.MemberIds[op.Data]);
+                        evalStack.Replace(evalStack.Peek().GetConstructor(ctx) == unit.IndexedStrings[op.Data].Value);
                         break;
                     case OpCode.Start:
                         {
@@ -586,7 +584,7 @@ namespace Dyalect.Runtime
                         ctx.CatchMarks.Peek().Pop();
                         break;
                     case OpCode.NewType:
-                        evalStack.Replace(new DyCustomType(unit.Types[op.Data].Id, ctx.AUX, evalStack.Peek(), unit));
+                        evalStack.Replace(new DyCustomType(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, evalStack.Peek(), unit));
                         break;
                 }
             }

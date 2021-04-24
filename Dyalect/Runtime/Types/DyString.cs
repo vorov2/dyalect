@@ -92,7 +92,7 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
             | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
-            | SupportedOperations.Get | SupportedOperations.Len;
+            | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
 
         public override string TypeName => DyTypeNames.String;
 
@@ -157,7 +157,6 @@ namespace Dyalect.Runtime.Types
         protected override DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
         {
             var str = (DyString)self;
-            var arr = str.GetValues();
 
             if (fromElem.TypeId != DyType.Integer)
                 return ctx.InvalidType(fromElem);
@@ -464,7 +463,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(str.Remove(fri, c));
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "indexOf" => DyForeignFunction.Member(name, IndexOf, -1, new Par("value"), 
@@ -489,7 +488,7 @@ namespace Dyalect.Runtime.Types
                     new Par("ignoreCase", (DyObject)DyBool.False)),
                 "remove" => DyForeignFunction.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance)),
                 "reverse" => DyForeignFunction.Member(name, Reverse),
-                _ => base.GetMember(name, ctx),
+                _ => base.InitializeInstanceMember(name, ctx),
             };
         #endregion
 
@@ -559,7 +558,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(new string(value.GetChar(), (int)count.GetInteger()));
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "String" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
@@ -567,7 +566,7 @@ namespace Dyalect.Runtime.Types
                 "join" => DyForeignFunction.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(","))),
                 "default" => DyForeignFunction.Static(name, _ => DyString.Empty),
                 "repeat" => DyForeignFunction.Static(name, Repeat, -1, new Par("value"), new Par("count")),
-                _ => base.GetStaticMember(name, ctx),
+                _ => base.InitializeStaticMember(name, ctx),
             };
         #endregion
     }

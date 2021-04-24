@@ -16,8 +16,6 @@ namespace Dyalect.Compiler
             References = new();
             Types = new();
             TypeMap = new();
-            MemberIds = new();
-            MemberNames = new();
             IndexedStrings = new();
             IndexedIntegers = new();
             IndexedFloats = new();
@@ -37,8 +35,6 @@ namespace Dyalect.Compiler
             UnitIds = unit.UnitIds;
             References = unit.References;
             Types = unit.Types;
-            MemberIds = unit.MemberIds;
-            MemberNames = unit.MemberNames;
             IndexedStrings = unit.IndexedStrings;
             IndexedIntegers = unit.IndexedIntegers;
             IndexedFloats = unit.IndexedFloats;
@@ -68,10 +64,6 @@ namespace Dyalect.Compiler
 
         internal Dictionary<string, TypeDescriptor> TypeMap { get; }
 
-        internal List<int> MemberIds { get; }
-
-        internal Dictionary<string, int> MemberNames { get; }
-
         internal List<DyString> IndexedStrings { get; }
 
         internal List<DyInteger> IndexedIntegers { get; }
@@ -91,17 +83,5 @@ namespace Dyalect.Compiler
         public List<MemoryLayout> Layouts { get; }
 
         public Dictionary<string, ScopeVar> ExportList { get; }
-
-        internal int GetMemberId(string name)
-        {
-            if (!MemberNames.TryGetValue(name, out var id))
-            {
-                id = MemberIds.Count;
-                MemberIds.Add(-1);
-                MemberNames.Add(name, id);
-            }
-
-            return id;
-        }
     }
 }

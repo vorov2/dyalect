@@ -54,7 +54,7 @@ func catchTest5() {
                 throw e
             }
         } catch e {
-            "caught:" + e
+            "caught:" + e\detail
         }
     assert("caught:Oops!", res)
 }
@@ -238,7 +238,7 @@ func iteratorExceptionTest2() {
         var xs = [1..2]
         var seq = xs.iter()
         var x = seq()
-        xs.addRange({3, 4, 5})
+        xs.addRange(<(3, 4, 5)>)
         x = seq()
         x + x
     }

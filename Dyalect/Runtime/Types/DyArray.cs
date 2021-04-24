@@ -183,7 +183,8 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
+            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
+            | SupportedOperations.Iter;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             DyInteger.Get(((DyArray)arg).Count);
@@ -456,7 +457,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
@@ -475,7 +476,7 @@ namespace Dyalect.Runtime.Types
                 "swap" => DyForeignFunction.Member(name, Swap, -1, new Par("fst"), new Par("snd")),
                 "compact" => DyForeignFunction.Member(name, Compact, -1, Statics.EmptyParameters),
                 "reverse" => DyForeignFunction.Member(name, Reverse, -1, Statics.EmptyParameters),
-                _ => base.GetMember(name, ctx),
+                _ => base.InitializeInstanceMember(name, ctx),
             };
 
         private DyObject New(ExecutionContext ctx, DyObject tuple) => new DyArray(((DyTuple)tuple).Values);
@@ -557,7 +558,7 @@ namespace Dyalect.Runtime.Types
             return destArr;
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
             return name switch
             {
@@ -568,7 +569,7 @@ namespace Dyalect.Runtime.Types
                 "copy" => DyForeignFunction.Static(name, Copy, -1, new Par("from"), 
                     new Par("fromIndex", DyInteger.Get(0)), new Par("to", DyNil.Instance), 
                     new Par("toIndex", DyInteger.Get(0)), new Par("count")),
-                _ => base.GetStaticMember(name, ctx)
+                _ => base.InitializeStaticMember(name, ctx)
             };
         }
     }

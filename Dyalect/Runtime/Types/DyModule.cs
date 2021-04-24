@@ -109,12 +109,12 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Module")
                 return DyForeignFunction.Static(name, c => new DyModule(c.RuntimeContext.Composition.Units[0], c.RuntimeContext.Units[0]));
 
-            return base.GetStaticMember(name, ctx);
+            return base.InitializeStaticMember(name, ctx);
         }
     }
 }

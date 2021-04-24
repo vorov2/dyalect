@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using System;
 
 namespace Dyalect.Runtime.Types
 {
@@ -8,10 +9,10 @@ namespace Dyalect.Runtime.Types
 
         internal Unit DeclaringUnit { get; }
 
-        internal int ConstructorId { get; }
+        internal string Constructor { get; }
 
-        internal DyCustomType(int typeCode, int ctorId, DyObject value, Unit unit) : base(typeCode) =>
-            (Value, ConstructorId, DeclaringUnit) = (value, ctorId, unit);
+        internal DyCustomType(int typeCode, string ctor, DyObject value, Unit unit) : base(typeCode) =>
+            (Value, Constructor, DeclaringUnit) = (value, ctor, unit);
 
         public override object ToObject() => Value.ToObject();
 
@@ -40,24 +41,13 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Value.HasItem(name, ctx);
 
-        public override int GetConstructorId(ExecutionContext ctx) =>
-            DeclaringUnit.MemberIds[ConstructorId];
+        public override string GetConstructor(ExecutionContext ctx) => Constructor;
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 17;
-                hash = hash * 23 + ConstructorId.GetHashCode();
-                if (Value != null)
-                    hash = hash * 23 + Value.GetHashCode();
-                return hash;
-            }
-        }
+        public override int GetHashCode() => HashCode.Combine(Constructor, Value);
 
         public override bool Equals(DyObject other) =>
             other is DyCustomType ct
-            && ct.ConstructorId == ConstructorId
+            && ct.Constructor == Constructor
             && (ReferenceEquals(ct.Value, Value) || (ct.Value is not null && ct.Value.Equals(Value)));
     }
 
@@ -79,15 +69,14 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var cust = (DyCustomType)arg;
-            var ctorName = ctx.RuntimeContext.Composition.Members[cust.ConstructorId];
-            if (TypeName == ctorName && ReferenceEquals(cust.Value, DyNil.Instance))
+            if (TypeName == cust.Constructor && ReferenceEquals(cust.Value, DyNil.Instance))
                 return new DyString($"{TypeName}()");
-            else if (TypeName == ctorName)
+            else if (TypeName == cust.Constructor)
                 return new DyString($"{TypeName}({cust.Value.ToString(ctx)})");
             else if (ReferenceEquals(cust.Value, DyNil.Instance))
-                return new DyString($"{TypeName}.{ctorName}()");
+                return new DyString($"{TypeName}.{cust.Constructor}()");
             else
-                return new DyString($"{TypeName}.{ctorName}({cust.Value.ToString(ctx)})");
+                return new DyString($"{TypeName}.{cust.Constructor}({cust.Value.ToString(ctx)})");
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
@@ -137,29 +126,5 @@ namespace Dyalect.Runtime.Types
         }
 
         public override string TypeName { get; }
-
-        protected override bool HasMemberDirect(DyObject self, string name, int nameId, ExecutionContext ctx)
-        {
-            switch (name)
-            {
-                case Builtins.Not:
-                case Builtins.ToStr:
-                case Builtins.Clone:
-                case Builtins.Has:
-                    return true;
-                case Builtins.Len:
-                    if (!autoGenMethods)
-                        goto default;
-                    return true;
-                case Builtins.Get:
-                    if (!autoGenMethods)
-                        goto default;
-                    return true;
-                default:
-                    return nameId != -1
-                        ? CheckHasMemberDirect(self, nameId, ctx)
-                        : CheckHasMemberDirect(self, name, ctx);
-            }
-        }
     }
 }

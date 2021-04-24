@@ -27,10 +27,16 @@
 
         public const string Len         = "len";
         public const string ToStr       = "toString";
+        public const string ToTuple     = "toTuple";
+        public const string ToArray     = "toArray";
         public const string Iterator    = "iter";
         public const string Clone       = "clone";
         public const string Has         = "has";
         public const string Type        = "getType";
         public const string Call        = "call";
+        public const string Range       = "range";
+        public const string Slice       = "slice";
+        public const string Concat      = "concat";
+        public const string Dispose     = "dispose";
     }
 }
