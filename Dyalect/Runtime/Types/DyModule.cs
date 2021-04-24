@@ -1,9 +1,11 @@
 ﻿using Dyalect.Compiler;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyModule : DyObject
+    public sealed class DyModule : DyObject, IEnumerable<DyObject>
     {
         internal readonly DyObject[] Globals;
 
@@ -73,6 +75,20 @@ namespace Dyalect.Runtime.Types
                 return true;
             }
         }
+
+        public IEnumerator<DyObject> GetEnumerator()
+        {
+            foreach (var (key, sv) in Unit.ExportList)
+            {
+                if ((sv.Data & VarFlags.Private) != VarFlags.Private)
+                    yield return new DyTuple(new DyObject[] {
+                        new DyLabel("key", new DyString(key)),
+                        new DyLabel("value", Globals[sv.Address >> 9])
+                        });
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     internal sealed class DyModuleTypeInfo : DyTypeInfo
@@ -81,7 +97,8 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
+            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
+            | SupportedOperations.Iter;
 
         public override string TypeName => DyTypeNames.Module;
 

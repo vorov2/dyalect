@@ -94,3 +94,12 @@ func moduleConstAccess() {
     assert(3.14, pi)
     assert(3.14, lib\pi)
 }
+
+func moduleIterTest() {
+    var xs = []
+    for (key,_) in lib {
+        xs.add(key)
+    }
+    var shouldbe = ["abs","sign","double","min","max","userName","pi"]
+    assert(shouldbe, xs)
+}

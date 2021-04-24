@@ -9,9 +9,9 @@ namespace Dyalect.Runtime.Types
     {
         private readonly string errorCode;
 
-        internal DyError(DyErrorCode code, params object[] dataItems) : this(code, code.ToString(), dataItems) { }
+        internal DyError(DyErrorCode code, params object[] dataItems) : this(code.ToString(), code, dataItems) { }
 
-        internal DyError(DyErrorCode code, string error, params object[] dataItems) : base(DyType.Error)
+        internal DyError(string error, DyErrorCode code, params object[] dataItems) : base(DyType.Error)
         {
             Code = code;
             errorCode = error;
@@ -128,9 +128,9 @@ namespace Dyalect.Runtime.Types
                         code = DyErrorCode.UnexpectedError;
 
                     if (args is not null && args is DyTuple t)
-                        return new DyError(code, name, t.Values);
+                        return new DyError(name, code, t.Values);
                     else
-                        return new DyError(code, name);
+                        return new DyError(name, code);
                 }, 0, new Par("values"));
         }
     }
