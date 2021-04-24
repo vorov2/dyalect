@@ -681,6 +681,7 @@ PRODUCTIONS
             | Is<out node>
             | TryCatch<out node>
             | Throw<out node> Separator
+            | Block<out node>
         ).
 
     Throw<out DNode node> =
@@ -753,24 +754,24 @@ PRODUCTIONS
         (. node = null; DNode snode = null; DNode cnode = null; bool exclu = false; .)
         (
             (
-                "^" SimpleFunctionApplication<out snode>
+                "^" FunctionApplication<out snode>
                 ( ".." | "..<" (. exclu = true; .) )
                 (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                [ SimpleFunctionApplication<out cnode> (. range.To = cnode; .) ]
+                [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
             )
             |
             (
                 ( ".." | "..<" (. exclu = true; .) )
                 (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
-                [ SimpleFunctionApplication<out cnode> (. range.To = cnode; .) ]
+                [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
             )
             |
             (
-                Or<out node> [ "^" SimpleFunctionApplication<out snode> ]
+                Or<out node> [ "^" FunctionApplication<out snode> ]
                 [
                     ( ".." | "..<" (. exclu = true; .) )
                     (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                    [ SimpleFunctionApplication<out cnode> (. range.To = cnode; .) ]
+                    [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
                 ]
             )
         ).
@@ -913,17 +914,6 @@ PRODUCTIONS
             }
         ).
 
-    SimpleFunctionApplication<out DNode node> =
-        (. node = null; .)
-        (
-            SimpleUnary<out node>
-            {
-                (. var app = new DApplication(node, t); .)
-                "!" SimpleUnary<out node>
-                (. app.Arguments.Add(node); node = app; .)
-            }
-        ).
-
     Unary<out DNode node> =
         (.
             node = null;
@@ -1020,102 +1010,6 @@ PRODUCTIONS
             }
         ).
 
-    SimpleUnary<out DNode node> =
-        (.
-            node = null;
-            var op = default(UnaryOperator);
-            var ot = default(Token);
-        .)
-        (
-            (
-                (
-                    "!" (. ot = t; op = UnaryOperator.Not; .)
-                    SimpleIndex<out node>
-                    (. node = new DUnaryOperation(node, op, ot); .)
-                )
-                |
-                (
-                    "-" (. ot = t; op = UnaryOperator.Neg; .)
-                    SimpleIndex<out node>
-                    (. node = new DUnaryOperation(node, op, ot); .)
-                )
-                |
-                (
-                    "+" (. ot = t; op = UnaryOperator.Plus; .)
-                    SimpleIndex<out node>
-                    (. node = new DUnaryOperation(node, op, ot); .)
-                )
-                |
-                (
-                    "~~~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
-                    SimpleIndex<out node>
-                    (. node = new DUnaryOperation(node, op, ot); .)
-                )
-                | SimpleIndex<out node>
-            )
-        ).
-
-    SimpleIndex<out DNode node> =
-        (
-            SimpleLiteral<out node> 
-            {
-                (
-                    "." (. var ot = t; .)
-                    identToken
-                    (. var nm = t.val; DMemberCheck chk = null; .)
-                    (
-                        [
-                            "?"
-                            (.
-                                chk = new DMemberCheck(ot) { Target = node };
-                                chk.Name = nm;
-                                node = chk;
-                            .)
-                        ]
-                        (.
-                            if (chk == null)
-                            {
-                                var fld = new DAccess(ot) { Target = node };
-                                fld.Name = nm;
-                                node = fld;
-                            }
-                        .)
-                    )
-                )
-                |
-                (
-                    "|" (. var ot = t; .)
-                    identToken
-                    (.
-                        node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
-                    .)
-                )
-                |
-                (
-                    (. if (la.AfterEol) return; .)
-                    "["
-                        (. var idx = new DIndexer(t) { Target = node }; .)
-                        Expr<out node>
-                        (.
-                            idx.Index = node;
-                            node = idx;
-                        .)
-                    "]"
-                )
-                |
-                (
-                    (.
-                        if (la.AfterEol) return;
-                        var app = new DApplication(node, t);
-                    .)
-                    "("
-                        [ ApplicationArguments<app> ]
-                        (. node = app; .)
-                    ")"
-                )
-            }
-        ).
-
     ApplicationArguments<DApplication app> =
         (. var node = default(DNode); .)
         (
@@ -1133,13 +1027,6 @@ PRODUCTIONS
         }.
 
     Literal<out DNode node> =
-        (. node = null; .)
-        (
-              SimpleLiteral<out node>
-            | Block<out node>
-        ).
-
-    SimpleLiteral<out DNode node> =
         (. node = null; .)
         (
               Name<out node>

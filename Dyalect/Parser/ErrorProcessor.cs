@@ -21,7 +21,6 @@ namespace Dyalect.Parser
                 ,{ "invalid Loops", InvalidStatement }
                 ,{ "invalid Expr", InvalidExpression }
                 ,{ "invalid Index", InvalidExpression }
-                ,{ "invalid SimpleIndex", InvalidExpression }
                 ,{ "invalid IndexBody", InvalidExpression }
                 ,{ "invalid FunctionExpr", InvalidFunctionExpression }
                 ,{ "invalid Unary", InvalidUnary }
@@ -29,7 +28,6 @@ namespace Dyalect.Parser
                 ,{ "invalid String", InvalidLiteral }
                 ,{ "invalid Tuple", InvalidLiteral }
                 ,{ "invalid Literal", InvalidLiteral }
-                ,{ "invalid SimpleLiteral", InvalidLiteral }
                 ,{ "invalid DyalectItem", InvalidStatement }
                 ,{ "invalid Pattern", InvalidPattern }
                 ,{ "invalid BooleanPattern", InvalidPattern }

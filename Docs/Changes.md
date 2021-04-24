@@ -4,6 +4,7 @@
   * Add: _Syntax redesign: tuples_ ([Issue #404](https://github.com/vorov2/dyalect/issues/404)).
   * Change: _Error analysis for a parser is updated according to the language changes._
   * Change: _Global Dyalect type system and member lookup refactoring._
+  * Change: _Parser refactoring._
   * Fix: _Pattern match by constructor names might result in an incorrect behavior_ ([Issue #421](https://github.com/vorov2/dyalect/issues/421)).
 
 # 0.19.1
