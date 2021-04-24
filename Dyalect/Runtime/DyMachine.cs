@@ -314,7 +314,7 @@ namespace Dyalect.Runtime
                     case OpCode.Fail:
                         {
                             right = evalStack.Pop();
-                            ctx.Error = right is DyError e ? e : new DyUserError(right);
+                            ctx.Error = right is DyError e ? e : new DyError(DyErrorCode.UnexpectedError, right);
                             ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                             goto CATCH;
                         }

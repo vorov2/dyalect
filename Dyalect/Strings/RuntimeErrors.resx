@@ -154,7 +154,7 @@
     <value>Collection was modified after the iterator was instantiated.</value>
   </data>
   <data name="InvalidType" xml:space="preserve">
-    <value>Type error: type "{0}" is unexpected.</value>
+    <value>Type "{0}" is unexpected.</value>
   </data>
   <data name="PrivateNameAccess" xml:space="preserve">
     <value>Unable to access a private module member "{0}".</value>

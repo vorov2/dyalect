@@ -4,7 +4,7 @@
     {
         None,
 
-        UserCode = 601,
+        UnexpectedError = 601,
 
         //= 602,
 
@@ -42,7 +42,7 @@
 
         KeyAlreadyPresent = 619,
 
-        InvalidRange = 620,
+        // = 620,
 
         // = 621,
 

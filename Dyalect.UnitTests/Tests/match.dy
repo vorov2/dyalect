@@ -253,7 +253,7 @@ func setMatchTest3() {
     var res = try {
         set (x, 2) = foo()
     } catch e {
-        e
+        e\detail
     }
     assert("Match failed.", res)
 }
@@ -277,7 +277,7 @@ func varMatchTest3() {
     var res = try {
         var (x, 2) = foo()
     } catch e {
-        e
+        e\detail
     }
     assert("Match failed.", res)
 }

@@ -6,7 +6,7 @@ namespace Dyalect.Runtime
     {
         public static DyObject Fail(this ExecutionContext ctx, string detail)
         {
-            ctx.Error = new DyUserError(new DyString(detail));
+            ctx.Error = new(DyErrorCode.UnexpectedError, new DyString(detail));
             return DyNil.Instance;
         }
 

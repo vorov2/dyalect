@@ -39,7 +39,7 @@ func catchTest4() {
         try {
             throw "Error!"
         } catch e {
-            e
+            e[0]
         }
     assert("Error!", res)
 }
@@ -54,7 +54,7 @@ func catchTest5() {
                 throw e
             }
         } catch e {
-            "caught:" + e\detail
+            "caught:" + e[0]
         }
     assert("caught:Oops!", res)
 }
@@ -71,7 +71,7 @@ func catchTest6() {
                 2 => 2
             }
         } catch e {
-            e\detail
+            e[0]
         }
     assert(42, res)
 }
@@ -90,7 +90,7 @@ func catchTest7() {
         try {
             caller1()
         } catch e {
-            e
+            e[0]
         }
     }
     var res = caller0()
@@ -142,9 +142,9 @@ func catchMatchTest1() {
     var e = try {
             foo()
         } catch {
-            (detail: ("err", 22, 1),) => false,
-            (detail: ("err", 23),) => false,
-            (detail: ("err", 22),) => true
+            (("err", 22, 1),) => false,
+            (("err", 23),) => false,
+            (("err", 22),) => true
         }
     assert(true, e)
 }
@@ -178,7 +178,7 @@ func externalCatchTest1() {
     try {
         arr.sort(sorter)
     } catch e {
-        ex = e
+        ex = e[0]
     }
     assert("No!", ex)
 }
@@ -212,7 +212,7 @@ func externalCatchTest3() {
         var arr = []
         arr.addRange(seq())
     } catch e {
-        assert(2, e\detail)
+        assert(2, e[0])
     }
 }
 
@@ -262,7 +262,7 @@ func customTypeException() { //Bug #248
         try {
             bar()
         } catch {
-            (detail: U0(),) => "U0 caught."
+            (U0(),) => "U0 caught."
         }
     }
     assert("U0 caught.", foo())
@@ -279,7 +279,7 @@ func chainCatch1() {
         try {
             bar()
         } catch e {
-            if e\detail == 1024 {
+            if e[0] == 1024 {
                 throw
             }
         }
@@ -288,7 +288,7 @@ func chainCatch1() {
     try {
         foo()
     } catch e {
-        x = e\detail
+        x = e[0]
     }
     assert(1024, x)
 }
@@ -309,7 +309,7 @@ func rightCatch() {
     try {
         run()
     } catch e {
-        x = e\detail
+        x = e[0]
     }
     assert(12, x)
 }
@@ -326,7 +326,7 @@ func rethrowTest() {
     try {
         work()
     } catch e {
-        x = e\detail
+        x = e[0]
     }
     assert(42, x)
 }
@@ -348,7 +348,7 @@ func nestedExceptions() {
     try {
         foo()
     } catch e {
-        dat = e\detail
+        dat = e[0]
     }
     assert("exc.1", dat)
 }
@@ -362,7 +362,47 @@ func multipleThrowFromCatc() {
             throw "exc.1"
         }
     } catch e {
-        x = e\detail
+        x = e[0]
     }
     assert("exc.1", x)
+}
+
+func throwTest1() {
+    var x
+    try {
+        throw Error.IndexOutOfRange()
+    } catch {
+        IndexOutOfRange() => { x = true }
+    }
+    assert(true, x)
+}
+
+func throwTest2() {
+    var x
+    try {
+        throw Error.InvalidType(0.getType()\name)
+    } catch {
+        InvalidType(tn) when tn == "Integer"  => { x = true }
+    }
+    assert(true, x)
+}
+
+func throwTest3() {
+    var x
+    try {
+        throw "Test"
+    } catch {
+        UnexpectedError(msg) when msg == "Test"  => { x = true }
+    }
+    assert(true, x)
+}
+
+func throwTest4() {
+    var x
+    try {
+        throw Error.InvalidBehavior(42)
+    } catch {
+        InvalidBehavior(code)  => { x = code }
+    }
+    assert(42, x)
 }

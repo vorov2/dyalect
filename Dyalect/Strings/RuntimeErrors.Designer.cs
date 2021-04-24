@@ -124,7 +124,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type error: type &quot;{0}&quot; is unexpected..
+        ///   Looks up a localized string similar to Type &quot;{0}&quot; is unexpected..
         /// </summary>
         internal static string InvalidType {
             get {

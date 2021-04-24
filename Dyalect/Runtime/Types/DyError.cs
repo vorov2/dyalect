@@ -2,16 +2,19 @@
 using Dyalect.Strings;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyError : DyObject
+    public sealed class DyError : DyObject
     {
-        internal DyError(DyErrorCode code, params object[] dataItems) : base(DyType.Object)
+        private readonly string errorCode;
+
+        internal DyError(DyErrorCode code, params object[] dataItems) : this(code, code.ToString(), dataItems) { }
+
+        internal DyError(DyErrorCode code, string error, params object[] dataItems) : base(DyType.Error)
         {
             Code = code;
+            errorCode = error;
             DataItems = dataItems;
         }
 
@@ -21,22 +24,29 @@ namespace Dyalect.Runtime.Types
 
         public object[] DataItems { get; }
 
-        public virtual string GetDescription()
+        public string GetDescription()
         {
-            var key = Code.ToString();
-            var str = RuntimeErrors.ResourceManager.GetString(key);
+            var str = RuntimeErrors.ResourceManager.GetString(errorCode);
 
-            if (DataItems != null)
-                str = str.Format(DataItems);
+            if (str is not null)
+            {
+                if (DataItems is not null)
+                    str = str.Format(DataItems);
 
-            return str;
+                return str;
+            }
+
+            if (DataItems is not null)
+                return string.Join(",", DataItems);
+
+            return errorCode;
         }
 
-        internal virtual DyObject GetDetail() => new DyString(GetDescription());
+        internal DyObject GetDetail() => new DyString(GetDescription());
 
         public override object ToObject() => GetDescription();
 
-        public override string ToString() => Code.ToString() + ": " + GetDescription();
+        public override string ToString() => errorCode + ": " + GetDescription();
 
         protected internal override DyObject GetItem(string name, ExecutionContext ctx)
         {
@@ -68,20 +78,7 @@ namespace Dyalect.Runtime.Types
         protected internal override bool HasItem(string name, ExecutionContext ctx) =>
             name == "code" || name == "detail";
 
-        public override string GetConstructor(ExecutionContext ctx) => Code.ToString();
-    }
-
-    internal sealed class DyUserError : DyError
-    {
-        public DyUserError(DyObject data) : this(DyErrorCode.UserCode, data) { }
-
-        internal DyUserError(DyErrorCode code, DyObject data) : base(code) => Data = data;
-
-        public DyObject Data { get; }
-
-        public override string GetDescription() => Data.ToObject()?.ToString();
-
-        internal override DyObject GetDetail() => Data ?? DyNil.Instance;
+        public override string GetConstructor(ExecutionContext ctx) => errorCode;
     }
 
     internal sealed class DyErrorTypeInfo : DyTypeInfo
@@ -89,7 +86,35 @@ namespace Dyalect.Runtime.Types
         public DyErrorTypeInfo() : base(DyType.Error) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
+            | SupportedOperations.Len | SupportedOperations.Get;
+
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+            DyInteger.Get(((DyError)arg).DataItems?.Length ?? 0);
+
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        {
+            var err = (DyError)self;
+            
+            if (index.TypeId == DyType.Integer)
+            {
+                var idx = index.GetInteger();
+
+                if (idx < 0 || idx >= err.DataItems.Length)
+                    return ctx.IndexOutOfRange();
+
+                return TypeConverter.ConvertFrom(err.DataItems[idx]);
+            }
+            else if (index.TypeId == DyType.String)
+            {
+                if (!err.TryGetItem(index, ctx, out var value))
+                    return ctx.IndexOutOfRange();
+
+                return value;
+            }
+            else
+                return ctx.InvalidType(index);
+        }
 
         public override string TypeName => DyTypeNames.Error;
 
@@ -97,18 +122,16 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            if (Enum.TryParse(name, out DyErrorCode res))
-                return DyForeignFunction.Static(name, (c, args) => {
-                    if (args is not null && args is DyTuple t)
-                    {
-                        var vs = t.Values.Select(v => v.SafeToString(ctx)).ToArray();
-                        return new DyError(res, vs);
-                    }
-                    else
-                        return new DyError(res);
-                }, 0, new Par("values"));
+            return DyForeignFunction.Static(name, (c, args) => 
+                {
+                    if (!Enum.TryParse(name, out DyErrorCode code))
+                        code = DyErrorCode.UnexpectedError;
 
-            return base.InitializeStaticMember(name, ctx);
+                    if (args is not null && args is DyTuple t)
+                        return new DyError(code, name, t.Values);
+                    else
+                        return new DyError(code, name);
+                }, 0, new Par("values"));
         }
     }
 }

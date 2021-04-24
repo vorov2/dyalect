@@ -170,7 +170,7 @@ func autosExceptions2() {
     let msg = try {
         run()
     } catch e {
-        e
+        e[0]
     }
     assert("Error", msg)
     assert(["z", "y", "x"], boxCollector)
@@ -182,7 +182,7 @@ func autosExceptions3() {
         auto x = Box(42)
         throw 84
     } catch e {
-        boxCollector.add(e\detail)
+        boxCollector.add(e[0])
     }
     assert([42,84], boxCollector)
 }
@@ -214,7 +214,7 @@ func autosExceptions5() {
     try {
         doit()
     } catch e {
-        auto b = Box(e\detail)
+        auto b = Box(e[0])
     }
     assert([24], boxCollector)
 }
@@ -256,7 +256,7 @@ func autosCatch2() { //Bug #370
     try {
         inner()
     } catch e {
-        assert(e, "err")
+        assert(e[0], "err")
         assert([1], boxCollector)
     }
 }
@@ -276,7 +276,7 @@ func autosCatch3() {
     try {
         inside()
     } catch e {
-        x = e\detail
+        x = e[0]
     }
     assert('b', x)
 }
