@@ -25,7 +25,7 @@ func matchTest2() {
 func matchTest3() {
     var res = match (1,2,"str") {
         (1, 2, "strs") => "wrong",
-        Array && [1, 2, "str"] => "right?",
+        Array? && [1, 2, "str"] => "right?",
         (1, 2, "str") xs => xs
     }
     assert((1,2,"str"), res)
@@ -167,7 +167,7 @@ func forMatchTest1() {
 
 func forMatchTest2() {
     var arr = []
-    for Char c in ['a', "str", 'b', 'c', 12] {
+    for Char? c in ['a', "str", 'b', 'c', 12] {
         arr.add(c)
     }
     assert(['a','b','c'], arr)
@@ -175,7 +175,7 @@ func forMatchTest2() {
 
 func forMatchTest3() {
     var arr = []
-    for Char in ['a', "str", 'b', 'c', 12] {
+    for Char? in ['a', "str", 'b', 'c', 12] {
         arr.add(0)
     }
     assert(3, arr.len())
@@ -308,9 +308,9 @@ func ctorMatchTest4() {
 
 func isTest1() {
     var xs = (1, 2)
-    assert(true, xs is Tuple)
-    assert(false, xs is Array)
-    var b = xs is Tuple t
+    assert(true, xs is Tuple?)
+    assert(false, xs is Array?)
+    var b = xs is Tuple? t
     assert(true, b)
     assert((1,2), t)
 }

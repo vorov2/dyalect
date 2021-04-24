@@ -71,7 +71,7 @@ namespace Dyalect.Library.Types
             var rx = ((DyRegex)self).Regex;
 
             if (istart + ilen > str.Length)
-                return ctx.ValueOutOfRange(istart + ilen);
+                return ctx.IndexOutOfRange();
 
             var m = rx.Match(str, istart, ilen);
             //return new DyRegexMatch(m);

@@ -302,7 +302,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId is not DyType.Integer)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             var i = (int)index.GetInteger();
 
@@ -315,7 +315,7 @@ namespace Dyalect.Runtime.Types
             }
             catch (IndexOutOfRangeException)
             {
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
             }
         }
 
@@ -376,7 +376,7 @@ namespace Dyalect.Runtime.Types
             var i = (int)count.GetInteger();
 
             if (i < 0)
-                return ctx.InvalidValue(count);
+                i = 0;
 
             return new DyIterator(DyIterator.Run(ctx, self).Take(i));
         }
@@ -387,7 +387,11 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(self);
 
             var i = (int)count.GetInteger();
-            return i < 0 ? ctx.InvalidValue(count) : new DyIterator(DyIterator.Run(ctx, self).Skip(i));
+            
+            if (i < 0)
+                i = 0;
+
+            return new DyIterator(DyIterator.Run(ctx, self).Skip(i));
         }
 
         private DyObject First(ExecutionContext ctx, DyObject self) =>
@@ -404,7 +408,7 @@ namespace Dyalect.Runtime.Types
             if (self is DyRange r)
                 r.Step = step;
             else
-                return ctx.OperationNotSupported("by", self);
+                return ctx.OperationNotSupported("by", self.GetTypeName(ctx));
 
             return self;
         }

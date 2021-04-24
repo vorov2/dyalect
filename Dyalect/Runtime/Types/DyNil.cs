@@ -23,7 +23,7 @@ namespace Dyalect.Runtime.Types
         internal override int GetCount() => 0;
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            ctx.IndexOutOfRange(index);
+            ctx.IndexOutOfRange();
 
         internal override void Serialize(BinaryWriter writer) => writer.Write(TypeId);
 

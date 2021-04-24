@@ -33,9 +33,9 @@ namespace Dyalect.Runtime.Types
                 return GetItem((int)index.GetInteger(), ctx);
             
             if (index.TypeId == DyType.String || index.TypeId == DyType.Char)
-                return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange(index.GetString());
+                return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange();
             
-            return ctx.IndexInvalidType(index);
+            return ctx.InvalidType(index);
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
@@ -45,7 +45,7 @@ namespace Dyalect.Runtime.Types
             else if (index.TypeId == DyType.String)
                 SetItem(index.GetString(), value, ctx);
             else
-                ctx.IndexInvalidType(index);
+                ctx.InvalidType(index);
         }
 
         protected internal override DyObject GetItem(string name, ExecutionContext ctx)
@@ -53,7 +53,7 @@ namespace Dyalect.Runtime.Types
             var i = GetOrdinal(name);
 
             if (i == -1)
-                return ctx.IndexOutOfRange(name);
+                return ctx.IndexOutOfRange();
 
             return GetItem(i, ctx);
         }
@@ -77,7 +77,7 @@ namespace Dyalect.Runtime.Types
             var i = GetOrdinal(name);
 
             if (i == -1)
-                ctx.IndexOutOfRange(name);
+                ctx.IndexOutOfRange();
 
             SetItem(i, value, ctx);
         }
@@ -264,7 +264,7 @@ namespace Dyalect.Runtime.Types
         private DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
         {
             if (index.TypeId != DyType.Integer)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             var t = (DyTuple)self;
 
@@ -272,7 +272,7 @@ namespace Dyalect.Runtime.Types
             idx = idx < 0 ? t.Count + idx : idx;
 
             if (idx < 0 || idx >= t.Count)
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
 
             return RemoveAt(ctx, t, idx);
         }
@@ -294,7 +294,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
             if (index.TypeId is not DyType.Integer)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             var tuple = (DyTuple)self;
 
@@ -302,7 +302,7 @@ namespace Dyalect.Runtime.Types
             idx = idx < 0 ? tuple.Count + idx : idx;
 
             if (idx < 0 || idx > tuple.Count)
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
 
             var arr = new DyObject[tuple.Count + 1];
             arr[idx] = value;

@@ -104,7 +104,7 @@ namespace Dyalect.Runtime.Types
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (!Map.TryGetValue(index, out var value))
-                return ctx.KeyNotFound(index);
+                return ctx.KeyNotFound();
             else
                 return value;
         }
@@ -180,7 +180,7 @@ namespace Dyalect.Runtime.Types
         {
             var map = (DyMap)self;
             if (!map.TryAdd(key, value))
-                return ctx.KeyAlreadyPresent(key);
+                return ctx.KeyAlreadyPresent();
             return DyNil.Instance;
         }
 

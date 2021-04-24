@@ -12,6 +12,13 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => $"[type:{DyType.GetTypeNameByCode(TypeId)}]";
 
+        public string SafeToString(ExecutionContext ctx)
+        {
+            var nctx = ctx.Clone();
+            var str = ctx.RuntimeContext.Types[TypeId].ToString(nctx, this);
+            return nctx.HasErrors ? ToString() : str.ToString()?.Trim('\"');
+        }
+
         protected internal virtual bool GetBool() => true;
 
         internal protected virtual long GetInteger() => throw new InvalidCastException();
@@ -25,16 +32,16 @@ namespace Dyalect.Runtime.Types
         public abstract object ToObject();
 
         internal protected virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            index.TypeId == DyType.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange(index);
+            index.TypeId == DyType.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange();
 
         internal protected virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Set, this);
+            ctx.OperationNotSupported(Builtins.Set, this.GetTypeName(ctx));
 
         internal protected virtual DyObject GetItem(string name, ExecutionContext ctx) =>
             GetItem(new DyString(name), ctx);
 
         internal protected virtual DyObject GetItem(int index, ExecutionContext ctx) =>
-            index == 0 ? this : ctx.IndexOutOfRange(index);
+            index == 0 ? this : ctx.IndexOutOfRange();
 
         internal protected virtual bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
         {
@@ -51,7 +58,7 @@ namespace Dyalect.Runtime.Types
             else
             {
                 value = null;
-                ctx.IndexInvalidType(index);
+                ctx.InvalidType(index);
                 return false;
             }
         }
@@ -63,10 +70,10 @@ namespace Dyalect.Runtime.Types
         }
 
         internal protected virtual void SetItem(string name, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Get, this);
+            ctx.OperationNotSupported(Builtins.Get, this.GetTypeName(ctx));
 
         internal protected virtual void SetItem(int index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Set, this);
+            ctx.OperationNotSupported(Builtins.Set, this.GetTypeName(ctx));
 
         internal protected virtual bool HasItem(string name, ExecutionContext ctx) => false;
 

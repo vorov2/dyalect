@@ -120,7 +120,7 @@ namespace Dyalect.Runtime.Types
             index switch
             {
                 "name" => new DyString(((DyFunction)self).FunctionName),
-                _ => ctx.IndexOutOfRange(index)
+                _ => ctx.IndexOutOfRange()
             };
 
         private DyObject Compose(ExecutionContext ctx, DyObject first, DyObject second)

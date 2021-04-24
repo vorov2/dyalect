@@ -30,7 +30,7 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetItem(string name, ExecutionContext ctx)
         {
             if (!map.TryGetValue(name, out var value))
-                return ctx.IndexOutOfRange(name);
+                return ctx.IndexOutOfRange();
 
             return value;
         }
@@ -72,7 +72,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId != DyType.String)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             return self.GetItem(index.GetString(), ctx);
         }

@@ -41,17 +41,17 @@ namespace Dyalect.Library.Types
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == DyType.Integer)
-                return (long)index.ToObject() == 0 ? ((DyResult)self).Value : ctx.IndexOutOfRange(index);
+                return (long)index.ToObject() == 0 ? ((DyResult)self).Value : ctx.IndexOutOfRange();
             else if (index.TypeId == DyType.String)
             {
                 var str = index.ToString();
                 var s = (DyResult)self;
                 return str == "value" && s.Constructor == "Success" ? s.Value
                     : str == "detail" && s.Constructor == "Failure" ? s.Value
-                    : ctx.IndexOutOfRange(index);
+                    : ctx.IndexOutOfRange();
             }
 
-            return ctx.IndexInvalidType(index);
+            return ctx.InvalidType(index);
         }
 
         private DyObject TryGet(ExecutionContext ctx, DyObject self)

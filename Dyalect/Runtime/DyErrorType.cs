@@ -14,7 +14,7 @@
 
         IndexOutOfRange = 605,
 
-        IndexInvalidType = 606,
+        // = 606,
 
         DivideByZero = 607,
 
@@ -22,7 +22,7 @@
 
         InvalidType = 609,
 
-        StaticOperationNotSupported = 610,
+        //= 610,
 
         AssertFailed = 611,
 
@@ -44,10 +44,10 @@
 
         InvalidRange = 620,
 
-        InvalidValue = 621,
+        // = 621,
 
-        ValueOutOfRange = 622,
+        // = 622,
 
-        OpenRangeNotSupported = 623
+        // = 623
     }
 }

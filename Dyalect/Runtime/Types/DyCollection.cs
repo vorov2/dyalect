@@ -23,7 +23,7 @@ namespace Dyalect.Runtime.Types
             index = CorrectIndex(index);
             
             if (index < 0 || index >= Count)
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
             
             return CollectionGetItem(index, ctx);
         }
@@ -49,7 +49,7 @@ namespace Dyalect.Runtime.Types
             index = CorrectIndex(index);
 
             if (index < 0 || index >= Count)
-                ctx.IndexOutOfRange(index);
+                ctx.IndexOutOfRange();
             else
                 CollectionSetItem(index, value, ctx);
         }
@@ -173,18 +173,18 @@ namespace Dyalect.Runtime.Types
                 beg = coll.Count + beg;
 
             if (beg >= coll.Count)
-                return ctx.IndexOutOfRange(beg);
+                return ctx.IndexOutOfRange();
 
             if (end < 0)
                 end = coll.Count + end - 1;
 
             if (end >= coll.Count || end < 0)
-                return ctx.IndexOutOfRange(end);
+                return ctx.IndexOutOfRange();
 
             var len = end - beg + 1;
 
             if (len < 0)
-                return ctx.IndexOutOfRange(toElem);
+                return ctx.IndexOutOfRange();
 
             return new DyIterator(new DyCollectionEnumerable(arr, beg, len, coll));
         }

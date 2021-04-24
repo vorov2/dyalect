@@ -2,6 +2,8 @@
   * Add: _Special syntax for application of a function to a single argument_ ([Issue #420](https://github.com/vorov2/dyalect/issues/420)).
   * Add: _Syntax redesign: constants_ ([Issue #406](https://github.com/vorov2/dyalect/issues/406)).
   * Add: _Syntax redesign: tuples_ ([Issue #404](https://github.com/vorov2/dyalect/issues/404)).
+  * Add: _Consider making errors a separate Dy type_ ([Issue #383](https://github.com/vorov2/dyalect/issues/383)).
+  * Add: _Add an ability to generate standard run-time errors_ ([Issue #385](https://github.com/vorov2/dyalect/issues/385)).
   * Change: _Error analysis for a parser is updated according to the language changes._
   * Change: _Global Dyalect type system and member lookup refactoring._
   * Change: _Parser refactoring._

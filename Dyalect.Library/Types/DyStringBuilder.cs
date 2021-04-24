@@ -96,7 +96,7 @@ namespace Dyalect.Library.Types
             var sb = ((DyStringBuilder)self).Builder;
 
             if (index.TypeId != DyType.Integer)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             if (len.TypeId != DyType.Integer)
                 return ctx.InvalidType(len);
@@ -105,7 +105,7 @@ namespace Dyalect.Library.Types
             var ln = (long)len.ToObject();
 
             if (i + ln >= sb.Length)
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
 
             sb.Remove((int)i, (int)ln);
             return self;
@@ -116,7 +116,7 @@ namespace Dyalect.Library.Types
             var sb = ((DyStringBuilder)self).Builder;
 
             if (index.TypeId != DyType.Integer)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             var i = (long)index.ToObject();
             var str = DyString.ToString(value, ctx);
@@ -125,7 +125,7 @@ namespace Dyalect.Library.Types
                 return DyNil.Instance;
 
             if (i < 0 || i >= sb.Length)
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
 
             sb.Insert((int)i, str);
             return self;

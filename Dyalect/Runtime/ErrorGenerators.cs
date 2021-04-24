@@ -16,109 +16,57 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject OpenRangeNotSupported(this ExecutionContext ctx, string typeName)
-        {
-            ctx.Error = new(DyErrorCode.OpenRangeNotSupported,
-                ("Type", typeName));
-            return DyNil.Instance;
-        }
-
         public static DyObject FailedReadLiteral(this ExecutionContext ctx, string reason)
         {
-            ctx.Error = new(DyErrorCode.FailedReadLiteral,
-                ("Reason", reason));
+            ctx.Error = new(DyErrorCode.FailedReadLiteral, reason);
             return DyNil.Instance;
         }
 
         public static DyObject AssertFailed(this ExecutionContext ctx, string reason)
         {
-            ctx.Error = new(DyErrorCode.AssertFailed,
-                ("Reason", reason));
+            ctx.Error = new(DyErrorCode.AssertFailed, reason);
             return DyNil.Instance;
         }
 
-        public static DyObject StaticOperationNotSupported(this ExecutionContext ctx, string op, string typeName)
+        public static DyObject PrivateNameAccess(this ExecutionContext ctx, string name)
         {
-            ctx.Error = new(DyErrorCode.StaticOperationNotSupported,
-                ("Operation", op),
-                ("TypeName", typeName));
+            ctx.Error = new(DyErrorCode.PrivateNameAccess, name);
             return DyNil.Instance;
         }
 
-        public static DyObject PrivateNameAccess(this ExecutionContext ctx, DyObject obj)
+        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, string typeName)
         {
-            ctx.Error = new(DyErrorCode.PrivateNameAccess,
-                ("Name", obj.ToString()));
+            ctx.Error = new(DyErrorCode.OperationNotSupported, op, typeName);
             return DyNil.Instance;
         }
 
-        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj)
+        public static DyObject IndexOutOfRange(this ExecutionContext ctx)
         {
-            ctx.Error = new(DyErrorCode.OperationNotSupported,
-                ("Operation", op),
-                ("TypeName", obj.GetTypeName(ctx)));
+            ctx.Error = new(DyErrorCode.IndexOutOfRange);
             return DyNil.Instance;
         }
 
-        public static DyObject IndexOutOfRange(this ExecutionContext ctx, object index)
+        public static DyObject KeyNotFound(this ExecutionContext ctx)
         {
-            ctx.Error = new(DyErrorCode.IndexOutOfRange,
-                ("Index", index));
+            ctx.Error = new(DyErrorCode.KeyNotFound);
             return DyNil.Instance;
         }
 
-        public static DyObject ValueOutOfRange(this ExecutionContext ctx, object value)
+        public static DyObject KeyAlreadyPresent(this ExecutionContext ctx)
         {
-            ctx.Error = new(DyErrorCode.ValueOutOfRange,
-                ("Value", value));
-            return DyNil.Instance;
-        }
-
-        public static DyObject IndexInvalidType(this ExecutionContext ctx, DyObject index)
-        {
-            ctx.Error = new(DyErrorCode.IndexInvalidType,
-                ("Index", index),
-                ("IndexTypeName", index.GetTypeName(ctx)));
-            return DyNil.Instance;
-        }
-
-        public static DyObject KeyNotFound(this ExecutionContext ctx, DyObject key)
-        {
-            ctx.Error = new(DyErrorCode.KeyNotFound, ("Key", key));
-            return DyNil.Instance;
-        }
-
-        public static DyObject KeyAlreadyPresent(this ExecutionContext ctx, DyObject key)
-        {
-            ctx.Error = new(DyErrorCode.KeyAlreadyPresent, ("Key", key));
+            ctx.Error = new(DyErrorCode.KeyAlreadyPresent);
             return DyNil.Instance;
         }
 
         public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
         {
-            ctx.Error = new(DyErrorCode.InvalidType,
-                ("TypeName", value.GetTypeName(ctx)));
-            return DyNil.Instance;
-        }
-
-        public static DyObject InvalidValue(this ExecutionContext ctx, DyObject value)
-        {
-            ctx.Error = new(DyErrorCode.InvalidValue,
-                ("Value", value.ToString(ctx)));
-            return DyNil.Instance;
-        }
-
-        public static DyObject InvalidRange(this ExecutionContext ctx)
-        {
-            ctx.Error = new(DyErrorCode.InvalidRange);
+            ctx.Error = new(DyErrorCode.InvalidType, value.GetTypeName(ctx));
             return DyNil.Instance;
         }
 
         public static DyObject ExternalFunctionFailure(this ExecutionContext ctx, string functionName, string error)
         {
-            ctx.Error = new(DyErrorCode.ExternalFunctionFailure,
-                ("FunctionName", functionName),
-                ("Error", error));
+            ctx.Error = new(DyErrorCode.ExternalFunctionFailure, functionName, error);
             return DyNil.Instance;
         }
 
@@ -130,26 +78,19 @@ namespace Dyalect.Runtime
 
         public static DyObject TooManyArguments(this ExecutionContext ctx, string functionName, int functionArguments, int passedArguments)
         {
-            ctx.Error = new(DyErrorCode.TooManyArguments,
-                ("FunctionName", functionName),
-                ("FunctionArguments", functionArguments),
-                ("PassedArguments", passedArguments));
+            ctx.Error = new(DyErrorCode.TooManyArguments, functionName, functionArguments, passedArguments);
             return DyNil.Instance;
         }
 
         public static DyObject RequiredArgumentMissing(this ExecutionContext ctx, string functionName, string argumentName)
         {
-            ctx.Error = new(DyErrorCode.RequiredArgumentMissing,
-                ("FunctionName", functionName),
-                ("ArgumentName", argumentName));
+            ctx.Error = new(DyErrorCode.RequiredArgumentMissing, functionName, argumentName);
             return DyNil.Instance;
         }
 
         public static DyObject ArgumentNotFound(this ExecutionContext ctx, string functionName, string argumentName)
         {
-            ctx.Error = new(DyErrorCode.ArgumentNotFound,
-                ("FunctionName", functionName),
-                ("ArgumentName", argumentName));
+            ctx.Error = new(DyErrorCode.ArgumentNotFound, functionName, argumentName);
             return DyNil.Instance;
         }
     }
