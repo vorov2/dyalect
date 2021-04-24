@@ -201,26 +201,19 @@ namespace Dyalect.Compiler
 
         private void BuildName(DNamePattern node, Hints hints)
         {
-            var err = GetTypeHandle(null, node.Name, out var handle, out var std);
+            ScopeVar sv = default;
+            var found = hints.Has(Rebind)
+                ? TryGetVariable(node.Name, out sv)
+                : !hints.Has(OpenMatch) && TryGetLocalVariable(node.Name, out sv);
+            var sva = sv.Address;
 
-            if (err == CompilerError.None)
-                cw.TypeCheck(new(handle, std));
-            else
-            {
-                ScopeVar sv = default;
-                var found = hints.Has(Rebind)
-                    ? TryGetVariable(node.Name, out sv)
-                    : !hints.Has(OpenMatch) && TryGetLocalVariable(node.Name, out sv);
-                var sva = sv.Address;
+            if (!found)
+                sva = AddVariable(node.Name, node, hints.Has(Const) ? VarFlags.Const : VarFlags.None);
+            else if ((sv.Data & VarFlags.Const) == VarFlags.Const)
+                AddError(CompilerError.UnableAssignConstant, node.Location, node.Name);
 
-                if (!found)
-                    sva = AddVariable(node.Name, node, hints.Has(Const) ? VarFlags.Const : VarFlags.None);
-                else if ((sv.Data & VarFlags.Const) == VarFlags.Const)
-                    AddError(CompilerError.UnableAssignConstant, node.Location, node.Name);
-
-                cw.PopVar(sva);
-                cw.Push(true);
-            }
+            cw.PopVar(sva);
+            cw.Push(true);
         }
 
         private void BuildAnd(DAndPattern node, Hints hints, CompilerContext ctx)
