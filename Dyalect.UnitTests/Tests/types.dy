@@ -303,7 +303,7 @@ func callableTest1() {
     assert(2996.615, res)
 }
 
-func callablTest2() {
+func callableTest2() {
     func Integer.call() {
         this + this
     }
