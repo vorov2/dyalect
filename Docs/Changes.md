@@ -14,6 +14,7 @@
   * Change: _Overhaul of custom types design and syntax_ ([docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
   * Fix: _Pattern match by constructor names might result in an incorrect behavior_ ([Issue #421](https://github.com/vorov2/dyalect/issues/421)).
   * Fix: _Constructors and iterators_ ([Issue #429](https://github.com/vorov2/dyalect/issues/429)).
+  * Fix: _`new` without arguments is not recognized_ ([Issue #424](https://github.com/vorov2/dyalect/issues/424)).
 
 # 0.19.1
   * Fix: _Inconsistent type errors_ ([Issue #398](https://github.com/vorov2/dyalect/issues/398)).
