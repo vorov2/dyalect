@@ -22,7 +22,7 @@
 
         ReturnNotAllowed = 209,
 
-        CtorNoMethod = 210,
+        CtorOnlyMethod = 210,
 
         ExpressionNoName = 211,
 
@@ -78,6 +78,8 @@
         
         InvalidSlice = 237,
 
-        InvalidRethrow = 238
+        InvalidRethrow = 238,
+
+        CtorNotIterator = 239
     }
 }

@@ -2,14 +2,14 @@
 type Bar
 
 func extendTest1() {
-    static func Bar.Bar(args...) {
-        new(args)
+    ctor Bar.Bar(args...) {
+        args
     }
     func Bar.len() {
-        valueof(this).len()
+        this.len()
     }
     func Bar.get(index) {
-        valueof(this)[index]
+        this[index]
     }
     var obj = Bar.Bar(1, 2, 3)
     var res = match obj {
@@ -20,14 +20,14 @@ func extendTest1() {
 }
 
 func extendTest2() {
-    static func Bar.Bar(args...) {
-        new(args)
+    ctor Bar.Bar(args...) {
+        args
     }
     func Bar.len() {
-        valueof(this).len()
+        this.len()
     }
     func Bar.get(index) {
-        valueof(this)[index]
+        this[index]
     }
     var obj = Bar(1, 2, 3)
     var res = match obj {
@@ -80,29 +80,29 @@ func typeTest1() {
             Nat(x)
         }
     }
-    static func Nat.Nat(x) {
+    ctor Nat.Nat(x) {
         if x < 0 {
             throw "Negative number."
         }
-        new(x)
+        x
     }
     func Nat.toInteger() {
-        valueof(this)
+        this
     }
     func Nat + (other) {
-        fetch(valueof(this) + other.toInteger())
+        fetch(this + other.toInteger())
     }
     func Nat - (other) {
-        fetch(valueof(this) - other.toInteger())
+        fetch(this - other.toInteger())
     }
     func Nat * (other) {
-        fetch(valueof(this) * other.toInteger())
+        fetch(this * other.toInteger())
     }
     func Nat / (other) {
-        fetch(valueof(this) / other.toInteger())
+        fetch(this / other.toInteger())
     }
     func Nat == (other) {
-        valueof(this) == other.toInteger()
+        this == other.toInteger()
     }
     var n = Nat(12)
     assert(Nat(24), n + Nat(12))
@@ -132,20 +132,20 @@ func typeTest3() {
     func ref(value) {
         Cell((__value: value))
     }
-    static func Cell.Cell(value) {
-        new(value)
+    ctor Cell.Cell(value) {
+        value
     }
     func Cell.setValue(value) {
-        valueof(this)\__value = value
+        this["__value"] = value
     }
     func Cell.getValue() {
-        valueof(this)\__value
+        this["__value"]
     }
     func Cell.get(index) {
         if index != 0 {
             throw "Index out of range."
         }
-        valueof(this)\__value
+        this["__value"]
     }
     func Cell.len() {
         1
@@ -194,7 +194,7 @@ type Zoo1()
 func typeTest6() {
     var x = Zoo1()
     func Zoo1.toString() {
-        match valueof(this) {
+        match this {
             nil => "nil"
         }
     }
@@ -219,18 +219,18 @@ func simpleTypeTest2() {
 
 type Record
 func accessorTest() {
-    static func Record.Record(values...) {
-        new(values)
+    ctor Record.Record(values...) {
+        values
     }
     func Record.get(index) {
         if index == "name" {
-            return valueof(this)\name
+            return this["name"]
         } else if index == "age" {
-            return valueof(this)\age
+            return this["age"]
         }
     }
     var p = Record(values: (name: "John", age: 33))
-    assert("John", p\name)
+    assert("John", p["name"])
     assert(33, p\age)
 }
 
@@ -244,14 +244,14 @@ func setterTest1() {
 
 type Point1
 func setterTest2() { //Bug #205
-    static func Point1.Point1(x, y) {
-        new((x, y))
+    ctor Point1.Point1(x, y) {
+        (x, y)
     }
     func Point1.get(index) {
-        valueof(this)[index]
+        this[index]
     }
     func Point1.set(index, value) {
-        valueof(this)[index] = value
+        this[index] = value
     }
     var p = Point1(12, 34)
     p\x += p\x

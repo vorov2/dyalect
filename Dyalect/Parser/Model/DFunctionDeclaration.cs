@@ -13,7 +13,9 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; }
 
-        internal bool IsConstructor { get; set; }
+        internal bool IsAutoConstructor { get; set; }
+
+        public bool IsConstructor { get; set; }
 
         public bool IsStatic { get; set; }
 
@@ -45,11 +47,16 @@ namespace Dyalect.Parser.Model
                 return;
             }
 
-            if (IsStatic)
-                sb.Append("static ");
+            if (IsConstructor)
+                sb.Append("ctor ");
+            else
+            {
+                if (IsStatic)
+                    sb.Append("static ");
 
-            if (Name is not null)
-                sb.Append("func ");
+                if (Name is not null)
+                    sb.Append("func ");
+            }
 
             if (TypeName is not null)
             {

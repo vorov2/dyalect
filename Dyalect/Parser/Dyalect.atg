@@ -149,14 +149,14 @@ PRODUCTIONS
         .)
         identToken (. typ.Name = t.val; node = typ; .)
         [
-            (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; .)
+            (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsAutoConstructor = true, TypeName = new Qualident(typ.Name) }; .)
             FunctionArguments<f>
             (. typ.Constructors.Add(f); .)
         ]
         [
             "="
-            identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
-            { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
+            identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsAutoConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
+            { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsAutoConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
         ].
 
     Statement<out DNode node> =
@@ -256,14 +256,15 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; bool st = false; .)
+        (. node = null; bool st = false; bool ctor = false; .)
         (
             (
-                [ "static" (. st = true; .) ]
-                "func"
+                "static" "func" (. st = true; .)
+                | "func"
+                | "ctor" (. st = true; ctor = true; .)
             )
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st };
+                var f = new DFunctionDeclaration(t) { IsStatic = st, IsConstructor = ctor };
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>

@@ -1,7 +1,7 @@
 ﻿type Box(key)
 let boxCollector = []
 func Box.dispose() {
-    boxCollector.add(this\key)
+    boxCollector.add(this)
 }
 
 func autosSimple1() {
