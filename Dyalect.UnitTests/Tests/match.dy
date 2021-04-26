@@ -368,3 +368,31 @@ func bindingMatch3() {
     var (_, z) = [12, 222]
     assert(222, z)
 }
+
+func typeCheck1() {
+    var x = 1
+    var y = 1.2
+    var res1 = false
+    var res2 = false
+    if x is Integer? {
+        res1 = true
+    }
+    assert(true, res1)
+    if y is Float? {
+        res2 = true
+    }
+    assert(true, res2)
+    if y is Float? f {
+        assert(1.2, f)
+    }
+}
+
+type __CustomType1x2()
+func typeCheck2() {
+    var t = __CustomType1x2()
+    var res = false
+    if t is __CustomType1x2? {
+        res = true
+    }
+    assert(true, res)
+}

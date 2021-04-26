@@ -5,6 +5,7 @@
   * Add: _Consider making errors a separate Dy type_ ([Issue #383](https://github.com/vorov2/dyalect/issues/383)).
   * Add: _Add an ability to generate standard run-time errors_ ([Issue #385](https://github.com/vorov2/dyalect/issues/385)).
   * Add: _Modules should support iteration through globals like records do_ ([Issue #425](https://github.com/vorov2/dyalect/issues/425)).
+  * Add: _Type check in pattern matching_ ([Issue #422](https://github.com/vorov2/dyalect/issues/422), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
   * Change: _Error analysis for a parser is updated according to the language changes._
   * Change: _Global Dyalect type system and member lookup refactoring._
   * Change: _Parser refactoring._
