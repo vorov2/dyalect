@@ -143,7 +143,7 @@ func stringTest23() { //Bug #207
 }
 
 func stringTest24() { //Bug #219
-    var str = String(values: <('a','b','c')>)
+    var str = String(values: yields { 'a','b','c' })
     assert("abc", str)
 }
 

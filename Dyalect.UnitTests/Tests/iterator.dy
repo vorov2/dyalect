@@ -1,25 +1,25 @@
 ﻿
 func iteratorLiteralTest1() {
-    var seq = <( 1,2,3 )>
+    var seq = yields { 1,2,3 }
     assert([1,2,3], seq.toArray())
 }
 
 func iteratorLiteralTest2() {
     var x = 2
     var y = 3
-    var seq = <( x + y )>
+    var seq = yields { x + y }
     x -= 1
     y *= y
     assert(10, seq())
 }
 
 func iteratorLiteralTest3() {
-    var xs = <( 1, 2, 3, 4, 5 )>
+    var xs = yields { 1, 2, 3, 4, 5 }
     assert(5, xs.len())
 }
 
 func iteratorLiteralTest4() {
-    var xs = <( 1, 2, 3, 4, 5 )>
+    var xs = yields { 1, 2, 3, 4, 5 }
     assert(5, xs.len())
     assert(5, xs.len())
     xs()
@@ -27,11 +27,11 @@ func iteratorLiteralTest4() {
 }
 
 func iteratorLiteralTest5() {
-    var str = String.concat(values: <(
+    var str = String.concat(values: yields {
         22 + 1.25,
         "Hello, world!",
         true
-    )>)
+    })
     assert("23.25Hello, world!true", str)
 }
 
@@ -280,24 +280,24 @@ func yieldManyTest5() { //#96
 }
 
 func takeTest1() {
-    var seq = <( 1,2,3,4,5 )>
+    var seq = yields { 1,2,3,4,5 }
     var xs = seq.take(3).toArray()
     assert([1,2,3], xs)
 }
 
 func skipTest1() {
-    var seq = <( 1,2,3,4,5 )>
+    var seq = yields { 1,2,3,4,5 }
     var xs = seq.skip(3).toArray()
     assert([4,5], xs)
 }
 
 func firstTest1() {
-    var seq = <( 1,2,3,4,5 )>
+    var seq = yields { 1,2,3,4,5 }
     assert(1, seq.first())
 }
 
 func lastTest1() {
-    var seq = <( 1,2,3,4,5 )>
+    var seq = yields { 1,2,3,4,5 }
     assert(5, seq.last())
 }
 
@@ -338,4 +338,9 @@ func sliceTest1() { // #409
     var seq = 1..10
     var xs = seq[5..].toArray()
     assert([6, 7, 8, 9, 10], xs)
+}
+
+func rangeInIterator() {
+    let seq = yields { 1..5 }
+    assert([1,2,3,4,5], seq.toArray())
 }

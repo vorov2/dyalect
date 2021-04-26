@@ -1054,7 +1054,7 @@ PRODUCTIONS
     Iterator<out DNode node> =
         (. node = null; .)
         (
-            "<("
+            "yields" "{"
                 (.
                     var it = new DIteratorLiteral(t);
                     it.YieldBlock = new DYieldBlock(t);
@@ -1062,7 +1062,7 @@ PRODUCTIONS
                 Expr<out node> (. it.YieldBlock.Elements.Add(node); .)
                 { "," Expr<out node> (. it.YieldBlock.Elements.Add(node); .) }
                 (. node = it; .)
-            ")>"
+            "}"
         ).
 
     Label<out DNode node> =

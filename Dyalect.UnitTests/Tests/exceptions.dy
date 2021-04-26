@@ -238,7 +238,7 @@ func iteratorExceptionTest2() {
         var xs = [1..2]
         var seq = xs.iter()
         var x = seq()
-        xs.addRange(<(3, 4, 5)>)
+        xs.addRange(yields { 3, 4, 5 })
         x = seq()
         x + x
     }

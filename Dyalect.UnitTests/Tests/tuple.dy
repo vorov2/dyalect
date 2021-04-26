@@ -162,7 +162,7 @@ func tupleAddOp1() {
     assert((1,2,3,4,5,6), res)
     res = xs + [5,6]
     assert((1,2,3,5,6), res)
-    res = xs + <(11,22)>
+    res = xs + yields {11,22}
     assert((1,2,3,11,22), res)
 }
 

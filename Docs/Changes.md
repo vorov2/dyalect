@@ -6,6 +6,7 @@
   * Add: _Modules should support iteration through globals like records do_ ([Issue #425](https://github.com/vorov2/dyalect/issues/425)).
   * Add: _Type check in pattern matching_ ([Issue #422](https://github.com/vorov2/dyalect/issues/422), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
   * Add: _Syntax redesign: labels and indexing_ ([Issue #403](https://github.com/vorov2/dyalect/issues/403)).
+  * Add: _Syntax redesign: Iterators_ ([Issue #405](https://github.com/vorov2/dyalect/issues/405)).
   * Change: _Operator `valueof` can break encapsulation_ ([Issue #428](https://github.com/vorov2/dyalect/issues/428)).
   * Change: _It is possible to use new in instance methods of custom types_ ([Issue #426](https://github.com/vorov2/dyalect/issues/426)).
   * Change: _Error analysis for a parser is updated according to the language changes._
