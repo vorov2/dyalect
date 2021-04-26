@@ -426,7 +426,7 @@ namespace Dyalect.Runtime.Types
 
             if (value is not null)
                 return value.Clone(ctx, self);
-            else if (self.TryGetItem(name, ctx, out var obj))
+            else if (Support(SupportedOperations.Get) && self.TryGetItem(name, ctx, out var obj))
                 return obj;
             else
                 return ctx.OperationNotSupported(name, self.GetTypeName(ctx));
