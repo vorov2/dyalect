@@ -1,5 +1,4 @@
 # 0.20.0
-  * Add: _Special syntax for application of a function to a single argument_ ([Issue #420](https://github.com/vorov2/dyalect/issues/420)).
   * Add: _Syntax redesign: constants_ ([Issue #406](https://github.com/vorov2/dyalect/issues/406)).
   * Add: _Syntax redesign: tuples_ ([Issue #404](https://github.com/vorov2/dyalect/issues/404)).
   * Add: _Consider making errors a separate Dy type_ ([Issue #383](https://github.com/vorov2/dyalect/issues/383)).
