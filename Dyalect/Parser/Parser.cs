@@ -1776,7 +1776,7 @@ namespace Dyalect.Parser
 			case 86: s = "\"is\" expected"; break;
 			case 87: s = "\"^\" expected"; break;
 			case 88: s = "\"..<\" expected"; break;
-			case 89: s = "\"\\\\\" expected"; break;
+			case 89: s = "\"::\" expected"; break;
 			case 90: s = "\"<(\" expected"; break;
 			case 91: s = "\")>\" expected"; break;
 			case 92: s = "\"base\" expected"; break;

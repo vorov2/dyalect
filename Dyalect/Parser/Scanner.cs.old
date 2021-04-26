@@ -49,7 +49,6 @@ namespace Dyalect.Parser
 		start[62] = 90; 
 		start[33] = 91; 
 		start[126] = 92; 
-		start[92] = 76; 
 		start[Buffer.EOF] = -1;
 
         }
@@ -479,6 +478,7 @@ namespace Dyalect.Parser
 				recEnd = pos; recKind = 24;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 6;}
 				else if (ch == '.') {AddCh(); goto case 93;}
+				else if (ch == ':') {AddCh(); goto case 76;}
 				else {t.kind = 24; break;}
 			case 80:
 				recEnd = pos; recKind = 59;

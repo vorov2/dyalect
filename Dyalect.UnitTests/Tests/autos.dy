@@ -195,7 +195,7 @@ func autosExceptions4() {
             auto box = Box(12)
             return x / y
         } catch _ {
-            return def\key
+            return def::key
         }
     }
     var xs = [divide(10, 2), divide(2, 0)]

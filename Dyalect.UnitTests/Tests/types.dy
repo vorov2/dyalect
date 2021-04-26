@@ -67,8 +67,8 @@ func autoConsTest3() {
     var p = Point(12, 43)
     assert(12, p[0])
     assert(43, p[1])
-    assert(12, p\x)
-    assert(43, p\y)
+    assert(12, p::x)
+    assert(43, p::y)
 }
 
 type Nat
@@ -214,7 +214,7 @@ func simpleTypeTest2() {
     assert(1, b.len())
     assert(12, b[0])
     assert(12, b["x"])
-    assert(12, b\x)
+    assert(12, b::x)
 }
 
 type Record
@@ -231,15 +231,15 @@ func accessorTest() {
     }
     var p = Record(values: (name: "John", age: 33))
     assert("John", p["name"])
-    assert(33, p\age)
+    assert(33, p::age)
 }
 
 type UserInfo(name,age)
 func setterTest1() {
     var u = UserInfo("Jon", 17)
-    assert(17, u\age)
-    u\age = 39
-    assert(39, u\age)
+    assert(17, u::age)
+    u::age = 39
+    assert(39, u::age)
 }
 
 type Point1
@@ -254,10 +254,10 @@ func setterTest2() { //Bug #205
         this[index] = value
     }
     var p = Point1(12, 34)
-    p\x += p\x
-    p\y += p\y
-    assert(24, p\x)
-    assert(68, p\y)
+    p::x += p::x
+    p::y += p::y
+    assert(24, p::x)
+    assert(68, p::y)
 }
 
 func complexMemberCheckTest1() {
@@ -296,7 +296,7 @@ func objectTypeTest() {
 type X23(x)
 func callableTest1() {
     func X23.call(y, z) {
-        this\x + y * z 
+        this::x + y * z 
     }
     var x = X23(12)
     var res = x(44.5, 67.07)

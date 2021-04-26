@@ -255,16 +255,16 @@ func getTypeTest2() {
     var x = 42
     assert(true, x.getType() == Integer)
     var t = x.getType()
-    assert(1, t\id)
-    assert("Integer", t\name)
+    assert(1, t::id)
+    assert("Integer", t::name)
 }
 
 func getTypeTest3() {
     var x = 42
     assert(true, TypeInfo(x) == Integer)
     var t = TypeInfo(x)
-    assert(1, t\id)
-    assert("Integer", t\name)
+    assert(1, t::id)
+    assert("Integer", t::name)
 }
 
 func hasTest1() {

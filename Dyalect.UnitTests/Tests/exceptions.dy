@@ -228,7 +228,7 @@ func iteratorExceptionTest1() {
     var b = try {
         test()
     } catch e {
-        e\detail.contains("iterator")
+        e::detail.contains("iterator")
     }
     assert(true, b)
 }
@@ -245,7 +245,7 @@ func iteratorExceptionTest2() {
     var b = try {
         test()
     } catch e {
-        e\detail.contains("iterator")
+        e::detail.contains("iterator")
     }
     assert(true, b)
 }
@@ -380,7 +380,7 @@ func throwTest1() {
 func throwTest2() {
     var x
     try {
-        throw Error.InvalidType(0.getType()\name)
+        throw Error.InvalidType(0.getType()::name)
     } catch {
         InvalidType(tn) when tn == "Integer"  => { x = true }
     }
