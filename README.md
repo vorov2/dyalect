@@ -44,7 +44,7 @@ func Float.pow(n) {
         }
     }
     else if n < 0 {
-        for i in (-1)..n {
+        for i in -1..n {
             result /= this
         }
     }
