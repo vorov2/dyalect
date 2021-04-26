@@ -2,13 +2,13 @@
 type Bar
 
 func extendTest1() {
-    ctor Bar.Bar(args...) {
+    func Bar.Bar(args...) cons {
         args
     }
-    func Bar.len() {
+    func Bar.len() decons {
         this.len()
     }
-    func Bar.get(index) {
+    func Bar.get(index) decons {
         this[index]
     }
     var obj = Bar.Bar(1, 2, 3)
@@ -20,13 +20,13 @@ func extendTest1() {
 }
 
 func extendTest2() {
-    ctor Bar.Bar(args...) {
+    func Bar.Bar(args...) cons {
         args
     }
-    func Bar.len() {
+    func Bar.len() decons {
         this.len()
     }
-    func Bar.get(index) {
+    func Bar.get(index) decons {
         this[index]
     }
     var obj = Bar(1, 2, 3)
@@ -80,28 +80,28 @@ func typeTest1() {
             Nat(x)
         }
     }
-    ctor Nat.Nat(x) {
+    func Nat.Nat(x) cons {
         if x < 0 {
             throw "Negative number."
         }
         x
     }
-    func Nat.toInteger() {
+    func Nat.toInteger() decons {
         this
     }
-    func Nat + (other) {
+    func Nat + (other) decons {
         fetch(this + other.toInteger())
     }
-    func Nat - (other) {
+    func Nat - (other) decons {
         fetch(this - other.toInteger())
     }
-    func Nat * (other) {
+    func Nat * (other) decons {
         fetch(this * other.toInteger())
     }
-    func Nat / (other) {
+    func Nat / (other) decons {
         fetch(this / other.toInteger())
     }
-    func Nat == (other) {
+    func Nat == (other) decons {
         this == other.toInteger()
     }
     var n = Nat(12)
@@ -132,16 +132,16 @@ func typeTest3() {
     func ref(value) {
         Cell((__value: value))
     }
-    ctor Cell.Cell(value) {
+    func Cell.Cell(value) cons {
         value
     }
-    func Cell.setValue(value) {
+    func Cell.setValue(value) decons {
         this["__value"] = value
     }
-    func Cell.getValue() {
+    func Cell.getValue() decons {
         this["__value"]
     }
-    func Cell.get(index) {
+    func Cell.get(index) decons {
         if index != 0 {
             throw "Index out of range."
         }
@@ -179,7 +179,7 @@ func typeTest4() {
 }
 
 func typeTest5() {
-    static func List.List(values...) {
+    func List.List(values...) static {
         var xs = List.Empty()
         for x in values {
             xs = List.Cons(x, xs)
@@ -193,7 +193,7 @@ func typeTest5() {
 type Zoo1()
 func typeTest6() {
     var x = Zoo1()
-    func Zoo1.toString() {
+    func Zoo1.toString() decons {
         match this {
             nil => "nil"
         }
@@ -219,10 +219,10 @@ func simpleTypeTest2() {
 
 type Record
 func accessorTest() {
-    ctor Record.Record(values...) {
+    func Record.Record(values...) cons {
         values
     }
-    func Record.get(index) {
+    func Record.get(index) decons {
         if index == "name" {
             return this["name"]
         } else if index == "age" {
@@ -244,13 +244,13 @@ func setterTest1() {
 
 type Point1
 func setterTest2() { //Bug #205
-    ctor Point1.Point1(x, y) {
+    func Point1.Point1(x, y) cons {
         (x, y)
     }
-    func Point1.get(index) {
+    func Point1.get(index) decons {
         this[index]
     }
-    func Point1.set(index, value) {
+    func Point1.set(index, value) decons {
         this[index] = value
     }
     var p = Point1(12, 34)

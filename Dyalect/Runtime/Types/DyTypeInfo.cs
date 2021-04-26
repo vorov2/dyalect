@@ -415,7 +415,6 @@ namespace Dyalect.Runtime.Types
         protected virtual DyFunction InitializeStaticMember(string name, ExecutionContext ctx) => null;
         #endregion
 
-
         #region Instance
         private readonly Dictionary<string, DyFunction> members = new();
 
@@ -424,7 +423,13 @@ namespace Dyalect.Runtime.Types
         internal DyObject GetInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             var value = LookupInstanceMember(name, ctx);
-            return value is not null ? value.Clone(ctx, self) : ctx.OperationNotSupported(name, self.GetTypeName(ctx));
+
+            if (value is not null)
+                return value.Clone(ctx, self);
+            else if (self.TryGetItem(name, ctx, out var obj))
+                return obj;
+            else
+                return ctx.OperationNotSupported(name, self.GetTypeName(ctx));
         }
 
         internal DyFunction LookupInstanceMember(string name, ExecutionContext ctx)

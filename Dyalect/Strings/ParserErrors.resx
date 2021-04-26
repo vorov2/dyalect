@@ -186,4 +186,7 @@
   <data name="Deprecated" xml:space="preserve">
     <value>Deprecated syntax: {0}.</value>
   </data>
+  <data name="InvalidFunctionAttribute" xml:space="preserve">
+    <value>Function attribute "{0}" is not recognized.</value>
+  </data>
 </root>

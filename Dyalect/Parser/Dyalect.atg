@@ -149,14 +149,14 @@ PRODUCTIONS
         .)
         identToken (. typ.Name = t.val; node = typ; .)
         [
-            (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsAutoConstructor = true, TypeName = new Qualident(typ.Name) }; .)
+            (. f = new DFunctionDeclaration(t) { Name = typ.Name, Attribute = FunctionAttribute.Constructor, TypeName = new Qualident(typ.Name) }; .)
             FunctionArguments<f>
             (. typ.Constructors.Add(f); .)
         ]
         [
             "="
-            identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsAutoConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
-            { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsAutoConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
+            identToken (. f = new DFunctionDeclaration(t) { Name = t.val, Attribute = FunctionAttribute.Constructor, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
+            { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, Attribute = FunctionAttribute.Constructor, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
         ].
 
     Statement<out DNode node> =
@@ -256,15 +256,11 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; bool st = false; bool ctor = false; .)
+        (. node = null; .)
         (
-            (
-                "static" "func" (. st = true; .)
-                | "func"
-                | "ctor" (. st = true; ctor = true; .)
-            )
+            "func"
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st, IsConstructor = ctor };
+                var f = new DFunctionDeclaration(t);
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>
@@ -283,9 +279,19 @@ PRODUCTIONS
                 }
             .)
             FunctionArguments<f>
-            (
-                Block<out node>
-            )
+            [
+                identToken
+                (.
+                    var attr = FunctionAttribute.None; 
+                    if (t.val == "static") attr = FunctionAttribute.Static;
+                    else if (t.val == "cons") attr = FunctionAttribute.Constructor;
+                    else if (t.val == "decons") attr = FunctionAttribute.Deconstructor;
+                    else
+                        AddError(ParserError.InvalidFunctionAttribute, t.GetLocation(), t.val);
+                    f.Attribute = attr;
+                .)
+            ]
+            Block<out node>
             (.
                 f.Body = node;
                 node = f;

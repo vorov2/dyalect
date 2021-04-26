@@ -79,7 +79,7 @@ namespace Dyalect.Runtime.Types
 
         internal protected virtual string GetLabel() => null;
 
-        internal protected virtual DyObject GetTaggedValue() => null;
+        internal protected virtual DyObject GetTaggedValue() => this;
 
         public virtual string GetConstructor(ExecutionContext ctx) => null;
 

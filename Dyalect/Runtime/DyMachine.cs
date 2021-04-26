@@ -92,10 +92,10 @@ namespace Dyalect.Runtime
                     case OpCode.Nop:
                         break;
                     case OpCode.This:
-                        evalStack.Push(function.Self);
+                        evalStack.Push(function.Self.GetTaggedValue());
                         break;
                     case OpCode.Unbox:
-                        evalStack.Replace(evalStack.Peek().GetSelf());
+                        evalStack.Replace(evalStack.Peek().GetSelf().GetTaggedValue());
                         break;
                     case OpCode.Term:
                         if (evalStack.Size > 1 || evalStack.Size == 0)

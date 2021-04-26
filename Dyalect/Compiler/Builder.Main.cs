@@ -664,13 +664,21 @@ namespace Dyalect.Compiler
             var newHints = hints.Remove(Last);
 
             //Check if an application is in fact a built-in operator call
-            if (name != null && sv.IsEmpty() && name == "nameof" && node.Arguments.Count == 1)
-            {
-                var push = GetExpressionName(node.Arguments[0]);
-                AddLinePragma(node);
-                cw.Push(push);
-                return;
-            }
+            if (name != null && sv.IsEmpty())
+                if (name == "nameof" && node.Arguments.Count == 1)
+                {
+                    var push = GetExpressionName(node.Arguments[0]);
+                    AddLinePragma(node);
+                    cw.Push(push);
+                    return;
+                }
+                else if (name == "valueof" && node.Arguments.Count == 1)
+                {
+                    Build(node.Arguments[0], newHints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.Unbox();
+                    return;
+                }
 
             //This is a special optimization for the 'toString', 'has' and 'len' methods
             //If we see that it is called directly we than emit a direct op code
