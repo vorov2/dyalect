@@ -31,10 +31,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) => Value.GetItem(index, ctx);
 
-        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value) =>
-            Value.TryGetItem(name, ctx, out value);
-
-        protected internal override bool TryGetItem(int index, ExecutionContext ctx, out DyObject value) =>
+        protected internal override bool TryGetItem(DyObject index, ExecutionContext ctx, out DyObject value) =>
             Value.TryGetItem(index, ctx, out value);
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Value.HasItem(name, ctx);

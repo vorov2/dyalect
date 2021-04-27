@@ -30,9 +30,16 @@ namespace Dyalect.Runtime.Types
 
         protected abstract DyObject CollectionGetItem(int index, ExecutionContext ctx);
 
-        protected internal sealed override bool TryGetItem(int index, ExecutionContext ctx, out DyObject value)
+        protected internal override bool TryGetItem(DyObject obj, ExecutionContext ctx, out DyObject value)
         {
-            index = CorrectIndex(index);
+            if (obj.TypeId is not DyType.Integer)
+            {
+                value = null;
+                ctx.InvalidType(obj);
+                return false;
+            }
+
+            var index = CorrectIndex((int)obj.GetInteger());
 
             if (index < 0 || index >= Count)
             {

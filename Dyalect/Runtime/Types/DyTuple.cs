@@ -55,18 +55,23 @@ namespace Dyalect.Runtime.Types
                 ctx.InvalidType(index);
         }
 
-        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
+        protected internal override bool TryGetItem(DyObject index, ExecutionContext ctx, out DyObject value)
         {
-            var i = GetOrdinal(name);
-
-            if (i == -1)
+            if (index.TypeId is DyType.String)
             {
-                value = null;
-                return false;
+                var i = GetOrdinal(index.GetString());
+
+                if (i == -1)
+                {
+                    value = null;
+                    return false;
+                }
+
+                value = GetItem(i, ctx);
+                return true;
             }
 
-            value = GetItem(i, ctx);
-            return true;
+            return base.TryGetItem(index, ctx, out value);
         }
 
         protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx)

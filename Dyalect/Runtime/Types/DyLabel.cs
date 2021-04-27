@@ -24,28 +24,35 @@
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;
 
-        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
+        protected internal override bool TryGetItem(DyObject index, ExecutionContext ctx, out DyObject value)
         {
-            if (name == Label)
+            if (index.TypeId == DyType.Integer)
             {
+                if (index.GetInteger() != 0)
+                {
+                    value = null;
+                    return false;
+                }
+
                 value = Value;
                 return true;
             }
 
-            value = null;
-            return false;
-        }
-
-        protected internal override bool TryGetItem(int index, ExecutionContext ctx, out DyObject value)
-        {
-            if (index != 0)
+            if (index.TypeId == DyType.String)
             {
-                value = null;
-                return false;
+                if (index.GetString() != Label)
+                {
+                    value = null;
+                    return false;
+                }
+
+                value = Value;
+                return true;
             }
 
-            value = Value;
-            return true;
+            ctx.InvalidType(index);
+            value = null;
+            return false;
         }
 
         public override int GetHashCode() => Value.GetHashCode();
