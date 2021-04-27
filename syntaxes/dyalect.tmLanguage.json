@@ -29,7 +29,7 @@
 					"name": "keyword.control.branch.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:continue|break|yield|return)\\b",
+					"match": "(?<!\\.)\\b(?:continue|break|yield|many|return)\\b",
 					"name": "keyword.control.transfer.dyalect"
 				},
 				{
@@ -41,7 +41,7 @@
 					"name": "keyword.control.exception.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:const|var|set|auto)\\b",
+					"match": "(?<!\\.)\\b(?:let|var|set|auto)\\b",
 					"name": "keyword.other.declaration-specifier.dyalect"
 				},
 				{
@@ -53,11 +53,11 @@
 					"name": "storage.modifier.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:func|static)\\b",
+					"match": "(?<!\\.)\\b(?:func|static|cons|decons)\\b",
 					"name": "storage.type.function.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:nameof|typeof|valueof|new)\\b",
+					"match": "(?<!\\.)\\b(?:nameof|typeof)\\b",
 					"name": "keyword.other.builtins"
 				},
 				{

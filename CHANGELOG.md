@@ -1,3 +1,6 @@
+# 0.5.0
+* Syntax highlighting updated according to language changes
+
 # 0.4.0
 * Syntax highlighting updated according to language changes
 * Fixes and tweaks in language editor
