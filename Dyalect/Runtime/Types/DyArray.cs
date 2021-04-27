@@ -161,14 +161,6 @@ namespace Dyalect.Runtime.Types
 
         protected override void CollectionSetItem(int index, DyObject obj, ExecutionContext ctx) =>
             Values[index] = obj;
-        
-        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
-        {
-            if (index.TypeId != DyType.Integer)
-                ctx.InvalidType(index);
-            else
-                SetItem((int)index.GetInteger(), value, ctx);
-        }
 
         internal override DyObject GetValue(int index) => Values[CorrectIndex(index)];
 

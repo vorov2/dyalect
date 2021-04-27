@@ -51,9 +51,15 @@ namespace Dyalect.Runtime.Types
             return true;
         }
 
-        protected internal sealed override void SetItem(int index, DyObject value, ExecutionContext ctx)
+        protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
         {
-            index = CorrectIndex(index);
+            if (obj.TypeId is not DyType.Integer)
+            {
+                ctx.InvalidType(obj);
+                return;
+            }
+
+            var index = CorrectIndex((int)obj.GetInteger());
 
             if (index >= Count)
                 ctx.IndexOutOfRange();

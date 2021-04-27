@@ -44,12 +44,6 @@ namespace Dyalect.Runtime.Types
             return false;
         }
 
-        internal protected virtual void SetItem(string name, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Get, this.GetTypeName(ctx));
-
-        internal protected virtual void SetItem(int index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Set, this.GetTypeName(ctx));
-
         internal protected virtual bool HasItem(string name, ExecutionContext ctx) => false;
 
         internal protected virtual string GetLabel() => null;

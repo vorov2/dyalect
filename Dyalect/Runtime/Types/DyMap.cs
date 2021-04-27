@@ -109,9 +109,6 @@ namespace Dyalect.Runtime.Types
                 return value;
         }
 
-        internal protected override void SetItem(int index, DyObject obj, ExecutionContext ctx) =>
-            SetItem(DyInteger.Get(index), obj, ctx);
-
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
             if (!Map.TryAdd(index, value))

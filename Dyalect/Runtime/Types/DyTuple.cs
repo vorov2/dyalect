@@ -45,16 +45,6 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(index);
         }
 
-        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
-        {
-            if (index.TypeId == DyType.Integer)
-                SetItem((int)index.GetInteger(), value, ctx);
-            else if (index.TypeId == DyType.String)
-                SetItem(index.GetString(), value, ctx);
-            else
-                ctx.InvalidType(index);
-        }
-
         protected internal override bool TryGetItem(DyObject index, ExecutionContext ctx, out DyObject value)
         {
             if (index.TypeId is DyType.String)
@@ -74,14 +64,19 @@ namespace Dyalect.Runtime.Types
             return base.TryGetItem(index, ctx, out value);
         }
 
-        protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx)
+        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
-            var i = GetOrdinal(name);
+            if (index.TypeId is DyType.String)
+            {
+                var i = GetOrdinal(index.GetString());
 
-            if (i == -1)
-                ctx.IndexOutOfRange();
+                if (i == -1)
+                    ctx.IndexOutOfRange();
 
-            SetItem(i, value, ctx);
+                CollectionSetItem(i, value, ctx);
+            }
+            else
+                base.SetItem(index, value, ctx);
         }
 
         private int GetOrdinal(string name)
