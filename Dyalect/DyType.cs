@@ -16,7 +16,7 @@ namespace Dyalect
                 new DyStringTypeInfo(),
                 new DyFunctionTypeInfo(),
                 new DyLabelTypeInfo(),
-                new DyTypeTypeInfo(),
+                new DyMetaTypeInfo(),
                 new DyModuleTypeInfo(),
                 new DyArrayTypeInfo(),
                 new DyIteratorTypeInfo(),

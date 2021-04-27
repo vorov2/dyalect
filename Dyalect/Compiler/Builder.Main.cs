@@ -457,7 +457,7 @@ namespace Dyalect.Compiler
                     {
                         Build(el, hints.Append(Push), ctx);
 
-                        if ((name = el.GetName()) != null)
+                        if ((name = el.GetName()) is not null)
                             cw.Tag(name);
                     }
                 }
