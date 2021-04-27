@@ -117,7 +117,7 @@ namespace Dyalect.Runtime.Types
 
         internal int IndexOf(ExecutionContext ctx, DyObject elem)
         {
-            for (var i = 0; i < Values.Length; i++)
+            for (var i = 0; i < Count; i++)
             {
                 var e = Values[i];
 
