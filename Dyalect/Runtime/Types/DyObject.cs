@@ -37,12 +37,6 @@ namespace Dyalect.Runtime.Types
         internal protected virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Set, this.GetTypeName(ctx));
 
-        internal protected virtual DyObject GetItem(string name, ExecutionContext ctx) =>
-            GetItem(new DyString(name), ctx);
-
-        internal protected virtual DyObject GetItem(int index, ExecutionContext ctx) =>
-            index == 0 ? this : ctx.IndexOutOfRange();
-
         internal protected virtual bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
         {
             value = null;
@@ -98,16 +92,11 @@ namespace Dyalect.Runtime.Types
         public override int GetHashCode() => HashCode.Combine(TypeId);
     }
 
-    internal static class DyObjectInternalExtensions
-    {
-        public static bool IsNil(this DyObject self) => ReferenceEquals(self, DyNil.Instance);
-
-        public static DyObject GetIterator(this DyObject self, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Composition.Types[self.TypeId].GetInstanceMember(self, Builtins.Iterator, ctx);
-    }
-
     public static class DyObjectExtensions
     {
+        internal static DyObject GetIterator(this DyObject self, ExecutionContext ctx) =>
+            ctx.RuntimeContext.Composition.Types[self.TypeId].GetInstanceMember(self, Builtins.Iterator, ctx);
+
         public static DyTypeInfo GetTypeInfo(this DyObject self, ExecutionContext ctx) =>
             ctx.RuntimeContext.Composition.Types[self.TypeId];
 

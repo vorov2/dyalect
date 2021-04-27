@@ -358,7 +358,8 @@ namespace Dyalect.Compiler
                     BuildLabel((DLabelPattern)e, hints, ctx);
                 else
                 {
-                    cw.Get(i);
+                    cw.Push(i);
+                    cw.Get();
                     BuildPattern((DPattern)e, hints, ctx);
                 }
 

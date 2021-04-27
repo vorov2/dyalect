@@ -321,22 +321,11 @@ namespace Dyalect.Runtime.Types
         //x[y]
         private DyFunction get;
         protected virtual DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) =>
-            index.TypeId is DyType.String ? GetOp(self, index.GetString(), ctx) : ctx.OperationNotSupported(Builtins.Get, self.GetTypeName(ctx));
-        protected virtual DyObject GetOp(DyObject self, string index, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Get, self.GetTypeName(ctx));
-        protected virtual DyObject GetOp(DyObject self, int index, ExecutionContext ctx) =>
-            GetOp(self, DyInteger.Get(index), ctx);
         public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
         {
             if (get is not null)
                 return get.Clone(ctx, self).Call1(index, ctx);
-
-            return GetOp(self, index, ctx);
-        }
-        public DyObject Get(ExecutionContext ctx, DyObject self, int index)
-        {
-            if (get is not null)
-                return get.Clone(ctx, self).Call1(DyInteger.Get(index), ctx);
 
             return GetOp(self, index, ctx);
         }
@@ -345,19 +334,10 @@ namespace Dyalect.Runtime.Types
         private DyFunction set;
         protected virtual DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Set, self.GetTypeName(ctx));
-        protected virtual DyObject SetOp(DyObject self, int index, DyObject value, ExecutionContext ctx) =>
-            SetOp(self, DyInteger.Get(index), value, ctx);
         public DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
             if (set is not null)
                 return set.Clone(ctx, self).Call2(index, value, ctx);
-
-            return SetOp(self, index, value, ctx);
-        }
-        public DyObject Set(ExecutionContext ctx, DyObject self, int index, DyObject value)
-        {
-            if (set is not null)
-                return set.Clone(ctx, self).Call2(DyInteger.Get(index), value, ctx);
 
             return SetOp(self, index, value, ctx);
         }
@@ -371,7 +351,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject GetStaticMember(string name, ExecutionContext ctx) =>
             LookupStaticMember(name, ctx) ?? ctx.OperationNotSupported(name, TypeName);
 
-        private DyObject LookupStaticMember(string name, ExecutionContext ctx)
+        private DyFunction LookupStaticMember(string name, ExecutionContext ctx)
         {
             if (!staticMembers.TryGetValue(name, out var value))
             {
@@ -396,6 +376,7 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 "TypeInfo" => DyForeignFunction.Static(name, (c, obj) => c.RuntimeContext.Types[obj.TypeId], -1, new Par("value")),
+                "has" => DyForeignFunction.Member(name, Has, -1, new Par("member")),
                 "__deleteMember" => DyForeignFunction.Static(name,
                     (context, strObj) =>
                     {
@@ -405,7 +386,6 @@ namespace Dyalect.Runtime.Types
                         staticMembers.Remove(name);
                         return DyNil.Instance;
                     }, -1, new Par("name")),
-                "has" => DyForeignFunction.Member(name, Has, -1, new Par("member")),
                 _ => InitializeStaticMember(name, ctx)
             };
 
@@ -551,13 +531,18 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.TypeInfo;
 
-        protected override DyObject GetOp(DyObject self, string index, ExecutionContext ctx) =>
-            index switch
-            {
-                "id" => DyInteger.Get(((DyTypeInfo)self).TypeCode),
-                "name" => new DyString(((DyTypeInfo)self).TypeName),
-                _ => ctx.IndexOutOfRange()
-            };
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        {
+            if (index.TypeId is DyType.String)
+                return index.GetString() switch
+                {
+                    "id" => DyInteger.Get(((DyTypeInfo)self).TypeCode),
+                    "name" => new DyString(((DyTypeInfo)self).TypeName),
+                    _ => ctx.IndexOutOfRange()
+                };
+
+            return ctx.IndexOutOfRange();
+        }
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(("typeInfo " + ((DyTypeInfo)arg).TypeName).PutInBrackets());

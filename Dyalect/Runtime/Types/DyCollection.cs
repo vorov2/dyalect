@@ -18,11 +18,11 @@ namespace Dyalect.Runtime.Types
         #region Indexing
         protected int CorrectIndex(int index) => index < 0 ? Count + index : index;
 
-        protected internal sealed override DyObject GetItem(int index, ExecutionContext ctx)
+        internal DyObject GetItem(int index, ExecutionContext ctx)
         {
             index = CorrectIndex(index);
             
-            if (index < 0 || index >= Count)
+            if (index >= Count)
                 return ctx.IndexOutOfRange();
             
             return CollectionGetItem(index, ctx);
@@ -48,7 +48,7 @@ namespace Dyalect.Runtime.Types
         {
             index = CorrectIndex(index);
 
-            if (index < 0 || index >= Count)
+            if (index >= Count)
                 ctx.IndexOutOfRange();
             else
                 CollectionSetItem(index, value, ctx);

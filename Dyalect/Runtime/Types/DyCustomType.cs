@@ -31,8 +31,6 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) => Value.GetItem(index, ctx);
 
-        protected internal override DyObject GetItem(int index, ExecutionContext ctx) => Value.GetItem(index, ctx);
-
         protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value) =>
             Value.TryGetItem(name, ctx, out value);
 
@@ -95,26 +93,7 @@ namespace Dyalect.Runtime.Types
             return base.GetOp(self, index, ctx);
         }
 
-        protected override DyObject GetOp(DyObject self, int index, ExecutionContext ctx)
-        {
-            if (autoGenMethods)
-                return self.GetItem(index, ctx);
-
-            return base.GetOp(self, index, ctx);
-        }
-
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
-        {
-            if (autoGenMethods)
-            {
-                self.SetItem(index, value, ctx);
-                return DyNil.Instance;
-            }
-
-            return base.SetOp(self, index, value, ctx);
-        }
-
-        protected override DyObject SetOp(DyObject self, int index, DyObject value, ExecutionContext ctx)
         {
             if (autoGenMethods)
             {

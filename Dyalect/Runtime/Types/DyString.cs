@@ -66,8 +66,7 @@ namespace Dyalect.Runtime.Types
             if (index.TypeId != DyType.Integer)
                 return ctx.InvalidType(index);
 
-            var idx = (int)index.GetInteger();
-            return GetItem(idx, ctx);
+            return GetItem((int)index.GetInteger(), ctx);
         }
 
         protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) =>
@@ -145,8 +144,6 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)StringUtil.Escape(arg.GetString());
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
-
-        protected override DyObject GetOp(DyObject self, int index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {

@@ -268,8 +268,6 @@ namespace Dyalect.Compiler
         public void RunMod(int code) => Emit(new(OpCode.RunMod, code));
         public void Aux(string value) => Emit(new(OpCode.Aux, IndexString(value)));
         public void Aux(int data) => Emit(new(OpCode.Aux, data));
-        public void Get(int index) => Emit(new(OpCode.GetIx, index));
-        public void Set(int index) => Emit(new(OpCode.SetIx, index));
         public void HasField(string field) => Emit(new(OpCode.HasField, IndexString(field)));
         public void Start(Label lab) => Emit(OpCode.Start, lab);
         public void Fail(DyErrorCode code) => Emit(new(OpCode.FailSys, (int)code));

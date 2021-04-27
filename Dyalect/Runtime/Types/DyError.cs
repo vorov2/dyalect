@@ -48,9 +48,12 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => errorCode + ": " + GetDescription();
 
-        protected internal override DyObject GetItem(string name, ExecutionContext ctx)
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (!TryGetItem(name, ctx, out var value))
+            if (index.TypeId != DyType.String)
+                return ctx.InvalidType(index);
+
+            if (!TryGetItem(index.GetString(), ctx, out var value))
                 return ctx.IndexOutOfRange();
 
             return value;

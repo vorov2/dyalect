@@ -33,7 +33,14 @@ namespace Dyalect.Runtime.Types
                 return GetItem((int)index.GetInteger(), ctx);
             
             if (index.TypeId == DyType.String || index.TypeId == DyType.Char)
-                return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange();
+            {
+                var i = GetOrdinal(index.GetString());
+
+                if (i == -1)
+                    return ctx.IndexOutOfRange();
+
+                return GetItem(i, ctx);
+            }
             
             return ctx.InvalidType(index);
         }
@@ -46,16 +53,6 @@ namespace Dyalect.Runtime.Types
                 SetItem(index.GetString(), value, ctx);
             else
                 ctx.InvalidType(index);
-        }
-
-        protected internal override DyObject GetItem(string name, ExecutionContext ctx)
-        {
-            var i = GetOrdinal(name);
-
-            if (i == -1)
-                return ctx.IndexOutOfRange();
-
-            return GetItem(i, ctx);
         }
 
         protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
@@ -194,8 +191,6 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyObject GetOp(DyObject self, int index, ExecutionContext ctx) => self.GetItem(index, ctx);
-
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             self.SetItem(index, value, ctx);
@@ -222,10 +217,10 @@ namespace Dyalect.Runtime.Types
         }
 
         private DyObject GetFirst(ExecutionContext ctx, DyObject self) =>
-            self.GetItem(0, ctx);
+            self.GetItem(DyInteger.Zero, ctx);
 
         private DyObject GetSecond(ExecutionContext ctx, DyObject self) =>
-            self.GetItem(1, ctx);
+            self.GetItem(DyInteger.One, ctx);
 
         private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject fun)
         {

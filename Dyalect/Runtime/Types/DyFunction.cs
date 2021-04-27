@@ -116,12 +116,12 @@ namespace Dyalect.Runtime.Types
             return base.InitializeInstanceMember(name, ctx);
         }
 
-        protected override DyObject GetOp(DyObject self, string index, ExecutionContext ctx) =>
-            index switch
-            {
-                "name" => new DyString(((DyFunction)self).FunctionName),
-                _ => ctx.IndexOutOfRange()
-            };
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        {
+            if (index.TypeId == DyType.String && index.GetString() == "name")
+                return new DyString(((DyFunction)self).FunctionName);
+            return ctx.IndexOutOfRange();
+        }
 
         private DyObject Compose(ExecutionContext ctx, DyObject first, DyObject second)
         {

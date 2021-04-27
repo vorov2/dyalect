@@ -80,8 +80,6 @@
             0,  //FunCall
 
             0,  //NewTuple **dynamic
-            0,  //GetIx
-            -2, //SetIx
             0,  //HasField
             0,  //TypeCheck
             0,  //TypeCheckT

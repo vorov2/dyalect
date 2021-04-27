@@ -38,9 +38,6 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        protected internal override DyObject GetItem(int index, ExecutionContext ctx) =>
-                ctx.InvalidType(DyInteger.Get(index));
-
         protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
         {
             if (!TryGetMember(name, ctx, out value))

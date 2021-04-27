@@ -27,9 +27,12 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => map;
 
-        protected internal override DyObject GetItem(string name, ExecutionContext ctx)
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (!map.TryGetValue(name, out var value))
+            if (index.TypeId != DyType.String)
+                return ctx.InvalidType(index);
+
+            if (!map.TryGetValue(index.GetString(), out var value))
                 return ctx.IndexOutOfRange();
 
             return value;
@@ -69,13 +72,8 @@ namespace Dyalect.Runtime.Types
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get;
 
-        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
-        {
-            if (index.TypeId != DyType.String)
-                return ctx.InvalidType(index);
-
-            return self.GetItem(index.GetString(), ctx);
-        }
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) =>
+            self.GetItem(index, ctx);
 
         public override string TypeName => DyTypeNames.Object;
     }

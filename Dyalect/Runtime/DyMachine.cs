@@ -380,16 +380,6 @@ namespace Dyalect.Runtime
                         types[right.TypeId].Set(ctx, right, left, evalStack.Pop());
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
-                    case OpCode.GetIx:
-                        right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].Get(ctx, right, op.Data));
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        break;
-                    case OpCode.SetIx:
-                        right = evalStack.Pop();
-                        types[right.TypeId].Set(ctx, right, op.Data, evalStack.Pop());
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        break;
                     case OpCode.HasField:
                         right = evalStack.Peek();
                         evalStack.Replace(right.HasItem(unit.IndexedStrings[op.Data].Value, ctx));

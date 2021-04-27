@@ -79,8 +79,6 @@
             1, //FunArgNm
             1, //FunCall
             1, //NewTuple
-            1, //GetIx
-            1, //SetIx
             1, //HasField
             1, //TypeCheck
             1, //TypeCheckT

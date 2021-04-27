@@ -22,12 +22,6 @@
                 (index.TypeId == DyType.String && index.GetString() == Label)
                 ? Value : ctx.IndexOutOfRange();
 
-        internal protected override DyObject GetItem(string name, ExecutionContext ctx) =>
-            name == Label ? Value : ctx.IndexOutOfRange();
-
-        internal protected override DyObject GetItem(int index, ExecutionContext ctx) =>
-            index == 0 ? Value : ctx.IndexOutOfRange();
-
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;
 
         protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)

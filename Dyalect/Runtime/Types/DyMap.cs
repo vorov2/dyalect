@@ -109,8 +109,6 @@ namespace Dyalect.Runtime.Types
                 return value;
         }
 
-        internal protected override DyObject GetItem(int index, ExecutionContext ctx) => GetItem(DyInteger.Get(index), ctx);
-
         internal protected override void SetItem(int index, DyObject obj, ExecutionContext ctx) =>
             SetItem(DyInteger.Get(index), obj, ctx);
 
@@ -167,8 +165,6 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
-
-        protected override DyObject GetOp(DyObject self, int index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
