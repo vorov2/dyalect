@@ -6,7 +6,7 @@
 
         UnexpectedError = 601,
 
-        //= 602,
+        MultipleValuesForArgument = 602,
 
         ExternalFunctionFailure = 603,
 

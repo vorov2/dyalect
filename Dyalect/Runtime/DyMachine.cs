@@ -523,7 +523,16 @@ namespace Dyalect.Runtime
                                     goto CATCH;
                             }
                             else
+                            {
+                                if (locs.Locals[idx] is not null)
+                                {
+                                    ctx.MultipleValuesForArgument(((DyFunction)evalStack.Peek(2)).FunctionName, unit.IndexedStrings[op.Data].Value);
+                                    if (ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper))
+                                        goto CATCH;
+                                }
+
                                 locs.Locals[idx] = evalStack.Pop();
+                            }
                         }
                         break;
                     case OpCode.FunCall:

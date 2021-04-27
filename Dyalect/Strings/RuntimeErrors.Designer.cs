@@ -160,6 +160,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Function &quot;{0}&quot; has multiple values for an argument &quot;{1}&quot;..
+        /// </summary>
+        internal static string MultipleValuesForArgument {
+            get {
+                return ResourceManager.GetString("MultipleValuesForArgument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation &quot;{0}&quot; is not supported by the type &quot;{1}&quot;..
         /// </summary>
         internal static string OperationNotSupported {

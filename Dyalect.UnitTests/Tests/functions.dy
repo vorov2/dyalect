@@ -333,3 +333,13 @@ func paramsTest3() {
     res = pars(10, 20)
     assert("x=10,y=20,z=3", res)
 }
+
+func paramsTest4() {
+    func pars(x, y, z) { }
+    let res = try {
+        pars(1, 2, x: 3)
+    } catch {
+        MultipleValuesForArgument(funName, argName) => "\(funName)->\(argName)"
+    }
+    assert("pars->x", res)
+}

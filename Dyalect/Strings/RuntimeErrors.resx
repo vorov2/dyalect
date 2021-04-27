@@ -165,4 +165,7 @@
   <data name="KeyAlreadyPresent" xml:space="preserve">
     <value>Key is already present in the dictionary.</value>
   </data>
+  <data name="MultipleValuesForArgument" xml:space="preserve">
+    <value>Function "{0}" has multiple values for an argument "{1}".</value>
+  </data>
 </root>
