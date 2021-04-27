@@ -1081,7 +1081,7 @@ namespace Dyalect.Parser
 		functions.Push(f); 
 		Expect(23);
 		Expr(out var exp);
-		f.Body = exp; 
+		f.Body = exp; functions.Pop(); 
 	}
 
 	void Is(out DNode node) {

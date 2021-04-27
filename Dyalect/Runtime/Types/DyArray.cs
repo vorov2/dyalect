@@ -117,7 +117,7 @@ namespace Dyalect.Runtime.Types
 
         internal int IndexOf(ExecutionContext ctx, DyObject elem)
         {
-            for (var i = 0; i < Values.Length; i++)
+            for (var i = 0; i < Count; i++)
             {
                 var e = Values[i];
 
@@ -472,7 +472,7 @@ namespace Dyalect.Runtime.Types
                 "clear" => DyForeignFunction.Member(name, ClearItems),
                 "indexOf" => DyForeignFunction.Member(name, IndexOf, -1, new Par("item")),
                 "lastIndexOf" => DyForeignFunction.Member(name, LastIndexOf, -1, new Par("item")),
-                "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
+                "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
                 "swap" => DyForeignFunction.Member(name, Swap, -1, new Par("fst"), new Par("snd")),
                 "compact" => DyForeignFunction.Member(name, Compact),
                 "reverse" => DyForeignFunction.Member(name, Reverse),

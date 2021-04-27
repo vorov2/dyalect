@@ -767,7 +767,7 @@ namespace Dyalect.Compiler
                         else
                             dict.Add(la.Label, null);
 
-                        Build(la.Expression, newHints.Append(Push), ctx);
+                        Build(la.Expression, newHints.Append(Push).Remove(IteratorBody), ctx);
                         cw.FunArgNm(la.Label);
                     }
                     else

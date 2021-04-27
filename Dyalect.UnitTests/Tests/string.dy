@@ -198,6 +198,11 @@ func interpolationTest3() {
     assert("value = 30", res)
 }
 
+func interpolationTest4() {
+    assert("[1, 2, 3]", "\([1,2,3])")
+    assert("(1, 2, 3)", "\((1,2,3))")
+}
+
 func stringIndexing() { //#301
     var xs = "abcde"
     assert('e', xs[-1])
