@@ -40,10 +40,7 @@ namespace Dyalect.Runtime.Types
 
         protected abstract SupportedOperations GetSupportedOperations();
 
-        private bool Support(SupportedOperations op)
-        {
-            return (GetSupportedOperations() & op) == op;
-        }
+        private bool Support(SupportedOperations op) => (GetSupportedOperations() & op) == op;
 
         public override object ToObject() => this;
 
@@ -538,20 +535,16 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();
 
-        private DyObject GetIterator(ExecutionContext ctx, DyObject self)
-        {
-            if (self is IEnumerable<DyObject> en)
-                return new DyIterator(en);
-            else
-                return ctx.OperationNotSupported(Builtins.Iterator, self.GetTypeName(ctx));
-        }
+        private DyObject GetIterator(ExecutionContext ctx, DyObject self) =>
+            self is IEnumerable<DyObject> en ? new DyIterator(en)
+            : ctx.OperationNotSupported(Builtins.Iterator, self.GetTypeName(ctx));
         
         public override int GetHashCode() => TypeCode.GetHashCode();
     }
 
-    internal sealed class DyTypeTypeInfo : DyTypeInfo
+    internal sealed class DyMetaTypeInfo : DyTypeInfo
     {
-        public DyTypeTypeInfo() : base(DyType.TypeInfo) { }
+        public DyMetaTypeInfo() : base(DyType.TypeInfo) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Get;

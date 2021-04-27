@@ -380,7 +380,7 @@ PRODUCTIONS
             OrPattern<out var p>
             (. me.Pattern = p; .)
             [ "when" Expr<out var node> (. me.Guard = node; .) ]
-            "=>" Expr<out var exp> (. me.Expression = exp; .)
+            "=>" StatementExpr<out var exp> (. me.Expression = exp; .)
         ).
 
     OrPattern<out DPattern node> =
@@ -1100,7 +1100,7 @@ PRODUCTIONS
                 (. var tup = new DTupleLiteral(t); .)
                 (
                       IF (IsLabel()) Label<out node>
-                    | Expr<out node> 
+                    | Expr<out node>
                 )
                 (. tup.Elements.Add(node); .)
                 { 
@@ -1108,7 +1108,7 @@ PRODUCTIONS
                     [
                         (
                               IF (IsLabel()) Label<out node>
-                            | Expr<out node> 
+                            | Expr<out node>
                         )
                         (. tup.Elements.Add(node); .)
                     ] 
