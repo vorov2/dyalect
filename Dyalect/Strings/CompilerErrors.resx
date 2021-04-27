@@ -246,4 +246,7 @@
   <data name="CtorNotIterator" xml:space="preserve">
     <value>A constructor function cannot be an iterator.</value>
   </data>
+  <data name="PositionalArgumentAfterKeyword" xml:space="preserve">
+    <value>A positional argument can't follow an argument passed by name.</value>
+  </data>
 </root>

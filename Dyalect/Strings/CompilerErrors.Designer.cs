@@ -241,6 +241,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A positional argument can&apos;t follow an argument passed by name..
+        /// </summary>
+        internal static string PositionalArgumentAfterKeyword {
+            get {
+                return ResourceManager.GetString("PositionalArgumentAfterKeyword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Methods cannot be declared inside a &quot;private&quot; scope..
         /// </summary>
         internal static string PrivateMethod {

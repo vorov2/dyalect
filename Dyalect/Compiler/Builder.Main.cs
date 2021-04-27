@@ -749,6 +749,7 @@ namespace Dyalect.Compiler
                 AddLinePragma(node);
                 cw.FunPrep(node.Arguments.Count);
                 Dictionary<string, object> dict = null;
+                var kwArg = false;
 
                 for (var i = 0; i < node.Arguments.Count; i++)
                 {
@@ -759,6 +760,7 @@ namespace Dyalect.Compiler
                         if (dict == null)
                             dict = new();
 
+                        kwArg = true;
                         var la = (DLabelLiteral)a;
                         if (dict.ContainsKey(la.Label))
                             AddError(CompilerError.NamedArgumentMultipleTimes, la.Location, la.Label);
@@ -772,6 +774,9 @@ namespace Dyalect.Compiler
                     {
                         Build(a, newHints.Append(Push), ctx);
                         cw.FunArgIx(i);
+
+                        if (kwArg)
+                            AddError(CompilerError.PositionalArgumentAfterKeyword, a.Location);
                     }
                 }
 
