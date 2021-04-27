@@ -1,5 +1,5 @@
 # 0.20.2
-  * Fix: _Limiting grammar for MatchEntry_ ([Issue #435](https://github.com/vorov2/dyalect/issues/435)).
+  * Fix: _Limiting grammar for MatchEntry_ ([Issue #437](https://github.com/vorov2/dyalect/issues/437)).
 
 # 0.20.1
   * Fix: _`Array.indexOf` crushes_ ([Issue #432](https://github.com/vorov2/dyalect/issues/432)).
