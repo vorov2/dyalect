@@ -750,7 +750,7 @@ namespace Dyalect.Parser
 			me.Guard = node; 
 		}
 		Expect(23);
-		Expr(out var exp);
+		StatementExpr(out var exp);
 		me.Expression = exp; 
 	}
 

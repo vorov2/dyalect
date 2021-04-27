@@ -1,3 +1,6 @@
+# 0.20.2
+  * Fix: _Limiting grammar for MatchEntry_ ([Issue #435](https://github.com/vorov2/dyalect/issues/435)).
+
 # 0.20.1
   * Fix: _`Array.indexOf` crushes_ ([Issue #432](https://github.com/vorov2/dyalect/issues/432)).
   * Fix: _Strange behavior of string interpolation_ ([Issue #433](https://github.com/vorov2/dyalect/issues/433)).
