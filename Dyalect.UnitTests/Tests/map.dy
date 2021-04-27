@@ -52,3 +52,20 @@ func mapTest7() {
     map[[1,2,3]] = [4,5,6]
     assert([4,5,6], map[[1,2,3]])
 }
+
+func mapFieldTest1() {
+    var map = Map()
+    map::name = "John"
+    map::surname = "Doe"
+    map::age = 50
+    assert("John", map::name)
+    assert("Doe", map::surname)
+    assert(50, map::age)
+}
+
+func mapFieldTest2() {
+    var map = Map.fromTuple( (name: "John", surname: "Doe", age: 50) )
+    assert("John", map::name)
+    assert("Doe", map::surname)
+    assert(50, map::age)
+}
