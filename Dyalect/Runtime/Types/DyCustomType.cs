@@ -16,7 +16,7 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => Value.ToObject();
 
-        internal override DyObject GetSelf() => Value;
+        internal override DyObject Unbox() => Value;
 
         internal override int GetCount() => Value.GetCount();
 

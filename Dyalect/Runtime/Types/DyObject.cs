@@ -54,7 +54,7 @@ namespace Dyalect.Runtime.Types
 
         public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 
-        internal virtual DyObject GetSelf() => this;
+        internal virtual DyObject Unbox() => this;
 
         internal virtual int GetCount() => 1;
 
