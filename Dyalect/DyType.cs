@@ -22,7 +22,7 @@ namespace Dyalect
                 new DyIteratorTypeInfo(),
                 new DyTupleTypeInfo(),
                 new DyMapTypeInfo(),
-                new DyCustomObjectTypeInfo(),
+                new DyWrapperTypeInfo(),
                 new DyErrorTypeInfo()
             };
 

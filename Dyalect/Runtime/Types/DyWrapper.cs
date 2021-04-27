@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyCustomObject : DyObject
+    public class DyWrapper : DyObject
     {
         private readonly Dictionary<string, DyObject> map;
 
-        public DyCustomObject(params ValueTuple<string, object>[] fields) : base(DyType.Object)
+        public DyWrapper(params ValueTuple<string, object>[] fields) : base(DyType.Object)
         {
             map = new();
 
@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
                 map[fld] = TypeConverter.ConvertFrom(val);
         }
 
-        public DyCustomObject(IDictionary<string, object> dict) : base(DyType.Object)
+        public DyWrapper(IDictionary<string, object> dict) : base(DyType.Object)
         {
             map = new();
 
@@ -23,7 +23,7 @@ namespace Dyalect.Runtime.Types
                 this.map[fld] = TypeConverter.ConvertFrom(val);
         }
 
-        internal DyCustomObject(Dictionary<string, DyObject> map) : base(DyType.Object) => this.map = map;
+        internal DyWrapper(Dictionary<string, DyObject> map) : base(DyType.Object) => this.map = map;
 
         public override object ToObject() => map;
 
@@ -42,9 +42,9 @@ namespace Dyalect.Runtime.Types
             map.ContainsKey(name);
     }
 
-    public sealed class DyReflectionObject : DyCustomObject
+    public sealed class DyReflectionWrapper : DyWrapper
     {
-        public DyReflectionObject(object instance) : base(Convert(instance)) { }
+        public DyReflectionWrapper(object instance) : base(Convert(instance)) { }
 
         private static Dictionary<string, DyObject> Convert(object instance)
         {
@@ -61,9 +61,9 @@ namespace Dyalect.Runtime.Types
         }
     }
 
-    public class DyCustomObjectTypeInfo : DyTypeInfo
+    public class DyWrapperTypeInfo : DyTypeInfo
     {
-        public DyCustomObjectTypeInfo() : base(DyType.Object) { }
+        public DyWrapperTypeInfo() : base(DyType.Object) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
