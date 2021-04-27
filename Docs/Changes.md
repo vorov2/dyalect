@@ -1,5 +1,6 @@
 # 0.20.1
   * Fix: _`Array.indexOf` crushes_ ([Issue #432](https://github.com/vorov2/dyalect/issues/432)).
+  * Fix: _Strange behavior of string interpolation_ ([Issue #433](https://github.com/vorov2/dyalect/issues/433)).
 
 # 0.20.0
   * Add: _Syntax redesign: constants_ ([Issue #406](https://github.com/vorov2/dyalect/issues/406)).

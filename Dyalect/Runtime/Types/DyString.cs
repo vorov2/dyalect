@@ -513,11 +513,16 @@ namespace Dyalect.Runtime.Types
                 var a = values[i];
 
                 if (a.TypeId == DyType.String || a.TypeId == DyType.Char)
-                    arr.Add(a.GetString()); 
-                else if (a is IEnumerable<DyObject> seq)
-                    Collect(ctx, seq.ToArray(), arr);
+                    arr.Add(a.GetString());
                 else if (a.TypeId == DyType.Iterator)
-                    Collect(ctx, DyIterator.Run(ctx, a).ToArray(), arr);
+                {
+                    var it = DyIterator.Run(ctx, a);
+
+                    if (ctx.HasErrors)
+                        return false;
+
+                    Collect(ctx, it.ToArray(), arr);
+                }
                 else
                 {
                     var res = DyString.ToString(a, ctx);
