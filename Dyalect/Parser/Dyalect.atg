@@ -739,7 +739,7 @@ PRODUCTIONS
             )
             (. functions.Push(f); .)
             "=>" Expr<out var exp>
-            (. f.Body = exp; .)
+            (. f.Body = exp; functions.Pop(); .)
         ).
 
     Is<out DNode node> =
