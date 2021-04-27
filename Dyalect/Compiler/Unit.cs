@@ -16,8 +16,6 @@ namespace Dyalect.Compiler
             References = new();
             Types = new();
             TypeMap = new();
-            MemberIds = new();
-            MemberNames = new();
             IndexedStrings = new();
             IndexedIntegers = new();
             IndexedFloats = new();
@@ -37,8 +35,6 @@ namespace Dyalect.Compiler
             UnitIds = unit.UnitIds;
             References = unit.References;
             Types = unit.Types;
-            MemberIds = unit.MemberIds;
-            MemberNames = unit.MemberNames;
             IndexedStrings = unit.IndexedStrings;
             IndexedIntegers = unit.IndexedIntegers;
             IndexedFloats = unit.IndexedFloats;
@@ -67,10 +63,6 @@ namespace Dyalect.Compiler
         internal List<TypeDescriptor> Types { get; }
 
         internal Dictionary<string, TypeDescriptor> TypeMap { get; }
-
-        internal List<int> MemberIds { get; }
-
-        internal Dictionary<string, int> MemberNames { get; }
 
         internal List<DyString> IndexedStrings { get; }
 

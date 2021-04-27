@@ -147,8 +147,7 @@ namespace Dyalect.Compiler
 
             cw.Dup();
 
-            var nameId = unit.GetMemberId(node.Constructor);
-            cw.CtorCheck(nameId);
+            cw.CtorCheck(node.Constructor);
             cw.Brfalse(bad);
 
             if (node.Arguments == null || node.Arguments.Count == 0)
@@ -172,8 +171,7 @@ namespace Dyalect.Compiler
         private void BuildMethodCheck(DMethodCheckPattern node)
         {
             AddLinePragma(node);
-            var nameId = unit.GetMemberId(node.Name);
-            cw.HasMember(nameId);
+            cw.HasMember(node.Name);
         }
 
         private void BuildAs(DAsPattern node, Hints hints, CompilerContext ctx)
@@ -203,26 +201,19 @@ namespace Dyalect.Compiler
 
         private void BuildName(DNamePattern node, Hints hints)
         {
-            var err = GetTypeHandle(null, node.Name, out var handle, out var std);
+            ScopeVar sv = default;
+            var found = hints.Has(Rebind)
+                ? TryGetVariable(node.Name, out sv)
+                : !hints.Has(OpenMatch) && TryGetLocalVariable(node.Name, out sv);
+            var sva = sv.Address;
 
-            if (err == CompilerError.None)
-                cw.TypeCheck(new(handle, std));
-            else
-            {
-                ScopeVar sv = default;
-                var found = hints.Has(Rebind)
-                    ? TryGetVariable(node.Name, out sv)
-                    : !hints.Has(OpenMatch) && TryGetLocalVariable(node.Name, out sv);
-                var sva = sv.Address;
+            if (!found)
+                sva = AddVariable(node.Name, node, hints.Has(Const) ? VarFlags.Const : VarFlags.None);
+            else if ((sv.Data & VarFlags.Const) == VarFlags.Const)
+                AddError(CompilerError.UnableAssignConstant, node.Location, node.Name);
 
-                if (!found)
-                    sva = AddVariable(node.Name, node, hints.Has(Const) ? VarFlags.Const : VarFlags.None);
-                else if ((sv.Data & VarFlags.Const) == VarFlags.Const)
-                    AddError(CompilerError.UnableAssignConstant, node.Location, node.Name);
-
-                cw.PopVar(sva);
-                cw.Push(true);
-            }
+            cw.PopVar(sva);
+            cw.Push(true);
         }
 
         private void BuildAnd(DAndPattern node, Hints hints, CompilerContext ctx)
@@ -267,11 +258,11 @@ namespace Dyalect.Compiler
             var exit = cw.DefineLabel();
 
             cw.Dup(); //2 objs
-            cw.HasMember(unit.GetMemberId(Builtins.Lt));
+            cw.HasMember(Builtins.Lt);
             cw.Brfalse(skip); //1 left
 
             cw.Dup(); //2 objs
-            cw.HasMember(unit.GetMemberId(Builtins.Gt));
+            cw.HasMember(Builtins.Gt);
             cw.Brfalse(skip); //1 left
 
             cw.Dup(); //2 objs
@@ -341,12 +332,12 @@ namespace Dyalect.Compiler
             if (!onlyLabels)
             {
                 cw.Dup(); //2 objs
-                cw.HasMember(unit.GetMemberId(Builtins.Len));
+                cw.HasMember(Builtins.Len);
                 cw.Brfalse(skip); //1 obj left to pop
             }
 
             cw.Dup(); //2 objs
-            cw.HasMember(unit.GetMemberId(Builtins.Get));
+            cw.HasMember(Builtins.Get);
             cw.Brfalse(skip); //1 obj left to pop
 
             if (!onlyLabels)

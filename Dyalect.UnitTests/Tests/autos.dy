@@ -1,7 +1,7 @@
 ﻿type Box(key)
-const boxCollector = []
+let boxCollector = []
 func Box.dispose() {
-    boxCollector.add(this:key)
+    boxCollector.add(this)
 }
 
 func autosSimple1() {
@@ -28,7 +28,7 @@ func autosSimple2() {
 
 func autosSimple3() {
     boxCollector.clear()
-    for x in [1..6] {
+    for x in 1..6 {
         auto obj = Box(x)
         if x == 3 {
             continue
@@ -121,9 +121,9 @@ func autosFunc4() { //Bug #367
         }
         auto b = Box('b')
     }
-    foobar(flag = true)
-    foobar(flag = false)
-    foobar(flag = true)
+    foobar(flag: true)
+    foobar(flag: false)
+    foobar(flag: true)
     assert(['a', 'a', 'b', 'a'], boxCollector)
 }
 
@@ -167,10 +167,10 @@ func autosExceptions2() {
         auto old = Box("x")
         test1()
     }
-    const msg = try {
+    let msg = try {
         run()
     } catch e {
-        e
+        e[0]
     }
     assert("Error", msg)
     assert(["z", "y", "x"], boxCollector)
@@ -182,7 +182,7 @@ func autosExceptions3() {
         auto x = Box(42)
         throw 84
     } catch e {
-        boxCollector.add(e:detail)
+        boxCollector.add(e[0])
     }
     assert([42,84], boxCollector)
 }
@@ -195,7 +195,7 @@ func autosExceptions4() {
             auto box = Box(12)
             return x / y
         } catch _ {
-            return def:key
+            return def::key
         }
     }
     var xs = [divide(10, 2), divide(2, 0)]
@@ -214,7 +214,7 @@ func autosExceptions5() {
     try {
         doit()
     } catch e {
-        auto b = Box(e:detail)
+        auto b = Box(e[0])
     }
     assert([24], boxCollector)
 }
@@ -256,7 +256,7 @@ func autosCatch2() { //Bug #370
     try {
         inner()
     } catch e {
-        assert(e, "err")
+        assert(e[0], "err")
         assert([1], boxCollector)
     }
 }
@@ -276,7 +276,7 @@ func autosCatch3() {
     try {
         inside()
     } catch e {
-        x = e:detail
+        x = e[0]
     }
     assert('b', x)
 }

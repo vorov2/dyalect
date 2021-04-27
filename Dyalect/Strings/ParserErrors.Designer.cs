@@ -79,6 +79,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deprecated syntax: {0}..
+        /// </summary>
+        internal static string Deprecated {
+            get {
+                return ResourceManager.GetString("Deprecated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid argument list for a function call expression..
         /// </summary>
         internal static string InvalidApplicationArguments {
@@ -120,6 +129,15 @@ namespace Dyalect.Strings {
         internal static string InvalidExpression {
             get {
                 return ResourceManager.GetString("InvalidExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Function attribute &quot;{0}&quot; is not recognized..
+        /// </summary>
+        internal static string InvalidFunctionAttribute {
+            get {
+                return ResourceManager.GetString("InvalidFunctionAttribute", resourceCulture);
             }
         }
         

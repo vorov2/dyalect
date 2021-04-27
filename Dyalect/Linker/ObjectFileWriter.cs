@@ -23,7 +23,6 @@ namespace Dyalect.Linker
             WriteReferences(writer, unit.References);
             writer.Write(unit.UnitIds.Count);
             WriteTypeDescriptors(writer, unit.Types);
-            WriteMembers(writer, unit);
             WriteIndices(writer, unit);
             WriteOps(writer, unit.Ops);
             WriteSymbols(writer, unit.Symbols);
@@ -147,17 +146,6 @@ namespace Dyalect.Linker
                 writer.Write(t.Name);
                 writer.Write(t.Id);
                 writer.Write(t.AutoGenConstructors);
-            }
-        }
-
-        private static void WriteMembers(BinaryWriter writer, Unit unit)
-        {
-            writer.Write(unit.MemberIds.Count);
-
-            foreach (var m in unit.MemberNames)
-            {
-                writer.Write(m.Key);
-                writer.Write(m.Value);
             }
         }
 

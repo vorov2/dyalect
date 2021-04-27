@@ -1,5 +1,4 @@
 ﻿using Dyalect.Compiler;
-using Dyalect.Linker;
 
 namespace Dyalect.Runtime.Types
 {
@@ -26,15 +25,7 @@ namespace Dyalect.Runtime.Types
 
         public string Constructor { get; }
 
-        public override int GetConstructorId(ExecutionContext ctx)
-        {
-            if (string.IsNullOrEmpty(Constructor))
-                return base.GetConstructorId(ctx);
-
-            var id = DeclaringUnit.GetMemberId(Constructor);
-            var gid = RuntimeContext.Composition.GetMemberId(Constructor);
-            DeclaringUnit.MemberIds[id] = gid;
-            return gid;
-        }
+        public override string GetConstructor(ExecutionContext ctx) =>
+            Constructor ?? base.GetConstructor(ctx);
     }
 }

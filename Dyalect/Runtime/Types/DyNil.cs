@@ -23,7 +23,7 @@ namespace Dyalect.Runtime.Types
         internal override int GetCount() => 0;
 
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            ctx.IndexOutOfRange(index);
+            ctx.IndexOutOfRange();
 
         internal override void Serialize(BinaryWriter writer) => writer.Write(TypeId);
 
@@ -46,7 +46,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Nil")
                 return DyForeignFunction.Static(name, _ => DyNil.Instance);
@@ -54,7 +54,7 @@ namespace Dyalect.Runtime.Types
             if (name == "default")
                 return DyForeignFunction.Static(name, _ => DyNil.Instance);
 
-            return base.GetStaticMember(name, ctx);
+            return base.InitializeStaticMember(name, ctx);
         }
     }
 }

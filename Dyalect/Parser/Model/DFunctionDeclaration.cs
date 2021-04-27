@@ -13,9 +13,9 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; }
 
-        internal bool IsConstructor { get; set; }
+        internal bool IsStatic => Attribute is FunctionAttribute.Static or FunctionAttribute.Constructor;
 
-        public bool IsStatic { get; set; }
+        public FunctionAttribute Attribute { get; set; }
 
         public bool IsIterator { get; set; }
 
@@ -45,9 +45,6 @@ namespace Dyalect.Parser.Model
                 return;
             }
 
-            if (IsStatic)
-                sb.Append("static ");
-
             if (Name is not null)
                 sb.Append("func ");
 
@@ -68,10 +65,25 @@ namespace Dyalect.Parser.Model
             if (Name is not null || Parameters.Count > 1)
                 sb.Append(") ");
 
+            if (Attribute == FunctionAttribute.Constructor)
+                sb.Append("cons ");
+            else if (Attribute == FunctionAttribute.Static)
+                sb.Append("static ");
+            else if (Attribute == FunctionAttribute.Deconstructor)
+                sb.Append("decons ");
+
             if (Name is null)
                 sb.Append(" => ");
 
             Body.ToString(sb);
         }
+    }
+
+    public enum FunctionAttribute
+    {
+        None,
+        Static,
+        Constructor,
+        Deconstructor
     }
 }

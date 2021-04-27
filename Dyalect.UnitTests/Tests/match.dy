@@ -25,7 +25,7 @@ func matchTest2() {
 func matchTest3() {
     var res = match (1,2,"str") {
         (1, 2, "strs") => "wrong",
-        Array && [1, 2, "str"] => "right?",
+        Array? && [1, 2, "str"] => "right?",
         (1, 2, "str") xs => xs
     }
     assert((1,2,"str"), res)
@@ -98,9 +98,9 @@ func matchTest7() {
 }
 
 func matchTest8() {
-    var res = match (x = 12, y = 24) {
-        (x = 13, y = y) => y,
-        (x = x, y = 24) => x
+    var res = match (x: 12, y: 24) {
+        (x: 13, y: y) => y,
+        (x: x, y: 24) => x
     }
     assert(12, res)
 }
@@ -149,9 +149,9 @@ func matchTest13() {
 }
 
 func matchTest14() {
-    var res = match (x = 12,) {
-        (x = 13,) => 13,
-        (x = x,) => x
+    var res = match (x: 12,) {
+        (x: 13,) => 13,
+        (x: x,) => x
     }
     assert(12, res)
 }
@@ -167,7 +167,7 @@ func forMatchTest1() {
 
 func forMatchTest2() {
     var arr = []
-    for Char c in ['a', "str", 'b', 'c', 12] {
+    for Char? c in ['a', "str", 'b', 'c', 12] {
         arr.add(c)
     }
     assert(['a','b','c'], arr)
@@ -175,7 +175,7 @@ func forMatchTest2() {
 
 func forMatchTest3() {
     var arr = []
-    for Char in ['a', "str", 'b', 'c', 12] {
+    for Char? in ['a', "str", 'b', 'c', 12] {
         arr.add(0)
     }
     assert(3, arr.len())
@@ -253,7 +253,7 @@ func setMatchTest3() {
     var res = try {
         set (x, 2) = foo()
     } catch e {
-        e
+        e::detail
     }
     assert("Match failed.", res)
 }
@@ -277,38 +277,40 @@ func varMatchTest3() {
     var res = try {
         var (x, 2) = foo()
     } catch e {
-        e
+        e::detail
     }
     assert("Match failed.", res)
 }
 
 func ctorMatchTest1() {
-    const Array(x, y, z) = [1, 2, 3]
+    let Array? && (x, y, z) = [1, 2, 3]
     assert(6, x + y + z)
+    let Array? && [xx, yy, zz] = [1, 2, 3, 4, 5]
+    assert(6, xx + yy + zz)
 }
 
 func ctorMatchTest2() {
-    const Tuple(x, y, z) = (1, 2, 3)
+    let Tuple? && (x, y, z) = (1, 2, 3)
     assert(6, x + y + z)
 }
 
 func ctorMatchTest3() {
     var res = match 42 {
-        Integer() => true
+        Integer? => true
     }
     assert(true, res)
 }
 
 func ctorMatchTest4() {
-    const String(x, y, z) = "abc"
+    let String? && (x, y, z) = "abc"
     assert(['a','b','c'], [x,y,z])
 }
 
 func isTest1() {
     var xs = (1, 2)
-    assert(true, xs is Tuple)
-    assert(false, xs is Array)
-    var b = xs is Tuple t
+    assert(true, xs is Tuple?)
+    assert(false, xs is Array?)
+    var b = xs is Tuple? t
     assert(true, b)
     assert((1,2), t)
 }
@@ -365,4 +367,32 @@ func bindingMatch3() {
     assert(14, x + y)
     var (_, z) = [12, 222]
     assert(222, z)
+}
+
+func typeCheck1() {
+    var x = 1
+    var y = 1.2
+    var res1 = false
+    var res2 = false
+    if x is Integer? {
+        res1 = true
+    }
+    assert(true, res1)
+    if y is Float? {
+        res2 = true
+    }
+    assert(true, res2)
+    if y is Float? f {
+        assert(1.2, f)
+    }
+}
+
+type __CustomType1x2()
+func typeCheck2() {
+    var t = __CustomType1x2()
+    var res = false
+    if t is __CustomType1x2? {
+        res = true
+    }
+    assert(true, res)
 }

@@ -255,7 +255,8 @@ namespace Dyalect.Runtime.Types
         public DyIteratorTypeInfo() : base(DyType.Iterator) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Len;
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not 
+            | SupportedOperations.Len | SupportedOperations.Iter;
 
         public override string TypeName => DyTypeNames.Iterator;
 
@@ -301,7 +302,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId is not DyType.Integer)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             var i = (int)index.GetInteger();
 
@@ -314,7 +315,7 @@ namespace Dyalect.Runtime.Types
             }
             catch (IndexOutOfRangeException)
             {
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
             }
         }
 
@@ -375,7 +376,7 @@ namespace Dyalect.Runtime.Types
             var i = (int)count.GetInteger();
 
             if (i < 0)
-                return ctx.InvalidValue(count);
+                i = 0;
 
             return new DyIterator(DyIterator.Run(ctx, self).Take(i));
         }
@@ -386,7 +387,11 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(self);
 
             var i = (int)count.GetInteger();
-            return i < 0 ? ctx.InvalidValue(count) : new DyIterator(DyIterator.Run(ctx, self).Skip(i));
+            
+            if (i < 0)
+                i = 0;
+
+            return new DyIterator(DyIterator.Run(ctx, self).Skip(i));
         }
 
         private DyObject First(ExecutionContext ctx, DyObject self) =>
@@ -403,7 +408,7 @@ namespace Dyalect.Runtime.Types
             if (self is DyRange r)
                 r.Step = step;
             else
-                return ctx.OperationNotSupported("by", self);
+                return ctx.OperationNotSupported("by", self.GetTypeName(ctx));
 
             return self;
         }
@@ -443,7 +448,7 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(seq.Skip(beg).Take(end - beg + 1));
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "toArray" => DyForeignFunction.Member(name, ToArray),
@@ -455,12 +460,12 @@ namespace Dyalect.Runtime.Types
                 "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance)),
                 "by" => DyForeignFunction.Member(name, SetStep, -1, new Par("value")),
                 //"element" => DyForeignFunction.Member(name, ElementAt, -1, new Par("at")),
-                _ => null
+                _ => base.InitializeInstanceMember(name, ctx)
             };
 
         private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, DyObject exclusive) => new DyRange(ctx, from, to, step, exclusive);
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Iterator")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));
@@ -469,7 +474,7 @@ namespace Dyalect.Runtime.Types
             if (name == "range")
                 return DyForeignFunction.Static(name, MakeRange, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance), 
                     new Par("by", DyInteger.One), new Par("exclusive", DyBool.False));
-            return null;
+            return base.InitializeStaticMember(name, ctx);
         }
     }
 }

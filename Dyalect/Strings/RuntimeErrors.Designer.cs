@@ -61,7 +61,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function &quot;%FunctionName%&quot; doesn&apos;t have an argument &quot;%ArgumentName%&quot;..
+        ///   Looks up a localized string similar to Function &quot;{0}&quot; doesn&apos;t have an argument &quot;{1}&quot;..
         /// </summary>
         internal static string ArgumentNotFound {
             get {
@@ -70,7 +70,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assert failed: %Reason%..
+        ///   Looks up a localized string similar to Assert failed: {0}..
         /// </summary>
         internal static string AssertFailed {
             get {
@@ -97,7 +97,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An unhandled exception occured during an execution of an external function &quot;%FunctionName%&quot;: %Error%.
+        ///   Looks up a localized string similar to An unhandled exception occured during an execution of an external function &quot;{0}&quot;: {1}.
         /// </summary>
         internal static string ExternalFunctionFailure {
             get {
@@ -106,7 +106,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to read literal: %Reason%.
+        ///   Looks up a localized string similar to Failed to read literal: {0}.
         /// </summary>
         internal static string FailedReadLiteral {
             get {
@@ -115,16 +115,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Indices of type &quot;%IndexTypeName%&quot; are not supported by the type. Failed index: &quot;%Index%&quot;..
-        /// </summary>
-        internal static string IndexInvalidType {
-            get {
-                return ResourceManager.GetString("IndexInvalidType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An index &quot;%Index%&quot; is out of range..
+        ///   Looks up a localized string similar to An index is out of range..
         /// </summary>
         internal static string IndexOutOfRange {
             get {
@@ -133,16 +124,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Range is invalid..
-        /// </summary>
-        internal static string InvalidRange {
-            get {
-                return ResourceManager.GetString("InvalidRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Type error: type &quot;%TypeName%&quot; is unexpected..
+        ///   Looks up a localized string similar to Type &quot;{0}&quot; is unexpected..
         /// </summary>
         internal static string InvalidType {
             get {
@@ -151,16 +133,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A value &quot;%Value%&quot; causes an invalid behavior..
-        /// </summary>
-        internal static string InvalidValue {
-            get {
-                return ResourceManager.GetString("InvalidValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Key &quot;%Key%&quot; is already present in the dictionary..
+        ///   Looks up a localized string similar to Key is already present in the dictionary..
         /// </summary>
         internal static string KeyAlreadyPresent {
             get {
@@ -169,7 +142,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The key &quot;%Key%&quot; is not present in the dictionary..
+        ///   Looks up a localized string similar to Key is not present in the dictionary..
         /// </summary>
         internal static string KeyNotFound {
             get {
@@ -187,16 +160,16 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type &quot;%Type%&quot; doesn&apos;t support open ranges..
+        ///   Looks up a localized string similar to Function &quot;{0}&quot; has multiple values for an argument &quot;{1}&quot;..
         /// </summary>
-        internal static string OpenRangeNotSupported {
+        internal static string MultipleValuesForArgument {
             get {
-                return ResourceManager.GetString("OpenRangeNotSupported", resourceCulture);
+                return ResourceManager.GetString("MultipleValuesForArgument", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operation &quot;%Operation%&quot; is not supported by the type &quot;%TypeName%&quot;..
+        ///   Looks up a localized string similar to Operation &quot;{0}&quot; is not supported by the type &quot;{1}&quot;..
         /// </summary>
         internal static string OperationNotSupported {
             get {
@@ -205,7 +178,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to access a private module member &quot;%Name%&quot;..
+        ///   Looks up a localized string similar to Unable to access a private module member &quot;{0}&quot;..
         /// </summary>
         internal static string PrivateNameAccess {
             get {
@@ -214,7 +187,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No value provided for an argument &quot;%ArgumentName%&quot; of a function &quot;%FunctionName%&quot;..
+        ///   Looks up a localized string similar to No value provided for an argument &quot;{1}&quot; of a function &quot;{0}&quot;..
         /// </summary>
         internal static string RequiredArgumentMissing {
             get {
@@ -232,29 +205,11 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Static method &quot;%Operation%&quot; is not supported by the type &quot;%TypeName%&quot;..
-        /// </summary>
-        internal static string StaticOperationNotSupported {
-            get {
-                return ResourceManager.GetString("StaticOperationNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Function &quot;%FunctionName%&quot; accepts %FunctionArguments% argument(s) (%PassedArguments% given)..
+        ///   Looks up a localized string similar to Function &quot;{0}&quot; accepts {1} argument(s) ({2} given)..
         /// </summary>
         internal static string TooManyArguments {
             get {
                 return ResourceManager.GetString("TooManyArguments", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Value &quot;%Value%&quot; is out of range..
-        /// </summary>
-        internal static string ValueOutOfRange {
-            get {
-                return ResourceManager.GetString("ValueOutOfRange", resourceCulture);
             }
         }
     }

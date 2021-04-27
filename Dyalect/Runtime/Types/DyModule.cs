@@ -1,9 +1,11 @@
 ﻿using Dyalect.Compiler;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyModule : DyObject
+    public sealed class DyModule : DyObject, IEnumerable<DyObject>
     {
         internal readonly DyObject[] Globals;
 
@@ -28,16 +30,16 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId != DyType.String)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             if (!TryGetMember(index.GetString(), ctx, out var value))
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
 
             return value;
         }
 
         protected internal override DyObject GetItem(int index, ExecutionContext ctx) =>
-                ctx.IndexInvalidType(DyInteger.Get(index));
+                ctx.InvalidType(DyInteger.Get(index));
 
         protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
         {
@@ -67,12 +69,26 @@ namespace Dyalect.Runtime.Types
             else
             {
                 if ((sv.Data & VarFlags.Private) == VarFlags.Private)
-                    ctx.PrivateNameAccess(new DyString(name));
+                    ctx.PrivateNameAccess(name);
 
                 value = Globals[sv.Address >> 8];
                 return true;
             }
         }
+
+        public IEnumerator<DyObject> GetEnumerator()
+        {
+            foreach (var (key, sv) in Unit.ExportList)
+            {
+                if ((sv.Data & VarFlags.Private) != VarFlags.Private)
+                    yield return new DyTuple(new DyObject[] {
+                        new DyLabel("key", new DyString(key)),
+                        new DyLabel("value", Globals[sv.Address >> 9])
+                        });
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     internal sealed class DyModuleTypeInfo : DyTypeInfo
@@ -81,7 +97,8 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
+            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
+            | SupportedOperations.Iter;
 
         public override string TypeName => DyTypeNames.Module;
 
@@ -109,12 +126,12 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Module")
                 return DyForeignFunction.Static(name, c => new DyModule(c.RuntimeContext.Composition.Units[0], c.RuntimeContext.Units[0]));
 
-            return base.GetStaticMember(name, ctx);
+            return base.InitializeStaticMember(name, ctx);
         }
     }
 }

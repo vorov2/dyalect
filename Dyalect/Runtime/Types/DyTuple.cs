@@ -33,9 +33,9 @@ namespace Dyalect.Runtime.Types
                 return GetItem((int)index.GetInteger(), ctx);
             
             if (index.TypeId == DyType.String || index.TypeId == DyType.Char)
-                return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange(index.GetString());
+                return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange();
             
-            return ctx.IndexInvalidType(index);
+            return ctx.InvalidType(index);
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
@@ -45,7 +45,7 @@ namespace Dyalect.Runtime.Types
             else if (index.TypeId == DyType.String)
                 SetItem(index.GetString(), value, ctx);
             else
-                ctx.IndexInvalidType(index);
+                ctx.InvalidType(index);
         }
 
         protected internal override DyObject GetItem(string name, ExecutionContext ctx)
@@ -53,7 +53,7 @@ namespace Dyalect.Runtime.Types
             var i = GetOrdinal(name);
 
             if (i == -1)
-                return ctx.IndexOutOfRange(name);
+                return ctx.IndexOutOfRange();
 
             return GetItem(i, ctx);
         }
@@ -77,7 +77,7 @@ namespace Dyalect.Runtime.Types
             var i = GetOrdinal(name);
 
             if (i == -1)
-                ctx.IndexOutOfRange(name);
+                ctx.IndexOutOfRange();
 
             SetItem(i, value, ctx);
         }
@@ -126,7 +126,7 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
-            | SupportedOperations.Add;
+            | SupportedOperations.Add | SupportedOperations.Iter;
 
         public override string TypeName => DyTypeNames.Tuple;
 
@@ -159,7 +159,7 @@ namespace Dyalect.Runtime.Types
                 if (k != null)
                 {
                     sb.Append(k);
-                    sb.Append(" = ");
+                    sb.Append(": ");
                 }
 
                 sb.Append(val.GetString());
@@ -205,28 +205,26 @@ namespace Dyalect.Runtime.Types
         internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
             new DyTuple(DyCollection.ConcatValues(ctx, values));
 
-        private DyObject GetKeys(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject GetKeys(ExecutionContext _, DyObject self)
         {
-            var tup = (DyTuple)self;
-
-            IEnumerable<DyObject> iterate()
+            IEnumerable<DyObject> Iterate()
             {
+                var tup = (DyTuple)self;
                 for (var i = 0; i < tup.Count; i++)
                 {
                     var k = tup.GetKey(i);
-
-                    if (k != null)
+                    if (k is not null)
                         yield return new DyString(k);
                 }
             }
 
-            return new DyIterator(iterate());
+            return new DyIterator(Iterate());
         }
 
-        private DyObject GetFirst(ExecutionContext ctx, DyObject self, DyObject[] args) =>
+        private DyObject GetFirst(ExecutionContext ctx, DyObject self) =>
             self.GetItem(0, ctx);
 
-        private DyObject GetSecond(ExecutionContext ctx, DyObject self, DyObject[] args) =>
+        private DyObject GetSecond(ExecutionContext ctx, DyObject self) =>
             self.GetItem(1, ctx);
 
         private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject fun)
@@ -266,7 +264,7 @@ namespace Dyalect.Runtime.Types
         private DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
         {
             if (index.TypeId != DyType.Integer)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             var t = (DyTuple)self;
 
@@ -274,7 +272,7 @@ namespace Dyalect.Runtime.Types
             idx = idx < 0 ? t.Count + idx : idx;
 
             if (idx < 0 || idx >= t.Count)
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
 
             return RemoveAt(ctx, t, idx);
         }
@@ -296,7 +294,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
             if (index.TypeId is not DyType.Integer)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             var tuple = (DyTuple)self;
 
@@ -304,7 +302,7 @@ namespace Dyalect.Runtime.Types
             idx = idx < 0 ? tuple.Count + idx : idx;
 
             if (idx < 0 || idx > tuple.Count)
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
 
             var arr = new DyObject[tuple.Count + 1];
             arr[idx] = value;
@@ -322,18 +320,18 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(arr);
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
                 "remove" => DyForeignFunction.Member(name, Remove, -1, new Par("item")),
                 "removeAt" => DyForeignFunction.Member(name, RemoveAt, -1, new Par("index")),
                 "insert" => DyForeignFunction.Member(name, Insert, -1, new Par("index"), new Par("item")),
-                "keys" => DyForeignFunction.Member(name, GetKeys, -1, Statics.EmptyParameters),
-                "fst" => DyForeignFunction.Member(name, GetFirst, -1, Statics.EmptyParameters),
-                "snd" => DyForeignFunction.Member(name, GetSecond, -1, Statics.EmptyParameters),
+                "keys" => DyForeignFunction.Member(name, GetKeys),
+                "fst" => DyForeignFunction.Member(name, GetFirst),
+                "snd" => DyForeignFunction.Member(name, GetSecond),
                 "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
-                _ => base.GetMember(name, ctx)
+                _ => base.InitializeInstanceMember(name, ctx)
             };
 
         private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
@@ -344,7 +342,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
@@ -352,7 +350,7 @@ namespace Dyalect.Runtime.Types
                 "triple" => DyForeignFunction.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
                 "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
                 "Tuple" => DyForeignFunction.Static(name, MakeNew, 0, new Par("values")),
-                _ => base.GetStaticMember(name, ctx)
+                _ => base.InitializeStaticMember(name, ctx)
             };
     }
 }

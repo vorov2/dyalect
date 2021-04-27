@@ -61,12 +61,12 @@ func charTest7() {
 
 func charTest8() {
     assert(['a','b','c','d'], ['a'..'d'])
-    assert(['a', 'c', 'e'], ('a'..'f').by(2).toArray())
+    assert(['a', 'c', 'e'], ('a'^2..'f').toArray())
 }
 
 func charMath1() {
-    const a = 'a'
-    const b = 'b'
+    let a = 'a'
+    let b = 'b'
     assert('b', a + 1)
     assert('a', b - 1)
     assert("ab", a + b)

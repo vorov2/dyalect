@@ -39,6 +39,13 @@ namespace Dyalect.Parser
             AddError(new BuildMessage(str, BuildMessageType.Error, (int)error, loc.Line, loc.Column, this.scanner.Buffer.FileName));
         }
 
+        private void Deprecated(string exp)
+        {
+            var detail = string.Format(ParserErrors.Deprecated, exp);
+            AddError(new BuildMessage(detail, BuildMessageType.Error, (int)ParserError.Deprecated,
+                t.line, t.col, this.scanner.Buffer.FileName));
+        }
+
         private void AddError(string message, int line, int col)
         {
             ErrorProcessor.ProcessError(message, out var detail, out var code);
@@ -129,6 +136,7 @@ namespace Dyalect.Parser
             }
         }
 
+        //not used!
         private bool IsMap()
         {
             if (la.kind != _squareLeftToken)
@@ -151,7 +159,7 @@ namespace Dyalect.Parser
                 return false;
 
             scanner.ResetPeek();
-            return scanner.Peek().kind == _equalToken;
+            return scanner.Peek().kind == _colonToken;
         }
 
         private bool IsLabelPattern()
@@ -160,7 +168,7 @@ namespace Dyalect.Parser
                 return false;
 
             scanner.ResetPeek();
-            return scanner.Peek().kind == _equalToken;
+            return scanner.Peek().kind == _colonToken;
         }
 
         private bool IsIterator()
@@ -203,7 +211,7 @@ namespace Dyalect.Parser
             {
                 Token xt;
                 if (((xt = scanner.Peek()).kind == _identToken || xt.kind == _stringToken)
-                    && scanner.Peek().kind == _equalToken)
+                    && scanner.Peek().kind == _colonToken)
                     return true;
                 scanner.ResetPeek();
             }

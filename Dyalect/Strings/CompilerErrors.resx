@@ -187,16 +187,13 @@
     <value>Module already contains a definition for "{0}".</value>
   </data>
   <data name="CtorOnlyLocalType" xml:space="preserve">
-    <value>Unable to use "new" operator for a non-local type "{0}".</value>
+    <value>Unable to create a constructor for a non-local type "{0}".</value>
   </data>
   <data name="PrivateNameAccess" xml:space="preserve">
     <value>Unable to access a private module member "{0}".</value>
   </data>
   <data name="PrivateMethod" xml:space="preserve">
     <value>Methods cannot be declared inside a "private" scope.</value>
-  </data>
-  <data name="CtorNoMethod" xml:space="preserve">
-    <value>Unable to use "new" operator outside of a method.</value>
   </data>
   <data name="UnableToLinkModule" xml:space="preserve">
     <value>Unable to link module '{0}". Compilation terminated.</value>
@@ -242,5 +239,14 @@
   </data>
   <data name="InvalidSlice" xml:space="preserve">
     <value>Slice is invalid (step and exclusivity sign are not supported in slices).</value>
+  </data>
+  <data name="CtorOnlyMethod" xml:space="preserve">
+    <value>Invalid constructor declaration (type specification is missing).</value>
+  </data>
+  <data name="CtorNotIterator" xml:space="preserve">
+    <value>A constructor function cannot be an iterator.</value>
+  </data>
+  <data name="PositionalArgumentAfterKeyword" xml:space="preserve">
+    <value>A positional argument can't follow an argument passed by name.</value>
   </data>
 </root>

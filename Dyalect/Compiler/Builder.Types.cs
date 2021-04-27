@@ -23,7 +23,7 @@ namespace Dyalect.Compiler
 
             var td = new TypeDescriptor(node.Name, typeId, node.HasConstructors);
             unit.Types.Add(td);
-            unit.TypeMap.Add(node.Name, td);
+            unit.TypeMap[node.Name] = td;
 
             if (node.HasConstructors)
             {
@@ -66,7 +66,7 @@ namespace Dyalect.Compiler
             }
 
             TryGetLocalType(func.TypeName.Local, out var ti);
-            cw.Aux(unit.GetMemberId(func.Name));
+            cw.Aux(func.Name);
             cw.NewType(ti.TypeId);
         }
 

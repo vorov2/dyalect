@@ -1,3 +1,23 @@
+# 0.20.0
+  * Add: _Syntax redesign: constants_ ([Issue #406](https://github.com/vorov2/dyalect/issues/406)).
+  * Add: _Syntax redesign: tuples_ ([Issue #404](https://github.com/vorov2/dyalect/issues/404)).
+  * Add: _Consider making errors a separate Dy type_ ([Issue #383](https://github.com/vorov2/dyalect/issues/383)).
+  * Add: _Add an ability to generate standard run-time errors_ ([Issue #385](https://github.com/vorov2/dyalect/issues/385)).
+  * Add: _Modules should support iteration through globals like records do_ ([Issue #425](https://github.com/vorov2/dyalect/issues/425)).
+  * Add: _Type check in pattern matching_ ([Issue #422](https://github.com/vorov2/dyalect/issues/422), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
+  * Add: _Syntax redesign: labels and indexing_ ([Issue #403](https://github.com/vorov2/dyalect/issues/403)).
+  * Add: _Syntax redesign: Iterators_ ([Issue #405](https://github.com/vorov2/dyalect/issues/405)).
+  * Change: _Operator `valueof` can break encapsulation_ ([Issue #428](https://github.com/vorov2/dyalect/issues/428)).
+  * Change: _It is possible to use new in instance methods of custom types_ ([Issue #426](https://github.com/vorov2/dyalect/issues/426)).
+  * Change: _Error analysis for a parser is updated according to the language changes._
+  * Change: _Global Dyalect type system and member lookup refactoring._
+  * Change: _Parser refactoring._
+  * Change: _Overhaul of custom types design and syntax_ ([docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
+  * Fix: _Pattern match by constructor names might result in an incorrect behavior_ ([Issue #421](https://github.com/vorov2/dyalect/issues/421)).
+  * Fix: _Constructors and iterators_ ([Issue #429](https://github.com/vorov2/dyalect/issues/429)).
+  * Fix: _`new` without arguments is not recognized_ ([Issue #424](https://github.com/vorov2/dyalect/issues/424)).
+  * Fix: _Crush when calling a function_ ([Issue #430](https://github.com/vorov2/dyalect/issues/430)).
+
 # 0.19.1
   * Fix: _Inconsistent type errors_ ([Issue #398](https://github.com/vorov2/dyalect/issues/398)).
 

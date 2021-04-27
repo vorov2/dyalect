@@ -23,6 +23,7 @@ namespace Dyalect
                 new DyTupleTypeInfo(),
                 new DyMapTypeInfo(),
                 new DyCustomObjectTypeInfo(),
+                new DyErrorTypeInfo()
             };
 
         public const int Nil = 0;
@@ -40,6 +41,7 @@ namespace Dyalect
         public const int Tuple = 12;
         public const int Map = 13;
         public const int Object = 14;
+        public const int Error = 15;
 
         public static int GetTypeCodeByName(string name) =>
             name switch
@@ -59,6 +61,7 @@ namespace Dyalect
                 DyTypeNames.Iterator => Iterator,
                 DyTypeNames.Map => Map,
                 DyTypeNames.Object => Object,
+                DyTypeNames.Error => Error,
                 _ => -1,
             };
 
@@ -80,6 +83,7 @@ namespace Dyalect
                 Iterator => DyTypeNames.Iterator,
                 Map => DyTypeNames.Map,
                 Object => DyTypeNames.Object,
+                Error => DyTypeNames.Error,
                 _ => code.ToString(),
             };
     }
@@ -103,7 +107,8 @@ namespace Dyalect
                 Iterator,
                 Tuple,
                 Map,
-                Object
+                Object,
+                Error
             };
 
         public const string Nil = "Nil";
@@ -121,5 +126,6 @@ namespace Dyalect
         public const string Tuple = "Tuple";
         public const string Map = "Map";
         public const string Object = "Object";
+        public const string Error = "Error";
     }
 }

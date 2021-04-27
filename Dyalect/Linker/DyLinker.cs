@@ -209,18 +209,6 @@ namespace Dyalect.Linker
                 if (u.References.Count > 0)
                     u.UnitIds[u.References.Count] = uid;
 
-                foreach (var mi in u.MemberNames)
-                {
-                    if (!composition.MembersMap.TryGetValue(mi.Key, out var id))
-                    {
-                        id = composition.Members.Count;
-                        composition.Members.Add(mi.Key);
-                        composition.MembersMap.Add(mi.Key, id);
-                    }
-
-                    u.MemberIds[mi.Value] = id;
-                }
-
                 for (var i = 0; i < u.Types.Count; i++)
                 {
                     var td = u.Types[i];

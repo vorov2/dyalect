@@ -19,7 +19,7 @@ namespace Dyalect.Compiler
         private readonly Scope globalScope; //Global scope (for variables) of the current unit
         private readonly Unit unit; //Unit (file) that is beign compiler
         private Scope currentScope; //Current lexical scope
-        private Label programEnd; //Label that marks an end of program
+        private readonly Label programEnd; //Label that marks an end of program
         private readonly Dictionary<string, UnitInfo> referencedUnits;
 
         private readonly Dictionary<string, TypeInfo> types;
@@ -73,10 +73,6 @@ namespace Dyalect.Compiler
         {
             Messages.Clear();
             unit.FileName = codeModel.FileName;
-
-            //It is used internally, so we need to add it even if the code doesn't reference it
-            unit.GetMemberId(Builtins.Iterator);
-            unit.GetMemberId(Builtins.Call);
 
             if (unit.Layouts.Count == 0)
                 unit.Layouts.Add(null); //A layout reserved for the top level

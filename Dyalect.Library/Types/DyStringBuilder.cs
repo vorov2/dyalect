@@ -96,7 +96,7 @@ namespace Dyalect.Library.Types
             var sb = ((DyStringBuilder)self).Builder;
 
             if (index.TypeId != DyType.Integer)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             if (len.TypeId != DyType.Integer)
                 return ctx.InvalidType(len);
@@ -105,7 +105,7 @@ namespace Dyalect.Library.Types
             var ln = (long)len.ToObject();
 
             if (i + ln >= sb.Length)
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
 
             sb.Remove((int)i, (int)ln);
             return self;
@@ -116,7 +116,7 @@ namespace Dyalect.Library.Types
             var sb = ((DyStringBuilder)self).Builder;
 
             if (index.TypeId != DyType.Integer)
-                return ctx.IndexInvalidType(index);
+                return ctx.InvalidType(index);
 
             var i = (long)index.ToObject();
             var str = DyString.ToString(value, ctx);
@@ -125,13 +125,13 @@ namespace Dyalect.Library.Types
                 return DyNil.Instance;
 
             if (i < 0 || i >= sb.Length)
-                return ctx.IndexOutOfRange(index);
+                return ctx.IndexOutOfRange();
 
             sb.Insert((int)i, str);
             return self;
         }
 
-        protected override DyFunction GetMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "insert" => DyForeignFunction.Member(name, Insert, -1, new Par("index"), new Par("value")),
@@ -139,7 +139,7 @@ namespace Dyalect.Library.Types
                 "replace" => DyForeignFunction.Member(name, Replace, -1, new Par("old"), new Par("new")),
                 "append" => DyForeignFunction.Member(name, Append, -1, new Par("value")),
                 "appendLine" => DyForeignFunction.Member(name, AppendLine, -1, new Par("value")),
-                _ => base.GetMember(name, ctx),
+                _ => base.InitializeInstanceMember(name, ctx),
             };
 
 
@@ -156,12 +156,12 @@ namespace Dyalect.Library.Types
                 return new DyStringBuilder(ctx.RuntimeContext, DeclaringUnit, new StringBuilder());
         }
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "StringBuilder")
                 return DyForeignFunction.Static(name, New, -1, new Par("values", DyNil.Instance));
 
-            return base.GetStaticMember(name, ctx);
+            return base.InitializeStaticMember(name, ctx);
         }
     }
 }

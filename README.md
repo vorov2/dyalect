@@ -1,7 +1,9 @@
-# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.19-blue.svg)
+# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.20-blue.svg)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
 ![AppVeyor tests](https://img.shields.io/appveyor/tests/vorov2/dyalect.svg)
+
+:blue_book: [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
 
 Dyalect is a dynamic programming language for .NET Core platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short) is
@@ -44,7 +46,7 @@ func Float.pow(n) {
         }
     }
     else if n < 0 {
-        for i in (-1)..n {
+        for i in -1..n {
             result /= this
         }
     }

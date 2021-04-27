@@ -106,20 +106,29 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to use &quot;new&quot; operator outside of a method..
+        ///   Looks up a localized string similar to A constructor function cannot be an iterator..
         /// </summary>
-        internal static string CtorNoMethod {
+        internal static string CtorNotIterator {
             get {
-                return ResourceManager.GetString("CtorNoMethod", resourceCulture);
+                return ResourceManager.GetString("CtorNotIterator", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to use &quot;new&quot; operator for a non-local type &quot;{0}&quot;..
+        ///   Looks up a localized string similar to Unable to create a constructor for a non-local type &quot;{0}&quot;..
         /// </summary>
         internal static string CtorOnlyLocalType {
             get {
                 return ResourceManager.GetString("CtorOnlyLocalType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid constructor declaration (type specification is missing)..
+        /// </summary>
+        internal static string CtorOnlyMethod {
+            get {
+                return ResourceManager.GetString("CtorOnlyMethod", resourceCulture);
             }
         }
         
@@ -228,6 +237,15 @@ namespace Dyalect.Strings {
         internal static string PatternNotSupported {
             get {
                 return ResourceManager.GetString("PatternNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A positional argument can&apos;t follow an argument passed by name..
+        /// </summary>
+        internal static string PositionalArgumentAfterKeyword {
+            get {
+                return ResourceManager.GetString("PositionalArgumentAfterKeyword", resourceCulture);
             }
         }
         

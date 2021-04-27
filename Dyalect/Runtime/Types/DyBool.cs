@@ -58,7 +58,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             (DyString)(ReferenceEquals(arg, DyBool.True) ? "true" : "false");
 
-        protected override DyFunction GetStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Bool")
                 return DyForeignFunction.Static(name, (_, obj) => (DyBool)obj.GetBool(), -1, new Par("value"));
@@ -66,7 +66,7 @@ namespace Dyalect.Runtime.Types
             if (name == "default")
                 return DyForeignFunction.Static(name, _ => DyBool.False);
 
-            return base.GetStaticMember(name, ctx);
+            return base.InitializeStaticMember(name, ctx);
         }
     }
 }

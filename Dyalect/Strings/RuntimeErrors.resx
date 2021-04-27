@@ -121,37 +121,31 @@
     <value>Division by zero.</value>
   </data>
   <data name="ExternalFunctionFailure" xml:space="preserve">
-    <value>An unhandled exception occured during an execution of an external function "%FunctionName%": %Error%</value>
-  </data>
-  <data name="IndexInvalidType" xml:space="preserve">
-    <value>Indices of type "%IndexTypeName%" are not supported by the type. Failed index: "%Index%".</value>
+    <value>An unhandled exception occured during an execution of an external function "{0}": {1}</value>
   </data>
   <data name="OperationNotSupported" xml:space="preserve">
-    <value>Operation "%Operation%" is not supported by the type "%TypeName%".</value>
+    <value>Operation "{0}" is not supported by the type "{1}".</value>
   </data>
   <data name="StackCorrupted" xml:space="preserve">
     <value>Stack is corrupted.</value>
   </data>
   <data name="IndexOutOfRange" xml:space="preserve">
-    <value>An index "%Index%" is out of range.</value>
+    <value>An index is out of range.</value>
   </data>
   <data name="TooManyArguments" xml:space="preserve">
-    <value>Function "%FunctionName%" accepts %FunctionArguments% argument(s) (%PassedArguments% given).</value>
-  </data>
-  <data name="StaticOperationNotSupported" xml:space="preserve">
-    <value>Static method "%Operation%" is not supported by the type "%TypeName%".</value>
+    <value>Function "{0}" accepts {1} argument(s) ({2} given).</value>
   </data>
   <data name="AssertFailed" xml:space="preserve">
-    <value>Assert failed: %Reason%.</value>
+    <value>Assert failed: {0}.</value>
   </data>
   <data name="RequiredArgumentMissing" xml:space="preserve">
-    <value>No value provided for an argument "%ArgumentName%" of a function "%FunctionName%".</value>
+    <value>No value provided for an argument "{1}" of a function "{0}".</value>
   </data>
   <data name="ArgumentNotFound" xml:space="preserve">
-    <value>Function "%FunctionName%" doesn't have an argument "%ArgumentName%".</value>
+    <value>Function "{0}" doesn't have an argument "{1}".</value>
   </data>
   <data name="FailedReadLiteral" xml:space="preserve">
-    <value>Failed to read literal: %Reason%</value>
+    <value>Failed to read literal: {0}</value>
   </data>
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed.</value>
@@ -160,27 +154,18 @@
     <value>Collection was modified after the iterator was instantiated.</value>
   </data>
   <data name="InvalidType" xml:space="preserve">
-    <value>Type error: type "%TypeName%" is unexpected.</value>
+    <value>Type "{0}" is unexpected.</value>
   </data>
   <data name="PrivateNameAccess" xml:space="preserve">
-    <value>Unable to access a private module member "%Name%".</value>
+    <value>Unable to access a private module member "{0}".</value>
   </data>
   <data name="KeyNotFound" xml:space="preserve">
-    <value>The key "%Key%" is not present in the dictionary.</value>
+    <value>Key is not present in the dictionary.</value>
   </data>
   <data name="KeyAlreadyPresent" xml:space="preserve">
-    <value>Key "%Key%" is already present in the dictionary.</value>
+    <value>Key is already present in the dictionary.</value>
   </data>
-  <data name="InvalidRange" xml:space="preserve">
-    <value>Range is invalid.</value>
-  </data>
-  <data name="InvalidValue" xml:space="preserve">
-    <value>A value "%Value%" causes an invalid behavior.</value>
-  </data>
-  <data name="ValueOutOfRange" xml:space="preserve">
-    <value>Value "%Value%" is out of range.</value>
-  </data>
-  <data name="OpenRangeNotSupported" xml:space="preserve">
-    <value>Type "%Type%" doesn't support open ranges.</value>
+  <data name="MultipleValuesForArgument" xml:space="preserve">
+    <value>Function "{0}" has multiple values for an argument "{1}".</value>
   </data>
 </root>

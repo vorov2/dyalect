@@ -37,7 +37,7 @@ TOKENS
 
     autoToken           = "auto".
     varToken            = "var".
-    constToken          = "const".
+    letToken            = "let".
     funcToken           = "func".
     returnToken         = "return".
     privateToken        = "private".
@@ -54,6 +54,7 @@ TOKENS
     dotToken            = ".".
     commaToken          = ",".
     semicolonToken      = ";".
+    colonToken          = ":".
     equalToken          = "=".
     parenLeftToken      = "(".
     parenRightToken     = ")".
@@ -148,14 +149,14 @@ PRODUCTIONS
         .)
         identToken (. typ.Name = t.val; node = typ; .)
         [
-            (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; .)
+            (. f = new DFunctionDeclaration(t) { Name = typ.Name, Attribute = FunctionAttribute.Constructor, TypeName = new Qualident(typ.Name) }; .)
             FunctionArguments<f>
             (. typ.Constructors.Add(f); .)
         ]
         [
             "="
-            identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
-            { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
+            identToken (. f = new DFunctionDeclaration(t) { Name = t.val, Attribute = FunctionAttribute.Constructor, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
+            { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, Attribute = FunctionAttribute.Constructor, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
         ].
 
     Statement<out DNode node> =
@@ -255,14 +256,11 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; bool st = false; .)
+        (. node = null; .)
         (
-            (
-                [ "static" (. st = true; .) ]
-                "func"
-            )
+            "func"
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st };
+                var f = new DFunctionDeclaration(t);
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>
@@ -281,9 +279,19 @@ PRODUCTIONS
                 }
             .)
             FunctionArguments<f>
-            (
-                Block<out node>
-            )
+            [
+                identToken
+                (.
+                    var attr = FunctionAttribute.None; 
+                    if (t.val == "static") attr = FunctionAttribute.Static;
+                    else if (t.val == "cons") attr = FunctionAttribute.Constructor;
+                    else if (t.val == "decons") attr = FunctionAttribute.Deconstructor;
+                    else
+                        AddError(ParserError.InvalidFunctionAttribute, t.GetLocation(), t.val);
+                    f.Attribute = attr;
+                .)
+            ]
+            Block<out node>
             (.
                 f.Body = node;
                 node = f;
@@ -312,8 +320,8 @@ PRODUCTIONS
         (. node = null; .)
         (
             (
-                ( "var" | "const" )
-                (. var bin = new DBinding(t) { Constant = t.val == "const" }; .)
+                ( "var" | "let" | "const" (. Deprecated("const"); .) )
+                (. var bin = new DBinding(t) { Constant = t.val == "let" }; .)
                 OrPattern<out var pat> (. bin.Pattern = pat; .)
                 [
                     "=" Expr<out node>
@@ -509,24 +517,33 @@ PRODUCTIONS
         (
             identToken
             (. var la = new DLabelPattern(t) { Label = t.val }; .)
-            "=" Pattern<out var pat>
+            ":" Pattern<out var pat>
             (. la.Pattern = pat; node = la; .)
         ).
 
     NamePattern<out DPattern node> =
-        (. node = null; string nm2 = null; string nm1 = null; Token ot = null; .)
+        (. node = null; string nm2 = null; string nm1 = null; Token ot = null; bool typeCheck = false; .)
         (
             identToken (. nm1 = t.val; ot = t; .)
             [ "." identToken (. nm2 = null; .) ]
+            [ "?" (. typeCheck = true; .) ]
             (.
-                if (nm2 == null) {
-                    if (t.val == "_")
+                if (typeCheck)
+                    node = new DTypeTestPattern(ot) {
+                        TypeName = nm2 is null ? new Qualident(nm1) : new Qualident(nm2, nm1) 
+                    };
+                else {
+                    if (nm2 is not null) {
+                        //TODO: error here
+                    }
+                    else if (nm1 == "_") {
                         node = new DWildcardPattern(ot);
-                    else
-                        node = new DNamePattern(ot) { Name = nm1 };
-                } else {
-                    var q = new Qualident(nm2, nm1);
-                    node = new DTypeTestPattern(ot) { TypeName = q };
+                    }
+                    else {
+                        node = new DNamePattern(ot) {
+                            Name = nm1
+                        };
+                    }
                 }
             .)
         ).
@@ -671,6 +688,7 @@ PRODUCTIONS
             | Is<out node>
             | TryCatch<out node>
             | Throw<out node> Separator
+            | Block<out node>
         ).
 
     Throw<out DNode node> =
@@ -743,24 +761,24 @@ PRODUCTIONS
         (. node = null; DNode snode = null; DNode cnode = null; bool exclu = false; .)
         (
             (
-                "^" SimpleUnary<out snode>
+                "^" FunctionApplication<out snode>
                 ( ".." | "..<" (. exclu = true; .) )
                 (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+                [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
             )
             |
             (
                 ( ".." | "..<" (. exclu = true; .) )
                 (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
-                [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+                [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
             )
             |
             (
-                Or<out node> [ "^" SimpleUnary<out snode> ]
+                Or<out node> [ "^" FunctionApplication<out snode> ]
                 [
                     ( ".." | "..<" (. exclu = true; .) )
                     (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                    [ SimpleUnary<out cnode> (. range.To = cnode; .) ]
+                    [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
                 ]
             )
         ).
@@ -876,7 +894,7 @@ PRODUCTIONS
         }.
 
     Mul<out DNode node> =
-        Unary<out node>
+        FunctionApplication<out node>
         {
             (.
                 var op = default(BinaryOperator);
@@ -888,9 +906,20 @@ PRODUCTIONS
                 | "%" (. ot = t; op = BinaryOperator.Rem; .)
             )
             (
-                Unary<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
+                FunctionApplication<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
             )
         }.
+
+    FunctionApplication<out DNode node> =
+        (. node = null; .)
+        (
+            Unary<out node>
+            {
+                (. var app = new DApplication(node, t); .)
+                "!" Unary<out node>
+                (. app.Arguments.Add(node); node = app; .)
+            }
+        ).
 
     Unary<out DNode node> =
         (.
@@ -956,103 +985,7 @@ PRODUCTIONS
                 )
                 |
                 (
-                    ":" (. var ot = t; .)
-                    identToken
-                    (.
-                        node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
-                    .)
-                )
-                |
-                (
-                    (. if (la.AfterEol) return; .)
-                    "["
-                        (. var idx = new DIndexer(t) { Target = node }; .)
-                        Expr<out node>
-                        (.
-                            idx.Index = node;
-                            node = idx;
-                        .)
-                    "]"
-                )
-                |
-                (
-                    (.
-                        if (la.AfterEol) return;
-                        var app = new DApplication(node, t);
-                    .)
-                    "("
-                        [ ApplicationArguments<app> ]
-                        (. node = app; .)
-                    ")"
-                )
-            }
-        ).
-
-    SimpleUnary<out DNode node> =
-        (.
-            node = null;
-            var op = default(UnaryOperator);
-            var ot = default(Token);
-        .)
-        (
-            (
-                (
-                    "!" (. ot = t; op = UnaryOperator.Not; .)
-                    SimpleIndex<out node>
-                    (. node = new DUnaryOperation(node, op, ot); .)
-                )
-                |
-                (
-                    "-" (. ot = t; op = UnaryOperator.Neg; .)
-                    SimpleIndex<out node>
-                    (. node = new DUnaryOperation(node, op, ot); .)
-                )
-                |
-                (
-                    "+" (. ot = t; op = UnaryOperator.Plus; .)
-                    SimpleIndex<out node>
-                    (. node = new DUnaryOperation(node, op, ot); .)
-                )
-                |
-                (
-                    "~~~" (. ot = t; op = UnaryOperator.BitwiseNot; .)
-                    SimpleIndex<out node>
-                    (. node = new DUnaryOperation(node, op, ot); .)
-                )
-                | SimpleIndex<out node>
-            )
-        ).
-
-    SimpleIndex<out DNode node> =
-        (
-            SimpleLiteral<out node> 
-            {
-                (
-                    "." (. var ot = t; .)
-                    identToken
-                    (. var nm = t.val; DMemberCheck chk = null; .)
-                    (
-                        [
-                            "?"
-                            (.
-                                chk = new DMemberCheck(ot) { Target = node };
-                                chk.Name = nm;
-                                node = chk;
-                            .)
-                        ]
-                        (.
-                            if (chk == null)
-                            {
-                                var fld = new DAccess(ot) { Target = node };
-                                fld.Name = nm;
-                                node = fld;
-                            }
-                        .)
-                    )
-                )
-                |
-                (
-                    ":" (. var ot = t; .)
+                    "::" (. var ot = t; .)
                     identToken
                     (.
                         node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
@@ -1103,14 +1036,6 @@ PRODUCTIONS
     Literal<out DNode node> =
         (. node = null; .)
         (
-              SimpleLiteral<out node>
-            | IF (IsIterator()) Iterator<out node>
-            | Block<out node>
-        ).
-
-    SimpleLiteral<out DNode node> =
-        (. node = null; .)
-        (
               Name<out node>
             | SpecialName<out node>
             | Integer<out node>
@@ -1123,21 +1048,19 @@ PRODUCTIONS
             | Group<out node>
             | Base<out node>
             | Array<out node>
+            | Iterator<out node>
         ).
 
     Iterator<out DNode node> =
         (. node = null; .)
         (
-            "{"
+            "yields" "{"
                 (.
                     var it = new DIteratorLiteral(t);
                     it.YieldBlock = new DYieldBlock(t);
                 .)
-                Expr<out node> (. it.YieldBlock.Elements.Add(node); .) ","
-                [
-                    Expr<out node> (. it.YieldBlock.Elements.Add(node); .)
-                    { "," Expr<out node> (. it.YieldBlock.Elements.Add(node); .) }
-                ]
+                Expr<out node> (. it.YieldBlock.Elements.Add(node); .)
+                { "," Expr<out node> (. it.YieldBlock.Elements.Add(node); .) }
                 (. node = it; .)
             "}"
         ).
@@ -1146,7 +1069,7 @@ PRODUCTIONS
         (. node = null; var name = ""; .)
         (
             ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
-            "=" (. var ot = t; .)
+            ":" (. var ot = t; .)
             (
                   IF (IsFunction()) FunctionExpr<out node>
                 | Is<out node>
