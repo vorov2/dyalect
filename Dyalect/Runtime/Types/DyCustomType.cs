@@ -30,6 +30,10 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             var i = GetItemIndex(index, ctx);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
             return Locals[i].GetTaggedValue();
         }
 

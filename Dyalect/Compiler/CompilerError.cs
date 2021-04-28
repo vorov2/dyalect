@@ -88,6 +88,6 @@
 
         CtorOnlyPascal = 242,
 
-        // = 243
+        ReturnInConstructor = 243
     }
 }

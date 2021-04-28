@@ -3,6 +3,7 @@
   * Change: _Redesign of custom type system for better flexibility_ ([Issue #440](https://github.com/vorov2/dyalect/issues/440), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
   * Change: _Type check incosistency_ ([Issue #443](https://github.com/vorov2/dyalect/issues/443)).
   * Change: _Change precendence for `is` operator_ ([Issue #445](https://github.com/vorov2/dyalect/issues/445)).
+  * Change: _Redesign of custom type system for better flexibility_ ([Issue #440](https://github.com/vorov2/dyalect/issues/440)).
   * Add: _Add an ability to specify a type for a constructor pattern_ ([Issue #442](https://github.com/vorov2/dyalect/issues/442)).
 
 # 0.20.2

@@ -304,6 +304,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Statement &quot;return&quot; is not supported inside constructors..
+        /// </summary>
+        internal static string ReturnInConstructor {
+            get {
+                return ResourceManager.GetString("ReturnInConstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Statement &quot;return&quot; is not allowed in iterators. Use &quot;yield break&quot; to terminate an iterator..
         /// </summary>
         internal static string ReturnInIterator {

@@ -255,4 +255,7 @@
   <data name="CtorOnlyPascal" xml:space="preserve">
     <value>Constructor names should start with a capital letter.</value>
   </data>
+  <data name="ReturnInConstructor" xml:space="preserve">
+    <value>Statement "return" is not supported inside constructors.</value>
+  </data>
 </root>

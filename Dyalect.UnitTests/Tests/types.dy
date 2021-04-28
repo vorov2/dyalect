@@ -380,3 +380,24 @@ func callableTest2() {
     Integer.__deleteMember("call")
     assert(28, res)
 }
+
+type TypesOption = Some(x) | None()
+func testIs() {
+    let some = TypesOption.Some(42)
+    let none = TypesOption.None()
+    var x
+    if some is TypesOption? && none is TypesOption? {
+        x = 42
+    }
+    assert(42, x)
+}
+
+func testCustomFunc() {
+    func TypesOption.extractValue() {
+        if this is Some(x) {
+            x
+        }
+    }
+    let some = TypesOption.Some(42)
+    assert(42, some.extractValue())
+}
