@@ -41,13 +41,10 @@ namespace Dyalect.Compiler
             if (!char.IsUpper(func.Name[0]))
                 AddError(CompilerError.CtorOnlyPascal, func.Location);
 
-            var sys = AddVariable();
-
             if (func.Parameters.Count == 0)
             {
                 AddLinePragma(func);
-                cw.PushNil();
-                cw.PopVar(sys);
+                cw.Nop();
             }
             else if (func.Parameters.Count == 1)
             {
@@ -56,8 +53,7 @@ namespace Dyalect.Compiler
                 AddLinePragma(func);
                 cw.PushVar(a);
                 cw.Tag(p.Name);
-                cw.NewTuple(1);
-                cw.PopVar(sys);
+                cw.PopVar(a.Address);
             }
             else
             {
@@ -67,11 +63,11 @@ namespace Dyalect.Compiler
                     var a = GetVariable(p.Name, p);
                     cw.PushVar(a);
                     cw.Tag(p.Name);
+                    cw.PopVar(a.Address);
                 }
 
                 AddLinePragma(func);
-                cw.NewTuple(func.Parameters.Count);
-                cw.PopVar(sys);
+                cw.Nop();
             }
 
             TryGetLocalType(func.TypeName.Local, out var ti);

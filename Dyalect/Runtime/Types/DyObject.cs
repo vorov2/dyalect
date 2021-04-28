@@ -54,8 +54,6 @@ namespace Dyalect.Runtime.Types
 
         public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 
-        internal virtual DyObject Unbox() => this;
-
         internal virtual int GetCount() => 1;
 
         internal virtual void Serialize(BinaryWriter writer) => throw new NotSupportedException();

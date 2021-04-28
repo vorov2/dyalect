@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using System;
+using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
@@ -11,26 +12,81 @@ namespace Dyalect.Runtime.Types
 
         internal DyObject[] Locals { get; }
 
-        internal DyObject Value => Locals.Length > 0 ? Locals[^1] : DyNil.Instance;
-
         internal DyCustomType(int typeCode, string ctor, DyObject[] locals, Unit unit) : base(typeCode) =>
             (Constructor, Locals, DeclaringUnit) = (ctor, locals, unit);
 
         public override object ToObject() => this;
 
-        internal override DyObject Unbox() => this;
+        internal override int GetCount() => Locals.Length;
 
-        internal override int GetCount() => Value.GetCount();
+        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
+        {
+            var i = GetItemIndex(index, ctx);
 
-        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
-            Value.SetItem(index, value, ctx);
+            if (!ctx.HasErrors)
+                ((DyLabel)Locals[i]).Value = value;
+        }
 
-        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) => Value.GetItem(index, ctx);
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
+        {
+            var i = GetItemIndex(index, ctx);
+            return Locals[i].GetTaggedValue();
+        }
 
-        protected internal override bool TryGetItem(DyObject index, ExecutionContext ctx, out DyObject value) =>
-            Value.TryGetItem(index, ctx, out value);
+        protected internal override bool TryGetItem(DyObject index, ExecutionContext ctx, out DyObject value)
+        {
+            var i = GetItemIndex(index, ctx, noerr: true);
 
-        protected internal override bool HasItem(string name, ExecutionContext ctx) => Value.HasItem(name, ctx);
+            if (i < 0)
+            {
+                value = null;
+                return false;
+            }
+
+            value = Locals[i].GetTaggedValue();
+            return true;
+        }
+
+        protected internal override bool HasItem(string name, ExecutionContext ctx) => GetOrdinal(name, ctx, noerr: true) != -1;
+
+        private int GetItemIndex(DyObject index, ExecutionContext ctx, bool noerr = false)
+        {
+            if (index.TypeId == DyType.Integer)
+            {
+                var i = (int)index.GetInteger();
+                i = i < 0 ? Locals.Length + i : i;
+
+                if (i >= Locals.Length)
+                {
+                    if (!noerr)
+                        ctx.IndexOutOfRange();
+                    return -1;
+                }
+
+                return i;
+            }
+
+            if (index.TypeId == DyType.String)
+            {
+                var s = index.GetString();
+                return GetOrdinal(s, ctx, noerr);
+            }
+
+            if (!noerr)
+                ctx.InvalidType(index);
+            return -1;
+        }
+
+        private int GetOrdinal(string s, ExecutionContext ctx, bool noerr)
+        {
+            for (var i = 0; i < Locals.Length; i++)
+                if (Locals[i].GetLabel() == s)
+                    return i;
+
+            if (!noerr)
+                ctx.IndexOutOfRange();
+            return -1;
+        }
 
         public override string GetConstructor(ExecutionContext ctx) => Constructor;
 
@@ -93,14 +149,38 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var cust = (DyCustomType)arg;
-            if (TypeName == cust.Constructor && ReferenceEquals(cust.Value, DyNil.Instance))
+            if (TypeName == cust.Constructor && cust.Locals.Length == 0)
                 return new DyString($"{TypeName}()");
             else if (TypeName == cust.Constructor)
-                return new DyString($"{TypeName}({cust.Value.ToString(ctx)})");
-            else if (ReferenceEquals(cust.Value, DyNil.Instance))
+                return new DyString($"{TypeName}({LocalsToString(cust, ctx)})");
+            else if (cust.Locals.Length == 0)
                 return new DyString($"{TypeName}.{cust.Constructor}()");
             else
-                return new DyString($"{TypeName}.{cust.Constructor}({cust.Value.ToString(ctx)})");
+                return new DyString($"{TypeName}.{cust.Constructor}({LocalsToString(cust, ctx)})");
+        }
+
+        private string LocalsToString(DyCustomType t, ExecutionContext ctx)
+        {
+            var sb = new StringBuilder();
+
+            for (var i = 0; i < t.Locals.Length; i++)
+            {
+                if (sb.Length > 0)
+                {
+                    sb.Append(',');
+                    sb.Append(' ');
+                }
+
+                sb.Append(t.Locals[i].GetLabel());
+                sb.Append(':');
+                sb.Append(' ');
+                sb.Append(t.Locals[i].GetTaggedValue().ToString(ctx));
+
+                if (ctx.HasErrors)
+                    return "";
+            }
+
+            return sb.ToString();
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)

@@ -672,13 +672,6 @@ namespace Dyalect.Compiler
                     cw.Push(push);
                     return;
                 }
-                else if (name == "valueof" && node.Arguments.Count == 1)
-                {
-                    Build(node.Arguments[0], newHints.Append(Push), ctx);
-                    AddLinePragma(node);
-                    cw.Unbox();
-                    return;
-                }
 
             //This is a special optimization for the 'toString', 'has' and 'len' methods
             //If we see that it is called directly we than emit a direct op code

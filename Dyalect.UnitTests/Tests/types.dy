@@ -18,6 +18,29 @@ func simpleTest2() {
     }
 }
 
+type Asset = Computer(model, memory, rank) | Phone(model, memory) | Modem(model)
+func simpleTest3() {
+    var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
+    var a2 = Asset.Phone("1+", 8)
+    var a3 = Asset.Modem("Zyxel")
+    assert(3, a1.len())
+    assert(2, a2.len())
+    assert(1, a3.len())
+    assert("Lenovo"+16+3, a1::model+a1::memory+a1::rank)
+    assert("1+"+8, a2::model+a2::memory)
+    assert("Zyxel", a3::model)
+    assert("Asset.Computer(model: \"Lenovo\", memory: 16, rank: 3)", a1.toString())
+    assert("Asset.Phone(model: \"1+\", memory: 8)", a2.toString())
+    assert("Asset.Modem(model: \"Zyxel\")", a3.toString())
+}
+
+type Void()
+func simpleTest4() {
+    var v = Void()
+    assert(0, v.len())
+    assert("Void()", v.toString())
+}
+
 type Bar = {
     var data
 }
