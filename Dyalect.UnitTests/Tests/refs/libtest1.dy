@@ -2,6 +2,8 @@
 
 let PI = 3.14
 
+type Asset = Computer(model, memory, rank) | Phone(model, memory) | Modem(model)
+
 func sayHello() {
     "Hello, \(userName("Jon"))"
 }

@@ -239,15 +239,6 @@ namespace Dyalect.Parser
             return false;
         }
 
-        private bool IsConstructor()
-        {
-            if (la.kind != _identToken)
-                return false;
-
-            scanner.ResetPeek();
-            return scanner.Peek().kind == _parenLeftToken;
-        }
-
         private bool IsFunction()
         {
             if (la.kind != _parenLeftToken && la.kind != _identToken)

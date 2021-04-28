@@ -1,6 +1,8 @@
 # 0.21.0
   * Change: _Rethreat to old function syntax_ ([Issue #441](https://github.com/vorov2/dyalect/issues/441)).
   * Change: _Redesign of custom type system for better flexibility_ ([Issue #440](https://github.com/vorov2/dyalect/issues/440), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
+  * Change: _Type check incosistency_ ([Issue #443](https://github.com/vorov2/dyalect/issues/443)).
+  * Add: _Add an ability to specify a type for a constructor pattern_ ([Issue #442](https://github.com/vorov2/dyalect/issues/442)).
 
 # 0.20.2
   * Fix: _Limiting grammar for MatchEntry_ ([Issue #437](https://github.com/vorov2/dyalect/issues/437)).

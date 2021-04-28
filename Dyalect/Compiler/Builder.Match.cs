@@ -145,8 +145,14 @@ namespace Dyalect.Compiler
             var bad = cw.DefineLabel();
             var ok = cw.DefineLabel();
 
-            cw.Dup();
+            if (node.TypeName is not null)
+            {
+                cw.Dup();
+                cw.TypeCheck(GetTypeHandle(node.TypeName, node.Location));
+                cw.Brfalse(bad);
+            }
 
+            cw.Dup();
             cw.CtorCheck(node.Constructor);
             cw.Brfalse(bad);
 

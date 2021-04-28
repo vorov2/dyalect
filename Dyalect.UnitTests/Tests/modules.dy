@@ -103,3 +103,40 @@ func moduleIterTest() {
     var shouldbe = ["abs","sign","double","min","max","userName","pi"]
     assert(shouldbe, xs)
 }
+
+func matchExoTypeTest1() {
+    var a1 = lib1::Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
+    var a2 = Asset.Phone("1+", 8)
+    func mem1(a) {
+        match a {
+            lib1::Asset.Computer(model, memory, rank) => memory,
+            lib1::Asset.Phone(model, memory) => memory
+        }
+    }
+    func mem2(a) {
+        match a {
+            Asset.Computer(model, memory, rank) => memory,
+            Asset.Phone(model, memory) => memory
+        }
+    }
+    func mem3(a) {
+        match a {
+            Computer(model, memory, rank) => memory,
+            Phone(model, memory) => memory
+        }
+    }
+    assert(16, mem1(a1))
+    assert(8, mem1(a2))
+    assert(16, mem2(a1))
+    assert(8, mem2(a2))
+    assert(16, mem3(a1))
+    assert(8, mem3(a2))
+}
+
+func testExoType1() {
+    var t = lib1::Asset
+    assert("Asset", t::name)
+    var c = t.Computer("Acer", 4, 1)
+    assert("Acer41", c::model+c::memory+c::rank)
+    assert(true, c is lib1::Asset?)
+}

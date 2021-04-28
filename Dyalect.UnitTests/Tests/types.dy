@@ -41,6 +41,19 @@ func simpleTest4() {
     assert("Void()", v.toString())
 }
 
+func matchTypeTest1() {
+    var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
+    var a2 = Asset.Phone("1+", 8)
+    func mem(a) {
+        match a {
+            Asset.Computer(model, memory, rank) => memory,
+            Asset.Phone(model, memory) => memory
+        }
+    }
+    assert(16, mem(a1))
+    assert(8, mem(a2))
+}
+
 type Bar = {
     var data
 }
