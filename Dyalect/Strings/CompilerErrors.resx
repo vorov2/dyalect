@@ -258,4 +258,7 @@
   <data name="ReturnInConstructor" xml:space="preserve">
     <value>Statement "return" is not supported inside constructors.</value>
   </data>
+  <data name="TypeNameCamel" xml:space="preserve">
+    <value>Type name should start from a capital letter.</value>
+  </data>
 </root>

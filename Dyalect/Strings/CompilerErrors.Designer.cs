@@ -367,6 +367,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type name should start from a capital letter..
+        /// </summary>
+        internal static string TypeNameCamel {
+            get {
+                return ResourceManager.GetString("TypeNameCamel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to change a value of a constant &quot;{0}&quot;..
         /// </summary>
         internal static string UnableAssignConstant {

@@ -9,6 +9,9 @@ namespace Dyalect.Compiler
     {
         private void Build(DTypeDeclaration node, Hints hints, CompilerContext ctx)
         {
+            if (!char.IsUpper(node.Name[0]))
+                AddError(CompilerError.TypeNameCamel, node.Location);
+
             var typeId = unit.Types.Count;
             var unitId = unit.UnitIds.Count - 1;
             var ti = new TypeInfo(typeId, node, new UnitInfo(unitId, unit));

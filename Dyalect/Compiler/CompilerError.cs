@@ -88,6 +88,8 @@
 
         CtorOnlyPascal = 242,
 
-        ReturnInConstructor = 243
+        ReturnInConstructor = 243,
+
+        TypeNameCamel = 244
     }
 }
