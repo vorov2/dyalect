@@ -233,13 +233,13 @@ func concatTest1() {
     assert("sum(x, y)str", sum + str)
 }
 
-type __Dummy()
+type TypeInString()
 func concatTest2() {
-    func __Dummy.toString() { "!dummy!" }
-    var x = __Dummy()
+    func TypeInString.toString() { "!dummy!" }
+    var x = TypeInString()
     var str = "str" + x
     assert("str!dummy!", str)
     str = x + "str"
     assert("!dummy!str", str)
-    __Dummy.__deleteMember("toString")
+    TypeInString.__deleteMember("toString")
 }

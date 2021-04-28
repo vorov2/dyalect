@@ -5,18 +5,20 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyCustomType : DyObject
     {
-        internal DyObject Value { get; }
-
         internal Unit DeclaringUnit { get; }
 
         internal string Constructor { get; }
 
-        internal DyCustomType(int typeCode, string ctor, DyObject value, Unit unit) : base(typeCode) =>
-            (Value, Constructor, DeclaringUnit) = (value, ctor, unit);
+        internal DyObject[] Locals { get; }
 
-        public override object ToObject() => Value.ToObject();
+        internal DyObject Value => Locals.Length > 0 ? Locals[^1] : DyNil.Instance;
 
-        internal override DyObject Unbox() => Value;
+        internal DyCustomType(int typeCode, string ctor, DyObject[] locals, Unit unit) : base(typeCode) =>
+            (Constructor, Locals, DeclaringUnit) = (ctor, locals, unit);
+
+        public override object ToObject() => this;
+
+        internal override DyObject Unbox() => this;
 
         internal override int GetCount() => Value.GetCount();
 
@@ -32,12 +34,21 @@ namespace Dyalect.Runtime.Types
 
         public override string GetConstructor(ExecutionContext ctx) => Constructor;
 
-        public override int GetHashCode() => HashCode.Combine(Constructor, Value);
+        public override int GetHashCode() => HashCode.Combine(Constructor, Locals);
 
-        public override bool Equals(DyObject other) =>
-            other is DyCustomType ct
-            && ct.Constructor == Constructor
-            && (ReferenceEquals(ct.Value, Value) || (ct.Value is not null && ct.Value.Equals(Value)));
+        public override bool Equals(DyObject other)
+        {
+            if (TypeId == other.TypeId && other is DyCustomType t 
+                && t.Constructor == Constructor && t.Locals.Length == Locals.Length)
+            {
+                for (var i = 0; i < Locals.Length; i++)
+                    if (!t.Locals[i].Equals(Locals[i]))
+                        return false;
+                return true;
+            }
+
+            return false;
+        }
     }
 
     internal sealed class DyCustomTypeInfo : DyTypeInfo
@@ -54,6 +65,30 @@ namespace Dyalect.Runtime.Types
             (SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not)
             | (autoGenMethods ? (SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len)
                 : SupportedOperations.None);
+
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            var self = (DyCustomType)left;
+
+            if (self.TypeId == right.TypeId && right is DyCustomType t && t.Constructor == self.Constructor
+                && t.Locals.Length == self.Locals.Length)
+            {
+                for (var i = 0; i < self.Locals.Length; i++)
+                {
+                    var res = ctx.RuntimeContext.Types[self.Locals[i].TypeId].Eq(ctx, self.Locals[i], t.Locals[i]);
+
+                    if (ctx.HasErrors)
+                        return DyNil.Instance;
+
+                    if (res == DyBool.False)
+                        return res;
+                }
+
+                return DyBool.True;
+            }
+
+            return DyBool.False;
+        }
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {

@@ -133,6 +133,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Constructor names should start with a capital letter..
+        /// </summary>
+        internal static string CtorOnlyPascal {
+            get {
+                return ResourceManager.GetString("CtorOnlyPascal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Constructor should be a static function..
+        /// </summary>
+        internal static string CtorOnlyStatic {
+            get {
+                return ResourceManager.GetString("CtorOnlyStatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An expression doesn&apos;t have a name..
         /// </summary>
         internal static string ExpressionNoName {

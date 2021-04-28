@@ -249,4 +249,10 @@
   <data name="PositionalArgumentAfterKeyword" xml:space="preserve">
     <value>A positional argument can't follow an argument passed by name.</value>
   </data>
+  <data name="CtorOnlyStatic" xml:space="preserve">
+    <value>Constructor should be a static function.</value>
+  </data>
+  <data name="CtorOnlyPascal" xml:space="preserve">
+    <value>Constructor names should start with a capital letter.</value>
+  </data>
 </root>

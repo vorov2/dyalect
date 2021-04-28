@@ -1,15 +1,35 @@
-﻿type Foo
-type Bar
+﻿type SimpleFoo(x)
+func simpleTest1() {
+    var f = SimpleFoo(42)
+    assert(42, f::x)
+    assert(42, f[0])
+    assert(1, f.len())
+    match f {
+        SimpleFoo(x) => assert(42, x)
+    }
+}
 
+type EmptyFoo()
+func simpleTest2() {
+    var f = EmptyFoo()
+    assert(0, f.len())
+    match f {
+        EmptyFoo() => assert(true, true)
+    }
+}
+
+type Bar = {
+    var data
+}
 func extendTest1() {
-    func Bar.Bar(args...) cons {
-        args
+    static func Bar.Bar(args...) {
+        data = args
     }
-    func Bar.len() decons {
-        this.len()
+    func Bar.len() {
+        data.len()
     }
-    func Bar.get(index) decons {
-        this[index]
+    func Bar.get(index) {
+        data[index]
     }
     var obj = Bar.Bar(1, 2, 3)
     var res = match obj {
@@ -20,21 +40,21 @@ func extendTest1() {
 }
 
 func extendTest2() {
-    func Bar.Bar(args...) cons {
-        args
+    static func Bar.Bar(args...) {
+        data = args
     }
-    func Bar.len() decons {
-        this.len()
+    func Bar.len() {
+        data.len()
     }
-    func Bar.get(index) decons {
-        this[index]
+    func Bar.get(index) {
+        data[index]
     }
-    var obj = Bar(1, 2, 3)
+    var obj = Bar(10, 20, 30)
     var res = match obj {
         (x, y) => x + y,
         (x, y, z) => x + y + z
     }
-    assert(6, res)
+    assert(60, res)
 }
 
 type Maybe = None() | Some(x)
@@ -71,7 +91,7 @@ func autoConsTest3() {
     assert(43, p::y)
 }
 
-type Nat
+type Nat = { var val }
 func typeTest1() {
     func fetch(x) {
         if x < 0 {
@@ -80,29 +100,29 @@ func typeTest1() {
             Nat(x)
         }
     }
-    func Nat.Nat(x) cons {
+    static func Nat.Nat(x) {
         if x < 0 {
             throw "Negative number."
         }
-        x
+        val = x
     }
-    func Nat.toInteger() decons {
-        this
+    func Nat.toInteger() {
+        val
     }
-    func Nat + (other) decons {
-        fetch(this + other.toInteger())
+    func Nat + (other) {
+        fetch(val + other.toInteger())
     }
-    func Nat - (other) decons {
-        fetch(this - other.toInteger())
+    func Nat - (other) {
+        fetch(val - other.toInteger())
     }
-    func Nat * (other) decons {
-        fetch(this * other.toInteger())
+    func Nat * (other) {
+        fetch(val * other.toInteger())
     }
-    func Nat / (other) decons {
-        fetch(this / other.toInteger())
+    func Nat / (other) {
+        fetch(val / other.toInteger())
     }
-    func Nat == (other) decons {
-        this == other.toInteger()
+    func Nat == (other) {
+        val == other.toInteger()
     }
     var n = Nat(12)
     assert(Nat(24), n + Nat(12))
@@ -127,25 +147,25 @@ func typeTest2() {
     assert(24, doMatch(y))
 }
 
-type Cell
+type Cell = { var val }
 func typeTest3() {
     func ref(value) {
-        Cell((__value: value))
+        Cell(value)
     }
-    func Cell.Cell(value) cons {
-        value
+    static func Cell.Cell(value) {
+        val = value
     }
-    func Cell.setValue(value) decons {
-        this["__value"] = value
+    func Cell.setValue(value) {
+        val = value
     }
-    func Cell.getValue() decons {
-        this["__value"]
+    func Cell.getValue() {
+        val
     }
-    func Cell.get(index) decons {
+    func Cell.get(index) {
         if index != 0 {
             throw "Index out of range."
         }
-        this["__value"]
+        val
     }
     func Cell.len() {
         1
@@ -179,23 +199,23 @@ func typeTest4() {
 }
 
 func typeTest5() {
-    func List.List(values...) static {
+    static func List.generate(values...) {
         var xs = List.Empty()
         for x in values {
             xs = List.Cons(x, xs)
         }
         xs
     }
-    var xs = List(1,2,3,4)
+    var xs = List.generate(1,2,3,4)
     assert("[4,3,2,1]", xs.toString())
 }
 
 type Zoo1()
 func typeTest6() {
     var x = Zoo1()
-    func Zoo1.toString() decons {
+    func Zoo1.toString() {
         match this {
-            nil => "nil"
+            Zoo1() => "nil"
         }
     }
     assert("nil", x.toString())
@@ -217,16 +237,16 @@ func simpleTypeTest2() {
     assert(12, b::x)
 }
 
-type Record
+type Record = { var fields }
 func accessorTest() {
-    func Record.Record(values...) cons {
-        values
+    static func Record.Record(values...) {
+        fields = values
     }
-    func Record.get(index) decons {
+    func Record.get(index) {
         if index == "name" {
-            return this["name"]
+            return fields::name
         } else if index == "age" {
-            return this["age"]
+            return fields::age
         }
     }
     var p = Record(values: (name: "John", age: 33))
@@ -242,16 +262,29 @@ func setterTest1() {
     assert(39, u::age)
 }
 
-type Point1
+type Point1 = { var px; var py }
 func setterTest2() { //Bug #205
-    func Point1.Point1(x, y) cons {
-        (x, y)
+    static func Point1.Point1(x, y) {
+        px = x
+        py = y
     }
-    func Point1.get(index) decons {
-        this[index]
+    func Point1.get(index) {
+        if index == 0 || index == "x" {
+            x
+        } else if index == 1 || index == "y" {
+            y
+        } else {
+            throw Error.IndexOutOfRange()
+        }
     }
-    func Point1.set(index, value) decons {
-        this[index] = value
+    func Point1.set(index, value) {
+        if index == 0 || index == "x" {
+            x = value
+        } else if index == 1 || index == "y" {
+            y = value
+        } else {
+            throw Error.IndexOutOfRange()
+        }
     }
     var p = Point1(12, 34)
     p::x += p::x
@@ -271,10 +304,10 @@ func complexMemberCheckTest2() {
     Integer.__deleteMember("foobar")
 }
 
-type X22(x)
+type Leto(x)
 func complexMemberCheckTest3() {
-    func X22.foobar() {}
-    var p = X22(22)
+    func Leto.foobar() {}
+    var p = Leto(22)
     assert(false, p.x?)
     assert(true, p.foobar?)
 }
@@ -293,12 +326,12 @@ func objectTypeTest() {
     assert("x=Vasily,y=41", res2)
 }
 
-type X23(x)
+type Julia(x)
 func callableTest1() {
-    func X23.call(y, z) {
+    func Julia.call(y, z) {
         this::x + y * z 
     }
-    var x = X23(12)
+    var x = Julia(12)
     var res = x(44.5, 67.07)
     assert(2996.615, res)
 }

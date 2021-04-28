@@ -89,8 +89,6 @@
             1, //TypeST
             1, //CtorCheck
             0, //Unbox
-            0, //Rethrow
-            0, //PopErr
             0, //IsNull
         };
     }

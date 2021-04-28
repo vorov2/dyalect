@@ -11,7 +11,7 @@ namespace Dyalect.Compiler
         {
             var typeId = unit.Types.Count;
             var unitId = unit.UnitIds.Count - 1;
-            var ti = new TypeInfo(typeId, new UnitInfo(unitId, unit));
+            var ti = new TypeInfo(typeId, node, new UnitInfo(unitId, unit));
 
             if (types.ContainsKey(node.Name))
             {
@@ -38,10 +38,16 @@ namespace Dyalect.Compiler
 
         private void GenerateConstructor(DFunctionDeclaration func)
         {
+            if (!char.IsUpper(func.Name[0]))
+                AddError(CompilerError.CtorOnlyPascal, func.Location);
+
+            var sys = AddVariable();
+
             if (func.Parameters.Count == 0)
             {
                 AddLinePragma(func);
                 cw.PushNil();
+                cw.PopVar(sys);
             }
             else if (func.Parameters.Count == 1)
             {
@@ -50,6 +56,8 @@ namespace Dyalect.Compiler
                 AddLinePragma(func);
                 cw.PushVar(a);
                 cw.Tag(p.Name);
+                cw.NewTuple(1);
+                cw.PopVar(sys);
             }
             else
             {
@@ -63,6 +71,7 @@ namespace Dyalect.Compiler
 
                 AddLinePragma(func);
                 cw.NewTuple(func.Parameters.Count);
+                cw.PopVar(sys);
             }
 
             TryGetLocalType(func.TypeName.Local, out var ti);
@@ -134,7 +143,7 @@ namespace Dyalect.Compiler
             foreach (var r in referencedUnits.Values)
                 if (TryGetExternalType(r, local, out var id))
                 {
-                    ti = new TypeInfo(id, r);
+                    ti = new TypeInfo(id, null, r);
                     return true;
                 }
 

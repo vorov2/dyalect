@@ -1,11 +1,18 @@
-﻿namespace Dyalect.Compiler
+﻿using Dyalect.Parser.Model;
+
+namespace Dyalect.Compiler
 {
     internal sealed class TypeInfo
     {
-        public TypeInfo(int handle, UnitInfo unit) => (TypeId, Unit) = (handle, unit);
+        public TypeInfo(int handle, DTypeDeclaration dec, UnitInfo unit) =>
+            (TypeId, Declaration, Unit) = (handle, dec, unit);
 
         public int TypeId { get; }
 
         public UnitInfo Unit { get; }
+
+        public DTypeDeclaration Declaration { get; }
+
+        public Scope Scope { get; set; }
     }
 }

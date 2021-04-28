@@ -81,11 +81,9 @@
         HasField,   //0
         TypeCheck,  //0
         TypeCheckT, //0
-
         Start,      //0
         End,        //0
         NewType,    //0
-
         TypeS,      //1
         TypeST,     //1
         CtorCheck,  //0

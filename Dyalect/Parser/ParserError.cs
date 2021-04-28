@@ -49,7 +49,5 @@
         InvalidApplicationArguments = 22,
         
         Deprecated = 23,
-
-        InvalidFunctionAttribute = 24
     }
 }

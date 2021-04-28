@@ -148,16 +148,28 @@ PRODUCTIONS
             node = typ;
         .)
         identToken (. typ.Name = t.val; node = typ; .)
-        [
-            (. f = new DFunctionDeclaration(t) { Name = typ.Name, Attribute = FunctionAttribute.Constructor, TypeName = new Qualident(typ.Name) }; .)
-            FunctionArguments<f>
-            (. typ.Constructors.Add(f); .)
-        ]
-        [
-            "="
-            identToken (. f = new DFunctionDeclaration(t) { Name = t.val, Attribute = FunctionAttribute.Constructor, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
-            { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, Attribute = FunctionAttribute.Constructor, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
-        ].
+        (
+            (
+                (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; .)
+                FunctionArguments<f>
+                (. typ.Constructors.Add(f); .)
+            )
+            |
+            (
+                "="
+                (
+                    (
+                        identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
+                        { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
+                    )
+                    |
+                    (
+                        Block<out var wnode>
+                        (. typ.With = wnode; .)
+                    )
+                )
+            )
+        ).
 
     Statement<out DNode node> =
         (. node = null; .)
@@ -256,11 +268,11 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; .)
+        (. node = null; var st = false; .)
         (
-            "func"
+            [ "static" (. st = true; .) ] "func"
             (.
-                var f = new DFunctionDeclaration(t);
+                var f = new DFunctionDeclaration(t) { IsStatic = st };
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>
@@ -279,18 +291,6 @@ PRODUCTIONS
                 }
             .)
             FunctionArguments<f>
-            [
-                identToken
-                (.
-                    var attr = FunctionAttribute.None; 
-                    if (t.val == "static") attr = FunctionAttribute.Static;
-                    else if (t.val == "cons") attr = FunctionAttribute.Constructor;
-                    else if (t.val == "decons") attr = FunctionAttribute.Deconstructor;
-                    else
-                        AddError(ParserError.InvalidFunctionAttribute, t.GetLocation(), t.val);
-                    f.Attribute = attr;
-                .)
-            ]
             Block<out node>
             (.
                 f.Body = node;
@@ -685,6 +685,7 @@ PRODUCTIONS
         (. node = null; .)
         (
               IF (IsFunction()) FunctionExpr<out node>
+            //| NoArgFunctionExpr<out node>
             | Is<out node>
             | TryCatch<out node>
             | Throw<out node> Separator
@@ -741,6 +742,17 @@ PRODUCTIONS
             "=>" Expr<out var exp>
             (. f.Body = exp; functions.Pop(); .)
         ).
+
+    /*NoArgFunctionExpr<out DNode node> =
+        (.
+            var f = new DFunctionDeclaration(t);
+            node = f;
+        .)
+        (
+            (. functions.Push(f); .)
+            "=>" Expr<out var exp>
+            (. f.Body = exp; functions.Pop(); .)
+        ).*/
 
     Is<out DNode node> =
         Coalesce<out node>

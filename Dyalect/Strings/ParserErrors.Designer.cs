@@ -133,15 +133,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function attribute &quot;{0}&quot; is not recognized..
-        /// </summary>
-        internal static string InvalidFunctionAttribute {
-            get {
-                return ResourceManager.GetString("InvalidFunctionAttribute", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Invalid function expression..
         /// </summary>
         internal static string InvalidFunctionExpression {
