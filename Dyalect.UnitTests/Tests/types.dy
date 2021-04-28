@@ -29,9 +29,9 @@ func simpleTest3() {
     assert("Lenovo"+16+3, a1::model+a1::memory+a1::rank)
     assert("1+"+8, a2::model+a2::memory)
     assert("Zyxel", a3::model)
-    assert("Asset.Computer(model: \"Lenovo\", memory: 16, rank: 3)", a1.toString())
-    assert("Asset.Phone(model: \"1+\", memory: 8)", a2.toString())
-    assert("Asset.Modem(model: \"Zyxel\")", a3.toString())
+    assert("Asset.Computer(model: Lenovo, memory: 16, rank: 3)", a1.toString())
+    assert("Asset.Phone(model: 1+, memory: 8)", a2.toString())
+    assert("Asset.Modem(model: Zyxel)", a3.toString())
 }
 
 type Void()
@@ -400,4 +400,38 @@ func testCustomFunc() {
     }
     let some = TypesOption.Some(42)
     assert(42, some.extractValue())
+}
+
+type TStringBuilder = {
+    let buffer = []
+}
+func stringBuilderTest() {
+    static func TStringBuilder.TStringBuilder() { }
+    func TStringBuilder.append(val) {
+        buffer.add(val.toString())
+    }
+    func TStringBuilder.clear() {
+        buffer.clear()
+    }
+    func TStringBuilder.toString() {
+        String.concat(values: buffer)
+    }
+    func TStringBuilder.len() {
+        var count = 0
+        for x in buffer {
+            count += x.len()
+        }
+        return count
+    }
+    let sb = TStringBuilder()
+    sb.append("my ")
+    sb.append("rank ")
+    sb.append("is ")
+    sb.append(123)
+    assert("my rank is 123", sb.toString())
+    assert(14, sb.len())
+    sb.clear()
+    sb.append(true)
+    sb.append(false)
+    assert("truefalse", sb.toString())
 }
