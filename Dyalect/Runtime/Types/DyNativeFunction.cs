@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
+using System;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
@@ -25,7 +26,7 @@ namespace Dyalect.Runtime.Types
         }
 
         internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) :
-            base(typeId, sym?.Parameters ?? Statics.EmptyParameters, varArgIndex)
+            base(typeId, sym?.Parameters ?? Array.Empty<Par>(), varArgIndex)
         {
             Sym = sym;
             UnitId = unitId;
@@ -51,7 +52,7 @@ namespace Dyalect.Runtime.Types
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {
             if (args == null)
-                args = Statics.EmptyDyObjects;
+                args = Array.Empty<DyObject>();
 
             var locs = CreateLocals(ctx);
             var argCount = args.Length;
@@ -142,7 +143,7 @@ namespace Dyalect.Runtime.Types
         internal override DyObject[] CreateLocals(ExecutionContext ctx)
         {
             var size = GetLayout(ctx).Size;
-            return size == 0 ? Statics.EmptyDyObjects : new DyObject[size];
+            return size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
         }
 
         internal override bool Equals(DyFunction func) => func is DyNativeFunction m

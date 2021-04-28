@@ -647,7 +647,7 @@ namespace Dyalect.Runtime
 
             if (callFun.VarArgIndex > -1)
                 locals[callFun.VarArgIndex] = cont.VarArgs is null ? null :
-                    new DyTuple(cont.VarArgs.ToArray() ?? Statics.EmptyDyObjects);
+                    new DyTuple(cont.VarArgs.ToArray() ?? Array.Empty<DyObject>());
 
             for (var i = 0; i < pars.Length; i++)
             {

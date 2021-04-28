@@ -31,5 +31,4 @@ namespace Dyalect
             return result2.Value;
         }
     }
-
 }

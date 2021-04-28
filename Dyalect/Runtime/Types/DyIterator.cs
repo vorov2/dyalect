@@ -82,7 +82,7 @@ namespace Dyalect.Runtime.Types
         public DyIterator(IEnumerable<DyObject> enumerable) : this(enumerable.GetEnumerator()) =>
             this.enumerable = enumerable;
 
-        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Statics.EmptyParameters, DyType.Iterator, -1) =>
+        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Array.Empty<Par>(), DyType.Iterator, -1) =>
             this.enumerator = enumerator;
 
         internal void SetEnumerable(IEnumerable<DyObject> enu) =>

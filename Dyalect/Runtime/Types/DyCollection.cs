@@ -135,7 +135,7 @@ namespace Dyalect.Runtime.Types
             var coll = DyIterator.Run(ctx, right);
 
             if (ctx.HasErrors)
-                return Statics.EmptyDyObjects;
+                return Array.Empty<DyObject>();
 
             newArr.AddRange(coll);
             return newArr.ToArray();
@@ -144,7 +144,7 @@ namespace Dyalect.Runtime.Types
         internal static DyObject[] ConcatValues(ExecutionContext ctx, DyObject values)
         {
             if (values == null)
-                return Statics.EmptyDyObjects;
+                return Array.Empty<DyObject>();
 
             var arr = new List<DyObject>();
             var vals = ((DyTuple)values).Values;
@@ -218,7 +218,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "indices" => DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters),
+                "indices" => DyForeignFunction.Member(name, GetIndices, -1, Array.Empty<Par>()),
                 "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(name, ctx)
             };

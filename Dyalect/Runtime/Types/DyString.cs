@@ -372,7 +372,7 @@ namespace Dyalect.Runtime.Types
         private static char[] GetChars(DyObject[] args, ExecutionContext ctx)
         {
             if (args[0] == null)
-                return Statics.EmptyChars;
+                return Array.Empty<char>();
 
             var values = ((DyTuple)args[0]).Values;
             var chs = new char[values.Length];
@@ -382,7 +382,7 @@ namespace Dyalect.Runtime.Types
                 if (values[i].TypeId != DyType.Char)
                 {
                     ctx.InvalidType(values[i]);
-                    return Statics.EmptyChars;
+                    return Array.Empty<char>();
                 }
                 chs[i] = values[i].GetChar();
             }

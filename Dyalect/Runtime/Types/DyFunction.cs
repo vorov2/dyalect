@@ -26,7 +26,7 @@ namespace Dyalect.Runtime.Types
 
         internal virtual DyObject Call1(DyObject obj, ExecutionContext ctx) => Call(ctx, obj);
 
-        internal virtual DyObject Call0(ExecutionContext ctx) => Call(ctx, Statics.EmptyDyObjects);
+        internal virtual DyObject Call0(ExecutionContext ctx) => Call(ctx, Array.Empty<DyObject>());
 
         internal int GetParameterIndex(string name)
         {
