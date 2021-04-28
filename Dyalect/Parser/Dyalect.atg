@@ -699,7 +699,7 @@ PRODUCTIONS
         (
               IF (IsFunction()) FunctionExpr<out node>
             //| NoArgFunctionExpr<out node>
-            | Is<out node>
+            | Coalesce<out node>
             | TryCatch<out node>
             | Throw<out node> Separator
             | Block<out node>
@@ -767,14 +767,6 @@ PRODUCTIONS
             (. f.Body = exp; functions.Pop(); .)
         ).*/
 
-    Is<out DNode node> =
-        Coalesce<out node>
-        {
-            "is" (. var ot = t; .)
-            OrPattern<out var pat>
-            (. node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); .)
-        }.
-
     Coalesce<out DNode node> =
         Range<out node>
         {
@@ -816,20 +808,19 @@ PRODUCTIONS
         }.
 
     And<out DNode node> =
-        Eq<out node>
+        Is<out node>
         {
-            "&&" (. var ot = t; .) Eq<out DNode exp>
+            "&&" (. var ot = t; .) Is<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.And, ot); .)
         }.
 
-    /*LeftPipe<out DNode node> =
-        (. node = null; .)
+    Is<out DNode node> =
         Eq<out node>
-        [
-            (. var p = node is DApplication na ? na : new DApplication(node, t); .)
-            "<|" LeftPipe<out node>
-            (. p.Arguments.Add(node); node = p; .)
-        ].*/
+        {
+            "is" (. var ot = t; .)
+            Pattern<out var pat>
+            (. node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); .)
+        }.
 
     Eq<out DNode node> =
         Shift<out node>
