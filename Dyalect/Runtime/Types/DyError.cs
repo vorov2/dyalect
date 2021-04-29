@@ -50,38 +50,17 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (!TryGetItem(index, ctx, out var value))
-                return ctx.IndexOutOfRange();
-
-            return value;
-        }
-
-        protected internal override bool TryGetItem(DyObject index, ExecutionContext ctx, out DyObject value)
-        {
             if (index.TypeId != DyType.String)
-            {
-                value = null;
-                ctx.InvalidType(index);
-                return false;
-            }
+                return ctx.InvalidType(index);
 
             var name = index.GetString();
 
             if (name == "code")
-            {
-                value = new DyInteger((int)Code);
-                return true;
-            }
+                return new DyInteger((int)Code);
             else if (name == "detail")
-            {
-                value = GetDetail();
-                return true;
-            }
+                return GetDetail();
             else
-            {
-                value = null;
-                return false;
-            }
+                return ctx.IndexOutOfRange();
         }
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) =>
@@ -115,12 +94,7 @@ namespace Dyalect.Runtime.Types
                 return TypeConverter.ConvertFrom(err.DataItems[idx]);
             }
             else if (index.TypeId == DyType.String)
-            {
-                if (!err.TryGetItem(index, ctx, out var value))
-                    return ctx.IndexOutOfRange();
-
-                return value;
-            }
+                return err.GetItem(index, ctx);
             else
                 return ctx.InvalidType(index);
         }

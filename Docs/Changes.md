@@ -1,4 +1,5 @@
 # 0.21.0
+  * Change: _General refactoring._
   * Change: _Rethreat to old function syntax_ ([Issue #441](https://github.com/vorov2/dyalect/issues/441)).
   * Change: _Redesign of custom type system for better flexibility_ ([Issue #440](https://github.com/vorov2/dyalect/issues/440), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
   * Change: _Type check incosistency_ ([Issue #443](https://github.com/vorov2/dyalect/issues/443)).

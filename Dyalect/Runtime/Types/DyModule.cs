@@ -38,24 +38,6 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        protected internal override bool TryGetItem(DyObject index, ExecutionContext ctx, out DyObject value)
-        {
-            if (index.TypeId is not DyType.String)
-            {
-                value = null;
-                ctx.InvalidType(index);
-                return false;
-            }
-
-            if (!TryGetMember(index.GetString(), ctx, out value))
-            {
-                value = null;
-                return false;
-            }
-
-            return true;
-        }
-
         private bool TryGetMember(string name, ExecutionContext ctx, out DyObject value)
         {
             value = null;

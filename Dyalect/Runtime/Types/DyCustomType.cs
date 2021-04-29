@@ -35,20 +35,6 @@ namespace Dyalect.Runtime.Types
             return Locals[i].GetTaggedValue();
         }
 
-        protected internal override bool TryGetItem(DyObject index, ExecutionContext ctx, out DyObject value)
-        {
-            var i = GetItemIndex(index, ctx, noerr: true);
-
-            if (i < 0)
-            {
-                value = null;
-                return false;
-            }
-
-            value = Locals[i].GetTaggedValue();
-            return true;
-        }
-
         protected internal override bool HasItem(string name, ExecutionContext ctx) => GetOrdinal(name, ctx, noerr: true) != -1;
 
         private int GetItemIndex(DyObject index, ExecutionContext ctx, bool noerr = false)

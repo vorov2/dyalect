@@ -38,18 +38,6 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        protected internal override bool TryGetItem(DyObject index, ExecutionContext ctx, out DyObject value)
-        {
-            if (index.TypeId is not DyType.String)
-            {
-                value = null;
-                ctx.InvalidType(index);
-                return false;
-            }
-
-            return map.TryGetValue(index.GetString(), out value);
-        }
-
         protected internal override bool HasItem(string name, ExecutionContext ctx) =>
             map.ContainsKey(name);
     }
