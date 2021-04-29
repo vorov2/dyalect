@@ -121,8 +121,6 @@ namespace Dyalect.Runtime.Types
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        internal override int GetCount() => Map.Count;
-
         public override int GetHashCode() => Map.GetHashCode();
     }
 

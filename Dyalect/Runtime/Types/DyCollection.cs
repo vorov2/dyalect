@@ -98,7 +98,7 @@ namespace Dyalect.Runtime.Types
             unchecked
             {
                 var hash = 17;
-                var c = GetCount();
+                var c = Count;
 
                 for (var i = 0; i < c; i++)
                 {
@@ -115,9 +115,9 @@ namespace Dyalect.Runtime.Types
             if (other is not DyCollection arr)
                 return false;
 
-            var c = GetCount();
+            var c = Count;
 
-            if (arr.GetCount() != c)
+            if (arr.Count != c)
                 return false;
 
             for (var i = 0; i < c; i++)
@@ -126,8 +126,6 @@ namespace Dyalect.Runtime.Types
 
             return true;
         }
-
-        internal override int GetCount() => Count;
 
         internal DyObject[] Concat(ExecutionContext ctx, DyObject right)
         {

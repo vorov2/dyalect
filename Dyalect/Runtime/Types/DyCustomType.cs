@@ -17,8 +17,6 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => this;
 
-        internal override int GetCount() => Locals.Length;
-
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
             var i = GetItemIndex(index, ctx);
@@ -190,7 +188,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             if (autoGenMethods)
-                return DyInteger.Get(arg.GetCount());
+                return DyInteger.Get(((DyCustomType)arg).Locals.Length);
 
             return base.LengthOp(arg, ctx);
         }

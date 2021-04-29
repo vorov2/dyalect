@@ -20,8 +20,6 @@ namespace Dyalect.Runtime.Types
 
         public override DyObject Clone() => this;
 
-        internal override int GetCount() => 0;
-
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
             ctx.IndexOutOfRange();
 
