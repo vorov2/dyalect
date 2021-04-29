@@ -107,7 +107,7 @@ namespace Dyalect.Runtime.Types
 
         public override int GetHashCode() => enumerator.GetHashCode();
 
-        internal override DyFunction Clone(ExecutionContext ctx, DyObject arg) => new DyIterator(enumerable) { Self = arg };
+        internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) => new DyIterator(enumerable) { Self = arg };
 
         internal static DyFunction GetIterator(ExecutionContext ctx, DyObject val)
         {
@@ -246,7 +246,7 @@ namespace Dyalect.Runtime.Types
         public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) 
             : base(null, unitId, funcId, captures, DyType.Iterator, -1) { }
 
-        internal override DyFunction Clone(ExecutionContext ctx, DyObject arg) =>
+        internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) =>
             new DyNativeIterator(UnitId, FunctionId, Captures) { Self = arg };
     }
 

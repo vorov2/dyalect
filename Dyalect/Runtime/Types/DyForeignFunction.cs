@@ -227,7 +227,7 @@ namespace Dyalect.Runtime.Types
 
         public override bool IsExternal => true;
 
-        internal override DyFunction Clone(ExecutionContext ctx, DyObject arg)
+        internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg)
         {
             var clone = Clone(ctx);
             clone.Self = arg;

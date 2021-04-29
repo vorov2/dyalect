@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
 
-        internal abstract DyFunction Clone(ExecutionContext ctx, DyObject arg);
+        internal abstract DyFunction BindToInstance(ExecutionContext ctx, DyObject arg);
 
         public abstract DyObject Call(ExecutionContext ctx, params DyObject[] args);
 

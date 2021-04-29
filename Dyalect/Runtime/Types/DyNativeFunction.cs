@@ -40,7 +40,7 @@ namespace Dyalect.Runtime.Types
             return new DyNativeFunction(sym, unitId, funcId, vars, DyType.Function, varArgIndex);
         }
 
-        internal override DyFunction Clone(ExecutionContext ctx, DyObject arg)
+        internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg)
         {
             var captures = new FastList<DyObject[]>(Captures) { arg is DyCustomType ct ? ct.Locals : System.Array.Empty<DyObject>() };
             return new DyNativeFunction(Sym, UnitId, FunctionId, captures, DyType.Function, VarArgIndex)
