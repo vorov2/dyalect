@@ -1222,7 +1222,7 @@ namespace Dyalect.Parser
 		while (la.kind == 90) {
 			Get();
 			var ot = t; 
-			OrPattern(out var pat);
+			Pattern(out var pat);
 			node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); 
 		}
 	}
