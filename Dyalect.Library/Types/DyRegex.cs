@@ -1,17 +1,16 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Dyalect.Library.Types
 {
-    public sealed class DyRegex : DyObject
+    public sealed class DyRegex : DyForeignObject<DyRegexTypeInfo>
     {
         internal readonly Regex Regex;
 
-        public DyRegex(int typeCode, string regex) : base(typeCode)
+        public DyRegex(RuntimeContext rtx, Unit unit, string regex) : base(rtx, unit)
         {
             this.Regex = new Regex(regex, RegexOptions.Compiled);
         }
@@ -21,29 +20,24 @@ namespace Dyalect.Library.Types
         public override DyObject Clone() => this;
     }
 
-    public sealed class DyRegexMatch : DyObject
+    //public sealed class DyRegexMatch : DyObject
+    //{
+    //    internal readonly Match Match;
+
+    //    public DyRegexMatch(int typeCode, Match match) : base(typeCode)
+    //    {
+    //        this.Match = match;
+    //    }
+
+    //    protected override bool GetBool() => Match.Success;
+
+    //    public override object ToObject() => Match;
+
+    //    public override DyObject Clone() => this;
+    //}
+
+    public sealed class DyRegexTypeInfo : ForeignTypeInfo
     {
-        internal readonly Match Match;
-
-        public DyRegexMatch(int typeCode, Match match) : base(typeCode)
-        {
-            this.Match = match;
-        }
-
-        protected override bool GetBool() => Match.Success;
-
-        public override object ToObject() => Match;
-
-        public override DyObject Clone() => this;
-    }
-
-    public sealed class DyRegexTypeInfo : DyTypeInfo
-    {
-        public DyRegexTypeInfo(int typeCode) : base(typeCode)
-        {
-
-        }
-
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             return new DyString(((DyRegex)arg).Regex.ToString());
@@ -78,18 +72,18 @@ namespace Dyalect.Library.Types
             return null;
         }
 
-        private DyObject New(ExecutionContext ctx, DyObject arg)
-        {
-            if (arg.TypeId != DyType.String)
-                return ctx.InvalidType(arg);
+        //private DyObject New(ExecutionContext ctx, DyObject arg)
+        //{
+        //    if (arg.TypeId != DyType.String)
+        //        return ctx.InvalidType(arg);
 
-            return new DyRegex(TypeCode, (string)arg.ToObject());
-        }
+        //    return new DyRegex((string)arg.ToObject());
+        //}
 
         protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "Regex")
-                return DyForeignFunction.Static(name, New, -1, new Par("pattern"));
+            //if (name == "Regex")
+            //    return DyForeignFunction.Static(name, New, -1, new Par("pattern"));
 
             return base.InitializeStaticMember(name, ctx);
         }

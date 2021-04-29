@@ -40,6 +40,8 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) =>
             map.ContainsKey(name);
+
+        public override int GetHashCode() => map.GetHashCode();
     }
 
     public sealed class DyReflectionWrapper : DyWrapper

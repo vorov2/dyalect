@@ -90,6 +90,8 @@ namespace Dyalect.Runtime.Types
 
         internal abstract bool Equals(DyFunction func);
 
+        public override int GetHashCode() => HashCode.Combine(TypeId, FunctionName ?? DefaultName, Parameters, Self);
+
         internal virtual void Reset(ExecutionContext ctx) { }
     }
 

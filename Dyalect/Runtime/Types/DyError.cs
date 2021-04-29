@@ -67,6 +67,8 @@ namespace Dyalect.Runtime.Types
             name == "code" || name == "detail";
 
         public override string GetConstructor(ExecutionContext ctx) => errorCode;
+
+        public override int GetHashCode() => HashCode.Combine(Code, DataItems);
     }
 
     internal sealed class DyErrorTypeInfo : DyTypeInfo

@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -75,6 +76,8 @@ namespace Dyalect.Runtime.Types
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public override int GetHashCode() => HashCode.Combine(TypeId, Unit.Id);
     }
 
     internal sealed class DyModuleTypeInfo : DyTypeInfo

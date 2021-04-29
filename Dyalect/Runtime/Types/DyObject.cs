@@ -12,13 +12,6 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => $"[type:{DyType.GetTypeNameByCode(TypeId)}]";
 
-        public string SafeToString(ExecutionContext ctx)
-        {
-            var nctx = ctx.Clone();
-            var str = ctx.RuntimeContext.Types[TypeId].ToString(nctx, this);
-            return nctx.HasErrors ? ToString() : str.ToString()?.Trim('\"');
-        }
-
         protected internal virtual bool GetBool() => true;
 
         internal protected virtual long GetInteger() => throw new InvalidCastException();
@@ -53,22 +46,20 @@ namespace Dyalect.Runtime.Types
 
         public override sealed bool Equals(object obj) => obj is DyObject dyo && Equals(dyo);
 
-        public override int GetHashCode() => HashCode.Combine(TypeId);
+        public override abstract int GetHashCode();
     }
 
     public static class DyObjectExtensions
     {
-        internal static DyObject GetIterator(this DyObject self, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Composition.Types[self.TypeId].GetInstanceMember(self, Builtins.Iterator, ctx);
-
         public static DyTypeInfo GetTypeInfo(this DyObject self, ExecutionContext ctx) =>
             ctx.RuntimeContext.Composition.Types[self.TypeId];
 
-        public static string GetTypeName(this DyObject self, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Composition.Types[self.TypeId].TypeName;
+        internal static DyObject GetIterator(this DyObject self, ExecutionContext ctx) =>
+            GetTypeInfo(self, ctx).GetInstanceMember(self, Builtins.Iterator, ctx);
 
-        public static string Format(this DyObject self, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Composition.Types[self.TypeId].ToString(ctx, self).GetString();
+        public static string GetTypeName(this DyObject self, ExecutionContext ctx) => GetTypeInfo(self, ctx).TypeName;
+
+        public static string Format(this DyObject self, ExecutionContext ctx) => ToString(self, ctx).GetString();
 
         public static DyString ToString(this DyObject self, ExecutionContext ctx) =>
             (DyString)ctx.RuntimeContext.Composition.Types[self.TypeId].ToString(ctx, self);

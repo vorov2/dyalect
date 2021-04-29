@@ -25,8 +25,6 @@ namespace Dyalect.Library.Types
 
     public sealed class DyByteArrayTypeInfo : ForeignTypeInfo
     {
-        public DyByteArrayTypeInfo() { }
-
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString("ByteArray [" + string.Join(",", ((DyByteArray)arg).Buffer) + "]");
 
