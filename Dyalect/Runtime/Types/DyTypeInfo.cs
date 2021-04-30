@@ -344,14 +344,14 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Statics
-        private readonly Dictionary<string, DyFunction> staticMembers = new();
+        private readonly Dictionary<string, DyObject> staticMembers = new();
 
         internal bool HasStaticMember(string name, ExecutionContext ctx) => LookupStaticMember(name, ctx) is not null;
 
         internal DyObject GetStaticMember(string name, ExecutionContext ctx) =>
             LookupStaticMember(name, ctx) ?? ctx.OperationNotSupported(name, TypeName);
 
-        private DyFunction LookupStaticMember(string name, ExecutionContext ctx)
+        private DyObject LookupStaticMember(string name, ExecutionContext ctx)
         {
             if (!staticMembers.TryGetValue(name, out var value))
             {
@@ -372,7 +372,7 @@ namespace Dyalect.Runtime.Types
                 staticMembers.Add(name, func);
         }
 
-        private DyFunction InitializeStaticMembers(string name, ExecutionContext ctx) =>
+        private DyObject InitializeStaticMembers(string name, ExecutionContext ctx) =>
             name switch
             {
                 "TypeInfo" => DyForeignFunction.Static(name, (c, obj) => c.RuntimeContext.Types[obj.TypeId], -1, new Par("value")),
@@ -389,11 +389,11 @@ namespace Dyalect.Runtime.Types
                 _ => InitializeStaticMember(name, ctx)
             };
 
-        protected virtual DyFunction InitializeStaticMember(string name, ExecutionContext ctx) => null;
+        protected virtual DyObject InitializeStaticMember(string name, ExecutionContext ctx) => null;
         #endregion
 
         #region Instance
-        private readonly Dictionary<string, DyFunction> members = new();
+        private readonly Dictionary<string, DyObject> members = new();
 
         internal bool HasInstanceMember(string name, ExecutionContext ctx) => LookupInstanceMember(name, ctx) is not null;
 
@@ -402,12 +402,12 @@ namespace Dyalect.Runtime.Types
             var value = LookupInstanceMember(name, ctx);
 
             if (value is not null)
-                return value.BindToInstance(ctx, self);
+                return value is DyFunction f ? f.BindToInstance(ctx, self) : value;
             else
                 return ctx.OperationNotSupported(name, self.GetTypeName(ctx));
         }
 
-        internal DyFunction LookupInstanceMember(string name, ExecutionContext ctx)
+        internal DyObject LookupInstanceMember(string name, ExecutionContext ctx)
         {
             if (!members.TryGetValue(name, out var value))
             {
@@ -476,7 +476,7 @@ namespace Dyalect.Runtime.Types
             return (DyBool)HasInstanceMember(name, ctx);
         }
 
-        private DyFunction InitializeInstanceMembers(string name, ExecutionContext ctx) =>
+        private DyObject InitializeInstanceMembers(string name, ExecutionContext ctx) =>
             name switch
             {
                 Builtins.Add => Support(SupportedOperations.Add) ? DyForeignFunction.Member(name, Add, -1, new Par("other")) : null,
@@ -510,7 +510,7 @@ namespace Dyalect.Runtime.Types
                 _ => InitializeInstanceMember(name, ctx)
             };
 
-        protected virtual DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) => null;
+        protected virtual DyObject InitializeInstanceMember(string name, ExecutionContext ctx) => null;
         #endregion
 
         private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();

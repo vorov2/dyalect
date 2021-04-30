@@ -68,7 +68,7 @@ namespace Dyalect.Library.Types
             }
         }
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeInstanceMember(string name, ExecutionContext ctx)
         {
             if (name == "value")
                 return DyForeignFunction.Member(name, TryGet);
@@ -81,7 +81,7 @@ namespace Dyalect.Library.Types
         private DyObject Failure(ExecutionContext ctx, DyObject arg) =>
             new DyResult(ctx.RuntimeContext, DeclaringUnit, "Failure", arg);
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Success")
                 return DyForeignFunction.Static(name, Success, -1, new Par("arg", DyNil.Instance));

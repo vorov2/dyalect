@@ -80,7 +80,7 @@ namespace Dyalect.Library.Types
         //    return new DyRegex((string)arg.ToObject());
         //}
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
         {
             //if (name == "Regex")
             //    return DyForeignFunction.Static(name, New, -1, new Par("pattern"));

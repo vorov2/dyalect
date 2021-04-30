@@ -60,7 +60,7 @@ namespace Dyalect.Library.Types
             return new DyByteArray(ctx.RuntimeContext, DeclaringUnit, arr);
         }
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "ByteArray")
                 return DyForeignFunction.Static(name, New, -1, new Par("values"));

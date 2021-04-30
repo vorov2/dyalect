@@ -460,7 +460,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(str.Remove(fri, c));
         }
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "indexOf" => DyForeignFunction.Member(name, IndexOf, -1, new Par("value"), 
@@ -550,7 +550,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(new string(value.GetChar(), (int)count.GetInteger()));
         }
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "String" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),

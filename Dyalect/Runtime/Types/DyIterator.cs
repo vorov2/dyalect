@@ -448,7 +448,7 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(seq.Skip(beg).Take(end - beg + 1));
         }
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "toArray" => DyForeignFunction.Member(name, ToArray),
@@ -465,7 +465,7 @@ namespace Dyalect.Runtime.Types
 
         private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, DyObject exclusive) => new DyRange(ctx, from, to, step, exclusive);
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Iterator")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));

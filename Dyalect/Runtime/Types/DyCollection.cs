@@ -192,7 +192,7 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(Iterate());
         }
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "indices" => DyForeignFunction.Member(name, GetIndices, -1, Array.Empty<Par>()),
