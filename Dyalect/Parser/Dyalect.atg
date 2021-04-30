@@ -499,8 +499,9 @@ PRODUCTIONS
         (. node = null; Token ot = null; string mod = null; string typ = null; string nam = null;.)
         (
             identToken (. nam = t.val; ot = t; .)
-            [ "::" identToken (. mod = nam; typ = t.val; nam = null; .) ]
-            [ "." identToken (. if (typ is null) typ = nam; nam = t.val; .) ]
+            [ "." identToken (. typ = nam; nam = t.val; .) 
+                [ "." identToken (. mod = typ; typ = nam; nam = t.val; .) ]
+            ]
             [
                 (
                     "?"
@@ -508,7 +509,7 @@ PRODUCTIONS
                         if (nam is not null && typ is not null && mod is not null)
                             AddError(ParserError.InvalidPattern, t.GetLocation());
                         node = new DTypeTestPattern(ot) {
-                            TypeName = typ is null ? new Qualident(nam) : new Qualident(typ, mod) 
+                            TypeName = typ is null ? new Qualident(nam) : new Qualident(nam, typ) 
                         };
                     .)
                 )

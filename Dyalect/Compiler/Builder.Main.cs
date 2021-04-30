@@ -414,33 +414,6 @@ namespace Dyalect.Compiler
                 return;
             }
 
-            if (node.Target.NodeType == NodeType.Name)
-            {
-                var nm = node.Target.GetName();
-                var sv = GetVariable(nm, node.Target, err: false);
-
-                if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
-                {
-                    if (ru.Unit.ExportList.TryGetValue(node.Name, out var var))
-                    {
-                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
-                            AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
-
-                        AddLinePragma(node);
-                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
-                        PopIf(hints);
-                        return;
-                    }
-                    else if (GetTypeHandle(nm, node.Name, out var handle, out var std) == CompilerError.None)
-                    {
-                        AddLinePragma(node);
-                        cw.Type(new TypeHandle(handle, std));
-                        PopIf(hints);
-                        return;
-                    }
-                }
-            }
-
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
             AddLinePragma(node);
 

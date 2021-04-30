@@ -92,6 +92,7 @@ func moduleTypeTest6() {
 
 func moduleConstAccess() {
     assert(3.14, pi)
+    assert(3.14, lib.pi)
     assert(3.14, lib::pi)
 }
 
@@ -105,12 +106,12 @@ func moduleIterTest() {
 }
 
 func matchExoTypeTest1() {
-    var a1 = lib1::Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
+    var a1 = lib1.Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
     var a2 = Asset.Phone("1+", 8)
     func mem1(a) {
         match a {
-            lib1::Asset.Computer(model, memory, rank) => memory,
-            lib1::Asset.Phone(model, memory) => memory
+            lib1.Asset.Computer(model, memory, rank) => memory,
+            lib1.Asset.Phone(model, memory) => memory
         }
     }
     func mem2(a) {
@@ -134,9 +135,9 @@ func matchExoTypeTest1() {
 }
 
 func testExoType1() {
-    var t = lib1::Asset
+    var t = lib1.Asset
     assert("Asset", t::name)
     var c = t.Computer("Acer", 4, 1)
     assert("Acer41", c::model+c::memory+c::rank)
-    assert(true, c is lib1::Asset?)
+    assert(true, c is lib1.Asset?)
 }
