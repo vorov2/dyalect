@@ -1,3 +1,6 @@
+# 0.20.3
+  * Fix: _Stack corruption_ ([Issue #449](https://github.com/vorov2/dyalect/issues/449)).
+
 # 0.20.2
   * Fix: _Limiting grammar for MatchEntry_ ([Issue #437](https://github.com/vorov2/dyalect/issues/437)).
 

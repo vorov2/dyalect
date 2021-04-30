@@ -518,12 +518,14 @@ namespace Dyalect.Compiler
 
                             AddLinePragma(node);
                             cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
+                            PopIf(hints);
                             return;
                         }
                         else if (GetTypeHandle(nm, str.Value, out var handle, out var std) == CompilerError.None)
                         {
                             AddLinePragma(node);
                             cw.Type(new TypeHandle(handle, std));
+                            PopIf(hints);
                             return;
                         }
                     }
