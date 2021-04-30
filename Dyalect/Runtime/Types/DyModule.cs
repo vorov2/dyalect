@@ -39,7 +39,7 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        private bool TryGetMember(string name, ExecutionContext ctx, out DyObject value)
+        internal bool TryGetMember(string name, ExecutionContext ctx, out DyObject value)
         {
             value = null;
 
@@ -114,6 +114,14 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        {
+            if (!((DyModule)self).TryGetMember(name, ctx, out var value))
+                return ctx.IndexOutOfRange();
+
+            return value;
+        }
 
         protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
         {

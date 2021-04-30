@@ -7,6 +7,9 @@
   * Add: _There should be a requirement for type names to start with an uppercase_ ([Issue #444](https://github.com/vorov2/dyalect/issues/444)).
   * Add: _Add an ability to specify a type for a constructor pattern_ ([Issue #442](https://github.com/vorov2/dyalect/issues/442)).
 
+# 0.20.3
+  * Fix: _Stack corruption_ ([Issue #449](https://github.com/vorov2/dyalect/issues/449)).
+
 # 0.20.2
   * Fix: _Limiting grammar for MatchEntry_ ([Issue #437](https://github.com/vorov2/dyalect/issues/437)).
 

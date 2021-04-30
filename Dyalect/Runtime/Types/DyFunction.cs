@@ -110,12 +110,12 @@ namespace Dyalect.Runtime.Types
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
 
-        protected override DyObject InitializeInstanceMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             if (name == "compose")
                 return DyForeignFunction.Member(name, Compose, -1, new Par("with"));
 
-            return base.InitializeInstanceMember(name, ctx);
+            return base.InitializeInstanceMember(self, name, ctx);
         }
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)

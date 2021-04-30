@@ -333,7 +333,7 @@ namespace Dyalect.Runtime
                         if (right.TypeId == DyType.TypeInfo)
                             evalStack.Replace(((DyTypeInfo)right).HasStaticMember(unit.IndexedStrings[op.Data].Value, ctx));
                         else
-                            evalStack.Replace(types[right.TypeId].HasInstanceMember(unit.IndexedStrings[op.Data].Value, ctx));
+                            evalStack.Replace(types[right.TypeId].HasInstanceMember(right, unit.IndexedStrings[op.Data].Value, ctx));
                         break;
                     case OpCode.GetMember:
                         right = evalStack.Peek();

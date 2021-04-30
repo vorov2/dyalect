@@ -296,7 +296,7 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(arr);
         }
 
-        protected override DyObject InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
@@ -307,7 +307,7 @@ namespace Dyalect.Runtime.Types
                 "fst" => DyForeignFunction.Member(name, GetFirst),
                 "snd" => DyForeignFunction.Member(name, GetSecond),
                 "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
-                _ => base.InitializeInstanceMember(name, ctx)
+                _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
         private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>

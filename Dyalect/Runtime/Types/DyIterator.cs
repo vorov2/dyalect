@@ -448,7 +448,7 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(seq.Skip(beg).Take(end - beg + 1));
         }
 
-        protected override DyObject InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "toArray" => DyForeignFunction.Member(name, ToArray),
@@ -460,7 +460,7 @@ namespace Dyalect.Runtime.Types
                 "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance)),
                 "by" => DyForeignFunction.Member(name, SetStep, -1, new Par("value")),
                 //"element" => DyForeignFunction.Member(name, ElementAt, -1, new Par("at")),
-                _ => base.InitializeInstanceMember(name, ctx)
+                _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
         private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, DyObject exclusive) => new DyRange(ctx, from, to, step, exclusive);

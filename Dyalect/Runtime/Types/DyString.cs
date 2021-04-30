@@ -460,7 +460,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(str.Remove(fri, c));
         }
 
-        protected override DyObject InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "indexOf" => DyForeignFunction.Member(name, IndexOf, -1, new Par("value"), 
@@ -484,7 +484,7 @@ namespace Dyalect.Runtime.Types
                 "replace" => DyForeignFunction.Member(name, Replace, -1, new Par("value"), new Par("with"), new Par("ignoreCase", DyBool.False)),
                 "remove" => DyForeignFunction.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance)),
                 "reverse" => DyForeignFunction.Member(name, Reverse),
-                _ => base.InitializeInstanceMember(name, ctx),
+                _ => base.InitializeInstanceMember(self, name, ctx),
             };
         #endregion
 

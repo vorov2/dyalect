@@ -447,7 +447,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyObject InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
@@ -466,7 +466,7 @@ namespace Dyalect.Runtime.Types
                 "swap" => DyForeignFunction.Member(name, Swap, -1, new Par("fst"), new Par("snd")),
                 "compact" => DyForeignFunction.Member(name, Compact),
                 "reverse" => DyForeignFunction.Member(name, Reverse),
-                _ => base.InitializeInstanceMember(name, ctx),
+                _ => base.InitializeInstanceMember(self, name, ctx),
             };
 
         private DyObject New(ExecutionContext ctx, DyObject tuple) => new DyArray(((DyTuple)tuple).Values);

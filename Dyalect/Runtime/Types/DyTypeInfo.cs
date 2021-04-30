@@ -395,11 +395,12 @@ namespace Dyalect.Runtime.Types
         #region Instance
         private readonly Dictionary<string, DyObject> members = new();
 
-        internal bool HasInstanceMember(string name, ExecutionContext ctx) => LookupInstanceMember(name, ctx) is not null;
+        internal bool HasInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+            LookupInstanceMember(self, name, ctx) is not null;
 
         internal DyObject GetInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
-            var value = LookupInstanceMember(name, ctx);
+            var value = LookupInstanceMember(self, name, ctx);
 
             if (value is not null)
                 return value is DyFunction f ? f.BindToInstance(ctx, self) : value;
@@ -407,11 +408,11 @@ namespace Dyalect.Runtime.Types
                 return ctx.OperationNotSupported(name, self.GetTypeName(ctx));
         }
 
-        internal DyObject LookupInstanceMember(string name, ExecutionContext ctx)
+        internal DyObject LookupInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             if (!members.TryGetValue(name, out var value))
             {
-                value = InitializeInstanceMembers(name, ctx);
+                value = InitializeInstanceMembers(self, name, ctx);
 
                 if (value is not null)
                     members.Add(name, value);
@@ -473,10 +474,10 @@ namespace Dyalect.Runtime.Types
             if (self is null)
                 return (DyBool)HasStaticMember(name, ctx);
             
-            return (DyBool)HasInstanceMember(name, ctx);
+            return (DyBool)HasInstanceMember(self, name, ctx);
         }
 
-        private DyObject InitializeInstanceMembers(string name, ExecutionContext ctx) =>
+        private DyObject InitializeInstanceMembers(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 Builtins.Add => Support(SupportedOperations.Add) ? DyForeignFunction.Member(name, Add, -1, new Par("other")) : null,
@@ -507,10 +508,10 @@ namespace Dyalect.Runtime.Types
                 Builtins.Clone => DyForeignFunction.Member(name, Clone),
                 Builtins.Has => DyForeignFunction.Member(name, Has, -1, new Par("member")),
                 Builtins.Type => DyForeignFunction.Member(name, (context, o) => context.RuntimeContext.Types[TypeCode]),
-                _ => InitializeInstanceMember(name, ctx)
+                _ => InitializeInstanceMember(self, name, ctx)
             };
 
-        protected virtual DyObject InitializeInstanceMember(string name, ExecutionContext ctx) => null;
+        protected virtual DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) => null;
         #endregion
 
         private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();

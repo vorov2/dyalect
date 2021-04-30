@@ -131,7 +131,7 @@ namespace Dyalect.Library.Types
             return self;
         }
 
-        protected override DyObject InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "insert" => DyForeignFunction.Member(name, Insert, -1, new Par("index"), new Par("value")),
@@ -139,7 +139,7 @@ namespace Dyalect.Library.Types
                 "replace" => DyForeignFunction.Member(name, Replace, -1, new Par("old"), new Par("new")),
                 "append" => DyForeignFunction.Member(name, Append, -1, new Par("value")),
                 "appendLine" => DyForeignFunction.Member(name, AppendLine, -1, new Par("value")),
-                _ => base.InitializeInstanceMember(name, ctx),
+                _ => base.InitializeInstanceMember(self, name, ctx),
             };
 
 

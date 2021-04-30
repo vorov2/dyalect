@@ -200,7 +200,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyObject InitializeInstanceMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             return name switch
             {
@@ -209,7 +209,7 @@ namespace Dyalect.Runtime.Types
                 "tryGet" => DyForeignFunction.Member(name, TryGetItem, -1, new Par("key")),
                 "remove" => DyForeignFunction.Member(name, RemoveItem, -1, new Par("key")),
                 "clear" => DyForeignFunction.Member(name, ClearItems),
-                _ => base.InitializeInstanceMember(name, ctx),
+                _ => base.InitializeInstanceMember(self, name, ctx),
             };
         }
 
