@@ -390,10 +390,7 @@ namespace Dyalect.Compiler
             cw.Br(ctx.FunctionExit);
         }
 
-        private void Build(DBase node)
-        {
-            AddError(CompilerError.BaseNotAllowed, node.Location);
-        }
+        private void Build(DBase node) => AddError(CompilerError.BaseNotAllowed, node.Location);
 
         private void Build(DAccess node, Hints hints, CompilerContext ctx)
         {

@@ -724,7 +724,7 @@ namespace Dyalect.Parser
 				if (nam is not null && typ is not null && mod is not null)
 				   AddError(ParserError.InvalidPattern, t.GetLocation());
 				node = new DTypeTestPattern(ot) {
-				   TypeName = typ is null ? new Qualident(nam) : new Qualident(typ, mod) 
+				   TypeName = typ is null ? new Qualident(nam) : new Qualident(nam, typ) 
 				};
 				
 			} else {

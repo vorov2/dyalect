@@ -495,7 +495,7 @@ PRODUCTIONS
             (. la.Pattern = pat; node = la; .)
         ).
 
-    /*NamePattern<out DPattern node> =
+    NamePattern<out DPattern node> =
         (. node = null; Token ot = null; string mod = null; string typ = null; string nam = null;.)
         (
             identToken (. nam = t.val; ot = t; .)
@@ -560,9 +560,8 @@ PRODUCTIONS
                 }
             .)
         ).
-        */
 
-    NamePattern<out DPattern node> =
+    /*NamePattern<out DPattern node> =
         (. node = null; Token ot = null; string mod = null; string typ = null; string nam = null;.)
         (
             identToken (. nam = t.val; ot = t; .)
@@ -627,7 +626,7 @@ PRODUCTIONS
                         node = new DNamePattern(ot) { Name = nam };
                 }
             .)
-        ).
+        ).*/
 
     NilPattern<out DPattern node> = "nil" (. node = new DNilPattern(t); .).
     IntegerPattern<out DPattern node> = intToken (. node = new DIntegerPattern(t) { Value = ParseInteger() }; .).
