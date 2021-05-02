@@ -5,13 +5,7 @@ namespace Dyalect.Compiler
 {
     public sealed class Scope
     {
-        public Scope(ScopeKind kind, Scope parent)
-        {
-            Kind = kind;
-            Parent = parent;
-            Locals = new ();
-            Autos = new ();
-        }
+        public Scope(ScopeKind kind, Scope parent) => (Kind, Parent, Locals, Autos) = (kind, parent, new(), new());
 
         public ScopeVar GetVariable(string name)
         {

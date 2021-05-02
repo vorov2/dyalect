@@ -39,11 +39,8 @@ namespace Dyalect.Debug
             Symbols.Functions.Add(handle, f);
         }
 
-        public void StartScope(int offset, int line, int col)
-        {
-            var index = ++scopeCount;
-            scopes.Push(new(index, scopes.Peek().Index, offset, line, col));
-        }
+        public void StartScope(int offset, int line, int col) =>
+            scopes.Push(new(++scopeCount, scopes.Peek().Index, offset, line, col));
 
         public void EndScope(int offset, int line, int col)
         {
@@ -60,7 +57,7 @@ namespace Dyalect.Debug
         public void AddLineSym(int offset, int line, int col) =>
             Symbols.Lines.Add(new(offset, line, col));
         
-        public DebugInfo Symbols { get; private set; }
+        public DebugInfo Symbols { get; }
 
         public VarSym LastVarSym { get; private set; }
     }

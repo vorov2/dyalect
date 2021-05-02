@@ -8,12 +8,7 @@ namespace Dyalect.Compiler
     {
         public Guid Id { get; } = Guid.NewGuid();
 
-        public UnitComposition(List<Unit> units)
-        {
-            Units = units;
-            Types = DyType.GetAll();
-            TypeCodes = new();
-        }
+        public UnitComposition(List<Unit> units) => (Units, Types, TypeCodes) = (units, DyType.GetAll(), new());
 
         public List<Unit> Units { get; }
 

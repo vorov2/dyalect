@@ -21,16 +21,16 @@ namespace Dyalect.Debug
             Functions = new(di.Functions);
         }
 
-        public DebugInfo Clone() => new DebugInfo(this);
+        public DebugInfo Clone() => new(this);
 
         public string File { get; set; }
 
-        public List<ScopeSym> Scopes { get; private set; }
+        public List<ScopeSym> Scopes { get; }
 
-        public List<LineSym> Lines { get; private set; }
+        public List<LineSym> Lines { get; }
 
-        public List<VarSym> Vars { get; private set; }
+        public List<VarSym> Vars { get; }
 
-        public Dictionary<int, FunSym> Functions { get; private set; }
+        public Dictionary<int, FunSym> Functions { get; }
     }
 }

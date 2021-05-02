@@ -80,11 +80,7 @@ namespace Dyalect.Compiler
                 Emit(new(op, 0));
         }
 
-        private void Emit(Op op)
-        {
-            var size = op.Code.GetStack();
-            Emit(op, size);
-        }
+        private void Emit(Op op) => Emit(op, op.Code.GetStack());
 
         private void Emit(Op op, int size)
         {
@@ -154,10 +150,7 @@ namespace Dyalect.Compiler
             return idx;
         }
 
-        public void Push(string val)
-        {
-            Emit(new(OpCode.PushStr, IndexString(val)));
-        }
+        public void Push(string val) => Emit(new(OpCode.PushStr, IndexString(val)));
 
         public void Push(double val)
         {

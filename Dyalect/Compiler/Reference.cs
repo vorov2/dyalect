@@ -25,6 +25,8 @@ namespace Dyalect.Compiler
 
         public override int GetHashCode() => HashCode.Combine(LocalPath, DllName, ModuleName);
 
+        public override bool Equals(object obj) => Equals(obj as Reference);
+
         internal int Checksum { get; set; }
 
         public string LocalPath { get; }
