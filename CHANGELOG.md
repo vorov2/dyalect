@@ -1,3 +1,6 @@
+# 0.6.0
+* Syntax highlighting updated according to language changes
+
 # 0.5.0
 * Syntax highlighting updated according to language changes
 

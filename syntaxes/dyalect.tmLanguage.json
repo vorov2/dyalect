@@ -53,7 +53,7 @@
 					"name": "storage.modifier.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:func|static|cons|decons)\\b",
+					"match": "(?<!\\.)\\b(?:func|static)\\b",
 					"name": "storage.type.function.dyalect"
 				},
 				{
