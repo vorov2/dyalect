@@ -422,7 +422,7 @@ PRODUCTIONS
             | StringPattern<out node> [ AsPattern<node, out node> ]
             | BooleanPattern<out node> [ AsPattern<node, out node> ]
             | NilPattern<out node> [ AsPattern<node, out node> ]
-            | IF (IsTuple(allowFields: false)) TuplePattern<out node> [ AsPattern<node, out node> ]
+            | IF (IsTuple(allowFields: true)) TuplePattern<out node> [ AsPattern<node, out node> ]
             | GroupPattern<out node> [ AsPattern<node, out node> ]
             | ArrayPattern<out node> [ AsPattern<node, out node> ]
             | MethodCheckPattern<out node> [ AsPattern<node, out node> ]
@@ -561,73 +561,6 @@ PRODUCTIONS
             .)
         ).
 
-    /*NamePattern<out DPattern node> =
-        (. node = null; Token ot = null; string mod = null; string typ = null; string nam = null;.)
-        (
-            identToken (. nam = t.val; ot = t; .)
-            [ "." identToken (. typ = nam; nam = t.val; .) 
-                [ "." identToken (. mod = typ; typ = nam; nam = t.val; .) ]
-            ]
-            [
-                (
-                    "?"
-                    (.
-                        if (nam is not null && typ is not null && mod is not null)
-                            AddError(ParserError.InvalidPattern, t.GetLocation());
-                        node = new DTypeTestPattern(ot) {
-                            TypeName = typ is null ? new Qualident(nam) : new Qualident(nam, typ) 
-                        };
-                    .)
-                )
-                |
-                (
-                    (.
-                        var ctor = new DCtorPattern(t);
-                        if (mod is null && typ is null)
-                            ctor.Constructor = nam;
-                        else if (mod is null) {
-                            ctor.TypeName = new Qualident(typ);
-                            ctor.Constructor = nam;
-                        }
-                        else {
-                            ctor.TypeName = new Qualident(typ, mod);
-                            ctor.Constructor = nam;
-                        }
-                    .)
-                    "("
-                        [ 
-                            (
-                                  IF (IsLabelPattern()) LabelPattern<out node>
-                                | OrPattern<out node>
-                            )
-                            (. ctor.Arguments.Add(node); .)
-                        ]
-                        {
-                            ","
-                            (
-                                  IF (IsLabelPattern()) LabelPattern<out node>
-                                | OrPattern<out node>
-                            )
-                            (. ctor.Arguments.Add(node); .)
-                        }
-                    ")"
-                    (. node = ctor; .)
-                )
-            ]
-            (.
-                if (node is null)
-                {
-                    if (typ is not null || mod is not null)
-                        AddError(ParserError.InvalidPattern, t.GetLocation());
-
-                    if (nam == "_")
-                        node = new DWildcardPattern(ot);
-                    else
-                        node = new DNamePattern(ot) { Name = nam };
-                }
-            .)
-        ).*/
-
     NilPattern<out DPattern node> = "nil" (. node = new DNilPattern(t); .).
     IntegerPattern<out DPattern node> = intToken (. node = new DIntegerPattern(t) { Value = ParseInteger() }; .).
     FloatPattern<out DPattern node> = floatToken (. node = new DFloatPattern(t) { Value = ParseFloat() }; .).
@@ -765,7 +698,7 @@ PRODUCTIONS
         (. node = null; .)
         (
               IF (IsFunction()) FunctionExpr<out node>
-            //| NoArgFunctionExpr<out node>
+            | NoArgFunctionExpr<out node>
             | Coalesce<out node>
             | TryCatch<out node>
             | Throw<out node> Separator
@@ -823,7 +756,7 @@ PRODUCTIONS
             (. f.Body = exp; functions.Pop(); .)
         ).
 
-    /*NoArgFunctionExpr<out DNode node> =
+    NoArgFunctionExpr<out DNode node> =
         (.
             var f = new DFunctionDeclaration(t);
             node = f;
@@ -832,7 +765,7 @@ PRODUCTIONS
             (. functions.Push(f); .)
             "=>" Expr<out var exp>
             (. f.Body = exp; functions.Pop(); .)
-        ).*/
+        ).
 
     Coalesce<out DNode node> =
         Range<out node>

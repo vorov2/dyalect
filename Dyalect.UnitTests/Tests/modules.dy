@@ -140,3 +140,12 @@ func testExoType1() {
     assert("Acer41", c::model+c::memory+c::rank)
     assert(true, c is lib1::Asset?)
 }
+
+func testModuleCons() {
+    let m = Module()
+    let z =
+        if m is (testModuleCons:fn) && fn == testModuleCons {
+            42
+        }
+    assert(42, z)
+}
