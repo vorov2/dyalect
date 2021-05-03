@@ -24,10 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{CF92CF03-8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dyalect.UnitTests", "Dyalect.UnitTests\Dyalect.UnitTests.csproj", "{52B56E24-8E1B-4953-B5D0-470A85089FB2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VSI", "VSI", "{70630CF7-8F3A-400A-B17E-C977342CD8D8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualDyalect", "VisualDyalect\VisualDyalect.csproj", "{FD56DBD3-42FA-451B-95BF-73C9D67EC6CB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,16 +46,9 @@ Global
 		{52B56E24-8E1B-4953-B5D0-470A85089FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52B56E24-8E1B-4953-B5D0-470A85089FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52B56E24-8E1B-4953-B5D0-470A85089FB2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD56DBD3-42FA-451B-95BF-73C9D67EC6CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD56DBD3-42FA-451B-95BF-73C9D67EC6CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD56DBD3-42FA-451B-95BF-73C9D67EC6CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD56DBD3-42FA-451B-95BF-73C9D67EC6CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{FD56DBD3-42FA-451B-95BF-73C9D67EC6CB} = {70630CF7-8F3A-400A-B17E-C977342CD8D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {372D4D76-B9AB-4F57-AF89-4C99BCEECECA}
