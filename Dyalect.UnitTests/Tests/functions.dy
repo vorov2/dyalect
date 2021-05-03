@@ -343,3 +343,13 @@ func paramsTest4() {
     }
     assert("pars->x", res)
 }
+
+func paramerlessLambda() {
+    let fn = => 2 + 2
+    assert(4, fn())
+    func takeIt(fn) {
+        return fn()
+    }
+    let res = takeIt(=> { 22 + 22 })
+    assert(44, res)
+}
