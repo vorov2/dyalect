@@ -105,6 +105,14 @@ func matchTest8() {
     assert(12, res)
 }
 
+func matchTest8b() {
+    var res = match (x: 12) {
+        (x: 13) => 13,
+        (x: x) => x
+    }
+    assert(12, res)
+}
+
 func matchTest9() {
     var arr = []
     match [1..5] {

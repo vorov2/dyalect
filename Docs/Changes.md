@@ -1,3 +1,6 @@
+# 0.21.1
+  * Fix: _Record pattern requires trailing comma_ ([Issue #452](https://github.com/vorov2/dyalect/issues/452)).
+
 # 0.21.0
   * Change: _General refactoring._
   * Change: _Rethreat to old function syntax_ ([Issue #441](https://github.com/vorov2/dyalect/issues/441)).
