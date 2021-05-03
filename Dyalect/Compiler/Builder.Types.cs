@@ -9,9 +9,12 @@ namespace Dyalect.Compiler
     {
         private void Build(DTypeDeclaration node, Hints hints, CompilerContext ctx)
         {
+            if (!char.IsUpper(node.Name[0]))
+                AddError(CompilerError.TypeNameCamel, node.Location);
+
             var typeId = unit.Types.Count;
             var unitId = unit.UnitIds.Count - 1;
-            var ti = new TypeInfo(typeId, new UnitInfo(unitId, unit));
+            var ti = new TypeInfo(typeId, node, new UnitInfo(unitId, unit));
 
             if (types.ContainsKey(node.Name))
             {
@@ -38,10 +41,13 @@ namespace Dyalect.Compiler
 
         private void GenerateConstructor(DFunctionDeclaration func)
         {
+            if (!char.IsUpper(func.Name[0]))
+                AddError(CompilerError.CtorOnlyPascal, func.Location);
+
             if (func.Parameters.Count == 0)
             {
                 AddLinePragma(func);
-                cw.PushNil();
+                cw.Nop();
             }
             else if (func.Parameters.Count == 1)
             {
@@ -50,6 +56,7 @@ namespace Dyalect.Compiler
                 AddLinePragma(func);
                 cw.PushVar(a);
                 cw.Tag(p.Name);
+                cw.PopVar(a.Address);
             }
             else
             {
@@ -59,10 +66,11 @@ namespace Dyalect.Compiler
                     var a = GetVariable(p.Name, p);
                     cw.PushVar(a);
                     cw.Tag(p.Name);
+                    cw.PopVar(a.Address);
                 }
 
                 AddLinePragma(func);
-                cw.NewTuple(func.Parameters.Count);
+                cw.Nop();
             }
 
             TryGetLocalType(func.TypeName.Local, out var ti);
@@ -134,7 +142,7 @@ namespace Dyalect.Compiler
             foreach (var r in referencedUnits.Values)
                 if (TryGetExternalType(r, local, out var id))
                 {
-                    ti = new TypeInfo(id, r);
+                    ti = new TypeInfo(id, null, r);
                     return true;
                 }
 

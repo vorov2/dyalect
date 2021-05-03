@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
 
-        internal abstract DyFunction Clone(ExecutionContext ctx, DyObject arg);
+        internal abstract DyFunction BindToInstance(ExecutionContext ctx, DyObject arg);
 
         public abstract DyObject Call(ExecutionContext ctx, params DyObject[] args);
 
@@ -26,7 +26,7 @@ namespace Dyalect.Runtime.Types
 
         internal virtual DyObject Call1(DyObject obj, ExecutionContext ctx) => Call(ctx, obj);
 
-        internal virtual DyObject Call0(ExecutionContext ctx) => Call(ctx, Statics.EmptyDyObjects);
+        internal virtual DyObject Call0(ExecutionContext ctx) => Call(ctx, Array.Empty<DyObject>());
 
         internal int GetParameterIndex(string name)
         {
@@ -90,6 +90,8 @@ namespace Dyalect.Runtime.Types
 
         internal abstract bool Equals(DyFunction func);
 
+        public override int GetHashCode() => HashCode.Combine(TypeId, FunctionName ?? DefaultName, Parameters, Self);
+
         internal virtual void Reset(ExecutionContext ctx) { }
     }
 
@@ -108,20 +110,20 @@ namespace Dyalect.Runtime.Types
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             if (name == "compose")
                 return DyForeignFunction.Member(name, Compose, -1, new Par("with"));
 
-            return base.InitializeInstanceMember(name, ctx);
+            return base.InitializeInstanceMember(self, name, ctx);
         }
 
-        protected override DyObject GetOp(DyObject self, string index, ExecutionContext ctx) =>
-            index switch
-            {
-                "name" => new DyString(((DyFunction)self).FunctionName),
-                _ => ctx.IndexOutOfRange()
-            };
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        {
+            if (index.TypeId == DyType.String && index.GetString() == "name")
+                return new DyString(((DyFunction)self).FunctionName);
+            return ctx.IndexOutOfRange();
+        }
 
         private DyObject Compose(ExecutionContext ctx, DyObject first, DyObject second)
         {
@@ -138,7 +140,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "compose")
                 return DyForeignFunction.Static(name, Compose, -1, new Par("first"), new Par("second"));

@@ -29,6 +29,7 @@ namespace Dyalect.Parser
                 ,{ "invalid Tuple", InvalidLiteral }
                 ,{ "invalid Literal", InvalidLiteral }
                 ,{ "invalid DyalectItem", InvalidStatement }
+                ,{ "invalid NamePattern", InvalidPattern }
                 ,{ "invalid Pattern", InvalidPattern }
                 ,{ "invalid BooleanPattern", InvalidPattern }
                 ,{ "invalid CtorPattern", InvalidPattern }

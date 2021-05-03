@@ -390,10 +390,7 @@ namespace Dyalect.Compiler
             cw.Br(ctx.FunctionExit);
         }
 
-        private void Build(DBase node)
-        {
-            AddError(CompilerError.BaseNotAllowed, node.Location);
-        }
+        private void Build(DBase node) => AddError(CompilerError.BaseNotAllowed, node.Location);
 
         private void Build(DAccess node, Hints hints, CompilerContext ctx)
         {
@@ -415,7 +412,6 @@ namespace Dyalect.Compiler
             }
 
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
-
             AddLinePragma(node);
 
             if (hints.Has(Pop))
@@ -502,7 +498,7 @@ namespace Dyalect.Compiler
         {
             var push = hints.Remove(Pop).Append(Push);
             
-            if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks == null)
+            if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks is null)
             {
                 if (node.Target.NodeType == NodeType.Name)
                 {
@@ -649,6 +645,9 @@ namespace Dyalect.Compiler
             if (hints.Has(IteratorBody))
                 AddError(CompilerError.ReturnInIterator, node.Location);
 
+            if (ctx.Function is not null && ctx.Function.IsConstructor)
+                AddError(CompilerError.ReturnInConstructor, node.Location);
+
             if (node.Expression != null)
                 Build(node.Expression, hints.Append(Push), ctx);
             else
@@ -672,13 +671,6 @@ namespace Dyalect.Compiler
                     var push = GetExpressionName(node.Arguments[0]);
                     AddLinePragma(node);
                     cw.Push(push);
-                    return;
-                }
-                else if (name == "valueof" && node.Arguments.Count == 1)
-                {
-                    Build(node.Arguments[0], newHints.Append(Push), ctx);
-                    AddLinePragma(node);
-                    cw.Unbox();
                     return;
                 }
 

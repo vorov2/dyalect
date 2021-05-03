@@ -20,8 +20,6 @@ namespace Dyalect.Runtime.Types
 
         public override DyObject Clone() => this;
 
-        internal override int GetCount() => 0;
-
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
             ctx.IndexOutOfRange();
 
@@ -46,7 +44,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Nil")
                 return DyForeignFunction.Static(name, _ => DyNil.Instance);

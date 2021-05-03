@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -29,7 +30,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId != DyType.String)
+            if (index.TypeId is not DyType.String)
                 return ctx.InvalidType(index);
 
             if (!TryGetMember(index.GetString(), ctx, out var value))
@@ -38,21 +39,7 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        protected internal override DyObject GetItem(int index, ExecutionContext ctx) =>
-                ctx.InvalidType(DyInteger.Get(index));
-
-        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
-        {
-            if (!TryGetMember(name, ctx, out value))
-            {
-                value = null;
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool TryGetMember(string name, ExecutionContext ctx, out DyObject value)
+        internal bool TryGetMember(string name, ExecutionContext ctx, out DyObject value)
         {
             value = null;
 
@@ -89,6 +76,8 @@ namespace Dyalect.Runtime.Types
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public override int GetHashCode() => HashCode.Combine(TypeId, Unit.Id);
     }
 
     internal sealed class DyModuleTypeInfo : DyTypeInfo
@@ -126,7 +115,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Module")
                 return DyForeignFunction.Static(name, c => new DyModule(c.RuntimeContext.Composition.Units[0], c.RuntimeContext.Units[0]));

@@ -79,8 +79,6 @@
             1, //FunArgNm
             1, //FunCall
             1, //NewTuple
-            1, //GetIx
-            1, //SetIx
             1, //HasField
             1, //TypeCheck
             1, //TypeCheckT
@@ -90,9 +88,6 @@
             1, //TypeS
             1, //TypeST
             1, //CtorCheck
-            0, //Unbox
-            0, //Rethrow
-            0, //PopErr
             0, //IsNull
         };
     }

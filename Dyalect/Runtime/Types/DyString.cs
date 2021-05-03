@@ -66,8 +66,7 @@ namespace Dyalect.Runtime.Types
             if (index.TypeId != DyType.Integer)
                 return ctx.InvalidType(index);
 
-            var idx = (int)index.GetInteger();
-            return GetItem(idx, ctx);
+            return GetItem((int)index.GetInteger(), ctx);
         }
 
         protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) =>
@@ -142,11 +141,9 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(len);
         }
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)StringUtil.Escape(arg.GetString());
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => (DyString)arg.GetString();
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
-
-        protected override DyObject GetOp(DyObject self, int index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
@@ -375,7 +372,7 @@ namespace Dyalect.Runtime.Types
         private static char[] GetChars(DyObject[] args, ExecutionContext ctx)
         {
             if (args[0] == null)
-                return Statics.EmptyChars;
+                return Array.Empty<char>();
 
             var values = ((DyTuple)args[0]).Values;
             var chs = new char[values.Length];
@@ -385,7 +382,7 @@ namespace Dyalect.Runtime.Types
                 if (values[i].TypeId != DyType.Char)
                 {
                     ctx.InvalidType(values[i]);
-                    return Statics.EmptyChars;
+                    return Array.Empty<char>();
                 }
                 chs[i] = values[i].GetChar();
             }
@@ -463,7 +460,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(str.Remove(fri, c));
         }
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "indexOf" => DyForeignFunction.Member(name, IndexOf, -1, new Par("value"), 
@@ -487,7 +484,7 @@ namespace Dyalect.Runtime.Types
                 "replace" => DyForeignFunction.Member(name, Replace, -1, new Par("value"), new Par("with"), new Par("ignoreCase", DyBool.False)),
                 "remove" => DyForeignFunction.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance)),
                 "reverse" => DyForeignFunction.Member(name, Reverse),
-                _ => base.InitializeInstanceMember(name, ctx),
+                _ => base.InitializeInstanceMember(self, name, ctx),
             };
         #endregion
 
@@ -553,7 +550,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(new string(value.GetChar(), (int)count.GetInteger()));
         }
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "String" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),

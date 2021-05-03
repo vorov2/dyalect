@@ -49,7 +49,7 @@ namespace Dyalect.Runtime.Types
             private readonly Func<ExecutionContext, DyObject, DyObject> fun;
 
             public MemberFunction0(string name, Func<ExecutionContext, DyObject, DyObject> fun)
-                : base(name, Statics.EmptyParameters, -1) => this.fun = fun;
+                : base(name, Array.Empty<Par>(), -1) => this.fun = fun;
 
             public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self);
 
@@ -211,7 +211,7 @@ namespace Dyalect.Runtime.Types
 
         public static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, int varArgIndex, params Par[] pars) => new MemberFunction3(name, fun, pars, varArgIndex);
 
-        public static DyFunction Static(string name, Func<ExecutionContext, DyObject> fun) => new StaticFunction0(name, fun, Statics.EmptyParameters);
+        public static DyFunction Static(string name, Func<ExecutionContext, DyObject> fun) => new StaticFunction0(name, fun, Array.Empty<Par>());
 
         public static DyFunction Static(string name, Func<ExecutionContext, DyObject, DyObject> fun, int varArgIndex, params Par[] pars) => new StaticFunction1(name, fun, pars, varArgIndex);
 
@@ -227,7 +227,7 @@ namespace Dyalect.Runtime.Types
 
         public override bool IsExternal => true;
 
-        internal override DyFunction Clone(ExecutionContext ctx, DyObject arg)
+        internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg)
         {
             var clone = Clone(ctx);
             clone.Self = arg;
@@ -236,6 +236,6 @@ namespace Dyalect.Runtime.Types
 
         protected virtual DyFunction Clone(ExecutionContext ctx) => (DyForeignFunction)MemberwiseClone();
 
-        internal override DyObject[] CreateLocals(ExecutionContext ctx) => Parameters.Length == 0 ? Statics.EmptyDyObjects : new DyObject[Parameters.Length];
+        internal override DyObject[] CreateLocals(ExecutionContext ctx) => Parameters.Length == 0 ? Array.Empty<DyObject>() : new DyObject[Parameters.Length];
     }
 }

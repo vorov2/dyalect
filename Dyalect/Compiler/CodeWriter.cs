@@ -80,11 +80,7 @@ namespace Dyalect.Compiler
                 Emit(new(op, 0));
         }
 
-        private void Emit(Op op)
-        {
-            var size = op.Code.GetStack();
-            Emit(op, size);
-        }
+        private void Emit(Op op) => Emit(op, op.Code.GetStack());
 
         private void Emit(Op op, int size)
         {
@@ -154,10 +150,7 @@ namespace Dyalect.Compiler
             return idx;
         }
 
-        public void Push(string val)
-        {
-            Emit(new(OpCode.PushStr, IndexString(val)));
-        }
+        public void Push(string val) => Emit(new(OpCode.PushStr, IndexString(val)));
 
         public void Push(double val)
         {
@@ -268,8 +261,6 @@ namespace Dyalect.Compiler
         public void RunMod(int code) => Emit(new(OpCode.RunMod, code));
         public void Aux(string value) => Emit(new(OpCode.Aux, IndexString(value)));
         public void Aux(int data) => Emit(new(OpCode.Aux, data));
-        public void Get(int index) => Emit(new(OpCode.GetIx, index));
-        public void Set(int index) => Emit(new(OpCode.SetIx, index));
         public void HasField(string field) => Emit(new(OpCode.HasField, IndexString(field)));
         public void Start(Label lab) => Emit(OpCode.Start, lab);
         public void Fail(DyErrorCode code) => Emit(new(OpCode.FailSys, (int)code));
@@ -280,7 +271,6 @@ namespace Dyalect.Compiler
         public void Str() => Emit(Op.Str);
         public void Get() => Emit(Op.Get);
         public void Set() => Emit(Op.Set);
-        public void Unbox() => Emit(Op.Unbox);
         public void This() => Emit(Op.This);
         public void Type() => Emit(Op.Type);
         public void PushNil() => Emit(Op.PushNil);

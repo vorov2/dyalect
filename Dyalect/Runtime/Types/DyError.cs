@@ -48,37 +48,27 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => errorCode + ": " + GetDescription();
 
-        protected internal override DyObject GetItem(string name, ExecutionContext ctx)
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (!TryGetItem(name, ctx, out var value))
-                return ctx.IndexOutOfRange();
+            if (index.TypeId != DyType.String)
+                return ctx.InvalidType(index);
 
-            return value;
-        }
+            var name = index.GetString();
 
-        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
-        {
             if (name == "code")
-            {
-                value = new DyInteger((int)Code);
-                return true;
-            }
+                return new DyInteger((int)Code);
             else if (name == "detail")
-            {
-                value = GetDetail();
-                return true;
-            }
+                return GetDetail();
             else
-            {
-                value = null;
-                return false;
-            }
+                return ctx.IndexOutOfRange();
         }
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) =>
             name == "code" || name == "detail";
 
         public override string GetConstructor(ExecutionContext ctx) => errorCode;
+
+        public override int GetHashCode() => HashCode.Combine(Code, DataItems);
     }
 
     internal sealed class DyErrorTypeInfo : DyTypeInfo
@@ -106,12 +96,7 @@ namespace Dyalect.Runtime.Types
                 return TypeConverter.ConvertFrom(err.DataItems[idx]);
             }
             else if (index.TypeId == DyType.String)
-            {
-                if (!err.TryGetItem(index, ctx, out var value))
-                    return ctx.IndexOutOfRange();
-
-                return value;
-            }
+                return err.GetItem(index, ctx);
             else
                 return ctx.InvalidType(index);
         }

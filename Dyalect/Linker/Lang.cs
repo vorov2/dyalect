@@ -202,7 +202,7 @@ namespace Dyalect.Linker
                 }
             }
 
-            return new DyCustomObject(dict);
+            return new DyWrapper(dict);
         }
 
         [Function("parse")]

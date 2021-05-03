@@ -22,37 +22,7 @@
                 (index.TypeId == DyType.String && index.GetString() == Label)
                 ? Value : ctx.IndexOutOfRange();
 
-        internal protected override DyObject GetItem(string name, ExecutionContext ctx) =>
-            name == Label ? Value : ctx.IndexOutOfRange();
-
-        internal protected override DyObject GetItem(int index, ExecutionContext ctx) =>
-            index == 0 ? Value : ctx.IndexOutOfRange();
-
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;
-
-        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
-        {
-            if (name == Label)
-            {
-                value = Value;
-                return true;
-            }
-
-            value = null;
-            return false;
-        }
-
-        protected internal override bool TryGetItem(int index, ExecutionContext ctx, out DyObject value)
-        {
-            if (index != 0)
-            {
-                value = null;
-                return false;
-            }
-
-            value = Value;
-            return true;
-        }
 
         public override int GetHashCode() => Value.GetHashCode();
 

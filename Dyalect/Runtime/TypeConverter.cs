@@ -57,7 +57,7 @@ namespace Dyalect.Runtime
                         return new DyArray(newArr);
                     }
                     else
-                        return new DyReflectionObject(obj);
+                        return new DyReflectionWrapper(obj);
             }
         }
 

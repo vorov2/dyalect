@@ -33,53 +33,31 @@ namespace Dyalect.Runtime.Types
                 return GetItem((int)index.GetInteger(), ctx);
             
             if (index.TypeId == DyType.String || index.TypeId == DyType.Char)
-                return GetItem(index.GetString(), ctx) ?? ctx.IndexOutOfRange();
+            {
+                var i = GetOrdinal(index.GetString());
+
+                if (i == -1)
+                    return ctx.IndexOutOfRange();
+
+                return GetItem(i, ctx);
+            }
             
             return ctx.InvalidType(index);
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
-            if (index.TypeId == DyType.Integer)
-                SetItem((int)index.GetInteger(), value, ctx);
-            else if (index.TypeId == DyType.String)
-                SetItem(index.GetString(), value, ctx);
-            else
-                ctx.InvalidType(index);
-        }
-
-        protected internal override DyObject GetItem(string name, ExecutionContext ctx)
-        {
-            var i = GetOrdinal(name);
-
-            if (i == -1)
-                return ctx.IndexOutOfRange();
-
-            return GetItem(i, ctx);
-        }
-
-        protected internal override bool TryGetItem(string name, ExecutionContext ctx, out DyObject value)
-        {
-            var i = GetOrdinal(name);
-
-            if (i == -1)
+            if (index.TypeId is DyType.String)
             {
-                value = null;
-                return false;
+                var i = GetOrdinal(index.GetString());
+
+                if (i == -1)
+                    ctx.IndexOutOfRange();
+
+                CollectionSetItem(i, value, ctx);
             }
-
-            value = GetItem(i, ctx);
-            return true;
-        }
-
-        protected internal override void SetItem(string name, DyObject value, ExecutionContext ctx)
-        {
-            var i = GetOrdinal(name);
-
-            if (i == -1)
-                ctx.IndexOutOfRange();
-
-            SetItem(i, value, ctx);
+            else
+                base.SetItem(index, value, ctx);
         }
 
         private int GetOrdinal(string name)
@@ -194,8 +172,6 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyObject GetOp(DyObject self, int index, ExecutionContext ctx) => self.GetItem(index, ctx);
-
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             self.SetItem(index, value, ctx);
@@ -222,10 +198,10 @@ namespace Dyalect.Runtime.Types
         }
 
         private DyObject GetFirst(ExecutionContext ctx, DyObject self) =>
-            self.GetItem(0, ctx);
+            self.GetItem(DyInteger.Zero, ctx);
 
         private DyObject GetSecond(ExecutionContext ctx, DyObject self) =>
-            self.GetItem(1, ctx);
+            self.GetItem(DyInteger.One, ctx);
 
         private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject fun)
         {
@@ -320,7 +296,7 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(arr);
         }
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
@@ -331,7 +307,7 @@ namespace Dyalect.Runtime.Types
                 "fst" => DyForeignFunction.Member(name, GetFirst),
                 "snd" => DyForeignFunction.Member(name, GetSecond),
                 "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
-                _ => base.InitializeInstanceMember(name, ctx)
+                _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
         private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
@@ -342,7 +318,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),

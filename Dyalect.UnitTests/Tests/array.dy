@@ -241,33 +241,33 @@ func arrayIndexing() { //#301
 }
 
 //Start  #301
-type __Foo(x)
-func __Foo == (other) { other is __Foo() }
+type FooInArray(x)
+func FooInArray == (other) { other is FooInArray() }
 func complexEquality1() {
-    var res = __Foo(0) == __Foo(12)
+    var res = FooInArray(0) == FooInArray(12)
     assert(true, res)
-    var xs = [__Foo(0)]
-    xs.remove(__Foo(3))
+    var xs = [FooInArray(0)]
+    xs.remove(FooInArray(3))
     assert([], xs)
 }
 
 func complexEquality2() {
-    var xs = [12, "foo", __Foo(12), __Foo(0)]
-    var res = xs.indexOf(__Foo(42))
+    var xs = [12, "foo", FooInArray(12), FooInArray(0)]
+    var res = xs.indexOf(FooInArray(42))
     assert(res, 2)
-    res = xs.indexOf(__Foo(0))
+    res = xs.indexOf(FooInArray(0))
     assert(res, 2)
 }
 
 func complexEquality3() {
-    var xs = [12, "foo", __Foo(12), __Foo(0)]
-    var res = xs.lastIndexOf(__Foo(12))
+    var xs = [12, "foo", FooInArray(12), FooInArray(0)]
+    var res = xs.lastIndexOf(FooInArray(12))
     assert(res, 3)
 }
 
 func complexEquality4() {
-    var xs = [__Foo(1), __Foo(2), __Foo(3), __Foo(4)]
-    xs.removeRange([__Foo(0)])
-    assert([__Foo(2), __Foo(3), __Foo(4)], xs)
+    var xs = [FooInArray(1), FooInArray(2), FooInArray(3), FooInArray(4)]
+    xs.removeRange([FooInArray(0)])
+    assert([FooInArray(2), FooInArray(3), FooInArray(4)], xs)
 }
 //End #301

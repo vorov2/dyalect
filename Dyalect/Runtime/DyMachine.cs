@@ -94,9 +94,6 @@ namespace Dyalect.Runtime
                     case OpCode.This:
                         evalStack.Push(function.Self.GetTaggedValue());
                         break;
-                    case OpCode.Unbox:
-                        evalStack.Replace(evalStack.Peek().GetSelf().GetTaggedValue());
-                        break;
                     case OpCode.Term:
                         if (evalStack.Size > 1 || evalStack.Size == 0)
                             throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
@@ -336,7 +333,7 @@ namespace Dyalect.Runtime
                         if (right.TypeId == DyType.TypeInfo)
                             evalStack.Replace(((DyTypeInfo)right).HasStaticMember(unit.IndexedStrings[op.Data].Value, ctx));
                         else
-                            evalStack.Replace(types[right.TypeId].HasInstanceMember(unit.IndexedStrings[op.Data].Value, ctx));
+                            evalStack.Replace(types[right.TypeId].HasInstanceMember(right, unit.IndexedStrings[op.Data].Value, ctx));
                         break;
                     case OpCode.GetMember:
                         right = evalStack.Peek();
@@ -378,16 +375,6 @@ namespace Dyalect.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Pop();
                         types[right.TypeId].Set(ctx, right, left, evalStack.Pop());
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        break;
-                    case OpCode.GetIx:
-                        right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].Get(ctx, right, op.Data));
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        break;
-                    case OpCode.SetIx:
-                        right = evalStack.Pop();
-                        types[right.TypeId].Set(ctx, right, op.Data, evalStack.Pop());
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.HasField:
@@ -593,7 +580,7 @@ namespace Dyalect.Runtime
                         ctx.CatchMarks.Peek().Pop();
                         break;
                     case OpCode.NewType:
-                        evalStack.Replace(new DyCustomType(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, evalStack.Peek(), unit));
+                        evalStack.Push(new DyCustomType(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, locals, unit));
                         break;
                 }
             }
@@ -660,7 +647,7 @@ namespace Dyalect.Runtime
 
             if (callFun.VarArgIndex > -1)
                 locals[callFun.VarArgIndex] = cont.VarArgs is null ? null :
-                    new DyTuple(cont.VarArgs.ToArray() ?? Statics.EmptyDyObjects);
+                    new DyTuple(cont.VarArgs.ToArray() ?? Array.Empty<DyObject>());
 
             for (var i = 0; i < pars.Length; i++)
             {

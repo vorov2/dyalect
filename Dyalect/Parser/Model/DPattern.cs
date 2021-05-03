@@ -253,10 +253,18 @@ namespace Dyalect.Parser.Model
 
         public string Constructor { get; set; }
 
+        public Qualident TypeName { get; set; }
+
         public List<DNode> Arguments { get; } = new();
 
         internal override void ToString(StringBuilder sb)
         {
+            if (TypeName is not null)
+            {
+                sb.Append(TypeName);
+                sb.Append('.');
+            }
+
             sb.Append(Constructor);
             sb.Append('(');
             if (Arguments != null && Arguments.Count > 0)

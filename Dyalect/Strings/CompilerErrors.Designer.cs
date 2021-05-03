@@ -133,6 +133,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Constructor names should start with a capital letter..
+        /// </summary>
+        internal static string CtorOnlyPascal {
+            get {
+                return ResourceManager.GetString("CtorOnlyPascal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Constructor should be a static function..
+        /// </summary>
+        internal static string CtorOnlyStatic {
+            get {
+                return ResourceManager.GetString("CtorOnlyStatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An expression doesn&apos;t have a name..
         /// </summary>
         internal static string ExpressionNoName {
@@ -286,6 +304,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Statement &quot;return&quot; is not supported inside constructors..
+        /// </summary>
+        internal static string ReturnInConstructor {
+            get {
+                return ResourceManager.GetString("ReturnInConstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Statement &quot;return&quot; is not allowed in iterators. Use &quot;yield break&quot; to terminate an iterator..
         /// </summary>
         internal static string ReturnInIterator {
@@ -336,6 +363,15 @@ namespace Dyalect.Strings {
         internal static string TypeAlreadyDeclared {
             get {
                 return ResourceManager.GetString("TypeAlreadyDeclared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type name should start from a capital letter..
+        /// </summary>
+        internal static string TypeNameCamel {
+            get {
+                return ResourceManager.GetString("TypeNameCamel", resourceCulture);
             }
         }
         

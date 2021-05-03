@@ -123,7 +123,7 @@ namespace Dyalect.Runtime.Types
         }
         #endregion
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "isLower" => DyForeignFunction.Member(name, (_, c) => (DyBool)char.IsLower(c.GetChar())),
@@ -136,7 +136,7 @@ namespace Dyalect.Runtime.Types
                 "lower" => DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToLower(c.GetChar()))),
                 "upper" => DyForeignFunction.Member(name, (_, c) => new DyChar(char.ToUpper(c.GetChar()))),
                 "order" => DyForeignFunction.Member(name, (_, c) => DyInteger.Get(c.GetChar())),
-                _ => base.InitializeInstanceMember(name, ctx),
+                _ => base.InitializeInstanceMember(self, name, ctx),
             };
 
         private DyObject CreateChar(ExecutionContext ctx, DyObject obj)
@@ -159,7 +159,7 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(obj);
         }
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "max" => DyForeignFunction.Static(name, _ => DyChar.Max),

@@ -18,11 +18,11 @@ namespace Dyalect.Runtime.Types
         #region Indexing
         protected int CorrectIndex(int index) => index < 0 ? Count + index : index;
 
-        protected internal sealed override DyObject GetItem(int index, ExecutionContext ctx)
+        internal DyObject GetItem(int index, ExecutionContext ctx)
         {
             index = CorrectIndex(index);
             
-            if (index < 0 || index >= Count)
+            if (index >= Count)
                 return ctx.IndexOutOfRange();
             
             return CollectionGetItem(index, ctx);
@@ -30,25 +30,17 @@ namespace Dyalect.Runtime.Types
 
         protected abstract DyObject CollectionGetItem(int index, ExecutionContext ctx);
 
-        protected internal sealed override bool TryGetItem(int index, ExecutionContext ctx, out DyObject value)
+        protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
         {
-            index = CorrectIndex(index);
-
-            if (index < 0 || index >= Count)
+            if (obj.TypeId is not DyType.Integer)
             {
-                value = null;
-                return false;
+                ctx.InvalidType(obj);
+                return;
             }
 
-            value = CollectionGetItem(index, ctx);
-            return true;
-        }
+            var index = CorrectIndex((int)obj.GetInteger());
 
-        protected internal sealed override void SetItem(int index, DyObject value, ExecutionContext ctx)
-        {
-            index = CorrectIndex(index);
-
-            if (index < 0 || index >= Count)
+            if (index >= Count)
                 ctx.IndexOutOfRange();
             else
                 CollectionSetItem(index, value, ctx);
@@ -85,7 +77,7 @@ namespace Dyalect.Runtime.Types
             unchecked
             {
                 var hash = 17;
-                var c = GetCount();
+                var c = Count;
 
                 for (var i = 0; i < c; i++)
                 {
@@ -102,9 +94,9 @@ namespace Dyalect.Runtime.Types
             if (other is not DyCollection arr)
                 return false;
 
-            var c = GetCount();
+            var c = Count;
 
-            if (arr.GetCount() != c)
+            if (arr.Count != c)
                 return false;
 
             for (var i = 0; i < c; i++)
@@ -114,15 +106,13 @@ namespace Dyalect.Runtime.Types
             return true;
         }
 
-        internal override int GetCount() => Count;
-
         internal DyObject[] Concat(ExecutionContext ctx, DyObject right)
         {
             var newArr = new List<DyObject>(GetValues());
             var coll = DyIterator.Run(ctx, right);
 
             if (ctx.HasErrors)
-                return Statics.EmptyDyObjects;
+                return Array.Empty<DyObject>();
 
             newArr.AddRange(coll);
             return newArr.ToArray();
@@ -131,7 +121,7 @@ namespace Dyalect.Runtime.Types
         internal static DyObject[] ConcatValues(ExecutionContext ctx, DyObject values)
         {
             if (values == null)
-                return Statics.EmptyDyObjects;
+                return Array.Empty<DyObject>();
 
             var arr = new List<DyObject>();
             var vals = ((DyTuple)values).Values;
@@ -202,12 +192,12 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(Iterate());
         }
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "indices" => DyForeignFunction.Member(name, GetIndices, -1, Statics.EmptyParameters),
+                "indices" => DyForeignFunction.Member(name, GetIndices, -1, Array.Empty<Par>()),
                 "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
-                _ => base.InitializeInstanceMember(name, ctx)
+                _ => base.InitializeInstanceMember(self, name, ctx)
             };
     }
 }

@@ -40,7 +40,7 @@ namespace Dyalect.Linker
                 startupPaths,
                 GetBasePaths(),
                 systemPaths,
-                additionalPaths ?? Statics.EmptyStrings
+                additionalPaths ?? Array.Empty<string>()
             );
         }
 

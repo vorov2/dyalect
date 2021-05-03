@@ -24,7 +24,6 @@
         public const string BitNot      = "op_bitcomp";
         public const string Get         = "op_get";
         public const string Set         = "op_set";
-
         public const string Len         = "len";
         public const string ToStr       = "toString";
         public const string ToTuple     = "toTuple";

@@ -75,6 +75,8 @@ namespace Dyalect.Linker
 
         internal override bool Equals(DyFunction func) => func is ForeignFunction m && m.fun.Equals(fun);
 
+        public override int GetHashCode() => fun.Func.GetHasCode();
+
         protected override DyFunction Clone(ExecutionContext ctx) => this;
     }
 }

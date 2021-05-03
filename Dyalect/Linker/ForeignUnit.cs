@@ -85,7 +85,7 @@ namespace Dyalect.Linker
             else if (!hasContext && pars.Length > 0)
                 parsMeta = new Par[pars.Length];
             else if (pars.Length == 0)
-                parsMeta = Statics.EmptyParameters;
+                parsMeta = Array.Empty<Par>();
             
             var varArgIndex = -1;
             var simpleSignature = true;

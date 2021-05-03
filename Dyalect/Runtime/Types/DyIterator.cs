@@ -82,7 +82,7 @@ namespace Dyalect.Runtime.Types
         public DyIterator(IEnumerable<DyObject> enumerable) : this(enumerable.GetEnumerator()) =>
             this.enumerable = enumerable;
 
-        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Statics.EmptyParameters, DyType.Iterator, -1) =>
+        public DyIterator(IEnumerator<DyObject> enumerator) : base(Builtins.Iterator, Array.Empty<Par>(), DyType.Iterator, -1) =>
             this.enumerator = enumerator;
 
         internal void SetEnumerable(IEnumerable<DyObject> enu) =>
@@ -107,7 +107,7 @@ namespace Dyalect.Runtime.Types
 
         public override int GetHashCode() => enumerator.GetHashCode();
 
-        internal override DyFunction Clone(ExecutionContext ctx, DyObject arg) => new DyIterator(enumerable) { Self = arg };
+        internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) => new DyIterator(enumerable) { Self = arg };
 
         internal static DyFunction GetIterator(ExecutionContext ctx, DyObject val)
         {
@@ -246,7 +246,7 @@ namespace Dyalect.Runtime.Types
         public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) 
             : base(null, unitId, funcId, captures, DyType.Iterator, -1) { }
 
-        internal override DyFunction Clone(ExecutionContext ctx, DyObject arg) =>
+        internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) =>
             new DyNativeIterator(UnitId, FunctionId, Captures) { Self = arg };
     }
 
@@ -448,7 +448,7 @@ namespace Dyalect.Runtime.Types
             return new DyIterator(seq.Skip(beg).Take(end - beg + 1));
         }
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "toArray" => DyForeignFunction.Member(name, ToArray),
@@ -460,12 +460,12 @@ namespace Dyalect.Runtime.Types
                 "slice" => DyForeignFunction.Member(name, GetSlice, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance)),
                 "by" => DyForeignFunction.Member(name, SetStep, -1, new Par("value")),
                 //"element" => DyForeignFunction.Member(name, ElementAt, -1, new Par("at")),
-                _ => base.InitializeInstanceMember(name, ctx)
+                _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
         private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, DyObject exclusive) => new DyRange(ctx, from, to, step, exclusive);
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Iterator")
                 return DyForeignFunction.Static(name, Concat, 0, new Par("values", true));

@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using System;
 
 namespace Dyalect.Runtime.Types
 {
@@ -27,5 +28,7 @@ namespace Dyalect.Runtime.Types
 
         public override string GetConstructor(ExecutionContext ctx) =>
             Constructor ?? base.GetConstructor(ctx);
+
+        public override int GetHashCode() => HashCode.Combine(TypeId, Constructor, DeclaringUnit.Id);
     }
 }

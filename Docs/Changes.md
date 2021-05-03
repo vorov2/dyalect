@@ -1,3 +1,12 @@
+# 0.21.0
+  * Change: _General refactoring._
+  * Change: _Rethreat to old function syntax_ ([Issue #441](https://github.com/vorov2/dyalect/issues/441)).
+  * Change: _Redesign of custom type system for better flexibility_ ([Issue #440](https://github.com/vorov2/dyalect/issues/440), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
+  * Change: _Type check incosistency_ ([Issue #443](https://github.com/vorov2/dyalect/issues/443)).
+  * Change: _Change precendence for `is` operator_ ([Issue #445](https://github.com/vorov2/dyalect/issues/445)).
+  * Add: _There should be a requirement for type names to start with an uppercase_ ([Issue #444](https://github.com/vorov2/dyalect/issues/444)).
+  * Add: _Add an ability to specify a type for a constructor pattern_ ([Issue #442](https://github.com/vorov2/dyalect/issues/442)).
+
 # 0.20.3
   * Fix: _Stack corruption_ ([Issue #449](https://github.com/vorov2/dyalect/issues/449)).
 

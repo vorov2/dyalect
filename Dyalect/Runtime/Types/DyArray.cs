@@ -161,14 +161,6 @@ namespace Dyalect.Runtime.Types
 
         protected override void CollectionSetItem(int index, DyObject obj, ExecutionContext ctx) =>
             Values[index] = obj;
-        
-        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
-        {
-            if (index.TypeId != DyType.Integer)
-                ctx.InvalidType(index);
-            else
-                SetItem((int)index.GetInteger(), value, ctx);
-        }
 
         internal override DyObject GetValue(int index) => Values[CorrectIndex(index)];
 
@@ -215,8 +207,6 @@ namespace Dyalect.Runtime.Types
             new DyArray(((DyCollection)left).Concat(ctx, right));
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
-
-        protected override DyObject GetOp(DyObject self, int index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
@@ -457,7 +447,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx) =>
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
@@ -476,7 +466,7 @@ namespace Dyalect.Runtime.Types
                 "swap" => DyForeignFunction.Member(name, Swap, -1, new Par("fst"), new Par("snd")),
                 "compact" => DyForeignFunction.Member(name, Compact),
                 "reverse" => DyForeignFunction.Member(name, Reverse),
-                _ => base.InitializeInstanceMember(name, ctx),
+                _ => base.InitializeInstanceMember(self, name, ctx),
             };
 
         private DyObject New(ExecutionContext ctx, DyObject tuple) => new DyArray(((DyTuple)tuple).Values);
@@ -558,7 +548,7 @@ namespace Dyalect.Runtime.Types
             return destArr;
         }
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
         {
             return name switch
             {

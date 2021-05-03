@@ -6,21 +6,16 @@ namespace Dyalect.Debug
     {
         public Breakpoint(int line, int column) : this(line, column, false) { }
 
-        public Breakpoint(int line, int column, bool temp)
-        {
-            Id = Guid.NewGuid();
-            Line = line;
-            Column = column;
-            Temporary = temp;
-        }
+        public Breakpoint(int line, int column, bool temp) =>
+            (Id, Line, Column, Temporary) = (Guid.NewGuid(), line, column, temp);
 
-        public bool Temporary { get; private set; }
+        public bool Temporary { get; }
 
-        public int Line { get; private set; }
+        public int Line { get; }
 
-        public int Column { get; private set; }
+        public int Column { get; }
 
-        internal Guid Id { get; private set; }
+        internal Guid Id { get; }
 
         internal int Offset { get; set; }
 

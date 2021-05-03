@@ -16,7 +16,7 @@ namespace Dyalect.Runtime
 
         internal FastList(int size)
         {
-            this.initialSize = size;
+            initialSize = size;
             array = new T[size];
         }
 
@@ -29,7 +29,7 @@ namespace Dyalect.Runtime
 
         internal FastList(T[] arr)
         {
-            this.initialSize = arr.Length;
+            initialSize = arr.Length;
             size = arr.Length;
             array = arr;
         }

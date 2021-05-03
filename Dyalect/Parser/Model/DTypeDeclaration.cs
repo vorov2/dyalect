@@ -14,6 +14,8 @@ namespace Dyalect.Parser.Model
         private List<DFunctionDeclaration> constructors;
         public List<DFunctionDeclaration> Constructors => constructors ??= new();
 
+        public DNode With { get; set; }
+
         internal override void ToString(StringBuilder sb)
         {
             sb.Append("type ");
@@ -34,6 +36,12 @@ namespace Dyalect.Parser.Model
                     c.Parameters.ToString(sb);
                     sb.Append(')');
                 }
+            }
+
+            if (With is not null)
+            {
+                sb.Append(" with ");
+                With.ToString(sb);
             }
         }
     }

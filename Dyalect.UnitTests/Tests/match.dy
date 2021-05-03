@@ -387,11 +387,11 @@ func typeCheck1() {
     }
 }
 
-type __CustomType1x2()
+type TypeInMatch()
 func typeCheck2() {
-    var t = __CustomType1x2()
+    var t = TypeInMatch()
     var res = false
-    if t is __CustomType1x2? {
+    if t is TypeInMatch? {
         res = true
     }
     assert(true, res)

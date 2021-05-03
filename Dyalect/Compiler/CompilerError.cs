@@ -82,6 +82,14 @@
 
         CtorNotIterator = 239,
 
-        PositionalArgumentAfterKeyword = 240
+        PositionalArgumentAfterKeyword = 240,
+
+        CtorOnlyStatic = 241,
+
+        CtorOnlyPascal = 242,
+
+        ReturnInConstructor = 243,
+
+        TypeNameCamel = 244
     }
 }

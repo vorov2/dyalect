@@ -78,20 +78,15 @@
         FunArgNm,   //-1
         FunCall,    //0
         NewTuple,   //Dynamic
-        GetIx,      //0
-        SetIx,      //-2
         HasField,   //0
         TypeCheck,  //0
         TypeCheckT, //0
-
         Start,      //0
         End,        //0
         NewType,    //0
-
         TypeS,      //1
         TypeST,     //1
         CtorCheck,  //0
-        Unbox,      //1
         IsNull      //0
     }
 }

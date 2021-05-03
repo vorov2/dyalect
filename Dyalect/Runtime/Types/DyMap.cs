@@ -109,11 +109,6 @@ namespace Dyalect.Runtime.Types
                 return value;
         }
 
-        internal protected override DyObject GetItem(int index, ExecutionContext ctx) => GetItem(DyInteger.Get(index), ctx);
-
-        internal protected override void SetItem(int index, DyObject obj, ExecutionContext ctx) =>
-            SetItem(DyInteger.Get(index), obj, ctx);
-
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
             if (!Map.TryAdd(index, value))
@@ -125,8 +120,6 @@ namespace Dyalect.Runtime.Types
         public IEnumerator<DyObject> GetEnumerator() => new Enumerator(this);
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        internal override int GetCount() => Map.Count;
 
         public override int GetHashCode() => Map.GetHashCode();
     }
@@ -168,8 +161,6 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyObject GetOp(DyObject self, int index, ExecutionContext ctx) => self.GetItem(index, ctx);
-
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             self.SetItem(index, value, ctx);
@@ -209,7 +200,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyFunction InitializeInstanceMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             return name switch
             {
@@ -218,7 +209,7 @@ namespace Dyalect.Runtime.Types
                 "tryGet" => DyForeignFunction.Member(name, TryGetItem, -1, new Par("key")),
                 "remove" => DyForeignFunction.Member(name, RemoveItem, -1, new Par("key")),
                 "clear" => DyForeignFunction.Member(name, ClearItems),
-                _ => base.InitializeInstanceMember(name, ctx),
+                _ => base.InitializeInstanceMember(self, name, ctx),
             };
         }
 
@@ -232,7 +223,7 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(values);
         }
 
-        protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Map")
                 return DyForeignFunction.Static(name, New, -1, new Par("values", DyNil.Instance));

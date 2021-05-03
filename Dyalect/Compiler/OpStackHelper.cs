@@ -80,20 +80,15 @@
             0,  //FunCall
 
             0,  //NewTuple **dynamic
-            0,  //GetIx
-            -2, //SetIx
             0,  //HasField
             0,  //TypeCheck
             0,  //TypeCheckT
             0,  //Start
             0,  //End
-            0,  //NewType
+            1,  //NewType
             1,  //TypeS
             1,  //TypeST
             0,  //CtorCheck
-            1,  //Unbox
-            0, //Rethrow
-            0, //PopErr
             0, //IsNull
         };
     }
