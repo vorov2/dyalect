@@ -413,6 +413,13 @@ namespace Dyalect.Compiler
 
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
             AddLinePragma(node);
+            var skip = cw.DefineLabel();
+
+            if (node.NilSafety)
+            {
+                cw.Dup();
+                cw.Brfalse(skip);
+            }
 
             if (hints.Has(Pop))
             {
@@ -422,6 +429,13 @@ namespace Dyalect.Compiler
             else
             {
                 cw.GetMember(node.Name);
+                PopIf(hints);
+            }
+
+            if (node.NilSafety)
+            {
+                cw.MarkLabel(skip);
+                cw.Nop();
                 PopIf(hints);
             }
         }

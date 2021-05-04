@@ -986,9 +986,6 @@ PRODUCTIONS
                         [
                             "?"
                             (.
-                                if (nsaf)
-                                    AddError(ParserError.InvalidPattern, t.GetLocation());
-
                                 chk = new DMemberCheck(ot) { Target = node };
                                 chk.Name = nm;
                                 node = chk;
