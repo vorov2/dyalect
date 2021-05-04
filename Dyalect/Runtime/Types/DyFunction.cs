@@ -110,20 +110,37 @@ namespace Dyalect.Runtime.Types
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
 
-        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
-        {
-            if (name == "compose")
-                return DyForeignFunction.Member(name, Compose, -1, new Par("with"));
+        private DyObject GetName(ExecutionContext _, DyObject self) => new DyString(((DyFunction)self).FunctionName);
 
-            return base.InitializeInstanceMember(self, name, ctx);
+        private DyObject GetParameters(ExecutionContext _, DyObject self)
+        {
+            var fn = (DyFunction)self;
+            var arr = new DyObject[fn.Parameters.Length];
+
+            for (var i = 0; i < fn.Parameters.Length; i++)
+            {
+                var p = fn.Parameters[i];
+                arr[i] = new DyTuple(
+                        new[] {
+                            new DyLabel("name", new DyString(p.Name)),
+                            new DyLabel("hasDefault", (DyBool)(p.Value is not null)),
+                            new DyLabel("default", p.Value ?? DyNil.Instance),
+                            new DyLabel("varArg", (DyBool)(fn.VarArgIndex == i))
+                        }
+                    );
+            }
+
+            return new DyArray(arr);
         }
 
-        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
-        {
-            if (index.TypeId == DyType.String && index.GetString() == "name")
-                return new DyString(((DyFunction)self).FunctionName);
-            return ctx.IndexOutOfRange();
-        }
+        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+            name switch
+            {
+                "compose" => DyForeignFunction.Member(name, Compose, -1, new Par("with")),
+                "name" => DyForeignFunction.Member(name, GetName),
+                "parameters" => DyForeignFunction.Member(name, GetParameters),
+                _ => base.InitializeInstanceMember(self, name, ctx)
+            };
 
         private DyObject Compose(ExecutionContext ctx, DyObject first, DyObject second)
         {
