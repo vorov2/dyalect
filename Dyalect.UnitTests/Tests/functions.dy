@@ -262,6 +262,7 @@ func complexToStringTest2() {
     }
     var x = "foo" + nil
     assert("foonull", x)
+    Nil.__deleteMember("toString")
 }
 
 func methodTest1() {
@@ -361,14 +362,23 @@ func introspectionTest1() {
     var i = 0
     for p in tt.parameters() {
         if i == 0 {
-            assert("(name: x, hasDefault: false, default: nil, varArg: false)", p)
+            assert("(name: x, hasDefault: false, default: nil, varArg: false)", p.toString())
         } else if i == 1 {
-            assert("(name: y, hasDefault: false, default: nil, varArg: false)", p)
+            assert("(name: y, hasDefault: false, default: nil, varArg: false)", p.toString())
         } else if i == 2 {
-            assert("(name: z, hasDefault: true, default: 3, varArg: false)", p)
+            assert("(name: z, hasDefault: true, default: 3, varArg: false)", p.toString())
         } else if i == 3 {
-            assert("(name: extras, hasDefault: false, default: nil, varArg: true)", p)
+            assert("(name: extras, hasDefault: false, default: nil, varArg: true)", p.toString())
         }
         i += 1
     }
+}
+
+func exprBody1() {
+    func sum(x, y) => x + y
+    assert(5, sum(2, 3))
+    func sum3(x, y, z) => {
+        x + y + z
+    }
+    assert(9, sum3(2, 3, 4))
 }

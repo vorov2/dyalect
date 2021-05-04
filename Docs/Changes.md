@@ -1,6 +1,7 @@
 # 0.22.0
   * Add: _Syntax for parameterless lambdas_ ([Issue #439](https://github.com/vorov2/dyalect/issues/439)).
-  * Change: _Function introspection_ ([Issue #448](https://github.com/vorov2/dyalect/issues/448), [docs](https://github.com/vorov2/dyalect/wiki/Functions#mmethods)).
+  * Add: _Function introspection_ ([Issue #448](https://github.com/vorov2/dyalect/issues/448), [docs](https://github.com/vorov2/dyalect/wiki/Functions#mmethods)).
+  * Add: _Syntax for expression bodied functions_ ([Issue #446(https://github.com/vorov2/dyalect/issues/446)).
 
 # 0.21.1
   * Fix: _Record pattern requires trailing comma_ ([Issue #452](https://github.com/vorov2/dyalect/issues/452)).

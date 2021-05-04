@@ -291,7 +291,7 @@ PRODUCTIONS
                 }
             .)
             FunctionArguments<f>
-            Block<out node>
+            ( Block<out node> | "=>" Expr<out node> Separator )
             (.
                 f.Body = node;
                 node = f;
@@ -932,7 +932,7 @@ PRODUCTIONS
             Unary<out node>
             {
                 (. var app = new DApplication(node, t); .)
-                "!" Unary<out node>
+                "\\" Unary<out node>
                 (. app.Arguments.Add(node); node = app; .)
             }
         ).
