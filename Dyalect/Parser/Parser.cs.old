@@ -850,7 +850,7 @@ namespace Dyalect.Parser
 			if (la.kind == 1) {
 				AsPattern(node, out node);
 			}
-		} else if (IsTuple(allowFields: false)) {
+		} else if (IsTuple(allowFields: true)) {
 			TuplePattern(out node);
 			if (la.kind == 1) {
 				AsPattern(node, out node);
