@@ -87,6 +87,8 @@ Please refer to [wiki](https://github.com/vorov2/dyalect/wiki) for more informat
 * [Dyalect at RosettaCode](http://rosettacode.org/wiki/Category:Dyalect)
 * [Dyalect at OpenHub](https://www.openhub.net/p/dyalect)
 
+##
+
 This software is developed in JetBrains Rider
 
 [<img src="Docs/icon-rider.svg">](https://jb.gg/OpenSource)
