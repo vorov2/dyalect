@@ -973,17 +973,22 @@ PRODUCTIONS
         ).
 
     Index<out DNode node> =
+        (. var nsaf = false; .)
         (
             Literal<out node> 
             {
                 (
-                    "." (. var ot = t; .)
+                    ( "." | "?." (. nsaf = true; .) )
+                    (. var ot = t; .)
                     identToken
                     (. var nm = t.val; DMemberCheck chk = null; .)
                     (
                         [
                             "?"
                             (.
+                                if (nsaf)
+                                    AddError(ParserError.InvalidPattern, t.GetLocation());
+
                                 chk = new DMemberCheck(ot) { Target = node };
                                 chk.Name = nm;
                                 node = chk;
@@ -992,7 +997,7 @@ PRODUCTIONS
                         (.
                             if (chk == null)
                             {
-                                var fld = new DAccess(ot) { Target = node };
+                                var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
                                 fld.Name = nm;
                                 node = fld;
                             }
@@ -1010,8 +1015,8 @@ PRODUCTIONS
                 |
                 (
                     (. if (la.AfterEol) return; .)
-                    "["
-                        (. var idx = new DIndexer(t) { Target = node }; .)
+                    ( "[" | "?[" (. nsaf = true; .) )
+                        (. var idx = new DIndexer(t) { Target = node, NilSafety = nsaf }; .)
                         Expr<out node>
                         (.
                             idx.Index = node;
@@ -1025,7 +1030,7 @@ PRODUCTIONS
                         if (la.AfterEol) return;
                         var app = new DApplication(node, t);
                     .)
-                    "("
+                    ( "(" | "?(" (. app.NilSafety = true; .) )
                         [ ApplicationArguments<app> ]
                         (. node = app; .)
                     ")"
