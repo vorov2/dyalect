@@ -184,12 +184,12 @@ func dammTest() {
 }
 
 func eulerTest() {
-    let T0 = 100.0
-    let TR = 20.0
+    let t0 = 100.0
+    let tR = 20.0
     let k = 0.07
     let n = 100
     func newtonCooling(t) {
-        -k * (t - TR)
+        -k * (t - tR)
     }
     func euler(fn, y, n, h) {
         var values = []
@@ -201,7 +201,7 @@ func eulerTest() {
         }
         values
     }
-    let arr = euler(newtonCooling, T0, n, 10.0)
+    let arr = euler(newtonCooling, t0, n, 10.0)
     var str = ""
     for e in arr {
         str += e + ";"

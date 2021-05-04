@@ -439,17 +439,9 @@ PRODUCTIONS
         ).
 
     MethodCheckPattern<out DPattern node> =
-        (. node = null; .)
-        (
-            "." identToken (. node = new DMethodCheckPattern(t) { Name = t.val }; .)
-            "?"
-        ).
+        "." identToken (. node = new DMethodCheckPattern(t) { Name = t.val }; .).
 
-    GroupPattern<out DPattern node> =
-        (. node = null; .)
-        (
-            "(" OrPattern<out node> ")"
-        ).
+    GroupPattern<out DPattern node> = "(" OrPattern<out node> ")".
 
     ArrayPattern<out DPattern node> =
         (. node = null; .)
@@ -502,61 +494,58 @@ PRODUCTIONS
             [ "::" identToken (. mod = nam; typ = t.val; nam = null; .) ]
             [ "." identToken (. if (typ is null) typ = nam; nam = t.val; .) ]
             [
-                (
-                    "?"
-                    (.
-                        if (nam is not null && typ is not null && mod is not null)
-                            AddError(ParserError.InvalidPattern, t.GetLocation());
-                        node = new DTypeTestPattern(ot) {
-                            TypeName = typ is null ? new Qualident(nam) : new Qualident(typ, mod) 
-                        };
-                    .)
-                )
-                |
-                (
-                    (.
-                        var ctor = new DCtorPattern(t);
-                        if (mod is null && typ is null)
-                            ctor.Constructor = nam;
-                        else if (mod is null) {
-                            ctor.TypeName = new Qualident(typ);
-                            ctor.Constructor = nam;
-                        }
-                        else {
-                            ctor.TypeName = new Qualident(typ, mod);
-                            ctor.Constructor = nam;
-                        }
-                    .)
-                    "("
-                        [ 
-                            (
-                                  IF (IsLabelPattern()) LabelPattern<out node>
-                                | OrPattern<out node>
-                            )
-                            (. ctor.Arguments.Add(node); .)
-                        ]
-                        {
-                            ","
-                            (
-                                  IF (IsLabelPattern()) LabelPattern<out node>
-                                | OrPattern<out node>
-                            )
-                            (. ctor.Arguments.Add(node); .)
-                        }
-                    ")"
-                    (. node = ctor; .)
-                )
+                (.
+                    var ctor = new DCtorPattern(t);
+                    if (mod is null && typ is null)
+                        ctor.Constructor = nam;
+                    else if (mod is null) {
+                        ctor.TypeName = new Qualident(typ);
+                        ctor.Constructor = nam;
+                    }
+                    else {
+                        ctor.TypeName = new Qualident(typ, mod);
+                        ctor.Constructor = nam;
+                    }
+                .)
+                "("
+                    [ 
+                        (
+                              IF (IsLabelPattern()) LabelPattern<out node>
+                            | OrPattern<out node>
+                        )
+                        (. ctor.Arguments.Add(node); .)
+                    ]
+                    {
+                        ","
+                        (
+                              IF (IsLabelPattern()) LabelPattern<out node>
+                            | OrPattern<out node>
+                        )
+                        (. ctor.Arguments.Add(node); .)
+                    }
+                ")"
+                (. node = ctor; .)
             ]
             (.
                 if (node is null)
                 {
-                    if (typ is not null || mod is not null)
+                    if (mod is not null && typ is not null && nam is not null)
                         AddError(ParserError.InvalidPattern, t.GetLocation());
-
-                    if (nam == "_")
-                        node = new DWildcardPattern(ot);
-                    else
-                        node = new DNamePattern(ot) { Name = nam };
+                    else if (mod is not null && typ is not null && nam is null)
+                    {
+                        node = new DTypeTestPattern(ot) {
+                            TypeName = typ is null ? new Qualident(nam) : new Qualident(typ, mod) 
+                        };
+                    }
+                    else if (nam is not null)
+                    {
+                        if (nam == "_")
+                            node = new DWildcardPattern(ot);
+                        else if (char.IsUpper(nam[0]))
+                            node = new DTypeTestPattern(ot) { TypeName = new Qualident(nam) };
+                        else
+                            node = new DNamePattern(ot) { Name = nam };
+                    }
                 }
             .)
         ).
