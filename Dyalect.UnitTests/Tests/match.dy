@@ -83,8 +83,8 @@ func matchTest5() {
 
 func matchTest6() {
     var res = match 12 {
-        "24" or 24 x => x,
-        "12" or 12 x => x
+        "24" or 24 => 24,
+        "12" or 12 => 12
     }
     assert(12, res)
 }
@@ -128,7 +128,7 @@ func matchTest9() {
 
 func matchTest10() {
     var res = match (42, 12) {
-        (x, y) and (43, _) or (x, y) and (_, 12) when x > 10 => x
+        (x, y) and (_, 12) when x > 10 => x
     }
     assert(42, res)
 }
