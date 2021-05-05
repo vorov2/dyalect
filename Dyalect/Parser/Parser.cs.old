@@ -811,7 +811,7 @@ namespace Dyalect.Parser
 	void RangePattern(out DPattern node) {
 		node = null; 
 		Pattern(out node);
-		while (la.kind == 78) {
+		if (la.kind == 78) {
 			var r = new DRangePattern(t) { From = node }; 
 			Get();
 			Pattern(out node);

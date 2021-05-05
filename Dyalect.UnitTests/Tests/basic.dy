@@ -434,5 +434,5 @@ func nullConditional4() {
         return nil
     }
     let res = fn()?(42)
-    assert(nil, res)
+    assert(nil , res)
 }
