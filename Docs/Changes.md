@@ -2,6 +2,9 @@
   * Add: _Syntax for parameterless lambdas_ ([Issue #439](https://github.com/vorov2/dyalect/issues/439)).
   * Add: _Function introspection_ ([Issue #448](https://github.com/vorov2/dyalect/issues/448), [docs](https://github.com/vorov2/dyalect/wiki/Functions#mmethods)).
   * Add: _Syntax for expression bodied functions_ ([Issue #446(https://github.com/vorov2/dyalect/issues/446)).
+  * Add: _Consider a null conditional operator_ ([Issue #450](https://github.com/vorov2/dyalect/issues/450), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#null)).
+  * Change: _Revise syntax_ ([Issue #455](https://github.com/vorov2/dyalect/issues/455), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching)).
+  * Fix: _Runtime crush_ ([Issue #456(https://github.com/vorov2/dyalect/issues/456)).
 
 # 0.21.1
   * Fix: _Record pattern requires trailing comma_ ([Issue #452](https://github.com/vorov2/dyalect/issues/452)).

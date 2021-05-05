@@ -178,7 +178,7 @@ namespace Dyalect.Parser
 			case "throw": t.kind = 84; break;
 			case "try": t.kind = 85; break;
 			case "catch": t.kind = 86; break;
-			case "is": t.kind = 91; break;
+			case "is": t.kind = 89; break;
 			case "yields": t.kind = 94; break;
 			case "base": t.kind = 95; break;
 			default: break;
@@ -474,7 +474,7 @@ namespace Dyalect.Parser
 			case 75:
 				{t.kind = 79; break;}
 			case 76:
-				{t.kind = 88; break;}
+				{t.kind = 91; break;}
 			case 77:
 				{t.kind = 92; break;}
 			case 78:
@@ -523,10 +523,10 @@ namespace Dyalect.Parser
 				else if (ch == '|') {AddCh(); goto case 95;}
 				else {t.kind = 68; break;}
 			case 88:
-				recEnd = pos; recKind = 87;
+				recEnd = pos; recKind = 90;
 				if (ch == '=') {AddCh(); goto case 45;}
 				else if (ch == '^') {AddCh(); goto case 70;}
-				else {t.kind = 87; break;}
+				else {t.kind = 90; break;}
 			case 89:
 				recEnd = pos; recKind = 58;
 				if (ch == '>') {AddCh(); goto case 96;}
@@ -549,13 +549,13 @@ namespace Dyalect.Parser
 				if (ch == '<') {AddCh(); goto case 97;}
 				else {goto case 0;}
 			case 94:
-				recEnd = pos; recKind = 90;
+				recEnd = pos; recKind = 88;
 				if (ch == '&') {AddCh(); goto case 65;}
-				else {t.kind = 90; break;}
+				else {t.kind = 88; break;}
 			case 95:
-				recEnd = pos; recKind = 89;
+				recEnd = pos; recKind = 87;
 				if (ch == '|') {AddCh(); goto case 64;}
-				else {t.kind = 89; break;}
+				else {t.kind = 87; break;}
 			case 96:
 				if (ch == '>') {AddCh(); goto case 98;}
 				else {goto case 0;}

@@ -126,7 +126,7 @@ namespace Dyalect.Compiler
                     BuildAnd((DAndPattern)node, hints, ctx);
                     break;
                 case NodeType.OrPattern:
-                    BuildOr((DOrPattern)node, hints, ctx);
+                    BuildOr((DOrPattern)node, hints.Append(NoBinding), ctx);
                     break;
                 case NodeType.MethodCheckPattern:
                     BuildMethodCheck((DMethodCheckPattern)node);
@@ -203,6 +203,9 @@ namespace Dyalect.Compiler
             cw.Push(false);
             cw.MarkLabel(ok);
             cw.Nop();
+
+            if (hints.Has(NoBinding))
+                AddError(CompilerError.BindingNotAllowed, node.Location, node.Name);
         }
 
         private void BuildName(DNamePattern node, Hints hints)
@@ -220,6 +223,9 @@ namespace Dyalect.Compiler
 
             cw.PopVar(sva);
             cw.Push(true);
+
+            if (hints.Has(NoBinding))
+                AddError(CompilerError.BindingNotAllowed, node.Location, node.Name);
         }
 
         private void BuildAnd(DAndPattern node, Hints hints, CompilerContext ctx)

@@ -90,6 +90,8 @@
 
         ReturnInConstructor = 243,
 
-        TypeNameCamel = 244
+        TypeNameCamel = 244,
+
+        BindingNotAllowed = 245
     }
 }

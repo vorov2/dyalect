@@ -755,10 +755,32 @@ PRODUCTIONS
         ).
 
     Coalesce<out DNode node> =
-        Range<out node>
+        Or<out node>
         {
             "??" (. var ot = t; .) Or<out DNode exp>
             (. node = new DBinaryOperation(node, exp, BinaryOperator.Coalesce, ot); .)
+        }.
+
+    Or<out DNode node> =
+        And<out node>
+        {
+            "||" (. var ot = t; .) And<out DNode exp>
+            (. node = new DBinaryOperation(node, exp, BinaryOperator.Or, ot); .)
+        }.
+
+    And<out DNode node> =
+        Is<out node>
+        {
+            "&&" (. var ot = t; .) Is<out DNode exp>
+            (. node = new DBinaryOperation(node, exp, BinaryOperator.And, ot); .)
+        }.
+
+    Is<out DNode node> =
+        Range<out node>
+        {
+            "is" (. var ot = t; .)
+            OrPattern<out var pat>
+            (. node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); .)
         }.
 
     Range<out DNode node> =
@@ -778,7 +800,7 @@ PRODUCTIONS
             )
             |
             (
-                Or<out node> [ "^" FunctionApplication<out snode> ]
+                Eq<out node> [ "^" FunctionApplication<out snode> ]
                 [
                     ( ".." | "..<" (. exclu = true; .) )
                     (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
@@ -786,28 +808,6 @@ PRODUCTIONS
                 ]
             )
         ).
-
-    Or<out DNode node> =
-        And<out node>
-        {
-            "||" (. var ot = t; .) And<out DNode exp>
-            (. node = new DBinaryOperation(node, exp, BinaryOperator.Or, ot); .)
-        }.
-
-    And<out DNode node> =
-        Is<out node>
-        {
-            "&&" (. var ot = t; .) Is<out DNode exp>
-            (. node = new DBinaryOperation(node, exp, BinaryOperator.And, ot); .)
-        }.
-
-    Is<out DNode node> =
-        Eq<out node>
-        {
-            "is" (. var ot = t; .)
-            OrPattern<out var pat>
-            (. node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); .)
-        }.
 
     Eq<out DNode node> =
         Shift<out node>
