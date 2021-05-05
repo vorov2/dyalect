@@ -6,9 +6,9 @@ namespace Dyalect.Parser.Model
     {
         public DName(Location loc) : base(NodeType.Name, loc) { }
 
-        public string Value { get; set; }
+        public string Value { get; set; } = null!;
 
-        protected internal override string GetName() => Value;
+        protected internal override string? GetName() => Value;
 
         internal override void ToString(StringBuilder sb) => sb.Append(Value);
     }

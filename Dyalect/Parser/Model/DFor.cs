@@ -6,13 +6,13 @@ namespace Dyalect.Parser.Model
     {
         public DFor(Location loc) : base(NodeType.For, loc) { }
 
-        public DPattern Pattern { get; set; }
+        public DPattern Pattern { get; set; } = null!;
 
-        public DNode Target { get; set; }
+        public DNode Target { get; set; } = null!;
 
-        public DNode Guard { get; set; }
+        public DNode? Guard { get; set; }
 
-        public DNode Body { get; set; }
+        public DNode Body { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {

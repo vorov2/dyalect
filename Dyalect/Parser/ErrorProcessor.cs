@@ -100,7 +100,7 @@ namespace Dyalect.Parser
         public static void ProcessError(string source, out string detail, out ParserError error)
         {
             if (errors.TryGetValue(source, out error))
-                detail = ParserErrors.ResourceManager.GetString(error.ToString());
+                detail = ParserErrors.ResourceManager.GetString(error.ToString()) ?? "";
             else
             {
                 var twoParts = source.Split(new char[] { '\u0020' }, StringSplitOptions.RemoveEmptyEntries);

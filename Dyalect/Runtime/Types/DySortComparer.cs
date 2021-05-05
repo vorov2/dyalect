@@ -4,24 +4,24 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DySortComparer : IComparer<DyObject>
     {
-        private readonly DyFunction fun;
+        private readonly DyFunction? fun;
         private readonly ExecutionContext ctx;
 
-        public DySortComparer(DyFunction fun, ExecutionContext ctx)
+        public DySortComparer(DyFunction? fun, ExecutionContext ctx)
         {
             this.fun = fun;
             this.ctx = ctx;
         }
 
-        public int Compare(DyObject x, DyObject y)
+        public int Compare(DyObject? x, DyObject? y)
         {
-            if (x.TypeId == DyType.Label)
+            if (x!.TypeId == DyType.Label)
                 x = x.GetTaggedValue();
 
-            if (y.TypeId == DyType.Label)
+            if (y!.TypeId == DyType.Label)
                 y = y.GetTaggedValue();
 
-            if (fun != null)
+            if (fun is not null)
             {
                 var ret = fun.Call2(x, y, ctx);
                 return ret.TypeId != DyType.Integer

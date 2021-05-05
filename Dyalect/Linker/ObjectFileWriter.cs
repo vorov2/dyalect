@@ -25,8 +25,8 @@ namespace Dyalect.Linker
             WriteTypeDescriptors(writer, unit.Types);
             WriteIndices(writer, unit);
             WriteOps(writer, unit.Ops);
-            WriteSymbols(writer, unit.Symbols);
-            WriteGlobalScope(writer, unit.GlobalScope);
+            WriteSymbols(writer, unit.Symbols ?? DebugInfo.Default);
+            WriteGlobalScope(writer, unit.GlobalScope!);
             WriteMemoryLayouts(writer, unit.Layouts);
             WriteExportList(writer, unit.ExportList);
         }
@@ -133,7 +133,7 @@ namespace Dyalect.Linker
                 writer.Write(r.DllName ?? "");
                 writer.Write(r.SourceLocation.Line);
                 writer.Write(r.SourceLocation.Column);
-                writer.Write(r.SourceFileName);
+                writer.Write(r.SourceFileName ?? "");
             }
         }
 

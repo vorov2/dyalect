@@ -6,13 +6,13 @@ namespace Dyalect.Parser.Model
     {
         public DIndexer(Location loc) : base(NodeType.Index, loc) { }
 
-        public DNode Target { get; set; }
+        public DNode Target { get; set; } = null!;
 
-        public DNode Index { get; set; }
+        public DNode Index { get; set; } = null!;
 
         public bool NilSafety { get; set; }
 
-        protected internal override string GetName() => Index.GetName();
+        protected internal override string? GetName() => Index?.GetName();
 
         internal override void ToString(StringBuilder sb)
         {

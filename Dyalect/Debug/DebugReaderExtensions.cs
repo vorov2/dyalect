@@ -6,7 +6,7 @@ namespace Dyalect.Debug
 {
     public static class DebugReaderExtensions
     {
-        public static FunSym FindFunSym(this DebugInfo syms, int offset)
+        public static FunSym? FindFunSym(this DebugInfo syms, int offset)
         {
             foreach (var f in syms.Functions.Values)
                 if (offset > f.StartOffset && offset < f.EndOffset)
@@ -14,7 +14,7 @@ namespace Dyalect.Debug
             return null;
         }
 
-        public static LineSym FindLineSym(this DebugInfo syms, int offset)
+        public static LineSym? FindLineSym(this DebugInfo syms, int offset)
         {
             if (offset < 0)
                 return null;
@@ -30,7 +30,7 @@ namespace Dyalect.Debug
             return offset == 0 ? null : FindLineSym(syms, offset - 1);
         }
 
-        public static LineSym FindClosestLineSym(this DebugInfo syms, int line, int column)
+        public static LineSym? FindClosestLineSym(this DebugInfo syms, int line, int column)
         {
             var ln = default(LineSym);
             var minDiffCol = int.MaxValue;
@@ -72,7 +72,7 @@ namespace Dyalect.Debug
             return ln;
         }
 
-        public static ScopeSym GetScopeSymByIndex(this DebugInfo syms, int scopeIndex)
+        public static ScopeSym? GetScopeSymByIndex(this DebugInfo syms, int scopeIndex)
         {
             for (var i = 0; i < syms.Scopes.Count; i++)
                 if (syms.Scopes[i].Index == scopeIndex)
@@ -81,7 +81,7 @@ namespace Dyalect.Debug
             return null;
         }
 
-        public static ScopeSym FindScopeSym(this DebugInfo syms, int offset)
+        public static ScopeSym? FindScopeSym(this DebugInfo syms, int offset)
         {
             var scope = default(ScopeSym);
 
@@ -96,7 +96,7 @@ namespace Dyalect.Debug
             return scope;
         }
 
-        public static ScopeSym FindScopeSym(this DebugInfo syms, int line, int column)
+        public static ScopeSym? FindScopeSym(this DebugInfo syms, int line, int column)
         {
             for (var i = 0; i < syms.Scopes.Count; i++)
             {
@@ -111,7 +111,7 @@ namespace Dyalect.Debug
             return null;
         }
 
-        public static VarSym FindVarSym(this DebugInfo syms, int address, int scopeIndex)
+        public static VarSym? FindVarSym(this DebugInfo syms, int address, int scopeIndex)
         {
             for (var i = 0; i < syms.Vars.Count; i++)
             {
@@ -130,7 +130,7 @@ namespace Dyalect.Debug
             {
                 var v = syms.Vars[i];
 
-                if ((scope == null && v.Scope == 0 || v.Scope == scope.Index) &&
+                if ((scope is null && v.Scope == 0 || scope is not null && v.Scope == scope.Index) &&
                     v.Offset <= offset)
                     yield return v;
             }

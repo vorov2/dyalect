@@ -9,13 +9,13 @@ namespace Dyalect.Linker
 {
     public sealed class DyIncrementalLinker : DyLinker
     {
-        private DyCompiler compiler;
-        private UnitComposition composition;
+        private DyCompiler? compiler;
+        private UnitComposition? composition;
         private int? startOffset;
 
-        private Dictionary<Reference, Unit> backupUnitMap;
-        private Dictionary<string, Dictionary<string, Type>> backupAssemblyMap;
-        private List<Unit> backupUnits;
+        private Dictionary<Reference, Unit>? backupUnitMap;
+        private Dictionary<string, Dictionary<string, Type>>? backupAssemblyMap;
+        private List<Unit>? backupUnits;
 
         public DyIncrementalLinker(FileLookup lookup, BuilderOptions options) : base(lookup, options) { }
 
@@ -32,12 +32,17 @@ namespace Dyalect.Linker
         {
             if (failed)
             {
-                UnitMap = backupUnitMap;
-                AssemblyMap = backupAssemblyMap;
+                if (backupUnitMap is not null)
+                    UnitMap = backupUnitMap;
+
+                if (backupAssemblyMap is not null)
+                    AssemblyMap = backupAssemblyMap;
+
                 Units.Clear();
 
-                for (var i = 0; i < backupUnits.Count; i++)
-                    Units.Add(backupUnits[i]);
+                if (backupUnits is not null)
+                    for (var i = 0; i < backupUnits.Count; i++)
+                        Units.Add(backupUnits[i]);
             }
         }
 
@@ -51,7 +56,7 @@ namespace Dyalect.Linker
             return Result.Create(composition, Messages);
         }
 
-        protected override Unit CompileNodes(DyCodeModel codeModel, bool root)
+        protected override Unit? CompileNodes(DyCodeModel codeModel, bool root)
         {
             if (!root)
                 return base.CompileNodes(codeModel, root);
@@ -60,7 +65,7 @@ namespace Dyalect.Linker
 
             var oldCompiler = compiler;
 
-            if (compiler == null)
+            if (compiler is null)
                 compiler = new(BuilderOptions, this);
             else
             {
@@ -81,7 +86,7 @@ namespace Dyalect.Linker
             }
 
             if (startOffset is not null)
-                res.Value.Layouts[0].Address = startOffset.Value;
+                res.Value!.Layouts[0].Address = startOffset.Value;
 
             return res.Value;
         }

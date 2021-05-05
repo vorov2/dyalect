@@ -113,7 +113,7 @@ namespace Dyalect.Compiler
                     if (p.IsVarArgs)
                         AddError(CompilerError.VarArgNoDefaultValue, p.Location);
 
-                    DyObject val = null;
+                    DyObject? val = null;
 
                     switch (p.DefaultValue.NodeType)
                     {
@@ -178,7 +178,7 @@ namespace Dyalect.Compiler
             hints = Function | Push | (iterBody ? IteratorBody : None);
 
             var hasCtorScope = false;
-            TypeInfo lti = null;
+            TypeInfo lti = null!;
             var localTypeMember = node.IsMemberFunction && node.TypeName.Parent is null && TryGetLocalType(node.TypeName.Local, out lti);
 
             if (localTypeMember && !node.IsConstructor)
@@ -273,7 +273,7 @@ namespace Dyalect.Compiler
                     AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName);
                 else
                 {
-                    lti.Scope = currentScope;
+                    lti.Scope = currentScope ?? throw new DyBuildException("Missing scope.", null);
                     //Constructor returns a type instance, not a value. We need to pop this value from stack
                     cw.Pop();
                     cw.Aux(node.Name);
@@ -294,7 +294,7 @@ namespace Dyalect.Compiler
             EndSection();
 
             if (hasCtorScope)
-                currentScope = currentScope.Parent;
+                currentScope = currentScope.Parent!;
 
             //Iterators are a separate type (based on function through)
             if (iterBody)

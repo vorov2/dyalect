@@ -19,9 +19,10 @@ namespace Dyalect.Linker
 
         protected Dictionary<Reference, Unit> UnitMap { get; set;  } = new Dictionary<Reference, Unit>();
 
-        protected Dictionary<string, Dictionary<string, Type>> AssemblyMap { get; set; } = new Dictionary<string, Dictionary<string, Type>>(StringComparer.OrdinalIgnoreCase);
+        protected Dictionary<string, Dictionary<string, Type>> AssemblyMap { get; set; } = 
+            new Dictionary<string, Dictionary<string, Type>>(StringComparer.OrdinalIgnoreCase);
 
-        protected List<Unit> Units { get; set; } = new List<Unit>();
+        protected List<Unit?> Units { get; set; } = new();
 
         protected List<BuildMessage> Messages { get; } = new List<BuildMessage>();
 
@@ -31,7 +32,7 @@ namespace Dyalect.Linker
 
         public DyLinker(FileLookup lookup, BuilderOptions options) : this(lookup, options, null) { }
 
-        public DyLinker(FileLookup lookup, BuilderOptions options, DyTuple args)
+        public DyLinker(FileLookup lookup, BuilderOptions options, DyTuple? args)
         {
             Lookup = lookup;
             BuilderOptions = options;
@@ -41,7 +42,7 @@ namespace Dyalect.Linker
 
         protected internal virtual Result<Unit> Link(Unit self, Reference mod)
         {
-            if (!UnitMap.TryGetValue(mod, out Unit unit))
+            if (!UnitMap.TryGetValue(mod, out var unit))
             {
                 if (mod.ModuleName == nameof(lang))
                     unit = lang; 
@@ -77,8 +78,8 @@ namespace Dyalect.Linker
                 }
             }
 
-            if (unit != null && mod.Checksum != 0 && mod.Checksum != unit.Checksum && !BuilderOptions.LinkerSkipChecksum)
-                AddError(LinkerError.ChecksumValidationFailed, mod.SourceFileName, mod.SourceLocation, mod.ModuleName, unit.FileName);
+            if (unit is not null && mod.Checksum != 0 && mod.Checksum != unit.Checksum && !BuilderOptions.LinkerSkipChecksum)
+                AddError(LinkerError.ChecksumValidationFailed, mod.SourceFileName, mod.SourceLocation, mod.ModuleName, unit.FileName ?? "<unknown>");
 
             return Result.Create(unit, Messages);
         }
@@ -96,7 +97,7 @@ namespace Dyalect.Linker
 
             if (fullPath.EndsWith(OBJ, StringComparison.OrdinalIgnoreCase))
             {
-                var unit = ProcessObjectFile(fullPath, null);
+                var unit = ProcessObjectFile(fullPath, default);
 
                 if (unit == null)
                     return Result.Create(default(UnitComposition), Messages);
@@ -189,7 +190,7 @@ namespace Dyalect.Linker
         protected virtual Result<UnitComposition> Make(Unit unit)
         {
             Units[0] = unit;
-            var asm = new UnitComposition(Units);
+            var asm = new UnitComposition(Units!);
             ProcessUnits(asm);
             return Result.Create(asm, Messages);
         }
@@ -200,7 +201,7 @@ namespace Dyalect.Linker
             {
                 var u = Units[uid];
 
-                for (var i = 0; i < u.References.Count; i++)
+                for (var i = 0; i < u!.References.Count; i++)
                 {
                     var r = u.References[i];
                     u.UnitIds[i] = UnitMap[r].Id;
@@ -221,7 +222,7 @@ namespace Dyalect.Linker
                         composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, td.Name, td.AutoGenConstructors));
                     else
                     {
-                        var ti = (ForeignTypeInfo)Activator.CreateInstance(td.ForeignTypeInfo);
+                        var ti = (ForeignTypeInfo)Activator.CreateInstance(td.ForeignTypeInfo)!;
                         ti.DeclaringUnit = u;
                         ti.TypeCode = composition.Types.Count;
                         composition.Types.Add(ti);
@@ -231,7 +232,7 @@ namespace Dyalect.Linker
             }
         }
 
-        private Unit ProcessSourceFile(string fileName, Reference reference)
+        private Unit? ProcessSourceFile(string fileName, Reference reference)
         {
             string src;
 
@@ -249,7 +250,7 @@ namespace Dyalect.Linker
             return codeModel is not null ? CompileNodes(codeModel, root: false) : null;
         }
 
-        private DyCodeModel ProcessBuffer(SourceBuffer buffer)
+        private DyCodeModel? ProcessBuffer(SourceBuffer buffer)
         {
             var res = DyParser.Parse(buffer);
 
@@ -262,7 +263,7 @@ namespace Dyalect.Linker
             return res.Value;
         }
 
-        protected virtual Unit CompileNodes(DyCodeModel codeModel, bool root)
+        protected virtual Unit? CompileNodes(DyCodeModel codeModel, bool root)
         {
             var compiler = new DyCompiler(BuilderOptions, this);
             var res = compiler.Compile(codeModel);
@@ -276,7 +277,7 @@ namespace Dyalect.Linker
             return res.Value;
         }
 
-        private Unit ProcessObjectFile(string fileName, Reference reference)
+        private Unit ProcessObjectFile(string fileName, Reference? reference)
         {
 #if !DEBUG
             try
@@ -293,23 +294,23 @@ namespace Dyalect.Linker
             catch (Exception ex)
             {
                 AddError(LinkerError.UnableReadObjectFile, fileName,
-                    reference != null ? reference.SourceLocation : default, fileName, ex.Message);
+                    reference is not null ? reference.SourceLocation : default, fileName, ex.Message);
                 return null;
             }
 #endif
         }
 
-        private string FindModule(Unit self, string module, Reference mod)
+        private string? FindModule(Unit self, string module, Reference mod)
         {
             var objModule = Path.Combine(Path.GetDirectoryName(module), Path.GetFileNameWithoutExtension(module) + OBJ);
 
-            if (FindModuleExact(self.FileName, objModule, mod, out var path))
+            if (FindModuleExact(self.FileName!, objModule, mod, out var path))
                 return path;
 
             if (!module.EndsWith(EXT, StringComparison.OrdinalIgnoreCase))
                 module += EXT;
 
-            if (!FindModuleExact(self.FileName, module, mod, out path))
+            if (!FindModuleExact(self.FileName!, module, mod, out path))
             {
                 AddError(LinkerError.ModuleNotFound, mod.SourceFileName, mod.SourceLocation, module);
                 return null;
@@ -318,7 +319,7 @@ namespace Dyalect.Linker
                 return path;
         }
 
-        private bool FindModuleExact(string workingDir, string module, Reference mod, out string path)
+        private bool FindModuleExact(string workingDir, string module, Reference mod, out string? path)
         {
             path = null;
 

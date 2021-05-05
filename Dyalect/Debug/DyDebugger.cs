@@ -43,9 +43,20 @@ namespace Dyalect.Debug
 
                 var offset = mem.BreakAddress - 1;
                 var unit = Composition.Units[mem.UnitHandle];
+
+                if (unit.Symbols is null)
+                {
+                    frames.Add(new(
+                        moduleName: unit.FileName,
+                        codeBlockName: "<unknown>",
+                        offset: offset,
+                        lineSym: new(offset)));
+                    continue;
+                }
+
                 var funSym = unit.Symbols.FindFunSym(offset);
                 var line = unit.Symbols.FindLineSym(offset);
-                string codeBlockName = null;
+                string? codeBlockName = null;
 
                 if (funSym != null)
                 {
@@ -59,9 +70,9 @@ namespace Dyalect.Debug
 
                 frames.Add(new(
                     moduleName: unit.FileName,
-                    codeBlockName: codeBlockName,
+                    codeBlockName: codeBlockName ?? "<unknown>",
                     offset: offset,
-                    lineSym: line));
+                    lineSym: line ?? new LineSym(offset)));
             }
             while (callChain.Count > 0);
 

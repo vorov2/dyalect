@@ -9,7 +9,7 @@ namespace Dyalect.Parser.Model
         public DUnaryOperation(DNode node, UnaryOperator op, Location loc) : this(loc) =>
             (Node, Operator) = (node, op);
 
-        public DNode Node { get; set; }
+        public DNode Node { get; set; } = null!;
 
         public UnaryOperator Operator { get; set; }
 

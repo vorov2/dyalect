@@ -7,11 +7,11 @@ namespace Dyalect.Parser.Model
     {
         public DFunctionDeclaration(Location loc) : base(NodeType.Function, loc) { }
 
-        public bool IsMemberFunction => TypeName != null;
+        public bool IsMemberFunction => TypeName is not null;
 
-        public Qualident TypeName { get; set; }
+        public Qualident? TypeName { get; set; }
 
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         internal bool IsStatic { get; set; }
 
@@ -26,7 +26,7 @@ namespace Dyalect.Parser.Model
 
         public List<DParameter> Parameters { get; } = new();
 
-        public DNode Body { get; set; }
+        public DNode? Body { get; set; }
 
         public bool IsVariadic()
         {
@@ -76,7 +76,7 @@ namespace Dyalect.Parser.Model
             if (Name is null)
                 sb.Append(" => ");
 
-            Body.ToString(sb);
+            Body?.ToString(sb);
         }
     }
 }

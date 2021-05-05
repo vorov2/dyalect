@@ -5,7 +5,7 @@ namespace Dyalect.Compiler
 {
     public sealed class Scope
     {
-        public Scope(ScopeKind kind, Scope parent) => (Kind, Parent, Locals, Autos) = (kind, parent, new(), new());
+        public Scope(ScopeKind kind, Scope? parent) => (Kind, Parent, Locals, Autos) = (kind, parent, new(), new());
 
         public ScopeVar GetVariable(string name)
         {
@@ -74,7 +74,7 @@ namespace Dyalect.Compiler
 
         public bool IsGlobal => Parent == null;
 
-        public Scope Parent { get; set; }
+        public Scope? Parent { get; set; }
 
         public Queue<(int, string)> Autos { get; private set; }
 

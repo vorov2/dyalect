@@ -18,6 +18,6 @@ namespace Dyalect.Compiler
         
         public bool AutoGenConstructors { get; }
 
-        public Type ForeignTypeInfo { get; }
+        public Type? ForeignTypeInfo { get; }
     }
 }

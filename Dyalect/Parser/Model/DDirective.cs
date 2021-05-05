@@ -7,7 +7,7 @@ namespace Dyalect.Parser.Model
     {
         public DDirective(Location loc) : base(NodeType.Directive, loc) { }
 
-        public string Key { get; set; }
+        public string Key { get; set; } = null!;
 
         public List<object> Attributes { get; } = new();
 

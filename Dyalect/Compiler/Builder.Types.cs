@@ -95,12 +95,12 @@ namespace Dyalect.Compiler
         private bool IsTypeExists(string name) =>
             GetTypeHandle(null, name, out var _, out var _) == CompilerError.None;
 
-        private CompilerError GetTypeHandle(string parent, string local, out int handle, out bool std)
+        private CompilerError GetTypeHandle(string? parent, string local, out int handle, out bool std)
         {
             handle = -1;
             std = false;
 
-            if (parent == null)
+            if (parent is null)
                 handle = DyType.GetTypeCodeByName(local);
 
             if (handle > -1)
@@ -109,7 +109,7 @@ namespace Dyalect.Compiler
                 return CompilerError.None;
             }
 
-            if (parent == null)
+            if (parent is null)
             {
                 if (!TryGetType(local, out var ti))
                     return CompilerError.UndefinedType;

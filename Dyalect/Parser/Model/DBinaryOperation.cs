@@ -9,9 +9,9 @@ namespace Dyalect.Parser.Model
         public DBinaryOperation(DNode left, DNode right, BinaryOperator op, Location loc) : this(loc) =>
             (Left, Right, Operator) = (left, right, op);
 
-        public DNode Left { get; set; }
+        public DNode Left { get; set; } = null!;
 
-        public DNode Right { get; set; }
+        public DNode Right { get; set; } = null!;
 
         public BinaryOperator Operator { get; set; }
 

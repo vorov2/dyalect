@@ -6,9 +6,9 @@ namespace Dyalect.Parser.Model
     {
         public DWhile(Location loc) : base(NodeType.While, loc) { }
 
-        public DNode Condition { get; set; }
+        public DNode Condition { get; set; } = null!;
 
-        public DNode Body { get; set; }
+        public DNode Body { get; set; } = null!;
 
         public bool DoWhile { get; set; }
 

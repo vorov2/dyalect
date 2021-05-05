@@ -6,17 +6,17 @@ namespace Dyalect.Parser.Model
     {
         public DLabelLiteral(Location loc) : base(NodeType.Label, loc) { }
 
-        public string Label { get; set; }
+        public string Label { get; set; } = null!;
 
-        public DNode Expression { get; set; }
+        public DNode Expression { get; set; } = null!;
 
-        protected internal override string GetName() => Label;
+        protected internal override string? GetName() => Label;
 
         internal override void ToString(StringBuilder sb)
         {
             sb.Append(Label);
             sb.Append(" = ");
-            Expression.ToString(sb);
+            Expression?.ToString(sb);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Dyalect.Parser.Model
     {
         public DPrivateScope(Location loc) : base(NodeType.PrivateScope, loc) { }
 
-        public DBlock Block { get; set; }
+        public DBlock Block { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {

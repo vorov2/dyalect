@@ -12,11 +12,11 @@ namespace Dyalect.Linker
 {
     internal sealed class Lang : ForeignUnit
     {
-        private readonly DyTuple args;
+        private readonly DyTuple? args;
 
         public Lang() : this(null) { }
 
-        public Lang(DyTuple args)
+        public Lang(DyTuple? args)
         {
             FileName = "lang";
             this.args = args;
@@ -69,7 +69,7 @@ namespace Dyalect.Linker
         }
 
         [Function("readLine")]
-        public DyObject Read(ExecutionContext _) => new DyString(Console.ReadLine());
+        public DyObject Read(ExecutionContext _) => new DyString(Console.ReadLine() ?? "");
 
         [Function("rnd")]
         public DyObject Randomize(ExecutionContext _, [Default(int.MaxValue)]DyObject max, [Default(0)]DyObject min, [Default]DyObject seed)
@@ -98,7 +98,7 @@ namespace Dyalect.Linker
             return DyNil.Instance;
         }
 
-        private bool Eq(object x, object y)
+        private bool Eq(object? x, object? y)
         {
             if (ReferenceEquals(x, y))
                 return true;
@@ -218,7 +218,7 @@ namespace Dyalect.Linker
                 if (!res.Success)
                     return ctx.FailedReadLiteral(res.Messages.First().ToString());
 
-                if (res.Value.Root == null || res.Value.Root.Nodes.Count == 0)
+                if (res.Value!.Root == null || res.Value.Root.Nodes.Count == 0)
                     return ctx.FailedReadLiteral("Empty expression.");
                 else if (res.Value.Root.Nodes.Count > 1)
                     return ctx.FailedReadLiteral("Only single expressions allowed.");
@@ -264,13 +264,13 @@ namespace Dyalect.Linker
             sb.Append('}');
             sb.Append("__x12");
 
-            var linker = new DyLinker(null, BuilderOptions.Default());
+            var linker = new DyLinker(FileLookup.Default, BuilderOptions.Default());
             var result = linker.Make(SourceBuffer.FromString(sb.ToString()));
 
             if (!result.Success)
                 throw new DyBuildException(result.Messages);
 
-            var newctx = DyMachine.CreateExecutionContext(result.Value);
+            var newctx = DyMachine.CreateExecutionContext(result.Value!);
             var result2 = DyMachine.Execute(newctx);
             var func = result2.Value as DyFunction;
             var argsList = new List<DyObject>();
@@ -286,7 +286,7 @@ namespace Dyalect.Linker
                 }
             }
 
-            return func.Call(newctx, argsList.ToArray());
+            return func!.Call(newctx, argsList.ToArray());
         }
     }
 }

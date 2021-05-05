@@ -8,9 +8,9 @@ namespace Dyalect.Parser
 {
     internal static class EscapeCodeParser
     {
-        public static bool Parse(string fileName, Location loc, string str, List<BuildMessage> messages, out string value, out List<StringChunk> chunks)
+        public static bool Parse(string fileName, Location loc, string str, List<BuildMessage> messages, out string? value, out List<StringChunk>? chunks)
         {
-            if (str?.Length < 2)
+            if (str is null || str.Length < 2)
             {
                 value = str;
                 chunks = null;
@@ -125,7 +125,7 @@ namespace Dyalect.Parser
             return true;
         }
 
-        private static string Balance(ref int i, char[] buffer)
+        private static string? Balance(ref int i, char[] buffer)
         {
             var b = 0;
             var start = i;

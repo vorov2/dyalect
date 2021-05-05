@@ -4,6 +4,8 @@
     {
         public LineSym() { }
 
+        public LineSym(int offset) => Offset = offset;
+
         public LineSym(int offset, int line, int column) => 
             (Offset, Line, Column) = (offset, line, column);
 

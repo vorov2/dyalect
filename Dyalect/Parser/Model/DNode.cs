@@ -18,11 +18,11 @@ namespace Dyalect.Parser.Model
             return sb.ToString();
         }
 
-        internal protected virtual string GetName() => null;
+        internal protected virtual string? GetName() => null;
 
         internal protected virtual int GetElementCount() => -1;
 
-        internal protected virtual List<DNode> ListElements() => null;
+        internal protected virtual List<DNode>? ListElements() => null;
 
         internal protected virtual bool HasAuto() => false;
 

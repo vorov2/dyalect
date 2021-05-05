@@ -12,6 +12,9 @@ namespace Dyalect.Linker
         private readonly string[] systemPaths;
         private readonly string[] additionalPaths;
 
+        internal static readonly FileLookup Default = new(Array.Empty<string>(), Array.Empty<string>(), 
+            Array.Empty<string>(), Array.Empty<string>());
+
         private FileLookup(string[] startupPaths, string[] standardPaths, string[] systemPaths, string[] additionalPaths)
         {
             this.startupPaths = startupPaths;
@@ -20,7 +23,7 @@ namespace Dyalect.Linker
             this.additionalPaths = additionalPaths;
         }
 
-        public static FileLookup Create(string startupPath, string[] additionalPaths = null)
+        public static FileLookup Create(string startupPath, string[]? additionalPaths = null)
         {
             var asm = typeof(FileLookup).Assembly;
             var codeBase = asm.Location;
@@ -30,7 +33,7 @@ namespace Dyalect.Linker
             if (!File.Exists(systemPath))
                 systemPath = asm.Location;
 
-            systemPath = Path.GetDirectoryName(systemPath);
+            systemPath = Path.GetDirectoryName(systemPath)!;
             var systemPaths = new string[] { systemPath, Path.Combine(systemPath, LIBDIR) };
             var startupPaths = startupPath != null ? new string[] { startupPath, Path.Combine(startupPath, LIBDIR) }
                 : Array.Empty<string>();
@@ -44,21 +47,21 @@ namespace Dyalect.Linker
             );
         }
 
-        public bool Find(string currentPath, string fileName, out string fullPath)
+        public bool Find(string? currentPath, string fileName, out string fullPath)
         {
-            if (currentPath != null && File.Exists(fullPath = Path.Combine(currentPath, fileName)))
+            if (currentPath is not null && File.Exists(fullPath = Path.Combine(currentPath, fileName)))
                 return true;
 
-            if (LookIn(fileName, startupPaths, out fullPath)
-                || LookIn(fileName, standardPaths, out fullPath)
-                || LookIn(fileName, systemPaths, out fullPath)
-                || LookIn(fileName, additionalPaths, out fullPath))
+            if (LookIn(fileName, startupPaths, out fullPath!)
+                || LookIn(fileName, standardPaths, out fullPath!)
+                || LookIn(fileName, systemPaths, out fullPath!)
+                || LookIn(fileName, additionalPaths, out fullPath!))
                 return true;
 
             return false;
         }
 
-        private bool LookIn(string fileName, string[] dirs, out string path)
+        private bool LookIn(string fileName, string[] dirs, out string? path)
         {
             path = null;
 

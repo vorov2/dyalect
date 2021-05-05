@@ -7,7 +7,7 @@ namespace Dyalect.Parser.Model
     {
         public DMatch(Location loc) : base(NodeType.Match, loc) { }
 
-        public DNode Expression { get; set; }
+        public DNode? Expression { get; set; }
 
         public List<DMatchEntry> Entries { get; } = new();
 

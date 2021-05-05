@@ -9,7 +9,7 @@ namespace Dyalect
         public DyBuildException(IEnumerable<BuildMessage> messages) : base("") =>
             Messages = messages;
 
-        public DyBuildException(string message, Exception innerException) : base(message, innerException) =>
+        public DyBuildException(string message, Exception? innerException) : base(message, innerException) =>
             Messages = Enumerable.Empty<BuildMessage>();
 
         public override string Message =>

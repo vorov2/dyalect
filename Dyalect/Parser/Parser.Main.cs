@@ -14,19 +14,19 @@ namespace Dyalect.Parser
 
         private readonly Scanner scanner;
 
-        public Token t;
-        public Token la;
+        public Token t = null!;
+        public Token la = null!;
         private int errDist = minErrDist;
 
-        public List<DImport> Imports { get; } = new List<DImport>();
+        public List<DImport> Imports { get; } = new();
 
-        public DBlock Root { get; } = new DBlock(new Location(0, 0));
+        public DBlock Root { get; } = new(new(0, 0));
 
-        public List<BuildMessage> Errors { get; } = new List<BuildMessage>();
+        public List<BuildMessage> Errors { get; } = new();
 
-        private Stack<DFunctionDeclaration> functions = new Stack<DFunctionDeclaration>();
+        private Stack<DFunctionDeclaration> functions = new();
 
-        private List<int> implicits;
+        private List<int>? implicits;
 
         public InternalParser(Scanner scanner)
         {
@@ -272,12 +272,12 @@ namespace Dyalect.Parser
             return false;
         }
 
-        private DStringLiteral ParseString()
+        private DStringLiteral? ParseString()
         {
             if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
                 return null;
 
-            return new DStringLiteral(t) { Value = result, Chunks = chunks };
+            return new DStringLiteral(t) { Value = result ?? "", Chunks = chunks };
         }
 
         private DStringLiteral ParseVerbatimString()
@@ -285,7 +285,7 @@ namespace Dyalect.Parser
             return new DStringLiteral(t) { Value = t.val.Substring(2, t.val.Length - 4).Replace("]>]>", "]>") };
         }
 
-        private string ParseSimpleString()
+        private string? ParseSimpleString()
         {
             if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
                 return null;
@@ -332,7 +332,7 @@ namespace Dyalect.Parser
 
         private DNode ProcessImplicits(DNode node)
         {
-            if (implicits != null)
+            if (implicits is not null)
             {
                 var func = new DFunctionDeclaration(node.Location)
                 {

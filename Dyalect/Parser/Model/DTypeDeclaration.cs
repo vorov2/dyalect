@@ -7,14 +7,14 @@ namespace Dyalect.Parser.Model
     {
         public DTypeDeclaration(Location loc) : base(NodeType.Type, loc) { }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public bool HasConstructors => constructors is not null && constructors.Count > 0;
 
-        private List<DFunctionDeclaration> constructors;
+        private List<DFunctionDeclaration> constructors = null!;
         public List<DFunctionDeclaration> Constructors => constructors ??= new();
 
-        public DNode With { get; set; }
+        public DNode? With { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {

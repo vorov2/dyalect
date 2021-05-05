@@ -68,13 +68,13 @@ namespace Dyalect.Compiler
             programEnd = cw.DefineLabel();
         }
 
-        public Unit Build(DyCodeModel codeModel)
+        public Unit? Build(DyCodeModel codeModel)
         {
             Messages.Clear();
             unit.FileName = codeModel.FileName;
 
             if (unit.Layouts.Count == 0)
-                unit.Layouts.Add(null); //A layout reserved for the top level
+                unit.Layouts.Add(null!); //A layout reserved for the top level
 
             cw.StartFrame(); //Start a new global frame
             var res = TryBuild(codeModel);
@@ -169,8 +169,8 @@ namespace Dyalect.Compiler
             return false;
         }
 
-        private Exception Ice(Exception ex = null) =>
+        private Exception Ice(Exception? ex = null) =>
             new DyBuildException(
-                $"Internal compiler error: {(ex != null ? ex.Message : "Unknown error.")}", ex);
+                $"Internal compiler error: {(ex is not null ? ex.Message : "Unknown error.")}", ex);
     }
 }

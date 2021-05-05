@@ -90,7 +90,7 @@ namespace Dyalect.Runtime.Types
                 if (index < Count)
                     Array.Copy(Values, index + 1, Values, index, Count - index);
 
-                Values[Count] = null;
+                Values[Count] = null!;
                 Version++;
                 return true;
             }

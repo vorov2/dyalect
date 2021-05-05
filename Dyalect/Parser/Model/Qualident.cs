@@ -6,7 +6,7 @@
 
         internal Qualident(string local, string parent) : this(local) => Parent = parent;
 
-        public string Parent { get; }
+        public string? Parent { get; }
 
         public string Local { get; }
 

@@ -6,7 +6,7 @@ namespace Dyalect.Parser.Model
     {
         public DThrow(Location loc) : base(NodeType.Throw, loc) { }
 
-        public DNode Expression { get; set; }
+        public DNode? Expression { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {
