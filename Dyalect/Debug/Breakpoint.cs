@@ -21,12 +21,12 @@ namespace Dyalect.Debug
 
         public override int GetHashCode() => HashCode.Combine(Line, Column);
 
-        public static bool Equals(Breakpoint fst, Breakpoint snd) =>
-            ReferenceEquals(fst, snd) || (fst.Line == snd.Line && fst.Column == snd.Column);
+        public static bool Equals(Breakpoint? fst, Breakpoint? snd) =>
+            fst is null && snd is null || ReferenceEquals(fst, snd) || (fst?.Line == snd?.Line && fst?.Column == snd?.Column);
 
-        public bool Equals(Breakpoint other) => Equals(this, other);
+        public bool Equals(Breakpoint? other) => Equals(this, other);
 
-        public override bool Equals(object obj) => obj is Breakpoint b && Equals(this, b);
+        public override bool Equals(object? obj) => obj is Breakpoint b && Equals(this, b);
 
         public override string ToString() => $"{(Temporary ? "#" : "")}{Line}:{Column}";
     }

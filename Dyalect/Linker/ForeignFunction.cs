@@ -23,7 +23,7 @@ namespace Dyalect.Linker
 
             if (expectContext)
             {
-                retval = (fun.Types.Length - 1) switch
+                retval = (fun.Types!.Length - 1) switch
                 {
                     0  => fun.Func(ctx),
                     1  => fun.Func(ctx, val(0)),
@@ -47,7 +47,7 @@ namespace Dyalect.Linker
             }
             else
             {
-                retval = (fun.Types.Length - 1) switch
+                retval = (fun.Types!.Length - 1) switch
                 {
                     0  => fun.Func(),
                     1  => fun.Func(val(0)),
@@ -75,7 +75,7 @@ namespace Dyalect.Linker
 
         internal override bool Equals(DyFunction func) => func is ForeignFunction m && m.fun.Equals(fun);
 
-        public override int GetHashCode() => fun.Func.GetHasCode();
+        public override int GetHashCode() => fun.Func!.GetHasCode();
 
         protected override DyFunction Clone(ExecutionContext ctx) => this;
     }

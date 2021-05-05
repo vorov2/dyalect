@@ -583,7 +583,7 @@ namespace Dyalect.Compiler
 
         private bool IsPureBinding(DPattern node)
         {
-            foreach (var n in node.ListElements())
+            foreach (var n in node.ListElements()!)
                 if (n.NodeType != NodeType.NamePattern && n.NodeType != NodeType.WildcardPattern)
                     return false;
             return true;

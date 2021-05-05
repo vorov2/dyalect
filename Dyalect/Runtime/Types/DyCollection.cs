@@ -89,7 +89,7 @@ namespace Dyalect.Runtime.Types
             }
         }
 
-        public override bool Equals(DyObject other)
+        public override bool Equals(DyObject? other)
         {
             if (other is not DyCollection arr)
                 return false;

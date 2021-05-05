@@ -37,7 +37,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool GetBool() => !string.IsNullOrEmpty(Value);
 
-        public override bool Equals(DyObject obj) =>
+        public override bool Equals(DyObject? obj) =>
             obj is DyString s ? Value == s.Value : base.Equals(obj);
 
         protected internal override string GetString() => Value;
@@ -306,10 +306,8 @@ namespace Dyalect.Runtime.Types
         private DyObject Lower(ExecutionContext _, DyObject self) =>
             new DyString(self.GetString().ToLower());
 
-        private DyObject StartsWith(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject StartsWith(ExecutionContext ctx, DyObject self, DyObject a)
         {
-            var a = args.TakeOne(DyNil.Instance);
-
             if (a.TypeId == DyType.String)
                 return self.GetString().StartsWith(a.GetString()) ? DyBool.True : DyBool.False;
 
@@ -319,10 +317,8 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(a);
         }
 
-        private DyObject EndsWith(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject EndsWith(ExecutionContext ctx, DyObject self, DyObject a)
         {
-            var a = args.TakeOne(DyNil.Instance);
-
             if (a.TypeId == DyType.String)
                 return self.GetString().EndsWith(a.GetString()) ? DyBool.True : DyBool.False;
 
@@ -332,15 +328,12 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(a);
         }
 
-        private DyObject Substring(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject Substring(ExecutionContext ctx, DyObject self, DyObject from, DyObject to)
         {
-            var from = args.TakeOne(DyNil.Instance);
-            var to = args.TakeAt(1);
-
             if (from.TypeId != DyType.Integer)
                 return ctx.InvalidType(from);
 
-            if (!ReferenceEquals(to, DyNil.Instance) && to!.TypeId != DyType.Integer)
+            if (!ReferenceEquals(to, DyNil.Instance) && to.TypeId != DyType.Integer)
                 return ctx.InvalidType(to);
 
             var str = self.GetString();

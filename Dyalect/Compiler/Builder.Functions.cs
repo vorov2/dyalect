@@ -271,13 +271,13 @@ namespace Dyalect.Compiler
                     AddError(CompilerError.CtorNotIterator, node.Location);
 
                 if (!localTypeMember)
-                    AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName);
+                    AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName!);
                 else
                 {
                     lti.Scope = currentScope ?? throw new DyBuildException("Missing scope.", null);
                     //Constructor returns a type instance, not a value. We need to pop this value from stack
                     cw.Pop();
-                    cw.Aux(node.Name);
+                    cw.Aux(node.Name!);
                     cw.NewType(lti.TypeId);
                 }
             }
