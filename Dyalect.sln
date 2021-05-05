@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{CF92CF03-8
 		LICENSE = LICENSE
 		README.md = README.md
 		Docs\icon-rider.svg = Docs\icon-rider.svg
+		Docs\badges.txt = Docs\badges.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dyalect.UnitTests", "Dyalect.UnitTests\Dyalect.UnitTests.csproj", "{52B56E24-8E1B-4953-B5D0-470A85089FB2}"

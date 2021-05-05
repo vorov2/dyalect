@@ -388,7 +388,7 @@ PRODUCTIONS
         AndPattern<out node>
         {
             (. var por = new DOrPattern(t) { Left = node }; .)
-            "||" AndPattern<out node>
+            "or" AndPattern<out node>
             (. por.Right = node; node = por; .)
         }.
 
@@ -397,20 +397,18 @@ PRODUCTIONS
         RangePattern<out node>
         {
             (. var pa = new DAndPattern(t) { Left = node }; .)
-            "&&" RangePattern<out node>
+            "and" RangePattern<out node>
             (. pa.Right = node; node = pa; .)
         }.
 
     RangePattern<out DPattern node> =
         (. node = null; .)
-        (
-            Pattern<out node>
-            [
-                (. var r = new DRangePattern(t) { From = node }; .)
-                ".." Pattern<out node>
-                (. r.To = node; node = r; .)
-            ]
-        ).
+        Pattern<out node>
+        [
+            (. var r = new DRangePattern(t) { From = node }; .)
+            ".." Pattern<out node>
+            (. r.To = node; node = r; .)
+        ].
 
     Pattern<out DPattern node> =
         (. node = null; .)
@@ -807,7 +805,7 @@ PRODUCTIONS
         Eq<out node>
         {
             "is" (. var ot = t; .)
-            Pattern<out var pat>
+            OrPattern<out var pat>
             (. node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); .)
         }.
 
