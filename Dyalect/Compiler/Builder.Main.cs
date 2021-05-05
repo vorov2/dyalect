@@ -500,53 +500,38 @@ namespace Dyalect.Compiler
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)
         {
             var push = hints.Remove(Pop).Append(Push);
-            
-            if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks is null)
+            var skip = cw.DefineLabel();
+
+            if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks is null
+                && node.Target.NodeType == NodeType.Name)
             {
-                if (node.Target.NodeType == NodeType.Name)
+                var nm = node.Target.GetName();
+                var sv = GetVariable(nm, node.Target, err: false);
+
+                if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
                 {
-                    var nm = node.Target.GetName();
-                    var sv = GetVariable(nm, node.Target, err: false);
-
-                    if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
+                    if (ru.Unit.ExportList.TryGetValue(str.Value, out var var))
                     {
-                        if (ru.Unit.ExportList.TryGetValue(str.Value, out var var))
-                        {
-                            if ((var.Data & VarFlags.Private) == VarFlags.Private)
-                                AddError(CompilerError.PrivateNameAccess, node.Location, str.Value);
+                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                            AddError(CompilerError.PrivateNameAccess, node.Location, str.Value);
 
-                            AddLinePragma(node);
-                            cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
-                            PopIf(hints);
-                            return;
-                        }
-                        else if (GetTypeHandle(nm, str.Value, out var handle, out var std) == CompilerError.None)
-                        {
-                            AddLinePragma(node);
-                            cw.Type(new TypeHandle(handle, std));
-                            PopIf(hints);
-                            return;
-                        }
+                        AddLinePragma(node);
+                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
+                        PopIf(hints);
+                        return;
+                    }
+                    else if (GetTypeHandle(nm, str.Value, out var handle, out var std) == CompilerError.None)
+                    {
+                        AddLinePragma(node);
+                        cw.Type(new TypeHandle(handle, std));
+                        PopIf(hints);
+                        return;
                     }
                 }
-
-                Build(node.Target, push, ctx);
-                cw.Push(str.Value);
-
-                if (!hints.Has(Pop))
-                {
-                    cw.Get();
-                    PopIf(hints);
-                }
-                else
-                    cw.Set();
-
-                return;
             }
 
             Build(node.Target, push, ctx);
 
-            var skip = cw.DefineLabel();
             if (node.NilSafety)
             {
                 cw.Dup();
@@ -694,7 +679,7 @@ namespace Dyalect.Compiler
 
             //This is a special optimization for the 'toString', 'has' and 'len' methods
             //If we see that it is called directly we can emit a direct op code
-            if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations && !node.NilSafety)
+            if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations)
             {
                 var meth = (DAccess)node.Target;
 
@@ -702,7 +687,16 @@ namespace Dyalect.Compiler
                 {
                     Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
-                    cw.Str();
+                    if (meth.NilSafety)
+                    {
+                        cw.Dup();
+                        cw.Brfalse(skip);
+                        cw.Str();
+                        cw.MarkLabel(skip);
+                        cw.Nop();
+                    }
+                    else
+                        cw.Str();
                     PopIf(hints);
                     return;
                 }
@@ -711,7 +705,16 @@ namespace Dyalect.Compiler
                 {
                     Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
-                    cw.Len();
+                    if (meth.NilSafety)
+                    {
+                        cw.Dup();
+                        cw.Brfalse(skip);
+                        cw.Len();
+                        cw.MarkLabel(skip);
+                        cw.Nop();
+                    }
+                    else
+                        cw.Len();
                     PopIf(hints);
                     return;
                 }
@@ -723,7 +726,16 @@ namespace Dyalect.Compiler
                 {
                     Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
-                    cw.HasMember(str.Value);
+                    if (meth.NilSafety)
+                    {
+                        cw.Dup();
+                        cw.Brfalse(skip);
+                        cw.HasMember(str.Value);
+                        cw.MarkLabel(skip);
+                        cw.Nop();
+                    }
+                    else
+                        cw.HasMember(str.Value);
                     PopIf(hints);
                     return;
                 }

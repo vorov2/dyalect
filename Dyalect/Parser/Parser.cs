@@ -1425,7 +1425,7 @@ namespace Dyalect.Parser
 				Get();
 				var ot = t; 
 				Expect(1);
-				node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
+				node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
 				
 			} else if (la.kind == 33) {
 				if (la.AfterEol) return; 
@@ -1438,7 +1438,7 @@ namespace Dyalect.Parser
 				Expect(34);
 			} else if (la.kind == 29) {
 				if (la.AfterEol) return;
-				var app = new DApplication(node, t);
+				var app = new DApplication(node, t) { NilSafety = nsaf };
 				
 				Get();
 				if (StartOf(9)) {

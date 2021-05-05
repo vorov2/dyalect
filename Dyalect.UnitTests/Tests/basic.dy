@@ -405,3 +405,34 @@ func floatRangeTest1() {
     assert([0.0,1.0,2.0,3.0,4.0,5.0], [0.0..5])
     assert([0.0,0.02,0.04], (0.0^0.02..0.05).toArray())
 }
+
+func nullConditional1() {
+    let fn = nil
+    let r = fn?()
+    assert(nil, r)
+}
+
+func nullConditional2() {
+    let xs = []
+    let s1 = xs?.has("iter")?.toString()
+    assert("true", s1)
+    let ys = nil
+    let s2 = ys?.has("iter")?.toString()
+    assert(nil, s2)
+    let t = (inner: (x: 2, fuc: nil) )
+    let s3 = t?::inner?::fuc?(s1, s2)
+    assert(nil, s3)
+}
+
+func nullConditional3() {
+    let xs = nil
+    assert(nil, xs?[0])
+}
+
+func nullConditional4() {
+    func fn() {
+        return nil
+    }
+    let res = fn()?(42)
+    assert(nil, res)
+}

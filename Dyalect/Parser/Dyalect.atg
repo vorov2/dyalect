@@ -983,7 +983,7 @@ PRODUCTIONS
                         "::" (. var ot = t; .)
                         identToken
                         (.
-                            node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
+                            node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
                         .)
                     )
                     |
@@ -1002,7 +1002,7 @@ PRODUCTIONS
                     (
                         (.
                             if (la.AfterEol) return;
-                            var app = new DApplication(node, t);
+                            var app = new DApplication(node, t) { NilSafety = nsaf };
                         .)
                         "("
                             [ ApplicationArguments<app> ]
