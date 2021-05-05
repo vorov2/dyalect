@@ -1,5 +1,4 @@
 # 0.22.0
-  * Add: _Syntax for parameterless lambdas_ ([Issue #439](https://github.com/vorov2/dyalect/issues/439)).
   * Add: _Function introspection_ ([Issue #448](https://github.com/vorov2/dyalect/issues/448), [docs](https://github.com/vorov2/dyalect/wiki/Functions#mmethods)).
   * Add: _Syntax for expression bodied functions_ ([Issue #446(https://github.com/vorov2/dyalect/issues/446)).
   * Add: _Consider a null conditional operator_ ([Issue #450](https://github.com/vorov2/dyalect/issues/450), [docs](https://github.com/vorov2/dyalect/wiki/Standard-methods#null)).
