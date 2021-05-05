@@ -32,8 +32,7 @@ namespace Dyalect.Library.Json
 
         public static bool Bool(this Dictionary<string, object> dict, string key)
         {
-            object? res;
-            dict.TryGetValue(key, out res);
+            dict.TryGetValue(key, out object? res);
             return res is not null && res is bool b ? b
                 : res is not null && res.ToString()!.Equals(bool.TrueString, StringComparison.OrdinalIgnoreCase);
         }

@@ -11,20 +11,20 @@ namespace Dyalect.Library.Json
         private readonly JsonFormatInfo format;
         private readonly string newLine;
 
-        public readonly static JsonFormatter Compact = new JsonFormatter(JsonFormatInfo.Compact);
-        public readonly static JsonFormatter Default = new JsonFormatter(JsonFormatInfo.Default);
+        public readonly static JsonFormatter Compact = new(JsonFormatInfo.Compact);
+        public readonly static JsonFormatter Default = new(JsonFormatInfo.Default);
 
         public JsonFormatter(JsonFormatInfo format)
         {
             this.format = format;
 
-            switch (format.LineEndings)
+            newLine = format.LineEndings switch
             {
-                default: newLine = Environment.NewLine; break;
-                case JsonFormatInfo.Eol.Cr: newLine = "\r"; break;
-                case JsonFormatInfo.Eol.Lf: newLine = "\n"; break;
-                case JsonFormatInfo.Eol.CrLf: newLine = "\r\n"; break;
-            }
+                JsonFormatInfo.Eol.Cr => "\r",
+                JsonFormatInfo.Eol.Lf => "\n",
+                JsonFormatInfo.Eol.CrLf => "\r\n",
+                _ => Environment.NewLine,
+            };
         }
 
         public string Format(object value)
