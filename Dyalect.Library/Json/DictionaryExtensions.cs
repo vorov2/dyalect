@@ -6,13 +6,13 @@ namespace Dyalect.Library.Json
 {
     public static class DictionaryExtensions
     {
-        public static object Object(this Dictionary<string, object> dict, string key)
+        public static object? Object(this Dictionary<string, object> dict, string key)
         {
             dict.TryGetValue(key, out var res);
             return res;
         }
 
-        public static string String(this Dictionary<string, object> dict, string key)
+        public static string? String(this Dictionary<string, object> dict, string key)
         {
             var res = Object(dict, key);
             return res?.ToString();
@@ -21,7 +21,7 @@ namespace Dyalect.Library.Json
         public static int Int(this Dictionary<string, object> dict, string key)
         {
             var res = Object(dict, key);
-            return res != null && res is double d ? (int)d : 0;
+            return res is not null && res is double d ? (int)d : 0;
         }
 
         public static double Double(this Dictionary<string, object> dict, string key)
@@ -32,10 +32,10 @@ namespace Dyalect.Library.Json
 
         public static bool Bool(this Dictionary<string, object> dict, string key)
         {
-            object res;
+            object? res;
             dict.TryGetValue(key, out res);
-            return res != null && res is bool b ? b
-                : res != null && res.ToString().Equals(bool.TrueString, StringComparison.OrdinalIgnoreCase);
+            return res is not null && res is bool b ? b
+                : res is not null && res.ToString()!.Equals(bool.TrueString, StringComparison.OrdinalIgnoreCase);
         }
 
         public static T Enum<T>(this Dictionary<string, object> dict, string key) where T : struct
@@ -48,12 +48,12 @@ namespace Dyalect.Library.Json
         public static char Char(this Dictionary<string, object> dict, string key)
         {
             dict.TryGetValue(key, out var res);
-            return res != null ? res.ToString()[0] : '\0';
+            return res is not null ? res.ToString()![0] : '\0';
         }
 
-        public static List<T> List<T>(this Dictionary<string, object> dict, string key)
+        public static List<T>? List<T>(this Dictionary<string, object> dict, string key)
         {
-            if (!(Object(dict, key) is List<object> list))
+            if (Object(dict, key) is not List<object> list)
                 return null;
 
             if (typeof(T) == typeof(int))

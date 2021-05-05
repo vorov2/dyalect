@@ -47,7 +47,7 @@ namespace Dyalect.Library.Json
             else if (value is List<object> xs)
                 Format(xs, sb, indent);
             else
-                Format(value.ToString(), sb);
+                Format(value.ToString()!, sb);
         }
 
         private void Format(bool value, StringBuilder sb)
@@ -140,7 +140,7 @@ namespace Dyalect.Library.Json
                     FormatObject(kv.Value, sb, indent +
                         (format.IndentWithTabs ? 1 : format.IndentSize));
                 else
-                    FormatObject(kv.Value, sb, 0);
+                    FormatObject(kv.Value!, sb, 0);
                 
             }
 

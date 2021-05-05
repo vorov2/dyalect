@@ -14,7 +14,7 @@ namespace Dyalect.Library.Types
 
         public DyStringBuilder(RuntimeContext rtx, Unit unit, StringBuilder builder) : base(rtx, unit) => Builder = builder;
 
-        public override bool Equals(DyObject other) =>
+        public override bool Equals(DyObject? other) =>
             other is DyString || other is DyStringBuilder ? Builder.ToString() == other.ToString() 
             : base.Equals(other);
 
@@ -131,7 +131,7 @@ namespace Dyalect.Library.Types
             return self;
         }
 
-        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "insert" => DyForeignFunction.Member(name, Insert, -1, new Par("index"), new Par("value")),
@@ -156,7 +156,7 @@ namespace Dyalect.Library.Types
                 return new DyStringBuilder(ctx.RuntimeContext, DeclaringUnit, new StringBuilder());
         }
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "StringBuilder")
                 return DyForeignFunction.Static(name, New, -1, new Par("values", DyNil.Instance));

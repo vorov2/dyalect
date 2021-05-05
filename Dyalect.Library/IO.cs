@@ -25,7 +25,7 @@ namespace Dyalect.Library
         }
 
         [Function("writeAllText")]
-        public object WriteAllText(string path, string data, [Default(0)]int encoding)
+        public object? WriteAllText(string path, string data, [Default(0)]int encoding)
         {
             if (encoding == 0)
                 encoding = Encoding.UTF8.CodePage;
@@ -44,7 +44,7 @@ namespace Dyalect.Library
         }
 
         [Function("writeAllBytes")]
-        public object WriteAllBytes(string path, DyByteArray arr)
+        public object? WriteAllBytes(string path, DyByteArray arr)
         {
             File.WriteAllBytes(path, arr.Buffer);
             return null;

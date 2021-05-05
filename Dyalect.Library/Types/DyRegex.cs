@@ -69,7 +69,7 @@ namespace Dyalect.Library.Types
 
             var m = rx.Match(str, istart, ilen);
             //return new DyRegexMatch(m);
-            return null;
+            return null!;
         }
 
         //private DyObject New(ExecutionContext ctx, DyObject arg)
@@ -80,7 +80,7 @@ namespace Dyalect.Library.Types
         //    return new DyRegex((string)arg.ToObject());
         //}
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             //if (name == "Regex")
             //    return DyForeignFunction.Static(name, New, -1, new Par("pattern"));

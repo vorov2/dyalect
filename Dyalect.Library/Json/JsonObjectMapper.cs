@@ -44,10 +44,10 @@ namespace Dyalect.Library.Json
                 var attr = Attribute.GetCustomAttribute(pi, typeof(JsonElementAttribute));
                 var name = pi.Name;
 
-                if (attr != null)
+                if (attr is not null)
                     name = attr.ToString();
 
-                if (!ObtainDictionaryValue(name, pi.PropertyType, dict, out var value))
+                if (!ObtainDictionaryValue(name!, pi.PropertyType, dict, out var value))
                     continue;
 
                 pi.SetValue(instance, value);
@@ -74,9 +74,9 @@ namespace Dyalect.Library.Json
         }
 
 
-        private static bool ObtainDictionaryValue(string key, Type type, MAP dict, out object val)
+        private static bool ObtainDictionaryValue(string key, Type type, MAP dict, out object? val)
         {
-            if (!dict.TryGetValue(key, out val) || val == null)
+            if (!dict.TryGetValue(key, out val) || val is null)
                 return false;
 
             if (!ConvertValue(type, ref val))
@@ -136,10 +136,10 @@ namespace Dyalect.Library.Json
                     else return false;
                     break;
                 case TypeCode.String:
-                    val = val.ToString();
+                    val = val.ToString()!;
                     break;
                 case TypeCode.Char:
-                    var str = val.ToString();
+                    var str = val.ToString()!;
                     if (str.Length > 0) val = str[0];
                     else return false;
                     break;
@@ -184,9 +184,9 @@ namespace Dyalect.Library.Json
         private static bool TryGetElementType(Type type, out Type elementType)
         {
             var pi = type.GetProperty("Item");
-            elementType = null;
+            elementType = null!;
 
-            if (pi != null)
+            if (pi is not null)
             {
                 elementType = pi.PropertyType;
                 return true;
@@ -207,13 +207,13 @@ namespace Dyalect.Library.Json
 
         private static bool TryCreateInstance<T>(Type type, out T value)
         {
-            value = default;
+            value = default!;
             
             try
             {
                 var obj = Activator.CreateInstance(type);
 
-                if (!(obj is T tobj))
+                if (obj is not T tobj)
                     return false;
                 else
                 {
