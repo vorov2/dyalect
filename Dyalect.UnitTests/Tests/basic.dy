@@ -177,21 +177,21 @@ func integerLiteralTest() {
 }
 
 func memberCheckTest1() {
-    assert(true, "string".len?)
-    assert(false, 42.fooBar?)
+    assert(true, "string" is .len)
+    assert(false, 42 is .fooBar)
 }
 
 func memberCheckTest2() { //#270
-    assert(true, String.join?)
-    assert(false, String.foo?)
-    assert(true, "".split?)
-    assert(false, "".join?)
+    assert(true, String is .join)
+    assert(false, String is .foo)
+    assert(true, "" is .split)
+    assert(false, "" is .join)
 }
 
 func memberCheckTest3() { //#271
     var nm = "split"
     assert(true, "".has(nm))
-    assert(true, "".split?)
+    assert(true, "" is .split)
     assert(true, "".has("split"))
 }
 

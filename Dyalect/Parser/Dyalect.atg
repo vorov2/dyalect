@@ -977,60 +977,49 @@ PRODUCTIONS
         (
             Literal<out node> 
             {
+                [ "?" (. nsaf = true; .) ]
                 (
-                    ( "." | "?." (. nsaf = true; .) )
-                    (. var ot = t; .)
-                    identToken
-                    (. var nm = t.val; DMemberCheck chk = null; .)
                     (
-                        [
-                            "?"
-                            (.
-                                chk = new DMemberCheck(ot) { Target = node };
-                                chk.Name = nm;
-                                node = chk;
-                            .)
-                        ]
+                        "."
+                        (. var ot = t; .)
+                        identToken
                         (.
-                            if (chk == null)
-                            {
-                                var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
-                                fld.Name = nm;
-                                node = fld;
-                            }
+                            var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
+                            fld.Name = t.val;
+                            node = fld;
                         .)
                     )
-                )
-                |
-                (
-                    "::" (. var ot = t; .)
-                    identToken
-                    (.
-                        node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
-                    .)
-                )
-                |
-                (
-                    (. if (la.AfterEol) return; .)
-                    ( "[" | "?[" (. nsaf = true; .) )
-                        (. var idx = new DIndexer(t) { Target = node, NilSafety = nsaf }; .)
-                        Expr<out node>
+                    |
+                    (
+                        "::" (. var ot = t; .)
+                        identToken
                         (.
-                            idx.Index = node;
-                            node = idx;
+                            node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
                         .)
-                    "]"
-                )
-                |
-                (
-                    (.
-                        if (la.AfterEol) return;
-                        var app = new DApplication(node, t);
-                    .)
-                    ( "(" | "?(" (. app.NilSafety = true; .) )
-                        [ ApplicationArguments<app> ]
-                        (. node = app; .)
-                    ")"
+                    )
+                    |
+                    (
+                        (. if (la.AfterEol) return; .)
+                        "["
+                            (. var idx = new DIndexer(t) { Target = node, NilSafety = nsaf }; .)
+                            Expr<out node>
+                            (.
+                                idx.Index = node;
+                                node = idx;
+                            .)
+                        "]"
+                    )
+                    |
+                    (
+                        (.
+                            if (la.AfterEol) return;
+                            var app = new DApplication(node, t);
+                        .)
+                        "("
+                            [ ApplicationArguments<app> ]
+                            (. node = app; .)
+                        ")"
+                    )
                 )
             }
         ).
