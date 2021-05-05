@@ -386,7 +386,7 @@ func testIs() {
     let some = TypesOption.Some(42)
     let none = TypesOption.None()
     var x
-    if some is TypesOption? && none is TypesOption? {
+    if some is TypesOption && none is TypesOption {
         x = 42
     }
     assert(42, x)

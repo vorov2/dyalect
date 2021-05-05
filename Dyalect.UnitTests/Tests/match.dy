@@ -25,7 +25,7 @@ func matchTest2() {
 func matchTest3() {
     var res = match (1,2,"str") {
         (1, 2, "strs") => "wrong",
-        Array? && [1, 2, "str"] => "right?",
+        Array && [1, 2, "str"] => "right?",
         (1, 2, "str") xs => xs
     }
     assert((1,2,"str"), res)
@@ -175,7 +175,7 @@ func forMatchTest1() {
 
 func forMatchTest2() {
     var arr = []
-    for Char? c in ['a', "str", 'b', 'c', 12] {
+    for Char c in ['a', "str", 'b', 'c', 12] {
         arr.add(c)
     }
     assert(['a','b','c'], arr)
@@ -183,7 +183,7 @@ func forMatchTest2() {
 
 func forMatchTest3() {
     var arr = []
-    for Char? in ['a', "str", 'b', 'c', 12] {
+    for Char in ['a', "str", 'b', 'c', 12] {
         arr.add(0)
     }
     assert(3, arr.len())
@@ -225,17 +225,23 @@ func rangeMatchTest2() {
 
 func hasMatchTest1() {
     var res = match 12 {
-        .foo? => false,
-        .op_mul? => true
+        .foo => false,
+        .op_mul => true
     }
     assert(true, res)
 }
 
 func hasMatchTest2() {
     var res = match (12,3) {
-        .foo? => false,
-        .keys? => true
+        .foo => false,
+        .keys => true
     }
+    assert(true, res)
+}
+
+func hasMatchTest3() {
+    let xs = []
+    let res = xs is (.iter && .toString && .has)
     assert(true, res)
 }
 
@@ -291,34 +297,34 @@ func varMatchTest3() {
 }
 
 func ctorMatchTest1() {
-    let Array? && (x, y, z) = [1, 2, 3]
+    let Array && (x, y, z) = [1, 2, 3]
     assert(6, x + y + z)
-    let Array? && [xx, yy, zz] = [1, 2, 3, 4, 5]
+    let Array && [xx, yy, zz] = [1, 2, 3, 4, 5]
     assert(6, xx + yy + zz)
 }
 
 func ctorMatchTest2() {
-    let Tuple? && (x, y, z) = (1, 2, 3)
+    let Tuple && (x, y, z) = (1, 2, 3)
     assert(6, x + y + z)
 }
 
 func ctorMatchTest3() {
     var res = match 42 {
-        Integer? => true
+        Integer => true
     }
     assert(true, res)
 }
 
 func ctorMatchTest4() {
-    let String? && (x, y, z) = "abc"
+    let String && (x, y, z) = "abc"
     assert(['a','b','c'], [x,y,z])
 }
 
 func isTest1() {
     var xs = (1, 2)
-    assert(true, xs is Tuple?)
-    assert(false, xs is Array?)
-    var b = xs is Tuple? t
+    assert(true, xs is Tuple)
+    assert(false, xs is Array)
+    var b = xs is Tuple t
     assert(true, b)
     assert((1,2), t)
 }
@@ -382,15 +388,15 @@ func typeCheck1() {
     var y = 1.2
     var res1 = false
     var res2 = false
-    if x is Integer? {
+    if x is Integer {
         res1 = true
     }
     assert(true, res1)
-    if y is Float? {
+    if y is Float {
         res2 = true
     }
     assert(true, res2)
-    if y is Float? f {
+    if y is Float f {
         assert(1.2, f)
     }
 }
@@ -399,7 +405,7 @@ type TypeInMatch()
 func typeCheck2() {
     var t = TypeInMatch()
     var res = false
-    if t is TypeInMatch? {
+    if t is TypeInMatch {
         res = true
     }
     assert(true, res)

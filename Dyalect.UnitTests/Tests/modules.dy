@@ -138,7 +138,7 @@ func testExoType1() {
     assert("Asset", t::name)
     var c = t.Computer("Acer", 4, 1)
     assert("Acer41", c::model+c::memory+c::rank)
-    assert(true, c is lib1::Asset?)
+    assert(true, c is lib1::Asset)
 }
 
 func testModuleCons() {
