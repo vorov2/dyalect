@@ -162,9 +162,6 @@ namespace Dyalect.Runtime.Types
             if (name == "compose")
                 return DyForeignFunction.Static(name, Compose, -1, new Par("first"), new Par("second"));
 
-            if (name == "Function")
-                return DyForeignFunction.Static(name, (c, obj) => DyForeignFunction.Static("id", _ => obj), -1, new Par("value"));
-
             return base.InitializeStaticMember(name, ctx);
         }
     }
