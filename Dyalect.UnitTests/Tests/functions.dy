@@ -153,8 +153,8 @@ func functionTest9() {
 }
 
 func functionTest10() {
-    var f = Function(12)
-    assert(12, f())
+    var f = x => x
+    assert(12, f(12))
 }
 
 func functionTest11() {
