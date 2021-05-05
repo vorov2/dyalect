@@ -31,7 +31,9 @@ namespace Dyalect.Compiler
 
         NoScope = 0x800,
 
-        Catch = 0x1000
+        Catch = 0x1000,
+
+        NoBinding = 0x2000
     }
 
     public static class HintsExtensions

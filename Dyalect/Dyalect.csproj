@@ -20,6 +20,7 @@
       <RepositoryUrl>https://github.com/vorov2/dyalect</RepositoryUrl>
       <RepositoryType>git</RepositoryType>
       <AssemblyName>Dyalect</AssemblyName>
+      <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
