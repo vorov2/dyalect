@@ -108,9 +108,6 @@ namespace Dyalect.Compiler
                 case NodeType.Char:
                     Build((DCharLiteral)node, hints);
                     break;
-                case NodeType.MemberCheck:
-                    Build((DMemberCheck)node, hints, ctx);
-                    break;
                 case NodeType.Range:
                     Build((DRange)node, hints, ctx);
                     break;
@@ -337,14 +334,6 @@ namespace Dyalect.Compiler
             PopIf(hints);
         }
 
-        private void Build(DMemberCheck node, Hints hints, CompilerContext ctx)
-        {
-            Build(node.Target, hints.Append(Push), ctx);
-            AddLinePragma(node);
-            cw.HasMember(node.Name);
-            PopIf(hints);
-        }
-
         private void Build(DYield node, Hints hints, CompilerContext ctx)
         {
             Build(node.Expression, hints.Append(Push), ctx);
@@ -557,6 +546,13 @@ namespace Dyalect.Compiler
 
             Build(node.Target, push, ctx);
 
+            var skip = cw.DefineLabel();
+            if (node.NilSafety)
+            {
+                cw.Dup();
+                cw.Brfalse(skip);
+            }
+
             if (node.Index.NodeType == NodeType.Range)
             {
                 if (hints.Has(Pop))
@@ -599,6 +595,13 @@ namespace Dyalect.Compiler
                 }
                 else
                     cw.Set();
+            }
+
+            if (node.NilSafety)
+            {
+                cw.MarkLabel(skip);
+                cw.Nop();
+                PopIf(hints);
             }
         }
 
@@ -677,6 +680,7 @@ namespace Dyalect.Compiler
             var name = node.Target.NodeType == NodeType.Name ? node.Target.GetName() : null;
             var sv = name is not null ? GetVariable(name, node, err: false) : ScopeVar.Empty;
             var newHints = hints.Remove(Last);
+            var skip = cw.DefineLabel();
 
             //Check if an application is in fact a built-in operator call
             if (name != null && sv.IsEmpty())
@@ -689,8 +693,8 @@ namespace Dyalect.Compiler
                 }
 
             //This is a special optimization for the 'toString', 'has' and 'len' methods
-            //If we see that it is called directly we than emit a direct op code
-            if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations)
+            //If we see that it is called directly we can emit a direct op code
+            if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations && !node.NilSafety)
             {
                 var meth = (DAccess)node.Target;
 
@@ -755,6 +759,13 @@ namespace Dyalect.Compiler
                     Build(node.Target, newHints.Append(Push), ctx);
 
                 AddLinePragma(node);
+
+                if (node.NilSafety)
+                {
+                    cw.Dup();
+                    cw.Brfalse(skip);
+                }
+
                 cw.FunPrep(node.Arguments.Count);
                 Dictionary<string, object> dict = null;
                 var kwArg = false;
@@ -790,6 +801,12 @@ namespace Dyalect.Compiler
 
                 AddLinePragma(node);
                 cw.FunCall(node.Arguments.Count);
+            }
+
+            if (node.NilSafety)
+            {
+                cw.MarkLabel(skip);
+                cw.Nop();
             }
 
             PopIf(hints);

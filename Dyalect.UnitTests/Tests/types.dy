@@ -331,12 +331,12 @@ func setterTest2() { //Bug #205
 
 func complexMemberCheckTest1() {
     var t = (x: 2)
-    assert(false, t.x?)
+    assert(false, t is .x)
 }
 
 func complexMemberCheckTest2() {
     func Integer.foobar() {}
-    assert(true, 12.foobar?)
+    assert(true, 12 is .foobar)
     Integer.__deleteMember("foobar")
 }
 
@@ -344,8 +344,8 @@ type Leto(x)
 func complexMemberCheckTest3() {
     func Leto.foobar() {}
     var p = Leto(22)
-    assert(false, p.x?)
-    assert(true, p.foobar?)
+    assert(false, p is .x)
+    assert(true, p is .foobar)
 }
 
 func objectTypeTest() {
