@@ -5,6 +5,8 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DTypeDeclaration : DNode
     {
+        internal static readonly DTypeDeclaration Default = new DTypeDeclaration(default);
+
         public DTypeDeclaration(Location loc) : base(NodeType.Type, loc) { }
 
         public string Name { get; set; } = null!;

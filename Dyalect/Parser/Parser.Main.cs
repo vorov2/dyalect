@@ -24,7 +24,7 @@ namespace Dyalect.Parser
 
         public List<BuildMessage> Errors { get; } = new();
 
-        private Stack<DFunctionDeclaration> functions = new();
+        private readonly Stack<DFunctionDeclaration> functions = new();
 
         private List<int>? implicits;
 
@@ -282,7 +282,7 @@ namespace Dyalect.Parser
 
         private DStringLiteral ParseVerbatimString()
         {
-            return new DStringLiteral(t) { Value = t.val.Substring(2, t.val.Length - 4).Replace("]>]>", "]>") };
+            return new DStringLiteral(t) { Value = t.val[2..^2].Replace("]>]>", "]>") };
         }
 
         private string? ParseSimpleString()
@@ -315,17 +315,17 @@ namespace Dyalect.Parser
         private long ParseInteger()
         {
             if (t.val.Length > 2 && t.val[0] == '0' && char.ToUpper(t.val[1]) == 'X')
-                return long.Parse(t.val.Substring(2), NumberStyles.HexNumber);
+                return long.Parse(t.val[2..], NumberStyles.HexNumber);
 
             return long.Parse(t.val);
         }
 
         private double ParseFloat()
         {
-            var c = t.val[t.val.Length - 1];
+            var c = t.val[^1];
 
             if (c == 'f' || c == 'F')
-                return double.Parse(t.val.Substring(0, t.val.Length - 1), CI.NumberFormat);
+                return double.Parse(t.val[0..^1], CI.NumberFormat);
 
             return double.Parse(t.val, CI.NumberFormat);
         }

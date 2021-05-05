@@ -4,7 +4,7 @@
     {
         private const string ERR_FORMAT = "{0}({1},{2}): {3} Dy{4}: {5}";
 
-        public BuildMessage(string message, BuildMessageType type, int code, int line, int col, string file)
+        public BuildMessage(string message, BuildMessageType type, int code, int line, int col, string? file)
         {
             Message = message;
             Type = type;
@@ -26,7 +26,7 @@
 
         protected string GetFileName() => File ?? "<memory>";
 
-        public string File { get; internal set; }
+        public string? File { get; internal set; }
 
         public string Message { get; protected set; }
 

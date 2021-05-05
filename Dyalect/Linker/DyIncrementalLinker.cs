@@ -25,7 +25,7 @@ namespace Dyalect.Linker
         {
             backupUnitMap = new Dictionary<Reference, Unit>(UnitMap);
             backupAssemblyMap = new Dictionary<string, Dictionary<string, Type>>(AssemblyMap);
-            backupUnits = new List<Unit>(Units);
+            backupUnits = new List<Unit>(Units!);
         }
 
         protected override void Complete(bool failed)
@@ -49,7 +49,7 @@ namespace Dyalect.Linker
         protected override Result<UnitComposition> Make(Unit unit)
         {
             if (composition is null)
-                composition = new UnitComposition(Units);
+                composition = new UnitComposition(Units!);
 
             Units[0] = unit;
             ProcessUnits(composition);
@@ -70,7 +70,7 @@ namespace Dyalect.Linker
             else
             {
                 compiler = new(compiler);
-                startOffset = composition.Units[0].Ops.Count;
+                startOffset = composition!.Units[0].Ops.Count;
             }
 
             var res = compiler.Compile(codeModel);

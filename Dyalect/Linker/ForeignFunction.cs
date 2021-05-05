@@ -18,7 +18,7 @@ namespace Dyalect.Linker
 
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {
-            dynamic val(int i) => TypeConverter.ConvertTo(args[i], fun.Types[i]);
+            dynamic val(int i) => TypeConverter.ConvertTo(args[i], fun.Types[i])!;
             object retval;
 
             if (expectContext)

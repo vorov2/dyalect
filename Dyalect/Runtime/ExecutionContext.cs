@@ -25,13 +25,13 @@ namespace Dyalect.Runtime
 
         internal SectionStack CatchMarks { get; }
         
-        internal DyError Error { get; set; }
+        internal DyError? Error { get; set; }
 
-        internal Stack<int> Sections { get; set; }
+        internal Stack<int>? Sections { get; set; }
 
         internal Stack<ArgContainer> Arguments { get; } = new(4);
 
-        public DyError GetError() => Error;
+        public DyError? GetError() => Error;
 
         internal void ThrowIf()
         {
@@ -48,7 +48,7 @@ namespace Dyalect.Runtime
     internal struct ArgContainer
     {
         public DyObject[] Locals;
-        public FastList<DyObject> VarArgs;
+        public FastList<DyObject>? VarArgs;
         public int VarArgsIndex;
     }
 }

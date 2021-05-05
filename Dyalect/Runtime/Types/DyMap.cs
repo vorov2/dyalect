@@ -82,7 +82,7 @@ namespace Dyalect.Runtime.Types
             return Map.TryAdd(key, value);
         }
 
-        public bool TryGet(DyObject key, out DyObject value) =>
+        public bool TryGet(DyObject key, out DyObject? value) =>
             Map.TryGetValue(key, out value);
 
         public bool Remove(DyObject key)
@@ -188,7 +188,7 @@ namespace Dyalect.Runtime.Types
             var map = (DyMap)self;
             if (!map.TryGet(key, out var value))
                 return DyNil.Instance;
-            return value;
+            return value!;
         }
 
         private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject key) =>
@@ -200,7 +200,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             return name switch
             {
@@ -223,7 +223,7 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(values);
         }
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Map")
                 return DyForeignFunction.Static(name, New, -1, new Par("values", DyNil.Instance));

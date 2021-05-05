@@ -51,7 +51,7 @@ namespace Dyalect.Linker
                     unit = LinkForeignModule(self, mod);
 
                     if (unit is null)
-                        AddError(LinkerError.AssemblyNotFound, mod.SourceFileName, mod.SourceLocation, mod.DllName, mod.ModuleName);
+                        AddError(LinkerError.AssemblyNotFound, mod.SourceFileName!, mod.SourceLocation, mod.DllName, mod.ModuleName);
                     else
                         foreach (var rf in unit.References)
                         {
@@ -79,7 +79,7 @@ namespace Dyalect.Linker
             }
 
             if (unit is not null && mod.Checksum != 0 && mod.Checksum != unit.Checksum && !BuilderOptions.LinkerSkipChecksum)
-                AddError(LinkerError.ChecksumValidationFailed, mod.SourceFileName, mod.SourceLocation, mod.ModuleName, unit.FileName ?? "<unknown>");
+                AddError(LinkerError.ChecksumValidationFailed, mod.SourceFileName!, mod.SourceLocation, mod.ModuleName, unit.FileName ?? "<unknown>");
 
             return Result.Create(unit, Messages);
         }
@@ -242,7 +242,7 @@ namespace Dyalect.Linker
             }
             catch (Exception ex)
             {
-                AddError(LinkerError.UnableReadModule, reference.SourceFileName, reference.SourceLocation, fileName, ex.Message);
+                AddError(LinkerError.UnableReadModule, reference.SourceFileName!, reference.SourceLocation, fileName, ex.Message);
                 return null;
             }
 
@@ -302,7 +302,7 @@ namespace Dyalect.Linker
 
         private string? FindModule(Unit self, string module, Reference mod)
         {
-            var objModule = Path.Combine(Path.GetDirectoryName(module), Path.GetFileNameWithoutExtension(module) + OBJ);
+            var objModule = Path.Combine(Path.GetDirectoryName(module)!, Path.GetFileNameWithoutExtension(module) + OBJ);
 
             if (FindModuleExact(self.FileName!, objModule, mod, out var path))
                 return path;
@@ -312,7 +312,7 @@ namespace Dyalect.Linker
 
             if (!FindModuleExact(self.FileName!, module, mod, out path))
             {
-                AddError(LinkerError.ModuleNotFound, mod.SourceFileName, mod.SourceLocation, module);
+                AddError(LinkerError.ModuleNotFound, mod.SourceFileName!, mod.SourceLocation, module);
                 return null;
             }
             else
@@ -328,10 +328,10 @@ namespace Dyalect.Linker
                 if (NeedReport((int)LinkerWarning.NewerSourceFile)
                     && !string.Equals(Path.GetExtension(module), ".DLL", StringComparison.OrdinalIgnoreCase))
                 {
-                    var sf = Path.Combine(Path.GetDirectoryName(fullPath), Path.GetFileNameWithoutExtension(fullPath) + ".dy");
+                    var sf = Path.Combine(Path.GetDirectoryName(fullPath)!, Path.GetFileNameWithoutExtension(fullPath) + ".dy");
 
                     if (File.Exists(sf) && File.GetLastWriteTime(sf) > File.GetLastWriteTime(fullPath))
-                        AddWarning(LinkerWarning.NewerSourceFile, mod.SourceFileName, mod.SourceLocation, Path.GetFileNameWithoutExtension(fullPath));
+                        AddWarning(LinkerWarning.NewerSourceFile, mod.SourceFileName!, mod.SourceLocation, Path.GetFileNameWithoutExtension(fullPath));
                 }
 
                 path = fullPath.Replace('\\', '/');

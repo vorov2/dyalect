@@ -80,9 +80,9 @@ namespace Dyalect.Runtime.Types
 
         public override int GetHashCode() => HashCode.Combine(Constructor, Locals);
 
-        public override bool Equals(DyObject other)
+        public override bool Equals(DyObject? other)
         {
-            if (TypeId == other.TypeId && other is DyCustomType t 
+            if (other is not null && TypeId == other.TypeId && other is DyCustomType t 
                 && t.Constructor == Constructor && t.Locals.Length == Locals.Length)
             {
                 for (var i = 0; i < Locals.Length; i++)

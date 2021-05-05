@@ -6,8 +6,8 @@ namespace Dyalect.Runtime
 {
     public sealed class DyCodeException : DyRuntimeException
     {
-        internal DyCodeException(DyError err, CallStackTrace cs, Exception innerException)
-            : base(null, innerException) => (Error, CallTrace) = (err, cs);
+        internal DyCodeException(DyError err, CallStackTrace cs, Exception? innerException)
+            : base(null!, innerException) => (Error, CallTrace) = (err, cs);
 
         public override string Message => Error.GetDescription();
 

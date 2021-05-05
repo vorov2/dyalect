@@ -216,7 +216,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
-            ((DyArray)self).Add(args.TakeOne(DyNil.Instance));
+            ((DyArray)self).Add(args.TakeOne(DyNil.Instance)!);
             return DyNil.Instance;
         }
 
@@ -447,7 +447,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
@@ -548,9 +548,8 @@ namespace Dyalect.Runtime.Types
             return destArr;
         }
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
-        {
-            return name switch
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "Array" => DyForeignFunction.Static(name, New, 0, new Par("values", true)),
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance)),
@@ -561,6 +560,5 @@ namespace Dyalect.Runtime.Types
                     new Par("toIndex", DyInteger.Get(0)), new Par("count")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
-        }
     }
 }

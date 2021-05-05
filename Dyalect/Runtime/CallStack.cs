@@ -38,7 +38,7 @@ namespace Dyalect.Runtime
 
         public bool PopLast()
         {
-            array[--Count] = null;
+            array[--Count] = null!;
             return true;
         }
 
@@ -75,10 +75,10 @@ namespace Dyalect.Runtime
         public static readonly Caller Root = new();
         public static readonly Caller External = new();
 
-        public readonly DyObject[] Locals;
-        public readonly EvalStack EvalStack;
+        public readonly DyObject[] Locals = null!;
+        public readonly EvalStack EvalStack = null!;
         public readonly int Offset;
-        public readonly DyNativeFunction Function;
+        public readonly DyNativeFunction Function = null!;
 
         private Caller() { }
 

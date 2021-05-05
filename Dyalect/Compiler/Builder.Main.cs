@@ -372,7 +372,7 @@ namespace Dyalect.Compiler
             PushIf(hints);
         }
 
-        private void Build(DYieldBreak node, Hints hints, CompilerContext ctx)
+        private void Build(DYieldBreak node, Hints _, CompilerContext ctx)
         {
             AddLinePragma(node);
             cw.PushNil();
@@ -444,7 +444,7 @@ namespace Dyalect.Compiler
                 for (var i = 0; i < node.Elements.Count; i++)
                 {
                     var el = node.Elements[i];
-                    string name;
+                    string? name;
 
                     if (el.NodeType == NodeType.Label)
                     {
@@ -621,7 +621,7 @@ namespace Dyalect.Compiler
 
             if (res.Success)
             {
-                r.Checksum = res.Value.Checksum;
+                r.Checksum = res.Value!.Checksum;
                 var referencedUnit = new UnitInfo(unit.UnitIds.Count, res.Value);
                 unit.References.Add(r);
                 referencedUnits.Add(node.Alias ?? node.ModuleName, referencedUnit);

@@ -22,7 +22,7 @@ namespace Dyalect.Runtime
             return retval;
         }
 
-        private static DyObject ExecuteModule(int unitId, ExecutionContext ctx)
+        private static DyObject? ExecuteModule(int unitId, ExecutionContext ctx)
         {
             var unit = ctx.RuntimeContext.Composition.Units[unitId];
 
@@ -52,9 +52,9 @@ namespace Dyalect.Runtime
             if (unitId != 0 && ctx.RuntimeContext.Units[unitId] is not null)
                 return null;
 
-            ctx.CatchMarks.Push(null);
+            ctx.CatchMarks.Push(null!);
             ctx.RuntimeContext.Units[unitId] = ctx.RuntimeContext.Units[unitId] ?? new DyObject[lay0.Size];
-            return ExecuteWithData(Global(unitId), null, ctx);
+            return ExecuteWithData(Global(unitId), null!, ctx);
         }
 
         internal static DyObject ExecuteWithData(DyNativeFunction function, DyObject[] locals, ExecutionContext ctx)
@@ -92,7 +92,7 @@ namespace Dyalect.Runtime
                     case OpCode.Nop:
                         break;
                     case OpCode.This:
-                        evalStack.Push(function.Self.GetTaggedValue());
+                        evalStack.Push(function.Self!.GetTaggedValue());
                         break;
                     case OpCode.Term:
                         if (evalStack.Size > 1 || evalStack.Size == 0)
@@ -487,7 +487,7 @@ namespace Dyalect.Runtime
                             var locs = ctx.Arguments.Peek();
                             if (locs.VarArgsIndex > -1 && op.Data >= locs.VarArgsIndex)
                             {
-                                locs.VarArgs.Add(evalStack.Pop());
+                                locs.VarArgs!.Add(evalStack.Pop());
                                 break;
                             }
                             locs.Locals[op.Data] = evalStack.Pop();
@@ -591,7 +591,7 @@ namespace Dyalect.Runtime
                 offset = jumper;
                 unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
                 ops = unit.Ops;
-                evalStack.Push(ctx.Error);
+                evalStack.Push(ctx.Error!);
                 ctx.Error = null;
                 goto CYCLE;
             }
@@ -600,13 +600,13 @@ namespace Dyalect.Runtime
         private static void Push(ArgContainer container, DyObject value, ExecutionContext ctx)
         {
             if (value.TypeId == DyType.Array)
-                container.VarArgs.AddRange((IEnumerable<DyObject>)value);
+                container.VarArgs!.AddRange((IEnumerable<DyObject>)value);
             else if (value.TypeId == DyType.Tuple)
-                container.VarArgs.AddRange(((DyTuple)value).Values);
+                container.VarArgs!.AddRange(((DyTuple)value).Values);
             else if (value.TypeId == DyType.Iterator)
-                container.VarArgs.AddRange(DyIterator.Run(ctx, value));
+                container.VarArgs!.AddRange(DyIterator.Run(ctx, value));
             else
-                container.VarArgs.Add(value);
+                container.VarArgs!.Add(value);
         }
 
         private static DyObject CallExternalFunction(DyFunction func, ExecutionContext ctx)
@@ -646,14 +646,14 @@ namespace Dyalect.Runtime
             var locals = cont.Locals;
 
             if (callFun.VarArgIndex > -1)
-                locals[callFun.VarArgIndex] = cont.VarArgs is null ? null :
+                locals[callFun.VarArgIndex] = cont.VarArgs is null ? null! :
                     new DyTuple(cont.VarArgs.ToArray() ?? Array.Empty<DyObject>());
 
             for (var i = 0; i < pars.Length; i++)
             {
                 if (locals[i] is null)
                 {
-                    locals[i] = pars[i].Value;
+                    locals[i] = pars[i].Value!;
 
                     if (locals[i] is null)
                     {

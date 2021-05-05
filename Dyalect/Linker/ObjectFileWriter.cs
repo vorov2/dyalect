@@ -192,16 +192,17 @@ namespace Dyalect.Linker
                 writer.Write(f.Handle);
                 writer.Write(f.StartOffset);
                 writer.Write(f.EndOffset);
-                writer.Write(f.Parameters.Length);
-                foreach (var p in f.Parameters)
-                {
-                    writer.Write(p.Name);
-                    writer.Write(p.IsVarArg);
-                    if (p.Value == null)
-                        writer.Write(-1);
-                    else
-                        p.Value.Serialize(writer);
-                }
+                writer.Write(f.Parameters is null ? 0 : f.Parameters.Length);
+                if (f.Parameters is not null)
+                    foreach (var p in f.Parameters)
+                    {
+                        writer.Write(p.Name);
+                        writer.Write(p.IsVarArg);
+                        if (p.Value == null)
+                            writer.Write(-1);
+                        else
+                            p.Value.Serialize(writer);
+                    }
             }
         }
     }

@@ -6,6 +6,6 @@ namespace Dyalect.Runtime.Types
     {
         protected ForeignTypeInfo() : base(-1) { }
 
-        public Unit DeclaringUnit { get; internal set; }
+        public Unit DeclaringUnit { get; internal set; } = null!;
     }
 }

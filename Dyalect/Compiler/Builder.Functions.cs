@@ -37,7 +37,7 @@ namespace Dyalect.Compiler
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
                     cw.Aux(realName);
-                    var code = GetTypeHandle(node.TypeName, node.Location);
+                    var code = GetTypeHandle(node.TypeName!, node.Location);
 
                     if (node.IsStatic)
                         cw.SetMemberS(code);
@@ -153,10 +153,10 @@ namespace Dyalect.Compiler
         {
             var iterBody = hints.Has(IteratorBody);
             var args = CompileFunctionParameters(node.Parameters);
-            StartFun(node.Name, args);
+            StartFun(node.Name!, args);
 
             if (node.IsStatic && !node.IsMemberFunction)
-                AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name);
+                AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);
 
             var startLabel = cw.DefineLabel();
             var funEndLabel = cw.DefineLabel();
@@ -179,7 +179,8 @@ namespace Dyalect.Compiler
 
             var hasCtorScope = false;
             TypeInfo lti = null!;
-            var localTypeMember = node.IsMemberFunction && node.TypeName.Parent is null && TryGetLocalType(node.TypeName.Local, out lti);
+            var localTypeMember = node.IsMemberFunction && node.TypeName!.Parent is null
+                && TryGetLocalType(node.TypeName.Local, out lti!);
 
             if (localTypeMember && !node.IsConstructor)
             {
@@ -248,7 +249,7 @@ namespace Dyalect.Compiler
                             Build(lti.Declaration.With, hints.Append(NoScope), oldctx);
                     }
 
-                    Build(node.Body, hints.Append(Last), ctx);
+                    Build(node.Body!, hints.Append(Last), ctx);
                 }
             }
 

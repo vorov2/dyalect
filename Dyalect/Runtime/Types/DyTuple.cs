@@ -71,7 +71,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
             Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
 
-        internal string GetKey(int index) => Values[index].GetLabel();
+        internal string GetKey(int index) => Values[index].GetLabel()!;
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
         {
@@ -296,7 +296,7 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(arr);
         }
 
-        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
@@ -318,7 +318,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),

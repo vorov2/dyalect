@@ -32,19 +32,19 @@ namespace Dyalect.Runtime.Types
 
         internal protected virtual bool HasItem(string name, ExecutionContext ctx) => false;
 
-        internal protected virtual string GetLabel() => null;
+        internal protected virtual string? GetLabel() => null;
 
         internal protected virtual DyObject GetTaggedValue() => this;
 
-        public virtual string GetConstructor(ExecutionContext ctx) => null;
+        public virtual string? GetConstructor(ExecutionContext ctx) => null;
 
         public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 
         internal virtual void Serialize(BinaryWriter writer) => throw new NotSupportedException();
 
-        public virtual bool Equals(DyObject other) => ReferenceEquals(this, other);
+        public virtual bool Equals(DyObject? other) => ReferenceEquals(this, other);
 
-        public override sealed bool Equals(object obj) => obj is DyObject dyo && Equals(dyo);
+        public override sealed bool Equals(object? obj) => obj is DyObject dyo && Equals(dyo);
 
         public override abstract int GetHashCode();
     }

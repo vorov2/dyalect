@@ -57,7 +57,7 @@ namespace Dyalect.Compiler
             pdb = builder.pdb.Clone();
             unit = builder.unit.Clone(pdb.Symbols);
             cw = builder.cw.Clone(unit);
-            globalScope = unit.GlobalScope;
+            globalScope = unit.GlobalScope!;
             currentScope = builder.currentScope != builder.globalScope
                 ? builder.currentScope.Clone() : globalScope;
             isDebug = builder.isDebug;

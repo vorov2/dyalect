@@ -55,7 +55,7 @@ namespace Dyalect.Runtime.Types
                 res = res.ToString(ctx);
 
                 if (ctx.HasErrors)
-                    return null;
+                    return null!;
             }
 
             return res.GetString();
@@ -335,12 +335,12 @@ namespace Dyalect.Runtime.Types
         private DyObject Substring(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var from = args.TakeOne(DyNil.Instance);
-            var to = args.TakeAt(1, null);
+            var to = args.TakeAt(1);
 
             if (from.TypeId != DyType.Integer)
                 return ctx.InvalidType(from);
 
-            if (!ReferenceEquals(to, DyNil.Instance) && to.TypeId != DyType.Integer)
+            if (!ReferenceEquals(to, DyNil.Instance) && to!.TypeId != DyType.Integer)
                 return ctx.InvalidType(to);
 
             var str = self.GetString();
@@ -460,7 +460,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(str.Remove(fri, c));
         }
 
-        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "indexOf" => DyForeignFunction.Member(name, IndexOf, -1, new Par("value"), 
@@ -550,7 +550,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(new string(value.GetChar(), (int)count.GetInteger()));
         }
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "String" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),

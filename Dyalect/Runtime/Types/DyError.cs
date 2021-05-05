@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
             DataItems = dataItems;
         }
 
-        internal Stack<StackPoint> Dump { get; set; }
+        internal Stack<StackPoint>? Dump { get; set; }
 
         public DyErrorCode Code { get; }
 

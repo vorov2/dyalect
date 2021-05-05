@@ -76,7 +76,7 @@ namespace Dyalect.Compiler
 
         public string? FileName { get; internal set; }
 
-        public DebugInfo? Symbols { get; internal set; }
+        public DebugInfo Symbols { get; internal set; } = null!;
 
         public Scope? GlobalScope { get; internal set; }
 

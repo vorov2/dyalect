@@ -12,7 +12,7 @@ namespace Dyalect.Runtime.Types
 
         private DyNil() : base(DyType.Nil) { }
 
-        public override object ToObject() => null;
+        public override object ToObject() => this;
 
         protected internal override bool GetBool() => false;
 
@@ -44,7 +44,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Nil")
                 return DyForeignFunction.Static(name, _ => DyNil.Instance);
