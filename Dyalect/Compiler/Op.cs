@@ -49,6 +49,7 @@ namespace Dyalect.Compiler
         public static readonly Op PushNilT = new(OpCode.PushNilT);
         public static readonly Op End = new(OpCode.End);
         public static readonly Op IsNull = new(OpCode.IsNull);
+        public static readonly Op GetIter = new(OpCode.GetIter);
 
         internal static readonly Dictionary<OpCode, Op> Ops = new();
 

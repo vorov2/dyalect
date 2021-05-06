@@ -1342,11 +1342,9 @@ namespace Dyalect.Parser
 			var ot = default(Token);
 			
 			if (la.kind == 47) {
-				if (la.AfterEol) return; 
 				Get();
 				ot = t; op = BinaryOperator.Add; 
 			} else {
-				if (la.AfterEol) return; 
 				Get();
 				ot = t; op = BinaryOperator.Sub; 
 			}

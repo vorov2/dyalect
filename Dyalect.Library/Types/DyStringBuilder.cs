@@ -147,7 +147,7 @@ namespace Dyalect.Library.Types
         {
             if (arg.TypeId != DyType.Nil)
             {
-                var vals = DyIterator.Run(ctx, arg);
+                var vals = DyIterator.ToEnumerable(ctx, arg);
                 var arr = vals.Select(o => DyString.ToString(o, ctx)).ToArray();
                 var sb = new StringBuilder(string.Join("", arr));
                 return new DyStringBuilder(ctx.RuntimeContext, DeclaringUnit, sb);

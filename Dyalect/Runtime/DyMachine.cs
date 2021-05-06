@@ -320,7 +320,7 @@ namespace Dyalect.Runtime
                         ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                         goto CATCH;
                     case OpCode.NewIter:
-                        evalStack.Push(DyIterator.CreateIterator(function.UnitId, op.Data, function.Captures, locals));
+                        evalStack.Push(DyIterator.Create(function.UnitId, op.Data, function.Captures, locals));
                         break;
                     case OpCode.NewFun:
                         evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals));
@@ -433,13 +433,16 @@ namespace Dyalect.Runtime
                         if (evalStack.Peek().TypeId == DyType.Iterator)
                             offset = op.Data;
                         break;
+                    case OpCode.GetIter:
+                        evalStack.Replace(((DyIterator)evalStack.Peek()).GetIteratorFunction());
+                        break;
                     case OpCode.Aux:
                         ctx.AUX = op.Data;
                         break;
                     case OpCode.FunPrep:
                         {
                             right = evalStack.Peek();
-                            if (right.TypeId != DyType.Function && right.TypeId != DyType.Iterator)
+                            if (right.TypeId != DyType.Function)
                             {
                                 if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti)
                                 {
@@ -604,7 +607,7 @@ namespace Dyalect.Runtime
             else if (value.TypeId == DyType.Tuple)
                 container.VarArgs!.AddRange(((DyTuple)value).Values);
             else if (value.TypeId == DyType.Iterator)
-                container.VarArgs!.AddRange(DyIterator.Run(ctx, value));
+                container.VarArgs!.AddRange(DyIterator.ToEnumerable(ctx, value));
             else
                 container.VarArgs!.Add(value);
         }
@@ -615,7 +618,7 @@ namespace Dyalect.Runtime
             {
                 return func.Call(ctx, ctx.Arguments.Pop().Locals);
             }
-            catch (DyIterator.IterationException)
+            catch (IterationException)
             {
                 return ctx.CollectionModified();
             }

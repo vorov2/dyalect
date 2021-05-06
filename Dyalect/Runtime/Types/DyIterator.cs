@@ -8,90 +8,84 @@ using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyIterator : DyForeignFunction
+    #region Nested types
+    //Generated when a currently traversed iterator was changed
+    internal sealed class IterationException : Exception { }
+
+    //Used to implement "concat" method when several iterators are combined in one
+    internal sealed class MultiPartEnumerator : IEnumerator<DyObject>
     {
-        #region Nested types
-        //Generated when a currently traversed iterator was changed
-        internal sealed class IterationException : Exception { }
+        private readonly DyObject[] iterators;
+        private int nextIterator = 0;
+        private IEnumerator<DyObject>? current;
+        private readonly ExecutionContext ctx;
 
-        //Used to implement "concat" method when several iterators are combined in one
-        private sealed class MultiPartEnumerator : IEnumerator<DyObject>
+        public MultiPartEnumerator(ExecutionContext ctx, params DyObject[] iterators)
         {
-            private readonly DyObject[] iterators;
-            private int nextIterator = 0;
-            private IEnumerator<DyObject>? current;
-            private readonly ExecutionContext ctx;
+            this.iterators = iterators;
+            this.ctx = ctx;
+        }
 
-            public MultiPartEnumerator(ExecutionContext ctx, params DyObject[] iterators)
+        public DyObject Current => current!.Current;
+
+        object IEnumerator.Current => current!.Current;
+
+        public void Dispose() { }
+
+        public bool MoveNext()
+        {
+            if (current is null || !current.MoveNext())
             {
-                this.iterators = iterators;
-                this.ctx = ctx;
-            }
-
-            public DyObject Current => current!.Current;
-
-            object IEnumerator.Current => current!.Current;
-
-            public void Dispose() { }
-
-            public bool MoveNext()
-            {
-                if (current is null || !current.MoveNext())
+                if (iterators.Length > nextIterator)
                 {
-                    if (iterators.Length > nextIterator)
-                    {
-                        var it = Run(ctx, iterators[nextIterator]);
-                        nextIterator++;
+                    var it = DyIterator.ToEnumerable(ctx, iterators[nextIterator]);
+                    nextIterator++;
 
-                        if (ctx.HasErrors)
-                            return false;
-
-                        current = it.GetEnumerator();
-                        return current.MoveNext();
-                    }
-                    else
+                    if (ctx.HasErrors)
                         return false;
+
+                    current = it.GetEnumerator();
+                    return current.MoveNext();
                 }
                 else
-                    return true;
+                    return false;
             }
-
-            public void Reset()
-            {
-                current = null;
-                nextIterator = 0;
-            }
+            else
+                return true;
         }
 
-        //Used to create MultiPartEnumerator
-        internal sealed class MultiPartEnumerable : IEnumerable<DyObject>
+        public void Reset()
         {
-            private readonly DyObject[] iterators;
-            private readonly ExecutionContext ctx;
-
-            public MultiPartEnumerable(ExecutionContext ctx, params DyObject[] iterators)
-            {
-                this.iterators = iterators;
-                this.ctx = ctx;
-            }
-
-            public IEnumerator<DyObject> GetEnumerator() => new MultiPartEnumerator(ctx, iterators);
-
-            IEnumerator IEnumerable.GetEnumerator() => new MultiPartEnumerator(ctx, iterators);
+            current = null;
+            nextIterator = 0;
         }
-        #endregion
+    }
 
+    //Used to create MultiPartEnumerator
+    internal sealed class MultiPartEnumerable : IEnumerable<DyObject>
+    {
+        private readonly DyObject[] iterators;
+        private readonly ExecutionContext ctx;
+
+        public MultiPartEnumerable(ExecutionContext ctx, params DyObject[] iterators)
+        {
+            this.iterators = iterators;
+            this.ctx = ctx;
+        }
+
+        public IEnumerator<DyObject> GetEnumerator() => new MultiPartEnumerator(ctx, iterators);
+
+        IEnumerator IEnumerable.GetEnumerator() => new MultiPartEnumerator(ctx, iterators);
+    }
+    #endregion
+
+    internal sealed class DyIteratorFunction : DyForeignFunction
+    {
         private readonly IEnumerable<DyObject> enumerable;
         private IEnumerator<DyObject>? enumerator;
 
-        public DyIterator(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), DyType.Iterator, -1) =>
+        public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), DyType.Function, -1) =>
             this.enumerable = enumerable;
-
-        internal static DyFunction CreateIterator(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals)
-        {
-            var vars = new FastList<DyObject[]>(captures) { locals };
-            return new DyNativeIterator(unitId, handle, vars);
-        }
 
         public override DyObject Call(ExecutionContext ctx, params DyObject[] args) =>
             (enumerator ??= enumerable.GetEnumerator()).MoveNext() ? enumerator.Current : DyNil.Terminator;
@@ -100,14 +94,39 @@ namespace Dyalect.Runtime.Types
 
         public override int GetHashCode() => enumerable.GetHashCode();
 
-        internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) => new DyIterator(enumerable) { Self = arg };
+        internal override bool Equals(DyFunction func) => func is DyIteratorFunction f && f.enumerable.Equals(enumerator);
+
+        public override DyObject Clone() => new DyIteratorFunction(enumerable);
+    }
+
+    internal sealed class DyNativeIteratorFunction : DyNativeFunction
+    {
+        public override string FunctionName => "iter";
+
+        public DyNativeIteratorFunction(int unitId, int funcId, FastList<DyObject[]> captures)
+            : base(null, unitId, funcId, captures, DyType.Function, -1) { }
+
+        internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) =>
+            new DyNativeIteratorFunction(UnitId, FunctionId, Captures) { Self = arg };
+    }
+
+    public abstract class DyIterator : DyObject
+    {
+        protected DyIterator() : base(DyType.Iterator) { }
+
+        internal static DyIterator Create(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) =>
+            new DyNativeIterator(unitId, handle, captures, locals);
+
+        public static DyIterator Create(IEnumerable<DyObject> seq) => new DyForeignIterator(seq);
+
+        public abstract DyFunction GetIteratorFunction();
 
         internal static DyFunction? GetIterator(ExecutionContext ctx, DyObject val)
         {
             DyFunction? iter;
 
             if (val.TypeId == DyType.Iterator)
-                iter = (DyFunction)val.Clone();
+                iter = ((DyIterator)val).GetIteratorFunction();
             else if (val.TypeId == DyType.Function)
             {
                 var obj = ((DyFunction)val).Call0(ctx);
@@ -124,10 +143,12 @@ namespace Dyalect.Runtime.Types
             }
             else
             {
-                iter = val.GetIterator(ctx) as DyFunction;
+                var obj = val.GetIterator(ctx) as DyIterator;
 
                 if (ctx.HasErrors)
                     return null;
+
+                iter = obj?.GetIteratorFunction();
 
                 if (iter is null)
                 {
@@ -141,17 +162,17 @@ namespace Dyalect.Runtime.Types
             return iter;
         }
 
-        public static IEnumerable<DyObject> Run(ExecutionContext ctx, DyObject val)
+        public static IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx, DyObject val)
         {
             if (val.TypeId == DyType.Array)
                 return ((DyArray)val).Values;
-            
+
             if (val.TypeId == DyType.Tuple)
                 return ((DyTuple)val).Values;
-            
+
             if (val.TypeId == DyType.String)
                 return (DyString)val;
-            
+
             return InternalRun(ctx, val);
         }
 
@@ -181,21 +202,38 @@ namespace Dyalect.Runtime.Types
                 }
             }
         }
-
-        internal override bool Equals(DyFunction func) => func is DyIterator m && m.enumerable.Equals(enumerator);
-
-        public override DyObject Clone() => new DyIterator(enumerable);
     }
 
-    internal sealed class DyNativeIterator : DyNativeFunction
+    internal sealed class DyForeignIterator : DyIterator
     {
-        public override string FunctionName => "iter";
+        private readonly IEnumerable<DyObject> seq;
 
-        public DyNativeIterator(int unitId, int funcId, FastList<DyObject[]> captures) 
-            : base(null, unitId, funcId, captures, DyType.Iterator, -1) { }
+        public DyForeignIterator(IEnumerable<DyObject> seq) => this.seq = seq;
 
-        internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) =>
-            new DyNativeIterator(UnitId, FunctionId, Captures) { Self = arg };
+        public override DyFunction GetIteratorFunction() => new DyIteratorFunction(seq);
+
+        public override object ToObject() => seq;
+
+        public override int GetHashCode() => seq.GetHashCode();
+    }
+
+    internal sealed class DyNativeIterator : DyIterator
+    {
+        private readonly int unitId;
+        private readonly int handle;
+        private readonly FastList<DyObject[]> captures;
+
+        public DyNativeIterator(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals)
+        {
+            var vars = new FastList<DyObject[]>(captures) { locals };
+            (this.unitId, this.handle, this.captures) = (unitId, handle, vars);
+        }
+
+        public override DyFunction GetIteratorFunction() => new DyNativeIteratorFunction(unitId, handle, captures);
+
+        public override object ToObject() => new MultiPartEnumerable(ExecutionContext.External, GetIteratorFunction());
+
+        public override int GetHashCode() => HashCode.Combine(unitId, handle, captures);
     }
 
     internal sealed class DyIteratorTypeInfo : DyTypeInfo
@@ -210,15 +248,15 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => GetCount(ctx, arg);
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject self, ExecutionContext ctx)
         {
-            var fn = (DyFunction)arg;
+            var fn = ((DyIterator)self).GetIteratorFunction();
             fn.Reset(ctx);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            var seq = DyIterator.Run(ctx, arg);
+            var seq = DyIterator.ToEnumerable(ctx, self);
 
             if (ctx.HasErrors)
                 return DyString.Empty;
@@ -256,7 +294,7 @@ namespace Dyalect.Runtime.Types
 
             try
             {
-                var iter = DyIterator.Run(ctx, self);
+                var iter = DyIterator.ToEnumerable(ctx, self);
 
                 if (i < 0)
                 {
@@ -274,13 +312,7 @@ namespace Dyalect.Runtime.Types
 
         private static List<DyObject>? ConvertToArray(ExecutionContext ctx, DyObject self)
         {
-            var fn = (DyFunction)self;
-            fn.Reset(ctx);
-
-            if (ctx.HasErrors)
-                return null;
-
-            var seq = DyIterator.Run(ctx, self);
+            var seq = DyIterator.ToEnumerable(ctx, self);
             return ctx.HasErrors ? null : seq.ToList();
         }
 
@@ -298,26 +330,8 @@ namespace Dyalect.Runtime.Types
 
         private static DyObject GetCount(ExecutionContext ctx, DyObject self)
         {
-            var fn = (DyFunction)self.Clone();
-
-            if (ctx.HasErrors)
-                return DyNil.Instance;
-
-            var count = 0;
-            DyObject res = null!;
-
-            while (!ReferenceEquals(res, DyNil.Terminator))
-            {
-                res = fn.Call0(ctx);
-
-                if (ctx.HasErrors)
-                    return DyNil.Instance;
-
-                if (!ReferenceEquals(res, DyNil.Terminator))
-                    count++;
-            }
-
-            return DyInteger.Get(count);
+            var seq = DyIterator.ToEnumerable(ctx, self);
+            return ctx.HasErrors ? DyNil.Instance : DyInteger.Get(seq.Count());
         }
 
         private DyObject ElementAt(ExecutionContext ctx, DyObject self, DyObject index) => GetOp(self, index, ctx);
@@ -332,7 +346,7 @@ namespace Dyalect.Runtime.Types
             if (i < 0)
                 i = 0;
 
-            return new DyIterator(DyIterator.Run(ctx, self).Take(i));
+            return DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Take(i));
         }
 
         private DyObject Skip(ExecutionContext ctx, DyObject self, DyObject count)
@@ -345,21 +359,21 @@ namespace Dyalect.Runtime.Types
             if (i < 0)
                 i = 0;
 
-            return new DyIterator(DyIterator.Run(ctx, self).Skip(i));
+            return DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Skip(i));
         }
 
         private DyObject First(ExecutionContext ctx, DyObject self) =>
-            DyIterator.Run(ctx, self).FirstOrDefault() ?? DyNil.Instance;
+            DyIterator.ToEnumerable(ctx, self).FirstOrDefault() ?? DyNil.Instance;
 
         private DyObject Last(ExecutionContext ctx, DyObject self) =>
-            DyIterator.Run(ctx, self).LastOrDefault() ?? DyNil.Instance;
+            DyIterator.ToEnumerable(ctx, self).LastOrDefault() ?? DyNil.Instance;
 
         private DyObject Concat(ExecutionContext ctx, DyObject tuple) =>
-            new DyIterator(new DyIterator.MultiPartEnumerable(ctx, ((DyTuple)tuple).Values));
+            DyIterator.Create(new MultiPartEnumerable(ctx, ((DyTuple)tuple).Values));
 
         private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
         {
-            var seq = DyIterator.Run(ctx, self);
+            var seq = DyIterator.ToEnumerable(ctx, self);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
@@ -381,7 +395,7 @@ namespace Dyalect.Runtime.Types
                 if (beg == 0)
                     return self;
 
-                return new DyIterator(seq.Skip(beg)); 
+                return DyIterator.Create(seq.Skip(beg)); 
             }
             
             var end = (int)toElem.GetInteger();
@@ -389,7 +403,7 @@ namespace Dyalect.Runtime.Types
             if (end < 0)
                 end = (count ?? seq.Count()) + end - 1;
 
-            return new DyIterator(seq.Skip(beg).Take(end - beg + 1));
+            return DyIterator.Create(seq.Skip(beg).Take(end - beg + 1));
         }
 
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -444,7 +458,7 @@ namespace Dyalect.Runtime.Types
         }
 
         private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, DyObject exclusive) =>
-            new DyIterator(GenerateRange(ctx, from, to, step, exclusive.GetBool()));
+            DyIterator.Create(GenerateRange(ctx, from, to, step, exclusive.GetBool()));
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch

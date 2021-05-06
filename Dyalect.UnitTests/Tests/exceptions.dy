@@ -218,34 +218,37 @@ func externalCatchTest3() {
 
 func iteratorExceptionTest1() {
     func test() {
-        var xs = [1..2]
-        var seq = xs.iter()
-        var x = seq()
-        xs.removeAt(1)
-        x = seq()
-        x + x
+        var xs = [1..10]
+        for x in xs {
+            xs.add(3)
+        }
     }
     var b = try {
         test()
     } catch e {
-        e::detail.contains("iterator")
+        e::detail.contains("modified after the iterator was instantiated")
     }
     assert(true, b)
 }
 
 func iteratorExceptionTest2() {
-    func test() {
-        var xs = [1..2]
-        var seq = xs.iter()
-        var x = seq()
-        xs.addRange(yields { 3, 4, 5 })
-        x = seq()
-        x + x
+    func test0() {
+        var xs = [1..10]
+        for x in xs {
+            xs[x-1] = x + x
+        }
     }
+    func test() {
+        var xs = [1..10]
+        for x in xs {
+            xs.remove(x)
+        }
+    }
+    test0()
     var b = try {
         test()
     } catch e {
-        e::detail.contains("iterator")
+        e::detail.contains("modified after the iterator was instantiated")
     }
     assert(true, b)
 }

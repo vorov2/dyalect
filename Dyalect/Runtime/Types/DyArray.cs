@@ -240,7 +240,7 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyArray)self;
 
-            foreach (var o in DyIterator.Run(ctx, val))
+            foreach (var o in DyIterator.ToEnumerable(ctx, val))
             {
                 if (ctx.HasErrors)
                     break;
@@ -354,7 +354,7 @@ namespace Dyalect.Runtime.Types
             if (idx < 0 || idx > arr.Count)
                 return ctx.IndexOutOfRange();
 
-            var coll = DyIterator.Run(ctx, range);
+            var coll = DyIterator.ToEnumerable(ctx, range);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
@@ -368,7 +368,7 @@ namespace Dyalect.Runtime.Types
         private DyObject RemoveRange(ExecutionContext ctx, DyObject self, DyObject items)
         {
             var arr = (DyArray)self;
-            var coll = DyIterator.Run(ctx, items);
+            var coll = DyIterator.ToEnumerable(ctx, items);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
@@ -471,6 +471,9 @@ namespace Dyalect.Runtime.Types
         {
             var size = sizeObj.GetInteger();
             var arr = new DyObject[size];
+
+            if (val.TypeId == DyType.Iterator)
+                val = ((DyIterator)val).GetIteratorFunction();
 
             if (val is DyFunction func)
             {

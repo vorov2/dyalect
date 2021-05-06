@@ -5,6 +5,7 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyForeignFunction : DyFunction
     {
+        #region Nested types
         private sealed class CompositionContainer : DyForeignFunction
         {
             private readonly DyFunction first;
@@ -119,18 +120,6 @@ namespace Dyalect.Runtime.Types
             internal override bool Equals(DyFunction func) => func is StaticFunction0 m && m.fun.Equals(fun);
         }
 
-        private sealed class StaticAutoFunction : BaseStaticFunction
-        {
-            private readonly Func<ExecutionContext, DyObject> fun;
-
-            public StaticAutoFunction(Func<ExecutionContext, DyObject> fun, Par[] pars)
-                : base(null, pars, -1) => this.fun = fun;
-
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx);
-
-            internal override bool Equals(DyFunction func) => func is StaticAutoFunction m && m.fun.Equals(fun);
-        }
-
         private sealed class StaticFunction1 : BaseStaticFunction
         {
             private readonly Func<ExecutionContext, DyObject, DyObject> fun;
@@ -190,6 +179,7 @@ namespace Dyalect.Runtime.Types
 
             internal override bool Equals(DyFunction func) => func is StaticFunction5 m && m.fun.Equals(fun);
         }
+        #endregion
 
         private readonly string name;
 

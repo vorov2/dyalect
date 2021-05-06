@@ -516,8 +516,9 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();
 
-        private DyObject GetIterator(ExecutionContext ctx, DyObject self) =>
-            self is IEnumerable<DyObject> en ? new DyIterator(en)
+        private DyObject GetIterator(ExecutionContext ctx, DyObject self) => 
+            self is IEnumerable<DyObject> en 
+            ? DyIterator.Create(en)
             : ctx.OperationNotSupported(Builtins.Iterator, self.GetTypeName(ctx));
         
         public override int GetHashCode() => TypeCode.GetHashCode();

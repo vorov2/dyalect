@@ -194,7 +194,7 @@ namespace Dyalect.Runtime.Types
                 }
             }
 
-            return new DyIterator(Iterate());
+            return DyIterator.Create(Iterate());
         }
 
         private DyObject GetFirst(ExecutionContext ctx, DyObject self) =>

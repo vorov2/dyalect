@@ -109,7 +109,7 @@ namespace Dyalect.Runtime.Types
         internal DyObject[] Concat(ExecutionContext ctx, DyObject right)
         {
             var newArr = new List<DyObject>(GetValues());
-            var coll = DyIterator.Run(ctx, right);
+            var coll = DyIterator.ToEnumerable(ctx, right);
 
             if (ctx.HasErrors)
                 return Array.Empty<DyObject>();
@@ -128,7 +128,7 @@ namespace Dyalect.Runtime.Types
 
             foreach (var v in vals)
             {
-                arr.AddRange(DyIterator.Run(ctx, v));
+                arr.AddRange(DyIterator.ToEnumerable(ctx, v));
 
                 if (ctx.HasErrors)
                     break;
@@ -176,7 +176,7 @@ namespace Dyalect.Runtime.Types
             if (len < 0)
                 return ctx.IndexOutOfRange();
 
-            return new DyIterator(new DyCollectionEnumerable(arr, beg, len, coll));
+            return DyIterator.Create(new DyCollectionEnumerable(arr, beg, len, coll));
         }
 
         protected DyObject GetIndices(ExecutionContext ctx, DyObject self, DyObject[] args)
@@ -189,7 +189,7 @@ namespace Dyalect.Runtime.Types
                     yield return DyInteger.Get(i);
             }
 
-            return new DyIterator(Iterate());
+            return DyIterator.Create(Iterate());
         }
 
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>

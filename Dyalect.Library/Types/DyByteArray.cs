@@ -55,7 +55,7 @@ namespace Dyalect.Library.Types
 
         private DyObject New(ExecutionContext ctx, DyObject arg)
         {
-            var vals = DyIterator.Run(ctx, arg);
+            var vals = DyIterator.ToEnumerable(ctx, arg);
             var arr =  vals.Select(o => o.ToObject()).Select(Convert.ToByte).ToArray();
             return new DyByteArray(ctx.RuntimeContext, DeclaringUnit, arr);
         }

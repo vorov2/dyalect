@@ -882,12 +882,12 @@ PRODUCTIONS
             .)
             (
                 (
-                    (. if (la.AfterEol) return; .)
+                    //(. if (la.AfterEol) return; .)
                     "+" (. ot = t; op = BinaryOperator.Add; .)
                 )
                 |
                 (
-                    (. if (la.AfterEol) return; .)
+                    //(. if (la.AfterEol) return; .)
                     "-" (. ot = t; op = BinaryOperator.Sub; .)
                 )
             )

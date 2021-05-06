@@ -37,7 +37,7 @@ namespace Dyalect.Runtime.Types
             public void Dispose() { }
 
             public bool MoveNext() =>
-                version != obj.version ? throw new DyIterator.IterationException() : enumerator.MoveNext();
+                version != obj.version ? throw new IterationException() : enumerator.MoveNext();
 
             public void Reset() => enumerator.Reset();
         }

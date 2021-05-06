@@ -1,5 +1,6 @@
 # 0.23.0
   * Fix: _Iterator state is not correctly restored_ ([Issue #464](https://github.com/vorov2/dyalect/issues/464)).
+  * Fix: _Parser error_ ([Issue #466](https://github.com/vorov2/dyalect/issues/466)).
 
 # 0.22.1
   * _Code refactoring (nullable reference types)._

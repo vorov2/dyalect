@@ -356,6 +356,7 @@ namespace Dyalect.Compiler
 
             cw.MarkLabel(initSkip);
             AddLinePragma(node);
+            cw.GetIter();
             cw.PopVar(sys);
 
             var iter = cw.DefineLabel();

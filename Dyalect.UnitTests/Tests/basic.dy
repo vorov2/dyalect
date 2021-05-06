@@ -436,3 +436,20 @@ func nullConditional4() {
     let res = fn()?(42)
     assert(nil , res)
 }
+
+func sumTest() {
+    var x = 2
+        + 3
+        + 5
+        + 6
+    assert(16, x)
+    var y = 12
+        + 
+        -44
+    assert(-32, y)
+    var z = 12
+        + -3
+        --12
+        -44
+    assert(-23, z)
+}
