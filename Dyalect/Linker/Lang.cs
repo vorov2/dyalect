@@ -231,6 +231,28 @@ namespace Dyalect.Linker
             }
         }
 
+        [Function("__invoke")]
+        public DyObject Invoke(ExecutionContext ctx, DyObject func, [VarArg]DyObject values)
+        {
+            var fn = (DyFunction)func;
+            var arr = ((DyTuple)values).Values;
+
+            if (arr.Length == 0)
+                return fn.Call0(ctx);
+            else if (arr.Length == 1)
+                return fn.Call1(arr[0], ctx);
+            else if (arr.Length == 2)
+                return fn.Call2(arr[0], arr[1], ctx);
+            else
+                return fn.Call(ctx, arr);
+        }
+
+        [Function("__five")]
+        public DyObject Five(ExecutionContext _, [Default(0)]DyObject a, [Default(0)]DyObject b, [Default(0)]DyObject c, [Default(0)]DyObject d, [Default(0)]DyObject e)
+        {
+            return new DyTuple(new[] { a, b, c, d, e });
+        }
+
         [Function("eval")]
         public DyObject Eval(ExecutionContext ctx, DyObject source, DyObject args)
         {

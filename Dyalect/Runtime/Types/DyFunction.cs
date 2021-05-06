@@ -20,7 +20,19 @@ namespace Dyalect.Runtime.Types
 
         internal abstract DyFunction BindToInstance(ExecutionContext ctx, DyObject arg);
 
-        public abstract DyObject Call(ExecutionContext ctx, params DyObject[] args);
+
+        protected abstract DyObject InternalCall(ExecutionContext ctx, params DyObject[] args);
+
+        public DyObject Call(ExecutionContext ctx, params DyObject[] args)
+        {
+            args = PrepareArguments(ctx, args);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            return InternalCall(ctx, args);
+
+        }
 
         internal virtual DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
         {
@@ -52,9 +64,9 @@ namespace Dyalect.Runtime.Types
             return Call(ctx, args);
         }
 
-        private DyObject[] PrepareArguments(ExecutionContext ctx, params DyObject[] locals)
+        protected DyObject[] PrepareArguments(ExecutionContext ctx, params DyObject[] locals)
         {
-            if (Parameters.Length == locals.Length)
+            if (Parameters.Length == 0)
                 return locals;
 
             if (locals.Length > Parameters.Length)

@@ -87,7 +87,7 @@ namespace Dyalect.Runtime.Types
         public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), DyType.Function, -1) =>
             this.enumerable = enumerable;
 
-        public override DyObject Call(ExecutionContext ctx, params DyObject[] args) =>
+        protected override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) =>
             (enumerator ??= enumerable.GetEnumerator()).MoveNext() ? enumerator.Current : DyNil.Terminator;
 
         internal override void Reset(ExecutionContext ctx) => enumerator = null;

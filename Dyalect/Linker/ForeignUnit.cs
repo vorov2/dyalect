@@ -142,6 +142,9 @@ namespace Dyalect.Linker
                 if (parsMeta.Length == 4)
                     return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
 
+                if (parsMeta.Length == 5)
+                    return DyForeignFunction.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
+                
                 throw new DyException(LinkerErrors.TooManyParameters.Format(mi.Name));
             }
             else

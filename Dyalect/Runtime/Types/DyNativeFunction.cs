@@ -49,7 +49,7 @@ namespace Dyalect.Runtime.Types
             };
         }
 
-        public override DyObject Call(ExecutionContext ctx, params DyObject[] args)
+        protected override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args)
         {
             if (args == null)
                 args = Array.Empty<DyObject>();
@@ -68,7 +68,9 @@ namespace Dyalect.Runtime.Types
                 argCount = VarArgIndex;
             }
 
-            if (Parameters.Length != argCount && !ProcessArguments(ctx, locs, argCount))
+            locs = PrepareArguments(ctx, locs);
+            
+            if (Parameters.Length != argCount && !ProcessArguments(ctx, locs))
                 return DyNil.Instance;
 
             for (var i = 0; i < argCount; i++)
@@ -78,11 +80,11 @@ namespace Dyalect.Runtime.Types
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
 
-        private bool ProcessArguments(ExecutionContext ctx, DyObject[] locs, int passed)
+        private bool ProcessArguments(ExecutionContext ctx, DyObject[] locs)
         {
-            if (Parameters.Length < passed)
+            if (Parameters.Length < locs.Length)
             {
-                ctx.TooManyArguments(FunctionName, Parameters.Length, passed);
+                ctx.TooManyArguments(FunctionName, Parameters.Length, locs.Length);
                 return false;
             }
             else
@@ -105,12 +107,13 @@ namespace Dyalect.Runtime.Types
         internal override DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var locs = CreateLocals(ctx);
-
-            if (Parameters.Length != 2 && !ProcessArguments(ctx, locs, 2))
-                return DyNil.Instance;
-
             locs[0] = left;
             locs[1] = right;
+            locs = PrepareArguments(ctx, locs);
+
+            if (Parameters.Length != 2 && !ProcessArguments(ctx, locs))
+                return DyNil.Instance;
+
             ctx.CallStack.Push(Caller.External);
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
@@ -118,11 +121,12 @@ namespace Dyalect.Runtime.Types
         internal override DyObject Call1(DyObject obj, ExecutionContext ctx)
         {
             var locs = CreateLocals(ctx);
+            locs[0] = obj;
+            locs = PrepareArguments(ctx, locs);
 
-            if (Parameters.Length != 1 && !ProcessArguments(ctx, locs, 2))
+            if (Parameters.Length != 1 && !ProcessArguments(ctx, locs))
                 return DyNil.Instance;
 
-            locs[0] = obj;
             ctx.CallStack.Push(Caller.External);
             return DyMachine.ExecuteWithData(this, locs, ctx);
         }
@@ -130,8 +134,9 @@ namespace Dyalect.Runtime.Types
         internal override DyObject Call0(ExecutionContext ctx)
         {
             var locs = CreateLocals(ctx);
+            locs = PrepareArguments(ctx, locs);
 
-            if (Parameters.Length != 0 && !ProcessArguments(ctx, locs, 2))
+            if (Parameters.Length != 0 && !ProcessArguments(ctx, locs))
                 return DyNil.Instance;
 
             ctx.CallStack.Push(Caller.External);
