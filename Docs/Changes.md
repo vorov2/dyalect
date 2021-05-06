@@ -4,6 +4,7 @@
   * Fix: _External call for function with defaults_ ([Issue #467](https://github.com/vorov2/dyalect/issues/467)).
   * Add: _Iterator: add `elementAt` method_ ([Issue #463](https://github.com/vorov2/dyalect/issues/463), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#element)).
   * Add: _Iterator: add static `empty` and `repeat` methods_ ([Issue #460](https://github.com/vorov2/dyalect/issues/460), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#empty)).
+  * Add: _Internal redesign of iterators_ ([Issue #465](https://github.com/vorov2/dyalect/issues/465)).
 
 # 0.22.1
   * _Code refactoring (nullable reference types)._
