@@ -7,6 +7,8 @@ namespace Dyalect.Runtime.Types
 {
     public class DyTuple : DyCollection, IEnumerable<DyObject>
     {
+        internal static readonly DyTuple Empty = new DyTuple(Array.Empty<DyObject>());
+
         internal readonly DyObject[] Values;
 
         public override int Count => Values.Length;

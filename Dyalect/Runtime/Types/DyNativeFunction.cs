@@ -55,25 +55,12 @@ namespace Dyalect.Runtime.Types
                 args = Array.Empty<DyObject>();
 
             var locs = CreateLocals(ctx);
-            var argCount = args.Length;
-
-            if (VarArgIndex != -1 && args.Length >= VarArgIndex)
-            {
-                var arr = new DyObject[args.Length];
-                locs[VarArgIndex] = new DyTuple(arr);
-
-                for (var i = VarArgIndex; i < args.Length; i++)
-                    arr[i] = args[i];
-
-                argCount = VarArgIndex;
-            }
-
             locs = PrepareArguments(ctx, locs);
             
-            if (Parameters.Length != argCount && !ProcessArguments(ctx, locs))
+            if (Parameters.Length != args.Length && !ProcessArguments(ctx, locs))
                 return DyNil.Instance;
 
-            for (var i = 0; i < argCount; i++)
+            for (var i = 0; i < args.Length; i++)
                 locs[i] = args[i];
 
             ctx.CallStack.Push(Caller.External);

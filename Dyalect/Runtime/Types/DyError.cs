@@ -30,7 +30,7 @@ namespace Dyalect.Runtime.Types
 
             if (str is not null)
             {
-                if (DataItems is not null)
+                if (DataItems is not null && DataItems.Length > 0)
                     str = str.Format(DataItems);
 
                 return str;

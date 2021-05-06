@@ -75,18 +75,19 @@ namespace Dyalect.Runtime.Types
                 return null!;
             }
 
-            var cont = new ArgContainer
+            DyObject[] newLocals;
+
+            if (locals.Length == Parameters.Length)
+                newLocals = locals;
+            else
             {
-                Locals = new DyObject[Parameters.Length],
-                VarArgsIndex = VarArgIndex,
-                VarArgs = VarArgIndex > -1 ? new() : null
-            };
+                newLocals = new DyObject[Parameters.Length];
+                if (locals.Length > 0)
+                    Array.Copy(locals, newLocals, locals.Length);
+            }
 
-            if (locals.Length > 0)
-                Array.Copy(locals, cont.Locals, locals.Length);
-
-            DyMachine.FillDefaults(cont, this, ctx);
-            return cont.Locals;
+            DyMachine.FillDefaults(newLocals, this, ctx);
+            return newLocals;
         }
 
         internal int GetParameterIndex(string name)

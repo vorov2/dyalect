@@ -643,15 +643,21 @@ namespace Dyalect.Runtime
             return new DyTuple(arr);
         }
 
-        internal static void FillDefaults(ArgContainer cont, DyFunction callFun, ExecutionContext ctx)
+        private static void FillDefaults(ArgContainer cont, DyFunction callFun, ExecutionContext ctx)
         {
-            var pars = callFun.Parameters;
             var locals = cont.Locals;
 
             if (callFun.VarArgIndex > -1)
-                locals[callFun.VarArgIndex] = cont.VarArgs is null ? null! :
+                locals[callFun.VarArgIndex] = cont.VarArgs is null ? DyTuple.Empty :
                     new DyTuple(cont.VarArgs.ToArray() ?? Array.Empty<DyObject>());
 
+            FillDefaults(cont.Locals, callFun, ctx);
+        }
+
+        internal static void FillDefaults(DyObject[] locals, DyFunction callFun, ExecutionContext ctx)
+        {
+            var pars = callFun.Parameters;
+            
             for (var i = 0; i < pars.Length; i++)
             {
                 if (locals[i] is null)
