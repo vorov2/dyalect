@@ -180,7 +180,7 @@ namespace Dyalect.Compiler
             var hasCtorScope = false;
             TypeInfo lti = null!;
             var localTypeMember = node.IsMemberFunction && node.TypeName!.Parent is null
-                && TryGetLocalType(node.TypeName.Local, out lti!);
+                && TryGetLocalType(node.TypeName.Local, out lti);
 
             if (localTypeMember && !node.IsConstructor)
             {

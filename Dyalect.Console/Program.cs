@@ -119,7 +119,7 @@ namespace Dyalect
                 try
 #endif
                 {
-                    ObjectFileWriter.Write(outFile, unit!);
+                    ObjectFileWriter.Write(outFile, unit);
                     Printer.Information($"Compilation completed. File saved: \"{outFile}\"");
                 }
 #if !DEBUG

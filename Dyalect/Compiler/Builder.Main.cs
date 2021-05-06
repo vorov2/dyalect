@@ -502,13 +502,14 @@ namespace Dyalect.Compiler
             var push = hints.Remove(Pop).Append(Push);
             var skip = cw.DefineLabel();
 
+            //An indexer with compile time string which can be a reference to a module (and can be optimized away)
             if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks is null
-                && node.Target.NodeType == NodeType.Name)
+                && node.Target.NodeType == NodeType.Name && !options.NoOptimizations)
             {
-                var nm = node.Target.GetName();
-                var sv = GetVariable(nm!, node.Target, err: false);
+                var nm = node.Target.GetName()!;
+                var sv = GetVariable(nm, node.Target, err: false);
 
-                if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm!, out var ru))
+                if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
                 {
                     if (ru.Unit.ExportList.TryGetValue(str.Value, out var var))
                     {
