@@ -23,7 +23,7 @@ namespace Dyalect.Runtime.Types
 
             if (fun is not null)
             {
-                var ret = fun.Call2(x, y, ctx);
+                var ret = fun.Call(ctx, x, y);
                 return ret.TypeId != DyType.Integer
                     ? (ret.TypeId == DyType.Float ? (int)ret.GetFloat() : 0)
                     : (int)ret.GetInteger();

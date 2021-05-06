@@ -65,7 +65,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Add(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (add is not null)
-                return add.BindToInstance(ctx, left).Call1(right, ctx);
+                return add.BindToInstance(ctx, left).Call(ctx, right);
 
             return AddOp(left, right, ctx);
         }
@@ -77,7 +77,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Sub(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (sub is not null)
-                return sub.BindToInstance(ctx, left).Call1(right, ctx);
+                return sub.BindToInstance(ctx, left).Call(ctx, right);
             return SubOp(left, right, ctx);
         }
 
@@ -88,7 +88,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Mul(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (mul is not null)
-                return mul.BindToInstance(ctx, left).Call1(right, ctx);
+                return mul.BindToInstance(ctx, left).Call(ctx, right);
             return MulOp(left, right, ctx);
         }
 
@@ -99,7 +99,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Div(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (div is not null)
-                return div.BindToInstance(ctx, left).Call1(right, ctx);
+                return div.BindToInstance(ctx, left).Call(ctx, right);
             return DivOp(left, right, ctx);
         }
 
@@ -110,7 +110,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Rem(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (rem is not null)
-                return rem.BindToInstance(ctx, left).Call1(right, ctx);
+                return rem.BindToInstance(ctx, left).Call(ctx, right);
             return RemOp(left, right, ctx);
         }
 
@@ -121,7 +121,7 @@ namespace Dyalect.Runtime.Types
         public DyObject ShiftLeft(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (shl is not null)
-                return shl.BindToInstance(ctx, left).Call1(right, ctx);
+                return shl.BindToInstance(ctx, left).Call(ctx, right);
             return ShiftLeftOp(left, right, ctx);
         }
 
@@ -132,7 +132,7 @@ namespace Dyalect.Runtime.Types
         public DyObject ShiftRight(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (shr is not null)
-                return shr.BindToInstance(ctx, left).Call1(right, ctx);
+                return shr.BindToInstance(ctx, left).Call(ctx, right);
             return ShiftRightOp(left, right, ctx);
         }
 
@@ -143,7 +143,7 @@ namespace Dyalect.Runtime.Types
         public DyObject And(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (and is not null)
-                return and.BindToInstance(ctx, left).Call1(right, ctx);
+                return and.BindToInstance(ctx, left).Call(ctx, right);
             return AndOp(left, right, ctx);
         }
 
@@ -154,7 +154,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Or(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (or is not null)
-                return or.BindToInstance(ctx, left).Call1(right, ctx);
+                return or.BindToInstance(ctx, left).Call(ctx, right);
             return OrOp(left, right, ctx);
         }
 
@@ -165,7 +165,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Xor(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (xor is not null)
-                return xor.BindToInstance(ctx, left).Call1(right, ctx);
+                return xor.BindToInstance(ctx, left).Call(ctx, right);
             return XorOp(left, right, ctx);
         }
 
@@ -176,7 +176,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Eq(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (eq is not null)
-                return eq.BindToInstance(ctx, left).Call1(right, ctx);
+                return eq.BindToInstance(ctx, left).Call(ctx, right);
             if (right.TypeId is DyType.Bool)
                 return left.GetBool() == right.GetBool() ? DyBool.True : DyBool.False;
             return EqOp(left, right, ctx);
@@ -189,7 +189,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Neq(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (neq is not null)
-                return neq.BindToInstance(ctx, left).Call1(right, ctx);
+                return neq.BindToInstance(ctx, left).Call(ctx, right);
             return NeqOp(left, right, ctx);
         }
 
@@ -200,7 +200,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Gt(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (gt is not null)
-                return gt.BindToInstance(ctx, left).Call1(right, ctx);
+                return gt.BindToInstance(ctx, left).Call(ctx, right);
             return GtOp(left, right, ctx);
         }
 
@@ -211,7 +211,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Lt(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (lt is not null)
-                return lt.BindToInstance(ctx, left).Call1(right, ctx);
+                return lt.BindToInstance(ctx, left).Call(ctx, right);
             return LtOp(left, right, ctx);
         }
 
@@ -226,7 +226,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Gte(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (gte is not null)
-                return gte.BindToInstance(ctx, left).Call1(right, ctx);
+                return gte.BindToInstance(ctx, left).Call(ctx, right);
             return GteOp(left, right, ctx);
         }
 
@@ -241,7 +241,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Lte(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (lte is not null)
-                return lte.BindToInstance(ctx, left).Call1(right, ctx);
+                return lte.BindToInstance(ctx, left).Call(ctx, right);
             return LteOp(left, right, ctx);
         }
         #endregion
@@ -254,7 +254,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Neg(ExecutionContext ctx, DyObject arg)
         {
             if (neg is not null)
-                return neg.BindToInstance(ctx, arg).Call0(ctx);
+                return neg.BindToInstance(ctx, arg).Call(ctx);
             return NegOp(arg, ctx);
         }
 
@@ -265,7 +265,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Plus(ExecutionContext ctx, DyObject arg)
         {
             if (plus is not null)
-                return plus.BindToInstance(ctx, arg).Call0(ctx);
+                return plus.BindToInstance(ctx, arg).Call(ctx);
             return PlusOp(arg, ctx);
         }
 
@@ -276,7 +276,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Not(ExecutionContext ctx, DyObject arg)
         {
             if (not is not null)
-                return not.BindToInstance(ctx, arg).Call0(ctx);
+                return not.BindToInstance(ctx, arg).Call(ctx);
             return NotOp(arg, ctx);
         }
 
@@ -287,7 +287,7 @@ namespace Dyalect.Runtime.Types
         public DyObject BitwiseNot(ExecutionContext ctx, DyObject arg)
         {
             if (bitnot is not null)
-                return bitnot.BindToInstance(ctx, arg).Call0(ctx);
+                return bitnot.BindToInstance(ctx, arg).Call(ctx);
             return BitwiseNotOp(arg, ctx);
         }
 
@@ -298,7 +298,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Length(ExecutionContext ctx, DyObject arg)
         {
             if (len is not null)
-                return len.BindToInstance(ctx, arg).Call0(ctx);
+                return len.BindToInstance(ctx, arg).Call(ctx);
             return LengthOp(arg, ctx);
         }
 
@@ -309,7 +309,7 @@ namespace Dyalect.Runtime.Types
         {
             if (tos is not null)
             {
-                var retval = tos.BindToInstance(ctx, arg).Call0(ctx);
+                var retval = tos.BindToInstance(ctx, arg).Call(ctx);
                 return retval.TypeId is DyType.String ? (DyString)retval : DyString.Empty;
             }
 
@@ -325,7 +325,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
         {
             if (get is not null)
-                return get.BindToInstance(ctx, self).Call1(index, ctx);
+                return get.BindToInstance(ctx, self).Call(ctx, index);
 
             return GetOp(self, index, ctx);
         }
@@ -337,7 +337,7 @@ namespace Dyalect.Runtime.Types
         public DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
             if (set is not null)
-                return set.BindToInstance(ctx, self).Call2(index, value, ctx);
+                return set.BindToInstance(ctx, self).Call(ctx, index, value);
 
             return SetOp(self, index, value, ctx);
         }

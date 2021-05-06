@@ -382,3 +382,16 @@ func exprBody1() {
     }
     assert(9, sum3(2, 3, 4))
 }
+
+func funcWithDefaults1() {
+    func double(x = 2) => x + x
+    func sum2(x, y = 3) => x + y
+    func sum3(x = 1, y = 0.5, z = 0.25) => x + y + z
+    assert(4, __invoke(double))
+    assert(6.33, __invoke(sum2, 3.33))
+    assert(1.75, __invoke(sum3))
+}
+
+func funcWithDefaults2() {
+    assert(12.12, __invoke(round, 12.1245677))
+}

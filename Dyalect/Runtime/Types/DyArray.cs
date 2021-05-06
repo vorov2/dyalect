@@ -424,7 +424,7 @@ namespace Dyalect.Runtime.Types
 
             foreach (var o in arr)
             {
-                var res = fun.Call1(o, ctx);
+                var res = fun.Call(ctx, o);
                 if (ctx.HasErrors)
                     return DyNil.Instance;
 
@@ -479,7 +479,7 @@ namespace Dyalect.Runtime.Types
             {
                 for (var i = 0; i < size; i++)
                 {
-                    var res = func.Call0(ctx);
+                    var res = func.Call(ctx);
 
                     if (ctx.HasErrors)
                         return DyNil.Instance;

@@ -49,85 +49,25 @@ namespace Dyalect.Runtime.Types
             };
         }
 
-        protected override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args)
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args)
         {
-            if (args == null)
-                args = Array.Empty<DyObject>();
+            var size = GetLayout(ctx).Size;
+            DyObject[] locals;
 
-            var locs = CreateLocals(ctx);
-            locs = PrepareArguments(ctx, locs);
-            
-            if (Parameters.Length != args.Length && !ProcessArguments(ctx, locs))
-                return DyNil.Instance;
-
-            for (var i = 0; i < args.Length; i++)
-                locs[i] = args[i];
-
-            ctx.CallStack.Push(Caller.External);
-            return DyMachine.ExecuteWithData(this, locs, ctx);
-        }
-
-        private bool ProcessArguments(ExecutionContext ctx, DyObject[] locs)
-        {
-            if (Parameters.Length < locs.Length)
+            if (size == args.Length)
+                locals = args;
+            else if (size > 0)
             {
-                ctx.TooManyArguments(FunctionName, Parameters.Length, locs.Length);
-                return false;
+                locals = CreateLocals(ctx);
+
+                for (var i = 0; i < args.Length; i++)
+                    locals[i] = args[i];
             }
             else
-            {
-                for (var i = 2; i < Parameters.Length; i++)
-                {
-                    if (Parameters[i].Value is not null)
-                        locs[i] = Parameters[i].Value!;
-                    else
-                    {
-                        ctx.RequiredArgumentMissing(FunctionName, Parameters[i].Name);
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        internal override DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            var locs = CreateLocals(ctx);
-            locs[0] = left;
-            locs[1] = right;
-            locs = PrepareArguments(ctx, locs);
-
-            if (Parameters.Length != 2 && !ProcessArguments(ctx, locs))
-                return DyNil.Instance;
+                locals = Array.Empty<DyObject>();
 
             ctx.CallStack.Push(Caller.External);
-            return DyMachine.ExecuteWithData(this, locs, ctx);
-        }
-
-        internal override DyObject Call1(DyObject obj, ExecutionContext ctx)
-        {
-            var locs = CreateLocals(ctx);
-            locs[0] = obj;
-            locs = PrepareArguments(ctx, locs);
-
-            if (Parameters.Length != 1 && !ProcessArguments(ctx, locs))
-                return DyNil.Instance;
-
-            ctx.CallStack.Push(Caller.External);
-            return DyMachine.ExecuteWithData(this, locs, ctx);
-        }
-
-        internal override DyObject Call0(ExecutionContext ctx)
-        {
-            var locs = CreateLocals(ctx);
-            locs = PrepareArguments(ctx, locs);
-
-            if (Parameters.Length != 0 && !ProcessArguments(ctx, locs))
-                return DyNil.Instance;
-
-            ctx.CallStack.Push(Caller.External);
-            return DyMachine.ExecuteWithData(this, locs, ctx);
+            return DyMachine.ExecuteWithData(this, locals, ctx);
         }
 
         internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId];

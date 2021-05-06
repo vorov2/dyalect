@@ -16,7 +16,7 @@ namespace Dyalect.Linker
             this.expectContext = expectContext;
         }
 
-        protected override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args)
+        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args)
         {
             dynamic val(int i) => TypeConverter.ConvertTo(args[i], fun.Types[i])!;
             object retval;

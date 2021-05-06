@@ -616,7 +616,7 @@ namespace Dyalect.Runtime
         {
             try
             {
-                return func.Call(ctx, ctx.Arguments.Pop().Locals);
+                return func.InternalCall(ctx, ctx.Arguments.Pop().Locals);
             }
             catch (IterationException)
             {

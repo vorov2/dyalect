@@ -20,70 +20,38 @@ namespace Dyalect.Runtime.Types
 
         internal abstract DyFunction BindToInstance(ExecutionContext ctx, DyObject arg);
 
-
-        protected abstract DyObject InternalCall(ExecutionContext ctx, params DyObject[] args);
+        internal abstract DyObject InternalCall(ExecutionContext ctx, DyObject[] args);
 
         public DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {
-            args = PrepareArguments(ctx, args);
+            var newArgs = PrepareArguments(ctx, args);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            return InternalCall(ctx, args);
-
+            return InternalCall(ctx, newArgs);
         }
 
-        internal virtual DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
+        protected DyObject[] PrepareArguments(ExecutionContext ctx, DyObject[] args)
         {
-            var args = PrepareArguments(ctx, left, right);
-            
-            if (ctx.HasErrors)
-                return DyNil.Instance;
+            if (Parameters.Length == 0 && args.Length == 0)
+                return args;
 
-            return Call(ctx, args);
-        }
-
-        internal virtual DyObject Call1(DyObject obj, ExecutionContext ctx)
-        {
-            var args = PrepareArguments(ctx, obj);
-            
-            if (ctx.HasErrors)
-                return DyNil.Instance;
-
-            return Call(ctx, args);
-        }
-
-        internal virtual DyObject Call0(ExecutionContext ctx)
-        {
-            var args = PrepareArguments(ctx);
-
-            if (ctx.HasErrors)
-                return DyNil.Instance;
-
-            return Call(ctx, args);
-        }
-
-        protected DyObject[] PrepareArguments(ExecutionContext ctx, params DyObject[] locals)
-        {
-            if (Parameters.Length == 0)
-                return locals;
-
-            if (locals.Length > Parameters.Length)
+            if (args.Length > Parameters.Length)
             {
-                ctx.TooManyArguments(FunctionName, Parameters.Length, locals.Length);
-                return null!;
+                ctx.TooManyArguments(FunctionName, Parameters.Length, args.Length);
+                return args;
             }
 
             DyObject[] newLocals;
 
-            if (locals.Length == Parameters.Length)
-                newLocals = locals;
+            if (args.Length == Parameters.Length)
+                newLocals = args;
             else
             {
                 newLocals = new DyObject[Parameters.Length];
-                if (locals.Length > 0)
-                    Array.Copy(locals, newLocals, locals.Length);
+                if (args.Length > 0)
+                    Array.Copy(args, newLocals, args.Length);
             }
 
             DyMachine.FillDefaults(newLocals, this, ctx);
@@ -105,7 +73,7 @@ namespace Dyalect.Runtime.Types
         {
             var sb = new StringBuilder();
 
-            if (FunctionName == null)
+            if (FunctionName is null)
                 sb.Append(DefaultName);
             else
                 sb.Append(FunctionName);

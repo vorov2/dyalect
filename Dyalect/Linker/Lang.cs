@@ -12,18 +12,18 @@ namespace Dyalect.Linker
 {
     internal sealed class Lang : ForeignUnit
     {
-        private readonly DyTuple? args;
+        private readonly DyTuple? startupArguments;
 
         public Lang() : this(null) { }
 
-        public Lang(DyTuple? args)
+        public Lang(DyTuple? startupArguments)
         {
             FileName = "lang";
-            this.args = args;
+            startupArguments = startupArguments;
         }
 
         protected override void Execute(ExecutionContext ctx) =>
-            Add("args", args ?? (DyObject)DyNil.Instance);
+            Add("args", startupArguments ?? (DyObject)DyNil.Instance);
 
         [Function("print")]
         public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
@@ -236,21 +236,7 @@ namespace Dyalect.Linker
         {
             var fn = (DyFunction)func;
             var arr = ((DyTuple)values).Values;
-
-            if (arr.Length == 0)
-                return fn.Call0(ctx);
-            else if (arr.Length == 1)
-                return fn.Call1(arr[0], ctx);
-            else if (arr.Length == 2)
-                return fn.Call2(arr[0], arr[1], ctx);
-            else
-                return fn.Call(ctx, arr);
-        }
-
-        [Function("__five")]
-        public DyObject Five(ExecutionContext _, [Default(0)]DyObject a, [Default(0)]DyObject b, [Default(0)]DyObject c, [Default(0)]DyObject d, [Default(0)]DyObject e)
-        {
-            return new DyTuple(new[] { a, b, c, d, e });
+            return fn.Call(ctx, arr);
         }
 
         [Function("eval")]
