@@ -19,7 +19,7 @@ namespace Dyalect.Linker
 
         public DyIncrementalLinker(FileLookup lookup, BuilderOptions options) : base(lookup, options) { }
 
-        public DyIncrementalLinker(FileLookup lookup, BuilderOptions options, DyTuple args) : base(lookup, options, args) { }
+        public DyIncrementalLinker(FileLookup lookup, BuilderOptions options, DyTuple? args) : base(lookup, options, args) { }
 
         protected override void Prepare()
         {

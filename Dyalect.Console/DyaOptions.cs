@@ -16,10 +16,10 @@ namespace Dyalect
         private const string TEST = "Testing settings";
 
         [Binding(Help = "A full path to the .dy file which should be executed, tested or compiled (or to the directory with files). Several files or directories can be specified.", Category = COMPILER)]
-        public string[] FileNames { get; set; }
+        public string[]? FileNames { get; set; }
 
         [Binding("out", Help = "Specifies an output directory (e.g. for a compiled file).", Category = COMPILER)]
-        public string OutputDirectory { get; set; }
+        public string? OutputDirectory { get; set; }
 
         [Binding("c", "compile", Help = "Compiles all provided files. By default an object file is placed in the same directory as compiled file (with a .dyo extension). In order to change an output directory, use -out switch.", Category = COMPILER)]
         public bool Compile { get; set; }
@@ -34,7 +34,7 @@ namespace Dyalect
         public bool NoWarnings { get; set; }
 
         [Binding("ignore", Help = "Ignore specific warnings (works for both compiler and linker). You can specify this switch multiple times, e.g.: -ignore 301 -ignore 302.", Category = GENERAL)]
-        public int[] IgnoreWarnings { get; set; }
+        public int[]? IgnoreWarnings { get; set; }
 
         [Binding("nowarnlinker", Help = "Do not generate warnings by linker.", Category = LINKER)]
         public bool NoWarningsLinker { get; set; }
@@ -43,7 +43,7 @@ namespace Dyalect
         public bool NoLang { get; set; }
 
         [Binding("path", Help = "A path where linker would look for referenced modules. You can specify this switch multiple times.", Category = LINKER)]
-        public string[] Paths { get; set; }
+        public string[]? Paths { get; set; }
 
         [Binding("nologo", Help = "Do not show logo.", Category = GENERAL)]
         public bool NoLogo { get; set; }
@@ -63,7 +63,7 @@ namespace Dyalect
         [Binding("i", Help = "Stay in interactive mode after executing a file.", Category = GENERAL)]
         public bool StayInInteractive { get; set; }
 
-        public DyTuple UserArguments { get; set; }
+        public DyTuple? UserArguments { get; set; }
 
         public override string ToString()
         {
@@ -73,7 +73,7 @@ namespace Dyalect
             {
                 if (Attribute.GetCustomAttribute(pi, typeof(BindingAttribute)) is BindingAttribute attr)
                 {
-                    var val = pi.GetValue(this);
+                    var val = pi.GetValue(this)!;
                     var byt = pi.PropertyType == typeof(bool);
                     var i4 = pi.PropertyType == typeof(int);
 
@@ -86,7 +86,7 @@ namespace Dyalect
                     list.Add((key, byt ? ""
                         : val is System.Collections.IEnumerable seq
                             ? string.Join(';', seq.OfType<object>().Select(v => v.ToString()))
-                        : val.ToString()));
+                        : val.ToString()!));
                 }
             }
 

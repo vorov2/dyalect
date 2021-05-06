@@ -11,8 +11,8 @@ namespace Dyalect
     {
         private const int ERR = -1;
         private const int OK = 0;
-        private static CommandDispatcher dispatcher;
-        private static InteractiveContext ctx;
+        private static CommandDispatcher dispatcher = null!;
+        private static InteractiveContext ctx = null!;
 
         public static int Main(string[] args)
         {
@@ -23,7 +23,7 @@ namespace Dyalect
             try
 #endif
             {
-                return Run(options) ? OK : ERR;
+                return Run(options!) ? OK : ERR;
             }
 #if !DEBUG
             catch (Exception ex)
@@ -100,7 +100,7 @@ namespace Dyalect
                 var outFile = options.OutputDirectory;
 
                 if (string.IsNullOrWhiteSpace(outFile))
-                    outFile = Path.Combine(Path.GetDirectoryName(f), Path.GetFileNameWithoutExtension(f) + ".dyo");
+                    outFile = Path.Combine(Path.GetDirectoryName(f)!, Path.GetFileNameWithoutExtension(f) + ".dyo");
                 else
                 {
                     if (!Directory.Exists(outFile))
@@ -119,7 +119,7 @@ namespace Dyalect
                 try
 #endif
                 {
-                    ObjectFileWriter.Write(outFile, unit);
+                    ObjectFileWriter.Write(outFile, unit!);
                     Printer.Information($"Compilation completed. File saved: \"{outFile}\"");
                 }
 #if !DEBUG
@@ -169,7 +169,7 @@ namespace Dyalect
             {
                 var command = cmd[1..].Trim();
                 int idx;
-                object argument = null;
+                object? argument = null;
 
                 if ((idx = command.IndexOf(' ')) != -1)
                 {
@@ -185,11 +185,11 @@ namespace Dyalect
                 return false;
         }
 
-        private static bool Prepare(string[] args, out DyaOptions options)
+        private static bool Prepare(string[] args, out DyaOptions? options)
         {
             try
             {
-                var config = ConfigReader.Read(Path.Combine(FS.GetStartupPath(), "config.json"));
+                var config = ConfigReader.Read(Path.Combine(FS.GetStartupPath(), "config.json"))!;
                 options = CommandLineReader.Read<DyaOptions>(args, config);
             }
             catch (DyaException ex)

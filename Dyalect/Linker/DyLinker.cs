@@ -277,7 +277,7 @@ namespace Dyalect.Linker
             return res.Value;
         }
 
-        private Unit ProcessObjectFile(string fileName, Reference? reference)
+        private Unit? ProcessObjectFile(string fileName, Reference? reference)
         {
 #if !DEBUG
             try

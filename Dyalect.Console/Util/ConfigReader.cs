@@ -8,7 +8,7 @@ namespace Dyalect.Util
 {
     public static class ConfigReader
     {
-        public static IDictionary<string, object> Read(string path)
+        public static IDictionary<string, object>? Read(string path)
         {
             if (!File.Exists(path))
             {
@@ -23,7 +23,7 @@ namespace Dyalect.Util
 
                 if (!json.IsSuccess)
                 {
-                    Printer.PrintErrors(json.Errors);
+                    Printer.PrintErrors(json.Errors!);
                     return null;
                 }
 

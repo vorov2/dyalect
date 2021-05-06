@@ -10,18 +10,18 @@ namespace Dyalect.Util
     {
         public const string Prefix = "#";
 
-        private Dictionary<string, CommandCallBack> commands;
+        private Dictionary<string, CommandCallBack> commands = null!;
 
         private readonly InteractiveContext ctx;
 
-        internal delegate void CommandCallBack(object arg);
+        internal delegate void CommandCallBack(object? arg);
 
         internal CommandDispatcher(InteractiveContext ctx)
         {
             this.ctx = ctx;
         }
 
-        public void Dispatch(string command, object argument)
+        public void Dispatch(string command, object? argument)
         {
             if (commands is null)
             {
@@ -116,7 +116,7 @@ namespace Dyalect.Util
         {
             var str = arg?.ToString()?.Trim('\"', '\'');
 
-            if (ctx.EvalFile(str, measureTime: false))
+            if (str is not null && ctx.EvalFile(str, measureTime: false))
                 Printer.Output($"File \"{Path.GetFileName(str)}\" successfully evaluated.");
         }
     }

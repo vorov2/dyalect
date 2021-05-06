@@ -16,6 +16,8 @@ namespace Dyalect.Util
 
         class StringValue : Value
         {
+            public StringValue() => Value = null!;
+
             public string Value;
 
             public override DyObject ToObject() => new DyString(Value);
@@ -31,15 +33,15 @@ namespace Dyalect.Util
                     Values.Add(null);
             }
 
-            public List<string> Values = new List<string>();
+            public List<string?> Values = new();
 
-            public override DyObject ToObject() => new DyTuple(Values.Select(v => new DyString(v)).ToArray());
+            public override DyObject ToObject() => new DyTuple(Values.Select(v => new DyString(v!)).ToArray());
         }
 
         public static T Read<T>(string[] args, IDictionary<string, object> config) where T : IOptionBag, new()
         {
             var options = Parse(args, config);
-            var bag = ProcessOptionBag<T>(options);
+            var bag = ProcessOptionBag<T>(options!);
 
             if (options.Count > 0)
             {
@@ -48,7 +50,7 @@ namespace Dyalect.Util
 
                 foreach (var kv in options)
                 {
-                    arr[cc++] = new DyLabel(kv.Key.TrimStart('-'), kv.Value.ToObject());
+                    arr[cc++] = new DyLabel(kv.Key.TrimStart('-'), kv.Value!.ToObject());
 
                     if (kv.Key[0] != '-')
                         throw new DyaException($"Unknown switch -{kv.Key}.");
@@ -71,8 +73,8 @@ namespace Dyalect.Util
                 if (attr is null)
                     continue;
 
-                object value = null;
-                string key = null;
+                object value = null!;
+                string key = null!;
 
                 if (attr.Names is null || attr.Names.Length == 0 || (attr.Names.Length == 1 && attr.Names[0] is null ))
                 {
@@ -90,7 +92,7 @@ namespace Dyalect.Util
                 }
                 else
                 {
-                    ArrayValue arr = null;
+                    ArrayValue arr = null!;
 
                     foreach (var n in attr.Names)
                     {
@@ -110,10 +112,10 @@ namespace Dyalect.Util
                                 else
                                     arr.Values.Add(cstr.Value);
                             }
-                            else if (opt == null)
+                            else if (opt is null)
                             {
                                 if (arr is null)
-                                    arr = new ArrayValue(null);
+                                    arr = new ArrayValue(null!);
                                 else
                                     arr.Values.Add(null);
                             }
@@ -130,10 +132,10 @@ namespace Dyalect.Util
                     {
                         if (arr.Values.Count > 1)
                             throw KeyNotArray(key);
-                        value = ConvertValue(key, arr.Values[0], pi.PropertyType);
+                        value = ConvertValue(key, arr.Values[0]!, pi.PropertyType);
                     }
                     else
-                        value = CreateArray(key, pi.PropertyType, arr.Values);
+                        value = CreateArray(key, pi.PropertyType, arr.Values!);
                 }
 
                 if (value is not null)
@@ -168,14 +170,14 @@ namespace Dyalect.Util
             else if (typ == typeof(bool) && v is null || string.Equals(bool.TrueString, v, StringComparison.OrdinalIgnoreCase))
                 return true;
             else if (typ.IsEnum && Enum.TryParse(typ, v, true, out var en))
-                return en;
+                return en!;
             else
                 throw InvalidKeyValue(key);
         }
 
         private static Array CreateArray(string key, Type typ, List<string> elements)
         {
-            var elType = typ.GetElementType();
+            var elType = typ.GetElementType()!;
             var arr = Array.CreateInstance(elType, elements.Count);
 
             for (var i = 0; i < elements.Count; i++)
@@ -188,23 +190,23 @@ namespace Dyalect.Util
 
         private static Exception KeyNotArray(string key) => new DyaException($"Command line switch -{key} doesn't support multiple values.");
 
-        private static Dictionary<string, Value> Parse(string[] args, IDictionary<string, object> config)
+        private static Dictionary<string, Value?> Parse(string[] args, IDictionary<string, object> config)
         {
-            var options = new Dictionary<string, Value>();
-            string opt = null;
+            var options = new Dictionary<string, Value?>();
+            string? opt = null;
 
-            if (config != null)
+            if (config is not null)
                 foreach (var kv in config)
-                    options.Add(kv.Key, new StringValue { Value = kv.Value.ToString(), IsDefault = true });
+                    options.Add(kv.Key, new StringValue { Value = kv.Value.ToString()!, IsDefault = true });
 
-            void AddOption(string key, string val)
+            void AddOption(string? key, string? val)
             {
                 key ??= "$default";
-                val = val?.Trim('"');
+                val = val?.Trim('"')!;
 
                 if (options.TryGetValue(key, out var oldval))
                 {
-                    if (oldval.IsDefault)
+                    if (oldval is not null && oldval.IsDefault)
                     {
                         options.Remove(key);
                         options.Add(key, new StringValue { Value = val });

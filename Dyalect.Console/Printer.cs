@@ -34,7 +34,7 @@ namespace Dyalect
                 return;
             }
 
-            if (res.Value == DyNil.Instance)
+            if (res.Value == DyNil.Instance || res.Value is null)
                 return;
 
             var fmt = Format(res.Value, res.Context);
@@ -95,7 +95,7 @@ namespace Dyalect
         public static void PrintErrors(IEnumerable<JsonError> messages)
         {
             foreach (var m in messages)
-                Error(m.ToString());
+                Error(m.ToString()!);
         }
     }
 }

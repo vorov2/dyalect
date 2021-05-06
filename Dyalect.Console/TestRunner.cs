@@ -15,11 +15,11 @@ namespace Dyalect
     {
         sealed class FunSet
         {
-            public string FileName { get; set; }
+            public string FileName { get; set; } = null!;
 
-            public ExecutionContext Context { get; set; }
+            public ExecutionContext Context { get; set; } = null!;
 
-            public Dictionary<string, DyFunction> Funs { get; set; }
+            public Dictionary<string, DyFunction> Funs { get; set; } = null!;
         }
 
         private static readonly List<string> commands = new();
@@ -148,7 +148,7 @@ namespace Dyalect
 
             foreach (var file in files)
             {
-                var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(file)), buildOptions);
+                var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(file)!), buildOptions);
                 var cres = linker.Make(SourceBuffer.FromFile(file));
                 var funs = new FunSet
                 {
@@ -160,7 +160,7 @@ namespace Dyalect
                     throw new DyBuildException(cres.Messages);
 
                 warns.AddRange(cres.Messages.Where(m => m.Type == BuildMessageType.Warning));
-                var ctx = DyMachine.CreateExecutionContext(cres.Value);
+                var ctx = DyMachine.CreateExecutionContext(cres.Value!);
                 funs.Context = ctx;
                 DyMachine.Execute(ctx);
 

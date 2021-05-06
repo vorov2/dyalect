@@ -7,7 +7,7 @@ namespace Dyalect.Util
     {
         class Dya { }
 
-        public static string GetStartupPath() => Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
+        public static string GetStartupPath() => Path.GetDirectoryName(Environment.GetCommandLineArgs()[0])!;
 
         public static string GetPathByType<T>()
         {

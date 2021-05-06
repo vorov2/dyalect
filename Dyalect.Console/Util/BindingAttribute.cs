@@ -9,8 +9,8 @@ namespace Dyalect.Util
 
         public string[] Names { get; }
 
-        public string Help { get; set; }
+        public string? Help { get; set; }
 
-        public string Category { get; set; }
+        public string? Category { get; set; }
     }
 }
