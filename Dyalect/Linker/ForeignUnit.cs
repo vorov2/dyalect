@@ -17,6 +17,7 @@ namespace Dyalect.Linker
 
         protected ForeignUnit()
         {
+            RuntimeContext = null!;
             InitializeMembers();
             UnitIds.Add(0); //Self reference, to mimic the behavior of regular units
         }
@@ -78,7 +79,7 @@ namespace Dyalect.Linker
         {
             var pars = mi.GetParameters();
             var hasContext = pars.Length > 0 && pars[0].ParameterType == typeof(ExecutionContext);
-            Par[] parsMeta = null;
+            Par[] parsMeta = null!;
 
             if (hasContext && pars.Length > 1)
                 parsMeta = new Par[pars.Length - 1];
@@ -114,14 +115,14 @@ namespace Dyalect.Linker
                     varArgIndex = i - 1;
                 }
 
-                DyObject def = null;
+                DyObject? def = null;
 
                 if (Attribute.GetCustomAttribute(p, typeof(DefaultAttribute)) is DefaultAttribute defAttr)
                     def = defAttr.Value;
                 else if (p.HasDefaultValue)
-                    def = TypeConverter.ConvertFrom(p.DefaultValue, p.ParameterType);
+                    def = TypeConverter.ConvertFrom(p.DefaultValue!, p.ParameterType);
 
-                parsMeta[i - (hasContext ? 1 : 0)] = new Par(p.Name, def, va);
+                parsMeta[i - (hasContext ? 1 : 0)] = new Par(p.Name!, def, va);
             }
 
             if (simpleSignature)

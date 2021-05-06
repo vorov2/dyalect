@@ -4,11 +4,11 @@
     {
         public DImport(Location loc) => Location = loc;
 
-        public string Alias { get; set; }
+        public string? Alias { get; set; }
 
-        public string ModuleName { get; set; }
+        public string ModuleName { get; set; } = null!;
 
-        public string LocalPath { get; set; }
+        public string? LocalPath { get; set; }
 
         public Location Location { get; }
     }

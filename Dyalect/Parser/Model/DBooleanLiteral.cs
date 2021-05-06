@@ -2,7 +2,6 @@
 
 namespace Dyalect.Parser.Model
 {
-
     public sealed class DBooleanLiteral : DNode
     {
         public DBooleanLiteral(Location loc) : base(NodeType.Boolean, loc) { }

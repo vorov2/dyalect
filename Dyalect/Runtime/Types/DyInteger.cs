@@ -36,8 +36,7 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => value.ToString(CI.Default);
 
-        public override bool Equals(DyObject obj) =>
-            obj is DyInteger i && value == i.value;
+        public override bool Equals(DyObject? obj) => obj is DyInteger i && value == i.value;
 
         public override object ToObject() => value;
 
@@ -262,7 +261,7 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(obj);
         }
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "max" => DyForeignFunction.Static(name, _ => DyInteger.Max),

@@ -14,11 +14,10 @@ namespace Dyalect
         {
             Options = options;
             BuildOptions = CreateBuildOptions(options);
+            var nofn = options.FileNames is null || options.FileNames.Length == 0 || string.IsNullOrWhiteSpace(options.FileNames[0]);
 
             var lookup = FileLookup.Create(
-                options.FileNames == null || options.FileNames.Length == 0 || string.IsNullOrWhiteSpace(options.FileNames[0])
-                    ? Environment.CurrentDirectory
-                    : Path.GetDirectoryName(options.FileNames[0]), options.Paths);
+                nofn ? Environment.CurrentDirectory! : Path.GetDirectoryName(options.FileNames![0])!, options.Paths);
             Linker = new DyIncrementalLinker(lookup, BuildOptions, options.UserArguments);
         }
 
@@ -43,7 +42,7 @@ namespace Dyalect
 
         public BuilderOptions BuildOptions { get; }
 
-        public ExecutionContext ExecutionContext { get; private set; }
+        public ExecutionContext? ExecutionContext { get; private set; }
 
         public DyLinker Linker { get; private set; }
 
@@ -66,12 +65,12 @@ namespace Dyalect
                 return false;
 
             if (ExecutionContext == null)
-                ExecutionContext = DyMachine.CreateExecutionContext(made.Value);
+                ExecutionContext = DyMachine.CreateExecutionContext(made.Value!);
 
             return Eval(measureTime: false);
         }
 
-        public bool Compile(string fileName, out Unit unit)
+        public bool Compile(string fileName, out Unit? unit)
         {
             unit = null;
             Result<Unit> made;
@@ -93,11 +92,11 @@ namespace Dyalect
             if (!made.Success)
                 return false;
 
-            unit = made.Value;
+            unit = made.Value!;
             return true;
         }
 
-        public bool Make(string fileName, out UnitComposition composition)
+        public bool Make(string fileName, out UnitComposition? composition)
         {
             composition = null;
             var made = Linker.Make(fileName);
@@ -108,7 +107,7 @@ namespace Dyalect
             if (!made.Success)
                 return false;
 
-            composition = made.Value;
+            composition = made.Value!;
             return true;
         }
 
@@ -117,8 +116,8 @@ namespace Dyalect
             if (!Make(fileName, out var composition))
                 return false;
 
-            if (ExecutionContext == null)
-                ExecutionContext = DyMachine.CreateExecutionContext(composition);
+            if (ExecutionContext is null)
+                ExecutionContext = DyMachine.CreateExecutionContext(composition!);
 
             return Eval(measureTime);
         }
@@ -130,7 +129,7 @@ namespace Dyalect
 #endif
             {
                 var dt = DateTime.Now;
-                var res = DyMachine.Execute(ExecutionContext);
+                var res = DyMachine.Execute(ExecutionContext!);
                 Printer.Output(res);
 
                 if (measureTime)

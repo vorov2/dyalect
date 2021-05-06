@@ -8,11 +8,11 @@ namespace Dyalect.Parser.Model
 
         public bool Exclusive { get; set; }
 
-        public DNode From { get; set; }
+        public DNode? From { get; set; }
 
-        public DNode To { get; set; }
+        public DNode? To { get; set; }
         
-        public DNode Step { get; set; }
+        public DNode? Step { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {

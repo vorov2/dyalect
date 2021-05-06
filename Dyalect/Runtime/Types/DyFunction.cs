@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
     public abstract class DyFunction : DyObject
     {
         internal const string DefaultName = "<func>";
-        internal DyObject Self;
+        internal DyObject? Self;
         internal Par[] Parameters;
         internal int VarArgIndex;
 
@@ -84,7 +84,7 @@ namespace Dyalect.Runtime.Types
 
         public abstract bool IsExternal { get; }
 
-        internal virtual MemoryLayout GetLayout(ExecutionContext ctx) => null;
+        internal virtual MemoryLayout? GetLayout(ExecutionContext ctx) => null;
 
         internal abstract DyObject[] CreateLocals(ExecutionContext ctx);
 
@@ -133,7 +133,7 @@ namespace Dyalect.Runtime.Types
             return new DyArray(arr);
         }
 
-        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "compose" => DyForeignFunction.Member(name, Compose, -1, new Par("with")),
@@ -157,7 +157,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "compose")
                 return DyForeignFunction.Static(name, Compose, -1, new Par("first"), new Par("second"));

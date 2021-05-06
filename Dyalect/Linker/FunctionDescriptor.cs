@@ -2,8 +2,8 @@
 {
     internal sealed class FunctionDescriptor
     {
-        public dynamic Func;
+        public dynamic? Func;
 
-        public System.Type[] Types;
+        public System.Type[]? Types;
     }
 }

@@ -24,8 +24,7 @@ namespace Dyalect.Runtime.Types
 
         public override int GetHashCode() => value.GetHashCode();
 
-        public override bool Equals(DyObject obj) =>
-            obj is DyFloat f && value == f.value;
+        public override bool Equals(DyObject? obj) => obj is DyFloat f && value == f.value;
 
         public override string ToString() => value.ToString(CI.NumberFormat);
 
@@ -160,7 +159,7 @@ namespace Dyalect.Runtime.Types
         }
         #endregion
 
-        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "isNaN" => DyForeignFunction.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
@@ -184,7 +183,7 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(obj);
         }
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "max" => DyForeignFunction.Static(name, _ => DyFloat.Max),

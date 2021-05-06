@@ -8,9 +8,9 @@ namespace Dyalect.Parser.Model
 
         public BinaryOperator? AutoAssign { get; set; }
 
-        public DNode Target { get; set; }
+        public DNode Target { get; set; } = null!;
 
-        public DNode Value { get; set; }
+        public DNode Value { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {

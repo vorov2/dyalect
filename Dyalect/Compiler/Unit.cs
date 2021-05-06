@@ -42,7 +42,7 @@ namespace Dyalect.Compiler
             TypeMap = unit.TypeMap;
         }
 
-        protected TypeDescriptor QueryType(string name)
+        protected TypeDescriptor? QueryType(string name)
         {
             if (!TypeMap.TryGetValue(name, out var t))
                 t = null;
@@ -74,11 +74,11 @@ namespace Dyalect.Compiler
 
         internal List<Op> Ops { get; }
 
-        public string FileName { get; internal set; }
+        public string? FileName { get; internal set; }
 
-        public DebugInfo Symbols { get; internal set; }
+        public DebugInfo Symbols { get; internal set; } = null!;
 
-        public Scope GlobalScope { get; internal set; }
+        public Scope? GlobalScope { get; internal set; }
 
         public List<MemoryLayout> Layouts { get; }
 

@@ -8,12 +8,12 @@
 
         sealed class ExternalCallFrame : CallFrame
         {
+            internal ExternalCallFrame() : base("", "", 0, new LineSym()) { }
+
             public override string ToString() => "\tat <external code>";
         }
 
-        private CallFrame() { }
-
-        internal CallFrame(string moduleName, string codeBlockName, int offset, LineSym lineSym)
+        internal CallFrame(string? moduleName, string codeBlockName, int offset, LineSym lineSym)
         {
             CodeBlockName = codeBlockName;
             ModuleName = moduleName;
@@ -30,7 +30,7 @@
 
         public string CodeBlockName { get; }
 
-        public string ModuleName { get; }
+        public string? ModuleName { get; }
 
         public int Offset { get; }
 

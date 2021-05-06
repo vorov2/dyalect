@@ -7,10 +7,10 @@ namespace Dyalect.Runtime.Types
 {
     internal class DyNativeFunction : DyFunction
     {
-        internal FunSym Sym;
+        internal FunSym? Sym;
         internal FastList<DyObject[]> Captures;
-        internal DyObject[] Locals;
-        internal Stack<CatchMark> CatchMarks;
+        internal DyObject[]? Locals;
+        internal Stack<CatchMark> CatchMarks = null!;
         internal int PreviousOffset;
         internal int UnitId;
         internal int FunctionId;
@@ -25,7 +25,7 @@ namespace Dyalect.Runtime.Types
             PreviousOffset = ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId].Size;
         }
 
-        internal DyNativeFunction(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) :
+        internal DyNativeFunction(FunSym? sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) :
             base(typeId, sym?.Parameters ?? Array.Empty<Par>(), varArgIndex)
         {
             Sym = sym;
@@ -59,7 +59,7 @@ namespace Dyalect.Runtime.Types
 
             if (VarArgIndex != -1 && args.Length >= VarArgIndex)
             {
-                var arr = default(DyObject[]);
+                var arr = new DyObject[args.Length];
                 locs[VarArgIndex] = new DyTuple(arr);
 
                 for (var i = VarArgIndex; i < args.Length; i++)
@@ -89,8 +89,8 @@ namespace Dyalect.Runtime.Types
             {
                 for (var i = 2; i < Parameters.Length; i++)
                 {
-                    if (Parameters[i].Value != null)
-                        locs[i] = Parameters[i].Value;
+                    if (Parameters[i].Value is not null)
+                        locs[i] = Parameters[i].Value!;
                     else
                     {
                         ctx.RequiredArgumentMissing(FunctionName, Parameters[i].Name);

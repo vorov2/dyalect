@@ -60,7 +60,7 @@ namespace Dyalect.Compiler
         {
             foreach (var fi in typeof(Op).GetFields(BindingFlags.Static | BindingFlags.Public))
             {
-                var o = (Op)fi.GetValue(null);
+                var o = (Op)fi.GetValue(null)!;
                 Ops.Add(o.Code, o);
             }
         }

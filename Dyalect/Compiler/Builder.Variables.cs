@@ -47,7 +47,7 @@ namespace Dyalect.Compiler
 
                 scope = scope.Parent;
 
-                if (scope.Kind == kind)
+                if (scope!.Kind == kind)
                     last = true;
 
                 if (scope.Kind == ScopeKind.Function)

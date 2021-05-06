@@ -6,7 +6,7 @@ namespace Dyalect.Parser
     {
         internal const int EOF = char.MaxValue + 1;
 
-        public abstract string FileName { get; }
+        public abstract string? FileName { get; }
 
         internal protected abstract int Pos { get; set; }
 
@@ -22,7 +22,7 @@ namespace Dyalect.Parser
             return new StringBuffer(sr.ReadToEnd(), file);
         }
 
-        public static SourceBuffer FromString(string str, string file = null) =>
+        public static SourceBuffer FromString(string str, string? file = null) =>
             new StringBuffer(str, file ?? "<memory>");
     }
 }

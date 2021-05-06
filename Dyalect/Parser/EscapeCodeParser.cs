@@ -8,9 +8,9 @@ namespace Dyalect.Parser
 {
     internal static class EscapeCodeParser
     {
-        public static bool Parse(string fileName, Location loc, string str, List<BuildMessage> messages, out string value, out List<StringChunk> chunks)
+        public static bool Parse(string? fileName, Location loc, string str, List<BuildMessage> messages, out string? value, out List<StringChunk>? chunks)
         {
-            if (str?.Length < 2)
+            if (str is null || str.Length < 2)
             {
                 value = str;
                 chunks = null;
@@ -93,9 +93,7 @@ namespace Dyalect.Parser
                                         if (ns[0] == ' ' || ns[0] == '\t' || ns[3] == ' ' || ns[3] == '\t')
                                             return InvalidLiteral(messages, loc, fileName, i);
 
-                                        int ci;
-
-                                        if (!int.TryParse(ns, NumberStyles.HexNumber, CI.Default.NumberFormat, out ci))
+                                        if (!int.TryParse(ns, NumberStyles.HexNumber, CI.Default.NumberFormat, out var ci))
                                             return InvalidLiteral(messages, loc, fileName, i);
                                         else
                                         {
@@ -125,7 +123,7 @@ namespace Dyalect.Parser
             return true;
         }
 
-        private static string Balance(ref int i, char[] buffer)
+        private static string? Balance(ref int i, char[] buffer)
         {
             var b = 0;
             var start = i;
@@ -146,13 +144,13 @@ namespace Dyalect.Parser
             return null;
         }
 
-        private static bool InvalidLiteral(List<BuildMessage> messages, Location baseLocation, string fileName, int offset)
+        private static bool InvalidLiteral(List<BuildMessage> messages, Location baseLocation, string? fileName, int offset)
         {
             messages.Add(new BuildMessage(ParserErrors.InvalidEscapeCode, BuildMessageType.Error, (int)ParserError.InvalidEscapeCode, baseLocation.Line, baseLocation.Column + offset, fileName));
             return false;
         }
 
-        private static bool InvalidCodeIsland(List<BuildMessage> messages, Location baseLocation, string fileName, int offset)
+        private static bool InvalidCodeIsland(List<BuildMessage> messages, Location baseLocation, string? fileName, int offset)
         {
             messages.Add(new BuildMessage(ParserErrors.CodeIslandInvalid, BuildMessageType.Error, (int)ParserError.CodeIslandInvalid, baseLocation.Line, baseLocation.Column + offset, fileName));
             return false;

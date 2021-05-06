@@ -36,10 +36,10 @@ namespace Dyalect.Runtime.Types
             if (!TryGetMember(index.GetString(), ctx, out var value))
                 return ctx.IndexOutOfRange();
 
-            return value;
+            return value!;
         }
 
-        internal bool TryGetMember(string name, ExecutionContext ctx, out DyObject value)
+        internal bool TryGetMember(string name, ExecutionContext ctx, out DyObject? value)
         {
             value = null;
 
@@ -115,7 +115,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Module")
                 return DyForeignFunction.Static(name, c => new DyModule(c.RuntimeContext.Composition.Units[0], c.RuntimeContext.Units[0]));

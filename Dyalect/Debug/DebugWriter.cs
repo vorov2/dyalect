@@ -28,7 +28,7 @@ namespace Dyalect.Debug
 
         public DebugWriter Clone() => new(this);
 
-        public void StartFunction(string name, int offset, Par[] pars = null) =>
+        public void StartFunction(string name, int offset, Par[]? pars = null) =>
             funs.Push(new(name, offset, pars ?? Array.Empty<Par>()));
         
         public void EndFunction(int handle, int offset)
@@ -59,6 +59,6 @@ namespace Dyalect.Debug
         
         public DebugInfo Symbols { get; }
 
-        public VarSym LastVarSym { get; private set; }
+        public VarSym? LastVarSym { get; private set; }
     }
 }

@@ -17,6 +17,7 @@
       <RootNamespace>Dyalect</RootNamespace>
       <PackageProjectUrl>https://github.com/vorov2/dyalect</PackageProjectUrl>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
+      <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

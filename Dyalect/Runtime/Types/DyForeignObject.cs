@@ -17,17 +17,16 @@ namespace Dyalect.Runtime.Types
 
         protected DyForeignObject(RuntimeContext rtx, Unit unit) : this(rtx, unit, null) { }
 
-        protected DyForeignObject(RuntimeContext rtx, Unit unit, string ctor) : base(GetTypeId(rtx)) =>
+        protected DyForeignObject(RuntimeContext rtx, Unit unit, string? ctor) : base(GetTypeId(rtx)) =>
             (RuntimeContext, DeclaringUnit, Constructor) = (rtx, unit,ctor);
 
         public RuntimeContext RuntimeContext { get; }
 
         public Unit DeclaringUnit { get; }
 
-        public string Constructor { get; }
+        public string? Constructor { get; }
 
-        public override string GetConstructor(ExecutionContext ctx) =>
-            Constructor ?? base.GetConstructor(ctx);
+        public override string? GetConstructor(ExecutionContext ctx) => Constructor ?? base.GetConstructor(ctx);
 
         public override int GetHashCode() => HashCode.Combine(TypeId, Constructor, DeclaringUnit.Id);
     }

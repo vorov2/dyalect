@@ -7,13 +7,13 @@ namespace Dyalect.Parser.Model
     {
         public DParameter(Location loc) : base(NodeType.Parameter, loc) { }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        public DNode DefaultValue { get; set; }
+        public DNode? DefaultValue { get; set; }
 
         public bool IsVarArgs { get; set; }
 
-        protected internal override string GetName() => Name;
+        protected internal override string? GetName() => Name;
 
         internal override void ToString(StringBuilder sb)
         {

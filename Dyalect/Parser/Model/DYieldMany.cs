@@ -6,7 +6,7 @@ namespace Dyalect.Parser.Model
     {
         public DYieldMany(Location loc) : base(NodeType.YieldMany, loc) { }
 
-        public DNode Expression { get; set; }
+        public DNode Expression { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {

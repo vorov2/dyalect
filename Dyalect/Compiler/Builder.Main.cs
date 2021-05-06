@@ -372,7 +372,7 @@ namespace Dyalect.Compiler
             PushIf(hints);
         }
 
-        private void Build(DYieldBreak node, Hints hints, CompilerContext ctx)
+        private void Build(DYieldBreak node, Hints _, CompilerContext ctx)
         {
             AddLinePragma(node);
             cw.PushNil();
@@ -444,7 +444,7 @@ namespace Dyalect.Compiler
                 for (var i = 0; i < node.Elements.Count; i++)
                 {
                     var el = node.Elements[i];
-                    string name;
+                    string? name;
 
                     if (el.NodeType == NodeType.Label)
                     {
@@ -506,9 +506,9 @@ namespace Dyalect.Compiler
                 && node.Target.NodeType == NodeType.Name)
             {
                 var nm = node.Target.GetName();
-                var sv = GetVariable(nm, node.Target, err: false);
+                var sv = GetVariable(nm!, node.Target, err: false);
 
-                if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
+                if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm!, out var ru))
                 {
                     if (ru.Unit.ExportList.TryGetValue(str.Value, out var var))
                     {
@@ -593,7 +593,7 @@ namespace Dyalect.Compiler
         private void BuildImport(DImport node)
         {
             var localPath = node.LocalPath;
-            string dll = default;
+            string? dll = null;
 
             if (localPath is not null && localPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
             {
@@ -621,7 +621,7 @@ namespace Dyalect.Compiler
 
             if (res.Success)
             {
-                r.Checksum = res.Value.Checksum;
+                r.Checksum = res.Value!.Checksum;
                 var referencedUnit = new UnitInfo(unit.UnitIds.Count, res.Value);
                 unit.References.Add(r);
                 referencedUnits.Add(node.Alias ?? node.ModuleName, referencedUnit);
@@ -779,7 +779,7 @@ namespace Dyalect.Compiler
                 }
 
                 cw.FunPrep(node.Arguments.Count);
-                Dictionary<string, object> dict = null;
+                Dictionary<string, object?>? dict = null;
                 var kwArg = false;
 
                 for (var i = 0; i < node.Arguments.Count; i++)
@@ -788,7 +788,7 @@ namespace Dyalect.Compiler
 
                     if (a.NodeType == NodeType.Label)
                     {
-                        if (dict == null)
+                        if (dict is null)
                             dict = new();
 
                         kwArg = true;
@@ -1010,7 +1010,7 @@ namespace Dyalect.Compiler
             var hasLast = hints.Has(Last);
             hints = hints.Remove(Last);
 
-            if (node.Nodes?.Count == 0 && !hints.Has(Catch))
+            if ((node.Nodes is null || node.Nodes.Count == 0) && !hints.Has(Catch))
             {
                 if (hints.Has(Push))
                     cw.PushNil();
@@ -1023,7 +1023,7 @@ namespace Dyalect.Compiler
             //Start a compile time lexical scope
             if (!hints.Has(NoScope))
             {
-                hasAuto = HasAuto(node.Nodes);
+                hasAuto = node.Nodes is not null && HasAuto(node.Nodes);
                 if (hasAuto)
                 {
                     gotcha = cw.DefineLabel();
@@ -1033,14 +1033,15 @@ namespace Dyalect.Compiler
                 StartScope(ScopeKind.Lexical, loc: node.Location);
             }
 
-            for (var i = 0; i < node.Nodes.Count; i++)
-            {
-                var n = node.Nodes[i];
-                var last = i == node.Nodes.Count - 1;
-                var nh = hasPush && last ? hints : hints.Remove(Push);
-                nh = hasLast && last ? nh.Append(Last) : nh;
-                Build(n, nh, ctx);
-            }
+            if (node.Nodes is not null)
+                for (var i = 0; i < node.Nodes.Count; i++)
+                {
+                    var n = node.Nodes[i];
+                    var last = i == node.Nodes.Count - 1;
+                    var nh = hasPush && last ? hints : hints.Remove(Push);
+                    nh = hasLast && last ? nh.Append(Last) : nh;
+                    Build(n, nh, ctx);
+                }
 
             if (hasAuto)
             {
@@ -1117,7 +1118,7 @@ namespace Dyalect.Compiler
                 return;
             }
 
-            if (node.Init != null)
+            if (node.Init is not null)
                 Build(node.Init, hints.Append(Push), ctx);
             else
                 cw.PushNil();
@@ -1127,11 +1128,11 @@ namespace Dyalect.Compiler
                 AddLinePragma(node);
                 var flags = node.Constant ? VarFlags.Const : VarFlags.None;
                 var nam = node.Pattern.GetName();
-                var a = AddVariable(nam, node, flags);
+                var a = AddVariable(nam!, node, flags);
                 cw.PopVar(a);
 
                 if (node.AutoClose)
-                    currentScope.Autos.Enqueue((a >> 8, nam));
+                    currentScope.Autos.Enqueue((a >> 8, nam!));
             }
             else
             {
@@ -1143,8 +1144,8 @@ namespace Dyalect.Compiler
                     if ((n = node.Pattern.GetElementCount()) == node.Init.GetElementCount() && n != -1
                         && IsPureBinding(node.Pattern))
                     {
-                        var xs = node.Pattern.ListElements();
-                        var ys = node.Init.ListElements();
+                        var xs = node.Pattern.ListElements()!;
+                        var ys = node.Init.ListElements()!;
                         var flags = node.Constant ? VarFlags.Const : VarFlags.None;
 
                         for (var i = 0; i < xs.Count; i++)
@@ -1156,7 +1157,7 @@ namespace Dyalect.Compiler
 
                             if (x.NodeType != NodeType.WildcardPattern)
                             {
-                                var a = AddVariable(x.GetName(), node, flags);
+                                var a = AddVariable(x.GetName()!, node, flags);
                                 cw.PopVar(a);
                             }
                             else
@@ -1225,10 +1226,10 @@ namespace Dyalect.Compiler
                 {
                     var e = pat.Elements[pat.Elements.Count - i - 1];
                     var addr = node.NodeType == NodeType.Binding
-                        ? AddVariable(e.GetName(), e, VarFlags.None)
-                        : GetVariableToAssign(e.GetName(), e, false);
+                        ? AddVariable(e.GetName()!, e, VarFlags.None)
+                        : GetVariableToAssign(e.GetName()!, e, false);
                     if (addr == -1 && node.NodeType == NodeType.Rebinding)
-                        addr = AddVariable(e.GetName(), e, VarFlags.None);
+                        addr = AddVariable(e.GetName()!, e, VarFlags.None);
                     cw.PopVar(addr);
                 }
 
@@ -1349,8 +1350,8 @@ namespace Dyalect.Compiler
             {
                 case NodeType.Name:
                     var name = node.GetName();
-                    GetVariable(name, node);
-                    return name;
+                    GetVariable(name!, node);
+                    return name!;
                 case NodeType.Access:
                     return ((DAccess)node).Name;
                 case NodeType.Index:

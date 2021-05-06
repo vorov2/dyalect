@@ -56,7 +56,7 @@ namespace Dyalect.Runtime
         public bool Contains(T val)
         {
             for (var i = 0; i < size; i++)
-                if (array[i].Equals(val))
+                if (array[i]!.Equals(val))
                     return true;
 
             return false;
@@ -118,7 +118,7 @@ namespace Dyalect.Runtime
                 if (index < size)
                     Array.Copy(array, index + 1, array, index, size - index);
 
-                array[size] = default;
+                array[size] = default!;
                 return true;
             }
 

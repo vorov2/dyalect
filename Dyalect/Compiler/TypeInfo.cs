@@ -13,6 +13,6 @@ namespace Dyalect.Compiler
 
         public DTypeDeclaration Declaration { get; }
 
-        public Scope Scope { get; set; }
+        public Scope? Scope { get; set; }
     }
 }

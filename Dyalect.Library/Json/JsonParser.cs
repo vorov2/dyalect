@@ -21,7 +21,7 @@ namespace Dyalect.Library.Json
 
         public object Parse()
         {
-            object obj = null;
+            object obj = null!;
 
             for (int pos = 0; pos < len; pos++)
             {
@@ -59,7 +59,7 @@ namespace Dyalect.Library.Json
 
         private int ParseObject(int pos, out Dictionary<string, object> obj)
         {
-            obj = DictionaryComparer != null 
+            obj = DictionaryComparer is not null 
                 ? new Dictionary<string, object>(DictionaryComparer)
                 : new Dictionary<string, object>();
             var key = "";
@@ -71,14 +71,14 @@ namespace Dyalect.Library.Json
 
                 if (c == ',')
                 {
-                    if (key == null)
+                    if (key is null)
                         Unexpected(pos, ",");
                     else
                     {
                         if (val != null || !SkipNulls)
                         {
                             obj.Remove(key);
-                            obj.Add(key, val);
+                            obj.Add(key, val!);
                         }
                             
                         key = null;
@@ -87,10 +87,10 @@ namespace Dyalect.Library.Json
                 }
                 else if (c == '}')
                 {
-                    if (key != null && (val != null || !SkipNulls))
+                    if (key != null && (val is not null || !SkipNulls))
                     {
                         obj.Remove(key);
-                        obj.Add(key, val);
+                        obj.Add(key, val!);
                     }
 
                     return pos;
@@ -119,7 +119,7 @@ namespace Dyalect.Library.Json
         private int ParseList(int pos, out List<object> obj)
         {
             obj = new();
-            object val = null;
+            object val = null!;
 
             for (; pos < len; pos++)
             {
@@ -134,15 +134,15 @@ namespace Dyalect.Library.Json
                     else
                     {
                         if (val is not null || !SkipNulls)
-                            obj.Add(val);
+                            obj.Add(val!);
 
                         pos = ParseLiteral(pos + 1, out val);
                     }
                 }
                 else if (c == ']')
                 {
-                    if (val != null || !SkipNulls)
-                        obj.Add(val);
+                    if (val is not null || !SkipNulls)
+                        obj.Add(val!);
                     return pos;
                 }
                 else
@@ -167,7 +167,7 @@ namespace Dyalect.Library.Json
         private int ParseString(int pos, out string key)
         {
             var sb = new StringBuilder();
-            key = null;
+            key = null!;
 
             for (; pos < len; pos++)
             {
@@ -299,7 +299,7 @@ namespace Dyalect.Library.Json
 
         private int ParseLiteral(int pos, out object val)
         {
-            val = null;
+            val = null!;
 
             for (; pos < len; pos++)
             {
@@ -448,8 +448,8 @@ namespace Dyalect.Library.Json
             return new(line, col);
         }
 
-        private List<JsonError> errors;
-        public IEnumerable<JsonError> Errors => errors;
+        private List<JsonError>? errors;
+        public IEnumerable<JsonError>? Errors => errors;
 
         public bool ThrowErrors { get; set; } = true;
 

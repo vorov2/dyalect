@@ -14,19 +14,19 @@ namespace Dyalect.Parser
 
         private readonly Scanner scanner;
 
-        public Token t;
-        public Token la;
+        public Token t = null!;
+        public Token la = null!;
         private int errDist = minErrDist;
 
-        public List<DImport> Imports { get; } = new List<DImport>();
+        public List<DImport> Imports { get; } = new();
 
-        public DBlock Root { get; } = new DBlock(new Location(0, 0));
+        public DBlock Root { get; } = new(new(0, 0));
 
-        public List<BuildMessage> Errors { get; } = new List<BuildMessage>();
+        public List<BuildMessage> Errors { get; } = new();
 
-        private Stack<DFunctionDeclaration> functions = new Stack<DFunctionDeclaration>();
+        private readonly Stack<DFunctionDeclaration> functions = new();
 
-        private List<int> implicits;
+        private List<int>? implicits;
 
         public InternalParser(Scanner scanner)
         {
@@ -272,20 +272,20 @@ namespace Dyalect.Parser
             return false;
         }
 
-        private DStringLiteral ParseString()
+        private DStringLiteral? ParseString()
         {
             if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
                 return null;
 
-            return new DStringLiteral(t) { Value = result, Chunks = chunks };
+            return new DStringLiteral(t) { Value = result ?? "", Chunks = chunks };
         }
 
         private DStringLiteral ParseVerbatimString()
         {
-            return new DStringLiteral(t) { Value = t.val.Substring(2, t.val.Length - 4).Replace("]>]>", "]>") };
+            return new DStringLiteral(t) { Value = t.val[2..^2].Replace("]>]>", "]>") };
         }
 
-        private string ParseSimpleString()
+        private string? ParseSimpleString()
         {
             if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
                 return null;
@@ -315,24 +315,24 @@ namespace Dyalect.Parser
         private long ParseInteger()
         {
             if (t.val.Length > 2 && t.val[0] == '0' && char.ToUpper(t.val[1]) == 'X')
-                return long.Parse(t.val.Substring(2), NumberStyles.HexNumber);
+                return long.Parse(t.val[2..], NumberStyles.HexNumber);
 
             return long.Parse(t.val);
         }
 
         private double ParseFloat()
         {
-            var c = t.val[t.val.Length - 1];
+            var c = t.val[^1];
 
             if (c == 'f' || c == 'F')
-                return double.Parse(t.val.Substring(0, t.val.Length - 1), CI.NumberFormat);
+                return double.Parse(t.val[0..^1], CI.NumberFormat);
 
             return double.Parse(t.val, CI.NumberFormat);
         }
 
         private DNode ProcessImplicits(DNode node)
         {
-            if (implicits != null)
+            if (implicits is not null)
             {
                 var func = new DFunctionDeclaration(node.Location)
                 {

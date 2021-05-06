@@ -15,16 +15,16 @@ namespace Dyalect.Runtime
         {
             --size;
             var ret = array[size];
-            array[size] = null;
+            array[size] = null!;
             return ret;
         }
 
-        internal void PopVoid() => array[--size] = null;
+        internal void PopVoid() => array[--size] = null!;
 
         internal void Clear()
         {
             while (size > 0)
-                array[--size] = null;
+                array[--size] = null!;
         }
 
         internal DyObject Peek() => array[size - 1];

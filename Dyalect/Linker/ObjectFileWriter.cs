@@ -25,8 +25,8 @@ namespace Dyalect.Linker
             WriteTypeDescriptors(writer, unit.Types);
             WriteIndices(writer, unit);
             WriteOps(writer, unit.Ops);
-            WriteSymbols(writer, unit.Symbols);
-            WriteGlobalScope(writer, unit.GlobalScope);
+            WriteSymbols(writer, unit.Symbols ?? DebugInfo.Default);
+            WriteGlobalScope(writer, unit.GlobalScope!);
             WriteMemoryLayouts(writer, unit.Layouts);
             WriteExportList(writer, unit.ExportList);
         }
@@ -133,7 +133,7 @@ namespace Dyalect.Linker
                 writer.Write(r.DllName ?? "");
                 writer.Write(r.SourceLocation.Line);
                 writer.Write(r.SourceLocation.Column);
-                writer.Write(r.SourceFileName);
+                writer.Write(r.SourceFileName ?? "");
             }
         }
 
@@ -192,16 +192,17 @@ namespace Dyalect.Linker
                 writer.Write(f.Handle);
                 writer.Write(f.StartOffset);
                 writer.Write(f.EndOffset);
-                writer.Write(f.Parameters.Length);
-                foreach (var p in f.Parameters)
-                {
-                    writer.Write(p.Name);
-                    writer.Write(p.IsVarArg);
-                    if (p.Value == null)
-                        writer.Write(-1);
-                    else
-                        p.Value.Serialize(writer);
-                }
+                writer.Write(f.Parameters is null ? 0 : f.Parameters.Length);
+                if (f.Parameters is not null)
+                    foreach (var p in f.Parameters)
+                    {
+                        writer.Write(p.Name);
+                        writer.Write(p.IsVarArg);
+                        if (p.Value == null)
+                            writer.Write(-1);
+                        else
+                            p.Value.Serialize(writer);
+                    }
             }
         }
     }

@@ -7,15 +7,15 @@ namespace Dyalect.Parser.Model
     {
         public DMatchEntry(Location loc) : base(NodeType.MatchEntry, loc) { }
 
-        public DPattern Pattern { get; set; }
+        public DPattern Pattern { get; set; } = null!;
 
-        public DNode Guard { get; set; }
+        public DNode? Guard { get; set; }
 
-        public DNode Expression { get; set; }
+        public DNode Expression { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {
-            Pattern.ToString(sb);
+            Pattern?.ToString(sb);
 
             if (Guard is not null)
             {
@@ -24,7 +24,7 @@ namespace Dyalect.Parser.Model
             }
 
             sb.Append(" => ");
-            Expression.ToString(sb);
+            Expression?.ToString(sb);
         }
     }
 }

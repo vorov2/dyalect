@@ -37,7 +37,7 @@ namespace Dyalect.Runtime.Types
             public MemberFunction(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun, Par[] pars, int varArgIndex) 
                 : base(name, pars, varArgIndex) => this.fun = fun;
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args);
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self!, args);
 
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction(FunctionName, fun, Parameters, VarArgIndex);
 
@@ -51,7 +51,7 @@ namespace Dyalect.Runtime.Types
             public MemberFunction0(string name, Func<ExecutionContext, DyObject, DyObject> fun)
                 : base(name, Array.Empty<Par>(), -1) => this.fun = fun;
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self);
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self!);
 
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction0(FunctionName, fun);
 
@@ -65,7 +65,7 @@ namespace Dyalect.Runtime.Types
             public MemberFunction1(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex) 
                 : base(name, pars, varArgIndex) => this.fun = fun;
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args[0]);
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self!, args[0]);
 
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction1(FunctionName, fun, Parameters, VarArgIndex);
 
@@ -79,7 +79,7 @@ namespace Dyalect.Runtime.Types
             public MemberFunction2(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
                 : base(name, pars, varArgIndex) => this.fun = fun;
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args[0], args[1]);
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self!, args[0], args[1]);
 
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction2(FunctionName, fun, Parameters, VarArgIndex);
 
@@ -93,7 +93,7 @@ namespace Dyalect.Runtime.Types
             public MemberFunction3(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
                 : base(name, pars, varArgIndex) => this.fun = fun;
 
-            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self, args[0], args[1], args[2]);
+            public override DyObject Call(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self!, args[0], args[1], args[2]);
 
             protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction3(FunctionName, fun, Parameters, VarArgIndex);
 
@@ -102,7 +102,7 @@ namespace Dyalect.Runtime.Types
 
         private abstract class BaseStaticFunction : DyForeignFunction
         {
-            protected BaseStaticFunction(string name, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex) { }
+            protected BaseStaticFunction(string? name, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex) { }
 
             protected override DyFunction Clone(ExecutionContext ctx) => this;
         }
@@ -193,10 +193,10 @@ namespace Dyalect.Runtime.Types
 
         private readonly string name;
 
-        protected DyForeignFunction(string name, Par[] pars, int varArgIndex)
+        protected DyForeignFunction(string? name, Par[] pars, int varArgIndex)
             : base(DyType.Function, pars, varArgIndex) => this.name = name ?? DefaultName;
 
-        internal DyForeignFunction(string name, Par[] pars, int typeId, int varArgIndex) : base(typeId, pars, varArgIndex) =>
+        internal DyForeignFunction(string? name, Par[] pars, int typeId, int varArgIndex) : base(typeId, pars, varArgIndex) =>
             this.name = name ?? DefaultName;
 
         internal static DyFunction Compose(DyFunction first, DyFunction second) => new CompositionContainer(first, second);

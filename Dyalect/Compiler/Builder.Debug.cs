@@ -67,7 +67,7 @@ namespace Dyalect.Compiler
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EndScope()
         {
-            currentScope = currentScope.Parent ?? null;
+            currentScope = currentScope.Parent!;
 
             if (isDebug)
                 pdb.EndScope(cw.Offset, Line(lastLocation), Col(lastLocation));

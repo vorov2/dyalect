@@ -8,11 +8,11 @@ namespace Dyalect.Parser.Model
     {
         public DTryCatch(Location loc) : base(NodeType.TryCatch, loc) { }
 
-        public DNode Expression { get; set; }
+        public DNode Expression { get; set; } = null!;
 
-        public DNode Catch { get; set; }
+        public DNode Catch { get; set; } = null!;
 
-        public DName BindVariable { get; set; }
+        public DName? BindVariable { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {

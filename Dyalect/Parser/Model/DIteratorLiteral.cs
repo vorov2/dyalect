@@ -7,7 +7,7 @@ namespace Dyalect.Parser.Model
     {
         public DIteratorLiteral(Location loc) : base(NodeType.Iterator, loc) { }
 
-        public DYieldBlock YieldBlock { get; set; }
+        public DYieldBlock YieldBlock { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {

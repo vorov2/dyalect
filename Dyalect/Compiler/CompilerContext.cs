@@ -30,7 +30,7 @@ namespace Dyalect.Compiler
 
         public Stack<int> Errors { get; } = new();
 
-        public DFunctionDeclaration Function { get; set; }
+        public DFunctionDeclaration? Function { get; set; }
 
         public int FunctionAddress { get; set; }
 

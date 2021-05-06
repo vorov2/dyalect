@@ -8,8 +8,8 @@ namespace Dyalect
         protected Result(IEnumerable<BuildMessage> messages) =>
             (Messages, Success) = (messages, !messages.Any(m => m.Type == BuildMessageType.Error));
 
-        public static Result<T> Create<T>(T result, IEnumerable<BuildMessage> messages = null) =>
-            new(result, messages);
+        public static Result<T> Create<T>(T? result, IEnumerable<BuildMessage>? messages = null) =>
+            new(result, messages ?? Enumerable.Empty<BuildMessage>());
 
         public IEnumerable<BuildMessage> Messages { get; }
 
@@ -18,9 +18,9 @@ namespace Dyalect
 
     public sealed class Result<T> : Result
     {
-        internal Result(T result, IEnumerable<BuildMessage> messages = null)
+        internal Result(T? result, IEnumerable<BuildMessage>? messages = null)
             : base(messages ?? Enumerable.Empty<BuildMessage>()) => Value = result;
 
-        public T Value { get; }
+        public T? Value { get; }
     }
 }

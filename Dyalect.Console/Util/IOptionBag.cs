@@ -4,6 +4,6 @@ namespace Dyalect.Util
 {
     public interface IOptionBag
     {
-        DyTuple UserArguments { get; set; }
+        DyTuple? UserArguments { get; set; }
     }
 }

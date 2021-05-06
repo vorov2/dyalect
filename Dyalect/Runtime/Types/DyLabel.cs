@@ -26,7 +26,7 @@
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public override bool Equals(DyObject other)
+        public override bool Equals(DyObject? other)
         {
             if (other is not DyLabel lab)
                 return false;

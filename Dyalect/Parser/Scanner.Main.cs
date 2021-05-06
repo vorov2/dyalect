@@ -4,9 +4,9 @@
     {
         private const char EOL = '\n';
         private const int EOFSYM = 0;
-        private static readonly Map start;
+        private static readonly Map start = null!;
         private readonly SourceBuffer buffer;
-        private Token t;
+        private Token t = null!;
         private int ch;
         private int pos = -1;
         private int charPos = -1;

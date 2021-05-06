@@ -10,9 +10,9 @@ namespace Dyalect.Runtime
     {
         public static DyObject ConvertFrom<T>(T obj) => ConvertFrom(obj, typeof(T));
 
-        public static DyObject ConvertFrom(object obj) => ConvertFrom(obj, obj?.GetType());
+        public static DyObject ConvertFrom(object? obj) => ConvertFrom(obj, obj?.GetType()!);
 
-        internal static DyObject ConvertFrom(object obj, Type type)
+        internal static DyObject ConvertFrom(object? obj, Type type)
         {
             if (obj is null)
                 return DyNil.Instance;
@@ -32,7 +32,7 @@ namespace Dyalect.Runtime
                 case TypeCode.UInt32: return new DyInteger((uint)obj);
                 case TypeCode.UInt64: return new DyInteger((long)(ulong)obj);
                 case TypeCode.String:
-                case TypeCode.Char: return new DyString(obj.ToString());
+                case TypeCode.Char: return new DyString(obj.ToString() ?? "");
                 case TypeCode.Single: return new DyFloat((float)obj);
                 case TypeCode.Double: return new DyFloat((double)obj);
                 case TypeCode.Decimal: return new DyFloat((double)(decimal)obj);
@@ -53,7 +53,7 @@ namespace Dyalect.Runtime
                         var arr = (Array)obj;
                         var newArr = new DyObject[arr.Length];
                         for (var i = 0; i < arr.Length; i++)
-                            newArr[i] = ConvertFrom(arr.GetValue(i), arr.GetValue(i)?.GetType());
+                            newArr[i] = ConvertFrom(arr.GetValue(i));
                         return new DyArray(newArr);
                     }
                     else
@@ -61,9 +61,9 @@ namespace Dyalect.Runtime
             }
         }
 
-        public static T ConvertTo<T>(DyObject obj) => (T)ConvertTo(obj, typeof(T));
+        public static T? ConvertTo<T>(DyObject obj) => (T?)ConvertTo(obj, typeof(T));
 
-        public static object ConvertTo(DyObject obj, Type type)
+        public static object? ConvertTo(DyObject obj, Type type)
         {
             if (type == Dyalect.Types.DyObject)
                 return obj;
@@ -112,12 +112,12 @@ namespace Dyalect.Runtime
                         else if (type.IsArray)
                         {
                             var et = type.GetElementType();
-                            var arr = Array.CreateInstance(et, coll.Count);
+                            var arr = Array.CreateInstance(et!, coll.Count);
 
                             for (var i = 0; i < coll.Count; i++)
                             {
                                 var c = coll[i];
-                                arr.SetValue(ConvertTo(c, et), i);
+                                arr.SetValue(ConvertTo(c, et!), i);
                             }
 
                             return arr;

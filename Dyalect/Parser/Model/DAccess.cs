@@ -6,13 +6,13 @@ namespace Dyalect.Parser.Model
     {
         public DAccess(Location loc) : base(NodeType.Access, loc) { }
 
-        public DNode Target { get; set; }
+        public DNode Target { get; set; } = null!;
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public bool NilSafety { get; set; }
 
-        protected internal override string GetName() => Name;
+        protected internal override string? GetName() => Name;
 
         internal override void ToString(StringBuilder sb)
         {

@@ -90,7 +90,7 @@ namespace Dyalect.Runtime.Types
                 if (index < Count)
                     Array.Copy(Values, index + 1, Values, index, Count - index);
 
-                Values[Count] = null;
+                Values[Count] = null!;
                 Version++;
                 return true;
             }
@@ -216,7 +216,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
-            ((DyArray)self).Add(args.TakeOne(DyNil.Instance));
+            ((DyArray)self).Add(args.TakeOne(DyNil.Instance)!);
             return DyNil.Instance;
         }
 
@@ -253,10 +253,8 @@ namespace Dyalect.Runtime.Types
         private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject val) =>
             ((DyArray)self).Remove(ctx, val) ? DyBool.True : DyBool.False;
 
-        private DyObject RemoveItemAt(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject RemoveItemAt(ExecutionContext ctx, DyObject self, DyObject index)
         {
-            var index = args.TakeOne(DyNil.Instance);
-
             if (index.TypeId != DyType.Integer)
                 return ctx.InvalidType(index);
 
@@ -276,18 +274,16 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject IndexOf(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject IndexOf(ExecutionContext ctx, DyObject self, DyObject val)
         {
             var arr = (DyArray)self;
-            var val = args.TakeOne(DyNil.Instance);
             var i = arr.IndexOf(ctx, val);
             return DyInteger.Get(i);
         }
 
-        private DyObject LastIndexOf(ExecutionContext ctx, DyObject self, DyObject[] args)
+        private DyObject LastIndexOf(ExecutionContext ctx, DyObject self, DyObject val)
         {
             var arr = (DyArray)self;
-            var val = args.TakeOne(DyNil.Instance);
             var i = arr.LastIndexOf(ctx, val);
             return DyInteger.Get(i);
         }
@@ -447,7 +443,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyObject InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
@@ -548,9 +544,8 @@ namespace Dyalect.Runtime.Types
             return destArr;
         }
 
-        protected override DyObject InitializeStaticMember(string name, ExecutionContext ctx)
-        {
-            return name switch
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "Array" => DyForeignFunction.Static(name, New, 0, new Par("values", true)),
                 "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance)),
@@ -561,6 +556,5 @@ namespace Dyalect.Runtime.Types
                     new Par("toIndex", DyInteger.Get(0)), new Par("count")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
-        }
     }
 }

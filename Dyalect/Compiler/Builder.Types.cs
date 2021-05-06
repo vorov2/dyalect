@@ -41,7 +41,7 @@ namespace Dyalect.Compiler
 
         private void GenerateConstructor(DFunctionDeclaration func)
         {
-            if (!char.IsUpper(func.Name[0]))
+            if (!char.IsUpper(func.Name![0]))
                 AddError(CompilerError.CtorOnlyPascal, func.Location);
 
             if (func.Parameters.Count == 0)
@@ -73,12 +73,14 @@ namespace Dyalect.Compiler
                 cw.Nop();
             }
 
-            TryGetLocalType(func.TypeName.Local, out var ti);
-            cw.Aux(func.Name);
-            cw.NewType(ti.TypeId);
+            if (TryGetLocalType(func.TypeName!.Local, out var ti))
+            {
+                cw.Aux(func.Name);
+                cw.NewType(ti!.TypeId);
+            }
         }
 
-        private TypeHandle GetTypeHandle(Qualident name, Location loc) => GetTypeHandle(name.Parent, name.Local, loc);
+        private TypeHandle GetTypeHandle(Qualident name, Location loc) => GetTypeHandle(name.Parent!, name.Local, loc);
 
         private TypeHandle GetTypeHandle(string parent, string local, Location loc)
         {
@@ -95,12 +97,12 @@ namespace Dyalect.Compiler
         private bool IsTypeExists(string name) =>
             GetTypeHandle(null, name, out var _, out var _) == CompilerError.None;
 
-        private CompilerError GetTypeHandle(string parent, string local, out int handle, out bool std)
+        private CompilerError GetTypeHandle(string? parent, string local, out int handle, out bool std)
         {
             handle = -1;
             std = false;
 
-            if (parent == null)
+            if (parent is null)
                 handle = DyType.GetTypeCodeByName(local);
 
             if (handle > -1)
@@ -109,13 +111,13 @@ namespace Dyalect.Compiler
                 return CompilerError.None;
             }
 
-            if (parent == null)
+            if (parent is null)
             {
                 if (!TryGetType(local, out var ti))
                     return CompilerError.UndefinedType;
                 else
                 {
-                    handle = (byte)ti.Unit.Handle | ti.TypeId << 8;
+                    handle = (byte)ti!.Unit.Handle | ti.TypeId << 8;
                     return CompilerError.None;
                 }
             }
@@ -134,7 +136,7 @@ namespace Dyalect.Compiler
             }
         }
 
-        private bool TryGetType(string local, out TypeInfo ti)
+        private bool TryGetType(string local, out TypeInfo? ti)
         {
             if (TryGetLocalType(local, out ti))
                 return true;
@@ -142,7 +144,7 @@ namespace Dyalect.Compiler
             foreach (var r in referencedUnits.Values)
                 if (TryGetExternalType(r, local, out var id))
                 {
-                    ti = new TypeInfo(id, null, r);
+                    ti = new TypeInfo(id, DTypeDeclaration.Default, r);
                     return true;
                 }
 
@@ -162,7 +164,7 @@ namespace Dyalect.Compiler
             return false;
         }
 
-        private bool TryGetLocalType(string typeName, out TypeInfo ti) =>
+        private bool TryGetLocalType(string typeName, out TypeInfo? ti) =>
             types.TryGetValue(typeName, out ti);
     }
 }

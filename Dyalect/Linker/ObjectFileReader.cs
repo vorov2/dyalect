@@ -194,23 +194,22 @@ namespace Dyalect.Linker
             var vars = reader.ReadInt32();
             for (var i = 0; i < vars; i++)
             {
-                di.Vars.Add(new()
-                {
-                    Name = reader.ReadString(),
-                    Address = reader.ReadInt32(),
-                    Offset = reader.ReadInt32(),
-                    Scope = reader.ReadInt32(),
-                    Flags = reader.ReadInt32(),
-                    Data = reader.ReadInt32()
-                });
+                di.Vars.Add(new
+                (
+                    name: reader.ReadString(),
+                    address: reader.ReadInt32(),
+                    offset: reader.ReadInt32(),
+                    scope: reader.ReadInt32(),
+                    flags: reader.ReadInt32(),
+                    data: reader.ReadInt32()
+                ));
             }
 
             var funs = reader.ReadInt32();
             for (var i = 0; i < funs; i++)
             {
-                var f = new FunSym
+                var f = new FunSym(reader.ReadString())
                 {
-                    Name = reader.ReadString(),
                     Handle = reader.ReadInt32(),
                     StartOffset = reader.ReadInt32(),
                     EndOffset = reader.ReadInt32()

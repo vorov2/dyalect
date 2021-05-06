@@ -37,7 +37,7 @@ namespace Dyalect.Compiler
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
                     cw.Aux(realName);
-                    var code = GetTypeHandle(node.TypeName, node.Location);
+                    var code = GetTypeHandle(node.TypeName!, node.Location);
 
                     if (node.IsStatic)
                         cw.SetMemberS(code);
@@ -113,7 +113,7 @@ namespace Dyalect.Compiler
                     if (p.IsVarArgs)
                         AddError(CompilerError.VarArgNoDefaultValue, p.Location);
 
-                    DyObject val = null;
+                    DyObject? val = null;
 
                     switch (p.DefaultValue.NodeType)
                     {
@@ -153,10 +153,10 @@ namespace Dyalect.Compiler
         {
             var iterBody = hints.Has(IteratorBody);
             var args = CompileFunctionParameters(node.Parameters);
-            StartFun(node.Name, args);
+            StartFun(node.Name!, args);
 
             if (node.IsStatic && !node.IsMemberFunction)
-                AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name);
+                AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);
 
             var startLabel = cw.DefineLabel();
             var funEndLabel = cw.DefineLabel();
@@ -178,8 +178,9 @@ namespace Dyalect.Compiler
             hints = Function | Push | (iterBody ? IteratorBody : None);
 
             var hasCtorScope = false;
-            TypeInfo lti = null;
-            var localTypeMember = node.IsMemberFunction && node.TypeName.Parent is null && TryGetLocalType(node.TypeName.Local, out lti);
+            TypeInfo lti = null!;
+            var localTypeMember = node.IsMemberFunction && node.TypeName!.Parent is null
+                && TryGetLocalType(node.TypeName.Local, out lti!);
 
             if (localTypeMember && !node.IsConstructor)
             {
@@ -248,7 +249,7 @@ namespace Dyalect.Compiler
                             Build(lti.Declaration.With, hints.Append(NoScope), oldctx);
                     }
 
-                    Build(node.Body, hints.Append(Last), ctx);
+                    Build(node.Body!, hints.Append(Last), ctx);
                 }
             }
 
@@ -270,13 +271,13 @@ namespace Dyalect.Compiler
                     AddError(CompilerError.CtorNotIterator, node.Location);
 
                 if (!localTypeMember)
-                    AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName);
+                    AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName!);
                 else
                 {
-                    lti.Scope = currentScope;
+                    lti.Scope = currentScope ?? throw new DyBuildException("Missing scope.", null);
                     //Constructor returns a type instance, not a value. We need to pop this value from stack
                     cw.Pop();
-                    cw.Aux(node.Name);
+                    cw.Aux(node.Name!);
                     cw.NewType(lti.TypeId);
                 }
             }
@@ -294,7 +295,7 @@ namespace Dyalect.Compiler
             EndSection();
 
             if (hasCtorScope)
-                currentScope = currentScope.Parent;
+                currentScope = currentScope.Parent!;
 
             //Iterators are a separate type (based on function through)
             if (iterBody)

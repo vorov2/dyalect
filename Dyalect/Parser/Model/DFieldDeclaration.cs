@@ -10,9 +10,9 @@ namespace Dyalect.Parser.Model
 
         public bool IsPrivate => Name?.Length > 0 && Name[0] == '_';
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        protected internal override string GetName() => Name;
+        protected internal override string? GetName() => Name;
 
         internal override void ToString(StringBuilder sb) => sb.Append(Name);
     }

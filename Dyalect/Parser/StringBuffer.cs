@@ -54,7 +54,7 @@
             }
         }
 
-        private readonly string fileName;
-        public override string FileName => fileName;
+        private readonly string? fileName;
+        public override string? FileName => fileName;
     }
 }

@@ -10,7 +10,7 @@ namespace Dyalect.Runtime
         private static bool ProcessError(ExecutionContext ctx, int offset, ref DyNativeFunction function,
             ref DyObject[] locals, ref EvalStack evalStack, ref int jumper)
         {
-            var err = ctx.Error;
+            var err = ctx.Error!;
             jumper = ThrowIf(err, offset, function.UnitId, ref function, ref locals, ref evalStack, ctx);
             return jumper > -1;
         }
@@ -32,7 +32,7 @@ namespace Dyalect.Runtime
 
             if ((jumper = FindCatch(ctx, ref function, ref locals, ref evalStack)) > -1)
             {
-                ctx.Error.Dump = dump;
+                ctx.Error!.Dump = dump;
                 return jumper;
             }
             else
@@ -62,7 +62,7 @@ namespace Dyalect.Runtime
             if (mark.Offset == 0)
                 return -1;
 
-            Caller cp = null;
+            Caller? cp = null;
 
             while (ctx.CallStack.Count > mark.StackOffset)
             {
@@ -108,11 +108,11 @@ namespace Dyalect.Runtime
 
         public static IEnumerable<RuntimeVar> DumpVariables(ExecutionContext ctx)
         {
-            foreach (var v in ctx.RuntimeContext.Composition.Units[0].GlobalScope.EnumerateVars())
+            foreach (var v in ctx.RuntimeContext.Composition.Units[0].GlobalScope!.EnumerateVars())
                 yield return new(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
         }
 
-        private static DyCodeException GetCodeException(Exception ex)
+        private static DyCodeException? GetCodeException(Exception ex)
         {
             if (ex is DyCodeException dy)
                 return dy;

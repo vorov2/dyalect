@@ -7,20 +7,20 @@ namespace Dyalect.Linker
 {
     partial class DyLinker
     {
-        private Unit LinkForeignModule(Unit self, Reference mod)
+        private Unit? LinkForeignModule(Unit self, Reference mod)
         {
-            if (!FindModuleExact(self.FileName, mod.DllName, mod, out var path))
+            if (!FindModuleExact(self.FileName!, mod.DllName!, mod, out var path))
                 return null;
 
-            if (!AssemblyMap.TryGetValue(path, out var dict))
-                dict = LoadAssembly(path, mod);
+            if (!AssemblyMap.TryGetValue(path!, out var dict))
+                dict = LoadAssembly(path!, mod);
 
             if (dict is not null)
             {
                 if (!dict.TryGetValue(mod.ModuleName, out var sysType))
                 {
-                    AddError(LinkerError.AssemblyModuleNotFound, mod.SourceFileName, mod.SourceLocation,
-                        mod.ModuleName, mod.DllName);
+                    AddError(LinkerError.AssemblyModuleNotFound, mod.SourceFileName!, mod.SourceLocation,
+                        mod.ModuleName, mod.DllName!);
                     return null;
                 }
 
@@ -28,19 +28,19 @@ namespace Dyalect.Linker
 
                 try
                 {
-                    module = Activator.CreateInstance(sysType);
+                    module = Activator.CreateInstance(sysType)!;
                 }
                 catch (Exception ex)
                 {
-                    AddError(LinkerError.AssemblyModuleLoadError, mod.SourceFileName, mod.SourceLocation,
-                        mod.ModuleName, mod.DllName, ex.Message);
+                    AddError(LinkerError.AssemblyModuleLoadError, mod.SourceFileName!, mod.SourceLocation,
+                        mod.ModuleName, mod.DllName!, ex.Message);
                     return null;
                 }
 
                 if (module is not Unit unit)
                 {
-                    AddError(LinkerError.InvalidAssemblyModule, mod.SourceFileName, mod.SourceLocation,
-                        mod.ModuleName, mod.DllName);
+                    AddError(LinkerError.InvalidAssemblyModule, mod.SourceFileName!, mod.SourceLocation,
+                        mod.ModuleName, mod.DllName!);
                     return null;
                 }
 
@@ -51,7 +51,7 @@ namespace Dyalect.Linker
             return null;
         }
 
-        private Dictionary<string, Type> LoadAssembly(string path, Reference mod)
+        private Dictionary<string, Type>? LoadAssembly(string path, Reference mod)
         {
             Assembly asm;
 
@@ -61,8 +61,8 @@ namespace Dyalect.Linker
             }
             catch (Exception ex)
             {
-                AddError(LinkerError.UnableLoadAssembly, mod.SourceFileName, mod.SourceLocation,
-                    mod.DllName, ex.Message);
+                AddError(LinkerError.UnableLoadAssembly, mod.SourceFileName!, mod.SourceLocation,
+                    mod.DllName!, ex.Message);
                 return null;
             }
 
@@ -73,8 +73,8 @@ namespace Dyalect.Linker
                 if (Attribute.GetCustomAttribute(t, typeof(DyUnitAttribute)) is DyUnitAttribute attr)
                 {
                     if (dict.ContainsKey(attr.Name))
-                        AddError(LinkerError.DuplicateModuleName, mod.SourceFileName, mod.SourceLocation,
-                            mod.DllName, attr.Name);
+                        AddError(LinkerError.DuplicateModuleName, mod.SourceFileName!, mod.SourceLocation,
+                            mod.DllName!, attr.Name);
                     else
                         dict.Add(attr.Name, t);
                 }

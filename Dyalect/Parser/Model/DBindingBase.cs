@@ -6,8 +6,8 @@ namespace Dyalect.Parser.Model
     {
         protected DBindingBase(NodeType type, Location loc) : base(type, loc) { }
 
-        public DPattern Pattern { get; internal set; }
+        public DPattern Pattern { get; internal set; } = null!;
 
-        public DNode Init { get; set; }
+        public DNode Init { get; set; } = null!;
     }
 }

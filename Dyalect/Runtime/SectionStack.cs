@@ -45,7 +45,7 @@ namespace Dyalect.Runtime
         {
             if (Count - i < 0)
             {
-                val = default;
+                val = default!;
                 return false;
             }
 

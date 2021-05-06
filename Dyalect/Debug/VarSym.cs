@@ -2,8 +2,6 @@
 {
     public sealed class VarSym
     {
-        public VarSym() { }
-
         public VarSym(string name, int address, int offset, int scope, int flags, int data)
         {
             Name = name;

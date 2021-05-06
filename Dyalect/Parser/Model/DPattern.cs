@@ -13,9 +13,9 @@ namespace Dyalect.Parser.Model
     {
         public DNamePattern(Location loc) : base(loc, NodeType.NamePattern) { }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        protected internal override string GetName() => Name;
+        protected internal override string? GetName() => Name;
 
         internal bool IsConstructor { get; set; }
 
@@ -32,7 +32,7 @@ namespace Dyalect.Parser.Model
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public override bool Equals(object obj) => obj is DIntegerPattern i && i.Value == Value;
+        public override bool Equals(object? obj) => obj is DIntegerPattern i && i.Value == Value;
     }
 
     public sealed class DFloatPattern : DPattern
@@ -45,7 +45,7 @@ namespace Dyalect.Parser.Model
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public override bool Equals(object obj) => obj is DFloatPattern f && f.Value == Value;
+        public override bool Equals(object? obj) => obj is DFloatPattern f && f.Value == Value;
     }
 
     public sealed class DBooleanPattern : DPattern
@@ -58,7 +58,7 @@ namespace Dyalect.Parser.Model
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public override bool Equals(object obj) => obj is DBooleanPattern b && b.Value == Value;
+        public override bool Equals(object? obj) => obj is DBooleanPattern b && b.Value == Value;
     }
 
     public sealed class DCharPattern : DPattern
@@ -71,20 +71,20 @@ namespace Dyalect.Parser.Model
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public override bool Equals(object obj) => obj is DCharPattern c && c.Value == Value;
+        public override bool Equals(object? obj) => obj is DCharPattern c && c.Value == Value;
     }
 
     public sealed class DStringPattern : DPattern
     {
         public DStringPattern(Location loc) : base(loc, NodeType.StringPattern) { }
 
-        public DStringLiteral Value { get; set; }
+        public DStringLiteral Value { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb) => Value.ToString(sb);
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        public override bool Equals(object obj) => obj is DStringPattern s && s.Value.Value == Value.Value;
+        public override bool Equals(object? obj) => obj is DStringPattern s && s.Value.Value == Value.Value;
     }
 
     public sealed class DNilPattern : DPattern
@@ -95,7 +95,7 @@ namespace Dyalect.Parser.Model
 
         public override int GetHashCode() => 0;
 
-        public override bool Equals(object obj) => obj is DNilPattern;
+        public override bool Equals(object? obj) => obj is DNilPattern;
     }
 
     public abstract class DSequencePattern : DPattern
@@ -137,9 +137,9 @@ namespace Dyalect.Parser.Model
     {
         public DRangePattern(Location loc) : base(loc, NodeType.RangePattern) { }
 
-        public DPattern From { get; set; }
+        public DPattern From { get; set; } = null!;
 
-        public DPattern To { get; set; }
+        public DPattern To { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {
@@ -153,15 +153,15 @@ namespace Dyalect.Parser.Model
     {
         public DLabelPattern(Location loc) : base(loc, NodeType.LabelPattern) { }
 
-        public string Label { get; set; }
+        public string Label { get; set; } = null!;
 
-        public DPattern Pattern { get; set; }
+        public DPattern Pattern { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {
             sb.Append(Label);
             sb.Append(':');
-            Pattern.ToString(sb);
+            Pattern?.ToString(sb);
         }
     }
 
@@ -169,14 +169,13 @@ namespace Dyalect.Parser.Model
     {
         public DAsPattern(Location loc) : base(loc, NodeType.AsPattern) { }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        public DPattern Pattern { get; set; }
+        public DPattern Pattern { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {
-            sb.Append(':');
-            Pattern.ToString(sb);
+            Pattern?.ToString(sb);
             sb.Append(" as " + Name);
         }
     }
@@ -185,13 +184,12 @@ namespace Dyalect.Parser.Model
     {
         public DMethodCheckPattern(Location loc) : base(loc, NodeType.MethodCheckPattern) { }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {
             sb.Append('.');
             sb.Append(Name);
-            sb.Append('?');
         }
     }
 
@@ -206,12 +204,11 @@ namespace Dyalect.Parser.Model
     {
         public DTypeTestPattern(Location loc) : base(loc, NodeType.TypeTestPattern) { }
 
-        public Qualident TypeName { get; set; }
+        public Qualident TypeName { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {
-            sb.Append("is ");
-            sb.Append(TypeName.ToString());
+            sb.Append(TypeName?.ToString());
         }
     }
 
@@ -219,14 +216,14 @@ namespace Dyalect.Parser.Model
     {
         public DAndPattern(Location loc) : base(loc, NodeType.AndPattern) { }
 
-        public DPattern Left { get; set; }
+        public DPattern Left { get; set; } = null!;
 
-        public DPattern Right { get; set; }
+        public DPattern Right { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {
             Left.ToString(sb);
-            sb.Append(" && ");
+            sb.Append(" and ");
             Right.ToString(sb);
         }
     }
@@ -235,14 +232,14 @@ namespace Dyalect.Parser.Model
     {
         public DOrPattern(Location loc) : base(loc, NodeType.OrPattern) { }
 
-        public DPattern Left { get; set; }
+        public DPattern Left { get; set; } = null!;
 
-        public DPattern Right { get; set; }
+        public DPattern Right { get; set; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {
             Left.ToString(sb);
-            sb.Append(" || ");
+            sb.Append(" or ");
             Right.ToString(sb);
         }
     }
@@ -251,9 +248,9 @@ namespace Dyalect.Parser.Model
     {
         public DCtorPattern(Location loc) : base(loc, NodeType.CtorPattern) { }
 
-        public string Constructor { get; set; }
+        public string Constructor { get; set; } = null!;
 
-        public Qualident TypeName { get; set; }
+        public Qualident? TypeName { get; set; }
 
         public List<DNode> Arguments { get; } = new();
 

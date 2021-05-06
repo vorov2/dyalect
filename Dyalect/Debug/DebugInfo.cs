@@ -4,6 +4,8 @@ namespace Dyalect.Debug
 {
     public sealed class DebugInfo
     {
+        internal static readonly DebugInfo Default = new();
+
         public DebugInfo()
         {
             Scopes = new();
@@ -23,7 +25,7 @@ namespace Dyalect.Debug
 
         public DebugInfo Clone() => new(this);
 
-        public string File { get; set; }
+        public string? File { get; set; }
 
         public List<ScopeSym> Scopes { get; }
 

@@ -17,7 +17,7 @@ namespace Dyalect.Parser.Model
             if (AutoClose)
                 sb.Append("auto ");
 
-            sb.Append(Constant ? "const " : "var ");
+            sb.Append(Constant ? "let " : "var ");
             Pattern.ToString(sb);
 
             if (Init is not null)

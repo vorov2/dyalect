@@ -9,9 +9,9 @@ namespace Dyalect
 {
     public static class Exe
     {
-        public static DyObject Eval(SourceBuffer buffer, BuilderOptions options, object args = null)
+        public static DyObject? Eval(SourceBuffer buffer, BuilderOptions options, object? args = null)
         {
-            DyTuple tup = null;
+            DyTuple? tup = null;
 
             if (args is not null)
             {
@@ -20,13 +20,13 @@ namespace Dyalect
                 tup = new DyTuple(arr);
             }
 
-            var linker = new DyLinker(null, options ?? BuilderOptions.Default(), tup);
+            var linker = new DyLinker(FileLookup.Default, options ?? BuilderOptions.Default(), tup);
             var result = linker.Make(buffer);
 
             if (!result.Success)
                 throw new DyBuildException(result.Messages);
 
-            var ctx = DyMachine.CreateExecutionContext(result.Value);
+            var ctx = DyMachine.CreateExecutionContext(result.Value!);
             var result2 = DyMachine.Execute(ctx);
             return result2.Value;
         }
