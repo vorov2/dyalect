@@ -389,7 +389,7 @@ func powTest() {
 func binaryToString() {
     func Integer.toString() {
         var s = ""
-        for x in (31..0).by(-1) {
+        for x in 31^-1..0 {
             if this &&& (1 <<< x) != 0 {
                 s += "1"
             } else if s != "" {

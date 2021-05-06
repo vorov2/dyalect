@@ -344,3 +344,24 @@ func rangeInIterator() {
     let seq = yields { 1..5 }
     assert([1,2,3,4,5], seq.toArray())
 }
+
+func iteratorStateBug() {
+    let seq = yields { 1,2,3,4,5 }
+    assert(2, seq[1])
+    assert(2, seq[1])
+    assert([1,2,3], seq.take(3).toArray())
+    assert([1,2,3], seq.take(3).toArray())
+}
+
+func elementAtAndIndexer() {
+    let seq = yields { 1..10 }
+    assert(2, seq.element(1))
+    assert(2, seq.element(at: 1))
+    assert(10, seq.element(9))
+    assert(10, seq.element(at: 9))
+    assert(9, seq.element(-1))
+    assert(2, seq[1])
+    assert(2, seq[1])
+    assert(10, seq[9])
+    assert(10, seq[9])
+}

@@ -1,3 +1,6 @@
+# 0.23.0
+  * Fix: _Iterator state is not correctly restored_ ([Issue #464](https://github.com/vorov2/dyalect/issues/464)).
+
 # 0.22.1
   * _Code refactoring (nullable reference types)._
   * Fix: _Inconsistency of pattern match_ ([Issue #461](https://github.com/vorov2/dyalect/issues/461)).
