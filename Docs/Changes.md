@@ -1,6 +1,7 @@
 # 0.23.0
   * Fix: _Iterator state is not correctly restored_ ([Issue #464](https://github.com/vorov2/dyalect/issues/464)).
   * Fix: _Parser error_ ([Issue #466](https://github.com/vorov2/dyalect/issues/466)).
+  * Add: _Iterator: add `elementAt` method_ ([Issue #463](https://github.com/vorov2/dyalect/issues/463), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#element)).
 
 # 0.22.1
   * _Code refactoring (nullable reference types)._
