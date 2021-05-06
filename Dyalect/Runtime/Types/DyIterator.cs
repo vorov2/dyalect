@@ -460,12 +460,42 @@ namespace Dyalect.Runtime.Types
         private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, DyObject exclusive) =>
             DyIterator.Create(GenerateRange(ctx, from, to, step, exclusive.GetBool()));
 
+        private static DyObject Empty(ExecutionContext ctx) => DyIterator.Create(Enumerable.Empty<DyObject>());
+
+        private static IEnumerable<DyObject> Repeater(ExecutionContext ctx, DyObject val)
+        {
+            if (val.TypeId == DyType.Iterator)
+                val = ((DyIterator)val).GetIteratorFunction();
+
+            if (val is DyFunction func)
+            {
+                while (true)
+                {
+                    var res = func.Call0(ctx);
+
+                    if (ctx.HasErrors)
+                        yield break;
+
+                    yield return res;
+                }
+            }
+            else
+            {
+                while (true)
+                    yield return val;
+            }
+        }
+
+        private static DyObject Repeat(ExecutionContext ctx, DyObject val) => DyIterator.Create(Repeater(ctx, val));
+
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "Iterator" or "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
                 "range" => DyForeignFunction.Static(name, MakeRange, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance),
                     new Par("by", DyInteger.One), new Par("exclusive", DyBool.False)),
+                "empty" => DyForeignFunction.Static(name, Empty),
+                "repeat" => DyForeignFunction.Static(name, Repeat, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

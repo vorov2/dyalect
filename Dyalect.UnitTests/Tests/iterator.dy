@@ -373,3 +373,25 @@ func elementAtAndIndexer() {
     assert(10, seq[9])
     assert(10, seq[9])
 }
+
+func emptyTest() {
+    let seq = Iterator.empty()
+    assert(true, seq is Iterator)
+    assert(0, seq.len())
+    for x in seq {
+        assert(true, false)
+    }
+}
+
+func repeatTest() {
+    func defaultValue() {
+        var i = 0
+        while true {
+            yield i
+            i += 1
+        }
+    }
+    assert([0,0,0], Iterator.repeat(0).take(3).toArray())
+    assert([3,3,3], Iterator.repeat(()=>3).take(3).toArray())
+    assert([0,1,2,3,4], Iterator.repeat(defaultValue()).take(5).toArray())
+}
