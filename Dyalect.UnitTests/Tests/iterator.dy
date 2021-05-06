@@ -395,3 +395,18 @@ func repeatTest() {
     assert([3,3,3], Iterator.repeat(()=>3).take(3).toArray())
     assert([0,1,2,3,4], Iterator.repeat(defaultValue()).take(5).toArray())
 }
+
+/*
+/*func double(x = 2) => x + x
+func sum2(x, y = 3) => x + y
+func sum3(x = 1, y = 0.5, z = 0.25) => x + y + z
+//print( __invoke(rnd) )
+//print( __invoke(double) )
+//print( __invoke(sum2, 3.33) )
+//print( __invoke(sum3) )
+print( __invoke(__five, 1, 2, 3, 4) )*/
+
+var arr = [[1,2], [3,4,(5,6,a: [7,8])]]
+let _ = arr[0][0]
+let _ = arr[1][2]["a"][1]
+*/
