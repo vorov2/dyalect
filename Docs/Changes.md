@@ -1,5 +1,6 @@
 # 0.22.1
-  *
+  * _Code refactoring (nullable reference types)._
+  * Fix: _Inconsistency of pattern match_ ([Issue #461](https://github.com/vorov2/dyalect/issues/461)).
 
 # 0.22.0
   * Add: _Function introspection_ ([Issue #448](https://github.com/vorov2/dyalect/issues/448), [docs](https://github.com/vorov2/dyalect/wiki/Functions#mmethods)).

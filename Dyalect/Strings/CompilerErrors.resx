@@ -261,7 +261,4 @@
   <data name="TypeNameCamel" xml:space="preserve">
     <value>Type name should start from a capital letter.</value>
   </data>
-  <data name="BindingNotAllowed" xml:space="preserve">
-    <value>Unable to declare "{0}" variable inside "or" pattern.</value>
-  </data>
 </root>

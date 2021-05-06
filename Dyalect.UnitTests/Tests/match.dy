@@ -425,3 +425,28 @@ func forWithMatchAndGuard() {
     }
     assert([4, 8], xs)
 }
+
+func matchBinding1() {
+    let xs = [42]
+    xs is Array arr
+    assert([42], xs)
+    xs is Array or Array arr2
+    assert(nil, arr2)
+}
+
+func matchBinding2() {
+    let xs = []
+    if xs is [x] || xs is Array {
+        assert(nil, x)
+    } else {
+        assert(true, false)
+    }
+}
+
+func matchBinding3() {
+    let xs = []
+    match xs {
+        [x] or Array => assert(nil, x),
+        _ => assert(true, false)
+    }
+}

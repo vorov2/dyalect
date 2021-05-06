@@ -70,15 +70,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to declare &quot;{0}&quot; variable inside &quot;or&quot; pattern..
-        /// </summary>
-        internal static string BindingNotAllowed {
-            get {
-                return ResourceManager.GetString("BindingNotAllowed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Pattern matching in variable binding requires initialization clause..
         /// </summary>
         internal static string BindingPatternNoInit {

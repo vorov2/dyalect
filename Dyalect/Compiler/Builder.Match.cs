@@ -126,7 +126,7 @@ namespace Dyalect.Compiler
                     BuildAnd((DAndPattern)node, hints, ctx);
                     break;
                 case NodeType.OrPattern:
-                    BuildOr((DOrPattern)node, hints.Append(NoBinding), ctx);
+                    BuildOr((DOrPattern)node, hints, ctx);
                     break;
                 case NodeType.MethodCheckPattern:
                     BuildMethodCheck((DMethodCheckPattern)node);
@@ -203,9 +203,6 @@ namespace Dyalect.Compiler
             cw.Push(false);
             cw.MarkLabel(ok);
             cw.Nop();
-
-            if (hints.Has(NoBinding))
-                AddError(CompilerError.BindingNotAllowed, node.Location, node.Name);
         }
 
         private void BuildName(DNamePattern node, Hints hints)
@@ -223,9 +220,6 @@ namespace Dyalect.Compiler
 
             cw.PopVar(sva);
             cw.Push(true);
-
-            if (hints.Has(NoBinding))
-                AddError(CompilerError.BindingNotAllowed, node.Location, node.Name);
         }
 
         private void BuildAnd(DAndPattern node, Hints hints, CompilerContext ctx)
@@ -248,6 +242,8 @@ namespace Dyalect.Compiler
 
         private void BuildOr(DOrPattern node, Hints hints, CompilerContext ctx)
         {
+            PreinitOr(node, hints);
+
             cw.Dup();
             BuildPattern(node.Left, hints, ctx);
             var termLab = cw.DefineLabel();
@@ -414,18 +410,22 @@ namespace Dyalect.Compiler
         {
             switch (node.NodeType)
             {
+                case NodeType.TypeTestPattern:
+                case NodeType.NilPattern:
+                case NodeType.RangePattern:
+                case NodeType.WildcardPattern:
+                case NodeType.IntegerPattern:
+                case NodeType.StringPattern:
+                case NodeType.FloatPattern:
+                case NodeType.CharPattern:
+                case NodeType.BooleanPattern:
+                case NodeType.MethodCheckPattern:
+                    break;
                 case NodeType.NamePattern:
                     PreinitName((DNamePattern)node, hints);
                     break;
-                case NodeType.IntegerPattern:
-                    break;
-                case NodeType.StringPattern:
-                    break;
-                case NodeType.FloatPattern:
-                    break;
-                case NodeType.CharPattern:
-                    break;
-                case NodeType.BooleanPattern:
+                case NodeType.AsPattern:
+                    PreinitAs((DAsPattern)node, hints);
                     break;
                 case NodeType.TuplePattern:
                     PreinitSequence(((DTuplePattern)node).Elements, hints);
@@ -433,24 +433,11 @@ namespace Dyalect.Compiler
                 case NodeType.ArrayPattern:
                     PreinitSequence(((DArrayPattern)node).Elements, hints);
                     break;
-                case NodeType.NilPattern:
-                    break;
-                case NodeType.RangePattern:
-                    break;
-                case NodeType.WildcardPattern:
-                    break;
-                case NodeType.AsPattern:
-                    PreinitAs((DAsPattern)node, hints);
-                    break;
-                case NodeType.TypeTestPattern:
-                    break;
                 case NodeType.AndPattern:
                     PreinitAnd((DAndPattern)node, hints);
                     break;
                 case NodeType.OrPattern:
                     PreinitOr((DOrPattern)node, hints);
-                    break;
-                case NodeType.MethodCheckPattern:
                     break;
                 case NodeType.CtorPattern:
                     PreinitCtor((DCtorPattern)node, hints);
@@ -525,10 +512,8 @@ namespace Dyalect.Compiler
             }
         }
 
-        private void PreinitLabel(DLabelPattern node, Hints hints)
-        {
+        private void PreinitLabel(DLabelPattern node, Hints hints) =>
             PreinitPattern(node.Pattern, hints);
-        }
 
         private void ValidateMatch(DMatch match)
         {
