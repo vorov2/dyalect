@@ -22,11 +22,60 @@ namespace Dyalect.Runtime.Types
 
         public abstract DyObject Call(ExecutionContext ctx, params DyObject[] args);
 
-        internal virtual DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx) =>  Call(ctx, left, right);
+        internal virtual DyObject Call2(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            var args = PrepareArguments(ctx, left, right);
+            
+            if (ctx.HasErrors)
+                return DyNil.Instance;
 
-        internal virtual DyObject Call1(DyObject obj, ExecutionContext ctx) => Call(ctx, obj);
+            return Call(ctx, args);
+        }
 
-        internal virtual DyObject Call0(ExecutionContext ctx) => Call(ctx, Array.Empty<DyObject>());
+        internal virtual DyObject Call1(DyObject obj, ExecutionContext ctx)
+        {
+            var args = PrepareArguments(ctx, obj);
+            
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            return Call(ctx, args);
+        }
+
+        internal virtual DyObject Call0(ExecutionContext ctx)
+        {
+            var args = PrepareArguments(ctx);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            return Call(ctx, args);
+        }
+
+        private DyObject[] PrepareArguments(ExecutionContext ctx, params DyObject[] locals)
+        {
+            if (Parameters.Length == locals.Length)
+                return locals;
+
+            if (locals.Length > Parameters.Length)
+            {
+                ctx.TooManyArguments(FunctionName, Parameters.Length, locals.Length);
+                return null!;
+            }
+
+            var cont = new ArgContainer
+            {
+                Locals = new DyObject[Parameters.Length],
+                VarArgsIndex = VarArgIndex,
+                VarArgs = VarArgIndex > -1 ? new() : null
+            };
+
+            if (locals.Length > 0)
+                Array.Copy(locals, cont.Locals, locals.Length);
+
+            DyMachine.FillDefaults(cont, this, ctx);
+            return cont.Locals;
+        }
 
         internal int GetParameterIndex(string name)
         {

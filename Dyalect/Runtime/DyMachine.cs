@@ -643,7 +643,7 @@ namespace Dyalect.Runtime
             return new DyTuple(arr);
         }
 
-        private static void FillDefaults(ArgContainer cont, DyFunction callFun, ExecutionContext ctx)
+        internal static void FillDefaults(ArgContainer cont, DyFunction callFun, ExecutionContext ctx)
         {
             var pars = callFun.Parameters;
             var locals = cont.Locals;

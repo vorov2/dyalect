@@ -467,8 +467,13 @@ namespace Dyalect.Runtime.Types
             if (val.TypeId == DyType.Iterator)
                 val = ((DyIterator)val).GetIteratorFunction();
 
+
+
             if (val is DyFunction func)
             {
+                if (ctx.HasErrors)
+                    yield break;
+
                 while (true)
                 {
                     var res = func.Call0(ctx);
