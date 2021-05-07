@@ -424,7 +424,12 @@ PRODUCTIONS
             | GroupPattern<out node> [ AsPattern<node, out node> ]
             | ArrayPattern<out node> [ AsPattern<node, out node> ]
             | MethodCheckPattern<out node> [ AsPattern<node, out node> ]
+            | NotPattern<out node>
         ).
+
+    NotPattern<out DPattern node> =
+        "not" (. var np = new DNotPattern(t); .)
+        Pattern<out node> (. np.Pattern = node; node = np; .).
 
     AsPattern<DPattern target, out DPattern node> =
         (. node = null; .)

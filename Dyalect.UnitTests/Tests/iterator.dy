@@ -410,3 +410,27 @@ func repeatTest2() {
     assert(true, all(xs, notNil))
     assert(20, xs.len())
 }
+
+func stateIterTest() {
+    func it() {
+        yield 1
+        yield 2
+        yield 3
+        yield 4
+        yield 5
+    }
+    let xs = yields { 1, 2, 3, 4, 5 }
+    let ys = []
+    for x in xs {
+        ys.add(x)
+        if x > 3 {
+            break
+        }
+    }
+    assert([1,2,3,4], ys)
+    ys.clear()
+    for x in xs {
+        ys.add(x)
+    }
+    assert([1,2,3,4,5], ys)
+}

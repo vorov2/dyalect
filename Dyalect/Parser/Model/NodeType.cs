@@ -59,6 +59,7 @@
         CharPattern,
         StringPattern,
         NilPattern,
+        NotPattern,
         ArrayPattern,
         RangePattern,
         TuplePattern,
