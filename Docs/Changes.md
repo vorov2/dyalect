@@ -1,5 +1,4 @@
 # 0.23.0
-  * _Internal redesign of Dyalect functions invocation from .NET code_.
   * _Internal type system refactoring._
   * Fix: _Iterator state is not correctly restored_ ([Issue #464](https://github.com/vorov2/dyalect/issues/464)).
   * Fix: _Parser error_ ([Issue #466](https://github.com/vorov2/dyalect/issues/466)).
@@ -8,7 +7,8 @@
   * Add: _Iterator: add static `empty` and `repeat` methods_ ([Issue #460](https://github.com/vorov2/dyalect/issues/460), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#empty)).
   * Add: _Internal redesign of iterators_ ([Issue #465](https://github.com/vorov2/dyalect/issues/465)).
   * Add: _Consider adding not operator to pattern matching_ ([Issue #468](https://github.com/vorov2/dyalect/issues/468)).
-
+  * Change: _Redesign of Dyalect functions invocation from .NET code_ ([Issue #469](https://github.com/vorov2/dyalect/issues/469)).
+  
 # 0.22.1
   * _Code refactoring (nullable reference types)._
   * Fix: _Inconsistency of pattern match_ ([Issue #461](https://github.com/vorov2/dyalect/issues/461)).
