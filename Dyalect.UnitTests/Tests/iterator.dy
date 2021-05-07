@@ -383,7 +383,7 @@ func emptyTest() {
     }
 }
 
-func repeatTest() {
+func repeatTest1() {
     func defaultValue() {
         var i = 0
         while true {
@@ -394,4 +394,19 @@ func repeatTest() {
     assert([0,0,0], Iterator.repeat(0).take(3).toArray())
     assert([3,3,3], Iterator.repeat(()=>3).take(3).toArray())
     assert([0,1,2,3,4], Iterator.repeat(defaultValue()).take(5).toArray())
+}
+
+func repeatTest2() {
+    func notNil(x) => x != nil
+    func all(seq, fn) {
+        for x in seq {
+            if !fn(x) {
+                return false
+            }
+        }
+        return true
+    }
+    let xs = Iterator.repeat(rnd).take(20)
+    assert(true, all(xs, notNil))
+    assert(20, xs.len())
 }

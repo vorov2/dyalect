@@ -20,6 +20,15 @@ namespace Dyalect.Runtime.Types
 
         internal DyArray(DyObject[] values) : base(DyType.Array) => (Values, Count) = (values, values.Length);
 
+        public void Compact()
+        {
+            if (Count == Values.Length)
+                return;
+            var arr = new DyObject[Count];
+            Array.Copy(Values, arr, Count);
+            Values = arr;
+        }
+
         public void RemoveRange(int start, int count)
         {
             var lst = new List<DyObject>(Values);

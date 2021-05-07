@@ -16,10 +16,10 @@ namespace Dyalect.Linker
 
         public Lang() : this(null) { }
 
-        public Lang(DyTuple? startupArguments)
+        public Lang(DyTuple? args)
         {
             FileName = "lang";
-            startupArguments = startupArguments;
+            startupArguments = args;
         }
 
         protected override void Execute(ExecutionContext ctx) =>
@@ -186,25 +186,6 @@ namespace Dyalect.Linker
                 return DyInteger.One;
         }
 
-        [Function("makeObject")]
-        public DyObject MakeObject(ExecutionContext _, DyObject arg)
-        {
-            var dict = new Dictionary<string, DyObject>();
-
-            if (arg is DyTuple tuple)
-            {
-                foreach (var obj in tuple.Values)
-                {
-                    var key = obj.GetLabel();
-
-                    if (key != null)
-                        dict[key] = obj.GetTaggedValue();
-                }
-            }
-
-            return new DyWrapper(dict);
-        }
-
         [Function("parse")]
         public DyObject Parse(ExecutionContext ctx, DyObject expression)
         {
@@ -229,14 +210,6 @@ namespace Dyalect.Linker
             {
                 return ctx.FailedReadLiteral(ex.Message);
             }
-        }
-
-        [Function("__invoke")]
-        public DyObject Invoke(ExecutionContext ctx, DyObject func, [VarArg]DyObject values)
-        {
-            var fn = (DyFunction)func;
-            var arr = ((DyTuple)values).Values;
-            return fn.Call(ctx, arr);
         }
 
         [Function("eval")]
@@ -295,6 +268,33 @@ namespace Dyalect.Linker
             }
 
             return func!.Call(newctx, argsList.ToArray());
+        }
+
+        [Function("__invoke")]
+        public DyObject Invoke(ExecutionContext ctx, DyObject func, [VarArg] DyObject values)
+        {
+            var fn = (DyFunction)func;
+            var arr = ((DyTuple)values).Values;
+            return fn.Call(ctx, arr);
+        }
+
+        [Function("__makeObject")]
+        public DyObject MakeObject(ExecutionContext _, DyObject arg)
+        {
+            var dict = new Dictionary<string, DyObject>();
+
+            if (arg is DyTuple tuple)
+            {
+                foreach (var obj in tuple.Values)
+                {
+                    var key = obj.GetLabel();
+
+                    if (key != null)
+                        dict[key] = obj.GetTaggedValue();
+                }
+            }
+
+            return new DyWrapper(dict);
         }
     }
 }

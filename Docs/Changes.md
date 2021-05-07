@@ -1,4 +1,5 @@
 # 0.23.0
+  * _Internal redesign of function Dy invocation from .NET code_.
   * Fix: _Iterator state is not correctly restored_ ([Issue #464](https://github.com/vorov2/dyalect/issues/464)).
   * Fix: _Parser error_ ([Issue #466](https://github.com/vorov2/dyalect/issues/466)).
   * Fix: _External call for function with defaults_ ([Issue #467](https://github.com/vorov2/dyalect/issues/467)).

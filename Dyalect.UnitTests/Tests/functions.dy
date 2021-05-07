@@ -398,5 +398,38 @@ func funcWithDefaults2() {
     assert(true, r >= 0 && r <= 10)
     assert(true, __invoke(rnd) >= 0)
     let r2 = __invoke(rnd, 5, 1)
-    assert(true, r2 >= 1 && r <= 5)
+    assert(true, r2 >= 1 && r2 <= 5)
+}
+
+func funcWithDefaults3() {
+    var cell
+    func collector(args..., x = 5) {
+        var xs = [x]
+        xs.addRange(args)
+        cell = xs
+    }
+    __invoke(collector, 4)
+    assert([5, 4], cell)
+}
+
+func funcWithDefaults4() {
+    var cell
+    func collector(x, y, args...) {
+        var xs = [x, y]
+        xs.addRange(args)
+        cell = xs
+    }
+    __invoke(collector, 1, 2, (3, 4))
+    assert([1, 2, 3, 4], cell)
+}
+
+func funcWithDefaults5() {
+    var cell
+    func collector(x, y, args...) {
+        var xs = [x, y]
+        xs.addRange(args)
+        cell = xs
+    }
+    __invoke(collector, 5, 6, [7, 8])
+    assert([5, 6, 7, 8], cell)
 }

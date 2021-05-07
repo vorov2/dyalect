@@ -54,6 +54,23 @@ namespace Dyalect.Runtime.Types
                     Array.Copy(args, newLocals, args.Length);
             }
 
+            if (VarArgIndex > -1)
+            {
+                var o = newLocals[VarArgIndex];
+                if (o.TypeId == DyType.Nil)
+                    newLocals[VarArgIndex] = DyTuple.Empty;
+                else if (o.TypeId == DyType.Array)
+                {
+                    var arr = (DyArray)o;
+                    arr.Compact();
+                    newLocals[VarArgIndex] = new DyTuple(arr.Values);
+                }
+                else if (o.TypeId != DyType.Tuple)
+                {
+                    newLocals[VarArgIndex] = DyTuple.Create(o);
+                }
+            }
+
             DyMachine.FillDefaults(newLocals, this, ctx);
             return newLocals;
         }
