@@ -1,3 +1,6 @@
+# 0.24.0
+  *
+
 # 0.23.0
   * _Internal type system refactoring._
   * Fix: _Iterator state is not correctly restored_ ([Issue #464](https://github.com/vorov2/dyalect/issues/464)).
