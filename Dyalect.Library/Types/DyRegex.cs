@@ -83,7 +83,7 @@ namespace Dyalect.Library.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             //if (name == "Regex")
-            //    return DyForeignFunction.Static(name, New, -1, new Par("pattern"));
+            //    return Func.Static(name, New, -1, new Par("pattern"));
 
             return base.InitializeStaticMember(name, ctx);
         }

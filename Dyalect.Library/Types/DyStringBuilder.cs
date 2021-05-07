@@ -134,11 +134,11 @@ namespace Dyalect.Library.Types
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "insert" => DyForeignFunction.Member(name, Insert, -1, new Par("index"), new Par("value")),
-                "remove" => DyForeignFunction.Member(name, Remove, -1, new Par("index"), new Par("len")),
-                "replace" => DyForeignFunction.Member(name, Replace, -1, new Par("old"), new Par("new")),
-                "append" => DyForeignFunction.Member(name, Append, -1, new Par("value")),
-                "appendLine" => DyForeignFunction.Member(name, AppendLine, -1, new Par("value")),
+                "insert" => Func.Member(name, Insert, -1, new Par("index"), new Par("value")),
+                "remove" => Func.Member(name, Remove, -1, new Par("index"), new Par("len")),
+                "replace" => Func.Member(name, Replace, -1, new Par("old"), new Par("new")),
+                "append" => Func.Member(name, Append, -1, new Par("value")),
+                "appendLine" => Func.Member(name, AppendLine, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
 
@@ -159,7 +159,7 @@ namespace Dyalect.Library.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "StringBuilder")
-                return DyForeignFunction.Static(name, New, -1, new Par("values", DyNil.Instance));
+                return Func.Static(name, New, -1, new Par("values", DyNil.Instance));
 
             return base.InitializeStaticMember(name, ctx);
         }

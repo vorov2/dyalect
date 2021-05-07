@@ -5,103 +5,6 @@ using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyTuple : DyCollection, IEnumerable<DyObject>
-    {
-        internal static readonly DyTuple Empty = new DyTuple(Array.Empty<DyObject>());
-
-        internal readonly DyObject[] Values;
-
-        public override int Count => Values.Length;
-
-        public DyTuple(DyObject[] values) : base(DyType.Tuple) =>
-            Values = values ?? throw new DyException("Unable to create a tuple with no values.");
-
-
-        public static DyTuple Create(params DyObject[] args) => new DyTuple(args);
-
-        public Dictionary<DyObject, DyObject> ConvertToDictionary()
-        {
-            var dict = new Dictionary<DyObject, DyObject>();
-
-            foreach (var obj in Values)
-            {
-                if (obj is not DyLabel lab || !dict.TryAdd(new DyString(lab.Label), lab.Value))
-                    dict.Add(new DyString(DefaultKey()), obj);
-            }
-
-            return dict;
-        }
-
-        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
-        {
-            if (index.TypeId == DyType.Integer)
-                return GetItem((int)index.GetInteger(), ctx);
-            
-            if (index.TypeId == DyType.String || index.TypeId == DyType.Char)
-            {
-                var i = GetOrdinal(index.GetString());
-
-                if (i == -1)
-                    return ctx.IndexOutOfRange();
-
-                return GetItem(i, ctx);
-            }
-            
-            return ctx.InvalidType(index);
-        }
-
-        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
-        {
-            if (index.TypeId is DyType.String)
-            {
-                var i = GetOrdinal(index.GetString());
-
-                if (i == -1)
-                    ctx.IndexOutOfRange();
-
-                CollectionSetItem(i, value, ctx);
-            }
-            else
-                base.SetItem(index, value, ctx);
-        }
-
-        private int GetOrdinal(string name)
-        {
-            for (var i = 0; i < Values.Length; i++)
-                if (Values[i].GetLabel() == name)
-                    return i;
-            return -1;
-        }
-
-        protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
-            Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
-
-        internal string GetKey(int index) => Values[index].GetLabel()!;
-
-        protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
-        {
-            if (Values[index].TypeId == DyType.Label)
-                ((DyLabel)Values[index]).Value = value;
-            else
-                Values[index] = value;
-        }
-
-        protected internal override bool HasItem(string name, ExecutionContext ctx) =>
-            GetOrdinal(name) != -1;
-
-        private static string DefaultKey() => Guid.NewGuid().ToString();
-
-        public override IEnumerator<DyObject> GetEnumerator()
-        {
-            for (var i = 0; i < Count; i++)
-                yield return Values[i].TypeId == DyType.Label ? Values[i].GetTaggedValue() : Values[i];
-        }
-
-        internal override DyObject GetValue(int index) => Values[index];
-
-        internal override DyObject[] GetValues() => Values;
-    }
-
     internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
     {
         public DyTupleTypeInfo() : base(DyType.Tuple) { }
@@ -113,8 +16,8 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Tuple;
 
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) => 
-            new DyTuple(((DyCollection) left).Concat(ctx, right));
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            new DyTuple(((DyCollection)left).Concat(ctx, right));
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
@@ -211,7 +114,7 @@ namespace Dyalect.Runtime.Types
         private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject fun)
         {
             var tup = (DyTuple)self;
-            var comparer = new DySortComparer(fun as DyFunction, ctx);
+            var comparer = new SortComparer(fun as DyFunction, ctx);
             var newArr = new DyObject[tup.Count];
             Array.Copy(tup.Values, newArr, newArr.Length);
             Array.Sort(newArr, 0, newArr.Length, comparer);
@@ -304,14 +207,14 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "add" => DyForeignFunction.Member(name, AddItem, -1, new Par("item")),
-                "remove" => DyForeignFunction.Member(name, Remove, -1, new Par("item")),
-                "removeAt" => DyForeignFunction.Member(name, RemoveAt, -1, new Par("index")),
-                "insert" => DyForeignFunction.Member(name, Insert, -1, new Par("index"), new Par("item")),
-                "keys" => DyForeignFunction.Member(name, GetKeys),
-                "fst" => DyForeignFunction.Member(name, GetFirst),
-                "snd" => DyForeignFunction.Member(name, GetSecond),
-                "sort" => DyForeignFunction.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
+                "add" => Func.Member(name, AddItem, -1, new Par("item")),
+                "remove" => Func.Member(name, Remove, -1, new Par("item")),
+                "removeAt" => Func.Member(name, RemoveAt, -1, new Par("index")),
+                "insert" => Func.Member(name, Insert, -1, new Par("index"), new Par("item")),
+                "keys" => Func.Member(name, GetKeys),
+                "fst" => Func.Member(name, GetFirst),
+                "snd" => Func.Member(name, GetSecond),
+                "sort" => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -326,11 +229,11 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "sort" => DyForeignFunction.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
-                "pair" => DyForeignFunction.Static(name, GetPair, -1, new Par("first"), new Par("second")),
-                "triple" => DyForeignFunction.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
-                "concat" => DyForeignFunction.Static(name, Concat, 0, new Par("values", true)),
-                "Tuple" => DyForeignFunction.Static(name, MakeNew, 0, new Par("values")),
+                "sort" => Func.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
+                "pair" => Func.Static(name, GetPair, -1, new Par("first"), new Par("second")),
+                "triple" => Func.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
+                "concat" => Func.Static(name, Concat, 0, new Par("values", true)),
+                "Tuple" => Func.Static(name, MakeNew, 0, new Par("values")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

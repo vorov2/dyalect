@@ -2,12 +2,12 @@
 
 namespace Dyalect.Runtime.Types
 {
-    internal sealed class DySortComparer : IComparer<DyObject>
+    internal sealed class SortComparer : IComparer<DyObject>
     {
         private readonly DyFunction? fun;
         private readonly ExecutionContext ctx;
 
-        public DySortComparer(DyFunction? fun, ExecutionContext ctx)
+        public SortComparer(DyFunction? fun, ExecutionContext ctx)
         {
             this.fun = fun;
             this.ctx = ctx;
