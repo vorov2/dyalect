@@ -1,50 +1,7 @@
 ﻿using Dyalect.Debug;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyFloat : DyObject
-    {
-        public static readonly DyFloat Zero = new(0D);
-        public static readonly DyFloat One = new(1D);
-        public static readonly DyFloat NaN = new(double.NaN);
-        public static readonly DyFloat PositiveInfinity = new(double.PositiveInfinity);
-        public static readonly DyFloat NegativeInfinity = new(double.NegativeInfinity);
-        public static readonly DyFloat Epsilon = new(double.Epsilon);
-        public static readonly DyFloat Min = new(double.MinValue);
-        public static readonly DyFloat Max = new(double.MaxValue);
-
-        private readonly double value;
-
-        public DyFloat(double value) : base(DyType.Float) =>
-            this.value = value;
-
-        public override int GetHashCode() => value.GetHashCode();
-
-        public override bool Equals(DyObject? obj) => obj is DyFloat f && value == f.value;
-
-        public override string ToString() => value.ToString(CI.NumberFormat);
-
-        public override object ToObject() => value;
-
-        protected internal override double GetFloat() => value;
-
-        protected internal override long GetInteger() => (long)value;
-
-        protected internal override bool GetBool() => value > .00001d;
-
-        public override DyObject Clone() => this;
-
-        internal override void Serialize(BinaryWriter writer)
-        {
-            writer.Write(TypeId);
-            writer.Write(value);
-        }
-    }
-
     internal sealed class DyFloatTypeInfo : DyTypeInfo
     {
         public DyFloatTypeInfo() : base(DyType.Float) { }
@@ -78,7 +35,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId is DyType.Float or DyType.Integer)
                 return new DyFloat(left.GetFloat() * right.GetFloat());
-            
+
             return ctx.InvalidType(right);
         }
 
@@ -86,7 +43,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId is DyType.Float or DyType.Integer)
                 return new DyFloat(left.GetFloat() / right.GetFloat());
-            
+
             return ctx.InvalidType(right);
         }
 
@@ -94,7 +51,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId is DyType.Float or DyType.Integer)
                 return new DyFloat(left.GetFloat() % right.GetFloat());
-            
+
             return ctx.InvalidType(right);
         }
 
@@ -102,7 +59,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId is DyType.Float or DyType.Integer)
                 return left.GetFloat() == right.GetFloat() ? DyBool.True : DyBool.False;
-            
+
             return base.EqOp(left, right, ctx); //Important! Should redirect to base
         }
 
@@ -110,7 +67,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId is DyType.Float or DyType.Integer)
                 return left.GetFloat() != right.GetFloat() ? DyBool.True : DyBool.False;
-            
+
             return base.NeqOp(left, right, ctx); //Important! Should redirect to base
         }
 
@@ -118,7 +75,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId is DyType.Float or DyType.Integer)
                 return left.GetFloat() > right.GetFloat() ? DyBool.True : DyBool.False;
-            
+
             return ctx.InvalidType(right);
         }
 
@@ -126,7 +83,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId is DyType.Float or DyType.Integer)
                 return left.GetFloat() < right.GetFloat() ? DyBool.True : DyBool.False;
-            
+
             return ctx.InvalidType(right);
         }
 
@@ -134,7 +91,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId is DyType.Float or DyType.Integer)
                 return left.GetFloat() >= right.GetFloat() ? DyBool.True : DyBool.False;
-            
+
             return ctx.InvalidType(right);
         }
 
@@ -142,7 +99,7 @@ namespace Dyalect.Runtime.Types
         {
             if (right.TypeId is DyType.Float or DyType.Integer)
                 return left.GetFloat() <= right.GetFloat() ? DyBool.True : DyBool.False;
-            
+
             return ctx.InvalidType(right);
         }
         #endregion
@@ -162,7 +119,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "isNaN" => DyForeignFunction.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
+                "isNaN" => Func.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -170,10 +127,10 @@ namespace Dyalect.Runtime.Types
         {
             if (obj.TypeId is DyType.Float)
                 return obj;
-            
+
             if (obj.TypeId is DyType.Integer)
                 return new DyFloat(obj.GetInteger());
-            
+
             if (obj.TypeId is DyType.Char or DyType.String)
             {
                 _ = double.TryParse(obj.GetString(), out var i);
@@ -186,11 +143,11 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "max" => DyForeignFunction.Static(name, _ => DyFloat.Max),
-                "min" => DyForeignFunction.Static(name, _ => DyFloat.Min),
-                "inf" => DyForeignFunction.Static(name, _ => DyFloat.PositiveInfinity),
-                "default" => DyForeignFunction.Static(name, _ => DyFloat.Zero),
-                "Float" => DyForeignFunction.Static(name, Convert, -1, new Par("value")),
+                "max" => Func.Static(name, _ => DyFloat.Max),
+                "min" => Func.Static(name, _ => DyFloat.Min),
+                "inf" => Func.Static(name, _ => DyFloat.PositiveInfinity),
+                "default" => Func.Static(name, _ => DyFloat.Zero),
+                "Float" => Func.Static(name, Convert, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

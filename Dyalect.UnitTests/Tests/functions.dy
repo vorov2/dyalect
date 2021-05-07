@@ -382,3 +382,54 @@ func exprBody1() {
     }
     assert(9, sum3(2, 3, 4))
 }
+
+func funcWithDefaults1() {
+    func double(x = 2) => x + x
+    func sum2(x, y = 3) => x + y
+    func sum3(x = 1, y = 0.5, z = 0.25) => x + y + z
+    assert(4, __invoke(double))
+    assert(6.33, __invoke(sum2, 3.33))
+    assert(1.75, __invoke(sum3))
+}
+
+func funcWithDefaults2() {
+    assert(12.12, __invoke(round, 12.1245677))
+    let r = __invoke(rnd, 10)
+    assert(true, r >= 0 && r <= 10)
+    assert(true, __invoke(rnd) >= 0)
+    let r2 = __invoke(rnd, 5, 1)
+    assert(true, r2 >= 1 && r2 <= 5)
+}
+
+func funcWithDefaults3() {
+    var cell
+    func collector(args..., x = 5) {
+        var xs = [x]
+        xs.addRange(args)
+        cell = xs
+    }
+    __invoke(collector, 4)
+    assert([5, 4], cell)
+}
+
+func funcWithDefaults4() {
+    var cell
+    func collector(x, y, args...) {
+        var xs = [x, y]
+        xs.addRange(args)
+        cell = xs
+    }
+    __invoke(collector, 1, 2, (3, 4))
+    assert([1, 2, 3, 4], cell)
+}
+
+func funcWithDefaults5() {
+    var cell
+    func collector(x, y, args...) {
+        var xs = [x, y]
+        xs.addRange(args)
+        cell = xs
+    }
+    __invoke(collector, 5, 6, [7, 8])
+    assert([5, 6, 7, 8], cell)
+}

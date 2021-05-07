@@ -93,11 +93,11 @@ namespace Dyalect.Compiler
             cw.Briter(initSkip);
 
             cw.GetMember(Builtins.Iterator);
-
             cw.FunPrep(0);
             cw.FunCall(0);
 
             cw.MarkLabel(initSkip);
+            cw.GetIter();
             cw.PopVar(sys);
 
             var iter = cw.DefineLabel();

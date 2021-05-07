@@ -70,9 +70,9 @@ namespace Dyalect
             return Eval(measureTime: false);
         }
 
-        public bool Compile(string fileName, out Unit? unit)
+        public bool Compile(string fileName, out Unit unit)
         {
-            unit = null;
+            unit = null!;
             Result<Unit> made;
 
             try
@@ -150,7 +150,7 @@ namespace Dyalect
             }
             catch (Exception ex)
             {
-                Printer.Error($"Critical failure: {Environment.NewLine}{ex.ToString()}");
+                Printer.Error($"Critical failure: {Environment.NewLine}{ex}");
                 return false;
             }
 #endif

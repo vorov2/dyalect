@@ -450,3 +450,21 @@ func matchBinding3() {
         _ => assert(true, false)
     }
 }
+
+func notPattern1() {
+    let x = nil
+    assert(true, x is nil)
+    assert(false, x is not nil)
+    assert(true, x is not (1,2,3))
+    let y = [1,2,3]
+    assert(true, y is not [1,2,3,4])
+    assert(true, y is [1,2,3])
+    if y is not [a,b,c,4] {
+        assert(true, a is nil)
+        assert(true, b is nil)
+        assert(true, c is nil)
+    }
+    assert(false, y is not Array)
+    assert(true, y is not Tuple)
+    assert(true, y is not Tuple and not Map)
+}

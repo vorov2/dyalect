@@ -30,9 +30,7 @@ namespace Dyalect.Util
 
                 foreach (var m in mis)
                 {
-                    var attr = Attribute.GetCustomAttribute(m, typeof(BindingAttribute)) as BindingAttribute;
-
-                    if (attr is null)
+                    if (Attribute.GetCustomAttribute(m, typeof(BindingAttribute)) is not BindingAttribute attr)
                         continue;
 
                     var act = (CommandCallBack)m.CreateDelegate(typeof(CommandCallBack), this);

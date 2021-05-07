@@ -4,9 +4,26 @@ using System.Collections.Generic;
 
 namespace Dyalect.Runtime
 {
-    public sealed class ExecutionContext
+    public class ExecutionContext
     {
         internal int AUX;
+
+        public static readonly ExecutionContext External = new ExternalExecutionContext();
+
+        private sealed class ExternalExecutionContext : ExecutionContext
+        {
+            internal ExternalExecutionContext() : base(null!, null!) { }
+
+            internal override DyError? Error
+            {
+                get => base.Error;
+                set
+                {
+                    base.Error = value;
+                    ThrowIf();
+                }
+            }
+        }
 
         internal ExecutionContext(CallStack callStack, RuntimeContext rtx)
         {
@@ -25,7 +42,7 @@ namespace Dyalect.Runtime
 
         internal SectionStack CatchMarks { get; }
         
-        internal DyError? Error { get; set; }
+        internal virtual DyError? Error { get; set; }
 
         internal Stack<int>? Sections { get; set; }
 
@@ -42,7 +59,6 @@ namespace Dyalect.Runtime
                 throw new DyRuntimeException(err.GetDescription());
             }
         }
-
     }
 
     internal struct ArgContainer

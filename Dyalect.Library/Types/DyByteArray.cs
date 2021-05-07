@@ -55,7 +55,7 @@ namespace Dyalect.Library.Types
 
         private DyObject New(ExecutionContext ctx, DyObject arg)
         {
-            var vals = DyIterator.Run(ctx, arg);
+            var vals = DyIterator.ToEnumerable(ctx, arg);
             var arr =  vals.Select(o => o.ToObject()).Select(Convert.ToByte).ToArray();
             return new DyByteArray(ctx.RuntimeContext, DeclaringUnit, arr);
         }
@@ -63,9 +63,9 @@ namespace Dyalect.Library.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "ByteArray")
-                return DyForeignFunction.Static(name, New, -1, new Par("values"));
+                return Func.Static(name, New, -1, new Par("values"));
             if (name == "concat")
-                return DyForeignFunction.Static(name, Concat, -1, new Par("fst"), new Par("snd"));
+                return Func.Static(name, Concat, -1, new Par("fst"), new Par("snd"));
 
             return base.InitializeStaticMember(name, ctx);
         }

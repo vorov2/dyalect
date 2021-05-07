@@ -43,37 +43,4 @@ namespace Dyalect.Runtime.Types
 
         public override int GetHashCode() => map.GetHashCode();
     }
-
-    public sealed class DyReflectionWrapper : DyWrapper
-    {
-        public DyReflectionWrapper(object instance) : base(Convert(instance)) { }
-
-        private static Dictionary<string, DyObject> Convert(object instance)
-        {
-            var typ = instance.GetType();
-            var map = new Dictionary<string, DyObject>();
-
-            foreach (var pi in typ.GetProperties())
-            {
-                var val = pi.GetValue(instance, null);
-                map[pi.Name] = TypeConverter.ConvertFrom(val);
-            }
-
-            return map;
-        }
-    }
-
-    public class DyWrapperTypeInfo : DyTypeInfo
-    {
-        public DyWrapperTypeInfo() : base(DyType.Object) { }
-
-        protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get;
-
-        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) =>
-            self.GetItem(index, ctx);
-
-        public override string TypeName => DyTypeNames.Object;
-    }
 }

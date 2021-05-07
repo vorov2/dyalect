@@ -89,6 +89,7 @@
             1, //TypeST
             1, //CtorCheck
             0, //IsNull
+            0, //GetIter
         };
     }
 }

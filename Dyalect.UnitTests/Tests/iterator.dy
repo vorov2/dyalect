@@ -10,7 +10,7 @@ func iteratorLiteralTest2() {
     var seq = yields { x + y }
     x -= 1
     y *= y
-    assert(10, seq())
+    assert(10, seq.first())
 }
 
 func iteratorLiteralTest3() {
@@ -22,7 +22,9 @@ func iteratorLiteralTest4() {
     var xs = yields { 1, 2, 3, 4, 5 }
     assert(5, xs.len())
     assert(5, xs.len())
-    xs()
+    xs.first()
+    assert(5, xs.len())
+    xs.last()
     assert(5, xs.len())
 }
 
@@ -46,7 +48,8 @@ func iteratorTest1() {
         yield 68.6
     }
     var it = foo(false)
-    var res = it() + it() + it() + it()
+    var res = it.element(at: 0) + it.element(at: 1) +
+        it.element(at: 2) + it.element(at: 3)
     assert(116.8, res)
 }
 
@@ -163,7 +166,12 @@ func iteratorTest7() {
 func iteratorTest8() {
     var xs = 1..10
     assert(10, xs.len())
-    xs()
+    for x in xs {
+        if x > 3 {
+            break
+        }
+    }
+    xs.first()
     assert(10, xs.len())
 }
 
@@ -343,4 +351,86 @@ func sliceTest1() { // #409
 func rangeInIterator() {
     let seq = yields { 1..5 }
     assert([1,2,3,4,5], seq.toArray())
+}
+
+func iteratorStateBug() {
+    let seq = yields { 1,2,3,4,5 }
+    assert(2, seq[1])
+    assert(2, seq[1])
+    assert([1,2,3], seq.take(3).toArray())
+    assert([1,2,3], seq.take(3).toArray())
+}
+
+func elementAtAndIndexer() {
+    let seq = yields { 1..10 }
+    assert(2, seq.element(1))
+    assert(2, seq.element(at: 1))
+    assert(10, seq.element(9))
+    assert(10, seq.element(at: 9))
+    assert(9, seq.element(-1))
+    assert(2, seq[1])
+    assert(2, seq[1])
+    assert(10, seq[9])
+    assert(10, seq[9])
+}
+
+func emptyTest() {
+    let seq = Iterator.empty()
+    assert(true, seq is Iterator)
+    assert(0, seq.len())
+    for x in seq {
+        assert(true, false)
+    }
+}
+
+func repeatTest1() {
+    func defaultValue() {
+        var i = 0
+        while true {
+            yield i
+            i += 1
+        }
+    }
+    assert([0,0,0], Iterator.repeat(0).take(3).toArray())
+    assert([3,3,3], Iterator.repeat(()=>3).take(3).toArray())
+    assert([0,1,2,3,4], Iterator.repeat(defaultValue()).take(5).toArray())
+}
+
+func repeatTest2() {
+    func notNil(x) => x != nil
+    func all(seq, fn) {
+        for x in seq {
+            if !fn(x) {
+                return false
+            }
+        }
+        return true
+    }
+    let xs = Iterator.repeat(rnd).take(20)
+    assert(true, all(xs, notNil))
+    assert(20, xs.len())
+}
+
+func stateIterTest() {
+    func it() {
+        yield 1
+        yield 2
+        yield 3
+        yield 4
+        yield 5
+    }
+    let xs = yields { 1, 2, 3, 4, 5 }
+    let ys = []
+    for x in xs {
+        ys.add(x)
+        if x > 3 {
+            break
+        }
+    }
+    assert([1,2,3,4], ys)
+    ys.clear()
+    for x in xs {
+        ys.add(x)
+    }
+    assert([1,2,3,4,5], ys)
 }

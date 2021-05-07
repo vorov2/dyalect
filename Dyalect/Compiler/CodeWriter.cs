@@ -266,6 +266,7 @@ namespace Dyalect.Compiler
         public void Fail(DyErrorCode code) => Emit(new(OpCode.FailSys, (int)code));
         public void NewType(int typeId) => Emit(new(OpCode.NewType, typeId));
 
+        public void GetIter() => Emit(Op.GetIter);
         public void End() => Emit(Op.End);
         public void Yield() => Emit(Op.Yield);
         public void Str() => Emit(Op.Str);

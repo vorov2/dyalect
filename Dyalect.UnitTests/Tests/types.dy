@@ -349,7 +349,7 @@ func complexMemberCheckTest3() {
 }
 
 func objectTypeTest() {
-    var obj = makeObject( (name: "Vasily", age: 41) )
+    var obj = __makeObject( (name: "Vasily", age: 41) )
     var res1 = match obj {
         (x, y) => "x=\(x),y=\(y)",
         _ => "No."

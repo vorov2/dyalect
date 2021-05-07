@@ -71,7 +71,7 @@ namespace Dyalect.Library.Types
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             if (name == "value")
-                return DyForeignFunction.Member(name, TryGet);
+                return Func.Member(name, TryGet);
             return base.InitializeInstanceMember(self, name, ctx);
         }
 
@@ -84,9 +84,9 @@ namespace Dyalect.Library.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Success")
-                return DyForeignFunction.Static(name, Success, -1, new Par("arg", DyNil.Instance));
+                return Func.Static(name, Success, -1, new Par("arg", DyNil.Instance));
             if (name == "Failure")
-                return DyForeignFunction.Static(name, Failure, -1, new Par("arg", DyNil.Instance));
+                return Func.Static(name, Failure, -1, new Par("arg", DyNil.Instance));
 
             return base.InitializeStaticMember(name, ctx);
         }

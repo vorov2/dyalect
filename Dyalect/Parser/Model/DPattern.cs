@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -85,6 +86,19 @@ namespace Dyalect.Parser.Model
         public override int GetHashCode() => Value.GetHashCode();
 
         public override bool Equals(object? obj) => obj is DStringPattern s && s.Value.Value == Value.Value;
+    }
+
+    public sealed class DNotPattern : DPattern
+    {
+        public DNotPattern(Location loc) : base(loc, NodeType.NotPattern) { }
+
+        internal override void ToString(StringBuilder sb) => sb.Append("not");
+
+        public DPattern Pattern { get; set; } = null!;
+
+        public override int GetHashCode() => HashCode.Combine("not", Pattern);
+
+        public override bool Equals(object? obj) => obj is DNotPattern p && Pattern.Equals(p.Pattern);
     }
 
     public sealed class DNilPattern : DPattern

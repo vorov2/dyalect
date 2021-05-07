@@ -76,6 +76,12 @@ namespace Dyalect.Compiler
         {
             switch (node.NodeType)
             {
+                case NodeType.NotPattern:
+                    var pt = ((DNotPattern)node).Pattern;
+                    PreinitPattern(pt, hints);
+                    BuildPattern(pt, hints, ctx);
+                    cw.Not();
+                    break;
                 case NodeType.NamePattern:
                     BuildName((DNamePattern)node, hints);
                     break;
