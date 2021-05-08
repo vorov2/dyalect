@@ -180,6 +180,40 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Reverse(ExecutionContext ctx, DyObject self) =>
             DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Reverse());
+        
+        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject keySelectorObj, DyObject funObj, DyObject desc)
+        {
+            var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            if (keySelectorObj.TypeId is not DyType.Function && keySelectorObj.TypeId is not DyType.Nil)
+                return ctx.InvalidType(keySelectorObj);
+
+            if (funObj.TypeId is not DyType.Function && funObj.TypeId is not DyType.Nil)
+                return ctx.InvalidType(funObj);
+
+            Func<DyObject, DyObject> selectorFun;
+
+            if (keySelectorObj.TypeId is DyType.Nil)
+                selectorFun = dy => dy;
+            else
+            {
+                var keySelector = (DyFunction)keySelectorObj;
+                selectorFun = dy => keySelector.Call(ctx, dy);
+            }
+
+            var comparer = new SortComparer(funObj as DyFunction, ctx);
+            IEnumerable<DyObject> sorted;
+            
+            if (desc.GetBool())
+                sorted = seq.OrderByDescending(selectorFun, comparer);
+            else
+                sorted = seq.OrderBy(selectorFun, comparer);
+            
+            return DyIterator.Create(sorted);
+        }
 
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
@@ -193,6 +227,7 @@ namespace Dyalect.Runtime.Types
                 "reverse" => Func.Member(name, Reverse),
                 "slice" => Func.Member(name, GetSlice, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance)),
                 "element" => Func.Member(name, ElementAt, -1, new Par("at")),
+                "sort" => Func.Member(name, SortBy, -1, new Par("with", DyNil.Instance), new Par("by", DyNil.Instance), new Par("desc", DyBool.False)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
