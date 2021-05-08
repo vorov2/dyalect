@@ -17,7 +17,7 @@ namespace Dyalect.Runtime.Types
         public StaticFunction0(string name, Func<ExecutionContext, DyObject> fun, Par[] pars)
             : base(name, pars, -1) => this.fun = fun;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) => fun(ctx);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx);
 
         internal override bool Equals(DyFunction func) => func is StaticFunction0 m && m.fun.Equals(fun);
     }
@@ -29,7 +29,7 @@ namespace Dyalect.Runtime.Types
         public StaticFunction1(string name, Func<ExecutionContext, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
             : base(name, pars, varArgIndex) => this.fun = fun;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0]);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0]);
 
         internal override bool Equals(DyFunction func) => func is StaticFunction1 m && m.fun.Equals(fun);
     }
@@ -41,7 +41,7 @@ namespace Dyalect.Runtime.Types
         public StaticFunction2(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
             : base(name, pars, varArgIndex) => this.fun = fun;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1]);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0], args[1]);
 
         internal override bool Equals(DyFunction func) => func is StaticFunction2 m && m.fun.Equals(fun);
     }
@@ -53,7 +53,7 @@ namespace Dyalect.Runtime.Types
         public StaticFunction3(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
             : base(name, pars, varArgIndex) => this.fun = fun;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2]);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0], args[1], args[2]);
 
         internal override bool Equals(DyFunction func) => func is StaticFunction3 m && m.fun.Equals(fun);
     }
@@ -65,7 +65,7 @@ namespace Dyalect.Runtime.Types
         public StaticFunction4(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
             : base(name, pars, varArgIndex) => this.fun = fun;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3]);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3]);
 
         internal override bool Equals(DyFunction func) => func is StaticFunction4 m && m.fun.Equals(fun);
     }
@@ -77,7 +77,7 @@ namespace Dyalect.Runtime.Types
         public StaticFunction5(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
             : base(name, pars, varArgIndex) => this.fun = fun;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3], args[4]);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3], args[4]);
 
         internal override bool Equals(DyFunction func) => func is StaticFunction5 m && m.fun.Equals(fun);
     }

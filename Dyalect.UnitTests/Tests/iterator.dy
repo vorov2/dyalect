@@ -434,3 +434,10 @@ func stateIterTest() {
     }
     assert([1,2,3,4,5], ys)
 }
+
+func reverseTest() {
+    let xs = [1, 2, 3, 4, 5]
+    assert([5, 4, 3, 2, 1], xs.iter().reverse().toArray())
+    let ys = yields { 'a', "str", 12 }
+    assert([12, "str", 'a'], ys.reverse().toArray())
+}

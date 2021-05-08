@@ -10,7 +10,7 @@ namespace Dyalect.Runtime.Types
         public MemberFunction(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun, Par[] pars, int varArgIndex)
             : base(name, pars, varArgIndex) => this.fun = fun;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self!, args);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args);
 
         protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction(FunctionName, fun, Parameters, VarArgIndex);
 
@@ -24,7 +24,7 @@ namespace Dyalect.Runtime.Types
         public MemberFunction0(string name, Func<ExecutionContext, DyObject, DyObject> fun)
             : base(name, Array.Empty<Par>(), -1) => this.fun = fun;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self!);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!);
 
         protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction0(FunctionName, fun);
 
@@ -38,7 +38,7 @@ namespace Dyalect.Runtime.Types
         public MemberFunction1(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
             : base(name, pars, varArgIndex) => this.fun = fun;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self!, args[0]);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0]);
 
         protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction1(FunctionName, fun, Parameters, VarArgIndex);
 
@@ -52,7 +52,7 @@ namespace Dyalect.Runtime.Types
         public MemberFunction2(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
             : base(name, pars, varArgIndex) => this.fun = fun;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self!, args[0], args[1]);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0], args[1]);
 
         protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction2(FunctionName, fun, Parameters, VarArgIndex);
 
@@ -66,7 +66,7 @@ namespace Dyalect.Runtime.Types
         public MemberFunction3(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
             : base(name, pars, varArgIndex) => this.fun = fun;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) => fun(ctx, Self!, args[0], args[1], args[2]);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0], args[1], args[2]);
 
         protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction3(FunctionName, fun, Parameters, VarArgIndex);
 

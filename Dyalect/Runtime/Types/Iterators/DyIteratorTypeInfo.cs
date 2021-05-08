@@ -177,6 +177,10 @@ namespace Dyalect.Runtime.Types
             return DyIterator.Create(seq.Skip(beg).Take(end - beg + 1));
         }
 
+
+        private DyObject Reverse(ExecutionContext ctx, DyObject self) =>
+            DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Reverse());
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -186,6 +190,7 @@ namespace Dyalect.Runtime.Types
                 "skip" => Func.Member(name, Skip, -1, new Par("count")),
                 "first" => Func.Member(name, First),
                 "last" => Func.Member(name, Last),
+                "reverse" => Func.Member(name, Reverse),
                 "slice" => Func.Member(name, GetSlice, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance)),
                 "element" => Func.Member(name, ElementAt, -1, new Par("at")),
                 _ => base.InitializeInstanceMember(self, name, ctx)

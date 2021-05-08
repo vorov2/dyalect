@@ -1,5 +1,5 @@
 # 0.24.0
-  *
+  * Add: _Iterator: add reverse method_ ([Issue #411](https://github.com/vorov2/dyalect/issues/411)).
 
 # 0.23.0
   * _Internal type system refactoring._

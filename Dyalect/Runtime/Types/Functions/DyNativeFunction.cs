@@ -56,18 +56,22 @@ namespace Dyalect.Runtime.Types
 
             if (size == args.Length)
                 locals = args;
-            else if (size > 0)
+            else
             {
                 locals = CreateLocals(ctx);
 
                 for (var i = 0; i < args.Length; i++)
                     locals[i] = args[i];
             }
-            else
-                locals = Array.Empty<DyObject>();
 
             ctx.CallStack.Push(Caller.External);
             return DyMachine.ExecuteWithData(this, locals, ctx);
+        }
+
+        internal override DyObject InternalCall(ExecutionContext ctx)
+        {
+            ctx.CallStack.Push(Caller.External);
+            return DyMachine.ExecuteWithData(this, CreateLocals(ctx), ctx);
         }
 
         internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId];
