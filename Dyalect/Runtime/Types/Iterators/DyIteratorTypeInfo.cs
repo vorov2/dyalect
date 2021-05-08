@@ -177,7 +177,6 @@ namespace Dyalect.Runtime.Types
             return DyIterator.Create(seq.Skip(beg).Take(end - beg + 1));
         }
 
-
         private DyObject Reverse(ExecutionContext ctx, DyObject self) =>
             DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Reverse());
         
