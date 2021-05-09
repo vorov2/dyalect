@@ -58,7 +58,7 @@ namespace Dyalect.Runtime.Types
                 locals = args;
             else
             {
-                locals = CreateLocals(ctx);
+                locals = size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
 
                 for (var i = 0; i < args.Length; i++)
                     locals[i] = args[i];
