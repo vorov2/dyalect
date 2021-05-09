@@ -221,6 +221,20 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(seq.Count(dy => fun.Call(ctx, dy).GetBool()));
         }
 
+        private DyObject Map(ExecutionContext ctx, DyObject self, DyObject funObj)
+        {
+            if (funObj.TypeId is not DyType.Function)
+                return ctx.InvalidType(funObj);
+
+            var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            var fun = (DyFunction)funObj;
+            return DyIterator.Create(seq.Select(dy => fun.Call(ctx, dy)));
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -236,6 +250,7 @@ namespace Dyalect.Runtime.Types
                 "sort" => Func.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
                 "shuffle" => Func.Member(name, Shuffle),
                 "count" => Func.Member(name, CountBy, -1, new Par("by")),
+                "map" => Func.Member(name, Map, -1, new Par("transform")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
