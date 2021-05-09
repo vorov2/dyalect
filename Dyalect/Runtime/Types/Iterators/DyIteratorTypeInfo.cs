@@ -235,6 +235,36 @@ namespace Dyalect.Runtime.Types
             return DyIterator.Create(seq.Select(dy => fun.Call(ctx, dy)));
         }
 
+        private DyObject TakeWhile(ExecutionContext ctx, DyObject self, DyObject funObj)
+        {
+            if (funObj.TypeId is not DyType.Function)
+                return ctx.InvalidType(funObj);
+
+            var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            var fun = (DyFunction)funObj;
+            var xs = seq.TakeWhile(o => fun.Call(ctx, o).GetBool());
+            return DyIterator.Create(xs);
+        }
+
+        private DyObject SkipWhile(ExecutionContext ctx, DyObject self, DyObject funObj)
+        {
+            if (funObj.TypeId is not DyType.Function)
+                return ctx.InvalidType(funObj);
+
+            var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            var fun = (DyFunction)funObj;
+            var xs = seq.SkipWhile(o => fun.Call(ctx, o).GetBool());
+            return DyIterator.Create(xs);
+        }
+
         private DyObject Filter(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
             if (funObj.TypeId is not DyType.Function)
@@ -267,6 +297,8 @@ namespace Dyalect.Runtime.Types
                 "count" => Func.Member(name, CountBy, -1, new Par("by")),
                 "map" => Func.Member(name, Map, -1, new Par("transform")),
                 "filter" => Func.Member(name, Filter, -1, new Par("include")),
+                "takeWhile" => Func.Member(name, TakeWhile, -1, new Par("take")),
+                "skipWhile" => Func.Member(name, SkipWhile, -1, new Par("skip")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

@@ -527,3 +527,15 @@ func filterTest() {
     let ys = xs.filter(include: x => x > 5)
     assert([6,7,8,9,10], ys.toArray())
 }
+
+func takeWhileTest() {
+    let xs = { 1..10 }
+    let ys = xs.takeWhile(take: x => x < 6)
+    assert([1,2,3,4,5], ys.toArray())
+}
+
+func skipWhileTest() {
+    let xs = { 1..10 }
+    let ys = xs.skipWhile(skip: x => x < 6)
+    assert([6,7,8,9,10], ys.toArray())
+}
