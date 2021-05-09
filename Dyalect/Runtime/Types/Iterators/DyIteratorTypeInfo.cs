@@ -280,6 +280,25 @@ namespace Dyalect.Runtime.Types
             return DyIterator.Create(xs);
         }
 
+        private DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject initial, DyObject funObj)
+        {
+            if (funObj.TypeId is not DyType.Function)
+                return ctx.InvalidType(funObj);
+
+            var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            var fun = (DyFunction)funObj;
+            var res = seq.Aggregate(initial, (x,y) => fun.Call(ctx, x, y));
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+            
+            return res;
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -299,6 +318,7 @@ namespace Dyalect.Runtime.Types
                 "filter" => Func.Member(name, Filter, -1, new Par("include")),
                 "takeWhile" => Func.Member(name, TakeWhile, -1, new Par("take")),
                 "skipWhile" => Func.Member(name, SkipWhile, -1, new Par("skip")),
+                "reduce" => Func.Member(name, Reduce, -1, new Par("initial", DyInteger.Zero), new Par("calculate")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

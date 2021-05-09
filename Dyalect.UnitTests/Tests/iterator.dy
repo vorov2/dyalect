@@ -539,3 +539,11 @@ func skipWhileTest() {
     let ys = xs.skipWhile(skip: x => x < 6)
     assert([6,7,8,9,10], ys.toArray())
 }
+
+func reduceTest() {
+    let xs = { 1..10 }
+    var res = xs.reduce(calculate: (x,y) => x + y)
+    assert(55, res)
+    res = xs.reduce(10, (x,y) => x + y)
+    assert(65, res)
+}

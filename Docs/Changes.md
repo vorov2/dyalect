@@ -6,6 +6,7 @@
   * Add: _Iterator: add `map` method_ ([Issue #415](https://github.com/vorov2/dyalect/issues/415), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#map)).
   * Add: _Iterator: add `filter` method_ ([Issue #414](https://github.com/vorov2/dyalect/issues/414), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#filter)).
   * Add: _Iterator: add `takeWhile` and `skipWhile` methods_ ([Issue #368](https://github.com/vorov2/dyalect/issues/368), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#takeWhile), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#skipWhile)).
+  * Add: _Iterator: add `reduce` method_ ([Issue #471](https://github.com/vorov2/dyalect/issues/471), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#reduce)).
 
 # 0.23.0
   * _Internal type system refactoring._
