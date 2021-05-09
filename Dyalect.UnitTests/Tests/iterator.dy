@@ -441,3 +441,28 @@ func reverseTest() {
     let ys = yields { 'a', "str", 12 }
     assert([12, "str", 'a'], ys.reverse().toArray())
 }
+
+func sortTest1() {
+    let refs = yields {3,5,1,6,2,4}
+    let xs = refs.sort().toArray()
+    assert([1,2,3,4,5,6], xs)
+    let ys = refs.sort((x,y) => y - x).toArray()
+    assert([6,5,4,3,2,1], ys)
+}
+
+func sortTest2() {
+    var refs = yields {3,5,0,1,2,4}
+    try {
+        refs = refs.sort((x,y) => x / y)
+    } catch {
+        DivisionByZero() => assert([3,5,0,1,2,3], refs.toArray())
+    }
+}
+
+func sortTest3() {
+    let refs = yields {3,5,1,6,2,4}
+    let xs = Iterator.sort(refs).toArray()
+    assert([1,2,3,4,5,6], xs)
+    let ys = Iterator.sort(values: refs, by: (x,y) => y - x).toArray()
+    assert([6,5,4,3,2,1], ys)
+}

@@ -390,7 +390,7 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 "Array" => Func.Static(name, New, 0, new Par("values", true)),
-                "sort" => Func.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance)),
+                "sort" => Func.Static(name, SortBy, -1, new Par("values"), new Par("by", DyNil.Instance)),
                 "empty" => Func.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance)),
                 "concat" => Func.Static(name, Concat, 0, new Par("values", true)),
                 "copy" => Func.Static(name, Copy, -1, new Par("from"),
