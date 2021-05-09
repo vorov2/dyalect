@@ -4,6 +4,7 @@
   * Add: _Add `Iterator.shuffled` method_ ([Issue #436](https://github.com/vorov2/dyalect/issues/436), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#shuffle)).
   * Add: _Iterator: add `count(by)` method_ ([Issue #392](https://github.com/vorov2/dyalect/issues/392), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#count)).
   * Add: _Iterator: add `map` method_ ([Issue #415](https://github.com/vorov2/dyalect/issues/415), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#map)).
+  * Add: _Iterator: add `filter` method_ ([Issue #414](https://github.com/vorov2/dyalect/issues/414), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#filter)).
 
 # 0.23.0
   * _Internal type system refactoring._

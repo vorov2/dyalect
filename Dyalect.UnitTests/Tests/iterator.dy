@@ -521,3 +521,9 @@ func mapTest2() {
         DivideByZero() => assert([2,4,6], res)
     }
 }
+
+func filterTest() {
+    let xs = { 1..10 }
+    let ys = xs.filter(include: x => x > 5)
+    assert([6,7,8,9,10], ys.toArray())
+}
