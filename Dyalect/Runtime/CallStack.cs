@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dyalect.Runtime
 {
@@ -13,25 +14,17 @@ namespace Dyalect.Runtime
 
         public CallStack() : this(DEFAULT_SIZE) { }
 
-        public CallStack(int size)
+        private CallStack(int size)
         {
             this.initialSize = size;
             array = new Caller[size];
         }
 
-        public IEnumerator<Caller> GetEnumerator()
-        {
-            for (var i = 0; i < Count; i++)
-                yield return array[i];
-        }
+        public IEnumerator<Caller> GetEnumerator() => array.Take(Count).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public void Clear()
-        {
-            Count = 0;
-            array = new Caller[initialSize];
-        }
+        public void Clear() => (Count, array) = (0, new Caller[initialSize]);
 
         public Caller Pop() =>
             Count == 0 ? throw new IndexOutOfRangeException() : array[--Count];
@@ -65,8 +58,8 @@ namespace Dyalect.Runtime
 
         public Caller this[int index]
         {
-            get { return array[index]; }
-            set { array[index] = value; }
+            get => array[index];
+            set => array[index] = value;
         }
     }
 
@@ -83,8 +76,8 @@ namespace Dyalect.Runtime
         private Caller()
         {
             Locals = Array.Empty<DyObject>();
-            EvalStack = new EvalStack(0);
-            Function = new DyNativeFunction(null, 0, 0, FastList<DyObject[]>.Empty, 0, 0);
+            EvalStack = new(0);
+            Function = new(null, 0, 0, FastList<DyObject[]>.Empty, 0, 0);
         }
 
         public Caller(DyNativeFunction function, int offset, EvalStack evalStack, DyObject[] locals)

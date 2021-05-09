@@ -38,7 +38,7 @@ namespace Dyalect.Linker
             var startupPaths = startupPath != null ? new string[] { startupPath, Path.Combine(startupPath, LIBDIR) }
                 : Array.Empty<string>();
 
-            return new FileLookup
+            return new
             (
                 startupPaths,
                 GetBasePaths(),
@@ -78,8 +78,8 @@ namespace Dyalect.Linker
 
             if (string.IsNullOrEmpty(var))
                 return Array.Empty<string>();
-            else
-                return var.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            return var.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

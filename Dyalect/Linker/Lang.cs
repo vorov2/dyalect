@@ -181,13 +181,13 @@ namespace Dyalect.Linker
         [Function("sign")]
         public DyObject Sign(ExecutionContext ctx, DyObject x)
         {
-            if (x == DyInteger.Zero)
+            if (ReferenceEquals(x, DyInteger.Zero)) 
                 return DyInteger.Zero;
 
             if (x.GetTypeInfo(ctx).Lt(ctx, x, DyInteger.Zero).GetBool())
                 return DyInteger.MinusOne;
-            else 
-                return DyInteger.One;
+            
+            return DyInteger.One;
         }
 
         [Function("parse")]
@@ -203,12 +203,12 @@ namespace Dyalect.Linker
                 if (!res.Success)
                     return ctx.FailedReadLiteral(res.Messages.First().ToString());
 
-                if (res.Value!.Root == null || res.Value.Root.Nodes.Count == 0)
+                if (res.Value!.Root is null || res.Value!.Root.Nodes.Count == 0)
                     return ctx.FailedReadLiteral("Empty expression.");
-                else if (res.Value.Root.Nodes.Count > 1)
+                else if (res.Value!.Root.Nodes.Count > 1)
                     return ctx.FailedReadLiteral("Only single expressions allowed.");
 
-                return LiteralEvaluator.Eval(res.Value.Root.Nodes[0]);
+                return LiteralEvaluator.Eval(res.Value!.Root.Nodes[0]);
             }
             catch (Exception ex)
             {
@@ -228,19 +228,19 @@ namespace Dyalect.Linker
             var sb = new StringBuilder();
             sb.Append("func __x12(");
 
-            if (tup != null)
+            if (tup is not null)
             {
                 for (var i = 0; i < tup.Count; i++)
                 {
                     var o = tup.Values[i];
 
-                    if (o is DyLabel lab)
-                    {
-                        if (i > 0)
-                            sb.Append(',');
+                    if (o is not DyLabel lab)
+                        continue;
+                    
+                    if (i > 0)
+                        sb.Append(',');
 
-                        sb.Append(lab.Label);
-                    }
+                    sb.Append(lab.Label);
                 }
             }
 
@@ -257,18 +257,18 @@ namespace Dyalect.Linker
 
             var newctx = DyMachine.CreateExecutionContext(result.Value!);
             var result2 = DyMachine.Execute(newctx);
-            var func = result2.Value as DyFunction;
+            var func = (DyFunction)result2.Value!;
             var argsList = new List<DyObject>();
 
-            if (tup != null)
-            {
-                for (var i = 0; i < tup.Count; i++)
-                {
-                    var o = tup.Values[i];
+            if (tup is null)
+                return func!.Call(newctx, argsList.ToArray());
 
-                    if (o is DyLabel lab)
-                        argsList.Add(lab.Value);
-                }
+            for (var i = 0; i < tup.Count; i++)
+            {
+                var o = tup.Values[i];
+
+                if (o is DyLabel lab)
+                    argsList.Add(lab.Value);
             }
 
             return func!.Call(newctx, argsList.ToArray());

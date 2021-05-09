@@ -19,7 +19,6 @@ namespace Dyalect.Linker
         private static void Write(BinaryWriter writer, Unit unit)
         {
             WriteHeader(writer, unit);
-
             WriteReferences(writer, unit.References);
             writer.Write(unit.UnitIds.Count);
             WriteTypeDescriptors(writer, unit.Types);
@@ -45,10 +44,14 @@ namespace Dyalect.Linker
         {
             var checksum = 0;
 
-            foreach (var op in ops)
-                checksum += (byte)op.Code;
+            unchecked
+            {
+                foreach (var op in ops)
+                    checksum += (byte) op.Code;
 
-            checksum &= 0xFF;
+                checksum &= 0xFF;
+            }
+
             return checksum;
         }
 

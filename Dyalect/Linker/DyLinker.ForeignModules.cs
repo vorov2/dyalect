@@ -70,14 +70,14 @@ namespace Dyalect.Linker
 
             foreach (var t in asm.GetTypes())
             {
-                if (Attribute.GetCustomAttribute(t, typeof(DyUnitAttribute)) is DyUnitAttribute attr)
-                {
-                    if (dict.ContainsKey(attr.Name))
-                        AddError(LinkerError.DuplicateModuleName, mod.SourceFileName!, mod.SourceLocation,
-                            mod.DllName!, attr.Name);
-                    else
-                        dict.Add(attr.Name, t);
-                }
+                if (Attribute.GetCustomAttribute(t, typeof(DyUnitAttribute)) is not DyUnitAttribute attr)
+                    continue;
+                
+                if (dict.ContainsKey(attr.Name))
+                    AddError(LinkerError.DuplicateModuleName, mod.SourceFileName!, mod.SourceLocation,
+                        mod.DllName!, attr.Name);
+                else
+                    dict.Add(attr.Name, t);
             }
 
             AssemblyMap.Add(path, dict);

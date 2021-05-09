@@ -7,15 +7,15 @@ namespace Dyalect.Runtime.Types
 {
     internal class DyNativeFunction : DyFunction
     {
-        internal FunSym? Sym;
-        internal FastList<DyObject[]> Captures;
+        private readonly FunSym? sym;
+        internal readonly FastList<DyObject[]> Captures;
         internal DyObject[]? Locals;
         internal Stack<CatchMark> CatchMarks = null!;
         internal int PreviousOffset;
-        internal int UnitId;
-        internal int FunctionId;
+        internal readonly int UnitId;
+        internal readonly int FunctionId;
 
-        public override string FunctionName => Sym?.Name != null ? Sym.Name : DefaultName;
+        public override string FunctionName => sym?.Name != null ? sym.Name : DefaultName;
 
         public override bool IsExternal => false;
 
@@ -28,7 +28,7 @@ namespace Dyalect.Runtime.Types
         internal DyNativeFunction(FunSym? sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) :
             base(typeId, sym?.Parameters ?? Array.Empty<Par>(), varArgIndex)
         {
-            Sym = sym;
+            this.sym = sym;
             UnitId = unitId;
             FunctionId = funcId;
             Captures = captures;
@@ -37,13 +37,13 @@ namespace Dyalect.Runtime.Types
         public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1)
         {
             var vars = new FastList<DyObject[]>(captures) { locals };
-            return new DyNativeFunction(sym, unitId, funcId, vars, DyType.Function, varArgIndex);
+            return new(sym, unitId, funcId, vars, DyType.Function, varArgIndex);
         }
 
         internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg)
         {
             var captures = new FastList<DyObject[]>(Captures) { arg is DyCustomType ct ? ct.Locals : System.Array.Empty<DyObject>() };
-            return new DyNativeFunction(Sym, UnitId, FunctionId, captures, DyType.Function, VarArgIndex)
+            return new DyNativeFunction(sym, UnitId, FunctionId, captures, DyType.Function, VarArgIndex)
             {
                 Self = arg
             };

@@ -22,7 +22,7 @@ namespace Dyalect.Linker
         protected Dictionary<string, Dictionary<string, Type>> AssemblyMap { get; set; } = 
             new Dictionary<string, Dictionary<string, Type>>(StringComparer.OrdinalIgnoreCase);
 
-        protected List<Unit?> Units { get; set; } = new();
+        protected List<Unit> Units { get; set; } = new();
 
         protected List<BuildMessage> Messages { get; } = new List<BuildMessage>();
 
@@ -30,14 +30,12 @@ namespace Dyalect.Linker
 
         public FileLookup Lookup { get; }
 
-        public DyLinker(FileLookup lookup, BuilderOptions options) : this(lookup, options, null) { }
-
-        public DyLinker(FileLookup lookup, BuilderOptions options, DyTuple? args)
+        public DyLinker(FileLookup lookup, BuilderOptions options, DyTuple? args = null)
         {
             Lookup = lookup;
             BuilderOptions = options;
-            lang = new Lang(args) { FileName = nameof(lang), Id = 1 };
-            Units.Add(null);
+            lang = new(args) { FileName = nameof(lang), Id = 1 };
+            Units.Add(null!);
         }
 
         protected internal virtual Result<Unit> Link(Unit self, Reference mod)
@@ -46,7 +44,7 @@ namespace Dyalect.Linker
             {
                 if (mod.ModuleName == nameof(lang))
                     unit = lang; 
-                else if (mod.DllName != null)
+                else if (mod.DllName is not null)
                 {
                     unit = LinkForeignModule(self, mod);
 
@@ -64,13 +62,13 @@ namespace Dyalect.Linker
                 {
                     var path = FindModule(self, mod.GetPath(), mod);
 
-                    if (path != null && string.Equals(Path.GetExtension(path), EXT))
+                    if (path is not null && string.Equals(Path.GetExtension(path), EXT))
                         unit = ProcessSourceFile(path, mod);
-                    else if (path != null)
+                    else if (path is not null)
                         unit = ProcessObjectFile(path, mod);
                 }
 
-                if (unit != null)
+                if (unit is not null)
                 {
                     unit.Id = Units.Count;
                     Units.Add(unit);
@@ -99,7 +97,7 @@ namespace Dyalect.Linker
             {
                 var unit = ProcessObjectFile(fullPath, default);
 
-                if (unit == null)
+                if (unit is null)
                     return Result.Create(default(UnitComposition), Messages);
 
                 return Make(unit);
@@ -119,7 +117,7 @@ namespace Dyalect.Linker
 
             var codeModel = ProcessBuffer(buffer);
 
-            if (codeModel == null)
+            if (codeModel is null)
                 return Result.Create(default(UnitComposition), Messages);
 
             return Make(codeModel);
@@ -141,7 +139,7 @@ namespace Dyalect.Linker
             Messages.Clear();
             var codeModel = ProcessBuffer(buffer);
 
-            if (codeModel == null)
+            if (codeModel is null)
                 return Result.Create(default(Unit), Messages);
 
             return Compile(codeModel);
@@ -171,7 +169,7 @@ namespace Dyalect.Linker
             {
                 var unit = CompileNodes(codeModel, root: true);
 
-                if (unit == null)
+                if (unit is null)
                     return Result.Create(default(UnitComposition), Messages);
 
                 return Make(unit);
@@ -323,22 +321,21 @@ namespace Dyalect.Linker
         {
             path = null;
 
-            if (Lookup.Find(Path.GetDirectoryName(workingDir), module, out var fullPath))
+            if (!Lookup.Find(Path.GetDirectoryName(workingDir), module, out var fullPath))
+                return false;
+            
+            if (NeedReport((int)LinkerWarning.NewerSourceFile)
+                && !string.Equals(Path.GetExtension(module), ".DLL", StringComparison.OrdinalIgnoreCase))
             {
-                if (NeedReport((int)LinkerWarning.NewerSourceFile)
-                    && !string.Equals(Path.GetExtension(module), ".DLL", StringComparison.OrdinalIgnoreCase))
-                {
-                    var sf = Path.Combine(Path.GetDirectoryName(fullPath)!, Path.GetFileNameWithoutExtension(fullPath) + ".dy");
+                var sf = Path.Combine(Path.GetDirectoryName(fullPath)!, Path.GetFileNameWithoutExtension(fullPath) + ".dy");
 
-                    if (File.Exists(sf) && File.GetLastWriteTime(sf) > File.GetLastWriteTime(fullPath))
-                        AddWarning(LinkerWarning.NewerSourceFile, mod.SourceFileName!, mod.SourceLocation, Path.GetFileNameWithoutExtension(fullPath));
-                }
-
-                path = fullPath.Replace('\\', '/');
-                return true;
+                if (File.Exists(sf) && File.GetLastWriteTime(sf) > File.GetLastWriteTime(fullPath))
+                    AddWarning(LinkerWarning.NewerSourceFile, mod.SourceFileName!, mod.SourceLocation, Path.GetFileNameWithoutExtension(fullPath));
             }
 
-            return false;
+            path = fullPath.Replace('\\', '/');
+            return true;
+
         }
 
         private void AddError(LinkerError error, string fileName, Location loc, params object[] args) =>
@@ -355,10 +352,10 @@ namespace Dyalect.Linker
             var str = LinkerErrors.ResourceManager.GetString(codeName);
             str ??= codeName;
 
-            if (args != null)
+            if (args is not null)
                 str = string.Format(str, args);
 
-            Messages.Add(new BuildMessage(str, type, code, loc.Line, loc.Column, fileName));
+            Messages.Add(new(str, type, code, loc.Line, loc.Column, fileName));
         }
 
         private bool NeedReport(int warn) =>
