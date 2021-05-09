@@ -54,7 +54,7 @@ namespace Dyalect.Linker
         public DyObject Caller(ExecutionContext ctx)
         {
             if (ctx.CallStack.Count > 2)
-                return ctx.CallStack[ctx.CallStack.Count - 2].Function;
+                return ctx.CallStack[ctx.CallStack.Count - 2].Function ?? (DyObject)DyNil.Instance;
 
             return DyNil.Instance;
         }
