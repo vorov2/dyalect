@@ -54,7 +54,11 @@ namespace Dyalect.Linker
         public DyObject Caller(ExecutionContext ctx)
         {
             if (ctx.CallStack.Count > 2)
-                return ctx.CallStack[ctx.CallStack.Count - 2].Function ?? (DyObject)DyNil.Instance;
+            {
+                var cp = ctx.CallStack[ctx.CallStack.Count - 2];
+                if (!ReferenceEquals(cp, global::Dyalect.Runtime.Caller.External))
+                    return cp.Function;
+            }
 
             return DyNil.Instance;
         }

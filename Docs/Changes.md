@@ -1,5 +1,6 @@
 # 0.24.0
-  * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473)).
+  * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473))
+  * Fix: _Function `caller` can cause Dyalect to crush_ ([Issue #474](https://github.com/vorov2/dyalect/issues/474)).
   * Add: _Iterator: add `reverse` method_ ([Issue #411](https://github.com/vorov2/dyalect/issues/411), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#reverse)).
   * Add: _Iterator: add `sort` method_ ([Issue #459](https://github.com/vorov2/dyalect/issues/459), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#sort)).
   * Add: _Add `Iterator.shuffled` method_ ([Issue #436](https://github.com/vorov2/dyalect/issues/436), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#shuffle)).

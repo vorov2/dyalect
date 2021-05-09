@@ -72,25 +72,20 @@ namespace Dyalect.Runtime
 
     internal sealed class Caller
     {
-        //public static readonly Caller Root = new(
-        //    function: new DyNativeFunction(default, default, default, new(), default, default),
-        //    offset: default,
-        //    evalStack: new(default),
-        //    locals: Array.Empty<DyObject>());
-        //public static readonly Caller External = new(
-        //    function: new DyNativeFunction(default, default, default, new(), default, default),
-        //    offset: default,
-        //    evalStack: new(default),
-        //    locals: Array.Empty<DyObject>());        
         public static readonly Caller Root = new();
         public static readonly Caller External = new();
 
-        public readonly DyObject[] Locals = null!;
-        public readonly EvalStack EvalStack = null!;
+        public readonly DyObject[] Locals;
+        public readonly EvalStack EvalStack;
         public readonly int Offset;
-        public readonly DyNativeFunction Function = null!;
+        public readonly DyNativeFunction Function;
 
-        public Caller() { }
+        public Caller()
+        {
+            Locals = Array.Empty<DyObject>();
+            EvalStack = new EvalStack(0);
+            Function = new DyNativeFunction(null, 0, 0, FastList<DyObject[]>.Empty, 0, 0);
+        }
 
         public Caller(DyNativeFunction function, int offset, EvalStack evalStack, DyObject[] locals)
         {
