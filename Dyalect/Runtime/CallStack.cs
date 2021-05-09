@@ -80,7 +80,7 @@ namespace Dyalect.Runtime
         public readonly int Offset;
         public readonly DyNativeFunction Function;
 
-        public Caller()
+        internal Caller()
         {
             Locals = Array.Empty<DyObject>();
             EvalStack = new EvalStack(0);
