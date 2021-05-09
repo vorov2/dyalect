@@ -195,6 +195,14 @@ namespace Dyalect.Runtime.Types
             return DyIterator.Create(sorted);
         }
 
+        private DyObject Shuffle(ExecutionContext ctx, DyObject self)
+        {
+            var seq = DyIterator.ToEnumerable(ctx, self);
+            var rnd = new Random();
+            var sorted = seq.OrderBy(_ => rnd.Next());
+            return DyIterator.Create(sorted);
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -208,6 +216,7 @@ namespace Dyalect.Runtime.Types
                 "slice" => Func.Member(name, GetSlice, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance)),
                 "element" => Func.Member(name, ElementAt, -1, new Par("at")),
                 "sort" => Func.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
+                "shuffle" => Func.Member(name, Shuffle),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -291,6 +300,7 @@ namespace Dyalect.Runtime.Types
                 "empty" => Func.Static(name, Empty),
                 "repeat" => Func.Static(name, Repeat, -1, new Par("value")),
                 "sort" => Func.Static(name, SortBy, -1, new Par("values"), new Par("by", DyNil.Instance)),
+                "shuffle" => Func.Static(name, Shuffle, -1, new Par("values")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }
