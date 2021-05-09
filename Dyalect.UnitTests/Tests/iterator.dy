@@ -485,3 +485,9 @@ func shuffleTest() {
     assert(6, ys.len())
     assert(true, !eq(xs.toArray(), ys))
 }
+
+func countTest() {
+    let refs = yields {3,5,1,6,2,4}
+    let c = refs.count(x => x % 2 == 0)
+    assert(3, c)
+}

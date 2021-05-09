@@ -2,6 +2,7 @@
   * Add: _Iterator: add `reverse` method_ ([Issue #411](https://github.com/vorov2/dyalect/issues/411), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#reverse)).
   * Add: _Iterator: add `sort` method_ ([Issue #459](https://github.com/vorov2/dyalect/issues/459), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#sort)).
   * Add: _Add `Iterator.shuffled` method_ ([Issue #436](https://github.com/vorov2/dyalect/issues/436), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#shuffle)).
+  * Add: _Iterator: add `count(by)` method_ ([Issue #392](https://github.com/vorov2/dyalect/issues/392), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#count)).
 
 # 0.23.0
   * _Internal type system refactoring._

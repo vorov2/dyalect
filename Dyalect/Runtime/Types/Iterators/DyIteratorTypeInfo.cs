@@ -198,9 +198,27 @@ namespace Dyalect.Runtime.Types
         private DyObject Shuffle(ExecutionContext ctx, DyObject self)
         {
             var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+            
             var rnd = new Random();
             var sorted = seq.OrderBy(_ => rnd.Next());
             return DyIterator.Create(sorted);
+        }
+
+        private DyObject CountBy(ExecutionContext ctx, DyObject self, DyObject funObj)
+        {
+            if (funObj.TypeId is not DyType.Function)
+                return ctx.InvalidType(funObj);
+
+            var seq = DyIterator.ToEnumerable(ctx, self);
+            
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            var fun = (DyFunction)funObj;
+            return DyInteger.Get(seq.Count(dy => fun.Call(ctx, dy).GetBool()));
         }
 
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -217,6 +235,7 @@ namespace Dyalect.Runtime.Types
                 "element" => Func.Member(name, ElementAt, -1, new Par("at")),
                 "sort" => Func.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
                 "shuffle" => Func.Member(name, Shuffle),
+                "count" => Func.Member(name, CountBy, -1, new Par("by")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
