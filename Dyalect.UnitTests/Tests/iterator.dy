@@ -459,14 +459,6 @@ func sortTest2() {
     }
 }
 
-func sortTest3() {
-    let refs = yields {3,5,1,6,2,4}
-    let xs = Iterator.sort(refs).toArray()
-    assert([1,2,3,4,5,6], xs)
-    let ys = Iterator.sort(values: refs, by: (x,y) => y - x).toArray()
-    assert([6,5,4,3,2,1], ys)
-}
-
 func shuffleTest() {
     func eq(xs, ys) {
         return false when xs.len() != ys.len()
@@ -479,9 +471,6 @@ func shuffleTest() {
     }
     let xs = yields { 1,2,3,4,5,6 }
     var ys = xs.shuffle().toArray()
-    assert(6, ys.len())
-    assert(true, !eq(xs.toArray(), ys))
-    ys = Iterator.shuffle(xs).toArray()
     assert(6, ys.len())
     assert(true, !eq(xs.toArray(), ys))
 }
@@ -546,4 +535,34 @@ func reduceTest() {
     assert(55, res)
     res = xs.reduce(10, (x,y) => x + y)
     assert(65, res)
+}
+
+func toMapTest1() {
+    let xs = yields {
+        (key: 1, value: "Foo"),
+        (key: 2, value: "Bar"),
+        (key: 3, value: "Zoo")
+    }
+    var map = xs.toMap(kv => kv::key, kv => kv::value)
+    assert("Foo", map[1])
+    assert("Bar", map[2])
+    assert("Zoo", map[3])
+    map = xs.toMap(kv => kv::key)
+    assert((key: 1, value: "Foo"), map[1])
+    assert((key: 2, value: "Bar"), map[2])
+    assert((key: 3, value: "Zoo"), map[3])
+}
+
+func toMapTest2() {
+    let xs = yields {
+        (key: 1, value: "Foo"),
+        (key: 2, value: "Bar"),
+        (key: 1, value: "Zoo")
+    }
+    try {
+        let _ = xs.toMap(kv => kv::key)
+        assert(true, false)
+    } catch {
+        KeyAlreadyPresent() => assert(true, true)
+    }
 }

@@ -11,7 +11,8 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
+            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
+            | SupportedOperations.Iter;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {

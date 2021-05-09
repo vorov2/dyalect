@@ -1,4 +1,5 @@
 # 0.24.0
+  * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473)).
   * Add: _Iterator: add `reverse` method_ ([Issue #411](https://github.com/vorov2/dyalect/issues/411), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#reverse)).
   * Add: _Iterator: add `sort` method_ ([Issue #459](https://github.com/vorov2/dyalect/issues/459), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#sort)).
   * Add: _Add `Iterator.shuffled` method_ ([Issue #436](https://github.com/vorov2/dyalect/issues/436), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#shuffle)).
@@ -7,6 +8,7 @@
   * Add: _Iterator: add `filter` method_ ([Issue #414](https://github.com/vorov2/dyalect/issues/414), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#filter)).
   * Add: _Iterator: add `takeWhile` and `skipWhile` methods_ ([Issue #368](https://github.com/vorov2/dyalect/issues/368), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#takeWhile), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#skipWhile)).
   * Add: _Iterator: add `reduce` method_ ([Issue #471](https://github.com/vorov2/dyalect/issues/471), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#reduce)).
+  * Add: _Iterator: add `toMap` method_ ([Issue #472](https://github.com/vorov2/dyalect/issues/472), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#toMap)).
 
 # 0.23.0
   * _Internal type system refactoring._

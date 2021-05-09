@@ -81,6 +81,35 @@ namespace Dyalect.Runtime.Types
             }
         }
 
+        private DyObject ToMap(ExecutionContext ctx, DyObject self, DyObject keySelectorObj, DyObject valueSelectorObj)
+        {
+            if (keySelectorObj.TypeId is not DyType.Function)
+                return ctx.InvalidType(keySelectorObj);
+
+            if (valueSelectorObj.TypeId is not DyType.Function and not DyType.Nil)
+                return ctx.InvalidType(valueSelectorObj);
+
+            var keySelector = (DyFunction)keySelectorObj;
+            var valueSelector = valueSelectorObj as DyFunction;
+            var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            try
+            {
+                var map = 
+                    valueSelector is not null
+                    ? seq.ToDictionary(dy => keySelector.Call(ctx, dy), dy => valueSelector.Call(ctx, dy))
+                    : seq.ToDictionary(dy => keySelector.Call(ctx, dy));
+                return new DyMap(map);
+            }
+            catch (ArgumentException)
+            {
+                return ctx.KeyAlreadyPresent();
+            }
+        }
+
         private static List<DyObject>? ConvertToArray(ExecutionContext ctx, DyObject self)
         {
             var seq = DyIterator.ToEnumerable(ctx, self);
@@ -304,6 +333,7 @@ namespace Dyalect.Runtime.Types
             {
                 "toArray" => Func.Member(name, ToArray),
                 "toTuple" => Func.Member(name, ToTuple),
+                "toMap" => Func.Member(name, ToMap, -1, new Par("selectKey"), new Par("selectValue", DyNil.Instance)),
                 "take" => Func.Member(name, Take, -1, new Par("count")),
                 "skip" => Func.Member(name, Skip, -1, new Par("count")),
                 "first" => Func.Member(name, First),
@@ -401,8 +431,6 @@ namespace Dyalect.Runtime.Types
                     new Par("by", DyInteger.One), new Par("exclusive", DyBool.False)),
                 "empty" => Func.Static(name, Empty),
                 "repeat" => Func.Static(name, Repeat, -1, new Par("value")),
-                "sort" => Func.Static(name, SortBy, -1, new Par("values"), new Par("by", DyNil.Instance)),
-                "shuffle" => Func.Static(name, Shuffle, -1, new Par("values")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }
