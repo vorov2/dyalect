@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Dyalect.Runtime.Types
 {
@@ -42,7 +41,7 @@ namespace Dyalect.Runtime.Types
                     sb.Append(", ");
                 var str = e.ToString(ctx);
 
-                if (ctx.Error != null)
+                if (ctx.Error is not null)
                     return DyString.Empty;
 
                 sb.Append(str.GetString());
@@ -374,7 +373,7 @@ namespace Dyalect.Runtime.Types
                 "sort" => Func.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
                 "shuffle" => Func.Member(name, Shuffle),
                 "count" => Func.Member(name, CountBy, -1, new Par("by")),
-                "map" => Func.Member(name, Map, -1, new Par("transform")),
+                "map" => Func.Member(name, Map, -1, new Par("select")),
                 "filter" => Func.Member(name, Filter, -1, new Par("predicate")),
                 "takeWhile" => Func.Member(name, TakeWhile, -1, new Par("predicate")),
                 "skipWhile" => Func.Member(name, SkipWhile, -1, new Par("predicate")),
