@@ -4,7 +4,7 @@
   * Add: _Add `Integer.parse` method_ ([Issue #480](https://github.com/vorov2/dyalect/issues/480), [docs](https://github.com/vorov2/dyalect/wiki/Integer#parse)).
 
 # 0.24.0
-  * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473))
+  * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473)).
   * Fix: _Function `caller` can cause Dyalect to crush_ ([Issue #474](https://github.com/vorov2/dyalect/issues/474)).
   * Fix: _An iterator with empty block_ ([Issue #475](https://github.com/vorov2/dyalect/issues/475)).
   * Fix: _Iterators don't support indexing_ ([Issue #476](https://github.com/vorov2/dyalect/issues/476)).
