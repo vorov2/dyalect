@@ -23,34 +23,34 @@ namespace Dyalect.Linker
 
         protected override void Prepare()
         {
-            backupUnitMap = new Dictionary<Reference, Unit>(UnitMap);
-            backupAssemblyMap = new Dictionary<string, Dictionary<string, Type>>(AssemblyMap);
-            backupUnits = new List<Unit>(Units!);
+            backupUnitMap = new(UnitMap);
+            backupAssemblyMap = new(AssemblyMap);
+            backupUnits = new(Units!);
         }
 
         protected override void Complete(bool failed)
         {
-            if (failed)
-            {
-                if (backupUnitMap is not null)
-                    UnitMap = backupUnitMap;
+            if (!failed)
+                return;
+            
+            if (backupUnitMap is not null)
+                UnitMap = backupUnitMap;
 
-                if (backupAssemblyMap is not null)
-                    AssemblyMap = backupAssemblyMap;
+            if (backupAssemblyMap is not null)
+                AssemblyMap = backupAssemblyMap;
 
-                Units.Clear();
+            Units.Clear();
 
-                if (backupUnits is not null)
-                    for (var i = 0; i < backupUnits.Count; i++)
-                        Units.Add(backupUnits[i]);
-            }
+            if (backupUnits is null)
+                return;
+            
+            for (var i = 0; i < backupUnits.Count; i++)
+                Units.Add(backupUnits[i]);
         }
 
         protected override Result<UnitComposition> Make(Unit unit)
         {
-            if (composition is null)
-                composition = new UnitComposition(Units!);
-
+            composition ??= new(Units!);
             Units[0] = unit;
             ProcessUnits(composition);
             return Result.Create(composition, Messages);
@@ -60,9 +60,8 @@ namespace Dyalect.Linker
         {
             if (!root)
                 return base.CompileNodes(codeModel, root);
-            else
-                Messages.Clear();
-
+            
+            Messages.Clear();
             var oldCompiler = compiler;
 
             if (compiler is null)

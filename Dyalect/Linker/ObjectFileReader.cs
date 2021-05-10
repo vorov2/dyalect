@@ -12,18 +12,15 @@ namespace Dyalect.Linker
         public static Unit Read(string fileName)
         {
             var unit = new Unit();
-
-            using (var stream = File.OpenRead(fileName))
-            using (var reader = new BinaryReader(stream))
-                Read(reader, unit);
-
+            using var stream = File.OpenRead(fileName);
+            using var reader = new BinaryReader(stream);
+            Read(reader, unit);
             return unit;
         }
 
         private static void Read(BinaryReader reader, Unit unit)
         {
             ReadHeader(reader, unit);
-
             ReadReferences(reader, unit);
             unit.UnitIds.AddRange(Enumerable.Repeat(-1, reader.ReadInt32()));
             ReadTypeDescriptors(reader, unit);
@@ -56,7 +53,7 @@ namespace Dyalect.Linker
             var count = reader.ReadInt32();
 
             for (var i = 0; i < count; i++)
-                unit.Ops.Add(OpExtensions.DeserializeOp(reader));
+                unit.Ops.Add(reader.DeserializeOp());
         }
 
         private static void ReadIndices(BinaryReader reader, Unit unit)
@@ -92,7 +89,6 @@ namespace Dyalect.Linker
         private static void ReadMemoryLayouts(BinaryReader reader, Unit unit)
         {
             var count = reader.ReadInt32();
-
             for (var i = 0; i < count; i++)
                 unit.Layouts.Add(new(
                     reader.ReadInt32(),
@@ -127,6 +123,7 @@ namespace Dyalect.Linker
         private static void ReadReferences(BinaryReader reader, Unit unit)
         {
             var refs = reader.ReadInt32();
+            
             for (var i = 0; i < refs; i++)
             {
                 var checksum = reader.ReadInt32();
@@ -217,6 +214,7 @@ namespace Dyalect.Linker
 
                 var pars = reader.ReadInt32();
                 f.Parameters = new Par[pars];
+                
                 for (var j = 0; j < pars; j++)
                 {
                     var name = reader.ReadString();

@@ -24,15 +24,29 @@ namespace Dyalect.Runtime.Types
             if (fun is not null)
             {
                 var ret = fun.Call(ctx, x, y);
+
+                if (ctx.HasErrors)
+                    return 0;
+                
                 return ret.TypeId != DyType.Integer
                     ? (ret.TypeId == DyType.Float ? (int)ret.GetFloat() : 0)
                     : (int)ret.GetInteger();
             }
 
             var res = ctx.RuntimeContext.Types[x.TypeId].Gt(ctx, x, y);
-            return ReferenceEquals(res, DyBool.True)
-                ? 1
-                : ReferenceEquals(ctx.RuntimeContext.Types[x.TypeId].Eq(ctx, x, y), DyBool.True) ? 0 : -1;
+
+            if (ctx.HasErrors)
+                return 0;
+            
+            if (ReferenceEquals(res, DyBool.True))
+                return 1;
+
+            res = ctx.RuntimeContext.Types[x.TypeId].Eq(ctx, x, y);
+
+            if (ctx.HasErrors)
+                return 0;
+            
+            return ReferenceEquals(res, DyBool.True) ? 0 : -1;
         }
     }
 }

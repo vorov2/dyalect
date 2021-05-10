@@ -28,5 +28,7 @@ namespace Dyalect.Runtime.Types
 
         internal override DyObject[] CreateLocals(ExecutionContext ctx) =>
             Parameters.Length == 0 ? Array.Empty<DyObject>() : new DyObject[Parameters.Length];
+
+        internal override DyObject InternalCall(ExecutionContext ctx) => InternalCall(ctx, Array.Empty<DyObject>());
     }
 }

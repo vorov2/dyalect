@@ -1643,8 +1643,10 @@ namespace Dyalect.Parser
 		var it = new DIteratorLiteral(t);
 		it.YieldBlock = new DYieldBlock(t);
 		
-		Expr(out node);
-		it.YieldBlock.Elements.Add(node); 
+		if (StartOf(9)) {
+			Expr(out node);
+			it.YieldBlock.Elements.Add(node); 
+		}
 		while (la.kind == 25) {
 			Get();
 			Expr(out node);

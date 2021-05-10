@@ -22,13 +22,13 @@ namespace Dyalect.Linker
             UnitIds.Add(0); //Self reference, to mimic the behavior of regular units
         }
 
-        internal protected void Add(string name, DyObject obj)
+        protected void Add(string name, DyObject obj)
         {
             ExportList.Add(name, new ScopeVar(0 | ExportList.Count << 8, VarFlags.Foreign));
             Values.Add(obj);
         }
 
-        internal protected void AddType<T>(string name) where T : ForeignTypeInfo
+        protected void AddType<T>(string name) where T : ForeignTypeInfo
         {
             var typeId = Types.Count;
             var td = new TypeDescriptor(name, typeId, true, typeof(T));
@@ -36,14 +36,15 @@ namespace Dyalect.Linker
             TypeMap[name] = td;
         }
 
-        internal protected void AddReference<T>() where T : ForeignUnit
+        protected void AddReference<T>() where T : ForeignUnit
         {
             var ti = typeof(T);
 
             if (Attribute.GetCustomAttribute(ti, typeof(DyUnitAttribute)) is not DyUnitAttribute attr)
                 throw new DyException("Invalid reference.");
 
-            var rf = new Reference(attr.Name, null, ti.Assembly.GetName().Name + ".dll", default, null);
+            var asmName = ti.Assembly.GetName().Name + ".dll";
+            var rf = new Reference(attr.Name, null, asmName, default, null);
             UnitIds.Add(-1); //Real handles are added by a linker
             References.Add(rf);
         }
@@ -89,10 +90,7 @@ namespace Dyalect.Linker
                 parsMeta = Array.Empty<Par>();
             
             var varArgIndex = -1;
-            var simpleSignature = true;
-
-            if (pars.Length == 0 || pars[0].ParameterType != typeof(ExecutionContext))
-                simpleSignature = false;
+            var simpleSignature = pars.Length > 0 && pars[0].ParameterType == typeof(ExecutionContext);
 
             for (var i = 0; i < pars.Length; i++)
             {
@@ -150,7 +148,7 @@ namespace Dyalect.Linker
             else
             {
                 var (fun, types) = CreateDelegate(mi, pars, this);
-                return new ForeignFunction(name, new FunctionDescriptor { Func = fun, Types = types }, parsMeta, varArgIndex, hasContext);
+                return new ForeignFunction(name, new() { Func = fun, Types = types }, parsMeta, varArgIndex, hasContext);
             }
         }
 

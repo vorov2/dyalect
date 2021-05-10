@@ -69,3 +69,21 @@ func mapFieldTest2() {
     assert("Doe", map::surname)
     assert(50, map::age)
 }
+
+func iterMap() {
+    let xs = yields {
+        (key: 1, value: "Foo"),
+        (key: 2, value: "Bar"),
+        (key: 3, value: "Zoo")
+    }
+    let map = xs.toMap(v => v::key, v => v::value)
+    for (key,value) in map {
+        if key == 1 {
+            assert("Foo", value)
+        } else if key == 2 {
+            assert("Bar", value)
+        } else if key == 3 {
+            assert("Zoo", value)
+        }
+    }
+}

@@ -433,3 +433,10 @@ func funcWithDefaults5() {
     __invoke(collector, 5, 6, [7, 8])
     assert([5, 6, 7, 8], cell)
 }
+
+func externalCall() {
+    func checkIt() {
+        assert(nil, caller())
+    }
+    __invoke(checkIt)
+}

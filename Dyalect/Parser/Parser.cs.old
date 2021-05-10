@@ -878,8 +878,7 @@ namespace Dyalect.Parser
 				AsPattern(node, out node);
 			}
 		} else if (la.kind == 79) {
-			Get();
-			Pattern(out node);
+			NotPattern(out node);
 		} else SynErr(112);
 	}
 
@@ -976,6 +975,13 @@ namespace Dyalect.Parser
 		Expect(24);
 		Expect(1);
 		node = new DMethodCheckPattern(t) { Name = t.val }; 
+	}
+
+	void NotPattern(out DPattern node) {
+		Expect(79);
+		var np = new DNotPattern(t); 
+		Pattern(out node);
+		np.Pattern = node; node = np; 
 	}
 
 	void LabelPattern(out DPattern node) {

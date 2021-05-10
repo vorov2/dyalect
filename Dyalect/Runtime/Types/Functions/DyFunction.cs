@@ -22,6 +22,8 @@ namespace Dyalect.Runtime.Types
 
         internal abstract DyObject InternalCall(ExecutionContext ctx, DyObject[] args);
 
+        internal abstract DyObject InternalCall(ExecutionContext ctx);
+
         public DyObject Call(ExecutionContext ctx, params DyObject[] args)
         {
             var newArgs = PrepareArguments(ctx, args);

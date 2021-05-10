@@ -1058,7 +1058,7 @@ PRODUCTIONS
                     var it = new DIteratorLiteral(t);
                     it.YieldBlock = new DYieldBlock(t);
                 .)
-                Expr<out node> (. it.YieldBlock.Elements.Add(node); .)
+                [ Expr<out node> (. it.YieldBlock.Elements.Add(node); .) ]
                 { "," Expr<out node> (. it.YieldBlock.Elements.Add(node); .) }
                 (. node = it; .)
             "}"

@@ -1,3 +1,19 @@
+# 0.24.0
+  * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473))
+  * Fix: _Function `caller` can cause Dyalect to crush_ ([Issue #474](https://github.com/vorov2/dyalect/issues/474)).
+  * Fix: _An iterator with empty block_ ([Issue #475](https://github.com/vorov2/dyalect/issues/475)).
+  * Fix: _Iterators don't support indexing_ ([Issue #476](https://github.com/vorov2/dyalect/issues/476)).
+  * Add: _Iterator: add `reverse` method_ ([Issue #411](https://github.com/vorov2/dyalect/issues/411), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#reverse)).
+  * Add: _Iterator: add `sort` method_ ([Issue #459](https://github.com/vorov2/dyalect/issues/459), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#sort)).
+  * Add: _Add `Iterator.shuffled` method_ ([Issue #436](https://github.com/vorov2/dyalect/issues/436), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#shuffle)).
+  * Add: _Iterator: add `count(by)` method_ ([Issue #392](https://github.com/vorov2/dyalect/issues/392), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#count)).
+  * Add: _Iterator: add `map` method_ ([Issue #415](https://github.com/vorov2/dyalect/issues/415), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#map)).
+  * Add: _Iterator: add `filter` method_ ([Issue #414](https://github.com/vorov2/dyalect/issues/414), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#filter)).
+  * Add: _Iterator: add `takeWhile` and `skipWhile` methods_ ([Issue #368](https://github.com/vorov2/dyalect/issues/368), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#takeWhile), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#skipWhile)).
+  * Add: _Iterator: add `reduce` method_ ([Issue #471](https://github.com/vorov2/dyalect/issues/471), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#reduce)).
+  * Add: _Iterator: add `toMap` method_ ([Issue #472](https://github.com/vorov2/dyalect/issues/472), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#toMap)).
+  * Add: _Iterator: add `any` and `all`_ ([Issue #477](https://github.com/vorov2/dyalect/issues/477), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#any), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#all)).
+  
 # 0.23.0
   * _Internal type system refactoring._
   * Fix: _Iterator state is not correctly restored_ ([Issue #464](https://github.com/vorov2/dyalect/issues/464)).
@@ -8,7 +24,7 @@
   * Add: _Internal redesign of iterators_ ([Issue #465](https://github.com/vorov2/dyalect/issues/465)).
   * Add: _Consider adding not operator to pattern matching_ ([Issue #468](https://github.com/vorov2/dyalect/issues/468)).
   * Change: _Redesign of Dyalect functions invocation from .NET code_ ([Issue #469](https://github.com/vorov2/dyalect/issues/469)).
-  
+
 # 0.22.1
   * _Code refactoring (nullable reference types)._
   * Fix: _Inconsistency of pattern match_ ([Issue #461](https://github.com/vorov2/dyalect/issues/461)).

@@ -340,22 +340,22 @@ namespace Dyalect.Runtime.Types
 
         private static DyObject Copy(ExecutionContext ctx, DyObject from, DyObject sourceIndex, DyObject to, DyObject destIndex, DyObject length)
         {
-            if (sourceIndex.TypeId != DyType.Integer)
+            if (sourceIndex.TypeId is not DyType.Integer)
                 return ctx.InvalidType(sourceIndex);
 
             var iSourceIndex = sourceIndex.GetInteger();
 
-            if (destIndex.TypeId != DyType.Integer)
+            if (destIndex.TypeId is not DyType.Integer)
                 return ctx.InvalidType(destIndex);
 
             var iDestIndex = destIndex.GetInteger();
 
-            if (length.TypeId != DyType.Integer)
+            if (length.TypeId is not DyType.Integer)
                 return ctx.InvalidType(length);
 
             var iLen = length.GetInteger();
 
-            if (from.TypeId != DyType.Array)
+            if (from.TypeId is not DyType.Array)
                 return ctx.InvalidType(from);
 
             var sourceArr = (DyArray)from;
@@ -390,7 +390,7 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 "Array" => Func.Static(name, New, 0, new Par("values", true)),
-                "sort" => Func.Static(name, SortBy, -1, new Par("array"), new Par("comparator", DyNil.Instance)),
+                "sort" => Func.Static(name, SortBy, -1, new Par("values"), new Par("by", DyNil.Instance)),
                 "empty" => Func.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance)),
                 "concat" => Func.Static(name, Concat, 0, new Par("values", true)),
                 "copy" => Func.Static(name, Copy, -1, new Par("from"),
