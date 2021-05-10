@@ -1449,7 +1449,7 @@ namespace Dyalect.Parser
 				var app = new DApplication(node, t) { NilSafety = nsaf };
 				
 				Get();
-				if (StartOf(9)) {
+				if (StartOf(14)) {
 					ApplicationArguments(app);
 				}
 				node = app; 
@@ -1509,7 +1509,15 @@ namespace Dyalect.Parser
 	}
 
 	void Label(out DNode node) {
-		node = null; var name = ""; 
+		bool mut = false; node = null; var name = ""; 
+		if (la.kind == 10 || la.kind == 11) {
+			if (la.kind == 10) {
+				Get();
+				mut = true; 
+			} else {
+				Get();
+			}
+		}
 		if (la.kind == 1) {
 			Get();
 			name = t.val; 
@@ -1524,7 +1532,7 @@ namespace Dyalect.Parser
 		} else if (StartOf(6)) {
 			Is(out node);
 		} else SynErr(126);
-		node = new DLabelLiteral(ot) { Label = name, Expression = node }; 
+		node = new DLabelLiteral(ot) { Mutable = mut, Label = name, Expression = node }; 
 	}
 
 	void Name(out DNode node) {
@@ -1583,50 +1591,23 @@ namespace Dyalect.Parser
 	}
 
 	void Tuple(out DNode node) {
-		node = null; var mut = false; 
+		node = null; 
 		Expect(29);
-		if (la.kind == 10 || la.kind == 11) {
-			if (la.kind == 10) {
-				Get();
-				mut = true; 
-			} else {
-				Get();
-			}
-		}
-		var tup = new DTupleLiteral(t);
-		if (mut) {
-		   tup.MutableFields = new List<int>();
-		   tup.MutableFields.Add(0);
-		}
-		
 		if (IsLabel()) {
 			Label(out node);
 		} else if (StartOf(9)) {
 			Expr(out node);
 		} else SynErr(129);
-		tup.Elements.Add(node); mut = false; 
+		tup.Elements.Add(node); 
 		while (la.kind == 25) {
 			Get();
 			if (StartOf(14)) {
-				if (la.kind == 10 || la.kind == 11) {
-					if (la.kind == 10) {
-						Get();
-						mut = true; 
-					} else {
-						Get();
-					}
-				}
 				if (IsLabel()) {
 					Label(out node);
-				} else if (StartOf(9)) {
+				} else {
 					Expr(out node);
-				} else SynErr(130);
-				if (mut) {
-				   tup.MutableFields ??= new List<int>();
-				   tup.MutableFields.Add(tup.Elements.Count);
 				}
-				tup.Elements.Add(node); mut = false;
-				
+				tup.Elements.Add(node); 
 			}
 		}
 		node = tup; 
@@ -1690,7 +1671,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 67) {
 			Import();
 			Separator();
-		} else SynErr(131);
+		} else SynErr(130);
 	}
 
 	void Dyalect() {
@@ -1868,8 +1849,7 @@ namespace Dyalect.Parser
 			case 127: s = "invalid String"; break;
 			case 128: s = "invalid Bool"; break;
 			case 129: s = "invalid Tuple"; break;
-			case 130: s = "invalid Tuple"; break;
-			case 131: s = "invalid DyalectItem"; break;
+			case 130: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

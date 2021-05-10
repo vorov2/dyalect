@@ -1065,15 +1065,16 @@ PRODUCTIONS
         ).
 
     Label<out DNode node> =
-        (. node = null; var name = ""; .)
+        (. bool mut = false; node = null; var name = ""; .)
         (
+            [ "var" (. mut = true; .) | "let" ]
             ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
             ":" (. var ot = t; .)
             (
                   IF (IsFunction()) FunctionExpr<out node>
                 | Is<out node>
             )
-            (. node = new DLabelLiteral(ot) { Label = name, Expression = node }; .)
+            (. node = new DLabelLiteral(ot) { Mutable = mut, Label = name, Expression = node }; .)
         ).
 
     Base<out DNode node> =
@@ -1093,37 +1094,23 @@ PRODUCTIONS
         ).
 
     Tuple<out DNode node> =
-        (. node = null; var mut = false; .)
+        (. node = null; .)
         (
             "("
-                [ ( "var" (. mut = true; .) | "let" ) ]
-                (.
-                    var tup = new DTupleLiteral(t);
-                    if (mut) {
-                        tup.MutableFields = new List<int>();
-                        tup.MutableFields.Add(0);
-                    }
-                .)
+                (.  var tup = new DTupleLiteral(t); .)
                 (
                       IF (IsLabel()) Label<out node>
                     | Expr<out node>
                 )
-                (. tup.Elements.Add(node); mut = false; .)
+                (. tup.Elements.Add(node); .)
                 { 
                     ","
                     [
-                        [ ( "var" (. mut = true; .) | "let" ) ]
                         (
                               IF (IsLabel()) Label<out node>
                             | Expr<out node>
                         )
-                        (.
-                            if (mut) {
-                                tup.MutableFields ??= new List<int>();
-                                tup.MutableFields.Add(tup.Elements.Count);
-                            }
-                            tup.Elements.Add(node); mut = false;
-                        .)
+                        (. tup.Elements.Add(node); .)
                     ] 
                 }
                 (. node = tup; .)

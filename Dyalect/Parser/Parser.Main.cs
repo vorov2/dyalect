@@ -155,11 +155,21 @@ namespace Dyalect.Parser
 
         private bool IsLabel()
         {
-            if (la.kind != _identToken && la.kind != _stringToken)
+            if (la.kind == _varToken || la.kind == _letToken)
+            {
+                var xa = scanner.Peek();
+                if (xa.kind != _identToken && xa.kind != _stringToken)
+                {
+                    scanner.ResetPeek();
+                    return false;
+                }
+            }
+            else if (la.kind != _identToken && la.kind != _stringToken)
                 return false;
 
+            var na = scanner.Peek();
             scanner.ResetPeek();
-            return scanner.Peek().kind == _colonToken;
+            return na.kind == _colonToken;
         }
 
         private bool IsLabelPattern()

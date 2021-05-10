@@ -2,6 +2,8 @@
 {
     public sealed class DyLabel : DyObject
     {
+        internal bool Mutable;
+        
         public string Label { get; }
 
         public DyObject Value { get; internal set; }

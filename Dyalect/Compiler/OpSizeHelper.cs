@@ -90,7 +90,7 @@
             1, //CtorCheck
             0, //IsNull
             0, //GetIter
-            1, //TupMut
+            0, //Mut
         };
     }
 }
