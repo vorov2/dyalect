@@ -274,6 +274,12 @@ namespace Dyalect.Compiler
 
         private void Build(DYieldBlock node, Hints hints, CompilerContext ctx)
         {
+            if (node.Elements.Count == 0)
+            {
+                PushIf(hints);
+                return;
+            }
+
             for (var i = 0; i < node.Elements.Count; i++)
             {
                 var n = node.Elements[i];

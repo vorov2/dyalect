@@ -566,3 +566,19 @@ func toMapTest2() {
         KeyAlreadyPresent() => assert(true, true)
     }
 }
+
+func emptySequence() {
+    func iter() {
+        yield break
+    }
+    var xs = iter()
+    assert(0, xs.len())
+    assert(nil, xs.first())
+    assert(nil, xs.last())
+    assert([], xs.toArray())
+    xs = yields {}
+    assert(0, xs.len())
+    assert(nil, xs.first())
+    assert(nil, xs.last())
+    assert([], xs.toArray())
+}

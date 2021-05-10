@@ -42,7 +42,7 @@ namespace Dyalect.Linker
 
                 fst = false;
 
-                if (ctx.Error != null)
+                if (ctx.Error is not null)
                     break;
             }
 
