@@ -21,7 +21,7 @@
 			"include": "#comments"
 		}
 	],
-	"repository": {	
+	"repository": {
 		"keywords": {
 			"patterns": [
 				{
@@ -29,7 +29,7 @@
 					"name": "keyword.control.branch.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:continue|break|yield|many|return)\\b",
+					"match": "(?<!\\.)\\b(?:continue|break|yield|yields|many|return)\\b",
 					"name": "keyword.control.transfer.dyalect"
 				},
 				{
@@ -73,38 +73,20 @@
 		"strings": {
 			"patterns": [
 				{
-					"begin": "\"\"\"",
+					"begin": "<\\[",
 					"beginCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.begin.dyalect"
 						}
 					},
-					"comment": "SE-0168: Multi-Line String Literals",
-					"end": "\"\"\"",
+					"comment": "Multi-Line String Literals",
+					"end": "\\]>",
 					"endCaptures": {
 						"0": {
 							"name": "punctuation.definition.string.end.dyalect"
 						}
 					},
-					"name": "string.quoted.double.block.dyalect",
-					"patterns": [
-						{
-							"match": "\\G.+(?=\"\"\")|\\G.+",
-							"name": "invalid.illegal.content-after-opening-delimiter.dyalect"
-						},
-						{
-							"match": "\\\\\\s*\\n",
-							"name": "constant.character.escape.newline.dyalect"
-						},
-						{
-							"include": "#string-guts"
-						},
-						{
-							"comment": "Allow \\(\"\"\"...\"\"\") to appear inside a block string",
-							"match": "\\S((?!\\\\\\().)*(?=\"\"\")",
-							"name": "invalid.illegal.content-before-closing-delimiter.dyalect"
-						}
-					]
+					"name": "string.quoted.double.block.dyalect"
 				},
 				{
 					"begin": "\"",

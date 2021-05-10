@@ -1,5 +1,6 @@
 # 0.6.0
 * Syntax highlighting updated according to language changes
+* Added support for Dyalect multiline strings
 
 # 0.5.0
 * Syntax highlighting updated according to language changes
