@@ -31,7 +31,7 @@ namespace Dyalect.Runtime.Types
                     if (ctx.HasErrors)
                         return DyNil.Instance;
 
-                    if (res == DyBool.False)
+                    if (ReferenceEquals(res, DyBool.False))
                         return res;
                 }
 

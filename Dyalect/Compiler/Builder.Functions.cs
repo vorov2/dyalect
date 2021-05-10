@@ -185,7 +185,7 @@ namespace Dyalect.Compiler
             if (localTypeMember && !node.IsConstructor)
             {
                 hasCtorScope = true;
-                currentScope = lti.Scope ?? new Scope(ScopeKind.Function, currentScope);
+                currentScope = lti.Scope ?? new(ScopeKind.Function, currentScope);
             }
 
             //Start of a physical (and not compiler time) lexical scope for a function

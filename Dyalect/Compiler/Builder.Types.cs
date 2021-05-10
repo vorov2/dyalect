@@ -14,7 +14,7 @@ namespace Dyalect.Compiler
 
             var typeId = unit.Types.Count;
             var unitId = unit.UnitIds.Count - 1;
-            var ti = new TypeInfo(typeId, node, new UnitInfo(unitId, unit));
+            var ti = new TypeInfo(typeId, node, new(unitId, unit));
 
             if (types.ContainsKey(node.Name))
             {

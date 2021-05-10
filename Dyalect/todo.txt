@@ -1,0 +1,4 @@
+﻿CustomType: scope that is captures contains too much data
+    .With block shouldn't be directly compiled into the body of the function
+    but rather presented as a captured scope
+Dictionary: keys hashcode
