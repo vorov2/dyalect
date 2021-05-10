@@ -373,7 +373,7 @@ namespace Dyalect.Runtime.Types
                 "sort" => Func.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
                 "shuffle" => Func.Member(name, Shuffle),
                 "count" => Func.Member(name, CountBy, -1, new Par("by")),
-                "map" => Func.Member(name, Map, -1, new Par("select")),
+                "map" => Func.Member(name, Map, -1, new Par("transform")),
                 "filter" => Func.Member(name, Filter, -1, new Par("predicate")),
                 "takeWhile" => Func.Member(name, TakeWhile, -1, new Par("predicate")),
                 "skipWhile" => Func.Member(name, SkipWhile, -1, new Par("predicate")),

@@ -80,6 +80,29 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
+        {
+            if (funObj.TypeId is not DyType.Function and not DyType.Nil)
+                return ctx.InvalidType(funObj);
+
+            var fun = funObj as DyFunction;
+            var map = (DyMap)self;
+            var newMap = new DyMap();
+
+            foreach (var (key, value) in map.Map)
+            {
+                var res = fun is not null ? fun.Call(ctx, value) : value;
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                if (!ReferenceEquals(res, DyNil.Instance))
+                    newMap[key] = res;
+            }
+
+            return newMap;
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             return name switch
@@ -89,6 +112,7 @@ namespace Dyalect.Runtime.Types
                 "tryGet" => Func.Member(name, TryGetItem, -1, new Par("key")),
                 "remove" => Func.Member(name, RemoveItem, -1, new Par("key")),
                 "clear" => Func.Member(name, ClearItems),
+                "compact" => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
         }
