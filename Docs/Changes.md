@@ -1,3 +1,6 @@
+# 0.25.0
+  * Add: _Add Integer.isMultiple(of) method_ ([Issue #454](https://github.com/vorov2/dyalect/issues/454), [docs](https://github.com/vorov2/dyalect/wiki/Integer#isMultiple)).
+
 # 0.24.0
   * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473))
   * Fix: _Function `caller` can cause Dyalect to crush_ ([Issue #474](https://github.com/vorov2/dyalect/issues/474)).

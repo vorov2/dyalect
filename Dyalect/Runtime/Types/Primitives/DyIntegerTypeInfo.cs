@@ -191,6 +191,24 @@ namespace Dyalect.Runtime.Types
             new DyString(arg.GetInteger().ToString(CI.NumberFormat));
         #endregion
 
+        private DyObject IsMultiple(ExecutionContext ctx, DyObject self, DyObject other)
+        {
+            if (other.TypeId != DyType.Integer)
+                return ctx.InvalidType(other);
+
+            var a = self.GetInteger();
+            var b = other.GetInteger();
+            return (DyBool)((a % b) == 0);
+        }
+
+        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        {
+            if (name == "isMultiple")
+                return Func.Member(name, IsMultiple, -1, new Par("of"));
+
+            return base.InitializeInstanceMember(self, name, ctx);
+        }
+
         private DyObject Convert(ExecutionContext ctx, DyObject obj)
         {
             if (obj.TypeId is DyType.Integer)

@@ -453,3 +453,10 @@ func sumTest() {
         -44
     assert(-23, z)
 }
+
+func isMultipleTest() {
+    assert(true, 12.isMultiple(3))
+    assert(true, 12.isMultiple(of: 2))
+    assert(true, 340.isMultiple(of: 10))
+    assert(false, 340.isMultiple(of: 13))
+}
