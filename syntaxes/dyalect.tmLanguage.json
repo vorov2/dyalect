@@ -25,47 +25,47 @@
 		"keywords": {
 			"patterns": [
 				{
-					"match": "(?<!\\.)\\b(?:if|else|match|is|when|and|or|not)\\b",
+					"match": "\\b(if|else|match|is|when|and|or|not)\\b",
 					"name": "keyword.control.branch.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:continue|break|yield|yields|many|return)\\b",
+					"match": "\\b(continue|break|yield|yields|many|return)\\b",
 					"name": "keyword.control.transfer.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:do|while|for|in)\\b",
+					"match": "\\b(do|while|for|in)\\b",
 					"name": "keyword.control.loop.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:catch|try|throw)\\b|\\btry[?!]\\B",
+					"match": "\\b(catch|try|throw)\\b|\\btry[?!]\\B",
 					"name": "keyword.control.exception.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:let|var|set|auto)\\b",
+					"match": "\\b(let|var|set|auto)\\b",
 					"name": "keyword.other.declaration-specifier.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(type)\\b",
+					"match": "\\b(type)\\b",
 					"name": "storage.type.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:private)\\b",
+					"match": "\\b(private)\\b",
 					"name": "storage.modifier.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:func|static)\\b",
+					"match": "\\b(func|static)\\b",
 					"name": "storage.type.function.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:nameof)\\b",
+					"match": "\\b(nameof)\\b",
 					"name": "keyword.other.builtins"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:base|this)\\b",
+					"match": "\\b(base|this)\\b",
 					"name": "variable.language.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(import)\\b",
+					"match": "\\b(import)\\b",
 					"name": "keyword.control.import.dyalect"
 				}
 			]
@@ -332,26 +332,6 @@
 					},
 					"end": "(?!\\G)",
 					"patterns": [
-						{
-							"begin": "///",
-							"beginCaptures": {
-								"0": {
-									"name": "punctuation.definition.comment.dyalect"
-								}
-							},
-							"end": "^",
-							"name": "comment.line.triple-slash.documentation.dyalect"
-						},
-						{
-							"begin": "//:",
-							"beginCaptures": {
-								"0": {
-									"name": "punctuation.definition.comment.dyalect"
-								}
-							},
-							"end": "^",
-							"name": "comment.line.double-slash.documentation.dyalect"
-						},
 						{
 							"begin": "//",
 							"beginCaptures": {
