@@ -466,3 +466,9 @@ func intParse() {
     assert(2, Integer.parse('2'))
     assert(nil, Integer.parse("three"))
 }
+
+func floatParse() {
+    assert(42.42, Float.parse("42.42"))
+    assert(2.0, Float.parse('2'))
+    assert(nil, Float.parse("three and a half"))
+}

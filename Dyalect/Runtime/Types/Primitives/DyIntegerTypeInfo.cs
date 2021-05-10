@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using System.Globalization;
 
 namespace Dyalect.Runtime.Types
 {
@@ -219,7 +220,7 @@ namespace Dyalect.Runtime.Types
 
             if (obj.TypeId is DyType.Char or DyType.String)
             {
-                _ = long.TryParse(obj.GetString(), out var i);
+                _ = long.TryParse(obj.GetString(), NumberStyles.Float, CI.NumberFormat, out var i);
                 return DyInteger.Get(i);
             }
 
@@ -234,7 +235,8 @@ namespace Dyalect.Runtime.Types
             if (obj.TypeId is DyType.Float)
                 return DyInteger.Get((long)obj.GetFloat());
 
-            if (obj.TypeId is DyType.Char or DyType.String && long.TryParse(obj.GetString(), out var i))
+            if (obj.TypeId is DyType.Char or DyType.String &&
+                long.TryParse(obj.GetString(), NumberStyles.Float, CI.NumberFormat, out var i))
                 return DyInteger.Get(i);
 
             return DyNil.Instance;
