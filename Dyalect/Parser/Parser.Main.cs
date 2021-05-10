@@ -207,6 +207,11 @@ namespace Dyalect.Parser
 
             scanner.ResetPeek();
 
+            if (scanner.Peek().kind is _varToken or _letToken)
+                return true;
+
+            scanner.ResetPeek();
+
             if (allowFields)
             {
                 Token xt;

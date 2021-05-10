@@ -185,3 +185,41 @@ func tupleRange() {
     var xs = (1..3,)
     assert((1,2,3), xs)
 }
+
+func mutableTuple1() {
+    var xs = (var 12, var 14)
+    xs[0] = xs[0] * 2
+    xs[1] = xs[1] * 2
+    assert((24, 28), xs)
+    xs = (var x:12, var y:14)
+    xs::x = xs::x * 2
+    xs::y = xs::y * 2
+    assert((24, 28), xs)
+    xs["x"] = xs["x"] * 2
+    xs["y"] = xs["y"] * 2
+    assert((48, 56), xs)
+}
+
+func mutableTuple2() {
+    var xs = (var x: 3, y: 4, var z: 5)
+    xs::x = 33
+    assert(33, xs::x)
+    try {
+        xs::y = 44
+    } catch {
+        FieldReadOnly() => assert(4, xs::y)
+    }
+}
+
+func mutableTuple3() {
+    var xs = ( 1..5, )
+    try {
+        xs[0] = 0
+        assert(true, false)
+    } catch {
+        FieldReadOnly() => assert(true, true)
+    }
+    xs = ( var 1..5 )
+    xs[0] = 0
+    assert(0, xs[0])
+}

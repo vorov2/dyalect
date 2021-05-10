@@ -6,15 +6,28 @@ namespace Dyalect.Runtime.Types
     public class DyTuple : DyCollection, IEnumerable<DyObject>
     {
         internal static readonly DyTuple Empty = new(Array.Empty<DyObject>());
+        private static readonly Dictionary<int, object?>? allMutableFields = new();
 
         internal readonly DyObject[] Values;
+        private Dictionary<int, object?>? mutableFields;
 
         public override int Count => Values.Length;
 
         public DyTuple(DyObject[] values) : base(DyType.Tuple) =>
             Values = values ?? throw new DyException("Unable to create a tuple with no values.");
 
-        public static DyTuple Create(params DyObject[] args) => new DyTuple(args);
+        public static DyTuple Create(params DyObject[] args) => new(args);
+
+        public void SetMutableField(int index)
+        {
+            if (index == -1)
+                mutableFields = allMutableFields;
+            else
+            {
+                mutableFields ??= new();
+                mutableFields[index] = null;
+            }
+        }
 
         public Dictionary<DyObject, DyObject> ConvertToDictionary()
         {
@@ -77,6 +90,13 @@ namespace Dyalect.Runtime.Types
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
         {
+            if (mutableFields is null
+                || (!ReferenceEquals(mutableFields, allMutableFields) && !mutableFields.ContainsKey(index)))
+            {
+                ctx.FieldReadOnly();
+                return;
+            }
+
             if (Values[index].TypeId == DyType.Label)
                 ((DyLabel)Values[index]).Value = value;
             else

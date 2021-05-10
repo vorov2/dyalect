@@ -585,6 +585,9 @@ namespace Dyalect.Runtime
                     case OpCode.NewType:
                         evalStack.Push(new DyCustomType(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, locals, unit));
                         break;
+                    case OpCode.TupMut:
+                        ((DyTuple)evalStack.Peek()).SetMutableField(op.Data);
+                        break;
                 }
             }
             goto CYCLE;

@@ -10,6 +10,12 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject FieldReadOnly(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.FieldReadOnly);
+            return DyNil.Instance;
+        }
+
         public static DyObject MultipleValuesForArgument(this ExecutionContext ctx, string funName, string argName)
         {
             ctx.Error = new(DyErrorCode.MultipleValuesForArgument, funName, argName);

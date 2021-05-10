@@ -106,6 +106,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A field is read-only..
+        /// </summary>
+        internal static string FieldReadOnly {
+            get {
+                return ResourceManager.GetString("FieldReadOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to lnvalid string format: {0}.
         /// </summary>
         internal static string FormatException {

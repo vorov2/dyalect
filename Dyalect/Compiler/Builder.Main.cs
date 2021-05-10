@@ -445,6 +445,9 @@ namespace Dyalect.Compiler
                 cw.FunPrep(0);
                 AddLinePragma(node);
                 cw.FunCall(0);
+                
+                if (node.MutableFields is not null)
+                    cw.TupMut(-1);
             }
             else
             {
@@ -470,6 +473,12 @@ namespace Dyalect.Compiler
 
                 AddLinePragma(node);
                 cw.NewTuple(node.Elements.Count);
+
+                if (node.MutableFields is not null)
+                {
+                    foreach (var i in node.MutableFields)
+                        cw.TupMut(i);
+                }
             }
 
             PopIf(hints);

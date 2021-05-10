@@ -14,7 +14,7 @@
 
         IndexOutOfRange = 605,
 
-        // = 606,
+        FieldReadOnly = 606,
 
         DivideByZero = 607,
 

@@ -1583,24 +1583,50 @@ namespace Dyalect.Parser
 	}
 
 	void Tuple(out DNode node) {
-		node = null; 
+		node = null; var mut = false; 
 		Expect(29);
-		var tup = new DTupleLiteral(t); 
+		if (la.kind == 10 || la.kind == 11) {
+			if (la.kind == 10) {
+				Get();
+				mut = true; 
+			} else {
+				Get();
+			}
+		}
+		var tup = new DTupleLiteral(t);
+		if (mut) {
+		   tup.MutableFields = new List<int>();
+		   tup.MutableFields.Add(0);
+		}
+		
 		if (IsLabel()) {
 			Label(out node);
 		} else if (StartOf(9)) {
 			Expr(out node);
 		} else SynErr(129);
-		tup.Elements.Add(node); 
+		tup.Elements.Add(node); mut = false; 
 		while (la.kind == 25) {
 			Get();
-			if (StartOf(9)) {
+			if (StartOf(14)) {
+				if (la.kind == 10 || la.kind == 11) {
+					if (la.kind == 10) {
+						Get();
+						mut = true; 
+					} else {
+						Get();
+					}
+				}
 				if (IsLabel()) {
 					Label(out node);
-				} else {
+				} else if (StartOf(9)) {
 					Expr(out node);
+				} else SynErr(130);
+				if (mut) {
+				   tup.MutableFields ??= new List<int>();
+				   tup.MutableFields.Add(tup.Elements.Count);
 				}
-				tup.Elements.Add(node); 
+				tup.Elements.Add(node); mut = false;
+				
 			}
 		}
 		node = tup; 
@@ -1664,12 +1690,12 @@ namespace Dyalect.Parser
 		} else if (la.kind == 67) {
 			Import();
 			Separator();
-		} else SynErr(130);
+		} else SynErr(131);
 	}
 
 	void Dyalect() {
 		DyalectItem();
-		while (StartOf(14)) {
+		while (StartOf(15)) {
 			DyalectItem();
 		}
 	}
@@ -1701,6 +1727,7 @@ namespace Dyalect.Parser
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
 		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_T,_T, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_T,_T,_x, _x,_x,_x,_T, _x,_x,_T,_x, _x,_T,_x,_T, _x,_T,_T,_x, _x,_x,_x,_T, _T,_x,_x,_T, _T,_x,_x},
 		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_T,_T,_x, _T,_x,_T,_T, _x,_x,_T,_x, _x,_T,_x,_T, _x,_T,_T,_x, _x,_x,_x,_T, _T,_x,_x,_T, _T,_x,_x}
 
         };
@@ -1841,7 +1868,8 @@ namespace Dyalect.Parser
 			case 127: s = "invalid String"; break;
 			case 128: s = "invalid Bool"; break;
 			case 129: s = "invalid Tuple"; break;
-			case 130: s = "invalid DyalectItem"; break;
+			case 130: s = "invalid Tuple"; break;
+			case 131: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

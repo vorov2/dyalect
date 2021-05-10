@@ -1093,23 +1093,37 @@ PRODUCTIONS
         ).
 
     Tuple<out DNode node> =
-        (. node = null; .)
+        (. node = null; var mut = false; .)
         (
             "("
-                (. var tup = new DTupleLiteral(t); .)
+                [ ( "var" (. mut = true; .) | "let" ) ]
+                (.
+                    var tup = new DTupleLiteral(t);
+                    if (mut) {
+                        tup.MutableFields = new List<int>();
+                        tup.MutableFields.Add(0);
+                    }
+                .)
                 (
                       IF (IsLabel()) Label<out node>
                     | Expr<out node>
                 )
-                (. tup.Elements.Add(node); .)
+                (. tup.Elements.Add(node); mut = false; .)
                 { 
                     ","
                     [
+                        [ ( "var" (. mut = true; .) | "let" ) ]
                         (
                               IF (IsLabel()) Label<out node>
                             | Expr<out node>
                         )
-                        (. tup.Elements.Add(node); .)
+                        (.
+                            if (mut) {
+                                tup.MutableFields ??= new List<int>();
+                                tup.MutableFields.Add(tup.Elements.Count);
+                            }
+                            tup.Elements.Add(node); mut = false;
+                        .)
                     ] 
                 }
                 (. node = tup; .)
