@@ -4,6 +4,7 @@
   * Add: _Map: add method `compact(by)`_ ([Issue #393](https://github.com/vorov2/dyalect/issues/393), [docs](https://github.com/vorov2/dyalect/wiki/Map#compact)).
   * Add: _Add `Integer.parse` method_ ([Issue #480](https://github.com/vorov2/dyalect/issues/480), [docs](https://github.com/vorov2/dyalect/wiki/Integer#parse)).
   * Add: _Add `Float.parse` method_ ([Issue #481](https://github.com/vorov2/dyalect/issues/481), [docs](https://github.com/vorov2/dyalect/wiki/Float#parse)).
+  * Add: _Add `Map.toTuple` method_ ([Issue #482](https://github.com/vorov2/dyalect/issues/482), [docs](https://github.com/vorov2/dyalect/wiki/Map#toTuple)).
 
 # 0.24.0
   * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473)).

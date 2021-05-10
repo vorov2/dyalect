@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -103,6 +104,20 @@ namespace Dyalect.Runtime.Types
             return newMap;
         }
 
+        private DyObject ToTuple(ExecutionContext ctx, DyObject self)
+        {
+            var map = ((DyMap)self).Map;
+            var xs = new List<DyLabel>();
+
+            foreach (var (key, value) in map)
+            {
+                if (key.TypeId is DyType.String)
+                    xs.Add(new DyLabel(key.GetString(), value));
+            }
+
+            return new DyTuple(xs.ToArray());
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             return name switch
@@ -112,6 +127,7 @@ namespace Dyalect.Runtime.Types
                 "tryGet" => Func.Member(name, TryGetItem, -1, new Par("key")),
                 "remove" => Func.Member(name, RemoveItem, -1, new Par("key")),
                 "clear" => Func.Member(name, ClearItems),
+                "toTuple" => Func.Member(name, ToTuple),
                 "compact" => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
