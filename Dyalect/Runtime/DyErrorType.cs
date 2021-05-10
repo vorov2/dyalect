@@ -30,7 +30,7 @@
 
         ArgumentNotFound = 613,
 
-        FailedReadLiteral = 614,
+        FormatException = 614,
 
         MatchFailed = 615,
 

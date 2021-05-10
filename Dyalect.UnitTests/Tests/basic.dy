@@ -460,3 +460,9 @@ func isMultipleTest() {
     assert(true, 340.isMultiple(of: 10))
     assert(false, 340.isMultiple(of: 13))
 }
+
+func intParse() {
+    assert(42, Integer.parse("42"))
+    assert(2, Integer.parse('2'))
+    assert(nil, Integer.parse("three"))
+}

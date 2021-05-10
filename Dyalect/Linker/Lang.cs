@@ -201,18 +201,18 @@ namespace Dyalect.Linker
                 var res = DyParser.Parse(SourceBuffer.FromString(expression.GetString()));
 
                 if (!res.Success)
-                    return ctx.FailedReadLiteral(res.Messages.First().ToString());
+                    return ctx.FormatException(res.Messages.First().ToString());
 
                 if (res.Value!.Root is null || res.Value!.Root.Nodes.Count == 0)
-                    return ctx.FailedReadLiteral("Empty expression.");
+                    return ctx.FormatException("Empty expression.");
                 else if (res.Value!.Root.Nodes.Count > 1)
-                    return ctx.FailedReadLiteral("Only single expressions allowed.");
+                    return ctx.FormatException("Only single expressions allowed.");
 
                 return LiteralEvaluator.Eval(res.Value!.Root.Nodes[0]);
             }
             catch (Exception ex)
             {
-                return ctx.FailedReadLiteral(ex.Message);
+                return ctx.FormatException(ex.Message);
             }
         }
 

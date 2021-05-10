@@ -108,6 +108,7 @@ func compactMap() {
     assert(2, res::zoo)
     assert(42, res::bar)
     let data = Map.fromTuple(("a": "1", "b": "three", "c": "4?"))
-    res = data.compact(v => Integer(v))
-    assert(1, data.len())
+    res = data.compact(Integer.parse)
+    assert(1, res.len())
+    assert(1, res["a"])
 }

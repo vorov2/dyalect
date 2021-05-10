@@ -226,12 +226,27 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(obj);
         }
 
+        private DyObject Parse(ExecutionContext ctx, DyObject obj)
+        {
+            if (obj.TypeId is DyType.Integer)
+                return obj;
+
+            if (obj.TypeId is DyType.Float)
+                return DyInteger.Get((long)obj.GetFloat());
+
+            if (obj.TypeId is DyType.Char or DyType.String && long.TryParse(obj.GetString(), out var i))
+                return DyInteger.Get(i);
+
+            return DyNil.Instance;
+        }
+
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "max" => Func.Static(name, _ => DyInteger.Max),
                 "min" => Func.Static(name, _ => DyInteger.Min),
                 "default" => Func.Static(name, _ => DyInteger.Zero),
+                "parse" => Func.Static(name, Parse, -1, new Par("value")),
                 "Integer" => Func.Static(name, Convert, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };

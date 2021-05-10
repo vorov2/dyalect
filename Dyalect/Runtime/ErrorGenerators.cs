@@ -22,9 +22,9 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject FailedReadLiteral(this ExecutionContext ctx, string reason)
+        public static DyObject FormatException(this ExecutionContext ctx, string reason)
         {
-            ctx.Error = new(DyErrorCode.FailedReadLiteral, reason);
+            ctx.Error = new(DyErrorCode.FormatException, reason);
             return DyNil.Instance;
         }
 

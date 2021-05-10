@@ -106,11 +106,11 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to read literal: {0}.
+        ///   Looks up a localized string similar to lnvalid string format: {0}.
         /// </summary>
-        internal static string FailedReadLiteral {
+        internal static string FormatException {
             get {
-                return ResourceManager.GetString("FailedReadLiteral", resourceCulture);
+                return ResourceManager.GetString("FormatException", resourceCulture);
             }
         }
         
