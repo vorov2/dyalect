@@ -23,7 +23,7 @@
   * Add: _Internal redesign of iterators_ ([Issue #465](https://github.com/vorov2/dyalect/issues/465)).
   * Add: _Consider adding not operator to pattern matching_ ([Issue #468](https://github.com/vorov2/dyalect/issues/468)).
   * Change: _Redesign of Dyalect functions invocation from .NET code_ ([Issue #469](https://github.com/vorov2/dyalect/issues/469)).
-  
+
 # 0.22.1
   * _Code refactoring (nullable reference types)._
   * Fix: _Inconsistency of pattern match_ ([Issue #461](https://github.com/vorov2/dyalect/issues/461)).
