@@ -328,12 +328,42 @@ namespace Dyalect.Runtime.Types
             return res;
         }
 
+        private DyObject Any(ExecutionContext ctx, DyObject self, DyObject funObj)
+        {
+            if (funObj.TypeId is not DyType.Function)
+                return ctx.InvalidType(funObj);
+
+            var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            var fun = (DyFunction)funObj;
+            var res = seq.Any(o => fun.Call(ctx, o).GetBool());
+            return (DyBool)res;
+        }
+
+        private DyObject All(ExecutionContext ctx, DyObject self, DyObject funObj)
+        {
+            if (funObj.TypeId is not DyType.Function)
+                return ctx.InvalidType(funObj);
+
+            var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            var fun = (DyFunction)funObj;
+            var res = seq.All(o => fun.Call(ctx, o).GetBool());
+            return (DyBool)res;
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "toArray" => Func.Member(name, ToArray),
                 "toTuple" => Func.Member(name, ToTuple),
-                "toMap" => Func.Member(name, ToMap, -1, new Par("selectKey"), new Par("selectValue", DyNil.Instance)),
+                "toMap" => Func.Member(name, ToMap, -1, new Par("key"), new Par("value", DyNil.Instance)),
                 "take" => Func.Member(name, Take, -1, new Par("count")),
                 "skip" => Func.Member(name, Skip, -1, new Par("count")),
                 "first" => Func.Member(name, First),
@@ -345,10 +375,12 @@ namespace Dyalect.Runtime.Types
                 "shuffle" => Func.Member(name, Shuffle),
                 "count" => Func.Member(name, CountBy, -1, new Par("by")),
                 "map" => Func.Member(name, Map, -1, new Par("transform")),
-                "filter" => Func.Member(name, Filter, -1, new Par("include")),
-                "takeWhile" => Func.Member(name, TakeWhile, -1, new Par("take")),
-                "skipWhile" => Func.Member(name, SkipWhile, -1, new Par("skip")),
-                "reduce" => Func.Member(name, Reduce, -1, new Par("initial", DyInteger.Zero), new Par("calculate")),
+                "filter" => Func.Member(name, Filter, -1, new Par("predicate")),
+                "takeWhile" => Func.Member(name, TakeWhile, -1, new Par("predicate")),
+                "skipWhile" => Func.Member(name, SkipWhile, -1, new Par("predicate")),
+                "reduce" => Func.Member(name, Reduce, -1, new Par("init", DyInteger.Zero), new Par("by")),
+                "any" => Func.Member(name, Any, -1, new Par("predicate")),
+                "all" => Func.Member(name, All, -1, new Par("predicate")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

@@ -513,25 +513,25 @@ func mapTest2() {
 
 func filterTest() {
     let xs = { 1..10 }
-    let ys = xs.filter(include: x => x > 5)
+    let ys = xs.filter(predicate: x => x > 5)
     assert([6,7,8,9,10], ys.toArray())
 }
 
 func takeWhileTest() {
     let xs = { 1..10 }
-    let ys = xs.takeWhile(take: x => x < 6)
+    let ys = xs.takeWhile(predicate: x => x < 6)
     assert([1,2,3,4,5], ys.toArray())
 }
 
 func skipWhileTest() {
     let xs = { 1..10 }
-    let ys = xs.skipWhile(skip: x => x < 6)
+    let ys = xs.skipWhile(predicate: x => x < 6)
     assert([6,7,8,9,10], ys.toArray())
 }
 
 func reduceTest() {
     let xs = { 1..10 }
-    var res = xs.reduce(calculate: (x,y) => x + y)
+    var res = xs.reduce(by: (x,y) => x + y)
     assert(55, res)
     res = xs.reduce(10, (x,y) => x + y)
     assert(65, res)
@@ -593,4 +593,33 @@ func matchIterator() {
         [x,y] => x+y
     }
     assert(3, res)
+}
+
+func anyTest() {
+    let xs = yields { 0,0,0,1,0,0,0 }
+    assert(true, xs.any(x => x > 0))
+    func iter() {
+        yield nil
+        yield true
+        throw "err"
+    }
+    let ys = iter()
+    assert(true, ys.any(x => x is not nil))
+}
+
+func allTest() {
+    let xs = yields { 10,2,3,1,4,5,6 }
+    assert(true, xs.all(x => x > 0))
+    assert(false, xs.all(x => x > 1))
+    func iter() {
+        yield true
+        yield true
+        throw "err"
+    }
+    let ys = iter()
+    try {
+        assert(true, ys.any(x => x))
+    } catch {
+        UnexpectedError(msg) => assert("err", msg)
+    }
 }

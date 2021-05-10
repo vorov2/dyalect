@@ -12,7 +12,8 @@
   * Add: _Iterator: add `takeWhile` and `skipWhile` methods_ ([Issue #368](https://github.com/vorov2/dyalect/issues/368), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#takeWhile), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#skipWhile)).
   * Add: _Iterator: add `reduce` method_ ([Issue #471](https://github.com/vorov2/dyalect/issues/471), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#reduce)).
   * Add: _Iterator: add `toMap` method_ ([Issue #472](https://github.com/vorov2/dyalect/issues/472), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#toMap)).
-
+  * Add: _Iterator: add `any` and `all`_ ([Issue #477](https://github.com/vorov2/dyalect/issues/477), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#any), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#all)).
+  
 # 0.23.0
   * _Internal type system refactoring._
   * Fix: _Iterator state is not correctly restored_ ([Issue #464](https://github.com/vorov2/dyalect/issues/464)).
