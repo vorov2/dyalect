@@ -582,3 +582,15 @@ func emptySequence() {
     assert(nil, xs.last())
     assert([], xs.toArray())
 }
+
+func matchIterator() {
+    let xs = yields { 1,2,3 }
+    var res = match xs {
+        (x,y,z) => x+y+z
+    }
+    assert(6, res)
+    res = match xs {
+        [x,y] => x+y
+    }
+    assert(3, res)
+}

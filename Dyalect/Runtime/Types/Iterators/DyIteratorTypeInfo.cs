@@ -13,7 +13,7 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Len | SupportedOperations.Iter;
+            | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
 
         public override string TypeName => DyTypeNames.Iterator;
 
