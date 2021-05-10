@@ -485,7 +485,7 @@ func mapTest1() {
     let xs = yields { 1,2,3,4,5 }
     let ys = xs.map(x => x + x).toArray();
     assert([2,4,6,8,10], ys)
-    let ys1 = xs.map(transform: x => "s" + x).toArray();
+    let ys1 = xs.map(select: x => "s" + x).toArray();
     assert(["s1","s2","s3","s4","s5"], ys1)
 }
 
