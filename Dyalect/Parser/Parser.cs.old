@@ -1623,7 +1623,7 @@ namespace Dyalect.Parser
 				} else SynErr(130);
 				if (mut) {
 				   tup.MutableFields ??= new List<int>();
-				   tup.MutableFields.Add(tup.Elements.Count - 1);
+				   tup.MutableFields.Add(tup.Elements.Count);
 				}
 				tup.Elements.Add(node); mut = false;
 				
