@@ -1,4 +1,6 @@
-﻿namespace Dyalect.Runtime.Types
+﻿using System;
+
+namespace Dyalect.Runtime.Types
 {
     public sealed class DyLabel : DyObject
     {
@@ -19,14 +21,14 @@
 
         protected internal override DyObject GetTaggedValue() => Value;
 
-        internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
             (index.TypeId == DyType.Integer && index.GetInteger() == 0) ||
                 (index.TypeId == DyType.String && index.GetString() == Label)
                 ? Value : ctx.IndexOutOfRange();
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;
 
-        public override int GetHashCode() => Value.GetHashCode();
+        public override int GetHashCode() => HashCode.Combine(Label, Value);
 
         public override bool Equals(DyObject? other)
         {
@@ -36,11 +38,7 @@
             if (lab.Label != Label)
                 return false;
 
-            if (ReferenceEquals(lab.Value, Value)
-                || (!(lab.Value is null) && lab.Value.Equals(Value)))
-                return true;
-
-            return false;
+            return ReferenceEquals(lab.Value, Value) || lab.Value.Equals(Value);
         }
     }
 }

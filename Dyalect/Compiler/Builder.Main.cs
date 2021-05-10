@@ -451,7 +451,6 @@ namespace Dyalect.Compiler
                 for (var i = 0; i < node.Elements.Count; i++)
                 {
                     var el = node.Elements[i];
-                    string? name;
 
                     if (el.NodeType == NodeType.Label)
                     {
@@ -465,6 +464,7 @@ namespace Dyalect.Compiler
                     else
                     {
                         Build(el, hints.Append(Push), ctx);
+                        string? name;
 
                         if ((name = el.GetName()) is not null)
                             cw.Tag(name);
