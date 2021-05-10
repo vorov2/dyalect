@@ -25,7 +25,7 @@
 		"keywords": {
 			"patterns": [
 				{
-					"match": "(?<!\\.)\\b(?:if|else|match|is|when)\\b",
+					"match": "(?<!\\.)\\b(?:if|else|match|is|when|and|or|not)\\b",
 					"name": "keyword.control.branch.dyalect"
 				},
 				{
@@ -57,7 +57,7 @@
 					"name": "storage.type.function.dyalect"
 				},
 				{
-					"match": "(?<!\\.)\\b(?:nameof|typeof)\\b",
+					"match": "(?<!\\.)\\b(?:nameof)\\b",
 					"name": "keyword.other.builtins"
 				},
 				{
