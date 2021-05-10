@@ -44,7 +44,7 @@ func tupleTest5() {
 func tupleTest6() {
     var t1 = (12, 3, 44, "string", false, 42.1)
     var t2 = (12, 3, 44, "string", false, 42.1)
-    assert(true, t1 == t2)
+    assert(got: t1 == t2)
 }
 
 func tupleTest7() {
@@ -206,7 +206,7 @@ func mutableTuple2() {
     assert(33, xs::x)
     try {
         xs::y = 44
-        assert(true, false)
+        assert(got: false)
     } catch {
         FieldReadOnly() => assert(4, xs::y)
     }
@@ -216,8 +216,14 @@ func mutableTuple3() {
     var xs = ( 1..5, )
     try {
         xs[0] = 0
-        assert(true, false)
+        assert(got: false)
     } catch {
-        FieldReadOnly() => assert(true, true)
+        FieldReadOnly() => assert(got: true)
     }
+}
+
+func mutableTupleToString() {
+    let xs = (var x: 2, y: 3, var z: 4, let xx: 42)
+    let str = xs.toString()
+    assert(expect: "(var x: 2, y: 3, var z: 4, xx: 42)", got: str) 
 }

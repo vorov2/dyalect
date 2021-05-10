@@ -31,24 +31,33 @@ namespace Dyalect.Runtime.Types
             var sb = new StringBuilder();
             sb.Append('(');
 
-            for (var i = 0; i < tup.Count; i++)
+            for (var i = 0; i < tup.Values.Length; i++)
             {
                 if (i > 0)
-                    sb.Append(", ");
-
-                var k = tup.GetKey(i);
-                var val = tup.GetItem(i, ctx).ToString(ctx);
-
-                if (ctx.Error != null)
-                    return DyString.Empty;
-
-                if (k != null)
                 {
-                    sb.Append(k);
-                    sb.Append(": ");
+                    sb.Append(',');
+                    sb.Append(' ');
                 }
 
-                sb.Append(val.GetString());
+                var v = tup.Values[i];
+
+                if (v is DyLabel lab)
+                {
+                    if (lab.Mutable)
+                        sb.Append("var ");
+
+                    sb.Append(lab.Label);
+                    sb.Append(':');
+                    sb.Append(' ');
+                    v = lab.Value;
+                }
+
+                var str = v.ToString(ctx);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                sb.Append(str);
             }
 
             sb.Append(')');

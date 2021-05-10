@@ -6,6 +6,7 @@
   * Add: _Add `Float.parse` method_ ([Issue #481](https://github.com/vorov2/dyalect/issues/481), [docs](https://github.com/vorov2/dyalect/wiki/Float#parse)).
   * Add: _Add `Map.toTuple` method_ ([Issue #482](https://github.com/vorov2/dyalect/issues/482), [docs](https://github.com/vorov2/dyalect/wiki/Map#toTuple)).
   * Add: _Add an ability to declare immutable tuple fields_ ([Issue #484](https://github.com/vorov2/dyalect/issues/484), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#overview)).
+  * Add: _Allow an intrinsic `assert` function to have optional parameter_ ([Issue #485](https://github.com/vorov2/dyalect/issues/485), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#assert)).
 
 # 0.24.0
   * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473)).
