@@ -244,7 +244,7 @@ namespace Dyalect.Compiler
                         else
                             cw.NewTuple(0);
 
-                        var v = AddVariable("this", lti.Declaration, VarFlags.Const | VarFlags.This);
+                        var v = AddVariable("$this", lti.Declaration, VarFlags.Const | VarFlags.This);
                         cw.PopVar(v);
                     }
                     
@@ -276,8 +276,8 @@ namespace Dyalect.Compiler
                     //Constructor returns a type instance, not a value. We need to pop this value from stack
                     cw.Pop();
 
-                    //Push "this" to stack
-                    var sv = GetVariable("this", lti.Declaration);
+                    //Push privates to stack
+                    var sv = GetVariable("$this", lti.Declaration);
                     cw.PushVar(sv);
 
                     cw.Aux(node.Name!);

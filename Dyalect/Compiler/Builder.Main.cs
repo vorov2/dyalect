@@ -220,7 +220,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                if (!hints.Has(Catch) || ctx.Errors.Count == 0)
+                if (!hints.Has(Catch) || ctx.Errors.Count is 0)
                     AddError(CompilerError.InvalidRethrow, node.Location);
                 else
                     cw.PushVar(new ScopeVar(ctx.Errors.Peek()));
@@ -250,11 +250,11 @@ namespace Dyalect.Compiler
             cw.PopVar(a);
             ctx.Errors.Push(a);
 
-            if (node.BindVariable != null)
+            if (node.BindVariable is not null)
             {
                 AddLinePragma(node.BindVariable);
 
-                if (node.BindVariable.Value != "_")
+                if (node.BindVariable.Value is not "_")
                 {
                     var sv = AddVariable(node.BindVariable.Value, node.Catch, VarFlags.Const);
                     cw.PopVar(sv);
@@ -274,7 +274,7 @@ namespace Dyalect.Compiler
 
         private void Build(DYieldBlock node, Hints hints, CompilerContext ctx)
         {
-            if (node.Elements.Count == 0)
+            if (node.Elements.Count is 0)
             {
                 PushIf(hints);
                 return;
@@ -295,7 +295,7 @@ namespace Dyalect.Compiler
 
         private void Build(DIteratorLiteral node, Hints hints, CompilerContext ctx)
         {
-            if (node.YieldBlock.Elements.Count == 1 && node.YieldBlock.Elements[0].NodeType == NodeType.Range)
+            if (node.YieldBlock.Elements.Count is 1 && node.YieldBlock.Elements[0].NodeType == NodeType.Range)
             {
                 Build(node.YieldBlock.Elements[0], hints.Append(Push), ctx);
                 PopIf(hints);
@@ -421,7 +421,7 @@ namespace Dyalect.Compiler
 
         private void Build(DTupleLiteral node, Hints hints, CompilerContext ctx)
         {
-            if (node.Elements.Count == 1 && node.Elements[0].NodeType == NodeType.Range)
+            if (node.Elements.Count is 1 && node.Elements[0].NodeType == NodeType.Range)
             {
                 Build(node.Elements[0], hints.Append(Push), ctx);
                 cw.GetMember(Builtins.ToTuple);
@@ -463,7 +463,7 @@ namespace Dyalect.Compiler
 
         private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
         {
-            if (node.Elements.Count == 1 && node.Elements[0].NodeType == NodeType.Range)
+            if (node.Elements.Count is 1 && node.Elements[0].NodeType == NodeType.Range)
             {
                 Build(node.Elements[0], hints.Append(Push), ctx);
                 cw.GetMember(Builtins.ToArray);
@@ -492,7 +492,8 @@ namespace Dyalect.Compiler
 
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)
         {
-            if (node.Target.NodeType == NodeType.Base && node.Index is DStringLiteral nam && nam.Chunks is null)
+            if (node.Target.NodeType == NodeType.Base 
+                && node.Index is DStringLiteral {Chunks: null} nam)
             {
                 if (!hints.Has(Function))
                 {
@@ -679,23 +680,36 @@ namespace Dyalect.Compiler
             var skip = cw.DefineLabel();
 
             //Check if an application is in fact a built-in operator call
-            if (name != null && sv.IsEmpty())
-                if (name == "nameof" && node.Arguments.Count == 1)
+            if (name is not null && sv.IsEmpty())
+                if (name is "nameof" && node.Arguments.Count == 1)
                 {
                     var push = GetExpressionName(node.Arguments[0]);
                     AddLinePragma(node);
                     cw.Push(push);
                     return;
                 }
-                else if (name == "private" && node.Arguments.Count == 1)
+                else if (name is "private" && node.Arguments.Count is 1 or 0)
                 {
-                    Build(node.Arguments[0], hints, ctx);
-
                     if (ctx.LocalType is null)
                     {
                         AddError(CompilerError.PrivateAccessInvalid, node.Location);
                         return;
                     }
+                    
+                    if (node.Arguments.Count is 0 && ctx.Function!.IsStatic)
+                    {
+                        var ta = GetVariable("$this", node);
+                        cw.PushVar(ta);
+                        return;
+                    }
+
+                    if (node.Arguments.Count is 0)
+                    {
+                        var ta = GetVariable("this", node);
+                        cw.PushVar(ta);
+                    }
+                    else if (node.Arguments.Count is 1)
+                        Build(node.Arguments[0], hints, ctx);
 
                     var th = GetTypeHandle(null, ctx.LocalType, node.Location);
                     cw.Dup();
@@ -715,7 +729,7 @@ namespace Dyalect.Compiler
             {
                 var meth = (DAccess)node.Target;
 
-                if (meth.Name == Builtins.ToStr && node.Arguments.Count == 0)
+                if (meth.Name == Builtins.ToStr && node.Arguments.Count is 0)
                 {
                     Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
@@ -733,7 +747,7 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-                if (meth.Name == Builtins.Len && node.Arguments.Count == 0)
+                if (meth.Name == Builtins.Len && node.Arguments.Count is 0)
                 {
                     Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
@@ -751,13 +765,13 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-                if (meth.Name == Builtins.Has && node.Arguments.Count == 1
-                    && node.Arguments[0].NodeType == NodeType.String
-                    && node.Arguments[0] is DStringLiteral str
-                    && str.Chunks == null)
+                if (meth.Name == Builtins.Has && node.Arguments.Count is 1
+                      && node.Arguments[0].NodeType == NodeType.String
+                      && node.Arguments[0] is DStringLiteral {Chunks: null} str)
                 {
                     Build(meth.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
+
                     if (meth.NilSafety)
                     {
                         cw.Dup();
@@ -768,6 +782,7 @@ namespace Dyalect.Compiler
                     }
                     else
                         cw.HasMember(str.Value);
+
                     PopIf(hints);
                     return;
                 }
@@ -775,12 +790,11 @@ namespace Dyalect.Compiler
 
             //Tail recursion optimization
             if (!options.NoOptimizations && hints.Has(Last)
-                && !sv.IsEmpty() && ctx.Function != null
-                && !ctx.Function.IsMemberFunction && !ctx.Function.IsIterator
-                && name == ctx.Function.Name && node.Arguments.Count == ctx.Function.Parameters.Count
-                && (ctx.FunctionAddress >> 8) == (sv.Address >> 8)
-                && (ctx.FunctionAddress & byte.MaxValue) == (counters.Count - (sv.Address & byte.MaxValue))
-                && !ctx.Function.IsVariadic() && !HasLabels(node.Arguments))
+                    && !sv.IsEmpty() && ctx.Function is {IsMemberFunction: false, IsIterator: false} 
+                    && name == ctx.Function.Name && node.Arguments.Count == ctx.Function.Parameters.Count 
+                    && (ctx.FunctionAddress >> 8) == (sv.Address >> 8) 
+                    && (ctx.FunctionAddress & byte.MaxValue) == (counters.Count - (sv.Address & byte.MaxValue)) 
+                    && !ctx.Function.IsVariadic() && !HasLabels(node.Arguments))
             {
                 for (var i = 0; i < node.Arguments.Count; i++)
                     Build(node.Arguments[i], newHints.Append(Push), ctx);
@@ -914,7 +928,7 @@ namespace Dyalect.Compiler
                         if (p.Errors.Count > 0)
                         {
                             foreach (var e in p.Errors)
-                                AddError(CompilerError.CodeIslandInvalid, new Location(node.Location.Line, node.Location.Column + e.Column), e.Message);
+                                AddError(CompilerError.CodeIslandInvalid, new(node.Location.Line, node.Location.Column + e.Column), e.Message);
                         }
                         else
                         {
@@ -1042,7 +1056,7 @@ namespace Dyalect.Compiler
             var hasLast = hints.Has(Last);
             hints = hints.Remove(Last);
 
-            if ((node.Nodes is null || node.Nodes.Count == 0) && !hints.Has(Catch))
+            if ((node.Nodes is null || node.Nodes.Count is 0) && !hints.Has(Catch))
             {
                 if (hints.Has(Push))
                     cw.PushNil();
@@ -1242,37 +1256,34 @@ namespace Dyalect.Compiler
 
         private bool CanBeOptimized(DBindingBase node, Hints hints, CompilerContext ctx)
         {
-            if (!options.NoOptimizations
-                && node.Init != null
-                && node.Init.NodeType == NodeType.Tuple
-                && node.Pattern.NodeType == NodeType.TuplePattern
-                && node.Init.GetElementCount() == node.Pattern.GetElementCount())
+            if (options.NoOptimizations 
+                || node.Init is null || node.Init.NodeType != NodeType.Tuple 
+                || node.Pattern.NodeType != NodeType.TuplePattern
+                || node.Init.GetElementCount() != node.Pattern.GetElementCount())
+                return false;
+            
+            var init = (DTupleLiteral)node.Init;
+            var pat = (DTuplePattern)node.Pattern;
+
+            for (var i = 0; i < pat.Elements.Count; i++)
+                if (pat.Elements[i].NodeType != NodeType.NamePattern)
+                    return false;
+
+            for (var i = 0; i < init.Elements.Count; i++)
+                Build(init.Elements[i], hints.Append(Push), ctx);
+
+            for (var i = 0; i < pat.Elements.Count; i++)
             {
-                var init = (DTupleLiteral)node.Init;
-                var pat = (DTuplePattern)node.Pattern;
-
-                for (var i = 0; i < pat.Elements.Count; i++)
-                    if (pat.Elements[i].NodeType != NodeType.NamePattern)
-                        return false;
-
-                for (var i = 0; i < init.Elements.Count; i++)
-                    Build(init.Elements[i], hints.Append(Push), ctx);
-
-                for (var i = 0; i < pat.Elements.Count; i++)
-                {
-                    var e = pat.Elements[pat.Elements.Count - i - 1];
-                    var addr = node.NodeType == NodeType.Binding
-                        ? AddVariable(e.GetName()!, e, VarFlags.None)
-                        : GetVariableToAssign(e.GetName()!, e, false);
-                    if (addr == -1 && node.NodeType == NodeType.Rebinding)
-                        addr = AddVariable(e.GetName()!, e, VarFlags.None);
-                    cw.PopVar(addr);
-                }
-
-                return true;
+                var e = pat.Elements[pat.Elements.Count - i - 1];
+                var addr = node.NodeType == NodeType.Binding
+                    ? AddVariable(e.GetName()!, e, VarFlags.None)
+                    : GetVariableToAssign(e.GetName()!, e, false);
+                if (addr == -1 && node.NodeType == NodeType.Rebinding)
+                    addr = AddVariable(e.GetName()!, e, VarFlags.None);
+                cw.PopVar(addr);
             }
 
-            return false;
+            return true;
         }
 
         private void Build(DUnaryOperation node, Hints hints, CompilerContext ctx)
