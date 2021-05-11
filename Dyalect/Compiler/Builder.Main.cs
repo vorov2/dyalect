@@ -687,21 +687,26 @@ namespace Dyalect.Compiler
                     cw.Push(push);
                     return;
                 }
-                else if (name == "use" && node.Arguments.Count == 1)
+                else if (name == "privates" && node.Arguments.Count == 1)
                 {
                     Build(node.Arguments[0], hints, ctx);
 
-                    if (ctx.Function is null || ctx.Function.TypeName is null || ctx.Function.TypeName.Parent is not null)
+                    if (ctx.LocalType is null)
                     {
                         AddError(CompilerError.PrivateAccessInvalid, node.Location);
                         return;
                     }
 
-                    if (TryGetLocalType(ctx.Function.TypeName.Local, out var lti))
-                    {
-                        AddLinePragma(node);
-                        cw.Private(lti.TypeId);
-                    }
+                    var th = GetTypeHandle(null, ctx.LocalType, node.Location);
+                    cw.Dup();
+                    cw.TypeCheck(th);
+                    var noerr = cw.DefineLabel();
+                    cw.Brtrue(noerr);
+                    cw.Fail(DyErrorCode.PrivateAccess);
+                    cw.MarkLabel(noerr);
+                    AddLinePragma(node);
+                    cw.GetMember("$privates");
+                    return;
                 }
 
             //This is a special optimization for the 'toString', 'has' and 'len' methods
@@ -1059,13 +1064,17 @@ namespace Dyalect.Compiler
 
                 StartScope(ScopeKind.Lexical, loc: node.Location);
             }
+            else if (node.Nodes is not null && HasAuto(node.Nodes))
+                AddError(CompilerError.AutoNotAllowed, node.Location);
+
+            var newHints = hints.Remove(NoScope);
 
             if (node.Nodes is not null)
                 for (var i = 0; i < node.Nodes.Count; i++)
                 {
                     var n = node.Nodes[i];
                     var last = i == node.Nodes.Count - 1;
-                    var nh = hasPush && last ? hints : hints.Remove(Push);
+                    var nh = hasPush && last ? newHints : newHints.Remove(Push);
                     nh = hasLast && last ? nh.Append(Last) : nh;
                     Build(n, nh, ctx);
                 }

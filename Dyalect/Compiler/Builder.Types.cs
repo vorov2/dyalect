@@ -42,12 +42,12 @@ namespace Dyalect.Compiler
         private void BuildUsing(DNode node, Hints hints, CompilerContext ctx)
         {
             StartScope(ScopeKind.Lexical, node.Location);
-            Build(node, hints.Remove(Push).Remove(ExpectPush), ctx);
+            Build(node, hints.Append(NoScope).Remove(Push).Remove(ExpectPush), ctx);
             var count = 0;
 
             foreach (var (name, sv) in currentScope.EnumerateVars())
             {
-                cw.PushVar(sv);
+                cw.PushVar(new(0 | sv.Address << 8));
                 cw.Tag(name);
                 count++;
 
@@ -101,12 +101,12 @@ namespace Dyalect.Compiler
 
         private TypeHandle GetTypeHandle(Qualident name, Location loc) => GetTypeHandle(name.Parent!, name.Local, loc);
 
-        private TypeHandle GetTypeHandle(string parent, string local, Location loc)
+        private TypeHandle GetTypeHandle(string? parent, string local, Location loc)
         {
             var err = GetTypeHandle(parent, local, out var handle, out var std);
 
             if (err == CompilerError.UndefinedModule)
-                AddError(err, loc, parent);
+                AddError(err, loc, parent!);
             else if (err == CompilerError.UndefinedType)
                 AddError(err, loc, local);
 

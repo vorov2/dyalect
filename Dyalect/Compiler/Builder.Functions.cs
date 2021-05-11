@@ -44,8 +44,6 @@ namespace Dyalect.Compiler
                     else
                         cw.SetMember(code);
                 }
-                else if (node.IsConstructor)
-                    AddError(CompilerError.CtorOnlyMethod, node.Location);
 
                 AddLinePragma(node);
 
@@ -166,27 +164,23 @@ namespace Dyalect.Compiler
             //additional goto so that we can jump over this function.
             var funSkipLabel = cw.DefineLabel();
             cw.Br(funSkipLabel);
+            hints = Function | Push | (iterBody ? IteratorBody : None);
+
+            TypeInfo lti = null!;
+            var localTypeMember = node.IsMemberFunction && node.TypeName!.Parent is null
+                && TryGetLocalType(node.TypeName.Local, out lti);
+
+            if (node.IsMemberFunction && oldctx.Function is not null && oldctx.Function.IsMemberFunction)
+                AddError(CompilerError.NestedMethod, node.Location);
 
             var ctx = new CompilerContext
             {
                 FunctionAddress = counters.Count | (addr >> 8) << 8,
                 FunctionStart = startLabel,
                 FunctionExit = funEndLabel,
-                Function = node
+                Function = node,
+                LocalType = localTypeMember ? node.TypeName!.Local : oldctx.LocalType
             };
-
-            hints = Function | Push | (iterBody ? IteratorBody : None);
-
-            var hasCtorScope = false;
-            TypeInfo lti = null!;
-            var localTypeMember = node.IsMemberFunction && node.TypeName!.Parent is null
-                && TryGetLocalType(node.TypeName.Local, out lti);
-
-            if (localTypeMember && !node.IsConstructor)
-            {
-                hasCtorScope = true;
-                currentScope = lti.Scope ?? new(ScopeKind.Function, currentScope);
-            }
 
             //Start of a physical (and not compiler time) lexical scope for a function
             StartScope(ScopeKind.Function, loc: node.Location);
@@ -279,7 +273,6 @@ namespace Dyalect.Compiler
                     AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName!);
                 else
                 {
-                    lti.Scope = currentScope ?? throw new DyBuildException("Missing scope.", null);
                     //Constructor returns a type instance, not a value. We need to pop this value from stack
                     cw.Pop();
 
@@ -294,7 +287,6 @@ namespace Dyalect.Compiler
 
             cw.Ret();
             cw.MarkLabel(funSkipLabel);
-
             AddLinePragma(node);
 
             //Close all lexical scopes and debugging information
@@ -303,9 +295,6 @@ namespace Dyalect.Compiler
             unit.Layouts.Add(new MemoryLayout(currentCounter, ss, address));
             EndScope();
             EndSection();
-
-            if (hasCtorScope)
-                currentScope = currentScope.Parent!;
 
             //Iterators are a separate type (based on function through)
             if (iterBody)

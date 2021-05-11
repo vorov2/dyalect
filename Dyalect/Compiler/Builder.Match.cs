@@ -16,7 +16,7 @@ namespace Dyalect.Compiler
             ValidateMatch(node);
             StartScope(ScopeKind.Lexical, node.Location);
 
-            ctx = new CompilerContext(ctx)
+            ctx = new(ctx)
             {
                 MatchExit = cw.DefineLabel()
             };

@@ -37,7 +37,7 @@ namespace Dyalect.Compiler
 
         private void Build(DWhile node, Hints hints, CompilerContext ctx)
         {
-            ctx = new CompilerContext(ctx)
+            ctx = new(ctx)
             {
                 BlockSkip = cw.DefineLabel(),
                 BlockExit = cw.DefineLabel(),

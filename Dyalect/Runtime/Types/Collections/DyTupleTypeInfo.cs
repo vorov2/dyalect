@@ -224,8 +224,14 @@ namespace Dyalect.Runtime.Types
                 "fst" => Func.Member(name, GetFirst),
                 "snd" => Func.Member(name, GetSecond),
                 "sort" => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
-                _ => base.InitializeInstanceMember(self, name, ctx)
+                _ => TryGetField(self, name, ctx) ?? base.InitializeInstanceMember(self, name, ctx)
             };
+
+        private DyObject? TryGetField(DyObject self, string name, ExecutionContext ctx)
+        {
+            ((DyTuple)self).TryGetItem(name, ctx, out var item);
+            return item;
+        }
 
         private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
             new DyTuple(new DyObject[] { fst, snd });

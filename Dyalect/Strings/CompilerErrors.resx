@@ -240,9 +240,6 @@
   <data name="InvalidSlice" xml:space="preserve">
     <value>Slice is invalid (step and exclusivity sign are not supported in slices).</value>
   </data>
-  <data name="CtorOnlyMethod" xml:space="preserve">
-    <value>Invalid constructor declaration (type specification is missing).</value>
-  </data>
   <data name="CtorNotIterator" xml:space="preserve">
     <value>A constructor function cannot be an iterator.</value>
   </data>
@@ -262,6 +259,12 @@
     <value>Type name should start from a capital letter.</value>
   </data>
   <data name="PrivateAccessInvalid" xml:space="preserve">
-    <value>An access to private scope is only allowed inside member functions of local types.</value>
+    <value>An access to private scope is only allowed inside member functions.</value>
+  </data>
+  <data name="NestedMethod" xml:space="preserve">
+    <value>Method cannot be nested in other methods.</value>
+  </data>
+  <data name="AutoNotAllowed" xml:space="preserve">
+    <value>An "auto" declaration is not allowed in this context.</value>
   </data>
 </root>

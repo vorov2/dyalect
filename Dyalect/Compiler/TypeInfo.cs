@@ -12,7 +12,5 @@ namespace Dyalect.Compiler
         public UnitInfo Unit { get; }
 
         public DTypeDeclaration Declaration { get; }
-
-        public Scope? Scope { get; set; }
     }
 }

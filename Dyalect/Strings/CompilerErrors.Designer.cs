@@ -61,6 +61,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An &quot;auto&quot; declaration is not allowed in this context..
+        /// </summary>
+        internal static string AutoNotAllowed {
+            get {
+                return ResourceManager.GetString("AutoNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Keyword &quot;base&quot; is not available in the current context..
         /// </summary>
         internal static string BaseNotAllowed {
@@ -120,15 +129,6 @@ namespace Dyalect.Strings {
         internal static string CtorOnlyLocalType {
             get {
                 return ResourceManager.GetString("CtorOnlyLocalType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid constructor declaration (type specification is missing)..
-        /// </summary>
-        internal static string CtorOnlyMethod {
-            get {
-                return ResourceManager.GetString("CtorOnlyMethod", resourceCulture);
             }
         }
         
@@ -223,6 +223,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Method cannot be nested in other methods..
+        /// </summary>
+        internal static string NestedMethod {
+            get {
+                return ResourceManager.GetString("NestedMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No enclosing loop out of which to break or continue..
         /// </summary>
         internal static string NoEnclosingLoop {
@@ -268,7 +277,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An access to private scope is only allowed inside member functions of local types..
+        ///   Looks up a localized string similar to An access to private scope is only allowed inside member functions..
         /// </summary>
         internal static string PrivateAccessInvalid {
             get {
