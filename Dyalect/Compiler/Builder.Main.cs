@@ -687,7 +687,7 @@ namespace Dyalect.Compiler
                     cw.Push(push);
                     return;
                 }
-                else if (name == "privates" && node.Arguments.Count == 1)
+                else if (name == "private" && node.Arguments.Count == 1)
                 {
                     Build(node.Arguments[0], hints, ctx);
 
@@ -705,7 +705,7 @@ namespace Dyalect.Compiler
                     cw.Fail(DyErrorCode.PrivateAccess);
                     cw.MarkLabel(noerr);
                     AddLinePragma(node);
-                    cw.GetMember("$privates");
+                    cw.GetMember("$private");
                     return;
                 }
 

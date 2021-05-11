@@ -92,7 +92,6 @@
             0,  //IsNull
             0,  //GetIter
             0,  //Mut
-            -1, //Private
         };
     }
 }

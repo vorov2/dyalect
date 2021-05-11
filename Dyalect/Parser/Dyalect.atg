@@ -174,7 +174,7 @@ PRODUCTIONS
             | ControlFlow<out node> [ Guard<node, out node> ] Separator
             | Type<out node> Separator
             | Match<out node> [ Guard<node, out node> Separator ]
-            | PrivateScope<out node>
+            | IF (IsPrivateScope()) PrivateScope<out node>
             | StatementExpr<out node> [ Guard<node, out node> ] Separator
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
@@ -1120,7 +1120,7 @@ PRODUCTIONS
 
     Name<out DNode node> =
         (
-            identToken
+            (identToken | "private")
             (. node = new DName(t) { Value = t.val }; .)
         ).
 

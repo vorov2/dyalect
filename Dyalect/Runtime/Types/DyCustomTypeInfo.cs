@@ -76,7 +76,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
-            if (name == "$privates")
+            if (name == "$private")
                 return ((DyCustomType)self).Privates;
 
             return base.InitializeInstanceMember(self, name, ctx);

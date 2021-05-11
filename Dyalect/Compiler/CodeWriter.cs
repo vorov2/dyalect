@@ -265,7 +265,6 @@ namespace Dyalect.Compiler
         public void Start(Label lab) => Emit(OpCode.Start, lab);
         public void Fail(DyErrorCode code) => Emit(new(OpCode.FailSys, (int)code));
         public void NewType(int typeId) => Emit(new(OpCode.NewType, typeId));
-        public void Private(int typeId) => Emit(new(OpCode.Private, typeId));
 
         public void GetIter() => Emit(Op.GetIter);
         public void End() => Emit(Op.End);

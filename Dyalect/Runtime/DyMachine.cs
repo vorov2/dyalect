@@ -588,10 +588,6 @@ namespace Dyalect.Runtime
                     case OpCode.Mut:
                         ((DyLabel)evalStack.Peek()).Mutable = true;
                         break;
-                    case OpCode.Private:
-                        evalStack.Replace(GetPrivatePart(unit.Types[op.Data].Id, evalStack.Peek(), ctx));
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        break;
                 }
             }
             goto CYCLE;
@@ -605,15 +601,6 @@ namespace Dyalect.Runtime
                 ctx.Error = null;
                 goto CYCLE;
             }
-        }
-
-        private static DyObject GetPrivatePart(int data, DyObject right, ExecutionContext ctx)
-        {
-            if (right.TypeId != data)
-                return ctx.PrivateAccess();
-
-            var ct = (DyCustomType)right;
-            return ct.Privates;
         }
 
         private static void Push(ArgContainer container, DyObject value, ExecutionContext ctx)
