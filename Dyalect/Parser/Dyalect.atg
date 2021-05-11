@@ -148,7 +148,7 @@ PRODUCTIONS
             node = typ;
         .)
         identToken (. typ.Name = t.val; node = typ; .)
-        (
+        [
             (
                 (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; .)
                 FunctionArguments<f>
@@ -157,19 +157,14 @@ PRODUCTIONS
             |
             (
                 "="
-                (
-                    (
-                        identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
-                        { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
-                    )
-                    |
-                    (
-                        Block<out var wnode>
-                        (. typ.With = wnode; .)
-                    )
-                )
+                identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
+                { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
             )
-        ).
+        ]
+        [
+            "using" Block<out var cnode>
+            (. typ.Using = cnode; .)
+        ].
 
     Statement<out DNode node> =
         (. node = null; .)
@@ -179,10 +174,10 @@ PRODUCTIONS
             | ControlFlow<out node> [ Guard<node, out node> ] Separator
             | Type<out node> Separator
             | Match<out node> [ Guard<node, out node> Separator ]
+            | PrivateScope<out node>
             | StatementExpr<out node> [ Guard<node, out node> ] Separator
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
-            | PrivateScope<out node>
             | Function<out node>
             | Directive<out node> Separator
         )

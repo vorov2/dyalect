@@ -187,6 +187,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to access private scope of an object..
+        /// </summary>
+        internal static string PrivateAccess {
+            get {
+                return ResourceManager.GetString("PrivateAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to access a private module member &quot;{0}&quot;..
         /// </summary>
         internal static string PrivateNameAccess {

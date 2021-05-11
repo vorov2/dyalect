@@ -245,10 +245,15 @@ namespace Dyalect.Compiler
                         if (unit.Types[lti.TypeId].AutoGenConstructors)
                             AddError(CompilerError.CtorAutoGen, node.Location, unit.Types[lti.TypeId].Name);
 
-                        if (lti.Declaration.With is not null)
-                            Build(lti.Declaration.With, hints.Append(NoScope), oldctx);
-                    }
+                        if (lti.Declaration.Using is not null)
+                            BuildUsing(lti.Declaration.Using, hints, oldctx);
+                        else
+                            cw.NewTuple(0);
 
+                        var v = AddVariable("this", lti.Declaration, VarFlags.Const | VarFlags.This);
+                        cw.PopVar(v);
+                    }
+                    
                     Build(node.Body!, hints.Append(Last), ctx);
                 }
             }
@@ -277,6 +282,11 @@ namespace Dyalect.Compiler
                     lti.Scope = currentScope ?? throw new DyBuildException("Missing scope.", null);
                     //Constructor returns a type instance, not a value. We need to pop this value from stack
                     cw.Pop();
+
+                    //Push "this" to stack
+                    var sv = GetVariable("this", lti.Declaration);
+                    cw.PushVar(sv);
+
                     cw.Aux(node.Name!);
                     cw.NewType(lti.TypeId);
                 }

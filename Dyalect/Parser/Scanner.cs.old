@@ -10,8 +10,8 @@ namespace Dyalect.Parser
 {
     partial class Scanner
     {
-	const int maxT = 97;
-	const int noSym = 97;
+	const int maxT = 98;
+	const int noSym = 98;
 
 
         static Scanner()
@@ -164,25 +164,26 @@ namespace Dyalect.Parser
 			case "in": t.kind = 22; break;
 			case "set": t.kind = 66; break;
 			case "import": t.kind = 67; break;
-			case "true": t.kind = 69; break;
-			case "false": t.kind = 70; break;
-			case "when": t.kind = 71; break;
-			case "static": t.kind = 72; break;
-			case "const": t.kind = 74; break;
-			case "match": t.kind = 75; break;
-			case "or": t.kind = 76; break;
-			case "and": t.kind = 77; break;
-			case "not": t.kind = 79; break;
-			case "nil": t.kind = 81; break;
-			case "else": t.kind = 82; break;
-			case "do": t.kind = 83; break;
-			case "many": t.kind = 84; break;
-			case "throw": t.kind = 85; break;
-			case "try": t.kind = 86; break;
-			case "catch": t.kind = 87; break;
-			case "is": t.kind = 90; break;
-			case "yields": t.kind = 95; break;
-			case "base": t.kind = 96; break;
+			case "using": t.kind = 69; break;
+			case "true": t.kind = 70; break;
+			case "false": t.kind = 71; break;
+			case "when": t.kind = 72; break;
+			case "static": t.kind = 73; break;
+			case "const": t.kind = 75; break;
+			case "match": t.kind = 76; break;
+			case "or": t.kind = 77; break;
+			case "and": t.kind = 78; break;
+			case "not": t.kind = 80; break;
+			case "nil": t.kind = 82; break;
+			case "else": t.kind = 83; break;
+			case "do": t.kind = 84; break;
+			case "many": t.kind = 85; break;
+			case "throw": t.kind = 86; break;
+			case "try": t.kind = 87; break;
+			case "catch": t.kind = 88; break;
+			case "is": t.kind = 91; break;
+			case "yields": t.kind = 96; break;
+			case "base": t.kind = 97; break;
 			default: break;
 		}
         }
@@ -472,13 +473,13 @@ namespace Dyalect.Parser
 			case 73:
 				{t.kind = 65; break;}
 			case 74:
-				{t.kind = 73; break;}
+				{t.kind = 74; break;}
 			case 75:
-				{t.kind = 80; break;}
+				{t.kind = 81; break;}
 			case 76:
-				{t.kind = 92; break;}
-			case 77:
 				{t.kind = 93; break;}
+			case 77:
+				{t.kind = 94; break;}
 			case 78:
 				recEnd = pos; recKind = 24;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 6;}
@@ -500,9 +501,9 @@ namespace Dyalect.Parser
 				if (ch == ':') {AddCh(); goto case 75;}
 				else {t.kind = 27; break;}
 			case 82:
-				recEnd = pos; recKind = 94;
+				recEnd = pos; recKind = 95;
 				if (ch == '?') {AddCh(); goto case 59;}
-				else {t.kind = 94; break;}
+				else {t.kind = 95; break;}
 			case 83:
 				recEnd = pos; recKind = 51;
 				if (ch == '=') {AddCh(); goto case 40;}
@@ -525,10 +526,10 @@ namespace Dyalect.Parser
 				else if (ch == '|') {AddCh(); goto case 95;}
 				else {t.kind = 68; break;}
 			case 88:
-				recEnd = pos; recKind = 91;
+				recEnd = pos; recKind = 92;
 				if (ch == '=') {AddCh(); goto case 45;}
 				else if (ch == '^') {AddCh(); goto case 70;}
-				else {t.kind = 91; break;}
+				else {t.kind = 92; break;}
 			case 89:
 				recEnd = pos; recKind = 58;
 				if (ch == '>') {AddCh(); goto case 96;}
@@ -543,21 +544,21 @@ namespace Dyalect.Parser
 				if (ch == '~') {AddCh(); goto case 72;}
 				else {t.kind = 49; break;}
 			case 92:
-				recEnd = pos; recKind = 78;
+				recEnd = pos; recKind = 79;
 				if (ch == '.') {AddCh(); goto case 74;}
 				else if (ch == '<') {AddCh(); goto case 76;}
-				else {t.kind = 78; break;}
+				else {t.kind = 79; break;}
 			case 93:
 				if (ch == '<') {AddCh(); goto case 97;}
 				else {goto case 0;}
 			case 94:
-				recEnd = pos; recKind = 89;
+				recEnd = pos; recKind = 90;
 				if (ch == '&') {AddCh(); goto case 65;}
-				else {t.kind = 89; break;}
+				else {t.kind = 90; break;}
 			case 95:
-				recEnd = pos; recKind = 88;
+				recEnd = pos; recKind = 89;
 				if (ch == '|') {AddCh(); goto case 64;}
-				else {t.kind = 88; break;}
+				else {t.kind = 89; break;}
 			case 96:
 				if (ch == '>') {AddCh(); goto case 98;}
 				else {goto case 0;}

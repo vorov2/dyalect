@@ -54,18 +54,18 @@ func matchTypeTest1() {
     assert(8, mem(a2))
 }
 
-type Bar = {
+type Bar using {
     var data
 }
 func extendTest1() {
     static func Bar.Bar(args...) {
-        data = args
+        this::data = args
     }
     func Bar.len() {
-        data.len()
+        use(this)::data.len()
     }
     func Bar.get(index) {
-        data[index]
+        use(this)::data[index]
     }
     var obj = Bar.Bar(1, 2, 3)
     var res = match obj {
@@ -77,13 +77,13 @@ func extendTest1() {
 
 func extendTest2() {
     static func Bar.Bar(args...) {
-        data = args
+        this::data = args
     }
     func Bar.len() {
-        data.len()
+        use(this)::data.len()
     }
     func Bar.get(index) {
-        data[index]
+        use(this)::data[index]
     }
     var obj = Bar(10, 20, 30)
     var res = match obj {

@@ -323,10 +323,10 @@ namespace Dyalect.Runtime
                         evalStack.Push(DyIterator.Create(function.UnitId, op.Data, function.Captures, locals));
                         break;
                     case OpCode.NewFun:
-                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals));
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures));
                         break;
                     case OpCode.NewFunV:
-                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, ctx.AUX));
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, ctx.AUX));
                         break;
                     case OpCode.HasMember:
                         right = evalStack.Peek();
@@ -558,7 +558,7 @@ namespace Dyalect.Runtime
                         }
                         break;
                     case OpCode.NewTuple:
-                        evalStack.Push(MakeTuple(evalStack, op.Data));
+                        evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(evalStack, op.Data));
                         break;
                     case OpCode.TypeCheckT:
                         right = evalStack.Pop();
@@ -583,10 +583,14 @@ namespace Dyalect.Runtime
                         ctx.CatchMarks.Peek().Pop();
                         break;
                     case OpCode.NewType:
-                        evalStack.Push(new DyCustomType(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, locals, unit));
+                        evalStack.Push(new DyCustomType(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, (DyTuple)evalStack.Pop(), unit));
                         break;
                     case OpCode.Mut:
                         ((DyLabel)evalStack.Peek()).Mutable = true;
+                        break;
+                    case OpCode.Private:
+                        evalStack.Replace(GetPrivatePart(unit.Types[op.Data].Id, evalStack.Peek(), ctx));
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                 }
             }
@@ -601,6 +605,15 @@ namespace Dyalect.Runtime
                 ctx.Error = null;
                 goto CYCLE;
             }
+        }
+
+        private static DyObject GetPrivatePart(int data, DyObject right, ExecutionContext ctx)
+        {
+            if (right.TypeId != data)
+                return ctx.PrivateAccess();
+
+            var ct = (DyCustomType)right;
+            return ct.Privates;
         }
 
         private static void Push(ArgContainer container, DyObject value, ExecutionContext ctx)

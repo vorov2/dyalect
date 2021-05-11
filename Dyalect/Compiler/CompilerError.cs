@@ -91,5 +91,7 @@
         ReturnInConstructor = 243,
 
         TypeNameCamel = 244,
+
+        PrivateAccessInvalid = 245
     }
 }

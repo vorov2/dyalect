@@ -241,7 +241,6 @@ namespace Dyalect.Compiler
                 Emit(new(OpCode.TypeS, type.TypeId));
         }
 
-        public void Mut() => Emit(Op.Mut);
         public void FunPrep(int argCount) => Emit(new(OpCode.FunPrep, argCount));
         public void FunArgIx(int index) => Emit(new(OpCode.FunArgIx, index));
         public void FunArgNm(string name) => Emit(new(OpCode.FunArgNm, IndexString(name)));
@@ -266,6 +265,7 @@ namespace Dyalect.Compiler
         public void Start(Label lab) => Emit(OpCode.Start, lab);
         public void Fail(DyErrorCode code) => Emit(new(OpCode.FailSys, (int)code));
         public void NewType(int typeId) => Emit(new(OpCode.NewType, typeId));
+        public void Private(int typeId) => Emit(new(OpCode.Private, typeId));
 
         public void GetIter() => Emit(Op.GetIter);
         public void End() => Emit(Op.End);
@@ -306,5 +306,6 @@ namespace Dyalect.Compiler
         public void Fail() => Emit(Op.Fail);
         public void Term() => Emit(Op.Term);
         public void IsNull() => Emit(Op.IsNull);
+        public void Mut() => Emit(Op.Mut);
     }
 }

@@ -268,6 +268,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An access to private scope is only allowed inside member functions of local types..
+        /// </summary>
+        internal static string PrivateAccessInvalid {
+            get {
+                return ResourceManager.GetString("PrivateAccessInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Methods cannot be declared inside a &quot;private&quot; scope..
         /// </summary>
         internal static string PrivateMethod {

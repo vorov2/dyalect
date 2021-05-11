@@ -261,4 +261,7 @@
   <data name="TypeNameCamel" xml:space="preserve">
     <value>Type name should start from a capital letter.</value>
   </data>
+  <data name="PrivateAccessInvalid" xml:space="preserve">
+    <value>An access to private scope is only allowed inside member functions of local types.</value>
+  </data>
 </root>

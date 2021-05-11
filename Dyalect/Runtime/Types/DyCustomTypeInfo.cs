@@ -21,21 +21,14 @@ namespace Dyalect.Runtime.Types
         {
             var self = (DyCustomType)left;
 
-            if (self.TypeId == right.TypeId && right is DyCustomType t && t.Constructor == self.Constructor
-                && t.Locals.Length == self.Locals.Length)
+            if (self.TypeId == right.TypeId && right is DyCustomType t && t.Constructor == self.Constructor)
             {
-                for (var i = 0; i < self.Locals.Length; i++)
-                {
-                    var res = ctx.RuntimeContext.Types[self.Locals[i].TypeId].Eq(ctx, self.Locals[i], t.Locals[i]);
+                var res = ctx.RuntimeContext.Types[self.Privates.TypeId].Eq(ctx, self.Privates, t.Privates);
+             
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
 
-                    if (ctx.HasErrors)
-                        return DyNil.Instance;
-
-                    if (ReferenceEquals(res, DyBool.False))
-                        return res;
-                }
-
-                return DyBool.True;
+                return res;
             }
 
             return DyBool.False;
@@ -44,44 +37,20 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var cust = (DyCustomType)arg;
-            if (TypeName == cust.Constructor && cust.Locals.Length == 0)
+            if (TypeName == cust.Constructor && cust.Privates.Count == 0)
                 return new DyString($"{TypeName}()");
             else if (TypeName == cust.Constructor)
-                return new DyString($"{TypeName}({LocalsToString(cust, ctx)})");
-            else if (cust.Locals.Length == 0)
+                return new DyString($"{TypeName}{ctx.RuntimeContext.Types[cust.Privates.TypeId].ToString(ctx)}");
+            else if (cust.Privates.Count == 0)
                 return new DyString($"{TypeName}.{cust.Constructor}()");
             else
-                return new DyString($"{TypeName}.{cust.Constructor}({LocalsToString(cust, ctx)})");
-        }
-
-        private string LocalsToString(DyCustomType t, ExecutionContext ctx)
-        {
-            var sb = new StringBuilder();
-
-            for (var i = 0; i < t.Locals.Length; i++)
-            {
-                if (sb.Length > 0)
-                {
-                    sb.Append(',');
-                    sb.Append(' ');
-                }
-
-                sb.Append(t.Locals[i].GetLabel());
-                sb.Append(':');
-                sb.Append(' ');
-                sb.Append(t.Locals[i].GetTaggedValue().ToString(ctx));
-
-                if (ctx.HasErrors)
-                    return "";
-            }
-
-            return sb.ToString();
+                return new DyString($"{TypeName}.{cust.Constructor}{ctx.RuntimeContext.Types[cust.Privates.TypeId].ToString(ctx)}");
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             if (autoGenMethods)
-                return DyInteger.Get(((DyCustomType)arg).Locals.Length);
+                return DyInteger.Get(((DyCustomType)arg).Privates.Count);
 
             return base.LengthOp(arg, ctx);
         }

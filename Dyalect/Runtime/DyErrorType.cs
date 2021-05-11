@@ -22,7 +22,7 @@
 
         InvalidType = 609,
 
-        //= 610,
+        PrivateAccess = 610,
 
         AssertFailed = 611,
 

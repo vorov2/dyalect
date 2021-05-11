@@ -171,4 +171,7 @@
   <data name="FieldReadOnly" xml:space="preserve">
     <value>A field is read-only.</value>
   </data>
+  <data name="PrivateAccess" xml:space="preserve">
+    <value>Unable to access private scope of an object.</value>
+  </data>
 </root>

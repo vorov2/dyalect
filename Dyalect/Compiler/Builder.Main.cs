@@ -687,6 +687,22 @@ namespace Dyalect.Compiler
                     cw.Push(push);
                     return;
                 }
+                else if (name == "use" && node.Arguments.Count == 1)
+                {
+                    Build(node.Arguments[0], hints, ctx);
+
+                    if (ctx.Function is null || ctx.Function.TypeName is null || ctx.Function.TypeName.Parent is not null)
+                    {
+                        AddError(CompilerError.PrivateAccessInvalid, node.Location);
+                        return;
+                    }
+
+                    if (TryGetLocalType(ctx.Function.TypeName.Local, out var lti))
+                    {
+                        AddLinePragma(node);
+                        cw.Private(lti.TypeId);
+                    }
+                }
 
             //This is a special optimization for the 'toString', 'has' and 'len' methods
             //If we see that it is called directly we can emit a direct op code

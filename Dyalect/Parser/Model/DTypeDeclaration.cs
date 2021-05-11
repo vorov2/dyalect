@@ -16,7 +16,7 @@ namespace Dyalect.Parser.Model
         private List<DFunctionDeclaration> constructors = null!;
         public List<DFunctionDeclaration> Constructors => constructors ??= new();
 
-        public DNode? With { get; set; }
+        public DNode? Using { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {
@@ -40,10 +40,10 @@ namespace Dyalect.Parser.Model
                 }
             }
 
-            if (With is not null)
+            if (Using is not null)
             {
-                sb.Append(" with ");
-                With.ToString(sb);
+                sb.Append(" using ");
+                Using.ToString(sb);
             }
         }
     }
