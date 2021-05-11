@@ -1,5 +1,5 @@
 # 0.25.0
-  * Fix: _`Float` constructor doesn't work correctly_ ([Issue #483](https://github.com/vorov2/dyalect/issues/483)). 
+  * Fix: _`Float` constructor doesn't work correctly_ ([Issue #483](https://github.com/vorov2/dyalect/issues/483)).
   * Add: _Add Integer.isMultiple(of) method_ ([Issue #454](https://github.com/vorov2/dyalect/issues/454), [docs](https://github.com/vorov2/dyalect/wiki/Integer#isMultiple)).
   * Add: _Map: add method `compact(by)`_ ([Issue #393](https://github.com/vorov2/dyalect/issues/393), [docs](https://github.com/vorov2/dyalect/wiki/Map#compact)).
   * Add: _Add `Integer.parse` method_ ([Issue #480](https://github.com/vorov2/dyalect/issues/480), [docs](https://github.com/vorov2/dyalect/wiki/Integer#parse)).
@@ -7,6 +7,7 @@
   * Add: _Add `Map.toTuple` method_ ([Issue #482](https://github.com/vorov2/dyalect/issues/482), [docs](https://github.com/vorov2/dyalect/wiki/Map#toTuple)).
   * Add: _Add an ability to declare immutable tuple fields_ ([Issue #484](https://github.com/vorov2/dyalect/issues/484), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#overview)).
   * Add: _Allow an intrinsic `assert` function to have optional parameter_ ([Issue #485](https://github.com/vorov2/dyalect/issues/485), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#assert)).
+  * Add: _Inconsistent `base` syntax_ ([Issue #488](https://github.com/vorov2/dyalect/issues/488)).
 
 # 0.24.0
   * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473)).

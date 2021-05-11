@@ -149,7 +149,7 @@ func baseTest1() {
     let x = 2
     func inner() {
         let x = 4
-        base.x
+        base::x
     }
     assert(2, inner())
 }
@@ -160,7 +160,7 @@ func baseTest2() {
         let x = 4
         if x == 4 {
             var x = 8
-            base.x
+            base::x
         }
     }
     assert(2, inner())
