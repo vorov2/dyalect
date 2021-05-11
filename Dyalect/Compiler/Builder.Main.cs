@@ -390,23 +390,6 @@ namespace Dyalect.Compiler
 
         private void Build(DAccess node, Hints hints, CompilerContext ctx)
         {
-            if (node.Target.NodeType == NodeType.Base)
-            {
-                if (!hints.Has(Function))
-                {
-                    AddError(CompilerError.BaseNotAllowed, node.Location);
-                    return;
-                }
-
-                if (NoPush(node, hints))
-                    return;
-
-                var sv = GetParentVariable(node.Name, node);
-                AddLinePragma(node);
-                cw.PushVar(sv);
-                return;
-            }
-
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
             AddLinePragma(node);
             var skip = cw.DefineLabel();
@@ -509,6 +492,23 @@ namespace Dyalect.Compiler
 
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)
         {
+            if (node.Target.NodeType == NodeType.Base && node.Index is DStringLiteral nam && nam.Chunks is null)
+            {
+                if (!hints.Has(Function))
+                {
+                    AddError(CompilerError.BaseNotAllowed, node.Location);
+                    return;
+                }
+
+                if (NoPush(node, hints))
+                    return;
+
+                var sv = GetParentVariable(nam.Value, node);
+                AddLinePragma(node);
+                cw.PushVar(sv);
+                return;
+            }
+
             var push = hints.Remove(Pop).Append(Push);
             var skip = cw.DefineLabel();
 

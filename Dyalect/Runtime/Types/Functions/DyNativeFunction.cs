@@ -34,8 +34,11 @@ namespace Dyalect.Runtime.Types
             Captures = captures;
         }
 
-        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, int varArgIndex = -1) =>
-            new(sym, unitId, funcId, captures, DyType.Function, varArgIndex);
+        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1)
+        {
+            var vars = new FastList<DyObject[]>(captures) { locals };
+            return new(sym, unitId, funcId, vars, DyType.Function, varArgIndex);
+        }
 
         internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) =>
             new DyNativeFunction(sym, UnitId, FunctionId, Captures, DyType.Function, VarArgIndex)

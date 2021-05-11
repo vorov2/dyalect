@@ -323,10 +323,10 @@ namespace Dyalect.Runtime
                         evalStack.Push(DyIterator.Create(function.UnitId, op.Data, function.Captures, locals));
                         break;
                     case OpCode.NewFun:
-                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures));
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals));
                         break;
                     case OpCode.NewFunV:
-                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, ctx.AUX));
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, ctx.AUX));
                         break;
                     case OpCode.HasMember:
                         right = evalStack.Peek();
