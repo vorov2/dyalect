@@ -305,6 +305,22 @@ func setterTest1() {
     }
 }
 
+type TypeTestZoo(a, b = 12, c = 33)
+func defaultsConsTest() {
+    var t = TypeTestZoo(1)
+    assert(1, t::a)
+    assert(12, t::b)
+    assert(33, t::c)
+    t = TypeTestZoo(1, 2)
+    assert(1, t::a)
+    assert(2, t::b)
+    assert(33, t::c)
+    t = TypeTestZoo(1, 2, 3)
+    assert(1, t::a)
+    assert(2, t::b)
+    assert(3, t::c)
+}
+
 type Point1 using { var px; var py }
 func setterTest2() { //Bug #205
     static func Point1.Point1(x, y) {
@@ -442,3 +458,51 @@ func stringBuilderTest() {
     sb.append(false)
     assert("truefalse", sb.toString())
 }
+
+type PAccessTest_Foo using {
+    var x
+    let pi = 3.14
+}
+static func PAccessTest_Foo.PAccessTest_Foo(x) {
+    private()::x = x
+}
+func privateAccessTest1() {
+    func PAccessTest_Foo.ok() {
+        return private(this)::x
+    }
+    var f = PAccessTest_Foo(12)
+    var res = f.ok()
+    assert(12, res)
+    PAccessTest_Foo.__deleteMember("ok")
+}
+
+func privateAccessTest2() {
+    func PAccessTest_Foo.ok(f) {
+        func inner() {
+            return private(f)::pi
+        }
+        return inner()
+    }
+    var f = PAccessTest_Foo(12)
+    var res = f.ok(f)
+    assert(3.14, res)
+    PAccessTest_Foo.__deleteMember("ok")
+}
+
+type PAccessTest_Bar(x)
+func PAccessTest_Bar.violator(f) {
+    return private(f)::x
+}
+func privateAccessTest3() {
+    var b = PAccessTest_Bar(42)
+    var res = b.violator(b)
+    assert(42, res)
+    var f = PAccessTest_Foo(42)
+    try {
+        b.violator(f)
+        assert(got: false)
+    } catch {
+        PrivateAccess() => assert(got: true)
+    }
+}
+

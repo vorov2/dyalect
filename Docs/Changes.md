@@ -11,6 +11,8 @@
   * Add: _Add an ability to declare immutable tuple fields_ ([Issue #484](https://github.com/vorov2/dyalect/issues/484), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#overview)).
   * Add: _Allow an intrinsic `assert` function to have optional parameter_ ([Issue #485](https://github.com/vorov2/dyalect/issues/485), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#assert)).
   * Add: _Inconsistent `base` syntax_ ([Issue #488](https://github.com/vorov2/dyalect/issues/488)).
+  * Add: _No ability to access private members of another instance of custom type_ ([Issue #487](https://github.com/vorov2/dyalect/issues/487)).
+  * Add: _Custom type redesign_  ([Issue #491](https://github.com/vorov2/dyalect/issues/491), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
 
 # 0.24.0
   * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473)).
