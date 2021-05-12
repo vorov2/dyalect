@@ -471,6 +471,12 @@ func notPattern1() {
 
 func comparisonPattern1() {
     let (x, y) = (1, 2)
-    let res = x is >0 //and <2
+    var res = x is >0
     assert(true, res)
+    res = x is >0 and <2
+    assert(true, res)
+    res = y is 5 || x is >=1
+    assert(true, res)
+    res = y is <=1 or >5
+    assert(false, res)
 }

@@ -433,7 +433,14 @@ PRODUCTIONS
                 | ">=" (. op = BinaryOperator.GtEq; ot = t; .)
                 | "<=" (. op = BinaryOperator.LtEq; ot = t; .)
             )
-            Pattern<out node>
+            (
+                  IntegerPattern<out node>
+                | FloatPattern<out node>
+                | CharPattern<out node>
+                | StringPattern<out node>
+                | BooleanPattern<out node>
+                | NilPattern<out node>                            
+            )
             (. node = new DComparisonPattern(ot) { Operator = op, Pattern = node }; .)
         ).
 

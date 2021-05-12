@@ -869,9 +869,6 @@ namespace Dyalect.Parser
 			NotPattern(out node);
 		} else if (StartOf(11)) {
 			ComparisonPattern(out node);
-			if (la.kind == 1) {
-				AsPattern(node, out node);
-			}
 		} else SynErr(111);
 	}
 

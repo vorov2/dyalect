@@ -151,8 +151,28 @@ namespace Dyalect.Compiler
 
         private void BuildComparisonPattern(DComparisonPattern node, Hints hints, CompilerContext ctx)
         {
-            PreinitPattern(node.Pattern, hints);
-            BuildPattern(node.Pattern, hints, ctx);
+            switch (node.Pattern.NodeType)
+            {
+                case NodeType.IntegerPattern:
+                    cw.Push(((DIntegerPattern)node.Pattern).Value);
+                    break;
+                case NodeType.FloatPattern:
+                    cw.Push(((DFloatPattern)node.Pattern).Value);
+                    break;
+                case NodeType.CharPattern:
+                    cw.Push(((DCharPattern)node.Pattern).Value);
+                    break;
+                case NodeType.StringPattern:
+                    Build(((DStringPattern)node.Pattern).Value, Push, ctx);
+                    break;
+                case NodeType.BooleanPattern:
+                    cw.Push(((DBooleanPattern)node.Pattern).Value);
+                    break;
+                case NodeType.NilPattern:
+                    cw.PushNil();
+                    break;
+            }
+
             AddLinePragma(node);
 
             switch (node.Operator)
