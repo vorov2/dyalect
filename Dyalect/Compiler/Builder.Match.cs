@@ -143,6 +143,32 @@ namespace Dyalect.Compiler
                 case NodeType.LabelPattern:
                     BuildLabel((DLabelPattern)node, hints, ctx);
                     break;
+                case NodeType.ComparisonPattern:
+                    BuildComparisonPattern((DComparisonPattern)node, hints, ctx);
+                    break;
+            }
+        }
+
+        private void BuildComparisonPattern(DComparisonPattern node, Hints hints, CompilerContext ctx)
+        {
+            PreinitPattern(node.Pattern, hints);
+            BuildPattern(node.Pattern, hints, ctx);
+            AddLinePragma(node);
+
+            switch (node.Operator)
+            {
+                case BinaryOperator.Gt:
+                    cw.Gt();
+                    break;
+                case BinaryOperator.Lt:
+                    cw.Lt();
+                    break;
+                case BinaryOperator.GtEq:
+                    cw.GtEq();
+                    break;
+                case BinaryOperator.LtEq:
+                    cw.LtEq();
+                    break;
             }
         }
 

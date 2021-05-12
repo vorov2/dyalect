@@ -468,3 +468,9 @@ func notPattern1() {
     assert(true, y is not Tuple)
     assert(true, y is not Tuple and not Map)
 }
+
+func comparisonPattern1() {
+    let (x, y) = (1, 2)
+    let res = x is >0 //and <2
+    assert(true, res)
+}
