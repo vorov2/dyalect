@@ -59,13 +59,13 @@ type Bar using {
 }
 func extendTest1() {
     static func Bar.Bar(args...) {
-        this::data = args
+        private()::data = args
     }
     func Bar.len() {
-        use(this)::data.len()
+        private(this)::data.len()
     }
     func Bar.get(index) {
-        use(this)::data[index]
+        private(this)::data[index]
     }
     var obj = Bar.Bar(1, 2, 3)
     var res = match obj {
@@ -77,15 +77,18 @@ func extendTest1() {
 
 func extendTest2() {
     static func Bar.Bar(args...) {
-        this::data = args
+        private()::data = args
     }
     func Bar.len() {
-        use(this)::data.len()
+        private()::data.len()
     }
     func Bar.get(index) {
-        use(this)::data[index]
+        private()::data[index]
     }
     var obj = Bar(10, 20, 30)
+    assert(10, obj[0])
+    assert(20, obj[1])
+    assert(30, obj[2])
     var res = match obj {
         (x, y) => x + y,
         (x, y, z) => x + y + z
@@ -127,7 +130,7 @@ func autoConsTest3() {
     assert(43, p::y)
 }
 
-type Nat = { var val }
+type Nat using { var val }
 func typeTest1() {
     func fetch(x) {
         if x < 0 {
@@ -140,25 +143,25 @@ func typeTest1() {
         if x < 0 {
             throw "Negative number."
         }
-        val = x
+        private()::val = x
     }
     func Nat.toInteger() {
-        val
+        private()::val
     }
     func Nat + (other) {
-        fetch(val + other.toInteger())
+        fetch(private()::val + private(other)::val)
     }
     func Nat - (other) {
-        fetch(val - other.toInteger())
+        fetch(private()::val - private(other)::val)
     }
     func Nat * (other) {
-        fetch(val * other.toInteger())
+        fetch(private()::val * private(other)::val)
     }
     func Nat / (other) {
-        fetch(val / other.toInteger())
+        fetch(private()::val / private(other)::val)
     }
     func Nat == (other) {
-        val == other.toInteger()
+        private()::val == private(other)::val
     }
     var n = Nat(12)
     assert(Nat(24), n + Nat(12))
@@ -183,25 +186,25 @@ func typeTest2() {
     assert(24, doMatch(y))
 }
 
-type Cell = { var val }
+type Cell using { var val }
 func typeTest3() {
     func ref(value) {
         Cell(value)
     }
     static func Cell.Cell(value) {
-        val = value
+        private()::val = value
     }
     func Cell.setValue(value) {
-        val = value
+        private()::val = value
     }
     func Cell.getValue() {
-        val
+        private()::val
     }
     func Cell.get(index) {
         if index != 0 {
             throw "Index out of range."
         }
-        val
+        private()::val
     }
     func Cell.len() {
         1
@@ -273,16 +276,16 @@ func simpleTypeTest2() {
     assert(12, b::x)
 }
 
-type Record = { var fields }
+type Record using { var fields }
 func accessorTest() {
     static func Record.Record(values...) {
-        fields = values
+        private()::fields = values
     }
     func Record.get(index) {
         if index == "name" {
-            return fields::name
+            return private()::fields::name
         } else if index == "age" {
-            return fields::age
+            return private(this)::fields::age
         }
     }
     var p = Record(values: (name: "John", age: 33))
@@ -294,30 +297,34 @@ type UserInfo(name,age)
 func setterTest1() {
     var u = UserInfo("Jon", 17)
     assert(17, u::age)
-    u::age = 39
-    assert(39, u::age)
+    try {
+        u::age = 39
+        assert(got: false)
+    } catch {
+        FieldReadOnly() => assert(got: true)
+    }
 }
 
-type Point1 = { var px; var py }
+type Point1 using { var px; var py }
 func setterTest2() { //Bug #205
     static func Point1.Point1(x, y) {
-        px = x
-        py = y
+        private()::px = x
+        private()::py = y
     }
     func Point1.get(index) {
         if index == 0 || index == "x" {
-            x
+            private()::px
         } else if index == 1 || index == "y" {
-            y
+            private()::py
         } else {
             throw Error.IndexOutOfRange()
         }
     }
     func Point1.set(index, value) {
         if index == 0 || index == "x" {
-            x = value
+            private()::px = value
         } else if index == 1 || index == "y" {
-            y = value
+            private()::py = value
         } else {
             throw Error.IndexOutOfRange()
         }
@@ -402,23 +409,23 @@ func testCustomFunc() {
     assert(42, some.extractValue())
 }
 
-type TStringBuilder = {
+type TStringBuilder using {
     let buffer = []
 }
 func stringBuilderTest() {
     static func TStringBuilder.TStringBuilder() { }
     func TStringBuilder.append(val) {
-        buffer.add(val.toString())
+        private()::buffer.add(val.toString())
     }
     func TStringBuilder.clear() {
-        buffer.clear()
+        private()::buffer.clear()
     }
     func TStringBuilder.toString() {
-        String.concat(values: buffer)
+        String.concat(values: private()::buffer)
     }
     func TStringBuilder.len() {
         var count = 0
-        for x in buffer {
+        for x in private()::buffer {
             count += x.len()
         }
         return count

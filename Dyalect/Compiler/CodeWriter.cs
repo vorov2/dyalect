@@ -306,5 +306,6 @@ namespace Dyalect.Compiler
         public void Term() => Emit(Op.Term);
         public void IsNull() => Emit(Op.IsNull);
         public void Mut() => Emit(Op.Mut);
+        public void Priv() => Emit(Op.Priv);
     }
 }

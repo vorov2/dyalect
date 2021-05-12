@@ -40,11 +40,11 @@ namespace Dyalect.Runtime.Types
             if (TypeName == cust.Constructor && cust.Privates.Count == 0)
                 return new DyString($"{TypeName}()");
             else if (TypeName == cust.Constructor)
-                return new DyString($"{TypeName}{ctx.RuntimeContext.Types[cust.Privates.TypeId].ToString(ctx)}");
+                return new DyString($"{TypeName}{cust.Privates.ToString(ctx)}");
             else if (cust.Privates.Count == 0)
                 return new DyString($"{TypeName}.{cust.Constructor}()");
             else
-                return new DyString($"{TypeName}.{cust.Constructor}{ctx.RuntimeContext.Types[cust.Privates.TypeId].ToString(ctx)}");
+                return new DyString($"{TypeName}.{cust.Constructor}{cust.Privates.ToString(ctx)}");
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
@@ -72,14 +72,6 @@ namespace Dyalect.Runtime.Types
             }
 
             return base.SetOp(self, index, value, ctx);
-        }
-
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
-        {
-            if (name == "$private")
-                return ((DyCustomType)self).Privates;
-
-            return base.InitializeInstanceMember(self, name, ctx);
         }
 
         public override string TypeName { get; }

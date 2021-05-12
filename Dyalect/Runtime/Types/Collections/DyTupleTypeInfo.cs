@@ -28,40 +28,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var tup = (DyTuple)arg;
-            var sb = new StringBuilder();
-            sb.Append('(');
-
-            for (var i = 0; i < tup.Values.Length; i++)
-            {
-                if (i > 0)
-                {
-                    sb.Append(',');
-                    sb.Append(' ');
-                }
-
-                var v = tup.Values[i];
-
-                if (v is DyLabel lab)
-                {
-                    if (lab.Mutable)
-                        sb.Append("var ");
-
-                    sb.Append(lab.Label);
-                    sb.Append(':');
-                    sb.Append(' ');
-                    v = lab.Value;
-                }
-
-                var str = v.ToString(ctx);
-
-                if (ctx.HasErrors)
-                    return DyNil.Instance;
-
-                sb.Append(str);
-            }
-
-            sb.Append(')');
-            return new DyString(sb.ToString());
+            return tup.ToString(ctx);
         }
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -224,14 +191,14 @@ namespace Dyalect.Runtime.Types
                 "fst" => Func.Member(name, GetFirst),
                 "snd" => Func.Member(name, GetSecond),
                 "sort" => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
-                _ => TryGetField(self, name, ctx) ?? base.InitializeInstanceMember(self, name, ctx)
+                _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
-        private DyObject? TryGetField(DyObject self, string name, ExecutionContext ctx)
-        {
-            ((DyTuple)self).TryGetItem(name, ctx, out var item);
-            return item;
-        }
+        //private DyObject? TryGetField(DyObject self, string name, ExecutionContext ctx)
+        //{
+        //    ((DyTuple)self).TryGetItem(name, ctx, out var item);
+        //    return item;
+        //}
 
         private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
             new DyTuple(new DyObject[] { fst, snd });

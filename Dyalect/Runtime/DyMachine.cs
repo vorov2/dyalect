@@ -95,7 +95,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(function.Self!.GetTaggedValue());
                         break;
                     case OpCode.Term:
-                        if (evalStack.Size > 1 || evalStack.Size == 0)
+                        if (evalStack.Size is >1 or 0)
                             throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
                         ctx.RuntimeContext.Units[function.UnitId] = locals;
                         return evalStack.Pop();
@@ -587,6 +587,9 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Mut:
                         ((DyLabel)evalStack.Peek()).Mutable = true;
+                        break;
+                    case OpCode.Priv:
+                        evalStack.Replace(((DyCustomType)evalStack.Peek()).Privates);
                         break;
                 }
             }

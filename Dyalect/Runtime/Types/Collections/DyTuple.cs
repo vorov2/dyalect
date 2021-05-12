@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
@@ -119,5 +120,43 @@ namespace Dyalect.Runtime.Types
         internal override DyObject GetValue(int index) => Values[index];
 
         internal override DyObject[] GetValues() => Values;
+
+        internal DyObject ToString(ExecutionContext ctx)
+        {
+            var sb = new StringBuilder();
+            sb.Append('(');
+
+            for (var i = 0; i < Values.Length; i++)
+            {
+                if (i > 0)
+                {
+                    sb.Append(',');
+                    sb.Append(' ');
+                }
+
+                var v = Values[i];
+
+                if (v is DyLabel lab)
+                {
+                    if (lab.Mutable)
+                        sb.Append("var ");
+
+                    sb.Append(lab.Label);
+                    sb.Append(':');
+                    sb.Append(' ');
+                    v = lab.Value;
+                }
+
+                var str = v.ToString(ctx);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                sb.Append(str);
+            }
+
+            sb.Append(')');
+            return new DyString(sb.ToString());
+        }
     }
 }

@@ -719,7 +719,7 @@ namespace Dyalect.Compiler
                     cw.Fail(DyErrorCode.PrivateAccess);
                     cw.MarkLabel(noerr);
                     AddLinePragma(node);
-                    cw.GetMember("$private");
+                    cw.Priv();
                     return;
                 }
 
