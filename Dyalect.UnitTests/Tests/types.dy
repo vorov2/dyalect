@@ -506,3 +506,34 @@ func privateAccessTest3() {
     }
 }
 
+type RealNat using {
+    var num
+}
+static func RealNat.RealNat(x) {
+    if x is not Integer {
+        throw Error.InvalidType(x.getType()::name)
+    }
+    private()::num = x
+}
+func RealNat + (other) {
+    var res
+    if other is RealNat {
+        let otherPrivates = private(other)
+        res = private()::num + otherPrivates::num
+    } else if other is Integer {
+        res = private()::num + other
+    } else {
+        throw Error.InvalidType(other.getType()::name)
+    }
+    if (res < 0) {
+        res
+    } else {
+        RealNat(res)
+    }
+}
+func testNat() {
+    var (x, y) = (RealNat(12), RealNat(10))
+    assert(RealNat(22), x + y)
+    assert(RealNat(2), x + -10)
+    assert(-2, x + -14)
+}
