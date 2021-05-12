@@ -303,18 +303,16 @@ namespace Dyalect.Parser
 		node = null; 
 		if (StartOf(4)) {
 			Binding(out node);
-			Separator();
 			if (la.kind == 70) {
 				Guard(node, out node);
-				Separator();
 			}
+			Separator();
 		} else if (la.kind == 66) {
 			Rebinding(out node);
-			Separator();
 			if (la.kind == 70) {
 				Guard(node, out node);
-				Separator();
 			}
+			Separator();
 		} else if (StartOf(5)) {
 			ControlFlow(out node);
 			if (la.kind == 70) {

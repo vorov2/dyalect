@@ -379,6 +379,20 @@ func guardsTest4() {
     assert(nil, res)
 }
 
+func guardsTest5() {
+    func safeDiv(x, y) {
+        0 when y is 0 else x / y
+    }
+    assert(5, safeDiv(10, 2))
+    assert(0, safeDiv(10, 0))
+}
+
+func guardsTest6() {
+    let (x, y) = (1, 2)
+    set (x, y) = (12, 14) when x > 0 && y > 1
+    assert((12, 14), (x, y))
+}
+
 func returnTest() {//Issue 266
     func foo() {
         return 2
