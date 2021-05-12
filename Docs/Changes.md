@@ -3,6 +3,8 @@
   * Fix: _`auto` doesn't work in private scope even if it has nested scopes_ ([Issue #490](https://github.com/vorov2/dyalect/issues/490)).
   * Fix: _Nested member functions_ ([Issue #489](https://github.com/vorov2/dyalect/issues/489)).
   * Fix: _Excessive memory use by custom types_ ([Issue #486](https://github.com/vorov2/dyalect/issues/486)).
+  * Fix: _Guard after throw expression_ ([Issue #494](https://github.com/vorov2/dyalect/issues/494)).
+  * Fix: _`UnreachableMatchEntry` compiler warning can be generated incorrectly_ ([Issue #493](https://github.com/vorov2/dyalect/issues/493)).
   * Add: _Add Integer.isMultiple(of) method_ ([Issue #454](https://github.com/vorov2/dyalect/issues/454), [docs](https://github.com/vorov2/dyalect/wiki/Integer#isMultiple)).
   * Add: _Map: add method `compact(by)`_ ([Issue #393](https://github.com/vorov2/dyalect/issues/393), [docs](https://github.com/vorov2/dyalect/wiki/Map#compact)).
   * Add: _Add `Integer.parse` method_ ([Issue #480](https://github.com/vorov2/dyalect/issues/480), [docs](https://github.com/vorov2/dyalect/wiki/Integer#parse)).

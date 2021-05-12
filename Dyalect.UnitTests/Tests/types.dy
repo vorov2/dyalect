@@ -133,16 +133,10 @@ func autoConsTest3() {
 type Nat using { var val }
 func typeTest1() {
     func fetch(x) {
-        if x < 0 {
-            x
-        } else {
-            Nat(x)
-        }
+        Nat(x) when x >= 0 else x
     }
     static func Nat.Nat(x) {
-        if x < 0 {
-            throw "Negative number."
-        }
+        throw "Negative number." when x < 0
         private()::val = x
     }
     func Nat.toInteger() {
@@ -282,10 +276,9 @@ func accessorTest() {
         private()::fields = values
     }
     func Record.get(index) {
-        if index == "name" {
-            return private()::fields::name
-        } else if index == "age" {
-            return private(this)::fields::age
+        match index {
+            "name" => private()::fields::name,
+            "age" => private()::fields::age
         }
     }
     var p = Record(values: (name: "John", age: 33))
@@ -328,21 +321,17 @@ func setterTest2() { //Bug #205
         private()::py = y
     }
     func Point1.get(index) {
-        if index == 0 || index == "x" {
-            private()::px
-        } else if index == 1 || index == "y" {
-            private()::py
-        } else {
-            throw Error.IndexOutOfRange()
+        match index {
+            0 or "x" => private()::px,
+            1 or "y" => private()::py,
+            _ => throw Error.IndexOutOfRange()
         }
     }
     func Point1.set(index, value) {
-        if index == 0 || index == "x" {
-            private()::px = value
-        } else if index == 1 || index == "y" {
-            private()::py = value
-        } else {
-            throw Error.IndexOutOfRange()
+        match index {
+            0 or "x" => private()::px = value,
+            1 or "y" => private()::py = value,
+            _ => throw Error.IndexOutOfRange()
         }
     }
     var p = Point1(12, 34)
@@ -409,9 +398,7 @@ func testIs() {
     let some = TypesOption.Some(42)
     let none = TypesOption.None()
     var x
-    if some is TypesOption && none is TypesOption {
-        x = 42
-    }
+    x = 42 when some is TypesOption && none is TypesOption
     assert(42, x)
 }
 
@@ -510,26 +497,16 @@ type RealNat using {
     var num
 }
 static func RealNat.RealNat(x) {
-    if x is not Integer {
-        throw Error.InvalidType(x.getType()::name)
-    }
+    throw Error.InvalidType(x.getType()) when x is not Integer
     private()::num = x
 }
 func RealNat + (other) {
-    var res
-    if other is RealNat {
-        let otherPrivates = private(other)
-        res = private()::num + otherPrivates::num
-    } else if other is Integer {
-        res = private()::num + other
-    } else {
-        throw Error.InvalidType(other.getType()::name)
+    let res = match other {
+        RealNat => private()::num + private(other)::num,
+        Integer => private()::num + other,
+        _ => throw Error.InvalidType(other.getType())
     }
-    if (res < 0) {
-        res
-    } else {
-        RealNat(res)
-    }
+    RealNat(res) when res >= 0 else res
 }
 func testNat() {
     var (x, y) = (RealNat(12), RealNat(10))

@@ -165,17 +165,17 @@ namespace Dyalect.Parser
 			case "set": t.kind = 66; break;
 			case "import": t.kind = 67; break;
 			case "using": t.kind = 69; break;
-			case "true": t.kind = 70; break;
-			case "false": t.kind = 71; break;
-			case "when": t.kind = 72; break;
-			case "static": t.kind = 73; break;
-			case "const": t.kind = 75; break;
-			case "match": t.kind = 76; break;
-			case "or": t.kind = 77; break;
-			case "and": t.kind = 78; break;
-			case "not": t.kind = 80; break;
-			case "nil": t.kind = 82; break;
-			case "else": t.kind = 83; break;
+			case "when": t.kind = 70; break;
+			case "else": t.kind = 71; break;
+			case "true": t.kind = 72; break;
+			case "false": t.kind = 73; break;
+			case "static": t.kind = 74; break;
+			case "const": t.kind = 76; break;
+			case "match": t.kind = 77; break;
+			case "or": t.kind = 78; break;
+			case "and": t.kind = 79; break;
+			case "not": t.kind = 81; break;
+			case "nil": t.kind = 83; break;
 			case "do": t.kind = 84; break;
 			case "many": t.kind = 85; break;
 			case "throw": t.kind = 86; break;
@@ -473,9 +473,9 @@ namespace Dyalect.Parser
 			case 73:
 				{t.kind = 65; break;}
 			case 74:
-				{t.kind = 74; break;}
+				{t.kind = 75; break;}
 			case 75:
-				{t.kind = 81; break;}
+				{t.kind = 82; break;}
 			case 76:
 				{t.kind = 93; break;}
 			case 77:
@@ -544,10 +544,10 @@ namespace Dyalect.Parser
 				if (ch == '~') {AddCh(); goto case 72;}
 				else {t.kind = 49; break;}
 			case 92:
-				recEnd = pos; recKind = 79;
+				recEnd = pos; recKind = 80;
 				if (ch == '.') {AddCh(); goto case 74;}
 				else if (ch == '<') {AddCh(); goto case 76;}
-				else {t.kind = 79; break;}
+				else {t.kind = 80; break;}
 			case 93:
 				if (ch == '<') {AddCh(); goto case 97;}
 				else {goto case 0;}
