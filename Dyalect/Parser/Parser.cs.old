@@ -61,7 +61,7 @@ namespace Dyalect.Parser
 	public const int _not = 48;
 	public const int _bitnot = 49;
 	public const int _coalesce = 50;
-	public const int maxT = 98;
+	public const int maxT = 102;
 
 
 
@@ -161,7 +161,7 @@ namespace Dyalect.Parser
 			Get();
 			break;
 		}
-		default: SynErr(99); break;
+		default: SynErr(103); break;
 		}
 	}
 
@@ -172,7 +172,7 @@ namespace Dyalect.Parser
 			StandardOperators();
 		} else if (la.kind == 66) {
 			Get();
-		} else SynErr(100);
+		} else SynErr(104);
 	}
 
 	void Qualident(out string s1, out string s2, out string s3) {
@@ -208,7 +208,7 @@ namespace Dyalect.Parser
 				Expect(1);
 				str += string.Concat(".", t.val); 
 			}
-		} else SynErr(101);
+		} else SynErr(105);
 	}
 
 	void Import() {
@@ -353,7 +353,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 2) {
 			Directive(out node);
 			Separator();
-		} else SynErr(102);
+		} else SynErr(106);
 		node = ProcessImplicits(node); 
 	}
 
@@ -385,7 +385,7 @@ namespace Dyalect.Parser
 			Expect(28);
 			Expr(out node);
 			bin.Init = node; node = bin; 
-		} else SynErr(103);
+		} else SynErr(107);
 	}
 
 	void Guard(DNode src, out DNode node) {
@@ -422,7 +422,7 @@ namespace Dyalect.Parser
 			Return(out node);
 		} else if (la.kind == 17) {
 			Yield(out node);
-		} else SynErr(104);
+		} else SynErr(108);
 	}
 
 	void Match(out DNode node) {
@@ -544,7 +544,7 @@ namespace Dyalect.Parser
 			} else if (la.kind == 18) {
 				If(out node);
 				@if.False = node; 
-			} else SynErr(105);
+			} else SynErr(109);
 		}
 		node = @if; 
 	}
@@ -558,7 +558,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 84) {
 			DoWhile(out node);
 			Separator();
-		} else SynErr(106);
+		} else SynErr(110);
 	}
 
 	void Function(out DNode node) {
@@ -592,7 +592,7 @@ namespace Dyalect.Parser
 			Get();
 			Expr(out node);
 			Separator();
-		} else SynErr(107);
+		} else SynErr(111);
 		f.Body = node;
 		node = f;
 		functions.Pop();
@@ -652,13 +652,16 @@ namespace Dyalect.Parser
 			NoArgFunctionExpr(out node);
 		} else if (StartOf(9)) {
 			Coalesce(out node);
-		} else if (la.kind == 87) {
+			if (la.kind == 86) {
+				TernaryExpr(node, out node);
+			}
+		} else if (la.kind == 88) {
 			TryCatch(out node);
-		} else if (la.kind == 86) {
+		} else if (la.kind == 87) {
 			Throw(out node);
 		} else if (la.kind == 31) {
 			Block(out node);
-		} else SynErr(108);
+		} else SynErr(112);
 	}
 
 	void Expr(out DNode node) {
@@ -671,7 +674,7 @@ namespace Dyalect.Parser
 			Loops(out node);
 		} else if (la.kind == 77) {
 			Match(out node);
-		} else SynErr(109);
+		} else SynErr(113);
 		node = ProcessImplicits(node); 
 	}
 
@@ -743,7 +746,7 @@ namespace Dyalect.Parser
 					LabelPattern(out node);
 				} else if (StartOf(10)) {
 					OrPattern(out node);
-				} else SynErr(110);
+				} else SynErr(114);
 				ctor.Arguments.Add(node); 
 			}
 			Expect(30);
@@ -869,7 +872,7 @@ namespace Dyalect.Parser
 			NotPattern(out node);
 		} else if (StartOf(11)) {
 			ComparisonPattern(out node);
-		} else SynErr(111);
+		} else SynErr(115);
 	}
 
 	void AsPattern(DPattern target, out DPattern node) {
@@ -906,7 +909,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 73) {
 			Get();
-		} else SynErr(112);
+		} else SynErr(116);
 		node = new DBooleanPattern(t) { Value = t.val == "true" }; 
 	}
 
@@ -923,7 +926,7 @@ namespace Dyalect.Parser
 			LabelPattern(out node);
 		} else if (StartOf(10)) {
 			OrPattern(out node);
-		} else SynErr(113);
+		} else SynErr(117);
 		tup.Elements.Add(node); 
 		while (la.kind == 25) {
 			Get();
@@ -988,8 +991,34 @@ namespace Dyalect.Parser
 		} else if (la.kind == 61) {
 			Get();
 			op = BinaryOperator.LtEq; ot = t; 
-		} else SynErr(114);
-		Pattern(out node);
+		} else SynErr(118);
+		switch (la.kind) {
+		case 3: {
+			IntegerPattern(out node);
+			break;
+		}
+		case 4: {
+			FloatPattern(out node);
+			break;
+		}
+		case 6: {
+			CharPattern(out node);
+			break;
+		}
+		case 5: {
+			StringPattern(out node);
+			break;
+		}
+		case 72: case 73: {
+			BooleanPattern(out node);
+			break;
+		}
+		case 83: {
+			NilPattern(out node);
+			break;
+		}
+		default: SynErr(119); break;
+		}
 		node = new DComparisonPattern(ot) { Operator = op, Pattern = node }; 
 	}
 
@@ -1093,7 +1122,7 @@ namespace Dyalect.Parser
 			
 			Expr(out var exp);
 			yield.Expression = exp; 
-		} else SynErr(115);
+		} else SynErr(120);
 	}
 
 	void FunctionExpr(out DNode node) {
@@ -1105,7 +1134,7 @@ namespace Dyalect.Parser
 			f.Parameters.Add(a); 
 		} else if (la.kind == 29) {
 			FunctionArguments(f);
-		} else SynErr(116);
+		} else SynErr(121);
 		functions.Push(f); 
 		Expect(23);
 		Expr(out var exp);
@@ -1132,13 +1161,24 @@ namespace Dyalect.Parser
 		}
 	}
 
+	void TernaryExpr(DNode parent, out DNode node) {
+		node = null; 
+		Expect(86);
+		var @if = new DIf(t) { Condition = parent }; 
+		SimpleExpr(out node);
+		@if.True = node; 
+		Expect(27);
+		SimpleExpr(out node);
+		@if.False = node; node = @if; 
+	}
+
 	void TryCatch(out DNode node) {
 		node =  null; 
-		Expect(87);
+		Expect(88);
 		var tc = new DTryCatch(t); 
 		Block(out node);
 		tc.Expression = node; 
-		Expect(88);
+		Expect(89);
 		if (la.kind == 31) {
 			var m = new DMatch(t); tc.Catch = m; 
 			Get();
@@ -1155,13 +1195,13 @@ namespace Dyalect.Parser
 			tc.BindVariable = new DName(t) { Value = t.val }; 
 			Block(out node);
 			tc.Catch = node; 
-		} else SynErr(117);
+		} else SynErr(122);
 		node = tc; 
 	}
 
 	void Throw(out DNode node) {
 		node = null; 
-		Expect(86);
+		Expect(87);
 		var th = new DThrow(t);
 		node = th;
 		if (la.AfterEol) return;
@@ -1172,7 +1212,7 @@ namespace Dyalect.Parser
 
 	void Or(out DNode node) {
 		And(out node);
-		while (la.kind == 89) {
+		while (la.kind == 90) {
 			Get();
 			var ot = t; 
 			And(out DNode exp);
@@ -1182,7 +1222,7 @@ namespace Dyalect.Parser
 
 	void And(out DNode node) {
 		Is(out node);
-		while (la.kind == 90) {
+		while (la.kind == 91) {
 			Get();
 			var ot = t; 
 			Is(out DNode exp);
@@ -1192,7 +1232,7 @@ namespace Dyalect.Parser
 
 	void Is(out DNode node) {
 		Range(out node);
-		while (la.kind == 91) {
+		while (la.kind == 92) {
 			Get();
 			var ot = t; 
 			OrPattern(out var pat);
@@ -1202,21 +1242,21 @@ namespace Dyalect.Parser
 
 	void Range(out DNode node) {
 		node = null; DNode snode = null; DNode cnode = null; bool exclu = false; 
-		if (la.kind == 92) {
+		if (la.kind == 93) {
 			Get();
 			FunctionApplication(out snode);
 			if (la.kind == 80) {
 				Get();
-			} else if (la.kind == 93) {
+			} else if (la.kind == 94) {
 				Get();
 				exclu = true; 
-			} else SynErr(118);
+			} else SynErr(123);
 			var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; 
 			if (StartOf(13)) {
 				FunctionApplication(out cnode);
 				range.To = cnode; 
 			}
-		} else if (la.kind == 80 || la.kind == 93) {
+		} else if (la.kind == 80 || la.kind == 94) {
 			if (la.kind == 80) {
 				Get();
 			} else {
@@ -1230,11 +1270,11 @@ namespace Dyalect.Parser
 			}
 		} else if (StartOf(13)) {
 			Eq(out node);
-			if (la.kind == 92) {
+			if (la.kind == 93) {
 				Get();
 				FunctionApplication(out snode);
 			}
-			if (la.kind == 80 || la.kind == 93) {
+			if (la.kind == 80 || la.kind == 94) {
 				if (la.kind == 80) {
 					Get();
 				} else {
@@ -1247,13 +1287,13 @@ namespace Dyalect.Parser
 					range.To = cnode; 
 				}
 			}
-		} else SynErr(119);
+		} else SynErr(124);
 	}
 
 	void FunctionApplication(out DNode node) {
 		node = null; 
 		Unary(out node);
-		while (la.kind == 94) {
+		while (la.kind == 95) {
 			var app = new DApplication(node, t); 
 			Get();
 			Unary(out node);
@@ -1419,51 +1459,68 @@ namespace Dyalect.Parser
 			node = new DUnaryOperation(node, op, ot); 
 		} else if (StartOf(15)) {
 			Index(out node);
-		} else SynErr(120);
+		} else SynErr(125);
 	}
 
 	void Index(out DNode node) {
 		var nsaf = false; 
 		Literal(out node);
 		while (StartOf(16)) {
-			if (la.kind == 95) {
-				Get();
-				nsaf = true; 
-			}
-			if (la.kind == 24) {
-				Get();
+			if (la.kind == 24 || la.kind == 96) {
+				if (la.kind == 24) {
+					Get();
+				} else {
+					Get();
+					nsaf = true; 
+				}
 				var ot = t; 
 				Expect(1);
 				var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
 				fld.Name = t.val;
 				node = fld;
 				
-			} else if (la.kind == 82) {
-				Get();
+			} else if (la.kind == 82 || la.kind == 97) {
+				if (la.kind == 82) {
+					Get();
+				} else {
+					Get();
+					nsaf = true; 
+				}
 				var ot = t; 
 				Expect(1);
 				node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
 				
-			} else if (la.kind == 33) {
+			} else if (la.kind == 33 || la.kind == 98) {
 				if (la.AfterEol) return; 
-				Get();
+				if (la.kind == 33) {
+					Get();
+				} else {
+					Get();
+					nsaf = true; 
+				}
 				var idx = new DIndexer(t) { Target = node, NilSafety = nsaf }; 
 				Expr(out node);
 				idx.Index = node;
 				node = idx;
 				
 				Expect(34);
-			} else if (la.kind == 29) {
+			} else {
 				if (la.AfterEol) return;
 				var app = new DApplication(node, t) { NilSafety = nsaf };
 				
-				Get();
-				if (StartOf(17)) {
+				if (la.kind == 29) {
+					Get();
+				} else if (StartOf(17)) {
+				} else {
+					Get();
+					nsaf = true; 
+				}
+				if (StartOf(18)) {
 					ApplicationArguments(app);
 				}
 				node = app; 
 				Expect(30);
-			} else SynErr(121);
+			}
 		}
 	}
 
@@ -1489,13 +1546,13 @@ namespace Dyalect.Parser
 			Tuple(out node);
 		} else if (la.kind == 29) {
 			Group(out node);
-		} else if (la.kind == 97) {
+		} else if (la.kind == 101) {
 			Base(out node);
 		} else if (la.kind == 33) {
 			Array(out node);
-		} else if (la.kind == 96) {
+		} else if (la.kind == 100) {
 			Iterator(out node);
-		} else SynErr(122);
+		} else SynErr(126);
 	}
 
 	void ApplicationArguments(DApplication app) {
@@ -1504,7 +1561,7 @@ namespace Dyalect.Parser
 			Label(out node);
 		} else if (StartOf(12)) {
 			Expr(out node);
-		} else SynErr(123);
+		} else SynErr(127);
 		app.Arguments.Add(node); 
 		while (la.kind == 25) {
 			Get();
@@ -1512,7 +1569,7 @@ namespace Dyalect.Parser
 				Label(out node);
 			} else if (StartOf(12)) {
 				Expr(out node);
-			} else SynErr(124);
+			} else SynErr(128);
 			app.Arguments.Add(node); 
 		}
 	}
@@ -1533,14 +1590,14 @@ namespace Dyalect.Parser
 		} else if (la.kind == 5) {
 			Get();
 			name = ParseSimpleString(); 
-		} else SynErr(125);
+		} else SynErr(129);
 		Expect(27);
 		var ot = t; 
 		if (IsFunction()) {
 			FunctionExpr(out node);
 		} else if (StartOf(9)) {
 			Is(out node);
-		} else SynErr(126);
+		} else SynErr(130);
 		node = new DLabelLiteral(ot) { Mutable = mut, Label = name, Expression = node }; 
 	}
 
@@ -1549,7 +1606,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 14) {
 			Get();
-		} else SynErr(127);
+		} else SynErr(131);
 		node = new DName(t) { Value = t.val }; 
 	}
 
@@ -1581,7 +1638,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 8) {
 			Get();
 			node = ParseVerbatimString(); 
-		} else SynErr(128);
+		} else SynErr(132);
 	}
 
 	void Char(out DNode node) {
@@ -1594,7 +1651,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 73) {
 			Get();
-		} else SynErr(129);
+		} else SynErr(133);
 		node = new DBooleanLiteral(t) { Value = t.val == "true" }; 
 	}
 
@@ -1611,11 +1668,11 @@ namespace Dyalect.Parser
 			Label(out node);
 		} else if (StartOf(12)) {
 			Expr(out node);
-		} else SynErr(130);
+		} else SynErr(134);
 		tup.Elements.Add(node); 
 		while (la.kind == 25) {
 			Get();
-			if (StartOf(17)) {
+			if (StartOf(18)) {
 				if (IsLabel()) {
 					Label(out node);
 				} else {
@@ -1636,7 +1693,7 @@ namespace Dyalect.Parser
 	}
 
 	void Base(out DNode node) {
-		Expect(97);
+		Expect(101);
 		node = new DBase(t); 
 	}
 
@@ -1659,7 +1716,7 @@ namespace Dyalect.Parser
 
 	void Iterator(out DNode node) {
 		node = null; 
-		Expect(96);
+		Expect(100);
 		Expect(31);
 		var it = new DIteratorLiteral(t);
 		it.YieldBlock = new DYieldBlock(t);
@@ -1685,12 +1742,12 @@ namespace Dyalect.Parser
 		} else if (la.kind == 67) {
 			Import();
 			Separator();
-		} else SynErr(131);
+		} else SynErr(135);
 	}
 
 	void Dyalect() {
 		DyalectItem();
-		while (StartOf(18)) {
+		while (StartOf(19)) {
 			DyalectItem();
 		}
 	}
@@ -1708,25 +1765,26 @@ namespace Dyalect.Parser
         }
 
         static readonly bool[,] set = {
-		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_T,_T,_x, _T,_T,_x,_x, _T,_x,_x,_T, _T,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_x, _T,_T,_x,_x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _T,_x,_x,_T, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_x, _T,_T,_x,_x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _T,_x,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _T,_T,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _x,_T,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_T,_T, _T,_x,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_T,_x,_x, _T,_x,_x,_T, _T,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_x, _T,_T,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_T,_T, _x,_x,_T,_x, _x,_x,_T,_T, _T,_x,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_T,_x,_x, _T,_x,_x,_T, _T,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_x, _T,_T,_x,_x},
-		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_x,_x,_x, _T,_T,_T,_x, _T,_T,_x,_x, _T,_x,_x,_T, _T,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_x, _T,_T,_x,_x}
+		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
+		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
+		{_x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
+		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_T,_T,_x, _T,_T,_x,_x, _T,_x,_x,_T, _T,_x,_x,_T, _T,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_T,_x,_x},
+		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
+		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _T,_x,_x,_T, _x,_x,_x,_T, _T,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_T,_x,_x},
+		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _T,_x,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_T,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _x,_T,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
+		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_T,_T, _T,_x,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_T,_x,_x, _T,_x,_x,_T, _T,_x,_x,_T, _T,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_T,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x},
+		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_T,_T, _x,_x,_T,_x, _x,_x,_T,_T, _T,_x,_x,_T, _T,_x,_x,_x, _x,_T,_T,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_T,_x,_x, _T,_x,_T,_T, _T,_x,_x,_T, _T,_x,_x,_x, _x,_T,_T,_x, _T,_T,_T,_T, _T,_T,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_T,_T, _x,_x,_T,_x, _x,_x,_T,_T, _T,_x,_x,_T, _x,_x,_x,_x, _x,_T,_T,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_T,_x,_x, _T,_x,_x,_T, _T,_x,_x,_T, _T,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_T,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_T,_T, _x,_x,_T,_x, _x,_x,_T,_T, _T,_x,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_T,_x,_x, _T,_x,_x,_T, _T,_x,_x,_T, _T,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_T,_x,_x},
+		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_x,_x,_x, _T,_T,_T,_x, _T,_T,_x,_x, _T,_x,_x,_T, _T,_x,_x,_T, _T,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_T,_x,_x}
 
         };
 
@@ -1822,52 +1880,56 @@ namespace Dyalect.Parser
 			case 83: s = "\"nil\" expected"; break;
 			case 84: s = "\"do\" expected"; break;
 			case 85: s = "\"many\" expected"; break;
-			case 86: s = "\"throw\" expected"; break;
-			case 87: s = "\"try\" expected"; break;
-			case 88: s = "\"catch\" expected"; break;
-			case 89: s = "\"||\" expected"; break;
-			case 90: s = "\"&&\" expected"; break;
-			case 91: s = "\"is\" expected"; break;
-			case 92: s = "\"^\" expected"; break;
-			case 93: s = "\"..<\" expected"; break;
-			case 94: s = "\"\\\\\" expected"; break;
-			case 95: s = "\"?\" expected"; break;
-			case 96: s = "\"yields\" expected"; break;
-			case 97: s = "\"base\" expected"; break;
-			case 98: s = "??? expected"; break;
-			case 99: s = "invalid StandardOperators"; break;
-			case 100: s = "invalid FunctionName"; break;
-			case 101: s = "invalid ImportToken"; break;
-			case 102: s = "invalid Statement"; break;
-			case 103: s = "invalid Binding"; break;
-			case 104: s = "invalid ControlFlow"; break;
-			case 105: s = "invalid If"; break;
-			case 106: s = "invalid Loops"; break;
-			case 107: s = "invalid Function"; break;
-			case 108: s = "invalid SimpleExpr"; break;
-			case 109: s = "invalid Expr"; break;
-			case 110: s = "invalid NamePattern"; break;
-			case 111: s = "invalid Pattern"; break;
-			case 112: s = "invalid BooleanPattern"; break;
-			case 113: s = "invalid TuplePattern"; break;
-			case 114: s = "invalid ComparisonPattern"; break;
-			case 115: s = "invalid Yield"; break;
-			case 116: s = "invalid FunctionExpr"; break;
-			case 117: s = "invalid TryCatch"; break;
-			case 118: s = "invalid Range"; break;
-			case 119: s = "invalid Range"; break;
-			case 120: s = "invalid Unary"; break;
-			case 121: s = "invalid Index"; break;
-			case 122: s = "invalid Literal"; break;
-			case 123: s = "invalid ApplicationArguments"; break;
-			case 124: s = "invalid ApplicationArguments"; break;
-			case 125: s = "invalid Label"; break;
-			case 126: s = "invalid Label"; break;
-			case 127: s = "invalid Name"; break;
-			case 128: s = "invalid String"; break;
-			case 129: s = "invalid Bool"; break;
-			case 130: s = "invalid Tuple"; break;
-			case 131: s = "invalid DyalectItem"; break;
+			case 86: s = "\"?\" expected"; break;
+			case 87: s = "\"throw\" expected"; break;
+			case 88: s = "\"try\" expected"; break;
+			case 89: s = "\"catch\" expected"; break;
+			case 90: s = "\"||\" expected"; break;
+			case 91: s = "\"&&\" expected"; break;
+			case 92: s = "\"is\" expected"; break;
+			case 93: s = "\"^\" expected"; break;
+			case 94: s = "\"..<\" expected"; break;
+			case 95: s = "\"\\\\\" expected"; break;
+			case 96: s = "\"?.\" expected"; break;
+			case 97: s = "\"?::\" expected"; break;
+			case 98: s = "\"?[\" expected"; break;
+			case 99: s = "\"?(\" expected"; break;
+			case 100: s = "\"yields\" expected"; break;
+			case 101: s = "\"base\" expected"; break;
+			case 102: s = "??? expected"; break;
+			case 103: s = "invalid StandardOperators"; break;
+			case 104: s = "invalid FunctionName"; break;
+			case 105: s = "invalid ImportToken"; break;
+			case 106: s = "invalid Statement"; break;
+			case 107: s = "invalid Binding"; break;
+			case 108: s = "invalid ControlFlow"; break;
+			case 109: s = "invalid If"; break;
+			case 110: s = "invalid Loops"; break;
+			case 111: s = "invalid Function"; break;
+			case 112: s = "invalid SimpleExpr"; break;
+			case 113: s = "invalid Expr"; break;
+			case 114: s = "invalid NamePattern"; break;
+			case 115: s = "invalid Pattern"; break;
+			case 116: s = "invalid BooleanPattern"; break;
+			case 117: s = "invalid TuplePattern"; break;
+			case 118: s = "invalid ComparisonPattern"; break;
+			case 119: s = "invalid ComparisonPattern"; break;
+			case 120: s = "invalid Yield"; break;
+			case 121: s = "invalid FunctionExpr"; break;
+			case 122: s = "invalid TryCatch"; break;
+			case 123: s = "invalid Range"; break;
+			case 124: s = "invalid Range"; break;
+			case 125: s = "invalid Unary"; break;
+			case 126: s = "invalid Literal"; break;
+			case 127: s = "invalid ApplicationArguments"; break;
+			case 128: s = "invalid ApplicationArguments"; break;
+			case 129: s = "invalid Label"; break;
+			case 130: s = "invalid Label"; break;
+			case 131: s = "invalid Name"; break;
+			case 132: s = "invalid String"; break;
+			case 133: s = "invalid Bool"; break;
+			case 134: s = "invalid Tuple"; break;
+			case 135: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

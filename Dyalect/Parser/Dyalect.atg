@@ -708,10 +708,19 @@ PRODUCTIONS
         (
               IF (IsFunction()) FunctionExpr<out node>
             | NoArgFunctionExpr<out node>
-            | Coalesce<out node>
+            | Coalesce<out node> [ TernaryExpr<node, out node> ]
             | TryCatch<out node>
             | Throw<out node>
             | Block<out node>
+        ).
+
+    TernaryExpr<DNode parent, out DNode node> = 
+        (. node = null; .)
+        (
+            "?"
+            (. var @if = new DIf(t) { Condition = parent }; .)
+            SimpleExpr<out node> (. @if.True = node; .)
+            ":" SimpleExpr<out node> (. @if.False = node; node = @if; .)
         ).
 
     Throw<out DNode node> =
@@ -986,10 +995,9 @@ PRODUCTIONS
         (
             Literal<out node> 
             {
-                [ "?" (. nsaf = true; .) ]
                 (
                     (
-                        "."
+                        ( "." | "?." (. nsaf = true; .) )
                         (. var ot = t; .)
                         identToken
                         (.
@@ -1000,7 +1008,8 @@ PRODUCTIONS
                     )
                     |
                     (
-                        "::" (. var ot = t; .)
+                        ( "::" | "?::" (. nsaf = true; .) )
+                        (. var ot = t; .)
                         identToken
                         (.
                             node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
@@ -1009,7 +1018,7 @@ PRODUCTIONS
                     |
                     (
                         (. if (la.AfterEol) return; .)
-                        "["
+                        ( "[" | "?[" (. nsaf = true; .) )
                             (. var idx = new DIndexer(t) { Target = node, NilSafety = nsaf }; .)
                             Expr<out node>
                             (.
@@ -1024,7 +1033,7 @@ PRODUCTIONS
                             if (la.AfterEol) return;
                             var app = new DApplication(node, t) { NilSafety = nsaf };
                         .)
-                        "("
+                        ( "(" | "?(" (. nsaf = true; .) )
                             [ ApplicationArguments<app> ]
                             (. node = app; .)
                         ")"
