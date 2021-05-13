@@ -393,6 +393,13 @@ func guardsTest6() {
     assert((12, 14), (x, y))
 }
 
+func guardsTest7() {
+    let (x, y) = (1, 2)
+    var res
+    if x < 2 { res = "x < 2" } when y > 10 else { res = "y < 10" }
+    assert("y < 10", res)
+}
+
 func returnTest() {//Issue 266
     func foo() {
         return 2

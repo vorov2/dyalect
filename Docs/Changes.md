@@ -16,6 +16,7 @@
   * Add: _No ability to access private members of another instance of custom type_ ([Issue #487](https://github.com/vorov2/dyalect/issues/487)).
   * Add: _Custom type redesign_  ([Issue #491](https://github.com/vorov2/dyalect/issues/491), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
   * Add: _Add comparison patterns_ ([Issue #496](https://github.com/vorov2/dyalect/issues/496), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
+  * Add: _Add an ability to specify an `else` clause for a guard_ ([Issue #495](https://github.com/vorov2/dyalect/issues/495), [docs](https://github.com/vorov2/dyalect/wiki/Control-flowmatching#guards)).
 
 # 0.24.0
   * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473)).
