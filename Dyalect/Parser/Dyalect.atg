@@ -1029,11 +1029,9 @@ PRODUCTIONS
                     )
                     |
                     (
-                        (.
-                            if (la.AfterEol) return;
-                            var app = new DApplication(node, t) { NilSafety = nsaf };
-                        .)
+                        (. if (la.AfterEol) return; .)
                         ( "(" | "?(" (. nsaf = true; .) )
+                            (. var app = new DApplication(node, t) { NilSafety = nsaf }; .)
                             [ ApplicationArguments<app> ]
                             (. node = app; .)
                         ")"

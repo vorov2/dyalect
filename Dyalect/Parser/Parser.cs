@@ -1505,15 +1505,14 @@ namespace Dyalect.Parser
 				
 				Expect(34);
 			} else {
-				if (la.AfterEol) return;
-				var app = new DApplication(node, t) { NilSafety = nsaf };
-				
+				if (la.AfterEol) return; 
 				if (la.kind == 29) {
 					Get();
 				} else {
 					Get();
 					nsaf = true; 
 				}
+				var app = new DApplication(node, t) { NilSafety = nsaf }; 
 				if (StartOf(17)) {
 					ApplicationArguments(app);
 				}

@@ -493,3 +493,10 @@ func floatParse() {
     assert(2.0, Float.parse('2'))
     assert(nil, Float.parse("three and a half"))
 }
+
+func ternaryTest1() {
+    var x = 0
+    var res = x > 0 ? x
+        : x < 0 ? -x : 42
+    print(42, res)
+}
