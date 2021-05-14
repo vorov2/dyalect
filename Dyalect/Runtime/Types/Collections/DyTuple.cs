@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyTuple : DyCollection, IEnumerable<DyObject>
+    public class DyTuple : DyCollection
     {
         internal static readonly DyTuple Empty = new(Array.Empty<DyObject>());
         internal readonly DyObject[] Values;
@@ -43,18 +43,14 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId == DyType.Integer)
+            if (index.TypeId is DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
-            
-            if (index.TypeId == DyType.String || index.TypeId == DyType.Char)
-            {
-                if (TryGetItem(index.GetString(), ctx, out var item))
-                    return item;
 
-                return ctx.IndexOutOfRange();
-            }
+            if (index.TypeId is not DyType.String and not DyType.Char)
+                return ctx.InvalidType(index);
             
-            return ctx.InvalidType(index);
+            return TryGetItem(index.GetString(), ctx, out var item)
+                ? item : ctx.IndexOutOfRange();
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
