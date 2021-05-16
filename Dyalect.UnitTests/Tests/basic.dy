@@ -498,5 +498,11 @@ func ternaryTest1() {
     var x = 0
     var res = x > 0 ? x
         : x < 0 ? -x : 42
-    print(42, res)
+    assert(42, res)
+}
+
+func ternaryTest2() {
+    func fib(n) =>
+        n < 2 ? n : fib(n - 1) + fib(n - 2) 
+    assert(89, fib(11))
 }
