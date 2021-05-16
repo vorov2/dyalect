@@ -119,7 +119,7 @@ namespace Dyalect.Runtime.Types
             if (obj.TypeId is DyType.String)
             {
                 var str = obj.ToString();
-                return str.Length > 0 ? new DyChar(str[0]) : DyChar.Empty;
+                return str.Length > 0 ? new(str[0]) : DyChar.Empty;
             }
 
             if (obj.TypeId is DyType.Integer)

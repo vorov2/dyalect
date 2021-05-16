@@ -135,20 +135,19 @@ namespace Dyalect.Runtime.Types
 
         private DyObject New(ExecutionContext ctx, DyObject values)
         {
-            if (values == DyNil.Instance)
+            if (ReferenceEquals(values, DyNil.Instance))
                 return new DyMap();
-            else if (values is DyTuple tup)
+
+            if (values is DyTuple tup)
                 return new DyMap(tup.ConvertToDictionary());
-            else
-                return ctx.InvalidType(values);
+            
+            return ctx.InvalidType(values);
         }
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "Map")
+            if (name is "Map" or "fromTuple")
                 return Func.Static(name, New, -1, new Par("values", DyNil.Instance));
-            else if (name == "fromTuple")
-                return Func.Static(name, New, -1, new Par("values"));
 
             return base.InitializeStaticMember(name, ctx);
         }

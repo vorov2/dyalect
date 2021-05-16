@@ -239,7 +239,7 @@ namespace Dyalect.Runtime.Types
 
             int le;
 
-            if (len == DyNil.Instance)
+            if (ReferenceEquals(len, DyNil.Instance))
                 le = arr.Count - sti;
             else if (len.TypeId != DyType.Integer)
                 return ctx.InvalidType(len);
@@ -264,6 +264,7 @@ namespace Dyalect.Runtime.Types
             foreach (var o in arr)
             {
                 var res = fun.Call(ctx, o);
+
                 if (ctx.HasErrors)
                     return DyNil.Instance;
 

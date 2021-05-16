@@ -506,3 +506,8 @@ func ternaryTest2() {
         n < 2 ? n : fib(n - 1) + fib(n - 2) 
     assert(89, fib(11))
 }
+
+func unaryTest1() {
+    let x = - 42 //with space
+    assert(0 - 42, x)
+}
