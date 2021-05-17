@@ -11,9 +11,21 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
+            | SupportedOperations.Len | SupportedOperations.Iter;
 
-        private DyObject Add(ExecutionContext _, DyObject self, DyObject value)
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            var self = (DySet)left;
+            return (DyBool)self.Equals(ctx, right);
+        }
+
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        {
+            var self = (DySet)arg;
+            return DyInteger.Get(self.Count);
+        }
+
+        private DyObject AddItem(ExecutionContext _, DyObject self, DyObject value)
         {
             var set = (DySet)self;
             return (DyBool)set.Add(value);
@@ -76,28 +88,52 @@ namespace Dyalect.Runtime.Types
             var set = (DySet)self;
             return (DyBool)set.Overlaps(ctx, value);
         }
+
+        private DyObject IsSubsetOf(ExecutionContext ctx, DyObject self, DyObject other)
+        {
+            var seq = (DySet)self;
+            return (DyBool)seq.IsSubsetOf(ctx, other);
+        }
+
+        private DyObject IsSupersetOf(ExecutionContext ctx, DyObject self, DyObject other)
+        {
+            var seq = (DySet)self;
+            return (DyBool)seq.IsSupersetOf(ctx, other);
+        }
         
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "add" => Func.Member(name, Add, -1, new Par("value")),
+                "add" => Func.Member(name, AddItem, -1, new Par("value")),
                 "remove" => Func.Member(name, Remove, -1, new Par("value")),
                 "contains" => Func.Member(name, Contains, -1, new Par("value")),
                 "clear" => Func.Member(name, Clear),
                 "toArray" => Func.Member(name, ToArray),
                 "toTuple" => Func.Member(name, ToTuple),
-                "intersectWith" => Func.Member(name, IntersectWith, -1, new Par("values")),
-                "unionWith" => Func.Member(name, UnionWith, -1, new Par("values")),
-                "overlaps" => Func.Member(name, Overlaps, -1, new Par("values")),
+                "except" => Func.Member(name, ExceptWith, -1, new Par("with")),
+                "intersect" => Func.Member(name, IntersectWith, -1, new Par("with")),
+                "union" => Func.Member(name, UnionWith, -1, new Par("with")),
+                "overlaps" => Func.Member(name, Overlaps, -1, new Par("with")),
+                "isSubset" => Func.Member(name, IsSubsetOf, -1, new Par("of")),
+                "isSuperset" => Func.Member(name, IsSupersetOf, -1, new Par("of")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
-        private DyObject New(ExecutionContext ctx) => new DySet();
+        private DyObject New(ExecutionContext ctx, DyObject arg)
+        {
+            var xs = ((DyTuple)arg).Values;
+            var set = new DySet();
+
+            foreach (var x in xs)
+                set.Add(x);
+
+            return set;
+        }
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "Map" => Func.Static(name, New),
+                "Set" => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

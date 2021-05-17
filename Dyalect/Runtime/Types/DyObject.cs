@@ -47,5 +47,7 @@ namespace Dyalect.Runtime.Types
         public sealed override bool Equals(object? obj) => obj is DyObject dyo && Equals(dyo);
 
         public abstract override int GetHashCode();
+
+        protected int CalculateSimpleHashCode() => base.GetHashCode();
     }
 }

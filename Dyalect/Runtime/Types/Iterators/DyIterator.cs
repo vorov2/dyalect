@@ -18,19 +18,8 @@ namespace Dyalect.Runtime.Types
 
         public abstract DyFunction GetIteratorFunction();
 
-        public static IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx, DyObject val)
-        {
-            if (val.TypeId == DyType.Array)
-                return ((DyArray)val).Values;
-
-            if (val.TypeId == DyType.Tuple)
-                return ((DyTuple)val).Values;
-
-            if (val.TypeId == DyType.String)
-                return (DyString)val;
-
-            return InternalRun(ctx, val);
-        }
+        public static IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx, DyObject val) =>
+            val is IEnumerable<DyObject> seq ? seq : InternalRun(ctx, val);
 
         private static IEnumerable<DyObject> InternalRun(ExecutionContext ctx, DyObject val)
         {

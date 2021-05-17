@@ -4,45 +4,52 @@ namespace Dyalect.Runtime.Types
 {
     public class DySet : DyEnumerable
     {
-        private readonly HashSet<DyObject> set;
+        internal readonly HashSet<DyObject> Set;
 
-        public DySet() : base(DyType.Set) => set = new();
+        public DySet() : base(DyType.Set) => Set = new();
 
-        public override IEnumerator<DyObject> GetEnumerator() =>
-            set.GetEnumerator();
+        public override IEnumerator<DyObject> GetEnumerator() => new DySetEnumerator(this);
 
-        public override object ToObject() => set;
-        
-        public override int GetHashCode()
+        public override object ToObject() => Set;
+
+        public override int Count => Set.Count;
+
+        public bool Equals(ExecutionContext ctx, DyObject other)
         {
-            unchecked
-            {
-                var hash = 17;
-                var c = set.Count;
+            var seq = DyIterator.ToEnumerable(ctx, other);
 
-                foreach (var v in set)
-                    hash = hash * 31 + v.GetHashCode();
+            if (ctx.HasErrors)
+                return false;
 
-                return hash;
-            }
+            return Set.SetEquals(seq);
         }
 
-        public int Count => set.Count;
+        public bool Add(DyObject value)
+        {
+            Version++;
+            return Set.Add(value);
+        }
 
-        public bool Add(DyObject value) => set.Add(value);
+        public bool Remove(DyObject value)
+        {
+            Version++;
+            return Set.Remove(value);
+        }
 
-        public bool Remove(DyObject value) => set.Remove(value);
+        public bool Contains(DyObject value) => Set.Contains(value);
 
-        public bool Contains(DyObject value) => set.Contains(value);
-
-        public void Clear() => set.Clear();
+        public void Clear()
+        {
+            Version++;
+            Set.Clear();
+        }
 
         private DyObject[] InternalToArray()
         {
-            var arr = new DyObject[set.Count];
+            var arr = new DyObject[Set.Count];
             var count = 0;
             
-            foreach (var v in set)
+            foreach (var v in Set)
                 arr[count++] = v;
 
             return arr;
@@ -54,50 +61,86 @@ namespace Dyalect.Runtime.Types
 
         public void IntersectWith(ExecutionContext ctx, DyObject other)
         {
-            var seq = other.TypeId is DyType.Set
-                ? ((DySet)other).set
-                : DyIterator.ToEnumerable(ctx, other);
+            var seq = DyIterator.ToEnumerable(ctx, other);
 
             if (ctx.HasErrors)
                 return;
-            
-            set.IntersectWith(seq);
+
+            Version++;
+            Set.IntersectWith(seq);
         }
 
         public void UnionWith(ExecutionContext ctx, DyObject other)
         {
-            var seq = other.TypeId is DyType.Set
-                ? ((DySet)other).set
-                : DyIterator.ToEnumerable(ctx, other);
+            var seq = DyIterator.ToEnumerable(ctx, other);
 
             if (ctx.HasErrors)
                 return;
-            
-            set.UnionWith(seq);
+
+            Version++;
+            Set.UnionWith(seq);
         }
 
         public void ExceptWith(ExecutionContext ctx, DyObject other)
         {
-            var seq = other.TypeId is DyType.Set
-                ? ((DySet)other).set
-                : DyIterator.ToEnumerable(ctx, other);
+            var seq = DyIterator.ToEnumerable(ctx, other);
 
             if (ctx.HasErrors)
                 return;
-            
-            set.ExceptWith(seq);
+
+            Version++;
+            Set.ExceptWith(seq);
         }
 
         public bool Overlaps(ExecutionContext ctx, DyObject other)
         {
-            var seq = other.TypeId is DyType.Set
-                ? ((DySet)other).set
-                : DyIterator.ToEnumerable(ctx, other);
+            var seq = DyIterator.ToEnumerable(ctx, other);
 
             if (ctx.HasErrors)
                 return false;
             
-            return set.Overlaps(seq);
+            return Set.Overlaps(seq);
+        }
+
+        public bool IsSubsetOf(ExecutionContext ctx, DyObject other)
+        {
+            var seq = DyIterator.ToEnumerable(ctx, other);
+
+            if (ctx.HasErrors)
+                return false;
+
+            return Set.IsSubsetOf(seq);
+        }
+
+        public bool IsSupersetOf(ExecutionContext ctx, DyObject other)
+        {
+            var seq = DyIterator.ToEnumerable(ctx, other);
+
+            if (ctx.HasErrors)
+                return false;
+
+            return Set.IsSupersetOf(seq);
+        }
+        
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hash = 17;
+
+                foreach (var v in Set)
+                    hash = hash * 31 + v.GetHashCode();
+
+                return hash;
+            }
+        }
+
+        public override bool Equals(DyObject? other)
+        {
+            if (other is not IEnumerable<DyObject> seq)
+                return false;
+
+            return Set.SetEquals(seq);
         }
     }
 }
