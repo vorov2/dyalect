@@ -336,7 +336,7 @@ namespace Dyalect.Runtime.Types
             return new DyArray(arr);
         }
 
-        internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
+        private static DyObject Concat(ExecutionContext ctx, DyObject values) =>
             new DyArray(DyCollection.ConcatValues(ctx, values));
 
         private static DyObject Copy(ExecutionContext ctx, DyObject from, DyObject sourceIndex, DyObject to, DyObject destIndex, DyObject length)
