@@ -287,7 +287,7 @@ PRODUCTIONS
                 }
             .)
             FunctionArguments<f>
-            ( Block<out node> | "=>" Expr<out node> Separator )
+            ( Block<out node> | "=>" Statement<out node> )
             (.
                 f.Body = node;
                 node = f;

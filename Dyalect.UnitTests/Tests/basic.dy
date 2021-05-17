@@ -400,6 +400,12 @@ func guardsTest7() {
     assert("y < 10", res)
 }
 
+func guardsTest8() {
+    func fib(n) =>
+        n when n < 2 else fib(n - 1) + fib(n - 2)
+    assert(89, fib(11))
+}
+
 func returnTest() {//Issue 266
     func foo() {
         return 2
@@ -503,7 +509,7 @@ func ternaryTest1() {
 
 func ternaryTest2() {
     func fib(n) =>
-        n < 2 ? n : fib(n - 1) + fib(n - 2) 
+        n < 2 ? n : fib(n - 1) + fib(n - 2)
     assert(89, fib(11))
 }
 

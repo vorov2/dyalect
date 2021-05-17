@@ -27,8 +27,7 @@ A taste of Dy:
 
 ```swift
 func fib(n) {
-    return n when n < 2
-    fib(n - 1) + fib(n - 2)
+    n when n < 2 else fib(n - 1) + fib(n - 2) 
 }
 
 //Calculate the n-th fibonacci number
