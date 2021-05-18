@@ -1,3 +1,6 @@
+# 0.26.0
+  *
+
 # 0.25.0
   * Fix: _`Float` constructor doesn't work correctly_ ([Issue #483](https://github.com/vorov2/dyalect/issues/483)).
   * Fix: _`auto` doesn't work in private scope even if it has nested scopes_ ([Issue #490](https://github.com/vorov2/dyalect/issues/490)).
