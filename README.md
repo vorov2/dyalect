@@ -39,18 +39,18 @@ Extending standard types:
 ```swift
 func Float.pow(n) {
     var result = 1.0
-    if n > 0 {
-        for i in 1..n {
-            result *= this
-        }
-    }
-    else if n < 0 {
-        for i in -1..n {
-            result /= this
-        }
-    }
+
+    for i in 1..n {
+        result *= this
+    } when n > 0
+
+    for i in -1..n {
+        result /= this
+    } when n < 0
+
     result
 }
+
 
 20.12.pow(3) //Outputs: 8144.865728
 ```
