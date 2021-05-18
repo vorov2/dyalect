@@ -18,7 +18,7 @@ func simpleTest2() {
     }
 }
 
-type Asset = Computer(model, memory, rank) | Phone(model, memory) | Modem(model)
+type Asset = Computer(model, memory, rank) or Phone(model, memory) or Modem(model)
 func simpleTest3() {
     var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
     var a2 = Asset.Phone("1+", 8)
@@ -96,7 +96,7 @@ func extendTest2() {
     assert(60, res)
 }
 
-type Maybe = None() | Some(x)
+type Maybe = None() or Some(x)
 func autoConsTest1() {
     var x = Maybe.Some(42)
     var y = Maybe.None()
@@ -166,7 +166,7 @@ func typeTest1() {
     assert(Nat(6), n / Nat(2))
 }
 
-type Either = Left(x) | Right(x)
+type Either = Left(x) or Right(x)
 func typeTest2() {
     var x = Either.Left(12)
     var y = Either.Right(24)
@@ -215,7 +215,7 @@ func typeTest3() {
     })
 }
 
-type List = Cons(x, next) | Empty()
+type List = Cons(x, next) or Empty()
 func typeTest4() {
     func List.toString() {
         func walk(xs) {
@@ -393,7 +393,7 @@ func callableTest2() {
     assert(28, res)
 }
 
-type TypesOption = Some(x) | None()
+type TypesOption = Some(x) or None()
 func testIs() {
     let some = TypesOption.Some(42)
     let none = TypesOption.None()

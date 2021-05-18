@@ -158,7 +158,7 @@ PRODUCTIONS
             (
                 "="
                 identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
-                { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
+                { "or" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
             )
         ]
         [

@@ -590,8 +590,7 @@ namespace Dyalect.Parser
 			Block(out node);
 		} else if (la.kind == 23) {
 			Get();
-			StatementExpr(out node);
-			Separator();
+			Statement(out node);
 		} else SynErr(111);
 		f.Body = node;
 		node = f;
