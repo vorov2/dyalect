@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text;
 using Dyalect.Debug;
 
 namespace Dyalect.Runtime.Types
@@ -23,6 +24,27 @@ namespace Dyalect.Runtime.Types
         {
             var self = (DySet)arg;
             return DyInteger.Get(self.Count);
+        }
+
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        {
+            var self = (DySet)arg;
+            var sb = new StringBuilder("Set (");
+            var c = 0;
+
+            foreach (var v in self)
+            {
+                if (c++ > 0)
+                    sb.Append(", ");
+
+                sb.Append(v.ToString(ctx));
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+            }
+
+            sb.Append(')');
+            return (DyString)sb.ToString();
         }
 
         private DyObject AddItem(ExecutionContext _, DyObject self, DyObject value)

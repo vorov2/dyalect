@@ -87,3 +87,8 @@ func isSupersetTest() {
     assert(false, xs.isSuperset(of: ys))
     assert(true, ys.isSuperset(of: xs))
 }
+
+func setToString() {
+    let xs = Set(1, 2, 3)
+    assert("Set (1, 2, 3)", xs.toString())
+}
