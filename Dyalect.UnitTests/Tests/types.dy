@@ -18,7 +18,7 @@ func simpleTest2() {
     }
 }
 
-type Asset = Computer(model, memory, rank) | Phone(model, memory) | Modem(model)
+type Asset = Computer(model, memory, rank) or Phone(model, memory) or Modem(model)
 func simpleTest3() {
     var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
     var a2 = Asset.Phone("1+", 8)
@@ -54,18 +54,18 @@ func matchTypeTest1() {
     assert(8, mem(a2))
 }
 
-type Bar = {
+type Bar using {
     var data
 }
 func extendTest1() {
     static func Bar.Bar(args...) {
-        data = args
+        private()::data = args
     }
     func Bar.len() {
-        data.len()
+        private(this)::data.len()
     }
     func Bar.get(index) {
-        data[index]
+        private(this)::data[index]
     }
     var obj = Bar.Bar(1, 2, 3)
     var res = match obj {
@@ -77,15 +77,18 @@ func extendTest1() {
 
 func extendTest2() {
     static func Bar.Bar(args...) {
-        data = args
+        private()::data = args
     }
     func Bar.len() {
-        data.len()
+        private()::data.len()
     }
     func Bar.get(index) {
-        data[index]
+        private()::data[index]
     }
     var obj = Bar(10, 20, 30)
+    assert(10, obj[0])
+    assert(20, obj[1])
+    assert(30, obj[2])
     var res = match obj {
         (x, y) => x + y,
         (x, y, z) => x + y + z
@@ -93,7 +96,7 @@ func extendTest2() {
     assert(60, res)
 }
 
-type Maybe = None() | Some(x)
+type Maybe = None() or Some(x)
 func autoConsTest1() {
     var x = Maybe.Some(42)
     var y = Maybe.None()
@@ -127,38 +130,32 @@ func autoConsTest3() {
     assert(43, p::y)
 }
 
-type Nat = { var val }
+type Nat using { var val }
 func typeTest1() {
     func fetch(x) {
-        if x < 0 {
-            x
-        } else {
-            Nat(x)
-        }
+        Nat(x) when x >= 0 else x
     }
     static func Nat.Nat(x) {
-        if x < 0 {
-            throw "Negative number."
-        }
-        val = x
+        throw "Negative number." when x < 0
+        private()::val = x
     }
     func Nat.toInteger() {
-        val
+        private()::val
     }
     func Nat + (other) {
-        fetch(val + other.toInteger())
+        fetch(private()::val + private(other)::val)
     }
     func Nat - (other) {
-        fetch(val - other.toInteger())
+        fetch(private()::val - private(other)::val)
     }
     func Nat * (other) {
-        fetch(val * other.toInteger())
+        fetch(private()::val * private(other)::val)
     }
     func Nat / (other) {
-        fetch(val / other.toInteger())
+        fetch(private()::val / private(other)::val)
     }
     func Nat == (other) {
-        val == other.toInteger()
+        private()::val == private(other)::val
     }
     var n = Nat(12)
     assert(Nat(24), n + Nat(12))
@@ -169,7 +166,7 @@ func typeTest1() {
     assert(Nat(6), n / Nat(2))
 }
 
-type Either = Left(x) | Right(x)
+type Either = Left(x) or Right(x)
 func typeTest2() {
     var x = Either.Left(12)
     var y = Either.Right(24)
@@ -183,25 +180,25 @@ func typeTest2() {
     assert(24, doMatch(y))
 }
 
-type Cell = { var val }
+type Cell using { var val }
 func typeTest3() {
     func ref(value) {
         Cell(value)
     }
     static func Cell.Cell(value) {
-        val = value
+        private()::val = value
     }
     func Cell.setValue(value) {
-        val = value
+        private()::val = value
     }
     func Cell.getValue() {
-        val
+        private()::val
     }
     func Cell.get(index) {
         if index != 0 {
             throw "Index out of range."
         }
-        val
+        private()::val
     }
     func Cell.len() {
         1
@@ -218,7 +215,7 @@ func typeTest3() {
     })
 }
 
-type List = Cons(x, next) | Empty()
+type List = Cons(x, next) or Empty()
 func typeTest4() {
     func List.toString() {
         func walk(xs) {
@@ -273,16 +270,15 @@ func simpleTypeTest2() {
     assert(12, b::x)
 }
 
-type Record = { var fields }
+type Record using { var fields }
 func accessorTest() {
     static func Record.Record(values...) {
-        fields = values
+        private()::fields = values
     }
     func Record.get(index) {
-        if index == "name" {
-            return fields::name
-        } else if index == "age" {
-            return fields::age
+        match index {
+            "name" => private()::fields::name,
+            "age" => private()::fields::age
         }
     }
     var p = Record(values: (name: "John", age: 33))
@@ -294,32 +290,48 @@ type UserInfo(name,age)
 func setterTest1() {
     var u = UserInfo("Jon", 17)
     assert(17, u::age)
-    u::age = 39
-    assert(39, u::age)
+    try {
+        u::age = 39
+        assert(got: false)
+    } catch {
+        FieldReadOnly() => assert(got: true)
+    }
 }
 
-type Point1 = { var px; var py }
+type TypeTestZoo(a, b = 12, c = 33)
+func defaultsConsTest() {
+    var t = TypeTestZoo(1)
+    assert(1, t::a)
+    assert(12, t::b)
+    assert(33, t::c)
+    t = TypeTestZoo(1, 2)
+    assert(1, t::a)
+    assert(2, t::b)
+    assert(33, t::c)
+    t = TypeTestZoo(1, 2, 3)
+    assert(1, t::a)
+    assert(2, t::b)
+    assert(3, t::c)
+}
+
+type Point1 using { var px; var py }
 func setterTest2() { //Bug #205
     static func Point1.Point1(x, y) {
-        px = x
-        py = y
+        private()::px = x
+        private()::py = y
     }
     func Point1.get(index) {
-        if index == 0 || index == "x" {
-            x
-        } else if index == 1 || index == "y" {
-            y
-        } else {
-            throw Error.IndexOutOfRange()
+        match index {
+            0 or "x" => private()::px,
+            1 or "y" => private()::py,
+            _ => throw Error.IndexOutOfRange()
         }
     }
     func Point1.set(index, value) {
-        if index == 0 || index == "x" {
-            x = value
-        } else if index == 1 || index == "y" {
-            y = value
-        } else {
-            throw Error.IndexOutOfRange()
+        match index {
+            0 or "x" => private()::px = value,
+            1 or "y" => private()::py = value,
+            _ => throw Error.IndexOutOfRange()
         }
     }
     var p = Point1(12, 34)
@@ -381,14 +393,12 @@ func callableTest2() {
     assert(28, res)
 }
 
-type TypesOption = Some(x) | None()
+type TypesOption = Some(x) or None()
 func testIs() {
     let some = TypesOption.Some(42)
     let none = TypesOption.None()
     var x
-    if some is TypesOption && none is TypesOption {
-        x = 42
-    }
+    x = 42 when some is TypesOption && none is TypesOption
     assert(42, x)
 }
 
@@ -402,23 +412,23 @@ func testCustomFunc() {
     assert(42, some.extractValue())
 }
 
-type TStringBuilder = {
+type TStringBuilder using {
     let buffer = []
 }
 func stringBuilderTest() {
     static func TStringBuilder.TStringBuilder() { }
     func TStringBuilder.append(val) {
-        buffer.add(val.toString())
+        private()::buffer.add(val.toString())
     }
     func TStringBuilder.clear() {
-        buffer.clear()
+        private()::buffer.clear()
     }
     func TStringBuilder.toString() {
-        String.concat(values: buffer)
+        String.concat(values: private()::buffer)
     }
     func TStringBuilder.len() {
         var count = 0
-        for x in buffer {
+        for x in private()::buffer {
             count += x.len()
         }
         return count
@@ -434,4 +444,73 @@ func stringBuilderTest() {
     sb.append(true)
     sb.append(false)
     assert("truefalse", sb.toString())
+}
+
+type PAccessTest_Foo using {
+    var x
+    let pi = 3.14
+}
+static func PAccessTest_Foo.PAccessTest_Foo(x) {
+    private()::x = x
+}
+func privateAccessTest1() {
+    func PAccessTest_Foo.ok() {
+        return private(this)::x
+    }
+    var f = PAccessTest_Foo(12)
+    var res = f.ok()
+    assert(12, res)
+    PAccessTest_Foo.__deleteMember("ok")
+}
+
+func privateAccessTest2() {
+    func PAccessTest_Foo.ok(f) {
+        func inner() {
+            return private(f)::pi
+        }
+        return inner()
+    }
+    var f = PAccessTest_Foo(12)
+    var res = f.ok(f)
+    assert(3.14, res)
+    PAccessTest_Foo.__deleteMember("ok")
+}
+
+type PAccessTest_Bar(x)
+func PAccessTest_Bar.violator(f) {
+    return private(f)::x
+}
+func privateAccessTest3() {
+    var b = PAccessTest_Bar(42)
+    var res = b.violator(b)
+    assert(42, res)
+    var f = PAccessTest_Foo(42)
+    try {
+        b.violator(f)
+        assert(got: false)
+    } catch {
+        PrivateAccess() => assert(got: true)
+    }
+}
+
+type RealNat using {
+    var num
+}
+static func RealNat.RealNat(x) {
+    throw Error.InvalidType(x.getType()) when x is not Integer
+    private()::num = x
+}
+func RealNat + (other) {
+    let res = match other {
+        RealNat => private()::num + private(other)::num,
+        Integer => private()::num + other,
+        _ => throw Error.InvalidType(other.getType())
+    }
+    RealNat(res) when res >= 0 else res
+}
+func testNat() {
+    var (x, y) = (RealNat(12), RealNat(10))
+    assert(RealNat(22), x + y)
+    assert(RealNat(2), x + -10)
+    assert(-2, x + -14)
 }

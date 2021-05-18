@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyArray : DyCollection, IEnumerable<DyObject>
+    public class DyArray : DyCollection
     {
         private const int DEFAULT_SIZE = 4;
 
@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
             set => Values[CorrectIndex(index)] = value;
         }
 
-        internal DyArray(DyObject[] values) : base(DyType.Array) => (Values, Count) = (values, values.Length);
+        public DyArray(DyObject[] values) : base(DyType.Array) => (Values, Count) = (values, values.Length);
 
         public void Compact()
         {
@@ -158,7 +158,7 @@ namespace Dyalect.Runtime.Types
             return index;
         }
 
-        internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);

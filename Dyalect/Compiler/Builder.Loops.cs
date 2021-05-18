@@ -11,7 +11,7 @@ namespace Dyalect.Compiler
             if (ctx.BlockExit.IsEmpty())
                 AddError(CompilerError.NoEnclosingLoop, node.Location);
 
-            if (node.Expression != null)
+            if (node.Expression is not null)
             {
                 Build(node.Expression, hints.Append(Push), ctx);
                 if (!hints.Has(ExpectPush)) cw.Pop();
@@ -37,7 +37,7 @@ namespace Dyalect.Compiler
 
         private void Build(DWhile node, Hints hints, CompilerContext ctx)
         {
-            ctx = new CompilerContext(ctx)
+            ctx = new(ctx)
             {
                 BlockSkip = cw.DefineLabel(),
                 BlockExit = cw.DefineLabel(),

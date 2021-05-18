@@ -16,7 +16,7 @@ namespace Dyalect.Compiler
             ValidateMatch(node);
             StartScope(ScopeKind.Lexical, node.Location);
 
-            ctx = new CompilerContext(ctx)
+            ctx = new(ctx)
             {
                 MatchExit = cw.DefineLabel()
             };
@@ -142,6 +142,52 @@ namespace Dyalect.Compiler
                     break;
                 case NodeType.LabelPattern:
                     BuildLabel((DLabelPattern)node, hints, ctx);
+                    break;
+                case NodeType.ComparisonPattern:
+                    BuildComparisonPattern((DComparisonPattern)node, hints, ctx);
+                    break;
+            }
+        }
+
+        private void BuildComparisonPattern(DComparisonPattern node, Hints hints, CompilerContext ctx)
+        {
+            switch (node.Pattern.NodeType)
+            {
+                case NodeType.IntegerPattern:
+                    cw.Push(((DIntegerPattern)node.Pattern).Value);
+                    break;
+                case NodeType.FloatPattern:
+                    cw.Push(((DFloatPattern)node.Pattern).Value);
+                    break;
+                case NodeType.CharPattern:
+                    cw.Push(((DCharPattern)node.Pattern).Value);
+                    break;
+                case NodeType.StringPattern:
+                    Build(((DStringPattern)node.Pattern).Value, Push, ctx);
+                    break;
+                case NodeType.BooleanPattern:
+                    cw.Push(((DBooleanPattern)node.Pattern).Value);
+                    break;
+                case NodeType.NilPattern:
+                    cw.PushNil();
+                    break;
+            }
+
+            AddLinePragma(node);
+
+            switch (node.Operator)
+            {
+                case BinaryOperator.Gt:
+                    cw.Gt();
+                    break;
+                case BinaryOperator.Lt:
+                    cw.Lt();
+                    break;
+                case BinaryOperator.GtEq:
+                    cw.GtEq();
+                    break;
+                case BinaryOperator.LtEq:
+                    cw.LtEq();
                     break;
             }
         }

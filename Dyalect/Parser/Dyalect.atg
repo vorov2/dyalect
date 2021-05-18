@@ -148,7 +148,7 @@ PRODUCTIONS
             node = typ;
         .)
         identToken (. typ.Name = t.val; node = typ; .)
-        (
+        [
             (
                 (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; .)
                 FunctionArguments<f>
@@ -157,36 +157,40 @@ PRODUCTIONS
             |
             (
                 "="
-                (
-                    (
-                        identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
-                        { "|" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
-                    )
-                    |
-                    (
-                        Block<out var wnode>
-                        (. typ.With = wnode; .)
-                    )
-                )
+                identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
+                { "or" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
             )
-        ).
+        ]
+        [
+            "using" Block<out var cnode>
+            (. typ.Using = cnode; .)
+        ].
 
     Statement<out DNode node> =
         (. node = null; .)
         (
-              Binding<out node> Separator
-            | Rebinding<out node> Separator
+              Binding<out node> [ Guard<node, out node> ] Separator
+            | Rebinding<out node> [ Guard<node, out node> ] Separator
             | ControlFlow<out node> [ Guard<node, out node> ] Separator
             | Type<out node> Separator
             | Match<out node> [ Guard<node, out node> Separator ]
+            | IF (IsPrivateScope()) PrivateScope<out node>
             | StatementExpr<out node> [ Guard<node, out node> ] Separator
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
-            | PrivateScope<out node>
             | Function<out node>
             | Directive<out node> Separator
         )
         (. node = ProcessImplicits(node); .).
+
+    Guard<DNode src, out DNode node> =
+        (. node = src; .)
+        (
+            (. var ot = t; .)
+            "when" SimpleExpr<out var cnode>
+            (. var @if = new DIf(ot) { Condition = cnode, True = src }; node = @if; .)
+            [ "else" SimpleExpr<out cnode> (. @if.False = cnode; .) ]
+        ).
 
     PrivateScope<out DNode node> =
         (. node = null; .)
@@ -246,14 +250,6 @@ PRODUCTIONS
             }
         ).
 
-    Guard<DNode src, out DNode node> =
-        (. node = src; .)
-        (
-            (. var ot = t; .)
-            "when" SimpleExpr<out var cnode>
-            (. node = new DIf(ot) { Condition = cnode, True = src }; .)
-        ).
-
     Block<out DNode node> =
         (. node = null; .)
         (
@@ -291,7 +287,7 @@ PRODUCTIONS
                 }
             .)
             FunctionArguments<f>
-            ( Block<out node> | "=>" Expr<out node> Separator )
+            ( Block<out node> | "=>" Statement<out node> )
             (.
                 f.Body = node;
                 node = f;
@@ -425,6 +421,27 @@ PRODUCTIONS
             | ArrayPattern<out node> [ AsPattern<node, out node> ]
             | MethodCheckPattern<out node> [ AsPattern<node, out node> ]
             | NotPattern<out node>
+            | ComparisonPattern<out node>
+        ).
+
+    ComparisonPattern<out DPattern node> =
+        (. node = null; BinaryOperator op = default; Token ot = default; .)
+        (
+            (
+                  ">" (. op = BinaryOperator.Gt; ot = t; .)
+                | "<" (. op = BinaryOperator.Lt; ot = t; .)
+                | ">=" (. op = BinaryOperator.GtEq; ot = t; .)
+                | "<=" (. op = BinaryOperator.LtEq; ot = t; .)
+            )
+            (
+                  IntegerPattern<out node>
+                | FloatPattern<out node>
+                | CharPattern<out node>
+                | StringPattern<out node>
+                | BooleanPattern<out node>
+                | NilPattern<out node>                            
+            )
+            (. node = new DComparisonPattern(ot) { Operator = op, Pattern = node }; .)
         ).
 
     NotPattern<out DPattern node> =
@@ -691,10 +708,19 @@ PRODUCTIONS
         (
               IF (IsFunction()) FunctionExpr<out node>
             | NoArgFunctionExpr<out node>
-            | Coalesce<out node>
+            | Coalesce<out node> [ TernaryExpr<node, out node> ]
             | TryCatch<out node>
-            | Throw<out node> Separator
+            | Throw<out node>
             | Block<out node>
+        ).
+
+    TernaryExpr<DNode parent, out DNode node> = 
+        (. node = null; .)
+        (
+            "?"
+            (. var @if = new DIf(t) { Condition = parent }; .)
+            SimpleExpr<out node> (. @if.True = node; .)
+            ":" SimpleExpr<out node> (. @if.False = node; node = @if; .)
         ).
 
     Throw<out DNode node> =
@@ -969,10 +995,9 @@ PRODUCTIONS
         (
             Literal<out node> 
             {
-                [ "?" (. nsaf = true; .) ]
                 (
                     (
-                        "."
+                        ( "." | "?." (. nsaf = true; .) )
                         (. var ot = t; .)
                         identToken
                         (.
@@ -983,7 +1008,8 @@ PRODUCTIONS
                     )
                     |
                     (
-                        "::" (. var ot = t; .)
+                        ( "::" | "?::" (. nsaf = true; .) )
+                        (. var ot = t; .)
                         identToken
                         (.
                             node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
@@ -992,7 +1018,7 @@ PRODUCTIONS
                     |
                     (
                         (. if (la.AfterEol) return; .)
-                        "["
+                        ( "[" | "?[" (. nsaf = true; .) )
                             (. var idx = new DIndexer(t) { Target = node, NilSafety = nsaf }; .)
                             Expr<out node>
                             (.
@@ -1003,11 +1029,9 @@ PRODUCTIONS
                     )
                     |
                     (
-                        (.
-                            if (la.AfterEol) return;
-                            var app = new DApplication(node, t) { NilSafety = nsaf };
-                        .)
-                        "("
+                        (. if (la.AfterEol) return; .)
+                        ( "(" | "?(" (. nsaf = true; .) )
+                            (. var app = new DApplication(node, t) { NilSafety = nsaf }; .)
                             [ ApplicationArguments<app> ]
                             (. node = app; .)
                         ")"
@@ -1065,15 +1089,16 @@ PRODUCTIONS
         ).
 
     Label<out DNode node> =
-        (. node = null; var name = ""; .)
+        (. bool mut = false; node = null; var name = ""; .)
         (
+            [ "var" (. mut = true; .) | "let" ]
             ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
             ":" (. var ot = t; .)
             (
                   IF (IsFunction()) FunctionExpr<out node>
                 | Is<out node>
             )
-            (. node = new DLabelLiteral(ot) { Label = name, Expression = node }; .)
+            (. node = new DLabelLiteral(ot) { Mutable = mut, Label = name, Expression = node }; .)
         ).
 
     Base<out DNode node> =
@@ -1096,7 +1121,7 @@ PRODUCTIONS
         (. node = null; .)
         (
             "("
-                (. var tup = new DTupleLiteral(t); .)
+                (.  var tup = new DTupleLiteral(t); .)
                 (
                       IF (IsLabel()) Label<out node>
                     | Expr<out node>
@@ -1124,7 +1149,7 @@ PRODUCTIONS
 
     Name<out DNode node> =
         (
-            identToken
+            (identToken | "private")
             (. node = new DName(t) { Value = t.val }; .)
         ).
 

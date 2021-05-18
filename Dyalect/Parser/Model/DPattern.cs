@@ -101,6 +101,26 @@ namespace Dyalect.Parser.Model
         public override bool Equals(object? obj) => obj is DNotPattern p && Pattern.Equals(p.Pattern);
     }
 
+    public sealed class DComparisonPattern : DPattern
+    {
+        public DComparisonPattern(Location loc) : base(loc, NodeType.ComparisonPattern) { }
+
+        public BinaryOperator Operator { get; init; }
+
+        public DPattern Pattern { get; init; } = null!;
+
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append(Operator.ToSymbol());
+            Pattern.ToString(sb);
+        }
+
+        public override int GetHashCode() => HashCode.Combine(Operator, Pattern);
+
+        public override bool Equals(object? obj) => obj is DComparisonPattern p 
+            && Operator == p.Operator && Pattern.Equals(p.Pattern);
+    }
+
     public sealed class DNilPattern : DPattern
     {
         public DNilPattern(Location loc) : base(loc, NodeType.NilPattern) { }

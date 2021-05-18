@@ -9,9 +9,9 @@ namespace Dyalect.Parser.Model
 
         public List<DNode> Elements { get; } = new();
 
-        internal protected override int GetElementCount() => Elements.Count;
+        protected internal override int GetElementCount() => Elements.Count;
 
-        internal protected override List<DNode> ListElements() => Elements;
+        protected internal override List<DNode> ListElements() => Elements;
 
         internal override void ToString(StringBuilder sb)
         {

@@ -1,4 +1,4 @@
-# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.24-blue.svg)
+# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.25-blue.svg)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
 ![AppVeyor tests](https://img.shields.io/appveyor/tests/vorov2/dyalect.svg)
@@ -27,8 +27,7 @@ A taste of Dy:
 
 ```swift
 func fib(n) {
-    return n when n < 2
-    fib(n - 1) + fib(n - 2)
+    n when n < 2 else fib(n - 1) + fib(n - 2) 
 }
 
 //Calculate the n-th fibonacci number
@@ -40,18 +39,18 @@ Extending standard types:
 ```swift
 func Float.pow(n) {
     var result = 1.0
-    if n > 0 {
-        for i in 1..n {
-            result *= this
-        }
-    }
-    else if n < 0 {
-        for i in -1..n {
-            result /= this
-        }
-    }
+
+    for i in 1..n {
+        result *= this
+    } when n > 0
+
+    for i in -1..n {
+        result /= this
+    } when n < 0
+
     result
 }
+
 
 20.12.pow(3) //Outputs: 8144.865728
 ```

@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -80,6 +81,43 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
+        {
+            if (funObj.TypeId is not DyType.Function and not DyType.Nil)
+                return ctx.InvalidType(funObj);
+
+            var fun = funObj as DyFunction;
+            var map = (DyMap)self;
+            var newMap = new DyMap();
+
+            foreach (var (key, value) in map.Map)
+            {
+                var res = fun is not null ? fun.Call(ctx, value) : value;
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                if (!ReferenceEquals(res, DyNil.Instance))
+                    newMap[key] = res;
+            }
+
+            return newMap;
+        }
+
+        private DyObject ToTuple(ExecutionContext ctx, DyObject self)
+        {
+            var map = ((DyMap)self).Map;
+            var xs = new List<DyLabel>();
+
+            foreach (var (key, value) in map)
+            {
+                if (key.TypeId is DyType.String)
+                    xs.Add(new DyLabel(key.GetString(), value));
+            }
+
+            return new DyTuple(xs.ToArray());
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             return name switch
@@ -89,26 +127,27 @@ namespace Dyalect.Runtime.Types
                 "tryGet" => Func.Member(name, TryGetItem, -1, new Par("key")),
                 "remove" => Func.Member(name, RemoveItem, -1, new Par("key")),
                 "clear" => Func.Member(name, ClearItems),
+                "toTuple" => Func.Member(name, ToTuple),
+                "compact" => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
         }
 
         private DyObject New(ExecutionContext ctx, DyObject values)
         {
-            if (values == DyNil.Instance)
+            if (ReferenceEquals(values, DyNil.Instance))
                 return new DyMap();
-            else if (values is DyTuple tup)
+
+            if (values is DyTuple tup)
                 return new DyMap(tup.ConvertToDictionary());
-            else
-                return ctx.InvalidType(values);
+            
+            return ctx.InvalidType(values);
         }
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "Map")
+            if (name is "Map" or "fromTuple")
                 return Func.Static(name, New, -1, new Par("values", DyNil.Instance));
-            else if (name == "fromTuple")
-                return Func.Static(name, New, -1, new Par("values"));
 
             return base.InitializeStaticMember(name, ctx);
         }

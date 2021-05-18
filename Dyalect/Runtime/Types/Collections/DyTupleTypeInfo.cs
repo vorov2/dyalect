@@ -28,31 +28,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var tup = (DyTuple)arg;
-            var sb = new StringBuilder();
-            sb.Append('(');
-
-            for (var i = 0; i < tup.Count; i++)
-            {
-                if (i > 0)
-                    sb.Append(", ");
-
-                var k = tup.GetKey(i);
-                var val = tup.GetItem(i, ctx).ToString(ctx);
-
-                if (ctx.Error != null)
-                    return DyString.Empty;
-
-                if (k != null)
-                {
-                    sb.Append(k);
-                    sb.Append(": ");
-                }
-
-                sb.Append(val.GetString());
-            }
-
-            sb.Append(')');
-            return new DyString(sb.ToString());
+            return tup.ToString(ctx);
         }
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -217,6 +193,12 @@ namespace Dyalect.Runtime.Types
                 "sort" => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
+
+        //private DyObject? TryGetField(DyObject self, string name, ExecutionContext ctx)
+        //{
+        //    ((DyTuple)self).TryGetItem(name, ctx, out var item);
+        //    return item;
+        //}
 
         private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
             new DyTuple(new DyObject[] { fst, snd });

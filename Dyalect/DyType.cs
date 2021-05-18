@@ -1,5 +1,6 @@
 ﻿using Dyalect.Runtime.Types;
 using System.Collections.Generic;
+using System.Dynamic;
 
 namespace Dyalect
 {
@@ -23,6 +24,7 @@ namespace Dyalect
                 new DyTupleTypeInfo(),
                 new DyMapTypeInfo(),
                 new DyWrapperTypeInfo(),
+                new DySetTypeInfo(),
                 new DyErrorTypeInfo()
             };
 
@@ -41,7 +43,8 @@ namespace Dyalect
         public const int Tuple = 12;
         public const int Map = 13;
         public const int Object = 14;
-        public const int Error = 15;
+        public const int Set = 15;
+        public const int Error = 16;
 
         public static int GetTypeCodeByName(string name) =>
             name switch
@@ -61,6 +64,7 @@ namespace Dyalect
                 DyTypeNames.Iterator => Iterator,
                 DyTypeNames.Map => Map,
                 DyTypeNames.Object => Object,
+                DyTypeNames.Set => Set,
                 DyTypeNames.Error => Error,
                 _ => -1,
             };
@@ -83,6 +87,7 @@ namespace Dyalect
                 Iterator => DyTypeNames.Iterator,
                 Map => DyTypeNames.Map,
                 Object => DyTypeNames.Object,
+                Set => DyTypeNames.Set,
                 Error => DyTypeNames.Error,
                 _ => code.ToString(),
             };
@@ -108,6 +113,7 @@ namespace Dyalect
                 Tuple,
                 Map,
                 Object,
+                Set,
                 Error
             };
 
@@ -126,6 +132,7 @@ namespace Dyalect
         public const string Tuple = "Tuple";
         public const string Map = "Map";
         public const string Object = "Object";
+        public const string Set = "Set";
         public const string Error = "Error";
     }
 }

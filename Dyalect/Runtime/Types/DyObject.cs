@@ -14,27 +14,27 @@ namespace Dyalect.Runtime.Types
 
         protected internal virtual bool GetBool() => true;
 
-        internal protected virtual long GetInteger() => throw new InvalidCastException();
+        protected internal virtual long GetInteger() => throw new InvalidCastException();
 
-        internal protected virtual double GetFloat() => throw new InvalidCastException();
+        protected internal virtual double GetFloat() => throw new InvalidCastException();
 
-        internal protected virtual char GetChar() => throw new InvalidCastException();
+        protected internal virtual char GetChar() => throw new InvalidCastException();
 
-        internal protected virtual string GetString() => throw new InvalidCastException();
+        protected internal virtual string GetString() => throw new InvalidCastException();
 
         public abstract object ToObject();
 
-        internal protected virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
+        protected internal virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
             index.TypeId == DyType.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange();
 
-        internal protected virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
+        protected internal virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Set, this.GetTypeName(ctx));
 
-        internal protected virtual bool HasItem(string name, ExecutionContext ctx) => false;
+        protected internal virtual bool HasItem(string name, ExecutionContext ctx) => false;
 
-        internal protected virtual string? GetLabel() => null;
+        protected internal virtual string? GetLabel() => null;
 
-        internal protected virtual DyObject GetTaggedValue() => this;
+        protected internal virtual DyObject GetTaggedValue() => this;
 
         public virtual string? GetConstructor(ExecutionContext ctx) => null;
 
@@ -44,8 +44,10 @@ namespace Dyalect.Runtime.Types
 
         public virtual bool Equals(DyObject? other) => ReferenceEquals(this, other);
 
-        public override sealed bool Equals(object? obj) => obj is DyObject dyo && Equals(dyo);
+        public sealed override bool Equals(object? obj) => obj is DyObject dyo && Equals(dyo);
 
-        public override abstract int GetHashCode();
+        public abstract override int GetHashCode();
+
+        protected int CalculateSimpleHashCode() => base.GetHashCode();
     }
 }

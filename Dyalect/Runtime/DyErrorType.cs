@@ -14,7 +14,7 @@
 
         IndexOutOfRange = 605,
 
-        // = 606,
+        FieldReadOnly = 606,
 
         DivideByZero = 607,
 
@@ -22,7 +22,7 @@
 
         InvalidType = 609,
 
-        //= 610,
+        PrivateAccess = 610,
 
         AssertFailed = 611,
 
@@ -30,7 +30,7 @@
 
         ArgumentNotFound = 613,
 
-        FailedReadLiteral = 614,
+        FormatException = 614,
 
         MatchFailed = 615,
 

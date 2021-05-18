@@ -15,7 +15,7 @@
             if (qua.Parent is not null && Parent is not null)
                 return qua.Parent == Parent && qua.Local == Local;
 
-            return Local == Local;
+            return Local == qua.Local;
         }
 
         public override string ToString() => Parent is null ? Local : Parent + "." + Local;

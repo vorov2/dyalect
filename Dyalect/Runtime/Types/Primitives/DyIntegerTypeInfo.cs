@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using System.Globalization;
 
 namespace Dyalect.Runtime.Types
 {
@@ -191,6 +192,24 @@ namespace Dyalect.Runtime.Types
             new DyString(arg.GetInteger().ToString(CI.NumberFormat));
         #endregion
 
+        private DyObject IsMultiple(ExecutionContext ctx, DyObject self, DyObject other)
+        {
+            if (other.TypeId != DyType.Integer)
+                return ctx.InvalidType(other);
+
+            var a = self.GetInteger();
+            var b = other.GetInteger();
+            return (DyBool)((a % b) == 0);
+        }
+
+        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        {
+            if (name == "isMultiple")
+                return Func.Member(name, IsMultiple, -1, new Par("of"));
+
+            return base.InitializeInstanceMember(self, name, ctx);
+        }
+
         private DyObject Convert(ExecutionContext ctx, DyObject obj)
         {
             if (obj.TypeId is DyType.Integer)
@@ -201,11 +220,26 @@ namespace Dyalect.Runtime.Types
 
             if (obj.TypeId is DyType.Char or DyType.String)
             {
-                _ = long.TryParse(obj.GetString(), out var i);
+                _ = long.TryParse(obj.GetString(), NumberStyles.Float, CI.NumberFormat, out var i);
                 return DyInteger.Get(i);
             }
 
             return ctx.InvalidType(obj);
+        }
+
+        private DyObject Parse(ExecutionContext ctx, DyObject obj)
+        {
+            if (obj.TypeId is DyType.Integer)
+                return obj;
+
+            if (obj.TypeId is DyType.Float)
+                return DyInteger.Get((long)obj.GetFloat());
+
+            if (obj.TypeId is DyType.Char or DyType.String &&
+                long.TryParse(obj.GetString(), NumberStyles.Float, CI.NumberFormat, out var i))
+                return DyInteger.Get(i);
+
+            return DyNil.Instance;
         }
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
@@ -214,6 +248,7 @@ namespace Dyalect.Runtime.Types
                 "max" => Func.Static(name, _ => DyInteger.Max),
                 "min" => Func.Static(name, _ => DyInteger.Min),
                 "default" => Func.Static(name, _ => DyInteger.Zero),
+                "parse" => Func.Static(name, Parse, -1, new Par("value")),
                 "Integer" => Func.Static(name, Convert, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };

@@ -114,7 +114,7 @@ namespace Dyalect.Runtime.Types
 
         internal static DyObject[] ConcatValues(ExecutionContext ctx, DyObject values)
         {
-            if (values == null)
+            if (values is null)
                 return Array.Empty<DyObject>();
 
             var arr = new List<DyObject>();

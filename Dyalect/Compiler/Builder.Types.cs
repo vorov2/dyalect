@@ -14,7 +14,7 @@ namespace Dyalect.Compiler
 
             var typeId = unit.Types.Count;
             var unitId = unit.UnitIds.Count - 1;
-            var ti = new TypeInfo(typeId, node, new UnitInfo(unitId, unit));
+            var ti = new TypeInfo(typeId, node, new(unitId, unit));
 
             if (types.ContainsKey(node.Name))
             {
@@ -39,6 +39,26 @@ namespace Dyalect.Compiler
             PushIf(hints);
         }
 
+        private void BuildUsing(DNode node, Hints hints, CompilerContext ctx)
+        {
+            StartScope(ScopeKind.Lexical, node.Location);
+            Build(node, hints.Append(NoScope).Remove(Push).Remove(ExpectPush), ctx);
+            var count = 0;
+
+            foreach (var (name, sv) in currentScope.EnumerateVars())
+            {
+                cw.PushVar(new(0 | sv.Address << 8));
+                cw.Tag(name);
+                count++;
+
+                if ((sv.Data & VarFlags.Const) != VarFlags.Const)
+                    cw.Mut();
+            }
+
+            cw.NewTuple(count++);
+            EndScope();
+        }
+
         private void GenerateConstructor(DFunctionDeclaration func)
         {
             if (!char.IsUpper(func.Name![0]))
@@ -47,7 +67,7 @@ namespace Dyalect.Compiler
             if (func.Parameters.Count == 0)
             {
                 AddLinePragma(func);
-                cw.Nop();
+                cw.NewTuple(0);
             }
             else if (func.Parameters.Count == 1)
             {
@@ -56,7 +76,7 @@ namespace Dyalect.Compiler
                 AddLinePragma(func);
                 cw.PushVar(a);
                 cw.Tag(p.Name);
-                cw.PopVar(a.Address);
+                cw.NewTuple(1);
             }
             else
             {
@@ -66,11 +86,10 @@ namespace Dyalect.Compiler
                     var a = GetVariable(p.Name, p);
                     cw.PushVar(a);
                     cw.Tag(p.Name);
-                    cw.PopVar(a.Address);
                 }
 
                 AddLinePragma(func);
-                cw.Nop();
+                cw.NewTuple(func.Parameters.Count);
             }
 
             if (TryGetLocalType(func.TypeName!.Local, out var ti))
@@ -82,12 +101,12 @@ namespace Dyalect.Compiler
 
         private TypeHandle GetTypeHandle(Qualident name, Location loc) => GetTypeHandle(name.Parent!, name.Local, loc);
 
-        private TypeHandle GetTypeHandle(string parent, string local, Location loc)
+        private TypeHandle GetTypeHandle(string? parent, string local, Location loc)
         {
             var err = GetTypeHandle(parent, local, out var handle, out var std);
 
             if (err == CompilerError.UndefinedModule)
-                AddError(err, loc, parent);
+                AddError(err, loc, parent!);
             else if (err == CompilerError.UndefinedType)
                 AddError(err, loc, local);
 

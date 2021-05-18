@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using System.Globalization;
 
 namespace Dyalect.Runtime.Types
 {
@@ -133,11 +134,26 @@ namespace Dyalect.Runtime.Types
 
             if (obj.TypeId is DyType.Char or DyType.String)
             {
-                _ = double.TryParse(obj.GetString(), out var i);
+                _ = double.TryParse(obj.GetString(), NumberStyles.Float, CI.NumberFormat, out var i);
                 return new DyFloat(i);
             }
 
             return ctx.InvalidType(obj);
+        }
+
+        private DyObject Parse(ExecutionContext ctx, DyObject obj)
+        {
+            if (obj.TypeId is DyType.Integer)
+                return new DyFloat(obj.GetInteger());
+
+            if (obj.TypeId is DyType.Float)
+                return obj;
+
+            if (obj.TypeId is DyType.Char or DyType.String && double.TryParse(obj.GetString(),
+                NumberStyles.Float, CI.NumberFormat, out var i))
+                return new DyFloat(i);
+
+            return DyNil.Instance;
         }
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
@@ -147,6 +163,7 @@ namespace Dyalect.Runtime.Types
                 "min" => Func.Static(name, _ => DyFloat.Min),
                 "inf" => Func.Static(name, _ => DyFloat.PositiveInfinity),
                 "default" => Func.Static(name, _ => DyFloat.Zero),
+                "parse" => Func.Static(name, Parse, -1, new Par("value")),
                 "Float" => Func.Static(name, Convert, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };

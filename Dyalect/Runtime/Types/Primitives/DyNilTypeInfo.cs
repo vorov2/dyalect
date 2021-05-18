@@ -18,10 +18,7 @@
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "Nil")
-                return Func.Static(name, _ => DyNil.Instance);
-
-            if (name == "default")
+            if (name is "Nil" or "default")
                 return Func.Static(name, _ => DyNil.Instance);
 
             return base.InitializeStaticMember(name, ctx);

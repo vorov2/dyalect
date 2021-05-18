@@ -106,11 +106,20 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to read literal: {0}.
+        ///   Looks up a localized string similar to A field is read-only..
         /// </summary>
-        internal static string FailedReadLiteral {
+        internal static string FieldReadOnly {
             get {
-                return ResourceManager.GetString("FailedReadLiteral", resourceCulture);
+                return ResourceManager.GetString("FieldReadOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to lnvalid string format: {0}.
+        /// </summary>
+        internal static string FormatException {
+            get {
+                return ResourceManager.GetString("FormatException", resourceCulture);
             }
         }
         
@@ -174,6 +183,15 @@ namespace Dyalect.Strings {
         internal static string OperationNotSupported {
             get {
                 return ResourceManager.GetString("OperationNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to access private scope of an object..
+        /// </summary>
+        internal static string PrivateAccess {
+            get {
+                return ResourceManager.GetString("PrivateAccess", resourceCulture);
             }
         }
         

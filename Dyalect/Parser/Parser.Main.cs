@@ -153,13 +153,34 @@ namespace Dyalect.Parser
             return true;
         }
 
-        private bool IsLabel()
+        private bool IsPrivateScope()
         {
-            if (la.kind != _identToken && la.kind != _stringToken)
+            if (la.kind != _privateToken)
                 return false;
 
+            var xa = scanner.Peek();
+            var res = xa.kind == _curlyLeftToken;
             scanner.ResetPeek();
-            return scanner.Peek().kind == _colonToken;
+            return res;
+        }
+
+        private bool IsLabel()
+        {
+            if (la.kind == _varToken || la.kind == _letToken)
+            {
+                var xa = scanner.Peek();
+                if (xa.kind != _identToken && xa.kind != _stringToken)
+                {
+                    scanner.ResetPeek();
+                    return false;
+                }
+            }
+            else if (la.kind != _identToken && la.kind != _stringToken)
+                return false;
+
+            var na = scanner.Peek();
+            scanner.ResetPeek();
+            return na.kind == _colonToken;
         }
 
         private bool IsLabelPattern()
@@ -204,6 +225,11 @@ namespace Dyalect.Parser
         {
             if (la.kind != _parenLeftToken)
                 return false;
+
+            scanner.ResetPeek();
+
+            if (scanner.Peek().kind is _varToken or _letToken)
+                return true;
 
             scanner.ResetPeek();
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
@@ -14,5 +15,7 @@ namespace Dyalect.Runtime.Types
         public abstract IEnumerator<DyObject> GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public override int GetHashCode() => base.CalculateSimpleHashCode();
     }
 }

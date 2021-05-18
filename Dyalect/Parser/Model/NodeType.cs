@@ -60,6 +60,7 @@
         StringPattern,
         NilPattern,
         NotPattern,
+        ComparisonPattern,
         ArrayPattern,
         RangePattern,
         TuplePattern,

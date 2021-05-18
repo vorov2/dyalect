@@ -87,3 +87,39 @@ func iterMap() {
         }
     }
 }
+
+func compactMap() {
+    let xs = Map()
+    xs.add("foo", 1)
+    xs.add("bar", nil)
+    xs.add("zoo", 2)
+    var res = xs.compact()
+    assert(2, res.len())
+    assert(1, res::foo)
+    assert(2, res::zoo)
+    res = xs.compact(v => {
+        if !v {
+            42
+        } else if v > 1 {
+            v
+        }
+    })
+    assert(2, res.len())
+    assert(2, res::zoo)
+    assert(42, res::bar)
+    let data = Map.fromTuple(("a": "1", "b": "three", "c": "4?"))
+    res = data.compact(Integer.parse)
+    assert(1, res.len())
+    assert(1, res["a"])
+}
+
+func toTuple() {
+    let tuple1 = (foo: "foo", bar: "bar")
+    let tuple2 = (foo: "foo", bar: "bar", "$zoo$": 24)
+    var map = Map.fromTuple(tuple1)
+    var backTuple = map.toTuple()
+    assert(tuple1, backTuple)
+    map = Map.fromTuple(tuple2)
+    backTuple = map.toTuple()
+    assert(tuple2, backTuple)
+}

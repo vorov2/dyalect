@@ -26,6 +26,7 @@ namespace Dyalect.Compiler
             BlockExit = old.BlockExit;
             BlockSkip = old.BlockSkip;
             MatchExit = old.MatchExit;
+            LocalType = old.LocalType;
         }
 
         public Stack<int> Errors { get; } = new();
@@ -33,6 +34,8 @@ namespace Dyalect.Compiler
         public DFunctionDeclaration? Function { get; set; }
 
         public int FunctionAddress { get; set; }
+
+        public string? LocalType { get; set; }
 
         public Label FunctionStart { get; set; }
 

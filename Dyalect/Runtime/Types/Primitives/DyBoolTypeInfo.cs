@@ -17,12 +17,14 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             (DyString)(ReferenceEquals(arg, DyBool.True) ? "true" : "false");
 
+        private DyObject Convert(ExecutionContext _, DyObject val) => val.GetBool() ? DyBool.True : DyBool.False;
+
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "Bool")
-                return Func.Static(name, (_, obj) => (DyBool)obj.GetBool(), -1, new Par("value"));
+            if (name is "Bool")
+                return Func.Static(name, Convert, -1, new Par("value"));
 
-            if (name == "default")
+            if (name is "default")
                 return Func.Static(name, _ => DyBool.False);
 
             return base.InitializeStaticMember(name, ctx);

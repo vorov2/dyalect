@@ -22,7 +22,7 @@
 
         ReturnNotAllowed = 209,
 
-        CtorOnlyMethod = 210,
+        NestedMethod = 210,
 
         ExpressionNoName = 211,
 
@@ -91,5 +91,9 @@
         ReturnInConstructor = 243,
 
         TypeNameCamel = 244,
+
+        PrivateAccessInvalid = 245,
+
+        AutoNotAllowed = 246
     }
 }

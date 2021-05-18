@@ -1,5 +1,26 @@
+# 0.25.0
+  * Fix: _`Float` constructor doesn't work correctly_ ([Issue #483](https://github.com/vorov2/dyalect/issues/483)).
+  * Fix: _`auto` doesn't work in private scope even if it has nested scopes_ ([Issue #490](https://github.com/vorov2/dyalect/issues/490)).
+  * Fix: _Nested member functions_ ([Issue #489](https://github.com/vorov2/dyalect/issues/489)).
+  * Fix: _Excessive memory use by custom types_ ([Issue #486](https://github.com/vorov2/dyalect/issues/486)).
+  * Fix: _Guard after throw expression_ ([Issue #494](https://github.com/vorov2/dyalect/issues/494)).
+  * Fix: _`UnreachableMatchEntry` compiler warning can be generated incorrectly_ ([Issue #493](https://github.com/vorov2/dyalect/issues/493)).
+  * Add: _Add Integer.isMultiple(of) method_ ([Issue #454](https://github.com/vorov2/dyalect/issues/454), [docs](https://github.com/vorov2/dyalect/wiki/Integer#isMultiple)).
+  * Add: _Map: add method `compact(by)`_ ([Issue #393](https://github.com/vorov2/dyalect/issues/393), [docs](https://github.com/vorov2/dyalect/wiki/Map#compact)).
+  * Add: _Add `Integer.parse` method_ ([Issue #480](https://github.com/vorov2/dyalect/issues/480), [docs](https://github.com/vorov2/dyalect/wiki/Integer#parse)).
+  * Add: _Add `Float.parse` method_ ([Issue #481](https://github.com/vorov2/dyalect/issues/481), [docs](https://github.com/vorov2/dyalect/wiki/Float#parse)).
+  * Add: _Add `Map.toTuple` method_ ([Issue #482](https://github.com/vorov2/dyalect/issues/482), [docs](https://github.com/vorov2/dyalect/wiki/Map#toTuple)).
+  * Add: _Add an ability to declare immutable tuple fields_ ([Issue #484](https://github.com/vorov2/dyalect/issues/484), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#overview)).
+  * Add: _Allow an intrinsic `assert` function to have optional parameter_ ([Issue #485](https://github.com/vorov2/dyalect/issues/485), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#assert)).
+  * Add: _Inconsistent `base` syntax_ ([Issue #488](https://github.com/vorov2/dyalect/issues/488)).
+  * Add: _No ability to access private members of another instance of custom type_ ([Issue #487](https://github.com/vorov2/dyalect/issues/487)).
+  * Add: _Custom type redesign_  ([Issue #491](https://github.com/vorov2/dyalect/issues/491), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
+  * Add: _Add comparison patterns_ ([Issue #496](https://github.com/vorov2/dyalect/issues/496), [docs](https://github.com/vorov2/dyalect/wiki/Pattern-matching#patterns)).
+  * Add: _Add an ability to specify an `else` clause for a guard_ ([Issue #495](https://github.com/vorov2/dyalect/issues/495), [docs](https://github.com/vorov2/dyalect/wiki/Control-flow#guards)).
+  * Add: _Add a ternary operator_ ([Issue #492](https://github.com/vorov2/dyalect/issues/492), [docs](https://github.com/vorov2/dyalect/wiki/Control-flow#ternary)).
+
 # 0.24.0
-  * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473))
+  * Fix: _`Map` doesn't support `iter`_ ([Issue #473](https://github.com/vorov2/dyalect/issues/473)).
   * Fix: _Function `caller` can cause Dyalect to crush_ ([Issue #474](https://github.com/vorov2/dyalect/issues/474)).
   * Fix: _An iterator with empty block_ ([Issue #475](https://github.com/vorov2/dyalect/issues/475)).
   * Fix: _Iterators don't support indexing_ ([Issue #476](https://github.com/vorov2/dyalect/issues/476)).

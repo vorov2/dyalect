@@ -239,7 +239,7 @@ namespace Dyalect.Runtime.Types
 
             int le;
 
-            if (len == DyNil.Instance)
+            if (ReferenceEquals(len, DyNil.Instance))
                 le = arr.Count - sti;
             else if (len.TypeId != DyType.Integer)
                 return ctx.InvalidType(len);
@@ -264,6 +264,7 @@ namespace Dyalect.Runtime.Types
             foreach (var o in arr)
             {
                 var res = fun.Call(ctx, o);
+
                 if (ctx.HasErrors)
                     return DyNil.Instance;
 
@@ -335,7 +336,7 @@ namespace Dyalect.Runtime.Types
             return new DyArray(arr);
         }
 
-        internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
+        private static DyObject Concat(ExecutionContext ctx, DyObject values) =>
             new DyArray(DyCollection.ConcatValues(ctx, values));
 
         private static DyObject Copy(ExecutionContext ctx, DyObject from, DyObject sourceIndex, DyObject to, DyObject destIndex, DyObject length)

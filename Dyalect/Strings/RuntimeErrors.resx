@@ -144,8 +144,8 @@
   <data name="ArgumentNotFound" xml:space="preserve">
     <value>Function "{0}" doesn't have an argument "{1}".</value>
   </data>
-  <data name="FailedReadLiteral" xml:space="preserve">
-    <value>Failed to read literal: {0}</value>
+  <data name="FormatException" xml:space="preserve">
+    <value>lnvalid string format: {0}</value>
   </data>
   <data name="MatchFailed" xml:space="preserve">
     <value>Match failed.</value>
@@ -167,5 +167,11 @@
   </data>
   <data name="MultipleValuesForArgument" xml:space="preserve">
     <value>Function "{0}" has multiple values for an argument "{1}".</value>
+  </data>
+  <data name="FieldReadOnly" xml:space="preserve">
+    <value>A field is read-only.</value>
+  </data>
+  <data name="PrivateAccess" xml:space="preserve">
+    <value>Unable to access private scope of an object.</value>
   </data>
 </root>
