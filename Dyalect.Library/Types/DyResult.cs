@@ -22,8 +22,8 @@ namespace Dyalect.Library.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var self = (DyResult)arg;
-            return new DyString(self.Constructor + "(" 
-                + (self.Value.TypeId != DyType.Nil ? self.Value.ToString(ctx) : "") + ")");
+            return new DyString(self.Constructor + " (" 
+                + (self.Value.TypeId is not DyType.Nil ? self.Value.ToString(ctx) : "") + ")");
         }
 
         public override string TypeName => "Result";
