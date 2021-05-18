@@ -1,73 +1,106 @@
 ﻿using Dyalect.Compiler;
-using Dyalect.Debug;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
-using System.Linq;
 
 namespace Dyalect.Library.Types
 {
     public sealed class DyByteArray : DyForeignObject<DyByteArrayTypeInfo>
     {
-        internal byte[] Buffer;
+        private const int DEFAULT_SIZE = 32;
+        private byte[] buffer;
+        private int size;
+        private int readPosition;
 
-        public DyByteArray(RuntimeContext rtx, Unit unit, byte[] buffer) : base(rtx, unit) => Buffer = buffer;
+        public DyByteArray(RuntimeContext rtx, Unit unit, byte[] buffer) : base(rtx, unit)
+        {
+            if (buffer is not null)
+            {
+                this.buffer = buffer;
+                size = buffer.Length;
+            }
+            else
+                this.buffer = new byte[DEFAULT_SIZE];
+        }
 
-        public override object ToObject() => Buffer;
+        public int Count => size;
+
+        public override object ToObject() => GetBytes();
+
+        public byte[] GetBytes() => Trim();
 
         public override DyObject Clone()
         {
             var clone = (DyByteArray)MemberwiseClone();
-            clone.Buffer = (byte[])Buffer.Clone();
+
+            if (buffer is not null)
+                clone.buffer = GetBytes();
+
             return clone;
         }
-    }
 
-    public sealed class DyByteArrayTypeInfo : ForeignTypeInfo
-    {
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString("ByteArray [" + string.Join(",", ((DyByteArray)arg).Buffer) + "]");
-
-        public override string TypeName => "ByteArray";
-
-        protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Len;
-
-        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
-            DyInteger.Get(((DyByteArray)arg).Buffer.Length);
-
-        private DyObject Concat(ExecutionContext ctx, DyObject fst, DyObject snd)
+        private byte[] Trim()
         {
-            if (fst.TypeId != TypeCode)
-                return ctx.InvalidType(fst);
+            if (size != buffer.Length)
+            {
+                var dest = new byte[size];
+                Array.Copy(buffer, 0, dest, 0, size);
+                return dest;
+            }
 
-            if (snd.TypeId != TypeCode)
-                return ctx.InvalidType(snd);
-
-            var a1 = ((DyByteArray)fst).Buffer;
-            var a2 = ((DyByteArray)snd).Buffer;
-            var a3 = new byte[a1.Length + a2.Length];
-            Array.Copy(a1, a3, a1.Length);
-            Array.Copy(a2, 0, a3, a1.Length, a2.Length);
-            return new DyByteArray(ctx.RuntimeContext, DeclaringUnit, a3);
+            return buffer;
         }
 
-        private DyObject New(ExecutionContext ctx, DyObject arg)
+        private void EnsureSize(int append = 0)
         {
-            var vals = DyIterator.ToEnumerable(ctx, arg);
-            var arr =  vals.Select(o => o.ToObject()).Select(Convert.ToByte).ToArray();
-            return new DyByteArray(ctx.RuntimeContext, DeclaringUnit, arr);
+            if (size + append < buffer.Length)
+                return;
+
+            var newSize = System.Math.Max(append, buffer.Length == 0 ? 4 : buffer.Length * 2);
+            var dest = new byte[newSize];
+            Array.Copy(buffer, 0, dest, 0, size);
+            buffer = dest;
         }
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
+        public void Write(ExecutionContext ctx, DyObject obj)
         {
-            if (name == "ByteArray")
-                return Func.Static(name, New, -1, new Par("values"));
-            if (name == "concat")
-                return Func.Static(name, Concat, -1, new Par("fst"), new Par("snd"));
+            switch (obj.TypeId)
+            {
+                case DyType.Integer:
+                    Write(obj.GetInteger());
+                    break;
+                default:
+                    ctx.InvalidType(obj);
+                    break;
+            }
+        }
 
-            return base.InitializeStaticMember(name, ctx);
+        private void Write(byte[] cz)
+        {
+            EnsureSize(cz.Length);
+            Array.Copy(cz, 0, buffer, size, cz.Length);
+            size += cz.Length;
+        }
+
+        private void Write(long value) => Write(BitConverter.GetBytes(value));
+
+        public DyObject Read(ExecutionContext ctx, DyTypeInfo type) =>
+            type.TypeCode switch
+            {
+                DyType.Integer => ReadInt64(),
+                _ => ctx.InvalidType(type.TypeName)
+            };
+
+        private DyObject ReadInt64()
+        {
+            if (readPosition >= buffer.Length)
+            {
+                //return ctx.EndOfStream();
+            }
+
+            var cz = BitConverter.ToInt64(buffer, readPosition);
+            readPosition += sizeof(long);
+            return DyInteger.Get(cz);
         }
     }
 }

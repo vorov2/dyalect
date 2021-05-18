@@ -46,7 +46,7 @@ namespace Dyalect.Library
         [Function("writeAllBytes")]
         public object? WriteAllBytes(string path, DyByteArray arr)
         {
-            File.WriteAllBytes(path, arr.Buffer);
+            File.WriteAllBytes(path, arr.GetBytes());
             return null;
         }
     }

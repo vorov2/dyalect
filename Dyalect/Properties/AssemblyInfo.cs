@@ -34,3 +34,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion(Meta.Version)]
 [assembly: AssemblyFileVersion(Meta.Version)]
+
+[assembly: InternalsVisibleTo("Dyalect.Library")] 

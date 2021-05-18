@@ -82,6 +82,12 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject InvalidType(this ExecutionContext ctx, string typeName)
+        {
+            ctx.Error = new(DyErrorCode.InvalidType, typeName);
+            return DyNil.Instance;
+        }
+
         public static DyObject ExternalFunctionFailure(this ExecutionContext ctx, string functionName, string error)
         {
             ctx.Error = new(DyErrorCode.ExternalFunctionFailure, functionName, error);
