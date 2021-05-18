@@ -41,11 +41,26 @@ namespace Dyalect.Library.Types
             return DyNil.Instance;
         }
 
+        private DyObject GetPosition(ExecutionContext ctx, DyObject self)
+        {
+            var bar = (DyByteArray)self;
+            return DyInteger.Get(bar.Position);
+        }
+
+        private DyObject Reset(ExecutionContext ctx, DyObject self)
+        {
+            var bar = (DyByteArray)self;
+            bar.Reset();
+            return DyNil.Instance;
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "read" => Func.Member(name, Read, -1, new Par("ofType")),
                 "write" => Func.Member(name, Write, -1, new Par("value")),
+                "position" => Func.Member(name, GetPosition),
+                "reset" => Func.Member(name, Reset),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -65,20 +80,14 @@ namespace Dyalect.Library.Types
             return new DyByteArray(ctx.RuntimeContext, DeclaringUnit, a3);
         }
 
-        private DyObject New(ExecutionContext ctx, DyObject arg)
-        {
-            var arr = ((DyTuple)arg).Values.Select(o => o.ToObject()).Select(Convert.ToByte).ToArray();
-            return new DyByteArray(ctx.RuntimeContext, DeclaringUnit, arr);
-        }
+        private DyObject New(ExecutionContext ctx) => new DyByteArray(ctx.RuntimeContext, DeclaringUnit, null);
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
-        {
-            if (name == "ByteArray")
-                return Func.Static(name, New, 0, new Par("values"));
-            if (name == "concat")
-                return Func.Static(name, Concat, -1, new Par("fst"), new Par("snd"));
-
-            return base.InitializeStaticMember(name, ctx);
-        }
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
+            name switch
+            {
+                "ByteArray" => Func.Static(name, New),
+                "concat" => Func.Static(name, Concat, -1, new Par("fst"), new Par("snd")),
+                _ => base.InitializeStaticMember(name, ctx)
+            };
     }
 }
