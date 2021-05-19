@@ -302,15 +302,19 @@ PRODUCTIONS
         [
             (
                 identToken
-                (. arg = new DParameter(t) { Name = t.val, TypeAnnotation = new Qualident(str) }; .)
+                (. arg = new DParameter(ot) { Name = t.val, TypeAnnotation = new Qualident(str) }; .)
             )
             |
             (
                 "::" identToken (. var ta = new Qualident(t.val, str); .)
                 identToken
-                (. arg = new DParameter(t) { Name = t.val, TypeAnnotation = ta } .)
+                (. arg = new DParameter(ot) { Name = t.val, TypeAnnotation = ta }; .)
             )
         ]
+        (.
+            if (arg is null)
+                arg = new DParameter(ot) { Name = str };
+        .)
         [
             "=" Expr<out var cnode>
             (. arg.DefaultValue = cnode; .)

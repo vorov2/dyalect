@@ -106,7 +106,12 @@ namespace Dyalect.Compiler
                     hasVarArg = true;
                 }
 
-                if (p.DefaultValue != null)
+                TypeHandle? ta = null;
+
+                if (p.TypeAnnotation is not null)
+                    ta = GetTypeHandle(p.TypeAnnotation, p.Location);
+
+                if (p.DefaultValue is not null)
                 {
                     if (p.IsVarArgs)
                         AddError(CompilerError.VarArgNoDefaultValue, p.Location);
@@ -138,10 +143,10 @@ namespace Dyalect.Compiler
                             break;
                     }
 
-                    arr[i] = new Par(p.Name, val, false);
+                    arr[i] = new Par(p.Name, val, false, ta);
                 }
                 else
-                    arr[i] = new Par(p.Name, null, p.IsVarArgs);
+                    arr[i] = new Par(p.Name, null, p.IsVarArgs, ta);
             }
 
             return arr;
@@ -198,7 +203,14 @@ namespace Dyalect.Compiler
                 if (arg.IsVarArg)
                     variadicIndex = i;
 
-                AddVariable(arg.Name, node, data: VarFlags.Argument);
+                var a = AddVariable(arg.Name, node, data: VarFlags.Argument);
+
+                if (arg.TypeAnnotation is not null)
+                {
+                    cw.PushVar(new ScopeVar(a));
+                    AddLinePragma(node.Parameters[i]);
+                    cw.TypeCheckF(arg.TypeAnnotation.Value);
+                }
             }
 
             //If this is a member function we add an additional system variable that

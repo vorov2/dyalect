@@ -684,15 +684,18 @@ namespace Dyalect.Parser
 		if (la.kind == 1 || la.kind == 75) {
 			if (la.kind == 1) {
 				Get();
-				arg = new DParameter(t) { Name = t.val, TypeAnnotation = new Qualident(str) }; 
+				arg = new DParameter(ot) { Name = t.val, TypeAnnotation = new Qualident(str) }; 
 			} else {
 				Get();
 				Expect(1);
 				var ta = new Qualident(t.val, str); 
 				Expect(1);
-				arg = new DParameter(t) { Name = t.val, TypeAnnotation = ta } 
+				arg = new DParameter(ot) { Name = t.val, TypeAnnotation = ta }; 
 			}
 		}
+		if (arg is null)
+		   arg = new DParameter(ot) { Name = str };
+		
 		if (la.kind == 28) {
 			Get();
 			Expr(out var cnode);
