@@ -517,3 +517,29 @@ func unaryTest1() {
     let x = - 42 //with space
     assert(0 - 42, x)
 }
+
+func inTest1() {
+    var xs = [1..10]
+    assert(true, 1 in xs)
+    assert(true, 10 in xs)
+    assert(false, 101 in xs)
+    xs = (1..10)
+    assert(true, 1 in xs)
+    assert(true, 10 in xs)
+    assert(false, 101 in xs)
+    xs = yields {1..10}
+    assert(true, 1 in xs)
+    assert(true, 10 in xs)
+    assert(false, 101 in xs)
+}
+
+func inTest2() {
+    var xs = (x: 12, y: 24)
+    assert(true, "x" in xs)
+    assert(true, "y" in xs)
+    assert(false, "z" in xs)
+    xs = Dictionary.fromTuple(xs)
+    assert(true, "x" in xs)
+    assert(true, "y" in xs)
+    assert(false, "z" in xs)
+}

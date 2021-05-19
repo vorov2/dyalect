@@ -1355,6 +1355,18 @@ namespace Dyalect.Compiler
                         BuildPattern(pat, hints, ctx);
                     }
                     break;
+                case BinaryOperator.In:
+                    {
+                        Build(node.Right, hints.Remove(Last).Append(Push), ctx);
+                        AddLinePragma(node);
+                        cw.GetMember("contains");
+                        cw.FunPrep(1);
+                        Build(node.Left, hints.Remove(Last).Append(Push), ctx);
+                        AddLinePragma(node);
+                        cw.FunArgIx(0);
+                        cw.FunCall(1);
+                    }
+                    break;
                 default:
                     Build(node.Left, hints.Remove(Last).Append(Push), ctx);
                     Build(node.Right, hints.Remove(Last).Append(Push), ctx);
