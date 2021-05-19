@@ -69,6 +69,8 @@ namespace Dyalect.Library.Types
 
         public void Write(ExecutionContext ctx, DyObject obj)
         {
+            Reset();
+
             switch (obj.TypeId)
             {
                 case DyType.Integer:
@@ -171,11 +173,12 @@ namespace Dyalect.Library.Types
                 return ctx.IndexOutOfRange();
 
             var len = BitConverter.ToInt32(buffer, readPosition);
+            readPosition += sizeof(int);
 
             if (readPosition + len > buffer.Length)
                 return ctx.IndexOutOfRange();
 
-            var str = BitConverter.ToString(buffer, readPosition, len);
+            var str = Encoding.UTF8.GetString(buffer, readPosition, len);
             return new DyString(str);
         }
     }
