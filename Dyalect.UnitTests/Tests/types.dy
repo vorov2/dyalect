@@ -514,3 +514,14 @@ func testNat() {
     assert(RealNat(2), x + -10)
     assert(-2, x + -14)
 }
+
+type TestTA(Integer x, Float y)
+func typeConstraints1() {
+    let _ = TestTA(12, 12.12)
+    try {
+        let _ = TestTA(12.2, 12)
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+}

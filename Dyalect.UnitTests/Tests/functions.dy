@@ -440,3 +440,30 @@ func externalCall() {
     }
     __invoke(checkIt)
 }
+
+func funcTypeAnnotations1() {
+    func sum(Integer x, Integer y) {
+        x + y
+    }
+    assert(12, sum(10, 2))
+    try {
+        sum(12.2, 0)
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+}
+
+import lib = refs/libtest1
+func funcTypeAnnotations2() {
+    func assetToString(lib::Asset ass) {
+        ass.toString()
+    }
+    assert("Asset.Phone(model: 1+, memory: 8)", assetToString(Asset.Phone("1+", 8)))
+    try {
+        assetToString(12)
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+}
