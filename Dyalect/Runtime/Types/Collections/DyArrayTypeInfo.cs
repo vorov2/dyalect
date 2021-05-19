@@ -308,7 +308,7 @@ namespace Dyalect.Runtime.Types
                 "swap" => Func.Member(name, Swap, -1, new Par("fst"), new Par("snd")),
                 "compact" => Func.Member(name, Compact),
                 "reverse" => Func.Member(name, Reverse),
-                "contains" => Func.Member(name, Contains, -1, new Par("item")),
+                "contains" => Func.Member(name, Contains, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
 

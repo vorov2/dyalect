@@ -623,3 +623,10 @@ func allTest() {
         UnexpectedError(msg) => assert("err", msg)
     }
 }
+
+func iteratorContainsTest() {
+    let xs = yields { 10,2,3,1,4,5,6 }
+    assert(true, xs.contains(10))
+    assert(true, xs.contains(1))
+    assert(false, xs.contains(101))
+}

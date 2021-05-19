@@ -6,6 +6,7 @@
   * Add: _Add `Dictionary.contains` method_ ([Issue #507](https://github.com/vorov2/dyalect/issues/507), [docs](https://github.com/vorov2/dyalect/wiki/Dictionary#contains)).
   * Add: _Add `Tuple.contains` method_ ([Issue #508](https://github.com/vorov2/dyalect/issues/508), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#contains)).
   * Add: _Add `Array.contains` method_ ([Issue #509](https://github.com/vorov2/dyalect/issues/509), [docs](https://github.com/vorov2/dyalect/wiki/Array#contains)).
+  * Add: _Add `Iterator.contains` method_ ([Issue #510](https://github.com/vorov2/dyalect/issues/510), [docs](https://github.com/vorov2/dyalect/wiki/Iterator#contains)).
 
 # 0.25.0
   * Fix: _`Float` constructor doesn't work correctly_ ([Issue #483](https://github.com/vorov2/dyalect/issues/483)).
