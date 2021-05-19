@@ -466,7 +466,7 @@ func notPattern1() {
     }
     assert(false, y is not Array)
     assert(true, y is not Tuple)
-    assert(true, y is not Tuple and not Map)
+    assert(true, y is not Tuple and not Dictionary)
 }
 
 func comparisonPattern1() {

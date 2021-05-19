@@ -101,7 +101,7 @@ namespace Dyalect.Runtime.Types
                     valueSelector is not null
                     ? seq.ToDictionary(dy => keySelector.Call(ctx, dy), dy => valueSelector.Call(ctx, dy))
                     : seq.ToDictionary(dy => keySelector.Call(ctx, dy));
-                return new DyMap(map);
+                return new DyDictionary(map);
             }
             catch (ArgumentException)
             {
@@ -362,7 +362,7 @@ namespace Dyalect.Runtime.Types
             {
                 "toArray" => Func.Member(name, ToArray),
                 "toTuple" => Func.Member(name, ToTuple),
-                "toMap" => Func.Member(name, ToMap, -1, new Par("key"), new Par("value", DyNil.Instance)),
+                "toDictionary" => Func.Member(name, ToMap, -1, new Par("key"), new Par("value", DyNil.Instance)),
                 "take" => Func.Member(name, Take, -1, new Par("count")),
                 "skip" => Func.Member(name, Skip, -1, new Par("count")),
                 "first" => Func.Member(name, First),

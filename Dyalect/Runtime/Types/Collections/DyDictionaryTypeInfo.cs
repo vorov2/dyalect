@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    internal sealed class DyMapTypeInfo : DyTypeInfo
+    internal sealed class DyDictionaryTypeInfo : DyTypeInfo
     {
-        public DyMapTypeInfo() : base(DyType.Map) { }
+        public DyDictionaryTypeInfo() : base(DyType.Dictionary) { }
 
-        public override string TypeName => DyTypeNames.Map;
+        public override string TypeName => DyTypeNames.Dictionary;
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -17,13 +17,13 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
-            var len = ((DyMap)arg).Count;
+            var len = ((DyDictionary)arg).Count;
             return DyInteger.Get(len);
         }
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
-            var map = (DyMap)arg;
+            var map = (DyDictionary)arg;
             var sb = new StringBuilder();
             sb.Append("Map {");
             var i = 0;
@@ -50,7 +50,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject key, DyObject value)
         {
-            var map = (DyMap)self;
+            var map = (DyDictionary)self;
             if (!map.TryAdd(key, value))
                 return ctx.KeyAlreadyPresent();
             return DyNil.Instance;
@@ -58,7 +58,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject TryAddItem(ExecutionContext ctx, DyObject self, DyObject key, DyObject value)
         {
-            var map = (DyMap)self;
+            var map = (DyDictionary)self;
             if (!map.TryAdd(key, value))
                 return DyBool.False;
             return DyBool.True;
@@ -66,18 +66,18 @@ namespace Dyalect.Runtime.Types
 
         private DyObject TryGetItem(ExecutionContext ctx, DyObject self, DyObject key)
         {
-            var map = (DyMap)self;
+            var map = (DyDictionary)self;
             if (!map.TryGet(key, out var value))
                 return DyNil.Instance;
             return value!;
         }
 
         private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject key) =>
-            ((DyMap)self).Remove(key) ? DyBool.True : DyBool.False;
+            ((DyDictionary)self).Remove(key) ? DyBool.True : DyBool.False;
 
         private DyObject ClearItems(ExecutionContext ctx, DyObject self)
         {
-            ((DyMap)self).Clear();
+            ((DyDictionary)self).Clear();
             return DyNil.Instance;
         }
 
@@ -87,8 +87,8 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(funObj);
 
             var fun = funObj as DyFunction;
-            var map = (DyMap)self;
-            var newMap = new DyMap();
+            var map = (DyDictionary)self;
+            var newMap = new DyDictionary();
 
             foreach (var (key, value) in map.Map)
             {
@@ -106,7 +106,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject ToTuple(ExecutionContext ctx, DyObject self)
         {
-            var map = ((DyMap)self).Map;
+            var map = ((DyDictionary)self).Map;
             var xs = new List<DyLabel>();
 
             foreach (var (key, value) in map)
@@ -136,17 +136,17 @@ namespace Dyalect.Runtime.Types
         private DyObject New(ExecutionContext ctx, DyObject values)
         {
             if (ReferenceEquals(values, DyNil.Instance))
-                return new DyMap();
+                return new DyDictionary();
 
             if (values is DyTuple tup)
-                return new DyMap(tup.ConvertToDictionary());
+                return new DyDictionary(tup.ConvertToDictionary());
             
             return ctx.InvalidType(values);
         }
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            if (name is "Map" or "fromTuple")
+            if (name is "Dictionary" or "fromTuple")
                 return Func.Static(name, New, -1, new Par("values", DyNil.Instance));
 
             return base.InitializeStaticMember(name, ctx);
