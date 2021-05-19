@@ -180,6 +180,12 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(arr);
         }
 
+        private DyObject ToDictionary(ExecutionContext ctx, DyObject self)
+        {
+            var tuple = (DyTuple)self;
+            return new DyDictionary(tuple.ConvertToDictionary());
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -191,14 +197,9 @@ namespace Dyalect.Runtime.Types
                 "fst" => Func.Member(name, GetFirst),
                 "snd" => Func.Member(name, GetSecond),
                 "sort" => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
+                "toDictionary" => Func.Member(name, ToDictionary),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
-
-        //private DyObject? TryGetField(DyObject self, string name, ExecutionContext ctx)
-        //{
-        //    ((DyTuple)self).TryGetItem(name, ctx, out var item);
-        //    return item;
-        //}
 
         private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
             new DyTuple(new DyObject[] { fst, snd });

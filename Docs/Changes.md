@@ -2,6 +2,7 @@
   * Add: _Type constraints for function arguments_ ([Issue #499](https://github.com/vorov2/dyalect/issues/499), [docs](https://github.com/vorov2/dyalect/wiki/Functions#anno)).
   * Add: _`Map` should support `HasField` method_ ([Issue #504](https://github.com/vorov2/dyalect/issues/504)).
   * Add: _Consider renaming `Map` to `Dictionary`_ ([Issue #503](https://github.com/vorov2/dyalect/issues/503)).
+  * Add: _Add `Tuple.toDictionary` method_ ([Issue #505](https://github.com/vorov2/dyalect/issues/505), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#toDictionary)).
 
 # 0.25.0
   * Fix: _`Float` constructor doesn't work correctly_ ([Issue #483](https://github.com/vorov2/dyalect/issues/483)).
