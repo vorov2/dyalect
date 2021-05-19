@@ -73,5 +73,7 @@ namespace Dyalect.Runtime.Types
         public override IEnumerator<DyObject> GetEnumerator() => new DyMapEnumerator(this);
 
         public override int GetHashCode() => Map.GetHashCode();
+
+        protected internal override bool HasItem(string name, ExecutionContext ctx) => ContainsKey((DyString)name);
     }
 }

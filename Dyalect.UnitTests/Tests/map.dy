@@ -123,3 +123,13 @@ func toTuple() {
     backTuple = map.toTuple()
     assert(tuple2, backTuple)
 }
+
+func patternMatchMap() {
+    var map = Map.fromTuple ((x: 1, y: 2))
+    match map {
+        (x: xx, y: yy) => {
+            assert(1, xx)
+            assert(2, yy)
+        }
+    }
+}
