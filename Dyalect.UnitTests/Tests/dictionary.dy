@@ -113,7 +113,7 @@ func compactDictionary() {
     assert(1, res["a"])
 }
 
-func toTuple() {
+func dictToTuple() {
     let tuple1 = (foo: "foo", bar: "bar")
     let tuple2 = (foo: "foo", bar: "bar", "$zoo$": 24)
     var map = Dictionary.fromTuple(tuple1)
@@ -132,4 +132,12 @@ func patternMatchDictionary() {
             assert(2, yy)
         }
     }
+}
+
+func dictContainsTest() {
+    var map = Dictionary.fromTuple ((x: 1, y: 2))
+    assert(true, map.contains("x"))
+    assert(false, map.contains("X"))
+    map[(1,2)] = true
+    assert(true, map.contains((1,2)))
 }

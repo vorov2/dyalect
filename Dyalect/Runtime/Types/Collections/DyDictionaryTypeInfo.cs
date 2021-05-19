@@ -118,6 +118,12 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(xs.ToArray());
         }
 
+        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject key)
+        {
+            var map = (DyDictionary)self;
+            return (DyBool)map.ContainsKey(key);
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             return name switch
@@ -129,6 +135,7 @@ namespace Dyalect.Runtime.Types
                 "clear" => Func.Member(name, ClearItems),
                 "toTuple" => Func.Member(name, ToTuple),
                 "compact" => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
+                "contains" => Func.Member(name, Contains, -1, new Par("key")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
         }
