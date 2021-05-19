@@ -235,3 +235,17 @@ func tupleToDictionary() {
     assert(41, dict["age"])
     assert("Male", dict["gender"])
 }
+
+func tupleContains() {
+    let xs = (name: "Vasily", age: 41, gender: "Male")
+    assert(true, xs.contains("name"))
+    assert(true, xs.contains("age"))
+    assert(true, xs.contains("gender"))
+    assert(false, xs.contains("NAME"))
+    try {
+        assert(true, xs.contains(42))
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+}

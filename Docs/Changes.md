@@ -3,7 +3,8 @@
   * Add: _`Map` should support `HasField` method_ ([Issue #504](https://github.com/vorov2/dyalect/issues/504)).
   * Add: _Consider renaming `Map` to `Dictionary`_ ([Issue #503](https://github.com/vorov2/dyalect/issues/503)).
   * Add: _Add `Tuple.toDictionary` method_ ([Issue #505](https://github.com/vorov2/dyalect/issues/505), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#toDictionary)).
-  * Add: _Add Dictionary.contains method_ ([Issue #507](https://github.com/vorov2/dyalect/issues/507), [docs](https://github.com/vorov2/dyalect/wiki/Dictionary#contains)).
+  * Add: _Add `Dictionary.contains` method_ ([Issue #507](https://github.com/vorov2/dyalect/issues/507), [docs](https://github.com/vorov2/dyalect/wiki/Dictionary#contains)).
+  * Add: _Add `Tuple.contains` method_ ([Issue #508](https://github.com/vorov2/dyalect/issues/508), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#contains)).
 
 # 0.25.0
   * Fix: _`Float` constructor doesn't work correctly_ ([Issue #483](https://github.com/vorov2/dyalect/issues/483)).

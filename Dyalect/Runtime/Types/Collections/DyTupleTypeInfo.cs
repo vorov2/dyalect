@@ -186,6 +186,16 @@ namespace Dyalect.Runtime.Types
             return new DyDictionary(tuple.ConvertToDictionary());
         }
 
+        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
+        {
+            if (item.TypeId is not DyType.String)
+                return ctx.InvalidType(item);
+
+            var tuple = (DyTuple)self;
+
+            return (DyBool)tuple.HasItem(item.GetString(), ctx);
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -198,6 +208,7 @@ namespace Dyalect.Runtime.Types
                 "snd" => Func.Member(name, GetSecond),
                 "sort" => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
                 "toDictionary" => Func.Member(name, ToDictionary),
+                "contains" => Func.Member(name, Contains, -1, new Par("label")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
