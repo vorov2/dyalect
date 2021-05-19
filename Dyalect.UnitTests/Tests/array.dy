@@ -271,3 +271,10 @@ func complexEquality4() {
     assert([FooInArray(2), FooInArray(3), FooInArray(4)], xs)
 }
 //End #301
+
+func arrayContains() {
+    var xs = [1..10]
+    assert(true, xs.contains(1))
+    assert(true, xs.contains(10))
+    assert(false, xs.contains(101))
+}
