@@ -151,7 +151,7 @@ PRODUCTIONS
         [
             (
                 (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; .)
-                FunctionArguments<f>
+                TypeArguments<f>
                 (. typ.Constructors.Add(f); .)
             )
             |
@@ -164,6 +164,40 @@ PRODUCTIONS
         [
             "using" Block<out var cnode>
             (. typ.Using = cnode; .)
+        ].
+        
+    TypeArguments<DFunctionDeclaration node> =
+        "("
+            [
+                TypeArgument<out var arg> (. node.Parameters.Add(arg); .)
+                { "," TypeArgument<out arg> (. node.Parameters.Add(arg); .) }
+            ]
+        ")".
+        
+    TypeArgument<out DParameter arg> =
+        (. arg = null; var mut = false; .)
+        [ "var" (. mut = true; .) | "let" ]
+        identToken
+        (. var ot = t; string str = t.val; .)
+        [
+            (
+                identToken
+                (. arg = new DTypeParameter(ot) { Name = t.val, TypeAnnotation = new Qualident(str), Mutable = mut }; .)
+            )
+            |
+            (
+                "::" identToken (. var ta = new Qualident(t.val, str); .)
+                identToken
+                (. arg = new DTypeParameter(ot) { Name = t.val, TypeAnnotation = ta, Mutable = mut }; .)
+            )
+        ]
+        (.
+            if (arg is null)
+                arg = new DTypeParameter(ot) { Name = str, Mutable = mut };
+        .)
+        [
+            "=" Expr<out var cnode>
+            (. arg.DefaultValue = cnode; .)
         ].
 
     Statement<out DNode node> =

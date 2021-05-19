@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Dyalect.Parser.Model
 {
-    public sealed class DParameter : DNode
+    public class DParameter : DNode
     {
         public DParameter(Location loc) : base(NodeType.Parameter, loc) { }
 
@@ -35,6 +35,21 @@ namespace Dyalect.Parser.Model
 
             if (IsVarArgs)
                 sb.Append("...");
+        }
+    }
+
+    public sealed class DTypeParameter : DParameter
+    {
+        public DTypeParameter(Location loc) : base(loc) { }
+        
+        public bool Mutable { get; set; }
+
+        internal override void ToString(StringBuilder sb)
+        {
+            if (Mutable)
+                sb.Append("var ");
+
+            base.ToString(sb);
         }
     }
 }

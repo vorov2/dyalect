@@ -76,6 +76,10 @@ namespace Dyalect.Compiler
                 AddLinePragma(func);
                 cw.PushVar(a);
                 cw.Tag(p.Name);
+                
+                if (p is DTypeParameter { Mutable: true })
+                    cw.Mut();
+                
                 cw.NewTuple(1);
             }
             else
@@ -86,6 +90,9 @@ namespace Dyalect.Compiler
                     var a = GetVariable(p.Name, p);
                     cw.PushVar(a);
                     cw.Tag(p.Name);
+                    
+                    if (p is DTypeParameter { Mutable: true })
+                        cw.Mut();
                 }
 
                 AddLinePragma(func);
