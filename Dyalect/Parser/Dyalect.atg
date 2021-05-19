@@ -824,11 +824,19 @@ PRODUCTIONS
         }.
 
     Is<out DNode node> =
-        Range<out node>
+        In<out node>
         {
             "is" (. var ot = t; .)
             OrPattern<out var pat>
             (. node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); .)
+        }.
+
+    In<out DNode node> =
+        Range<out node>
+        {
+            "in" (. var ot = t; .)
+            Range<out var pat>
+            (. node = new DBinaryOperation(node, pat, BinaryOperator.In, ot); .)
         }.
 
     Range<out DNode node> =

@@ -21,6 +21,7 @@
         BitwiseOr,
         Xor,
         Coalesce,
-        Is
+        Is,
+        In
     }
 }

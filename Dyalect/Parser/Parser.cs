@@ -1245,12 +1245,22 @@ namespace Dyalect.Parser
 	}
 
 	void Is(out DNode node) {
-		Range(out node);
+		In(out node);
 		while (la.kind == 91) {
 			Get();
 			var ot = t; 
 			OrPattern(out var pat);
 			node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); 
+		}
+	}
+
+	void In(out DNode node) {
+		Range(out node);
+		while (la.kind == 22) {
+			Get();
+			var ot = t; 
+			Range(out var pat);
+			node = new DBinaryOperation(node, pat, BinaryOperator.In, ot); 
 		}
 	}
 
