@@ -82,6 +82,8 @@
             1, //HasField
             1, //TypeCheck
             1, //TypeCheckT
+            1, //TypeCheckF
+            1, //TypeCheckFT
             1, //Start
             0, //End
             1, //NewType

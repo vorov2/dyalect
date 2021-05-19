@@ -81,6 +81,8 @@
         HasField,   //0
         TypeCheck,  //0
         TypeCheckT, //0
+        TypeCheckF, //0
+        TypeCheckFT,//0
         Start,      //0
         End,        //0
         NewType,    //0

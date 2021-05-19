@@ -11,12 +11,20 @@ namespace Dyalect.Parser.Model
 
         public DNode? DefaultValue { get; set; }
 
+        public Qualident? TypeAnnotation { get; set; }
+
         public bool IsVarArgs { get; set; }
 
         protected internal override string? GetName() => Name;
 
         internal override void ToString(StringBuilder sb)
         {
+            if (TypeAnnotation is not null)
+            {
+                sb.Append(TypeAnnotation.ToString());
+                sb.Append(' ');
+            }
+
             sb.Append(Name);
 
             if (DefaultValue is not null)

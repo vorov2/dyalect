@@ -233,6 +233,14 @@ namespace Dyalect.Compiler
                 Emit(new(OpCode.TypeCheck, type.TypeId));
         }
 
+        public void TypeCheckF(TypeHandle type)
+        {
+            if (type.IsStandard)
+                Emit(new(OpCode.TypeCheckFT, type.TypeId));
+            else
+                Emit(new(OpCode.TypeCheckF, type.TypeId));
+        }
+
         public void Type(TypeHandle type)
         {
             if (type.IsStandard)
@@ -246,7 +254,7 @@ namespace Dyalect.Compiler
         public void FunArgNm(string name) => Emit(new(OpCode.FunArgNm, IndexString(name)));
         public void FunCall(int argCount) => Emit(new(OpCode.FunCall, argCount));
         public void CtorCheck(string ctor) => Emit(new(OpCode.CtorCheck, IndexString(ctor)));
-
+        
         public void NewTuple(int len) => Emit(new(OpCode.NewTuple, len), -len + 1);
         public void NewFun(int funHandle) => Emit(new(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new(OpCode.NewFunV, funHandle));

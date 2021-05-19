@@ -564,9 +564,25 @@ namespace Dyalect.Runtime
                         right = evalStack.Pop();
                         evalStack.Push(right.TypeId == op.Data);
                         break;
+                    case OpCode.TypeCheckFT:
+                        if (evalStack.Peek().TypeId != op.Data)
+                        {
+                            ctx.InvalidType(evalStack.Peek());
+                            ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                            goto CATCH;
+                        }
+                        break;
                     case OpCode.TypeCheck:
                         right = evalStack.Pop();
                         evalStack.Push(right.TypeId == ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id);
+                        break;
+                    case OpCode.TypeCheckF:
+                        if (evalStack.Peek().TypeId != ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id)
+                        {
+                            ctx.InvalidType(evalStack.Peek());
+                            ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                            goto CATCH;
+                        }
                         break;
                     case OpCode.CtorCheck:
                         evalStack.Replace(evalStack.Peek().GetConstructor(ctx) == unit.IndexedStrings[op.Data].Value);

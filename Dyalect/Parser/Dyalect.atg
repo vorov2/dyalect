@@ -297,7 +297,20 @@ PRODUCTIONS
 
     FunctionArgument<out DParameter arg> =
         (. arg = null; .)
-        identToken (. arg = new DParameter(t) { Name = t.val }; .)
+        identToken
+        (. var ot = t; string str = t.val; .)
+        [
+            (
+                identToken
+                (. arg = new DParameter(t) { Name = t.val, TypeAnnotation = new Qualident(str) }; .)
+            )
+            |
+            (
+                "::" identToken (. var ta = new Qualident(t.val, str); .)
+                identToken
+                (. arg = new DParameter(t) { Name = t.val, TypeAnnotation = ta } .)
+            )
+        ]
         [
             "=" Expr<out var cnode>
             (. arg.DefaultValue = cnode; .)
