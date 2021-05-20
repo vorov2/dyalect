@@ -5,6 +5,8 @@ namespace Dyalect.Runtime.Types
     public sealed class DyLabel : DyObject
     {
         internal bool Mutable;
+
+        internal int? TypeAnnotation;
         
         public string Label { get; }
 

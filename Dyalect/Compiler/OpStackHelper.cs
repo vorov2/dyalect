@@ -95,6 +95,8 @@
             0,  //GetIter
             0,  //Mut
             0,  //Priv
+            0,  //TypeAnno
+            0,  //TypeAnnoT
         };
     }
 }

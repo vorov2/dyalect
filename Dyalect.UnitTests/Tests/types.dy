@@ -525,3 +525,29 @@ func typeConstraints1() {
         InvalidType() => assert(got: true)
     }
 }
+
+type TestMut(var x, y)
+func typeMutables1() {
+    let t = TestMut(12, 24)
+    t::x = 120
+    assert(120, t::x)
+    try {
+        t::y = 240
+        assert(got: false)
+    } catch {
+        FieldReadOnly() => assert(got: true)
+    }
+}
+
+type TestMut2(var Integer x, y)
+func typeMutables2() {
+    let t = TestMut2(12, 24)
+    t::x = 1
+    assert(1, t::x)
+    try {
+        t::x = "240"
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+}

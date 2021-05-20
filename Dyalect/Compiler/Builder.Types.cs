@@ -76,6 +76,9 @@ namespace Dyalect.Compiler
                 AddLinePragma(func);
                 cw.PushVar(a);
                 cw.Tag(p.Name);
+
+                if (p.TypeAnnotation is not null)
+                    cw.TypeAnno(GetTypeHandle(p.TypeAnnotation, p.Location));
                 
                 if (p is DTypeParameter { Mutable: true })
                     cw.Mut();
@@ -90,7 +93,10 @@ namespace Dyalect.Compiler
                     var a = GetVariable(p.Name, p);
                     cw.PushVar(a);
                     cw.Tag(p.Name);
-                    
+
+                    if (p.TypeAnnotation is not null)
+                        cw.TypeAnno(GetTypeHandle(p.TypeAnnotation, p.Location));
+
                     if (p is DTypeParameter { Mutable: true })
                         cw.Mut();
                 }

@@ -95,6 +95,12 @@ namespace Dyalect.Runtime.Types
                     ctx.FieldReadOnly();
                     return;
                 }
+
+                if (lab.TypeAnnotation is not null && lab.TypeAnnotation.Value != value.TypeId)
+                {
+                    ctx.InvalidType(value);
+                    return;
+                }
                 
                 lab.Value = value;
             }
