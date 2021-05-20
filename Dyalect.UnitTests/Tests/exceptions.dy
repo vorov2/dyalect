@@ -409,3 +409,16 @@ func throwTest4() {
     }
     assert(42, x)
 }
+
+func throwFromOverride() {
+    func Integer.toString() {
+        throw "Ooops!"
+    }
+    try {
+        12.toString()
+        assert(got: false)
+    } catch _ {
+        assert(got: true)
+    }
+    Integer.__deleteMember("toString")
+}

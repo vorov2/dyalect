@@ -551,3 +551,33 @@ func typeMutables2() {
         InvalidType() => assert(got: true)
     }
 }
+
+type TestCustomCons using {
+    var data
+}
+func customConsWithConstraints() {
+    static func TestCustomCons.TestCustomCons(Integer x) {
+        private()::data = x
+    }
+    func TestCustomCons.get(field) {
+        match field {
+            "x" => private()::data,
+            _ => Error.IndexOutOfRange()
+        }
+    }
+    func TestCustomCons.set(field, Integer value) {
+        match field {
+            "x" => private()::data = value,
+            _ => Error.IndexOutOfRange()
+        }
+    }
+    let t = TestCustomCons(12)
+    t::x = 120
+    try {
+        t::x = "120"
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true),
+        e => print(e)
+    }
+}
