@@ -48,27 +48,43 @@ namespace Dyalect.Runtime.Types
 
         internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args)
         {
-            var size = GetLayout(ctx).Size;
-            DyObject[] locals;
-
-            if (size == args.Length)
-                locals = args;
-            else
+            try
             {
-                locals = size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
+                var size = GetLayout(ctx).Size;
+                DyObject[] locals;
 
-                for (var i = 0; i < args.Length; i++)
-                    locals[i] = args[i];
+                if (size == args.Length)
+                    locals = args;
+                else
+                {
+                    locals = size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
+
+                    for (var i = 0; i < args.Length; i++)
+                        locals[i] = args[i];
+                }
+
+                ctx.CallStack.Push(Caller.External);
+                return DyMachine.ExecuteWithData(this, locals, ctx);
             }
-
-            ctx.CallStack.Push(Caller.External);
-            return DyMachine.ExecuteWithData(this, locals, ctx);
+            catch (DyCodeException ex)
+            {
+                ctx.Error = ex.Error;
+                return DyNil.Instance;
+            }
         }
 
         internal override DyObject InternalCall(ExecutionContext ctx)
         {
-            ctx.CallStack.Push(Caller.External);
-            return DyMachine.ExecuteWithData(this, CreateLocals(ctx), ctx);
+            try
+            {
+                ctx.CallStack.Push(Caller.External);
+                return DyMachine.ExecuteWithData(this, CreateLocals(ctx), ctx);
+            }
+            catch (DyCodeException ex)
+            {
+                ctx.Error = ex.Error;
+                return DyNil.Instance;
+            }
         }
 
         internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId];
