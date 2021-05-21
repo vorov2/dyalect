@@ -1,6 +1,6 @@
 namespace Dyalect
 {
-    public static class Meta
+    internal static class Meta
     {
         public static readonly System.DateTime Epoch = new(2019, 4, 17);
 
