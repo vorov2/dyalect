@@ -214,6 +214,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid type of a default parameter value..
+        /// </summary>
+        internal static string InvalidTypeDefaultValue {
+            get {
+                return ResourceManager.GetString("InvalidTypeDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Named argument &quot;{0}&quot; cannot be specified multiple times..
         /// </summary>
         internal static string NamedArgumentMultipleTimes {

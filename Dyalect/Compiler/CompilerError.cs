@@ -94,6 +94,8 @@
 
         PrivateAccessInvalid = 245,
 
-        AutoNotAllowed = 246
+        AutoNotAllowed = 246,
+
+        InvalidTypeDefaultValue = 247
     }
 }

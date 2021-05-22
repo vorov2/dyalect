@@ -267,4 +267,7 @@
   <data name="AutoNotAllowed" xml:space="preserve">
     <value>An "auto" declaration is not allowed in this context.</value>
   </data>
+  <data name="InvalidTypeDefaultValue" xml:space="preserve">
+    <value>Invalid type of a default parameter value.</value>
+  </data>
 </root>

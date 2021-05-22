@@ -122,21 +122,27 @@ namespace Dyalect.Compiler
                     {
                         case NodeType.Integer:
                             val = new DyInteger(((DIntegerLiteral)p.DefaultValue).Value);
+                            if (ta is not null && ta.Value.TypeId != DyType.Integer) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Float:
                             val = new DyFloat(((DFloatLiteral)p.DefaultValue).Value);
+                            if (ta is not null && ta.Value.TypeId != DyType.Float) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Char:
                             val = new DyChar(((DCharLiteral)p.DefaultValue).Value);
+                            if (ta is not null && ta.Value.TypeId != DyType.Char) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Boolean:
                             val = ((DBooleanLiteral)p.DefaultValue).Value ? DyBool.True : DyBool.False;
+                            if (ta is not null && ta.Value.TypeId != DyType.Bool) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.String:
                             val = new DyString(((DStringLiteral)p.DefaultValue).Value);
+                            if (ta is not null && ta.Value.TypeId != DyType.String) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Nil:
                             val = DyNil.Instance;
+                            if (ta is not null && ta.Value.TypeId != DyType.Nil) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         default:
                             AddError(CompilerError.InvalidDefaultValue, p.DefaultValue.Location, p.Name);
