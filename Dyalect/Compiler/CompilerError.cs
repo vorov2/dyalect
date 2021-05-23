@@ -96,6 +96,8 @@
 
         AutoNotAllowed = 246,
 
-        InvalidTypeDefaultValue = 247
+        InvalidTypeDefaultValue = 247,
+
+        NoUsing = 248
     }
 }

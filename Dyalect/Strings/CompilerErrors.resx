@@ -270,4 +270,7 @@
   <data name="InvalidTypeDefaultValue" xml:space="preserve">
     <value>Invalid type of a default parameter value.</value>
   </data>
+  <data name="NoUsing" xml:space="preserve">
+    <value>Indexer and member access are only valid with an active "using" declaration.</value>
+  </data>
 </root>

@@ -33,6 +33,7 @@
 
         Directive,
 
+        Using,
         Base,
 
         Application,

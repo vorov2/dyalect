@@ -415,6 +415,9 @@ namespace Dyalect.Parser
 		} else if (la.kind == 2) {
 			Directive(out node);
 			Separator();
+		} else if (la.kind == 69) {
+			Using(out node);
+			Separator();
 		} else SynErr(106);
 		node = ProcessImplicits(node); 
 	}
@@ -703,6 +706,14 @@ namespace Dyalect.Parser
 			}
 			}
 		}
+	}
+
+	void Using(out DNode node) {
+		node = null; 
+		Expect(69);
+		var ot = t; 
+		Expr(out node);
+		node = new DUsing(ot) { Expression = node }; 
 	}
 
 	void SimpleExpr(out DNode node) {
@@ -1509,35 +1520,51 @@ namespace Dyalect.Parser
 		var op = default(UnaryOperator);
 		var ot = default(Token);
 		
-		if (la.kind == 48) {
+		switch (la.kind) {
+		case 48: {
 			Get();
 			ot = t; op = UnaryOperator.Not; 
 			Index(out node);
 			node = new DUnaryOperation(node, op, ot); 
-		} else if (la.kind == 46) {
+			break;
+		}
+		case 46: {
 			Get();
 			ot = t; op = UnaryOperator.Neg; 
 			Index(out node);
 			node = new DUnaryOperation(node, op, ot); 
-		} else if (la.kind == 47) {
+			break;
+		}
+		case 47: {
 			Get();
 			ot = t; op = UnaryOperator.Plus; 
 			Index(out node);
 			node = new DUnaryOperation(node, op, ot); 
-		} else if (la.kind == 65) {
+			break;
+		}
+		case 65: {
 			Get();
 			ot = t; op = UnaryOperator.BitwiseNot; 
 			Index(out node);
 			node = new DUnaryOperation(node, op, ot); 
-		} else if (StartOf(15)) {
+			break;
+		}
+		case 1: case 3: case 4: case 5: case 6: case 7: case 8: case 14: case 29: case 33: case 73: case 74: case 82: case 99: case 100: {
 			Index(out node);
-		} else SynErr(124);
+			break;
+		}
+		case 24: case 70: case 95: case 96: {
+			UsingIndex(out node);
+			break;
+		}
+		default: SynErr(124); break;
+		}
 	}
 
 	void Index(out DNode node) {
 		var nsaf = false; 
 		Literal(out node);
-		while (StartOf(16)) {
+		while (StartOf(15)) {
 			if (la.kind == 24 || la.kind == 95) {
 				if (la.kind == 24) {
 					Get();
@@ -1585,12 +1612,115 @@ namespace Dyalect.Parser
 					nsaf = true; 
 				}
 				var app = new DApplication(node, t) { NilSafety = nsaf }; 
-				if (StartOf(17)) {
+				if (StartOf(16)) {
 					ApplicationArguments(app);
 				}
 				node = app; 
 				Expect(30);
 			}
+		}
+	}
+
+	void UsingIndex(out DNode node) {
+		var nsaf = false; node = null; 
+		if (la.kind == 24 || la.kind == 95) {
+			if (la.kind == 24) {
+				Get();
+			} else {
+				Get();
+				nsaf = true; 
+			}
+			var ot = t; 
+			Expect(1);
+			var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
+			fld.Name = t.val;
+			node = fld;
+			
+		} else if (la.kind == 70 || la.kind == 96) {
+			if (la.kind == 70) {
+				Get();
+			} else {
+				Get();
+				nsaf = true; 
+			}
+			var ot = t; 
+			Expect(1);
+			node = new DIndexer(t) { NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
+			
+		} else SynErr(125);
+		while (StartOf(15)) {
+			if (la.kind == 24 || la.kind == 95) {
+				if (la.kind == 24) {
+					Get();
+				} else {
+					Get();
+					nsaf = true; 
+				}
+				var ot = t; 
+				Expect(1);
+				var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
+				fld.Name = t.val;
+				node = fld;
+				
+			} else if (la.kind == 70 || la.kind == 96) {
+				if (la.kind == 70) {
+					Get();
+				} else {
+					Get();
+					nsaf = true; 
+				}
+				var ot = t; 
+				Expect(1);
+				node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
+				
+			} else if (la.kind == 33 || la.kind == 97) {
+				if (la.AfterEol) return; 
+				if (la.kind == 33) {
+					Get();
+				} else {
+					Get();
+					nsaf = true; 
+				}
+				var idx = new DIndexer(t) { Target = node, NilSafety = nsaf }; 
+				Expr(out node);
+				idx.Index = node;
+				node = idx;
+				
+				Expect(34);
+			} else {
+				if (la.AfterEol) return; 
+				if (la.kind == 29) {
+					Get();
+				} else {
+					Get();
+					nsaf = true; 
+				}
+				var app = new DApplication(node, t) { NilSafety = nsaf }; 
+				if (StartOf(16)) {
+					ApplicationArguments(app);
+				}
+				node = app; 
+				Expect(30);
+			}
+		}
+	}
+
+	void ApplicationArguments(DApplication app) {
+		var node = default(DNode); 
+		if (IsLabel()) {
+			Label(out node);
+		} else if (StartOf(12)) {
+			Expr(out node);
+		} else SynErr(126);
+		app.Arguments.Add(node); 
+		while (la.kind == 25) {
+			Get();
+			if (IsLabel()) {
+				Label(out node);
+			} else if (StartOf(12)) {
+				Expr(out node);
+			} else SynErr(127);
+			app.Arguments.Add(node); 
 		}
 	}
 
@@ -1622,26 +1752,7 @@ namespace Dyalect.Parser
 			Array(out node);
 		} else if (la.kind == 99) {
 			Iterator(out node);
-		} else SynErr(125);
-	}
-
-	void ApplicationArguments(DApplication app) {
-		var node = default(DNode); 
-		if (IsLabel()) {
-			Label(out node);
-		} else if (StartOf(12)) {
-			Expr(out node);
-		} else SynErr(126);
-		app.Arguments.Add(node); 
-		while (la.kind == 25) {
-			Get();
-			if (IsLabel()) {
-				Label(out node);
-			} else if (StartOf(12)) {
-				Expr(out node);
-			} else SynErr(127);
-			app.Arguments.Add(node); 
-		}
+		} else SynErr(128);
 	}
 
 	void Label(out DNode node) {
@@ -1660,14 +1771,14 @@ namespace Dyalect.Parser
 		} else if (la.kind == 5) {
 			Get();
 			name = ParseSimpleString(); 
-		} else SynErr(128);
+		} else SynErr(129);
 		Expect(27);
 		var ot = t; 
 		if (IsFunction()) {
 			FunctionExpr(out node);
 		} else if (StartOf(9)) {
 			Is(out node);
-		} else SynErr(129);
+		} else SynErr(130);
 		node = new DLabelLiteral(ot) { Mutable = mut, Label = name, Expression = node }; 
 	}
 
@@ -1676,7 +1787,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 14) {
 			Get();
-		} else SynErr(130);
+		} else SynErr(131);
 		node = new DName(t) { Value = t.val }; 
 	}
 
@@ -1708,7 +1819,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 8) {
 			Get();
 			node = ParseVerbatimString(); 
-		} else SynErr(131);
+		} else SynErr(132);
 	}
 
 	void Char(out DNode node) {
@@ -1721,7 +1832,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 74) {
 			Get();
-		} else SynErr(132);
+		} else SynErr(133);
 		node = new DBooleanLiteral(t) { Value = t.val == "true" }; 
 	}
 
@@ -1738,11 +1849,11 @@ namespace Dyalect.Parser
 			Label(out node);
 		} else if (StartOf(12)) {
 			Expr(out node);
-		} else SynErr(133);
+		} else SynErr(134);
 		tup.Elements.Add(node); 
 		while (la.kind == 25) {
 			Get();
-			if (StartOf(17)) {
+			if (StartOf(16)) {
 				if (IsLabel()) {
 					Label(out node);
 				} else {
@@ -1812,12 +1923,12 @@ namespace Dyalect.Parser
 		} else if (la.kind == 67) {
 			Import();
 			Separator();
-		} else SynErr(134);
+		} else SynErr(135);
 	}
 
 	void Dyalect() {
 		DyalectItem();
-		while (StartOf(18)) {
+		while (StartOf(17)) {
 			DyalectItem();
 		}
 	}
@@ -1838,22 +1949,21 @@ namespace Dyalect.Parser
 		{_T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
 		{_x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
-		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_T,_T,_x, _T,_x,_T,_T, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_T, _T,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_x,_T,_x, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_T, _T,_x,_x},
+		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _T,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_T,_T,_x, _x,_T,_T,_T, _x,_T,_T,_x, _T,_x,_T,_T, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_T, _T,_x,_x,_T, _T,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_T,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_x,_T,_x, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_T, _T,_x,_x,_T, _T,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
 		{_x,_T,_x,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_T, _T,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_T,_x, _x,_T,_T,_x, _x,_x,_x,_x, _T,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_x,_T, _T,_x,_x,_T, _T,_x,_x},
 		{_x,_T,_x,_T, _T,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_T,_T, _T,_x,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_T,_x, _T,_x,_T,_T, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_T, _T,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_T,_T, _T,_x,_x,_T, _T,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_T,_x, _x,_T,_T,_x, _x,_x,_T,_x, _T,_x,_T,_T, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_T, _T,_x,_x,_T, _T,_x,_x},
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_T,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_x,_x,_T, _T,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_T,_x, _x,_x,_x},
-		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_T,_T, _x,_x,_T,_x, _x,_x,_T,_T, _T,_x,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_T,_T,_x, _x,_x,_T,_x, _T,_x,_T,_T, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_T, _T,_x,_x},
-		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _x,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_x,_x,_x, _x,_T,_T,_T, _x,_T,_T,_x, _T,_x,_T,_T, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_x, _x,_x,_x,_T, _T,_x,_x}
+		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_T,_T, _x,_x,_T,_x, _x,_x,_T,_T, _T,_x,_x,_T, _T,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_T,_x, _x,_T,_T,_x, _x,_x,_T,_x, _T,_x,_T,_T, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_T, _T,_x,_x,_T, _T,_x,_x},
+		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _T,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_T,_T,_x, _x,_T,_T,_T, _x,_T,_T,_x, _T,_x,_T,_T, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_T, _T,_x,_x,_T, _T,_x,_x}
 
         };
 
@@ -1988,16 +2098,17 @@ namespace Dyalect.Parser
 			case 122: s = "invalid Range"; break;
 			case 123: s = "invalid Range"; break;
 			case 124: s = "invalid Unary"; break;
-			case 125: s = "invalid Literal"; break;
+			case 125: s = "invalid UsingIndex"; break;
 			case 126: s = "invalid ApplicationArguments"; break;
 			case 127: s = "invalid ApplicationArguments"; break;
-			case 128: s = "invalid Label"; break;
+			case 128: s = "invalid Literal"; break;
 			case 129: s = "invalid Label"; break;
-			case 130: s = "invalid Name"; break;
-			case 131: s = "invalid String"; break;
-			case 132: s = "invalid Bool"; break;
-			case 133: s = "invalid Tuple"; break;
-			case 134: s = "invalid DyalectItem"; break;
+			case 130: s = "invalid Label"; break;
+			case 131: s = "invalid Name"; break;
+			case 132: s = "invalid String"; break;
+			case 133: s = "invalid Bool"; break;
+			case 134: s = "invalid Tuple"; break;
+			case 135: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

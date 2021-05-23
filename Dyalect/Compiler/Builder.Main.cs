@@ -10,6 +10,8 @@ namespace Dyalect.Compiler
 {
     partial class Builder
     {
+        private readonly Stack<int> usings = new();
+
         //The main compilation switch that processes all types of AST nodes
         private void Build(DNode node, Hints hints, CompilerContext ctx)
         {
@@ -132,7 +134,19 @@ namespace Dyalect.Compiler
                 case NodeType.Label:
                     AddError(CompilerError.InvalidLabel, node.Location);
                     break;
+                case NodeType.Using:
+                    Build((DUsing)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DUsing node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Expression, hints.Append(Push), ctx);
+            var a = AddVariable();
+            AddLinePragma(node);
+            cw.PopVar(a);
+            usings.Push(a);
         }
 
         private void Build(DPrivateScope node, Hints hints, CompilerContext ctx)
@@ -390,7 +404,18 @@ namespace Dyalect.Compiler
 
         private void Build(DAccess node, Hints hints, CompilerContext ctx)
         {
-            Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
+            if (node.Target is null)
+            {
+                if (usings.Count == 0)
+                    AddError(CompilerError.NoUsing, node.Location);
+
+                var a = usings.Count > 0 ? usings.Peek() : 0;
+                cw.PushVar(new ScopeVar(a));
+            }
+            else
+                Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
+         
+            
             AddLinePragma(node);
             var skip = cw.DefineLabel();
 
@@ -490,59 +515,10 @@ namespace Dyalect.Compiler
             PopIf(hints);
         }
 
-        private void Build(DIndexer node, Hints hints, CompilerContext ctx)
+        private void BuildIndexer(DIndexer node, Hints hints, CompilerContext ctx)
         {
-            if (node.Target.NodeType == NodeType.Base 
-                && node.Index is DStringLiteral {Chunks: null} nam)
-            {
-                if (!hints.Has(Function))
-                {
-                    AddError(CompilerError.BaseNotAllowed, node.Location);
-                    return;
-                }
-
-                if (NoPush(node, hints))
-                    return;
-
-                var sv = GetParentVariable(nam.Value, node);
-                AddLinePragma(node);
-                cw.PushVar(sv);
-                return;
-            }
-
             var push = hints.Remove(Pop).Append(Push);
             var skip = cw.DefineLabel();
-
-            //An indexer with compile time string which can be a reference to a module (and can be optimized away)
-            if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks is null
-                && node.Target.NodeType == NodeType.Name && !options.NoOptimizations)
-            {
-                var nm = node.Target.GetName()!;
-                var sv = GetVariable(nm, node.Target, err: false);
-
-                if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
-                {
-                    if (ru.Unit.ExportList.TryGetValue(str.Value, out var var))
-                    {
-                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
-                            AddError(CompilerError.PrivateNameAccess, node.Location, str.Value);
-
-                        AddLinePragma(node);
-                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
-                        PopIf(hints);
-                        return;
-                    }
-                    else if (GetTypeHandle(nm, str.Value, out var handle, out var std) == CompilerError.None)
-                    {
-                        AddLinePragma(node);
-                        cw.Type(new TypeHandle(handle, std));
-                        PopIf(hints);
-                        return;
-                    }
-                }
-            }
-
-            Build(node.Target, push, ctx);
 
             if (node.NilSafety)
             {
@@ -562,12 +538,12 @@ namespace Dyalect.Compiler
 
                 cw.GetMember(Builtins.Slice);
                 cw.FunPrep(2);
-                
+
                 if (r.From is null)
                     cw.Push(0);
                 else
                     Build(r.From, hints.Append(Push), ctx);
-                
+
                 cw.FunArgIx(0);
 
                 if (r.To is not null)
@@ -600,6 +576,72 @@ namespace Dyalect.Compiler
                 cw.Nop();
                 PopIf(hints);
             }
+        }
+
+        private void Build(DIndexer node, Hints hints, CompilerContext ctx)
+        {
+            if (node.Target is null)
+            {
+                if (usings.Count == 0)
+                    AddError(CompilerError.NoUsing, node.Location);
+
+                var a = usings.Count > 0 ? usings.Peek() : 0;
+                cw.PushVar(new ScopeVar(a));
+                BuildIndexer(node, hints, ctx);
+                return;
+            }
+
+            if (node.Target.NodeType == NodeType.Base 
+                && node.Index is DStringLiteral {Chunks: null} nam)
+            {
+                if (!hints.Has(Function))
+                {
+                    AddError(CompilerError.BaseNotAllowed, node.Location);
+                    return;
+                }
+
+                if (NoPush(node, hints))
+                    return;
+
+                var sv = GetParentVariable(nam.Value, node);
+                AddLinePragma(node);
+                cw.PushVar(sv);
+                return;
+            }
+
+            var push = hints.Remove(Pop).Append(Push);
+
+            //An indexer with compile time string which can be a reference to a module (and can be optimized away)
+            if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks is null
+                && node.Target.NodeType == NodeType.Name && !options.NoOptimizations)
+            {
+                var nm = node.Target.GetName()!;
+                var sv = GetVariable(nm, node.Target, err: false);
+
+                if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
+                {
+                    if (ru.Unit.ExportList.TryGetValue(str.Value, out var var))
+                    {
+                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                            AddError(CompilerError.PrivateNameAccess, node.Location, str.Value);
+
+                        AddLinePragma(node);
+                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
+                        PopIf(hints);
+                        return;
+                    }
+                    else if (GetTypeHandle(nm, str.Value, out var handle, out var std) == CompilerError.None)
+                    {
+                        AddLinePragma(node);
+                        cw.Type(new TypeHandle(handle, std));
+                        PopIf(hints);
+                        return;
+                    }
+                }
+            }
+
+            Build(node.Target, push, ctx);
+            BuildIndexer(node, hints, ctx);
         }
 
         private void BuildImport(DImport node)
@@ -725,10 +767,9 @@ namespace Dyalect.Compiler
 
             //This is a special optimization for the 'toString', 'has' and 'len' methods
             //If we see that it is called directly we can emit a direct op code
-            if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations)
+            if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations
+                && node.Target is DAccess meth && meth.Target is not null)
             {
-                var meth = (DAccess)node.Target;
-
                 if (meth.Name == Builtins.ToStr && node.Arguments.Count is 0)
                 {
                     Build(meth.Target, newHints.Append(Push), ctx);
@@ -1109,7 +1150,12 @@ namespace Dyalect.Compiler
             }
 
             if (!hints.Has(NoScope))
+            {
                 EndScope();
+
+                if (usings.Count > 0)
+                    usings.Pop();
+            }
         }
 
         private void Build(DAssignment node, Hints hints, CompilerContext ctx)

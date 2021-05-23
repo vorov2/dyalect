@@ -250,6 +250,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Indexer and member access are only valid with an active &quot;using&quot; declaration..
+        /// </summary>
+        internal static string NoUsing {
+            get {
+                return ResourceManager.GetString("NoUsing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Overriding of &quot;{0}&quot; method is not allowed..
         /// </summary>
         internal static string OverrideNotAllowed {
