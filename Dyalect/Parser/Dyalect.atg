@@ -500,7 +500,7 @@ PRODUCTIONS
                 | CharPattern<out node>
                 | StringPattern<out node>
                 | BooleanPattern<out node>
-                | NilPattern<out node>                            
+                | NilPattern<out node>
             )
             (. node = new DComparisonPattern(ot) { Operator = op, Pattern = node }; .)
         ).

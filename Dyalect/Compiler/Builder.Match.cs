@@ -806,6 +806,29 @@ namespace Dyalect.Compiler
 
                         return false;
                     }
+                case NodeType.ComparisonPattern:
+                    {
+                        if (prev is DComparisonPattern prevPat)
+                        {
+                            var nowPat = (DComparisonPattern)now;
+                            
+                            if (nowPat.Operator != prevPat.Operator
+                                || nowPat.Pattern.NodeType != prevPat.NodeType)
+                                return true;
+
+                            return nowPat.Pattern.NodeType switch
+                            {
+                                NodeType.IntegerPattern => ((DIntegerPattern)nowPat.Pattern).Value != ((DIntegerPattern)prevPat.Pattern).Value,
+                                NodeType.FloatPattern => ((DFloatPattern)nowPat.Pattern).Value != ((DFloatPattern)prevPat.Pattern).Value,
+                                NodeType.StringPattern => ((DStringPattern)nowPat.Pattern).Value != ((DStringPattern)prevPat.Pattern).Value,
+                                NodeType.CharPattern => ((DCharPattern)nowPat.Pattern).Value != ((DCharPattern)prevPat.Pattern).Value,
+                                NodeType.BooleanPattern => ((DBooleanPattern)nowPat.Pattern).Value != ((DBooleanPattern)prevPat.Pattern).Value,
+                                _ => false
+                            };
+                        }
+
+                        return true;
+                    }
                 default: throw Ice();
             }
         }
