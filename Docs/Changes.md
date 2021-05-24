@@ -15,6 +15,7 @@
   * Add: _Add `FieldNotFound` error_ ([Issue #516](https://github.com/vorov2/dyalect/issues/516)).
   * Fix: _Failed test can be incorrectly displayed as successful_ ([Issue #518](https://github.com/vorov2/dyalect/issues/518)).
   * Fix: _Comparison pattern can cause Dyalect compiler to crush_ ([Issue #519](https://github.com/vorov2/dyalect/issues/519)).
+  * Fix: _Runtime crush_ ([Issue #520](https://github.com/vorov2/dyalect/issues/520)).
 
 # 0.25.1
   * Fix: _Exceptions thrown from overridden standard method couldn't be caught_ ([Issue #511](https://github.com/vorov2/dyalect/issues/511)).

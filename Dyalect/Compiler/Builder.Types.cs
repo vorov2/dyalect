@@ -30,7 +30,7 @@ namespace Dyalect.Compiler
 
             if (node.HasConstructors)
             {
-                var nh = hints.Remove(Push).Remove(ExpectPush);
+                var nh = hints.Remove(Push);
 
                 foreach (var c in node.Constructors)
                     Build(c, nh, ctx);
@@ -42,7 +42,7 @@ namespace Dyalect.Compiler
         private void BuildUsing(DNode node, Hints hints, CompilerContext ctx)
         {
             StartScope(ScopeKind.Lexical, node.Location);
-            Build(node, hints.Append(NoScope).Remove(Push).Remove(ExpectPush), ctx);
+            Build(node, hints.Append(NoScope).Remove(Push), ctx);
             var count = 0;
 
             foreach (var (name, sv) in currentScope.EnumerateVars())

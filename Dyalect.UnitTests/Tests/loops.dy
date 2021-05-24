@@ -23,6 +23,24 @@ func whileTest2() {
     assert(42, x)
 }
 
+func nestedWhileTest() {
+    var z = 5
+    var c = 0
+    while z >= 1 {
+        var y = z - 1
+        while y >= 0 {
+            if true {
+                c += 1
+                break
+            }
+            y -= 1
+        }
+        z -= 1
+    }
+    assert(0, z)
+    assert(5, c)
+}
+
 func doWhileTest1() {
     var x = 1
     do {
