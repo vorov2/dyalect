@@ -50,7 +50,7 @@ namespace Dyalect.Runtime
 
         public DyError? GetError() => Error;
 
-        internal void ThrowIf()
+        public void ThrowIf()
         {
             if (Error is not null)
             {

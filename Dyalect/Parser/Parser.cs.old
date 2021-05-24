@@ -1564,6 +1564,94 @@ namespace Dyalect.Parser
 	void Index(out DNode node) {
 		var nsaf = false; 
 		Literal(out node);
+		if (la.AfterEol) return; 
+		while (StartOf(15)) {
+			if (la.kind == 24 || la.kind == 95) {
+				if (la.kind == 24) {
+					Get();
+				} else {
+					Get();
+					nsaf = true; 
+				}
+				var ot = t; 
+				Expect(1);
+				var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
+				fld.Name = t.val;
+				node = fld;
+				if (la.AfterEol) return;
+				
+			} else if (la.kind == 70 || la.kind == 96) {
+				if (la.kind == 70) {
+					Get();
+				} else {
+					Get();
+					nsaf = true; 
+				}
+				var ot = t; 
+				Expect(1);
+				node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
+				if (la.AfterEol) return;
+				
+			} else if (la.kind == 33 || la.kind == 97) {
+				if (la.AfterEol) return; 
+				if (la.kind == 33) {
+					Get();
+				} else {
+					Get();
+					nsaf = true; 
+				}
+				var idx = new DIndexer(t) { Target = node, NilSafety = nsaf }; 
+				Expr(out node);
+				idx.Index = node;
+				node = idx;
+				
+				Expect(34);
+				if (la.AfterEol) return; 
+			} else {
+				if (la.AfterEol) return; 
+				if (la.kind == 29) {
+					Get();
+				} else {
+					Get();
+					nsaf = true; 
+				}
+				var app = new DApplication(node, t) { NilSafety = nsaf }; 
+				if (StartOf(16)) {
+					ApplicationArguments(app);
+				}
+				node = app; if (la.AfterEol) return; 
+				Expect(30);
+			}
+		}
+	}
+
+	void UsingIndex(out DNode node) {
+		var nsaf = false; node = null; 
+		if (la.kind == 24 || la.kind == 95) {
+			if (la.kind == 24) {
+				Get();
+			} else {
+				Get();
+				nsaf = true; 
+			}
+			var ot = t; 
+			Expect(1);
+			var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
+			fld.Name = t.val;
+			node = fld;
+			
+		} else if (la.kind == 70 || la.kind == 96) {
+			if (la.kind == 70) {
+				Get();
+			} else {
+				Get();
+				nsaf = true; 
+			}
+			var ot = t; 
+			Expect(1);
+			node = new DIndexer(t) { NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
+			
+		} else SynErr(125);
 		while (StartOf(15)) {
 			if (la.kind == 24 || la.kind == 95) {
 				if (la.kind == 24) {
@@ -1621,59 +1709,22 @@ namespace Dyalect.Parser
 		}
 	}
 
-	void UsingIndex(out DNode node) {
-		var nsaf = false; node = null; 
-		if (la.kind == 24 || la.kind == 95) {
-			if (la.kind == 24) {
-				Get();
-			} else {
-				Get();
-				nsaf = true; 
-			}
-			var ot = t; 
-			Expect(1);
-			var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
-			fld.Name = t.val;
-			node = fld;
-			
-		} else if (la.kind == 70 || la.kind == 96) {
-			if (la.kind == 70) {
-				Get();
-			} else {
-				Get();
-				nsaf = true; 
-			}
-			var ot = t; 
-			Expect(1);
-			node = new DIndexer(t) { NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
-			
-		} else SynErr(125);
-		while (StartOf(17)) {
-			if (la.kind == 24 || la.kind == 95) {
-				if (la.kind == 24) {
-					Get();
-				} else {
-					Get();
-					nsaf = true; 
-				}
-				var ot = t; 
-				Expect(1);
-				var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
-				fld.Name = t.val;
-				node = fld;
-				
-			} else {
-				if (la.kind == 70) {
-					Get();
-				} else {
-					Get();
-					nsaf = true; 
-				}
-				var ot = t; 
-				Expect(1);
-				node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
-				
-			}
+	void ApplicationArguments(DApplication app) {
+		var node = default(DNode); 
+		if (IsLabel()) {
+			Label(out node);
+		} else if (StartOf(12)) {
+			Expr(out node);
+		} else SynErr(126);
+		app.Arguments.Add(node); 
+		while (la.kind == 25) {
+			Get();
+			if (IsLabel()) {
+				Label(out node);
+			} else if (StartOf(12)) {
+				Expr(out node);
+			} else SynErr(127);
+			app.Arguments.Add(node); 
 		}
 	}
 
@@ -1705,26 +1756,7 @@ namespace Dyalect.Parser
 			Array(out node);
 		} else if (la.kind == 99) {
 			Iterator(out node);
-		} else SynErr(126);
-	}
-
-	void ApplicationArguments(DApplication app) {
-		var node = default(DNode); 
-		if (IsLabel()) {
-			Label(out node);
-		} else if (StartOf(12)) {
-			Expr(out node);
-		} else SynErr(127);
-		app.Arguments.Add(node); 
-		while (la.kind == 25) {
-			Get();
-			if (IsLabel()) {
-				Label(out node);
-			} else if (StartOf(12)) {
-				Expr(out node);
-			} else SynErr(128);
-			app.Arguments.Add(node); 
-		}
+		} else SynErr(128);
 	}
 
 	void Label(out DNode node) {
@@ -1900,7 +1932,7 @@ namespace Dyalect.Parser
 
 	void Dyalect() {
 		DyalectItem();
-		while (StartOf(18)) {
+		while (StartOf(17)) {
 			DyalectItem();
 		}
 	}
@@ -1935,7 +1967,6 @@ namespace Dyalect.Parser
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_T,_T,_T, _T,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x},
 		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_T,_x,_x, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_T,_T,_x, _x,_x,_x},
 		{_x,_T,_x,_T, _T,_T,_T,_T, _T,_x,_T,_T, _x,_x,_T,_x, _x,_x,_T,_T, _T,_x,_x,_T, _T,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_x,_x, _x,_x,_T,_x, _x,_T,_T,_x, _x,_x,_T,_x, _T,_x,_T,_T, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_T, _T,_x,_x,_T, _T,_x,_x},
-		{_x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_T, _T,_x,_x,_x, _x,_x,_x},
 		{_x,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_T,_T, _T,_T,_x,_T, _T,_x,_x,_x, _x,_T,_x,_T, _x,_T,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_T,_T, _T,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_x,_x,_x, _x,_T,_T,_T, _x,_T,_T,_x, _x,_T,_T,_T, _x,_T,_T,_x, _T,_x,_T,_T, _x,_x,_T,_T, _x,_x,_x,_x, _T,_T,_x,_T, _T,_x,_x,_T, _T,_x,_x}
 
         };
@@ -2072,9 +2103,9 @@ namespace Dyalect.Parser
 			case 123: s = "invalid Range"; break;
 			case 124: s = "invalid Unary"; break;
 			case 125: s = "invalid UsingIndex"; break;
-			case 126: s = "invalid Literal"; break;
+			case 126: s = "invalid ApplicationArguments"; break;
 			case 127: s = "invalid ApplicationArguments"; break;
-			case 128: s = "invalid ApplicationArguments"; break;
+			case 128: s = "invalid Literal"; break;
 			case 129: s = "invalid Label"; break;
 			case 130: s = "invalid Label"; break;
 			case 131: s = "invalid Name"; break;

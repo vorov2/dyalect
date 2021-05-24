@@ -581,3 +581,26 @@ func customConsWithConstraints() {
         e => print(e)
     }
 }
+
+type TypeWithUsing using {
+    var name
+    var age
+}
+func usingWithTypes() {
+    static func TypeWithUsing.TypeWithUsing(name, age) {
+        using private()
+        ::name = name
+        ::age = age
+    }
+    func TypeWithUsing.getName() {
+        using private()
+        ::name
+    }
+    func TypeWithUsing.getAge() {
+        using private()
+        ::age
+    }
+    let data = TypeWithUsing("John Doe", 44)
+    assert("John Doe", data.getName())
+    assert(44, data.getAge())
+}
