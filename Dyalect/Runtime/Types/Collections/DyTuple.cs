@@ -50,7 +50,7 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(index);
             
             return TryGetItem(index.GetString(), ctx, out var item)
-                ? item : ctx.IndexOutOfRange();
+                ? item : ctx.FieldNotFound();
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
@@ -59,9 +59,9 @@ namespace Dyalect.Runtime.Types
             {
                 var i = GetOrdinal(index.GetString());
 
-                if (i == -1)
+                if (i is -1)
                 {
-                    ctx.IndexOutOfRange();
+                    ctx.FieldNotFound();
                     return;
                 }
 
@@ -76,6 +76,7 @@ namespace Dyalect.Runtime.Types
             for (var i = 0; i < Values.Length; i++)
                 if (Values[i].GetLabel() == name)
                     return i;
+
             return -1;
         }
 
@@ -109,14 +110,14 @@ namespace Dyalect.Runtime.Types
         }
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) =>
-            GetOrdinal(name) != -1;
+            GetOrdinal(name) is not -1;
 
         private static string DefaultKey() => Guid.NewGuid().ToString();
 
         public override IEnumerator<DyObject> GetEnumerator()
         {
             for (var i = 0; i < Count; i++)
-                yield return Values[i].TypeId == DyType.Label ? Values[i].GetTaggedValue() : Values[i];
+                yield return Values[i].TypeId is DyType.Label ? Values[i].GetTaggedValue() : Values[i];
         }
 
         internal override DyObject GetValue(int index) => Values[index];

@@ -12,6 +12,7 @@
   * Add: _Type annotations and default values for parameters_ ([Issue #512](https://github.com/vorov2/dyalect/issues/512)).
   * Add: _Rename `String.sub` to `String.substring`_ ([Issue #517](https://github.com/vorov2/dyalect/issues/517)).
   * Add: _Add `using` statement_ ([Issue #515](https://github.com/vorov2/dyalect/issues/515), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#using)).
+  * Add: _Add `FieldNotFound` error_ ([Issue #516](https://github.com/vorov2/dyalect/issues/516)).
   * Fix: _Failed test can be incorrectly displayed as successful_ ([Issue #518](https://github.com/vorov2/dyalect/issues/518)).
 
 # 0.25.1

@@ -249,3 +249,17 @@ func tupleContains() {
         InvalidType() => assert(got: true)
     }
 }
+
+func tupleExceptions() {
+    let xs = (x: 1, y: 2)
+    try {
+        xs[2]
+    } catch {
+        IndexOutOfRange() => assert(got: true)
+    }
+    try {
+        xs::z
+    } catch {
+        FieldNotFound() => assert(got: true)
+    }
+}

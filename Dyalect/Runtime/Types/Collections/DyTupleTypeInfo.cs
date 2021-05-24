@@ -36,15 +36,14 @@ namespace Dyalect.Runtime.Types
             if (left.TypeId != right.TypeId)
                 return DyBool.False;
 
-            var t1 = (DyTuple)left;
-            var t2 = (DyTuple)right;
+            var (t1, t2) = ((DyTuple)left, (DyTuple)right);
 
             if (t1.Count != t2.Count)
                 return DyBool.False;
 
             for (var i = 0; i < t1.Count; i++)
             {
-                if (ctx.RuntimeContext.Types[t1.Values[i].TypeId].Eq(ctx, t1.Values[i], t2.Values[i]) == DyBool.False)
+                if (ReferenceEquals(ctx.RuntimeContext.Types[t1.Values[i].TypeId].Eq(ctx, t1.Values[i], t2.Values[i]), DyBool.False))
                     return DyBool.False;
 
                 if (ctx.HasErrors)
@@ -123,7 +122,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
         {
-            if (index.TypeId != DyType.Integer)
+            if (index.TypeId is not DyType.Integer)
                 return ctx.InvalidType(index);
 
             var t = (DyTuple)self;
