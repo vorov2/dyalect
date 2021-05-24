@@ -1619,8 +1619,9 @@ namespace Dyalect.Parser
 				if (StartOf(16)) {
 					ApplicationArguments(app);
 				}
-				node = app; if (la.AfterEol) return; 
+				node = app; 
 				Expect(30);
+				if (la.AfterEol) return; 
 			}
 		}
 	}

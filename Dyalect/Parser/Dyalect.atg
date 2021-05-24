@@ -1134,6 +1134,7 @@ PRODUCTIONS
             {
                 (
                     (
+                        (. if (la.AfterEol) return; .)
                         ( "." | "?." (. nsaf = true; .) )
                         (. var ot = t; .)
                         identToken
@@ -1141,17 +1142,16 @@ PRODUCTIONS
                             var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
                             fld.Name = t.val;
                             node = fld;
-                            if (la.AfterEol) return;
                         .)
                     )
                     |
                     (
+                        (. if (la.AfterEol) return; .)
                         ( "::" | "?::" (. nsaf = true; .) )
                         (. var ot = t; .)
                         identToken
                         (.
                             node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
-                            if (la.AfterEol) return;
                         .)
                     )
                     |
@@ -1165,7 +1165,6 @@ PRODUCTIONS
                                 node = idx;
                             .)
                         "]"
-                        (. if (la.AfterEol) return; .)
                     )
                     |
                     (
@@ -1175,7 +1174,6 @@ PRODUCTIONS
                             [ ApplicationArguments<app> ]
                             (. node = app; .)
                         ")"
-                        (. if (la.AfterEol) return; .)
                     )
                 )
             }

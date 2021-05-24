@@ -569,3 +569,11 @@ func usingTest2() {
         }
     }
 }
+
+func usingTest3() {
+    using (var x: 1, y: 2)
+    assert(1, ::x)
+    assert(2, ::y)
+    ::x = ::y * 2
+    assert(4, ::x)
+}

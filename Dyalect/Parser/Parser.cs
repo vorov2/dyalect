@@ -1567,6 +1567,7 @@ namespace Dyalect.Parser
 		if (la.AfterEol) return; 
 		while (StartOf(15)) {
 			if (la.kind == 24 || la.kind == 95) {
+				if (la.AfterEol) return; 
 				if (la.kind == 24) {
 					Get();
 				} else {
@@ -1578,9 +1579,9 @@ namespace Dyalect.Parser
 				var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
 				fld.Name = t.val;
 				node = fld;
-				if (la.AfterEol) return;
 				
 			} else if (la.kind == 70 || la.kind == 96) {
+				if (la.AfterEol) return; 
 				if (la.kind == 70) {
 					Get();
 				} else {
@@ -1590,7 +1591,6 @@ namespace Dyalect.Parser
 				var ot = t; 
 				Expect(1);
 				node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
-				if (la.AfterEol) return;
 				
 			} else if (la.kind == 33 || la.kind == 97) {
 				if (la.AfterEol) return; 
@@ -1606,7 +1606,6 @@ namespace Dyalect.Parser
 				node = idx;
 				
 				Expect(34);
-				if (la.AfterEol) return; 
 			} else {
 				if (la.AfterEol) return; 
 				if (la.kind == 29) {
@@ -1621,7 +1620,6 @@ namespace Dyalect.Parser
 				}
 				node = app; 
 				Expect(30);
-				if (la.AfterEol) return; 
 			}
 		}
 	}
