@@ -808,9 +808,9 @@ namespace Dyalect.Compiler
                     }
                 case NodeType.ComparisonPattern:
                     {
-                        if (prev is DComparisonPattern prevPat)
+                        if (now is DComparisonPattern nowPat)
                         {
-                            var nowPat = (DComparisonPattern)now;
+                            var prevPat = (DComparisonPattern)prev;
                             
                             if (nowPat.Operator != prevPat.Operator
                                 || nowPat.Pattern.NodeType != prevPat.NodeType)
