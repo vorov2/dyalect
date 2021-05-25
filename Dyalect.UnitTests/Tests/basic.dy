@@ -585,3 +585,12 @@ func usingTest3() {
     ::x = ::y * 2
     assert(4, ::x)
 }
+
+func typeErrorTest() {
+    try {
+        12 + '2'
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+}
