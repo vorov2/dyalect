@@ -137,7 +137,22 @@ namespace Dyalect.Compiler
                 case NodeType.Using:
                     Build((DUsing)node, hints, ctx);
                     break;
+                case NodeType.RecursiveBlock:
+                    Build((DRecursiveBlock)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DRecursiveBlock node, Hints hints, CompilerContext ctx)
+        {
+            if (node.Functions[0].IsMemberFunction)
+                AddError(CompilerError.MethodNotRecursive, node.Location);
+
+            for (var i = 0; i < node.Functions.Count; i++)
+                AddVariable(node.Functions[i].Name!, node.Functions[i], VarFlags.PreInit | VarFlags.Const | VarFlags.Function);
+
+            for (var i = 0; i < node.Functions.Count; i++)
+                Build(node.Functions[i], hints, ctx);
         }
 
         private void Build(DUsing node, Hints hints, CompilerContext ctx)

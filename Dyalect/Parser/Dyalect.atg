@@ -308,9 +308,26 @@ PRODUCTIONS
         ).
 
     Function<out DNode node> =
-        (. node = null; var st = false; .)
+        (. node = null; var st = false; DRecursiveBlock rec = null; .)
         (
             [ "static" (. st = true; .) ] "func"
+            FunctionBody<st, out node>
+        )
+        {
+            (.
+                if (rec is null)
+                {
+                    rec = new DRecursiveBlock(t);
+                    rec.Functions.Add((DFunctionDeclaration)node);
+                }
+            .)
+            "and" FunctionBody<false, out node> (. rec.Functions.Add((DFunctionDeclaration)node); .)
+        }
+        (. node = rec ?? node; .).
+
+    FunctionBody<bool st, out DNode node> =
+        (. node = null; .)
+        (
             (.
                 var f = new DFunctionDeclaration(t) { IsStatic = st };
                 functions.Push(f);

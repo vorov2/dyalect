@@ -223,6 +223,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Methods can&apos;t be recursive. Declare a regular function instead..
+        /// </summary>
+        internal static string MethodNotRecursive {
+            get {
+                return ResourceManager.GetString("MethodNotRecursive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Named argument &quot;{0}&quot; cannot be specified multiple times..
         /// </summary>
         internal static string NamedArgumentMultipleTimes {
