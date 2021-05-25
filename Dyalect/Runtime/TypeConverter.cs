@@ -44,7 +44,7 @@ namespace Dyalect.Runtime
                         foreach (DictionaryEntry kv in map)
                             dict[ConvertFrom(kv.Key)] =
                                 kv.Value is null ? DyNil.Instance : ConvertFrom(kv.Value);
-                        return new DyMap(dict);
+                        return new DyDictionary(dict);
                     }
                     else if (obj is IEnumerable seq)
                         return new DyArray(seq.OfType<object>().Select(o => ConvertFrom(o)).ToArray());
@@ -94,7 +94,7 @@ namespace Dyalect.Runtime
                 case TypeCode.Decimal: return (decimal)obj.GetFloat();
                 case TypeCode.Empty: return null;
                 default:
-                    if (obj is DyMap map)
+                    if (obj is DyDictionary map)
                     {
                         var ret = new Dictionary<object, object>();
 

@@ -517,3 +517,63 @@ func unaryTest1() {
     let x = - 42 //with space
     assert(0 - 42, x)
 }
+
+func inTest1() {
+    var xs = [1..10]
+    assert(true, 1 in xs)
+    assert(true, 10 in xs)
+    assert(false, 101 in xs)
+    xs = (1..10)
+    assert(true, 1 in xs)
+    assert(true, 10 in xs)
+    assert(false, 101 in xs)
+    xs = yields {1..10}
+    assert(true, 1 in xs)
+    assert(true, 10 in xs)
+    assert(false, 101 in xs)
+}
+
+func inTest2() {
+    var xs = (x: 12, y: 24)
+    assert(true, "x" in xs)
+    assert(true, "y" in xs)
+    assert(false, "z" in xs)
+    xs = Dictionary.fromTuple(xs)
+    assert(true, "x" in xs)
+    assert(true, "y" in xs)
+    assert(false, "z" in xs)
+}
+
+func usingTest1() {
+    let xs = (var x: 1, var y: 2)
+    if xs.len() > 0 {
+        using xs
+        assert(1, ::x)
+        assert(2, ::y)
+        ::x = 11
+        assert(11, ::x)
+    } else {
+        assert(got: false)
+    }
+}
+
+func usingTest2() {
+    {
+        using 42
+        assert("42", .toString())
+        {
+            using "42"
+            assert(true, .startsWith("4"))
+            assert("4", .substring(0, 1))
+            assert('2', .reverse()[0])
+        }
+    }
+}
+
+func usingTest3() {
+    using (var x: 1, y: 2)
+    assert(1, ::x)
+    assert(2, ::y)
+    ::x = ::y * 2
+    assert(4, ::x)
+}

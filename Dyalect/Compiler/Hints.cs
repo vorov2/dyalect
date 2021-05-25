@@ -25,7 +25,7 @@ namespace Dyalect.Compiler
 
         Rebind = 0x100,
 
-        ExpectPush = 0x200,
+        //ExpectPush = 0x200,
 
         OpenMatch = 0x400,
 

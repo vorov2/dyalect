@@ -400,6 +400,12 @@ namespace Dyalect.Runtime
                     case OpCode.TypeST:
                         evalStack.Push(types[op.Data]);
                         break;
+                    case OpCode.TypeAnno:
+                        ((DyLabel)evalStack.Peek()).TypeAnnotation = types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id].TypeCode;
+                        break;
+                    case OpCode.TypeAnnoT:
+                        ((DyLabel)evalStack.Peek()).TypeAnnotation = types[op.Data].TypeCode;
+                        break;
                     case OpCode.Tag:
                         evalStack.Replace(new DyLabel(unit.IndexedStrings[op.Data].Value, evalStack.Peek()));
                         break;
@@ -564,9 +570,25 @@ namespace Dyalect.Runtime
                         right = evalStack.Pop();
                         evalStack.Push(right.TypeId == op.Data);
                         break;
+                    case OpCode.TypeCheckFT:
+                        if (evalStack.Peek().TypeId != op.Data)
+                        {
+                            ctx.InvalidType(evalStack.Peek());
+                            ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                            goto CATCH;
+                        }
+                        break;
                     case OpCode.TypeCheck:
                         right = evalStack.Pop();
                         evalStack.Push(right.TypeId == ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id);
+                        break;
+                    case OpCode.TypeCheckF:
+                        if (evalStack.Peek().TypeId != ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id)
+                        {
+                            ctx.InvalidType(evalStack.Peek());
+                            ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                            goto CATCH;
+                        }
                         break;
                     case OpCode.CtorCheck:
                         evalStack.Replace(evalStack.Peek().GetConstructor(ctx) == unit.IndexedStrings[op.Data].Value);

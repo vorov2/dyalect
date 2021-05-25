@@ -9,7 +9,7 @@ namespace Dyalect
 {
     public static class Exe
     {
-        public static DyObject? Eval(SourceBuffer buffer, BuilderOptions options, object? args = null)
+        public static DyObject? Eval(SourceBuffer buffer, BuilderOptions options, FileLookup lookup, object? args = null)
         {
             DyTuple? tup = null;
 
@@ -20,7 +20,7 @@ namespace Dyalect
                 tup = new DyTuple(arr);
             }
 
-            var linker = new DyLinker(FileLookup.Default, options ?? BuilderOptions.Default(), tup);
+            var linker = new DyLinker(lookup ?? FileLookup.Default, options ?? BuilderOptions.Default(), tup);
             var result = linker.Make(buffer);
 
             if (!result.Success)

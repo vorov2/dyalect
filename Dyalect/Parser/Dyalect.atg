@@ -68,9 +68,9 @@ TOKENS
     eq_mul              = "*=".
     eq_div              = "/=".
     eq_rem              = "%=".
-    eq_and              = "&=".
-    eq_or               = "|=".
-    eq_xor              = "^=".
+    eq_and              = "&&&=".
+    eq_or               = "|||=".
+    eq_xor              = "^^^=".
     eq_lsh              = "<<<=".
     eq_rsh              = ">>>=".
     minus               = "-".
@@ -151,7 +151,7 @@ PRODUCTIONS
         [
             (
                 (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; .)
-                FunctionArguments<f>
+                TypeArguments<f>
                 (. typ.Constructors.Add(f); .)
             )
             |
@@ -164,6 +164,40 @@ PRODUCTIONS
         [
             "using" Block<out var cnode>
             (. typ.Using = cnode; .)
+        ].
+        
+    TypeArguments<DFunctionDeclaration node> =
+        "("
+            [
+                TypeArgument<out var arg> (. node.Parameters.Add(arg); .)
+                { "," TypeArgument<out arg> (. node.Parameters.Add(arg); .) }
+            ]
+        ")".
+        
+    TypeArgument<out DParameter arg> =
+        (. arg = null; var mut = false; .)
+        [ "var" (. mut = true; .) | "let" ]
+        identToken
+        (. var ot = t; string str = t.val; .)
+        [
+            (
+                identToken
+                (. arg = new DTypeParameter(ot) { Name = t.val, TypeAnnotation = new Qualident(str), Mutable = mut }; .)
+            )
+            |
+            (
+                "::" identToken (. var ta = new Qualident(t.val, str); .)
+                identToken
+                (. arg = new DTypeParameter(ot) { Name = t.val, TypeAnnotation = ta, Mutable = mut }; .)
+            )
+        ]
+        (.
+            if (arg is null)
+                arg = new DTypeParameter(ot) { Name = str, Mutable = mut };
+        .)
+        [
+            "=" Expr<out var cnode>
+            (. arg.DefaultValue = cnode; .)
         ].
 
     Statement<out DNode node> =
@@ -180,8 +214,18 @@ PRODUCTIONS
             | Loops<out node> [ Guard<node, out node> Separator ]
             | Function<out node>
             | Directive<out node> Separator
+            | Using<out node> Separator
         )
         (. node = ProcessImplicits(node); .).
+
+    Using<out DNode node> =
+        (. node = null; .)
+        (
+            "using"
+            (. var ot = t; .)
+            Expr<out node>
+            (. node = new DUsing(ot) { Expression = node }; .)
+        ).
 
     Guard<DNode src, out DNode node> =
         (. node = src; .)
@@ -218,9 +262,9 @@ PRODUCTIONS
                 | "*="  (. op = BinaryOperator.Mul; .)
                 | "/="  (. op = BinaryOperator.Div; .)
                 | "%="  (. op = BinaryOperator.Rem; .)
-                | "&="  (. op = BinaryOperator.And; .)
-                | "|="  (. op = BinaryOperator.Or; .)
-                | "^="  (. op = BinaryOperator.Xor; .)
+                | "&&&="  (. op = BinaryOperator.And; .)
+                | "|||="  (. op = BinaryOperator.Or; .)
+                | "^^^="  (. op = BinaryOperator.Xor; .)
                 | "<<<=" (. op = BinaryOperator.ShiftLeft; .)
                 | ">>>=" (. op = BinaryOperator.ShiftRight; .)
             )
@@ -297,7 +341,24 @@ PRODUCTIONS
 
     FunctionArgument<out DParameter arg> =
         (. arg = null; .)
-        identToken (. arg = new DParameter(t) { Name = t.val }; .)
+        identToken
+        (. var ot = t; string str = t.val; .)
+        [
+            (
+                identToken
+                (. arg = new DParameter(ot) { Name = t.val, TypeAnnotation = new Qualident(str) }; .)
+            )
+            |
+            (
+                "::" identToken (. var ta = new Qualident(t.val, str); .)
+                identToken
+                (. arg = new DParameter(ot) { Name = t.val, TypeAnnotation = ta }; .)
+            )
+        ]
+        (.
+            if (arg is null)
+                arg = new DParameter(ot) { Name = str };
+        .)
         [
             "=" Expr<out var cnode>
             (. arg.DefaultValue = cnode; .)
@@ -439,7 +500,7 @@ PRODUCTIONS
                 | CharPattern<out node>
                 | StringPattern<out node>
                 | BooleanPattern<out node>
-                | NilPattern<out node>                            
+                | NilPattern<out node>
             )
             (. node = new DComparisonPattern(ot) { Operator = op, Pattern = node }; .)
         ).
@@ -807,11 +868,19 @@ PRODUCTIONS
         }.
 
     Is<out DNode node> =
-        Range<out node>
+        In<out node>
         {
             "is" (. var ot = t; .)
             OrPattern<out var pat>
             (. node = new DBinaryOperation(node, pat, BinaryOperator.Is, ot); .)
+        }.
+
+    In<out DNode node> =
+        Range<out node>
+        {
+            "in" (. var ot = t; .)
+            Range<out var pat>
+            (. node = new DBinaryOperation(node, pat, BinaryOperator.In, ot); .)
         }.
 
     Range<out DNode node> =
@@ -987,16 +1056,85 @@ PRODUCTIONS
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
                 | Index<out node>
+                | UsingIndex<out node>
             )
         ).
+
+    UsingIndex<out DNode node> =
+        (. var nsaf = false; node = null; .)
+        (
+            (
+                ( "." | "?." (. nsaf = true; .) )
+                (. var ot = t; .)
+                identToken
+                (.
+                    var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
+                    fld.Name = t.val;
+                    node = fld;
+                .)
+            )
+            |
+            (
+                ( "::" | "?::" (. nsaf = true; .) )
+                (. var ot = t; .)
+                identToken
+                (.
+                    node = new DIndexer(t) { NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
+                .)
+            )
+        )
+        {
+            (
+                ( "." | "?." (. nsaf = true; .) )
+                (. var ot = t; .)
+                identToken
+                (.
+                    var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
+                    fld.Name = t.val;
+                    node = fld;
+                .)
+            )
+            |
+            (
+                ( "::" | "?::" (. nsaf = true; .) )
+                (. var ot = t; .)
+                identToken
+                (.
+                    node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
+                .)
+            )
+            |
+            (
+                (. if (la.AfterEol) return; .)
+                ( "[" | "?[" (. nsaf = true; .) )
+                    (. var idx = new DIndexer(t) { Target = node, NilSafety = nsaf }; .)
+                    Expr<out node>
+                    (.
+                        idx.Index = node;
+                        node = idx;
+                    .)
+                "]"
+            )
+            |
+            (
+                (. if (la.AfterEol) return; .)
+                ( "(" | "?(" (. nsaf = true; .) )
+                    (. var app = new DApplication(node, t) { NilSafety = nsaf }; .)
+                    [ ApplicationArguments<app> ]
+                    (. node = app; .)
+                ")"
+            )
+        }.
 
     Index<out DNode node> =
         (. var nsaf = false; .)
         (
-            Literal<out node> 
+            Literal<out node>
+            (. if (la.AfterEol) return; .)
             {
                 (
                     (
+                        (. if (la.AfterEol) return; .)
                         ( "." | "?." (. nsaf = true; .) )
                         (. var ot = t; .)
                         identToken
@@ -1008,6 +1146,7 @@ PRODUCTIONS
                     )
                     |
                     (
+                        (. if (la.AfterEol) return; .)
                         ( "::" | "?::" (. nsaf = true; .) )
                         (. var ot = t; .)
                         identToken

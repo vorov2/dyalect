@@ -89,6 +89,7 @@ namespace Dyalect
                     try
                     {
                         var res = fn.Value.Call(funSet.Context).ToObject();
+                        funSet.Context.ThrowIf();
                         printIt(i, false);
                         Success(options, fn.Key, funSet.FileName);
                         passed++;

@@ -260,7 +260,10 @@ namespace Dyalect.Runtime.Types
             var str = self.GetString();
             var i = (int)from.GetInteger();
 
-            if (i < 0 || i >= str.Length)
+            if (i < 0)
+                i = str.Length + i;
+
+            if (i >= str.Length)
                 return ctx.IndexOutOfRange();
 
             if (ReferenceEquals(to, DyNil.Instance))
@@ -384,7 +387,7 @@ namespace Dyalect.Runtime.Types
                 "lower" => Func.Member(name, Lower),
                 "startsWith" => Func.Member(name, StartsWith, -1, new Par("value")),
                 "endsWith" => Func.Member(name, EndsWith, -1, new Par("value")),
-                "sub" => Func.Member(name, Substring, -1, new Par("start"), new Par("len", DyNil.Instance)),
+                "substring" => Func.Member(name, Substring, -1, new Par("start"), new Par("len", DyNil.Instance)),
                 "capitalize" => Func.Member(name, Capitalize),
                 "trim" => Func.Member(name, Trim, 0, new Par("chars", true)),
                 "trimStart" => Func.Member(name, TrimStart, 0, new Par("chars", true)),

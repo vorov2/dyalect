@@ -40,6 +40,8 @@
 
         KeyNotFound = 618,
 
-        KeyAlreadyPresent = 619
+        KeyAlreadyPresent = 619,
+
+        FieldNotFound = 620
     }
 }

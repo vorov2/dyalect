@@ -46,21 +46,21 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId != DyType.String)
+            if (index.TypeId is not DyType.String)
                 return ctx.InvalidType(index);
 
             var name = index.GetString();
 
-            if (name == "code")
+            if (name is "code")
                 return new DyInteger((int)Code);
-            else if (name == "detail")
+            
+            if (name is "detail")
                 return GetDetail();
-            else
-                return ctx.IndexOutOfRange();
+            
+            return ctx.IndexOutOfRange();
         }
 
-        protected internal override bool HasItem(string name, ExecutionContext ctx) =>
-            name == "code" || name == "detail";
+        protected internal override bool HasItem(string name, ExecutionContext ctx) => name is "code" or "detail";
 
         public override string GetConstructor(ExecutionContext ctx) => errorCode;
 

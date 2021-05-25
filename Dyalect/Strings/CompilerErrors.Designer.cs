@@ -214,6 +214,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid type of a default parameter value..
+        /// </summary>
+        internal static string InvalidTypeDefaultValue {
+            get {
+                return ResourceManager.GetString("InvalidTypeDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Named argument &quot;{0}&quot; cannot be specified multiple times..
         /// </summary>
         internal static string NamedArgumentMultipleTimes {
@@ -237,6 +246,15 @@ namespace Dyalect.Strings {
         internal static string NoEnclosingLoop {
             get {
                 return ResourceManager.GetString("NoEnclosingLoop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indexer and member access are only valid with an active &quot;using&quot; declaration..
+        /// </summary>
+        internal static string NoUsing {
+            get {
+                return ResourceManager.GetString("NoUsing", resourceCulture);
             }
         }
         

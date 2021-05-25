@@ -106,6 +106,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Field not found..
+        /// </summary>
+        internal static string FieldNotFound {
+            get {
+                return ResourceManager.GetString("FieldNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A field is read-only..
         /// </summary>
         internal static string FieldReadOnly {

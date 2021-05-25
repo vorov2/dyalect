@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
-    internal sealed class DyMapEnumerator : IEnumerator<DyObject>
+    internal sealed class DyDictionaryEnumerator : IEnumerator<DyObject>
     {
-        private readonly DyMap obj;
+        private readonly DyDictionary obj;
         private readonly IEnumerator enumerator;
         private readonly int version;
 
-        public DyMapEnumerator(DyMap obj)
+        public DyDictionaryEnumerator(DyDictionary obj)
         {
             this.obj = obj;
             version = obj.Version;

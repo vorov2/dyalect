@@ -101,7 +101,7 @@ namespace Dyalect.Runtime.Types
                     valueSelector is not null
                     ? seq.ToDictionary(dy => keySelector.Call(ctx, dy), dy => valueSelector.Call(ctx, dy))
                     : seq.ToDictionary(dy => keySelector.Call(ctx, dy));
-                return new DyMap(map);
+                return new DyDictionary(map);
             }
             catch (ArgumentException)
             {
@@ -357,12 +357,18 @@ namespace Dyalect.Runtime.Types
             return (DyBool)res;
         }
 
+        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
+        {
+            var seq = DyIterator.ToEnumerable(ctx, self);
+            return (DyBool)seq.Any(o => ctx.RuntimeContext.Types[o.TypeId].Eq(ctx, o, item).GetBool());
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "toArray" => Func.Member(name, ToArray),
                 "toTuple" => Func.Member(name, ToTuple),
-                "toMap" => Func.Member(name, ToMap, -1, new Par("key"), new Par("value", DyNil.Instance)),
+                "toDictionary" => Func.Member(name, ToMap, -1, new Par("key"), new Par("value", DyNil.Instance)),
                 "take" => Func.Member(name, Take, -1, new Par("count")),
                 "skip" => Func.Member(name, Skip, -1, new Par("count")),
                 "first" => Func.Member(name, First),
@@ -380,6 +386,7 @@ namespace Dyalect.Runtime.Types
                 "reduce" => Func.Member(name, Reduce, -1, new Par("init", DyInteger.Zero), new Par("by")),
                 "any" => Func.Member(name, Any, -1, new Par("predicate")),
                 "all" => Func.Member(name, All, -1, new Par("predicate")),
+                "contains" => Func.Member(name, Contains, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

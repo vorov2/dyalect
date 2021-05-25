@@ -22,7 +22,7 @@ namespace Dyalect
                 new DyArrayTypeInfo(),
                 new DyIteratorTypeInfo(),
                 new DyTupleTypeInfo(),
-                new DyMapTypeInfo(),
+                new DyDictionaryTypeInfo(),
                 new DyWrapperTypeInfo(),
                 new DySetTypeInfo(),
                 new DyErrorTypeInfo()
@@ -41,7 +41,7 @@ namespace Dyalect
         public const int Array = 10;
         public const int Iterator = 11;
         public const int Tuple = 12;
-        public const int Map = 13;
+        public const int Dictionary = 13;
         public const int Object = 14;
         public const int Set = 15;
         public const int Error = 16;
@@ -62,7 +62,7 @@ namespace Dyalect
                 DyTypeNames.Module => Module,
                 DyTypeNames.Array => Array,
                 DyTypeNames.Iterator => Iterator,
-                DyTypeNames.Map => Map,
+                DyTypeNames.Dictionary => Dictionary,
                 DyTypeNames.Object => Object,
                 DyTypeNames.Set => Set,
                 DyTypeNames.Error => Error,
@@ -85,7 +85,7 @@ namespace Dyalect
                 Module => DyTypeNames.Module,
                 Array => DyTypeNames.Array,
                 Iterator => DyTypeNames.Iterator,
-                Map => DyTypeNames.Map,
+                Dictionary => DyTypeNames.Dictionary,
                 Object => DyTypeNames.Object,
                 Set => DyTypeNames.Set,
                 Error => DyTypeNames.Error,
@@ -111,7 +111,7 @@ namespace Dyalect
                 Array,
                 Iterator,
                 Tuple,
-                Map,
+                Dictionary,
                 Object,
                 Set,
                 Error
@@ -130,7 +130,7 @@ namespace Dyalect
         public const string Array = "Array";
         public const string Iterator = "Iterator";
         public const string Tuple = "Tuple";
-        public const string Map = "Map";
+        public const string Dictionary = "Dictionary";
         public const string Object = "Object";
         public const string Set = "Set";
         public const string Error = "Error";

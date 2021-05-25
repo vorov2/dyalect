@@ -22,8 +22,8 @@ namespace Dyalect.Library.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var self = (DyResult)arg;
-            return new DyString(self.Constructor + "(" 
-                + (self.Value.TypeId != DyType.Nil ? self.Value.ToString(ctx) : "") + ")");
+            return new DyString(self.Constructor + " (" 
+                + (self.Value.TypeId is not DyType.Nil ? self.Value.ToString(ctx) : "") + ")");
         }
 
         public override string TypeName => "Result";
@@ -35,19 +35,20 @@ namespace Dyalect.Library.Types
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var self = (DyResult)arg;
-            return DyInteger.Get(self.Value.TypeId == DyType.Nil ? 0 : 1);
+            return DyInteger.Get(self.Value.TypeId is DyType.Nil ? 0 : 1);
         }
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId == DyType.Integer)
-                return (long)index.ToObject() == 0 ? ((DyResult)self).Value : ctx.IndexOutOfRange();
-            else if (index.TypeId == DyType.String)
+            if (index.TypeId is DyType.Integer)
+                return (long)index.ToObject() is 0 ? ((DyResult)self).Value : ctx.IndexOutOfRange();
+            
+            if (index.TypeId is DyType.String)
             {
                 var str = index.ToString();
                 var s = (DyResult)self;
-                return str == "value" && s.Constructor == "Success" ? s.Value
-                    : str == "detail" && s.Constructor == "Failure" ? s.Value
+                return str is "value" && s.Constructor is "Success" ? s.Value
+                    : str is "detail" && s.Constructor is "Failure" ? s.Value
                     : ctx.IndexOutOfRange();
             }
 
@@ -58,19 +59,17 @@ namespace Dyalect.Library.Types
         {
             var s = (DyResult)self;
             
-            if (s.Constructor != "Failure")
+            if (s.Constructor is not "Failure")
                 return s.Value;
-            else
-            {
-                var newctx = ctx.Clone();
-                var res = s.Value.ToString(newctx);
-                return newctx.HasErrors ? ctx.Fail(s.Value.ToString()) : ctx.Fail(res.ToString());
-            }
+            
+            var newctx = ctx.Clone(); 
+            var res = s.Value.ToString(newctx);
+            return newctx.HasErrors ? ctx.Fail(s.Value.ToString()) : ctx.Fail(res.ToString());
         }
 
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
-            if (name == "value")
+            if (name is "value")
                 return Func.Member(name, TryGet);
             return base.InitializeInstanceMember(self, name, ctx);
         }

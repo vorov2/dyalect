@@ -53,8 +53,13 @@ func stringTest8() {
 }
 
 func stringTest9() {
-    var res = "abcdef".sub(2, 4) + "qwerty".sub(4)
+    var res = "abcdef".substring(2, 4) + "qwerty".substring(4)
     assert("cdefty", res)
+}
+
+func stringTest9b() {
+    var res = "abcdef".substring(-3)
+    assert("def", res)
 }
 
 func stringTest10() {

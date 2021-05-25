@@ -10,6 +10,12 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject FieldNotFound(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.FieldNotFound);
+            return DyNil.Instance;
+        }
+
         public static DyObject PrivateAccess(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.PrivateAccess);
@@ -79,6 +85,12 @@ namespace Dyalect.Runtime
         public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
         {
             ctx.Error = new(DyErrorCode.InvalidType, value.GetTypeName(ctx));
+            return DyNil.Instance;
+        }
+
+        public static DyObject InvalidType(this ExecutionContext ctx, string typeName)
+        {
+            ctx.Error = new(DyErrorCode.InvalidType, typeName);
             return DyNil.Instance;
         }
 

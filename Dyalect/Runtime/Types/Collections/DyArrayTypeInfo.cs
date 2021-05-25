@@ -283,6 +283,12 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
+        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
+        {
+            var arr = (DyArray)self;
+            return (DyBool)(arr.IndexOf(ctx, item) != -1);
+        }
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -302,6 +308,7 @@ namespace Dyalect.Runtime.Types
                 "swap" => Func.Member(name, Swap, -1, new Par("fst"), new Par("snd")),
                 "compact" => Func.Member(name, Compact),
                 "reverse" => Func.Member(name, Reverse),
+                "contains" => Func.Member(name, Contains, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
 

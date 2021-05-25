@@ -30,7 +30,7 @@ namespace Dyalect.Compiler
 
             if (node.HasConstructors)
             {
-                var nh = hints.Remove(Push).Remove(ExpectPush);
+                var nh = hints.Remove(Push);
 
                 foreach (var c in node.Constructors)
                     Build(c, nh, ctx);
@@ -42,7 +42,7 @@ namespace Dyalect.Compiler
         private void BuildUsing(DNode node, Hints hints, CompilerContext ctx)
         {
             StartScope(ScopeKind.Lexical, node.Location);
-            Build(node, hints.Append(NoScope).Remove(Push).Remove(ExpectPush), ctx);
+            Build(node, hints.Append(NoScope).Remove(Push), ctx);
             var count = 0;
 
             foreach (var (name, sv) in currentScope.EnumerateVars())
@@ -76,6 +76,13 @@ namespace Dyalect.Compiler
                 AddLinePragma(func);
                 cw.PushVar(a);
                 cw.Tag(p.Name);
+
+                if (p.TypeAnnotation is not null)
+                    cw.TypeAnno(GetTypeHandle(p.TypeAnnotation, p.Location));
+                
+                if (p is DTypeParameter { Mutable: true })
+                    cw.Mut();
+                
                 cw.NewTuple(1);
             }
             else
@@ -86,6 +93,12 @@ namespace Dyalect.Compiler
                     var a = GetVariable(p.Name, p);
                     cw.PushVar(a);
                     cw.Tag(p.Name);
+
+                    if (p.TypeAnnotation is not null)
+                        cw.TypeAnno(GetTypeHandle(p.TypeAnnotation, p.Location));
+
+                    if (p is DTypeParameter { Mutable: true })
+                        cw.Mut();
                 }
 
                 AddLinePragma(func);

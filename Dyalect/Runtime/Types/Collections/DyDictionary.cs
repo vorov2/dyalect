@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyMap : DyEnumerable
+    public class DyDictionary : DyEnumerable
     {
         internal readonly Dictionary<DyObject,DyObject> Map;
 
@@ -17,10 +17,10 @@ namespace Dyalect.Runtime.Types
             set => Map[key] = value;
         }
 
-        internal DyMap() : base(DyType.Map) =>
+        internal DyDictionary() : base(DyType.Dictionary) =>
             Map = new Dictionary<DyObject, DyObject>();
 
-        internal DyMap(Dictionary<DyObject, DyObject> dict) : base(DyType.Map) =>
+        internal DyDictionary(Dictionary<DyObject, DyObject> dict) : base(DyType.Dictionary) =>
             Map = dict;
 
         public void Add(DyObject key, DyObject value)
@@ -70,8 +70,10 @@ namespace Dyalect.Runtime.Types
                 Version++;
         }
 
-        public override IEnumerator<DyObject> GetEnumerator() => new DyMapEnumerator(this);
+        public override IEnumerator<DyObject> GetEnumerator() => new DyDictionaryEnumerator(this);
 
         public override int GetHashCode() => Map.GetHashCode();
+
+        protected internal override bool HasItem(string name, ExecutionContext ctx) => ContainsKey((DyString)name);
     }
 }

@@ -227,3 +227,39 @@ func mutableTupleToString() {
     let str = xs.toString()
     assert(expect: "(var x: 2, y: 3, var z: 4, xx: 42)", got: str) 
 }
+
+func tupleToDictionary() {
+    let xs = (name: "Vasily", age: 41, gender: "Male")
+    let dict = xs.toDictionary()
+    assert("Vasily", dict["name"])
+    assert(41, dict["age"])
+    assert("Male", dict["gender"])
+}
+
+func tupleContains() {
+    let xs = (name: "Vasily", age: 41, gender: "Male")
+    assert(true, xs.contains("name"))
+    assert(true, xs.contains("age"))
+    assert(true, xs.contains("gender"))
+    assert(false, xs.contains("NAME"))
+    try {
+        assert(true, xs.contains(42))
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+}
+
+func tupleExceptions() {
+    let xs = (x: 1, y: 2)
+    try {
+        xs[2]
+    } catch {
+        IndexOutOfRange() => assert(got: true)
+    }
+    try {
+        xs::z
+    } catch {
+        FieldNotFound() => assert(got: true)
+    }
+}

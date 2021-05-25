@@ -82,6 +82,8 @@
             1, //HasField
             1, //TypeCheck
             1, //TypeCheckT
+            1, //TypeCheckF
+            1, //TypeCheckFT
             1, //Start
             0, //End
             1, //NewType
@@ -92,6 +94,8 @@
             0, //GetIter
             0, //Mut
             0, //Priv
+            1, //TypeAnno
+            1, //TypeAnnoT
         };
     }
 }
