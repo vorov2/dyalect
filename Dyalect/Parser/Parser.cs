@@ -253,12 +253,12 @@ namespace Dyalect.Parser
 				Get();
 				Expect(1);
 				f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); 
-				FunctionArguments(f);
+				TypeArguments(f);
 				while (la.kind == 68) {
 					Get();
 					Expect(1);
 					f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);
-					FunctionArguments(f);
+					TypeArguments(f);
 				}
 			}
 		}
@@ -277,20 +277,6 @@ namespace Dyalect.Parser
 			while (la.kind == 25) {
 				Get();
 				TypeArgument(out arg);
-				node.Parameters.Add(arg); 
-			}
-		}
-		Expect(30);
-	}
-
-	void FunctionArguments(DFunctionDeclaration node) {
-		Expect(29);
-		if (la.kind == 1) {
-			FunctionArgument(out var arg);
-			node.Parameters.Add(arg); 
-			while (la.kind == 25) {
-				Get();
-				FunctionArgument(out arg);
 				node.Parameters.Add(arg); 
 			}
 		}
@@ -461,7 +447,7 @@ namespace Dyalect.Parser
 		var @if = new DIf(ot) { Condition = cnode, True = src }; node = @if; 
 		if (la.kind == 72) {
 			Get();
-			SimpleExpr(out cnode);
+			StatementExpr(out cnode);
 			@if.False = cnode; 
 		}
 	}
@@ -734,6 +720,20 @@ namespace Dyalect.Parser
 		} else if (la.kind == 31) {
 			Block(out node);
 		} else SynErr(112);
+	}
+
+	void FunctionArguments(DFunctionDeclaration node) {
+		Expect(29);
+		if (la.kind == 1) {
+			FunctionArgument(out var arg);
+			node.Parameters.Add(arg); 
+			while (la.kind == 25) {
+				Get();
+				FunctionArgument(out arg);
+				node.Parameters.Add(arg); 
+			}
+		}
+		Expect(30);
 	}
 
 	void FunctionArgument(out DParameter arg) {

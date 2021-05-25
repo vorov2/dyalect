@@ -253,12 +253,12 @@ namespace Dyalect.Parser
 				Get();
 				Expect(1);
 				f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); 
-				FunctionArguments(f);
+				TypeArguments(f);
 				while (la.kind == 68) {
 					Get();
 					Expect(1);
 					f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);
-					FunctionArguments(f);
+					TypeArguments(f);
 				}
 			}
 		}
@@ -277,20 +277,6 @@ namespace Dyalect.Parser
 			while (la.kind == 25) {
 				Get();
 				TypeArgument(out arg);
-				node.Parameters.Add(arg); 
-			}
-		}
-		Expect(30);
-	}
-
-	void FunctionArguments(DFunctionDeclaration node) {
-		Expect(29);
-		if (la.kind == 1) {
-			FunctionArgument(out var arg);
-			node.Parameters.Add(arg); 
-			while (la.kind == 25) {
-				Get();
-				FunctionArgument(out arg);
 				node.Parameters.Add(arg); 
 			}
 		}
@@ -461,7 +447,7 @@ namespace Dyalect.Parser
 		var @if = new DIf(ot) { Condition = cnode, True = src }; node = @if; 
 		if (la.kind == 72) {
 			Get();
-			SimpleExpr(out cnode);
+			Expr(out cnode);
 			@if.False = cnode; 
 		}
 	}
@@ -734,6 +720,20 @@ namespace Dyalect.Parser
 		} else if (la.kind == 31) {
 			Block(out node);
 		} else SynErr(112);
+	}
+
+	void FunctionArguments(DFunctionDeclaration node) {
+		Expect(29);
+		if (la.kind == 1) {
+			FunctionArgument(out var arg);
+			node.Parameters.Add(arg); 
+			while (la.kind == 25) {
+				Get();
+				FunctionArgument(out arg);
+				node.Parameters.Add(arg); 
+			}
+		}
+		Expect(30);
 	}
 
 	void FunctionArgument(out DParameter arg) {
@@ -1567,6 +1567,7 @@ namespace Dyalect.Parser
 		if (la.AfterEol) return; 
 		while (StartOf(15)) {
 			if (la.kind == 24 || la.kind == 95) {
+				if (la.AfterEol) return; 
 				if (la.kind == 24) {
 					Get();
 				} else {
@@ -1578,9 +1579,9 @@ namespace Dyalect.Parser
 				var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
 				fld.Name = t.val;
 				node = fld;
-				if (la.AfterEol) return;
 				
 			} else if (la.kind == 70 || la.kind == 96) {
+				if (la.AfterEol) return; 
 				if (la.kind == 70) {
 					Get();
 				} else {
@@ -1590,7 +1591,6 @@ namespace Dyalect.Parser
 				var ot = t; 
 				Expect(1);
 				node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
-				if (la.AfterEol) return;
 				
 			} else if (la.kind == 33 || la.kind == 97) {
 				if (la.AfterEol) return; 
@@ -1606,7 +1606,6 @@ namespace Dyalect.Parser
 				node = idx;
 				
 				Expect(34);
-				if (la.AfterEol) return; 
 			} else {
 				if (la.AfterEol) return; 
 				if (la.kind == 29) {
@@ -1621,7 +1620,6 @@ namespace Dyalect.Parser
 				}
 				node = app; 
 				Expect(30);
-				if (la.AfterEol) return; 
 			}
 		}
 	}
