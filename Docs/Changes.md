@@ -1,3 +1,6 @@
+# 0.26.1
+  * Fix: _Dyalect compiler crush_ ([Issue #522](https://github.com/vorov2/dyalect/issues/522)).
+
 # 0.26.0
   * Add: _Type constraints for function arguments_ ([Issue #499](https://github.com/vorov2/dyalect/issues/499), [docs](https://github.com/vorov2/dyalect/wiki/Functions#anno)).
   * Add: _`Map` should support `HasField` method_ ([Issue #504](https://github.com/vorov2/dyalect/issues/504)).
