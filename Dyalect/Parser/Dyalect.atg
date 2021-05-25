@@ -157,8 +157,8 @@ PRODUCTIONS
             |
             (
                 "="
-                identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) FunctionArguments<f>
-                { "or" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) FunctionArguments<f> }
+                identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) TypeArguments<f>
+                { "or" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) TypeArguments<f> }
             )
         ]
         [
@@ -233,7 +233,7 @@ PRODUCTIONS
             (. var ot = t; .)
             "when" SimpleExpr<out var cnode>
             (. var @if = new DIf(ot) { Condition = cnode, True = src }; node = @if; .)
-            [ "else" SimpleExpr<out cnode> (. @if.False = cnode; .) ]
+            [ "else" StatementExpr<out cnode> (. @if.False = cnode; .) ]
         ).
 
     PrivateScope<out DNode node> =

@@ -1,3 +1,7 @@
+# 0.26.2
+  * Fix: _Parser error in guards_ ([Issue #526](https://github.com/vorov2/dyalect/issues/526)).
+  * Fix: _Type declaration with variable fields_ ([Issue #525](https://github.com/vorov2/dyalect/issues/525)).
+
 # 0.26.1
   * Fix: _Dyalect compiler crush_ ([Issue #522](https://github.com/vorov2/dyalect/issues/522)).
 

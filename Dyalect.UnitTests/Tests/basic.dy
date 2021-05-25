@@ -406,6 +406,14 @@ func guardsTest8() {
     assert(89, fib(11))
 }
 
+func guardsTest9() {
+    var x = 1
+    var y = 42
+    x = y when y > 42 else y = 84
+    assert(1, x)
+    assert(84, y)
+}
+
 func returnTest() {//Issue 266
     func foo() {
         return 2
