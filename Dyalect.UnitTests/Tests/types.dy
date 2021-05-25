@@ -604,3 +604,18 @@ func usingWithTypes() {
     assert("John Doe", data.getName())
     assert(44, data.getAge())
 }
+
+type TestExpr = Literal(var Float value) or Unary(var op, var TestExpr left)
+func testTypeVars() {
+    let a = TestExpr.Literal(12.2)
+    assert(12.2, a::value)
+    a::value = 44.4
+    assert(44.4, a::value)
+    let b = TestExpr.Unary("-", a)
+    assert("-", b::op)
+    assert(44.4, b::left::value)
+    b::op = "+"
+    assert("+", b::op)
+    b::left::value = 42.0
+    assert(42.0, b::left::value)
+}
