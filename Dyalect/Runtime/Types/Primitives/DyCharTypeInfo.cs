@@ -30,7 +30,10 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId is DyType.Char)
                 return new DyString(left.GetString() + right.GetString());
 
-            return base.AddOp(left, right, ctx); //Important! Should redirect to base
+            if (right.TypeId is DyType.String)
+                return ctx.RuntimeContext.Types[DyType.String].Add(ctx, left, right);
+
+            return ctx.InvalidType(right);
         }
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)

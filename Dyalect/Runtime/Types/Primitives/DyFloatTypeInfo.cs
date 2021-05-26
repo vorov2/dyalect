@@ -21,15 +21,18 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId is DyType.Float or DyType.Integer)
                 return new DyFloat(left.GetFloat() + right.GetFloat());
 
-            return base.AddOp(left, right, ctx); //Important! Should redirect to base
+            if (right.TypeId is DyType.String)
+                return ctx.RuntimeContext.Types[DyType.String].Add(ctx, left, right);
+
+            return ctx.InvalidType(right);
         }
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right.TypeId is DyType.Float or DyType.Integer)
                 return new DyFloat(left.GetFloat() - right.GetFloat());
-            else
-                return ctx.InvalidType(right);
+
+            return ctx.InvalidType(right);
         }
 
         protected override DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx)

@@ -62,6 +62,7 @@ namespace Dyalect.Runtime.Types
                 return ctx.RuntimeContext.Types[DyType.String].Add(ctx, left, right);
             return ctx.OperationNotSupported(Builtins.Add, left.GetTypeName(ctx));
         }
+
         public DyObject Add(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (add is not null)
