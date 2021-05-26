@@ -25,13 +25,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Dyalect">
-      <HintPath>Dyalect\Dyalect.dll</HintPath>
-    </Reference>
+    <Folder Include="ace-build\build\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ace-build\build\" />
+    <Reference Include="Dyalect">
+      <HintPath>..\dya\Dyalect.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
