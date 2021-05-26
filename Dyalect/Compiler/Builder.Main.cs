@@ -152,7 +152,10 @@ namespace Dyalect.Compiler
                 AddVariable(node.Functions[i].Name!, node.Functions[i], VarFlags.PreInit | VarFlags.Const | VarFlags.Function);
 
             for (var i = 0; i < node.Functions.Count; i++)
-                Build(node.Functions[i], hints, ctx);
+            {
+                var last = i == node.Functions.Count - 1;
+                Build(node.Functions[i], last ? hints: hints.Remove(Push), ctx);
+            }
         }
 
         private void Build(DUsing node, Hints hints, CompilerContext ctx)

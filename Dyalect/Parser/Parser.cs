@@ -753,20 +753,6 @@ namespace Dyalect.Parser
 		Expect(30);
 	}
 
-	void FunctionArguments(DFunctionDeclaration node) {
-		Expect(29);
-		if (la.kind == 1) {
-			FunctionArgument(out var arg);
-			node.Parameters.Add(arg); 
-			while (la.kind == 25) {
-				Get();
-				FunctionArgument(out arg);
-				node.Parameters.Add(arg); 
-			}
-		}
-		Expect(30);
-	}
-
 	void FunctionArgument(out DParameter arg) {
 		arg = null; 
 		Expect(1);

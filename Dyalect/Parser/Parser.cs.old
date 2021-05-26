@@ -613,13 +613,25 @@ namespace Dyalect.Parser
 	}
 
 	void Function(out DNode node) {
-		node = null; var st = false; 
+		node = null; var st = false; DRecursiveBlock rec = null; 
 		if (la.kind == 75) {
 			Get();
 			st = true; 
 		}
 		Expect(12);
 		FunctionBody(st, out node);
+		while (la.kind == 76) {
+			if (rec is null)
+			{
+			   rec = new DRecursiveBlock(t);
+			   rec.Functions.Add((DFunctionDeclaration)node);
+			}
+			
+			Get();
+			FunctionBody(false, out node);
+			rec.Functions.Add((DFunctionDeclaration)node); 
+		}
+		node = rec ?? node; 
 	}
 
 	void Directive(out DNode node) {
@@ -696,7 +708,7 @@ namespace Dyalect.Parser
 	}
 
 	void FunctionBody(bool st, out DNode node) {
-		node = null; DRecursiveBlock rec = null; 
+		node = null; 
 		var f = new DFunctionDeclaration(t) { IsStatic = st };
 		functions.Push(f);
 		
@@ -725,18 +737,20 @@ namespace Dyalect.Parser
 		node = f;
 		functions.Pop();
 		
-		while (la.kind == 76) {
-			if (rec is null)
-			{
-			   rec = new DRecursiveBlock(t);
-			   rec.Functions.Add((DFunctionDeclaration)node);
+	}
+
+	void FunctionArguments(DFunctionDeclaration node) {
+		Expect(29);
+		if (la.kind == 1) {
+			FunctionArgument(out var arg);
+			node.Parameters.Add(arg); 
+			while (la.kind == 25) {
+				Get();
+				FunctionArgument(out arg);
+				node.Parameters.Add(arg); 
 			}
-			
-			Get();
-			FunctionBody(false, out node);
-			rec.Functions.Add((DFunctionDeclaration)node); 
 		}
-		node = rec ?? node; 
+		Expect(30);
 	}
 
 	void FunctionArguments(DFunctionDeclaration node) {
