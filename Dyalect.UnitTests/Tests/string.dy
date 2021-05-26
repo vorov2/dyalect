@@ -254,3 +254,9 @@ func concatTest2() {
     assert("!dummy!str", str)
     TypeInString.__deleteMember("toString")
 }
+
+func stringtoCharArray() {
+    let str = "Hello"
+    let arr = str.toCharArray()
+    assert(['H', 'e', 'l', 'l', 'o'], arr)
+}

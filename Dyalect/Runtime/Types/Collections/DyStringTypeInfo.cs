@@ -1,6 +1,7 @@
 ﻿using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -374,6 +375,9 @@ namespace Dyalect.Runtime.Types
             return new DyString(str.Remove(fri, c));
         }
 
+        private DyObject ToCharArray(ExecutionContext ctx, DyObject self) =>
+            new DyArray(self.GetString().ToCharArray().Select(c => new DyChar(c)).ToArray());
+
         protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -398,6 +402,7 @@ namespace Dyalect.Runtime.Types
                 "replace" => Func.Member(name, Replace, -1, new Par("value"), new Par("with"), new Par("ignoreCase", DyBool.False)),
                 "remove" => Func.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance)),
                 "reverse" => Func.Member(name, Reverse),
+                "toCharArray" => Func.Member(name, ToCharArray),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
         #endregion
