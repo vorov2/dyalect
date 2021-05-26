@@ -74,6 +74,16 @@ namespace Dyalect.Runtime.Types
             return base.SetOp(self, index, value, ctx);
         }
 
+        protected override DyObject? LookupSpecialInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        {
+            var typ = (DyCustomType)self;
+
+            if (typ.Privates.TryGetItem(name, ctx, out var item))
+                return item;
+            
+            return null;
+        }
+
         public override string TypeName { get; }
     }
 }
