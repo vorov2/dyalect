@@ -1,7 +1,0 @@
-﻿VSCode marketplace extension version:
-https://vsmarketplacebadge.apphb.com/version/vorov2.dyalect.svg
-
-VSCode marketplace extension installs:
-https://vsmarketplacebadge.apphb.com/installs/vorov2.dyalect.svg
-
-https://github.com/Naereen/badges
