@@ -1,3 +1,6 @@
+# 0.27.0
+  * Fix: _Consider forward declaration of functions_ ([Issue #527](https://github.com/vorov2/dyalect/issues/527), [docs](https://github.com/vorov2/dyalect/wiki/Functions#rec)).
+
 # 0.26.3
   * Fix: _Incorrect run-time error_ ([Issue #530](https://github.com/vorov2/dyalect/issues/530)).
   * Fix: _Incorrect treatment of private directive_ ([Issue #530](https://github.com/vorov2/dyalect/issues/530)).
