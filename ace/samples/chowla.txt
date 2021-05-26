@@ -1,0 +1,70 @@
+﻿//http://rosettacode.org/wiki/Chowla_numbers#Dyalect
+func chowla(n) {
+    var sum = 0
+    var i = 2
+    var j = 0
+    while i * i <= n {
+        if n % i == 0 {
+            j = n / i
+            var app = i == j ? 0 : j
+            sum += i + app
+        }
+        i += 1
+    }
+    return sum
+}
+ 
+func sieve(limit) {
+    let c = Array.empty(limit)
+    var i = 3
+    while i * 3 < limit {
+        if !c[i] && (chowla(i) == 0) {
+            var j = 3 * i
+            while j < limit {
+                c[j] = true
+                j += 2 * i
+            }
+        }
+        i += 2
+    }
+    return c
+}
+ 
+for i in 1..37 {
+    print("chowla(\(i)) = \(chowla(i))")
+}
+ 
+var count = 1
+var limit = 1000
+var power = 100
+var c = sieve(limit)
+ 
+var i = 3
+while i < limit {
+    count += 1 when !c[i]
+    if i == power - 1 {
+        print("Count of primes up to \(power) = \(count)")
+        power *= 10
+    }
+    i += 2
+}
+ 
+count = 0
+limit = 3500
+var k = 2
+var kk = 3
+var p
+i = 2
+ 
+while true {
+    p = k * kk
+    break when p > limit
+    if chowla(p) == p - 1 {
+        print("\(p) is a number that is perfect")
+        count += 1
+    }
+    k = kk + 1
+    kk += k
+}
+ 
+print("There are \(count) perfect numbers <= 35,000,000")

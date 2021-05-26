@@ -1,0 +1,13 @@
+﻿//http://rosettacode.org/wiki/FizzBuzz#Dyalect
+var n = 1
+ 
+while n < 20 {
+    let res = match n {
+        _ when n % 15 == 0 => "fizzbuzz",
+        _ when n % 3 == 0 => "fizz",
+        _ when n % 5 == 0 => "buzz",
+        _ => n
+    }
+    print(res)
+    n = n + 1
+}

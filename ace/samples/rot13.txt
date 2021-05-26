@@ -1,0 +1,18 @@
+﻿//http://rosettacode.org/wiki/Rot-13#Dyalect
+func Char.rot13() {
+    match this {
+        (>= 'a' and <= 'm') or (>= 'A' and <= 'M') => Char(this.order() + 13),
+        (>= 'n' and <= 'z') or (>= 'N' and <= 'Z') => Char(this.order() - 13),
+        _ => this
+    }
+}
+ 
+func String.rot13() {
+    var cs = []
+    for c in this {
+        cs.add(c.rot13())
+    }
+    String.concat(values: cs)
+}
+ 
+"ABJURER nowhere".rot13()

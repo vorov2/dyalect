@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!--<meta name="viewport" content="width=device-width,height=device-height" />-->
+	<title>Text Events</title>
+	<meta name="author" content="Fabian Jakobs">
+	
+	<style type="text/css" media="screen">
+	
+	#container {
+	    border: 1px solid black;
+	    width: 600px;
+	}
+	
+	#canvas {
+	    border: 1px solid black;
+        margin: 4px;
+	    width: 590px;
+	    height: 400px;
+	}
+	
+	#text {
+	    position: absolute;
+	}
+
+	</style>
+	
+</head>
+<body>
+    
+    <div id="container">    
+        <textarea id="text"></textarea>    
+        <div id="canvas"></div>
+    </div>
+
+    <input type="button" value="Clear" id="some_name" onclick="document.getElementById('logger').innerHTML = ''">
+    <div id="logger">
+        
+    </div>
+    
+<script type="text/javascript" charset="utf-8">
+    
+if (!window.console) window.console = {};
+if (!console.log) {
+    var logger = document.getElementById("logger");
+    console.log = function() {
+        logger.innerHTML += Array.prototype.join.call(arguments, ", ") + "<br>";
+    }
+}
+
+function addListener(elem, type, callback) {
+    if (elem.addEventListener) {
+        return elem.addEventListener(type, callback, false);
+    }
+    if (elem.attachEvent) {
+        elem.attachEvent("on" + type, function() {
+            callback(window.event);
+        });
+    }
+}
+
+    
+var container = document.getElementById("container");
+var canvas = document.getElementById("canvas");
+var text = document.getElementById("text");
+    
+function log(e) {
+    console.log(e.type, e);
+}
+
+function logKey(e) {
+    console.log(e.type, e.charCode, e.keyCode, e);
+}
+
+addListener(canvas, "mousedown", function(e) {
+    text.focus();
+    e.preventDefault();
+}, false);
+
+var pos;
+addListener(canvas, "touchstart", function(e) {
+    text.value = ""
+    pos = e.touches[0]
+    text.focus();
+}, false);
+addListener(canvas, "contextmenu", function(e) {
+    text.value = "xxxxx";
+    var rect = canvas.getBoundingClientRect()
+    // text.selectionStart = 0
+    // text.selectionEnd = 20
+    text.style.opacity = 0
+    text.style.top = pos.clientY - 15 - rect.top + "px"
+    text.style.left = pos.clientX - 15 - rect.left + "px"
+    // canvas.style.fontSize = "300px"
+    // text.readOnly = true
+    // text.focus();
+    text.style.width = "50px"
+    text.style.height =  "50px"
+    text.select();
+    setTimeout(function() {
+        text.readOnly = false
+        // text.style.top = pos.clientY - 5 + "px"
+        // text.style.left = pos.clientY - 5 + "px"
+    }, 100)
+    //e.preventDefault();
+}, false);
+
+addListener(text, "keydown", logKey, false);
+addListener(text, "keyup", logKey, false);
+addListener(text, "keypress", logKey, false);
+
+addListener(text, "textInput", function(e) {
+    console.log(e.type, e.data, e);
+}, false);
+
+var i = 0;
+function fillSelection() {
+  text.value = "Juhu Kinners " + (i++);
+  text.select();
+}
+
+addListener(text, "copy", fillSelection, false);
+addListener(text, "paste", log, false);
+addListener(text, "cut", fillSelection, false);
+
+addListener(text, "beforecopy", log, false);
+addListener(text, "beforepaste", log, false);
+addListener(text, "beforecut", log, false);
+
+addListener(text, "compositionstart", log, false);
+addListener(text, "compositionupdate", log, false);
+addListener(text, "compositionend", log, false);
+
+addListener(text, "propertychange", function(e) {
+    console.log(e.type, e.propertyName, e);
+}, false);
+    
+</script>
+
+</body>
+</html>

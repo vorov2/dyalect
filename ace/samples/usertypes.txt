@@ -1,0 +1,63 @@
+﻿//A simple type that can be used to fetch values from functions
+type Option = Some(value) or Nothing()
+
+func Option.hasValue() {
+    this is Some()
+}
+
+func Option.getValue() {
+    match this {
+        Some(value) => value,
+        _ => throw "Option.getValue: no value."
+    }
+}
+
+let val = Option.Some(42)
+print(val.getValue())
+
+//An implementation of a natural number
+type Nat using {
+    var value
+}
+
+//Type constructor
+static func Nat.Nat(value) {
+    if value < 0 {
+        throw "Nat.Nat: value is less than zero."
+    }
+    private()::value = value
+}
+
+//Convert back to integer
+func Nat.toInteger() {
+    private()::value
+}
+
+//Extend an integer with this method to unify conversion
+func Integer.toInteger() {
+    this
+}
+
+func Nat +(other) {
+    let res = private()::value + other.toInteger()
+    res < 0 ? res : Nat(res)
+}
+
+func Nat -(other) {
+    let res = private()::value - other.toInteger()
+    res < 0 ? res : Nat(res)
+}
+
+func Nat == (other) {
+    other.toInteger() == private()::value
+}
+
+func Nat.toString() {
+    "Nat(" + private()::value + ")"   
+}
+
+//Testing
+let x = Nat(42)
+print(x - 12)
+print(x - 122)
+print(x == Nat(42))

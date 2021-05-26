@@ -1,0 +1,21 @@
+﻿//http://rosettacode.org/wiki/Monty_Hall_problem#Dyalect
+var switchWins = 0
+var stayWins = 0
+ 
+for plays in 0..1000 {
+    var doors = [0 ,0, 0]
+    var winner = rnd(3)
+    doors[winner] = 1
+    let choice = rnd(3)
+    var shown = rnd(3)
+ 
+    while doors[shown] == 1 || shown == choice {
+        shown = rnd(3)
+    }
+ 
+    stayWins += doors[choice]
+    switchWins += doors[3 - choice - shown]
+}
+ 
+print("Staying wins \(stayWins) times.")
+print("Switching wins \(switchWins) times.")

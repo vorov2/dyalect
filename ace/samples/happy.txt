@@ -1,0 +1,26 @@
+﻿//http://rosettacode.org/wiki/Happy_numbers#Dyalect
+func happy(n) {
+    let m = []
+    while n > 1 {
+        m.add(n)
+        var x = n
+        n = 0
+        while x > 0 {
+            let d = x % 10
+            n += d * d
+            x /= 10
+        }
+        return false when m.indexOf(n) != -1
+    }
+    true
+}
+ 
+var (n, found) = (1, 0)
+while found < 8 {
+    if happy(n) {
+        print("\(n) ", terminator: "")
+        found += 1
+    }
+    n += 1
+}
+print()

@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="src/ace.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            padding: 0px;
+            margin: 0px;
+            background-color: #5B5B5B;
+        }
+        #container {
+            width: 100%;
+            height:100%;
+        }
+        #editor {
+            width: 100%;
+            height: 70%;
+            min-height: 100px;
+        }
+        #cout {
+            height: calc(30% - 71px);
+            overflow: auto;
+            border-top: solid 4px #161616;
+            background-color: #2D2D2D;
+            color: #CCCCCC;
+            font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+            font-size: 16px;
+            padding-left: 10px;
+            min-height:100px;
+        }
+        #toolbar {
+            background-color: #393939;
+            height: 40px;
+            border-bottom: solid 2px #161616;
+            padding-top: 5px;
+            padding-left: 5px;
+            padding-right: 15px;
+        }
+        #button_run {
+            color: #CCCCCC;
+            font-size: 22px;
+            font-family: Verdana;
+            height: 28px;
+            padding: 4px 4px 2px 40px;
+            background: url(play.svg) no-repeat left center;
+            float: right;
+        }
+        #button_run:hover {
+            background-color: #5B5B5B;
+            cursor:pointer;
+        }
+        .err {
+            color: #FF7F7F;
+        }
+        .retval {
+            color: #D7BA7D;
+        }
+        #title {
+            font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+            font-size: 30px;
+            font-weight: bold;
+            color: #D7BA7D;
+            padding-left: 10px;
+            padding-top: 8px;
+        }
+        a {
+            text-decoration:none;
+        }
+
+        #codeSamples {
+            background-color: #393939;
+            color: #CCCCCC;
+            float: right;
+            font-size: 22px;
+            font-family: Verdana;
+            margin-right: 10px;
+            margin-left: 10px;
+            margin-top: 2px;
+        }
+
+        .opt {
+            font-size: 14px;
+        }
+    </style>
+    <script type="text/javascript">
+        var samples = [
+              { title: "Custom types", file: "usertypes.txt" }
+            , { title: "100 doors", file: "100doors.txt" }
+            , { title: "9 billion names", file: "9bil.txt" }
+            , { title: "99 bottles of beer", file: "99bottles.txt" }
+            , { title: "ABC problem", file: "abc.txt" }
+            , { title: "Apply callback to an array", file: "arraycallback.txt" }
+            , { title: "Number classifications", file: "numberclass.txt" }
+            , { title: "Babbage problem", file: "babbage.txt" }
+            , { title: "Caesar cypher", file: "caesarcypher.txt" }
+            , { title: "Value of e", file: "valueofe.txt" }
+            , { title: "Chowla numbers", file: "chowla.txt" }
+            , { title: "Count the coins", file: "countcoins.txt" }
+            , { title: "CUSIP", file: "cusip.txt" }
+            , { title: "HQ9+ interpreter", file: "hqint.txt" }
+            , { title: "Fibonacci", file: "fib.txt" }
+            , { title: "Factors of an integer", file: "factors.txt" }
+            , { title: "FizzBuzz", file: "fizzbuzz.txt" }
+            , { title: "Happy numbers", file: "happy.txt" }
+            , { title: "Higher-order functions", file: "hofunc.txt" }
+            , { title: "Langton's ant", file: "lant.txt" }
+            , { title: "Levenshtein distance", file: "leven.txt" }
+            , { title: "Longest common prefix", file: "lcp.txt" }
+            , { title: "McNuggets problem", file: "mcnugget.txt" }
+            , { title: "Monty Hall problem", file: "montyhall.txt" }
+            , { title: "Phrase reversal", file: "reversal.txt" }
+            , { title: "Proper divisors", file: "properdiv.txt" }
+            , { title: "Rot-13", file: "rot13.txt" }
+            , { title: "Range consolidation", file: "rangecons.txt" }
+            , { title: "The name game", file: "namegame.txt" }
+            , { title: "The twelve days of Christmas", file: "12days.txt" }
+            , { title: "Towers of Hanoi", file: "hanoi.txt" }
+        ];
+
+        function runCode() {
+            var cout = document.getElementById("cout");
+            var editor = ace.edit("editor");
+            cout.innerHTML = "";
+            var req = new XMLHttpRequest();
+            req.onreadystatechange = function () {
+                if (req.readyState == 4) {
+                    var obj = JSON.parse(req.responseText);
+                    var data = "<div style='font-size:10px;margin-bottom:5px;color:gray'>Dyalect console v0.5</div>" ;
+
+                    if (obj.cout != "") {
+                        data += obj.cout.replaceAll("\n", "<br/>");
+                        data += "<br/>";
+                    }
+
+                    if (obj.success) {
+                        if (obj.value != "nil") {
+                            data += "<span class='retval'>" + obj.value + "</span>";
+                        }
+                    }
+                    else {
+                        for (var i = 0; i < obj.messages.length; i++) {
+                            data += "<span class='err'>" + obj.messages[i] + "</span><br/>";
+                        }
+                    }
+
+                    cout.innerHTML = data;
+                    cout.scrollTop = cout.scrollHeight;
+                }
+            }
+            req.open("POST", "/exe");
+            req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            req.send("source=" + encodeURIComponent(editor.getValue()));
+        }
+        function getVersion() {
+            var req = new XMLHttpRequest();
+            req.onreadystatechange = function () {
+                if (req.readyState == 4) {
+                    var obj = JSON.parse(req.responseText);
+                    document.getElementById("version").innerHTML = obj.version;
+                }
+            }
+            req.open("GET", "/exe");
+            req.send();
+
+            var ddl = document.getElementById("codeSamples");
+            var def = document.createElement("option");
+            def.value = "";
+            def.text = "(Choose a code sample)";
+            def.className = "opt";
+            ddl.appendChild(def);
+
+            for (var i = 0; i < samples.length; i++) {
+                var option = document.createElement("option");
+                option.value = samples[i].file;
+                option.text = samples[i].title;
+                option.className = "opt";
+                ddl.appendChild(option);
+            }
+            ddl.onchange = function () {
+                if (ddl.value == "") {
+                    var editor = ace.edit("editor");
+                    var editor = ace.edit("editor");
+                    editor.setValue("//Welcome to Dyalect!\n" +
+                        "//Write your own code or choose a sample from the menu above\n" +
+                        "\n" + "print(\"Hello world\")");
+                    editor.clearSelection();
+                    editor.clearSelection();
+                } else {
+                    openFile(ddl.value);
+                }
+            }
+        }
+
+        function openFile(uri) {
+            var req = new XMLHttpRequest();
+            req.onreadystatechange = function () {
+                if (req.readyState == 4) {
+                    var editor = ace.edit("editor");
+                    editor.setValue(req.responseText);
+                    editor.clearSelection();
+                }
+            }
+            req.open("GET", "samples/" + uri);
+            req.send();
+        }
+    </script>
+</head>
+<body onload="getVersion()">
+    <div id="container">
+        <div id="toolbar">
+            <a href="https://github.com/vorov2/dyalect"><span id="title">Dyalect&nbsp;<span id="version"></span></span></a>
+            <select id="codeSamples"></select>
+            <span id="button_run" onclick="runCode()">Run</span>
+        </div>
+        <div id="editor">//Welcome to Dyalect!
+//Write your own code or choose a sample from the menu above
+        
+print("Hello world")</div>
+        <pre id="cout">
+        </pre>
+    </div>
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/tomorrow_night_eighties");
+        editor.session.setMode("ace/mode/dyalect");
+        editor.setFontSize(16);
+        editor.setOption("foldStyle", "manual");
+    </script>
+</body>
+</html>

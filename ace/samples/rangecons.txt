@@ -1,0 +1,42 @@
+﻿//http://rosettacode.org/wiki/Range_consolidation#Dyalect
+type Pt(s, e)
+
+func Pt.min() => min(this::s, this::e)
+func Pt.max() => max(this::s, this::e)
+func Pt.toString() => "(\(this::s), \(this::e))"
+
+let rng = [
+    [ Pt(1.1, 2.2) ],
+    [ Pt(6.1, 7.2), Pt(7.2, 8.3) ],
+    [ Pt(4.0, 3.0), Pt(2, 1) ],
+    [ Pt(4.0, 3.0), Pt(2, 1),  Pt(-1, 2),  Pt(3.9, 10) ],
+    [ Pt(1.0, 3.0), Pt(-6, -1), Pt(-4, -5), Pt(8,   2), Pt(-6, -6) ]
+]
+
+func overlap(left, right) =>
+    right.max() >= left.min()
+        when left.max() > right.max()
+        else left.max() >= right.min()
+ 
+func consolidate(left, right) => Pt(min(left.min(), right.min()), max(left.max(), right.max()))
+ 
+func normalize(range) => Pt(range.min(), range.max())
+ 
+for list in rng {
+    var z = list.len() - 1
+    
+    while z >= 1 {
+        for y in (z - 1)^-1..0 when overlap(list[z], list[y]) {
+            list[y] = consolidate(list[z], list[y])
+            break list.removeAt(z)
+        }
+        z -= 1
+    }
+    
+    for i in list.indices() {
+        list[i] = normalize(list[i])
+    }
+    
+    list.sort((x,y) => x::s - y::s)
+    print(list)
+}

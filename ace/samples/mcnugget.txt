@@ -1,0 +1,21 @@
+﻿//http://rosettacode.org/wiki/McNuggets_problem#Dyalect
+func mcnugget(limit) {
+    let sv = Array.empty(limit + 1, false)
+    
+    for s in 0^6..limit { //range from 0 to limit with a step 6
+        for n in s^9..limit { //range from s to limit with a step 9
+            for t in n^20..limit { //range from n to limit with a step 20
+                sv[t] = true
+            }
+        }
+    }
+    
+    for i in limit^-1..0 { //range from limit to 0 with a step -1
+        if !sv[i] {
+            print("Maximum non-McNuggets number is \(i)")
+            return
+        }
+    }
+}
+ 
+mcnugget(100)

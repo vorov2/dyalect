@@ -1,0 +1,37 @@
+﻿//http://rosettacode.org/wiki/Longest_common_prefix#Dyalect
+func lcp(sa...) { //function accepts variable number of arguments
+    return "" when sa.len() == 0 || !sa[0]
+ 
+    var ret = ""
+    var idx = 0
+ 
+    while true {
+        var thisLetter = '\0'
+        
+        for word in sa {
+            if idx == word.len() {
+                return ret
+            }
+            if thisLetter == '\0' {
+                thisLetter = word[idx]
+            }
+            if thisLetter != word[idx] {
+                return ret
+            }
+        }
+ 
+        ret += thisLetter
+        idx += 1
+    }
+}
+ 
+//Testing
+print(lcp("interspecies", "interstellar", "interstate"))
+print(lcp("throne", "throne"))
+print(lcp("throne", "dungeon"))
+print(lcp("throne", "", "throne"))
+print(lcp("cheese"))
+print(lcp(""))
+print(lcp(nil))
+print(lcp("prefix", "suffix"))
+print(lcp("foo", "foobar"))

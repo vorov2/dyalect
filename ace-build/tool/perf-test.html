@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+    <base href="..">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Ace Profile  util</title>
+    <link rel="stylesheet" href="demo/kitchen-sink/styles.css" type="text/css" media="screen" charset="utf-8">
+    <link href="../doc/site/images/favicon.ico" rel="icon" type="image/x-icon">
+</head>
+<body>
+<div style="position:absolute;height:100%;width:260px">
+  <div style="position: absolute; overflow: hidden; top:20px; bottom:0">
+  <div style="width: 120%; height:100%; overflow-y: scroll">
+
+  <table>
+    <tr>
+      <td colspan="2">
+        <label for="profile">profile</label>
+        <input type="checkbox" checked id="profile"></input>
+        <label for="timeout">delay</label>
+        <input id="timeout" type="text" value="3" style="width:10em"></input>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <button onclick = "start(this.textContent)">scroll</button>
+        <button onclick = "start(this.textContent)">select</button>
+        <button onclick = "start(this.textContent)">type</button>
+        <button onclick = "start(this.textContent)">selectH</button>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <button onclick = "start(this.textContent)">tokenize</button>
+      </td>
+    </tr>
+
+  </table>
+  <div id="optionsPanel"></div>
+
+  </div>
+  </div>
+</div>
+  <div id="editor-container"></div>
+
+<!--DEVEL-->
+  <script type="text/javascript">
+      var require = {
+          baseUrl: window.location.protocol + "//" + window.location.host + window.location.pathname.split("/").slice(0, -1).join("/"),
+          paths: {
+              ace: "../lib/ace"
+          }
+      };
+  </script>
+  <script src="demo/kitchen-sink/require.js" data-main="../demo/kitchen-sink/demo" type="text/javascript"></script>
+
+  <script>
+    if (!Date.now) {
+        Date.now = function() { return (new Date()).getTime() };
+    }
+
+
+    var scrollTop, startTime;
+    var timeout, speed, next
+    var editor, shouldProfile;
+
+    function start(testName) {
+        editor = env.editor
+        timeout = parseInt(document.getElementById("timeout").value);
+        shouldProfile = document.getElementById("profile").checked;
+
+        startTime = Date.now()
+        shouldProfile && console.profile()
+
+        speed = 10;
+        next = window[testName + "Next"];
+
+        window[testName + "Start"] && window[testName + "Start"]()
+        setTimeout(next, 1);
+    }
+    function end(){
+        shouldProfile && console.profileEnd()
+        var dt = startTime - Date.now()
+        console.log(dt)
+        ace.cmdLine.setValue(dt+"", 1)
+    }
+
+    /*editor.renderer.scrollToY(0);
+    editor.navigateFileStart(0);
+    */
+
+    var scrollNext = function() {
+        var r = editor.renderer
+        for (var i = speed; i--; )
+            r.scrollBy(0, 1)
+        if (r.scrollTop + r.layerConfig.height > r.layerConfig.maxHeight - 20)
+            end()
+        else
+            setTimeout(next, timeout, speed++)
+    }
+
+    var selectNext = function() {
+        var r = editor.renderer
+        for (var i = speed; i-- > 0; )
+            editor.selection.selectDown()
+        editor.renderer.scrollCursorIntoView()
+        if (r.scrollTop + r.layerConfig.height > r.layerConfig.maxHeight - 20)
+            end()
+        else
+            setTimeout(next, timeout, speed+=0.1)
+    }
+
+    var selectHNext = function() {
+        var r = editor.renderer
+        for (var i = speed; i-- > 0; )
+            editor.selection.selectRight()
+        if (r.scrollTop + r.layerConfig.height > r.layerConfig.maxHeight - 20)
+            end()
+        else
+            setTimeout(next, timeout, speed+=0.1)
+    }
+
+    var typeChars = start.toString().split("")
+    var typeNext = function() {
+        var r = editor.renderer
+        for (var i = speed; i--; )
+            editor.insert(typeChars[i % typeChars.length])
+        if (speed == 100)
+            end()
+        else
+            setTimeout(next, timeout, speed++)
+    }
+
+    var tokenizer, state, lines, chunk
+    var tokenizeStart = function() {
+        var b = ace.session.bgTokenizer
+        state = null
+        tokenizer = b.tokenizer
+        lines = b.doc.getAllLines()
+        chunk = 1000
+    }
+    
+    var tokenizeNext = function() {
+        var states = []
+        for (var i = 0, l = lines.length; i < l; i++) {
+            state = tokenizer.getLineTokens(lines[i], state).state
+        }
+        states.push(state)
+        if (speed-- > 3)
+            setTimeout(next, timeout)
+        else
+            end()
+    }
+
+  </script>
+
+</body>
+</html>

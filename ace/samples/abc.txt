@@ -1,0 +1,24 @@
+﻿//http://rosettacode.org/wiki/ABC_problem#Dyalect
+func blockable(str) {
+    let blocks = [
+        "BO", "XK", "DQ", "CP", "NA", "GT", "RE", "TG", "QD", "FS",
+        "JW", "HU", "VI", "AN", "OB", "ER", "FS", "LY", "PC", "ZM" ]
+    let strUp = str.upper()
+    var final = ""
+ 
+    for c in strUp {
+        for j in blocks.indices() when blocks[j].startsWith(c) || blocks[j].endsWith(c) {
+            final += c
+            blocks[j] = ""
+            break
+        }
+    }
+    
+    final == strUp
+}
+ 
+func canOrNot(can) => can ? "can" : "cannot"
+ 
+for str in [ "A", "BARK", "BooK", "TrEaT", "comMON", "sQuAd", "Confuse" ] {
+    print("\"\(str)\" \(canOrNot(blockable(str))) be spelled with blocks.")
+}

@@ -1,0 +1,2 @@
+﻿FTP-адрес :	FTP.SITE4NOW.NET
+Имя пользователя FTP :	vorov2-001

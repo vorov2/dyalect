@@ -1,0 +1,14 @@
+﻿//http://rosettacode.org/wiki/Factors_of_an_integer#Dyalect
+func Iterator.where(pred) {
+    for x in this when pred(x) {
+        yield x
+    }
+}
+ 
+func Integer.factors() {
+    (1..this).where(x => this % x == 0)
+}
+ 
+for x in 45.factors() {
+    print(x)
+}

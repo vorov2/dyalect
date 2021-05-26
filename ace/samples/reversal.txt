@@ -1,0 +1,35 @@
+﻿//http://rosettacode.org/wiki/Phrase_reversals#Dyalect
+let str = "rosetta code phrase reversal"
+ 
+//or you can use a built-in method String.reverse
+func reverse(str) {
+    let xs = []
+    for i in (str.len()-1)^-1..0 { //Range with a step -1 down to 0
+        xs.add(str[i])
+    }
+    String.concat(values: xs)
+}
+ 
+func reverseByWord(str) {
+    let words = str.split(" ")
+    let xs = []
+    for w in words {
+        xs.add(reverse(w))
+        xs.add(" ")
+    }
+    String.concat(values: xs)
+}
+ 
+func reverseWords(str) {    
+    let words = str.split(" ")
+    let xs = []
+    for i in (words.len()-1)^-1..0 {
+        xs.add(words[i])
+        xs.add(" ")
+    }
+    String.concat(values: xs)
+}
+ 
+print("1. \(reverse(str))")
+print("2. \(reverseByWord(str))")
+print("3. \(reverseWords(str))")

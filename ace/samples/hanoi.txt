@@ -1,0 +1,9 @@
+﻿//http://rosettacode.org/wiki/Towers_of_Hanoi#Dyalect
+func hanoi(n, a, b, c) {
+    return when n <= 0
+    hanoi(n - 1, a, c, b)
+    print("Move disk from \(a) to \(c)")
+    hanoi(n - 1, b, a, c)
+}
+ 
+hanoi(4, "A", "B", "C")

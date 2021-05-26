@@ -1,0 +1,11 @@
+﻿//http://rosettacode.org/wiki/Apply_a_callback_to_an_array#Dyalect
+func Array.select(pred) {
+    for x in this when pred(x) {
+        yield x
+    }
+}
+ 
+var arr = [1, 2, 3, 4, 5]
+var squares = arr.select(x => x * x)
+ 
+print(squares)
