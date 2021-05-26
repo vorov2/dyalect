@@ -1,5 +1,7 @@
 # 0.27.0
-  * Fix: _Consider forward declaration of functions_ ([Issue #527](https://github.com/vorov2/dyalect/issues/527), [docs](https://github.com/vorov2/dyalect/wiki/Functions#rec)).
+  * Add: _Consider forward declaration of functions_ ([Issue #527](https://github.com/vorov2/dyalect/issues/527), [docs](https://github.com/vorov2/dyalect/wiki/Functions#rec)).
+  * Add: _Add `sqrt` standard function_ ([Issue #533](https://github.com/vorov2/dyalect/issues/533), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#sqrt)).
+  * Add: _Add `pow` standard function_ ([Issue #532](https://github.com/vorov2/dyalect/issues/532), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#pow)).
 
 # 0.26.3
   * Fix: _Incorrect run-time error_ ([Issue #530](https://github.com/vorov2/dyalect/issues/530)).

@@ -130,12 +130,24 @@ namespace Dyalect.Linker
         }
 
         [Function("sqrt")]
-        public DyObject Sqrt(ExecutionContext ctx, DyObject n)
+        public DyObject Sqrt(ExecutionContext ctx, DyObject x)
         {
-            if (n.TypeId != DyType.Float && n.TypeId != DyType.Integer)
-                return ctx.InvalidType(n);
+            if (x.TypeId != DyType.Float && x.TypeId != DyType.Integer)
+                return ctx.InvalidType(x);
 
-            return new DyFloat(Math.Sqrt(n.GetFloat()));
+            return new DyFloat(Math.Sqrt(x.GetFloat()));
+        }
+
+        [Function("pow")]
+        public DyObject Pow(ExecutionContext ctx, DyObject x, DyObject y)
+        {
+            if (x.TypeId is not DyType.Float and not DyType.Integer)
+                return ctx.InvalidType(x);
+
+            if (y.TypeId is not DyType.Float and not DyType.Integer)
+                return ctx.InvalidType(y);
+
+            return new DyFloat(Math.Pow(x.GetFloat(), y.GetFloat()));
         }
 
         [Function("min")]
