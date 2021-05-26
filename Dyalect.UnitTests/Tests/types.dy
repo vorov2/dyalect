@@ -619,3 +619,23 @@ func testTypeVars() {
     b::left::value = 42.0
     assert(42.0, b::left::value)
 }
+
+type TinyInt using {
+    var value
+    func getInteger(val) {
+        val is TinyInt ? private(val)::value : val
+    }
+}
+func testPrivateInsideInit() {
+    static func TinyInt.TinyInt(Integer x) {
+        using private()
+        ::value = ::getInteger(x)
+    }
+    func TinyInt toInteger() => private()::value
+    func TinyInt + (other) {
+        using private()
+        TinyInt(::value + ::getInteger(other))
+    }
+    let res = TinyInt(2) + TinyInt(7)
+    print(9, res.toInteger())
+}

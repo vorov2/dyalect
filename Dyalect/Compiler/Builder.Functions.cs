@@ -258,7 +258,7 @@ namespace Dyalect.Compiler
                             AddError(CompilerError.CtorAutoGen, node.Location, unit.Types[lti.TypeId].Name);
 
                         if (lti.Declaration.Using is not null)
-                            BuildUsing(lti.Declaration.Using, hints, oldctx);
+                            BuildUsing(lti.Declaration.Using, hints, ctx);
                         else
                             cw.NewTuple(0);
 
