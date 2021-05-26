@@ -468,7 +468,7 @@ func funcTypeAnnotations2() {
     }
 }
 
-func mutualRecursion() {
+func mutualRecursion1() {
     func f(x) {
         g(x - 1) when x > 0 else x
     }
@@ -477,4 +477,17 @@ func mutualRecursion() {
     }
     assert(0, f(1))
     assert(-1, f(-1))
+}
+
+func mutualRecursion2() {
+    func f(n) {
+        n == 0 ? 1 : n - m(f(n-1))
+    }
+    and m(n) {
+        n == 0 ? 0 : n - f(m(n-1))
+    }
+    let xs = (0..20).map(i => f(i)).toArray()
+    let ys = (0..20).map(i => m(i)).toArray()
+    assert([1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 11, 11, 12, 13], xs)
+    assert([0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 7, 8, 9, 9, 10, 11, 11, 12, 12], ys)
 }
