@@ -3,6 +3,7 @@
   * Add: _Add `sqrt` standard function_ ([Issue #533](https://github.com/vorov2/dyalect/issues/533), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#sqrt)).
   * Add: _Add `pow` standard function_ ([Issue #532](https://github.com/vorov2/dyalect/issues/532), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#pow)).
   * Add: _Add `String.toCharArray` method_ ([Issue #524](https://github.com/vorov2/dyalect/issues/524), [docs](https://github.com/vorov2/dyalect/wiki/String#toCharArray)).
+  * Change: _`String.repeat` should accept both strings and chars_ ([Issue #534](https://github.com/vorov2/dyalect/issues/534)).
 
 # 0.26.3
   * Fix: _Incorrect run-time error_ ([Issue #530](https://github.com/vorov2/dyalect/issues/530)).

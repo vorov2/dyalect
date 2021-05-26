@@ -260,3 +260,8 @@ func stringtoCharArray() {
     let arr = str.toCharArray()
     assert(['H', 'e', 'l', 'l', 'o'], arr)
 }
+
+func stringRepeatTest() {
+    let str = String.repeat("ha", 5)
+    assert("hahahahaha", str)
+}

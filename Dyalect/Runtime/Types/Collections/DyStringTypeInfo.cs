@@ -460,13 +460,19 @@ namespace Dyalect.Runtime.Types
 
         private static DyObject Repeat(ExecutionContext ctx, DyObject value, DyObject count)
         {
-            if (count.TypeId != DyType.Integer)
+            if (count.TypeId is not DyType.Integer)
                 return ctx.InvalidType(count);
 
-            if (value.TypeId != DyType.Char)
+            if (value.TypeId is not DyType.Char and not DyType.String)
                 return ctx.InvalidType(value);
 
-            return new DyString(new string(value.GetChar(), (int)count.GetInteger()));
+            var c = (int)count.GetInteger();
+            var sb = new StringBuilder();
+
+            for (var i = 0; i < c; i++)
+                sb.Append(value.GetString());
+
+            return new DyString(sb.ToString());
         }
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
