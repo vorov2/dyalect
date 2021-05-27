@@ -5,6 +5,9 @@
   * Add: _Add `String.toCharArray` method_ ([Issue #524](https://github.com/vorov2/dyalect/issues/524), [docs](https://github.com/vorov2/dyalect/wiki/String#toCharArray)).
   * Change: _`String.repeat` should accept both strings and chars_ ([Issue #534](https://github.com/vorov2/dyalect/issues/534)).
 
+# 0.26.4
+  * Fix: _Run-time crash_ ([Issue #535](https://github.com/vorov2/dyalect/issues/535)).
+
 # 0.26.3
   * Fix: _Incorrect run-time error_ ([Issue #530](https://github.com/vorov2/dyalect/issues/530)).
   * Fix: _Incorrect treatment of private directive_ ([Issue #530](https://github.com/vorov2/dyalect/issues/530)).
