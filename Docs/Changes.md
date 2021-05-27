@@ -10,7 +10,7 @@
 
 # 0.26.3
   * Fix: _Incorrect run-time error_ ([Issue #530](https://github.com/vorov2/dyalect/issues/530)).
-  * Fix: _Incorrect treatment of private directive_ ([Issue #530](https://github.com/vorov2/dyalect/issues/530)).
+  * Fix: _Incorrect treatment of private directive_ ([Issue #528](https://github.com/vorov2/dyalect/issues/528)).
 
 # 0.26.2
   * Fix: _Parser error in guards_ ([Issue #526](https://github.com/vorov2/dyalect/issues/526)).
