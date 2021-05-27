@@ -68,3 +68,8 @@ func evalTest() {
     var res = eval(src, (x: 2, y: 12, z: 3) )
     assert(38, res)
 }
+
+func powTest() {
+    assert(46918, Integer(pow(12.2, 4.3)))
+    assert(3111696, Integer(pow(42, 4)))
+}

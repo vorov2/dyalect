@@ -405,11 +405,11 @@ namespace Dyalect.Runtime.Types
 
             if (value is not null)
                 return value is DyFunction f ? f.BindToInstance(ctx, self) : value;
-            else
-                return ctx.OperationNotSupported(name, self.GetTypeName(ctx));
+            
+            return ctx.OperationNotSupported(name, self.GetTypeName(ctx));
         }
 
-        internal DyObject? LookupInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        private DyObject? LookupInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             if (!members.TryGetValue(name, out var value))
             {

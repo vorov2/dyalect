@@ -98,6 +98,8 @@
 
         InvalidTypeDefaultValue = 247,
 
-        NoUsing = 248
+        NoUsing = 248,
+
+        MethodNotRecursive = 249
     }
 }

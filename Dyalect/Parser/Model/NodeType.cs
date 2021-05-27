@@ -48,6 +48,7 @@
         Label,
         Parameter,
 
+        RecursiveBlock,
         Type,
         Field,
 

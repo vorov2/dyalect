@@ -1,3 +1,10 @@
+# 0.27.0
+  * Add: _Consider forward declaration of functions_ ([Issue #527](https://github.com/vorov2/dyalect/issues/527), [docs](https://github.com/vorov2/dyalect/wiki/Functions#rec)).
+  * Add: _Add `sqrt` standard function_ ([Issue #533](https://github.com/vorov2/dyalect/issues/533), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#sqrt)).
+  * Add: _Add `pow` standard function_ ([Issue #532](https://github.com/vorov2/dyalect/issues/532), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#pow)).
+  * Add: _Add `String.toCharArray` method_ ([Issue #524](https://github.com/vorov2/dyalect/issues/524), [docs](https://github.com/vorov2/dyalect/wiki/String#toCharArray)).
+  * Change: _`String.repeat` should accept both strings and chars_ ([Issue #534](https://github.com/vorov2/dyalect/issues/534)).
+
 # 0.26.4
   * Fix: _Run-time crash_ ([Issue #535](https://github.com/vorov2/dyalect/issues/535)).
 

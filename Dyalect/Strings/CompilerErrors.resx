@@ -273,4 +273,7 @@
   <data name="NoUsing" xml:space="preserve">
     <value>Indexer and member access are only valid with an active "using" declaration.</value>
   </data>
+  <data name="MethodNotRecursive" xml:space="preserve">
+    <value>Methods can't be recursive. Declare a regular function instead.</value>
+  </data>
 </root>

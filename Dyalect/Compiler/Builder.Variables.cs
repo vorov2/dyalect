@@ -83,10 +83,18 @@ namespace Dyalect.Compiler
         private int AddVariable(string name, Location loc, int data)
         {
             //Check if we already have such a variable in the local scope
-            if (currentScope.Locals.ContainsKey(name))
+            if (currentScope.Locals.TryGetValue(name, out var exist))
             {
-                AddError(CompilerError.VariableAlreadyDeclared, loc, name);
-                return -1;
+                if ((exist.Data & VarFlags.PreInit) == VarFlags.PreInit && (data & VarFlags.Function) == VarFlags.Function)
+                {
+                    currentScope.Locals[name] = new ScopeVar(exist.Address, exist.Data ^ VarFlags.PreInit);
+                    return (0 | exist.Address << 8);
+                }
+                else
+                {
+                    AddError(CompilerError.VariableAlreadyDeclared, loc, name);
+                    return -1;
+                }
             }
 
             currentScope.Locals.Add(name, new(currentCounter, data));
