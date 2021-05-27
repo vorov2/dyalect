@@ -10,7 +10,8 @@ namespace Dyalect.Compiler
 {
     partial class Builder
     {
-        private readonly Stack<int> usings = new();
+        private readonly Stack<string> usings = new();
+        private int usingCount;
 
         //The main compilation switch that processes all types of AST nodes
         private void Build(DNode node, Hints hints, CompilerContext ctx)
@@ -143,10 +144,11 @@ namespace Dyalect.Compiler
         private void Build(DUsing node, Hints hints, CompilerContext ctx)
         {
             Build(node.Expression, hints.Append(Push), ctx);
-            var a = AddVariable();
+            var nam = "$using" + ++usingCount;
+            var a = AddVariable(nam, node, VarFlags.None);
             AddLinePragma(node);
             cw.PopVar(a);
-            usings.Push(a);
+            usings.Push(nam);
         }
 
         private void Build(DPrivateScope node, Hints hints, CompilerContext ctx)
@@ -409,8 +411,9 @@ namespace Dyalect.Compiler
                 if (usings.Count == 0)
                     AddError(CompilerError.NoUsing, node.Location);
 
-                var a = usings.Count > 0 ? usings.Peek() : 0;
-                cw.PushVar(new ScopeVar(a));
+                var nam = usings.Count > 0 ? usings.Peek() : "";
+                var a = GetVariable(nam, node);
+                cw.PushVar(a);
             }
             else
                 Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
@@ -585,8 +588,9 @@ namespace Dyalect.Compiler
                 if (usings.Count == 0)
                     AddError(CompilerError.NoUsing, node.Location);
 
-                var a = usings.Count > 0 ? usings.Peek() : 0;
-                cw.PushVar(new ScopeVar(a));
+                var vn = usings.Count > 0 ? usings.Peek() : "";
+                var a = GetVariable(vn, node);
+                cw.PushVar(a);
                 BuildIndexer(node, hints, ctx);
                 return;
             }
