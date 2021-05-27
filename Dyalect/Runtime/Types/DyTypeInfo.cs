@@ -419,10 +419,8 @@ namespace Dyalect.Runtime.Types
                     members.Add(name, value);
             }
 
-            return value ?? LookupSpecialInstanceMember(self, name, ctx);
+            return value;
         }
-
-        protected virtual DyObject? LookupSpecialInstanceMember(DyObject self, string name, ExecutionContext ctx) => null;
 
         internal void SetInstanceMember(string name, DyObject value)
         {
