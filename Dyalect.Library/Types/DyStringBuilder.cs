@@ -131,7 +131,7 @@ namespace Dyalect.Library.Types
             return self;
         }
 
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "insert" => Func.Member(name, Insert, -1, new Par("index"), new Par("value")),

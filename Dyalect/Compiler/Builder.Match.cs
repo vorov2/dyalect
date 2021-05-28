@@ -83,7 +83,7 @@ namespace Dyalect.Compiler
                     cw.Not();
                     break;
                 case NodeType.NamePattern:
-                    BuildName((DNamePattern)node, hints);
+                    BuildName((DNamePattern)node, hints, ctx);
                     break;
                 case NodeType.IntegerPattern:
                     cw.Push(((DIntegerPattern)node).Value);
@@ -243,7 +243,7 @@ namespace Dyalect.Compiler
             int sva;
 
             if (!TryGetLocalVariable(node.Name, out var sv))
-                sva = AddVariable(node.Name, node, VarFlags.None);
+                sva = AddVariable(node.Name, node.Location, VarFlags.None);
             else
                 sva = sv.Address;
 
@@ -257,20 +257,19 @@ namespace Dyalect.Compiler
             cw.Nop();
         }
 
-        private void BuildName(DNamePattern node, Hints hints)
+        private void BuildName(DNamePattern node, Hints hints, CompilerContext ctx)
         {
-            ScopeVar sv = default;
-            var found = hints.Has(Rebind)
-                ? TryGetVariable(node.Name, out sv)
-                : !hints.Has(OpenMatch) && TryGetLocalVariable(node.Name, out sv);
-            var sva = sv.Address;
+            if (hints.Has(Rebind) && VariableExists(ctx, node.Name, checkType: false) is CompilerError.None)
+                PopVariable(ctx, node.Name, node.Location);
+            else if (!hints.Has(OpenMatch) && TryGetLocalVariable(node.Name, out var sv))
+                cw.PopVar(sv.Address);
+            else
+            {
+                var sva = AddVariable(node.Name, node.Location, hints.Has(Const) ? VarFlags.Const : VarFlags.None);
+                cw.PopVar(sva);
+            }
 
-            if (!found)
-                sva = AddVariable(node.Name, node, hints.Has(Const) ? VarFlags.Const : VarFlags.None);
-            else if ((sv.Data & VarFlags.Const) == VarFlags.Const)
-                AddError(CompilerError.UnableAssignConstant, node.Location, node.Name);
-
-            cw.PopVar(sva);
+            AddLinePragma(node);
             cw.Push(true);
         }
 
@@ -512,7 +511,7 @@ namespace Dyalect.Compiler
             int sva;
 
             if (!TryGetLocalVariable(node.Name, out var sv))
-                sva = AddVariable(node.Name, node, VarFlags.None);
+                sva = AddVariable(node.Name, node.Location, VarFlags.None);
             else
                 sva = sv.Address;
 
@@ -530,7 +529,7 @@ namespace Dyalect.Compiler
                 int sva;
 
                 if (!found)
-                    sva = AddVariable(node.Name, node, hints.Has(Const) ? VarFlags.Const : VarFlags.None);
+                    sva = AddVariable(node.Name, node.Location, hints.Has(Const) ? VarFlags.Const : VarFlags.None);
                 else
                     sva = sv.Address;
 

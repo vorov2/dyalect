@@ -96,6 +96,8 @@
             0, //Priv
             1, //TypeAnno
             1, //TypeAnnoT
+            1, //SetType
+            1, //UnsetType
         };
     }
 }

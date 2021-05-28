@@ -123,7 +123,7 @@ namespace Dyalect.Runtime.Types
             return (DyBool)seq.IsSupersetOf(ctx, other);
         }
         
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => Func.Member(name, AddItem, -1, new Par("value")),

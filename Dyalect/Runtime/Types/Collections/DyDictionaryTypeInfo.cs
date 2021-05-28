@@ -124,7 +124,7 @@ namespace Dyalect.Runtime.Types
             return (DyBool)map.ContainsKey(key);
         }
 
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             return name switch
             {

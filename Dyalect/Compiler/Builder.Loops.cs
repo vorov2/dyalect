@@ -82,7 +82,7 @@ namespace Dyalect.Compiler
 
             if (node.Pattern.NodeType == NodeType.NamePattern
                 && GetTypeHandle(null, node.Pattern.GetName()!, out var _, out var _) != CompilerError.None)
-                inc = AddVariable(node.Pattern.GetName()!, node.Pattern, VarFlags.None);
+                inc = AddVariable(node.Pattern.GetName()!, node.Pattern.Location, VarFlags.None);
 
             var sys = AddVariable();
             var initSkip = cw.DefineLabel();

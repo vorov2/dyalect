@@ -394,7 +394,7 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Instance
-        private readonly Dictionary<string, DyObject> members = new();
+        private readonly Dictionary<string, DyFunction> members = new();
 
         internal bool HasInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             LookupInstanceMember(self, name, ctx) is not null;
@@ -404,12 +404,12 @@ namespace Dyalect.Runtime.Types
             var value = LookupInstanceMember(self, name, ctx);
 
             if (value is not null)
-                return value is DyFunction f ? f.BindToInstance(ctx, self) : value;
+                return value.BindOrRun(ctx, self);
             
             return ctx.OperationNotSupported(name, self.GetTypeName(ctx));
         }
 
-        private DyObject? LookupInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        private DyFunction? LookupInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             if (!members.TryGetValue(name, out var value))
             {
@@ -478,7 +478,7 @@ namespace Dyalect.Runtime.Types
             return (DyBool)HasInstanceMember(self, name, ctx);
         }
 
-        private DyObject? InitializeInstanceMembers(DyObject self, string name, ExecutionContext ctx) =>
+        private DyFunction? InitializeInstanceMembers(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 Builtins.Add => Support(SupportedOperations.Add) ? Func.Member(name, Add, -1, new Par("other")) : null,
@@ -512,7 +512,7 @@ namespace Dyalect.Runtime.Types
                 _ => InitializeInstanceMember(self, name, ctx)
             };
 
-        protected virtual DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) => null;
+        protected virtual DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) => null;
         #endregion
 
         private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();

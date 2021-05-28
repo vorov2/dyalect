@@ -1,5 +1,6 @@
 ﻿ using Dyalect.Parser;
 using Dyalect.Parser.Model;
+using System;
 using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
@@ -36,16 +37,44 @@ namespace Dyalect.Compiler
                     Build(c, nh, ctx);
             }
 
+            if (node.Using is not null)
+            {
+                var addr = AddVariable("$" + node.Name, node.Location, VarFlags.Const | VarFlags.Private);
+                
+                StartFun(node.Name, Array.Empty<Debug.Par>());
+                var funSkipLabel = cw.DefineLabel();
+                cw.Br(funSkipLabel);
+                var newctx = new CompilerContext { LocalType = node.Name };
+
+                StartScope(ScopeKind.Function, loc: node.Location);
+                StartSection();
+                var offset = cw.Offset;
+                var usingScope = BuildUsing(node.Using, hints, newctx);
+                typeScopes.Add(node.Name, usingScope);
+                cw.Ret();
+                cw.MarkLabel(funSkipLabel);
+
+                var funHandle = unit.Layouts.Count;
+                var ss = EndFun(funHandle);
+                unit.Layouts.Add(new MemoryLayout(currentCounter, ss, offset));
+                EndScope();
+                EndSection();
+                cw.NewFun(funHandle);
+
+                cw.PopVar(addr);
+            }
+
             PushIf(hints);
         }
 
-        private void BuildUsing(DNode node, Hints hints, CompilerContext ctx)
+        private Scope BuildUsing(DNode node, Hints hints, CompilerContext ctx)
         {
             StartScope(ScopeKind.Lexical, node.Location);
             Build(node, hints.Append(NoScope).Remove(Push), ctx);
             var count = 0;
+            var scope = currentScope;
 
-            foreach (var (name, sv) in currentScope.EnumerateVars())
+            foreach (var (name, sv) in scope.EnumerateVars())
             {
                 cw.PushVar(new(0 | sv.Address << 8));
                 cw.Tag(name);
@@ -57,9 +86,10 @@ namespace Dyalect.Compiler
 
             cw.NewTuple(count++);
             EndScope();
+            return scope;
         }
 
-        private void GenerateConstructor(DFunctionDeclaration func)
+        private void GenerateConstructor(DFunctionDeclaration func, CompilerContext ctx)
         {
             if (!char.IsUpper(func.Name![0]))
                 AddError(CompilerError.CtorOnlyPascal, func.Location);
@@ -72,9 +102,8 @@ namespace Dyalect.Compiler
             else if (func.Parameters.Count == 1)
             {
                 var p = func.Parameters[0];
-                var a = GetVariable(p.Name, p);
-                AddLinePragma(func);
-                cw.PushVar(a);
+                PushVariable(ctx, p.Name, p.Location);
+
                 cw.Tag(p.Name);
 
                 if (p.TypeAnnotation is not null)
@@ -90,8 +119,7 @@ namespace Dyalect.Compiler
                 for (var i = 0; i < func.Parameters.Count; i++)
                 {
                     var p = func.Parameters[i];
-                    var a = GetVariable(p.Name, p);
-                    cw.PushVar(a);
+                    PushVariable(ctx, p.Name, p.Location);
                     cw.Tag(p.Name);
 
                     if (p.TypeAnnotation is not null)

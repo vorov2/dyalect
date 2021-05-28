@@ -611,7 +611,14 @@ namespace Dyalect.Runtime
                         ((DyLabel)evalStack.Peek()).Mutable = true;
                         break;
                     case OpCode.Priv:
-                        evalStack.Replace(((DyCustomType)evalStack.Peek()).Privates);
+                        right = evalStack.Peek();
+                        evalStack.Replace(right.TypeId is DyType.Tuple ? right : ((DyCustomType)right).Privates);
+                        break;
+                    case OpCode.SetType:
+                        ctx.TypeStack.Push(ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id);
+                        break;
+                    case OpCode.UnsetType:
+                        ctx.TypeStack.Pop();
                         break;
                 }
             }

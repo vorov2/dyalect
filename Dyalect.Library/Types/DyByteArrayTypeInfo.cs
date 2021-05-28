@@ -54,7 +54,7 @@ namespace Dyalect.Library.Types
             return DyNil.Instance;
         }
 
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "read" => Func.Member(name, Read, -1, new Par("ofType")),

@@ -52,7 +52,7 @@ namespace Dyalect.Compiler
                     Build((DIntegerLiteral)node, hints);
                     break;
                 case NodeType.Name:
-                    Build((DName)node, hints);
+                    Build((DName)node, hints, ctx);
                     break;
                 case NodeType.String:
                     Build((DStringLiteral)node, hints, ctx);
@@ -150,7 +150,7 @@ namespace Dyalect.Compiler
                 AddError(CompilerError.MethodNotRecursive, node.Location);
 
             for (var i = 0; i < node.Functions.Count; i++)
-                AddVariable(node.Functions[i].Name!, node.Functions[i], VarFlags.PreInit | VarFlags.Const | VarFlags.Function);
+                AddVariable(node.Functions[i].Name!, node.Functions[i].Location, VarFlags.PreInit | VarFlags.Const | VarFlags.Function);
 
             for (var i = 0; i < node.Functions.Count; i++)
             {
@@ -163,7 +163,7 @@ namespace Dyalect.Compiler
         {
             Build(node.Expression, hints.Append(Push), ctx);
             var nam = "$using" + ++usingCount;
-            var a = AddVariable(nam, node, VarFlags.None);
+            var a = AddVariable(nam, node.Location, VarFlags.None);
             AddLinePragma(node);
             cw.PopVar(a);
             usings.Push(nam);
@@ -290,7 +290,7 @@ namespace Dyalect.Compiler
 
                 if (node.BindVariable.Value is not "_")
                 {
-                    var sv = AddVariable(node.BindVariable.Value, node.Catch, VarFlags.Const);
+                    var sv = AddVariable(node.BindVariable.Value, node.Catch.Location, VarFlags.Const);
                     cw.PopVar(sv);
                 }
                 else
@@ -430,8 +430,7 @@ namespace Dyalect.Compiler
                     AddError(CompilerError.NoUsing, node.Location);
 
                 var nam = usings.Count > 0 ? usings.Peek() : "";
-                var a = GetVariable(nam, node);
-                cw.PushVar(a);
+                PushVariable(ctx, nam, node.Location);
             }
             else
                 Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
@@ -600,15 +599,14 @@ namespace Dyalect.Compiler
         }
 
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)
-        {
+         {
             if (node.Target is null)
             {
                 if (usings.Count == 0)
                     AddError(CompilerError.NoUsing, node.Location);
 
                 var vn = usings.Count > 0 ? usings.Peek() : "";
-                var a = GetVariable(vn, node);
-                cw.PushVar(a);
+                PushVariable(ctx, vn, node.Location);
                 BuildIndexer(node, hints, ctx);
                 return;
             }
@@ -622,12 +620,12 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-                if (NoPush(node, hints))
-                    return;
-
-                var sv = GetParentVariable(nam.Value, node);
+                var sv = GetParentVariable(nam.Value, node.Location);
                 AddLinePragma(node);
-                cw.PushVar(sv);
+                if (hints.Has(Pop))
+                    cw.PopVar(sv.Address);
+                else
+                    cw.PushVar(sv);
                 return;
             }
 
@@ -638,11 +636,12 @@ namespace Dyalect.Compiler
                 && node.Target.NodeType == NodeType.Name && !options.NoOptimizations)
             {
                 var nm = node.Target.GetName()!;
-                var sv = GetVariable(nm, node.Target, err: false);
+                var err = GetVariable1(nm, currentScope, out var sv);
 
-                if ((sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
+                if (err is CompilerError.None 
+                    && (sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
                 {
-                    if (ru.Unit.ExportList.TryGetValue(str.Value, out var var))
+                    if (ru!.Unit.ExportList.TryGetValue(str.Value, out var var))
                     {
                         if ((var.Data & VarFlags.Private) == VarFlags.Private)
                             AddError(CompilerError.PrivateNameAccess, node.Location, str.Value);
@@ -739,7 +738,11 @@ namespace Dyalect.Compiler
         private void Build(DApplication node, Hints hints, CompilerContext ctx)
         {
             var name = node.Target.NodeType == NodeType.Name ? node.Target.GetName() : null;
-            var sv = name is not null ? GetVariable(name, node, err: false) : ScopeVar.Empty;
+            var sv = ScopeVar.Empty;
+
+            if (name is not null)
+                GetVariable1(name, currentScope, out sv);
+
             var newHints = hints.Remove(Last);
             var skip = cw.DefineLabel();
 
@@ -747,9 +750,10 @@ namespace Dyalect.Compiler
             if (name is not null && sv.IsEmpty())
                 if (name is "nameof" && node.Arguments.Count == 1)
                 {
-                    var push = GetExpressionName(node.Arguments[0]);
+                    var push = GetExpressionName(node.Arguments[0], ctx);
                     AddLinePragma(node);
-                    cw.Push(push);
+                    if (push is not null)
+                        cw.Push(push);
                     return;
                 }
                 else if (name is "private" && node.Arguments.Count is 1 or 0)
@@ -762,16 +766,12 @@ namespace Dyalect.Compiler
                     
                     if (node.Arguments.Count is 0 && ctx.Function!.IsStatic)
                     {
-                        var ta = GetVariable("$this", node);
-                        cw.PushVar(ta);
+                        PushVariable(ctx, "$this", node.Location);
                         return;
                     }
 
                     if (node.Arguments.Count is 0)
-                    {
-                        var ta = GetVariable("this", node);
-                        cw.PushVar(ta);
-                    }
+                        PushVariable(ctx, "this", node.Location);
                     else if (node.Arguments.Count is 1)
                         Build(node.Arguments[0], hints, ctx);
 
@@ -865,8 +865,7 @@ namespace Dyalect.Compiler
                 for (var i = 0; i < ctx.Function.Parameters.Count; i++)
                 {
                     var p = ctx.Function.Parameters[ctx.Function.Parameters.Count - i - 1];
-                    var pv = GetVariable(p.Name, p);
-                    cw.PopVar(pv.Address);
+                    PopVariable(ctx, p.Name, p.Location);
                 }
 
                 AddLinePragma(node);
@@ -1041,38 +1040,17 @@ namespace Dyalect.Compiler
             cw.Push(node.Value);
         }
 
-        private void Build(DName node, Hints hints)
+        private void Build(DName node, Hints hints, CompilerContext ctx)
         {
-            var sv = GetVariable(node.Value, node.Location, err: false);
-
-            if (sv.IsEmpty())
-            {
-                var th = GetTypeHandle(null, node.Value, out var hdl, out var std);
-
-                if (th != CompilerError.None)
-                    AddError(CompilerError.UndefinedVariable, node.Location, node.Value);
-
-                AddLinePragma(node);
-                cw.Type(new(hdl, std));
-                return;
-            }
-
-            AddLinePragma(node);
-
             if (!hints.Has(Pop))
             {
                 if (NoPush(node, hints))
                     return;
 
-                cw.PushVar(sv);
+                PushVariable(ctx, node.Value, node.Location);
             }
             else
-            {
-                if ((sv.Data & VarFlags.Const) == VarFlags.Const)
-                    AddError(CompilerError.UnableAssignConstant, node.Location, node.Value);
-
-                cw.PopVar(sv.Address);
-            }
+                PopVariable(ctx, node.Value, node.Location);
         }
 
         private void Build(DIntegerLiteral node, Hints hints)
@@ -1190,7 +1168,7 @@ namespace Dyalect.Compiler
                 return;
             }
 
-            if (node.AutoAssign != null)
+            if (node.AutoAssign is not null)
                 Build(node.Target, hints.Append(Push), ctx);
 
             Build(node.Value, hints.Append(Push), ctx);
@@ -1246,7 +1224,7 @@ namespace Dyalect.Compiler
                 AddLinePragma(node);
                 var flags = node.Constant ? VarFlags.Const : VarFlags.None;
                 var nam = node.Pattern.GetName();
-                var a = AddVariable(nam!, node, flags);
+                var a = AddVariable(nam!, node.Location, flags);
                 cw.PopVar(a);
 
                 if (node.AutoClose)
@@ -1275,7 +1253,7 @@ namespace Dyalect.Compiler
 
                             if (x.NodeType != NodeType.WildcardPattern)
                             {
-                                var a = AddVariable(x.GetName()!, node, flags);
+                                var a = AddVariable(x.GetName()!, node.Location, flags);
                                 cw.PopVar(a);
                             }
                             else
@@ -1343,12 +1321,23 @@ namespace Dyalect.Compiler
             for (var i = 0; i < pat.Elements.Count; i++)
             {
                 var e = pat.Elements[pat.Elements.Count - i - 1];
-                var addr = node.NodeType == NodeType.Binding
-                    ? AddVariable(e.GetName()!, e, VarFlags.None)
-                    : GetVariableToAssign(e.GetName()!, e, false);
-                if (addr == -1 && node.NodeType == NodeType.Rebinding)
-                    addr = AddVariable(e.GetName()!, e, VarFlags.None);
-                cw.PopVar(addr);
+                var nm = e.GetName()!;
+
+                if (node.NodeType is NodeType.Binding)
+                {
+                    var a = AddVariable(nm, e.Location, VarFlags.None);
+                    cw.PopVar(a);
+                }
+                else if (node.NodeType is NodeType.Rebinding)
+                {
+                    if (VariableExists(ctx, nm, checkType: false) is CompilerError.None)
+                        PopVariable(ctx, nm, e.Location);
+                    else
+                    {
+                        var a = AddVariable(nm, e.Location, VarFlags.None);
+                        cw.PopVar(a);
+                    }
+                }
             }
 
             return true;
@@ -1471,19 +1460,26 @@ namespace Dyalect.Compiler
             }
         }
 
-        private string GetExpressionName(DNode node)
+        private string? GetExpressionName(DNode node, CompilerContext ctx)
         {
             switch (node.NodeType)
             {
                 case NodeType.Name:
                     var name = node.GetName();
-                    GetVariable(name!, node);
-                    return name!;
+
+                    if (name is not null)
+                    {
+                        var err = VariableExists(ctx, name);
+                        if (err is not CompilerError.None)
+                            AddError(err, node.Location, name);
+                    }
+
+                    return name;
                 case NodeType.Access:
                     return ((DAccess)node).Name;
                 case NodeType.Index:
                     var idx = (DIndexer)node;
-                    return GetExpressionName(idx.Index);
+                    return GetExpressionName(idx.Index, ctx);
                 case NodeType.String:
                     return ((DStringLiteral)node).Value;
                 default:

@@ -67,7 +67,7 @@ namespace Dyalect.Library.Types
             return newctx.HasErrors ? ctx.Fail(s.Value.ToString()) : ctx.Fail(res.ToString());
         }
 
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             if (name is "value")
                 return Func.Member(name, TryGet);
