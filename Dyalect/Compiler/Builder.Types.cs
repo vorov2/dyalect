@@ -49,8 +49,12 @@ namespace Dyalect.Compiler
                 StartScope(ScopeKind.Function, loc: node.Location);
                 StartSection();
                 var offset = cw.Offset;
+                var typeHandle = GetTypeHandle(null, node.Name, node.Location);
+                cw.SetType(typeHandle);
+
                 var usingScope = BuildUsing(node.Using, hints, newctx);
                 typeScopes.Add(node.Name, usingScope);
+                cw.SetType(typeHandle);
                 cw.Ret();
                 cw.MarkLabel(funSkipLabel);
 

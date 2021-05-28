@@ -21,7 +21,8 @@ namespace Dyalect.Compiler
                 else if (privateScope)
                     AddError(CompilerError.PrivateMethod, node.Location);
 
-                BuildFunctionBody(addr, node, hints, ctx);
+                var code = GetTypeHandle(node.TypeName!, node.Location);
+                BuildFunctionBody(code, addr, node, hints, ctx);
 
                 if (hints.Has(Push))
                     cw.Dup();
@@ -37,7 +38,6 @@ namespace Dyalect.Compiler
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
                     cw.Aux(realName);
-                    var code = GetTypeHandle(node.TypeName!, node.Location);
 
                     if (node.IsStatic)
                         cw.SetMemberS(code);
@@ -54,7 +54,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                BuildFunctionBody(-1, node, hints, ctx);
+                BuildFunctionBody(null, -1, node, hints, ctx);
                 AddLinePragma(node);
                 cw.Nop();
                 PopIf(hints);
@@ -158,7 +158,7 @@ namespace Dyalect.Compiler
             return arr;
         }
 
-        private void BuildFunctionBody(int addr, DFunctionDeclaration node, Hints hints, CompilerContext oldctx)
+        private void BuildFunctionBody(TypeHandle? typeHandle, int addr, DFunctionDeclaration node, Hints hints, CompilerContext oldctx)
         {
             var iterBody = hints.Has(IteratorBody);
             var args = CompileFunctionParameters(node.Parameters);
@@ -218,6 +218,9 @@ namespace Dyalect.Compiler
                     cw.TypeCheckF(arg.TypeAnnotation.Value);
                 }
             }
+
+            if (typeHandle is not null)
+                cw.SetType(typeHandle.Value);
 
             //If this is a member function we add an additional system variable that
             //would return an instance of an object to which this function is coupled
@@ -280,6 +283,9 @@ namespace Dyalect.Compiler
             //to break early. An early return would actually goto here, where a real return (OpCode.Ret)
             //is executed. This is a function epilogue.
             cw.MarkLabel(funEndLabel);
+
+            if (typeHandle is not null)
+                cw.UnsetType();
 
             //If this is an iterator function push a terminator at the end (and pop a normal value)
             if (iterBody)

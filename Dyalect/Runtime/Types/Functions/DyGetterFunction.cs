@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dyalect.Runtime.Types.Functions
+namespace Dyalect.Runtime.Types
 {
     internal sealed class DyGetterFunction : DyFunction
     {
@@ -15,10 +15,13 @@ namespace Dyalect.Runtime.Types.Functions
 
         internal override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
         {
-            if (ctx.TypeStack.Peek() != arg.TypeId)
+            if (fieldIndex == -1)
+                return ctx.FieldNotFound();
+
+            if (ctx.TypeStack.Count == 0 || ctx.TypeStack.Peek() != arg.TypeId)
                 return ctx.PrivateAccess();
 
-            var tup = (DyTuple)arg;
+            var tup = ((DyCustomType)arg).Privates;
             return tup.Values[fieldIndex];
         }
 

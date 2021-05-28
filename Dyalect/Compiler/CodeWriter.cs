@@ -263,8 +263,7 @@ namespace Dyalect.Compiler
         public void FunCall(int argCount) => Emit(new(OpCode.FunCall, argCount));
         public void CtorCheck(string ctor) => Emit(new(OpCode.CtorCheck, IndexString(ctor)));
 
-        public void SetType(int typeId) => Emit(new(OpCode.SetType, typeId));
-        public void UnsetType(int typeId) => Emit(new(OpCode.UnsetType, typeId));
+        public void SetType(TypeHandle handle) => Emit(new(OpCode.SetType, handle.TypeId));
         public void NewTuple(int len) => Emit(new(OpCode.NewTuple, len), -len + 1);
         public void NewFun(int funHandle) => Emit(new(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new(OpCode.NewFunV, funHandle));
@@ -325,5 +324,6 @@ namespace Dyalect.Compiler
         public void IsNull() => Emit(Op.IsNull);
         public void Mut() => Emit(Op.Mut);
         public void Priv() => Emit(Op.Priv);
+        public void UnsetType() => Emit(Op.UnsetType);
     }
 }

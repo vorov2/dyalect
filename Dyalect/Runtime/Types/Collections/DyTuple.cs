@@ -71,7 +71,7 @@ namespace Dyalect.Runtime.Types
                 base.SetItem(index, value, ctx);
         }
 
-        private int GetOrdinal(string name)
+        internal int GetOrdinal(string name)
         {
             for (var i = 0; i < Values.Length; i++)
                 if (Values[i].GetLabel() == name)

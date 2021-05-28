@@ -74,6 +74,13 @@ namespace Dyalect.Runtime.Types
             return base.SetOp(self, index, value, ctx);
         }
 
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        {
+            var obj = (DyCustomType)self;
+            var idx = obj.Privates.GetOrdinal(name);
+            return new DyGetterFunction(idx);
+        }
+
         public override string TypeName { get; }
     }
 }
