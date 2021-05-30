@@ -77,10 +77,10 @@ namespace Dyalect.Compiler
             Build(node, hints.Append(NoScope).Remove(Push), ctx);
             var count = 0;
             var scope = currentScope;
+            cw.PushNil();
 
             foreach (var (name, sv) in scope.EnumerateVars())
             {
-                cw.PushVar(new(0 | sv.Address << 8));
                 cw.Tag(name);
                 count++;
 
@@ -88,6 +88,7 @@ namespace Dyalect.Compiler
                     cw.Mut();
             }
 
+            cw.Pop();
             cw.NewTuple(count++);
             EndScope();
             return scope;

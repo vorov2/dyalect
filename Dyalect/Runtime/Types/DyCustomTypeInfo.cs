@@ -19,11 +19,14 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
+            if (!autoGenMethods)
+                return base.EqOp(left, right, ctx);
+
             var self = (DyCustomType)left;
 
             if (self.TypeId == right.TypeId && right is DyCustomType t && t.Constructor == self.Constructor)
             {
-                var res = ctx.RuntimeContext.Types[self.Privates.TypeId].Eq(ctx, self.Privates, t.Privates);
+                var res = ctx.RuntimeContext.Types[((DyTuple)self.Privates).TypeId].Eq(ctx, (DyTuple)self.Privates, (DyTuple)t.Privates);
              
                 if (ctx.HasErrors)
                     return DyNil.Instance;
@@ -36,21 +39,26 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
+            if (!autoGenMethods)
+                return base.ToStringOp(arg, ctx);
+
             var cust = (DyCustomType)arg;
-            if (TypeName == cust.Constructor && cust.Privates.Count == 0)
+            var priv = (DyTuple)cust.Privates;
+
+            if (TypeName == cust.Constructor && priv.Count == 0)
                 return new DyString($"{TypeName}()");
             else if (TypeName == cust.Constructor)
-                return new DyString($"{TypeName}{cust.Privates.ToString(ctx)}");
-            else if (cust.Privates.Count == 0)
+                return new DyString($"{TypeName}{priv.ToString(ctx)}");
+            else if (priv.Count == 0)
                 return new DyString($"{TypeName}.{cust.Constructor}()");
             else
-                return new DyString($"{TypeName}.{cust.Constructor}{cust.Privates.ToString(ctx)}");
+                return new DyString($"{TypeName}.{cust.Constructor}{priv.ToString(ctx)}");
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             if (autoGenMethods)
-                return DyInteger.Get(((DyCustomType)arg).Privates.Count);
+                return DyInteger.Get(((DyTuple)((DyCustomType)arg).Privates).Count);
 
             return base.LengthOp(arg, ctx);
         }
@@ -58,7 +66,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (autoGenMethods)
-                return self.GetItem(index, ctx);
+                return ((DyTuple)((DyCustomType)self).Privates).GetItem(index, ctx);
 
             return base.GetOp(self, index, ctx);
         }
@@ -67,7 +75,7 @@ namespace Dyalect.Runtime.Types
         {
             if (autoGenMethods)
             {
-                self.SetItem(index, value, ctx);
+                ((DyTuple)((DyCustomType)self).Privates).SetItem(index, value, ctx);
                 return DyNil.Instance;
             }
 
@@ -77,7 +85,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             var obj = (DyCustomType)self;
-            var idx = obj.Privates.GetOrdinal(name);
+            var idx = ((DyAssemblage)obj.Privates).GetOrdinal(name);
             return new DyGetterFunction(idx);
         }
 

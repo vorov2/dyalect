@@ -274,6 +274,7 @@ namespace Dyalect.Compiler
         public void FunCall(int argCount) => Emit(new(OpCode.FunCall, argCount));
         public void CtorCheck(string ctor) => Emit(new(OpCode.CtorCheck, IndexString(ctor)));
 
+        public void NewAmg(int len) => Emit(new(OpCode.NewAmg, len), -len + 1);
         public void NewTuple(int len) => Emit(new(OpCode.NewTuple, len), -len + 1);
         public void NewFun(int funHandle) => Emit(new(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new(OpCode.NewFunV, funHandle));

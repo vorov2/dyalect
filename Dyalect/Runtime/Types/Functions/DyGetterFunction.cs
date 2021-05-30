@@ -21,8 +21,8 @@ namespace Dyalect.Runtime.Types
             if (ctx.TypeStack.Count == 0 || ctx.TypeStack.Peek() != arg.TypeId)
                 return ctx.PrivateAccess();
 
-            var tup = ((DyCustomType)arg).Privates;
-            return tup.Values[fieldIndex].GetTaggedValue();
+            var tup = (DyAssemblage)((DyCustomType)arg).Privates;
+            return tup.Values[fieldIndex];
         }
 
         internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) => throw new NotSupportedException();

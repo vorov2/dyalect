@@ -571,6 +571,9 @@ namespace Dyalect.Runtime
                     case OpCode.NewTuple:
                         evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(evalStack, op.Data));
                         break;
+                    case OpCode.NewAmg:
+                        evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeAssemblage(locals, evalStack, op.Data));
+                        break;
                     case OpCode.TypeCheckT:
                         right = evalStack.Pop();
                         evalStack.Push(right.TypeId == op.Data);
@@ -610,14 +613,14 @@ namespace Dyalect.Runtime
                         ctx.CatchMarks.Peek().Pop();
                         break;
                     case OpCode.NewType:
-                        evalStack.Push(new DyCustomType(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, (DyAssemblage)evalStack.Pop(), unit));
+                        evalStack.Push(new DyCustomType(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, evalStack.Pop(), unit));
                         break;
                     case OpCode.Mut:
                         ((DyLabel)evalStack.Peek()).Mutable = true;
                         break;
                     case OpCode.Priv:
                         right = evalStack.Peek();
-                        evalStack.Replace(right.TypeId is DyType.Tuple ? right : ((DyCustomType)right).Privates);
+                        evalStack.Replace((DyAssemblage)((DyCustomType)right).Privates);
                         break;
                     case OpCode.SetTypeT:
                         ctx.TypeStack.Push(op.Data);
@@ -641,6 +644,16 @@ namespace Dyalect.Runtime
                 ctx.Error = null;
                 goto CYCLE;
             }
+        }
+
+        private static DyAssemblage MakeAssemblage(DyObject[] locals, EvalStack stack, int size)
+        {
+            var arr = new DyLabel[size];
+
+            for (var i = 0; i < size; i++)
+                arr[arr.Length - i - 1] = (DyLabel)stack.Pop();
+
+            return new(locals, arr);
         }
 
         private static void Push(ArgContainer container, DyObject value, ExecutionContext ctx)

@@ -101,6 +101,7 @@
             0,  //SetTypeT
             0,  //UnsetType
             -2, //SetPriv
+            0,  //NewAmg **dynamic
         };
     }
 }

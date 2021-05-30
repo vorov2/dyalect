@@ -34,7 +34,7 @@ namespace Dyalect.Runtime.Types
             item = null!;
             var i = GetOrdinal(name);
 
-            if (i == -1)
+            if (i is -1)
                 return false;
 
             item = GetItem(i, ctx);
@@ -71,7 +71,7 @@ namespace Dyalect.Runtime.Types
                 base.SetItem(index, value, ctx);
         }
 
-        internal int GetOrdinal(string name)
+        public int GetOrdinal(string name)
         {
             for (var i = 0; i < Values.Length; i++)
                 if (Values[i].GetLabel() == name)
@@ -79,6 +79,8 @@ namespace Dyalect.Runtime.Types
 
             return -1;
         }
+
+        public bool IsReadOnly(int index) => Values[index] is DyLabel lab && !lab.Mutable;
 
         protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
             Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];

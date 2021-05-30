@@ -9,18 +9,12 @@ namespace Dyalect.Runtime.Types
 
         internal string Constructor { get; }
 
-        internal DyAssemblage Privates { get; }
+        internal DyObject Privates { get; }
 
-        internal DyCustomType(int typeCode, string ctor, DyAssemblage privates, Unit unit) : base(typeCode) =>
+        internal DyCustomType(int typeCode, string ctor, DyObject privates, Unit unit) : base(typeCode) =>
             (Constructor, Privates, DeclaringUnit) = (ctor, privates, unit);
 
         public override object ToObject() => this;
-
-        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx) => Privates.SetItem(index, value, ctx);
-
-        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) => Privates.GetItem(index, ctx);
-
-        protected internal override bool HasItem(string name, ExecutionContext ctx) => Privates.HasItem(name, ctx);
 
         public override string GetConstructor(ExecutionContext ctx) => Constructor;
 
@@ -29,7 +23,6 @@ namespace Dyalect.Runtime.Types
         public override bool Equals(DyObject? other) =>
             other is not null && TypeId == other.TypeId && other is DyCustomType t 
                 && t.Constructor == Constructor && t.Privates.Equals(Privates);
-        }
 
         internal override void SetPrivate(ExecutionContext ctx, string name, DyObject value)
         {
@@ -39,7 +32,13 @@ namespace Dyalect.Runtime.Types
                 return;
             }
 
-            var idx = Privates.GetOrdinal(name);
+            if (Privates is not DyAssemblage asm)
+            {
+                ctx.FieldNotFound();
+                return;
+            }
+
+            var idx = asm.GetOrdinal(name);
 
             if (idx == -1)
             {
@@ -47,15 +46,13 @@ namespace Dyalect.Runtime.Types
                 return;
             }
 
-            var label =(DyLabel)Privates[idx];
-
-            if (!label.Mutable)
+            if (asm.IsReadOnly(idx))
             {
                 ctx.FieldReadOnly();
                 return;
             }
 
-            label.Value = value;
+            asm.Values[idx] = value;
         }
     }
 }

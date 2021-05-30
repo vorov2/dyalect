@@ -100,6 +100,7 @@
             1, //SetTypeT
             0, //UnsetType
             1, //SetPriv
+            1, //NewAmg
         };
     }
 }

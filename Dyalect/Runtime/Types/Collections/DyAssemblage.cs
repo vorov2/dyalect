@@ -5,22 +5,23 @@ namespace Dyalect.Runtime.Types
     internal sealed class DyAssemblage : DyObject
     {
         internal readonly DyObject[] Values;
-        private readonly string[] keys;
-        private readonly int[] readOnly;
+        private readonly DyLabel[] keys;
 
         public int Count => Values.Length;
         
-        public DyAssemblage(DyObject[] locals, string[] keys, int[] readOnly) : base(DyType.Object) =>
-            (Values, this.keys, this.readOnly) = (locals, keys, readOnly);
+        public DyAssemblage(DyObject[] locals, DyLabel[] keys) : base(DyType.Object) =>
+            (Values, this.keys) = (locals, keys);
 
         public int GetOrdinal(string name)
         {
-            for (var i = 0; i < Values.Length; i++)
-                if (Values[i].GetLabel() == name)
+            for (var i = 0; i < keys.Length; i++)
+                if (keys[i].Label == name)
                     return i;
 
             return -1;
         }
+
+        public bool IsReadOnly(int index) => !keys[index].Mutable;
 
         public override object ToObject() => throw new NotSupportedException();
 
