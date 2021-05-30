@@ -156,9 +156,9 @@ namespace Dyalect.Compiler
 
         public void Push(double val)
         {
-            if (val == 0D)
+            if (val is 0D)
                 Emit(Op.PushR8_0);
-            else if (val == 1D)
+            else if (val is 1D)
                 Emit(Op.PushR8_1);
             else
                 Emit(new(OpCode.PushR8, IndexFloat(val)));
