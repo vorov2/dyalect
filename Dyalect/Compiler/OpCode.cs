@@ -100,5 +100,6 @@
         UnsetType,  //0
         SetPriv,    //-2
         NewAmg,     //Dynamic
+        Tag0,       //1
     }
 }

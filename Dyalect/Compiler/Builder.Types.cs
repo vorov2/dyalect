@@ -77,19 +77,17 @@ namespace Dyalect.Compiler
             Build(node, hints.Append(NoScope).Remove(Push), ctx);
             var count = 0;
             var scope = currentScope;
-            cw.PushNil();
 
             foreach (var (name, sv) in scope.EnumerateVars())
             {
-                cw.Tag(name);
+                cw.Tag0(name);
                 count++;
 
                 if ((sv.Data & VarFlags.Const) != VarFlags.Const)
                     cw.Mut();
             }
 
-            cw.Pop();
-            cw.NewTuple(count++);
+            cw.NewAmg(count++);
             EndScope();
             return scope;
         }

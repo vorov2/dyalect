@@ -101,6 +101,7 @@
             0, //UnsetType
             1, //SetPriv
             1, //NewAmg
+            1, //Tag0
         };
     }
 }

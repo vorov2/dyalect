@@ -414,6 +414,9 @@ namespace Dyalect.Runtime
                     case OpCode.Tag:
                         evalStack.Replace(new DyLabel(unit.IndexedStrings[op.Data].Value, evalStack.Peek()));
                         break;
+                    case OpCode.Tag0:
+                        evalStack.Push(new DyLabel(unit.IndexedStrings[op.Data].Value, DyNil.Instance));
+                        break;
                     case OpCode.Yield:
                         function.PreviousOffset = offset++;
                         function.Locals = locals;
@@ -620,7 +623,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Priv:
                         right = evalStack.Peek();
-                        evalStack.Replace((DyAssemblage)((DyCustomType)right).Privates);
+                        evalStack.Replace(right.TypeId == DyType.Object ? right : (DyAssemblage)((DyCustomType)right).Privates);
                         break;
                     case OpCode.SetTypeT:
                         ctx.TypeStack.Push(op.Data);

@@ -211,6 +211,12 @@ namespace Dyalect.Compiler
             Emit(new(OpCode.Tag, idx));
         }
 
+        public void Tag0(string tag)
+        {
+            var idx = IndexString(tag);
+            Emit(new(OpCode.Tag0, idx));
+        }
+
         public void SetMember(TypeHandle type)
         {
             if (type.IsStandard)
