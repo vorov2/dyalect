@@ -377,6 +377,11 @@ namespace Dyalect.Runtime
                         types[right.TypeId].Set(ctx, right, left, evalStack.Pop());
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
+                    case OpCode.SetPriv:
+                        right = evalStack.Pop();
+                        right.SetPrivate(ctx, unit.IndexedStrings[op.Data].Value, evalStack.Pop());
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
+                        break;
                     case OpCode.HasField:
                         right = evalStack.Peek();
                         evalStack.Replace(right.HasItem(unit.IndexedStrings[op.Data].Value, ctx));
@@ -613,6 +618,9 @@ namespace Dyalect.Runtime
                     case OpCode.Priv:
                         right = evalStack.Peek();
                         evalStack.Replace(right.TypeId is DyType.Tuple ? right : ((DyCustomType)right).Privates);
+                        break;
+                    case OpCode.SetTypeT:
+                        ctx.TypeStack.Push(op.Data);
                         break;
                     case OpCode.SetType:
                         ctx.TypeStack.Push(ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id);

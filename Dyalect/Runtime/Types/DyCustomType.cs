@@ -31,5 +31,32 @@ namespace Dyalect.Runtime.Types
             return other is not null && TypeId == other.TypeId && other is DyCustomType t 
                 && t.Constructor == Constructor && t.Privates.Equals(Privates);
         }
+
+        internal override void SetPrivate(ExecutionContext ctx, string name, DyObject value)
+        {
+            if (ctx.TypeStack.Count == 0 || TypeId != ctx.TypeStack.Peek())
+            {
+                ctx.PrivateAccess();
+                return;
+            }
+
+            var idx = Privates.GetOrdinal(name);
+
+            if (idx == -1)
+            {
+                ctx.FieldNotFound();
+                return;
+            }
+
+            var label =(DyLabel)Privates[idx];
+
+            if (!label.Mutable)
+            {
+                ctx.FieldReadOnly();
+                return;
+            }
+
+            label.Value = value;
+        }
     }
 }

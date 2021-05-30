@@ -54,18 +54,18 @@ func matchTypeTest1() {
     assert(8, mem(a2))
 }
 
-type Bar using {
+type Bar = {
     var data
 }
 func extendTest1() {
     static func Bar.Bar(args...) {
-        private()::data = args
+        data = args
     }
     func Bar.len() {
-        private(this)::data.len()
+        data.len()
     }
     func Bar.get(index) {
-        private(this)::data[index]
+        data[index]
     }
     var obj = Bar.Bar(1, 2, 3)
     var res = match obj {
@@ -77,13 +77,13 @@ func extendTest1() {
 
 func extendTest2() {
     static func Bar.Bar(args...) {
-        private()::data = args
+        data = args
     }
     func Bar.len() {
-        private()::data.len()
+        data.len()
     }
     func Bar.get(index) {
-        private()::data[index]
+        data[index]
     }
     var obj = Bar(10, 20, 30)
     assert(10, obj[0])
@@ -130,32 +130,32 @@ func autoConsTest3() {
     assert(43, p::y)
 }
 
-type Nat using { var val }
+type Nat = { var val }
 func typeTest1() {
     func fetch(x) {
         Nat(x) when x >= 0 else x
     }
     static func Nat.Nat(x) {
         throw "Negative number." when x < 0
-        private()::val = x
+        val = x
     }
     func Nat.toInteger() {
-        private()::val
+        val
     }
     func Nat + (other) {
-        fetch(private()::val + private(other)::val)
+        fetch(val + other.val)
     }
     func Nat - (other) {
-        fetch(private()::val - private(other)::val)
+        fetch(val - other.val)
     }
     func Nat * (other) {
-        fetch(private()::val * private(other)::val)
+        fetch(val * other.val)
     }
     func Nat / (other) {
-        fetch(private()::val / private(other)::val)
+        fetch(val / other.val)
     }
     func Nat == (other) {
-        private()::val == private(other)::val
+        val == other.val
     }
     var n = Nat(12)
     assert(Nat(24), n + Nat(12))
@@ -180,25 +180,25 @@ func typeTest2() {
     assert(24, doMatch(y))
 }
 
-type Cell using { var val }
+type Cell = { var val }
 func typeTest3() {
     func ref(value) {
         Cell(value)
     }
     static func Cell.Cell(value) {
-        private()::val = value
+        val = value
     }
     func Cell.setValue(value) {
-        private()::val = value
+        val = value
     }
     func Cell.getValue() {
-        private()::val
+        val
     }
     func Cell.get(index) {
         if index != 0 {
             throw "Index out of range."
         }
-        private()::val
+        val
     }
     func Cell.len() {
         1
@@ -270,15 +270,15 @@ func simpleTypeTest2() {
     assert(12, b::x)
 }
 
-type Record using { var fields }
+type Record = { var fields }
 func accessorTest() {
     static func Record.Record(values...) {
-        private()::fields = values
+        fields = values
     }
     func Record.get(index) {
         match index {
-            "name" => private()::fields::name,
-            "age" => private()::fields::age
+            "name" => fields::name,
+            "age" => fields::age
         }
     }
     var p = Record(values: (name: "John", age: 33))
@@ -314,23 +314,23 @@ func defaultsConsTest() {
     assert(3, t::c)
 }
 
-type Point1 using { var px; var py }
+type Point1 = { var px; var py }
 func setterTest2() { //Bug #205
     static func Point1.Point1(x, y) {
-        private()::px = x
-        private()::py = y
+        px = x
+        py = y
     }
     func Point1.get(index) {
         match index {
-            0 or "x" => private()::px,
-            1 or "y" => private()::py,
+            0 or "x" => px,
+            1 or "y" => py,
             _ => throw Error.IndexOutOfRange()
         }
     }
     func Point1.set(index, value) {
         match index {
-            0 or "x" => private()::px = value,
-            1 or "y" => private()::py = value,
+            0 or "x" => px = value,
+            1 or "y" => py = value,
             _ => throw Error.IndexOutOfRange()
         }
     }
@@ -412,23 +412,23 @@ func testCustomFunc() {
     assert(42, some.extractValue())
 }
 
-type TStringBuilder using {
+type TStringBuilder = {
     let buffer = []
 }
 func stringBuilderTest() {
     static func TStringBuilder.TStringBuilder() { }
     func TStringBuilder.append(val) {
-        private()::buffer.add(val.toString())
+        buffer.add(val.toString())
     }
     func TStringBuilder.clear() {
-        private()::buffer.clear()
+        buffer.clear()
     }
     func TStringBuilder.toString() {
-        String.concat(values: private()::buffer)
+        String.concat(values: buffer)
     }
     func TStringBuilder.len() {
         var count = 0
-        for x in private()::buffer {
+        for x in buffer {
             count += x.len()
         }
         return count
@@ -446,16 +446,16 @@ func stringBuilderTest() {
     assert("truefalse", sb.toString())
 }
 
-type PAccessTest_Foo using {
+type PAccessTest_Foo = {
     var x
     let pi = 3.14
 }
-static func PAccessTest_Foo.PAccessTest_Foo(x) {
-    private()::x = x
+static func PAccessTest_Foo.PAccessTest_Foo(px) {
+    x = px
 }
 func privateAccessTest1() {
     func PAccessTest_Foo.ok() {
-        return private(this)::x
+        return x
     }
     var f = PAccessTest_Foo(12)
     var res = f.ok()
@@ -466,7 +466,7 @@ func privateAccessTest1() {
 func privateAccessTest2() {
     func PAccessTest_Foo.ok(f) {
         func inner() {
-            return private(f)::pi
+            return pi
         }
         return inner()
     }
@@ -478,7 +478,7 @@ func privateAccessTest2() {
 
 type PAccessTest_Bar(x)
 func PAccessTest_Bar.violator(f) {
-    return private(f)::x
+    return f.x
 }
 func privateAccessTest3() {
     var b = PAccessTest_Bar(42)
@@ -493,17 +493,17 @@ func privateAccessTest3() {
     }
 }
 
-type RealNat using {
+type RealNat = {
     var num
 }
 static func RealNat.RealNat(x) {
     throw Error.InvalidType(x.getType()) when x is not Integer
-    private()::num = x
+    num = x
 }
 func RealNat + (other) {
     let res = match other {
-        RealNat => private()::num + private(other)::num,
-        Integer => private()::num + other,
+        RealNat => num + other.num,
+        Integer => num + other,
         _ => throw Error.InvalidType(other.getType())
     }
     RealNat(res) when res >= 0 else res
@@ -552,22 +552,22 @@ func typeMutables2() {
     }
 }
 
-type TestCustomCons using {
+type TestCustomCons = {
     var data
 }
 func customConsWithConstraints() {
     static func TestCustomCons.TestCustomCons(Integer x) {
-        private()::data = x
+        data = x
     }
     func TestCustomCons.get(field) {
         match field {
-            "x" => private()::data,
+            "x" => data,
             _ => Error.IndexOutOfRange()
         }
     }
     func TestCustomCons.set(field, Integer value) {
         match field {
-            "x" => private()::data = value,
+            "x" => data = value,
             _ => Error.IndexOutOfRange()
         }
     }
@@ -582,23 +582,20 @@ func customConsWithConstraints() {
     }
 }
 
-type TypeWithUsing using {
+type TypeWithUsing = {
     var name
     var age
 }
-func usingWithTypes() {
-    static func TypeWithUsing.TypeWithUsing(name, age) {
-        using private()
-        ::name = name
-        ::age = age
+func thisWithTypes() {
+    static func TypeWithUsing.TypeWithUsing(pName, pAge) {
+        name = pName
+        age = pAge
     }
     func TypeWithUsing.getName() {
-        using private()
-        ::name
+        this.name
     }
     func TypeWithUsing.getAge() {
-        using private()
-        ::age
+        this.age
     }
     let data = TypeWithUsing("John Doe", 44)
     assert("John Doe", data.getName())
@@ -620,21 +617,19 @@ func testTypeVars() {
     assert(42.0, b::left::value)
 }
 
-type TinyInt using {
+type TinyInt = {
     var value
     func getInteger(val) {
-        val is TinyInt ? private(val)::value : val
+        val is TinyInt ? value : val
     }
 }
 func testPrivateInsideInit() {
     static func TinyInt.TinyInt(Integer x) {
-        using private()
-        ::value = ::getInteger(x)
+        value = getInteger(x)
     }
-    func TinyInt toInteger() => private()::value
+    func TinyInt toInteger() => value
     func TinyInt + (other) {
-        using private()
-        TinyInt(::value + ::getInteger(other))
+        TinyInt(value + getInteger(other))
     }
     let res = TinyInt(2) + TinyInt(7)
     print(9, res.toInteger())

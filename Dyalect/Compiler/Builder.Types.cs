@@ -37,7 +37,7 @@ namespace Dyalect.Compiler
                     Build(c, nh, ctx);
             }
 
-            if (node.Using is not null)
+            if (node.InitBlock is not null)
             {
                 var addr = AddVariable("$" + node.Name, node.Location, VarFlags.Const | VarFlags.Private);
                 
@@ -52,9 +52,9 @@ namespace Dyalect.Compiler
                 var typeHandle = GetTypeHandle(null, node.Name, node.Location);
                 cw.SetType(typeHandle);
 
-                var usingScope = BuildUsing(node.Using, hints, newctx);
+                var usingScope = BuildUsing(node.InitBlock, hints, newctx);
                 typeScopes.Add(node.Name, usingScope);
-                cw.SetType(typeHandle);
+                cw.UnsetType();
                 cw.Ret();
                 cw.MarkLabel(funSkipLabel);
 

@@ -150,6 +150,8 @@ namespace Dyalect.Compiler
             return idx;
         }
 
+        public void SetPriv(string name) => Emit(new(OpCode.SetPriv, IndexString(name)));
+
         public void Push(string val) => Emit(new(OpCode.PushStr, IndexString(val)));
 
         public void Push(double val)
@@ -257,13 +259,21 @@ namespace Dyalect.Compiler
                 Emit(new(OpCode.TypeAnno, type.TypeId));
         }
 
+        public void SetType(TypeHandle handle)
+        {
+            if (handle.IsStandard)
+                Emit(new(OpCode.SetTypeT, handle.TypeId));
+            else
+                Emit(new(OpCode.SetType, handle.TypeId));
+        }
+
+
         public void FunPrep(int argCount) => Emit(new(OpCode.FunPrep, argCount));
         public void FunArgIx(int index) => Emit(new(OpCode.FunArgIx, index));
         public void FunArgNm(string name) => Emit(new(OpCode.FunArgNm, IndexString(name)));
         public void FunCall(int argCount) => Emit(new(OpCode.FunCall, argCount));
         public void CtorCheck(string ctor) => Emit(new(OpCode.CtorCheck, IndexString(ctor)));
 
-        public void SetType(TypeHandle handle) => Emit(new(OpCode.SetType, handle.TypeId));
         public void NewTuple(int len) => Emit(new(OpCode.NewTuple, len), -len + 1);
         public void NewFun(int funHandle) => Emit(new(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new(OpCode.NewFunV, funHandle));

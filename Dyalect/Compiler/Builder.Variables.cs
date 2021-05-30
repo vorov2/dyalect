@@ -16,7 +16,7 @@ namespace Dyalect.Compiler
 
         private CompilerError VariableExists(CompilerContext ctx, string name, bool checkType = true)
         {
-            var err = GetVariable1(name, currentScope, out _);
+            var err = GetVariable(name, currentScope, out _);
 
             if (err is CompilerError.None)
                 return err;
@@ -35,7 +35,7 @@ namespace Dyalect.Compiler
 
         private void PushVariable(CompilerContext ctx, string name, Location loc)
         {
-            var err = GetVariable1(name, currentScope, out var sv);
+            var err = GetVariable(name, currentScope, out var sv);
 
             if (err is not CompilerError.None)
             {
@@ -57,7 +57,7 @@ namespace Dyalect.Compiler
 
             if ((sv.Data & VarFlags.InitBlock) == VarFlags.InitBlock)
             {
-                GetVariable1(ctx.Function!.IsStatic ? "$this" : "this", currentScope, out var thisVar);
+                GetVariable(ctx.Function!.IsStatic ? "$this" : "this", currentScope, out var thisVar);
                 AddLinePragma(loc);
                 cw.PushVar(thisVar);
                 cw.Priv();
@@ -72,7 +72,7 @@ namespace Dyalect.Compiler
 
         private void PopVariable(CompilerContext ctx, string name, Location loc)
         {
-            var err = GetVariable1(name, currentScope, out var sv);
+            var err = GetVariable(name, currentScope, out var sv);
 
             if (err is not CompilerError.None)
             {
@@ -85,7 +85,7 @@ namespace Dyalect.Compiler
 
             if ((sv.Data & VarFlags.InitBlock) == VarFlags.InitBlock)
             {
-                GetVariable1(ctx.Function!.IsStatic ? "$this" : "this", currentScope, out var thisVar);
+                GetVariable(ctx.Function!.IsStatic ? "$this" : "this", currentScope, out var thisVar);
                 AddLinePragma(loc);
                 cw.PushVar(thisVar);
                 cw.Priv();
@@ -240,7 +240,7 @@ namespace Dyalect.Compiler
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private CompilerError GetVariable1(string name, Scope startScope, out ScopeVar var)
+        private CompilerError GetVariable(string name, Scope startScope, out ScopeVar var)
         {
             var cur = startScope;
             var shift = 0;
@@ -273,9 +273,6 @@ namespace Dyalect.Compiler
                 var = new(moduleHandle | (sv1.Address >> 8) << 8, sv1.Data | VarFlags.External);
                 return CompilerError.None;
             }
-
-            //if (err)
-            //    AddError(CompilerError.UndefinedVariable, loc, name);
 
             var = ScopeVar.Empty;
             return CompilerError.UndefinedVariable;

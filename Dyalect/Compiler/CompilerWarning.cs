@@ -8,6 +8,8 @@
 
         UnreachableMatchEntry = 302,
 
-        PatternNeverMatch = 303
+        PatternNeverMatch = 303,
+
+        AssignmentSameVariable = 304
     }
 }

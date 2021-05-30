@@ -60,7 +60,7 @@
 
         PrivateScopeNested = 228,
 
-        CtorOnlyLocalType = 229,
+        // = 229,
 
         PrivateMethod = 230,
 
@@ -92,7 +92,7 @@
 
         TypeNameCamel = 244,
 
-        PrivateAccessInvalid = 245,
+        // = 245,
 
         AutoNotAllowed = 246,
 

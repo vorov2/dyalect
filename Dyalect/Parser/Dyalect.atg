@@ -157,13 +157,15 @@ PRODUCTIONS
             |
             (
                 "="
-                identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) TypeArguments<f>
-                { "or" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) TypeArguments<f> }
+                (
+                    Block<out var cnode> (. typ.InitBlock = cnode; .)
+                    |
+                    (
+                        identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) TypeArguments<f>
+                        { "or" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) TypeArguments<f> }
+                    )
+                )
             )
-        ]
-        [
-            "using" Block<out var cnode>
-            (. typ.Using = cnode; .)
         ].
         
     TypeArguments<DFunctionDeclaration node> =

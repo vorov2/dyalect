@@ -414,13 +414,11 @@ func bubbTest() {
 
 func rot13Test() {
     func Char.rot13() {
-        if ('a' <= this && this <= 'm' || 'A' <= this && this <= 'M') {
-            return Char(this.order() + 13)
+        match this {
+            (>= 'a' and <= 'm') or (>= 'A' and <= 'M') => Char(this.order() + 13),
+            (>= 'n' and <= 'z') or (>= 'N' and <= 'Z') => Char(this.order() - 13),
+            _ => this
         }
-        if ('n' <= this && this <= 'z' || 'N' <= this && this <= 'Z') {
-            return Char(this.order() - 13);
-        }
-        return this
     }
     func String.rot13() {
         var cs = []
@@ -429,8 +427,10 @@ func rot13Test() {
         }
         String.concat(values: cs)
     }
-    var res = "ABJURER nowhere".rot13()
+    let res = "ABJURER nowhere".rot13()
     assert("NOWHERE abjurer", res)
+    Char.__deleteMember("rot13")
+    String.__deleteMember("rot13")
 }
 
 func caesarCypherTest() {

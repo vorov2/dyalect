@@ -72,24 +72,3 @@ func charMath1() {
     assert("ab", a + b)
     assert("abcdef", a + b + "cdef")
 }
-
-func rot13() {
-    func Char.rot13() {
-        match this {
-            (>= 'a' and <= 'm') or (>= 'A' and <= 'M') => Char(this.order() + 13),
-            (>= 'n' and <= 'z') or (>= 'N' and <= 'Z') => Char(this.order() - 13),
-            _ => this
-        }
-    }
-    func String.rot13() {
-        var cs = []
-        for c in this {
-            cs.add(c.rot13())
-        }
-        String.concat(values: cs)
-    }
-    let res = "ABJURER nowhere".rot13()
-    assert("NOWHERE abjurer", res)
-    Char.__deleteMember("rot13")
-    String.__deleteMember("rot13")
-}

@@ -61,6 +61,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assignment to the same variable..
+        /// </summary>
+        internal static string AssignmentSameVariable {
+            get {
+                return ResourceManager.GetString("AssignmentSameVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An &quot;auto&quot; declaration is not allowed in this context..
         /// </summary>
         internal static string AutoNotAllowed {
@@ -120,15 +129,6 @@ namespace Dyalect.Strings {
         internal static string CtorNotIterator {
             get {
                 return ResourceManager.GetString("CtorNotIterator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to create a constructor for a non-local type &quot;{0}&quot;..
-        /// </summary>
-        internal static string CtorOnlyLocalType {
-            get {
-                return ResourceManager.GetString("CtorOnlyLocalType", resourceCulture);
             }
         }
         
@@ -300,15 +300,6 @@ namespace Dyalect.Strings {
         internal static string PositionalArgumentAfterKeyword {
             get {
                 return ResourceManager.GetString("PositionalArgumentAfterKeyword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An access to private scope is only allowed inside member functions..
-        /// </summary>
-        internal static string PrivateAccessInvalid {
-            get {
-                return ResourceManager.GetString("PrivateAccessInvalid", resourceCulture);
             }
         }
         

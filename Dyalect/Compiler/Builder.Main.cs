@@ -434,8 +434,7 @@ namespace Dyalect.Compiler
             }
             else
                 Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
-         
-            
+
             AddLinePragma(node);
             var skip = cw.DefineLabel();
 
@@ -446,10 +445,7 @@ namespace Dyalect.Compiler
             }
 
             if (hints.Has(Pop))
-            {
-                cw.Push(node.Name);
-                cw.Set();
-            }
+                cw.SetPriv(node.Name);
             else
             {
                 cw.GetMember(node.Name);
@@ -636,7 +632,7 @@ namespace Dyalect.Compiler
                 && node.Target.NodeType == NodeType.Name && !options.NoOptimizations)
             {
                 var nm = node.Target.GetName()!;
-                var err = GetVariable1(nm, currentScope, out var sv);
+                var err = GetVariable(nm, currentScope, out var sv);
 
                 if (err is CompilerError.None 
                     && (sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
@@ -741,7 +737,7 @@ namespace Dyalect.Compiler
             var sv = ScopeVar.Empty;
 
             if (name is not null)
-                GetVariable1(name, currentScope, out sv);
+                GetVariable(name, currentScope, out sv);
 
             var newHints = hints.Remove(Last);
             var skip = cw.DefineLabel();
@@ -754,36 +750,6 @@ namespace Dyalect.Compiler
                     AddLinePragma(node);
                     if (push is not null)
                         cw.Push(push);
-                    return;
-                }
-                else if (name is "private" && node.Arguments.Count is 1 or 0)
-                {
-                    if (ctx.LocalType is null)
-                    {
-                        AddError(CompilerError.PrivateAccessInvalid, node.Location);
-                        return;
-                    }
-                    
-                    if (node.Arguments.Count is 0 && ctx.Function!.IsStatic)
-                    {
-                        PushVariable(ctx, "$this", node.Location);
-                        return;
-                    }
-
-                    if (node.Arguments.Count is 0)
-                        PushVariable(ctx, "this", node.Location);
-                    else if (node.Arguments.Count is 1)
-                        Build(node.Arguments[0], hints, ctx);
-
-                    var th = GetTypeHandle(null, ctx.LocalType, node.Location);
-                    cw.Dup();
-                    cw.TypeCheck(th);
-                    var noerr = cw.DefineLabel();
-                    cw.Brtrue(noerr);
-                    cw.Fail(DyErrorCode.PrivateAccess);
-                    cw.MarkLabel(noerr);
-                    AddLinePragma(node);
-                    cw.Priv();
                     return;
                 }
 
@@ -873,11 +839,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                if (!sv.IsEmpty())
-                    cw.PushVar(sv);
-                else
-                    Build(node.Target, newHints.Append(Push), ctx);
-
+                Build(node.Target, newHints.Append(Push), ctx);
                 AddLinePragma(node);
 
                 if (node.NilSafety)
@@ -1173,13 +1135,19 @@ namespace Dyalect.Compiler
 
             Build(node.Value, hints.Append(Push), ctx);
 
-            if (node.AutoAssign != null)
+            if (node.AutoAssign is not null)
                 EmitBinaryOp(node.AutoAssign.Value);
 
             Build(node.Target, hints.Append(Pop), ctx);
 
             if (hints.Has(Push))
                 cw.PushNil();
+
+            if (node.Target.NodeType == node.Value.NodeType
+                && node.Target.NodeType == NodeType.Name
+                && node.Target.GetName() == node.Value.GetName()
+                && node.AutoAssign is null)
+                AddWarning(CompilerWarning.AssignmentSameVariable, node.Location);
         }
 
         private void CheckTarget(DNode target)

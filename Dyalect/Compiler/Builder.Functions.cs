@@ -21,7 +21,7 @@ namespace Dyalect.Compiler
                 else if (privateScope)
                     AddError(CompilerError.PrivateMethod, node.Location);
 
-                var code = GetTypeHandle(node.TypeName!, node.Location);
+                var code = node.IsMemberFunction ? GetTypeHandle(node.TypeName!, node.Location) : (TypeHandle?)null;
                 BuildFunctionBody(code, addr, node, hints, ctx);
 
                 if (hints.Has(Push))
@@ -40,9 +40,9 @@ namespace Dyalect.Compiler
                     cw.Aux(realName);
 
                     if (node.IsStatic)
-                        cw.SetMemberS(code);
+                        cw.SetMemberS(code!.Value);
                     else
-                        cw.SetMember(code);
+                        cw.SetMember(code!.Value);
                 }
 
                 AddLinePragma(node);
@@ -202,21 +202,26 @@ namespace Dyalect.Compiler
             var variadicIndex = -1;
 
             //Initialize function arguments
-            for (var i = 0; i < args.Length; i++)
+            if (args.Length > 0)
             {
-                var arg = args[i];
-
-                if (arg.IsVarArg)
-                    variadicIndex = i;
-
-                var a = AddVariable(arg.Name, node.Location, data: VarFlags.Argument);
-
-                if (arg.TypeAnnotation is not null)
+                for (var i = 0; i < args.Length; i++)
                 {
-                    cw.PushVar(new ScopeVar(a));
-                    AddLinePragma(node.Parameters[i]);
-                    cw.TypeCheckF(arg.TypeAnnotation.Value);
+                    var arg = args[i];
+
+                    if (arg.IsVarArg)
+                        variadicIndex = i;
+
+                    var a = AddVariable(arg.Name, node.Location, data: VarFlags.Argument);
+
+                    if (arg.TypeAnnotation is not null)
+                    {
+                        cw.PushVar(new ScopeVar(a));
+                        AddLinePragma(node.Parameters[i]);
+                        cw.TypeCheckF(arg.TypeAnnotation.Value);
+                    }
                 }
+
+                StartScope(ScopeKind.Lexical, node.Location);
             }
 
             if (typeHandle is not null)
@@ -245,8 +250,6 @@ namespace Dyalect.Compiler
             }
             else
             {
-                Scope? scope = null;
-
                 //Compile a common initialization logic for all constructors
                 if (localTypeMember && node.IsConstructor)
                 {
@@ -270,9 +273,10 @@ namespace Dyalect.Compiler
                     cw.PopVar(v);
                 }
 
-                if (localTypeMember)
+                if (localTypeMember && typeScopes.TryGetValue(lti.Declaration.Name, out var scope))
                 {
-                    foreach (var (name, svv) in typeScopes[lti.Declaration.Name].Locals)
+
+                    foreach (var (name, svv) in scope.Locals)
                         AddVariable(name, node.Location, svv.Data | VarFlags.InitBlock);
                 }
 
@@ -299,22 +303,21 @@ namespace Dyalect.Compiler
                 if (node.IsIterator)
                     AddError(CompilerError.CtorNotIterator, node.Location);
 
-                if (!localTypeMember)
-                    AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName!);
-                else
-                {
-                    //Constructor returns a type instance, not a value. We need to pop this value from stack
-                    cw.Pop();
+                //Constructor returns a type instance, not a value. We need to pop this value from stack
+                cw.Pop();
 
-                    //Push privates to stack
-                    PushVariable(ctx, "$this", node.Body.Location);
+                //Push privates to stack
+                PushVariable(ctx, "$this", node.Body.Location);
 
-                    cw.Aux(node.Name!);
-                    cw.NewType(lti.TypeId);
-                }
+                cw.Aux(node.Name!);
+                cw.NewType(lti.TypeId);
             }
 
             cw.Ret();
+
+            if (args.Length > 0)
+                EndScope();
+
             cw.MarkLabel(funSkipLabel);
             AddLinePragma(node);
 

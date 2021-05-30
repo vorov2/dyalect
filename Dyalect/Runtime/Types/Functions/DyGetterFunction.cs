@@ -22,7 +22,7 @@ namespace Dyalect.Runtime.Types
                 return ctx.PrivateAccess();
 
             var tup = ((DyCustomType)arg).Privates;
-            return tup.Values[fieldIndex];
+            return tup.Values[fieldIndex].GetTaggedValue();
         }
 
         internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) => throw new NotSupportedException();

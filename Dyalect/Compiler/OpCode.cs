@@ -96,6 +96,8 @@
         TypeAnno,   //0
         TypeAnnoT,  //0
         SetType,    //0
-        UnsetType   //0
+        SetTypeT,   //0
+        UnsetType,  //0
+        SetPriv,    //-2
     }
 }
