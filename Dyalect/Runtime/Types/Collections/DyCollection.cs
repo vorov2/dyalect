@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dyalect.Runtime.Types
 {
@@ -118,7 +119,7 @@ namespace Dyalect.Runtime.Types
                 return Array.Empty<DyObject>();
 
             var arr = new List<DyObject>();
-            var vals = ((DyTuple)values).Values;
+            var vals = ((DyTuple)values).GetValues();
 
             foreach (var v in vals)
             {

@@ -103,6 +103,7 @@
             -2, //SetPriv
             0,  //NewAmg **dynamic
             1,  //Tag0
+            1,  //NewFunA
         };
     }
 }

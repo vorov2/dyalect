@@ -9,9 +9,9 @@ namespace Dyalect.Runtime.Types
 
         internal string Constructor { get; }
 
-        internal DyObject Privates { get; }
+        internal DyTuple Privates { get; }
 
-        internal DyCustomType(int typeCode, string ctor, DyObject privates, Unit unit) : base(typeCode) =>
+        internal DyCustomType(int typeCode, string ctor, DyTuple privates, Unit unit) : base(typeCode) =>
             (Constructor, Privates, DeclaringUnit) = (ctor, privates, unit);
 
         public override object ToObject() => this;
@@ -32,13 +32,7 @@ namespace Dyalect.Runtime.Types
                 return;
             }
 
-            if (Privates is not DyAssemblage asm)
-            {
-                ctx.FieldNotFound();
-                return;
-            }
-
-            var idx = asm.GetOrdinal(name);
+            var idx = Privates.GetOrdinal(name);
 
             if (idx == -1)
             {
@@ -46,13 +40,13 @@ namespace Dyalect.Runtime.Types
                 return;
             }
 
-            if (asm.IsReadOnly(idx))
+            if (Privates.IsReadOnly(idx))
             {
                 ctx.FieldReadOnly();
                 return;
             }
 
-            asm.Values[idx] = value;
+            Privates.SetValue(idx, value);
         }
     }
 }

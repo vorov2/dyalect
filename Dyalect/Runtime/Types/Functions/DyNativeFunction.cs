@@ -34,10 +34,10 @@ namespace Dyalect.Runtime.Types
             Captures = captures;
         }
 
-        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1)
+        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1, bool auto = false)
         {
             var vars = new FastList<DyObject[]>(captures) { locals };
-            return new(sym, unitId, funcId, vars, DyType.Function, varArgIndex);
+            return new(sym, unitId, funcId, vars, DyType.Function, varArgIndex) { Auto = auto };
         }
 
         internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) =>
@@ -45,6 +45,27 @@ namespace Dyalect.Runtime.Types
             {
                 Self = arg
             };
+
+        internal override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
+        {
+            if (Auto)
+            {
+                try
+                {
+                    var size = GetLayout(ctx).Size;
+                    var locals = size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
+                    ctx.CallStack.Push(Caller.External);
+                    return DyMachine.ExecuteWithData(this, locals, ctx);
+                }
+                catch (DyCodeException ex)
+                {
+                    ctx.Error = ex.Error;
+                    return DyNil.Instance;
+                }
+            }
+
+            return BindToInstance(ctx, arg);
+        }
 
         internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args)
         {

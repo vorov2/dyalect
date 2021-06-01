@@ -328,6 +328,9 @@ namespace Dyalect.Runtime
                     case OpCode.NewFunV:
                         evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, ctx.AUX));
                         break;
+                    case OpCode.NewFunA:
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, ctx.AUX));
+                        break;
                     case OpCode.HasMember:
                         right = evalStack.Peek();
                         if (right.TypeId == DyType.TypeInfo)
@@ -616,14 +619,14 @@ namespace Dyalect.Runtime
                         ctx.CatchMarks.Peek().Pop();
                         break;
                     case OpCode.NewType:
-                        evalStack.Push(new DyCustomType(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, evalStack.Pop(), unit));
+                        evalStack.Push(new DyCustomType(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, (DyTuple)evalStack.Pop(), unit));
                         break;
                     case OpCode.Mut:
                         ((DyLabel)evalStack.Peek()).Mutable = true;
                         break;
                     case OpCode.Priv:
                         right = evalStack.Peek();
-                        evalStack.Replace(right.TypeId == DyType.Object ? right : (DyAssemblage)((DyCustomType)right).Privates);
+                        evalStack.Replace(right.TypeId == DyType.Object ? right : ((DyCustomType)right).Privates);
                         break;
                     case OpCode.SetTypeT:
                         ctx.TypeStack.Push(op.Data);

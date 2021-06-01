@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Dyalect.Runtime.Types
 {
-    internal sealed class DyAssemblage : DyObject
+    internal sealed  class DyAssemblage : DyTuple
     {
-        internal readonly DyObject[] Values;
         private readonly DyLabel[] keys;
 
-        public int Count => Values.Length;
-        
-        public DyAssemblage(DyObject[] locals, DyLabel[] keys) : base(DyType.Object) =>
-            (Values, this.keys) = (locals, keys);
+        public DyAssemblage(DyObject[] values, DyLabel[] keys) : base(values) =>
+            this.keys = keys;
 
-        public int GetOrdinal(string name)
+        public override int GetOrdinal(string name)
         {
             for (var i = 0; i < keys.Length; i++)
                 if (keys[i].Label == name)
@@ -21,10 +22,33 @@ namespace Dyalect.Runtime.Types
             return -1;
         }
 
-        public bool IsReadOnly(int index) => !keys[index].Mutable;
+        public override bool IsReadOnly(int index) => !keys[index].Mutable;
 
-        public override object ToObject() => throw new NotSupportedException();
+        protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) => Values[index];
 
-        public override int GetHashCode() => throw new NotSupportedException();
+        internal override string GetKey(int index) => keys[index].Label;
+
+        internal override void SetValue(int index, DyObject value) => Values[index] = value;
+
+        protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
+        {
+            var ki = keys[index];
+
+            if (!ki.Mutable)
+            {
+                ctx.FieldReadOnly();
+                return;
+            }
+
+            if (ki.TypeAnnotation is not null && ki.TypeAnnotation.Value != value.TypeId)
+            {
+                ctx.InvalidType(value);
+                return;
+            }
+
+            Values[index] = value;
+        }
+
+        internal override DyLabel? GetKeyInfo(int index) => keys[index];
     }
 }

@@ -12,7 +12,7 @@ namespace Dyalect.Runtime.Types
         public override int Count => Values.Length;
 
         public DyTuple(DyObject[] values) : base(DyType.Tuple) =>
-            Values = values ?? throw new DyException("Unable to create a tuple with no values.");
+            this.Values = values ?? throw new DyException("Unable to create a tuple with no values.");
 
         public static DyTuple Create(params DyObject[] args) => new(args);
 
@@ -20,10 +20,12 @@ namespace Dyalect.Runtime.Types
         {
             var dict = new Dictionary<DyObject, DyObject>();
 
-            foreach (var obj in Values)
+            for (var i = 0; i < Count; i++)
             {
-                if (obj is not DyLabel lab || !dict.TryAdd(new DyString(lab.Label), lab.Value))
-                    dict.Add(new DyString(DefaultKey()), obj);
+                var ki = GetKeyInfo(i);
+                var v = GetValue(i);
+                var key = new DyString(ki is null ? DefaultKey() : ki.Label);
+                dict[key] = v;
             }
 
             return dict;
@@ -71,7 +73,7 @@ namespace Dyalect.Runtime.Types
                 base.SetItem(index, value, ctx);
         }
 
-        public int GetOrdinal(string name)
+        public virtual int GetOrdinal(string name)
         {
             for (var i = 0; i < Values.Length; i++)
                 if (Values[i].GetLabel() == name)
@@ -80,12 +82,12 @@ namespace Dyalect.Runtime.Types
             return -1;
         }
 
-        public bool IsReadOnly(int index) => Values[index] is DyLabel lab && !lab.Mutable;
+        public virtual bool IsReadOnly(int index) => Values[index] is DyLabel lab && !lab.Mutable;
 
         protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
             Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
 
-        internal string GetKey(int index) => Values[index].GetLabel()!;
+        internal virtual string GetKey(int index) => Values[index].GetLabel()!;
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
         {
@@ -119,19 +121,46 @@ namespace Dyalect.Runtime.Types
         public override IEnumerator<DyObject> GetEnumerator()
         {
             for (var i = 0; i < Count; i++)
-                yield return Values[i].TypeId is DyType.Label ? Values[i].GetTaggedValue() : Values[i];
+                yield return GetValue(i);
         }
 
-        internal override DyObject GetValue(int index) => Values[index];
+        internal override DyObject GetValue(int index) => Values[index].GetTaggedValue();
 
-        internal override DyObject[] GetValues() => Values;
+        internal virtual void SetValue(int index, DyObject value)
+        {
+            if (Values[index] is DyLabel lab)
+                lab.Value = value;
+            else
+                Values[index] = value;
+        }
+
+        internal virtual DyLabel? GetKeyInfo(int index) => Values[index] is DyLabel lab ? lab : null;
+
+        internal override DyObject[] GetValues()
+        {
+            for (var i = 0; i < Count; i++)
+                if (Values[i].TypeId == DyType.Label)
+                    return ConvertToPlainValues();
+
+            return Values;
+        }
+
+        private DyObject[] ConvertToPlainValues()
+        {
+            var arr = new DyObject[Count];
+
+            for (var i = 0; i < Count; i++)
+                arr[i] = Values[i].GetTaggedValue();
+
+            return arr;
+        }
 
         internal DyObject ToString(ExecutionContext ctx)
         {
             var sb = new StringBuilder();
             sb.Append('(');
 
-            for (var i = 0; i < Values.Length; i++)
+            for (var i = 0; i < Count; i++)
             {
                 if (i > 0)
                 {
@@ -139,17 +168,17 @@ namespace Dyalect.Runtime.Types
                     sb.Append(' ');
                 }
 
-                var v = Values[i];
+                var v = GetValue(i);
+                var ki = GetKeyInfo(i);
 
-                if (v is DyLabel lab)
+                if (ki is not null)
                 {
-                    if (lab.Mutable)
+                    if (ki.Mutable)
                         sb.Append("var ");
 
-                    sb.Append(lab.Label);
+                    sb.Append(ki.Label);
                     sb.Append(':');
                     sb.Append(' ');
-                    v = lab.Value;
                 }
 
                 var str = v.ToString(ctx);
