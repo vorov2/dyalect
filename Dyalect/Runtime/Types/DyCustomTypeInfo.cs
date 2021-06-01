@@ -84,6 +84,12 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
+            if (name.Length > 4)
+            {
+                var (prefix, snam) = (name[0..3], name[4..]);
+
+            }
+
             var obj = (DyCustomType)self;
             var idx = ((DyAssemblage)obj.Privates).GetOrdinal(name);
             return new DyGetterFunction(idx);
@@ -92,3 +98,4 @@ namespace Dyalect.Runtime.Types
         public override string TypeName { get; }
     }
 }
+ 
