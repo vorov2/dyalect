@@ -445,7 +445,20 @@ namespace Dyalect.Compiler
             }
 
             if (hints.Has(Pop))
-                cw.SetPriv(node.Name);
+            {
+                //cw.SetPriv(node.Name);
+                var (a, b) = (AddVariable(), AddVariable());
+                cw.GetMember("set_" + node.Name);
+                cw.PopVar(a); //member
+                cw.PopVar(b); //arg
+                
+                cw.PushVar(new ScopeVar(a));
+                cw.FunPrep(1);
+                cw.PushVar(new ScopeVar(b));
+                cw.FunArgIx(0);
+                cw.FunCall(1);
+                cw.Pop();
+            }
             else
             {
                 cw.GetMember(node.Name);
