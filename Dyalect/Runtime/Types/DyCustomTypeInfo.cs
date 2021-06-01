@@ -81,21 +81,7 @@ namespace Dyalect.Runtime.Types
 
             return base.SetOp(self, index, value, ctx);
         }
-
-        private DyObject Setter(ExecutionContext ctx, DyObject self, DyObject value, int index)
-        {
-            if (index == -1)
-                return ctx.FieldNotFound();
-            
-            if (ctx.TypeStack.Count == 0 || ctx.TypeStack.Peek() != self.TypeId)
-                return ctx.PrivateAccess();
-            
-            var tup = ((DyCustomType) self).Privates;
-            
-            tup.SetValue(index, value);
-            return DyNil.Instance;
-        }
-
+        
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             var obj = (DyCustomType)self;
@@ -116,6 +102,9 @@ namespace Dyalect.Runtime.Types
                     return new DyGetterFunction(idx);
                 }
             }
+
+            if (Members.TryGetValue("get_" + name, out var func))
+                return func;
 
             return new DyGetterFunction(obj.Privates.GetOrdinal(name));
         }

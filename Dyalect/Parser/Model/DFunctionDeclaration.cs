@@ -21,7 +21,11 @@ namespace Dyalect.Parser.Model
             get => isConstructor ?? IsMemberFunction && Name is not null && char.IsUpper(Name[0]);
             set => isConstructor = value;
         }
+        
+        public bool Getter { get; set; }
 
+        public bool Setter { get; set; }
+        
         public bool IsIterator { get; set; }
 
         public List<DParameter> Parameters { get; } = new();
@@ -55,6 +59,12 @@ namespace Dyalect.Parser.Model
 
             if (Name is not null)
                 sb.Append("func ");
+
+            if (Getter)
+                sb.Append("get ");
+
+            if (Setter)
+                sb.Append("set ");
 
             if (TypeName is not null)
             {

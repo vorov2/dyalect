@@ -11,7 +11,7 @@ namespace Dyalect.Compiler
     {
         private void Build(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
-            if (node.Name != null)
+            if (node.Name is not null)
             {
                 var flags = VarFlags.Const | VarFlags.Function;
                 var addr = 0;
@@ -34,7 +34,13 @@ namespace Dyalect.Compiler
                     if (!node.IsStatic)
                         realName = GetMethodName(realName, node);
 
-                    if (node.Name == Builtins.Has || (!node.IsStatic && node.Name == Builtins.Type))
+                    if (node.Getter)
+                        realName = "get_" + realName;
+
+                    if (node.Setter)
+                        realName = "set_" + realName;
+
+                    if (node.Name is Builtins.Has || (!node.IsStatic && node.Name is Builtins.Type))
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
                     cw.Aux(realName);
@@ -68,8 +74,8 @@ namespace Dyalect.Compiler
             {
                 "+" => node.Parameters.Count == 0 ? Builtins.Plus : Builtins.Add,
                 "-" => node.Parameters.Count == 0 ? Builtins.Neg : Builtins.Sub,
-                "get" => Builtins.Get,
-                "set" => Builtins.Set,
+                "getItem" => Builtins.Get,
+                "setItem" => Builtins.Set,
                 "*" => Builtins.Mul,
                 "/" => Builtins.Div,
                 "%" => Builtins.Rem,
@@ -84,7 +90,7 @@ namespace Dyalect.Compiler
                 "<=" => Builtins.Lte,
                 "!" => Builtins.Not,
                 "~~~" => Builtins.BitNot,
-                _ => name,
+                _ => name
             };
 
         //Compilation of function parameters with support for variable
@@ -190,7 +196,7 @@ namespace Dyalect.Compiler
         {
             var iterBody = hints.Has(IteratorBody);
             var args = CompileFunctionParameters(node.Parameters);
-            StartFun(node.Name!, args);
+            StartFun(node.Getter ? "get_" + node.Name : node.Setter ? "set_" + node.Name : node.Name!, args);
 
             if (node.IsStatic && !node.IsMemberFunction)
                 AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);
@@ -243,6 +249,9 @@ namespace Dyalect.Compiler
                 cw.This();
                 cw.PopVar(va);
             }
+            
+            if ((node.Getter || node.Setter) && !node.IsMemberFunction)
+                AddError(CompilerError.AccessorOnlyMethod, node.Location);
 
             //Start of a function that is used for tail call optimization
             cw.MarkLabel(startLabel);
@@ -336,6 +345,9 @@ namespace Dyalect.Compiler
                 else
                     cw.NewFun(funHandle);
             }
+            
+            if (node.Getter)
+                cw.FunAttr(FunAttr.Auto);
         }
     }
 }

@@ -273,4 +273,7 @@
   <data name="AssignmentSameVariable" xml:space="preserve">
     <value>Assignment to the same variable.</value>
   </data>
+  <data name="AccessorOnlyMethod" xml:space="preserve">
+    <value>Only methods can be declared as accessors (get and set).</value>
+  </data>
 </root>

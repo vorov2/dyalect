@@ -6,6 +6,7 @@
   * Add: _Add `String.toCharArray` method_ ([Issue #524](https://github.com/vorov2/dyalect/issues/524), [docs](https://github.com/vorov2/dyalect/wiki/String#toCharArray)).
   * Add: _Assignment to the same variable_ ([Issue #541](https://github.com/vorov2/dyalect/issues/541)).
   * Change: _`String.repeat` should accept both strings and chars_ ([Issue #534](https://github.com/vorov2/dyalect/issues/534)).
+  * Change: _Rename standard functions `get` and `set`_ ([Issue #546](https://github.com/vorov2/dyalect/issues/546)).
   * Fix: _`nameof` error_ ([Issue #537](https://github.com/vorov2/dyalect/issues/537)).
   * Fix: _`base` doesn't work correctly for assignments_ ([Issue #538](https://github.com/vorov2/dyalect/issues/538)).
   * Fix: _A bug in parsing interpolated strings_ ([Issue #545](https://github.com/vorov2/dyalect/issues/545)).

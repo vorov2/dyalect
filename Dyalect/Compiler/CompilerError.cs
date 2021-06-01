@@ -92,7 +92,7 @@
 
         TypeNameCamel = 244,
 
-        // = 245,
+        AccessorOnlyMethod = 245,
 
         AutoNotAllowed = 246,
 

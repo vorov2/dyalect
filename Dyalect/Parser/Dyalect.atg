@@ -93,7 +93,7 @@ PRODUCTIONS
     StandardOperators = "+" | "-" | "*" | "/" | "%" | "|||" | "&&&" | "!"
         | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^^^" | "<<<" | ">>>" | "~~~".
 
-    FunctionName = identToken | StandardOperators | "set".
+    FunctionName = identToken | StandardOperators.
 
     Qualident<out string s1, out string s2, out string s3> =
         (. s1 = null; s2 = null; s3 = null; .)
@@ -330,10 +330,11 @@ PRODUCTIONS
         (. node = rec ?? node; .).
 
     FunctionBody<bool st, out DNode node> =
-        (. node = null; .)
+        (. node = null; var get = false; var set = false; .)
         (
+            [ "get" (. get = true; .) | "set" (. set = true; .) ]
             (.
-                var f = new DFunctionDeclaration(t) { IsStatic = st };
+                var f = new DFunctionDeclaration(t) { IsStatic = st, Getter = get, Setter = set };
                 functions.Push(f);
             .)
             Qualident<out var s1, out var s2, out var s3>

@@ -68,6 +68,9 @@ namespace Dyalect.Compiler
 
             AddLinePragma(loc);
             cw.PopVar(sv.Address);
+            
+            if ((sv.Data & VarFlags.Const) == VarFlags.Const)
+                AddError(CompilerError.UnableAssignConstant, loc, name);
         }
 
 

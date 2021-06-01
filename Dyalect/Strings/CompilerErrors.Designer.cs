@@ -61,6 +61,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only methods can be declared as accessors (get and set)..
+        /// </summary>
+        internal static string AccessorOnlyMethod {
+            get {
+                return ResourceManager.GetString("AccessorOnlyMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assignment to the same variable..
         /// </summary>
         internal static string AssignmentSameVariable {

@@ -101,6 +101,6 @@
         SetPriv,    //-2
         NewAmg,     //Dynamic
         Tag0,       //1
-        NewFunA,    //0
+        FunAttr,    //0
     }
 }

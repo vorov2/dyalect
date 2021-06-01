@@ -328,8 +328,8 @@ namespace Dyalect.Runtime
                     case OpCode.NewFunV:
                         evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, ctx.AUX));
                         break;
-                    case OpCode.NewFunA:
-                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, ctx.AUX));
+                    case OpCode.FunAttr:
+                        ((DyFunction)evalStack.Peek()).Attr |= op.Data;
                         break;
                     case OpCode.HasMember:
                         right = evalStack.Peek();
@@ -360,12 +360,12 @@ namespace Dyalect.Runtime
                     case OpCode.SetMember:
                         right = evalStack.Pop();
                         types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
-                            .SetInstanceMember(unit.IndexedStrings[ctx.AUX].Value, right);
+                            .SetInstanceMember(ctx, unit.IndexedStrings[ctx.AUX].Value, right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMemberT:
                         right = evalStack.Pop();
-                        types[op.Data].SetInstanceMember(unit.IndexedStrings[ctx.AUX].Value, right);
+                        types[op.Data].SetInstanceMember(ctx, unit.IndexedStrings[ctx.AUX].Value, right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Get:
