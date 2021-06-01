@@ -52,8 +52,7 @@ namespace Dyalect.Compiler
                 var typeHandle = GetTypeHandle(null, node.Name, node.Location);
                 cw.SetType(typeHandle);
 
-                var usingScope = BuildUsing(node.InitBlock, hints, newctx);
-                typeScopes.Add(node.Name, usingScope);
+                BuildUsing(node.InitBlock, hints, newctx);
                 cw.UnsetType();
                 cw.Ret();
                 cw.MarkLabel(funSkipLabel);
@@ -71,7 +70,7 @@ namespace Dyalect.Compiler
             PushIf(hints);
         }
 
-        private Scope BuildUsing(DNode node, Hints hints, CompilerContext ctx)
+        private void BuildUsing(DNode node, Hints hints, CompilerContext ctx)
         {
             StartScope(ScopeKind.Lexical, node.Location);
             Build(node, hints.Append(NoScope).Remove(Push), ctx);
@@ -89,7 +88,6 @@ namespace Dyalect.Compiler
 
             cw.NewAmg(count++);
             EndScope();
-            return scope;
         }
 
         private void GenerateConstructor(DFunctionDeclaration func, CompilerContext ctx)

@@ -82,17 +82,42 @@ namespace Dyalect.Runtime.Types
             return base.SetOp(self, index, value, ctx);
         }
 
+        private DyObject Setter(ExecutionContext ctx, DyObject self, DyObject value, int index)
+        {
+            if (index == -1)
+                return ctx.FieldNotFound();
+            
+            if (ctx.TypeStack.Count == 0 || ctx.TypeStack.Peek() != self.TypeId)
+                return ctx.PrivateAccess();
+            
+            var tup = ((DyCustomType) self).Privates;
+            
+            tup.SetValue(index, value);
+            return DyNil.Instance;
+        }
+
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
+            var obj = (DyCustomType)self;
+
             if (name.Length > 4)
             {
-                var (prefix, snam) = (name[0..3], name[4..]);
+                var (prefix, snam) = (name[..3], name[4..]);
 
+                if (prefix is "set")
+                {
+                    var idx = obj.Privates.GetOrdinal(snam);
+                    return new DySetterFunction(idx, name);
+                }
+
+                if (prefix is "get")
+                {
+                    var idx = obj.Privates.GetOrdinal(snam);
+                    return new DyGetterFunction(idx);
+                }
             }
 
-            var obj = (DyCustomType)self;
-            var idx = ((DyAssemblage)obj.Privates).GetOrdinal(name);
-            return new DyGetterFunction(idx);
+            return new DyGetterFunction(obj.Privates.GetOrdinal(name));
         }
 
         public override string TypeName { get; }

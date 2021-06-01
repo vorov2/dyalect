@@ -259,7 +259,7 @@ namespace Dyalect.Compiler
 
         private void BuildName(DNamePattern node, Hints hints, CompilerContext ctx)
         {
-            if (hints.Has(Rebind) && VariableExists(ctx, node.Name, checkType: false) is CompilerError.None)
+            if (hints.Has(Rebind) && VariableExists(node.Name, checkType: false) is CompilerError.None)
                 PopVariable(ctx, node.Name, node.Location);
             else if (!hints.Has(OpenMatch) && TryGetLocalVariable(node.Name, out var sv))
                 cw.PopVar(sv.Address);

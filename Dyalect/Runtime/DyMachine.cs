@@ -626,7 +626,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Priv:
                         right = evalStack.Peek();
-                        evalStack.Replace(right.TypeId == DyType.Object ? right : ((DyCustomType)right).Privates);
+                        evalStack.Replace(right.TypeId == DyType.Tuple ? right : ((DyCustomType)right).Privates);
                         break;
                     case OpCode.SetTypeT:
                         ctx.TypeStack.Push(op.Data);

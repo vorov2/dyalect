@@ -14,7 +14,7 @@ namespace Dyalect.Compiler
 
         private bool privateScope; //Identifies that a current scope is private
 
-        private CompilerError VariableExists(CompilerContext ctx, string name, bool checkType = true)
+        private CompilerError VariableExists(string name, bool checkType = true)
         {
             var err = GetVariable(name, currentScope, out _);
 
@@ -22,12 +22,6 @@ namespace Dyalect.Compiler
                 return err;
 
             if (checkType && GetTypeHandle(null, name, out _, out _) is CompilerError.None)
-                return CompilerError.None;
-
-            if (err is CompilerError.UndefinedVariable
-                && ctx.LocalType is not null
-                && typeScopes.TryGetValue(ctx.LocalType, out var tscope)
-                && tscope.Locals.TryGetValue(name, out _))
                 return CompilerError.None;
 
             return err;
@@ -55,17 +49,6 @@ namespace Dyalect.Compiler
                 return;
             }
 
-            if ((sv.Data & VarFlags.InitBlock) == VarFlags.InitBlock)
-            {
-                GetVariable(ctx.Function!.IsStatic ? "$this" : "this", currentScope, out var thisVar);
-                AddLinePragma(loc);
-                cw.PushVar(thisVar);
-                cw.Priv();
-                cw.Push(name);
-                cw.Get();
-                return;
-            }
-
             AddLinePragma(loc);
             cw.PushVar(sv);
         }
@@ -80,17 +63,6 @@ namespace Dyalect.Compiler
                     return;
 
                 AddError(err, loc, name);
-                return;
-            }
-
-            if ((sv.Data & VarFlags.InitBlock) == VarFlags.InitBlock)
-            {
-                GetVariable(ctx.Function!.IsStatic ? "$this" : "this", currentScope, out var thisVar);
-                AddLinePragma(loc);
-                cw.PushVar(thisVar);
-                cw.Priv();
-                cw.Push(name);
-                cw.Set();
                 return;
             }
 

@@ -1298,7 +1298,7 @@ namespace Dyalect.Compiler
                 }
                 else if (node.NodeType is NodeType.Rebinding)
                 {
-                    if (VariableExists(ctx, nm, checkType: false) is CompilerError.None)
+                    if (VariableExists(nm, checkType: false) is CompilerError.None)
                         PopVariable(ctx, nm, e.Location);
                     else
                     {
@@ -1437,7 +1437,7 @@ namespace Dyalect.Compiler
 
                     if (name is not null)
                     {
-                        var err = VariableExists(ctx, name);
+                        var err = VariableExists(name);
                         if (err is not CompilerError.None)
                             AddError(err, node.Location, name);
                     }

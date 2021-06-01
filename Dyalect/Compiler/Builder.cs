@@ -23,7 +23,6 @@ namespace Dyalect.Compiler
         private readonly Dictionary<string, UnitInfo> referencedUnits;
 
         private readonly Dictionary<string, TypeInfo> types;
-        private readonly Dictionary<string, Scope> typeScopes = new();
         private readonly static DImport defaultInclude = new(default) { ModuleName = "lang" };
 
         public Builder(BuilderOptions options, DyLinker linker)

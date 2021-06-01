@@ -11,8 +11,6 @@
         public const int Module = 0x20;
         public const int This = 0x40;
         public const int Private = 0x80;
-        public const int TypeVar = 0x100;
-        public const int PreInit = 0x200;
-        public const int InitBlock = 0x400;
+        public const int PreInit = 0x100;
     }
 }

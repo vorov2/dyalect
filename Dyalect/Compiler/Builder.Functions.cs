@@ -158,6 +158,34 @@ namespace Dyalect.Compiler
             return arr;
         }
 
+        private int BuildFunctionArguments(DFunctionDeclaration node, Par[] args)
+        {
+            var variadicIndex = -1;
+
+            //Initialize function arguments
+            if (args.Length > 0)
+            {
+                for (var i = 0; i < args.Length; i++)
+                {
+                    var arg = args[i];
+
+                    if (arg.IsVarArg)
+                        variadicIndex = i;
+
+                    var a = AddVariable(arg.Name, node.Location, data: VarFlags.Argument);
+
+                    if (arg.TypeAnnotation is not null)
+                    {
+                        cw.PushVar(new ScopeVar(a));
+                        AddLinePragma(node.Parameters[i]);
+                        cw.TypeCheckF(arg.TypeAnnotation.Value);
+                    }
+                }
+            }
+
+            return variadicIndex;
+        }
+
         private void BuildFunctionBody(TypeHandle? typeHandle, int addr, DFunctionDeclaration node, Hints hints, CompilerContext oldctx)
         {
             var iterBody = hints.Has(IteratorBody);
@@ -199,31 +227,10 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             var address = cw.Offset;
-            var variadicIndex = -1;
-
-            //Initialize function arguments
-            if (args.Length > 0)
-            {
-                for (var i = 0; i < args.Length; i++)
-                {
-                    var arg = args[i];
-
-                    if (arg.IsVarArg)
-                        variadicIndex = i;
-
-                    var a = AddVariable(arg.Name, node.Location, data: VarFlags.Argument);
-
-                    if (arg.TypeAnnotation is not null)
-                    {
-                        cw.PushVar(new ScopeVar(a));
-                        AddLinePragma(node.Parameters[i]);
-                        cw.TypeCheckF(arg.TypeAnnotation.Value);
-                    }
-                }
-
-                StartScope(ScopeKind.Lexical, node.Location);
-            }
-
+            
+            //args was here
+            var variadicIndex = BuildFunctionArguments(node, args);
+            
             if (typeHandle is not null)
                 cw.SetType(typeHandle.Value);
 
@@ -260,7 +267,7 @@ namespace Dyalect.Compiler
                     if (unit.Types[lti.TypeId].AutoGenConstructors)
                         AddError(CompilerError.CtorAutoGen, node.Location, unit.Types[lti.TypeId].Name);
 
-                    if (typeScopes.ContainsKey(lti.Declaration.Name))
+                    if (VariableExists("$" + lti.Declaration.Name) == CompilerError.None)
                     {
                         PushVariable(ctx, "$" + lti.Declaration.Name, node.Location);
                         cw.FunPrep(0);
@@ -269,15 +276,10 @@ namespace Dyalect.Compiler
                     else
                         cw.NewTuple(0);
 
-                    var v = AddVariable("$this", lti.Declaration.Location, VarFlags.Const | VarFlags.This);
+                    var v = AddVariable("this", lti.Declaration.Location, VarFlags.Const | VarFlags.This);
+                    cw.Aux(node.Name!);
+                    cw.NewType(lti.TypeId);
                     cw.PopVar(v);
-                }
-
-                if (localTypeMember && typeScopes.TryGetValue(lti.Declaration.Name, out var scope))
-                {
-
-                    foreach (var (name, svv) in scope.Locals)
-                        AddVariable(name, node.Location, svv.Data | VarFlags.InitBlock);
                 }
 
                 Build(node.Body!, hints.Append(Last), ctx);
@@ -307,17 +309,10 @@ namespace Dyalect.Compiler
                 cw.Pop();
 
                 //Push privates to stack
-                PushVariable(ctx, "$this", node.Body.Location);
-
-                cw.Aux(node.Name!);
-                cw.NewType(lti.TypeId);
+                PushVariable(ctx, "this", node.Body.Location);
             }
 
             cw.Ret();
-
-            if (args.Length > 0)
-                EndScope();
-
             cw.MarkLabel(funSkipLabel);
             AddLinePragma(node);
 

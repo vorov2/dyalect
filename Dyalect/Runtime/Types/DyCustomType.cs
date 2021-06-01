@@ -26,7 +26,7 @@ namespace Dyalect.Runtime.Types
 
         internal override void SetPrivate(ExecutionContext ctx, string name, DyObject value)
         {
-            if (ctx.TypeStack.Count == 0 || TypeId != ctx.TypeStack.Peek())
+            if (ctx.TypeStack.Count is 0 || TypeId != ctx.TypeStack.Peek())
             {
                 ctx.PrivateAccess();
                 return;
@@ -34,7 +34,7 @@ namespace Dyalect.Runtime.Types
 
             var idx = Privates.GetOrdinal(name);
 
-            if (idx == -1)
+            if (idx is -1)
             {
                 ctx.FieldNotFound();
                 return;

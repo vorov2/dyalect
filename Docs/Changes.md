@@ -6,7 +6,8 @@
   * Add: _Assignment to the same variable_ ([Issue #541](https://github.com/vorov2/dyalect/issues/541)).
   * Change: _`String.repeat` should accept both strings and chars_ ([Issue #534](https://github.com/vorov2/dyalect/issues/534)).
   * Fix: _`nameof` error_ ([Issue #537](https://github.com/vorov2/dyalect/issues/537)).
-  * Fix: `base` doesn't work correctly for assignments_ ([Issue #538](https://github.com/vorov2/dyalect/issues/538)).
+  * Fix: _`base` doesn't work correctly for assignments_ ([Issue #538](https://github.com/vorov2/dyalect/issues/538)).
+  * Fix: _A bug in parsing interpolated strings_ ([Issue #545](https://github.com/vorov2/dyalect/issues/545)).
 
 # 0.26.4
   * Fix: _Run-time crash_ ([Issue #535](https://github.com/vorov2/dyalect/issues/535)).

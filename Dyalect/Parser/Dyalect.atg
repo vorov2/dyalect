@@ -10,6 +10,7 @@ CHARACTERS
     notDigit = ANY - digit.
     hexDigit = digit + "ABCDEFabcdef".
     stringChar = ANY - '"' - '\\' - newLine.
+    stringChar2 = ANY - '"' - '\\' - '(' - ')' - newLine.
     verbatimChar = ANY - ']'.
     verbatimChar2 = ANY - '>'.
     char = ANY - "'" - newLine.
@@ -30,7 +31,8 @@ TOKENS
                             | ( "e" | "E") ["+" | "-" ] digit { digit }
                         ) [("F"|"f")].
 
-    stringToken = "\"" { stringChar | "\\" esc | ("\\(" {stringChar|"\""} ")" ) }  "\"".
+    stringToken = "\"" { stringChar | "\\" esc | ("\\(" {stringChar} ")" ) }  "\"".
+
     charToken = "'" { char | "\\" esc } "'".
     implicitToken = "$" digit { digit }.
     verbatimStringToken = "<[" { verbatimChar | ("]" verbatimChar2) | "]>]>" } "]>".
