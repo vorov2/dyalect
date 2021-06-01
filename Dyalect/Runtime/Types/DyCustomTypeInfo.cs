@@ -75,7 +75,7 @@ namespace Dyalect.Runtime.Types
         {
             if (autoGenMethods)
             {
-                ((DyTuple)((DyCustomType)self).Privates).SetItem(index, value, ctx);
+                ((DyCustomType)self).Privates.SetItem(index, value, ctx);
                 return DyNil.Instance;
             }
 
