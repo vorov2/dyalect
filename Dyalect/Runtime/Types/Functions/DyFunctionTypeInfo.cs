@@ -44,8 +44,8 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 "compose" => Func.Member(name, Compose, -1, new Par("with")),
-                "name" => Func.Member(name, GetName),
-                "parameters" => Func.Member(name, GetParameters),
+                "name" => Func.Auto(name, GetName),
+                "parameters" => Func.Auto(name, GetParameters),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

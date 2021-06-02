@@ -1,18 +1,19 @@
 # 0.27.0
   * Add: _Consider forward declaration of functions_ ([Issue #527](https://github.com/vorov2/dyalect/issues/527), [docs](https://github.com/vorov2/dyalect/wiki/Functions#rec)).
   * Add: _Revise custom type implementation_ ([Issue #539](https://github.com/vorov2/dyalect/issues/539), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
+  * Add: _Add support for properties/accessors_ ([Issue #547](https://github.com/vorov2/dyalect/issues/547), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types#properties)).
   * Add: _Add `sqrt` standard function_ ([Issue #533](https://github.com/vorov2/dyalect/issues/533), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#sqrt)).
   * Add: _Add `pow` standard function_ ([Issue #532](https://github.com/vorov2/dyalect/issues/532), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#pow)).
   * Add: _Add `String.toCharArray` method_ ([Issue #524](https://github.com/vorov2/dyalect/issues/524), [docs](https://github.com/vorov2/dyalect/wiki/String#toCharArray)).
   * Add: _Assignment to the same variable_ ([Issue #541](https://github.com/vorov2/dyalect/issues/541)).
   * Change: _`String.repeat` should accept both strings and chars_ ([Issue #534](https://github.com/vorov2/dyalect/issues/534)).
   * Change: _Rename standard functions `get` and `set`_ ([Issue #546](https://github.com/vorov2/dyalect/issues/546)).
+  * Change: _Convert fields `name` and `id` in `TypeInfo` to functions_ ([Issue #548](https://github.com/vorov2/dyalect/issues/548)).
   * Fix: _`nameof` error_ ([Issue #537](https://github.com/vorov2/dyalect/issues/537)).
   * Fix: _`base` doesn't work correctly for assignments_ ([Issue #538](https://github.com/vorov2/dyalect/issues/538)).
   * Fix: _A bug in parsing interpolated strings_ ([Issue #545](https://github.com/vorov2/dyalect/issues/545)).
   * Fix: _`toString` is always generated for custom type_ ([Issue #542](https://github.com/vorov2/dyalect/issues/542)).
   * Fix: _Equality operator is always generated for custom types_ ([Issue #543](https://github.com/vorov2/dyalect/issues/543)).
-  * Fix: _Convert fields `name` and `id` in `TypeInfo` to functions_ ([Issue #548](https://github.com/vorov2/dyalect/issues/548)).
 
 # 0.26.4
   * Fix: _Run-time crash_ ([Issue #535](https://github.com/vorov2/dyalect/issues/535)).
