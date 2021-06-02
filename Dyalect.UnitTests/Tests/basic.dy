@@ -529,3 +529,18 @@ func typeErrorTest() {
         InvalidType() => assert(got: true)
     }
 }
+
+func propertyExtTest() {
+    func get Array.first() { 
+        this[0] when this.len() > 0
+    }
+    func set Array.first(val) {
+        this.add(val) when this.len() == 0 else this[0] = val
+    }
+    let xs = [1,2,3]
+    assert(1, xs.first)
+    xs.first = 11
+    assert(11, xs.first)
+    Array.__deleteMember("first")
+    Array.__deleteMember("set_first")
+}
