@@ -382,6 +382,8 @@ namespace Dyalect.Runtime.Types
                     (context, strObj) =>
                     {
                         var nm = strObj.GetString();
+                        if (nm is "getItem") nm = "op_get";
+                        if (nm is "setItem") nm = "op_set";
                         SetBuiltin(nm, null);
                         Members.Remove(name);
                         staticMembers.Remove(name);

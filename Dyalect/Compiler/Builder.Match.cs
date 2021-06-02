@@ -208,7 +208,7 @@ namespace Dyalect.Compiler
             cw.CtorCheck(node.Constructor);
             cw.Brfalse(bad);
 
-            if (node.Arguments == null || node.Arguments.Count == 0)
+            if (node.Arguments is null || node.Arguments.Count is 0)
             {
                 cw.Pop();
                 cw.Push(true);

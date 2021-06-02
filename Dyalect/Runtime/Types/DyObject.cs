@@ -49,7 +49,5 @@ namespace Dyalect.Runtime.Types
         public abstract override int GetHashCode();
 
         protected int CalculateSimpleHashCode() => base.GetHashCode();
-
-        internal virtual void SetPrivate(ExecutionContext ctx, string name, DyObject value) => ctx.FieldNotFound();
     }
 }

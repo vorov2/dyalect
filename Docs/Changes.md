@@ -10,6 +10,8 @@
   * Fix: _`nameof` error_ ([Issue #537](https://github.com/vorov2/dyalect/issues/537)).
   * Fix: _`base` doesn't work correctly for assignments_ ([Issue #538](https://github.com/vorov2/dyalect/issues/538)).
   * Fix: _A bug in parsing interpolated strings_ ([Issue #545](https://github.com/vorov2/dyalect/issues/545)).
+  * Fix: _`toString` is always generated for custom type_ ([Issue #542](https://github.com/vorov2/dyalect/issues/542)).
+  * Fix: _Equality operator is always generated for custom types_ ([Issue #543](https://github.com/vorov2/dyalect/issues/543)).
 
 # 0.26.4
   * Fix: _Run-time crash_ ([Issue #535](https://github.com/vorov2/dyalect/issues/535)).

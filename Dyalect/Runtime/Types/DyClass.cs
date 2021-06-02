@@ -23,5 +23,7 @@ namespace Dyalect.Runtime.Types
         public override bool Equals(DyObject? other) =>
             other is not null && TypeId == other.TypeId && other is DyClass t 
                 && t.Constructor == Constructor && t.Privates.Equals(Privates);
+
+        protected internal override bool HasItem(string name, ExecutionContext ctx) => Privates.HasItem(name, ctx);
     }
 }

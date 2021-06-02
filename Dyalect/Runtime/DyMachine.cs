@@ -382,9 +382,9 @@ namespace Dyalect.Runtime
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetPriv:
-                        right = evalStack.Pop();
-                        right.SetPrivate(ctx, unit.IndexedStrings[op.Data].Value, evalStack.Pop());
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
+                        //right = evalStack.Pop();
+                        //types[right.TypeId].SetPrivate(ctx, unit.IndexedStrings[op.Data].Value, evalStack.Pop());
+                        //if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.HasField:
                         right = evalStack.Peek();
@@ -627,6 +627,12 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Priv:
                         right = evalStack.Peek();
+                        if (ctx.TypeStack.Count > 0 && ctx.TypeStack.Peek() != right.TypeId)
+                        {
+                            ctx.PrivateAccess();
+                            ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                            goto CATCH;
+                        }
                         evalStack.Replace(((DyClass)right).Privates);
                         break;
                     case OpCode.SetTypeT:

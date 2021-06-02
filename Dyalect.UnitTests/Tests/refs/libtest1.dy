@@ -5,7 +5,7 @@ let pi = 3.14
 type Asset = Computer(model, memory, rank) or Phone(model, memory) or Modem(model)
 
 func sayHello() {
-    "Hello, \(userName("Jon"))"
+    "Hello, \(userName('J'+'o'+'n'))"
 }
 
 func double(x) {

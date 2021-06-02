@@ -12,15 +12,9 @@ namespace Dyalect.Parser.Model
 
         public List<DNode> Arguments { get; } = new();
 
-        public bool NilSafety { get; set; }
-
         internal override void ToString(StringBuilder sb)
         {
             Target.ToString(sb);
-
-            if (NilSafety)
-                sb.Append('?');
-
             sb.Append('(');
             Arguments.ToString(sb);
             sb.Append(')');

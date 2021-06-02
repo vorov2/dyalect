@@ -218,18 +218,8 @@ PRODUCTIONS
             | Loops<out node> [ Guard<node, out node> Separator ]
             | Function<out node>
             | Directive<out node> Separator
-            | Using<out node> Separator
         )
         (. node = ProcessImplicits(node); .).
-
-    Using<out DNode node> =
-        (. node = null; .)
-        (
-            "using"
-            (. var ot = t; .)
-            Expr<out node>
-            (. node = new DUsing(ot) { Expression = node }; .)
-        ).
 
     Guard<DNode src, out DNode node> =
         (. node = src; .)
@@ -1078,78 +1068,10 @@ PRODUCTIONS
                     (. node = new DUnaryOperation(node, op, ot); .)
                 )
                 | Index<out node>
-                | UsingIndex<out node>
             )
         ).
 
-    UsingIndex<out DNode node> =
-        (. var nsaf = false; node = null; .)
-        (
-            (
-                ( "." | "?." (. nsaf = true; .) )
-                (. var ot = t; .)
-                identToken
-                (.
-                    var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
-                    fld.Name = t.val;
-                    node = fld;
-                .)
-            )
-            |
-            (
-                ( "::" | "?::" (. nsaf = true; .) )
-                (. var ot = t; .)
-                identToken
-                (.
-                    node = new DIndexer(t) { NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
-                .)
-            )
-        )
-        {
-            (
-                ( "." | "?." (. nsaf = true; .) )
-                (. var ot = t; .)
-                identToken
-                (.
-                    var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
-                    fld.Name = t.val;
-                    node = fld;
-                .)
-            )
-            |
-            (
-                ( "::" | "?::" (. nsaf = true; .) )
-                (. var ot = t; .)
-                identToken
-                (.
-                    node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
-                .)
-            )
-            |
-            (
-                (. if (la.AfterEol) return; .)
-                ( "[" | "?[" (. nsaf = true; .) )
-                    (. var idx = new DIndexer(t) { Target = node, NilSafety = nsaf }; .)
-                    Expr<out node>
-                    (.
-                        idx.Index = node;
-                        node = idx;
-                    .)
-                "]"
-            )
-            |
-            (
-                (. if (la.AfterEol) return; .)
-                ( "(" | "?(" (. nsaf = true; .) )
-                    (. var app = new DApplication(node, t) { NilSafety = nsaf }; .)
-                    [ ApplicationArguments<app> ]
-                    (. node = app; .)
-                ")"
-            )
-        }.
-
     Index<out DNode node> =
-        (. var nsaf = false; .)
         (
             Literal<out node>
             (. if (la.AfterEol) return; .)
@@ -1157,11 +1079,11 @@ PRODUCTIONS
                 (
                     (
                         (. if (la.AfterEol) return; .)
-                        ( "." | "?." (. nsaf = true; .) )
+                        "."
                         (. var ot = t; .)
                         identToken
                         (.
-                            var fld = new DAccess(ot) { Target = node, NilSafety = nsaf };
+                            var fld = new DAccess(ot) { Target = node };
                             fld.Name = t.val;
                             node = fld;
                         .)
@@ -1169,18 +1091,18 @@ PRODUCTIONS
                     |
                     (
                         (. if (la.AfterEol) return; .)
-                        ( "::" | "?::" (. nsaf = true; .) )
+                        "::"
                         (. var ot = t; .)
                         identToken
                         (.
-                            node = new DIndexer(t) { Target = node, NilSafety = nsaf, Index = new DStringLiteral(ot) { Value = t.val } };
+                            node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
                         .)
                     )
                     |
                     (
                         (. if (la.AfterEol) return; .)
-                        ( "[" | "?[" (. nsaf = true; .) )
-                            (. var idx = new DIndexer(t) { Target = node, NilSafety = nsaf }; .)
+                        "["
+                            (. var idx = new DIndexer(t) { Target = node }; .)
                             Expr<out node>
                             (.
                                 idx.Index = node;
@@ -1191,8 +1113,8 @@ PRODUCTIONS
                     |
                     (
                         (. if (la.AfterEol) return; .)
-                        ( "(" | "?(" (. nsaf = true; .) )
-                            (. var app = new DApplication(node, t) { NilSafety = nsaf }; .)
+                        "("
+                            (. var app = new DApplication(node, t); .)
                             [ ApplicationArguments<app> ]
                             (. node = app; .)
                         ")"

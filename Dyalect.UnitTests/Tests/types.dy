@@ -59,13 +59,13 @@ type Bar = {
 }
 func extendTest1() {
     static func Bar.Bar(args...) {
-        data = args
+        this.ini.data = args
     }
     func Bar.len() {
-        data.len()
+        this.ini.data.len()
     }
-    func Bar.get(index) {
-        data[index]
+    func Bar.getItem(index) {
+        this.ini.data[index]
     }
     var obj = Bar.Bar(1, 2, 3)
     var res = match obj {
@@ -73,17 +73,20 @@ func extendTest1() {
         (x, y, z) => x + y + z
     }
     assert(6, res)
+    Bar.__deleteMember("Bar")
+    Bar.__deleteMember("len")
+    Bar.__deleteMember("getItem")
 }
 
 func extendTest2() {
     static func Bar.Bar(args...) {
-        data = args
+        this.ini.data = args
     }
     func Bar.len() {
-        data.len()
+        this.ini.data.len()
     }
-    func Bar.get(index) {
-        data[index]
+    func Bar.getItem(index) {
+        this.ini.data[index]
     }
     var obj = Bar(10, 20, 30)
     assert(10, obj[0])
@@ -137,25 +140,25 @@ func typeTest1() {
     }
     static func Nat.Nat(x) {
         throw "Negative number." when x < 0
-        val = x
+        this.ini.val = x
     }
     func Nat.toInteger() {
-        val
+        this.ini.val
     }
     func Nat + (other) {
-        fetch(val + other.val)
+        fetch(this.ini.val + other.ini.val)
     }
     func Nat - (other) {
-        fetch(val - other.val)
+        fetch(this.ini.val - other.ini.val)
     }
     func Nat * (other) {
-        fetch(val * other.val)
+        fetch(this.ini.val * other.ini.val)
     }
     func Nat / (other) {
-        fetch(val / other.val)
+        fetch(this.ini.val / other.ini.val)
     }
     func Nat == (other) {
-        val == other.val
+        this.ini.val == other.ini.val
     }
     var n = Nat(12)
     assert(Nat(24), n + Nat(12))
@@ -186,19 +189,19 @@ func typeTest3() {
         Cell(value)
     }
     static func Cell.Cell(value) {
-        val = value
+        this.ini.val = value
     }
     func Cell.setValue(value) {
-        val = value
+        this.ini.val = value
     }
     func Cell.getValue() {
-        val
+        this.ini.val
     }
-    func Cell.get(index) {
+    func Cell.getItem(index) {
         if index != 0 {
             throw "Index out of range."
         }
-        val
+        this.ini.val
     }
     func Cell.len() {
         1
@@ -273,12 +276,12 @@ func simpleTypeTest2() {
 type Record = { var fields }
 func accessorTest() {
     static func Record.Record(values...) {
-        fields = values
+        this.ini.fields = values
     }
-    func Record.get(index) {
+    func Record.getItem(index) {
         match index {
-            "name" => fields::name,
-            "age" => fields::age
+            "name" => this.ini.fields::name,
+            "age" => this.ini.fields::age
         }
     }
     var p = Record(values: (name: "John", age: 33))
@@ -315,22 +318,22 @@ func defaultsConsTest() {
 }
 
 type Point1 = { var px; var py }
-func setterTest2() { //Bug #205
+func setterTest2() {
     static func Point1.Point1(x, y) {
-        px = x
-        py = y
+        this.ini.px = x
+        this.ini.py = y
     }
-    func Point1.get(index) {
+    func Point1.getItem(index) {
         match index {
-            0 or "x" => px,
-            1 or "y" => py,
+            0 or "x" => this.ini.px,
+            1 or "y" => this.ini.py,
             _ => throw Error.IndexOutOfRange()
         }
     }
-    func Point1.set(index, value) {
+    func Point1.setItem(index, value) {
         match index {
-            0 or "x" => px = value,
-            1 or "y" => py = value,
+            0 or "x" => this.ini.px = value,
+            1 or "y" => this.ini.py = value,
             _ => throw Error.IndexOutOfRange()
         }
     }
@@ -418,17 +421,17 @@ type TStringBuilder = {
 func stringBuilderTest() {
     static func TStringBuilder.TStringBuilder() { }
     func TStringBuilder.append(val) {
-        buffer.add(val.toString())
+        this.ini.buffer.add(val.toString())
     }
     func TStringBuilder.clear() {
-        buffer.clear()
+        this.ini.buffer.clear()
     }
     func TStringBuilder.toString() {
-        String.concat(values: buffer)
+        String.concat(values: this.ini.buffer)
     }
     func TStringBuilder.len() {
         var count = 0
-        for x in buffer {
+        for x in this.ini.buffer {
             count += x.len()
         }
         return count
@@ -451,11 +454,11 @@ type PAccessTest_Foo = {
     let pi = 3.14
 }
 static func PAccessTest_Foo.PAccessTest_Foo(px) {
-    x = px
+    this.ini.x = px
 }
 func privateAccessTest1() {
     func PAccessTest_Foo.ok() {
-        return x
+        return this.ini.x
     }
     var f = PAccessTest_Foo(12)
     var res = f.ok()
@@ -466,7 +469,7 @@ func privateAccessTest1() {
 func privateAccessTest2() {
     func PAccessTest_Foo.ok(f) {
         func inner() {
-            return pi
+            return this.ini.pi
         }
         return inner()
     }
@@ -478,12 +481,10 @@ func privateAccessTest2() {
 
 type PAccessTest_Bar(x)
 func PAccessTest_Bar.violator(f) {
-    return f.x
+    return f.ini.x
 }
 func privateAccessTest3() {
     var b = PAccessTest_Bar(42)
-    var res = b.violator(b)
-    assert(42, res)
     var f = PAccessTest_Foo(42)
     try {
         b.violator(f)
@@ -496,19 +497,20 @@ func privateAccessTest3() {
 type RealNat = {
     var num
 }
-static func RealNat.RealNat(x) {
-    throw Error.InvalidType(x.getType()) when x is not Integer
-    num = x
-}
-func RealNat + (other) {
-    let res = match other {
-        RealNat => num + other.num,
-        Integer => num + other,
-        _ => throw Error.InvalidType(other.getType())
-    }
-    RealNat(res) when res >= 0 else res
-}
 func testNat() {
+    static func RealNat.RealNat(x) {
+        throw Error.InvalidType(x.getType()) when x is not Integer
+        this.ini.num = x
+    }
+    func RealNat + (other) {
+        let res = match other {
+            RealNat => this.ini.num + other.ini.num,
+            Integer => this.ini.num + other,
+            _ => throw Error.InvalidType(other.getType())
+        }
+        RealNat(res) when res >= 0 else res
+    }
+    func RealNat == (other) => this.ini.num == other.ini.num
     var (x, y) = (RealNat(12), RealNat(10))
     assert(RealNat(22), x + y)
     assert(RealNat(2), x + -10)
@@ -557,17 +559,17 @@ type TestCustomCons = {
 }
 func customConsWithConstraints() {
     static func TestCustomCons.TestCustomCons(Integer x) {
-        data = x
+        this.ini.data = x
     }
-    func TestCustomCons.get(field) {
+    func TestCustomCons.getItem(field) {
         match field {
-            "x" => data,
+            "x" => this.ini.data,
             _ => Error.IndexOutOfRange()
         }
     }
-    func TestCustomCons.set(field, Integer value) {
+    func TestCustomCons.setItem(field, Integer value) {
         match field {
-            "x" => data = value,
+            "x" => this.ini.data = value,
             _ => Error.IndexOutOfRange()
         }
     }
@@ -580,26 +582,6 @@ func customConsWithConstraints() {
         InvalidType() => assert(got: true),
         e => print(e)
     }
-}
-
-type TypeWithUsing = {
-    var name
-    var age
-}
-func thisWithTypes() {
-    static func TypeWithUsing.TypeWithUsing(pName, pAge) {
-        name = pName
-        age = pAge
-    }
-    func TypeWithUsing.getName() {
-        this.name
-    }
-    func TypeWithUsing.getAge() {
-        this.age
-    }
-    let data = TypeWithUsing("John Doe", 44)
-    assert("John Doe", data.getName())
-    assert(44, data.getAge())
 }
 
 type TestExpr = Literal(var Float value) or Unary(var op, var TestExpr left)
@@ -625,11 +607,11 @@ type TinyInt = {
 }
 func testPrivateInsideInit() {
     static func TinyInt.TinyInt(Integer x) {
-        value = getInteger(x)
+        this.ini.value = this.ini.getInteger(x)
     }
-    func TinyInt toInteger() => value
+    func TinyInt toInteger() => this.ini.value
     func TinyInt + (other) {
-        TinyInt(value + getInteger(other))
+        TinyInt(this.ini.value + this.ini.getInteger(other))
     }
     let res = TinyInt(2) + TinyInt(7)
     print(9, res.toInteger())

@@ -13,7 +13,15 @@
         {
             if (self is DyAssemblage amb)
             {
-                var idx = amb.GetOrdinal(name);
+                int idx;
+
+                if (name.Length > 4 && name[..3] == "set")
+                {
+                    idx = amb.GetOrdinal(name[4..]);
+                    return new DySetterFunction(idx, name);
+                }
+
+                idx = amb.GetOrdinal(name);
                 return new DyGetterFunction(idx);
             }
 
