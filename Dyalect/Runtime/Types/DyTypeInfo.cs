@@ -349,8 +349,18 @@ namespace Dyalect.Runtime.Types
 
         internal bool HasStaticMember(string name, ExecutionContext ctx) => LookupStaticMember(name, ctx) is not null;
 
-        internal DyObject GetStaticMember(string name, ExecutionContext ctx) =>
-            LookupStaticMember(name, ctx) ?? ctx.OperationNotSupported(name, TypeName);
+        internal DyObject GetStaticMember(string name, ExecutionContext ctx)
+        {
+            var ret = LookupStaticMember(name, ctx);
+
+            if (ret is null)
+                return ctx.OperationNotSupported("Static:" + name, TypeName);
+
+            if (ret is DyFunction f && f.Auto)
+                ret = f.BindOrRun(ctx, this);
+
+            return ret;
+        }
 
         private DyObject? LookupStaticMember(string name, ExecutionContext ctx)
         {
@@ -378,6 +388,8 @@ namespace Dyalect.Runtime.Types
             {
                 "TypeInfo" => Func.Static(name, (c, obj) => c.RuntimeContext.Types[obj.TypeId], -1, new Par("value")),
                 "has" => Func.Member(name, Has, -1, new Par("member")),
+                "id" => Func.Auto(name, (ctx, self) => DyInteger.Get(((DyTypeInfo)self).TypeCode)),
+                "name" => Func.Auto(name, (ctx, self) => new DyString(((DyTypeInfo)self).TypeName)),
                 "__deleteMember" => Func.Static(name,
                     (context, strObj) =>
                     {
