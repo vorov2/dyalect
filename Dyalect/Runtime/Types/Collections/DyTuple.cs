@@ -12,7 +12,10 @@ namespace Dyalect.Runtime.Types
         public override int Count => Values.Length;
 
         public DyTuple(DyObject[] values) : base(DyType.Tuple) =>
-            this.Values = values ?? throw new DyException("Unable to create a tuple with no values.");
+            Values = values ?? throw new DyException("Unable to create a tuple with no values.");
+
+        protected DyTuple(DyObject[] values, int typeId) : base(typeId) =>
+            Values = values ?? throw new DyException("Unable to create a tuple with no values.");
 
         public static DyTuple Create(params DyObject[] args) => new(args);
 

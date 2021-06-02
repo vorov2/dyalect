@@ -4,6 +4,7 @@ using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System;
 using System.Collections.Generic;
+using Dyalect.Debug;
 
 namespace Dyalect.Runtime
 {

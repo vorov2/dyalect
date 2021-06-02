@@ -26,7 +26,7 @@ namespace Dyalect.Runtime.Types
 
             if (self.TypeId == right.TypeId && right is DyCustomType t && t.Constructor == self.Constructor)
             {
-                var res = ctx.RuntimeContext.Types[((DyTuple)self.Privates).TypeId].Eq(ctx, (DyTuple)self.Privates, (DyTuple)t.Privates);
+                var res = ctx.RuntimeContext.Types[self.Privates.TypeId].Eq(ctx, self.Privates, t.Privates);
              
                 if (ctx.HasErrors)
                     return DyNil.Instance;
@@ -43,7 +43,7 @@ namespace Dyalect.Runtime.Types
                 return base.ToStringOp(arg, ctx);
 
             var cust = (DyCustomType)arg;
-            var priv = (DyTuple)cust.Privates;
+            var priv = cust.Privates;
 
             if (TypeName == cust.Constructor && priv.Count == 0)
                 return new DyString($"{TypeName}()");
@@ -58,7 +58,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             if (autoGenMethods)
-                return DyInteger.Get(((DyTuple)((DyCustomType)arg).Privates).Count);
+                return DyInteger.Get(((DyCustomType)arg).Privates.Count);
 
             return base.LengthOp(arg, ctx);
         }
@@ -66,7 +66,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (autoGenMethods)
-                return ((DyTuple)((DyCustomType)self).Privates).GetItem(index, ctx);
+                return ((DyCustomType)self).Privates.GetItem(index, ctx);
 
             return base.GetOp(self, index, ctx);
         }
@@ -82,32 +82,32 @@ namespace Dyalect.Runtime.Types
             return base.SetOp(self, index, value, ctx);
         }
         
-        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
-        {
-            var obj = (DyCustomType)self;
+        //protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        //{
+        //    var obj = (DyCustomType)self;
 
-            if (name.Length > 4)
-            {
-                var (prefix, snam) = (name[..3], name[4..]);
+        //    if (name.Length > 4)
+        //    {
+        //        var (prefix, snam) = (name[..3], name[4..]);
 
-                if (prefix is "set")
-                {
-                    var idx = obj.Privates.GetOrdinal(snam);
-                    return new DySetterFunction(idx, name);
-                }
+        //        if (prefix is "set")
+        //        {
+        //            var idx = obj.Privates.GetOrdinal(snam);
+        //            return new DySetterFunction(idx, name);
+        //        }
 
-                if (prefix is "get")
-                {
-                    var idx = obj.Privates.GetOrdinal(snam);
-                    return new DyGetterFunction(idx);
-                }
-            }
+        //        if (prefix is "get")
+        //        {
+        //            var idx = obj.Privates.GetOrdinal(snam);
+        //            return new DyGetterFunction(idx);
+        //        }
+        //    }
 
-            if (Members.TryGetValue("get_" + name, out var func))
-                return func;
+        //    if (Members.TryGetValue("get_" + name, out var func))
+        //        return func;
 
-            return new DyGetterFunction(obj.Privates.GetOrdinal(name));
-        }
+        //    return new DyGetterFunction(obj.Privates.GetOrdinal(name));
+        //}
 
         public override string TypeName { get; }
     }

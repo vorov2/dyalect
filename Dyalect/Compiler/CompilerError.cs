@@ -60,7 +60,7 @@
 
         PrivateScopeNested = 228,
 
-        // = 229,
+        UnableSetIni = 229,
 
         PrivateMethod = 230,
 

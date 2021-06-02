@@ -444,20 +444,28 @@ namespace Dyalect.Compiler
                 cw.Brfalse(skip);
             }
 
-            if (hints.Has(Pop))
+            if (node.Name is "ini")
             {
-                //cw.SetPriv(node.Name);
-                var (a, b) = (AddVariable(), AddVariable());
-                cw.GetMember("set_" + node.Name);
-                cw.PopVar(a); //member
-                cw.PopVar(b); //arg
+                cw.Priv();
+                PopIf(hints);
+
+                if (hints.Has(Pop))
+                    AddError(CompilerError.UnableSetIni, node.Location);
+            }
+            else if (hints.Has(Pop))
+            {
+                cw.SetPriv(node.Name);
+                //var (a, b) = (AddVariable(), AddVariable());
+                //cw.GetMember("set_" + node.Name);
+                //cw.PopVar(a); //member
+                //cw.PopVar(b); //arg
                 
-                cw.PushVar(new ScopeVar(a));
-                cw.FunPrep(1);
-                cw.PushVar(new ScopeVar(b));
-                cw.FunArgIx(0);
-                cw.FunCall(1);
-                cw.Pop();
+                //cw.PushVar(new ScopeVar(a));
+                //cw.FunPrep(1);
+                //cw.PushVar(new ScopeVar(b));
+                //cw.FunArgIx(0);
+                //cw.FunCall(1);
+                //cw.Pop();
             }
             else
             {

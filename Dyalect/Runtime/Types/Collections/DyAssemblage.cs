@@ -10,7 +10,7 @@ namespace Dyalect.Runtime.Types
     {
         private readonly DyLabel[] keys;
 
-        public DyAssemblage(DyObject[] values, DyLabel[] keys) : base(values) =>
+        public DyAssemblage(DyObject[] values, DyLabel[] keys) : base(values, DyType.Assemblage) =>
             this.keys = keys;
 
         public override int GetOrdinal(string name)
@@ -50,5 +50,18 @@ namespace Dyalect.Runtime.Types
         }
 
         internal override DyLabel? GetKeyInfo(int index) => keys[index];
+
+        internal override void SetPrivate(ExecutionContext ctx, string name, DyObject value)
+        {
+            var idx = GetOrdinal(name);
+
+            if (idx is -1)
+            {
+                ctx.FieldNotFound();
+                return;
+            }
+
+            Values[idx] = value;
+        }
     }
 }

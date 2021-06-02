@@ -34,9 +34,6 @@ namespace Dyalect.Compiler
                     if (!node.IsStatic)
                         realName = GetMethodName(realName, node);
 
-                    if (node.Getter)
-                        realName = "get_" + realName;
-
                     if (node.Setter)
                         realName = "set_" + realName;
 
@@ -196,7 +193,7 @@ namespace Dyalect.Compiler
         {
             var iterBody = hints.Has(IteratorBody);
             var args = CompileFunctionParameters(node.Parameters);
-            StartFun(node.Getter ? "get_" + node.Name : node.Setter ? "set_" + node.Name : node.Name!, args);
+            StartFun(node.Setter ? "set_" + node.Name : node.Name!, args);
 
             if (node.IsStatic && !node.IsMemberFunction)
                 AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);
