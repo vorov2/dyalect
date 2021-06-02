@@ -14,7 +14,7 @@ CHARACTERS
     verbatimChar = ANY - ']'.
     verbatimChar2 = ANY - '>'.
     char = ANY - "'" - newLine.
-    esc = digit + letter + "\"\\'". // ~`:;,./][{}!@#$%^&*-_=+?><|".
+    printable = digit + letter + "(\"\\'".
 
 TOKENS
     identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
@@ -31,9 +31,20 @@ TOKENS
                             | ( "e" | "E") ["+" | "-" ] digit { digit }
                         ) [("F"|"f")].
 
-    stringToken = "\"" { stringChar | "\\" esc | ("\\(" {stringChar} ")" ) }  "\"".
+    stringToken = "\"" { stringChar | "\\" printable }  "\"".
+    /*stringToken = "\""
+                    {
+                        stringChar
+                        | "\\" printable
+                        | "\\(" { stringChar2 
+                                | "\"" { stringChar | "\\" printable } "\""
+                                | "(" { stringChar2 } ")"
+                                }
+                          ")"
+                    }
+                  "\"".*/
 
-    charToken = "'" { char | "\\" esc } "'".
+    charToken = "'" { char | "\\" printable } "'".
     implicitToken = "$" digit { digit }.
     verbatimStringToken = "<[" { verbatimChar | ("]" verbatimChar2) | "]>]>" } "]>".
 

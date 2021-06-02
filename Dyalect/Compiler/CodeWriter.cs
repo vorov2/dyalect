@@ -150,8 +150,6 @@ namespace Dyalect.Compiler
             return idx;
         }
 
-        public void SetPriv(string name) => Emit(new(OpCode.SetPriv, IndexString(name)));
-
         public void Push(string val) => Emit(new(OpCode.PushStr, IndexString(val)));
 
         public void Push(double val)

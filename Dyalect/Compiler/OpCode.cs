@@ -98,7 +98,6 @@
         SetType,    //0
         SetTypeT,   //0
         UnsetType,  //0
-        SetPriv,    //-2
         NewAmg,     //Dynamic
         Tag0,       //1
         FunAttr,    //0

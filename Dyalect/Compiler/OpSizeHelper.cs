@@ -99,7 +99,6 @@
             1, //SetType
             1, //SetTypeT
             0, //UnsetType
-            1, //SetPriv
             1, //NewAmg
             1, //Tag0
             1, //FunAttr
