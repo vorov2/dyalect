@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
             if (fieldIndex == -1)
                 return ctx.FieldNotFound();
 
-            return ((DyTuple)arg).Values[fieldIndex].GetTaggedValue();
+            return ((DyAssemblage)arg).Values[fieldIndex];
         }
 
         internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) => throw new NotSupportedException();

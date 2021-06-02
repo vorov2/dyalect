@@ -217,7 +217,9 @@ namespace Dyalect.Linker
                     td.Id = composition.Types.Count;
 
                     if (td.ForeignTypeInfo is null)
-                        composition.Types.Add(new DyCustomTypeInfo(composition.Types.Count, td.Name, td.AutoGenConstructors));
+                        composition.Types.Add(td.AutoGenConstructors
+                            ? new DyVariantInfo(composition.Types.Count, td.Name)
+                            : new DyClassInfo(composition.Types.Count, td.Name));
                     else
                     {
                         var ti = (ForeignTypeInfo)Activator.CreateInstance(td.ForeignTypeInfo)!;

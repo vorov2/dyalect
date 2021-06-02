@@ -620,14 +620,14 @@ namespace Dyalect.Runtime
                         ctx.CatchMarks.Peek().Pop();
                         break;
                     case OpCode.NewType:
-                        evalStack.Push(new DyCustomType(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, (DyTuple)evalStack.Pop(), unit));
+                        evalStack.Push(new DyClass(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, evalStack.Pop(), unit));
                         break;
                     case OpCode.Mut:
                         ((DyLabel)evalStack.Peek()).Mutable = true;
                         break;
                     case OpCode.Priv:
                         right = evalStack.Peek();
-                        evalStack.Replace(right.TypeId == DyType.Tuple ? right : ((DyCustomType)right).Privates);
+                        evalStack.Replace(((DyClass)right).Privates);
                         break;
                     case OpCode.SetTypeT:
                         ctx.TypeStack.Push(op.Data);
