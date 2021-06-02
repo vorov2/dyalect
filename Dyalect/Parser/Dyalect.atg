@@ -14,7 +14,7 @@ CHARACTERS
     verbatimChar = ANY - ']'.
     verbatimChar2 = ANY - '>'.
     char = ANY - "'" - newLine.
-    esc = digit + letter + "\"\\'~`:;,./][{}!@#$%^&*-_=+?><|".
+    esc = digit + letter + "\"\\'". // ~`:;,./][{}!@#$%^&*-_=+?><|".
 
 TOKENS
     identToken  = letter { letter | digit } | "_" letter { letter | digit  }.

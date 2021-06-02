@@ -406,7 +406,7 @@ namespace Dyalect.Parser
 				else if (ch >= '0' && ch <= '9') {AddCh(); goto case 3;}
 				else {t.kind = 2; break;}
 			case 54:
-				if (ch >= '!' && ch <= 39 || ch >= '*' && ch <= '~') {AddCh(); goto case 19;}
+				if (ch == '"' || ch == 39 || ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == 92 || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 19;}
 				else if (ch == '(') {AddCh(); goto case 20;}
 				else {goto case 0;}
 			case 55:
