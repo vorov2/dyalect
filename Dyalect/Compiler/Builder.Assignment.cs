@@ -31,9 +31,7 @@ namespace Dyalect.Compiler
         private void EmitGetter(DNode target, string field, Hints hints, CompilerContext ctx)
         {
             Build(target, hints.Remove(Last).Append(Push), ctx);
-            cw.GetMember("get_" + field);
-            cw.FunPrep(0);
-            cw.FunCall(0);
+            cw.GetMember(field);
         }
 
         private void EmitSetter(DNode target, DNode value, string field, Hints hints, CompilerContext ctx)
@@ -83,6 +81,7 @@ namespace Dyalect.Compiler
         private bool BuildSetterAutoAssign(DAssignment node, Hints hints, CompilerContext ctx)
         {
             var acc = (DAccess)node.Target;
+            Build(acc.Target, hints.Remove(Last).Append(Push), ctx);
             cw.GetMember("set_" + acc.Name);
             cw.FunPrep(1);
             EmitGetter(acc.Target, acc.Name, hints, ctx);
@@ -90,7 +89,7 @@ namespace Dyalect.Compiler
             EmitBinaryOp(node.AutoAssign!.Value);
             cw.FunArgIx(0);
             cw.FunCall(1);
-            PushIf(hints);
+            PopIf(hints);
             return true;
         }
 

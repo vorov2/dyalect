@@ -616,3 +616,33 @@ func testPrivateInsideInit() {
     let res = TinyInt(2) + TinyInt(7)
     print(9, res.toInteger())
 }
+
+type Foo14 = {
+    var status
+}
+func testProperties1() {
+    static func Foo14.Foo14(value) => this.ini.status = value
+    func get Foo14.status() => this.ini.status
+    func set Foo14.status(value) => this.ini.status = value
+    let f = Foo14(10)
+    assert(10, f.status)
+    f.status = 21
+    assert(21, f.status)
+    f.status += 11
+    assert(32, f.status)
+}
+
+type Foo15 = {
+    var box
+}
+func testProperties2() {
+    static func Foo15.Foo15() { }
+    func get Foo15.box() => this.ini.box
+    func set Foo15.box(value) => this.ini.box = value
+    let f = Foo15()
+    assert(42, f.box ?? 42)
+    f.box ??= 144
+    assert(144, f.box)
+    f.box ??= 288
+    assert(144, f.box)
+}
