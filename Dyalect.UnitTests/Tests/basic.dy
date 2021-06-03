@@ -335,7 +335,6 @@ func nilTest2() {
     assert(nil, Nil.default())
 }
 
-////////////////////////////////////////////////////////////
 func boolTest1() {
     assert(true, Bool(12))
     assert(false, Bool(0))
@@ -347,6 +346,7 @@ func boolTest1() {
 func boolTest2() {
     assert(false, Bool.default())
 }
+////////////////////////////////////////////////////////////
 
 func guardsTest1() {
     func safeDiv(x, y) {
@@ -427,7 +427,7 @@ func returnTest() {//Issue 266
     assert(nil, bar())
 }
 
-func evalTest() { //Issue 269
+func evalTest() { //Issue 269 --> DONE
     var z = eval("x + y", (x: 2, y: 3) )
     assert(5, z)
 }
@@ -459,20 +459,20 @@ func sumTest() {
     assert(-23, z)
 }
 
-func isMultipleTest() {
+func isMultipleTest() { //--> DONE
     assert(true, 12.isMultiple(3))
     assert(true, 12.isMultiple(of: 2))
     assert(true, 340.isMultiple(of: 10))
     assert(false, 340.isMultiple(of: 13))
 }
 
-func intParse() {
+func intParse() { //--> DONE
     assert(42, Integer.parse("42"))
     assert(2, Integer.parse('2'))
     assert(nil, Integer.parse("three"))
 }
 
-func floatParse() {
+func floatParse() { //--> DONE
     assert(42.42, Float.parse("42.42"))
     assert(2.0, Float.parse('2'))
     assert(nil, Float.parse("three and a half"))

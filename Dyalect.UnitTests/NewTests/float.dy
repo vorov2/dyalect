@@ -39,3 +39,10 @@ test "getType"
     assert(2, t.id)
     assert("Float", t.name)
 }
+
+test "parse"
+{
+    assert(42.42, Float.parse("42.42"))
+    assert(2.0, Float.parse('2'))
+    assert(nil, Float.parse("three and a half"))
+}

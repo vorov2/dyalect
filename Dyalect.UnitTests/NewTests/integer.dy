@@ -31,3 +31,19 @@ test "getType"
     assert(1, t.id)
     assert("Integer", t.name)
 }
+
+
+test "isMultiple"
+{
+    assert(true, 12.isMultiple(3))
+    assert(true, 12.isMultiple(of: 2))
+    assert(true, 340.isMultiple(of: 10))
+    assert(false, 340.isMultiple(of: 13))
+}
+
+test "parse"
+{
+    assert(42, Integer.parse("42"))
+    assert(2, Integer.parse('2'))
+    assert(nil, Integer.parse("three"))
+}
