@@ -1,0 +1,33 @@
+﻿test "Integer literal"
+{
+    let res = 0x40 + 0x20
+    assert(96, res)
+}
+
+test "min and max"
+{
+    assert(9223372036854775807, Integer.max())
+    assert(-9223372036854775807, Integer.min() + 1)
+}
+
+test "Constructor"
+{
+    assert(12, Integer(12.2))
+    assert(1222, Integer(1222))
+    assert(5, Integer('5'))
+}
+
+test "default"
+{
+    assert(0, Integer.default())
+}
+
+test "getType"
+{
+    let x = 42
+    assert(true, TypeInfo(x) == Integer)
+    assert(true, x.getType() == Integer)
+    let t = TypeInfo(x)
+    assert(1, t.id)
+    assert("Integer", t.name)
+}

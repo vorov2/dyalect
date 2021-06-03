@@ -1,0 +1,16 @@
+﻿test "String literal"
+{
+    var fst = "some\tstring with\"inner quotes\" and such (and a buck \u0024)"
+    var snd = "some\u0009string with\u0022inner quotes\u0022 and such (and a buck $)"
+    assert(fst, snd)
+}
+
+test "getType"
+{
+    let x = "Foo"
+    assert(true, TypeInfo(x) == String)
+    assert(true, x.getType() == String)
+    var t = TypeInfo(x)
+    assert(5, t.id)
+    assert("String", t.name)
+}

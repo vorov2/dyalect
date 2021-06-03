@@ -843,7 +843,7 @@ namespace Dyalect.Compiler
 
                     if (c.IsCode)
                     {
-                        var p = new InternalParser(new(SourceBuffer.FromString(c.GetContent())));
+                        var p = new InternalParser("", new(SourceBuffer.FromString(c.GetContent())));
                         p.Parse();
 
                         if (p.Errors.Count > 0)
@@ -853,7 +853,7 @@ namespace Dyalect.Compiler
                         }
                         else
                         {
-                            if (p.Root.Nodes == null || p.Root.Nodes.Count == 0)
+                            if (p.Root.Nodes is null || p.Root.Nodes.Count is 0)
                                 AddError(CompilerError.CodeIslandEmpty, node.Location);
                             else
                             {

@@ -1,0 +1,5 @@
+﻿test "parse"
+{
+    let res = parse("[1,2,3,('c',true,23.4),nil]")
+    assert([1,2,3,('c',true,23.4),nil], res)
+}

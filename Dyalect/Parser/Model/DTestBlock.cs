@@ -6,15 +6,16 @@ namespace Dyalect.Parser.Model
     {
         public DTestBlock(Location loc) : base(NodeType.TestBlock, loc) { }
 
+        public string? FileName { get; set; }
+
         public string Name { get; init; } = null!;
 
-        public DNode Body { get; init; } = null!;
+        public DyCodeModel Body { get; init; } = null!;
 
         internal override void ToString(StringBuilder sb)
         {
             sb.Append("test ");
             sb.Append(Name);
-            Body.ToString(sb);
         }
     }
 }

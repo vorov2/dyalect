@@ -335,6 +335,7 @@ func nilTest2() {
     assert(nil, Nil.default())
 }
 
+////////////////////////////////////////////////////////////
 func boolTest1() {
     assert(true, Bool(12))
     assert(false, Bool(0))

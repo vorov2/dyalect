@@ -32,17 +32,6 @@ TOKENS
                         ) [("F"|"f")].
 
     stringToken = "\"" { stringChar | "\\" printable }  "\"".
-    /*stringToken = "\""
-                    {
-                        stringChar
-                        | "\\" printable
-                        | "\\(" { stringChar2 
-                                | "\"" { stringChar | "\\" printable } "\""
-                                | "(" { stringChar2 } ")"
-                                }
-                          ")"
-                    }
-                  "\"".*/
 
     charToken = "'" { char | "\\" printable } "'".
     implicitToken = "$" digit { digit }.
@@ -129,14 +118,38 @@ PRODUCTIONS
         ).
 
     TestBlock<out DNode node> = 
-        (. string name; .)
-        "test" (. var ot = t; .) (identToken (. name = t.val; .) | stringToken (. nam = ParseSimpleString(); .) )
-        Block<out var node>
-        (. node = new DTestBlock(ot) { Name = name, Body = node }; .).
+        (. string name = null; node = null; .)
+        (
+            "test" (. var ot = t; .) 
+            ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
+            "{"
+            (.
+                var block = new DBlock(default);
+                var imports = new List<DImport>();
+            .)
+            {
+                (
+                    Statement<out node>
+                    (.
+                        block.Nodes.Add(node);
+                    .)
+                )
+                |
+                (
+                    Import<out var imp>
+                    (. imports.Add(imp); .)
+                    Separator
+                )
+            }
+            "}"
+            (.
+                var dyc = new DyCodeModel(block, imports.ToArray(), FileName);
+                node = new DTestBlock(ot) { Name = name, Body = dyc };
+            .)
+        ).
 
-    Import =
-        "import"
-        (. var inc = new DImport(t); Imports.Add(inc); .)
+    Import<out DImport node> =
+        "import" (. var inc = new DImport(t); node = inc; .)
         ImportToken<out var str> (. var lastName = str; .)
         [
             "="
@@ -1301,13 +1314,18 @@ PRODUCTIONS
 
     DyalectItem =
         (
-              (
+            (
                 Statement<out var node>
                 (.
                     Root.Nodes.Add(node);
                 .)
-              )
-            | ( Import Separator )
+            )
+            |
+            (
+                Import<out var node>
+                (. Imports.Add(node); .)
+                Separator
+            )
         ).
 
     Dyalect =

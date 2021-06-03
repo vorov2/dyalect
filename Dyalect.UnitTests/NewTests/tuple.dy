@@ -1,0 +1,28 @@
+﻿test "toString"
+{
+    var res = (1,2,3).toString()
+    assert("(1, 2, 3)", res)
+    res = (1, true, (2,3)).toString()
+    assert("(1, true, (2, 3))", res)
+    res = (x: 12, 44.4, y: (1, 2)).toString()
+    assert("(x: 12, 44.4, y: (1, 2))", res)
+    res = (x: 42,y: "foo").toString()
+    assert("(x: 42, y: foo)", res)
+}
+
+test "clone"
+{
+    let xs = (1,2,3)
+    assert(true, xs == xs)
+    assert(true, xs.clone() == xs)
+}
+
+test "getType"
+{
+    let x = (1,2)
+    assert(true, TypeInfo(x) == Tuple)
+    assert(true, x.getType() == Tuple)
+    var t = TypeInfo(x)
+    assert(12, t.id)
+    assert("Tuple", t.name)
+}
