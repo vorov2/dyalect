@@ -316,7 +316,7 @@ namespace Dyalect.Parser
             if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
                 return null;
 
-            if (chunks != null)
+            if (chunks is not null)
             {
                 AddError(ParserError.CodeIslandsNotAllowed, t);
                 return null;

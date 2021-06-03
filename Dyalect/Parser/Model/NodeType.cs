@@ -6,6 +6,8 @@
         Block,
         PrivateScope,
 
+        TestBlock,
+
         Integer,
         Float,
         String,

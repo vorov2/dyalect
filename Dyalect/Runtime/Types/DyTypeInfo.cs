@@ -354,7 +354,7 @@ namespace Dyalect.Runtime.Types
             var ret = LookupStaticMember(name, ctx);
 
             if (ret is null)
-                return ctx.OperationNotSupported("Static:" + name, TypeName);
+                return ctx.OperationNotSupported("static " + name, TypeName);
 
             if (ret is DyFunction f && f.Auto)
                 ret = f.BindOrRun(ctx, this);

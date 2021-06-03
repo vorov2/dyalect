@@ -128,6 +128,12 @@ PRODUCTIONS
             )
         ).
 
+    TestBlock<out DNode node> = 
+        (. string name; .)
+        "test" (. var ot = t; .) (identToken (. name = t.val; .) | stringToken (. nam = ParseSimpleString(); .) )
+        Block<out var node>
+        (. node = new DTestBlock(ot) { Name = name, Body = node }; .).
+
     Import =
         "import"
         (. var inc = new DImport(t); Imports.Add(inc); .)
@@ -229,6 +235,7 @@ PRODUCTIONS
             | Loops<out node> [ Guard<node, out node> Separator ]
             | Function<out node>
             | Directive<out node> Separator
+            | TestBlock<out node>
         )
         (. node = ProcessImplicits(node); .).
 
