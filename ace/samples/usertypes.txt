@@ -5,18 +5,18 @@ func Option.hasValue() {
     this is Some()
 }
 
-func Option.getValue() {
+func Option.obtainValue() {
     match this {
         Some(value) => value,
-        _ => throw "Option.getValue: no value."
+        _ => throw "Option.obtainValue: no value."
     }
 }
 
 let val = Option.Some(42)
-print(val.getValue())
+print(val.obtainValue())
 
 //An implementation of a natural number
-type Nat using {
+type Nat = {
     var value
 }
 
@@ -25,12 +25,12 @@ static func Nat.Nat(value) {
     if value < 0 {
         throw "Nat.Nat: value is less than zero."
     }
-    private()::value = value
+    this.ini.value = value
 }
 
 //Convert back to integer
 func Nat.toInteger() {
-    private()::value
+    this.ini.value
 }
 
 //Extend an integer with this method to unify conversion
@@ -39,21 +39,21 @@ func Integer.toInteger() {
 }
 
 func Nat +(other) {
-    let res = private()::value + other.toInteger()
+    let res = this.ini.value + other.toInteger()
     res < 0 ? res : Nat(res)
 }
 
 func Nat -(other) {
-    let res = private()::value - other.toInteger()
+    let res = this.ini.value - other.toInteger()
     res < 0 ? res : Nat(res)
 }
 
 func Nat == (other) {
-    other.toInteger() == private()::value
+    other.toInteger() == this.ini.value
 }
 
 func Nat.toString() {
-    "Nat(" + private()::value + ")"   
+    "Nat(" + this.ini.value + ")"
 }
 
 //Testing

@@ -1,7 +1,7 @@
 ﻿//http://rosettacode.org/wiki/Langton%27s_ant#Dyalect
 type Point(var Integer x, var Integer y)
 
-type Ant using {
+type Ant = {
     let (north, east, west, south) = (0, 1, 2, 3)
     let leftTurns  = [ west, north, south, east ]
     let rightTurns = [ east, south, north, west ]
@@ -11,40 +11,37 @@ type Ant using {
 }
 
 static func Ant.Ant(Integer width, Integer height) {
-    using private()
-    ::position = Point(0, 0)
-    ::origin = Point(width / 2, height / 2)
-    ::width = width
-    ::height = height
+    this.ini.position = Point(0, 0)
+    this.ini.origin = Point(width / 2, height / 2)
+    this.ini.width = width
+    this.ini.height = height
 }
 
-func Ant.get(field) {
+func Ant.getItem(field) {
     match field {
-        "position" => private()::position,
-        "origin" => private()::origin,
+        "position" => this.ini.position,
+        "origin" => this.ini.origin,
         _ => Error.IndexOutOfRange()
     }
 }
 
-func Ant.isOutOfBounds() => private()::outOfBounds
+func Ant.isOutOfBounds() => this.ini.outOfBounds
 
 func Ant.move() {
-    using private()
-    let pos = ::position
-    pos::x += ::xInc[::direction]
-    pos::y += ::yInc[::direction]
-    let pt = Point(pos::x + ::origin::x, pos::y + ::origin::y)
-    ::outOfBounds = 
+    let pos = this.ini.position
+    pos::x += this.ini.xInc[this.ini.direction]
+    pos::y += this.ini.yInc[this.ini.direction]
+    let pt = Point(pos::x + this.ini.origin::x, pos::y + this.ini.origin::y)
+    this.ini.outOfBounds = 
         pt::x < 0 ||
-        pt::x >= ::width ||
+        pt::x >= this.ini.width ||
         pt::y < 0 ||
-        pt::y >= ::height
+        pt::y >= this.ini.height
     return pos
 }
 
 func Ant.changeDirection(Bool left) {
-    using private()
-    ::direction = left ? ::leftTurns[private()::direction] : ::rightTurns[::direction]
+    this.ini.direction = left ? this.ini.leftTurns[this.ini.direction] : this.ini.rightTurns[this.ini.direction]
 }
  
 func Array.step(ant) {
