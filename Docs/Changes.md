@@ -9,6 +9,7 @@
   * Change: _`String.repeat` should accept both strings and chars_ ([Issue #534](https://github.com/vorov2/dyalect/issues/534)).
   * Change: _Rename standard functions `get` and `set`_ ([Issue #546](https://github.com/vorov2/dyalect/issues/546)).
   * Change: _Convert fields `name` and `id` in `TypeInfo` to functions_ ([Issue #548](https://github.com/vorov2/dyalect/issues/548)).
+  * Change: _Auto-generated constructors and varargs_ ([Issue #544](https://github.com/vorov2/dyalect/issues/544)).
   * Fix: _`nameof` error_ ([Issue #537](https://github.com/vorov2/dyalect/issues/537)).
   * Fix: _`base` doesn't work correctly for assignments_ ([Issue #538](https://github.com/vorov2/dyalect/issues/538)).
   * Fix: _A bug in parsing interpolated strings_ ([Issue #545](https://github.com/vorov2/dyalect/issues/545)).

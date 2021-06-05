@@ -232,7 +232,8 @@ PRODUCTIONS
         [
             "=" Expr<out var cnode>
             (. arg.DefaultValue = cnode; .)
-        ].
+        ]
+        [ "..." (. arg.IsVarArgs = true; .) ].
 
     Statement<out DNode node> =
         (. node = null; .)

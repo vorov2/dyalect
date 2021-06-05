@@ -165,14 +165,14 @@ namespace Dyalect.Parser
 			case "test": t.kind = 66; break;
 			case "import": t.kind = 67; break;
 			case "or": t.kind = 68; break;
-			case "when": t.kind = 70; break;
-			case "else": t.kind = 71; break;
-			case "true": t.kind = 72; break;
-			case "false": t.kind = 73; break;
-			case "static": t.kind = 74; break;
-			case "and": t.kind = 75; break;
-			case "get": t.kind = 76; break;
-			case "set": t.kind = 77; break;
+			case "when": t.kind = 71; break;
+			case "else": t.kind = 72; break;
+			case "true": t.kind = 73; break;
+			case "false": t.kind = 74; break;
+			case "static": t.kind = 75; break;
+			case "and": t.kind = 76; break;
+			case "get": t.kind = 77; break;
+			case "set": t.kind = 78; break;
 			case "const": t.kind = 79; break;
 			case "match": t.kind = 80; break;
 			case "not": t.kind = 82; break;
@@ -452,7 +452,7 @@ namespace Dyalect.Parser
 			case 67:
 				{t.kind = 69; break;}
 			case 68:
-				{t.kind = 78; break;}
+				{t.kind = 70; break;}
 			case 69:
 				{t.kind = 94; break;}
 			case 70:
