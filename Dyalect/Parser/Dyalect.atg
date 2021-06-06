@@ -1106,11 +1106,9 @@ PRODUCTIONS
     Index<out DNode node> =
         (
             Literal<out node>
-            (. if (la.AfterEol) return; .)
             {
                 (
                     (
-                        (. if (la.AfterEol) return; .)
                         "."
                         (. var ot = t; .)
                         identToken
@@ -1122,7 +1120,6 @@ PRODUCTIONS
                     )
                     |
                     (
-                        (. if (la.AfterEol) return; .)
                         "::"
                         (. var ot = t; .)
                         identToken
