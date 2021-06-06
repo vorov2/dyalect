@@ -86,37 +86,37 @@ func functionTest1() {
 }
 
 func functionTest2() {
-    func test(x, y, z) {
+    func test1(x, y, z) {
         (x, y, z)
     }
-    var res = test(z: 12, x: 3, y: 1)
+    var res = test1(z: 12, x: 3, y: 1)
     assert((3, 1, 12), res)
 }
 
 func functionTest3() {
-    func test(x, x1 = 144, y, z, z1 = 33) {
+    func test1(x, x1 = 144, y, z, z1 = 33) {
         (x, x1, y, z, z1)
     }
-    var res = test(z: 12, x: 3, y: 1)
+    var res = test1(z: 12, x: 3, y: 1)
     assert((3, 144, 1, 12, 33), res)
 }
 
 func functionTest4() {
-    func test(args..., separator = ",", terminator = "\n") {
+    func test1(args..., separator = ",", terminator = "\n") {
         [args, separator, terminator]
     }
-    assert( [(1,2), ",", "\n"], test(1,2) )
-    assert( [(1,2), ",", "\r"], test(1,2, terminator: "\r") )
-    assert( [(1,2), ";", "\r"], test(1,2, terminator: "\r", separator: ";") )
+    assert( [(1,2), ",", "\n"], test1(1,2) )
+    assert( [(1,2), ",", "\r"], test1(1,2, terminator: "\r") )
+    assert( [(1,2), ";", "\r"], test1(1,2, terminator: "\r", separator: ";") )
 }
 
 func functionTest5() {
-    func test(optional = "foo") {
+    func test1(optional = "foo") {
         optional
     }
-    assert("foo", test())
+    assert("foo", test1())
     var arg = "bar"
-    assert(arg, test(arg))
+    assert(arg, test1(arg))
 }
 
 func functionTest6() {
@@ -165,8 +165,8 @@ func functionTest11() {
 
 func functionTest12() {
     func foo() {
-        assert("foo", current().name())
-        assert("bar", caller().name())
+        assert("foo", current().name)
+        assert("bar", caller().name)
     }
     func bar() {
         foo()
@@ -175,7 +175,7 @@ func functionTest12() {
 }
 
 func functionTest13() {
-    assert(functionTest13.name(), current().name())
+    assert(functionTest13.name, current().name)
     assert(nil, caller())
 }
 
@@ -184,17 +184,17 @@ func functionTest14() {
     func snd() { thy() }
     func fst() { snd() }
     var s = fst()
-    assert("snd", s.name())
+    assert("snd", s.name)
 }
 
 func functionTest15() {
     let f = x => x * x
-    assert("<func>", f.name())
+    assert("<func>", f.name)
 }
 
 func functionTest16() {
     func foo() {
-        return "\(current().name()) is called by \(caller().name())"
+        return "\(current().name) is called by \(caller().name)"
     }
     func bar() {
         foo()
@@ -285,7 +285,7 @@ func methodTest2() {
 
 func methodTest3() {
     var x = 11
-    func Integer.get(index) { index }
+    func Integer.getItem(index) { index }
     assert(11, 12[x])
     Integer.__deleteMember("op_get")
 }
@@ -357,10 +357,10 @@ func paramerlessLambda() {
 
 func introspectionTest1() {
     func tt(x, y, z = 3, extras...) {}
-    assert("tt", tt.name())
-    assert(4, tt.parameters().len())
+    assert("tt", tt.name)
+    assert(4, tt.parameters.len())
     var i = 0
-    for p in tt.parameters() {
+    for p in tt.parameters {
         if i == 0 {
             assert("(name: x, hasDefault: false, default: nil, varArg: false)", p.toString())
         } else if i == 1 {

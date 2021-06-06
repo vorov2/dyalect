@@ -120,7 +120,7 @@ namespace Dyalect.Runtime.Types
         }
         #endregion
 
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "isNaN" => Func.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),

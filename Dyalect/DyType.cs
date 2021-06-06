@@ -25,7 +25,8 @@ namespace Dyalect
                 new DyDictionaryTypeInfo(),
                 new DyWrapperTypeInfo(),
                 new DySetTypeInfo(),
-                new DyErrorTypeInfo()
+                new DyErrorTypeInfo(),
+                new DyAssemblageTypeInfo()
             };
 
         public const int Nil = 0;
@@ -45,6 +46,7 @@ namespace Dyalect
         public const int Object = 14;
         public const int Set = 15;
         public const int Error = 16;
+        public const int Assemblage = 17;
 
         public static int GetTypeCodeByName(string name) =>
             name switch
@@ -66,6 +68,7 @@ namespace Dyalect
                 DyTypeNames.Object => Object,
                 DyTypeNames.Set => Set,
                 DyTypeNames.Error => Error,
+                DyTypeNames.Assemblage => Assemblage,
                 _ => -1,
             };
 
@@ -89,6 +92,7 @@ namespace Dyalect
                 Object => DyTypeNames.Object,
                 Set => DyTypeNames.Set,
                 Error => DyTypeNames.Error,
+                Assemblage => DyTypeNames.Assemblage,
                 _ => code.ToString(),
             };
     }
@@ -114,7 +118,8 @@ namespace Dyalect
                 Dictionary,
                 Object,
                 Set,
-                Error
+                Error,
+                Assemblage
             };
 
         public const string Nil = "Nil";
@@ -124,7 +129,7 @@ namespace Dyalect
         public const string Char = "Char";
         public const string String = "String";
         public const string Function = "Function";
-        public const string Label = "Label";
+        public const string Label = "system:Label";
         public const string TypeInfo = "TypeInfo";
         public const string Module = "Module";
         public const string Array = "Array";
@@ -134,5 +139,6 @@ namespace Dyalect
         public const string Object = "Object";
         public const string Set = "Set";
         public const string Error = "Error";
+        public const string Assemblage = "system:Assemblage";
     }
 }

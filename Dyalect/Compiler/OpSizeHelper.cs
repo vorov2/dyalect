@@ -96,6 +96,12 @@
             0, //Priv
             1, //TypeAnno
             1, //TypeAnnoT
+            1, //SetType
+            1, //SetTypeT
+            0, //UnsetType
+            1, //NewAmg
+            1, //Tag0
+            1, //FunAttr
         };
     }
 }

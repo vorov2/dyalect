@@ -46,6 +46,11 @@ namespace Dyalect
                 Printer.LineFeed();
                 return RunTests(options);
             }
+            else if (options.NewTest)
+            {
+                Printer.LineFeed();
+                return RunTestsNew(options);
+            }
             else if (options.Compile)
             {
                 Printer.LineFeed();
@@ -88,6 +93,19 @@ namespace Dyalect
             }
 
             return TestRunner.RunTests(options.GetFileNames(), options,
+                InteractiveContext.CreateBuildOptions(options));
+        }
+
+        private static bool RunTestsNew(DyaOptions options)
+        {
+            if (options.FileNames == null || options.FileNames.Length == 0
+                || string.IsNullOrEmpty(options.FileNames[0]))
+            {
+                Printer.Error("File name(s) not specified.");
+                return false;
+            }
+
+            return NewTestRunner.RunTests(options.GetFileNames(), options,
                 InteractiveContext.CreateBuildOptions(options));
         }
 

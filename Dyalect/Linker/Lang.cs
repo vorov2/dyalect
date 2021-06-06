@@ -96,13 +96,13 @@ namespace Dyalect.Linker
         [Function("assert")]
         public DyObject Assert(ExecutionContext ctx, [Default(true)]DyObject expect, DyObject got)
         {
-            if (!Eq(expect?.ToObject(), got?.ToObject()))
+            if (!Eq(ctx, expect?.ToObject(), got?.ToObject()))
                 return ctx.AssertFailed($"Expected {expect?.ToString(ctx)}, got {got?.ToString(ctx)}");
 
             return DyNil.Instance;
         }
 
-        private bool Eq(object? x, object? y)
+        private bool Eq(ExecutionContext ctx, object? x, object? y)
         {
             if (ReferenceEquals(x, y))
                 return true;
@@ -120,11 +120,14 @@ namespace Dyalect.Linker
                     return false;
 
                 for (var i = 0; i < xs.Count; i++)
-                    if (!Eq(xs[i], ys[i]))
+                    if (!Eq(ctx, xs[i], ys[i]))
                         return false;
 
                 return true;
             }
+
+            if (x is DyObject xa && y is DyObject ba)
+                return ctx.RuntimeContext.Types[xa.TypeId].Eq(ctx, xa, ba).GetBool();
 
             return Equals(x, y);
         }

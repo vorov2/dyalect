@@ -61,6 +61,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only methods can be declared as accessors (get and set)..
+        /// </summary>
+        internal static string AccessorOnlyMethod {
+            get {
+                return ResourceManager.GetString("AccessorOnlyMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assignment to the same variable..
+        /// </summary>
+        internal static string AssignmentSameVariable {
+            get {
+                return ResourceManager.GetString("AssignmentSameVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An &quot;auto&quot; declaration is not allowed in this context..
         /// </summary>
         internal static string AutoNotAllowed {
@@ -120,15 +138,6 @@ namespace Dyalect.Strings {
         internal static string CtorNotIterator {
             get {
                 return ResourceManager.GetString("CtorNotIterator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to create a constructor for a non-local type &quot;{0}&quot;..
-        /// </summary>
-        internal static string CtorOnlyLocalType {
-            get {
-                return ResourceManager.GetString("CtorOnlyLocalType", resourceCulture);
             }
         }
         
@@ -304,15 +313,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An access to private scope is only allowed inside member functions..
-        /// </summary>
-        internal static string PrivateAccessInvalid {
-            get {
-                return ResourceManager.GetString("PrivateAccessInvalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Methods cannot be declared inside a &quot;private&quot; scope..
         /// </summary>
         internal static string PrivateMethod {
@@ -435,6 +435,15 @@ namespace Dyalect.Strings {
         internal static string UnableAssignExpression {
             get {
                 return ResourceManager.GetString("UnableAssignExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initialization scope of a type cannot be overwritten..
+        /// </summary>
+        internal static string UnableSetIni {
+            get {
+                return ResourceManager.GetString("UnableSetIni", resourceCulture);
             }
         }
         

@@ -149,7 +149,7 @@ func baseTest1() {
     let x = 2
     func inner() {
         let x = 4
-        base::x
+        base.x
     }
     assert(2, inner())
 }
@@ -160,7 +160,7 @@ func baseTest2() {
         let x = 4
         if x == 4 {
             var x = 8
-            base::x
+            base.x
         }
     }
     assert(2, inner())
@@ -198,8 +198,8 @@ func memberCheckTest3() { //#271
 func memberCheckTest4() { //#272
     assert(true, String.has("join"))
     assert(false, String.has("split"))
-    assert(false, String.has("id"))
-    assert(false, String.has("name"))
+    assert(true, String.has("id"))
+    assert(true, String.has("name"))
 }
 
 func nameofTest() {
@@ -255,16 +255,16 @@ func getTypeTest2() {
     var x = 42
     assert(true, x.getType() == Integer)
     var t = x.getType()
-    assert(1, t::id)
-    assert("Integer", t::name)
+    assert(1, t.id)
+    assert("Integer", t.name)
 }
 
 func getTypeTest3() {
     var x = 42
     assert(true, TypeInfo(x) == Integer)
     var t = TypeInfo(x)
-    assert(1, t::id)
-    assert("Integer", t::name)
+    assert(1, t.id)
+    assert("Integer", t.name)
 }
 
 func hasTest1() {
@@ -346,6 +346,7 @@ func boolTest1() {
 func boolTest2() {
     assert(false, Bool.default())
 }
+////////////////////////////////////////////////////////////
 
 func guardsTest1() {
     func safeDiv(x, y) {
@@ -426,7 +427,7 @@ func returnTest() {//Issue 266
     assert(nil, bar())
 }
 
-func evalTest() { //Issue 269
+func evalTest() { //Issue 269 --> DONE
     var z = eval("x + y", (x: 2, y: 3) )
     assert(5, z)
 }
@@ -439,37 +440,6 @@ func intRangeTest1() {
 func floatRangeTest1() {
     assert([0.0,1.0,2.0,3.0,4.0,5.0], [0.0..5])
     assert([0.0,0.02,0.04], (0.0^0.02..0.05).toArray())
-}
-
-func nullConditional1() {
-    let fn = nil
-    let r = fn?()
-    assert(nil, r)
-}
-
-func nullConditional2() {
-    let xs = []
-    let s1 = xs?.has("iter")?.toString()
-    assert("true", s1)
-    let ys = nil
-    let s2 = ys?.has("iter")?.toString()
-    assert(nil, s2)
-    let t = (inner: (x: 2, fuc: nil) )
-    let s3 = t?::inner?::fuc?(s1, s2)
-    assert(nil, s3)
-}
-
-func nullConditional3() {
-    let xs = nil
-    assert(nil, xs?[0])
-}
-
-func nullConditional4() {
-    func fn() {
-        return nil
-    }
-    let res = fn()?(42)
-    assert(nil , res)
 }
 
 func sumTest() {
@@ -489,20 +459,20 @@ func sumTest() {
     assert(-23, z)
 }
 
-func isMultipleTest() {
+func isMultipleTest() { //--> DONE
     assert(true, 12.isMultiple(3))
     assert(true, 12.isMultiple(of: 2))
     assert(true, 340.isMultiple(of: 10))
     assert(false, 340.isMultiple(of: 13))
 }
 
-func intParse() {
+func intParse() { //--> DONE
     assert(42, Integer.parse("42"))
     assert(2, Integer.parse('2'))
     assert(nil, Integer.parse("three"))
 }
 
-func floatParse() {
+func floatParse() { //--> DONE
     assert(42.42, Float.parse("42.42"))
     assert(2.0, Float.parse('2'))
     assert(nil, Float.parse("three and a half"))
@@ -552,40 +522,6 @@ func inTest2() {
     assert(false, "z" in xs)
 }
 
-func usingTest1() {
-    let xs = (var x: 1, var y: 2)
-    if xs.len() > 0 {
-        using xs
-        assert(1, ::x)
-        assert(2, ::y)
-        ::x = 11
-        assert(11, ::x)
-    } else {
-        assert(got: false)
-    }
-}
-
-func usingTest2() {
-    {
-        using 42
-        assert("42", .toString())
-        {
-            using "42"
-            assert(true, .startsWith("4"))
-            assert("4", .substring(0, 1))
-            assert('2', .reverse()[0])
-        }
-    }
-}
-
-func usingTest3() {
-    using (var x: 1, y: 2)
-    assert(1, ::x)
-    assert(2, ::y)
-    ::x = ::y * 2
-    assert(4, ::x)
-}
-
 func typeErrorTest() {
     try {
         12 + '2'
@@ -593,4 +529,19 @@ func typeErrorTest() {
     } catch {
         InvalidType() => assert(got: true)
     }
+}
+
+func propertyExtTest() {
+    func get Array.first() { 
+        this[0] when this.len() > 0
+    }
+    func set Array.first(val) {
+        this.add(val) when this.len() == 0 else this[0] = val
+    }
+    let xs = [1,2,3]
+    assert(1, xs.first)
+    xs.first = 11
+    assert(11, xs.first)
+    Array.__deleteMember("first")
+    Array.__deleteMember("set_first")
 }

@@ -1,8 +1,29 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System;
 
 namespace Dyalect.Runtime.Types
 {
+    internal sealed class AutoFunction : DyForeignFunction
+    {
+        private readonly Func<ExecutionContext, DyObject, DyObject> fun;
+
+        public AutoFunction(string name, Func<ExecutionContext, DyObject, DyObject> fun)
+            : base(name, Array.Empty<Par>(), -1)
+        {
+            this.fun = fun;
+            Attr |= FunAttr.Auto;
+        }
+
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!);
+
+        internal override DyObject BindOrRun(ExecutionContext ctx, DyObject arg) => fun(ctx, arg);
+
+        protected override DyFunction Clone(ExecutionContext ctx) => new AutoFunction(FunctionName, fun);
+
+        internal override bool Equals(DyFunction func) => func is AutoFunction m && m.fun.Equals(fun);
+    }
+
     internal sealed class MemberFunction : DyForeignFunction
     {
         private readonly Func<ExecutionContext, DyObject, DyObject[], DyObject> fun;

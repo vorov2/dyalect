@@ -1,0 +1,23 @@
+﻿test "Constructor"
+{
+    assert(true, Bool(12))
+    assert(false, Bool(0))
+    assert(true, Bool("str"))
+    assert(false, Bool(""))
+    assert(false, Bool(nil))
+}
+
+test "default"
+{
+    assert(false, Bool.default())
+}
+
+test "getType"
+{
+    let x = false
+    assert(true, TypeInfo(x) == Bool)
+    assert(true, x.getType() == Bool)
+    var t = TypeInfo(x)
+    assert(3, t.id)
+    assert("Bool", t.name)
+}

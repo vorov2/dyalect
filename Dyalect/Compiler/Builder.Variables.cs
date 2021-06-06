@@ -14,6 +14,66 @@ namespace Dyalect.Compiler
 
         private bool privateScope; //Identifies that a current scope is private
 
+        private CompilerError VariableExists(string name, bool checkType = true)
+        {
+            var err = GetVariable(name, currentScope, out _);
+
+            if (err is CompilerError.None)
+                return err;
+
+            if (checkType && GetTypeHandle(null, name, out _, out _) is CompilerError.None)
+                return CompilerError.None;
+
+            return err;
+        }
+
+        private void PushVariable(CompilerContext ctx, string name, Location loc)
+        {
+            var err = GetVariable(name, currentScope, out var sv);
+
+            if (err is not CompilerError.None)
+            {
+                if (string.IsNullOrEmpty(name))
+                    return;
+
+                var th = GetTypeHandle(null, name, out var hdl, out var std);
+
+                if (th is CompilerError.None)
+                {
+                    AddLinePragma(loc);
+                    cw.Type(new(hdl, std));
+                    return;
+                }
+
+                AddError(err, loc, name);
+                return;
+            }
+
+            AddLinePragma(loc);
+            cw.PushVar(sv);
+        }
+
+        private void PopVariable(CompilerContext ctx, string name, Location loc)
+        {
+            var err = GetVariable(name, currentScope, out var sv);
+
+            if (err is not CompilerError.None)
+            {
+                if (string.IsNullOrEmpty(name))
+                    return;
+
+                AddError(err, loc, name);
+                return;
+            }
+
+            AddLinePragma(loc);
+            cw.PopVar(sv.Address);
+            
+            if ((sv.Data & VarFlags.Const) == VarFlags.Const)
+                AddError(CompilerError.UnableAssignConstant, loc, name);
+        }
+
+
         //Standard routine to add variables, can be used when an internal unnamed variable is need
         //which won't be visible to the user (for system purposes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -74,10 +134,6 @@ namespace Dyalect.Compiler
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int AddVariable(string name, DNode node, int data) =>
-            AddVariable(name, node != null ? node.Location : default, data);
-
         //Add a regular named variable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int AddVariable(string name, Location loc, int data)
@@ -122,9 +178,6 @@ namespace Dyalect.Compiler
         }
 
         //Find a variable in a global scope
-        private ScopeVar GetParentVariable(string name, DNode node) =>
-            GetParentVariable(name, node.Location);
-
         private ScopeVar GetParentVariable(string name, Location loc)
         {
             var cur = currentScope;
@@ -148,30 +201,6 @@ namespace Dyalect.Compiler
             return ScopeVar.Empty;
         }
 
-        //Search a vriable by its name, starting from current lexical scope
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ScopeVar GetVariable(string name, DNode node, bool err = true) =>
-            GetVariable(name, currentScope, node.Location, err);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetVariableToAssign(string name, DNode node, bool err = true) =>
-            GetVariableToAssign(name, node.Location, err);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ScopeVar GetVariable(string name, Location loc, bool err = true) =>
-            GetVariable(name, currentScope, loc, err);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int GetVariableToAssign(string name, Location loc, bool err = true)
-        {
-            var sv = GetVariable(name, currentScope, loc, err);
-
-            if ((sv.Data & VarFlags.Const) == VarFlags.Const)
-                AddError(CompilerError.UnableAssignConstant, loc, loc);
-
-            return sv.Address;
-        }
-
         private bool TryGetLocalVariable(string name, out ScopeVar var)
         {
             var = default;
@@ -185,22 +214,8 @@ namespace Dyalect.Compiler
             return false;
         }
 
-        private bool TryGetVariable(string name, out ScopeVar var)
-        {
-            var = default;
-            var sv = GetVariable(name, currentScope, default, err: false);
-
-            if (!sv.IsEmpty())
-            {
-                var = sv;
-                return true;
-            }
-            else
-                return false;
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ScopeVar GetVariable(string name, Scope startScope, Location loc, bool err)
+        private CompilerError GetVariable(string name, Scope startScope, out ScopeVar var)
         {
             var cur = startScope;
             var shift = 0;
@@ -208,8 +223,11 @@ namespace Dyalect.Compiler
             //Search all upper scopes recursively
             do
             {
-                if (cur.Locals.TryGetValue(name, out var var))
-                    return new(shift | var.Address << 8, var.Data);
+                if (cur.Locals.TryGetValue(name, out var sv))
+                {
+                    var = new(shift | sv.Address << 8, sv.Data);
+                    return CompilerError.None;
+                }
 
                 if (cur.Kind == ScopeKind.Function)
                     shift++;
@@ -219,18 +237,20 @@ namespace Dyalect.Compiler
             while (cur != null);
 
             //No luck. Need to check if this variable is imported from some module
-            if (TryGetImport(name, out var sv, out var moduleHandle))
+            if (TryGetImport(name, out var sv1, out var moduleHandle))
             {
-                if ((sv.Data & VarFlags.Private) == VarFlags.Private)
-                    AddError(CompilerError.PrivateNameAccess, loc, name);
+                if ((sv1.Data & VarFlags.Private) == VarFlags.Private)
+                {
+                    var = ScopeVar.Empty;
+                    return CompilerError.PrivateNameAccess;
+                }
 
-                return new(moduleHandle | (sv.Address >> 8) << 8, sv.Data | VarFlags.External);
+                var = new(moduleHandle | (sv1.Address >> 8) << 8, sv1.Data | VarFlags.External);
+                return CompilerError.None;
             }
 
-            if (err)
-                AddError(CompilerError.UndefinedVariable, loc, name);
-
-            return ScopeVar.Empty;
+            var = ScopeVar.Empty;
+            return CompilerError.UndefinedVariable;
         }
 
         private bool TryGetImport(string name, out ScopeVar sv, out int moduleHandle)

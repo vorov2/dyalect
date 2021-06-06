@@ -1,0 +1,24 @@
+﻿test "toString"
+{
+    var res = [12.2, "string", true].toString()
+    assert("[12.2, string, true]", res)
+    res = [(1,2), 4, 5].toString()
+    assert("[(1, 2), 4, 5]", res)
+}
+
+test "clone"
+{
+    let xs = [1,2,3]
+    assert(true, xs == xs)
+    assert(false, xs.clone() == xs)
+}
+
+test "getType"
+{
+    let x = [1,2,3]
+    assert(true, TypeInfo(x) == Array)
+    assert(true, x.getType() == Array)
+    var t = TypeInfo(x)
+    assert(10, t.id)
+    assert("Array", t.name)
+}

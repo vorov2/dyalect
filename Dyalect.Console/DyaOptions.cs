@@ -54,6 +54,9 @@ namespace Dyalect
         [Binding("test", Help = "Run unit tests from a file (or files if a path to a directory is specified). Usage: dya [path to a file or directory] -test.", Category = TEST)]
         public bool Test { get; set; }
 
+        [Binding("newtest", Help = "Run unit tests from a file (or files if a path to a directory is specified). Usage: dya [path to a file or directory] -test.", Category = TEST)]
+        public bool NewTest { get; set; }
+
         [Binding("onlyfailed", Help = "Show only failed tests (the default behavior is to report about all executed tests).", Category = TEST)]
         public bool ShowOnlyFailedTests { get; set; }
 

@@ -10,17 +10,11 @@ namespace Dyalect.Parser.Model
 
         public DNode Index { get; set; } = null!;
 
-        public bool NilSafety { get; set; }
-
         protected internal override string? GetName() => Index?.GetName();
 
         internal override void ToString(StringBuilder sb)
         {
             Target.ToString(sb);
-
-            if (NilSafety)
-                sb.Append('?');
-
             sb.Append('[');
             Index.ToString(sb);
             sb.Append(']');

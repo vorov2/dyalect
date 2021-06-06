@@ -18,9 +18,11 @@ namespace Dyalect.Parser
         public Token la = null!;
         private int errDist = minErrDist;
 
+        public string FileName { get; init; }
+
         public List<DImport> Imports { get; } = new();
 
-        public DBlock Root { get; } = new(new(0, 0));
+        public DBlock Root { get; } = new(default);
 
         public List<BuildMessage> Errors { get; } = new();
 
@@ -28,8 +30,9 @@ namespace Dyalect.Parser
 
         private List<int>? implicits;
 
-        public InternalParser(Scanner scanner)
+        public InternalParser(string filename, Scanner scanner)
         {
+            FileName = filename;
             this.scanner = scanner;
         }
 
@@ -316,7 +319,7 @@ namespace Dyalect.Parser
             if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
                 return null;
 
-            if (chunks != null)
+            if (chunks is not null)
             {
                 AddError(ParserError.CodeIslandsNotAllowed, t);
                 return null;

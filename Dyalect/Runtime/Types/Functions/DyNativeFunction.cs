@@ -46,6 +46,27 @@ namespace Dyalect.Runtime.Types
                 Self = arg
             };
 
+        internal override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
+        {
+            if (Auto)
+            {
+                try
+                {
+                    var size = GetLayout(ctx).Size;
+                    var locals = size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
+                    ctx.CallStack.Push(Caller.External);
+                    return DyMachine.ExecuteWithData((DyNativeFunction)BindToInstance(ctx, arg), locals, ctx);
+                }
+                catch (DyCodeException ex)
+                {
+                    ctx.Error = ex.Error;
+                    return DyNil.Instance;
+                }
+            }
+
+            return BindToInstance(ctx, arg);
+        }
+
         internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args)
         {
             try

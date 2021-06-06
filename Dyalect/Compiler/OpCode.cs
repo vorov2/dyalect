@@ -1,4 +1,4 @@
-﻿namespace Dyalect.Compiler
+﻿ namespace Dyalect.Compiler
 {
     public enum OpCode
     {
@@ -95,5 +95,11 @@
         Priv,       //0
         TypeAnno,   //0
         TypeAnnoT,  //0
+        SetType,    //0
+        SetTypeT,   //0
+        UnsetType,  //0
+        NewAmg,     //Dynamic
+        Tag0,       //1
+        FunAttr,    //0
     }
 }

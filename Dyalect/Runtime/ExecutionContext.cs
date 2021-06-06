@@ -48,6 +48,8 @@ namespace Dyalect.Runtime
 
         internal Stack<ArgContainer> Arguments { get; } = new(6);
 
+        internal Stack<int> TypeStack { get; } = new();
+
         public DyError? GetError() => Error;
 
         public void ThrowIf()

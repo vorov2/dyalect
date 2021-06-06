@@ -98,7 +98,7 @@ namespace Dyalect.Runtime.Types
         }
         #endregion
 
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "isLower" => Func.Member(name, (_, c) => (DyBool)char.IsLower(c.GetChar())),

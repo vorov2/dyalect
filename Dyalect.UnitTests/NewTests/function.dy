@@ -1,0 +1,74 @@
+﻿test "toString"
+{
+    func foo(args..., quotes = 12) { }
+    let pat = "foo(args..., quotes = 12)";
+    assert(pat, foo.toString())
+}
+
+test "clone"
+{
+    let fn = (x, y) => x + y
+    assert(true, fn == fn)
+    assert(true, fn.clone() == fn)
+    assert(true, fn.toString.clone() == fn.toString)
+    assert(false, fn.toString.clone() == fn)
+}
+
+test "Base variable 1"
+{
+    let x = 2
+    func inner() {
+        let x = 4
+        base.x
+    }
+    assert(2, inner())
+}
+
+test "Base variable 2"
+{
+    let x = 2
+    func inner() {
+        let x = 4
+        if x == 4 {
+            var x = 8
+            base.x
+        }
+    }
+    assert(2, inner())
+}
+
+test "Composition 1"
+{
+    func sum(x, y) {
+        x + y
+    }
+    func fmt(res) {
+        "result=\(res)"
+    }
+    let fun = Function.compose(sum, fmt)
+    let res = fun(13, 14)
+    assert(res, "result=27")
+}
+
+test "Composition 2"
+{
+    func sum(x, y) {
+        x + y
+    }
+    func fmt(res) {
+        "result=\(res)"
+    }
+    let fun = sum.compose(with: fmt)
+    let res = fun(13, 14)
+    assert(res, "result=27")
+}
+
+test "getType"
+{
+    let x = x => x
+    assert(true, TypeInfo(x) == Function)
+    assert(true, x.getType() == Function)
+    var t = TypeInfo(x)
+    assert(6, t.id)
+    assert("Function", t.name)
+}

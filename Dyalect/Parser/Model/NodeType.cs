@@ -6,6 +6,8 @@
         Block,
         PrivateScope,
 
+        TestBlock,
+
         Integer,
         Float,
         String,
@@ -33,7 +35,6 @@
 
         Directive,
 
-        Using,
         Base,
 
         Application,

@@ -205,7 +205,7 @@ namespace Dyalect.Runtime.Types
             return (DyBool)((a % b) == 0);
         }
 
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             if (name == "isMultiple")
                 return Func.Member(name, IsMultiple, -1, new Par("of"));

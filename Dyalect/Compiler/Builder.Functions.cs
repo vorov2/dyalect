@@ -11,17 +11,18 @@ namespace Dyalect.Compiler
     {
         private void Build(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
-            if (node.Name != null)
+            if (node.Name is not null)
             {
                 var flags = VarFlags.Const | VarFlags.Function;
                 var addr = 0;
 
                 if (!node.IsMemberFunction)
-                    addr = AddVariable(node.Name, node, flags);
+                    addr = AddVariable(node.Name, node.Location, flags);
                 else if (privateScope)
                     AddError(CompilerError.PrivateMethod, node.Location);
 
-                BuildFunctionBody(addr, node, hints, ctx);
+                var code = node.IsMemberFunction ? GetTypeHandle(node.TypeName!, node.Location) : (TypeHandle?)null;
+                BuildFunctionBody(code, addr, node, hints, ctx);
 
                 if (hints.Has(Push))
                     cw.Dup();
@@ -33,16 +34,18 @@ namespace Dyalect.Compiler
                     if (!node.IsStatic)
                         realName = GetMethodName(realName, node);
 
-                    if (node.Name == Builtins.Has || (!node.IsStatic && node.Name == Builtins.Type))
+                    if (node.Setter)
+                        realName = "set_" + realName;
+
+                    if (node.Name is Builtins.Has || (!node.IsStatic && node.Name is Builtins.Type))
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
                     cw.Aux(realName);
-                    var code = GetTypeHandle(node.TypeName!, node.Location);
 
                     if (node.IsStatic)
-                        cw.SetMemberS(code);
+                        cw.SetMemberS(code!.Value);
                     else
-                        cw.SetMember(code);
+                        cw.SetMember(code!.Value);
                 }
 
                 AddLinePragma(node);
@@ -54,7 +57,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                BuildFunctionBody(-1, node, hints, ctx);
+                BuildFunctionBody(null, -1, node, hints, ctx);
                 AddLinePragma(node);
                 cw.Nop();
                 PopIf(hints);
@@ -68,8 +71,8 @@ namespace Dyalect.Compiler
             {
                 "+" => node.Parameters.Count == 0 ? Builtins.Plus : Builtins.Add,
                 "-" => node.Parameters.Count == 0 ? Builtins.Neg : Builtins.Sub,
-                "get" => Builtins.Get,
-                "set" => Builtins.Set,
+                "getItem" => Builtins.Get,
+                "setItem" => Builtins.Set,
                 "*" => Builtins.Mul,
                 "/" => Builtins.Div,
                 "%" => Builtins.Rem,
@@ -84,7 +87,7 @@ namespace Dyalect.Compiler
                 "<=" => Builtins.Lte,
                 "!" => Builtins.Not,
                 "~~~" => Builtins.BitNot,
-                _ => name,
+                _ => name
             };
 
         //Compilation of function parameters with support for variable
@@ -158,11 +161,39 @@ namespace Dyalect.Compiler
             return arr;
         }
 
-        private void BuildFunctionBody(int addr, DFunctionDeclaration node, Hints hints, CompilerContext oldctx)
+        private int BuildFunctionArguments(DFunctionDeclaration node, Par[] args)
+        {
+            var variadicIndex = -1;
+
+            //Initialize function arguments
+            if (args.Length > 0)
+            {
+                for (var i = 0; i < args.Length; i++)
+                {
+                    var arg = args[i];
+
+                    if (arg.IsVarArg)
+                        variadicIndex = i;
+
+                    var a = AddVariable(arg.Name, node.Location, data: VarFlags.Argument);
+
+                    if (arg.TypeAnnotation is not null)
+                    {
+                        cw.PushVar(new ScopeVar(a));
+                        AddLinePragma(node.Parameters[i]);
+                        cw.TypeCheckF(arg.TypeAnnotation.Value);
+                    }
+                }
+            }
+
+            return variadicIndex;
+        }
+
+        private void BuildFunctionBody(TypeHandle? typeHandle, int addr, DFunctionDeclaration node, Hints hints, CompilerContext oldctx)
         {
             var iterBody = hints.Has(IteratorBody);
             var args = CompileFunctionParameters(node.Parameters);
-            StartFun(node.Name!, args);
+            StartFun(node.Setter ? "set_" + node.Name : node.Name!, args);
 
             if (node.IsStatic && !node.IsMemberFunction)
                 AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);
@@ -199,81 +230,74 @@ namespace Dyalect.Compiler
 
             AddLinePragma(node);
             var address = cw.Offset;
-            var variadicIndex = -1;
-
-            //Initialize function arguments
-            for (var i = 0; i < args.Length; i++)
-            {
-                var arg = args[i];
-
-                if (arg.IsVarArg)
-                    variadicIndex = i;
-
-                var a = AddVariable(arg.Name, node, data: VarFlags.Argument);
-
-                if (arg.TypeAnnotation is not null)
-                {
-                    cw.PushVar(new ScopeVar(a));
-                    AddLinePragma(node.Parameters[i]);
-                    cw.TypeCheckF(arg.TypeAnnotation.Value);
-                }
-            }
+            
+            //args was here
+            var variadicIndex = BuildFunctionArguments(node, args);
+            
+            if (typeHandle is not null)
+                cw.SetType(typeHandle.Value);
 
             //If this is a member function we add an additional system variable that
             //would return an instance of an object to which this function is coupled
             //(same as "this" in C#)
             if (node.IsMemberFunction && !node.IsStatic)
             {
-                var va = AddVariable("this", node, data: VarFlags.Const | VarFlags.This);
+                var va = AddVariable("this", node.Location, data: VarFlags.Const | VarFlags.This);
                 cw.This();
                 cw.PopVar(va);
             }
+            
+            if ((node.Getter || node.Setter) && !node.IsMemberFunction)
+                AddError(CompilerError.AccessorOnlyMethod, node.Location);
 
             //Start of a function that is used for tail call optimization
             cw.MarkLabel(startLabel);
 
             //This is an autogenerated constructor
             if (node.IsConstructor && node.Body is null)
+                GenerateConstructor(node, ctx);
+            else if (node.IsIterator) //Compile function body
             {
-                GenerateConstructor(node);
+                var dec = new DFunctionDeclaration(node.Location) { Name = node.Name, Body = node.Body };
+                Build(dec, hints.Append(IteratorBody), ctx);
             }
             else
             {
-                //Compile function body
-                if (node.IsIterator)
+                //Compile a common initialization logic for all constructors
+                if (localTypeMember && node.IsConstructor)
                 {
-                    var dec = new DFunctionDeclaration(node.Location) { Name = node.Name, Body = node.Body };
-                    Build(dec, hints.Append(IteratorBody), ctx);
-                }
-                else
-                {
-                    //Compile a common initialization logic for all constructors
-                    if (localTypeMember && node.IsConstructor)
+                    if (!node.IsStatic)
+                        AddError(CompilerError.CtorOnlyStatic, node.Location);
+
+                    //Autogenerated construstor do not work with manual constructors
+                    if (unit.Types[lti.TypeId].AutoGenConstructors)
+                        AddError(CompilerError.CtorAutoGen, node.Location, unit.Types[lti.TypeId].Name);
+
+                    if (VariableExists("$" + lti.Declaration.Name) == CompilerError.None)
                     {
-                        if (!node.IsStatic)
-                            AddError(CompilerError.CtorOnlyStatic, node.Location);
-
-                        //Autogenerated construstor do not work with manual constructors
-                        if (unit.Types[lti.TypeId].AutoGenConstructors)
-                            AddError(CompilerError.CtorAutoGen, node.Location, unit.Types[lti.TypeId].Name);
-
-                        if (lti.Declaration.Using is not null)
-                            BuildUsing(lti.Declaration.Using, hints, ctx);
-                        else
-                            cw.NewTuple(0);
-
-                        var v = AddVariable("$this", lti.Declaration, VarFlags.Const | VarFlags.This);
-                        cw.PopVar(v);
+                        PushVariable(ctx, "$" + lti.Declaration.Name, node.Location);
+                        cw.FunPrep(0);
+                        cw.FunCall(0);
                     }
-                    
-                    Build(node.Body!, hints.Append(Last), ctx);
+                    else
+                        cw.NewTuple(0);
+
+                    var v = AddVariable("this", lti.Declaration.Location, VarFlags.Const | VarFlags.This);
+                    cw.Aux(node.Name!);
+                    cw.NewType(lti.TypeId);
+                    cw.PopVar(v);
                 }
+
+                Build(node.Body!, hints.Append(Last), ctx);
             }
 
             //Return from a function. Any function execution should get here, it is not possible
             //to break early. An early return would actually goto here, where a real return (OpCode.Ret)
             //is executed. This is a function epilogue.
             cw.MarkLabel(funEndLabel);
+
+            if (typeHandle is not null)
+                cw.UnsetType();
 
             //If this is an iterator function push a terminator at the end (and pop a normal value)
             if (iterBody)
@@ -287,20 +311,11 @@ namespace Dyalect.Compiler
                 if (node.IsIterator)
                     AddError(CompilerError.CtorNotIterator, node.Location);
 
-                if (!localTypeMember)
-                    AddError(CompilerError.CtorOnlyLocalType, node.Location, ctx.Function.TypeName!);
-                else
-                {
-                    //Constructor returns a type instance, not a value. We need to pop this value from stack
-                    cw.Pop();
+                //Constructor returns a type instance, not a value. We need to pop this value from stack
+                cw.Pop();
 
-                    //Push privates to stack
-                    var sv = GetVariable("$this", lti.Declaration);
-                    cw.PushVar(sv);
-
-                    cw.Aux(node.Name!);
-                    cw.NewType(lti.TypeId);
-                }
+                //Push privates to stack
+                PushVariable(ctx, "this", node.Body.Location);
             }
 
             cw.Ret();
@@ -327,6 +342,9 @@ namespace Dyalect.Compiler
                 else
                     cw.NewFun(funHandle);
             }
+            
+            if (node.Getter)
+                cw.FunAttr(FunAttr.Auto);
         }
     }
 }

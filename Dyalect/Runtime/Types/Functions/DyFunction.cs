@@ -12,6 +12,9 @@ namespace Dyalect.Runtime.Types
         internal DyObject? Self;
         internal Par[] Parameters;
         internal int VarArgIndex;
+        internal int Attr;
+
+        internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
 
         protected DyFunction(int typeId, Par[] pars, int varArgIndex) : base(typeId) =>
             (Parameters, VarArgIndex) = (pars, varArgIndex);
@@ -20,6 +23,8 @@ namespace Dyalect.Runtime.Types
 
         internal abstract DyFunction BindToInstance(ExecutionContext ctx, DyObject arg);
 
+        internal virtual DyObject BindOrRun(ExecutionContext ctx, DyObject arg) => BindToInstance(ctx, arg);
+        
         internal abstract DyObject InternalCall(ExecutionContext ctx, DyObject[] args);
 
         internal abstract DyObject InternalCall(ExecutionContext ctx);

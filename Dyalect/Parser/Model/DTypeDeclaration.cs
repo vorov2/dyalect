@@ -16,7 +16,7 @@ namespace Dyalect.Parser.Model
         private List<DFunctionDeclaration> constructors = null!;
         public List<DFunctionDeclaration> Constructors => constructors ??= new();
 
-        public DNode? Using { get; set; }
+        public DNode? InitBlock { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {
@@ -31,7 +31,7 @@ namespace Dyalect.Parser.Model
                 foreach (var c in constructors)
                 {
                     if (!fst)
-                        sb.Append(" | ");
+                        sb.Append(" or ");
 
                     sb.Append(c.Name);
                     sb.Append('(');
@@ -40,10 +40,10 @@ namespace Dyalect.Parser.Model
                 }
             }
 
-            if (Using is not null)
+            if (InitBlock is not null)
             {
-                sb.Append(" using ");
-                Using.ToString(sb);
+                sb.Append(" = ");
+                InitBlock.ToString(sb);
             }
         }
     }

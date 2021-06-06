@@ -54,18 +54,18 @@ func matchTypeTest1() {
     assert(8, mem(a2))
 }
 
-type Bar using {
+type Bar = {
     var data
 }
 func extendTest1() {
     static func Bar.Bar(args...) {
-        private()::data = args
+        this.ini.data = args
     }
     func Bar.len() {
-        private(this)::data.len()
+        this.ini.data.len()
     }
-    func Bar.get(index) {
-        private(this)::data[index]
+    func Bar.getItem(index) {
+        this.ini.data[index]
     }
     var obj = Bar.Bar(1, 2, 3)
     var res = match obj {
@@ -73,17 +73,20 @@ func extendTest1() {
         (x, y, z) => x + y + z
     }
     assert(6, res)
+    Bar.__deleteMember("Bar")
+    Bar.__deleteMember("len")
+    Bar.__deleteMember("getItem")
 }
 
 func extendTest2() {
     static func Bar.Bar(args...) {
-        private()::data = args
+        this.ini.data = args
     }
     func Bar.len() {
-        private()::data.len()
+        this.ini.data.len()
     }
-    func Bar.get(index) {
-        private()::data[index]
+    func Bar.getItem(index) {
+        this.ini.data[index]
     }
     var obj = Bar(10, 20, 30)
     assert(10, obj[0])
@@ -130,32 +133,32 @@ func autoConsTest3() {
     assert(43, p::y)
 }
 
-type Nat using { var val }
+type Nat = { var val }
 func typeTest1() {
     func fetch(x) {
         Nat(x) when x >= 0 else x
     }
     static func Nat.Nat(x) {
         throw "Negative number." when x < 0
-        private()::val = x
+        this.ini.val = x
     }
     func Nat.toInteger() {
-        private()::val
+        this.ini.val
     }
     func Nat + (other) {
-        fetch(private()::val + private(other)::val)
+        fetch(this.ini.val + other.ini.val)
     }
     func Nat - (other) {
-        fetch(private()::val - private(other)::val)
+        fetch(this.ini.val - other.ini.val)
     }
     func Nat * (other) {
-        fetch(private()::val * private(other)::val)
+        fetch(this.ini.val * other.ini.val)
     }
     func Nat / (other) {
-        fetch(private()::val / private(other)::val)
+        fetch(this.ini.val / other.ini.val)
     }
     func Nat == (other) {
-        private()::val == private(other)::val
+        this.ini.val == other.ini.val
     }
     var n = Nat(12)
     assert(Nat(24), n + Nat(12))
@@ -180,25 +183,25 @@ func typeTest2() {
     assert(24, doMatch(y))
 }
 
-type Cell using { var val }
+type Cell = { var val }
 func typeTest3() {
     func ref(value) {
         Cell(value)
     }
     static func Cell.Cell(value) {
-        private()::val = value
+        this.ini.val = value
     }
     func Cell.setValue(value) {
-        private()::val = value
+        this.ini.val = value
     }
     func Cell.getValue() {
-        private()::val
+        this.ini.val
     }
-    func Cell.get(index) {
+    func Cell.getItem(index) {
         if index != 0 {
             throw "Index out of range."
         }
-        private()::val
+        this.ini.val
     }
     func Cell.len() {
         1
@@ -270,15 +273,15 @@ func simpleTypeTest2() {
     assert(12, b::x)
 }
 
-type Record using { var fields }
+type Record = { var fields }
 func accessorTest() {
     static func Record.Record(values...) {
-        private()::fields = values
+        this.ini.fields = values
     }
-    func Record.get(index) {
+    func Record.getItem(index) {
         match index {
-            "name" => private()::fields::name,
-            "age" => private()::fields::age
+            "name" => this.ini.fields::name,
+            "age" => this.ini.fields::age
         }
     }
     var p = Record(values: (name: "John", age: 33))
@@ -314,23 +317,23 @@ func defaultsConsTest() {
     assert(3, t::c)
 }
 
-type Point1 using { var px; var py }
-func setterTest2() { //Bug #205
+type Point1 = { var px; var py }
+func setterTest2() {
     static func Point1.Point1(x, y) {
-        private()::px = x
-        private()::py = y
+        this.ini.px = x
+        this.ini.py = y
     }
-    func Point1.get(index) {
+    func Point1.getItem(index) {
         match index {
-            0 or "x" => private()::px,
-            1 or "y" => private()::py,
+            0 or "x" => this.ini.px,
+            1 or "y" => this.ini.py,
             _ => throw Error.IndexOutOfRange()
         }
     }
-    func Point1.set(index, value) {
+    func Point1.setItem(index, value) {
         match index {
-            0 or "x" => private()::px = value,
-            1 or "y" => private()::py = value,
+            0 or "x" => this.ini.px = value,
+            1 or "y" => this.ini.py = value,
             _ => throw Error.IndexOutOfRange()
         }
     }
@@ -412,23 +415,23 @@ func testCustomFunc() {
     assert(42, some.extractValue())
 }
 
-type TStringBuilder using {
+type TStringBuilder = {
     let buffer = []
 }
 func stringBuilderTest() {
     static func TStringBuilder.TStringBuilder() { }
     func TStringBuilder.append(val) {
-        private()::buffer.add(val.toString())
+        this.ini.buffer.add(val.toString())
     }
     func TStringBuilder.clear() {
-        private()::buffer.clear()
+        this.ini.buffer.clear()
     }
     func TStringBuilder.toString() {
-        String.concat(values: private()::buffer)
+        String.concat(values: this.ini.buffer)
     }
     func TStringBuilder.len() {
         var count = 0
-        for x in private()::buffer {
+        for x in this.ini.buffer {
             count += x.len()
         }
         return count
@@ -446,16 +449,16 @@ func stringBuilderTest() {
     assert("truefalse", sb.toString())
 }
 
-type PAccessTest_Foo using {
+type PAccessTest_Foo = {
     var x
     let pi = 3.14
 }
-static func PAccessTest_Foo.PAccessTest_Foo(x) {
-    private()::x = x
+static func PAccessTest_Foo.PAccessTest_Foo(px) {
+    this.ini.x = px
 }
 func privateAccessTest1() {
     func PAccessTest_Foo.ok() {
-        return private(this)::x
+        return this.ini.x
     }
     var f = PAccessTest_Foo(12)
     var res = f.ok()
@@ -466,7 +469,7 @@ func privateAccessTest1() {
 func privateAccessTest2() {
     func PAccessTest_Foo.ok(f) {
         func inner() {
-            return private(f)::pi
+            return this.ini.pi
         }
         return inner()
     }
@@ -478,12 +481,10 @@ func privateAccessTest2() {
 
 type PAccessTest_Bar(x)
 func PAccessTest_Bar.violator(f) {
-    return private(f)::x
+    return f.ini.x
 }
 func privateAccessTest3() {
     var b = PAccessTest_Bar(42)
-    var res = b.violator(b)
-    assert(42, res)
     var f = PAccessTest_Foo(42)
     try {
         b.violator(f)
@@ -493,22 +494,23 @@ func privateAccessTest3() {
     }
 }
 
-type RealNat using {
+type RealNat = {
     var num
 }
-static func RealNat.RealNat(x) {
-    throw Error.InvalidType(x.getType()) when x is not Integer
-    private()::num = x
-}
-func RealNat + (other) {
-    let res = match other {
-        RealNat => private()::num + private(other)::num,
-        Integer => private()::num + other,
-        _ => throw Error.InvalidType(other.getType())
-    }
-    RealNat(res) when res >= 0 else res
-}
 func testNat() {
+    static func RealNat.RealNat(x) {
+        throw Error.InvalidType(x.getType()) when x is not Integer
+        this.ini.num = x
+    }
+    func RealNat + (other) {
+        let res = match other {
+            RealNat => this.ini.num + other.ini.num,
+            Integer => this.ini.num + other,
+            _ => throw Error.InvalidType(other.getType())
+        }
+        RealNat(res) when res >= 0 else res
+    }
+    func RealNat == (other) => this.ini.num == other.ini.num
     var (x, y) = (RealNat(12), RealNat(10))
     assert(RealNat(22), x + y)
     assert(RealNat(2), x + -10)
@@ -552,22 +554,22 @@ func typeMutables2() {
     }
 }
 
-type TestCustomCons using {
+type TestCustomCons = {
     var data
 }
 func customConsWithConstraints() {
     static func TestCustomCons.TestCustomCons(Integer x) {
-        private()::data = x
+        this.ini.data = x
     }
-    func TestCustomCons.get(field) {
+    func TestCustomCons.getItem(field) {
         match field {
-            "x" => private()::data,
+            "x" => this.ini.data,
             _ => Error.IndexOutOfRange()
         }
     }
-    func TestCustomCons.set(field, Integer value) {
+    func TestCustomCons.setItem(field, Integer value) {
         match field {
-            "x" => private()::data = value,
+            "x" => this.ini.data = value,
             _ => Error.IndexOutOfRange()
         }
     }
@@ -580,29 +582,6 @@ func customConsWithConstraints() {
         InvalidType() => assert(got: true),
         e => print(e)
     }
-}
-
-type TypeWithUsing using {
-    var name
-    var age
-}
-func usingWithTypes() {
-    static func TypeWithUsing.TypeWithUsing(name, age) {
-        using private()
-        ::name = name
-        ::age = age
-    }
-    func TypeWithUsing.getName() {
-        using private()
-        ::name
-    }
-    func TypeWithUsing.getAge() {
-        using private()
-        ::age
-    }
-    let data = TypeWithUsing("John Doe", 44)
-    assert("John Doe", data.getName())
-    assert(44, data.getAge())
 }
 
 type TestExpr = Literal(var Float value) or Unary(var op, var TestExpr left)
@@ -620,22 +599,50 @@ func testTypeVars() {
     assert(42.0, b::left::value)
 }
 
-type TinyInt using {
+type TinyInt = {
     var value
     func getInteger(val) {
-        val is TinyInt ? private(val)::value : val
+        val is TinyInt ? value : val
     }
 }
 func testPrivateInsideInit() {
     static func TinyInt.TinyInt(Integer x) {
-        using private()
-        ::value = ::getInteger(x)
+        this.ini.value = this.ini.getInteger(x)
     }
-    func TinyInt toInteger() => private()::value
+    func TinyInt toInteger() => this.ini.value
     func TinyInt + (other) {
-        using private()
-        TinyInt(::value + ::getInteger(other))
+        TinyInt(this.ini.value + this.ini.getInteger(other))
     }
     let res = TinyInt(2) + TinyInt(7)
     print(9, res.toInteger())
+}
+
+type Foo14 = {
+    var status
+}
+func testProperties1() {
+    static func Foo14.Foo14(value) => this.ini.status = value
+    func get Foo14.status() => this.ini.status
+    func set Foo14.status(value) => this.ini.status = value
+    let f = Foo14(10)
+    assert(10, f.status)
+    f.status = 21
+    assert(21, f.status)
+    f.status += 11
+    assert(32, f.status)
+}
+
+type Foo15 = {
+    var box
+}
+func testProperties2() {
+    static func Foo15.Foo15() { }
+    func get Foo15.box() => this.ini.box
+    func set Foo15.box(value) => this.ini.box = value
+    let f = Foo15()
+    assert(42, f.box ?? 42)
+    f.box ??= 144
+    assert(144, f.box)
+    f.box ??= 288
+    assert(144, f.box)
 }

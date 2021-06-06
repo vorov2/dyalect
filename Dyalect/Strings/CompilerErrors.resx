@@ -186,9 +186,6 @@
   <data name="TypeAlreadyDeclared" xml:space="preserve">
     <value>Module already contains a definition for "{0}".</value>
   </data>
-  <data name="CtorOnlyLocalType" xml:space="preserve">
-    <value>Unable to create a constructor for a non-local type "{0}".</value>
-  </data>
   <data name="PrivateNameAccess" xml:space="preserve">
     <value>Unable to access a private module member "{0}".</value>
   </data>
@@ -258,9 +255,6 @@
   <data name="TypeNameCamel" xml:space="preserve">
     <value>Type name should start from a capital letter.</value>
   </data>
-  <data name="PrivateAccessInvalid" xml:space="preserve">
-    <value>An access to private scope is only allowed inside member functions.</value>
-  </data>
   <data name="NestedMethod" xml:space="preserve">
     <value>Method cannot be nested in other methods.</value>
   </data>
@@ -275,5 +269,14 @@
   </data>
   <data name="MethodNotRecursive" xml:space="preserve">
     <value>Methods can't be recursive. Declare a regular function instead.</value>
+  </data>
+  <data name="AssignmentSameVariable" xml:space="preserve">
+    <value>Assignment to the same variable.</value>
+  </data>
+  <data name="AccessorOnlyMethod" xml:space="preserve">
+    <value>Only methods can be declared as accessors (get and set).</value>
+  </data>
+  <data name="UnableSetIni" xml:space="preserve">
+    <value>Initialization scope of a type cannot be overwritten.</value>
   </data>
 </root>

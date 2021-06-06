@@ -40,12 +40,12 @@ namespace Dyalect.Runtime.Types
             return new DyArray(arr);
         }
 
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "compose" => Func.Member(name, Compose, -1, new Par("with")),
-                "name" => Func.Member(name, GetName),
-                "parameters" => Func.Member(name, GetParameters),
+                "name" => Func.Auto(name, GetName),
+                "parameters" => Func.Auto(name, GetParameters),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

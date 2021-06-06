@@ -378,7 +378,7 @@ namespace Dyalect.Runtime.Types
         private DyObject ToCharArray(ExecutionContext ctx, DyObject self) =>
             new DyArray(self.GetString().ToCharArray().Select(c => new DyChar(c)).ToArray());
 
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "indexOf" => Func.Member(name, IndexOf, -1, new Par("value"),

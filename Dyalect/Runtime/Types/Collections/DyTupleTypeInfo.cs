@@ -111,10 +111,10 @@ namespace Dyalect.Runtime.Types
 
             for (var i = 0; i < t.Values.Length; i++)
             {
-                var e = t.Values[i];
+                var e = t.Values[i].GetTaggedValue();
 
                 if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, item).GetBool())
-                    return RemoveAt(ctx, t, i);
+                    return RemoveAt(t, i);
             }
 
             return self;
@@ -133,10 +133,10 @@ namespace Dyalect.Runtime.Types
             if (idx < 0 || idx >= t.Count)
                 return ctx.IndexOutOfRange();
 
-            return RemoveAt(ctx, t, idx);
+            return RemoveAt(t, idx);
         }
 
-        private static DyTuple RemoveAt(ExecutionContext _, DyTuple self, int index)
+        private static DyTuple RemoveAt(DyTuple self, int index)
         {
             var arr = new DyObject[self.Count - 1];
             var c = 0;
@@ -195,7 +195,7 @@ namespace Dyalect.Runtime.Types
             return (DyBool)tuple.HasItem(item.GetString(), ctx);
         }
 
-        protected override DyObject? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "add" => Func.Member(name, AddItem, -1, new Par("item")),
