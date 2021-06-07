@@ -71,7 +71,7 @@ namespace Dyalect
         private static void Failed(string name, string reason, string fileName)
         {
             commands.Add($"AddTest {name} -Outcome Failed -Framework DyaUnit -FileName {fileName}");
-            Printer.Output($"[X] {name} FAILED: {reason}");
+            Printer.Output($"[ ] {name} FAILED: {reason}");
         }
 
         private static void Success(DyaOptions options, string name, string fileName)
@@ -79,7 +79,7 @@ namespace Dyalect
             commands.Add($"AddTest {name} -Outcome Passed -Framework DyaUnit -FileName {fileName}");
 
             if (!options.ShowOnlyFailedTests)
-                Printer.Output($"[.] {name}");
+                Printer.Output($"[+] {name}");
         }
 
         private static DTestBlock[] GatherTests(IEnumerable<string> files, List<BuildMessage> warns)
@@ -132,11 +132,15 @@ namespace Dyalect
 
                 var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(block.FileName)!), builderOptions);
                 var cres = linker.Make(block.Body);
+                warns.AddRange(cres.Messages.Where(m => m.Type == BuildMessageType.Warning));
 
                 if (!cres.Success)
-                    throw new DyBuildException(cres.Messages);
+                {
+                    failed++;
+                    Failed(block.Name, string.Join(' ', cres.Messages.Select(m => m.Message)), block.FileName!);
+                    continue;
+                }
 
-                warns.AddRange(cres.Messages.Where(m => m.Type == BuildMessageType.Warning));
                 var ctx = DyMachine.CreateExecutionContext(cres.Value!);
 
                 try

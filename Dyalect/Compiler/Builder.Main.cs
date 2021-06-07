@@ -327,7 +327,7 @@ namespace Dyalect.Compiler
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
         {
-            cw.Type(new TypeHandle(DyType.GetTypeCodeByName(DyTypeNames.Iterator), true));
+            cw.Type(new(DyType.GetTypeCodeByName(DyTypeNames.Iterator), true));
             cw.GetMember(Builtins.Range);
             cw.FunPrep(4);
 

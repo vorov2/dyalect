@@ -47,3 +47,9 @@ test "parse"
     assert(2, Integer.parse('2'))
     assert(nil, Integer.parse("three"))
 }
+
+test "Range"
+{
+    assert([0,1,2,3,4,5], [0..5])
+    assert([0,2,4], (0^2..4).toArray())
+}

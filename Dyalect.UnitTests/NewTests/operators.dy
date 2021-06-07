@@ -1,4 +1,4 @@
-﻿test "Simple math 1"
+﻿test "Simple math"
 {
     var x = 12 + 3 - 4 + 6
     assert(17, x)
@@ -38,6 +38,24 @@ test "Float math 2"
     assert(29.071957080597016, x)
     x = (188.123 - 12.0004) * 5.667 - 12.2 / 0.134
     assert(907.04199808059684, x)
+}
+
+test "Math with formatting"
+{
+    var x = 2
+        + 3
+        + 5
+        + 6
+    assert(16, x)
+    var y = 12
+        + 
+        -44
+    assert(-32, y)
+    var z = 12
+        + -3
+        --12
+        -44
+    assert(-23, z)
 }
 
 test "Math with unary"
@@ -175,4 +193,49 @@ test "has 3"
     assert(true, t.has("indices"))
     var indices = "indices"
     assert(true, t.has(indices))
+}
+
+test "Ternary"
+{
+    var x = 0
+    var res = x > 0 ? x
+        : x < 0 ? -x : 42
+    assert(42, res)
+    func fib(n) =>
+        n < 2 ? n : fib(n - 1) + fib(n - 2)
+    assert(89, fib(11))
+}
+
+test "Unary minus"
+{
+    let x = - 42 //with space
+    assert(0 - 42, x)
+}
+
+test "In 1"
+{ 
+    var xs = [1..10]
+    assert(true, 1 in xs)
+    assert(true, 10 in xs)
+    assert(false, 101 in xs)
+    xs = (1..10)
+    assert(true, 1 in xs)
+    assert(true, 10 in xs)
+    assert(false, 101 in xs)
+    xs = yields {1..10}
+    assert(true, 1 in xs)
+    assert(true, 10 in xs)
+    assert(false, 101 in xs)
+}
+
+test "In 2"
+{
+    var xs = (x: 12, y: 24)
+    assert(true, "x" in xs)
+    assert(true, "y" in xs)
+    assert(false, "z" in xs)
+    xs = Dictionary.fromTuple(xs)
+    assert(true, "x" in xs)
+    assert(true, "y" in xs)
+    assert(false, "z" in xs)
 }
