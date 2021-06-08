@@ -395,9 +395,9 @@ func funcWithDefaults1() {
 func funcWithDefaults2() {
     assert(12.12, __invoke(round, 12.1245677))
     let r = __invoke(rnd, 10)
-    assert(true, r >= 0 && r <= 10)
+    assert(true, r >= 10)
     assert(true, __invoke(rnd) >= 0)
-    let r2 = __invoke(rnd, 5, 1)
+    let r2 = __invoke(rnd, 1, 5)
     assert(true, r2 >= 1 && r2 <= 5)
 }
 

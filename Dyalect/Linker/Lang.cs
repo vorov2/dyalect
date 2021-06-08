@@ -76,7 +76,7 @@ namespace Dyalect.Linker
         public DyObject Read(ExecutionContext _) => new DyString(Console.ReadLine() ?? "");
 
         [Function("rnd")]
-        public DyObject Randomize(ExecutionContext _, [Default(int.MaxValue)]DyObject max, [Default(0)]DyObject min, [Default]DyObject seed)
+        public DyObject Randomize(ExecutionContext ctx, [Default(0)]DyObject min, [Default(int.MaxValue)]DyObject max, [Default]DyObject seed)
         {
             int iseed;
 
@@ -89,8 +89,14 @@ namespace Dyalect.Linker
                 iseed = (int)(dt2 - dt).Ticks;
             }
 
+            var imin = (int)min.GetInteger();
+            var imax = (int)max.GetInteger();
+
+            if (imin > imax)
+                return ctx.InvalidValue("The value of parameter \"min\" cannot be greater than the value of parameterr \"max\".");
+
             var rnd = new Random(iseed);
-            return DyInteger.Get(rnd.Next((int)min.GetInteger(), (int)max.GetInteger()));
+            return DyInteger.Get(rnd.Next(imin, imax));
         }
 
         [Function("assert")]

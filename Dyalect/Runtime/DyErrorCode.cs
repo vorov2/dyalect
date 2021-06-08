@@ -42,6 +42,8 @@
 
         KeyAlreadyPresent = 619,
 
-        FieldNotFound = 620
+        FieldNotFound = 620,
+
+        InvalidValue = 621
     }
 }

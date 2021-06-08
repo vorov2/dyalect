@@ -1,3 +1,6 @@
+# 0.27.1
+  * Fix: _Correct error messages for standard `rnd` function_ ([Issue #555](https://github.com/vorov2/dyalect/issues/555)).
+
 # 0.27.0
   * Add: _Consider forward declaration of functions_ ([Issue #527](https://github.com/vorov2/dyalect/issues/527), [docs](https://github.com/vorov2/dyalect/wiki/Functions#rec)).
   * Add: _Revise custom type implementation_ ([Issue #539](https://github.com/vorov2/dyalect/issues/539), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
