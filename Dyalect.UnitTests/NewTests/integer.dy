@@ -4,7 +4,7 @@
     assert(96, res)
 }
 
-test "min and max"
+test "Methods: min and max"
 {
     assert(9223372036854775807, Integer.max())
     assert(-9223372036854775807, Integer.min() + 1)
@@ -17,12 +17,12 @@ test "Constructor"
     assert(5, Integer('5'))
 }
 
-test "default"
+test "Methods: default"
 {
     assert(0, Integer.default())
 }
 
-test "getType"
+test "Methods: getType"
 {
     let x = 42
     assert(true, TypeInfo(x) == Integer)
@@ -33,7 +33,7 @@ test "getType"
 }
 
 
-test "isMultiple"
+test "Methods: isMultiple"
 {
     assert(true, 12.isMultiple(3))
     assert(true, 12.isMultiple(of: 2))
@@ -41,14 +41,14 @@ test "isMultiple"
     assert(false, 340.isMultiple(of: 13))
 }
 
-test "parse"
+test "Methods: parse"
 {
     assert(42, Integer.parse("42"))
     assert(2, Integer.parse('2'))
     assert(nil, Integer.parse("three"))
 }
 
-test "Range"
+test "Ranges"
 {
     assert([0,1,2,3,4,5], [0..5])
     assert([0,2,4], (0^2..4).toArray())

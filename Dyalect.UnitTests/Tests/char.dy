@@ -1,4 +1,5 @@
-﻿func charLiteralTest() {
+﻿//Done
+func charLiteralTest() {
     var res = '\'' + 'F' + '\'' + '\s'
     assert("'F' ", res)
 }

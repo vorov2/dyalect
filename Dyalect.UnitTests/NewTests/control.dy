@@ -77,3 +77,169 @@ test "Return from method"
     assert(2, foo())
     assert(nil, bar())
 }
+
+test "Cycle: while with break 1"
+{
+    var n = 100
+    var x = while n > 0 {
+        if n == 33 {
+            break n
+        }
+        n = n - 1
+    }
+    assert(33, x)
+}
+
+test "Cycle: while with break 2"
+{
+    var n = 100
+    var x = while n > 0 {
+        if n == 33 {
+            break
+        }
+        n = n - 1
+    }
+    if !x {
+        x = 42
+    }
+    assert(42, x)
+}
+
+test "Cycle: Nested while"
+{
+    var z = 5
+    var c = 0
+    while z >= 1 {
+        var y = z - 1
+        while y >= 0 {
+            if true {
+                c += 1
+                break
+            }
+            y -= 1
+        }
+        z -= 1
+    }
+    assert(0, z)
+    assert(5, c)
+}
+
+test "Cycle: do/while 1"
+{
+    var x = 1
+    do {
+        x -= 1
+    } while x > 0
+    assert(0, x)
+    do {
+        x += 1
+    } while false
+    assert(1, x)
+}
+
+test "Cycle: do/while 2"
+{
+    var x = 0
+    do {
+        x += 1
+    } while x < 10
+    assert(10, x)
+}
+
+test "Cycle: do/while with break"
+{
+    var x = 0
+    do {
+        x += 1
+        if x == 1 {
+            break
+        }
+    } while x < 10
+    assert(1, x)
+}
+
+test "Cycle: do/while with continue"
+{
+    var x = 0
+    var iter = 0
+    do {
+        x += 1
+        if x == 1 || x == 5 {
+            continue
+        }
+        iter += 1
+    } while x < 10
+    assert(10, x)
+    assert(8, iter)
+}
+
+test "Cycle: for 1"
+{
+    var str = ""
+    for i in 1..5 {
+        for _ in 1..i {
+            str += "*"
+        }
+        str += "\n"
+    }
+    var pattern =
+        "*\n" +
+        "**\n" +
+        "***\n" +
+        "****\n" +
+        "*****\n"
+    assert(pattern, str)
+}
+
+test "Cycle: for 2"
+{
+    var arr = []
+    for x in [1,2,3,4] {
+        x = x+x
+        arr.add(x)
+    }
+    assert([2,4,6,8], arr)
+}
+
+test "Cycle: for with continue"
+{
+    var acc = 0
+    for x in 1..5 {
+        if x % 2 != 0 {
+            continue
+        }
+        for y in 6..10 {
+            if y % 2 == 0 {
+                continue
+            }
+            acc += x + y
+        }
+    }
+    assert(44, acc)
+}
+
+test "Cycle: for with break"
+{
+    var acc = ""
+    for x in 1..10 {
+        if x > 5 {
+            acc += ">>1"
+            break
+            acc += ">>2"
+            acc += ">>3"
+        }
+    }
+    assert(">>1", acc)
+}
+
+test "Cycle: endless while"
+{
+    var i = 1
+    while true {
+        if i < 100 {
+            break
+        }
+        i += 1
+    }
+    assert(true, true)
+}

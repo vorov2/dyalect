@@ -1,4 +1,5 @@
-﻿func mathTest1() {
+﻿//Done
+func mathTest1() {
     var x = 12 * 3 - 4 + 6
     assert(38, x)
 }

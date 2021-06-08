@@ -13,7 +13,7 @@ test "Constructor"
     assert('f', Char("foo"))
 }
 
-test "getType"
+test "Methods: getType"
 {
     let x = 'A'
     assert(true, TypeInfo(x) == Char)
@@ -23,19 +23,19 @@ test "getType"
     assert("Char", t.name)
 }
 
-test "default"
+test "Methods: default"
 {
     assert('\0', Char.default())
 }
 
-test "min and max"
+test "Methods: min and max"
 {
     assert('\0', Char.min())
     assert('\uffff', Char.max())
     assert(true, Char.default() == Char.min())
 }
 
-test "Range"
+test "Ranges"
 {
     assert(['a','b','c','d','e','f'], ['a'..'f'])
     assert(['a','c','e'], ('a'^2..'f').toArray())
@@ -53,19 +53,19 @@ test "Char comparison"
     assert(false, "cc" < 'c')
 }
 
-test "upper and isUpper"
+test "Methods: upper and isUpper"
 {
     assert(true, 'C' == 'c'.upper())
     assert(true, 'C'.isUpper())
 }
 
-test "lower and isLower"
+test "Methods: lower and isLower"
 {
     assert(true, 'c' == 'C'.lower())
     assert(true, 'c'.isLower())
 }
 
-test "isWhitespace"
+test "Methods: isWhitespace"
 {
     assert(true, '\s'.isWhiteSpace())
     assert(true, ' '.isWhiteSpace())
@@ -73,14 +73,14 @@ test "isWhitespace"
     assert(true, '\t'.isWhiteSpace())
 }
 
-test "isControl"
+test "Methods: isControl"
 {
     assert(true, '\t'.isControl())
     assert(true, '\b'.isControl())
     assert(false, 't'.isControl())
 }
 
-test "isLetterOrDigit"
+test "Methods: isLetterOrDigit"
 {
     assert(true, '9'.isDigit())
     assert(false, 'A'.isDigit())
@@ -90,7 +90,7 @@ test "isLetterOrDigit"
     assert(true, 't'.isLetterOrDigit())
 }
 
-test "order"
+test "Methods: order"
 {
     assert(65, 'A'.order())
     assert(54, '6'.order())

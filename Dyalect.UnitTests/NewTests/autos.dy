@@ -1,12 +1,9 @@
-﻿//Done
-type Box(key)
-let boxCollector = []
-func Box.dispose() {
-    boxCollector.add(this::key)
-}
+﻿test "Simple 1"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
 
-func autosSimple1() {
-    boxCollector.clear()
     {
         auto x = Box("foo")
         boxCollector.add("wait.foo")
@@ -14,8 +11,12 @@ func autosSimple1() {
     assert(["wait.foo", "foo"], boxCollector)
 }
 
-func autosSimple2() {
-    boxCollector.clear()
+test "Simple 2"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+
     {
         auto x = Box("foo")
         boxCollector.add("wait.foo")
@@ -27,8 +28,12 @@ func autosSimple2() {
     assert(["wait.foo", "wait.bar", "bar", "foo"], boxCollector)
 }
 
-func autosSimple3() {
-    boxCollector.clear()
+test "Simple 3"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+
     for x in 1..6 {
         auto obj = Box(x)
         if x == 3 {
@@ -41,8 +46,12 @@ func autosSimple3() {
     assert([1,2,3,4,5,6], boxCollector)
 }
 
-func autosSimple4() {
-    boxCollector.clear()
+test "Simple 4"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func doit(b) {
         if b {
             auto a = Box(2)
@@ -56,8 +65,12 @@ func autosSimple4() {
     assert([2, 100, 4, 100], boxCollector)
 }
 
-func autosSimple5() {
-    boxCollector.clear()
+test "Simple 5"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     var x = 5
     while x > 0 {
         auto a = Box(x)
@@ -72,8 +85,12 @@ func autosSimple5() {
     assert([5,4,3,2,1], boxCollector)
 }
 
-func autosFunc1() {
-    boxCollector.clear()
+test "Autos in functions 1"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func run() {
         auto x = Box("foo")
         auto y = Box("bar")
@@ -82,8 +99,12 @@ func autosFunc1() {
     assert(["foo", "bar"], boxCollector)
 }
 
-func autosFunc2() {
-    boxCollector.clear()
+test "Autos in functions 2"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func iter() {
         auto x = Box("fin")
         boxCollector.add(1)
@@ -97,8 +118,12 @@ func autosFunc2() {
     assert([1,2,3,"fin"], boxCollector)
 }
 
-func autosFunc3() {
-    boxCollector.clear()
+test "Autos in functions 3"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func testFn() {
         auto x = Box("x")
         {
@@ -113,8 +138,12 @@ func autosFunc3() {
     assert(["z","y","x"], boxCollector)
 }
 
-func autosFunc4() { //Bug #367
-    boxCollector.clear()
+test "Autos in functions 4"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func foobar(flag) {
         auto a = Box('a')
         if flag {
@@ -128,8 +157,12 @@ func autosFunc4() { //Bug #367
     assert(['a', 'a', 'b', 'a'], boxCollector)
 }
 
-func autosFunc5() {
-    boxCollector.clear()
+test "Autos in functions 5"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func iter() {
         auto a = Box(10)
         yield { auto a = Box(2) }
@@ -142,8 +175,12 @@ func autosFunc5() {
     assert([2,4,6,8,9,10], boxCollector)
 }
 
-func autosExceptions1() {
-    boxCollector.clear()
+test "Autos and exceptions 1"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func testE() {
         auto x = Box(12)
         throw "err"
@@ -155,8 +192,12 @@ func autosExceptions1() {
     }
 }
 
-func autosExceptions2() {
-    boxCollector.clear()
+test "Autos and exceptions 2"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func test1() {
         auto x = Box("y")
         {
@@ -177,8 +218,12 @@ func autosExceptions2() {
     assert(["z", "y", "x"], boxCollector)
 }
 
-func autosExceptions3() {
-    boxCollector.clear()
+test "Autos and exceptions 3"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     try {
         auto x = Box(42)
         throw 84
@@ -188,8 +233,12 @@ func autosExceptions3() {
     assert([42,84], boxCollector)
 }
 
-func autosExceptions4() {
-    boxCollector.clear()
+test "Autos and exceptions 4"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func divide(x, y) {
         auto def = Box(-100)
         try {
@@ -204,8 +253,12 @@ func autosExceptions4() {
     assert([12, -100, 12, -100], boxCollector)
 }
 
-func autosExceptions5() {
-    boxCollector.clear()
+test "Autos and exceptions 5"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func doit() {
         var x = {
             throw 24
@@ -220,8 +273,12 @@ func autosExceptions5() {
     assert([24], boxCollector)
 }
 
-func autosExceptions6() {
-    boxCollector.clear()
+test "Autos and exceptions 6"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func doit() {
         throw {
             auto b = Box(22)
@@ -234,8 +291,12 @@ func autosExceptions6() {
     assert([22], boxCollector)
 }
 
-func autosCatch1() { //Bug #370
-    boxCollector.clear()
+test "Autos in catch 1"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     try {
         throw "err"
     } catch e {
@@ -244,8 +305,12 @@ func autosCatch1() { //Bug #370
     assert([1], boxCollector)
 }
 
-func autosCatch2() { //Bug #370
-    boxCollector.clear()
+test "Autos in catch 2"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func inner() {
         try {
             throw "err"
@@ -262,8 +327,12 @@ func autosCatch2() { //Bug #370
     }
 }
 
-func autosCatch3() {
-    boxCollector.clear()
+test "Autos in catch 3"
+{
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
+    
     func inside() {
         try {
             throw 'a'

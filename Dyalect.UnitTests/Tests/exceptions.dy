@@ -1,4 +1,5 @@
-﻿func catchTest1() {
+﻿//Done
+func catchTest1() {
     var x
     try {
         x = 2

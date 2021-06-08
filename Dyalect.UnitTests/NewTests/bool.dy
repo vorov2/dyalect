@@ -5,14 +5,15 @@
     assert(true, Bool("str"))
     assert(false, Bool(""))
     assert(false, Bool(nil))
+    assert(true, Bool([]))
 }
 
-test "default"
+test "Methods: default"
 {
     assert(false, Bool.default())
 }
 
-test "getType"
+test "Methods: getType"
 {
     let x = false
     assert(true, TypeInfo(x) == Bool)
