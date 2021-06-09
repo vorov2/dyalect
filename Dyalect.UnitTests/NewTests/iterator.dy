@@ -1,10 +1,46 @@
-﻿//Done
-func iteratorLiteralTest1() {
-    var seq = yields { 1,2,3 }
+﻿test "Iterator literal"
+{
+    let seq = yields { 1,2,3 }
     assert([1,2,3], seq.toArray())
 }
 
-func iteratorLiteralTest2() {
+test "Constructor"
+{
+    var xs = 1..5
+    var ys = 6..10
+    var res = Iterator(xs, ys)
+    assert([1..10], res.toArray())
+
+    xs = 1..5
+    res = Iterator(xs)
+    assert((1,2,3,4,5), res.toTuple())
+}
+
+test "Methods: getType"
+{
+    let x = yields {}
+    assert(true, TypeInfo(x) == Iterator)
+    assert(true, x.getType() == Iterator)
+    var t = TypeInfo(x)
+    assert(11, t.id)
+    assert("Iterator", t.name)
+}
+
+test "Methods: clone"
+{
+    let xs = yields {1,2,3}
+    assert(true, xs == xs)
+    assert(false, xs.clone() == xs)
+}
+
+test "Methods: len"
+{
+    var xs = yields { 1, 2, 3, 4, 5 }
+    assert(5, xs.len())
+}
+
+test "Variable capture"
+{
     var x = 2
     var y = 3
     var seq = yields { x + y }
@@ -13,12 +49,8 @@ func iteratorLiteralTest2() {
     assert(10, seq.first())
 }
 
-func iteratorLiteralTest3() {
-    var xs = yields { 1, 2, 3, 4, 5 }
-    assert(5, xs.len())
-}
-
-func iteratorLiteralTest4() {
+test "Methods: first, last, len"
+{
     var xs = yields { 1, 2, 3, 4, 5 }
     assert(5, xs.len())
     assert(5, xs.len())
@@ -28,7 +60,8 @@ func iteratorLiteralTest4() {
     assert(5, xs.len())
 }
 
-func iteratorLiteralTest5() {
+test "Iterator as argument"
+{
     var str = String.concat(values: yields {
         22 + 1.25,
         "Hello, world!",
@@ -37,7 +70,8 @@ func iteratorLiteralTest5() {
     assert("23.25Hello, world!true", str)
 }
 
-func iteratorTest1() {
+test "Iterator function"
+{
     func foo(token) {
         yield 1
         yield 3
@@ -53,7 +87,8 @@ func iteratorTest1() {
     assert(116.8, res)
 }
 
-func iteratorTest2() {
+test "Running iterator 1"
+{
     var arr = [1,2,3,4,5,6,7,8]
     func sum(arr) {
         var acc = 0
@@ -66,7 +101,8 @@ func iteratorTest2() {
     assert(36, res)
 }
 
-func iteratorTest3() {
+test "Running iterator 2"
+{
     var arr = [1,2,3,4,5,6,7,8]
     func filter(arr, pred) {
         for x in arr {
@@ -87,7 +123,8 @@ func iteratorTest3() {
     assert(20, res)
 }
 
-func iteratorTest4() {
+test "Running iterator 3"
+{
     func reverse(arr) {
         var newArr = []
         newArr.addRange(arr) //hack
@@ -111,7 +148,8 @@ func iteratorTest4() {
     assert("olleH", res)
 }
 
-func iteratorTest5() {
+test "Running iterator 4"
+{
     func filter(arr, pred) {
         for x in arr {
             if pred(x) {
@@ -131,7 +169,8 @@ func iteratorTest5() {
     assert("ll", res)
 }
 
-func iteratorTest6() {
+test "Running iterator 5"
+{
     var arr = [1,3,5,8]
     var x =
         for x in arr {
@@ -142,7 +181,8 @@ func iteratorTest6() {
     assert(8, x)
 }
 
-func iteratorTest7() {
+test "Iterator as method"
+{
     func Integer.iter() {
         var i = 0
         if this < 0 {
@@ -163,7 +203,8 @@ func iteratorTest7() {
     assert([0,1,2,3,4], res)
 }
 
-func iteratorTest8() {
+test "Breaking iteration"
+{
     var xs = 1..10
     assert(10, xs.len())
     for x in xs {
@@ -175,27 +216,16 @@ func iteratorTest8() {
     assert(10, xs.len())
 }
 
-func iteratorTest9() {
+test "Methods: concat"
+{
     var xs = 1..5
     var ys = 6..10
     var res = Iterator.concat(xs, ys)
     assert([1..10], res.toArray())
 }
 
-func iteratorTest10() {
-    var xs = 1..5
-    var ys = 6..10
-    var res = Iterator(xs, ys)
-    assert([1..10], res.toArray())
-}
-
-func iteratorTest11() { //#289
-    var xs = 1..5
-    var res = Iterator(xs)
-    assert((1,2,3,4,5), res.toTuple())
-}
-
-func yieldManyTest1() {
+test "Yield many 1"
+{
     func bar() {
         yield 4
         yield 5
@@ -211,7 +241,8 @@ func yieldManyTest1() {
     assert([1,2,3,4,5,6],seq)
 }
 
-func yieldManyTest2() {
+test "Yield many 2"
+{
     func bar() {
         yield 31
         yield 32
@@ -229,7 +260,8 @@ func yieldManyTest2() {
     assert([1,2,3,31,32,33,4,5],seq)
 }
 
-func yieldManyTest3() { //#96
+test "Yield many 3"
+{
     func zoo() {
         yield 31
         yield 32
@@ -250,7 +282,8 @@ func yieldManyTest3() { //#96
     assert([1,2,21,22,3,31,32,4],seq)
 }
 
-func yieldManyTest4() { //#96
+test "Yield many 4"
+{
     func zoo() {
         yield 31
         yield 32
@@ -273,7 +306,8 @@ func yieldManyTest4() { //#96
     assert([1,2,21,22,3,31,32,4,21,22,31,32],seq)
 }
 
-func yieldManyTest5() { //#96
+test "Yield many 5"
+{
     func bar() {
         yield 2
         yield 3
@@ -287,29 +321,28 @@ func yieldManyTest5() { //#96
     assert([2,3], arr[1].toArray())
 }
 
-func takeTest1() {
+test "Methods: take"
+{
     var seq = yields { 1,2,3,4,5 }
     var xs = seq.take(3).toArray()
     assert([1,2,3], xs)
 }
 
-func skipTest1() {
+test "Methods: skip"
+{
     var seq = yields { 1,2,3,4,5 }
     var xs = seq.skip(3).toArray()
     assert([4,5], xs)
 }
 
-func firstTest1() {
-    var seq = yields { 1,2,3,4,5 }
-    assert(1, seq.first())
-}
-
-func lastTest1() {
+test "Methods: last"
+{
     var seq = yields { 1,2,3,4,5 }
     assert(5, seq.last())
 }
 
-func tryCatchBug() { //bug #365
+test "Iterator and exception"
+{
     var val = 0
     func iter() {
         try {
@@ -324,7 +357,8 @@ func tryCatchBug() { //bug #365
     assert(42, val)
 }
 
-func yieldBreakTest1() { // #399
+test "Yield break"
+{
     func seq() {
     var x = 100
     while x > 0 {
@@ -342,18 +376,21 @@ func yieldBreakTest1() { // #399
     assert([100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88], xs)
 }
 
-func sliceTest1() { // #409
+test "Slicing"
+{
     var seq = 1..10
     var xs = seq[5..].toArray()
     assert([6, 7, 8, 9, 10], xs)
 }
 
-func rangeInIterator() {
+test "Iterator and range"
+{
     let seq = yields { 1..5 }
     assert([1,2,3,4,5], seq.toArray())
 }
 
-func iteratorStateBug() {
+test "Iterator state 1"
+{
     let seq = yields { 1,2,3,4,5 }
     assert(2, seq[1])
     assert(2, seq[1])
@@ -361,7 +398,8 @@ func iteratorStateBug() {
     assert([1,2,3], seq.take(3).toArray())
 }
 
-func elementAtAndIndexer() {
+test "Methods: element"
+{
     let seq = yields { 1..10 }
     assert(2, seq.element(1))
     assert(2, seq.element(at: 1))
@@ -374,7 +412,8 @@ func elementAtAndIndexer() {
     assert(10, seq[9])
 }
 
-func emptyTest() {
+test "Methods: empty"
+{
     let seq = Iterator.empty()
     assert(true, seq is Iterator)
     assert(0, seq.len())
@@ -383,7 +422,8 @@ func emptyTest() {
     }
 }
 
-func repeatTest1() {
+test "Methods: repeat 2"
+{
     func defaultValue() {
         var i = 0
         while true {
@@ -396,7 +436,8 @@ func repeatTest1() {
     assert([0,1,2,3,4], Iterator.repeat(defaultValue()).take(5).toArray())
 }
 
-func repeatTest2() {
+test "Methods: repeat 2"
+{
     func notNil(x) => x != nil
     func all(seq, fn) {
         for x in seq {
@@ -411,7 +452,8 @@ func repeatTest2() {
     assert(20, xs.len())
 }
 
-func stateIterTest() {
+test "Iterator state 2"
+{
     func it() {
         yield 1
         yield 2
@@ -435,14 +477,16 @@ func stateIterTest() {
     assert([1,2,3,4,5], ys)
 }
 
-func reverseTest() {
+test "Methods: reverse"
+{
     let xs = [1, 2, 3, 4, 5]
     assert([5, 4, 3, 2, 1], xs.iter().reverse().toArray())
     let ys = yields { 'a', "str", 12 }
     assert([12, "str", 'a'], ys.reverse().toArray())
 }
 
-func sortTest1() {
+test "Methods: sort 1"
+{
     let refs = yields {3,5,1,6,2,4}
     let xs = refs.sort().toArray()
     assert([1,2,3,4,5,6], xs)
@@ -450,7 +494,8 @@ func sortTest1() {
     assert([6,5,4,3,2,1], ys)
 }
 
-func sortTest2() {
+test "Methods: sort 2"
+{
     var refs = yields {3,5,0,1,2,4}
     try {
         refs = refs.sort((x,y) => x / y)
@@ -459,7 +504,8 @@ func sortTest2() {
     }
 }
 
-func shuffleTest() {
+test "Methods: shuffle"
+{
     func eq(xs, ys) {
         return false when xs.len() != ys.len()
         for i in 0..<xs.len() {
@@ -475,13 +521,15 @@ func shuffleTest() {
     assert(true, !eq(xs.toArray(), ys))
 }
 
-func countTest() {
+test "Methods: shuffle"
+{
     let refs = yields {3,5,1,6,2,4}
     let c = refs.count(x => x % 2 == 0)
     assert(3, c)
 }
 
-func mapTest1() {
+test "Methods: transform"
+{
     let xs = yields { 1,2,3,4,5 }
     let ys = xs.map(x => x + x).toArray();
     assert([2,4,6,8,10], ys)
@@ -489,7 +537,8 @@ func mapTest1() {
     assert(["s1","s2","s3","s4","s5"], ys1)
 }
 
-func mapTest2() {
+test "Methods: map"
+{
     func iter(x) {
         yield 1
         yield 2
@@ -511,25 +560,29 @@ func mapTest2() {
     }
 }
 
-func filterTest() {
+test "Methods: filter"
+{
     let xs = { 1..10 }
     let ys = xs.filter(predicate: x => x > 5)
     assert([6,7,8,9,10], ys.toArray())
 }
 
-func takeWhileTest() {
+test "Methods: takeWhile"
+{
     let xs = { 1..10 }
     let ys = xs.takeWhile(predicate: x => x < 6)
     assert([1,2,3,4,5], ys.toArray())
 }
 
-func skipWhileTest() {
+test "Methods: skipWhile"
+{
     let xs = { 1..10 }
     let ys = xs.skipWhile(predicate: x => x < 6)
     assert([6,7,8,9,10], ys.toArray())
 }
 
-func reduceTest() {
+test "Methods: reduce"
+{
     let xs = { 1..10 }
     var res = xs.reduce(by: (x,y) => x + y)
     assert(55, res)
@@ -537,7 +590,8 @@ func reduceTest() {
     assert(65, res)
 }
 
-func toDictionaryTest1() {
+test "Methods: toDictionary 1"
+{
     let xs = yields {
         (key: 1, value: "Foo"),
         (key: 2, value: "Bar"),
@@ -553,7 +607,8 @@ func toDictionaryTest1() {
     assert((key: 3, value: "Zoo"), map[3])
 }
 
-func toDictionaryTest2() {
+test "Methods: toDictionary 2"
+{
     let xs = yields {
         (key: 1, value: "Foo"),
         (key: 2, value: "Bar"),
@@ -567,7 +622,8 @@ func toDictionaryTest2() {
     }
 }
 
-func emptySequence() {
+test "Empty sequence"
+{
     func iter() {
         yield break
     }
@@ -583,7 +639,8 @@ func emptySequence() {
     assert([], xs.toArray())
 }
 
-func matchIterator() {
+test "Pattern match"
+{
     let xs = yields { 1,2,3 }
     var res = match xs {
         (x,y,z) => x+y+z
@@ -595,7 +652,8 @@ func matchIterator() {
     assert(3, res)
 }
 
-func anyTest() {
+test "Methods: any"
+{
     let xs = yields { 0,0,0,1,0,0,0 }
     assert(true, xs.any(x => x > 0))
     func iter() {
@@ -607,7 +665,8 @@ func anyTest() {
     assert(true, ys.any(x => x is not nil))
 }
 
-func allTest() {
+test "Methods: all"
+{
     let xs = yields { 10,2,3,1,4,5,6 }
     assert(true, xs.all(x => x > 0))
     assert(false, xs.all(x => x > 1))
@@ -624,7 +683,8 @@ func allTest() {
     }
 }
 
-func iteratorContainsTest() {
+test "Methods: contains"
+{
     let xs = yields { 10,2,3,1,4,5,6 }
     assert(true, xs.contains(10))
     assert(true, xs.contains(1))
