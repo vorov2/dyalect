@@ -1,0 +1,353 @@
+﻿test "Methods: getType"
+{
+    type Foo()
+    let x = Foo()
+    assert(true, TypeInfo(x) == Foo)
+    assert(true, x.getType() == Foo)
+    var t = TypeInfo(x)
+    assert("Foo", t.name)
+}
+
+test "Methods: clone"
+{
+    type Foo()
+    let xs = Foo()
+    assert(true, xs == xs)
+    assert(true, xs.clone() == xs)
+}
+
+test "Methods: toString"
+{
+    type Foo(x, y, z)
+    let xs = Foo(1, 2, 3)
+    let str = xs.toString()
+    assert("Foo(x: 1, y: 2, z: 3)", str)
+}
+
+test "Generated members"
+{
+    type Foo(x)
+    var f = Foo(42)
+    assert(42, f::x)
+    assert(42, f[0])
+    assert(1, f.len())
+    match f {
+        Foo(x) => assert(42, x)
+    }
+}
+
+test "Empty variant"
+{
+    type Void()
+    var f = Void()
+    assert(0, f.len())
+    match f {
+        Void() => assert(true, true)
+    }
+    assert("Void()", f.toString())
+}
+
+test "Multiple productions"
+{
+    type Asset = Computer(model, memory, rank) or Phone(model, memory) or Modem(model)
+    var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
+    var a2 = Asset.Phone("1+", 8)
+    var a3 = Asset.Modem("Zyxel")
+    assert(3, a1.len())
+    assert(2, a2.len())
+    assert(1, a3.len())
+    assert("Lenovo"+16+3, a1::model+a1::memory+a1::rank)
+    assert("1+"+8, a2::model+a2::memory)
+    assert("Zyxel", a3::model)
+    assert("Asset.Computer(model: Lenovo, memory: 16, rank: 3)", a1.toString())
+    assert("Asset.Phone(model: 1+, memory: 8)", a2.toString())
+    assert("Asset.Modem(model: Zyxel)", a3.toString())
+}
+
+test "Pattern match 1"
+{
+    type Asset = Computer(model, memory, rank) or Phone(model, memory) or Modem(model)
+    var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
+    var a2 = Asset.Phone("1+", 8)
+    func mem(a) {
+        match a {
+            Asset.Computer(model, memory, rank) => memory,
+            Asset.Phone(model, memory) => memory
+        }
+    }
+    assert(16, mem(a1))
+    assert(8, mem(a2))
+}
+
+test "Extending type 1"
+{
+    type Bar = {
+        var data
+    }
+    static func Bar.Bar(args...) {
+        this.ini.data = args
+    }
+    func Bar.len() {
+        this.ini.data.len()
+    }
+    func Bar.getItem(index) {
+        this.ini.data[index]
+    }
+    var obj = Bar.Bar(1, 2, 3)
+    var res = match obj {
+        (x, y) => x + y,
+        (x, y, z) => x + y + z
+    }
+    assert(6, res)
+}
+
+test "Extending type 2"
+{
+    type Bar = {
+        var data
+    }
+    static func Bar.Bar(args...) {
+        this.ini.data = args
+    }
+    func Bar.len() {
+        this.ini.data.len()
+    }
+    func Bar.getItem(index) {
+        this.ini.data[index]
+    }
+    var obj = Bar(10, 20, 30)
+    assert(10, obj[0])
+    assert(20, obj[1])
+    assert(30, obj[2])
+    var res = match obj {
+        (x, y) => x + y,
+        (x, y, z) => x + y + z
+    }
+    assert(60, res)
+}
+
+test "Maybe or Some"
+{
+    type Maybe = None() or Some(x)
+    var x = Maybe.Some(42)
+    var y = Maybe.None()
+    func doMatch(x) {
+        match x {
+            Some(x) => x,
+            None() => "None"
+        }
+    }
+    assert(42, doMatch(x))
+    assert("None", doMatch(y))
+}
+
+test "Pattern match 2"
+{
+    type Foo = Bar(x, y, z)
+    var f = Foo.Bar(12, "foobar", 3)
+    var res = match f {
+        Bar(x: xx, y: yy, z: zz) => "\(xx),\(yy)",
+        Bar(x, y, z) => x + z,
+        Bar() => "not quite"
+    }
+    assert("12,foobar", res)
+}
+
+test "Point variant"
+{
+    type Point(x, y)
+    var p = Point(12, 43)
+    assert(12, p[0])
+    assert(43, p[1])
+    assert(12, p::x)
+    assert(43, p::y)
+}
+
+test "Natural number"
+{
+    type Nat = { var val }
+    func fetch(x) {
+        Nat(x) when x >= 0 else x
+    }
+    static func Nat.Nat(x) {
+        throw "Negative number." when x < 0
+        this.ini.val = x
+    }
+    func Nat.toInteger() {
+        this.ini.val
+    }
+    func Nat + (other) {
+        fetch(this.ini.val + other.ini.val)
+    }
+    func Nat - (other) {
+        fetch(this.ini.val - other.ini.val)
+    }
+    func Nat * (other) {
+        fetch(this.ini.val * other.ini.val)
+    }
+    func Nat / (other) {
+        fetch(this.ini.val / other.ini.val)
+    }
+    func Nat == (other) {
+        this.ini.val == other.ini.val
+    }
+    var n = Nat(12)
+    assert(Nat(24), n + Nat(12))
+    assert(Nat(2), n - Nat(10))
+    assert(-8, n - Nat(20))
+    assert(Nat(24), n * Nat(2))
+    assert(Nat(6), n / Nat(2))
+    assert(Nat(6), n / Nat(2))
+}
+
+test "Either"
+{
+    type Either = Left(x) or Right(x)
+    var x = Either.Left(12)
+    var y = Either.Right(24)
+    func doMatch(obj) {
+        match obj {
+            Left(x) => x,
+            Right(y) => y
+        }
+    }
+    assert(12, doMatch(x))
+    assert(24, doMatch(y))
+}
+
+test "Reference cell"
+{
+    type Cell = { var val }
+    func ref(value) {
+        Cell(value)
+    }
+    static func Cell.Cell(value) {
+        this.ini.val = value
+    }
+    func Cell.setValue(value) {
+        this.ini.val = value
+    }
+    func Cell.getValue() {
+        this.ini.val
+    }
+    func Cell.getItem(index) {
+        if index != 0 {
+            throw "Index out of range."
+        }
+        this.ini.val
+    }
+    func Cell.len() {
+        1
+    }
+    var c = ref(12)
+    assert(12, c.getValue())
+    assert(12, match c {
+        Cell(x) => x
+    })
+    c.setValue(24)
+    assert(24, c.getValue())
+    assert(24, match c {
+        Cell(x) => x
+    })
+}
+
+test "Linked list"
+{
+    type List = Cons(x, next) or Empty()
+    func List.toString() {
+        func walk(xs) {
+            match xs {
+                Cons(x, Empty()) => x.toString(),
+                Cons(x, next) => x.toString() + "," + walk(next),
+                Empty() => ""
+            }
+        }
+        return "[" + walk(this) + "]"
+    }
+    var xs = List.Cons(1, List.Cons(2, List.Cons(3, List.Cons(4, List.Empty()))))
+    assert("[1,2,3,4]", xs.toString())
+}
+
+test "Generate linked list"
+{
+    type List = Cons(x, next) or Empty()
+    func List.toString() {
+        func walk(xs) {
+            match xs {
+                Cons(x, Empty()) => x.toString(),
+                Cons(x, next) => x.toString() + "," + walk(next),
+                Empty() => ""
+            }
+        }
+        return "[" + walk(this) + "]"
+    }
+    static func List.generate(values...) {
+        var xs = List.Empty()
+        for x in values {
+            xs = List.Cons(x, xs)
+        }
+        xs
+    }
+    var xs = List.generate(1,2,3,4)
+    assert("[4,3,2,1]", xs.toString())
+}
+
+test "Custom toString"
+{
+    type Foo()
+    var x = Foo()
+    func Foo.toString() {
+        match this {
+            Foo() => "nil"
+        }
+    }
+    assert("nil", x.toString())
+}
+
+test ""
+{
+}
+
+test ""
+{
+}
+
+test ""
+{
+}
+
+test ""
+{
+}
+
+test ""
+{
+}
+
+test ""
+{
+}
+
+test ""
+{
+}
+
+test ""
+{
+}
+
+test ""
+{
+}
+
+test ""
+{
+}
+
+test ""
+{
+}
+
+test ""
+{
+}
