@@ -689,7 +689,7 @@ test "Function inside init"
     type TinyInt = {
         var value
         func getInteger(val) {
-            val is TinyInt ? value : val
+            val is TinyInt ? val.ini.value : val
         }
     }
     static func TinyInt.TinyInt(Integer x) {
