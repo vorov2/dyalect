@@ -1,4 +1,5 @@
-﻿type SimpleFoo(x)
+﻿//Done
+type SimpleFoo(x)
 func simpleTest1() {
     var f = SimpleFoo(42)
     assert(42, f::x)

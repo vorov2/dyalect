@@ -163,7 +163,7 @@ test "Point variant"
     assert(43, p::y)
 }
 
-test "Natural number"
+test "Natural number 1"
 {
     type Nat = { var val }
     func fetch(x) {
@@ -304,50 +304,433 @@ test "Custom toString"
     assert("nil", x.toString())
 }
 
-test ""
+test "Record"
 {
+    type Record = { var fields }    
+    static func Record.Record(values...) {
+        this.ini.fields = values
+    }
+    func Record.getItem(index) {
+        match index {
+            "name" => this.ini.fields::name,
+            "age" => this.ini.fields::age
+        }
+    }
+    var p = Record(values: (name: "John", age: 33))
+    assert("John", p["name"])
+    assert(33, p::age)
 }
 
-test ""
+test "Read-only fields"
 {
+    type UserInfo(name,age)
+    var u = UserInfo("Jon", 17)
+    assert(17, u::age)
+    try {
+        u::age = 39
+        assert(got: false)
+    } catch {
+        FieldReadOnly() => assert(got: true)
+    }
 }
 
-test ""
+test "Default values"
 {
+    type Foo(a, b = 12, c = 33)
+    var t = Foo(1)
+    assert(1, t::a)
+    assert(12, t::b)
+    assert(33, t::c)
+    t = Foo(1, 2)
+    assert(1, t::a)
+    assert(2, t::b)
+    assert(33, t::c)
+    t = Foo(1, 2, 3)
+    assert(1, t::a)
+    assert(2, t::b)
+    assert(3, t::c)
 }
 
-test ""
+test "Mutable Point"
 {
+    type Point = { var px; var py }
+    static func Point.Point(x, y) {
+        this.ini.px = x
+        this.ini.py = y
+    }
+    func Point.getItem(index) {
+        match index {
+            0 or "x" => this.ini.px,
+            1 or "y" => this.ini.py,
+            _ => throw Error.IndexOutOfRange()
+        }
+    }
+    func Point.setItem(index, value) {
+        match index {
+            0 or "x" => this.ini.px = value,
+            1 or "y" => this.ini.py = value,
+            _ => throw Error.IndexOutOfRange()
+        }
+    }
+    var p = Point(12, 34)
+    p::x += p::x
+    p::y += p::y
+    assert(24, p::x)
+    assert(68, p::y)
 }
 
-test ""
+test "Member check 1"
 {
+    var t = (x: 2)
+    assert(false, t is .x)
 }
 
-test ""
+test "Member check 2"
 {
+    func Integer.foobar() {}
+    assert(true, 12 is .foobar)
+    Integer.__deleteMember("foobar")
 }
 
-test ""
+test "Member check 3"
 {
+    type Foo(x)
+    func Foo.foobar() {}
+    var p = Foo(22)
+    assert(false, p is .x)
+    assert(true, p is .foobar)
 }
 
-test ""
+test "Object: general behavior"
 {
+    var obj = __makeObject( (name: "Vasily", age: 41) )
+    var res1 = match obj {
+        (x, y) => "x=\(x),y=\(y)",
+        _ => "No."
+    }
+    assert("No.", res1)
+    var res2 = match obj {
+        (name: x, age: y) => "x=\(x),y=\(y)",
+        _ => "No."
+    }
+    assert("x=Vasily,y=41", res2)
+    
 }
 
-test ""
+test "Object: getType"
 {
+    let x = __makeObject( (x: 1) )
+    assert(true, TypeInfo(x) == Object)
+     assert(true, x.getType() == Object)
+     var t = TypeInfo(x)
+     assert(14, t.id)
+     assert("Object", t.name)
 }
 
-test ""
+test "Object: clone"
 {
+    let xs = __makeObject( (x: 1) )
+    assert(true, xs == xs)
+    assert(false, xs.clone() == xs)
 }
 
-test ""
+test "Callable type 1"
 {
+    type Julia(x)
+    func Julia.call(y, z) {
+        this::x + y * z 
+    }
+    var x = Julia(12)
+    var res = x(44.5, 67.07)
+    assert(2996.615, res)
 }
 
-test ""
+test "Callable type 2"
 {
+    func Integer.call() {
+        this + this
+    }
+    var res = 14()
+    Integer.__deleteMember("call")
+    assert(28, res)
+}
+
+test "Pattern match: is"
+{
+    type Option = Some(x) or None()
+    let some = Option.Some(42)
+    let none = Option.None()
+    var x
+    x = 42 when some is Option && none is Option
+    assert(42, x)
+}
+
+test "Pattern match: inside method"
+{
+    type Option = Some(x) or None()
+    func Option.extractValue() {
+        if this is Some(x) {
+            x
+        }
+    }
+    let some = Option.Some(42)
+    assert(42, some.extractValue())
+}
+
+test "String builder"
+{
+    type StringBuilder = {
+        let buffer = []
+    }
+    
+    static func StringBuilder.StringBuilder() { }
+    func StringBuilder.append(val) {
+        this.ini.buffer.add(val.toString())
+    }
+    func StringBuilder.clear() {
+        this.ini.buffer.clear()
+    }
+    func StringBuilder.toString() {
+        String.concat(values: this.ini.buffer)
+    }
+    func StringBuilder.len() {
+        var count = 0
+        for x in this.ini.buffer {
+            count += x.len()
+        }
+        return count
+    }
+    let sb = StringBuilder()
+    sb.append("my ")
+    sb.append("rank ")
+    sb.append("is ")
+    sb.append(123)
+    assert("my rank is 123", sb.toString())
+    assert(14, sb.len())
+    sb.clear()
+    sb.append(true)
+    sb.append(false)
+    assert("truefalse", sb.toString())
+}
+
+test "Private access 1"
+{
+    type Foo = {
+        var x
+        let pi = 3.14
+    }
+    static func Foo.Foo(px) {
+        this.ini.x = px
+    }
+    func Foo.ok() {
+        return this.ini.x
+    }
+    var f = Foo(12)
+    var res = f.ok()
+    assert(12, res)
+}
+
+test "Private access 2"
+{
+    type Foo = {
+        var x
+        let pi = 3.14
+    }
+    static func Foo.Foo(px) {
+        this.ini.x = px
+    }
+    func Foo.ok(f) {
+        func inner() {
+            return f.ini.pi
+        }
+        return inner()
+    }    
+    var f = Foo(12)
+    var res = f.ok(f)
+    assert(3.14, res)
+}
+
+test "Private access 3"
+{
+    type Foo = {
+        var x
+        let pi = 3.14
+    }
+    static func Foo.Foo(px) {
+        this.ini.x = px
+    }
+    type Bar(x)
+    func Bar.violator(f) {
+        return f.ini.x
+    }
+    var b = Bar(42)
+    var f = Foo(42)
+    try {
+        b.violator(f)
+        assert(got: false)
+    } catch {
+        PrivateAccess() => assert(got: true)
+    }
+}
+
+test "Natural number 2"
+{
+    type RealNat = {
+        var num
+    }
+    static func RealNat.RealNat(x) {
+        throw Error.InvalidType(x.getType()) when x is not Integer
+        this.ini.num = x
+    }
+    func RealNat + (other) {
+        let res = match other {
+            RealNat => this.ini.num + other.ini.num,
+            Integer => this.ini.num + other,
+            _ => throw Error.InvalidType(other.getType())
+        }
+        RealNat(res) when res >= 0 else res
+    }
+    func RealNat == (other) => this.ini.num == other.ini.num
+    var (x, y) = (RealNat(12), RealNat(10))
+    assert(RealNat(22), x + y)
+    assert(RealNat(2), x + -10)
+    assert(-2, x + -14)
+}
+
+test "Type constraints"
+{
+    type Foo(Integer x, Float y)
+    let _ = Foo(12, 12.12)
+    try {
+        let _ = Foo(12.2, 12)
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+}
+
+test "Mutable variant 1"
+{
+    type Foo(var x, y)
+    let t = Foo(12, 24)
+    t::x = 120
+    assert(120, t::x)
+    try {
+        t::y = 240
+        assert(got: false)
+    } catch {
+        FieldReadOnly() => assert(got: true)
+    }
+}
+
+test "Mutable variant 2"
+{
+    type Foo(var Integer x, y)
+    let t = Foo(12, 24)
+    t::x = 1
+    assert(1, t::x)
+    try {
+        t::x = "240"
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+}
+
+test "Custom constructor with constraints"
+{
+    type Foo = {
+        var data
+    }
+    static func Foo.Foo(Integer x) {
+        this.ini.data = x
+    }
+    func Foo.getItem(field) {
+        match field {
+            "x" => this.ini.data,
+            _ => Error.IndexOutOfRange()
+        }
+    }
+    func Foo.setItem(field, Integer value) {
+        match field {
+            "x" => this.ini.data = value,
+            _ => Error.IndexOutOfRange()
+        }
+    }
+    let t = Foo(12)
+    t::x = 120
+    try {
+        t::x = "120"
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true),
+        e => print(e)
+    }
+}
+
+test "Variant members"
+{
+    type Expr = Literal(var Float value) or Unary(var op, var Expr left)
+    let a = Expr.Literal(12.2)
+    assert(12.2, a::value)
+    a::value = 44.4
+    assert(44.4, a::value)
+    let b = Expr.Unary("-", a)
+    assert("-", b::op)
+    assert(44.4, b::left::value)
+    b::op = "+"
+    assert("+", b::op)
+    b::left::value = 42.0
+    assert(42.0, b::left::value)
+}
+
+test "Function inside init"
+{
+    type TinyInt = {
+        var value
+        func getInteger(val) {
+            val is TinyInt ? value : val
+        }
+    }
+    static func TinyInt.TinyInt(Integer x) {
+        this.ini.value = this.ini.getInteger(x)
+    }
+    func TinyInt toInteger() => this.ini.value
+    func TinyInt + (other) {
+        TinyInt(this.ini.value + this.ini.getInteger(other))
+    }
+    let res = TinyInt(2) + TinyInt(7)
+    assert(9, res.toInteger())
+}
+
+test "Properties 1"
+{
+    type Foo = {
+        var status
+    }
+    static func Foo.Foo(value) => this.ini.status = value
+    func get Foo.status() => this.ini.status
+    func set Foo.status(value) => this.ini.status = value
+    let f = Foo(10)
+    assert(10, f.status)
+    f.status = 21
+    assert(21, f.status)
+    f.status += 11
+    assert(32, f.status)
+}
+
+test "Properties 2"
+{
+    type Foo = {
+        var box
+    }    
+    static func Foo.Foo() { }
+    func get Foo.box() => this.ini.box
+    func set Foo.box(value) => this.ini.box = value
+    let f = Foo()
+    assert(42, f.box ?? 42)
+    f.box ??= 144
+    assert(144, f.box)
+    f.box ??= 288
+    assert(144, f.box)
 }
