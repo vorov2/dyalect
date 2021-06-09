@@ -1,0 +1,72 @@
+﻿COMPILER UnitTest
+
+CHARACTERS
+    cr = '\r'.
+    lf = '\n'.
+    newLine = cr + lf.
+    tab = '\t'.
+    letter = 'A' .. 'Z' + 'a' .. 'z' + '_'.
+    digit = "0123456789".
+    notDigit = ANY - digit.
+    hexDigit = digit + "ABCDEFabcdef".
+    stringChar = ANY - '"' - '\\' - newLine.
+    stringChar2 = ANY - '"' - '\\' - '(' - ')' - newLine.
+    verbatimChar = ANY - ']'.
+    verbatimChar2 = ANY - '>'.
+    char = ANY - "'" - newLine.
+    printable = digit + letter + "(\"\\'".
+    op = "+-~/\\!@%^&*()=<>[];:`." - "<[".
+
+TOKENS
+    identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
+
+    directive = "#" (letter { letter | digit } | "_" letter { letter | digit  }).
+
+    intToken    = digit { digit } | ("0x"|"0X") hexDigit { hexDigit }.
+
+    floatToken  = "." digit { digit } [ ("e"|"E") [ "+" | "-" ] digit { digit } ] [("F"|"f")]
+                    | digit { digit } ("F"|"f")
+                    | digit { digit }
+                        (
+                            "." digit { digit } [ ( "e" | "E" ) ["+" | "-" ] digit { digit } ]
+                            | ( "e" | "E") ["+" | "-" ] digit { digit }
+                        ) [("F"|"f")].
+
+    stringToken = "\"" { stringChar | "\\" printable }  "\"".
+
+    charToken = "'" { char | "\\" printable } "'".
+    implicitToken = "$" digit { digit }.
+    verbatimStringToken = "<[" { verbatimChar | ("]" verbatimChar2) | "]>]>" } "]>".
+    operatorToken = op { op }.
+
+
+COMMENTS FROM "/*" TO "*/" NESTED
+COMMENTS FROM "//" TO lf
+
+IGNORE cr + lf + tab
+
+PRODUCTIONS
+
+Test =
+    "test" ( stringToken | "init" )
+    "{"
+        { Content }
+    "}".
+
+Parens = "{" { Content } "}".
+
+Content =
+    identToken
+    | directive
+    | intToken
+    | floatToken
+    | stringToken
+    | charToken
+    | implicitToken
+    | verbatimStringToken
+    | operatorToken
+    | Parens.
+
+UnitTest = Test { Test }.
+
+END UnitTest.
