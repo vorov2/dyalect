@@ -135,6 +135,8 @@ namespace Dyalect.Compiler
                 case NodeType.RecursiveBlock:
                     Build((DRecursiveBlock)node, hints, ctx);
                     break;
+                case NodeType.TestBlock:
+                    break;
             }
         }
 

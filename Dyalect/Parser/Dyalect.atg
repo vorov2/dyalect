@@ -120,9 +120,8 @@ PRODUCTIONS
     TestBlock<out DNode node> = 
         (. string name = null; node = null; .)
         (
-            "test" (. var ot = t; .) 
+            "#test" (. var ot = t; .) 
             ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
-            "{"
             (.
                 var block = new DBlock(default);
                 var imports = new List<DImport>();
@@ -141,7 +140,7 @@ PRODUCTIONS
                     Separator
                 )
             }
-            "}"
+            "#endtest"
             (.
                 var dyc = new DyCodeModel(block, imports.ToArray(), FileName);
                 node = new DTestBlock(ot) { Name = name, Body = dyc };
