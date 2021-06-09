@@ -8,7 +8,7 @@ func simpleTest1() {
     match f {
         SimpleFoo(x) => assert(42, x)
     }
-}
+#endtest
 
 type EmptyFoo()
 func simpleTest2() {
@@ -17,7 +17,7 @@ func simpleTest2() {
     match f {
         EmptyFoo() => assert(true, true)
     }
-}
+#endtest
 
 type Asset = Computer(model, memory, rank) or Phone(model, memory) or Modem(model)
 func simpleTest3() {
@@ -33,14 +33,14 @@ func simpleTest3() {
     assert("Asset.Computer(model: Lenovo, memory: 16, rank: 3)", a1.toString())
     assert("Asset.Phone(model: 1+, memory: 8)", a2.toString())
     assert("Asset.Modem(model: Zyxel)", a3.toString())
-}
+#endtest
 
 type Void()
 func simpleTest4() {
     var v = Void()
     assert(0, v.len())
     assert("Void()", v.toString())
-}
+#endtest
 
 func matchTypeTest1() {
     var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
@@ -53,11 +53,11 @@ func matchTypeTest1() {
     }
     assert(16, mem(a1))
     assert(8, mem(a2))
-}
+#endtest
 
 type Bar = {
     var data
-}
+#endtest
 func extendTest1() {
     static func Bar.Bar(args...) {
         this.ini.data = args
@@ -77,7 +77,7 @@ func extendTest1() {
     Bar.__deleteMember("Bar")
     Bar.__deleteMember("len")
     Bar.__deleteMember("getItem")
-}
+#endtest
 
 func extendTest2() {
     static func Bar.Bar(args...) {
@@ -98,7 +98,7 @@ func extendTest2() {
         (x, y, z) => x + y + z
     }
     assert(60, res)
-}
+#endtest
 
 type Maybe = None() or Some(x)
 func autoConsTest1() {
@@ -112,7 +112,7 @@ func autoConsTest1() {
     }
     assert(42, doMatch(x))
     assert("None", doMatch(y))
-}
+#endtest
 
 type Foo1 = Bar(x, y, z)
 func autoConsTest2() {
@@ -123,7 +123,7 @@ func autoConsTest2() {
         Bar() => "not quite"
     }
     assert("12,foobar", res)
-}
+#endtest
 
 type Point(x, y)
 func autoConsTest3() {
@@ -132,7 +132,7 @@ func autoConsTest3() {
     assert(43, p[1])
     assert(12, p::x)
     assert(43, p::y)
-}
+#endtest
 
 type Nat = { var val }
 func typeTest1() {
@@ -168,7 +168,7 @@ func typeTest1() {
     assert(Nat(24), n * Nat(2))
     assert(Nat(6), n / Nat(2))
     assert(Nat(6), n / Nat(2))
-}
+#endtest
 
 type Either = Left(x) or Right(x)
 func typeTest2() {
@@ -182,7 +182,7 @@ func typeTest2() {
     }
     assert(12, doMatch(x))
     assert(24, doMatch(y))
-}
+#endtest
 
 type Cell = { var val }
 func typeTest3() {
@@ -217,7 +217,7 @@ func typeTest3() {
     assert(24, match c {
         Cell(x) => x
     })
-}
+#endtest
 
 type List = Cons(x, next) or Empty()
 func typeTest4() {
@@ -233,7 +233,7 @@ func typeTest4() {
     }
     var xs = List.Cons(1, List.Cons(2, List.Cons(3, List.Cons(4, List.Empty()))))
     assert("[1,2,3,4]", xs.toString())
-}
+#endtest
 
 func typeTest5() {
     static func List.generate(values...) {
@@ -245,7 +245,7 @@ func typeTest5() {
     }
     var xs = List.generate(1,2,3,4)
     assert("[4,3,2,1]", xs.toString())
-}
+#endtest
 
 type Zoo1()
 func typeTest6() {
@@ -256,14 +256,14 @@ func typeTest6() {
         }
     }
     assert("nil", x.toString())
-}
+#endtest
 
 type Zeta()
 func simpleTypeTest1() {
     var z = Zeta()
     var res = z.len()
     assert(0, res)
-}
+#endtest
 
 type Beta(x)
 func simpleTypeTest2() {
@@ -272,7 +272,7 @@ func simpleTypeTest2() {
     assert(12, b[0])
     assert(12, b["x"])
     assert(12, b::x)
-}
+#endtest
 
 type Record = { var fields }
 func accessorTest() {
@@ -288,7 +288,7 @@ func accessorTest() {
     var p = Record(values: (name: "John", age: 33))
     assert("John", p["name"])
     assert(33, p::age)
-}
+#endtest
 
 type UserInfo(name,age)
 func setterTest1() {
@@ -300,7 +300,7 @@ func setterTest1() {
     } catch {
         FieldReadOnly() => assert(got: true)
     }
-}
+#endtest
 
 type TypeTestZoo(a, b = 12, c = 33)
 func defaultsConsTest() {
@@ -316,7 +316,7 @@ func defaultsConsTest() {
     assert(1, t::a)
     assert(2, t::b)
     assert(3, t::c)
-}
+#endtest
 
 type Point1 = { var px; var py }
 func setterTest2() {
@@ -343,18 +343,18 @@ func setterTest2() {
     p::y += p::y
     assert(24, p::x)
     assert(68, p::y)
-}
+#endtest
 
 func complexMemberCheckTest1() {
     var t = (x: 2)
     assert(false, t is .x)
-}
+#endtest
 
 func complexMemberCheckTest2() {
     func Integer.foobar() {}
     assert(true, 12 is .foobar)
     Integer.__deleteMember("foobar")
-}
+#endtest
 
 type Leto(x)
 func complexMemberCheckTest3() {
@@ -362,7 +362,7 @@ func complexMemberCheckTest3() {
     var p = Leto(22)
     assert(false, p is .x)
     assert(true, p is .foobar)
-}
+#endtest
 
 func objectTypeTest() {
     var obj = __makeObject( (name: "Vasily", age: 41) )
@@ -376,7 +376,7 @@ func objectTypeTest() {
         _ => "No."
     }
     assert("x=Vasily,y=41", res2)
-}
+#endtest
 
 type Julia(x)
 func callableTest1() {
@@ -386,7 +386,7 @@ func callableTest1() {
     var x = Julia(12)
     var res = x(44.5, 67.07)
     assert(2996.615, res)
-}
+#endtest
 
 func callableTest2() {
     func Integer.call() {
@@ -395,7 +395,7 @@ func callableTest2() {
     var res = 14()
     Integer.__deleteMember("call")
     assert(28, res)
-}
+#endtest
 
 type TypesOption = Some(x) or None()
 func testIs() {
@@ -404,7 +404,7 @@ func testIs() {
     var x
     x = 42 when some is TypesOption && none is TypesOption
     assert(42, x)
-}
+#endtest
 
 func testCustomFunc() {
     func TypesOption.extractValue() {
@@ -414,11 +414,11 @@ func testCustomFunc() {
     }
     let some = TypesOption.Some(42)
     assert(42, some.extractValue())
-}
+#endtest
 
 type TStringBuilder = {
     let buffer = []
-}
+#endtest
 func stringBuilderTest() {
     static func TStringBuilder.TStringBuilder() { }
     func TStringBuilder.append(val) {
@@ -448,15 +448,15 @@ func stringBuilderTest() {
     sb.append(true)
     sb.append(false)
     assert("truefalse", sb.toString())
-}
+#endtest
 
 type PAccessTest_Foo = {
     var x
     let pi = 3.14
-}
+#endtest
 static func PAccessTest_Foo.PAccessTest_Foo(px) {
     this.ini.x = px
-}
+#endtest
 func privateAccessTest1() {
     func PAccessTest_Foo.ok() {
         return this.ini.x
@@ -465,7 +465,7 @@ func privateAccessTest1() {
     var res = f.ok()
     assert(12, res)
     PAccessTest_Foo.__deleteMember("ok")
-}
+#endtest
 
 func privateAccessTest2() {
     func PAccessTest_Foo.ok(f) {
@@ -478,12 +478,12 @@ func privateAccessTest2() {
     var res = f.ok(f)
     assert(3.14, res)
     PAccessTest_Foo.__deleteMember("ok")
-}
+#endtest
 
 type PAccessTest_Bar(x)
 func PAccessTest_Bar.violator(f) {
     return f.ini.x
-}
+#endtest
 func privateAccessTest3() {
     var b = PAccessTest_Bar(42)
     var f = PAccessTest_Foo(42)
@@ -493,11 +493,11 @@ func privateAccessTest3() {
     } catch {
         PrivateAccess() => assert(got: true)
     }
-}
+#endtest
 
 type RealNat = {
     var num
-}
+#endtest
 func testNat() {
     static func RealNat.RealNat(x) {
         throw Error.InvalidType(x.getType()) when x is not Integer
@@ -516,7 +516,7 @@ func testNat() {
     assert(RealNat(22), x + y)
     assert(RealNat(2), x + -10)
     assert(-2, x + -14)
-}
+#endtest
 
 type TestTA(Integer x, Float y)
 func typeConstraints1() {
@@ -527,7 +527,7 @@ func typeConstraints1() {
     } catch {
         InvalidType() => assert(got: true)
     }
-}
+#endtest
 
 type TestMut(var x, y)
 func typeMutables1() {
@@ -540,7 +540,7 @@ func typeMutables1() {
     } catch {
         FieldReadOnly() => assert(got: true)
     }
-}
+#endtest
 
 type TestMut2(var Integer x, y)
 func typeMutables2() {
@@ -553,11 +553,11 @@ func typeMutables2() {
     } catch {
         InvalidType() => assert(got: true)
     }
-}
+#endtest
 
 type TestCustomCons = {
     var data
-}
+#endtest
 func customConsWithConstraints() {
     static func TestCustomCons.TestCustomCons(Integer x) {
         this.ini.data = x
@@ -583,7 +583,7 @@ func customConsWithConstraints() {
         InvalidType() => assert(got: true),
         e => print(e)
     }
-}
+#endtest
 
 type TestExpr = Literal(var Float value) or Unary(var op, var TestExpr left)
 func testTypeVars() {
@@ -598,14 +598,14 @@ func testTypeVars() {
     assert("+", b::op)
     b::left::value = 42.0
     assert(42.0, b::left::value)
-}
+#endtest
 
 type TinyInt = {
     var value
     func getInteger(val) {
         val is TinyInt ? value : val
     }
-}
+#endtest
 func testPrivateInsideInit() {
     static func TinyInt.TinyInt(Integer x) {
         this.ini.value = this.ini.getInteger(x)
@@ -616,11 +616,11 @@ func testPrivateInsideInit() {
     }
     let res = TinyInt(2) + TinyInt(7)
     print(9, res.toInteger())
-}
+#endtest
 
 type Foo14 = {
     var status
-}
+#endtest
 func testProperties1() {
     static func Foo14.Foo14(value) => this.ini.status = value
     func get Foo14.status() => this.ini.status
@@ -631,11 +631,11 @@ func testProperties1() {
     assert(21, f.status)
     f.status += 11
     assert(32, f.status)
-}
+#endtest
 
 type Foo15 = {
     var box
-}
+#endtest
 func testProperties2() {
     static func Foo15.Foo15() { }
     func get Foo15.box() => this.ini.box
@@ -646,4 +646,4 @@ func testProperties2() {
     assert(144, f.box)
     f.box ??= 288
     assert(144, f.box)
-}
+#endtest

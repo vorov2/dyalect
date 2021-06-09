@@ -2,7 +2,7 @@
 func iteratorLiteralTest1() {
     var seq = yields { 1,2,3 }
     assert([1,2,3], seq.toArray())
-}
+#endtest
 
 func iteratorLiteralTest2() {
     var x = 2
@@ -11,12 +11,12 @@ func iteratorLiteralTest2() {
     x -= 1
     y *= y
     assert(10, seq.first())
-}
+#endtest
 
 func iteratorLiteralTest3() {
     var xs = yields { 1, 2, 3, 4, 5 }
     assert(5, xs.len())
-}
+#endtest
 
 func iteratorLiteralTest4() {
     var xs = yields { 1, 2, 3, 4, 5 }
@@ -26,7 +26,7 @@ func iteratorLiteralTest4() {
     assert(5, xs.len())
     xs.last()
     assert(5, xs.len())
-}
+#endtest
 
 func iteratorLiteralTest5() {
     var str = String.concat(values: yields {
@@ -35,7 +35,7 @@ func iteratorLiteralTest5() {
         true
     })
     assert("23.25Hello, world!true", str)
-}
+#endtest
 
 func iteratorTest1() {
     func foo(token) {
@@ -51,7 +51,7 @@ func iteratorTest1() {
     var res = it.element(at: 0) + it.element(at: 1) +
         it.element(at: 2) + it.element(at: 3)
     assert(116.8, res)
-}
+#endtest
 
 func iteratorTest2() {
     var arr = [1,2,3,4,5,6,7,8]
@@ -64,7 +64,7 @@ func iteratorTest2() {
     }
     var res = sum(arr)
     assert(36, res)
-}
+#endtest
 
 func iteratorTest3() {
     var arr = [1,2,3,4,5,6,7,8]
@@ -85,7 +85,7 @@ func iteratorTest3() {
     var filtered = filter(arr, x => x % 2 == 0)
     var res = sum(filtered)
     assert(20, res)
-}
+#endtest
 
 func iteratorTest4() {
     func reverse(arr) {
@@ -109,7 +109,7 @@ func iteratorTest4() {
     let arr = reverse("Hello")
     var res = makeString(arr)
     assert("olleH", res)
-}
+#endtest
 
 func iteratorTest5() {
     func filter(arr, pred) {
@@ -129,7 +129,7 @@ func iteratorTest5() {
     let arr = toArray( filter("hello", x => x == 'l') )
     var res = arr[0] + arr[1]
     assert("ll", res)
-}
+#endtest
 
 func iteratorTest6() {
     var arr = [1,3,5,8]
@@ -140,7 +140,7 @@ func iteratorTest6() {
             }
         }
     assert(8, x)
-}
+#endtest
 
 func iteratorTest7() {
     func Integer.iter() {
@@ -161,7 +161,7 @@ func iteratorTest7() {
     var res = 5.iter().toArray()
     Integer.__deleteMember("iter")
     assert([0,1,2,3,4], res)
-}
+#endtest
 
 func iteratorTest8() {
     var xs = 1..10
@@ -173,27 +173,27 @@ func iteratorTest8() {
     }
     xs.first()
     assert(10, xs.len())
-}
+#endtest
 
 func iteratorTest9() {
     var xs = 1..5
     var ys = 6..10
     var res = Iterator.concat(xs, ys)
     assert([1..10], res.toArray())
-}
+#endtest
 
 func iteratorTest10() {
     var xs = 1..5
     var ys = 6..10
     var res = Iterator(xs, ys)
     assert([1..10], res.toArray())
-}
+#endtest
 
 func iteratorTest11() { //#289
     var xs = 1..5
     var res = Iterator(xs)
     assert((1,2,3,4,5), res.toTuple())
-}
+#endtest
 
 func yieldManyTest1() {
     func bar() {
@@ -209,7 +209,7 @@ func yieldManyTest1() {
     }
     var seq = foo().toArray()
     assert([1,2,3,4,5,6],seq)
-}
+#endtest
 
 func yieldManyTest2() {
     func bar() {
@@ -227,7 +227,7 @@ func yieldManyTest2() {
     }
     var seq = foo().toArray()
     assert([1,2,3,31,32,33,4,5],seq)
-}
+#endtest
 
 func yieldManyTest3() { //#96
     func zoo() {
@@ -248,7 +248,7 @@ func yieldManyTest3() { //#96
     }
     var seq = foo().toArray()
     assert([1,2,21,22,3,31,32,4],seq)
-}
+#endtest
 
 func yieldManyTest4() { //#96
     func zoo() {
@@ -271,7 +271,7 @@ func yieldManyTest4() { //#96
     }
     var seq = foo().toArray()
     assert([1,2,21,22,3,31,32,4,21,22,31,32],seq)
-}
+#endtest
 
 func yieldManyTest5() { //#96
     func bar() {
@@ -285,29 +285,29 @@ func yieldManyTest5() { //#96
     var arr = foo().toArray()
     assert(1, arr[0])
     assert([2,3], arr[1].toArray())
-}
+#endtest
 
 func takeTest1() {
     var seq = yields { 1,2,3,4,5 }
     var xs = seq.take(3).toArray()
     assert([1,2,3], xs)
-}
+#endtest
 
 func skipTest1() {
     var seq = yields { 1,2,3,4,5 }
     var xs = seq.skip(3).toArray()
     assert([4,5], xs)
-}
+#endtest
 
 func firstTest1() {
     var seq = yields { 1,2,3,4,5 }
     assert(1, seq.first())
-}
+#endtest
 
 func lastTest1() {
     var seq = yields { 1,2,3,4,5 }
     assert(5, seq.last())
-}
+#endtest
 
 func tryCatchBug() { //bug #365
     var val = 0
@@ -322,7 +322,7 @@ func tryCatchBug() { //bug #365
     }
     for _ in iter() { }
     assert(42, val)
-}
+#endtest
 
 func yieldBreakTest1() { // #399
     func seq() {
@@ -340,18 +340,18 @@ func yieldBreakTest1() { // #399
         xs.add(x)
     }
     assert([100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88], xs)
-}
+#endtest
 
 func sliceTest1() { // #409
     var seq = 1..10
     var xs = seq[5..].toArray()
     assert([6, 7, 8, 9, 10], xs)
-}
+#endtest
 
 func rangeInIterator() {
     let seq = yields { 1..5 }
     assert([1,2,3,4,5], seq.toArray())
-}
+#endtest
 
 func iteratorStateBug() {
     let seq = yields { 1,2,3,4,5 }
@@ -359,7 +359,7 @@ func iteratorStateBug() {
     assert(2, seq[1])
     assert([1,2,3], seq.take(3).toArray())
     assert([1,2,3], seq.take(3).toArray())
-}
+#endtest
 
 func elementAtAndIndexer() {
     let seq = yields { 1..10 }
@@ -372,7 +372,7 @@ func elementAtAndIndexer() {
     assert(2, seq[1])
     assert(10, seq[9])
     assert(10, seq[9])
-}
+#endtest
 
 func emptyTest() {
     let seq = Iterator.empty()
@@ -381,7 +381,7 @@ func emptyTest() {
     for x in seq {
         assert(true, false)
     }
-}
+#endtest
 
 func repeatTest1() {
     func defaultValue() {
@@ -394,7 +394,7 @@ func repeatTest1() {
     assert([0,0,0], Iterator.repeat(0).take(3).toArray())
     assert([3,3,3], Iterator.repeat(()=>3).take(3).toArray())
     assert([0,1,2,3,4], Iterator.repeat(defaultValue()).take(5).toArray())
-}
+#endtest
 
 func repeatTest2() {
     func notNil(x) => x != nil
@@ -409,7 +409,7 @@ func repeatTest2() {
     let xs = Iterator.repeat(rnd).take(20)
     assert(true, all(xs, notNil))
     assert(20, xs.len())
-}
+#endtest
 
 func stateIterTest() {
     func it() {
@@ -433,14 +433,14 @@ func stateIterTest() {
         ys.add(x)
     }
     assert([1,2,3,4,5], ys)
-}
+#endtest
 
 func reverseTest() {
     let xs = [1, 2, 3, 4, 5]
     assert([5, 4, 3, 2, 1], xs.iter().reverse().toArray())
     let ys = yields { 'a', "str", 12 }
     assert([12, "str", 'a'], ys.reverse().toArray())
-}
+#endtest
 
 func sortTest1() {
     let refs = yields {3,5,1,6,2,4}
@@ -448,7 +448,7 @@ func sortTest1() {
     assert([1,2,3,4,5,6], xs)
     let ys = refs.sort((x,y) => y - x).toArray()
     assert([6,5,4,3,2,1], ys)
-}
+#endtest
 
 func sortTest2() {
     var refs = yields {3,5,0,1,2,4}
@@ -457,7 +457,7 @@ func sortTest2() {
     } catch {
         DivisionByZero() => assert([3,5,0,1,2,3], refs.toArray())
     }
-}
+#endtest
 
 func shuffleTest() {
     func eq(xs, ys) {
@@ -473,13 +473,13 @@ func shuffleTest() {
     var ys = xs.shuffle().toArray()
     assert(6, ys.len())
     assert(true, !eq(xs.toArray(), ys))
-}
+#endtest
 
 func countTest() {
     let refs = yields {3,5,1,6,2,4}
     let c = refs.count(x => x % 2 == 0)
     assert(3, c)
-}
+#endtest
 
 func mapTest1() {
     let xs = yields { 1,2,3,4,5 }
@@ -487,7 +487,7 @@ func mapTest1() {
     assert([2,4,6,8,10], ys)
     let ys1 = xs.map(transform: x => "s" + x).toArray();
     assert(["s1","s2","s3","s4","s5"], ys1)
-}
+#endtest
 
 func mapTest2() {
     func iter(x) {
@@ -509,25 +509,25 @@ func mapTest2() {
     } catch {
         DivideByZero() => assert([2,4,6], res)
     }
-}
+#endtest
 
 func filterTest() {
     let xs = { 1..10 }
     let ys = xs.filter(predicate: x => x > 5)
     assert([6,7,8,9,10], ys.toArray())
-}
+#endtest
 
 func takeWhileTest() {
     let xs = { 1..10 }
     let ys = xs.takeWhile(predicate: x => x < 6)
     assert([1,2,3,4,5], ys.toArray())
-}
+#endtest
 
 func skipWhileTest() {
     let xs = { 1..10 }
     let ys = xs.skipWhile(predicate: x => x < 6)
     assert([6,7,8,9,10], ys.toArray())
-}
+#endtest
 
 func reduceTest() {
     let xs = { 1..10 }
@@ -535,7 +535,7 @@ func reduceTest() {
     assert(55, res)
     res = xs.reduce(10, (x,y) => x + y)
     assert(65, res)
-}
+#endtest
 
 func toDictionaryTest1() {
     let xs = yields {
@@ -551,7 +551,7 @@ func toDictionaryTest1() {
     assert((key: 1, value: "Foo"), map[1])
     assert((key: 2, value: "Bar"), map[2])
     assert((key: 3, value: "Zoo"), map[3])
-}
+#endtest
 
 func toDictionaryTest2() {
     let xs = yields {
@@ -565,7 +565,7 @@ func toDictionaryTest2() {
     } catch {
         KeyAlreadyPresent() => assert(true, true)
     }
-}
+#endtest
 
 func emptySequence() {
     func iter() {
@@ -581,7 +581,7 @@ func emptySequence() {
     assert(nil, xs.first())
     assert(nil, xs.last())
     assert([], xs.toArray())
-}
+#endtest
 
 func matchIterator() {
     let xs = yields { 1,2,3 }
@@ -593,7 +593,7 @@ func matchIterator() {
         [x,y] => x+y
     }
     assert(3, res)
-}
+#endtest
 
 func anyTest() {
     let xs = yields { 0,0,0,1,0,0,0 }
@@ -605,7 +605,7 @@ func anyTest() {
     }
     let ys = iter()
     assert(true, ys.any(x => x is not nil))
-}
+#endtest
 
 func allTest() {
     let xs = yields { 10,2,3,1,4,5,6 }
@@ -622,11 +622,11 @@ func allTest() {
     } catch {
         UnexpectedError(msg) => assert("err", msg)
     }
-}
+#endtest
 
 func iteratorContainsTest() {
     let xs = yields { 10,2,3,1,4,5,6 }
     assert(true, xs.contains(10))
     assert(true, xs.contains(1))
     assert(false, xs.contains(101))
-}
+#endtest

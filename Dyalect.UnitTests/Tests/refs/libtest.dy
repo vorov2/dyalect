@@ -4,7 +4,7 @@
     } else {
         x
     }
-}
+#endtest
 
 func sign(x) {
     if x < 0 {
@@ -12,11 +12,11 @@ func sign(x) {
     } else {
         0
     }
-}
+#endtest
 
 func double(x) {
     x + x
-}
+#endtest
 
 func min(x, y) {
     if x < y {
@@ -24,7 +24,7 @@ func min(x, y) {
     } else {
         y
     }
-}
+#endtest
 
 func max(x, y) {
     if x > y {
@@ -32,17 +32,17 @@ func max(x, y) {
     } else {
         y
     }
-}
+#endtest
 
 private {
     func id(x) {
         x
     }
-}
+#endtest
 
 func userName(name) {
     "User " + name
-}
+#endtest
 
 type Foobar(x, y)
 

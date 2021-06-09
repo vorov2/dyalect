@@ -12,7 +12,7 @@ func tailRecursion1() {
     }
     loop(0, 10)
     assert([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], xs)
-}
+#endtest
 
 func tailRecursion2() {
     func foo(a, b) {
@@ -32,7 +32,7 @@ func tailRecursion2() {
     }
     var res = foo(1, 2)
     assert(42, res)
-}
+#endtest
 
 func tailRecursion3() {
     func withpm(obj) {
@@ -45,7 +45,7 @@ func tailRecursion3() {
     }
     var res = withpm((1,2))
     assert(res, "foo")
-}
+#endtest
 
 func recursionTest1() { //#62
     var acc = 0
@@ -59,7 +59,7 @@ func recursionTest1() { //#62
     }
     iter(10)
     assert(acc, 10)
-}
+#endtest
 
 func recursionTest2() { //#62
     func foo(x, y) {
@@ -68,7 +68,7 @@ func recursionTest2() { //#62
     }
     var res = foo(12, 2)
     assert(res, 10)
-}
+#endtest
 
 
 func functionTest1() {
@@ -83,7 +83,7 @@ func functionTest1() {
     }
     var res = sum(2, 4)
     assert(7, res)
-}
+#endtest
 
 func functionTest2() {
     func test1(x, y, z) {
@@ -91,7 +91,7 @@ func functionTest2() {
     }
     var res = test1(z: 12, x: 3, y: 1)
     assert((3, 1, 12), res)
-}
+#endtest
 
 func functionTest3() {
     func test1(x, x1 = 144, y, z, z1 = 33) {
@@ -99,7 +99,7 @@ func functionTest3() {
     }
     var res = test1(z: 12, x: 3, y: 1)
     assert((3, 144, 1, 12, 33), res)
-}
+#endtest
 
 func functionTest4() {
     func test1(args..., separator = ",", terminator = "\n") {
@@ -108,7 +108,7 @@ func functionTest4() {
     assert( [(1,2), ",", "\n"], test1(1,2) )
     assert( [(1,2), ",", "\r"], test1(1,2, terminator: "\r") )
     assert( [(1,2), ";", "\r"], test1(1,2, terminator: "\r", separator: ";") )
-}
+#endtest
 
 func functionTest5() {
     func test1(optional = "foo") {
@@ -117,14 +117,14 @@ func functionTest5() {
     assert("foo", test1())
     var arg = "bar"
     assert(arg, test1(arg))
-}
+#endtest
 
 func functionTest6() {
     func apply(fun, fst) { snd => fun(fst, snd) }
     func sum(x, y) { x + y }
     var sum2 = apply(sum, 2)
     assert(5, sum2(3))
-}
+#endtest
 
 func functionTest7() {
     func apply(fun, fst) { snd => fun(fst, snd) }
@@ -132,7 +132,7 @@ func functionTest7() {
     func sub(x, y) { x - y }
     var sub3 = apply(flip(sub), 3)
     assert(6, sub3(9))
-}
+#endtest
 
 func functionTest8() {
     var res
@@ -141,7 +141,7 @@ func functionTest8() {
     }
     variadic(args: (1,2,3))
     assert(3, res)
-}
+#endtest
 
 func functionTest9() {
     var res
@@ -150,18 +150,18 @@ func functionTest9() {
     }
     variadic([1,2,3,4])
     assert(1, res)
-}
+#endtest
 
 func functionTest10() {
     var f = x => x
     assert(12, f(12))
-}
+#endtest
 
 func functionTest11() {
     var f = $0 ?? 22
     assert(12, f(12))
     assert(22, f(0))
-}
+#endtest
 
 func functionTest12() {
     func foo() {
@@ -172,12 +172,12 @@ func functionTest12() {
         foo()
     }
     bar()
-}
+#endtest
 
 func functionTest13() {
     assert(functionTest13.name, current().name)
     assert(nil, caller())
-}
+#endtest
 
 func functionTest14() {
     func thy() { caller() }
@@ -185,12 +185,12 @@ func functionTest14() {
     func fst() { snd() }
     var s = fst()
     assert("snd", s.name)
-}
+#endtest
 
 func functionTest15() {
     let f = x => x * x
     assert("<func>", f.name)
-}
+#endtest
 
 func functionTest16() {
     func foo() {
@@ -201,12 +201,12 @@ func functionTest16() {
     }
     var s = bar()
     assert("foo is called by bar", s)
-}
+#endtest
 
 func functionTest17() { //#294
     $0 + $1
     assert(true, true)
-}
+#endtest
 
 func variadicTest1() {
     func takeItAll(x, y, args...) {
@@ -224,7 +224,7 @@ func variadicTest1() {
     }
     var x = takeItAll(12, 33.4, "oops", true, [1], (x: 0.33, y: 1))
     assert("x=33.4;y=33.4;other=[oopstrue,[1],(x: 0.33, y: 1)]", x)
-}
+#endtest
 
 func variadicTest2() {
     func take(args...) {
@@ -232,7 +232,7 @@ func variadicTest2() {
     }
     var x = take(1,2,44.42)
     assert("(1, 2, 44.42)", x)
-}
+#endtest
 
 func variadicTest3() {
     func take(x, args...) {
@@ -242,7 +242,7 @@ func variadicTest3() {
     }
     var x = take(14)
     assert("x=14()", x)
-}
+#endtest
 
 func complexToStringTest1() {
     func Integer.toString() {
@@ -254,7 +254,7 @@ func complexToStringTest1() {
     }
     assert("even", 12.toString())
     Integer.__deleteMember("toString")
-}
+#endtest
 
 func complexToStringTest2() {
     func Nil.toString() {
@@ -263,7 +263,7 @@ func complexToStringTest2() {
     var x = "foo" + nil
     assert("foonull", x)
     Nil.__deleteMember("toString")
-}
+#endtest
 
 func methodTest1() {
     func Integer +(other) {
@@ -272,7 +272,7 @@ func methodTest1() {
     var res = 3 + 3 == 3 * 3
     Integer.__deleteMember("op_add")
     assert(true, res)
-}
+#endtest
 
 func methodTest2() {
     func Float +(other) {
@@ -281,14 +281,14 @@ func methodTest2() {
     var res = 12.2 + 0.4
     Float.__deleteMember("op_add")
     assert("12.2 + 0.4", res)
-}
+#endtest
 
 func methodTest3() {
     var x = 11
     func Integer.getItem(index) { index }
     assert(11, 12[x])
     Integer.__deleteMember("op_get")
-}
+#endtest
 
 func closureTest() {
     var xs = []
@@ -302,7 +302,7 @@ func closureTest() {
         ys.add(x())
     }
     assert([0, 1, 4, 9, 16, 25, 36, 49, 64, 81], ys)
-}
+#endtest
 
 func paramsTest1() {
     func pars(x, y) {
@@ -310,7 +310,7 @@ func paramsTest1() {
     }
     let res = pars(y: 2, x: 1)
     assert("x=1,y=2", res)
-}
+#endtest
 
 func paramsTest2() {
     func getter(x = 12, y = 3, z = 4, j = 44, k = 42) {
@@ -319,7 +319,7 @@ func paramsTest2() {
     assert(60, getter(3, 4, k: 5))
     assert(62, getter(j: 1))
     assert(105, getter())
-}
+#endtest
 
 func paramsTest3() {
     func pars(x = 1, y = 2, z = 3) {
@@ -333,7 +333,7 @@ func paramsTest3() {
     assert("x=1,y=2,z=4", res)
     res = pars(10, 20)
     assert("x=10,y=20,z=3", res)
-}
+#endtest
 
 func paramsTest4() {
     func pars(x, y, z) { }
@@ -343,7 +343,7 @@ func paramsTest4() {
         MultipleValuesForArgument(funName, argName) => "\(funName)->\(argName)"
     }
     assert("pars->x", res)
-}
+#endtest
 
 func paramerlessLambda() {
     let fn = => 2 + 2
@@ -353,7 +353,7 @@ func paramerlessLambda() {
     }
     let res = takeIt(=> { 22 + 22 })
     assert(44, res)
-}
+#endtest
 
 func introspectionTest1() {
     func tt(x, y, z = 3, extras...) {}
@@ -372,7 +372,7 @@ func introspectionTest1() {
         }
         i += 1
     }
-}
+#endtest
 
 func exprBody1() {
     func sum(x, y) => x + y
@@ -381,7 +381,7 @@ func exprBody1() {
         x + y + z
     }
     assert(9, sum3(2, 3, 4))
-}
+#endtest
 
 func funcWithDefaults1() {
     func double(x = 2) => x + x
@@ -390,7 +390,7 @@ func funcWithDefaults1() {
     assert(4, __invoke(double))
     assert(6.33, __invoke(sum2, 3.33))
     assert(1.75, __invoke(sum3))
-}
+#endtest
 
 func funcWithDefaults2() {
     assert(12.12, __invoke(round, 12.1245677))
@@ -399,7 +399,7 @@ func funcWithDefaults2() {
     assert(true, __invoke(rnd) >= 0)
     let r2 = __invoke(rnd, 1, 5)
     assert(true, r2 >= 1 && r2 <= 5)
-}
+#endtest
 
 func funcWithDefaults3() {
     var cell
@@ -410,7 +410,7 @@ func funcWithDefaults3() {
     }
     __invoke(collector, 4)
     assert([5, 4], cell)
-}
+#endtest
 
 func funcWithDefaults4() {
     var cell
@@ -421,7 +421,7 @@ func funcWithDefaults4() {
     }
     __invoke(collector, 1, 2, (3, 4))
     assert([1, 2, 3, 4], cell)
-}
+#endtest
 
 func funcWithDefaults5() {
     var cell
@@ -432,14 +432,14 @@ func funcWithDefaults5() {
     }
     __invoke(collector, 5, 6, [7, 8])
     assert([5, 6, 7, 8], cell)
-}
+#endtest
 
 func externalCall() {
     func checkIt() {
         assert(nil, caller())
     }
     __invoke(checkIt)
-}
+#endtest
 
 func funcTypeAnnotations1() {
     func sum(Integer x, Integer y) {
@@ -452,7 +452,7 @@ func funcTypeAnnotations1() {
     } catch {
         InvalidType() => assert(got: true)
     }
-}
+#endtest
 
 import lib = refs/libtest1
 func funcTypeAnnotations2() {
@@ -466,7 +466,7 @@ func funcTypeAnnotations2() {
     } catch {
         InvalidType() => assert(got: true)
     }
-}
+#endtest
 
 func mutualRecursion1() {
     func f(x) {
@@ -477,7 +477,7 @@ func mutualRecursion1() {
     }
     assert(0, f(1))
     assert(-1, f(-1))
-}
+#endtest
 
 func mutualRecursion2() {
     func f(n) {
@@ -490,4 +490,4 @@ func mutualRecursion2() {
     let ys = (0..20).map(i => m(i)).toArray()
     assert([1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 11, 11, 12, 13], xs)
     assert([0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 7, 8, 9, 9, 10, 11, 11, 12, 12], ys)
-}
+#endtest

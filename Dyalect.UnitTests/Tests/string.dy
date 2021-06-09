@@ -3,13 +3,13 @@ func stringLiteralTest() {
     var fst = "some\tstring with\"inner quotes\" and such (and a buck \u0024)"
     var snd = "some\u0009string with\u0022inner quotes\u0022 and such (and a buck $)"
     assert(fst, snd)
-}
+#endtest
 
 func stringTest1() {
     var str = "Hello, world!"
     var res = str.len()
     assert(13, res)
-}
+#endtest
 
 func stringTest2() {
     var str = "Hello, world!"
@@ -17,91 +17,91 @@ func stringTest2() {
     assert(8, str.lastIndexOf("o"))
     assert(8, str.indexOf("o", fromIndex: 7))
     assert(3, str.lastIndexOf("l", fromIndex: 6, count: 4))
-}
+#endtest
 
 func stringTest3() {  
     assert(false, "1" > "2")
     assert(true, "1" < "2")
-}
+#endtest
 
 func stringTest4() {
     var str = "Name=John;Surname=Doe;Age=21;Gender=Male"
     var arr = str.split('=', ';')
     assert(["Name","John","Surname","Doe","Age","21","Gender","Male"], arr)
-}
+#endtest
 
 func stringTest5() {
     var str = "foo"
     var res = str[0] + str[2]
     assert("fo", res)
-}
+#endtest
 
 func stringTest6() {
     var str1 = "FOO"
     var str2 = "bar"
     var res = str1.lower() + str2.upper()
     assert("fooBAR", res)
-}
+#endtest
 
 func stringTest7() {
     var res = "fooBar".startsWith("foo")
     assert(true, res)
-}
+#endtest
 
 func stringTest8() {
     var res = "fooBar".endsWith("Bar")
     assert(true, res)
-}
+#endtest
 
 func stringTest9() {
     var res = "abcdef".substring(2, 4) + "qwerty".substring(4)
     assert("cdefty", res)
-}
+#endtest
 
 func stringTest9b() {
     var res = "abcdef".substring(-3)
     assert("def", res)
-}
+#endtest
 
 func stringTest10() {
     var res = "camelCase".capitalize()
     assert("Camelcase", res)
-}
+#endtest
 
 func stringTest11() {
     var res = String.concat("one", "two", "three", 44)
     assert("onetwothree44", res)
     res = String.concat(12, true, "bool")
     assert("12truebool", res)
-}
+#endtest
 
 func stringTest12() {
     var res = "fooBar".contains("oBa")
     assert(true, res)
-}
+#endtest
 
 func stringTest13() {
     var res = " ss".trim() + "--dd--".trimStart('-') + "!ee!".trimEnd('!')
     assert("ssdd--!ee", res)
-}
+#endtest
 
 func stringTest14() {
     assert(true, "".isEmpty())
     assert(true, " \s ".isEmpty())
     assert(true, " \t\r\n\t ".isEmpty())
     assert(false, "hh".isEmpty())
-}
+#endtest
 
 func stringTest15() {
     var str = "Hello!"
     assert('H', str[0])
     assert('!', str[str.len() - 1])
-}
+#endtest
 
 func stringTest16() {
     var str = String.join("foo", 1, 3, 44, true, separator: ";")
     assert("foo;1;3;44;true", str)
-}
+#endtest
 
 func stringTest18() {
     var foo = "12"
@@ -109,22 +109,22 @@ func stringTest18() {
     assert("00012", foo.padLeft(with: '0', to: 5))
     assert("12   ", foo.padRight(5))
     assert("12000", foo.padRight(with: '0', to: 5))
-}
+#endtest
 
 func stringTest19() {
     var res = String("one", "two", "three", 44)
     assert("onetwothree44", res)
-}
+#endtest
 
 func stringTest20() {
     assert("", String.default())
-}
+#endtest
 
 func stringTest21() {
     assert("for gem gemetric", "for rem remetric".replace("rem", "gem"))
     assert("foobar", "foobar".replace(value: "FOO", with: "ZOO"))
     assert("ZOObar", "foobar".replace(value: "FOO", with: "ZOO", ignoreCase: true))
-}
+#endtest
 
 func stringTest22() {
     var str = "from to"
@@ -132,29 +132,29 @@ func stringTest22() {
     assert("from", str.remove(4, 3))
     assert("from ", str.remove(5))
     assert("froo", str.remove(3, 3))
-}
+#endtest
 
 func stringTest23() { //Bug #207
     var str = "alphaBETA"
     assert("Alphabeta", str.capitalize())
-}
+#endtest
 
 func stringTest24() { //Bug #219
     var str = String(values: yields { 'a','b','c' })
     assert("abc", str)
-}
+#endtest
 
 func stringTest25() {
     var str = String.repeat('*', 5)
     assert("*****", str)
     str = String.repeat(value: '!', count: 3)
     assert("!!!", str)
-}
+#endtest
 
 func stringTest26() { //Issue #249
     var str = "foobar"
     assert("raboof", str.reverse())
-}
+#endtest
 
 func verbatimStringTest1() {
     var str = <[ first
@@ -162,7 +162,7 @@ func verbatimStringTest1() {
     third..]>
     var pat = " first\n    second\n    third.."
     assert(pat, str)
-}
+#endtest
 
 func verbatimStringTest2() {
     var str = <[ first
@@ -170,14 +170,14 @@ func verbatimStringTest2() {
     third..]>
     var pat = " first\n    <[second]>\n    third.."
     assert(pat, str)
-}
+#endtest
 
 func interpolationTest1() {
     var x = 42
     var y = 12
     var res = "the value of (x + y) is \(x + y)"
     assert("the value of (x + y) is 54", res)
-}
+#endtest
 
 func interpolationTest2() {
     func doubleMe(x) {
@@ -186,31 +186,31 @@ func interpolationTest2() {
     var foo = 13
     var res = "doubleMe(foo) = \(doubleMe(foo))"
     assert("doubleMe(foo) = 26", res)
-}
+#endtest
 
 func interpolationTest3() {
     var x = 3
     var y = 2
     var res = "value = \((x * (2 + 3)) * y)"
     assert("value = 30", res)
-}
+#endtest
 
 func interpolationTest4() {
     assert("[1, 2, 3]", "\([1,2,3])")
     assert("(1, 2, 3)", "\((1,2,3))")
-}
+#endtest
 
 func stringIndexing() { //#301
     var xs = "abcde"
     assert('e', xs[-1])
     assert('a', xs[-5])
-}
+#endtest
 
 func stringSlice1() { 
     var story = "Dyalect is going to be great!"
     var res = story[-6..]
     assert("great!", res)
-}
+#endtest
 
 func stringSplice2() {
     var str = "the quick brown fox jumped over the lazy dogs"
@@ -218,7 +218,7 @@ func stringSplice2() {
     assert("lazy dogs",  str[36..])
     assert("the quick",  str[..8])
     assert(str,  str[..])
-}
+#endtest
 
 func concatTest1() {
     var str = "str"
@@ -228,7 +228,7 @@ func concatTest1() {
     assert("nilstr", nil + str)
     func sum(x,y) { x + y }
     assert("sum(x, y)str", sum + str)
-}
+#endtest
 
 type TypeInString()
 func concatTest2() {
@@ -239,15 +239,15 @@ func concatTest2() {
     str = x + "str"
     assert("!dummy!str", str)
     TypeInString.__deleteMember("toString")
-}
+#endtest
 
 func stringtoCharArray() {
     let str = "Hello"
     let arr = str.toCharArray()
     assert(['H', 'e', 'l', 'l', 'o'], arr)
-}
+#endtest
 
 func stringRepeatTest() {
     let str = String.repeat("ha", 5)
     assert("hahahahaha", str)
-}
+#endtest

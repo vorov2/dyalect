@@ -12,7 +12,7 @@ func matchTest1() {
         (1, x) => x
     }
     assert(2, res)
-}
+#endtest
 
 func matchTest2() {
     var res = match (1,2,"str") {
@@ -21,7 +21,7 @@ func matchTest2() {
         (1, 2, "str") => "right!"
     }
     assert("right?", res)
-}
+#endtest
 
 func matchTest3() {
     var res = match (1,2,"str") {
@@ -30,7 +30,7 @@ func matchTest3() {
         (1, 2, "str") xs => xs
     }
     assert((1,2,"str"), res)
-}
+#endtest
 
 func matchTest4() {
     var res = match (1,2) {
@@ -38,7 +38,7 @@ func matchTest4() {
         (x, 2) xs when xs.fst() == 1 => xs
     }
     assert((1,2), res)
-}
+#endtest
 
 func matchTest5() {
     func typeName(x) {
@@ -80,7 +80,7 @@ func matchTest5() {
         ]
         assert(expected, xs)
     }
-}
+#endtest
 
 func matchTest6() {
     var res = match 12 {
@@ -88,7 +88,7 @@ func matchTest6() {
         "12" or 12 => 12
     }
     assert(12, res)
-}
+#endtest
 
 func matchTest7() {
     var res = match [1, 2, ('f', 'F', [34, 42.2]), "end"] {
@@ -96,7 +96,7 @@ func matchTest7() {
         [1, 2, (_, _, [34, x])] when x > 42 => x
     }
     assert(42.2, res)
-}
+#endtest
 
 func matchTest8() {
     var res = match (x: 12, y: 24) {
@@ -104,7 +104,7 @@ func matchTest8() {
         (x: x, y: 24) => x
     }
     assert(12, res)
-}
+#endtest
 
 func matchTest8b() {
     var res = match (x: 12) {
@@ -112,7 +112,7 @@ func matchTest8b() {
         (x: x) => x
     }
     assert(12, res)
-}
+#endtest
 
 func matchTest9() {
     var arr = []
@@ -125,14 +125,14 @@ func matchTest9() {
         }
     }
     assert([2,4], arr)
-}
+#endtest
 
 func matchTest10() {
     var res = match (42, 12) {
         (x, y) and (_, 12) when x > 10 => x
     }
     assert(42, res)
-}
+#endtest
 
 func matchTest11() {
     var res = match (42, 12) {
@@ -140,14 +140,14 @@ func matchTest11() {
         (42, x) when x == 12 => true
     }
     assert(true, res)
-}
+#endtest
 
 func matchTest12() {
     var res = match (42, 12) {
         (x, y) and (_, 12) when x > y => x + y
     }
     assert(54, res)
-}
+#endtest
 
 func matchTest13() {
     var n = nil //Bug #178
@@ -155,7 +155,7 @@ func matchTest13() {
         nil => true
     }
     assert(true, res)
-}
+#endtest
 
 func matchTest14() {
     var res = match (x: 12,) {
@@ -163,7 +163,7 @@ func matchTest14() {
         (x: x,) => x
     }
     assert(12, res)
-}
+#endtest
 
 
 func forMatchTest1() {
@@ -172,7 +172,7 @@ func forMatchTest1() {
         arr.add(x)
     }
     assert([2, 3, 4], arr)
-}
+#endtest
 
 func forMatchTest2() {
     var arr = []
@@ -180,7 +180,7 @@ func forMatchTest2() {
         arr.add(c)
     }
     assert(['a','b','c'], arr)
-}
+#endtest
 
 func forMatchTest3() {
     var arr = []
@@ -188,7 +188,7 @@ func forMatchTest3() {
         arr.add(0)
     }
     assert(3, arr.len())
-}
+#endtest
 
 func forMatchTest4() {
     var arr = []
@@ -196,7 +196,7 @@ func forMatchTest4() {
         arr.add(xs)
     }
     assert([(1,2), (1,3), (1,4)], arr)
-}
+#endtest
 
 func forMatchTest5() {
     var arr = []
@@ -204,7 +204,7 @@ func forMatchTest5() {
         arr.add(x)
     }
     assert([2,4,6,8,10], arr)
-}
+#endtest
 
 func rangeMatchTest1() {
     var x = 5
@@ -213,7 +213,7 @@ func rangeMatchTest1() {
         3..10 => true
     }
     assert(true, res)
-}
+#endtest
 
 func rangeMatchTest2() {
     var x = 'c'
@@ -222,7 +222,7 @@ func rangeMatchTest2() {
         'b'..'f' => 144
     }
     assert(144, res)
-}
+#endtest
 
 func hasMatchTest1() {
     var res = match 12 {
@@ -230,7 +230,7 @@ func hasMatchTest1() {
         .op_mul => true
     }
     assert(true, res)
-}
+#endtest
 
 func hasMatchTest2() {
     var res = match (12,3) {
@@ -238,13 +238,13 @@ func hasMatchTest2() {
         .keys => true
     }
     assert(true, res)
-}
+#endtest
 
 func hasMatchTest3() {
     let xs = []
     let res = xs is .iter and .toString and .has
     assert(true, res)
-}
+#endtest
 
 func setMatchTest1() {
     var x = 1
@@ -252,13 +252,13 @@ func setMatchTest1() {
     set (x, y) = (y, x)
     assert(2, x)
     assert(1, y)
-}
+#endtest
 
 func setMatchTest2() {
     var x
     set [1, ('a', 'b'), x, 33] = [1, ('a', 'b'), 42, 33, 88]
     assert(42, x)
-}
+#endtest
 
 func setMatchTest3() {
     func foo() {
@@ -271,19 +271,19 @@ func setMatchTest3() {
         e::detail
     }
     assert("Match failed.", res)
-}
+#endtest
 
 func varMatchTest1() {
     set (x, y) = (1, 11)
     assert(1, x)
     assert(11, y)
-}
+#endtest
 
 func varMatchTest2() {
     var [1, ('a', 'b'), x, 33, y] = [1, ('a', 'b'), 42, 33, 88]
     assert(42, x)
     assert(88, y)
-}
+#endtest
 
 func varMatchTest3() {
     func foo() {
@@ -295,31 +295,31 @@ func varMatchTest3() {
         e::detail
     }
     assert("Match failed.", res)
-}
+#endtest
 
 func ctorMatchTest1() {
     let Array and (x, y, z) = [1, 2, 3]
     assert(6, x + y + z)
     let Array and [xx, yy, zz] = [1, 2, 3, 4, 5]
     assert(6, xx + yy + zz)
-}
+#endtest
 
 func ctorMatchTest2() {
     let Tuple and (x, y, z) = (1, 2, 3)
     assert(6, x + y + z)
-}
+#endtest
 
 func ctorMatchTest3() {
     var res = match 42 {
         Integer => true
     }
     assert(true, res)
-}
+#endtest
 
 func ctorMatchTest4() {
     let String and (x, y, z) = "abc"
     assert(['a','b','c'], [x,y,z])
-}
+#endtest
 
 func isTest1() {
     var xs = (1, 2)
@@ -328,7 +328,7 @@ func isTest1() {
     var b = xs is Tuple t
     assert(true, b)
     assert((1,2), t)
-}
+#endtest
 
 func isTest2() {
     var xs = (1, 2, 3, ['a', 'b'])
@@ -340,14 +340,14 @@ func isTest2() {
     var res1 = xs is (1, _, 3, ['a', x])
     assert(true, res1)
     assert('b', x)
-}
+#endtest
 
 func isTest3() {
     var xs = (1, 2, 3)
     var res = xs is (1, _, 3, ['a', x])
     assert(false, res)
     assert(nil, x)
-}
+#endtest
 
 func isTest4() {
     func calcIt(xs) {
@@ -361,28 +361,28 @@ func isTest4() {
     var ys = (1, 2)
     assert(6, calcIt(xs))
     assert(0, calcIt(ys))
-}
+#endtest
 
 func bindingMatch1() {
     var (x,y) = (12, 2)
     assert(14, x + y)
     var (_, z) = (12, 222)
     assert(222, z)
-}
+#endtest
 
 func bindingMatch2() {
     var [x,y] = [12, 2]
     assert(14, x + y)
     var [_, z] = [12, 222]
     assert(222, z)
-}
+#endtest
 
 func bindingMatch3() {
     var (x,y) = [12, 2]
     assert(14, x + y)
     var (_, z) = [12, 222]
     assert(222, z)
-}
+#endtest
 
 func typeCheck1() {
     var x = 1
@@ -400,7 +400,7 @@ func typeCheck1() {
     if y is Float f {
         assert(1.2, f)
     }
-}
+#endtest
 
 type TypeInMatch()
 func typeCheck2() {
@@ -410,7 +410,7 @@ func typeCheck2() {
         res = true
     }
     assert(true, res)
-}
+#endtest
 
 func forWithMatchAndGuard() {
     let tup = (
@@ -425,7 +425,7 @@ func forWithMatchAndGuard() {
         xs.add(y)
     }
     assert([4, 8], xs)
-}
+#endtest
 
 func matchBinding1() {
     let xs = [42]
@@ -433,7 +433,7 @@ func matchBinding1() {
     assert([42], xs)
     xs is Array or Array arr2
     assert(nil, arr2)
-}
+#endtest
 
 func matchBinding2() {
     let xs = []
@@ -442,7 +442,7 @@ func matchBinding2() {
     } else {
         assert(true, false)
     }
-}
+#endtest
 
 func matchBinding3() {
     let xs = []
@@ -450,7 +450,7 @@ func matchBinding3() {
         [x] or Array => assert(nil, x),
         _ => assert(true, false)
     }
-}
+#endtest
 
 func notPattern1() {
     let x = nil
@@ -468,7 +468,7 @@ func notPattern1() {
     assert(false, y is not Array)
     assert(true, y is not Tuple)
     assert(true, y is not Tuple and not Dictionary)
-}
+#endtest
 
 func comparisonPattern1() {
     let (x, y) = (1, 2)
@@ -480,4 +480,4 @@ func comparisonPattern1() {
     assert(true, res)
     res = y is <=1 or >5
     assert(false, res)
-}
+#endtest

@@ -1,131 +1,113 @@
-﻿test init
-{
+﻿#test init
     import lib = refs/libtest
     import lib1 = refs/libtest1
-}
+#endtest
 
-test "Methods: clone"
-{
+#test "Methods: clone"
     let xs = lib
     assert(true, xs == xs)
     assert(true, xs.clone() == xs)
-}
+#endtest
 
-test "Methods: getType"
-{
+#test "Methods: getType"
     let x = lib
     assert(true, TypeInfo(x) == Module)
     assert(true, x.getType() == Module)
     var t = TypeInfo(x)
     assert(9, t.id)
     assert("Module", t.name)
-}
+#endtest
 
-test "Member access 1"
-{
+#test "Member access 1"
     var abs = lib::abs(-12)
     assert(12, abs)
     assert(2, lib::abs(-2))
-}
+#endtest
 
-test "Member access 2"
-{
+#test "Member access 2"
     var a = abs(-12)
     assert(12, a)
     var b = min(2, 1)
     assert(1, b)
-}
+#endtest
 
-test "Match module"
-{
+#test "Match module"
     var res = match lib {
         (sign: fn,) => fn(-12)
     }
     assert(-1, res)
-}
+#endtest
 
-test "Match module using is"
-{
+#test "Match module using is"
     var res = lib is (id: _,)
     assert(false, res)
-}
+#endtest
 
-test "Qualification 1"
-{
+#test "Qualification 1"
     var res = lib1::sayHello()
     assert("Hello, User Jon", res)
-}
+#endtest
 
-test "Qualification 2"
-{
+#test "Qualification 2"
     var res = lib::double(2)
     var res1 = lib1::double(2)
     assert(4, res)
     assert("double 2", res1)
-}
+#endtest
 
-test "Module as tuple 1"
-{
+#test "Module as tuple 1"
     var libMod = lib
     var f = libMod::double
     assert(4, f(2))
-}
+#endtest
 
-test "Module as tuple 2"
-{
+#test "Module as tuple 2"
     var libMod = lib
     var f = libMod::double
     assert(4, f(2))
     var f1 = lib::double
     assert(4, f1(2))
-}
+#endtest
 
-test "Types from module"
-{
+#test "Types from module"
     var fb = Foobar(12, 2)
     assert(12, fb::x)
     assert(2, fb::y)
-}
+#endtest
 
-test "Types from module (qual)"
-{
+#test "Types from module (qual)"
     var fb = lib::Foobar(12, 2)
     assert(12, fb[0])
     assert(2, fb[1])
-}
+#endtest
 
-test "Extending external type"
-{
+#test "Extending external type"
     func Foobar.getVal1() {
         "Foobar"
     }
     var fb = Foobar(1, 2)
     assert("Foobar", fb.getVal1())
-}
+#endtest
 
-test "Extending external type (qual)"
-{
+#test "Extending external type (qual)"
     func lib.Foobar.getVal2() {
         "Foobar"
     }
     var fb = lib::Foobar(1, 2)
     assert("Foobar", fb.getVal2())
-}
+#endtest
 
-test "External type name"
-{
+#test "External type name"
     var t = Foobar
     assert("Foobar", t.name)
-}
+#endtest
 
-test "External type name (qual)"
-{
+#test "External type name (qual)"
     var t = lib::Foobar
     assert("Foobar", t.name)
-}
+#endtest
 
-test "Constants"
-{
+#test "Constants"
     assert(3.14, pi)
     assert(3.14, lib::pi)
     try {
@@ -135,20 +117,18 @@ test "Constants"
     catch {
         OperationNotSupported() => assert(got: true)
     }
-}
+#endtest
 
-test "Iterating module"
-{
+#test "Iterating module"
     var xs = []
     for (key,_) in lib {
         xs.add(key)
     }
     var shouldbe = ["abs","sign","double","min","max","userName","pi"]
     assert(shouldbe, xs)
-}
+#endtest
 
-test "Match external type"
-{
+#test "Match external type"
     var a1 = lib1::Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
     var a2 = Asset.Phone("1+", 8)
     func mem1(a) {
@@ -175,13 +155,12 @@ test "Match external type"
     assert(8, mem2(a2))
     assert(16, mem3(a1))
     assert(8, mem3(a2))
-}
+#endtest
 
-test "Test external type"
-{
+#test "Test external type"
     var t = lib1::Asset
     assert("Asset", t::name)
     var c = t.Computer("Acer", 4, 1)
     assert("Acer41", c::model+c::memory+c::rank)
     assert(true, c is lib1::Asset)
-}
+#endtest

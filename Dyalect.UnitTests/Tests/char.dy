@@ -2,7 +2,7 @@
 func charLiteralTest() {
     var res = '\'' + 'F' + '\'' + '\s'
     assert("'F' ", res)
-}
+#endtest
 
 func charTest1() {
     assert(true, 'c' == "c")
@@ -13,14 +13,14 @@ func charTest1() {
     assert(true, 'c' < "cc")
     assert(true, "cc" > 'c')
     assert(false, "cc" < 'c')
-}
+#endtest
 
 func charTest2() {
     assert(true, 'c' == 'C'.lower())
     assert(true, 'C' == 'c'.upper())
     assert(true, 'c'.isLower())
     assert(true, 'C'.isUpper())
-}
+#endtest
 
 func charTest3() {
     assert(true, '\s'.isWhiteSpace())
@@ -29,7 +29,7 @@ func charTest3() {
     assert(true, ' '.isWhiteSpace())
     assert(true, '\t'.isControl())
     assert(false, 't'.isControl())
-}
+#endtest
 
 func charTest4() {
     assert(true, '9'.isDigit())
@@ -38,12 +38,12 @@ func charTest4() {
     assert(false, '1'.isLetter())
     assert(true, '9'.isLetterOrDigit())
     assert(true, 't'.isLetterOrDigit())
-}
+#endtest
 
 func charTest5() {
     assert(65, 'A'.order())
     assert(54, '6'.order())
-}
+#endtest
 
 func charTest6() {
     assert('c', Char('c'))
@@ -51,19 +51,19 @@ func charTest6() {
     assert('6', Char('6'))
     assert('\u0006', Char(6))
     assert('f', Char("foo"))
-}
+#endtest
 
 func charTest7() {
     assert('\0', Char.default())
     assert('\0', Char.min())
     assert('\uffff', Char.max())
     assert(true, Char.default() == Char.min())
-}
+#endtest
 
 func charTest8() {
     assert(['a','b','c','d'], ['a'..'d'])
     assert(['a', 'c', 'e'], ('a'^2..'f').toArray())
-}
+#endtest
 
 func charMath1() {
     let a = 'a'
@@ -72,4 +72,4 @@ func charMath1() {
     assert('a', b - 1)
     assert("ab", a + b)
     assert("abcdef", a + b + "cdef")
-}
+#endtest

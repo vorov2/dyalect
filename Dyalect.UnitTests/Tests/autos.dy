@@ -3,7 +3,7 @@ type Box(key)
 let boxCollector = []
 func Box.dispose() {
     boxCollector.add(this::key)
-}
+#endtest
 
 func autosSimple1() {
     boxCollector.clear()
@@ -12,7 +12,7 @@ func autosSimple1() {
         boxCollector.add("wait.foo")
     }
     assert(["wait.foo", "foo"], boxCollector)
-}
+#endtest
 
 func autosSimple2() {
     boxCollector.clear()
@@ -25,7 +25,7 @@ func autosSimple2() {
         }
     }
     assert(["wait.foo", "wait.bar", "bar", "foo"], boxCollector)
-}
+#endtest
 
 func autosSimple3() {
     boxCollector.clear()
@@ -39,7 +39,7 @@ func autosSimple3() {
         }
     }
     assert([1,2,3,4,5,6], boxCollector)
-}
+#endtest
 
 func autosSimple4() {
     boxCollector.clear()
@@ -54,7 +54,7 @@ func autosSimple4() {
     doit(true)
     doit(false)
     assert([2, 100, 4, 100], boxCollector)
-}
+#endtest
 
 func autosSimple5() {
     boxCollector.clear()
@@ -70,7 +70,7 @@ func autosSimple5() {
         }
     }
     assert([5,4,3,2,1], boxCollector)
-}
+#endtest
 
 func autosFunc1() {
     boxCollector.clear()
@@ -80,7 +80,7 @@ func autosFunc1() {
     }
     run()
     assert(["foo", "bar"], boxCollector)
-}
+#endtest
 
 func autosFunc2() {
     boxCollector.clear()
@@ -95,7 +95,7 @@ func autosFunc2() {
     }
     for _ in iter() { }
     assert([1,2,3,"fin"], boxCollector)
-}
+#endtest
 
 func autosFunc3() {
     boxCollector.clear()
@@ -111,7 +111,7 @@ func autosFunc3() {
     }
     testFn()
     assert(["z","y","x"], boxCollector)
-}
+#endtest
 
 func autosFunc4() { //Bug #367
     boxCollector.clear()
@@ -126,7 +126,7 @@ func autosFunc4() { //Bug #367
     foobar(flag: false)
     foobar(flag: true)
     assert(['a', 'a', 'b', 'a'], boxCollector)
-}
+#endtest
 
 func autosFunc5() {
     boxCollector.clear()
@@ -140,7 +140,7 @@ func autosFunc5() {
     }
     for _ in iter() { }
     assert([2,4,6,8,9,10], boxCollector)
-}
+#endtest
 
 func autosExceptions1() {
     boxCollector.clear()
@@ -153,7 +153,7 @@ func autosExceptions1() {
     } catch _ {
         assert([12], boxCollector)
     }
-}
+#endtest
 
 func autosExceptions2() {
     boxCollector.clear()
@@ -175,7 +175,7 @@ func autosExceptions2() {
     }
     assert("Error", msg)
     assert(["z", "y", "x"], boxCollector)
-}
+#endtest
 
 func autosExceptions3() {
     boxCollector.clear()
@@ -186,7 +186,7 @@ func autosExceptions3() {
         boxCollector.add(e[0])
     }
     assert([42,84], boxCollector)
-}
+#endtest
 
 func autosExceptions4() {
     boxCollector.clear()
@@ -202,7 +202,7 @@ func autosExceptions4() {
     var xs = [divide(10, 2), divide(2, 0)]
     assert([5, -100], xs)
     assert([12, -100, 12, -100], boxCollector)
-}
+#endtest
 
 func autosExceptions5() {
     boxCollector.clear()
@@ -218,7 +218,7 @@ func autosExceptions5() {
         auto b = Box(e[0])
     }
     assert([24], boxCollector)
-}
+#endtest
 
 func autosExceptions6() {
     boxCollector.clear()
@@ -232,7 +232,7 @@ func autosExceptions6() {
         doit()
     } catch _ { }
     assert([22], boxCollector)
-}
+#endtest
 
 func autosCatch1() { //Bug #370
     boxCollector.clear()
@@ -242,7 +242,7 @@ func autosCatch1() { //Bug #370
         auto b = Box(1)
     }
     assert([1], boxCollector)
-}
+#endtest
 
 func autosCatch2() { //Bug #370
     boxCollector.clear()
@@ -260,7 +260,7 @@ func autosCatch2() { //Bug #370
         assert(e[0], "err")
         assert([1], boxCollector)
     }
-}
+#endtest
 
 func autosCatch3() {
     boxCollector.clear()
@@ -280,4 +280,4 @@ func autosCatch3() {
         x = e[0]
     }
     assert('b', x)
-}
+#endtest

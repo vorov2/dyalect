@@ -4,7 +4,7 @@ func roundTest() {
     var y = round(42.12345, 4) //Evaluates to 42.1234
     assert(42.12, x)
     assert(42.1234, y)
-}
+#endtest
 
 func minTest() {
     var x = min(12, 2)
@@ -15,7 +15,7 @@ func minTest() {
     assert(12, x)
     x = min(-12, 0)
     assert(-12, x)
-}
+#endtest
 
 func maxTest() {
     var x = max(12, 2)
@@ -26,7 +26,7 @@ func maxTest() {
     assert(12, x)
     x = max(-12, 0)
     assert(0, x)
-}
+#endtest
 
 func signTest() {
     var x = sign(123)
@@ -35,25 +35,25 @@ func signTest() {
     assert(-1, x)
     x = sign(0)
     assert(0, x)
-}
+#endtest
 
 func sqrtTest() {
     var x = sqrt(246)
     x = round(x, 4)
     assert(15.6844, x)
-}
+#endtest
 
 func absTest() {
     assert(12, abs(-12))
     assert(42, abs(42))
     let x = -14.102
     assert(14.102, abs(x))
-}
+#endtest
 
 func rndTest() {
     let x = rnd(max: 10, min: 3)
     assert(true, x <= 10 && x >= 3)
-}
+#endtest
 
 func parseTest() {
     assert(true, parse("true"))
@@ -62,15 +62,15 @@ func parseTest() {
     var xs = parse("[12.0, true, (1,2)]")
     var pat = [12.0, true, (1,2)]
     assert(pat, xs)
-}
+#endtest
 
 func evalTest() {
     let src = "x + y * z"
     var res = eval(src, (x: 2, y: 12, z: 3) )
     assert(38, res)
-}
+#endtest
 
 func powTest() {
     assert(46918, Integer(pow(12.2, 4.3)))
     assert(3111696, Integer(pow(42, 4)))
-}
+#endtest

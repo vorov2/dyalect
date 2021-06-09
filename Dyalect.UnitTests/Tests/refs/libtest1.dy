@@ -6,8 +6,8 @@ type Asset = Computer(model, memory, rank) or Phone(model, memory) or Modem(mode
 
 func sayHello() {
     "Hello, \(userName('J'+'o'+'n'))"
-}
+#endtest
 
 func double(x) {
     "double " + x
-}
+#endtest

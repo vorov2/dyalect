@@ -1,31 +1,27 @@
-﻿test "Methods: getType"
-{
+﻿#test "Methods: getType"
     type Foo()
     let x = Foo()
     assert(true, TypeInfo(x) == Foo)
     assert(true, x.getType() == Foo)
     var t = TypeInfo(x)
     assert("Foo", t.name)
-}
+#endtest
 
-test "Methods: clone"
-{
+#test "Methods: clone"
     type Foo()
     let xs = Foo()
     assert(true, xs == xs)
     assert(true, xs.clone() == xs)
-}
+#endtest
 
-test "Methods: toString"
-{
+#test "Methods: toString"
     type Foo(x, y, z)
     let xs = Foo(1, 2, 3)
     let str = xs.toString()
     assert("Foo(x: 1, y: 2, z: 3)", str)
-}
+#endtest
 
-test "Generated members"
-{
+#test "Generated members"
     type Foo(x)
     var f = Foo(42)
     assert(42, f::x)
@@ -34,10 +30,9 @@ test "Generated members"
     match f {
         Foo(x) => assert(42, x)
     }
-}
+#endtest
 
-test "Empty variant"
-{
+#test "Empty variant"
     type Void()
     var f = Void()
     assert(0, f.len())
@@ -45,10 +40,9 @@ test "Empty variant"
         Void() => assert(true, true)
     }
     assert("Void()", f.toString())
-}
+#endtest
 
-test "Multiple productions"
-{
+#test "Multiple productions"
     type Asset = Computer(model, memory, rank) or Phone(model, memory) or Modem(model)
     var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
     var a2 = Asset.Phone("1+", 8)
@@ -62,10 +56,9 @@ test "Multiple productions"
     assert("Asset.Computer(model: Lenovo, memory: 16, rank: 3)", a1.toString())
     assert("Asset.Phone(model: 1+, memory: 8)", a2.toString())
     assert("Asset.Modem(model: Zyxel)", a3.toString())
-}
+#endtest
 
-test "Pattern match 1"
-{
+#test "Pattern match 1"
     type Asset = Computer(model, memory, rank) or Phone(model, memory) or Modem(model)
     var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
     var a2 = Asset.Phone("1+", 8)
@@ -77,10 +70,9 @@ test "Pattern match 1"
     }
     assert(16, mem(a1))
     assert(8, mem(a2))
-}
+#endtest
 
-test "Extending type 1"
-{
+#test "Extending type 1"
     type Bar = {
         var data
     }
@@ -99,10 +91,9 @@ test "Extending type 1"
         (x, y, z) => x + y + z
     }
     assert(6, res)
-}
+#endtest
 
-test "Extending type 2"
-{
+#test "Extending type 2"
     type Bar = {
         var data
     }
@@ -124,10 +115,9 @@ test "Extending type 2"
         (x, y, z) => x + y + z
     }
     assert(60, res)
-}
+#endtest
 
-test "Maybe or Some"
-{
+#test "Maybe or Some"
     type Maybe = None() or Some(x)
     var x = Maybe.Some(42)
     var y = Maybe.None()
@@ -139,10 +129,9 @@ test "Maybe or Some"
     }
     assert(42, doMatch(x))
     assert("None", doMatch(y))
-}
+#endtest
 
-test "Pattern match 2"
-{
+#test "Pattern match 2"
     type Foo = Bar(x, y, z)
     var f = Foo.Bar(12, "foobar", 3)
     var res = match f {
@@ -151,20 +140,18 @@ test "Pattern match 2"
         Bar() => "not quite"
     }
     assert("12,foobar", res)
-}
+#endtest
 
-test "Point variant"
-{
+#test "Point variant"
     type Point(x, y)
     var p = Point(12, 43)
     assert(12, p[0])
     assert(43, p[1])
     assert(12, p::x)
     assert(43, p::y)
-}
+#endtest
 
-test "Natural number 1"
-{
+#test "Natural number 1"
     type Nat = { var val }
     func fetch(x) {
         Nat(x) when x >= 0 else x
@@ -198,10 +185,9 @@ test "Natural number 1"
     assert(Nat(24), n * Nat(2))
     assert(Nat(6), n / Nat(2))
     assert(Nat(6), n / Nat(2))
-}
+#endtest
 
-test "Either"
-{
+#test "Either"
     type Either = Left(x) or Right(x)
     var x = Either.Left(12)
     var y = Either.Right(24)
@@ -213,10 +199,9 @@ test "Either"
     }
     assert(12, doMatch(x))
     assert(24, doMatch(y))
-}
+#endtest
 
-test "Reference cell"
-{
+#test "Reference cell"
     type Cell = { var val }
     func ref(value) {
         Cell(value)
@@ -249,10 +234,9 @@ test "Reference cell"
     assert(24, match c {
         Cell(x) => x
     })
-}
+#endtest
 
-test "Linked list"
-{
+#test "Linked list"
     type List = Cons(x, next) or Empty()
     func List.toString() {
         func walk(xs) {
@@ -266,10 +250,9 @@ test "Linked list"
     }
     var xs = List.Cons(1, List.Cons(2, List.Cons(3, List.Cons(4, List.Empty()))))
     assert("[1,2,3,4]", xs.toString())
-}
+#endtest
 
-test "Generate linked list"
-{
+#test "Generate linked list"
     type List = Cons(x, next) or Empty()
     func List.toString() {
         func walk(xs) {
@@ -290,10 +273,9 @@ test "Generate linked list"
     }
     var xs = List.generate(1,2,3,4)
     assert("[4,3,2,1]", xs.toString())
-}
+#endtest
 
-test "Custom toString"
-{
+#test "Custom toString"
     type Foo()
     var x = Foo()
     func Foo.toString() {
@@ -302,10 +284,9 @@ test "Custom toString"
         }
     }
     assert("nil", x.toString())
-}
+#endtest
 
-test "Record"
-{
+#test "Record"
     type Record = { var fields }    
     static func Record.Record(values...) {
         this.ini.fields = values
@@ -319,10 +300,9 @@ test "Record"
     var p = Record(values: (name: "John", age: 33))
     assert("John", p["name"])
     assert(33, p::age)
-}
+#endtest
 
-test "Read-only fields"
-{
+#test "Read-only fields"
     type UserInfo(name,age)
     var u = UserInfo("Jon", 17)
     assert(17, u::age)
@@ -332,10 +312,9 @@ test "Read-only fields"
     } catch {
         FieldReadOnly() => assert(got: true)
     }
-}
+#endtest
 
-test "Default values"
-{
+#test "Default values"
     type Foo(a, b = 12, c = 33)
     var t = Foo(1)
     assert(1, t::a)
@@ -349,10 +328,9 @@ test "Default values"
     assert(1, t::a)
     assert(2, t::b)
     assert(3, t::c)
-}
+#endtest
 
-test "Mutable Point"
-{
+#test "Mutable Point"
     type Point = { var px; var py }
     static func Point.Point(x, y) {
         this.ini.px = x
@@ -377,32 +355,28 @@ test "Mutable Point"
     p::y += p::y
     assert(24, p::x)
     assert(68, p::y)
-}
+#endtest
 
-test "Member check 1"
-{
+#test "Member check 1"
     var t = (x: 2)
     assert(false, t is .x)
-}
+#endtest
 
-test "Member check 2"
-{
+#test "Member check 2"
     func Integer.foobar() {}
     assert(true, 12 is .foobar)
     Integer.__deleteMember("foobar")
-}
+#endtest
 
-test "Member check 3"
-{
+#test "Member check 3"
     type Foo(x)
     func Foo.foobar() {}
     var p = Foo(22)
     assert(false, p is .x)
     assert(true, p is .foobar)
-}
+#endtest
 
-test "Object: general behavior"
-{
+#test "Object: general behavior"
     var obj = __makeObject( (name: "Vasily", age: 41) )
     var res1 = match obj {
         (x, y) => "x=\(x),y=\(y)",
@@ -415,27 +389,24 @@ test "Object: general behavior"
     }
     assert("x=Vasily,y=41", res2)
     
-}
+#endtest
 
-test "Object: getType"
-{
+#test "Object: getType"
     let x = __makeObject( (x: 1) )
     assert(true, TypeInfo(x) == Object)
      assert(true, x.getType() == Object)
      var t = TypeInfo(x)
      assert(14, t.id)
      assert("Object", t.name)
-}
+#endtest
 
-test "Object: clone"
-{
+#test "Object: clone"
     let xs = __makeObject( (x: 1) )
     assert(true, xs == xs)
     assert(false, xs.clone() == xs)
-}
+#endtest
 
-test "Callable type 1"
-{
+#test "Callable type 1"
     type Julia(x)
     func Julia.call(y, z) {
         this::x + y * z 
@@ -443,30 +414,27 @@ test "Callable type 1"
     var x = Julia(12)
     var res = x(44.5, 67.07)
     assert(2996.615, res)
-}
+#endtest
 
-test "Callable type 2"
-{
+#test "Callable type 2"
     func Integer.call() {
         this + this
     }
     var res = 14()
     Integer.__deleteMember("call")
     assert(28, res)
-}
+#endtest
 
-test "Pattern match: is"
-{
+#test "Pattern match: is"
     type Option = Some(x) or None()
     let some = Option.Some(42)
     let none = Option.None()
     var x
     x = 42 when some is Option && none is Option
     assert(42, x)
-}
+#endtest
 
-test "Pattern match: inside method"
-{
+#test "Pattern match: inside method"
     type Option = Some(x) or None()
     func Option.extractValue() {
         if this is Some(x) {
@@ -475,10 +443,9 @@ test "Pattern match: inside method"
     }
     let some = Option.Some(42)
     assert(42, some.extractValue())
-}
+#endtest
 
-test "String builder"
-{
+#test "String builder"
     type StringBuilder = {
         let buffer = []
     }
@@ -511,10 +478,9 @@ test "String builder"
     sb.append(true)
     sb.append(false)
     assert("truefalse", sb.toString())
-}
+#endtest
 
-test "Private access 1"
-{
+#test "Private access 1"
     type Foo = {
         var x
         let pi = 3.14
@@ -528,10 +494,9 @@ test "Private access 1"
     var f = Foo(12)
     var res = f.ok()
     assert(12, res)
-}
+#endtest
 
-test "Private access 2"
-{
+#test "Private access 2"
     type Foo = {
         var x
         let pi = 3.14
@@ -548,10 +513,9 @@ test "Private access 2"
     var f = Foo(12)
     var res = f.ok(f)
     assert(3.14, res)
-}
+#endtest
 
-test "Private access 3"
-{
+#test "Private access 3"
     type Foo = {
         var x
         let pi = 3.14
@@ -571,10 +535,9 @@ test "Private access 3"
     } catch {
         PrivateAccess() => assert(got: true)
     }
-}
+#endtest
 
-test "Natural number 2"
-{
+#test "Natural number 2"
     type RealNat = {
         var num
     }
@@ -595,10 +558,9 @@ test "Natural number 2"
     assert(RealNat(22), x + y)
     assert(RealNat(2), x + -10)
     assert(-2, x + -14)
-}
+#endtest
 
-test "Type constraints"
-{
+#test "Type constraints"
     type Foo(Integer x, Float y)
     let _ = Foo(12, 12.12)
     try {
@@ -607,10 +569,9 @@ test "Type constraints"
     } catch {
         InvalidType() => assert(got: true)
     }
-}
+#endtest
 
-test "Mutable variant 1"
-{
+#test "Mutable variant 1"
     type Foo(var x, y)
     let t = Foo(12, 24)
     t::x = 120
@@ -621,10 +582,9 @@ test "Mutable variant 1"
     } catch {
         FieldReadOnly() => assert(got: true)
     }
-}
+#endtest
 
-test "Mutable variant 2"
-{
+#test "Mutable variant 2"
     type Foo(var Integer x, y)
     let t = Foo(12, 24)
     t::x = 1
@@ -635,10 +595,9 @@ test "Mutable variant 2"
     } catch {
         InvalidType() => assert(got: true)
     }
-}
+#endtest
 
-test "Custom constructor with constraints"
-{
+#test "Custom constructor with constraints"
     type Foo = {
         var data
     }
@@ -666,10 +625,9 @@ test "Custom constructor with constraints"
         InvalidType() => assert(got: true),
         e => print(e)
     }
-}
+#endtest
 
-test "Variant members"
-{
+#test "Variant members"
     type Expr = Literal(var Float value) or Unary(var op, var Expr left)
     let a = Expr.Literal(12.2)
     assert(12.2, a::value)
@@ -682,10 +640,9 @@ test "Variant members"
     assert("+", b::op)
     b::left::value = 42.0
     assert(42.0, b::left::value)
-}
+#endtest
 
-test "Function inside init"
-{
+#test "Function inside init"
     type TinyInt = {
         var value
         func getInteger(val) {
@@ -701,10 +658,9 @@ test "Function inside init"
     }
     let res = TinyInt(2) + TinyInt(7)
     assert(9, res.toInteger())
-}
+#endtest
 
-test "Properties 1"
-{
+#test "Properties 1"
     type Foo = {
         var status
     }
@@ -717,10 +673,9 @@ test "Properties 1"
     assert(21, f.status)
     f.status += 11
     assert(32, f.status)
-}
+#endtest
 
-test "Properties 2"
-{
+#test "Properties 2"
     type Foo = {
         var box
     }    
@@ -733,4 +688,4 @@ test "Properties 2"
     assert(144, f.box)
     f.box ??= 288
     assert(144, f.box)
-}
+#endtest

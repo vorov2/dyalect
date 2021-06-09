@@ -1,48 +1,41 @@
-﻿test "Char literal"
-{
+﻿#test "Char literal"
     var res = '\'' + 'F' + '\'' + '\s'
     assert("'F' ", res)
-}
+#endtest
 
-test "Constructor"
-{
+#test "Constructor"
     assert('c', Char('c'))
     assert('A', Char(65))
     assert('6', Char('6'))
     assert('\u0006', Char(6))
     assert('f', Char("foo"))
-}
+#endtest
 
-test "Methods: getType"
-{
+#test "Methods: getType"
     let x = 'A'
     assert(true, TypeInfo(x) == Char)
     assert(true, x.getType() == Char)
     let t = TypeInfo(x)
     assert(4, t.id)
     assert("Char", t.name)
-}
+#endtest
 
-test "Methods: default"
-{
+#test "Methods: default"
     assert('\0', Char.default())
-}
+#endtest
 
-test "Methods: min and max"
-{
+#test "Methods: min and max"
     assert('\0', Char.min())
     assert('\uffff', Char.max())
     assert(true, Char.default() == Char.min())
-}
+#endtest
 
-test "Ranges"
-{
+#test "Ranges"
     assert(['a','b','c','d','e','f'], ['a'..'f'])
     assert(['a','c','e'], ('a'^2..'f').toArray())
-}
+#endtest
 
-test "Char comparison"
-{
+#test "Char comparison"
     assert(true, 'c' == "c")
     assert(true, "c" == 'c')
     assert(false, 'c' == "cc")
@@ -51,57 +44,50 @@ test "Char comparison"
     assert(true, 'c' < "cc")
     assert(true, "cc" > 'c')
     assert(false, "cc" < 'c')
-}
+#endtest
 
-test "Methods: upper and isUpper"
-{
+#test "Methods: upper and isUpper"
     assert(true, 'C' == 'c'.upper())
     assert(true, 'C'.isUpper())
-}
+#endtest
 
-test "Methods: lower and isLower"
-{
+#test "Methods: lower and isLower"
     assert(true, 'c' == 'C'.lower())
     assert(true, 'c'.isLower())
-}
+#endtest
 
-test "Methods: isWhitespace"
-{
+#test "Methods: isWhitespace"
     assert(true, '\s'.isWhiteSpace())
     assert(true, ' '.isWhiteSpace())
     assert(true, '\u0020'.isWhiteSpace())
     assert(true, '\t'.isWhiteSpace())
-}
+#endtest
 
-test "Methods: isControl"
-{
+#test "Methods: isControl"
     assert(true, '\t'.isControl())
     assert(true, '\b'.isControl())
     assert(false, 't'.isControl())
-}
+#endtest
 
-test "Methods: isLetterOrDigit"
-{
+#test "Methods: isLetterOrDigit"
     assert(true, '9'.isDigit())
     assert(false, 'A'.isDigit())
     assert(true, 'A'.isLetter())
     assert(false, '1'.isLetter())
     assert(true, '9'.isLetterOrDigit())
     assert(true, 't'.isLetterOrDigit())
-}
+#endtest
 
-test "Methods: order"
-{
+#test "Methods: order"
     assert(65, 'A'.order())
     assert(54, '6'.order())
-}
+#endtest
 
-test "Math with chars"
-{
+#test "Math with chars"
     let a = 'a'
     let b = 'b'
     assert('b', a + 1)
     assert('a', b - 1)
     assert("ab", a + b)
     assert("abcdef", a + b + "cdef")
-}
+#endtest

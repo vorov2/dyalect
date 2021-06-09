@@ -3,7 +3,7 @@ func arrayLiteralTest() {
     var arr = [[1,2], [3,4,(5,6,a: [7,8])]]
     var res = arr[0][0] + arr[1][2]["a"][1]
     assert(9, res)
-}
+#endtest
 
 func arrayTest1() {
     var arr = []
@@ -13,7 +13,7 @@ func arrayTest1() {
     arr.removeAt(1)
     arr.remove(3)
     assert([1, 1, 2], arr)
-}
+#endtest
 
 func arrayTest2() {
     var arr = [1,2,3,4,5]
@@ -24,7 +24,7 @@ func arrayTest2() {
     arr.insert(0, 11)
     arr.remove(11)
     assert([11, 1, 2], arr)
-}
+#endtest
 
 func arrayTest3() {
     var arr = [1,2,3,4,5,6]
@@ -34,42 +34,42 @@ func arrayTest3() {
     assert([3, 4, 5, 6], newArr)
     newArr = arr.slice(2).toArray()
     assert([3, 4, 5, 6], newArr)
-}
+#endtest
 
 func arrayTest4() {
     var arr = [4,6,1,3,2,5]
     arr.sort((x,y) => x - y)
     assert([1, 2, 3, 4, 5, 6], arr)
-}
+#endtest
 
 func arrayTest5() {
     var arr = [1, 2, 3, 1, 4, 5, 1]
     assert(0, arr.indexOf(1))
     assert(6, arr.lastIndexOf(1))
-}
+#endtest
 
 func arrayTest6() {
     var arr = [1,2,3,4,5,6]
     var res = arr.indices().toArray()
     assert([0, 1, 2, 3, 4, 5], res)
-}
+#endtest
 
 func arrayTest7() {
     var arr = [1,nil,2,nil,3,nil,nil,4,5,6]
     arr.compact()
     assert([1, 2, 3, 4, 5, 6], arr)
-}
+#endtest
 
 func arrayTest8() {
     var arr = [1,2,3,4]
     assert(4, arr.len())
-}
+#endtest
 
 func arrayTest9() {
     var arr = [7,4,6,1,3,2,5]
     arr.sort()
     assert([1, 2, 3, 4, 5, 6, 7], arr)
-}
+#endtest
 
 func arrayTest10() {
     var arr = Array.empty(4, false)
@@ -78,12 +78,12 @@ func arrayTest10() {
     assert([0, 0, 0], arr)
     arr = Array.empty(2)
     assert([nil, nil], arr)
-}
+#endtest
 
 func arrayTest11() {
     var arr = Array(1,2,3)
     assert([1,2,3], arr)
-}
+#endtest
 
 func arrayTest12() {
     func it() {
@@ -92,42 +92,42 @@ func arrayTest12() {
     }
     var arr = Array.concat([1,2,3], [4,5,6], (1,2), it())
     assert([1,2,3,4,5,6,1,2,"foo","boo"], arr)
-}
+#endtest
 
 func arrayTest13() {
     var xs = (1..10).toArray()
     var slice = xs.slice(4).toArray()
     assert([5,6,7,8,9,10], slice)
-}
+#endtest
 
 func arrayTest14() {
     var xs = [0,1,2,3,4,5,6,7,8,9]
     var res = xs[1..5].toArray()
     assert([1,2,3,4,5], res)
-}
+#endtest
 
 func arrayTest15() {
     var xs = [1..10]
     assert([1,2,3,4,5,6,7,8,9,10], xs)
-}
+#endtest
 
 func arrayTest18() {
     var xs = []
     xs.addRange(yields { 1,2,3,4,5 })
     assert([1,2,3,4,5], xs)
-}
+#endtest
 
 func arrayTest19() {
     var xs = [1,2,3]
     xs.insert(1, 1.5)
     assert([1,1.5,2,3], xs)
-}
+#endtest
 
 func arrayTest20() {
     var xs = [1,2,3]
     xs.insertRange(1, [3,4,5])
     assert([1,3,4,5,2,3], xs)
-}
+#endtest
 
 func arrayTest21() {
     var xs = [1,2,3]
@@ -138,32 +138,32 @@ func arrayTest21() {
     assert([1,2,3,5,6], res)
     res = xs + yields { 11,22 }
     assert([1,2,3,11,22], res)
-}
+#endtest
 
 func arrayTest22() {
     //Related to bug #145
     var arr = []
     arr.insert(0, 1)
     assert([1], arr)
-}
+#endtest
 
 func arrayTest23() { //Bug #226
     var xs = [(s: 3.0, e: 4.0), (s: 1.0, e: 2.0)]
     xs.sort((x,y) => x::s - y::s)
     assert(1.0, xs[0]::s)
-}
+#endtest
 
 func arrayTest24() { //Issue #250
     var xs = [1,2,3,4,5]
     xs.reverse()
     assert([5,4,3,2,1], xs)
-}
+#endtest
 
 func arrayTest25() { //#273
     var xs = [1,2,3]
     xs.swap(1,2)
     assert([1,3,2], xs)
-}
+#endtest
 
 func arrayTest26() { //#285
     var xs = [1..10]
@@ -172,13 +172,13 @@ func arrayTest26() { //#285
     xs = [1..10]
     xs.removeRangeAt(4)
     assert([1,2,3,4], xs)
-}
+#endtest
 
 func arrayTest27() { //#285
     var xs = [1..10]
     xs.removeRange([1..5])
     assert([6,7,8,9,10], xs)
-}
+#endtest
 
 func arrayTest28() { //#285
     var xs = [1..10]
@@ -189,57 +189,57 @@ func arrayTest28() { //#285
     }
     xs.removeRange(filter())
     assert([1,3,5,7,9], xs)
-}
+#endtest
 
 func arrayTest29() { //#286
     var xs = [1..10]
     xs.removeAll(x => x % 2 == 0)
     assert([1,3,5,7,9], xs)
-}
+#endtest
 
 func arrayTest30() { //#291
     var arr = [4,6,1,3,2,5]
     Array.sort(arr, (x,y) => x - y)
     assert([1, 2, 3, 4, 5, 6], arr)
-}
+#endtest
 
 func arratTest31() { //#315
     var xs = [1,2,3]
     var res = xs + "abc"
     assert([1,2,3,'a','b','c'], res)
-}
+#endtest
 
 func arrayCopyTest1() {
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = Array.empty(3)
     Array.copy(xs, 1, ys, 0, 3)
     assert([2,3,4], ys)
-}
+#endtest
 
 func arrayCopyTest2() {
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = Array.copy(from: xs, fromIndex: 1, count: 3)
     assert([2,3,4], ys)
-}
+#endtest
 
 func arrayCopyTest3() {
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = [999, 999, 0, 0, 0]
     ys = Array.copy(xs, 1, ys, 2, 3)
     assert([999,999,2,3,4], ys)
-}
+#endtest
 
 func arrayCopyTest4() {
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = Array.copy(xs, count: 3)
     assert([1,2,3], ys)
-}
+#endtest
 
 func arrayIndexing() { //#301
     var xs = [1,2,3,4,5]
     assert(5, xs[-1])
     assert(1, xs[-5])
-}
+#endtest
 
 //Start  #301
 type FooInArray(x)
@@ -250,7 +250,7 @@ func complexEquality1() {
     var xs = [FooInArray(0)]
     xs.remove(FooInArray(3))
     assert([], xs)
-}
+#endtest
 
 func complexEquality2() {
     var xs = [12, "foo", FooInArray(12), FooInArray(0)]
@@ -258,19 +258,19 @@ func complexEquality2() {
     assert(res, 2)
     res = xs.indexOf(FooInArray(0))
     assert(res, 2)
-}
+#endtest
 
 func complexEquality3() {
     var xs = [12, "foo", FooInArray(12), FooInArray(0)]
     var res = xs.lastIndexOf(FooInArray(12))
     assert(res, 3)
-}
+#endtest
 
 func complexEquality4() {
     var xs = [FooInArray(1), FooInArray(2), FooInArray(3), FooInArray(4)]
     xs.removeRange([FooInArray(0)])
     assert([FooInArray(2), FooInArray(3), FooInArray(4)], xs)
-}
+#endtest
 //End #301
 
 func arrayContains() {
@@ -278,4 +278,4 @@ func arrayContains() {
     assert(true, xs.contains(1))
     assert(true, xs.contains(10))
     assert(false, xs.contains(101))
-}
+#endtest

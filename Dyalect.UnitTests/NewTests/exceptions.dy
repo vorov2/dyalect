@@ -1,15 +1,13 @@
-﻿test "Type error"
-{
+﻿#test "Type error"
     try {
         12 + '2'
         assert(got: false)
     } catch {
         InvalidType() => assert(got: true)
     }
-}
+#endtest
 
-test "Simple catch 1"
-{
+#test "Simple catch 1"
     var x
     try {
         x = 2
@@ -18,10 +16,9 @@ test "Simple catch 1"
     }
     //catch should be ignored
     assert(2, x)
-}
+#endtest
 
-test "Simple catch 2"
-{
+#test "Simple catch 2"
     var res =
         try {
             2 / 0
@@ -29,10 +26,9 @@ test "Simple catch 2"
             42
         }
     assert(42, res)
-}
+#endtest
 
-test "Nested catch 1"
-{
+#test "Nested catch 1"
     var res =
         try {
             try {
@@ -45,10 +41,9 @@ test "Nested catch 1"
             42
         }
     assert(142, res)
-}
+#endtest
 
-test "Catch and throw"
-{
+#test "Catch and throw"
     var res =
         try {
             throw "Error!"
@@ -56,10 +51,9 @@ test "Catch and throw"
             e[0]
         }
     assert("Error!", res)
-}
+#endtest
 
-test "Nested catch 2"
-{
+#test "Nested catch 2"
     var res =
         try {
             try {
@@ -72,10 +66,9 @@ test "Nested catch 2"
             "caught:" + e[0]
         }
     assert("caught:Oops!", res)
-}
+#endtest
 
-test "Nested catch 3"
-{
+#test "Nested catch 3"
     var res =
         try {
             try {
@@ -90,10 +83,9 @@ test "Nested catch 3"
             e[0]
         }
     assert(42, res)
-}
+#endtest
 
-test "Throwing from functions"
-{
+#test "Throwing from functions"
     func errorMaker() {
         throw nameof(errorMaker)
     }
@@ -112,10 +104,9 @@ test "Throwing from functions"
     }
     var res = caller0()
     assert("errorMaker", res)
-}
+#endtest
 
-test "Catch as an expression"
-{
+#test "Catch as an expression"
     func foo(x, y, z) { (x,y,z) }
     var e = try {
             foo(1, 2, 3, 4)
@@ -123,10 +114,9 @@ test "Catch as an expression"
             "foo"
         }
     assert("foo", e)
-}
+#endtest
 
-test "Catch and iterators"
-{
+#test "Catch and iterators"
     func check(x) {
         if x % 2 == 0 {
             throw x
@@ -144,10 +134,9 @@ test "Catch and iterators"
     }
     var arr = [1..20]
     assert([1,3,5,7,9,11,13,15,17,19], yielder(arr).toArray())
-}
+#endtest
 
-test "Simple catch 3"
-{
+#test "Simple catch 3"
     var res =
         try {
             4 / 2
@@ -155,10 +144,9 @@ test "Simple catch 3"
             42
         }
     assert(2, res)
-}
+#endtest
 
-test "Pattern matching 1"
-{
+#test "Pattern matching 1"
     func foo() { throw ("err", 22) }
     var e = try {
             foo()
@@ -168,10 +156,9 @@ test "Pattern matching 1"
             (("err", 22),) => true
         }
     assert(true, e)
-}
+#endtest
 
-test "Pattern matching 2"
-{
+#test "Pattern matching 2"
     func foo() { throw ("err", 231) }
     var e
     e = try {
@@ -186,10 +173,9 @@ test "Pattern matching 2"
         142
     }
     assert(142, e)
-}
+#endtest
 
-test "External catch 1"
-{
+#test "External catch 1"
     func sorter(x, y) {
         if x > 10 {
             throw "No!"
@@ -204,10 +190,9 @@ test "External catch 1"
         ex = e[0]
     }
     assert("No!", ex)
-}
+#endtest
 
-test "External catch 2"
-{
+#test "External catch 2"
     func defaultElement() {
         var n = 0
         while true {
@@ -225,10 +210,9 @@ test "External catch 2"
     } catch e {
         assert(11, e)
     }
-}
+#endtest
 
-test "External catch 3"
-{
+#test "External catch 3"
     func seq() {
         yield 1
         throw 2
@@ -239,10 +223,9 @@ test "External catch 3"
     } catch e {
         assert(2, e[0])
     }
-}
+#endtest
 
-test "Iterators 1"
-{
+#test "Iterators 1"
     func testMe() {
         var xs = [1..10]
         for x in xs {
@@ -255,10 +238,9 @@ test "Iterators 1"
         e::detail.contains("modified after the iterator was instantiated")
     }
     assert(true, b)
-}
+#endtest
 
-test "Iterators 2"
-{
+#test "Iterators 2"
     func test0() {
         var xs = [1..10]
         for x in xs {
@@ -278,10 +260,9 @@ test "Iterators 2"
         e::detail.contains("modified after the iterator was instantiated")
     }
     assert(true, b)
-}
+#endtest
 
-test "Custom type exception"
-{
+#test "Custom type exception"
     //Bug #248
     type U0()
 
@@ -299,10 +280,9 @@ test "Custom type exception"
         }
     }
     assert("U0 caught.", foo())
-}
+#endtest
 
-test "Catch chain"
-{
+#test "Catch chain"
     func zoo() {
         throw 1024
     }
@@ -325,10 +305,9 @@ test "Catch chain"
         x = e[0]
     }
     assert(1024, x)
-}
+#endtest
 
-test "Fall into correct catch"
-{
+#test "Fall into correct catch"
     func checkit() {
         try {
             return
@@ -347,10 +326,9 @@ test "Fall into correct catch"
         x = e[0]
     }
     assert(12, x)
-}
+#endtest
 
-test "Rethrowing"
-{
+#test "Rethrowing"
     func work() {
         try {
             throw 42
@@ -365,10 +343,9 @@ test "Rethrowing"
         x = e[0]
     }
     assert(42, x)
-}
+#endtest
 
-test "Nested exceptions"
-{
+#test "Nested exceptions"
     func foo() {
         try {
             throw "exc.1"
@@ -388,10 +365,9 @@ test "Nested exceptions"
         dat = e[0]
     }
     assert("exc.1", dat)
-}
+#endtest
 
-test "Multiple throws from catch"
-{
+#test "Multiple throws from catch"
     var x 
     try {
        try {
@@ -403,10 +379,9 @@ test "Multiple throws from catch"
         x = e[0]
     }
     assert("exc.1", x)
-}
+#endtest
 
-test "Throwing 1"
-{
+#test "Throwing 1"
     var x
     try {
         throw Error.IndexOutOfRange()
@@ -414,10 +389,9 @@ test "Throwing 1"
         IndexOutOfRange() => { x = true }
     }
     assert(true, x)
-}
+#endtest
 
-test "Throwing 2"
-{
+#test "Throwing 2"
     var x
     try {
         throw Error.InvalidType(0.getType().name)
@@ -425,10 +399,9 @@ test "Throwing 2"
         InvalidType(tn) when tn == "Integer"  => { x = true }
     }
     assert(true, x)
-}
+#endtest
 
-test "Throwing 3"
-{
+#test "Throwing 3"
     var x
     try {
         throw "Test"
@@ -436,10 +409,9 @@ test "Throwing 3"
         UnexpectedError(msg) when msg == "Test"  => { x = true }
     }
     assert(true, x)
-}
+#endtest
 
-test "Throwing 4"
-{
+#test "Throwing 4"
     var x
     try {
         throw Error.InvalidBehavior(42)
@@ -447,10 +419,9 @@ test "Throwing 4"
         InvalidBehavior(code)  => { x = code }
     }
     assert(42, x)
-}
+#endtest
 
-test "Throw from override"
-{
+#test "Throw from override"
     func Integer.toString() {
         throw "Ooops!"
     }
@@ -461,4 +432,4 @@ test "Throw from override"
     } catch _ {
         assert(got: true)
     }
-}
+#endtest

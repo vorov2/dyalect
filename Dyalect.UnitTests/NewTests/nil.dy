@@ -1,28 +1,24 @@
-﻿test "Literal and initialization"
-{
+﻿#test "Literal and initialization"
     let x = nil
     assert(nil, x)
     var y
     assert(y, nil)
     assert(got: x == y)
-}
+#endtest
 
-test "Constructor"
-{
+#test "Constructor"
     assert(nil, Nil())
-}
+#endtest
 
-test "Methods: default"
-{
+#test "Methods: default"
     assert(nil, Nil.default())
-}
+#endtest
 
-test "Methods: getType"
-{
+#test "Methods: getType"
     let x = nil
     assert(true, TypeInfo(x) == Nil)
     assert(true, x.getType() == Nil)
     var t = TypeInfo(x)
     assert(0, t.id)
     assert("Nil", t.name)
-}
+#endtest

@@ -8,7 +8,7 @@ func whileTest1() {
         n = n - 1
     }
     assert(33, x)
-}
+#endtest
 
 func whileTest2() {
     var n = 100
@@ -22,7 +22,7 @@ func whileTest2() {
         x = 42
     }
     assert(42, x)
-}
+#endtest
 
 func nestedWhileTest() {
     var z = 5
@@ -40,7 +40,7 @@ func nestedWhileTest() {
     }
     assert(0, z)
     assert(5, c)
-}
+#endtest
 
 func doWhileTest1() {
     var x = 1
@@ -52,7 +52,7 @@ func doWhileTest1() {
         x += 1
     } while false
     assert(1, x)
-}
+#endtest
 
 func doWhileTest2() {
     var x = 0
@@ -60,7 +60,7 @@ func doWhileTest2() {
         x += 1
     } while x < 10
     assert(10, x)
-}
+#endtest
 
 func dowhileTest3() {
     var x = 0
@@ -71,7 +71,7 @@ func dowhileTest3() {
         }
     } while x < 10
     assert(1, x)
-}
+#endtest
 
 func dowhileTest4() {
     var x = 0
@@ -85,7 +85,7 @@ func dowhileTest4() {
     } while x < 10
     assert(10, x)
     assert(8, iter)
-}
+#endtest
 
 func forTest1() {
     var str = ""
@@ -102,7 +102,7 @@ func forTest1() {
         "****\n" +
         "*****\n"
     assert(pattern, str)
-}
+#endtest
 
 func forTest2() {
     var acc = 0
@@ -118,7 +118,7 @@ func forTest2() {
         }
     }
     assert(44, acc)
-}
+#endtest
 
 func forTest3() {
     var acc = ""
@@ -131,7 +131,7 @@ func forTest3() {
         }
     }
     assert(">>1", acc)
-}
+#endtest
 
 func forTest4() { //Bug #238
     var arr = []
@@ -140,7 +140,7 @@ func forTest4() { //Bug #238
         arr.add(x)
     }
     assert([2,4,6,8], arr)
-}
+#endtest
 
 func whileStackTest() { //#151
     var i = 1
@@ -151,4 +151,4 @@ func whileStackTest() { //#151
         i += 1
     }
     assert(true, true)
-}
+#endtest

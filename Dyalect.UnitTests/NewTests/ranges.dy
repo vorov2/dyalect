@@ -1,38 +1,32 @@
-﻿test "Simple range"
-{
+﻿#test "Simple range"
     var xs = 1..10
     assert([1,2,3,4,5,6,7,8,9,10], xs.toArray())
-}
+#endtest
 
-test "Range with a step"
-{
+#test "Range with a step"
     var xs = (5^-1..1)
     assert([5,4,3,2,1], xs.toArray())
-}
+#endtest
 
-test "Range in cycle"
-{
+#test "Range in cycle"
     var acc = 0
     for x in 1..5 {
         acc += x
     }
     assert(15, acc)
-}
+#endtest
 
-test "Char range"
-{
+#test "Char range"
     var chz = ('a'..'e')
     assert(['a','b','c','d','e'], chz.toArray())
-}
+#endtest
 
-test "Range as a statement"
-{
+#test "Range as a statement"
     1..10 //Check how ranges behave as statements, issue #77
     assert(got: true)
-}
+#endtest
 
-test "Range and take"
-{
+#test "Range and take"
     func take(xs, count) {
         var c = 0
         var arr = []
@@ -54,54 +48,48 @@ test "Range and take"
     seq = ('a'..)
     xs = take(seq, 5)
     assert(['a', 'b', 'c', 'd', 'e'], xs)
-}
+#endtest
 
-test "String range"
-{
+#test "String range"
     let str = "hello,world!"
     let new1 = str[0..4]
     assert("hello", new1)
     let new2 = str[6..10]
     assert("world", new2)
-}
+#endtest
 
-test "Slicing 1"
-{
+#test "Slicing 1"
     var xs = ["Firefly", "Cowboy Bebop", "Samurai Champloo"]
     assert(["Cowboy Bebop", "Samurai Champloo"], xs[-2..].toArray())
     assert(["Samurai Champloo"], xs[-1..].toArray())
-}
+#endtest
 
-test "Slicing 2"
-{
+#test "Slicing 2"
     var cities = ["Kolkata", "Hyderabad", "Bangalore", "London", "Moscow", "London", "New York"]
     assert("New York", cities[-1])
     assert(["Kolkata", "Hyderabad", "Bangalore", "London", "Moscow"], cities[0..4].toArray())
-}
+#endtest
 
-test "Slicing 3"
-{
+#test "Slicing 3"
     var xs = 1..10
     assert([9,10], xs[-2..].toArray())
     assert([2,3,4], xs[1..3].toArray())
     var ys = [1..10]
     assert([9,10], ys[-2..].toArray())
     assert([2,3,4], ys[1..3].toArray())
-}
+#endtest
 
-test "Slicing 4"
-{
+#test "Slicing 4"
     var xs = "hello,world!"
     assert("hello", xs[..-7])
     assert("hello", xs[..4])
     assert("world!", xs[-6..])
     assert("lo", xs[3..-7])
-}
+#endtest
 
-test "Exclusive range"
-{
+#test "Exclusive range"
     var xs = [1..5]
     assert([1,2,3,4,5], xs)
     xs = [1..<5]
     assert([1,2,3,4], xs)
-}
+#endtest

@@ -8,7 +8,7 @@ func catchTest1() {
     }
     //catch should be ignored
     assert(2, x)
-}
+#endtest
 
 func catchTest2() {
     var res =
@@ -18,7 +18,7 @@ func catchTest2() {
             42
         }
     assert(42, res)
-}
+#endtest
 
 func catchTest3() {
     var res =
@@ -33,7 +33,7 @@ func catchTest3() {
             42
         }
     assert(142, res)
-}
+#endtest
 
 func catchTest4() {
     var res =
@@ -43,7 +43,7 @@ func catchTest4() {
             e[0]
         }
     assert("Error!", res)
-}
+#endtest
 
 func catchTest5() {
     var res =
@@ -58,7 +58,7 @@ func catchTest5() {
             "caught:" + e[0]
         }
     assert("caught:Oops!", res)
-}
+#endtest
 
 func catchTest6() {
     var res =
@@ -75,7 +75,7 @@ func catchTest6() {
             e[0]
         }
     assert(42, res)
-}
+#endtest
 
 func catchTest7() {
     func errorMaker() {
@@ -96,7 +96,7 @@ func catchTest7() {
     }
     var res = caller0()
     assert("errorMaker", res)
-}
+#endtest
 
 func catchTest8() {
     func foo(x, y, z) { (x,y,z) }
@@ -106,7 +106,7 @@ func catchTest8() {
             "foo"
         }
     assert("foo", e)
-}
+#endtest
 
 func catchTest9() {
     func check(x) {
@@ -126,7 +126,7 @@ func catchTest9() {
     }
     var arr = [1..20]
     assert([1,3,5,7,9,11,13,15,17,19], yielder(arr).toArray())
-}
+#endtest
 
 func catchTest10() {
     var res =
@@ -136,7 +136,7 @@ func catchTest10() {
             42
         }
     assert(2, res)
-}
+#endtest
 
 func catchMatchTest1() {
     func foo() { throw ("err", 22) }
@@ -148,7 +148,7 @@ func catchMatchTest1() {
             (("err", 22),) => true
         }
     assert(true, e)
-}
+#endtest
 
 func catchMatchTest2() {
     func foo() { throw ("err", 231) }
@@ -165,7 +165,7 @@ func catchMatchTest2() {
         142
     }
     assert(142, e)
-}
+#endtest
 
 func externalCatchTest1() {
     func sorter(x, y) {
@@ -182,7 +182,7 @@ func externalCatchTest1() {
         ex = e[0]
     }
     assert("No!", ex)
-}
+#endtest
 
 func externalCatchTest2() {
     func defaultElement() {
@@ -202,7 +202,7 @@ func externalCatchTest2() {
     } catch e {
         assert(11, e)
     }
-}
+#endtest
 
 func externalCatchTest3() {
     func seq() {
@@ -215,7 +215,7 @@ func externalCatchTest3() {
     } catch e {
         assert(2, e[0])
     }
-}
+#endtest
 
 func iteratorExceptionTest1() {
     func testMe() {
@@ -230,7 +230,7 @@ func iteratorExceptionTest1() {
         e::detail.contains("modified after the iterator was instantiated")
     }
     assert(true, b)
-}
+#endtest
 
 func iteratorExceptionTest2() {
     func test0() {
@@ -252,7 +252,7 @@ func iteratorExceptionTest2() {
         e::detail.contains("modified after the iterator was instantiated")
     }
     assert(true, b)
-}
+#endtest
 
 type U0()
 func customTypeException() { //Bug #248
@@ -270,7 +270,7 @@ func customTypeException() { //Bug #248
         }
     }
     assert("U0 caught.", foo())
-}
+#endtest
 
 func chainCatch1() {
     func zoo() {
@@ -295,7 +295,7 @@ func chainCatch1() {
         x = e[0]
     }
     assert(1024, x)
-}
+#endtest
 
 func rightCatch() {
     func checkit() {
@@ -316,7 +316,7 @@ func rightCatch() {
         x = e[0]
     }
     assert(12, x)
-}
+#endtest
 
 func rethrowTest() {
     func work() {
@@ -333,7 +333,7 @@ func rethrowTest() {
         x = e[0]
     }
     assert(42, x)
-}
+#endtest
 
 func nestedExceptions() {
     func foo() {
@@ -355,7 +355,7 @@ func nestedExceptions() {
         dat = e[0]
     }
     assert("exc.1", dat)
-}
+#endtest
 
 func multipleThrowFromCatc() {
     var x 
@@ -369,7 +369,7 @@ func multipleThrowFromCatc() {
         x = e[0]
     }
     assert("exc.1", x)
-}
+#endtest
 
 func throwTest1() {
     var x
@@ -379,7 +379,7 @@ func throwTest1() {
         IndexOutOfRange() => { x = true }
     }
     assert(true, x)
-}
+#endtest
 
 func throwTest2() {
     var x
@@ -389,7 +389,7 @@ func throwTest2() {
         InvalidType(tn) when tn == "Integer"  => { x = true }
     }
     assert(true, x)
-}
+#endtest
 
 func throwTest3() {
     var x
@@ -399,7 +399,7 @@ func throwTest3() {
         UnexpectedError(msg) when msg == "Test"  => { x = true }
     }
     assert(true, x)
-}
+#endtest
 
 func throwTest4() {
     var x
@@ -409,7 +409,7 @@ func throwTest4() {
         InvalidBehavior(code)  => { x = code }
     }
     assert(42, x)
-}
+#endtest
 
 func throwFromOverride() {
     func Integer.toString() {
@@ -422,4 +422,4 @@ func throwFromOverride() {
         assert(got: true)
     }
     Integer.__deleteMember("toString")
-}
+#endtest
