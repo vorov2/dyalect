@@ -1,4 +1,4 @@
-﻿COMPILER UnitTest
+﻿COMPILER Unit
 
 CHARACTERS
     cr = '\r'.
@@ -15,7 +15,7 @@ CHARACTERS
     verbatimChar2 = ANY - '>'.
     char = ANY - "'" - newLine.
     printable = digit + letter + "(\"\\'".
-    op = "+-~/\\!@%^&*()=<>[];:`." - "<[".
+    op = "+-~/\\!@%^&*()=;:`.,|".
 
 TOKENS
     identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
@@ -39,7 +39,6 @@ TOKENS
     verbatimStringToken = "<[" { verbatimChar | ("]" verbatimChar2) | "]>]>" } "]>".
     operatorToken = op { op }.
 
-
 COMMENTS FROM "/*" TO "*/" NESTED
 COMMENTS FROM "//" TO lf
 
@@ -48,15 +47,21 @@ IGNORE cr + lf + tab
 PRODUCTIONS
 
 Test =
-    "test" ( stringToken | "init" )
+    (. string name = null; .)
+    "test" ( stringToken (. name = ParseString(); .) | "init" )
     "{"
+        (. Console.WriteLine(name + " start " + t.line + ":" + t.col); .)
         { Content }
+        (. Console.WriteLine(name + " end " + t.line + ":" + t.col); .)
     "}".
 
 Parens = "{" { Content } "}".
 
 Content =
     identToken
+    | "init"
+    | "test"
+    | "<" | ">" | "[" | "]"
     | directive
     | intToken
     | floatToken
@@ -67,6 +72,6 @@ Content =
     | operatorToken
     | Parens.
 
-UnitTest = Test { Test }.
+Unit = Test { Test }.
 
-END UnitTest.
+END Unit.

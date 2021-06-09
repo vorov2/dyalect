@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Dyalect.Parser
+namespace Dyalect.Units
 {
     public abstract class SourceBuffer
     {

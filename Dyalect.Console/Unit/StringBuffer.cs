@@ -1,4 +1,4 @@
-﻿namespace Dyalect.Parser
+﻿namespace Dyalect.Units
 {
     internal sealed class StringBuffer : SourceBuffer
     {
