@@ -117,9 +117,24 @@ namespace Dyalect
             var allCounter = 0;
             var fileCounter = 0;
             var currentFile = "";
-            
+
+            Dictionary<string, DyCodeModel> inits;
+
+            try
+            {
+                inits = testBlocks.Where(b => b.Name == "init")
+                    .ToDictionary(b => b.FileName!, b => b.Body);
+            }
+            catch (ArgumentException)
+            {
+                throw new Exception("Multiple initialization block in a test file.");
+            }
+
             foreach (var block in testBlocks)
             {
+                if (block.Name == "init")
+                    continue;
+
                 if (currentFile != block.FileName)
                 {
                     fileCounter++;
@@ -129,9 +144,27 @@ namespace Dyalect
                 }
 
                 allCounter++;
+                var ast = block.Body;
+
+                if (inits.TryGetValue(block.FileName!, out var init))
+                {
+                    var imports = ast.Imports;
+
+                    if (init.Imports is not null)
+                    {
+                        imports = new DImport[ast.Imports.Length + init.Imports.Length];
+                        Array.Copy(init.Imports, 0, imports, 0, init.Imports.Length);
+                        Array.Copy(ast.Imports, 0, imports, init.Imports.Length, ast.Imports.Length);
+                    }
+
+                    var root = new DBlock(init.Root.Location);
+                    root.Nodes.AddRange(init.Root.Nodes);
+                    root.Nodes.AddRange(ast.Root.Nodes);
+                    ast = new DyCodeModel(root, imports, ast.FileName);
+                }
 
                 var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(block.FileName)!), builderOptions);
-                var cres = linker.Make(block.Body);
+                var cres = linker.Make(ast);
                 warns.AddRange(cres.Messages.Where(m => m.Type == BuildMessageType.Warning));
 
                 if (!cres.Success)
@@ -163,7 +196,7 @@ namespace Dyalect
 
             if (options.AppVeyour)
                 Submit();
-        }
+            }
 
         private static void PrintFileHeader(DyaOptions options, string fileName)
         {

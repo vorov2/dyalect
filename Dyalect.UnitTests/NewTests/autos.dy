@@ -1,9 +1,12 @@
-﻿test "Simple 1"
+﻿test init
 {
     type Box(key)
     let boxCollector = []
     func Box.dispose() => boxCollector.add(this::key)
+}
 
+test "Simple 1"
+{
     {
         auto x = Box("foo")
         boxCollector.add("wait.foo")
@@ -13,10 +16,6 @@
 
 test "Simple 2"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-
     {
         auto x = Box("foo")
         boxCollector.add("wait.foo")
@@ -30,10 +29,6 @@ test "Simple 2"
 
 test "Simple 3"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-
     for x in 1..6 {
         auto obj = Box(x)
         if x == 3 {
@@ -48,10 +43,6 @@ test "Simple 3"
 
 test "Simple 4"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func doit(b) {
         if b {
             auto a = Box(2)
@@ -67,10 +58,6 @@ test "Simple 4"
 
 test "Simple 5"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     var x = 5
     while x > 0 {
         auto a = Box(x)
@@ -87,10 +74,6 @@ test "Simple 5"
 
 test "Autos in functions 1"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func run() {
         auto x = Box("foo")
         auto y = Box("bar")
@@ -101,10 +84,6 @@ test "Autos in functions 1"
 
 test "Autos in functions 2"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func iter() {
         auto x = Box("fin")
         boxCollector.add(1)
@@ -120,10 +99,6 @@ test "Autos in functions 2"
 
 test "Autos in functions 3"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func testFn() {
         auto x = Box("x")
         {
@@ -140,10 +115,6 @@ test "Autos in functions 3"
 
 test "Autos in functions 4"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func foobar(flag) {
         auto a = Box('a')
         if flag {
@@ -151,6 +122,7 @@ test "Autos in functions 4"
         }
         auto b = Box('b')
     }
+
     foobar(flag: true)
     foobar(flag: false)
     foobar(flag: true)
@@ -159,10 +131,6 @@ test "Autos in functions 4"
 
 test "Autos in functions 5"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func iter() {
         auto a = Box(10)
         yield { auto a = Box(2) }
@@ -177,14 +145,11 @@ test "Autos in functions 5"
 
 test "Autos and exceptions 1"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func testE() {
         auto x = Box(12)
         throw "err"
     }
+
     try {
         testE()
     } catch _ {
@@ -194,10 +159,6 @@ test "Autos and exceptions 1"
 
 test "Autos and exceptions 2"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func test1() {
         auto x = Box("y")
         {
@@ -220,10 +181,6 @@ test "Autos and exceptions 2"
 
 test "Autos and exceptions 3"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     try {
         auto x = Box(42)
         throw 84
@@ -235,10 +192,6 @@ test "Autos and exceptions 3"
 
 test "Autos and exceptions 4"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func divide(x, y) {
         auto def = Box(-100)
         try {
@@ -255,10 +208,6 @@ test "Autos and exceptions 4"
 
 test "Autos and exceptions 5"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func doit() {
         var x = {
             throw 24
@@ -275,10 +224,6 @@ test "Autos and exceptions 5"
 
 test "Autos and exceptions 6"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func doit() {
         throw {
             auto b = Box(22)
@@ -293,10 +238,6 @@ test "Autos and exceptions 6"
 
 test "Autos in catch 1"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     try {
         throw "err"
     } catch e {
@@ -307,10 +248,6 @@ test "Autos in catch 1"
 
 test "Autos in catch 2"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func inner() {
         try {
             throw "err"
@@ -329,10 +266,6 @@ test "Autos in catch 2"
 
 test "Autos in catch 3"
 {
-    type Box(key)
-    let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
-    
     func inside() {
         try {
             throw 'a'
