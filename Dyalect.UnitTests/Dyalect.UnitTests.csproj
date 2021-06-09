@@ -41,6 +41,9 @@
     <None Update="NewTests\iterator.dy">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="NewTests\match.dy">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="NewTests\nil.dy">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

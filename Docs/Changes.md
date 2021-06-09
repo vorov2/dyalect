@@ -1,3 +1,6 @@
+# 0.27.2
+  * Fix: _Stack corruption_ ([Issue #557](https://github.com/vorov2/dyalect/issues/557)).
+
 # 0.27.1
   * Fix: _Correct error messages for standard `rnd` function_ ([Issue #555](https://github.com/vorov2/dyalect/issues/555)).
 
