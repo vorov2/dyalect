@@ -569,7 +569,7 @@ namespace Dyalect.Compiler
 
             //An indexer with compile time string which can be a reference to a module (and can be optimized away)
             if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks is null
-                && node.Target.NodeType == NodeType.Name && !options.NoOptimizations)
+                && node.Target.NodeType == NodeType.Name && !hints.Has(Pop) && !options.NoOptimizations)
             {
                 var nm = node.Target.GetName()!;
                 var err = GetVariable(nm, currentScope, out var sv);

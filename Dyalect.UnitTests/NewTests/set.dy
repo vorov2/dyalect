@@ -1,5 +1,28 @@
-﻿//Done
-func setTest1() {
+﻿test "Constructor"
+{
+    let xs = Set(1, 2, 3)
+    assert([1,2,3], xs.toArray())
+}
+
+test "Methods: clone"
+{
+    let xs = Set()
+    assert(true, xs == xs)
+    assert(true, xs.clone() == xs)
+}
+
+test "Methods: getType"
+{
+    let x = Set()
+    assert(true, TypeInfo(x) == Set)
+    assert(true, x.getType() == Set)
+    var t = TypeInfo(x)
+    assert(15, t.id)
+    assert("Set", t.name)
+}
+
+test "Methods: add, len"
+{
     let xs = Set()
     xs.add(4)
     xs.add(1)
@@ -9,7 +32,8 @@ func setTest1() {
     assert([4,1,2], xs.toArray())
 }
 
-func setTest2() {
+test "Methods: add, remove"
+{
     let xs = Set()
     xs.add(5)
     xs.add(6)
@@ -18,7 +42,8 @@ func setTest2() {
     assert([6], xs.toArray())
 }
 
-func setTest3() {
+test "Methods: add, clear, contains"
+{
     let xs = Set()
     xs.add(5)
     xs.add(6)
@@ -29,7 +54,8 @@ func setTest3() {
     assert(false, xs.contains(6))
 }
 
-func setTest4() {
+test "Methods: toArray, toTuple"
+{
     let xs = Set(1, 2, 3, 4, 5)
     assert([1,2,3,4,5], xs.toArray())
     let ys = Set(1, 2, 2, 3)
@@ -37,7 +63,8 @@ func setTest4() {
     assert((1,2,3), ys.toTuple())
 }
 
-func setTest5() {
+test "Equality test"
+{
     let xs = Set(1,2,3,4,5)
     let ys = Set(1,2,3,4,5)
     assert(true, xs == ys)
@@ -46,28 +73,32 @@ func setTest5() {
     assert(false, xs != ys)
 }
 
-func intersectTest() {
+test "Methods: intersect"
+{
     let xs = Set(values: [1..10])
     let ys = Set(values: [5..15])
     xs.intersect(with: ys)
     assert([5,6,7,8,9,10], xs.toArray())
 }
 
-func unionTest() {
+test "Methods: union"
+{
     let xs = Set(values: [1..3])
     let ys = Set(values: [4..6])
     xs.union(with: ys)
     assert([1,2,3,4,5,6], xs.toArray())
 }
 
-func exceptTest() {
+test "Methods: except"
+{
     let xs = Set(values: [1..10])
     let ys = Set(values: [4..7])
     xs.except(with: ys)
     assert([1,2,3,8,9,10], xs.toArray())
 }
 
-func overlapsTest() {
+test "Methods: overlaps"
+{
     let xs = Set(values: [1..10])
     var ys = Set(values: [5..15])
     assert(true, xs.overlaps(with: ys))
@@ -75,21 +106,24 @@ func overlapsTest() {
     assert(false, xs.overlaps(with: ys))
 }
 
-func isSubsetTest() {
+test "Methods: isSubset"
+{
     let xs = Set(values: [5..10])
     var ys = Set(values: [1..20])
     assert(false, ys.isSubset(of: xs))
     assert(true, xs.isSubset(of: ys))
 }
 
-func isSupersetTest() {
+test "Methods: isSuperset"
+{
     let xs = Set(values: [5..10])
     var ys = Set(values: [1..20])
     assert(false, xs.isSuperset(of: ys))
     assert(true, ys.isSuperset(of: xs))
 }
 
-func setToString() {
+test "Methods: toString"
+{
     let xs = Set(1, 2, 3)
     assert("Set (1, 2, 3)", xs.toString())
 }

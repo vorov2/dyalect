@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
+            | SupportedOperations.Get | SupportedOperations.Len
             | SupportedOperations.Iter;
 
         public override string TypeName => DyTypeNames.Module;
@@ -28,6 +28,11 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(count);
         }
 
+        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        {
+            return base.SetOp(self, index, value, ctx);
+        }
+
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right is DyModule mod)
@@ -37,13 +42,5 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
-
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
-        {
-            if (name == "Module")
-                return Func.Static(name, c => new DyModule(c.RuntimeContext.Composition.Units[0], c.RuntimeContext.Units[0]));
-
-            return base.InitializeStaticMember(name, ctx);
-        }
     }
 }

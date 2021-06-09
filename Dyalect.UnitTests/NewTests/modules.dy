@@ -1,51 +1,78 @@
-﻿//Done
-import lib = refs/libtest
-import lib1 = refs/libtest1
+﻿test init
+{
+    import lib = refs/libtest
+    import lib1 = refs/libtest1
+}
 
-func moduleTest1() {
+test "Methods: clone"
+{
+    let xs = lib
+    assert(true, xs == xs)
+    assert(true, xs.clone() == xs)
+}
+
+test "Methods: getType"
+{
+    let x = lib
+    assert(true, TypeInfo(x) == Module)
+    assert(true, x.getType() == Module)
+    var t = TypeInfo(x)
+    assert(9, t.id)
+    assert("Module", t.name)
+}
+
+test "Member access 1"
+{
     var abs = lib::abs(-12)
     assert(12, abs)
     assert(2, lib::abs(-2))
 }
 
-func moduleTest2() {
+test "Member access 2"
+{
     var a = abs(-12)
     assert(12, a)
     var b = min(2, 1)
     assert(1, b)
 }
 
-func moduleTest3() {
+test "Match module"
+{
     var res = match lib {
         (sign: fn,) => fn(-12)
     }
     assert(-1, res)
 }
 
-func moduleTest4() {
+test "Match module using is"
+{
     var res = lib is (id: _,)
     assert(false, res)
 }
 
-func moduleTest5() {
+test "Qualification 1"
+{
     var res = lib1::sayHello()
     assert("Hello, User Jon", res)
 }
 
-func moduleTest6() {
+test "Qualification 2"
+{
     var res = lib::double(2)
     var res1 = lib1::double(2)
     assert(4, res)
     assert("double 2", res1)
 }
 
-func moduleTest7() {
+test "Module as tuple 1"
+{
     var libMod = lib
     var f = libMod::double
     assert(4, f(2))
 }
 
-func moduleTest8() {
+test "Module as tuple 2"
+{
     var libMod = lib
     var f = libMod::double
     assert(4, f(2))
@@ -53,19 +80,22 @@ func moduleTest8() {
     assert(4, f1(2))
 }
 
-func moduleTypeTest1() {
+test "Types from module"
+{
     var fb = Foobar(12, 2)
     assert(12, fb::x)
     assert(2, fb::y)
 }
 
-func moduleTypeTest2() {
+test "Types from module (qual)"
+{
     var fb = lib::Foobar(12, 2)
     assert(12, fb[0])
     assert(2, fb[1])
 }
 
-func moduleTypeTest3() {
+test "Extending external type"
+{
     func Foobar.getVal1() {
         "Foobar"
     }
@@ -73,7 +103,8 @@ func moduleTypeTest3() {
     assert("Foobar", fb.getVal1())
 }
 
-func moduleTypeTest4() {
+test "Extending external type (qual)"
+{
     func lib.Foobar.getVal2() {
         "Foobar"
     }
@@ -81,22 +112,33 @@ func moduleTypeTest4() {
     assert("Foobar", fb.getVal2())
 }
 
-func moduleTypeTest5() {
+test "External type name"
+{
     var t = Foobar
     assert("Foobar", t.name)
 }
 
-func moduleTypeTest6() {
+test "External type name (qual)"
+{
     var t = lib::Foobar
     assert("Foobar", t.name)
 }
 
-func moduleConstAccess() {
+test "Constants"
+{
     assert(3.14, pi)
     assert(3.14, lib::pi)
+    try {
+        lib::pi = 3.15
+        assert(got: false)
+    }
+    catch {
+        OperationNotSupported() => assert(got: true)
+    }
 }
 
-func moduleIterTest() {
+test "Iterating module"
+{
     var xs = []
     for (key,_) in lib {
         xs.add(key)
@@ -105,7 +147,8 @@ func moduleIterTest() {
     assert(shouldbe, xs)
 }
 
-func matchExoTypeTest1() {
+test "Match external type"
+{
     var a1 = lib1::Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
     var a2 = Asset.Phone("1+", 8)
     func mem1(a) {
@@ -134,7 +177,8 @@ func matchExoTypeTest1() {
     assert(8, mem3(a2))
 }
 
-func testExoType1() {
+test "Test external type"
+{
     var t = lib1::Asset
     assert("Asset", t::name)
     var c = t.Computer("Acer", 4, 1)

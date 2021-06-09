@@ -27,6 +27,11 @@ namespace Dyalect.Runtime.Types
             return (sv.Data & VarFlags.Private) != VarFlags.Private;
         }
 
+        protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
+        {
+            base.SetItem(index, value, ctx);
+        }
+
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId is not DyType.String)
