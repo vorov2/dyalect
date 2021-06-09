@@ -1,15 +1,17 @@
-﻿//Done
-func rangeTest1() {
+﻿test "Simple range"
+{
     var xs = 1..10
     assert([1,2,3,4,5,6,7,8,9,10], xs.toArray())
 }
 
-func rangeTest2() {
+test "Range with a step"
+{
     var xs = (5^-1..1)
     assert([5,4,3,2,1], xs.toArray())
 }
 
-func rangeTest3() {
+test "Range in cycle"
+{
     var acc = 0
     for x in 1..5 {
         acc += x
@@ -17,17 +19,20 @@ func rangeTest3() {
     assert(15, acc)
 }
 
-func rangeTest4() {
+test "Char range"
+{
     var chz = ('a'..'e')
     assert(['a','b','c','d','e'], chz.toArray())
 }
 
-func rangeTest5() {
+test "Range as a statement"
+{
     1..10 //Check how ranges behave as statements, issue #77
-    assert(true, true)
+    assert(got: true)
 }
 
-func rangeTest6() {
+test "Range and take"
+{
     func take(xs, count) {
         var c = 0
         var arr = []
@@ -51,7 +56,8 @@ func rangeTest6() {
     assert(['a', 'b', 'c', 'd', 'e'], xs)
 }
 
-func stringRange1() {
+test "String range"
+{
     let str = "hello,world!"
     let new1 = str[0..4]
     assert("hello", new1)
@@ -59,19 +65,22 @@ func stringRange1() {
     assert("world", new2)
 }
 
-func slice1() {
+test "Slicing 1"
+{
     var xs = ["Firefly", "Cowboy Bebop", "Samurai Champloo"]
     assert(["Cowboy Bebop", "Samurai Champloo"], xs[-2..].toArray())
     assert(["Samurai Champloo"], xs[-1..].toArray())
 }
 
-func slice2() {
+test "Slicing 2"
+{
     var cities = ["Kolkata", "Hyderabad", "Bangalore", "London", "Moscow", "London", "New York"]
     assert("New York", cities[-1])
     assert(["Kolkata", "Hyderabad", "Bangalore", "London", "Moscow"], cities[0..4].toArray())
 }
 
-func slice3() {
+test "Slicing 3"
+{
     var xs = 1..10
     assert([9,10], xs[-2..].toArray())
     assert([2,3,4], xs[1..3].toArray())
@@ -80,7 +89,8 @@ func slice3() {
     assert([2,3,4], ys[1..3].toArray())
 }
 
-func slice4() {
+test "Slicing 4"
+{
     var xs = "hello,world!"
     assert("hello", xs[..-7])
     assert("hello", xs[..4])
@@ -88,7 +98,8 @@ func slice4() {
     assert("lo", xs[3..-7])
 }
 
-func exclusiveRanges1() {
+test "Exclusive range"
+{
     var xs = [1..5]
     assert([1,2,3,4,5], xs)
     xs = [1..<5]

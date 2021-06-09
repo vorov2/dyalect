@@ -1,5 +1,85 @@
-﻿//Done
-func whileTest1() {
+﻿test "Guards 1"
+{
+    func safeDiv1(x, y) {
+        return -1 when y == 0
+        return x / y
+    }
+    var x = safeDiv1(4, 2)
+    var y = safeDiv1(2, 0)
+    assert(2, x)
+    assert(-1, y)
+
+    func safeDiv2(x, y) {
+        return when y == 0
+        return x / y
+    }
+    var res = safeDiv2(10, 0)
+    assert(nil, res)
+
+    func safeDiv3(x, y) {
+        0 when y is 0 else x / y
+    }
+    assert(5, safeDiv3(10, 2))
+    assert(0, safeDiv3(10, 0))
+}
+
+test "Guards 2"
+{
+    var x = 0
+    x += 1 when x < 1
+    assert(1, x)
+
+    var y = 0
+    y += 1 when y < 0
+    assert(0, y)
+}
+
+test "Guards 3"
+{
+    let (x, y) = (1, 2)
+    set (x, y) = (12, 14) when x > 0 && y > 1
+    assert((12, 14), (x, y))
+}
+
+test "Guards 4"
+{
+    let (x, y) = (1, 2)
+    var res
+    if x < 2 { res = "x < 2" } when y > 10 else { res = "y < 10" }
+    assert("y < 10", res)
+}
+
+test "Guards 5"
+{
+    func fib(n) =>
+        n when n < 2 else fib(n - 1) + fib(n - 2)
+    assert(89, fib(11))
+}
+
+test "Guards 6"
+{
+    var x = 1
+    var y = 42
+    x = y when y > 42 else y = 84
+    assert(1, x)
+    assert(84, y)
+}
+
+test "Return from method"
+{
+    func foo() {
+        return 2
+    }
+    func bar() {
+        return
+        22
+    }
+    assert(2, foo())
+    assert(nil, bar())
+}
+
+test "Cycle: while with break 1"
+{
     var n = 100
     var x = while n > 0 {
         if n == 33 {
@@ -10,7 +90,8 @@ func whileTest1() {
     assert(33, x)
 }
 
-func whileTest2() {
+test "Cycle: while with break 2"
+{
     var n = 100
     var x = while n > 0 {
         if n == 33 {
@@ -24,7 +105,8 @@ func whileTest2() {
     assert(42, x)
 }
 
-func nestedWhileTest() {
+test "Cycle: Nested while"
+{
     var z = 5
     var c = 0
     while z >= 1 {
@@ -42,7 +124,8 @@ func nestedWhileTest() {
     assert(5, c)
 }
 
-func doWhileTest1() {
+test "Cycle: do/while 1"
+{
     var x = 1
     do {
         x -= 1
@@ -54,7 +137,8 @@ func doWhileTest1() {
     assert(1, x)
 }
 
-func doWhileTest2() {
+test "Cycle: do/while 2"
+{
     var x = 0
     do {
         x += 1
@@ -62,7 +146,8 @@ func doWhileTest2() {
     assert(10, x)
 }
 
-func dowhileTest3() {
+test "Cycle: do/while with break"
+{
     var x = 0
     do {
         x += 1
@@ -73,7 +158,8 @@ func dowhileTest3() {
     assert(1, x)
 }
 
-func dowhileTest4() {
+test "Cycle: do/while with continue"
+{
     var x = 0
     var iter = 0
     do {
@@ -87,7 +173,8 @@ func dowhileTest4() {
     assert(8, iter)
 }
 
-func forTest1() {
+test "Cycle: for 1"
+{
     var str = ""
     for i in 1..5 {
         for _ in 1..i {
@@ -104,7 +191,18 @@ func forTest1() {
     assert(pattern, str)
 }
 
-func forTest2() {
+test "Cycle: for 2"
+{
+    var arr = []
+    for x in [1,2,3,4] {
+        x = x+x
+        arr.add(x)
+    }
+    assert([2,4,6,8], arr)
+}
+
+test "Cycle: for with continue"
+{
     var acc = 0
     for x in 1..5 {
         if x % 2 != 0 {
@@ -120,7 +218,8 @@ func forTest2() {
     assert(44, acc)
 }
 
-func forTest3() {
+test "Cycle: for with break"
+{
     var acc = ""
     for x in 1..10 {
         if x > 5 {
@@ -133,16 +232,8 @@ func forTest3() {
     assert(">>1", acc)
 }
 
-func forTest4() { //Bug #238
-    var arr = []
-    for x in [1,2,3,4] {
-        x = x+x
-        arr.add(x)
-    }
-    assert([2,4,6,8], arr)
-}
-
-func whileStackTest() { //#151
+test "Cycle: endless while"
+{
     var i = 1
     while true {
         if i < 100 {

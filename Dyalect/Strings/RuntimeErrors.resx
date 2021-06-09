@@ -177,4 +177,7 @@
   <data name="FieldNotFound" xml:space="preserve">
     <value>Field not found.</value>
   </data>
+  <data name="InvalidValue" xml:space="preserve">
+    <value>{0}</value>
+  </data>
 </root>

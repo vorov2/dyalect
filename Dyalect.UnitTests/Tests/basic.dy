@@ -1,4 +1,5 @@
-﻿func mathTest1() {
+﻿//Done
+func mathTest1() {
     var x = 12 * 3 - 4 + 6
     assert(38, x)
 }
@@ -432,17 +433,17 @@ func evalTest() { //Issue 269 --> DONE
     assert(5, z)
 }
 
-func intRangeTest1() {
+func intRangeTest1() {//--> DONE
     assert([0,1,2,3,4,5], [0..5])
     assert([0,2,4], (0^2..4).toArray())
 }
 
-func floatRangeTest1() {
+func floatRangeTest1() {//--> DONE
     assert([0.0,1.0,2.0,3.0,4.0,5.0], [0.0..5])
     assert([0.0,0.02,0.04], (0.0^0.02..0.05).toArray())
 }
 
-func sumTest() {
+func sumTest() { //--> DONE
     var x = 2
         + 3
         + 5
@@ -478,25 +479,25 @@ func floatParse() { //--> DONE
     assert(nil, Float.parse("three and a half"))
 }
 
-func ternaryTest1() {
+func ternaryTest1() { //--> DONE
     var x = 0
     var res = x > 0 ? x
         : x < 0 ? -x : 42
     assert(42, res)
 }
 
-func ternaryTest2() {
+func ternaryTest2() { //--> DONE
     func fib(n) =>
         n < 2 ? n : fib(n - 1) + fib(n - 2)
     assert(89, fib(11))
 }
 
-func unaryTest1() {
+func unaryTest1() { //--> DONE
     let x = - 42 //with space
     assert(0 - 42, x)
 }
 
-func inTest1() {
+func inTest1() { //--> DONE
     var xs = [1..10]
     assert(true, 1 in xs)
     assert(true, 10 in xs)
@@ -511,7 +512,7 @@ func inTest1() {
     assert(false, 101 in xs)
 }
 
-func inTest2() {
+func inTest2() { //--> DONE
     var xs = (x: 12, y: 24)
     assert(true, "x" in xs)
     assert(true, "y" in xs)
@@ -522,7 +523,7 @@ func inTest2() {
     assert(false, "z" in xs)
 }
 
-func typeErrorTest() {
+func typeErrorTest() { //--> DONE
     try {
         12 + '2'
         assert(got: false)
@@ -531,7 +532,7 @@ func typeErrorTest() {
     }
 }
 
-func propertyExtTest() {
+func propertyExtTest() { //--> DONE
     func get Array.first() { 
         this[0] when this.len() > 0
     }

@@ -1,4 +1,5 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -465,7 +466,7 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 "Iterator" or "concat" => Func.Static(name, Concat, 0, new Par("values", true)),
-                "range" => Func.Static(name, MakeRange, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance),
+                Builtins.Range => Func.Static(name, MakeRange, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance),
                     new Par("by", DyInteger.One), new Par("exclusive", DyBool.False)),
                 "empty" => Func.Static(name, Empty),
                 "repeat" => Func.Static(name, Repeat, -1, new Par("value")),

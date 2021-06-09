@@ -1,5 +1,15 @@
-﻿//Done
-func catchTest1() {
+﻿test "Type error"
+{
+    try {
+        12 + '2'
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+}
+
+test "Simple catch 1"
+{
     var x
     try {
         x = 2
@@ -10,7 +20,8 @@ func catchTest1() {
     assert(2, x)
 }
 
-func catchTest2() {
+test "Simple catch 2"
+{
     var res =
         try {
             2 / 0
@@ -20,7 +31,8 @@ func catchTest2() {
     assert(42, res)
 }
 
-func catchTest3() {
+test "Nested catch 1"
+{
     var res =
         try {
             try {
@@ -35,7 +47,8 @@ func catchTest3() {
     assert(142, res)
 }
 
-func catchTest4() {
+test "Catch and throw"
+{
     var res =
         try {
             throw "Error!"
@@ -45,7 +58,8 @@ func catchTest4() {
     assert("Error!", res)
 }
 
-func catchTest5() {
+test "Nested catch 2"
+{
     var res =
         try {
             try {
@@ -60,7 +74,8 @@ func catchTest5() {
     assert("caught:Oops!", res)
 }
 
-func catchTest6() {
+test "Nested catch 3"
+{
     var res =
         try {
             try {
@@ -77,7 +92,8 @@ func catchTest6() {
     assert(42, res)
 }
 
-func catchTest7() {
+test "Throwing from functions"
+{
     func errorMaker() {
         throw nameof(errorMaker)
     }
@@ -98,7 +114,8 @@ func catchTest7() {
     assert("errorMaker", res)
 }
 
-func catchTest8() {
+test "Catch as an expression"
+{
     func foo(x, y, z) { (x,y,z) }
     var e = try {
             foo(1, 2, 3, 4)
@@ -108,7 +125,8 @@ func catchTest8() {
     assert("foo", e)
 }
 
-func catchTest9() {
+test "Catch and iterators"
+{
     func check(x) {
         if x % 2 == 0 {
             throw x
@@ -128,7 +146,8 @@ func catchTest9() {
     assert([1,3,5,7,9,11,13,15,17,19], yielder(arr).toArray())
 }
 
-func catchTest10() {
+test "Simple catch 3"
+{
     var res =
         try {
             4 / 2
@@ -138,7 +157,8 @@ func catchTest10() {
     assert(2, res)
 }
 
-func catchMatchTest1() {
+test "Pattern matching 1"
+{
     func foo() { throw ("err", 22) }
     var e = try {
             foo()
@@ -150,7 +170,8 @@ func catchMatchTest1() {
     assert(true, e)
 }
 
-func catchMatchTest2() {
+test "Pattern matching 2"
+{
     func foo() { throw ("err", 231) }
     var e
     e = try {
@@ -167,7 +188,8 @@ func catchMatchTest2() {
     assert(142, e)
 }
 
-func externalCatchTest1() {
+test "External catch 1"
+{
     func sorter(x, y) {
         if x > 10 {
             throw "No!"
@@ -184,7 +206,8 @@ func externalCatchTest1() {
     assert("No!", ex)
 }
 
-func externalCatchTest2() {
+test "External catch 2"
+{
     func defaultElement() {
         var n = 0
         while true {
@@ -204,7 +227,8 @@ func externalCatchTest2() {
     }
 }
 
-func externalCatchTest3() {
+test "External catch 3"
+{
     func seq() {
         yield 1
         throw 2
@@ -217,7 +241,8 @@ func externalCatchTest3() {
     }
 }
 
-func iteratorExceptionTest1() {
+test "Iterators 1"
+{
     func testMe() {
         var xs = [1..10]
         for x in xs {
@@ -232,7 +257,8 @@ func iteratorExceptionTest1() {
     assert(true, b)
 }
 
-func iteratorExceptionTest2() {
+test "Iterators 2"
+{
     func test0() {
         var xs = [1..10]
         for x in xs {
@@ -254,8 +280,11 @@ func iteratorExceptionTest2() {
     assert(true, b)
 }
 
-type U0()
-func customTypeException() { //Bug #248
+test "Custom type exception"
+{
+    //Bug #248
+    type U0()
+
     func baz() {
         throw U0()
     }
@@ -272,7 +301,8 @@ func customTypeException() { //Bug #248
     assert("U0 caught.", foo())
 }
 
-func chainCatch1() {
+test "Catch chain"
+{
     func zoo() {
         throw 1024
     }
@@ -297,7 +327,8 @@ func chainCatch1() {
     assert(1024, x)
 }
 
-func rightCatch() {
+test "Fall into correct catch"
+{
     func checkit() {
         try {
             return
@@ -318,7 +349,8 @@ func rightCatch() {
     assert(12, x)
 }
 
-func rethrowTest() {
+test "Rethrowing"
+{
     func work() {
         try {
             throw 42
@@ -335,7 +367,8 @@ func rethrowTest() {
     assert(42, x)
 }
 
-func nestedExceptions() {
+test "Nested exceptions"
+{
     func foo() {
         try {
             throw "exc.1"
@@ -357,7 +390,8 @@ func nestedExceptions() {
     assert("exc.1", dat)
 }
 
-func multipleThrowFromCatc() {
+test "Multiple throws from catch"
+{
     var x 
     try {
        try {
@@ -371,7 +405,8 @@ func multipleThrowFromCatc() {
     assert("exc.1", x)
 }
 
-func throwTest1() {
+test "Throwing 1"
+{
     var x
     try {
         throw Error.IndexOutOfRange()
@@ -381,7 +416,8 @@ func throwTest1() {
     assert(true, x)
 }
 
-func throwTest2() {
+test "Throwing 2"
+{
     var x
     try {
         throw Error.InvalidType(0.getType().name)
@@ -391,7 +427,8 @@ func throwTest2() {
     assert(true, x)
 }
 
-func throwTest3() {
+test "Throwing 3"
+{
     var x
     try {
         throw "Test"
@@ -401,7 +438,8 @@ func throwTest3() {
     assert(true, x)
 }
 
-func throwTest4() {
+test "Throwing 4"
+{
     var x
     try {
         throw Error.InvalidBehavior(42)
@@ -411,15 +449,16 @@ func throwTest4() {
     assert(42, x)
 }
 
-func throwFromOverride() {
+test "Throw from override"
+{
     func Integer.toString() {
         throw "Ooops!"
     }
+
     try {
         12.toString()
         assert(got: false)
     } catch _ {
         assert(got: true)
     }
-    Integer.__deleteMember("toString")
 }

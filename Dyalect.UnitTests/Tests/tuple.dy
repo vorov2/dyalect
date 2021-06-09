@@ -1,4 +1,5 @@
-﻿func tupleLiteralTest1() {
+﻿//Done
+func tupleLiteralTest1() {
     //Test if a tuple is recognized correctly
     var res = ([1,2,3].len() + 4) * 2
     assert(14, res)

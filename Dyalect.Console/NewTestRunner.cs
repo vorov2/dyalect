@@ -71,7 +71,7 @@ namespace Dyalect
         private static void Failed(string name, string reason, string fileName)
         {
             commands.Add($"AddTest {name} -Outcome Failed -Framework DyaUnit -FileName {fileName}");
-            Printer.Output($"[X] {name} FAILED: {reason}");
+            Printer.Output($"[ ] {name} FAILED: {reason}");
         }
 
         private static void Success(DyaOptions options, string name, string fileName)
@@ -79,7 +79,7 @@ namespace Dyalect
             commands.Add($"AddTest {name} -Outcome Passed -Framework DyaUnit -FileName {fileName}");
 
             if (!options.ShowOnlyFailedTests)
-                Printer.Output($"[.] {name}");
+                Printer.Output($"[+] {name}");
         }
 
         private static DTestBlock[] GatherTests(IEnumerable<string> files, List<BuildMessage> warns)
@@ -117,9 +117,24 @@ namespace Dyalect
             var allCounter = 0;
             var fileCounter = 0;
             var currentFile = "";
-            
+
+            Dictionary<string, DyCodeModel> inits;
+
+            try
+            {
+                inits = testBlocks.Where(b => b.Name == "init")
+                    .ToDictionary(b => b.FileName!, b => b.Body);
+            }
+            catch (ArgumentException)
+            {
+                throw new Exception("Multiple initialization block in a test file.");
+            }
+
             foreach (var block in testBlocks)
             {
+                if (block.Name == "init")
+                    continue;
+
                 if (currentFile != block.FileName)
                 {
                     fileCounter++;
@@ -129,14 +144,36 @@ namespace Dyalect
                 }
 
                 allCounter++;
+                var ast = block.Body;
+
+                if (inits.TryGetValue(block.FileName!, out var init))
+                {
+                    var imports = ast.Imports;
+
+                    if (init.Imports is not null)
+                    {
+                        imports = new DImport[ast.Imports.Length + init.Imports.Length];
+                        Array.Copy(init.Imports, 0, imports, 0, init.Imports.Length);
+                        Array.Copy(ast.Imports, 0, imports, init.Imports.Length, ast.Imports.Length);
+                    }
+
+                    var root = new DBlock(init.Root.Location);
+                    root.Nodes.AddRange(init.Root.Nodes);
+                    root.Nodes.AddRange(ast.Root.Nodes);
+                    ast = new DyCodeModel(root, imports, ast.FileName);
+                }
 
                 var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(block.FileName)!), builderOptions);
-                var cres = linker.Make(block.Body);
+                var cres = linker.Make(ast);
+                warns.AddRange(cres.Messages.Where(m => m.Type == BuildMessageType.Warning));
 
                 if (!cres.Success)
-                    throw new DyBuildException(cres.Messages);
+                {
+                    failed++;
+                    Failed(block.Name, string.Join(' ', cres.Messages.Select(m => m.Message)), block.FileName!);
+                    continue;
+                }
 
-                warns.AddRange(cres.Messages.Where(m => m.Type == BuildMessageType.Warning));
                 var ctx = DyMachine.CreateExecutionContext(cres.Value!);
 
                 try
@@ -159,7 +196,7 @@ namespace Dyalect
 
             if (options.AppVeyour)
                 Submit();
-        }
+            }
 
         private static void PrintFileHeader(DyaOptions options, string fileName)
         {

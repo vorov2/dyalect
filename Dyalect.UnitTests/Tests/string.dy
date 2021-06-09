@@ -1,4 +1,5 @@
-﻿func stringLiteralTest() {
+﻿//Done
+func stringLiteralTest() {
     var fst = "some\tstring with\"inner quotes\" and such (and a buck \u0024)"
     var snd = "some\u0009string with\u0022inner quotes\u0022 and such (and a buck $)"
     assert(fst, snd)

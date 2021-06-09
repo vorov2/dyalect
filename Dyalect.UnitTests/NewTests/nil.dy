@@ -12,12 +12,12 @@ test "Constructor"
     assert(nil, Nil())
 }
 
-test "default"
+test "Methods: default"
 {
     assert(nil, Nil.default())
 }
 
-test "getType"
+test "Methods: getType"
 {
     let x = nil
     assert(true, TypeInfo(x) == Nil)
