@@ -1,12 +1,10 @@
-﻿//Done
-type Box(key)
-let boxCollector = []
-func Box.dispose() {
-    boxCollector.add(this::key)
+﻿#test init
+    type Box(key)
+    let boxCollector = []
+    func Box.dispose() => boxCollector.add(this::key)
 #endtest
 
-func autosSimple1() {
-    boxCollector.clear()
+#test "Simple 1"
     {
         auto x = Box("foo")
         boxCollector.add("wait.foo")
@@ -14,8 +12,7 @@ func autosSimple1() {
     assert(["wait.foo", "foo"], boxCollector)
 #endtest
 
-func autosSimple2() {
-    boxCollector.clear()
+#test "Simple 2"
     {
         auto x = Box("foo")
         boxCollector.add("wait.foo")
@@ -27,8 +24,7 @@ func autosSimple2() {
     assert(["wait.foo", "wait.bar", "bar", "foo"], boxCollector)
 #endtest
 
-func autosSimple3() {
-    boxCollector.clear()
+#test "Simple 3"
     for x in 1..6 {
         auto obj = Box(x)
         if x == 3 {
@@ -41,8 +37,7 @@ func autosSimple3() {
     assert([1,2,3,4,5,6], boxCollector)
 #endtest
 
-func autosSimple4() {
-    boxCollector.clear()
+#test "Simple 4"
     func doit(b) {
         if b {
             auto a = Box(2)
@@ -56,8 +51,7 @@ func autosSimple4() {
     assert([2, 100, 4, 100], boxCollector)
 #endtest
 
-func autosSimple5() {
-    boxCollector.clear()
+#test "Simple 5"
     var x = 5
     while x > 0 {
         auto a = Box(x)
@@ -72,8 +66,7 @@ func autosSimple5() {
     assert([5,4,3,2,1], boxCollector)
 #endtest
 
-func autosFunc1() {
-    boxCollector.clear()
+#test "Autos in functions 1"
     func run() {
         auto x = Box("foo")
         auto y = Box("bar")
@@ -82,8 +75,7 @@ func autosFunc1() {
     assert(["foo", "bar"], boxCollector)
 #endtest
 
-func autosFunc2() {
-    boxCollector.clear()
+#test "Autos in functions 2"
     func iter() {
         auto x = Box("fin")
         boxCollector.add(1)
@@ -97,8 +89,7 @@ func autosFunc2() {
     assert([1,2,3,"fin"], boxCollector)
 #endtest
 
-func autosFunc3() {
-    boxCollector.clear()
+#test "Autos in functions 3"
     func testFn() {
         auto x = Box("x")
         {
@@ -113,8 +104,7 @@ func autosFunc3() {
     assert(["z","y","x"], boxCollector)
 #endtest
 
-func autosFunc4() { //Bug #367
-    boxCollector.clear()
+#test "Autos in functions 4"
     func foobar(flag) {
         auto a = Box('a')
         if flag {
@@ -122,14 +112,14 @@ func autosFunc4() { //Bug #367
         }
         auto b = Box('b')
     }
+
     foobar(flag: true)
     foobar(flag: false)
     foobar(flag: true)
     assert(['a', 'a', 'b', 'a'], boxCollector)
 #endtest
 
-func autosFunc5() {
-    boxCollector.clear()
+#test "Autos in functions 5"
     func iter() {
         auto a = Box(10)
         yield { auto a = Box(2) }
@@ -142,12 +132,12 @@ func autosFunc5() {
     assert([2,4,6,8,9,10], boxCollector)
 #endtest
 
-func autosExceptions1() {
-    boxCollector.clear()
+#test "Autos and exceptions 1"
     func testE() {
         auto x = Box(12)
         throw "err"
     }
+
     try {
         testE()
     } catch _ {
@@ -155,8 +145,7 @@ func autosExceptions1() {
     }
 #endtest
 
-func autosExceptions2() {
-    boxCollector.clear()
+#test "Autos and exceptions 2"
     func test1() {
         auto x = Box("y")
         {
@@ -177,8 +166,7 @@ func autosExceptions2() {
     assert(["z", "y", "x"], boxCollector)
 #endtest
 
-func autosExceptions3() {
-    boxCollector.clear()
+#test "Autos and exceptions 3"
     try {
         auto x = Box(42)
         throw 84
@@ -188,8 +176,7 @@ func autosExceptions3() {
     assert([42,84], boxCollector)
 #endtest
 
-func autosExceptions4() {
-    boxCollector.clear()
+#test "Autos and exceptions 4"
     func divide(x, y) {
         auto def = Box(-100)
         try {
@@ -204,8 +191,7 @@ func autosExceptions4() {
     assert([12, -100, 12, -100], boxCollector)
 #endtest
 
-func autosExceptions5() {
-    boxCollector.clear()
+#test "Autos and exceptions 5"
     func doit() {
         var x = {
             throw 24
@@ -220,8 +206,7 @@ func autosExceptions5() {
     assert([24], boxCollector)
 #endtest
 
-func autosExceptions6() {
-    boxCollector.clear()
+#test "Autos and exceptions 6"
     func doit() {
         throw {
             auto b = Box(22)
@@ -234,8 +219,7 @@ func autosExceptions6() {
     assert([22], boxCollector)
 #endtest
 
-func autosCatch1() { //Bug #370
-    boxCollector.clear()
+#test "Autos in catch 1"
     try {
         throw "err"
     } catch e {
@@ -244,8 +228,7 @@ func autosCatch1() { //Bug #370
     assert([1], boxCollector)
 #endtest
 
-func autosCatch2() { //Bug #370
-    boxCollector.clear()
+#test "Autos in catch 2"
     func inner() {
         try {
             throw "err"
@@ -262,8 +245,7 @@ func autosCatch2() { //Bug #370
     }
 #endtest
 
-func autosCatch3() {
-    boxCollector.clear()
+#test "Autos in catch 3"
     func inside() {
         try {
             throw 'a'

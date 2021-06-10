@@ -6,7 +6,7 @@
     },
     "Run tests": {
       "commandName": "Project",
-      "commandLineArgs": "..\\Dyalect.UnitTests\\NewTests\\ -newtest"
+      "commandLineArgs": "..\\Dyalect.UnitTests\\Tests\\ -test -onlyfailed"
     },
     "Interactive": {
       "commandName": "Project"
@@ -14,10 +14,6 @@
     "Debug": {
       "commandName": "Project",
       "commandLineArgs": "C:\\temp\\dyalect\\main.dy"
-    },
-    "Run tests (new)": {
-      "commandName": "Project",
-      "commandLineArgs": "..\\Dyalect.UnitTests\\NewTests\\ -newtest"
     }
   }
 }

@@ -1,34 +1,60 @@
-﻿//Done
-func mapTest1() {
+﻿#test "Constructor"
+    let xs = Dictionary(
+        (x: 1, y: 2, z: "foo")
+    )
+    assert(1, xs["x"])
+    assert(2, xs["y"])
+    assert("foo", xs["z"])
+#endtest
+
+#test "Methods: getType"
+    let x = Dictionary()
+    assert(true, TypeInfo(x) == Dictionary)
+    assert(true, x.getType() == Dictionary)
+    var t = TypeInfo(x)
+    assert(13, t.id)
+    assert("Dictionary", t.name)
+#endtest
+
+#test "Methods: clone"
+    let xs = Dictionary()
+    assert(true, xs == xs)
+    assert(false, xs.clone() == xs)
+#endtest
+
+#test "Methods: fromTuple"
+    var map = Dictionary.fromTuple( (name: "John", surname: "Doe", age: 50) )
+    assert("John", map::name)
+    assert("Doe", map::surname)
+    assert(50, map::age)
+
+    map = Dictionary.fromTuple( (foo: "foo", bar: "bar") )
+    assert("foo", map::foo)
+    assert("bar", map::bar)
+#endtest
+
+#test "Methods: add"
     var map = Dictionary()
     map.add("x", 1)
     map.add("y", 2)
     assert(1, map["x"])
     assert(2, map["y"])
-#endtest
 
-func mapTest2() {
-    var map = Dictionary()
+    map = Dictionary()
     map.add(("x",1), 1)
     map.add(("y",2), 2)
     assert(1, map[("x",1)])
     assert(2, map[("y",2)])
 #endtest
 
-func mapTest3() {
-    var map = Dictionary.fromTuple( (foo: "foo", bar: "bar") )
-    assert("foo", map::foo)
-    assert("bar", map::bar)
-#endtest
-
-func mapTest4() {
+#test "Indexing"
     var map = Dictionary()
     map[42] = 420
     map[42] = map[42] * 2
     assert(840, map[42])
 #endtest
 
-func mapTest5() {
+#test "Methods: tryAdd, tryGet"
     var map = Dictionary()
     map.add(12, 12)
     if !map.tryAdd(12, 12) {
@@ -38,7 +64,7 @@ func mapTest5() {
     assert(nil, res)
 #endtest
 
-func mapTest6() {
+#test "Methods: len, clear"
     var map = Dictionary()
     map.add("x", 1)
     map["x"] = 2
@@ -48,13 +74,13 @@ func mapTest6() {
     assert(0, map.len())
 #endtest
 
-func mapTest7() {
+#test "Complex keys"
     var map = Dictionary()
     map[[1,2,3]] = [4,5,6]
     assert([4,5,6], map[[1,2,3]])
 #endtest
 
-func mapFieldTest1() {
+#test "Field access"
     var map = Dictionary()
     map::name = "John"
     map::surname = "Doe"
@@ -64,14 +90,7 @@ func mapFieldTest1() {
     assert(50, map::age)
 #endtest
 
-func mapFieldTest2() { //--> DONE
-    var map = Dictionary.fromTuple( (name: "John", surname: "Doe", age: 50) )
-    assert("John", map::name)
-    assert("Doe", map::surname)
-    assert(50, map::age)
-#endtest
-
-func iterDictionary() {
+#test "Iterator to dictionary"
     let xs = yields {
         (key: 1, value: "Foo"),
         (key: 2, value: "Bar"),
@@ -89,7 +108,7 @@ func iterDictionary() {
     }
 #endtest
 
-func compactDictionary() {
+#test "Methods: compact"
     let xs = Dictionary()
     xs.add("foo", 1)
     xs.add("bar", nil)
@@ -114,7 +133,7 @@ func compactDictionary() {
     assert(1, res["a"])
 #endtest
 
-func dictToTuple() {
+#test "Methods: toTuple"
     let tuple1 = (foo: "foo", bar: "bar")
     let tuple2 = (foo: "foo", bar: "bar", "$zoo$": 24)
     var map = Dictionary.fromTuple(tuple1)
@@ -125,7 +144,7 @@ func dictToTuple() {
     assert(tuple2, backTuple)
 #endtest
 
-func patternMatchDictionary() {
+#test "Pattern matching"
     var map = Dictionary.fromTuple ((x: 1, y: 2))
     match map {
         (x: xx, y: yy) => {
@@ -135,7 +154,7 @@ func patternMatchDictionary() {
     }
 #endtest
 
-func dictContainsTest() {
+#test "Methods: contains"
     var map = Dictionary.fromTuple ((x: 1, y: 2))
     assert(true, map.contains("x"))
     assert(false, map.contains("X"))
