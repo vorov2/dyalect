@@ -25,5 +25,7 @@ namespace Dyalect.Runtime.Types
                 && t.Constructor == Constructor && t.Privates.Equals(Privates);
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Privates.HasItem(name, ctx);
+
+        public override DyObject Clone() => new DyClass(TypeId, Constructor, Privates, DeclaringUnit);
     }
 }

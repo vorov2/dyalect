@@ -135,6 +135,8 @@ namespace Dyalect.Compiler
                 case NodeType.RecursiveBlock:
                     Build((DRecursiveBlock)node, hints, ctx);
                     break;
+                case NodeType.TestBlock:
+                    break;
             }
         }
 
@@ -569,7 +571,7 @@ namespace Dyalect.Compiler
 
             //An indexer with compile time string which can be a reference to a module (and can be optimized away)
             if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks is null
-                && node.Target.NodeType == NodeType.Name && !options.NoOptimizations)
+                && node.Target.NodeType == NodeType.Name && !hints.Has(Pop) && !options.NoOptimizations)
             {
                 var nm = node.Target.GetName()!;
                 var err = GetVariable(nm, currentScope, out var sv);
@@ -1040,36 +1042,6 @@ namespace Dyalect.Compiler
             {
                 if (node.Init == null)
                     AddError(CompilerError.BindingPatternNoInit, node.Location);
-                else
-                {
-                    int n;
-                    if ((n = node.Pattern.GetElementCount()) == node.Init.GetElementCount() && n != -1
-                        && IsPureBinding(node.Pattern))
-                    {
-                        var xs = node.Pattern.ListElements()!;
-                        var ys = node.Init.ListElements()!;
-                        var flags = node.Constant ? VarFlags.Const : VarFlags.None;
-
-                        for (var i = 0; i < xs.Count; i++)
-                        {
-                            var x = xs[i];
-                            var y = ys[i];
-                            Build(y, hints.Append(Push), ctx);
-                            AddLinePragma(node);
-
-                            if (x.NodeType != NodeType.WildcardPattern)
-                            {
-                                var a = AddVariable(x.GetName()!, node.Location, flags);
-                                cw.PopVar(a);
-                            }
-                            else
-                                cw.Pop();
-                        }
-
-                        PushIf(hints);
-                        return;
-                    }
-                }
 
                 var nh = hints.Append(OpenMatch);
 
@@ -1118,18 +1090,22 @@ namespace Dyalect.Compiler
             var pat = (DTuplePattern)node.Pattern;
 
             for (var i = 0; i < pat.Elements.Count; i++)
-                if (pat.Elements[i].NodeType != NodeType.NamePattern)
+                if (pat.Elements[i].NodeType is not NodeType.NamePattern and not NodeType.WildcardPattern)
                     return false;
 
             for (var i = 0; i < init.Elements.Count; i++)
+            {
                 Build(init.Elements[i], hints.Append(Push), ctx);
+            }
 
             for (var i = 0; i < pat.Elements.Count; i++)
             {
                 var e = pat.Elements[pat.Elements.Count - i - 1];
                 var nm = e.GetName()!;
 
-                if (node.NodeType is NodeType.Binding)
+                if (nm is null)
+                    cw.Pop();
+                else if (node.NodeType is NodeType.Binding)
                 {
                     var a = AddVariable(nm, e.Location, VarFlags.None);
                     cw.PopVar(a);

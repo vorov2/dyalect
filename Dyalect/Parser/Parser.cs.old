@@ -1598,7 +1598,6 @@ namespace Dyalect.Parser
 
 	void Index(out DNode node) {
 		Literal(out node);
-		if (la.AfterEol) return; 
 		while (StartOf(17)) {
 			if (la.kind == 24) {
 				Get();

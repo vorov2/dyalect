@@ -17,10 +17,10 @@
             this.fileName = fileName.Replace('\\', '/');
         }
 
-        internal protected override int Read() =>
+        protected internal override int Read() =>
             bufferPosition < bufferLen ? buffer[bufferPosition++] : EOF;
 
-        internal protected override int Peek()
+        protected internal override int Peek()
         {
             var curPos = Pos;
             var ch = Read();
@@ -28,7 +28,7 @@
             return ch;
         }
 
-        internal protected override string GetString(int start, int end)
+        protected internal override string GetString(int start, int end)
         {
             var len = 0;
             var buf = new char[end - start];
@@ -42,13 +42,13 @@
             return new string(buf, 0, len);
         }
 
-        internal protected override int Pos
+        protected internal override int Pos
         {
             get => bufferPosition;
             set
             {
                 if (value < 0 || value > bufferLen)
-                    throw new DyException($"Выход за пределы диапазона в буфере парсера MScript, позиция: {value}.", null);
+                    throw new DyException($"End of file, position: {value}.", null);
 
                 bufferPosition = value;
             }

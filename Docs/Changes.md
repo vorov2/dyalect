@@ -1,3 +1,10 @@
+# 0.27.2
+  * Add: _New test unit engine_ ([Issue #550](https://github.com/vorov2/dyalect/issues/550)).
+  * Fix: _Stack corruption_ ([Issue #557](https://github.com/vorov2/dyalect/issues/557)).
+  * Fix: _Runtime crush_ ([Issue #559](https://github.com/vorov2/dyalect/issues/559)).
+  * Fix: _It is possible to change a constant from an external module_ ([Issue #558](https://github.com/vorov2/dyalect/issues/558)).
+  * Fix: _Stack corruption because of compound assignment_ ([Issue #560](https://github.com/vorov2/dyalect/issues/560)).
+
 # 0.27.1
   * Fix: _Correct error messages for standard `rnd` function_ ([Issue #555](https://github.com/vorov2/dyalect/issues/555)).
 

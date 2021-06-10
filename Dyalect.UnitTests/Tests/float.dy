@@ -1,54 +1,46 @@
-﻿test "Float literal"
-{
+﻿#test "Float literal"
     var res = 1.234e-17
     assert(0.00000000000000001234, res)
     res = .0
     assert(0.0, res)
-}
+#endtest
 
-test "Methods: min and max"
-{
+#test "Methods: min and max"
     assert(1.7976931348623157E+308, Float.max())
     assert(-1.7976931348623157E+308, Float.min())
-}
+#endtest
 
-test "Methods: inf and NaN"
-{
+#test "Methods: inf and NaN"
     var d = Float.inf() + (-Float.inf())
     assert(true, d.isNaN())
-}
+#endtest
 
-test "Constructor"
-{
+#test "Constructor"
     assert(12.2, Float(12.2))
     assert(12.0, Float(12))
     assert(5.0, Float('5'))
-}
+#endtest
 
-test "Methods: default"
-{
+#test "Methods: default"
     assert(0.0, Float.default())
-}
+#endtest
 
-test "Methods: getType"
-{
+#test "Methods: getType"
     let x = 42.42
     assert(true, TypeInfo(x) == Float)
     assert(true, x.getType() == Float)
     var t = TypeInfo(x)
     assert(2, t.id)
     assert("Float", t.name)
-}
+#endtest
 
-test "Methods: parse"
-{
+#test "Methods: parse"
     assert(42.42, Float.parse("42.42"))
     assert(2.0, Float.parse('2'))
     assert(nil, Float.parse("three and a half"))
-}
+#endtest
 
-test "Ranges"
-{
+#test "Ranges"
     assert([0.0,1.0,2.0,3.0,4.0,5.0], [0.0..5])
     assert([0.0,0.02,0.04], (0.0^0.02..0.05).toArray())
-}
+#endtest

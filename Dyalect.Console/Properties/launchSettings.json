@@ -14,10 +14,6 @@
     "Debug": {
       "commandName": "Project",
       "commandLineArgs": "C:\\temp\\dyalect\\main.dy"
-    },
-    "Run tests (new)": {
-      "commandName": "Project",
-      "commandLineArgs": "..\\Dyalect.UnitTests\\NewTests\\ -newtest"
     }
   }
 }

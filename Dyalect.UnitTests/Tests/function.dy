@@ -1,5 +1,87 @@
-﻿
-func tailRecursion1() {
+﻿#test "Methods: toString"
+    func foo(args..., quotes = 12) { }
+    let pat = "foo(args..., quotes = 12)";
+    assert(pat, foo.toString())
+#endtest
+
+#test "Methods: clone"
+    let fn = (x, y) => x + y
+    assert(true, fn == fn)
+    assert(true, fn.clone() == fn)
+    assert(true, fn.toString.clone() == fn.toString)
+    assert(false, fn.toString.clone() == fn)
+#endtest
+
+#test "Base variable 1"
+    let x = 2
+    func inner() {
+        let x = 4
+        base.x
+    }
+    assert(2, inner())
+#endtest
+
+#test "Base variable 2"
+    let x = 2
+    func inner() {
+        let x = 4
+        if x == 4 {
+            var x = 8
+            base.x
+        }
+    }
+    assert(2, inner())
+#endtest
+
+#test "Composition 1"
+    func sum(x, y) {
+        x + y
+    }
+    func fmt(res) {
+        "result=\(res)"
+    }
+    let fun = Function.compose(sum, fmt)
+    let res = fun(13, 14)
+    assert(res, "result=27")
+#endtest
+
+#test "Composition 2"
+    func sum(x, y) {
+        x + y
+    }
+    func fmt(res) {
+        "result=\(res)"
+    }
+    let fun = sum.compose(with: fmt)
+    let res = fun(13, 14)
+    assert(res, "result=27")
+#endtest
+
+#test "Methods: getType"
+    let x = x => x
+    assert(true, TypeInfo(x) == Function)
+    assert(true, x.getType() == Function)
+    var t = TypeInfo(x)
+    assert(6, t.id)
+    assert("Function", t.name)
+#endtest
+
+#test "Properties"
+    func get Array.first() { 
+        this[0] when this.len() > 0
+    }
+
+    func set Array.first(val) {
+        this.add(val) when this.len() == 0 else this[0] = val
+    }
+    
+    let xs = [1,2,3]
+    assert(1, xs.first)
+    xs.first = 11
+    assert(11, xs.first)
+#endtest
+
+#test "Tail recursion 1"
     var xs = []
     func loop(n, max) {
         func loop(i) {
@@ -12,9 +94,9 @@ func tailRecursion1() {
     }
     loop(0, 10)
     assert([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], xs)
-}
+#endtest
 
-func tailRecursion2() {
+#test "Tail recursion 2"
     func foo(a, b) {
         func foo(a, b, c) {
             if a + b == 0 {
@@ -32,9 +114,9 @@ func tailRecursion2() {
     }
     var res = foo(1, 2)
     assert(42, res)
-}
+#endtest
 
-func tailRecursion3() {
+#test "Tail recursion 3"
     func withpm(obj) {
         match obj {
             (x, y) => withpm(42),
@@ -45,9 +127,9 @@ func tailRecursion3() {
     }
     var res = withpm((1,2))
     assert(res, "foo")
-}
+#endtest
 
-func recursionTest1() { //#62
+#test "Recursion 1"
     var acc = 0
     func iter(n) {
         if n == 0 {
@@ -59,19 +141,18 @@ func recursionTest1() { //#62
     }
     iter(10)
     assert(acc, 10)
-}
+#endtest
 
-func recursionTest2() { //#62
+#test "Recursion 2"
     func foo(x, y) {
         var foo = (x, y) => x - y
         foo(x, y)
     }
     var res = foo(12, 2)
     assert(res, 10)
-}
+#endtest
 
-
-func functionTest1() {
+#test "Call"
     func sum(x,y) {
         if y == 2 {
             x + y
@@ -83,87 +164,85 @@ func functionTest1() {
     }
     var res = sum(2, 4)
     assert(7, res)
-}
+#endtest
 
-func functionTest2() {
+#test "Call with named arguments"
     func test1(x, y, z) {
         (x, y, z)
     }
     var res = test1(z: 12, x: 3, y: 1)
     assert((3, 1, 12), res)
-}
+#endtest
 
-func functionTest3() {
+#test "Call with optional arguments"
     func test1(x, x1 = 144, y, z, z1 = 33) {
         (x, x1, y, z, z1)
     }
     var res = test1(z: 12, x: 3, y: 1)
     assert((3, 144, 1, 12, 33), res)
-}
 
-func functionTest4() {
+    func test2(optional = "foo") {
+        optional
+    }
+    assert("foo", test2())
+    var arg = "bar"
+    assert(arg, test2(arg))
+#endtest
+
+#test "Variadic call 1"
     func test1(args..., separator = ",", terminator = "\n") {
         [args, separator, terminator]
     }
     assert( [(1,2), ",", "\n"], test1(1,2) )
     assert( [(1,2), ",", "\r"], test1(1,2, terminator: "\r") )
     assert( [(1,2), ";", "\r"], test1(1,2, terminator: "\r", separator: ";") )
-}
+#endtest
 
-func functionTest5() {
-    func test1(optional = "foo") {
-        optional
-    }
-    assert("foo", test1())
-    var arg = "bar"
-    assert(arg, test1(arg))
-}
-
-func functionTest6() {
+#test "Curried function"
     func apply(fun, fst) { snd => fun(fst, snd) }
     func sum(x, y) { x + y }
     var sum2 = apply(sum, 2)
     assert(5, sum2(3))
-}
+#endtest
 
-func functionTest7() {
+#test "Flip"
     func apply(fun, fst) { snd => fun(fst, snd) }
     func flip(fun) { (y, x) => fun(x, y) }
     func sub(x, y) { x - y }
     var sub3 = apply(flip(sub), 3)
     assert(6, sub3(9))
-}
+#endtest
 
-func functionTest8() {
+#test "Variadic call 2"
     var res
     func variadic(args...) {
         res = args.len()
     }
     variadic(args: (1,2,3))
     assert(3, res)
-}
+#endtest
 
-func functionTest9() {
+#test "Variadic call 3"
     var res
     func variadic(args...) {
         res = args.len()
     }
     variadic([1,2,3,4])
     assert(1, res)
-}
+#endtest
 
-func functionTest10() {
+#test "Identity function"
     var f = x => x
     assert(12, f(12))
-}
+#endtest
 
-func functionTest11() {
+#test "Implicit function"
     var f = $0 ?? 22
     assert(12, f(12))
     assert(22, f(0))
-}
+#endtest
 
-func functionTest12() {
+#test "Caller and current"
     func foo() {
         assert("foo", current().name)
         assert("bar", caller().name)
@@ -172,27 +251,30 @@ func functionTest12() {
         foo()
     }
     bar()
-}
+#endtest
 
-func functionTest13() {
-    assert(functionTest13.name, current().name)
+#test "Function info"
+    func foo() {
+        assert(foo.name, current().name)
+    }
+    foo()
     assert(nil, caller())
-}
+#endtest
 
-func functionTest14() {
+#test "Call chain 1"
     func thy() { caller() }
     func snd() { thy() }
     func fst() { snd() }
     var s = fst()
     assert("snd", s.name)
-}
+#endtest
 
-func functionTest15() {
+#test "Anonymous function name"
     let f = x => x * x
     assert("<func>", f.name)
-}
+#endtest
 
-func functionTest16() {
+#test "Call chain 2"
     func foo() {
         return "\(current().name) is called by \(caller().name)"
     }
@@ -201,14 +283,15 @@ func functionTest16() {
     }
     var s = bar()
     assert("foo is called by bar", s)
-}
+#endtest
 
-func functionTest17() { //#294
+#test "Implicit as statement"
+    //Bug #294
     $0 + $1
-    assert(true, true)
-}
+    assert(got: true)
+#endtest
 
-func variadicTest1() {
+#test "Complex variadic"
     func takeItAll(x, y, args...) {
         var str = "x=" + y + ";y=" + y + ";other=["
         var count = 0
@@ -224,17 +307,17 @@ func variadicTest1() {
     }
     var x = takeItAll(12, 33.4, "oops", true, [1], (x: 0.33, y: 1))
     assert("x=33.4;y=33.4;other=[oopstrue,[1],(x: 0.33, y: 1)]", x)
-}
+#endtest
 
-func variadicTest2() {
+#test "Variadic arguments to string"
     func take(args...) {
         args.toString()
     }
     var x = take(1,2,44.42)
     assert("(1, 2, 44.42)", x)
-}
+#endtest
 
-func variadicTest3() {
+#test "Variadic and optional"
     func take(x, args...) {
         var str = "x=" + x
         str += args
@@ -242,9 +325,9 @@ func variadicTest3() {
     }
     var x = take(14)
     assert("x=14()", x)
-}
+#endtest
 
-func complexToStringTest1() {
+#test "Method: toString 1"
     func Integer.toString() {
         if this % 2 == 0 {
             "even"
@@ -253,44 +336,39 @@ func complexToStringTest1() {
         }
     }
     assert("even", 12.toString())
-    Integer.__deleteMember("toString")
-}
+#endtest
 
-func complexToStringTest2() {
+#test "Method: toString 2"
     func Nil.toString() {
         "null"
     }
     var x = "foo" + nil
     assert("foonull", x)
-    Nil.__deleteMember("toString")
-}
+#endtest
 
-func methodTest1() {
+#test "Method: addition 1"
     func Integer +(other) {
         this * other
     }
     var res = 3 + 3 == 3 * 3
-    Integer.__deleteMember("op_add")
-    assert(true, res)
-}
+    assert(got: res)
+#endtest
 
-func methodTest2() {
+#test "Method: addition 2"
     func Float +(other) {
         this.toString() + " + " + other.toString()
     }
     var res = 12.2 + 0.4
-    Float.__deleteMember("op_add")
     assert("12.2 + 0.4", res)
-}
+#endtest
 
-func methodTest3() {
+#test "Method: getItem"
     var x = 11
     func Integer.getItem(index) { index }
     assert(11, 12[x])
-    Integer.__deleteMember("op_get")
-}
+#endtest
 
-func closureTest() {
+#test "Closures"
     var xs = []
     let num = 10
     for n in 0..<num {
@@ -302,26 +380,26 @@ func closureTest() {
         ys.add(x())
     }
     assert([0, 1, 4, 9, 16, 25, 36, 49, 64, 81], ys)
-}
+#endtest
 
-func paramsTest1() {
+#test "Parameter order 1"
     func pars(x, y) {
         "x=\(x),y=\(y)"
     }
     let res = pars(y: 2, x: 1)
     assert("x=1,y=2", res)
-}
+#endtest
 
-func paramsTest2() {
+#test "Parameter defaults 1"
     func getter(x = 12, y = 3, z = 4, j = 44, k = 42) {
         x + y + z + j + k
     }
     assert(60, getter(3, 4, k: 5))
     assert(62, getter(j: 1))
     assert(105, getter())
-}
+#endtest
 
-func paramsTest3() {
+#test "Parameter defaults 2"
     func pars(x = 1, y = 2, z = 3) {
         "x=\(x),y=\(y),z=\(z)"
     }
@@ -333,9 +411,9 @@ func paramsTest3() {
     assert("x=1,y=2,z=4", res)
     res = pars(10, 20)
     assert("x=10,y=20,z=3", res)
-}
+#endtest
 
-func paramsTest4() {
+#test "Parameters and exceptions"
     func pars(x, y, z) { }
     let res = try {
         pars(1, 2, x: 3)
@@ -343,9 +421,9 @@ func paramsTest4() {
         MultipleValuesForArgument(funName, argName) => "\(funName)->\(argName)"
     }
     assert("pars->x", res)
-}
+#endtest
 
-func paramerlessLambda() {
+#test "Parameterless lambda"
     let fn = => 2 + 2
     assert(4, fn())
     func takeIt(fn) {
@@ -353,9 +431,9 @@ func paramerlessLambda() {
     }
     let res = takeIt(=> { 22 + 22 })
     assert(44, res)
-}
+#endtest
 
-func introspectionTest1() {
+#test "Introspection"
     func tt(x, y, z = 3, extras...) {}
     assert("tt", tt.name)
     assert(4, tt.parameters.len())
@@ -372,36 +450,36 @@ func introspectionTest1() {
         }
         i += 1
     }
-}
+#endtest
 
-func exprBody1() {
+#test "Expression bodied functions"
     func sum(x, y) => x + y
     assert(5, sum(2, 3))
     func sum3(x, y, z) => {
         x + y + z
     }
     assert(9, sum3(2, 3, 4))
-}
+#endtest
 
-func funcWithDefaults1() {
+#test "Defaults and foreign call 1"
     func double(x = 2) => x + x
     func sum2(x, y = 3) => x + y
     func sum3(x = 1, y = 0.5, z = 0.25) => x + y + z
     assert(4, __invoke(double))
     assert(6.33, __invoke(sum2, 3.33))
     assert(1.75, __invoke(sum3))
-}
+#endtest
 
-func funcWithDefaults2() {
+#test "Defaults and foreign call 2"
     assert(12.12, __invoke(round, 12.1245677))
     let r = __invoke(rnd, 10)
     assert(true, r >= 10)
     assert(true, __invoke(rnd) >= 0)
     let r2 = __invoke(rnd, 1, 5)
     assert(true, r2 >= 1 && r2 <= 5)
-}
+#endtest
 
-func funcWithDefaults3() {
+#test "Defaults and foreign call 3"
     var cell
     func collector(args..., x = 5) {
         var xs = [x]
@@ -410,9 +488,9 @@ func funcWithDefaults3() {
     }
     __invoke(collector, 4)
     assert([5, 4], cell)
-}
+#endtest
 
-func funcWithDefaults4() {
+#test "Defaults and foreign call 4"
     var cell
     func collector(x, y, args...) {
         var xs = [x, y]
@@ -421,9 +499,9 @@ func funcWithDefaults4() {
     }
     __invoke(collector, 1, 2, (3, 4))
     assert([1, 2, 3, 4], cell)
-}
+#endtest
 
-func funcWithDefaults5() {
+#test "Defaults and foreign call 5"
     var cell
     func collector(x, y, args...) {
         var xs = [x, y]
@@ -432,16 +510,16 @@ func funcWithDefaults5() {
     }
     __invoke(collector, 5, 6, [7, 8])
     assert([5, 6, 7, 8], cell)
-}
+#endtest
 
-func externalCall() {
+#test "External call"
     func checkIt() {
         assert(nil, caller())
     }
     __invoke(checkIt)
-}
+#endtest
 
-func funcTypeAnnotations1() {
+#test "Type annotations 1"
     func sum(Integer x, Integer y) {
         x + y
     }
@@ -452,10 +530,11 @@ func funcTypeAnnotations1() {
     } catch {
         InvalidType() => assert(got: true)
     }
-}
+#endtest
 
-import lib = refs/libtest1
-func funcTypeAnnotations2() {
+#test "Type annotations 2"
+    import lib = refs/libtest1
+
     func assetToString(lib::Asset ass) {
         ass.toString()
     }
@@ -466,9 +545,9 @@ func funcTypeAnnotations2() {
     } catch {
         InvalidType() => assert(got: true)
     }
-}
+#endtest
 
-func mutualRecursion1() {
+#test "Mutual recursion 1"
     func f(x) {
         g(x - 1) when x > 0 else x
     }
@@ -477,9 +556,9 @@ func mutualRecursion1() {
     }
     assert(0, f(1))
     assert(-1, f(-1))
-}
+#endtest
 
-func mutualRecursion2() {
+#test "Mutual recursion 2"
     func f(n) {
         n == 0 ? 1 : n - m(f(n-1))
     }
@@ -490,4 +569,4 @@ func mutualRecursion2() {
     let ys = (0..20).map(i => m(i)).toArray()
     assert([1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 11, 11, 12, 13], xs)
     assert([0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 7, 8, 9, 9, 10, 11, 11, 12, 12], ys)
-}
+#endtest

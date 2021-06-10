@@ -8,13 +8,13 @@ namespace Dyalect.Parser
 
         public abstract string? FileName { get; }
 
-        internal protected abstract int Pos { get; set; }
+        protected internal abstract int Pos { get; set; }
 
-        internal protected abstract string GetString(int start, int end);
+        protected internal abstract string GetString(int start, int end);
 
-        internal protected abstract int Peek();
+        protected internal abstract int Peek();
 
-        internal protected abstract int Read();
+        protected internal abstract int Read();
 
         public static SourceBuffer FromFile(string file)
         {

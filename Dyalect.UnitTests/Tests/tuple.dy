@@ -1,151 +1,165 @@
-﻿//Done
-func tupleLiteralTest1() {
+﻿#test "Methods: toString"
+    var res = (1,2,3).toString()
+    assert("(1, 2, 3)", res)
+    res = (1, true, (2,3)).toString()
+    assert("(1, true, (2, 3))", res)
+    res = (x: 12, 44.4, y: (1, 2)).toString()
+    assert("(x: 12, 44.4, y: (1, 2))", res)
+    res = (x: 42,y: "foo").toString()
+    assert("(x: 42, y: foo)", res)
+#endtest
+
+#test "Methods: clone"
+    let xs = (1,2,3)
+    assert(true, xs == xs)
+    assert(true, xs.clone() == xs)
+#endtest
+
+#test "Methods: getType"
+    let x = (1,2)
+    assert(true, TypeInfo(x) == Tuple)
+    assert(true, x.getType() == Tuple)
+    var t = TypeInfo(x)
+    assert(12, t.id)
+    assert("Tuple", t.name)
+#endtest
+
+#test "Tuple literal 1"
     //Test if a tuple is recognized correctly
     var res = ([1,2,3].len() + 4) * 2
     assert(14, res)
-}
+#endtest
 
-func tupleLiteralTest2() {
+#test "Tuple literal 2"
     var tup = (
         x: (x: 2, y: (y: 3)),
         22
     )
     var res = tup[1] + tup["x"]["x"] - tup["x"]["y"]["y"]
     assert(21, res)
-}
+#endtest
 
-func tupleTest1() {
+#test "Methods: len"
     var t = (1,2,3)
     assert(3, t.len())
-}
+#endtest
 
-func tupleTest2() {
+#test "Field access"
     var t = (x: 1, y: 2, z: 3)
     assert(6, t::x + t::y + t::z)
-}
+    
+    t = ("long name": 12, "+": 34)
+    assert(12, t["long name"])
+    assert(34, t["+"])
 
-func tupleTest3() {
+    t = (fn: x => x+x)
+    assert(42, t::fn(21))
+
+    t = (x: 33)
+    assert(33, t['x'])
+#endtest
+
+#test "Methods: keys"
     var t = (x: 1, y: 2, z: 3)
     var res = t.keys().toArray()
     assert(["x", "y", "z"], res)
-}
+#endtest
 
-func tupleTest4() {
+#test "Methods: indices"
     var t = (1,2,3,4,5,6)
     var res = t.indices().toArray()
     assert([0, 1, 2, 3, 4, 5], res)
-}
+#endtest
 
-func tupleTest5() {
+#test "Methods: fst, snd"
     var t = (42, 4.56)
     var res = t.fst() - t.snd()
     assert(37.44, res)
-}
+#endtest
 
-func tupleTest6() {
+#test "Equality"
     var t1 = (12, 3, 44, "string", false, 42.1)
     var t2 = (12, 3, 44, "string", false, 42.1)
     assert(got: t1 == t2)
-}
+#endtest
 
-func tupleTest7() {
+#test "Constructor"
     var t = Tuple(1, 2, 3, "foo", "bar", 4, 5, 6)
     var t2 = (1, 2, 3, "foo", "bar", 4, 5, 6)
     assert(t2, t)
-}
+#endtest
 
-func tupleTest8() { //bug #215
-    var t = ("long name": 12, "+": 34)
-    assert(12, t["long name"])
-    assert(34, t["+"])
-}
-
-func tupleTest9() { //bug #216
-    var t = (fn: x => x+x)
-    assert(42, t::fn(21))
-}
-
-func tupleTest10() { //bug #217
-    var t = (x: 33)
-    assert(33, t['x'])
-}
-
-func tupleTest11() { //#287
+#test "Methods: slice"
     var xs = (1..10).toTuple()
     var slice = xs.slice(4).toTuple()
     assert((5,6,7,8,9,10), slice)
-}
+#endtest
 
-func tupleTest12() { //#287
+#test "Methods: toTuple"
     var xs = [0,1,2,3,4,5,6,7,8,9]
     var res = xs[1..5].toTuple()
     assert((1,2,3,4,5), res)
-}
+#endtest
 
-func tupleTest13() { //#290
+#test "Methods: sort"
     var xs = (4,6,1,3,2,5)
     var ys = xs.sort((x,y) => x - y)
     assert((1, 2, 3, 4, 5, 6), ys)
-}
 
-func tupleTest14() { //#290
-    var xs = (7,4,6,1,3,2,5)
-    var ys = xs.sort()
+    xs = (7,4,6,1,3,2,5)
+    ys = xs.sort()
     assert((1, 2, 3, 4, 5, 6, 7), ys)
-}
+#endtest
 
-func tupleTest15() { //#290
+#test "Methods: static sort"
     var xs = (4,6,1,3,2,5)
     var ys = Tuple.sort(xs, (x,y) => x - y)
     assert((1, 2, 3, 4, 5, 6), ys)
-}
 
-func tupleTest16() { //#290
-    var xs = (7,4,6,1,3,2,5)
-    var ys = Tuple.sort(xs)
+    xs = (7,4,6,1,3,2,5)
+    ys = Tuple.sort(xs)
     assert((1, 2, 3, 4, 5, 6, 7), ys)
-}
+#endtest
 
-func tupleTest17() { //#293
+#test "Single element tuple"
     var xx = (1,)
     assert((1,), xx)
     var (x,) = (2,)
     assert(x, 2)
     set (x,) = (3,)
     assert(x, 3)
-}
+#endtest
 
-func tupleIndexing() { //#301
+#test "Negative indices"
     var xs = (1,2,3,4,5)
     assert(5, xs[-1])
     assert(1, xs[-5])
-}
+#endtest
 
-//Start #292
-func tupleAdd() {
+#test "Methods: add"
     var xs = (1,)
     xs = xs.add(2)
     xs = xs.add(3)
     assert((1,2,3), xs)
-}
+#endtest
 
-func tupleRemove() {
+#test "Methods: remove"
     var xs = (1,2,3,4,5)
     xs = xs.remove(3)
     xs = xs.remove(6)
     xs = xs.remove(5)
     assert((1,2,4), xs)
-}
+#endtest
 
-func tupleRemoveAt() {
+#test "Methods: removeAt"
     var xs = (1,2,3,4)
     xs = xs.removeAt(3)
     assert((1,2,3), xs)
     xs = xs.removeAt(1)
     assert((1,3), xs)
-}
+#endtest
 
-func tupleInsert() {
+#test "Methods: insert"
     var xs = (1,2,3)
     xs = xs.insert(0, 0)
     assert((0,1,2,3), xs)
@@ -153,10 +167,9 @@ func tupleInsert() {
     assert((0,1,2,3,4), xs)
     xs = xs.insert(3, 2.5)
     assert((0,1,2,2.5,3,4), xs)
-}
-//End #292
+#endtest
 
-func tupleAddOp1() {
+#test "Addition 1"
     var xs = (1,2,3)
     var ys = (4,5,6)
     var res = xs + ys
@@ -165,29 +178,29 @@ func tupleAddOp1() {
     assert((1,2,3,5,6), res)
     res = xs + yields {11,22}
     assert((1,2,3,11,22), res)
-}
+#endtest
 
-func tupleAddOp2() { //#315
+#test "Addition 2"
     var xs = (1,2,3)
     var res = xs + "abc"
     assert((1,2,3,'a','b','c'), res)
-}
+#endtest
 
-func tupleConcat() { //#317
+#test "Methods: concat"
     func it() {
         yield "foo"
         yield "boo"
     }
     var arr = Tuple.concat((1,2,3), (4,5,6), [1,2], it())
     assert((1,2,3,4,5,6,1,2,"foo","boo"), arr)
-}
+#endtest
 
-func tupleRange() {
+#test "Ranges"
     var xs = (1..3,)
     assert((1,2,3), xs)
-}
+#endtest
 
-func mutableTuple1() {
+#test "Mutable tuples 1"
     var xs = (var x: 12, var y: 14)
     xs[0] = xs[0] * 2
     xs[1] = xs[1] * 2
@@ -199,9 +212,9 @@ func mutableTuple1() {
     xs["x"] = xs["x"] * 2
     xs["y"] = xs["y"] * 2
     assert((48, 56), xs)
-}
+#endtest
 
-func mutableTuple2() {
+#test "Mutable tuples 2"
     var xs = (var x: 3, y: 4, var z: 5)
     xs::x = 33
     assert(33, xs::x)
@@ -211,9 +224,9 @@ func mutableTuple2() {
     } catch {
         FieldReadOnly() => assert(4, xs::y)
     }
-}
+#endtest
 
-func mutableTuple3() {
+#test "Mutable tuples 3"
     var xs = ( 1..5, )
     try {
         xs[0] = 0
@@ -221,23 +234,23 @@ func mutableTuple3() {
     } catch {
         FieldReadOnly() => assert(got: true)
     }
-}
+#endtest
 
-func mutableTupleToString() {
+#test "Methods: toString (mutable)"
     let xs = (var x: 2, y: 3, var z: 4, let xx: 42)
     let str = xs.toString()
     assert(expect: "(var x: 2, y: 3, var z: 4, xx: 42)", got: str) 
-}
+#endtest
 
-func tupleToDictionary() {
+#test "Methods: toDictionary"
     let xs = (name: "Vasily", age: 41, gender: "Male")
     let dict = xs.toDictionary()
     assert("Vasily", dict["name"])
     assert(41, dict["age"])
     assert("Male", dict["gender"])
-}
+#endtest
 
-func tupleContains() {
+#test "Methods: contains"
     let xs = (name: "Vasily", age: 41, gender: "Male")
     assert(true, xs.contains("name"))
     assert(true, xs.contains("age"))
@@ -249,9 +262,9 @@ func tupleContains() {
     } catch {
         InvalidType() => assert(got: true)
     }
-}
+#endtest
 
-func tupleExceptions() {
+#test "Exceptions with tuples"
     let xs = (x: 1, y: 2)
     try {
         xs[2]
@@ -263,4 +276,4 @@ func tupleExceptions() {
     } catch {
         FieldNotFound() => assert(got: true)
     }
-}
+#endtest

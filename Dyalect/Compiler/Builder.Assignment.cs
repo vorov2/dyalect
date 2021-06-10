@@ -42,13 +42,13 @@ namespace Dyalect.Compiler
             Build(value, hints.Append(Push), ctx);
             cw.FunArgIx(0);
             cw.FunCall(1);
+            PopIf(hints);
         }
 
         private bool BuildSetter(DAssignment node, Hints hints, CompilerContext ctx)
         {
             var acc = (DAccess)node.Target;
             EmitSetter(acc.Target, node.Value, acc.Name, hints, ctx);
-            PopIf(hints);
             return true;
         }
 
@@ -58,7 +58,7 @@ namespace Dyalect.Compiler
             var acc = (DAccess)node.Target;
             EmitGetter(acc.Target, acc.Name, hints, ctx);
             cw.Brtrue(exitLab);
-            EmitSetter(acc.Target, node.Value, acc.Name, hints, ctx);
+            EmitSetter(acc.Target, node.Value, acc.Name, hints.Remove(Push), ctx);
             cw.MarkLabel(exitLab);
             cw.Nop();
             PushIf(hints);

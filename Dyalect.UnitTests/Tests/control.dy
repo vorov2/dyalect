@@ -1,5 +1,4 @@
-﻿test "Guards 1"
-{
+﻿#test "Guards 1"
     func safeDiv1(x, y) {
         return -1 when y == 0
         return x / y
@@ -21,10 +20,9 @@
     }
     assert(5, safeDiv3(10, 2))
     assert(0, safeDiv3(10, 0))
-}
+#endtest
 
-test "Guards 2"
-{
+#test "Guards 2"
     var x = 0
     x += 1 when x < 1
     assert(1, x)
@@ -32,41 +30,36 @@ test "Guards 2"
     var y = 0
     y += 1 when y < 0
     assert(0, y)
-}
+#endtest
 
-test "Guards 3"
-{
+#test "Guards 3"
     let (x, y) = (1, 2)
     set (x, y) = (12, 14) when x > 0 && y > 1
     assert((12, 14), (x, y))
-}
+#endtest
 
-test "Guards 4"
-{
+#test "Guards 4"
     let (x, y) = (1, 2)
     var res
     if x < 2 { res = "x < 2" } when y > 10 else { res = "y < 10" }
     assert("y < 10", res)
-}
+#endtest
 
-test "Guards 5"
-{
+#test "Guards 5"
     func fib(n) =>
         n when n < 2 else fib(n - 1) + fib(n - 2)
     assert(89, fib(11))
-}
+#endtest
 
-test "Guards 6"
-{
+#test "Guards 6"
     var x = 1
     var y = 42
     x = y when y > 42 else y = 84
     assert(1, x)
     assert(84, y)
-}
+#endtest
 
-test "Return from method"
-{
+#test "Return from method"
     func foo() {
         return 2
     }
@@ -76,10 +69,9 @@ test "Return from method"
     }
     assert(2, foo())
     assert(nil, bar())
-}
+#endtest
 
-test "Cycle: while with break 1"
-{
+#test "Cycle: while with break 1"
     var n = 100
     var x = while n > 0 {
         if n == 33 {
@@ -88,10 +80,9 @@ test "Cycle: while with break 1"
         n = n - 1
     }
     assert(33, x)
-}
+#endtest
 
-test "Cycle: while with break 2"
-{
+#test "Cycle: while with break 2"
     var n = 100
     var x = while n > 0 {
         if n == 33 {
@@ -103,10 +94,9 @@ test "Cycle: while with break 2"
         x = 42
     }
     assert(42, x)
-}
+#endtest
 
-test "Cycle: Nested while"
-{
+#test "Cycle: Nested while"
     var z = 5
     var c = 0
     while z >= 1 {
@@ -122,10 +112,9 @@ test "Cycle: Nested while"
     }
     assert(0, z)
     assert(5, c)
-}
+#endtest
 
-test "Cycle: do/while 1"
-{
+#test "Cycle: do/while 1"
     var x = 1
     do {
         x -= 1
@@ -135,19 +124,17 @@ test "Cycle: do/while 1"
         x += 1
     } while false
     assert(1, x)
-}
+#endtest
 
-test "Cycle: do/while 2"
-{
+#test "Cycle: do/while 2"
     var x = 0
     do {
         x += 1
     } while x < 10
     assert(10, x)
-}
+#endtest
 
-test "Cycle: do/while with break"
-{
+#test "Cycle: do/while with break"
     var x = 0
     do {
         x += 1
@@ -156,10 +143,9 @@ test "Cycle: do/while with break"
         }
     } while x < 10
     assert(1, x)
-}
+#endtest
 
-test "Cycle: do/while with continue"
-{
+#test "Cycle: do/while with continue"
     var x = 0
     var iter = 0
     do {
@@ -171,10 +157,9 @@ test "Cycle: do/while with continue"
     } while x < 10
     assert(10, x)
     assert(8, iter)
-}
+#endtest
 
-test "Cycle: for 1"
-{
+#test "Cycle: for 1"
     var str = ""
     for i in 1..5 {
         for _ in 1..i {
@@ -189,20 +174,18 @@ test "Cycle: for 1"
         "****\n" +
         "*****\n"
     assert(pattern, str)
-}
+#endtest
 
-test "Cycle: for 2"
-{
+#test "Cycle: for 2"
     var arr = []
     for x in [1,2,3,4] {
         x = x+x
         arr.add(x)
     }
     assert([2,4,6,8], arr)
-}
+#endtest
 
-test "Cycle: for with continue"
-{
+#test "Cycle: for with continue"
     var acc = 0
     for x in 1..5 {
         if x % 2 != 0 {
@@ -216,10 +199,9 @@ test "Cycle: for with continue"
         }
     }
     assert(44, acc)
-}
+#endtest
 
-test "Cycle: for with break"
-{
+#test "Cycle: for with break"
     var acc = ""
     for x in 1..10 {
         if x > 5 {
@@ -230,10 +212,9 @@ test "Cycle: for with break"
         }
     }
     assert(">>1", acc)
-}
+#endtest
 
-test "Cycle: endless while"
-{
+#test "Cycle: endless while"
     var i = 1
     while true {
         if i < 100 {
@@ -242,4 +223,4 @@ test "Cycle: endless while"
         i += 1
     }
     assert(true, true)
-}
+#endtest

@@ -1,7 +1,9 @@
-﻿#warning disable 302
-#warning disable 303
+﻿#test init
+    #warning disable 302
+    #warning disable 303
+#endtest
 
-func matchTest1() {
+#test "Patterns: tuple"
     var res = match (1,2) {
         (2, x) => "wrong1",
         (x, y, z) => "wrong2",
@@ -11,35 +13,35 @@ func matchTest1() {
         (1, x) => x
     }
     assert(2, res)
-}
+#endtest
 
-func matchTest2() {
+#test "Patterns: tuple, array"
     var res = match (1,2,"str") {
         (1, 2, "strs") => "wrong",
         [1, 2, "str"] => "right?",
         (1, 2, "str") => "right!"
     }
     assert("right?", res)
-}
+#endtest
 
-func matchTest3() {
+#test "Patterns: tuple, array, type"
     var res = match (1,2,"str") {
         (1, 2, "strs") => "wrong",
         Array and [1, 2, "str"] => "right?",
         (1, 2, "str") xs => xs
     }
     assert((1,2,"str"), res)
-}
+#endtest
 
-func matchTest4() {
+#test "Guards 1"
     var res = match (1,2) {
         "clear fake" => "wrong1",
         (x, 2) xs when xs.fst() == 1 => xs
     }
     assert((1,2), res)
-}
+#endtest
 
-func matchTest5() {
+#test "Patterns: type test"
     func typeName(x) {
         match x {
             Integer => "Integer",
@@ -79,41 +81,41 @@ func matchTest5() {
         ]
         assert(expected, xs)
     }
-}
+#endtest
 
-func matchTest6() {
+#test "Patterns: or"
     var res = match 12 {
         "24" or 24 => 24,
         "12" or 12 => 12
     }
     assert(12, res)
-}
+#endtest
 
-func matchTest7() {
+#test "Patterns: array with guards"
     var res = match [1, 2, ('f', 'F', [34, 42.2]), "end"] {
         [1, 2] xs when xs.len() <= 3 => "wrong",
         [1, 2, (_, _, [34, x])] when x > 42 => x
     }
     assert(42.2, res)
-}
+#endtest
 
-func matchTest8() {
+#test "Patterns: record 1"
     var res = match (x: 12, y: 24) {
         (x: 13, y: y) => y,
         (x: x, y: 24) => x
     }
     assert(12, res)
-}
+#endtest
 
-func matchTest8b() {
+#test "Patterns: record 2"
     var res = match (x: 12) {
         (x: 13) => 13,
         (x: x) => x
     }
     assert(12, res)
-}
+#endtest
 
-func matchTest9() {
+#test "Match range"
     var arr = []
     match [1..5] {
         [1, 3, x] => nil,
@@ -124,142 +126,141 @@ func matchTest9() {
         }
     }
     assert([2,4], arr)
-}
+#endtest
 
-func matchTest10() {
+#test "Patterns: and 1"
     var res = match (42, 12) {
         (x, y) and (_, 12) when x > 10 => x
     }
     assert(42, res)
-}
+#endtest
 
-func matchTest11() {
+#test "Guards 2"
     var res = match (42, 12) {
         (42, x) when x > 15 => false,
         (42, x) when x == 12 => true
     }
     assert(true, res)
-}
+#endtest
 
-func matchTest12() {
+#test "Patterns: and 2"
     var res = match (42, 12) {
         (x, y) and (_, 12) when x > y => x + y
     }
     assert(54, res)
-}
+#endtest
 
-func matchTest13() {
+#test "Patterns: nil"
     var n = nil //Bug #178
     var res = match n {
         nil => true
     }
     assert(true, res)
-}
+#endtest
 
-func matchTest14() {
+#test "Patterns: record 3"
     var res = match (x: 12,) {
         (x: 13,) => 13,
         (x: x,) => x
     }
     assert(12, res)
-}
+#endtest
 
-
-func forMatchTest1() {
+#test "Pattern in cycle 1"
     var arr = []
     for (1, x) in [(1, 2), (2, 'F'), (3, 'S'), (1, 3), (1, 4), (1.01, true)] {
         arr.add(x)
     }
     assert([2, 3, 4], arr)
-}
+#endtest
 
-func forMatchTest2() {
+#test "Pattern in cycle 2"
     var arr = []
     for Char c in ['a', "str", 'b', 'c', 12] {
         arr.add(c)
     }
     assert(['a','b','c'], arr)
-}
+#endtest
 
-func forMatchTest3() {
+#test "Pattern in cycle 3"
     var arr = []
     for Char in ['a', "str", 'b', 'c', 12] {
         arr.add(0)
     }
     assert(3, arr.len())
-}
+#endtest
 
-func forMatchTest4() {
+#test "Pattern in cycle 4"
     var arr = []
     for (1, x) xs in [(1, 2), (2, 'F'), (3, 'S'), (1, 3), (1, 4), (1.01, true)] {
         arr.add(xs)
     }
     assert([(1,2), (1,3), (1,4)], arr)
-}
+#endtest
 
-func forMatchTest5() {
+#test "Pattern in cycle 5"
     var arr = []
     for x in [1,2,3,4,5,6,7,8,9,10] when x % 2 == 0 {
         arr.add(x)
     }
     assert([2,4,6,8,10], arr)
-}
+#endtest
 
-func rangeMatchTest1() {
+#test "Patterns: range 1"
     var x = 5
     var res = match x {
         1..4 => false,
         3..10 => true
     }
     assert(true, res)
-}
+#endtest
 
-func rangeMatchTest2() {
+#test "Patterns: range 2"
     var x = 'c'
     var res = match x {
         'd'..'z' => 0,
         'b'..'f' => 144
     }
     assert(144, res)
-}
+#endtest
 
-func hasMatchTest1() {
+#test "Patterns: member check 3"
     var res = match 12 {
         .foo => false,
         .op_mul => true
     }
     assert(true, res)
-}
+#endtest
 
-func hasMatchTest2() {
+#test "Patterns: member check 2"
     var res = match (12,3) {
         .foo => false,
         .keys => true
     }
     assert(true, res)
-}
+#endtest
 
-func hasMatchTest3() {
+#test "Patterns: member check 3"
     let xs = []
     let res = xs is .iter and .toString and .has
     assert(true, res)
-}
+#endtest
 
-func setMatchTest1() {
+#test "Match in set 1"
     var x = 1
     var y = 2
     set (x, y) = (y, x)
     assert(2, x)
     assert(1, y)
-}
+#endtest
 
-func setMatchTest2() {
+#test "Match in set 2"
     var x
     set [1, ('a', 'b'), x, 33] = [1, ('a', 'b'), 42, 33, 88]
     assert(42, x)
-}
+#endtest
 
-func setMatchTest3() {
+#test "Match and exception 1"
     func foo() {
         (41, 2, 3)
     }
@@ -270,21 +271,42 @@ func setMatchTest3() {
         e::detail
     }
     assert("Match failed.", res)
-}
+#endtest
 
-func varMatchTest1() {
+#test "Match in set 3"
     set (x, y) = (1, 11)
     assert(1, x)
     assert(11, y)
-}
+#endtest
 
-func varMatchTest2() {
+#test "Match in var 1"
     var [1, ('a', 'b'), x, 33, y] = [1, ('a', 'b'), 42, 33, 88]
     assert(42, x)
     assert(88, y)
-}
+#endtest
 
-func varMatchTest3() {
+#test "Match in var 2"
+    var (x,y) = (12, 2)
+    assert(14, x + y)
+    var (_, z) = (12, 222)
+    assert(222, z)
+#endtest
+
+#test "Match in var 3"
+    var [x,y] = [12, 2]
+    assert(14, x + y)
+    var [_, z] = [12, 222]
+    assert(222, z)
+#endtest
+
+#test "Match in var 4"
+    var (x,y) = [12, 2]
+    assert(14, x + y)
+    var (_, z) = [12, 222]
+    assert(222, z)
+#endtest
+
+#test "Match and exception 2"
     func foo() {
         (41, 2, 3)
     }
@@ -294,42 +316,42 @@ func varMatchTest3() {
         e::detail
     }
     assert("Match failed.", res)
-}
+#endtest
 
-func ctorMatchTest1() {
+#test "Match in let 1"
     let Array and (x, y, z) = [1, 2, 3]
     assert(6, x + y + z)
     let Array and [xx, yy, zz] = [1, 2, 3, 4, 5]
     assert(6, xx + yy + zz)
-}
+#endtest
 
-func ctorMatchTest2() {
+#test "Match in let 2"
     let Tuple and (x, y, z) = (1, 2, 3)
     assert(6, x + y + z)
-}
+#endtest
 
-func ctorMatchTest3() {
+#test "Match as an expression"
     var res = match 42 {
         Integer => true
     }
     assert(true, res)
-}
+#endtest
 
-func ctorMatchTest4() {
+#test "Match in let 3"
     let String and (x, y, z) = "abc"
     assert(['a','b','c'], [x,y,z])
-}
+#endtest
 
-func isTest1() {
+#test "Match in is 1"
     var xs = (1, 2)
     assert(true, xs is Tuple)
     assert(false, xs is Array)
     var b = xs is Tuple t
     assert(true, b)
     assert((1,2), t)
-}
+#endtest
 
-func isTest2() {
+#test "Match in is 2"
     var xs = (1, 2, 3, ['a', 'b'])
     var res
     if xs is (1, _, 3, ['a', x]) {
@@ -339,16 +361,16 @@ func isTest2() {
     var res1 = xs is (1, _, 3, ['a', x])
     assert(true, res1)
     assert('b', x)
-}
+#endtest
 
-func isTest3() {
+#test "Match in is 3"
     var xs = (1, 2, 3)
     var res = xs is (1, _, 3, ['a', x])
     assert(false, res)
     assert(nil, x)
-}
+#endtest
 
-func isTest4() {
+#test "Match in is 4"
     func calcIt(xs) {
         if xs is (x, y, z) {
             x + y + z
@@ -360,30 +382,9 @@ func isTest4() {
     var ys = (1, 2)
     assert(6, calcIt(xs))
     assert(0, calcIt(ys))
-}
+#endtest
 
-func bindingMatch1() {
-    var (x,y) = (12, 2)
-    assert(14, x + y)
-    var (_, z) = (12, 222)
-    assert(222, z)
-}
-
-func bindingMatch2() {
-    var [x,y] = [12, 2]
-    assert(14, x + y)
-    var [_, z] = [12, 222]
-    assert(222, z)
-}
-
-func bindingMatch3() {
-    var (x,y) = [12, 2]
-    assert(14, x + y)
-    var (_, z) = [12, 222]
-    assert(222, z)
-}
-
-func typeCheck1() {
+#test "Match in is 5"
     var x = 1
     var y = 1.2
     var res1 = false
@@ -399,19 +400,20 @@ func typeCheck1() {
     if y is Float f {
         assert(1.2, f)
     }
-}
+#endtest
 
-type TypeInMatch()
-func typeCheck2() {
+#test "Custom type check"
+    type TypeInMatch()
+
     var t = TypeInMatch()
     var res = false
     if t is TypeInMatch {
         res = true
     }
     assert(true, res)
-}
+#endtest
 
-func forWithMatchAndGuard() {
+#test "Match in for with guard"
     let tup = (
         (1, 2),
         (2, 4),
@@ -424,34 +426,34 @@ func forWithMatchAndGuard() {
         xs.add(y)
     }
     assert([4, 8], xs)
-}
+#endtest
 
-func matchBinding1() {
+#test "Match in let 4"
     let xs = [42]
     xs is Array arr
     assert([42], xs)
     xs is Array or Array arr2
     assert(nil, arr2)
-}
+#endtest
 
-func matchBinding2() {
+#test "Match in let 5"
     let xs = []
     if xs is [x] || xs is Array {
         assert(nil, x)
     } else {
         assert(true, false)
     }
-}
+#endtest
 
-func matchBinding3() {
+#test "Match in let 6"
     let xs = []
     match xs {
         [x] or Array => assert(nil, x),
         _ => assert(true, false)
     }
-}
+#endtest
 
-func notPattern1() {
+#test "Patterns: not"
     let x = nil
     assert(true, x is nil)
     assert(false, x is not nil)
@@ -467,9 +469,9 @@ func notPattern1() {
     assert(false, y is not Array)
     assert(true, y is not Tuple)
     assert(true, y is not Tuple and not Dictionary)
-}
+#endtest
 
-func comparisonPattern1() {
+#test "Patterns: comparison"
     let (x, y) = (1, 2)
     var res = x is >0
     assert(true, res)
@@ -479,4 +481,4 @@ func comparisonPattern1() {
     assert(true, res)
     res = y is <=1 or >5
     assert(false, res)
-}
+#endtest
