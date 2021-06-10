@@ -70,7 +70,7 @@ namespace Dyalect
 
         private static void Failed(string name, string reason, string fileName)
         {
-            commands.Add($"AddTest {name} -Outcome Failed -Framework DyaUnit -FileName {fileName}");
+            commands.Add($"AddTest \"{name}\" -Outcome Failed -Framework DyaUnit -FileName {fileName}");
             Printer.Output($"[ ] {name} FAILED: {reason}");
         }
 
