@@ -258,7 +258,4 @@
   <data name="AccessorOnlyMethod" xml:space="preserve">
     <value>Only methods can be declared as accessors (get and set).</value>
   </data>
-  <data name="UnableSetIni" xml:space="preserve">
-    <value>Initialization scope of a type cannot be overwritten.</value>
-  </data>
 </root>

@@ -385,15 +385,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Initialization scope of a type cannot be overwritten..
-        /// </summary>
-        internal static string UnableSetIni {
-            get {
-                return ResourceManager.GetString("UnableSetIni", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Unable to link module &apos;{0}&quot;. Compilation terminated..
         /// </summary>
         internal static string UnableToLinkModule {
