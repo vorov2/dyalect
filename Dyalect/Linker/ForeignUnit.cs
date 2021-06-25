@@ -31,7 +31,7 @@ namespace Dyalect.Linker
         protected void AddType<T>(string name) where T : ForeignTypeInfo
         {
             var typeId = Types.Count;
-            var td = new TypeDescriptor(name, typeId, true, typeof(T));
+            var td = new TypeDescriptor(name, typeId, typeof(T));
             Types.Add(td);
             TypeMap[name] = td;
         }

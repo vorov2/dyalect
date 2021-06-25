@@ -11,31 +11,24 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; } = null!;
 
-        public bool HasConstructors => constructors is not null && constructors.Count > 0;
-
-        private List<DFunctionDeclaration> constructors = null!;
-        public List<DFunctionDeclaration> Constructors => constructors ??= new();
+        public List<DFunctionDeclaration> Constructors { get; } = new();
 
         internal override void ToString(StringBuilder sb)
         {
             sb.Append("type ");
             sb.Append(Name);
+            sb.Append(" = ");
+            var fst = true;
 
-            if (HasConstructors)
+            foreach (var c in Constructors)
             {
-                sb.Append(" = ");
-                var fst = true;
+                if (!fst)
+                    sb.Append(" or ");
 
-                foreach (var c in constructors)
-                {
-                    if (!fst)
-                        sb.Append(" or ");
-
-                    sb.Append(c.Name);
-                    sb.Append('(');
-                    c.Parameters.ToString(sb);
-                    sb.Append(')');
-                }
+                sb.Append(c.Name);
+                sb.Append('(');
+                c.Parameters.ToString(sb);
+                sb.Append(')');
             }
         }
     }

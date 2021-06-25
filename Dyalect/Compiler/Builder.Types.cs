@@ -25,17 +25,14 @@ namespace Dyalect.Compiler
 
             types.Add(node.Name, ti);
 
-            var td = new TypeDescriptor(node.Name, typeId, node.HasConstructors);
+            var td = new TypeDescriptor(node.Name, typeId);
             unit.Types.Add(td);
             unit.TypeMap[node.Name] = td;
 
-            if (node.HasConstructors)
-            {
-                var nh = hints.Remove(Push);
+            var nh = hints.Remove(Push);
 
-                foreach (var c in node.Constructors)
-                    Build(c, nh, ctx);
-            }
+            foreach (var c in node.Constructors)
+                Build(c, nh, ctx);
 
             PushIf(hints);
         }
