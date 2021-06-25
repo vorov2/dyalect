@@ -36,7 +36,11 @@ namespace Dyalect.Runtime.Types
 
         protected internal virtual DyObject GetTaggedValue() => this;
 
-        public virtual string? GetConstructor(ExecutionContext ctx) => null;
+        public virtual void GetConstructor(ExecutionContext ctx, out string ctor, out bool priv)
+        {
+            ctor = "";
+            priv = false;
+        }
 
         public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 

@@ -72,7 +72,8 @@
             0, //PushNilT
             1, //Brterm
             1, //Briter
-            1, //Aux
+            1, //RgDI
+            1, //RgFI
 
             1, //FunPrep
             1, //FunArgIx

@@ -40,7 +40,7 @@ namespace Dyalect.Compiler
                     if (node.Name is Builtins.Has || (!node.IsStatic && node.Name is Builtins.Type))
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
-                    cw.Aux(realName);
+                    cw.RgDI(realName);
 
                     if (node.IsStatic)
                         cw.SetMemberS(code!.Value);
@@ -283,7 +283,7 @@ namespace Dyalect.Compiler
                         cw.NewTuple(0);
 
                     var v = AddVariable("this", lti.Declaration.Location, VarFlags.Const | VarFlags.This);
-                    cw.Aux(node.Name!);
+                    cw.RgDI(node.Name!);
                     cw.NewType(lti.TypeId);
                     cw.PopVar(v);
                 }
@@ -336,7 +336,7 @@ namespace Dyalect.Compiler
             {
                 if (variadicIndex > -1)
                 {
-                    cw.Aux(variadicIndex);
+                    cw.RgDI(variadicIndex);
                     cw.NewFunV(funHandle);
                 }
                 else

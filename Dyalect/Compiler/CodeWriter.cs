@@ -292,8 +292,9 @@ namespace Dyalect.Compiler
         public void GetMember(string name) => Emit(new(OpCode.GetMember, IndexString(name)));
         public void HasMember(string name) => Emit(new(OpCode.HasMember, IndexString(name)));
         public void RunMod(int code) => Emit(new(OpCode.RunMod, code));
-        public void Aux(string value) => Emit(new(OpCode.Aux, IndexString(value)));
-        public void Aux(int data) => Emit(new(OpCode.Aux, data));
+        public void RgDI(string value) => Emit(new(OpCode.RgDI, IndexString(value)));
+        public void RgDI(int data) => Emit(new(OpCode.RgDI, data));
+        public void RgFI(int data) => Emit(new(OpCode.RgFI, data));
         public void HasField(string field) => Emit(new(OpCode.HasField, IndexString(field)));
         public void Start(Label lab) => Emit(OpCode.Start, lab);
         public void Fail(DyErrorCode code) => Emit(new(OpCode.FailSys, (int)code));

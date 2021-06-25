@@ -60,10 +60,11 @@ namespace Dyalect.Runtime
 
         internal static DyObject ExecuteWithData(DyNativeFunction function, DyObject[] locals, ExecutionContext ctx)
         {
-            DyObject left;
-            DyObject right;
+            DyObject left, right;
             Op op;
             DyFunction callFun;
+            bool flag;
+            string str;
             var types = ctx.RuntimeContext.Types;
 
             PROLOGUE:
@@ -327,7 +328,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals));
                         break;
                     case OpCode.NewFunV:
-                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, ctx.AUX));
+                        evalStack.Push(DyNativeFunction.Create(unit.Symbols.Functions[op.Data], unit.Id, op.Data, function.Captures, locals, ctx.RgDI));
                         break;
                     case OpCode.FunAttr:
                         ((DyFunction)evalStack.Peek()).Attr |= op.Data;
@@ -350,23 +351,23 @@ namespace Dyalect.Runtime
                     case OpCode.SetMemberS:
                         right = evalStack.Pop();
                         types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
-                            .SetStaticMember(unit.IndexedStrings[ctx.AUX].Value, right);
+                            .SetStaticMember(unit.IndexedStrings[ctx.RgDI].Value, right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMemberST:
                         right = evalStack.Pop();
-                        types[op.Data].SetStaticMember(unit.IndexedStrings[ctx.AUX].Value, right);
+                        types[op.Data].SetStaticMember(unit.IndexedStrings[ctx.RgDI].Value, right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMember:
                         right = evalStack.Pop();
                         types[ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id]
-                            .SetInstanceMember(ctx, unit.IndexedStrings[ctx.AUX].Value, right);
+                            .SetInstanceMember(ctx, unit.IndexedStrings[ctx.RgDI].Value, right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMemberT:
                         right = evalStack.Pop();
-                        types[op.Data].SetInstanceMember(ctx, unit.IndexedStrings[ctx.AUX].Value, right);
+                        types[op.Data].SetInstanceMember(ctx, unit.IndexedStrings[ctx.RgDI].Value, right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Get:
@@ -449,8 +450,11 @@ namespace Dyalect.Runtime
                     case OpCode.GetIter:
                         evalStack.Replace(((DyIterator)evalStack.Peek()).GetIteratorFunction());
                         break;
-                    case OpCode.Aux:
-                        ctx.AUX = op.Data;
+                    case OpCode.RgDI:
+                        ctx.RgDI = op.Data;
+                        break;
+                    case OpCode.RgFI:
+                        ctx.RgFI = op.Data;
                         break;
                     case OpCode.FunPrep:
                         {
@@ -601,7 +605,10 @@ namespace Dyalect.Runtime
                         }
                         break;
                     case OpCode.CtorCheck:
-                        evalStack.Replace(evalStack.Peek().GetConstructor(ctx) == unit.IndexedStrings[op.Data].Value);
+                        right = evalStack.Peek();
+                        right.GetConstructor(ctx, out str, out flag);
+                        evalStack.Replace((!flag && str == unit.IndexedStrings[op.Data].Value)
+                            || (str == unit.IndexedStrings[op.Data].Value && ((DyClass)right).DeclaringUnit.Id == unit.Id));
                         break;
                     case OpCode.Start:
                         {
@@ -615,7 +622,7 @@ namespace Dyalect.Runtime
                         ctx.CatchMarks.Peek().Pop();
                         break;
                     case OpCode.NewType:
-                        evalStack.Push(new DyClass(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.AUX].Value, evalStack.Pop(), unit));
+                        evalStack.Push(new DyClass(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.RgDI].Value, ctx.RgFI == 1, evalStack.Pop(), unit));
                         break;
                     case OpCode.Mut:
                         ((DyLabel)evalStack.Peek()).Mutable = true;
