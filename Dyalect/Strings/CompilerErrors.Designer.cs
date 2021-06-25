@@ -124,42 +124,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to define custom constructors for a type with auto-generated constructors (type &quot;{0}&quot;)..
-        /// </summary>
-        internal static string CtorAutoGen {
-            get {
-                return ResourceManager.GetString("CtorAutoGen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A constructor function cannot be an iterator..
-        /// </summary>
-        internal static string CtorNotIterator {
-            get {
-                return ResourceManager.GetString("CtorNotIterator", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Constructor names should start with a capital letter..
-        /// </summary>
-        internal static string CtorOnlyPascal {
-            get {
-                return ResourceManager.GetString("CtorOnlyPascal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Constructor should be a static function..
-        /// </summary>
-        internal static string CtorOnlyStatic {
-            get {
-                return ResourceManager.GetString("CtorOnlyStatic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to An expression doesn&apos;t have a name..
         /// </summary>
         internal static string ExpressionNoName {
@@ -268,15 +232,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Indexer and member access are only valid with an active &quot;using&quot; declaration..
-        /// </summary>
-        internal static string NoUsing {
-            get {
-                return ResourceManager.GetString("NoUsing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Overriding of &quot;{0}&quot; method is not allowed..
         /// </summary>
         internal static string OverrideNotAllowed {
@@ -345,15 +300,6 @@ namespace Dyalect.Strings {
         internal static string PrivateScopeOnlyGlobal {
             get {
                 return ResourceManager.GetString("PrivateScopeOnlyGlobal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Statement &quot;return&quot; is not supported inside constructors..
-        /// </summary>
-        internal static string ReturnInConstructor {
-            get {
-                return ResourceManager.GetString("ReturnInConstructor", resourceCulture);
             }
         }
         

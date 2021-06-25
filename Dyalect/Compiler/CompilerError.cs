@@ -64,7 +64,7 @@
 
         PrivateMethod = 230,
 
-        CtorAutoGen = 231,
+        // = 231,
 
         UnableToLinkModule = 232,
 
@@ -80,15 +80,15 @@
 
         InvalidRethrow = 238,
 
-        CtorNotIterator = 239,
+        // = 239,
 
         PositionalArgumentAfterKeyword = 240,
 
-        CtorOnlyStatic = 241,
+        // = 241,
 
-        CtorOnlyPascal = 242,
+        // = 242,
 
-        ReturnInConstructor = 243,
+        // = 243,
 
         TypeNameCamel = 244,
 
@@ -98,7 +98,7 @@
 
         InvalidTypeDefaultValue = 247,
 
-        NoUsing = 248,
+        // = 248,
 
         MethodNotRecursive = 249
     }

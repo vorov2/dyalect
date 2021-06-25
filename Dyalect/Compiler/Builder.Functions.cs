@@ -273,9 +273,6 @@ namespace Dyalect.Compiler
 
             if (node.IsConstructor && node.Body is not null)
             {
-                if (node.IsIterator)
-                    AddError(CompilerError.CtorNotIterator, node.Location);
-
                 //Constructor returns a type instance, not a value. We need to pop this value from stack
                 cw.Pop();
 

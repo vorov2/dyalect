@@ -649,9 +649,6 @@ namespace Dyalect.Compiler
             if (hints.Has(IteratorBody))
                 AddError(CompilerError.ReturnInIterator, node.Location);
 
-            if (ctx.Function is not null && ctx.Function.IsConstructor)
-                AddError(CompilerError.ReturnInConstructor, node.Location);
-
             if (node.Expression != null)
                 Build(node.Expression, hints.Append(Push), ctx);
             else
