@@ -430,19 +430,8 @@ namespace Dyalect.Compiler
             Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
             AddLinePragma(node);
 
-            if (node.Name is "ini")
-            {
-                cw.Priv();
-                PopIf(hints);
-
-                if (hints.Has(Pop))
-                    AddError(CompilerError.UnableSetIni, node.Location);
-            }
-            else
-            {
-                cw.GetMember(node.Name);
-                PopIf(hints);
-            }
+            cw.GetMember(node.Name);
+            PopIf(hints);
         }
 
         private void Build(DTupleLiteral node, Hints hints, CompilerContext ctx)

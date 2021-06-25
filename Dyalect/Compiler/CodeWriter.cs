@@ -209,12 +209,6 @@ namespace Dyalect.Compiler
             Emit(new(OpCode.Tag, idx));
         }
 
-        public void Tag0(string tag)
-        {
-            var idx = IndexString(tag);
-            Emit(new(OpCode.Tag0, idx));
-        }
-
         public void SetMember(TypeHandle type)
         {
             if (type.IsStandard)
@@ -263,22 +257,12 @@ namespace Dyalect.Compiler
                 Emit(new(OpCode.TypeAnno, type.TypeId));
         }
 
-        public void SetType(TypeHandle handle)
-        {
-            if (handle.IsStandard)
-                Emit(new(OpCode.SetTypeT, handle.TypeId));
-            else
-                Emit(new(OpCode.SetType, handle.TypeId));
-        }
-
-
         public void FunPrep(int argCount) => Emit(new(OpCode.FunPrep, argCount));
         public void FunArgIx(int index) => Emit(new(OpCode.FunArgIx, index));
         public void FunArgNm(string name) => Emit(new(OpCode.FunArgNm, IndexString(name)));
         public void FunCall(int argCount) => Emit(new(OpCode.FunCall, argCount));
         public void CtorCheck(string ctor) => Emit(new(OpCode.CtorCheck, IndexString(ctor)));
 
-        public void NewAmg(int len) => Emit(new(OpCode.NewAmg, len), -len + 1);
         public void NewTuple(int len) => Emit(new(OpCode.NewTuple, len), -len + 1);
         public void NewFun(int funHandle) => Emit(new(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new(OpCode.NewFunV, funHandle));
@@ -340,7 +324,5 @@ namespace Dyalect.Compiler
         public void Term() => Emit(Op.Term);
         public void IsNull() => Emit(Op.IsNull);
         public void Mut() => Emit(Op.Mut);
-        public void Priv() => Emit(Op.Priv);
-        public void UnsetType() => Emit(Op.UnsetType);
     }
 }

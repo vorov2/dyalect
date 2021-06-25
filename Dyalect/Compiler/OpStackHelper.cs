@@ -95,14 +95,8 @@
             0,  //IsNull
             0,  //GetIter
             0,  //Mut
-            0,  //Priv
             0,  //TypeAnno
             0,  //TypeAnnoT
-            0,  //SetType
-            0,  //SetTypeT
-            0,  //UnsetType
-            0,  //NewAmg **dynamic
-            1,  //Tag0
             0,  //FunAttr
         };
     }

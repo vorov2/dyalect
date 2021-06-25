@@ -411,7 +411,7 @@ namespace Dyalect.Runtime.Types
         protected readonly Dictionary<string, DyFunction> Members = new();
 
         internal bool HasInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-            LookupInstanceMember(self, name, ctx) is not null and not DyGetterFunction;
+            LookupInstanceMember(self, name, ctx) is not null;
 
         internal DyObject GetInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {

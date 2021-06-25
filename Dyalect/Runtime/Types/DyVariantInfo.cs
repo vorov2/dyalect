@@ -30,7 +30,7 @@
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var cust = (DyClass)arg;
-            var priv = (DyTuple)cust.Privates;
+            var priv = cust.Privates;
 
             if (TypeName == cust.Constructor && priv.Count == 0)
                 return new DyString($"{TypeName}()");
@@ -43,7 +43,7 @@
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => 
-            DyInteger.Get(((DyTuple)((DyClass)arg).Privates).Count);
+            DyInteger.Get(((DyClass)arg).Privates.Count);
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => ((DyClass)self).Privates.GetItem(index, ctx);
 

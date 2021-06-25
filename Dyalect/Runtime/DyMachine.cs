@@ -414,9 +414,6 @@ namespace Dyalect.Runtime
                     case OpCode.Tag:
                         evalStack.Replace(new DyLabel(unit.IndexedStrings[op.Data].Value, evalStack.Peek()));
                         break;
-                    case OpCode.Tag0:
-                        evalStack.Push(new DyLabel(unit.IndexedStrings[op.Data].Value, DyNil.Instance));
-                        break;
                     case OpCode.Yield:
                         function.PreviousOffset = offset++;
                         function.Locals = locals;
@@ -577,9 +574,6 @@ namespace Dyalect.Runtime
                     case OpCode.NewTuple:
                         evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(evalStack, op.Data));
                         break;
-                    case OpCode.NewAmg:
-                        evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeAssemblage(locals, evalStack, op.Data));
-                        break;
                     case OpCode.TypeCheckT:
                         right = evalStack.Pop();
                         evalStack.Push(right.TypeId == op.Data);
@@ -622,29 +616,10 @@ namespace Dyalect.Runtime
                         ctx.CatchMarks.Peek().Pop();
                         break;
                     case OpCode.NewType:
-                        evalStack.Push(new DyClass(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.RgDI].Value, ctx.RgFI == 1, evalStack.Pop(), unit));
+                        evalStack.Push(new DyClass(unit.Types[op.Data].Id, unit.IndexedStrings[ctx.RgDI].Value, ctx.RgFI == 1, (DyTuple)evalStack.Pop(), unit));
                         break;
                     case OpCode.Mut:
                         ((DyLabel)evalStack.Peek()).Mutable = true;
-                        break;
-                    case OpCode.Priv:
-                        right = evalStack.Peek();
-                        if (ctx.TypeStack.Count > 0 && ctx.TypeStack.Peek() != right.TypeId)
-                        {
-                            ctx.PrivateAccess();
-                            ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
-                            goto CATCH;
-                        }
-                        evalStack.Replace(((DyClass)right).Privates);
-                        break;
-                    case OpCode.SetTypeT:
-                        ctx.TypeStack.Push(op.Data);
-                        break;
-                    case OpCode.SetType:
-                        ctx.TypeStack.Push(ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data & byte.MaxValue]].Types[op.Data >> 8].Id);
-                        break;
-                    case OpCode.UnsetType:
-                        ctx.TypeStack.Pop();
                         break;
                 }
             }
@@ -659,16 +634,6 @@ namespace Dyalect.Runtime
                 ctx.Error = null;
                 goto CYCLE;
             }
-        }
-
-        private static DyAssemblage MakeAssemblage(DyObject[] locals, EvalStack stack, int size)
-        {
-            var arr = new DyLabel[size];
-
-            for (var i = 0; i < size; i++)
-                arr[arr.Length - i - 1] = (DyLabel)stack.Pop();
-
-            return new(locals, arr);
         }
 
         private static void Push(ArgContainer container, DyObject value, ExecutionContext ctx)

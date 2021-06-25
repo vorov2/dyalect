@@ -11,9 +11,9 @@ namespace Dyalect.Runtime.Types
 
         internal string Constructor { get; }
 
-        internal DyObject Privates { get; }
+        internal DyTuple Privates { get; }
 
-        internal DyClass(int typeCode, string ctor, bool privateCtor, DyObject privates, Unit unit) : base(typeCode) =>
+        internal DyClass(int typeCode, string ctor, bool privateCtor, DyTuple privates, Unit unit) : base(typeCode) =>
             (Constructor, Privates, this.privateCtor, DeclaringUnit) = (ctor, privates, privateCtor, unit);
 
         public override object ToObject() => this;

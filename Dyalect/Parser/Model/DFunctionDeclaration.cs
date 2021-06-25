@@ -15,12 +15,7 @@ namespace Dyalect.Parser.Model
 
         internal bool IsStatic { get; set; }
 
-        private bool? isConstructor;
-        internal bool IsConstructor
-        {
-            get => isConstructor ?? IsMemberFunction && Name is not null && char.IsUpper(Name[0]);
-            set => isConstructor = value;
-        }
+        internal bool IsConstructor { get; set; }
         
         public bool Getter { get; set; }
 

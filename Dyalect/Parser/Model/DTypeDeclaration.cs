@@ -5,7 +5,7 @@ namespace Dyalect.Parser.Model
 {
     public sealed class DTypeDeclaration : DNode
     {
-        internal static readonly DTypeDeclaration Default = new DTypeDeclaration(default);
+        internal static readonly DTypeDeclaration Default = new(default);
 
         public DTypeDeclaration(Location loc) : base(NodeType.Type, loc) { }
 
@@ -15,8 +15,6 @@ namespace Dyalect.Parser.Model
 
         private List<DFunctionDeclaration> constructors = null!;
         public List<DFunctionDeclaration> Constructors => constructors ??= new();
-
-        public DNode? InitBlock { get; set; }
 
         internal override void ToString(StringBuilder sb)
         {
@@ -38,12 +36,6 @@ namespace Dyalect.Parser.Model
                     c.Parameters.ToString(sb);
                     sb.Append(')');
                 }
-            }
-
-            if (InitBlock is not null)
-            {
-                sb.Append(" = ");
-                InitBlock.ToString(sb);
             }
         }
     }
