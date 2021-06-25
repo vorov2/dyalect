@@ -42,9 +42,6 @@ namespace Dyalect.Compiler
 
         private void GenerateConstructor(DFunctionDeclaration func, CompilerContext ctx)
         {
-            //if (!char.IsUpper(func.Name![0]))
-            //    AddError(CompilerError.CtorOnlyPascal, func.Location);
-
             if (func.Parameters.Count == 0)
             {
                 AddLinePragma(func);

@@ -121,7 +121,6 @@ namespace Dyalect.Compiler
 
                 //Dispose auto's declared in global scope
                 CallAutos(cls: true);
-
                 return Success;
             }
             //This is thrown when an error limit is exceeded

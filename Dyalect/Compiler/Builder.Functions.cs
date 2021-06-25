@@ -258,6 +258,8 @@ namespace Dyalect.Compiler
                 var dec = new DFunctionDeclaration(node.Location) { Name = node.Name, Body = node.Body };
                 Build(dec, hints.Append(IteratorBody), ctx);
             }
+            else
+                Build(node.Body!, hints.Append(Last), ctx);
 
             //Return from a function. Any function execution should get here, it is not possible
             //to break early. An early return would actually goto here, where a real return (OpCode.Ret)
