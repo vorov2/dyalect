@@ -42,14 +42,34 @@
                 return new DyString($"{TypeName}.{cust.Constructor}{priv.ToString(ctx)}");
         }
 
-        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => 
-            DyInteger.Get(((DyClass)arg).Fields.Count);
+        protected override DyObject LengthOp(DyObject self, ExecutionContext ctx)
+        {
+            var cls = (DyClass)self;
 
-        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => ((DyClass)self).Fields.GetItem(index, ctx);
+            if (ctx.UnitId != cls.DeclaringUnit.Id)
+                return base.LengthOp(self, ctx);
+
+            return DyInteger.Get(cls.Fields.Count);
+        }
+
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        {
+            var cls = (DyClass)self;
+
+            if (ctx.UnitId != cls.DeclaringUnit.Id)
+                return base.GetOp(self, index, ctx);
+
+            return cls.Fields.GetItem(index, ctx);
+        }
 
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
-            ((DyClass)self).Fields.SetItem(index, value, ctx);
+            var cls = (DyClass)self;
+
+            if (ctx.UnitId != cls.DeclaringUnit.Id)
+                return base.SetOp(self, index, value, ctx);
+
+            cls.Fields.SetItem(index, value, ctx);
             return DyNil.Instance;
         }
     }
