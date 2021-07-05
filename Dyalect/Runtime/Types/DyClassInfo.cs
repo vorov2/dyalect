@@ -2,9 +2,15 @@
 {
     internal sealed class DyClassInfo : DyTypeInfo
     {
+        private readonly bool privateCons;
+
         public override string TypeName { get; }
 
-        public DyClassInfo(int typeCode, string typeName) : base(typeCode) => TypeName = typeName;
+        public DyClassInfo(int typeCode, string typeName) : base(typeCode)
+        {
+            TypeName = typeName;
+            privateCons = !string.IsNullOrEmpty(typeName) && typeName.Length > 0 && char.IsLower(typeName[0]);
+        }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -46,7 +52,7 @@
         {
             var cls = (DyClass)self;
 
-            if (ctx.UnitId != cls.DeclaringUnit.Id)
+            if (privateCons && ctx.UnitId != cls.DeclaringUnit.Id)
                 return base.LengthOp(self, ctx);
 
             return DyInteger.Get(cls.Fields.Count);
@@ -56,7 +62,7 @@
         {
             var cls = (DyClass)self;
 
-            if (ctx.UnitId != cls.DeclaringUnit.Id)
+            if (privateCons && ctx.UnitId != cls.DeclaringUnit.Id)
                 return base.GetOp(self, index, ctx);
 
             return cls.Fields.GetItem(index, ctx);
@@ -66,7 +72,7 @@
         {
             var cls = (DyClass)self;
 
-            if (ctx.UnitId != cls.DeclaringUnit.Id)
+            if (privateCons && ctx.UnitId != cls.DeclaringUnit.Id)
                 return base.SetOp(self, index, value, ctx);
 
             cls.Fields.SetItem(index, value, ctx);
