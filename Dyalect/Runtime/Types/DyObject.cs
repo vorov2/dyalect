@@ -53,5 +53,11 @@ namespace Dyalect.Runtime.Types
         public abstract override int GetHashCode();
 
         protected int CalculateSimpleHashCode() => base.GetHashCode();
+
+        #region Pattern Match
+        protected virtual bool Match_CheckLength(int _) => false;
+        protected virtual DyObject Match_GetByIndex(int _) => DyNil.Instance;
+        protected virtual DyObject Match_GetByName(string _) => DyNil.Instance;
+        #endregion
     }
 }
