@@ -73,7 +73,7 @@
 #endtest
 
 #test "Extending type 1"
-    print("Test > Extending type 1")
+    assert(true, false)
     type Bar = bar(data)
     static func Bar.Bar(args...) {
         Bar.bar(args)
@@ -93,6 +93,7 @@
 #endtest
 
 #test "Extending type 2"
+    assert(true, false)
     type Bar = bar(var data)
     static func Bar.Bar(args...) {
         Bar.bar(args)
@@ -199,6 +200,7 @@
 #endtest
 
 #test "Reference cell"
+    assert(true, false)
     type Cell = cell(var val)
     func ref(value) {
         Cell.cell(value)
@@ -284,6 +286,7 @@
 #endtest
 
 #test "Record"
+    assert(true, false)
     type Record = record(fields)
     static func Record.Record(values...) {
         Record.record(values)
@@ -326,21 +329,22 @@
 #endtest
 
 #test "Mutable Point"
-    type Point = point(var px, var py)
+    assert(got: false)
+    type Point = point(var x, var y)
     static func Point.Point(x, y) {
         Point.point(x, y)
     }
     func Point.getItem(index) {
         match index {
-            0 or "x" => this::px,
-            1 or "y" => this::py,
+            0 or "x" => this::x,
+            1 or "y" => this::y,
             _ => throw Error.IndexOutOfRange()
         }
     }
     func Point.setItem(index, value) {
         match index {
-            0 or "x" => this::px = value,
-            1 or "y" => this::py = value,
+            0 or "x" => this::x = value,
+            1 or "y" => this::y = value,
             _ => throw Error.IndexOutOfRange()
         }
     }
@@ -527,7 +531,7 @@
 
     static func RealNat.RealNat(x) {
         throw Error.InvalidType(x.getType()) when x is not Integer
-        this::num = x
+        RealNat.realNat(x)
     }
     func RealNat + (other) {
         let res = match other {
