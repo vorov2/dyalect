@@ -4,8 +4,6 @@
 ![AppVeyor tests](https://img.shields.io/appveyor/tests/vorov2/dyalect.svg)
 
 :blue_book: [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
-:computer: [Try it online!](http://vorov2-001-site1.itempurl.com/ace/editor.html)
-
 
 Dyalect is a dynamic programming language for .NET Core platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short) is
@@ -88,8 +86,3 @@ Please refer to [wiki](https://github.com/vorov2/dyalect/wiki) for more informat
 * [Dyalect at RosettaCode](http://rosettacode.org/wiki/Category:Dyalect)
 * [Dyalect at OpenHub](https://www.openhub.net/p/dyalect)
 
-##
-
-This software is developed in JetBrains Rider
-
-[<img src="Docs/icon-rider.svg">](https://jb.gg/OpenSource)
