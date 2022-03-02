@@ -291,6 +291,7 @@ namespace Dyalect.Compiler
         public void Get() => Emit(Op.Get);
         public void Set() => Emit(Op.Set);
         public void This() => Emit(Op.This);
+        public void Unbox() => Emit(Op.Unbox);
         public void Type() => Emit(Op.Type);
         public void PushNil() => Emit(Op.PushNil);
         public void PushNilT() => Emit(Op.PushNilT);

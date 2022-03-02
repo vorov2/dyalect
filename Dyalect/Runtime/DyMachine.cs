@@ -95,6 +95,9 @@ namespace Dyalect.Runtime
                     case OpCode.Nop:
                         break;
                     case OpCode.This:
+                        evalStack.Push(function.Self!);
+                        break;
+                    case OpCode.Unbox:
                         evalStack.Push(function.Self!.GetTaggedValue());
                         break;
                     case OpCode.Term:

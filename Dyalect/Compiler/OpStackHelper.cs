@@ -7,6 +7,7 @@
             0,  //Nop
             0,  //Str
             1,  //This
+            1,  //Unbox
             -1, //Pop
             1,  //PushNil
             1,  //PushI1_0

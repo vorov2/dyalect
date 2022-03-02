@@ -6,6 +6,7 @@
 
         Str,        //0
         This,       //+1
+        Unbox,      //+1
         Pop,        //-1
         PushNil,    //+1
         PushI1_0,   //+1

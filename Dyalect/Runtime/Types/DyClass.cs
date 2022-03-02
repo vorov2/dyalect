@@ -29,6 +29,8 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Fields.HasItem(name, ctx);
 
+        protected internal override DyObject GetTaggedValue() => Fields;
+
         public override DyObject Clone() => new DyClass(TypeId, Constructor, privateCtor, Fields, DeclaringUnit);
     }
 }

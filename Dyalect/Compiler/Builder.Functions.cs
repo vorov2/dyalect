@@ -242,6 +242,10 @@ namespace Dyalect.Compiler
                 var va = AddVariable("this", node.Location, data: VarFlags.Const | VarFlags.This);
                 cw.This();
                 cw.PopVar(va);
+
+                va = AddVariable("init", node.Location, data: VarFlags.Const);
+                cw.Unbox();
+                cw.PopVar(va);
             }
             
             if ((node.Getter || node.Setter) && !node.IsMemberFunction)
