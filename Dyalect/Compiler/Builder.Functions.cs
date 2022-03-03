@@ -243,7 +243,7 @@ namespace Dyalect.Compiler
                 cw.This();
                 cw.PopVar(va);
 
-                va = AddVariable("init", node.Location, data: VarFlags.Const);
+                va = AddVariable("ini", node.Location, data: VarFlags.Const);
                 cw.Unbox();
                 cw.PopVar(va);
             }

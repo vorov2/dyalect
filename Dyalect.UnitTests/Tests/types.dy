@@ -73,16 +73,15 @@
 #endtest
 
 #test "Extending type 1"
-    assert(true, false)
     type Bar = bar(data)
     static func Bar.Bar(args...) {
         Bar.bar(args)
     }
     func Bar.len() {
-        this::data.len()
+        ini::data.len()
     }
     func Bar.getItem(index) {
-        this::data[index]
+        ini::data[index]
     }
     var obj = Bar(1, 2, 3)
     var res = match obj {
@@ -90,29 +89,6 @@
         (x, y, z) => x + y + z
     }
     assert(6, res)
-#endtest
-
-#test "Extending type 2"
-    assert(true, false)
-    type Bar = bar(var data)
-    static func Bar.Bar(args...) {
-        Bar.bar(args)
-    }
-    func Bar.len() {
-        data.len() when this is Bar.bar(data)
-    }
-    func Bar.getItem(index) {
-        data[index] when this is Bar.bar(data)
-    }
-    var obj = Bar(10, 20, 30)
-    assert(10, obj[0])
-    assert(20, obj[1])
-    assert(30, obj[2])
-    var res = match obj {
-        (x, y) => x + y,
-        (x, y, z) => x + y + z
-    }
-    assert(60, res)
 #endtest
 
 #test "Maybe or Some"
@@ -200,7 +176,6 @@
 #endtest
 
 #test "Reference cell"
-    assert(true, false)
     type Cell = cell(var val)
     func ref(value) {
         Cell.cell(value)
@@ -209,30 +184,24 @@
         Cell.cell(value)
     }
     func Cell.setValue(value) {
-        this::val = value
+        ini::val = value
     }
     func Cell.getValue() {
-        val when this is Cell.cell(val)
+        ini::val
     }
     func Cell.getItem(index) {
         if index is not 0 {
             throw "Index out of range."
         }
-        val when this is Cell.cell(val)
+        ini::val
     }
     func Cell.len() {
         1
     }
     var c = ref(12)
     assert(12, c.getValue())
-    assert(12, match c {
-        Cell(x) => x
-    })
     c.setValue(24)
     assert(24, c.getValue())
-    assert(24, match c {
-        Cell(x) => x
-    })
 #endtest
 
 #test "Linked list"
@@ -286,14 +255,12 @@
 #endtest
 
 #test "Record"
-    assert(true, false)
     type Record = record(fields)
     static func Record.Record(values...) {
         Record.record(values)
     }
     func Record.getItem(index) {
-        let Record.record(fields) = this
-        this[index]
+        ini::fields[index]
     }
     var p = Record(values: (name: "John", age: 33))
     assert("John", p["name"])
@@ -329,22 +296,21 @@
 #endtest
 
 #test "Mutable Point"
-    assert(got: false)
     type Point = point(var x, var y)
     static func Point.Point(x, y) {
         Point.point(x, y)
     }
     func Point.getItem(index) {
         match index {
-            0 or "x" => this::x,
-            1 or "y" => this::y,
+            0 or "x" => ini::x,
+            1 or "y" => ini::y,
             _ => throw Error.IndexOutOfRange()
         }
     }
     func Point.setItem(index, value) {
         match index {
-            0 or "x" => this::x = value,
-            1 or "y" => this::y = value,
+            0 or "x" => ini::x = value,
+            1 or "y" => ini::y = value,
             _ => throw Error.IndexOutOfRange()
         }
     }
@@ -476,54 +442,6 @@
     sb.append(true)
     sb.append(false)
     assert("truefalse", sb.toString())
-#endtest
-
-#test "Private access 1"
-    type Foo = foo(var x)
-    static func Foo.Foo(px) {
-        Foo.foo(px)
-    }
-    func Foo.ok() {
-        return this::x
-    }
-    var f = Foo(12)
-    var res = f.ok()
-    assert(12, res)
-#endtest
-
-#test "Private access 2"
-    type Foo = foo(var x, pi)
-    static func Foo.Foo(px) {
-        Foo.foo(px, 3.14)
-    }
-    func Foo.ok(f) {
-        func inner() {
-            return f::pi
-        }
-        return inner()
-    }    
-    var f = Foo(12)
-    var res = f.ok(f)
-    assert(3.14, res)
-#endtest
-
-#test "Private access 3"
-    type Foo = foo(var x)
-    static func Foo.Foo(px) {
-        Foo.foo(px)
-    }
-    type Bar(x)
-    func Bar.violator(f) {
-        return f::x
-    }
-    var b = Bar(42)
-    var f = Foo(42)
-    try {
-        b.violator(f)
-        assert(got: false)
-    } catch {
-        PrivateAccess() => assert(got: true)
-    }
 #endtest
 
 #test "Natural number 2"
