@@ -4,12 +4,13 @@ using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System;
 using System.Collections.Generic;
-using Dyalect.Debug;
 
 namespace Dyalect.Runtime
 {
     public static partial class DyMachine
     {
+        private const int MAX_NESTED_CALLS = 100;
+
         private static DyNativeFunction Global(int unitId) =>
             new(null, unitId, 0, FastList<DyObject[]>.Empty, DyType.Function, -1);
 
@@ -60,6 +61,14 @@ namespace Dyalect.Runtime
 
         internal static DyObject ExecuteWithData(DyNativeFunction function, DyObject[] locals, ExecutionContext ctx)
         {
+            if (locals is not null)
+            {
+                ctx.Cl++;
+
+                if (ctx.Cl > MAX_NESTED_CALLS)
+                    throw new DyRuntimeException(RuntimeErrors.StackOverflow);
+            }
+
             DyObject left, right;
             Op op;
             DyFunction callFun;
@@ -98,12 +107,12 @@ namespace Dyalect.Runtime
                         evalStack.Push(function.Self!);
                         break;
                     case OpCode.Unbox:
-                        evalStack.Push(function.Self!.GetTaggedValue());
+                        evalStack.Push(function.Self!.Unbox());
                         break;
                     case OpCode.Term:
-                        if (evalStack.Size is >1 or 0)
+                        if (evalStack.Size is > 1 or 0)
                             throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
-                        ctx.RuntimeContext.Units[function.UnitId] = locals;
+                        ctx.RuntimeContext.Units[function.UnitId] = locals!;
                         return evalStack.Pop();
                     case OpCode.Pop:
                         evalStack.PopVoid();
@@ -299,7 +308,10 @@ namespace Dyalect.Runtime
                             var cp = ctx.CallStack.Pop();
 
                             if (ReferenceEquals(cp, Caller.External))
+                            {
+                                ctx.Cl--;
                                 return evalStack.Pop();
+                            }
 
                             cp.EvalStack.Push(evalStack.Pop());
                             function = cp.Function;
@@ -310,8 +322,11 @@ namespace Dyalect.Runtime
                             evalStack = cp.EvalStack;
                             goto CYCLE;
                         }
-                        else
+                        else 
+                        {
+                            ctx.Cl--;
                             return evalStack.Pop();
+                        }
                     case OpCode.IsNull:
                         evalStack.Push(evalStack.Pop() is null);
                         break;

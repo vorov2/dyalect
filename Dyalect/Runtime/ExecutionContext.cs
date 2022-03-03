@@ -8,6 +8,7 @@ namespace Dyalect.Runtime
     {
         internal int RgDI; //RgDI register
         internal int RgFI; //RgFI register
+        internal int Cl;
 
         public static readonly ExecutionContext External = new ExternalExecutionContext();
 

@@ -1,3 +1,7 @@
+# 0.28.0
+  * Change: _Rethink Dyalect type system_ ([Issue #563](https://github.com/vorov2/dyalect/issues/563), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
+  * Fix: _VM may crush in some cases with stack overflow exception_ ([Issue #566](https://github.com/vorov2/dyalect/issues/566)).
+
 # 0.27.2
   * Add: _New test unit engine_ ([Issue #550](https://github.com/vorov2/dyalect/issues/550)).
   * Fix: _Stack corruption_ ([Issue #557](https://github.com/vorov2/dyalect/issues/557)).
