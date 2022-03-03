@@ -1,4 +1,4 @@
-﻿ using Dyalect.Parser;
+﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
 using System;
 using static Dyalect.Compiler.Hints;
@@ -25,76 +25,20 @@ namespace Dyalect.Compiler
 
             types.Add(node.Name, ti);
 
-            var td = new TypeDescriptor(node.Name, typeId, node.HasConstructors);
+            var td = new TypeDescriptor(node.Name, typeId);
             unit.Types.Add(td);
             unit.TypeMap[node.Name] = td;
 
-            if (node.HasConstructors)
-            {
-                var nh = hints.Remove(Push);
+            var nh = hints.Remove(Push);
 
-                foreach (var c in node.Constructors)
-                    Build(c, nh, ctx);
-            }
-
-            if (node.InitBlock is not null)
-            {
-                var addr = AddVariable("$" + node.Name, node.Location, VarFlags.Const | VarFlags.Private);
-                
-                StartFun(node.Name, Array.Empty<Debug.Par>());
-                var funSkipLabel = cw.DefineLabel();
-                cw.Br(funSkipLabel);
-                var newctx = new CompilerContext { LocalType = node.Name };
-
-                StartScope(ScopeKind.Function, loc: node.Location);
-                StartSection();
-                var offset = cw.Offset;
-                var typeHandle = GetTypeHandle(null, node.Name, node.Location);
-                cw.SetType(typeHandle);
-
-                BuildUsing(node.InitBlock, hints, newctx);
-                cw.UnsetType();
-                cw.Ret();
-                cw.MarkLabel(funSkipLabel);
-
-                var funHandle = unit.Layouts.Count;
-                var ss = EndFun(funHandle);
-                unit.Layouts.Add(new MemoryLayout(currentCounter, ss, offset));
-                EndScope();
-                EndSection();
-                cw.NewFun(funHandle);
-
-                cw.PopVar(addr);
-            }
+            foreach (var c in node.Constructors)
+                Build(c, nh, ctx);
 
             PushIf(hints);
         }
 
-        private void BuildUsing(DNode node, Hints hints, CompilerContext ctx)
-        {
-            StartScope(ScopeKind.Lexical, node.Location);
-            Build(node, hints.Append(NoScope).Remove(Push), ctx);
-            var count = 0;
-            var scope = currentScope;
-
-            foreach (var (name, sv) in scope.EnumerateVars())
-            {
-                cw.Tag0(name);
-                count++;
-
-                if ((sv.Data & VarFlags.Const) != VarFlags.Const)
-                    cw.Mut();
-            }
-
-            cw.NewAmg(count++);
-            EndScope();
-        }
-
         private void GenerateConstructor(DFunctionDeclaration func, CompilerContext ctx)
         {
-            if (!char.IsUpper(func.Name![0]))
-                AddError(CompilerError.CtorOnlyPascal, func.Location);
-
             if (func.Parameters.Count == 0)
             {
                 AddLinePragma(func);
@@ -136,7 +80,8 @@ namespace Dyalect.Compiler
 
             if (TryGetLocalType(func.TypeName!.Local, out var ti))
             {
-                cw.Aux(func.Name);
+                cw.RgDI(func.Name!);
+                cw.RgFI(char.IsLower(func.Name![0]) ? 1 : 0);
                 cw.NewType(ti!.TypeId);
             }
         }

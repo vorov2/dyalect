@@ -36,7 +36,13 @@ namespace Dyalect.Runtime.Types
 
         protected internal virtual DyObject GetTaggedValue() => this;
 
-        public virtual string? GetConstructor(ExecutionContext ctx) => null;
+        protected internal virtual DyObject Unbox() => this;
+        
+        public virtual void GetConstructor(ExecutionContext ctx, out string ctor, out bool priv)
+        {
+            ctor = "";
+            priv = false;
+        }
 
         public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 
@@ -49,5 +55,11 @@ namespace Dyalect.Runtime.Types
         public abstract override int GetHashCode();
 
         protected int CalculateSimpleHashCode() => base.GetHashCode();
+
+        #region Pattern Match
+        protected virtual bool Match_CheckLength(int _) => false;
+        protected virtual DyObject Match_GetByIndex(int _) => DyNil.Instance;
+        protected virtual DyObject Match_GetByName(string _) => DyNil.Instance;
+        #endregion
     }
 }

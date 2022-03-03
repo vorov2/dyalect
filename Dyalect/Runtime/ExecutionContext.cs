@@ -6,7 +6,9 @@ namespace Dyalect.Runtime
 {
     public class ExecutionContext
     {
-        internal int AUX;
+        internal int RgDI; //RgDI register
+        internal int RgFI; //RgFI register
+        internal int Cl;
 
         public static readonly ExecutionContext External = new ExternalExecutionContext();
 
@@ -48,7 +50,7 @@ namespace Dyalect.Runtime
 
         internal Stack<ArgContainer> Arguments { get; } = new(6);
 
-        internal Stack<int> TypeStack { get; } = new();
+        internal int UnitId { get; set; }
 
         public DyError? GetError() => Error;
 

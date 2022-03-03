@@ -10,6 +10,7 @@ namespace Dyalect.Compiler
         public static readonly Op Get = new(OpCode.Get);
         public static readonly Op Set = new(OpCode.Set);
         public static readonly Op This = new(OpCode.This);
+        public static readonly Op Unbox = new(OpCode.Unbox);
         public static readonly Op Type = new(OpCode.Type);
         public static readonly Op Pop = new(OpCode.Pop);
         public static readonly Op PushNil = new(OpCode.PushNil);
@@ -51,8 +52,6 @@ namespace Dyalect.Compiler
         public static readonly Op IsNull = new(OpCode.IsNull);
         public static readonly Op GetIter = new(OpCode.GetIter);
         public static readonly Op Mut = new(OpCode.Mut);
-        public static readonly Op Priv = new(OpCode.Priv);
-        public static readonly Op UnsetType = new(OpCode.UnsetType);
 
         internal static readonly Dictionary<OpCode, Op> Ops = new();
 

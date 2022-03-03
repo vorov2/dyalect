@@ -7,6 +7,7 @@
             0, //Nop
             0, //Str
             0, //This
+            0, //Unbox
             0, //Pop
             0, //PushNil
             0, //PushI1_0
@@ -72,7 +73,8 @@
             0, //PushNilT
             1, //Brterm
             1, //Briter
-            1, //Aux
+            1, //RgDI
+            1, //RgFI
 
             1, //FunPrep
             1, //FunArgIx
@@ -93,14 +95,8 @@
             0, //IsNull
             0, //GetIter
             0, //Mut
-            0, //Priv
             1, //TypeAnno
             1, //TypeAnnoT
-            1, //SetType
-            1, //SetTypeT
-            0, //UnsetType
-            1, //NewAmg
-            1, //Tag0
             1, //FunAttr
         };
     }

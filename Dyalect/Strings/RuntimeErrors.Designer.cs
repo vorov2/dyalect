@@ -241,6 +241,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Too many nested calls..
+        /// </summary>
+        internal static string StackOverflow {
+            get {
+                return ResourceManager.GetString("StackOverflow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Function &quot;{0}&quot; accepts {1} argument(s) ({2} given)..
         /// </summary>
         internal static string TooManyArguments {

@@ -6,6 +6,7 @@
 
         Str,        //0
         This,       //+1
+        Unbox,      //+1
         Pop,        //-1
         PushNil,    //+1
         PushI1_0,   //+1
@@ -71,7 +72,8 @@
         PushNilT,   //1
         Brterm,     //0
         Briter,     //0
-        Aux,        //0
+        RgDI,       //0
+        RgFI,       //0
 
         FunPrep,    //0
         FunArgIx,   //-1
@@ -92,14 +94,8 @@
         IsNull,     //0
         GetIter,    //0
         Mut,        //0
-        Priv,       //0
         TypeAnno,   //0
         TypeAnnoT,  //0
-        SetType,    //0
-        SetTypeT,   //0
-        UnsetType,  //0
-        NewAmg,     //Dynamic
-        Tag0,       //1
         FunAttr,    //0
     }
 }

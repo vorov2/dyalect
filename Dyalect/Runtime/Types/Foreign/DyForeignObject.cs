@@ -26,7 +26,7 @@ namespace Dyalect.Runtime.Types
 
         public string? Constructor { get; }
 
-        public override string? GetConstructor(ExecutionContext ctx) => Constructor ?? base.GetConstructor(ctx);
+        public override void GetConstructor(ExecutionContext ctx, out string ctor, out bool priv) => (ctor, priv) = (Constructor ?? "", false);
 
         public override int GetHashCode() => HashCode.Combine(TypeId, Constructor, DeclaringUnit.Id);
     }

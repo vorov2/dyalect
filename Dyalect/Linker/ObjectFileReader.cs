@@ -150,8 +150,7 @@ namespace Dyalect.Linker
             {
                 var td = new TypeDescriptor(
                     reader.ReadString(),
-                    reader.ReadInt32(),
-                    reader.ReadBoolean());
+                    reader.ReadInt32());
                 unit.Types.Add(td);
                 unit.TypeMap.Add(td.Name, td);
             }

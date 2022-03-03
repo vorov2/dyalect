@@ -180,4 +180,7 @@
   <data name="InvalidValue" xml:space="preserve">
     <value>{0}</value>
   </data>
+  <data name="StackOverflow" xml:space="preserve">
+    <value>Too many nested calls.</value>
+  </data>
 </root>

@@ -209,12 +209,6 @@ namespace Dyalect.Compiler
             Emit(new(OpCode.Tag, idx));
         }
 
-        public void Tag0(string tag)
-        {
-            var idx = IndexString(tag);
-            Emit(new(OpCode.Tag0, idx));
-        }
-
         public void SetMember(TypeHandle type)
         {
             if (type.IsStandard)
@@ -263,22 +257,12 @@ namespace Dyalect.Compiler
                 Emit(new(OpCode.TypeAnno, type.TypeId));
         }
 
-        public void SetType(TypeHandle handle)
-        {
-            if (handle.IsStandard)
-                Emit(new(OpCode.SetTypeT, handle.TypeId));
-            else
-                Emit(new(OpCode.SetType, handle.TypeId));
-        }
-
-
         public void FunPrep(int argCount) => Emit(new(OpCode.FunPrep, argCount));
         public void FunArgIx(int index) => Emit(new(OpCode.FunArgIx, index));
         public void FunArgNm(string name) => Emit(new(OpCode.FunArgNm, IndexString(name)));
         public void FunCall(int argCount) => Emit(new(OpCode.FunCall, argCount));
         public void CtorCheck(string ctor) => Emit(new(OpCode.CtorCheck, IndexString(ctor)));
 
-        public void NewAmg(int len) => Emit(new(OpCode.NewAmg, len), -len + 1);
         public void NewTuple(int len) => Emit(new(OpCode.NewTuple, len), -len + 1);
         public void NewFun(int funHandle) => Emit(new(OpCode.NewFun, funHandle));
         public void NewFunV(int funHandle) => Emit(new(OpCode.NewFunV, funHandle));
@@ -292,8 +276,9 @@ namespace Dyalect.Compiler
         public void GetMember(string name) => Emit(new(OpCode.GetMember, IndexString(name)));
         public void HasMember(string name) => Emit(new(OpCode.HasMember, IndexString(name)));
         public void RunMod(int code) => Emit(new(OpCode.RunMod, code));
-        public void Aux(string value) => Emit(new(OpCode.Aux, IndexString(value)));
-        public void Aux(int data) => Emit(new(OpCode.Aux, data));
+        public void RgDI(string value) => Emit(new(OpCode.RgDI, IndexString(value)));
+        public void RgDI(int data) => Emit(new(OpCode.RgDI, data));
+        public void RgFI(int data) => Emit(new(OpCode.RgFI, data));
         public void HasField(string field) => Emit(new(OpCode.HasField, IndexString(field)));
         public void Start(Label lab) => Emit(OpCode.Start, lab);
         public void Fail(DyErrorCode code) => Emit(new(OpCode.FailSys, (int)code));
@@ -306,6 +291,7 @@ namespace Dyalect.Compiler
         public void Get() => Emit(Op.Get);
         public void Set() => Emit(Op.Set);
         public void This() => Emit(Op.This);
+        public void Unbox() => Emit(Op.Unbox);
         public void Type() => Emit(Op.Type);
         public void PushNil() => Emit(Op.PushNil);
         public void PushNilT() => Emit(Op.PushNilT);
@@ -339,7 +325,5 @@ namespace Dyalect.Compiler
         public void Term() => Emit(Op.Term);
         public void IsNull() => Emit(Op.IsNull);
         public void Mut() => Emit(Op.Mut);
-        public void Priv() => Emit(Op.Priv);
-        public void UnsetType() => Emit(Op.UnsetType);
     }
 }

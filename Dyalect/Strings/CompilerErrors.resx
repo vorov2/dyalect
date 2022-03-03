@@ -225,9 +225,6 @@
   <data name="InvalidRethrow" xml:space="preserve">
     <value>A "throw" statement with no arguments is only valid inside a "catch" block.</value>
   </data>
-  <data name="CtorAutoGen" xml:space="preserve">
-    <value>Unable to define custom constructors for a type with auto-generated constructors (type "{0}").</value>
-  </data>
   <data name="ReturnInIterator" xml:space="preserve">
     <value>Statement "return" is not allowed in iterators. Use "yield break" to terminate an iterator.</value>
   </data>
@@ -237,20 +234,8 @@
   <data name="InvalidSlice" xml:space="preserve">
     <value>Slice is invalid (step and exclusivity sign are not supported in slices).</value>
   </data>
-  <data name="CtorNotIterator" xml:space="preserve">
-    <value>A constructor function cannot be an iterator.</value>
-  </data>
   <data name="PositionalArgumentAfterKeyword" xml:space="preserve">
     <value>A positional argument can't follow an argument passed by name.</value>
-  </data>
-  <data name="CtorOnlyStatic" xml:space="preserve">
-    <value>Constructor should be a static function.</value>
-  </data>
-  <data name="CtorOnlyPascal" xml:space="preserve">
-    <value>Constructor names should start with a capital letter.</value>
-  </data>
-  <data name="ReturnInConstructor" xml:space="preserve">
-    <value>Statement "return" is not supported inside constructors.</value>
   </data>
   <data name="TypeNameCamel" xml:space="preserve">
     <value>Type name should start from a capital letter.</value>
@@ -264,9 +249,6 @@
   <data name="InvalidTypeDefaultValue" xml:space="preserve">
     <value>Invalid type of a default parameter value.</value>
   </data>
-  <data name="NoUsing" xml:space="preserve">
-    <value>Indexer and member access are only valid with an active "using" declaration.</value>
-  </data>
   <data name="MethodNotRecursive" xml:space="preserve">
     <value>Methods can't be recursive. Declare a regular function instead.</value>
   </data>
@@ -275,8 +257,5 @@
   </data>
   <data name="AccessorOnlyMethod" xml:space="preserve">
     <value>Only methods can be declared as accessors (get and set).</value>
-  </data>
-  <data name="UnableSetIni" xml:space="preserve">
-    <value>Initialization scope of a type cannot be overwritten.</value>
   </data>
 </root>

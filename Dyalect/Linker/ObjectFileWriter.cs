@@ -148,7 +148,6 @@ namespace Dyalect.Linker
             {
                 writer.Write(t.Name);
                 writer.Write(t.Id);
-                writer.Write(t.AutoGenConstructors);
             }
         }
 
