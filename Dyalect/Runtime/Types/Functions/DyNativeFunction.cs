@@ -7,6 +7,8 @@ namespace Dyalect.Runtime.Types
 {
     internal class DyNativeFunction : DyFunction
     {
+        private static readonly Stack<CatchMark> emptyMarks = new();
+
         private readonly FunSym? sym;
         internal readonly FastList<DyObject[]> Captures;
         internal DyObject[]? Locals;

@@ -1,3 +1,6 @@
+# 0.28.1
+  * _Code cleanup._
+
 # 0.28.0
   * Change: _Rethink Dyalect type system_ ([Issue #563](https://github.com/vorov2/dyalect/issues/563), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
   * Fix: _VM may crush in some cases with stack overflow exception_ ([Issue #566](https://github.com/vorov2/dyalect/issues/566)).

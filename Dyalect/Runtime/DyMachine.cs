@@ -24,13 +24,13 @@ namespace Dyalect.Runtime
             return retval;
         }
 
-        private static DyObject? ExecuteModule(int unitId, ExecutionContext ctx)
+        private static DyObject ExecuteModule(int unitId, ExecutionContext ctx)
         {
             var unit = ctx.RuntimeContext.Composition.Units[unitId];
 
             if (unit.Layouts.Count == 0) //This is a foreign module
             {
-                if (ctx.RuntimeContext.Units[unitId] is null)
+                if (ctx.RuntimeContext.Units[unitId] is null) //This module is not processed yet
                 {
                     var foreign = (ForeignUnit)unit;
                     foreign.Initialize(ctx);
@@ -42,7 +42,7 @@ namespace Dyalect.Runtime
 
             var lay0 = unit.Layouts[0];
 
-            //if yes we are in interactive mode and need to check if the size
+            //if yes, we are in interactive mode and need to check if the size
             //of global layout (for global variables) has changed
             if (ctx.RuntimeContext.Units[0] is not null && lay0.Size > ctx.RuntimeContext.Units[0].Length)
             {
@@ -51,24 +51,22 @@ namespace Dyalect.Runtime
                 ctx.RuntimeContext.Units[0] = mems;
             }
 
-            if (unitId != 0 && ctx.RuntimeContext.Units[unitId] is not null)
-                return null;
+            //Module is already processed, no need for further actions
+            if (unitId is not 0 && ctx.RuntimeContext.Units[unitId] is not null)
+                return DyNil.Instance;
 
             ctx.CatchMarks.Push(null!);
             ctx.RuntimeContext.Units[unitId] = ctx.RuntimeContext.Units[unitId] ?? new DyObject[lay0.Size];
-            return ExecuteWithData(Global(unitId), null!, ctx);
+            return ExecuteWithData(Global(unitId), Array.Empty<DyObject>(), ctx);
         }
 
         internal static DyObject ExecuteWithData(DyNativeFunction function, DyObject[] locals, ExecutionContext ctx)
         {
-            if (locals is not null)
-            {
-                ctx.Cl++;
+            ctx.CallCnt++;
 
-                if (ctx.Cl > MAX_NESTED_CALLS)
-                    throw new DyRuntimeException(RuntimeErrors.StackOverflow);
-            }
-
+            if (ctx.CallCnt > MAX_NESTED_CALLS)
+                throw new DyRuntimeException(RuntimeErrors.StackOverflow);
+            
             DyObject left, right;
             Op op;
             DyFunction callFun;
@@ -309,7 +307,7 @@ namespace Dyalect.Runtime
 
                             if (ReferenceEquals(cp, Caller.External))
                             {
-                                ctx.Cl--;
+                                ctx.CallCnt--;
                                 return evalStack.Pop();
                             }
 
@@ -324,7 +322,7 @@ namespace Dyalect.Runtime
                         }
                         else 
                         {
-                            ctx.Cl--;
+                            ctx.CallCnt--;
                             return evalStack.Pop();
                         }
                     case OpCode.IsNull:
