@@ -13,6 +13,25 @@ namespace Dyalect.Linker
     internal sealed class Lang : ForeignUnit
     {
         private readonly DyTuple? startupArguments;
+        private System.IO.TextWriter? consoleOutput;
+
+        #region ConsoleTextWriter
+        public sealed class ConsoleTextWriter : System.IO.TextWriter
+        {
+            private readonly DyFunction writer;
+            private readonly ExecutionContext ctx;
+
+            public override Encoding Encoding => Encoding.UTF8;
+
+            public ConsoleTextWriter(ExecutionContext ctx, DyFunction writer) =>
+                (this.ctx, this.writer) = (ctx, writer);
+
+            public override void Write(string? value)
+            {
+                writer.Call(ctx, new DyString(value ?? ""));
+            }
+        }
+        #endregion
 
         public Lang() : this(null) { }
 
@@ -29,7 +48,7 @@ namespace Dyalect.Linker
         public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
         {
             var fst = true;
-
+            
             foreach (var a in (DyTuple)values)
             {
                 if (!fst)
@@ -46,7 +65,32 @@ namespace Dyalect.Linker
                     break;
             }
 
-            Console.Write(terminator.TypeId == DyType.String ? terminator.GetString() : terminator.ToString(ctx).ToString());
+            if (terminator is DyString str && !string.IsNullOrEmpty(str.Value))
+                Console.Write(str.Value);
+            else if (terminator is not DyNil)
+                terminator.ToString(ctx).ToString();
+
+            return DyNil.Instance;
+        }
+
+        [Function("setOut")]
+        public DyObject SetOutput(ExecutionContext ctx, [Default]DyObject output)
+        {
+            if (output is DyNil)
+            {
+                if (consoleOutput is not null)
+                    Console.SetOut(consoleOutput);
+            }
+            else if (output is not DyFunction fn)
+                ctx.InvalidType(output);
+            else
+            {
+                if (consoleOutput is null)
+                    consoleOutput = Console.Out;
+
+                Console.SetOut(new ConsoleTextWriter(ctx, fn));
+            }
+
             return DyNil.Instance;
         }
 

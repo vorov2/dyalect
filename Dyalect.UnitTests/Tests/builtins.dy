@@ -78,3 +78,13 @@
     assert(46918, Integer(pow(12.2, 4.3)))
     assert(3111696, Integer(pow(42, 4)))
 #endtest
+
+#test "setOut"
+    let xs = []
+    setOut(s => xs.add(s))
+    print("String", terminator: nil)
+    print(true, terminator: nil)
+    print(42, terminator: nil)
+    setOut()
+    assert(["String", "true", "42"], xs)
+#endtest
