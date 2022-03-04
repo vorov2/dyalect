@@ -1,13 +1,12 @@
-﻿using Dyalect.Debug;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
     public class DyArray : DyCollection
     {
+        internal static readonly DyArrayTypeInfo Type = new();
+        
         private const int DEFAULT_SIZE = 4;
 
         internal DyObject[] Values;
@@ -18,7 +17,7 @@ namespace Dyalect.Runtime.Types
             set => Values[CorrectIndex(index)] = value;
         }
 
-        public DyArray(DyObject[] values) : base(DyType.Array) => (Values, Count) = (values, values.Length);
+        public DyArray(DyObject[] values) : base(Type) => (Values, Count) = (values, values.Length);
 
         public void Compact()
         {
@@ -130,7 +129,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = Values[i];
 
-                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
+                if (e.DecType.Eq(ctx, e, elem).GetBool())
                     return i;
 
                 if (ctx.HasErrors)
@@ -148,7 +147,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = Values[i];
 
-                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, elem).GetBool())
+                if (e.DecType.Eq(ctx, e, elem).GetBool())
                     index = i;
 
                 if (ctx.HasErrors)
@@ -160,7 +159,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId == DyType.Integer)
+            if (Is(index, DyInteger.Type))
                 return GetItem((int)index.GetInteger(), ctx);
             else
                 return ctx.InvalidType(index);

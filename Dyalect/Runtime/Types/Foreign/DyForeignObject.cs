@@ -5,22 +5,10 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyForeignObject<T> : DyObject where T : ForeignTypeInfo
     {
-        private static int GetTypeId(RuntimeContext rtx)
-        {
-            var guid = typeof(T).GUID;
+        protected DyForeignObject(DyTypeInfo typeInfo, Unit unit) : this(typeInfo, unit, null) { }
 
-            if (!rtx.Composition.TypeCodes.TryGetValue(guid, out var id))
-                throw new DyException($"Unable to find type {nameof(T)}.");
-
-            return id;
-        }
-
-        protected DyForeignObject(RuntimeContext rtx, Unit unit) : this(rtx, unit, null) { }
-
-        protected DyForeignObject(RuntimeContext rtx, Unit unit, string? ctor) : base(GetTypeId(rtx)) =>
-            (RuntimeContext, DeclaringUnit, Constructor) = (rtx, unit,ctor);
-
-        public RuntimeContext RuntimeContext { get; }
+        protected DyForeignObject(DyTypeInfo typeInfo, Unit unit, string? ctor) : base(typeInfo) =>
+            (DeclaringUnit, Constructor) = (unit,ctor);
 
         public Unit DeclaringUnit { get; }
 
@@ -28,6 +16,6 @@ namespace Dyalect.Runtime.Types
 
         public override void GetConstructor(ExecutionContext ctx, out string ctor, out bool priv) => (ctor, priv) = (Constructor ?? "", false);
 
-        public override int GetHashCode() => HashCode.Combine(TypeId, Constructor, DeclaringUnit.Id);
+        public override int GetHashCode() => HashCode.Combine((int)DecType.TypeCode, Constructor, DeclaringUnit.Id);
     }
 }

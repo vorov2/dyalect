@@ -4,7 +4,7 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class ForeignTypeInfo : DyTypeInfo
     {
-        protected ForeignTypeInfo() : base(-1) { }
+        protected ForeignTypeInfo() : base(DyTypeCode.Foreign) { }
 
         public Unit DeclaringUnit { get; internal set; } = null!;
     }

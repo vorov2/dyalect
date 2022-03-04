@@ -20,18 +20,19 @@ namespace Dyalect.Compiler
         private Scope currentScope; //Current lexical scope
         private readonly Label programEnd; //Label that marks an end of program
         private readonly FileLookup lookup; //Search referenced modules
+        private readonly DyLinker linker;
         private readonly Dictionary<string, UnitInfo> referencedUnits;
 
         private readonly Dictionary<string, TypeInfo> types;
         private readonly static DImport defaultInclude = new(default) { ModuleName = "lang" };
 
-        public Builder(BuilderOptions options, FileLookup lookup)
+        public Builder(BuilderOptions options, DyLinker linker)
         {
             referencedUnits = new();
             types = new();
 
             this.options = options;
-            this.lookup = lookup;
+            this.linker = linker;
             counters = new();
             pdb = new();
             isDebug = options.Debug;
@@ -166,6 +167,16 @@ namespace Dyalect.Compiler
             }
 
             return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void FailIfFalse(Runtime.DyErrorCode err)
+        {
+            var skip = cw.DefineLabel();
+            cw.Brtrue(skip);
+            cw.Fail(err);
+            cw.MarkLabel(skip);
+            cw.Nop();
         }
 
         private Exception Ice(Exception? ex = null) =>

@@ -5,7 +5,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyErrorTypeInfo : DyTypeInfo
     {
-        public DyErrorTypeInfo() : base(DyType.Error) { }
+        public DyErrorTypeInfo() : base(DyTypeCode.Error) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
         {
             var err = (DyError)self;
 
-            if (index.TypeId == DyType.Integer)
+            if (Is(index, DyInteger.Type))
             {
                 var idx = index.GetInteger();
 
@@ -27,7 +27,7 @@ namespace Dyalect.Runtime.Types
 
                 return TypeConverter.ConvertFrom(err.DataItems[idx]);
             }
-            else if (index.TypeId == DyType.String)
+            else if (Is(index, DyString.Type))
                 return err.GetItem(index, ctx);
             else
                 return ctx.InvalidType(index);

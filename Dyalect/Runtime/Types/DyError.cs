@@ -7,11 +7,12 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyError : DyObject
     {
+        internal static readonly DyErrorTypeInfo Type = new();
         private readonly string errorCode;
 
         internal DyError(DyErrorCode code, params object[] dataItems) : this(code.ToString(), code, dataItems) { }
 
-        internal DyError(string error, DyErrorCode code, params object[] dataItems) : base(DyType.Error) =>
+        internal DyError(string error, DyErrorCode code, params object[] dataItems) : base(Type) =>
             (errorCode, Code, DataItems) = (error, code, dataItems);
 
         internal Stack<StackPoint>? Dump { get; set; }
@@ -46,7 +47,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId is not DyType.String)
+            if (!Is(index, DyString.Type))
                 return ctx.InvalidType(index);
 
             var name = index.GetString();

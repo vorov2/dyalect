@@ -16,18 +16,17 @@ namespace Dyalect.Compiler
                 var flags = VarFlags.Const | VarFlags.Function;
                 var addr = 0;
 
-                if (!node.IsMemberFunction)
+                if (node.TypeName is null)
                     addr = AddVariable(node.Name, node.Location, flags);
                 else if (privateScope)
                     AddError(CompilerError.PrivateMethod, node.Location);
 
                 BuildFunctionBody(addr, node, hints, ctx);
-                var code = node.IsMemberFunction ? GetTypeHandle(node.TypeName!, node.Location) : (TypeHandle?)null;
 
                 if (hints.Has(Push))
                     cw.Dup();
 
-                if (node.IsMemberFunction)
+                if (node.TypeName is not null)
                 {
                     var realName = node.Name;
 
@@ -40,17 +39,17 @@ namespace Dyalect.Compiler
                     if (node.Name is Builtins.Has || (!node.IsStatic && node.Name is Builtins.Type))
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
-                    cw.RgDI(realName);
+                    PushTypeInfo(ctx, node.TypeName, node.Location);
 
                     if (node.IsStatic)
-                        cw.SetMemberS(code!.Value);
+                        cw.SetMemberS(realName);
                     else
-                        cw.SetMember(code!.Value);
+                        cw.SetMember(realName);
                 }
 
                 AddLinePragma(node);
 
-                if (node.IsMemberFunction)
+                if (node.TypeName is not null)
                     cw.Nop();
                 else
                     cw.PopVar(addr);
@@ -109,11 +108,6 @@ namespace Dyalect.Compiler
                     hasVarArg = true;
                 }
 
-                TypeHandle? ta = null;
-
-                if (p.TypeAnnotation is not null)
-                    ta = GetTypeHandle(p.TypeAnnotation, p.Location);
-
                 if (p.DefaultValue is not null)
                 {
                     if (p.IsVarArgs)
@@ -125,43 +119,60 @@ namespace Dyalect.Compiler
                     {
                         case NodeType.Integer:
                             val = new DyInteger(((DIntegerLiteral)p.DefaultValue).Value);
-                            if (ta is not null && ta.Value.TypeId != DyType.Integer) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                            if (!CheckRestriction(DyTypeCode.Integer, p.TypeAnnotation))
+                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Float:
                             val = new DyFloat(((DFloatLiteral)p.DefaultValue).Value);
-                            if (ta is not null && ta.Value.TypeId != DyType.Float) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                            if (!CheckRestriction(DyTypeCode.Float, p.TypeAnnotation))
+                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Char:
                             val = new DyChar(((DCharLiteral)p.DefaultValue).Value);
-                            if (ta is not null && ta.Value.TypeId != DyType.Char) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                            if (!CheckRestriction(DyTypeCode.Char, p.TypeAnnotation))
+                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Boolean:
                             val = ((DBooleanLiteral)p.DefaultValue).Value ? DyBool.True : DyBool.False;
-                            if (ta is not null && ta.Value.TypeId != DyType.Bool) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                            if (!CheckRestriction(DyTypeCode.Bool, p.TypeAnnotation)) 
+                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.String:
                             val = new DyString(((DStringLiteral)p.DefaultValue).Value);
-                            if (ta is not null && ta.Value.TypeId != DyType.String) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                            if (!CheckRestriction(DyTypeCode.String, p.TypeAnnotation))
+                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Nil:
                             val = DyNil.Instance;
-                            if (ta is not null && ta.Value.TypeId != DyType.Nil) AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                            if (!CheckRestriction(DyTypeCode.Nil, p.TypeAnnotation))
+                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         default:
                             AddError(CompilerError.InvalidDefaultValue, p.DefaultValue.Location, p.Name);
                             break;
                     }
 
-                    arr[i] = new Par(p.Name, val, false, ta);
+                    arr[i] = new Par(p.Name, val, false, p.TypeAnnotation);
                 }
                 else
-                    arr[i] = new Par(p.Name, null, p.IsVarArgs, ta);
+                    arr[i] = new Par(p.Name, null, p.IsVarArgs, p.TypeAnnotation);
             }
 
             return arr;
         }
 
-        private int BuildFunctionArguments(DFunctionDeclaration node, Par[] args)
+        private bool CheckRestriction(DyTypeCode code, Qualident? restriction)
+        {
+            if (restriction is null)
+                return true;
+
+            if (restriction.Parent is not null)
+                return false;
+
+            return code == DyType.GetTypeCodeByName(restriction.Local);
+        }
+
+        private int BuildFunctionArguments(CompilerContext ctx, DFunctionDeclaration node, Par[] args)
         {
             var variadicIndex = -1;
 
@@ -180,8 +191,10 @@ namespace Dyalect.Compiler
                     if (arg.TypeAnnotation is not null)
                     {
                         cw.PushVar(new ScopeVar(a));
+                        PushTypeInfo(ctx, arg.TypeAnnotation, node.Location);
                         AddLinePragma(node.Parameters[i]);
-                        cw.TypeCheckF(arg.TypeAnnotation.Value);
+                        cw.TypeCheck();
+                        FailIfFalse(Runtime.DyErrorCode.InvalidType);
                     }
                 }
             }
@@ -195,7 +208,7 @@ namespace Dyalect.Compiler
             var args = CompileFunctionParameters(node.Parameters);
             StartFun(node.Setter ? "set_" + node.Name : node.Name!, args);
 
-            if (node.IsStatic && !node.IsMemberFunction)
+            if (node.IsStatic && node.TypeName is not null)
                 AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);
 
             var startLabel = cw.DefineLabel();
@@ -208,11 +221,7 @@ namespace Dyalect.Compiler
             cw.Br(funSkipLabel);
             hints = Function | Push | (iterBody ? IteratorBody : None);
 
-            TypeInfo lti = null!;
-            var localTypeMember = node.IsMemberFunction && node.TypeName!.Parent is null
-                && TryGetLocalType(node.TypeName.Local, out lti);
-
-            if (node.IsMemberFunction && oldctx.Function is not null && oldctx.Function.IsMemberFunction)
+            if (node.TypeName is not null && oldctx.Function is not null && oldctx.Function.TypeName is not null)
                 AddError(CompilerError.NestedMethod, node.Location);
 
             var ctx = new CompilerContext
@@ -220,8 +229,7 @@ namespace Dyalect.Compiler
                 FunctionAddress = counters.Count | (addr >> 8) << 8,
                 FunctionStart = startLabel,
                 FunctionExit = funEndLabel,
-                Function = node,
-                LocalType = localTypeMember ? node.TypeName!.Local : oldctx.LocalType
+                Function = node
             };
 
             //Start of a physical (and not compiler time) lexical scope for a function
@@ -232,12 +240,12 @@ namespace Dyalect.Compiler
             var address = cw.Offset;
             
             //args was here
-            var variadicIndex = BuildFunctionArguments(node, args);
+            var variadicIndex = BuildFunctionArguments(ctx, node, args);
 
             //If this is a member function we add an additional system variable that
             //would return an instance of an object to which this function is coupled
             //(same as "this" in C#)
-            if (node.IsMemberFunction && !node.IsStatic)
+            if (node.TypeName is not null && !node.IsStatic)
             {
                 var va = AddVariable("this", node.Location, data: VarFlags.Const | VarFlags.This);
                 cw.This();
@@ -248,7 +256,7 @@ namespace Dyalect.Compiler
                 cw.PopVar(va);
             }
             
-            if ((node.Getter || node.Setter) && !node.IsMemberFunction)
+            if ((node.Getter || node.Setter) && node.TypeName is null)
                 AddError(CompilerError.AccessorOnlyMethod, node.Location);
 
             //Start of a function that is used for tail call optimization

@@ -2,7 +2,7 @@
 {
     internal sealed class DyMetaTypeInfo : DyTypeInfo
     {
-        public DyMetaTypeInfo() : base(DyType.TypeInfo) { }
+        public DyMetaTypeInfo() : base(DyTypeCode.TypeInfo) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
@@ -11,10 +11,10 @@
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId is DyType.String)
+            if (Is(index, DyString.Type))
                 return index.GetString() switch
                 {
-                    "id" => DyInteger.Get(((DyTypeInfo)self).TypeCode),
+                    "code" => DyInteger.Get((int)((DyTypeInfo)self).TypeCode),
                     "name" => new DyString(((DyTypeInfo)self).TypeName),
                     _ => ctx.IndexOutOfRange()
                 };
@@ -28,7 +28,7 @@
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "id" => Func.Auto(name, (ctx, self) => DyInteger.Get(((DyTypeInfo)self).TypeCode)),
+                "code" => Func.Auto(name, (ctx, self) => DyInteger.Get((int)((DyTypeInfo)self).TypeCode)),
                 "name" => Func.Auto(name, (ctx, self) => new DyString(((DyTypeInfo)self).TypeName)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };

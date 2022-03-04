@@ -46,28 +46,52 @@ namespace Dyalect
         public const int Set = 15;
         public const int Error = 16;
 
-        public static int GetTypeCodeByName(string name) =>
+        public static DyTypeCode GetTypeCodeByName(string name) =>
             name switch
             {
-                DyTypeNames.Nil => Nil,
-                DyTypeNames.Integer => Integer,
-                DyTypeNames.Float => Float,
-                DyTypeNames.Bool => Bool,
-                DyTypeNames.Char => Char,
-                DyTypeNames.String => String,
-                DyTypeNames.Function => Function,
-                DyTypeNames.Label => Label,
-                DyTypeNames.TypeInfo => TypeInfo,
-                DyTypeNames.Tuple => Tuple,
-                DyTypeNames.Module => Module,
-                DyTypeNames.Array => Array,
-                DyTypeNames.Iterator => Iterator,
-                DyTypeNames.Dictionary => Dictionary,
-                DyTypeNames.Object => Object,
-                DyTypeNames.Set => Set,
-                DyTypeNames.Error => Error,
-                _ => -1,
-            };
+                DyTypeNames.Nil => DyTypeCode.Nil,
+                DyTypeNames.Integer => DyTypeCode.Integer,
+                DyTypeNames.Float => DyTypeCode.Float,
+                DyTypeNames.Bool => DyTypeCode.Bool,
+                DyTypeNames.Char => DyTypeCode.Char,
+                DyTypeNames.String => DyTypeCode.String,
+                DyTypeNames.Function => DyTypeCode.Function,
+                DyTypeNames.Label => DyTypeCode.Label,
+                DyTypeNames.TypeInfo => DyTypeCode.TypeInfo,
+                DyTypeNames.Tuple => DyTypeCode.Tuple,
+                DyTypeNames.Module => DyTypeCode.Module,
+                DyTypeNames.Array => DyTypeCode.Array,
+                DyTypeNames.Iterator => DyTypeCode.Iterator,
+                DyTypeNames.Dictionary => DyTypeCode.Dictionary,
+                DyTypeNames.Object => DyTypeCode.Object,
+                DyTypeNames.Set => DyTypeCode.Set,
+                DyTypeNames.Error => DyTypeCode.Error,
+                DyTypeNames.Class => DyTypeCode.Class,
+                DyTypeNames.Foreign => DyTypeCode.Foreign,
+                _ => default
+            }; 
+
+        public static DyTypeInfo? GetTypeInfoByCode(DyTypeCode code) =>
+             code switch
+             {
+                 DyTypeCode.Nil => DyNil.Type,
+                 DyTypeCode.Integer => DyInteger.Type,
+                 DyTypeCode.Float => DyFloat.Type,
+                 DyTypeCode.Bool => DyBool.Type,
+                 DyTypeCode.Char => DyChar.Type,
+                 DyTypeCode.String => DyString.Type,
+                 DyTypeCode.Function => DyFunction.Type,
+                 DyTypeCode.Label => DyLabel.Type,
+                 DyTypeCode.TypeInfo => DyTypeInfo.Type,
+                 DyTypeCode.Tuple => DyTuple.Type,
+                 DyTypeCode.Module => DyModule.Type,
+                 DyTypeCode.Array => DyArray.Type,
+                 DyTypeCode.Iterator => DyIterator.Type,
+                 DyTypeCode.Dictionary => DyDictionary.Type,
+                 DyTypeCode.Set => DySet.Type,
+                 DyTypeCode.Error => DyError.Type,
+                 _ => default
+             };
 
         internal static string GetTypeNameByCode(int code) =>
             code switch
@@ -134,5 +158,7 @@ namespace Dyalect
         public const string Object = "Object";
         public const string Set = "Set";
         public const string Error = "Error";
+        public const string Class = "Class";
+        public const string Foreign = "Foreign";
     }
 }

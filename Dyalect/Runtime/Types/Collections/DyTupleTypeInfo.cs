@@ -7,7 +7,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
     {
-        public DyTupleTypeInfo() : base(DyType.Tuple) { }
+        public DyTupleTypeInfo() : base(DyTypeCode.Tuple) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -33,7 +33,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeId != right.TypeId)
+            if (!Is(left, right))
                 return DyBool.False;
 
             var (t1, t2) = ((DyTuple)left, (DyTuple)right);
@@ -43,7 +43,7 @@ namespace Dyalect.Runtime.Types
 
             for (var i = 0; i < t1.Count; i++)
             {
-                if (ReferenceEquals(ctx.RuntimeContext.Types[t1.Values[i].TypeId].Eq(ctx, t1.Values[i], t2.Values[i]), DyBool.False))
+                if (ReferenceEquals(t1.Values[i].DecType.Eq(ctx, t1.Values[i], t2.Values[i]), DyBool.False))
                     return DyBool.False;
 
                 if (ctx.HasErrors)
@@ -113,7 +113,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = t.Values[i].GetTaggedValue();
 
-                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, item).GetBool())
+                if (e.DecType.Eq(ctx, e, item).GetBool())
                     return RemoveAt(t, i);
             }
 
@@ -122,7 +122,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
         {
-            if (index.TypeId is not DyType.Integer)
+            if (!Is(index, DyInteger.Type))
                 return ctx.InvalidType(index);
 
             var t = (DyTuple)self;
@@ -152,7 +152,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
-            if (index.TypeId is not DyType.Integer)
+            if (!Is(index, DyInteger.Type))
                 return ctx.InvalidType(index);
 
             var tuple = (DyTuple)self;
@@ -187,7 +187,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
         {
-            if (item.TypeId is not DyType.String)
+            if (!Is(item, DyString.Type))
                 return ctx.InvalidType(item);
 
             var tuple = (DyTuple)self;

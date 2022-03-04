@@ -2,7 +2,7 @@
 {
     internal sealed class DyNilTypeInfo : DyTypeInfo
     {
-        public DyNilTypeInfo() : base(DyType.Nil) { }
+        public DyNilTypeInfo() : base(DyTypeCode.Nil) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
@@ -10,7 +10,7 @@
         public override string TypeName => DyTypeNames.Nil;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            left.TypeId == right.TypeId ? DyBool.True : DyBool.False;
+            Is(left, right) ? DyBool.True : DyBool.False;
 
         protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
 

@@ -8,6 +8,8 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyFunction : DyObject
     {
+        internal static readonly DyFunctionTypeInfo Type = new();
+
         internal const string DefaultName = "<func>";
         internal DyObject? Self;
         internal Par[] Parameters;
@@ -16,7 +18,7 @@ namespace Dyalect.Runtime.Types
 
         internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
 
-        protected DyFunction(int typeId, Par[] pars, int varArgIndex) : base(typeId) =>
+        protected DyFunction(Par[] pars, int varArgIndex) : base(Type) =>
             (Parameters, VarArgIndex) = (pars, varArgIndex);
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
@@ -64,15 +66,15 @@ namespace Dyalect.Runtime.Types
             if (VarArgIndex > -1)
             {
                 var o = newLocals[VarArgIndex];
-                if (o.TypeId == DyType.Nil)
+                if (Is(o, DyNil.Type))
                     newLocals[VarArgIndex] = DyTuple.Empty;
-                else if (o.TypeId == DyType.Array)
+                else if (Is(o, DyArray.Type))
                 {
                     var arr = (DyArray)o;
                     arr.Compact();
                     newLocals[VarArgIndex] = new DyTuple(arr.Values);
                 }
-                else if (o.TypeId != DyType.Tuple)
+                else if (!Is(o, DyTuple.Type))
                 {
                     newLocals[VarArgIndex] = DyTuple.Create(o);
                 }
@@ -118,9 +120,9 @@ namespace Dyalect.Runtime.Types
                 if (p.Value != null)
                 {
                     sb.Append(" = ");
-                    if (p.Value.TypeId == DyType.String)
+                    if (Is(p.Value, DyString.Type))
                         sb.Append(StringUtil.Escape(p.Value.ToString()));
-                    else if (p.Value.TypeId == DyType.Char)
+                    else if (Is(p.Value, DyChar.Type))
                         sb.Append(StringUtil.Escape(p.Value.ToString(), "'"));
                     else
                         sb.Append(p.Value.ToString());
@@ -144,7 +146,7 @@ namespace Dyalect.Runtime.Types
 
         internal abstract bool Equals(DyFunction func);
 
-        public override int GetHashCode() => HashCode.Combine(TypeId, FunctionName ?? DefaultName, Parameters, Self);
+        public override int GetHashCode() => HashCode.Combine((int)Type.TypeCode, FunctionName ?? DefaultName, Parameters, Self);
 
         internal virtual void Reset(ExecutionContext ctx) { }
     }

@@ -14,8 +14,6 @@ namespace Dyalect.Compiler
             ExportList = new();
             UnitIds = new();
             References = new();
-            Types = new();
-            TypeMap = new();
             IndexedStrings = new();
             IndexedIntegers = new();
             IndexedFloats = new();
@@ -34,20 +32,10 @@ namespace Dyalect.Compiler
             ExportList = unit.ExportList;
             UnitIds = unit.UnitIds;
             References = unit.References;
-            Types = unit.Types;
             IndexedStrings = unit.IndexedStrings;
             IndexedIntegers = unit.IndexedIntegers;
             IndexedFloats = unit.IndexedFloats;
             IndexedChars = unit.IndexedChars;
-            TypeMap = unit.TypeMap;
-        }
-
-        protected TypeDescriptor? QueryType(string name)
-        {
-            if (!TypeMap.TryGetValue(name, out var t))
-                t = null;
-
-            return t;
         }
 
         internal int Checksum { get; set; }
@@ -59,10 +47,6 @@ namespace Dyalect.Compiler
         internal List<Reference> References { get; }
 
         internal List<int> UnitIds { get; }
-
-        internal List<TypeDescriptor> Types { get; }
-
-        internal Dictionary<string, TypeDescriptor> TypeMap { get; }
 
         internal List<DyString> IndexedStrings { get; }
 

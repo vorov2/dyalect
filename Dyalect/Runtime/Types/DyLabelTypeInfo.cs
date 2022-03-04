@@ -2,7 +2,7 @@
 {
     internal sealed class DyLabelTypeInfo : DyTypeInfo
     {
-        public DyLabelTypeInfo() : base(DyType.Label) { }
+        public DyLabelTypeInfo() : base(DyTypeCode.Label) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;

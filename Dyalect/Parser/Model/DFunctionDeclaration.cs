@@ -7,8 +7,6 @@ namespace Dyalect.Parser.Model
     {
         public DFunctionDeclaration(Location loc) : base(NodeType.Function, loc) { }
 
-        public bool IsMemberFunction => TypeName is not null;
-
         public Qualident? TypeName { get; set; }
 
         public string? Name { get; set; }

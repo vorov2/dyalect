@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     public abstract class DyIterator : DyObject
     {
-        protected DyIterator() : base(DyType.Iterator) { }
+        internal static readonly DyIteratorTypeInfo Type = new();
+
+        protected DyIterator() : base(Type) { }
 
         internal static DyIterator Create(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) =>
             new DyNativeIterator(unitId, handle, captures, locals);
@@ -52,9 +49,9 @@ namespace Dyalect.Runtime.Types
         {
             DyFunction? iter;
 
-            if (val.TypeId == DyType.Iterator)
+            if (Is(val, DyIterator.Type))
                 iter = ((DyIterator)val).GetIteratorFunction();
-            else if (val.TypeId == DyType.Function)
+            else if (Is(val, DyFunction.Type))
             {
                 var obj = ((DyFunction)val).Call(ctx);
                 iter = obj as DyFunction;

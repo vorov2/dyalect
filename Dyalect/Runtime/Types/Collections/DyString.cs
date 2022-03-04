@@ -1,21 +1,18 @@
-﻿using Dyalect.Debug;
-using Dyalect.Parser;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
     public sealed class DyString : DyCollection, IEnumerable<DyObject>
     {
+        internal static readonly DyStringTypeInfo Type = new();
+
         public static readonly DyString Empty = new("");
         internal readonly string Value;
 
         public override int Count => Value.Length;
 
-        public DyString(string str) : base(DyType.String) => Value = str;
+        public DyString(string str) : base(Type) => Value = str;
 
         internal override DyObject GetValue(int index) => new DyChar(Value[index]);
 
@@ -50,7 +47,7 @@ namespace Dyalect.Runtime.Types
         {
             var res = value;
 
-            while (res.TypeId != DyType.String && res.TypeId != DyType.Char)
+            while (!Is(res, DyString.Type) && !Is(res, DyChar.Type))
             {
                 res = res.ToString(ctx);
 
@@ -63,7 +60,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId != DyType.Integer)
+            if (!Is(index, DyInteger.Type))
                 return ctx.InvalidType(index);
 
             return GetItem((int)index.GetInteger(), ctx);
@@ -73,13 +70,13 @@ namespace Dyalect.Runtime.Types
             new DyChar(Value[idx]);
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported("set", this.GetTypeName(ctx));
+            ctx.OperationNotSupported("set", Type.TypeName);
 
         public override DyObject Clone() => this;
 
         internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write(TypeId);
+            writer.Write((int)Type.TypeCode);
             writer.Write(Value);
         }
     }

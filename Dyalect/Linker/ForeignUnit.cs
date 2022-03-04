@@ -28,14 +28,6 @@ namespace Dyalect.Linker
             Values.Add(obj);
         }
 
-        protected void AddType<T>(string name) where T : ForeignTypeInfo
-        {
-            var typeId = Types.Count;
-            var td = new TypeDescriptor(name, typeId, typeof(T));
-            Types.Add(td);
-            TypeMap[name] = td;
-        }
-
         protected void AddReference<T>() where T : ForeignUnit
         {
             var ti = typeof(T);

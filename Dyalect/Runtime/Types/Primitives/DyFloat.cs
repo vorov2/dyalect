@@ -4,6 +4,8 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyFloat : DyObject
     {
+        internal static readonly DyFloatTypeInfo Type = new();
+        
         public static readonly DyFloat Zero = new(0D);
         public static readonly DyFloat One = new(1D);
         public static readonly DyFloat NaN = new(double.NaN);
@@ -15,7 +17,7 @@ namespace Dyalect.Runtime.Types
 
         private readonly double value;
 
-        public DyFloat(double value) : base(DyType.Float) =>
+        public DyFloat(double value) : base(Type) =>
             this.value = value;
 
         public override int GetHashCode() => value.GetHashCode();
@@ -36,7 +38,7 @@ namespace Dyalect.Runtime.Types
 
         internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write(TypeId);
+            writer.Write((int)Type.TypeCode);
             writer.Write(value);
         }
     }

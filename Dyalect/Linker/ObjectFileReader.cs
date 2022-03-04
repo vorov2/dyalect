@@ -23,7 +23,6 @@ namespace Dyalect.Linker
             ReadHeader(reader, unit);
             ReadReferences(reader, unit);
             unit.UnitIds.AddRange(Enumerable.Repeat(-1, reader.ReadInt32()));
-            ReadTypeDescriptors(reader, unit);
             ReadIndices(reader, unit);
             ReadOps(reader, unit);
             ReadSymbols(reader, unit);
@@ -139,20 +138,6 @@ namespace Dyalect.Linker
                     Checksum = checksum
                 };
                 unit.References.Add(r);
-            }
-        }
-
-        private static void ReadTypeDescriptors(BinaryReader reader, Unit unit)
-        {
-            var types = reader.ReadInt32();
-
-            for (var i = 0; i < types; i++)
-            {
-                var td = new TypeDescriptor(
-                    reader.ReadString(),
-                    reader.ReadInt32());
-                unit.Types.Add(td);
-                unit.TypeMap.Add(td.Name, td);
             }
         }
 

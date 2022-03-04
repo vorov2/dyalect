@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Dyalect.Runtime.Types
 {
@@ -9,7 +7,7 @@ namespace Dyalect.Runtime.Types
     {
         public virtual DyObject this[int index] => GetValue(index);
 
-        protected DyCollection(int typeId) : base(typeId) { }
+        protected DyCollection(DyTypeInfo type) : base(type) { }
 
         #region Indexing
         protected int CorrectIndex(int index) => index < 0 ? Count + index : index;
@@ -28,7 +26,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
         {
-            if (obj.TypeId is not DyType.Integer)
+            if (!ReferenceEquals(obj.DecType, DyInteger.Type))
             {
                 ctx.InvalidType(obj);
                 return;

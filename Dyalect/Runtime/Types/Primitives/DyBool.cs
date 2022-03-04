@@ -5,6 +5,8 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyBool : DyObject
     {
+        internal static readonly DyBoolTypeInfo Type = new();
+
         public static readonly DyBool True = new TrueBool();
         public static readonly DyBool False = new FalseBool();
 
@@ -26,7 +28,7 @@ namespace Dyalect.Runtime.Types
             public override int GetHashCode() => false.GetHashCode();
         }
 
-        private DyBool() : base(DyType.Bool) { }
+        private DyBool() : base(Type) { }
 
         public override object ToObject() => GetBool();
 
@@ -38,7 +40,7 @@ namespace Dyalect.Runtime.Types
 
         internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write(TypeId);
+            writer.Write((int)Type.TypeCode);
             writer.Write(this is TrueBool);
         }
     }

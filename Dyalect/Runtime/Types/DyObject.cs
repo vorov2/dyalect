@@ -6,11 +6,13 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyObject : IEquatable<DyObject>
     {
-        public readonly int TypeId;
+        internal readonly DyTypeInfo DecType;
 
-        protected DyObject(int typeId) => TypeId = typeId;
+        public DyTypeInfo TypeInfo => DecType;
 
-        public override string ToString() => $"[type:{DyType.GetTypeNameByCode(TypeId)}]";
+        protected DyObject(DyTypeInfo typeInfo) => DecType = typeInfo;
+
+        public override string ToString() => $"[type:{DecType.TypeName}]";
 
         protected internal virtual bool GetBool() => true;
 
@@ -25,10 +27,10 @@ namespace Dyalect.Runtime.Types
         public abstract object ToObject();
 
         protected internal virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            index.TypeId == DyType.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange();
+            Is(index, DyInteger.Type) && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange();
 
         protected internal virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Set, this.GetTypeName(ctx));
+            ctx.OperationNotSupported(Builtins.Set, DecType.TypeName);
 
         protected internal virtual bool HasItem(string name, ExecutionContext ctx) => false;
 
@@ -55,6 +57,11 @@ namespace Dyalect.Runtime.Types
         public abstract override int GetHashCode();
 
         protected int CalculateSimpleHashCode() => base.GetHashCode();
+
+        public static bool Is(DyTypeInfo type, DyObject obj) => ReferenceEquals(type, obj.DecType);
+        public static bool Is(DyTypeInfo type, DyTypeInfo otherType) => ReferenceEquals(type, otherType);
+        public static bool Is(DyObject obj, DyTypeInfo type) => ReferenceEquals(obj.DecType, type);
+        public static bool Is(DyObject obj, DyObject other) => ReferenceEquals(obj.DecType, other.DecType);
 
         #region Pattern Match
         protected virtual bool Match_CheckLength(int _) => false;

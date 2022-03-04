@@ -8,7 +8,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
     {
-        public DyArrayTypeInfo() : base(DyType.Array) { }
+        public DyArrayTypeInfo() : base(DyTypeCode.Array) { }
 
         public override string TypeName => DyTypeNames.Array;
 
@@ -63,7 +63,7 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyArray)self;
 
-            if (index.TypeId != DyType.Integer)
+            if (!Is(index, DyInteger.Type))
                 return ctx.InvalidType(index);
 
             var i = (int)index.GetInteger();
@@ -94,7 +94,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject RemoveItemAt(ExecutionContext ctx, DyObject self, DyObject index)
         {
-            if (index.TypeId != DyType.Integer)
+            if (!Is(index, DyInteger.Type))
                 return ctx.InvalidType(index);
 
             var idx = (int)index.GetInteger();
@@ -184,7 +184,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject InsertRange(ExecutionContext ctx, DyObject self, DyObject index, DyObject range)
         {
-            if (index.TypeId != DyType.Integer)
+            if (!Is(index, DyInteger.Type))
                 return ctx.InvalidType(index);
 
             var arr = (DyArray)self;
@@ -229,7 +229,7 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyArray)self;
 
-            if (start.TypeId != DyType.Integer)
+            if (!Is(start, DyInteger.Type))
                 return ctx.InvalidType(start);
 
             var sti = (int)start.GetInteger();
@@ -241,7 +241,7 @@ namespace Dyalect.Runtime.Types
 
             if (ReferenceEquals(len, DyNil.Instance))
                 le = arr.Count - sti;
-            else if (len.TypeId != DyType.Integer)
+            else if (!Is(len, DyInteger.Type))
                 return ctx.InvalidType(len);
             else
                 le = (int)len.GetInteger();
@@ -319,7 +319,7 @@ namespace Dyalect.Runtime.Types
             var size = sizeObj.GetInteger();
             var arr = new DyObject[size];
 
-            if (val.TypeId == DyType.Iterator)
+            if (Is(val, DyIterator.Type))
                 val = ((DyIterator)val).GetIteratorFunction();
 
             if (val is DyFunction func)
@@ -348,27 +348,27 @@ namespace Dyalect.Runtime.Types
 
         private static DyObject Copy(ExecutionContext ctx, DyObject from, DyObject sourceIndex, DyObject to, DyObject destIndex, DyObject length)
         {
-            if (sourceIndex.TypeId is not DyType.Integer)
+            if (!Is(sourceIndex, DyInteger.Type))
                 return ctx.InvalidType(sourceIndex);
 
             var iSourceIndex = sourceIndex.GetInteger();
 
-            if (destIndex.TypeId is not DyType.Integer)
+            if (!Is(destIndex, DyInteger.Type))
                 return ctx.InvalidType(destIndex);
 
             var iDestIndex = destIndex.GetInteger();
 
-            if (length.TypeId is not DyType.Integer)
+            if (!Is(length, DyInteger.Type))
                 return ctx.InvalidType(length);
 
             var iLen = length.GetInteger();
 
-            if (from.TypeId is not DyType.Array)
+            if (!Is(from, DyInteger.Type))
                 return ctx.InvalidType(from);
 
             var sourceArr = (DyArray)from;
 
-            if (to.TypeId != DyType.Array && to.TypeId != DyType.Nil)
+            if (!Is(to, DyInteger.Type) && !Is(to, DyNil.Type))
                 return ctx.InvalidType(to);
 
             var destArr = to == DyNil.Instance ? new DyArray(new DyObject[iDestIndex + iLen]) : (DyArray)to;

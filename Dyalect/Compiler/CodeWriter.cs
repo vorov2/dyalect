@@ -209,53 +209,10 @@ namespace Dyalect.Compiler
             Emit(new(OpCode.Tag, idx));
         }
 
-        public void SetMember(TypeHandle type)
-        {
-            if (type.IsStandard)
-                Emit(new(OpCode.SetMemberT, type.TypeId));
-            else
-                Emit(new(OpCode.SetMember, type.TypeId));
-        }
+        public void SetMember(string member) => Emit(new(OpCode.SetMember, IndexString(member)));
+        public void SetMemberS(string member) => Emit(new(OpCode.SetMemberS, IndexString(member)));
 
-        public void SetMemberS(TypeHandle type)
-        {
-            if (type.IsStandard)
-                Emit(new(OpCode.SetMemberST, type.TypeId));
-            else
-                Emit(new(OpCode.SetMemberS, type.TypeId));
-        }
-
-        public void TypeCheck(TypeHandle type)
-        {
-            if (type.IsStandard)
-                Emit(new(OpCode.TypeCheckT, type.TypeId));
-            else
-                Emit(new(OpCode.TypeCheck, type.TypeId));
-        }
-
-        public void TypeCheckF(TypeHandle type)
-        {
-            if (type.IsStandard)
-                Emit(new(OpCode.TypeCheckFT, type.TypeId));
-            else
-                Emit(new(OpCode.TypeCheckF, type.TypeId));
-        }
-
-        public void Type(TypeHandle type)
-        {
-            if (type.IsStandard)
-                Emit(new(OpCode.TypeST, type.TypeId));
-            else
-                Emit(new(OpCode.TypeS, type.TypeId));
-        }
-
-        public void TypeAnno(TypeHandle type)
-        {
-            if (type.IsStandard)
-                Emit(new(OpCode.TypeAnnoT, type.TypeId));
-            else
-                Emit(new(OpCode.TypeAnno, type.TypeId));
-        }
+        public void Type(DyTypeCode code) => Emit(new(OpCode.Type, (int)code));
 
         public void FunPrep(int argCount) => Emit(new(OpCode.FunPrep, argCount));
         public void FunArgIx(int index) => Emit(new(OpCode.FunArgIx, index));
@@ -282,7 +239,8 @@ namespace Dyalect.Compiler
         public void HasField(string field) => Emit(new(OpCode.HasField, IndexString(field)));
         public void Start(Label lab) => Emit(OpCode.Start, lab);
         public void Fail(DyErrorCode code) => Emit(new(OpCode.FailSys, (int)code));
-        public void NewType(int typeId) => Emit(new(OpCode.NewType, typeId));
+        public void NewObj(string ctor) => Emit(new(OpCode.NewObj, IndexString(ctor)));
+        public void NewType(string name) => Emit(new(OpCode.NewType, IndexString(name)));
 
         public void GetIter() => Emit(Op.GetIter);
         public void End() => Emit(Op.End);
@@ -325,5 +283,7 @@ namespace Dyalect.Compiler
         public void Term() => Emit(Op.Term);
         public void IsNull() => Emit(Op.IsNull);
         public void Mut() => Emit(Op.Mut);
+        public void Annot() => Emit(Op.Annot);
+        public void TypeCheck() => Emit(Op.TypeCheck);
     }
 }

@@ -77,7 +77,7 @@ namespace Dyalect.Runtime
         {
             Locals = Array.Empty<DyObject>();
             EvalStack = new(0);
-            Function = new(null, 0, 0, FastList<DyObject[]>.Empty, 0, 0);
+            Function = new(null, 0, 0, FastList<DyObject[]>.Empty, 0);
         }
 
         public Caller(DyNativeFunction function, int offset, EvalStack evalStack, DyObject[] locals)

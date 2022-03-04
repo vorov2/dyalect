@@ -142,7 +142,7 @@ namespace Dyalect.Compiler
 
         private void Build(DRecursiveBlock node, Hints hints, CompilerContext ctx)
         {
-            if (node.Functions[0].IsMemberFunction)
+            if (node.Functions[0].TypeName is not null)
                 AddError(CompilerError.MethodNotRecursive, node.Location);
 
             for (var i = 0; i < node.Functions.Count; i++)
@@ -329,7 +329,7 @@ namespace Dyalect.Compiler
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
         {
-            cw.Type(new(DyType.GetTypeCodeByName(DyTypeNames.Iterator), true));
+            cw.Type(DyTypeCode.Iterator);
             cw.GetMember(Builtins.Range);
             cw.FunPrep(4);
 
@@ -488,7 +488,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                cw.Type(new(DyType.Array, true));
+                cw.Type(DyTypeCode.Array);
                 cw.GetMember(DyTypeNames.Array);
                 cw.FunPrep(node.Elements.Count);
 
@@ -568,7 +568,7 @@ namespace Dyalect.Compiler
                 if (err is CompilerError.None 
                     && (sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
                 {
-                    if (ru!.Unit.ExportList.TryGetValue(str.Value, out var var))
+                    if (ru.Unit.ExportList.TryGetValue(str.Value, out var var))
                     {
                         if ((var.Data & VarFlags.Private) == VarFlags.Private)
                             AddError(CompilerError.PrivateNameAccess, node.Location, str.Value);
@@ -578,11 +578,10 @@ namespace Dyalect.Compiler
                         PopIf(hints);
                         return;
                     }
-                    else if (GetTypeHandle(nm, str.Value, out var handle, out var std) == CompilerError.None)
+                    else if (char.IsUpper(str.Value[0])) //It should be a type, no other way
                     {
                         AddLinePragma(node);
-                        cw.Type(new TypeHandle(handle, std));
-                        PopIf(hints);
+                        PushTypeInfo(ctx, ru, str.Value, node.Location);
                         return;
                     }
                 }
@@ -717,11 +716,11 @@ namespace Dyalect.Compiler
 
             //Tail recursion optimization
             if (!options.NoOptimizations && hints.Has(Last)
-                    && !sv.IsEmpty() && ctx.Function is {IsMemberFunction: false, IsIterator: false} 
-                    && name == ctx.Function.Name && node.Arguments.Count == ctx.Function.Parameters.Count 
-                    && (ctx.FunctionAddress >> 8) == (sv.Address >> 8) 
-                    && (ctx.FunctionAddress & byte.MaxValue) == (counters.Count - (sv.Address & byte.MaxValue)) 
-                    && !ctx.Function.IsVariadic() && !HasLabels(node.Arguments))
+                && !sv.IsEmpty() && ctx.Function is not null && ctx.Function.TypeName is null && !ctx.Function.IsIterator 
+                && name == ctx.Function.Name && node.Arguments.Count == ctx.Function.Parameters.Count 
+                && (ctx.FunctionAddress >> 8) == (sv.Address >> 8) 
+                && (ctx.FunctionAddress & byte.MaxValue) == (counters.Count - (sv.Address & byte.MaxValue)) 
+                && !ctx.Function.IsVariadic() && !HasLabels(node.Arguments))
             {
                 for (var i = 0; i < node.Arguments.Count; i++)
                     Build(node.Arguments[i], newHints.Append(Push), ctx);
@@ -821,7 +820,7 @@ namespace Dyalect.Compiler
 
             if (node.Chunks is not null)
             {
-                cw.Type(new(DyType.String, true));
+                cw.Type(DyTypeCode.String);
                 cw.GetMember(Builtins.Concat);
                 cw.FunPrep(node.Chunks.Count);
 
@@ -1098,7 +1097,7 @@ namespace Dyalect.Compiler
                 }
                 else if (node.NodeType is NodeType.Rebinding)
                 {
-                    if (VariableExists(nm, checkType: false) is CompilerError.None)
+                    if (VariableExists(nm) is CompilerError.None)
                         PopVariable(ctx, nm, e.Location);
                     else
                     {

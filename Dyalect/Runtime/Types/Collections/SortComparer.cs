@@ -15,10 +15,10 @@ namespace Dyalect.Runtime.Types
 
         public int Compare(DyObject? x, DyObject? y)
         {
-            if (x!.TypeId == DyType.Label)
+            if (DyObject.Is(x, DyLabel.Type))
                 x = x.GetTaggedValue();
 
-            if (y!.TypeId == DyType.Label)
+            if (DyObject.Is(y, DyLabel.Type))
                 y = y.GetTaggedValue();
 
             if (fun is not null)
@@ -27,13 +27,13 @@ namespace Dyalect.Runtime.Types
 
                 if (ctx.HasErrors)
                     return 0;
-                
-                return ret.TypeId != DyType.Integer
-                    ? (ret.TypeId == DyType.Float ? (int)ret.GetFloat() : 0)
+
+                return !DyObject.Is(ret, DyInteger.Type)
+                    ? (DyObject.Is(ret, DyFloat.Type) ? (int)ret.GetFloat() : 0)
                     : (int)ret.GetInteger();
             }
 
-            var res = ctx.RuntimeContext.Types[x.TypeId].Gt(ctx, x, y);
+            var res = x.DecType.Gt(ctx, x, y);
 
             if (ctx.HasErrors)
                 return 0;
@@ -41,7 +41,7 @@ namespace Dyalect.Runtime.Types
             if (ReferenceEquals(res, DyBool.True))
                 return 1;
 
-            res = ctx.RuntimeContext.Types[x.TypeId].Eq(ctx, x, y);
+            res = x.DecType.Eq(ctx, x, y);
 
             if (ctx.HasErrors)
                 return 0;

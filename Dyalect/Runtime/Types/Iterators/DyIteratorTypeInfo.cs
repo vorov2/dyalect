@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyIteratorTypeInfo : DyTypeInfo
     {
-        public DyIteratorTypeInfo() : base(DyType.Iterator) { }
+        public DyIteratorTypeInfo() : base(DyTypeCode.Iterator) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -58,7 +58,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId is not DyType.Integer)
+            if (!Is(index, DyInteger.Type))
                 return ctx.InvalidType(index);
 
             var i = (int)index.GetInteger();
@@ -83,10 +83,10 @@ namespace Dyalect.Runtime.Types
 
         private DyObject ToMap(ExecutionContext ctx, DyObject self, DyObject keySelectorObj, DyObject valueSelectorObj)
         {
-            if (keySelectorObj.TypeId is not DyType.Function)
+            if (!Is(keySelectorObj, DyFunction.Type))
                 return ctx.InvalidType(keySelectorObj);
 
-            if (valueSelectorObj.TypeId is not DyType.Function and not DyType.Nil)
+            if (!Is(valueSelectorObj, DyFunction.Type) && !Is(valueSelectorObj, DyNil.Type))
                 return ctx.InvalidType(valueSelectorObj);
 
             var keySelector = (DyFunction)keySelectorObj;
@@ -138,7 +138,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Take(ExecutionContext ctx, DyObject self, DyObject count)
         {
-            if (count.TypeId is not DyType.Integer)
+            if (!Is(count, DyInteger.Type))
                 return ctx.InvalidType(self);
 
             var i = (int)count.GetInteger();
@@ -151,7 +151,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Skip(ExecutionContext ctx, DyObject self, DyObject count)
         {
-            if (count.TypeId is not DyType.Integer)
+            if (!Is(count, DyInteger.Type))
                 return ctx.InvalidType(self);
 
             var i = (int)count.GetInteger();
@@ -178,10 +178,10 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            if (fromElem.TypeId != DyType.Integer)
+            if (!Is(fromElem, DyInteger.Type))
                 return ctx.InvalidType(fromElem);
 
-            if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
+            if (!Is(toElem, DyNil.Type) && !Is(toElem, DyInteger.Type))
                 return ctx.InvalidType(toElem);
 
             var beg = (int)fromElem.GetInteger();
@@ -216,7 +216,7 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            if (funObj.TypeId is not DyType.Function && funObj.TypeId is not DyType.Nil)
+            if (!Is(funObj, DyFunction.Type) && !Is(funObj, DyNil.Type))
                 return ctx.InvalidType(funObj);
 
             var comparer = new SortComparer(funObj as DyFunction, ctx);
@@ -238,7 +238,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject CountBy(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
-            if (funObj.TypeId is not DyType.Function)
+            if (!Is(funObj, DyFunction.Type))
                 return ctx.InvalidType(funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
@@ -252,7 +252,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Map(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
-            if (funObj.TypeId is not DyType.Function)
+            if (!Is(funObj, DyFunction.Type))
                 return ctx.InvalidType(funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
@@ -266,7 +266,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject TakeWhile(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
-            if (funObj.TypeId is not DyType.Function)
+            if (!Is(funObj, DyFunction.Type))
                 return ctx.InvalidType(funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
@@ -281,7 +281,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject SkipWhile(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
-            if (funObj.TypeId is not DyType.Function)
+            if (!Is(funObj, DyFunction.Type))
                 return ctx.InvalidType(funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
@@ -296,7 +296,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Filter(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
-            if (funObj.TypeId is not DyType.Function)
+            if (!Is(funObj, DyFunction.Type))
                 return ctx.InvalidType(funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
@@ -311,7 +311,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject initial, DyObject funObj)
         {
-            if (funObj.TypeId is not DyType.Function)
+            if (!Is(funObj, DyFunction.Type))
                 return ctx.InvalidType(funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
@@ -330,7 +330,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Any(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
-            if (funObj.TypeId is not DyType.Function)
+            if (!Is(funObj, DyFunction.Type))
                 return ctx.InvalidType(funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
@@ -345,7 +345,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject All(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
-            if (funObj.TypeId is not DyType.Function)
+            if (!Is(funObj, DyFunction.Type))
                 return ctx.InvalidType(funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
@@ -361,7 +361,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
         {
             var seq = DyIterator.ToEnumerable(ctx, self);
-            return (DyBool)seq.Any(o => ctx.RuntimeContext.Types[o.TypeId].Eq(ctx, o, item).GetBool());
+            return (DyBool)seq.Any(o => o.DecType.Eq(ctx, o, item).GetBool());
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -394,34 +394,34 @@ namespace Dyalect.Runtime.Types
         private static IEnumerable<DyObject> GenerateRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, bool exclusive)
         {
             var elem = from;
-            var inf = to.TypeId == DyType.Nil;
+            var inf = Is(to, DyNil.Type);
 
             if (inf)
             {
                 while (true)
                 {
                     yield return elem;
-                    elem = ctx.RuntimeContext.Types[elem.TypeId].Add(ctx, elem, step);
+                    elem = elem.DecType.Add(ctx, elem, step);
 
                     if (ctx.HasErrors)
                         yield break;
                 }
             }
 
-            var up = ReferenceEquals(ctx.RuntimeContext.Types[step.TypeId].Gt(ctx, step, DyInteger.Zero),
+            var up = ReferenceEquals(step.DecType.Gt(ctx, step, DyInteger.Zero),
                 DyBool.True);
 
             if (ctx.HasErrors)
                 yield break;
 
-            var types = ctx.RuntimeContext.Types[from.TypeId];
             Func<ExecutionContext, DyObject, DyObject, DyObject> predicate =
-                up && exclusive ? types.Lt : up ? types.Lte : exclusive ? types.Gt : types.Gte;
+                up && exclusive ? from.DecType.Lt : up ? from.DecType.Lte : exclusive
+                    ? from.DecType.Gt : from.DecType.Gte;
 
             while (ReferenceEquals(predicate(ctx, elem, to), DyBool.True))
             {
                 yield return elem;
-                elem = ctx.RuntimeContext.Types[elem.TypeId].Add(ctx, elem, step);
+                elem = elem.DecType.Add(ctx, elem, step);
 
                 if (ctx.HasErrors)
                     yield break;
@@ -435,7 +435,7 @@ namespace Dyalect.Runtime.Types
 
         private static IEnumerable<DyObject> Repeater(ExecutionContext ctx, DyObject val)
         {
-            if (val.TypeId == DyType.Iterator)
+            if (!Is(val, DyIterator.Type))
                 val = ((DyIterator)val).GetIteratorFunction();
 
             if (val is DyFunction func)

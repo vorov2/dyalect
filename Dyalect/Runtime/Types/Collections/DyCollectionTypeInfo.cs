@@ -1,22 +1,21 @@
 ﻿using Dyalect.Debug;
-using System;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     internal abstract class DyCollectionTypeInfo : DyTypeInfo
     {
-        protected DyCollectionTypeInfo(int typeId) : base(typeId) { }
+        protected DyCollectionTypeInfo(DyTypeCode typeCode) : base(typeCode) { }
 
         protected virtual DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
         {
             var coll = (DyCollection)self;
             var arr = coll.GetValues();
 
-            if (fromElem.TypeId != DyType.Integer)
+            if (!Is(fromElem, DyInteger.Type))
                 return ctx.InvalidType(fromElem);
 
-            if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
+            if (!Is(toElem, DyNil.Type) && !Is(toElem, DyInteger.Type))
                 return ctx.InvalidType(toElem);
 
             var beg = (int)fromElem.GetInteger();

@@ -13,7 +13,7 @@ namespace Dyalect.Runtime.Types
 
         internal DyTuple Fields { get; }
 
-        internal DyClass(int typeCode, string ctor, bool privateCtor, DyTuple privates, Unit unit) : base(typeCode) =>
+        internal DyClass(DyTypeInfo type, string ctor, bool privateCtor, DyTuple privates, Unit unit) : base(type) =>
             (Constructor, Fields, this.privateCtor, DeclaringUnit) = (ctor, privates, privateCtor, unit);
 
         public override object ToObject() => this;
@@ -24,13 +24,13 @@ namespace Dyalect.Runtime.Types
         public override int GetHashCode() => HashCode.Combine(Constructor, Fields);
 
         public override bool Equals(DyObject? other) =>
-            other is not null && TypeId == other.TypeId && other is DyClass t 
+            other is not null && Is(DecType, other) && other is DyClass t 
                 && t.Constructor == Constructor && t.Fields.Equals(Fields);
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Fields.HasItem(name, ctx);
 
         protected internal override DyObject Unbox() => Fields;
 
-        public override DyObject Clone() => new DyClass(TypeId, Constructor, privateCtor, Fields, DeclaringUnit);
+        public override DyObject Clone() => new DyClass(DecType, Constructor, privateCtor, Fields, DeclaringUnit);
     }
 }

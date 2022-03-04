@@ -57,11 +57,9 @@
         NewFunV,    //0
         NewIter,    //0
         SetMember,  //-2
-        SetMemberT, //-2
         GetMember,  //-1
         HasMember,  //-1
         SetMemberS, //-2
-        SetMemberST,//-2
         Get,        //-1
         Set,        //-3
         RunMod,     //+1
@@ -81,21 +79,16 @@
         FunCall,    //0
         NewTuple,   //Dynamic
         HasField,   //0
-        TypeCheck,  //0
-        TypeCheckT, //0
-        TypeCheckF, //0
-        TypeCheckFT,//0
+        TypeCheck,  //-2
         Start,      //0
         End,        //0
-        NewType,    //0
-        TypeS,      //1
-        TypeST,     //1
+        NewObj,     //1
+        NewType,    //1
         CtorCheck,  //0
         IsNull,     //0
         GetIter,    //0
         Mut,        //0
-        TypeAnno,   //0
-        TypeAnnoT,  //0
+        Annot,      //0
         FunAttr,    //0
     }
 }

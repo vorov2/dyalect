@@ -1,12 +1,10 @@
-﻿using Dyalect.Debug;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     public class DyDictionary : DyEnumerable
     {
+        internal static readonly DyDictionaryTypeInfo Type = new();
         internal readonly Dictionary<DyObject,DyObject> Map;
 
         public override int Count => Map.Count;
@@ -17,10 +15,10 @@ namespace Dyalect.Runtime.Types
             set => Map[key] = value;
         }
 
-        internal DyDictionary() : base(DyType.Dictionary) =>
+        internal DyDictionary() : base(Type) =>
             Map = new Dictionary<DyObject, DyObject>();
 
-        internal DyDictionary(Dictionary<DyObject, DyObject> dict) : base(DyType.Dictionary) =>
+        internal DyDictionary(Dictionary<DyObject, DyObject> dict) : base(Type) =>
             Map = dict;
 
         public void Add(DyObject key, DyObject value)

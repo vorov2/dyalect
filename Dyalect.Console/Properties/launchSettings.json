@@ -14,6 +14,11 @@
     "Debug": {
       "commandName": "Project",
       "commandLineArgs": "C:\\temp\\dyalect\\main.dy"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "environmentVariables": {},
+      "distributionName": ""
     }
   }
 }

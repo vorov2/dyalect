@@ -4,9 +4,10 @@ namespace Dyalect.Runtime.Types
 {
     public class DySet : DyEnumerable
     {
+        internal static readonly DySetTypeInfo Type = new();
         internal readonly HashSet<DyObject> Set;
 
-        public DySet() : base(DyType.Set) => Set = new();
+        public DySet() : base(Type) => Set = new();
 
         public override IEnumerator<DyObject> GetEnumerator() => new DySetEnumerator(this);
 

@@ -4,10 +4,7 @@ namespace Dyalect.Compiler
 {
     internal sealed class TypeInfo
     {
-        public TypeInfo(int handle, DTypeDeclaration dec, UnitInfo unit) =>
-            (TypeId, Declaration, Unit) = (handle, dec, unit);
-
-        public int TypeId { get; }
+        public TypeInfo(DTypeDeclaration dec, UnitInfo unit) => (Declaration, Unit) = (dec, unit);
 
         public UnitInfo Unit { get; }
 

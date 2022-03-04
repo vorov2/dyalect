@@ -6,15 +6,16 @@ namespace Dyalect.Runtime.Types
 {
     public class DyTuple : DyCollection
     {
+        internal static readonly DyTupleTypeInfo Type = new();
         internal static readonly DyTuple Empty = new(Array.Empty<DyObject>());
         internal readonly DyObject[] Values;
 
         public override int Count => Values.Length;
 
-        public DyTuple(DyObject[] values) : base(DyType.Tuple) =>
+        public DyTuple(DyObject[] values) : base(Type) =>
             Values = values ?? throw new DyException("Unable to create a tuple with no values.");
 
-        protected DyTuple(DyObject[] values, int typeId) : base(typeId) =>
+        protected DyTuple(DyObject[] values, int typeId) : base(Type) =>
             Values = values ?? throw new DyException("Unable to create a tuple with no values.");
 
         public static DyTuple Create(params DyObject[] args) => new(args);
@@ -48,10 +49,10 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId is DyType.Integer)
+            if (Is(index, DyInteger.Type))
                 return GetItem((int)index.GetInteger(), ctx);
 
-            if (index.TypeId is not DyType.String and not DyType.Char)
+            if (!Is(index, DyString.Type) && !Is(index, DyChar.Type))
                 return ctx.InvalidType(index);
             
             return TryGetItem(index.GetString(), ctx, out var item)
@@ -60,7 +61,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
-            if (index.TypeId is DyType.String)
+            if (Is(index, DyString.Type))
             {
                 var i = GetOrdinal(index.GetString());
 
@@ -88,13 +89,13 @@ namespace Dyalect.Runtime.Types
         public virtual bool IsReadOnly(int index) => Values[index] is DyLabel lab && !lab.Mutable;
 
         protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
-            Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
+            Is(Values[index], DyLabel.Type) ? Values[index].GetTaggedValue() : Values[index];
 
         internal virtual string GetKey(int index) => Values[index].GetLabel()!;
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
         {
-            if (Values[index].TypeId == DyType.Label)
+            if (Is(Values[index], DyLabel.Type))
             {
                 var lab = (DyLabel)Values[index];
 
@@ -104,7 +105,7 @@ namespace Dyalect.Runtime.Types
                     return;
                 }
 
-                if (lab.TypeAnnotation is not null && lab.TypeAnnotation.Value != value.TypeId)
+                if (lab.TypeAnnotation is not null && !Is(lab.TypeAnnotation, value))
                 {
                     ctx.InvalidType(value);
                     return;
@@ -142,7 +143,7 @@ namespace Dyalect.Runtime.Types
         internal override DyObject[] GetValues()
         {
             for (var i = 0; i < Count; i++)
-                if (Values[i].TypeId == DyType.Label)
+                if (Is(Values[i], DyLabel.Type))
                     return ConvertToPlainValues();
 
             return Values;

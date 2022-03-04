@@ -52,9 +52,9 @@ namespace Dyalect.Linker
             foreach (var a in (DyTuple)values)
             {
                 if (!fst)
-                    Console.Write(separator.TypeId == DyType.String ? separator.GetString() : separator.ToString(ctx).ToString());
+                    Console.Write(DyObject.Is(separator, DyString.Type) ? separator.GetString() : separator.ToString(ctx).ToString());
 
-                if (a.TypeId == DyType.String)
+                if (DyObject.Is(a, DyString.Type))
                     Console.Write(a.GetString());
                 else
                     Console.Write(a.ToString(ctx));
@@ -124,7 +124,7 @@ namespace Dyalect.Linker
         {
             int iseed;
 
-            if (seed.TypeId != DyType.Nil)
+            if (!DyObject.Is(seed, DyNil.Type))
                 iseed = (int)seed.GetInteger();
             else
             {
@@ -177,7 +177,7 @@ namespace Dyalect.Linker
             }
 
             if (x is DyObject xa && y is DyObject ba)
-                return ctx.RuntimeContext.Types[xa.TypeId].Eq(ctx, xa, ba).GetBool();
+                return xa.DecType.Eq(ctx, xa, ba).GetBool();
 
             return Equals(x, y);
         }
@@ -185,7 +185,7 @@ namespace Dyalect.Linker
         [Function("sqrt")]
         public DyObject Sqrt(ExecutionContext ctx, DyObject x)
         {
-            if (x.TypeId != DyType.Float && x.TypeId != DyType.Integer)
+            if (!DyObject.Is(x, DyFloat.Type) && !DyObject.Is(x, DyInteger.Type))
                 return ctx.InvalidType(x);
 
             return new DyFloat(Math.Sqrt(x.GetFloat()));
@@ -194,10 +194,10 @@ namespace Dyalect.Linker
         [Function("pow")]
         public DyObject Pow(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.TypeId is not DyType.Float and not DyType.Integer)
+            if (!DyObject.Is(x, DyFloat.Type) && !DyObject.Is(x, DyInteger.Type))
                 return ctx.InvalidType(x);
 
-            if (y.TypeId is not DyType.Float and not DyType.Integer)
+            if (!DyObject.Is(y, DyFloat.Type) && !DyObject.Is(y, DyInteger.Type))
                 return ctx.InvalidType(y);
 
             return new DyFloat(Math.Pow(x.GetFloat(), y.GetFloat()));
@@ -206,7 +206,7 @@ namespace Dyalect.Linker
         [Function("min")]
         public DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.GetTypeInfo(ctx).Lt(ctx, x, y).GetBool())
+            if (x.DecType.Lt(ctx, x, y).GetBool())
                 return x;
             else
                 return y;
@@ -215,7 +215,7 @@ namespace Dyalect.Linker
         [Function("max")]
         public DyObject Max(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.GetTypeInfo(ctx).Gt(ctx, x, y).GetBool())
+            if (x.DecType.Gt(ctx, x, y).GetBool())
                 return x;
             else
                 return y;
@@ -224,9 +224,9 @@ namespace Dyalect.Linker
         [Function("abs")]
         public DyObject Abs(ExecutionContext ctx, DyObject value)
         {
-            if (value.TypeId == DyType.Integer)
+            if (DyObject.Is(value, DyInteger.Type))
                 return new DyInteger(Math.Abs(value.GetInteger()));
-            else if (value.TypeId == DyType.Float)
+            else if (DyObject.Is(value, DyFloat.Type))
                 return new DyFloat(Math.Abs(value.GetFloat()));
             else
                 return ctx.InvalidType(value);
@@ -235,9 +235,9 @@ namespace Dyalect.Linker
         [Function("round")]
         public DyObject Round(ExecutionContext ctx, DyObject number, [Default(2)]DyObject digits)
         {
-            if (number.TypeId != DyType.Float)
+            if (!DyObject.Is(number, DyFloat.Type))
                 return ctx.InvalidType(number);
-            else if (digits.TypeId != DyType.Integer)
+            else if (!DyObject.Is(digits, DyInteger.Type))
                 return ctx.InvalidType(digits);
 
             return new DyFloat(Math.Round(number.GetFloat(), (int)digits.GetInteger()));
@@ -249,7 +249,7 @@ namespace Dyalect.Linker
             if (ReferenceEquals(x, DyInteger.Zero)) 
                 return DyInteger.Zero;
 
-            if (x.GetTypeInfo(ctx).Lt(ctx, x, DyInteger.Zero).GetBool())
+            if (x.DecType.Lt(ctx, x, DyInteger.Zero).GetBool())
                 return DyInteger.MinusOne;
             
             return DyInteger.One;
@@ -258,7 +258,7 @@ namespace Dyalect.Linker
         [Function("parse")]
         public DyObject Parse(ExecutionContext ctx, DyObject expression)
         {
-            if (expression.TypeId != DyType.String)
+            if (!DyObject.Is(expression, DyString.Type))
                 return ctx.InvalidType(expression);
 
             try

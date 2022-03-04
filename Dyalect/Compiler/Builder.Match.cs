@@ -126,7 +126,8 @@ namespace Dyalect.Compiler
                     BuildAs((DAsPattern)node, hints, ctx);
                     break;
                 case NodeType.TypeTestPattern:
-                    cw.TypeCheck(GetTypeHandle(((DTypeTestPattern)node).TypeName, node.Location));
+                    PushTypeInfo(ctx, ((DTypeTestPattern)node).TypeName, node.Location);
+                    cw.TypeCheck();
                     break;
                 case NodeType.AndPattern:
                     BuildAnd((DAndPattern)node, hints, ctx);
@@ -200,7 +201,8 @@ namespace Dyalect.Compiler
             if (node.TypeName is not null)
             {
                 cw.Dup();
-                cw.TypeCheck(GetTypeHandle(node.TypeName, node.Location));
+                PushTypeInfo(ctx, node.TypeName, node.Location);
+                cw.TypeCheck();
                 cw.Brfalse(bad);
             }
 
@@ -259,7 +261,7 @@ namespace Dyalect.Compiler
 
         private void BuildName(DNamePattern node, Hints hints, CompilerContext ctx)
         {
-            if (hints.Has(Rebind) && VariableExists(node.Name, checkType: false) is CompilerError.None)
+            if (hints.Has(Rebind) && VariableExists(node.Name) is CompilerError.None)
                 PopVariable(ctx, node.Name, node.Location);
             else if (!hints.Has(OpenMatch) && TryGetLocalVariable(node.Name, out var sv))
                 cw.PopVar(sv.Address);
@@ -521,9 +523,7 @@ namespace Dyalect.Compiler
 
         private void PreinitName(DNamePattern node, Hints hints)
         {
-            var err = GetTypeHandle(null, node.Name, out _, out _);
-
-            if (err != CompilerError.None)
+            if (!char.IsUpper(node.Name[0]))
             {
                 var found = TryGetLocalVariable(node.Name, out var sv);
                 int sva;
@@ -575,7 +575,7 @@ namespace Dyalect.Compiler
                 var e = match.Entries[i];
 
                 if (e.Guard is null && e.Pattern is DNamePattern name)
-                    name.IsConstructor = IsTypeExists(name.Name);
+                    name.IsConstructor = char.IsUpper(name.Name[0]);
 
                 if (e.Guard is null)
                 {

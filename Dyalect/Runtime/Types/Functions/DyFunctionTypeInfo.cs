@@ -4,7 +4,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
     {
-        public DyFunctionTypeInfo() : base(DyType.Function) { }
+        public DyFunctionTypeInfo() : base(DyTypeCode.Function) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
             new DyString(arg.ToString());
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
+            Is(left, right) && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
 
         private DyObject GetName(ExecutionContext _, DyObject self) => new DyString(((DyFunction)self).FunctionName);
 

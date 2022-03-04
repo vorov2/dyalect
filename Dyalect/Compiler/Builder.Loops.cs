@@ -80,8 +80,7 @@ namespace Dyalect.Compiler
 
             var inc = -1;
 
-            if (node.Pattern.NodeType == NodeType.NamePattern
-                && GetTypeHandle(null, node.Pattern.GetName()!, out var _, out var _) != CompilerError.None)
+            if (node.Pattern.NodeType == NodeType.NamePattern && !char.IsUpper(node.Pattern.GetName()[0]!))
                 inc = AddVariable(node.Pattern.GetName()!, node.Pattern.Location, VarFlags.None);
 
             var sys = AddVariable();

@@ -4,7 +4,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyBoolTypeInfo : DyTypeInfo
     {
-        public DyBoolTypeInfo() : base(DyType.Bool) { }
+        public DyBoolTypeInfo() : base(DyTypeCode.Bool) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;

@@ -6,7 +6,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyDictionaryTypeInfo : DyTypeInfo
     {
-        public DyDictionaryTypeInfo() : base(DyType.Dictionary) { }
+        public DyDictionaryTypeInfo() : base(DyTypeCode.Dictionary) { }
 
         public override string TypeName => DyTypeNames.Dictionary;
 
@@ -83,7 +83,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
-            if (funObj.TypeId is not DyType.Function and not DyType.Nil)
+            if (!Is(funObj, DyFunction.Type) && !Is(funObj, DyNil.Type))
                 return ctx.InvalidType(funObj);
 
             var fun = funObj as DyFunction;
@@ -111,7 +111,7 @@ namespace Dyalect.Runtime.Types
 
             foreach (var (key, value) in map)
             {
-                if (key.TypeId is DyType.String)
+                if (Is(key, DyString.Type))
                     xs.Add(new DyLabel(key.GetString(), value));
             }
 

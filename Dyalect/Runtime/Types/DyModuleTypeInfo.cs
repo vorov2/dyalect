@@ -5,7 +5,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyModuleTypeInfo : DyTypeInfo
     {
-        public DyModuleTypeInfo() : base(DyType.Module) { }
+        public DyModuleTypeInfo() : base(DyTypeCode.Module) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not

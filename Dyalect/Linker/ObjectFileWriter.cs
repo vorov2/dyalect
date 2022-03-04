@@ -21,7 +21,6 @@ namespace Dyalect.Linker
             WriteHeader(writer, unit);
             WriteReferences(writer, unit.References);
             writer.Write(unit.UnitIds.Count);
-            WriteTypeDescriptors(writer, unit.Types);
             WriteIndices(writer, unit);
             WriteOps(writer, unit.Ops);
             WriteSymbols(writer, unit.Symbols ?? DebugInfo.Default);
@@ -77,13 +76,13 @@ namespace Dyalect.Linker
 
             foreach (var o in table)
             {
-                if (o.TypeId == DyType.String)
+                if (DyObject.Is(o, DyString.Type))
                     writer.Write(o.GetString());
-                else if (o.TypeId == DyType.Integer)
+                else if (DyObject.Is(o, DyInteger.Type))
                     writer.Write(o.GetInteger());
-                else if (o.TypeId == DyType.Float)
+                else if (DyObject.Is(o, DyFloat.Type))
                     writer.Write(o.GetFloat());
-                else if (o.TypeId == DyType.Char)
+                else if (DyObject.Is(o, DyChar.Type))
                     writer.Write(o.GetChar());
             }
         }
@@ -137,17 +136,6 @@ namespace Dyalect.Linker
                 writer.Write(r.SourceLocation.Line);
                 writer.Write(r.SourceLocation.Column);
                 writer.Write(r.SourceFileName ?? "");
-            }
-        }
-
-        private static void WriteTypeDescriptors(BinaryWriter writer, List<TypeDescriptor> types)
-        {
-            writer.Write(types.Count);
-
-            foreach (var t in types)
-            {
-                writer.Write(t.Name);
-                writer.Write(t.Id);
             }
         }
 

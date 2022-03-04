@@ -6,7 +6,7 @@
 
         public override string TypeName { get; }
 
-        public DyClassInfo(int typeCode, string typeName) : base(typeCode)
+        public DyClassInfo(string typeName) : base(DyTypeCode.Class)
         {
             TypeName = typeName;
             privateCons = !string.IsNullOrEmpty(typeName) && typeName.Length > 0 && char.IsLower(typeName[0]);
@@ -20,9 +20,9 @@
         {
             var self = (DyClass)left;
 
-            if (self.TypeId == right.TypeId && right is DyClass t && t.Constructor == self.Constructor)
+            if (Is(self, right) && right is DyClass t && t.Constructor == self.Constructor)
             {
-                var res = ctx.RuntimeContext.Types[self.Fields.TypeId].Eq(ctx, self.Fields, t.Fields);
+                var res = self.Fields.DecType.Eq(ctx, self.Fields, t.Fields);
 
                 if (ctx.HasErrors)
                     return DyNil.Instance;

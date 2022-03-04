@@ -4,6 +4,8 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyInteger : DyObject
     {
+        internal static readonly DyIntegerTypeInfo Type = new();
+
         public static readonly DyInteger Zero = new(0L);
         public static readonly DyInteger MinusOne = new(-1L);
         public static readonly DyInteger One = new(1L);
@@ -14,7 +16,7 @@ namespace Dyalect.Runtime.Types
 
         private readonly long value;
 
-        public DyInteger(long value) : base(DyType.Integer) =>
+        public DyInteger(long value) : base(Type) =>
             this.value = value;
 
         public static DyInteger Get(long i) =>
@@ -46,7 +48,7 @@ namespace Dyalect.Runtime.Types
 
         internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write(TypeId);
+            writer.Write((int)Type.TypeCode);
             writer.Write(value);
         }
     }

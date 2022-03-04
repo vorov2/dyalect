@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
@@ -10,7 +9,7 @@ namespace Dyalect.Runtime.Types
 
         public virtual int Count { get; protected set; }
 
-        protected DyEnumerable(int typeId) : base(typeId) { }
+        protected DyEnumerable(DyTypeInfo type) : base(type) { }
 
         public abstract IEnumerator<DyObject> GetEnumerator();
 

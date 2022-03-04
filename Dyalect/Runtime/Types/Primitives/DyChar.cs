@@ -4,12 +4,14 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyChar : DyObject
     {
+        internal static readonly DyCharTypeInfo Type = new();
+
         public static readonly DyChar Empty = new('\0');
         public static readonly DyChar Max = new(char.MaxValue);
         public static readonly DyChar Min = new(char.MinValue);
         private readonly char value;
 
-        public DyChar(char value) : base(DyType.Char) => this.value = value;
+        public DyChar(char value) : base(Type) => this.value = value;
 
         public override object ToObject() => GetChar();
 
@@ -23,7 +25,7 @@ namespace Dyalect.Runtime.Types
 
         internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write(TypeId);
+            writer.Write((int)Type.TypeCode);
             writer.Write(value);
         }
 
