@@ -15,23 +15,23 @@ namespace Dyalect.Compiler
         private readonly bool iterative; //Compilation is performed in interactive mode
         private readonly BuilderOptions options; //Build options
         private readonly CodeWriter cw; //Helper for byte code emit
-        private readonly DyLinker linker; //Linker to link referenced modules
         private readonly Scope globalScope; //Global scope (for variables) of the current unit
         private readonly Unit unit; //Unit (file) that is beign compiler
         private Scope currentScope; //Current lexical scope
         private readonly Label programEnd; //Label that marks an end of program
+        private readonly FileLookup lookup; //Search referenced modules
         private readonly Dictionary<string, UnitInfo> referencedUnits;
 
         private readonly Dictionary<string, TypeInfo> types;
         private readonly static DImport defaultInclude = new(default) { ModuleName = "lang" };
 
-        public Builder(BuilderOptions options, DyLinker linker)
+        public Builder(BuilderOptions options, FileLookup lookup)
         {
             referencedUnits = new();
             types = new();
 
             this.options = options;
-            this.linker = linker;
+            this.lookup = lookup;
             counters = new();
             pdb = new();
             isDebug = options.Debug;

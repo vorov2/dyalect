@@ -600,7 +600,7 @@ namespace Dyalect.Compiler
             if (localPath is not null && localPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
             {
                 var idx = localPath.LastIndexOf('/');
-                
+
                 if (idx != -1)
                 {
                     dll = localPath[(idx + 1)..];

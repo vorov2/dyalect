@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Dyalect.Linker
+namespace Dyalect.Compiler
 {
     public sealed class FileLookup
     {

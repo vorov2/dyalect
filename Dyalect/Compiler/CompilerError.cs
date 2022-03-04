@@ -100,6 +100,19 @@
 
         // = 248,
 
-        MethodNotRecursive = 249
+        MethodNotRecursive = 249,
+
+
+
+        //Linking
+        UnableLoadAssembly = 401,
+
+        DuplicateModuleName = 402,
+
+        AssemblyModuleNotFound = 403,
+
+        AssemblyModuleLoadError = 404,
+
+        InvalidAssemblyModule = 405
     }
 }
