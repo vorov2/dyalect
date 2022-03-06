@@ -12,11 +12,15 @@ namespace Dyalect.Debug
 
     internal sealed class StaticInteger : StaticType
     {
+        public static readonly StaticInteger Zero = new(0);
+
         private readonly long value;
 
         public StaticInteger(long value) => this.value = value;
 
         public override DyObject ToRuntimeType(RuntimeContext ctx) => ctx.Integer.Get(value);
+
+        public override string ToString() => value.ToString(CI.NumberFormat);
     }
 
     internal sealed class StaticFloat : StaticType
@@ -26,15 +30,21 @@ namespace Dyalect.Debug
         public StaticFloat(double value) => this.value = value;
 
         public override DyObject ToRuntimeType(RuntimeContext ctx) => new DyFloat(ctx.Float, value);
+
+        public override string ToString() => value.ToString(CI.NumberFormat);
     }
 
     internal sealed class StaticChar : StaticType
     {
+        public static readonly StaticChar WhiteSpace = new(' ');
+
         private readonly char value;
 
         public StaticChar(char value) => this.value = value;
 
         public override DyObject ToRuntimeType(RuntimeContext ctx) => new DyChar(ctx.Char, value);
+
+        public override string ToString() => value.ToString();
     }
 
     internal sealed class StaticString : StaticType
@@ -43,16 +53,23 @@ namespace Dyalect.Debug
 
         public StaticString(string value) => this.value = value;
 
-        public override DyObject ToRuntimeType(RuntimeContext ctx) => new DyString(ctx.String, value);
+        public override DyObject ToRuntimeType(RuntimeContext ctx) => new DyString(ctx.String, ctx.Char, value);
+
+        public override string ToString() => value;
     }
 
     internal sealed class StaticBool : StaticType
     {
+        public static readonly StaticBool True = new(true);
+        public static readonly StaticBool False = new(false);
+
         private readonly bool value;
 
         public StaticBool(bool value) => this.value = value;
 
         public override DyObject ToRuntimeType(RuntimeContext ctx) => value ? ctx.Bool.True : ctx.Bool.False;
+
+        public override string ToString() => value ? "true" : "false";
     }
 
     internal sealed class StaticNil : StaticType
@@ -62,5 +79,7 @@ namespace Dyalect.Debug
         private StaticNil() { }
 
         public override DyObject ToRuntimeType(RuntimeContext ctx) => ctx.Nil.Instance;
+
+        public override string ToString() => "nil";
     }
 }

@@ -4,10 +4,9 @@ namespace Dyalect.Runtime.Types
 {
     public class DySet : DyEnumerable
     {
-        internal static readonly DySetTypeInfo Type = new();
         internal readonly HashSet<DyObject> Set;
 
-        public DySet() : base(Type) => Set = new();
+        public DySet(DyTypeInfo typeInfo) : base(typeInfo) => Set = new();
 
         public override IEnumerator<DyObject> GetEnumerator() => new DySetEnumerator(this);
 
@@ -56,9 +55,9 @@ namespace Dyalect.Runtime.Types
             return arr;
         }
         
-        public DyArray ToArray() => new(InternalToArray());
+        public DyArray ToArray(ExecutionContext ctx) => new(ctx.RuntimeContext.Array, InternalToArray());
 
-        public DyTuple ToTuple() => new(InternalToArray());
+        public DyTuple ToTuple(ExecutionContext ctx) => new(ctx.RuntimeContext.Tuple, InternalToArray());
 
         public void IntersectWith(ExecutionContext ctx, DyObject other)
         {

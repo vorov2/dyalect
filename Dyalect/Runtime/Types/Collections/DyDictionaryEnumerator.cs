@@ -8,9 +8,11 @@ namespace Dyalect.Runtime.Types
         private readonly DyDictionary obj;
         private readonly IEnumerator enumerator;
         private readonly int version;
+        private readonly RuntimeContext rtx;
 
-        public DyDictionaryEnumerator(DyDictionary obj)
+        public DyDictionaryEnumerator(RuntimeContext rtx, DyDictionary obj)
         {
+            this.rtx = rtx;
             this.obj = obj;
             version = obj.Version;
             enumerator = obj.Map.GetEnumerator();
@@ -21,9 +23,9 @@ namespace Dyalect.Runtime.Types
             get
             {
                 var obj = (KeyValuePair<DyObject, DyObject>)enumerator.Current;
-                return new DyTuple(new DyObject[] {
-                        new DyLabel("key", obj.Key),
-                        new DyLabel("value", obj.Value)
+                return new DyTuple(rtx.Tuple, new DyObject[] {
+                        new DyLabel(rtx.Label, "key", obj.Key),
+                        new DyLabel(rtx.Label, "value", obj.Value)
                         });
             }
         }

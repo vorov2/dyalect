@@ -8,8 +8,6 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyFunction : DyObject
     {
-        internal static readonly DyFunctionTypeInfo Type = new();
-
         internal const string DefaultName = "<func>";
         internal DyObject? Self;
         internal Par[] Parameters;
@@ -18,7 +16,7 @@ namespace Dyalect.Runtime.Types
 
         internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
 
-        protected DyFunction(Par[] pars, int varArgIndex) : base(Type) =>
+        protected DyFunction(DyTypeInfo typeInfo, Par[] pars, int varArgIndex) : base(typeInfo) =>
             (Parameters, VarArgIndex) = (pars, varArgIndex);
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
@@ -36,7 +34,7 @@ namespace Dyalect.Runtime.Types
             var newArgs = PrepareArguments(ctx, args);
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return ctx.RuntimeContext.Nil.Instance;
 
             return InternalCall(ctx, newArgs);
         }
@@ -66,17 +64,17 @@ namespace Dyalect.Runtime.Types
             if (VarArgIndex > -1)
             {
                 var o = newLocals[VarArgIndex];
-                if (Is(o, DyNil.Type))
-                    newLocals[VarArgIndex] = DyTuple.Empty;
-                else if (Is(o, DyArray.Type))
+                if (o.DecType.TypeCode == DyTypeCode.Nil)
+                    newLocals[VarArgIndex] = ctx.RuntimeContext.Tuple.Empty;
+                else if (o.DecType.TypeCode == DyTypeCode.Array)
                 {
                     var arr = (DyArray)o;
                     arr.Compact();
-                    newLocals[VarArgIndex] = new DyTuple(arr.Values);
+                    newLocals[VarArgIndex] = new DyTuple(ctx.RuntimeContext.Tuple, arr.Values);
                 }
-                else if (!Is(o, DyTuple.Type))
+                else if (o.DecType.TypeCode != DyTypeCode.Tuple)
                 {
-                    newLocals[VarArgIndex] = DyTuple.Create(o);
+                    newLocals[VarArgIndex] = DyTuple.Create(ctx, o);
                 }
             }
 
@@ -117,13 +115,13 @@ namespace Dyalect.Runtime.Types
                 if (p.IsVarArg)
                     sb.Append("...");
 
-                if (p.Value != null)
+                if (p.Value is not null)
                 {
                     sb.Append(" = ");
-                    if (Is(p.Value, DyString.Type))
-                        sb.Append(StringUtil.Escape(p.Value.ToString()));
-                    else if (Is(p.Value, DyChar.Type))
-                        sb.Append(StringUtil.Escape(p.Value.ToString(), "'"));
+                    if (p.Value is StaticString)
+                        sb.Append(StringUtil.Escape(p.Value.ToString()!));
+                    else if (p.Value is StaticChar)
+                        sb.Append(StringUtil.Escape(p.Value.ToString()!, "'"));
                     else
                         sb.Append(p.Value.ToString());
                 }
@@ -146,7 +144,7 @@ namespace Dyalect.Runtime.Types
 
         internal abstract bool Equals(DyFunction func);
 
-        public override int GetHashCode() => HashCode.Combine((int)Type.TypeCode, FunctionName ?? DefaultName, Parameters, Self);
+        public override int GetHashCode() => HashCode.Combine((int)DecType.TypeCode, FunctionName ?? DefaultName, Parameters, Self);
 
         internal virtual void Reset(ExecutionContext ctx) { }
     }

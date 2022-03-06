@@ -4,7 +4,7 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyReflectionWrapper : DyWrapper
     {
-        public DyReflectionWrapper(object instance) : base(Convert(instance)) { }
+        public DyReflectionWrapper(DyWrapperTypeInfo typeInfo, object instance) : base(typeInfo, Convert(instance)) { }
 
         private static Dictionary<string, DyObject> Convert(object instance)
         {

@@ -6,9 +6,9 @@ namespace Dyalect.Runtime.Types
     {
         private readonly IEnumerable<DyObject> seq;
 
-        public DyForeignIterator(IEnumerable<DyObject> seq) => this.seq = seq;
+        public DyForeignIterator(DyTypeInfo typeInfo, IEnumerable<DyObject> seq) : base(typeInfo) => this.seq = seq;
 
-        public override DyFunction GetIteratorFunction() => new DyIteratorFunction(seq);
+        public override DyFunction GetIteratorFunction() => new DyIteratorFunction(DecType, seq);
 
         public override object ToObject() => seq;
 

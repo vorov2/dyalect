@@ -6,7 +6,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DySetTypeInfo : DyTypeInfo
     {
-        public DySetTypeInfo() : base(DyTypeCode.Set) { }
+        public DySetTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Set) { }
 
         public override string TypeName => DyTypeNames.Set;
 
@@ -17,13 +17,13 @@ namespace Dyalect.Runtime.Types
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var self = (DySet)left;
-            return (DyBool)self.Equals(ctx, right);
+            return self.Equals(ctx, right) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var self = (DySet)arg;
-            return DyInteger.Get(self.Count);
+            return ctx.RuntimeContext.Integer.Get(self.Count);
         }
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
@@ -40,87 +40,87 @@ namespace Dyalect.Runtime.Types
                 sb.Append(v.ToString(ctx));
 
                 if (ctx.HasErrors)
-                    return DyNil.Instance;
+                    return ctx.RuntimeContext.Nil.Instance;
             }
 
             sb.Append(')');
-            return (DyString)sb.ToString();
+            return new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, sb.ToString());
         }
 
-        private DyObject AddItem(ExecutionContext _, DyObject self, DyObject value)
+        private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return (DyBool)set.Add(value);
+            return set.Add(value) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
         }
         
-        private DyObject Remove(ExecutionContext _, DyObject self, DyObject value)
+        private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return (DyBool)set.Remove(value);
+            return set.Remove(value) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
         }
         
-        private DyObject Contains(ExecutionContext _, DyObject self, DyObject value)
+        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return (DyBool)set.Contains(value);
+            return set.Contains(value) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
         }
         
-        private DyObject Clear(ExecutionContext _, DyObject self)
+        private DyObject Clear(ExecutionContext ctx, DyObject self)
         {
             var set = (DySet)self;
             set.Clear();
-            return DyNil.Instance;
+            return ctx.RuntimeContext.Nil.Instance;
         }
         
-        private DyObject ToArray(ExecutionContext _, DyObject self)
+        private DyObject ToArray(ExecutionContext ctx, DyObject self)
         {
             var set = (DySet)self;
-            return set.ToArray();
+            return set.ToArray(ctx);
         }
         
-        private DyObject ToTuple(ExecutionContext _, DyObject self)
+        private DyObject ToTuple(ExecutionContext ctx, DyObject self)
         {
             var set = (DySet)self;
-            return set.ToTuple();
+            return set.ToTuple(ctx);
         }
         
         private DyObject IntersectWith(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
             set.IntersectWith(ctx, value);
-            return DyNil.Instance;
+            return ctx.RuntimeContext.Nil.Instance;
         }
         
         private DyObject UnionWith(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
             set.UnionWith(ctx, value);
-            return DyNil.Instance;
+            return ctx.RuntimeContext.Nil.Instance;
         }
         
         private DyObject ExceptWith(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
             set.ExceptWith(ctx, value);
-            return DyNil.Instance;
+            return ctx.RuntimeContext.Nil.Instance;
         }
         
         private DyObject Overlaps(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return (DyBool)set.Overlaps(ctx, value);
+            return set.Overlaps(ctx, value) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
         }
 
         private DyObject IsSubsetOf(ExecutionContext ctx, DyObject self, DyObject other)
         {
             var seq = (DySet)self;
-            return (DyBool)seq.IsSubsetOf(ctx, other);
+            return seq.IsSubsetOf(ctx, other) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
         }
 
         private DyObject IsSupersetOf(ExecutionContext ctx, DyObject self, DyObject other)
         {
             var seq = (DySet)self;
-            return (DyBool)seq.IsSupersetOf(ctx, other);
+            return seq.IsSupersetOf(ctx, other) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
         }
         
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -144,7 +144,7 @@ namespace Dyalect.Runtime.Types
         private DyObject New(ExecutionContext ctx, DyObject arg)
         {
             var xs = ((DyTuple)arg).Values;
-            var set = new DySet();
+            var set = new DySet(DecType);
 
             foreach (var x in xs)
                 set.Add(x);
@@ -155,7 +155,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "Set" => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
+                "Set" => Func.Static(name, New, 0, new Par("values", StaticNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

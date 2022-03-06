@@ -7,14 +7,11 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyError : DyObject
     {
-        internal static readonly DyErrorTypeInfo Type = new();
         private readonly string errorCode;
 
-        public override DyTypeCode TypeCode => DyTypeCode.Error;
+        internal DyError(DyTypeInfo typeInfo, DyErrorCode code, params object[] dataItems) : this(typeInfo, code.ToString(), code, dataItems) { }
 
-        internal DyError(DyErrorCode code, params object[] dataItems) : this(code.ToString(), code, dataItems) { }
-
-        internal DyError(string error, DyErrorCode code, params object[] dataItems) =>
+        internal DyError(DyTypeInfo typeInfo, string error, DyErrorCode code, params object[] dataItems) : base(typeInfo) =>
             (errorCode, Code, DataItems) = (error, code, dataItems);
 
         internal Stack<StackPoint>? Dump { get; set; }
@@ -41,7 +38,7 @@ namespace Dyalect.Runtime.Types
             return errorCode;
         }
 
-        internal DyObject GetDetail() => new DyString(GetDescription());
+        internal DyObject GetDetail(ExecutionContext ctx) => new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, GetDescription());
 
         public override object ToObject() => GetDescription();
 
@@ -49,16 +46,16 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeCode != DyTypeCode.String)
+            if (index.DecType.TypeCode != DyTypeCode.String)
                 return ctx.InvalidType(index);
 
             var name = index.GetString();
 
             if (name is "code")
-                return new DyInteger((int)Code);
+                return new DyInteger(ctx.RuntimeContext.Integer, (int)Code);
             
             if (name is "detail")
-                return GetDetail();
+                return GetDetail(ctx);
             
             return ctx.IndexOutOfRange();
         }

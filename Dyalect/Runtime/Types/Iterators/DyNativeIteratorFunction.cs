@@ -4,10 +4,10 @@
     {
         public override string FunctionName => "iter";
 
-        public DyNativeIteratorFunction(int unitId, int funcId, FastList<DyObject[]> captures)
-            : base(null, unitId, funcId, captures, -1) { }
+        public DyNativeIteratorFunction(DyTypeInfo typeInfo, int unitId, int funcId, FastList<DyObject[]> captures)
+            : base(typeInfo, null, unitId, funcId, captures, -1) { }
 
         internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) =>
-            new DyNativeIteratorFunction(UnitId, FunctionId, Captures) { Self = arg };
+            new DyNativeIteratorFunction(ctx.RuntimeContext.Function, UnitId, FunctionId, Captures) { Self = arg };
     }
 }

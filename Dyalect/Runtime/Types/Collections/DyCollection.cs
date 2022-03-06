@@ -5,8 +5,6 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyCollection : DyEnumerable
     {
-        public virtual DyObject this[int index] => GetValue(index);
-
         protected DyCollection(DyTypeInfo type) : base(type) { }
 
         #region Indexing
@@ -26,7 +24,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
         {
-            if (!ReferenceEquals(obj.DecType, DyInteger.Type))
+            if (obj.DecType.TypeCode !=  DyTypeCode.Integer)
             {
                 ctx.InvalidType(obj);
                 return;
@@ -53,7 +51,7 @@ namespace Dyalect.Runtime.Types
             var newArr = new object[Count];
 
             for (var i = 0; i < newArr.Length; i++)
-                newArr[i] = values[i].ToObject();
+                newArr[i] = values[i];
 
             return newArr;
         }

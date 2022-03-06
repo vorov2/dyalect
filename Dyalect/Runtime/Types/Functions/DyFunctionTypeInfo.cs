@@ -4,7 +4,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
     {
-        public DyFunctionTypeInfo() : base(DyTypeCode.Function) { }
+        public DyFunctionTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Function) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
@@ -12,14 +12,15 @@ namespace Dyalect.Runtime.Types
         public override string TypeName => DyTypeNames.Function;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString(arg.ToString());
+            new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, arg.ToString());
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            Is(left, right) && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
+            left.DecType.TypeCode == right.DecType.TypeCode && ((DyFunction)left).Equals((DyFunction)right) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
 
-        private DyObject GetName(ExecutionContext _, DyObject self) => new DyString(((DyFunction)self).FunctionName);
+        private DyObject GetName(ExecutionContext ctx, DyObject self) =>
+            new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, ((DyFunction)self).FunctionName);
 
-        private DyObject GetParameters(ExecutionContext _, DyObject self)
+        private DyObject GetParameters(ExecutionContext ctx, DyObject self)
         {
             var fn = (DyFunction)self;
             var arr = new DyObject[fn.Parameters.Length];
@@ -27,17 +28,17 @@ namespace Dyalect.Runtime.Types
             for (var i = 0; i < fn.Parameters.Length; i++)
             {
                 var p = fn.Parameters[i];
-                arr[i] = new DyTuple(
+                arr[i] = new DyTuple(ctx.RuntimeContext.Tuple,
                         new[] {
-                            new DyLabel("name", new DyString(p.Name)),
-                            new DyLabel("hasDefault", (DyBool)(p.Value is not null)),
-                            new DyLabel("default", p.Value ?? DyNil.Instance),
-                            new DyLabel("varArg", (DyBool)(fn.VarArgIndex == i))
+                            new DyLabel("name", new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, p.Name)),
+                            new DyLabel("hasDefault", p.Value is not null ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False),
+                            new DyLabel("default", p.Value != null ? p.Value.ToRuntimeType(ctx.RuntimeContext) : ctx.RuntimeContext.Nil.Instance),
+                            new DyLabel("varArg", fn.VarArgIndex == i ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False)
                         }
                     );
             }
 
-            return new DyArray(arr);
+            return new DyArray(ctx.RuntimeContext.Array, arr);
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -61,7 +62,7 @@ namespace Dyalect.Runtime.Types
             else
                 ctx.InvalidType(first);
 
-            return DyNil.Instance;
+            return ctx.RuntimeContext.Nil.Instance;
         }
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)

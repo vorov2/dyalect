@@ -6,11 +6,11 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyObject : IEquatable<DyObject>
     {
-        public abstract DyTypeCode TypeCode { get; }
+        internal DyTypeInfo DecType;
 
-        protected DyObject() { }
+        protected DyObject(DyTypeInfo typeInfo) => DecType = typeInfo;
 
-        public override string ToString() => $"[type:{TypeCode}]";
+        public override string ToString() => $"[type:{DecType.TypeName}]";
 
         protected internal virtual bool GetBool() => true;
 
@@ -25,10 +25,10 @@ namespace Dyalect.Runtime.Types
         public abstract object ToObject();
 
         protected internal virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            index.TypeCode == DyTypeCode.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange();
+            index.DecType.TypeCode == DyTypeCode.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange();
 
         protected internal virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Set, GetTypeInfo(ctx).TypeName);
+            ctx.OperationNotSupported(Builtins.Set, DecType.TypeName);
 
         protected internal virtual bool HasItem(string name, ExecutionContext ctx) => false;
 
@@ -55,13 +55,5 @@ namespace Dyalect.Runtime.Types
         public abstract override int GetHashCode();
 
         protected int CalculateSimpleHashCode() => base.GetHashCode();
-
-        public virtual DyTypeInfo GetTypeInfo(ExecutionContext ctx) => ctx.RuntimeContext.Types[(int)TypeCode];
-
-        #region Pattern Match
-        protected virtual bool Match_CheckLength(int _) => false;
-        protected virtual DyObject Match_GetByIndex(int _) => DyNil.Instance;
-        protected virtual DyObject Match_GetByName(string _) => DyNil.Instance;
-        #endregion
     }
 }

@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = ((DyDictionary)arg).Count;
-            return DyInteger.Get(len);
+            return ctx.RuntimeContext.Integer.Get(len);
         }
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
@@ -45,7 +45,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             self.SetItem(index, value, ctx);
-            return DyNil.Instance;
+            return ctx.RuntimeContext.Nil.Instance;
         }
 
         private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject key, DyObject value)
@@ -53,7 +53,7 @@ namespace Dyalect.Runtime.Types
             var map = (DyDictionary)self;
             if (!map.TryAdd(key, value))
                 return ctx.KeyAlreadyPresent();
-            return DyNil.Instance;
+            return ctx.RuntimeContext.Nil.Instance;
         }
 
         private DyObject TryAddItem(ExecutionContext ctx, DyObject self, DyObject key, DyObject value)
@@ -68,17 +68,17 @@ namespace Dyalect.Runtime.Types
         {
             var map = (DyDictionary)self;
             if (!map.TryGet(key, out var value))
-                return DyNil.Instance;
+                return ctx.RuntimeContext.Nil.Instance;
             return value!;
         }
 
         private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject key) =>
-            ((DyDictionary)self).Remove(key) ? DyBool.True : DyBool.False;
+            ((DyDictionary)self).Remove(key) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
 
         private DyObject ClearItems(ExecutionContext ctx, DyObject self)
         {
             ((DyDictionary)self).Clear();
-            return DyNil.Instance;
+            return ctx.RuntimeContext.Nil.Instance;
         }
 
         private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
@@ -95,9 +95,9 @@ namespace Dyalect.Runtime.Types
                 var res = fun is not null ? fun.Call(ctx, value) : value;
 
                 if (ctx.HasErrors)
-                    return DyNil.Instance;
+                    return ctx.RuntimeContext.Nil.Instance;
 
-                if (!ReferenceEquals(res, DyNil.Instance))
+                if (!ReferenceEquals(res, ctx.RuntimeContext.Nil.Instance))
                     newMap[key] = res;
             }
 
@@ -134,7 +134,7 @@ namespace Dyalect.Runtime.Types
                 "remove" => Func.Member(name, RemoveItem, -1, new Par("key")),
                 "clear" => Func.Member(name, ClearItems),
                 "toTuple" => Func.Member(name, ToTuple),
-                "compact" => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
+                "compact" => Func.Member(name, Compact, -1, new Par("by", ctx.RuntimeContext.Nil.Instance)),
                 "contains" => Func.Member(name, Contains, -1, new Par("key")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
@@ -142,7 +142,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject New(ExecutionContext ctx, DyObject values)
         {
-            if (ReferenceEquals(values, DyNil.Instance))
+            if (ReferenceEquals(values, ctx.RuntimeContext.Nil.Instance))
                 return new DyDictionary();
 
             if (values is DyTuple tup)
@@ -154,7 +154,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name is "Dictionary" or "fromTuple")
-                return Func.Static(name, New, -1, new Par("values", DyNil.Instance));
+                return Func.Static(name, New, -1, new Par("values", ctx.RuntimeContext.Nil.Instance));
 
             return base.InitializeStaticMember(name, ctx);
         }

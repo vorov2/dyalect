@@ -5,16 +5,14 @@ using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyModule : DyObject, IEnumerable<DyObject>
+    public sealed class DyModule : DyObject
     {
         internal static readonly DyModuleTypeInfo Type = new();
         internal readonly DyObject[] Globals;
 
-        public override DyTypeCode TypeCode => DyTypeCode.Module;
-
         internal Unit Unit { get; }
 
-        public DyModule(Unit unit, DyObject[] globals)
+        public DyModule(DyTypeInfo typeInfo, Unit unit, DyObject[] globals) : base(typeInfo)
         {
             Unit = unit;
             Globals = globals;
@@ -37,7 +35,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeCode != DyTypeCode.String)
+            if (index.DecType.TypeCode != DyTypeCode.String)
                 return ctx.InvalidType(index);
 
             if (!TryGetMember(index.GetString(), ctx, out var value))
@@ -62,19 +60,18 @@ namespace Dyalect.Runtime.Types
             return false;
         }
 
-        public IEnumerator<DyObject> GetEnumerator()
+        public IEnumerator<DyObject> GetEnumerator(ExecutionContext ctx)
         {
             foreach (var (key, sv) in Unit.ExportList)
             {
                 if ((sv.Data & VarFlags.Private) != VarFlags.Private)
-                    yield return new DyTuple(new DyObject[] {
-                        new DyLabel("key", new DyString(key)),
-                        new DyLabel("value", Globals[sv.Address >> 9])
+                    yield return new DyTuple(ctx.RuntimeContext.Tuple, 
+                        new DyObject[] {
+                            new DyLabel(ctx.RuntimeContext.Label, "key", new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, key)),
+                            new DyLabel(ctx.RuntimeContext.Label, "value", Globals[sv.Address >> 9])
                         });
             }
         }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public override int GetHashCode() => HashCode.Combine((int)Type.TypeCode, Unit.Id);
     }

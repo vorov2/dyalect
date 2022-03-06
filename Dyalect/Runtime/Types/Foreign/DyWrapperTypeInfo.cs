@@ -2,9 +2,7 @@
 {
     public class DyWrapperTypeInfo : DyTypeInfo
     {
-        internal static readonly DyWrapperTypeInfo Instance = new();
-
-        public DyWrapperTypeInfo() : base(DyTypeCode.Object) { }
+        public DyWrapperTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Object) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not

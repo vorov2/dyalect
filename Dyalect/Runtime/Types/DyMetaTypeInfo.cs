@@ -2,7 +2,7 @@
 {
     internal sealed class DyMetaTypeInfo : DyTypeInfo
     {
-        public DyMetaTypeInfo() : base(DyTypeCode.TypeInfo) { }
+        public DyMetaTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.TypeInfo) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
@@ -11,11 +11,11 @@
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeCode == DyTypeCode.String)
+            if (index.DecType.TypeCode == DyTypeCode.String)
                 return index.GetString() switch
                 {
-                    "code" => DyInteger.Get((int)((DyTypeInfo)self).TypeCode),
-                    "name" => new DyString(((DyTypeInfo)self).TypeName),
+                    "code" => ctx.RuntimeContext.Integer.Get((int)((DyTypeInfo)self).TypeCode),
+                    "name" => new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, ((DyTypeInfo)self).TypeName),
                     _ => ctx.IndexOutOfRange()
                 };
 
@@ -23,13 +23,13 @@
         }
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString(("typeInfo " + ((DyTypeInfo)arg).TypeName).PutInBrackets());
+            new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, ("typeInfo " + ((DyTypeInfo)arg).TypeName).PutInBrackets());
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "code" => Func.Auto(name, (ctx, self) => DyInteger.Get((int)((DyTypeInfo)self).TypeCode)),
-                "name" => Func.Auto(name, (ctx, self) => new DyString(((DyTypeInfo)self).TypeName)),
+                "code" => Func.Auto(ctx, name, (ctx, self) => ctx.RuntimeContext.Integer.Get((int)((DyTypeInfo)self).TypeCode)),
+                "name" => Func.Auto(ctx, name, (ctx, self) => new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, ((DyTypeInfo)self).TypeName)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
     }

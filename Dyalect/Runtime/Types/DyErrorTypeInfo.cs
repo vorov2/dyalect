@@ -5,20 +5,20 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyErrorTypeInfo : DyTypeInfo
     {
-        public DyErrorTypeInfo() : base(DyTypeCode.Error) { }
+        public DyErrorTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Error) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Len | SupportedOperations.Get;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
-            DyInteger.Get(((DyError)arg).DataItems?.Length ?? 0);
+            ctx.RuntimeContext.Integer.Get(((DyError)arg).DataItems?.Length ?? 0);
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             var err = (DyError)self;
 
-            if (index.TypeCode == DyTypeCode.Integer)
+            if (index.DecType.TypeCode == DyTypeCode.Integer)
             {
                 var idx = index.GetInteger();
 
@@ -27,7 +27,7 @@ namespace Dyalect.Runtime.Types
 
                 return TypeConverter.ConvertFrom(err.DataItems[idx]);
             }
-            else if (index.TypeCode == DyTypeCode.String)
+            else if (index.DecType.TypeCode == DyTypeCode.String)
                 return err.GetItem(index, ctx);
             else
                 return ctx.InvalidType(index);
@@ -35,19 +35,20 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Error;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext _) => new DyString(arg.ToString());
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+            new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, arg.ToString());
 
         protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            return Func.Static(name, (c, args) =>
+            return Func.Static(ctx, name, (c, args) =>
             {
                 if (!Enum.TryParse(name, out DyErrorCode code))
                     code = DyErrorCode.UnexpectedError;
 
                 if (args is not null && args is DyTuple t)
-                    return new DyError(name, code, t.Values);
+                    return new DyError(ctx.RuntimeContext.Error, name, code, t.Values);
                 else
-                    return new DyError(name, code);
+                    return new DyError(ctx.RuntimeContext.Error, name, code);
             }, 0, new Par("values"));
         }
     }

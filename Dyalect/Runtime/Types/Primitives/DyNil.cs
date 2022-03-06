@@ -5,12 +5,15 @@ namespace Dyalect.Runtime.Types
 {
     public class DyNil : DyObject
     {
-        private sealed class DyTerminator : DyNil { }
+        internal sealed class Terminator : DyNil
+        {
+            public Terminator(DyTypeInfo typeInfo) : base(typeInfo) 
+            {
 
-        public static readonly DyNil Instance = new();
-        internal static readonly DyNil Terminator = new DyTerminator();
+            }
+        }
 
-        private DyNil() : base(Type) { }
+        internal DyNil(DyTypeInfo typeInfo) : base(typeInfo) { }
 
         public override object ToObject() => this;
 
@@ -23,8 +26,8 @@ namespace Dyalect.Runtime.Types
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
             ctx.IndexOutOfRange();
 
-        internal override void Serialize(BinaryWriter writer) => writer.Write((int)Type.TypeCode);
+        internal override void Serialize(BinaryWriter writer) => writer.Write((int)DecType.TypeCode);
 
-        public override int GetHashCode() => HashCode.Combine(Instance);
+        public override int GetHashCode() => HashCode.Combine(DecType.TypeName, DecType.TypeCode);
     }
 }

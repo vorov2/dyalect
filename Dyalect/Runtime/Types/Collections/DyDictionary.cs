@@ -4,7 +4,6 @@ namespace Dyalect.Runtime.Types
 {
     public class DyDictionary : DyEnumerable
     {
-        internal static readonly DyDictionaryTypeInfo Type = new();
         internal readonly Dictionary<DyObject,DyObject> Map;
 
         public override int Count => Map.Count;
@@ -15,10 +14,10 @@ namespace Dyalect.Runtime.Types
             set => Map[key] = value;
         }
 
-        internal DyDictionary() : base(Type) =>
+        internal DyDictionary(DyTypeInfo typeInfo) : base(typeInfo) =>
             Map = new Dictionary<DyObject, DyObject>();
 
-        internal DyDictionary(Dictionary<DyObject, DyObject> dict) : base(Type) =>
+        internal DyDictionary(DyTypeInfo typeInfo, Dictionary<DyObject, DyObject> dict) : base(typeInfo) =>
             Map = dict;
 
         public void Add(DyObject key, DyObject value)
@@ -68,7 +67,7 @@ namespace Dyalect.Runtime.Types
                 Version++;
         }
 
-        public override IEnumerator<DyObject> GetEnumerator() => new DyDictionaryEnumerator(this);
+        public IEnumerator<DyObject> GetEnumerator() => new DyDictionaryEnumerator(this);
 
         public override int GetHashCode() => Map.GetHashCode();
 

@@ -48,16 +48,16 @@ namespace Dyalect.Runtime.Types
 
         public abstract string TypeName { get; }
 
-        public DyTypeCode ReflectedTypeCode { get; }
+        public DyTypeCode TypeCode { get; }
 
-        protected DyTypeInfo(DyTypeCode typeCode) => ReflectedTypeCode = typeCode;
+        protected DyTypeInfo(DyTypeInfo typeInfo, DyTypeCode typeCode) : base(typeInfo) => TypeCode = typeCode;
 
         #region Binary Operations
         //x + y
         private DyFunction? add;
         protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyTypeCode.String && left.TypeCode != DyTypeCode.String)
+            if (right.DecType.TypeCode == DyTypeCode.String && left.DecType.TypeCode != DyTypeCode.String)
                 return DyString.Type.Add(ctx, left, right);
             return ctx.OperationNotSupported(Builtins.Add, left.GetTypeInfo(ctx).TypeName);
         }
@@ -172,13 +172,13 @@ namespace Dyalect.Runtime.Types
         //x == y
         private DyFunction? eq;
         protected virtual DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            ReferenceEquals(left, right) ? DyBool.True : DyBool.False;
+            ReferenceEquals(left, right) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
         public DyObject Eq(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (eq is not null)
                 return eq.BindToInstance(ctx, left).Call(ctx, right);
-            if (right.TypeCode == DyTypeCode.Bool)
-                return left.GetBool() == right.GetBool() ? DyBool.True : DyBool.False;
+            if (right.DecType.TypeCode == DyTypeCode.Bool)
+                return left.GetBool() == right.GetBool() ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
             return EqOp(left, right, ctx);
         }
 
@@ -221,7 +221,7 @@ namespace Dyalect.Runtime.Types
         {
             var ret = ReferenceEquals(Gt(ctx, left, right), DyBool.True)
                 || ReferenceEquals(Eq(ctx, left, right), DyBool.True);
-            return ret ? DyBool.True : DyBool.False;
+            return ret ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
         }
         public DyObject Gte(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -236,7 +236,7 @@ namespace Dyalect.Runtime.Types
         {
             var ret = ReferenceEquals(Lt(ctx, left, right), DyBool.True)
                 || ReferenceEquals(Eq(ctx, left, right), DyBool.True);
-            return ret ? DyBool.True : DyBool.False;
+            return ret ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
         }
         public DyObject Lte(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -310,7 +310,7 @@ namespace Dyalect.Runtime.Types
             if (tos is not null)
             {
                 var retval = tos.BindToInstance(ctx, arg).Call(ctx);
-                return retval.TypeCode == DyTypeCode.String ? retval : DyString.Empty;
+                return retval.DecType.TypeCode == DyTypeCode.String ? retval : DyString.Empty;
             }
 
             return ToStringOp(arg, ctx);
@@ -387,7 +387,7 @@ namespace Dyalect.Runtime.Types
             {
                 "TypeInfo" => Func.Static(name, (c, obj) => obj.GetTypeInfo(c), -1, new Par("value")),
                 "has" => Func.Member(name, Has, -1, new Par("member")),
-                "code" => Func.Auto(name, (ctx, self) => DyInteger.Get((int)TypeCode)),
+                "code" => Func.Auto(name, (ctx, self) => ctx.RuntimeContext.Integer.Get((int)TypeCode)),
                 "name" => Func.Auto(name, (ctx, self) => new DyString(((DyTypeInfo)self).TypeName)),
                 "__deleteMember" => Func.Static(name,
                     (context, strObj) =>
@@ -398,7 +398,7 @@ namespace Dyalect.Runtime.Types
                         SetBuiltin(nm, null);
                         Members.Remove(name);
                         staticMembers.Remove(name);
-                        return DyNil.Instance;
+                        return ctx.RuntimeContext.Nil.Instance;
                     }, -1, new Par("name")),
                 _ => InitializeStaticMember(name, ctx)
             };
@@ -478,7 +478,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Has(ExecutionContext ctx, DyObject self, DyObject member)
         {
-            if (member.TypeCode != DyTypeCode.String)
+            if (member.DecType.TypeCode != DyTypeCode.String)
                 return ctx.InvalidType(member);
 
             var name = member.GetString();
@@ -535,6 +535,6 @@ namespace Dyalect.Runtime.Types
             ? DyIterator.Create(en)
             : ctx.OperationNotSupported(Builtins.Iterator, self.GetTypeInfo(ctx).TypeName);
 
-        public override int GetHashCode() => HashCode.Combine(ReflectedTypeCode, TypeCode, TypeName);
+        public override int GetHashCode() => HashCode.Combine(TypeCode, TypeCode, TypeName);
     }
 }

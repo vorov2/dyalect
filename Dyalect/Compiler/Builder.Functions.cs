@@ -113,37 +113,37 @@ namespace Dyalect.Compiler
                     if (p.IsVarArgs)
                         AddError(CompilerError.VarArgNoDefaultValue, p.Location);
 
-                    DyObject? val = null;
+                    StaticType? val = null;
 
                     switch (p.DefaultValue.NodeType)
                     {
                         case NodeType.Integer:
-                            val = new DyInteger(((DIntegerLiteral)p.DefaultValue).Value);
+                            val = new StaticInteger(((DIntegerLiteral)p.DefaultValue).Value);
                             if (!CheckRestriction(DyTypeCode.Integer, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Float:
-                            val = new DyFloat(((DFloatLiteral)p.DefaultValue).Value);
+                            val = new StaticFloat(((DFloatLiteral)p.DefaultValue).Value);
                             if (!CheckRestriction(DyTypeCode.Float, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Char:
-                            val = new DyChar(((DCharLiteral)p.DefaultValue).Value);
+                            val = new StaticChar(((DCharLiteral)p.DefaultValue).Value);
                             if (!CheckRestriction(DyTypeCode.Char, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Boolean:
-                            val = ((DBooleanLiteral)p.DefaultValue).Value ? DyBool.True : DyBool.False;
+                            val = new StaticBool(((DBooleanLiteral)p.DefaultValue).Value);
                             if (!CheckRestriction(DyTypeCode.Bool, p.TypeAnnotation)) 
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.String:
-                            val = new DyString(((DStringLiteral)p.DefaultValue).Value);
+                            val = new StaticString(((DStringLiteral)p.DefaultValue).Value);
                             if (!CheckRestriction(DyTypeCode.String, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Nil:
-                            val = DyNil.Instance;
+                            val = StaticNil.Instance;
                             if (!CheckRestriction(DyTypeCode.Nil, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;

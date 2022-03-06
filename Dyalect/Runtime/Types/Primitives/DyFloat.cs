@@ -4,18 +4,9 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyFloat : DyObject
     {
-        public static readonly DyFloat Zero = new(0D);
-        public static readonly DyFloat One = new(1D);
-        public static readonly DyFloat NaN = new(double.NaN);
-        public static readonly DyFloat PositiveInfinity = new(double.PositiveInfinity);
-        public static readonly DyFloat NegativeInfinity = new(double.NegativeInfinity);
-        public static readonly DyFloat Epsilon = new(double.Epsilon);
-        public static readonly DyFloat Min = new(double.MinValue);
-        public static readonly DyFloat Max = new(double.MaxValue);
-
         private readonly double value;
 
-        public DyFloat(double value) : base(Type) =>
+        public DyFloat(DyTypeInfo typeInfo, double value) : base(typeInfo) =>
             this.value = value;
 
         public override int GetHashCode() => value.GetHashCode();
@@ -36,7 +27,7 @@ namespace Dyalect.Runtime.Types
 
         internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write((int)Type.TypeCode);
+            writer.Write((int)DecType.TypeCode);
             writer.Write(value);
         }
     }

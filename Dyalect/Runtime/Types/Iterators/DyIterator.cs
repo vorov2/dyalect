@@ -4,9 +4,7 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyIterator : DyObject
     {
-        internal static readonly DyIteratorTypeInfo Type = new();
-
-        protected DyIterator() : base(Type) { }
+        protected DyIterator(DyTypeInfo typeInfo) : base(typeInfo) { }
 
         internal static DyIterator Create(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) =>
             new DyNativeIterator(unitId, handle, captures, locals);
@@ -35,7 +33,7 @@ namespace Dyalect.Runtime.Types
                     yield break;
                 }
 
-                if (!ReferenceEquals(res, DyNil.Terminator))
+                if (!ReferenceEquals(res, ctx.RuntimeContext.Nil.Terminator))
                     yield return res;
                 else
                 {
@@ -49,9 +47,9 @@ namespace Dyalect.Runtime.Types
         {
             DyFunction? iter;
 
-            if (Is(val, DyIterator.Type))
+            if (val.DecType.TypeCode != DyTypeCode.Iterator)
                 iter = ((DyIterator)val).GetIteratorFunction();
-            else if (Is(val, DyFunction.Type))
+            else if (val.DecType.TypeCode == DyTypeCode.Function)
             {
                 var obj = ((DyFunction)val).Call(ctx);
                 iter = obj as DyFunction;

@@ -130,7 +130,7 @@ namespace Dyalect.Compiler
         {
             if (!integers.TryGetValue(val, out var idx))
             {
-                frame.IndexedIntegers.Add(DyInteger.Get(val));
+                frame.IndexedIntegers.Add(ctx.RuntimeContext.Integer.Get(val));
                 idx = frame.IndexedIntegers.Count - 1;
                 integers.Add(val, idx);
             }

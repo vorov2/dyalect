@@ -8,7 +8,7 @@ namespace Dyalect.Runtime.Types
         private readonly int handle;
         private readonly FastList<DyObject[]> captures;
 
-        public DyNativeIterator(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals)
+        public DyNativeIterator(DyTypeInfo typeInfo, int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) : base(typeInfo)
         {
             var vars = new FastList<DyObject[]>(captures) { locals };
             (this.unitId, this.handle, this.captures) = (unitId, handle, vars);

@@ -2,7 +2,7 @@
 {
     internal sealed class DyLabelTypeInfo : DyTypeInfo
     {
-        public DyLabelTypeInfo() : base(DyTypeCode.Label) { }
+        public DyLabelTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Label) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
@@ -12,7 +12,7 @@
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var lab = (DyLabel)arg;
-            return (DyString)(lab.Label + ": " + lab.Value.ToString(ctx).Value);
+            return new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, lab.Label + ": " + lab.Value.ToString(ctx).Value);
         }
     }
 }

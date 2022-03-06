@@ -36,7 +36,7 @@ namespace Dyalect.Runtime
                     ctx.RuntimeContext.Units[unitId] = foreign.Values.ToArray();
                 }
 
-                return DyNil.Instance;
+                return ctx.RuntimeContext.Nil.Instance;
             }
 
             var lay0 = unit.Layouts[0];
@@ -52,7 +52,7 @@ namespace Dyalect.Runtime
 
             //Module is already processed, no need for further actions
             if (unitId is not 0 && ctx.RuntimeContext.Units[unitId] is not null)
-                return DyNil.Instance;
+                return ctx.RuntimeContext.Nil.Instance;
 
             ctx.CatchMarks.Push(null!);
             ctx.RuntimeContext.Units[unitId] = ctx.RuntimeContext.Units[unitId] ?? new DyObject[lay0.Size];
@@ -114,7 +114,7 @@ namespace Dyalect.Runtime
                         evalStack.PopVoid();
                         break;
                     case OpCode.PushNil:
-                        evalStack.Push(DyNil.Instance);
+                        evalStack.Push(ctx.RuntimeContext.Nil.Instance);
                         break;
                     case OpCode.PushNilT:
                         evalStack.Push(DyNil.Terminator);
@@ -651,7 +651,7 @@ namespace Dyalect.Runtime
                     ctx.Error = dy.Error;
                 else
                     ctx.ExternalFunctionFailure(func.FunctionName, ex.Message);
-                return DyNil.Instance;
+                return ctx.RuntimeContext.Nil.Instance;
             }
         }
 

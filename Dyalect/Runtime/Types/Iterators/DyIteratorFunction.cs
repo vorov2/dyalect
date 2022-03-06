@@ -10,11 +10,11 @@ namespace Dyalect.Runtime.Types
         private readonly IEnumerable<DyObject> enumerable;
         private IEnumerator<DyObject>? enumerator;
 
-        public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), -1) =>
+        public DyIteratorFunction(DyTypeInfo typeInfo, IEnumerable<DyObject> enumerable) : base(typeInfo, Builtins.Iterator, Array.Empty<Par>(), -1) =>
             this.enumerable = enumerable;
 
         internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) =>
-            (enumerator ??= enumerable.GetEnumerator()).MoveNext() ? enumerator.Current : DyNil.Terminator;
+            (enumerator ??= enumerable.GetEnumerator()).MoveNext() ? enumerator.Current : ctx.RuntimeContext.Nil.Terminator;
 
         internal override void Reset(ExecutionContext ctx) => enumerator = null;
 
@@ -22,6 +22,6 @@ namespace Dyalect.Runtime.Types
 
         internal override bool Equals(DyFunction func) => func is DyIteratorFunction f && f.enumerable.Equals(enumerator);
 
-        public override DyObject Clone() => new DyIteratorFunction(enumerable);
+        public override DyObject Clone() => new DyIteratorFunction(DecType, enumerable);
     }
 }

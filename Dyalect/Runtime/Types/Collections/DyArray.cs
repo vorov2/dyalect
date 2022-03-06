@@ -3,21 +3,20 @@ using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyArray : DyCollection
+    public class DyArray : DyCollection, IEnumerable<DyObject>
     {
-        internal static readonly DyArrayTypeInfo Type = new();
-        
         private const int DEFAULT_SIZE = 4;
 
         internal DyObject[] Values;
 
-        public new DyObject this[int index]
+        public DyObject this[int index]
         {
             get => Values[CorrectIndex(index)];
             set => Values[CorrectIndex(index)] = value;
         }
 
-        public DyArray(DyObject[] values) : base(Type) => (Values, Count) = (values, values.Length);
+        public DyArray(DyTypeInfo typeInfo, DyObject[] values) : base(typeInfo) => 
+            (Values, Count) = (values, values.Length);
 
         public void Compact()
         {
@@ -159,7 +158,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeCode == DyTypeCode.Integer)
+            if (index.DecType.TypeCode == DyTypeCode.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
             else
                 return ctx.InvalidType(index);

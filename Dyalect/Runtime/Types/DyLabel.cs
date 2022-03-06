@@ -10,13 +10,11 @@ namespace Dyalect.Runtime.Types
 
         internal DyTypeInfo? TypeAnnotation;
 
-        public override DyTypeCode TypeCode => DyTypeCode.Label;
-
         public string Label { get; }
 
         public DyObject Value { get; internal set; }
 
-        public DyLabel(string label, DyObject value) => (Label, Value) = (label, value);
+        public DyLabel(DyTypeInfo typeInfo, string label, DyObject value) : base(typeInfo) => (Label, Value) = (label, value);
 
         protected internal override bool GetBool() => Value.GetBool();
 
@@ -27,8 +25,8 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetTaggedValue() => Value;
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            (index.TypeCode == DyTypeCode.Integer && index.GetInteger() == 0) 
-            || (index.TypeCode == DyTypeCode.String && index.GetString() == Label)
+            (index.DecType.TypeCode == DyTypeCode.Integer && index.GetInteger() == 0) 
+            || (index.DecType.TypeCode == DyTypeCode.String && index.GetString() == Label)
                 ? Value : ctx.IndexOutOfRange();
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;

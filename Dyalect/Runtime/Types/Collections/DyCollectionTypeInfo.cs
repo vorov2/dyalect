@@ -5,21 +5,21 @@ namespace Dyalect.Runtime.Types
 {
     internal abstract class DyCollectionTypeInfo : DyTypeInfo
     {
-        protected DyCollectionTypeInfo(DyTypeCode typeCode) : base(typeCode) { }
+        protected DyCollectionTypeInfo(DyTypeInfo typeInfo, DyTypeCode typeCode) : base(typeInfo, typeCode) { }
 
         protected virtual DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
         {
             var coll = (DyCollection)self;
-            var arr = coll.GetValues();
+            var arr = coll.GetValues(ctx);
 
-            if (!Is(fromElem, DyInteger.Type))
+            if (fromElem.DecType.TypeCode != DyTypeCode.Integer)
                 return ctx.InvalidType(fromElem);
 
-            if (!Is(toElem, DyNil.Type) && !Is(toElem, DyInteger.Type))
+            if (toElem.DecType.TypeCode != DyTypeCode.Nil && toElem.DecType.TypeCode != DyTypeCode.Integer)
                 return ctx.InvalidType(toElem);
 
             var beg = (int)fromElem.GetInteger();
-            var end = ReferenceEquals(toElem, DyNil.Instance) ? coll.Count - 1 : (int)toElem.GetInteger();
+            var end = ReferenceEquals(toElem, ctx.RuntimeContext.Nil.Instance) ? coll.Count - 1 : (int)toElem.GetInteger();
 
             if (beg == 0 && end == coll.Count - 1)
                 return self;
@@ -51,7 +51,7 @@ namespace Dyalect.Runtime.Types
             IEnumerable<DyObject> Iterate()
             {
                 for (var i = 0; i < arr.Count; i++)
-                    yield return DyInteger.Get(i);
+                    yield return ctx.RuntimeContext.Integer.Get(i);
             }
 
             return DyIterator.Create(Iterate());
@@ -61,7 +61,7 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 "indices" => Func.Member(name, GetIndices),
-                "slice" => Func.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
+                "slice" => Func.Member(name, GetSlice, -1, new Par("start", StaticInteger.Zero), new Par("len", StaticNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
     }

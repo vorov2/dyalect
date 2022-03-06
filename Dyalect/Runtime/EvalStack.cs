@@ -35,9 +35,9 @@ namespace Dyalect.Runtime
 
         internal void Replace(DyObject val) => array[size - 1] = val;
 
-        internal void Push(bool val) => array[size++] = val ? DyBool.True : DyBool.False;
+        internal void Push(bool val) => array[size++] = val ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
 
-        internal void Replace(bool val) => array[size - 1] = val ? DyBool.True : DyBool.False;
+        internal void Replace(bool val) => array[size - 1] = val ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
 
         internal int Size => size;
     }

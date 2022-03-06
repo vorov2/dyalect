@@ -1,27 +1,26 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyString : DyCollection, IEnumerable<DyObject>
+    public sealed class DyString : DyCollection
     {
-        internal static readonly DyStringTypeInfo Type = new();
+        private readonly DyTypeInfo charInfo;
 
-        public static readonly DyString Empty = new("");
         internal readonly string Value;
 
         public override int Count => Value.Length;
 
-        public DyString(string str) : base(Type) => Value = str;
+        public DyString(DyTypeInfo typeInfo, DyTypeInfo charInfo, string str) : base(typeInfo) => 
+            (Value, this.charInfo) = (str, charInfo);
 
-        internal override DyObject GetValue(int index) => new DyChar(Value[index]);
+        internal override DyObject GetValue(int index) => new DyChar(charInfo, Value[index]);
 
         internal override DyObject[] GetValues()
         {
             var arr = new DyObject[Value.Length];
 
             for (var i = 0; i < Value.Length; i++)
-                arr[i] = new DyChar(Value[i]);
+                arr[i] = new DyChar(charInfo, Value[i]);
 
             return arr;
         }
@@ -41,13 +40,11 @@ namespace Dyalect.Runtime.Types
 
         public static explicit operator string(DyString str) => str.Value;
 
-        public static explicit operator DyString(string str) => new(str);
-
         public static string ToString(DyObject value, ExecutionContext ctx)
         {
             var res = value;
 
-            while (!Is(res, DyString.Type) && !Is(res, DyChar.Type))
+            while (res.DecType.TypeCode != DyTypeCode.String && res.DecType.TypeCode != DyTypeCode.Char)
             {
                 res = res.ToString(ctx);
 
@@ -60,23 +57,23 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeCode != DyTypeCode.Integer)
+            if (index.DecType.TypeCode != DyTypeCode.Integer)
                 return ctx.InvalidType(index);
 
             return GetItem((int)index.GetInteger(), ctx);
         }
 
         protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) =>
-            new DyChar(Value[idx]);
+            new DyChar(ctx.RuntimeContext.Char, Value[idx]);
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported("set", Type.TypeName);
+            ctx.OperationNotSupported("set", DecType.TypeName);
 
         public override DyObject Clone() => this;
 
         internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write((int)Type.TypeCode);
+            writer.Write((int)DecType.TypeCode);
             writer.Write(Value);
         }
     }
