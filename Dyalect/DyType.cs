@@ -1,4 +1,5 @@
-﻿using Dyalect.Runtime.Types;
+﻿using Dyalect.Runtime;
+using Dyalect.Runtime.Types;
 using System.Collections.Generic;
 using System.Dynamic;
 
@@ -49,25 +50,25 @@ namespace Dyalect
                 _ => default
             }; 
 
-        public static DyTypeInfo? GetTypeInfoByCode(DyTypeCode code) =>
+        public static DyTypeInfo? GetTypeInfoByCode(RuntimeContext rtx, DyTypeCode code) =>
              code switch
              {
-                 DyTypeCode.Nil => DyNil.Type,
-                 DyTypeCode.Integer => DyInteger.Type,
-                 DyTypeCode.Float => DyFloat.Type,
-                 DyTypeCode.Bool => DyBool.Type,
-                 DyTypeCode.Char => DyChar.Type,
-                 DyTypeCode.String => DyString.Type,
-                 DyTypeCode.Function => DyFunction.Type,
-                 DyTypeCode.Label => DyLabel.Type,
-                 DyTypeCode.TypeInfo => DyMetaTypeInfo.Instance,
-                 DyTypeCode.Tuple => DyTuple.Type,
-                 DyTypeCode.Module => DyModule.Type,
-                 DyTypeCode.Array => DyArray.Type,
-                 DyTypeCode.Iterator => DyIterator.Type,
-                 DyTypeCode.Dictionary => DyDictionary.Type,
-                 DyTypeCode.Set => DySet.Type,
-                 DyTypeCode.Error => DyError.Type,
+                 DyTypeCode.Nil => rtx.Nil,
+                 DyTypeCode.Integer => rtx.Integer,
+                 DyTypeCode.Float => rtx.Float,
+                 DyTypeCode.Bool => rtx.Bool,
+                 DyTypeCode.Char => rtx.Char,
+                 DyTypeCode.String => rtx.String,
+                 DyTypeCode.Function => rtx.Function,
+                 DyTypeCode.Label => rtx.Label,
+                 DyTypeCode.TypeInfo => rtx.TypeInfo,
+                 DyTypeCode.Tuple => rtx.Tuple,
+                 DyTypeCode.Module => rtx.Module,
+                 DyTypeCode.Array => rtx.Array,
+                 DyTypeCode.Iterator => rtx.Iterator,
+                 DyTypeCode.Dictionary => rtx.Dictionary,
+                 DyTypeCode.Set => rtx.Set,
+                 DyTypeCode.Error => rtx.Error,
                  _ => default
              };
 
