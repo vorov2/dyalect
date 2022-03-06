@@ -6,7 +6,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyDictionaryTypeInfo : DyTypeInfo
     {
-        public DyDictionaryTypeInfo() : base(DyTypeCode.Dictionary) { }
+        public DyDictionaryTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Dictionary) { }
 
         public override string TypeName => DyTypeNames.Dictionary;
 
@@ -128,14 +128,14 @@ namespace Dyalect.Runtime.Types
         {
             return name switch
             {
-                "add" => Func.Member(name, AddItem, -1, new Par("key"), new Par("value")),
-                "tryAdd" => Func.Member(name, TryAddItem, -1, new Par("key"), new Par("value")),
-                "tryGet" => Func.Member(name, TryGetItem, -1, new Par("key")),
-                "remove" => Func.Member(name, RemoveItem, -1, new Par("key")),
-                "clear" => Func.Member(name, ClearItems),
-                "toTuple" => Func.Member(name, ToTuple),
-                "compact" => Func.Member(name, Compact, -1, new Par("by", ctx.RuntimeContext.Nil.Instance)),
-                "contains" => Func.Member(name, Contains, -1, new Par("key")),
+                "add" => Func.Member(ctx, name, AddItem, -1, new Par("key"), new Par("value")),
+                "tryAdd" => Func.Member(ctx, name, TryAddItem, -1, new Par("key"), new Par("value")),
+                "tryGet" => Func.Member(ctx, name, TryGetItem, -1, new Par("key")),
+                "remove" => Func.Member(ctx, name, RemoveItem, -1, new Par("key")),
+                "clear" => Func.Member(ctx, name, ClearItems),
+                "toTuple" => Func.Member(ctx, name, ToTuple),
+                "compact" => Func.Member(ctx, name, Compact, -1, new Par("by", StaticNil.Instance)),
+                "contains" => Func.Member(ctx, name, Contains, -1, new Par("key")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
         }
@@ -143,10 +143,10 @@ namespace Dyalect.Runtime.Types
         private DyObject New(ExecutionContext ctx, DyObject values)
         {
             if (ReferenceEquals(values, ctx.RuntimeContext.Nil.Instance))
-                return new DyDictionary();
+                return new DyDictionary(ctx.RuntimeContext);
 
             if (values is DyTuple tup)
-                return new DyDictionary(tup.ConvertToDictionary());
+                return new DyDictionary(ctx.RuntimeContext, tup.ConvertToDictionary(ctx));
             
             return ctx.InvalidType(values);
         }
@@ -154,7 +154,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name is "Dictionary" or "fromTuple")
-                return Func.Static(name, New, -1, new Par("values", ctx.RuntimeContext.Nil.Instance));
+                return Func.Static(ctx, name, New, -1, new Par("values", StaticNil.Instance));
 
             return base.InitializeStaticMember(name, ctx);
         }
