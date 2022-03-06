@@ -5,7 +5,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyModuleTypeInfo : DyTypeInfo
     {
-        public DyModuleTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Module) { }
+        public DyModuleTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyType.Module) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
         public override string TypeName => DyTypeNames.Module;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, "[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
+            new DyString("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
@@ -25,7 +25,7 @@ namespace Dyalect.Runtime.Types
                 if ((g.Value.Data & VarFlags.Private) != VarFlags.Private)
                     count++;
 
-            return ctx.RuntimeContext.Integer.Get(count);
+            return DyInteger.Get(count);
         }
 
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
@@ -36,9 +36,9 @@ namespace Dyalect.Runtime.Types
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right is DyModule mod)
-                return ((DyModule)left).Unit.Id == mod.Unit.Id ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+                return ((DyModule)left).Unit.Id == mod.Unit.Id ? DyBool.True : DyBool.False;
 
-            return ctx.RuntimeContext.Bool.False;
+            return DyBool.False;
         }
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);

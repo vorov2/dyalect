@@ -7,7 +7,7 @@ namespace Dyalect.Runtime.Types
     {
         private readonly Dictionary<string, DyObject> map;
 
-        public DyWrapper(DyWrapperTypeInfo typeInfo, params ValueTuple<string, object>[] fields) : base(typeInfo)
+        public DyWrapper(params ValueTuple<string, object>[] fields) : base(-1)
         {
             map = new();
 
@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
                 map[fld] = TypeConverter.ConvertFrom(val);
         }
 
-        public DyWrapper(DyWrapperTypeInfo typeInfo, IDictionary<string, object> dict) : base(typeInfo)
+        public DyWrapper(IDictionary<string, object> dict) : base(-1)
         {
             map = new();
 
@@ -23,7 +23,7 @@ namespace Dyalect.Runtime.Types
                 this.map[fld] = TypeConverter.ConvertFrom(val);
         }
 
-        internal DyWrapper(DyWrapperTypeInfo typeInfo, Dictionary<string, DyObject> map) : base(typeInfo)
+        internal DyWrapper(Dictionary<string, DyObject> map) : base(-1)
         {
             this.map = map;
         }
@@ -32,7 +32,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.DecType.TypeCode != DyTypeCode.String)
+            if (index.TypeCode != DyType.String)
                 return ctx.InvalidType(index);
 
             if (!map.TryGetValue(index.GetString(), out var value))

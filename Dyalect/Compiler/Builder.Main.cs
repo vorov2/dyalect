@@ -329,7 +329,7 @@ namespace Dyalect.Compiler
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
         {
-            cw.Type(DyTypeCode.Iterator);
+            cw.Type(DyType.Iterator);
             cw.GetMember(Builtins.Range);
             cw.FunPrep(4);
 
@@ -488,7 +488,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                cw.Type(DyTypeCode.Array);
+                cw.Type(DyType.Array);
                 cw.GetMember(DyTypeNames.Array);
                 cw.FunPrep(node.Elements.Count);
 
@@ -820,7 +820,7 @@ namespace Dyalect.Compiler
 
             if (node.Chunks is not null)
             {
-                cw.Type(DyTypeCode.String);
+                cw.Type(DyType.String);
                 cw.GetMember(Builtins.Concat);
                 cw.FunPrep(node.Chunks.Count);
 

@@ -7,12 +7,11 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyModule : DyObject
     {
-        internal static readonly DyModuleTypeInfo Type = new();
         internal readonly DyObject[] Globals;
 
         internal Unit Unit { get; }
 
-        public DyModule(DyTypeInfo typeInfo, Unit unit, DyObject[] globals) : base(typeInfo)
+        public DyModule(Unit unit, DyObject[] globals) : base(DyType.Module)
         {
             Unit = unit;
             Globals = globals;
@@ -35,7 +34,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.DecType.TypeCode != DyTypeCode.String)
+            if (index.TypeCode != DyType.String)
                 return ctx.InvalidType(index);
 
             if (!TryGetMember(index.GetString(), ctx, out var value))
@@ -65,14 +64,14 @@ namespace Dyalect.Runtime.Types
             foreach (var (key, sv) in Unit.ExportList)
             {
                 if ((sv.Data & VarFlags.Private) != VarFlags.Private)
-                    yield return new DyTuple(ctx.RuntimeContext.Tuple, 
+                    yield return new DyTuple(
                         new DyObject[] {
-                            new DyLabel(ctx.RuntimeContext.Label, "key", new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, key)),
-                            new DyLabel(ctx.RuntimeContext.Label, "value", Globals[sv.Address >> 9])
+                            new DyLabel("key", new DyString(key)),
+                            new DyLabel("value", Globals[sv.Address >> 9])
                         });
             }
         }
 
-        public override int GetHashCode() => HashCode.Combine((int)Type.TypeCode, Unit.Id);
+        public override int GetHashCode() => HashCode.Combine(TypeCode, Unit.Id);
     }
 }

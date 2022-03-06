@@ -22,7 +22,7 @@
 //            | SupportedOperations.Len;
 
 //        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
-//            ctx.RuntimeContext.Integer.Get(((DyByteArray)arg).Count);
+//            DyInteger.Get(((DyByteArray)arg).Count);
 
 //        private DyObject Read(ExecutionContext ctx, DyObject self, DyObject obj)
 //        {
@@ -38,20 +38,20 @@
 //        {
 //            var bar = (DyByteArray)self;
 //            bar.Write(ctx, obj);
-//            return ctx.RuntimeContext.Nil.Instance;
+//            return DyNil.Instance;
 //        }
 
 //        private DyObject GetPosition(ExecutionContext ctx, DyObject self)
 //        {
 //            var bar = (DyByteArray)self;
-//            return ctx.RuntimeContext.Integer.Get(bar.Position);
+//            return DyInteger.Get(bar.Position);
 //        }
 
 //        private DyObject Reset(ExecutionContext ctx, DyObject self)
 //        {
 //            var bar = (DyByteArray)self;
 //            bar.Reset();
-//            return ctx.RuntimeContext.Nil.Instance;
+//            return DyNil.Instance;
 //        }
 
 //        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>

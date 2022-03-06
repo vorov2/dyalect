@@ -4,11 +4,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyCharTypeInfo : DyTypeInfo
     {
-        public DyChar Empty => new(this, '\0');
-        public DyChar Max => new(this, char.MaxValue);
-        public DyChar Min => new(this, char.MinValue);
-
-        public DyCharTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Char) { }
+        public DyCharTypeInfo() : base(DyType.TypeInfo) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -18,43 +14,43 @@ namespace Dyalect.Runtime.Types
         public override string TypeName => DyTypeNames.Char;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, arg.GetString());
+            new DyString(arg.GetString());
 
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.DecType.TypeCode == DyTypeCode.Integer)
-                return new DyChar(this, (char)(left.GetChar() + right.GetInteger()));
+            if (right.TypeCode == DyType.Integer)
+                return new DyChar((char)(left.GetChar() + right.GetInteger()));
 
-            if (right.DecType.TypeCode == DyTypeCode.Char)
-                return new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, left.GetString() + right.GetString());
+            if (right.TypeCode == DyType.Char)
+                return new DyString(left.GetString() + right.GetString());
 
-            if (right.DecType.TypeCode == DyTypeCode.String)
-                return ctx.RuntimeContext.String.Add(ctx, left, right);
+            if (right.TypeCode == DyType.String)
+                return DyString.Add(ctx, left, right);
 
             return ctx.InvalidType(right);
         }
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.DecType.TypeCode == DyTypeCode.Integer)
-                return new DyChar(this, (char)(left.GetChar() - right.GetInteger()));
+            if (right.TypeCode == DyType.Integer)
+                return new DyChar((char)(left.GetChar() - right.GetInteger()));
 
-            if (right.DecType.TypeCode == DyTypeCode.Char)
-                return ctx.RuntimeContext.Integer.Get(left.GetChar() - right.GetChar());
+            if (right.TypeCode == DyType.Char)
+                return DyInteger.Get(left.GetChar() - right.GetChar());
 
             return ctx.InvalidType(right);
         }
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.DecType.TypeCode == right.DecType.TypeCode)
-                return left.GetChar() == right.GetChar() ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            if (left.TypeCode == right.TypeCode)
+                return left.GetChar() == right.GetChar() ? DyBool.True : DyBool.False;
 
-            if (right.DecType.TypeCode == DyTypeCode.String)
+            if (right.TypeCode == DyType.String)
             {
                 var str = right.GetString();
-                return str.Length == 1 && left.GetChar() == str[0] ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+                return str.Length == 1 && left.GetChar() == str[0] ? DyBool.True : DyBool.False;
             }
 
             return base.EqOp(left, right, ctx); //Important! Should redirect to base
@@ -62,13 +58,13 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.DecType.TypeCode == right.DecType.TypeCode)
-                return left.GetChar() != right.GetChar() ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            if (left.TypeCode == right.TypeCode)
+                return left.GetChar() != right.GetChar() ? DyBool.True : DyBool.False;
 
-            if (right.DecType.TypeCode == DyTypeCode.String)
+            if (right.TypeCode == DyType.String)
             {
                 var str = right.GetString();
-                return str.Length != 1 || left.GetChar() != str[0] ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+                return str.Length != 1 || left.GetChar() != str[0] ? DyBool.True : DyBool.False;
             }
 
             return base.NeqOp(left, right, ctx); //Important! Should redirect to base
@@ -76,22 +72,22 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.DecType.TypeCode == right.DecType.TypeCode)
-                return left.GetChar().CompareTo(right.GetChar()) > 0 ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            if (left.TypeCode == right.TypeCode)
+                return left.GetChar().CompareTo(right.GetChar()) > 0 ? DyBool.True : DyBool.False;
 
-            if (right.DecType.TypeCode == DyTypeCode.String)
-                return left.GetString().CompareTo(right.GetString()) > 0 ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            if (right.TypeCode == DyType.String)
+                return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);
         }
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.DecType.TypeCode == right.DecType.TypeCode)
-                return left.GetChar().CompareTo(right.GetChar()) < 0 ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            if (left.TypeCode == right.TypeCode)
+                return left.GetChar().CompareTo(right.GetChar()) < 0 ? DyBool.True : DyBool.False;
 
-            if (right.DecType.TypeCode == DyTypeCode.String)
-                return left.GetString().CompareTo(right.GetString()) < 0 ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            if (right.TypeCode == DyType.String)
+                return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);
         }
@@ -100,35 +96,35 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "isLower" => Func.Member(ctx, name, (_, c) => char.IsLower(c.GetChar()) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False),
-                "isUpper" => Func.Member(ctx, name, (_, c) => char.IsUpper(c.GetChar()) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False),
-                "isControl" => Func.Member(ctx, name, (_, c) => char.IsControl(c.GetChar()) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False),
-                "isDigit" => Func.Member(ctx, name, (_, c) => char.IsDigit(c.GetChar())? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False),
-                "isLetter" => Func.Member(ctx, name, (_, c) => char.IsLetter(c.GetChar())? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False),
-                "isLetterOrDigit" => Func.Member(ctx, name, (_, c) => char.IsLetterOrDigit(c.GetChar())? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False),
-                "isWhiteSpace" => Func.Member(ctx, name, (_, c) => char.IsWhiteSpace(c.GetChar())? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False),
-                "lower" => Func.Member(ctx, name, (_, c) => new DyChar(this, char.ToLower(c.GetChar()))),
-                "upper" => Func.Member(ctx, name, (_, c) => new DyChar(this, char.ToUpper(c.GetChar()))),
-                "order" => Func.Member(ctx, name, (_, c) => ctx.RuntimeContext.Integer.Get(c.GetChar())),
+                "isLower" => Func.Member(name, (_, c) => char.IsLower(c.GetChar()) ? DyBool.True : DyBool.False),
+                "isUpper" => Func.Member(name, (_, c) => char.IsUpper(c.GetChar()) ? DyBool.True : DyBool.False),
+                "isControl" => Func.Member(name, (_, c) => char.IsControl(c.GetChar()) ? DyBool.True : DyBool.False),
+                "isDigit" => Func.Member(name, (_, c) => char.IsDigit(c.GetChar())? DyBool.True : DyBool.False),
+                "isLetter" => Func.Member(name, (_, c) => char.IsLetter(c.GetChar())? DyBool.True : DyBool.False),
+                "isLetterOrDigit" => Func.Member(name, (_, c) => char.IsLetterOrDigit(c.GetChar())? DyBool.True : DyBool.False),
+                "isWhiteSpace" => Func.Member(name, (_, c) => char.IsWhiteSpace(c.GetChar())? DyBool.True : DyBool.False),
+                "lower" => Func.Member(name, (_, c) => new DyChar(char.ToLower(c.GetChar()))),
+                "upper" => Func.Member(name, (_, c) => new DyChar(char.ToUpper(c.GetChar()))),
+                "order" => Func.Member(name, (_, c) => DyInteger.Get(c.GetChar())),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
 
         private DyObject CreateChar(ExecutionContext ctx, DyObject obj)
         {
-            if (obj.DecType.TypeCode == DyTypeCode.Char)
+            if (obj.TypeCode == DyType.Char)
                 return obj;
 
-            if (obj.DecType.TypeCode == DyTypeCode.String)
+            if (obj.TypeCode == DyType.String)
             {
                 var str = obj.ToString();
-                return str.Length > 0 ? new(this, str[0]) : Empty;
+                return str is not null && str.Length > 0 ? new(str[0]) : DyChar.Empty;
             }
 
-            if (obj.DecType.TypeCode == DyTypeCode.Integer)
-                return new DyChar(this, (char)obj.GetInteger());
+            if (obj.TypeCode == DyType.Integer)
+                return new DyChar((char)obj.GetInteger());
 
-            if (obj.DecType.TypeCode == DyTypeCode.Float)
-                return new DyChar(this, (char)obj.GetFloat());
+            if (obj.TypeCode == DyType.Float)
+                return new DyChar((char)obj.GetFloat());
 
             return ctx.InvalidType(obj);
         }
@@ -136,10 +132,10 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "max" => Func.Static(ctx, name, _ => Max),
-                "min" => Func.Static(ctx, name, _ => Min),
-                "default" => Func.Static(ctx, name, _ => Empty),
-                "Char" => Func.Static(ctx, name, CreateChar, -1, new Par("value")),
+                "max" => Func.Static(name, _ => DyChar.Max),
+                "min" => Func.Static(name, _ => DyChar.Min),
+                "default" => Func.Static(name, _ => DyChar.Empty),
+                "Char" => Func.Static(name, CreateChar, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

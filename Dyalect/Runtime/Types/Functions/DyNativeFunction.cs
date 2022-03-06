@@ -25,8 +25,8 @@ namespace Dyalect.Runtime.Types
             PreviousOffset = ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId].Size;
         }
 
-        internal DyNativeFunction(DyTypeInfo typeInfo, FunSym? sym, int unitId, int funcId, FastList<DyObject[]> captures, int varArgIndex) :
-            base(typeInfo, sym?.Parameters ?? Array.Empty<Par>(), varArgIndex)
+        internal DyNativeFunction(FunSym? sym, int unitId, int funcId, FastList<DyObject[]> captures, int varArgIndex) :
+            base(sym?.Parameters ?? Array.Empty<Par>(), varArgIndex)
         {
             this.sym = sym;
             UnitId = unitId;
@@ -34,14 +34,14 @@ namespace Dyalect.Runtime.Types
             Captures = captures;
         }
 
-        public static DyNativeFunction Create(DyTypeInfo typeInfo, FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1)
+        public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1)
         {
             var vars = new FastList<DyObject[]>(captures) { locals };
-            return new(typeInfo, sym, unitId, funcId, vars, varArgIndex);
+            return new(sym, unitId, funcId, vars, varArgIndex);
         }
 
         internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) =>
-            new DyNativeFunction(DecType, sym, UnitId, FunctionId, Captures, VarArgIndex)
+            new DyNativeFunction(sym, UnitId, FunctionId, Captures, VarArgIndex)
             {
                 Self = arg
             };
@@ -60,7 +60,7 @@ namespace Dyalect.Runtime.Types
                 catch (DyCodeException ex)
                 {
                     ctx.Error = ex.Error;
-                    return ctx.RuntimeContext.Nil.Instance;
+                    return DyNil.Instance;
                 }
             }
 
@@ -90,7 +90,7 @@ namespace Dyalect.Runtime.Types
             catch (DyCodeException ex)
             {
                 ctx.Error = ex.Error;
-                return ctx.RuntimeContext.Nil.Instance;
+                return DyNil.Instance;
             }
         }
 
@@ -104,7 +104,7 @@ namespace Dyalect.Runtime.Types
             catch (DyCodeException ex)
             {
                 ctx.Error = ex.Error;
-                return ctx.RuntimeContext.Nil.Instance;
+                return DyNil.Instance;
             }
         }
 

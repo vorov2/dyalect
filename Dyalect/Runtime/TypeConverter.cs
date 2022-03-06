@@ -15,14 +15,14 @@ namespace Dyalect.Runtime
         internal static DyObject ConvertFrom(object? obj, Type type)
         {
             if (obj is null)
-                return ctx.RuntimeContext.Nil.Instance;
+                return DyNil.Instance;
             
             if (obj is DyObject retval)
                 return retval;
 
             switch (Type.GetTypeCode(type))
             {
-                case TypeCode.Boolean: return (bool)obj ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+                case TypeCode.Boolean: return (bool)obj ? DyBool.True : DyBool.False;
                 case TypeCode.Byte: return new DyInteger((byte)obj);
                 case TypeCode.Int16: return new DyInteger((short)obj);
                 case TypeCode.Int32: return new DyInteger((int)obj);
@@ -36,14 +36,14 @@ namespace Dyalect.Runtime
                 case TypeCode.Single: return new DyFloat((float)obj);
                 case TypeCode.Double: return new DyFloat((double)obj);
                 case TypeCode.Decimal: return new DyFloat((double)(decimal)obj);
-                case TypeCode.Empty: return ctx.RuntimeContext.Nil.Instance;
+                case TypeCode.Empty: return DyNil.Instance;
                 default:
                     if (obj is IDictionary map)
                     {
                         var dict = new Dictionary<DyObject, DyObject>();
                         foreach (DictionaryEntry kv in map)
                             dict[ConvertFrom(kv.Key)] =
-                                kv.Value is null ? ctx.RuntimeContext.Nil.Instance : ConvertFrom(kv.Value);
+                                kv.Value is null ? DyNil.Instance : ConvertFrom(kv.Value);
                         return new DyDictionary(dict);
                     }
                     else if (obj is IEnumerable seq)

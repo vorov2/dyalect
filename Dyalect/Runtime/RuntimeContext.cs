@@ -1,5 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Runtime.Types;
+using System.Collections.Generic;
 
 namespace Dyalect.Runtime
 {
@@ -8,45 +9,23 @@ namespace Dyalect.Runtime
         internal RuntimeContext(UnitComposition composition)
         {
             (Composition, Units) = (composition, new DyObject[composition.Units.Count][]);
-            TypeInfo.DecType = TypeInfo;
-            Nil.DecType = TypeInfo;
-            Integer.DecType = TypeInfo;
-            Float.DecType = TypeInfo;
-            Bool.DecType = TypeInfo;
-            Char.DecType = TypeInfo;
-            String.DecType = TypeInfo;
-            Function.DecType = TypeInfo;
-            Label.DecType = TypeInfo;
-            TypeInfo.DecType = TypeInfo;
-            Module.DecType = TypeInfo;
-            Array.DecType = TypeInfo;
-            Iterator.DecType = TypeInfo;
-            Tuple.DecType = TypeInfo;
-            Dictionary.DecType = TypeInfo;
-            Wrapper.DecType = TypeInfo;
-            Set.DecType = TypeInfo;
-            Error.DecType = TypeInfo;
+            Types = DyType.GetAll();
+            String = (DyStringTypeInfo)Types[DyType.String];
+            Char = (DyCharTypeInfo)Types[DyType.Char];
+            Nil = (DyNilTypeInfo)Types[DyType.Nil];
+            Tuple = (DyTupleTypeInfo)Types[DyType.Tuple];
+            Array = (DyArrayTypeInfo)Types[DyType.Array];
         }
 
-        internal DyObject[][] Units { get; }
+        internal readonly DyStringTypeInfo String;
+        internal readonly DyCharTypeInfo Char;
+        internal readonly DyNilTypeInfo Nil;
+        internal readonly DyTupleTypeInfo Tuple;
+        internal readonly DyArrayTypeInfo Array;
 
-        internal readonly DyNilTypeInfo Nil = new(null!);
-        internal readonly DyIntegerTypeInfo Integer = new(null!);
-        internal readonly DyFloatTypeInfo Float = new(null!);
-        internal readonly DyBoolTypeInfo Bool = new(null!);
-        internal readonly DyCharTypeInfo Char = new(null!);
-        internal readonly DyStringTypeInfo String = new(null!);
-        internal readonly DyFunctionTypeInfo Function = new(null!);
-        internal readonly DyLabelTypeInfo Label = new(null!);
-        internal readonly DyMetaTypeInfo TypeInfo = new(null!);
-        internal readonly DyModuleTypeInfo Module = new(null!);
-        internal readonly DyArrayTypeInfo Array = new(null!);
-        internal readonly DyIteratorTypeInfo Iterator = new(null!);
-        internal readonly DyTupleTypeInfo Tuple = new(null!);
-        internal readonly DyDictionaryTypeInfo Dictionary = new(null!);
-        internal readonly DyWrapperTypeInfo Wrapper = new(null!);
-        internal readonly DySetTypeInfo Set = new(null!);
-        internal readonly DyErrorTypeInfo Error = new(null!);
+        internal readonly List<DyTypeInfo> Types; 
+
+        internal DyObject[][] Units { get; }
 
         public UnitComposition Composition { get; }
     }

@@ -6,18 +6,19 @@ namespace Dyalect.Runtime.Types
 {
     public class DyTuple : DyCollection
     {
+        public static readonly DyTuple Empty = new(Array.Empty<DyObject>());
+        
         internal readonly DyObject[] Values;
 
         public override int Count => Values.Length;
 
-        public DyTuple(DyTypeInfo typeInfo, DyObject[] values) : base(typeInfo) =>
+        public DyTuple(DyObject[] values) : base(DyType.Tuple) =>
             Values = values ?? throw new DyException("Unable to create a tuple with no values.");
 
-        protected DyTuple(DyTypeInfo typeInfo, DyObject[] values, int typeId) : base(typeInfo) =>
+        protected DyTuple(DyObject[] values, int typeId) : base(DyType.Tuple) =>
             Values = values ?? throw new DyException("Unable to create a tuple with no values.");
 
-        public static DyTuple Create(ExecutionContext ctx, params DyObject[] args) => 
-            new(ctx.RuntimeContext.Tuple, args);
+        public static DyTuple Create(ExecutionContext ctx, params DyObject[] args) => new(args);
 
         public Dictionary<DyObject, DyObject> ConvertToDictionary(ExecutionContext ctx)
         {
@@ -27,8 +28,7 @@ namespace Dyalect.Runtime.Types
             {
                 var ki = GetKeyInfo(i);
                 var v = GetValue(i);
-                var key = new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char,
-                    ki is null ? DefaultKey() : ki.Label);
+                var key = new DyString(ki is null ? DefaultKey() : ki.Label);
                 dict[key] = v;
             }
 
@@ -49,10 +49,10 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.DecType.TypeCode == DyTypeCode.Integer)
+            if (index.TypeCode == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
 
-            if (index.DecType.TypeCode != DyTypeCode.String && index.DecType.TypeCode != DyTypeCode.Char)
+            if (index.TypeCode != DyType.String && index.TypeCode != DyType.Char)
                 return ctx.InvalidType(index);
             
             return TryGetItem(index.GetString(), ctx, out var item)
@@ -61,7 +61,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
-            if (index.DecType.TypeCode == DyTypeCode.String)
+            if (index.TypeCode == DyType.String)
             {
                 var i = GetOrdinal(index.GetString());
 
@@ -89,13 +89,13 @@ namespace Dyalect.Runtime.Types
         public virtual bool IsReadOnly(int index) => Values[index] is DyLabel lab && !lab.Mutable;
 
         protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
-            Values[index].DecType.TypeCode == DyTypeCode.Label ? Values[index].GetTaggedValue() : Values[index];
+            Values[index].TypeCode == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
 
         internal virtual string GetKey(int index) => Values[index].GetLabel()!;
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
         {
-            if (Values[index].DecType.TypeCode == DyTypeCode.Integer)
+            if (Values[index].TypeCode == DyType.Integer)
             {
                 var lab = (DyLabel)Values[index];
 
@@ -105,7 +105,7 @@ namespace Dyalect.Runtime.Types
                     return;
                 }
 
-                if (lab.TypeAnnotation is not null && ReferenceEquals(value.DecType, lab.TypeAnnotation))
+                if (lab.TypeAnnotation is not null && value.TypeCode == lab.TypeAnnotation.TypeCode)
                 {
                     ctx.InvalidType(value);
                     return;
@@ -143,7 +143,7 @@ namespace Dyalect.Runtime.Types
         internal override DyObject[] GetValues()
         {
             for (var i = 0; i < Count; i++)
-                if (Values[i].DecType.TypeCode == DyTypeCode.Label)
+                if (Values[i].TypeCode == DyType.Label)
                     return ConvertToPlainValues();
 
             return Values;
@@ -188,13 +188,13 @@ namespace Dyalect.Runtime.Types
                 var str = v.ToString(ctx);
 
                 if (ctx.HasErrors)
-                    return ctx.RuntimeContext.Nil.Instance;
+                    return DyNil.Instance;
 
                 sb.Append(str);
             }
 
             sb.Append(')');
-            return new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, sb.ToString());
+            return new DyString(sb.ToString());
         }
     }
 }

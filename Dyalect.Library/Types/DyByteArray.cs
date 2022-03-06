@@ -134,7 +134,7 @@
 
 //            var cz = BitConverter.ToInt64(buffer, readPosition);
 //            readPosition += sizeof(long);
-//            return ctx.RuntimeContext.Integer.Get(cz);
+//            return DyInteger.Get(cz);
 //        }
 
 //        private DyObject ReadDouble(ExecutionContext ctx)
@@ -154,7 +154,7 @@
 
 //            var cz = buffer[readPosition];
 //            readPosition++;
-//            return cz is 1 ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+//            return cz is 1 ? DyBool.True : DyBool.False;
 //        }
 
 //        private DyObject ReadChar(ExecutionContext ctx)

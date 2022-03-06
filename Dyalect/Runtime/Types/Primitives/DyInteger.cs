@@ -4,9 +4,28 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyInteger : DyObject
     {
+        public static readonly DyInteger Zero = new(0L);
+        public static readonly DyInteger MinusOne = new(-1L);
+        public static readonly DyInteger One = new(1L);
+        public static readonly DyInteger Two = new(2L);
+        public static readonly DyInteger Three = new(3L);
+        public static readonly DyInteger Max = new(long.MaxValue);
+        public static readonly DyInteger Min = new(long.MinValue);
+
+        public static DyInteger Get(long i) =>
+            i switch
+            {
+                -1 => MinusOne,
+                0 => Zero,
+                1 => One,
+                2 => Two,
+                3 => Three,
+                _ => new DyInteger(i)
+            };
+
         private readonly long value;
 
-        public DyInteger(DyTypeInfo typeInfo, long value) : base(typeInfo) =>
+        public DyInteger(long value) : base(DyType.Integer) =>
             this.value = value;
 
         public override int GetHashCode() => value.GetHashCode();
@@ -27,7 +46,7 @@ namespace Dyalect.Runtime.Types
 
         internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write((int)DecType.TypeCode);
+            writer.Write(TypeCode);
             writer.Write(value);
         }
     }

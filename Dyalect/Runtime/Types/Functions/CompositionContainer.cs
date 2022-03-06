@@ -16,7 +16,7 @@
             var res = first.Call(ctx, args);
 
             if (ctx.HasErrors)
-                return ctx.RuntimeContext.Nil.Instance;
+                return DyNil.Instance;
 
             return second.Call(ctx, res);
         }

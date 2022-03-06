@@ -9,9 +9,9 @@ namespace Dyalect.Runtime.Types
     {
         private readonly string errorCode;
 
-        internal DyError(DyTypeInfo typeInfo, DyErrorCode code, params object[] dataItems) : this(typeInfo, code.ToString(), code, dataItems) { }
+        internal DyError(DyErrorCode code, params object[] dataItems) : this(code.ToString(), code, dataItems) { }
 
-        internal DyError(DyTypeInfo typeInfo, string error, DyErrorCode code, params object[] dataItems) : base(typeInfo) =>
+        internal DyError(string error, DyErrorCode code, params object[] dataItems) : base(DyType.Error) =>
             (errorCode, Code, DataItems) = (error, code, dataItems);
 
         internal Stack<StackPoint>? Dump { get; set; }
@@ -38,7 +38,7 @@ namespace Dyalect.Runtime.Types
             return errorCode;
         }
 
-        internal DyObject GetDetail(ExecutionContext ctx) => new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, GetDescription());
+        internal DyObject GetDetail(ExecutionContext ctx) => new DyString(GetDescription());
 
         public override object ToObject() => GetDescription();
 
@@ -46,13 +46,13 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.DecType.TypeCode != DyTypeCode.String)
+            if (index.TypeCode != DyType.String)
                 return ctx.InvalidType(index);
 
             var name = index.GetString();
 
             if (name is "code")
-                return new DyInteger(ctx.RuntimeContext.Integer, (int)Code);
+                return new DyInteger((int)Code);
             
             if (name is "detail")
                 return GetDetail(ctx);

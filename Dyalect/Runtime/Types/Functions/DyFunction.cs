@@ -16,7 +16,7 @@ namespace Dyalect.Runtime.Types
 
         internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
 
-        protected DyFunction(DyTypeInfo typeInfo, Par[] pars, int varArgIndex) : base(typeInfo) =>
+        protected DyFunction(Par[] pars, int varArgIndex) : base(DyType.Function) =>
             (Parameters, VarArgIndex) = (pars, varArgIndex);
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
@@ -34,7 +34,7 @@ namespace Dyalect.Runtime.Types
             var newArgs = PrepareArguments(ctx, args);
 
             if (ctx.HasErrors)
-                return ctx.RuntimeContext.Nil.Instance;
+                return DyNil.Instance;
 
             return InternalCall(ctx, newArgs);
         }
@@ -64,15 +64,15 @@ namespace Dyalect.Runtime.Types
             if (VarArgIndex > -1)
             {
                 var o = newLocals[VarArgIndex];
-                if (o.DecType.TypeCode == DyTypeCode.Nil)
+                if (o.TypeCode == DyType.Nil)
                     newLocals[VarArgIndex] = ctx.RuntimeContext.Tuple.Empty;
-                else if (o.DecType.TypeCode == DyTypeCode.Array)
+                else if (o.TypeCode == DyType.Array)
                 {
                     var arr = (DyArray)o;
                     arr.Compact();
-                    newLocals[VarArgIndex] = new DyTuple(ctx.RuntimeContext.Tuple, arr.Values);
+                    newLocals[VarArgIndex] = new DyTuple(arr.Values);
                 }
-                else if (o.DecType.TypeCode != DyTypeCode.Tuple)
+                else if (o.TypeCode != DyType.Tuple)
                 {
                     newLocals[VarArgIndex] = DyTuple.Create(ctx, o);
                 }
@@ -144,7 +144,7 @@ namespace Dyalect.Runtime.Types
 
         internal abstract bool Equals(DyFunction func);
 
-        public override int GetHashCode() => HashCode.Combine((int)DecType.TypeCode, FunctionName ?? DefaultName, Parameters, Self);
+        public override int GetHashCode() => HashCode.Combine(TypeCode, FunctionName ?? DefaultName, Parameters, Self);
 
         internal virtual void Reset(ExecutionContext ctx) { }
     }

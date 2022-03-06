@@ -4,12 +4,12 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyIterator : DyObject
     {
-        protected DyIterator(DyTypeInfo typeInfo) : base(typeInfo) { }
+        protected DyIterator() : base(DyType.Iterator) { }
 
-        internal static DyIterator Create(DyTypeInfo typeInfo, int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) =>
-            new DyNativeIterator(typeInfo, unitId, handle, captures, locals);
+        internal static DyIterator Create(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) =>
+            new DyNativeIterator(unitId, handle, captures, locals);
 
-        public static DyIterator Create(DyTypeInfo typeInfo, IEnumerable<DyObject> seq) => new DyForeignIterator(typeInfo, seq);
+        public static DyIterator Create(IEnumerable<DyObject> seq) => new DyForeignIterator(seq);
 
         public abstract DyFunction GetIteratorFunction();
 
@@ -47,9 +47,9 @@ namespace Dyalect.Runtime.Types
         {
             DyFunction? iter;
 
-            if (val.DecType.TypeCode != DyTypeCode.Iterator)
+            if (val.TypeCode != DyType.Iterator)
                 iter = ((DyIterator)val).GetIteratorFunction();
-            else if (val.DecType.TypeCode == DyTypeCode.Function)
+            else if (val.TypeCode == DyType.Function)
             {
                 var obj = ((DyFunction)val).Call(ctx);
                 iter = obj as DyFunction;

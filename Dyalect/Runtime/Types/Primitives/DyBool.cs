@@ -1,14 +1,14 @@
 ﻿using System.IO;
-using Dyalect.Debug;
 
 namespace Dyalect.Runtime.Types
 {
     public abstract class DyBool : DyObject
     {
-        internal sealed class True: DyBool
-        {
-            public True(DyTypeInfo typeInfo) : base(typeInfo) { }
+        public static readonly DyBool True = new DyBoolTrue();
+        public static readonly DyBool False = new DyBoolFalse();
 
+        private sealed class DyBoolTrue: DyBool
+        {
             protected internal override bool GetBool() => true;
 
             public override string ToString() => "true";
@@ -16,10 +16,8 @@ namespace Dyalect.Runtime.Types
             public override int GetHashCode() => true.GetHashCode();
         }
 
-        internal sealed class False: DyBool
+        private sealed class DyBoolFalse: DyBool
         {
-            public False(DyTypeInfo typeInfo) : base(typeInfo) { }
-
             protected internal override bool GetBool() => false;
 
             public override string ToString() => "false";
@@ -27,18 +25,18 @@ namespace Dyalect.Runtime.Types
             public override int GetHashCode() => false.GetHashCode();
         }
 
-        private DyBool(DyTypeInfo typeInfo) : base(typeInfo) { }
+        private DyBool() : base(DyType.Bool) { }
 
         public override object ToObject() => GetBool();
 
         public override DyObject Clone() => this;
 
-        public static explicit operator bool(DyBool v) => v is True;
+        public static explicit operator bool(DyBool v) => v is DyBoolTrue;
 
         internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write((int)DecType.TypeCode);
-            writer.Write(this is True);
+            writer.Write(TypeCode);
+            writer.Write(this is DyBoolTrue);
         }
     }
 }

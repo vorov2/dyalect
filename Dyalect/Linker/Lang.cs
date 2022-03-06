@@ -42,7 +42,7 @@ namespace Dyalect.Linker
         }
 
         protected override void Execute(ExecutionContext ctx) =>
-            Add("args", startupArguments ?? (DyObject)ctx.RuntimeContext.Nil.Instance);
+            Add("args", startupArguments ?? (DyObject)DyNil.Instance);
 
         [Function("print")]
         public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
@@ -54,7 +54,7 @@ namespace Dyalect.Linker
                 if (!fst)
                     Console.Write(DyObject.Is(separator, DyString.Type) ? separator.GetString() : separator.ToString(ctx).ToString());
 
-                if (DyObject.a.DecType.TypeCode == DyTypeCode.String)
+                if (DyObject.a.TypeCode == DyType.String)
                     Console.Write(a.GetString());
                 else
                     Console.Write(a.ToString(ctx));
@@ -70,7 +70,7 @@ namespace Dyalect.Linker
             else if (terminator is not DyNil)
                 terminator.ToString(ctx).ToString();
 
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         [Function("setOut")]
@@ -91,7 +91,7 @@ namespace Dyalect.Linker
                 Console.SetOut(new ConsoleTextWriter(ctx, fn));
             }
 
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         [Function("caller")]
@@ -104,7 +104,7 @@ namespace Dyalect.Linker
                     return cp.Function;
             }
 
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         [Function("current")]
@@ -113,7 +113,7 @@ namespace Dyalect.Linker
             if (ctx.CallStack.Count > 1)
                 return ctx.CallStack.Peek().Function;
 
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         [Function("readLine")]
@@ -140,7 +140,7 @@ namespace Dyalect.Linker
                 return ctx.InvalidValue("The value of parameter \"min\" cannot be greater than the value of parameterr \"max\".");
 
             var rnd = new Random(iseed);
-            return ctx.RuntimeContext.Integer.Get(rnd.Next(imin, imax));
+            return DyInteger.Get(rnd.Next(imin, imax));
         }
 
         [Function("assert")]
@@ -149,7 +149,7 @@ namespace Dyalect.Linker
             if (!Eq(ctx, expect?.ToObject(), got?.ToObject()))
                 return ctx.AssertFailed($"Expected {expect?.ToString(ctx)}, got {got?.ToString(ctx)}");
 
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         private bool Eq(ExecutionContext ctx, object? x, object? y)
@@ -177,7 +177,7 @@ namespace Dyalect.Linker
             }
 
             if (x is DyObject xa && y is DyObject ba)
-                return xa.DecType.Eq(ctx, xa, ba).GetBool();
+                return xa.Eq(ctx, xa, ba).GetBool();
 
             return Equals(x, y);
         }
@@ -206,7 +206,7 @@ namespace Dyalect.Linker
         [Function("min")]
         public DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.DecType.Lt(ctx, x, y).GetBool())
+            if (x.Lt(ctx, x, y).GetBool())
                 return x;
             else
                 return y;
@@ -215,7 +215,7 @@ namespace Dyalect.Linker
         [Function("max")]
         public DyObject Max(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.DecType.Gt(ctx, x, y).GetBool())
+            if (x.Gt(ctx, x, y).GetBool())
                 return x;
             else
                 return y;
@@ -249,7 +249,7 @@ namespace Dyalect.Linker
             if (ReferenceEquals(x, DyInteger.Zero)) 
                 return DyInteger.Zero;
 
-            if (x.DecType.Lt(ctx, x, DyInteger.Zero).GetBool())
+            if (x.Lt(ctx, x, DyInteger.Zero).GetBool())
                 return DyInteger.MinusOne;
             
             return DyInteger.One;

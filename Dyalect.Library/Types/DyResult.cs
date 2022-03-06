@@ -35,7 +35,7 @@
 //        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
 //        {
 //            var self = (DyResult)arg;
-//            return ctx.RuntimeContext.Integer.Get(self.Value.TypeId is DyType.Nil ? 0 : 1);
+//            return DyInteger.Get(self.Value.TypeId is DyType.Nil ? 0 : 1);
 //        }
 
 //        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
@@ -83,9 +83,9 @@
 //        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
 //        {
 //            if (name == "Success")
-//                return Func.Static(name, Success, -1, new Par("arg", ctx.RuntimeContext.Nil.Instance));
+//                return Func.Static(name, Success, -1, new Par("arg", DyNil.Instance));
 //            if (name == "Failure")
-//                return Func.Static(name, Failure, -1, new Par("arg", ctx.RuntimeContext.Nil.Instance));
+//                return Func.Static(name, Failure, -1, new Par("arg", DyNil.Instance));
 
 //            return base.InitializeStaticMember(name, ctx);
 //        }

@@ -2,8 +2,6 @@
 {
     public class DyWrapperTypeInfo : DyTypeInfo
     {
-        public DyWrapperTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Object) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get;
@@ -12,5 +10,7 @@
             self.GetItem(index, ctx);
 
         public override string TypeName => DyTypeNames.Object;
+
+        public override int ReflectedTypeCode => DyType.Object;
     }
 }

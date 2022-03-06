@@ -4,7 +4,7 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
     {
-        public DyFunctionTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Function) { }
+        public DyFunctionTypeInfo() : base(DyType.TypeInfo) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
@@ -12,13 +12,13 @@ namespace Dyalect.Runtime.Types
         public override string TypeName => DyTypeNames.Function;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, arg.ToString());
+            new DyString(arg.ToString());
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            left.DecType.TypeCode == right.DecType.TypeCode && ((DyFunction)left).Equals((DyFunction)right) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            left.TypeCode == right.TypeCode && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
 
         private DyObject GetName(ExecutionContext ctx, DyObject self) =>
-            new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, ((DyFunction)self).FunctionName);
+            new DyString(((DyFunction)self).FunctionName);
 
         private DyObject GetParameters(ExecutionContext ctx, DyObject self)
         {
@@ -28,12 +28,12 @@ namespace Dyalect.Runtime.Types
             for (var i = 0; i < fn.Parameters.Length; i++)
             {
                 var p = fn.Parameters[i];
-                arr[i] = new DyTuple(ctx.RuntimeContext.Tuple,
+                arr[i] = new DyTuple(
                         new[] {
-                            new DyLabel(ctx.RuntimeContext.Label, "name", new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, p.Name)),
-                            new DyLabel(ctx.RuntimeContext.Label, "hasDefault", p.Value is not null ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False),
-                            new DyLabel(ctx.RuntimeContext.Label, "default", p.Value != null ? p.Value.ToRuntimeType(ctx.RuntimeContext) : ctx.RuntimeContext.Nil.Instance),
-                            new DyLabel(ctx.RuntimeContext.Label, "varArg", fn.VarArgIndex == i ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False)
+                            new DyLabel("name", new DyString(p.Name)),
+                            new DyLabel("hasDefault", p.Value is not null ? DyBool.True : DyBool.False),
+                            new DyLabel("default", p.Value != null ? p.Value.ToRuntimeType(ctx.RuntimeContext) : DyNil.Instance),
+                            new DyLabel("varArg", fn.VarArgIndex == i ? DyBool.True : DyBool.False)
                         }
                     );
             }
@@ -44,7 +44,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "compose" => Func.Member(ctx, name, Compose, -1, new Par("with")),
+                "compose" => Func.Member(name, Compose, -1, new Par("with")),
                 "name" => Func.Auto(ctx, name, GetName),
                 "parameters" => Func.Auto(ctx, name, GetParameters),
                 _ => base.InitializeInstanceMember(self, name, ctx)
@@ -62,13 +62,13 @@ namespace Dyalect.Runtime.Types
             else
                 ctx.InvalidType(first);
 
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "compose")
-                return Func.Static(ctx, name, Compose, -1, new Par("first"), new Par("second"));
+                return Func.Static(name, Compose, -1, new Par("first"), new Par("second"));
 
             return base.InitializeStaticMember(name, ctx);
         }

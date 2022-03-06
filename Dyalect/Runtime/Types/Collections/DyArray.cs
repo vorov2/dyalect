@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
             set => Values[CorrectIndex(index)] = value;
         }
 
-        public DyArray(DyTypeInfo typeInfo, DyObject[] values) : base(typeInfo) => 
+        public DyArray(DyObject[] values) : base(DyType.Array) => 
             (Values, Count) = (values, values.Length);
 
         public void Compact()
@@ -128,7 +128,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = Values[i];
 
-                if (e.DecType.Eq(ctx, e, elem).GetBool())
+                if (ctx.RuntimeContext.Types[e.TypeCode].Eq(ctx, e, elem).GetBool())
                     return i;
 
                 if (ctx.HasErrors)
@@ -146,7 +146,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = Values[i];
 
-                if (e.DecType.Eq(ctx, e, elem).GetBool())
+                if (ctx.RuntimeContext.Types[e.TypeCode].Eq(ctx, e, elem).GetBool())
                     index = i;
 
                 if (ctx.HasErrors)
@@ -158,7 +158,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.DecType.TypeCode == DyTypeCode.Integer)
+            if (index.TypeCode == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
             else
                 return ctx.InvalidType(index);

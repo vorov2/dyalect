@@ -51,7 +51,7 @@
 //        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
 //        {
 //            return left is DyRegex a && right is DyRegex b && a.Regex.ToString() == b.Regex.ToString()
-//                ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+//                ? DyBool.True : DyBool.False;
 //        }
 
 //        private DyObject Match(ExecutionContext ctx, DyObject self, DyObject input, DyObject start, DyObject len)

@@ -10,7 +10,7 @@ namespace Dyalect.Linker
             Value = new DyString(value);
 
         public DefaultAttribute(long value) =>
-            Value = ctx.RuntimeContext.Integer.Get(value);
+            Value = DyInteger.Get(value);
 
         public DefaultAttribute(double value) =>
             Value = new DyFloat(value);
@@ -19,10 +19,10 @@ namespace Dyalect.Linker
             Value = new DyChar(value);
 
         public DefaultAttribute() =>
-            Value = ctx.RuntimeContext.Nil.Instance;
+            Value = DyNil.Instance;
 
         public DefaultAttribute(bool value) =>
-            Value = value ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            Value = value ? DyBool.True : DyBool.False;
 
         public DyObject Value { get; }
     }

@@ -5,20 +5,20 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyErrorTypeInfo : DyTypeInfo
     {
-        public DyErrorTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Error) { }
+        public DyErrorTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyType.Error) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Len | SupportedOperations.Get;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Integer.Get(((DyError)arg).DataItems?.Length ?? 0);
+            DyInteger.Get(((DyError)arg).DataItems?.Length ?? 0);
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             var err = (DyError)self;
 
-            if (index.DecType.TypeCode == DyTypeCode.Integer)
+            if (index.TypeCode == DyType.Integer)
             {
                 var idx = index.GetInteger();
 
@@ -27,7 +27,7 @@ namespace Dyalect.Runtime.Types
 
                 return TypeConverter.ConvertFrom(err.DataItems[idx]);
             }
-            else if (index.DecType.TypeCode == DyTypeCode.String)
+            else if (index.TypeCode == DyType.String)
                 return err.GetItem(index, ctx);
             else
                 return ctx.InvalidType(index);
@@ -36,11 +36,11 @@ namespace Dyalect.Runtime.Types
         public override string TypeName => DyTypeNames.Error;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, arg.ToString());
+            new DyString(arg.ToString());
 
         protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            return Func.Static(ctx, name, (c, args) =>
+            return Func.Static(name, (c, args) =>
             {
                 if (!Enum.TryParse(name, out DyErrorCode code))
                     code = DyErrorCode.UnexpectedError;

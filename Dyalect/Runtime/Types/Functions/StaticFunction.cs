@@ -5,8 +5,8 @@ namespace Dyalect.Runtime.Types
 {
     internal abstract class BaseStaticFunction : DyForeignFunction
     {
-        protected BaseStaticFunction(DyTypeInfo typeInfo, string? name, Par[] pars, int varArgIndex) : 
-            base(typeInfo, name, pars, varArgIndex) { }
+        protected BaseStaticFunction(string? name, Par[] pars, int varArgIndex) : 
+            base(name, pars, varArgIndex) { }
 
         protected override DyFunction Clone(ExecutionContext ctx) => this;
     }
@@ -15,8 +15,8 @@ namespace Dyalect.Runtime.Types
     {
         private readonly Func<ExecutionContext, DyObject> fun;
 
-        public StaticFunction0(DyTypeInfo typeInfo, string name, Func<ExecutionContext, DyObject> fun, Par[] pars)
-            : base(typeInfo, name, pars, -1) => this.fun = fun;
+        public StaticFunction0(string name, Func<ExecutionContext, DyObject> fun, Par[] pars)
+            : base(name, pars, -1) => this.fun = fun;
 
         internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx);
 
@@ -27,8 +27,8 @@ namespace Dyalect.Runtime.Types
     {
         private readonly Func<ExecutionContext, DyObject, DyObject> fun;
 
-        public StaticFunction1(DyTypeInfo typeInfo, string name, Func<ExecutionContext, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
-            : base(typeInfo, name, pars, varArgIndex) => this.fun = fun;
+        public StaticFunction1(string name, Func<ExecutionContext, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+            : base(name, pars, varArgIndex) => this.fun = fun;
 
         internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0]);
 
@@ -39,8 +39,8 @@ namespace Dyalect.Runtime.Types
     {
         private readonly Func<ExecutionContext, DyObject, DyObject, DyObject> fun;
 
-        public StaticFunction2(DyTypeInfo typeInfo, string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
-            : base(typeInfo, name, pars, varArgIndex) => this.fun = fun;
+        public StaticFunction2(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+            : base(name, pars, varArgIndex) => this.fun = fun;
 
         internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0], args[1]);
 
@@ -51,8 +51,8 @@ namespace Dyalect.Runtime.Types
     {
         private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun;
 
-        public StaticFunction3(DyTypeInfo typeInfo, string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
-            : base(typeInfo, name, pars, varArgIndex) => this.fun = fun;
+        public StaticFunction3(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+            : base(name, pars, varArgIndex) => this.fun = fun;
 
         internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0], args[1], args[2]);
 
@@ -63,8 +63,8 @@ namespace Dyalect.Runtime.Types
     {
         private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun;
 
-        public StaticFunction4(DyTypeInfo typeInfo, string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
-            : base(typeInfo, name, pars, varArgIndex) => this.fun = fun;
+        public StaticFunction4(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+            : base(name, pars, varArgIndex) => this.fun = fun;
 
         internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3]);
 
@@ -75,8 +75,8 @@ namespace Dyalect.Runtime.Types
     {
         private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun;
 
-        public StaticFunction5(DyTypeInfo typeInfo, string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
-            : base(typeInfo, name, pars, varArgIndex) => this.fun = fun;
+        public StaticFunction5(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+            : base(name, pars, varArgIndex) => this.fun = fun;
 
         internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3], args[4]);
 

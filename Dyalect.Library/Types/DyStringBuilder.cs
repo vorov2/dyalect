@@ -45,13 +45,13 @@
 
 
 //        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
-//            ctx.RuntimeContext.Integer.Get(((DyStringBuilder)arg).Builder.Length);
+//            DyInteger.Get(((DyStringBuilder)arg).Builder.Length);
 
 //        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
 //        {
 //            var a = ((DyStringBuilder)left).Builder;
 //            var b = ((DyStringBuilder)right).Builder;
-//            return a.ToString() == b.ToString() ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+//            return a.ToString() == b.ToString() ? DyBool.True : DyBool.False;
 //        }
 
 //        private DyObject Append(ExecutionContext ctx, DyObject self, DyObject value)
@@ -60,7 +60,7 @@
 //            var str = DyString.ToString(value, ctx);
 
 //            if (ctx.HasErrors)
-//                return ctx.RuntimeContext.Nil.Instance;
+//                return DyNil.Instance;
 
 //            sb.Append(str);
 //            return self;
@@ -72,7 +72,7 @@
 //            var str = DyString.ToString(value, ctx);
 
 //            if (ctx.HasErrors)
-//                return ctx.RuntimeContext.Nil.Instance;
+//                return DyNil.Instance;
 
 //            sb.AppendLine(str);
 //            return self;
@@ -84,7 +84,7 @@
 //            var b = DyString.ToString(@new, ctx);
 
 //            if (ctx.HasErrors)
-//                return ctx.RuntimeContext.Nil.Instance;
+//                return DyNil.Instance;
 
 //            var sb = ((DyStringBuilder)self).Builder;
 //            sb.Replace(a, b);
@@ -122,7 +122,7 @@
 //            var str = DyString.ToString(value, ctx);
 
 //            if (ctx.HasErrors)
-//                return ctx.RuntimeContext.Nil.Instance;
+//                return DyNil.Instance;
 
 //            if (i < 0 || i >= sb.Length)
 //                return ctx.IndexOutOfRange();
@@ -159,7 +159,7 @@
 //        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
 //        {
 //            if (name == "StringBuilder")
-//                return Func.Static(name, New, -1, new Par("values", ctx.RuntimeContext.Nil.Instance));
+//                return Func.Static(name, New, -1, new Par("values", DyNil.Instance));
 
 //            return base.InitializeStaticMember(name, ctx);
 //        }

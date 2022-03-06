@@ -7,127 +7,127 @@ namespace Dyalect.Runtime
         public static DyObject Fail(this ExecutionContext ctx, string detail)
         {
             ctx.Error = new(DyErrorCode.UnexpectedError, new DyString(detail));
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject InvalidValue(this ExecutionContext ctx, string error)
         {
             ctx.Error = new(DyErrorCode.InvalidValue, error);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject FieldNotFound(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.FieldNotFound);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject PrivateAccess(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.PrivateAccess);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject FieldReadOnly(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.FieldReadOnly);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject MultipleValuesForArgument(this ExecutionContext ctx, string funName, string argName)
         {
             ctx.Error = new(DyErrorCode.MultipleValuesForArgument, funName, argName);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject CollectionModified(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.CollectionModified);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject FormatException(this ExecutionContext ctx, string reason)
         {
             ctx.Error = new(DyErrorCode.FormatException, reason);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject AssertFailed(this ExecutionContext ctx, string reason)
         {
             ctx.Error = new(DyErrorCode.AssertFailed, reason);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject PrivateNameAccess(this ExecutionContext ctx, string name)
         {
             ctx.Error = new(DyErrorCode.PrivateNameAccess, name);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, string typeName)
         {
             ctx.Error = new(DyErrorCode.OperationNotSupported, op, typeName);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject IndexOutOfRange(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.IndexOutOfRange);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject KeyNotFound(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.KeyNotFound);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject KeyAlreadyPresent(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.KeyAlreadyPresent);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
         {
-            ctx.Error = new(DyErrorCode.InvalidType, value.DecType.TypeName);
-            return ctx.RuntimeContext.Nil.Instance;
+            ctx.Error = new(DyErrorCode.InvalidType, value.TypeName);
+            return DyNil.Instance;
         }
 
         public static DyObject InvalidType(this ExecutionContext ctx, string typeName)
         {
             ctx.Error = new(DyErrorCode.InvalidType, typeName);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject ExternalFunctionFailure(this ExecutionContext ctx, string functionName, string error)
         {
             ctx.Error = new(DyErrorCode.ExternalFunctionFailure, functionName, error);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject DivideByZero(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.DivideByZero);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject TooManyArguments(this ExecutionContext ctx, string functionName, int functionArguments, int passedArguments)
         {
             ctx.Error = new(DyErrorCode.TooManyArguments, functionName, functionArguments, passedArguments);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject RequiredArgumentMissing(this ExecutionContext ctx, string functionName, string argumentName)
         {
             ctx.Error = new(DyErrorCode.RequiredArgumentMissing, functionName, argumentName);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
 
         public static DyObject ArgumentNotFound(this ExecutionContext ctx, string functionName, string argumentName)
         {
             ctx.Error = new(DyErrorCode.ArgumentNotFound, functionName, argumentName);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
     }
 }

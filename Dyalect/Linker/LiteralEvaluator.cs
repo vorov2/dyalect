@@ -10,11 +10,11 @@ namespace Dyalect.Linker
             node.NodeType switch
             {
                 NodeType.String => new DyString(((DStringLiteral)node).Value),
-                NodeType.Integer => ctx.RuntimeContext.Integer.Get(((DIntegerLiteral)node).Value),
+                NodeType.Integer => DyInteger.Get(((DIntegerLiteral)node).Value),
                 NodeType.Float => new DyFloat(((DFloatLiteral)node).Value),
                 NodeType.Char => new DyChar(((DCharLiteral)node).Value),
-                NodeType.Boolean => ((DBooleanLiteral)node).Value ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False,
-                NodeType.Nil => ctx.RuntimeContext.Nil.Instance,
+                NodeType.Boolean => ((DBooleanLiteral)node).Value ? DyBool.True : DyBool.False,
+                NodeType.Nil => DyNil.Instance,
                 NodeType.Tuple => new DyTuple(GetArray(((DTupleLiteral)node).Elements, allowLabels: true)),
                 NodeType.Array => new DyArray(GetArray(((DArrayLiteral)node).Elements, allowLabels: false)),
                 _ => throw new DyException($"Node of type {node.NodeType} is not supported."),

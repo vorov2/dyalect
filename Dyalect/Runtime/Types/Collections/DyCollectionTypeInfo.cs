@@ -5,21 +5,21 @@ namespace Dyalect.Runtime.Types
 {
     internal abstract class DyCollectionTypeInfo : DyTypeInfo
     {
-        protected DyCollectionTypeInfo(DyTypeInfo typeInfo, DyTypeCode typeCode) : base(typeInfo, typeCode) { }
+        protected DyCollectionTypeInfo() { }
 
         protected virtual DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
         {
             var coll = (DyCollection)self;
-            var arr = coll.GetValues(ctx);
+            var arr = coll.GetValues();
 
-            if (fromElem.DecType.TypeCode != DyTypeCode.Integer)
+            if (fromElem.TypeCode != DyType.Integer)
                 return ctx.InvalidType(fromElem);
 
-            if (toElem.DecType.TypeCode != DyTypeCode.Nil && toElem.DecType.TypeCode != DyTypeCode.Integer)
+            if (toElem.TypeCode != DyType.Nil && toElem.TypeCode != DyType.Integer)
                 return ctx.InvalidType(toElem);
 
             var beg = (int)fromElem.GetInteger();
-            var end = ReferenceEquals(toElem, ctx.RuntimeContext.Nil.Instance) ? coll.Count - 1 : (int)toElem.GetInteger();
+            var end = ReferenceEquals(toElem, DyNil.Instance) ? coll.Count - 1 : (int)toElem.GetInteger();
 
             if (beg == 0 && end == coll.Count - 1)
                 return self;
@@ -51,7 +51,7 @@ namespace Dyalect.Runtime.Types
             IEnumerable<DyObject> Iterate()
             {
                 for (var i = 0; i < arr.Count; i++)
-                    yield return ctx.RuntimeContext.Integer.Get(i);
+                    yield return DyInteger.Get(i);
             }
 
             return DyIterator.Create(Iterate());

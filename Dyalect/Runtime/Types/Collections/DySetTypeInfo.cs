@@ -6,9 +6,9 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DySetTypeInfo : DyTypeInfo
     {
-        public DySetTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyTypeCode.Set) { }
-
         public override string TypeName => DyTypeNames.Set;
+
+        public override int ReflectedTypeCode => DyType.Set;
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -17,13 +17,13 @@ namespace Dyalect.Runtime.Types
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var self = (DySet)left;
-            return self.Equals(ctx, right) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            return self.Equals(ctx, right) ? DyBool.True : DyBool.False;
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var self = (DySet)arg;
-            return ctx.RuntimeContext.Integer.Get(self.Count);
+            return DyInteger.Get(self.Count);
         }
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
@@ -40,36 +40,36 @@ namespace Dyalect.Runtime.Types
                 sb.Append(v.ToString(ctx));
 
                 if (ctx.HasErrors)
-                    return ctx.RuntimeContext.Nil.Instance;
+                    return DyNil.Instance;
             }
 
             sb.Append(')');
-            return new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, sb.ToString());
+            return new DyString(sb.ToString());
         }
 
         private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return set.Add(value) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            return set.Add(value) ? DyBool.True : DyBool.False;
         }
         
         private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return set.Remove(value) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            return set.Remove(value) ? DyBool.True : DyBool.False;
         }
         
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return set.Contains(value) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            return set.Contains(value) ? DyBool.True : DyBool.False;
         }
         
         private DyObject Clear(ExecutionContext ctx, DyObject self)
         {
             var set = (DySet)self;
             set.Clear();
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
         
         private DyObject ToArray(ExecutionContext ctx, DyObject self)
@@ -88,39 +88,39 @@ namespace Dyalect.Runtime.Types
         {
             var set = (DySet)self;
             set.IntersectWith(ctx, value);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
         
         private DyObject UnionWith(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
             set.UnionWith(ctx, value);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
         
         private DyObject ExceptWith(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
             set.ExceptWith(ctx, value);
-            return ctx.RuntimeContext.Nil.Instance;
+            return DyNil.Instance;
         }
         
         private DyObject Overlaps(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return set.Overlaps(ctx, value) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            return set.Overlaps(ctx, value) ? DyBool.True : DyBool.False;
         }
 
         private DyObject IsSubsetOf(ExecutionContext ctx, DyObject self, DyObject other)
         {
             var seq = (DySet)self;
-            return seq.IsSubsetOf(ctx, other) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            return seq.IsSubsetOf(ctx, other) ? DyBool.True : DyBool.False;
         }
 
         private DyObject IsSupersetOf(ExecutionContext ctx, DyObject self, DyObject other)
         {
             var seq = (DySet)self;
-            return seq.IsSupersetOf(ctx, other) ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False;
+            return seq.IsSupersetOf(ctx, other) ? DyBool.True : DyBool.False;
         }
         
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -144,7 +144,7 @@ namespace Dyalect.Runtime.Types
         private DyObject New(ExecutionContext ctx, DyObject arg)
         {
             var xs = ((DyTuple)arg).Values;
-            var set = new DySet(DecType);
+            var set = new DySet();
 
             foreach (var x in xs)
                 set.Add(x);

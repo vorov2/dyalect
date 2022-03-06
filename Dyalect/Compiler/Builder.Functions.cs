@@ -119,32 +119,32 @@ namespace Dyalect.Compiler
                     {
                         case NodeType.Integer:
                             val = new StaticInteger(((DIntegerLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyTypeCode.Integer, p.TypeAnnotation))
+                            if (!CheckRestriction(DyType.Integer, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Float:
                             val = new StaticFloat(((DFloatLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyTypeCode.Float, p.TypeAnnotation))
+                            if (!CheckRestriction(DyType.Float, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Char:
                             val = new StaticChar(((DCharLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyTypeCode.Char, p.TypeAnnotation))
+                            if (!CheckRestriction(DyType.Char, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Boolean:
                             val = new StaticBool(((DBooleanLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyTypeCode.Bool, p.TypeAnnotation)) 
+                            if (!CheckRestriction(DyType.Bool, p.TypeAnnotation)) 
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.String:
                             val = new StaticString(((DStringLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyTypeCode.String, p.TypeAnnotation))
+                            if (!CheckRestriction(DyType.String, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Nil:
                             val = StaticNil.Instance;
-                            if (!CheckRestriction(DyTypeCode.Nil, p.TypeAnnotation))
+                            if (!CheckRestriction(DyType.Nil, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         default:

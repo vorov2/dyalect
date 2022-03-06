@@ -5,7 +5,7 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyCollection : DyEnumerable
     {
-        protected DyCollection(DyTypeInfo type) : base(type) { }
+        protected DyCollection(int typeCode) : base(typeCode) { }
 
         #region Indexing
         protected int CorrectIndex(int index) => index < 0 ? Count + index : index;
@@ -24,7 +24,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
         {
-            if (obj.DecType.TypeCode !=  DyTypeCode.Integer)
+            if (obj.TypeCode !=  DyType.Integer)
             {
                 ctx.InvalidType(obj);
                 return;

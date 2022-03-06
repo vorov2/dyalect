@@ -7,68 +7,90 @@ namespace Dyalect
 {
     public static class DyType
     {
-        public const int Nil = 0;
-        public const int Integer = 1;
-        public const int Float = 2;
-        public const int Bool = 3;
-        public const int Char = 4;
-        public const int String = 5;
-        public const int Function = 6;
-        public const int Label = 7;
-        public const int TypeInfo = 8;
-        public const int Module = 9;
-        public const int Array = 10;
-        public const int Iterator = 11;
-        public const int Tuple = 12;
-        public const int Dictionary = 13;
-        public const int Object = 14;
+        public const int Nil = 1;
+        public const int Integer = 2;
+        public const int Float = 3;
+        public const int Bool = 4;
+        public const int Char = 5;
+        public const int String = 6;
+        public const int Function = 7;
+        public const int Label = 8;
+        public const int TypeInfo = 9;
+        public const int Module = 10;
+        public const int Array = 11;
+        public const int Iterator = 12;
+        public const int Tuple = 13;
+        public const int Dictionary = 14;
         public const int Set = 15;
         public const int Error = 16;
+        public const int Object = 17;
+
+        internal static List<DyTypeInfo> GetAll() =>
+            new()
+            {
+                null!,
+                new DyNilTypeInfo(),
+                new DyIntegerTypeInfo(),
+                new DyFloatTypeInfo(),
+                new DyBoolTypeInfo(),
+                new DyCharTypeInfo(),
+                new DyStringTypeInfo(),
+                new DyFunctionTypeInfo(),
+                new DyLabelTypeInfo(),
+                new DyMetaTypeInfo(),
+                new DyModuleTypeInfo(),
+                new DyArrayTypeInfo(),
+                new DyIteratorTypeInfo(),
+                new DyTupleTypeInfo(),
+                new DyDictionaryTypeInfo(),
+                new DySetTypeInfo(),
+                new DyErrorTypeInfo()
+            };
 
         public static DyTypeCode GetTypeCodeByName(string name) =>
             name switch
             {
-                DyTypeNames.Nil => DyTypeCode.Nil,
-                DyTypeNames.Integer => DyTypeCode.Integer,
-                DyTypeNames.Float => DyTypeCode.Float,
-                DyTypeNames.Bool => DyTypeCode.Bool,
-                DyTypeNames.Char => DyTypeCode.Char,
-                DyTypeNames.String => DyTypeCode.String,
-                DyTypeNames.Function => DyTypeCode.Function,
-                DyTypeNames.Label => DyTypeCode.Label,
-                DyTypeNames.TypeInfo => DyTypeCode.TypeInfo,
-                DyTypeNames.Tuple => DyTypeCode.Tuple,
-                DyTypeNames.Module => DyTypeCode.Module,
-                DyTypeNames.Array => DyTypeCode.Array,
-                DyTypeNames.Iterator => DyTypeCode.Iterator,
-                DyTypeNames.Dictionary => DyTypeCode.Dictionary,
-                DyTypeNames.Object => DyTypeCode.Object,
-                DyTypeNames.Set => DyTypeCode.Set,
-                DyTypeNames.Error => DyTypeCode.Error,
-                DyTypeNames.Class => DyTypeCode.Class,
-                DyTypeNames.Foreign => DyTypeCode.Foreign,
+                DyTypeNames.Nil => DyType.Nil,
+                DyTypeNames.Integer => DyType.Integer,
+                DyTypeNames.Float => DyType.Float,
+                DyTypeNames.Bool => DyType.Bool,
+                DyTypeNames.Char => DyType.Char,
+                DyTypeNames.String => DyType.String,
+                DyTypeNames.Function => DyType.Function,
+                DyTypeNames.Label => DyType.Label,
+                DyTypeNames.TypeInfo => DyType.TypeInfo,
+                DyTypeNames.Tuple => DyType.Tuple,
+                DyTypeNames.Module => DyType.Module,
+                DyTypeNames.Array => DyType.Array,
+                DyTypeNames.Iterator => DyType.Iterator,
+                DyTypeNames.Dictionary => DyType.Dictionary,
+                DyTypeNames.Object => DyType.Object,
+                DyTypeNames.Set => DyType.Set,
+                DyTypeNames.Error => DyType.Error,
+                DyTypeNames.Class => DyType.Class,
+                DyTypeNames.Foreign => DyType.Foreign,
                 _ => default
             }; 
 
         public static DyTypeInfo? GetTypeInfoByCode(RuntimeContext rtx, DyTypeCode code) =>
              code switch
              {
-                 DyTypeCode.Nil => rtx.Nil,
-                 DyTypeCode.Integer => rtx.Integer,
-                 DyTypeCode.Float => rtx.Float,
-                 DyTypeCode.Bool => rtx.Bool,
-                 DyTypeCode.Char => rtx.Char,
-                 DyTypeCode.String => rtx.String,
-                 DyTypeCode.Function => rtx.Function,
-                 DyTypeCode.Label => rtx.Label,
-                 DyTypeCode.TypeInfo => rtx.TypeInfo,
-                 DyTypeCode.Tuple => rtx.Tuple,
-                 DyTypeCode.Module => rtx.Module,
-                 DyTypeCode.Array => rtx.Array,
-                 DyTypeCode.Iterator => rtx.Iterator,
-                 DyTypeCode.Dictionary => rtx.Dictionary,
-                 DyTypeCode.Set => rtx.Set,
-                 DyTypeCode.Error => rtx.Error,
+                 DyType.Nil => rtx.Nil,
+                 DyType.Integer => rtx.Integer,
+                 DyType.Float => rtx.Float,
+                 DyType.Bool => rtx.Bool,
+                 DyType.Char => rtx.Char,
+                 DyType.String => rtx.String,
+                 DyType.Function => rtx.Function,
+                 DyType.Label => rtx.Label,
+                 DyType.TypeInfo => rtx.TypeInfo,
+                 DyType.Tuple => rtx.Tuple,
+                 DyType.Module => rtx.Module,
+                 DyType.Array => rtx.Array,
+                 DyType.Iterator => rtx.Iterator,
+                 DyType.Dictionary => rtx.Dictionary,
+                 DyType.Set => rtx.Set,
+                 DyType.Error => rtx.Error,
                  _ => default
              };
 

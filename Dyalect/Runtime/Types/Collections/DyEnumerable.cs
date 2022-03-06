@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
 
         public virtual int Count { get; protected set; }
 
-        protected DyEnumerable(DyTypeInfo type) : base(type) { }
+        protected DyEnumerable(int typeCode) : base(typeCode) { }
 
         public abstract IEnumerator<DyObject> GetEnumerator();
 

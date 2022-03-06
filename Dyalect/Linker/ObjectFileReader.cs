@@ -77,7 +77,7 @@ namespace Dyalect.Linker
                 if (typeId == DyType.String)
                     yield return (T)(object)new DyString(reader.ReadString());
                 else if (typeId == DyType.Integer)
-                    yield return (T)(object)ctx.RuntimeContext.Integer.Get(reader.ReadInt64());
+                    yield return (T)(object)DyInteger.Get(reader.ReadInt64());
                 else if (typeId == DyType.Float)
                     yield return (T)(object)new DyFloat(reader.ReadDouble());
                 else if (typeId == DyType.Char)

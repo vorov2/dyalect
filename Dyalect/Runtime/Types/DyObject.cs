@@ -6,11 +6,9 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyObject : IEquatable<DyObject>
     {
-        internal DyTypeInfo DecType;
+        internal int TypeCode;
 
-        protected DyObject(DyTypeInfo typeInfo) => DecType = typeInfo;
-
-        public override string ToString() => $"[type:{DecType.TypeName}]";
+        protected DyObject(int typeCode) => TypeCode = typeCode;
 
         protected internal virtual bool GetBool() => true;
 
@@ -25,10 +23,10 @@ namespace Dyalect.Runtime.Types
         public abstract object ToObject();
 
         protected internal virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            index.DecType.TypeCode == DyTypeCode.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange();
+            index.TypeCode == DyType.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange();
 
         protected internal virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Set, DecType.TypeName);
+            ctx.OperationNotSupported(Builtins.Set, ctx.RuntimeContext.Types[TypeCode].TypeName);
 
         protected internal virtual bool HasItem(string name, ExecutionContext ctx) => false;
 

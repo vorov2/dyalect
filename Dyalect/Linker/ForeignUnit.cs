@@ -179,6 +179,6 @@ namespace Dyalect.Linker
             return (self.CreateDelegate(dt, instance), types);
         }
 
-        protected DyObject Default() => ctx.RuntimeContext.Nil.Instance;
+        protected DyObject Default() => DyNil.Instance;
     }
 }

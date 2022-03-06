@@ -7,8 +7,10 @@ namespace Dyalect.Runtime.Types
     {
         protected DyForeignObject(DyTypeInfo typeInfo, Unit unit) : this(typeInfo, unit, null) { }
 
-        protected DyForeignObject(DyTypeInfo typeInfo, Unit unit, string? ctor) : base(typeInfo) =>
-            (DeclaringUnit, Constructor) = (unit,ctor);
+        protected DyForeignObject(DyTypeInfo typeInfo, Unit unit, string? ctor) : base(-1) =>
+            (TypeInfo, DeclaringUnit, Constructor) = (typeInfo, unit,ctor);
+
+        public DyTypeInfo TypeInfo { get; }
 
         public Unit DeclaringUnit { get; }
 
@@ -16,6 +18,6 @@ namespace Dyalect.Runtime.Types
 
         public override void GetConstructor(ExecutionContext ctx, out string ctor, out bool priv) => (ctor, priv) = (Constructor ?? "", false);
 
-        public override int GetHashCode() => HashCode.Combine((int)DecType.TypeCode, Constructor, DeclaringUnit.Id);
+        public override int GetHashCode() => HashCode.Combine(TypeCode, Constructor, DeclaringUnit.Id);
     }
 }
