@@ -5,8 +5,6 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyIntegerTypeInfo : DyTypeInfo
     {
-        public DyIntegerTypeInfo() : base(DyType.Integer) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
             | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
@@ -15,6 +13,8 @@ namespace Dyalect.Runtime.Types
             | SupportedOperations.Xor | SupportedOperations.BitNot | SupportedOperations.Shl | SupportedOperations.Shr;
 
         public override string TypeName => DyTypeNames.Integer;
+
+        public override int ReflectedTypeCode => DyType.Integer;
 
         #region Binary Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)

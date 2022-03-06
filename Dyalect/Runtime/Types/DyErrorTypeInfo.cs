@@ -5,8 +5,6 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyErrorTypeInfo : DyTypeInfo
     {
-        public DyErrorTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyType.Error) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Len | SupportedOperations.Get;
@@ -35,8 +33,10 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Error;
 
+        public override int ReflectedTypeCode => DyType.Error;
+
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString(arg.ToString());
+            new DyString(arg.ToString()!);
 
         protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)
         {
@@ -46,9 +46,9 @@ namespace Dyalect.Runtime.Types
                     code = DyErrorCode.UnexpectedError;
 
                 if (args is not null && args is DyTuple t)
-                    return new DyError(ctx.RuntimeContext.Error, name, code, t.Values);
+                    return new DyError(name, code, t.Values);
                 else
-                    return new DyError(ctx.RuntimeContext.Error, name, code);
+                    return new DyError(name, code);
             }, 0, new Par("values"));
         }
     }

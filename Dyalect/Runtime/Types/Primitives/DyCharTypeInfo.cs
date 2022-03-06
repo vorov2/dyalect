@@ -4,14 +4,14 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyCharTypeInfo : DyTypeInfo
     {
-        public DyCharTypeInfo() : base(DyType.TypeInfo) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Add | SupportedOperations.Sub
             | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte;
 
         public override string TypeName => DyTypeNames.Char;
+
+        public override int ReflectedTypeCode => DyType.Char;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.GetString());

@@ -5,8 +5,6 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyFloatTypeInfo : DyTypeInfo
     {
-        public DyFloatTypeInfo() : base(DyType.Float) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
             | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
@@ -14,6 +12,8 @@ namespace Dyalect.Runtime.Types
             | SupportedOperations.Neg | SupportedOperations.Plus;
 
         public override string TypeName => DyTypeNames.Float;
+
+        public override int ReflectedTypeCode => DyType.Float;
 
         #region Binary Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)

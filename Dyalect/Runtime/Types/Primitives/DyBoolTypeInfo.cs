@@ -4,12 +4,12 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyBoolTypeInfo : DyTypeInfo
     {
-        public DyBoolTypeInfo() : base(DyType.TypeInfo) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
         public override string TypeName => DyTypeNames.Bool;
+
+        public override int ReflectedTypeCode => DyType.Bool;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.GetBool() == right.GetBool() ? DyBool.True : DyBool.False;

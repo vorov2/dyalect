@@ -5,14 +5,14 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyModuleTypeInfo : DyTypeInfo
     {
-        public DyModuleTypeInfo(DyTypeInfo typeInfo) : base(typeInfo, DyType.Module) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get | SupportedOperations.Len
             | SupportedOperations.Iter;
 
         public override string TypeName => DyTypeNames.Module;
+
+        public override int ReflectedTypeCode => DyType.Module;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
