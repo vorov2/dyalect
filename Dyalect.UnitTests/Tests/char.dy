@@ -16,7 +16,7 @@
     assert(true, TypeInfo(x) == Char)
     assert(true, x.getType() == Char)
     let t = TypeInfo(x)
-    assert(4, t.id)
+    assert(5, t.code)
     assert("Char", t.name)
 #endtest
 

@@ -63,7 +63,7 @@
         Get,        //-1
         Set,        //-3
         RunMod,     //+1
-        Type,       //0
+        Type,       //+1
         Tag,        //0
         Term,       //0
         Yield,      //-1

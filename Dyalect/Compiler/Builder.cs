@@ -1,4 +1,4 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Runtime.Types;
 using Dyalect.Linker;
 using Dyalect.Parser.Model;
 using System;
@@ -28,6 +28,10 @@ namespace Dyalect.Compiler
 
         public Builder(BuilderOptions options, DyLinker linker)
         {
+            //TODO: Find a better place for this logic
+            //This is needed to create a circular reference
+            DyMetaTypeInfo.Instance.DecType = DyMetaTypeInfo.Instance;
+
             referencedUnits = new();
             types = new();
 

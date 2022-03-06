@@ -24,7 +24,7 @@ namespace Dyalect.Runtime.Types
             if (Is(right, DyChar.Type))
                 return new DyString(left.GetString() + right.GetString());
 
-            if (Is(right, DyString.Type))
+            if (right.TypeCode == DyTypeCode.String)
                 return DyString.Type.Add(ctx, left, right);
 
             return ctx.InvalidType(right);
@@ -46,7 +46,7 @@ namespace Dyalect.Runtime.Types
             if (Is(left, right))
                 return left.GetChar() == right.GetChar() ? DyBool.True : DyBool.False;
 
-            if (Is(right, DyString.Type))
+            if (right.TypeCode == DyTypeCode.String)
             {
                 var str = right.GetString();
                 return str.Length == 1 && left.GetChar() == str[0] ? DyBool.True : DyBool.False;
@@ -60,7 +60,7 @@ namespace Dyalect.Runtime.Types
             if (Is(left, right))
                 return left.GetChar() != right.GetChar() ? DyBool.True : DyBool.False;
 
-            if (Is(right, DyString.Type))
+            if (right.TypeCode == DyTypeCode.String)
             {
                 var str = right.GetString();
                 return str.Length != 1 || left.GetChar() != str[0] ? DyBool.True : DyBool.False;
@@ -74,7 +74,7 @@ namespace Dyalect.Runtime.Types
             if (Is(left, right))
                 return left.GetChar().CompareTo(right.GetChar()) > 0 ? DyBool.True : DyBool.False;
 
-            if (Is(right, DyString.Type))
+            if (right.TypeCode == DyTypeCode.String)
                 return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);
@@ -85,7 +85,7 @@ namespace Dyalect.Runtime.Types
             if (Is(left, right))
                 return left.GetChar().CompareTo(right.GetChar()) < 0 ? DyBool.True : DyBool.False;
 
-            if (Is(right, DyString.Type))
+            if (right.TypeCode == DyTypeCode.String)
                 return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);

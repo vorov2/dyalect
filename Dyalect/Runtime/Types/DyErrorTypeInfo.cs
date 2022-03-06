@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
         {
             var err = (DyError)self;
 
-            if (Is(index, DyInteger.Type))
+            if (index.TypeCode == DyTypeCode.Integer)
             {
                 var idx = index.GetInteger();
 
@@ -27,7 +27,7 @@ namespace Dyalect.Runtime.Types
 
                 return TypeConverter.ConvertFrom(err.DataItems[idx]);
             }
-            else if (Is(index, DyString.Type))
+            else if (index.TypeCode == DyTypeCode.String)
                 return err.GetItem(index, ctx);
             else
                 return ctx.InvalidType(index);

@@ -5,8 +5,6 @@ namespace Dyalect.Runtime.Types
 {
     public class DyNil : DyObject
     {
-        internal static readonly DyNilTypeInfo Type = new();
-
         private sealed class DyTerminator : DyNil { }
 
         public static readonly DyNil Instance = new();

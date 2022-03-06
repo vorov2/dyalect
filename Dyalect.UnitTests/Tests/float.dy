@@ -30,7 +30,7 @@
     assert(true, TypeInfo(x) == Float)
     assert(true, x.getType() == Float)
     var t = TypeInfo(x)
-    assert(2, t.id)
+    assert(3, t.code)
     assert("Float", t.name)
 #endtest
 

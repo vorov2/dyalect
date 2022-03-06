@@ -10,9 +10,11 @@ namespace Dyalect.Runtime.Types
         internal static readonly DyModuleTypeInfo Type = new();
         internal readonly DyObject[] Globals;
 
+        public override DyTypeCode TypeCode => DyTypeCode.Module;
+
         internal Unit Unit { get; }
 
-        public DyModule(Unit unit, DyObject[] globals) : base(Type)
+        public DyModule(Unit unit, DyObject[] globals)
         {
             Unit = unit;
             Globals = globals;
@@ -35,7 +37,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (!Is(index, DyString.Type))
+            if (index.TypeCode != DyTypeCode.String)
                 return ctx.InvalidType(index);
 
             if (!TryGetMember(index.GetString(), ctx, out var value))

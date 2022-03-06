@@ -20,7 +20,7 @@
     assert(true, TypeInfo(x) == String)
     assert(true, x.getType() == String)
     var t = TypeInfo(x)
-    assert(5, t.id)
+    assert(6, t.code)
     assert("String", t.name)
 #endtest
 

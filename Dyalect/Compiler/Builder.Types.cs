@@ -87,7 +87,7 @@ namespace Dyalect.Compiler
             {
                 PushTypeInfo(ctx, func.TypeName, func.Location);
                 cw.RgDI(char.IsLower(func.Name![0]) ? 1 : 0);
-                cw.NewType(func.Name);
+                cw.NewObj(func.Name);
             }
         }
 

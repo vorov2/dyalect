@@ -4,8 +4,6 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyFloat : DyObject
     {
-        internal static readonly DyFloatTypeInfo Type = new();
-        
         public static readonly DyFloat Zero = new(0D);
         public static readonly DyFloat One = new(1D);
         public static readonly DyFloat NaN = new(double.NaN);

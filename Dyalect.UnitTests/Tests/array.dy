@@ -27,7 +27,7 @@
     assert(true, TypeInfo(x) == Array)
     assert(true, x.getType() == Array)
     var t = TypeInfo(x)
-    assert(10, t.id)
+    assert(11, t.code)
     assert("Array", t.name)
 #endtest
 

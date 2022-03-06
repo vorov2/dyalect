@@ -11,7 +11,7 @@
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
-            if (Is(index, DyString.Type))
+            if (index.TypeCode == DyTypeCode.String)
                 return index.GetString() switch
                 {
                     "code" => DyInteger.Get((int)((DyTypeInfo)self).TypeCode),

@@ -4,8 +4,6 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyInteger : DyObject
     {
-        internal static readonly DyIntegerTypeInfo Type = new();
-
         public static readonly DyInteger Zero = new(0L);
         public static readonly DyInteger MinusOne = new(-1L);
         public static readonly DyInteger One = new(1L);

@@ -19,6 +19,6 @@
     assert(true, TypeInfo(x) == Nil)
     assert(true, x.getType() == Nil)
     var t = TypeInfo(x)
-    assert(0, t.id)
+    assert(1, t.code)
     assert("Nil", t.name)
 #endtest

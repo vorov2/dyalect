@@ -12,7 +12,7 @@
     assert(true, TypeInfo(x) == Dictionary)
     assert(true, x.getType() == Dictionary)
     var t = TypeInfo(x)
-    assert(13, t.id)
+    assert(14, t.code)
     assert("Dictionary", t.name)
 #endtest
 

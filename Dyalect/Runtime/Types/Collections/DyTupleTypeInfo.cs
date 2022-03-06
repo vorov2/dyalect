@@ -122,7 +122,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
         {
-            if (!Is(index, DyInteger.Type))
+            if (index.TypeCode != DyTypeCode.Integer)
                 return ctx.InvalidType(index);
 
             var t = (DyTuple)self;
@@ -152,7 +152,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
-            if (!Is(index, DyInteger.Type))
+            if (index.TypeCode != DyTypeCode.Integer)
                 return ctx.InvalidType(index);
 
             var tuple = (DyTuple)self;

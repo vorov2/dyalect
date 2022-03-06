@@ -60,7 +60,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (!Is(index, DyInteger.Type))
+            if (index.TypeCode != DyTypeCode.Integer)
                 return ctx.InvalidType(index);
 
             return GetItem((int)index.GetInteger(), ctx);

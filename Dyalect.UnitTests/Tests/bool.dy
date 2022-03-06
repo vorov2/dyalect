@@ -16,6 +16,6 @@
     assert(true, TypeInfo(x) == Bool)
     assert(true, x.getType() == Bool)
     var t = TypeInfo(x)
-    assert(3, t.id)
+    assert(4, t.code)
     assert("Bool", t.name)
 #endtest

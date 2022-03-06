@@ -64,7 +64,7 @@
             -1, //Get
             -3, //Set
             1,  //RunMod
-            0,  //Type
+            1,  //Type
             0,  //Tag
             0,  //Term
             -1, //Yield

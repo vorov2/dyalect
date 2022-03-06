@@ -63,7 +63,7 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyArray)self;
 
-            if (!Is(index, DyInteger.Type))
+            if (index.TypeCode != DyTypeCode.Integer)
                 return ctx.InvalidType(index);
 
             var i = (int)index.GetInteger();
@@ -94,7 +94,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject RemoveItemAt(ExecutionContext ctx, DyObject self, DyObject index)
         {
-            if (!Is(index, DyInteger.Type))
+            if (index.TypeCode != DyTypeCode.Integer)
                 return ctx.InvalidType(index);
 
             var idx = (int)index.GetInteger();
@@ -184,7 +184,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject InsertRange(ExecutionContext ctx, DyObject self, DyObject index, DyObject range)
         {
-            if (!Is(index, DyInteger.Type))
+            if (index.TypeCode != DyTypeCode.Integer)
                 return ctx.InvalidType(index);
 
             var arr = (DyArray)self;
@@ -363,12 +363,12 @@ namespace Dyalect.Runtime.Types
 
             var iLen = length.GetInteger();
 
-            if (!Is(from, DyInteger.Type))
+            if (!Is(from, DyArray.Type))
                 return ctx.InvalidType(from);
 
             var sourceArr = (DyArray)from;
 
-            if (!Is(to, DyInteger.Type) && !Is(to, DyNil.Type))
+            if (!Is(to, DyArray.Type) && !Is(to, DyNil.Type))
                 return ctx.InvalidType(to);
 
             var destArr = to == DyNil.Instance ? new DyArray(new DyObject[iDestIndex + iLen]) : (DyArray)to;

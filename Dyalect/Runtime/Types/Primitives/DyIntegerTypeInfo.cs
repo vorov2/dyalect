@@ -25,7 +25,7 @@ namespace Dyalect.Runtime.Types
             if (Is(right, DyFloat.Type))
                 return new DyFloat(left.GetFloat() + right.GetFloat());
 
-            if (Is(right, DyString.Type))
+            if (right.TypeCode == DyTypeCode.String)
                 return DyString.Type.Add(ctx, left, right);
 
             return ctx.InvalidType(right);

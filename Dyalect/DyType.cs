@@ -6,28 +6,6 @@ namespace Dyalect
 {
     public static class DyType
     {
-        internal static List<DyTypeInfo> GetAll() =>
-            new()
-            {
-                new DyNilTypeInfo(),
-                new DyIntegerTypeInfo(),
-                new DyFloatTypeInfo(),
-                new DyBoolTypeInfo(),
-                new DyCharTypeInfo(),
-                new DyStringTypeInfo(),
-                new DyFunctionTypeInfo(),
-                new DyLabelTypeInfo(),
-                new DyMetaTypeInfo(),
-                new DyModuleTypeInfo(),
-                new DyArrayTypeInfo(),
-                new DyIteratorTypeInfo(),
-                new DyTupleTypeInfo(),
-                new DyDictionaryTypeInfo(),
-                new DyWrapperTypeInfo(),
-                new DySetTypeInfo(),
-                new DyErrorTypeInfo()
-            };
-
         public const int Nil = 0;
         public const int Integer = 1;
         public const int Float = 2;
@@ -82,7 +60,7 @@ namespace Dyalect
                  DyTypeCode.String => DyString.Type,
                  DyTypeCode.Function => DyFunction.Type,
                  DyTypeCode.Label => DyLabel.Type,
-                 DyTypeCode.TypeInfo => DyTypeInfo.Type,
+                 DyTypeCode.TypeInfo => DyMetaTypeInfo.Instance,
                  DyTypeCode.Tuple => DyTuple.Type,
                  DyTypeCode.Module => DyModule.Type,
                  DyTypeCode.Array => DyArray.Type,

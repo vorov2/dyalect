@@ -19,7 +19,7 @@
     assert(true, TypeInfo(x) == Iterator)
     assert(true, x.getType() == Iterator)
     var t = TypeInfo(x)
-    assert(11, t.id)
+    assert(12, t.code)
     assert("Iterator", t.name)
 #endtest
 

@@ -20,12 +20,12 @@ namespace Dyalect.Runtime.Types
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            var str1 = Is(left, DyString.Type) || Is(left, DyChar.Type) ? left.GetString() : left.ToString(ctx).Value;
+            var str1 = left.TypeCode == DyTypeCode.String || Is(left, DyChar.Type) ? left.GetString() : left.ToString(ctx).Value;
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            var str2 = Is(right, DyString.Type) || Is(right, DyChar.Type) ? right.GetString() : right.ToString(ctx).Value;
+            var str2 = right.TypeCode == DyTypeCode.String || Is(right, DyChar.Type) ? right.GetString() : right.ToString(ctx).Value;
             return new DyString(str1 + str2);
         }
 

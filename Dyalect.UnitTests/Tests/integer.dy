@@ -23,7 +23,7 @@
     assert(true, TypeInfo(x) == Integer)
     assert(true, x.getType() == Integer)
     let t = TypeInfo(x)
-    assert(1, t.id)
+    assert(2, t.code)
     assert("Integer", t.name)
 #endtest
 

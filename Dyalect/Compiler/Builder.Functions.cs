@@ -208,7 +208,7 @@ namespace Dyalect.Compiler
             var args = CompileFunctionParameters(node.Parameters);
             StartFun(node.Setter ? "set_" + node.Name : node.Name!, args);
 
-            if (node.IsStatic && node.TypeName is not null)
+            if (node.IsStatic && node.TypeName is null)
                 AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);
 
             var startLabel = cw.DefineLabel();

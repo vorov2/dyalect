@@ -351,14 +351,14 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.HasMember:
                         right = evalStack.Peek();
-                        if (DyObject.Is(right, DyTypeInfo.Type))
+                        if (right.TypeInfo.TypeCode == DyTypeCode.TypeInfo)
                             evalStack.Replace(((DyTypeInfo)right).HasStaticMember(unit.IndexedStrings[op.Data].Value, ctx));
                         else
                             evalStack.Replace(right.DecType.HasInstanceMember(right, unit.IndexedStrings[op.Data].Value, ctx));
                         break;
                     case OpCode.GetMember:
                         right = evalStack.Peek();
-                        if (DyObject.Is(right, DyTypeInfo.Type))
+                        if (right.TypeInfo.TypeCode == DyTypeCode.TypeInfo)
                             evalStack.Replace(((DyTypeInfo)right).GetStaticMember(unit.IndexedStrings[op.Data].Value, ctx));
                         else
                             evalStack.Replace(right.DecType.GetInstanceMember(right, unit.IndexedStrings[op.Data].Value, ctx));
@@ -367,12 +367,12 @@ namespace Dyalect.Runtime
                     case OpCode.SetMemberS:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
-                        ((DyTypeInfo)right).SetStaticMember(unit.IndexedStrings[op.Data].Value, left);
+                        ((DyTypeInfo)left).SetStaticMember(unit.IndexedStrings[op.Data].Value, right);
                         break;
                     case OpCode.SetMember:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
-                        ((DyTypeInfo)right).SetInstanceMember(ctx, unit.IndexedStrings[op.Data].Value, left);
+                        ((DyTypeInfo)left).SetInstanceMember(ctx, unit.IndexedStrings[op.Data].Value, right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Get:
@@ -404,7 +404,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(new DyModule(ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data]], ctx.RuntimeContext.Units[unit.UnitIds[op.Data]]));
                         break;
                     case OpCode.Type:
-                        evalStack.Replace(DyType.GetTypeInfoByCode((DyTypeCode)op.Data)!);
+                        evalStack.Push(DyType.GetTypeInfoByCode((DyTypeCode)op.Data)!);
                         break;
                     case OpCode.Annot:
                         ((DyLabel)evalStack.Peek()).TypeAnnotation = (DyClassInfo)evalStack.Pop();
@@ -456,7 +456,7 @@ namespace Dyalect.Runtime
                             right = evalStack.Peek();
                             if (!DyObject.Is(right, DyFunction.Type))
                             {
-                                if (DyObject.Is(right, DyTypeInfo.Type) && right is DyTypeInfo ti)
+                                if (right.TypeInfo.TypeCode == DyTypeCode.TypeInfo && right is DyTypeInfo ti)
                                 {
                                     right = ti.GetStaticMember(ti.TypeName, ctx);
 
@@ -469,9 +469,12 @@ namespace Dyalect.Runtime
                                     evalStack.Replace(right);
                                     goto case OpCode.FunPrep;
                                 }
-                                
+
                                 right = right.DecType.GetInstanceMember(right, Builtins.Call, ctx);
-                                if (!ctx.HasErrors && !DyObject.Is(right, DyFunction.Type)) ctx.InvalidType(right);
+
+                                if (!ctx.HasErrors && !DyObject.Is(right, DyFunction.Type))
+                                    ctx.InvalidType(right);
+
                                 if (ctx.HasErrors)
                                 {
                                     ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
@@ -598,6 +601,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(new DyClass((DyClassInfo)right, unit.IndexedStrings[op.Data].Value, ctx.RgDI == 1, (DyTuple)left, unit));
                         break;
                     case OpCode.NewType:
+                        
                         evalStack.Push(new DyClassInfo(unit.IndexedStrings[op.Data].Value));
                         break;
                     case OpCode.Mut:

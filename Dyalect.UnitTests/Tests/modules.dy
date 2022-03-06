@@ -14,7 +14,7 @@
     assert(true, TypeInfo(x) == Module)
     assert(true, x.getType() == Module)
     var t = TypeInfo(x)
-    assert(9, t.id)
+    assert(10, t.code)
     assert("Module", t.name)
 #endtest
 

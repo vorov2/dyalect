@@ -62,7 +62,7 @@
     assert(true, TypeInfo(x) == Function)
     assert(true, x.getType() == Function)
     var t = TypeInfo(x)
-    assert(6, t.id)
+    assert(7, t.code)
     assert("Function", t.name)
 #endtest
 

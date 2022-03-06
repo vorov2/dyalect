@@ -1,5 +1,6 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Runtime.Types;
+using System;
 using System.Collections.Generic;
 
 namespace Dyalect.Compiler
@@ -18,6 +19,7 @@ namespace Dyalect.Compiler
             IndexedIntegers = new();
             IndexedFloats = new();
             IndexedChars = new();
+            IndexedGuids = new();
         }
 
         private Unit(Unit unit, DebugInfo di)
@@ -36,6 +38,7 @@ namespace Dyalect.Compiler
             IndexedIntegers = unit.IndexedIntegers;
             IndexedFloats = unit.IndexedFloats;
             IndexedChars = unit.IndexedChars;
+            IndexedGuids = unit.IndexedGuids;
         }
 
         internal int Checksum { get; set; }
@@ -55,6 +58,8 @@ namespace Dyalect.Compiler
         internal List<DyFloat> IndexedFloats { get; }
 
         internal List<DyChar> IndexedChars { get; }
+
+        internal List<Guid> IndexedGuids { get; }
 
         internal List<Op> Ops { get; }
 
