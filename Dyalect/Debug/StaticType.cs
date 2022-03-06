@@ -13,6 +13,7 @@ namespace Dyalect.Debug
     internal sealed class StaticInteger : StaticType
     {
         public static readonly StaticInteger Zero = new(0);
+        public static readonly StaticInteger One = new(1);
 
         private readonly long value;
 

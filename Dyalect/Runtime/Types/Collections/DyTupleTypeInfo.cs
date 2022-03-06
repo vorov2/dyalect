@@ -80,7 +80,7 @@ namespace Dyalect.Runtime.Types
                 }
             }
 
-            return DyIterator.Create(Iterate());
+            return DyIterator.Create(ctx.RuntimeContext.Iterator, Iterate());
         }
 
         private DyObject GetFirst(ExecutionContext ctx, DyObject self) =>
@@ -185,7 +185,7 @@ namespace Dyalect.Runtime.Types
         private DyObject ToDictionary(ExecutionContext ctx, DyObject self)
         {
             var tuple = (DyTuple)self;
-            return new DyDictionary(ctx.RuntimeContext.Dictionary, tuple.ConvertToDictionary(ctx));
+            return new DyDictionary(ctx.RuntimeContext, tuple.ConvertToDictionary(ctx));
         }
 
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
@@ -201,16 +201,16 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "add" => Func.Member(name, AddItem, -1, new Par("item")),
-                "remove" => Func.Member(name, Remove, -1, new Par("item")),
-                "removeAt" => Func.Member(name, RemoveAt, -1, new Par("index")),
-                "insert" => Func.Member(name, Insert, -1, new Par("index"), new Par("item")),
-                "keys" => Func.Member(name, GetKeys),
-                "fst" => Func.Member(name, GetFirst),
-                "snd" => Func.Member(name, GetSecond),
-                "sort" => Func.Member(name, SortBy, -1, new Par("comparator", StaticNil.Instance)),
-                "toDictionary" => Func.Member(name, ToDictionary),
-                "contains" => Func.Member(name, Contains, -1, new Par("label")),
+                "add" => Func.Member(ctx, name, AddItem, -1, new Par("item")),
+                "remove" => Func.Member(ctx, name, Remove, -1, new Par("item")),
+                "removeAt" => Func.Member(ctx, name, RemoveAt, -1, new Par("index")),
+                "insert" => Func.Member(ctx, name, Insert, -1, new Par("index"), new Par("item")),
+                "keys" => Func.Member(ctx, name, GetKeys),
+                "fst" => Func.Member(ctx, name, GetFirst),
+                "snd" => Func.Member(ctx, name, GetSecond),
+                "sort" => Func.Member(ctx, name, SortBy, -1, new Par("comparator", StaticNil.Instance)),
+                "toDictionary" => Func.Member(ctx, name, ToDictionary),
+                "contains" => Func.Member(ctx, name, Contains, -1, new Par("label")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -225,11 +225,11 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "sort" => Func.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", StaticNil.Instance)),
-                "pair" => Func.Static(name, GetPair, -1, new Par("first"), new Par("second")),
-                "triple" => Func.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
-                "concat" => Func.Static(name, Concat, 0, new Par("values", true)),
-                "Tuple" => Func.Static(name, MakeNew, 0, new Par("values")),
+                "sort" => Func.Static(ctx, name, SortBy, -1, new Par("tuple"), new Par("comparator", StaticNil.Instance)),
+                "pair" => Func.Static(ctx, name, GetPair, -1, new Par("first"), new Par("second")),
+                "triple" => Func.Static(ctx, name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
+                "concat" => Func.Static(ctx, name, Concat, 0, new Par("values", true)),
+                "Tuple" => Func.Static(ctx, name, MakeNew, 0, new Par("values")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

@@ -14,7 +14,7 @@ namespace Dyalect.Runtime.Types
             (this.unitId, this.handle, this.captures) = (unitId, handle, vars);
         }
 
-        public override DyFunction GetIteratorFunction() => new DyNativeIteratorFunction(unitId, handle, captures);
+        public override DyFunction GetIteratorFunction() => new DyNativeIteratorFunction(DecType, unitId, handle, captures);
 
         public override object ToObject() => new MultiPartEnumerable(ExecutionContext.External, GetIteratorFunction());
 

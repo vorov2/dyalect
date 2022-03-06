@@ -419,7 +419,7 @@ namespace Dyalect.Runtime.Types
             if (!Collect(ctx, values, arr))
                 return ctx.RuntimeContext.Nil.Instance;
 
-            return new DyString(ctx.RuntimeContext.String, string.Concat(arr));
+            return new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, string.Concat(arr));
         }
 
         private static bool Collect(ExecutionContext ctx, DyObject[] values, List<string> arr)
@@ -458,7 +458,7 @@ namespace Dyalect.Runtime.Types
             if (!Collect(ctx, arr, strArr))
                 return ctx.RuntimeContext.Nil.Instance;
 
-            return new DyString(ctx.RuntimeContext.String, string.Join(separator.GetString(), strArr));
+            return new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, string.Join(separator.GetString(), strArr));
         }
 
         private static DyObject Repeat(ExecutionContext ctx, DyObject value, DyObject count)
@@ -475,17 +475,17 @@ namespace Dyalect.Runtime.Types
             for (var i = 0; i < c; i++)
                 sb.Append(value.GetString());
 
-            return new DyString(ctx.RuntimeContext.String, sb.ToString());
+            return new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, sb.ToString());
         }
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "String" => Func.Static(name, Concat, 0, new Par("values", true)),
-                "concat" => Func.Static(name, Concat, 0, new Par("values", true)),
-                "join" => Func.Static(name, Join, 0, new Par("values", true), new Par("separator", new StaticString(","))),
-                "default" => Func.Static(name, ctx => ctx.RuntimeContext.String.Empty),
-                "repeat" => Func.Static(name, Repeat, -1, new Par("value"), new Par("count")),
+                "String" => Func.Static(ctx, name, Concat, 0, new Par("values", true)),
+                "concat" => Func.Static(ctx, name, Concat, 0, new Par("values", true)),
+                "join" => Func.Static(ctx, name, Join, 0, new Par("values", true), new Par("separator", new StaticString(","))),
+                "default" => Func.Static(ctx, name, ctx => ctx.RuntimeContext.String.Empty),
+                "repeat" => Func.Static(ctx, name, Repeat, -1, new Par("value"), new Par("count")),
                 _ => base.InitializeStaticMember(name, ctx),
             };
         #endregion

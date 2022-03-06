@@ -404,7 +404,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(new DyModule(ctx.RuntimeContext.Module, ctx.RuntimeContext.Composition.Units[unit.UnitIds[op.Data]], ctx.RuntimeContext.Units[unit.UnitIds[op.Data]]));
                         break;
                     case OpCode.Type:
-                        evalStack.Push(DyType.GetTypeInfoByCode((DyTypeCode)op.Data)!);
+                        evalStack.Push(DyType.GetTypeInfoByCode(ctx.RuntimeContext, (DyTypeCode)op.Data)!);
                         break;
                     case OpCode.Annot:
                         ((DyLabel)evalStack.Peek()).TypeAnnotation = (DyClassInfo)evalStack.Pop();

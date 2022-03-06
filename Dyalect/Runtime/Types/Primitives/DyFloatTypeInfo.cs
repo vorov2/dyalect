@@ -31,7 +31,7 @@ namespace Dyalect.Runtime.Types
                 return new DyFloat(this, left.GetFloat() + right.GetFloat());
 
             if (right.DecType.TypeCode == DyTypeCode.String)
-                return DyString.Type.Add(ctx, left, right);
+                return ctx.RuntimeContext.String.Add(ctx, left, right);
 
             return ctx.InvalidType(right);
         }

@@ -6,10 +6,10 @@ namespace Dyalect.Runtime.Types
     {
         protected DyIterator(DyTypeInfo typeInfo) : base(typeInfo) { }
 
-        internal static DyIterator Create(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) =>
-            new DyNativeIterator(unitId, handle, captures, locals);
+        internal static DyIterator Create(DyTypeInfo typeInfo, int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) =>
+            new DyNativeIterator(typeInfo, unitId, handle, captures, locals);
 
-        public static DyIterator Create(IEnumerable<DyObject> seq) => new DyForeignIterator(seq);
+        public static DyIterator Create(DyTypeInfo typeInfo, IEnumerable<DyObject> seq) => new DyForeignIterator(typeInfo, seq);
 
         public abstract DyFunction GetIteratorFunction();
 

@@ -30,10 +30,10 @@ namespace Dyalect.Runtime.Types
                 var p = fn.Parameters[i];
                 arr[i] = new DyTuple(ctx.RuntimeContext.Tuple,
                         new[] {
-                            new DyLabel("name", new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, p.Name)),
-                            new DyLabel("hasDefault", p.Value is not null ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False),
-                            new DyLabel("default", p.Value != null ? p.Value.ToRuntimeType(ctx.RuntimeContext) : ctx.RuntimeContext.Nil.Instance),
-                            new DyLabel("varArg", fn.VarArgIndex == i ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False)
+                            new DyLabel(ctx.RuntimeContext.Label, "name", new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, p.Name)),
+                            new DyLabel(ctx.RuntimeContext.Label, "hasDefault", p.Value is not null ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False),
+                            new DyLabel(ctx.RuntimeContext.Label, "default", p.Value != null ? p.Value.ToRuntimeType(ctx.RuntimeContext) : ctx.RuntimeContext.Nil.Instance),
+                            new DyLabel(ctx.RuntimeContext.Label, "varArg", fn.VarArgIndex == i ? ctx.RuntimeContext.Bool.True : ctx.RuntimeContext.Bool.False)
                         }
                     );
             }
@@ -44,9 +44,9 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "compose" => Func.Member(name, Compose, -1, new Par("with")),
-                "name" => Func.Auto(name, GetName),
-                "parameters" => Func.Auto(name, GetParameters),
+                "compose" => Func.Member(ctx, name, Compose, -1, new Par("with")),
+                "name" => Func.Auto(ctx, name, GetName),
+                "parameters" => Func.Auto(ctx, name, GetParameters),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -68,7 +68,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "compose")
-                return Func.Static(name, Compose, -1, new Par("first"), new Par("second"));
+                return Func.Static(ctx, name, Compose, -1, new Par("first"), new Par("second"));
 
             return base.InitializeStaticMember(name, ctx);
         }

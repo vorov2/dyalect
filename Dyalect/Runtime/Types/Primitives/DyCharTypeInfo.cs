@@ -17,7 +17,8 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Char;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.GetString());
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+            new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, arg.GetString());
 
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -26,10 +27,10 @@ namespace Dyalect.Runtime.Types
                 return new DyChar(this, (char)(left.GetChar() + right.GetInteger()));
 
             if (right.DecType.TypeCode == DyTypeCode.Char)
-                return new DyString(left.GetString() + right.GetString());
+                return new DyString(ctx.RuntimeContext.String, ctx.RuntimeContext.Char, left.GetString() + right.GetString());
 
             if (right.DecType.TypeCode == DyTypeCode.String)
-                return DyString.Type.Add(ctx, left, right);
+                return ctx.RuntimeContext.String.Add(ctx, left, right);
 
             return ctx.InvalidType(right);
         }
