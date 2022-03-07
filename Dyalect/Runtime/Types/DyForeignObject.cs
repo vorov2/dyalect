@@ -3,12 +3,14 @@ using System;
 
 namespace Dyalect.Runtime.Types
 {
-    public abstract class DyForeignObject<T> : DyObject where T : ForeignTypeInfo
+    public abstract class DyForeignObject : DyObject
     {
         protected DyForeignObject(DyTypeInfo typeInfo, Unit unit) : this(typeInfo, unit, null) { }
 
         protected DyForeignObject(DyTypeInfo typeInfo, Unit unit, string? ctor) : base(-1) =>
             (TypeInfo, DeclaringUnit, Constructor) = (typeInfo, unit,ctor);
+
+        public override int TypeId => TypeInfo.ReflectedTypeCode;
 
         public DyTypeInfo TypeInfo { get; }
 

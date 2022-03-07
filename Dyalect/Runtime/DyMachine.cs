@@ -335,10 +335,6 @@ namespace Dyalect.Runtime
                             ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                             goto CATCH;
                         }
-                    case OpCode.FailSys:
-                        ctx.Error = new((DyErrorCode)op.Data);
-                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
-                        goto CATCH;
                     case OpCode.NewIter:
                         evalStack.Push(DyIterator.Create(function.UnitId, op.Data, function.Captures, locals));
                         break;
@@ -409,7 +405,9 @@ namespace Dyalect.Runtime
                         evalStack.Push(types[op.Data]);
                         break;
                     case OpCode.Annot:
-                        ((DyLabel)evalStack.Peek()).TypeAnnotation = (DyClassInfo)evalStack.Pop();
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        ((DyLabel)right).TypeAnnotation = (DyTypeInfo)left;
                         break;
                     case OpCode.Tag:
                         evalStack.Replace(new DyLabel(unit.IndexedStrings[op.Data].Value, evalStack.Peek()));
@@ -474,7 +472,7 @@ namespace Dyalect.Runtime
 
                                 right = types[right.TypeId].GetInstanceMember(right, Builtins.Call, ctx);
 
-                                if (!ctx.HasErrors && right.TypeId != DyType.TypeInfo)
+                                if (!ctx.HasErrors && right.TypeId != DyType.Function)
                                     ctx.InvalidType(right);
 
                                 if (ctx.HasErrors)
@@ -575,10 +573,18 @@ namespace Dyalect.Runtime
                         }
                         break;
                     case OpCode.NewTuple:
-                        evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(ctx, evalStack, op.Data));
+                        evalStack.Push(op.Data == 0 ? DyTuple.Empty : new DyTuple(MakeArray(ctx, evalStack, op.Data)));
+                        break;
+                    case OpCode.NewErr:
+                        if (op.Data > 0)
+                            evalStack.Push(new DyError((DyErrorCode)ctx.RgDI, MakeArray(ctx, evalStack, op.Data)));
+                        else
+                            evalStack.Push(new DyError((DyErrorCode)ctx.RgDI));
                         break;
                     case OpCode.TypeCheck:
-                        evalStack.Push(evalStack.Pop().TypeId == evalStack.Pop().TypeId);
+                        left = evalStack.Pop();
+                        right = evalStack.Pop();
+                        evalStack.Push(((DyTypeInfo)left).ReflectedTypeCode == right.TypeId);
                         break;
                     case OpCode.CtorCheck:
                         right = evalStack.Peek();
@@ -657,15 +663,14 @@ namespace Dyalect.Runtime
                 return DyNil.Instance;
             }
         }
-
-        private static DyTuple MakeTuple(ExecutionContext ctx, EvalStack stack, int size)
+        private static DyObject[] MakeArray(ExecutionContext ctx, EvalStack stack, int size)
         {
             var arr = new DyObject[size];
 
             for (var i = 0; i < size; i++)
                 arr[arr.Length - i - 1] = stack.Pop();
 
-            return new DyTuple(arr);
+            return arr;
         }
 
         private static void FillDefaults(ArgContainer cont, DyFunction callFun, ExecutionContext ctx)

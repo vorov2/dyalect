@@ -9,6 +9,7 @@ namespace Dyalect.Runtime.Types
 
         public static string Format(this DyObject self, ExecutionContext ctx) => ToString(self, ctx).GetString();
 
-        public static DyString ToString(this DyObject self, ExecutionContext ctx) => self.ToString(ctx);
+        public static DyString ToString(this DyObject self, ExecutionContext ctx) => 
+            (DyString)ctx.RuntimeContext.Types[self.TypeId].ToString(ctx, self);
     }
 }

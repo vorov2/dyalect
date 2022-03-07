@@ -340,36 +340,6 @@
     assert(true, p is .foobar)
 #endtest
 
-#test "Object: general behavior"
-    var obj = __makeObject( (name: "Vasily", age: 41) )
-    var res1 = match obj {
-        (x, y) => "x=\(x),y=\(y)",
-        _ => "No."
-    }
-    assert("No.", res1)
-    var res2 = match obj {
-        (name: x, age: y) => "x=\(x),y=\(y)",
-        _ => "No."
-    }
-    assert("x=Vasily,y=41", res2)
-    
-#endtest
-
-#test "Object: getType"
-    let x = __makeObject( (x: 1) )
-    assert(true, TypeInfo(x) == Object)
-     assert(true, x.getType() == Object)
-     var t = TypeInfo(x)
-     assert(14, t.id)
-     assert("Object", t.name)
-#endtest
-
-#test "Object: clone"
-    let xs = __makeObject( (x: 1) )
-    assert(true, xs == xs)
-    assert(false, xs.clone() == xs)
-#endtest
-
 #test "Callable type 1"
     type Julia(x)
     func Julia.call(y, z) {

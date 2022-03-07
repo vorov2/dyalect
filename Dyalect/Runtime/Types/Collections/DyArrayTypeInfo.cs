@@ -319,7 +319,7 @@ namespace Dyalect.Runtime.Types
             var size = sizeObj.GetInteger();
             var arr = new DyObject[size];
 
-            if (val.TypeId != DyType.Iterator)
+            if (val.TypeId == DyType.Iterator)
                 val = ((DyIterator)val).GetIteratorFunction();
 
             if (val is DyFunction func)

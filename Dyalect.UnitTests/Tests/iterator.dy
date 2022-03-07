@@ -390,7 +390,7 @@
     }
 #endtest
 
-#test "Methods: repeat 2"
+#test "Methods: repeat 1"
     func defaultValue() {
         var i = 0
         while true {

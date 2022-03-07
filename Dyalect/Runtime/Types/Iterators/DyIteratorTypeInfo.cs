@@ -436,7 +436,7 @@ namespace Dyalect.Runtime.Types
 
         private static IEnumerable<DyObject> Repeater(ExecutionContext ctx, DyObject val)
         {
-            if (val.TypeId != DyType.Iterator)
+            if (val.TypeId == DyType.Iterator)
                 val = ((DyIterator)val).GetIteratorFunction();
 
             if (val is DyFunction func)

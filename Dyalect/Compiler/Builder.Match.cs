@@ -36,7 +36,10 @@ namespace Dyalect.Compiler
             //It is some kind of a hack, but Expression can be null
             //only if this match is inside try/catch
             if (node.Expression != null)
-                cw.Fail(DyErrorCode.MatchFailed);
+            {
+                cw.NewErr(DyErrorCode.MatchFailed);
+                cw.Fail();
+            }
             else
             {
                 cw.PushVar(sysVar);

@@ -1039,7 +1039,8 @@ namespace Dyalect.Compiler
                 BuildPattern(node.Pattern, nh, ctx);
                 var skip = cw.DefineLabel();
                 cw.Brtrue(skip);
-                cw.Fail(DyErrorCode.MatchFailed);
+                cw.NewErr(DyErrorCode.MatchFailed);
+                cw.Fail();
                 cw.MarkLabel(skip);
                 cw.Nop();
             }
@@ -1055,7 +1056,8 @@ namespace Dyalect.Compiler
                 BuildPattern(node.Pattern, hints.Append(Rebind), ctx);
                 var skip = cw.DefineLabel();
                 cw.Brtrue(skip);
-                cw.Fail(DyErrorCode.MatchFailed);
+                cw.NewErr(DyErrorCode.MatchFailed);
+                cw.Fail();
                 cw.MarkLabel(skip);
                 cw.Nop();
             }
@@ -1237,7 +1239,7 @@ namespace Dyalect.Compiler
                     if (name is not null)
                     {
                         var err = VariableExists(name);
-                        if (err is not CompilerError.None)
+                        if (err is not CompilerError.None && DyType.GetTypeCodeByName(name) == 0)
                             AddError(err, node.Location, name);
                     }
 

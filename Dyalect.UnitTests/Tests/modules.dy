@@ -124,7 +124,7 @@
     for (key,_) in lib {
         xs.add(key)
     }
-    var shouldbe = ["abs","sign","double","min","max","userName","pi"]
+    var shouldbe = ["abs","sign","double","min","max","userName","Foobar","pi"]
     assert(shouldbe, xs)
 #endtest
 

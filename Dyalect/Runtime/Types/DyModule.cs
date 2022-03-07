@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyModule : DyObject
+    public sealed class DyModule : DyObject, IEnumerable<DyObject>
     {
         internal readonly DyObject[] Globals;
 
@@ -59,18 +59,19 @@ namespace Dyalect.Runtime.Types
             return false;
         }
 
-        public IEnumerator<DyObject> GetEnumerator(ExecutionContext ctx)
+        public IEnumerator<DyObject> GetEnumerator()
         {
             foreach (var (key, sv) in Unit.ExportList)
             {
                 if ((sv.Data & VarFlags.Private) != VarFlags.Private)
-                    yield return new DyTuple(
-                        new DyObject[] {
-                            new DyLabel("key", new DyString(key)),
-                            new DyLabel("value", Globals[sv.Address >> 9])
+                    yield return new DyTuple(new DyObject[] {
+                        new DyLabel("key", new DyString(key)),
+                        new DyLabel("value", Globals[sv.Address >> 9])
                         });
             }
         }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public override int GetHashCode() => HashCode.Combine(TypeId, Unit.Id);
     }

@@ -209,6 +209,13 @@ namespace Dyalect.Compiler
             Emit(new(OpCode.Tag, idx));
         }
 
+        public void NewErr(DyErrorCode code)
+        {
+            RgDI((int)code);
+            var narg = code.GetArgumentNumber();
+            Emit(new(OpCode.NewErr, narg), -narg + 1);
+        }
+
         public void SetMember(string member) => Emit(new(OpCode.SetMember, IndexString(member)));
         public void SetMemberS(string member) => Emit(new(OpCode.SetMemberS, IndexString(member)));
 
@@ -238,7 +245,6 @@ namespace Dyalect.Compiler
         public void RgFI(int data) => Emit(new(OpCode.RgFI, data));
         public void HasField(string field) => Emit(new(OpCode.HasField, IndexString(field)));
         public void Start(Label lab) => Emit(OpCode.Start, lab);
-        public void Fail(DyErrorCode code) => Emit(new(OpCode.FailSys, (int)code));
         public void NewObj(string ctor) => Emit(new(OpCode.NewObj, IndexString(ctor)));
         public void NewType(string name) => Emit(new(OpCode.NewType, IndexString(name)));
 

@@ -53,7 +53,6 @@
             1,  //Dup
             0,  //SyncPoint
             0,  //Fail
-            0,  //FailSys
             1,  //NewFun
             1,  //NewFunV
             1,  //NewIter
@@ -92,6 +91,7 @@
             0,  //Mut
             -1, //Annot
             0,  //FunAttr
+            0,  //NewErr **dynamic
         };
     }
 }

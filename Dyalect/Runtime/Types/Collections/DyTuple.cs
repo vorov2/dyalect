@@ -95,7 +95,7 @@ namespace Dyalect.Runtime.Types
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
         {
-            if (Values[index].TypeId == DyType.Integer)
+            if (Values[index].TypeId == DyType.Label)
             {
                 var lab = (DyLabel)Values[index];
 
@@ -105,7 +105,7 @@ namespace Dyalect.Runtime.Types
                     return;
                 }
 
-                if (lab.TypeAnnotation is not null && value.TypeId == lab.TypeAnnotation.TypeId)
+                if (lab.TypeAnnotation is not null && value.TypeId != lab.TypeAnnotation.ReflectedTypeCode)
                 {
                     ctx.InvalidType(value);
                     return;

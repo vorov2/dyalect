@@ -11,6 +11,8 @@ namespace Dyalect.Linker
 {
     public abstract class ForeignUnit : Unit
     {
+        internal List<DyForeignTypeInfo> Types { get; }
+
         internal List<DyObject> Values { get; } = new();
 
         protected RuntimeContext RuntimeContext { get; private set; }
@@ -18,6 +20,7 @@ namespace Dyalect.Linker
         protected ForeignUnit()
         {
             RuntimeContext = null!;
+            Types = new();
             InitializeMembers();
             UnitIds.Add(0); //Self reference, to mimic the behavior of regular units
         }
@@ -26,6 +29,11 @@ namespace Dyalect.Linker
         {
             ExportList.Add(name, new ScopeVar(0 | ExportList.Count << 8, VarFlags.Foreign));
             Values.Add(obj);
+        }
+
+        protected void AddType(DyForeignTypeInfo typeInfo)
+        {
+            Types.Add(typeInfo);
         }
 
         protected void AddReference<T>() where T : ForeignUnit
@@ -45,6 +53,12 @@ namespace Dyalect.Linker
 
         public void Initialize(ExecutionContext ctx)
         {
+            foreach (var t in Types)
+            {
+                t.SetReflectedTypeCode(ctx.RuntimeContext.Types.Count);
+                ctx.RuntimeContext.Types.Add(t);
+            }
+
             RuntimeContext = ctx.RuntimeContext;
             Execute(ctx);
         }
@@ -118,22 +132,22 @@ namespace Dyalect.Linker
             if (simpleSignature)
             {
                 if (parsMeta == null)
-                    return Func.Static(name, (Func<ExecutionContext, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject>), this));
+                    return Func.Static(name, (Func<ExecutionContext, DyObject>) mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject>), this));
 
                 if (parsMeta.Length == 1)
-                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject>), this), varArgIndex, parsMeta);
+                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject>) mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject>), this), varArgIndex, parsMeta);
 
                 if (parsMeta.Length == 2)
-                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
+                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject>) mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
 
                 if (parsMeta.Length == 3)
-                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
+                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject>) mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
 
                 if (parsMeta.Length == 4)
-                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
+                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>) mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
 
                 if (parsMeta.Length == 5)
-                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
+                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>) mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
                 
                 throw new DyException(LinkerErrors.TooManyParameters.Format(mi.Name));
             }

@@ -32,7 +32,7 @@ namespace Dyalect.Runtime.Types
                     return 0;
 
                 return ret.TypeId != DyType.Integer
-                    ? (ret.TypeId != DyType.Float ? (int)ret.GetFloat() : 0)
+                    ? (ret.TypeId == DyType.Float ? (int)ret.GetFloat() : 0)
                     : (int)ret.GetInteger();
             }
 

@@ -1,5 +1,6 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Parser.Model;
+using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System.Collections.Generic;
 using static Dyalect.Compiler.Hints;
@@ -191,10 +192,21 @@ namespace Dyalect.Compiler
                     if (arg.TypeAnnotation is not null)
                     {
                         cw.PushVar(new ScopeVar(a));
+                        cw.Dup();
                         PushTypeInfo(ctx, arg.TypeAnnotation, node.Location);
                         AddLinePragma(node.Parameters[i]);
-                        cw.TypeCheck();
-                        FailIfFalse(Runtime.DyErrorCode.InvalidType);
+                        cw.TypeCheck(); 
+                        var skip = cw.DefineLabel();
+                        cw.Brtrue(skip);
+                        cw.GetMember(Builtins.Type);
+                        cw.FunPrep(0);
+                        cw.FunCall(0);
+                        cw.Push("name");
+                        cw.Get();
+                        cw.NewErr(DyErrorCode.InvalidType);
+                        cw.Fail();
+                        cw.MarkLabel(skip);
+                        cw.Pop();
                     }
                 }
             }

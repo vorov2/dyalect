@@ -14,7 +14,7 @@
     assert(true, TypeInfo(x) == Set)
     assert(true, x.getType() == Set)
     var t = TypeInfo(x)
-    assert(16, t.code)
+    assert(15, t.code)
     assert("Set", t.name)
 #endtest
 

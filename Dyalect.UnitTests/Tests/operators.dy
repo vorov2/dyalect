@@ -152,7 +152,7 @@
     assert(true, "".has("split"))
     assert(true, String.has("join"))
     assert(false, String.has("split"))
-    assert(true, String.has("id"))
+    assert(true, String.has("code"))
     assert(true, String.has("name"))
 #endtest
 

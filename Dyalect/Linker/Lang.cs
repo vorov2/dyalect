@@ -346,24 +346,5 @@ namespace Dyalect.Linker
             var arr = ((DyTuple)values).Values;
             return fn.Call(ctx, arr);
         }
-
-        [Function("__makeObject")]
-        public DyObject MakeObject(ExecutionContext ctx, DyObject arg)
-        {
-            var dict = new Dictionary<string, DyObject>();
-
-            if (arg is DyTuple tuple)
-            {
-                foreach (var obj in tuple.Values)
-                {
-                    var key = obj.GetLabel();
-
-                    if (key != null)
-                        dict[key] = obj.GetTaggedValue();
-                }
-            }
-
-            return new DyWrapper(dict);
-        }
     }
 }

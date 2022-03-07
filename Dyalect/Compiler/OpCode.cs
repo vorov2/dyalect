@@ -52,7 +52,6 @@
         Dup,        //1
         SyncPoint,  //0
         Fail,       //-1
-        FailSys,    //0
         NewFun,     //0
         NewFunV,    //0
         NewIter,    //0
@@ -90,5 +89,6 @@
         Mut,        //0
         Annot,      //0
         FunAttr,    //0
+        NewErr,     //Dynamic
     }
 }

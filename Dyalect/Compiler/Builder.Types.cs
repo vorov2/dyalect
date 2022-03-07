@@ -22,7 +22,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                var av = AddVariable(node.Name, node.Location, VarFlags.Type);
+                var av = AddVariable(node.Name, node.Location, VarFlags.Type | VarFlags.Const);
                 cw.NewType(node.Name);
                 cw.PopVar(av);
             }

@@ -464,7 +464,7 @@ namespace Dyalect.Runtime.Types
             if (count.TypeId != DyType.Integer)
                 return ctx.InvalidType(count);
 
-            if (value.TypeId != DyType.Char && value.TypeId == DyType.String)
+            if (value.TypeId != DyType.Char && value.TypeId != DyType.String)
                 return ctx.InvalidType(value);
 
             var c = (int)count.GetInteger();

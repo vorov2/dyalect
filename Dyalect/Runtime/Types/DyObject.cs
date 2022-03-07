@@ -6,7 +6,8 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyObject : IEquatable<DyObject>
     {
-        internal int TypeId;
+        public virtual int TypeId { get; }
+
         protected DyObject(int typeCode) => TypeId = typeCode;
 
         public override string ToString() => $"[type:{TypeId}]";

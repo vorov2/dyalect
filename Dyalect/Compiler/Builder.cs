@@ -169,16 +169,6 @@ namespace Dyalect.Compiler
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void FailIfFalse(Runtime.DyErrorCode err)
-        {
-            var skip = cw.DefineLabel();
-            cw.Brtrue(skip);
-            cw.Fail(err);
-            cw.MarkLabel(skip);
-            cw.Nop();
-        }
-
         private Exception Ice(Exception? ex = null) =>
             new DyBuildException(
                 $"Internal compiler error: {(ex is not null ? ex.Message : "Unknown error.")}", ex);

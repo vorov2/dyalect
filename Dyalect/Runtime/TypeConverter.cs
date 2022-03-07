@@ -57,7 +57,7 @@ namespace Dyalect.Runtime
                         return new DyArray(newArr);
                     }
                     else
-                        return new DyReflectionWrapper(obj);
+                        throw new Exception("Unable to convert type.");
             }
         }
 

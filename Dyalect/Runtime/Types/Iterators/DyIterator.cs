@@ -47,7 +47,7 @@ namespace Dyalect.Runtime.Types
         {
             DyFunction? iter;
 
-            if (val.TypeId != DyType.Iterator)
+            if (val.TypeId == DyType.Iterator)
                 iter = ((DyIterator)val).GetIteratorFunction();
             else if (val.TypeId == DyType.Function)
             {
