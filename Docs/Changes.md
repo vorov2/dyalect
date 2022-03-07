@@ -1,6 +1,7 @@
 # 0.29.0
   * Change: _Global refactoring of Dyalect internals and type system_ ([Issue #569](https://github.com/vorov2/dyalect/issues/569)).
   * Change: _Change field access syntax_ ([Issue #571](https://github.com/vorov2/dyalect/issues/571)).
+  * Change: _Use member access syntax for module prefixes_ ([Issue #577](https://github.com/vorov2/dyalect/issues/577)).
   * Change: _Use private modified to declare private constructors_ ([Issue #575](https://github.com/vorov2/dyalect/issues/575)).
   * Change: _All built-in methods should start with a capital letter_ ([Issue #576](https://github.com/vorov2/dyalect/issues/576)).
   * Change: _Rename methods `len` and `iter` to `Length` and `Iterate`_ ([Issue #574](https://github.com/vorov2/dyalect/issues/574)).

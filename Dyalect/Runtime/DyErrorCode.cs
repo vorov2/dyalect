@@ -1,6 +1,4 @@
-﻿using static Dyalect.Runtime.DyErrorCode;
-
-namespace Dyalect.Runtime
+﻿namespace Dyalect.Runtime
 {
     public enum DyErrorCode
     {
