@@ -368,27 +368,27 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "toArray" => Func.Member(name, ToArray),
-                "toTuple" => Func.Member(name, ToTuple),
-                "toDictionary" => Func.Member(name, ToMap, -1, new Par("key"), new Par("value", DyNil.Instance)),
-                "take" => Func.Member(name, Take, -1, new Par("count")),
-                "skip" => Func.Member(name, Skip, -1, new Par("count")),
-                "first" => Func.Member(name, First),
-                "last" => Func.Member(name, Last),
-                "reverse" => Func.Member(name, Reverse),
-                "slice" => Func.Member(name, GetSlice, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance)),
-                "element" => Func.Member(name, ElementAt, -1, new Par("at")),
-                "sort" => Func.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
-                "shuffle" => Func.Member(name, Shuffle),
-                "count" => Func.Member(name, CountBy, -1, new Par("by")),
-                "map" => Func.Member(name, Map, -1, new Par("transform")),
-                "filter" => Func.Member(name, Filter, -1, new Par("predicate")),
-                "takeWhile" => Func.Member(name, TakeWhile, -1, new Par("predicate")),
-                "skipWhile" => Func.Member(name, SkipWhile, -1, new Par("predicate")),
-                "reduce" => Func.Member(name, Reduce, -1, new Par("init", DyInteger.Zero), new Par("by")),
-                "any" => Func.Member(name, Any, -1, new Par("predicate")),
-                "all" => Func.Member(name, All, -1, new Par("predicate")),
-                "contains" => Func.Member(name, Contains, -1, new Par("value")),
+                "ToArray" => Func.Member(name, ToArray),
+                "ToTuple" => Func.Member(name, ToTuple),
+                "ToDictionary" => Func.Member(name, ToMap, -1, new Par("key"), new Par("value", DyNil.Instance)),
+                "Take" => Func.Member(name, Take, -1, new Par("count")),
+                "Skip" => Func.Member(name, Skip, -1, new Par("count")),
+                "First" => Func.Member(name, First),
+                "Last" => Func.Member(name, Last),
+                "Reverse" => Func.Member(name, Reverse),
+                "Slice" => Func.Member(name, GetSlice, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance)),
+                "Element" => Func.Member(name, ElementAt, -1, new Par("at")),
+                "Sort" => Func.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
+                "Shuffle" => Func.Member(name, Shuffle),
+                "Count" => Func.Member(name, CountBy, -1, new Par("by")),
+                "Map" => Func.Member(name, Map, -1, new Par("transform")),
+                "Filter" => Func.Member(name, Filter, -1, new Par("predicate")),
+                "TakeWhile" => Func.Member(name, TakeWhile, -1, new Par("predicate")),
+                "SkipWhile" => Func.Member(name, SkipWhile, -1, new Par("predicate")),
+                "Reduce" => Func.Member(name, Reduce, -1, new Par("init", DyInteger.Zero), new Par("by")),
+                "Any" => Func.Member(name, Any, -1, new Par("predicate")),
+                "All" => Func.Member(name, All, -1, new Par("predicate")),
+                "Contains" => Func.Member(name, Contains, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -466,11 +466,11 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "Iterator" or "concat" => Func.Static(name, Concat, 0, new Par("values", true)),
+                "Iterator" or "Concat" => Func.Static(name, Concat, 0, new Par("values", true)),
                 Builtins.Range => Func.Static(name, MakeRange, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance),
                     new Par("by", DyInteger.One), new Par("exclusive", DyBool.False)),
-                "empty" => Func.Static(name, Empty),
-                "repeat" => Func.Static(name, Repeat, -1, new Par("value")),
+                "Empty" => Func.Static(name, Empty),
+                "Repeat" => Func.Static(name, Repeat, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

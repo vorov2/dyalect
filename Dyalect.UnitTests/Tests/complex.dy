@@ -70,7 +70,7 @@
                 if accum {
                     accum + " " + a
                 } else {
-                    a.toString()
+                    a.ToString()
                 }
             fib(accum, b, a + b, nums - 1)
         } else {
@@ -95,7 +95,7 @@
         || c == '9'
     }
     func parse(str) {
-        var max = str.len()
+        var max = str.Len()
         var i = 0
         var res = ""
         while i < max {
@@ -157,7 +157,7 @@
     ]
     func damm(num) {
         var interim = 0
-        for c in num.toString() {
+        for c in num.ToString() {
             interim = table[interim][Integer(c)];
         }
         interim == 0
@@ -167,9 +167,9 @@
     for num in numbers {
         var isValid = damm(num)
         if isValid {
-            results.add("yes")
+            results.Add("yes")
         } else {
-            results.add("no")
+            results.Add("no")
         }
     }
     var str = ""
@@ -191,7 +191,7 @@
         var values = []
         var x = 0
         while x <= n {
-            values.add(x + "=" + round(y))
+            values.Add(x + "=" + round(y))
             y += h * fn(y)
             x += h
         }
@@ -287,7 +287,7 @@
         var x = 1
         while x <= num {
             if num % x == 0 {
-                arr.add(x)
+                arr.Add(x)
             }
             x += 1
         }
@@ -298,17 +298,17 @@
 #endtest
 
 #test "Factors of an integer 2"
-    func Iterator.where(pred) {
+    func Iterator.Where(pred) {
         for x in this when pred(x) {
             yield x
         }
     }
-    func Integer.factors() {
-        (1..this).where(x => this % x == 0)
+    func Integer.Factors() {
+        (1..this).Where(x => this % x == 0)
     }
     var arr = []
-    for x in 45.factors() {
-        arr.add(x)
+    for x in 45.Factors() {
+        arr.Add(x)
     }
     assert([1,3,5,9,15,45],arr)
 #endtest
@@ -335,16 +335,16 @@
 #test "Names of god"
     var cache = [[1]]
     func namesOfGod(n) {
-        for l in cache.len()..n {
+        for l in cache.Len()..n {
             var r = [0]
             if l == 1 {
-                r.add(r[r.len() - 1] + cache[0][0])
+                r.Add(r[r.Len() - 1] + cache[0][0])
             } else {
                 for x in 1..l {
-                    r.add(r[r.len() - 1] + cache[l - x][min(x, l-x)])
+                    r.Add(r[r.Len() - 1] + cache[l - x][min(x, l-x)])
                 }
             }
-            cache.add(r)
+            cache.Add(r)
         }
         return cache[n]
     }
@@ -353,7 +353,7 @@
         var returnArray = []
         //for i in 0..(n - 1) {
         for i in 0..<n {
-            returnArray.add(r[i + 1] - r[i])
+            returnArray.Add(r[i + 1] - r[i])
         }
         return returnArray
     }
@@ -381,7 +381,7 @@
 #endtest
 
 #test "Binary to string conversion"
-    func Integer.toString() {
+    func Integer.ToString() {
         var s = ""
         for x in 31^-1..0 {
             if this &&& (1 <<< x) != 0 {
@@ -392,13 +392,12 @@
         }
         return s
     }
-    assert("10001100101000", 9000.toString())
-    Integer.__deleteMember("toString")
+    assert("10001100101000", 9000.ToString())
 #endtest
 
 #test "Bubb"
     let res =
-        for i in 2..Integer.max() {
+        for i in 2..Integer.Max() {
             if i * i % 1000000 == 269696 {
                 break i
             }
@@ -407,57 +406,52 @@
 #endtest
 
 #test "Rot-13"
-    func Char.rot13() {
+    func Char.Rot13() {
         match this {
-            (>= 'a' and <= 'm') or (>= 'A' and <= 'M') => Char(this.order() + 13),
-            (>= 'n' and <= 'z') or (>= 'N' and <= 'Z') => Char(this.order() - 13),
+            (>= 'a' and <= 'm') or (>= 'A' and <= 'M') => Char(this.Order() + 13),
+            (>= 'n' and <= 'z') or (>= 'N' and <= 'Z') => Char(this.Order() - 13),
             _ => this
         }
     }
-    func String.rot13() {
+    func String.Rot13() {
         var cs = []
         for c in this {
-            cs.add(c.rot13())
+            cs.Add(c.Rot13())
         }
-        String.concat(values: cs)
+        String.Concat(values: cs)
     }
-    let res = "ABJURER nowhere".rot13()
+    let res = "ABJURER nowhere".Rot13()
     assert("NOWHERE abjurer", res)
-    Char.__deleteMember("rot13")
-    String.__deleteMember("rot13")
 #endtest
 
 #test "Caesar cypher"
-    func Char.encrypt(code) {
-        if !this.isLetter() {
+    func Char.Encrypt(code) {
+        if !this.IsLetter() {
             return this
         }
-        var offset = (if this.isUpper() {'A'} else {'a'}).order()
-        return Char((this.order() + code - offset) % 26 + offset)
+        var offset = (if this.IsUpper() {'A'} else {'a'}).Order()
+        return Char((this.Order() + code - offset) % 26 + offset)
     }
-    func String.encrypt(code) {
+    func String.Encrypt(code) {
         var xs = []
         for c in this {
-            xs.add(c.encrypt(code))
+            xs.Add(c.Encrypt(code))
         }
-        return String.concat(values: xs)
+        return String.Concat(values: xs)
     }
-    func String.decrypt(code) {
-        this.encrypt(26 - code);
+    func String.Decrypt(code) {
+        this.Encrypt(26 - code);
     }
     var str = "Pack my box with five dozen liquor jugs."
-    var enc = str.encrypt(5)
-    var dec = enc.decrypt(5)
-    Char.__deleteMember("encrypt")
-    String.__deleteMember("encrypt")
-    String.__deleteMember("decrypt")
+    var enc = str.Encrypt(5)
+    var dec = enc.Decrypt(5)
     assert("Ufhp rd gtc bnym knaj itejs qnvztw ozlx.", enc)
     assert("Pack my box with five dozen liquor jugs.", dec)
 #endtest
 
 #test "Count coins"
     func countCoins(coins, n) {
-        var xs = Array.empty(n + 1, 0)
+        var xs = Array.Empty(n + 1, 0)
         xs[0] = 1
         for c in coins {
             var cj = c
@@ -489,27 +483,27 @@
         }
     }
     func overlap(left, right) {
-        if max(left::s, left::e) > max(right::s, right::e) {
-            max(right::s, right::e) >= min(left::s, left::e)
+        if max(left.s, left.e) > max(right.s, right.e) {
+            max(right.s, right.e) >= min(left.s, left.e)
         } else {
-            max(left::s, left::e) >= min(right::s, right::e)
+            max(left.s, left.e) >= min(right.s, right.e)
         }
     }
     func consolidate(left, right) {
-        (s: min(min(left::s, left::e), min(right::s, right::e)), e: max(max(left::s, left::e), max(right::s, right::e)))
+        (s: min(min(left.s, left.e), min(right.s, right.e)), e: max(max(left.s, left.e), max(right.s, right.e)))
     }
     func normalize(range) {
-        (s: min(range::s, range::e), e: max(range::s, range::e))
+        (s: min(range.s, range.e), e: max(range.s, range.e))
     }
     for list in [
         [ (s: 6.1, e: 7.2), (s: 7.2, e: 8.3) ]
     ] {
-        var z = list.len() - 1
+        var z = list.Len() - 1
         while z >= 1 {
             for y in (z - 1)..0 {
                 if overlap(list[z], list[y]) {
                     list[y] = consolidate(list[z], list[y])
-                    list.removeAt(z)
+                    list.RemoveAt(z)
                     break
                 }
             }
@@ -517,10 +511,10 @@
         }
         var ys = []
         for x in list {
-            ys.add(normalize(x))
+            ys.Add(normalize(x))
         }
-        assert(6.1, ys[0]::s)
-        assert(8.3, ys[0]::e)
+        assert(6.1, ys[0].s)
+        assert(8.3, ys[0].e)
     }
 #endtest
 
@@ -528,8 +522,8 @@
 #test "Employee salary"
     type Employee(name,id,salary,department)
 
-    func Employee.toString() {
-        "$\(this::salary) name: \(this::name), id: \(this::id), department: \(this::department)"
+    func Employee.ToString() {
+        "$\(this.salary) name: \(this.name), id: \(this.id), department: \(this.department)"
     } 
     let employees = [
         Employee("Tyler Bennett","E10297",32000,"D101"),
@@ -548,10 +542,10 @@
     ] 
     func topNSalaries(n) {
         //We sort employees based on salary
-        employees.sort(by: (x,y) => y::salary - x::salary)
+        employees.Sort(by: (x,y) => y.salary - x.salary)
         let max =
-            if n > employees.len() - 1 { 
-                employees.len() - 1 
+            if n > employees.Len() - 1 { 
+                employees.Len() - 1 
             } else { 
                 n 
             }
@@ -570,7 +564,7 @@
 
     var i = 0
     for s in topNSalaries(5) {
-        assert(patterns[i], s.toString())
+        assert(patterns[i], s.ToString())
         i += 1
     }
 #endtest

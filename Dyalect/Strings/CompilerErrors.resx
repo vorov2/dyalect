@@ -238,7 +238,7 @@
     <value>A positional argument can't follow an argument passed by name.</value>
   </data>
   <data name="TypeNameCamel" xml:space="preserve">
-    <value>Type name should start from a capital letter.</value>
+    <value>Type name should start with a capital letter.</value>
   </data>
   <data name="NestedMethod" xml:space="preserve">
     <value>Method cannot be nested in other methods.</value>
@@ -272,5 +272,8 @@
   </data>
   <data name="UnableLoadAssembly" xml:space="preserve">
     <value>An error occured while loading assembly "{0}": {1}</value>
+  </data>
+  <data name="MemberNameCamel" xml:space="preserve">
+    <value>A type member name should start with a capital letter.</value>
   </data>
 </root>

@@ -1,32 +1,32 @@
-﻿#test "Methods: toString"
-    var res = (1,2,3).toString()
+﻿#test "Methods: ToString"
+    var res = (1,2,3).ToString()
     assert("(1, 2, 3)", res)
-    res = (1, true, (2,3)).toString()
+    res = (1, true, (2,3)).ToString()
     assert("(1, true, (2, 3))", res)
-    res = (x: 12, 44.4, y: (1, 2)).toString()
+    res = (x: 12, 44.4, y: (1, 2)).ToString()
     assert("(x: 12, 44.4, y: (1, 2))", res)
-    res = (x: 42,y: "foo").toString()
+    res = (x: 42,y: "foo").ToString()
     assert("(x: 42, y: foo)", res)
 #endtest
 
-#test "Methods: clone"
+#test "Methods: Clone"
     let xs = (1,2,3)
     assert(true, xs == xs)
-    assert(true, xs.clone() == xs)
+    assert(true, xs.Clone() == xs)
 #endtest
 
-#test "Methods: getType"
+#test "Methods: GetType"
     let x = (1,2)
     assert(true, TypeInfo(x) == Tuple)
-    assert(true, x.getType() == Tuple)
+    assert(true, x.GetType() == Tuple)
     var t = TypeInfo(x)
-    assert(13, t.code)
-    assert("Tuple", t.name)
+    assert(13, t.Code)
+    assert("Tuple", t.Name)
 #endtest
 
 #test "Tuple literal 1"
     //Test if a tuple is recognized correctly
-    var res = ([1,2,3].len() + 4) * 2
+    var res = ([1,2,3].Len() + 4) * 2
     assert(14, res)
 #endtest
 
@@ -39,41 +39,41 @@
     assert(21, res)
 #endtest
 
-#test "Methods: len"
+#test "Methods: Len"
     var t = (1,2,3)
-    assert(3, t.len())
+    assert(3, t.Len())
 #endtest
 
 #test "Field access"
     var t = (x: 1, y: 2, z: 3)
-    assert(6, t::x + t::y + t::z)
+    assert(6, t.x + t.y + t.z)
     
     t = ("long name": 12, "+": 34)
     assert(12, t["long name"])
     assert(34, t["+"])
 
     t = (fn: x => x+x)
-    assert(42, t::fn(21))
+    assert(42, t.fn(21))
 
     t = (x: 33)
     assert(33, t['x'])
 #endtest
 
-#test "Methods: keys"
+#test "Methods: Keys"
     var t = (x: 1, y: 2, z: 3)
-    var res = t.keys().toArray()
+    var res = t.Keys().ToArray()
     assert(["x", "y", "z"], res)
 #endtest
 
-#test "Methods: indices"
+#test "Methods: Indices"
     var t = (1,2,3,4,5,6)
-    var res = t.indices().toArray()
+    var res = t.Indices().ToArray()
     assert([0, 1, 2, 3, 4, 5], res)
 #endtest
 
-#test "Methods: fst, snd"
+#test "Methods: Fst, Snd"
     var t = (42, 4.56)
-    var res = t.fst() - t.snd()
+    var res = t.Fst() - t.Snd()
     assert(37.44, res)
 #endtest
 
@@ -89,35 +89,35 @@
     assert(t2, t)
 #endtest
 
-#test "Methods: slice"
-    var xs = (1..10).toTuple()
-    var slice = xs.slice(4).toTuple()
+#test "Methods: Slice"
+    var xs = (1..10).ToTuple()
+    var slice = xs.Slice(4).ToTuple()
     assert((5,6,7,8,9,10), slice)
 #endtest
 
-#test "Methods: toTuple"
+#test "Methods: ToTuple"
     var xs = [0,1,2,3,4,5,6,7,8,9]
-    var res = xs[1..5].toTuple()
+    var res = xs[1..5].ToTuple()
     assert((1,2,3,4,5), res)
 #endtest
 
-#test "Methods: sort"
+#test "Methods: Sort"
     var xs = (4,6,1,3,2,5)
-    var ys = xs.sort((x,y) => x - y)
+    var ys = xs.Sort((x,y) => x - y)
     assert((1, 2, 3, 4, 5, 6), ys)
 
     xs = (7,4,6,1,3,2,5)
-    ys = xs.sort()
+    ys = xs.Sort()
     assert((1, 2, 3, 4, 5, 6, 7), ys)
 #endtest
 
 #test "Methods: static sort"
     var xs = (4,6,1,3,2,5)
-    var ys = Tuple.sort(xs, (x,y) => x - y)
+    var ys = Tuple.Sort(xs, (x,y) => x - y)
     assert((1, 2, 3, 4, 5, 6), ys)
 
     xs = (7,4,6,1,3,2,5)
-    ys = Tuple.sort(xs)
+    ys = Tuple.Sort(xs)
     assert((1, 2, 3, 4, 5, 6, 7), ys)
 #endtest
 
@@ -136,36 +136,36 @@
     assert(1, xs[-5])
 #endtest
 
-#test "Methods: add"
+#test "Methods: Add"
     var xs = (1,)
-    xs = xs.add(2)
-    xs = xs.add(3)
+    xs = xs.Add(2)
+    xs = xs.Add(3)
     assert((1,2,3), xs)
 #endtest
 
-#test "Methods: remove"
+#test "Methods: Remove"
     var xs = (1,2,3,4,5)
-    xs = xs.remove(3)
-    xs = xs.remove(6)
-    xs = xs.remove(5)
+    xs = xs.Remove(3)
+    xs = xs.Remove(6)
+    xs = xs.Remove(5)
     assert((1,2,4), xs)
 #endtest
 
-#test "Methods: removeAt"
+#test "Methods: RemoveAt"
     var xs = (1,2,3,4)
-    xs = xs.removeAt(3)
+    xs = xs.RemoveAt(3)
     assert((1,2,3), xs)
-    xs = xs.removeAt(1)
+    xs = xs.RemoveAt(1)
     assert((1,3), xs)
 #endtest
 
-#test "Methods: insert"
+#test "Methods: Insert"
     var xs = (1,2,3)
-    xs = xs.insert(0, 0)
+    xs = xs.Insert(0, 0)
     assert((0,1,2,3), xs)
-    xs = xs.insert(4, 4)
+    xs = xs.Insert(4, 4)
     assert((0,1,2,3,4), xs)
-    xs = xs.insert(3, 2.5)
+    xs = xs.Insert(3, 2.5)
     assert((0,1,2,2.5,3,4), xs)
 #endtest
 
@@ -186,12 +186,12 @@
     assert((1,2,3,'a','b','c'), res)
 #endtest
 
-#test "Methods: concat"
+#test "Methods: Concat"
     func it() {
         yield "foo"
         yield "boo"
     }
-    var arr = Tuple.concat((1,2,3), (4,5,6), [1,2], it())
+    var arr = Tuple.Concat((1,2,3), (4,5,6), [1,2], it())
     assert((1,2,3,4,5,6,1,2,"foo","boo"), arr)
 #endtest
 
@@ -206,8 +206,8 @@
     xs[1] = xs[1] * 2
     assert((24, 28), xs)
     xs = (var x:12, var y:14)
-    xs::x = xs::x * 2
-    xs::y = xs::y * 2
+    xs.x = xs.x * 2
+    xs.y = xs.y * 2
     assert((24, 28), xs)
     xs["x"] = xs["x"] * 2
     xs["y"] = xs["y"] * 2
@@ -216,13 +216,13 @@
 
 #test "Mutable tuples 2"
     var xs = (var x: 3, y: 4, var z: 5)
-    xs::x = 33
-    assert(33, xs::x)
+    xs.x = 33
+    assert(33, xs.x)
     try {
-        xs::y = 44
+        xs.y = 44
         assert(got: false)
     } catch {
-        FieldReadOnly() => assert(4, xs::y)
+        FieldReadOnly() => assert(4, xs.y)
     }
 #endtest
 
@@ -236,28 +236,28 @@
     }
 #endtest
 
-#test "Methods: toString (mutable)"
+#test "Methods: ToString (mutable)"
     let xs = (var x: 2, y: 3, var z: 4, let xx: 42)
-    let str = xs.toString()
+    let str = xs.ToString()
     assert(expect: "(var x: 2, y: 3, var z: 4, xx: 42)", got: str) 
 #endtest
 
-#test "Methods: toDictionary"
+#test "Methods: ToDictionary"
     let xs = (name: "Vasily", age: 41, gender: "Male")
-    let dict = xs.toDictionary()
+    let dict = xs.ToDictionary()
     assert("Vasily", dict["name"])
     assert(41, dict["age"])
     assert("Male", dict["gender"])
 #endtest
 
-#test "Methods: contains"
+#test "Methods: Contains"
     let xs = (name: "Vasily", age: 41, gender: "Male")
-    assert(true, xs.contains("name"))
-    assert(true, xs.contains("age"))
-    assert(true, xs.contains("gender"))
-    assert(false, xs.contains("NAME"))
+    assert(true, xs.Contains("name"))
+    assert(true, xs.Contains("age"))
+    assert(true, xs.Contains("gender"))
+    assert(false, xs.Contains("NAME"))
     try {
-        assert(true, xs.contains(42))
+        assert(true, xs.Contains(42))
         assert(got: false)
     } catch {
         InvalidType() => assert(got: true)
@@ -272,7 +272,7 @@
         IndexOutOfRange() => assert(got: true)
     }
     try {
-        xs::z
+        xs.z
     } catch {
         FieldNotFound() => assert(got: true)
     }

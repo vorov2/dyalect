@@ -207,7 +207,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
-            if (name == "isMultiple")
+            if (name == "IsMultiple")
                 return Func.Member(name, IsMultiple, -1, new Par("of"));
 
             return base.InitializeInstanceMember(self, name, ctx);
@@ -249,10 +249,10 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "max" => Func.Static(name, _ => DyInteger.Max),
-                "min" => Func.Static(name, _ => DyInteger.Min),
-                "default" => Func.Static(name, _ => DyInteger.Zero),
-                "parse" => Func.Static(name, Parse, -1, new Par("value")),
+                "Max" => Func.Static(name, _ => DyInteger.Max),
+                "Min" => Func.Static(name, _ => DyInteger.Min),
+                "Default" => Func.Static(name, _ => DyInteger.Zero),
+                "Parse" => Func.Static(name, Parse, -1, new Par("value")),
                 "Integer" => Func.Static(name, Convert, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };

@@ -13,8 +13,10 @@ namespace Dyalect.Runtime.Types
         internal Par[] Parameters;
         internal int VarArgIndex;
         internal int Attr;
+        internal int DeclaringUnitId;
 
         internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
+        internal bool Private => (Attr & FunAttr.Priv) == FunAttr.Priv;
 
         protected DyFunction(Par[] pars, int varArgIndex) : base(DyType.Function) =>
             (Parameters, VarArgIndex) = (pars, varArgIndex);

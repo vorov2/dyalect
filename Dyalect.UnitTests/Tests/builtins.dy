@@ -81,7 +81,7 @@
 
 #test "setOut"
     let xs = []
-    setOut(s => xs.add(s))
+    setOut(s => xs.Add(s))
     print("String", terminator: nil)
     print(true, terminator: nil)
     print(42, terminator: nil)

@@ -199,16 +199,16 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "add" => Func.Member(name, AddItem, -1, new Par("item")),
-                "remove" => Func.Member(name, Remove, -1, new Par("item")),
-                "removeAt" => Func.Member(name, RemoveAt, -1, new Par("index")),
-                "insert" => Func.Member(name, Insert, -1, new Par("index"), new Par("item")),
-                "keys" => Func.Member(name, GetKeys),
-                "fst" => Func.Member(name, GetFirst),
-                "snd" => Func.Member(name, GetSecond),
-                "sort" => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
-                "toDictionary" => Func.Member(name, ToDictionary),
-                "contains" => Func.Member(name, Contains, -1, new Par("label")),
+                "Add" => Func.Member(name, AddItem, -1, new Par("item")),
+                "Remove" => Func.Member(name, Remove, -1, new Par("item")),
+                "RemoveAt" => Func.Member(name, RemoveAt, -1, new Par("index")),
+                "Insert" => Func.Member(name, Insert, -1, new Par("index"), new Par("item")),
+                "Keys" => Func.Member(name, GetKeys),
+                "Fst" => Func.Member(name, GetFirst),
+                "Snd" => Func.Member(name, GetSecond),
+                "Sort" => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
+                "ToDictionary" => Func.Member(name, ToDictionary),
+                "Contains" => Func.Member(name, Contains, -1, new Par("label")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -223,10 +223,10 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "sort" => Func.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
-                "pair" => Func.Static(name, GetPair, -1, new Par("first"), new Par("second")),
-                "triple" => Func.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
-                "concat" => Func.Static(name, Concat, 0, new Par("values", true)),
+                "Sort" => Func.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
+                "Pair" => Func.Static(name, GetPair, -1, new Par("first"), new Par("second")),
+                "Triple" => Func.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
+                "Concat" => Func.Static(name, Concat, 0, new Par("values", true)),
                 "Tuple" => Func.Static(name, MakeNew, 0, new Par("values")),
                 _ => base.InitializeStaticMember(name, ctx)
             };

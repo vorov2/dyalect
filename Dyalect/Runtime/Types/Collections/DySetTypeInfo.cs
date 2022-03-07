@@ -126,18 +126,18 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "add" => Func.Member(name, AddItem, -1, new Par("value")),
-                "remove" => Func.Member(name, Remove, -1, new Par("value")),
-                "contains" => Func.Member(name, Contains, -1, new Par("value")),
-                "clear" => Func.Member(name, Clear),
-                "toArray" => Func.Member(name, ToArray),
-                "toTuple" => Func.Member(name, ToTuple),
-                "except" => Func.Member(name, ExceptWith, -1, new Par("with")),
-                "intersect" => Func.Member(name, IntersectWith, -1, new Par("with")),
-                "union" => Func.Member(name, UnionWith, -1, new Par("with")),
-                "overlaps" => Func.Member(name, Overlaps, -1, new Par("with")),
-                "isSubset" => Func.Member(name, IsSubsetOf, -1, new Par("of")),
-                "isSuperset" => Func.Member(name, IsSupersetOf, -1, new Par("of")),
+                "Add" => Func.Member(name, AddItem, -1, new Par("value")),
+                "Remove" => Func.Member(name, Remove, -1, new Par("value")),
+                "Contains" => Func.Member(name, Contains, -1, new Par("value")),
+                "Clear" => Func.Member(name, Clear),
+                "ToArray" => Func.Member(name, ToArray),
+                "ToTuple" => Func.Member(name, ToTuple),
+                "Except" => Func.Member(name, ExceptWith, -1, new Par("with")),
+                "Intersect" => Func.Member(name, IntersectWith, -1, new Par("with")),
+                "Union" => Func.Member(name, UnionWith, -1, new Par("with")),
+                "Overlaps" => Func.Member(name, Overlaps, -1, new Par("with")),
+                "IsSubset" => Func.Member(name, IsSubsetOf, -1, new Par("of")),
+                "IsSuperset" => Func.Member(name, IsSupersetOf, -1, new Par("of")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

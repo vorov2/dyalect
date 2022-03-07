@@ -410,6 +410,34 @@ namespace Dyalect.Compiler
 
         private void Build(DAccess node, Hints hints, CompilerContext ctx)
         {
+            //An access expression can be a reference to a module (and can be optimized away)
+            if (node.Target.NodeType == NodeType.Name && !hints.Has(Pop) && !options.NoOptimizations)
+            {
+                var nm = node.Target.GetName()!;
+                var err = GetVariable(nm, currentScope, out var sv);
+
+                if (err is CompilerError.None
+                    && (sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
+                {
+                    if (ru.Unit.ExportList.TryGetValue(node.Name, out var var))
+                    {
+                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                            AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
+
+                        AddLinePragma(node);
+                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
+                        PopIf(hints);
+                        return;
+                    }
+                    else if (char.IsUpper(node.Name[0])) //If true, it's a type
+                    {
+                        AddLinePragma(node);
+                        PushTypeInfo(ctx, ru, node.Name, node.Location);
+                        return;
+                    }
+                }
+            }
+
             if (node.Target.NodeType == NodeType.Base)
             {
                 if (!hints.Has(Function))
@@ -427,11 +455,29 @@ namespace Dyalect.Compiler
                 return;
             }
 
-            Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
-            AddLinePragma(node);
+            var push = hints.Remove(Pop).Append(Push);
+            Build(node.Target, push, ctx);
 
-            cw.GetMember(node.Name);
-            PopIf(hints);
+            //A method access
+            if (char.IsUpper(node.Name[0]))
+            {
+                AddLinePragma(node);
+                cw.GetMember(node.Name);
+                PopIf(hints);
+            }
+            //An indexer
+            else
+            {
+                AddLinePragma(node);
+                cw.Push(node.Name);
+                if (!hints.Has(Pop))
+                {
+                    cw.Get();
+                    PopIf(hints);
+                }
+                else
+                    cw.Set();
+            }
         }
 
         private void Build(DTupleLiteral node, Hints hints, CompilerContext ctx)
@@ -557,36 +603,6 @@ namespace Dyalect.Compiler
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)
         {
             var push = hints.Remove(Pop).Append(Push);
-
-            //An indexer with compile time string which can be a reference to a module (and can be optimized away)
-            if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks is null
-                && node.Target.NodeType == NodeType.Name && !hints.Has(Pop) && !options.NoOptimizations)
-            {
-                var nm = node.Target.GetName()!;
-                var err = GetVariable(nm, currentScope, out var sv);
-
-                if (err is CompilerError.None 
-                    && (sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
-                {
-                    if (ru.Unit.ExportList.TryGetValue(str.Value, out var var))
-                    {
-                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
-                            AddError(CompilerError.PrivateNameAccess, node.Location, str.Value);
-
-                        AddLinePragma(node);
-                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
-                        PopIf(hints);
-                        return;
-                    }
-                    else if (char.IsUpper(str.Value[0])) //It should be a type, no other way
-                    {
-                        AddLinePragma(node);
-                        PushTypeInfo(ctx, ru, str.Value, node.Location);
-                        return;
-                    }
-                }
-            }
-
             Build(node.Target, push, ctx);
             BuildIndexer(node, hints, ctx);
         }
@@ -1185,7 +1201,7 @@ namespace Dyalect.Compiler
                     {
                         Build(node.Right, hints.Remove(Last).Append(Push), ctx);
                         AddLinePragma(node);
-                        cw.GetMember("contains");
+                        cw.GetMember(Builtins.Contains);
                         cw.FunPrep(1);
                         Build(node.Left, hints.Remove(Last).Append(Push), ctx);
                         AddLinePragma(node);

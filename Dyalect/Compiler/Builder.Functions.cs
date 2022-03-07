@@ -31,11 +31,14 @@ namespace Dyalect.Compiler
                 {
                     var realName = node.Name;
 
+                    if (!char.IsUpper(realName[0]) && Builtins.OperatorSymbols.IndexOf(realName[0]) == -1)
+                        AddError(CompilerError.MemberNameCamel, node.Location);
+
                     if (!node.IsStatic)
                         realName = GetMethodName(realName, node);
 
                     if (node.Setter)
-                        realName = "set_" + realName;
+                        realName = Builtins.Setter(realName);
 
                     if (node.Name is Builtins.Has || (!node.IsStatic && node.Name is Builtins.Type))
                         AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
@@ -71,8 +74,8 @@ namespace Dyalect.Compiler
             {
                 "+" => node.Parameters.Count == 0 ? Builtins.Plus : Builtins.Add,
                 "-" => node.Parameters.Count == 0 ? Builtins.Neg : Builtins.Sub,
-                "getItem" => Builtins.Get,
-                "setItem" => Builtins.Set,
+                "GetItem" => Builtins.Get,
+                "SetItem" => Builtins.Set,
                 "*" => Builtins.Mul,
                 "/" => Builtins.Div,
                 "%" => Builtins.Rem,
@@ -218,7 +221,7 @@ namespace Dyalect.Compiler
         {
             var iterBody = hints.Has(IteratorBody);
             var args = CompileFunctionParameters(node.Parameters);
-            StartFun(node.Setter ? "set_" + node.Name : node.Name!, args);
+            StartFun(node.Setter ? Builtins.Setter(node.Name) : node.Name!, args);
 
             if (node.IsStatic && node.TypeName is null)
                 AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);
@@ -333,6 +336,9 @@ namespace Dyalect.Compiler
             
             if (node.Getter)
                 cw.FunAttr(FunAttr.Auto);
+
+            if (node.IsPrivate)
+                cw.FunAttr(FunAttr.Priv);
         }
     }
 }

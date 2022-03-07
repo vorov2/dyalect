@@ -50,7 +50,8 @@ namespace Dyalect.Runtime
 
         internal Stack<ArgContainer> Arguments { get; } = new(6);
 
-        internal int UnitId { get; set; }
+        internal int UnitId;
+        internal int CallerUnitId;
 
         public DyError? GetError() => Error;
 

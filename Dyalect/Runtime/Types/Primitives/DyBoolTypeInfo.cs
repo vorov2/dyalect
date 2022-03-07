@@ -24,7 +24,7 @@ namespace Dyalect.Runtime.Types
             if (name is "Bool")
                 return Func.Static(name, Convert, -1, new Par("value"));
 
-            if (name is "default")
+            if (name is "Default")
                 return Func.Static(name, _ => DyBool.False);
 
             return base.InitializeStaticMember(name, ctx);

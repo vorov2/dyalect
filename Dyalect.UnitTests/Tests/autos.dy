@@ -1,13 +1,13 @@
 ﻿#test init
     type Box(key)
     let boxCollector = []
-    func Box.dispose() => boxCollector.add(this::key)
+    func Box.Dispose() => boxCollector.Add(this.key)
 #endtest
 
 #test "Simple 1"
     {
         auto x = Box("foo")
-        boxCollector.add("wait.foo")
+        boxCollector.Add("wait.foo")
     }
     assert(["wait.foo", "foo"], boxCollector)
 #endtest
@@ -15,10 +15,10 @@
 #test "Simple 2"
     {
         auto x = Box("foo")
-        boxCollector.add("wait.foo")
+        boxCollector.Add("wait.foo")
         {
             auto y = Box("bar")
-            boxCollector.add("wait.bar")
+            boxCollector.Add("wait.bar")
         }
     }
     assert(["wait.foo", "wait.bar", "bar", "foo"], boxCollector)
@@ -78,11 +78,11 @@
 #test "Autos in functions 2"
     func iter() {
         auto x = Box("fin")
-        boxCollector.add(1)
+        boxCollector.Add(1)
         yield 1
-        boxCollector.add(2)
+        boxCollector.Add(2)
         yield 2
-        boxCollector.add(3)
+        boxCollector.Add(3)
         yield 3
     }
     for _ in iter() { }
@@ -171,7 +171,7 @@
         auto x = Box(42)
         throw 84
     } catch e {
-        boxCollector.add(e[0])
+        boxCollector.Add(e[0])
     }
     assert([42,84], boxCollector)
 #endtest
@@ -183,7 +183,7 @@
             auto box = Box(12)
             return x / y
         } catch _ {
-            return def::key
+            return def.key
         }
     }
     var xs = [divide(10, 2), divide(2, 0)]

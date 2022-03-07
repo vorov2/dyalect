@@ -60,8 +60,8 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "indices" => Func.Member(name, GetIndices),
-                "slice" => Func.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
+                "Indices" => Func.Member(name, GetIndices),
+                "Slice" => Func.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
     }

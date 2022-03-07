@@ -76,6 +76,7 @@ namespace Dyalect.Runtime
             PROLOGUE:
             var jumper = -1;
             var unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
+            ctx.CallerUnitId = ctx.UnitId;
             ctx.UnitId = function.UnitId;
             var ops = unit.Ops;
             var layout = unit.Layouts[function.FunctionId];
@@ -111,6 +112,7 @@ namespace Dyalect.Runtime
                         if (evalStack.Size is > 1 or 0)
                             throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
                         ctx.RuntimeContext.Units[function.UnitId] = locals!;
+                        ctx.UnitId = ctx.CallerUnitId;
                         return evalStack.Pop();
                     case OpCode.Pop:
                         evalStack.PopVoid();
@@ -291,7 +293,6 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Len:
                         right = evalStack.Peek();
-                        ctx.UnitId = unit.Id;
                         evalStack.Replace(types[right.TypeId].Length(ctx, right));
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
@@ -376,14 +377,12 @@ namespace Dyalect.Runtime
                     case OpCode.Get:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
-                        ctx.UnitId = unit.Id;
                         evalStack.Push(types[right.TypeId].Get(ctx, right, left));
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Set:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
-                        ctx.UnitId = unit.Id;
                         types[right.TypeId].Set(ctx, right, left, evalStack.Pop());
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;

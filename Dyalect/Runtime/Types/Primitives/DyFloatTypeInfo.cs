@@ -124,7 +124,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch 
             {
-                "isNaN" => Func.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
+                "IsNaN" => Func.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -163,11 +163,11 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "max" => Func.Static(name, _ => DyFloat.Max),
-                "min" => Func.Static(name, _ => DyFloat.Min),
-                "inf" => Func.Static(name, _ => DyFloat.PositiveInfinity),
-                "default" => Func.Static(name, _ => DyFloat.Zero),
-                "parse" => Func.Static(name, Parse, -1, new Par("value")),
+                "Max" => Func.Static(name, _ => DyFloat.Max),
+                "Min" => Func.Static(name, _ => DyFloat.Min),
+                "Inf" => Func.Static(name, _ => DyFloat.PositiveInfinity),
+                "Default" => Func.Static(name, _ => DyFloat.Zero),
+                "Parse" => Func.Static(name, Parse, -1, new Par("value")),
                 "Float" => Func.Static(name, Convert, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };

@@ -1,32 +1,32 @@
-﻿#test "Methods: getType"
+﻿#test "Methods: GetType"
     type Foo()
     let x = Foo()
     assert(true, TypeInfo(x) == Foo)
-    assert(true, x.getType() == Foo)
+    assert(true, x.GetType() == Foo)
     var t = TypeInfo(x)
-    assert("Foo", t.name)
+    assert("Foo", t.Name)
 #endtest
 
-#test "Methods: clone"
+#test "Methods: Clone"
     type Foo()
     let xs = Foo()
     assert(true, xs == xs)
-    assert(true, xs.clone() == xs)
+    assert(true, xs.Clone() == xs)
 #endtest
 
-#test "Methods: toString"
+#test "Methods: ToString"
     type Foo(x, y, z)
     let xs = Foo(1, 2, 3)
-    let str = xs.toString()
+    let str = xs.ToString()
     assert("Foo(x: 1, y: 2, z: 3)", str)
 #endtest
 
 #test "Generated members"
     type Foo(x)
     var f = Foo(42)
-    assert(42, f::x)
+    assert(42, f.x)
     assert(42, f[0])
-    assert(1, f.len())
+    assert(1, f.Len())
     match f {
         Foo(x) => assert(42, x)
     }
@@ -35,11 +35,11 @@
 #test "Empty variant"
     type Void()
     var f = Void()
-    assert(0, f.len())
+    assert(0, f.Len())
     match f {
         Void() => assert(true, true)
     }
-    assert("Void()", f.toString())
+    assert("Void()", f.ToString())
 #endtest
 
 #test "Multiple productions"
@@ -47,15 +47,15 @@
     var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
     var a2 = Asset.Phone("1+", 8)
     var a3 = Asset.Modem("Zyxel")
-    assert(3, a1.len())
-    assert(2, a2.len())
-    assert(1, a3.len())
-    assert("Lenovo"+16+3, a1::model+a1::memory+a1::rank)
-    assert("1+"+8, a2::model+a2::memory)
-    assert("Zyxel", a3::model)
-    assert("Asset.Computer(model: Lenovo, memory: 16, rank: 3)", a1.toString())
-    assert("Asset.Phone(model: 1+, memory: 8)", a2.toString())
-    assert("Asset.Modem(model: Zyxel)", a3.toString())
+    assert(3, a1.Len())
+    assert(2, a2.Len())
+    assert(1, a3.Len())
+    assert("Lenovo"+16+3, a1.model+a1.memory+a1.rank)
+    assert("1+"+8, a2.model+a2.memory)
+    assert("Zyxel", a3.model)
+    assert("Asset.Computer(model: Lenovo, memory: 16, rank: 3)", a1.ToString())
+    assert("Asset.Phone(model: 1+, memory: 8)", a2.ToString())
+    assert("Asset.Modem(model: Zyxel)", a3.ToString())
 #endtest
 
 #test "Pattern match 1"
@@ -73,15 +73,15 @@
 #endtest
 
 #test "Extending type 1"
-    type Bar = bar(data)
+    type Bar = private PrivateBar(data)
     static func Bar.Bar(args...) {
-        Bar.bar(args)
+        Bar.PrivateBar(args)
     }
-    func Bar.len() {
-        ini::data.len()
+    func Bar.Len() {
+        ini.data.Len()
     }
-    func Bar.getItem(index) {
-        ini::data[index]
+    func Bar.GetItem(index) {
+        ini.data[index]
     }
     var obj = Bar(1, 2, 3)
     var res = match obj {
@@ -121,36 +121,36 @@
     var p = Point(12, 43)
     assert(12, p[0])
     assert(43, p[1])
-    assert(12, p::x)
-    assert(43, p::y)
+    assert(12, p.x)
+    assert(43, p.y)
 #endtest
 
 #test "Natural number 1"
-    type Nat = nat(var val)
+    type Nat = private PrivateNat(var val)
     func fetch(x) {
         Nat(x) when x >= 0 else x
     }
     static func Nat.Nat(x) {
         throw "Negative number." when x < 0
-        Nat.nat(x)
+        Nat.PrivateNat(x)
     }
-    func Nat.toInteger() {
+    func Nat.ToInteger() {
         val when this is Nat.nat(val)
     }
     func Nat + (other) {
-        fetch(this::val + other::val)
+        fetch(this.val + other.val)
     }
     func Nat - (other) {
-        fetch(this::val - other::val)
+        fetch(this.val - other.val)
     }
     func Nat * (other) {
-        fetch(this::val * other::val)
+        fetch(this.val * other.val)
     }
     func Nat / (other) {
-        fetch(this::val / other::val)
+        fetch(this.val / other.val)
     }
     func Nat == (other) {
-        this::val == other::val
+        this.val == other.val
     }
     var n = Nat(12)
     assert(Nat(24), n + Nat(12))
@@ -176,103 +176,103 @@
 #endtest
 
 #test "Reference cell"
-    type Cell = cell(var val)
+    type Cell = private MakeCell(var val)
     func ref(value) {
-        Cell.cell(value)
+        Cell.MakeCell(value)
     }
     static func Cell.Cell(value) {
-        Cell.cell(value)
+        Cell.MakeCell(value)
     }
-    func Cell.setValue(value) {
-        ini::val = value
+    func Cell.SetValue(value) {
+        ini.val = value
     }
-    func Cell.getValue() {
-        ini::val
+    func Cell.GetValue() {
+        ini.val
     }
-    func Cell.getItem(index) {
+    func Cell.GetItem(index) {
         if index is not 0 {
             throw "Index out of range."
         }
-        ini::val
+        ini.val
     }
-    func Cell.len() {
+    func Cell.Len() {
         1
     }
     var c = ref(12)
-    assert(12, c.getValue())
-    c.setValue(24)
-    assert(24, c.getValue())
+    assert(12, c.GetValue())
+    c.SetValue(24)
+    assert(24, c.GetValue())
 #endtest
 
 #test "Linked list"
     type List = Cons(x, next) or Empty()
-    func List.toString() {
+    func List.ToString() {
         func walk(xs) {
             match xs {
-                Cons(x, Empty()) => x.toString(),
-                Cons(x, next) => x.toString() + "," + walk(next),
+                Cons(x, Empty()) => x.ToString(),
+                Cons(x, next) => x.ToString() + "," + walk(next),
                 Empty() => ""
             }
         }
         return "[" + walk(this) + "]"
     }
     var xs = List.Cons(1, List.Cons(2, List.Cons(3, List.Cons(4, List.Empty()))))
-    assert("[1,2,3,4]", xs.toString())
+    assert("[1,2,3,4]", xs.ToString())
 #endtest
 
 #test "Generate linked list"
     type List = Cons(x, next) or Empty()
-    func List.toString() {
+    func List.ToString() {
         func walk(xs) {
             match xs {
-                Cons(x, Empty()) => x.toString(),
-                Cons(x, next) => x.toString() + "," + walk(next),
+                Cons(x, Empty()) => x.ToString(),
+                Cons(x, next) => x.ToString() + "," + walk(next),
                 Empty() => ""
             }
         }
         return "[" + walk(this) + "]"
     }
-    static func List.generate(values...) {
+    static func List.Generate(values...) {
         var xs = List.Empty()
         for x in values {
             xs = List.Cons(x, xs)
         }
         xs
     }
-    var xs = List.generate(1,2,3,4)
-    assert("[4,3,2,1]", xs.toString())
+    var xs = List.Generate(1,2,3,4)
+    assert("[4,3,2,1]", xs.ToString())
 #endtest
 
 #test "Custom toString"
     type Foo()
     var x = Foo()
-    func Foo.toString() {
+    func Foo.ToString() {
         match this {
             Foo() => "nil"
         }
     }
-    assert("nil", x.toString())
+    assert("nil", x.ToString())
 #endtest
 
 #test "Record"
-    type Record = record(fields)
+    type Record = private Make(fields)
     static func Record.Record(values...) {
-        Record.record(values)
+        Record.Make(values)
     }
-    func Record.getItem(index) {
-        ini::fields[index]
+    func Record.GetItem(index) {
+        ini.fields[index]
     }
     var p = Record(values: (name: "John", age: 33))
     assert("John", p["name"])
-    assert(33, p::age)
+    assert(33, p.age)
 #endtest
 
 #test "Read-only fields"
     type UserInfo(name,age)
     var u = UserInfo("Jon", 17)
-    assert(17, u::age)
+    assert(17, u.age)
     try {
-        u::age = 39
+        u.age = 39
         assert(got: false)
     } catch {
         FieldReadOnly() => assert(got: true)
@@ -282,43 +282,43 @@
 #test "Default values"
     type Foo(a, b = 12, c = 33)
     var t = Foo(1)
-    assert(1, t::a)
-    assert(12, t::b)
-    assert(33, t::c)
+    assert(1, t.a)
+    assert(12, t.b)
+    assert(33, t.c)
     t = Foo(1, 2)
-    assert(1, t::a)
-    assert(2, t::b)
-    assert(33, t::c)
+    assert(1, t.a)
+    assert(2, t.b)
+    assert(33, t.c)
     t = Foo(1, 2, 3)
-    assert(1, t::a)
-    assert(2, t::b)
-    assert(3, t::c)
+    assert(1, t.a)
+    assert(2, t.b)
+    assert(3, t.c)
 #endtest
 
 #test "Mutable Point"
-    type Point = point(var x, var y)
+    type Point = private Make(var x, var y)
     static func Point.Point(x, y) {
-        Point.point(x, y)
+        Point.Make(x, y)
     }
-    func Point.getItem(index) {
+    func Point.GetItem(index) {
         match index {
-            0 or "x" => ini::x,
-            1 or "y" => ini::y,
+            0 or "x" => ini.x,
+            1 or "y" => ini.y,
             _ => throw Error.IndexOutOfRange()
         }
     }
-    func Point.setItem(index, value) {
+    func Point.SetItem(index, value) {
         match index {
-            0 or "x" => ini::x = value,
-            1 or "y" => ini::y = value,
+            0 or "x" => ini.x = value,
+            1 or "y" => ini.y = value,
             _ => throw Error.IndexOutOfRange()
         }
     }
     var p = Point(12, 34)
-    p::x += p::x
-    p::y += p::y
-    assert(24, p::x)
-    assert(68, p::y)
+    p.x += p.x
+    p.y += p.y
+    assert(24, p.x)
+    assert(68, p.y)
 #endtest
 
 #test "Member check 1"
@@ -327,23 +327,22 @@
 #endtest
 
 #test "Member check 2"
-    func Integer.foobar() {}
-    assert(true, 12 is .foobar)
-    Integer.__deleteMember("foobar")
+    func Integer.Foobar() {}
+    assert(true, 12 is .Foobar)
 #endtest
 
 #test "Member check 3"
     type Foo(x)
-    func Foo.foobar() {}
+    func Foo.Foobar() {}
     var p = Foo(22)
-    assert(false, p is .x)
-    assert(true, p is .foobar)
+    assert(false, p is .Barfoo)
+    assert(true, p is .Foobar)
 #endtest
 
 #test "Callable type 1"
     type Julia(x)
-    func Julia.call(y, z) {
-        this::x + y * z 
+    func Julia.Call(y, z) {
+        this.x + y * z 
     }
     var x = Julia(12)
     var res = x(44.5, 67.07)
@@ -351,11 +350,10 @@
 #endtest
 
 #test "Callable type 2"
-    func Integer.call() {
+    func Integer.Call() {
         this + this
     }
     var res = 14()
-    Integer.__deleteMember("call")
     assert(28, res)
 #endtest
 
@@ -370,66 +368,66 @@
 
 #test "Pattern match: inside method"
     type Option = Some(x) or None()
-    func Option.extractValue() {
+    func Option.ExtractValue() {
         if this is Some(x) {
             x
         }
     }
     let some = Option.Some(42)
-    assert(42, some.extractValue())
+    assert(42, some.ExtractValue())
 #endtest
 
 #test "String builder"
-    type StringBuilder = stringBuilder(buffer)
+    type StringBuilder = private Builder(buffer)
 
     static func StringBuilder.StringBuilder() {
-        StringBuilder.stringBuilder([])
+        StringBuilder.Builder([])
     }
-    func StringBuilder.append(val) {
-        this::buffer.add(val.toString())
+    func StringBuilder.Append(val) {
+        this.buffer.Add(val.ToString())
     }
-    func StringBuilder.clear() {
-        this::buffer.clear()
+    func StringBuilder.Clear() {
+        this.buffer.Clear()
     }
-    func StringBuilder.toString() {
-        String.concat(values: this::buffer)
+    func StringBuilder.ToString() {
+        String.Concat(values: this.buffer)
     }
-    func StringBuilder.len() {
+    func StringBuilder.Len() {
         var count = 0
-        for x in this::buffer {
-            count += x.len()
+        for x in this.buffer {
+            count += x.Len()
         }
         return count
     }
     let sb = StringBuilder()
-    sb.append("my ")
-    sb.append("rank ")
-    sb.append("is ")
-    sb.append(123)
-    assert("my rank is 123", sb.toString())
-    assert(14, sb.len())
-    sb.clear()
-    sb.append(true)
-    sb.append(false)
-    assert("truefalse", sb.toString())
+    sb.Append("my ")
+    sb.Append("rank ")
+    sb.Append("is ")
+    sb.Append(123)
+    assert("my rank is 123", sb.ToString())
+    assert(14, sb.Len())
+    sb.Clear()
+    sb.Append(true)
+    sb.Append(false)
+    assert("truefalse", sb.ToString())
 #endtest
 
 #test "Natural number 2"
-    type RealNat = realNat(var num)
+    type RealNat = private Nat(var num)
 
     static func RealNat.RealNat(x) {
-        throw Error.InvalidType(x.getType()) when x is not Integer
-        RealNat.realNat(x)
+        throw Error.InvalidType(x.GetType()) when x is not Integer
+        RealNat.Nat(x)
     }
     func RealNat + (other) {
         let res = match other {
-            RealNat => this::num + other::num,
-            Integer => this::num + other,
-            _ => throw Error.InvalidType(other.getType())
+            RealNat => this.num + other.num,
+            Integer => this.num + other,
+            _ => throw Error.InvalidType(other.GetType())
         }
         RealNat(res) when res >= 0 else res
     }
-    func RealNat == (other) => this::num == other::num
+    func RealNat == (other) => this.num == other.num
     var (x, y) = (RealNat(12), RealNat(10))
     assert(RealNat(22), x + y)
     assert(RealNat(2), x + -10)
@@ -450,10 +448,10 @@
 #test "Mutable variant 1"
     type Foo(var x, y)
     let t = Foo(12, 24)
-    t::x = 120
-    assert(120, t::x)
+    t.x = 120
+    assert(120, t.x)
     try {
-        t::y = 240
+        t.y = 240
         assert(got: false)
     } catch {
         FieldReadOnly() => assert(got: true)
@@ -463,10 +461,10 @@
 #test "Mutable variant 2"
     type Foo(var Integer x, y)
     let t = Foo(12, 24)
-    t::x = 1
-    assert(1, t::x)
+    t.x = 1
+    assert(1, t.x)
     try {
-        t::x = "240"
+        t.x = "240"
         assert(got: false)
     } catch {
         InvalidType() => assert(got: true)
@@ -474,26 +472,26 @@
 #endtest
 
 #test "Custom constructor with constraints"
-    type Foo = foo(var data)
+    type Foo = private PrivateFoo(var data)
     static func Foo.Foo(Integer x) {
-        Foo.foo(x)
+        Foo.PrivateFoo(x)
     }
-    func Foo.getItem(field) {
+    func Foo.GetItem(field) {
         match field {
-            "x" => this::data,
+            "x" => this.data,
             _ => Error.IndexOutOfRange()
         }
     }
-    func Foo.setItem(field, Integer value) {
+    func Foo.SetItem(field, Integer value) {
         match field {
-            "x" => this::data = value,
+            "x" => this.data = value,
             _ => Error.IndexOutOfRange()
         }
     }
     let t = Foo(12)
-    t::x = 120
+    t.x = 120
     try {
-        t::x = "120"
+        t.x = "120"
         assert(got: false)
     } catch {
         InvalidType() => assert(got: true),
@@ -504,42 +502,42 @@
 #test "Variant members"
     type Expr = Literal(var Float value) or Unary(var op, var Expr left)
     let a = Expr.Literal(12.2)
-    assert(12.2, a::value)
-    a::value = 44.4
-    assert(44.4, a::value)
+    assert(12.2, a.value)
+    a.value = 44.4
+    assert(44.4, a.value)
     let b = Expr.Unary("-", a)
-    assert("-", b::op)
-    assert(44.4, b::left::value)
-    b::op = "+"
-    assert("+", b::op)
-    b::left::value = 42.0
-    assert(42.0, b::left::value)
+    assert("-", b.op)
+    assert(44.4, b.left.value)
+    b.op = "+"
+    assert("+", b.op)
+    b.left.value = 42.0
+    assert(42.0, b.left.value)
 #endtest
 
 #test "Properties 1"
-    type Foo = foo(var status)
-    static func Foo.Foo(value) => Foo.foo(value)
-    func get Foo.status() => this::status
-    func set Foo.status(value) => this::status = value
+    type Foo = private Make(var status)
+    static func Foo.Foo(value) => Foo.Make(value)
+    func get Foo.Status() => this.status
+    func set Foo.Status(value) => this.status = value
     let f = Foo(10)
-    assert(10, f.status)
-    f.status = 21
-    assert(21, f.status)
-    f.status += 11
-    assert(32, f.status)
+    assert(10, f.Status)
+    f.Status = 21
+    assert(21, f.Status)
+    f.Status += 11
+    assert(32, f.Status)
 #endtest
 
 #test "Properties 2"
-    type Foo = foo(var box)
+    type Foo = private Make(var box)
     static func Foo.Foo() {
-        Foo.foo(nil)
+        Foo.Make(nil)
     }
-    func get Foo.box() => this::box
-    func set Foo.box(value) => this::box = value
+    func get Foo.Box() => this.box
+    func set Foo.Box(value) => this.box = value
     let f = Foo()
-    assert(42, f.box ?? 42)
-    f.box ??= 144
-    assert(144, f.box)
-    f.box ??= 288
-    assert(144, f.box)
+    assert(42, f.Box ?? 42)
+    f.Box ??= 144
+    assert(144, f.Box)
+    f.Box ??= 288
+    assert(144, f.Box)
 #endtest

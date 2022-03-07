@@ -128,14 +128,14 @@ namespace Dyalect.Runtime.Types
         {
             return name switch
             {
-                "add" => Func.Member(name, AddItem, -1, new Par("key"), new Par("value")),
-                "tryAdd" => Func.Member(name, TryAddItem, -1, new Par("key"), new Par("value")),
-                "tryGet" => Func.Member(name, TryGetItem, -1, new Par("key")),
-                "remove" => Func.Member(name, RemoveItem, -1, new Par("key")),
-                "clear" => Func.Member(name, ClearItems),
-                "toTuple" => Func.Member(name, ToTuple),
-                "compact" => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
-                "contains" => Func.Member(name, Contains, -1, new Par("key")),
+                "Add" => Func.Member(name, AddItem, -1, new Par("key"), new Par("value")),
+                "TryAdd" => Func.Member(name, TryAddItem, -1, new Par("key"), new Par("value")),
+                "TryGet" => Func.Member(name, TryGetItem, -1, new Par("key")),
+                "Remove" => Func.Member(name, RemoveItem, -1, new Par("key")),
+                "Clear" => Func.Member(name, ClearItems),
+                "ToTuple" => Func.Member(name, ToTuple),
+                "Compact" => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
+                "Contains" => Func.Member(name, Contains, -1, new Par("key")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
         }
@@ -153,7 +153,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            if (name is "Dictionary" or "fromTuple")
+            if (name is "Dictionary" or "FromTuple")
                 return Func.Static(name, New, -1, new Par("values", DyNil.Instance));
 
             return base.InitializeStaticMember(name, ctx);

@@ -96,16 +96,16 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "isLower" => Func.Member(name, (_, c) => char.IsLower(c.GetChar()) ? DyBool.True : DyBool.False),
-                "isUpper" => Func.Member(name, (_, c) => char.IsUpper(c.GetChar()) ? DyBool.True : DyBool.False),
-                "isControl" => Func.Member(name, (_, c) => char.IsControl(c.GetChar()) ? DyBool.True : DyBool.False),
-                "isDigit" => Func.Member(name, (_, c) => char.IsDigit(c.GetChar())? DyBool.True : DyBool.False),
-                "isLetter" => Func.Member(name, (_, c) => char.IsLetter(c.GetChar())? DyBool.True : DyBool.False),
-                "isLetterOrDigit" => Func.Member(name, (_, c) => char.IsLetterOrDigit(c.GetChar())? DyBool.True : DyBool.False),
-                "isWhiteSpace" => Func.Member(name, (_, c) => char.IsWhiteSpace(c.GetChar())? DyBool.True : DyBool.False),
-                "lower" => Func.Member(name, (_, c) => new DyChar(char.ToLower(c.GetChar()))),
-                "upper" => Func.Member(name, (_, c) => new DyChar(char.ToUpper(c.GetChar()))),
-                "order" => Func.Member(name, (_, c) => DyInteger.Get(c.GetChar())),
+                "IsLower" => Func.Member(name, (_, c) => char.IsLower(c.GetChar()) ? DyBool.True : DyBool.False),
+                "IsUpper" => Func.Member(name, (_, c) => char.IsUpper(c.GetChar()) ? DyBool.True : DyBool.False),
+                "IsControl" => Func.Member(name, (_, c) => char.IsControl(c.GetChar()) ? DyBool.True : DyBool.False),
+                "IsDigit" => Func.Member(name, (_, c) => char.IsDigit(c.GetChar())? DyBool.True : DyBool.False),
+                "IsLetter" => Func.Member(name, (_, c) => char.IsLetter(c.GetChar())? DyBool.True : DyBool.False),
+                "IsLetterOrDigit" => Func.Member(name, (_, c) => char.IsLetterOrDigit(c.GetChar())? DyBool.True : DyBool.False),
+                "IsWhiteSpace" => Func.Member(name, (_, c) => char.IsWhiteSpace(c.GetChar())? DyBool.True : DyBool.False),
+                "Lower" => Func.Member(name, (_, c) => new DyChar(char.ToLower(c.GetChar()))),
+                "Upper" => Func.Member(name, (_, c) => new DyChar(char.ToUpper(c.GetChar()))),
+                "Order" => Func.Member(name, (_, c) => DyInteger.Get(c.GetChar())),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
 
@@ -132,9 +132,9 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "max" => Func.Static(name, _ => DyChar.Max),
-                "min" => Func.Static(name, _ => DyChar.Min),
-                "default" => Func.Static(name, _ => DyChar.Empty),
+                "Max" => Func.Static(name, _ => DyChar.Max),
+                "Min" => Func.Static(name, _ => DyChar.Min),
+                "Default" => Func.Static(name, _ => DyChar.Empty),
                 "Char" => Func.Static(name, CreateChar, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
