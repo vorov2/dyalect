@@ -6,6 +6,7 @@
   * `len` method renamed to `Length`, `iter` to `Iterate`.
   * Tuples methods `fst` and `snd` are renamed to `First` and `Second`.
   * A bug fixed in Dyalect console in processing of boolean command line switches.
+  * Fix: _Allow to declare types only in global scope_ ([Issue #570](https://github.com/vorov2/dyalect/issues/570)).
 
 # 0.28.0
   * Change: _Rethink Dyalect type system_ ([Issue #563](https://github.com/vorov2/dyalect/issues/563), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).

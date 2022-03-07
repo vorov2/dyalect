@@ -64,7 +64,7 @@
 
         PrivateMethod = 230,
 
-        // = 231,
+        TypesOnlyGlobalScope = 231,
 
         UnableToLinkModule = 232,
 

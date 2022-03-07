@@ -376,6 +376,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Types should only be declared in a global scope..
+        /// </summary>
+        internal static string TypesOnlyGlobalScope {
+            get {
+                return ResourceManager.GetString("TypesOnlyGlobalScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to change a value of a constant &quot;{0}&quot;..
         /// </summary>
         internal static string UnableAssignConstant {

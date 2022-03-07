@@ -12,6 +12,9 @@ namespace Dyalect.Compiler
             if (!char.IsUpper(node.Name[0]))
                 AddError(CompilerError.TypeNameCamel, node.Location);
 
+            if (currentScope != globalScope)
+                AddError(CompilerError.TypesOnlyGlobalScope, node.Location);
+
             var unitId = unit.UnitIds.Count - 1;
             var ti = new TypeInfo(node, new(unitId, unit));
 

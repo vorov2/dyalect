@@ -261,4 +261,7 @@
   <data name="MemberNameCamel" xml:space="preserve">
     <value>A type member name should start with a capital letter.</value>
   </data>
+  <data name="TypesOnlyGlobalScope" xml:space="preserve">
+    <value>Types should only be declared in a global scope.</value>
+  </data>
 </root>
