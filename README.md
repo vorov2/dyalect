@@ -37,7 +37,7 @@ fib(11)
 Extending standard types:
 
 ```swift
-func Float.pow(n) {
+func Float.Pow(n) {
     var result = 1.0
 
     for i in 1..n {
@@ -52,7 +52,7 @@ func Float.pow(n) {
 }
 
 
-20.12.pow(3) //Outputs: 8144.865728
+20.12.Pow(3) //Outputs: 8144.865728
 ```
 
 And a small example with iterators (coroutines):
