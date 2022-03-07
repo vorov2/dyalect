@@ -587,9 +587,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.CtorCheck:
                         right = evalStack.Peek();
-                        right.GetConstructor(ctx, out str, out flag);
-                        evalStack.Replace((!flag && str == unit.IndexedStrings[op.Data].Value)
-                            || (str == unit.IndexedStrings[op.Data].Value && ((DyClass)right).DeclaringUnit.Id == unit.Id));
+                        evalStack.Replace(right.GetConstructor(ctx) == unit.IndexedStrings[op.Data].Value);
                         break;
                     case OpCode.Start:
                         {
@@ -605,7 +603,7 @@ namespace Dyalect.Runtime
                     case OpCode.NewObj:
                         right = evalStack.Pop();
                         left = evalStack.Pop();
-                        evalStack.Push(new DyClass((DyClassInfo)right, unit.IndexedStrings[op.Data].Value, ctx.RgDI == 1, (DyTuple)left, unit));
+                        evalStack.Push(new DyClass((DyClassInfo)right, unit.IndexedStrings[op.Data].Value, (DyTuple)left, unit));
                         break;
                     case OpCode.NewType:
                         cls = new DyClassInfo(unit.IndexedStrings[op.Data].Value, types.Count);

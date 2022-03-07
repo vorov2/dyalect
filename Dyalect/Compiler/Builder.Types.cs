@@ -86,7 +86,6 @@ namespace Dyalect.Compiler
             if (func.TypeName is not null)
             {
                 PushTypeInfo(ctx, func.TypeName, func.Location);
-                cw.RgDI(func.IsPrivate ? 1 : 0);
                 cw.NewObj(func.Name!);
             }
         }

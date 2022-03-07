@@ -5,8 +5,6 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyClass : DyObject
     {
-        private readonly bool privateCtor;
-
         internal Unit DeclaringUnit { get; }
 
         internal string Constructor { get; }
@@ -15,13 +13,12 @@ namespace Dyalect.Runtime.Types
 
         internal DyTypeInfo DecType { get; }
 
-        internal DyClass(DyTypeInfo type, string ctor, bool privateCtor, DyTuple privates, Unit unit) : base(type.ReflectedTypeCode) =>
-            (DecType, Constructor, Fields, this.privateCtor, DeclaringUnit) = (type, ctor, privates, privateCtor, unit);
+        internal DyClass(DyTypeInfo type, string ctor, DyTuple privates, Unit unit) : base(type.ReflectedTypeCode) =>
+            (DecType, Constructor, Fields, DeclaringUnit) = (type, ctor, privates, unit);
 
         public override object ToObject() => this;
 
-        public override void GetConstructor(ExecutionContext ctx, out string ctor, out bool priv) => 
-            (ctor, priv) = (Constructor, privateCtor);
+        public override string GetConstructor(ExecutionContext ctx) => Constructor;
 
         public override int GetHashCode() => HashCode.Combine(Constructor, Fields);
 
@@ -33,6 +30,6 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject Unbox() => Fields;
 
-        public override DyObject Clone() => new DyClass(DecType, Constructor, privateCtor, Fields, DeclaringUnit);
+        public override DyObject Clone() => new DyClass(DecType, Constructor, Fields, DeclaringUnit);
     }
 }

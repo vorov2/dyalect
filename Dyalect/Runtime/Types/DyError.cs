@@ -62,7 +62,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name is "code" or "detail";
 
-        public override void GetConstructor(ExecutionContext ctx, out string ctor, out bool priv) => (ctor, priv) = (errorCode, false);
+        public override string GetConstructor(ExecutionContext ctx) => errorCode;
 
         public override int GetHashCode() => HashCode.Combine(Code, DataItems);
     }
