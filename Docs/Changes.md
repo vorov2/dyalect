@@ -2,7 +2,7 @@
   * Change: _Global refactoring of Dyalect internals and type system_ ([Issue #569](https://github.com/vorov2/dyalect/issues/569)).
   * Change: _Change field access syntax_ ([Issue #571](https://github.com/vorov2/dyalect/issues/571)).
   * Change: _Use private modified to declare private constructors_ ([Issue #575](https://github.com/vorov2/dyalect/issues/575)).
-  * Change: _All built-in methods now start with a capital letter._
+  * Change: _All built-in methods should start with a capital letter_ ([Issue #576](https://github.com/vorov2/dyalect/issues/576)).
   * Change: _Rename methods `len` and `iter` to `Length` and `Iterate`_ ([Issue #574](https://github.com/vorov2/dyalect/issues/574)).
   * Change: _Rename tuple methods fst and snd to First and Second_ ([Issue #573](https://github.com/vorov2/dyalect/issues/573)).
   * Change: _A bug in Dyalect console in processing of boolean command line switches_ ([Issue #572](https://github.com/vorov2/dyalect/issues/572)).
