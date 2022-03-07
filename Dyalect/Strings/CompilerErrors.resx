@@ -258,21 +258,6 @@
   <data name="AccessorOnlyMethod" xml:space="preserve">
     <value>Only methods can be declared as accessors (get and set).</value>
   </data>
-  <data name="AssemblyModuleLoadError" xml:space="preserve">
-    <value>An error occured while loading module "{0}" from an assembly "{1}": {2}</value>
-  </data>
-  <data name="AssemblyModuleNotFound" xml:space="preserve">
-    <value>Module "{0}" is not defined in an assembly "{1}".</value>
-  </data>
-  <data name="DuplicateModuleName" xml:space="preserve">
-    <value>Duplicate name of a module "{1}" in an assembly "{0}".</value>
-  </data>
-  <data name="InvalidAssemblyModule" xml:space="preserve">
-    <value>Unsupported type of a module "{0}" from an assembly "{1}".</value>
-  </data>
-  <data name="UnableLoadAssembly" xml:space="preserve">
-    <value>An error occured while loading assembly "{0}": {1}</value>
-  </data>
   <data name="MemberNameCamel" xml:space="preserve">
     <value>A type member name should start with a capital letter.</value>
   </data>

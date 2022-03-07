@@ -19,8 +19,7 @@ namespace Dyalect.Compiler
         private readonly Unit unit; //Unit (file) that is beign compiler
         private Scope currentScope; //Current lexical scope
         private readonly Label programEnd; //Label that marks an end of program
-        private readonly FileLookup lookup; //Search referenced modules
-        private readonly DyLinker linker;
+        private readonly DyLinker linker; //Linker
         private readonly Dictionary<string, UnitInfo> referencedUnits;
 
         private readonly Dictionary<string, TypeInfo> types;

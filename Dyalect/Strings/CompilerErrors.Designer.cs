@@ -70,24 +70,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An error occured while loading module &quot;{0}&quot; from an assembly &quot;{1}&quot;: {2}.
-        /// </summary>
-        internal static string AssemblyModuleLoadError {
-            get {
-                return ResourceManager.GetString("AssemblyModuleLoadError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Module &quot;{0}&quot; is not defined in an assembly &quot;{1}&quot;..
-        /// </summary>
-        internal static string AssemblyModuleNotFound {
-            get {
-                return ResourceManager.GetString("AssemblyModuleNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Assignment to the same variable..
         /// </summary>
         internal static string AssignmentSameVariable {
@@ -142,15 +124,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Duplicate name of a module &quot;{1}&quot; in an assembly &quot;{0}&quot;..
-        /// </summary>
-        internal static string DuplicateModuleName {
-            get {
-                return ResourceManager.GetString("DuplicateModuleName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to An expression doesn&apos;t have a name..
         /// </summary>
         internal static string ExpressionNoName {
@@ -165,15 +138,6 @@ namespace Dyalect.Strings {
         internal static string FunctionDeprecated {
             get {
                 return ResourceManager.GetString("FunctionDeprecated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unsupported type of a module &quot;{0}&quot; from an assembly &quot;{1}&quot;..
-        /// </summary>
-        internal static string InvalidAssemblyModule {
-            get {
-                return ResourceManager.GetString("InvalidAssemblyModule", resourceCulture);
             }
         }
         
@@ -426,15 +390,6 @@ namespace Dyalect.Strings {
         internal static string UnableAssignExpression {
             get {
                 return ResourceManager.GetString("UnableAssignExpression", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An error occured while loading assembly &quot;{0}&quot;: {1}.
-        /// </summary>
-        internal static string UnableLoadAssembly {
-            get {
-                return ResourceManager.GetString("UnableLoadAssembly", resourceCulture);
             }
         }
         
