@@ -34,7 +34,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeCode != DyType.String)
+            if (index.TypeId != DyType.String)
                 return ctx.InvalidType(index);
 
             if (!TryGetMember(index.GetString(), ctx, out var value))
@@ -72,6 +72,6 @@ namespace Dyalect.Runtime.Types
             }
         }
 
-        public override int GetHashCode() => HashCode.Combine(TypeCode, Unit.Id);
+        public override int GetHashCode() => HashCode.Combine(TypeId, Unit.Id);
     }
 }

@@ -54,7 +54,7 @@ namespace Dyalect
                 return $"[Error evaluating result value: {ex.Message}]";
             }
 
-            return notype ? fmt : fmt + " :: " + obj.TypeInfo.TypeName;
+            return notype ? fmt : fmt + " :: " + obj.GetTypeInfo(ctx).TypeName;
         }
 
         public static void SupplementaryOutput(string data) => WriteLine(data);

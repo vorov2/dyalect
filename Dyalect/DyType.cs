@@ -1,7 +1,5 @@
-﻿using Dyalect.Runtime;
-using Dyalect.Runtime.Types;
+﻿using Dyalect.Runtime.Types;
 using System.Collections.Generic;
-using System.Dynamic;
 
 namespace Dyalect
 {
@@ -47,52 +45,28 @@ namespace Dyalect
                 new DyErrorTypeInfo()
             };
 
-        public static DyTypeCode GetTypeCodeByName(string name) =>
+        public static int GetTypeCodeByName(string name) =>
             name switch
             {
-                DyTypeNames.Nil => DyType.Nil,
-                DyTypeNames.Integer => DyType.Integer,
-                DyTypeNames.Float => DyType.Float,
-                DyTypeNames.Bool => DyType.Bool,
-                DyTypeNames.Char => DyType.Char,
-                DyTypeNames.String => DyType.String,
-                DyTypeNames.Function => DyType.Function,
-                DyTypeNames.Label => DyType.Label,
-                DyTypeNames.TypeInfo => DyType.TypeInfo,
-                DyTypeNames.Tuple => DyType.Tuple,
-                DyTypeNames.Module => DyType.Module,
-                DyTypeNames.Array => DyType.Array,
-                DyTypeNames.Iterator => DyType.Iterator,
-                DyTypeNames.Dictionary => DyType.Dictionary,
-                DyTypeNames.Object => DyType.Object,
-                DyTypeNames.Set => DyType.Set,
-                DyTypeNames.Error => DyType.Error,
-                DyTypeNames.Class => DyType.Class,
-                DyTypeNames.Foreign => DyType.Foreign,
+                DyTypeNames.Nil => Nil,
+                DyTypeNames.Integer => Integer,
+                DyTypeNames.Float => Float,
+                DyTypeNames.Bool => Bool,
+                DyTypeNames.Char => Char,
+                DyTypeNames.String => String,
+                DyTypeNames.Function => Function,
+                DyTypeNames.Label => Label,
+                DyTypeNames.TypeInfo => TypeInfo,
+                DyTypeNames.Tuple => Tuple,
+                DyTypeNames.Module => Module,
+                DyTypeNames.Array => Array,
+                DyTypeNames.Iterator => Iterator,
+                DyTypeNames.Dictionary => Dictionary,
+                DyTypeNames.Object => Object,
+                DyTypeNames.Set => Set,
+                DyTypeNames.Error => Error,
                 _ => default
             }; 
-
-        public static DyTypeInfo? GetTypeInfoByCode(RuntimeContext rtx, DyTypeCode code) =>
-             code switch
-             {
-                 DyType.Nil => rtx.Nil,
-                 DyType.Integer => rtx.Integer,
-                 DyType.Float => rtx.Float,
-                 DyType.Bool => rtx.Bool,
-                 DyType.Char => rtx.Char,
-                 DyType.String => rtx.String,
-                 DyType.Function => rtx.Function,
-                 DyType.Label => rtx.Label,
-                 DyType.TypeInfo => rtx.TypeInfo,
-                 DyType.Tuple => rtx.Tuple,
-                 DyType.Module => rtx.Module,
-                 DyType.Array => rtx.Array,
-                 DyType.Iterator => rtx.Iterator,
-                 DyType.Dictionary => rtx.Dictionary,
-                 DyType.Set => rtx.Set,
-                 DyType.Error => rtx.Error,
-                 _ => default
-             };
 
         internal static string GetTypeNameByCode(int code) =>
             code switch

@@ -212,7 +212,7 @@ namespace Dyalect.Compiler
         public void SetMember(string member) => Emit(new(OpCode.SetMember, IndexString(member)));
         public void SetMemberS(string member) => Emit(new(OpCode.SetMemberS, IndexString(member)));
 
-        public void Type(DyTypeCode code) => Emit(new(OpCode.Type, (int)code));
+        public void Type(int code) => Emit(new(OpCode.Type, code));
 
         public void FunPrep(int argCount) => Emit(new(OpCode.FunPrep, argCount));
         public void FunArgIx(int index) => Emit(new(OpCode.FunArgIx, index));

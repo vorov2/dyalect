@@ -83,7 +83,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
-            if (funObj.TypeCode != DyType.Function && funObj.TypeCode != DyType.Nil)
+            if (funObj.TypeId != DyType.Function && funObj.TypeId != DyType.Nil)
                 return ctx.InvalidType(funObj);
 
             var fun = funObj as DyFunction;
@@ -111,7 +111,7 @@ namespace Dyalect.Runtime.Types
 
             foreach (var (key, value) in map)
             {
-                if (key.TypeCode == DyType.String)
+                if (key.TypeId == DyType.String)
                     xs.Add(new DyLabel(key.GetString(), value));
             }
 
@@ -134,7 +134,7 @@ namespace Dyalect.Runtime.Types
                 "remove" => Func.Member(name, RemoveItem, -1, new Par("key")),
                 "clear" => Func.Member(name, ClearItems),
                 "toTuple" => Func.Member(name, ToTuple),
-                "compact" => Func.Member(name, Compact, -1, new Par("by", StaticNil.Instance)),
+                "compact" => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
                 "contains" => Func.Member(name, Contains, -1, new Par("key")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
@@ -146,7 +146,7 @@ namespace Dyalect.Runtime.Types
                 return new DyDictionary();
 
             if (values is DyTuple tup)
-                return new DyDictionary(ctx.RuntimeContext, tup.ConvertToDictionary(ctx));
+                return new DyDictionary(tup.ConvertToDictionary(ctx));
             
             return ctx.InvalidType(values);
         }
@@ -154,7 +154,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name is "Dictionary" or "fromTuple")
-                return Func.Static(name, New, -1, new Par("values", StaticNil.Instance));
+                return Func.Static(name, New, -1, new Par("values", DyNil.Instance));
 
             return base.InitializeStaticMember(name, ctx);
         }

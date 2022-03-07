@@ -23,8 +23,8 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetTaggedValue() => Value;
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            (index.TypeCode == DyType.Integer && index.GetInteger() == 0) 
-            || (index.TypeCode == DyType.String && index.GetString() == Label)
+            (index.TypeId == DyType.Integer && index.GetInteger() == 0) 
+            || (index.TypeId == DyType.String && index.GetString() == Label)
                 ? Value : ctx.IndexOutOfRange();
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;

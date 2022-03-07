@@ -32,7 +32,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeCode != DyType.String)
+            if (index.TypeId != DyType.String)
                 return ctx.InvalidType(index);
 
             if (!map.TryGetValue(index.GetString(), out var value))

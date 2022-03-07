@@ -90,7 +90,7 @@ namespace Dyalect.Runtime
 
         public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
         {
-            ctx.Error = new(DyErrorCode.InvalidType, value.TypeName);
+            ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[value.TypeId].TypeName);
             return DyNil.Instance;
         }
 

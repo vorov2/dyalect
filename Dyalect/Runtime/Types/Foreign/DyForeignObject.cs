@@ -18,6 +18,6 @@ namespace Dyalect.Runtime.Types
 
         public override void GetConstructor(ExecutionContext ctx, out string ctor, out bool priv) => (ctor, priv) = (Constructor ?? "", false);
 
-        public override int GetHashCode() => HashCode.Combine(TypeCode, Constructor, DeclaringUnit.Id);
+        public override int GetHashCode() => HashCode.Combine(TypeId, Constructor, DeclaringUnit.Id);
     }
 }

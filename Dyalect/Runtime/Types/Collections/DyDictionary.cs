@@ -19,7 +19,7 @@ namespace Dyalect.Runtime.Types
             Map = new Dictionary<DyObject, DyObject>();
         }
 
-        internal DyDictionary(RuntimeContext rtx, Dictionary<DyObject, DyObject> dict) : base(DyType.Dictionary)
+        internal DyDictionary(Dictionary<DyObject, DyObject> dict) : base(DyType.Dictionary)
         {
             Map = dict;
         }

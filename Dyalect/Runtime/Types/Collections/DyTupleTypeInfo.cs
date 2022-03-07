@@ -33,7 +33,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeCode != right.TypeCode)
+            if (left.TypeId != right.TypeId)
                 return DyBool.False;
 
             var (t1, t2) = ((DyTuple)left, (DyTuple)right);
@@ -43,7 +43,7 @@ namespace Dyalect.Runtime.Types
 
             for (var i = 0; i < t1.Count; i++)
             {
-                if (ReferenceEquals(ctx.RuntimeContext.Types[t1.Values[i].TypeCode].Eq(ctx, t1.Values[i], t2.Values[i]),
+                if (ReferenceEquals(ctx.RuntimeContext.Types[t1.Values[i].TypeId].Eq(ctx, t1.Values[i], t2.Values[i]),
                     DyBool.False))
                     return DyBool.False;
 
@@ -114,7 +114,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = t.Values[i].GetTaggedValue();
 
-                if (ctx.RuntimeContext.Types[e.TypeCode].Eq(ctx, e, item).GetBool())
+                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, item).GetBool())
                     return RemoveAt(ctx, t, i);
             }
 
@@ -123,7 +123,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
         {
-            if (index.TypeCode != DyType.Integer)
+            if (index.TypeId != DyType.Integer)
                 return ctx.InvalidType(index);
 
             var t = (DyTuple)self;
@@ -153,7 +153,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
-            if (index.TypeCode != DyType.Integer)
+            if (index.TypeId != DyType.Integer)
                 return ctx.InvalidType(index);
 
             var tuple = (DyTuple)self;
@@ -183,12 +183,12 @@ namespace Dyalect.Runtime.Types
         private DyObject ToDictionary(ExecutionContext ctx, DyObject self)
         {
             var tuple = (DyTuple)self;
-            return new DyDictionary(ctx.RuntimeContext, tuple.ConvertToDictionary(ctx));
+            return new DyDictionary(tuple.ConvertToDictionary(ctx));
         }
 
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
         {
-            if (item.TypeCode != DyType.String)
+            if (item.TypeId != DyType.String)
                 return ctx.InvalidType(item);
 
             var tuple = (DyTuple)self;
@@ -206,7 +206,7 @@ namespace Dyalect.Runtime.Types
                 "keys" => Func.Member(name, GetKeys),
                 "fst" => Func.Member(name, GetFirst),
                 "snd" => Func.Member(name, GetSecond),
-                "sort" => Func.Member(name, SortBy, -1, new Par("comparator", StaticNil.Instance)),
+                "sort" => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
                 "toDictionary" => Func.Member(name, ToDictionary),
                 "contains" => Func.Member(name, Contains, -1, new Par("label")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
@@ -223,7 +223,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "sort" => Func.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", StaticNil.Instance)),
+                "sort" => Func.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
                 "pair" => Func.Static(name, GetPair, -1, new Par("first"), new Par("second")),
                 "triple" => Func.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
                 "concat" => Func.Static(name, Concat, 0, new Par("values", true)),

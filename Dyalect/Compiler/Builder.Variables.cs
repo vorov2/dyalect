@@ -37,7 +37,7 @@ namespace Dyalect.Compiler
                 {
                     var ti = DyType.GetTypeCodeByName(name);
                     
-                    if (ti is not DyType.None)
+                    if (ti != 0)
                     {
                         AddLinePragma(loc);
                         cw.Type(ti);

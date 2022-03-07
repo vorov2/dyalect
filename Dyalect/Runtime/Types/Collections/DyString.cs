@@ -43,7 +43,7 @@ namespace Dyalect.Runtime.Types
         {
             var res = value;
 
-            while (res.TypeCode != DyType.String && res.TypeCode != DyType.Char)
+            while (res.TypeId != DyType.String && res.TypeId != DyType.Char)
             {
                 res = res.ToString(ctx);
 
@@ -56,7 +56,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeCode != DyType.Integer)
+            if (index.TypeId != DyType.Integer)
                 return ctx.InvalidType(index);
 
             return GetItem((int)index.GetInteger(), ctx);
@@ -65,13 +65,13 @@ namespace Dyalect.Runtime.Types
         protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) => new DyChar(Value[idx]);
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported("set", DyString.TypeName);
+            ctx.OperationNotSupported("set", ctx.RuntimeContext.String.TypeName);
 
         public override DyObject Clone() => this;
 
         internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write(TypeCode);
+            writer.Write(TypeId);
             writer.Write(Value);
         }
     }

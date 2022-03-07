@@ -18,10 +18,10 @@ namespace Dyalect.Runtime.Types
         #region Binary Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyType.Float || right.TypeCode == DyType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return new DyFloat(left.GetFloat() + right.GetFloat());
 
-            if (right.TypeCode == DyType.String)
+            if (right.TypeId == DyType.String)
                 return ctx.RuntimeContext.Types[DyType.String].Add(ctx, left, right);
 
             return ctx.InvalidType(right);
@@ -29,7 +29,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyType.Float || right.TypeCode == DyType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return new DyFloat(left.GetFloat() - right.GetFloat());
 
             return ctx.InvalidType(right);
@@ -37,7 +37,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyType.Float || right.TypeCode == DyType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return new DyFloat(left.GetFloat() * right.GetFloat());
 
             return ctx.InvalidType(right);
@@ -45,7 +45,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyType.Float || right.TypeCode == DyType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return new DyFloat(left.GetFloat() / right.GetFloat());
 
             return ctx.InvalidType(right);
@@ -53,7 +53,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyType.Float || right.TypeCode == DyType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return new DyFloat(left.GetFloat() % right.GetFloat());
 
             return ctx.InvalidType(right);
@@ -61,7 +61,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyType.Float || right.TypeCode == DyType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() == right.GetFloat() ? DyBool.True : DyBool.False;
 
             return base.EqOp(left, right, ctx); //Important! Should redirect to base
@@ -69,7 +69,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyType.Float || right.TypeCode == DyType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() != right.GetFloat() ? DyBool.True : DyBool.False;
 
             return base.NeqOp(left, right, ctx); //Important! Should redirect to base
@@ -77,7 +77,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyType.Float || right.TypeCode == DyType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() > right.GetFloat() ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);
@@ -85,7 +85,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyType.Float || right.TypeCode == DyType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() < right.GetFloat() ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);
@@ -93,7 +93,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyType.Float || right.TypeCode == DyType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() >= right.GetFloat() ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);
@@ -101,7 +101,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeCode == DyType.Float || right.TypeCode == DyType.Integer)
+            if (right.TypeId == DyType.Float || right.TypeId == DyType.Integer)
                 return left.GetFloat() <= right.GetFloat() ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);
@@ -130,13 +130,13 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Convert(ExecutionContext ctx, DyObject obj)
         {
-            if (obj.TypeCode == DyType.Float)
+            if (obj.TypeId == DyType.Float)
                 return obj;
 
-            if (obj.TypeCode == DyType.Integer)
+            if (obj.TypeId == DyType.Integer)
                 return new DyFloat(obj.GetInteger());
 
-            if (obj.TypeCode == DyType.Char || obj.TypeCode == DyType.String)
+            if (obj.TypeId == DyType.Char || obj.TypeId == DyType.String)
             {
                 _ = double.TryParse(obj.GetString(), NumberStyles.Float, CI.NumberFormat, out var i);
                 return new DyFloat(i);
@@ -147,13 +147,13 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Parse(ExecutionContext ctx, DyObject obj)
         {
-            if (obj.TypeCode == DyType.Integer)
+            if (obj.TypeId == DyType.Integer)
                 return new DyFloat(obj.GetInteger());
 
-            if (obj.TypeCode == DyType.Float)
+            if (obj.TypeId == DyType.Float)
                 return obj;
 
-            if ((obj.TypeCode == DyType.Char || obj.TypeCode == DyType.String) && double.TryParse(obj.GetString(),
+            if ((obj.TypeId == DyType.Char || obj.TypeId == DyType.String) && double.TryParse(obj.GetString(),
                 NumberStyles.Float, CI.NumberFormat, out var i))
                 return new DyFloat(i);
 

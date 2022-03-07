@@ -10,7 +10,7 @@
         public override int ReflectedTypeCode => DyType.Nil;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            left.TypeCode == right.TypeCode ? DyBool.True : DyBool.False;
+            left.TypeId == right.TypeId ? DyBool.True : DyBool.False;
 
         protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
 

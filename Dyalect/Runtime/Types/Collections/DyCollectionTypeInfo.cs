@@ -12,10 +12,10 @@ namespace Dyalect.Runtime.Types
             var coll = (DyCollection)self;
             var arr = coll.GetValues();
 
-            if (fromElem.TypeCode != DyType.Integer)
+            if (fromElem.TypeId != DyType.Integer)
                 return ctx.InvalidType(fromElem);
 
-            if (toElem.TypeCode != DyType.Nil && toElem.TypeCode != DyType.Integer)
+            if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
                 return ctx.InvalidType(toElem);
 
             var beg = (int)fromElem.GetInteger();
@@ -61,7 +61,7 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 "indices" => Func.Member(name, GetIndices),
-                "slice" => Func.Member(name, GetSlice, -1, new Par("start", StaticInteger.Zero), new Par("len", StaticNil.Instance)),
+                "slice" => Func.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
     }

@@ -23,9 +23,9 @@
         {
             var self = (DyClass)left;
 
-            if (self.TypeCode == right.TypeCode && right is DyClass t && t.Constructor == self.Constructor)
+            if (self.TypeId == right.TypeId && right is DyClass t && t.Constructor == self.Constructor)
             {
-                var res = ctx.RuntimeContext.Types[self.Fields.TypeCode].Eq(ctx, self.Fields, t.Fields);
+                var res = ctx.RuntimeContext.Types[self.Fields.TypeId].Eq(ctx, self.Fields, t.Fields);
 
                 if (ctx.HasErrors)
                     return DyNil.Instance;

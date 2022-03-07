@@ -5,7 +5,7 @@
         private readonly DyFunction first;
         private readonly DyFunction second;
 
-        public CompositionContainer(DyFunction first, DyFunction second) : base(first.DecType, null, first.Parameters, first.VarArgIndex)
+        public CompositionContainer(DyFunction first, DyFunction second) : base(null, first.Parameters, first.VarArgIndex)
         {
             this.first = first;
             this.second = second;

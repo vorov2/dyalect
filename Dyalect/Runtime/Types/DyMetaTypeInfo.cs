@@ -11,10 +11,10 @@
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeCode == DyType.String)
+            if (index.TypeId == DyType.String)
                 return index.GetString() switch
                 {
-                    "code" => DyInteger.Get((int)((DyTypeInfo)self).TypeCode),
+                    "code" => DyInteger.Get((int)((DyTypeInfo)self).TypeId),
                     "name" => new DyString(((DyTypeInfo)self).TypeName),
                     _ => ctx.IndexOutOfRange()
                 };
@@ -28,7 +28,7 @@
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "code" => Func.Auto(name, (ctx, self) => DyInteger.Get((int)((DyTypeInfo)self).TypeCode)),
+                "code" => Func.Auto(name, (ctx, self) => DyInteger.Get((int)((DyTypeInfo)self).TypeId)),
                 "name" => Func.Auto(name, (ctx, self) => new DyString(((DyTypeInfo)self).TypeName)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };

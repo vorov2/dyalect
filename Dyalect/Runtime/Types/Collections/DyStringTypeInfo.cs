@@ -20,39 +20,39 @@ namespace Dyalect.Runtime.Types
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            var str1 = left.TypeCode == DyType.String || left.TypeCode == DyType.Char ? left.GetString() : left.ToString(ctx).Value;
+            var str1 = left.TypeId == DyType.String || left.TypeId == DyType.Char ? left.GetString() : left.ToString(ctx).Value;
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            var str2 = right.TypeCode == DyType.String || right.TypeCode == DyType.Char ? right.GetString() : right.ToString(ctx).Value;
+            var str2 = right.TypeId == DyType.String || right.TypeId == DyType.Char ? right.GetString() : right.ToString(ctx).Value;
             return new DyString(str1 + str2);
         }
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeCode == right.TypeCode || right.TypeCode == DyType.Char)
+            if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString() == right.GetString() ? DyBool.True : DyBool.False;
             return base.EqOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeCode == right.TypeCode || right.TypeCode == DyType.Char)
+            if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString() != right.GetString() ? DyBool.True : DyBool.False;
             return base.NeqOp(left, right, ctx); //Important! Should redirect to base
         }
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeCode == right.TypeCode || right.TypeCode == DyType.Char)
+            if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
             return ctx.InvalidType(right);
         }
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeCode == right.TypeCode || right.TypeCode == DyType.Char)
+            if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
             return ctx.InvalidType(right);
         }
@@ -77,10 +77,10 @@ namespace Dyalect.Runtime.Types
         {
             var str = (DyString)self;
 
-            if (fromElem.TypeCode != DyType.Integer)
+            if (fromElem.TypeId != DyType.Integer)
                 return ctx.InvalidType(fromElem);
 
-            if (toElem.TypeCode != DyType.Nil && toElem.TypeCode != DyType.Integer)
+            if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
                 return ctx.InvalidType(toElem);
 
             var beg = (int)fromElem.GetInteger();
@@ -116,9 +116,9 @@ namespace Dyalect.Runtime.Types
         {
             var str = self.GetString();
 
-            if (value.TypeCode == DyType.String)
+            if (value.TypeId == DyType.String)
                 return str.Contains(value.GetString()) ? DyBool.True : DyBool.False;
-            else if (value.TypeCode == DyType.Char)
+            else if (value.TypeId == DyType.Char)
                 return str.Contains(value.GetChar()) ? DyBool.True : DyBool.False;
             else
                 return ctx.InvalidType(value);
@@ -128,7 +128,7 @@ namespace Dyalect.Runtime.Types
         {
             var str = self.GetString();
             var ifrom = (int)fromIndex.GetInteger();
-            var icount = count.TypeCode == DyType.Nil ? str.Length - ifrom : (int)count.GetInteger();
+            var icount = count.TypeId == DyType.Nil ? str.Length - ifrom : (int)count.GetInteger();
 
             if (ifrom < 0 || ifrom > str.Length)
                 return ctx.IndexOutOfRange();
@@ -136,9 +136,9 @@ namespace Dyalect.Runtime.Types
             if (icount < 0 || icount > str.Length - ifrom)
                 return ctx.IndexOutOfRange();
 
-            if (value.TypeCode == DyType.String)
+            if (value.TypeId == DyType.String)
                 return DyInteger.Get(str.IndexOf(value.GetString(), ifrom, icount));
-            else if (value.TypeCode == DyType.Char)
+            else if (value.TypeId == DyType.Char)
                 return DyInteger.Get(str.IndexOf(value.GetChar(), ifrom, icount));
             else
                 return ctx.InvalidType(value);
@@ -147,8 +147,8 @@ namespace Dyalect.Runtime.Types
         private DyObject LastIndexOf(ExecutionContext ctx, DyObject self, DyObject value, DyObject fromIndex, DyObject count)
         {
             var str = self.GetString();
-            var ifrom = fromIndex.TypeCode == DyType.Nil ? str.Length - 1 : (int)fromIndex.GetInteger();
-            var icount = count.TypeCode == DyType.Nil ? ifrom + 1 : (int)count.GetInteger();
+            var ifrom = fromIndex.TypeId == DyType.Nil ? str.Length - 1 : (int)fromIndex.GetInteger();
+            var icount = count.TypeId == DyType.Nil ? ifrom + 1 : (int)count.GetInteger();
 
             if (ifrom < 0 || ifrom > str.Length)
                 return ctx.IndexOutOfRange();
@@ -156,9 +156,9 @@ namespace Dyalect.Runtime.Types
             if (icount < 0 || ifrom - icount + 1 < 0)
                 return ctx.IndexOutOfRange();
 
-            if (value.TypeCode == DyType.String)
+            if (value.TypeId == DyType.String)
                 return DyInteger.Get(str.LastIndexOf(value.GetString(), ifrom, icount));
-            else if (value.TypeCode == DyType.Char)
+            else if (value.TypeId == DyType.Char)
                 return DyInteger.Get(str.LastIndexOf(value.GetChar(), ifrom, icount));
             else
                 return ctx.InvalidType(value);
@@ -170,7 +170,7 @@ namespace Dyalect.Runtime.Types
             var values = ((DyTuple)arg).Values;
 
             for (var i = 0; i < values.Length; i++)
-                if (values[i].TypeCode != DyType.Char)
+                if (values[i].TypeId != DyType.Char)
                 {
                     allChars = false;
                     break;
@@ -185,7 +185,7 @@ namespace Dyalect.Runtime.Types
 
             for (var i = 0; i < args.Length; i++)
             {
-                if (args[i].TypeCode != DyType.String)
+                if (args[i].TypeId != DyType.String)
                     return ctx.InvalidType(args[i]);
 
                 xs[i] = args[i].GetString();
@@ -231,10 +231,10 @@ namespace Dyalect.Runtime.Types
 
         private DyObject StartsWith(ExecutionContext ctx, DyObject self, DyObject a)
         {
-            if (a.TypeCode == DyType.String)
+            if (a.TypeId == DyType.String)
                 return self.GetString().StartsWith(a.GetString()) ? DyBool.True : DyBool.False;
 
-            if (a.TypeCode == DyType.Char)
+            if (a.TypeId == DyType.Char)
                 return self.GetString().StartsWith(a.GetChar()) ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(a);
@@ -242,10 +242,10 @@ namespace Dyalect.Runtime.Types
 
         private DyObject EndsWith(ExecutionContext ctx, DyObject self, DyObject a)
         {
-            if (a.TypeCode == DyType.String)
+            if (a.TypeId == DyType.String)
                 return self.GetString().EndsWith(a.GetString()) ? DyBool.True : DyBool.False;
 
-            if (a.TypeCode == DyType.Char)
+            if (a.TypeId == DyType.Char)
                 return self.GetString().EndsWith(a.GetChar()) ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(a);
@@ -253,10 +253,10 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Substring(ExecutionContext ctx, DyObject self, DyObject from, DyObject to)
         {
-            if (from.TypeCode != DyType.Integer)
+            if (from.TypeId != DyType.Integer)
                 return ctx.InvalidType(from);
 
-            if (to.TypeCode != DyType.Nil && to.TypeCode != DyType.Integer)
+            if (to.TypeId != DyType.Nil && to.TypeId != DyType.Integer)
                 return ctx.InvalidType(to);
 
             var str = self.GetString();
@@ -268,7 +268,7 @@ namespace Dyalect.Runtime.Types
             if (i >= str.Length)
                 return ctx.IndexOutOfRange();
 
-            if (to.TypeCode == DyType.Nil)
+            if (to.TypeId == DyType.Nil)
                 return new DyString(str[i..]);
 
             var j = (int)to.GetInteger();
@@ -295,7 +295,7 @@ namespace Dyalect.Runtime.Types
 
             for (var i = 0; i < values.Length; i++)
             {
-                if (values[i].TypeCode != DyType.Char)
+                if (values[i].TypeId != DyType.Char)
                 {
                     ctx.InvalidType(values[i]);
                     return Array.Empty<char>();
@@ -320,10 +320,10 @@ namespace Dyalect.Runtime.Types
 
         private DyObject PadLeft(ExecutionContext ctx, DyObject self, DyObject len, DyObject with)
         {
-            if (len.TypeCode != DyType.Integer)
+            if (len.TypeId != DyType.Integer)
                 return ctx.InvalidType(len);
 
-            if (with.TypeCode != DyType.Char)
+            if (with.TypeId != DyType.Char)
                 return ctx.InvalidType(with);
 
             var str = self.GetString();
@@ -332,10 +332,10 @@ namespace Dyalect.Runtime.Types
 
         private DyObject PadRight(ExecutionContext ctx, DyObject self, DyObject len, DyObject with)
         {
-            if (len.TypeCode != DyType.Integer)
+            if (len.TypeId != DyType.Integer)
                 return ctx.InvalidType(len);
 
-            if (with.TypeCode != DyType.Char)
+            if (with.TypeId != DyType.Char)
                 return ctx.InvalidType(with);
 
             var str = self.GetString();
@@ -344,10 +344,10 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Replace(ExecutionContext ctx, DyObject self, DyObject oldValue, DyObject newValue, DyObject ignoreCase)
         {
-            if (oldValue.TypeCode != DyType.String && oldValue.TypeCode != DyType.Char)
+            if (oldValue.TypeId != DyType.String && oldValue.TypeId != DyType.Char)
                 return ctx.InvalidType(oldValue);
 
-            if (newValue.TypeCode != DyType.String && newValue.TypeCode != DyType.Char)
+            if (newValue.TypeId != DyType.String && newValue.TypeId != DyType.Char)
                 return ctx.InvalidType(newValue);
 
             return new DyString(self.GetString().Replace(oldValue.GetString(), newValue.GetString(),
@@ -356,16 +356,16 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject from, DyObject count)
         {
-            if (from.TypeCode != DyType.Integer)
+            if (from.TypeId != DyType.Integer)
                 return ctx.InvalidType(from);
 
             int fri = (int)from.GetInteger();
             int c;
             var str = self.GetString();
 
-            if (count.TypeCode == DyType.Integer)
+            if (count.TypeId == DyType.Integer)
                 c = (int)count.GetInteger();
-            else if (count.TypeCode == DyType.Nil)
+            else if (count.TypeId == DyType.Nil)
                 c = str.Length - fri;
             else
                 return ctx.InvalidType(count);
@@ -383,25 +383,25 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 "indexOf" => Func.Member(name, IndexOf, -1, new Par("value"),
-                    new Par("fromIndex", StaticInteger.Zero), new Par("count", StaticNil.Instance)),
+                    new Par("fromIndex", DyInteger.Zero), new Par("count", DyNil.Instance)),
                 "lastIndexOf" => Func.Member(name, LastIndexOf, -1, new Par("value"),
-                    new Par("fromIndex", StaticNil.Instance), new Par("count", StaticNil.Instance)),
+                    new Par("fromIndex", DyNil.Instance), new Par("count", DyNil.Instance)),
                 "contains" => Func.Member(name, Contains, -1, new Par("value")),
                 "split" => Func.Member(name, Split, 0, new Par("separators", true)),
                 "upper" => Func.Member(name, Upper),
                 "lower" => Func.Member(name, Lower),
                 "startsWith" => Func.Member(name, StartsWith, -1, new Par("value")),
                 "endsWith" => Func.Member(name, EndsWith, -1, new Par("value")),
-                "substring" => Func.Member(name, Substring, -1, new Par("start"), new Par("len", StaticNil.Instance)),
+                "substring" => Func.Member(name, Substring, -1, new Par("start"), new Par("len", DyNil.Instance)),
                 "capitalize" => Func.Member(name, Capitalize),
                 "trim" => Func.Member(name, Trim, 0, new Par("chars", true)),
                 "trimStart" => Func.Member(name, TrimStart, 0, new Par("chars", true)),
                 "trimEnd" => Func.Member(name, TrimEnd, 0, new Par("chars", true)),
                 "isEmpty" => Func.Member(name, IsEmpty),
-                "padLeft" => Func.Member(name, PadLeft, -1, new Par("to"), new Par("with", StaticChar.WhiteSpace)),
-                "padRight" => Func.Member(name, PadRight, -1, new Par("to"), new Par("with", StaticChar.WhiteSpace)),
-                "replace" => Func.Member(name, Replace, -1, new Par("value"), new Par("with"), new Par("ignoreCase", StaticBool.False)),
-                "remove" => Func.Member(name, Remove, -1, new Par("from"), new Par("count", StaticNil.Instance)),
+                "padLeft" => Func.Member(name, PadLeft, -1, new Par("to"), new Par("with", DyChar.WhiteSpace)),
+                "padRight" => Func.Member(name, PadRight, -1, new Par("to"), new Par("with", DyChar.WhiteSpace)),
+                "replace" => Func.Member(name, Replace, -1, new Par("value"), new Par("with"), new Par("ignoreCase", DyBool.False)),
+                "remove" => Func.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance)),
                 "reverse" => Func.Member(name, Reverse),
                 "toCharArray" => Func.Member(name, ToCharArray),
                 _ => base.InitializeInstanceMember(self, name, ctx),
@@ -429,7 +429,7 @@ namespace Dyalect.Runtime.Types
             {
                 var a = values[i];
 
-                if (a.TypeCode == DyType.String || a.TypeCode == DyType.Char)
+                if (a.TypeId == DyType.String || a.TypeId == DyType.Char)
                     arr.Add(a.GetString());
                 else
                 {
@@ -447,7 +447,7 @@ namespace Dyalect.Runtime.Types
 
         private static DyObject Join(ExecutionContext ctx, DyObject values, DyObject separator)
         {
-            if (separator.TypeCode != DyType.String)
+            if (separator.TypeId != DyType.String)
                 return ctx.InvalidType(separator);
 
             var arr = ((DyTuple)values).Values;
@@ -461,10 +461,10 @@ namespace Dyalect.Runtime.Types
 
         private static DyObject Repeat(ExecutionContext ctx, DyObject value, DyObject count)
         {
-            if (count.TypeCode != DyType.Integer)
+            if (count.TypeId != DyType.Integer)
                 return ctx.InvalidType(count);
 
-            if (value.TypeCode != DyType.Char && value.TypeCode == DyType.String)
+            if (value.TypeId != DyType.Char && value.TypeId == DyType.String)
                 return ctx.InvalidType(value);
 
             var c = (int)count.GetInteger();
@@ -481,7 +481,7 @@ namespace Dyalect.Runtime.Types
             {
                 "String" => Func.Static(name, Concat, 0, new Par("values", true)),
                 "concat" => Func.Static(name, Concat, 0, new Par("values", true)),
-                "join" => Func.Static(name, Join, 0, new Par("values", true), new Par("separator", new StaticString(","))),
+                "join" => Func.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(","))),
                 "default" => Func.Static(name, ctx => DyString.Empty),
                 "repeat" => Func.Static(name, Repeat, -1, new Par("value"), new Par("count")),
                 _ => base.InitializeStaticMember(name, ctx),

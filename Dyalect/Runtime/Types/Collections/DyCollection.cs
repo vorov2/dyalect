@@ -24,7 +24,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
         {
-            if (obj.TypeCode !=  DyType.Integer)
+            if (obj.TypeId !=  DyType.Integer)
             {
                 ctx.InvalidType(obj);
                 return;

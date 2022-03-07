@@ -36,7 +36,7 @@ namespace Dyalect.Runtime.Types
 
         internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write(TypeCode);
+            writer.Write(TypeId);
             writer.Write(value);
         }
     }

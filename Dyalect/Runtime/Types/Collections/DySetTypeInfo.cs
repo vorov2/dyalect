@@ -155,7 +155,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "Set" => Func.Static(name, New, 0, new Par("values", StaticNil.Instance)),
+                "Set" => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

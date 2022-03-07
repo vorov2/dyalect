@@ -49,10 +49,10 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeCode == DyType.Integer)
+            if (index.TypeId == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
 
-            if (index.TypeCode != DyType.String && index.TypeCode != DyType.Char)
+            if (index.TypeId != DyType.String && index.TypeId != DyType.Char)
                 return ctx.InvalidType(index);
             
             return TryGetItem(index.GetString(), ctx, out var item)
@@ -61,7 +61,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
-            if (index.TypeCode == DyType.String)
+            if (index.TypeId == DyType.String)
             {
                 var i = GetOrdinal(index.GetString());
 
@@ -89,13 +89,13 @@ namespace Dyalect.Runtime.Types
         public virtual bool IsReadOnly(int index) => Values[index] is DyLabel lab && !lab.Mutable;
 
         protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
-            Values[index].TypeCode == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
+            Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
 
         internal virtual string GetKey(int index) => Values[index].GetLabel()!;
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
         {
-            if (Values[index].TypeCode == DyType.Integer)
+            if (Values[index].TypeId == DyType.Integer)
             {
                 var lab = (DyLabel)Values[index];
 
@@ -105,7 +105,7 @@ namespace Dyalect.Runtime.Types
                     return;
                 }
 
-                if (lab.TypeAnnotation is not null && value.TypeCode == lab.TypeAnnotation.TypeCode)
+                if (lab.TypeAnnotation is not null && value.TypeId == lab.TypeAnnotation.TypeId)
                 {
                     ctx.InvalidType(value);
                     return;
@@ -143,7 +143,7 @@ namespace Dyalect.Runtime.Types
         internal override DyObject[] GetValues()
         {
             for (var i = 0; i < Count; i++)
-                if (Values[i].TypeCode == DyType.Label)
+                if (Values[i].TypeId == DyType.Label)
                     return ConvertToPlainValues();
 
             return Values;

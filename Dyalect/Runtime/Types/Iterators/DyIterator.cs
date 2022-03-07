@@ -33,7 +33,7 @@ namespace Dyalect.Runtime.Types
                     yield break;
                 }
 
-                if (!ReferenceEquals(res, ctx.RuntimeContext.Nil.Terminator))
+                if (!ReferenceEquals(res, DyNil.Terminator))
                     yield return res;
                 else
                 {
@@ -47,9 +47,9 @@ namespace Dyalect.Runtime.Types
         {
             DyFunction? iter;
 
-            if (val.TypeCode != DyType.Iterator)
+            if (val.TypeId != DyType.Iterator)
                 iter = ((DyIterator)val).GetIteratorFunction();
-            else if (val.TypeCode == DyType.Function)
+            else if (val.TypeId == DyType.Function)
             {
                 var obj = ((DyFunction)val).Call(ctx);
                 iter = obj as DyFunction;

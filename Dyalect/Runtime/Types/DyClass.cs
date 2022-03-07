@@ -26,7 +26,7 @@ namespace Dyalect.Runtime.Types
         public override int GetHashCode() => HashCode.Combine(Constructor, Fields);
 
         public override bool Equals(DyObject? other) =>
-            other is not null && DecType.TypeCode == other.TypeCode && other is DyClass t 
+            other is not null && DecType.TypeId == other.TypeId && other is DyClass t 
                 && t.Constructor == Constructor && t.Fields.Equals(Fields);
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Fields.HasItem(name, ctx);

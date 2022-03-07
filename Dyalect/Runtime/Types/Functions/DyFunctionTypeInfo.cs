@@ -4,18 +4,18 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
     {
-        public DyFunctionTypeInfo() : base(DyType.TypeInfo) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
         public override string TypeName => DyTypeNames.Function;
 
+        public override int ReflectedTypeCode => DyType.Function;
+
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.ToString());
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            left.TypeCode == right.TypeCode && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
+            left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
 
         private DyObject GetName(ExecutionContext ctx, DyObject self) =>
             new DyString(((DyFunction)self).FunctionName);
@@ -32,21 +32,21 @@ namespace Dyalect.Runtime.Types
                         new[] {
                             new DyLabel("name", new DyString(p.Name)),
                             new DyLabel("hasDefault", p.Value is not null ? DyBool.True : DyBool.False),
-                            new DyLabel("default", p.Value != null ? p.Value.ToRuntimeType(ctx.RuntimeContext) : DyNil.Instance),
+                            new DyLabel("default", p.Value != null ? p.Value : DyNil.Instance),
                             new DyLabel("varArg", fn.VarArgIndex == i ? DyBool.True : DyBool.False)
                         }
                     );
             }
 
-            return new DyArray(ctx.RuntimeContext.Array, arr);
+            return new DyArray(arr);
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 "compose" => Func.Member(name, Compose, -1, new Par("with")),
-                "name" => Func.Auto(ctx, name, GetName),
-                "parameters" => Func.Auto(ctx, name, GetParameters),
+                "name" => Func.Auto(name, GetName),
+                "parameters" => Func.Auto(name, GetParameters),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

@@ -76,13 +76,13 @@ namespace Dyalect.Linker
 
             foreach (var o in table)
             {
-                if (DyObject.Is(o, DyString.Type))
+                if (o.TypeId == DyType.String)
                     writer.Write(o.GetString());
-                else if (DyObject.Is(o, DyInteger.Type))
+                else if (o.TypeId == DyType.Integer)
                     writer.Write(o.GetInteger());
-                else if (DyObject.Is(o, DyFloat.Type))
+                else if (o.TypeId == DyType.Float)
                     writer.Write(o.GetFloat());
-                else if (DyObject.Is(o, DyChar.Type))
+                else if (o.TypeId == DyType.Char)
                     writer.Write(o.GetChar());
             }
         }
