@@ -1,5 +1,11 @@
-# 0.28.1
-  * _Code cleanup._
+# 0.29
+  * _Global refactoring of Dyalect internals and type system_.
+  * Field access syntax is decomissioned, now all methods and constructors should start with a capital letter.
+  * Private constructors are now declared using `private` modifier.
+  * All built-in methods now start with a capital letter.
+  * `len` method renamed to `Length`, `iter` to `Iterate`.
+  * Tuples methods `fst` and `snd` are renamed to `First` and `Second`.
+  * A bug fixed in Dyalect console in processing of boolean command line switches.
 
 # 0.28.0
   * Change: _Rethink Dyalect type system_ ([Issue #563](https://github.com/vorov2/dyalect/issues/563), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).

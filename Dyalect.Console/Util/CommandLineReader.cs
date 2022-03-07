@@ -167,8 +167,8 @@ namespace Dyalect.Util
                 return v;
             else if (typ == typeof(int) && int.TryParse(v, out var i4))
                 return i4;
-            else if (typ == typeof(bool) && v is null || string.Equals(bool.TrueString, v, StringComparison.OrdinalIgnoreCase))
-                return true;
+            else if (typ == typeof(bool))
+                return v is null || string.Equals(bool.TrueString, v, StringComparison.OrdinalIgnoreCase);
             else if (typ.IsEnum && Enum.TryParse(typ, v, true, out var en))
                 return en!;
             else
