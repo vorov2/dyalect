@@ -52,7 +52,7 @@ namespace Dyalect.Runtime.Types
         {
             var map = (DyDictionary)self;
             if (!map.TryAdd(key, value))
-                return ctx.KeyAlreadyPresent();
+                return ctx.KeyAlreadyPresent(key);
             return DyNil.Instance;
         }
 

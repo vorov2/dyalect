@@ -66,7 +66,7 @@ namespace Dyalect.Runtime
             ctx.CallCnt++;
 
             if (ctx.CallCnt > MAX_NESTED_CALLS)
-                throw new DyRuntimeException(RuntimeErrors.StackOverflow);
+                throw new DyRuntimeException(RuntimeErrors.StackOverflow_0);
             
             DyObject left, right;
             DyClassInfo cls;
@@ -110,7 +110,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Term:
                         if (evalStack.Size is > 1 or 0)
-                            throw new DyRuntimeException(RuntimeErrors.StackCorrupted);
+                            throw new DyRuntimeException(RuntimeErrors.StackCorrupted_0);
                         ctx.RuntimeContext.Units[function.UnitId] = locals!;
                         ctx.UnitId = ctx.CallerUnitId;
                         return evalStack.Pop();

@@ -56,7 +56,7 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(index);
             
             return TryGetItem(index.GetString(), ctx, out var item)
-                ? item : ctx.FieldNotFound();
+                ? item : ctx.IndexOutOfRange(index);
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
@@ -67,7 +67,7 @@ namespace Dyalect.Runtime.Types
 
                 if (i is -1)
                 {
-                    ctx.FieldNotFound();
+                    ctx.IndexOutOfRange(index);
                     return;
                 }
 
@@ -101,7 +101,7 @@ namespace Dyalect.Runtime.Types
 
                 if (!lab.Mutable)
                 {
-                    ctx.FieldReadOnly();
+                    ctx.IndexReadOnly(lab.Label);
                     return;
                 }
 
@@ -114,7 +114,7 @@ namespace Dyalect.Runtime.Types
                 lab.Value = value;
             }
             else
-                ctx.FieldReadOnly();
+                ctx.IndexReadOnly();
         }
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) =>

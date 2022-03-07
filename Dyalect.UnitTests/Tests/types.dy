@@ -275,7 +275,7 @@
         u.age = 39
         assert(got: false)
     } catch {
-        FieldReadOnly() => assert(got: true)
+        IndexReadOnly() => assert(got: true)
     }
 #endtest
 
@@ -454,7 +454,7 @@
         t.y = 240
         assert(got: false)
     } catch {
-        FieldReadOnly() => assert(got: true)
+        IndexReadOnly() => assert(got: true)
     }
 #endtest
 

@@ -137,7 +137,7 @@ namespace Dyalect.Linker
             var imax = (int)max.GetInteger();
 
             if (imin > imax)
-                return ctx.InvalidValue("The value of parameter \"min\" cannot be greater than the value of parameterr \"max\".");
+                return ctx.InvalidValue("min", "max");
 
             var rnd = new Random(iseed);
             return DyInteger.Get(rnd.Next(imin, imax));

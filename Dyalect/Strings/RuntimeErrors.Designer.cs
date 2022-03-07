@@ -61,200 +61,335 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Function argument not found..
+        /// </summary>
+        internal static string ArgumentNotFound_0 {
+            get {
+                return ResourceManager.GetString("ArgumentNotFound.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Function &quot;{0}&quot; doesn&apos;t have an argument &quot;{1}&quot;..
         /// </summary>
-        internal static string ArgumentNotFound {
+        internal static string ArgumentNotFound_2 {
             get {
-                return ResourceManager.GetString("ArgumentNotFound", resourceCulture);
+                return ResourceManager.GetString("ArgumentNotFound.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Assert failed..
+        /// </summary>
+        internal static string AssertFailed_0 {
+            get {
+                return ResourceManager.GetString("AssertFailed.0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Assert failed: {0}..
         /// </summary>
-        internal static string AssertFailed {
+        internal static string AssertFailed_1 {
             get {
-                return ResourceManager.GetString("AssertFailed", resourceCulture);
+                return ResourceManager.GetString("AssertFailed.1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Collection was modified after the iterator was instantiated..
         /// </summary>
-        internal static string CollectionModified {
+        internal static string CollectionModified_0 {
             get {
-                return ResourceManager.GetString("CollectionModified", resourceCulture);
+                return ResourceManager.GetString("CollectionModified.0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Division by zero..
         /// </summary>
-        internal static string DivideByZero {
+        internal static string DivideByZero_0 {
             get {
-                return ResourceManager.GetString("DivideByZero", resourceCulture);
+                return ResourceManager.GetString("DivideByZero.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unhandled exception occured during an execution of an external function..
+        /// </summary>
+        internal static string ExternalFunctionFailure_0 {
+            get {
+                return ResourceManager.GetString("ExternalFunctionFailure.0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to An unhandled exception occured during an execution of an external function &quot;{0}&quot;: {1}.
         /// </summary>
-        internal static string ExternalFunctionFailure {
+        internal static string ExternalFunctionFailure_2 {
             get {
-                return ResourceManager.GetString("ExternalFunctionFailure", resourceCulture);
+                return ResourceManager.GetString("ExternalFunctionFailure.2", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Field not found..
+        ///   Looks up a localized string similar to lnvalid string format..
         /// </summary>
-        internal static string FieldNotFound {
+        internal static string FormatException_0 {
             get {
-                return ResourceManager.GetString("FieldNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A field is read-only..
-        /// </summary>
-        internal static string FieldReadOnly {
-            get {
-                return ResourceManager.GetString("FieldReadOnly", resourceCulture);
+                return ResourceManager.GetString("FormatException.0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to lnvalid string format: {0}.
         /// </summary>
-        internal static string FormatException {
+        internal static string FormatException_1 {
             get {
-                return ResourceManager.GetString("FormatException", resourceCulture);
+                return ResourceManager.GetString("FormatException.1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to An index is out of range..
         /// </summary>
-        internal static string IndexOutOfRange {
+        internal static string IndexOutOfRange_0 {
             get {
-                return ResourceManager.GetString("IndexOutOfRange", resourceCulture);
+                return ResourceManager.GetString("IndexOutOfRange.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An index or field &quot;{0}&quot; is out of range..
+        /// </summary>
+        internal static string IndexOutOfRange_1 {
+            get {
+                return ResourceManager.GetString("IndexOutOfRange.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An index or field is read-only..
+        /// </summary>
+        internal static string IndexReadOnly_0 {
+            get {
+                return ResourceManager.GetString("IndexReadOnly.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An index or field &quot;{0}&quot; is read-only..
+        /// </summary>
+        internal static string IndexReadOnly_1 {
+            get {
+                return ResourceManager.GetString("IndexReadOnly.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type is unexpected..
+        /// </summary>
+        internal static string InvalidType_0 {
+            get {
+                return ResourceManager.GetString("InvalidType.0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Type &quot;{0}&quot; is unexpected..
         /// </summary>
-        internal static string InvalidType {
+        internal static string InvalidType_1 {
             get {
-                return ResourceManager.GetString("InvalidType", resourceCulture);
+                return ResourceManager.GetString("InvalidType.1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}.
+        ///   Looks up a localized string similar to Value is invalid..
         /// </summary>
-        internal static string InvalidValue {
+        internal static string InvalidValue_0 {
             get {
-                return ResourceManager.GetString("InvalidValue", resourceCulture);
+                return ResourceManager.GetString("InvalidValue.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value of &quot;{0}&quot; is invalid..
+        /// </summary>
+        internal static string InvalidValue_1 {
+            get {
+                return ResourceManager.GetString("InvalidValue.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Values of arguments &quot;{0}&quot; and &quot;{1}&quot; are invalid..
+        /// </summary>
+        internal static string InvalidValue_2 {
+            get {
+                return ResourceManager.GetString("InvalidValue.2", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Key is already present in the dictionary..
         /// </summary>
-        internal static string KeyAlreadyPresent {
+        internal static string KeyAlreadyPresent_0 {
             get {
-                return ResourceManager.GetString("KeyAlreadyPresent", resourceCulture);
+                return ResourceManager.GetString("KeyAlreadyPresent.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key &quot;{0}&quot; is already present in the dictionary..
+        /// </summary>
+        internal static string KeyAlreadyPresent_1 {
+            get {
+                return ResourceManager.GetString("KeyAlreadyPresent.1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Key is not present in the dictionary..
         /// </summary>
-        internal static string KeyNotFound {
+        internal static string KeyNotFound_0 {
             get {
-                return ResourceManager.GetString("KeyNotFound", resourceCulture);
+                return ResourceManager.GetString("KeyNotFound.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key &quot;{0}&quot; is not present in the dictionary..
+        /// </summary>
+        internal static string KeyNotFound_1 {
+            get {
+                return ResourceManager.GetString("KeyNotFound.1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Match failed..
         /// </summary>
-        internal static string MatchFailed {
+        internal static string MatchFailed_0 {
             get {
-                return ResourceManager.GetString("MatchFailed", resourceCulture);
+                return ResourceManager.GetString("MatchFailed.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple values provided for the same function argument..
+        /// </summary>
+        internal static string MultipleValuesForArgument_0 {
+            get {
+                return ResourceManager.GetString("MultipleValuesForArgument.0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Function &quot;{0}&quot; has multiple values for an argument &quot;{1}&quot;..
         /// </summary>
-        internal static string MultipleValuesForArgument {
+        internal static string MultipleValuesForArgument_2 {
             get {
-                return ResourceManager.GetString("MultipleValuesForArgument", resourceCulture);
+                return ResourceManager.GetString("MultipleValuesForArgument.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation is not supported..
+        /// </summary>
+        internal static string OperationNotSupported_0 {
+            get {
+                return ResourceManager.GetString("OperationNotSupported.0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Operation &quot;{0}&quot; is not supported by the type &quot;{1}&quot;..
         /// </summary>
-        internal static string OperationNotSupported {
+        internal static string OperationNotSupported_2 {
             get {
-                return ResourceManager.GetString("OperationNotSupported", resourceCulture);
+                return ResourceManager.GetString("OperationNotSupported.2", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unable to access private scope of an object..
         /// </summary>
-        internal static string PrivateAccess {
+        internal static string PrivateAccess_0 {
             get {
-                return ResourceManager.GetString("PrivateAccess", resourceCulture);
+                return ResourceManager.GetString("PrivateAccess.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to access a private module member..
+        /// </summary>
+        internal static string PrivateNameAccess_0 {
+            get {
+                return ResourceManager.GetString("PrivateNameAccess.0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unable to access a private module member &quot;{0}&quot;..
         /// </summary>
-        internal static string PrivateNameAccess {
+        internal static string PrivateNameAccess_1 {
             get {
-                return ResourceManager.GetString("PrivateNameAccess", resourceCulture);
+                return ResourceManager.GetString("PrivateNameAccess.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No value provided for a mandatory function argument..
+        /// </summary>
+        internal static string RequiredArgumentMissing_0 {
+            get {
+                return ResourceManager.GetString("RequiredArgumentMissing.0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to No value provided for an argument &quot;{1}&quot; of a function &quot;{0}&quot;..
         /// </summary>
-        internal static string RequiredArgumentMissing {
+        internal static string RequiredArgumentMissing_2 {
             get {
-                return ResourceManager.GetString("RequiredArgumentMissing", resourceCulture);
+                return ResourceManager.GetString("RequiredArgumentMissing.2", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Stack is corrupted..
         /// </summary>
-        internal static string StackCorrupted {
+        internal static string StackCorrupted_0 {
             get {
-                return ResourceManager.GetString("StackCorrupted", resourceCulture);
+                return ResourceManager.GetString("StackCorrupted.0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Too many nested calls..
         /// </summary>
-        internal static string StackOverflow {
+        internal static string StackOverflow_0 {
             get {
-                return ResourceManager.GetString("StackOverflow", resourceCulture);
+                return ResourceManager.GetString("StackOverflow.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many arguments provided to a function..
+        /// </summary>
+        internal static string TooManyArguments_0 {
+            get {
+                return ResourceManager.GetString("TooManyArguments.0", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Function &quot;{0}&quot; accepts {1} argument(s) ({2} given)..
         /// </summary>
-        internal static string TooManyArguments {
+        internal static string TooManyArguments_3 {
             get {
-                return ResourceManager.GetString("TooManyArguments", resourceCulture);
+                return ResourceManager.GetString("TooManyArguments.3", resourceCulture);
             }
         }
     }

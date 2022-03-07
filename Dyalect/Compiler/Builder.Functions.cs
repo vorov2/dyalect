@@ -204,9 +204,7 @@ namespace Dyalect.Compiler
                         cw.GetMember(Builtins.Type);
                         cw.FunPrep(0);
                         cw.FunCall(0);
-                        cw.Push("name");
-                        cw.Get();
-                        cw.NewErr(DyErrorCode.InvalidType);
+                        cw.NewErr(DyErrorCode.InvalidType, 1);
                         cw.Fail();
                         cw.MarkLabel(skip);
                         cw.Pop();

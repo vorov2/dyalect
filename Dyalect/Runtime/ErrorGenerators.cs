@@ -6,19 +6,25 @@ namespace Dyalect.Runtime
     {
         public static DyObject Fail(this ExecutionContext ctx, string detail)
         {
-            ctx.Error = new(DyErrorCode.UnexpectedError, new DyString(detail));
+            ctx.Error = new(DyErrorCode.UnexpectedError, detail);
             return DyNil.Instance;
         }
 
-        public static DyObject InvalidValue(this ExecutionContext ctx, string error)
+        public static DyObject InvalidValue(this ExecutionContext ctx, object val1)
         {
-            ctx.Error = new(DyErrorCode.InvalidValue, error);
+            ctx.Error = new(DyErrorCode.InvalidValue, val1);
             return DyNil.Instance;
         }
 
-        public static DyObject FieldNotFound(this ExecutionContext ctx)
+        public static DyObject InvalidValue(this ExecutionContext ctx, object val1, object val2)
         {
-            ctx.Error = new(DyErrorCode.FieldNotFound);
+            ctx.Error = new(DyErrorCode.InvalidValue, val1, val2);
+            return DyNil.Instance;
+        }
+
+        public static DyObject InvalidValue(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.InvalidValue);
             return DyNil.Instance;
         }
 
@@ -28,9 +34,15 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject FieldReadOnly(this ExecutionContext ctx)
+        public static DyObject IndexReadOnly(this ExecutionContext ctx, object obj)
         {
-            ctx.Error = new(DyErrorCode.FieldReadOnly);
+            ctx.Error = new(DyErrorCode.IndexReadOnly, obj);
+            return DyNil.Instance;
+        }
+
+        public static DyObject IndexReadOnly(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.IndexReadOnly);
             return DyNil.Instance;
         }
 
@@ -70,6 +82,12 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject IndexOutOfRange(this ExecutionContext ctx, object obj)
+        {
+            ctx.Error = new(DyErrorCode.IndexOutOfRange, obj);
+            return DyNil.Instance;
+        }
+
         public static DyObject IndexOutOfRange(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.IndexOutOfRange);
@@ -79,6 +97,18 @@ namespace Dyalect.Runtime
         public static DyObject KeyNotFound(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.KeyNotFound);
+            return DyNil.Instance;
+        }
+
+        public static DyObject KeyNotFound(this ExecutionContext ctx, object key)
+        {
+            ctx.Error = new(DyErrorCode.KeyNotFound, key);
+            return DyNil.Instance;
+        }
+
+        public static DyObject KeyAlreadyPresent(this ExecutionContext ctx, object key)
+        {
+            ctx.Error = new(DyErrorCode.KeyAlreadyPresent, key);
             return DyNil.Instance;
         }
 

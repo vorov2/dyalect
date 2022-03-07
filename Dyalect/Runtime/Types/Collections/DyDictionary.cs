@@ -58,7 +58,7 @@ namespace Dyalect.Runtime.Types
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (!Map.TryGetValue(index, out var value))
-                return ctx.KeyNotFound();
+                return ctx.KeyNotFound(index);
             else
                 return value;
         }

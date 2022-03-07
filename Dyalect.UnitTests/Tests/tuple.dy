@@ -222,7 +222,7 @@
         xs.y = 44
         assert(got: false)
     } catch {
-        FieldReadOnly() => assert(4, xs.y)
+        IndexReadOnly() => assert(4, xs.y)
     }
 #endtest
 
@@ -232,7 +232,7 @@
         xs[0] = 0
         assert(got: false)
     } catch {
-        FieldReadOnly() => assert(got: true)
+        IndexReadOnly() => assert(got: true)
     }
 #endtest
 
@@ -274,6 +274,6 @@
     try {
         xs.z
     } catch {
-        FieldNotFound() => assert(got: true)
+        IndexOutOfRange() => assert(got: true)
     }
 #endtest

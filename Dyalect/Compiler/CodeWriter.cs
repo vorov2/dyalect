@@ -209,10 +209,9 @@ namespace Dyalect.Compiler
             Emit(new(OpCode.Tag, idx));
         }
 
-        public void NewErr(DyErrorCode code)
+        public void NewErr(DyErrorCode code, int narg)
         {
             RgDI((int)code);
-            var narg = code.GetArgumentNumber();
             Emit(new(OpCode.NewErr, narg), -narg + 1);
         }
 
