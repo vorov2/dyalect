@@ -433,3 +433,12 @@
         assert(got: true)
     }
 #endtest
+
+#test "Data items"
+    try {
+        throw Error.Foo(1, "Foo", true)
+        assert(got: false)
+    } catch e {
+        assert("(1, Foo, true)", e.items.ToString())
+    }
+#endtest
