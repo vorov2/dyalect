@@ -36,7 +36,7 @@
 #test "Guards 1"
     var res = match (1,2) {
         "clear fake" => "wrong1",
-        (x, 2) xs when xs.Fst() == 1 => xs
+        (x, 2) xs when xs.First() == 1 => xs
     }
     assert((1,2), res)
 #endtest
@@ -61,7 +61,7 @@
             typeName([]),
             typeName((1,2)),
             typeName(typeName),
-            typeName([].Iter()),
+            typeName([].Iterate()),
             typeName(false),
             typeName(""),
             typeName('\s'),
@@ -93,7 +93,7 @@
 
 #test "Patterns: array with guards"
     var res = match [1, 2, ('f', 'F', [34, 42.2]), "end"] {
-        [1, 2] xs when xs.Len() <= 3 => "wrong",
+        [1, 2] xs when xs.Length() <= 3 => "wrong",
         [1, 2, (_, _, [34, x])] when x > 42 => x
     }
     assert(42.2, res)
@@ -187,7 +187,7 @@
     for Char in ['a', "str", 'b', 'c', 12] {
         arr.Add(0)
     }
-    assert(3, arr.Len())
+    assert(3, arr.Length())
 #endtest
 
 #test "Pattern in cycle 4"
@@ -242,7 +242,7 @@
 
 #test "Patterns: member check 3"
     let xs = []
-    let res = xs is .Iter and .ToString and .Has
+    let res = xs is .Iterate and .ToString and .Has
     assert(true, res)
 #endtest
 

@@ -26,7 +26,7 @@
     var f = Foo(42)
     assert(42, f.x)
     assert(42, f[0])
-    assert(1, f.Len())
+    assert(1, f.Length())
     match f {
         Foo(x) => assert(42, x)
     }
@@ -35,7 +35,7 @@
 #test "Empty variant"
     type Void()
     var f = Void()
-    assert(0, f.Len())
+    assert(0, f.Length())
     match f {
         Void() => assert(true, true)
     }
@@ -47,9 +47,9 @@
     var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
     var a2 = Asset.Phone("1+", 8)
     var a3 = Asset.Modem("Zyxel")
-    assert(3, a1.Len())
-    assert(2, a2.Len())
-    assert(1, a3.Len())
+    assert(3, a1.Length())
+    assert(2, a2.Length())
+    assert(1, a3.Length())
     assert("Lenovo"+16+3, a1.model+a1.memory+a1.rank)
     assert("1+"+8, a2.model+a2.memory)
     assert("Zyxel", a3.model)
@@ -77,8 +77,8 @@
     static func Bar.Bar(args...) {
         Bar.PrivateBar(args)
     }
-    func Bar.Len() {
-        ini.data.Len()
+    func Bar.Length() {
+        ini.data.Length()
     }
     func Bar.GetItem(index) {
         ini.data[index]
@@ -195,7 +195,7 @@
         }
         ini.val
     }
-    func Cell.Len() {
+    func Cell.Length() {
         1
     }
     var c = ref(12)
@@ -392,10 +392,10 @@
     func StringBuilder.ToString() {
         String.Concat(values: this.buffer)
     }
-    func StringBuilder.Len() {
+    func StringBuilder.Length() {
         var count = 0
         for x in this.buffer {
-            count += x.Len()
+            count += x.Length()
         }
         return count
     }
@@ -405,7 +405,7 @@
     sb.Append("is ")
     sb.Append(123)
     assert("my rank is 123", sb.ToString())
-    assert(14, sb.Len())
+    assert(14, sb.Length())
     sb.Clear()
     sb.Append(true)
     sb.Append(false)

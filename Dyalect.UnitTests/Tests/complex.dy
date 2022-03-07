@@ -95,7 +95,7 @@
         || c == '9'
     }
     func parse(str) {
-        var max = str.Len()
+        var max = str.Length()
         var i = 0
         var res = ""
         while i < max {
@@ -335,13 +335,13 @@
 #test "Names of god"
     var cache = [[1]]
     func namesOfGod(n) {
-        for l in cache.Len()..n {
+        for l in cache.Length()..n {
             var r = [0]
             if l == 1 {
-                r.Add(r[r.Len() - 1] + cache[0][0])
+                r.Add(r[r.Length() - 1] + cache[0][0])
             } else {
                 for x in 1..l {
-                    r.Add(r[r.Len() - 1] + cache[l - x][min(x, l-x)])
+                    r.Add(r[r.Length() - 1] + cache[l - x][min(x, l-x)])
                 }
             }
             cache.Add(r)
@@ -498,7 +498,7 @@
     for list in [
         [ (s: 6.1, e: 7.2), (s: 7.2, e: 8.3) ]
     ] {
-        var z = list.Len() - 1
+        var z = list.Length() - 1
         while z >= 1 {
             for y in (z - 1)..0 {
                 if overlap(list[z], list[y]) {
@@ -544,8 +544,8 @@
         //We sort employees based on salary
         employees.Sort(by: (x,y) => y.salary - x.salary)
         let max =
-            if n > employees.Len() - 1 { 
-                employees.Len() - 1 
+            if n > employees.Length() - 1 { 
+                employees.Length() - 1 
             } else { 
                 n 
             }

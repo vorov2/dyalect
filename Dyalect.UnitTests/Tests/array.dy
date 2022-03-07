@@ -100,7 +100,7 @@
 
 #test "Methods: Len"
     var arr = [1,2,3,4]
-    assert(4, arr.Len())
+    assert(4, arr.Length())
 #endtest
 
 #test "Methods: Empty"

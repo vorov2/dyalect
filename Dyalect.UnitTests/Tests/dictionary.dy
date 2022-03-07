@@ -69,9 +69,9 @@
     map.Add("x", 1)
     map["x"] = 2
     map["y"] = 3
-    assert(2, map.Len())
+    assert(2, map.Length())
     map.Clear()
-    assert(0, map.Len())
+    assert(0, map.Length())
 #endtest
 
 #test "Complex keys"
@@ -114,7 +114,7 @@
     xs.Add("bar", nil)
     xs.Add("zoo", 2)
     var res = xs.Compact()
-    assert(2, res.Len())
+    assert(2, res.Length())
     assert(1, res.foo)
     assert(2, res.zoo)
     res = xs.Compact(v => {
@@ -124,12 +124,12 @@
             v
         }
     })
-    assert(2, res.Len())
+    assert(2, res.Length())
     assert(2, res.zoo)
     assert(42, res.bar)
     let data = Dictionary.FromTuple(("a": "1", "b": "three", "c": "4?"))
     res = data.Compact(Integer.Parse)
-    assert(1, res.Len())
+    assert(1, res.Length())
     assert(1, res["a"])
 #endtest
 

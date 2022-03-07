@@ -26,7 +26,7 @@
 
 #test "Methods: Len"
     var str = "Hello, world!"
-    var res = str.Len()
+    var res = str.Length()
     assert(13, res)
 #endtest
 
@@ -110,7 +110,7 @@
 #test "Indexing"
     var str = "Hello!"
     assert('H', str[0])
-    assert('!', str[str.Len() - 1])
+    assert('!', str[str.Length() - 1])
     var xs = "abcde"
     assert('e', xs[-1])
     assert('a', xs[-5])

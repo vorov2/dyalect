@@ -31,7 +31,7 @@
 
 #test "Methods: Len"
     var xs = yields { 1, 2, 3, 4, 5 }
-    assert(5, xs.Len())
+    assert(5, xs.Length())
 #endtest
 
 #test "Variable capture"
@@ -45,12 +45,12 @@
 
 #test "Methods: First, Last, Len"
     var xs = yields { 1, 2, 3, 4, 5 }
-    assert(5, xs.Len())
-    assert(5, xs.Len())
+    assert(5, xs.Length())
+    assert(5, xs.Length())
     xs.First()
-    assert(5, xs.Len())
+    assert(5, xs.Length())
     xs.Last()
-    assert(5, xs.Len())
+    assert(5, xs.Length())
 #endtest
 
 #test "Iterator as argument"
@@ -116,7 +116,7 @@
     func reverse(arr) {
         var newArr = []
         newArr.AddRange(arr) //hack
-        var len = newArr.Len()
+        var len = newArr.Length()
         var counter = 1
         for x in arr {
             newArr[len - counter] = x
@@ -168,7 +168,7 @@
 #endtest
 
 #test "Iterator as method"
-    func Integer.Iter() {
+    func Integer.Iterate() {
         var i = 0
         if this < 0 {
             while i > this {
@@ -183,20 +183,20 @@
         }
     }
 
-    var res = 5.Iter().ToArray()
+    var res = 5.Iterate().ToArray()
     assert([0,1,2,3,4], res)
 #endtest
 
 #test "Breaking iteration"
     var xs = 1..10
-    assert(10, xs.Len())
+    assert(10, xs.Length())
     for x in xs {
         if x > 3 {
             break
         }
     }
     xs.First()
-    assert(10, xs.Len())
+    assert(10, xs.Length())
 #endtest
 
 #test "Methods: Concat"
@@ -383,7 +383,7 @@
 #test "Methods: Empty"
     let seq = Iterator.Empty()
     assert(true, seq is Iterator)
-    assert(0, seq.Len())
+    assert(0, seq.Length())
     for x in seq {
         assert(true, false)
     }
@@ -414,7 +414,7 @@
     }
     let xs = Iterator.Repeat(rnd).Take(20)
     assert(true, all(xs, notNil))
-    assert(20, xs.Len())
+    assert(20, xs.Length())
 #endtest
 
 #test "Iterator state 2"
@@ -443,7 +443,7 @@
 
 #test "Methods: reverse"
     let xs = [1, 2, 3, 4, 5]
-    assert([5, 4, 3, 2, 1], xs.Iter().Reverse().ToArray())
+    assert([5, 4, 3, 2, 1], xs.Iterate().Reverse().ToArray())
     let ys = yields { 'a', "str", 12 }
     assert([12, "str", 'a'], ys.Reverse().ToArray())
 #endtest
@@ -467,8 +467,8 @@
 
 #test "Methods: Shuffle"
     func eq(xs, ys) {
-        return false when xs.Len() != ys.Len()
-        for i in 0..<xs.Len() {
+        return false when xs.Length() != ys.Length()
+        for i in 0..<xs.Length() {
             if xs[i] != ys[i] {
                 return false
             }
@@ -477,7 +477,7 @@
     }
     let xs = yields { 1,2,3,4,5,6 }
     var ys = xs.Shuffle().ToArray()
-    assert(6, ys.Len())
+    assert(6, ys.Length())
     assert(true, !eq(xs.ToArray(), ys))
 #endtest
 
@@ -578,12 +578,12 @@
         yield break
     }
     var xs = iter()
-    assert(0, xs.Len())
+    assert(0, xs.Length())
     assert(nil, xs.First())
     assert(nil, xs.Last())
     assert([], xs.ToArray())
     xs = yields {}
-    assert(0, xs.Len())
+    assert(0, xs.Length())
     assert(nil, xs.First())
     assert(nil, xs.Last())
     assert([], xs.ToArray())

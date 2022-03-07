@@ -24,7 +24,7 @@
     xs.Add(1)
     xs.Add(2)
     xs.Add(2)
-    assert(3, xs.Len())
+    assert(3, xs.Length())
     assert([4,1,2], xs.ToArray())
 #endtest
 
@@ -60,8 +60,8 @@
     let xs = Set(1,2,3,4,5)
     let ys = Set(1,2,3,4,5)
     assert(true, xs == ys)
-    assert(5, xs.Len())
-    assert(5, ys.Len())
+    assert(5, xs.Length())
+    assert(5, ys.Length())
     assert(false, xs != ys)
 #endtest
 

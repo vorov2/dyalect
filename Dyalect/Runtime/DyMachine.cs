@@ -51,7 +51,7 @@ namespace Dyalect.Runtime
             }
 
             //Module is already processed, no need for further actions
-            if (unitId is not 0 && ctx.RuntimeContext.Units[unitId] is not null)
+            if (ctx.RuntimeContext.Units[unitId] is not null)
                 return DyNil.Instance;
 
             ctx.CatchMarks.Push(null!);

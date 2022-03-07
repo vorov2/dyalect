@@ -68,11 +68,11 @@
 
 #test "Properties"
     func get Array.First() { 
-        this[0] when this.Len() > 0
+        this[0] when this.Length() > 0
     }
 
     func set Array.First(val) {
-        this.Add(val) when this.Len() == 0 else this[0] = val
+        this.Add(val) when this.Length() == 0 else this[0] = val
     }
     
     let xs = [1,2,3]
@@ -216,7 +216,7 @@
 #test "Variadic call 2"
     var res
     func variadic(args...) {
-        res = args.Len()
+        res = args.Length()
     }
     variadic(args: (1,2,3))
     assert(3, res)
@@ -225,7 +225,7 @@
 #test "Variadic call 3"
     var res
     func variadic(args...) {
-        res = args.Len()
+        res = args.Length()
     }
     variadic([1,2,3,4])
     assert(1, res)
@@ -436,7 +436,7 @@
 #test "Introspection"
     func tt(x, y, z = 3, extras...) {}
     assert("tt", tt.Name)
-    assert(4, tt.Parameters.Len())
+    assert(4, tt.Parameters.Length())
     var i = 0
     for p in tt.Parameters {
         if i == 0 {

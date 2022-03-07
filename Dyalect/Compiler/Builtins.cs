@@ -33,11 +33,11 @@
         public const string SetItem     = "SetItem";
         public const string Code        = "Code";
         public const string Name        = "Name";
-        public const string Len         = "Len";
+        public const string Len         = "Length";
         public const string ToStr       = "ToString";
         public const string ToTuple     = "ToTuple";
         public const string ToArray     = "ToArray";
-        public const string Iterator    = "Iter";
+        public const string Iterator    = "Iterate";
         public const string Clone       = "Clone";
         public const string Has         = "Has";
         public const string Type        = "GetType";

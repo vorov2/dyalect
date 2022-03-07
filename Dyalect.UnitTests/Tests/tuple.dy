@@ -26,7 +26,7 @@
 
 #test "Tuple literal 1"
     //Test if a tuple is recognized correctly
-    var res = ([1,2,3].Len() + 4) * 2
+    var res = ([1,2,3].Length() + 4) * 2
     assert(14, res)
 #endtest
 
@@ -41,7 +41,7 @@
 
 #test "Methods: Len"
     var t = (1,2,3)
-    assert(3, t.Len())
+    assert(3, t.Length())
 #endtest
 
 #test "Field access"
@@ -71,9 +71,9 @@
     assert([0, 1, 2, 3, 4, 5], res)
 #endtest
 
-#test "Methods: Fst, Snd"
+#test "Methods: First, Second"
     var t = (42, 4.56)
-    var res = t.Fst() - t.Snd()
+    var res = t.First() - t.Second()
     assert(37.44, res)
 #endtest
 

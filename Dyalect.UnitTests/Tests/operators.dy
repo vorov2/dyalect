@@ -128,7 +128,7 @@
 #endtest
 
 #test "Member check 1"
-    assert(true, "string" is .Len)
+    assert(true, "string" is .Length)
     assert(false, 42 is .FooBar)
     assert(true, String is .Join)
     assert(false, String is .Foo)
