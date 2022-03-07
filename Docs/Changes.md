@@ -1,5 +1,5 @@
-# 0.29
-  * _Global refactoring of Dyalect internals and type system_.
+# 0.29.0
+  * _Global refactoring of Dyalect internals and type system_ ([Issue #569](https://github.com/vorov2/dyalect/issues/569)).
   * Field access syntax is decomissioned, now all methods and constructors should start with a capital letter.
   * Private constructors are now declared using `private` modifier.
   * All built-in methods now start with a capital letter.
