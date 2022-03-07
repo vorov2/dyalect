@@ -692,6 +692,7 @@ namespace Dyalect.Compiler
                     AddLinePragma(node);
                     if (push is not null)
                         cw.Push(push);
+                    PopIf(hints);
                     return;
                 }
 

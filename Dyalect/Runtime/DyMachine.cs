@@ -50,8 +50,10 @@ namespace Dyalect.Runtime
                 ctx.RuntimeContext.Units[0] = mems;
             }
 
-            //Module is already processed, no need for further actions
-            if (ctx.RuntimeContext.Units[unitId] is not null)
+            //Module is already processed, no need for further actions.
+            //However if unitId is 0 and is already processed - it means that we are inside interactive
+            //and should execute it one more time.
+            if (unitId is not 0 && ctx.RuntimeContext.Units[unitId] is not null)
                 return DyNil.Instance;
 
             ctx.CatchMarks.Push(null!);
@@ -70,8 +72,6 @@ namespace Dyalect.Runtime
             DyClassInfo cls;
             Op op;
             DyFunction callFun;
-            bool flag;
-            string str;
 
             PROLOGUE:
             var jumper = -1;
