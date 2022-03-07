@@ -1,6 +1,6 @@
 # 0.29.0
   * Change: _Global refactoring of Dyalect internals and type system_ ([Issue #569](https://github.com/vorov2/dyalect/issues/569)).
-  * Change: _Field access syntax is decomissioned, now all methods and constructors should start with a capital letter._
+  * Change: _Change field access syntax_ ([Issue #571](https://github.com/vorov2/dyalect/issues/571)).
   * Change: _Private constructors are now declared using `private` modifier._
   * Change: _All built-in methods now start with a capital letter._
   * Change: _`len` method renamed to `Length`, `iter` to `Iterate`._
