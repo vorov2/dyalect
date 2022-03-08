@@ -142,7 +142,7 @@ namespace Dyalect.Compiler
 
         private void Build(DRecursiveBlock node, Hints hints, CompilerContext ctx)
         {
-            if (node.Functions[0].IsMemberFunction)
+            if (node.Functions[0].TypeName is not null)
                 AddError(CompilerError.MethodNotRecursive, node.Location);
 
             for (var i = 0; i < node.Functions.Count; i++)
@@ -329,7 +329,7 @@ namespace Dyalect.Compiler
 
         private void Build(DRange range, Hints hints, CompilerContext ctx)
         {
-            cw.Type(new(DyType.GetTypeCodeByName(DyTypeNames.Iterator), true));
+            cw.Type(DyType.Iterator);
             cw.GetMember(Builtins.Range);
             cw.FunPrep(4);
 
@@ -410,6 +410,34 @@ namespace Dyalect.Compiler
 
         private void Build(DAccess node, Hints hints, CompilerContext ctx)
         {
+            //An access expression can be a reference to a module (and can be optimized away)
+            if (node.Target.NodeType == NodeType.Name && !hints.Has(Pop) && !options.NoOptimizations)
+            {
+                var nm = node.Target.GetName()!;
+                var err = GetVariable(nm, currentScope, out var sv);
+
+                if (err is CompilerError.None
+                    && (sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
+                {
+                    if (ru.Unit.ExportList.TryGetValue(node.Name, out var var))
+                    {
+                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
+                            AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
+
+                        AddLinePragma(node);
+                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
+                        PopIf(hints);
+                        return;
+                    }
+                    else if (char.IsUpper(node.Name[0])) //If true, it's a type
+                    {
+                        AddLinePragma(node);
+                        PushTypeInfo(ctx, ru, node.Name, node.Location);
+                        return;
+                    }
+                }
+            }
+
             if (node.Target.NodeType == NodeType.Base)
             {
                 if (!hints.Has(Function))
@@ -427,11 +455,29 @@ namespace Dyalect.Compiler
                 return;
             }
 
-            Build(node.Target, hints.Remove(Pop).Append(Push), ctx);
-            AddLinePragma(node);
+            var push = hints.Remove(Pop).Append(Push);
+            Build(node.Target, push, ctx);
 
-            cw.GetMember(node.Name);
-            PopIf(hints);
+            //A method access
+            if (char.IsUpper(node.Name[0]))
+            {
+                AddLinePragma(node);
+                cw.GetMember(node.Name);
+                PopIf(hints);
+            }
+            //An indexer
+            else
+            {
+                AddLinePragma(node);
+                cw.Push(node.Name);
+                if (!hints.Has(Pop))
+                {
+                    cw.Get();
+                    PopIf(hints);
+                }
+                else
+                    cw.Set();
+            }
         }
 
         private void Build(DTupleLiteral node, Hints hints, CompilerContext ctx)
@@ -488,7 +534,7 @@ namespace Dyalect.Compiler
             }
             else
             {
-                cw.Type(new(DyType.Array, true));
+                cw.Type(DyType.Array);
                 cw.GetMember(DyTypeNames.Array);
                 cw.FunPrep(node.Elements.Count);
 
@@ -557,37 +603,6 @@ namespace Dyalect.Compiler
         private void Build(DIndexer node, Hints hints, CompilerContext ctx)
         {
             var push = hints.Remove(Pop).Append(Push);
-
-            //An indexer with compile time string which can be a reference to a module (and can be optimized away)
-            if (node.Index.NodeType == NodeType.String && node.Index is DStringLiteral str && str.Chunks is null
-                && node.Target.NodeType == NodeType.Name && !hints.Has(Pop) && !options.NoOptimizations)
-            {
-                var nm = node.Target.GetName()!;
-                var err = GetVariable(nm, currentScope, out var sv);
-
-                if (err is CompilerError.None 
-                    && (sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
-                {
-                    if (ru!.Unit.ExportList.TryGetValue(str.Value, out var var))
-                    {
-                        if ((var.Data & VarFlags.Private) == VarFlags.Private)
-                            AddError(CompilerError.PrivateNameAccess, node.Location, str.Value);
-
-                        AddLinePragma(node);
-                        cw.PushVar(new ScopeVar(ru.Handle | (var.Address >> 8) << 8, VarFlags.External));
-                        PopIf(hints);
-                        return;
-                    }
-                    else if (GetTypeHandle(nm, str.Value, out var handle, out var std) == CompilerError.None)
-                    {
-                        AddLinePragma(node);
-                        cw.Type(new TypeHandle(handle, std));
-                        PopIf(hints);
-                        return;
-                    }
-                }
-            }
-
             Build(node.Target, push, ctx);
             BuildIndexer(node, hints, ctx);
         }
@@ -600,7 +615,7 @@ namespace Dyalect.Compiler
             if (localPath is not null && localPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
             {
                 var idx = localPath.LastIndexOf('/');
-                
+
                 if (idx != -1)
                 {
                     dll = localPath[(idx + 1)..];
@@ -677,6 +692,7 @@ namespace Dyalect.Compiler
                     AddLinePragma(node);
                     if (push is not null)
                         cw.Push(push);
+                    PopIf(hints);
                     return;
                 }
 
@@ -717,11 +733,11 @@ namespace Dyalect.Compiler
 
             //Tail recursion optimization
             if (!options.NoOptimizations && hints.Has(Last)
-                    && !sv.IsEmpty() && ctx.Function is {IsMemberFunction: false, IsIterator: false} 
-                    && name == ctx.Function.Name && node.Arguments.Count == ctx.Function.Parameters.Count 
-                    && (ctx.FunctionAddress >> 8) == (sv.Address >> 8) 
-                    && (ctx.FunctionAddress & byte.MaxValue) == (counters.Count - (sv.Address & byte.MaxValue)) 
-                    && !ctx.Function.IsVariadic() && !HasLabels(node.Arguments))
+                && !sv.IsEmpty() && ctx.Function is not null && ctx.Function.TypeName is null && !ctx.Function.IsIterator 
+                && name == ctx.Function.Name && node.Arguments.Count == ctx.Function.Parameters.Count 
+                && (ctx.FunctionAddress >> 8) == (sv.Address >> 8) 
+                && (ctx.FunctionAddress & byte.MaxValue) == (counters.Count - (sv.Address & byte.MaxValue)) 
+                && !ctx.Function.IsVariadic() && !HasLabels(node.Arguments))
             {
                 for (var i = 0; i < node.Arguments.Count; i++)
                     Build(node.Arguments[i], newHints.Append(Push), ctx);
@@ -821,7 +837,7 @@ namespace Dyalect.Compiler
 
             if (node.Chunks is not null)
             {
-                cw.Type(new(DyType.String, true));
+                cw.Type(DyType.String);
                 cw.GetMember(Builtins.Concat);
                 cw.FunPrep(node.Chunks.Count);
 
@@ -1040,7 +1056,8 @@ namespace Dyalect.Compiler
                 BuildPattern(node.Pattern, nh, ctx);
                 var skip = cw.DefineLabel();
                 cw.Brtrue(skip);
-                cw.Fail(DyErrorCode.MatchFailed);
+                cw.NewErr(DyErrorCode.MatchFailed, 0);
+                cw.Fail();
                 cw.MarkLabel(skip);
                 cw.Nop();
             }
@@ -1056,7 +1073,8 @@ namespace Dyalect.Compiler
                 BuildPattern(node.Pattern, hints.Append(Rebind), ctx);
                 var skip = cw.DefineLabel();
                 cw.Brtrue(skip);
-                cw.Fail(DyErrorCode.MatchFailed);
+                cw.NewErr(DyErrorCode.MatchFailed, 0);
+                cw.Fail();
                 cw.MarkLabel(skip);
                 cw.Nop();
             }
@@ -1098,7 +1116,7 @@ namespace Dyalect.Compiler
                 }
                 else if (node.NodeType is NodeType.Rebinding)
                 {
-                    if (VariableExists(nm, checkType: false) is CompilerError.None)
+                    if (VariableExists(nm) is CompilerError.None)
                         PopVariable(ctx, nm, e.Location);
                     else
                     {
@@ -1184,7 +1202,7 @@ namespace Dyalect.Compiler
                     {
                         Build(node.Right, hints.Remove(Last).Append(Push), ctx);
                         AddLinePragma(node);
-                        cw.GetMember("contains");
+                        cw.GetMember(Builtins.Contains);
                         cw.FunPrep(1);
                         Build(node.Left, hints.Remove(Last).Append(Push), ctx);
                         AddLinePragma(node);
@@ -1238,7 +1256,7 @@ namespace Dyalect.Compiler
                     if (name is not null)
                     {
                         var err = VariableExists(name);
-                        if (err is not CompilerError.None)
+                        if (err is not CompilerError.None && DyType.GetTypeCodeByName(name) == 0)
                             AddError(err, node.Location, name);
                     }
 

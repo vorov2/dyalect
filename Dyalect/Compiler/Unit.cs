@@ -1,5 +1,6 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Runtime.Types;
+using System;
 using System.Collections.Generic;
 
 namespace Dyalect.Compiler
@@ -14,12 +15,8 @@ namespace Dyalect.Compiler
             ExportList = new();
             UnitIds = new();
             References = new();
-            Types = new();
-            TypeMap = new();
-            IndexedStrings = new();
-            IndexedIntegers = new();
-            IndexedFloats = new();
-            IndexedChars = new();
+            Strings = new();
+            Objects = new();
         }
 
         private Unit(Unit unit, DebugInfo di)
@@ -34,20 +31,8 @@ namespace Dyalect.Compiler
             ExportList = unit.ExportList;
             UnitIds = unit.UnitIds;
             References = unit.References;
-            Types = unit.Types;
-            IndexedStrings = unit.IndexedStrings;
-            IndexedIntegers = unit.IndexedIntegers;
-            IndexedFloats = unit.IndexedFloats;
-            IndexedChars = unit.IndexedChars;
-            TypeMap = unit.TypeMap;
-        }
-
-        protected TypeDescriptor? QueryType(string name)
-        {
-            if (!TypeMap.TryGetValue(name, out var t))
-                t = null;
-
-            return t;
+            Strings = unit.Strings;
+            Objects = unit.Objects;
         }
 
         internal int Checksum { get; set; }
@@ -60,17 +45,9 @@ namespace Dyalect.Compiler
 
         internal List<int> UnitIds { get; }
 
-        internal List<TypeDescriptor> Types { get; }
+        internal List<string> Strings { get; }
 
-        internal Dictionary<string, TypeDescriptor> TypeMap { get; }
-
-        internal List<DyString> IndexedStrings { get; }
-
-        internal List<DyInteger> IndexedIntegers { get; }
-
-        internal List<DyFloat> IndexedFloats { get; }
-
-        internal List<DyChar> IndexedChars { get; }
+        internal List<DyObject> Objects { get; }
 
         internal List<Op> Ops { get; }
 

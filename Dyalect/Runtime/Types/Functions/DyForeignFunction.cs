@@ -8,10 +8,7 @@ namespace Dyalect.Runtime.Types
         private readonly string name;
 
         protected DyForeignFunction(string? name, Par[] pars, int varArgIndex)
-            : base(DyType.Function, pars, varArgIndex) => this.name = name ?? DefaultName;
-
-        internal DyForeignFunction(string? name, Par[] pars, int typeId, int varArgIndex) : base(typeId, pars, varArgIndex) =>
-            this.name = name ?? DefaultName;
+            : base(pars, varArgIndex) => this.name = name ?? DefaultName;
 
         public override string FunctionName => name;
 

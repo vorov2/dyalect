@@ -1,6 +1,5 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
-using System;
 using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
@@ -13,22 +12,25 @@ namespace Dyalect.Compiler
             if (!char.IsUpper(node.Name[0]))
                 AddError(CompilerError.TypeNameCamel, node.Location);
 
-            var typeId = unit.Types.Count;
+            if (currentScope != globalScope)
+                AddError(CompilerError.TypesOnlyGlobalScope, node.Location);
+
             var unitId = unit.UnitIds.Count - 1;
-            var ti = new TypeInfo(typeId, node, new(unitId, unit));
+            var ti = new TypeInfo(node, new(unitId, unit));
 
             if (types.ContainsKey(node.Name))
             {
                 types.Remove(node.Name);
                 AddError(CompilerError.TypeAlreadyDeclared, node.Location, node.Name);
             }
+            else
+            {
+                var av = AddVariable(node.Name, node.Location, VarFlags.Type | VarFlags.Const);
+                cw.NewType(node.Name);
+                cw.PopVar(av);
+            }
 
             types.Add(node.Name, ti);
-
-            var td = new TypeDescriptor(node.Name, typeId);
-            unit.Types.Add(td);
-            unit.TypeMap[node.Name] = td;
-
             var nh = hints.Remove(Push);
 
             foreach (var c in node.Constructors)
@@ -48,11 +50,13 @@ namespace Dyalect.Compiler
             {
                 var p = func.Parameters[0];
                 PushVariable(ctx, p.Name, p.Location);
-
                 cw.Tag(p.Name);
 
                 if (p.TypeAnnotation is not null)
-                    cw.TypeAnno(GetTypeHandle(p.TypeAnnotation, p.Location));
+                {
+                    PushTypeInfo(ctx, p.TypeAnnotation, p.Location);
+                    cw.Annot();
+                }
                 
                 if (p is DTypeParameter { Mutable: true })
                     cw.Mut();
@@ -68,7 +72,10 @@ namespace Dyalect.Compiler
                     cw.Tag(p.Name);
 
                     if (p.TypeAnnotation is not null)
-                        cw.TypeAnno(GetTypeHandle(p.TypeAnnotation, p.Location));
+                    {
+                        PushTypeInfo(ctx, p.TypeAnnotation, p.Location);
+                        cw.Annot();
+                    }
 
                     if (p is DTypeParameter { Mutable: true })
                         cw.Mut();
@@ -78,99 +85,46 @@ namespace Dyalect.Compiler
                 cw.NewTuple(func.Parameters.Count);
             }
 
-            if (TryGetLocalType(func.TypeName!.Local, out var ti))
+            //Just because compiler wants it, it is always not null here
+            if (func.TypeName is not null)
             {
-                cw.RgDI(func.Name!);
-                cw.RgFI(char.IsLower(func.Name![0]) ? 1 : 0);
-                cw.NewType(ti!.TypeId);
+                PushTypeInfo(ctx, func.TypeName, func.Location);
+                cw.NewObj(func.Name!);
             }
         }
 
-        private TypeHandle GetTypeHandle(Qualident name, Location loc) => GetTypeHandle(name.Parent!, name.Local, loc);
-
-        private TypeHandle GetTypeHandle(string? parent, string local, Location loc)
+        private void PushTypeInfo(CompilerContext ctx, Qualident qual, Location loc)
         {
-            var err = GetTypeHandle(parent, local, out var handle, out var std);
-
-            if (err == CompilerError.UndefinedModule)
-                AddError(err, loc, parent!);
-            else if (err == CompilerError.UndefinedType)
-                AddError(err, loc, local);
-
-            return new TypeHandle(handle, std);
-        }
-
-        private bool IsTypeExists(string name) =>
-            GetTypeHandle(null, name, out var _, out var _) == CompilerError.None;
-
-        private CompilerError GetTypeHandle(string? parent, string local, out int handle, out bool std)
-        {
-            handle = -1;
-            std = false;
-
-            if (parent is null)
-                handle = DyType.GetTypeCodeByName(local);
-
-            if (handle > -1)
+            if (qual.Parent is null) //Type is local
+                PushVariable(ctx, qual.Local, loc);
+            else //Type is external
             {
-                std = true;
-                return CompilerError.None;
-            }
-
-            if (parent is null)
-            {
-                if (!TryGetType(local, out var ti))
-                    return CompilerError.UndefinedType;
-                else
+                //Can't find module
+                if (!referencedUnits.TryGetValue(qual.Parent, out var info))
                 {
-                    handle = (byte)ti!.Unit.Handle | ti.TypeId << 8;
-                    return CompilerError.None;
-                }
-            }
-            else
-            {
-                if (!referencedUnits.TryGetValue(parent, out var ui))
-                    return CompilerError.UndefinedModule;
-                else
-                {
-                    if (!TryGetExternalType(ui, local, out var id))
-                        return CompilerError.UndefinedType;
-
-                    handle = (byte)ui.Handle | id << 8;
-                    return CompilerError.None;
-                }
-            }
-        }
-
-        private bool TryGetType(string local, out TypeInfo? ti)
-        {
-            if (TryGetLocalType(local, out ti))
-                return true;
-
-            foreach (var r in referencedUnits.Values)
-                if (TryGetExternalType(r, local, out var id))
-                {
-                    ti = new TypeInfo(id, DTypeDeclaration.Default, r);
-                    return true;
+                    AddError(CompilerError.UndefinedModule, loc, qual.Parent);
+                    return;
                 }
 
-            return false;
+                //Push type from found module
+                PushTypeInfo(ctx, info, qual.Local, loc);
+            }
         }
 
-        private bool TryGetExternalType(UnitInfo ui, string typeName, out int id)
+        private void PushTypeInfo(CompilerContext ctx, UnitInfo info, string name, Location loc)
         {
-            id = -1;
-
-            if (ui.Unit.TypeMap.TryGetValue(typeName, out var td))
+            //Can't find type in the module
+            if (!info.Unit.ExportList.TryGetValue(name, out var sv))
             {
-                id = td.Id;
-                return true;
+                AddError(CompilerError.UndefinedType, loc, name);
+                return;
             }
 
-            return false;
-        }
+            //A type is declared inside a private block
+            if ((sv.Data & VarFlags.Private) == VarFlags.Private)
+                AddError(CompilerError.PrivateNameAccess, loc, name);
 
-        private bool TryGetLocalType(string typeName, out TypeInfo ti) =>
-            types.TryGetValue(typeName, out ti!);
+            cw.PushVar(new(info.Handle | (sv.Address >> 8) << 8, sv.Data | VarFlags.External));
+        }
     }
 }

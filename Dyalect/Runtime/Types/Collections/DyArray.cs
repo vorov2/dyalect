@@ -1,24 +1,22 @@
-﻿using Dyalect.Debug;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
-    public class DyArray : DyCollection
+    public class DyArray : DyCollection, IEnumerable<DyObject>
     {
         private const int DEFAULT_SIZE = 4;
 
         internal DyObject[] Values;
 
-        public new DyObject this[int index]
+        public DyObject this[int index]
         {
             get => Values[CorrectIndex(index)];
             set => Values[CorrectIndex(index)] = value;
         }
 
-        public DyArray(DyObject[] values) : base(DyType.Array) => (Values, Count) = (values, values.Length);
+        public DyArray(DyObject[] values) : base(DyType.Array) => 
+            (Values, Count) = (values, values.Length);
 
         public void Compact()
         {

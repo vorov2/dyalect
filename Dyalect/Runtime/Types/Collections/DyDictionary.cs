@@ -1,13 +1,10 @@
-﻿using Dyalect.Debug;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     public class DyDictionary : DyEnumerable
     {
-        internal readonly Dictionary<DyObject,DyObject> Map;
+        internal readonly Dictionary<DyObject, DyObject> Map;
 
         public override int Count => Map.Count;
 
@@ -17,11 +14,15 @@ namespace Dyalect.Runtime.Types
             set => Map[key] = value;
         }
 
-        internal DyDictionary() : base(DyType.Dictionary) =>
+        internal DyDictionary() : base(DyType.Dictionary)
+        {
             Map = new Dictionary<DyObject, DyObject>();
+        }
 
-        internal DyDictionary(Dictionary<DyObject, DyObject> dict) : base(DyType.Dictionary) =>
+        internal DyDictionary(Dictionary<DyObject, DyObject> dict) : base(DyType.Dictionary)
+        {
             Map = dict;
+        }
 
         public void Add(DyObject key, DyObject value)
         {
@@ -57,7 +58,7 @@ namespace Dyalect.Runtime.Types
         internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (!Map.TryGetValue(index, out var value))
-                return ctx.KeyNotFound();
+                return ctx.KeyNotFound(index);
             else
                 return value;
         }
@@ -74,6 +75,6 @@ namespace Dyalect.Runtime.Types
 
         public override int GetHashCode() => Map.GetHashCode();
 
-        protected internal override bool HasItem(string name, ExecutionContext ctx) => ContainsKey((DyString)name);
+        protected internal override bool HasItem(string name, ExecutionContext ctx) => ContainsKey(new DyString(name));
     }
 }

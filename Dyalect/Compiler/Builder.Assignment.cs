@@ -13,13 +13,13 @@ namespace Dyalect.Compiler
             if (node.Target.NodeType is NodeType.Access && node.AutoAssign is BinaryOperator.Coalesce)
                 return BuildSetterCoalesce(node, hints, ctx);
 
-            if (node.Target.NodeType is NodeType.Access && node.AutoAssign is not null)
+            if (node.Target.NodeType is NodeType.Access && IsMemberAccess(node.Target) && node.AutoAssign is not null)
                 return BuildSetterAutoAssign(node, hints, ctx);
 
-            if (node.Target.NodeType is NodeType.Access)
+            if (node.Target.NodeType is NodeType.Access && IsMemberAccess(node.Target))
                 return BuildSetter(node, hints, ctx);
 
-            if (node.AutoAssign == BinaryOperator.Coalesce)
+            if (node.AutoAssign is BinaryOperator.Coalesce)
                 return BuildCoalesce(node, hints, ctx);
 
             if (node.AutoAssign is not null)
@@ -27,6 +27,8 @@ namespace Dyalect.Compiler
 
             return BuildAssignment(node, hints, ctx);
         }
+
+        private bool IsMemberAccess(DNode node) => char.IsUpper(((DAccess)node).Name[0]);
 
         private void EmitGetter(DNode target, string field, Hints hints, CompilerContext ctx)
         {
@@ -37,7 +39,7 @@ namespace Dyalect.Compiler
         private void EmitSetter(DNode target, DNode value, string field, Hints hints, CompilerContext ctx)
         {
             Build(target, hints.Append(Push), ctx);
-            cw.GetMember("set_" + field);
+            cw.GetMember(Builtins.Setter(field));
             cw.FunPrep(1);
             Build(value, hints.Append(Push), ctx);
             cw.FunArgIx(0);
@@ -82,7 +84,7 @@ namespace Dyalect.Compiler
         {
             var acc = (DAccess)node.Target;
             Build(acc.Target, hints.Remove(Last).Append(Push), ctx);
-            cw.GetMember("set_" + acc.Name);
+            cw.GetMember(Builtins.Setter(acc.Name));
             cw.FunPrep(1);
             EmitGetter(acc.Target, acc.Name, hints, ctx);
             Build(node.Value, hints.Append(Push), ctx);

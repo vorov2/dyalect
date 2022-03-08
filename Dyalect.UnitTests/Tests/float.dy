@@ -5,14 +5,14 @@
     assert(0.0, res)
 #endtest
 
-#test "Methods: min and max"
-    assert(1.7976931348623157E+308, Float.max())
-    assert(-1.7976931348623157E+308, Float.min())
+#test "Methods: Min and Max"
+    assert(1.7976931348623157E+308, Float.Max())
+    assert(-1.7976931348623157E+308, Float.Min())
 #endtest
 
-#test "Methods: inf and NaN"
-    var d = Float.inf() + (-Float.inf())
-    assert(true, d.isNaN())
+#test "Methods: Inf and NaN"
+    var d = Float.Inf() + (-Float.Inf())
+    assert(true, d.IsNaN())
 #endtest
 
 #test "Constructor"
@@ -22,25 +22,25 @@
 #endtest
 
 #test "Methods: default"
-    assert(0.0, Float.default())
+    assert(0.0, Float.Default())
 #endtest
 
 #test "Methods: getType"
     let x = 42.42
     assert(true, TypeInfo(x) == Float)
-    assert(true, x.getType() == Float)
+    assert(true, x.GetType() == Float)
     var t = TypeInfo(x)
-    assert(2, t.id)
-    assert("Float", t.name)
+    assert(3, t.Code)
+    assert("Float", t.Name)
 #endtest
 
-#test "Methods: parse"
-    assert(42.42, Float.parse("42.42"))
-    assert(2.0, Float.parse('2'))
-    assert(nil, Float.parse("three and a half"))
+#test "Methods: Parse"
+    assert(42.42, Float.Parse("42.42"))
+    assert(2.0, Float.Parse('2'))
+    assert(nil, Float.Parse("three and a half"))
 #endtest
 
 #test "Ranges"
     assert([0.0,1.0,2.0,3.0,4.0,5.0], [0.0..5])
-    assert([0.0,0.02,0.04], (0.0^0.02..0.05).toArray())
+    assert([0.0,0.02,0.04], (0.0^0.02..0.05).ToArray())
 #endtest

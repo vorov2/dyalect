@@ -1,12 +1,11 @@
 ﻿using Dyalect.Debug;
-using System;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     internal abstract class DyCollectionTypeInfo : DyTypeInfo
     {
-        protected DyCollectionTypeInfo(int typeId) : base(typeId) { }
+        protected DyCollectionTypeInfo() { }
 
         protected virtual DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
         {
@@ -61,8 +60,8 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "indices" => Func.Member(name, GetIndices),
-                "slice" => Func.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
+                "Indices" => Func.Member(name, GetIndices),
+                "Slice" => Func.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
     }

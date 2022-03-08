@@ -207,26 +207,6 @@ namespace Dyalect.Linker
 
                 if (u.References.Count > 0)
                     u.UnitIds[u.References.Count] = uid;
-
-                for (var i = 0; i < u.Types.Count; i++)
-                {
-                    var td = u.Types[i];
-                    if (td.Processed)
-                        continue;
-                    td.Processed = true;
-                    td.Id = composition.Types.Count;
-
-                    if (td.ForeignTypeInfo is null)
-                        composition.Types.Add(new DyClassInfo(composition.Types.Count, td.Name));
-                    else
-                    {
-                        var ti = (ForeignTypeInfo)Activator.CreateInstance(td.ForeignTypeInfo)!;
-                        ti.DeclaringUnit = u;
-                        ti.TypeCode = composition.Types.Count;
-                        composition.Types.Add(ti);
-                        composition.TypeCodes.Add(td.ForeignTypeInfo.GUID, ti.TypeCode);
-                    }
-                }
             }
         }
 

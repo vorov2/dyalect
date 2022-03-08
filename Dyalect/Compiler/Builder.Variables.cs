@@ -14,15 +14,12 @@ namespace Dyalect.Compiler
 
         private bool privateScope; //Identifies that a current scope is private
 
-        private CompilerError VariableExists(string name, bool checkType = true)
+        private CompilerError VariableExists(string name)
         {
             var err = GetVariable(name, currentScope, out _);
 
             if (err is CompilerError.None)
                 return err;
-
-            if (checkType && GetTypeHandle(null, name, out _, out _) is CompilerError.None)
-                return CompilerError.None;
 
             return err;
         }
@@ -36,13 +33,16 @@ namespace Dyalect.Compiler
                 if (string.IsNullOrEmpty(name))
                     return;
 
-                var th = GetTypeHandle(null, name, out var hdl, out var std);
-
-                if (th is CompilerError.None)
+                if (char.IsUpper(name[0]))
                 {
-                    AddLinePragma(loc);
-                    cw.Type(new(hdl, std));
-                    return;
+                    var ti = DyType.GetTypeCodeByName(name);
+                    
+                    if (ti != 0)
+                    {
+                        AddLinePragma(loc);
+                        cw.Type(ti);
+                        return;
+                    }
                 }
 
                 AddError(err, loc, name);

@@ -11,14 +11,14 @@
 #endtest
 
 #test "Methods: default"
-    assert(nil, Nil.default())
+    assert(nil, Nil.Default())
 #endtest
 
 #test "Methods: getType"
     let x = nil
     assert(true, TypeInfo(x) == Nil)
-    assert(true, x.getType() == Nil)
+    assert(true, x.GetType() == Nil)
     var t = TypeInfo(x)
-    assert(0, t.id)
-    assert("Nil", t.name)
+    assert(1, t.Code)
+    assert("Nil", t.Name)
 #endtest

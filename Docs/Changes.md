@@ -1,3 +1,19 @@
+# 0.29.0
+  * Change: _Global refactoring of Dyalect internals and type system_ ([Issue #569](https://github.com/vorov2/dyalect/issues/569)).
+  * Change: _Change field access syntax_ ([Issue #571](https://github.com/vorov2/dyalect/issues/571)).
+  * Change: _Use member access syntax for module prefixes_ ([Issue #577](https://github.com/vorov2/dyalect/issues/577)).
+  * Change: _Use private modified to declare private constructors_ ([Issue #575](https://github.com/vorov2/dyalect/issues/575)).
+  * Change: _All built-in methods should start with a capital letter_ ([Issue #576](https://github.com/vorov2/dyalect/issues/576)).
+  * Change: _Rename methods `len` and `iter` to `Length` and `Iterate`_ ([Issue #574](https://github.com/vorov2/dyalect/issues/574)).
+  * Change: _Rename tuple methods fst and snd to First and Second_ ([Issue #573](https://github.com/vorov2/dyalect/issues/573)).
+  * Change: _A bug in Dyalect console in processing of boolean command line switches_ ([Issue #572](https://github.com/vorov2/dyalect/issues/572)).
+  * Change: _Exception generation redesign_ ([Issue #513](https://github.com/vorov2/dyalect/issues/513)).
+  * Change: _Change syntax for indexer definition_ ([Issue #578](https://github.com/vorov2/dyalect/issues/578)).
+  * Change: _Method check pattern should accept operators_ ([Issue #579](https://github.com/vorov2/dyalect/issues/579)).
+  * Change: _Simplify object file format_ ([Issue #580](https://github.com/vorov2/dyalect/issues/580)).
+  * Fix: _Dya: Whole test suite fails because of the parser error_ ([Issue #581](https://github.com/vorov2/dyalect/issues/581)).
+  * Fix: _Allow to declare types only in global scope_ ([Issue #570](https://github.com/vorov2/dyalect/issues/570)).
+
 # 0.28.0
   * Change: _Rethink Dyalect type system_ ([Issue #563](https://github.com/vorov2/dyalect/issues/563), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
   * Fix: _VM may crush in some cases with stack overflow exception_ ([Issue #566](https://github.com/vorov2/dyalect/issues/566)).

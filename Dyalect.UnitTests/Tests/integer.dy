@@ -3,9 +3,9 @@
     assert(96, res)
 #endtest
 
-#test "Methods: min and max"
-    assert(9223372036854775807, Integer.max())
-    assert(-9223372036854775807, Integer.min() + 1)
+#test "Methods: Min and Max"
+    assert(9223372036854775807, Integer.Max())
+    assert(-9223372036854775807, Integer.Min() + 1)
 #endtest
 
 #test "Constructor"
@@ -14,34 +14,34 @@
     assert(5, Integer('5'))
 #endtest
 
-#test "Methods: default"
-    assert(0, Integer.default())
+#test "Methods: Default"
+    assert(0, Integer.Default())
 #endtest
 
-#test "Methods: getType"
+#test "Methods: GetType"
     let x = 42
     assert(true, TypeInfo(x) == Integer)
-    assert(true, x.getType() == Integer)
+    assert(true, x.GetType() == Integer)
     let t = TypeInfo(x)
-    assert(1, t.id)
-    assert("Integer", t.name)
+    assert(2, t.Code)
+    assert("Integer", t.Name)
 #endtest
 
 
-#test "Methods: isMultiple"
-    assert(true, 12.isMultiple(3))
-    assert(true, 12.isMultiple(of: 2))
-    assert(true, 340.isMultiple(of: 10))
-    assert(false, 340.isMultiple(of: 13))
+#test "Methods: IsMultiple"
+    assert(true, 12.IsMultiple(3))
+    assert(true, 12.IsMultiple(of: 2))
+    assert(true, 340.IsMultiple(of: 10))
+    assert(false, 340.IsMultiple(of: 13))
 #endtest
 
-#test "Methods: parse"
-    assert(42, Integer.parse("42"))
-    assert(2, Integer.parse('2'))
-    assert(nil, Integer.parse("three"))
+#test "Methods: Parse"
+    assert(42, Integer.Parse("42"))
+    assert(2, Integer.Parse('2'))
+    assert(nil, Integer.Parse("three"))
 #endtest
 
 #test "Ranges"
     assert([0,1,2,3,4,5], [0..5])
-    assert([0,2,4], (0^2..4).toArray())
+    assert([0,2,4], (0^2..4).ToArray())
 #endtest

@@ -1,5 +1,5 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Runtime.Types;
+﻿using Dyalect.Runtime.Types;
+using System;
 using System.Collections.Generic;
 
 namespace Dyalect.Runtime
@@ -8,7 +8,7 @@ namespace Dyalect.Runtime
     {
         internal int RgDI; //RgDI register
         internal int RgFI; //RgFI register
-        internal int Cl;
+        internal int CallCnt; //Call counter
 
         public static readonly ExecutionContext External = new ExternalExecutionContext();
 
@@ -50,7 +50,8 @@ namespace Dyalect.Runtime
 
         internal Stack<ArgContainer> Arguments { get; } = new(6);
 
-        internal int UnitId { get; set; }
+        internal int UnitId;
+        internal int CallerUnitId;
 
         public DyError? GetError() => Error;
 

@@ -10,7 +10,7 @@ namespace Dyalect.Runtime.Types
         private readonly IEnumerable<DyObject> enumerable;
         private IEnumerator<DyObject>? enumerator;
 
-        public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), DyType.Function, -1) =>
+        public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), -1) =>
             this.enumerable = enumerable;
 
         internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) =>

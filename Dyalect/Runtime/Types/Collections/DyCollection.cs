@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Dyalect.Runtime.Types
 {
     public abstract class DyCollection : DyEnumerable
     {
-        public virtual DyObject this[int index] => GetValue(index);
-
-        protected DyCollection(int typeId) : base(typeId) { }
+        protected DyCollection(int typeCode) : base(typeCode) { }
 
         #region Indexing
         protected int CorrectIndex(int index) => index < 0 ? Count + index : index;
@@ -28,7 +24,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
         {
-            if (obj.TypeId is not DyType.Integer)
+            if (obj.TypeId !=  DyType.Integer)
             {
                 ctx.InvalidType(obj);
                 return;
@@ -55,7 +51,7 @@ namespace Dyalect.Runtime.Types
             var newArr = new object[Count];
 
             for (var i = 0; i < newArr.Length; i++)
-                newArr[i] = values[i].ToObject();
+                newArr[i] = values[i];
 
             return newArr;
         }

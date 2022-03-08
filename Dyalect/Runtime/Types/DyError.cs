@@ -2,6 +2,7 @@
 using Dyalect.Strings;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dyalect.Runtime.Types
 {
@@ -22,14 +23,36 @@ namespace Dyalect.Runtime.Types
 
         public string GetDescription()
         {
-            var str = RuntimeErrors.ResourceManager.GetString(errorCode);
+            var idx = DataItems.Length;
+            var str = RuntimeErrors.ResourceManager.GetString(errorCode + "." + idx);
 
             if (str is not null)
             {
                 if (DataItems is not null && DataItems.Length > 0)
-                    str = str.Format(DataItems);
+                {
+                    var arr = new string[DataItems.Length];
+
+                    for (var i = 0; i < arr.Length; i++)
+                    {
+                        var it = DataItems[i];
+
+                        if (it is DyTypeInfo dti)
+                            arr[i] = dti.TypeName;
+                        else
+                            arr[i] = it.ToString() ?? "";
+                    }
+
+                    str = str.Format(arr);
+                }
 
                 return str;
+            }
+            else if (str is null)
+            {
+                str = RuntimeErrors.ResourceManager.GetString(errorCode + ".0");
+
+                if (str is not null)
+                    return str;
             }
 
             if (DataItems is not null)
@@ -46,7 +69,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId is not DyType.String)
+            if (index.TypeId != DyType.String)
                 return ctx.InvalidType(index);
 
             var name = index.GetString();
@@ -56,13 +79,16 @@ namespace Dyalect.Runtime.Types
             
             if (name is "detail")
                 return GetDetail();
+
+            if (name is "items")
+                return new DyTuple(DataItems.Select(i => TypeConverter.ConvertFrom(i)).ToArray());
             
-            return ctx.IndexOutOfRange();
+            return ctx.IndexOutOfRange(index);
         }
 
-        protected internal override bool HasItem(string name, ExecutionContext ctx) => name is "code" or "detail";
+        protected internal override bool HasItem(string name, ExecutionContext ctx) => name is "code" or "detail" or "items";
 
-        public override void GetConstructor(ExecutionContext ctx, out string ctor, out bool priv) => (ctor, priv) = (errorCode, false);
+        public override string GetConstructor(ExecutionContext ctx) => errorCode;
 
         public override int GetHashCode() => HashCode.Combine(Code, DataItems);
     }

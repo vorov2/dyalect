@@ -21,7 +21,6 @@ namespace Dyalect.Linker
             WriteHeader(writer, unit);
             WriteReferences(writer, unit.References);
             writer.Write(unit.UnitIds.Count);
-            WriteTypeDescriptors(writer, unit.Types);
             WriteIndices(writer, unit);
             WriteOps(writer, unit.Ops);
             WriteSymbols(writer, unit.Symbols ?? DebugInfo.Default);
@@ -65,27 +64,15 @@ namespace Dyalect.Linker
 
         private static void WriteIndices(BinaryWriter writer, Unit unit)
         {
-            WriteIndex(writer, unit.IndexedStrings);
-            WriteIndex(writer, unit.IndexedIntegers);
-            WriteIndex(writer, unit.IndexedFloats);
-            WriteIndex(writer, unit.IndexedChars);
-        }
+            writer.Write(unit.Strings.Count);
 
-        private static void WriteIndex(BinaryWriter writer, IEnumerable<DyObject> table)
-        {
-            writer.Write(table.Count());
+            foreach (var s in unit.Strings)
+                writer.Write(s);
 
-            foreach (var o in table)
-            {
-                if (o.TypeId == DyType.String)
-                    writer.Write(o.GetString());
-                else if (o.TypeId == DyType.Integer)
-                    writer.Write(o.GetInteger());
-                else if (o.TypeId == DyType.Float)
-                    writer.Write(o.GetFloat());
-                else if (o.TypeId == DyType.Char)
-                    writer.Write(o.GetChar());
-            }
+            writer.Write(unit.Objects.Count);
+
+            foreach (var o in unit.Objects)
+                o.Serialize(writer);
         }
 
         private static void WriteMemoryLayouts(BinaryWriter writer, List<MemoryLayout> layouts)
@@ -137,17 +124,6 @@ namespace Dyalect.Linker
                 writer.Write(r.SourceLocation.Line);
                 writer.Write(r.SourceLocation.Column);
                 writer.Write(r.SourceFileName ?? "");
-            }
-        }
-
-        private static void WriteTypeDescriptors(BinaryWriter writer, List<TypeDescriptor> types)
-        {
-            writer.Write(types.Count);
-
-            foreach (var t in types)
-            {
-                writer.Write(t.Name);
-                writer.Write(t.Id);
             }
         }
 

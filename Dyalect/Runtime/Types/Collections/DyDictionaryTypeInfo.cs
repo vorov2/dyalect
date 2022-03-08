@@ -6,9 +6,9 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyDictionaryTypeInfo : DyTypeInfo
     {
-        public DyDictionaryTypeInfo() : base(DyType.Dictionary) { }
-
         public override string TypeName => DyTypeNames.Dictionary;
+
+        public override int ReflectedTypeCode => DyType.Dictionary;
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -52,7 +52,7 @@ namespace Dyalect.Runtime.Types
         {
             var map = (DyDictionary)self;
             if (!map.TryAdd(key, value))
-                return ctx.KeyAlreadyPresent();
+                return ctx.KeyAlreadyPresent(key);
             return DyNil.Instance;
         }
 
@@ -83,7 +83,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
-            if (funObj.TypeId is not DyType.Function and not DyType.Nil)
+            if (funObj.TypeId != DyType.Function && funObj.TypeId != DyType.Nil)
                 return ctx.InvalidType(funObj);
 
             var fun = funObj as DyFunction;
@@ -111,7 +111,7 @@ namespace Dyalect.Runtime.Types
 
             foreach (var (key, value) in map)
             {
-                if (key.TypeId is DyType.String)
+                if (key.TypeId == DyType.String)
                     xs.Add(new DyLabel(key.GetString(), value));
             }
 
@@ -121,21 +121,21 @@ namespace Dyalect.Runtime.Types
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject key)
         {
             var map = (DyDictionary)self;
-            return (DyBool)map.ContainsKey(key);
+            return map.ContainsKey(key) ? DyBool.True : DyBool.False;
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             return name switch
             {
-                "add" => Func.Member(name, AddItem, -1, new Par("key"), new Par("value")),
-                "tryAdd" => Func.Member(name, TryAddItem, -1, new Par("key"), new Par("value")),
-                "tryGet" => Func.Member(name, TryGetItem, -1, new Par("key")),
-                "remove" => Func.Member(name, RemoveItem, -1, new Par("key")),
-                "clear" => Func.Member(name, ClearItems),
-                "toTuple" => Func.Member(name, ToTuple),
-                "compact" => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
-                "contains" => Func.Member(name, Contains, -1, new Par("key")),
+                "Add" => Func.Member(name, AddItem, -1, new Par("key"), new Par("value")),
+                "TryAdd" => Func.Member(name, TryAddItem, -1, new Par("key"), new Par("value")),
+                "TryGet" => Func.Member(name, TryGetItem, -1, new Par("key")),
+                "Remove" => Func.Member(name, RemoveItem, -1, new Par("key")),
+                "Clear" => Func.Member(name, ClearItems),
+                "ToTuple" => Func.Member(name, ToTuple),
+                "Compact" => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
+                "Contains" => Func.Member(name, Contains, -1, new Par("key")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
         }
@@ -146,14 +146,14 @@ namespace Dyalect.Runtime.Types
                 return new DyDictionary();
 
             if (values is DyTuple tup)
-                return new DyDictionary(tup.ConvertToDictionary());
+                return new DyDictionary(tup.ConvertToDictionary(ctx));
             
             return ctx.InvalidType(values);
         }
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            if (name is "Dictionary" or "fromTuple")
+            if (name is "Dictionary" or "FromTuple")
                 return Func.Static(name, New, -1, new Par("values", DyNil.Instance));
 
             return base.InitializeStaticMember(name, ctx);

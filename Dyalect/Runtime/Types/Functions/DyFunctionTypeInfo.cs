@@ -4,12 +4,12 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyFunctionTypeInfo : DyTypeInfo
     {
-        public DyFunctionTypeInfo() : base(DyType.Function) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
         public override string TypeName => DyTypeNames.Function;
+
+        public override int ReflectedTypeCode => DyType.Function;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.ToString());
@@ -17,9 +17,10 @@ namespace Dyalect.Runtime.Types
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
 
-        private DyObject GetName(ExecutionContext _, DyObject self) => new DyString(((DyFunction)self).FunctionName);
+        private DyObject GetName(ExecutionContext ctx, DyObject self) =>
+            new DyString(((DyFunction)self).FunctionName);
 
-        private DyObject GetParameters(ExecutionContext _, DyObject self)
+        private DyObject GetParameters(ExecutionContext ctx, DyObject self)
         {
             var fn = (DyFunction)self;
             var arr = new DyObject[fn.Parameters.Length];
@@ -30,9 +31,9 @@ namespace Dyalect.Runtime.Types
                 arr[i] = new DyTuple(
                         new[] {
                             new DyLabel("name", new DyString(p.Name)),
-                            new DyLabel("hasDefault", (DyBool)(p.Value is not null)),
-                            new DyLabel("default", p.Value ?? DyNil.Instance),
-                            new DyLabel("varArg", (DyBool)(fn.VarArgIndex == i))
+                            new DyLabel("hasDefault", p.Value is not null ? DyBool.True : DyBool.False),
+                            new DyLabel("default", p.Value != null ? p.Value : DyNil.Instance),
+                            new DyLabel("varArg", fn.VarArgIndex == i ? DyBool.True : DyBool.False)
                         }
                     );
             }
@@ -43,9 +44,9 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "compose" => Func.Member(name, Compose, -1, new Par("with")),
-                "name" => Func.Auto(name, GetName),
-                "parameters" => Func.Auto(name, GetParameters),
+                "Compose" => Func.Member(name, Compose, -1, new Par("with")),
+                "Name" => Func.Auto(name, GetName),
+                "Parameters" => Func.Auto(name, GetParameters),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -66,7 +67,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            if (name == "compose")
+            if (name == "Compose")
                 return Func.Static(name, Compose, -1, new Par("first"), new Par("second"));
 
             return base.InitializeStaticMember(name, ctx);

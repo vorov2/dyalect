@@ -65,12 +65,12 @@
 
 #test "Inf"
     var x = 2.0 / 0
-    assert(true, x == Float.inf())
+    assert(true, x == Float.Inf())
 #endtest
 
 #test "NaN"
     var x = .0 / 0
-    assert(true, x.isNaN())
+    assert(true, x.IsNaN())
 #endtest
 
 #test "Logical Or"
@@ -110,8 +110,8 @@
 #endtest
 
 #test "Function comparison"
-    assert(true, "".toString == "".toString)
-    assert(false, "".toString == '\0'.toString)
+    assert(true, "".ToString == "".ToString)
+    assert(false, "".ToString == '\0'.ToString)
 #endtest
 
 #test "Coalesce"
@@ -128,12 +128,12 @@
 #endtest
 
 #test "Member check 1"
-    assert(true, "string" is .len)
-    assert(false, 42 is .fooBar)
-    assert(true, String is .join)
-    assert(false, String is .foo)
-    assert(true, "" is .split)
-    assert(false, "" is .join)
+    assert(true, "string" is .Length)
+    assert(false, 42 is .FooBar)
+    assert(true, String is .Join)
+    assert(false, String is .Foo)
+    assert(true, "" is .Split)
+    assert(false, "" is .Join)
 #endtest
 
 #test "nameof"
@@ -145,35 +145,33 @@
     assert("Integer", nameof(Integer))
 #endtest
 
-#test "has 1"
-    let nm = "split"
-    assert(true, "".has(nm))
-    assert(true, "" is .split)
-    assert(true, "".has("split"))
-    assert(true, String.has("join"))
-    assert(false, String.has("split"))
-    assert(true, String.has("id"))
-    assert(true, String.has("name"))
+#test "Has 1"
+    let nm = "Split"
+    assert(true, "".Has(nm))
+    assert(true, "" is .Split)
+    assert(true, "".Has("Split"))
+    assert(true, String.Has("Join"))
+    assert(false, String.Has("Split"))
 #endtest
 
-#test "has 2"
+#test "Has 2"
     var t = (1,2,3)
-    assert(false, t.has("foo"))
-    var foo = "foo"
-    assert(false, t.has(foo))
-    assert(true, t.has("keys"))
-    var keys = "keys"
-    assert(true, t.has(keys))
+    assert(false, t.Has("Foo"))
+    var foo = "Foo"
+    assert(false, t.Has(foo))
+    assert(true, t.Has("Keys"))
+    var keys = "Keys"
+    assert(true, t.Has(keys))
 #endtest
 
-#test "has 3"
+#test "Has 3"
     var t = [1,2,3]
-    assert(false, t.has("foo"))
-    var foo = "foo"
-    assert(false, t.has(foo))
-    assert(true, t.has("indices"))
-    var indices = "indices"
-    assert(true, t.has(indices))
+    assert(false, t.Has("Foo"))
+    var foo = "Foo"
+    assert(false, t.Has(foo))
+    assert(true, t.Has("Indices"))
+    var indices = "Indices"
+    assert(true, t.Has(indices))
 #endtest
 
 #test "Ternary"
@@ -211,7 +209,7 @@
     assert(true, "x" in xs)
     assert(true, "y" in xs)
     assert(false, "z" in xs)
-    xs = Dictionary.fromTuple(xs)
+    xs = Dictionary.FromTuple(xs)
     assert(true, "x" in xs)
     assert(true, "y" in xs)
     assert(false, "z" in xs)

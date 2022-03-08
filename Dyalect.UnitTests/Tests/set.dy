@@ -1,114 +1,114 @@
 ﻿#test "Constructor"
     let xs = Set(1, 2, 3)
-    assert([1,2,3], xs.toArray())
+    assert([1,2,3], xs.ToArray())
 #endtest
 
-#test "Methods: clone"
+#test "Methods: Clone"
     let xs = Set()
     assert(true, xs == xs)
-    assert(true, xs.clone() == xs)
+    assert(true, xs.Clone() == xs)
 #endtest
 
-#test "Methods: getType"
+#test "Methods: GetType"
     let x = Set()
     assert(true, TypeInfo(x) == Set)
-    assert(true, x.getType() == Set)
+    assert(true, x.GetType() == Set)
     var t = TypeInfo(x)
-    assert(15, t.id)
-    assert("Set", t.name)
+    assert(15, t.Code)
+    assert("Set", t.Name)
 #endtest
 
-#test "Methods: add, len"
+#test "Methods: Add, Len"
     let xs = Set()
-    xs.add(4)
-    xs.add(1)
-    xs.add(2)
-    xs.add(2)
-    assert(3, xs.len())
-    assert([4,1,2], xs.toArray())
+    xs.Add(4)
+    xs.Add(1)
+    xs.Add(2)
+    xs.Add(2)
+    assert(3, xs.Length())
+    assert([4,1,2], xs.ToArray())
 #endtest
 
-#test "Methods: add, remove"
+#test "Methods: Add, Remove"
     let xs = Set()
-    xs.add(5)
-    xs.add(6)
-    xs.remove(5)
-    xs.remove(8) //non-existent
-    assert([6], xs.toArray())
+    xs.Add(5)
+    xs.Add(6)
+    xs.Remove(5)
+    xs.Remove(8) //non-existent
+    assert([6], xs.ToArray())
 #endtest
 
-#test "Methods: add, clear, contains"
+#test "Methods: Add, Clear, Contains"
     let xs = Set()
-    xs.add(5)
-    xs.add(6)
-    assert(true, xs.contains(5))
-    assert(true, xs.contains(6))
-    xs.clear()
-    assert(false, xs.contains(5))
-    assert(false, xs.contains(6))
+    xs.Add(5)
+    xs.Add(6)
+    assert(true, xs.Contains(5))
+    assert(true, xs.Contains(6))
+    xs.Clear()
+    assert(false, xs.Contains(5))
+    assert(false, xs.Contains(6))
 #endtest
 
-#test "Methods: toArray, toTuple"
+#test "Methods: ToArray, ToTuple"
     let xs = Set(1, 2, 3, 4, 5)
-    assert([1,2,3,4,5], xs.toArray())
+    assert([1,2,3,4,5], xs.ToArray())
     let ys = Set(1, 2, 2, 3)
-    assert([1,2,3], ys.toArray())
-    assert((1,2,3), ys.toTuple())
+    assert([1,2,3], ys.ToArray())
+    assert((1,2,3), ys.ToTuple())
 #endtest
 
 #test "Equality test"
     let xs = Set(1,2,3,4,5)
     let ys = Set(1,2,3,4,5)
     assert(true, xs == ys)
-    assert(5, xs.len())
-    assert(5, ys.len())
+    assert(5, xs.Length())
+    assert(5, ys.Length())
     assert(false, xs != ys)
 #endtest
 
-#test "Methods: intersect"
+#test "Methods: Intersect"
     let xs = Set(values: [1..10])
     let ys = Set(values: [5..15])
-    xs.intersect(with: ys)
-    assert([5,6,7,8,9,10], xs.toArray())
+    xs.Intersect(with: ys)
+    assert([5,6,7,8,9,10], xs.ToArray())
 #endtest
 
-#test "Methods: union"
+#test "Methods: Union"
     let xs = Set(values: [1..3])
     let ys = Set(values: [4..6])
-    xs.union(with: ys)
-    assert([1,2,3,4,5,6], xs.toArray())
+    xs.Union(with: ys)
+    assert([1,2,3,4,5,6], xs.ToArray())
 #endtest
 
-#test "Methods: except"
+#test "Methods: Except"
     let xs = Set(values: [1..10])
     let ys = Set(values: [4..7])
-    xs.except(with: ys)
-    assert([1,2,3,8,9,10], xs.toArray())
+    xs.Except(with: ys)
+    assert([1,2,3,8,9,10], xs.ToArray())
 #endtest
 
-#test "Methods: overlaps"
+#test "Methods: Overlaps"
     let xs = Set(values: [1..10])
     var ys = Set(values: [5..15])
-    assert(true, xs.overlaps(with: ys))
+    assert(true, xs.Overlaps(with: ys))
     ys = Set(values: [11..15])
-    assert(false, xs.overlaps(with: ys))
+    assert(false, xs.Overlaps(with: ys))
 #endtest
 
-#test "Methods: isSubset"
+#test "Methods: IsSubset"
     let xs = Set(values: [5..10])
     var ys = Set(values: [1..20])
-    assert(false, ys.isSubset(of: xs))
-    assert(true, xs.isSubset(of: ys))
+    assert(false, ys.IsSubset(of: xs))
+    assert(true, xs.IsSubset(of: ys))
 #endtest
 
-#test "Methods: isSuperset"
+#test "Methods: IsSuperset"
     let xs = Set(values: [5..10])
     var ys = Set(values: [1..20])
-    assert(false, xs.isSuperset(of: ys))
-    assert(true, ys.isSuperset(of: xs))
+    assert(false, xs.IsSuperset(of: ys))
+    assert(true, ys.IsSuperset(of: xs))
 #endtest
 
-#test "Methods: toString"
+#test "Methods: ToString"
     let xs = Set(1, 2, 3)
-    assert("Set (1, 2, 3)", xs.toString())
+    assert("Set (1, 2, 3)", xs.ToString())
 #endtest

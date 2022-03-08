@@ -1,4 +1,4 @@
-﻿using Dyalect.Compiler;
+﻿using Dyalect.Parser.Model;
 using Dyalect.Runtime.Types;
 
 namespace Dyalect.Debug
@@ -8,9 +8,9 @@ namespace Dyalect.Debug
         public readonly string Name;
         public readonly bool IsVarArg;
         public readonly DyObject? Value;
-        internal readonly TypeHandle? TypeAnnotation;
+        internal readonly Qualident? TypeAnnotation;
 
-        internal Par(string name, DyObject? val, bool isVarArg, TypeHandle? ta) =>
+        internal Par(string name, DyObject? val, bool isVarArg, Qualident? ta) =>
             (Name, Value, IsVarArg, TypeAnnotation) = (name, val, isVarArg, ta);
 
         internal Par(string name, DyObject? val, bool isVarArg) =>

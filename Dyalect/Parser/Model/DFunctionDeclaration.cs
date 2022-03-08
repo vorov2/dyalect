@@ -7,16 +7,18 @@ namespace Dyalect.Parser.Model
     {
         public DFunctionDeclaration(Location loc) : base(NodeType.Function, loc) { }
 
-        public bool IsMemberFunction => TypeName is not null;
-
         public Qualident? TypeName { get; set; }
 
         public string? Name { get; set; }
 
         internal bool IsStatic { get; set; }
 
+        internal bool IsIndexer { get; set; }
+
         internal bool IsConstructor { get; set; }
-        
+
+        internal bool IsPrivate { get; set; }
+
         public bool Getter { get; set; }
 
         public bool Setter { get; set; }
@@ -64,18 +66,24 @@ namespace Dyalect.Parser.Model
             if (TypeName is not null)
             {
                 sb.Append(TypeName);
-                sb.Append('.');
+
+                if (Name is not null)
+                    sb.Append('.');
             }
 
             if (Name is not null)
                 sb.Append(Name);
 
-            if (Name is not null || Parameters.Count > 1)
+            if (IsIndexer)
+                sb.Append('[');
+            else if (Name is not null || Parameters.Count > 1)
                 sb.Append('(');
 
             Parameters.ToString(sb);
 
-            if (Name is not null || Parameters.Count > 1)
+            if (IsIndexer)
+                sb.Append(']');
+            else if (Name is not null || Parameters.Count > 1)
                 sb.Append(") ");
 
             if (Name is null)

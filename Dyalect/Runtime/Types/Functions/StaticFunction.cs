@@ -5,7 +5,8 @@ namespace Dyalect.Runtime.Types
 {
     internal abstract class BaseStaticFunction : DyForeignFunction
     {
-        protected BaseStaticFunction(string? name, Par[] pars, int varArgIndex) : base(name, pars, varArgIndex) { }
+        protected BaseStaticFunction(string? name, Par[] pars, int varArgIndex) : 
+            base(name, pars, varArgIndex) { }
 
         protected override DyFunction Clone(ExecutionContext ctx) => this;
     }

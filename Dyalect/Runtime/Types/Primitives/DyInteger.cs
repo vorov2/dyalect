@@ -12,11 +12,6 @@ namespace Dyalect.Runtime.Types
         public static readonly DyInteger Max = new(long.MaxValue);
         public static readonly DyInteger Min = new(long.MinValue);
 
-        private readonly long value;
-
-        public DyInteger(long value) : base(DyType.Integer) =>
-            this.value = value;
-
         public static DyInteger Get(long i) =>
             i switch
             {
@@ -27,6 +22,11 @@ namespace Dyalect.Runtime.Types
                 3 => Three,
                 _ => new DyInteger(i)
             };
+
+        private readonly long value;
+
+        public DyInteger(long value) : base(DyType.Integer) =>
+            this.value = value;
 
         public override int GetHashCode() => value.GetHashCode();
 

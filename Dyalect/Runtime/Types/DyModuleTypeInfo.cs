@@ -5,8 +5,6 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyModuleTypeInfo : DyTypeInfo
     {
-        public DyModuleTypeInfo() : base(DyType.Module) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get | SupportedOperations.Len
@@ -14,8 +12,10 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Module;
 
+        public override int ReflectedTypeCode => DyType.Module;
+
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            (DyString)("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
+            new DyString("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
@@ -36,7 +36,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right is DyModule mod)
-                return (DyBool)(((DyModule)left).Unit.Id == mod.Unit.Id);
+                return ((DyModule)left).Unit.Id == mod.Unit.Id ? DyBool.True : DyBool.False;
 
             return DyBool.False;
         }

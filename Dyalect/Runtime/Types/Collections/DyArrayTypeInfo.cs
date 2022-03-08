@@ -8,9 +8,9 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
     {
-        public DyArrayTypeInfo() : base(DyType.Array) { }
-
         public override string TypeName => DyTypeNames.Array;
+
+        public override int ReflectedTypeCode => DyType.Array;
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -107,7 +107,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject ClearItems(ExecutionContext _, DyObject self)
+        private DyObject ClearItems(ExecutionContext ctx, DyObject self)
         {
             ((DyArray)self).Clear();
             return DyNil.Instance;
@@ -135,14 +135,14 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject Reverse(ExecutionContext _, DyObject self)
+        private DyObject Reverse(ExecutionContext ctx, DyObject self)
         {
             var arr = (DyArray)self;
             Array.Reverse(arr.Values);
             return DyNil.Instance;
         }
 
-        private DyObject Compact(ExecutionContext _, DyObject self)
+        private DyObject Compact(ExecutionContext ctx, DyObject self)
         {
             var arr = (DyArray)self;
 
@@ -286,29 +286,29 @@ namespace Dyalect.Runtime.Types
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
         {
             var arr = (DyArray)self;
-            return (DyBool)(arr.IndexOf(ctx, item) != -1);
+            return arr.IndexOf(ctx, item) != -1 ? DyBool.True : DyBool.False;
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "add" => Func.Member(name, AddItem, -1, new Par("item")),
-                "insert" => Func.Member(name, InsertItem, -1, new Par("index"), new Par("item")),
-                "insertRange" => Func.Member(name, InsertRange, -1, new Par("index"), new Par("items")),
-                "addRange" => Func.Member(name, AddRange, -1, new Par("items")),
-                "remove" => Func.Member(name, RemoveItem, -1, new Par("item")),
-                "removeAt" => Func.Member(name, RemoveItemAt, -1, new Par("index")),
-                "removeRange" => Func.Member(name, RemoveRange, -1, new Par("items")),
-                "removeRangeAt" => Func.Member(name, RemoveRangeAt, -1, new Par("start"), new Par("len", DyNil.Instance)),
-                "removeAll" => Func.Member(name, RemoveAll, -1, new Par("predicate")),
-                "clear" => Func.Member(name, ClearItems),
-                "indexOf" => Func.Member(name, IndexOf, -1, new Par("item")),
-                "lastIndexOf" => Func.Member(name, LastIndexOf, -1, new Par("item")),
-                "sort" => Func.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
-                "swap" => Func.Member(name, Swap, -1, new Par("fst"), new Par("snd")),
-                "compact" => Func.Member(name, Compact),
-                "reverse" => Func.Member(name, Reverse),
-                "contains" => Func.Member(name, Contains, -1, new Par("value")),
+                "Add" => Func.Member(name, AddItem, -1, new Par("item")),
+                "Insert" => Func.Member(name, InsertItem, -1, new Par("index"), new Par("item")),
+                "InsertRange" => Func.Member(name, InsertRange, -1, new Par("index"), new Par("items")),
+                "AddRange" => Func.Member(name, AddRange, -1, new Par("items")),
+                "Remove" => Func.Member(name, RemoveItem, -1, new Par("item")),
+                "RemoveAt" => Func.Member(name, RemoveItemAt, -1, new Par("index")),
+                "RemoveRange" => Func.Member(name, RemoveRange, -1, new Par("items")),
+                "RemoveRangeAt" => Func.Member(name, RemoveRangeAt, -1, new Par("start"), new Par("len", DyNil.Instance)),
+                "RemoveAll" => Func.Member(name, RemoveAll, -1, new Par("predicate")),
+                "Clear" => Func.Member(name, ClearItems),
+                "IndexOf" => Func.Member(name, IndexOf, -1, new Par("item")),
+                "LastIndexOf" => Func.Member(name, LastIndexOf, -1, new Par("item")),
+                "Sort" => Func.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
+                "Swap" => Func.Member(name, Swap, -1, new Par("fst"), new Par("snd")),
+                "Compact" => Func.Member(name, Compact),
+                "Reverse" => Func.Member(name, Reverse),
+                "Contains" => Func.Member(name, Contains, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
 
@@ -348,22 +348,22 @@ namespace Dyalect.Runtime.Types
 
         private static DyObject Copy(ExecutionContext ctx, DyObject from, DyObject sourceIndex, DyObject to, DyObject destIndex, DyObject length)
         {
-            if (sourceIndex.TypeId is not DyType.Integer)
+            if (sourceIndex.TypeId != DyType.Integer)
                 return ctx.InvalidType(sourceIndex);
 
             var iSourceIndex = sourceIndex.GetInteger();
 
-            if (destIndex.TypeId is not DyType.Integer)
+            if (destIndex.TypeId != DyType.Integer)
                 return ctx.InvalidType(destIndex);
 
             var iDestIndex = destIndex.GetInteger();
 
-            if (length.TypeId is not DyType.Integer)
+            if (length.TypeId != DyType.Integer)
                 return ctx.InvalidType(length);
 
             var iLen = length.GetInteger();
 
-            if (from.TypeId is not DyType.Array)
+            if (from.TypeId != DyType.Array)
                 return ctx.InvalidType(from);
 
             var sourceArr = (DyArray)from;
@@ -398,12 +398,12 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 "Array" => Func.Static(name, New, 0, new Par("values", true)),
-                "sort" => Func.Static(name, SortBy, -1, new Par("values"), new Par("by", DyNil.Instance)),
-                "empty" => Func.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance)),
-                "concat" => Func.Static(name, Concat, 0, new Par("values", true)),
-                "copy" => Func.Static(name, Copy, -1, new Par("from"),
-                    new Par("fromIndex", DyInteger.Get(0)), new Par("to", DyNil.Instance),
-                    new Par("toIndex", DyInteger.Get(0)), new Par("count")),
+                "Sort" => Func.Static(name, SortBy, -1, new Par("values"), new Par("by", DyNil.Instance)),
+                "Empty" => Func.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance)),
+                "Concat" => Func.Static(name, Concat, 0, new Par("values", true)),
+                "Copy" => Func.Static(name, Copy, -1, new Par("from"),
+                    new Par("fromIndex", DyInteger.Zero), new Par("to", DyNil.Instance),
+                    new Par("toIndex", DyInteger.Zero), new Par("count")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

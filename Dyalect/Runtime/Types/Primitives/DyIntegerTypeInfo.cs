@@ -5,8 +5,6 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyIntegerTypeInfo : DyTypeInfo
     {
-        public DyIntegerTypeInfo() : base(DyType.Integer) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
             | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
@@ -16,27 +14,29 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Integer;
 
+        public override int ReflectedTypeCode => DyType.Integer;
+
         #region Binary Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId is DyType.Integer)
+            if (right.TypeId == DyType.Integer)
                 return new DyInteger(left.GetInteger() + right.GetInteger());
 
-            if (right.TypeId is DyType.Float)
+            if (right.TypeId == DyType.Float)
                 return new DyFloat(left.GetFloat() + right.GetFloat());
 
-            if (right.TypeId is DyType.String)
-                return ctx.RuntimeContext.Types[DyType.String].Add(ctx, left, right);
+            if (right.TypeId == DyType.String)
+                return ctx.RuntimeContext.String.Add(ctx, left, right);
 
             return ctx.InvalidType(right);
         }
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId is DyType.Integer)
+            if (right.TypeId == DyType.Integer)
                 return new DyInteger(left.GetInteger() - right.GetInteger());
 
-            if (right.TypeId is DyType.Float)
+            if (right.TypeId == DyType.Float)
                 return new DyFloat(left.GetFloat() - right.GetFloat());
 
             return ctx.InvalidType(right);
@@ -44,10 +44,10 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId is DyType.Integer)
+            if (right.TypeId == DyType.Integer)
                 return new DyInteger(left.GetInteger() * right.GetInteger());
 
-            if (right.TypeId is DyType.Float)
+            if (right.TypeId == DyType.Float)
                 return new DyFloat(left.GetFloat() * right.GetFloat());
 
             return ctx.InvalidType(right);
@@ -55,7 +55,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId is DyType.Integer)
+            if (right.TypeId == DyType.Integer)
             {
                 var i = right.GetInteger();
 
@@ -65,7 +65,7 @@ namespace Dyalect.Runtime.Types
                 return new DyInteger(left.GetInteger() / i);
             }
 
-            if (right.TypeId is DyType.Float)
+            if (right.TypeId == DyType.Float)
                 return new DyFloat(left.GetFloat() / right.GetFloat());
 
             return ctx.InvalidType(right);
@@ -73,10 +73,10 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId is DyType.Integer)
+            if (right.TypeId == DyType.Integer)
                 return new DyInteger(left.GetInteger() % right.GetInteger());
 
-            if (right.TypeId is DyType.Float)
+            if (right.TypeId == DyType.Float)
                 return new DyFloat(left.GetFloat() % right.GetFloat());
 
             return ctx.InvalidType(right);
@@ -119,10 +119,10 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId is DyType.Integer)
+            if (right.TypeId == DyType.Integer)
                 return left.GetInteger() == right.GetInteger() ? DyBool.True : DyBool.False;
 
-            if (right.TypeId is DyType.Float)
+            if (right.TypeId == DyType.Float)
                 return left.GetFloat() == right.GetFloat() ? DyBool.True : DyBool.False;
 
             return base.EqOp(left, right, ctx); //Important! Should redirect to base
@@ -130,10 +130,10 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId is DyType.Integer)
+            if (right.TypeId == DyType.Integer)
                 return left.GetInteger() != right.GetInteger() ? DyBool.True : DyBool.False;
 
-            if (right.TypeId is DyType.Float)
+            if (right.TypeId == DyType.Float)
                 return left.GetFloat() != right.GetFloat() ? DyBool.True : DyBool.False;
 
             return base.NeqOp(left, right, ctx); //Important! Should redirect to base
@@ -141,10 +141,10 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId is DyType.Integer)
+            if (right.TypeId == DyType.Integer)
                 return left.GetInteger() > right.GetInteger() ? DyBool.True : DyBool.False;
 
-            if (right.TypeId is DyType.Float)
+            if (right.TypeId == DyType.Float)
                 return left.GetFloat() > right.GetFloat() ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);
@@ -152,10 +152,10 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId is DyType.Integer)
+            if (right.TypeId == DyType.Integer)
                 return left.GetInteger() < right.GetInteger() ? DyBool.True : DyBool.False;
 
-            if (right.TypeId is DyType.Float)
+            if (right.TypeId == DyType.Float)
                 return left.GetFloat() < right.GetFloat() ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);
@@ -163,10 +163,10 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId is DyType.Integer)
+            if (right.TypeId == DyType.Integer)
                 return left.GetInteger() >= right.GetInteger() ? DyBool.True : DyBool.False;
 
-            if (right.TypeId is DyType.Float)
+            if (right.TypeId == DyType.Float)
                 return left.GetFloat() >= right.GetFloat() ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);
@@ -174,10 +174,10 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId is DyType.Integer)
+            if (right.TypeId == DyType.Integer)
                 return left.GetInteger() <= right.GetInteger() ? DyBool.True : DyBool.False;
 
-            if (right.TypeId is DyType.Float)
+            if (right.TypeId == DyType.Float)
                 return left.GetFloat() <= right.GetFloat() ? DyBool.True : DyBool.False;
 
             return ctx.InvalidType(right);
@@ -202,12 +202,12 @@ namespace Dyalect.Runtime.Types
 
             var a = self.GetInteger();
             var b = other.GetInteger();
-            return (DyBool)((a % b) == 0);
+            return (a % b) == 0 ? DyBool.True : DyBool.False;
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
-            if (name == "isMultiple")
+            if (name == "IsMultiple")
                 return Func.Member(name, IsMultiple, -1, new Par("of"));
 
             return base.InitializeInstanceMember(self, name, ctx);
@@ -215,13 +215,13 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Convert(ExecutionContext ctx, DyObject obj)
         {
-            if (obj.TypeId is DyType.Integer)
+            if (obj.TypeId == DyType.Integer)
                 return obj;
 
-            if (obj.TypeId is DyType.Float)
+            if (obj.TypeId == DyType.Float)
                 return DyInteger.Get((long)obj.GetFloat());
 
-            if (obj.TypeId is DyType.Char or DyType.String)
+            if (obj.TypeId == DyType.Char || obj.TypeId == DyType.String)
             {
                 _ = long.TryParse(obj.GetString(), NumberStyles.Float, CI.NumberFormat, out var i);
                 return DyInteger.Get(i);
@@ -232,13 +232,14 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Parse(ExecutionContext ctx, DyObject obj)
         {
-            if (obj.TypeId is DyType.Integer)
+            if (obj.TypeId == DyType.Integer)
                 return obj;
 
-            if (obj.TypeId is DyType.Float)
+            if (obj.TypeId == DyType.Float)
+
                 return DyInteger.Get((long)obj.GetFloat());
 
-            if (obj.TypeId is DyType.Char or DyType.String &&
+            if ((obj.TypeId == DyType.Char || obj.TypeId == DyType.String) &&
                 long.TryParse(obj.GetString(), NumberStyles.Float, CI.NumberFormat, out var i))
                 return DyInteger.Get(i);
 
@@ -248,10 +249,10 @@ namespace Dyalect.Runtime.Types
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "max" => Func.Static(name, _ => DyInteger.Max),
-                "min" => Func.Static(name, _ => DyInteger.Min),
-                "default" => Func.Static(name, _ => DyInteger.Zero),
-                "parse" => Func.Static(name, Parse, -1, new Par("value")),
+                "Max" => Func.Static(name, _ => DyInteger.Max),
+                "Min" => Func.Static(name, _ => DyInteger.Min),
+                "Default" => Func.Static(name, _ => DyInteger.Zero),
+                "Parse" => Func.Static(name, Parse, -1, new Par("value")),
                 "Integer" => Func.Static(name, Convert, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };

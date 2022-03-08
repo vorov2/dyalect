@@ -117,7 +117,7 @@ namespace Dyalect.Linker
         }
 
         [Function("readLine")]
-        public DyObject Read(ExecutionContext _) => new DyString(Console.ReadLine() ?? "");
+        public DyObject Read(ExecutionContext ctx) => new DyString(Console.ReadLine() ?? "");
 
         [Function("rnd")]
         public DyObject Randomize(ExecutionContext ctx, [Default(0)]DyObject min, [Default(int.MaxValue)]DyObject max, [Default]DyObject seed)
@@ -137,7 +137,7 @@ namespace Dyalect.Linker
             var imax = (int)max.GetInteger();
 
             if (imin > imax)
-                return ctx.InvalidValue("The value of parameter \"min\" cannot be greater than the value of parameterr \"max\".");
+                return ctx.InvalidValue("min", "max");
 
             var rnd = new Random(iseed);
             return DyInteger.Get(rnd.Next(imin, imax));
@@ -194,10 +194,10 @@ namespace Dyalect.Linker
         [Function("pow")]
         public DyObject Pow(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.TypeId is not DyType.Float and not DyType.Integer)
+            if (x.TypeId != DyType.Float && x.TypeId != DyType.Integer)
                 return ctx.InvalidType(x);
 
-            if (y.TypeId is not DyType.Float and not DyType.Integer)
+            if (y.TypeId != DyType.Float && y.TypeId != DyType.Integer)
                 return ctx.InvalidType(y);
 
             return new DyFloat(Math.Pow(x.GetFloat(), y.GetFloat()));
@@ -206,7 +206,7 @@ namespace Dyalect.Linker
         [Function("min")]
         public DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.GetTypeInfo(ctx).Lt(ctx, x, y).GetBool())
+            if (ctx.RuntimeContext.Types[x.TypeId].Lt(ctx, x, y).GetBool())
                 return x;
             else
                 return y;
@@ -215,7 +215,7 @@ namespace Dyalect.Linker
         [Function("max")]
         public DyObject Max(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.GetTypeInfo(ctx).Gt(ctx, x, y).GetBool())
+            if (ctx.RuntimeContext.Types[x.TypeId].Gt(ctx, x, y).GetBool())
                 return x;
             else
                 return y;
@@ -249,7 +249,7 @@ namespace Dyalect.Linker
             if (ReferenceEquals(x, DyInteger.Zero)) 
                 return DyInteger.Zero;
 
-            if (x.GetTypeInfo(ctx).Lt(ctx, x, DyInteger.Zero).GetBool())
+            if (ctx.RuntimeContext.Types[x.TypeId].Lt(ctx, x, DyInteger.Zero).GetBool())
                 return DyInteger.MinusOne;
             
             return DyInteger.One;
@@ -345,25 +345,6 @@ namespace Dyalect.Linker
             var fn = (DyFunction)func;
             var arr = ((DyTuple)values).Values;
             return fn.Call(ctx, arr);
-        }
-
-        [Function("__makeObject")]
-        public DyObject MakeObject(ExecutionContext _, DyObject arg)
-        {
-            var dict = new Dictionary<string, DyObject>();
-
-            if (arg is DyTuple tuple)
-            {
-                foreach (var obj in tuple.Values)
-                {
-                    var key = obj.GetLabel();
-
-                    if (key != null)
-                        dict[key] = obj.GetTaggedValue();
-                }
-            }
-
-            return new DyWrapper(dict);
         }
     }
 }

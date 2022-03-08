@@ -117,70 +117,115 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DivideByZero" xml:space="preserve">
+  <data name="DivideByZero.0" xml:space="preserve">
     <value>Division by zero.</value>
   </data>
-  <data name="ExternalFunctionFailure" xml:space="preserve">
+  <data name="ExternalFunctionFailure.2" xml:space="preserve">
     <value>An unhandled exception occured during an execution of an external function "{0}": {1}</value>
   </data>
-  <data name="OperationNotSupported" xml:space="preserve">
+  <data name="OperationNotSupported.2" xml:space="preserve">
     <value>Operation "{0}" is not supported by the type "{1}".</value>
   </data>
-  <data name="StackCorrupted" xml:space="preserve">
+  <data name="StackCorrupted.0" xml:space="preserve">
     <value>Stack is corrupted.</value>
   </data>
-  <data name="IndexOutOfRange" xml:space="preserve">
+  <data name="IndexOutOfRange.0" xml:space="preserve">
     <value>An index is out of range.</value>
   </data>
-  <data name="TooManyArguments" xml:space="preserve">
+  <data name="TooManyArguments.3" xml:space="preserve">
     <value>Function "{0}" accepts {1} argument(s) ({2} given).</value>
   </data>
-  <data name="AssertFailed" xml:space="preserve">
+  <data name="AssertFailed.1" xml:space="preserve">
     <value>Assert failed: {0}.</value>
   </data>
-  <data name="RequiredArgumentMissing" xml:space="preserve">
+  <data name="RequiredArgumentMissing.2" xml:space="preserve">
     <value>No value provided for an argument "{1}" of a function "{0}".</value>
   </data>
-  <data name="ArgumentNotFound" xml:space="preserve">
+  <data name="ArgumentNotFound.2" xml:space="preserve">
     <value>Function "{0}" doesn't have an argument "{1}".</value>
   </data>
-  <data name="FormatException" xml:space="preserve">
+  <data name="FormatException.1" xml:space="preserve">
     <value>lnvalid string format: {0}</value>
   </data>
-  <data name="MatchFailed" xml:space="preserve">
+  <data name="MatchFailed.0" xml:space="preserve">
     <value>Match failed.</value>
   </data>
-  <data name="CollectionModified" xml:space="preserve">
+  <data name="CollectionModified.0" xml:space="preserve">
     <value>Collection was modified after the iterator was instantiated.</value>
   </data>
-  <data name="InvalidType" xml:space="preserve">
+  <data name="InvalidType.1" xml:space="preserve">
     <value>Type "{0}" is unexpected.</value>
   </data>
-  <data name="PrivateNameAccess" xml:space="preserve">
+  <data name="PrivateNameAccess.1" xml:space="preserve">
     <value>Unable to access a private module member "{0}".</value>
   </data>
-  <data name="KeyNotFound" xml:space="preserve">
+  <data name="KeyNotFound.0" xml:space="preserve">
     <value>Key is not present in the dictionary.</value>
   </data>
-  <data name="KeyAlreadyPresent" xml:space="preserve">
+  <data name="KeyAlreadyPresent.0" xml:space="preserve">
     <value>Key is already present in the dictionary.</value>
   </data>
-  <data name="MultipleValuesForArgument" xml:space="preserve">
+  <data name="MultipleValuesForArgument.2" xml:space="preserve">
     <value>Function "{0}" has multiple values for an argument "{1}".</value>
   </data>
-  <data name="FieldReadOnly" xml:space="preserve">
-    <value>A field is read-only.</value>
+  <data name="IndexReadOnly.0" xml:space="preserve">
+    <value>An index or field is read-only.</value>
   </data>
-  <data name="PrivateAccess" xml:space="preserve">
+  <data name="PrivateAccess.0" xml:space="preserve">
     <value>Unable to access private scope of an object.</value>
   </data>
-  <data name="FieldNotFound" xml:space="preserve">
-    <value>Field not found.</value>
+  <data name="InvalidValue.1" xml:space="preserve">
+    <value>Value of "{0}" is invalid.</value>
   </data>
-  <data name="InvalidValue" xml:space="preserve">
-    <value>{0}</value>
-  </data>
-  <data name="StackOverflow" xml:space="preserve">
+  <data name="StackOverflow.0" xml:space="preserve">
     <value>Too many nested calls.</value>
+  </data>
+  <data name="ArgumentNotFound.0" xml:space="preserve">
+    <value>Function argument not found.</value>
+  </data>
+  <data name="AssertFailed.0" xml:space="preserve">
+    <value>Assert failed.</value>
+  </data>
+  <data name="ExternalFunctionFailure.0" xml:space="preserve">
+    <value>An unhandled exception occured during an execution of an external function.</value>
+  </data>
+  <data name="FormatException.0" xml:space="preserve">
+    <value>lnvalid string format.</value>
+  </data>
+  <data name="IndexOutOfRange.1" xml:space="preserve">
+    <value>An index or field "{0}" is out of range.</value>
+  </data>
+  <data name="IndexReadOnly.1" xml:space="preserve">
+    <value>An index or field "{0}" is read-only.</value>
+  </data>
+  <data name="InvalidType.0" xml:space="preserve">
+    <value>Type is unexpected.</value>
+  </data>
+  <data name="InvalidValue.0" xml:space="preserve">
+    <value>Value is invalid.</value>
+  </data>
+  <data name="InvalidValue.2" xml:space="preserve">
+    <value>Values of arguments "{0}" and "{1}" are invalid.</value>
+  </data>
+  <data name="KeyAlreadyPresent.1" xml:space="preserve">
+    <value>Key "{0}" is already present in the dictionary.</value>
+  </data>
+  <data name="KeyNotFound.1" xml:space="preserve">
+    <value>Key "{0}" is not present in the dictionary.</value>
+  </data>
+  <data name="MultipleValuesForArgument.0" xml:space="preserve">
+    <value>Multiple values provided for the same function argument.</value>
+  </data>
+  <data name="OperationNotSupported.0" xml:space="preserve">
+    <value>Operation is not supported.</value>
+  </data>
+  <data name="PrivateNameAccess.0" xml:space="preserve">
+    <value>Unable to access a private module member.</value>
+  </data>
+  <data name="RequiredArgumentMissing.0" xml:space="preserve">
+    <value>No value provided for a mandatory function argument.</value>
+  </data>
+  <data name="TooManyArguments.0" xml:space="preserve">
+    <value>Too many arguments provided to a function.</value>
   </data>
 </root>

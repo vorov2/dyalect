@@ -60,11 +60,11 @@
 
         PrivateScopeNested = 228,
 
-        // = 229,
+        MemberNameCamel = 229,
 
         PrivateMethod = 230,
 
-        // = 231,
+        TypesOnlyGlobalScope = 231,
 
         UnableToLinkModule = 232,
 
@@ -84,11 +84,11 @@
 
         PositionalArgumentAfterKeyword = 240,
 
-        // = 241,
+        IndexerStatic = 241,
 
-        // = 242,
+        IndexerWrongArguments = 242,
 
-        // = 243,
+        IndexerSetOrGet = 243,
 
         TypeNameCamel = 244,
 

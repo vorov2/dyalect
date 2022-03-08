@@ -2,40 +2,48 @@
 {
     internal static class Builtins
     {
-        public const string Add         = "op_add";
-        public const string Sub         = "op_sub";
-        public const string Mul         = "op_mul";
-        public const string Div         = "op_div";
-        public const string Rem         = "op_rem";
-        public const string Shl         = "op_shl";
-        public const string Shr         = "op_shr";
-        public const string And         = "op_and";
-        public const string Or          = "op_or";
-        public const string Xor         = "op_xor";
-        public const string Eq          = "op_eq";
-        public const string Neq         = "op_neq";
-        public const string Gt          = "op_gt";
-        public const string Lt          = "op_lt";
-        public const string Gte         = "op_gte";
-        public const string Lte         = "op_lte";
-        public const string Neg         = "op_negate";
-        public const string Plus        = "op_plus";
-        public const string Not         = "op_not";
-        public const string BitNot      = "op_bitcomp";
-        public const string Get         = "op_get";
-        public const string Set         = "op_set";
-        public const string Len         = "len";
-        public const string ToStr       = "toString";
-        public const string ToTuple     = "toTuple";
-        public const string ToArray     = "toArray";
-        public const string Iterator    = "iter";
-        public const string Clone       = "clone";
-        public const string Has         = "has";
-        public const string Type        = "getType";
-        public const string Call        = "call";
-        public const string Range       = "range";
-        public const string Slice       = "slice";
-        public const string Concat      = "concat";
-        public const string Dispose     = "dispose";
+        public static string Setter(string name) => $"__set_{name}";
+
+        public const string OperatorSymbols = "?:+-*/%<>^=!~";
+
+        public const string Add         = "__op_add";
+        public const string Sub         = "__op_sub";
+        public const string Mul         = "__op_mul";
+        public const string Div         = "__op_div";
+        public const string Rem         = "__op_rem";
+        public const string Shl         = "__op_shl";
+        public const string Shr         = "__op_shr";
+        public const string And         = "__op_and";
+        public const string Or          = "__op_or";
+        public const string Xor         = "__op_xor";
+        public const string Eq          = "__op_eq";
+        public const string Neq         = "__op_neq";
+        public const string Gt          = "__op_gt";
+        public const string Lt          = "__op_lt";
+        public const string Gte         = "__op_gte";
+        public const string Lte         = "__op_lte";
+        public const string Neg         = "__op_negate";
+        public const string Plus        = "__op_plus";
+        public const string Not         = "__op_not";
+        public const string BitNot      = "__op_bitcomp";
+        public const string Get         = "__op_get";
+        public const string Set         = "__op_set";
+        public const string Code        = "Code";
+        public const string Name        = "Name";
+        public const string Len         = "Length";
+        public const string ToStr       = "ToString";
+        public const string ToTuple     = "ToTuple";
+        public const string ToArray     = "ToArray";
+        public const string Iterator    = "Iterate";
+        public const string Clone       = "Clone";
+        public const string Has         = "Has";
+        public const string Type        = "GetType";
+        public const string Call        = "Call";
+        public const string Range       = "Range";
+        public const string Slice       = "Slice";
+        public const string Concat      = "Concat";
+        public const string Dispose     = "Dispose";
+        public const string Contains    = "Contains";
+        public const string DelMember   = "DeleteMember";
     }
 }

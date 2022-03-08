@@ -1,37 +1,37 @@
 ﻿#test "Iterator literal"
     let seq = yields { 1,2,3 }
-    assert([1,2,3], seq.toArray())
+    assert([1,2,3], seq.ToArray())
 #endtest
 
 #test "Constructor"
     var xs = 1..5
     var ys = 6..10
     var res = Iterator(xs, ys)
-    assert([1..10], res.toArray())
+    assert([1..10], res.ToArray())
 
     xs = 1..5
     res = Iterator(xs)
-    assert((1,2,3,4,5), res.toTuple())
+    assert((1,2,3,4,5), res.ToTuple())
 #endtest
 
-#test "Methods: getType"
+#test "Methods: GetType"
     let x = yields {}
     assert(true, TypeInfo(x) == Iterator)
-    assert(true, x.getType() == Iterator)
+    assert(true, x.GetType() == Iterator)
     var t = TypeInfo(x)
-    assert(11, t.id)
-    assert("Iterator", t.name)
+    assert(12, t.Code)
+    assert("Iterator", t.Name)
 #endtest
 
-#test "Methods: clone"
+#test "Methods: Clone"
     let xs = yields {1,2,3}
     assert(true, xs == xs)
-    assert(false, xs.clone() == xs)
+    assert(false, xs.Clone() == xs)
 #endtest
 
-#test "Methods: len"
+#test "Methods: Len"
     var xs = yields { 1, 2, 3, 4, 5 }
-    assert(5, xs.len())
+    assert(5, xs.Length())
 #endtest
 
 #test "Variable capture"
@@ -40,21 +40,21 @@
     var seq = yields { x + y }
     x -= 1
     y *= y
-    assert(10, seq.first())
+    assert(10, seq.First())
 #endtest
 
-#test "Methods: first, last, len"
+#test "Methods: First, Last, Len"
     var xs = yields { 1, 2, 3, 4, 5 }
-    assert(5, xs.len())
-    assert(5, xs.len())
-    xs.first()
-    assert(5, xs.len())
-    xs.last()
-    assert(5, xs.len())
+    assert(5, xs.Length())
+    assert(5, xs.Length())
+    xs.First()
+    assert(5, xs.Length())
+    xs.Last()
+    assert(5, xs.Length())
 #endtest
 
 #test "Iterator as argument"
-    var str = String.concat(values: yields {
+    var str = String.Concat(values: yields {
         22 + 1.25,
         "Hello, world!",
         true
@@ -73,8 +73,8 @@
         yield 68.6
     }
     var it = foo(false)
-    var res = it.element(at: 0) + it.element(at: 1) +
-        it.element(at: 2) + it.element(at: 3)
+    var res = it.Element(at: 0) + it.Element(at: 1) +
+        it.Element(at: 2) + it.Element(at: 3)
     assert(116.8, res)
 #endtest
 
@@ -115,8 +115,8 @@
 #test "Running iterator 3"
     func reverse(arr) {
         var newArr = []
-        newArr.addRange(arr) //hack
-        var len = newArr.len()
+        newArr.AddRange(arr) //hack
+        var len = newArr.Length()
         var counter = 1
         for x in arr {
             newArr[len - counter] = x
@@ -147,7 +147,7 @@
     func toArray(seq) {
         var arr = []
         for x in seq {
-            arr.add(x)
+            arr.Add(x)
         }
         arr
     }
@@ -168,7 +168,7 @@
 #endtest
 
 #test "Iterator as method"
-    func Integer.iter() {
+    func Integer.Iterate() {
         var i = 0
         if this < 0 {
             while i > this {
@@ -183,28 +183,27 @@
         }
     }
 
-    var res = 5.iter().toArray()
-    Integer.__deleteMember("iter")
+    var res = 5.Iterate().ToArray()
     assert([0,1,2,3,4], res)
 #endtest
 
 #test "Breaking iteration"
     var xs = 1..10
-    assert(10, xs.len())
+    assert(10, xs.Length())
     for x in xs {
         if x > 3 {
             break
         }
     }
-    xs.first()
-    assert(10, xs.len())
+    xs.First()
+    assert(10, xs.Length())
 #endtest
 
-#test "Methods: concat"
+#test "Methods: Concat"
     var xs = 1..5
     var ys = 6..10
-    var res = Iterator.concat(xs, ys)
-    assert([1..10], res.toArray())
+    var res = Iterator.Concat(xs, ys)
+    assert([1..10], res.ToArray())
 #endtest
 
 #test "Yield many 1"
@@ -219,7 +218,7 @@
         yield 3
         yield many bar()
     }
-    var seq = foo().toArray()
+    var seq = foo().ToArray()
     assert([1,2,3,4,5,6],seq)
 #endtest
 
@@ -237,7 +236,7 @@
         yield 4
         yield 5
     }
-    var seq = foo().toArray()
+    var seq = foo().ToArray()
     assert([1,2,3,31,32,33,4,5],seq)
 #endtest
 
@@ -258,7 +257,7 @@
         yield many zoo()
         yield 4
     }
-    var seq = foo().toArray()
+    var seq = foo().ToArray()
     assert([1,2,21,22,3,31,32,4],seq)
 #endtest
 
@@ -281,7 +280,7 @@
         yield many bar()
         yield many zoo()
     }
-    var seq = foo().toArray()
+    var seq = foo().ToArray()
     assert([1,2,21,22,3,31,32,4,21,22,31,32],seq)
 #endtest
 
@@ -294,26 +293,26 @@
         yield 1
         yield bar()
     }
-    var arr = foo().toArray()
+    var arr = foo().ToArray()
     assert(1, arr[0])
-    assert([2,3], arr[1].toArray())
+    assert([2,3], arr[1].ToArray())
 #endtest
 
-#test "Methods: take"
+#test "Methods: Take"
     var seq = yields { 1,2,3,4,5 }
-    var xs = seq.take(3).toArray()
+    var xs = seq.Take(3).ToArray()
     assert([1,2,3], xs)
 #endtest
 
-#test "Methods: skip"
+#test "Methods: Skip"
     var seq = yields { 1,2,3,4,5 }
-    var xs = seq.skip(3).toArray()
+    var xs = seq.Skip(3).ToArray()
     assert([4,5], xs)
 #endtest
 
-#test "Methods: last"
+#test "Methods: Last"
     var seq = yields { 1,2,3,4,5 }
-    assert(5, seq.last())
+    assert(5, seq.Last())
 #endtest
 
 #test "Iterator and exception"
@@ -344,53 +343,53 @@
     }
     var xs = []
     for x in seq() {
-        xs.add(x)
+        xs.Add(x)
     }
     assert([100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88], xs)
 #endtest
 
 #test "Slicing"
     var seq = 1..10
-    var xs = seq[5..].toArray()
+    var xs = seq[5..].ToArray()
     assert([6, 7, 8, 9, 10], xs)
 #endtest
 
 #test "Iterator and range"
     let seq = yields { 1..5 }
-    assert([1,2,3,4,5], seq.toArray())
+    assert([1,2,3,4,5], seq.ToArray())
 #endtest
 
 #test "Iterator state 1"
     let seq = yields { 1,2,3,4,5 }
     assert(2, seq[1])
     assert(2, seq[1])
-    assert([1,2,3], seq.take(3).toArray())
-    assert([1,2,3], seq.take(3).toArray())
+    assert([1,2,3], seq.Take(3).ToArray())
+    assert([1,2,3], seq.Take(3).ToArray())
 #endtest
 
-#test "Methods: element"
+#test "Methods: Element"
     let seq = yields { 1..10 }
-    assert(2, seq.element(1))
-    assert(2, seq.element(at: 1))
-    assert(10, seq.element(9))
-    assert(10, seq.element(at: 9))
-    assert(9, seq.element(-1))
+    assert(2, seq.Element(1))
+    assert(2, seq.Element(at: 1))
+    assert(10, seq.Element(9))
+    assert(10, seq.Element(at: 9))
+    assert(9, seq.Element(-1))
     assert(2, seq[1])
     assert(2, seq[1])
     assert(10, seq[9])
     assert(10, seq[9])
 #endtest
 
-#test "Methods: empty"
-    let seq = Iterator.empty()
+#test "Methods: Empty"
+    let seq = Iterator.Empty()
     assert(true, seq is Iterator)
-    assert(0, seq.len())
+    assert(0, seq.Length())
     for x in seq {
         assert(true, false)
     }
 #endtest
 
-#test "Methods: repeat 2"
+#test "Methods: Repeat 1"
     func defaultValue() {
         var i = 0
         while true {
@@ -398,9 +397,9 @@
             i += 1
         }
     }
-    assert([0,0,0], Iterator.repeat(0).take(3).toArray())
-    assert([3,3,3], Iterator.repeat(()=>3).take(3).toArray())
-    assert([0,1,2,3,4], Iterator.repeat(defaultValue()).take(5).toArray())
+    assert([0,0,0], Iterator.Repeat(0).Take(3).ToArray())
+    assert([3,3,3], Iterator.Repeat(()=>3).Take(3).ToArray())
+    assert([0,1,2,3,4], Iterator.Repeat(defaultValue()).Take(5).ToArray())
 #endtest
 
 #test "Methods: repeat 2"
@@ -413,9 +412,9 @@
         }
         return true
     }
-    let xs = Iterator.repeat(rnd).take(20)
+    let xs = Iterator.Repeat(rnd).Take(20)
     assert(true, all(xs, notNil))
-    assert(20, xs.len())
+    assert(20, xs.Length())
 #endtest
 
 #test "Iterator state 2"
@@ -429,47 +428,47 @@
     let xs = yields { 1, 2, 3, 4, 5 }
     let ys = []
     for x in xs {
-        ys.add(x)
+        ys.Add(x)
         if x > 3 {
             break
         }
     }
     assert([1,2,3,4], ys)
-    ys.clear()
+    ys.Clear()
     for x in xs {
-        ys.add(x)
+        ys.Add(x)
     }
     assert([1,2,3,4,5], ys)
 #endtest
 
 #test "Methods: reverse"
     let xs = [1, 2, 3, 4, 5]
-    assert([5, 4, 3, 2, 1], xs.iter().reverse().toArray())
+    assert([5, 4, 3, 2, 1], xs.Iterate().Reverse().ToArray())
     let ys = yields { 'a', "str", 12 }
-    assert([12, "str", 'a'], ys.reverse().toArray())
+    assert([12, "str", 'a'], ys.Reverse().ToArray())
 #endtest
 
 #test "Methods: sort 1"
     let refs = yields {3,5,1,6,2,4}
-    let xs = refs.sort().toArray()
+    let xs = refs.Sort().ToArray()
     assert([1,2,3,4,5,6], xs)
-    let ys = refs.sort((x,y) => y - x).toArray()
+    let ys = refs.Sort((x,y) => y - x).ToArray()
     assert([6,5,4,3,2,1], ys)
 #endtest
 
 #test "Methods: sort 2"
     var refs = yields {3,5,0,1,2,4}
     try {
-        refs = refs.sort((x,y) => x / y)
+        refs = refs.Sort((x,y) => x / y)
     } catch {
-        DivisionByZero() => assert([3,5,0,1,2,3], refs.toArray())
+        DivisionByZero() => assert([3,5,0,1,2,3], refs.ToArray())
     }
 #endtest
 
-#test "Methods: shuffle"
+#test "Methods: Shuffle"
     func eq(xs, ys) {
-        return false when xs.len() != ys.len()
-        for i in 0..<xs.len() {
+        return false when xs.Length() != ys.Length()
+        for i in 0..<xs.Length() {
             if xs[i] != ys[i] {
                 return false
             }
@@ -477,26 +476,26 @@
         return true
     }
     let xs = yields { 1,2,3,4,5,6 }
-    var ys = xs.shuffle().toArray()
-    assert(6, ys.len())
-    assert(true, !eq(xs.toArray(), ys))
+    var ys = xs.Shuffle().ToArray()
+    assert(6, ys.Length())
+    assert(true, !eq(xs.ToArray(), ys))
 #endtest
 
-#test "Methods: shuffle"
+#test "Methods: Count"
     let refs = yields {3,5,1,6,2,4}
-    let c = refs.count(x => x % 2 == 0)
+    let c = refs.Count(x => x % 2 == 0)
     assert(3, c)
 #endtest
 
-#test "Methods: transform"
+#test "Methods: Transform"
     let xs = yields { 1,2,3,4,5 }
-    let ys = xs.map(x => x + x).toArray();
+    let ys = xs.Map(x => x + x).ToArray();
     assert([2,4,6,8,10], ys)
-    let ys1 = xs.map(transform: x => "s" + x).toArray();
+    let ys1 = xs.Map(transform: x => "s" + x).ToArray();
     assert(["s1","s2","s3","s4","s5"], ys1)
 #endtest
 
-#test "Methods: map"
+#test "Methods: Map"
     func iter(x) {
         yield 1
         yield 2
@@ -505,69 +504,69 @@
         yield 5
     }
     let xs = iter(4)
-    let ys = xs.map(x => x + x).toArray()
+    let ys = xs.Map(x => x + x).ToArray()
     assert([2,4,6,2,10], ys)
     let xs1 = iter(0)
     let res = []
     try {
-        for x in xs1.map(x => x + x) {
-            res.add(x)
+        for x in xs1.Map(x => x + x) {
+            res.Add(x)
         }
     } catch {
         DivideByZero() => assert([2,4,6], res)
     }
 #endtest
 
-#test "Methods: filter"
+#test "Methods: Filter"
     let xs = { 1..10 }
-    let ys = xs.filter(predicate: x => x > 5)
-    assert([6,7,8,9,10], ys.toArray())
+    let ys = xs.Filter(predicate: x => x > 5)
+    assert([6,7,8,9,10], ys.ToArray())
 #endtest
 
-#test "Methods: takeWhile"
+#test "Methods: TakeWhile"
     let xs = { 1..10 }
-    let ys = xs.takeWhile(predicate: x => x < 6)
-    assert([1,2,3,4,5], ys.toArray())
+    let ys = xs.TakeWhile(predicate: x => x < 6)
+    assert([1,2,3,4,5], ys.ToArray())
 #endtest
 
-#test "Methods: skipWhile"
+#test "Methods: SkipWhile"
     let xs = { 1..10 }
-    let ys = xs.skipWhile(predicate: x => x < 6)
-    assert([6,7,8,9,10], ys.toArray())
+    let ys = xs.SkipWhile(predicate: x => x < 6)
+    assert([6,7,8,9,10], ys.ToArray())
 #endtest
 
-#test "Methods: reduce"
+#test "Methods: Reduce"
     let xs = { 1..10 }
-    var res = xs.reduce(by: (x,y) => x + y)
+    var res = xs.Reduce(by: (x,y) => x + y)
     assert(55, res)
-    res = xs.reduce(10, (x,y) => x + y)
+    res = xs.Reduce(10, (x,y) => x + y)
     assert(65, res)
 #endtest
 
-#test "Methods: toDictionary 1"
+#test "Methods: ToDictionary 1"
     let xs = yields {
         (key: 1, value: "Foo"),
         (key: 2, value: "Bar"),
         (key: 3, value: "Zoo")
     }
-    var map = xs.toDictionary(kv => kv::key, kv => kv::value)
+    var map = xs.ToDictionary(kv => kv.key, kv => kv.value)
     assert("Foo", map[1])
     assert("Bar", map[2])
     assert("Zoo", map[3])
-    map = xs.toDictionary(kv => kv::key)
+    map = xs.ToDictionary(kv => kv.key)
     assert((key: 1, value: "Foo"), map[1])
     assert((key: 2, value: "Bar"), map[2])
     assert((key: 3, value: "Zoo"), map[3])
 #endtest
 
-#test "Methods: toDictionary 2"
+#test "Methods: ToDictionary 2"
     let xs = yields {
         (key: 1, value: "Foo"),
         (key: 2, value: "Bar"),
         (key: 1, value: "Zoo")
     }
     try {
-        let _ = xs.toDictionary(kv => kv::key)
+        let _ = xs.ToDictionary(kv => kv.key)
         assert(true, false)
     } catch {
         KeyAlreadyPresent() => assert(true, true)
@@ -579,15 +578,15 @@
         yield break
     }
     var xs = iter()
-    assert(0, xs.len())
-    assert(nil, xs.first())
-    assert(nil, xs.last())
-    assert([], xs.toArray())
+    assert(0, xs.Length())
+    assert(nil, xs.First())
+    assert(nil, xs.Last())
+    assert([], xs.ToArray())
     xs = yields {}
-    assert(0, xs.len())
-    assert(nil, xs.first())
-    assert(nil, xs.last())
-    assert([], xs.toArray())
+    assert(0, xs.Length())
+    assert(nil, xs.First())
+    assert(nil, xs.Last())
+    assert([], xs.ToArray())
 #endtest
 
 #test "Pattern match"
@@ -602,22 +601,22 @@
     assert(3, res)
 #endtest
 
-#test "Methods: any"
+#test "Methods: Any"
     let xs = yields { 0,0,0,1,0,0,0 }
-    assert(true, xs.any(x => x > 0))
+    assert(true, xs.Any(x => x > 0))
     func iter() {
         yield nil
         yield true
         throw "err"
     }
     let ys = iter()
-    assert(true, ys.any(x => x is not nil))
+    assert(true, ys.Any(x => x is not nil))
 #endtest
 
 #test "Methods: all"
     let xs = yields { 10,2,3,1,4,5,6 }
-    assert(true, xs.all(x => x > 0))
-    assert(false, xs.all(x => x > 1))
+    assert(true, xs.All(x => x > 0))
+    assert(false, xs.All(x => x > 1))
     func iter() {
         yield true
         yield true
@@ -625,15 +624,15 @@
     }
     let ys = iter()
     try {
-        assert(true, ys.any(x => x))
+        assert(true, ys.Any(x => x))
     } catch {
         UnexpectedError(msg) => assert("err", msg)
     }
 #endtest
 
-#test "Methods: contains"
+#test "Methods: Contains"
     let xs = yields { 10,2,3,1,4,5,6 }
-    assert(true, xs.contains(10))
-    assert(true, xs.contains(1))
-    assert(false, xs.contains(101))
+    assert(true, xs.Contains(10))
+    assert(true, xs.Contains(1))
+    assert(false, xs.Contains(101))
 #endtest

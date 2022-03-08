@@ -5,10 +5,10 @@ namespace Dyalect.Runtime.Types
 {
     public class DyNil : DyObject
     {
-        private sealed class DyTerminator : DyNil { }
-
         public static readonly DyNil Instance = new();
-        internal static readonly DyNil Terminator = new DyTerminator();
+        internal static readonly DyNil Terminator = new DyNilTerminator();
+        
+        private sealed class DyNilTerminator : DyNil { }
 
         private DyNil() : base(DyType.Nil) { }
 
@@ -25,6 +25,6 @@ namespace Dyalect.Runtime.Types
 
         internal override void Serialize(BinaryWriter writer) => writer.Write(TypeId);
 
-        public override int GetHashCode() => HashCode.Combine(Instance);
+        public override int GetHashCode() => HashCode.Combine(DyTypeNames.Nil, TypeId);
     }
 }

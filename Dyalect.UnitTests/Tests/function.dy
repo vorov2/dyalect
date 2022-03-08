@@ -1,15 +1,15 @@
-﻿#test "Methods: toString"
+﻿#test "Methods: ToString"
     func foo(args..., quotes = 12) { }
     let pat = "foo(args..., quotes = 12)";
-    assert(pat, foo.toString())
+    assert(pat, foo.ToString())
 #endtest
 
-#test "Methods: clone"
+#test "Methods: Clone"
     let fn = (x, y) => x + y
     assert(true, fn == fn)
-    assert(true, fn.clone() == fn)
-    assert(true, fn.toString.clone() == fn.toString)
-    assert(false, fn.toString.clone() == fn)
+    assert(true, fn.Clone() == fn)
+    assert(true, fn.ToString.Clone() == fn.ToString)
+    assert(false, fn.ToString.Clone() == fn)
 #endtest
 
 #test "Base variable 1"
@@ -40,7 +40,7 @@
     func fmt(res) {
         "result=\(res)"
     }
-    let fun = Function.compose(sum, fmt)
+    let fun = Function.Compose(sum, fmt)
     let res = fun(13, 14)
     assert(res, "result=27")
 #endtest
@@ -52,7 +52,7 @@
     func fmt(res) {
         "result=\(res)"
     }
-    let fun = sum.compose(with: fmt)
+    let fun = sum.Compose(with: fmt)
     let res = fun(13, 14)
     assert(res, "result=27")
 #endtest
@@ -60,25 +60,25 @@
 #test "Methods: getType"
     let x = x => x
     assert(true, TypeInfo(x) == Function)
-    assert(true, x.getType() == Function)
+    assert(true, x.GetType() == Function)
     var t = TypeInfo(x)
-    assert(6, t.id)
-    assert("Function", t.name)
+    assert(7, t.Code)
+    assert("Function", t.Name)
 #endtest
 
 #test "Properties"
-    func get Array.first() { 
-        this[0] when this.len() > 0
+    func get Array.First() { 
+        this[0] when this.Length() > 0
     }
 
-    func set Array.first(val) {
-        this.add(val) when this.len() == 0 else this[0] = val
+    func set Array.First(val) {
+        this.Add(val) when this.Length() == 0 else this[0] = val
     }
     
     let xs = [1,2,3]
-    assert(1, xs.first)
-    xs.first = 11
-    assert(11, xs.first)
+    assert(1, xs.First)
+    xs.First = 11
+    assert(11, xs.First)
 #endtest
 
 #test "Tail recursion 1"
@@ -86,7 +86,7 @@
     func loop(n, max) {
         func loop(i) {
             if i < max {
-                xs.add(i)
+                xs.Add(i)
                 loop(i + 1)
             }
         }
@@ -216,7 +216,7 @@
 #test "Variadic call 2"
     var res
     func variadic(args...) {
-        res = args.len()
+        res = args.Length()
     }
     variadic(args: (1,2,3))
     assert(3, res)
@@ -225,7 +225,7 @@
 #test "Variadic call 3"
     var res
     func variadic(args...) {
-        res = args.len()
+        res = args.Length()
     }
     variadic([1,2,3,4])
     assert(1, res)
@@ -244,8 +244,8 @@
 
 #test "Caller and current"
     func foo() {
-        assert("foo", current().name)
-        assert("bar", caller().name)
+        assert("foo", current().Name)
+        assert("bar", caller().Name)
     }
     func bar() {
         foo()
@@ -255,7 +255,7 @@
 
 #test "Function info"
     func foo() {
-        assert(foo.name, current().name)
+        assert(foo.Name, current().Name)
     }
     foo()
     assert(nil, caller())
@@ -266,17 +266,17 @@
     func snd() { thy() }
     func fst() { snd() }
     var s = fst()
-    assert("snd", s.name)
+    assert("snd", s.Name)
 #endtest
 
 #test "Anonymous function name"
     let f = x => x * x
-    assert("<func>", f.name)
+    assert("<func>", f.Name)
 #endtest
 
 #test "Call chain 2"
     func foo() {
-        return "\(current().name) is called by \(caller().name)"
+        return "\(current().Name) is called by \(caller().Name)"
     }
     func bar() {
         foo()
@@ -311,7 +311,7 @@
 
 #test "Variadic arguments to string"
     func take(args...) {
-        args.toString()
+        args.ToString()
     }
     var x = take(1,2,44.42)
     assert("(1, 2, 44.42)", x)
@@ -328,18 +328,18 @@
 #endtest
 
 #test "Method: toString 1"
-    func Integer.toString() {
+    func Integer.ToString() {
         if this % 2 == 0 {
             "even"
         } else {
             "odd"
         }
     }
-    assert("even", 12.toString())
+    assert("even", 12.ToString())
 #endtest
 
 #test "Method: toString 2"
-    func Nil.toString() {
+    func Nil.ToString() {
         "null"
     }
     var x = "foo" + nil
@@ -356,15 +356,15 @@
 
 #test "Method: addition 2"
     func Float +(other) {
-        this.toString() + " + " + other.toString()
+        this.ToString() + " + " + other.ToString()
     }
     var res = 12.2 + 0.4
     assert("12.2 + 0.4", res)
 #endtest
 
-#test "Method: getItem"
+#test "Method: GetItem"
     var x = 11
-    func Integer.getItem(index) { index }
+    func get Integer[index] { index }
     assert(11, 12[x])
 #endtest
 
@@ -373,11 +373,11 @@
     let num = 10
     for n in 0..<num {
         var elem = x => () => x * x
-        xs.add(elem(n))
+        xs.Add(elem(n))
     }
     var ys = []
     for x in xs {
-        ys.add(x())
+        ys.Add(x())
     }
     assert([0, 1, 4, 9, 16, 25, 36, 49, 64, 81], ys)
 #endtest
@@ -435,18 +435,18 @@
 
 #test "Introspection"
     func tt(x, y, z = 3, extras...) {}
-    assert("tt", tt.name)
-    assert(4, tt.parameters.len())
+    assert("tt", tt.Name)
+    assert(4, tt.Parameters.Length())
     var i = 0
-    for p in tt.parameters {
+    for p in tt.Parameters {
         if i == 0 {
-            assert("(name: x, hasDefault: false, default: nil, varArg: false)", p.toString())
+            assert("(name: x, hasDefault: false, default: nil, varArg: false)", p.ToString())
         } else if i == 1 {
-            assert("(name: y, hasDefault: false, default: nil, varArg: false)", p.toString())
+            assert("(name: y, hasDefault: false, default: nil, varArg: false)", p.ToString())
         } else if i == 2 {
-            assert("(name: z, hasDefault: true, default: 3, varArg: false)", p.toString())
+            assert("(name: z, hasDefault: true, default: 3, varArg: false)", p.ToString())
         } else if i == 3 {
-            assert("(name: extras, hasDefault: false, default: nil, varArg: true)", p.toString())
+            assert("(name: extras, hasDefault: false, default: nil, varArg: true)", p.ToString())
         }
         i += 1
     }
@@ -483,7 +483,7 @@
     var cell
     func collector(args..., x = 5) {
         var xs = [x]
-        xs.addRange(args)
+        xs.AddRange(args)
         cell = xs
     }
     __invoke(collector, 4)
@@ -494,7 +494,7 @@
     var cell
     func collector(x, y, args...) {
         var xs = [x, y]
-        xs.addRange(args)
+        xs.AddRange(args)
         cell = xs
     }
     __invoke(collector, 1, 2, (3, 4))
@@ -505,7 +505,7 @@
     var cell
     func collector(x, y, args...) {
         var xs = [x, y]
-        xs.addRange(args)
+        xs.AddRange(args)
         cell = xs
     }
     __invoke(collector, 5, 6, [7, 8])
@@ -535,8 +535,8 @@
 #test "Type annotations 2"
     import lib = refs/libtest1
 
-    func assetToString(lib::Asset ass) {
-        ass.toString()
+    func assetToString(lib.Asset ass) {
+        ass.ToString()
     }
     assert("Asset.Phone(model: 1+, memory: 8)", assetToString(Asset.Phone("1+", 8)))
     try {
@@ -565,8 +565,8 @@
     and m(n) {
         n == 0 ? 0 : n - f(m(n-1))
     }
-    let xs = (0..20).map(i => f(i)).toArray()
-    let ys = (0..20).map(i => m(i)).toArray()
+    let xs = (0..20).Map(i => f(i)).ToArray()
+    let ys = (0..20).Map(i => m(i)).ToArray()
     assert([1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 11, 11, 12, 13], xs)
     assert([0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 7, 8, 9, 9, 10, 11, 11, 12, 12], ys)
 #endtest

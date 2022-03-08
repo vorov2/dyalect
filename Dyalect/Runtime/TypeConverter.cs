@@ -57,7 +57,7 @@ namespace Dyalect.Runtime
                         return new DyArray(newArr);
                     }
                     else
-                        return new DyReflectionWrapper(obj);
+                        throw new Exception("Unable to convert type.");
             }
         }
 
@@ -116,7 +116,7 @@ namespace Dyalect.Runtime
 
                             for (var i = 0; i < coll.Count; i++)
                             {
-                                var c = coll[i];
+                                var c = coll.GetValue(i);
                                 arr.SetValue(ConvertTo(c, et!), i);
                             }
 

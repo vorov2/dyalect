@@ -7,7 +7,7 @@ namespace Dyalect.Linker
     internal static class ObjectFile
     {
         public static readonly byte[] BOM = { 67, 12, 43 };
-        public const int Version = 8;
+        public const int Version = 9;
 
         public static DyObject? DeserializeObject(BinaryReader reader) =>
             reader.ReadInt32() switch
@@ -18,7 +18,7 @@ namespace Dyalect.Linker
                 DyType.Float => new DyFloat(reader.ReadDouble()),
                 DyType.String => new DyString(reader.ReadString()),
                 DyType.Char => new DyChar(reader.ReadChar()),
-                DyType.Bool => (DyBool)reader.ReadBoolean(),
+                DyType.Bool => reader.ReadBoolean() ? DyBool.True : DyBool.False,
                 _ => throw new NotSupportedException(),
             };
     }

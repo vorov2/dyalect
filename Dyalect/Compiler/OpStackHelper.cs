@@ -53,20 +53,17 @@
             1,  //Dup
             0,  //SyncPoint
             0,  //Fail
-            0,  //FailSys
             1,  //NewFun
             1,  //NewFunV
             1,  //NewIter
-            -1, //SetMember
-            -1, //SetMemberT
+            -2, //SetMember
             0,  //GetMember
             0,  //HasMember
-            -1, //SetMemberS
-            -1, //SetMemberST
+            -2, //SetMemberS
             -1, //Get
             -3, //Set
             1,  //RunMod
-            0,  //Type
+            1,  //Type
             0,  //Tag
             0,  //Term
             -1, //Yield
@@ -83,22 +80,18 @@
 
             0,  //NewTuple **dynamic
             0,  //HasField
-            0,  //TypeCheck
-            0,  //TypeCheckT
-            0,  //TypeCheckF
-            0,  //TypeCheckFT
+            -2, //TypeCheck
             0,  //Start
             0,  //End
+            -1, //NewObj
             1,  //NewType
-            1,  //TypeS
-            1,  //TypeST
             0,  //CtorCheck
             0,  //IsNull
             0,  //GetIter
             0,  //Mut
-            0,  //TypeAnno
-            0,  //TypeAnnoT
+            -1, //Annot
             0,  //FunAttr
+            0,  //NewErr **dynamic
         };
     }
 }

@@ -34,7 +34,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId is not DyType.String)
+            if (index.TypeId != DyType.String)
                 return ctx.InvalidType(index);
 
             if (!TryGetMember(index.GetString(), ctx, out var value))
@@ -47,17 +47,7 @@ namespace Dyalect.Runtime.Types
         {
             value = null;
 
-            if (!Unit.ExportList.TryGetValue(name, out var sv))
-            {
-                if (!Unit.TypeMap.TryGetValue(name, out var td))
-                    return false;
-                else
-                {
-                    value = ctx.RuntimeContext.Types[td.Id];
-                    return true;
-                }
-            }
-            else
+            if (Unit.ExportList.TryGetValue(name, out var sv))
             {
                 if ((sv.Data & VarFlags.Private) == VarFlags.Private)
                     ctx.PrivateNameAccess(name);
@@ -65,6 +55,8 @@ namespace Dyalect.Runtime.Types
                 value = Globals[sv.Address >> 8];
                 return true;
             }
+
+            return false;
         }
 
         public IEnumerator<DyObject> GetEnumerator()

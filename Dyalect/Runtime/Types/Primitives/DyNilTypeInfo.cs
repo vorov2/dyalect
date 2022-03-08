@@ -2,12 +2,12 @@
 {
     internal sealed class DyNilTypeInfo : DyTypeInfo
     {
-        public DyNilTypeInfo() : base(DyType.Nil) { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
         public override string TypeName => DyTypeNames.Nil;
+
+        public override int ReflectedTypeCode => DyType.Nil;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.TypeId == right.TypeId ? DyBool.True : DyBool.False;
@@ -18,7 +18,7 @@
 
         protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
         {
-            if (name is "Nil" or "default")
+            if (name is "Nil" or "Default")
                 return Func.Static(name, _ => DyNil.Instance);
 
             return base.InitializeStaticMember(name, ctx);

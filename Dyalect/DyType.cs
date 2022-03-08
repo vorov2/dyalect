@@ -1,14 +1,32 @@
 ﻿using Dyalect.Runtime.Types;
 using System.Collections.Generic;
-using System.Dynamic;
 
 namespace Dyalect
 {
     public static class DyType
     {
+        public const int Nil = 1;
+        public const int Integer = 2;
+        public const int Float = 3;
+        public const int Bool = 4;
+        public const int Char = 5;
+        public const int String = 6;
+        public const int Function = 7;
+        public const int Label = 8;
+        public const int TypeInfo = 9;
+        public const int Module = 10;
+        public const int Array = 11;
+        public const int Iterator = 12;
+        public const int Tuple = 13;
+        public const int Dictionary = 14;
+        public const int Set = 15;
+        public const int Error = 16;
+        public const int Object = 17;
+
         internal static List<DyTypeInfo> GetAll() =>
             new()
             {
+                null!,
                 new DyNilTypeInfo(),
                 new DyIntegerTypeInfo(),
                 new DyFloatTypeInfo(),
@@ -23,28 +41,9 @@ namespace Dyalect
                 new DyIteratorTypeInfo(),
                 new DyTupleTypeInfo(),
                 new DyDictionaryTypeInfo(),
-                new DyWrapperTypeInfo(),
                 new DySetTypeInfo(),
                 new DyErrorTypeInfo()
             };
-
-        public const int Nil = 0;
-        public const int Integer = 1;
-        public const int Float = 2;
-        public const int Bool = 3;
-        public const int Char = 4;
-        public const int String = 5;
-        public const int Function = 6;
-        public const int Label = 7;
-        public const int TypeInfo = 8;
-        public const int Module = 9;
-        public const int Array = 10;
-        public const int Iterator = 11;
-        public const int Tuple = 12;
-        public const int Dictionary = 13;
-        public const int Object = 14;
-        public const int Set = 15;
-        public const int Error = 16;
 
         public static int GetTypeCodeByName(string name) =>
             name switch
@@ -66,8 +65,8 @@ namespace Dyalect
                 DyTypeNames.Object => Object,
                 DyTypeNames.Set => Set,
                 DyTypeNames.Error => Error,
-                _ => -1,
-            };
+                _ => default
+            }; 
 
         internal static string GetTypeNameByCode(int code) =>
             code switch
@@ -134,5 +133,7 @@ namespace Dyalect
         public const string Object = "Object";
         public const string Set = "Set";
         public const string Error = "Error";
+        public const string Class = "Class";
+        public const string Foreign = "Foreign";
     }
 }

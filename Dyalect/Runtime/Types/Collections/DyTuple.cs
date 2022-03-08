@@ -6,7 +6,8 @@ namespace Dyalect.Runtime.Types
 {
     public class DyTuple : DyCollection
     {
-        internal static readonly DyTuple Empty = new(Array.Empty<DyObject>());
+        public static readonly DyTuple Empty = new(Array.Empty<DyObject>());
+        
         internal readonly DyObject[] Values;
 
         public override int Count => Values.Length;
@@ -14,12 +15,12 @@ namespace Dyalect.Runtime.Types
         public DyTuple(DyObject[] values) : base(DyType.Tuple) =>
             Values = values ?? throw new DyException("Unable to create a tuple with no values.");
 
-        protected DyTuple(DyObject[] values, int typeId) : base(typeId) =>
+        protected DyTuple(DyObject[] values, int typeId) : base(DyType.Tuple) =>
             Values = values ?? throw new DyException("Unable to create a tuple with no values.");
 
-        public static DyTuple Create(params DyObject[] args) => new(args);
+        public static DyTuple Create(ExecutionContext ctx, params DyObject[] args) => new(args);
 
-        public Dictionary<DyObject, DyObject> ConvertToDictionary()
+        public Dictionary<DyObject, DyObject> ConvertToDictionary(ExecutionContext ctx)
         {
             var dict = new Dictionary<DyObject, DyObject>();
 
@@ -48,25 +49,25 @@ namespace Dyalect.Runtime.Types
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (index.TypeId is DyType.Integer)
+            if (index.TypeId == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
 
-            if (index.TypeId is not DyType.String and not DyType.Char)
+            if (index.TypeId != DyType.String && index.TypeId != DyType.Char)
                 return ctx.InvalidType(index);
             
             return TryGetItem(index.GetString(), ctx, out var item)
-                ? item : ctx.FieldNotFound();
+                ? item : ctx.IndexOutOfRange(index);
         }
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
-            if (index.TypeId is DyType.String)
+            if (index.TypeId == DyType.String)
             {
                 var i = GetOrdinal(index.GetString());
 
                 if (i is -1)
                 {
-                    ctx.FieldNotFound();
+                    ctx.IndexOutOfRange(index);
                     return;
                 }
 
@@ -100,11 +101,11 @@ namespace Dyalect.Runtime.Types
 
                 if (!lab.Mutable)
                 {
-                    ctx.FieldReadOnly();
+                    ctx.IndexReadOnly(lab.Label);
                     return;
                 }
 
-                if (lab.TypeAnnotation is not null && lab.TypeAnnotation.Value != value.TypeId)
+                if (lab.TypeAnnotation is not null && value.TypeId != lab.TypeAnnotation.ReflectedTypeCode)
                 {
                     ctx.InvalidType(value);
                     return;
@@ -113,7 +114,7 @@ namespace Dyalect.Runtime.Types
                 lab.Value = value;
             }
             else
-                ctx.FieldReadOnly();
+                ctx.IndexReadOnly();
         }
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) =>

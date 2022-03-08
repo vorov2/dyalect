@@ -11,28 +11,28 @@
     assert('f', Char("foo"))
 #endtest
 
-#test "Methods: getType"
+#test "Methods: GetType"
     let x = 'A'
     assert(true, TypeInfo(x) == Char)
-    assert(true, x.getType() == Char)
+    assert(true, x.GetType() == Char)
     let t = TypeInfo(x)
-    assert(4, t.id)
-    assert("Char", t.name)
+    assert(5, t.Code)
+    assert("Char", t.Name)
 #endtest
 
-#test "Methods: default"
-    assert('\0', Char.default())
+#test "Methods: Default"
+    assert('\0', Char.Default())
 #endtest
 
-#test "Methods: min and max"
-    assert('\0', Char.min())
-    assert('\uffff', Char.max())
-    assert(true, Char.default() == Char.min())
+#test "Methods: Min and Max"
+    assert('\0', Char.Min())
+    assert('\uffff', Char.Max())
+    assert(true, Char.Default() == Char.Min())
 #endtest
 
 #test "Ranges"
     assert(['a','b','c','d','e','f'], ['a'..'f'])
-    assert(['a','c','e'], ('a'^2..'f').toArray())
+    assert(['a','c','e'], ('a'^2..'f').ToArray())
 #endtest
 
 #test "Char comparison"
@@ -46,41 +46,41 @@
     assert(false, "cc" < 'c')
 #endtest
 
-#test "Methods: upper and isUpper"
-    assert(true, 'C' == 'c'.upper())
-    assert(true, 'C'.isUpper())
+#test "Methods: Upper and IsUpper"
+    assert(true, 'C' == 'c'.Upper())
+    assert(true, 'C'.IsUpper())
 #endtest
 
-#test "Methods: lower and isLower"
-    assert(true, 'c' == 'C'.lower())
-    assert(true, 'c'.isLower())
+#test "Methods: Lower and IsLower"
+    assert(true, 'c' == 'C'.Lower())
+    assert(true, 'c'.IsLower())
 #endtest
 
-#test "Methods: isWhitespace"
-    assert(true, '\s'.isWhiteSpace())
-    assert(true, ' '.isWhiteSpace())
-    assert(true, '\u0020'.isWhiteSpace())
-    assert(true, '\t'.isWhiteSpace())
+#test "Methods: IsWhitespace"
+    assert(true, '\s'.IsWhiteSpace())
+    assert(true, ' '.IsWhiteSpace())
+    assert(true, '\u0020'.IsWhiteSpace())
+    assert(true, '\t'.IsWhiteSpace())
 #endtest
 
-#test "Methods: isControl"
-    assert(true, '\t'.isControl())
-    assert(true, '\b'.isControl())
-    assert(false, 't'.isControl())
+#test "Methods: IsControl"
+    assert(true, '\t'.IsControl())
+    assert(true, '\b'.IsControl())
+    assert(false, 't'.IsControl())
 #endtest
 
-#test "Methods: isLetterOrDigit"
-    assert(true, '9'.isDigit())
-    assert(false, 'A'.isDigit())
-    assert(true, 'A'.isLetter())
-    assert(false, '1'.isLetter())
-    assert(true, '9'.isLetterOrDigit())
-    assert(true, 't'.isLetterOrDigit())
+#test "Methods: IsLetterOrDigit"
+    assert(true, '9'.IsDigit())
+    assert(false, 'A'.IsDigit())
+    assert(true, 'A'.IsLetter())
+    assert(false, '1'.IsLetter())
+    assert(true, '9'.IsLetterOrDigit())
+    assert(true, 't'.IsLetterOrDigit())
 #endtest
 
-#test "Methods: order"
-    assert(65, 'A'.order())
-    assert(54, '6'.order())
+#test "Methods: Order"
+    assert(65, 'A'.Order())
+    assert(54, '6'.Order())
 #endtest
 
 #test "Math with chars"

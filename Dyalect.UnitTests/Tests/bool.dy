@@ -8,14 +8,14 @@
 #endtest
 
 #test "Methods: default"
-    assert(false, Bool.default())
+    assert(false, Bool.Default())
 #endtest
 
 #test "Methods: getType"
     let x = false
     assert(true, TypeInfo(x) == Bool)
-    assert(true, x.getType() == Bool)
+    assert(true, x.GetType() == Bool)
     var t = TypeInfo(x)
-    assert(3, t.id)
-    assert("Bool", t.name)
+    assert(4, t.Code)
+    assert("Bool", t.Name)
 #endtest

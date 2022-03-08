@@ -13,10 +13,12 @@ namespace Dyalect.Runtime.Types
         internal Par[] Parameters;
         internal int VarArgIndex;
         internal int Attr;
+        internal int DeclaringUnitId;
 
         internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
+        internal bool Private => (Attr & FunAttr.Priv) == FunAttr.Priv;
 
-        protected DyFunction(int typeId, Par[] pars, int varArgIndex) : base(typeId) =>
+        protected DyFunction(Par[] pars, int varArgIndex) : base(DyType.Function) =>
             (Parameters, VarArgIndex) = (pars, varArgIndex);
 
         public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
@@ -74,7 +76,7 @@ namespace Dyalect.Runtime.Types
                 }
                 else if (o.TypeId != DyType.Tuple)
                 {
-                    newLocals[VarArgIndex] = DyTuple.Create(o);
+                    newLocals[VarArgIndex] = DyTuple.Create(ctx, o);
                 }
             }
 
@@ -115,13 +117,13 @@ namespace Dyalect.Runtime.Types
                 if (p.IsVarArg)
                     sb.Append("...");
 
-                if (p.Value != null)
+                if (p.Value is not null)
                 {
                     sb.Append(" = ");
-                    if (p.Value.TypeId == DyType.String)
-                        sb.Append(StringUtil.Escape(p.Value.ToString()));
-                    else if (p.Value.TypeId == DyType.Char)
-                        sb.Append(StringUtil.Escape(p.Value.ToString(), "'"));
+                    if (p.Value is DyString)
+                        sb.Append(StringUtil.Escape(p.Value.ToString()!));
+                    else if (p.Value is DyChar)
+                        sb.Append(StringUtil.Escape(p.Value.ToString()!, "'"));
                     else
                         sb.Append(p.Value.ToString());
                 }

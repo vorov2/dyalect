@@ -25,8 +25,8 @@ namespace Dyalect.Runtime.Types
             PreviousOffset = ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId].Size;
         }
 
-        internal DyNativeFunction(FunSym? sym, int unitId, int funcId, FastList<DyObject[]> captures, int typeId, int varArgIndex) :
-            base(typeId, sym?.Parameters ?? Array.Empty<Par>(), varArgIndex)
+        internal DyNativeFunction(FunSym? sym, int unitId, int funcId, FastList<DyObject[]> captures, int varArgIndex) :
+            base(sym?.Parameters ?? Array.Empty<Par>(), varArgIndex)
         {
             this.sym = sym;
             UnitId = unitId;
@@ -37,11 +37,11 @@ namespace Dyalect.Runtime.Types
         public static DyNativeFunction Create(FunSym sym, int unitId, int funcId, FastList<DyObject[]> captures, DyObject[] locals, int varArgIndex = -1)
         {
             var vars = new FastList<DyObject[]>(captures) { locals };
-            return new(sym, unitId, funcId, vars, DyType.Function, varArgIndex);
+            return new(sym, unitId, funcId, vars, varArgIndex);
         }
 
         internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) =>
-            new DyNativeFunction(sym, UnitId, FunctionId, Captures, DyType.Function, VarArgIndex)
+            new DyNativeFunction(sym, UnitId, FunctionId, Captures, VarArgIndex)
             {
                 Self = arg
             };

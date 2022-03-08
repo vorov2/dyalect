@@ -33,13 +33,19 @@ namespace Dyalect.Compiler
             }
         }
 
-        private void AddError(CompilerError error, Location loc, params object[] args)
+        private void AddError(CompilerError error, Location loc, params object[] args) =>
+            AddError(error, unit.FileName!, loc, args);
+
+        private void AddError(CompilerError error, string fileName, Location loc, params object[] args)
         {
             var str = string.Format(CompilerErrors.ResourceManager.GetString(error.ToString()) ?? error.ToString(), args);
-            AddMessage(new BuildMessage(str, BuildMessageType.Error, (int)error, Line(loc), Col(loc), unit.FileName));
+            AddMessage(new BuildMessage(str, BuildMessageType.Error, (int)error, Line(loc), Col(loc), fileName));
         }
 
-        private void AddWarning(CompilerWarning warning, Location loc, params object[] args)
+        private void AddWarning(CompilerWarning warning, Location loc, params object[] args) =>
+            AddWarning(warning, unit.FileName!, loc, args);
+
+        private void AddWarning(CompilerWarning warning, string fileName, Location loc, params object[] args)
         {
             if (options.NoWarnings)
                 return;
@@ -49,7 +55,7 @@ namespace Dyalect.Compiler
                 return;
 
             var str = string.Format(CompilerErrors.ResourceManager.GetString(warning.ToString()) ?? warning.ToString(), args);
-            AddMessage(new BuildMessage(str, BuildMessageType.Warning, (int)warning, Line(loc), Col(loc), unit.FileName));
+            AddMessage(new BuildMessage(str, BuildMessageType.Warning, (int)warning, Line(loc), Col(loc), fileName));
         }
 
         public bool Success => ErrorCount == 0;

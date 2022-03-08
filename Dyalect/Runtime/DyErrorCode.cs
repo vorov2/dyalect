@@ -14,7 +14,7 @@
 
         IndexOutOfRange = 605,
 
-        FieldReadOnly = 606,
+        IndexReadOnly = 606,
 
         DivideByZero = 607,
 
@@ -42,7 +42,7 @@
 
         KeyAlreadyPresent = 619,
 
-        FieldNotFound = 620,
+        // = 620,
 
         InvalidValue = 621
     }

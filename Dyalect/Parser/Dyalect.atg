@@ -187,10 +187,10 @@ PRODUCTIONS
             )
             |
             (
-                "="
+                "=" (. var priv = false; .)
                 (
-                    identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) TypeArguments<f>
-                    { "or" identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) TypeArguments<f> }
+                    [ "private" (. priv = true; .) ] identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsPrivate = priv, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) TypeArguments<f>
+                    { "or" [ "private" (. priv = true; .) ] identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsPrivate = priv, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) TypeArguments<f> }
                 )
             )
         ].
@@ -215,7 +215,7 @@ PRODUCTIONS
             )
             |
             (
-                "::" identToken (. var ta = new Qualident(t.val, str); .)
+                "." identToken (. var ta = new Qualident(t.val, str); .)
                 identToken
                 (. arg = new DTypeParameter(ot) { Name = t.val, TypeAnnotation = ta, Mutable = mut }; .)
             )
@@ -369,7 +369,28 @@ PRODUCTIONS
                     f.TypeName = new Qualident(s2, s1);
                 }
             .)
-            FunctionArguments<f>
+            (
+                (
+                    "["
+                        (.
+                            f.IsIndexer = true;
+                        .)
+                        [
+                            FunctionArgument<out var arg> (. f.Parameters.Add(arg); .)
+                            { "," FunctionArgument<out arg> (. f.Parameters.Add(arg); .) }
+                        ]
+                        (.
+                            if (f.TypeName is null)
+                                f.TypeName = new Qualident(f.Name);
+                            else
+                                f.TypeName = new Qualident(f.Name, f.TypeName.Local);
+
+                            f.Name = set ? "__op_set" : "__op_get";
+                        .)
+                    "]"
+                )
+                | FunctionArguments<f>
+            )
             ( Block<out node> | "=>" Statement<out node> )
             (.
                 f.Body = node;
@@ -389,7 +410,7 @@ PRODUCTIONS
             )
             |
             (
-                "::" identToken (. var ta = new Qualident(t.val, str); .)
+                "." identToken (. var ta = new Qualident(t.val, str); .)
                 identToken
                 (. arg = new DParameter(ot) { Name = t.val, TypeAnnotation = ta }; .)
             )
@@ -559,7 +580,24 @@ PRODUCTIONS
         ).
 
     MethodCheckPattern<out DPattern node> =
-        "." identToken (. node = new DMethodCheckPattern(t) { Name = t.val }; .).
+        (
+            (. var name = ""; .)
+            "."
+            (
+                identToken (. name = t.val; .)
+                |
+                (
+                    "("
+                        (
+                            "-" | "+" | "*" | "/" | "==" | "!=" | "^" | "<" | ">" | ">=" | "<=" | "!" | "%" 
+                            | "<<<" | ">>>" | "~~~" 
+                        )
+                        (. name = t.val; .)
+                    ")"
+                )
+            )
+            (. node = new DMethodCheckPattern(t) { Name = name }; .)
+        ).
 
     GroupPattern<out DPattern node> = "(" OrPattern<out node> ")".
 
@@ -611,8 +649,10 @@ PRODUCTIONS
         (. node = null; Token ot = null; string mod = null; string typ = null; string nam = null;.)
         (
             identToken (. nam = t.val; ot = t; .)
-            [ "::" identToken (. mod = nam; typ = t.val; nam = null; .) ]
-            [ "." identToken (. if (typ is null) typ = nam; nam = t.val; .) ]
+            [
+                "." identToken (. typ = nam; nam = t.val; .)
+                [ "." identToken (. mod = typ; typ = nam; nam = t.val; .) ]
+            ]
             [
                 (.
                     var ctor = new DCtorPattern(t);
@@ -1111,15 +1151,6 @@ PRODUCTIONS
                             var fld = new DAccess(ot) { Target = node };
                             fld.Name = t.val;
                             node = fld;
-                        .)
-                    )
-                    |
-                    (
-                        "::"
-                        (. var ot = t; .)
-                        identToken
-                        (.
-                            node = new DIndexer(t) { Target = node, Index = new DStringLiteral(ot) { Value = t.val } };
                         .)
                     )
                     |

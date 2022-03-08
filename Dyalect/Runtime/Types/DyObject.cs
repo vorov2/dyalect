@@ -6,11 +6,11 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyObject : IEquatable<DyObject>
     {
-        public readonly int TypeId;
+        public virtual int TypeId { get; }
 
-        protected DyObject(int typeId) => TypeId = typeId;
+        protected DyObject(int typeCode) => TypeId = typeCode;
 
-        public override string ToString() => $"[type:{DyType.GetTypeNameByCode(TypeId)}]";
+        public override string ToString() => $"[type:{TypeId}]";
 
         protected internal virtual bool GetBool() => true;
 
@@ -28,7 +28,7 @@ namespace Dyalect.Runtime.Types
             index.TypeId == DyType.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange();
 
         protected internal virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Set, this.GetTypeName(ctx));
+            ctx.OperationNotSupported(Builtins.Set, ctx.RuntimeContext.Types[TypeId].TypeName);
 
         protected internal virtual bool HasItem(string name, ExecutionContext ctx) => false;
 
@@ -37,12 +37,8 @@ namespace Dyalect.Runtime.Types
         protected internal virtual DyObject GetTaggedValue() => this;
 
         protected internal virtual DyObject Unbox() => this;
-        
-        public virtual void GetConstructor(ExecutionContext ctx, out string ctor, out bool priv)
-        {
-            ctor = "";
-            priv = false;
-        }
+
+        public virtual string GetConstructor(ExecutionContext ctx) => "";
 
         public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 
@@ -56,10 +52,6 @@ namespace Dyalect.Runtime.Types
 
         protected int CalculateSimpleHashCode() => base.GetHashCode();
 
-        #region Pattern Match
-        protected virtual bool Match_CheckLength(int _) => false;
-        protected virtual DyObject Match_GetByIndex(int _) => DyNil.Instance;
-        protected virtual DyObject Match_GetByName(string _) => DyNil.Instance;
-        #endregion
+        public DyTypeInfo GetTypeInfo(ExecutionContext ctx) => ctx.RuntimeContext.Types[TypeId];
     }
 }

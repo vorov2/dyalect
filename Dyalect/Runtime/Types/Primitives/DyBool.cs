@@ -1,14 +1,13 @@
 ﻿using System.IO;
-using Dyalect.Debug;
 
 namespace Dyalect.Runtime.Types
 {
     public abstract class DyBool : DyObject
     {
-        public static readonly DyBool True = new TrueBool();
-        public static readonly DyBool False = new FalseBool();
+        public static readonly DyBool True = new DyBoolTrue();
+        public static readonly DyBool False = new DyBoolFalse();
 
-        private sealed class TrueBool : DyBool
+        private sealed class DyBoolTrue: DyBool
         {
             protected internal override bool GetBool() => true;
 
@@ -17,7 +16,7 @@ namespace Dyalect.Runtime.Types
             public override int GetHashCode() => true.GetHashCode();
         }
 
-        private sealed class FalseBool : DyBool
+        private sealed class DyBoolFalse: DyBool
         {
             protected internal override bool GetBool() => false;
 
@@ -32,14 +31,12 @@ namespace Dyalect.Runtime.Types
 
         public override DyObject Clone() => this;
 
-        public static explicit operator DyBool(bool v) => v ? True : False;
-
-        public static explicit operator bool(DyBool v) => ReferenceEquals(v, True);
+        public static explicit operator bool(DyBool v) => v is DyBoolTrue;
 
         internal override void Serialize(BinaryWriter writer)
         {
             writer.Write(TypeId);
-            writer.Write(this is TrueBool);
+            writer.Write(this is DyBoolTrue);
         }
     }
 }

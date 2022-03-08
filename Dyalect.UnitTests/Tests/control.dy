@@ -180,7 +180,7 @@
     var arr = []
     for x in [1,2,3,4] {
         x = x+x
-        arr.add(x)
+        arr.Add(x)
     }
     assert([2,4,6,8], arr)
 #endtest

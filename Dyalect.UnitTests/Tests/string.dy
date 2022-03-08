@@ -11,31 +11,31 @@
     assert("abc", str)
 #endtest
 
-#test "Methods: default"
-    assert("", String.default())
+#test "Methods: Default"
+    assert("", String.Default())
 #endtest
 
-#test "Methods: getType"
+#test "Methods: GetType"
     let x = "Foo"
     assert(true, TypeInfo(x) == String)
-    assert(true, x.getType() == String)
+    assert(true, x.GetType() == String)
     var t = TypeInfo(x)
-    assert(5, t.id)
-    assert("String", t.name)
+    assert(6, t.Code)
+    assert("String", t.Name)
 #endtest
 
-#test "Methods: len"
+#test "Methods: Len"
     var str = "Hello, world!"
-    var res = str.len()
+    var res = str.Length()
     assert(13, res)
 #endtest
 
-#test "Methods: indexOf, lastIndexOf"
+#test "Methods: IndexOf, LastIndexOf"
     var str = "Hello, world!"
-    assert(4, str.indexOf("o"))
-    assert(8, str.lastIndexOf("o"))
-    assert(8, str.indexOf("o", fromIndex: 7))
-    assert(3, str.lastIndexOf("l", fromIndex: 6, count: 4))
+    assert(4, str.IndexOf("o"))
+    assert(8, str.LastIndexOf("o"))
+    assert(8, str.IndexOf("o", fromIndex: 7))
+    assert(3, str.LastIndexOf("l", fromIndex: 6, count: 4))
 #endtest
 
 #test "Comparison"
@@ -43,9 +43,9 @@
     assert(true, "1" < "2")
 #endtest
 
-#test "Methods: split"
+#test "Methods: Split"
     var str = "Name=John;Surname=Doe;Age=21;Gender=Male"
-    var arr = str.split('=', ';')
+    var arr = str.Split('=', ';')
     assert(["Name","John","Surname","Doe","Age","21","Gender","Male"], arr)
 #endtest
 
@@ -55,62 +55,62 @@
     assert("fo", res)
 #endtest
 
-#test "Methods: lower, upper"
+#test "Methods: Lower, Upper"
     var str1 = "FOO"
     var str2 = "bar"
-    var res = str1.lower() + str2.upper()
+    var res = str1.Lower() + str2.Upper()
     assert("fooBAR", res)
 #endtest
 
-#test "Methods: startsWith, endsWith"
-    var res = "fooBar".startsWith("foo")
+#test "Methods: StartsWith, EndsWith"
+    var res = "fooBar".StartsWith("foo")
     assert(true, res)
-    res = "fooBar".endsWith("Bar")
+    res = "fooBar".EndsWith("Bar")
     assert(true, res)
 #endtest
 
-#test "Methods: substring"
-    var res = "abcdef".substring(2, 4) + "qwerty".substring(4)
+#test "Methods: Substring"
+    var res = "abcdef".Substring(2, 4) + "qwerty".Substring(4)
     assert("cdefty", res)
-    res = "abcdef".substring(-3)
+    res = "abcdef".Substring(-3)
     assert("def", res)
 #endtest
 
-#test "Methods: capitalize"
-    var res = "camelCase".capitalize()
+#test "Methods: Capitalize"
+    var res = "camelCase".Capitalize()
     assert("Camelcase", res)
     var str = "alphaBETA"
-    assert("Alphabeta", str.capitalize())
+    assert("Alphabeta", str.Capitalize())
 #endtest
 
-#test "Methods: concat"
-    var res = String.concat("one", "two", "three", 44)
+#test "Methods: Concat"
+    var res = String.Concat("one", "two", "three", 44)
     assert("onetwothree44", res)
-    res = String.concat(12, true, "bool")
+    res = String.Concat(12, true, "bool")
     assert("12truebool", res)
 #endtest
 
-#test "Methods: contains"
-    var res = "fooBar".contains("oBa")
+#test "Methods: Contains"
+    var res = "fooBar".Contains("oBa")
     assert(true, res)
 #endtest
 
-#test "Methods: trim, trimStart, trimEnd"
-    var res = " ss".trim() + "--dd--".trimStart('-') + "!ee!".trimEnd('!')
+#test "Methods: Trim, TrimStart, TrimEnd"
+    var res = " ss".Trim() + "--dd--".TrimStart('-') + "!ee!".TrimEnd('!')
     assert("ssdd--!ee", res)
 #endtest
 
-#test "Methods: isEmpty"
-    assert(true, "".isEmpty())
-    assert(true, " \s ".isEmpty())
-    assert(true, " \t\r\n\t ".isEmpty())
-    assert(false, "hh".isEmpty())
+#test "Methods: IsEmpty"
+    assert(true, "".IsEmpty())
+    assert(true, " \s ".IsEmpty())
+    assert(true, " \t\r\n\t ".IsEmpty())
+    assert(false, "hh".IsEmpty())
 #endtest
 
 #test "Indexing"
     var str = "Hello!"
     assert('H', str[0])
-    assert('!', str[str.len() - 1])
+    assert('!', str[str.Length() - 1])
     var xs = "abcde"
     assert('e', xs[-1])
     assert('a', xs[-5])
@@ -122,49 +122,49 @@
     assert("great!", res)
 
     var str = "the quick brown fox jumped over the lazy dogs"
-    assert("lazy dogs",  str[-9..])
-    assert("lazy dogs",  str[36..])
-    assert("the quick",  str[..8])
-    assert(str,  str[..])
+    assert("lazy dogs", str[-9..])
+    assert("lazy dogs", str[36..])
+    assert("the quick", str[..8])
+    assert(str, str[..])
 #endtest
 
-#test "Methods: join"
-    var str = String.join("foo", 1, 3, 44, true, separator: ";")
+#test "Methods: Join"
+    var str = String.Join("foo", 1, 3, 44, true, separator: ";")
     assert("foo;1;3;44;true", str)
 #endtest
 
-#test "Methods: padLeft, padRight"
+#test "Methods: PadLeft, PadRight"
     var foo = "12"
-    assert("   12", foo.padLeft(5))
-    assert("00012", foo.padLeft(with: '0', to: 5))
-    assert("12   ", foo.padRight(5))
-    assert("12000", foo.padRight(with: '0', to: 5))
+    assert("   12", foo.PadLeft(5))
+    assert("00012", foo.PadLeft(with: '0', to: 5))
+    assert("12   ", foo.PadRight(5))
+    assert("12000", foo.PadRight(with: '0', to: 5))
 #endtest
 
-#test "Methods: replace"
-    assert("for gem gemetric", "for rem remetric".replace("rem", "gem"))
-    assert("foobar", "foobar".replace(value: "FOO", with: "ZOO"))
-    assert("ZOObar", "foobar".replace(value: "FOO", with: "ZOO", ignoreCase: true))
+#test "Methods: Replace"
+    assert("for gem gemetric", "for rem remetric".Replace("rem", "gem"))
+    assert("foobar", "foobar".Replace(value: "FOO", with: "ZOO"))
+    assert("ZOObar", "foobar".Replace(value: "FOO", with: "ZOO", ignoreCase: true))
 #endtest
 
-#test "Methods: remove"
+#test "Methods: Remove"
     var str = "from to"
-    assert("from", str.remove(4))
-    assert("from", str.remove(4, 3))
-    assert("from ", str.remove(5))
-    assert("froo", str.remove(3, 3))
+    assert("from", str.Remove(4))
+    assert("from", str.Remove(4, 3))
+    assert("from ", str.Remove(5))
+    assert("froo", str.Remove(3, 3))
 #endtest
 
-#test "Methods: repeat"
-    var str = String.repeat('*', 5)
+#test "Methods: Repeat"
+    var str = String.Repeat('*', 5)
     assert("*****", str)
-    str = String.repeat(value: '!', count: 3)
+    str = String.Repeat(value: '!', count: 3)
     assert("!!!", str)
 #endtest
 
-#test "Methods: reverse"
+#test "Methods: Reverse"
     var str = "foobar"
-    assert("raboof", str.reverse())
+    assert("raboof", str.Reverse())
 #endtest
 
 #test "Multiline string 1"
@@ -220,7 +220,7 @@
 
 #test "Concatenation 2"
     type TypeInString()
-    func TypeInString.toString() => "!dummy!"
+    func TypeInString.ToString() => "!dummy!"
 
     var x = TypeInString()
     var str = "str" + x
@@ -229,13 +229,13 @@
     assert("!dummy!str", str)
 #endtest
 
-#test "Methods: toCharArray"
+#test "Methods: ToCharArray"
     let str = "Hello"
-    let arr = str.toCharArray()
+    let arr = str.ToCharArray()
     assert(['H', 'e', 'l', 'l', 'o'], arr)
 #endtest
 
-#test "Methods: repeat"
-    let str = String.repeat("ha", 5)
+#test "Methods: Repeat"
+    let str = String.Repeat("ha", 5)
     assert("hahahahaha", str)
 #endtest

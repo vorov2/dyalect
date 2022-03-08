@@ -142,6 +142,33 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid definition of an indexer method - missing &quot;set&quot; or &quot;get&quot; modifier..
+        /// </summary>
+        internal static string IndexerSetOrGet {
+            get {
+                return ResourceManager.GetString("IndexerSetOrGet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An indexer method cannot be static..
+        /// </summary>
+        internal static string IndexerStatic {
+            get {
+                return ResourceManager.GetString("IndexerStatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid number of argument for an indexer method..
+        /// </summary>
+        internal static string IndexerWrongArguments {
+            get {
+                return ResourceManager.GetString("IndexerWrongArguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default parameter value for &apos;{0}&apos; must be of a primitive type (integer, float, character, string or nil)..
         /// </summary>
         internal static string InvalidDefaultValue {
@@ -192,6 +219,15 @@ namespace Dyalect.Strings {
         internal static string InvalidTypeDefaultValue {
             get {
                 return ResourceManager.GetString("InvalidTypeDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A type member name should start with a capital letter..
+        /// </summary>
+        internal static string MemberNameCamel {
+            get {
+                return ResourceManager.GetString("MemberNameCamel", resourceCulture);
             }
         }
         
@@ -358,11 +394,20 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type name should start from a capital letter..
+        ///   Looks up a localized string similar to Type name should start with a capital letter..
         /// </summary>
         internal static string TypeNameCamel {
             get {
                 return ResourceManager.GetString("TypeNameCamel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Types should only be declared in a global scope..
+        /// </summary>
+        internal static string TypesOnlyGlobalScope {
+            get {
+                return ResourceManager.GetString("TypesOnlyGlobalScope", resourceCulture);
             }
         }
         

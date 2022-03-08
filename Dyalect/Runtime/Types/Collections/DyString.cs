@@ -1,16 +1,11 @@
-﻿using Dyalect.Debug;
-using Dyalect.Parser;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyString : DyCollection, IEnumerable<DyObject>
+    public sealed class DyString : DyCollection
     {
         public static readonly DyString Empty = new("");
+
         internal readonly string Value;
 
         public override int Count => Value.Length;
@@ -44,8 +39,6 @@ namespace Dyalect.Runtime.Types
 
         public static explicit operator string(DyString str) => str.Value;
 
-        public static explicit operator DyString(string str) => new(str);
-
         public static string ToString(DyObject value, ExecutionContext ctx)
         {
             var res = value;
@@ -69,11 +62,10 @@ namespace Dyalect.Runtime.Types
             return GetItem((int)index.GetInteger(), ctx);
         }
 
-        protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) =>
-            new DyChar(Value[idx]);
+        protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) => new DyChar(Value[idx]);
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported("set", this.GetTypeName(ctx));
+            ctx.OperationNotSupported("set", ctx.RuntimeContext.String.TypeName);
 
         public override DyObject Clone() => this;
 

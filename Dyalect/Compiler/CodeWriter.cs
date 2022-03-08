@@ -12,9 +12,7 @@ namespace Dyalect.Compiler
         private readonly List<int> labels;
         private readonly List<int> fixups;
         private readonly Dictionary<string, int> strings;
-        private readonly Dictionary<double, int> floats;
-        private readonly Dictionary<long, int> integers;
-        private readonly Dictionary<char, int> chars;
+        private readonly Dictionary<DyObject, int> objects;
 
         private sealed class StackSize
         {
@@ -29,9 +27,7 @@ namespace Dyalect.Compiler
             labels = new(cw.labels.ToArray());
             fixups = new(cw.fixups.ToArray());
             strings = cw.strings;
-            floats = cw.floats;
-            integers = cw.integers;
-            chars = cw.chars;
+            objects = cw.objects;
             frame = unit;
         }
 
@@ -40,9 +36,7 @@ namespace Dyalect.Compiler
             this.frame = frame;
             ops = frame.Ops;
             strings = new();
-            integers = new();
-            floats = new();
-            chars = new();
+            objects = new();
             locals = new();
             labels = new();
             fixups = new();
@@ -106,51 +100,27 @@ namespace Dyalect.Compiler
         {
             if (!strings.TryGetValue(val, out var idx))
             {
-                frame.IndexedStrings.Add(new(val));
-                idx = frame.IndexedStrings.Count - 1;
+                frame.Strings.Add(new(val));
+                idx = frame.Strings.Count - 1;
                 strings.Add(val, idx);
             }
 
             return idx;
         }
 
-        private int IndexFloat(double val)
+        private int IndexObject(DyObject val)
         {
-            if (!floats.TryGetValue(val, out var idx))
+            if (!objects.TryGetValue(val, out var idx))
             {
-                frame.IndexedFloats.Add(new(val));
-                idx = frame.IndexedFloats.Count - 1;
-                floats.Add(val, idx);
+                frame.Objects.Add(val);
+                idx = frame.Objects.Count - 1;
+                objects.Add(val, idx);
             }
 
             return idx;
         }
 
-        private int IndexInteger(long val)
-        {
-            if (!integers.TryGetValue(val, out var idx))
-            {
-                frame.IndexedIntegers.Add(DyInteger.Get(val));
-                idx = frame.IndexedIntegers.Count - 1;
-                integers.Add(val, idx);
-            }
-
-            return idx;
-        }
-
-        private int IndexChar(char val)
-        {
-            if (!chars.TryGetValue(val, out var idx))
-            {
-                frame.IndexedChars.Add(new(val));
-                idx = frame.IndexedChars.Count - 1;
-                chars.Add(val, idx);
-            }
-
-            return idx;
-        }
-
-        public void Push(string val) => Emit(new(OpCode.PushStr, IndexString(val)));
+        public void Push(string val) => Emit(new(OpCode.PushStr, IndexObject(new DyString(val))));
 
         public void Push(double val)
         {
@@ -159,7 +129,7 @@ namespace Dyalect.Compiler
             else if (val is 1D)
                 Emit(Op.PushR8_1);
             else
-                Emit(new(OpCode.PushR8, IndexFloat(val)));
+                Emit(new(OpCode.PushR8, IndexObject(new DyFloat(val))));
         }
 
         public void Push(long val)
@@ -169,7 +139,7 @@ namespace Dyalect.Compiler
             else if (val == 1L)
                 Emit(Op.PushI8_1);
             else
-                Emit(new(OpCode.PushI8, IndexInteger(val)));
+                Emit(new(OpCode.PushI8, IndexObject(new DyInteger(val))));
         }
 
         public void Push(bool val)
@@ -182,7 +152,7 @@ namespace Dyalect.Compiler
 
         public void Push(char val)
         {
-            Emit(new(OpCode.PushCh, IndexChar(val)));
+            Emit(new(OpCode.PushCh, IndexObject(new DyChar(val))));
         }
 
         public void PushVar(ScopeVar sv)
@@ -209,53 +179,16 @@ namespace Dyalect.Compiler
             Emit(new(OpCode.Tag, idx));
         }
 
-        public void SetMember(TypeHandle type)
+        public void NewErr(DyErrorCode code, int narg)
         {
-            if (type.IsStandard)
-                Emit(new(OpCode.SetMemberT, type.TypeId));
-            else
-                Emit(new(OpCode.SetMember, type.TypeId));
+            RgDI((int)code);
+            Emit(new(OpCode.NewErr, narg), -narg + 1);
         }
 
-        public void SetMemberS(TypeHandle type)
-        {
-            if (type.IsStandard)
-                Emit(new(OpCode.SetMemberST, type.TypeId));
-            else
-                Emit(new(OpCode.SetMemberS, type.TypeId));
-        }
+        public void SetMember(string member) => Emit(new(OpCode.SetMember, IndexString(member)));
+        public void SetMemberS(string member) => Emit(new(OpCode.SetMemberS, IndexString(member)));
 
-        public void TypeCheck(TypeHandle type)
-        {
-            if (type.IsStandard)
-                Emit(new(OpCode.TypeCheckT, type.TypeId));
-            else
-                Emit(new(OpCode.TypeCheck, type.TypeId));
-        }
-
-        public void TypeCheckF(TypeHandle type)
-        {
-            if (type.IsStandard)
-                Emit(new(OpCode.TypeCheckFT, type.TypeId));
-            else
-                Emit(new(OpCode.TypeCheckF, type.TypeId));
-        }
-
-        public void Type(TypeHandle type)
-        {
-            if (type.IsStandard)
-                Emit(new(OpCode.TypeST, type.TypeId));
-            else
-                Emit(new(OpCode.TypeS, type.TypeId));
-        }
-
-        public void TypeAnno(TypeHandle type)
-        {
-            if (type.IsStandard)
-                Emit(new(OpCode.TypeAnnoT, type.TypeId));
-            else
-                Emit(new(OpCode.TypeAnno, type.TypeId));
-        }
+        public void Type(int code) => Emit(new(OpCode.Type, code));
 
         public void FunPrep(int argCount) => Emit(new(OpCode.FunPrep, argCount));
         public void FunArgIx(int index) => Emit(new(OpCode.FunArgIx, index));
@@ -281,8 +214,8 @@ namespace Dyalect.Compiler
         public void RgFI(int data) => Emit(new(OpCode.RgFI, data));
         public void HasField(string field) => Emit(new(OpCode.HasField, IndexString(field)));
         public void Start(Label lab) => Emit(OpCode.Start, lab);
-        public void Fail(DyErrorCode code) => Emit(new(OpCode.FailSys, (int)code));
-        public void NewType(int typeId) => Emit(new(OpCode.NewType, typeId));
+        public void NewObj(string ctor) => Emit(new(OpCode.NewObj, IndexString(ctor)));
+        public void NewType(string name) => Emit(new(OpCode.NewType, IndexString(name)));
 
         public void GetIter() => Emit(Op.GetIter);
         public void End() => Emit(Op.End);
@@ -325,5 +258,7 @@ namespace Dyalect.Compiler
         public void Term() => Emit(Op.Term);
         public void IsNull() => Emit(Op.IsNull);
         public void Mut() => Emit(Op.Mut);
+        public void Annot() => Emit(Op.Annot);
+        public void TypeCheck() => Emit(Op.TypeCheck);
     }
 }

@@ -6,9 +6,9 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DySetTypeInfo : DyTypeInfo
     {
-        public DySetTypeInfo() : base(DyType.Set) { }
-
         public override string TypeName => DyTypeNames.Set;
+
+        public override int ReflectedTypeCode => DyType.Set;
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -17,7 +17,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var self = (DySet)left;
-            return (DyBool)self.Equals(ctx, right);
+            return self.Equals(ctx, right) ? DyBool.True : DyBool.False;
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
@@ -44,44 +44,44 @@ namespace Dyalect.Runtime.Types
             }
 
             sb.Append(')');
-            return (DyString)sb.ToString();
+            return new DyString(sb.ToString());
         }
 
-        private DyObject AddItem(ExecutionContext _, DyObject self, DyObject value)
+        private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return (DyBool)set.Add(value);
+            return set.Add(value) ? DyBool.True : DyBool.False;
         }
         
-        private DyObject Remove(ExecutionContext _, DyObject self, DyObject value)
+        private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return (DyBool)set.Remove(value);
+            return set.Remove(value) ? DyBool.True : DyBool.False;
         }
         
-        private DyObject Contains(ExecutionContext _, DyObject self, DyObject value)
+        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return (DyBool)set.Contains(value);
+            return set.Contains(value) ? DyBool.True : DyBool.False;
         }
         
-        private DyObject Clear(ExecutionContext _, DyObject self)
+        private DyObject Clear(ExecutionContext ctx, DyObject self)
         {
             var set = (DySet)self;
             set.Clear();
             return DyNil.Instance;
         }
         
-        private DyObject ToArray(ExecutionContext _, DyObject self)
+        private DyObject ToArray(ExecutionContext ctx, DyObject self)
         {
             var set = (DySet)self;
-            return set.ToArray();
+            return set.ToArray(ctx);
         }
         
-        private DyObject ToTuple(ExecutionContext _, DyObject self)
+        private DyObject ToTuple(ExecutionContext ctx, DyObject self)
         {
             var set = (DySet)self;
-            return set.ToTuple();
+            return set.ToTuple(ctx);
         }
         
         private DyObject IntersectWith(ExecutionContext ctx, DyObject self, DyObject value)
@@ -108,36 +108,36 @@ namespace Dyalect.Runtime.Types
         private DyObject Overlaps(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
-            return (DyBool)set.Overlaps(ctx, value);
+            return set.Overlaps(ctx, value) ? DyBool.True : DyBool.False;
         }
 
         private DyObject IsSubsetOf(ExecutionContext ctx, DyObject self, DyObject other)
         {
             var seq = (DySet)self;
-            return (DyBool)seq.IsSubsetOf(ctx, other);
+            return seq.IsSubsetOf(ctx, other) ? DyBool.True : DyBool.False;
         }
 
         private DyObject IsSupersetOf(ExecutionContext ctx, DyObject self, DyObject other)
         {
             var seq = (DySet)self;
-            return (DyBool)seq.IsSupersetOf(ctx, other);
+            return seq.IsSupersetOf(ctx, other) ? DyBool.True : DyBool.False;
         }
         
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "add" => Func.Member(name, AddItem, -1, new Par("value")),
-                "remove" => Func.Member(name, Remove, -1, new Par("value")),
-                "contains" => Func.Member(name, Contains, -1, new Par("value")),
-                "clear" => Func.Member(name, Clear),
-                "toArray" => Func.Member(name, ToArray),
-                "toTuple" => Func.Member(name, ToTuple),
-                "except" => Func.Member(name, ExceptWith, -1, new Par("with")),
-                "intersect" => Func.Member(name, IntersectWith, -1, new Par("with")),
-                "union" => Func.Member(name, UnionWith, -1, new Par("with")),
-                "overlaps" => Func.Member(name, Overlaps, -1, new Par("with")),
-                "isSubset" => Func.Member(name, IsSubsetOf, -1, new Par("of")),
-                "isSuperset" => Func.Member(name, IsSupersetOf, -1, new Par("of")),
+                "Add" => Func.Member(name, AddItem, -1, new Par("value")),
+                "Remove" => Func.Member(name, Remove, -1, new Par("value")),
+                "Contains" => Func.Member(name, Contains, -1, new Par("value")),
+                "Clear" => Func.Member(name, Clear),
+                "ToArray" => Func.Member(name, ToArray),
+                "ToTuple" => Func.Member(name, ToTuple),
+                "Except" => Func.Member(name, ExceptWith, -1, new Par("with")),
+                "Intersect" => Func.Member(name, IntersectWith, -1, new Par("with")),
+                "Union" => Func.Member(name, UnionWith, -1, new Par("with")),
+                "Overlaps" => Func.Member(name, Overlaps, -1, new Par("with")),
+                "IsSubset" => Func.Member(name, IsSubsetOf, -1, new Par("of")),
+                "IsSuperset" => Func.Member(name, IsSupersetOf, -1, new Par("of")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
