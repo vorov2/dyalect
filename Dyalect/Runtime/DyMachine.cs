@@ -9,9 +9,9 @@ namespace Dyalect.Runtime
 {
     public static partial class DyMachine
     {
-        private const int MAX_NESTED_CALLS = 100;
+        private const int MAX_NESTED_CALLS = 1000*1000;
 
-        private static DyNativeFunction Global(int unitId, ExecutionContext ctx) => new(null, unitId, 0, FastList<DyObject[]>.Empty, -1);
+        private static DyNativeFunction Global(int unitId) => new(null, unitId, 0, FastList<DyObject[]>.Empty, -1);
 
         public static ExecutionContext CreateExecutionContext(UnitComposition composition) =>
             new(new(), new(composition));
@@ -58,7 +58,7 @@ namespace Dyalect.Runtime
 
             ctx.CatchMarks.Push(null!);
             ctx.RuntimeContext.Units[unitId] = ctx.RuntimeContext.Units[unitId] ?? new DyObject[lay0.Size];
-            return ExecuteWithData(Global(unitId, ctx), Array.Empty<DyObject>(), ctx);
+            return ExecuteWithData(Global(unitId), Array.Empty<DyObject>(), ctx);
         }
 
         internal static DyObject ExecuteWithData(DyNativeFunction function, DyObject[] locals, ExecutionContext ctx)
