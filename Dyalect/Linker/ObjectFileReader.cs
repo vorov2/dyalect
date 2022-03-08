@@ -57,31 +57,25 @@ namespace Dyalect.Linker
 
         private static void ReadIndices(BinaryReader reader, Unit unit)
         {
-            unit.IndexedStrings.AddRange(ReadIndex<DyString>(reader));
-            unit.IndexedIntegers.AddRange(ReadIndex<DyInteger>(reader));
-            unit.IndexedFloats.AddRange(ReadIndex<DyFloat>(reader));
-            unit.IndexedChars.AddRange(ReadIndex<DyChar>(reader));
-        }
-
-        private static IEnumerable<T> ReadIndex<T>(BinaryReader reader) where T : DyObject
-        {
             var count = reader.ReadInt32();
-            var typeId =
-                typeof(T) == typeof(DyString) ? DyType.String
-                : typeof(T) == typeof(DyInteger) ? DyType.Integer
-                : typeof(T) == typeof(DyFloat) ? DyType.Float
-                : DyType.Char;
+
+            for (var i = 0; i < count; i++)
+                unit.Strings.Add(reader.ReadString());
+
+            count = reader.ReadInt32();
 
             for (var i = 0; i < count; i++)
             {
-                if (typeId == DyType.String)
-                    yield return (T)(object)new DyString(reader.ReadString());
-                else if (typeId == DyType.Integer)
-                    yield return (T)(object)DyInteger.Get(reader.ReadInt64());
+                var typeId = reader.ReadInt32();
+
+                if (typeId == DyType.Integer)
+                    unit.Objects.Add(new DyInteger(reader.ReadInt64()));
                 else if (typeId == DyType.Float)
-                    yield return (T)(object)new DyFloat(reader.ReadDouble());
+                    unit.Objects.Add(new DyFloat(reader.ReadDouble()));
+                else if (typeId == DyType.String)
+                    unit.Objects.Add(new DyString(reader.ReadString()));
                 else if (typeId == DyType.Char)
-                    yield return (T)(object)new DyChar(reader.ReadChar());
+                    unit.Objects.Add(new DyChar(reader.ReadChar()));
             }
         }
 

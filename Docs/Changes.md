@@ -10,6 +10,7 @@
   * Change: _Exception generation redesign_ ([Issue #513](https://github.com/vorov2/dyalect/issues/513)).
   * Change: _Change syntax for indexer definition_ ([Issue #578](https://github.com/vorov2/dyalect/issues/578)).
   * Change: _Method check pattern should accept operators_ ([Issue #579](https://github.com/vorov2/dyalect/issues/579)).
+  * Change: _Simplify object file format_ ([Issue #580](https://github.com/vorov2/dyalect/issues/580)).
   * Fix: _Allow to declare types only in global scope_ ([Issue #570](https://github.com/vorov2/dyalect/issues/570)).
 
 # 0.28.0
