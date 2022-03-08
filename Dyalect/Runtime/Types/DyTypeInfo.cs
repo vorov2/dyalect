@@ -414,7 +414,7 @@ namespace Dyalect.Runtime.Types
         protected readonly Dictionary<string, DyFunction> Members = new();
 
         internal bool HasInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-            LookupInstanceMember(self, name, ctx) is not null;
+            LookupInstanceMember(self, GetBuiltinName(name), ctx) is not null;
 
         internal DyObject GetInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
@@ -527,6 +527,28 @@ namespace Dyalect.Runtime.Types
                 Builtins.Has => Func.Member(name, Has, -1, new Par("member")),
                 Builtins.Type => Func.Member(name, (ct, o) => ct.RuntimeContext.Types[o.TypeId]),
                 _ => InitializeInstanceMember(self, name, ctx)
+            };
+
+        private string GetBuiltinName(string name) =>
+            name switch
+            {
+                "+" => Builtins.Add,
+                "-" => Builtins.Sub,
+                "*" => Builtins.Mul,
+                "/" => Builtins.Div,
+                "%" => Builtins.Rem,
+                "<<<" => Builtins.Shl,
+                ">>>" => Builtins.Shr,
+                "^" => Builtins.Xor,
+                "==" => Builtins.Eq,
+                "!=" => Builtins.Neq,
+                ">" => Builtins.Gt,
+                "<" => Builtins.Lt,
+                ">=" => Builtins.Gte,
+                "<=" => Builtins.Lte,
+                "!" => Builtins.Not,
+                "~~~" => Builtins.BitNot,
+                _ => name
             };
 
         protected virtual DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) => null;

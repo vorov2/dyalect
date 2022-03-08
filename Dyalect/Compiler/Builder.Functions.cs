@@ -84,14 +84,12 @@ namespace Dyalect.Compiler
         }
 
         //Converts symbolic names (used when overriding operators) to special internal
-        //names, e.g. "*" becomes "op_mul"
+        //names, e.g. "*" becomes "__op_mul"
         private string GetMethodName(string name, DFunctionDeclaration node) =>
             name switch
             {
                 "+" => node.Parameters.Count == 0 ? Builtins.Plus : Builtins.Add,
                 "-" => node.Parameters.Count == 0 ? Builtins.Neg : Builtins.Sub,
-                "GetItem" => Builtins.Get,
-                "SetItem" => Builtins.Set,
                 "*" => Builtins.Mul,
                 "/" => Builtins.Div,
                 "%" => Builtins.Rem,

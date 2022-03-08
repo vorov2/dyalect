@@ -580,7 +580,24 @@ PRODUCTIONS
         ).
 
     MethodCheckPattern<out DPattern node> =
-        "." identToken (. node = new DMethodCheckPattern(t) { Name = t.val }; .).
+        (
+            (. var name = ""; .)
+            "."
+            (
+                identToken (. name = t.val; .)
+                |
+                (
+                    "("
+                        (
+                            "-" | "+" | "*" | "/" | "==" | "!=" | "^" | "<" | ">" | ">=" | "<=" | "!" | "%" 
+                            | "<<<" | ">>>" | "~~~" 
+                        )
+                        (. name = t.val; .)
+                    ")"
+                )
+            )
+            (. node = new DMethodCheckPattern(t) { Name = name }; .)
+        ).
 
     GroupPattern<out DPattern node> = "(" OrPattern<out node> ")".
 

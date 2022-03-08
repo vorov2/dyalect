@@ -4,7 +4,7 @@
     {
         public static string Setter(string name) => $"__set_{name}";
 
-        public const string OperatorSymbols = "+-*/%<>^=!~";
+        public const string OperatorSymbols = "?:+-*/%<>^=!~";
 
         public const string Add         = "__op_add";
         public const string Sub         = "__op_sub";
