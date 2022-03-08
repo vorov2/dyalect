@@ -142,6 +142,33 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid definition of an indexer method - missing &quot;set&quot; or &quot;get&quot; modifier..
+        /// </summary>
+        internal static string IndexerSetOrGet {
+            get {
+                return ResourceManager.GetString("IndexerSetOrGet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An indexer method cannot be static..
+        /// </summary>
+        internal static string IndexerStatic {
+            get {
+                return ResourceManager.GetString("IndexerStatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid number of argument for an indexer method..
+        /// </summary>
+        internal static string IndexerWrongArguments {
+            get {
+                return ResourceManager.GetString("IndexerWrongArguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default parameter value for &apos;{0}&apos; must be of a primitive type (integer, float, character, string or nil)..
         /// </summary>
         internal static string InvalidDefaultValue {

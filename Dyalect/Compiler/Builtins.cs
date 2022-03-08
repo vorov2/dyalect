@@ -3,7 +3,6 @@
     internal static class Builtins
     {
         public static string Setter(string name) => $"__set_{name}";
-        public static string Getter(string name) => $"__get_{name}";
 
         public const string OperatorSymbols = "+-*/%<>^=!~";
 
@@ -29,8 +28,6 @@
         public const string BitNot      = "__op_bitcomp";
         public const string Get         = "__op_get";
         public const string Set         = "__op_set";
-        public const string GetItem     = "GetItem";
-        public const string SetItem     = "SetItem";
         public const string Code        = "Code";
         public const string Name        = "Name";
         public const string Len         = "Length";

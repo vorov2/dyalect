@@ -264,4 +264,13 @@
   <data name="TypesOnlyGlobalScope" xml:space="preserve">
     <value>Types should only be declared in a global scope.</value>
   </data>
+  <data name="IndexerStatic" xml:space="preserve">
+    <value>An indexer method cannot be static.</value>
+  </data>
+  <data name="IndexerWrongArguments" xml:space="preserve">
+    <value>Invalid number of argument for an indexer method.</value>
+  </data>
+  <data name="IndexerSetOrGet" xml:space="preserve">
+    <value>Invalid definition of an indexer method - missing "set" or "get" modifier.</value>
+  </data>
 </root>

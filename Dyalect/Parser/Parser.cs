@@ -763,31 +763,40 @@ namespace Dyalect.Parser
 		   f.TypeName = new Qualident(s2, s1);
 		}
 		
-		FunctionArguments(f);
+		if (la.kind == 33) {
+			Get();
+			f.IsIndexer = true;
+			
+			if (la.kind == 1) {
+				FunctionArgument(out var arg);
+				f.Parameters.Add(arg); 
+				while (la.kind == 25) {
+					Get();
+					FunctionArgument(out arg);
+					f.Parameters.Add(arg); 
+				}
+			}
+			if (f.TypeName is null)
+			   f.TypeName = new Qualident(f.Name);
+			else
+			   f.TypeName = new Qualident(f.Name, f.TypeName.Local);
+			
+			f.Name = set ? "__op_set" : "__op_get";
+			
+			Expect(34);
+		} else if (la.kind == 29) {
+			FunctionArguments(f);
+		} else SynErr(110);
 		if (la.kind == 31) {
 			Block(out node);
 		} else if (la.kind == 23) {
 			Get();
 			Statement(out node);
-		} else SynErr(110);
+		} else SynErr(111);
 		f.Body = node;
 		node = f;
 		functions.Pop();
 		
-	}
-
-	void FunctionArguments(DFunctionDeclaration node) {
-		Expect(29);
-		if (la.kind == 1) {
-			FunctionArgument(out var arg);
-			node.Parameters.Add(arg); 
-			while (la.kind == 25) {
-				Get();
-				FunctionArgument(out arg);
-				node.Parameters.Add(arg); 
-			}
-		}
-		Expect(30);
 	}
 
 	void FunctionArgument(out DParameter arg) {
@@ -818,6 +827,20 @@ namespace Dyalect.Parser
 			Get();
 			arg.IsVarArgs = true; 
 		}
+	}
+
+	void FunctionArguments(DFunctionDeclaration node) {
+		Expect(29);
+		if (la.kind == 1) {
+			FunctionArgument(out var arg);
+			node.Parameters.Add(arg); 
+			while (la.kind == 25) {
+				Get();
+				FunctionArgument(out arg);
+				node.Parameters.Add(arg); 
+			}
+		}
+		Expect(30);
 	}
 
 	void OrPattern(out DPattern node) {
@@ -873,7 +896,7 @@ namespace Dyalect.Parser
 					LabelPattern(out node);
 				} else if (StartOf(11)) {
 					OrPattern(out node);
-				} else SynErr(111);
+				} else SynErr(112);
 				ctor.Arguments.Add(node); 
 			}
 			Expect(30);
@@ -999,7 +1022,7 @@ namespace Dyalect.Parser
 			NotPattern(out node);
 		} else if (StartOf(12)) {
 			ComparisonPattern(out node);
-		} else SynErr(112);
+		} else SynErr(113);
 	}
 
 	void AsPattern(DPattern target, out DPattern node) {
@@ -1036,7 +1059,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 74) {
 			Get();
-		} else SynErr(113);
+		} else SynErr(114);
 		node = new DBooleanPattern(t) { Value = t.val == "true" }; 
 	}
 
@@ -1053,7 +1076,7 @@ namespace Dyalect.Parser
 			LabelPattern(out node);
 		} else if (StartOf(11)) {
 			OrPattern(out node);
-		} else SynErr(114);
+		} else SynErr(115);
 		tup.Elements.Add(node); 
 		while (la.kind == 25) {
 			Get();
@@ -1118,7 +1141,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 61) {
 			Get();
 			op = BinaryOperator.LtEq; ot = t; 
-		} else SynErr(115);
+		} else SynErr(116);
 		switch (la.kind) {
 		case 3: {
 			IntegerPattern(out node);
@@ -1144,7 +1167,7 @@ namespace Dyalect.Parser
 			NilPattern(out node);
 			break;
 		}
-		default: SynErr(116); break;
+		default: SynErr(117); break;
 		}
 		node = new DComparisonPattern(ot) { Operator = op, Pattern = node }; 
 	}
@@ -1249,7 +1272,7 @@ namespace Dyalect.Parser
 			
 			Expr(out var exp);
 			yield.Expression = exp; 
-		} else SynErr(117);
+		} else SynErr(118);
 	}
 
 	void FunctionExpr(out DNode node) {
@@ -1261,7 +1284,7 @@ namespace Dyalect.Parser
 			f.Parameters.Add(a); 
 		} else if (la.kind == 29) {
 			FunctionArguments(f);
-		} else SynErr(118);
+		} else SynErr(119);
 		functions.Push(f); 
 		Expect(23);
 		Expr(out var exp);
@@ -1322,7 +1345,7 @@ namespace Dyalect.Parser
 			tc.BindVariable = new DName(t) { Value = t.val }; 
 			Block(out node);
 			tc.Catch = node; 
-		} else SynErr(119);
+		} else SynErr(120);
 		node = tc; 
 	}
 
@@ -1387,7 +1410,7 @@ namespace Dyalect.Parser
 			} else if (la.kind == 94) {
 				Get();
 				exclu = true; 
-			} else SynErr(120);
+			} else SynErr(121);
 			var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; 
 			if (StartOf(14)) {
 				FunctionApplication(out cnode);
@@ -1424,7 +1447,7 @@ namespace Dyalect.Parser
 					range.To = cnode; 
 				}
 			}
-		} else SynErr(121);
+		} else SynErr(122);
 	}
 
 	void FunctionApplication(out DNode node) {
@@ -1596,7 +1619,7 @@ namespace Dyalect.Parser
 			node = new DUnaryOperation(node, op, ot); 
 		} else if (StartOf(16)) {
 			Index(out node);
-		} else SynErr(122);
+		} else SynErr(123);
 	}
 
 	void Index(out DNode node) {
@@ -1660,7 +1683,7 @@ namespace Dyalect.Parser
 			Array(out node);
 		} else if (la.kind == 96) {
 			Iterator(out node);
-		} else SynErr(123);
+		} else SynErr(124);
 	}
 
 	void ApplicationArguments(DApplication app) {
@@ -1669,7 +1692,7 @@ namespace Dyalect.Parser
 			Label(out node);
 		} else if (StartOf(13)) {
 			Expr(out node);
-		} else SynErr(124);
+		} else SynErr(125);
 		app.Arguments.Add(node); 
 		while (la.kind == 25) {
 			Get();
@@ -1677,7 +1700,7 @@ namespace Dyalect.Parser
 				Label(out node);
 			} else if (StartOf(13)) {
 				Expr(out node);
-			} else SynErr(125);
+			} else SynErr(126);
 			app.Arguments.Add(node); 
 		}
 	}
@@ -1698,14 +1721,14 @@ namespace Dyalect.Parser
 		} else if (la.kind == 5) {
 			Get();
 			name = ParseSimpleString(); 
-		} else SynErr(126);
+		} else SynErr(127);
 		Expect(27);
 		var ot = t; 
 		if (IsFunction()) {
 			FunctionExpr(out node);
 		} else if (StartOf(10)) {
 			Is(out node);
-		} else SynErr(127);
+		} else SynErr(128);
 		node = new DLabelLiteral(ot) { Mutable = mut, Label = name, Expression = node }; 
 	}
 
@@ -1714,7 +1737,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 14) {
 			Get();
-		} else SynErr(128);
+		} else SynErr(129);
 		node = new DName(t) { Value = t.val }; 
 	}
 
@@ -1746,7 +1769,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 8) {
 			Get();
 			node = ParseVerbatimString(); 
-		} else SynErr(129);
+		} else SynErr(130);
 	}
 
 	void Char(out DNode node) {
@@ -1759,7 +1782,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 74) {
 			Get();
-		} else SynErr(130);
+		} else SynErr(131);
 		node = new DBooleanLiteral(t) { Value = t.val == "true" }; 
 	}
 
@@ -1776,7 +1799,7 @@ namespace Dyalect.Parser
 			Label(out node);
 		} else if (StartOf(13)) {
 			Expr(out node);
-		} else SynErr(131);
+		} else SynErr(132);
 		tup.Elements.Add(node); 
 		while (la.kind == 25) {
 			Get();
@@ -1851,7 +1874,7 @@ namespace Dyalect.Parser
 			Import(out var node);
 			Imports.Add(node); 
 			Separator();
-		} else SynErr(132);
+		} else SynErr(133);
 	}
 
 	void Dyalect() {
@@ -2012,28 +2035,29 @@ namespace Dyalect.Parser
 			case 108: s = "invalid Loops"; break;
 			case 109: s = "invalid SimpleExpr"; break;
 			case 110: s = "invalid FunctionBody"; break;
-			case 111: s = "invalid NamePattern"; break;
-			case 112: s = "invalid Pattern"; break;
-			case 113: s = "invalid BooleanPattern"; break;
-			case 114: s = "invalid TuplePattern"; break;
-			case 115: s = "invalid ComparisonPattern"; break;
+			case 111: s = "invalid FunctionBody"; break;
+			case 112: s = "invalid NamePattern"; break;
+			case 113: s = "invalid Pattern"; break;
+			case 114: s = "invalid BooleanPattern"; break;
+			case 115: s = "invalid TuplePattern"; break;
 			case 116: s = "invalid ComparisonPattern"; break;
-			case 117: s = "invalid Yield"; break;
-			case 118: s = "invalid FunctionExpr"; break;
-			case 119: s = "invalid TryCatch"; break;
-			case 120: s = "invalid Range"; break;
+			case 117: s = "invalid ComparisonPattern"; break;
+			case 118: s = "invalid Yield"; break;
+			case 119: s = "invalid FunctionExpr"; break;
+			case 120: s = "invalid TryCatch"; break;
 			case 121: s = "invalid Range"; break;
-			case 122: s = "invalid Unary"; break;
-			case 123: s = "invalid Literal"; break;
-			case 124: s = "invalid ApplicationArguments"; break;
+			case 122: s = "invalid Range"; break;
+			case 123: s = "invalid Unary"; break;
+			case 124: s = "invalid Literal"; break;
 			case 125: s = "invalid ApplicationArguments"; break;
-			case 126: s = "invalid Label"; break;
+			case 126: s = "invalid ApplicationArguments"; break;
 			case 127: s = "invalid Label"; break;
-			case 128: s = "invalid Name"; break;
-			case 129: s = "invalid String"; break;
-			case 130: s = "invalid Bool"; break;
-			case 131: s = "invalid Tuple"; break;
-			case 132: s = "invalid DyalectItem"; break;
+			case 128: s = "invalid Label"; break;
+			case 129: s = "invalid Name"; break;
+			case 130: s = "invalid String"; break;
+			case 131: s = "invalid Bool"; break;
+			case 132: s = "invalid Tuple"; break;
+			case 133: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

@@ -399,8 +399,6 @@ namespace Dyalect.Runtime.Types
                     (context, strObj) =>
                     {
                         var nm = strObj.GetString();
-                        if (nm is Builtins.GetItem) nm = Builtins.Get;
-                        if (nm is Builtins.SetItem) nm = Builtins.Set;
                         SetBuiltin(nm, null);
                         Members.Remove(name);
                         staticMembers.Remove(name);
@@ -520,8 +518,8 @@ namespace Dyalect.Runtime.Types
                 Builtins.Not => Func.Member(name, Not),
                 Builtins.BitNot => Support(SupportedOperations.BitNot) ? Func.Member(name, BitwiseNot) : null,
                 Builtins.Plus => Support(SupportedOperations.Plus) ? Func.Member(name, Plus) : null,
-                Builtins.Get or Builtins.GetItem => Support(SupportedOperations.Get) ? Func.Member(name, Get, -1, new Par("index")) : null,
-                Builtins.Set or Builtins.SetItem => Support(SupportedOperations.Set) ? Func.Member(name, Set, -1, new Par("index"), new Par("value")) : null,
+                Builtins.Get => Support(SupportedOperations.Get) ? Func.Member(name, Get, -1, new Par("index")) : null,
+                Builtins.Set => Support(SupportedOperations.Set) ? Func.Member(name, Set, -1, new Par("index"), new Par("value")) : null,
                 Builtins.Len => Support(SupportedOperations.Len) ? Func.Member(name, Length) : null,
                 Builtins.ToStr => Func.Member(name, ToString),
                 Builtins.Iterator => Support(SupportedOperations.Iter) ? Func.Member(name, GetIterator) : null,

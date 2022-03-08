@@ -364,7 +364,7 @@
 
 #test "Method: GetItem"
     var x = 11
-    func Integer.GetItem(index) { index }
+    func get Integer[index] { index }
     assert(11, 12[x])
 #endtest
 

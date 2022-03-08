@@ -29,15 +29,31 @@ namespace Dyalect.Compiler
 
                 if (node.TypeName is not null)
                 {
+                    if (node.IsIndexer)
+                    {
+                        if (node.IsStatic)
+                            AddError(CompilerError.IndexerStatic, node.Location);
+
+                        if (node.Setter && node.Parameters.Count is not 2)
+                            AddError(CompilerError.IndexerWrongArguments, node.Location);
+
+                        if (node.Getter && node.Parameters.Count is not 1)
+                            AddError(CompilerError.IndexerWrongArguments, node.Location);
+
+                        if (!node.Getter && !node.Setter)
+                            AddError(CompilerError.IndexerSetOrGet, node.Location);
+                    }
+
                     var realName = node.Name;
 
-                    if (!char.IsUpper(realName[0]) && Builtins.OperatorSymbols.IndexOf(realName[0]) == -1)
+                    if (realName != Builtins.Get && realName != Builtins.Set
+                        && !char.IsUpper(realName[0]) && !Builtins.OperatorSymbols.Contains(realName[0]))
                         AddError(CompilerError.MemberNameCamel, node.Location);
 
                     if (!node.IsStatic)
                         realName = GetMethodName(realName, node);
 
-                    if (node.Setter)
+                    if (node.Setter && !node.IsIndexer)
                         realName = Builtins.Setter(realName);
 
                     if (node.Name is Builtins.Has || (!node.IsStatic && node.Name is Builtins.Type))

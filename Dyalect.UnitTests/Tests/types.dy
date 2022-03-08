@@ -80,7 +80,7 @@
     func Bar.Length() {
         ini.data.Length()
     }
-    func Bar.GetItem(index) {
+    func get Bar[index] {
         ini.data[index]
     }
     var obj = Bar(1, 2, 3)
@@ -189,7 +189,7 @@
     func Cell.GetValue() {
         ini.val
     }
-    func Cell.GetItem(index) {
+    func get Cell[index] {
         if index is not 0 {
             throw "Index out of range."
         }
@@ -259,7 +259,7 @@
     static func Record.Record(values...) {
         Record.Make(values)
     }
-    func Record.GetItem(index) {
+    func get Record[index] {
         ini.fields[index]
     }
     var p = Record(values: (name: "John", age: 33))
@@ -300,14 +300,14 @@
     static func Point.Point(x, y) {
         Point.Make(x, y)
     }
-    func Point.GetItem(index) {
+    func get Point[index] {
         match index {
             0 or "x" => ini.x,
             1 or "y" => ini.y,
             _ => throw Error.IndexOutOfRange()
         }
     }
-    func Point.SetItem(index, value) {
+    func set Point[index, value] {
         match index {
             0 or "x" => ini.x = value,
             1 or "y" => ini.y = value,
@@ -476,13 +476,13 @@
     static func Foo.Foo(Integer x) {
         Foo.PrivateFoo(x)
     }
-    func Foo.GetItem(field) {
+    func get Foo[field] {
         match field {
             "x" => this.data,
             _ => Error.IndexOutOfRange()
         }
     }
-    func Foo.SetItem(field, Integer value) {
+    func set Foo[field, Integer value] {
         match field {
             "x" => this.data = value,
             _ => Error.IndexOutOfRange()
