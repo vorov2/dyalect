@@ -25,7 +25,7 @@
   * Add: _Add standard `setOutput` function_ ([Issue #554](https://github.com/vorov2/dyalect/issues/554), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#setOut))
 
 # 0.27.2
-  * Add: _New test unit engine_ ([Issue #550](https://github.com/vorov2/dyalect/issues/550)).
+  * Add: _New unit test engine_ ([Issue #550](https://github.com/vorov2/dyalect/issues/550)).
   * Fix: _Stack corruption_ ([Issue #557](https://github.com/vorov2/dyalect/issues/557)).
   * Fix: _Runtime crush_ ([Issue #559](https://github.com/vorov2/dyalect/issues/559)).
   * Fix: _It is possible to change a constant from an external module_ ([Issue #558](https://github.com/vorov2/dyalect/issues/558)).
