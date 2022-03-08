@@ -1,3 +1,6 @@
+# 0.29.1
+  * Fix: _Uppercase labels for tuples shouldn't be allowed_ ([Issue #583](https://github.com/vorov2/dyalect/issues/583)).
+
 # 0.29.0
   * Change: _Global refactoring of Dyalect internals and type system_ ([Issue #569](https://github.com/vorov2/dyalect/issues/569)).
   * Change: _Change field access syntax_ ([Issue #571](https://github.com/vorov2/dyalect/issues/571)).

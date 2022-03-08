@@ -273,4 +273,7 @@
   <data name="IndexerSetOrGet" xml:space="preserve">
     <value>Invalid definition of an indexer method - missing "set" or "get" modifier.</value>
   </data>
+  <data name="LabelOnlyCamel" xml:space="preserve">
+    <value>Tuple labels can't start with an uppercase letter.</value>
+  </data>
 </root>

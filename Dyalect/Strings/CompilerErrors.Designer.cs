@@ -223,6 +223,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tuple labels can&apos;t start with an uppercase letter..
+        /// </summary>
+        internal static string LabelOnlyCamel {
+            get {
+                return ResourceManager.GetString("LabelOnlyCamel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A type member name should start with a capital letter..
         /// </summary>
         internal static string MemberNameCamel {
