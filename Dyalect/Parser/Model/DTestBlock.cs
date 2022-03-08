@@ -6,6 +6,8 @@ namespace Dyalect.Parser.Model
     {
         public DTestBlock(Location loc) : base(NodeType.TestBlock, loc) { }
 
+        public string? GlobalError { get; set; }
+
         public string? FileName { get; set; }
 
         public string Name { get; init; } = null!;

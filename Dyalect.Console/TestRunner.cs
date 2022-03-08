@@ -91,7 +91,14 @@ namespace Dyalect
                 var res = DyParser.Parse(SourceBuffer.FromFile(file));
 
                 if (!res.Success)
-                    throw new DyBuildException(res.Messages);
+                {
+                    blocks.Add(new DTestBlock(default)
+                    {
+                        FileName = file,
+                        GlobalError = "Unable to process test file: " + string.Join(" ", res.Messages)
+                    });
+                    continue;
+                }
 
                 if (res.Messages.Any())
                     warns.AddRange(res.Messages);
@@ -112,6 +119,7 @@ namespace Dyalect
             if (testBlocks.Length == 0)
                 return;
 
+            var plusFails = false;
             var passed = 0;
             var failed = 0;
             var allCounter = 0;
@@ -127,7 +135,7 @@ namespace Dyalect
             }
             catch (ArgumentException)
             {
-                throw new Exception("Multiple initialization block in a test file.");
+                throw new Exception("Multiple initialization blocks in a test file.");
             }
 
             foreach (var block in testBlocks)
@@ -141,6 +149,14 @@ namespace Dyalect
                     currentFile = block.FileName;
                     PrintFileHeader(options, block.FileName!);
                     allCounter = 0;
+                }
+
+                if (block.GlobalError is not null)
+                {
+                    Printer.Error(block.GlobalError);
+                    failed++;
+                    plusFails = true;
+                    continue;
                 }
 
                 allCounter++;
@@ -192,7 +208,7 @@ namespace Dyalect
 
             Printer.LineFeed();
             Printer.Output("Total:");
-            Printer.Output($"{passed} passed, {failed} failed in {fileCounter} file(s)");
+            Printer.Output($"{passed} passed, {failed}{(plusFails ? "+" : "")} failed in {fileCounter} file(s)");
 
             if (options.AppVeyour)
                 Submit();
