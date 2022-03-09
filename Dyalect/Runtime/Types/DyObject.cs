@@ -24,11 +24,30 @@ namespace Dyalect.Runtime.Types
 
         public abstract object ToObject();
 
-        protected internal virtual DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            index.TypeId == DyType.Integer && index.GetInteger() == 0 ? this : ctx.IndexOutOfRange();
+        public virtual SupportedOperations Supports() => SupportedOperations.None;
+
+        protected internal virtual DyObject GetItem(DyObject index, ExecutionContext ctx)
+        {
+            object? retval;
+            
+            if (index.TypeId == DyType.Integer)
+                retval = GetItem(index.GetInteger());
+            else if (index.TypeId == DyType.String)
+                retval = GetItem(index.GetString());
+            else
+                return ctx.InvalidType(index);
+
+            if (retval is null)
+                return ctx.IndexOutOfRange(index);
+
+            return TypeConverter.ConvertFrom(retval);
+        }
 
         protected internal virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Set, ctx.RuntimeContext.Types[TypeId].TypeName);
+
+        protected internal virtual object? GetItem(string key) => null;
+        protected internal virtual object? GetItem(long index) => null;
 
         protected internal virtual bool HasItem(string name, ExecutionContext ctx) => false;
 

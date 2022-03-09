@@ -11,6 +11,8 @@ namespace Dyalect.Linker
 {
     public abstract class ForeignUnit : Unit
     {
+        private readonly Dictionary<Type, DyForeignTypeInfo> typeInfos = new();
+
         internal List<DyForeignTypeInfo> Types { get; }
 
         internal List<DyObject> Values { get; } = new();
@@ -22,8 +24,11 @@ namespace Dyalect.Linker
             RuntimeContext = null!;
             Types = new();
             InitializeMembers();
+            InitializeTypes();
             UnitIds.Add(0); //Self reference, to mimic the behavior of regular units
         }
+
+        internal T GetTypeInfo<T>() where T : DyForeignTypeInfo => (T)typeInfos[typeof(T)];
 
         protected void Add(string name, DyObject obj)
         {
@@ -31,12 +36,16 @@ namespace Dyalect.Linker
             Values.Add(obj);
         }
 
-        protected void AddType(DyForeignTypeInfo typeInfo)
+        protected T AddType<T>() where T : DyForeignTypeInfo, new()
         {
-            Types.Add(typeInfo);
+            var t = new T();
+            typeInfos.Add(typeof(T), t);
+            Types.Add(t);
+            Add(t.TypeName, t);
+            return t;
         }
 
-        protected void AddReference<T>() where T : ForeignUnit
+        protected Reference AddReference<T>() where T : ForeignUnit
         {
             var ti = typeof(T);
 
@@ -47,9 +56,8 @@ namespace Dyalect.Linker
             var rf = new Reference(attr.Name, null, asmName, default, null);
             UnitIds.Add(-1); //Real handles are added by a linker
             References.Add(rf);
+            return rf;
         }
-
-        internal void Modify(int id, DyObject obj) => Values[id] = obj;
 
         public void Initialize(ExecutionContext ctx)
         {
@@ -64,6 +72,8 @@ namespace Dyalect.Linker
         }
 
         protected virtual void Execute(ExecutionContext ctx) { }
+
+        protected virtual void InitializeTypes() { }
 
         protected virtual void InitializeMembers()
         {

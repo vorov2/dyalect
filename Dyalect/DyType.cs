@@ -42,7 +42,8 @@ namespace Dyalect
                 new DyTupleTypeInfo(),
                 new DyDictionaryTypeInfo(),
                 new DySetTypeInfo(),
-                new DyErrorTypeInfo()
+                new DyErrorTypeInfo(),
+                new DyObjectTypeInfo()
             };
 
         public static int GetTypeCodeByName(string name) =>
@@ -62,9 +63,9 @@ namespace Dyalect
                 DyTypeNames.Array => Array,
                 DyTypeNames.Iterator => Iterator,
                 DyTypeNames.Dictionary => Dictionary,
-                DyTypeNames.Object => Object,
                 DyTypeNames.Set => Set,
                 DyTypeNames.Error => Error,
+                DyTypeNames.Object => Object,
                 _ => default
             }; 
 
@@ -85,9 +86,9 @@ namespace Dyalect
                 Array => DyTypeNames.Array,
                 Iterator => DyTypeNames.Iterator,
                 Dictionary => DyTypeNames.Dictionary,
-                Object => DyTypeNames.Object,
                 Set => DyTypeNames.Set,
                 Error => DyTypeNames.Error,
+                Object => DyTypeNames.Object,
                 _ => code.ToString(),
             };
     }
@@ -111,9 +112,9 @@ namespace Dyalect
                 Iterator,
                 Tuple,
                 Dictionary,
-                Object,
                 Set,
-                Error
+                Error,
+                Object
             };
 
         public const string Nil = "Nil";
@@ -130,10 +131,8 @@ namespace Dyalect
         public const string Iterator = "Iterator";
         public const string Tuple = "Tuple";
         public const string Dictionary = "Dictionary";
-        public const string Object = "Object";
         public const string Set = "Set";
         public const string Error = "Error";
-        public const string Class = "Class";
-        public const string Foreign = "Foreign";
+        public const string Object = "Object";
     }
 }

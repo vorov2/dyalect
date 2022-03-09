@@ -54,8 +54,9 @@ namespace Dyalect.Linker
                         foreach (var rf in unit.References)
                         {
                             var res = Link(self, rf);
-                            if (!res.Success)
+                            if (!res.Success || res.Value is null)
                                 return res;
+                            rf.Instance = (ForeignUnit)res.Value;
                         }
                 }
                 else
