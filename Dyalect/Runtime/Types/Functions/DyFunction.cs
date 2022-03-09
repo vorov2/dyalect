@@ -75,9 +75,7 @@ namespace Dyalect.Runtime.Types
                     newLocals[VarArgIndex] = new DyTuple(arr.Values);
                 }
                 else if (o.TypeId != DyType.Tuple)
-                {
-                    newLocals[VarArgIndex] = DyTuple.Create(ctx, o);
-                }
+                    newLocals[VarArgIndex] = new DyTuple(new DyObject[] { o } );
             }
 
             DyMachine.FillDefaults(newLocals, this, ctx);

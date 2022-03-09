@@ -15,10 +15,7 @@ namespace Dyalect.Runtime.Types
         public DyTuple(DyObject[] values) : base(DyType.Tuple) =>
             Values = values ?? throw new DyException("Unable to create a tuple with no values.");
 
-        protected DyTuple(DyObject[] values, int typeId) : base(DyType.Tuple) =>
-            Values = values ?? throw new DyException("Unable to create a tuple with no values.");
-
-        public static DyTuple Create(ExecutionContext ctx, params DyObject[] args) => new(args);
+        public DyTuple(params DyLabel[] labels) : this((DyObject[])labels) { }
 
         public Dictionary<DyObject, DyObject> ConvertToDictionary(ExecutionContext ctx)
         {
