@@ -19,7 +19,7 @@
     var res = match (1,2,"str") {
         (1, 2, "strs") => "wrong",
         [1, 2, "str"] => "right?",
-        (1, 2, "str") => "right!"2e3e2
+        (1, 2, "str") => "right!"
     }
     assert("right?", res)
 #endtest

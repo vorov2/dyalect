@@ -7,7 +7,7 @@ namespace Dyalect.Linker
 {
     partial class DyLinker
     {
-        private Unit? LinkForeignModule(Unit self, Reference mod)
+        private ForeignUnit? LinkForeignModule(Unit self, Reference mod)
         {
             if (!FindModuleExact(self.FileName!, mod.DllName!, mod, out var path))
                 return null;
@@ -37,7 +37,7 @@ namespace Dyalect.Linker
                     return null;
                 }
 
-                if (module is not Unit unit)
+                if (module is not ForeignUnit unit)
                 {
                     AddError(LinkerError.InvalidAssemblyModule, mod.SourceFileName!, mod.SourceLocation,
                         mod.ModuleName, mod.DllName!);

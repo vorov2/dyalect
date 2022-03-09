@@ -1,4 +1,5 @@
-﻿using Dyalect.Parser;
+﻿using Dyalect.Linker;
+using Dyalect.Parser;
 using System;
 
 namespace Dyalect.Compiler
@@ -38,5 +39,7 @@ namespace Dyalect.Compiler
         public Location SourceLocation { get; }
 
         public string? SourceFileName { get; }
+
+        public ForeignUnit? Instance { get; internal set; }
     }
 }

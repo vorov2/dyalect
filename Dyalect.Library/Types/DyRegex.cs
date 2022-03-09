@@ -1,91 +1,183 @@
-﻿//using Dyalect.Compiler;
-//using Dyalect.Debug;
-//using Dyalect.Runtime;
-//using Dyalect.Runtime.Types;
-//using System.Text.RegularExpressions;
+﻿using Dyalect.Debug;
+using Dyalect.Runtime;
+using Dyalect.Runtime.Types;
+using System.Text.RegularExpressions;
 
-//namespace Dyalect.Library.Types
-//{
-//    public sealed class DyRegex : DyForeignObject<DyRegexTypeInfo>
-//    {
-//        internal readonly Regex Regex;
+namespace Dyalect.Library.Types
+{
+    public sealed class DyRegex : DyForeignObject
+    {
+        internal readonly Regex Regex;
 
-//        public DyRegex(RuntimeContext rtx, Unit unit, string regex) : base(rtx, unit)
-//        {
-//            this.Regex = new Regex(regex, RegexOptions.Compiled);
-//        }
+        public DyRegex(DyForeignTypeInfo typeInfo, string regex) : base(typeInfo)
+        {
+            Regex = new Regex(regex, RegexOptions.Compiled);
+        }
 
-//        public override object ToObject() => Regex;
+        public override object ToObject() => Regex;
 
-//        public override DyObject Clone() => this;
-//    }
+        public override DyObject Clone() => this;
+    }
 
-//    //public sealed class DyRegexMatch : DyObject
-//    //{
-//    //    internal readonly Match Match;
+    public class DyRegexCapture : DyObject
+    {
+        private readonly Capture capture;
 
-//    //    public DyRegexMatch(int typeCode, Match match) : base(typeCode)
-//    //    {
-//    //        this.Match = match;
-//    //    }
+        public DyRegexCapture(Capture capture) : base(DyType.Object) => this.capture = capture;
 
-//    //    protected override bool GetBool() => Match.Success;
+        public override SupportedOperations Supports() => SupportedOperations.Get;
 
-//    //    public override object ToObject() => Match;
+        public override int GetHashCode() => capture.GetHashCode();
 
-//    //    public override DyObject Clone() => this;
-//    //}
+        public override object ToObject() => capture;
 
-//    public sealed class DyRegexTypeInfo : ForeignTypeInfo
-//    {
-//        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
-//        {
-//            return new DyString(((DyRegex)arg).Regex.ToString());
-//        }
+        public override string ToString() => capture.Value;
 
-//        public override string TypeName => "Regex";
+        protected internal override object? GetItem(string key) =>
+            key switch
+            {
+                "index" => capture.Index,
+                "length" => capture.Length,
+                "value" => capture.Value,
+                _ => null
+            };
+    }
 
-//        protected override SupportedOperations GetSupportedOperations() =>
-//            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+    public sealed class DyRegexMatch : DyRegexCapture
+    {
+        private readonly Match match;
 
-//        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
-//        {
-//            return left is DyRegex a && right is DyRegex b && a.Regex.ToString() == b.Regex.ToString()
-//                ? DyBool.True : DyBool.False;
-//        }
+        public DyRegexMatch(Match match) : base(match) => this.match = match;
 
-//        private DyObject Match(ExecutionContext ctx, DyObject self, DyObject input, DyObject start, DyObject len)
-//        {
-//            if (input.TypeId != DyType.String)
-//                return ctx.InvalidType(input);
+        protected internal override bool GetBool() => match.Success;
 
-//            var str = (string)input.ToObject();
-//            var istart = (int)(long)start.ToObject();
-//            var ilen = len.TypeId == DyType.Nil ? str.Length : (int)(long)len.ToObject();
-//            var rx = ((DyRegex)self).Regex;
+        private DyTuple GetCaptures()
+        {
+            var xs = new FastList<DyRegexCapture>();
 
-//            if (istart + ilen > str.Length)
-//                return ctx.IndexOutOfRange();
+            for (var i = 0; i < match.Captures.Count; i++)
+                xs.Add(new DyRegexCapture(match.Captures[i]));
 
-//            var m = rx.Match(str, istart, ilen);
-//            //return new DyRegexMatch(m);
-//            return null!;
-//        }
+            return new DyTuple(xs.ToArray());
+        }
 
-//        //private DyObject New(ExecutionContext ctx, DyObject arg)
-//        //{
-//        //    if (arg.TypeId != DyType.String)
-//        //        return ctx.InvalidType(arg);
+        protected internal override object? GetItem(string key) =>
+            key switch
+            {
+                "name" => match.Name,
+                "success" => match.Success,
+                "captures" => GetCaptures(),
+                _ => base.GetItem(key)
+            };
+    }
 
-//        //    return new DyRegex((string)arg.ToObject());
-//        //}
+    public sealed class DyRegexTypeInfo : DyForeignTypeInfo
+    {
+        public override string TypeName => "Regex";
 
-//        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
-//        {
-//            //if (name == "Regex")
-//            //    return Func.Static(name, New, -1, new Par("pattern"));
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        {
+            return new DyString(((DyRegex)arg).Regex.ToString());
+        }
 
-//            return base.InitializeStaticMember(name, ctx);
-//        }
-//    }
-//}
+        protected override SupportedOperations GetSupportedOperations() =>
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            return left is DyRegex a && right is DyRegex b && a.Regex.ToString() == b.Regex.ToString()
+                ? DyBool.True : DyBool.False;
+        }
+
+        private DyObject StaticReplace(ExecutionContext ctx, DyObject pattern, DyObject input, DyObject replacement)
+        {
+            if (input.TypeId != DyType.String)
+                return ctx.InvalidType(input);
+
+            if (replacement.TypeId != DyType.String)
+                return ctx.InvalidType(replacement);
+
+            if (pattern.TypeId != DyType.String)
+                return ctx.InvalidType(pattern);
+
+            var str = Regex.Replace(input.GetString(), pattern.GetString(), replacement.GetString());
+            return new DyString(str);
+        }
+
+        private DyObject Replace(ExecutionContext ctx, DyObject self, DyObject input, DyObject replacement)
+        {
+            if (input.TypeId != DyType.String)
+                return ctx.InvalidType(input);
+
+            if (replacement.TypeId != DyType.String)
+                return ctx.InvalidType(replacement);
+
+            var rx = ((DyRegex)self).Regex;
+            var str = rx.Replace(input.GetString(), replacement.GetString());
+            return new DyString(str);
+        }
+
+        private DyObject Match(ExecutionContext ctx, DyObject self, DyObject input, DyObject start, DyObject len)
+        {
+            if (input.TypeId != DyType.String)
+                return ctx.InvalidType(input);
+
+            var str = input.GetString();
+            var istart = (int)(long)start.ToObject();
+            var ilen = len.TypeId == DyType.Nil ? str.Length : (int)(long)len.ToObject();
+            var rx = ((DyRegex)self).Regex;
+
+            if (istart + ilen > str.Length)
+                return ctx.IndexOutOfRange();
+
+            var m = rx.Match(str, istart, ilen);
+            return new DyRegexMatch(m);
+        }
+
+        private DyObject Matches(ExecutionContext ctx, DyObject self, DyObject input, DyObject start)
+        {
+            if (input.TypeId != DyType.String)
+                return ctx.InvalidType(input);
+
+            var str = (string)input.ToObject();
+            var istart = (int)(long)start.ToObject();
+            var rx = ((DyRegex)self).Regex;
+
+            if (istart > str.Length)
+                return ctx.IndexOutOfRange();
+
+            var ms = rx.Matches(str, istart);
+            var xs = new FastList<DyRegexMatch>();
+
+            for (var i = 0; i < ms.Count; i++)
+                xs.Add(new DyRegexMatch(ms[i]));
+
+            return new DyTuple(xs.ToArray());
+        }
+
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+            name switch
+            {
+                "Match" => Func.Member(name, Match, -1, new Par("input"), new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
+                "Matches" => Func.Member(name, Matches, -1, new Par("input"), new Par("start", DyInteger.Zero)),
+                "Replace" => Func.Static(name, Replace, -1, new Par("input"), new Par("replacement")),
+                _ => base.InitializeInstanceMember(self, name, ctx)
+            };
+
+        private DyObject New(ExecutionContext ctx, DyObject arg)
+        {
+            if (arg.TypeId != DyType.String)
+                return ctx.InvalidType(arg);
+
+            return new DyRegex(this, arg.GetString());
+        }
+
+        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
+            name switch
+            {
+                "Regex" => Func.Static(name, New, -1, new Par("pattern")),
+                "Replace" => Func.Static(name, StaticReplace, -1, new Par("pattern"), new Par("input"), new Par("replacement")),
+                _ => base.InitializeStaticMember(name, ctx)
+            };
+    }
+}

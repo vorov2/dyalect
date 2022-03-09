@@ -7,40 +7,10 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyTypeInfo : DyObject
     {
-        [Flags]
-        public enum SupportedOperations
-        {
-            None = 0xFF,
-            Add = 0x01,
-            Sub = 0x02,
-            Mul = 0x04,
-            Div = 0x08,
-            Rem = 0x10,
-            Shl = 0x20,
-            Shr = 0x40,
-            And = 0x80,
-            Or  = 0x100,
-            Xor = 0x200,
-            Eq  = 0x400,
-            Neq = 0x800,
-            Gt  = 0x1000,
-            Lt  = 0x2000,
-            Gte = 0x4000,
-            Lte = 0x8000,
-            Neg = 0x10000,
-            BitNot = 0x20000,
-            Bit =  0x40000,
-            Plus = 0x80000,
-            Not =  0x100000,
-            Get =  0x200000,
-            Set =  0x400000,
-            Len =  0x800000,
-            Iter = 0x1000000
-        }
-
         protected abstract SupportedOperations GetSupportedOperations();
 
-        private bool Support(SupportedOperations op) => (GetSupportedOperations() & op) == op;
+        private bool Support(DyObject self, SupportedOperations op) => (GetSupportedOperations() & op) == op
+            || (self.Supports() & op) == op;
 
         public override object ToObject() => this;
 
@@ -320,8 +290,7 @@ namespace Dyalect.Runtime.Types
         #region Other Operations
         //x[y]
         private DyFunction? get;
-        protected virtual DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Get, ctx.RuntimeContext.Types[self.TypeId].TypeName);
+        protected virtual DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
         public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
         {
             if (get is not null)
@@ -498,31 +467,31 @@ namespace Dyalect.Runtime.Types
         private DyFunction? InitializeInstanceMembers(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                Builtins.Add => Support(SupportedOperations.Add) ? Func.Member(name, Add, -1, new Par("other")) : null,
-                Builtins.Sub => Support(SupportedOperations.Sub) ? Func.Member(name, Sub, -1, new Par("other")) : null,
-                Builtins.Mul => Support(SupportedOperations.Mul) ? Func.Member(name, Mul, -1, new Par("other")) : null,
-                Builtins.Div => Support(SupportedOperations.Div) ? Func.Member(name, Div, -1, new Par("other")) : null,
-                Builtins.Rem => Support(SupportedOperations.Rem) ? Func.Member(name, Rem, -1, new Par("other")) : null,
-                Builtins.Shl => Support(SupportedOperations.Shl) ? Func.Member(name, ShiftLeft, -1, new Par("other")) : null,
-                Builtins.Shr => Support(SupportedOperations.Shr) ? Func.Member(name, ShiftRight, -1, new Par("other")) : null,
-                Builtins.And => Support(SupportedOperations.And) ? Func.Member(name, And, -1, new Par("other")) : null,
-                Builtins.Or => Support(SupportedOperations.Or) ? Func.Member(name, Or, -1, new Par("other")) : null,
-                Builtins.Xor => Support(SupportedOperations.Xor) ? Func.Member(name, Xor, -1, new Par("other")) : null,
+                Builtins.Add => Support(self, SupportedOperations.Add) ? Func.Member(name, Add, -1, new Par("other")) : null,
+                Builtins.Sub => Support(self, SupportedOperations.Sub) ? Func.Member(name, Sub, -1, new Par("other")) : null,
+                Builtins.Mul => Support(self, SupportedOperations.Mul) ? Func.Member(name, Mul, -1, new Par("other")) : null,
+                Builtins.Div => Support(self, SupportedOperations.Div) ? Func.Member(name, Div, -1, new Par("other")) : null,
+                Builtins.Rem => Support(self, SupportedOperations.Rem) ? Func.Member(name, Rem, -1, new Par("other")) : null,
+                Builtins.Shl => Support(self, SupportedOperations.Shl) ? Func.Member(name, ShiftLeft, -1, new Par("other")) : null,
+                Builtins.Shr => Support(self, SupportedOperations.Shr) ? Func.Member(name, ShiftRight, -1, new Par("other")) : null,
+                Builtins.And => Support(self, SupportedOperations.And) ? Func.Member(name, And, -1, new Par("other")) : null,
+                Builtins.Or => Support(self, SupportedOperations.Or) ? Func.Member(name, Or, -1, new Par("other")) : null,
+                Builtins.Xor => Support(self, SupportedOperations.Xor) ? Func.Member(name, Xor, -1, new Par("other")) : null,
                 Builtins.Eq => Func.Member(name, Eq, -1, new Par("other")),
                 Builtins.Neq => Func.Member(name, Neq, -1, new Par("other")),
-                Builtins.Gt => Support(SupportedOperations.Gt) ? Func.Member(name, Gt, -1, new Par("other")) : null,
-                Builtins.Lt => Support(SupportedOperations.Lt) ? Func.Member(name, Lt, -1, new Par("other")) : null,
-                Builtins.Gte => Support(SupportedOperations.Gte) ? Func.Member(name, Gte, -1, new Par("other")) : null,
-                Builtins.Lte => Support(SupportedOperations.Lte) ? Func.Member(name, Lte, -1, new Par("other")) : null,
-                Builtins.Neg => Support(SupportedOperations.Neg) ? Func.Member(name, Neg) : null,
+                Builtins.Gt => Support(self, SupportedOperations.Gt) ? Func.Member(name, Gt, -1, new Par("other")) : null,
+                Builtins.Lt => Support(self, SupportedOperations.Lt) ? Func.Member(name, Lt, -1, new Par("other")) : null,
+                Builtins.Gte => Support(self, SupportedOperations.Gte) ? Func.Member(name, Gte, -1, new Par("other")) : null,
+                Builtins.Lte => Support(self, SupportedOperations.Lte) ? Func.Member(name, Lte, -1, new Par("other")) : null,
+                Builtins.Neg => Support(self, SupportedOperations.Neg) ? Func.Member(name, Neg) : null,
                 Builtins.Not => Func.Member(name, Not),
-                Builtins.BitNot => Support(SupportedOperations.BitNot) ? Func.Member(name, BitwiseNot) : null,
-                Builtins.Plus => Support(SupportedOperations.Plus) ? Func.Member(name, Plus) : null,
-                Builtins.Get => Support(SupportedOperations.Get) ? Func.Member(name, Get, -1, new Par("index")) : null,
-                Builtins.Set => Support(SupportedOperations.Set) ? Func.Member(name, Set, -1, new Par("index"), new Par("value")) : null,
-                Builtins.Len => Support(SupportedOperations.Len) ? Func.Member(name, Length) : null,
+                Builtins.BitNot => Support(self, SupportedOperations.BitNot) ? Func.Member(name, BitwiseNot) : null,
+                Builtins.Plus => Support(self, SupportedOperations.Plus) ? Func.Member(name, Plus) : null,
+                Builtins.Get => Support(self, SupportedOperations.Get) ? Func.Member(name, Get, -1, new Par("index")) : null,
+                Builtins.Set => Support(self, SupportedOperations.Set) ? Func.Member(name, Set, -1, new Par("index"), new Par("value")) : null,
+                Builtins.Len => Support(self, SupportedOperations.Len) ? Func.Member(name, Length) : null,
                 Builtins.ToStr => Func.Member(name, ToString),
-                Builtins.Iterator => Support(SupportedOperations.Iter) ? Func.Member(name, GetIterator) : null,
+                Builtins.Iterator => Support(self, SupportedOperations.Iter) ? Func.Member(name, GetIterator) : null,
                 Builtins.Clone => Func.Member(name, Clone),
                 Builtins.Has => Func.Member(name, Has, -1, new Par("member")),
                 Builtins.Type => Func.Member(name, (ct, o) => ct.RuntimeContext.Types[o.TypeId]),
