@@ -1,5 +1,5 @@
 # 0.29.2
-  * Fix: _Regression for foreign module import_ ([Issue #587](https://github.com/vorov2/dyalect/issues/587)).
+  * Fix: _Regression for foreign module import_ ([Issue #587](https://github.com/vorov2/dyalect/issues/587)). 
 
 # 0.29.1
   * Fix: _Uppercase labels for tuples shouldn't be allowed_ ([Issue #583](https://github.com/vorov2/dyalect/issues/583)).
