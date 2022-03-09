@@ -80,7 +80,7 @@
 
         InvalidRethrow = 238,
 
-        // = 239,
+        LabelOnlyCamel = 239,
 
         PositionalArgumentAfterKeyword = 240,
 

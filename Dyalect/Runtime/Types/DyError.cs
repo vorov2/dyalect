@@ -55,9 +55,6 @@ namespace Dyalect.Runtime.Types
                     return str;
             }
 
-            if (DataItems is not null)
-                return string.Join(",", DataItems);
-
             return errorCode;
         }
 

@@ -1227,16 +1227,16 @@ PRODUCTIONS
         ).
 
     Label<out DNode node> =
-        (. bool mut = false; node = null; var name = ""; .)
+        (. bool mut = false; node = null; var name = ""; var fromStr = false; .)
         (
             [ "var" (. mut = true; .) | "let" ]
-            ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
+            ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); fromStr = true; .) )
             ":" (. var ot = t; .)
             (
                   IF (IsFunction()) FunctionExpr<out node>
                 | Is<out node>
             )
-            (. node = new DLabelLiteral(ot) { Mutable = mut, Label = name, Expression = node }; .)
+            (. node = new DLabelLiteral(ot) { Mutable = mut, Label = name, FromString = fromStr, Expression = node }; .)
         ).
 
     Base<out DNode node> =

@@ -10,6 +10,8 @@ namespace Dyalect.Parser.Model
 
         public string Label { get; init; } = null!;
 
+        public bool FromString{ get; init; }
+
         public DNode Expression { get; init; } = null!;
 
         protected internal override string? GetName() => Label;
@@ -18,8 +20,12 @@ namespace Dyalect.Parser.Model
         {
             if (Mutable)
                 sb.Append("var ");
-            
-            sb.Append(Label);
+
+            if (FromString)
+                sb.Append(StringUtil.Escape(Label));
+            else
+                sb.Append(Label);
+
             sb.Append(": ");
             Expression?.ToString(sb);
         }

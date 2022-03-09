@@ -9,9 +9,9 @@ namespace Dyalect.Runtime
 {
     public static partial class DyMachine
     {
-        private const int MAX_NESTED_CALLS = 100;
+        private const int MAX_NESTED_CALLS = 200;
 
-        private static DyNativeFunction Global(int unitId, ExecutionContext ctx) => new(null, unitId, 0, FastList<DyObject[]>.Empty, -1);
+        private static DyNativeFunction Global(int unitId) => new(null, unitId, 0, FastList<DyObject[]>.Empty, -1);
 
         public static ExecutionContext CreateExecutionContext(UnitComposition composition) =>
             new(new(), new(composition));
@@ -58,7 +58,7 @@ namespace Dyalect.Runtime
 
             ctx.CatchMarks.Push(null!);
             ctx.RuntimeContext.Units[unitId] = ctx.RuntimeContext.Units[unitId] ?? new DyObject[lay0.Size];
-            return ExecuteWithData(Global(unitId, ctx), Array.Empty<DyObject>(), ctx);
+            return ExecuteWithData(Global(unitId), Array.Empty<DyObject>(), ctx);
         }
 
         internal static DyObject ExecuteWithData(DyNativeFunction function, DyObject[] locals, ExecutionContext ctx)
@@ -112,6 +112,7 @@ namespace Dyalect.Runtime
                         if (evalStack.Size is > 1 or 0)
                             throw new DyRuntimeException(RuntimeErrors.StackCorrupted_0);
                         ctx.RuntimeContext.Units[function.UnitId] = locals!;
+                        ctx.CallCnt--;
                         ctx.UnitId = ctx.CallerUnitId;
                         return evalStack.Pop();
                     case OpCode.Pop:
@@ -420,7 +421,10 @@ namespace Dyalect.Runtime
                             function.CatchMarks = ctx.CatchMarks.Pop();
 
                             if (ReferenceEquals(cp, Caller.External))
+                            {
+                                ctx.CallCnt--;
                                 return evalStack.Pop();
+                            }
 
                             cp.EvalStack.Push(evalStack.Pop());
                             function = cp.Function;
@@ -432,7 +436,10 @@ namespace Dyalect.Runtime
                             goto CYCLE;
                         }
                         else
+                        {
+                            ctx.CallCnt--;
                             return evalStack.Pop();
+                        }
                     case OpCode.Brterm:
                         if (ReferenceEquals(evalStack.Peek(), DyNil.Terminator))
                             offset = op.Data;

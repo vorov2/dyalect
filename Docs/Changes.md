@@ -1,3 +1,8 @@
+# 0.29.1
+  * Fix: _Uppercase labels for tuples shouldn't be allowed_ ([Issue #583](https://github.com/vorov2/dyalect/issues/583)).
+  * Fix: _Custom errors are not correctly serialized to string_ ([Issue #584](https://github.com/vorov2/dyalect/issues/584)).
+  * Fix: _Stack overflow detection can incorrectly break execution_ ([Issue #585](https://github.com/vorov2/dyalect/issues/585)).
+
 # 0.29.0
   * Change: _Global refactoring of Dyalect internals and type system_ ([Issue #569](https://github.com/vorov2/dyalect/issues/569)).
   * Change: _Change field access syntax_ ([Issue #571](https://github.com/vorov2/dyalect/issues/571)).
@@ -20,7 +25,7 @@
   * Add: _Add standard `setOutput` function_ ([Issue #554](https://github.com/vorov2/dyalect/issues/554), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#setOut))
 
 # 0.27.2
-  * Add: _New test unit engine_ ([Issue #550](https://github.com/vorov2/dyalect/issues/550)).
+  * Add: _New unit test engine_ ([Issue #550](https://github.com/vorov2/dyalect/issues/550)).
   * Fix: _Stack corruption_ ([Issue #557](https://github.com/vorov2/dyalect/issues/557)).
   * Fix: _Runtime crush_ ([Issue #559](https://github.com/vorov2/dyalect/issues/559)).
   * Fix: _It is possible to change a constant from an external module_ ([Issue #558](https://github.com/vorov2/dyalect/issues/558)).

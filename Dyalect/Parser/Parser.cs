@@ -1781,7 +1781,7 @@ namespace Dyalect.Parser
 	}
 
 	void Label(out DNode node) {
-		bool mut = false; node = null; var name = ""; 
+		bool mut = false; node = null; var name = ""; var fromStr = false; 
 		if (la.kind == 10 || la.kind == 11) {
 			if (la.kind == 10) {
 				Get();
@@ -1795,7 +1795,7 @@ namespace Dyalect.Parser
 			name = t.val; 
 		} else if (la.kind == 5) {
 			Get();
-			name = ParseSimpleString(); 
+			name = ParseSimpleString(); fromStr = true; 
 		} else SynErr(129);
 		Expect(27);
 		var ot = t; 
@@ -1804,7 +1804,7 @@ namespace Dyalect.Parser
 		} else if (StartOf(10)) {
 			Is(out node);
 		} else SynErr(130);
-		node = new DLabelLiteral(ot) { Mutable = mut, Label = name, Expression = node }; 
+		node = new DLabelLiteral(ot) { Mutable = mut, Label = name, FromString = fromStr, Expression = node }; 
 	}
 
 	void Name(out DNode node) {

@@ -502,6 +502,9 @@ namespace Dyalect.Compiler
                         Build(label.Expression, hints.Append(Push), ctx);
                         cw.Tag(label.Label);
 
+                        if (char.IsUpper(label.Label[0]) && !label.FromString)
+                            AddError(CompilerError.LabelOnlyCamel, label.Location);
+
                         if (label.Mutable)
                             cw.Mut();
                     }
