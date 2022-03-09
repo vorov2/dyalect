@@ -1,6 +1,6 @@
 # 0.29.1
   * Fix: _Uppercase labels for tuples shouldn't be allowed_ ([Issue #583](https://github.com/vorov2/dyalect/issues/583)).
-  * Fix: _Custom error are not correctly serialized to string_ ([Issue #584](https://github.com/vorov2/dyalect/issues/584)).
+  * Fix: _Custom errors are not correctly serialized to string_ ([Issue #584](https://github.com/vorov2/dyalect/issues/584)).
   * Fix: _Stack overflow detection can incorrectly break execution_ ([Issue #585](https://github.com/vorov2/dyalect/issues/585)).
 
 # 0.29.0
