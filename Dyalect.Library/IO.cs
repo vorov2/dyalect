@@ -11,7 +11,7 @@ namespace Dyalect.Library
     [DyUnit("io")]
     public sealed class IOModule : ForeignUnit
     {
-        private readonly Reference core;
+        private readonly Reference<Core> core;
 
         public IOModule()
         {
@@ -40,10 +40,10 @@ namespace Dyalect.Library
         [Function("readAllBytes")]
         public DyObject ReadAllBytes(ExecutionContext ctx, DyObject arg)
         {
-            if (arg.TypeId == DyType.String)
+            if (arg.TypeId != DyType.String)
                 return ctx.InvalidType(arg);
 
-            return ((Core)core.Instance!).ByteArray.Create(File.ReadAllBytes((string)arg.ToObject()));
+            return core.Value.ByteArray.Create(File.ReadAllBytes(arg.GetString()));
         }
 
         [Function("writeAllBytes")]

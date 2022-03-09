@@ -45,7 +45,7 @@ namespace Dyalect.Linker
             return t;
         }
 
-        protected Reference AddReference<T>() where T : ForeignUnit
+        protected Reference<T> AddReference<T>() where T : ForeignUnit
         {
             var ti = typeof(T);
 
@@ -56,7 +56,7 @@ namespace Dyalect.Linker
             var rf = new Reference(attr.Name, null, asmName, default, null);
             UnitIds.Add(-1); //Real handles are added by a linker
             References.Add(rf);
-            return rf;
+            return new Reference<T>(rf);
         }
 
         public void Initialize(ExecutionContext ctx)
