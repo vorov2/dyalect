@@ -921,7 +921,7 @@ PRODUCTIONS
         .)
         (
             (. functions.Push(f); .)
-            "=>" Expr<out var exp>
+            "?" Expr<out var exp>
             (. f.Body = exp; functions.Pop(); .)
         ).
 

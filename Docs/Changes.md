@@ -1,3 +1,6 @@
+# 0.31.0
+  * Add: _Consider shortcut syntax for parameterless lambda_ ([Issue #591](https://github.com/vorov2/dyalect/issues/591)).
+
 # 0.30.0
   * Change: _Referencing modules from stdlib_ ([Issue #502](https://github.com/vorov2/dyalect/issues/502)).
   * Add: _Simplify tuple construction from C# code_ ([Issue #588](https://github.com/vorov2/dyalect/issues/588)).
