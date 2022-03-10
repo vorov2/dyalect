@@ -13,8 +13,8 @@ namespace Dyalect.Linker
         private UnitComposition? composition;
         private int? startOffset;
 
-        private Dictionary<Reference, Unit>? backupUnitMap;
-        private Dictionary<string, Dictionary<string, Type>>? backupAssemblyMap;
+        private Dictionary<Guid, Unit>? backupUnitMap;
+        private Dictionary<string, Dictionary<string, ForeignUnit>>? backupAssemblyMap;
         private List<Unit>? backupUnits;
 
         public DyIncrementalLinker(FileLookup lookup, BuilderOptions options) : base(lookup, options) { }

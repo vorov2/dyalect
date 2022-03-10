@@ -65,7 +65,7 @@ namespace Dyalect.Library.Types
 
         private DyObject Failure(ExecutionContext ctx, DyObject arg) => new DyResult(this, "Failure", arg);
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "Success")
                 return Func.Static(name, Success, -1, new Par("arg", DyNil.Instance));

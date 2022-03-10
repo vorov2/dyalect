@@ -129,7 +129,7 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(obj);
         }
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "Max" => Func.Static(name, _ => DyChar.Max),

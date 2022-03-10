@@ -1,5 +1,4 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Library.Types;
+﻿using Dyalect.Library.Types;
 using Dyalect.Linker;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;

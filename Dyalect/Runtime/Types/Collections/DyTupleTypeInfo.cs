@@ -220,7 +220,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "Sort" => Func.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),

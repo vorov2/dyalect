@@ -476,7 +476,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "String" => Func.Static(name, Concat, 0, new Par("values", true)),

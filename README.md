@@ -1,13 +1,13 @@
-# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.29-blue.svg)
+# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.30-blue.svg)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
 ![AppVeyor tests](https://img.shields.io/appveyor/tests/vorov2/dyalect.svg)
 
 :blue_book: [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
 
-Dyalect is a dynamic programming language for .NET Core platform.
+Dyalect is a dynamic programming language for .NET platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short) is
-written in C# and has zero dependencies except for standard .NET Core
+written in C# and has zero dependencies except for standard .NET
 libraries, which means that it can seamlessly run on Windows, MacOS
 and Linux. Moreover you can use the same binaries on any of these 
 platforms!

@@ -2,9 +2,12 @@
 {
     internal static class Builtins
     {
-        public static string Setter(string name) => $"__set_{name}";
+        private const string SET = "__set_";
+        public static string Setter(string name) => $"{SET}{name}";
+        public static bool IsSetter(string name) => name.StartsWith(SET);
+        public static string GetSetterName(string name) => name[SET.Length..];
 
-        public const string OperatorSymbols = "?:+-*/%<>^=!~";
+        public const string OperatorSymbols = "?:+-*/%<>^=!~|";
 
         public const string Add         = "__op_add";
         public const string Sub         = "__op_sub";

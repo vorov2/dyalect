@@ -367,12 +367,13 @@ namespace Dyalect.Runtime
                     case OpCode.SetMemberS:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
-                        ((DyTypeInfo)left).SetStaticMember(unit.Strings[op.Data], right);
+                        ((DyTypeInfo)left).SetStaticMember(ctx, unit.Strings[op.Data], (DyFunction)right);
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.SetMember:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
-                        ((DyTypeInfo)left).SetInstanceMember(ctx, unit.Strings[op.Data], right);
+                        ((DyTypeInfo)left).SetInstanceMember(ctx, unit.Strings[op.Data], (DyFunction)right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Get:

@@ -16,12 +16,15 @@ namespace Dyalect.Parser.Model
         {
             sb.Append("if ");
             Condition.ToString(sb);
+            sb.Append(" { ");
             True.ToString(sb);
+            sb.Append(" }");
 
             if (False is not null)
             {
-                sb.Append("else ");
+                sb.Append("else { ");
                 False.ToString(sb);
+                sb.Append(" }");
             }
         }
     }

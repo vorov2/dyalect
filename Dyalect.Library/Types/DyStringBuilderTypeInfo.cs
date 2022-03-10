@@ -132,7 +132,7 @@ namespace Dyalect.Library.Types
                 return new DyStringBuilder(this, new StringBuilder());
         }
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "StringBuilder")
                 return Func.Static(name, New, -1, new Par("values", DyNil.Instance));

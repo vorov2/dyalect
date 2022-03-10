@@ -570,3 +570,63 @@
     assert([1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 11, 11, 12, 13], xs)
     assert([0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 7, 8, 9, 9, 10, 11, 11, 12, 12], ys)
 #endtest
+
+#test "Invalid overload (builtins)"
+    try {
+        func get Array.Length() { }
+        assert(got: false)
+    } catch {
+        InvalidOverload() => assert(got: true)
+    }
+    try {
+        func set Array.Length() { }
+        assert(got: false)
+    } catch {
+        InvalidOverload() => assert(got: true)
+    }
+    try {
+        func get Array.ToString() { }
+        assert(got: false)
+    } catch {
+        InvalidOverload() => assert(got: true)
+    }
+    try {
+        func set Array.ToString() { }
+        assert(got: false)
+    } catch {
+        InvalidOverload() => assert(got: true)
+    }
+#endtest
+
+#test "Invalid overload (custom)"
+    type Foo
+    func get Foo.Index() { }
+    func set Foo.Index() { }
+    func Foo.Bar() { }
+    static func get Foo.Bar() { }
+
+    try {
+        func Foo.Index() { }
+        assert(got: false)
+    } catch {
+        InvalidOverload() => assert(got: true)
+    }
+    try {
+        func set Foo.Bar() { }
+        assert(got: false)
+    } catch {
+        InvalidOverload() => assert(got: true)
+    }
+    try {
+        func get Foo.Bar() { }
+        assert(got: false)
+    } catch {
+        InvalidOverload() => assert(got: true)
+    }
+    try {
+        static func Foo.Bar() { }
+        assert(got: false)
+    } catch {
+        InvalidOverload() => assert(got: true)
+    }
+#endtest

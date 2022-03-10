@@ -17,10 +17,10 @@ namespace Dyalect.Linker
         private const string OBJ = ".dyo";
         private readonly Lang lang;
 
-        protected Dictionary<Reference, Unit> UnitMap { get; set;  } = new Dictionary<Reference, Unit>();
+        protected Dictionary<Guid, Unit> UnitMap { get; set;  } = new();
 
-        protected Dictionary<string, Dictionary<string, Type>> AssemblyMap { get; set; } = 
-            new Dictionary<string, Dictionary<string, Type>>(StringComparer.OrdinalIgnoreCase);
+        protected Dictionary<string, Dictionary<string, ForeignUnit>> AssemblyMap { get; set; } = 
+            new Dictionary<string, Dictionary<string, ForeignUnit>>(StringComparer.OrdinalIgnoreCase);
 
         protected List<Unit> Units { get; set; } = new();
 
@@ -40,8 +40,17 @@ namespace Dyalect.Linker
 
         protected internal virtual Result<Unit> Link(Unit self, Reference mod)
         {
-            if (!UnitMap.TryGetValue(mod, out var unit))
+            if (!UnitMap.TryGetValue(mod.Id, out var unit))
             {
+                if (mod.LocalPath is null && mod.DllName is null && mod.ModuleName != nameof(lang))
+                {
+                    if (dyalectLib is null)
+                        LookupAssembly(self, DYALECTLIB);
+
+                    if (dyalectLib is not null && dyalectLib.ContainsKey(mod.ModuleName))
+                        return Link(self, new Reference(mod.Id, mod.ModuleName, null, DYALECTLIB, mod.SourceLocation, mod.SourceFileName));
+                }
+
                 if (mod.ModuleName == nameof(lang))
                     unit = lang; 
                 else if (mod.DllName is not null)
@@ -73,7 +82,7 @@ namespace Dyalect.Linker
                 {
                     unit.Id = Units.Count;
                     Units.Add(unit);
-                    UnitMap.Add(mod, unit);
+                    UnitMap.Add(mod.Id, unit);
                 }
             }
 
@@ -203,7 +212,7 @@ namespace Dyalect.Linker
                 for (var i = 0; i < u!.References.Count; i++)
                 {
                     var r = u.References[i];
-                    u.UnitIds[i] = UnitMap[r].Id;
+                    u.UnitIds[i] = UnitMap[r.Id].Id;
                 }
 
                 if (u.References.Count > 0)

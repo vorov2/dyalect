@@ -172,7 +172,7 @@ namespace Dyalect.Library.Types
             return new DyRegex(this, arg.GetString());
         }
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "Regex" => Func.Static(name, New, -1, new Par("pattern")),

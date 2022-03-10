@@ -19,7 +19,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Convert(ExecutionContext ctx, DyObject val) => val.GetBool() ? DyBool.True : DyBool.False;
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name is "Bool")
                 return Func.Static(name, Convert, -1, new Par("value"));

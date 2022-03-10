@@ -10,6 +10,18 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject InvalidOverload(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.InvalidOverload);
+            return DyNil.Instance;
+        }
+
+        public static DyObject InvalidOverload(this ExecutionContext ctx, object func)
+        {
+            ctx.Error = new(DyErrorCode.InvalidOverload, func);
+            return DyNil.Instance;
+        }
+
         public static DyObject InvalidValue(this ExecutionContext ctx, object val1)
         {
             ctx.Error = new(DyErrorCode.InvalidValue, val1);

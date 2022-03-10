@@ -187,6 +187,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to overload..
+        /// </summary>
+        internal static string InvalidOverload_0 {
+            get {
+                return ResourceManager.GetString("InvalidOverload.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to overload function or property &quot;{0}&quot;..
+        /// </summary>
+        internal static string InvalidOverload_1 {
+            get {
+                return ResourceManager.GetString("InvalidOverload.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type is unexpected..
         /// </summary>
         internal static string InvalidType_0 {

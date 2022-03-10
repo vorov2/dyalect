@@ -152,7 +152,7 @@ namespace Dyalect.Runtime.Types
             return set;
         }
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "Set" => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
