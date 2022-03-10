@@ -228,4 +228,10 @@
   <data name="TooManyArguments.0" xml:space="preserve">
     <value>Too many arguments provided to a function.</value>
   </data>
+  <data name="InvalidOverload.0" xml:space="preserve">
+    <value>Unable to overload.</value>
+  </data>
+  <data name="InvalidOverload.1" xml:space="preserve">
+    <value>Unable to overload function or property "{0}".</value>
+  </data>
 </root>

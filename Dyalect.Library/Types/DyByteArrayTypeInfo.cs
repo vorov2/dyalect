@@ -82,7 +82,7 @@ namespace Dyalect.Library.Types
             return new DyByteArray(this, a3);
         }
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "ByteArray" => Func.Static(name, _ => new DyByteArray(this, null)),

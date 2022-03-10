@@ -16,7 +16,7 @@
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name is "Nil" or "Default")
                 return Func.Static(name, _ => DyNil.Instance);

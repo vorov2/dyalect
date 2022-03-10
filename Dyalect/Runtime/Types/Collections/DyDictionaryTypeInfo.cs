@@ -151,7 +151,7 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(values);
         }
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx)
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name is "Dictionary" or "FromTuple")
                 return Func.Static(name, New, -1, new Par("values", DyNil.Instance));

@@ -42,7 +42,7 @@
 
         KeyAlreadyPresent = 619,
 
-        // = 620,
+        InvalidOverload = 620,
 
         InvalidValue = 621
     }

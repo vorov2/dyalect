@@ -313,7 +313,7 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Statics
-        private readonly Dictionary<string, DyObject> staticMembers = new();
+        private readonly Dictionary<string, DyFunction> staticMembers = new();
 
         internal bool HasStaticMember(string name, ExecutionContext ctx) => LookupStaticMember(name, ctx) is not null;
 
@@ -349,15 +349,34 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        internal void SetStaticMember(string name, DyObject value)
+        internal void SetStaticMember(ExecutionContext ctx, string name, DyFunction func)
         {
-            staticMembers.Remove(name);
+            if (Builtins.IsSetter(name))
+            {
+                var set = Builtins.GetSetterName(name);
 
-            if (value is DyFunction func)
-                staticMembers.Add(name, func);
+                if (Members.TryGetValue(set, out var get) && !get.Auto)
+                {
+                    ctx.InvalidOverload(set);
+                    return;
+                }
+            }
+
+            if (staticMembers.TryGetValue(name, out var oldfun))
+            {
+                if (oldfun.Auto != func.Auto)
+                {
+                    ctx.InvalidOverload(name);
+                    return;
+                }
+
+                staticMembers.Remove(name);
+            }
+
+            staticMembers.Add(name, func);
         }
 
-        private DyObject? InitializeStaticMembers(string name, ExecutionContext ctx) =>
+        private DyFunction? InitializeStaticMembers(string name, ExecutionContext ctx) =>
             name switch
             {
                 "TypeInfo" => Func.Static(name, (c, obj) => c.RuntimeContext.Types[obj.TypeId], -1, new Par("value")),
@@ -368,7 +387,7 @@ namespace Dyalect.Runtime.Types
                     (context, strObj) =>
                     {
                         var nm = strObj.GetString();
-                        SetBuiltin(nm, null);
+                        SetBuiltin(ctx, nm, null);
                         Members.Remove(name);
                         staticMembers.Remove(name);
                         return DyNil.Instance;
@@ -376,7 +395,7 @@ namespace Dyalect.Runtime.Types
                 _ => InitializeStaticMember(name, ctx)
             };
 
-        protected virtual DyObject? InitializeStaticMember(string name, ExecutionContext ctx) => null;
+        protected virtual DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) => null;
         #endregion
 
         #region Instance
@@ -408,17 +427,37 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        internal void SetInstanceMember(ExecutionContext ctx, string name, DyObject value)
+        internal void SetInstanceMember(ExecutionContext ctx, string name, DyFunction func)
         {
-            var func = value as DyFunction;
-            SetBuiltin(name, func);
-            Members.Remove(name);
+            SetBuiltin(ctx, name, func);
 
-            if (func is not null)
-                Members[name] = func;
+            if (Builtins.IsSetter(name))
+            {
+                var set = Builtins.GetSetterName(name);
+
+                if ((set == Builtins.Len & (GetSupportedOperations() & SupportedOperations.Len) == SupportedOperations.Len)
+                    || set == Builtins.ToStr || (Members.TryGetValue(set, out var get) && !get.Auto))
+                {
+                    ctx.InvalidOverload(set);
+                    return;
+                }
+            }
+
+            if (Members.TryGetValue(name, out var oldfun))
+            {
+                if (oldfun.Auto != func.Auto)
+                {
+                    ctx.InvalidOverload(name);
+                    return;
+                }
+
+                Members.Remove(name);
+            }
+
+            Members[name] = func;
         }
 
-        private void SetBuiltin(string name, DyFunction? func)
+        private void SetBuiltin(ExecutionContext ctx, string name, DyFunction? func)
         {
             switch (name)
             {
@@ -441,11 +480,19 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Neg: neg = func; break;
                 case Builtins.Not: not = func; break;
                 case Builtins.BitNot: bitnot = func; break;
-                case Builtins.Len: len = func; break;
-                case Builtins.ToStr: tos = func; break;
                 case Builtins.Plus: plus = func; break;
                 case Builtins.Set: set = func; break;
                 case Builtins.Get: get = func; break;
+                case Builtins.Len:
+                    if (func is not null && func.Auto)
+                        ctx.InvalidOverload(name);
+                    len = func;
+                    break;
+                case Builtins.ToStr:
+                    if (func is not null && func.Auto)
+                        ctx.InvalidOverload(name);
+                    tos = func; 
+                    break;
             }
         }
 

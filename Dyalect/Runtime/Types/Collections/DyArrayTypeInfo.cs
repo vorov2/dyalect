@@ -394,7 +394,7 @@ namespace Dyalect.Runtime.Types
             return destArr;
         }
 
-        protected override DyObject? InitializeStaticMember(string name, ExecutionContext ctx) =>
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "Array" => Func.Static(name, New, 0, new Par("values", true)),
