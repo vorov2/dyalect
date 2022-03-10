@@ -474,7 +474,7 @@ namespace Dyalect.Runtime
                                     ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                                     goto CATCH;
                                 }
-                                else
+                                else if (right.TypeId == DyType.Function)
                                 {
                                     evalStack.Replace(right);
                                     goto case OpCode.FunPrep;

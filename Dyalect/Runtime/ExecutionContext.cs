@@ -50,7 +50,7 @@ namespace Dyalect.Runtime
             get => _error;
             set
             {
-                if (_error is null)
+                if (_error is null || value is null)
                     _error = value;
             }
         }
