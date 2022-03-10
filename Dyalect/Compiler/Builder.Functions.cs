@@ -233,7 +233,7 @@ namespace Dyalect.Compiler
         {
             var iterBody = hints.Has(IteratorBody);
             var args = CompileFunctionParameters(node.Parameters);
-            StartFun(node.Setter ? Builtins.Setter(node.Name) : node.Name!, args);
+            StartFun(node.Setter ? Builtins.Setter(node.Name!) : node.Name!, args);
 
             if (node.IsStatic && node.TypeName is null)
                 AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);

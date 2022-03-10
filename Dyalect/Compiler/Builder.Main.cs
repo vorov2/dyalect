@@ -963,6 +963,12 @@ namespace Dyalect.Compiler
 
         private void Build(DBlock node, Hints hints, CompilerContext ctx)
         {
+            if (hints.Has(Push) && !hints.Has(Last))
+            {
+                Build(new DFunctionDeclaration(node.Location) { Body = node }, hints, ctx);
+                return;
+            }
+
             var hasPush = hints.Has(Push);
             var hasLast = hints.Has(Last);
             hints = hints.Remove(Last);
