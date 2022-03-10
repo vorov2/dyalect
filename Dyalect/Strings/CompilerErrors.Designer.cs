@@ -124,6 +124,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A module with alias &quot;{0}&quot; is already referenced..
+        /// </summary>
+        internal static string DuplicateModuleAlias {
+            get {
+                return ResourceManager.GetString("DuplicateModuleAlias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An expression doesn&apos;t have a name..
         /// </summary>
         internal static string ExpressionNoName {

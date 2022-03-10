@@ -6,8 +6,13 @@ namespace Dyalect.Compiler
 {
     public sealed class Reference : IEquatable<Reference>
     {
-        internal Reference(string moduleName, string? localPath, string? dllName, Location sourceLocation, string? sourceFleName)
+        internal static readonly Reference Empty = new(Guid.NewGuid(), "<NOTSET>", default, default, default, default);
+
+        internal Guid Id { get; }
+
+        internal Reference(Guid id, string moduleName, string? localPath, string? dllName, Location sourceLocation, string? sourceFleName)
         {
+            Id = id;
             ModuleName = moduleName;
             LocalPath = localPath;
             DllName = dllName;

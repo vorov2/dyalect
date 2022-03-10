@@ -100,6 +100,8 @@
 
         GuardOnBinding = 248,
 
-        MethodNotRecursive = 249
+        MethodNotRecursive = 249,
+
+        DuplicateModuleAlias = 250
     }
 }

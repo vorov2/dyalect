@@ -1,6 +1,7 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
 using Dyalect.Runtime.Types;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -122,6 +123,7 @@ namespace Dyalect.Linker
                 var checksum = reader.ReadInt32();
                 string str;
                 var r = new Reference(
+                    Guid.NewGuid(),
                     reader.ReadString(),
                     (str = reader.ReadString()).Length == 0 ? null : str,
                     (str = reader.ReadString()).Length == 0 ? null : str,

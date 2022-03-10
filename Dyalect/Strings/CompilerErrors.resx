@@ -279,4 +279,7 @@
   <data name="GuardOnBinding" xml:space="preserve">
     <value>Guards are not allowed on bindings.</value>
   </data>
+  <data name="DuplicateModuleAlias" xml:space="preserve">
+    <value>A module with alias "{0}" is already referenced.</value>
+  </data>
 </root>

@@ -53,7 +53,7 @@ namespace Dyalect.Linker
                 throw new DyException("Invalid reference.");
 
             var asmName = ti.Assembly.GetName().Name + ".dll";
-            var rf = new Reference(attr.Name, null, asmName, default, null);
+            var rf = new Reference(Guid.NewGuid(), attr.Name, null, asmName, default, null);
             UnitIds.Add(-1); //Real handles are added by a linker
             References.Add(rf);
             return new Reference<T>(rf);

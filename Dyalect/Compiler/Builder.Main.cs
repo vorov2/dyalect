@@ -630,13 +630,8 @@ namespace Dyalect.Compiler
                     localPath = null;
                 }
             }
-            else if (localPath == "std")
-            {
-                dll = "Dyalect.Library.dll";
-                localPath = null;
-            }
 
-            var r = new Reference(node.ModuleName, localPath, dll, node.Location, unit.FileName);
+            var r = new Reference(Guid.NewGuid(), node.ModuleName, localPath, dll, node.Location, unit.FileName);
             var res = linker.Link(unit, r);
 
             if (res.Success)
@@ -644,13 +639,19 @@ namespace Dyalect.Compiler
                 r.Checksum = res.Value!.Checksum;
                 var referencedUnit = new UnitInfo(unit.UnitIds.Count, res.Value);
                 unit.References.Add(r);
-                referencedUnits.Add(node.Alias ?? node.ModuleName, referencedUnit);
+                var key = node.Alias ?? node.ModuleName;
 
-                cw.RunMod(unit.UnitIds.Count);
-                unit.UnitIds.Add(-1); //Real handles are added by a linker
+                if (referencedUnits.ContainsKey(key))
+                    AddError(CompilerError.DuplicateModuleAlias, node.Location, key);
+                else
+                {
+                    referencedUnits.Add(key, referencedUnit);
+                    cw.RunMod(unit.UnitIds.Count);
+                    unit.UnitIds.Add(-1); //Real handles are added by a linker
 
-                var addr = AddVariable(node.Alias ?? node.ModuleName, node.Location, VarFlags.Module);
-                cw.PopVar(addr);
+                    var addr = AddVariable(node.Alias ?? node.ModuleName, node.Location, VarFlags.Module);
+                    cw.PopVar(addr);
+                }
             }
             else
             {
