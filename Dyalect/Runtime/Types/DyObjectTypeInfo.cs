@@ -9,7 +9,7 @@
 
         public override int ReflectedTypeCode => DyType.Object;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.ToString()!);
     }
 }

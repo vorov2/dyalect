@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
         public override int ReflectedTypeCode => DyType.String;
 
         #region Operations
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+        internal protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var str1 = left.TypeId == DyType.String || left.TypeId == DyType.Char ? left.GetString() : left.ToString(ctx).Value;
 
@@ -29,45 +29,45 @@ namespace Dyalect.Runtime.Types
             return new DyString(str1 + str2);
         }
 
-        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString() == right.GetString() ? DyBool.True : DyBool.False;
             return base.EqOp(left, right, ctx); //Important! Should redirect to base
         }
 
-        protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        internal protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString() != right.GetString() ? DyBool.True : DyBool.False;
             return base.NeqOp(left, right, ctx); //Important! Should redirect to base
         }
 
-        protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
+        internal protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
             return ctx.InvalidType(right);
         }
 
-        protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
+        internal protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
             return ctx.InvalidType(right);
         }
 
-        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = arg.GetString().Length;
             return DyInteger.Get(len);
         }
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.GetString());
+        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.GetString());
 
-        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        internal protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             self.SetItem(index, value, ctx);
             return DyNil.Instance;
@@ -351,7 +351,7 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(newValue);
 
             return new DyString(self.GetString().Replace(oldValue.GetString(), newValue.GetString(),
-                ignoreCase.GetBool() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
+                ignoreCase.GetBool(ctx) ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
         }
 
         private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject from, DyObject count)

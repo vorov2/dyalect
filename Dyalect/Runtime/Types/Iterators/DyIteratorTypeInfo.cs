@@ -17,9 +17,9 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeCode => DyType.Iterator;
 
-        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => GetCount(ctx, arg);
+        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => GetCount(ctx, arg);
 
-        protected override DyObject ToStringOp(DyObject self, ExecutionContext ctx)
+        internal protected override DyObject ToStringOp(DyObject self, ExecutionContext ctx)
         {
             var fn = ((DyIterator)self).GetIteratorFunction();
             fn.Reset(ctx);
@@ -56,7 +56,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId != DyType.Integer)
                 return ctx.InvalidType(index);
@@ -247,7 +247,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            return DyInteger.Get(seq.Count(dy => fun.Call(ctx, dy).GetBool()));
+            return DyInteger.Get(seq.Count(dy => fun.Call(ctx, dy).GetBool(ctx)));
         }
 
         private DyObject Map(ExecutionContext ctx, DyObject self, DyObject funObj)
@@ -275,7 +275,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var xs = seq.TakeWhile(o => fun.Call(ctx, o).GetBool());
+            var xs = seq.TakeWhile(o => fun.Call(ctx, o).GetBool(ctx));
             return DyIterator.Create(xs);
         }
 
@@ -290,7 +290,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var xs = seq.SkipWhile(o => fun.Call(ctx, o).GetBool());
+            var xs = seq.SkipWhile(o => fun.Call(ctx, o).GetBool(ctx));
             return DyIterator.Create(xs);
         }
 
@@ -305,7 +305,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var xs = seq.Where(o => fun.Call(ctx, o).GetBool());
+            var xs = seq.Where(o => fun.Call(ctx, o).GetBool(ctx));
             return DyIterator.Create(xs);
         }
 
@@ -339,7 +339,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var res = seq.Any(o => fun.Call(ctx, o).GetBool());
+            var res = seq.Any(o => fun.Call(ctx, o).GetBool(ctx));
             return res ? DyBool.True : DyBool.False;
         }
 
@@ -354,14 +354,14 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var res = seq.All(o => fun.Call(ctx, o).GetBool());
+            var res = seq.All(o => fun.Call(ctx, o).GetBool(ctx));
             return res ? DyBool.True : DyBool.False;
         }
 
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
         {
             var seq = DyIterator.ToEnumerable(ctx, self);
-            return seq.Any(o => ctx.RuntimeContext.Types[o.TypeId].Eq(ctx, o, item).GetBool()) 
+            return seq.Any(o => ctx.RuntimeContext.Types[o.TypeId].Eq(ctx, o, item).GetBool(ctx)) 
                 ? DyBool.True : DyBool.False; ;
         }
 
@@ -430,7 +430,7 @@ namespace Dyalect.Runtime.Types
         }
 
         private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, DyObject exclusive) =>
-            DyIterator.Create(GenerateRange(ctx, from, to, step, exclusive.GetBool()));
+            DyIterator.Create(GenerateRange(ctx, from, to, step, exclusive.GetBool(ctx)));
 
         private static DyObject Empty(ExecutionContext ctx) => DyIterator.Create(Enumerable.Empty<DyObject>());
 

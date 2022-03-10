@@ -13,7 +13,7 @@ namespace Dyalect.Library
         public DyRegexTypeInfo Regex { get; private set; } = null!;
         public DyResultTypeInfo Result { get; private set; } = null!;
 
-        protected override void InitializeTypes()
+        public Core()
         {
             ByteArray = AddType<DyByteArrayTypeInfo>();
             StringBuilder = AddType<DyStringBuilderTypeInfo>();

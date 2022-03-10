@@ -79,7 +79,7 @@ namespace Dyalect.Library.Types
                     Write(obj.GetFloat());
                     break;
                 case DyType.Bool:
-                    Write(obj.GetBool());
+                    Write(obj.GetBool(ctx));
                     break;
                 case DyType.Char:
                     Write(obj.GetChar());

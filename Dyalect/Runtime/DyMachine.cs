@@ -174,12 +174,14 @@ namespace Dyalect.Runtime
                         offset = op.Data;
                         break;
                     case OpCode.Brtrue:
-                        if (evalStack.Pop().GetBool())
+                        if (evalStack.Pop().GetBool(ctx))
                             offset = op.Data;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Brfalse:
-                        if (!evalStack.Pop().GetBool())
+                        if (!evalStack.Pop().GetBool(ctx))
                             offset = op.Data;
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Shl:
                         right = evalStack.Pop();
@@ -333,6 +335,8 @@ namespace Dyalect.Runtime
                     case OpCode.Fail:
                         {
                             right = evalStack.Pop();
+                            right = right.Force(ctx);
+                            if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                             ctx.Error = right is DyError e ? e : new(DyErrorCode.UnexpectedError, right);
                             ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                             goto CATCH;
@@ -463,6 +467,19 @@ namespace Dyalect.Runtime
                             right = evalStack.Peek();
                             if (right.TypeId != DyType.Function)
                             {
+                                right = right.Force(ctx);
+
+                                if (ctx.HasErrors)
+                                {
+                                    ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                                    goto CATCH;
+                                }
+                                else
+                                {
+                                    evalStack.Replace(right);
+                                    goto case OpCode.FunPrep;
+                                }
+
                                 if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti)
                                 {
                                     right = ti.GetStaticMember(ti.TypeName, ctx);
@@ -590,11 +607,13 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.TypeCheck:
                         left = evalStack.Pop();
-                        right = evalStack.Pop();
+                        right = evalStack.Pop().Force(ctx);
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         evalStack.Push(((DyTypeInfo)left).ReflectedTypeCode == right.TypeId);
                         break;
                     case OpCode.CtorCheck:
-                        right = evalStack.Peek();
+                        right = evalStack.Peek().Force(ctx);
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         evalStack.Replace(right.GetConstructor(ctx) == unit.Strings[op.Data]);
                         break;
                     case OpCode.Start:

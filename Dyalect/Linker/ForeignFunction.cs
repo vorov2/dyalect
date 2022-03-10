@@ -18,59 +18,51 @@ namespace Dyalect.Linker
 
         internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args)
         {
-            dynamic val(int i) => TypeConverter.ConvertTo(args[i], fun.Types[i])!;
-            object retval;
-
-            if (expectContext)
+            dynamic val(int i)
             {
-                retval = (fun.Types!.Length - 1) switch
+                try
                 {
-                    0  => fun.Func(ctx),
-                    1  => fun.Func(ctx, val(0)),
-                    2  => fun.Func(ctx, val(0), val(1)),
-                    3  => fun.Func(ctx, val(0), val(1), val(2)),
-                    4  => fun.Func(ctx, val(0), val(1), val(2), val(3)),
-                    5  => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4)),
-                    6  => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4), val(5)),
-                    7  => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4), val(5), val(6)),
-                    8  => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7)),
-                    9  => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8)),
-                    10 => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9)),
-                    11 => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10)),
-                    12 => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11)),
-                    13 => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12)),
-                    14 => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13)),
-                    15 => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13), val(14)),
-                    16 => fun.Func(ctx, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13), val(14), val(15)),
-                    _  => throw new NotSupportedException()
-                };
-            }
-            else
-            {
-                retval = (fun.Types!.Length - 1) switch
+                    return TypeConverter.ConvertTo(ctx, args[i], fun.Types[i])!;
+                }
+                catch (Exception)
                 {
-                    0  => fun.Func(),
-                    1  => fun.Func(val(0)),
-                    2  => fun.Func(val(0), val(1)),
-                    3  => fun.Func(val(0), val(1), val(2)),
-                    4  => fun.Func(val(0), val(1), val(2), val(3)),
-                    5  => fun.Func(val(0), val(1), val(2), val(3), val(4)),
-                    6  => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5)),
-                    7  => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6)),
-                    8  => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7)),
-                    9  => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8)),
-                    10 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9)),
-                    11 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10)),
-                    12 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11)),
-                    13 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12)),
-                    14 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13)),
-                    15 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13), val(14)),
-                    16 => fun.Func(val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13), val(14), val(15)),
-                    _  => throw new NotSupportedException()
-                };
+                    return ctx.InvalidType(args[i].GetTypeInfo(ctx).TypeName);
+                }
             }
 
-            return TypeConverter.ConvertFrom(retval, fun.Types[^1]);
+            object? retval = (fun.Types!.Length - 1) switch
+            {
+                1 => fun.Invoke(ctx, expectContext, fun.Types!.Length),
+                2 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0)),
+                3 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1)),
+                4 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2)),
+                5 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3)),
+                6 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4)),
+                7 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4), val(5)),
+                8 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4), val(5), val(6)),
+                9 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7)),
+                10 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8)),
+                11 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9)),
+                12 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10)),
+                13 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11)),
+                14 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12)),
+                15 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13)),
+                16 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13), val(14)),
+                17 => fun.Invoke(ctx, expectContext, fun.Types!.Length, val(0), val(1), val(2), val(3), val(4), val(5), val(6), val(7), val(8), val(9), val(10), val(11), val(12), val(13), val(14), val(15)),
+                _ => throw new NotSupportedException()
+            };
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            try
+            {
+                return TypeConverter.ConvertFrom(retval, fun.Types[^1]);
+            }
+            catch (Exception)
+            {
+                return ctx.InvalidType(fun.Types[^1].Name);
+            }
         }
 
         internal override bool Equals(DyFunction func) => func is ForeignFunction m && m.fun.Equals(fun);

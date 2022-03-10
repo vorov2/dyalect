@@ -36,7 +36,7 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => value;
 
-        protected internal override bool GetBool() => value != 0;
+        protected internal override bool GetBool(ExecutionContext ctx) => value != 0;
 
         protected internal override double GetFloat() => value;
 

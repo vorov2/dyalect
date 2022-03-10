@@ -1,5 +1,6 @@
-# 0.31.0
-  * Add: _Consider shortcut syntax for parameterless lambda_ ([Issue #591](https://github.com/vorov2/dyalect/issues/591)).
+# 0.30.1
+  * Fix: _VM can crush when invoking functions from foreign modules_ ([Issue #595](https://github.com/vorov2/dyalect/issues/595)).
+  * Fix: _Last error can be overwritten in an execution context_ ([Issue #596](https://github.com/vorov2/dyalect/issues/596)).
 
 # 0.30.0
   * Change: _Referencing modules from stdlib_ ([Issue #502](https://github.com/vorov2/dyalect/issues/502)).
