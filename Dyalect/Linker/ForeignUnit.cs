@@ -139,7 +139,7 @@ namespace Dyalect.Linker
                 parsMeta[i - (hasContext ? 1 : 0)] = new Par(p.Name!, def, va);
             }
 
-            if (false)//simpleSignature)
+            if (simpleSignature)
             {
                 if (parsMeta == null)
                     return Func.Static(name, (Func<ExecutionContext, DyObject>) mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject>), this));
