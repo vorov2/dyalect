@@ -142,6 +142,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Guards are not allowed on bindings..
+        /// </summary>
+        internal static string GuardOnBinding {
+            get {
+                return ResourceManager.GetString("GuardOnBinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid definition of an indexer method - missing &quot;set&quot; or &quot;get&quot; modifier..
         /// </summary>
         internal static string IndexerSetOrGet {

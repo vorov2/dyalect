@@ -3,6 +3,7 @@
   * Add: _Add an ability for foreign modules to reference other foreign modules_ ([Issue #590](https://github.com/vorov2/dyalect/issues/590)).
   * Add: _Properties are not supported for foreign functions_ ([Issue #568](https://github.com/vorov2/dyalect/issues/568)).
   * Fix: _Overloading of methods and properties consistency_ ([Issue #592](https://github.com/vorov2/dyalect/issues/592)).
+  * Fix: _Disallow guards on bindings_ ([Issue #564](https://github.com/vorov2/dyalect/issues/564)).
 
 # 0.29.2
   * Fix: _Regression for foreign module import_ ([Issue #587](https://github.com/vorov2/dyalect/issues/587)). 

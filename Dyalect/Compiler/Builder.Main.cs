@@ -811,6 +811,9 @@ namespace Dyalect.Compiler
 
         private void Build(DIf node, Hints hints, CompilerContext ctx)
         {
+            if (node.True.NodeType == NodeType.Binding) //A guard used on binding
+                AddError(CompilerError.GuardOnBinding, node.Location);
+
             var falseLabel = cw.DefineLabel();
             var skipLabel = cw.DefineLabel();
 

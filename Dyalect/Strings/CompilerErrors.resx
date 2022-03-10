@@ -276,4 +276,7 @@
   <data name="LabelOnlyCamel" xml:space="preserve">
     <value>Tuple labels can't start with an uppercase letter.</value>
   </data>
+  <data name="GuardOnBinding" xml:space="preserve">
+    <value>Guards are not allowed on bindings.</value>
+  </data>
 </root>
