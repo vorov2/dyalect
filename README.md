@@ -5,9 +5,9 @@
 
 :blue_book: [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
 
-Dyalect is a dynamic programming language for .NET Core platform.
+Dyalect is a dynamic programming language for .NET platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short) is
-written in C# and has zero dependencies except for standard .NET Core
+written in C# and has zero dependencies except for standard .NET
 libraries, which means that it can seamlessly run on Windows, MacOS
 and Linux. Moreover you can use the same binaries on any of these 
 platforms!

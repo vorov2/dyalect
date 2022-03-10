@@ -1,6 +1,7 @@
 # 0.30.0
   * Add: _Simplify tuple construction from C# code_ ([Issue #588](https://github.com/vorov2/dyalect/issues/588)).
   * Add: _Add an ability for foreign modules to reference other foreign modules_ ([Issue #590](https://github.com/vorov2/dyalect/issues/590)).
+  * Add: _Properties are not supported for foreign functions_ ([Issue #568](https://github.com/vorov2/dyalect/issues/568)).
 
 # 0.29.2
   * Fix: _Regression for foreign module import_ ([Issue #587](https://github.com/vorov2/dyalect/issues/587)). 
