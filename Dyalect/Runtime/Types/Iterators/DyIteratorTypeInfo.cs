@@ -473,5 +473,13 @@ namespace Dyalect.Runtime.Types
                 "Repeat" => Func.Static(name, Repeat, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.TypeId switch
+            {
+                DyType.Tuple => new DyTuple(((DyIterator)self).ToEnumerable().ToArray()),
+                DyType.Array => new DyArray(((DyIterator)self).ToEnumerable().ToArray()),
+                _ => base.CastOp(self, targetType, ctx)
+            };
     }
 }

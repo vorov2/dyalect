@@ -158,5 +158,13 @@ namespace Dyalect.Runtime.Types
                 "Set" => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.TypeId switch
+            {
+                DyType.Array => new DyArray(((DySet)self).ToArray()),
+                DyType.Tuple => new DyTuple(((DySet)self).ToArray()),
+                _ => base.CastOp(self, targetType, ctx)
+            };
     }
 }

@@ -145,8 +145,8 @@ namespace Dyalect.Compiler
 
         private void Build(DAs node, Hints hints, CompilerContext ctx)
         {
-            Build(node.Expression, hints.Append(Push), ctx);
             PushTypeInfo(ctx, node.TypeName, node.Location);
+            Build(node.Expression, hints.Append(Push), ctx);
             AddLinePragma(node);
             cw.Cast();
         }

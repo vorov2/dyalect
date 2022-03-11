@@ -409,6 +409,14 @@ namespace Dyalect.Runtime.Types
                 "ToCharArray" => Func.Member(name, ToCharArray),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.TypeId switch
+            {
+                DyType.Integer => long.TryParse(self.GetString(), out var i8) ? DyInteger.Get(i8) : DyInteger.Zero,
+                DyType.Float => double.TryParse(self.GetString(), out var r8) ? new DyFloat(r8) : DyFloat.Zero,
+                _ => base.CastOp(self, targetType, ctx)
+            };
         #endregion
 
         #region Statics

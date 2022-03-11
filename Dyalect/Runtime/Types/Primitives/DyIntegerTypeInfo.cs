@@ -236,7 +236,6 @@ namespace Dyalect.Runtime.Types
                 return obj;
 
             if (obj.TypeId == DyType.Float)
-
                 return DyInteger.Get((long)obj.GetFloat());
 
             if ((obj.TypeId == DyType.Char || obj.TypeId == DyType.String) &&
@@ -255,6 +254,13 @@ namespace Dyalect.Runtime.Types
                 "Parse" => Func.Static(name, Parse, -1, new Par("value")),
                 "Integer" => Func.Static(name, Convert, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
+            };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.TypeId switch
+            {
+                DyType.Float => new DyFloat(self.GetInteger()),
+                _ => base.CastOp(self, targetType, ctx)
             };
     }
 }

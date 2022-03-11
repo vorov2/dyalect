@@ -1694,7 +1694,7 @@ namespace Dyalect.Parser
 		node = null; 
 		FunctionApplication(out node);
 		while (la.kind == 79) {
-			var @as = new DAs(node, t); string s1, s2 = null; 
+			var @as = new DAs(t) { Expression = node }; string s1, s2 = null; 
 			Get();
 			Expect(1);
 			s1 = t.val; 

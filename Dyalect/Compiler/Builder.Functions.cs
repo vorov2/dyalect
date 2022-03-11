@@ -34,7 +34,7 @@ namespace Dyalect.Compiler
                         if (node.IsStatic || node.Setter || node.Getter)
                             AddError(CompilerError.InvalidCast, node.Location);
 
-                        PushTypeInfo(ctx, node.TypeName, node.Location);
+                        PushTypeInfo(ctx, node.TargetTypeName, node.Location);
                         PushTypeInfo(ctx, node.TypeName, node.Location);
                         cw.NewCast();
                     }

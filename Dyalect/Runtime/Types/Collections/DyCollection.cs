@@ -45,10 +45,10 @@ namespace Dyalect.Runtime.Types
 
         public IList<object> ConvertToList() => new List<object>(ConvertToArray());
 
-        public object[] ConvertToArray()
+        public DyObject[] ConvertToArray()
         {
             var values = GetValues();
-            var newArr = new object[Count];
+            var newArr = new DyObject[Count];
 
             for (var i = 0; i < newArr.Length; i++)
                 newArr[i] = values[i];

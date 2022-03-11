@@ -64,5 +64,14 @@ namespace Dyalect.Runtime.Types
                 "Slice" => Func.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.TypeId switch
+            {
+                DyType.Tuple => new DyTuple(((DyCollection)self).ConvertToArray()),
+                DyType.Array => new DyArray(((DyCollection)self).ConvertToArray()),
+                DyType.Iterator => DyIterator.Create((DyCollection)self),
+                _ => base.CastOp(self, targetType, ctx)
+            };
     }
 }

@@ -1116,7 +1116,7 @@ PRODUCTIONS
         (
             FunctionApplication<out node>
             {
-                (. var @as = new DAs(node, t); string s1, s2 = null; .)
+                (. var @as = new DAs(t) { Expression = node }; string s1, s2 = null; .)
                 "as"
                 identToken (. s1 = t.val; .) [ "." identToken (. s2 = t.val; .) ]
                 (.

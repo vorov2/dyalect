@@ -171,5 +171,12 @@ namespace Dyalect.Runtime.Types
                 "Float" => Func.Static(name, Convert, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.TypeId switch
+            {
+                DyType.Integer => DyInteger.Get((long)self.GetFloat()),
+                _ => base.CastOp(self, targetType, ctx)
+            };
     }
 }

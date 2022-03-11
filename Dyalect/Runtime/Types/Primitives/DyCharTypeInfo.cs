@@ -126,7 +126,7 @@ namespace Dyalect.Runtime.Types
             if (obj.TypeId == DyType.Float)
                 return new DyChar((char)obj.GetFloat());
 
-            return ctx.InvalidType(obj);
+            return ctx.InvalidCast(obj.GetTypeInfo(ctx).TypeName, DyTypeNames.Char);
         }
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
@@ -137,6 +137,14 @@ namespace Dyalect.Runtime.Types
                 "Default" => Func.Static(name, _ => DyChar.Empty),
                 "Char" => Func.Static(name, CreateChar, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
+            };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.TypeId switch
+            {
+                DyType.Integer => DyInteger.Get(self.GetChar()),
+                DyType.Float => new DyFloat(self.GetChar()),
+                _ => base.CastOp(self, targetType, ctx)
             };
     }
 }

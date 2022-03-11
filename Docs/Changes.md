@@ -2,6 +2,7 @@
   * Change: _Methods such as Trim should accept both strings and chars_ ([Issue #598](https://github.com/vorov2/dyalect/issues/598)).
   * Add: _Consider shortcut syntax for parameterless lambda_ ([Issue #591](https://github.com/vorov2/dyalect/issues/591)).
   * Add: _Add a `Lazy` type_ ([Issue #551](https://github.com/vorov2/dyalect/issues/551), [docs](https://github.com/vorov2/dyalect/wiki/Variables#lazy)).
+  * Add: _Consider implementing generic conversion routines_ ([Issue #506](https://github.com/vorov2/dyalect/issues/506), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#as)).
 
 # 0.30.1
   * Fix: _VM can crush when invoking functions from foreign modules_ ([Issue #595](https://github.com/vorov2/dyalect/issues/595)).

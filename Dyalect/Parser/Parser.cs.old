@@ -1670,7 +1670,7 @@ namespace Dyalect.Parser
 	}
 
 	void Mul(out DNode node) {
-		FunctionApplication(out node);
+		Cast(out node);
 		while (la.kind == 51 || la.kind == 52 || la.kind == 53) {
 			var op = default(BinaryOperator);
 			var ot = default(Token);
@@ -1685,8 +1685,28 @@ namespace Dyalect.Parser
 				Get();
 				ot = t; op = BinaryOperator.Rem; 
 			}
-			FunctionApplication(out var exp);
+			Cast(out var exp);
 			node = new DBinaryOperation(node, exp, op, ot); 
+		}
+	}
+
+	void Cast(out DNode node) {
+		node = null; 
+		FunctionApplication(out node);
+		while (la.kind == 79) {
+			var @as = new DAs(node, t); string s1, s2 = null; 
+			Get();
+			Expect(1);
+			s1 = t.val; 
+			if (la.kind == 24) {
+				Get();
+				Expect(1);
+				s2 = t.val; 
+			}
+			@as.Expression = node;
+			@as.TypeName = s2 is null ? new Qualident(s1) : new Qualident(s1, s2);
+			node = @as;
+			
 		}
 	}
 

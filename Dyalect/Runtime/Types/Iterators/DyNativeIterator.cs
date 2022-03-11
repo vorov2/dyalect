@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
@@ -16,7 +17,9 @@ namespace Dyalect.Runtime.Types
 
         public override DyFunction GetIteratorFunction() => new DyNativeIteratorFunction(unitId, handle, captures);
 
-        public override object ToObject() => new MultiPartEnumerable(ExecutionContext.External, GetIteratorFunction());
+        public override object ToObject() => ToEnumerable();
+
+        public override IEnumerable<DyObject> ToEnumerable() => new MultiPartEnumerable(ExecutionContext.External, GetIteratorFunction());
 
         public override int GetHashCode() => HashCode.Combine(unitId, handle, captures);
     }

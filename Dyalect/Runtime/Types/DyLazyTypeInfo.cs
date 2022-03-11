@@ -42,6 +42,8 @@
         public override DyObject ToString(ExecutionContext ctx, DyObject arg) => Force(arg, ctx)?.ToString(ctx, arg.Force(ctx)) ?? DyNil.Instance;
         public override DyObject Get(ExecutionContext ctx, DyObject self, DyObject index) => Force(self, ctx)?.Get(ctx, self.Force(ctx), index.Force(ctx)) ?? DyNil.Instance;
         public override DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) => Force(self, ctx)?.Set(ctx, self.Force(ctx), index.Force(ctx), value) ?? DyNil.Instance;
+        public override DyObject Cast(ExecutionContext ctx, DyObject self, DyObject targetType) => Force(self, ctx)?.Cast(ctx, self, targetType.Force(ctx)) ?? DyNil.Instance;
+
         internal override DyObject GetInstanceMember(DyObject self, string name, ExecutionContext ctx) => Force(self, ctx)?.GetInstanceMember(self.Force(ctx), name, ctx) ?? DyNil.Instance;
 
         internal override bool HasInstanceMember(DyObject self, string name, ExecutionContext ctx)
