@@ -10,7 +10,7 @@
     assert(-1.7976931348623157E+308, Float.Min())
 #endtest
 
-#test "Methods: Inf and NaN"
+#test "Methods: Inf and IsNaN"
     var d = Float.Inf() + (-Float.Inf())
     assert(true, d.IsNaN())
 #endtest
@@ -21,7 +21,7 @@
     assert(5.0, Float('5'))
 #endtest
 
-#test "Methods: default"
+#test "Methods: Default"
     assert(0.0, Float.Default())
 #endtest
 

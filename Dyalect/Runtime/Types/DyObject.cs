@@ -73,6 +73,6 @@ namespace Dyalect.Runtime.Types
 
         public virtual DyTypeInfo GetTypeInfo(ExecutionContext ctx) => ctx.RuntimeContext.Types[TypeId];
 
-        internal virtual DyObject? Force(ExecutionContext ctx) => this;
+        internal virtual DyObject Force(ExecutionContext ctx) => this;
     }
 }

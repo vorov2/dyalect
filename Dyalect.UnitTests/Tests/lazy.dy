@@ -46,3 +46,85 @@
     }
     assert("4+6=10", y.ToString())
 #endtest
+
+#test "Methods: IsNan"
+    lazy d = Float.Inf() + (-Float.Inf())
+    assert(true, d.IsNaN())
+#endtest
+
+#test "Conversion to boolean"
+    lazy x = 2
+    if x {
+        assert(got: true)
+    } else {
+        assert(got: false)
+    }
+    lazy y = 0
+    if y {
+        assert(got: false)
+    } else {
+        assert(got: true)
+    }
+#endtest
+
+#test "Math"
+    lazy x = 12 / 3
+    lazy y = 2 + 3
+    lazy z = 12
+    assert(9, x + y)
+    assert(60, z * 5)
+    assert(3, x - 1)
+    lazy x1 = 44 - 40
+    lazy y1 = 2 + 0
+    assert(2, x1 / y1)
+    assert(0, x1 % y1)
+#endtest
+
+#test "Invoke members"
+    lazy x = 2 + 13
+    assert(got: x.IsMultiple(of: 5))
+    assert(got: x.IsMultiple(of: 3))
+    lazy str = "Hello" + ", " + "world"
+    assert("Helloworld", str.Replace(", ", ""))
+    lazy c = 'A'
+    assert(got: c.IsUpper())
+#endtest
+
+#test "Lazy arrays"
+    lazy xs = {
+        let xs = []
+        for i in 1..10 {
+            xs.Add(i)
+        }
+        xs
+    }
+    xs.Add(11)
+    assert([1,2,3,4,5,6,7,8,9,10,11], xs)
+    xs.RemoveRange([1,2,9,10,11])
+    assert([3,4,5,6,7,8], xs)
+    xs.Remove(8)
+    assert([3,4,5,6,7], xs)
+    xs.RemoveAt(0)
+    assert([4,5,6,7], xs)
+    xs[1] = 55
+    assert([4,55,6,7], xs)
+#endtest
+
+#test "Lazy tuples"
+    lazy xs = {
+        (1,) + (2, 3)
+    }
+    assert((1,2,3,4), xs.Add(4))
+    assert(1, xs.First())
+    assert(2, xs.Second())
+    assert(3, xs.Length())
+#endtest
+
+#test "Lazy strings"
+    lazy s1 = "one" + "," + "two"
+    lazy s2 = "," + "three"
+    assert(",two", s1.Substring(3))
+    assert("one,two,three", s1 + s2)
+    lazy s3 = "'val'"
+    assert("val", s3.Trim('\''))
+#endtest

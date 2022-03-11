@@ -290,6 +290,9 @@ namespace Dyalect.Runtime.Types
 
         private static char[] GetChars(DyObject arg, ExecutionContext ctx)
         {
+            if (arg.TypeId == DyType.String)
+                return arg.GetString().ToCharArray();
+
             var values = ((DyTuple)arg).Values;
             var chs = new char[values.Length];
 
@@ -323,7 +326,7 @@ namespace Dyalect.Runtime.Types
             if (len.TypeId != DyType.Integer)
                 return ctx.InvalidType(len);
 
-            if (with.TypeId != DyType.Char)
+            if (with.TypeId != DyType.Char && with.TypeId != DyType.String)
                 return ctx.InvalidType(with);
 
             var str = self.GetString();
@@ -335,7 +338,7 @@ namespace Dyalect.Runtime.Types
             if (len.TypeId != DyType.Integer)
                 return ctx.InvalidType(len);
 
-            if (with.TypeId != DyType.Char)
+            if (with.TypeId != DyType.Char && with.TypeId != DyType.String)
                 return ctx.InvalidType(with);
 
             var str = self.GetString();

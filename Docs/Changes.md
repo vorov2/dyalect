@@ -1,4 +1,5 @@
 # 0.31.0
+  * Change: _Methods such as Trim should accept both strings and chars_ ([Issue #598](https://github.com/vorov2/dyalect/issues/598)).
   * Add: _Consider shortcut syntax for parameterless lambda_ ([Issue #591](https://github.com/vorov2/dyalect/issues/591)).
   * Add: _Add a `Lazy` type_ ([Issue #551](https://github.com/vorov2/dyalect/issues/551)).
 
