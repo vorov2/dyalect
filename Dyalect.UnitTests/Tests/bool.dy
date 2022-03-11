@@ -19,3 +19,9 @@
     assert(4, t.Code)
     assert("Bool", t.Name)
 #endtest
+
+#test "Conversion: as"
+    let b = true
+    assert(true, b as Bool)
+    assert("true", b as String)
+#endtest

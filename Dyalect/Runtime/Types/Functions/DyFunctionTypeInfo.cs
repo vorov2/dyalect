@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Function;
 
-        public override int ReflectedTypeCode => DyType.Function;
+        public override int ReflectedTypeId => DyType.Function;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.ToString());

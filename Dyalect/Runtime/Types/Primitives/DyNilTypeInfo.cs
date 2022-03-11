@@ -7,7 +7,7 @@
 
         public override string TypeName => DyTypeNames.Nil;
 
-        public override int ReflectedTypeCode => DyType.Nil;
+        public override int ReflectedTypeId => DyType.Nil;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.TypeId == right.TypeId ? DyBool.True : DyBool.False;
@@ -23,5 +23,12 @@
 
             return base.InitializeStaticMember(name, ctx);
         }
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.ReflectedTypeId switch
+            {
+                DyType.Bool => DyBool.False,
+                _ => base.CastOp(self, targetType, ctx)
+            };
     }
 }

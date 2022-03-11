@@ -4,60 +4,60 @@ namespace Dyalect.Runtime.Types
 {
     public class DyDictionary : DyEnumerable
     {
-        internal readonly Dictionary<DyObject, DyObject> Map;
+        internal readonly Dictionary<DyObject, DyObject> Dictionary;
 
-        public override int Count => Map.Count;
+        public override int Count => Dictionary.Count;
 
         public DyObject this[DyObject key]
         {
-            get => Map[key];
-            set => Map[key] = value;
+            get => Dictionary[key];
+            set => Dictionary[key] = value;
         }
 
         internal DyDictionary() : base(DyType.Dictionary)
         {
-            Map = new Dictionary<DyObject, DyObject>();
+            Dictionary = new Dictionary<DyObject, DyObject>();
         }
 
         internal DyDictionary(Dictionary<DyObject, DyObject> dict) : base(DyType.Dictionary)
         {
-            Map = dict;
+            Dictionary = dict;
         }
 
         public void Add(DyObject key, DyObject value)
         {
             Version++;
-            Map.Add(key, value);
+            Dictionary.Add(key, value);
         }
 
         public bool TryAdd(DyObject key, DyObject value)
         {
             Version++;
-            return Map.TryAdd(key, value);
+            return Dictionary.TryAdd(key, value);
         }
 
         public bool TryGet(DyObject key, out DyObject? value) =>
-            Map.TryGetValue(key, out value);
+            Dictionary.TryGetValue(key, out value);
 
         public bool Remove(DyObject key)
         {
             Version++;
-            return Map.Remove(key);
+            return Dictionary.Remove(key);
         }
 
-        public bool ContainsKey(DyObject key) => Map.ContainsKey(key);
+        public bool ContainsKey(DyObject key) => Dictionary.ContainsKey(key);
 
         public void Clear()
         {
             Version++;
-            Map.Clear();
+            Dictionary.Clear();
         }
 
-        public override object ToObject() => Map;
+        public override object ToObject() => Dictionary;
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
-            if (!Map.TryGetValue(index, out var value))
+            if (!Dictionary.TryGetValue(index, out var value))
                 return ctx.KeyNotFound(index);
             else
                 return value;
@@ -65,15 +65,15 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
         {
-            if (!Map.TryAdd(index, value))
-                Map[index] = value;
+            if (!Dictionary.TryAdd(index, value))
+                Dictionary[index] = value;
             else
                 Version++;
         }
 
         public override IEnumerator<DyObject> GetEnumerator() => new DyDictionaryEnumerator(this);
 
-        public override int GetHashCode() => Map.GetHashCode();
+        public override int GetHashCode() => Dictionary.GetHashCode();
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => ContainsKey(new DyString(name));
     }

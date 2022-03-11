@@ -3,6 +3,7 @@
   * Add: _Consider shortcut syntax for parameterless lambda_ ([Issue #591](https://github.com/vorov2/dyalect/issues/591)).
   * Add: _Add a `Lazy` type_ ([Issue #551](https://github.com/vorov2/dyalect/issues/551), [docs](https://github.com/vorov2/dyalect/wiki/Variables#lazy)).
   * Add: _Consider implementing generic conversion routines_ ([Issue #506](https://github.com/vorov2/dyalect/issues/506), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#as)).
+  * Fix: _Incorrect `ToString` implementation for dictionaries_ ([Issue #599](https://github.com/vorov2/dyalect/issues/599)).
 
 # 0.30.1
   * Fix: _VM can crush when invoking functions from foreign modules_ ([Issue #595](https://github.com/vorov2/dyalect/issues/595)).

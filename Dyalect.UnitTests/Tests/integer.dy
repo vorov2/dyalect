@@ -45,3 +45,11 @@
     assert([0,1,2,3,4,5], [0..5])
     assert([0,2,4], (0^2..4).ToArray())
 #endtest
+
+#test "Conversion: as"
+    let x = 12
+    assert(12, x as Integer)
+    assert(12.0, x as Float)
+    assert("12", x as String)
+    assert(true, x as Bool)
+#endtest

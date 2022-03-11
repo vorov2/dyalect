@@ -7,7 +7,7 @@
 
         public override string TypeName => DyTypeNames.Object;
 
-        public override int ReflectedTypeCode => DyType.Object;
+        public override int ReflectedTypeId => DyType.Object;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.ToString()!);

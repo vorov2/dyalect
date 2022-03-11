@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Bool;
 
-        public override int ReflectedTypeCode => DyType.Bool;
+        public override int ReflectedTypeId => DyType.Bool;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.GetBool(ctx) == right.GetBool(ctx) ? DyBool.True : DyBool.False;

@@ -609,7 +609,7 @@ namespace Dyalect.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Pop().Force(ctx);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        evalStack.Push(((DyTypeInfo)left).ReflectedTypeCode == right.TypeId);
+                        evalStack.Push(((DyTypeInfo)left).ReflectedTypeId == right.TypeId);
                         break;
                     case OpCode.CtorCheck:
                         right = evalStack.Peek().Force(ctx);

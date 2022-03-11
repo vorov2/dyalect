@@ -112,3 +112,10 @@
     let xs = Set(1, 2, 3)
     assert("Set (1, 2, 3)", xs.ToString())
 #endtest
+
+#test "Conversion: as"
+    let xs = Set(1, 2, 3)
+    assert([1,2,3], xs as Array)
+    assert((1,2,3), xs as Tuple)
+    assert(true, xs as Bool)
+#endtest

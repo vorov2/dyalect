@@ -13,7 +13,7 @@ namespace Dyalect.Runtime.Types
         {
             this.obj = obj;
             version = obj.Version;
-            enumerator = obj.Map.GetEnumerator();
+            enumerator = obj.Dictionary.GetEnumerator();
         }
 
         public DyObject Current

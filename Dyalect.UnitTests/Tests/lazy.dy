@@ -190,3 +190,10 @@
     force(f)
     assert("Yes!", outp)
 #endtest
+
+#test "Convert lazy"
+    type Foo()
+    func Foo as Integer { 42 }
+    lazy f = Foo()
+    assert(42, f as Integer)
+#endtest

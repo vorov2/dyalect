@@ -8,7 +8,7 @@ namespace Dyalect.Runtime.Types
     {
         public override string TypeName => DyTypeNames.Set;
 
-        public override int ReflectedTypeCode => DyType.Set;
+        public override int ReflectedTypeId => DyType.Set;
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -160,7 +160,7 @@ namespace Dyalect.Runtime.Types
             };
 
         protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-            targetType.TypeId switch
+            targetType.ReflectedTypeId switch
             {
                 DyType.Array => new DyArray(((DySet)self).ToArray()),
                 DyType.Tuple => new DyTuple(((DySet)self).ToArray()),

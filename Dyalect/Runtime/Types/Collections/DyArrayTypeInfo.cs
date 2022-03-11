@@ -10,7 +10,7 @@ namespace Dyalect.Runtime.Types
     {
         public override string TypeName => DyTypeNames.Array;
 
-        public override int ReflectedTypeCode => DyType.Array;
+        public override int ReflectedTypeId => DyType.Array;
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not

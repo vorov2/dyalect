@@ -4,7 +4,7 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyForeignObject : DyObject
     {
-        public override int TypeId => TypeInfo.ReflectedTypeCode;
+        public override int TypeId => TypeInfo.ReflectedTypeId;
 
         public DyTypeInfo TypeInfo { get; }
 

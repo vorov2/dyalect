@@ -33,7 +33,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Error;
 
-        public override int ReflectedTypeCode => DyType.Error;
+        public override int ReflectedTypeId => DyType.Error;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.ToString()!);

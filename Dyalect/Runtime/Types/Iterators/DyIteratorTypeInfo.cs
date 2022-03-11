@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Iterator;
 
-        public override int ReflectedTypeCode => DyType.Iterator;
+        public override int ReflectedTypeId => DyType.Iterator;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => GetCount(ctx, arg);
 
@@ -475,7 +475,7 @@ namespace Dyalect.Runtime.Types
             };
 
         protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-            targetType.TypeId switch
+            targetType.ReflectedTypeId switch
             {
                 DyType.Tuple => new DyTuple(((DyIterator)self).ToEnumerable().ToArray()),
                 DyType.Array => new DyArray(((DyIterator)self).ToEnumerable().ToArray()),

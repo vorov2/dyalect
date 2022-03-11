@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
 
         public abstract string TypeName { get; }
 
-        public abstract int ReflectedTypeCode { get; }
+        public abstract int ReflectedTypeId { get; }
 
         protected DyTypeInfo() : base(DyType.TypeInfo) { }
 
@@ -314,12 +314,12 @@ namespace Dyalect.Runtime.Types
         //as
         private readonly Dictionary<int, DyFunction> conversions = new();
         protected virtual DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-            targetType.TypeId switch
+            targetType.ReflectedTypeId switch
             {
                 DyType.Bool => DyBool.True,
                 DyType.String => ToString(ctx, self),
                 DyType.Char => new DyChar((ToString(ctx, self)?.GetString() ?? "\0")[0]),
-                _ when targetType.TypeId == self.TypeId => self,
+                _ when targetType.ReflectedTypeId == self.TypeId => self,
                 _ => ctx.InvalidCast(self.GetTypeInfo(ctx).TypeName, targetType.TypeName)
             };
 
@@ -410,7 +410,7 @@ namespace Dyalect.Runtime.Types
             {
                 "TypeInfo" => Func.Static(name, (c, obj) => c.RuntimeContext.Types[obj.TypeId], -1, new Par("value")),
                 Builtins.Has => Func.Member(name, Has, -1, new Par("member")),
-                Builtins.Code => Func.Auto(name, (ctx, self) => DyInteger.Get(((DyTypeInfo)self).ReflectedTypeCode)),
+                Builtins.Code => Func.Auto(name, (ctx, self) => DyInteger.Get(((DyTypeInfo)self).ReflectedTypeId)),
                 Builtins.Name => Func.Auto(name, (ctx, self) => new DyString(((DyTypeInfo)self).TypeName)),
                 Builtins.DelMember => Func.Static(name,
                     (context, strObj) =>

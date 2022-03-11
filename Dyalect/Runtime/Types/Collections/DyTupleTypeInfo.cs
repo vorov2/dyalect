@@ -14,7 +14,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Tuple;
 
-        public override int ReflectedTypeCode => DyType.Tuple;
+        public override int ReflectedTypeId => DyType.Tuple;
 
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             new DyTuple(((DyCollection)left).Concat(ctx, right));

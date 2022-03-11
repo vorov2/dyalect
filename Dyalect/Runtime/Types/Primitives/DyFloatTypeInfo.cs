@@ -13,7 +13,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Float;
 
-        public override int ReflectedTypeCode => DyType.Float;
+        public override int ReflectedTypeId => DyType.Float;
 
         #region Binary Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -173,7 +173,7 @@ namespace Dyalect.Runtime.Types
             };
 
         protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-            targetType.TypeId switch
+            targetType.ReflectedTypeId switch
             {
                 DyType.Integer => DyInteger.Get((long)self.GetFloat()),
                 _ => base.CastOp(self, targetType, ctx)

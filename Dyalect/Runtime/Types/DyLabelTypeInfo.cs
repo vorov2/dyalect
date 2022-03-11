@@ -7,7 +7,7 @@
 
         public override string TypeName => DyTypeNames.Label;
 
-        public override int ReflectedTypeCode => DyType.Label;
+        public override int ReflectedTypeId => DyType.Label;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {

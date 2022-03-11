@@ -4,7 +4,7 @@
     {
         public override string TypeName => DyTypeNames.Lazy;
 
-        public override int ReflectedTypeCode => DyType.Lazy;
+        public override int ReflectedTypeId => DyType.Lazy;
 
         protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 

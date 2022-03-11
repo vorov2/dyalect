@@ -6,12 +6,12 @@
 
         public override string TypeName { get; }
 
-        public override int ReflectedTypeCode { get; }
+        public override int ReflectedTypeId { get; }
 
         public DyClassInfo(string typeName, int typeCode)
         {
             TypeName = typeName;
-            ReflectedTypeCode = typeCode;
+            ReflectedTypeId = typeCode;
             privateCons = !string.IsNullOrEmpty(typeName) && typeName.Length > 0 && char.IsLower(typeName[0]);
         }
 

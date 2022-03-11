@@ -11,7 +11,7 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Char;
 
-        public override int ReflectedTypeCode => DyType.Char;
+        public override int ReflectedTypeId => DyType.Char;
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.GetString());
@@ -140,7 +140,7 @@ namespace Dyalect.Runtime.Types
             };
 
         protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-            targetType.TypeId switch
+            targetType.ReflectedTypeId switch
             {
                 DyType.Integer => DyInteger.Get(self.GetChar()),
                 DyType.Float => new DyFloat(self.GetChar()),

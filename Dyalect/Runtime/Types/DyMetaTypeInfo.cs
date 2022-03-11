@@ -7,7 +7,7 @@
 
         public override string TypeName => DyTypeNames.TypeInfo;
 
-        public override int ReflectedTypeCode => DyType.TypeInfo;
+        public override int ReflectedTypeId => DyType.TypeInfo;
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
