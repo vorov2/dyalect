@@ -130,6 +130,12 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject InvalidType(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.InvalidType);
+            return DyNil.Instance;
+        }
+
         public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
         {
             ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[value.TypeId].TypeName);

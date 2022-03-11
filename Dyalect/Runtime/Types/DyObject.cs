@@ -12,7 +12,7 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => $"[type:{TypeId}]";
 
-        protected internal virtual bool GetBool() => true;
+        protected internal virtual bool GetBool(ExecutionContext ctx) => true;
 
         protected internal virtual long GetInteger() => throw new InvalidCastException();
 
@@ -72,5 +72,7 @@ namespace Dyalect.Runtime.Types
         protected int CalculateSimpleHashCode() => base.GetHashCode();
 
         public DyTypeInfo GetTypeInfo(ExecutionContext ctx) => ctx.RuntimeContext.Types[TypeId];
+
+        internal virtual DyObject Force(ExecutionContext ctx) => this;
     }
 }

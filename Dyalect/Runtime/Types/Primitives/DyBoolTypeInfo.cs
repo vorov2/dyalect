@@ -11,13 +11,13 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeCode => DyType.Bool;
 
-        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-            left.GetBool() == right.GetBool() ? DyBool.True : DyBool.False;
+        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+            left.GetBool(ctx) == right.GetBool(ctx) ? DyBool.True : DyBool.False;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(ReferenceEquals(arg, DyBool.True) ? "true" : "false");
 
-        private DyObject Convert(ExecutionContext ctx, DyObject val) => val.GetBool() ? DyBool.True : DyBool.False;
+        private DyObject Convert(ExecutionContext ctx, DyObject val) => val.GetBool(ctx) ? DyBool.True : DyBool.False;
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
         {

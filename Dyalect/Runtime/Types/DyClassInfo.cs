@@ -19,7 +19,7 @@
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
 
-        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var self = (DyClass)left;
 
@@ -36,7 +36,7 @@
             return DyBool.False;
         }
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var cust = (DyClass)arg;
             var priv = cust.Fields;
@@ -51,7 +51,7 @@
                 return new DyString($"{TypeName}.{cust.Constructor}{priv.ToString(ctx)}");
         }
 
-        protected override DyObject LengthOp(DyObject self, ExecutionContext ctx)
+        internal protected override DyObject LengthOp(DyObject self, ExecutionContext ctx)
         {
             var cls = (DyClass)self;
 
@@ -61,7 +61,7 @@
             return DyInteger.Get(cls.Fields.Count);
         }
 
-        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             var cls = (DyClass)self;
 
@@ -71,7 +71,7 @@
             return cls.Fields.GetItem(index, ctx);
         }
 
-        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        internal protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             var cls = (DyClass)self;
 

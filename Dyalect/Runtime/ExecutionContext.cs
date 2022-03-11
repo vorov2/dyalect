@@ -43,8 +43,17 @@ namespace Dyalect.Runtime
         internal CallStack CallStack { get; }
 
         internal SectionStack CatchMarks { get; }
-        
-        internal virtual DyError? Error { get; set; }
+
+        private DyError? _error;
+        internal virtual DyError? Error
+        {
+            get => _error;
+            set
+            {
+                if (_error is null || value is null)
+                    _error = value;
+            }
+        }
 
         internal Stack<int>? Sections { get; set; }
 

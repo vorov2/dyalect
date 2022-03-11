@@ -30,7 +30,7 @@ namespace Dyalect.Runtime.Types
 
         public override int GetHashCode() => Value.GetHashCode();
 
-        protected internal override bool GetBool() => !string.IsNullOrEmpty(Value);
+        protected internal override bool GetBool(ExecutionContext ctx) => !string.IsNullOrEmpty(Value);
 
         public override bool Equals(DyObject? obj) =>
             obj is DyString s ? Value == s.Value : base.Equals(obj);

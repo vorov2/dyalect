@@ -25,7 +25,7 @@ namespace Dyalect.Runtime.Types
         #region Binary Operations
         //x + y
         private DyFunction? add;
-        protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+        internal protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right.TypeId == DyType.String && left.TypeId != DyType.String)
                 return ctx.RuntimeContext.String.Add(ctx, left, right);
@@ -42,7 +42,7 @@ namespace Dyalect.Runtime.Types
 
         //x - y
         private DyFunction? sub;
-        protected virtual DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Sub, ctx.RuntimeContext.Types[left.TypeId].TypeName);
         public DyObject Sub(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -53,7 +53,7 @@ namespace Dyalect.Runtime.Types
 
         //x * y
         private DyFunction? mul;
-        protected virtual DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Mul, ctx.RuntimeContext.Types[left.TypeId].TypeName);
         public DyObject Mul(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -64,7 +64,7 @@ namespace Dyalect.Runtime.Types
 
         //x / y
         private DyFunction? div;
-        protected virtual DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Div, ctx.RuntimeContext.Types[left.TypeId].TypeName);
         public DyObject Div(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -75,7 +75,7 @@ namespace Dyalect.Runtime.Types
 
         //x % y
         private DyFunction? rem;
-        protected virtual DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Rem, ctx.RuntimeContext.Types[left.TypeId].TypeName);
         public DyObject Rem(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -86,7 +86,7 @@ namespace Dyalect.Runtime.Types
 
         //x << y
         private DyFunction? shl;
-        protected virtual DyObject ShiftLeftOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject ShiftLeftOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Shl, ctx.RuntimeContext.Types[left.TypeId].TypeName);
         public DyObject ShiftLeft(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -97,7 +97,7 @@ namespace Dyalect.Runtime.Types
 
         //x >> y
         private DyFunction? shr;
-        protected virtual DyObject ShiftRightOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject ShiftRightOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Shr, ctx.RuntimeContext.Types[left.TypeId].TypeName);
         public DyObject ShiftRight(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -108,7 +108,7 @@ namespace Dyalect.Runtime.Types
 
         //x & y
         private DyFunction? and;
-        protected virtual DyObject AndOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject AndOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.And, ctx.RuntimeContext.Types[left.TypeId].TypeName);
         public DyObject And(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -119,7 +119,7 @@ namespace Dyalect.Runtime.Types
 
         //x | y
         private DyFunction? or;
-        protected virtual DyObject OrOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject OrOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Or, ctx.RuntimeContext.Types[left.TypeId].TypeName);
         public DyObject Or(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -130,7 +130,7 @@ namespace Dyalect.Runtime.Types
 
         //x ^ y
         private DyFunction? xor;
-        protected virtual DyObject XorOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject XorOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Xor, ctx.RuntimeContext.Types[left.TypeId].TypeName);
         public DyObject Xor(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -141,20 +141,20 @@ namespace Dyalect.Runtime.Types
 
         //x == y
         private DyFunction? eq;
-        protected virtual DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ReferenceEquals(left, right) ? DyBool.True : DyBool.False;
         public DyObject Eq(ExecutionContext ctx, DyObject left, DyObject right)
         {
             if (eq is not null)
                 return eq.BindToInstance(ctx, left).Call(ctx, right);
             if (right.TypeId == DyType.Bool)
-                return left.GetBool() == right.GetBool() ? DyBool.True : DyBool.False;
+                return left.GetBool(ctx) == right.GetBool(ctx) ? DyBool.True : DyBool.False;
             return EqOp(left, right, ctx);
         }
 
         //x != y
         private DyFunction? neq;
-        protected virtual DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             Eq(ctx, left, right) == DyBool.True ? DyBool.False : DyBool.True;
         public DyObject Neq(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -165,7 +165,7 @@ namespace Dyalect.Runtime.Types
 
         //x > y
         private DyFunction? gt;
-        protected virtual DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Gt, ctx.RuntimeContext.Types[left.TypeId].TypeName);
         public DyObject Gt(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -176,7 +176,7 @@ namespace Dyalect.Runtime.Types
 
         //x < y
         private DyFunction? lt;
-        protected virtual DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected virtual DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Lt, ctx.RuntimeContext.Types[left.TypeId].TypeName);
         public DyObject Lt(ExecutionContext ctx, DyObject left, DyObject right)
         {
@@ -187,7 +187,7 @@ namespace Dyalect.Runtime.Types
 
         //x >= y
         private DyFunction? gte;
-        protected virtual DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
+        internal protected virtual DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var ret = ReferenceEquals(Gt(ctx, left, right), DyBool.True)
                 || ReferenceEquals(Eq(ctx, left, right), DyBool.True);
@@ -202,7 +202,7 @@ namespace Dyalect.Runtime.Types
 
         //x <= y
         private DyFunction? lte;
-        protected virtual DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
+        internal protected virtual DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var ret = ReferenceEquals(Lt(ctx, left, right), DyBool.True)
                 || ReferenceEquals(Eq(ctx, left, right), DyBool.True);
@@ -219,7 +219,7 @@ namespace Dyalect.Runtime.Types
         #region Unary Operations
         //-x
         private DyFunction? neg;
-        protected virtual DyObject NegOp(DyObject arg, ExecutionContext ctx) =>
+        internal protected virtual DyObject NegOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Neg, ctx.RuntimeContext.Types[arg.TypeId].TypeName);
         public DyObject Neg(ExecutionContext ctx, DyObject arg)
         {
@@ -230,7 +230,7 @@ namespace Dyalect.Runtime.Types
 
         //+x
         private DyFunction? plus;
-        protected virtual DyObject PlusOp(DyObject arg, ExecutionContext ctx) =>
+        internal protected virtual DyObject PlusOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Plus, ctx.RuntimeContext.Types[arg.TypeId].TypeName);
         public DyObject Plus(ExecutionContext ctx, DyObject arg)
         {
@@ -241,8 +241,8 @@ namespace Dyalect.Runtime.Types
 
         //!x
         private DyFunction? not;
-        protected virtual DyObject NotOp(DyObject arg, ExecutionContext ctx) =>
-            arg.GetBool() ? DyBool.False : DyBool.True;
+        internal protected virtual DyObject NotOp(DyObject arg, ExecutionContext ctx) =>
+            arg.GetBool(ctx) ? DyBool.False : DyBool.True;
         public DyObject Not(ExecutionContext ctx, DyObject arg)
         {
             if (not is not null)
@@ -252,7 +252,7 @@ namespace Dyalect.Runtime.Types
 
         //~x
         private DyFunction? bitnot;
-        protected virtual DyObject BitwiseNotOp(DyObject arg, ExecutionContext ctx) =>
+        internal protected virtual DyObject BitwiseNotOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.BitNot, ctx.RuntimeContext.Types[arg.TypeId].TypeName);
         public DyObject BitwiseNot(ExecutionContext ctx, DyObject arg)
         {
@@ -263,7 +263,7 @@ namespace Dyalect.Runtime.Types
 
         //x.len
         private DyFunction? len;
-        protected virtual DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+        internal protected virtual DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Len, ctx.RuntimeContext.Types[arg.TypeId].TypeName);
         public DyObject Length(ExecutionContext ctx, DyObject arg)
         {
@@ -274,7 +274,7 @@ namespace Dyalect.Runtime.Types
 
         //x.toString
         private DyFunction? tos;
-        protected virtual DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.ToString());
+        internal protected virtual DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.ToString());
         public DyObject ToString(ExecutionContext ctx, DyObject arg)
         {
             if (tos is not null)
@@ -290,7 +290,7 @@ namespace Dyalect.Runtime.Types
         #region Other Operations
         //x[y]
         private DyFunction? get;
-        protected virtual DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+        internal protected virtual DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
         public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
         {
             if (get is not null)
@@ -301,7 +301,7 @@ namespace Dyalect.Runtime.Types
 
         //x[y] = z
         private DyFunction? set;
-        protected virtual DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx) =>
+        internal protected virtual DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Set, ctx.RuntimeContext.Types[self.TypeId].TypeName);
         public DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
@@ -401,10 +401,10 @@ namespace Dyalect.Runtime.Types
         #region Instance
         protected readonly Dictionary<string, DyFunction> Members = new();
 
-        internal bool HasInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+        internal virtual bool HasInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             LookupInstanceMember(self, GetBuiltinName(name), ctx) is not null;
 
-        internal DyObject GetInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        internal virtual DyObject GetInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             var value = LookupInstanceMember(self, name, ctx);
 

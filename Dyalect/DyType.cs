@@ -21,7 +21,8 @@ namespace Dyalect
         public const int Dictionary = 14;
         public const int Set = 15;
         public const int Error = 16;
-        public const int Object = 17;
+        public const int Lazy = 17;
+        public const int Object = 18;
 
         internal static List<DyTypeInfo> GetAll() =>
             new()
@@ -43,6 +44,7 @@ namespace Dyalect
                 new DyDictionaryTypeInfo(),
                 new DySetTypeInfo(),
                 new DyErrorTypeInfo(),
+                new DyLazyTypeInfo(),
                 new DyObjectTypeInfo()
             };
 
@@ -65,6 +67,7 @@ namespace Dyalect
                 DyTypeNames.Dictionary => Dictionary,
                 DyTypeNames.Set => Set,
                 DyTypeNames.Error => Error,
+                DyTypeNames.Lazy => Lazy,
                 DyTypeNames.Object => Object,
                 _ => default
             }; 
@@ -88,6 +91,7 @@ namespace Dyalect
                 Dictionary => DyTypeNames.Dictionary,
                 Set => DyTypeNames.Set,
                 Error => DyTypeNames.Error,
+                Lazy => DyTypeNames.Lazy,
                 Object => DyTypeNames.Object,
                 _ => code.ToString(),
             };
@@ -114,6 +118,7 @@ namespace Dyalect
                 Dictionary,
                 Set,
                 Error,
+                Lazy,
                 Object
             };
 
@@ -133,6 +138,7 @@ namespace Dyalect
         public const string Dictionary = "Dictionary";
         public const string Set = "Set";
         public const string Error = "Error";
+        public const string Lazy = "Lazy";
         public const string Object = "Object";
     }
 }

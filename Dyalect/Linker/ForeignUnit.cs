@@ -163,12 +163,12 @@ namespace Dyalect.Linker
             }
             else
             {
-                var (fun, types) = CreateDelegate(mi, pars, this);
+                var (fun, types) = CreateDelegate(name, mi, pars, this);
                 return new ForeignFunction(name, new() { Func = fun, Types = types }, parsMeta, varArgIndex, hasContext);
             }
         }
 
-        private (Delegate,Type[]) CreateDelegate(MethodInfo self, ParameterInfo[] pars, object instance)
+        private (Delegate,Type[]) CreateDelegate(string name, MethodInfo self, ParameterInfo[] pars, object instance)
         {
             var types = new Type[pars.Length + 1];
 

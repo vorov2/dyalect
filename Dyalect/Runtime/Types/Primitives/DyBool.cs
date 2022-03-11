@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
 
         private sealed class DyBoolTrue: DyBool
         {
-            protected internal override bool GetBool() => true;
+            protected internal override bool GetBool(ExecutionContext ctx) => true;
 
             public override string ToString() => "true";
 
@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
 
         private sealed class DyBoolFalse: DyBool
         {
-            protected internal override bool GetBool() => false;
+            protected internal override bool GetBool(ExecutionContext ctx) => false;
 
             public override string ToString() => "false";
 
@@ -27,7 +27,7 @@ namespace Dyalect.Runtime.Types
 
         private DyBool() : base(DyType.Bool) { }
 
-        public override object ToObject() => GetBool();
+        public override object ToObject() => this is DyBoolTrue;
 
         public override DyObject Clone() => this;
 

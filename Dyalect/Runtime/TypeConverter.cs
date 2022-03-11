@@ -61,10 +61,18 @@ namespace Dyalect.Runtime
             }
         }
 
-        public static T? ConvertTo<T>(DyObject obj) => (T?)ConvertTo(obj, typeof(T));
+        public static T? ConvertTo<T>(ExecutionContext ctx, DyObject obj) => (T?)ConvertTo(ctx, obj, typeof(T));
 
-        public static object? ConvertTo(DyObject obj, Type type)
+        public static object? ConvertTo(ExecutionContext ctx, DyObject obj, Type type)
         {
+            if (obj.TypeId == DyType.Lazy)
+            {
+                obj = obj.Force(ctx);
+
+                if (ctx.HasErrors)
+                    return null;
+            }
+
             if (type == Dyalect.Types.DyObject)
                 return obj;
             else if (type == Dyalect.Types.Object)
@@ -74,7 +82,7 @@ namespace Dyalect.Runtime
 
             switch (Type.GetTypeCode(type))
             {
-                case TypeCode.Boolean: return obj.GetBool();
+                case TypeCode.Boolean: return obj.GetBool(null!);
                 case TypeCode.Byte: return (byte)obj.GetInteger();
                 case TypeCode.Int16: return (short)obj.GetInteger();
                 case TypeCode.Int32: return (int)obj.GetInteger();
@@ -117,7 +125,7 @@ namespace Dyalect.Runtime
                             for (var i = 0; i < coll.Count; i++)
                             {
                                 var c = coll.GetValue(i);
-                                arr.SetValue(ConvertTo(c, et!), i);
+                                arr.SetValue(ConvertTo(ctx, c, et!), i);
                             }
 
                             return arr;

@@ -199,7 +199,7 @@
     <value>An index or field "{0}" is read-only.</value>
   </data>
   <data name="InvalidType.0" xml:space="preserve">
-    <value>Type is unexpected.</value>
+    <value>Invalid type.</value>
   </data>
   <data name="InvalidValue.0" xml:space="preserve">
     <value>Value is invalid.</value>

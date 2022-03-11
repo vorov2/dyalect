@@ -17,10 +17,10 @@ namespace Dyalect.Runtime.Types
             | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
             | SupportedOperations.Iter;
 
-        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             DyInteger.Get(((DyArray)arg).Count);
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var arr = (DyArray)arg;
             var sb = new StringBuilder();
@@ -42,12 +42,12 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             new DyArray(((DyCollection)left).Concat(ctx, right));
 
-        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        internal protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             self.SetItem(index, value, ctx);
             return DyNil.Instance;
@@ -268,7 +268,7 @@ namespace Dyalect.Runtime.Types
                 if (ctx.HasErrors)
                     return DyNil.Instance;
 
-                if (res.GetBool())
+                if (res.GetBool(ctx))
                     toDelete.Add(o);
             }
 

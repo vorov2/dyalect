@@ -49,7 +49,7 @@ namespace Dyalect.Library.Types
 
         public DyRegexMatch(Match match) : base(match) => this.match = match;
 
-        protected internal override bool GetBool() => match.Success;
+        protected internal override bool GetBool(ExecutionContext ctx) => match.Success;
 
         private DyTuple GetCaptures()
         {
@@ -75,7 +75,7 @@ namespace Dyalect.Library.Types
     {
         public override string TypeName => "Regex";
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             return new DyString(((DyRegex)arg).Regex.ToString());
         }
@@ -83,7 +83,7 @@ namespace Dyalect.Library.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             return left is DyRegex a && right is DyRegex b && a.Regex.ToString() == b.Regex.ToString()
                 ? DyBool.True : DyBool.False;

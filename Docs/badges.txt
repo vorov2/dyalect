@@ -5,3 +5,6 @@ VSCode marketplace extension installs:
 https://vsmarketplacebadge.apphb.com/installs/vorov2.dyalect.svg
 
 https://github.com/Naereen/badges
+
+* Add: _Consider shortcut syntax for parameterless lambda_ ([Issue #591](https://github.com/vorov2/dyalect/issues/591)).
+  

@@ -177,7 +177,7 @@ namespace Dyalect.Linker
             }
 
             if (x is DyObject xa && y is DyObject ba)
-                return ctx.RuntimeContext.Types[xa.TypeId].Eq(ctx, xa, ba).GetBool();
+                return ctx.RuntimeContext.Types[xa.TypeId].Eq(ctx, xa, ba).GetBool(ctx);
 
             return Equals(x, y);
         }
@@ -206,7 +206,7 @@ namespace Dyalect.Linker
         [Function("min")]
         public DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (ctx.RuntimeContext.Types[x.TypeId].Lt(ctx, x, y).GetBool())
+            if (ctx.RuntimeContext.Types[x.TypeId].Lt(ctx, x, y).GetBool(ctx))
                 return x;
             else
                 return y;
@@ -215,7 +215,7 @@ namespace Dyalect.Linker
         [Function("max")]
         public DyObject Max(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (ctx.RuntimeContext.Types[x.TypeId].Gt(ctx, x, y).GetBool())
+            if (ctx.RuntimeContext.Types[x.TypeId].Gt(ctx, x, y).GetBool(ctx))
                 return x;
             else
                 return y;
@@ -249,7 +249,7 @@ namespace Dyalect.Linker
             if (ReferenceEquals(x, DyInteger.Zero)) 
                 return DyInteger.Zero;
 
-            if (ctx.RuntimeContext.Types[x.TypeId].Lt(ctx, x, DyInteger.Zero).GetBool())
+            if (ctx.RuntimeContext.Types[x.TypeId].Lt(ctx, x, DyInteger.Zero).GetBool(ctx))
                 return DyInteger.MinusOne;
             
             return DyInteger.One;

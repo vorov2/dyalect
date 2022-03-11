@@ -16,22 +16,22 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeCode => DyType.Tuple;
 
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        internal protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             new DyTuple(((DyCollection)left).Concat(ctx, right));
 
-        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = ((DyTuple)arg).Count;
             return DyInteger.Get(len);
         }
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var tup = (DyTuple)arg;
             return tup.ToString(ctx);
         }
 
-        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId != right.TypeId)
                 return DyBool.False;
@@ -54,9 +54,9 @@ namespace Dyalect.Runtime.Types
             return DyBool.True;
         }
 
-        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        internal protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             self.SetItem(index, value, ctx);
             return DyNil.Instance;
@@ -114,7 +114,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = t.Values[i].GetTaggedValue();
 
-                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, item).GetBool())
+                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, item).GetBool(ctx))
                     return RemoveAt(ctx, t, i);
             }
 
