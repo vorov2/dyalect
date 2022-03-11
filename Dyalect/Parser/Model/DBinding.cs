@@ -10,6 +10,8 @@ namespace Dyalect.Parser.Model
 
         public bool Constant { get; set; }
 
+        public bool Lazy { get; set; }
+
         protected internal override bool HasAuto() => AutoClose;
 
         internal override void ToString(StringBuilder sb)
@@ -17,7 +19,7 @@ namespace Dyalect.Parser.Model
             if (AutoClose)
                 sb.Append("auto ");
 
-            sb.Append(Constant ? "let " : "var ");
+            sb.Append(Constant ? "let " : Lazy ? "lazy" : "var ");
             Pattern.ToString(sb);
 
             if (Init is not null)

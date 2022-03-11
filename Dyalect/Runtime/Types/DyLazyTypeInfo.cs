@@ -10,12 +10,12 @@
 
         private DyTypeInfo? Force(DyObject obj, ExecutionContext ctx)
         {
-            obj = obj.Force(ctx);
+            var o = obj.Force(ctx);
 
-            if (ctx.HasErrors)
+            if (o is null || ctx.HasErrors)
                 return null;
 
-            return ctx.RuntimeContext.Types[obj.TypeId];
+            return ctx.RuntimeContext.Types[o.TypeId];
         }
 
         internal protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) => Force(left, ctx)?.AddOp(left, right, ctx) ?? DyNil.Instance;

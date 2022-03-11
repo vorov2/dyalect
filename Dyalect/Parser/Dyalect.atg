@@ -210,8 +210,8 @@ PRODUCTIONS
         (. var ot = t; string str = t.val; .)
         [
             (
-                identToken
-                (. arg = new DTypeParameter(ot) { Name = t.val, TypeAnnotation = new Qualident(str), Mutable = mut }; .)
+                identToken 
+                (. arg = new DTypeParameter(ot) { Name = t.val, TypeAnnotation = new Qualident(str), Mutable = mut}; .)
             )
             |
             (
@@ -437,8 +437,8 @@ PRODUCTIONS
         (. node = null; .)
         (
             (
-                ( "var" | "let" | "const" (. Deprecated("const"); .) )
-                (. var bin = new DBinding(t) { Constant = t.val == "let" }; .)
+                ( "var" | "let" | "const" (. Deprecated("const"); .) | "lazy" )
+                (. var bin = new DBinding(t) { Constant = t.val == "let", Lazy = t.val == "lazy" }; .)
                 OrPattern<out var pat> (. bin.Pattern = pat; .)
                 [
                     "=" Expr<out node>

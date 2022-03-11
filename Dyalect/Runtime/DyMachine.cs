@@ -640,6 +640,9 @@ namespace Dyalect.Runtime
                     case OpCode.Mut:
                         ((DyLabel)evalStack.Peek()).Mutable = true;
                         break;
+                    case OpCode.NewLaz:
+                        evalStack.Replace(new DyLazy((DyFunction)evalStack.Peek()));
+                        break;
                 }
             }
             goto CYCLE;

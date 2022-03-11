@@ -541,7 +541,7 @@ namespace Dyalect.Runtime.Types
                 Builtins.Iterator => Support(self, SupportedOperations.Iter) ? Func.Member(name, GetIterator) : null,
                 Builtins.Clone => Func.Member(name, Clone),
                 Builtins.Has => Func.Member(name, Has, -1, new Par("member")),
-                Builtins.Type => Func.Member(name, (ct, o) => ct.RuntimeContext.Types[o.TypeId]),
+                Builtins.Type => Func.Member(name, (ct, o) => ct.RuntimeContext.Types[o.Force(ctx)?.TypeId ?? 0]),
                 _ => InitializeInstanceMember(self, name, ctx)
             };
 

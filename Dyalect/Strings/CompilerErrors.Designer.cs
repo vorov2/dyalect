@@ -214,6 +214,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid lazy binding, patterns are not supported in lazy bindings..
+        /// </summary>
+        internal static string InvalidLazyBinding {
+            get {
+                return ResourceManager.GetString("InvalidLazyBinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A &quot;throw&quot; statement with no arguments is only valid inside a &quot;catch&quot; block..
         /// </summary>
         internal static string InvalidRethrow {

@@ -6,7 +6,7 @@
     },
     "Run tests": {
       "commandName": "Project",
-      "commandLineArgs": "..\\Dyalect.UnitTests\\Tests\\ -test "
+      "commandLineArgs": "..\\Dyalect.UnitTests\\Tests\\lazy.dy -test "
     },
     "Interactive": {
       "commandName": "Project"
@@ -17,7 +17,6 @@
     },
     "WSL": {
       "commandName": "WSL2",
-      "environmentVariables": {},
       "distributionName": ""
     }
   }

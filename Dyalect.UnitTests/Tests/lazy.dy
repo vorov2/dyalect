@@ -1,0 +1,48 @@
+﻿#test "Type info"
+    lazy x = "a" + "b" + "c"
+    assert(String, x.GetType())
+    lazy y = 1 + 2 + 3
+    assert(Integer, y.GetType())
+    assert(Integer, y.GetType())
+    lazy z = 1.0 + 2.0 + 3.0
+    assert(got: Float == z.GetType())
+#endtest
+
+#test "Simple 1"
+    lazy x = 2 + 2
+    let y = x + x
+    assert(8, y)
+#endtest
+
+#test "Simple 2"
+    var it = 0
+    lazy x = {
+        it += 1
+        2 + it
+    }
+    let y = x + x
+    assert(6, y)
+#endtest
+
+#test "Simple 3"
+    let xs = []
+    lazy x = {
+        xs.Add(42)
+        2 + 2
+    }
+    assert(got: xs is not [42])
+    assert(6.5, x + 2.5)
+    assert(4, x)
+    assert(got: xs is [42])
+#endtest
+
+#test "Methods: ToString"
+    let x = 2 + 2
+    assert("4", x.ToString())
+    let y = {
+        let v = 4
+        let w = 6
+        "\(v)+\(w)=\(v+w)"
+    }
+    assert("4+6=10", y.ToString())
+#endtest

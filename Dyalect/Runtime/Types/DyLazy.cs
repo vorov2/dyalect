@@ -8,6 +8,8 @@ namespace Dyalect.Runtime.Types
         private DyFunction? func;
         private DyObject? value;
 
+        public override int TypeId => value is not null ? value.TypeId : DyType.Lazy;
+
         internal DyLazy(DyFunction func) : base(DyType.Lazy) => this.func = func;
 
         public override object ToObject() => (value is not null ? value : func)!;
@@ -27,8 +29,15 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
+        public override DyTypeInfo GetTypeInfo(ExecutionContext ctx) => Force(ctx)?.GetTypeInfo(ctx) ?? ctx.RuntimeContext.Nil;
+
         protected internal override bool GetBool(ExecutionContext ctx) =>
             Force(ctx) is not null && value!.GetBool(ctx);
+
+        protected internal override long GetInteger() => value is not null ? value.GetInteger() : base.GetInteger();
+        protected internal override double GetFloat() => value is not null ? value.GetFloat() : base.GetFloat();
+        protected internal override string GetString() => value is not null ? value.GetString() : base.GetString();
+        protected internal override char GetChar() => value is not null ? value.GetChar() : base.GetChar();
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) =>
             Force(ctx) is not null && value!.HasItem(name, ctx);

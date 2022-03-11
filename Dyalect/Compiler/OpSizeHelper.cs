@@ -91,6 +91,7 @@
             0, //Annot
             1, //FunAttr
             1, //NewErr
+            0, //NewLaz
         };
     }
 }
