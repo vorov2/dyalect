@@ -104,6 +104,8 @@
 
         DuplicateModuleAlias = 250,
 
-        InvalidLazyBinding = 251
+        InvalidLazyBinding = 251,
+
+        InvalidCast = 252
     }
 }

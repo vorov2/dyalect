@@ -93,6 +93,8 @@
             0,  //FunAttr
             0,  //NewErr **dynamic
             0,  //NewLaz
+            -3, //NewCast
+            0,  //Cast
         };
     }
 }

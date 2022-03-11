@@ -92,6 +92,8 @@
             1, //FunAttr
             1, //NewErr
             0, //NewLaz
+            0, //NewCast
+            0, //Cast
         };
     }
 }

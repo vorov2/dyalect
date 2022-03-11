@@ -310,6 +310,22 @@ namespace Dyalect.Runtime.Types
 
             return SetOp(self, index, value, ctx);
         }
+
+        //as
+        private readonly Dictionary<int, DyFunction> conversions = new();
+        protected virtual DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            ctx.InvalidCast(self.GetTypeInfo(ctx).TypeName, targetType.TypeName);
+        public virtual DyObject Cast(ExecutionContext ctx, DyObject self, DyObject targetType)
+        {
+            if (targetType.TypeId != DyType.TypeInfo)
+                return ctx.InvalidType(targetType);
+
+            if (conversions.TryGetValue(targetType.TypeId, out var func))
+                return func.BindToInstance(ctx, self).Call(ctx, self, targetType);
+
+            return CastOp(self, (DyTypeInfo)targetType, ctx);
+
+        }
         #endregion
 
         #region Statics

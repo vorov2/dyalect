@@ -137,7 +137,18 @@ namespace Dyalect.Compiler
                     break;
                 case NodeType.TestBlock:
                     break;
+                case NodeType.As:
+                    Build((DAs)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DAs node, Hints hints, CompilerContext ctx)
+        {
+            Build(node.Expression, hints.Append(Push), ctx);
+            PushTypeInfo(ctx, node.TypeName, node.Location);
+            AddLinePragma(node);
+            cw.Cast();
         }
 
         private void Build(DRecursiveBlock node, Hints hints, CompilerContext ctx)

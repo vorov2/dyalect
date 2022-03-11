@@ -55,6 +55,8 @@ namespace Dyalect.Compiler
         public static readonly Op Annot = new(OpCode.Annot);
         public static readonly Op TypeCheck = new(OpCode.TypeCheck);
         public static readonly Op NewLaz = new(OpCode.NewLaz);
+        public static readonly Op NewCast = new(OpCode.NewCast);
+        public static readonly Op Cast = new(OpCode.Cast);
 
         internal static readonly Dictionary<OpCode, Op> Ops = new();
 

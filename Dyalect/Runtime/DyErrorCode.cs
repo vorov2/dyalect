@@ -44,6 +44,8 @@
 
         InvalidOverload = 620,
 
-        InvalidValue = 621
+        InvalidValue = 621,
+
+        InvalidCast = 622
     }
 }

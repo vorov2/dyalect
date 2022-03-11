@@ -186,4 +186,7 @@
   <data name="Deprecated" xml:space="preserve">
     <value>Deprecated syntax: {0}.</value>
   </data>
+  <data name="InvalidTypeName" xml:space="preserve">
+    <value>Type name is invalid.</value>
+  </data>
 </root>
