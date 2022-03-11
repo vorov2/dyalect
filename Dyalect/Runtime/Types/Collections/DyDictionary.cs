@@ -55,7 +55,7 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => Map;
 
-        internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx)
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (!Map.TryGetValue(index, out var value))
                 return ctx.KeyNotFound(index);

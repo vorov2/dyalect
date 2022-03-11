@@ -15,13 +15,13 @@ namespace Dyalect.Runtime.Types
             | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
             | SupportedOperations.Iter;
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = ((DyDictionary)arg).Count;
             return DyInteger.Get(len);
         }
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var map = (DyDictionary)arg;
             var sb = new StringBuilder();
@@ -40,9 +40,9 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        internal protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             self.SetItem(index, value, ctx);
             return DyNil.Instance;

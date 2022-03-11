@@ -11,10 +11,10 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeCode => DyType.Bool;
 
-        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.GetBool(ctx) == right.GetBool(ctx) ? DyBool.True : DyBool.False;
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(ReferenceEquals(arg, DyBool.True) ? "true" : "false");
 
         private DyObject Convert(ExecutionContext ctx, DyObject val) => val.GetBool(ctx) ? DyBool.True : DyBool.False;

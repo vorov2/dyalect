@@ -12,17 +12,17 @@ namespace Dyalect.Library.Types
 
         public DyStringBuilder Create(StringBuilder sb) => new DyStringBuilder(this, sb);
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(((DyStringBuilder)arg).ToString());
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neg
             | SupportedOperations.Not | SupportedOperations.Len;
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             DyInteger.Get(((DyStringBuilder)arg).Builder.Length);
 
-        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var a = ((DyStringBuilder)left).Builder;
             var b = ((DyStringBuilder)right).Builder;

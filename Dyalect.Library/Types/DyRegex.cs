@@ -75,7 +75,7 @@ namespace Dyalect.Library.Types
     {
         public override string TypeName => "Regex";
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             return new DyString(((DyRegex)arg).Regex.ToString());
         }
@@ -83,7 +83,7 @@ namespace Dyalect.Library.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             return left is DyRegex a && right is DyRegex b && a.Regex.ToString() == b.Regex.ToString()
                 ? DyBool.True : DyBool.False;

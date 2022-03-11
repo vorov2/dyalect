@@ -100,6 +100,7 @@
     }
     xs.Add(11)
     assert([1,2,3,4,5,6,7,8,9,10,11], xs)
+    assert(11, xs.Length())
     xs.RemoveRange([1,2,9,10,11])
     assert([3,4,5,6,7,8], xs)
     xs.Remove(8)
@@ -127,4 +128,65 @@
     assert("one,two,three", s1 + s2)
     lazy s3 = "'val'"
     assert("val", s3.Trim('\''))
+#endtest
+
+#test "Lazy custom type"
+    type Foo()
+    func Foo.Call() {
+        "FromFoo!"
+    }
+    func Foo.ToString() {
+        "Foo.ToString"
+    }
+    lazy x = {
+        Foo()
+    }
+    assert("FromFoo!", x())
+    assert("Foo.ToString", x.ToString())
+#endtest
+
+#test "Lazy and operator overloading"
+    func Integer + (other) => this.ToString() + other.ToString()
+    lazy x = 12
+    assert("122", x + 2)
+#endtest
+
+#test "Lazy indexers"
+    let xs = [1,2,3]
+    type Foo()
+    func get Foo[index] => index * 10
+    func set Foo[index, value] => xs[index] = value
+    lazy x = Foo()
+    assert(30, x[3])
+    x[1] = 22
+    assert(22, xs[1])
+#endtest
+
+#test "Lazy properties"
+    type Foo()
+    func get Foo.Bar() { "Bar!" }
+    lazy x = Foo()
+    assert("Bar!", x.Bar)
+#endtest
+
+#test "Lazy exceptions"
+    let xs = []
+    lazy x = {
+        xs.AddRange(yields { 1, 2 })
+        throw Error.Unknown(xs)
+    }
+    try {
+        let _ = x.ToString()
+    } catch {
+        Unknown(xs) => assert([1, 2], xs)
+    }
+#endtest
+
+#test "Force lazy"
+    var outp = ""
+    lazy f = {
+        outp = "Yes!"
+    }
+    force(f)
+    assert("Yes!", outp)
 #endtest

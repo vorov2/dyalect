@@ -17,9 +17,9 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeCode => DyType.Iterator;
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => GetCount(ctx, arg);
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => GetCount(ctx, arg);
 
-        internal protected override DyObject ToStringOp(DyObject self, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject self, ExecutionContext ctx)
         {
             var fn = ((DyIterator)self).GetIteratorFunction();
             fn.Reset(ctx);
@@ -56,7 +56,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId != DyType.Integer)
                 return ctx.InvalidType(index);

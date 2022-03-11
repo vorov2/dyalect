@@ -14,19 +14,19 @@ namespace Dyalect.Runtime.Types
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Len | SupportedOperations.Iter;
 
-        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var self = (DySet)left;
             return self.Equals(ctx, right) ? DyBool.True : DyBool.False;
         }
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var self = (DySet)arg;
             return DyInteger.Get(self.Count);
         }
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var self = (DySet)arg;
             var sb = new StringBuilder("Set (");

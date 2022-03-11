@@ -9,7 +9,7 @@
 
         public override int ReflectedTypeCode => DyType.Label;
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var lab = (DyLabel)arg;
             return new DyString(lab.Label + ": " + lab.Value.ToString(ctx).Value);

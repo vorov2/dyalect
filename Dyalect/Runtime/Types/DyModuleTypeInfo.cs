@@ -14,10 +14,10 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeCode => DyType.Module;
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var count = 0;
 
@@ -28,12 +28,12 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(count);
         }
 
-        internal protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             return base.SetOp(self, index, value, ctx);
         }
 
-        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right is DyModule mod)
                 return ((DyModule)left).Unit.Id == mod.Unit.Id ? DyBool.True : DyBool.False;
@@ -41,6 +41,6 @@ namespace Dyalect.Runtime.Types
             return DyBool.False;
         }
 
-        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
     }
 }

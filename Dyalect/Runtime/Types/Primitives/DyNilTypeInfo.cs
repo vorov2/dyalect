@@ -9,12 +9,12 @@
 
         public override int ReflectedTypeCode => DyType.Nil;
 
-        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             left.TypeId == right.TypeId ? DyBool.True : DyBool.False;
 
-        internal protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
+        protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
         {

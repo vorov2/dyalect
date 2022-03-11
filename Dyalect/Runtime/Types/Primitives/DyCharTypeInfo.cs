@@ -13,11 +13,11 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeCode => DyType.Char;
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.GetString());
 
         #region Operations
-        internal protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right.TypeId == DyType.Integer)
                 return new DyChar((char)(left.GetChar() + right.GetInteger()));
@@ -31,7 +31,7 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(right);
         }
 
-        internal protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right.TypeId == DyType.Integer)
                 return new DyChar((char)(left.GetChar() - right.GetInteger()));
@@ -42,7 +42,7 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(right);
         }
 
-        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId)
                 return left.GetChar() == right.GetChar() ? DyBool.True : DyBool.False;
@@ -56,7 +56,7 @@ namespace Dyalect.Runtime.Types
             return base.EqOp(left, right, ctx); //Important! Should redirect to base
         }
 
-        internal protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId)
                 return left.GetChar() != right.GetChar() ? DyBool.True : DyBool.False;
@@ -70,7 +70,7 @@ namespace Dyalect.Runtime.Types
             return base.NeqOp(left, right, ctx); //Important! Should redirect to base
         }
 
-        internal protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId)
                 return left.GetChar().CompareTo(right.GetChar()) > 0 ? DyBool.True : DyBool.False;
@@ -81,7 +81,7 @@ namespace Dyalect.Runtime.Types
             return ctx.InvalidType(right);
         }
 
-        internal protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId)
                 return left.GetChar().CompareTo(right.GetChar()) < 0 ? DyBool.True : DyBool.False;

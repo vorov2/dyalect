@@ -140,7 +140,7 @@ namespace Dyalect.Parser.Model
 
         protected internal override int GetElementCount() => Elements.Count;
 
-        internal protected override List<DNode> ListElements() => Elements;
+        protected internal override List<DNode> ListElements() => Elements;
     }
 
     public sealed class DTuplePattern : DSequencePattern

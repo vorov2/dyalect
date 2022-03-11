@@ -44,6 +44,9 @@ namespace Dyalect.Linker
         protected override void Execute(ExecutionContext ctx) =>
             Add("args", startupArguments ?? (DyObject)DyNil.Instance);
 
+        [Function("force")]
+        public DyObject Force(ExecutionContext ctx, DyObject obj) => obj.Force(ctx);
+
         [Function("print")]
         public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
         {
