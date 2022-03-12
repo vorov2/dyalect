@@ -541,3 +541,12 @@
     f.Box ??= 288
     assert(144, f.Box)
 #endtest
+
+#test "Custom conversion"
+    type Foo(Integer x)
+    func Foo as Integer { this.x }
+    let f = Foo(42)
+    assert(42, f as Integer)
+    func Foo as Bool { false }
+    assert(false, f as Bool)
+#endtest

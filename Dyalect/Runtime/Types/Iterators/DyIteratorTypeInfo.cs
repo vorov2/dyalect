@@ -15,11 +15,11 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Iterator;
 
-        public override int ReflectedTypeCode => DyType.Iterator;
+        public override int ReflectedTypeId => DyType.Iterator;
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => GetCount(ctx, arg);
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => GetCount(ctx, arg);
 
-        internal protected override DyObject ToStringOp(DyObject self, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject self, ExecutionContext ctx)
         {
             var fn = ((DyIterator)self).GetIteratorFunction();
             fn.Reset(ctx);
@@ -56,7 +56,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId != DyType.Integer)
                 return ctx.InvalidType(index);
@@ -472,6 +472,14 @@ namespace Dyalect.Runtime.Types
                 "Empty" => Func.Static(name, Empty),
                 "Repeat" => Func.Static(name, Repeat, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
+            };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.ReflectedTypeId switch
+            {
+                DyType.Tuple => new DyTuple(((DyIterator)self).ToEnumerable().ToArray()),
+                DyType.Array => new DyArray(((DyIterator)self).ToEnumerable().ToArray()),
+                _ => base.CastOp(self, targetType, ctx)
             };
     }
 }

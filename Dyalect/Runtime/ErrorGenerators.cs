@@ -94,6 +94,18 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject InvalidCast(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.InvalidCast);
+            return DyNil.Instance;
+        }
+
+        public static DyObject InvalidCast(this ExecutionContext ctx, string type1, string type2)
+        {
+            ctx.Error = new(DyErrorCode.InvalidCast, type1, type2);
+            return DyNil.Instance;
+        }
+
         public static DyObject IndexOutOfRange(this ExecutionContext ctx, object obj)
         {
             ctx.Error = new(DyErrorCode.IndexOutOfRange, obj);

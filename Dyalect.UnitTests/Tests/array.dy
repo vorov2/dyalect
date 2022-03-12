@@ -290,3 +290,9 @@
     xs.RemoveRange([FooInArray(0)])
     assert([FooInArray(2), FooInArray(3), FooInArray(4)], xs)
 #endtest
+
+#test "Conversion: as"
+    let xs = [1..3]
+    assert((1,2,3), xs as Tuple)
+    assert("[1, 2, 3]", xs as String)
+#endtest

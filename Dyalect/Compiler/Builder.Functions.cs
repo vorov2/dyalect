@@ -12,12 +12,12 @@ namespace Dyalect.Compiler
     {
         private void Build(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
-            if (node.Name is not null)
+            if (node.Name is not null || node.TargetTypeName is not null)
             {
                 var flags = VarFlags.Const | VarFlags.Function;
                 var addr = 0;
 
-                if (node.TypeName is null)
+                if (node.TypeName is null && node.Name is not null)
                     addr = AddVariable(node.Name, node.Location, flags);
                 else if (privateScope)
                     AddError(CompilerError.PrivateMethod, node.Location);
@@ -29,6 +29,16 @@ namespace Dyalect.Compiler
 
                 if (node.TypeName is not null)
                 {
+                    if (node.TargetTypeName is not null)
+                    {
+                        if (node.IsStatic || node.Setter || node.Getter)
+                            AddError(CompilerError.InvalidCast, node.Location);
+
+                        PushTypeInfo(ctx, node.TargetTypeName, node.Location);
+                        PushTypeInfo(ctx, node.TypeName, node.Location);
+                        cw.NewCast();
+                    }
+
                     if (node.IsIndexer)
                     {
                         if (node.IsStatic)
@@ -44,27 +54,30 @@ namespace Dyalect.Compiler
                             AddError(CompilerError.IndexerSetOrGet, node.Location);
                     }
 
-                    var realName = node.Name;
+                    if (node.Name is not null)
+                    {
+                        var realName = node.Name;
 
-                    if (realName != Builtins.Get && realName != Builtins.Set
-                        && !char.IsUpper(realName[0]) && !Builtins.OperatorSymbols.Contains(realName[0]))
-                        AddError(CompilerError.MemberNameCamel, node.Location);
+                        if (realName != Builtins.Get && realName != Builtins.Set
+                            && !char.IsUpper(realName[0]) && !Builtins.OperatorSymbols.Contains(realName[0]))
+                            AddError(CompilerError.MemberNameCamel, node.Location);
 
-                    if (!node.IsStatic)
-                        realName = GetMethodName(realName, node);
+                        if (!node.IsStatic)
+                            realName = GetMethodName(realName, node);
 
-                    if (node.Setter && !node.IsIndexer)
-                        realName = Builtins.Setter(realName);
+                        if (node.Setter && !node.IsIndexer)
+                            realName = Builtins.Setter(realName);
 
-                    if (node.Name is Builtins.Has || (!node.IsStatic && node.Name is Builtins.Type))
-                        AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
+                        if (node.Name is Builtins.Has || (!node.IsStatic && node.Name is Builtins.Type))
+                            AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
 
-                    PushTypeInfo(ctx, node.TypeName, node.Location);
+                        PushTypeInfo(ctx, node.TypeName, node.Location);
 
-                    if (node.IsStatic)
-                        cw.SetMemberS(realName);
-                    else
-                        cw.SetMember(realName);
+                        if (node.IsStatic)
+                            cw.SetMemberS(realName);
+                        else
+                            cw.SetMember(realName);
+                    }
                 }
 
                 AddLinePragma(node);

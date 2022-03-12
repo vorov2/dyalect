@@ -12,32 +12,37 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => (value is not null ? value : func)!;
 
-        internal override DyObject? Force(ExecutionContext ctx)
+        internal override DyObject Force(ExecutionContext ctx)
         {
             if (func is not null)
             {
                 value = func.InternalCall(ctx);
 
                 if (ctx.HasErrors)
-                    return null;
+                    return DyNil.Instance;
                 else
                     func = null;
             }
 
-            return value;
+            return value ?? DyNil.Instance;
         }
 
-        protected internal override bool GetBool(ExecutionContext ctx) =>
-            Force(ctx) is not null && value!.GetBool(ctx);
+        public override DyTypeInfo GetTypeInfo(ExecutionContext ctx) => Force(ctx).GetTypeInfo(ctx);
 
-        protected internal override bool HasItem(string name, ExecutionContext ctx) =>
-            Force(ctx) is not null && value!.HasItem(name, ctx);
+        protected internal override bool GetBool(ExecutionContext ctx) => Force(ctx).GetBool(ctx);
+
+        protected internal override long GetInteger() => value is not null ? value.GetInteger() : base.GetInteger();
+        protected internal override double GetFloat() => value is not null ? value.GetFloat() : base.GetFloat();
+        protected internal override string GetString() => value is not null ? value.GetString() : base.GetString();
+        protected internal override char GetChar() => value is not null ? value.GetChar() : base.GetChar();
+
+        protected internal override bool HasItem(string name, ExecutionContext ctx) => Force(ctx).HasItem(name, ctx);
 
         public override string ToString() => "nil";
 
         public override DyObject Clone() => this;
 
-        internal protected override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
+        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
             ctx.IndexOutOfRange();
 
         internal override void Serialize(BinaryWriter writer) => writer.Write(TypeId);

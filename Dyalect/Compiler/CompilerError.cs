@@ -102,6 +102,10 @@
 
         MethodNotRecursive = 249,
 
-        DuplicateModuleAlias = 250
+        DuplicateModuleAlias = 250,
+
+        InvalidLazyBinding = 251,
+
+        InvalidCast = 252
     }
 }

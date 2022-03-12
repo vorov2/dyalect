@@ -8,25 +8,25 @@ namespace Dyalect.Runtime.Types
     {
         public override string TypeName => DyTypeNames.Set;
 
-        public override int ReflectedTypeCode => DyType.Set;
+        public override int ReflectedTypeId => DyType.Set;
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Len | SupportedOperations.Iter;
 
-        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             var self = (DySet)left;
             return self.Equals(ctx, right) ? DyBool.True : DyBool.False;
         }
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var self = (DySet)arg;
             return DyInteger.Get(self.Count);
         }
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var self = (DySet)arg;
             var sb = new StringBuilder("Set (");
@@ -157,6 +157,14 @@ namespace Dyalect.Runtime.Types
             {
                 "Set" => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
+            };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.ReflectedTypeId switch
+            {
+                DyType.Array => new DyArray(((DySet)self).ToArray()),
+                DyType.Tuple => new DyTuple(((DySet)self).ToArray()),
+                _ => base.CastOp(self, targetType, ctx)
             };
     }
 }

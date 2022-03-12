@@ -67,7 +67,7 @@ namespace Dyalect
                 DyTypeNames.Dictionary => Dictionary,
                 DyTypeNames.Set => Set,
                 DyTypeNames.Error => Error,
-                DyTypeNames.Lazy => Lazy,
+                //DyTypeNames.Lazy => Lazy,
                 DyTypeNames.Object => Object,
                 _ => default
             }; 

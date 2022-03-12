@@ -22,3 +22,9 @@
     assert(1, t.Code)
     assert("Nil", t.Name)
 #endtest
+
+#test "Conversion: as"
+    let x = nil
+    assert(false, x as Bool)
+    assert("nil", x as String)
+#endtest

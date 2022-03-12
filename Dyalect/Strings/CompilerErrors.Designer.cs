@@ -187,6 +187,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid type conversion function..
+        /// </summary>
+        internal static string InvalidCast {
+            get {
+                return ResourceManager.GetString("InvalidCast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default parameter value for &apos;{0}&apos; must be of a primitive type (integer, float, character, string or nil)..
         /// </summary>
         internal static string InvalidDefaultValue {
@@ -210,6 +219,15 @@ namespace Dyalect.Strings {
         internal static string InvalidLabel {
             get {
                 return ResourceManager.GetString("InvalidLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid lazy binding, patterns are not supported in lazy bindings..
+        /// </summary>
+        internal static string InvalidLazyBinding {
+            get {
+                return ResourceManager.GetString("InvalidLazyBinding", resourceCulture);
             }
         }
         

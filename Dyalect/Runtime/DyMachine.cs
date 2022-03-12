@@ -609,7 +609,7 @@ namespace Dyalect.Runtime
                         left = evalStack.Pop();
                         right = evalStack.Pop().Force(ctx);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        evalStack.Push(((DyTypeInfo)left).ReflectedTypeCode == right.TypeId);
+                        evalStack.Push(((DyTypeInfo)left).ReflectedTypeId == right.TypeId);
                         break;
                     case OpCode.CtorCheck:
                         right = evalStack.Peek().Force(ctx);
@@ -639,6 +639,21 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Mut:
                         ((DyLabel)evalStack.Peek()).Mutable = true;
+                        break;
+                    case OpCode.NewLaz:
+                        evalStack.Replace(new DyLazy((DyFunction)evalStack.Peek()));
+                        break;
+                    case OpCode.NewCast:
+                        left = evalStack.Pop();
+                        right = evalStack.Pop();
+                        ((DyTypeInfo)left).SetCastFunction(ctx, left, (DyTypeInfo)right, (DyFunction)evalStack.Pop());
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
+                        break;
+                    case OpCode.Cast:
+                        left = evalStack.Pop();
+                        right = evalStack.Peek();
+                        evalStack.Replace(types[left.TypeId].Cast(ctx, left, right));
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                 }
             }

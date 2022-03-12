@@ -13,6 +13,8 @@ namespace Dyalect.Runtime.Types
 
         public abstract DyFunction GetIteratorFunction();
 
+        public abstract IEnumerable<DyObject> ToEnumerable();
+
         public static IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx, DyObject val) =>
             val is IEnumerable<DyObject> seq ? seq : InternalRun(ctx, val);
 

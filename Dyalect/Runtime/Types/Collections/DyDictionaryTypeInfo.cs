@@ -8,27 +8,27 @@ namespace Dyalect.Runtime.Types
     {
         public override string TypeName => DyTypeNames.Dictionary;
 
-        public override int ReflectedTypeCode => DyType.Dictionary;
+        public override int ReflectedTypeId => DyType.Dictionary;
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
             | SupportedOperations.Iter;
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = ((DyDictionary)arg).Count;
             return DyInteger.Get(len);
         }
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var map = (DyDictionary)arg;
             var sb = new StringBuilder();
-            sb.Append("Map {");
+            sb.Append("Dictionary (");
             var i = 0;
 
-            foreach (var kv in map.Map)
+            foreach (var kv in map.Dictionary)
             {
                 if (i > 0)
                     sb.Append(", ");
@@ -36,13 +36,13 @@ namespace Dyalect.Runtime.Types
                 i++;
             }
 
-            sb.Append('}');
+            sb.Append(')');
             return new DyString(sb.ToString());
         }
 
-        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        internal protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             self.SetItem(index, value, ctx);
             return DyNil.Instance;
@@ -90,7 +90,7 @@ namespace Dyalect.Runtime.Types
             var map = (DyDictionary)self;
             var newMap = new DyDictionary();
 
-            foreach (var (key, value) in map.Map)
+            foreach (var (key, value) in map.Dictionary)
             {
                 var res = fun is not null ? fun.Call(ctx, value) : value;
 
@@ -106,7 +106,7 @@ namespace Dyalect.Runtime.Types
 
         private DyObject ToTuple(ExecutionContext ctx, DyObject self)
         {
-            var map = ((DyDictionary)self).Map;
+            var map = ((DyDictionary)self).Dictionary;
             var xs = new List<DyLabel>();
 
             foreach (var (key, value) in map)

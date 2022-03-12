@@ -35,7 +35,7 @@ namespace Dyalect.Runtime.Types
         internal bool TryGetItem(string name, ExecutionContext ctx, out DyObject item)
         {
             item = null!;
-            var i = GetOrdinal(name);
+            var i = GetOrdinal(ctx, name);
 
             if (i is -1)
                 return false;
@@ -60,7 +60,7 @@ namespace Dyalect.Runtime.Types
         {
             if (index.TypeId == DyType.String)
             {
-                var i = GetOrdinal(index.GetString());
+                var i = GetOrdinal(ctx, index.GetString());
 
                 if (i is -1)
                 {
@@ -74,7 +74,7 @@ namespace Dyalect.Runtime.Types
                 base.SetItem(index, value, ctx);
         }
 
-        public virtual int GetOrdinal(string name)
+        public virtual int GetOrdinal(ExecutionContext ctx, string name)
         {
             for (var i = 0; i < Values.Length; i++)
                 if (Values[i].GetLabel() == name)
@@ -102,7 +102,7 @@ namespace Dyalect.Runtime.Types
                     return;
                 }
 
-                if (lab.TypeAnnotation is not null && value.TypeId != lab.TypeAnnotation.ReflectedTypeCode)
+                if (lab.TypeAnnotation is not null && value.TypeId != lab.TypeAnnotation.ReflectedTypeId)
                 {
                     ctx.InvalidType(value);
                     return;
@@ -115,7 +115,7 @@ namespace Dyalect.Runtime.Types
         }
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) =>
-            GetOrdinal(name) is not -1;
+            GetOrdinal(ctx, name) is not -1;
 
         private static string DefaultKey() => Guid.NewGuid().ToString();
 

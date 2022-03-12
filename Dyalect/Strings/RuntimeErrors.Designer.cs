@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class RuntimeErrors {
@@ -183,6 +183,24 @@ namespace Dyalect.Strings {
         internal static string IndexReadOnly_1 {
             get {
                 return ResourceManager.GetString("IndexReadOnly.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot convert type..
+        /// </summary>
+        internal static string InvalidCast_0 {
+            get {
+                return ResourceManager.GetString("InvalidCast.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot convert type &quot;{0}&quot; to &quot;{1}&quot;..
+        /// </summary>
+        internal static string InvalidCast_2 {
+            get {
+                return ResourceManager.GetString("InvalidCast.2", resourceCulture);
             }
         }
         

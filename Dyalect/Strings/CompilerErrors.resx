@@ -282,4 +282,10 @@
   <data name="DuplicateModuleAlias" xml:space="preserve">
     <value>A module with alias "{0}" is already referenced.</value>
   </data>
+  <data name="InvalidLazyBinding" xml:space="preserve">
+    <value>Invalid lazy binding, patterns are not supported in lazy bindings.</value>
+  </data>
+  <data name="InvalidCast" xml:space="preserve">
+    <value>Invalid type conversion function.</value>
+  </data>
 </root>

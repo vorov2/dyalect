@@ -7,9 +7,9 @@
 
         public override string TypeName => DyTypeNames.TypeInfo;
 
-        public override int ReflectedTypeCode => DyType.TypeInfo;
+        public override int ReflectedTypeId => DyType.TypeInfo;
 
-        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId == DyType.String)
                 return index.GetString() switch
@@ -22,7 +22,7 @@
             return ctx.IndexOutOfRange();
         }
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(("typeInfo " + ((DyTypeInfo)arg).TypeName).PutInBrackets());
     }
 }

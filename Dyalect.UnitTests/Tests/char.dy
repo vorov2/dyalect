@@ -91,3 +91,10 @@
     assert("ab", a + b)
     assert("abcdef", a + b + "cdef")
 #endtest
+
+#test "Conversion: as"
+    let c = 'A'
+    assert("A", c as String)
+    assert(65, c as Integer)
+    assert(65.0, c as Float)
+#endtest

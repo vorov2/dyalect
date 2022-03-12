@@ -10,6 +10,8 @@ namespace Dyalect.Runtime.Types
 
         public override DyFunction GetIteratorFunction() => new DyIteratorFunction(seq);
 
+        public override IEnumerable<DyObject> ToEnumerable() => seq;
+
         public override object ToObject() => seq;
 
         public override int GetHashCode() => seq.GetHashCode();

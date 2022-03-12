@@ -9,10 +9,10 @@ namespace Dyalect.Runtime.Types
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Len | SupportedOperations.Get;
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             DyInteger.Get(((DyError)arg).DataItems?.Length ?? 0);
 
-        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             var err = (DyError)self;
 
@@ -33,9 +33,9 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Error;
 
-        public override int ReflectedTypeCode => DyType.Error;
+        public override int ReflectedTypeId => DyType.Error;
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.ToString()!);
 
         protected override DyFunction InitializeStaticMember(string name, ExecutionContext ctx)

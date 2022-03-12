@@ -9,6 +9,8 @@ namespace Dyalect.Parser.Model
 
         public Qualident? TypeName { get; set; }
 
+        public Qualident? TargetTypeName { get; set; }
+
         public string? Name { get; set; }
 
         internal bool IsStatic { get; set; }
@@ -73,6 +75,14 @@ namespace Dyalect.Parser.Model
 
             if (Name is not null)
                 sb.Append(Name);
+
+            if (TargetTypeName is not null)
+            {
+                sb.Append(" as ");
+                sb.Append(TargetTypeName);
+                Body?.ToString(sb);
+                return;
+            }
 
             if (IsIndexer)
                 sb.Append('[');

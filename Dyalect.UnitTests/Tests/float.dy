@@ -10,7 +10,7 @@
     assert(-1.7976931348623157E+308, Float.Min())
 #endtest
 
-#test "Methods: Inf and NaN"
+#test "Methods: Inf and IsNaN"
     var d = Float.Inf() + (-Float.Inf())
     assert(true, d.IsNaN())
 #endtest
@@ -21,7 +21,7 @@
     assert(5.0, Float('5'))
 #endtest
 
-#test "Methods: default"
+#test "Methods: Default"
     assert(0.0, Float.Default())
 #endtest
 
@@ -43,4 +43,11 @@
 #test "Ranges"
     assert([0.0,1.0,2.0,3.0,4.0,5.0], [0.0..5])
     assert([0.0,0.02,0.04], (0.0^0.02..0.05).ToArray())
+#endtest
+
+#test "Conversion: as"
+    let x = 12.2
+    assert(12, x as Integer)
+    assert("12.2", x as String)
+    assert(true, x as Bool)
 #endtest

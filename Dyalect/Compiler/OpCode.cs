@@ -90,5 +90,8 @@
         Annot,      //0
         FunAttr,    //0
         NewErr,     //Dynamic
+        NewLaz,     //0
+        NewCast,    //-3
+        Cast,       //0
     }
 }

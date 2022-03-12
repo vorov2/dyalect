@@ -8,7 +8,7 @@ namespace Dyalect.Library.Types
     {
         public override string TypeName => "Result";
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var self = (DyResult)arg;
             return new DyString(self.Constructor + " ("
@@ -19,13 +19,13 @@ namespace Dyalect.Library.Types
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get | SupportedOperations.Len;
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var self = (DyResult)arg;
             return DyInteger.Get(self.Value.TypeId is DyType.Nil ? 0 : 1);
         }
 
-        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId is DyType.Integer)
                 return (long)index.ToObject() is 0 ? ((DyResult)self).Value : ctx.IndexOutOfRange(index);

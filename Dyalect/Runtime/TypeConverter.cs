@@ -106,7 +106,7 @@ namespace Dyalect.Runtime
                     {
                         var ret = new Dictionary<object, object>();
 
-                        foreach (var kv in map.Map)
+                        foreach (var kv in map.Dictionary)
                             ret[kv.Key.ToObject()] = kv.Value.ToObject();
 
                         return ret;

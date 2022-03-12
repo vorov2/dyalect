@@ -14,24 +14,24 @@ namespace Dyalect.Runtime.Types
 
         public override string TypeName => DyTypeNames.Tuple;
 
-        public override int ReflectedTypeCode => DyType.Tuple;
+        public override int ReflectedTypeId => DyType.Tuple;
 
-        internal protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             new DyTuple(((DyCollection)left).Concat(ctx, right));
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = ((DyTuple)arg).Count;
             return DyInteger.Get(len);
         }
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var tup = (DyTuple)arg;
             return tup.ToString(ctx);
         }
 
-        internal protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId != right.TypeId)
                 return DyBool.False;
@@ -54,9 +54,9 @@ namespace Dyalect.Runtime.Types
             return DyBool.True;
         }
 
-        internal protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        internal protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
         {
             self.SetItem(index, value, ctx);
             return DyNil.Instance;

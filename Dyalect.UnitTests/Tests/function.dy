@@ -630,3 +630,8 @@
         InvalidOverload() => assert(got: true)
     }
 #endtest
+
+#test "Conversion: as"
+    let f = () => 42
+    assert(true, f as Bool)
+#endtest

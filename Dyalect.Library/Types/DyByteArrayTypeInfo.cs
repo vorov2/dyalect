@@ -12,7 +12,7 @@ namespace Dyalect.Library.Types
 
         public DyByteArray Create(byte[]? buffer) => new(this, buffer);
 
-        internal protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var buffer = ((DyByteArray)arg).GetBytes();
             var strs = buffer.Select(b => "0x" + b.ToString("X").PadLeft(2, '0')).ToArray();
@@ -23,7 +23,7 @@ namespace Dyalect.Library.Types
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Len;
 
-        internal protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             DyInteger.Get(((DyByteArray)arg).Count);
 
         private DyObject Read(ExecutionContext ctx, DyObject self, DyObject obj)

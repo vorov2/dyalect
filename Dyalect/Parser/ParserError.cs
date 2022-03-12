@@ -49,5 +49,7 @@
         InvalidApplicationArguments = 22,
         
         Deprecated = 23,
+
+        InvalidTypeName = 34
     }
 }

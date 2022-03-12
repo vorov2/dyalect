@@ -234,4 +234,10 @@
   <data name="InvalidOverload.1" xml:space="preserve">
     <value>Unable to overload function or property "{0}".</value>
   </data>
+  <data name="InvalidCast.0" xml:space="preserve">
+    <value>Cannot convert type.</value>
+  </data>
+  <data name="InvalidCast.2" xml:space="preserve">
+    <value>Cannot convert type "{0}" to "{1}".</value>
+  </data>
 </root>

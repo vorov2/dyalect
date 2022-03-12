@@ -210,8 +210,8 @@ PRODUCTIONS
         (. var ot = t; string str = t.val; .)
         [
             (
-                identToken
-                (. arg = new DTypeParameter(ot) { Name = t.val, TypeAnnotation = new Qualident(str), Mutable = mut }; .)
+                identToken 
+                (. arg = new DTypeParameter(ot) { Name = t.val, TypeAnnotation = new Qualident(str), Mutable = mut}; .)
             )
             |
             (
@@ -390,6 +390,25 @@ PRODUCTIONS
                     "]"
                 )
                 | FunctionArguments<f>
+                |
+                (
+                    "as"
+                    (.
+                        if (f.TypeName is not null && f.TypeName.Parent is not null)
+                            AddError(ParserError.InvalidTypeName, t.GetLocation());
+                        else if (f.TypeName is not null)
+                            f.TypeName = new Qualident(f.TypeName.Local, f.Name);
+                        else
+                            f.TypeName = new Qualident(f.Name);
+                        f.Name = null;
+
+                        string str1, str2 = null;
+                    .)
+                    identToken (. str1 = t.val; .) [ "." identToken (. str2 = t.val; .) ]
+                    (.
+                        f.TargetTypeName = str2 is null ? new Qualident(str1) : new Qualident(str1, str2);
+                    .)
+                )
             )
             ( Block<out node> | "=>" Statement<out node> )
             (.
@@ -437,8 +456,8 @@ PRODUCTIONS
         (. node = null; .)
         (
             (
-                ( "var" | "let" | "const" (. Deprecated("const"); .) )
-                (. var bin = new DBinding(t) { Constant = t.val == "let" }; .)
+                ( "var" | "let" | "const" (. Deprecated("const"); .) | "lazy" )
+                (. var bin = new DBinding(t) { Constant = t.val == "let", Lazy = t.val == "lazy" }; .)
                 OrPattern<out var pat> (. bin.Pattern = pat; .)
                 [
                     "=" Expr<out node>
@@ -1076,7 +1095,7 @@ PRODUCTIONS
         }.
 
     Mul<out DNode node> =
-        FunctionApplication<out node>
+        Cast<out node>
         {
             (.
                 var op = default(BinaryOperator);
@@ -1088,9 +1107,25 @@ PRODUCTIONS
                 | "%" (. ot = t; op = BinaryOperator.Rem; .)
             )
             (
-                FunctionApplication<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
+                Cast<out var exp> (. node = new DBinaryOperation(node, exp, op, ot); .)
             )
         }.
+
+    Cast<out DNode node> = 
+        (. node = null; .)
+        (
+            FunctionApplication<out node>
+            {
+                (. var @as = new DAs(t) { Expression = node }; string s1, s2 = null; .)
+                "as"
+                identToken (. s1 = t.val; .) [ "." identToken (. s2 = t.val; .) ]
+                (.
+                    @as.Expression = node;
+                    @as.TypeName = s2 is null ? new Qualident(s1) : new Qualident(s1, s2);
+                    node = @as;
+                .)
+            }
+        ).  
 
     FunctionApplication<out DNode node> =
         (. node = null; .)

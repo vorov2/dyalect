@@ -161,3 +161,8 @@
     map[(1,2)] = true
     assert(true, map.Contains((1,2)))
 #endtest
+
+#test "Conversion: as"
+    let xs = Dictionary.FromTuple ((x: 1, y: 2))
+    assert("Dictionary (x = 1, y = 2)", xs as String)
+#endtest

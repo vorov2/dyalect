@@ -32,6 +32,7 @@
         YieldBreak,
         YieldMany,
         Throw,
+        As,
 
         Directive,
 

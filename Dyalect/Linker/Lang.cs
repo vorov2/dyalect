@@ -44,6 +44,9 @@ namespace Dyalect.Linker
         protected override void Execute(ExecutionContext ctx) =>
             Add("args", startupArguments ?? (DyObject)DyNil.Instance);
 
+        [Function("force")]
+        public DyObject Force(ExecutionContext ctx, DyObject obj) => obj.Force(ctx);
+
         [Function("print")]
         public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
         {
@@ -146,8 +149,8 @@ namespace Dyalect.Linker
         [Function("assert")]
         public DyObject Assert(ExecutionContext ctx, [Default(true)]DyObject expect, DyObject got)
         {
-            if (!Eq(ctx, expect?.ToObject(), got?.ToObject()))
-                return ctx.AssertFailed($"Expected {expect?.ToString(ctx)}, got {got?.ToString(ctx)}");
+            if (!Eq(ctx, expect?.Force(ctx)?.ToObject(), got?.Force(ctx)?.ToObject()))
+                return ctx.AssertFailed($"Expected {expect?.Force(ctx)?.ToString(ctx)}, got {got?.Force(ctx)?.ToString(ctx)}");
 
             return DyNil.Instance;
         }

@@ -13,7 +13,7 @@ namespace Dyalect.Runtime.Types
 
         internal DyTypeInfo DecType { get; }
 
-        internal DyClass(DyTypeInfo type, string ctor, DyTuple privates, Unit unit) : base(type.ReflectedTypeCode) =>
+        internal DyClass(DyTypeInfo type, string ctor, DyTuple privates, Unit unit) : base(type.ReflectedTypeId) =>
             (DecType, Constructor, Fields, DeclaringUnit) = (type, ctor, privates, unit);
 
         public override object ToObject() => this;
