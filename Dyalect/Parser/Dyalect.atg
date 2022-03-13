@@ -239,8 +239,8 @@ PRODUCTIONS
             | Type<out node> Separator
             | Match<out node> [ Guard<node, out node> Separator ]
             | IF (IsPrivateScope()) PrivateScope<out node>
-            | StatementExpr<out node> [ Guard<node, out node> ] Separator
-            | If<out node> [ Guard<node, out node> Separator ]
+            | Assignment<out node> [ Guard<node, out node> ] Separator
+            | If<out node> [ Guard<node, out node> ] Separator
             | Loops<out node> [ Guard<node, out node> Separator ]
             | Function<out node>
             | Directive<out node> Separator
@@ -254,7 +254,7 @@ PRODUCTIONS
             (. var ot = t; .)
             "when" SimpleExpr<out var cnode>
             (. var @if = new DIf(ot) { Condition = cnode, True = src }; node = @if; .)
-            [ "else" StatementExpr<out cnode> (. @if.False = cnode; .) ]
+            [ "else" Assignment<out cnode> (. @if.False = cnode; .) ]
         ).
 
     PrivateScope<out DNode node> =
@@ -267,7 +267,7 @@ PRODUCTIONS
             .)
         ).
 
-    StatementExpr<out DNode node> =
+    Assignment<out DNode node> =
         SimpleExpr<out node>
         [
             (.
@@ -410,13 +410,26 @@ PRODUCTIONS
                     .)
                 )
             )
-            ( Block<out node> | "=>" Statement<out node> )
+            ( Block<out node> | "=>" FunctionStatement<out node> )
             (.
                 f.Body = node;
                 node = f;
                 functions.Pop();
             .)
         ).
+
+    FunctionStatement<out DNode node> =
+        (. node = null; .)
+        (
+              Binding<out node> [ Guard<node, out node> ] Separator
+            | Rebinding<out node> [ Guard<node, out node> ] Separator
+            | ControlFlow<out node> [ Guard<node, out node> ] Separator
+            | Match<out node> [ Guard<node, out node> Separator ]
+            | Assignment<out node> [ Guard<node, out node> ] Separator
+            | If<out node> [ Guard<node, out node> Separator ]
+            | Loops<out node> [ Guard<node, out node> Separator ]
+        )
+        (. node = ProcessImplicits(node); .).
 
     FunctionArgument<out DParameter arg> =
         (. arg = null; .)
@@ -516,7 +529,7 @@ PRODUCTIONS
             OrPattern<out var p>
             (. me.Pattern = p; .)
             [ "when" Expr<out var node> (. me.Guard = node; .) ]
-            "=>" StatementExpr<out var exp> (. me.Expression = exp; .)
+            "=>" Assignment<out var exp> (. me.Expression = exp; .)
         ).
 
     OrPattern<out DPattern node> =
@@ -865,8 +878,8 @@ PRODUCTIONS
     SimpleExpr<out DNode node> =
         (. node = null; .)
         (
-              IF (IsFunction()) FunctionExpr<out node>
-            | NoArgFunctionExpr<out node>
+              IF (IsFunction()) Lambda<out node>
+            | NoArgLambda<out node>
             | Coalesce<out node> [ TernaryExpr<node, out node> ]
             | TryCatch<out node>
             | Throw<out node>
@@ -891,7 +904,7 @@ PRODUCTIONS
                 node = th;
                 if (la.AfterEol) return;
             .)
-            Expr<out var cexp> (. th.Expression = cexp; .)
+            SimpleExpr<out var cexp> (. th.Expression = cexp; .)
         ).
 
     TryCatch<out DNode node> =
@@ -917,7 +930,7 @@ PRODUCTIONS
             (. node = tc; .)
         ).
 
-    FunctionExpr<out DNode node> =
+    Lambda<out DNode node> =
         (.
             var f = new DFunctionDeclaration(t);
             node = f;
@@ -929,18 +942,18 @@ PRODUCTIONS
                 | FunctionArguments<f>
             )
             (. functions.Push(f); .)
-            "=>" Expr<out var exp>
+            "=>" SimpleExpr<out var exp>
             (. f.Body = exp; functions.Pop(); .)
         ).
 
-    NoArgFunctionExpr<out DNode node> =
+    NoArgLambda<out DNode node> =
         (.
             var f = new DFunctionDeclaration(t);
             node = f;
         .)
         (
             (. functions.Push(f); .)
-            "=>" Expr<out var exp>
+            "=>" SimpleExpr<out var exp>
             (. f.Body = exp; functions.Pop(); .)
         ).
 
@@ -1268,7 +1281,7 @@ PRODUCTIONS
             ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); fromStr = true; .) )
             ":" (. var ot = t; .)
             (
-                  IF (IsFunction()) FunctionExpr<out node>
+                  IF (IsFunction()) Lambda<out node>
                 | Is<out node>
             )
             (. node = new DLabelLiteral(ot) { Mutable = mut, Label = name, FromString = fromStr, Expression = node }; .)

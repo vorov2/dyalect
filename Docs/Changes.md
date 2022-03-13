@@ -1,3 +1,7 @@
+# 0.31.1
+  * _Minor optimizations in Dyalect console._
+  * Fix: _Problems in Dyalect grammar_ ([Issue #601](https://github.com/vorov2/dyalect/issues/601)).
+
 # 0.31.0
   * Change: _Methods such as Trim should accept both strings and chars_ ([Issue #598](https://github.com/vorov2/dyalect/issues/598)).
   * Add: _Consider shortcut syntax for parameterless lambda_ ([Issue #591](https://github.com/vorov2/dyalect/issues/591)).

@@ -13,6 +13,7 @@ namespace Dyalect.Parser
             {
                  { "invalid StandardOperators", InvalidStandardOperators }
                 ,{ "invalid FunctionName", InvalidFunctionName}
+                ,{ "invalid Assignment", InvalidStatement }
                 ,{ "invalid Statement", InvalidStatement }
                 ,{ "invalid Binding", InvalidBinding }
                 ,{ "invalid SimpleExpr", InvalidExpression }
@@ -22,7 +23,8 @@ namespace Dyalect.Parser
                 ,{ "invalid Expr", InvalidExpression }
                 ,{ "invalid Index", InvalidExpression }
                 ,{ "invalid IndexBody", InvalidExpression }
-                ,{ "invalid FunctionExpr", InvalidFunctionExpression }
+                ,{ "invalid Lambda", InvalidFunctionExpression }
+                ,{ "invalid NoArgLambda", InvalidFunctionExpression }
                 ,{ "invalid Unary", InvalidUnary }
                 ,{ "invalid Bool", InvalidLiteral }
                 ,{ "invalid String", InvalidLiteral }
