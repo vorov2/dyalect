@@ -1,4 +1,4 @@
-﻿#test "Type info"
+﻿#region "Type info"
     lazy x = "a" + "b" + "c"
     assert(String, x.GetType())
     lazy y = 1 + 2 + 3
@@ -6,15 +6,15 @@
     assert(Integer, y.GetType())
     lazy z = 1.0 + 2.0 + 3.0
     assert(got: Float == z.GetType())
-#endtest
+#endregion
 
-#test "Simple 1"
+#region "Simple 1"
     lazy x = 2 + 2
     let y = x + x
     assert(8, y)
-#endtest
+#endregion
 
-#test "Simple 2"
+#region "Simple 2"
     var it = 0
     lazy x = {
         it += 1
@@ -22,9 +22,9 @@
     }
     let y = x + x
     assert(6, y)
-#endtest
+#endregion
 
-#test "Simple 3"
+#region "Simple 3"
     let xs = []
     lazy x = {
         xs.Add(42)
@@ -34,9 +34,9 @@
     assert(6.5, x + 2.5)
     assert(4, x)
     assert(got: xs is [42])
-#endtest
+#endregion
 
-#test "Methods: ToString"
+#region "Methods: ToString"
     let x = 2 + 2
     assert("4", x.ToString())
     let y = {
@@ -45,14 +45,14 @@
         "\(v)+\(w)=\(v+w)"
     }
     assert("4+6=10", y.ToString())
-#endtest
+#endregion
 
-#test "Methods: IsNan"
+#region "Methods: IsNan"
     lazy d = Float.Inf() + (-Float.Inf())
     assert(true, d.IsNaN())
-#endtest
+#endregion
 
-#test "Conversion to boolean"
+#region "Conversion to boolean"
     lazy x = 2
     if x {
         assert(got: true)
@@ -65,9 +65,9 @@
     } else {
         assert(got: true)
     }
-#endtest
+#endregion
 
-#test "Math"
+#region "Math"
     lazy x = 12 / 3
     lazy y = 2 + 3
     lazy z = 12
@@ -78,9 +78,9 @@
     lazy y1 = 2 + 0
     assert(2, x1 / y1)
     assert(0, x1 % y1)
-#endtest
+#endregion
 
-#test "Invoke members"
+#region "Invoke members"
     lazy x = 2 + 13
     assert(got: x.IsMultiple(of: 5))
     assert(got: x.IsMultiple(of: 3))
@@ -88,9 +88,9 @@
     assert("Helloworld", str.Replace(", ", ""))
     lazy c = 'A'
     assert(got: c.IsUpper())
-#endtest
+#endregion
 
-#test "Lazy arrays"
+#region "Lazy arrays"
     lazy xs = {
         let xs = []
         for i in 1..10 {
@@ -109,9 +109,9 @@
     assert([4,5,6,7], xs)
     xs[1] = 55
     assert([4,55,6,7], xs)
-#endtest
+#endregion
 
-#test "Lazy tuples"
+#region "Lazy tuples"
     lazy xs = {
         (1,) + (2, 3)
     }
@@ -119,18 +119,18 @@
     assert(1, xs.First())
     assert(2, xs.Second())
     assert(3, xs.Length())
-#endtest
+#endregion
 
-#test "Lazy strings"
+#region "Lazy strings"
     lazy s1 = "one" + "," + "two"
     lazy s2 = "," + "three"
     assert(",two", s1.Substring(3))
     assert("one,two,three", s1 + s2)
     lazy s3 = "'val'"
     assert("val", s3.Trim('\''))
-#endtest
+#endregion
 
-#test "Lazy custom type"
+#region "Lazy custom type"
     type Foo()
     func Foo.Call() {
         "FromFoo!"
@@ -143,15 +143,15 @@
     }
     assert("FromFoo!", x())
     assert("Foo.ToString", x.ToString())
-#endtest
+#endregion
 
-#test "Lazy and operator overloading"
+#region "Lazy and operator overloading"
     func Integer + (other) => this.ToString() + other.ToString()
     lazy x = 12
     assert("122", x + 2)
-#endtest
+#endregion
 
-#test "Lazy indexers"
+#region "Lazy indexers"
     let xs = [1,2,3]
     type Foo()
     func get Foo[index] => index * 10
@@ -160,16 +160,16 @@
     assert(30, x[3])
     x[1] = 22
     assert(22, xs[1])
-#endtest
+#endregion
 
-#test "Lazy properties"
+#region "Lazy properties"
     type Foo()
     func get Foo.Bar() { "Bar!" }
     lazy x = Foo()
     assert("Bar!", x.Bar)
-#endtest
+#endregion
 
-#test "Lazy exceptions"
+#region "Lazy exceptions"
     let xs = []
     lazy x = {
         xs.AddRange(yields { 1, 2 })
@@ -180,20 +180,20 @@
     } catch {
         Unknown(xs) => assert([1, 2], xs)
     }
-#endtest
+#endregion
 
-#test "Force lazy"
+#region "Force lazy"
     var outp = ""
     lazy f = {
         outp = "Yes!"
     }
     force(f)
     assert("Yes!", outp)
-#endtest
+#endregion
 
-#test "Convert lazy"
+#region "Convert lazy"
     type Foo()
     func Foo as Integer { 42 }
     lazy f = Foo()
     assert(42, f as Integer)
-#endtest
+#endregion

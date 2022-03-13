@@ -1,18 +1,18 @@
-﻿#test init
+﻿#region "Initialize"
     type Box(key)
     let boxCollector = []
     func Box.Dispose() => boxCollector.Add(this.key)
-#endtest
+#endregion
 
-#test "Simple 1"
+#region "Simple 1"
     {
         auto x = Box("foo")
         boxCollector.Add("wait.foo")
     }
     assert(["wait.foo", "foo"], boxCollector)
-#endtest
+#endregion
 
-#test "Simple 2"
+#region "Simple 2"
     {
         auto x = Box("foo")
         boxCollector.Add("wait.foo")
@@ -22,9 +22,9 @@
         }
     }
     assert(["wait.foo", "wait.bar", "bar", "foo"], boxCollector)
-#endtest
+#endregion
 
-#test "Simple 3"
+#region "Simple 3"
     for x in 1..6 {
         auto obj = Box(x)
         if x == 3 {
@@ -35,9 +35,9 @@
         }
     }
     assert([1,2,3,4,5,6], boxCollector)
-#endtest
+#endregion
 
-#test "Simple 4"
+#region "Simple 4"
     func doit(b) {
         if b {
             auto a = Box(2)
@@ -49,9 +49,9 @@
     doit(true)
     doit(false)
     assert([2, 100, 4, 100], boxCollector)
-#endtest
+#endregion
 
-#test "Simple 5"
+#region "Simple 5"
     var x = 5
     while x > 0 {
         auto a = Box(x)
@@ -64,18 +64,18 @@
         }
     }
     assert([5,4,3,2,1], boxCollector)
-#endtest
+#endregion
 
-#test "Autos in functions 1"
+#region "Autos in functions 1"
     func run() {
         auto x = Box("foo")
         auto y = Box("bar")
     }
     run()
     assert(["foo", "bar"], boxCollector)
-#endtest
+#endregion
 
-#test "Autos in functions 2"
+#region "Autos in functions 2"
     func iter() {
         auto x = Box("fin")
         boxCollector.Add(1)
@@ -87,9 +87,9 @@
     }
     for _ in iter() { }
     assert([1,2,3,"fin"], boxCollector)
-#endtest
+#endregion
 
-#test "Autos in functions 3"
+#region "Autos in functions 3"
     func testFn() {
         auto x = Box("x")
         {
@@ -102,9 +102,9 @@
     }
     testFn()
     assert(["z","y","x"], boxCollector)
-#endtest
+#endregion
 
-#test "Autos in functions 4"
+#region "Autos in functions 4"
     func foobar(flag) {
         auto a = Box('a')
         if flag {
@@ -117,9 +117,9 @@
     foobar(flag: false)
     foobar(flag: true)
     assert(['a', 'a', 'b', 'a'], boxCollector)
-#endtest
+#endregion
 
-#test "Autos in functions 5"
+#region "Autos in functions 5"
     func iter() {
         auto a = Box(10)
         yield { auto a = Box(2) }
@@ -130,9 +130,9 @@
     }
     for _ in iter() { }
     assert([2,4,6,8,9,10], boxCollector)
-#endtest
+#endregion
 
-#test "Autos and exceptions 1"
+#region "Autos and exceptions 1"
     func testE() {
         auto x = Box(12)
         throw "err"
@@ -143,9 +143,9 @@
     } catch _ {
         assert([12], boxCollector)
     }
-#endtest
+#endregion
 
-#test "Autos and exceptions 2"
+#region "Autos and exceptions 2"
     func test1() {
         auto x = Box("y")
         {
@@ -164,9 +164,9 @@
     }
     assert("Error", msg)
     assert(["z", "y", "x"], boxCollector)
-#endtest
+#endregion
 
-#test "Autos and exceptions 3"
+#region "Autos and exceptions 3"
     try {
         auto x = Box(42)
         throw 84
@@ -174,9 +174,9 @@
         boxCollector.Add(e[0])
     }
     assert([42,84], boxCollector)
-#endtest
+#endregion
 
-#test "Autos and exceptions 4"
+#region "Autos and exceptions 4"
     func divide(x, y) {
         auto def = Box(-100)
         try {
@@ -189,9 +189,9 @@
     var xs = [divide(10, 2), divide(2, 0)]
     assert([5, -100], xs)
     assert([12, -100, 12, -100], boxCollector)
-#endtest
+#endregion
 
-#test "Autos and exceptions 5"
+#region "Autos and exceptions 5"
     func doit() {
         var x = {
             throw 24
@@ -204,9 +204,9 @@
         auto b = Box(e[0])
     }
     assert([24], boxCollector)
-#endtest
+#endregion
 
-#test "Autos and exceptions 6"
+#region "Autos and exceptions 6"
     func doit() {
         throw {
             auto b = Box(22)
@@ -217,18 +217,18 @@
         doit()
     } catch _ { }
     assert([22], boxCollector)
-#endtest
+#endregion
 
-#test "Autos in catch 1"
+#region "Autos in catch 1"
     try {
         throw "err"
     } catch e {
         auto b = Box(1)
     }
     assert([1], boxCollector)
-#endtest
+#endregion
 
-#test "Autos in catch 2"
+#region "Autos in catch 2"
     func inner() {
         try {
             throw "err"
@@ -243,9 +243,9 @@
         assert(e[0], "err")
         assert([1], boxCollector)
     }
-#endtest
+#endregion
 
-#test "Autos in catch 3"
+#region "Autos in catch 3"
     func inside() {
         try {
             throw 'a'
@@ -262,4 +262,4 @@
         x = e[0]
     }
     assert('b', x)
-#endtest
+#endregion

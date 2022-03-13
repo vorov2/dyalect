@@ -133,6 +133,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid function declaration..
+        /// </summary>
+        internal static string InvalidFunction {
+            get {
+                return ResourceManager.GetString("InvalidFunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid function expression..
         /// </summary>
         internal static string InvalidFunctionExpression {
@@ -147,6 +156,15 @@ namespace Dyalect.Strings {
         internal static string InvalidFunctionName {
             get {
                 return ResourceManager.GetString("InvalidFunctionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid identifier..
+        /// </summary>
+        internal static string InvalidIdentifier {
+            get {
+                return ResourceManager.GetString("InvalidIdentifier", resourceCulture);
             }
         }
         
@@ -192,6 +210,24 @@ namespace Dyalect.Strings {
         internal static string InvalidPattern {
             get {
                 return ResourceManager.GetString("InvalidPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid range expression..
+        /// </summary>
+        internal static string InvalidRange {
+            get {
+                return ResourceManager.GetString("InvalidRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid region..
+        /// </summary>
+        internal static string InvalidRegion {
+            get {
+                return ResourceManager.GetString("InvalidRegion", resourceCulture);
             }
         }
         
@@ -246,6 +282,15 @@ namespace Dyalect.Strings {
         internal static string InvalidUnary {
             get {
                 return ResourceManager.GetString("InvalidUnary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid &quot;yield&quot; statement..
+        /// </summary>
+        internal static string InvalidYield {
+            get {
+                return ResourceManager.GetString("InvalidYield", resourceCulture);
             }
         }
         

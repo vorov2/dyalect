@@ -17,7 +17,7 @@ namespace Dyalect
 
         sealed class TestBlockInfo
         {
-            public DTestBlock? Block { get; init; }
+            public DRegion? Block { get; init; }
             public string FileName { get; }
             public string? Error { get; init; }
             public TestBlockInfo(string fileName) => FileName = fileName;
@@ -111,7 +111,7 @@ namespace Dyalect
                     warns.AddRange(res.Messages);
 
                 foreach (var node in res.Value!.Root.Nodes)
-                    if (node is DTestBlock b)
+                    if (node is DRegion b)
                     {
                         blocks.Add(new TestBlockInfo(file)
                         {
@@ -125,6 +125,8 @@ namespace Dyalect
 
         private static void RunTests(TestBlockInfo[] testBlocks, DyaOptions options, BuilderOptions builderOptions, List<BuildMessage> warns)
         {
+            const string INIT = "Initialize";
+
             if (testBlocks.Length == 0)
                 return;
 
@@ -139,7 +141,7 @@ namespace Dyalect
 
             try
             {
-                inits = testBlocks.Where(b => b.Block is not null && b.Block?.Name == "init")
+                inits = testBlocks.Where(b => b.Block is not null && b.Block?.Name == INIT)
                     .ToDictionary(b => b.FileName, b => b.Block.Body);
             }
             catch (ArgumentException)
@@ -149,7 +151,7 @@ namespace Dyalect
 
             foreach (var bi in testBlocks)
             {
-                if (bi.Block?.Name == "init")
+                if (bi.Block?.Name == INIT)
                     continue;
 
                 if (currentFile != bi.FileName)

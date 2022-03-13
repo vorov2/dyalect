@@ -136,7 +136,6 @@ namespace Dyalect.Compiler
                     Build((DRecursiveBlock)node, hints, ctx);
                     break;
                 case NodeType.TestBlock:
-                    Build(((DTestBlock)node).Body);
                     break;
                 case NodeType.As:
                     Build((DAs)node, hints, ctx);

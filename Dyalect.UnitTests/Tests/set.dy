@@ -1,24 +1,24 @@
-﻿#test "Constructor"
+﻿#region "Constructor"
     let xs = Set(1, 2, 3)
     assert([1,2,3], xs.ToArray())
-#endtest
+#endregion
 
-#test "Methods: Clone"
+#region "Methods: Clone"
     let xs = Set()
     assert(true, xs == xs)
     assert(true, xs.Clone() == xs)
-#endtest
+#endregion
 
-#test "Methods: GetType"
+#region "Methods: GetType"
     let x = Set()
     assert(true, TypeInfo(x) == Set)
     assert(true, x.GetType() == Set)
     var t = TypeInfo(x)
     assert(15, t.Code)
     assert("Set", t.Name)
-#endtest
+#endregion
 
-#test "Methods: Add, Len"
+#region "Methods: Add, Len"
     let xs = Set()
     xs.Add(4)
     xs.Add(1)
@@ -26,18 +26,18 @@
     xs.Add(2)
     assert(3, xs.Length())
     assert([4,1,2], xs.ToArray())
-#endtest
+#endregion
 
-#test "Methods: Add, Remove"
+#region "Methods: Add, Remove"
     let xs = Set()
     xs.Add(5)
     xs.Add(6)
     xs.Remove(5)
     xs.Remove(8) //non-existent
     assert([6], xs.ToArray())
-#endtest
+#endregion
 
-#test "Methods: Add, Clear, Contains"
+#region "Methods: Add, Clear, Contains"
     let xs = Set()
     xs.Add(5)
     xs.Add(6)
@@ -46,76 +46,76 @@
     xs.Clear()
     assert(false, xs.Contains(5))
     assert(false, xs.Contains(6))
-#endtest
+#endregion
 
-#test "Methods: ToArray, ToTuple"
+#region "Methods: ToArray, ToTuple"
     let xs = Set(1, 2, 3, 4, 5)
     assert([1,2,3,4,5], xs.ToArray())
     let ys = Set(1, 2, 2, 3)
     assert([1,2,3], ys.ToArray())
     assert((1,2,3), ys.ToTuple())
-#endtest
+#endregion
 
-#test "Equality test"
+#region "Equality test"
     let xs = Set(1,2,3,4,5)
     let ys = Set(1,2,3,4,5)
     assert(true, xs == ys)
     assert(5, xs.Length())
     assert(5, ys.Length())
     assert(false, xs != ys)
-#endtest
+#endregion
 
-#test "Methods: Intersect"
+#region "Methods: Intersect"
     let xs = Set(values: [1..10])
     let ys = Set(values: [5..15])
     xs.Intersect(with: ys)
     assert([5,6,7,8,9,10], xs.ToArray())
-#endtest
+#endregion
 
-#test "Methods: Union"
+#region "Methods: Union"
     let xs = Set(values: [1..3])
     let ys = Set(values: [4..6])
     xs.Union(with: ys)
     assert([1,2,3,4,5,6], xs.ToArray())
-#endtest
+#endregion
 
-#test "Methods: Except"
+#region "Methods: Except"
     let xs = Set(values: [1..10])
     let ys = Set(values: [4..7])
     xs.Except(with: ys)
     assert([1,2,3,8,9,10], xs.ToArray())
-#endtest
+#endregion
 
-#test "Methods: Overlaps"
+#region "Methods: Overlaps"
     let xs = Set(values: [1..10])
     var ys = Set(values: [5..15])
     assert(true, xs.Overlaps(with: ys))
     ys = Set(values: [11..15])
     assert(false, xs.Overlaps(with: ys))
-#endtest
+#endregion
 
-#test "Methods: IsSubset"
+#region "Methods: IsSubset"
     let xs = Set(values: [5..10])
     var ys = Set(values: [1..20])
     assert(false, ys.IsSubset(of: xs))
     assert(true, xs.IsSubset(of: ys))
-#endtest
+#endregion
 
-#test "Methods: IsSuperset"
+#region "Methods: IsSuperset"
     let xs = Set(values: [5..10])
     var ys = Set(values: [1..20])
     assert(false, xs.IsSuperset(of: ys))
     assert(true, ys.IsSuperset(of: xs))
-#endtest
+#endregion
 
-#test "Methods: ToString"
+#region "Methods: ToString"
     let xs = Set(1, 2, 3)
     assert("Set (1, 2, 3)", xs.ToString())
-#endtest
+#endregion
 
-#test "Conversion: as"
+#region "Conversion: as"
     let xs = Set(1, 2, 3)
     assert([1,2,3], xs as Array)
     assert((1,2,3), xs as Tuple)
     assert(true, xs as Bool)
-#endtest
+#endregion

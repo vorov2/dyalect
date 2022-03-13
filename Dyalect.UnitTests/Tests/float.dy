@@ -1,53 +1,53 @@
-﻿#test "Float literal"
+﻿#region "Float literal"
     var res = 1.234e-17
     assert(0.00000000000000001234, res)
     res = .0
     assert(0.0, res)
-#endtest
+#endregion
 
-#test "Methods: Min and Max"
+#region "Methods: Min and Max"
     assert(1.7976931348623157E+308, Float.Max())
     assert(-1.7976931348623157E+308, Float.Min())
-#endtest
+#endregion
 
-#test "Methods: Inf and IsNaN"
+#region "Methods: Inf and IsNaN"
     var d = Float.Inf() + (-Float.Inf())
     assert(true, d.IsNaN())
-#endtest
+#endregion
 
-#test "Constructor"
+#region "Constructor"
     assert(12.2, Float(12.2))
     assert(12.0, Float(12))
     assert(5.0, Float('5'))
-#endtest
+#endregion
 
-#test "Methods: Default"
+#region "Methods: Default"
     assert(0.0, Float.Default())
-#endtest
+#endregion
 
-#test "Methods: getType"
+#region "Methods: getType"
     let x = 42.42
     assert(true, TypeInfo(x) == Float)
     assert(true, x.GetType() == Float)
     var t = TypeInfo(x)
     assert(3, t.Code)
     assert("Float", t.Name)
-#endtest
+#endregion
 
-#test "Methods: Parse"
+#region "Methods: Parse"
     assert(42.42, Float.Parse("42.42"))
     assert(2.0, Float.Parse('2'))
     assert(nil, Float.Parse("three and a half"))
-#endtest
+#endregion
 
-#test "Ranges"
+#region "Ranges"
     assert([0.0,1.0,2.0,3.0,4.0,5.0], [0.0..5])
     assert([0.0,0.02,0.04], (0.0^0.02..0.05).ToArray())
-#endtest
+#endregion
 
-#test "Conversion: as"
+#region "Conversion: as"
     let x = 12.2
     assert(12, x as Integer)
     assert("12.2", x as String)
     assert(true, x as Bool)
-#endtest
+#endregion

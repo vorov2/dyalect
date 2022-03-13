@@ -1,28 +1,28 @@
-﻿#test "Constructor"
+﻿#region "Constructor"
     let xs = Dictionary(
         (x: 1, y: 2, z: "foo")
     )
     assert(1, xs["x"])
     assert(2, xs["y"])
     assert("foo", xs["z"])
-#endtest
+#endregion
 
-#test "Methods: GetType"
+#region "Methods: GetType"
     let x = Dictionary()
     assert(true, TypeInfo(x) == Dictionary)
     assert(true, x.GetType() == Dictionary)
     var t = TypeInfo(x)
     assert(14, t.Code)
     assert("Dictionary", t.Name)
-#endtest
+#endregion
 
-#test "Methods: Clone"
+#region "Methods: Clone"
     let xs = Dictionary()
     assert(true, xs == xs)
     assert(false, xs.Clone() == xs)
-#endtest
+#endregion
 
-#test "Methods: FromTuple"
+#region "Methods: FromTuple"
     var map = Dictionary.FromTuple( (name: "John", surname: "Doe", age: 50) )
     assert("John", map.name)
     assert("Doe", map.surname)
@@ -31,9 +31,9 @@
     map = Dictionary.FromTuple( (foo: "foo", bar: "bar") )
     assert("foo", map.foo)
     assert("bar", map.bar)
-#endtest
+#endregion
 
-#test "Methods: add"
+#region "Methods: add"
     var map = Dictionary()
     map.Add("x", 1)
     map.Add("y", 2)
@@ -45,16 +45,16 @@
     map.Add(("y",2), 2)
     assert(1, map[("x",1)])
     assert(2, map[("y",2)])
-#endtest
+#endregion
 
-#test "Indexing"
+#region "Indexing"
     var map = Dictionary()
     map[42] = 420
     map[42] = map[42] * 2
     assert(840, map[42])
-#endtest
+#endregion
 
-#test "Methods: TryAdd, TryGet"
+#region "Methods: TryAdd, TryGet"
     var map = Dictionary()
     map.Add(12, 12)
     if !map.TryAdd(12, 12) {
@@ -62,9 +62,9 @@
     }
     var res = map.TryGet(12)
     assert(nil, res)
-#endtest
+#endregion
 
-#test "Methods: Len, Clear"
+#region "Methods: Len, Clear"
     var map = Dictionary()
     map.Add("x", 1)
     map["x"] = 2
@@ -72,15 +72,15 @@
     assert(2, map.Length())
     map.Clear()
     assert(0, map.Length())
-#endtest
+#endregion
 
-#test "Complex keys"
+#region "Complex keys"
     var map = Dictionary()
     map[[1,2,3]] = [4,5,6]
     assert([4,5,6], map[[1,2,3]])
-#endtest
+#endregion
 
-#test "Field access"
+#region "Field access"
     var map = Dictionary()
     map.name = "John"
     map.surname = "Doe"
@@ -88,9 +88,9 @@
     assert("John", map.name)
     assert("Doe", map.surname)
     assert(50, map.age)
-#endtest
+#endregion
 
-#test "Iterator to dictionary"
+#region "Iterator to dictionary"
     let xs = yields {
         (key: 1, value: "Foo"),
         (key: 2, value: "Bar"),
@@ -106,9 +106,9 @@
             assert("Zoo", value)
         }
     }
-#endtest
+#endregion
 
-#test "Methods: Compact"
+#region "Methods: Compact"
     let xs = Dictionary()
     xs.Add("foo", 1)
     xs.Add("bar", nil)
@@ -131,9 +131,9 @@
     res = data.Compact(Integer.Parse)
     assert(1, res.Length())
     assert(1, res["a"])
-#endtest
+#endregion
 
-#test "Methods: ToTuple"
+#region "Methods: ToTuple"
     let tuple1 = (foo: "foo", bar: "bar")
     let tuple2 = (foo: "foo", bar: "bar", "$zoo$": 24)
     var map = Dictionary.FromTuple(tuple1)
@@ -142,9 +142,9 @@
     map = Dictionary.FromTuple(tuple2)
     backTuple = map.ToTuple()
     assert(tuple2, backTuple)
-#endtest
+#endregion
 
-#test "Pattern matching"
+#region "Pattern matching"
     var map = Dictionary.FromTuple ((x: 1, y: 2))
     match map {
         (x: xx, y: yy) => {
@@ -152,17 +152,17 @@
             assert(2, yy)
         }
     }
-#endtest
+#endregion
 
-#test "Methods: Contains"
+#region "Methods: Contains"
     var map = Dictionary.FromTuple ((x: 1, y: 2))
     assert(true, map.Contains("x"))
     assert(false, map.Contains("X"))
     map[(1,2)] = true
     assert(true, map.Contains((1,2)))
-#endtest
+#endregion
 
-#test "Conversion: as"
+#region "Conversion: as"
     let xs = Dictionary.FromTuple ((x: 1, y: 2))
     assert("Dictionary (x = 1, y = 2)", xs as String)
-#endtest
+#endregion

@@ -189,4 +189,19 @@
   <data name="InvalidTypeName" xml:space="preserve">
     <value>Type name is invalid.</value>
   </data>
+  <data name="InvalidRegion" xml:space="preserve">
+    <value>Invalid region.</value>
+  </data>
+  <data name="InvalidFunction" xml:space="preserve">
+    <value>Invalid function declaration.</value>
+  </data>
+  <data name="InvalidIdentifier" xml:space="preserve">
+    <value>Invalid identifier.</value>
+  </data>
+  <data name="InvalidRange" xml:space="preserve">
+    <value>Invalid range expression.</value>
+  </data>
+  <data name="InvalidYield" xml:space="preserve">
+    <value>Invalid "yield" statement.</value>
+  </data>
 </root>

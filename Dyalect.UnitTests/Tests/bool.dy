@@ -1,27 +1,27 @@
-﻿#test "Constructor"
+﻿#region "Constructor"
     assert(true, Bool(12))
     assert(false, Bool(0))
     assert(true, Bool("str"))
     assert(false, Bool(""))
     assert(false, Bool(nil))
     assert(true, Bool([]))
-#endtest
+#endregion
 
-#test "Methods: default"
+#region "Methods: default"
     assert(false, Bool.Default())
-#endtest
+#endregion
 
-#test "Methods: getType"
+#region "Methods: getType"
     let x = false
     assert(true, TypeInfo(x) == Bool)
     assert(true, x.GetType() == Bool)
     var t = TypeInfo(x)
     assert(4, t.Code)
     assert("Bool", t.Name)
-#endtest
+#endregion
 
-#test "Conversion: as"
+#region "Conversion: as"
     let b = true
     assert(true, b as Bool)
     assert("true", b as String)
-#endtest
+#endregion

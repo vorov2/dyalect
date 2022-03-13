@@ -40,6 +40,7 @@ TOKENS
     autoToken           = "auto".
     varToken            = "var".
     letToken            = "let".
+    lazyToken           = "lazy".
     funcToken           = "func".
     returnToken         = "return".
     privateToken        = "private".
@@ -117,10 +118,10 @@ PRODUCTIONS
             )
         ).
 
-    TestBlock<out DNode node> = 
+    Region<out DNode node> = 
         (. string name = null; node = null; .)
         (
-            "#test" (. var ot = t; .) 
+            "#region" (. var ot = t; .) 
             ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
             (.
                 var block = new DBlock(default);
@@ -140,10 +141,10 @@ PRODUCTIONS
                     Separator
                 )
             }
-            "#endtest"
+            "#endregion"
             (.
                 var dyc = new DyCodeModel(block, imports.ToArray(), FileName);
-                node = new DTestBlock(ot) { Name = name, Body = dyc };
+                node = new DRegion(name, dyc, ot);
             .)
         ).
 
@@ -225,7 +226,7 @@ PRODUCTIONS
                 arg = new DTypeParameter(ot) { Name = str, Mutable = mut };
         .)
         [
-            "=" Expr<out var cnode>
+            "=" Control<out var cnode>
             (. arg.DefaultValue = cnode; .)
         ]
         [ "..." (. arg.IsVarArgs = true; .) ].
@@ -244,7 +245,7 @@ PRODUCTIONS
             | Loops<out node> [ Guard<node, out node> Separator ]
             | Function<out node>
             | Directive<out node> Separator
-            | TestBlock<out node>
+            | Region<out node>
         )
         (. node = ProcessImplicits(node); .).
 
@@ -252,7 +253,7 @@ PRODUCTIONS
         (. node = src; .)
         (
             (. var ot = t; .)
-            "when" SimpleExpr<out var cnode>
+            "when" Expr<out var cnode>
             (. var @if = new DIf(ot) { Condition = cnode, True = src }; node = @if; .)
             [ "else" Assignment<out cnode> (. @if.False = cnode; .) ]
         ).
@@ -268,7 +269,7 @@ PRODUCTIONS
         ).
 
     Assignment<out DNode node> =
-        SimpleExpr<out node>
+        Expr<out node>
         [
             (.
                 var ass = new DAssignment(t) { Target = node };
@@ -289,7 +290,7 @@ PRODUCTIONS
                 | "<<<=" (. op = BinaryOperator.ShiftLeft; .)
                 | ">>>=" (. op = BinaryOperator.ShiftRight; .)
             )
-            Expr<out node>
+            Control<out node>
             (.
                 ass.Value = node;
                 ass.AutoAssign = op;
@@ -452,7 +453,7 @@ PRODUCTIONS
                 arg = new DParameter(ot) { Name = str };
         .)
         [
-            "=" Expr<out var cnode>
+            "=" Control<out var cnode>
             (. arg.DefaultValue = cnode; .)
         ]
         [ "..." (. arg.IsVarArgs = true; .) ].
@@ -473,7 +474,7 @@ PRODUCTIONS
                 (. var bin = new DBinding(t) { Constant = t.val == "let", Lazy = t.val == "lazy" }; .)
                 OrPattern<out var pat> (. bin.Pattern = pat; .)
                 [
-                    "=" Expr<out node>
+                    "=" Control<out node>
                     (. bin.Init = node; .)
                 ]
                 (. node = bin; .)
@@ -483,7 +484,7 @@ PRODUCTIONS
                 "auto"
                 (. var bin = new DBinding(t) { AutoClose = true, Constant = true }; .)
                 NamePattern<out var pat> (. bin.Pattern = pat; .)
-                "=" Expr<out node>
+                "=" Control<out node>
                 (. bin.Init = node; node = bin; .)
             )
         ).
@@ -493,16 +494,16 @@ PRODUCTIONS
             "set"
             (. var bin = new DRebinding(t); .)
             OrPattern<out var pat> (. bin.Pattern = pat; .)
-            "=" Expr<out node>
+            "=" Control<out node>
             (. bin.Init = node; .)
             (. node = bin; .)
         ).
 
-    Expr<out DNode node> =
+    Control<out DNode node> =
         (. node = null; .)
         (
               If<out node>
-            | SimpleExpr<out node>
+            | Expr<out node>
             | Loops<out node>
             | Match<out node>
         )
@@ -514,7 +515,7 @@ PRODUCTIONS
         (
             "match"
             (. var m = new DMatch(t); .)
-            Expr<out node>
+            Control<out node>
             (. m.Expression = node; .)
             "{"
                 MatchEntry<out var entry> (. m.Entries.Add(entry); .)
@@ -528,7 +529,7 @@ PRODUCTIONS
             (. me = new DMatchEntry(t); .)
             OrPattern<out var p>
             (. me.Pattern = p; .)
-            [ "when" Expr<out var node> (. me.Guard = node; .) ]
+            [ "when" Control<out var node> (. me.Guard = node; .) ]
             "=>" Assignment<out var exp> (. me.Expression = exp; .)
         ).
 
@@ -755,7 +756,7 @@ PRODUCTIONS
         (
             "if"
             (. var @if = new DIf(t); .)
-            Expr<out node> (. @if.Condition = node; .)
+            Control<out node> (. @if.Condition = node; .)
             Block<out node>  (. @if.True = node; .)
             [
                 "else"
@@ -788,7 +789,7 @@ PRODUCTIONS
             (. var @while = new DWhile(t) { DoWhile = true }; .)
             "do"
             Block<out node> (. @while.Body = node; .)
-            "while" Expr<out node>
+            "while" Control<out node>
             (. @while.Condition = node; node = @while; .)
         ).
 
@@ -797,7 +798,7 @@ PRODUCTIONS
         (
             "while"
             (. var @while = new DWhile(t); .)
-            Expr<out node> (. @while.Condition = node; .)
+            Control<out node> (. @while.Condition = node; .)
             Block<out node>
             (.
                 @while.Body = node;
@@ -811,8 +812,8 @@ PRODUCTIONS
             "for"
             (. var @for = new DFor(t); .)
             OrPattern<out var pattern> (. @for.Pattern = pattern; .)
-            "in" Expr<out node> (. @for.Target = node; .)
-            [ "when" Expr<out node> (. @for.Guard = node; .) ]
+            "in" Control<out node> (. @for.Target = node; .)
+            [ "when" Control<out node> (. @for.Guard = node; .) ]
             Block<out node>
             (.
                 @for.Body = node;
@@ -845,7 +846,7 @@ PRODUCTIONS
                     var yield = new DYieldMany(t);
                     node = yield;
                 .)
-                Expr<out var exp> (. yield.Expression = exp; .)
+                Control<out var exp> (. yield.Expression = exp; .)
             )
             |
             (
@@ -853,7 +854,7 @@ PRODUCTIONS
                     var yield = new DYield(t);
                     node = yield;
                 .)
-                Expr<out var exp> (. yield.Expression = exp; .)
+                Control<out var exp> (. yield.Expression = exp; .)
             )
         ).
 
@@ -862,7 +863,7 @@ PRODUCTIONS
         (. var br = new DBreak(t); node = br; .)
         [
             (. if (la.AfterEol) return; .)
-            Expr<out var exp> (. br.Expression = exp; .)
+            Control<out var exp> (. br.Expression = exp; .)
         ].
 
     Return<out DNode node> =
@@ -871,28 +872,28 @@ PRODUCTIONS
             var br = new DReturn(t); node = br;
             if (la.AfterEol) return;
         .)
-        [ Expr<out var exp> (. br.Expression = exp; .) ].
+        [ Control<out var exp> (. br.Expression = exp; .) ].
 
     Continue<out DNode node> = "continue" (. node = new DContinue(t); .).
 
-    SimpleExpr<out DNode node> =
+    Expr<out DNode node> =
         (. node = null; .)
         (
               IF (IsFunction()) Lambda<out node>
-            | NoArgLambda<out node>
-            | Coalesce<out node> [ TernaryExpr<node, out node> ]
+            | NullaryLambda<out node>
+            | Coalesce<out node> [ Ternary<node, out node> ]
             | TryCatch<out node>
             | Throw<out node>
             | Block<out node>
         ).
 
-    TernaryExpr<DNode parent, out DNode node> = 
+    Ternary<DNode parent, out DNode node> = 
         (. node = null; .)
         (
             "?"
             (. var @if = new DIf(t) { Condition = parent }; .)
-            SimpleExpr<out node> (. @if.True = node; .)
-            ":" SimpleExpr<out node> (. @if.False = node; node = @if; .)
+            Expr<out node> (. @if.True = node; .)
+            ":" Expr<out node> (. @if.False = node; node = @if; .)
         ).
 
     Throw<out DNode node> =
@@ -904,7 +905,7 @@ PRODUCTIONS
                 node = th;
                 if (la.AfterEol) return;
             .)
-            SimpleExpr<out var cexp> (. th.Expression = cexp; .)
+            Expr<out var cexp> (. th.Expression = cexp; .)
         ).
 
     TryCatch<out DNode node> =
@@ -942,18 +943,18 @@ PRODUCTIONS
                 | FunctionArguments<f>
             )
             (. functions.Push(f); .)
-            "=>" SimpleExpr<out var exp>
+            "=>" Expr<out var exp>
             (. f.Body = exp; functions.Pop(); .)
         ).
 
-    NoArgLambda<out DNode node> =
+    NullaryLambda<out DNode node> =
         (.
             var f = new DFunctionDeclaration(t);
             node = f;
         .)
         (
             (. functions.Push(f); .)
-            "=>" SimpleExpr<out var exp>
+            "=>" Expr<out var exp>
             (. f.Body = exp; functions.Pop(); .)
         ).
 
@@ -1206,7 +1207,7 @@ PRODUCTIONS
                         (. if (la.AfterEol) return; .)
                         "["
                             (. var idx = new DIndexer(t) { Target = node }; .)
-                            Expr<out node>
+                            Control<out node>
                             (.
                                 idx.Index = node;
                                 node = idx;
@@ -1230,14 +1231,14 @@ PRODUCTIONS
         (. var node = default(DNode); .)
         (
               IF (IsLabel()) Label<out node>
-            | Expr<out node> 
+            | Control<out node> 
         )
         (. app.Arguments.Add(node); .)
         {
             ","
             (
                   IF (IsLabel()) Label<out node>
-                | Expr<out node> 
+                | Control<out node> 
             )
             (. app.Arguments.Add(node); .)
         }.
@@ -1268,8 +1269,8 @@ PRODUCTIONS
                     var it = new DIteratorLiteral(t);
                     it.YieldBlock = new DYieldBlock(t);
                 .)
-                [ Expr<out node> (. it.YieldBlock.Elements.Add(node); .) ]
-                { "," Expr<out node> (. it.YieldBlock.Elements.Add(node); .) }
+                [ Control<out node> (. it.YieldBlock.Elements.Add(node); .) ]
+                { "," Control<out node> (. it.YieldBlock.Elements.Add(node); .) }
                 (. node = it; .)
             "}"
         ).
@@ -1296,8 +1297,8 @@ PRODUCTIONS
             "["
                 (. var arr = new DArrayLiteral(t); .)
                 [
-                    Expr<out node> (. arr.Elements.Add(node); .)
-                    { "," Expr<out node> (. arr.Elements.Add(node); .) }
+                    Control<out node> (. arr.Elements.Add(node); .)
+                    { "," Control<out node> (. arr.Elements.Add(node); .) }
                 ]
                 (. node = arr; .)
             "]"
@@ -1310,7 +1311,7 @@ PRODUCTIONS
                 (.  var tup = new DTupleLiteral(t); .)
                 (
                       IF (IsLabel()) Label<out node>
-                    | Expr<out node>
+                    | Control<out node>
                 )
                 (. tup.Elements.Add(node); .)
                 { 
@@ -1318,7 +1319,7 @@ PRODUCTIONS
                     [
                         (
                               IF (IsLabel()) Label<out node>
-                            | Expr<out node>
+                            | Control<out node>
                         )
                         (. tup.Elements.Add(node); .)
                     ] 
@@ -1330,7 +1331,7 @@ PRODUCTIONS
     Group<out DNode node> =
         (. node = null; .)
         (
-            "(" Expr<out node> ")"
+            "(" Control<out node> ")"
         ).
 
     Name<out DNode node> =

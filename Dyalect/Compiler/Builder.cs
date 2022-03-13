@@ -108,7 +108,7 @@ namespace Dyalect.Compiler
                 unit.UnitIds.Add(0);
                 var root = codeModel.Root;
 
-                //What if we have no code, only imports? Useless, but we shouldn't crush in this case
+                //What if we have no code, just imports? We shouldn't crush in this case
                 if (root.Nodes.Count == 0)
                     cw.PushNil();
 
@@ -168,8 +168,6 @@ namespace Dyalect.Compiler
             return false;
         }
 
-        private Exception Ice(Exception? ex = null) =>
-            new DyBuildException(
-                $"Internal compiler error: {(ex is not null ? ex.Message : "Unknown error.")}", ex);
+        private DyBuildException Ice(Exception? ex = null) => new($"Internal compiler error: {ex?.Message}", ex);
     }
 }
