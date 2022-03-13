@@ -50,6 +50,16 @@
         
         Deprecated = 23,
 
-        InvalidTypeName = 34
+        InvalidTypeName = 34,
+
+        InvalidRegion = 35,
+
+        InvalidFunction = 36,
+
+        InvalidYield = 37,
+
+        InvalidRange = 38,
+
+        InvalidIdentifier = 39
     }
 }

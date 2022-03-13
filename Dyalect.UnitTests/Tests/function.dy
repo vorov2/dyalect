@@ -1,27 +1,27 @@
-﻿#test "Methods: ToString"
+﻿#region "Methods: ToString"
     func foo(args..., quotes = 12) { }
     let pat = "foo(args..., quotes = 12)";
     assert(pat, foo.ToString())
-#endtest
+#endregion
 
-#test "Methods: Clone"
+#region "Methods: Clone"
     let fn = (x, y) => x + y
     assert(true, fn == fn)
     assert(true, fn.Clone() == fn)
     assert(true, fn.ToString.Clone() == fn.ToString)
     assert(false, fn.ToString.Clone() == fn)
-#endtest
+#endregion
 
-#test "Base variable 1"
+#region "Base variable 1"
     let x = 2
     func inner() {
         let x = 4
         base.x
     }
     assert(2, inner())
-#endtest
+#endregion
 
-#test "Base variable 2"
+#region "Base variable 2"
     let x = 2
     func inner() {
         let x = 4
@@ -31,9 +31,9 @@
         }
     }
     assert(2, inner())
-#endtest
+#endregion
 
-#test "Composition 1"
+#region "Composition 1"
     func sum(x, y) {
         x + y
     }
@@ -43,9 +43,9 @@
     let fun = Function.Compose(sum, fmt)
     let res = fun(13, 14)
     assert(res, "result=27")
-#endtest
+#endregion
 
-#test "Composition 2"
+#region "Composition 2"
     func sum(x, y) {
         x + y
     }
@@ -55,18 +55,18 @@
     let fun = sum.Compose(with: fmt)
     let res = fun(13, 14)
     assert(res, "result=27")
-#endtest
+#endregion
 
-#test "Methods: getType"
+#region "Methods: getType"
     let x = x => x
     assert(true, TypeInfo(x) == Function)
     assert(true, x.GetType() == Function)
     var t = TypeInfo(x)
     assert(7, t.Code)
     assert("Function", t.Name)
-#endtest
+#endregion
 
-#test "Properties"
+#region "Properties"
     func get Array.First() { 
         this[0] when this.Length() > 0
     }
@@ -79,9 +79,9 @@
     assert(1, xs.First)
     xs.First = 11
     assert(11, xs.First)
-#endtest
+#endregion
 
-#test "Tail recursion 1"
+#region "Tail recursion 1"
     var xs = []
     func loop(n, max) {
         func loop(i) {
@@ -94,9 +94,9 @@
     }
     loop(0, 10)
     assert([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], xs)
-#endtest
+#endregion
 
-#test "Tail recursion 2"
+#region "Tail recursion 2"
     func foo(a, b) {
         func foo(a, b, c) {
             if a + b == 0 {
@@ -114,9 +114,9 @@
     }
     var res = foo(1, 2)
     assert(42, res)
-#endtest
+#endregion
 
-#test "Tail recursion 3"
+#region "Tail recursion 3"
     func withpm(obj) {
         match obj {
             (x, y) => withpm(42),
@@ -127,9 +127,9 @@
     }
     var res = withpm((1,2))
     assert(res, "foo")
-#endtest
+#endregion
 
-#test "Recursion 1"
+#region "Recursion 1"
     var acc = 0
     func iter(n) {
         if n == 0 {
@@ -141,18 +141,18 @@
     }
     iter(10)
     assert(acc, 10)
-#endtest
+#endregion
 
-#test "Recursion 2"
+#region "Recursion 2"
     func foo(x, y) {
         var foo = (x, y) => x - y
         foo(x, y)
     }
     var res = foo(12, 2)
     assert(res, 10)
-#endtest
+#endregion
 
-#test "Call"
+#region "Call"
     func sum(x,y) {
         if y == 2 {
             x + y
@@ -164,17 +164,17 @@
     }
     var res = sum(2, 4)
     assert(7, res)
-#endtest
+#endregion
 
-#test "Call with named arguments"
+#region "Call with named arguments"
     func test1(x, y, z) {
         (x, y, z)
     }
     var res = test1(z: 12, x: 3, y: 1)
     assert((3, 1, 12), res)
-#endtest
+#endregion
 
-#test "Call with optional arguments"
+#region "Call with optional arguments"
     func test1(x, x1 = 144, y, z, z1 = 33) {
         (x, x1, y, z, z1)
     }
@@ -187,62 +187,62 @@
     assert("foo", test2())
     var arg = "bar"
     assert(arg, test2(arg))
-#endtest
+#endregion
 
-#test "Variadic call 1"
+#region "Variadic call 1"
     func test1(args..., separator = ",", terminator = "\n") {
         [args, separator, terminator]
     }
     assert( [(1,2), ",", "\n"], test1(1,2) )
     assert( [(1,2), ",", "\r"], test1(1,2, terminator: "\r") )
     assert( [(1,2), ";", "\r"], test1(1,2, terminator: "\r", separator: ";") )
-#endtest
+#endregion
 
-#test "Curried function"
+#region "Curried function"
     func apply(fun, fst) { snd => fun(fst, snd) }
     func sum(x, y) { x + y }
     var sum2 = apply(sum, 2)
     assert(5, sum2(3))
-#endtest
+#endregion
 
-#test "Flip"
+#region "Flip"
     func apply(fun, fst) { snd => fun(fst, snd) }
     func flip(fun) { (y, x) => fun(x, y) }
     func sub(x, y) { x - y }
     var sub3 = apply(flip(sub), 3)
     assert(6, sub3(9))
-#endtest
+#endregion
 
-#test "Variadic call 2"
+#region "Variadic call 2"
     var res
     func variadic(args...) {
         res = args.Length()
     }
     variadic(args: (1,2,3))
     assert(3, res)
-#endtest
+#endregion
 
-#test "Variadic call 3"
+#region "Variadic call 3"
     var res
     func variadic(args...) {
         res = args.Length()
     }
     variadic([1,2,3,4])
     assert(1, res)
-#endtest
+#endregion
 
-#test "Identity function"
+#region "Identity function"
     var f = x => x
     assert(12, f(12))
-#endtest
+#endregion
 
-#test "Implicit function"
+#region "Implicit function"
     var f = $0 ?? 22
     assert(12, f(12))
     assert(22, f(0))
-#endtest
+#endregion
 
-#test "Caller and current"
+#region "Caller and current"
     func foo() {
         assert("foo", current().Name)
         assert("bar", caller().Name)
@@ -251,30 +251,30 @@
         foo()
     }
     bar()
-#endtest
+#endregion
 
-#test "Function info"
+#region "Function info"
     func foo() {
         assert(foo.Name, current().Name)
     }
     foo()
     assert(nil, caller())
-#endtest
+#endregion
 
-#test "Call chain 1"
+#region "Call chain 1"
     func thy() { caller() }
     func snd() { thy() }
     func fst() { snd() }
     var s = fst()
     assert("snd", s.Name)
-#endtest
+#endregion
 
-#test "Anonymous function name"
+#region "Anonymous function name"
     let f = x => x * x
     assert("<func>", f.Name)
-#endtest
+#endregion
 
-#test "Call chain 2"
+#region "Call chain 2"
     func foo() {
         return "\(current().Name) is called by \(caller().Name)"
     }
@@ -283,15 +283,15 @@
     }
     var s = bar()
     assert("foo is called by bar", s)
-#endtest
+#endregion
 
-#test "Implicit as statement"
+#region "Implicit as statement"
     //Bug #294
     $0 + $1
     assert(got: true)
-#endtest
+#endregion
 
-#test "Complex variadic"
+#region "Complex variadic"
     func takeItAll(x, y, args...) {
         var str = "x=" + y + ";y=" + y + ";other=["
         var count = 0
@@ -307,17 +307,17 @@
     }
     var x = takeItAll(12, 33.4, "oops", true, [1], (x: 0.33, y: 1))
     assert("x=33.4;y=33.4;other=[oopstrue,[1],(x: 0.33, y: 1)]", x)
-#endtest
+#endregion
 
-#test "Variadic arguments to string"
+#region "Variadic arguments to string"
     func take(args...) {
         args.ToString()
     }
     var x = take(1,2,44.42)
     assert("(1, 2, 44.42)", x)
-#endtest
+#endregion
 
-#test "Variadic and optional"
+#region "Variadic and optional"
     func take(x, args...) {
         var str = "x=" + x
         str += args
@@ -325,9 +325,9 @@
     }
     var x = take(14)
     assert("x=14()", x)
-#endtest
+#endregion
 
-#test "Method: toString 1"
+#region "Method: toString 1"
     func Integer.ToString() {
         if this % 2 == 0 {
             "even"
@@ -336,39 +336,39 @@
         }
     }
     assert("even", 12.ToString())
-#endtest
+#endregion
 
-#test "Method: toString 2"
+#region "Method: toString 2"
     func Nil.ToString() {
         "null"
     }
     var x = "foo" + nil
     assert("foonull", x)
-#endtest
+#endregion
 
-#test "Method: addition 1"
+#region "Method: addition 1"
     func Integer +(other) {
         this * other
     }
     var res = 3 + 3 == 3 * 3
     assert(got: res)
-#endtest
+#endregion
 
-#test "Method: addition 2"
+#region "Method: addition 2"
     func Float +(other) {
         this.ToString() + " + " + other.ToString()
     }
     var res = 12.2 + 0.4
     assert("12.2 + 0.4", res)
-#endtest
+#endregion
 
-#test "Method: GetItem"
+#region "Method: GetItem"
     var x = 11
     func get Integer[index] { index }
     assert(11, 12[x])
-#endtest
+#endregion
 
-#test "Closures"
+#region "Closures"
     var xs = []
     let num = 10
     for n in 0..<num {
@@ -380,26 +380,26 @@
         ys.Add(x())
     }
     assert([0, 1, 4, 9, 16, 25, 36, 49, 64, 81], ys)
-#endtest
+#endregion
 
-#test "Parameter order 1"
+#region "Parameter order 1"
     func pars(x, y) {
         "x=\(x),y=\(y)"
     }
     let res = pars(y: 2, x: 1)
     assert("x=1,y=2", res)
-#endtest
+#endregion
 
-#test "Parameter defaults 1"
+#region "Parameter defaults 1"
     func getter(x = 12, y = 3, z = 4, j = 44, k = 42) {
         x + y + z + j + k
     }
     assert(60, getter(3, 4, k: 5))
     assert(62, getter(j: 1))
     assert(105, getter())
-#endtest
+#endregion
 
-#test "Parameter defaults 2"
+#region "Parameter defaults 2"
     func pars(x = 1, y = 2, z = 3) {
         "x=\(x),y=\(y),z=\(z)"
     }
@@ -411,9 +411,9 @@
     assert("x=1,y=2,z=4", res)
     res = pars(10, 20)
     assert("x=10,y=20,z=3", res)
-#endtest
+#endregion
 
-#test "Parameters and exceptions"
+#region "Parameters and exceptions"
     func pars(x, y, z) { }
     let res = try {
         pars(1, 2, x: 3)
@@ -421,9 +421,9 @@
         MultipleValuesForArgument(funName, argName) => "\(funName)->\(argName)"
     }
     assert("pars->x", res)
-#endtest
+#endregion
 
-#test "Parameterless lambda"
+#region "Parameterless lambda"
     let fn = => 2 + 2
     assert(4, fn())
     func takeIt(fn) {
@@ -431,9 +431,9 @@
     }
     let res = takeIt(=> { 22 + 22 })
     assert(44, res)
-#endtest
+#endregion
 
-#test "Introspection"
+#region "Introspection"
     func tt(x, y, z = 3, extras...) {}
     assert("tt", tt.Name)
     assert(4, tt.Parameters.Length())
@@ -450,36 +450,36 @@
         }
         i += 1
     }
-#endtest
+#endregion
 
-#test "Expression bodied functions"
+#region "Expression bodied functions"
     func sum(x, y) => x + y
     assert(5, sum(2, 3))
     func sum3(x, y, z) => {
         x + y + z
     }
     assert(9, sum3(2, 3, 4))
-#endtest
+#endregion
 
-#test "Defaults and foreign call 1"
+#region "Defaults and foreign call 1"
     func double(x = 2) => x + x
     func sum2(x, y = 3) => x + y
     func sum3(x = 1, y = 0.5, z = 0.25) => x + y + z
     assert(4, __invoke(double))
     assert(6.33, __invoke(sum2, 3.33))
     assert(1.75, __invoke(sum3))
-#endtest
+#endregion
 
-#test "Defaults and foreign call 2"
+#region "Defaults and foreign call 2"
     assert(12.12, __invoke(round, 12.1245677))
     let r = __invoke(rnd, 10)
     assert(true, r >= 10)
     assert(true, __invoke(rnd) >= 0)
     let r2 = __invoke(rnd, 1, 5)
     assert(true, r2 >= 1 && r2 <= 5)
-#endtest
+#endregion
 
-#test "Defaults and foreign call 3"
+#region "Defaults and foreign call 3"
     var cell
     func collector(args..., x = 5) {
         var xs = [x]
@@ -488,9 +488,9 @@
     }
     __invoke(collector, 4)
     assert([5, 4], cell)
-#endtest
+#endregion
 
-#test "Defaults and foreign call 4"
+#region "Defaults and foreign call 4"
     var cell
     func collector(x, y, args...) {
         var xs = [x, y]
@@ -499,9 +499,9 @@
     }
     __invoke(collector, 1, 2, (3, 4))
     assert([1, 2, 3, 4], cell)
-#endtest
+#endregion
 
-#test "Defaults and foreign call 5"
+#region "Defaults and foreign call 5"
     var cell
     func collector(x, y, args...) {
         var xs = [x, y]
@@ -510,16 +510,16 @@
     }
     __invoke(collector, 5, 6, [7, 8])
     assert([5, 6, 7, 8], cell)
-#endtest
+#endregion
 
-#test "External call"
+#region "External call"
     func checkIt() {
         assert(nil, caller())
     }
     __invoke(checkIt)
-#endtest
+#endregion
 
-#test "Type annotations 1"
+#region "Type annotations 1"
     func sum(Integer x, Integer y) {
         x + y
     }
@@ -530,9 +530,9 @@
     } catch {
         InvalidType() => assert(got: true)
     }
-#endtest
+#endregion
 
-#test "Type annotations 2"
+#region "Type annotations 2"
     import lib = refs/libtest1
 
     func assetToString(lib.Asset ass) {
@@ -545,9 +545,9 @@
     } catch {
         InvalidType() => assert(got: true)
     }
-#endtest
+#endregion
 
-#test "Mutual recursion 1"
+#region "Mutual recursion 1"
     func f(x) {
         g(x - 1) when x > 0 else x
     }
@@ -556,9 +556,9 @@
     }
     assert(0, f(1))
     assert(-1, f(-1))
-#endtest
+#endregion
 
-#test "Mutual recursion 2"
+#region "Mutual recursion 2"
     func f(n) {
         n == 0 ? 1 : n - m(f(n-1))
     }
@@ -569,9 +569,9 @@
     let ys = (0..20).Map(i => m(i)).ToArray()
     assert([1, 1, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 8, 8, 9, 9, 10, 11, 11, 12, 13], xs)
     assert([0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 7, 8, 9, 9, 10, 11, 11, 12, 12], ys)
-#endtest
+#endregion
 
-#test "Invalid overload (builtins)"
+#region "Invalid overload (builtins)"
     try {
         func get Array.Length() { }
         assert(got: false)
@@ -596,9 +596,9 @@
     } catch {
         InvalidOverload() => assert(got: true)
     }
-#endtest
+#endregion
 
-#test "Invalid overload (custom)"
+#region "Invalid overload (custom)"
     type Foo
     func get Foo.Index() { }
     func set Foo.Index() { }
@@ -629,9 +629,9 @@
     } catch {
         InvalidOverload() => assert(got: true)
     }
-#endtest
+#endregion
 
-#test "Conversion: as"
+#region "Conversion: as"
     let f = () => 42
     assert(true, f as Bool)
-#endtest
+#endregion

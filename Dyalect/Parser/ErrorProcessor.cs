@@ -13,40 +13,51 @@ namespace Dyalect.Parser
             {
                  { "invalid StandardOperators", InvalidStandardOperators }
                 ,{ "invalid FunctionName", InvalidFunctionName}
-                ,{ "invalid Assignment", InvalidStatement }
+                ,{ "invalid ImportToken", InvalidImport }
+                ,{ "invalid Region", InvalidRegion }
                 ,{ "invalid Statement", InvalidStatement }
+                ,{ "invalid Control", InvalidExpression }
                 ,{ "invalid Binding", InvalidBinding }
-                ,{ "invalid SimpleExpr", InvalidExpression }
                 ,{ "invalid ControlFlow", InvalidStatement }
                 ,{ "invalid If", InvalidIf }
                 ,{ "invalid Loops", InvalidStatement }
                 ,{ "invalid Expr", InvalidExpression }
-                ,{ "invalid Index", InvalidExpression }
-                ,{ "invalid IndexBody", InvalidExpression }
-                ,{ "invalid Lambda", InvalidFunctionExpression }
-                ,{ "invalid NoArgLambda", InvalidFunctionExpression }
-                ,{ "invalid Unary", InvalidUnary }
-                ,{ "invalid Bool", InvalidLiteral }
-                ,{ "invalid String", InvalidLiteral }
-                ,{ "invalid Tuple", InvalidLiteral }
-                ,{ "invalid Literal", InvalidLiteral }
-                ,{ "invalid DyalectItem", InvalidStatement }
+                ,{ "invalid FunctionBody", InvalidFunction}
+                ,{ "invalid FunctionStatement", InvalidFunction}
                 ,{ "invalid NamePattern", InvalidPattern }
                 ,{ "invalid Pattern", InvalidPattern }
                 ,{ "invalid BooleanPattern", InvalidPattern }
-                ,{ "invalid CtorPattern", InvalidPattern }
                 ,{ "invalid TuplePattern", InvalidPattern }
+                ,{ "invalid MethodCheckPattern", InvalidPattern }
+                ,{ "invalid ComparisonPattern", InvalidPattern }
+                ,{ "invalid Yield", InvalidYield }
+                ,{ "invalid Lambda", InvalidFunctionExpression }
                 ,{ "invalid TryCatch", InvalidTryCatch }
-                ,{ "invalid Label", InvalidLabel }
-                ,{ "invalid Import", InvalidImport }
+                ,{ "invalid Range", InvalidRange }
+                ,{ "invalid Unary", InvalidUnary }
+                ,{ "invalid Literal", InvalidLiteral }
                 ,{ "invalid ApplicationArguments", InvalidApplicationArguments }
+                ,{ "invalid Label", InvalidLabel }
+                ,{ "invalid Name", InvalidIdentifier }
+                ,{ "invalid String", InvalidLiteral }
+                ,{ "invalid Bool", InvalidLiteral }
+                ,{ "invalid Tuple", InvalidLiteral }
+                ,{ "invalid DyalectItem", InvalidStatement }
+
+                ,{ "invalid Assignment", InvalidStatement }
+                ,{ "invalid Ternary", InvalidExpression }
+                ,{ "invalid Index", InvalidExpression }
+                ,{ "invalid IndexBody", InvalidExpression }
+                ,{ "invalid NullaryLambda", InvalidFunctionExpression }
+                ,{ "invalid CtorPattern", InvalidPattern }
                 ,{ "??? expected", Undefined }
             };
 
         private static readonly Dictionary<string, string> tokens =
             new()
             {
-                 { "identToken", "identifier" }
+                 { "EOF", "end of file" }
+                ,{ "identToken", "identifier" }
                 ,{ "directive", "compiler directive" }
                 ,{ "intToken", "integer literal" }
                 ,{ "floatToken", "float literal" }
@@ -59,6 +70,7 @@ namespace Dyalect.Parser
                 ,{ "autoToken", "auto" }
                 ,{ "varToken", "var" }
                 ,{ "letToken", "let" }
+                ,{ "lazyToken", "lazy" }
                 ,{ "funcToken", "func" }
                 ,{ "returnToken", "return" }
                 ,{ "continueToken", "continue" }
@@ -125,7 +137,7 @@ namespace Dyalect.Parser
                     return;
                 }
 
-                if (!token.All(c => char.IsLetter(c)))
+                if (!token.All(char.IsLetter))
                     token = "\"" + token + "\"";
 
                 error = TokenExpected;

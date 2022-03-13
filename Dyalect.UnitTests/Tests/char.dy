@@ -1,41 +1,41 @@
-﻿#test "Char literal"
+﻿#region "Char literal"
     var res = '\'' + 'F' + '\'' + '\s'
     assert("'F' ", res)
-#endtest
+#endregion
 
-#test "Constructor"
+#region "Constructor"
     assert('c', Char('c'))
     assert('A', Char(65))
     assert('6', Char('6'))
     assert('\u0006', Char(6))
     assert('f', Char("foo"))
-#endtest
+#endregion
 
-#test "Methods: GetType"
+#region "Methods: GetType"
     let x = 'A'
     assert(true, TypeInfo(x) == Char)
     assert(true, x.GetType() == Char)
     let t = TypeInfo(x)
     assert(5, t.Code)
     assert("Char", t.Name)
-#endtest
+#endregion
 
-#test "Methods: Default"
+#region "Methods: Default"
     assert('\0', Char.Default())
-#endtest
+#endregion
 
-#test "Methods: Min and Max"
+#region "Methods: Min and Max"
     assert('\0', Char.Min())
     assert('\uffff', Char.Max())
     assert(true, Char.Default() == Char.Min())
-#endtest
+#endregion
 
-#test "Ranges"
+#region "Ranges"
     assert(['a','b','c','d','e','f'], ['a'..'f'])
     assert(['a','c','e'], ('a'^2..'f').ToArray())
-#endtest
+#endregion
 
-#test "Char comparison"
+#region "Char comparison"
     assert(true, 'c' == "c")
     assert(true, "c" == 'c')
     assert(false, 'c' == "cc")
@@ -44,57 +44,57 @@
     assert(true, 'c' < "cc")
     assert(true, "cc" > 'c')
     assert(false, "cc" < 'c')
-#endtest
+#endregion
 
-#test "Methods: Upper and IsUpper"
+#region "Methods: Upper and IsUpper"
     assert(true, 'C' == 'c'.Upper())
     assert(true, 'C'.IsUpper())
-#endtest
+#endregion
 
-#test "Methods: Lower and IsLower"
+#region "Methods: Lower and IsLower"
     assert(true, 'c' == 'C'.Lower())
     assert(true, 'c'.IsLower())
-#endtest
+#endregion
 
-#test "Methods: IsWhitespace"
+#region "Methods: IsWhitespace"
     assert(true, '\s'.IsWhiteSpace())
     assert(true, ' '.IsWhiteSpace())
     assert(true, '\u0020'.IsWhiteSpace())
     assert(true, '\t'.IsWhiteSpace())
-#endtest
+#endregion
 
-#test "Methods: IsControl"
+#region "Methods: IsControl"
     assert(true, '\t'.IsControl())
     assert(true, '\b'.IsControl())
     assert(false, 't'.IsControl())
-#endtest
+#endregion
 
-#test "Methods: IsLetterOrDigit"
+#region "Methods: IsLetterOrDigit"
     assert(true, '9'.IsDigit())
     assert(false, 'A'.IsDigit())
     assert(true, 'A'.IsLetter())
     assert(false, '1'.IsLetter())
     assert(true, '9'.IsLetterOrDigit())
     assert(true, 't'.IsLetterOrDigit())
-#endtest
+#endregion
 
-#test "Methods: Order"
+#region "Methods: Order"
     assert(65, 'A'.Order())
     assert(54, '6'.Order())
-#endtest
+#endregion
 
-#test "Math with chars"
+#region "Math with chars"
     let a = 'a'
     let b = 'b'
     assert('b', a + 1)
     assert('a', b - 1)
     assert("ab", a + b)
     assert("abcdef", a + b + "cdef")
-#endtest
+#endregion
 
-#test "Conversion: as"
+#region "Conversion: as"
     let c = 'A'
     assert("A", c as String)
     assert(65, c as Integer)
     assert(65.0, c as Float)
-#endtest
+#endregion

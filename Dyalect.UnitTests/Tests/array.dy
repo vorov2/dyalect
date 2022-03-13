@@ -1,37 +1,37 @@
-﻿#test "Array literal"
+﻿#region "Array literal"
     var arr = [[1,2], [3,4,(5,6,a: [7,8])]]
     var res = arr[0][0] + arr[1][2]["a"][1]
     assert(9, res)
-#endtest
+#endregion
 
-#test "Constructor"
+#region "Constructor"
     let arr = Array(1,2,3)
     assert([1,2,3], arr)
-#endtest
+#endregion
 
-#test "Methods: ToString"
+#region "Methods: ToString"
     var res = [12.2, "string", true].ToString()
     assert("[12.2, string, true]", res)
     res = [(1,2), 4, 5].ToString()
     assert("[(1, 2), 4, 5]", res)
-#endtest
+#endregion
 
-#test "Methods: Clone"
+#region "Methods: Clone"
     let xs = [1,2,3]
     assert(true, xs == xs)
     assert(false, xs.Clone() == xs)
-#endtest
+#endregion
 
-#test "Methods: GetType"
+#region "Methods: GetType"
     let x = [1,2,3]
     assert(true, TypeInfo(x) == Array)
     assert(true, x.GetType() == Array)
     var t = TypeInfo(x)
     assert(11, t.Code)
     assert("Array", t.Name)
-#endtest
+#endregion
 
-#test "Methods: Add, AddRange, Remove, RemoveAt"
+#region "Methods: Add, AddRange, Remove, RemoveAt"
     var arr = []
     arr.Add(1)
     arr.Add(2)
@@ -39,9 +39,9 @@
     arr.RemoveAt(1)
     arr.Remove(3)
     assert([1, 1, 2], arr)
-#endtest
+#endregion
 
-#test "Methods: Add, Clear, Insert, Remove"
+#region "Methods: Add, Clear, Insert, Remove"
     let arr = [1,2,3,4,5]
     arr.Clear()
     arr.Add(1)
@@ -54,9 +54,9 @@
     let xs = [1,2,3]
     xs.Insert(1, 1.5)
     assert([1,1.5,2,3], xs)
-#endtest
+#endregion
 
-#test "Methods: Slice"
+#region "Methods: Slice"
     var arr = [1,2,3,4,5,6]
     var newArr = arr.Slice(2,4).ToArray()
     assert([3, 4, 5], newArr)
@@ -68,9 +68,9 @@
     let xs = (1..10).ToArray()
     let slice = xs.Slice(4).ToArray()
     assert([5,6,7,8,9,10], slice)
-#endtest
+#endregion
 
-#test "Methods: Sort"
+#region "Methods: Sort"
     var arr = [4,6,1,3,2,5]
     arr.Sort((x,y) => x - y)
     assert([1, 2, 3, 4, 5, 6], arr)
@@ -78,89 +78,89 @@
     arr = [7,4,6,1,3,2,5]
     arr.Sort()
     assert([1, 2, 3, 4, 5, 6, 7], arr)
-#endtest
+#endregion
 
-#test "Methods: IndexOf, LastIndexOf"
+#region "Methods: IndexOf, LastIndexOf"
     var arr = [1, 2, 3, 1, 4, 5, 1]
     assert(0, arr.IndexOf(1))
     assert(6, arr.LastIndexOf(1))
-#endtest
+#endregion
 
-#test "Methods: Indices"
+#region "Methods: Indices"
     var arr = [1,2,3,4,5,6]
     var res = arr.Indices().ToArray()
     assert([0, 1, 2, 3, 4, 5], res)
-#endtest
+#endregion
 
-#test "Methods: Compact"
+#region "Methods: Compact"
     var arr = [1,nil,2,nil,3,nil,nil,4,5,6]
     arr.Compact()
     assert([1, 2, 3, 4, 5, 6], arr)
-#endtest
+#endregion
 
-#test "Methods: Len"
+#region "Methods: Len"
     var arr = [1,2,3,4]
     assert(4, arr.Length())
-#endtest
+#endregion
 
-#test "Methods: Empty"
+#region "Methods: Empty"
     var arr = Array.Empty(4, false)
     assert([false, false, false, false], arr)
     arr = Array.Empty(3, 0)
     assert([0, 0, 0], arr)
     arr = Array.Empty(2)
     assert([nil, nil], arr)
-#endtest
+#endregion
 
-#test "Methods: Concat"
+#region "Methods: Concat"
     func it() {
         yield "foo"
         yield "boo"
     }
     var arr = Array.Concat([1,2,3], [4,5,6], (1,2), it())
     assert([1,2,3,4,5,6,1,2,"foo","boo"], arr)
-#endtest
+#endregion
 
-#test "Methods: AddRange"
+#region "Methods: AddRange"
     var xs = []
     xs.AddRange(yields { 1,2,3,4,5 })
     assert([1,2,3,4,5], xs)
-#endtest
+#endregion
 
-#test "Methods: InsertRange"
+#region "Methods: InsertRange"
     var xs = [1,2,3]
     xs.InsertRange(1, [3,4,5])
     assert([1,3,4,5,2,3], xs)
-#endtest
+#endregion
 
-#test "Methods: Reverse"
+#region "Methods: Reverse"
     var xs = [1,2,3,4,5]
     xs.Reverse()
     assert([5,4,3,2,1], xs)
-#endtest
+#endregion
 
-#test "Methods: Swap"
+#region "Methods: Swap"
     var xs = [1,2,3]
     xs.Swap(1,2)
     assert([1,3,2], xs)
-#endtest
+#endregion
 
-#test "Methods: RemoveRangeAt"
+#region "Methods: RemoveRangeAt"
     var xs = [1..10]
     xs.RemoveRangeAt(3, 7)
     assert([1,2,3], xs)
     xs = [1..10]
     xs.RemoveRangeAt(4)
     assert([1,2,3,4], xs)
-#endtest
+#endregion
 
-#test "Methods: RemoveRange 1"
+#region "Methods: RemoveRange 1"
     var xs = [1..10]
     xs.RemoveRange([1..5])
     assert([6,7,8,9,10], xs)
-#endtest
+#endregion
 
-#test "Methods: RemoveRange 2" 
+#region "Methods: RemoveRange 2" 
     //#285
     var xs = [1..10]
     func filter() {
@@ -170,32 +170,32 @@
     }
     xs.RemoveRange(filter())
     assert([1,3,5,7,9], xs)
-#endtest
+#endregion
 
-#test "Methods: RemoveAll"
+#region "Methods: RemoveAll"
     var xs = [1..10]
     xs.RemoveAll(x => x % 2 == 0)
     assert([1,3,5,7,9], xs)
-#endtest
+#endregion
 
-#test "Methods: static sort"
+#region "Methods: static sort"
     var arr = [4,6,1,3,2,5]
     Array.Sort(arr, (x,y) => x - y)
     assert([1, 2, 3, 4, 5, 6], arr)
-#endtest
+#endregion
 
-#test "Range indices"
+#region "Range indices"
     var xs = [0,1,2,3,4,5,6,7,8,9]
     var res = xs[1..5].ToArray()
     assert([1,2,3,4,5], res)
-#endtest
+#endregion
 
-#test "Ranges"
+#region "Ranges"
     var xs = [1..10]
     assert([1,2,3,4,5,6,7,8,9,10], xs)
-#endtest
+#endregion
 
-#test "Addition 1"
+#region "Addition 1"
     var xs = [1,2,3]
     var ys = [4,5,6]
     var res = xs + ys
@@ -204,69 +204,69 @@
     assert([1,2,3,5,6], res)
     res = xs + yields { 11,22 }
     assert([1,2,3,11,22], res)
-#endtest
+#endregion
 
-#test "Addition 2" 
+#region "Addition 2" 
     //#315
     var xs = [1,2,3]
     var res = xs + "abc"
     assert([1,2,3,'a','b','c'], res)
-#endtest
+#endregion
 
-#test "Insert into empty array"
+#region "Insert into empty array"
     //Related to bug #145
     var arr = []
     arr.Insert(0, 1)
     assert([1], arr)
-#endtest
+#endregion
 
-#test "Complex sort"
+#region "Complex sort"
     //Bug #226
     var xs = [(s: 3.0, e: 4.0), (s: 1.0, e: 2.0)]
     xs.Sort((x,y) => x.s - y.s)
     assert(1.0, xs[0].s)
-#endtest
+#endregion
 
-#test "Methods: copy 1"
+#region "Methods: copy 1"
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = Array.Empty(3)
     Array.Copy(xs, 1, ys, 0, 3)
     assert([2,3,4], ys)
-#endtest
+#endregion
 
-#test "Methods: copy 2"
+#region "Methods: copy 2"
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = Array.Copy(from: xs, fromIndex: 1, count: 3)
     assert([2,3,4], ys)
-#endtest
+#endregion
 
-#test "Methods: copy 3"
+#region "Methods: copy 3"
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = [999, 999, 0, 0, 0]
     ys = Array.Copy(xs, 1, ys, 2, 3)
     assert([999,999,2,3,4], ys)
-#endtest
+#endregion
 
-#test "Methods: copy 4"
+#region "Methods: copy 4"
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = Array.Copy(xs, count: 3)
     assert([1,2,3], ys)
-#endtest
+#endregion
 
-#test "Methods: contains"
+#region "Methods: contains"
     var xs = [1..10]
     assert(true, xs.Contains(1))
     assert(true, xs.Contains(10))
     assert(false, xs.Contains(101))
-#endtest
+#endregion
 
-#test "Negative indices"
+#region "Negative indices"
     var xs = [1,2,3,4,5]
     assert(5, xs[-1])
     assert(1, xs[-5])
-#endtest
+#endregion
 
-#test "Complex equality"
+#region "Complex equality"
     type FooInArray(x)
     func FooInArray == (other) => other is FooInArray()
 
@@ -289,10 +289,10 @@
     xs = [FooInArray(1), FooInArray(2), FooInArray(3), FooInArray(4)]
     xs.RemoveRange([FooInArray(0)])
     assert([FooInArray(2), FooInArray(3), FooInArray(4)], xs)
-#endtest
+#endregion
 
-#test "Conversion: as"
+#region "Conversion: as"
     let xs = [1..3]
     assert((1,2,3), xs as Tuple)
     assert("[1, 2, 3]", xs as String)
-#endtest
+#endregion

@@ -1,30 +1,30 @@
-﻿#test "Literal and initialization"
+﻿#region "Literal and initialization"
     let x = nil
     assert(nil, x)
     var y
     assert(y, nil)
     assert(got: x == y)
-#endtest
+#endregion
 
-#test "Constructor"
+#region "Constructor"
     assert(nil, Nil())
-#endtest
+#endregion
 
-#test "Methods: default"
+#region "Methods: default"
     assert(nil, Nil.Default())
-#endtest
+#endregion
 
-#test "Methods: getType"
+#region "Methods: getType"
     let x = nil
     assert(true, TypeInfo(x) == Nil)
     assert(true, x.GetType() == Nil)
     var t = TypeInfo(x)
     assert(1, t.Code)
     assert("Nil", t.Name)
-#endtest
+#endregion
 
-#test "Conversion: as"
+#region "Conversion: as"
     let x = nil
     assert(false, x as Bool)
     assert("nil", x as String)
-#endtest
+#endregion

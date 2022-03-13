@@ -1,4 +1,4 @@
-﻿#test "Methods: ToString"
+﻿#region "Methods: ToString"
     var res = (1,2,3).ToString()
     assert("(1, 2, 3)", res)
     res = (1, true, (2,3)).ToString()
@@ -7,44 +7,44 @@
     assert("(x: 12, 44.4, y: (1, 2))", res)
     res = (x: 42,y: "foo").ToString()
     assert("(x: 42, y: foo)", res)
-#endtest
+#endregion
 
-#test "Methods: Clone"
+#region "Methods: Clone"
     let xs = (1,2,3)
     assert(true, xs == xs)
     assert(true, xs.Clone() == xs)
-#endtest
+#endregion
 
-#test "Methods: GetType"
+#region "Methods: GetType"
     let x = (1,2)
     assert(true, TypeInfo(x) == Tuple)
     assert(true, x.GetType() == Tuple)
     var t = TypeInfo(x)
     assert(13, t.Code)
     assert("Tuple", t.Name)
-#endtest
+#endregion
 
-#test "Tuple literal 1"
+#region "Tuple literal 1"
     //Test if a tuple is recognized correctly
     var res = ([1,2,3].Length() + 4) * 2
     assert(14, res)
-#endtest
+#endregion
 
-#test "Tuple literal 2"
+#region "Tuple literal 2"
     var tup = (
         x: (x: 2, y: (y: 3)),
         22
     )
     var res = tup[1] + tup["x"]["x"] - tup["x"]["y"]["y"]
     assert(21, res)
-#endtest
+#endregion
 
-#test "Methods: Len"
+#region "Methods: Len"
     var t = (1,2,3)
     assert(3, t.Length())
-#endtest
+#endregion
 
-#test "Field access"
+#region "Field access"
     var t = (x: 1, y: 2, z: 3)
     assert(6, t.x + t.y + t.z)
     
@@ -57,51 +57,51 @@
 
     t = (x: 33)
     assert(33, t['x'])
-#endtest
+#endregion
 
-#test "Methods: Keys"
+#region "Methods: Keys"
     var t = (x: 1, y: 2, z: 3)
     var res = t.Keys().ToArray()
     assert(["x", "y", "z"], res)
-#endtest
+#endregion
 
-#test "Methods: Indices"
+#region "Methods: Indices"
     var t = (1,2,3,4,5,6)
     var res = t.Indices().ToArray()
     assert([0, 1, 2, 3, 4, 5], res)
-#endtest
+#endregion
 
-#test "Methods: First, Second"
+#region "Methods: First, Second"
     var t = (42, 4.56)
     var res = t.First() - t.Second()
     assert(37.44, res)
-#endtest
+#endregion
 
-#test "Equality"
+#region "Equality"
     var t1 = (12, 3, 44, "string", false, 42.1)
     var t2 = (12, 3, 44, "string", false, 42.1)
     assert(got: t1 == t2)
-#endtest
+#endregion
 
-#test "Constructor"
+#region "Constructor"
     var t = Tuple(1, 2, 3, "foo", "bar", 4, 5, 6)
     var t2 = (1, 2, 3, "foo", "bar", 4, 5, 6)
     assert(t2, t)
-#endtest
+#endregion
 
-#test "Methods: Slice"
+#region "Methods: Slice"
     var xs = (1..10).ToTuple()
     var slice = xs.Slice(4).ToTuple()
     assert((5,6,7,8,9,10), slice)
-#endtest
+#endregion
 
-#test "Methods: ToTuple"
+#region "Methods: ToTuple"
     var xs = [0,1,2,3,4,5,6,7,8,9]
     var res = xs[1..5].ToTuple()
     assert((1,2,3,4,5), res)
-#endtest
+#endregion
 
-#test "Methods: Sort"
+#region "Methods: Sort"
     var xs = (4,6,1,3,2,5)
     var ys = xs.Sort((x,y) => x - y)
     assert((1, 2, 3, 4, 5, 6), ys)
@@ -109,9 +109,9 @@
     xs = (7,4,6,1,3,2,5)
     ys = xs.Sort()
     assert((1, 2, 3, 4, 5, 6, 7), ys)
-#endtest
+#endregion
 
-#test "Methods: static sort"
+#region "Methods: static sort"
     var xs = (4,6,1,3,2,5)
     var ys = Tuple.Sort(xs, (x,y) => x - y)
     assert((1, 2, 3, 4, 5, 6), ys)
@@ -119,47 +119,47 @@
     xs = (7,4,6,1,3,2,5)
     ys = Tuple.Sort(xs)
     assert((1, 2, 3, 4, 5, 6, 7), ys)
-#endtest
+#endregion
 
-#test "Single element tuple"
+#region "Single element tuple"
     var xx = (1,)
     assert((1,), xx)
     var (x,) = (2,)
     assert(x, 2)
     set (x,) = (3,)
     assert(x, 3)
-#endtest
+#endregion
 
-#test "Negative indices"
+#region "Negative indices"
     var xs = (1,2,3,4,5)
     assert(5, xs[-1])
     assert(1, xs[-5])
-#endtest
+#endregion
 
-#test "Methods: Add"
+#region "Methods: Add"
     var xs = (1,)
     xs = xs.Add(2)
     xs = xs.Add(3)
     assert((1,2,3), xs)
-#endtest
+#endregion
 
-#test "Methods: Remove"
+#region "Methods: Remove"
     var xs = (1,2,3,4,5)
     xs = xs.Remove(3)
     xs = xs.Remove(6)
     xs = xs.Remove(5)
     assert((1,2,4), xs)
-#endtest
+#endregion
 
-#test "Methods: RemoveAt"
+#region "Methods: RemoveAt"
     var xs = (1,2,3,4)
     xs = xs.RemoveAt(3)
     assert((1,2,3), xs)
     xs = xs.RemoveAt(1)
     assert((1,3), xs)
-#endtest
+#endregion
 
-#test "Methods: Insert"
+#region "Methods: Insert"
     var xs = (1,2,3)
     xs = xs.Insert(0, 0)
     assert((0,1,2,3), xs)
@@ -167,9 +167,9 @@
     assert((0,1,2,3,4), xs)
     xs = xs.Insert(3, 2.5)
     assert((0,1,2,2.5,3,4), xs)
-#endtest
+#endregion
 
-#test "Addition 1"
+#region "Addition 1"
     var xs = (1,2,3)
     var ys = (4,5,6)
     var res = xs + ys
@@ -178,29 +178,29 @@
     assert((1,2,3,5,6), res)
     res = xs + yields {11,22}
     assert((1,2,3,11,22), res)
-#endtest
+#endregion
 
-#test "Addition 2"
+#region "Addition 2"
     var xs = (1,2,3)
     var res = xs + "abc"
     assert((1,2,3,'a','b','c'), res)
-#endtest
+#endregion
 
-#test "Methods: Concat"
+#region "Methods: Concat"
     func it() {
         yield "foo"
         yield "boo"
     }
     var arr = Tuple.Concat((1,2,3), (4,5,6), [1,2], it())
     assert((1,2,3,4,5,6,1,2,"foo","boo"), arr)
-#endtest
+#endregion
 
-#test "Ranges"
+#region "Ranges"
     var xs = (1..3,)
     assert((1,2,3), xs)
-#endtest
+#endregion
 
-#test "Mutable tuples 1"
+#region "Mutable tuples 1"
     var xs = (var x: 12, var y: 14)
     xs[0] = xs[0] * 2
     xs[1] = xs[1] * 2
@@ -212,9 +212,9 @@
     xs["x"] = xs["x"] * 2
     xs["y"] = xs["y"] * 2
     assert((48, 56), xs)
-#endtest
+#endregion
 
-#test "Mutable tuples 2"
+#region "Mutable tuples 2"
     var xs = (var x: 3, y: 4, var z: 5)
     xs.x = 33
     assert(33, xs.x)
@@ -224,9 +224,9 @@
     } catch {
         IndexReadOnly() => assert(4, xs.y)
     }
-#endtest
+#endregion
 
-#test "Mutable tuples 3"
+#region "Mutable tuples 3"
     var xs = ( 1..5, )
     try {
         xs[0] = 0
@@ -234,23 +234,23 @@
     } catch {
         IndexReadOnly() => assert(got: true)
     }
-#endtest
+#endregion
 
-#test "Methods: ToString (mutable)"
+#region "Methods: ToString (mutable)"
     let xs = (var x: 2, y: 3, var z: 4, let xx: 42)
     let str = xs.ToString()
     assert(expect: "(var x: 2, y: 3, var z: 4, xx: 42)", got: str) 
-#endtest
+#endregion
 
-#test "Methods: ToDictionary"
+#region "Methods: ToDictionary"
     let xs = (name: "Vasily", age: 41, gender: "Male")
     let dict = xs.ToDictionary()
     assert("Vasily", dict["name"])
     assert(41, dict["age"])
     assert("Male", dict["gender"])
-#endtest
+#endregion
 
-#test "Methods: Contains"
+#region "Methods: Contains"
     let xs = (name: "Vasily", age: 41, gender: "Male")
     assert(true, xs.Contains("name"))
     assert(true, xs.Contains("age"))
@@ -262,9 +262,9 @@
     } catch {
         InvalidType() => assert(got: true)
     }
-#endtest
+#endregion
 
-#test "Exceptions with tuples"
+#region "Exceptions with tuples"
     let xs = (x: 1, y: 2)
     try {
         xs[2]
@@ -276,11 +276,11 @@
     } catch {
         IndexOutOfRange() => assert(got: true)
     }
-#endtest
+#endregion
 
-#test "Conversion: as"
+#region "Conversion: as"
     let xs = (1,2,3)
     assert([1,2,3], xs as Array)
     assert("(1, 2, 3)", xs as String)
     assert(true, xs as Bool)
-#endtest
+#endregion

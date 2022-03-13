@@ -1,3 +1,7 @@
+# 0.31.2
+  * _Optimizations and cleanups in Dyalect console and Dyalect parser._
+  * _Optimizations and corrections in parser error reporting._
+
 # 0.31.1
   * _Minor optimizations in Dyalect console._
   * Fix: _Problems in Dyalect grammar_ ([Issue #601](https://github.com/vorov2/dyalect/issues/601)).

@@ -1,55 +1,55 @@
-﻿#test "Integer literal"
+﻿#region "Integer literal"
     let res = 0x40 + 0x20
     assert(96, res)
-#endtest
+#endregion
 
-#test "Methods: Min and Max"
+#region "Methods: Min and Max"
     assert(9223372036854775807, Integer.Max())
     assert(-9223372036854775807, Integer.Min() + 1)
-#endtest
+#endregion
 
-#test "Constructor"
+#region "Constructor"
     assert(12, Integer(12.2))
     assert(1222, Integer(1222))
     assert(5, Integer('5'))
-#endtest
+#endregion
 
-#test "Methods: Default"
+#region "Methods: Default"
     assert(0, Integer.Default())
-#endtest
+#endregion
 
-#test "Methods: GetType"
+#region "Methods: GetType"
     let x = 42
     assert(true, TypeInfo(x) == Integer)
     assert(true, x.GetType() == Integer)
     let t = TypeInfo(x)
     assert(2, t.Code)
     assert("Integer", t.Name)
-#endtest
+#endregion
 
 
-#test "Methods: IsMultiple"
+#region "Methods: IsMultiple"
     assert(true, 12.IsMultiple(3))
     assert(true, 12.IsMultiple(of: 2))
     assert(true, 340.IsMultiple(of: 10))
     assert(false, 340.IsMultiple(of: 13))
-#endtest
+#endregion
 
-#test "Methods: Parse"
+#region "Methods: Parse"
     assert(42, Integer.Parse("42"))
     assert(2, Integer.Parse('2'))
     assert(nil, Integer.Parse("three"))
-#endtest
+#endregion
 
-#test "Ranges"
+#region "Ranges"
     assert([0,1,2,3,4,5], [0..5])
     assert([0,2,4], (0^2..4).ToArray())
-#endtest
+#endregion
 
-#test "Conversion: as"
+#region "Conversion: as"
     let x = 12
     assert(12, x as Integer)
     assert(12.0, x as Float)
     assert("12", x as String)
     assert(true, x as Bool)
-#endtest
+#endregion

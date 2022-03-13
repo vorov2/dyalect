@@ -1,13 +1,13 @@
-﻿#test "Type error"
+﻿#region "Type error"
     try {
         12 + '2'
         assert(got: false)
     } catch {
         InvalidType() => assert(got: true)
     }
-#endtest
+#endregion
 
-#test "Simple catch 1"
+#region "Simple catch 1"
     var x
     try {
         x = 2
@@ -16,9 +16,9 @@
     }
     //catch should be ignored
     assert(2, x)
-#endtest
+#endregion
 
-#test "Simple catch 2"
+#region "Simple catch 2"
     var res =
         try {
             2 / 0
@@ -26,9 +26,9 @@
             42
         }
     assert(42, res)
-#endtest
+#endregion
 
-#test "Nested catch 1"
+#region "Nested catch 1"
     var res =
         try {
             try {
@@ -41,9 +41,9 @@
             42
         }
     assert(142, res)
-#endtest
+#endregion
 
-#test "Catch and throw"
+#region "Catch and throw"
     var res =
         try {
             throw "Error!"
@@ -51,9 +51,9 @@
             e[0]
         }
     assert("Error!", res)
-#endtest
+#endregion
 
-#test "Nested catch 2"
+#region "Nested catch 2"
     var res =
         try {
             try {
@@ -66,9 +66,9 @@
             "caught:" + e[0]
         }
     assert("caught:Oops!", res)
-#endtest
+#endregion
 
-#test "Nested catch 3"
+#region "Nested catch 3"
     var res =
         try {
             try {
@@ -83,9 +83,9 @@
             e[0]
         }
     assert(42, res)
-#endtest
+#endregion
 
-#test "Throwing from functions"
+#region "Throwing from functions"
     func errorMaker() {
         throw nameof(errorMaker)
     }
@@ -104,9 +104,9 @@
     }
     var res = caller0()
     assert("errorMaker", res)
-#endtest
+#endregion
 
-#test "Catch as an expression"
+#region "Catch as an expression"
     func foo(x, y, z) { (x,y,z) }
     var e = try {
             foo(1, 2, 3, 4)
@@ -114,9 +114,9 @@
             "foo"
         }
     assert("foo", e)
-#endtest
+#endregion
 
-#test "Catch and iterators"
+#region "Catch and iterators"
     func check(x) {
         if x % 2 == 0 {
             throw x
@@ -134,9 +134,9 @@
     }
     var arr = [1..20]
     assert([1,3,5,7,9,11,13,15,17,19], yielder(arr).ToArray())
-#endtest
+#endregion
 
-#test "Simple catch 3"
+#region "Simple catch 3"
     var res =
         try {
             4 / 2
@@ -144,9 +144,9 @@
             42
         }
     assert(2, res)
-#endtest
+#endregion
 
-#test "Pattern matching 1"
+#region "Pattern matching 1"
     func foo() { throw ("err", 22) }
     var e = try {
             foo()
@@ -156,9 +156,9 @@
             (("err", 22),) => true
         }
     assert(true, e)
-#endtest
+#endregion
 
-#test "Pattern matching 2"
+#region "Pattern matching 2"
     func foo() { throw ("err", 231) }
     var e
     e = try {
@@ -173,9 +173,9 @@
         142
     }
     assert(142, e)
-#endtest
+#endregion
 
-#test "External catch 1"
+#region "External catch 1"
     func sorter(x, y) {
         if x > 10 {
             throw "No!"
@@ -190,9 +190,9 @@
         ex = e[0]
     }
     assert("No!", ex)
-#endtest
+#endregion
 
-#test "External catch 2"
+#region "External catch 2"
     func defaultElement() {
         var n = 0
         while true {
@@ -210,9 +210,9 @@
     } catch e {
         assert(11, e)
     }
-#endtest
+#endregion
 
-#test "External catch 3"
+#region "External catch 3"
     func seq() {
         yield 1
         throw 2
@@ -223,9 +223,9 @@
     } catch e {
         assert(2, e[0])
     }
-#endtest
+#endregion
 
-#test "Iterators 1"
+#region "Iterators 1"
     func testMe() {
         var xs = [1..10]
         for x in xs {
@@ -238,9 +238,9 @@
         e.detail.Contains("modified after the iterator was instantiated")
     }
     assert(true, b)
-#endtest
+#endregion
 
-#test "Iterators 2"
+#region "Iterators 2"
     func test0() {
         var xs = [1..10]
         for x in xs {
@@ -260,9 +260,9 @@
         e.detail.Contains("modified after the iterator was instantiated")
     }
     assert(true, b)
-#endtest
+#endregion
 
-#test "Custom type exception"
+#region "Custom type exception"
     //Bug #248
     type U0()
 
@@ -280,9 +280,9 @@
         }
     }
     assert("U0 caught.", foo())
-#endtest
+#endregion
 
-#test "Catch chain"
+#region "Catch chain"
     func zoo() {
         throw 1024
     }
@@ -305,9 +305,9 @@
         x = e[0]
     }
     assert(1024, x)
-#endtest
+#endregion
 
-#test "Fall into correct catch"
+#region "Fall into correct catch"
     func checkit() {
         try {
             return
@@ -326,9 +326,9 @@
         x = e[0]
     }
     assert(12, x)
-#endtest
+#endregion
 
-#test "Rethrowing"
+#region "Rethrowing"
     func work() {
         try {
             throw 42
@@ -343,9 +343,9 @@
         x = e[0]
     }
     assert(42, x)
-#endtest
+#endregion
 
-#test "Nested exceptions"
+#region "Nested exceptions"
     func foo() {
         try {
             throw "exc.1"
@@ -365,9 +365,9 @@
         dat = e[0]
     }
     assert("exc.1", dat)
-#endtest
+#endregion
 
-#test "Multiple throws from catch"
+#region "Multiple throws from catch"
     var x 
     try {
        try {
@@ -379,9 +379,9 @@
         x = e[0]
     }
     assert("exc.1", x)
-#endtest
+#endregion
 
-#test "Throwing 1"
+#region "Throwing 1"
     var x
     try {
         throw Error.IndexOutOfRange()
@@ -389,9 +389,9 @@
         IndexOutOfRange() => { x = true }
     }
     assert(true, x)
-#endtest
+#endregion
 
-#test "Throwing 2"
+#region "Throwing 2"
     var x
     try {
         throw Error.InvalidType(0.GetType().Name)
@@ -399,9 +399,9 @@
         InvalidType(tn) when tn == "Integer"  => { x = true }
     }
     assert(true, x)
-#endtest
+#endregion
 
-#test "Throwing 3"
+#region "Throwing 3"
     var x
     try {
         throw "Test"
@@ -409,9 +409,9 @@
         UnexpectedError(msg) when msg == "Test"  => { x = true }
     }
     assert(true, x)
-#endtest
+#endregion
 
-#test "Throwing 4"
+#region "Throwing 4"
     var x
     try {
         throw Error.InvalidBehavior(42)
@@ -419,9 +419,9 @@
         InvalidBehavior(code)  => { x = code }
     }
     assert(42, x)
-#endtest
+#endregion
 
-#test "Throw from override"
+#region "Throw from override"
     func Integer.ToString() {
         throw "Ooops!"
     }
@@ -432,13 +432,13 @@
     } catch _ {
         assert(got: true)
     }
-#endtest
+#endregion
 
-#test "Data items"
+#region "Data items"
     try {
         throw Error.Foo(1, "Foo", true)
         assert(got: false)
     } catch e {
         assert("(1, Foo, true)", e.items.ToString())
     }
-#endtest
+#endregion
