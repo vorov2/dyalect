@@ -15,6 +15,14 @@ namespace Dyalect
     {
         private static readonly List<string> commands = new();
 
+        sealed class TestBlockInfo
+        {
+            public DTestBlock? Block { get; init; }
+            public string FileName { get; }
+            public string? Error { get; init; }
+            public TestBlockInfo(string fileName) => FileName = fileName;
+        }
+
         public static bool RunTests(IEnumerable<string> fileNames, DyaOptions dyaOptions, BuilderOptions buildOptions)
         {
 #if !DEBUG
@@ -82,9 +90,9 @@ namespace Dyalect
                 Printer.Output($"[+] {name}");
         }
 
-        private static DTestBlock[] GatherTests(IEnumerable<string> files, List<BuildMessage> warns)
+        private static TestBlockInfo[] GatherTests(IEnumerable<string> files, List<BuildMessage> warns)
         {
-            var blocks = new List<DTestBlock>();
+            var blocks = new List<TestBlockInfo>();
 
             foreach (var file in files)
             {
@@ -92,10 +100,9 @@ namespace Dyalect
 
                 if (!res.Success)
                 {
-                    blocks.Add(new DTestBlock(default)
+                    blocks.Add(new TestBlockInfo(file)
                     {
-                        FileName = file,
-                        GlobalError = "Unable to process test file: " + string.Join(" ", res.Messages)
+                        Error = "Unable to process test file: " + string.Join(" ", res.Messages)
                     });
                     continue;
                 }
@@ -106,15 +113,17 @@ namespace Dyalect
                 foreach (var node in res.Value!.Root.Nodes)
                     if (node is DTestBlock b)
                     {
-                        b.FileName = file;
-                        blocks.Add(b);
+                        blocks.Add(new TestBlockInfo(file)
+                        {
+                            Block = b
+                        });
                     }
             }
 
             return blocks.ToArray();
         }
 
-        private static void RunTests(DTestBlock[] testBlocks, DyaOptions options, BuilderOptions builderOptions, List<BuildMessage> warns)
+        private static void RunTests(TestBlockInfo[] testBlocks, DyaOptions options, BuilderOptions builderOptions, List<BuildMessage> warns)
         {
             if (testBlocks.Length == 0)
                 return;
@@ -130,39 +139,39 @@ namespace Dyalect
 
             try
             {
-                inits = testBlocks.Where(b => b.Name == "init")
-                    .ToDictionary(b => b.FileName!, b => b.Body);
+                inits = testBlocks.Where(b => b.Block is not null && b.Block?.Name == "init")
+                    .ToDictionary(b => b.FileName, b => b.Block.Body);
             }
             catch (ArgumentException)
             {
                 throw new Exception("Multiple initialization blocks in a test file.");
             }
 
-            foreach (var block in testBlocks)
+            foreach (var bi in testBlocks)
             {
-                if (block.Name == "init")
+                if (bi.Block?.Name == "init")
                     continue;
 
-                if (currentFile != block.FileName)
+                if (currentFile != bi.FileName)
                 {
                     fileCounter++;
-                    currentFile = block.FileName;
-                    PrintFileHeader(options, block.FileName!);
+                    currentFile = bi.FileName;
+                    PrintFileHeader(options, bi.FileName!);
                     allCounter = 0;
                 }
 
-                if (block.GlobalError is not null)
+                if (bi.Block is null)
                 {
-                    Printer.Error(block.GlobalError);
+                    Printer.Error(bi.Error ?? "Unknown error");
                     failed++;
                     plusFails = true;
                     continue;
                 }
 
                 allCounter++;
-                var ast = block.Body;
+                var ast = bi.Block.Body;
 
-                if (inits.TryGetValue(block.FileName!, out var init))
+                if (inits.TryGetValue(bi.FileName, out var init))
                 {
                     var imports = ast.Imports;
 
@@ -179,14 +188,14 @@ namespace Dyalect
                     ast = new DyCodeModel(root, imports, ast.FileName);
                 }
 
-                var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(block.FileName)!), builderOptions);
+                var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(bi.FileName)!), builderOptions);
                 var cres = linker.Make(ast);
                 warns.AddRange(cres.Messages.Where(m => m.Type == BuildMessageType.Warning));
 
                 if (!cres.Success)
                 {
                     failed++;
-                    Failed(block.Name, string.Join(' ', cres.Messages.Select(m => m.Message)), block.FileName!);
+                    Failed(bi.Block.Name, string.Join(' ', cres.Messages.Select(m => m.Message)), bi.FileName!);
                     continue;
                 }
 
@@ -196,13 +205,13 @@ namespace Dyalect
                 {
                     DyMachine.Execute(ctx);
                     ctx.ThrowIf();
-                    Success(options, block.Name, block.FileName!);
+                    Success(options, bi.Block.Name, bi.FileName!);
                     passed++;
                 }
                 catch (Exception ex)
                 {
                     failed++;
-                    Failed(block.Name, ex.Message, block.FileName!);
+                    Failed(bi.Block.Name, ex.Message, bi.FileName!);
                 }
             }
 
@@ -212,7 +221,7 @@ namespace Dyalect
 
             if (options.AppVeyour)
                 Submit();
-            }
+        }
 
         private static void PrintFileHeader(DyaOptions options, string fileName)
         {
