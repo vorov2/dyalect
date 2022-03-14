@@ -67,20 +67,6 @@ namespace Dyalect.Compiler
                             CrawlVariables(n, vars);
                     }
                     break;
-                case NodeType.Access:
-                    CrawlVariables(((DAccess)node).Target, vars);
-                    break;
-                case NodeType.Yield:
-                    CrawlVariables(((DYield)node).Expression, vars);
-                    break;
-                case NodeType.YieldMany:
-                    CrawlVariables(((DYieldMany)node).Expression, vars);
-                    break;
-                case NodeType.Range:
-                    CrawlVariables(((DRange)node).From, vars);
-                    CrawlVariables(((DRange)node).Step, vars);
-                    CrawlVariables(((DRange)node).To, vars);
-                    break;
                 case NodeType.Iterator:
                     CrawlVariables(((DIteratorLiteral)node).YieldBlock, vars);
                     break;
@@ -89,6 +75,20 @@ namespace Dyalect.Compiler
                         foreach (var n in ((DYieldBlock)node).Elements)
                             CrawlVariables(n, vars);
                     }
+                    break;
+                case NodeType.Range:
+                    CrawlVariables(((DRange)node).From, vars);
+                    CrawlVariables(((DRange)node).Step, vars);
+                    CrawlVariables(((DRange)node).To, vars);
+                    break;
+                case NodeType.Access:
+                    CrawlVariables(((DAccess)node).Target, vars);
+                    break;
+                case NodeType.Yield:
+                    CrawlVariables(((DYield)node).Expression, vars);
+                    break;
+                case NodeType.YieldMany:
+                    CrawlVariables(((DYieldMany)node).Expression, vars);
                     break;
                 case NodeType.Throw:
                     CrawlVariables(((DThrow)node).Expression, vars);
