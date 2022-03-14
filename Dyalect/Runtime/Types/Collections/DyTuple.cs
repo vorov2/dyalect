@@ -148,7 +148,7 @@ namespace Dyalect.Runtime.Types
             return Values;
         }
 
-        private DyObject[] ConvertToPlainValues()
+        internal DyObject[] ConvertToPlainValues()
         {
             var arr = new DyObject[Count];
 

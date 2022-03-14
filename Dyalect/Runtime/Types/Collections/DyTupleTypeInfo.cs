@@ -183,6 +183,12 @@ namespace Dyalect.Runtime.Types
             return new DyDictionary(tuple.ConvertToDictionary(ctx));
         }
 
+        private DyObject ToArray(ExecutionContext ctx, DyObject self)
+        {
+            var tuple = (DyTuple)self;
+            return new DyArray(tuple.ConvertToPlainValues());
+        }
+
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
         {
             if (item.TypeId != DyType.String)
@@ -205,6 +211,7 @@ namespace Dyalect.Runtime.Types
                 "Second" => Func.Member(name, GetSecond),
                 "Sort" => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
                 "ToDictionary" => Func.Member(name, ToDictionary),
+                "ToArray" => Func.Member(name, ToArray),
                 "Contains" => Func.Member(name, Contains, -1, new Par("label")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
