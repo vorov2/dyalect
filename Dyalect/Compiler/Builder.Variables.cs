@@ -28,7 +28,7 @@ namespace Dyalect.Compiler
         {
             var err = GetVariable(name, currentScope, out var sv);
 
-            if (err is not CompilerError.None)
+            if (err == CompilerError.UndefinedVariable)
             {
                 if (string.IsNullOrEmpty(name))
                     return;
@@ -36,13 +36,16 @@ namespace Dyalect.Compiler
                 if (char.IsUpper(name[0]))
                 {
                     var ti = DyType.GetTypeCodeByName(name);
-                    
+
                     if (ti != 0)
                     {
                         AddLinePragma(loc);
                         cw.Type(ti);
-                        return;
                     }
+                    else
+                        AddError(CompilerError.UndefinedType, loc, name);
+
+                    return;
                 }
 
                 AddError(err, loc, name);
