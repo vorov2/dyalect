@@ -124,6 +124,18 @@ namespace Dyalect.Runtime.Types
             return map.ContainsKey(key) ? DyBool.True : DyBool.False;
         }
 
+        private DyObject ContainsValue(ExecutionContext ctx, DyObject self, DyObject value)
+        {
+            var map = (DyDictionary)self;
+            return map.ContainsValue(value) ? DyBool.True : DyBool.False;
+        }
+
+        private DyObject GetAndRemove(ExecutionContext ctx, DyObject self, DyObject key)
+        {
+            var map = (DyDictionary)self;
+            return map.GetAndRemove(key);
+        }
+
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
         {
             return name switch
@@ -136,6 +148,8 @@ namespace Dyalect.Runtime.Types
                 "ToTuple" => Func.Member(name, ToTuple),
                 "Compact" => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
                 "Contains" => Func.Member(name, Contains, -1, new Par("key")),
+                "ContainsValue" => Func.Member(name, ContainsValue, -1, new Par("value")),
+                "GetAndRemove" => Func.Member(name, GetAndRemove, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
         }

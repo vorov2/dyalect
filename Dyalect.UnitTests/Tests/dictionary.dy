@@ -162,6 +162,19 @@
     assert(true, map.Contains((1,2)))
 #endregion
 
+#region "Methods: ContainsValue"
+    var map = Dictionary.FromTuple ((x: 1, y: 2))
+    assert(true, map.ContainsValue(2))
+    assert(false, map.ContainsValue(22))
+#endregion
+
+#region "Methods: GetAndRemove"
+    var map = Dictionary.FromTuple ((x: 1, y: 2))
+    let x = map.GetAndRemove("x")
+    assert(1, x)
+    assert(1, map.Length())
+#endregion
+
 #region "Conversion: as"
     let xs = Dictionary.FromTuple ((x: 1, y: 2))
     assert("Dictionary (x = 1, y = 2)", xs as String)
