@@ -219,7 +219,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Capitalize(ExecutionContext ctx, DyObject self)
         {
             var str = self.GetString();
-            return str.Length == 0 ? DyString.Empty 
+            return str.Length == 0 ? DyString.Empty
                 : new DyString(char.ToUpper(str[0]) + str[1..].ToLower());
         }
 
@@ -379,6 +379,27 @@ namespace Dyalect.Runtime.Types
             return new DyString(str.Remove(fri, c));
         }
 
+        private DyObject Format(ExecutionContext ctx, DyObject self, DyObject args)
+        {
+            if (self.TypeId != DyType.String)
+                return ctx.InvalidType(self);
+
+            var vals = ((DyTuple)args).Values;
+            var arr = new object[vals.Length];
+
+            for (var i = 0; i < vals.Length; i++)
+            {
+                var o = vals[i].ToString(ctx);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                arr[i] = o;
+            }
+
+            return new DyString(self.GetString().Format(arr));
+        }
+
         private DyObject ToCharArray(ExecutionContext ctx, DyObject self) =>
             new DyArray(self.GetString().ToCharArray().Select(c => new DyChar(c)).ToArray());
 
@@ -407,6 +428,7 @@ namespace Dyalect.Runtime.Types
                 "Remove" => Func.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance)),
                 "Reverse" => Func.Member(name, Reverse),
                 "ToCharArray" => Func.Member(name, ToCharArray),
+                "Format" => Func.Member(name, Format, 0, new Par("values", true)),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
 
@@ -495,6 +517,7 @@ namespace Dyalect.Runtime.Types
                 "Join" => Func.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(","))),
                 "Default" => Func.Static(name, ctx => DyString.Empty),
                 "Repeat" => Func.Static(name, Repeat, -1, new Par("value"), new Par("count")),
+                "Format" => Func.Static(name, Format, 1, new Par("template"), new Par("values", true)),
                 _ => base.InitializeStaticMember(name, ctx),
             };
         #endregion

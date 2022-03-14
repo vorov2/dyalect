@@ -1,3 +1,6 @@
+# 0.32.0
+  * Add: _Add `String.Format` method_ ([Issue #603](https://github.com/vorov2/dyalect/issues/603), [docs](https://github.com/vorov2/dyalect/wiki/String#format)).
+
 # 0.31.2
   * _Optimizations and cleanups in Dyalect console and Dyalect parser._
   * _Optimizations and corrections in parser error reporting._
