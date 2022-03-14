@@ -255,7 +255,6 @@ PRODUCTIONS
             (. var ot = t; .)
             "when" Expr<out var cnode>
             (. var @if = new DIf(ot) { Condition = cnode, True = src }; node = @if; .)
-            [ "else" Assignment<out cnode> (. @if.False = cnode; .) ]
         ).
 
     PrivateScope<out DNode node> =

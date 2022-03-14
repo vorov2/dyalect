@@ -128,7 +128,7 @@
 #region "Natural number 1"
     type Nat = private PrivateNat(var val)
     func fetch(x) {
-        Nat(x) when x >= 0 else x
+        x >= 0 ? Nat(x) : x
     }
     static func Nat.Nat(x) {
         throw "Negative number." when x < 0
@@ -425,7 +425,7 @@
             Integer => this.num + other,
             _ => throw Error.InvalidType(other.GetType())
         }
-        RealNat(res) when res >= 0 else res
+        res >= 0 ? RealNat(res) : res
     }
     func RealNat == (other) => this.num == other.num
     var (x, y) = (RealNat(12), RealNat(10))

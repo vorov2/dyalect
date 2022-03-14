@@ -210,7 +210,7 @@ namespace Dyalect.Parser
 		} else SynErr(103);
 	}
 
-	void TestBlock(out DNode node) {
+	void Region(out DNode node) {
 		string name = null; node = null; 
 		Expect(67);
 		var ot = t; 
@@ -296,7 +296,7 @@ namespace Dyalect.Parser
 			Directive(out node);
 			Separator();
 		} else if (la.kind == 67) {
-			TestBlock(out node);
+			Region(out node);
 		} else SynErr(105);
 		node = ProcessImplicits(node); 
 	}
@@ -711,7 +711,7 @@ namespace Dyalect.Parser
 		} else if (StartOf(11)) {
 			Coalesce(out node);
 			if (la.kind == 89) {
-				TernaryExpr(node, out node);
+				Ternary(node, out node);
 			}
 		} else if (la.kind == 91) {
 			TryCatch(out node);
@@ -1474,7 +1474,7 @@ namespace Dyalect.Parser
 		}
 	}
 
-	void TernaryExpr(DNode parent, out DNode node) {
+	void Ternary(DNode parent, out DNode node) {
 		node = null; 
 		Expect(89);
 		var @if = new DIf(t) { Condition = parent }; 
@@ -2212,7 +2212,7 @@ namespace Dyalect.Parser
 			case 101: s = "invalid StandardOperators"; break;
 			case 102: s = "invalid FunctionName"; break;
 			case 103: s = "invalid ImportToken"; break;
-			case 104: s = "invalid TestBlock"; break;
+			case 104: s = "invalid Region"; break;
 			case 105: s = "invalid Statement"; break;
 			case 106: s = "invalid Control"; break;
 			case 107: s = "invalid Binding"; break;

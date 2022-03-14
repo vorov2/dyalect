@@ -168,18 +168,18 @@ namespace Dyalect.Parser
 			case "import": t.kind = 69; break;
 			case "or": t.kind = 70; break;
 			case "when": t.kind = 72; break;
-			case "else": t.kind = 73; break;
-			case "true": t.kind = 74; break;
-			case "false": t.kind = 75; break;
-			case "static": t.kind = 76; break;
-			case "and": t.kind = 77; break;
-			case "get": t.kind = 78; break;
-			case "set": t.kind = 79; break;
-			case "as": t.kind = 80; break;
-			case "const": t.kind = 81; break;
-			case "match": t.kind = 82; break;
-			case "not": t.kind = 84; break;
-			case "nil": t.kind = 86; break;
+			case "true": t.kind = 73; break;
+			case "false": t.kind = 74; break;
+			case "static": t.kind = 75; break;
+			case "and": t.kind = 76; break;
+			case "get": t.kind = 77; break;
+			case "set": t.kind = 78; break;
+			case "as": t.kind = 79; break;
+			case "const": t.kind = 80; break;
+			case "match": t.kind = 81; break;
+			case "not": t.kind = 83; break;
+			case "nil": t.kind = 85; break;
+			case "else": t.kind = 86; break;
 			case "do": t.kind = 87; break;
 			case "many": t.kind = 88; break;
 			case "throw": t.kind = 90; break;
@@ -499,9 +499,9 @@ namespace Dyalect.Parser
 				if (ch == '|') {AddCh(); goto case 87;}
 				else {goto case 0;}
 			case 80:
-				recEnd = pos; recKind = 85;
+				recEnd = pos; recKind = 84;
 				if (ch == '^') {AddCh(); goto case 88;}
-				else {t.kind = 85; break;}
+				else {t.kind = 84; break;}
 			case 81:
 				recEnd = pos; recKind = 59;
 				if (ch == '>') {AddCh(); goto case 89;}
@@ -516,10 +516,10 @@ namespace Dyalect.Parser
 				if (ch == '~') {AddCh(); goto case 66;}
 				else {t.kind = 50; break;}
 			case 84:
-				recEnd = pos; recKind = 83;
+				recEnd = pos; recKind = 82;
 				if (ch == '.') {AddCh(); goto case 68;}
 				else if (ch == '<') {AddCh(); goto case 69;}
-				else {t.kind = 83; break;}
+				else {t.kind = 82; break;}
 			case 85:
 				if (ch == '<') {AddCh(); goto case 90;}
 				else {goto case 0;}

@@ -1,4 +1,4 @@
-# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.31-blue.svg)
+# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.32-blue.svg)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
 ![AppVeyor tests](https://img.shields.io/appveyor/tests/vorov2/dyalect.svg)
@@ -27,7 +27,7 @@ A taste of Dy:
 
 ```swift
 func fib(n) {
-    n when n < 2 else fib(n - 1) + fib(n - 2) 
+    n < 2 ? n : fib(n - 1) + fib(n - 2)
 }
 
 //Calculate the n-th fibonacci number
