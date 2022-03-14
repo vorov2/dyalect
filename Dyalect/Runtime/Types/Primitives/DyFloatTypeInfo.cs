@@ -9,7 +9,7 @@ namespace Dyalect.Runtime.Types
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
             | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
             | SupportedOperations.Sub | SupportedOperations.Div | SupportedOperations.Mul | SupportedOperations.Rem
-            | SupportedOperations.Neg | SupportedOperations.Plus;
+            | SupportedOperations.Neg | SupportedOperations.Plus | SupportedOperations.Lit;
 
         public override string TypeName => DyTypeNames.Float;
 
@@ -116,9 +116,10 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var f = arg.GetFloat();
-            return double.IsNaN(f) ? new DyString("NaN")
-                : new DyString(f.ToString(CI.NumberFormat));
+            return new DyString(f.ToString(CI.NumberFormat));
         }
+
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, ctx);
         #endregion
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>

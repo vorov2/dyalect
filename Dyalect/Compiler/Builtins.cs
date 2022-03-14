@@ -35,6 +35,7 @@
         public const string Name        = "Name";
         public const string Len         = "Length";
         public const string ToStr       = "ToString";
+        public const string ToLit       = "ToLiteral";
         public const string ToTuple     = "ToTuple";
         public const string ToArray     = "ToArray";
         public const string Iterator    = "Iterate";

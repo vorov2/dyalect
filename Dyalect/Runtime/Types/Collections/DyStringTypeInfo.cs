@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using Dyalect.Parser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
             | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
-            | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
+            | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.Lit;
 
         public override string TypeName => DyTypeNames.String;
 
@@ -64,6 +65,8 @@ namespace Dyalect.Runtime.Types
         }
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.GetString());
+
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => new DyString(StringUtil.Escape(arg.GetString()));
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 

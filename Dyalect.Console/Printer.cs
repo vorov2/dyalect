@@ -47,7 +47,7 @@ namespace Dyalect
 
             try
             {
-                fmt = obj.Format(ctx);
+                fmt = obj.ToLiteral(ctx).ToString();
             }
             catch (Exception ex)
             {

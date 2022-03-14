@@ -253,7 +253,7 @@
     assert([1,2,3], ys)
 #endregion
 
-#region "Methods: contains"
+#region "Methods: Contains"
     var xs = [1..10]
     assert(true, xs.Contains(1))
     assert(true, xs.Contains(10))
@@ -295,4 +295,9 @@
     let xs = [1..3]
     assert((1,2,3), xs as Tuple)
     assert("[1, 2, 3]", xs as String)
+#endregion
+
+#region "Methods: ToLiteral"
+    let xs = [1, 2, 'c', "True", false]
+    assert("[1, 2, 'c', \"True\", false]", xs.ToLiteral())
 #endregion

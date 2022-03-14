@@ -5,7 +5,7 @@ namespace Dyalect.Runtime.Types
     internal sealed class DyBoolTypeInfo : DyTypeInfo
     {
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Lit;
 
         public override string TypeName => DyTypeNames.Bool;
 
@@ -16,6 +16,8 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(ReferenceEquals(arg, DyBool.True) ? "true" : "false");
+
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, ctx);
 
         private DyObject Convert(ExecutionContext ctx, DyObject val) => val.GetBool(ctx) ? DyBool.True : DyBool.False;
 

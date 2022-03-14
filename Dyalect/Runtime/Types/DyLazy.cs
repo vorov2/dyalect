@@ -38,7 +38,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => Force(ctx).HasItem(name, ctx);
 
-        public override string ToString() => "nil";
+        public override string ToString() => "lazy";
 
         public override DyObject Clone() => this;
 

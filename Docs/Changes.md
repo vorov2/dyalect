@@ -1,6 +1,7 @@
 # 0.32.0
   * Add: _Add `String.Format` method_ ([Issue #603](https://github.com/vorov2/dyalect/issues/603), [docs](https://github.com/vorov2/dyalect/wiki/String#format)).
   * Add: _Add methods `Dictionary.ContainsValue` and `Dictionary.GetAndRemove`_ ([Issue #608](https://github.com/vorov2/dyalect/issues/608), [docs](https://github.com/vorov2/dyalect/wiki/Dictionary#containsValue)).
+  * Add: _Add a universal `ToLiteral` method_ ([Issue #607](https://github.com/vorov2/dyalect/issues/607)).
 
 # 0.31.2
   * _Optimizations and cleanups in Dyalect console and Dyalect parser._

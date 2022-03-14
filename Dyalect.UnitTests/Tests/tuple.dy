@@ -264,6 +264,11 @@
     }
 #endregion
 
+#region "Methods: ToLiteral"
+    let xs = (x: 1, "Fo obj": 'c')
+    assert("(x: 1, \"Fo obj\": 'c')", xs.ToLiteral())
+#endregion
+
 #region "Exceptions with tuples"
     let xs = (x: 1, y: 2)
     try {

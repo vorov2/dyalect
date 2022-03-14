@@ -1,7 +1,6 @@
 ﻿using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Dyalect.Runtime.Types
 {
@@ -10,7 +9,7 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
-            | SupportedOperations.Add | SupportedOperations.Iter;
+            | SupportedOperations.Add | SupportedOperations.Iter | SupportedOperations.Lit;
 
         public override string TypeName => DyTypeNames.Tuple;
 
@@ -25,11 +24,9 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(len);
         }
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
-        {
-            var tup = (DyTuple)arg;
-            return tup.ToString(ctx);
-        }
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => ((DyTuple)arg).ToString(false, ctx);
+
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ((DyTuple)arg).ToString(true, ctx);
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {

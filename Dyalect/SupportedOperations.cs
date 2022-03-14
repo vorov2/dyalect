@@ -30,6 +30,7 @@ namespace Dyalect
         Get = 0x200000,
         Set = 0x400000,
         Len = 0x800000,
-        Iter = 0x1000000
+        Iter = 0x1000000,
+        Lit = 0x2000000
     }
 }

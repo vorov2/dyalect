@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using Dyalect.Parser;
 
 namespace Dyalect.Runtime.Types
 {
@@ -7,7 +8,8 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Add | SupportedOperations.Sub
-            | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte;
+            | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
+            | SupportedOperations.Lit;
 
         public override string TypeName => DyTypeNames.Char;
 
@@ -15,6 +17,8 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.GetString());
+
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => new DyString(StringUtil.Escape(arg.GetString(), "'"));
 
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)

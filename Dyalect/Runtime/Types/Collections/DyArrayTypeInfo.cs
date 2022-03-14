@@ -15,12 +15,13 @@ namespace Dyalect.Runtime.Types
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
-            | SupportedOperations.Iter;
+            | SupportedOperations.Iter | SupportedOperations.Lit;
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             DyInteger.Get(((DyArray)arg).Count);
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+
+        private DyString ToStringOrLiteral(bool literal, DyObject arg, ExecutionContext ctx)
         {
             var arr = (DyArray)arg;
             var sb = new StringBuilder();
@@ -30,7 +31,7 @@ namespace Dyalect.Runtime.Types
             {
                 if (i > 0)
                     sb.Append(", ");
-                var str = arr[i].ToString(ctx);
+                var str = literal ? arr[i].ToLiteral(ctx) :arr[i].ToString(ctx);
 
                 if (ctx.Error != null)
                     return DyString.Empty;
@@ -41,6 +42,10 @@ namespace Dyalect.Runtime.Types
             sb.Append(']');
             return new DyString(sb.ToString());
         }
+
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => ToStringOrLiteral(false, arg, ctx);
+
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOrLiteral(true, arg, ctx);
 
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             new DyArray(((DyCollection)left).Concat(ctx, right));

@@ -285,6 +285,20 @@ namespace Dyalect.Runtime.Types
 
             return ToStringOp(arg, ctx);
         }
+
+        //x.ToLiteral
+        private DyFunction? tol;
+        protected virtual DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.ToString());
+        public virtual DyObject ToLiteral(ExecutionContext ctx, DyObject arg)
+        {
+            if (tol is not null)
+            {
+                var retval = tol.BindToInstance(ctx, arg).Call(ctx);
+                return retval.TypeId == DyType.String ? retval : DyString.Empty;
+            }
+
+            return ToLiteralOp(arg, ctx);
+        }
         #endregion
 
         #region Other Operations
@@ -522,6 +536,11 @@ namespace Dyalect.Runtime.Types
                         ctx.InvalidOverload(name);
                     tos = func; 
                     break;
+                case Builtins.ToLit:
+                    if (func is not null && func.Auto)
+                        ctx.InvalidOverload(name);
+                    tol = func;
+                    break;
             }
         }
 
@@ -567,6 +586,7 @@ namespace Dyalect.Runtime.Types
                 Builtins.Set => Support(self, SupportedOperations.Set) ? Func.Member(name, Set, -1, new Par("index"), new Par("value")) : null,
                 Builtins.Len => Support(self, SupportedOperations.Len) ? Func.Member(name, Length) : null,
                 Builtins.ToStr => Func.Member(name, ToString),
+                Builtins.ToLit => Support(self, SupportedOperations.Lit) ? Func.Member(name, ToLiteral) : null,
                 Builtins.Iterator => Support(self, SupportedOperations.Iter) ? Func.Member(name, GetIterator) : null,
                 Builtins.Clone => Func.Member(name, Clone),
                 Builtins.Has => Func.Member(name, Has, -1, new Par("member")),

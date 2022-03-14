@@ -240,6 +240,12 @@
     assert("hahahahaha", str)
 #endregion
 
+#region "Methods: ToLiteral"
+    let str = "Foo"
+    assert("\"Foo\"", str.ToLiteral())
+    assert("'F'", str[0].ToLiteral())
+#endregion
+
 #region "Conversion: as"
     let str = "12"
     assert('1', str as Char)

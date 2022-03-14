@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Dyalect.Parser;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Dyalect.Runtime.Types
@@ -156,7 +158,7 @@ namespace Dyalect.Runtime.Types
             return arr;
         }
 
-        internal DyObject ToString(ExecutionContext ctx)
+        internal DyObject ToString(bool literal, ExecutionContext ctx)
         {
             var sb = new StringBuilder();
             sb.Append('(');
@@ -177,12 +179,16 @@ namespace Dyalect.Runtime.Types
                     if (ki.Mutable)
                         sb.Append("var ");
 
-                    sb.Append(ki.Label);
+                    if (ki.Label.Length > 0 && char.IsLower(ki.Label[0]) && ki.Label.All(char.IsLetter))
+                        sb.Append(ki.Label);
+                    else
+                        sb.Append(StringUtil.Escape(ki.Label));
+
                     sb.Append(':');
                     sb.Append(' ');
                 }
 
-                var str = v.ToString(ctx);
+                var str = literal ? v.ToLiteral(ctx) : v.ToString(ctx);
 
                 if (ctx.HasErrors)
                     return DyNil.Instance;

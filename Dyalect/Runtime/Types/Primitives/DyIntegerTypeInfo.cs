@@ -193,6 +193,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(arg.GetInteger().ToString(CI.NumberFormat));
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, ctx);
         #endregion
 
         private DyObject IsMultiple(ExecutionContext ctx, DyObject self, DyObject other)
