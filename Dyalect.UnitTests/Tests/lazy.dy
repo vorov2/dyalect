@@ -47,7 +47,7 @@
     assert("4+6=10", y.ToString())
 #endregion
 
-#region "Methods: IsNan"
+#region "Methods: IsNaN"
     lazy d = Float.Inf() + (-Float.Inf())
     assert(true, d.IsNaN())
 #endregion
@@ -196,4 +196,10 @@
     func Foo as Integer { 42 }
     lazy f = Foo()
     assert(42, f as Integer)
+#endregion
+
+#region "Overloaded operators"
+    func Integer + (other) => this.ToString() + other
+    lazy x = 2 + 2
+    assert("221", x + 1)
 #endregion
