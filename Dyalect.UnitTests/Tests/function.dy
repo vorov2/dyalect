@@ -569,6 +569,12 @@
     }
     assert("Foo", test("Foo"))
     assert("F", test('F'))
+    try {
+        test(12)
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
 #endregion
 
 #region "Mutual recursion 1"
