@@ -12,6 +12,7 @@
   * Add: _Add `Tuple.ToArray` method_ ([Issue #609](https://github.com/vorov2/dyalect/issues/609), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#toArray)).
   * Add: _Add `Tuple.Compact` method_ ([Issue #615](https://github.com/vorov2/dyalect/issues/615), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#compact)).
   * Add: _Add an ability to specify an optional predicate for an `Array.Compact`_ ([Issue #616](https://github.com/vorov2/dyalect/issues/616), [docs](https://github.com/vorov2/dyalect/wiki/Array#compact)).
+  * Add: _Allow multiple type annotations for a single parameter_ ([Issue #618](https://github.com/vorov2/dyalect/issues/618), [docs](https://github.com/vorov2/dyalect/wiki/Functions#anno)).
   * Fix: _Correct errors for undefined types_ ([Issue #610](https://github.com/vorov2/dyalect/issues/610)).
   * Fix: _Test runner doesn't display file name in "onlyfailed" display mode_ ([Issue #614](https://github.com/vorov2/dyalect/issues/614)).
 
