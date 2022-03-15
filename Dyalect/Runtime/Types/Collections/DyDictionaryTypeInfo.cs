@@ -88,20 +88,24 @@ namespace Dyalect.Runtime.Types
 
             var fun = funObj as DyFunction;
             var map = (DyDictionary)self;
-            var newMap = new DyDictionary();
 
             foreach (var (key, value) in map.Dictionary)
             {
-                var res = fun is not null ? fun.Call(ctx, value) : value;
+                if (fun is not null)
+                {
+                    var res = fun.Call(ctx, value);
 
-                if (ctx.HasErrors)
-                    return DyNil.Instance;
+                    if (ctx.HasErrors)
+                        return DyNil.Instance;
 
-                if (!ReferenceEquals(res, DyNil.Instance))
-                    newMap[key] = res;
+                    if (ReferenceEquals(res, DyBool.True))
+                        map.Dictionary.Remove(key);
+                }
+                else if (ReferenceEquals(value, DyNil.Instance))
+                    map.Dictionary.Remove(key);
             }
 
-            return newMap;
+            return DyNil.Instance;
         }
 
         private DyObject ToTuple(ExecutionContext ctx, DyObject self)
@@ -146,7 +150,7 @@ namespace Dyalect.Runtime.Types
                 Method.Remove => Func.Member(name, RemoveItem, -1, new Par("key")),
                 Method.Clear => Func.Member(name, ClearItems),
                 Method.ToTuple => Func.Member(name, ToTuple),
-                Method.Compact => Func.Member(name, Compact, -1, new Par("comparer", DyNil.Instance)),
+                Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("key")),
                 Method.ContainsValue => Func.Member(name, ContainsValue, -1, new Par("value")),
                 Method.GetAndRemove => Func.Member(name, GetAndRemove, -1, new Par("value")),

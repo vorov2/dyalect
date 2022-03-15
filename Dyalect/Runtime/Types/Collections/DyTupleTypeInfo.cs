@@ -199,6 +199,34 @@ namespace Dyalect.Runtime.Types
             return tuple.HasItem(item.GetString(), ctx) ? DyBool.True : DyBool.False;
         }
 
+        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
+        {
+            if (funObj.TypeId != DyType.Function && funObj.TypeId != DyType.Nil)
+                return ctx.InvalidType(DyType.Function, DyType.Nil, funObj);
+
+            var fun = funObj as DyFunction;
+            var seq = (DyTuple)self;
+            var xs = new List<DyObject>();
+
+            foreach (var val in seq.GetValues())
+            {
+                if (fun is not null)
+                {
+                    var res = fun.Call(ctx, val);
+
+                    if (ctx.HasErrors)
+                        return DyNil.Instance;
+
+                    if (ReferenceEquals(res, DyBool.False))
+                        xs.Add(val);
+                }
+                else if (!ReferenceEquals(val, DyNil.Instance))
+                    xs.Add(val);
+            }
+
+            return new DyTuple(xs.ToArray());
+        }
+
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -212,6 +240,7 @@ namespace Dyalect.Runtime.Types
                 Method.Sort => Func.Member(name, SortBy, -1, new Par("comparer", DyNil.Instance)),
                 Method.ToDictionary => Func.Member(name, ToDictionary),
                 Method.ToArray => Func.Member(name, ToArray),
+                Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("key")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };

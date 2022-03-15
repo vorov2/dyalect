@@ -8,6 +8,7 @@
   * Add: _Add methods `Dictionary.ContainsValue` and `Dictionary.GetAndRemove`_ ([Issue #608](https://github.com/vorov2/dyalect/issues/608), [docs](https://github.com/vorov2/dyalect/wiki/Dictionary#containsValue)).
   * Add: _Add a universal `ToLiteral` method_ ([Issue #607](https://github.com/vorov2/dyalect/issues/607)).
   * Add: _Add `Tuple.ToArray` method_ ([Issue #609](https://github.com/vorov2/dyalect/issues/609), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#toArray)).
+  * Add: _Add `Tuple.Compact` method_ ([Issue #615](https://github.com/vorov2/dyalect/issues/615), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#compact)).
   * Fix: _Correct errors for undefined types_ ([Issue #610](https://github.com/vorov2/dyalect/issues/610)).
   * Fix: _Test runner doesn't display file name in "onlyfailed" display mode_ ([Issue #614](https://github.com/vorov2/dyalect/issues/614)).
 
