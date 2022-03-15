@@ -3,11 +3,13 @@
   * Change: _Rethink guards_ ([Issue #605](https://github.com/vorov2/dyalect/issues/605)).
   * Change: _`String.Join` should accept char as separator_ ([Issue #611](https://github.com/vorov2/dyalect/issues/611)).
   * Change: _Refactor error messages raised by standard types for better clarity_ ([Issue #612](https://github.com/vorov2/dyalect/issues/612)).
+  * Change: _Refactor parameter names in standard functions for better consistency_ ([Issue #613](https://github.com/vorov2/dyalect/issues/613)).
   * Add: _Add `String.Format` method_ ([Issue #603](https://github.com/vorov2/dyalect/issues/603), [docs](https://github.com/vorov2/dyalect/wiki/String#format)).
   * Add: _Add methods `Dictionary.ContainsValue` and `Dictionary.GetAndRemove`_ ([Issue #608](https://github.com/vorov2/dyalect/issues/608), [docs](https://github.com/vorov2/dyalect/wiki/Dictionary#containsValue)).
   * Add: _Add a universal `ToLiteral` method_ ([Issue #607](https://github.com/vorov2/dyalect/issues/607)).
   * Add: _Add `Tuple.ToArray` method_ ([Issue #609](https://github.com/vorov2/dyalect/issues/609), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#toArray)).
   * Fix: _Correct errors for undefined types_ ([Issue #610](https://github.com/vorov2/dyalect/issues/610)).
+  * Fix: _Test runner doesn't display file name in "onlyfailed" display mode_ ([Issue #614](https://github.com/vorov2/dyalect/issues/614)).
 
 # 0.31.2
   * _Optimizations and cleanups in Dyalect console and Dyalect parser._
