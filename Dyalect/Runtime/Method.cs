@@ -9,12 +9,12 @@
         public const string Insert = "Insert";
         public const string InsertRange = "InsertRange";
         public const string AddRange = "AddRange";
-        public const string Except = "Except";
-        public const string Intersect = "Intersect";
-        public const string Union = "Union";
-        public const string Overlaps = "Overlaps";
-        public const string IsSubset = "IsSubset";
-        public const string IsSuperset = "IsSuperset";
+        public const string ExceptOf = "ExceptOf";
+        public const string IntersectWith = "IntersectWith";
+        public const string UnionWith = "UnionWith";
+        public const string OverlapsWith = "OverlapsWith";
+        public const string IsSubsetOf = "IsSubsetOf";
+        public const string IsSupersetOf = "IsSupersetOf";
         public const string Remove = "Remove";
         public const string RemoveAt = "RemoveAt";
         public const string RemoveRange = "RemoveRange";
@@ -96,7 +96,7 @@
         public const string TakeWhile = "TakeWhile";
         public const string Skip = "Skip";
         public const string SkipWhile = "SkipWhile";
-        public const string Element = "Element";
+        public const string ElementAt = "ElementAt";
         public const string Shuffle = "Shuffle";
         public const string Count = "Count";
         public const string Map = "Map";

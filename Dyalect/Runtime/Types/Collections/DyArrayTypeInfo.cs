@@ -299,20 +299,20 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                Method.Add => Func.Member(name, AddItem, -1, new Par("item")),
-                Method.Insert => Func.Member(name, InsertItem, -1, new Par("index"), new Par("item")),
-                Method.InsertRange => Func.Member(name, InsertRange, -1, new Par("index"), new Par("items")),
-                Method.AddRange => Func.Member(name, AddRange, -1, new Par("items")),
-                Method.Remove => Func.Member(name, RemoveItem, -1, new Par("item")),
+                Method.Add => Func.Member(name, AddItem, -1, new Par("value")),
+                Method.Insert => Func.Member(name, InsertItem, -1, new Par("index"), new Par("value")),
+                Method.InsertRange => Func.Member(name, InsertRange, -1, new Par("index"), new Par("values")),
+                Method.AddRange => Func.Member(name, AddRange, -1, new Par("values")),
+                Method.Remove => Func.Member(name, RemoveItem, -1, new Par("value")),
                 Method.RemoveAt => Func.Member(name, RemoveItemAt, -1, new Par("index")),
-                Method.RemoveRange => Func.Member(name, RemoveRange, -1, new Par("items")),
-                Method.RemoveRangeAt => Func.Member(name, RemoveRangeAt, -1, new Par("start"), new Par("len", DyNil.Instance)),
+                Method.RemoveRange => Func.Member(name, RemoveRange, -1, new Par("values")),
+                Method.RemoveRangeAt => Func.Member(name, RemoveRangeAt, -1, new Par("index"), new Par("count", DyNil.Instance)),
                 Method.RemoveAll => Func.Member(name, RemoveAll, -1, new Par("predicate")),
                 Method.Clear => Func.Member(name, ClearItems),
-                Method.IndexOf => Func.Member(name, IndexOf, -1, new Par("item")),
-                Method.LastIndexOf => Func.Member(name, LastIndexOf, -1, new Par("item")),
-                Method.Sort => Func.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
-                Method.Swap => Func.Member(name, Swap, -1, new Par("fst"), new Par("snd")),
+                Method.IndexOf => Func.Member(name, IndexOf, -1, new Par("value")),
+                Method.LastIndexOf => Func.Member(name, LastIndexOf, -1, new Par("value")),
+                Method.Sort => Func.Member(name, SortBy, -1, new Par("comparer", DyNil.Instance)),
+                Method.Swap => Func.Member(name, Swap, -1, new Par("value"), new Par("other")),
                 Method.Compact => Func.Member(name, Compact),
                 Method.Reverse => Func.Member(name, Reverse),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("value")),
@@ -365,15 +365,15 @@ namespace Dyalect.Runtime.Types
 
             var iDestIndex = destIndex.GetInteger();
 
-            if (length.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, length);
-
-            var iLen = length.GetInteger();
-
             if (from.TypeId != DyType.Array)
                 return ctx.InvalidType(DyType.Array, from);
 
             var sourceArr = (DyArray)from;
+
+            if (length.TypeId != DyType.Integer && length.TypeId != DyType.Nil)
+                return ctx.InvalidType(DyType.Integer, DyType.Nil, length);
+
+            var iLen = length.TypeId == DyType.Nil ? sourceArr.Count : length.GetInteger();
 
             if (to.TypeId != DyType.Array && to.TypeId != DyType.Nil)
                 return ctx.InvalidType(DyType.Array, DyType.Nil, to);
@@ -405,12 +405,12 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 Method.Array => Func.Static(name, New, 0, new Par("values", true)),
-                Method.Sort => Func.Static(name, SortBy, -1, new Par("values"), new Par("by", DyNil.Instance)),
-                Method.Empty => Func.Static(name, Empty, -1, new Par("size"), new Par("default", DyNil.Instance)),
+                Method.Sort => Func.Static(name, SortBy, -1, new Par("values"), new Par("comparer", DyNil.Instance)),
+                Method.Empty => Func.Static(name, Empty, -1, new Par("count"), new Par("default", DyNil.Instance)),
                 Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
-                Method.Copy => Func.Static(name, Copy, -1, new Par("from"),
-                    new Par("fromIndex", DyInteger.Zero), new Par("to", DyNil.Instance),
-                    new Par("toIndex", DyInteger.Zero), new Par("count")),
+                Method.Copy => Func.Static(name, Copy, -1, new Par("source"),
+                    new Par("index", DyInteger.Zero), new Par("destination", DyNil.Instance),
+                    new Par("destinationIndex", DyInteger.Zero), new Par("count", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

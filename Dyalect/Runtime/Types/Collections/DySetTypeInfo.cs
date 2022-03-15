@@ -98,7 +98,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
         
-        private DyObject ExceptWith(ExecutionContext ctx, DyObject self, DyObject value)
+        private DyObject ExceptOf(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var set = (DySet)self;
             set.ExceptWith(ctx, value);
@@ -132,12 +132,12 @@ namespace Dyalect.Runtime.Types
                 Method.Clear => Func.Member(name, Clear),
                 Method.ToArray => Func.Member(name, ToArray),
                 Method.ToTuple => Func.Member(name, ToTuple),
-                Method.Except => Func.Member(name, ExceptWith, -1, new Par("with")),
-                Method.Intersect => Func.Member(name, IntersectWith, -1, new Par("with")),
-                Method.Union => Func.Member(name, UnionWith, -1, new Par("with")),
-                Method.Overlaps => Func.Member(name, Overlaps, -1, new Par("with")),
-                Method.IsSubset => Func.Member(name, IsSubsetOf, -1, new Par("of")),
-                Method.IsSuperset => Func.Member(name, IsSupersetOf, -1, new Par("of")),
+                Method.ExceptOf => Func.Member(name, ExceptOf, -1, new Par("other")),
+                Method.IntersectWith => Func.Member(name, IntersectWith, -1, new Par("other")),
+                Method.UnionWith => Func.Member(name, UnionWith, -1, new Par("other")),
+                Method.OverlapsWith => Func.Member(name, Overlaps, -1, new Par("other")),
+                Method.IsSubsetOf => Func.Member(name, IsSubsetOf, -1, new Par("other")),
+                Method.IsSupersetOf => Func.Member(name, IsSupersetOf, -1, new Par("other")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

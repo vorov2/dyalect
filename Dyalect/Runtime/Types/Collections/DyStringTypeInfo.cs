@@ -324,16 +324,16 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        private DyObject PadLeft(ExecutionContext ctx, DyObject self, DyObject len, DyObject with)
+        private DyObject PadLeft(ExecutionContext ctx, DyObject self, DyObject width, DyObject ch)
         {
-            if (len.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, len);
+            if (width.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyType.Integer, width);
 
-            if (with.TypeId != DyType.Char && with.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, DyType.Char, with);
+            if (ch.TypeId != DyType.Char && ch.TypeId != DyType.String)
+                return ctx.InvalidType(DyType.String, DyType.Char, ch);
 
             var str = self.GetString();
-            return new DyString(str.PadLeft((int)len.GetInteger(), with.GetChar()));
+            return new DyString(str.PadLeft((int)width.GetInteger(), ch.GetChar()));
         }
 
         private DyObject PadRight(ExecutionContext ctx, DyObject self, DyObject len, DyObject with)
@@ -410,25 +410,25 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 Method.IndexOf => Func.Member(name, IndexOf, -1, new Par("value"),
-                    new Par("fromIndex", DyInteger.Zero), new Par("count", DyNil.Instance)),
+                    new Par("index", DyInteger.Zero), new Par("count", DyNil.Instance)),
                 Method.LastIndexOf => Func.Member(name, LastIndexOf, -1, new Par("value"),
-                    new Par("fromIndex", DyNil.Instance), new Par("count", DyNil.Instance)),
+                    new Par("index", DyNil.Instance), new Par("count", DyNil.Instance)),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("value")),
                 Method.Split => Func.Member(name, Split, 0, new Par("separators", true)),
                 Method.Upper => Func.Member(name, Upper),
                 Method.Lower => Func.Member(name, Lower),
                 Method.StartsWith => Func.Member(name, StartsWith, -1, new Par("value")),
                 Method.EndsWith => Func.Member(name, EndsWith, -1, new Par("value")),
-                Method.Substring => Func.Member(name, Substring, -1, new Par("start"), new Par("len", DyNil.Instance)),
+                Method.Substring => Func.Member(name, Substring, -1, new Par("index"), new Par("count", DyNil.Instance)),
                 Method.Capitalize => Func.Member(name, Capitalize),
                 Method.Trim => Func.Member(name, Trim, 0, new Par("chars", true)),
                 Method.TrimStart => Func.Member(name, TrimStart, 0, new Par("chars", true)),
                 Method.TrimEnd => Func.Member(name, TrimEnd, 0, new Par("chars", true)),
                 Method.IsEmpty => Func.Member(name, IsEmpty),
-                Method.PadLeft => Func.Member(name, PadLeft, -1, new Par("to"), new Par("with", DyChar.WhiteSpace)),
-                Method.PadRight => Func.Member(name, PadRight, -1, new Par("to"), new Par("with", DyChar.WhiteSpace)),
-                Method.Replace => Func.Member(name, Replace, -1, new Par("value"), new Par("with"), new Par("ignoreCase", DyBool.False)),
-                Method.Remove => Func.Member(name, Remove, -1, new Par("from"), new Par("count", DyNil.Instance)),
+                Method.PadLeft => Func.Member(name, PadLeft, -1, new Par("width"), new Par("char", DyChar.WhiteSpace)),
+                Method.PadRight => Func.Member(name, PadRight, -1, new Par("width"), new Par("char", DyChar.WhiteSpace)),
+                Method.Replace => Func.Member(name, Replace, -1, new Par("value"), new Par("other"), new Par("ignoreCase", DyBool.False)),
+                Method.Remove => Func.Member(name, Remove, -1, new Par("index"), new Par("count", DyNil.Instance)),
                 Method.Reverse => Func.Member(name, Reverse),
                 Method.ToCharArray => Func.Member(name, ToCharArray),
                 Method.Format => Func.Member(name, Format, 0, new Par("values", true)),

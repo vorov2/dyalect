@@ -146,7 +146,7 @@ namespace Dyalect.Runtime.Types
                 Method.Remove => Func.Member(name, RemoveItem, -1, new Par("key")),
                 Method.Clear => Func.Member(name, ClearItems),
                 Method.ToTuple => Func.Member(name, ToTuple),
-                Method.Compact => Func.Member(name, Compact, -1, new Par("by", DyNil.Instance)),
+                Method.Compact => Func.Member(name, Compact, -1, new Par("comparer", DyNil.Instance)),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("key")),
                 Method.ContainsValue => Func.Member(name, ContainsValue, -1, new Par("value")),
                 Method.GetAndRemove => Func.Member(name, GetAndRemove, -1, new Par("value")),

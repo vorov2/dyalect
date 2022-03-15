@@ -236,7 +236,7 @@
 
 #region "Methods: copy 2"
     var xs = [1, 2, 3, 4, 5, 6]
-    var ys = Array.Copy(from: xs, fromIndex: 1, count: 3)
+    var ys = Array.Copy(source: xs, index: 1, count: 3)
     assert([2,3,4], ys)
 #endregion
 
@@ -245,6 +245,13 @@
     var ys = [999, 999, 0, 0, 0]
     ys = Array.Copy(xs, 1, ys, 2, 3)
     assert([999,999,2,3,4], ys)
+#endregion
+
+#region "Methods: copy 4"
+    let xs = [1, 2, 3]
+    let ys = [0, 0, 0, 0]
+    Array.Copy(xs, destination: ys, destinationIndex: 1)
+    assert([0, 1, 2, 3], ys)
 #endregion
 
 #region "Methods: copy 4"

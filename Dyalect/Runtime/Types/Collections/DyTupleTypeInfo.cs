@@ -202,17 +202,17 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                Method.Add => Func.Member(name, AddItem, -1, new Par("item")),
-                Method.Remove => Func.Member(name, Remove, -1, new Par("item")),
+                Method.Add => Func.Member(name, AddItem, -1, new Par("value")),
+                Method.Remove => Func.Member(name, Remove, -1, new Par("value")),
                 Method.RemoveAt => Func.Member(name, RemoveAt, -1, new Par("index")),
-                Method.Insert => Func.Member(name, Insert, -1, new Par("index"), new Par("item")),
+                Method.Insert => Func.Member(name, Insert, -1, new Par("index"), new Par("value")),
                 Method.Keys => Func.Member(name, GetKeys),
                 Method.First => Func.Member(name, GetFirst),
                 Method.Second => Func.Member(name, GetSecond),
-                Method.Sort => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
+                Method.Sort => Func.Member(name, SortBy, -1, new Par("comparer", DyNil.Instance)),
                 Method.ToDictionary => Func.Member(name, ToDictionary),
                 Method.ToArray => Func.Member(name, ToArray),
-                Method.Contains => Func.Member(name, Contains, -1, new Par("label")),
+                Method.Contains => Func.Member(name, Contains, -1, new Par("key")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -227,7 +227,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                Method.Sort => Func.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
+                Method.Sort => Func.Static(name, SortBy, -1, new Par("value"), new Par("comparer", DyNil.Instance)),
                 Method.Pair => Func.Static(name, GetPair, -1, new Par("first"), new Par("second")),
                 Method.Triple => Func.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
                 Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),

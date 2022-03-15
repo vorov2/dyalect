@@ -61,7 +61,7 @@ namespace Dyalect.Runtime.Types
             name switch
             {
                 Method.Indices => Func.Member(name, GetIndices),
-                Method.Slice => Func.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
+                Method.Slice => Func.Member(name, GetSlice, -1, new Par("index", DyInteger.Zero), new Par("size", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
