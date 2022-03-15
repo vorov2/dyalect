@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
             index = CorrectIndex(index);
             
             if (index >= Count)
-                return ctx.IndexOutOfRange();
+                return ctx.IndexOutOfRange(index);
             
             return CollectionGetItem(index, ctx);
         }
@@ -33,7 +33,7 @@ namespace Dyalect.Runtime.Types
             var index = CorrectIndex((int)obj.GetInteger());
 
             if (index >= Count)
-                ctx.IndexOutOfRange();
+                ctx.IndexOutOfRange(index);
             else
                 CollectionSetItem(index, value, ctx);
         }

@@ -1,6 +1,8 @@
 # 0.32.0
   * Change: _Virtual machine optimizations._
   * Change: _Rethink guards_ ([Issue #605](https://github.com/vorov2/dyalect/issues/605)).
+  * Change: _`String.Join` should accept char as separator_ ([Issue #611](https://github.com/vorov2/dyalect/issues/611)).
+  * Change: _Refactor error messages raised by standard types for better clarity_ ([Issue #612](https://github.com/vorov2/dyalect/issues/612)).
   * Add: _Add `String.Format` method_ ([Issue #603](https://github.com/vorov2/dyalect/issues/603), [docs](https://github.com/vorov2/dyalect/wiki/String#format)).
   * Add: _Add methods `Dictionary.ContainsValue` and `Dictionary.GetAndRemove`_ ([Issue #608](https://github.com/vorov2/dyalect/issues/608), [docs](https://github.com/vorov2/dyalect/wiki/Dictionary#containsValue)).
   * Add: _Add a universal `ToLiteral` method_ ([Issue #607](https://github.com/vorov2/dyalect/issues/607)).

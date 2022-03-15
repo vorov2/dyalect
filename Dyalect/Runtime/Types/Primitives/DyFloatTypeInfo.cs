@@ -125,7 +125,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch 
             {
-                "IsNaN" => Func.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
+                Method.IsNaN => Func.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -143,7 +143,7 @@ namespace Dyalect.Runtime.Types
                 return new DyFloat(i);
             }
 
-            return ctx.InvalidType(obj);
+            return ctx.InvalidType(DyType.Float, DyType.Integer, DyType.Char, DyType.String, obj);
         }
 
         private DyObject Parse(ExecutionContext ctx, DyObject obj)
@@ -164,12 +164,12 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "Max" => Func.Static(name, _ => DyFloat.Max),
-                "Min" => Func.Static(name, _ => DyFloat.Min),
-                "Inf" => Func.Static(name, _ => DyFloat.PositiveInfinity),
-                "Default" => Func.Static(name, _ => DyFloat.Zero),
-                "Parse" => Func.Static(name, Parse, -1, new Par("value")),
-                "Float" => Func.Static(name, Convert, -1, new Par("value")),
+                Method.Max => Func.Static(name, _ => DyFloat.Max),
+                Method.Min => Func.Static(name, _ => DyFloat.Min),
+                Method.Inf => Func.Static(name, _ => DyFloat.PositiveInfinity),
+                Method.Default => Func.Static(name, _ => DyFloat.Zero),
+                Method.Parse => Func.Static(name, Parse, -1, new Par("value")),
+                Method.Float => Func.Static(name, Convert, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
 

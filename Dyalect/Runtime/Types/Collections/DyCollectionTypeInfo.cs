@@ -13,10 +13,10 @@ namespace Dyalect.Runtime.Types
             var arr = coll.GetValues();
 
             if (fromElem.TypeId != DyType.Integer)
-                return ctx.InvalidType(fromElem);
+                return ctx.InvalidType(DyType.Integer, fromElem);
 
             if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
-                return ctx.InvalidType(toElem);
+                return ctx.InvalidType(DyType.Integer, DyType.Nil, toElem);
 
             var beg = (int)fromElem.GetInteger();
             var end = ReferenceEquals(toElem, DyNil.Instance) ? coll.Count - 1 : (int)toElem.GetInteger();
@@ -60,8 +60,8 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "Indices" => Func.Member(name, GetIndices),
-                "Slice" => Func.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
+                Method.Indices => Func.Member(name, GetIndices),
+                Method.Slice => Func.Member(name, GetSlice, -1, new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

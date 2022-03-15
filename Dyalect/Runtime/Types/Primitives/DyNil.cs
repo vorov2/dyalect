@@ -22,7 +22,7 @@ namespace Dyalect.Runtime.Types
         public override DyObject Clone() => this;
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-            ctx.IndexOutOfRange();
+            ctx.IndexOutOfRange(index);
 
         internal override void Serialize(BinaryWriter writer) => writer.Write(TypeId);
 

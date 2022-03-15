@@ -28,7 +28,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.String)
                 return ctx.RuntimeContext.String.Add(ctx, left, right);
 
-            return ctx.InvalidType(right);
+            return ctx.InvalidType(DyType.Integer, DyType.Float, DyType.String, right);
         }
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -39,7 +39,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.Float)
                 return new DyFloat(left.GetFloat() - right.GetFloat());
 
-            return ctx.InvalidType(right);
+            return ctx.InvalidType(DyType.Integer, DyType.Float, right);
         }
 
         protected override DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -50,7 +50,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.Float)
                 return new DyFloat(left.GetFloat() * right.GetFloat());
 
-            return ctx.InvalidType(right);
+            return ctx.InvalidType(DyType.Integer, DyType.Float, right);
         }
 
         protected override DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -68,7 +68,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.Float)
                 return new DyFloat(left.GetFloat() / right.GetFloat());
 
-            return ctx.InvalidType(right);
+            return ctx.InvalidType(DyType.Integer, DyType.Float, right);
         }
 
         protected override DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -79,41 +79,41 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.Float)
                 return new DyFloat(left.GetFloat() % right.GetFloat());
 
-            return ctx.InvalidType(right);
+            return ctx.InvalidType(DyType.Integer, DyType.Float, right);
         }
 
         protected override DyObject ShiftLeftOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId != right.TypeId)
-                return ctx.InvalidType(right);
+                return ctx.InvalidType(DyType.Integer, right);
             return new DyInteger(left.GetInteger() << (int)right.GetInteger());
         }
 
         protected override DyObject ShiftRightOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId != right.TypeId)
-                return ctx.InvalidType(right);
+                return ctx.InvalidType(DyType.Integer, right);
             return new DyInteger(left.GetInteger() >> (int)right.GetInteger());
         }
 
         protected override DyObject AndOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId != right.TypeId)
-                return ctx.InvalidType(right);
+                return ctx.InvalidType(DyType.Integer, right);
             return new DyInteger(left.GetInteger() & (int)right.GetInteger());
         }
 
         protected override DyObject OrOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId != right.TypeId)
-                return ctx.InvalidType(right);
+                return ctx.InvalidType(DyType.Integer, right);
             return new DyInteger((int)left.GetInteger() | (int)right.GetInteger());
         }
 
         protected override DyObject XorOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId != right.TypeId)
-                return ctx.InvalidType(right);
+                return ctx.InvalidType(DyType.Integer, right);
             return new DyInteger(left.GetInteger() ^ (int)right.GetInteger());
         }
 
@@ -147,7 +147,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.Float)
                 return left.GetFloat() > right.GetFloat() ? DyBool.True : DyBool.False;
 
-            return ctx.InvalidType(right);
+            return ctx.InvalidType(DyType.Integer, DyType.Float, right);
         }
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -158,7 +158,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.Float)
                 return left.GetFloat() < right.GetFloat() ? DyBool.True : DyBool.False;
 
-            return ctx.InvalidType(right);
+            return ctx.InvalidType(DyType.Integer, DyType.Float, right);
         }
 
         protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -169,7 +169,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.Float)
                 return left.GetFloat() >= right.GetFloat() ? DyBool.True : DyBool.False;
 
-            return ctx.InvalidType(right);
+            return ctx.InvalidType(DyType.Integer, DyType.Float, right);
         }
 
         protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -180,7 +180,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.Float)
                 return left.GetFloat() <= right.GetFloat() ? DyBool.True : DyBool.False;
 
-            return ctx.InvalidType(right);
+            return ctx.InvalidType(DyType.Integer, DyType.Float, right);
         }
         #endregion
 
@@ -199,20 +199,19 @@ namespace Dyalect.Runtime.Types
         private DyObject IsMultiple(ExecutionContext ctx, DyObject self, DyObject other)
         {
             if (other.TypeId != DyType.Integer)
-                return ctx.InvalidType(other);
+                return ctx.InvalidType(DyType.Integer, other);
 
             var a = self.GetInteger();
             var b = other.GetInteger();
             return (a % b) == 0 ? DyBool.True : DyBool.False;
         }
 
-        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
-        {
-            if (name == "IsMultiple")
-                return Func.Member(name, IsMultiple, -1, new Par("of"));
-
-            return base.InitializeInstanceMember(self, name, ctx);
-        }
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+            name switch
+            {
+                Method.IsMultiple => Func.Member(name, IsMultiple, -1, new Par("of")),
+                _ => base.InitializeInstanceMember(self, name, ctx)
+            };
 
         private DyObject Convert(ExecutionContext ctx, DyObject obj)
         {
@@ -228,7 +227,7 @@ namespace Dyalect.Runtime.Types
                 return DyInteger.Get(i);
             }
 
-            return ctx.InvalidType(obj);
+            return ctx.InvalidType(DyType.Integer, DyType.Float, obj);
         }
 
         private DyObject Parse(ExecutionContext ctx, DyObject obj)
@@ -249,11 +248,11 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "Max" => Func.Static(name, _ => DyInteger.Max),
-                "Min" => Func.Static(name, _ => DyInteger.Min),
-                "Default" => Func.Static(name, _ => DyInteger.Zero),
-                "Parse" => Func.Static(name, Parse, -1, new Par("value")),
-                "Integer" => Func.Static(name, Convert, -1, new Par("value")),
+                Method.Max => Func.Static(name, _ => DyInteger.Max),
+                Method.Min => Func.Static(name, _ => DyInteger.Min),
+                Method.Default => Func.Static(name, _ => DyInteger.Zero),
+                Method.Parse => Func.Static(name, Parse, -1, new Par("value")),
+                Method.Integer => Func.Static(name, Convert, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
 

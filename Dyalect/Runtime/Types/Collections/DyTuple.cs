@@ -52,7 +52,7 @@ namespace Dyalect.Runtime.Types
                 return GetItem((int)index.GetInteger(), ctx);
 
             if (index.TypeId != DyType.String && index.TypeId != DyType.Char)
-                return ctx.InvalidType(index);
+                return ctx.InvalidType(DyType.String, index);
             
             return TryGetItem(index.GetString(), ctx, out var item)
                 ? item : ctx.IndexOutOfRange(index);
@@ -106,7 +106,7 @@ namespace Dyalect.Runtime.Types
 
                 if (lab.TypeAnnotation is not null && value.TypeId != lab.TypeAnnotation.ReflectedTypeId)
                 {
-                    ctx.InvalidType(value);
+                    ctx.InvalidType(lab.TypeAnnotation.ReflectedTypeId, value);
                     return;
                 }
                 

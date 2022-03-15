@@ -57,7 +57,7 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(index);
+                return ctx.IndexOutOfRange(index);
 
             return GetItem((int)index.GetInteger(), ctx);
         }

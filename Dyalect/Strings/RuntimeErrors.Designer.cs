@@ -241,6 +241,42 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected type &quot;{0}&quot;, got type &quot;{1}&quot; instead..
+        /// </summary>
+        internal static string InvalidType_2 {
+            get {
+                return ResourceManager.GetString("InvalidType.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected types &quot;{0}&quot; or &quot;{1}&quot;, got type &quot;{2}&quot; instead..
+        /// </summary>
+        internal static string InvalidType_3 {
+            get {
+                return ResourceManager.GetString("InvalidType.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected types &quot;{0}&quot;, &quot;{1}&quot; or &quot;{2}&quot;, got type &quot;{3}&quot; instead..
+        /// </summary>
+        internal static string InvalidType_4 {
+            get {
+                return ResourceManager.GetString("InvalidType.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected types &quot;{0}&quot;, &quot;{1}&quot;, &quot;{2}&quot; or &quot;{3}&quot;, got type &quot;{4}&quot; instead..
+        /// </summary>
+        internal static string InvalidType_5 {
+            get {
+                return ResourceManager.GetString("InvalidType.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Value is invalid..
         /// </summary>
         internal static string InvalidValue_0 {
@@ -412,7 +448,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Too many arguments provided to a function..
+        ///   Looks up a localized string similar to Too many arguments to function..
         /// </summary>
         internal static string TooManyArguments_0 {
             get {

@@ -121,7 +121,7 @@ namespace Dyalect.Runtime.Types
         private DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
         {
             if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(index);
+                return ctx.InvalidType(DyType.Integer, index);
 
             var t = (DyTuple)self;
 
@@ -151,7 +151,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
             if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(index);
+                return ctx.InvalidType(DyType.Integer, index);
 
             var tuple = (DyTuple)self;
 
@@ -192,7 +192,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
         {
             if (item.TypeId != DyType.String)
-                return ctx.InvalidType(item);
+                return ctx.InvalidType(DyType.String, item);
 
             var tuple = (DyTuple)self;
 
@@ -202,36 +202,36 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "Add" => Func.Member(name, AddItem, -1, new Par("item")),
-                "Remove" => Func.Member(name, Remove, -1, new Par("item")),
-                "RemoveAt" => Func.Member(name, RemoveAt, -1, new Par("index")),
-                "Insert" => Func.Member(name, Insert, -1, new Par("index"), new Par("item")),
-                "Keys" => Func.Member(name, GetKeys),
-                "First" => Func.Member(name, GetFirst),
-                "Second" => Func.Member(name, GetSecond),
-                "Sort" => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
-                "ToDictionary" => Func.Member(name, ToDictionary),
-                "ToArray" => Func.Member(name, ToArray),
-                "Contains" => Func.Member(name, Contains, -1, new Par("label")),
+                Method.Add => Func.Member(name, AddItem, -1, new Par("item")),
+                Method.Remove => Func.Member(name, Remove, -1, new Par("item")),
+                Method.RemoveAt => Func.Member(name, RemoveAt, -1, new Par("index")),
+                Method.Insert => Func.Member(name, Insert, -1, new Par("index"), new Par("item")),
+                Method.Keys => Func.Member(name, GetKeys),
+                Method.First => Func.Member(name, GetFirst),
+                Method.Second => Func.Member(name, GetSecond),
+                Method.Sort => Func.Member(name, SortBy, -1, new Par("comparator", DyNil.Instance)),
+                Method.ToDictionary => Func.Member(name, ToDictionary),
+                Method.ToArray => Func.Member(name, ToArray),
+                Method.Contains => Func.Member(name, Contains, -1, new Par("label")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
         private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
-            new DyTuple(new DyObject[] { fst, snd });
+            new DyTuple(new[] { fst, snd });
 
         private DyObject GetTriple(ExecutionContext ctx, DyObject fst, DyObject snd, DyObject thd) =>
-            new DyTuple(new DyObject[] { fst, snd, thd });
+            new DyTuple(new[] { fst, snd, thd });
 
         private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "Sort" => Func.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
-                "Pair" => Func.Static(name, GetPair, -1, new Par("first"), new Par("second")),
-                "Triple" => Func.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
-                "Concat" => Func.Static(name, Concat, 0, new Par("values", true)),
-                "Tuple" => Func.Static(name, MakeNew, 0, new Par("values")),
+                Method.Sort => Func.Static(name, SortBy, -1, new Par("tuple"), new Par("comparator", DyNil.Instance)),
+                Method.Pair => Func.Static(name, GetPair, -1, new Par("first"), new Par("second")),
+                Method.Triple => Func.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
+                Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
+                Method.Tuple => Func.Static(name, MakeNew, 0, new Par("values")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

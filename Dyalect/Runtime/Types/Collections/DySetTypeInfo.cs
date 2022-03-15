@@ -126,18 +126,18 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "Add" => Func.Member(name, AddItem, -1, new Par("value")),
-                "Remove" => Func.Member(name, Remove, -1, new Par("value")),
-                "Contains" => Func.Member(name, Contains, -1, new Par("value")),
-                "Clear" => Func.Member(name, Clear),
-                "ToArray" => Func.Member(name, ToArray),
-                "ToTuple" => Func.Member(name, ToTuple),
-                "Except" => Func.Member(name, ExceptWith, -1, new Par("with")),
-                "Intersect" => Func.Member(name, IntersectWith, -1, new Par("with")),
-                "Union" => Func.Member(name, UnionWith, -1, new Par("with")),
-                "Overlaps" => Func.Member(name, Overlaps, -1, new Par("with")),
-                "IsSubset" => Func.Member(name, IsSubsetOf, -1, new Par("of")),
-                "IsSuperset" => Func.Member(name, IsSupersetOf, -1, new Par("of")),
+                Method.Add => Func.Member(name, AddItem, -1, new Par("value")),
+                Method.Remove => Func.Member(name, Remove, -1, new Par("value")),
+                Method.Contains => Func.Member(name, Contains, -1, new Par("value")),
+                Method.Clear => Func.Member(name, Clear),
+                Method.ToArray => Func.Member(name, ToArray),
+                Method.ToTuple => Func.Member(name, ToTuple),
+                Method.Except => Func.Member(name, ExceptWith, -1, new Par("with")),
+                Method.Intersect => Func.Member(name, IntersectWith, -1, new Par("with")),
+                Method.Union => Func.Member(name, UnionWith, -1, new Par("with")),
+                Method.Overlaps => Func.Member(name, Overlaps, -1, new Par("with")),
+                Method.IsSubset => Func.Member(name, IsSubsetOf, -1, new Par("of")),
+                Method.IsSuperset => Func.Member(name, IsSupersetOf, -1, new Par("of")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -155,7 +155,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "Set" => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
+                Method.Set => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
 

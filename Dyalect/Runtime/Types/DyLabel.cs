@@ -31,7 +31,7 @@ namespace Dyalect.Runtime.Types
             if ((index.TypeId == DyType.Integer && index.GetInteger() == 0) || (index.TypeId == DyType.String && index.GetString() == Label))
                 return Value;
             else
-                return ctx.IndexOutOfRange();
+                return ctx.IndexOutOfRange(index);
         }
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;

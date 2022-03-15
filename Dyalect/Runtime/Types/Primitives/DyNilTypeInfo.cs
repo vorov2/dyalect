@@ -18,13 +18,12 @@
 
         protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, ctx);
 
-        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
-        {
-            if (name is "Nil" or "Default")
-                return Func.Static(name, _ => DyNil.Instance);
-
-            return base.InitializeStaticMember(name, ctx);
-        }
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
+            name switch
+            {
+                Method.Nil or Method.Default => Func.Static(name, _ => DyNil.Instance),
+                _ => base.InitializeStaticMember(name, ctx)
+            };
 
         protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
             targetType.ReflectedTypeId switch
