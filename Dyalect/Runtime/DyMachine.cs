@@ -606,10 +606,12 @@ namespace Dyalect.Runtime
                             evalStack.Push(new DyError((DyErrorCode)ctx.RgDI));
                         break;
                     case OpCode.TypeCheck:
-                        left = evalStack.Pop();
-                        right = evalStack.Pop().Force(ctx);
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        evalStack.Push(((DyTypeInfo)left).ReflectedTypeId == right.TypeId);
+                        {
+                            var ti = (DyTypeInfo)evalStack.Pop();
+                            right = evalStack.Pop().Force(ctx);
+                            if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
+                            evalStack.Push(ti.ReflectedTypeId == right.TypeId || (ti.ReflectedTypeId is DyType.Float && right.TypeId == DyType.Integer));
+                        }
                         break;
                     case OpCode.CtorCheck:
                         right = evalStack.Peek().Force(ctx);
