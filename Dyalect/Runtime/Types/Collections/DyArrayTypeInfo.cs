@@ -149,8 +149,12 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject Compact(ExecutionContext ctx, DyObject self)
+        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
+            if (funObj.TypeId != DyType.Function && funObj.TypeId != DyType.Nil)
+                return ctx.InvalidType(DyType.Function, DyType.Nil, funObj);
+
+            var fun = funObj as DyFunction;
             var arr = (DyArray)self;
 
             if (arr.Count == 0)
@@ -161,8 +165,21 @@ namespace Dyalect.Runtime.Types
             while (idx < arr.Count)
             {
                 var e = arr[idx];
+                bool flag;
 
-                if (ReferenceEquals(e, DyNil.Instance))
+                if (fun is not null)
+                {
+                    var res = fun.Call(ctx, e);
+
+                    if (ctx.HasErrors)
+                        return DyNil.Instance;
+
+                    flag = ReferenceEquals(res, DyBool.True);
+                }
+                else
+                    flag = ReferenceEquals(e, DyNil.Instance);
+
+                if (flag)
                     arr.RemoveAt(idx);
                 else
                     idx++;
@@ -313,7 +330,7 @@ namespace Dyalect.Runtime.Types
                 Method.LastIndexOf => Func.Member(name, LastIndexOf, -1, new Par("value")),
                 Method.Sort => Func.Member(name, SortBy, -1, new Par("comparer", DyNil.Instance)),
                 Method.Swap => Func.Member(name, Swap, -1, new Par("value"), new Par("other")),
-                Method.Compact => Func.Member(name, Compact),
+                Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
                 Method.Reverse => Func.Member(name, Reverse),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
