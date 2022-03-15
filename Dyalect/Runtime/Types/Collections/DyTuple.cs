@@ -104,9 +104,9 @@ namespace Dyalect.Runtime.Types
                     return;
                 }
 
-                if (lab.TypeAnnotation is not null && value.TypeId != lab.TypeAnnotation.ReflectedTypeId)
+                if (!lab.VerifyType(value.TypeId))
                 {
-                    ctx.InvalidType(lab.TypeAnnotation.ReflectedTypeId, value);
+                    ctx.InvalidType(value);
                     return;
                 }
                 

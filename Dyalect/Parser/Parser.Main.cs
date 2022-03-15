@@ -156,6 +156,20 @@ namespace Dyalect.Parser
             return true;
         }
 
+        private bool IsTypeName()
+        {
+            if (la.kind == _ucaseToken)
+                return true;
+
+            if (la.kind != _lcaseToken)
+                return false;
+
+            var xa = scanner.Peek();
+            var res = xa.kind == _dotToken;
+            scanner.ResetPeek();
+            return res;
+        }
+
         private bool IsPrivateScope()
         {
             if (la.kind != _privateToken)
@@ -172,13 +186,13 @@ namespace Dyalect.Parser
             if (la.kind == _varToken || la.kind == _letToken)
             {
                 var xa = scanner.Peek();
-                if (xa.kind != _identToken && xa.kind != _stringToken)
+                if (xa.kind != _lcaseToken && xa.kind != _ucaseToken && xa.kind != _stringToken)
                 {
                     scanner.ResetPeek();
                     return false;
                 }
             }
-            else if (la.kind != _identToken && la.kind != _stringToken)
+            else if (la.kind != _lcaseToken && la.kind != _ucaseToken && la.kind != _stringToken)
                 return false;
 
             var na = scanner.Peek();
@@ -188,7 +202,7 @@ namespace Dyalect.Parser
 
         private bool IsLabelPattern()
         {
-            if (la.kind != _identToken && la.kind != _stringToken)
+            if (la.kind != _lcaseToken && la.kind != _ucaseToken && la.kind != _stringToken)
                 return false;
 
             scanner.ResetPeek();
@@ -239,7 +253,7 @@ namespace Dyalect.Parser
             if (allowFields)
             {
                 Token xt;
-                if (((xt = scanner.Peek()).kind == _identToken || xt.kind == _stringToken)
+                if (((xt = scanner.Peek()).kind == _lcaseToken || xt.kind == _ucaseToken|| xt.kind == _stringToken)
                     && scanner.Peek().kind == _colonToken)
                     return true;
                 scanner.ResetPeek();
@@ -270,13 +284,13 @@ namespace Dyalect.Parser
 
         private bool IsFunction()
         {
-            if (la.kind != _parenLeftToken && la.kind != _identToken)
+            if (la.kind != _parenLeftToken && la.kind != _lcaseToken && la.kind != _ucaseToken)
                 return false;
 
             scanner.ResetPeek();
             var x = la;
 
-            if (la.kind == _identToken)
+            if (la.kind == _lcaseToken || la.kind == _ucaseToken)
             {
                 x = scanner.Peek();
                 return x.kind == _arrowToken;

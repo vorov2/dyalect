@@ -412,7 +412,7 @@ namespace Dyalect.Runtime
                     case OpCode.Annot:
                         left = evalStack.Pop();
                         right = evalStack.Peek();
-                        ((DyLabel)right).TypeAnnotation = (DyTypeInfo)left;
+                        ((DyLabel)right).AddTypeAnnotation((DyTypeInfo)left);
                         break;
                     case OpCode.Tag:
                         evalStack.Replace(new DyLabel(unit.Strings[op.Data], evalStack.Peek()));

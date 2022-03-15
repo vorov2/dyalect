@@ -1,5 +1,6 @@
 # 0.32.0
   * Change: _Virtual machine optimizations._
+  * Change: _Parser refactoring and optimization._
   * Change: _Rethink guards_ ([Issue #605](https://github.com/vorov2/dyalect/issues/605)).
   * Change: _`String.Join` should accept char as separator_ ([Issue #611](https://github.com/vorov2/dyalect/issues/611)).
   * Change: _Refactor error messages raised by standard types for better clarity_ ([Issue #612](https://github.com/vorov2/dyalect/issues/612)).

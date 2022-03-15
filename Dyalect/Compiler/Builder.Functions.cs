@@ -192,15 +192,16 @@ namespace Dyalect.Compiler
             return arr;
         }
 
-        private bool CheckRestriction(int code, Qualident? restriction)
+        private bool CheckRestriction(int code, TypeAnnotation? restriction)
         {
             if (restriction is null)
                 return true;
 
-            if (restriction.Parent is not null)
-                return false;
+            foreach (var q in restriction)
+                if (q.Parent is not null || code != DyType.GetTypeCodeByName(q.Local))
+                    return false;
 
-            return code == DyType.GetTypeCodeByName(restriction.Local);
+            return true;
         }
 
         private int BuildFunctionArguments(CompilerContext ctx, DFunctionDeclaration node, Par[] args)
@@ -221,20 +222,29 @@ namespace Dyalect.Compiler
 
                     if (arg.TypeAnnotation is not null)
                     {
-                        cw.PushVar(new ScopeVar(a));
-                        cw.Dup();
-                        PushTypeInfo(ctx, arg.TypeAnnotation, node.Location);
-                        AddLinePragma(node.Parameters[i]);
-                        cw.TypeCheck(); 
                         var skip = cw.DefineLabel();
-                        cw.Brtrue(skip);
-                        cw.GetMember(Builtins.Type);
-                        cw.FunPrep(0);
-                        cw.FunCall(0);
+                        AddLinePragma(node.Parameters[i]);
+
+                        //We type check for all the types in annotation. If at least one
+                        //is a success, we goto to the exit section
+                        foreach (var q in arg.TypeAnnotation)
+                        {
+                            cw.PushVar(new ScopeVar(a));
+                            PushTypeInfo(ctx, q, node.Location);
+                            cw.TypeCheck();
+                            cw.Brtrue(skip);
+                        }
+
+                        //We fall in here if all checks are not successful
+                        //Here we try to obtain some additional info to generate nice
+                        //error message
+                        cw.PushVar(new ScopeVar(a));
+                        cw.CallNullaryMember(Builtins.Type);
                         cw.NewErr(DyErrorCode.InvalidType, 1);
                         cw.Fail();
+                        //Exit section for success
                         cw.MarkLabel(skip);
-                        cw.Pop();
+                        cw.Nop();
                     }
                 }
             }

@@ -1,22 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Dyalect.Runtime.Types
 {
     public sealed class DyLabel : DyObject
     {
-        internal bool Mutable;
+        private List<DyTypeInfo>? typeAnnotations;
 
-        internal DyTypeInfo? TypeAnnotation;
+        internal bool Mutable;
 
         public string Label { get; }
 
         public DyObject Value { get; internal set; }
 
-        public DyLabel(string label, DyObject value, bool mutable = false, DyTypeInfo? typeAnnotation = null) : base(DyType.Label) =>
-            (Label, Value, Mutable, TypeAnnotation) = (label, value, mutable, typeAnnotation);
+        public DyLabel(string label, DyObject value, bool mutable = false) : base(DyType.Label) =>
+            (Label, Value, Mutable) = (label, value, mutable);
 
-        public DyLabel(string label, object value, bool mutable = false, DyTypeInfo? typeAnnotation = null) : base(DyType.Label) =>
-            (Label, Value, Mutable, TypeAnnotation) = (label, TypeConverter.ConvertFrom(value), mutable, typeAnnotation);
+        public DyLabel(string label, object value, bool mutable = false) : base(DyType.Label) =>
+            (Label, Value, Mutable) = (label, TypeConverter.ConvertFrom(value), mutable);
 
         protected internal override bool GetBool(ExecutionContext ctx) => Value.GetBool(ctx);
 
@@ -32,6 +33,24 @@ namespace Dyalect.Runtime.Types
                 return Value;
             else
                 return ctx.IndexOutOfRange(index);
+        }
+
+        internal void AddTypeAnnotation(DyTypeInfo ti)
+        {
+            typeAnnotations = typeAnnotations ?? new();
+            typeAnnotations.Add(ti);
+        }
+
+        internal bool VerifyType(int tid)
+        {
+            if (typeAnnotations is null)
+                return true;
+
+            foreach (var t in typeAnnotations)
+                if (t.ReflectedTypeId == tid)
+                    return true;
+
+            return false;
         }
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;
