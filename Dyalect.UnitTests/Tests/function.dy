@@ -554,8 +554,13 @@
 #region "Type annotations 3"
     func test(Float x) { }
     test(1.0)
-    test(1)
     assert(got: true)
+    try {
+        test(1)
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
 #endregion
 
 #region "Complex type annotations 1"
