@@ -256,7 +256,7 @@ PRODUCTIONS
     TypeAnnotation<out TypeAnnotation ta> =
         (. string val = null; TypeAnnotation cta = null; .)
         (
-            TypeName<out var qual> [ "+" TypeAnnotation<out cta> ]
+            TypeName<out var qual> [ "|" TypeAnnotation<out cta> ]
             (. ta = new TypeAnnotation(qual, cta); .)
         ).
 

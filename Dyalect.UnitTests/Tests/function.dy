@@ -564,7 +564,7 @@
 #endregion
 
 #region "Complex type annotations 1"
-    func test(String+Char c) {
+    func test(String|Char c) {
         return c.ToString()
     }
     assert("Foo", test("Foo"))

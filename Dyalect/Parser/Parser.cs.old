@@ -452,8 +452,9 @@ namespace Dyalect.Parser
 	void TypeAnnotation(out TypeAnnotation ta) {
 		string val = null; TypeAnnotation cta = null; 
 		TypeName(out var qual);
-		while (la.kind == 1 || la.kind == 2) {
-			TypeName(out qual);
+		if (la.kind == 49) {
+			Get();
+			TypeAnnotation(out cta);
 		}
 		ta = new TypeAnnotation(qual, cta); 
 	}
