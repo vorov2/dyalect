@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using Dyalect.Parser;
 using System.Collections.Generic;
 using System.Text;
 
@@ -21,6 +22,25 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(len);
         }
 
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx)
+        {
+            var map = (DyDictionary)arg;
+            var sb = new StringBuilder();
+            sb.Append("Dictionary (");
+            var i = 0;
+
+            foreach (var kv in map.Dictionary)
+            {
+                if (i > 0)
+                    sb.Append(", ");
+                sb.Append(kv.Key.ToLiteral(ctx) + ": " + kv.Value.ToLiteral(ctx));
+                i++;
+            }
+
+            sb.Append(')');
+            return new DyString(sb.ToString());
+        }
+
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
         {
             var map = (DyDictionary)arg;
@@ -32,7 +52,7 @@ namespace Dyalect.Runtime.Types
             {
                 if (i > 0)
                     sb.Append(", ");
-                sb.Append(kv.Key.ToString(ctx) + " = " + kv.Value.ToString(ctx));
+                sb.Append(kv.Key.ToString(ctx) + ": " + kv.Value.ToString(ctx));
                 i++;
             }
 
@@ -172,7 +192,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                Method.Dictionary or Method.FromTuple => Func.Static(name, New, -1, new Par("values", DyNil.Instance)),
+                Method.Dictionary or Method.FromTuple => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

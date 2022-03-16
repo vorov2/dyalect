@@ -287,7 +287,7 @@ namespace Dyalect.Runtime.Types
 
         //x.ToLiteral
         private DyFunction? tol;
-        protected virtual DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.ToString());
+        protected virtual DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, ctx);
         public virtual DyObject ToLiteral(ExecutionContext ctx, DyObject arg)
         {
             if (tol is not null)

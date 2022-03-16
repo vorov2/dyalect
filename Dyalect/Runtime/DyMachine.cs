@@ -537,14 +537,20 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.FunArgNm:
                         {
+                            var locs = ctx.Arguments.Peek();
                             var idx = ((DyFunction)evalStack.Peek(2)).GetParameterIndex(unit.Strings[op.Data]);
                             if (idx == -1)
                             {
+                                if (locs.VarArgsIndex > -1)
+                                {
+                                    locs.VarArgs!.Add(new DyLabel(unit.Strings[op.Data], evalStack.Pop()));
+                                    break;
+                                }
+
                                 ctx.ArgumentNotFound(((DyFunction)evalStack.Peek(2)).FunctionName, unit.Strings[op.Data]);
                                 ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                                 goto CATCH;
                             }
-                            var locs = ctx.Arguments.Peek();
                             if (idx == locs.VarArgsIndex)
                             {
                                 Push(locs, evalStack.Pop(), ctx);
