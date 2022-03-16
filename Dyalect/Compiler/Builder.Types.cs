@@ -42,7 +42,7 @@ namespace Dyalect.Compiler
         private void GenerateConstructor(DFunctionDeclaration func, CompilerContext ctx)
         {
             if (func.Body is not null)
-                Build(func.Body, Hints.Push, new());
+                Build(func.Body, NoScope, new());
 
             if (func.Parameters.Count == 0)
             {
