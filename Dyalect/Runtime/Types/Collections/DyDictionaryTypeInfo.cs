@@ -183,10 +183,17 @@ namespace Dyalect.Runtime.Types
             if (ReferenceEquals(values, DyNil.Instance))
                 return new DyDictionary();
 
-            if (values is DyTuple tup)
-                return new DyDictionary(tup.ConvertToDictionary(ctx));
-            
-            return ctx.InvalidType(DyType.Tuple, values);
+            var xs = (DyTuple)values;
+
+            if (xs.Count == 1)
+            {
+                var el = xs.GetValue(0);
+
+                if (el is DyTuple t)
+                    return new DyDictionary(t.ConvertToDictionary(ctx));
+            }
+
+            return new DyDictionary(xs.ConvertToDictionary(ctx));
         }
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>

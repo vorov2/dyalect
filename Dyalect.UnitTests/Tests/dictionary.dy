@@ -1,10 +1,17 @@
-﻿#region "Constructor"
+﻿#region "Constructor 1"
     let xs = Dictionary(
         (x: 1, y: 2, z: "foo")
     )
     assert(1, xs["x"])
     assert(2, xs["y"])
     assert("foo", xs["z"])
+#endregion
+
+#region "Constructor 2"
+    let xs = Dictionary (foo: 42, "best key": true, bar: "string value")
+    assert(42, xs.foo)
+    assert(true, xs["best key"])
+    assert("string value", xs.bar)
 #endregion
 
 #region "Methods: GetType"
@@ -168,5 +175,5 @@
 
 #region "Conversion: as"
     let xs = Dictionary.FromTuple ((x: 1, y: 2))
-    assert("Dictionary (x = 1, y = 2)", xs as String)
+    assert("Dictionary (x: 1, y: 2)", xs as String)
 #endregion

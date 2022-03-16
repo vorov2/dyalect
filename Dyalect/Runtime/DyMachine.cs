@@ -541,7 +541,7 @@ namespace Dyalect.Runtime
                             var idx = ((DyFunction)evalStack.Peek(2)).GetParameterIndex(unit.Strings[op.Data]);
                             if (idx == -1)
                             {
-                                if (locs.VarArgsIndex > -1)
+                                if (locs.VarArgsIndex > -1 && locs.Locals.Length == 1)
                                 {
                                     locs.VarArgs!.Add(new DyLabel(unit.Strings[op.Data], evalStack.Pop()));
                                     break;
