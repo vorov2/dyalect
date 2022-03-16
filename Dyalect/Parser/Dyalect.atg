@@ -295,8 +295,7 @@ PRODUCTIONS
             | Function<out node>
             | Directive<out node> Separator
             | Region<out node>
-        )
-        (. node = ProcessImplicits(node); .).
+        ).
 
     Guard<DNode src, out DNode node> =
         (. node = src; .)
@@ -450,8 +449,7 @@ PRODUCTIONS
             | Assignment<out node> [ Guard<node, out node> ] Separator
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
-        )
-        (. node = ProcessImplicits(node); .).
+        ).
 
     FunctionParameter<out DParameter arg> =
         (. TypeAnnotation ta = null; .)
@@ -507,8 +505,7 @@ PRODUCTIONS
             | Expr<out node>
             | Loops<out node>
             | Match<out node>
-        )
-        (. node = ProcessImplicits(node); .).
+        ).
 
     //Patterns
     Match<out DNode node> =
@@ -1248,7 +1245,6 @@ PRODUCTIONS
         (. node = null; .)
         (
               Name<out node>
-            | SpecialName<out node>
             | Integer<out node>
             | Float<out node>
             | String<out node>
@@ -1339,18 +1335,6 @@ PRODUCTIONS
         (
             (Identifier | "private")
             (. node = new DName(t) { Value = t.val }; .)
-        ).
-
-    SpecialName<out DNode node> =
-        (
-            implicitToken
-            (.
-                var nm = int.Parse(t.val.Substring(1));
-                node = new DName(t) { Value = "p" + nm };
-                if (implicits == null)
-                    implicits = new List<int>();
-                implicits.Add(nm);
-            .)
         ).
 
     Nil<out DNode node> = "nil" (. node = new DNilLiteral(t); .).

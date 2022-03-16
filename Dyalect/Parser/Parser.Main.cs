@@ -28,8 +28,6 @@ namespace Dyalect.Parser
 
         private readonly Stack<DFunctionDeclaration> functions = new();
 
-        private List<int>? implicits;
-
         public InternalParser(string filename, Scanner scanner)
         {
             FileName = filename;
@@ -371,23 +369,6 @@ namespace Dyalect.Parser
                 return double.Parse(t.val[0..^1], CI.NumberFormat);
 
             return double.Parse(t.val, CI.NumberFormat);
-        }
-
-        private DNode ProcessImplicits(DNode node)
-        {
-            if (implicits is not null)
-            {
-                var func = new DFunctionDeclaration(node.Location)
-                {
-                    Body = node
-                };
-                implicits.Sort();
-                func.Parameters.AddRange(implicits.Distinct().Select(i => new DParameter(t) { Name = "p" + i }));
-                implicits = null;
-                return func;
-            }
-
-            return node;
         }
     }
 }

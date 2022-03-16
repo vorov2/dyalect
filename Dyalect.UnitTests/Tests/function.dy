@@ -240,12 +240,6 @@
     assert(12, f(12))
 #endregion
 
-#region "Implicit function"
-    var f = $0 ?? 22
-    assert(12, f(12))
-    assert(22, f(0))
-#endregion
-
 #region "Caller and current"
     func foo() {
         assert("foo", current().Name)
@@ -287,12 +281,6 @@
     }
     var s = bar()
     assert("foo is called by bar", s)
-#endregion
-
-#region "Implicit as statement"
-    //Bug #294
-    $0 + $1
-    assert(got: true)
 #endregion
 
 #region "Complex variadic"

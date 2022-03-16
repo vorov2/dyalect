@@ -10,8 +10,8 @@ namespace Dyalect.Parser
 {
     partial class Scanner
     {
-	const int maxT = 100;
-	const int noSym = 100;
+	const int maxT = 101;
+	const int noSym = 101;
 
 
         static Scanner()
@@ -167,26 +167,26 @@ namespace Dyalect.Parser
 			case "#endregion": t.kind = 69; break;
 			case "import": t.kind = 70; break;
 			case "or": t.kind = 71; break;
-			case "when": t.kind = 73; break;
-			case "true": t.kind = 74; break;
-			case "false": t.kind = 75; break;
-			case "static": t.kind = 76; break;
-			case "and": t.kind = 77; break;
-			case "get": t.kind = 78; break;
-			case "set": t.kind = 79; break;
-			case "as": t.kind = 80; break;
-			case "match": t.kind = 81; break;
-			case "not": t.kind = 83; break;
-			case "nil": t.kind = 85; break;
-			case "else": t.kind = 86; break;
-			case "do": t.kind = 87; break;
-			case "many": t.kind = 88; break;
-			case "throw": t.kind = 90; break;
-			case "try": t.kind = 91; break;
-			case "catch": t.kind = 92; break;
-			case "is": t.kind = 95; break;
-			case "yields": t.kind = 98; break;
-			case "base": t.kind = 99; break;
+			case "when": t.kind = 74; break;
+			case "true": t.kind = 75; break;
+			case "false": t.kind = 76; break;
+			case "static": t.kind = 77; break;
+			case "and": t.kind = 78; break;
+			case "get": t.kind = 79; break;
+			case "set": t.kind = 80; break;
+			case "as": t.kind = 81; break;
+			case "match": t.kind = 82; break;
+			case "not": t.kind = 84; break;
+			case "nil": t.kind = 86; break;
+			case "else": t.kind = 87; break;
+			case "do": t.kind = 88; break;
+			case "many": t.kind = 89; break;
+			case "throw": t.kind = 91; break;
+			case "try": t.kind = 92; break;
+			case "catch": t.kind = 93; break;
+			case "is": t.kind = 96; break;
+			case "yields": t.kind = 99; break;
+			case "base": t.kind = 100; break;
 			default: break;
 		}
         }
@@ -458,11 +458,11 @@ namespace Dyalect.Parser
 			case 68:
 				{t.kind = 67; break;}
 			case 69:
-				{t.kind = 72; break;}
+				{t.kind = 73; break;}
 			case 70:
-				{t.kind = 96; break;}
-			case 71:
 				{t.kind = 97; break;}
+			case 71:
+				{t.kind = 98; break;}
 			case 72:
 				recEnd = pos; recKind = 26;
 				if (ch >= '0' && ch <= '9') {AddCh(); goto case 7;}
@@ -480,9 +480,9 @@ namespace Dyalect.Parser
 				else if (ch == '=') {AddCh(); goto case 63;}
 				else {t.kind = 30; break;}
 			case 75:
-				recEnd = pos; recKind = 89;
+				recEnd = pos; recKind = 90;
 				if (ch == '?') {AddCh(); goto case 59;}
-				else {t.kind = 89; break;}
+				else {t.kind = 90; break;}
 			case 76:
 				recEnd = pos; recKind = 53;
 				if (ch == '=') {AddCh(); goto case 42;}
@@ -499,12 +499,13 @@ namespace Dyalect.Parser
 				if (ch == '&') {AddCh(); goto case 87;}
 				else {goto case 0;}
 			case 80:
+				recEnd = pos; recKind = 72;
 				if (ch == '|') {AddCh(); goto case 88;}
-				else {goto case 0;}
+				else {t.kind = 72; break;}
 			case 81:
-				recEnd = pos; recKind = 84;
+				recEnd = pos; recKind = 85;
 				if (ch == '^') {AddCh(); goto case 89;}
-				else {t.kind = 84; break;}
+				else {t.kind = 85; break;}
 			case 82:
 				recEnd = pos; recKind = 60;
 				if (ch == '>') {AddCh(); goto case 90;}
@@ -519,21 +520,21 @@ namespace Dyalect.Parser
 				if (ch == '~') {AddCh(); goto case 67;}
 				else {t.kind = 51; break;}
 			case 85:
-				recEnd = pos; recKind = 82;
+				recEnd = pos; recKind = 83;
 				if (ch == '.') {AddCh(); goto case 69;}
 				else if (ch == '<') {AddCh(); goto case 70;}
-				else {t.kind = 82; break;}
+				else {t.kind = 83; break;}
 			case 86:
 				if (ch == '<') {AddCh(); goto case 91;}
 				else {goto case 0;}
 			case 87:
-				recEnd = pos; recKind = 94;
+				recEnd = pos; recKind = 95;
 				if (ch == '&') {AddCh(); goto case 92;}
-				else {t.kind = 94; break;}
+				else {t.kind = 95; break;}
 			case 88:
-				recEnd = pos; recKind = 93;
+				recEnd = pos; recKind = 94;
 				if (ch == '|') {AddCh(); goto case 93;}
-				else {t.kind = 93; break;}
+				else {t.kind = 94; break;}
 			case 89:
 				if (ch == '^') {AddCh(); goto case 94;}
 				else {goto case 0;}
