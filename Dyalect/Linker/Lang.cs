@@ -154,7 +154,7 @@ namespace Dyalect.Linker
                 if (errorText.TypeId == DyType.String)
                     return ctx.AssertionFailed(errorText.GetString());
 
-                return ctx.AssertionFailed($"Expected {expect?.Force(ctx)?.ToString(ctx)}, got {got?.Force(ctx)?.ToString(ctx)}");
+                return ctx.AssertionFailed($"Expected {expect?.Force(ctx)?.ToString(ctx)}, got {got?.Force(ctx)?.ToString(ctx)}.");
             }
 
             return DyNil.Instance;

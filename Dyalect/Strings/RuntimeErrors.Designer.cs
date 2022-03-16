@@ -88,7 +88,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assertion failed: {0}..
+        ///   Looks up a localized string similar to Assertion failed. {0}.
         /// </summary>
         internal static string AssertionFailed_1 {
             get {

@@ -136,7 +136,7 @@
     <value>Function "{0}" accepts {1} argument(s) ({2} given).</value>
   </data>
   <data name="AssertionFailed.1" xml:space="preserve">
-    <value>Assertion failed: {0}.</value>
+    <value>Assertion failed. {0}</value>
   </data>
   <data name="RequiredArgumentMissing.2" xml:space="preserve">
     <value>No value provided for an argument "{1}" of a function "{0}".</value>
