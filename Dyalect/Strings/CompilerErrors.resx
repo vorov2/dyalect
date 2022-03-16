@@ -288,4 +288,7 @@
   <data name="InvalidCast" xml:space="preserve">
     <value>Invalid type conversion function.</value>
   </data>
+  <data name="YieldNotAllowed" xml:space="preserve">
+    <value>Statement "yield" is only supported inside functions.</value>
+  </data>
 </root>

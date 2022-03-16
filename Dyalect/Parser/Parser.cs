@@ -395,26 +395,18 @@ namespace Dyalect.Parser
 			if (la.kind == 31) {
 				f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; 
 				TypeArguments(f);
+				if (la.kind == 33) {
+					Block(out var b);
+					f.Body = b; 
+				}
 				typ.Constructors.Add(f); 
 			} else {
 				Get();
 				var priv = false; 
-				if (la.kind == 16) {
-					Get();
-					priv = true; 
-				}
-				Identifier();
-				f = new DFunctionDeclaration(t) { Name = t.val, IsPrivate = priv, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); 
-				TypeArguments(f);
+				Constructor(typ);
 				while (la.kind == 71) {
 					Get();
-					if (la.kind == 16) {
-						Get();
-						priv = true; 
-					}
-					Identifier();
-					f = new DFunctionDeclaration(t) { Name = t.val, IsPrivate = priv, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);
-					TypeArguments(f);
+					Constructor(typ);
 				}
 			}
 		}
@@ -432,6 +424,45 @@ namespace Dyalect.Parser
 			}
 		}
 		Expect(32);
+	}
+
+	void Block(out DNode node) {
+		node = null; 
+		Expect(33);
+		var block = new DBlock(t); 
+		if (StartOf(4)) {
+			Statement(out node);
+			block.Nodes.Add(node); 
+			while (StartOf(4)) {
+				Statement(out node);
+				block.Nodes.Add(node); 
+			}
+		}
+		node = block; 
+		Expect(34);
+	}
+
+	void Constructor(DTypeDeclaration typ) {
+		var priv = false; 
+		if (la.kind == 16) {
+			Get();
+			priv = true; 
+		}
+		Identifier();
+		var f = new DFunctionDeclaration(t) {
+		   Name = t.val,
+		   IsPrivate = priv,
+		   IsStatic = true, 
+		   IsConstructor = true,
+		   TypeName = new Qualident(typ.Name) 
+		}; 
+		typ.Constructors.Add(f);
+		
+		TypeArguments(f);
+		if (la.kind == 33) {
+			Block(out var b);
+			f.Body = b; 
+		}
 	}
 
 	void TypeName(out Qualident qual) {
@@ -780,22 +811,6 @@ namespace Dyalect.Parser
 		} else if (la.kind == 33) {
 			Block(out node);
 		} else SynErr(115);
-	}
-
-	void Block(out DNode node) {
-		node = null; 
-		Expect(33);
-		var block = new DBlock(t); 
-		if (StartOf(4)) {
-			Statement(out node);
-			block.Nodes.Add(node); 
-			while (StartOf(4)) {
-				Statement(out node);
-				block.Nodes.Add(node); 
-			}
-		}
-		node = block; 
-		Expect(34);
 	}
 
 	void FunctionBody(bool st, out DNode node) {
@@ -1440,7 +1455,8 @@ namespace Dyalect.Parser
 		Expect(19);
 		var ot = t;
 		node = null;
-		functions.Peek().IsIterator = true;
+		if (functions.Count > 0)
+		   functions.Peek().IsIterator = true;
 		
 		if (la.kind == 18) {
 			Get();

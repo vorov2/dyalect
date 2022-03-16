@@ -373,6 +373,9 @@ namespace Dyalect.Compiler
 
         private void Build(DYield node, Hints hints, CompilerContext ctx)
         {
+            if (ctx.FunctionExit.IsEmpty())
+                AddError(CompilerError.YieldNotAllowed, node.Location);
+
             Build(node.Expression, hints.Append(Push), ctx);
             AddLinePragma(node);
             cw.Yield();
@@ -381,6 +384,9 @@ namespace Dyalect.Compiler
 
         private void Build(DYieldMany node, Hints hints, CompilerContext ctx)
         {
+            if (ctx.FunctionExit.IsEmpty())
+                AddError(CompilerError.YieldNotAllowed, node.Location);
+
             var sys = AddVariable();
             var initSkip = cw.DefineLabel();
             var exit = cw.DefineLabel();
@@ -412,6 +418,9 @@ namespace Dyalect.Compiler
 
         private void Build(DYieldBreak node, Hints _, CompilerContext ctx)
         {
+            if (ctx.FunctionExit.IsEmpty())
+                AddError(CompilerError.YieldNotAllowed, node.Location);
+
             AddLinePragma(node);
             cw.PushNil();
             cw.Br(ctx.FunctionExit);

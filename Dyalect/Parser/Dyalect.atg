@@ -233,18 +233,34 @@ PRODUCTIONS
         [
             (
                 (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; .)
-                TypeArguments<f>
+                TypeArguments<f> [ Block<out var b> (. f.Body = b; .) ]
                 (. typ.Constructors.Add(f); .)
             )
             |
             (
                 "=" (. var priv = false; .)
-                (
-                    [ "private" (. priv = true; .) ] Identifier (. f = new DFunctionDeclaration(t) { Name = t.val, IsPrivate = priv, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) TypeArguments<f>
-                    { "or" [ "private" (. priv = true; .) ] Identifier (. f = new DFunctionDeclaration(t) { Name = t.val, IsPrivate = priv, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) TypeArguments<f> }
-                )
+                Constructor<typ> { "or" Constructor<typ> }
             )
         ].
+
+    Constructor<DTypeDeclaration typ> =
+        (. var priv = false; .)
+        (
+            [ "private" (. priv = true; .) ]
+            Identifier
+            (.
+                var f = new DFunctionDeclaration(t) {
+                    Name = t.val,
+                    IsPrivate = priv,
+                    IsStatic = true, 
+                    IsConstructor = true,
+                    TypeName = new Qualident(typ.Name) 
+                }; 
+                typ.Constructors.Add(f);
+            .) 
+            TypeArguments<f>
+            [ Block<out var b> (. f.Body = b; .) ]
+        ).
 
     TypeName<out Qualident qual> =
         (. string val; qual = null; .)
@@ -833,7 +849,8 @@ PRODUCTIONS
         (.
             var ot = t;
             node = null;
-            functions.Peek().IsIterator = true;
+            if (functions.Count > 0)
+                functions.Peek().IsIterator = true;
         .)
         (
             ( "break" (. node = new DYieldBreak(ot); .) )
