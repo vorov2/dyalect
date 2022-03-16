@@ -434,17 +434,6 @@
     assert(-2, x + -14)
 #endregion
 
-#region "Type constraints"
-    type Foo(Integer x, Float y)
-    let _ = Foo(12, 12.12)
-    try {
-        let _ = Foo(12.2, 12)
-        assert(got: false)
-    } catch {
-        InvalidType() => assert(got: true)
-    }
-#endregion
-
 #region "Mutable variant 1"
     type Foo(var x, y)
     let t = Foo(12, 24)
@@ -549,4 +538,55 @@
     assert(42, f as Integer)
     func Foo as Bool { false }
     assert(false, f as Bool)
+#endregion
+
+#region "Type annotations 1"
+    type Foo(Integer x, Float y)
+    let _ = Foo(12, 12.12)
+    try {
+        let _ = Foo(12.2, 12)
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+#endregion
+
+#region "Type annotations 2"
+    type Number(Integer|Float x)
+    let _ = Number(12)
+    let _ = Number(21.221)
+    try {
+        let _ = Number("string")
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+#endregion
+
+#region "Type annotations 3"
+    type Foo(var Integer value)
+    let x = Foo(12)
+    assert(12, x.value)
+    x.value = 122
+    assert(122, x.value)
+    try {
+        x.value = 0.25
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+#endregion
+
+#region "Type annotations 4"
+    type Foo(var Integer|Char value)
+    let x = Foo(12)
+    assert(12, x.value)
+    x.value = 'A'
+    assert('A', x.value)
+    try {
+        x.value = true
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
 #endregion

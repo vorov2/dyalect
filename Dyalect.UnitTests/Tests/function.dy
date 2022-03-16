@@ -577,6 +577,25 @@
     }
 #endregion
 
+#region "Complex type annotations 2"
+    import refs/libtest
+    func test(libtest.Foobar|Integer x) {
+        match x {
+            Integer => assert(got: true),
+            libtest.Foobar => assert(got: true),
+            _ => assert(got: false)
+        }
+    }
+    test(libtest.Foobar(1, 2))
+    test(12)
+    try {
+        test(true)
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+#endregion
+
 #region "Mutual recursion 1"
     func f(x) => x > 0 ? g(x - 1) : x
     and g(x) => x > 0 ? f(x - 1) : x
