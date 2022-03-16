@@ -1,7 +1,7 @@
-# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.32-blue.svg)
+# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.32-royalblue.svg)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
-![AppVeyor tests](https://img.shields.io/appveyor/tests/vorov2/dyalect.svg)
+[![Tests](https://img.shields.io/appveyor/tests/vorov2/dyalect.svg)](https://ci.appveyor.com/project/vorov2/dyalect)
 
 :blue_book: [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
 
@@ -52,7 +52,7 @@ func Float.Pow(n) {
 }
 
 
-20.12.Pow(3) //Outputs: 8144.865728
+20.12.Pow(3) //Output: 8144.865728
 ```
 
 And a small example with iterators (coroutines):
@@ -68,7 +68,7 @@ for x in fetch() {
 }
 ```
 
-Outputs:
+Output:
 
 ```
 Hello, world!
