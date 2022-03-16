@@ -147,10 +147,15 @@ namespace Dyalect.Linker
         }
 
         [Function("assert")]
-        public DyObject Assert(ExecutionContext ctx, [Default(true)]DyObject expect, DyObject got)
+        public DyObject Assert(ExecutionContext ctx, [Default(true)]DyObject expect, DyObject got, [Default]DyObject errorText)
         {
             if (!Eq(ctx, expect?.Force(ctx)?.ToObject(), got?.Force(ctx)?.ToObject()))
-                return ctx.AssertFailed($"Expected {expect?.Force(ctx)?.ToString(ctx)}, got {got?.Force(ctx)?.ToString(ctx)}");
+            {
+                if (errorText.TypeId == DyType.String)
+                    return ctx.AssertionFailed(errorText.GetString());
+
+                return ctx.AssertionFailed($"Expected {expect?.Force(ctx)?.ToString(ctx)}, got {got?.Force(ctx)?.ToString(ctx)}");
+            }
 
             return DyNil.Instance;
         }

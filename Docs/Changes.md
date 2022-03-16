@@ -15,6 +15,7 @@
   * Add: _Add an ability to specify an optional predicate for an `Array.Compact`_ ([Issue #616](https://github.com/vorov2/dyalect/issues/616), [docs](https://github.com/vorov2/dyalect/wiki/Array#compact)).
   * Add: _Allow multiple type annotations for a single parameter_ ([Issue #618](https://github.com/vorov2/dyalect/issues/618), [docs](https://github.com/vorov2/dyalect/wiki/Functions#anno)).
   * Add: _Implement special notation for passing a tuple names elements to a function_ ([Issue #622](https://github.com/vorov2/dyalect/issues/622), [docs](https://github.com/vorov2/dyalect/wiki/Functions#variadic_functions)).
+  * Add: _An ability to specify error message for `assert` function_ ([Issue #624](https://github.com/vorov2/dyalect/issues/624), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#assert)).
   * Fix: _Correct errors for undefined types_ ([Issue #610](https://github.com/vorov2/dyalect/issues/610)).
   * Fix: _Test runner doesn't display file name in "onlyfailed" display mode_ ([Issue #614](https://github.com/vorov2/dyalect/issues/614)).
   * Fix: _`Dictionary.ToLiteral` is not implemented correctly_ ([Issue #623](https://github.com/vorov2/dyalect/issues/623)).

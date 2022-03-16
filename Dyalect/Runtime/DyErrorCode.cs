@@ -24,7 +24,7 @@
 
         PrivateAccess = 610,
 
-        AssertFailed = 611,
+        AssertionFailed = 611,
 
         RequiredArgumentMissing = 612,
 

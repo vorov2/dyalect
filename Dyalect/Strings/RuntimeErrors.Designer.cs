@@ -79,20 +79,20 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assert failed..
+        ///   Looks up a localized string similar to Assertion failed..
         /// </summary>
-        internal static string AssertFailed_0 {
+        internal static string AssertionFailed_0 {
             get {
-                return ResourceManager.GetString("AssertFailed.0", resourceCulture);
+                return ResourceManager.GetString("AssertionFailed.0", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assert failed: {0}..
+        ///   Looks up a localized string similar to Assertion failed: {0}..
         /// </summary>
-        internal static string AssertFailed_1 {
+        internal static string AssertionFailed_1 {
             get {
-                return ResourceManager.GetString("AssertFailed.1", resourceCulture);
+                return ResourceManager.GetString("AssertionFailed.1", resourceCulture);
             }
         }
         

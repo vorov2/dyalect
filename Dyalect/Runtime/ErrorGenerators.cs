@@ -76,9 +76,9 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject AssertFailed(this ExecutionContext ctx, string reason)
+        public static DyObject AssertionFailed(this ExecutionContext ctx, string reason)
         {
-            ctx.Error = new(DyErrorCode.AssertFailed, reason);
+            ctx.Error = new(DyErrorCode.AssertionFailed, reason);
             return DyNil.Instance;
         }
 
