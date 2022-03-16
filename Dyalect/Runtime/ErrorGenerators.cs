@@ -89,9 +89,23 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, string typeName)
+        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj)
         {
-            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), typeName);
+            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op),
+                ctx.RuntimeContext.Types[obj.TypeId].TypeName);
+            return DyNil.Instance;
+        }
+
+        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, int typeId)
+        {
+            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), typeId);
+            return DyNil.Instance;
+        }
+
+        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj1, DyObject obj2)
+        {
+            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op),
+                ctx.RuntimeContext.Types[obj1.TypeId].TypeName, ctx.RuntimeContext.Types[obj2.TypeId].TypeName);
             return DyNil.Instance;
         }
 

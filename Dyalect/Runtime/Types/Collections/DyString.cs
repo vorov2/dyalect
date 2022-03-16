@@ -65,7 +65,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) => new DyChar(Value[idx]);
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported("set", ctx.RuntimeContext.String.TypeName);
+            ctx.OperationNotSupported("set", DyType.String);
 
         public override DyObject Clone() => this;
 

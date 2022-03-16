@@ -250,7 +250,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected types &quot;{0}&quot; or &quot;{1}&quot;, got type &quot;{2}&quot; instead..
+        ///   Looks up a localized string similar to Expected type &quot;{0}&quot; or &quot;{1}&quot;, got type &quot;{2}&quot; instead..
         /// </summary>
         internal static string InvalidType_3 {
             get {
@@ -259,7 +259,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected types &quot;{0}&quot;, &quot;{1}&quot; or &quot;{2}&quot;, got type &quot;{3}&quot; instead..
+        ///   Looks up a localized string similar to Expected type &quot;{0}&quot;, &quot;{1}&quot; or &quot;{2}&quot;, got type &quot;{3}&quot; instead..
         /// </summary>
         internal static string InvalidType_4 {
             get {
@@ -268,7 +268,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected types &quot;{0}&quot;, &quot;{1}&quot;, &quot;{2}&quot; or &quot;{3}&quot;, got type &quot;{4}&quot; instead..
+        ///   Looks up a localized string similar to Expected type &quot;{0}&quot;, &quot;{1}&quot;, &quot;{2}&quot; or &quot;{3}&quot;, got type &quot;{4}&quot; instead..
         /// </summary>
         internal static string InvalidType_5 {
             get {
@@ -381,6 +381,15 @@ namespace Dyalect.Strings {
         internal static string OperationNotSupported_2 {
             get {
                 return ResourceManager.GetString("OperationNotSupported.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation &quot;{0}&quot; is not supported for the types &quot;{1}&quot; and &quot;{2}&quot;..
+        /// </summary>
+        internal static string OperationNotSupported_3 {
+            get {
+                return ResourceManager.GetString("OperationNotSupported.3", resourceCulture);
             }
         }
         

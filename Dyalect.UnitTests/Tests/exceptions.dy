@@ -3,7 +3,7 @@
         12 + '2'
         assert(got: false)
     } catch {
-        InvalidType() => assert(got: true)
+        OperationNotSupported() => assert(got: true)
     }
 #endregion
 

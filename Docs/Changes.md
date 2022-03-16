@@ -8,6 +8,7 @@
   * Change: _Allow integers to pass Float type restriction_ ([Issue #617](https://github.com/vorov2/dyalect/issues/617)).
   * Change: _Simplify dictionary creation_ ([Issue #621](https://github.com/vorov2/dyalect/issues/621), [docs](https://github.com/vorov2/dyalect/wiki/Dictionary#Dictionary)).
   * Change: _Correct operation names in error messages_ ([Issue #625](https://github.com/vorov2/dyalect/issues/625)).
+  * Change: _Make error message for "not supported operations" more clear_ ([Issue #627](https://github.com/vorov2/dyalect/issues/627)).
   * Add: _Add `String.Format` method_ ([Issue #603](https://github.com/vorov2/dyalect/issues/603), [docs](https://github.com/vorov2/dyalect/wiki/String#format)).
   * Add: _Add methods `Dictionary.ContainsValue` and `Dictionary.GetAndRemove`_ ([Issue #608](https://github.com/vorov2/dyalect/issues/608), [docs](https://github.com/vorov2/dyalect/wiki/Dictionary#containsValue)).
   * Add: _Add a universal `ToLiteral` method_ ([Issue #607](https://github.com/vorov2/dyalect/issues/607)).

@@ -44,7 +44,7 @@ namespace Dyalect.Runtime.Types
         }
 
         protected internal virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
-            ctx.OperationNotSupported(Builtins.Set, ctx.RuntimeContext.Types[TypeId].TypeName);
+            ctx.OperationNotSupported(Builtins.Set, TypeId);
 
         protected internal virtual object? GetItem(string key) => null;
         protected internal virtual object? GetItem(long index) => null;

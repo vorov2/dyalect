@@ -48,14 +48,14 @@ namespace Dyalect.Runtime.Types
         {
             if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
-            return ctx.InvalidType(DyType.String, DyType.Char, right);
+            return base.GtOp(left, right, ctx);
         }
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
                 return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
-            return ctx.InvalidType(DyType.String, DyType.Char, right);
+            return base.LtOp(left, right, ctx);
         }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)

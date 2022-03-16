@@ -1,4 +1,5 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using Dyalect.Parser;
 
 namespace Dyalect.Runtime.Types
@@ -32,7 +33,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.String)
                 return ctx.RuntimeContext.String.Add(ctx, left, right);
 
-            return ctx.InvalidType(DyType.Integer, DyType.Char, DyType.String, right);
+            return base.AddOp(left, right, ctx);
         }
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -43,7 +44,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.Char)
                 return DyInteger.Get(left.GetChar() - right.GetChar());
 
-            return ctx.InvalidType(DyType.Integer, DyType.Char, right);
+            return base.SubOp(left, right, ctx);
         }
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -82,7 +83,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.String)
                 return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
 
-            return ctx.InvalidType(DyType.Char, DyType.String, right);
+            return base.GtOp(left, right, ctx);
         }
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -93,7 +94,7 @@ namespace Dyalect.Runtime.Types
             if (right.TypeId == DyType.String)
                 return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
 
-            return ctx.InvalidType(DyType.Char, DyType.String, right);
+            return base.LtOp(left, right, ctx);
         }
         #endregion
 
