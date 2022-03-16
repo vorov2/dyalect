@@ -1,4 +1,5 @@
-﻿using Dyalect.Runtime.Types;
+﻿using Dyalect.Compiler;
+using Dyalect.Runtime.Types;
 
 namespace Dyalect.Runtime
 {
@@ -90,7 +91,7 @@ namespace Dyalect.Runtime
 
         public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, string typeName)
         {
-            ctx.Error = new(DyErrorCode.OperationNotSupported, op, typeName);
+            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), typeName);
             return DyNil.Instance;
         }
 

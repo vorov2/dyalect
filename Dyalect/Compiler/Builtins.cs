@@ -6,6 +6,31 @@
         public static string Setter(string name) => $"{SET}{name}";
         public static bool IsSetter(string name) => name.StartsWith(SET);
         public static string GetSetterName(string name) => name[SET.Length..];
+        public static string Translate(string op) =>
+            op switch
+            {
+                Add => "+",
+                Sub => "-",
+                Mul => "*",
+                Div => "/",
+                Rem => "%",
+                Shl => "<<<",
+                Shr => ">>>",
+                And => "&&",
+                Or => "||",
+                Eq => "==",
+                Neq => "!=",
+                Gt => ">",
+                Lt => "<",
+                Gte => ">=",
+                Lte => "<=",
+                Not => "!",
+                Xor => "^^^",
+                BitNot => "~~~",
+                BitAnd => "&&&",
+                BitOr => "|||",
+                _ => op
+            };
 
         public const string OperatorSymbols = "?:+-*/%<>^=!~|";
 
@@ -29,6 +54,8 @@
         public const string Plus        = "__op_plus";
         public const string Not         = "__op_not";
         public const string BitNot      = "__op_bitcomp";
+        public const string BitAnd      = "__op_bitand";
+        public const string BitOr       = "__op_bitor";
         public const string Get         = "__op_get";
         public const string Set         = "__op_set";
         public const string Code        = "Code";

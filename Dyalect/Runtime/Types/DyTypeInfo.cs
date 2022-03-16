@@ -603,7 +603,7 @@ namespace Dyalect.Runtime.Types
                 "%" => Builtins.Rem,
                 "<<<" => Builtins.Shl,
                 ">>>" => Builtins.Shr,
-                "^" => Builtins.Xor,
+                "^^^" => Builtins.Xor,
                 "==" => Builtins.Eq,
                 "!=" => Builtins.Neq,
                 ">" => Builtins.Gt,
@@ -612,6 +612,8 @@ namespace Dyalect.Runtime.Types
                 "<=" => Builtins.Lte,
                 "!" => Builtins.Not,
                 "~~~" => Builtins.BitNot,
+                "|||" => Builtins.BitOr,
+                "&&&" => Builtins.BitAnd,
                 _ => name
             };
 

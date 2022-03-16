@@ -356,7 +356,6 @@ namespace Dyalect.Parser
 		} else if (la.kind == 68) {
 			Region(out node);
 		} else SynErr(108);
-		node = ProcessImplicits(node); 
 	}
 
 	void Import(out DImport node) {
