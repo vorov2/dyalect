@@ -1,4 +1,5 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
 
@@ -49,6 +50,44 @@ namespace Dyalect.Runtime.Types
             }
 
             return DyBool.True;
+        }
+
+        protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(true, left, right, ctx);
+
+        protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(false, left, right, ctx);
+
+        private DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (left.TypeId != right.TypeId)
+                return ctx.OperationNotSupported(gt ? Builtins.Gt : Builtins.Lt, left, right);
+
+            var xs = (DyTuple)left;
+            var ys = (DyTuple)right;
+            var len = xs.Count > ys.Count ? ys.Count : xs.Count;
+
+            for (var i = 0; i < len; i++)
+            {
+                var x = xs.GetValue(i);
+                var y = ys.GetValue(i);
+                var typ = ctx.RuntimeContext.Types[x.TypeId];
+                var res = gt ? typ.Gt(ctx, x, y) : typ.Lt(ctx, x, y);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                if (ReferenceEquals(res, DyBool.True))
+                    return DyBool.True;
+
+                res = typ.Eq(ctx, x, y);
+
+                if (ctx.HasErrors)
+                    return DyNil.Instance;
+
+                if (!ReferenceEquals(res, DyBool.True))
+                    return DyBool.False;
+            }
+
+            return DyBool.False;
         }
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);

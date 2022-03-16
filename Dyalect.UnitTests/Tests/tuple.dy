@@ -306,3 +306,23 @@
     takeMany(x: 1, y: 22)
     takeMany(args: (x: 1, y: 22))
 #endregion
+
+#region "Comparison 1"
+    assert(got: (0, 1) < (1, 0))
+    assert(got: (0, 12, 33, 98) < (0, 12, 33, 99))
+    assert(got: (0, 12, 33, 98, "foo") < (0, 12, 33, 99))
+    assert(false, (1, 2, 3, 1) < (1, 2, 2, 1024))
+#endregion
+
+#region "Comparison 2"
+    assert(got: (1, 0) > (0, 1))
+    assert(got: (0, 12, 33, 99) > (0, 12, 33, 98))
+    assert(got: (0, 12, 33, 99) > (0, 12, 33, 98, 1024))
+    assert(false, (1, 2, 2, 1024) > (1, 2, 3, 1))
+    try {
+        let _ = (0, 12, 33, 99) > (0, 12, "33", 98, 123)
+        assert(got: false)
+    } catch {
+        OperationNotSupported() => assert(got: true)
+    }
+#endregion
