@@ -590,3 +590,39 @@
         InvalidType() => assert(got: true)
     }
 #endregion
+
+#region "Initialization blocks 1"
+    type Nat(x) {
+        throw Error.InvalidValue(x) when x == 0
+        x = -x when x < 0 
+    }
+    func Nat as Integer => this.x
+    var x = Nat(12)
+    assert(12, x as Integer)
+    x = Nat(-24)
+    assert(24, x as Integer)
+    try {
+        x = Nat(0)
+        assert(got: false)
+    } catch {
+        InvalidValue(x) => assert(0, x)
+    }
+#endregion
+
+#region "Initialization blocks 2"
+    type Expr =
+        Literal(typ) {
+            if typ is not "num" and not "string" {
+                typ = "nil"
+            }
+        }
+        or Function(Integer args) {
+            if args < 0 {
+                args = 0
+            }
+        }
+    assert("num", Expr.Literal("num").typ)
+    assert("nil", Expr.Literal("char").typ)
+    assert(3, Expr.Function(3).args)
+    assert(0, Expr.Function(-5).args)
+#endregion

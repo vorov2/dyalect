@@ -19,6 +19,7 @@
   * Add: _Implement special notation for passing a tuple names elements to a function_ ([Issue #622](https://github.com/vorov2/dyalect/issues/622), [docs](https://github.com/vorov2/dyalect/wiki/Functions#variadic_functions)).
   * Add: _An ability to specify error message for `assert` function_ ([Issue #624](https://github.com/vorov2/dyalect/issues/624), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#assert)).
   * Add: _Consider comparison operations for tuples_ ([Issue #626](https://github.com/vorov2/dyalect/issues/626), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#operators)).
+  * Add: _Initialization blocks for types_ ([Issue #628](https://github.com/vorov2/dyalect/issues/628), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types#inits)).
   * Fix: _Correct errors for undefined types_ ([Issue #610](https://github.com/vorov2/dyalect/issues/610)).
   * Fix: _Test runner doesn't display file name in "onlyfailed" display mode_ ([Issue #614](https://github.com/vorov2/dyalect/issues/614)).
   * Fix: _`Dictionary.ToLiteral` is not implemented correctly_ ([Issue #623](https://github.com/vorov2/dyalect/issues/623)).
