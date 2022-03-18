@@ -183,7 +183,7 @@ namespace Dyalect.Parser
 		} else SynErr(104);
 	}
 
-	void Qualident(out string name, out Qualident? type) {
+	void Qualident(out string name, out Qualident type) {
 		name = null; type = null; string str1, str2 = null; 
 		if (la.kind == 1) {
 			Get();
@@ -402,7 +402,6 @@ namespace Dyalect.Parser
 				typ.Constructors.Add(f); 
 			} else {
 				Get();
-				var priv = false; 
 				Constructor(typ);
 				while (la.kind == 71) {
 					Get();
@@ -480,7 +479,7 @@ namespace Dyalect.Parser
 	}
 
 	void TypeAnnotation(out TypeAnnotation ta) {
-		string val = null; TypeAnnotation cta = null; 
+		TypeAnnotation cta = null; 
 		TypeName(out var qual);
 		if (la.kind == 72) {
 			Get();
@@ -827,7 +826,7 @@ namespace Dyalect.Parser
 		var f = new DFunctionDeclaration(t) { IsStatic = st, Getter = get, Setter = set };
 		functions.Push(f);
 		
-		Qualident(out var name, out Qualident? type);
+		Qualident(out var name, out Qualident type);
 		f.Name = name;
 		f.TypeName = type;
 		

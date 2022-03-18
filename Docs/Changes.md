@@ -1,3 +1,6 @@
+# 0.32.1
+  *
+
 # 0.32.0
   * Change: _Virtual machine optimizations._
   * Change: _Parser refactoring and optimization._
