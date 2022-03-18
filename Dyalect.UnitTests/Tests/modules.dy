@@ -14,8 +14,8 @@
     assert(true, TypeInfo(x) == Module)
     assert(true, x.GetType() == Module)
     var t = TypeInfo(x)
-    assert(10, t.Code)
-    assert("Module", t.Name)
+    assert(10, t.code)
+    assert("Module", t.name)
 #endregion
 
 #region "Member access 1"
@@ -99,12 +99,12 @@
 
 #region "External type name"
     var t = Foobar
-    assert("Foobar", t.Name)
+    assert("Foobar", t.name)
 #endregion
 
 #region "External type name (qual)"
     var t = lib.Foobar
-    assert("Foobar", t.Name)
+    assert("Foobar", t.name)
 #endregion
 
 #region "Constants"
@@ -159,7 +159,7 @@
 
 #region "Test external type"
     var t = lib1.Asset
-    assert("Asset", t.Name)
+    assert("Asset", t.name)
     var c = t.Computer("Acer", 4, 1)
     assert("Acer41", c.model+c.memory+c.rank)
     assert(true, c is lib1.Asset)

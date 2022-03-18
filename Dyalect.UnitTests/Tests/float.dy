@@ -30,8 +30,8 @@
     assert(true, TypeInfo(x) == Float)
     assert(true, x.GetType() == Float)
     var t = TypeInfo(x)
-    assert(3, t.Code)
-    assert("Float", t.Name)
+    assert(3, t.code)
+    assert("Float", t.name)
 #endregion
 
 #region "Methods: Parse"

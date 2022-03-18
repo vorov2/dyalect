@@ -58,8 +58,6 @@
         public const string BitOr       = "__op_bitor";
         public const string Get         = "__op_get";
         public const string Set         = "__op_set";
-        public const string Code        = "Code";
-        public const string Name        = "Name";
         public const string Len         = "Length";
         public const string ToStr       = "ToString";
         public const string ToLit       = "ToLiteral";

@@ -4,7 +4,7 @@
     assert(true, TypeInfo(x) == Foo)
     assert(true, x.GetType() == Foo)
     var t = TypeInfo(x)
-    assert("Foo", t.Name)
+    assert("Foo", t.name)
 #endregion
 
 #region "Methods: Clone"

@@ -428,8 +428,6 @@ namespace Dyalect.Runtime.Types
             {
                 "TypeInfo" => Func.Static(name, (c, obj) => c.RuntimeContext.Types[obj.TypeId], -1, new Par("value")),
                 Builtins.Has => Func.Member(name, Has, -1, new Par("member")),
-                Builtins.Code => Func.Auto(name, (ctx, self) => DyInteger.Get(((DyTypeInfo)self).ReflectedTypeId)),
-                Builtins.Name => Func.Auto(name, (ctx, self) => new DyString(((DyTypeInfo)self).TypeName)),
                 Builtins.DelMember => Func.Static(name,
                     (context, strObj) =>
                     {
