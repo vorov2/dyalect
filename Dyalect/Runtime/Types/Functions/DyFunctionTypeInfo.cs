@@ -44,9 +44,9 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "Compose" => Func.Member(name, Compose, -1, new Par("with")),
-                "Name" => Func.Auto(name, GetName),
-                "Parameters" => Func.Auto(name, GetParameters),
+                Method.Compose => Func.Member(name, Compose, -1, new Par("with")),
+                Method.Name => Func.Auto(name, GetName),
+                Method.Parameters => Func.Auto(name, GetParameters),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -65,12 +65,11 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
-        {
-            if (name == "Compose")
-                return Func.Static(name, Compose, -1, new Par("first"), new Par("second"));
-
-            return base.InitializeStaticMember(name, ctx);
-        }
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
+            name switch
+            {
+                Method.Compose => Func.Static(name, Compose, -1, new Par("first"), new Par("second")),
+                _ => base.InitializeStaticMember(name, ctx)
+            };
     }
 }

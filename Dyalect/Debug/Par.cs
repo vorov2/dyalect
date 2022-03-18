@@ -8,9 +8,9 @@ namespace Dyalect.Debug
         public readonly string Name;
         public readonly bool IsVarArg;
         public readonly DyObject? Value;
-        internal readonly Qualident? TypeAnnotation;
+        internal readonly TypeAnnotation? TypeAnnotation;
 
-        internal Par(string name, DyObject? val, bool isVarArg, Qualident? ta) =>
+        internal Par(string name, DyObject? val, bool isVarArg, TypeAnnotation? ta) =>
             (Name, Value, IsVarArg, TypeAnnotation) = (name, val, isVarArg, ta);
 
         internal Par(string name, DyObject? val, bool isVarArg) =>

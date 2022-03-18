@@ -88,3 +88,11 @@
     setOut()
     assert(["String", "true", "42"], xs)
 #endregion
+
+#region "assert"
+    try {
+        assert(expect: 1, got: 2, errorText: "Strange!!!")
+    } catch {
+        AssertionFailed(str) => assert("Strange!!!", str)
+    }
+#endregion

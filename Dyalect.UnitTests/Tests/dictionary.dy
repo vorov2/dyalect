@@ -1,10 +1,17 @@
-﻿#region "Constructor"
+﻿#region "Constructor 1"
     let xs = Dictionary(
         (x: 1, y: 2, z: "foo")
     )
     assert(1, xs["x"])
     assert(2, xs["y"])
     assert("foo", xs["z"])
+#endregion
+
+#region "Constructor 2"
+    let xs = Dictionary (foo: 42, "best key": true, bar: "string value")
+    assert(42, xs.foo)
+    assert(true, xs["best key"])
+    assert("string value", xs.bar)
 #endregion
 
 #region "Methods: GetType"
@@ -33,7 +40,7 @@
     assert("bar", map.bar)
 #endregion
 
-#region "Methods: add"
+#region "Methods: Add"
     var map = Dictionary()
     map.Add("x", 1)
     map.Add("y", 2)
@@ -113,24 +120,15 @@
     xs.Add("foo", 1)
     xs.Add("bar", nil)
     xs.Add("zoo", 2)
-    var res = xs.Compact()
-    assert(2, res.Length())
-    assert(1, res.foo)
-    assert(2, res.zoo)
-    res = xs.Compact(v => {
-        if !v {
-            42
-        } else if v > 1 {
-            v
-        }
+    xs.Compact()
+    assert(2, xs.Length())
+    assert(1, xs.foo)
+    assert(2, xs.zoo)
+    xs.Compact(v => {
+        v && v > 1 ? false : true
     })
-    assert(2, res.Length())
-    assert(2, res.zoo)
-    assert(42, res.bar)
-    let data = Dictionary.FromTuple(("a": "1", "b": "three", "c": "4?"))
-    res = data.Compact(Integer.Parse)
-    assert(1, res.Length())
-    assert(1, res["a"])
+    assert(1, xs.Length())
+    assert(2, xs.zoo)
 #endregion
 
 #region "Methods: ToTuple"
@@ -162,7 +160,20 @@
     assert(true, map.Contains((1,2)))
 #endregion
 
+#region "Methods: ContainsValue"
+    var map = Dictionary.FromTuple ((x: 1, y: 2))
+    assert(true, map.ContainsValue(2))
+    assert(false, map.ContainsValue(22))
+#endregion
+
+#region "Methods: GetAndRemove"
+    var map = Dictionary.FromTuple ((x: 1, y: 2))
+    let x = map.GetAndRemove("x")
+    assert(1, x)
+    assert(1, map.Length())
+#endregion
+
 #region "Conversion: as"
     let xs = Dictionary.FromTuple ((x: 1, y: 2))
-    assert("Dictionary (x = 1, y = 2)", xs as String)
+    assert("Dictionary (x: 1, y: 2)", xs as String)
 #endregion

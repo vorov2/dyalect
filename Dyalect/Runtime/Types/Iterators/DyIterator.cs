@@ -61,7 +61,7 @@ namespace Dyalect.Runtime.Types
 
                 if (iter is null)
                 {
-                    ctx.InvalidType(obj);
+                    ctx.InvalidType(DyType.Function, obj);
                     return null;
                 }
             }
@@ -76,7 +76,7 @@ namespace Dyalect.Runtime.Types
 
                 if (iter is null)
                 {
-                    ctx.InvalidType(val);
+                    ctx.InvalidType(DyType.Iterator, val);
                     return null;
                 }
 

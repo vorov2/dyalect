@@ -28,11 +28,6 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(count);
         }
 
-        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
-        {
-            return base.SetOp(self, index, value, ctx);
-        }
-
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right is DyModule mod)

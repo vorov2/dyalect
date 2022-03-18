@@ -3,7 +3,7 @@
     internal sealed class DyNilTypeInfo : DyTypeInfo
     {
         protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
+            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Lit;
 
         public override string TypeName => DyTypeNames.Nil;
 
@@ -14,15 +14,16 @@
 
         protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString("nil");
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(DyNil.Literal);
 
-        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
-        {
-            if (name is "Nil" or "Default")
-                return Func.Static(name, _ => DyNil.Instance);
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, ctx);
 
-            return base.InitializeStaticMember(name, ctx);
-        }
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
+            name switch
+            {
+                Method.Nil or Method.Default => Func.Static(name, _ => DyNil.Instance),
+                _ => base.InitializeStaticMember(name, ctx)
+            };
 
         protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
             targetType.ReflectedTypeId switch

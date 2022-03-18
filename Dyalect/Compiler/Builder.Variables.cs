@@ -14,6 +14,91 @@ namespace Dyalect.Compiler
 
         private bool privateScope; //Identifies that a current scope is private
 
+        //TODO: work..
+        private void CrawlVariables(DNode? node, HashSet<string> vars)
+        {
+            if (node is null)
+                return;
+
+            switch (node.NodeType)
+            {
+                case NodeType.Assignment:
+                    CrawlVariables(((DAssignment)node).Target, vars);
+                    CrawlVariables(((DAssignment)node).Value, vars);
+                    break;
+                case NodeType.Binary:
+                    CrawlVariables(((DBinaryOperation)node).Left, vars);
+                    CrawlVariables(((DBinaryOperation)node).Right, vars);
+                    break;
+                case NodeType.If:
+                    CrawlVariables(((DIf)node).Condition, vars);
+                    CrawlVariables(((DIf)node).True, vars);
+                    CrawlVariables(((DIf)node).False, vars);
+                    break;
+                case NodeType.Name:
+                    vars.Add(((DName)node).Value);
+                    break;
+                case NodeType.Unary:
+                    CrawlVariables(((DUnaryOperation)node).Node, vars);
+                    break;
+                case NodeType.Application:
+                    {
+                        CrawlVariables(((DApplication)node).Target, vars);
+                        foreach (var a in ((DApplication)node).Arguments)
+                            CrawlVariables(a, vars);
+                    }
+                    break;
+                case NodeType.Return:
+                    CrawlVariables(((DReturn)node).Expression, vars);
+                    break;
+                case NodeType.Index:
+                    CrawlVariables(((DIndexer)node).Target, vars);
+                    CrawlVariables(((DIndexer)node).Index, vars);
+                    break;
+                case NodeType.Tuple:
+                    {
+                        foreach (var n in ((DTupleLiteral)node).Elements)
+                            CrawlVariables(n, vars);
+                    }
+                    break;
+                case NodeType.Array:
+                    {
+                        foreach (var n in ((DArrayLiteral)node).Elements)
+                            CrawlVariables(n, vars);
+                    }
+                    break;
+                case NodeType.Iterator:
+                    CrawlVariables(((DIteratorLiteral)node).YieldBlock, vars);
+                    break;
+                case NodeType.YieldBlock:
+                    {
+                        foreach (var n in ((DYieldBlock)node).Elements)
+                            CrawlVariables(n, vars);
+                    }
+                    break;
+                case NodeType.Range:
+                    CrawlVariables(((DRange)node).From, vars);
+                    CrawlVariables(((DRange)node).Step, vars);
+                    CrawlVariables(((DRange)node).To, vars);
+                    break;
+                case NodeType.Access:
+                    CrawlVariables(((DAccess)node).Target, vars);
+                    break;
+                case NodeType.Yield:
+                    CrawlVariables(((DYield)node).Expression, vars);
+                    break;
+                case NodeType.YieldMany:
+                    CrawlVariables(((DYieldMany)node).Expression, vars);
+                    break;
+                case NodeType.Throw:
+                    CrawlVariables(((DThrow)node).Expression, vars);
+                    break;
+                case NodeType.As:
+                    CrawlVariables(((DAs)node).Expression, vars);
+                    break;
+            }
+        }
+
         private CompilerError VariableExists(string name)
         {
             var err = GetVariable(name, currentScope, out _);
@@ -28,7 +113,7 @@ namespace Dyalect.Compiler
         {
             var err = GetVariable(name, currentScope, out var sv);
 
-            if (err is not CompilerError.None)
+            if (err == CompilerError.UndefinedVariable)
             {
                 if (string.IsNullOrEmpty(name))
                     return;
@@ -36,13 +121,16 @@ namespace Dyalect.Compiler
                 if (char.IsUpper(name[0]))
                 {
                     var ti = DyType.GetTypeCodeByName(name);
-                    
+
                     if (ti != 0)
                     {
                         AddLinePragma(loc);
                         cw.Type(ti);
-                        return;
                     }
+                    else
+                        AddError(CompilerError.UndefinedType, loc, name);
+
+                    return;
                 }
 
                 AddError(err, loc, name);

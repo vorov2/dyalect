@@ -2,7 +2,7 @@
 {
     public class BuildMessage
     {
-        private const string ERR_FORMAT = "{0}({1},{2}): {3} Dy{4}: {5}";
+        private const string ERR_FORMAT = "{0}({1},{2}): {3} D{4}: {5}";
 
         public BuildMessage(string message, BuildMessageType type, int code, int line, int col, string? file)
         {

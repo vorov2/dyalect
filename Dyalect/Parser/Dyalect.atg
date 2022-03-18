@@ -5,7 +5,9 @@ CHARACTERS
     lf = '\n'.
     newLine = cr + lf.
     tab = '\t'.
-    letter = 'A' .. 'Z' + 'a' .. 'z' + '_'.
+    letter = 'A' .. 'Z' + 'a' .. 'z' + "_".
+    ucase = 'A' .. 'Z'.
+    lcase = 'a' .. 'z' + "_".
     digit = "0123456789".
     notDigit = ANY - digit.
     hexDigit = digit + "ABCDEFabcdef".
@@ -17,7 +19,9 @@ CHARACTERS
     printable = digit + letter + "(\"\\'".
 
 TOKENS
-    identToken  = letter { letter | digit } | "_" letter { letter | digit  }.
+    ucaseToken = ucase { letter | digit }.
+
+    lcaseToken = lcase { letter | digit } | "_" lcase { letter | digit  } | "_".
 
     directive = "#" (letter { letter | digit } | "_" letter { letter | digit  }).
 
@@ -94,15 +98,61 @@ PRODUCTIONS
     StandardOperators = "+" | "-" | "*" | "/" | "%" | "|||" | "&&&" | "!"
         | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^^^" | "<<<" | ">>>" | "~~~".
 
-    FunctionName = identToken | StandardOperators.
+    FunctionName = Identifier | StandardOperators.
 
-    Qualident<out string s1, out string s2, out string s3> =
-        (. s1 = null; s2 = null; s3 = null; .)
-        FunctionName (. s1 = t.val; .)
-        [
-            ["."] FunctionName  (. s2 = t.val; .)
-            [ ["."] FunctionName (. s3 = t.val; .) ]
-        ].
+    Identifier = lcaseToken | ucaseToken.
+
+    Qualident<out string name, out Qualident? type> =
+        (. name = null; type = null; string str1, str2 = null; .)
+        (
+            (
+                ucaseToken (. str1 = t.val; .) 
+                [ 
+                    (
+                        "." FunctionName (. name = t.val; .) 
+                        [ 
+                            "." Identifier (. str2 = t.val; .) 
+                            | StandardOperators (. str2 = t.val; .)
+                        ] 
+                    )
+                    | StandardOperators (. name = t.val; .)
+                ]
+                (.
+                    if (str2 is null)
+                        type = new Qualident(str1);
+                    else
+                    {
+                        type = new Qualident(name, str1);
+                        name = str2;
+                    }
+                .)
+            )
+            |
+            (
+                lcaseToken (. str1 = t.val; .) 
+                [ 
+                    (
+                        "." FunctionName (. name = t.val; .) 
+                        [ 
+                            "." Identifier (. str2 = t.val; .) 
+                            | StandardOperators (. str2 = t.val; .)
+                        ] 
+                    )
+                    | StandardOperators (. name = t.val; .)
+                ]
+                (.
+                    if (name is null)
+                        name = str1;
+                    else if (str2 is null)
+                        type = new Qualident(str1);
+                    else
+                    {
+                        type = new Qualident(name, str1);
+                        name = str2;
+                    }
+                .)
+            )
+        ).
 
     ImportToken<out string str> =
         (. str = ""; .)
@@ -110,9 +160,9 @@ PRODUCTIONS
             stringToken (. str = ParseSimpleString(); .)
             |
             (
-                identToken (. str = t.val; .)
+                Identifier (. str = t.val; .)
                 {
-                    "." identToken
+                    "." Identifier
                     (. str += string.Concat(".", t.val); .)
                 }
             )
@@ -122,7 +172,7 @@ PRODUCTIONS
         (. string name = null; node = null; .)
         (
             "#region" (. var ot = t; .) 
-            ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
+            ( Identifier (. name = t.val; .) | stringToken (. name = ParseSimpleString(); .) )
             (.
                 var block = new DBlock(default);
                 var imports = new List<DImport>();
@@ -179,23 +229,53 @@ PRODUCTIONS
             var typ = new DTypeDeclaration(t);
             node = typ;
         .)
-        identToken (. typ.Name = t.val; node = typ; .)
+        Identifier (. typ.Name = t.val; node = typ; .)
         [
             (
                 (. f = new DFunctionDeclaration(t) { Name = typ.Name, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; .)
-                TypeArguments<f>
+                TypeArguments<f> [ Block<out var b> (. f.Body = b; .) ]
                 (. typ.Constructors.Add(f); .)
             )
             |
             (
                 "=" (. var priv = false; .)
-                (
-                    [ "private" (. priv = true; .) ] identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsPrivate = priv, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f); .) TypeArguments<f>
-                    { "or" [ "private" (. priv = true; .) ] identToken (. f = new DFunctionDeclaration(t) { Name = t.val, IsPrivate = priv, IsStatic = true, IsConstructor = true, TypeName = new Qualident(typ.Name) }; typ.Constructors.Add(f);.) TypeArguments<f> }
-                )
+                Constructor<typ> { "or" Constructor<typ> }
             )
         ].
-        
+
+    Constructor<DTypeDeclaration typ> =
+        (. var priv = false; .)
+        (
+            [ "private" (. priv = true; .) ]
+            Identifier
+            (.
+                var f = new DFunctionDeclaration(t) {
+                    Name = t.val,
+                    IsPrivate = priv,
+                    IsStatic = true, 
+                    IsConstructor = true,
+                    TypeName = new Qualident(typ.Name) 
+                }; 
+                typ.Constructors.Add(f);
+            .) 
+            TypeArguments<f>
+            [ Block<out var b> (. f.Body = b; .) ]
+        ).
+
+    TypeName<out Qualident qual> =
+        (. string val; qual = null; .)
+        (
+            ucaseToken (. qual = new Qualident(t.val); .)
+            | lcaseToken (. val = t.val; .) "." ucaseToken (. qual = new Qualident(t.val, val); .)
+        ).
+
+    TypeAnnotation<out TypeAnnotation ta> =
+        (. string val = null; TypeAnnotation cta = null; .)
+        (
+            TypeName<out var qual> [ "|" TypeAnnotation<out cta> ]
+            (. ta = new TypeAnnotation(qual, cta); .)
+        ).
+
     TypeArguments<DFunctionDeclaration node> =
         "("
             [
@@ -205,26 +285,11 @@ PRODUCTIONS
         ")".
         
     TypeArgument<out DParameter arg> =
-        (. arg = null; var mut = false; .)
+        (. arg = null; var mut = false; TypeAnnotation ta = null; .)
         [ "var" (. mut = true; .) | "let" ]
-        identToken
-        (. var ot = t; string str = t.val; .)
-        [
-            (
-                identToken 
-                (. arg = new DTypeParameter(ot) { Name = t.val, TypeAnnotation = new Qualident(str), Mutable = mut}; .)
-            )
-            |
-            (
-                "." identToken (. var ta = new Qualident(t.val, str); .)
-                identToken
-                (. arg = new DTypeParameter(ot) { Name = t.val, TypeAnnotation = ta, Mutable = mut }; .)
-            )
-        ]
-        (.
-            if (arg is null)
-                arg = new DTypeParameter(ot) { Name = str, Mutable = mut };
-        .)
+        [ IF (IsTypeName()) TypeAnnotation<out ta> ]
+        lcaseToken
+        (. arg = new DTypeParameter(t) { Name = t.val, TypeAnnotation = ta, Mutable = mut }; .)
         [
             "=" Control<out var cnode>
             (. arg.DefaultValue = cnode; .)
@@ -246,8 +311,7 @@ PRODUCTIONS
             | Function<out node>
             | Directive<out node> Separator
             | Region<out node>
-        )
-        (. node = ProcessImplicits(node); .).
+        ).
 
     Guard<DNode src, out DNode node> =
         (. node = src; .)
@@ -255,7 +319,6 @@ PRODUCTIONS
             (. var ot = t; .)
             "when" Expr<out var cnode>
             (. var @if = new DIf(ot) { Condition = cnode, True = src }; node = @if; .)
-            [ "else" Assignment<out cnode> (. @if.False = cnode; .) ]
         ).
 
     PrivateScope<out DNode node> =
@@ -311,7 +374,7 @@ PRODUCTIONS
                     | charToken (. pp.Attributes.Add(ParseChar()); .)
                     | "true" (. pp.Attributes.Add(true); .)
                     | "false" (. pp.Attributes.Add(false); .)
-                    | identToken (. pp.Attributes.Add(t.val); .)
+                    | Identifier (. pp.Attributes.Add(t.val); .)
                 )
             }
         ).
@@ -355,42 +418,20 @@ PRODUCTIONS
                 var f = new DFunctionDeclaration(t) { IsStatic = st, Getter = get, Setter = set };
                 functions.Push(f);
             .)
-            Qualident<out var s1, out var s2, out var s3>
+            Qualident<out var name, out Qualident? type>
             (.
-                if (s2 == null && s3 == null)
-                    f.Name = s1;
-                else if (s3 == null)
-                {
-                    f.Name = s2;
-                    f.TypeName = new Qualident(s1);
-                }
-                else
-                {
-                    f.Name = s3;
-                    f.TypeName = new Qualident(s2, s1);
-                }
+                f.Name = name;
+                f.TypeName = type;
             .)
             (
                 (
                     "["
-                        (.
-                            f.IsIndexer = true;
-                        .)
-                        [
-                            FunctionArgument<out var arg> (. f.Parameters.Add(arg); .)
-                            { "," FunctionArgument<out arg> (. f.Parameters.Add(arg); .) }
-                        ]
-                        (.
-                            if (f.TypeName is null)
-                                f.TypeName = new Qualident(f.Name);
-                            else
-                                f.TypeName = new Qualident(f.Name, f.TypeName.Local);
-
-                            f.Name = set ? "__op_set" : "__op_get";
-                        .)
+                        (. f.IsIndexer = true; .)
+                        [ FunctionParameters<f> ]
+                        (. f.Name = set ? "__op_set" : "__op_get"; .)
                     "]"
                 )
-                | FunctionArguments<f>
+                | "(" [ FunctionParameters<f> ] ")"
                 |
                 (
                     "as"
@@ -402,13 +443,8 @@ PRODUCTIONS
                         else
                             f.TypeName = new Qualident(f.Name);
                         f.Name = null;
-
-                        string str1, str2 = null;
                     .)
-                    identToken (. str1 = t.val; .) [ "." identToken (. str2 = t.val; .) ]
-                    (.
-                        f.TargetTypeName = str2 is null ? new Qualident(str1) : new Qualident(str1, str2);
-                    .)
+                    TypeName<out var qual> (. f.TargetTypeName = qual; .)
                 )
             )
             ( Block<out node> | "=>" FunctionStatement<out node> )
@@ -429,48 +465,27 @@ PRODUCTIONS
             | Assignment<out node> [ Guard<node, out node> ] Separator
             | If<out node> [ Guard<node, out node> Separator ]
             | Loops<out node> [ Guard<node, out node> Separator ]
-        )
-        (. node = ProcessImplicits(node); .).
+        ).
 
-    FunctionArgument<out DParameter arg> =
-        (. arg = null; .)
-        identToken
-        (. var ot = t; string str = t.val; .)
-        [
-            (
-                identToken
-                (. arg = new DParameter(ot) { Name = t.val, TypeAnnotation = new Qualident(str) }; .)
-            )
-            |
-            (
-                "." identToken (. var ta = new Qualident(t.val, str); .)
-                identToken
-                (. arg = new DParameter(ot) { Name = t.val, TypeAnnotation = ta }; .)
-            )
-        ]
-        (.
-            if (arg is null)
-                arg = new DParameter(ot) { Name = str };
-        .)
-        [
-            "=" Control<out var cnode>
-            (. arg.DefaultValue = cnode; .)
-        ]
-        [ "..." (. arg.IsVarArgs = true; .) ].
+    FunctionParameter<out DParameter arg> =
+        (. TypeAnnotation ta = null; .)
+        (
+            [ IF(IsTypeName()) TypeAnnotation<out ta> ]
+            lcaseToken
+            (. arg = new DParameter(t) { Name = t.val, TypeAnnotation = ta }; .)
+            [ "=" Control<out var cnode> (. arg.DefaultValue = cnode; .) ]
+            [ "..." (. arg.IsVarArgs = true; .) ]
+        ).
 
-    FunctionArguments<DFunctionDeclaration node> =
-        "("
-            [
-                FunctionArgument<out var arg> (. node.Parameters.Add(arg); .)
-                { "," FunctionArgument<out arg> (. node.Parameters.Add(arg); .) }
-            ]
-        ")".
+    FunctionParameters<DFunctionDeclaration node> =
+        FunctionParameter<out var arg> (. node.Parameters.Add(arg); .)
+        { "," FunctionParameter<out arg> (. node.Parameters.Add(arg); .) }.
 
     Binding<out DNode node> =
         (. node = null; .)
         (
             (
-                ( "var" | "let" | "const" (. Deprecated("const"); .) | "lazy" )
+                ( "var" | "let" | "lazy" )
                 (. var bin = new DBinding(t) { Constant = t.val == "let", Lazy = t.val == "lazy" }; .)
                 OrPattern<out var pat> (. bin.Pattern = pat; .)
                 [
@@ -506,8 +521,7 @@ PRODUCTIONS
             | Expr<out node>
             | Loops<out node>
             | Match<out node>
-        )
-        (. node = ProcessImplicits(node); .).
+        ).
 
     //Patterns
     Match<out DNode node> =
@@ -609,7 +623,7 @@ PRODUCTIONS
                 if (la.AfterEol) { node = target; return; }
                 var asp = new DAsPattern(t) { Pattern = target };
             .)
-            identToken (. asp.Name = t.val; node = asp; .)
+            Identifier (. asp.Name = t.val; node = asp; .)
         ).
 
     MethodCheckPattern<out DPattern node> =
@@ -617,13 +631,13 @@ PRODUCTIONS
             (. var name = ""; .)
             "."
             (
-                identToken (. name = t.val; .)
+                Identifier (. name = t.val; .)
                 |
                 (
                     "("
                         (
-                            "-" | "+" | "*" | "/" | "==" | "!=" | "^" | "<" | ">" | ">=" | "<=" | "!" | "%" 
-                            | "<<<" | ">>>" | "~~~" 
+                            "-" | "+" | "*" | "/" | "==" | "!=" | "^^^" | "<" | ">" | ">=" | "<=" | "!" | "%" 
+                            | "<<<" | ">>>" | "~~~" | "|||" | "&&&"
                         )
                         (. name = t.val; .)
                     ")"
@@ -672,7 +686,7 @@ PRODUCTIONS
     LabelPattern<out DPattern node> =
         (. node = null; .)
         (
-            identToken
+            Identifier
             (. var la = new DLabelPattern(t) { Label = t.val }; .)
             ":" Pattern<out var pat>
             (. la.Pattern = pat; node = la; .)
@@ -681,10 +695,10 @@ PRODUCTIONS
     NamePattern<out DPattern node> =
         (. node = null; Token ot = null; string mod = null; string typ = null; string nam = null;.)
         (
-            identToken (. nam = t.val; ot = t; .)
+            Identifier (. nam = t.val; ot = t; .)
             [
-                "." identToken (. typ = nam; nam = t.val; .)
-                [ "." identToken (. mod = typ; typ = nam; nam = t.val; .) ]
+                "." Identifier (. typ = nam; nam = t.val; .)
+                [ "." Identifier (. mod = typ; typ = nam; nam = t.val; .) ]
             ]
             [
                 (.
@@ -835,7 +849,8 @@ PRODUCTIONS
         (.
             var ot = t;
             node = null;
-            functions.Peek().IsIterator = true;
+            if (functions.Count > 0)
+                functions.Peek().IsIterator = true;
         .)
         (
             ( "break" (. node = new DYieldBreak(ot); .) )
@@ -924,7 +939,7 @@ PRODUCTIONS
                 )
                 |
                 (
-                    identToken (. tc.BindVariable = new DName(t) { Value = t.val }; .)
+                    Identifier (. tc.BindVariable = new DName(t) { Value = t.val }; .)
                     Block<out node> (. tc.Catch = node; .)
                 )
             )
@@ -939,8 +954,8 @@ PRODUCTIONS
         (
             (
 
-                  ( FunctionArgument<out var a> (. f.Parameters.Add(a); .) )
-                | FunctionArguments<f>
+                 ( FunctionParameter<out var a> (. f.Parameters.Add(a); .) )
+                | "(" [ FunctionParameters<f> ] ")"
             )
             (. functions.Push(f); .)
             "=>" Expr<out var exp>
@@ -1132,7 +1147,7 @@ PRODUCTIONS
             {
                 (. var @as = new DAs(t) { Expression = node }; string s1, s2 = null; .)
                 "as"
-                identToken (. s1 = t.val; .) [ "." identToken (. s2 = t.val; .) ]
+                Identifier (. s1 = t.val; .) [ "." Identifier (. s2 = t.val; .) ]
                 (.
                     @as.Expression = node;
                     @as.TypeName = s2 is null ? new Qualident(s1) : new Qualident(s1, s2);
@@ -1195,7 +1210,7 @@ PRODUCTIONS
                     (
                         "."
                         (. var ot = t; .)
-                        identToken
+                        Identifier
                         (.
                             var fld = new DAccess(ot) { Target = node };
                             fld.Name = t.val;
@@ -1247,7 +1262,6 @@ PRODUCTIONS
         (. node = null; .)
         (
               Name<out node>
-            | SpecialName<out node>
             | Integer<out node>
             | Float<out node>
             | String<out node>
@@ -1279,7 +1293,7 @@ PRODUCTIONS
         (. bool mut = false; node = null; var name = ""; var fromStr = false; .)
         (
             [ "var" (. mut = true; .) | "let" ]
-            ( identToken (. name = t.val; .) | stringToken (. name = ParseSimpleString(); fromStr = true; .) )
+            ( Identifier (. name = t.val; .) | stringToken (. name = ParseSimpleString(); fromStr = true; .) )
             ":" (. var ot = t; .)
             (
                   IF (IsFunction()) Lambda<out node>
@@ -1336,20 +1350,8 @@ PRODUCTIONS
 
     Name<out DNode node> =
         (
-            (identToken | "private")
+            (Identifier | "private")
             (. node = new DName(t) { Value = t.val }; .)
-        ).
-
-    SpecialName<out DNode node> =
-        (
-            implicitToken
-            (.
-                var nm = int.Parse(t.val.Substring(1));
-                node = new DName(t) { Value = "p" + nm };
-                if (implicits == null)
-                    implicits = new List<int>();
-                implicits.Add(nm);
-            .)
         ).
 
     Nil<out DNode node> = "nil" (. node = new DNilLiteral(t); .).

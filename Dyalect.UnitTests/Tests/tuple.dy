@@ -264,6 +264,19 @@
     }
 #endregion
 
+#region "Methods: ToLiteral"
+    let xs = (x: 1, "Fo obj": 'c')
+    assert("(x: 1, \"Fo obj\": 'c')", xs.ToLiteral())
+#endregion
+
+#region "Methods: Compact"
+    let xs = (1, nil, 2, 3, nil, 4)
+    var ys = xs.Compact()
+    assert((1,2,3,4), ys)
+    ys = xs.Compact(x => !x || x < 3)
+    assert((3,4), ys)
+#endregion
+
 #region "Exceptions with tuples"
     let xs = (x: 1, y: 2)
     try {
@@ -283,4 +296,33 @@
     assert([1,2,3], xs as Array)
     assert("(1, 2, 3)", xs as String)
     assert(true, xs as Bool)
+#endregion
+
+#region "Tuple as argument"
+    func takeMany(args...) {
+        assert(1, args.x)
+        assert(22, args.y)
+    }
+    takeMany(x: 1, y: 22)
+    takeMany(args: (x: 1, y: 22))
+#endregion
+
+#region "Comparison 1"
+    assert(got: (0, 1) < (1, 0))
+    assert(got: (0, 12, 33, 98) < (0, 12, 33, 99))
+    assert(got: (0, 12, 33, 98, "foo") < (0, 12, 33, 99))
+    assert(false, (1, 2, 3, 1) < (1, 2, 2, 1024))
+#endregion
+
+#region "Comparison 2"
+    assert(got: (1, 0) > (0, 1))
+    assert(got: (0, 12, 33, 99) > (0, 12, 33, 98))
+    assert(got: (0, 12, 33, 99) > (0, 12, 33, 98, 1024))
+    assert(false, (1, 2, 2, 1024) > (1, 2, 3, 1))
+    try {
+        let _ = (0, 12, 33, 99) > (0, 12, "33", 98, 123)
+        assert(got: false)
+    } catch {
+        OperationNotSupported() => assert(got: true)
+    }
 #endregion

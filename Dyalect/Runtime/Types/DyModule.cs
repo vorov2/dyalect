@@ -35,10 +35,10 @@ namespace Dyalect.Runtime.Types
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId != DyType.String)
-                return ctx.InvalidType(index);
+                return ctx.IndexOutOfRange(index);
 
             if (!TryGetMember(index.GetString(), ctx, out var value))
-                return ctx.IndexOutOfRange();
+                return ctx.IndexOutOfRange(index);
 
             return value!;
         }

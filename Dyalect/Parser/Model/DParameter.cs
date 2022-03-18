@@ -11,7 +11,7 @@ namespace Dyalect.Parser.Model
 
         public DNode? DefaultValue { get; set; }
 
-        public Qualident? TypeAnnotation { get; set; }
+        public TypeAnnotation? TypeAnnotation { get; set; }
 
         public bool IsVarArgs { get; set; }
 

@@ -57,7 +57,7 @@
     assert(res, "result=27")
 #endregion
 
-#region "Methods: getType"
+#region "Methods: GetType"
     let x = x => x
     assert(true, TypeInfo(x) == Function)
     assert(true, x.GetType() == Function)
@@ -72,7 +72,11 @@
     }
 
     func set Array.First(val) {
-        this.Add(val) when this.Length() == 0 else this[0] = val
+        if this.Length() is 0 {
+            this.Add(val) 
+        } else {
+            this[0] = val
+        }
     }
     
     let xs = [1,2,3]
@@ -236,12 +240,6 @@
     assert(12, f(12))
 #endregion
 
-#region "Implicit function"
-    var f = $0 ?? 22
-    assert(12, f(12))
-    assert(22, f(0))
-#endregion
-
 #region "Caller and current"
     func foo() {
         assert("foo", current().Name)
@@ -283,12 +281,6 @@
     }
     var s = bar()
     assert("foo is called by bar", s)
-#endregion
-
-#region "Implicit as statement"
-    //Bug #294
-    $0 + $1
-    assert(got: true)
 #endregion
 
 #region "Complex variadic"
@@ -547,13 +539,54 @@
     }
 #endregion
 
+#region "Type annotations 3"
+    func test(Float x) { }
+    test(1.0)
+    assert(got: true)
+    try {
+        test(1)
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+#endregion
+
+#region "Complex type annotations 1"
+    func test(String|Char c) {
+        return c.ToString()
+    }
+    assert("Foo", test("Foo"))
+    assert("F", test('F'))
+    try {
+        test(12)
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+#endregion
+
+#region "Complex type annotations 2"
+    import refs/libtest
+    func test(libtest.Foobar|Integer x) {
+        match x {
+            Integer => assert(got: true),
+            libtest.Foobar => assert(got: true),
+            _ => assert(got: false)
+        }
+    }
+    test(libtest.Foobar(1, 2))
+    test(12)
+    try {
+        test(true)
+        assert(got: false)
+    } catch {
+        InvalidType() => assert(got: true)
+    }
+#endregion
+
 #region "Mutual recursion 1"
-    func f(x) {
-        g(x - 1) when x > 0 else x
-    }
-    and g(x) {
-        f(x - 1) when x > 0 else x
-    }
+    func f(x) => x > 0 ? g(x - 1) : x
+    and g(x) => x > 0 ? f(x - 1) : x
     assert(0, f(1))
     assert(-1, f(-1))
 #endregion

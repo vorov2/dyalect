@@ -16,7 +16,7 @@
     assert(nil, res)
 
     func safeDiv3(x, y) {
-        0 when y is 0 else x / y
+        y is 0 ? 0 : x / y
     }
     assert(5, safeDiv3(10, 2))
     assert(0, safeDiv3(10, 0))
@@ -36,27 +36,6 @@
     let (x, y) = (1, 2)
     set (x, y) = (12, 14) when x > 0 && y > 1
     assert((12, 14), (x, y))
-#endregion
-
-#region "Guards 4"
-    let (x, y) = (1, 2)
-    var res
-    if x < 2 { res = "x < 2" } when y > 10 else { res = "y < 10" }
-    assert("y < 10", res)
-#endregion
-
-#region "Guards 5"
-    func fib(n) =>
-        n when n < 2 else fib(n - 1) + fib(n - 2)
-    assert(89, fib(11))
-#endregion
-
-#region "Guards 6"
-    var x = 1
-    var y = 42
-    x = y when y > 42 else y = 84
-    assert(1, x)
-    assert(84, y)
 #endregion
 
 #region "Return from method"

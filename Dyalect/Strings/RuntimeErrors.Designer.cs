@@ -79,20 +79,20 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assert failed..
+        ///   Looks up a localized string similar to Assertion failed..
         /// </summary>
-        internal static string AssertFailed_0 {
+        internal static string AssertionFailed_0 {
             get {
-                return ResourceManager.GetString("AssertFailed.0", resourceCulture);
+                return ResourceManager.GetString("AssertionFailed.0", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assert failed: {0}..
+        ///   Looks up a localized string similar to Assertion failed. {0}.
         /// </summary>
-        internal static string AssertFailed_1 {
+        internal static string AssertionFailed_1 {
             get {
-                return ResourceManager.GetString("AssertFailed.1", resourceCulture);
+                return ResourceManager.GetString("AssertionFailed.1", resourceCulture);
             }
         }
         
@@ -241,6 +241,42 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected type &quot;{0}&quot;, got type &quot;{1}&quot; instead..
+        /// </summary>
+        internal static string InvalidType_2 {
+            get {
+                return ResourceManager.GetString("InvalidType.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected type &quot;{0}&quot; or &quot;{1}&quot;, got type &quot;{2}&quot; instead..
+        /// </summary>
+        internal static string InvalidType_3 {
+            get {
+                return ResourceManager.GetString("InvalidType.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected type &quot;{0}&quot;, &quot;{1}&quot; or &quot;{2}&quot;, got type &quot;{3}&quot; instead..
+        /// </summary>
+        internal static string InvalidType_4 {
+            get {
+                return ResourceManager.GetString("InvalidType.4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected type &quot;{0}&quot;, &quot;{1}&quot;, &quot;{2}&quot; or &quot;{3}&quot;, got type &quot;{4}&quot; instead..
+        /// </summary>
+        internal static string InvalidType_5 {
+            get {
+                return ResourceManager.GetString("InvalidType.5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Value is invalid..
         /// </summary>
         internal static string InvalidValue_0 {
@@ -349,6 +385,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Operation &quot;{0}&quot; is not supported for the types &quot;{1}&quot; and &quot;{2}&quot;..
+        /// </summary>
+        internal static string OperationNotSupported_3 {
+            get {
+                return ResourceManager.GetString("OperationNotSupported.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to access private scope of an object..
         /// </summary>
         internal static string PrivateAccess_0 {
@@ -412,7 +457,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Too many arguments provided to a function..
+        ///   Looks up a localized string similar to Too many arguments to function..
         /// </summary>
         internal static string TooManyArguments_0 {
             get {

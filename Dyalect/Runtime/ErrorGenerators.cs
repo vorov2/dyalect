@@ -1,4 +1,5 @@
-﻿using Dyalect.Runtime.Types;
+﻿using Dyalect.Compiler;
+using Dyalect.Runtime.Types;
 
 namespace Dyalect.Runtime
 {
@@ -76,9 +77,9 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject AssertFailed(this ExecutionContext ctx, string reason)
+        public static DyObject AssertionFailed(this ExecutionContext ctx, string reason)
         {
-            ctx.Error = new(DyErrorCode.AssertFailed, reason);
+            ctx.Error = new(DyErrorCode.AssertionFailed, reason);
             return DyNil.Instance;
         }
 
@@ -88,9 +89,23 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, string typeName)
+        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj)
         {
-            ctx.Error = new(DyErrorCode.OperationNotSupported, op, typeName);
+            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op),
+                ctx.RuntimeContext.Types[obj.TypeId].TypeName);
+            return DyNil.Instance;
+        }
+
+        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, int typeId)
+        {
+            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), typeId);
+            return DyNil.Instance;
+        }
+
+        public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj1, DyObject obj2)
+        {
+            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op),
+                ctx.RuntimeContext.Types[obj1.TypeId].TypeName, ctx.RuntimeContext.Types[obj2.TypeId].TypeName);
             return DyNil.Instance;
         }
 
@@ -151,6 +166,32 @@ namespace Dyalect.Runtime
         public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
         {
             ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[value.TypeId].TypeName);
+            return DyNil.Instance;
+        }
+
+        public static DyObject InvalidType(this ExecutionContext ctx, int expected, DyObject got)
+        {
+            ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected].TypeName, ctx.RuntimeContext.Types[got.TypeId].TypeName);
+            return DyNil.Instance;
+        }
+
+        public static DyObject InvalidType(this ExecutionContext ctx, int expected1, int exptected2, DyObject got)
+        {
+            ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected1].TypeName, ctx.RuntimeContext.Types[exptected2].TypeName, ctx.RuntimeContext.Types[got.TypeId].TypeName);
+            return DyNil.Instance;
+        }
+
+        public static DyObject InvalidType(this ExecutionContext ctx, int expected1, int exptected2, int expected3, DyObject got)
+        {
+            ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected1].TypeName, ctx.RuntimeContext.Types[exptected2].TypeName,
+                ctx.RuntimeContext.Types[expected3].TypeName, ctx.RuntimeContext.Types[got.TypeId].TypeName);
+            return DyNil.Instance;
+        }
+
+        public static DyObject InvalidType(this ExecutionContext ctx, int expected1, int exptected2, int expected3, int expected4, DyObject got)
+        {
+            ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected1].TypeName, ctx.RuntimeContext.Types[exptected2].TypeName,
+                ctx.RuntimeContext.Types[expected3].TypeName, ctx.RuntimeContext.Types[expected4].TypeName, ctx.RuntimeContext.Types[got.TypeId].TypeName);
             return DyNil.Instance;
         }
 

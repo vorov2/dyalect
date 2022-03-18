@@ -106,6 +106,8 @@
 
         InvalidLazyBinding = 251,
 
-        InvalidCast = 252
+        InvalidCast = 252,
+
+        YieldNotAllowed = 253
     }
 }

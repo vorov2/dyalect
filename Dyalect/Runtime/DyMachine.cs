@@ -412,7 +412,7 @@ namespace Dyalect.Runtime
                     case OpCode.Annot:
                         left = evalStack.Pop();
                         right = evalStack.Peek();
-                        ((DyLabel)right).TypeAnnotation = (DyTypeInfo)left;
+                        ((DyLabel)right).AddTypeAnnotation((DyTypeInfo)left);
                         break;
                     case OpCode.Tag:
                         evalStack.Replace(new DyLabel(unit.Strings[op.Data], evalStack.Peek()));
@@ -537,14 +537,20 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.FunArgNm:
                         {
+                            var locs = ctx.Arguments.Peek();
                             var idx = ((DyFunction)evalStack.Peek(2)).GetParameterIndex(unit.Strings[op.Data]);
                             if (idx == -1)
                             {
+                                if (locs.VarArgsIndex > -1 && locs.Locals.Length == 1)
+                                {
+                                    locs.VarArgs!.Add(new DyLabel(unit.Strings[op.Data], evalStack.Pop()));
+                                    break;
+                                }
+
                                 ctx.ArgumentNotFound(((DyFunction)evalStack.Peek(2)).FunctionName, unit.Strings[op.Data]);
                                 ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                                 goto CATCH;
                             }
-                            var locs = ctx.Arguments.Peek();
                             if (idx == locs.VarArgsIndex)
                             {
                                 Push(locs, evalStack.Pop(), ctx);
@@ -606,10 +612,12 @@ namespace Dyalect.Runtime
                             evalStack.Push(new DyError((DyErrorCode)ctx.RgDI));
                         break;
                     case OpCode.TypeCheck:
-                        left = evalStack.Pop();
-                        right = evalStack.Pop().Force(ctx);
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        evalStack.Push(((DyTypeInfo)left).ReflectedTypeId == right.TypeId);
+                        {
+                            left = evalStack.Pop();
+                            right = evalStack.Pop().Force(ctx);
+                            if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
+                            evalStack.Push(((DyTypeInfo)left).ReflectedTypeId == right.TypeId);
+                        }
                         break;
                     case OpCode.CtorCheck:
                         right = evalStack.Peek().Force(ctx);

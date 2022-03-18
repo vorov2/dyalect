@@ -21,14 +21,14 @@ namespace Dyalect.Runtime.Types
                 var idx = index.GetInteger();
 
                 if (idx < 0 || idx >= err.DataItems.Length)
-                    return ctx.IndexOutOfRange();
+                    return ctx.IndexOutOfRange(index);
 
                 return TypeConverter.ConvertFrom(err.DataItems[idx]);
             }
             else if (index.TypeId == DyType.String)
                 return err.GetItem(index, ctx);
             else
-                return ctx.InvalidType(index);
+                return ctx.IndexOutOfRange(index);
         }
 
         public override string TypeName => DyTypeNames.Error;

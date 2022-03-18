@@ -161,7 +161,7 @@ namespace Dyalect.Runtime.Types
             if (index.TypeId == DyType.Integer)
                 return GetItem((int)index.GetInteger(), ctx);
             else
-                return ctx.InvalidType(index);
+                return ctx.IndexOutOfRange(index);
         }
 
         protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) => Values[index];

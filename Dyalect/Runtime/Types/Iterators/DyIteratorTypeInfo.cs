@@ -59,7 +59,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(index);
+                return ctx.InvalidType(DyType.Integer, index);
 
             var i = (int)index.GetInteger();
 
@@ -84,10 +84,10 @@ namespace Dyalect.Runtime.Types
         private DyObject ToMap(ExecutionContext ctx, DyObject self, DyObject keySelectorObj, DyObject valueSelectorObj)
         {
             if (keySelectorObj.TypeId != DyType.Function)
-                return ctx.InvalidType(keySelectorObj);
+                return ctx.InvalidType(DyType.Function, keySelectorObj);
 
             if (valueSelectorObj.TypeId != DyType.Function && valueSelectorObj.TypeId != DyType.Nil)
-                return ctx.InvalidType(valueSelectorObj);
+                return ctx.InvalidType(DyType.Function, DyType.Nil, valueSelectorObj);
 
             var keySelector = (DyFunction)keySelectorObj;
             var valueSelector = valueSelectorObj as DyFunction;
@@ -139,7 +139,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Take(ExecutionContext ctx, DyObject self, DyObject count)
         {
             if (count.TypeId != DyType.Integer)
-                return ctx.InvalidType(self);
+                return ctx.InvalidType(DyType.Integer, self);
 
             var i = (int)count.GetInteger();
 
@@ -152,7 +152,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Skip(ExecutionContext ctx, DyObject self, DyObject count)
         {
             if (count.TypeId != DyType.Integer)
-                return ctx.InvalidType(self);
+                return ctx.InvalidType(DyType.Integer, self);
 
             var i = (int)count.GetInteger();
 
@@ -179,10 +179,10 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             if (fromElem.TypeId != DyType.Integer)
-                return ctx.InvalidType(fromElem);
+                return ctx.InvalidType(DyType.Integer, fromElem);
 
             if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
-                return ctx.InvalidType(toElem);
+                return ctx.InvalidType(DyType.Integer, DyType.Nil, toElem);
 
             var beg = (int)fromElem.GetInteger();
             int? count = null;
@@ -217,7 +217,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             if (funObj.TypeId != DyType.Function && funObj.TypeId != DyType.Nil)
-                return ctx.InvalidType(funObj);
+                return ctx.InvalidType(DyType.Function, DyType.Nil, funObj);
 
             var comparer = new SortComparer(funObj as DyFunction, ctx);
             var sorted = seq.OrderBy(dy => dy, comparer);
@@ -239,7 +239,7 @@ namespace Dyalect.Runtime.Types
         private DyObject CountBy(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
             if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(funObj);
+                return ctx.InvalidType(DyType.Function, funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
             
@@ -253,7 +253,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Map(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
             if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(funObj);
+                return ctx.InvalidType(DyType.Function, funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -267,7 +267,7 @@ namespace Dyalect.Runtime.Types
         private DyObject TakeWhile(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
             if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(funObj);
+                return ctx.InvalidType(DyType.Function, funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -282,7 +282,7 @@ namespace Dyalect.Runtime.Types
         private DyObject SkipWhile(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
             if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(funObj);
+                return ctx.InvalidType(DyType.Function, funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -297,7 +297,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Filter(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
             if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(funObj);
+                return ctx.InvalidType(DyType.Function, funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -312,7 +312,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject initial, DyObject funObj)
         {
             if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(funObj);
+                return ctx.InvalidType(DyType.Function, funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -331,7 +331,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Any(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
             if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(funObj);
+                return ctx.InvalidType(DyType.Function, funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -346,7 +346,7 @@ namespace Dyalect.Runtime.Types
         private DyObject All(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
             if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(funObj);
+                return ctx.InvalidType(DyType.Function, funObj);
 
             var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -368,27 +368,27 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "ToArray" => Func.Member(name, ToArray),
-                "ToTuple" => Func.Member(name, ToTuple),
-                "ToDictionary" => Func.Member(name, ToMap, -1, new Par("key"), new Par("value", DyNil.Instance)),
-                "Take" => Func.Member(name, Take, -1, new Par("count")),
-                "Skip" => Func.Member(name, Skip, -1, new Par("count")),
-                "First" => Func.Member(name, First),
-                "Last" => Func.Member(name, Last),
-                "Reverse" => Func.Member(name, Reverse),
-                "Slice" => Func.Member(name, GetSlice, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance)),
-                "Element" => Func.Member(name, ElementAt, -1, new Par("at")),
-                "Sort" => Func.Member(name, SortBy, -1, new Par("by", DyNil.Instance)),
-                "Shuffle" => Func.Member(name, Shuffle),
-                "Count" => Func.Member(name, CountBy, -1, new Par("by")),
-                "Map" => Func.Member(name, Map, -1, new Par("transform")),
-                "Filter" => Func.Member(name, Filter, -1, new Par("predicate")),
-                "TakeWhile" => Func.Member(name, TakeWhile, -1, new Par("predicate")),
-                "SkipWhile" => Func.Member(name, SkipWhile, -1, new Par("predicate")),
-                "Reduce" => Func.Member(name, Reduce, -1, new Par("init", DyInteger.Zero), new Par("by")),
-                "Any" => Func.Member(name, Any, -1, new Par("predicate")),
-                "All" => Func.Member(name, All, -1, new Par("predicate")),
-                "Contains" => Func.Member(name, Contains, -1, new Par("value")),
+                Method.ToArray => Func.Member(name, ToArray),
+                Method.ToTuple => Func.Member(name, ToTuple),
+                Method.ToDictionary => Func.Member(name, ToMap, -1, new Par("keySelector"), new Par("valueSelector", DyNil.Instance)),
+                Method.Take => Func.Member(name, Take, -1, new Par("count")),
+                Method.Skip => Func.Member(name, Skip, -1, new Par("count")),
+                Method.First => Func.Member(name, First),
+                Method.Last => Func.Member(name, Last),
+                Method.Reverse => Func.Member(name, Reverse),
+                Method.Slice => Func.Member(name, GetSlice, -1, new Par("index", DyInteger.Zero), new Par("endIndex", DyNil.Instance)),
+                Method.ElementAt => Func.Member(name, ElementAt, -1, new Par("index")),
+                Method.Sort => Func.Member(name, SortBy, -1, new Par("comparer", DyNil.Instance)),
+                Method.Shuffle => Func.Member(name, Shuffle),
+                Method.Count => Func.Member(name, CountBy, -1, new Par("predicate")),
+                Method.Map => Func.Member(name, Map, -1, new Par("converter")),
+                Method.Filter => Func.Member(name, Filter, -1, new Par("predicate")),
+                Method.TakeWhile => Func.Member(name, TakeWhile, -1, new Par("predicate")),
+                Method.SkipWhile => Func.Member(name, SkipWhile, -1, new Par("predicate")),
+                Method.Reduce => Func.Member(name, Reduce, -1, new Par("initial", DyInteger.Zero), new Par("converter")),
+                Method.Any => Func.Member(name, Any, -1, new Par("predicate")),
+                Method.All => Func.Member(name, All, -1, new Par("predicate")),
+                Method.Contains => Func.Member(name, Contains, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -466,11 +466,11 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "Iterator" or "Concat" => Func.Static(name, Concat, 0, new Par("values", true)),
-                Builtins.Range => Func.Static(name, MakeRange, -1, new Par("from", DyInteger.Zero), new Par("to", DyNil.Instance),
-                    new Par("by", DyInteger.One), new Par("exclusive", DyBool.False)),
-                "Empty" => Func.Static(name, Empty),
-                "Repeat" => Func.Static(name, Repeat, -1, new Par("value")),
+                Method.Iterator or Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
+                Method.Range => Func.Static(name, MakeRange, -1, new Par("start", DyInteger.Zero), new Par("end", DyNil.Instance),
+                    new Par("step", DyInteger.One), new Par("exclusive", DyBool.False)),
+                Method.Empty => Func.Static(name, Empty),
+                Method.Repeat => Func.Static(name, Repeat, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
 

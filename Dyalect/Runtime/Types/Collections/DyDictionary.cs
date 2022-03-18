@@ -39,6 +39,12 @@ namespace Dyalect.Runtime.Types
         public bool TryGet(DyObject key, out DyObject? value) =>
             Dictionary.TryGetValue(key, out value);
 
+        public DyObject GetAndRemove(DyObject key)
+        {
+            Dictionary.Remove(key, out var value);
+            return value ?? DyNil.Instance;
+        }
+
         public bool Remove(DyObject key)
         {
             Version++;
@@ -46,6 +52,8 @@ namespace Dyalect.Runtime.Types
         }
 
         public bool ContainsKey(DyObject key) => Dictionary.ContainsKey(key);
+
+        public bool ContainsValue(DyObject value) => Dictionary.ContainsValue(value);
 
         public void Clear()
         {

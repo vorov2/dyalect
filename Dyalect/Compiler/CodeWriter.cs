@@ -185,6 +185,13 @@ namespace Dyalect.Compiler
             Emit(new(OpCode.NewErr, narg), -narg + 1);
         }
 
+        public void CallNullaryMember(string name)
+        {
+            GetMember(name);
+            FunPrep(0);
+            FunCall(0);
+        }
+
         public void SetMember(string member) => Emit(new(OpCode.SetMember, IndexString(member)));
         public void SetMemberS(string member) => Emit(new(OpCode.SetMemberS, IndexString(member)));
 

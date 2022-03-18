@@ -41,6 +41,9 @@ namespace Dyalect.Compiler
 
         private void GenerateConstructor(DFunctionDeclaration func, CompilerContext ctx)
         {
+            if (func.Body is not null)
+                Build(func.Body, NoScope, new());
+
             if (func.Parameters.Count == 0)
             {
                 AddLinePragma(func);
@@ -54,8 +57,11 @@ namespace Dyalect.Compiler
 
                 if (p.TypeAnnotation is not null)
                 {
-                    PushTypeInfo(ctx, p.TypeAnnotation, p.Location);
-                    cw.Annot();
+                    foreach (var q in p.TypeAnnotation)
+                    {
+                        PushTypeInfo(ctx, q, p.Location);
+                        cw.Annot();
+                    }
                 }
                 
                 if (p is DTypeParameter { Mutable: true })
@@ -73,8 +79,11 @@ namespace Dyalect.Compiler
 
                     if (p.TypeAnnotation is not null)
                     {
-                        PushTypeInfo(ctx, p.TypeAnnotation, p.Location);
-                        cw.Annot();
+                        foreach (var q in p.TypeAnnotation)
+                        {
+                            PushTypeInfo(ctx, q, p.Location);
+                            cw.Annot();
+                        }
                     }
 
                     if (p is DTypeParameter { Mutable: true })

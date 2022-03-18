@@ -34,8 +34,8 @@
     var str = "Hello, world!"
     assert(4, str.IndexOf("o"))
     assert(8, str.LastIndexOf("o"))
-    assert(8, str.IndexOf("o", fromIndex: 7))
-    assert(3, str.LastIndexOf("l", fromIndex: 6, count: 4))
+    assert(8, str.IndexOf("o", index: 7))
+    assert(3, str.LastIndexOf("l", index: 6, count: 4))
 #endregion
 
 #region "Comparison"
@@ -136,15 +136,15 @@
 #region "Methods: PadLeft, PadRight"
     var foo = "12"
     assert("   12", foo.PadLeft(5))
-    assert("00012", foo.PadLeft(with: '0', to: 5))
+    assert("00012", foo.PadLeft(width: 5, char: '0'))
     assert("12   ", foo.PadRight(5))
-    assert("12000", foo.PadRight(with: '0', to: 5))
+    assert("12000", foo.PadRight(width: 5, char: '0'))
 #endregion
 
 #region "Methods: Replace"
     assert("for gem gemetric", "for rem remetric".Replace("rem", "gem"))
-    assert("foobar", "foobar".Replace(value: "FOO", with: "ZOO"))
-    assert("ZOObar", "foobar".Replace(value: "FOO", with: "ZOO", ignoreCase: true))
+    assert("foobar", "foobar".Replace(value: "FOO", other: "ZOO"))
+    assert("ZOObar", "foobar".Replace(value: "FOO", other: "ZOO", ignoreCase: true))
 #endregion
 
 #region "Methods: Remove"
@@ -240,10 +240,34 @@
     assert("hahahahaha", str)
 #endregion
 
+#region "Methods: ToLiteral"
+    let str = "Foo"
+    assert("\"Foo\"", str.ToLiteral())
+    assert("'F'", str[0].ToLiteral())
+#endregion
+
 #region "Conversion: as"
     let str = "12"
     assert('1', str as Char)
     assert(12, str as Integer)
     assert(12.0, str as Float)
     assert(true, str as Bool)
+#endregion
+
+#region "Format 1"
+    let author = "Mahesh Chand"
+    let book = "Graphics Programming with GDI+"
+    let year = 2003
+    let price = 49.95
+    let publisher = "APress"
+    let fmt = "{0} is the author of book {1}, published by {2} in year {3}. Book price is ${4}."
+    let res1 = String.Format(fmt, author, book, publisher, year, price)
+    let res2 = fmt.Format(author, book, publisher, year, price)
+    assert("Mahesh Chand is the author of book Graphics Programming with GDI+, published by APress in year 2003. Book price is $49.95.", res1)
+    assert(res1, res2)
+#endregion
+
+#region "Format 2"
+    let data = String.Format("{0,-35} {1,-20} {2,-10} {3, -10}", "Foo", "Boo", "Bar", "Zar")
+    assert("Foo                                 Boo                  Bar        Zar       ", data)
 #endregion

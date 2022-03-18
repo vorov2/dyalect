@@ -18,7 +18,7 @@ namespace Dyalect.Runtime
         public override string ToString()
         {
             var errCode = ((int)Error.Code).ToString().PadLeft(3, '0');
-            return $"Runtime exception Dy{errCode}: {Message}\nStack trace:\n{CallTrace}";
+            return $"Error D{errCode}: {Message}\nStack trace:\n{CallTrace}";
         }
     }
 }

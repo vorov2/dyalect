@@ -73,8 +73,8 @@
         yield 68.6
     }
     var it = foo(false)
-    var res = it.Element(at: 0) + it.Element(at: 1) +
-        it.Element(at: 2) + it.Element(at: 3)
+    var res = it.ElementAt(0) + it.ElementAt(index: 1) +
+        it.ElementAt(2) + it.ElementAt(3)
     assert(116.8, res)
 #endregion
 
@@ -369,11 +369,11 @@
 
 #region "Methods: Element"
     let seq = yields { 1..10 }
-    assert(2, seq.Element(1))
-    assert(2, seq.Element(at: 1))
-    assert(10, seq.Element(9))
-    assert(10, seq.Element(at: 9))
-    assert(9, seq.Element(-1))
+    assert(2, seq.ElementAt(1))
+    assert(2, seq.ElementAt(index: 1))
+    assert(10, seq.ElementAt(9))
+    assert(10, seq.ElementAt(index: 9))
+    assert(9, seq.ElementAt(-1))
     assert(2, seq[1])
     assert(2, seq[1])
     assert(10, seq[9])
@@ -487,11 +487,11 @@
     assert(3, c)
 #endregion
 
-#region "Methods: Transform"
+#region "Methods: Map"
     let xs = yields { 1,2,3,4,5 }
     let ys = xs.Map(x => x + x).ToArray();
     assert([2,4,6,8,10], ys)
-    let ys1 = xs.Map(transform: x => "s" + x).ToArray();
+    let ys1 = xs.Map(converter: x => "s" + x).ToArray();
     assert(["s1","s2","s3","s4","s5"], ys1)
 #endregion
 
@@ -537,7 +537,7 @@
 
 #region "Methods: Reduce"
     let xs = { 1..10 }
-    var res = xs.Reduce(by: (x,y) => x + y)
+    var res = xs.Reduce(converter: (x,y) => x + y)
     assert(55, res)
     res = xs.Reduce(10, (x,y) => x + y)
     assert(65, res)

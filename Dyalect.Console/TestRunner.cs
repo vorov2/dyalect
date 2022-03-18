@@ -138,6 +138,7 @@ namespace Dyalect
             var currentFile = "";
 
             Dictionary<string, DyCodeModel> inits;
+            Dictionary<string, bool> files = new();
 
             try
             {
@@ -164,6 +165,9 @@ namespace Dyalect
 
                 if (bi.Block is null)
                 {
+                    if (options.ShowOnlyFailedTests)
+                        PrintFileHeader(options, bi.FileName, true);
+
                     Printer.Error(bi.Error ?? "Unknown error");
                     failed++;
                     plusFails = true;
@@ -197,6 +201,13 @@ namespace Dyalect
                 if (!cres.Success)
                 {
                     failed++;
+
+                    if (options.ShowOnlyFailedTests && !files.ContainsKey(bi.FileName))
+                    {
+                        PrintFileHeader(options, bi.FileName!, true);
+                        files[bi.FileName] = true;
+                    }
+
                     Failed(bi.Block.Name, string.Join(' ', cres.Messages.Select(m => m.Message)), bi.FileName!);
                     continue;
                 }
@@ -213,6 +224,13 @@ namespace Dyalect
                 catch (Exception ex)
                 {
                     failed++;
+
+                    if (options.ShowOnlyFailedTests && !files.ContainsKey(bi.FileName))
+                    {
+                        PrintFileHeader(options, bi.FileName!, true);
+                        files[bi.FileName] = true;
+                    }
+
                     Failed(bi.Block.Name, ex.Message, bi.FileName!);
                 }
             }
@@ -225,9 +243,9 @@ namespace Dyalect
                 Submit();
         }
 
-        private static void PrintFileHeader(DyaOptions options, string fileName)
+        private static void PrintFileHeader(DyaOptions options, string fileName, bool printAlways = false)
         {
-            if (!options.ShowOnlyFailedTests)
+            if (printAlways || !options.ShowOnlyFailedTests)
             {
                 Printer.LineFeed();
                 var fi = new FileInfo(fileName);
