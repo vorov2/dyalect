@@ -55,7 +55,7 @@ func Float.Pow(n) {
 20.12.Pow(3) //Output: 8144.865728
 ```
 
-And a small example with iterators (coroutines):
+And a small example with iterators:
 
 ```swift
 func fetch() { 
