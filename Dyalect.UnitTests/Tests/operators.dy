@@ -214,3 +214,14 @@
     assert(true, "y" in xs)
     assert(false, "z" in xs)
 #endregion
+
+#region "As"
+    type Foo(x)
+    func Integer as Char { this.ToString()[0] }
+    func Integer as Foo { Foo(this) }
+    let x = 42
+    assert('4', 42 as Char)
+    match x as Foo {
+        Foo(y) => assert(42, y)
+    }
+#endregion

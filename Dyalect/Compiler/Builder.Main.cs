@@ -149,6 +149,7 @@ namespace Dyalect.Compiler
             Build(node.Expression, hints.Append(Push), ctx);
             AddLinePragma(node);
             cw.Cast();
+            PopIf(hints);
         }
 
         private void Build(DRecursiveBlock node, Hints hints, CompilerContext ctx)

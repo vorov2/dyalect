@@ -291,4 +291,10 @@
   <data name="YieldNotAllowed" xml:space="preserve">
     <value>Statement "yield" is only supported inside functions.</value>
   </data>
+  <data name="BoolCastNotAllowed" xml:space="preserve">
+    <value>Overriding type conversion to boolean is not allowed.</value>
+  </data>
+  <data name="SelfCastNotAllowed" xml:space="preserve">
+    <value>Custom conversion of a type to itself is not allowed.</value>
+  </data>
 </root>

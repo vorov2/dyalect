@@ -25,3 +25,8 @@
     assert(true, b as Bool)
     assert("true", b as String)
 #endregion
+
+#region "Conversion to itself" //Bug #635
+    assert(true, true as Bool)
+    assert(false, false as Bool)
+#endregion

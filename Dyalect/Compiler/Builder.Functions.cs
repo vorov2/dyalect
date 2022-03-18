@@ -2,6 +2,7 @@
 using Dyalect.Parser.Model;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
+using System;
 using System.Collections.Generic;
 using static Dyalect.Compiler.Hints;
 
@@ -34,8 +35,16 @@ namespace Dyalect.Compiler
                         if (node.IsStatic || node.Setter || node.Getter)
                             AddError(CompilerError.InvalidCast, node.Location);
 
-                        PushTypeInfo(ctx, node.TargetTypeName, node.Location);
-                        PushTypeInfo(ctx, node.TypeName, node.Location);
+                        var t1 = PushTypeInfo(ctx, node.TargetTypeName, node.Location);
+
+                        if (t1 < 0 && -t1 == DyType.Bool)
+                            AddError(CompilerError.BoolCastNotAllowed, node.Location);
+
+                        var t2 = PushTypeInfo(ctx, node.TypeName, node.Location);
+
+                        if (t1 == t2)
+                            AddError(CompilerError.SelfCastNotAllowed, node.Location);
+
                         cw.NewCast();
                     }
 

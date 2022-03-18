@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class CompilerErrors {
@@ -102,6 +102,15 @@ namespace Dyalect.Strings {
         internal static string BindingPatternNoInit {
             get {
                 return ResourceManager.GetString("BindingPatternNoInit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overriding type conversion to boolean is not allowed..
+        /// </summary>
+        internal static string BoolCastNotAllowed {
+            get {
+                return ResourceManager.GetString("BoolCastNotAllowed", resourceCulture);
             }
         }
         
@@ -399,6 +408,15 @@ namespace Dyalect.Strings {
         internal static string ReturnNotAllowed {
             get {
                 return ResourceManager.GetString("ReturnNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom conversion of a type to itself is not allowed..
+        /// </summary>
+        internal static string SelfCastNotAllowed {
+            get {
+                return ResourceManager.GetString("SelfCastNotAllowed", resourceCulture);
             }
         }
         
