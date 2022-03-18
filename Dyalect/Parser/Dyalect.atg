@@ -103,56 +103,50 @@ PRODUCTIONS
     Identifier = lcaseToken | ucaseToken.
 
     Qualident<out string name, out Qualident type> =
-        (. name = null; type = null; string str1, str2 = null; .)
+        (. type = null; string str1 = null; string str2 = null; string str3 = null; .)
         (
             (
                 ucaseToken (. str1 = t.val; .) 
                 [ 
                     (
-                        "." FunctionName (. name = t.val; .) 
+                        "." FunctionName (. str2 = t.val; .) 
                         [ 
-                            "." Identifier (. str2 = t.val; .) 
-                            | StandardOperators (. str2 = t.val; .)
+                            "." Identifier (. str3 = t.val; .) 
+                            | StandardOperators (. str3 = t.val; .)
                         ] 
                     )
-                    | StandardOperators (. name = t.val; .)
+                    | StandardOperators (. str2 = t.val; .)
                 ]
-                (.
-                    if (str2 is null)
-                        type = new Qualident(str1);
-                    else
-                    {
-                        type = new Qualident(name, str1);
-                        name = str2;
-                    }
-                .)
             )
             |
             (
                 lcaseToken (. str1 = t.val; .) 
                 [ 
                     (
-                        "." FunctionName (. name = t.val; .) 
+                        "." FunctionName (. str2 = t.val; .) 
                         [ 
-                            "." Identifier (. str2 = t.val; .) 
-                            | StandardOperators (. str2 = t.val; .)
+                            "." Identifier (. str3 = t.val; .) 
+                            | StandardOperators (. str3 = t.val; .)
                         ] 
                     )
-                    | StandardOperators (. name = t.val; .)
+                    | StandardOperators (. str2 = t.val; .)
                 ]
-                (.
-                    if (name is null)
-                        name = str1;
-                    else if (str2 is null)
-                        type = new Qualident(str1);
-                    else
-                    {
-                        type = new Qualident(name, str1);
-                        name = str2;
-                    }
-                .)
             )
-        ).
+        )
+        (.
+            if (str2 is null)
+                name = str1;
+            else if (str3 is null)
+            {
+                type = new Qualident(str1);
+                name = str2;
+            }
+            else
+            {
+                type = new Qualident(str2, str1);
+                name = str3;
+            }
+        .).
 
     ImportToken<out string str> =
         (. str = ""; .)
@@ -426,7 +420,15 @@ PRODUCTIONS
             (
                 (
                     "["
-                        (. f.IsIndexer = true; .)
+                        (.
+                            f.IsIndexer = true;
+                            if (f.TypeName is not null && f.TypeName.Parent is not null)
+                                AddError(ParserError.InvalidTypeName, t.GetLocation());
+                            else if (f.TypeName is not null)
+                                f.TypeName = new Qualident(f.Name, f.TypeName.Local);
+                            else
+                                f.TypeName = new Qualident(f.Name);
+                        .)
                         [ FunctionParameters<f> ]
                         (. f.Name = set ? "__op_set" : "__op_get"; .)
                     "]"
@@ -439,7 +441,7 @@ PRODUCTIONS
                         if (f.TypeName is not null && f.TypeName.Parent is not null)
                             AddError(ParserError.InvalidTypeName, t.GetLocation());
                         else if (f.TypeName is not null)
-                            f.TypeName = new Qualident(f.TypeName.Local, f.Name);
+                            f.TypeName = new Qualident(f.Name, f.TypeName.Local);
                         else
                             f.TypeName = new Qualident(f.Name);
                         f.Name = null;
@@ -1150,7 +1152,7 @@ PRODUCTIONS
                 Identifier (. s1 = t.val; .) [ "." Identifier (. s2 = t.val; .) ]
                 (.
                     @as.Expression = node;
-                    @as.TypeName = s2 is null ? new Qualident(s1) : new Qualident(s1, s2);
+                    @as.TypeName = s2 is null ? new Qualident(s1) : new Qualident(s2, s1);
                     node = @as;
                 .)
             }

@@ -16,8 +16,8 @@
     assert(true, TypeInfo(x) == Bool)
     assert(true, x.GetType() == Bool)
     var t = TypeInfo(x)
-    assert(4, t.Code)
-    assert("Bool", t.Name)
+    assert(4, t.code)
+    assert("Bool", t.name)
 #endregion
 
 #region "Conversion: as"

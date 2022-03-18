@@ -19,8 +19,8 @@
     assert(true, TypeInfo(x) == Dictionary)
     assert(true, x.GetType() == Dictionary)
     var t = TypeInfo(x)
-    assert(14, t.Code)
-    assert("Dictionary", t.Name)
+    assert(14, t.code)
+    assert("Dictionary", t.name)
 #endregion
 
 #region "Methods: Clone"

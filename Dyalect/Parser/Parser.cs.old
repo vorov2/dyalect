@@ -183,8 +183,8 @@ namespace Dyalect.Parser
 		} else SynErr(104);
 	}
 
-	void Qualident(out string name, out Qualident? type) {
-		name = null; type = null; string str1, str2 = null; 
+	void Qualident(out string name, out Qualident type) {
+		type = null; string str1 = null; string str2 = null; string str3 = null; 
 		if (la.kind == 1) {
 			Get();
 			str1 = t.val; 
@@ -192,30 +192,22 @@ namespace Dyalect.Parser
 				if (la.kind == 26) {
 					Get();
 					FunctionName();
-					name = t.val; 
+					str2 = t.val; 
 					if (StartOf(2)) {
 						if (la.kind == 26) {
 							Get();
 							Identifier();
-							str2 = t.val; 
+							str3 = t.val; 
 						} else {
 							StandardOperators();
-							str2 = t.val; 
+							str3 = t.val; 
 						}
 					}
 				} else {
 					StandardOperators();
-					name = t.val; 
+					str2 = t.val; 
 				}
 			}
-			if (str2 is null)
-			   type = new Qualident(str1);
-			else
-			{
-			   type = new Qualident(name, str1);
-			   name = str2;
-			}
-			
 		} else if (la.kind == 2) {
 			Get();
 			str1 = t.val; 
@@ -223,33 +215,36 @@ namespace Dyalect.Parser
 				if (la.kind == 26) {
 					Get();
 					FunctionName();
-					name = t.val; 
+					str2 = t.val; 
 					if (StartOf(2)) {
 						if (la.kind == 26) {
 							Get();
 							Identifier();
-							str2 = t.val; 
+							str3 = t.val; 
 						} else {
 							StandardOperators();
-							str2 = t.val; 
+							str3 = t.val; 
 						}
 					}
 				} else {
 					StandardOperators();
-					name = t.val; 
+					str2 = t.val; 
 				}
 			}
-			if (name is null)
-			   name = str1;
-			else if (str2 is null)
-			   type = new Qualident(str1);
-			else
-			{
-			   type = new Qualident(name, str1);
-			   name = str2;
-			}
-			
 		} else SynErr(105);
+		if (str2 is null)
+		   name = str1;
+		else if (str3 is null)
+		{
+		   type = new Qualident(str1);
+		   name = str2;
+		}
+		else
+		{
+		   type = new Qualident(str1, str2);
+		   name = str3;
+		}
+		
 	}
 
 	void ImportToken(out string str) {
@@ -402,7 +397,6 @@ namespace Dyalect.Parser
 				typ.Constructors.Add(f); 
 			} else {
 				Get();
-				var priv = false; 
 				Constructor(typ);
 				while (la.kind == 71) {
 					Get();
@@ -480,7 +474,7 @@ namespace Dyalect.Parser
 	}
 
 	void TypeAnnotation(out TypeAnnotation ta) {
-		string val = null; TypeAnnotation cta = null; 
+		TypeAnnotation cta = null; 
 		TypeName(out var qual);
 		if (la.kind == 72) {
 			Get();
@@ -827,13 +821,20 @@ namespace Dyalect.Parser
 		var f = new DFunctionDeclaration(t) { IsStatic = st, Getter = get, Setter = set };
 		functions.Push(f);
 		
-		Qualident(out var name, out Qualident? type);
+		Qualident(out var name, out Qualident type);
 		f.Name = name;
 		f.TypeName = type;
 		
 		if (la.kind == 35) {
 			Get();
-			f.IsIndexer = true; 
+			f.IsIndexer = true;
+			if (f.TypeName is not null && f.TypeName.Parent is not null)
+			   AddError(ParserError.InvalidTypeName, t.GetLocation());
+			else if (f.TypeName is not null)
+			   f.TypeName = new Qualident(f.Name, f.TypeName.Local);
+			else
+			   f.TypeName = new Qualident(f.Name);
+			
 			if (la.kind == 1 || la.kind == 2) {
 				FunctionParameters(f);
 			}
@@ -850,7 +851,7 @@ namespace Dyalect.Parser
 			if (f.TypeName is not null && f.TypeName.Parent is not null)
 			   AddError(ParserError.InvalidTypeName, t.GetLocation());
 			else if (f.TypeName is not null)
-			   f.TypeName = new Qualident(f.TypeName.Local, f.Name);
+			   f.TypeName = new Qualident(f.Name, f.TypeName.Local);
 			else
 			   f.TypeName = new Qualident(f.Name);
 			f.Name = null;
@@ -1812,7 +1813,7 @@ namespace Dyalect.Parser
 				s2 = t.val; 
 			}
 			@as.Expression = node;
-			@as.TypeName = s2 is null ? new Qualident(s1) : new Qualident(s1, s2);
+			@as.TypeName = s2 is null ? new Qualident(s1) : new Qualident(s2, s1);
 			node = @as;
 			
 		}

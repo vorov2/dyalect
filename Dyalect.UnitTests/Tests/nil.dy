@@ -19,8 +19,8 @@
     assert(true, TypeInfo(x) == Nil)
     assert(true, x.GetType() == Nil)
     var t = TypeInfo(x)
-    assert(1, t.Code)
-    assert("Nil", t.Name)
+    assert(1, t.code)
+    assert("Nil", t.name)
 #endregion
 
 #region "Conversion: as"
