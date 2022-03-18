@@ -1,6 +1,6 @@
 ﻿using Dyalect.Runtime.Types;
 
-namespace Dyalect.Library.Types
+namespace Dyalect.Library.Core
 {
     public sealed class DyResult : DyForeignObject
     {

@@ -1,20 +1,20 @@
-﻿using Dyalect.Library.Types;
+﻿using Dyalect.Library.Core;
 using Dyalect.Linker;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System.IO;
 using System.Text;
 
-namespace Dyalect.Library
+namespace Dyalect.Library.IO
 {
     [DyUnit("io")]
     public sealed class IOModule : ForeignUnit
     {
-        private readonly Reference<Core> core;
+        private readonly Reference<CoreModule> core;
 
         public IOModule()
         {
-            core = AddReference<Core>();
+            core = AddReference<CoreModule>();
         }
 
         [Function("readAllText")]

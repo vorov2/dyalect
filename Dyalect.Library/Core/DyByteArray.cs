@@ -3,7 +3,7 @@ using Dyalect.Runtime.Types;
 using System;
 using System.Text;
 
-namespace Dyalect.Library.Types
+namespace Dyalect.Library.Core
 {
     public sealed class DyByteArray : DyForeignObject
     {

@@ -4,7 +4,7 @@ using Dyalect.Runtime.Types;
 using System;
 using System.Linq;
 
-namespace Dyalect.Library.Types
+namespace Dyalect.Library.Core
 {
     public sealed class DyByteArrayTypeInfo : DyForeignTypeInfo
     {
@@ -59,7 +59,7 @@ namespace Dyalect.Library.Types
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "Read" => Func.Member(name, Read, -1, new Par("ofType")),
+                "Read" => Func.Member(name, Read, -1, new Par("typeInfo")),
                 "Write" => Func.Member(name, Write, -1, new Par("value")),
                 "Position" => Func.Auto(name, GetPosition),
                 "Reset" => Func.Member(name, Reset),
@@ -86,7 +86,7 @@ namespace Dyalect.Library.Types
             name switch
             {
                 "ByteArray" => Func.Static(name, _ => new DyByteArray(this, null)),
-                "Concat" => Func.Static(name, Concat, -1, new Par("fst"), new Par("snd")),
+                "Concat" => Func.Static(name, Concat, -1, new Par("first"), new Par("second")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

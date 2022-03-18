@@ -3,74 +3,8 @@ using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System.Text.RegularExpressions;
 
-namespace Dyalect.Library.Types
+namespace Dyalect.Library.Core
 {
-    public sealed class DyRegex : DyForeignObject
-    {
-        internal readonly Regex Regex;
-
-        public DyRegex(DyForeignTypeInfo typeInfo, string regex) : base(typeInfo)
-        {
-            Regex = new Regex(regex, RegexOptions.Compiled);
-        }
-
-        public override object ToObject() => Regex;
-
-        public override DyObject Clone() => this;
-    }
-
-    public class DyRegexCapture : DyObject
-    {
-        private readonly Capture capture;
-
-        public DyRegexCapture(Capture capture) : base(DyType.Object) => this.capture = capture;
-
-        public override SupportedOperations Supports() => SupportedOperations.Get;
-
-        public override int GetHashCode() => capture.GetHashCode();
-
-        public override object ToObject() => capture;
-
-        public override string ToString() => capture.Value;
-
-        protected internal override object? GetItem(string key) =>
-            key switch
-            {
-                "index" => capture.Index,
-                "length" => capture.Length,
-                "value" => capture.Value,
-                _ => null
-            };
-    }
-
-    public sealed class DyRegexMatch : DyRegexCapture
-    {
-        private readonly Match match;
-
-        public DyRegexMatch(Match match) : base(match) => this.match = match;
-
-        protected internal override bool GetBool(ExecutionContext ctx) => match.Success;
-
-        private DyTuple GetCaptures()
-        {
-            var xs = new FastList<DyRegexCapture>();
-
-            for (var i = 0; i < match.Captures.Count; i++)
-                xs.Add(new DyRegexCapture(match.Captures[i]));
-
-            return new DyTuple(xs.ToArray());
-        }
-
-        protected internal override object? GetItem(string key) =>
-            key switch
-            {
-                "name" => match.Name,
-                "success" => match.Success,
-                "captures" => GetCaptures(),
-                _ => base.GetItem(key)
-            };
-    }
-
     public sealed class DyRegexTypeInfo : DyForeignTypeInfo
     {
         public override string TypeName => "Regex";

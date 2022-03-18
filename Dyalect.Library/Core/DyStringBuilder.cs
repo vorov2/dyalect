@@ -1,8 +1,7 @@
-﻿using Dyalect.Linker;
-using Dyalect.Runtime.Types;
+﻿using Dyalect.Runtime.Types;
 using System.Text;
 
-namespace Dyalect.Library.Types
+namespace Dyalect.Library.Core
 {
     public sealed class DyStringBuilder : DyForeignObject
     {

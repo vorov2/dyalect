@@ -4,7 +4,7 @@ using Dyalect.Runtime.Types;
 using System.Linq;
 using System.Text;
 
-namespace Dyalect.Library.Types
+namespace Dyalect.Library.Core
 {
     public sealed class DyStringBuilderTypeInfo : DyForeignTypeInfo
     {
@@ -110,8 +110,8 @@ namespace Dyalect.Library.Types
             name switch
             {
                 "Insert" => Func.Member(name, Insert, -1, new Par("index"), new Par("value")),
-                "Remove" => Func.Member(name, Remove, -1, new Par("index"), new Par("len")),
-                "Replace" => Func.Member(name, Replace, -1, new Par("old"), new Par("new")),
+                "Remove" => Func.Member(name, Remove, -1, new Par("index"), new Par("count")),
+                "Replace" => Func.Member(name, Replace, -1, new Par("value"), new Par("other")),
                 "Append" => Func.Member(name, Append, -1, new Par("value")),
                 "AppendLine" => Func.Member(name, AppendLine, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
