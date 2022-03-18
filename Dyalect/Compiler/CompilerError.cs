@@ -108,6 +108,10 @@
 
         InvalidCast = 252,
 
-        YieldNotAllowed = 253
+        YieldNotAllowed = 253,
+
+        BoolCastNotAllowed = 254,
+
+        SelfCastNotAllowed = 255
     }
 }

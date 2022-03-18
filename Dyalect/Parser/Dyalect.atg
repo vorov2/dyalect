@@ -102,7 +102,7 @@ PRODUCTIONS
 
     Identifier = lcaseToken | ucaseToken.
 
-    Qualident<out string name, out Qualident? type> =
+    Qualident<out string name, out Qualident type> =
         (. name = null; type = null; string str1, str2 = null; .)
         (
             (
@@ -238,7 +238,7 @@ PRODUCTIONS
             )
             |
             (
-                "=" (. var priv = false; .)
+                "="
                 Constructor<typ> { "or" Constructor<typ> }
             )
         ].
@@ -270,7 +270,7 @@ PRODUCTIONS
         ).
 
     TypeAnnotation<out TypeAnnotation ta> =
-        (. string val = null; TypeAnnotation cta = null; .)
+        (. TypeAnnotation cta = null; .)
         (
             TypeName<out var qual> [ "|" TypeAnnotation<out cta> ]
             (. ta = new TypeAnnotation(qual, cta); .)
@@ -418,7 +418,7 @@ PRODUCTIONS
                 var f = new DFunctionDeclaration(t) { IsStatic = st, Getter = get, Setter = set };
                 functions.Push(f);
             .)
-            Qualident<out var name, out Qualident? type>
+            Qualident<out var name, out Qualident type>
             (.
                 f.Name = name;
                 f.TypeName = type;

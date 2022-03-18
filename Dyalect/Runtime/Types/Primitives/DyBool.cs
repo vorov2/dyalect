@@ -33,6 +33,14 @@ namespace Dyalect.Runtime.Types
 
         public static explicit operator bool(DyBool v) => v is DyBoolTrue;
 
+        public static DyBool Equals(ExecutionContext ctx, DyObject x, DyObject y)
+        {
+            if (ReferenceEquals(x, y))
+                return True;
+
+            return x.GetBool(ctx) == y.GetBool(ctx) ? True : False;
+        }
+
         internal override void Serialize(BinaryWriter writer)
         {
             writer.Write(TypeId);

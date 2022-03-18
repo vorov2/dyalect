@@ -23,6 +23,6 @@
         }
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString(("typeInfo " + ((DyTypeInfo)arg).TypeName).PutInBrackets());
+            new DyString("typeInfo {" + ((DyTypeInfo)arg).TypeName + "}");
     }
 }

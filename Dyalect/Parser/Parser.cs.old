@@ -1455,7 +1455,8 @@ namespace Dyalect.Parser
 		Expect(19);
 		var ot = t;
 		node = null;
-		functions.Peek().IsIterator = true;
+		if (functions.Count > 0)
+		   functions.Peek().IsIterator = true;
 		
 		if (la.kind == 18) {
 			Get();

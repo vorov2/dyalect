@@ -109,14 +109,14 @@ namespace Dyalect.Compiler
             return err;
         }
 
-        private void PushVariable(CompilerContext ctx, string name, Location loc)
+        private int PushVariable(CompilerContext ctx, string name, Location loc)
         {
             var err = GetVariable(name, currentScope, out var sv);
 
             if (err == CompilerError.UndefinedVariable)
             {
                 if (string.IsNullOrEmpty(name))
-                    return;
+                    return default;
 
                 if (char.IsUpper(name[0]))
                 {
@@ -126,19 +126,21 @@ namespace Dyalect.Compiler
                     {
                         AddLinePragma(loc);
                         cw.Type(ti);
+                        return -ti;
                     }
                     else
                         AddError(CompilerError.UndefinedType, loc, name);
 
-                    return;
+                    return default;
                 }
 
                 AddError(err, loc, name);
-                return;
+                return default;
             }
 
             AddLinePragma(loc);
             cw.PushVar(sv);
+            return sv.Address;
         }
 
         private void PopVariable(CompilerContext ctx, string name, Location loc)

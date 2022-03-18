@@ -102,31 +102,31 @@ namespace Dyalect.Compiler
             }
         }
 
-        private void PushTypeInfo(CompilerContext ctx, Qualident qual, Location loc)
+        private int PushTypeInfo(CompilerContext ctx, Qualident qual, Location loc)
         {
             if (qual.Parent is null) //Type is local
-                PushVariable(ctx, qual.Local, loc);
+                return PushVariable(ctx, qual.Local, loc);
             else //Type is external
             {
                 //Can't find module
                 if (!referencedUnits.TryGetValue(qual.Parent, out var info))
                 {
                     AddError(CompilerError.UndefinedModule, loc, qual.Parent);
-                    return;
+                    return default;
                 }
 
                 //Push type from found module
-                PushTypeInfo(ctx, info, qual.Local, loc);
+                return PushTypeInfo(ctx, info, qual.Local, loc);
             }
         }
 
-        private void PushTypeInfo(CompilerContext ctx, UnitInfo info, string name, Location loc)
+        private int PushTypeInfo(CompilerContext ctx, UnitInfo info, string name, Location loc)
         {
             //Can't find type in the module
             if (!info.Unit.ExportList.TryGetValue(name, out var sv))
             {
                 AddError(CompilerError.UndefinedType, loc, name);
-                return;
+                return default;
             }
 
             //A type is declared inside a private block
@@ -134,6 +134,7 @@ namespace Dyalect.Compiler
                 AddError(CompilerError.PrivateNameAccess, loc, name);
 
             cw.PushVar(new(info.Handle | (sv.Address >> 8) << 8, sv.Data | VarFlags.External));
+            return info.Handle | (sv.Address >> 8) << 8;
         }
     }
 }

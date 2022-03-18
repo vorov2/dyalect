@@ -1,3 +1,10 @@
+# 0.32.1
+  * Fix: _Virtual machine stack corruption_ ([Issue #633](https://github.com/vorov2/dyalect/issues/633)).
+  * Fix: _Inconsistent boolean conversions_ ([Issue #632](https://github.com/vorov2/dyalect/issues/632)).
+  * Fix: _Incorrect behavior of a conversion to boolean_ ([Issue #635](https://github.com/vorov2/dyalect/issues/635)).
+  * Fix: _Type is not correctly recognized in custom conversions_ ([Issue #636](https://github.com/vorov2/dyalect/issues/636)).
+  * Fix: _Conversion of type to itself_ ([Issue #634](https://github.com/vorov2/dyalect/issues/634)).
+
 # 0.32.0
   * Change: _Virtual machine optimizations._
   * Change: _Parser refactoring and optimization._

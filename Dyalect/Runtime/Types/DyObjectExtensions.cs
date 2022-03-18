@@ -4,6 +4,9 @@ namespace Dyalect.Runtime.Types
 {
     public static class DyObjectExtensions
     {
+        internal static bool IsTrue(this DyObject self, ExecutionContext ctx) =>
+            self.TypeId == DyType.Bool && ReferenceEquals(self, DyBool.True) || self.GetBool(ctx);
+
         internal static DyObject GetIterator(this DyObject self, ExecutionContext ctx) =>
             ctx.RuntimeContext.Types[self.TypeId].GetInstanceMember(self, Builtins.Iterator, ctx);
 

@@ -9,12 +9,12 @@ namespace Dyalect.Runtime.Types
     {
         protected abstract SupportedOperations GetSupportedOperations();
 
-        private bool Support(DyObject self, SupportedOperations op) => (GetSupportedOperations() & op) == op
-            || (self.Supports() & op) == op;
+        private bool Support(DyObject self, SupportedOperations op) =>
+            (GetSupportedOperations() & op) == op || (self.Supports() & op) == op;
 
         public override object ToObject() => this;
 
-        public override string ToString() => TypeName.PutInBrackets();
+        public override string ToString() => "{" + TypeName + "}";
 
         public abstract string TypeName { get; }
 
@@ -241,7 +241,7 @@ namespace Dyalect.Runtime.Types
         //!x
         private DyFunction? not;
         protected virtual DyObject NotOp(DyObject arg, ExecutionContext ctx) =>
-            arg.GetBool(ctx) ? DyBool.False : DyBool.True;
+            arg.IsTrue(ctx) ? DyBool.False : DyBool.True;
         public virtual DyObject Not(ExecutionContext ctx, DyObject arg)
         {
             if (not is not null)
@@ -329,7 +329,7 @@ namespace Dyalect.Runtime.Types
         protected virtual DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
             targetType.ReflectedTypeId switch
             {
-                DyType.Bool => DyBool.True,
+                DyType.Bool => self.IsTrue(ctx) ? DyBool.True : DyBool.False,
                 DyType.String => ToString(ctx, self),
                 DyType.Char => new DyChar((ToString(ctx, self)?.GetString() ?? "\0")[0]),
                 _ when targetType.ReflectedTypeId == self.TypeId => self,
@@ -339,9 +339,14 @@ namespace Dyalect.Runtime.Types
         public DyObject Cast(ExecutionContext ctx, DyObject self, DyObject targetType)
         {
             if (targetType.TypeId != DyType.TypeInfo)
-                return ctx.InvalidType(targetType);
+                return ctx.InvalidType(DyType.TypeInfo, targetType);
 
-            if (conversions.TryGetValue(targetType.TypeId, out var func))
+            var ti = (DyTypeInfo)targetType;
+
+            if (ti.ReflectedTypeId == self.TypeId)
+                return self;
+
+            if (conversions.TryGetValue(ti.ReflectedTypeId, out var func))
                 return func.BindToInstance(ctx, self).Call(ctx);
 
             return CastOp(self, (DyTypeInfo)targetType, ctx);
@@ -349,8 +354,8 @@ namespace Dyalect.Runtime.Types
 
         public void SetCastFunction(ExecutionContext ctx, DyObject self, DyTypeInfo type, DyFunction func)
         {
-            conversions.Remove(type.TypeId);
-            conversions.Add(type.TypeId, func);
+            conversions.Remove(type.ReflectedTypeId);
+            conversions.Add(type.ReflectedTypeId, func);
         }
         #endregion
 
