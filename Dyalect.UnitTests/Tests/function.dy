@@ -668,3 +668,18 @@
     let f = () => 42
     assert(true, f as Bool)
 #endregion
+
+#region "Complex definition 1"
+    import refs/libtest
+    func libtest.Foo as Integer {
+        this.x
+    }
+    func Integer as libtest.Foo {
+        Foo(this)
+    }
+    let f = Foo(124)
+    assert(124, f as Integer)
+    match 2 as libtest.Foo {
+        Foo(x) => assert(2, x)
+    }
+#endregion

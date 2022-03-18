@@ -1,3 +1,8 @@
+# 0.32.2
+  * Fix: _Type might not be correctly recognized in as expression_ ([Issue #640](https://github.com/vorov2/dyalect/issues/640)).
+  * Fix: _Type might not be correctly recognized in as function_ ([Issue #637](https://github.com/vorov2/dyalect/issues/637)).
+  * Fix: _Incorrect compilation of indexer with long type name_ ([Issue #638](https://github.com/vorov2/dyalect/issues/638)).
+
 # 0.32.1
   * Fix: _Virtual machine stack corruption_ ([Issue #633](https://github.com/vorov2/dyalect/issues/633)).
   * Fix: _Inconsistent boolean conversions_ ([Issue #632](https://github.com/vorov2/dyalect/issues/632)).

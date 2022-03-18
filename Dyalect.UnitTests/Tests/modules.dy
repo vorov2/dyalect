@@ -124,7 +124,7 @@
     for (key,_) in lib {
         xs.Add(key)
     }
-    var shouldbe = ["abs","sign","double","min","max","userName","Foobar","pi"]
+    var shouldbe = ["abs","sign","double","min","max","userName","Foobar","Foo","pi"]
     assert(shouldbe, xs)
 #endregion
 
