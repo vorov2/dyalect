@@ -84,5 +84,4 @@ Please refer to [wiki](https://github.com/vorov2/dyalect/wiki) for more informat
 
 * [SourceForge page](https://sourceforge.net/projects/dyalect/)
 * [Dyalect at RosettaCode](http://rosettacode.org/wiki/Category:Dyalect)
-* [Dyalect at OpenHub](https://www.openhub.net/p/dyalect)
 

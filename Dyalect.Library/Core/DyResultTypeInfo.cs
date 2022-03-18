@@ -71,8 +71,8 @@ namespace Dyalect.Library.Core
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch 
             {
-                SUCCESS => Func.Static(name, Success, -1, new Par("arg", DyNil.Instance)),
-                FAILURE => Func.Static(name, Failure, -1, new Par("arg", DyNil.Instance)),
+                SUCCESS => Func.Static(name, Success, -1, new Par("value", DyNil.Instance)),
+                FAILURE => Func.Static(name, Failure, -1, new Par("detail", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

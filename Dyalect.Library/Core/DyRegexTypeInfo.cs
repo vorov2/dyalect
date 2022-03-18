@@ -92,9 +92,9 @@ namespace Dyalect.Library.Core
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "Match" => Func.Member(name, Match, -1, new Par("input"), new Par("start", DyInteger.Zero), new Par("len", DyNil.Instance)),
-                "Matches" => Func.Member(name, Matches, -1, new Par("input"), new Par("start", DyInteger.Zero)),
-                "Replace" => Func.Static(name, Replace, -1, new Par("input"), new Par("replacement")),
+                "Match" => Func.Member(name, Match, -1, new Par("input"), new Par("index", DyInteger.Zero), new Par("count", DyNil.Instance)),
+                "Matches" => Func.Member(name, Matches, -1, new Par("input"), new Par("index", DyInteger.Zero)),
+                "Replace" => Func.Static(name, Replace, -1, new Par("value"), new Par("other")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -110,7 +110,7 @@ namespace Dyalect.Library.Core
             name switch
             {
                 "Regex" => Func.Static(name, New, -1, new Par("pattern")),
-                "Replace" => Func.Static(name, StaticReplace, -1, new Par("pattern"), new Par("input"), new Par("replacement")),
+                "Replace" => Func.Static(name, StaticReplace, -1, new Par("pattern"), new Par("value"), new Par("other")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }
