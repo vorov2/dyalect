@@ -16,7 +16,7 @@ namespace Dyalect.Library.Core
         {
             var buffer = ((DyByteArray)arg).GetBytes();
             var strs = buffer.Select(b => "0x" + b.ToString("X").PadLeft(2, '0')).ToArray();
-            return new DyString("ByteArray [" + string.Join(",", strs) + "]");
+            return new DyString("{" + string.Join(",", strs) + "}");
         }
 
         protected override SupportedOperations GetSupportedOperations() =>

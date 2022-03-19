@@ -9,6 +9,7 @@ namespace Dyalect.Library.Core
         public DyStringBuilderTypeInfo StringBuilder { get; }
         public DyRegexTypeInfo Regex { get; }
         public DyResultTypeInfo Result { get; }
+        public DyGuidTypeInfo Guid { get; }
 
         public CoreModule()
         {
@@ -16,6 +17,7 @@ namespace Dyalect.Library.Core
             StringBuilder = AddType<DyStringBuilderTypeInfo>();
             Regex = AddType<DyRegexTypeInfo>();
             Result = AddType<DyResultTypeInfo>();
+            Guid = AddType<DyGuidTypeInfo>();
         }
     }
 }

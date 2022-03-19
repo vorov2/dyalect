@@ -7,17 +7,17 @@ namespace Dyalect.Runtime.Types
         private int _reflectedTypeCode;
         public override sealed int ReflectedTypeId => _reflectedTypeCode;
 
-        public ForeignUnit DeclaringUnit { get; internal set; } = null!;
+        public ForeignUnit DeclaringUnit { get; internal set; }
 
         internal void SetReflectedTypeCode(int code) => _reflectedTypeCode = code;
 
-        protected DyForeignTypeInfo() { }
+        protected DyForeignTypeInfo() => DeclaringUnit = null!;
     }
 
     public abstract class DyForeignTypeInfo<T> : DyForeignTypeInfo where T : ForeignUnit
     {
         protected DyForeignTypeInfo() { }
 
-        public new T DeclaringUnit { get; internal set; } = null!;
+        public new T DeclaringUnit => (T)base.DeclaringUnit;
     }
 }

@@ -11,7 +11,8 @@ namespace Dyalect.Library.Core
 
         public DyByteArray Create(byte[]? buffer) => new(this, buffer);
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.ToString());
+        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+            new DyString("{" + arg.ToString().ToUpper() + "}");
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
@@ -74,6 +75,7 @@ namespace Dyalect.Library.Core
                 "Empty" => Func.Static(name, _ => new DyGuid(this, Guid.Empty)),
                 "Parse" => Func.Static(name, Parse, -1, new Par("value")),
                 "FromByteArray" => Func.Static(name, FromByteArray, -1, new Par("value")),
+                "Default" => Func.Static(name, _ => new DyGuid(this, Guid.Empty)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
 

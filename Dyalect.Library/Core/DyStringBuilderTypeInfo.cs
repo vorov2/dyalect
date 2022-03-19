@@ -113,7 +113,7 @@ namespace Dyalect.Library.Core
                 "Remove" => Func.Member(name, Remove, -1, new Par("index"), new Par("count")),
                 "Replace" => Func.Member(name, Replace, -1, new Par("value"), new Par("other")),
                 "Append" => Func.Member(name, Append, -1, new Par("value")),
-                "AppendLine" => Func.Member(name, AppendLine, -1, new Par("value")),
+                "AppendLine" => Func.Member(name, AppendLine, -1, new Par("value", DyString.Empty)),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
 
@@ -133,7 +133,7 @@ namespace Dyalect.Library.Core
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "StringBuilder")
-                return Func.Static(name, New, -1, new Par("values", DyNil.Instance));
+                return Func.Static(name, New, 0, new Par("values"));
 
             return base.InitializeStaticMember(name, ctx);
         }

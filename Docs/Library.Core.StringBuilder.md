@@ -33,10 +33,10 @@ Converts a given `value` to a string and appends it to the end of a constructed 
 ## AppendLine
 
 ```swift
-AppendLine(value)
+AppendLine(value = "")
 ```
 
-The same as `append`, but adds a new line character to the end of the constructed string.
+The same as `Append`, but adds a new line character to the end of the constructed string. If a `value` parameter is not provided this method simply appends a new line character.
 
 <a name="remove"></a>
 ## Remove
@@ -69,7 +69,14 @@ Converts a given `value` to a string and inserts it at a given `index`. Returns 
 # Construction
 
 ```swift
-StringBuilder(values = nil)
+StringBuilder(values...)
 ```
 
-Constructs an instance of a type with a optional sequence of `values` (which if provided are converted to strings and concatenated to a solid string).
+Constructs an instance of a type with a sequence of `values` (values are converted to strings and concatenated to a solid string):
+
+```swift
+let sb1 = StringBuilder() //empty instance
+print(sb1.ToString()) //Outputs an empty string
+let sb2 = StringBuilder(1, 2, 3)
+print(sb2.ToString()) //Outputs a string: "123"
+```
