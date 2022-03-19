@@ -3,6 +3,7 @@
   * Add: _`StringBuilder`_ ([Issue #22](https://github.com/vorov2/dyalect/issues/22), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.StringBuilder)).
   * Add: _Add a `Result` type_ ([Issue #391](https://github.com/vorov2/dyalect/issues/391), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Result)).
   * Add: _Add `Guid` type_ ([Issue #606](https://github.com/vorov2/dyalect/issues/606), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Guid)).
+  * Add: _Library: regular expressions_ ([Issue #330](https://github.com/vorov2/dyalect/issues/330), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Regex)).
 
 # 0.32.2
   * Fix: _Type might not be correctly recognized in `as` expression_ ([Issue #640](https://github.com/vorov2/dyalect/issues/640)).

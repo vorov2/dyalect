@@ -7,9 +7,18 @@ namespace Dyalect.Library.Core
     {
         internal readonly Regex Regex;
 
-        public DyRegex(DyForeignTypeInfo typeInfo, string regex) : base(typeInfo)
+        public DyRegex(DyForeignTypeInfo typeInfo, string regex, bool ignoreCase, bool singleline, bool multiline) : base(typeInfo)
         {
-            Regex = new Regex(regex, RegexOptions.Compiled);
+            var opt = RegexOptions.Compiled;
+
+            if (ignoreCase)
+                opt |= RegexOptions.IgnoreCase;
+            if (singleline)
+                opt |= RegexOptions.Singleline;
+            if (multiline)
+                opt |= RegexOptions.Multiline;
+
+            Regex = new Regex(regex, opt);
         }
 
         public override object ToObject() => Regex;

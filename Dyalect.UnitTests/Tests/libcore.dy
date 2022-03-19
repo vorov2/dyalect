@@ -102,3 +102,73 @@
     assert(Guid.Default(), g)
     assert("{00000000-0000-0000-0000-000000000000}", g.ToString())
 #endregion
+
+#region "Regex: GetType"
+    let r = Regex("\\.")
+    assert(Regex, r.GetType())
+    assert("Regex", r.GetType().name)
+#endregion
+
+#region "Regex: Match 1"
+    let words = ["Seven", "even", "Maven", "Amen", "eleven"]
+    let rx = Regex(".even")
+    let matches = []
+    for word in words {
+        if rx.Match(word) {
+            matches.Add(word)
+        }
+    }
+    assert(["Seven", "eleven"], matches)
+#endregion
+
+#region "Regex: Match 2"
+    let content = <[Foxes are omnivorous mammals belonging to several genera 
+of the family Canidae. Foxes have a flattened skull, upright triangular ears,
+a pointed, slightly upturned snout, and a long bushy tail. Foxes live on every
+continent except Antarctica. By far the most common and widespread species of
+fox is the red fox.]>
+    let rx = Regex("fox(es)?", ignoreCase: true)
+    let ma = rx.Match(content)
+    assert(got: ma.success)
+    assert(1, ma.captures.Length())
+    assert("Foxes", ma.captures.First().value)
+#endregion
+
+#region "Regex: Matches 1"
+    let content = "<p>The <code>Regex</code> is a compiled representation of a regular expression.</p>"
+    let rx = Regex("</?[a-z]+>")
+    var res = rx.Matches(content)
+    var matches = []
+    for m in res {
+        matches.Add(m.value)
+    }
+    assert(["<p>", "<code>", "</code>", "</p>"], matches)
+#endregion
+
+#region "Regex: Matches 2"
+    let rg = Regex("\\b[M]\\w+")
+    let authors = "Mahesh Chand, Raj Kumar, Mike Gold, Allen O'Neill, Marshal Troll"
+    var res = rg.Matches(authors)
+    var matches = []
+    for m in res {
+        matches.Add(m.value)
+    }
+    assert(["Mahesh", "Mike", "Marshal"], matches)
+#endregion
+
+#region "Regex: Replace"
+    let x = "12;abc-D"
+    let y = Regex.Replace(x, "[^0-9a-zA-Z]+", "")
+    assert("12abcD", y)
+#endregion
+
+#region "Regex: Split"
+    let azpattern = "[a-z]+"
+    let str = "Asd2323b0900c1234Def5678Ghi9012Jklm"
+    let result = Regex.Split(str, azpattern, ignoreCase: true, removeEmptyEntries: true)
+    let matches = []
+    for x in result {
+        matches.Add(x)
+    }
+    assert(["2323", "0900", "1234", "5678", "9012"], matches)
+#endregion
