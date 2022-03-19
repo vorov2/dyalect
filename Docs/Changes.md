@@ -1,6 +1,7 @@
 # 0.33.0
   * Add: _Create foreign types from other foreign modules_ ([Issue #644](https://github.com/vorov2/dyalect/issues/644)).
   * Add: _`StringBuilder`_ ([Issue #22](https://github.com/vorov2/dyalect/issues/22), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.StringBuilder)).
+  * Add: _Add a `Result` type_ ([Issue #391](https://github.com/vorov2/dyalect/issues/391), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Result)).
 
 # 0.32.2
   * Fix: _Type might not be correctly recognized in `as` expression_ ([Issue #640](https://github.com/vorov2/dyalect/issues/640)).
