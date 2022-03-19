@@ -1,8 +1,8 @@
 # 0.32.2
-  * Fix: _Type might not be correctly recognized in as expression_ ([Issue #640](https://github.com/vorov2/dyalect/issues/640)).
-  * Fix: _Type might not be correctly recognized in as function_ ([Issue #637](https://github.com/vorov2/dyalect/issues/637)).
+  * Fix: _Type might not be correctly recognized in `as` expression_ ([Issue #640](https://github.com/vorov2/dyalect/issues/640)).
+  * Fix: _Type might not be correctly recognized in `as` function_ ([Issue #637](https://github.com/vorov2/dyalect/issues/637)).
   * Fix: _Incorrect compilation of indexer with long type name_ ([Issue #638](https://github.com/vorov2/dyalect/issues/638)).
-  * Fix: _Field code of DyTypeInfo returns incorrect code_ ([Issue #642](https://github.com/vorov2/dyalect/issues/642)).
+  * Fix: _Field `code` of `DyTypeInfo` returns incorrect value_ ([Issue #642](https://github.com/vorov2/dyalect/issues/642)).
   * Fix: _It is possible to override `Name` and `Code` properties of `DyTypeInfo`_ ([Issue #641](https://github.com/vorov2/dyalect/issues/641)).
 
 # 0.32.1

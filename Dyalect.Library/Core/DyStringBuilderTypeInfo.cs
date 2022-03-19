@@ -10,7 +10,7 @@ namespace Dyalect.Library.Core
     {
         public override string TypeName => "StringBuilder";
 
-        public DyStringBuilder Create(StringBuilder sb) => new DyStringBuilder(this, sb);
+        public DyStringBuilder Create(StringBuilder sb) => new(this, sb);
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(((DyStringBuilder)arg).ToString());
@@ -116,7 +116,6 @@ namespace Dyalect.Library.Core
                 "AppendLine" => Func.Member(name, AppendLine, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
-
 
         private DyObject New(ExecutionContext ctx, DyObject arg)
         {
