@@ -153,6 +153,25 @@ namespace Dyalect.Library.Core
             return new DyTuple(xs.ToArray());
         }
 
+        private DyObject IsMatch(ExecutionContext ctx, DyObject input, DyObject pattern, DyObject ignoreCase, DyObject singleline, DyObject multiline)
+        {
+            if (input.TypeId != DyType.String)
+                return ctx.InvalidType(DyType.String, input);
+
+            if (pattern.TypeId != DyType.String)
+                return ctx.InvalidType(DyType.String, pattern);
+
+            var opt = RegexOptions.Compiled;
+            if (ignoreCase.GetBool(ctx))
+                opt |= RegexOptions.IgnoreCase;
+            if (singleline.GetBool(ctx))
+                opt |= RegexOptions.Singleline;
+            if (multiline.GetBool(ctx))
+                opt |= RegexOptions.Multiline;
+
+            return Regex.IsMatch(input.GetString(), pattern.GetString(), opt) ? DyBool.True : DyBool.False;
+        }
+
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -181,6 +200,9 @@ namespace Dyalect.Library.Core
                 "Split" => Func.Static(name, StaticSplit, -1, new Par("input"), new Par("pattern"),
                     new Par("count", DyNil.Instance), new Par("index", DyInteger.Zero),
                     new Par("ignoreCase", DyBool.False), new Par("removeEmptyEntries", DyBool.False)),
+                "IsMatch" => Func.Static(name, IsMatch, -1, new Par("input"), new Par("pattern"),
+                    new Par("ignoreCase", DyBool.False),
+                    new Par("singleline", DyBool.False), new Par("multiline", DyBool.False)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

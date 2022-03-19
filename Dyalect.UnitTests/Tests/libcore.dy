@@ -172,3 +172,13 @@ fox is the red fox.]>
     }
     assert(["2323", "0900", "1234", "5678", "9012"], matches)
 #endregion
+
+#region "Regex: IsMatch"
+    let partNumbers = ["1298-673-4192", "A08Z-931-468A", "_A90-123-129X", "12345-KKA-1230", "0919-2893-1256"]
+    let pattern = <[^[a-zA-Z0-9]\d{2}[a-zA-Z0-9](-\d{3}){2}[A-Za-z0-9]$]>
+    let matches = []
+    for n in partNumbers when Regex.IsMatch(n, pattern) {
+        matches.Add(true)
+    }
+    assert([true, true], matches)
+#endregion
