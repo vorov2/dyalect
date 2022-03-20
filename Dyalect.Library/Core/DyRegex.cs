@@ -7,7 +7,9 @@ namespace Dyalect.Library.Core
     {
         internal readonly Regex Regex;
 
-        public DyRegex(DyForeignTypeInfo typeInfo, string regex, bool ignoreCase, bool singleline, bool multiline) : base(typeInfo)
+        internal bool RemoveEmptyEntries { get; }
+
+        public DyRegex(DyForeignTypeInfo typeInfo, string regex, bool ignoreCase, bool singleline, bool multiline, bool removeEmptyEntries) : base(typeInfo)
         {
             var opt = RegexOptions.Compiled;
 
@@ -18,6 +20,7 @@ namespace Dyalect.Library.Core
             if (multiline)
                 opt |= RegexOptions.Multiline;
 
+            RemoveEmptyEntries = removeEmptyEntries;
             Regex = new Regex(regex, opt);
         }
 

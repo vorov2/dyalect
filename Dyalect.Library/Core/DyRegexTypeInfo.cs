@@ -153,23 +153,30 @@ namespace Dyalect.Library.Core
             return new DyTuple(xs.ToArray());
         }
 
-        private DyObject IsMatch(ExecutionContext ctx, DyObject input, DyObject pattern, DyObject ignoreCase, DyObject singleline, DyObject multiline)
+        private DyObject IsMatch(ExecutionContext ctx, DyObject self, DyObject input, DyObject index)
         {
             if (input.TypeId != DyType.String)
                 return ctx.InvalidType(DyType.String, input);
 
-            if (pattern.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, pattern);
+            if (index.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyType.Integer, index);
 
-            var opt = RegexOptions.Compiled;
-            if (ignoreCase.GetBool(ctx))
-                opt |= RegexOptions.IgnoreCase;
-            if (singleline.GetBool(ctx))
-                opt |= RegexOptions.Singleline;
-            if (multiline.GetBool(ctx))
-                opt |= RegexOptions.Multiline;
+            var idx = (int)index.GetInteger();
+            var str = input.GetString();
 
-            return Regex.IsMatch(input.GetString(), pattern.GetString(), opt) ? DyBool.True : DyBool.False;
+            if (idx < 0 || idx >= str.Length)
+                return ctx.IndexOutOfRange(index);
+
+            var rx = ((DyRegex)self).Regex;
+
+            try
+            {
+                return rx.IsMatch(str, idx) ? DyBool.True : DyBool.False;
+            }
+            catch (RegexMatchTimeoutException) 
+            {
+                return ctx.FailWith("RegexTimeout");
+            }
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -178,31 +185,24 @@ namespace Dyalect.Library.Core
                 "Match" => Func.Member(name, Match, -1, new Par("input"), new Par("index", DyInteger.Zero), new Par("count", DyNil.Instance)),
                 "Matches" => Func.Member(name, Matches, -1, new Par("input"), new Par("index", DyInteger.Zero)),
                 "Replace" => Func.Member(name, Replace, -1, new Par("input"), new Par("replacement")),
-                "Split" => Func.Member(name, Split, -1, new Par("input"), new Par("count", DyNil.Instance),
-                    new Par("index", DyInteger.Zero), new Par("removeEmptyEntries", DyBool.False)),
+                "Split" => Func.Member(name, Split, -1, new Par("input"), new Par("count", DyNil.Instance), new Par("index", DyInteger.Zero)),
+                "IsMatch" => Func.Member(name, IsMatch, -1, new Par("input")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
-        private DyObject New(ExecutionContext ctx, DyObject arg, DyObject ignoreCase, DyObject singleline, DyObject multiline)
+        private DyObject New(ExecutionContext ctx, DyObject arg, DyObject ignoreCase, DyObject singleline, DyObject multiline, DyObject removeEmptyEntries)
         {
             if (arg.TypeId != DyType.String)
                 return ctx.InvalidType(arg);
 
-            return new DyRegex(this, arg.GetString(), ignoreCase.GetBool(ctx), singleline.GetBool(ctx), multiline.GetBool(ctx));
+            return new DyRegex(this, arg.GetString(), ignoreCase.GetBool(ctx), singleline.GetBool(ctx), multiline.GetBool(ctx), removeEmptyEntries.GetBool(ctx));
         }
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "Regex" => Func.Static(name, New, -1, new Par("pattern"), new Par("ignoreCase", DyBool.False),
-                    new Par("singleline", DyBool.False), new Par("multiline", DyBool.False)),
-                "Replace" => Func.Static(name, StaticReplace, -1, new Par("input"), new Par("pattern"), new Par("replacement"), new Par("ignoreCase", DyBool.False)),
-                "Split" => Func.Static(name, StaticSplit, -1, new Par("input"), new Par("pattern"),
-                    new Par("count", DyNil.Instance), new Par("index", DyInteger.Zero),
-                    new Par("ignoreCase", DyBool.False), new Par("removeEmptyEntries", DyBool.False)),
-                "IsMatch" => Func.Static(name, IsMatch, -1, new Par("input"), new Par("pattern"),
-                    new Par("ignoreCase", DyBool.False),
-                    new Par("singleline", DyBool.False), new Par("multiline", DyBool.False)),
+                    new Par("singleline", DyBool.False), new Par("multiline", DyBool.False), new Par("removeEmptyEntries", DyBool.False)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

@@ -5,6 +5,12 @@ namespace Dyalect.Runtime
 {
     public static class ErrorGenerators
     {
+        public static DyObject FailWith(this ExecutionContext ctx, string name, params string[] dataItems)
+        {
+            ctx.Error = new(name, DyErrorCode.UnexpectedError, dataItems);
+            return DyNil.Instance;
+        }
+
         public static DyObject Fail(this ExecutionContext ctx, string detail)
         {
             ctx.Error = new(DyErrorCode.UnexpectedError, detail);
@@ -98,7 +104,8 @@ namespace Dyalect.Runtime
 
         public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, int typeId)
         {
-            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), typeId);
+            var typeName = ctx.RuntimeContext.Types[typeId].TypeName;
+            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), typeName);
             return DyNil.Instance;
         }
 
