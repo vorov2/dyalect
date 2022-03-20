@@ -190,3 +190,24 @@ fox is the red fox.]>
     }
     assert([true, true], matches)
 #endregion
+
+#region "ByteArray: GetType"
+    let barr = ByteArray()
+    assert(ByteArray, barr.GetType())
+    assert("ByteArray", barr.GetType().name)
+#endregion
+
+#region "ByteArray: read and write"
+    let bar = ByteArray()
+    bar.Write(24)
+    bar.Write("foo")
+    bar.Write("Coed")
+    bar.Write('D')
+    assert(24, bar.Read(Integer))
+    assert(8, bar.Position())
+    assert("foo", bar.Read(String))
+    assert(15, bar.Position())
+    assert("Coed", bar.Read(String))
+    assert(23, bar.Position())
+    assert('D', bar.Read(Char))
+#endregion

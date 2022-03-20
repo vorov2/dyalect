@@ -61,7 +61,7 @@ namespace Dyalect.Library.Core
             {
                 "Read" => Func.Member(name, Read, -1, new Par("typeInfo")),
                 "Write" => Func.Member(name, Write, -1, new Par("value")),
-                "Position" => Func.Auto(name, GetPosition),
+                "Position" => Func.Member(name, GetPosition),
                 "Reset" => Func.Member(name, Reset),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };

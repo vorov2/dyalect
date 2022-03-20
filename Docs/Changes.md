@@ -4,6 +4,7 @@
   * Add: _Add a `Result` type_ ([Issue #391](https://github.com/vorov2/dyalect/issues/391), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Result)).
   * Add: _Add `Guid` type_ ([Issue #606](https://github.com/vorov2/dyalect/issues/606), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Guid)).
   * Add: _Library: regular expressions_ ([Issue #330](https://github.com/vorov2/dyalect/issues/330), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Regex)).
+  * Add: _Library: `ByteArray` data type_  ([Issue #333](https://github.com/vorov2/dyalect/issues/333), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.ByteArray)).
   * Fix: _Type related error messages can be incorrectly displayed for custom types_ ([Issue #645](https://github.com/vorov2/dyalect/issues/645)).
 
 # 0.32.2
