@@ -156,16 +156,24 @@ fox is the red fox.]>
     assert(["Mahesh", "Mike", "Marshal"], matches)
 #endregion
 
-#region "Regex: Replace"
+#region "Regex: Replace 1"
     let x = "12;abc-D"
-    let y = Regex.Replace(x, "[^0-9a-zA-Z]+", "")
+    let rx = Regex("[^0-9a-zA-Z]+")
+    let y = rx.Replace(x, "")
     assert("12abcD", y)
 #endregion
 
+#region "Regex: Replace 2"
+    let badString = "Here is a strig with ton of white space."
+    let rx = Regex("\\s+")
+    let cleanedString = rx.Replace(badString, "-")
+    assert("Here-is-a-strig-with-ton-of-white-space.", cleanedString)
+#endregion
+
 #region "Regex: Split"
-    let azpattern = "[a-z]+"
     let str = "Asd2323b0900c1234Def5678Ghi9012Jklm"
-    let result = Regex.Split(str, azpattern, ignoreCase: true, removeEmptyEntries: true)
+    let rx = Regex("[a-z]+", ignoreCase: true, removeEmptyEntries: true)
+    let result = rx.Split(str)
     let matches = []
     for x in result {
         matches.Add(x)
@@ -175,9 +183,9 @@ fox is the red fox.]>
 
 #region "Regex: IsMatch"
     let partNumbers = ["1298-673-4192", "A08Z-931-468A", "_A90-123-129X", "12345-KKA-1230", "0919-2893-1256"]
-    let pattern = <[^[a-zA-Z0-9]\d{2}[a-zA-Z0-9](-\d{3}){2}[A-Za-z0-9]$]>
+    let rx = Regex(<[^[a-zA-Z0-9]\d{2}[a-zA-Z0-9](-\d{3}){2}[A-Za-z0-9]$]>)
     let matches = []
-    for n in partNumbers when Regex.IsMatch(n, pattern) {
+    for n in partNumbers when rx.IsMatch(n) {
         matches.Add(true)
     }
     assert([true, true], matches)

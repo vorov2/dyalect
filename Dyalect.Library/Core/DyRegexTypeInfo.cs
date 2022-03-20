@@ -8,6 +8,8 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyRegexTypeInfo : DyForeignTypeInfo
     {
+        private const string EXCEPTION_REGEXTIMEOUT = "RegexTimeout";
+
         public override string TypeName => "Regex";
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
@@ -24,23 +26,6 @@ namespace Dyalect.Library.Core
                 ? DyBool.True : DyBool.False;
         }
 
-        private DyObject StaticReplace(ExecutionContext ctx, DyObject input, DyObject pattern, DyObject replacement,
-            DyObject ignoreCase)
-        {
-            if (input.TypeId != DyType.String)
-                return ctx.InvalidType(input);
-
-            if (replacement.TypeId != DyType.String)
-                return ctx.InvalidType(replacement);
-
-            if (pattern.TypeId != DyType.String)
-                return ctx.InvalidType(pattern);
-
-            var str = Regex.Replace(input.GetString(), pattern.GetString(), replacement.GetString(),
-                ignoreCase.GetBool(ctx) ? RegexOptions.None : RegexOptions.IgnoreCase);
-            return new DyString(str);
-        }
-
         private DyObject Replace(ExecutionContext ctx, DyObject self, DyObject input, DyObject replacement)
         {
             if (input.TypeId != DyType.String)
@@ -50,12 +35,19 @@ namespace Dyalect.Library.Core
                 return ctx.InvalidType(DyType.String, replacement);
 
             var rx = ((DyRegex)self).Regex;
-            var str = rx.Replace(input.GetString(), replacement.GetString());
-            return new DyString(str);
+
+            try
+            {
+                var str = rx.Replace(input.GetString(), replacement.GetString());
+                return new DyString(str);
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return ctx.FailWith(EXCEPTION_REGEXTIMEOUT);
+            }
         }
 
-        private DyObject Split(ExecutionContext ctx, DyObject self, DyObject input, DyObject count, DyObject index,
-            DyObject removeEmptyEntries)
+        private DyObject Split(ExecutionContext ctx, DyObject self, DyObject input, DyObject count, DyObject index)
         {
             if (input.TypeId != DyType.String)
                 return ctx.InvalidType(DyType.String, input);
@@ -71,80 +63,71 @@ namespace Dyalect.Library.Core
             if (count.TypeId == DyType.Integer)
                 icount = (int)count.GetInteger();
 
-            var rx = ((DyRegex)self).Regex;
-            var arr = rx.Split(input.GetString(), icount, (int)index.GetInteger());
-            var objs = new List<DyObject>();
-            var flag = removeEmptyEntries.GetBool(ctx);
+            var idx = (int)index.GetInteger();
+            var str = input.GetString();
 
-            for (var i = 0; i < arr.Length; i++)
-                if (!flag || !string.IsNullOrEmpty(arr[i]))
-                    objs.Add(new DyString(arr[i]));
+            if (idx < 0 || idx >= str.Length)
+                return ctx.IndexOutOfRange(index);
 
-            return new DyTuple(objs.ToArray());
+            var rx = (DyRegex)self;
+
+            try
+            {
+                var arr = rx.Regex.Split(str, icount, idx);
+                var objs = new List<DyObject>();
+
+                for (var i = 0; i < arr.Length; i++)
+                    if (!rx.RemoveEmptyEntries || !string.IsNullOrEmpty(arr[i]))
+                        objs.Add(new DyString(arr[i]));
+
+                return new DyTuple(objs.ToArray());
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return ctx.FailWith(EXCEPTION_REGEXTIMEOUT);
+            }
         }
 
-        private DyObject StaticSplit(ExecutionContext ctx, DyObject input, DyObject pattern, DyObject count, DyObject index,
-            DyObject ignoreCase, DyObject removeEmptyEntries)
-        {
-            if (input.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, input);
-
-            if (pattern.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, pattern);
-
-            if (count.TypeId != DyType.Integer && count.TypeId != DyType.Nil)
-                return ctx.InvalidType(DyType.Integer, DyType.Nil, count);
-
-            if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, index);
-
-            var icount = int.MaxValue;
-
-            if (count.TypeId == DyType.Integer)
-                icount = (int)count.GetInteger();
-
-            var rx = new Regex(pattern.GetString(), ignoreCase.GetBool(ctx) ? (RegexOptions.IgnoreCase|RegexOptions.Compiled) : RegexOptions.Compiled);
-            var arr = rx.Split(input.GetString(), icount, (int)index.GetInteger());
-            var objs = new List<DyObject>();
-            var flag = removeEmptyEntries.GetBool(ctx);
-
-            for (var i = 0; i < arr.Length; i++)
-                if (!flag || !string.IsNullOrEmpty(arr[i]))
-                    objs.Add(new DyString(arr[i]));
-
-            return new DyTuple(objs.ToArray());
-        }
-
-        private DyObject Match(ExecutionContext ctx, DyObject self, DyObject input, DyObject start, DyObject len)
+        private DyObject Match(ExecutionContext ctx, DyObject self, DyObject input, DyObject index, DyObject count)
         {
             if (input.TypeId != DyType.String)
                 return ctx.InvalidType(DyType.String, input);
 
             var str = input.GetString();
-            var istart = (int)(long)start.ToObject();
-            var ilen = len.TypeId == DyType.Nil ? str.Length : (int)(long)len.ToObject();
+            var istart = (int)(long)index.ToObject();
+            var ilen = count.TypeId == DyType.Nil ? str.Length : (int)(long)count.ToObject();
             var rx = ((DyRegex)self).Regex;
 
             if (istart + ilen > str.Length)
                 return ctx.IndexOutOfRange();
 
-            var m = rx.Match(str, istart, ilen);
-            return new DyRegexMatch(m);
+            try
+            {
+                var m = rx.Match(str, istart, ilen);
+                return new DyRegexMatch(m);
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return ctx.FailWith(EXCEPTION_REGEXTIMEOUT);
+            }
         }
 
-        private DyObject Matches(ExecutionContext ctx, DyObject self, DyObject input, DyObject start)
+        private DyObject Matches(ExecutionContext ctx, DyObject self, DyObject input, DyObject index)
         {
             if (input.TypeId != DyType.String)
                 return ctx.InvalidType(DyType.String, input);
 
-            var str = (string)input.ToObject();
-            var istart = (int)(long)start.ToObject();
+            if (index.TypeId != DyType.Integer)
+                return ctx.InvalidType(DyType.Integer, index);
+
+            var str = input.GetString();
+            var idx = (int)index.GetInteger();
             var rx = ((DyRegex)self).Regex;
 
-            if (istart > str.Length)
+            if (idx > str.Length)
                 return ctx.IndexOutOfRange();
 
-            var ms = rx.Matches(str, istart);
+            var ms = rx.Matches(str, idx);
             var xs = new FastList<DyRegexMatch>();
 
             for (var i = 0; i < ms.Count; i++)
@@ -175,7 +158,7 @@ namespace Dyalect.Library.Core
             }
             catch (RegexMatchTimeoutException) 
             {
-                return ctx.FailWith("RegexTimeout");
+                return ctx.FailWith(EXCEPTION_REGEXTIMEOUT);
             }
         }
 
@@ -186,7 +169,7 @@ namespace Dyalect.Library.Core
                 "Matches" => Func.Member(name, Matches, -1, new Par("input"), new Par("index", DyInteger.Zero)),
                 "Replace" => Func.Member(name, Replace, -1, new Par("input"), new Par("replacement")),
                 "Split" => Func.Member(name, Split, -1, new Par("input"), new Par("count", DyNil.Instance), new Par("index", DyInteger.Zero)),
-                "IsMatch" => Func.Member(name, IsMatch, -1, new Par("input")),
+                "IsMatch" => Func.Member(name, IsMatch, -1, new Par("input"), new Par("index", DyInteger.Zero)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
