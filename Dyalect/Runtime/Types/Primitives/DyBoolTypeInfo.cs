@@ -28,5 +28,12 @@ namespace Dyalect.Runtime.Types
                 Method.Default => Func.Static(name, _ => DyBool.False),
                 _ => base.InitializeStaticMember(name, ctx)
             };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.ReflectedTypeId switch
+            {
+                DyType.Integer => ReferenceEquals(self, DyBool.True) ? DyInteger.One : DyInteger.Zero,
+                _ => base.CastOp(self, targetType, ctx)
+            };
     }
 }

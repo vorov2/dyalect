@@ -24,6 +24,7 @@
     let b = true
     assert(true, b as Bool)
     assert("true", b as String)
+    assert(1, b as Integer)
 #endregion
 
 #region "Conversion to itself" //Bug #635
