@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using Dyalect.Library.Strings;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System.Collections.Generic;
@@ -8,8 +9,6 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyRegexTypeInfo : DyForeignTypeInfo
     {
-        private const string EXCEPTION_REGEXTIMEOUT = "RegexTimeout";
-
         public override string TypeName => "Regex";
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
@@ -43,7 +42,7 @@ namespace Dyalect.Library.Core
             }
             catch (RegexMatchTimeoutException)
             {
-                return ctx.FailWith(EXCEPTION_REGEXTIMEOUT);
+                return ctx.Fail(nameof(Errors.RegexTimeout), Errors.RegexTimeout);
             }
         }
 
@@ -84,7 +83,7 @@ namespace Dyalect.Library.Core
             }
             catch (RegexMatchTimeoutException)
             {
-                return ctx.FailWith(EXCEPTION_REGEXTIMEOUT);
+                return ctx.Fail(nameof(Errors.RegexTimeout), Errors.RegexTimeout);
             }
         }
 
@@ -108,7 +107,7 @@ namespace Dyalect.Library.Core
             }
             catch (RegexMatchTimeoutException)
             {
-                return ctx.FailWith(EXCEPTION_REGEXTIMEOUT);
+                return ctx.Fail(nameof(Errors.RegexTimeout), Errors.RegexTimeout);
             }
         }
 
@@ -158,7 +157,7 @@ namespace Dyalect.Library.Core
             }
             catch (RegexMatchTimeoutException) 
             {
-                return ctx.FailWith(EXCEPTION_REGEXTIMEOUT);
+                return ctx.Fail(nameof(Errors.RegexTimeout), Errors.RegexTimeout);
             }
         }
 

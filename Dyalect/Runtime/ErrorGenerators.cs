@@ -5,15 +5,21 @@ namespace Dyalect.Runtime
 {
     public static class ErrorGenerators
     {
-        public static DyObject FailWith(this ExecutionContext ctx, string name, params string[] dataItems)
+        public static DyObject Fail(this ExecutionContext ctx, string errorName, string description, params string[] dataItems)
         {
-            ctx.Error = new(name, DyErrorCode.UnexpectedError, dataItems);
+            ctx.Error = new(errorName, description, dataItems);
             return DyNil.Instance;
         }
 
-        public static DyObject Fail(this ExecutionContext ctx, string detail)
+        public static DyObject Failure(this ExecutionContext ctx, string detail)
         {
-            ctx.Error = new(DyErrorCode.UnexpectedError, detail);
+            ctx.Error = new(DyErrorCode.Failure, detail);
+            return DyNil.Instance;
+        }
+
+        public static DyObject ValueMissing(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.ValueMissing);
             return DyNil.Instance;
         }
 

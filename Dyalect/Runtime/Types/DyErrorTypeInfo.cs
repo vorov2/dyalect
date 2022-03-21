@@ -46,9 +46,9 @@ namespace Dyalect.Runtime.Types
                     code = DyErrorCode.UnexpectedError;
 
                 if (args is not null && args is DyTuple t)
-                    return new DyError(name, code, t.Values);
+                    return new DyError(name, code, null, t.Values);
                 else
-                    return new DyError(name, code);
+                    return new DyError(name, code, null, code);
             }, 0, new Par("values"));
         }
     }

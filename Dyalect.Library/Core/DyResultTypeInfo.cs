@@ -54,7 +54,7 @@ namespace Dyalect.Library.Core
 
             var newctx = ctx.Clone();
             var res = s.Value.ToString(newctx);
-            return newctx.HasErrors ? ctx.Fail(s.Value.ToString()) : ctx.Fail(res.ToString());
+            return newctx.HasErrors ? ctx.Failure(s.Value.ToString()) : ctx.Failure(res.ToString());
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>

@@ -255,4 +255,13 @@
   <data name="OperationNotSupported.3" xml:space="preserve">
     <value>Operation "{0}" is not supported for the types "{1}" and "{2}".</value>
   </data>
+  <data name="ValueMissing.0" xml:space="preserve">
+    <value>Value is not available.</value>
+  </data>
+  <data name="Failure.0" xml:space="preserve">
+    <value>A failure occured.</value>
+  </data>
+  <data name="Failure.1" xml:space="preserve">
+    <value>A failure occured: {0}</value>
+  </data>
 </root>
