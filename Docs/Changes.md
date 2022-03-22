@@ -7,6 +7,7 @@
   * Add: _Library: `ByteArray` data type_  ([Issue #333](https://github.com/vorov2/dyalect/issues/333), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.ByteArray)).
   * Add: _Support for casting dictionary to a tuple with named elements_ ([Issue #647](https://github.com/vorov2/dyalect/issues/647)).
   * Add: _Add an ability to save test results to a file_ ([Issue #648](https://github.com/vorov2/dyalect/issues/648), [docs](https://github.com/vorov2/dyalect/wiki/Dyalect-consoles#switches)).
+  * Add: _Add a module to work with console input/output_ ([Issue #255](https://github.com/vorov2/dyalect/issues/255), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Console)).
   * Fix: _Type related error messages can be incorrectly displayed for custom types_ ([Issue #645](https://github.com/vorov2/dyalect/issues/645)).
 
 # 0.32.2

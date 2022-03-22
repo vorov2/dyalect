@@ -10,6 +10,7 @@ namespace Dyalect.Library.Core
         public DyRegexTypeInfo Regex { get; }
         public DyResultTypeInfo Result { get; }
         public DyGuidTypeInfo Guid { get; }
+        public DyConsoleTypeInfo Console { get; }
 
         public CoreModule()
         {
@@ -18,6 +19,7 @@ namespace Dyalect.Library.Core
             Regex = AddType<DyRegexTypeInfo>();
             Result = AddType<DyResultTypeInfo>();
             Guid = AddType<DyGuidTypeInfo>();
+            Console = AddType<DyConsoleTypeInfo>();
         }
     }
 }
