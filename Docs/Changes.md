@@ -9,6 +9,7 @@
   * Add: _Add an ability to save test results to a file_ ([Issue #648](https://github.com/vorov2/dyalect/issues/648), [docs](https://github.com/vorov2/dyalect/wiki/Dyalect-consoles#switches)).
   * Add: _Add a module to work with console input/output_ ([Issue #255](https://github.com/vorov2/dyalect/issues/255), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Console)).
   * Fix: _Type related error messages can be incorrectly displayed for custom types_ ([Issue #645](https://github.com/vorov2/dyalect/issues/645)).
+  * Fix: _It is not possible to create foreign static properties_ ([Issue #646](https://github.com/vorov2/dyalect/issues/646)).
 
 # 0.32.2
   * Fix: _Type might not be correctly recognized in `as` expression_ ([Issue #640](https://github.com/vorov2/dyalect/issues/640)).
