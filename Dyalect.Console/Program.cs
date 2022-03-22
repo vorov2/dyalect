@@ -87,8 +87,8 @@ namespace Dyalect
                 return false;
             }
 
-            return TestRunner.RunTests(options.GetFileNames(), options,
-                InteractiveContext.CreateBuildOptions(options));
+            var tr = new TestRunner(InteractiveContext.CreateBuildOptions(options), options);
+            return tr.RunTests(options.GetFileNames());
         }
 
         private static bool Compile(DyaOptions options)

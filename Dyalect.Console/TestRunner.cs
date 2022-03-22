@@ -8,12 +8,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 
 namespace Dyalect
 {
-    public static class TestRunner
+    public class TestRunner
     {
-        private static readonly List<string> commands = new();
+        private readonly List<string> commands = new();
+        private readonly StringBuilder builder = new();
+        private readonly DyaOptions dyaOptions;
+        private readonly BuilderOptions buildOptions;
 
         sealed class TestBlockInfo
         {
@@ -23,16 +28,35 @@ namespace Dyalect
             public TestBlockInfo(string fileName) => FileName = fileName;
         }
 
-        public static bool RunTests(IEnumerable<string> fileNames, DyaOptions dyaOptions, BuilderOptions buildOptions)
+        public TestRunner(BuilderOptions buildOptions, DyaOptions dyaOptions) =>
+            (this.buildOptions, this.dyaOptions) = (buildOptions, dyaOptions);
+
+        private void Output(string text)
         {
-#if !DEBUG
+            builder.AppendLine(text);
+            Printer.Output(text);
+        }
+
+        private void Error(string text)
+        {
+            builder.AppendLine(text);
+            Printer.Error(text);
+        }
+
+        private void LineFeed()
+        {
+            builder.AppendLine();
+            Printer.LineFeed();
+        }
+
+        public bool RunTests(IEnumerable<string> fileNames)
+        {
             try
-#endif
             {
                 var warns = new List<BuildMessage>();
                 var blocks = GatherTests(fileNames, warns);
-                Printer.Output($"Running tests from {fileNames.Count()} file(s):");
-                Printer.Output(string.Join(' ', blocks.Select(b => Path.GetFileName(b.FileName)).Distinct()));
+                Output($"Running tests from {fileNames.Count()} file(s):");
+                Output(string.Join(' ', blocks.Select(b => Path.GetFileName(b.FileName)).Distinct()));
 
                 if (blocks is null)
                     return false;
@@ -41,10 +65,10 @@ namespace Dyalect
 
                 if (warns.Count > 0)
                 {
-                    Printer.LineFeed();
-                    Printer.Output($"Warnings:");
+                    LineFeed();
+                    Output($"Warnings:");
                     foreach (var w in warns)
-                        Printer.Output(w.ToString());
+                        Output(w.ToString());
                 }
 
                 return true;
@@ -52,45 +76,60 @@ namespace Dyalect
 #if !DEBUG
             catch (Exception ex)
             {
-                Printer.Error($"Failure! {ex.Message}");
+                Error($"Failure! {ex.Message}");
                 return false;
             }
 #endif
+            finally
+            {
+                if (!string.IsNullOrWhiteSpace(dyaOptions.SaveTestResults))
+                {
+                    try
+                    {
+                        var path = Path.Combine(Environment.CurrentDirectory, dyaOptions.SaveTestResults);
+                        File.WriteAllText(path, builder.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        Error($"Unable to save test results: {ex.Message}");
+                    }
+                }
+            }
         }
 
-        private static void Submit()
+        private void Submit()
         {
-            Printer.LineFeed();
-            Printer.Output("Submitting test results...");
+            LineFeed();
+            Output("Submitting test results...");
 
             try
             {
                 foreach (var c in commands)
                     Process.Start("appveyor", c);
 
-                Printer.Output("Ok");
+                Output("Ok");
             }
             catch (Exception ex)
             {
-                Printer.Error($"Failure! {ex.Message}");
+                Error($"Failure! {ex.Message}");
             }
         }
 
-        private static void Failed(string name, string reason, string fileName)
+        private void Failed(string name, string reason, string fileName)
         {
             commands.Add($"AddTest \"{name}\" -Outcome Failed -Framework DyaUnit -FileName {fileName}");
-            Printer.Output($"[ ] {name} FAILED: {reason}");
+            Output($"[ ] {name} FAILED: {reason}");
         }
 
-        private static void Success(DyaOptions options, string name, string fileName)
+        private void Success(DyaOptions options, string name, string fileName)
         {
             commands.Add($"AddTest {name} -Outcome Passed -Framework DyaUnit -FileName {fileName}");
 
             if (!options.ShowOnlyFailedTests)
-                Printer.Output($"[+] {name}");
+                Output($"[+] {name}");
         }
 
-        private static TestBlockInfo[] GatherTests(IEnumerable<string> files, List<BuildMessage> warns)
+        private TestBlockInfo[] GatherTests(IEnumerable<string> files, List<BuildMessage> warns)
         {
             var blocks = new List<TestBlockInfo>();
 
@@ -123,7 +162,7 @@ namespace Dyalect
             return blocks.ToArray();
         }
 
-        private static void RunTests(TestBlockInfo[] testBlocks, DyaOptions options, BuilderOptions builderOptions, List<BuildMessage> warns)
+        private void RunTests(TestBlockInfo[] testBlocks, DyaOptions options, BuilderOptions builderOptions, List<BuildMessage> warns)
         {
             const string INIT = "Initialize";
 
@@ -168,7 +207,7 @@ namespace Dyalect
                     if (options.ShowOnlyFailedTests)
                         PrintFileHeader(options, bi.FileName, true);
 
-                    Printer.Error(bi.Error ?? "Unknown error");
+                    Error(bi.Error ?? "Unknown error");
                     failed++;
                     plusFails = true;
                     continue;
@@ -235,21 +274,21 @@ namespace Dyalect
                 }
             }
 
-            Printer.LineFeed();
-            Printer.Output("Total:");
-            Printer.Output($"{passed} passed, {failed}{(plusFails ? "+" : "")} failed in {fileCounter} file(s)");
+            LineFeed();
+            Output("Total:");
+            Output($"{passed} passed, {failed}{(plusFails ? "+" : "")} failed in {fileCounter} file(s)");
 
             if (options.AppVeyour)
                 Submit();
         }
 
-        private static void PrintFileHeader(DyaOptions options, string fileName, bool printAlways = false)
+        private void PrintFileHeader(DyaOptions options, string fileName, bool printAlways = false)
         {
             if (printAlways || !options.ShowOnlyFailedTests)
             {
-                Printer.LineFeed();
+                LineFeed();
                 var fi = new FileInfo(fileName);
-                Printer.Output($"{fi.Directory?.Name}/{fi.Name}:");
+                Output($"{fi.Directory?.Name}/{fi.Name}:");
             }
         }
     }
