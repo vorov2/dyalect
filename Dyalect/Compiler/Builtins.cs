@@ -2,7 +2,7 @@
 {
     internal static class Builtins
     {
-        private const string SET = "__set_";
+        private const string SET = "set_";
         public static string Setter(string name) => $"{SET}{name}";
         public static bool IsSetter(string name) => name.StartsWith(SET);
         public static string GetSetterName(string name) => name[SET.Length..];

@@ -2,12 +2,15 @@
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
+using System.IO;
 
 namespace Dyalect.Library.Core
 {
     public sealed class DyConsoleTypeInfo : DyForeignTypeInfo
     {
         public override string TypeName => "Console";
+        private TextWriter? consoleOutput;
+        private TextReader? consoleInput;
 
         protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
@@ -26,7 +29,7 @@ namespace Dyalect.Library.Core
             var str = value.ToString(ctx);
 
             if (!ctx.HasErrors)
-                Console.WriteLine(str.GetString());
+                Console.Write(str.GetString() + Environment.NewLine);
 
             return DyNil.Instance;
         }
@@ -94,9 +97,60 @@ namespace Dyalect.Library.Core
             return DyNil.Instance;
         }
 
+        private DyObject SetTitle(ExecutionContext ctx, DyObject value)
+        {
+            if (value.TypeId != DyType.String)
+                return ctx.InvalidType(DyType.String, value);
+
+            Console.Title = value.GetString();
+            return DyNil.Instance;
+        }
+
         private DyObject ResetColor(ExecutionContext _)
         {
             Console.ResetColor();
+            return DyNil.Instance;
+        }
+
+        private DyObject SetOutput(ExecutionContext ctx, DyObject write)
+        {
+            if (write is DyNil)
+            {
+                if (consoleOutput is not null)
+                    Console.SetOut(consoleOutput);
+            }
+            else if (write is not DyFunction fn)
+                ctx.InvalidType(write);
+            else
+            {
+                if (consoleOutput is null)
+                    consoleOutput = Console.Out;
+
+                Console.SetOut(new ConsoleTextWriter(ctx, fn));
+            }
+
+            return DyNil.Instance;
+        }
+
+        private DyObject SetInput(ExecutionContext ctx, DyObject read, DyObject readLine)
+        {
+            if (read is DyNil && readLine is DyNil)
+            {
+                if (consoleInput is not null)
+                    Console.SetIn(consoleInput);
+            }
+            else if (read is not DyFunction readFn)
+                ctx.InvalidType(read);
+            else if (readLine is not DyFunction readLineFn)
+                ctx.InvalidType(readLine);
+            else
+            {
+                if (consoleInput is null)
+                    consoleInput = Console.In;
+
+                Console.SetIn(new ConsoleTextReader(ctx, readFn, readLineFn));
+            }
+
             return DyNil.Instance;
         }
 
@@ -112,9 +166,12 @@ namespace Dyalect.Library.Core
                 "GetCursorPosition" => Func.Static(name, GetCursorPosition),
                 "SetCursorPosition" => Func.Static(name, SetCursorPosition, -1, new Par("left"), new Par("right")),
                 "BackColor" => Func.Auto(name, GetBackColor),
-                "__set_BackColor" => Func.Static(name, SetBackColor, -1, new Par("value")),
+                "set_BackColor" => Func.Static(name, SetBackColor, -1, new Par("value")),
                 "ForeColor" => Func.Auto(name, GetForeColor),
-                "__set_ForeColor" => Func.Static(name, SetForeColor, -1, new Par("value")),
+                "set_ForeColor" => Func.Static(name, SetForeColor, -1, new Par("value")),
+                "SetTitle" => Func.Static(name, SetTitle, -1, new Par("value")),
+                "SetOutput" => Func.Static(name, SetOutput, -1, new Par("write", DyNil.Instance)),
+                "SetInput" => Func.Static(name, SetInput, -1, new Par("read", DyNil.Instance), new Par("readLine", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

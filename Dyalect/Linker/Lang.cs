@@ -15,24 +15,6 @@ namespace Dyalect.Linker
         private readonly DyTuple? startupArguments;
         private System.IO.TextWriter? consoleOutput;
 
-        #region ConsoleTextWriter
-        public sealed class ConsoleTextWriter : System.IO.TextWriter
-        {
-            private readonly DyFunction writer;
-            private readonly ExecutionContext ctx;
-
-            public override Encoding Encoding => Encoding.UTF8;
-
-            public ConsoleTextWriter(ExecutionContext ctx, DyFunction writer) =>
-                (this.ctx, this.writer) = (ctx, writer);
-
-            public override void Write(string? value)
-            {
-                writer.Call(ctx, new DyString(value ?? ""));
-            }
-        }
-        #endregion
-
         public Lang() : this(null) { }
 
         public Lang(DyTuple? args)
