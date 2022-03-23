@@ -1,6 +1,6 @@
 # Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.34-royalblue.svg)
 
-[![Tests](https://img.shields.io/badge/tests-passed-brightgreen.svg)](https://github.com/vorov2/dyalect/blob/master/Docs/testresults.txt)
+[![Build](https://github.com/vorov2/dyalect/actions/workflows/dotnet.yml/badge.svg)](https://github.com/vorov2/dyalect/blob/master/Docs/testresults.txt)
 
 :blue_book: [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
 
