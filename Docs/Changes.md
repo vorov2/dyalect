@@ -1,8 +1,21 @@
+# 0.33.0
+  * Add: _Create foreign types from other foreign modules_ ([Issue #644](https://github.com/vorov2/dyalect/issues/644)).
+  * Add: _`StringBuilder`_ ([Issue #22](https://github.com/vorov2/dyalect/issues/22), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.StringBuilder)).
+  * Add: _Add a `Result` type_ ([Issue #391](https://github.com/vorov2/dyalect/issues/391), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Result)).
+  * Add: _Add `Guid` type_ ([Issue #606](https://github.com/vorov2/dyalect/issues/606), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Guid)).
+  * Add: _Library: regular expressions_ ([Issue #330](https://github.com/vorov2/dyalect/issues/330), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Regex)).
+  * Add: _Library: `ByteArray` data type_  ([Issue #333](https://github.com/vorov2/dyalect/issues/333), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.ByteArray)).
+  * Add: _Support for casting dictionary to a tuple with named elements_ ([Issue #647](https://github.com/vorov2/dyalect/issues/647)).
+  * Add: _Add an ability to save test results to a file_ ([Issue #648](https://github.com/vorov2/dyalect/issues/648), [docs](https://github.com/vorov2/dyalect/wiki/Dyalect-consoles#switches)).
+  * Add: _Add a module to work with console input/output_ ([Issue #255](https://github.com/vorov2/dyalect/issues/255), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Console)).
+  * Fix: _Type related error messages can be incorrectly displayed for custom types_ ([Issue #645](https://github.com/vorov2/dyalect/issues/645)).
+  * Fix: _It is not possible to create foreign static properties_ ([Issue #649](https://github.com/vorov2/dyalect/issues/649)).
+
 # 0.32.2
-  * Fix: _Type might not be correctly recognized in as expression_ ([Issue #640](https://github.com/vorov2/dyalect/issues/640)).
-  * Fix: _Type might not be correctly recognized in as function_ ([Issue #637](https://github.com/vorov2/dyalect/issues/637)).
+  * Fix: _Type might not be correctly recognized in `as` expression_ ([Issue #640](https://github.com/vorov2/dyalect/issues/640)).
+  * Fix: _Type might not be correctly recognized in `as` function_ ([Issue #637](https://github.com/vorov2/dyalect/issues/637)).
   * Fix: _Incorrect compilation of indexer with long type name_ ([Issue #638](https://github.com/vorov2/dyalect/issues/638)).
-  * Fix: _Field code of DyTypeInfo returns incorrect code_ ([Issue #642](https://github.com/vorov2/dyalect/issues/642)).
+  * Fix: _Field `code` of `DyTypeInfo` returns incorrect value_ ([Issue #642](https://github.com/vorov2/dyalect/issues/642)).
   * Fix: _It is possible to override `Name` and `Code` properties of `DyTypeInfo`_ ([Issue #641](https://github.com/vorov2/dyalect/issues/641)).
 
 # 0.32.1

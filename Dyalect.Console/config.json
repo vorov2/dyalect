@@ -1,4 +1,5 @@
 ﻿{
     "debug": true,
-    "onlyfailed": true
+    "onlyfailed": false,
+    "testresults": "..\\Docs\\testresults.txt"
 }

@@ -17,6 +17,8 @@ namespace Dyalect.Runtime.Types
 
         public static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject> fun, int varArgIndex, params Par[] pars) => new MemberFunction3(name, fun, pars, varArgIndex);
 
+        public static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, int varArgIndex, params Par[] pars) => new MemberFunction4(name, fun, pars, varArgIndex);
+
         public static DyFunction Static(string name, Func<ExecutionContext, DyObject> fun) => new StaticFunction0(name, fun, Array.Empty<Par>());
 
         public static DyFunction Static(string name, Func<ExecutionContext, DyObject, DyObject> fun, int varArgIndex, params Par[] pars) => new StaticFunction1(name, fun, pars, varArgIndex);
@@ -29,6 +31,10 @@ namespace Dyalect.Runtime.Types
 
         public static DyFunction Static(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, int varArgIndex, params Par[] pars) => new StaticFunction5(name, fun, pars, varArgIndex);
 
-        public static DyFunction Auto(string name, Func<ExecutionContext, DyObject, DyObject> fun) => new AutoFunction(name, fun);
+        public static DyFunction Static(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, int varArgIndex, params Par[] pars) => new StaticFunction6(name, fun, pars, varArgIndex);
+
+        public static DyFunction Auto(string name, Func<ExecutionContext, DyObject> fun) => new AutoFunction0(name, fun);
+
+        public static DyFunction Auto(string name, Func<ExecutionContext, DyObject, DyObject> fun) => new AutoFunction1(name, fun);
     }
 }

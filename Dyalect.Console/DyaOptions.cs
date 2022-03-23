@@ -57,6 +57,9 @@ namespace Dyalect
         [Binding("onlyfailed", Help = "Show only failed tests (the default behavior is to report about all executed tests).", Category = TEST)]
         public bool ShowOnlyFailedTests { get; set; }
 
+        [Binding("testresults", Help = "Specifies a file to save test results. If file is not specified test results are only printed to console.", Category = TEST)]
+        public string? SaveTestResults { get; set; }
+
         [Binding("appveyor")]
         public bool AppVeyour { get; set; }
 

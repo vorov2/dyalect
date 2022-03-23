@@ -3,7 +3,7 @@ using Dyalect.Runtime.Types;
 using System;
 using System.Text;
 
-namespace Dyalect.Library.Types
+namespace Dyalect.Library.Core
 {
     public sealed class DyByteArray : DyForeignObject
     {
@@ -82,7 +82,7 @@ namespace Dyalect.Library.Types
                     Write(obj.GetBool(ctx));
                     break;
                 case DyType.Char:
-                    Write(obj.GetChar());
+                    Write(obj.GetString());
                     break;
                 case DyType.String:
                     Write(obj.GetString());
@@ -106,8 +106,6 @@ namespace Dyalect.Library.Types
 
         private void Write(bool value) => Write(BitConverter.GetBytes(value));
 
-        private void Write(char value) => Write(BitConverter.GetBytes(value));
-
         private void Write(string value)
         {
             var cz = Encoding.UTF8.GetBytes(value);
@@ -116,7 +114,7 @@ namespace Dyalect.Library.Types
         }
 
         public DyObject Read(ExecutionContext ctx, DyTypeInfo type) =>
-            type.TypeId switch
+            type.ReflectedTypeId switch
             {
                 DyType.Integer => ReadInt64(ctx),
                 DyType.Float => ReadDouble(ctx),
@@ -158,27 +156,30 @@ namespace Dyalect.Library.Types
 
         private DyObject ReadChar(ExecutionContext ctx)
         {
-            if (readPosition + sizeof(char) > buffer.Length)
-                return ctx.IndexOutOfRange();
-
-            var cz = BitConverter.ToChar(buffer, readPosition);
-            readPosition += sizeof(char);
-            return new DyChar(cz);
+            var ret = ReadRawString();
+            return ret is null || ret.Length == 0 ? ctx.IndexOutOfRange() : new DyChar(ret[0]);
         }
 
         private DyObject ReadString(ExecutionContext ctx)
         {
+            var ret = ReadRawString();
+            return ret is null ? ctx.IndexOutOfRange() : new DyString(ret);
+        }
+
+        private string? ReadRawString()
+        {
             if (readPosition + sizeof(int) > buffer.Length)
-                return ctx.IndexOutOfRange();
+                return null;
 
             var len = BitConverter.ToInt32(buffer, readPosition);
             readPosition += sizeof(int);
 
             if (readPosition + len > buffer.Length)
-                return ctx.IndexOutOfRange();
+                return null;
 
-            var str = Encoding.UTF8.GetString(buffer, readPosition, len);
-            return new DyString(str);
+            var retval = Encoding.UTF8.GetString(buffer, readPosition, len);
+            readPosition += len;
+            return retval;
         }
     }
 }

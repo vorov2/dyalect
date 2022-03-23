@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class RuntimeErrors {
@@ -129,6 +129,24 @@ namespace Dyalect.Strings {
         internal static string ExternalFunctionFailure_2 {
             get {
                 return ResourceManager.GetString("ExternalFunctionFailure.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A failure occured..
+        /// </summary>
+        internal static string Failure_0 {
+            get {
+                return ResourceManager.GetString("Failure.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A failure occured: {0}.
+        /// </summary>
+        internal static string Failure_1 {
+            get {
+                return ResourceManager.GetString("Failure.1", resourceCulture);
             }
         }
         
@@ -471,6 +489,15 @@ namespace Dyalect.Strings {
         internal static string TooManyArguments_3 {
             get {
                 return ResourceManager.GetString("TooManyArguments.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value is not available..
+        /// </summary>
+        internal static string ValueMissing_0 {
+            get {
+                return ResourceManager.GetString("ValueMissing.0", resourceCulture);
             }
         }
     }

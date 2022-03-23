@@ -8,8 +8,6 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
     {
-        
-
         public override string TypeName => DyTypeNames.Array;
 
         public override int ReflectedTypeId => DyType.Array;
@@ -429,6 +427,13 @@ namespace Dyalect.Runtime.Types
                     new Par("index", DyInteger.Zero), new Par("destination", DyNil.Instance),
                     new Par("destinationIndex", DyInteger.Zero), new Par("count", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
+            };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.ReflectedTypeId switch
+            {
+                DyType.Tuple => new DyTuple(((DyArray)self).ToArray()),
+                _ => base.CastOp(self, targetType, ctx)
             };
     }
 }

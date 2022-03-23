@@ -4,13 +4,13 @@ using Dyalect.Runtime.Types;
 using System.Linq;
 using System.Text;
 
-namespace Dyalect.Library.Types
+namespace Dyalect.Library.Core
 {
     public sealed class DyStringBuilderTypeInfo : DyForeignTypeInfo
     {
         public override string TypeName => "StringBuilder";
 
-        public DyStringBuilder Create(StringBuilder sb) => new DyStringBuilder(this, sb);
+        public DyStringBuilder Create(StringBuilder sb) => new(this, sb);
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
             new DyString(((DyStringBuilder)arg).ToString());
@@ -110,13 +110,12 @@ namespace Dyalect.Library.Types
             name switch
             {
                 "Insert" => Func.Member(name, Insert, -1, new Par("index"), new Par("value")),
-                "Remove" => Func.Member(name, Remove, -1, new Par("index"), new Par("len")),
-                "Replace" => Func.Member(name, Replace, -1, new Par("old"), new Par("new")),
+                "Remove" => Func.Member(name, Remove, -1, new Par("index"), new Par("count")),
+                "Replace" => Func.Member(name, Replace, -1, new Par("value"), new Par("other")),
                 "Append" => Func.Member(name, Append, -1, new Par("value")),
-                "AppendLine" => Func.Member(name, AppendLine, -1, new Par("value")),
+                "AppendLine" => Func.Member(name, AppendLine, -1, new Par("value", DyString.Empty)),
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
-
 
         private DyObject New(ExecutionContext ctx, DyObject arg)
         {
@@ -134,7 +133,7 @@ namespace Dyalect.Library.Types
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
         {
             if (name == "StringBuilder")
-                return Func.Static(name, New, -1, new Par("values", DyNil.Instance));
+                return Func.Static(name, New, 0, new Par("values"));
 
             return base.InitializeStaticMember(name, ctx);
         }

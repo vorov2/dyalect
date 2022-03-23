@@ -2,10 +2,13 @@
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 
-namespace Dyalect.Library.Types
+namespace Dyalect.Library.Core
 {
     public sealed class DyResultTypeInfo : DyForeignTypeInfo
     {
+        private const string SUCCESS = "Success";
+        private const string FAILURE = "Failure";
+
         public override string TypeName => "Result";
 
         protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
@@ -34,8 +37,8 @@ namespace Dyalect.Library.Types
             {
                 var str = index.GetString();
                 var s = (DyResult)self;
-                return str is "value" && s.Constructor is "Success" ? s.Value
-                    : str is "detail" && s.Constructor is "Failure" ? s.Value
+                return str is "value" && s.Constructor is SUCCESS ? s.Value
+                    : str is "detail" && s.Constructor is FAILURE ? s.Value
                     : ctx.IndexOutOfRange(str);
             }
 
@@ -46,12 +49,12 @@ namespace Dyalect.Library.Types
         {
             var s = (DyResult)self;
 
-            if (s.Constructor is not "Failure")
+            if (s.Constructor is not FAILURE)
                 return s.Value;
 
             var newctx = ctx.Clone();
             var res = s.Value.ToString(newctx);
-            return newctx.HasErrors ? ctx.Fail(s.Value.ToString()) : ctx.Fail(res.ToString());
+            return newctx.HasErrors ? ctx.Failure(s.Value.ToString()) : ctx.Failure(res.ToString());
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -61,18 +64,16 @@ namespace Dyalect.Library.Types
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
-        private DyObject Success(ExecutionContext ctx, DyObject arg) => new DyResult(this, "Success", arg);
+        private DyObject Success(ExecutionContext ctx, DyObject arg) => new DyResult(this, SUCCESS, arg);
 
-        private DyObject Failure(ExecutionContext ctx, DyObject arg) => new DyResult(this, "Failure", arg);
+        private DyObject Failure(ExecutionContext ctx, DyObject arg) => new DyResult(this, FAILURE, arg);
 
-        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
-        {
-            if (name == "Success")
-                return Func.Static(name, Success, -1, new Par("arg", DyNil.Instance));
-            if (name == "Failure")
-                return Func.Static(name, Failure, -1, new Par("arg", DyNil.Instance));
-
-            return base.InitializeStaticMember(name, ctx);
-        }
+        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
+            name switch 
+            {
+                SUCCESS => Func.Static(name, Success, -1, new Par("value", DyNil.Instance)),
+                FAILURE => Func.Static(name, Failure, -1, new Par("detail", DyNil.Instance)),
+                _ => base.InitializeStaticMember(name, ctx)
+            };
     }
 }

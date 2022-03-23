@@ -8,13 +8,18 @@ namespace Dyalect.Runtime.Types
 {
     public sealed class DyError : DyObject
     {
-        private readonly string errorCode;
+        private readonly string errorName;
+        private readonly string? description;
 
-        internal DyError(DyErrorCode code, params object[] dataItems) : this(code.ToString(), code, dataItems) { }
+        internal DyError(DyErrorCode code, params object[] dataItems) : base(DyType.Error) =>
+            (Code, errorName, DataItems) = (code, code.ToString(), dataItems);
 
-        internal DyError(string error, DyErrorCode code, params object[] dataItems) : base(DyType.Error) =>
-            (errorCode, Code, DataItems) = (error, code, dataItems);
+        internal DyError(string errorName, string? description, params object[] dataItems) : 
+            this(errorName, DyErrorCode.UnexpectedError, description, dataItems) { }
 
+        internal DyError(string errorName, DyErrorCode code, string? description, params object[] dataItems) : base(DyType.Error) =>
+            (this.errorName, this.description, Code, DataItems) = (errorName, description, code, dataItems);
+        
         internal Stack<StackPoint>? Dump { get; set; }
 
         public DyErrorCode Code { get; }
@@ -23,8 +28,11 @@ namespace Dyalect.Runtime.Types
 
         public string GetDescription()
         {
+            if (description is not null)
+                return description;
+
             var idx = DataItems.Length;
-            var str = RuntimeErrors.ResourceManager.GetString(errorCode + "." + idx);
+            var str = RuntimeErrors.ResourceManager.GetString(errorName + "." + idx);
 
             if (str is not null)
             {
@@ -49,20 +57,20 @@ namespace Dyalect.Runtime.Types
             }
             else if (str is null)
             {
-                str = RuntimeErrors.ResourceManager.GetString(errorCode + ".0");
+                str = RuntimeErrors.ResourceManager.GetString(errorName + ".0");
 
                 if (str is not null)
                     return str;
             }
 
-            return errorCode;
+            return errorName;
         }
 
         internal DyObject GetDetail() => new DyString(GetDescription());
 
         public override object ToObject() => GetDescription();
 
-        public override string ToString() => errorCode + ": " + GetDescription();
+        public override string ToString() => errorName + ": " + GetDescription();
 
         protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
         {
@@ -85,7 +93,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name is "code" or "detail" or "items";
 
-        public override string GetConstructor(ExecutionContext ctx) => errorCode;
+        public override string GetConstructor(ExecutionContext ctx) => errorName;
 
         public override int GetHashCode() => HashCode.Combine(Code, DataItems);
     }

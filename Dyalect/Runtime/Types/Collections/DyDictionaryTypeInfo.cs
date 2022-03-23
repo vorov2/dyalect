@@ -128,7 +128,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject ToTuple(ExecutionContext ctx, DyObject self)
+        private DyObject[] GetArray(DyObject self)
         {
             var map = ((DyDictionary)self).Dictionary;
             var xs = new List<DyLabel>();
@@ -139,8 +139,10 @@ namespace Dyalect.Runtime.Types
                     xs.Add(new DyLabel(key.GetString(), value));
             }
 
-            return new DyTuple(xs.ToArray());
+            return xs.ToArray();
         }
+
+        private DyObject ToTuple(ExecutionContext ctx, DyObject self) => new DyTuple(GetArray(self));
 
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject key)
         {
@@ -201,6 +203,13 @@ namespace Dyalect.Runtime.Types
             {
                 Method.Dictionary or Method.FromTuple => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
+            };
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.ReflectedTypeId switch
+            {
+                DyType.Tuple => new DyTuple(GetArray(self)),
+                _ => base.CastOp(self, targetType, ctx)
             };
     }
 }

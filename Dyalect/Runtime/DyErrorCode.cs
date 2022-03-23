@@ -46,6 +46,10 @@
 
         InvalidValue = 621,
 
-        InvalidCast = 622
+        InvalidCast = 622,
+
+        ValueMissing = 623,
+
+        Failure = 624
     }
 }

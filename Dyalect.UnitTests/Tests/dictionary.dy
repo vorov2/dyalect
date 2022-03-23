@@ -176,4 +176,5 @@
 #region "Conversion: as"
     let xs = Dictionary.FromTuple ((x: 1, y: 2))
     assert("Dictionary (x: 1, y: 2)", xs as String)
+    assert((x: 1, y: 2), xs as Tuple)
 #endregion

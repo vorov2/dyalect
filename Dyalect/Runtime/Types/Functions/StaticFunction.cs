@@ -82,4 +82,16 @@ namespace Dyalect.Runtime.Types
 
         internal override bool Equals(DyFunction func) => func is StaticFunction5 m && m.fun.Equals(fun);
     }
+
+    internal sealed class StaticFunction6 : BaseStaticFunction
+    {
+        private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun;
+
+        public StaticFunction6(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+            : base(name, pars, varArgIndex) => this.fun = fun;
+
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0], args[1], args[2], args[3], args[4], args[5]);
+
+        internal override bool Equals(DyFunction func) => func is StaticFunction6 m && m.fun.Equals(fun);
+    }
 }
