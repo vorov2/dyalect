@@ -231,7 +231,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction? plus;
         protected virtual DyObject PlusOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Plus, arg);
-        public virtual DyObject Plus(ExecutionContext ctx, DyObject arg)
+        public DyObject Plus(ExecutionContext ctx, DyObject arg)
         {
             if (plus is not null)
                 return plus.BindToInstance(ctx, arg).Call(ctx);
@@ -242,7 +242,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction? not;
         protected virtual DyObject NotOp(DyObject arg, ExecutionContext ctx) =>
             arg.IsTrue(ctx) ? DyBool.False : DyBool.True;
-        public virtual DyObject Not(ExecutionContext ctx, DyObject arg)
+        public DyObject Not(ExecutionContext ctx, DyObject arg)
         {
             if (not is not null)
                 return not.BindToInstance(ctx, arg).Call(ctx);
@@ -253,7 +253,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction? bitnot;
         protected virtual DyObject BitwiseNotOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.BitNot, arg);
-        public virtual DyObject BitwiseNot(ExecutionContext ctx, DyObject arg)
+        public DyObject BitwiseNot(ExecutionContext ctx, DyObject arg)
         {
             if (bitnot is not null)
                 return bitnot.BindToInstance(ctx, arg).Call(ctx);
@@ -264,7 +264,7 @@ namespace Dyalect.Runtime.Types
         private DyFunction? len;
         protected virtual DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Len, arg);
-        public virtual DyObject Length(ExecutionContext ctx, DyObject arg)
+        public DyObject Length(ExecutionContext ctx, DyObject arg)
         {
             if (len is not null)
                 return len.BindToInstance(ctx, arg).Call(ctx);
@@ -274,7 +274,22 @@ namespace Dyalect.Runtime.Types
         //x.toString
         private DyFunction? tos;
         protected virtual DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.ToString());
-        public virtual DyObject ToString(ExecutionContext ctx, DyObject arg)
+        internal string? ToStringDirect(ExecutionContext ctx, DyObject arg)
+        {
+            var res = ToStringOp(arg, ctx);
+
+            if (ctx.HasErrors)
+                return null;
+
+            if (res.TypeId != DyType.String)
+            {
+                ctx.InvalidType(DyType.String, res);
+                return null;
+            }
+
+            return res.GetString();
+        }
+        public DyObject ToString(ExecutionContext ctx, DyObject arg)
         {
             if (tos is not null)
             {
@@ -288,7 +303,22 @@ namespace Dyalect.Runtime.Types
         //x.ToLiteral
         private DyFunction? tol;
         protected virtual DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, ctx);
-        public virtual DyObject ToLiteral(ExecutionContext ctx, DyObject arg)
+        internal string? ToLiteralDirect(ExecutionContext ctx, DyObject arg)
+        {
+            var res = ToLiteralOp(arg, ctx);
+
+            if (ctx.HasErrors)
+                return null;
+
+            if (res.TypeId != DyType.String)
+            {
+                ctx.InvalidType(DyType.String, res);
+                return null;
+            }
+
+            return res.GetString();
+        }
+        public DyObject ToLiteral(ExecutionContext ctx, DyObject arg)
         {
             if (tol is not null)
             {
@@ -304,6 +334,7 @@ namespace Dyalect.Runtime.Types
         //x[y]
         private DyFunction? get;
         protected virtual DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+        internal DyObject GetDirect(ExecutionContext ctx, DyObject self, DyObject index) => GetOp(self, index, ctx);
         public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
         {
             if (get is not null)
@@ -335,7 +366,6 @@ namespace Dyalect.Runtime.Types
                 _ when targetType.ReflectedTypeId == self.TypeId => self,
                 _ => ctx.InvalidCast(self.GetTypeInfo(ctx).TypeName, targetType.TypeName)
             };
-
         public DyObject Cast(ExecutionContext ctx, DyObject self, DyObject targetType)
         {
             if (targetType.TypeId != DyType.TypeInfo)

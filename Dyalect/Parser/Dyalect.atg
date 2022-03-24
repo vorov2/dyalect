@@ -23,6 +23,8 @@ TOKENS
 
     lcaseToken = lcase { letter | digit } | "_" lcase { letter | digit  } | "_".
 
+    variantToken = "`" ucase { letter | digit | "_"}.
+
     directive = "#" (letter { letter | digit } | "_" letter { letter | digit  }).
 
     intToken    = digit { digit } | ("0x"|"0X") hexDigit { hexDigit }.
@@ -1236,7 +1238,7 @@ PRODUCTIONS
                         (. if (la.AfterEol) return; .)
                         "("
                             (. var app = new DApplication(node, t); .)
-                            [ ApplicationArguments<app> ]
+                            [ ApplicationArguments<app.Arguments> ]
                             (. node = app; .)
                         ")"
                     )
@@ -1244,20 +1246,20 @@ PRODUCTIONS
             }
         ).
 
-    ApplicationArguments<DApplication app> =
+    ApplicationArguments<DNodeList arguments> =
         (. var node = default(DNode); .)
         (
               IF (IsLabel()) Label<out node>
             | Control<out node> 
         )
-        (. app.Arguments.Add(node); .)
+        (. arguments.Add(node); .)
         {
             ","
             (
                   IF (IsLabel()) Label<out node>
                 | Control<out node> 
             )
-            (. app.Arguments.Add(node); .)
+            (. arguments.Add(node); .)
         }.
 
     Literal<out DNode node> =
@@ -1275,6 +1277,18 @@ PRODUCTIONS
             | Base<out node>
             | Array<out node>
             | Iterator<out node>
+            | Variant<out node>
+        ).
+
+    Variant<out DNode node> =
+        (. string name; node = null; .)
+        (
+            variantToken (. name = t.val.Substring(1); .)
+            "("
+                (. var vr = new DVariant(name, t); .)
+                [ ApplicationArguments<vr.Arguments> ]
+                (. node = vr; .)
+            ")"
         ).
 
     Iterator<out DNode node> =

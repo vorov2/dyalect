@@ -1,5 +1,6 @@
 # 0.34.0
-  * Change: _Console.SetOutput_ method corrected.
+  * Change: _`Console.SetOutput` method corrected.
+  * Add: _Consider adding variant type_ ([Issue #652](https://github.com/vorov2/dyalect/issues/652), [docs](https://github.com/vorov2/dyalect/wiki/Variant)).
 
 # 0.33.0
   * Add: _Create foreign types from other foreign modules_ ([Issue #644](https://github.com/vorov2/dyalect/issues/644)).

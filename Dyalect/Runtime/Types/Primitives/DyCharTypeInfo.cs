@@ -1,5 +1,4 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Debug;
+﻿using Dyalect.Debug;
 using Dyalect.Parser;
 
 namespace Dyalect.Runtime.Types

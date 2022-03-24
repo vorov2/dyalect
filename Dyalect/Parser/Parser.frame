@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Dyalect.Parser.Model;
+using DNodeList = System.Collections.Generic.List<Dyalect.Parser.Model.DNode>;
 
 -->namespace
 namespace Dyalect.Parser

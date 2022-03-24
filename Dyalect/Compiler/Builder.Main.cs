@@ -140,7 +140,17 @@ namespace Dyalect.Compiler
                 case NodeType.As:
                     Build((DAs)node, hints, ctx);
                     break;
+                case NodeType.Variant:
+                    Build((DVariant)node, hints, ctx);
+                    break;
             }
+        }
+
+        private void Build(DVariant node, Hints hints, CompilerContext ctx)
+        {
+            cw.Type(DyType.Variant);
+            cw.GetMember(node.Name);
+            BuildApplicationArguments(node.Location, node.Arguments, hints.Remove(Last), ctx);
         }
 
         private void Build(DAs node, Hints hints, CompilerContext ctx)
@@ -779,45 +789,50 @@ namespace Dyalect.Compiler
             else
             {
                 Build(node.Target, newHints.Append(Push), ctx);
-                AddLinePragma(node);
-                cw.FunPrep(node.Arguments.Count);
-                Dictionary<string, object?>? dict = null;
-                var kwArg = false;
-
-                for (var i = 0; i < node.Arguments.Count; i++)
-                {
-                    var a = node.Arguments[i];
-
-                    if (a.NodeType == NodeType.Label)
-                    {
-                        if (dict is null)
-                            dict = new();
-
-                        kwArg = true;
-                        var la = (DLabelLiteral)a;
-                        if (dict.ContainsKey(la.Label))
-                            AddError(CompilerError.NamedArgumentMultipleTimes, la.Location, la.Label);
-                        else
-                            dict.Add(la.Label, null);
-
-                        Build(la.Expression, newHints.Append(Push).Remove(IteratorBody), ctx);
-                        cw.FunArgNm(la.Label);
-                    }
-                    else
-                    {
-                        Build(a, newHints.Append(Push), ctx);
-                        cw.FunArgIx(i);
-
-                        if (kwArg)
-                            AddError(CompilerError.PositionalArgumentAfterKeyword, a.Location);
-                    }
-                }
-
-                AddLinePragma(node);
-                cw.FunCall(node.Arguments.Count);
+                BuildApplicationArguments(node.Location, node.Arguments, newHints, ctx);
             }
 
             PopIf(hints);
+        }
+
+        private void BuildApplicationArguments(Location loc, List<DNode> arguments, Hints hints, CompilerContext ctx)
+        {
+            AddLinePragma(loc);
+            cw.FunPrep(arguments.Count);
+            Dictionary<string, object?>? dict = null;
+            var kwArg = false;
+
+            for (var i = 0; i < arguments.Count; i++)
+            {
+                var a = arguments[i];
+
+                if (a.NodeType == NodeType.Label)
+                {
+                    if (dict is null)
+                        dict = new();
+
+                    kwArg = true;
+                    var la = (DLabelLiteral)a;
+                    if (dict.ContainsKey(la.Label))
+                        AddError(CompilerError.NamedArgumentMultipleTimes, la.Location, la.Label);
+                    else
+                        dict.Add(la.Label, null);
+
+                    Build(la.Expression, hints.Append(Push).Remove(IteratorBody), ctx);
+                    cw.FunArgNm(la.Label);
+                }
+                else
+                {
+                    Build(a, hints.Append(Push), ctx);
+                    cw.FunArgIx(i);
+
+                    if (kwArg)
+                        AddError(CompilerError.PositionalArgumentAfterKeyword, a.Location);
+                }
+            }
+
+            AddLinePragma(loc);
+            cw.FunCall(arguments.Count);
         }
 
         private bool HasLabels(List<DNode> nodes)
