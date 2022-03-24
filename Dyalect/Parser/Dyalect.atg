@@ -915,7 +915,7 @@ PRODUCTIONS
             ":" Expr<out node> (. @if.False = node; node = @if; .)
         ).
 
-    Throw<out DNode node> =
+    /*Throw<out DNode node> =
         (. node = null; .)
         (
             "throw" 
@@ -925,6 +925,32 @@ PRODUCTIONS
                 if (la.AfterEol) return;
             .)
             Expr<out var cexp> (. th.Expression = cexp; .)
+        ).*/
+
+    Throw<out DNode node> =
+        (. node = null; .)
+        (
+            "throw" 
+            (. 
+                var th = new DThrow(t);
+                node = th;
+                if (la.AfterEol) return;
+            .)
+            [
+                (
+                    ucaseToken (. string name = t.val; .)
+                    "("
+                        (. var vr = new DVariant(name, t); .)
+                        [ ApplicationArguments<vr.Arguments> ]
+                        (. th.Expression = vr; .)
+                    ")"
+                )
+                |
+                (
+                    lcaseToken
+                    (. th.Expression = new DName(t) { Value = t.val }; .)
+                )
+            ]
         ).
 
     TryCatch<out DNode node> =

@@ -20,10 +20,9 @@ namespace Dyalect
         public const int Tuple = 13;
         public const int Dictionary = 14;
         public const int Set = 15;
-        public const int Error = 16;
-        public const int Lazy = 17;
-        public const int Variant = 18;
-        public const int Object = 19;
+        public const int Lazy = 16;
+        public const int Variant = 17;
+        public const int Object = 18;
 
         internal static List<DyTypeInfo> GetAll() =>
             new()
@@ -44,7 +43,6 @@ namespace Dyalect
                 new DyTupleTypeInfo(),
                 new DyDictionaryTypeInfo(),
                 new DySetTypeInfo(),
-                new DyErrorTypeInfo(),
                 new DyLazyTypeInfo(),
                 new DyVariantTypeInfo(),
                 new DyObjectTypeInfo()
@@ -68,7 +66,6 @@ namespace Dyalect
                 DyTypeNames.Iterator => Iterator,
                 DyTypeNames.Dictionary => Dictionary,
                 DyTypeNames.Set => Set,
-                DyTypeNames.Error => Error,
                 //DyTypeNames.Lazy => Lazy,
                 DyTypeNames.Variant => Variant,
                 DyTypeNames.Object => Object,
@@ -93,7 +90,6 @@ namespace Dyalect
                 Iterator => DyTypeNames.Iterator,
                 Dictionary => DyTypeNames.Dictionary,
                 Set => DyTypeNames.Set,
-                Error => DyTypeNames.Error,
                 Lazy => DyTypeNames.Lazy,
                 Variant => DyTypeNames.Variant,
                 Object => DyTypeNames.Object,
@@ -121,7 +117,6 @@ namespace Dyalect
                 Tuple,
                 Dictionary,
                 Set,
-                Error,
                 Lazy,
                 Variant,
                 Object
@@ -142,7 +137,6 @@ namespace Dyalect
         public const string Tuple = "Tuple";
         public const string Dictionary = "Dictionary";
         public const string Set = "Set";
-        public const string Error = "Error";
         public const string Lazy = "Lazy";
         public const string Variant = "Variant";
         public const string Object = "Object";

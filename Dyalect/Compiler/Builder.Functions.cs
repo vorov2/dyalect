@@ -247,9 +247,11 @@ namespace Dyalect.Compiler
                         //We fall in here if all checks are not successful
                         //Here we try to obtain some additional info to generate nice
                         //error message
+                        ThrowErrorProlog(DyErrorCode.InvalidType, 1);
                         cw.PushVar(new ScopeVar(a));
                         cw.CallNullaryMember(Builtins.Type);
-                        cw.NewErr(DyErrorCode.InvalidType, 1);
+                        cw.FunArgIx(0);
+                        cw.FunCall(1);
                         cw.Fail();
                         //Exit section for success
                         cw.MarkLabel(skip);

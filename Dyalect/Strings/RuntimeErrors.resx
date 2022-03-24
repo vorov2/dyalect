@@ -258,6 +258,12 @@
   <data name="ValueMissing.0" xml:space="preserve">
     <value>Value is not available.</value>
   </data>
+  <data name="Timeout.0" xml:space="preserve">
+    <value>Operation timed out.</value>
+  </data>
+  <data name="ParsingFailed.0" xml:space="preserve">
+    <value>Parsing failed.</value>
+  </data>
   <data name="Failure.0" xml:space="preserve">
     <value>A failure occured.</value>
   </data>

@@ -37,7 +37,7 @@ namespace Dyalect.Compiler
             //only if this match is inside try/catch
             if (node.Expression != null)
             {
-                cw.NewErr(DyErrorCode.MatchFailed, 0);
+                ThrowError(DyErrorCode.MatchFailed);
                 cw.Fail();
             }
             else

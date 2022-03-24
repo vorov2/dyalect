@@ -1,4 +1,5 @@
-﻿using Dyalect.Runtime.Types;
+﻿using Dyalect.Debug;
+using Dyalect.Runtime.Types;
 using System;
 using System.Collections.Generic;
 
@@ -16,7 +17,7 @@ namespace Dyalect.Runtime
         {
             internal ExternalExecutionContext() : base(null!, null!) { }
 
-            internal override DyError? Error
+            internal override DyVariant? Error
             {
                 get => base.Error;
                 set
@@ -44,8 +45,8 @@ namespace Dyalect.Runtime
 
         internal SectionStack CatchMarks { get; }
 
-        private DyError? _error;
-        internal virtual DyError? Error
+        private DyVariant? _error;
+        internal virtual DyVariant? Error
         {
             get => _error;
             set
@@ -55,6 +56,8 @@ namespace Dyalect.Runtime
             }
         }
 
+        internal Stack<StackPoint>? ErrorDump { get; set; }
+
         internal Stack<int>? Sections { get; set; }
 
         internal Stack<ArgContainer> Arguments { get; } = new(6);
@@ -62,7 +65,7 @@ namespace Dyalect.Runtime
         internal int UnitId;
         internal int CallerUnitId;
 
-        public DyError? GetError() => Error;
+        public DyVariant? GetError() => Error;
 
         public void ThrowIf()
         {
@@ -70,7 +73,7 @@ namespace Dyalect.Runtime
             {
                 var err = Error;
                 Error = null;
-                throw new DyRuntimeException(err.GetDescription());
+                throw new DyRuntimeException(ErrorGenerators.GetErrorDescription(err));
             }
         }
     }

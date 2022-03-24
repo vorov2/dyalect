@@ -131,7 +131,7 @@
         x >= 0 ? Nat(x) : x
     }
     static func Nat.Nat(x) {
-        throw "Negative number." when x < 0
+        throw Error("Negative number.") when x < 0
         Nat.PrivateNat(x)
     }
     func Nat.ToInteger() {
@@ -191,7 +191,7 @@
     }
     func get Cell[index] {
         if index is not 0 {
-            throw "Index out of range."
+            throw IndexOutOfRange()
         }
         ini.val
     }
@@ -304,14 +304,14 @@
         match index {
             0 or "x" => ini.x,
             1 or "y" => ini.y,
-            _ => throw Error.IndexOutOfRange()
+            _ => throw IndexOutOfRange()
         }
     }
     func set Point[index, value] {
         match index {
             0 or "x" => ini.x = value,
             1 or "y" => ini.y = value,
-            _ => throw Error.IndexOutOfRange()
+            _ => throw IndexOutOfRange()
         }
     }
     var p = Point(12, 34)
@@ -416,14 +416,14 @@
     type RealNat = private Nat(var num)
 
     static func RealNat.RealNat(x) {
-        throw Error.InvalidType(x.GetType()) when x is not Integer
+        throw InvalidType(x.GetType()) when x is not Integer
         RealNat.Nat(x)
     }
     func RealNat + (other) {
         let res = match other {
             RealNat => this.num + other.num,
             Integer => this.num + other,
-            _ => throw Error.InvalidType(other.GetType())
+            _ => throw InvalidType(other.GetType())
         }
         res >= 0 ? RealNat(res) : res
     }
@@ -467,14 +467,14 @@
     }
     func get Foo[field] {
         match field {
-            "x" => this.data,
-            _ => Error.IndexOutOfRange()
+            "x" => ini.data,
+            _ => throw IndexOutOfRange()
         }
     }
     func set Foo[field, Integer value] {
         match field {
-            "x" => this.data = value,
-            _ => Error.IndexOutOfRange()
+            "x" => ini.data = value,
+            _ => throw IndexOutOfRange()
         }
     }
     let t = Foo(12)
@@ -484,7 +484,7 @@
         assert(got: false)
     } catch {
         InvalidType() => assert(got: true),
-        e => print(e)
+        _ => assert(got: false)
     }
 #endregion
 
@@ -593,7 +593,7 @@
 
 #region "Initialization blocks 1"
     type Nat(x) {
-        throw Error.InvalidValue(x) when x == 0
+        throw InvalidValue(x) when x == 0
         x = -x when x < 0 
     }
     func Nat as Integer => this.x

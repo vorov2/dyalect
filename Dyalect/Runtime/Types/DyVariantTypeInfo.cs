@@ -58,5 +58,22 @@ namespace Dyalect.Runtime.Types
 
             return Func.Static(name, (_, args) => new DyVariant(name, (DyTuple)args), 0, new Par("values"));
         }
+
+        private DyObject GetTuple(ExecutionContext ctx, DyObject self)
+        {
+            var v = (DyVariant)self;
+
+            if (v.Tuple.Count == 0)
+                return ctx.InvalidCast(TypeName, DyTypeNames.Tuple);
+
+            return v.Tuple;
+        }
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.ReflectedTypeId switch
+            {
+                DyType.Tuple => GetTuple(ctx, self),
+                _ => base.CastOp(self, targetType, ctx)
+            };
     }
 }

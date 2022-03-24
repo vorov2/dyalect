@@ -1,5 +1,4 @@
 ﻿using Dyalect.Debug;
-using Dyalect.Library.Strings;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System.Collections.Generic;
@@ -42,7 +41,7 @@ namespace Dyalect.Library.Core
             }
             catch (RegexMatchTimeoutException)
             {
-                return ctx.Fail(nameof(Errors.RegexTimeout), Errors.RegexTimeout);
+                return ctx.Timeout();
             }
         }
 
@@ -83,7 +82,7 @@ namespace Dyalect.Library.Core
             }
             catch (RegexMatchTimeoutException)
             {
-                return ctx.Fail(nameof(Errors.RegexTimeout), Errors.RegexTimeout);
+                return ctx.Timeout();
             }
         }
 
@@ -107,7 +106,7 @@ namespace Dyalect.Library.Core
             }
             catch (RegexMatchTimeoutException)
             {
-                return ctx.Fail(nameof(Errors.RegexTimeout), Errors.RegexTimeout);
+                return ctx.Timeout();
             }
         }
 
@@ -157,7 +156,7 @@ namespace Dyalect.Library.Core
             }
             catch (RegexMatchTimeoutException) 
             {
-                return ctx.Fail(nameof(Errors.RegexTimeout), Errors.RegexTimeout);
+                return ctx.Timeout();
             }
         }
 

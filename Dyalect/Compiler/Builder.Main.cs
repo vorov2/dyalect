@@ -786,6 +786,12 @@ namespace Dyalect.Compiler
                 AddLinePragma(node);
                 cw.Br(ctx.FunctionStart);
             }
+            else if (IsVariantConstructor(node.Target))
+            {
+                cw.Type(DyType.Variant);
+                cw.GetMember(node.Target.GetName()!);
+                BuildApplicationArguments(node.Location, node.Arguments, hints.Remove(Last), ctx);
+            }
             else
             {
                 Build(node.Target, newHints.Append(Push), ctx);
@@ -793,6 +799,17 @@ namespace Dyalect.Compiler
             }
 
             PopIf(hints);
+        }
+
+        private bool IsVariantConstructor(DNode node)
+        {
+            var name = node.GetName();
+
+            if (name is null || name.Length == 0 || !char.IsUpper(name[0]))
+                return false;
+
+            var err = GetVariable(name, currentScope, out var _);
+            return err == CompilerError.UndefinedVariable && DyType.GetTypeCodeByName(name) == 0;
         }
 
         private void BuildApplicationArguments(Location loc, List<DNode> arguments, Hints hints, CompilerContext ctx)
@@ -1124,7 +1141,7 @@ namespace Dyalect.Compiler
                 BuildPattern(node.Pattern, nh, ctx);
                 var skip = cw.DefineLabel();
                 cw.Brtrue(skip);
-                cw.NewErr(DyErrorCode.MatchFailed, 0);
+                ThrowError(DyErrorCode.MatchFailed);
                 cw.Fail();
                 cw.MarkLabel(skip);
                 cw.Nop();
@@ -1141,7 +1158,7 @@ namespace Dyalect.Compiler
                 BuildPattern(node.Pattern, hints.Append(Rebind), ctx);
                 var skip = cw.DefineLabel();
                 cw.Brtrue(skip);
-                cw.NewErr(DyErrorCode.MatchFailed, 0);
+                ThrowError(DyErrorCode.MatchFailed);
                 cw.Fail();
                 cw.MarkLabel(skip);
                 cw.Nop();
@@ -1340,6 +1357,19 @@ namespace Dyalect.Compiler
                     AddError(CompilerError.ExpressionNoName, node.Location);
                     return "";
             }
+        }
+
+        private void ThrowErrorProlog(DyErrorCode code, int pars)
+        {
+            cw.Type(DyType.Variant);
+            cw.GetMember(code.ToString());
+            cw.FunPrep(pars);
+        }
+
+        private void ThrowError(DyErrorCode code)
+        {
+            ThrowErrorProlog(code, 0);
+            cw.FunCall(0);
         }
     }
 }
