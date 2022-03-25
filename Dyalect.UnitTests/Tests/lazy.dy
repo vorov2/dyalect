@@ -178,7 +178,7 @@
     try {
         let _ = x.ToString()
     } catch {
-        Unknown(xs) => assert([1, 2], xs)
+        @Unknown(xs) => assert([1, 2], xs)
     }
 #endregion
 

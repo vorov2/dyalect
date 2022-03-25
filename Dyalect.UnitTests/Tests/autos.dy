@@ -135,7 +135,7 @@
 #region "Autos and exceptions 1"
     func testE() {
         auto x = Box(12)
-        throw Error()
+        throw @Error()
     }
 
     try {
@@ -150,7 +150,7 @@
         auto x = Box("y")
         {
             auto y = Box("z")
-            throw Error("Error")
+            throw @Error("Error")
         }
     }
     func run() {
@@ -169,7 +169,7 @@
 #region "Autos and exceptions 3"
     try {
         auto x = Box(42)
-        throw Error(84)
+        throw @Error(84)
     } catch e {
         boxCollector.Add(e[0])
     }
@@ -194,7 +194,7 @@
 #region "Autos and exceptions 5"
     func doit() {
         var x = {
-            throw Error(24)
+            throw @Error(24)
             auto b = Box(12)
         }
     }
@@ -208,7 +208,7 @@
 
 #region "Autos in catch 1"
     try {
-        throw Error()
+        throw @Error()
     } catch _ {
         auto b = Box(1)
     }
@@ -218,7 +218,7 @@
 #region "Autos in catch 2"
     func inner() {
         try {
-            throw Error("err")
+            throw @Error("err")
         } catch e {
             auto b = Box(1)
             throw
@@ -235,10 +235,10 @@
 #region "Autos in catch 3"
     func inside() {
         try {
-            throw Error('a')
+            throw @Error('a')
         } catch _ {
             auto b = Box("auto")
-            throw Error('b')
+            throw @Error('b')
             throw
         }
     }

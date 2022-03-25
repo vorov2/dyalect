@@ -45,7 +45,7 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            return new DyString($"`{self.Constructor}{str}");
+            return new DyString($"@{self.Constructor}{str}");
         }
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) =>

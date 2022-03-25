@@ -21,7 +21,7 @@ namespace Dyalect.Parser
 		for (int i = 97; i <= 122; ++i) start[i] = 2;
 		for (int i = 49; i <= 57; ++i) start[i] = 52;
 		start[95] = 53; 
-		start[96] = 3; 
+		start[64] = 3; 
 		start[35] = 5; 
 		start[48] = 54; 
 		start[46] = 74; 
@@ -241,7 +241,7 @@ namespace Dyalect.Parser
 				if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 2;}
 				else {t.kind = 2; t.val = new String(tval, 0, tlen); CheckLiteral(); return t;}
 			case 3:
-				if (ch >= 'A' && ch <= 'Z') {AddCh(); goto case 4;}
+				if (ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case 4;}
 				else {goto case 0;}
 			case 4:
 				recEnd = pos; recKind = 3;

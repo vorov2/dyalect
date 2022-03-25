@@ -803,6 +803,9 @@ namespace Dyalect.Compiler
 
         private bool IsVariantConstructor(DNode node)
         {
+            if (node.NodeType != NodeType.Name)
+                return false;
+
             var name = node.GetName();
 
             if (name is null || name.Length == 0 || !char.IsUpper(name[0]))

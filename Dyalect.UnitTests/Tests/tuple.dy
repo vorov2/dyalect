@@ -222,7 +222,7 @@
         xs.y = 44
         assert(got: false)
     } catch {
-        IndexReadOnly() => assert(4, xs.y)
+        @IndexReadOnly() => assert(4, xs.y)
     }
 #endregion
 
@@ -232,7 +232,7 @@
         xs[0] = 0
         assert(got: false)
     } catch {
-        IndexReadOnly() => assert(got: true)
+        @IndexReadOnly() => assert(got: true)
     }
 #endregion
 
@@ -260,7 +260,7 @@
         assert(true, xs.Contains(42))
         assert(got: false)
     } catch {
-        InvalidType() => assert(got: true)
+        @InvalidType() => assert(got: true)
     }
 #endregion
 
@@ -282,12 +282,12 @@
     try {
         xs[2]
     } catch {
-        IndexOutOfRange() => assert(got: true)
+        @IndexOutOfRange() => assert(got: true)
     }
     try {
         xs.z
     } catch {
-        IndexOutOfRange() => assert(got: true)
+        @IndexOutOfRange() => assert(got: true)
     }
 #endregion
 
@@ -323,6 +323,6 @@
         let _ = (0, 12, 33, 99) > (0, 12, "33", 98, 123)
         assert(got: false)
     } catch {
-        OperationNotSupported() => assert(got: true)
+        @OperationNotSupported() => assert(got: true)
     }
 #endregion

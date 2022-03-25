@@ -131,7 +131,7 @@
         x >= 0 ? Nat(x) : x
     }
     static func Nat.Nat(x) {
-        throw Error("Negative number.") when x < 0
+        throw @Error("Negative number.") when x < 0
         Nat.PrivateNat(x)
     }
     func Nat.ToInteger() {
@@ -191,7 +191,7 @@
     }
     func get Cell[index] {
         if index is not 0 {
-            throw IndexOutOfRange()
+            throw @IndexOutOfRange()
         }
         ini.val
     }
@@ -275,7 +275,7 @@
         u.age = 39
         assert(got: false)
     } catch {
-        IndexReadOnly() => assert(got: true)
+        @IndexReadOnly() => assert(got: true)
     }
 #endregion
 
@@ -304,14 +304,14 @@
         match index {
             0 or "x" => ini.x,
             1 or "y" => ini.y,
-            _ => throw IndexOutOfRange()
+            _ => throw @IndexOutOfRange()
         }
     }
     func set Point[index, value] {
         match index {
             0 or "x" => ini.x = value,
             1 or "y" => ini.y = value,
-            _ => throw IndexOutOfRange()
+            _ => throw @IndexOutOfRange()
         }
     }
     var p = Point(12, 34)
@@ -416,14 +416,14 @@
     type RealNat = private Nat(var num)
 
     static func RealNat.RealNat(x) {
-        throw InvalidType(x.GetType()) when x is not Integer
+        throw @InvalidType(x.GetType()) when x is not Integer
         RealNat.Nat(x)
     }
     func RealNat + (other) {
         let res = match other {
             RealNat => this.num + other.num,
             Integer => this.num + other,
-            _ => throw InvalidType(other.GetType())
+            _ => throw @InvalidType(other.GetType())
         }
         res >= 0 ? RealNat(res) : res
     }
@@ -443,7 +443,7 @@
         t.y = 240
         assert(got: false)
     } catch {
-        IndexReadOnly() => assert(got: true)
+        @IndexReadOnly() => assert(got: true)
     }
 #endregion
 
@@ -456,7 +456,7 @@
         t.x = "240"
         assert(got: false)
     } catch {
-        InvalidType() => assert(got: true)
+        @InvalidType() => assert(got: true)
     }
 #endregion
 
@@ -468,13 +468,13 @@
     func get Foo[field] {
         match field {
             "x" => ini.data,
-            _ => throw IndexOutOfRange()
+            _ => throw @IndexOutOfRange(field)
         }
     }
     func set Foo[field, Integer value] {
         match field {
             "x" => ini.data = value,
-            _ => throw IndexOutOfRange()
+            _ => throw @IndexOutOfRange(field)
         }
     }
     let t = Foo(12)
@@ -483,7 +483,7 @@
         t.x = "120"
         assert(got: false)
     } catch {
-        InvalidType() => assert(got: true),
+        @InvalidType() => assert(got: true),
         _ => assert(got: false)
     }
 #endregion
@@ -547,7 +547,7 @@
         let _ = Foo(12.2, 12)
         assert(got: false)
     } catch {
-        InvalidType() => assert(got: true)
+        @InvalidType() => assert(got: true)
     }
 #endregion
 
@@ -559,7 +559,7 @@
         let _ = Number("string")
         assert(got: false)
     } catch {
-        InvalidType() => assert(got: true)
+        @InvalidType() => assert(got: true)
     }
 #endregion
 
@@ -573,7 +573,7 @@
         x.value = 0.25
         assert(got: false)
     } catch {
-        InvalidType() => assert(got: true)
+        @InvalidType() => assert(got: true)
     }
 #endregion
 
@@ -587,13 +587,13 @@
         x.value = true
         assert(got: false)
     } catch {
-        InvalidType() => assert(got: true)
+        @InvalidType() => assert(got: true)
     }
 #endregion
 
 #region "Initialization blocks 1"
     type Nat(x) {
-        throw InvalidValue(x) when x == 0
+        throw @InvalidValue(x) when x == 0
         x = -x when x < 0 
     }
     func Nat as Integer => this.x
@@ -605,7 +605,7 @@
         x = Nat(0)
         assert(got: false)
     } catch {
-        InvalidValue(x) => assert(0, x)
+        @InvalidValue(x) => assert(0, x)
     }
 #endregion
 

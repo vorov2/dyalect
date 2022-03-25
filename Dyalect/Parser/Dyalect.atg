@@ -23,7 +23,7 @@ TOKENS
 
     lcaseToken = lcase { letter | digit } | "_" lcase { letter | digit  } | "_".
 
-    variantToken = "`" ucase { letter | digit | "_"}.
+    variantToken = "@" (letter|"_") { letter | digit }.
 
     directive = "#" (letter { letter | digit } | "_" letter { letter | digit  }).
 
@@ -582,6 +582,7 @@ PRODUCTIONS
         (. node = null; .)
         (
               NamePattern<out node> [ AsPattern<node, out node> ]
+            | VariantPattern<out node> [ AsPattern<node, out node> ]
             | IntegerPattern<out node> [ AsPattern<node, out node> ]
             | FloatPattern<out node> [ AsPattern<node, out node> ]
             | CharPattern<out node> [ AsPattern<node, out node> ]
@@ -696,6 +697,13 @@ PRODUCTIONS
             (. la.Pattern = pat; node = la; .)
         ).
 
+    VariantPattern<out DPattern node> =
+        (
+            variantToken
+            (. var ctor = new DCtorPattern(t) { Constructor = t.val.Substring(1) }; node = ctor; .)
+            [ CtorPatternArguments<ctor.Arguments> ]
+        ).
+
     NamePattern<out DPattern node> =
         (. node = null; Token ot = null; string mod = null; string typ = null; string nam = null;.)
         (
@@ -718,23 +726,7 @@ PRODUCTIONS
                         ctor.Constructor = nam;
                     }
                 .)
-                "("
-                    [ 
-                        (
-                              IF (IsLabelPattern()) LabelPattern<out node>
-                            | OrPattern<out node>
-                        )
-                        (. ctor.Arguments.Add(node); .)
-                    ]
-                    {
-                        ","
-                        (
-                              IF (IsLabelPattern()) LabelPattern<out node>
-                            | OrPattern<out node>
-                        )
-                        (. ctor.Arguments.Add(node); .)
-                    }
-                ")"
+                CtorPatternArguments<ctor.Arguments> 
                 (. node = ctor; .)
             ]
             (.
@@ -760,6 +752,26 @@ PRODUCTIONS
                 }
             .)
         ).
+
+    CtorPatternArguments<DNodeList arguments> = 
+        (. DPattern node = null; .)
+        "("
+            [ 
+                (
+                      IF (IsLabelPattern()) LabelPattern<out node>
+                    | OrPattern<out node>
+                )
+                (. arguments.Add(node); .)
+            ]
+            {
+                ","
+                (
+                      IF (IsLabelPattern()) LabelPattern<out node>
+                    | OrPattern<out node>
+                )
+                (. arguments.Add(node); .)
+            }
+        ")".
 
     NilPattern<out DPattern node> = "nil" (. node = new DNilPattern(t); .).
     IntegerPattern<out DPattern node> = intToken (. node = new DIntegerPattern(t) { Value = ParseInteger() }; .).
@@ -915,18 +927,6 @@ PRODUCTIONS
             ":" Expr<out node> (. @if.False = node; node = @if; .)
         ).
 
-    /*Throw<out DNode node> =
-        (. node = null; .)
-        (
-            "throw" 
-            (. 
-                var th = new DThrow(t);
-                node = th;
-                if (la.AfterEol) return;
-            .)
-            Expr<out var cexp> (. th.Expression = cexp; .)
-        ).*/
-
     Throw<out DNode node> =
         (. node = null; .)
         (
@@ -936,21 +936,7 @@ PRODUCTIONS
                 node = th;
                 if (la.AfterEol) return;
             .)
-            [
-                (
-                    ucaseToken (. string name = t.val; .)
-                    "("
-                        (. var vr = new DVariant(name, t); .)
-                        [ ApplicationArguments<vr.Arguments> ]
-                        (. th.Expression = vr; .)
-                    ")"
-                )
-                |
-                (
-                    lcaseToken
-                    (. th.Expression = new DName(t) { Value = t.val }; .)
-                )
-            ]
+            Control<out var cexp> (. th.Expression = cexp; .)
         ).
 
     TryCatch<out DNode node> =
@@ -1310,10 +1296,13 @@ PRODUCTIONS
         (. string name; node = null; .)
         (
             variantToken (. name = t.val.Substring(1); .)
+            (.
+                var vr = new DVariant(name, t);
+                node = vr;
+                if (la.AfterEol || la.kind != _parenLeftToken) return;
+            .)
             "("
-                (. var vr = new DVariant(name, t); .)
                 [ ApplicationArguments<vr.Arguments> ]
-                (. node = vr; .)
             ")"
         ).
 
