@@ -1583,7 +1583,7 @@ namespace Dyalect.Parser
 		node = th;
 		if (la.AfterEol) return;
 		
-		Expr(out var cexp);
+		Control(out var cexp);
 		th.Expression = cexp; 
 	}
 
