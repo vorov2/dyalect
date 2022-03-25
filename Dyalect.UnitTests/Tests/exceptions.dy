@@ -59,8 +59,8 @@
             try {
                 throw @Error("Oops!")
             }
-            catch e {
-                throw e
+            catch _ {
+                throw
             }
         } catch e {
             "caught:" + e[0]
