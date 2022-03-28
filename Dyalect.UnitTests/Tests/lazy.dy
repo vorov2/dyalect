@@ -173,12 +173,12 @@
     let xs = []
     lazy x = {
         xs.AddRange(yields { 1, 2 })
-        throw Error.Unknown(xs)
+        throw Unknown(xs)
     }
     try {
         let _ = x.ToString()
     } catch {
-        Unknown(xs) => assert([1, 2], xs)
+        @Unknown(xs) => assert([1, 2], xs)
     }
 #endregion
 

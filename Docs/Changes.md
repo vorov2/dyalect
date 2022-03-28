@@ -1,3 +1,8 @@
+# 0.34.0
+  * Change: _`Console.SetOutput` method corrected.
+  * Change: _Consider replacing `Error` type with a `Variant` type_ ([Issue #653](https://github.com/vorov2/dyalect/issues/653)).
+  * Add: _Consider adding variant type_ ([Issue #652](https://github.com/vorov2/dyalect/issues/652), [docs](https://github.com/vorov2/dyalect/wiki/Variant)).
+
 # 0.33.0
   * Add: _Create foreign types from other foreign modules_ ([Issue #644](https://github.com/vorov2/dyalect/issues/644)).
   * Add: _`StringBuilder`_ ([Issue #22](https://github.com/vorov2/dyalect/issues/22), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.StringBuilder)).

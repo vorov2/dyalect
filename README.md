@@ -1,7 +1,6 @@
-# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.33-royalblue.svg)
+# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.34-royalblue.svg)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/lu26t16of7nhetp0?svg=true)](https://ci.appveyor.com/project/vorov2/dyalect)
-[![Tests](https://img.shields.io/appveyor/tests/vorov2/dyalect.svg)](https://ci.appveyor.com/project/vorov2/dyalect)
+[![Build](https://github.com/vorov2/dyalect/actions/workflows/dotnet.yml/badge.svg)](https://github.com/vorov2/dyalect/blob/master/Docs/testresults.txt)
 
 :blue_book: [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
 

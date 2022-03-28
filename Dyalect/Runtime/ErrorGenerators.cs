@@ -1,19 +1,28 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Runtime.Types;
+using Dyalect.Strings;
+using System;
+using System.Linq;
 
 namespace Dyalect.Runtime
 {
     public static class ErrorGenerators
     {
-        public static DyObject Fail(this ExecutionContext ctx, string errorName, string description, params string[] dataItems)
-        {
-            ctx.Error = new(errorName, description, dataItems);
-            return DyNil.Instance;
-        }
-
         public static DyObject Failure(this ExecutionContext ctx, string detail)
         {
             ctx.Error = new(DyErrorCode.Failure, detail);
+            return DyNil.Instance;
+        }
+
+        public static DyObject ParsingFailed(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.ParsingFailed);
+            return DyNil.Instance;
+        }
+
+        public static DyObject Timeout(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.Timeout);
             return DyNil.Instance;
         }
 
@@ -242,6 +251,38 @@ namespace Dyalect.Runtime
         {
             ctx.Error = new(DyErrorCode.ArgumentNotFound, functionName, argumentName);
             return DyNil.Instance;
+        }
+
+        public static DyErrorCode GetErrorCode(DyVariant err)
+        {
+            if (!Enum.TryParse<DyErrorCode>(err.Constructor, true, out var res))
+                return DyErrorCode.UnexpectedError;
+
+            return res;
+        }
+
+        public static string GetErrorDescription(DyVariant err)
+        {
+            if (!Enum.TryParse<DyErrorCode>(err.Constructor, true, out var res))
+                return err.Constructor;
+
+            var idx = err.Tuple.Count;
+            var str = RuntimeErrors.ResourceManager.GetString(err.Constructor + "." + idx);
+
+            if (str is not null && err.Tuple.Count > 0)
+                {
+                var vals = err.Tuple.GetValues()
+                    .Select(v => v is DyTypeInfo t ? t.TypeName : (v.ToString() ?? ""))
+                    .ToArray();
+                str = str.Format(vals);
+            }
+            else if (str is null)
+            {
+                str = RuntimeErrors.ResourceManager.GetString(err.Constructor + ".0");
+                str ??= err.Constructor;
+            }
+
+            return str;
         }
     }
 }

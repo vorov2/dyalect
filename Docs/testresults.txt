@@ -1,5 +1,5 @@
-Running tests from 24 file(s):
-array.dy autos.dy bool.dy builtins.dy char.dy complex.dy control.dy dictionary.dy exceptions.dy float.dy function.dy integer.dy iterator.dy lazy.dy libcore.dy match.dy modules.dy nil.dy operators.dy ranges.dy set.dy string.dy tuple.dy types.dy
+Running tests from 25 file(s):
+array.dy autos.dy bool.dy builtins.dy char.dy complex.dy control.dy dictionary.dy exceptions.dy float.dy function.dy integer.dy iterator.dy lazy.dy libcore.dy match.dy modules.dy nil.dy operators.dy ranges.dy set.dy string.dy tuple.dy types.dy variant.dy
 
 Tests/array.dy:
 [+] Array literal
@@ -59,7 +59,6 @@ Tests/autos.dy:
 [+] Autos and exceptions 3
 [+] Autos and exceptions 4
 [+] Autos and exceptions 5
-[+] Autos and exceptions 6
 [+] Autos in catch 1
 [+] Autos in catch 2
 [+] Autos in catch 3
@@ -656,5 +655,16 @@ Tests/types.dy:
 [+] Initialization blocks 1
 [+] Initialization blocks 2
 
+Tests/variant.dy:
+[+] Literal
+[+] Methods: GetType
+[+] Methods: ToString, ToLiteral
+[+] Methods: Length
+[+] Equality
+[+] Conversion (as)
+[+] Pass as value
+[+] Pattern matching 1
+[+] Pattern matching 2
+
 Total:
-607 passed, 0 failed in 24 file(s)
+615 passed, 0 failed in 25 file(s)

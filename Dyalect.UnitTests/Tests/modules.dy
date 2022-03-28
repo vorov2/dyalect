@@ -115,7 +115,7 @@
         assert(got: false)
     }
     catch {
-        OperationNotSupported() => assert(got: true)
+        @OperationNotSupported() => assert(got: true)
     }
 #endregion
 

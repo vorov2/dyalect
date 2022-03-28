@@ -10,34 +10,30 @@ namespace Dyalect.Runtime
         private static bool ProcessError(ExecutionContext ctx, int offset, ref DyNativeFunction function,
             ref DyObject[] locals, ref EvalStack evalStack, ref int jumper)
         {
-            var err = ctx.Error!;
-            jumper = ThrowIf(err, offset, function.UnitId, ref function, ref locals, ref evalStack, ctx);
+            jumper = ThrowIf(ctx.Error!, ctx.ErrorDump, offset, function.UnitId, ref function, ref locals, ref evalStack, ctx);
             return jumper > -1;
         }
 
-        private static int ThrowIf(DyError err, int offset, int moduleHandle, ref DyNativeFunction function,
+        private static int ThrowIf(DyVariant err, Stack<StackPoint>? dump, int offset, int moduleHandle, ref DyNativeFunction function,
             ref DyObject[] locals, ref EvalStack evalStack, ExecutionContext ctx)
         {
-            Stack<StackPoint> dump;
-
-            if (err.Dump is null)
+            if (dump is null)
             {
                 dump = Dump(ctx.CallStack.Clone());
                 dump.Push(new(offset, moduleHandle));
             }
-            else
-                dump = err.Dump;
 
             int jumper;
 
             if ((jumper = FindCatch(ctx, ref function, ref locals, ref evalStack)) > -1)
             {
-                ctx.Error!.Dump = dump;
+                ctx.ErrorDump = dump;
                 return jumper;
             }
             else
             {
                 ctx.Error = null;
+                ctx.ErrorDump = null;
                 var deb = new DyDebugger(ctx.RuntimeContext.Composition);
                 var cs = deb.BuildCallStack(dump);
                 throw new DyCodeException(err, cs, null);

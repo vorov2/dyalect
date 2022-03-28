@@ -91,7 +91,6 @@
             0,  //Mut
             -1, //Annot
             0,  //FunAttr
-            0,  //NewErr **dynamic
             0,  //NewLaz
             -3, //NewCast
             0,  //Cast

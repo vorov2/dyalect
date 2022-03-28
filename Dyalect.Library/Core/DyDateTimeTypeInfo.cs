@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dyalect.Library.Strings;
 
 namespace Dyalect.Library.Core
 {
@@ -31,7 +30,7 @@ namespace Dyalect.Library.Core
             }
             catch (FormatException)
             {
-                return ctx.Fail(nameof(Errors.ParsingFailed), Errors.ParsingFailed);
+                return ctx.ParsingFailed();
             }
         }
 

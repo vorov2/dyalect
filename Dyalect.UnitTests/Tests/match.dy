@@ -267,8 +267,8 @@
     var x
     var res = try {
         set (x, 2) = foo()
-    } catch e {
-        e.detail
+    } catch {
+        @MatchFailed() => "Match failed."
     }
     assert("Match failed.", res)
 #endregion
@@ -312,8 +312,8 @@
     }
     var res = try {
         var (x, 2) = foo()
-    } catch e {
-        e.detail
+    } catch {
+        @MatchFailed() => "Match failed."
     }
     assert("Match failed.", res)
 #endregion

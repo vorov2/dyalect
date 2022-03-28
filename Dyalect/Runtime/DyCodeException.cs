@@ -6,18 +6,18 @@ namespace Dyalect.Runtime
 {
     public sealed class DyCodeException : DyRuntimeException
     {
-        internal DyCodeException(DyError err, CallStackTrace cs, Exception? innerException)
+        internal DyCodeException(DyVariant err, CallStackTrace cs, Exception? innerException)
             : base(null!, innerException) => (Error, CallTrace) = (err, cs);
 
-        public override string Message => Error.GetDescription();
+        public override string Message => ErrorGenerators.GetErrorDescription(Error);
 
-        public DyError Error { get; private set; }
+        public DyVariant Error { get; private set; }
 
         public CallStackTrace CallTrace { get; private set; }
 
         public override string ToString()
         {
-            var errCode = ((int)Error.Code).ToString().PadLeft(3, '0');
+            var errCode = ((int)ErrorGenerators.GetErrorCode(Error)).ToString().PadLeft(3, '0');
             return $"Error D{errCode}: {Message}\nStack trace:\n{CallTrace}";
         }
     }

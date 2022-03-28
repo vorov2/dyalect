@@ -50,6 +50,10 @@
 
         ValueMissing = 623,
 
-        Failure = 624
+        Failure = 624,
+
+        Timeout = 625,
+
+        ParsingFailed = 626
     }
 }

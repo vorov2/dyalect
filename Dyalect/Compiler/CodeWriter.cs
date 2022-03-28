@@ -179,12 +179,6 @@ namespace Dyalect.Compiler
             Emit(new(OpCode.Tag, idx));
         }
 
-        public void NewErr(DyErrorCode code, int narg)
-        {
-            RgDI((int)code);
-            Emit(new(OpCode.NewErr, narg), -narg + 1);
-        }
-
         public void CallNullaryMember(string name)
         {
             GetMember(name);

@@ -33,6 +33,7 @@
         YieldMany,
         Throw,
         As,
+        Variant,
 
         Directive,
 

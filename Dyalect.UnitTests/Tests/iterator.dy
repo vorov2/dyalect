@@ -320,7 +320,7 @@
     func iter() {
         try {
             yield 1
-            throw "oops"
+            throw @Error("oops")
             yield 2
         } catch e {
             val = 42
@@ -461,7 +461,7 @@
     try {
         refs = refs.Sort((x,y) => x / y)
     } catch {
-        DivisionByZero() => assert([3,5,0,1,2,3], refs.ToArray())
+        @DivisionByZero() => assert([3,5,0,1,2,3], refs.ToArray())
     }
 #endregion
 
@@ -513,7 +513,7 @@
             res.Add(x)
         }
     } catch {
-        DivideByZero() => assert([2,4,6], res)
+        @DivideByZero() => assert([2,4,6], res)
     }
 #endregion
 
@@ -569,7 +569,7 @@
         let _ = xs.ToDictionary(kv => kv.key)
         assert(true, false)
     } catch {
-        KeyAlreadyPresent() => assert(true, true)
+        @KeyAlreadyPresent() => assert(true, true)
     }
 #endregion
 
@@ -607,7 +607,7 @@
     func iter() {
         yield nil
         yield true
-        throw "err"
+        throw @Error("err")
     }
     let ys = iter()
     assert(true, ys.Any(x => x is not nil))
@@ -620,13 +620,13 @@
     func iter() {
         yield true
         yield true
-        throw "err"
+        throw Bar("err")
     }
     let ys = iter()
     try {
         assert(true, ys.Any(x => x))
     } catch {
-        UnexpectedError(msg) => assert("err", msg)
+        @Bar(msg) => assert("err", msg)
     }
 #endregion
 

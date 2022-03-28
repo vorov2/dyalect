@@ -112,21 +112,23 @@ namespace Dyalect.Library.Core
             return DyNil.Instance;
         }
 
-        private DyObject SetOutput(ExecutionContext ctx, DyObject write)
+        private DyObject SetOutput(ExecutionContext ctx, DyObject write, DyObject writeLine)
         {
-            if (write is DyNil)
+            if (write is DyNil && writeLine is DyNil)
             {
                 if (consoleOutput is not null)
                     Console.SetOut(consoleOutput);
             }
-            else if (write is not DyFunction fn)
+            else if (write is not DyFunction writeFn)
                 ctx.InvalidType(write);
+            else if (writeLine is not DyFunction writeLineFn)
+                ctx.InvalidType(writeLine);
             else
             {
                 if (consoleOutput is null)
                     consoleOutput = Console.Out;
 
-                Console.SetOut(new ConsoleTextWriter(ctx, fn));
+                Console.SetOut(new ConsoleTextWriter(ctx, writeFn, writeLineFn));
             }
 
             return DyNil.Instance;
@@ -170,7 +172,7 @@ namespace Dyalect.Library.Core
                 "ForeColor" => Func.Auto(name, GetForeColor),
                 "set_ForeColor" => Func.Static(name, SetForeColor, -1, new Par("value")),
                 "SetTitle" => Func.Static(name, SetTitle, -1, new Par("value")),
-                "SetOutput" => Func.Static(name, SetOutput, -1, new Par("write", DyNil.Instance)),
+                "SetOutput" => Func.Static(name, SetOutput, -1, new Par("write", DyNil.Instance), new Par("writeLine", DyNil.Instance)),
                 "SetInput" => Func.Static(name, SetInput, -1, new Par("read", DyNil.Instance), new Par("readLine", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
             };

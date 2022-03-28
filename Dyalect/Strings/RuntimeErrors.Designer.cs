@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class RuntimeErrors {
@@ -412,6 +412,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parsing failed..
+        /// </summary>
+        internal static string ParsingFailed_0 {
+            get {
+                return ResourceManager.GetString("ParsingFailed.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to access private scope of an object..
         /// </summary>
         internal static string PrivateAccess_0 {
@@ -471,6 +480,15 @@ namespace Dyalect.Strings {
         internal static string StackOverflow_0 {
             get {
                 return ResourceManager.GetString("StackOverflow.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation timed out..
+        /// </summary>
+        internal static string Timeout_0 {
+            get {
+                return ResourceManager.GetString("Timeout.0", resourceCulture);
             }
         }
         

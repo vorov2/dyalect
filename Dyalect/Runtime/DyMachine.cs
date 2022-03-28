@@ -337,7 +337,7 @@ namespace Dyalect.Runtime
                             right = evalStack.Pop();
                             right = right.Force(ctx);
                             if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                            ctx.Error = right is DyError e ? e : new(DyErrorCode.UnexpectedError, right);
+                            ctx.Error = (DyVariant)right;
                             ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                             goto CATCH;
                         }
@@ -604,12 +604,6 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.NewTuple:
                         evalStack.Push(op.Data == 0 ? DyTuple.Empty : new DyTuple(MakeArray(ctx, evalStack, op.Data)));
-                        break;
-                    case OpCode.NewErr:
-                        if (op.Data > 0)
-                            evalStack.Push(new DyError((DyErrorCode)ctx.RgDI, MakeArray(ctx, evalStack, op.Data)));
-                        else
-                            evalStack.Push(new DyError((DyErrorCode)ctx.RgDI));
                         break;
                     case OpCode.TypeCheck:
                         {
