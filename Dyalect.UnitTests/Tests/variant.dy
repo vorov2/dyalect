@@ -45,7 +45,22 @@
     assert((1,2,3,4), xs)
 #endregion
 
-#region "Pattern matching"
+#region "Pass as value"
+    func test(v) {
+        assert(got: @Bar == v)
+    }
+    test(@Bar)
+#endregion
+
+#region "Pattern matching 1"
+    let x = @Foo
+    match x {
+        @Foo => assert(got: true),
+        _ => assert(got: false)
+    }
+#endregion
+
+#region "Pattern matching 2"
     func matchIt(x) {
         match x {
             @Item(class, number, moveable) => {
