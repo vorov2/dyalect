@@ -30,8 +30,6 @@ namespace Dyalect.Runtime.Types
 
         protected internal override long GetInteger() => (long)value;
 
-        protected internal override bool GetBool(ExecutionContext ctx) => value > .00001d;
-
         public override DyObject Clone() => this;
 
         internal override void Serialize(BinaryWriter writer)

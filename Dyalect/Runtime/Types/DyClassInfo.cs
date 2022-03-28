@@ -25,12 +25,12 @@
 
             if (self.TypeId == right.TypeId && right is DyClass t && t.Constructor == self.Constructor)
             {
-                var res = ctx.RuntimeContext.Types[self.Fields.TypeId].Eq(ctx, self.Fields, t.Fields);
+                var res = self.Fields.Equals(t.Fields, ctx);
 
                 if (ctx.HasErrors)
                     return DyNil.Instance;
 
-                return res;
+                return res ? DyBool.True : DyBool.False;
             }
 
             return DyBool.False;

@@ -82,7 +82,7 @@ namespace Dyalect.Runtime
 
             switch (Type.GetTypeCode(type))
             {
-                case TypeCode.Boolean: return obj.GetBool(null!);
+                case TypeCode.Boolean: return obj.GetBool(ctx);
                 case TypeCode.Byte: return (byte)obj.GetInteger();
                 case TypeCode.Int16: return (short)obj.GetInteger();
                 case TypeCode.Int32: return (int)obj.GetInteger();

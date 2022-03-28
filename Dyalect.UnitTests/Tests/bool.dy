@@ -1,8 +1,6 @@
 ﻿#region "Constructor"
     assert(true, Bool(12))
-    assert(false, Bool(0))
     assert(true, Bool("str"))
-    assert(false, Bool(""))
     assert(false, Bool(nil))
     assert(true, Bool([]))
 #endregion

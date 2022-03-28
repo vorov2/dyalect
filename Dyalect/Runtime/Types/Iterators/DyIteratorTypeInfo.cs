@@ -361,8 +361,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
         {
             var seq = DyIterator.ToEnumerable(ctx, self);
-            return seq.Any(o => ctx.RuntimeContext.Types[o.TypeId].Eq(ctx, o, item).GetBool(ctx)) 
-                ? DyBool.True : DyBool.False; ;
+            return seq.Any(o => o.Equals(item, ctx)) ? DyBool.True : DyBool.False;
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>

@@ -59,7 +59,7 @@
     } else {
         assert(got: false)
     }
-    lazy y = 0
+    lazy y = nil
     if y {
         assert(got: false)
     } else {

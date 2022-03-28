@@ -70,21 +70,20 @@ namespace Dyalect.Runtime.Types
             {
                 var x = xs.GetValue(i);
                 var y = ys.GetValue(i);
-                var typ = ctx.RuntimeContext.Types[x.TypeId];
-                var res = gt ? typ.Gt(ctx, x, y) : typ.Lt(ctx, x, y);
+                var res = gt ? x.Greater(y, ctx) : x.Lesser(y, ctx);
 
                 if (ctx.HasErrors)
                     return DyNil.Instance;
 
-                if (ReferenceEquals(res, DyBool.True))
+                if (res)
                     return DyBool.True;
 
-                res = typ.Eq(ctx, x, y);
+                res = x.Equals(y, ctx);
 
                 if (ctx.HasErrors)
                     return DyNil.Instance;
 
-                if (!ReferenceEquals(res, DyBool.True))
+                if (!res)
                     return DyBool.False;
             }
 
@@ -151,7 +150,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = t.Values[i].GetTaggedValue();
 
-                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, item).GetBool(ctx))
+                if (e.Equals(item, ctx))
                     return RemoveAt(ctx, t, i);
             }
 
