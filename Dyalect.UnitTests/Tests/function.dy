@@ -709,3 +709,10 @@
     assert(4, fetchLambda(true)())
     assert(6, fetchLambda(false)())
 #endregion
+
+#region "Methods: Apply"
+    func sum(x, y, z) => x + y + z
+    let fn = sum.Apply(y: 12, z: 3)
+    assert(16, fn(1))
+    //assert(3, fn(1, 2, 3))
+#endregion

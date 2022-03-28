@@ -1,5 +1,6 @@
 # 0.35.0
   * Add: _Consider shortcut syntax for parameterless lambda_ ([Issue #591](https://github.com/vorov2/dyalect/issues/591), [docs](https://github.com/vorov2/dyalect/wiki/Functions#lambdas)).
+  * Add: _Consider adding `Function.Apply` method_ ([Issue #660](https://github.com/vorov2/dyalect/issues/660), [docs](https://github.com/vorov2/dyalect/wiki/Functions#apply)).
   * Change: _Consider changing `Iterator.Reduce` signature_ ([Issue #659](https://github.com/vorov2/dyalect/issues/659), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#reduce)).
   * Fix: _Correct grammar for labels/names function arguments_ ([Issue #658](https://github.com/vorov2/dyalect/issues/658)).
 

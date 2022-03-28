@@ -41,9 +41,40 @@ namespace Dyalect.Runtime.Types
             return new DyArray(arr);
         }
 
+        private DyObject Apply(ExecutionContext ctx, DyObject self, DyObject obj)
+        {
+            var tup = (DyTuple)obj;
+            var fn = (DyFunction)self.Clone();
+            var pars = new Par[fn.Parameters.Length];
+
+            for (var i = 0; i < fn.Parameters.Length; i++)
+            {
+                var p = fn.Parameters[i];
+
+                if (p.IsVarArg)
+                    continue;
+
+                var val = p.Value;
+
+                for (var j = 0; j < tup.Count; j++)
+                {
+                    var lab = tup.Values[j].GetLabel();
+
+                    if (p.Name == lab)
+                        val = tup.Values[j].GetTaggedValue();
+                }
+
+                pars[i] = new Par(p.Name, val, p.IsVarArg, p.TypeAnnotation);
+            }
+
+            fn.Parameters = pars;
+            return fn;
+        }
+
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
+                Method.Apply => Func.Member(name, Apply, 0, new Par("parameters")),
                 Method.Compose => Func.Member(name, Compose, -1, new Par("with")),
                 Method.Name => Func.Auto(name, GetName),
                 Method.Parameters => Func.Auto(name, GetParameters),

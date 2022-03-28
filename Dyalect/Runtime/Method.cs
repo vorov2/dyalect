@@ -88,6 +88,7 @@
         public const string IsMultiple = "IsMultiple";
         public const string Nil = "Nil";
         public const string Compose = "Compose";
+        public const string Apply = "Apply";
         public const string Name = "Name";
         public const string Parameters = "Parameters";
         public const string Iterator = "Iterator";
