@@ -18,7 +18,7 @@ namespace Dyalect.Parser
                 ,{ "invalid ImportToken", InvalidImport }
                 ,{ "invalid Region", InvalidRegion }
                 ,{ "invalid Statement", InvalidStatement }
-                ,{ "invalid Statement", InvalidTypeName }
+                ,{ "invalid TypeName", InvalidTypeName }
                 ,{ "invalid Control", InvalidExpression }
                 ,{ "invalid Binding", InvalidBinding }
                 ,{ "invalid ControlFlow", InvalidStatement }
@@ -32,6 +32,7 @@ namespace Dyalect.Parser
                 ,{ "invalid TuplePattern", InvalidPattern }
                 ,{ "invalid MethodCheckPattern", InvalidPattern }
                 ,{ "invalid ComparisonPattern", InvalidPattern }
+                ,{ "invalid CtorPatternArguments", InvalidPattern }
                 ,{ "invalid Yield", InvalidYield }
                 ,{ "invalid Lambda", InvalidFunctionExpression }
                 ,{ "invalid TryCatch", InvalidTryCatch }
@@ -106,7 +107,7 @@ namespace Dyalect.Parser
                 ,{ "eq_rem", "%=" }
                 ,{ "eq_and", "&&&=" }
                 ,{ "eq_or", "|||=" }
-                ,{ "eq_xor", "^=" }
+                ,{ "eq_xor", "^^^=" }
                 ,{ "eq_lsh", "<<<=" }
                 ,{ "eq_rsh", ">>>=" }
                 ,{ "minus", "-" }
