@@ -1009,7 +1009,7 @@ PRODUCTIONS
         .)
         (
             (. functions.Push(f); .)
-            "=>" Expr<out var exp>
+            "\\" Expr<out var exp>
             (. f.Body = exp; functions.Pop(); .)
         ).
 
@@ -1200,11 +1200,12 @@ PRODUCTIONS
         (. node = null; .)
         (
             Unary<out node>
-            {
+            /*{
                 (. var app = new DApplication(node, t); .)
-                "\\" Unary<out node>
+                //"~~~~~~~" Unary<out node>
+                NullaryLambda<out node>
                 (. app.Arguments.Add(node); node = app; .)
-            }
+            }*/
         ).
 
     Unary<out DNode node> =

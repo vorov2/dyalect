@@ -415,16 +415,6 @@
     assert("pars->x", res)
 #endregion
 
-#region "Parameterless lambda"
-    let fn = => 2 + 2
-    assert(4, fn())
-    func takeIt(fn) {
-        return fn()
-    }
-    let res = takeIt(=> { 22 + 22 })
-    assert(44, res)
-#endregion
-
 #region "Introspection"
     func tt(x, y, z = 3, extras...) {}
     assert("tt", tt.Name)
@@ -682,4 +672,14 @@
     match 2 as libtest.Foo {
         Foo(x) => assert(2, x)
     }
+#endregion
+
+#region "Parameterless lambda"
+    let fn = \2 + 2
+    assert(4, fn())
+    func takeIt(fn) {
+        return fn()
+    }
+    let res = takeIt(\22 + 22)
+    assert(44, res)
 #endregion

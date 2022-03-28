@@ -254,7 +254,6 @@ Tests/function.dy:
 [+] Parameter defaults 1
 [+] Parameter defaults 2
 [+] Parameters and exceptions
-[+] Parameterless lambda
 [+] Introspection
 [+] Expression bodied functions
 [+] Defaults and foreign call 1
@@ -274,6 +273,7 @@ Tests/function.dy:
 [+] Invalid overload (custom)
 [+] Conversion: as
 [+] Complex definition 1
+[+] Parameterless lambda
 
 Tests/integer.dy:
 [+] Integer literal
