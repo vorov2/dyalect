@@ -39,11 +39,9 @@ namespace Dyalect.Runtime.Types
             if (t1.Count != t2.Count)
                 return DyBool.False;
 
-            var types = ctx.RuntimeContext.Types;
-
             for (var i = 0; i < t1.Count; i++)
             {
-                if (!types[t1.Values[i].TypeId].Eq(ctx, t1.Values[i], t2.Values[i]).IsTrue(ctx))
+                if (t1.Values[i].NotEquals(t2.Values[i], ctx))
                     return DyBool.False;
 
                 if (ctx.HasErrors)

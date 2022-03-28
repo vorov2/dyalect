@@ -4,9 +4,8 @@ namespace Dyalect.Runtime.Types
 {
     public static class DyObjectExtensions
     {
-        internal static bool IsTrue(this DyObject self, ExecutionContext ctx) =>
-            //!ReferenceEquals(self, DyBool.False) && !ReferenceEquals(self, DyNil.Instance);
-            self.TypeId == DyType.Bool && ReferenceEquals(self, DyBool.True) || self.GetBool(ctx);
+        internal static bool IsTrue(this DyObject self) =>
+            !ReferenceEquals(self, DyBool.False) && !ReferenceEquals(self, DyNil.Instance);
 
         internal static DyObject GetIterator(this DyObject self, ExecutionContext ctx) =>
             ctx.RuntimeContext.Types[self.TypeId].GetInstanceMember(self, Builtins.Iterator, ctx);
@@ -20,6 +19,9 @@ namespace Dyalect.Runtime.Types
         public static bool Equals(this DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.RuntimeContext.Types[left.TypeId].Eq(ctx, left, right).GetBool(ctx);
 
+        public static bool NotEquals(this DyObject left, DyObject right, ExecutionContext ctx) =>
+            ctx.RuntimeContext.Types[left.TypeId].Neq(ctx, left, right).GetBool(ctx);
+        
         public static bool Lesser(this DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.RuntimeContext.Types[left.TypeId].Lt(ctx, left, right).GetBool(ctx);
 
