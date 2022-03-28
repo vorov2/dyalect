@@ -182,6 +182,11 @@ namespace Dyalect.Compiler
         public void CallNullaryMember(string name)
         {
             GetMember(name);
+            CallNullaryFunction();
+        }
+
+        public void CallNullaryFunction()
+        {
             FunPrep(0);
             FunCall(0);
         }

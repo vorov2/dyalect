@@ -247,7 +247,7 @@ namespace Dyalect.Compiler
                     if (arg.IsVarArg)
                         variadicIndex = i;
 
-                    var a = AddVariable(arg.Name, node.Location, data: VarFlags.Argument);
+                    var sys = AddVariable(arg.Name, node.Location, data: VarFlags.Argument);
 
                     if (arg.TypeAnnotation is not null)
                     {
@@ -258,7 +258,7 @@ namespace Dyalect.Compiler
                         //is a success, we goto to the exit section
                         foreach (var q in arg.TypeAnnotation)
                         {
-                            cw.PushVar(new ScopeVar(a));
+                            cw.PushVar(new ScopeVar(sys));
                             PushTypeInfo(ctx, q, node.Location);
                             cw.TypeCheck();
                             cw.Brtrue(skip);
@@ -268,7 +268,7 @@ namespace Dyalect.Compiler
                         //Here we try to obtain some additional info to generate nice
                         //error message
                         ThrowErrorProlog(DyErrorCode.InvalidType, 1);
-                        cw.PushVar(new ScopeVar(a));
+                        cw.PushVar(new ScopeVar(sys));
                         cw.CallNullaryMember(Builtins.Type);
                         cw.FunArgIx(0);
                         cw.FunCall(1);

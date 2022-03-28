@@ -445,7 +445,7 @@ namespace Dyalect.Compiler
             if (node.Target.NodeType == NodeType.Name && !hints.Has(Pop) && !options.NoOptimizations)
             {
                 var nm = node.Target.GetName()!;
-                var err = GetVariable(nm, currentScope, out var sv);
+                var err = GetVariable(nm, out var sv);
 
                 if (err is CompilerError.None
                     && (sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
@@ -477,12 +477,11 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-                var sv = GetParentVariable(node.Name, node.Location);
-                AddLinePragma(node);
                 if (hints.Has(Pop))
-                    cw.PopVar(sv.Address);
+                    PopParentVariable(ctx, node.Name, node.Location);
                 else
-                    cw.PushVar(sv);
+                    PushParentVariable(ctx, node.Name, node.Location);
+
                 return;
             }
 
@@ -715,7 +714,7 @@ namespace Dyalect.Compiler
             var sv = ScopeVar.Empty;
 
             if (name is not null)
-                GetVariable(name, currentScope, out sv);
+                GetVariable(name, out sv);
 
             var newHints = hints.Remove(Last);
 
@@ -811,7 +810,7 @@ namespace Dyalect.Compiler
             if (name is null || name.Length == 0 || !char.IsUpper(name[0]))
                 return false;
 
-            var err = GetVariable(name, currentScope, out var _);
+            var err = GetVariable(name, out var _);
             return err == CompilerError.UndefinedVariable && DyType.GetTypeCodeByName(name) == 0;
         }
 
@@ -1080,6 +1079,30 @@ namespace Dyalect.Compiler
         }
 
         private void BuildLazy(DBinding node, Hints hints, CompilerContext ctx)
+        {
+            if (node.Pattern.NodeType != NodeType.NamePattern)
+                AddError(CompilerError.InvalidLazyBinding, node.Location);
+
+            var name = node.Pattern.GetName()!;
+
+            if (ReferenceEquals(currentScope, globalScope))
+                globalLazy.Add(name);
+
+            var dec = new DFunctionDeclaration(node.Init.Location)
+            {
+                Body = node.Init
+            };
+
+            Build(dec, hints.Append(Push), ctx);
+            AddLinePragma(node);
+            //cw.NewLaz();
+            var a = AddVariable(name, node.Location, VarFlags.Const | VarFlags.Lazy);
+            cw.PopVar(a);
+
+            PushIf(hints);
+        }
+
+        private void BuildLazy2(DBinding node, Hints hints, CompilerContext ctx)
         {
             if (node.Pattern.NodeType != NodeType.NamePattern)
                 AddError(CompilerError.InvalidLazyBinding, node.Location);
