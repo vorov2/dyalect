@@ -58,6 +58,7 @@ TOKENS
     whileToken          = "while".
     typeToken           = "type".
     inToken             = "in".
+    doToken             = "do".
 
     arrowToken          = "=>".
     dotToken            = ".".
