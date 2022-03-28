@@ -1986,6 +1986,9 @@ namespace Dyalect.Parser
 			Get();
 		} else SynErr(139);
 		node = new DName(t) { Value = t.val }; 
+		if (la.kind == 1 || la.kind == 2 || la.kind == 32) {
+			Lambda(out var cnode);
+		}
 	}
 
 	void Integer(out DNode node) {
