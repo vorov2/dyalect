@@ -309,7 +309,7 @@ namespace Dyalect.Runtime.Types
             return DyIterator.Create(xs);
         }
 
-        private DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject initial, DyObject funObj)
+        private DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject funObj, DyObject initial)
         {
             if (funObj.TypeId != DyType.Function)
                 return ctx.InvalidType(DyType.Function, funObj);
@@ -385,7 +385,7 @@ namespace Dyalect.Runtime.Types
                 Method.Filter => Func.Member(name, Filter, -1, new Par("predicate")),
                 Method.TakeWhile => Func.Member(name, TakeWhile, -1, new Par("predicate")),
                 Method.SkipWhile => Func.Member(name, SkipWhile, -1, new Par("predicate")),
-                Method.Reduce => Func.Member(name, Reduce, -1, new Par("initial", DyInteger.Zero), new Par("converter")),
+                Method.Reduce => Func.Member(name, Reduce, -1, new Par("converter"), new Par("initial", DyInteger.Zero)),
                 Method.Any => Func.Member(name, Any, -1, new Par("predicate")),
                 Method.All => Func.Member(name, All, -1, new Par("predicate")),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("value")),

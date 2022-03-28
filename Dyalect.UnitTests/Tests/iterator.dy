@@ -539,7 +539,7 @@
     let xs = { 1..10 }
     var res = xs.Reduce(converter: (x,y) => x + y)
     assert(55, res)
-    res = xs.Reduce(10, (x,y) => x + y)
+    res = xs.Reduce((x,y) => x + y, 10)
     assert(65, res)
 #endregion
 
