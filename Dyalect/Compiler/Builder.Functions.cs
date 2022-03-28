@@ -131,74 +131,94 @@ namespace Dyalect.Compiler
 
         //Compilation of function parameters with support for variable
         //arguments and default values
-        private Par[] CompileFunctionParameters(List<DParameter> pars)
+        private Par[] CompileFunctionParameters(DFunctionDeclaration node)
         {
-            var arr = new Par[pars.Count];
-            var hasVarArg = false;
-
-            for (var i = 0; i < pars.Count; i++)
+            if (node.IsNullary && node.Body is not null && node.Body.NodeType != NodeType.Block)
             {
-                var p = pars[i];
+                var set = new HashSet<string>();
+                CrawlVariables(node.Body, set);
+                var pars = new List<Par>();
 
-                if (p.IsVarArgs)
+                foreach (var n in set)
                 {
-                    if (hasVarArg)
-                        AddError(CompilerError.VarArgOnlyOne, p.Location);
+                    if (VariableExists(n) == CompilerError.None)
+                        continue;
 
-                    hasVarArg = true;
+                    pars.Add(new Par(n));
                 }
 
-                if (p.DefaultValue is not null)
+                return pars.ToArray();
+            }
+            else
+            {
+                var pars = node.Parameters;
+                var arr = new Par[pars.Count];
+                var hasVarArg = false;
+
+                for (var i = 0; i < pars.Count; i++)
                 {
+                    var p = pars[i];
+
                     if (p.IsVarArgs)
-                        AddError(CompilerError.VarArgNoDefaultValue, p.Location);
-
-                    DyObject? val = null;
-
-                    switch (p.DefaultValue.NodeType)
                     {
-                        case NodeType.Integer:
-                            val = new DyInteger(((DIntegerLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyType.Integer, p.TypeAnnotation))
-                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
-                            break;
-                        case NodeType.Float:
-                            val = new DyFloat(((DFloatLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyType.Float, p.TypeAnnotation))
-                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
-                            break;
-                        case NodeType.Char:
-                            val = new DyChar(((DCharLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyType.Char, p.TypeAnnotation))
-                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
-                            break;
-                        case NodeType.Boolean:
-                            val = ((DBooleanLiteral)p.DefaultValue).Value ? DyBool.True : DyBool.False;
-                            if (!CheckRestriction(DyType.Bool, p.TypeAnnotation)) 
-                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
-                            break;
-                        case NodeType.String:
-                            val = new DyString(((DStringLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyType.String, p.TypeAnnotation))
-                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
-                            break;
-                        case NodeType.Nil:
-                            val = DyNil.Instance;
-                            if (!CheckRestriction(DyType.Nil, p.TypeAnnotation))
-                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
-                            break;
-                        default:
-                            AddError(CompilerError.InvalidDefaultValue, p.DefaultValue.Location, p.Name);
-                            break;
+                        if (hasVarArg)
+                            AddError(CompilerError.VarArgOnlyOne, p.Location);
+
+                        hasVarArg = true;
                     }
 
-                    arr[i] = new Par(p.Name, val, false, p.TypeAnnotation);
-                }
-                else
-                    arr[i] = new Par(p.Name, null, p.IsVarArgs, p.TypeAnnotation);
-            }
+                    if (p.DefaultValue is not null)
+                    {
+                        if (p.IsVarArgs)
+                            AddError(CompilerError.VarArgNoDefaultValue, p.Location);
 
-            return arr;
+                        DyObject? val = null;
+
+                        switch (p.DefaultValue.NodeType)
+                        {
+                            case NodeType.Integer:
+                                val = new DyInteger(((DIntegerLiteral)p.DefaultValue).Value);
+                                if (!CheckRestriction(DyType.Integer, p.TypeAnnotation))
+                                    AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                                break;
+                            case NodeType.Float:
+                                val = new DyFloat(((DFloatLiteral)p.DefaultValue).Value);
+                                if (!CheckRestriction(DyType.Float, p.TypeAnnotation))
+                                    AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                                break;
+                            case NodeType.Char:
+                                val = new DyChar(((DCharLiteral)p.DefaultValue).Value);
+                                if (!CheckRestriction(DyType.Char, p.TypeAnnotation))
+                                    AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                                break;
+                            case NodeType.Boolean:
+                                val = ((DBooleanLiteral)p.DefaultValue).Value ? DyBool.True : DyBool.False;
+                                if (!CheckRestriction(DyType.Bool, p.TypeAnnotation))
+                                    AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                                break;
+                            case NodeType.String:
+                                val = new DyString(((DStringLiteral)p.DefaultValue).Value);
+                                if (!CheckRestriction(DyType.String, p.TypeAnnotation))
+                                    AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                                break;
+                            case NodeType.Nil:
+                                val = DyNil.Instance;
+                                if (!CheckRestriction(DyType.Nil, p.TypeAnnotation))
+                                    AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                                break;
+                            default:
+                                AddError(CompilerError.InvalidDefaultValue, p.DefaultValue.Location, p.Name);
+                                break;
+                        }
+
+                        arr[i] = new Par(p.Name, val, false, p.TypeAnnotation);
+                    }
+                    else
+                        arr[i] = new Par(p.Name, null, p.IsVarArgs, p.TypeAnnotation);
+                }
+
+                return arr;
+            }
         }
 
         private bool CheckRestriction(int code, TypeAnnotation? restriction)
@@ -266,7 +286,7 @@ namespace Dyalect.Compiler
         private void BuildFunctionBody(int addr, DFunctionDeclaration node, Hints hints, CompilerContext oldctx)
         {
             var iterBody = hints.Has(IteratorBody);
-            var args = CompileFunctionParameters(node.Parameters);
+            var args = CompileFunctionParameters(node);
             StartFun(node.Setter ? Builtins.Setter(node.Name!) : node.Name!, args);
 
             if (node.IsStatic && node.TypeName is null)

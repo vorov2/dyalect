@@ -273,7 +273,11 @@ Tests/function.dy:
 [+] Invalid overload (custom)
 [+] Conversion: as
 [+] Complex definition 1
-[+] Parameterless lambda
+[+] Parameterless lambda 1
+[+] Parameterless lambda 2
+[+] Parameterless lambda 2
+[+] Parameterless lambda 3
+[+] Parameterless lambda 4
 
 Tests/integer.dy:
 [+] Integer literal
@@ -667,4 +671,4 @@ Tests/variant.dy:
 [+] Pattern matching 2
 
 Total:
-615 passed, 0 failed in 25 file(s)
+619 passed, 0 failed in 25 file(s)

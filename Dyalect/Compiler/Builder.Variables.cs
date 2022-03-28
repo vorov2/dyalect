@@ -22,10 +22,6 @@ namespace Dyalect.Compiler
 
             switch (node.NodeType)
             {
-                case NodeType.Assignment:
-                    CrawlVariables(((DAssignment)node).Target, vars);
-                    CrawlVariables(((DAssignment)node).Value, vars);
-                    break;
                 case NodeType.Binary:
                     CrawlVariables(((DBinaryOperation)node).Left, vars);
                     CrawlVariables(((DBinaryOperation)node).Right, vars);
@@ -47,9 +43,6 @@ namespace Dyalect.Compiler
                         foreach (var a in ((DApplication)node).Arguments)
                             CrawlVariables(a, vars);
                     }
-                    break;
-                case NodeType.Return:
-                    CrawlVariables(((DReturn)node).Expression, vars);
                     break;
                 case NodeType.Index:
                     CrawlVariables(((DIndexer)node).Target, vars);
@@ -83,12 +76,6 @@ namespace Dyalect.Compiler
                     break;
                 case NodeType.Access:
                     CrawlVariables(((DAccess)node).Target, vars);
-                    break;
-                case NodeType.Yield:
-                    CrawlVariables(((DYield)node).Expression, vars);
-                    break;
-                case NodeType.YieldMany:
-                    CrawlVariables(((DYieldMany)node).Expression, vars);
                     break;
                 case NodeType.Throw:
                     CrawlVariables(((DThrow)node).Expression, vars);

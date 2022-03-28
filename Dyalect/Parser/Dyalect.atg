@@ -40,7 +40,6 @@ TOKENS
     stringToken = "\"" { stringChar | "\\" printable }  "\"".
 
     charToken = "'" { char | "\\" printable } "'".
-    implicitToken = "$" digit { digit }.
     verbatimStringToken = "<[" { verbatimChar | ("]" verbatimChar2) | "]>]>" } "]>".
 
     autoToken           = "auto".
@@ -1004,7 +1003,7 @@ PRODUCTIONS
 
     NullaryLambda<out DNode node> =
         (.
-            var f = new DFunctionDeclaration(t);
+            var f = new DFunctionDeclaration(t) { IsNullary = true };
             node = f;
         .)
         (
@@ -1202,8 +1201,7 @@ PRODUCTIONS
             Unary<out node>
             /*{
                 (. var app = new DApplication(node, t); .)
-                //"~~~~~~~" Unary<out node>
-                NullaryLambda<out node>
+                //"$" Unary<out node>
                 (. app.Arguments.Add(node); node = app; .)
             }*/
         ).
@@ -1350,11 +1348,7 @@ PRODUCTIONS
         (
             [ "var" (. mut = true; .) | "let" ]
             ( Identifier (. name = t.val; .) | stringToken (. name = ParseSimpleString(); fromStr = true; .) )
-            ":" (. var ot = t; .)
-            (
-                  IF (IsFunction()) Lambda<out node>
-                | Is<out node>
-            )
+            ":" (. var ot = t; .) Control<out node>
             (. node = new DLabelLiteral(ot) { Mutable = mut, Label = name, FromString = fromStr, Expression = node }; .)
         ).
 

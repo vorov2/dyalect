@@ -68,16 +68,15 @@ namespace Dyalect.Parser
                 ,{ "intToken", "integer literal" }
                 ,{ "floatToken", "float literal" }
                 ,{ "stringToken", "string literal" }
-                ,{ "verbatimStringToken", "multiline string literal" }
                 ,{ "charToken", "char literal" }
-                ,{ "implicitToken", "implicit" }
-                ,{ "privateToken", "private" }
+                ,{ "verbatimStringToken", "multiline string literal" }
                 ,{ "autoToken", "auto" }
                 ,{ "varToken", "var" }
                 ,{ "letToken", "let" }
                 ,{ "lazyToken", "lazy" }
                 ,{ "funcToken", "func" }
                 ,{ "returnToken", "return" }
+                ,{ "privateToken", "private" }
                 ,{ "continueToken", "continue" }
                 ,{ "breakToken", "break" }
                 ,{ "yieldToken", "yield" }

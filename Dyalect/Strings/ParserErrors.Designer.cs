@@ -178,6 +178,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implicit parameter reference can only be used inside a parameterless labmda definition..
+        /// </summary>
+        internal static string InvalidImplicit {
+            get {
+                return ResourceManager.GetString("InvalidImplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid import statement..
         /// </summary>
         internal static string InvalidImport {

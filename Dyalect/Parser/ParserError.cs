@@ -60,6 +60,8 @@
 
         InvalidRange = 38,
 
-        InvalidIdentifier = 39
+        InvalidIdentifier = 39,
+
+        InvalidImplicit = 40
     }
 }
