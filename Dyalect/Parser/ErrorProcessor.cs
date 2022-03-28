@@ -13,9 +13,12 @@ namespace Dyalect.Parser
             {
                  { "invalid StandardOperators", InvalidStandardOperators }
                 ,{ "invalid FunctionName", InvalidFunctionName}
+                ,{ "invalid Identifier", InvalidIdentifier }
+                ,{ "invalid Qualident", InvalidIdentifier }
                 ,{ "invalid ImportToken", InvalidImport }
                 ,{ "invalid Region", InvalidRegion }
                 ,{ "invalid Statement", InvalidStatement }
+                ,{ "invalid TypeName", InvalidTypeName }
                 ,{ "invalid Control", InvalidExpression }
                 ,{ "invalid Binding", InvalidBinding }
                 ,{ "invalid ControlFlow", InvalidStatement }
@@ -24,12 +27,12 @@ namespace Dyalect.Parser
                 ,{ "invalid Expr", InvalidExpression }
                 ,{ "invalid FunctionBody", InvalidFunction}
                 ,{ "invalid FunctionStatement", InvalidFunction}
-                ,{ "invalid NamePattern", InvalidPattern }
                 ,{ "invalid Pattern", InvalidPattern }
                 ,{ "invalid BooleanPattern", InvalidPattern }
                 ,{ "invalid TuplePattern", InvalidPattern }
                 ,{ "invalid MethodCheckPattern", InvalidPattern }
                 ,{ "invalid ComparisonPattern", InvalidPattern }
+                ,{ "invalid CtorPatternArguments", InvalidPattern }
                 ,{ "invalid Yield", InvalidYield }
                 ,{ "invalid Lambda", InvalidFunctionExpression }
                 ,{ "invalid TryCatch", InvalidTryCatch }
@@ -50,6 +53,7 @@ namespace Dyalect.Parser
                 ,{ "invalid IndexBody", InvalidExpression }
                 ,{ "invalid NullaryLambda", InvalidFunctionExpression }
                 ,{ "invalid CtorPattern", InvalidPattern }
+                ,{ "invalid NamePattern", InvalidPattern }
                 ,{ "??? expected", Undefined }
             };
 
@@ -57,7 +61,9 @@ namespace Dyalect.Parser
             new()
             {
                  { "EOF", "end of file" }
-                ,{ "identToken", "identifier" }
+                ,{ "ucaseToken", "identifier" }
+                ,{ "lcaseToken", "identifier" }
+                ,{ "variantToken", "variant identifier" }
                 ,{ "directive", "compiler directive" }
                 ,{ "intToken", "integer literal" }
                 ,{ "floatToken", "float literal" }
@@ -66,7 +72,6 @@ namespace Dyalect.Parser
                 ,{ "charToken", "char literal" }
                 ,{ "implicitToken", "implicit" }
                 ,{ "privateToken", "private" }
-                ,{ "inToken", "in" }
                 ,{ "autoToken", "auto" }
                 ,{ "varToken", "var" }
                 ,{ "letToken", "let" }
@@ -80,8 +85,9 @@ namespace Dyalect.Parser
                 ,{ "forToken", "for" }
                 ,{ "whileToken", "while" }
                 ,{ "typeToken", "type" }
-                ,{ "arrowToken", "=>" }
+                ,{ "inToken", "in" }
                 ,{ "doToken", "do" }
+                ,{ "arrowToken", "=>" }
                 ,{ "dotToken", "." }
                 ,{ "commaToken", "," }
                 ,{ "semicolonToken", ";" }
@@ -101,7 +107,7 @@ namespace Dyalect.Parser
                 ,{ "eq_rem", "%=" }
                 ,{ "eq_and", "&&&=" }
                 ,{ "eq_or", "|||=" }
-                ,{ "eq_xor", "^=" }
+                ,{ "eq_xor", "^^^=" }
                 ,{ "eq_lsh", "<<<=" }
                 ,{ "eq_rsh", ">>>=" }
                 ,{ "minus", "-" }

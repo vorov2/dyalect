@@ -137,23 +137,6 @@ namespace Dyalect.Parser
             }
         }
 
-        //not used!
-        private bool IsMap()
-        {
-            if (la.kind != _squareLeftToken)
-                return false;
-
-            scanner.ResetPeek();
-
-            if (scanner.Peek().kind != _stringToken)
-                return false;
-
-            if (scanner.Peek().kind != _equalToken)
-                return false;
-
-            return true;
-        }
-
         private bool IsTypeName()
         {
             if (la.kind == _ucaseToken)

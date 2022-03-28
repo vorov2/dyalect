@@ -35,9 +35,9 @@ namespace Dyalect.Parser.Model
                 BinaryOperator.Or => "||",
                 BinaryOperator.Rem => "%",
                 BinaryOperator.Sub => "-",
-                BinaryOperator.BitwiseAnd => "&",
-                BinaryOperator.BitwiseOr => "|",
-                BinaryOperator.Xor => "^",
+                BinaryOperator.BitwiseAnd => "&&&",
+                BinaryOperator.BitwiseOr => "|||",
+                BinaryOperator.Xor => "^^^",
                 BinaryOperator.ShiftLeft => "<<<",
                 BinaryOperator.ShiftRight => ">>>",
                 BinaryOperator.Coalesce => "??",
@@ -50,7 +50,7 @@ namespace Dyalect.Parser.Model
             {
                 UnaryOperator.Neg => "-",
                 UnaryOperator.Not => "!",
-                UnaryOperator.BitwiseNot => "~",
+                UnaryOperator.BitwiseNot => "~~~",
                 UnaryOperator.Plus => "+",
                 _ => "",
             };

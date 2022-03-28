@@ -58,6 +58,7 @@ TOKENS
     whileToken          = "while".
     typeToken           = "type".
     inToken             = "in".
+    doToken             = "do".
 
     arrowToken          = "=>".
     dotToken            = ".".
@@ -85,7 +86,7 @@ TOKENS
     minus               = "-".
     plus                = "+".
     not                 = "!".
-    bitnot              = "~".
+    bitnot              = "~~~".
     coalesce            = "??".
 
 COMMENTS FROM "/*" TO "*/" NESTED
@@ -328,7 +329,7 @@ PRODUCTIONS
         ).
 
     Assignment<out DNode node> =
-        Expr<out node>
+        StatementExpr<out node>
         [
             (.
                 var ass = new DAssignment(t) { Target = node };
@@ -907,7 +908,7 @@ PRODUCTIONS
 
     Continue<out DNode node> = "continue" (. node = new DContinue(t); .).
 
-    Expr<out DNode node> =
+    StatementExpr<out DNode node> =
         (. node = null; .)
         (
               IF (IsFunction()) Lambda<out node>
@@ -915,6 +916,29 @@ PRODUCTIONS
             | Coalesce<out node> [ Ternary<node, out node> ]
             | TryCatch<out node>
             | Throw<out node>
+            | Block<out node>
+        ).
+
+    Throw<out DNode node> =
+        (. node = null; .)
+        (
+            "throw" 
+            (. 
+                var th = new DThrow(t);
+                node = th;
+                if (la.AfterEol) return;
+            .)
+            [ Control<out var cexp> (. th.Expression = cexp; .) ]
+        ).
+
+    Expr<out DNode node> =
+        (. node = null; .)
+        (
+              IF (IsFunction()) Lambda<out node>
+            | NullaryLambda<out node>
+            | Coalesce<out node> [ Ternary<node, out node> ]
+            | TryCatch<out node>
+            | ThrowExpr<out node>
             | Block<out node>
         ).
 
@@ -927,14 +951,14 @@ PRODUCTIONS
             ":" Expr<out node> (. @if.False = node; node = @if; .)
         ).
 
-    Throw<out DNode node> =
+
+    ThrowExpr<out DNode node> =
         (. node = null; .)
         (
             "throw" 
             (. 
                 var th = new DThrow(t);
                 node = th;
-                if (la.AfterEol) return;
             .)
             Control<out var cexp> (. th.Expression = cexp; .)
         ).
@@ -985,7 +1009,7 @@ PRODUCTIONS
         .)
         (
             (. functions.Push(f); .)
-            "=>" Expr<out var exp>
+            "\\" Expr<out var exp>
             (. f.Body = exp; functions.Pop(); .)
         ).
 
@@ -1176,11 +1200,12 @@ PRODUCTIONS
         (. node = null; .)
         (
             Unary<out node>
-            {
+            /*{
                 (. var app = new DApplication(node, t); .)
-                "\\" Unary<out node>
+                //"~~~~~~~" Unary<out node>
+                NullaryLambda<out node>
                 (. app.Arguments.Add(node); node = app; .)
-            }
+            }*/
         ).
 
     Unary<out DNode node> =
