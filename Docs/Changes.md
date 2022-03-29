@@ -1,3 +1,6 @@
+# 0.35.2
+  * Fix: _Console can fail if command line options duplicate options from config_ ([Issue #672](https://github.com/vorov2/dyalect/issues/672)).
+
 # 0.35.1
   * Fix: _Mutable variant declaration do not work as expected_ ([Issue #667](https://github.com/vorov2/dyalect/issues/667)).
   * Fix: _It is possible to use `var` modifier in a function call_ ([Issue #668](https://github.com/vorov2/dyalect/issues/668)).

@@ -248,7 +248,7 @@ namespace Dyalect.Util
             }
 
             if (opt is not null)
-                options.Add(opt, null);
+                options[opt] = null;
 
             return options;
         }
