@@ -1539,7 +1539,8 @@ namespace Dyalect.Parser
 		functions.Push(f); 
 		Expect(26);
 		Expr(out var exp);
-		f.Body = exp; functions.Pop(); 
+		f.Body = exp; 
+		functions.Pop(); 
 	}
 
 	void NullaryLambda(out DNode node) {

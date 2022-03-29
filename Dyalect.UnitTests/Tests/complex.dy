@@ -583,3 +583,51 @@
     }
     assert(true, wakenings > 0)
 #endregion
+
+#region "Complex iterator"
+    func sequence(first, next) {
+	    var cur = first
+	    while cur {
+		    yield cur
+		    cur = next(cur)
+	    }
+    }
+    type List = Cons(value, List next) or Empty()
+    func get List.HasValue() => this is not Empty()
+    func List.Reverse() {
+	    var xs = List.Empty()
+	    for x in sequence(this, x => x.next.HasValue ? x.next : nil) {
+		    xs = List.Cons(x.value, xs)
+	    }
+	    return xs
+    }
+    func List.Iterate() {
+	    func iter() {
+		    for x in sequence(this, x => x.next is not Empty() ? x.next : nil) {
+			    yield x.value
+		    }
+	    }
+	    return iter()
+    }
+    func List.ToString() {
+	    let xs = []
+	    for x in this {
+		    xs.Add(x)
+	    }
+	    return "List " + String.Join(xs, separator: ", ")
+    }
+    static func List.List(values) {
+	    var xs = List.Empty()
+	    for x in values {
+		    xs = List.Cons(x, xs)
+	    }
+	    return xs.Reverse()
+    }
+    let xs = List << [1..10]
+    let ys = []
+    for x in xs {
+	    ys.Add(x)
+    }
+    assert([1,2,3,4,5,6,7,8,9,10], ys)
+    assert("List [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", xs.ToString())
+#endregion

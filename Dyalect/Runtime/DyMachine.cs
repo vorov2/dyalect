@@ -470,17 +470,6 @@ namespace Dyalect.Runtime
                             right = evalStack.Peek();
                             if (right.TypeId != DyType.Function)
                             {
-                                if (ctx.HasErrors)
-                                {
-                                    ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
-                                    goto CATCH;
-                                }
-                                else if (right.TypeId == DyType.Function)
-                                {
-                                    evalStack.Replace(right);
-                                    goto case OpCode.FunPrep;
-                                }
-
                                 if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti)
                                 {
                                     right = ti.GetStaticMember(ti.TypeName, ctx);

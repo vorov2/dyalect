@@ -86,12 +86,9 @@ namespace Dyalect.Compiler
             var sys = AddVariable();
             var initSkip = cw.DefineLabel();
             Build(node.Target, hints.Append(Push), ctx);
-
             cw.Briter(initSkip);
-
             cw.GetMember(Builtins.Iterator);
-            cw.FunPrep(0);
-            cw.FunCall(0);
+            cw.CallNullaryFunction();
 
             cw.MarkLabel(initSkip);
             cw.GetIter();
@@ -100,10 +97,7 @@ namespace Dyalect.Compiler
             var iter = cw.DefineLabel();
             cw.MarkLabel(iter);
             cw.PushVar(new ScopeVar(sys));
-
-            cw.FunPrep(0);
-            cw.FunCall(0);
-
+            cw.CallNullaryFunction();
             cw.Brterm(ctx.BlockExit);
 
             if (inc)
