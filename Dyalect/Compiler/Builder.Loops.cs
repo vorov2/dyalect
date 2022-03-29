@@ -78,10 +78,10 @@ namespace Dyalect.Compiler
             StartScope(ScopeKind.Loop, node.Location);
             hints = hints.Remove(Last);
 
-            var inc = -1;
+            var inc = false;
 
             if (node.Pattern.NodeType == NodeType.NamePattern && !char.IsUpper(node.Pattern.GetName()![0]!))
-                inc = AddVariable(node.Pattern.GetName()!, node.Pattern.Location, VarFlags.None);
+                inc = true;
 
             var sys = AddVariable();
             var initSkip = cw.DefineLabel();
@@ -106,8 +106,11 @@ namespace Dyalect.Compiler
 
             cw.Brterm(ctx.BlockExit);
 
-            if (inc > -1)
-                cw.PopVar(inc);
+            if (inc)
+            {
+                var ai = AddVariable(node.Pattern.GetName()!, node.Pattern.Location, VarFlags.None);
+                cw.PopVar(ai);
+            }
             else
             {
                 BuildPattern(node.Pattern, hints, ctx);
