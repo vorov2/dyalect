@@ -182,15 +182,6 @@
     }
 #endregion
 
-#region "Force lazy"
-    var outp = ""
-    lazy f = {
-        outp = "Yes!"
-    }
-    force(f)
-    assert("Yes!", outp)
-#endregion
-
 #region "Convert lazy"
     type Foo()
     func Foo as Integer { 42 }

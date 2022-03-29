@@ -364,7 +364,6 @@ Tests/lazy.dy:
 [+] Lazy indexers
 [+] Lazy properties
 [+] Lazy exceptions
-[+] Force lazy
 [+] Convert lazy
 [+] Overloaded operators
 
@@ -672,4 +671,4 @@ Tests/variant.dy:
 [+] Pattern matching 2
 
 Total:
-620 passed, 0 failed in 25 file(s)
+619 passed, 0 failed in 25 file(s)
