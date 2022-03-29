@@ -173,7 +173,7 @@
     let xs = []
     lazy x = {
         xs.AddRange(yields { 1, 2 })
-        throw Unknown(xs)
+        throw @Unknown(xs)
     }
     try {
         let _ = x.ToString()

@@ -98,7 +98,7 @@ PRODUCTIONS
     Separator = ";".
 
     StandardOperators = "+" | "-" | "*" | "/" | "%" | "|||" | "&&&" | "!"
-        | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^^^" | "<<<" | ">>>" | "~~~".
+        | "==" | "!=" | ">" | "<" | ">=" | "<=" | "^^^" | "<<<" | ">>>" | "~~~" | "<<" | ">>".
 
     FunctionName = Identifier | StandardOperators.
 

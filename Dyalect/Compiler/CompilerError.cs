@@ -112,6 +112,8 @@
 
         BoolCastNotAllowed = 254,
 
-        SelfCastNotAllowed = 255
+        SelfCastNotAllowed = 255,
+
+        InvalidFunctionArgument = 256
     }
 }

@@ -20,9 +20,9 @@
 #endregion
 
 #region "Methods: Length"
-    let v = Triple(1, 2, 3)
+    let v = @Triple(1, 2, 3)
     assert(3, v.Length())
-    let w = Null()
+    let w = @Null()
     assert(0, w.Length())
     if v is (x, y, z) {
         assert(6, x + y + z)
@@ -32,15 +32,15 @@
 #endregion
 
 #region "Equality"
-    let x = Foo(1, 2, 3)
-    let y = Foo(1, 2, 3)
-    let z = Foo(1, 2)
+    let x = @Foo(1, 2, 3)
+    let y = @Foo(1, 2, 3)
+    let z = @Foo(1, 2)
     assert(true, x == y)
     assert(false, y == z)
 #endregion
 
 #region "Conversion (as)"
-    let x = Multiple(1, 2, 3, 4)
+    let x = @Multiple(1, 2, 3, 4)
     let xs = x as Tuple
     assert((1,2,3,4), xs)
 #endregion
@@ -77,4 +77,16 @@
     let y = @Person(name: "John", surname: "Doe", gender: @Male)
     matchIt(x)
     matchIt(y)
+#endregion
+
+#region "Mutable variant"
+    let f = @Foo(var x: 1, y: 2)
+    f.x = 101
+    assert(101, f.x)
+    try {
+        f.y = 22
+        assert(got: false)
+    } catch {
+        @IndexReadOnly => assert(got: true)
+    }
 #endregion

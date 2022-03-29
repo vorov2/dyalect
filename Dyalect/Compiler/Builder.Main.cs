@@ -150,7 +150,10 @@ namespace Dyalect.Compiler
         {
             cw.Type(DyType.Variant);
             cw.GetMember(node.Name);
-            BuildApplicationArguments(node.Location, node.Arguments, hints.Remove(Last), ctx);
+            cw.FunPrep(1);
+            BuildTupleElements(node.Arguments, node.Location, hints, ctx);
+            cw.FunArgNm("values");
+            cw.FunCall(1);
         }
 
         private void Build(DAs node, Hints hints, CompilerContext ctx)
@@ -521,38 +524,41 @@ namespace Dyalect.Compiler
                 cw.FunCall(0);
             }
             else
-            {
-                for (var i = 0; i < node.Elements.Count; i++)
-                {
-                    var el = node.Elements[i];
-
-                    if (el.NodeType == NodeType.Label)
-                    {
-                        var label = (DLabelLiteral)el;
-                        Build(label.Expression, hints.Append(Push), ctx);
-                        cw.Tag(label.Label);
-
-                        if (char.IsUpper(label.Label[0]) && !label.FromString)
-                            AddError(CompilerError.LabelOnlyCamel, label.Location);
-
-                        if (label.Mutable)
-                            cw.Mut();
-                    }
-                    else
-                    {
-                        Build(el, hints.Append(Push), ctx);
-                        string? name;
-
-                        if ((name = el.GetName()) is not null)
-                            cw.Tag(name);
-                    }
-                }
-
-                AddLinePragma(node);
-                cw.NewTuple(node.Elements.Count);
-            }
+                BuildTupleElements(node.Elements, node.Location, hints, ctx);
 
             PopIf(hints);
+        }
+
+        private void BuildTupleElements(List<DNode> elements, Location loc, Hints hints, CompilerContext ctx)
+        {
+            for (var i = 0; i < elements.Count; i++)
+            {
+                var el = elements[i];
+
+                if (el.NodeType == NodeType.Label)
+                {
+                    var label = (DLabelLiteral)el;
+                    Build(label.Expression, hints.Append(Push), ctx);
+                    cw.Tag(label.Label);
+
+                    if (char.IsUpper(label.Label[0]) && !label.FromString)
+                        AddError(CompilerError.LabelOnlyCamel, label.Location);
+
+                    if (label.Mutable)
+                        cw.Mut();
+                }
+                else
+                {
+                    Build(el, hints.Append(Push), ctx);
+                    string? name;
+
+                    if ((name = el.GetName()) is not null)
+                        cw.Tag(name);
+                }
+            }
+
+            AddLinePragma(loc);
+            cw.NewTuple(elements.Count);
         }
 
         private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
@@ -785,12 +791,6 @@ namespace Dyalect.Compiler
                 AddLinePragma(node);
                 cw.Br(ctx.FunctionStart);
             }
-            else if (IsVariantConstructor(node.Target))
-            {
-                cw.Type(DyType.Variant);
-                cw.GetMember(node.Target.GetName()!);
-                BuildApplicationArguments(node.Location, node.Arguments, hints.Remove(Last), ctx);
-            }
             else
             {
                 Build(node.Target, newHints.Append(Push), ctx);
@@ -832,6 +832,10 @@ namespace Dyalect.Compiler
 
                     kwArg = true;
                     var la = (DLabelLiteral)a;
+
+                    if (la.Mutable)
+                        AddError(CompilerError.InvalidFunctionArgument, la.Location);
+
                     if (dict.ContainsKey(la.Label))
                         AddError(CompilerError.NamedArgumentMultipleTimes, la.Location, la.Label);
                     else
