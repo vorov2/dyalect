@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class CompilerErrors {
@@ -219,6 +219,15 @@ namespace Dyalect.Strings {
         internal static string InvalidDirective {
             get {
                 return ResourceManager.GetString("InvalidDirective", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid function argument, keyword &quot;var&quot; is not supported in this context..
+        /// </summary>
+        internal static string InvalidFunctionArgument {
+            get {
+                return ResourceManager.GetString("InvalidFunctionArgument", resourceCulture);
             }
         }
         

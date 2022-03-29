@@ -436,7 +436,7 @@
 
 #region "Data items"
     try {
-        throw Foo(1, "Foo", true)
+        throw @Foo(1, "Foo", true)
         assert(got: false)
     } catch e {
         assert("Variant.Foo(1, Foo, true)", e.ToString())

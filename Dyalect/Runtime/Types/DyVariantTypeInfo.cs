@@ -12,7 +12,7 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Len | SupportedOperations.Get | SupportedOperations.Lit;
+            | SupportedOperations.Len | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Lit;
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
@@ -50,6 +50,9 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) =>
             ctx.RuntimeContext.Tuple.GetDirect(ctx, ((DyVariant)self).Tuple, index);
+
+        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx) =>
+            ctx.RuntimeContext.Tuple.Set(ctx, ((DyVariant)self).Tuple, index, value);
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
         {

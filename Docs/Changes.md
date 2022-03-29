@@ -1,3 +1,8 @@
+# 0.35.1
+  * Fix: _Mutable variant declaration do not work as expected_ ([Issue #667](https://github.com/vorov2/dyalect/issues/667)).
+  * Fix: _It is possible to use `var` modifier in a function call_ ([Issue #668](https://github.com/vorov2/dyalect/issues/668)).
+  * Fix: _All unresolved constructors becomes variants_ ([Issue #669](https://github.com/vorov2/dyalect/issues/669)).
+
 # 0.35.0
   * Add: _Consider shortcut syntax for parameterless lambda_ ([Issue #591](https://github.com/vorov2/dyalect/issues/591), [docs](https://github.com/vorov2/dyalect/wiki/Functions#lambdas)).
   * Add: _Consider adding `Function.Apply` method_ ([Issue #660](https://github.com/vorov2/dyalect/issues/660), [docs](https://github.com/vorov2/dyalect/wiki/Functions#apply)).

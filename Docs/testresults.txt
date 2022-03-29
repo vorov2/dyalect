@@ -673,6 +673,7 @@ Tests/variant.dy:
 [+] Pass as value
 [+] Pattern matching 1
 [+] Pattern matching 2
+[+] Mutable variant
 
 Total:
-623 passed, 0 failed in 25 file(s)
+624 passed, 0 failed in 25 file(s)

@@ -297,4 +297,7 @@
   <data name="BoolCastNotAllowed" xml:space="preserve">
     <value>Overriding type conversion to boolean is not allowed.</value>
   </data>
+  <data name="InvalidFunctionArgument" xml:space="preserve">
+    <value>Invalid function argument, keyword "var" is not supported in this context.</value>
+  </data>
 </root>
