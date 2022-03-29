@@ -1872,14 +1872,19 @@ namespace Dyalect.Parser
 	}
 
 	void RightPipe(out DNode node) {
-		node = null; 
+		node = null; DNode cnode = null; 
 		Unary(out node);
 		while (la.kind == 99) {
 			Get();
-			Unary(out var cnode);
-			var app = cnode.NodeType == NodeType.Application ? (DApplication)cnode : new DApplication(cnode, t);
-			app.Arguments.Insert(0, node);
-			node = app;
+			Unary(out cnode);
+			if (cnode is not null)
+			{
+			   var app = cnode.NodeType == NodeType.Application ? (DApplication)cnode : new DApplication(cnode, t);
+			   app.Arguments.Insert(0, node);
+			   node = app;
+			}
+			else
+			   AddError(ParserError.InvalidApplicationOperator, t.GetLocation());
 			
 		}
 	}

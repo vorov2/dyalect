@@ -1207,15 +1207,20 @@ PRODUCTIONS
         ). 
 
     RightPipe<out DNode node> =
-        (. node = null; .)
+        (. node = null; DNode cnode = null; .)
         (
             Unary<out node>
             {
-                "|>" Unary<out var cnode>
+                "|>" Unary<out cnode>
                 (.
-                    var app = cnode.NodeType == NodeType.Application ? (DApplication)cnode : new DApplication(cnode, t);
-                    app.Arguments.Insert(0, node);
-                    node = app;
+                    if (cnode is not null)
+                    {
+                        var app = cnode.NodeType == NodeType.Application ? (DApplication)cnode : new DApplication(cnode, t);
+                        app.Arguments.Insert(0, node);
+                        node = app;
+                    }
+                    else
+                        AddError(ParserError.InvalidApplicationOperator, t.GetLocation());
                 .)
             }
         ).

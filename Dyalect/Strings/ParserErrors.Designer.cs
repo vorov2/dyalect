@@ -97,6 +97,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid application operator..
+        /// </summary>
+        internal static string InvalidApplicationOperator {
+            get {
+                return ResourceManager.GetString("InvalidApplicationOperator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid variable declaration..
         /// </summary>
         internal static string InvalidBinding {
@@ -174,15 +183,6 @@ namespace Dyalect.Strings {
         internal static string InvalidIf {
             get {
                 return ResourceManager.GetString("InvalidIf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Implicit parameter reference can only be used inside a parameterless labmda definition..
-        /// </summary>
-        internal static string InvalidImplicit {
-            get {
-                return ResourceManager.GetString("InvalidImplicit", resourceCulture);
             }
         }
         

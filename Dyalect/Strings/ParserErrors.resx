@@ -204,7 +204,7 @@
   <data name="InvalidYield" xml:space="preserve">
     <value>Invalid "yield" statement.</value>
   </data>
-  <data name="InvalidImplicit" xml:space="preserve">
-    <value>Implicit parameter reference can only be used inside a parameterless labmda definition.</value>
+  <data name="InvalidApplicationOperator" xml:space="preserve">
+    <value>Invalid application operator.</value>
   </data>
 </root>

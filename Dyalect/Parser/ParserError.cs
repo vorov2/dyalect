@@ -62,6 +62,6 @@
 
         InvalidIdentifier = 39,
 
-        InvalidImplicit = 40
+        InvalidApplicationOperator = 40
     }
 }

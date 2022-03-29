@@ -1872,14 +1872,23 @@ namespace Dyalect.Parser
 	}
 
 	void RightPipe(out DNode node) {
-		node = null; 
+		node = null; DNode cnode = null; 
 		Unary(out node);
 		while (la.kind == 99) {
 			Get();
-			Unary(out var cnode);
-			var app = cnode.NodeType == NodeType.Application ? (DApplication)cnode : new DApplication(cnode, t);
-			app.Arguments.Insert(0, node);
-			node = app;
+			if (StartOf(15)) {
+				Unary(out cnode);
+			} else if (la.kind == 34) {
+				Block(out cnode);
+			} else SynErr(134);
+			if (cnode is not null)
+			{
+			   var app = cnode.NodeType == NodeType.Application ? (DApplication)cnode : new DApplication(cnode, t);
+			   app.Arguments.Insert(0, node);
+			   node = app;
+			}
+			else
+			   AddError(ParserError.InvalidApplicationOperator, t.GetLocation());
 			
 		}
 	}
@@ -1911,7 +1920,7 @@ namespace Dyalect.Parser
 			node = new DUnaryOperation(node, op, ot); 
 		} else if (StartOf(17)) {
 			Index(out node);
-		} else SynErr(134);
+		} else SynErr(135);
 	}
 
 	void Index(out DNode node) {
@@ -1975,7 +1984,7 @@ namespace Dyalect.Parser
 			Iterator(out node);
 		} else if (la.kind == 3) {
 			Variant(out node);
-		} else SynErr(135);
+		} else SynErr(136);
 	}
 
 	void ApplicationArguments(DNodeList arguments) {
@@ -1984,7 +1993,7 @@ namespace Dyalect.Parser
 			Label(out node);
 		} else if (StartOf(14)) {
 			Control(out node);
-		} else SynErr(136);
+		} else SynErr(137);
 		arguments.Add(node); 
 		while (la.kind == 28) {
 			Get();
@@ -1992,7 +2001,7 @@ namespace Dyalect.Parser
 				Label(out node);
 			} else if (StartOf(14)) {
 				Control(out node);
-			} else SynErr(137);
+			} else SynErr(138);
 			arguments.Add(node); 
 		}
 	}
@@ -2013,7 +2022,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 7) {
 			Get();
 			name = ParseSimpleString(); fromStr = true; 
-		} else SynErr(138);
+		} else SynErr(139);
 		Expect(30);
 		var ot = t; 
 		Control(out node);
@@ -2025,7 +2034,7 @@ namespace Dyalect.Parser
 			Identifier();
 		} else if (la.kind == 16) {
 			Get();
-		} else SynErr(139);
+		} else SynErr(140);
 		node = new DName(t) { Value = t.val }; 
 	}
 
@@ -2047,7 +2056,7 @@ namespace Dyalect.Parser
 		} else if (la.kind == 9) {
 			Get();
 			node = ParseVerbatimString(); 
-		} else SynErr(140);
+		} else SynErr(141);
 	}
 
 	void Char(out DNode node) {
@@ -2060,7 +2069,7 @@ namespace Dyalect.Parser
 			Get();
 		} else if (la.kind == 76) {
 			Get();
-		} else SynErr(141);
+		} else SynErr(142);
 		node = new DBooleanLiteral(t) { Value = t.val == "true" }; 
 	}
 
@@ -2077,7 +2086,7 @@ namespace Dyalect.Parser
 			Label(out node);
 		} else if (StartOf(14)) {
 			Control(out node);
-		} else SynErr(142);
+		} else SynErr(143);
 		tup.Elements.Add(node); 
 		while (la.kind == 28) {
 			Get();
@@ -2167,7 +2176,7 @@ namespace Dyalect.Parser
 			Import(out var node);
 			Imports.Add(node); 
 			Separator();
-		} else SynErr(143);
+		} else SynErr(144);
 	}
 
 	void Dyalect() {
@@ -2352,16 +2361,17 @@ namespace Dyalect.Parser
 			case 131: s = "invalid TryCatch"; break;
 			case 132: s = "invalid Range"; break;
 			case 133: s = "invalid Range"; break;
-			case 134: s = "invalid Unary"; break;
-			case 135: s = "invalid Literal"; break;
-			case 136: s = "invalid ApplicationArguments"; break;
+			case 134: s = "invalid RightPipe"; break;
+			case 135: s = "invalid Unary"; break;
+			case 136: s = "invalid Literal"; break;
 			case 137: s = "invalid ApplicationArguments"; break;
-			case 138: s = "invalid Label"; break;
-			case 139: s = "invalid Name"; break;
-			case 140: s = "invalid String"; break;
-			case 141: s = "invalid Bool"; break;
-			case 142: s = "invalid Tuple"; break;
-			case 143: s = "invalid DyalectItem"; break;
+			case 138: s = "invalid ApplicationArguments"; break;
+			case 139: s = "invalid Label"; break;
+			case 140: s = "invalid Name"; break;
+			case 141: s = "invalid String"; break;
+			case 142: s = "invalid Bool"; break;
+			case 143: s = "invalid Tuple"; break;
+			case 144: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;
