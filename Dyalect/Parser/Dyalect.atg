@@ -1053,24 +1053,24 @@ PRODUCTIONS
         (. node = null; DNode snode = null; DNode cnode = null; bool exclu = false; .)
         (
             (
-                "^" FunctionApplication<out snode>
+                "^" LeftPipe<out snode>
                 ( ".." | "..<" (. exclu = true; .) )
                 (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
+                [ LeftPipe<out cnode> (. range.To = cnode; .) ]
             )
             |
             (
                 ( ".." | "..<" (. exclu = true; .) )
                 (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
-                [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
+                [ LeftPipe<out cnode> (. range.To = cnode; .) ]
             )
             |
             (
-                Eq<out node> [ "^" FunctionApplication<out snode> ]
+                Eq<out node> [ "^" LeftPipe<out snode> ]
                 [
                     ( ".." | "..<" (. exclu = true; .) )
                     (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                    [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
+                    [ LeftPipe<out cnode> (. range.To = cnode; .) ]
                 ]
             )
         ).
@@ -1182,7 +1182,7 @@ PRODUCTIONS
     Cast<out DNode node> = 
         (. node = null; .)
         (
-            FunctionApplication<out node>
+            LeftPipe<out node>
             {
                 (. var @as = new DAs(t) { Expression = node }; string s1, s2 = null; .)
                 "as"
@@ -1193,17 +1193,31 @@ PRODUCTIONS
                     node = @as;
                 .)
             }
-        ).  
+        ).
 
-    FunctionApplication<out DNode node> =
+    LeftPipe<out DNode node> =
+        (. node = null; .)
+        (
+            RightPipe<out node>
+            {
+                (. var app = node.NodeType == NodeType.Application ? (DApplication)node : new DApplication(node, t); .)
+                "<|" RightPipe<out node>
+                (. app.Arguments.Add(node); node = app; .)
+            }
+        ). 
+
+    RightPipe<out DNode node> =
         (. node = null; .)
         (
             Unary<out node>
-            /*{
-                (. var app = new DApplication(node, t); .)
-                //"$" Unary<out node>
-                (. app.Arguments.Add(node); node = app; .)
-            }*/
+            {
+                "|>" Unary<out var cnode>
+                (.
+                    var app = cnode.NodeType == NodeType.Application ? (DApplication)cnode : new DApplication(cnode, t);
+                    app.Arguments.Insert(0, node);
+                    node = app;
+                .)
+            }
         ).
 
     Unary<out DNode node> =

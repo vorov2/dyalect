@@ -128,12 +128,12 @@ namespace Dyalect.Linker
         [Function("assert")]
         public DyObject Assert(ExecutionContext ctx, [Default(true)]DyObject expect, DyObject got, [Default]DyObject errorText)
         {
-            if (!Eq(ctx, expect?.Force(ctx)?.ToObject(), got?.Force(ctx)?.ToObject()))
+            if (!Eq(ctx, expect?.ToObject(), got?.ToObject()))
             {
                 if (errorText.TypeId == DyType.String)
                     return ctx.AssertionFailed(errorText.GetString());
 
-                return ctx.AssertionFailed($"Expected {expect?.Force(ctx)?.ToString(ctx)}, got {got?.Force(ctx)?.ToString(ctx)}.");
+                return ctx.AssertionFailed($"Expected {expect?.ToString(ctx)}, got {got?.ToString(ctx)}.");
             }
 
             return DyNil.Instance;

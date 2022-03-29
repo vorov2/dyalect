@@ -70,7 +70,5 @@ namespace Dyalect.Runtime.Types
         protected int CalculateSimpleHashCode() => base.GetHashCode();
 
         public virtual DyTypeInfo GetTypeInfo(ExecutionContext ctx) => ctx.RuntimeContext.Types[TypeId];
-
-        internal virtual DyObject Force(ExecutionContext ctx) => this;
     }
 }
