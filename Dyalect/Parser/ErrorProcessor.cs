@@ -36,6 +36,7 @@ namespace Dyalect.Parser
                 ,{ "invalid Yield", InvalidYield }
                 ,{ "invalid Lambda", InvalidFunctionExpression }
                 ,{ "invalid TryCatch", InvalidTryCatch }
+                ,{ "invalid RightPipe", InvalidApplicationOperator }
                 ,{ "invalid Range", InvalidRange }
                 ,{ "invalid Unary", InvalidUnary }
                 ,{ "invalid Literal", InvalidLiteral }
@@ -54,6 +55,7 @@ namespace Dyalect.Parser
                 ,{ "invalid NullaryLambda", InvalidFunctionExpression }
                 ,{ "invalid CtorPattern", InvalidPattern }
                 ,{ "invalid NamePattern", InvalidPattern }
+                ,{ "invalid LeftPipe", InvalidApplicationOperator }
                 ,{ "??? expected", Undefined }
             };
 

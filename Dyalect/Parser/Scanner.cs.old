@@ -184,7 +184,7 @@ namespace Dyalect.Parser
 			case "throw": t.kind = 88; break;
 			case "try": t.kind = 90; break;
 			case "catch": t.kind = 91; break;
-			case "is": t.kind = 95; break;
+			case "is": t.kind = 97; break;
 			case "yields": t.kind = 100; break;
 			case "base": t.kind = 101; break;
 			default: break;
@@ -465,9 +465,9 @@ namespace Dyalect.Parser
 			case 71:
 				{t.kind = 92; break;}
 			case 72:
-				{t.kind = 97; break;}
+				{t.kind = 93; break;}
 			case 73:
-				{t.kind = 98; break;}
+				{t.kind = 94; break;}
 			case 74:
 				{t.kind = 99; break;}
 			case 75:
@@ -480,7 +480,7 @@ namespace Dyalect.Parser
 				if (ch == '[') {AddCh(); goto case 27;}
 				else if (ch == '<') {AddCh(); goto case 88;}
 				else if (ch == '=') {AddCh(); goto case 69;}
-				else if (ch == '|') {AddCh(); goto case 73;}
+				else if (ch == '|') {AddCh(); goto case 72;}
 				else {t.kind = 62; break;}
 			case 77:
 				recEnd = pos; recKind = 31;
@@ -509,12 +509,12 @@ namespace Dyalect.Parser
 			case 83:
 				recEnd = pos; recKind = 72;
 				if (ch == '|') {AddCh(); goto case 90;}
-				else if (ch == '>') {AddCh(); goto case 74;}
+				else if (ch == '>') {AddCh(); goto case 73;}
 				else {t.kind = 72; break;}
 			case 84:
-				recEnd = pos; recKind = 96;
+				recEnd = pos; recKind = 98;
 				if (ch == '^') {AddCh(); goto case 91;}
-				else {t.kind = 96; break;}
+				else {t.kind = 98; break;}
 			case 85:
 				recEnd = pos; recKind = 61;
 				if (ch == '>') {AddCh(); goto case 92;}
@@ -527,19 +527,19 @@ namespace Dyalect.Parser
 			case 87:
 				recEnd = pos; recKind = 83;
 				if (ch == '.') {AddCh(); goto case 70;}
-				else if (ch == '<') {AddCh(); goto case 72;}
+				else if (ch == '<') {AddCh(); goto case 74;}
 				else {t.kind = 83; break;}
 			case 88:
 				if (ch == '<') {AddCh(); goto case 93;}
 				else {goto case 0;}
 			case 89:
-				recEnd = pos; recKind = 94;
+				recEnd = pos; recKind = 96;
 				if (ch == '&') {AddCh(); goto case 94;}
-				else {t.kind = 94; break;}
+				else {t.kind = 96; break;}
 			case 90:
-				recEnd = pos; recKind = 93;
+				recEnd = pos; recKind = 95;
 				if (ch == '|') {AddCh(); goto case 95;}
-				else {t.kind = 93; break;}
+				else {t.kind = 95; break;}
 			case 91:
 				if (ch == '^') {AddCh(); goto case 96;}
 				else {goto case 0;}

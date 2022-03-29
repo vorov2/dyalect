@@ -279,6 +279,10 @@ Tests/function.dy:
 [+] Parameterless lambda 3
 [+] Parameterless lambda 4
 [+] Methods: Apply
+[+] Right pipe 1
+[+] Right pipe 2
+[+] Left pipe 1
+[+] Left pipe 2
 
 Tests/integer.dy:
 [+] Integer literal
@@ -671,4 +675,4 @@ Tests/variant.dy:
 [+] Pattern matching 2
 
 Total:
-619 passed, 0 failed in 25 file(s)
+623 passed, 0 failed in 25 file(s)

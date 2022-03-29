@@ -128,7 +128,8 @@ namespace Dyalect.Compiler
                     var sv = globalScope.Locals[laz];
 
                     //If it is not yet evaluated
-                    if ((sv.Data & VarFlags.Lazy) == VarFlags.Lazy)
+                    if ((sv.Data & VarFlags.Lazy) == VarFlags.Lazy
+                        && (sv.Data & VarFlags.Private) != VarFlags.Private)
                     {
                         var sys = 0 | sv.Address << 8;
                         cw.PushVar(new ScopeVar(sys));

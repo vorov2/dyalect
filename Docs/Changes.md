@@ -1,6 +1,7 @@
 # 0.35.0
   * Add: _Consider shortcut syntax for parameterless lambda_ ([Issue #591](https://github.com/vorov2/dyalect/issues/591), [docs](https://github.com/vorov2/dyalect/wiki/Functions#lambdas)).
   * Add: _Consider adding `Function.Apply` method_ ([Issue #660](https://github.com/vorov2/dyalect/issues/660), [docs](https://github.com/vorov2/dyalect/wiki/Functions#apply)).
+  * Add: _Function application operators_ ([Issue #105](https://github.com/vorov2/dyalect/issues/105), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#apps)).
   * Change: _Consider changing `Iterator.Reduce` signature_ ([Issue #659](https://github.com/vorov2/dyalect/issues/659), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#reduce)).
   * Change: _Redesign lazy bindings implementation_ ([Issue #663](https://github.com/vorov2/dyalect/issues/663), [docs](https://github.com/vorov2/dyalect/wiki/Variables#lazy)).
   * Change: _Redesign conversion to booleans_ ([Issue #664](https://github.com/vorov2/dyalect/issues/664)).

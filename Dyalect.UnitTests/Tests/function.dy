@@ -714,5 +714,47 @@
     func sum(x, y, z) => x + y + z
     let fn = sum.Apply(y: 12, z: 3)
     assert(16, fn(1))
-    //assert(3, fn(1, 2, 3))
+    assert(6, fn(1, 2, 3))
+#endregion
+
+#region "Right pipe 1"
+    func double(x) => x + x
+    let x = 12 >> double
+    assert(24, x)
+#endregion
+
+#region "Right pipe 2"
+    func map(xs, fn) {
+        for x in xs {
+            yield fn(x)
+        }
+    }
+
+    func toArray(xs) {
+        let ys = []
+        ys.AddRange(xs)
+        ys
+    }
+
+    let xs = [1, 2, 3]
+    let res = xs >> map(\x + x) >> toArray
+    assert([2,4,6], res)
+#endregion
+
+#region "Left pipe 1"
+    func double(x) => x + x
+    let x = double << 12
+    assert(24, x)
+#endregion
+
+#region "Left pipe 2"
+    func map(xs, fn) {
+        for x in xs {
+            yield fn(x)
+        }
+    }
+
+    let xs = [1, 2, 3]
+    let res = map(xs) << (\x + x)
+    assert([2, 4, 6], res.ToArray())
 #endregion
