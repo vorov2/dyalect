@@ -204,4 +204,7 @@
   <data name="InvalidYield" xml:space="preserve">
     <value>Invalid "yield" statement.</value>
   </data>
+  <data name="InvalidApplicationOperator" xml:space="preserve">
+    <value>Invalid application operator.</value>
+  </data>
 </root>

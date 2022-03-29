@@ -40,7 +40,6 @@ TOKENS
     stringToken = "\"" { stringChar | "\\" printable }  "\"".
 
     charToken = "'" { char | "\\" printable } "'".
-    implicitToken = "$" digit { digit }.
     verbatimStringToken = "<[" { verbatimChar | ("]" verbatimChar2) | "]>]>" } "]>".
 
     autoToken           = "auto".
@@ -913,10 +912,9 @@ PRODUCTIONS
         (
               IF (IsFunction()) Lambda<out node>
             | NullaryLambda<out node>
-            | Coalesce<out node> [ Ternary<node, out node> ]
+            | LeftPipe<out node> [ Ternary<node, out node> ]
             | TryCatch<out node>
             | Throw<out node>
-            | Block<out node>
         ).
 
     Throw<out DNode node> =
@@ -936,10 +934,9 @@ PRODUCTIONS
         (
               IF (IsFunction()) Lambda<out node>
             | NullaryLambda<out node>
-            | Coalesce<out node> [ Ternary<node, out node> ]
+            | LeftPipe<out node> [ Ternary<node, out node> ]
             | TryCatch<out node>
             | ThrowExpr<out node>
-            | Block<out node>
         ).
 
     Ternary<DNode parent, out DNode node> = 
@@ -1004,13 +1001,43 @@ PRODUCTIONS
 
     NullaryLambda<out DNode node> =
         (.
-            var f = new DFunctionDeclaration(t);
+            var f = new DFunctionDeclaration(t) { IsNullary = true };
             node = f;
         .)
         (
             (. functions.Push(f); .)
             "\\" Expr<out var exp>
             (. f.Body = exp; functions.Pop(); .)
+        ).
+
+    LeftPipe<out DNode node> =
+        (. node = null; .)
+        (
+            RightPipe<out node>
+            {
+                (. var app = node.NodeType == NodeType.Application ? (DApplication)node : new DApplication(node, t); .)
+                "<<" RightPipe<out node>
+                (. app.Arguments.Add(node); node = app; .)
+            }
+        ). 
+
+    RightPipe<out DNode node> =
+        (. node = null; DNode cnode = null; .)
+        (
+            (Block<out node>|Coalesce<out node>)
+            {
+                ">>" (Block<out cnode>|Coalesce<out cnode>)
+                (.
+                    if (cnode is not null)
+                    {
+                        var app = cnode.NodeType == NodeType.Application ? (DApplication)cnode : new DApplication(cnode, t);
+                        app.Arguments.Insert(0, node);
+                        node = app;
+                    }
+                    else
+                        AddError(ParserError.InvalidApplicationOperator, t.GetLocation());
+                .)
+            }
         ).
 
     Coalesce<out DNode node> =
@@ -1054,24 +1081,24 @@ PRODUCTIONS
         (. node = null; DNode snode = null; DNode cnode = null; bool exclu = false; .)
         (
             (
-                "^" FunctionApplication<out snode>
+                "^" Unary<out snode>
                 ( ".." | "..<" (. exclu = true; .) )
                 (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
+                [ Unary<out cnode> (. range.To = cnode; .) ]
             )
             |
             (
                 ( ".." | "..<" (. exclu = true; .) )
                 (. var range = new DRange(t) { From = node, Exclusive = exclu }; node = range; .)
-                [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
+                [ Unary<out cnode> (. range.To = cnode; .) ]
             )
             |
             (
-                Eq<out node> [ "^" FunctionApplication<out snode> ]
+                Eq<out node> [ "^" Unary<out snode> ]
                 [
                     ( ".." | "..<" (. exclu = true; .) )
                     (. var range = new DRange(t) { From = node, Exclusive = exclu, Step = snode }; node = range; .)
-                    [ FunctionApplication<out cnode> (. range.To = cnode; .) ]
+                    [ Unary<out cnode> (. range.To = cnode; .) ]
                 ]
             )
         ).
@@ -1183,7 +1210,7 @@ PRODUCTIONS
     Cast<out DNode node> = 
         (. node = null; .)
         (
-            FunctionApplication<out node>
+            Unary<out node>
             {
                 (. var @as = new DAs(t) { Expression = node }; string s1, s2 = null; .)
                 "as"
@@ -1194,18 +1221,6 @@ PRODUCTIONS
                     node = @as;
                 .)
             }
-        ).  
-
-    FunctionApplication<out DNode node> =
-        (. node = null; .)
-        (
-            Unary<out node>
-            /*{
-                (. var app = new DApplication(node, t); .)
-                //"~~~~~~~" Unary<out node>
-                NullaryLambda<out node>
-                (. app.Arguments.Add(node); node = app; .)
-            }*/
         ).
 
     Unary<out DNode node> =
@@ -1350,11 +1365,7 @@ PRODUCTIONS
         (
             [ "var" (. mut = true; .) | "let" ]
             ( Identifier (. name = t.val; .) | stringToken (. name = ParseSimpleString(); fromStr = true; .) )
-            ":" (. var ot = t; .)
-            (
-                  IF (IsFunction()) Lambda<out node>
-                | Is<out node>
-            )
+            ":" (. var ot = t; .) Control<out node>
             (. node = new DLabelLiteral(ot) { Mutable = mut, Label = name, FromString = fromStr, Expression = node }; .)
         ).
 

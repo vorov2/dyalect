@@ -26,9 +26,6 @@ namespace Dyalect.Linker
         protected override void Execute(ExecutionContext ctx) =>
             Add("args", startupArguments ?? (DyObject)DyNil.Instance);
 
-        [Function("force")]
-        public DyObject Force(ExecutionContext ctx, DyObject obj) => obj.Force(ctx);
-
         [Function("print")]
         public DyObject Print(ExecutionContext ctx, [VarArg]DyObject values, [Default(",")]DyObject separator, [Default("\n")]DyObject terminator)
         {
@@ -131,12 +128,12 @@ namespace Dyalect.Linker
         [Function("assert")]
         public DyObject Assert(ExecutionContext ctx, [Default(true)]DyObject expect, DyObject got, [Default]DyObject errorText)
         {
-            if (!Eq(ctx, expect?.Force(ctx)?.ToObject(), got?.Force(ctx)?.ToObject()))
+            if (!Eq(ctx, expect?.ToObject(), got?.ToObject()))
             {
                 if (errorText.TypeId == DyType.String)
                     return ctx.AssertionFailed(errorText.GetString());
 
-                return ctx.AssertionFailed($"Expected {expect?.Force(ctx)?.ToString(ctx)}, got {got?.Force(ctx)?.ToString(ctx)}.");
+                return ctx.AssertionFailed($"Expected {expect?.ToString(ctx)}, got {got?.ToString(ctx)}.");
             }
 
             return DyNil.Instance;
@@ -167,7 +164,7 @@ namespace Dyalect.Linker
             }
 
             if (x is DyObject xa && y is DyObject ba)
-                return ctx.RuntimeContext.Types[xa.TypeId].Eq(ctx, xa, ba).GetBool(ctx);
+                return xa.Equals(ba, ctx);
 
             return Equals(x, y);
         }
@@ -196,7 +193,7 @@ namespace Dyalect.Linker
         [Function("min")]
         public DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (ctx.RuntimeContext.Types[x.TypeId].Lt(ctx, x, y).GetBool(ctx))
+            if (x.Lesser(y,ctx))
                 return x;
             else
                 return y;
@@ -205,7 +202,7 @@ namespace Dyalect.Linker
         [Function("max")]
         public DyObject Max(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (ctx.RuntimeContext.Types[x.TypeId].Gt(ctx, x, y).GetBool(ctx))
+            if (x.Greater(y, ctx))
                 return x;
             else
                 return y;
@@ -239,7 +236,7 @@ namespace Dyalect.Linker
             if (ReferenceEquals(x, DyInteger.Zero)) 
                 return DyInteger.Zero;
 
-            if (ctx.RuntimeContext.Types[x.TypeId].Lt(ctx, x, DyInteger.Zero).GetBool(ctx))
+            if (x.Lesser(DyInteger.Zero, ctx))
                 return DyInteger.MinusOne;
             
             return DyInteger.One;

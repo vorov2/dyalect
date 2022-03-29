@@ -14,7 +14,6 @@ namespace Dyalect.Compiler
 
         private bool privateScope; //Identifies that a current scope is private
 
-        //TODO: work..
         private void CrawlVariables(DNode? node, HashSet<string> vars)
         {
             if (node is null)
@@ -22,10 +21,6 @@ namespace Dyalect.Compiler
 
             switch (node.NodeType)
             {
-                case NodeType.Assignment:
-                    CrawlVariables(((DAssignment)node).Target, vars);
-                    CrawlVariables(((DAssignment)node).Value, vars);
-                    break;
                 case NodeType.Binary:
                     CrawlVariables(((DBinaryOperation)node).Left, vars);
                     CrawlVariables(((DBinaryOperation)node).Right, vars);
@@ -47,9 +42,6 @@ namespace Dyalect.Compiler
                         foreach (var a in ((DApplication)node).Arguments)
                             CrawlVariables(a, vars);
                     }
-                    break;
-                case NodeType.Return:
-                    CrawlVariables(((DReturn)node).Expression, vars);
                     break;
                 case NodeType.Index:
                     CrawlVariables(((DIndexer)node).Target, vars);
@@ -84,12 +76,6 @@ namespace Dyalect.Compiler
                 case NodeType.Access:
                     CrawlVariables(((DAccess)node).Target, vars);
                     break;
-                case NodeType.Yield:
-                    CrawlVariables(((DYield)node).Expression, vars);
-                    break;
-                case NodeType.YieldMany:
-                    CrawlVariables(((DYieldMany)node).Expression, vars);
-                    break;
                 case NodeType.Throw:
                     CrawlVariables(((DThrow)node).Expression, vars);
                     break;
@@ -101,7 +87,7 @@ namespace Dyalect.Compiler
 
         private CompilerError VariableExists(string name)
         {
-            var err = GetVariable(name, currentScope, out _);
+            var err = GetVariable(name, out _);
 
             if (err is CompilerError.None)
                 return err;
@@ -109,11 +95,43 @@ namespace Dyalect.Compiler
             return err;
         }
 
+        private int PushParentVariable(CompilerContext ctx, string name, Location loc)
+        {
+            var err = GetParentVariable(name, out var sv);
+
+            if (err is not CompilerError.None)
+            {
+                AddError(err, loc, name);
+                return default;
+            }
+
+            AddLinePragma(loc);
+            DirectPushScopeVar(name, sv);
+            return sv.Address;
+        }
+
+        private void PopParentVariable(CompilerContext ctx, string name, Location loc)
+        {
+            var err = GetParentVariable(name, out var sv);
+
+            if (err is not CompilerError.None)
+            {
+                AddError(err, loc, name);
+                return;
+            }
+
+            AddLinePragma(loc);
+            cw.PopVar(sv.Address);
+
+            if ((sv.Data & VarFlags.Const) == VarFlags.Const)
+                AddError(CompilerError.UnableAssignConstant, loc, name);
+        }
+
         private int PushVariable(CompilerContext ctx, string name, Location loc)
         {
-            var err = GetVariable(name, currentScope, out var sv);
+            var err = GetVariable(name, out var sv);
 
-            if (err == CompilerError.UndefinedVariable)
+            if (err is not CompilerError.None)
             {
                 if (string.IsNullOrEmpty(name))
                     return default;
@@ -139,19 +157,29 @@ namespace Dyalect.Compiler
             }
 
             AddLinePragma(loc);
-            cw.PushVar(sv);
+            DirectPushScopeVar(name, sv);
             return sv.Address;
+        }
+
+        private void DirectPushScopeVar(string name, ScopeVar sv)
+        {
+            cw.PushVar(sv);
+
+            if ((sv.Data & VarFlags.Lazy) == VarFlags.Lazy)
+            {
+                cw.CallNullaryFunction();
+                cw.Dup();
+                cw.PopVar(sv.Address);
+                PatchVariable(name, sv, VarFlags.Const);
+            }
         }
 
         private void PopVariable(CompilerContext ctx, string name, Location loc)
         {
-            var err = GetVariable(name, currentScope, out var sv);
+            var err = GetVariable(name, out var sv);
 
             if (err is not CompilerError.None)
             {
-                if (string.IsNullOrEmpty(name))
-                    return;
-
                 AddError(err, loc, name);
                 return;
             }
@@ -162,7 +190,6 @@ namespace Dyalect.Compiler
             if ((sv.Data & VarFlags.Const) == VarFlags.Const)
                 AddError(CompilerError.UnableAssignConstant, loc, name);
         }
-
 
         //Standard routine to add variables, can be used when an internal unnamed variable is need
         //which won't be visible to the user (for system purposes).
@@ -268,7 +295,7 @@ namespace Dyalect.Compiler
         }
 
         //Find a variable in a global scope
-        private ScopeVar GetParentVariable(string name, Location loc)
+        private CompilerError GetParentVariable(string name, out ScopeVar var)
         {
             var cur = currentScope;
 
@@ -284,11 +311,14 @@ namespace Dyalect.Compiler
                 cur = cur.Parent;
             }
 
-            if (cur.Locals.TryGetValue(name, out var var))
-                return new(1 | var.Address << 8, var.Data);
+            if (cur.Locals.TryGetValue(name, out var sv))
+            {
+                var = new(1 | sv.Address << 8, sv.Data);
+                return CompilerError.None;
+            }
 
-            AddError(CompilerError.UndefinedBaseVariable, loc, name);
-            return ScopeVar.Empty;
+            var = default;
+            return CompilerError.UndefinedBaseVariable;
         }
 
         private bool TryGetLocalVariable(string name, out ScopeVar var)
@@ -304,10 +334,31 @@ namespace Dyalect.Compiler
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private CompilerError GetVariable(string name, Scope startScope, out ScopeVar var)
+        private void PatchVariable(string name, ScopeVar var, int data)
         {
-            var cur = startScope;
+            var shift = var.Address & byte.MaxValue;
+            var cur = currentScope;
+
+            do
+            {
+                if (shift == 0 && cur.Locals.ContainsKey(name))
+                {
+                    cur.AddData(name, data);
+                    return;
+                }
+
+                if (cur.Kind == ScopeKind.Function)
+                    shift--;
+
+                cur = cur.Parent;
+            }
+            while (cur != null);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private CompilerError GetVariable(string name, out ScopeVar var)
+        {
+            var cur = currentScope;
             var shift = 0;
 
             //Search all upper scopes recursively

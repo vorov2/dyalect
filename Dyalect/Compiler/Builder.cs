@@ -22,6 +22,7 @@ namespace Dyalect.Compiler
         private readonly DyLinker linker; //Linker
         private readonly Dictionary<string, UnitInfo> referencedUnits;
 
+        private readonly List<string> globalLazy;
         private readonly Dictionary<string, TypeInfo> types;
         private readonly static DImport defaultInclude = new(default) { ModuleName = "lang" };
 
@@ -34,6 +35,7 @@ namespace Dyalect.Compiler
             this.linker = linker;
             counters = new();
             pdb = new();
+            globalLazy = new();
             isDebug = options.Debug;
             globalScope = new(ScopeKind.Function, null);
             unit = new()
@@ -57,6 +59,7 @@ namespace Dyalect.Compiler
             pdb = builder.pdb.Clone();
             unit = builder.unit.Clone(pdb.Symbols);
             cw = builder.cw.Clone(unit);
+            globalLazy = builder.globalLazy;
             globalScope = unit.GlobalScope!;
             currentScope = builder.currentScope != builder.globalScope
                 ? builder.currentScope.Clone() : globalScope;
@@ -117,6 +120,22 @@ namespace Dyalect.Compiler
                     var n = root.Nodes[i];
                     var last = i == root.Nodes.Count - 1;
                     Build(n, last ? Push : None, ctx);
+                }
+
+                //Evaluate all lazy bindings at the end of module
+                foreach (var laz in globalLazy)
+                {
+                    var sv = globalScope.Locals[laz];
+
+                    //If it is not yet evaluated
+                    if ((sv.Data & VarFlags.Lazy) == VarFlags.Lazy
+                        && (sv.Data & VarFlags.Private) != VarFlags.Private)
+                    {
+                        var sys = 0 | sv.Address << 8;
+                        cw.PushVar(new ScopeVar(sys));
+                        cw.CallNullaryFunction();
+                        cw.PopVar(sys);
+                    }
                 }
 
                 //Dispose auto's declared in global scope

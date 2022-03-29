@@ -273,7 +273,16 @@ Tests/function.dy:
 [+] Invalid overload (custom)
 [+] Conversion: as
 [+] Complex definition 1
-[+] Parameterless lambda
+[+] Parameterless lambda 1
+[+] Parameterless lambda 2
+[+] Parameterless lambda 2
+[+] Parameterless lambda 3
+[+] Parameterless lambda 4
+[+] Methods: Apply
+[+] Right pipe 1
+[+] Right pipe 2
+[+] Left pipe 1
+[+] Left pipe 2
 
 Tests/integer.dy:
 [+] Integer literal
@@ -359,7 +368,6 @@ Tests/lazy.dy:
 [+] Lazy indexers
 [+] Lazy properties
 [+] Lazy exceptions
-[+] Force lazy
 [+] Convert lazy
 [+] Overloaded operators
 
@@ -667,4 +675,4 @@ Tests/variant.dy:
 [+] Pattern matching 2
 
 Total:
-615 passed, 0 failed in 25 file(s)
+623 passed, 0 failed in 25 file(s)

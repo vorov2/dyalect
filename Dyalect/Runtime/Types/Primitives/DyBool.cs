@@ -9,8 +9,6 @@ namespace Dyalect.Runtime.Types
 
         private sealed class DyBoolTrue: DyBool
         {
-            protected internal override bool GetBool(ExecutionContext ctx) => true;
-
             public override string ToString() => "true";
 
             public override int GetHashCode() => true.GetHashCode();
@@ -18,8 +16,6 @@ namespace Dyalect.Runtime.Types
 
         private sealed class DyBoolFalse: DyBool
         {
-            protected internal override bool GetBool(ExecutionContext ctx) => false;
-
             public override string ToString() => "false";
 
             public override int GetHashCode() => false.GetHashCode();
@@ -38,7 +34,7 @@ namespace Dyalect.Runtime.Types
             if (ReferenceEquals(x, y))
                 return True;
 
-            return x.GetBool(ctx) == y.GetBool(ctx) ? True : False;
+            return False;
         }
 
         internal override void Serialize(BinaryWriter writer)

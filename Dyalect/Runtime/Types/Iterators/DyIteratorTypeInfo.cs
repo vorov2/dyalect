@@ -247,7 +247,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            return DyInteger.Get(seq.Count(dy => fun.Call(ctx, dy).GetBool(ctx)));
+            return DyInteger.Get(seq.Count(dy => fun.Call(ctx, dy).IsTrue()));
         }
 
         private DyObject Map(ExecutionContext ctx, DyObject self, DyObject funObj)
@@ -275,7 +275,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var xs = seq.TakeWhile(o => fun.Call(ctx, o).GetBool(ctx));
+            var xs = seq.TakeWhile(o => fun.Call(ctx, o).IsTrue());
             return DyIterator.Create(xs);
         }
 
@@ -290,7 +290,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var xs = seq.SkipWhile(o => fun.Call(ctx, o).GetBool(ctx));
+            var xs = seq.SkipWhile(o => fun.Call(ctx, o).IsTrue());
             return DyIterator.Create(xs);
         }
 
@@ -305,11 +305,11 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var xs = seq.Where(o => fun.Call(ctx, o).GetBool(ctx));
+            var xs = seq.Where(o => fun.Call(ctx, o).IsTrue());
             return DyIterator.Create(xs);
         }
 
-        private DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject initial, DyObject funObj)
+        private DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject funObj, DyObject initial)
         {
             if (funObj.TypeId != DyType.Function)
                 return ctx.InvalidType(DyType.Function, funObj);
@@ -339,7 +339,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var res = seq.Any(o => fun.Call(ctx, o).GetBool(ctx));
+            var res = seq.Any(o => fun.Call(ctx, o).IsTrue());
             return res ? DyBool.True : DyBool.False;
         }
 
@@ -354,15 +354,14 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var res = seq.All(o => fun.Call(ctx, o).GetBool(ctx));
+            var res = seq.All(o => fun.Call(ctx, o).IsTrue());
             return res ? DyBool.True : DyBool.False;
         }
 
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
         {
             var seq = DyIterator.ToEnumerable(ctx, self);
-            return seq.Any(o => ctx.RuntimeContext.Types[o.TypeId].Eq(ctx, o, item).GetBool(ctx)) 
-                ? DyBool.True : DyBool.False; ;
+            return seq.Any(o => o.Equals(item, ctx)) ? DyBool.True : DyBool.False;
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -385,7 +384,7 @@ namespace Dyalect.Runtime.Types
                 Method.Filter => Func.Member(name, Filter, -1, new Par("predicate")),
                 Method.TakeWhile => Func.Member(name, TakeWhile, -1, new Par("predicate")),
                 Method.SkipWhile => Func.Member(name, SkipWhile, -1, new Par("predicate")),
-                Method.Reduce => Func.Member(name, Reduce, -1, new Par("initial", DyInteger.Zero), new Par("converter")),
+                Method.Reduce => Func.Member(name, Reduce, -1, new Par("converter"), new Par("initial", DyInteger.Zero)),
                 Method.Any => Func.Member(name, Any, -1, new Par("predicate")),
                 Method.All => Func.Member(name, All, -1, new Par("predicate")),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("value")),
@@ -430,7 +429,7 @@ namespace Dyalect.Runtime.Types
         }
 
         private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, DyObject exclusive) =>
-            DyIterator.Create(GenerateRange(ctx, from, to, step, exclusive.GetBool(ctx)));
+            DyIterator.Create(GenerateRange(ctx, from, to, step, exclusive.IsTrue()));
 
         private static DyObject Empty(ExecutionContext ctx) => DyIterator.Create(Enumerable.Empty<DyObject>());
 

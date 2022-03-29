@@ -114,7 +114,7 @@
     let rx = Regex(".even")
     let matches = []
     for word in words {
-        if rx.Match(word) {
+        if rx.Match(word).success {
             matches.Add(word)
         }
     }

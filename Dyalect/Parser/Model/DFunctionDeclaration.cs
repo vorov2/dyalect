@@ -21,6 +21,8 @@ namespace Dyalect.Parser.Model
 
         internal bool IsPrivate { get; set; }
 
+        internal bool IsNullary { get; set; }
+
         public bool Getter { get; set; }
 
         public bool Setter { get; set; }

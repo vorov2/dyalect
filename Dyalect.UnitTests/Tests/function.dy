@@ -674,7 +674,7 @@
     }
 #endregion
 
-#region "Parameterless lambda"
+#region "Parameterless lambda 1"
     let fn = \2 + 2
     assert(4, fn())
     func takeIt(fn) {
@@ -682,4 +682,79 @@
     }
     let res = takeIt(\22 + 22)
     assert(44, res)
+#endregion
+
+#region "Parameterless lambda 2"
+   let xs = yields { 1, 2, 3, 4, 5, 6 }
+   let ys = xs.Filter(\x % 2 == 0).ToArray()
+   assert([2, 4, 6], ys)
+#endregion
+
+#region "Parameterless lambda 2"
+   let xs = yields { 1, 2, 3 }
+   let ys = xs.Map(\x.ToString()).ToArray()
+   assert(["1", "2", "3"], ys)
+#endregion
+
+#region "Parameterless lambda 3"
+   let xs = yields { 1, 2, 3, 4, 5, 6 }
+   let res = xs.Reduce(converter: \x + y)
+   assert(21, res)
+#endregion
+
+#region "Parameterless lambda 4"
+    func fetchLambda(b) {
+        b ? (\2 + 2) : (\3 + 3)
+    }
+    assert(4, fetchLambda(true)())
+    assert(6, fetchLambda(false)())
+#endregion
+
+#region "Methods: Apply"
+    func sum(x, y, z) => x + y + z
+    let fn = sum.Apply(y: 12, z: 3)
+    assert(16, fn(1))
+    assert(6, fn(1, 2, 3))
+#endregion
+
+#region "Right pipe 1"
+    func double(x) => x + x
+    let x = 12 >> double
+    assert(24, x)
+#endregion
+
+#region "Right pipe 2"
+    func map(xs, fn) {
+        for x in xs {
+            yield fn(x)
+        }
+    }
+
+    func toArray(xs) {
+        let ys = []
+        ys.AddRange(xs)
+        ys
+    }
+
+    let xs = [1, 2, 3]
+    let res = xs >> map(\x + x) >> toArray
+    assert([2,4,6], res)
+#endregion
+
+#region "Left pipe 1"
+    func double(x) => x + x
+    let x = double << 12
+    assert(24, x)
+#endregion
+
+#region "Left pipe 2"
+    func map(xs, fn) {
+        for x in xs {
+            yield fn(x)
+        }
+    }
+
+    let xs = [1, 2, 3]
+    let res = map(xs) << (\x + x)
+    assert([2, 4, 6], res.ToArray())
 #endregion

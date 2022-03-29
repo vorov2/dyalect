@@ -36,20 +36,20 @@ namespace Dyalect.Runtime.Types
                     : (int)ret.GetInteger();
             }
 
-            var res = ctx.RuntimeContext.Types[x.TypeId].Gt(ctx, x, y);
+            var res = x.Greater(y, ctx);
 
             if (ctx.HasErrors)
                 return 0;
             
-            if (ReferenceEquals(res, DyBool.True))
+            if (res)
                 return 1;
 
-            res = ctx.RuntimeContext.Types[x.TypeId].Eq(ctx, x, y);
+            res = x.Equals(y, ctx);
 
             if (ctx.HasErrors)
                 return 0;
             
-            return ReferenceEquals(res, DyBool.True) ? 0 : -1;
+            return res ? 0 : -1;
         }
     }
 }

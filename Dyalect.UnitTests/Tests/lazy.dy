@@ -59,7 +59,7 @@
     } else {
         assert(got: false)
     }
-    lazy y = 0
+    lazy y = nil
     if y {
         assert(got: false)
     } else {
@@ -180,15 +180,6 @@
     } catch {
         @Unknown(xs) => assert([1, 2], xs)
     }
-#endregion
-
-#region "Force lazy"
-    var outp = ""
-    lazy f = {
-        outp = "Yes!"
-    }
-    force(f)
-    assert("Yes!", outp)
 #endregion
 
 #region "Convert lazy"

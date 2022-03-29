@@ -104,9 +104,12 @@
 #region "Comparison and bool"
     let str1 = "x"
     let str2 = ""
-    assert(true, str1 == true)
+    assert(false, str1 == true)
     assert(false, str2 == true)
-    assert(true, str2 == false)
+    assert(false, str2 == false)
+    assert(got: true == true)
+    assert(got: false == false)
+    assert(false, true == false)
 #endregion
 
 #region "Function comparison"

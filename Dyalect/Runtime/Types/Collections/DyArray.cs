@@ -128,7 +128,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = Values[i];
 
-                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, elem).GetBool(ctx))
+                if (e.Equals(elem, ctx))
                     return i;
 
                 if (ctx.HasErrors)
@@ -146,7 +146,7 @@ namespace Dyalect.Runtime.Types
             {
                 var e = Values[i];
 
-                if (ctx.RuntimeContext.Types[e.TypeId].Eq(ctx, e, elem).GetBool(ctx))
+                if (e.Equals(elem, ctx))
                     index = i;
 
                 if (ctx.HasErrors)

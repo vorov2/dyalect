@@ -36,6 +36,7 @@ namespace Dyalect.Parser
                 ,{ "invalid Yield", InvalidYield }
                 ,{ "invalid Lambda", InvalidFunctionExpression }
                 ,{ "invalid TryCatch", InvalidTryCatch }
+                ,{ "invalid RightPipe", InvalidApplicationOperator }
                 ,{ "invalid Range", InvalidRange }
                 ,{ "invalid Unary", InvalidUnary }
                 ,{ "invalid Literal", InvalidLiteral }
@@ -54,6 +55,7 @@ namespace Dyalect.Parser
                 ,{ "invalid NullaryLambda", InvalidFunctionExpression }
                 ,{ "invalid CtorPattern", InvalidPattern }
                 ,{ "invalid NamePattern", InvalidPattern }
+                ,{ "invalid LeftPipe", InvalidApplicationOperator }
                 ,{ "??? expected", Undefined }
             };
 
@@ -68,16 +70,15 @@ namespace Dyalect.Parser
                 ,{ "intToken", "integer literal" }
                 ,{ "floatToken", "float literal" }
                 ,{ "stringToken", "string literal" }
-                ,{ "verbatimStringToken", "multiline string literal" }
                 ,{ "charToken", "char literal" }
-                ,{ "implicitToken", "implicit" }
-                ,{ "privateToken", "private" }
+                ,{ "verbatimStringToken", "multiline string literal" }
                 ,{ "autoToken", "auto" }
                 ,{ "varToken", "var" }
                 ,{ "letToken", "let" }
                 ,{ "lazyToken", "lazy" }
                 ,{ "funcToken", "func" }
                 ,{ "returnToken", "return" }
+                ,{ "privateToken", "private" }
                 ,{ "continueToken", "continue" }
                 ,{ "breakToken", "break" }
                 ,{ "yieldToken", "yield" }

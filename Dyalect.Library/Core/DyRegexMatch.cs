@@ -11,8 +11,6 @@ namespace Dyalect.Library.Core
 
         public DyRegexMatch(Match match) : base(match) => this.match = match;
 
-        protected internal override bool GetBool(ExecutionContext ctx) => match.Success;
-
         private DyTuple GetCaptures()
         {
             var xs = new List<DyRegexCapture>();
