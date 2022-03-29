@@ -1,5 +1,6 @@
 # 0.36.0
-  * Fix: _Consider `rawget` and `rawset` built-in functions_ ([Issue #671](https://github.com/vorov2/dyalect/issues/671), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#rawget)).
+  * Add: _Consider `rawget` and `rawset` built-in functions_ ([Issue #671](https://github.com/vorov2/dyalect/issues/671), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#rawget)).
+  * Fix: _VM may crush if a custom implementation of `Iterate` returns a type other than `Iterator`_ ([Issue #678](https://github.com/vorov2/dyalect/issues/678)).
 
 # 0.35.2
   * Fix: _Console can fail if command line options duplicate options from config_ ([Issue #672](https://github.com/vorov2/dyalect/issues/672)).

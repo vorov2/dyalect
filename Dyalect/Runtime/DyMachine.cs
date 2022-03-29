@@ -453,7 +453,11 @@ namespace Dyalect.Runtime
                             offset = op.Data;
                         break;
                     case OpCode.GetIter:
-                        evalStack.Replace(((DyIterator)evalStack.Peek()).GetIteratorFunction());
+                        right = evalStack.Peek();
+                        if (right.TypeId != DyType.Iterator)
+                            ctx.InvalidType(DyType.Iterator, right);
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
+                        evalStack.Replace(((DyIterator)right).GetIteratorFunction());
                         break;
                     case OpCode.RgDI:
                         ctx.RgDI = op.Data;
