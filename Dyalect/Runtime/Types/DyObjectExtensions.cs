@@ -17,16 +17,16 @@ namespace Dyalect.Runtime.Types
             (DyString)ctx.RuntimeContext.Types[self.TypeId].ToLiteral(ctx, self);
 
         public static bool Equals(this DyObject left, DyObject right, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Types[left.TypeId].Eq(ctx, left, right).GetBool(ctx);
+            ctx.RuntimeContext.Types[left.TypeId].Eq(ctx, left, right).IsTrue();
 
         public static bool NotEquals(this DyObject left, DyObject right, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Types[left.TypeId].Neq(ctx, left, right).GetBool(ctx);
+            ctx.RuntimeContext.Types[left.TypeId].Neq(ctx, left, right).IsTrue();
         
         public static bool Lesser(this DyObject left, DyObject right, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Types[left.TypeId].Lt(ctx, left, right).GetBool(ctx);
+            ctx.RuntimeContext.Types[left.TypeId].Lt(ctx, left, right).IsTrue();
 
         public static bool Greater(this DyObject left, DyObject right, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Types[left.TypeId].Gt(ctx, left, right).GetBool(ctx);
+            ctx.RuntimeContext.Types[left.TypeId].Gt(ctx, left, right).IsTrue();
 
         public static string GetTypeName(this DyObject self, ExecutionContext ctx) =>
             ctx.RuntimeContext.Types[self.TypeId].TypeName;

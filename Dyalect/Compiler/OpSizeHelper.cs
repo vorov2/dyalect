@@ -90,7 +90,6 @@
             0, //Mut
             0, //Annot
             1, //FunAttr
-            0, //NewLaz
             0, //NewCast
             0, //Cast
         };

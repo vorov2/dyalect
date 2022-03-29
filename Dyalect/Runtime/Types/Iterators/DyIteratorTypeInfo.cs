@@ -247,7 +247,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            return DyInteger.Get(seq.Count(dy => fun.Call(ctx, dy).GetBool(ctx)));
+            return DyInteger.Get(seq.Count(dy => fun.Call(ctx, dy).IsTrue()));
         }
 
         private DyObject Map(ExecutionContext ctx, DyObject self, DyObject funObj)
@@ -275,7 +275,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var xs = seq.TakeWhile(o => fun.Call(ctx, o).GetBool(ctx));
+            var xs = seq.TakeWhile(o => fun.Call(ctx, o).IsTrue());
             return DyIterator.Create(xs);
         }
 
@@ -290,7 +290,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var xs = seq.SkipWhile(o => fun.Call(ctx, o).GetBool(ctx));
+            var xs = seq.SkipWhile(o => fun.Call(ctx, o).IsTrue());
             return DyIterator.Create(xs);
         }
 
@@ -305,7 +305,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var xs = seq.Where(o => fun.Call(ctx, o).GetBool(ctx));
+            var xs = seq.Where(o => fun.Call(ctx, o).IsTrue());
             return DyIterator.Create(xs);
         }
 
@@ -339,7 +339,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var res = seq.Any(o => fun.Call(ctx, o).GetBool(ctx));
+            var res = seq.Any(o => fun.Call(ctx, o).IsTrue());
             return res ? DyBool.True : DyBool.False;
         }
 
@@ -354,7 +354,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var fun = (DyFunction)funObj;
-            var res = seq.All(o => fun.Call(ctx, o).GetBool(ctx));
+            var res = seq.All(o => fun.Call(ctx, o).IsTrue());
             return res ? DyBool.True : DyBool.False;
         }
 
@@ -429,7 +429,7 @@ namespace Dyalect.Runtime.Types
         }
 
         private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, DyObject exclusive) =>
-            DyIterator.Create(GenerateRange(ctx, from, to, step, exclusive.GetBool(ctx)));
+            DyIterator.Create(GenerateRange(ctx, from, to, step, exclusive.IsTrue()));
 
         private static DyObject Empty(ExecutionContext ctx) => DyIterator.Create(Enumerable.Empty<DyObject>());
 

@@ -15,8 +15,6 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => this;
 
-        protected internal override bool GetBool(ExecutionContext ctx) => false;
-
         public override string ToString() => Literal;
 
         public override DyObject Clone() => this;

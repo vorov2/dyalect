@@ -20,9 +20,8 @@ namespace Dyalect
         public const int Tuple = 13;
         public const int Dictionary = 14;
         public const int Set = 15;
-        public const int Lazy = 16;
-        public const int Variant = 17;
-        public const int Object = 18;
+        public const int Variant = 16;
+        public const int Object = 17;
 
         internal static List<DyTypeInfo> GetAll() =>
             new()
@@ -43,7 +42,6 @@ namespace Dyalect
                 new DyTupleTypeInfo(),
                 new DyDictionaryTypeInfo(),
                 new DySetTypeInfo(),
-                new DyLazyTypeInfo(),
                 new DyVariantTypeInfo(),
                 new DyObjectTypeInfo()
             };
@@ -66,7 +64,6 @@ namespace Dyalect
                 DyTypeNames.Iterator => Iterator,
                 DyTypeNames.Dictionary => Dictionary,
                 DyTypeNames.Set => Set,
-                //DyTypeNames.Lazy => Lazy,
                 DyTypeNames.Variant => Variant,
                 DyTypeNames.Object => Object,
                 _ => default
@@ -90,7 +87,6 @@ namespace Dyalect
                 Iterator => DyTypeNames.Iterator,
                 Dictionary => DyTypeNames.Dictionary,
                 Set => DyTypeNames.Set,
-                Lazy => DyTypeNames.Lazy,
                 Variant => DyTypeNames.Variant,
                 Object => DyTypeNames.Object,
                 _ => code.ToString(),
@@ -117,7 +113,6 @@ namespace Dyalect
                 Tuple,
                 Dictionary,
                 Set,
-                Lazy,
                 Variant,
                 Object
             };
@@ -137,7 +132,6 @@ namespace Dyalect
         public const string Tuple = "Tuple";
         public const string Dictionary = "Dictionary";
         public const string Set = "Set";
-        public const string Lazy = "Lazy";
         public const string Variant = "Variant";
         public const string Object = "Object";
     }

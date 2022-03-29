@@ -1095,27 +1095,7 @@ namespace Dyalect.Compiler
 
             Build(dec, hints.Append(Push), ctx);
             AddLinePragma(node);
-            //cw.NewLaz();
             var a = AddVariable(name, node.Location, VarFlags.Const | VarFlags.Lazy);
-            cw.PopVar(a);
-
-            PushIf(hints);
-        }
-
-        private void BuildLazy2(DBinding node, Hints hints, CompilerContext ctx)
-        {
-            if (node.Pattern.NodeType != NodeType.NamePattern)
-                AddError(CompilerError.InvalidLazyBinding, node.Location);
-
-            var dec = new DFunctionDeclaration(node.Init.Location)
-            {
-                Body = node.Init
-            };
-
-            Build(dec, hints.Append(Push), ctx);
-            AddLinePragma(node);
-            cw.NewLaz();
-            var a = AddVariable(node.Pattern.GetName()!, node.Location, VarFlags.Const);
             cw.PopVar(a);
 
             PushIf(hints);

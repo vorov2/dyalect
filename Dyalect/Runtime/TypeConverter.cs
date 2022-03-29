@@ -65,14 +65,6 @@ namespace Dyalect.Runtime
 
         public static object? ConvertTo(ExecutionContext ctx, DyObject obj, Type type)
         {
-            if (obj.TypeId == DyType.Lazy)
-            {
-                obj = obj.Force(ctx);
-
-                if (ctx.HasErrors)
-                    return null;
-            }
-
             if (type == Dyalect.Types.DyObject)
                 return obj;
             else if (type == Dyalect.Types.Object)
@@ -82,7 +74,7 @@ namespace Dyalect.Runtime
 
             switch (Type.GetTypeCode(type))
             {
-                case TypeCode.Boolean: return obj.GetBool(ctx);
+                case TypeCode.Boolean: return obj.IsTrue();
                 case TypeCode.Byte: return (byte)obj.GetInteger();
                 case TypeCode.Int16: return (short)obj.GetInteger();
                 case TypeCode.Int32: return (int)obj.GetInteger();

@@ -174,12 +174,12 @@ namespace Dyalect.Runtime
                         offset = op.Data;
                         break;
                     case OpCode.Brtrue:
-                        if (evalStack.Pop().GetBool(ctx))
+                        if (evalStack.Pop().IsTrue())
                             offset = op.Data;
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Brfalse:
-                        if (!evalStack.Pop().GetBool(ctx))
+                        if (!evalStack.Pop().IsTrue())
                             offset = op.Data;
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
@@ -641,9 +641,6 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Mut:
                         ((DyLabel)evalStack.Peek()).Mutable = true;
-                        break;
-                    case OpCode.NewLaz:
-                        evalStack.Replace(new DyLazy((DyFunction)evalStack.Peek()));
                         break;
                     case OpCode.NewCast:
                         left = evalStack.Pop();

@@ -147,7 +147,7 @@ namespace Dyalect.Runtime.Types
             if (eq is not null)
                 return eq.BindToInstance(ctx, left).Call(ctx, right);
             if (right.TypeId == DyType.Bool)
-                return left.GetBool(ctx) == right.GetBool(ctx) ? DyBool.True : DyBool.False;
+                return ReferenceEquals(left, right) ? DyBool.True : DyBool.False;
             return EqOp(left, right, ctx);
         }
 
@@ -241,7 +241,7 @@ namespace Dyalect.Runtime.Types
         //!x
         private DyFunction? not;
         protected virtual DyObject NotOp(DyObject arg, ExecutionContext ctx) =>
-            arg.GetBool(ctx) ? DyBool.False : DyBool.True;
+            arg.IsTrue() ? DyBool.False : DyBool.True;
         public DyObject Not(ExecutionContext ctx, DyObject arg)
         {
             if (not is not null)
@@ -360,7 +360,7 @@ namespace Dyalect.Runtime.Types
         protected virtual DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
             targetType.ReflectedTypeId switch
             {
-                DyType.Bool => self.GetBool(ctx) ? DyBool.True : DyBool.False,
+                DyType.Bool => self.IsTrue() ? DyBool.True : DyBool.False,
                 DyType.String => ToString(ctx, self),
                 DyType.Char => new DyChar((ToString(ctx, self)?.GetString() ?? "\0")[0]),
                 _ when targetType.ReflectedTypeId == self.TypeId => self,

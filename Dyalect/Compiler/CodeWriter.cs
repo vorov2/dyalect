@@ -266,7 +266,6 @@ namespace Dyalect.Compiler
         public void Mut() => Emit(Op.Mut);
         public void Annot() => Emit(Op.Annot);
         public void TypeCheck() => Emit(Op.TypeCheck);
-        public void NewLaz() => Emit(Op.NewLaz);
         public void NewCast() => Emit(Op.NewCast);
         public void Cast() => Emit(Op.Cast);
     }

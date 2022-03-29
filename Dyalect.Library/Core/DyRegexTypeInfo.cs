@@ -176,7 +176,7 @@ namespace Dyalect.Library.Core
             if (arg.TypeId != DyType.String)
                 return ctx.InvalidType(arg);
 
-            return new DyRegex(this, arg.GetString(), ignoreCase.GetBool(ctx), singleline.GetBool(ctx), multiline.GetBool(ctx), removeEmptyEntries.GetBool(ctx));
+            return new DyRegex(this, arg.GetString(), ignoreCase.IsTrue(), singleline.IsTrue(), multiline.IsTrue(), removeEmptyEntries.IsTrue());
         }
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>

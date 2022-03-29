@@ -19,8 +19,6 @@ namespace Dyalect.Runtime.Types
         public DyLabel(string label, object value, bool mutable = false) : base(DyType.Label) =>
             (Label, Value, Mutable) = (label, TypeConverter.ConvertFrom(value), mutable);
 
-        protected internal override bool GetBool(ExecutionContext ctx) => Value.GetBool(ctx);
-
         public override object ToObject() => Value.ToObject();
 
         protected internal override string GetLabel() => Label;
