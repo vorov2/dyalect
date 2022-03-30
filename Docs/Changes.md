@@ -1,3 +1,5 @@
+# 0.36.0
+
 # 0.35.4
   * Fix: _Incorrect inference of implicit lambda parameters_ ([Issue #676](https://github.com/vorov2/dyalect/issues/676)).
 
