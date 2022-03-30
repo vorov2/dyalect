@@ -30,7 +30,7 @@ func fib(n) {
 }
 
 //Calculate the n-th fibonacci number
-fib(11)
+fib(11) 
 ```
 
 Extending standard types:
