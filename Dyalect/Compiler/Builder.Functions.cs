@@ -13,6 +13,11 @@ namespace Dyalect.Compiler
     {
         private void Build(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
+            BuildFunctionDeclaration(node, hints.Remove(IteratorBody), ctx);
+        }
+
+        private void BuildFunctionDeclaration(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
+        {
             if (node.Name is not null || node.TargetTypeName is not null)
             {
                 var flags = VarFlags.Const | VarFlags.Function;
@@ -348,7 +353,7 @@ namespace Dyalect.Compiler
             else if (node.IsIterator) //Compile function body
             {
                 var dec = new DFunctionDeclaration(node.Location) { Name = node.Name, Body = node.Body };
-                Build(dec, hints.Append(IteratorBody), ctx);
+                BuildFunctionDeclaration(dec, hints.Append(IteratorBody), ctx);
             }
             else
                 Build(node.Body!, hints.Append(Last), ctx);

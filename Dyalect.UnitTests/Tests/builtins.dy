@@ -96,3 +96,33 @@
         @AssertionFailed(str) => assert("Strange!!!", str)
     }
 #endregion
+
+#region "rawget and rawset"
+    type Foo(var x, var y, var z)
+    func get Foo[index] {
+        match index {
+            >2 or <0 => @IndexOutOfRange(index),
+            _ => rawget(this, index)
+        }
+    }
+    func set Foo[index, value] {
+        match index {
+            >2 or <0 => @IndexOutOfRange(index),
+            _ => rawset(this, index, value)
+        }
+    }
+    let f = Foo(1, 2, 3)
+    assert(2, f[1])
+    f[1] = 1024
+    assert(1024, f[1])
+#endregion
+
+#region "rawset and read-only"
+    let xs = (1, 2, 3)
+    try {
+        xs >> rawset(0, 12)
+        assert(got: false)
+    } catch {
+        @IndexReadOnly => assert(got: true)
+    }
+#endregion

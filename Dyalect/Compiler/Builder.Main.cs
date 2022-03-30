@@ -348,7 +348,7 @@ namespace Dyalect.Compiler
             else
             {
                 var dec = new DFunctionDeclaration(node.Location) { Body = node.YieldBlock };
-                Build(dec, hints.Append(IteratorBody), ctx);
+                BuildFunctionDeclaration(dec, hints.Append(IteratorBody), ctx);
             }
         }
 
