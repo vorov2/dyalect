@@ -14,74 +14,84 @@ namespace Dyalect.Compiler
 
         private bool privateScope; //Identifies that a current scope is private
 
-        private void CrawlVariables(DNode? node, HashSet<string> vars)
+        //If we have a simple expression than all name references are qualified as implicit function parameters
+        private bool CrawlVariables(DNode? node, HashSet<string> vars)
         {
             if (node is null)
-                return;
+                return true;
 
             switch (node.NodeType)
             {
-                case NodeType.Binary:
-                    CrawlVariables(((DBinaryOperation)node).Left, vars);
-                    CrawlVariables(((DBinaryOperation)node).Right, vars);
-                    break;
-                case NodeType.If:
-                    CrawlVariables(((DIf)node).Condition, vars);
-                    CrawlVariables(((DIf)node).True, vars);
-                    CrawlVariables(((DIf)node).False, vars);
-                    break;
                 case NodeType.Name:
                     vars.Add(((DName)node).Value);
-                    break;
+                    return true;
+                case NodeType.Label:
+                    return CrawlVariables(((DLabelLiteral)node).Expression, vars);
                 case NodeType.Unary:
-                    CrawlVariables(((DUnaryOperation)node).Node, vars);
-                    break;
+                    return CrawlVariables(((DUnaryOperation)node).Node, vars);
+                case NodeType.Binary:
+                    return CrawlVariables(((DBinaryOperation)node).Left, vars) 
+                        && CrawlVariables(((DBinaryOperation)node).Right, vars);
                 case NodeType.Application:
+                    if (CrawlVariables(((DApplication)node).Target, vars))
                     {
-                        CrawlVariables(((DApplication)node).Target, vars);
                         foreach (var a in ((DApplication)node).Arguments)
-                            CrawlVariables(a, vars);
+                            if (!CrawlVariables(a, vars))
+                                return false;
+                        return true;
                     }
-                    break;
+                    else
+                        return false;
                 case NodeType.Index:
-                    CrawlVariables(((DIndexer)node).Target, vars);
-                    CrawlVariables(((DIndexer)node).Index, vars);
-                    break;
+                    return CrawlVariables(((DIndexer)node).Target, vars)
+                        && CrawlVariables(((DIndexer)node).Index, vars);
                 case NodeType.Tuple:
                     {
                         foreach (var n in ((DTupleLiteral)node).Elements)
-                            CrawlVariables(n, vars);
+                            if (!CrawlVariables(n, vars))
+                                return false;
+                        return true;
                     }
-                    break;
                 case NodeType.Array:
                     {
                         foreach (var n in ((DArrayLiteral)node).Elements)
-                            CrawlVariables(n, vars);
+                            if (!CrawlVariables(n, vars))
+                                return false;
+                        return true;
                     }
-                    break;
                 case NodeType.Iterator:
-                    CrawlVariables(((DIteratorLiteral)node).YieldBlock, vars);
-                    break;
-                case NodeType.YieldBlock:
                     {
-                        foreach (var n in ((DYieldBlock)node).Elements)
-                            CrawlVariables(n, vars);
+                        foreach (var n in ((DIteratorLiteral)node).YieldBlock.Elements)
+                            if (!CrawlVariables(n, vars))
+                                return false;
+                        return true;
                     }
-                    break;
+                case NodeType.Variant:
+                    {
+                        foreach (var n in ((DVariant)node).Arguments)
+                            if (!CrawlVariables(n, vars))
+                                return false;
+                        return true;
+                    }
                 case NodeType.Range:
-                    CrawlVariables(((DRange)node).From, vars);
-                    CrawlVariables(((DRange)node).Step, vars);
-                    CrawlVariables(((DRange)node).To, vars);
-                    break;
+                    return CrawlVariables(((DRange)node).From, vars)
+                        && CrawlVariables(((DRange)node).Step, vars)
+                        && CrawlVariables(((DRange)node).To, vars);
                 case NodeType.Access:
-                    CrawlVariables(((DAccess)node).Target, vars);
-                    break;
+                    return CrawlVariables(((DAccess)node).Target, vars);
                 case NodeType.Throw:
-                    CrawlVariables(((DThrow)node).Expression, vars);
-                    break;
+                    return CrawlVariables(((DThrow)node).Expression, vars);
                 case NodeType.As:
-                    CrawlVariables(((DAs)node).Expression, vars);
-                    break;
+                    return CrawlVariables(((DAs)node).Expression, vars);
+                case NodeType.String:
+                case NodeType.Nil:
+                case NodeType.Float:
+                case NodeType.Integer:
+                case NodeType.Char:
+                case NodeType.Boolean:
+                    return true;
+                default:
+                    return false;
             }
         }
 

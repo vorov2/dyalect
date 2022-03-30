@@ -227,7 +227,7 @@
 #region "Patterns: member check 3"
     var res = match 12 {
         .foo => false,
-        .__op_mul => true
+        .(*) => true
     }
     assert(true, res)
 #endregion

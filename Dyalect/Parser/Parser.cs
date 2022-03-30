@@ -864,7 +864,7 @@ namespace Dyalect.Parser
 			if (la.kind == 1 || la.kind == 2) {
 				FunctionParameters(f);
 			}
-			f.Name = set ? "__op_set" : "__op_get"; 
+			f.Name = set ? "op_set" : "op_get"; 
 			Expect(37);
 		} else if (la.kind == 32) {
 			Get();
@@ -1539,8 +1539,7 @@ namespace Dyalect.Parser
 		functions.Push(f); 
 		Expect(26);
 		Expr(out var exp);
-		f.Body = exp; 
-		functions.Pop(); 
+		f.Body = exp; functions.Pop(); 
 	}
 
 	void NullaryLambda(out DNode node) {

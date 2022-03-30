@@ -11,7 +11,7 @@ namespace Dyalect.Parser.Model
 
         internal override void ToString(StringBuilder sb)
         {
-            sb.Append('{');
+            sb.Append("yields {");
             YieldBlock.ToString(sb);
             sb.Append('}');
         }

@@ -1539,7 +1539,8 @@ namespace Dyalect.Parser
 		functions.Push(f); 
 		Expect(26);
 		Expr(out var exp);
-		f.Body = exp; functions.Pop(); 
+		f.Body = exp; 
+		functions.Pop(); 
 	}
 
 	void NullaryLambda(out DNode node) {
@@ -2002,10 +2003,7 @@ namespace Dyalect.Parser
 		} else if (StartOf(14)) {
 			Control(out node);
 		} else SynErr(138);
-		if (node.NodeType == NodeType.Label && ((DLabelLiteral)node).Mutable)
-		   AddError(ParserError.InvalidFunctionCall, t.GetLocation());
-		arguments.Add(node);
-		
+		arguments.Add(node); 
 		while (la.kind == 28) {
 			Get();
 			if (IsLabel()) {
@@ -2013,10 +2011,7 @@ namespace Dyalect.Parser
 			} else if (StartOf(14)) {
 				Control(out node);
 			} else SynErr(139);
-			if (node.NodeType == NodeType.Label && ((DLabelLiteral)node).Mutable)
-			   AddError(ParserError.InvalidFunctionCall, t.GetLocation());
-			arguments.Add(node);
-			
+			arguments.Add(node); 
 		}
 	}
 

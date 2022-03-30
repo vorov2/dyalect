@@ -432,7 +432,7 @@ PRODUCTIONS
                                 f.TypeName = new Qualident(f.Name);
                         .)
                         [ FunctionParameters<f> ]
-                        (. f.Name = set ? "__op_set" : "__op_get"; .)
+                        (. f.Name = set ? "op_set" : "op_get"; .)
                     "]"
                 )
                 | "(" [ FunctionParameters<f> ] ")"

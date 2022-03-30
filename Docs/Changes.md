@@ -1,3 +1,6 @@
+# 0.35.4
+  * Fix: _Incorrect inference of implicit lambda parameters_ ([Issue #676](https://github.com/vorov2/dyalect/issues/676)).
+
 # 0.35.3
   * Add: _Consider `rawget` and `rawset` built-in functions_ ([Issue #671](https://github.com/vorov2/dyalect/issues/671), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#rawget)).
   * Fix: _VM may crush if a custom implementation of `Iterate` returns a type other than `Iterator`_ ([Issue #678](https://github.com/vorov2/dyalect/issues/678)).
