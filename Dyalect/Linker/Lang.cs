@@ -76,26 +76,6 @@ namespace Dyalect.Linker
             return DyNil.Instance;
         }
 
-        [Function("rawget")]
-        public DyObject RawGet(ExecutionContext ctx, DyObject values, DyObject index)
-        {
-
-            if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, index);
-
-            return ctx.RuntimeContext.Types[values.TypeId].GetDirect(ctx, values, index);
-        }
-
-        [Function("rawset")]
-        public DyObject RawSet(ExecutionContext ctx, DyObject values, DyObject index, DyObject value)
-        {
-            if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, index);
-
-            ctx.RuntimeContext.Types[values.TypeId].SetDirect(ctx, values, index, value);
-            return DyNil.Instance;
-        }
-
         [Function("caller")]
         public DyObject Caller(ExecutionContext ctx)
         {
