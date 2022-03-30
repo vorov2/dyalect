@@ -122,7 +122,7 @@ namespace Dyalect.Compiler
                 "%" => Builtins.Rem,
                 "<<<" => Builtins.Shl,
                 ">>>" => Builtins.Shr,
-                "^" => Builtins.Xor,
+                "^^^" => Builtins.Xor,
                 "==" => Builtins.Eq,
                 "!=" => Builtins.Neq,
                 ">" => Builtins.Gt,
@@ -141,16 +141,14 @@ namespace Dyalect.Compiler
             if (node.IsNullary && node.Body is not null && node.Body.NodeType != NodeType.Block)
             {
                 var set = new HashSet<string>();
-                CrawlVariables(node.Body, set);
+
+                if (!CrawlVariables(node.Body, set))
+                    return Array.Empty<Par>();
+
                 var pars = new List<Par>();
 
                 foreach (var n in set)
-                {
-                    if (VariableExists(n) == CompilerError.None)
-                        continue;
-
                     pars.Add(new Par(n));
-                }
 
                 return pars.ToArray();
             }
