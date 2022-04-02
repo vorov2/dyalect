@@ -19,7 +19,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, ctx);
 
-        private DyObject Convert(ExecutionContext ctx, DyObject val) => val.IsTrue() ? DyBool.True : DyBool.False;
+        private DyObject Convert(ExecutionContext ctx, DyObject val) => val.IsFalse() ? DyBool.False : DyBool.True;
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch

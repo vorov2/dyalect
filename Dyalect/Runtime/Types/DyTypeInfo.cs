@@ -241,7 +241,7 @@ namespace Dyalect.Runtime.Types
         //!x
         private DyFunction? not;
         protected virtual DyObject NotOp(DyObject arg, ExecutionContext ctx) =>
-            arg.IsTrue() ? DyBool.False : DyBool.True;
+            arg.IsFalse() ? DyBool.True : DyBool.False;
         public DyObject Not(ExecutionContext ctx, DyObject arg)
         {
             if (not is not null)
@@ -361,7 +361,7 @@ namespace Dyalect.Runtime.Types
         protected virtual DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
             targetType.ReflectedTypeId switch
             {
-                DyType.Bool => self.IsTrue() ? DyBool.True : DyBool.False,
+                DyType.Bool => self.IsFalse() ? DyBool.False : DyBool.True,
                 DyType.String => ToString(ctx, self),
                 DyType.Char => new DyChar((ToString(ctx, self)?.GetString() ?? "\0")[0]),
                 _ when targetType.ReflectedTypeId == self.TypeId => self,

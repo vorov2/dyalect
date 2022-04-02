@@ -176,12 +176,10 @@ namespace Dyalect.Runtime
                     case OpCode.Brtrue:
                         if (evalStack.Pop().IsTrue())
                             offset = op.Data;
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Brfalse:
-                        if (!evalStack.Pop().IsTrue())
+                        if (evalStack.Pop().IsFalse())
                             offset = op.Data;
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Shl:
                         right = evalStack.Pop();
