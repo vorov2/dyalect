@@ -83,7 +83,7 @@ namespace Dyalect.Runtime.Types
             return RemOp(left, right, ctx);
         }
 
-        //x << y
+        //x <<< y
         private DyFunction? shl;
         protected virtual DyObject ShiftLeftOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Shl, left, right);
@@ -94,7 +94,7 @@ namespace Dyalect.Runtime.Types
             return ShiftLeftOp(left, right, ctx);
         }
 
-        //x >> y
+        //x >>> y
         private DyFunction? shr;
         protected virtual DyObject ShiftRightOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Shr, left, right);
@@ -105,7 +105,7 @@ namespace Dyalect.Runtime.Types
             return ShiftRightOp(left, right, ctx);
         }
 
-        //x & y
+        //x &&& y
         private DyFunction? and;
         protected virtual DyObject AndOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.And, left, right);
@@ -116,7 +116,7 @@ namespace Dyalect.Runtime.Types
             return AndOp(left, right, ctx);
         }
 
-        //x | y
+        //x ||| y
         private DyFunction? or;
         protected virtual DyObject OrOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Or, left, right);
@@ -127,7 +127,7 @@ namespace Dyalect.Runtime.Types
             return OrOp(left, right, ctx);
         }
 
-        //x ^ y
+        //x ^^^ y
         private DyFunction? xor;
         protected virtual DyObject XorOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Xor, left, right);
@@ -260,7 +260,7 @@ namespace Dyalect.Runtime.Types
             return BitwiseNotOp(arg, ctx);
         }
 
-        //x.len
+        //x.Length
         private DyFunction? len;
         protected virtual DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Len, arg);
@@ -271,7 +271,7 @@ namespace Dyalect.Runtime.Types
             return LengthOp(arg, ctx);
         }
 
-        //x.toString
+        //x.ToString
         private DyFunction? tos;
         protected virtual DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.ToString());
         internal string? ToStringDirect(ExecutionContext ctx, DyObject arg)
@@ -383,7 +383,7 @@ namespace Dyalect.Runtime.Types
             return CastOp(self, (DyTypeInfo)targetType, ctx);
         }
 
-        public void SetCastFunction(ExecutionContext ctx, DyObject self, DyTypeInfo type, DyFunction func)
+        public void SetCastFunction(DyTypeInfo type, DyFunction func)
         {
             conversions.Remove(type.ReflectedTypeId);
             conversions.Add(type.ReflectedTypeId, func);
@@ -466,7 +466,7 @@ namespace Dyalect.Runtime.Types
                         SetBuiltin(ctx, nm, null);
                         Members.Remove(name);
                         staticMembers.Remove(name);
-                        return DyNil.Instance;
+                        return Default();
                     }, -1, new Par("name")),
                 _ => InitializeStaticMember(name, ctx)
             };

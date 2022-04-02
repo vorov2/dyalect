@@ -158,7 +158,7 @@ namespace Dyalect.Library.Core
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                Method.ToString => Func.Member(name, ToStringWithFormat, -1, new Par("format", DyNil.Instance)),
+                "ToString" => Func.Member(name, ToStringWithFormat, -1, new Par("format", DyNil.Instance)),
                 "Days" => Func.Auto(name, (_, self) => new DyInteger(((DyTimeDelta)self).Value.Days)),
                 "Hours" => Func.Auto(name, (_, self) => new DyInteger(((DyTimeDelta)self).Value.Hours)),
                 "Minutes" => Func.Auto(name, (_, self) => new DyInteger(((DyTimeDelta)self).Value.Minutes)),

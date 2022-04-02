@@ -1,4 +1,5 @@
 # 0.35.6
+  * Change: _Virtual machine optimizations._
   * Fix: _Equality and hash code calculation is not always correctly implemented for standard types_ ([Issue #688](https://github.com/vorov2/dyalect/issues/688)).
 
 # 0.35.5
