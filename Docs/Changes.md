@@ -1,3 +1,6 @@
+# 0.35.6
+  * Fix: _Equality and hash code calculation is not always correctly implemented for standard types_ ([Issue #688](https://github.com/vorov2/dyalect/issues/688)).
+
 # 0.35.5
   * Change: _Minor optimizations in Dyalect runtime._
   * Add: _Add `abs` built-in function_ ([Issue #684](https://github.com/vorov2/dyalect/issues/684), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#abs)).

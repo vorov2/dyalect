@@ -33,6 +33,8 @@ namespace Dyalect.Runtime.Types
         public override bool Equals(DyObject? obj) =>
             obj is DyString s ? Value == s.Value : base.Equals(obj);
 
+        public override DyObject Clone() => this;
+
         protected internal override string GetString() => Value;
 
         public static explicit operator string(DyString str) => str.Value;
@@ -64,8 +66,6 @@ namespace Dyalect.Runtime.Types
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx) =>
             ctx.OperationNotSupported("set", DyType.String);
-
-        public override DyObject Clone() => this;
 
         internal override void Serialize(BinaryWriter writer)
         {

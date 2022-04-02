@@ -15,6 +15,8 @@ namespace Dyalect.Library.Core
 
         public override int GetHashCode() => Value.GetHashCode();
 
+        public override bool Equals(DyObject? other) => other is DyTimeDelta d && d.Value == Value;
+
         public override DyObject Clone() => this;
     }
 }

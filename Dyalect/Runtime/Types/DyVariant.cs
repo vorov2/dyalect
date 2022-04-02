@@ -30,5 +30,9 @@
         public override int GetHashCode() => Constructor.GetHashCode();
 
         public override object ToObject() => Tuple.ToObject();
+
+        public override bool Equals(DyObject? other) => other is DyVariant v && v.Constructor == Constructor && v.Tuple.Equals(Tuple);
+
+        public override DyObject Clone() => new DyVariant(Constructor, (DyTuple)Tuple.Clone());
     }
 }

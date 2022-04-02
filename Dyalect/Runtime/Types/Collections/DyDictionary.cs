@@ -79,6 +79,14 @@ namespace Dyalect.Runtime.Types
                 Version++;
         }
 
+        public override bool Equals(DyObject? other)
+        {
+            if (other is not DyDictionary d)
+                return false;
+
+            return d.Dictionary.Equals(Dictionary);
+        }
+
         public override IEnumerator<DyObject> GetEnumerator() => new DyDictionaryEnumerator(this);
 
         public override int GetHashCode() => Dictionary.GetHashCode();

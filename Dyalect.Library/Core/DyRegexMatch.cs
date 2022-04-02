@@ -1,5 +1,4 @@
-﻿using Dyalect.Runtime;
-using Dyalect.Runtime.Types;
+﻿using Dyalect.Runtime.Types;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -10,6 +9,10 @@ namespace Dyalect.Library.Core
         private readonly Match match;
 
         public DyRegexMatch(Match match) : base(match) => this.match = match;
+
+        public override bool Equals(DyObject? other) => other is DyRegexMatch c && c.match == match;
+
+        public override int GetHashCode() => match.GetHashCode();
 
         private DyTuple GetCaptures()
         {

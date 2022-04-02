@@ -17,6 +17,8 @@ namespace Dyalect.Library.Core
 
         public override string ToString() => Builder.ToString();
 
+        public override int GetHashCode() => Builder.GetHashCode();
+
         public override DyObject Clone()
         {
             var clone = (DyStringBuilder)MemberwiseClone();

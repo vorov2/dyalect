@@ -65,5 +65,7 @@ namespace Dyalect.Runtime.Types
 
             return ReferenceEquals(lab.Value, Value) || lab.Value.Equals(Value);
         }
+
+        public override DyObject Clone() => new DyLabel(Label, Value.Clone(), Mutable);
     }
 }

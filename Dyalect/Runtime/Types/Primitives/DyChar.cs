@@ -29,6 +29,8 @@ namespace Dyalect.Runtime.Types
             writer.Write(value);
         }
 
+        public override bool Equals(DyObject? other) => other is DyChar c && c.value == value;
+
         public override int GetHashCode() => value.GetHashCode();
     }
 }
