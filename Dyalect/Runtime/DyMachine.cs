@@ -620,7 +620,7 @@ namespace Dyalect.Runtime
                     case OpCode.CtorCheck:
                         right = evalStack.Peek();
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        evalStack.Replace(right.GetConstructor(ctx) == unit.Strings[op.Data]);
+                        evalStack.Replace(right.GetConstructor() == unit.Strings[op.Data]);
                         break;
                     case OpCode.Start:
                         {

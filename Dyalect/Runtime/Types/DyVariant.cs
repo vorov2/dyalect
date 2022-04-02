@@ -25,7 +25,7 @@
                 Tuple = DyTuple.Empty;
         }
 
-        public override string GetConstructor(ExecutionContext _) => Constructor;
+        public override string? GetConstructor() => Constructor;
 
         public override int GetHashCode() => Constructor.GetHashCode();
 
