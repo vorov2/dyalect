@@ -412,6 +412,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The operation overflows..
+        /// </summary>
+        internal static string Overflow_0 {
+            get {
+                return ResourceManager.GetString("Overflow.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parsing failed..
         /// </summary>
         internal static string ParsingFailed_0 {

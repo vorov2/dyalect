@@ -54,6 +54,8 @@
 
         Timeout = 625,
 
-        ParsingFailed = 626
+        ParsingFailed = 626,
+
+        Overflow = 627
     }
 }

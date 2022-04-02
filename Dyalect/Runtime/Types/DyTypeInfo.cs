@@ -654,6 +654,8 @@ namespace Dyalect.Runtime.Types
         protected virtual DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) => null;
         #endregion
 
+        protected DyObject Default() => DyNil.Instance;
+
         private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();
 
         private DyObject GetIterator(ExecutionContext ctx, DyObject self) => self is IEnumerable<DyObject> en 

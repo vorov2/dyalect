@@ -270,4 +270,7 @@
   <data name="Failure.1" xml:space="preserve">
     <value>A failure occured: {0}</value>
   </data>
+  <data name="Overflow.0" xml:space="preserve">
+    <value>The operation overflows.</value>
+  </data>
 </root>

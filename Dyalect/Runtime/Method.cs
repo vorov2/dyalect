@@ -55,6 +55,7 @@
         public const string First = "First";
         public const string Second = "Second";
         public const string Last = "Last";
+        public const string ToString = "ToString";
         public const string ToDictionary = "ToDictionary";
         public const string ToArray = "ToArray";
         public const string ToTuple = "ToTuple";
