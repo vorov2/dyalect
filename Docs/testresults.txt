@@ -231,7 +231,8 @@ Tests/function.dy:
 [+] Recursion 1
 [+] Recursion 2
 [+] Call
-[+] Call with named arguments
+[+] Call with named arguments 1
+[+] Call with named arguments 2
 [+] Call with optional arguments
 [+] Variadic call 1
 [+] Curried function
@@ -389,6 +390,7 @@ Tests/libcore.dy:
 [+] Guid: ToByteArray
 [+] Guid: FromByteArray
 [+] Guid: Empty, Default
+[+] Guid and Dictionary
 [+] Regex: GetType
 [+] Regex: Match 1
 [+] Regex: Match 2
@@ -679,4 +681,4 @@ Tests/variant.dy:
 [+] Mutable variant
 
 Total:
-627 passed, 0 failed in 25 file(s)
+629 passed, 0 failed in 25 file(s)
