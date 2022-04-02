@@ -1,3 +1,7 @@
+# 0.35.5
+  * Change: _Minor optimizations in Dyalect runtime._
+  * Add: _Add `abs` built-in function_ ([Issue #684](https://github.com/vorov2/dyalect/issues/684), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#abs)).
+  
 # 0.35.4
   * Fix: _Incorrect inference of implicit lambda parameters_ ([Issue #676](https://github.com/vorov2/dyalect/issues/676)).
 

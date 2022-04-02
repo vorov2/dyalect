@@ -357,7 +357,7 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(DyType.String, DyType.Char, newValue);
 
             return new DyString(self.GetString().Replace(oldValue.GetString(), newValue.GetString(),
-                ignoreCase.IsTrue() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
+                ignoreCase.IsFalse() ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase));
         }
 
         private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject from, DyObject count)

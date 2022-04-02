@@ -7,6 +7,9 @@ namespace Dyalect.Runtime.Types
         internal static bool IsTrue(this DyObject self) =>
             !ReferenceEquals(self, DyBool.False) && !ReferenceEquals(self, DyNil.Instance);
 
+        internal static bool IsFalse(this DyObject self) =>
+            ReferenceEquals(self, DyBool.False) || ReferenceEquals(self, DyNil.Instance);
+
         internal static DyObject GetIterator(this DyObject self, ExecutionContext ctx) =>
             ctx.RuntimeContext.Types[self.TypeId].GetInstanceMember(self, Builtins.Iterator, ctx);
 

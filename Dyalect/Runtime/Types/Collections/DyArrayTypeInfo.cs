@@ -290,7 +290,7 @@ namespace Dyalect.Runtime.Types
                 if (ctx.HasErrors)
                     return DyNil.Instance;
 
-                if (res.IsTrue())
+                if (!res.IsFalse())
                     toDelete.Add(o);
             }
 
