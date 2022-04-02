@@ -119,3 +119,10 @@
     assert((1,2,3), xs as Tuple)
     assert(true, xs as Bool)
 #endregion
+
+#region "Operator in"
+    let xs = Set(1, 2, 3)
+    assert(true, 1 in xs)
+    assert(true, 2 in xs)
+    assert(false, 4 in xs)
+#endregion

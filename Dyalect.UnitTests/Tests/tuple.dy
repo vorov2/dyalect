@@ -326,3 +326,9 @@
         @OperationNotSupported() => assert(got: true)
     }
 #endregion
+
+#region "Operator in"
+    let xs = (x: 1, y: 2)
+    assert(true, "x" in xs)
+    assert(false, "z" in xs)
+#endregion

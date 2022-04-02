@@ -42,6 +42,7 @@ Tests/array.dy:
 [+] Complex equality
 [+] Conversion: as
 [+] Methods: ToLiteral
+[+] Operator in
 
 Tests/autos.dy:
 [+] Simple 1
@@ -172,6 +173,7 @@ Tests/dictionary.dy:
 [+] Methods: ContainsValue
 [+] Methods: GetAndRemove
 [+] Conversion: as
+[+] Operator in
 
 Tests/exceptions.dy:
 [+] Type error
@@ -541,6 +543,7 @@ Tests/set.dy:
 [+] Methods: IsSupersetOf
 [+] Methods: ToString
 [+] Conversion: as
+[+] Operator in
 
 Tests/string.dy:
 [+] String literal
@@ -622,6 +625,7 @@ Tests/tuple.dy:
 [+] Tuple as argument
 [+] Comparison 1
 [+] Comparison 2
+[+] Operator in
 
 Tests/types.dy:
 [+] Methods: GetType
@@ -681,4 +685,4 @@ Tests/variant.dy:
 [+] Mutable variant
 
 Total:
-629 passed, 0 failed in 25 file(s)
+633 passed, 0 failed in 25 file(s)

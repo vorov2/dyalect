@@ -178,3 +178,10 @@
     assert("Dictionary (x: 1, y: 2)", xs as String)
     assert((x: 1, y: 2), xs as Tuple)
 #endregion
+
+#region "Operator in"
+    let xs = Dictionary(x: 1, y: 2, "foo": 12)
+    assert(true, "x" in xs)
+    assert(true, "foo" in xs)
+    assert(false, "yy" in xs)
+#endregion
