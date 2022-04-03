@@ -332,3 +332,10 @@
     assert(true, "x" in xs)
     assert(false, "z" in xs)
 #endregion
+
+#region "Variadic function and labels"
+    func test(args...) {
+        assert("(x: 1, y: 2)", args.ToString())
+    }
+    test(args: (x: 1, y: 2))
+#endregion

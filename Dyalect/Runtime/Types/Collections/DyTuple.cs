@@ -157,12 +157,33 @@ namespace Dyalect.Runtime.Types
             return values;
         }
 
+        internal DyObject[] GetValuesWithLabels()
+        {
+            if (Count != values.Length)
+                return CopyTupleWithLabels();
+
+            for (var i = 0; i < Count; i++)
+                if (values[i].IsMutable())
+                    return CopyTupleWithLabels();
+
+            return values;
+        }
+
         private DyObject[] CopyTuple()
         {
             var arr = new DyObject[Count];
 
             for (var i = 0; i < Count; i++)
                 arr[i] = values[i].GetTaggedValue();
+
+            return arr;
+        }
+        private DyObject[] CopyTupleWithLabels()
+        {
+            var arr = new DyObject[Count];
+
+            for (var i = 0; i < Count; i++)
+                arr[i] = values[i];
 
             return arr;
         }

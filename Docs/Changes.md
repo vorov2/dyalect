@@ -1,6 +1,7 @@
 # 0.35.8
   * Change: _Virtual machine and type system optimizations._
   * Fix: _Variadic function invocation error_ ([Issue #696](https://github.com/vorov2/dyalect/issues/696)).
+  * Fix: _Variadic function should preserve tuple labels_ ([Issue #697](https://github.com/vorov2/dyalect/issues/697)).
 
 # 0.35.7
   * Fix: _Several runtime error messages are corrected for better clarity._
