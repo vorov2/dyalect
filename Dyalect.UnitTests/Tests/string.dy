@@ -271,3 +271,9 @@
     let data = String.Format("{0,-35} {1,-20} {2,-10} {3, -10}", "Foo", "Boo", "Bar", "Zar")
     assert("Foo                                 Boo                  Bar        Zar       ", data)
 #endregion
+
+#region "Operator in"
+    assert(true, 'o' in "foo")
+    assert(false, 'B' in "bar")
+    assert(true, "ello" in "Hello, world")
+#endregion
