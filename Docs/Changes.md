@@ -1,6 +1,7 @@
 # 0.35.7
+  * Fix: _Several runtime error messages are corrected for better clarity._
   * Fix: _Getting an item by index from some built-in type causes unnecessary conversions_ ([Issue #691](https://github.com/vorov2/dyalect/issues/691)).
-
+  
 # 0.35.6
   * Change: _Virtual machine optimizations._
   * Fix: _Several runtime error messages are corrected for better clarity._

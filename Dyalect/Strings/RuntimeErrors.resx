@@ -208,7 +208,7 @@
     <value>Key "{0}" is not present in the dictionary.</value>
   </data>
   <data name="MultipleValuesForArgument.0" xml:space="preserve">
-    <value>Multiple values provided for the same function argument.</value>
+    <value>Multiple values provided for the function argument.</value>
   </data>
   <data name="OperationNotSupported.0" xml:space="preserve">
     <value>Operation is not supported.</value>
@@ -269,5 +269,8 @@
   </data>
   <data name="ParsingFailed.1" xml:space="preserve">
     <value>Parsing failed: {0}</value>
+  </data>
+  <data name="OperationNotSupported.4" xml:space="preserve">
+    <value>Static operation "{0}" is not supported by the type "{1}".</value>
   </data>
 </root>

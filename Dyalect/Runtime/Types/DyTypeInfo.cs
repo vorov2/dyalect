@@ -382,7 +382,6 @@ namespace Dyalect.Runtime.Types
 
             return CastOp(self, (DyTypeInfo)targetType, ctx);
         }
-
         public void SetCastFunction(DyTypeInfo type, DyFunction func)
         {
             conversions.Remove(type.ReflectedTypeId);
@@ -400,12 +399,12 @@ namespace Dyalect.Runtime.Types
             var ret = LookupStaticMember(name, ctx);
 
             if (ret is null)
-                return ctx.OperationNotSupported("static " + name, ReflectedTypeId);
+                return ctx.StaticOperationNotSupported(name, ReflectedTypeId);
 
             if (ret is DyFunction f)
             {
                 if (f.Private && f is DyNativeFunction n && n.UnitId != ctx.UnitId)
-                    ctx.PrivateNameAccess(f.FunctionName);
+                    return ctx.PrivateNameAccess(f.FunctionName);
 
                 if (f.Auto)
                     ret = f.BindOrRun(ctx, this);
