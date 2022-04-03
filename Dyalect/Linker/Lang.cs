@@ -288,10 +288,11 @@ namespace Dyalect.Linker
             var tup = args as DyTuple;
             var sb = new StringBuilder();
             sb.Append("func __x12(");
-            var tv = tup.UnsafeAccessValues();
-
+            
             if (tup is not null)
             {
+                var tv = tup.UnsafeAccessValues();
+                
                 for (var i = 0; i < tup.Count; i++)
                 {
                     var o = tv[i];
@@ -324,10 +325,12 @@ namespace Dyalect.Linker
 
             if (tup is null)
                 return func!.Call(newctx, argsList.ToArray());
+            
+            var tvv = tup.UnsafeAccessValues();
 
             for (var i = 0; i < tup.Count; i++)
             {
-                var o = tv[i];
+                var o = tvv[i];
 
                 if (o is DyLabel lab)
                     argsList.Add(lab.Value);

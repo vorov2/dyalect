@@ -169,6 +169,8 @@ namespace Dyalect.Runtime.Types
         protected override void CollectionSetItem(int index, DyObject obj, ExecutionContext ctx) =>
             values[index] = obj;
 
+        public override IEnumerator<DyObject> GetEnumerator() => new DyCollectionEnumerator(values, 0, Count, this);
+
         internal override DyObject GetValue(int index) => values[CorrectIndex(index)];
 
         internal override DyObject[] GetValues()

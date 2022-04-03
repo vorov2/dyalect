@@ -65,12 +65,14 @@ namespace Dyalect.Runtime.Types
 
             var xs = (DyTuple)left;
             var ys = (DyTuple)right;
+            var xsv = xs.UnsafeAccessValues();
+            var ysv = ys.UnsafeAccessValues();
             var len = xs.Count > ys.Count ? ys.Count : xs.Count;
 
             for (var i = 0; i < len; i++)
             {
-                var x = xs.GetValue(i);
-                var y = ys.GetValue(i);
+                var x = xsv[i];
+                var y = ysv[i];
                 var res = gt ? x.Greater(y, ctx) : x.Lesser(y, ctx);
 
                 if (ctx.HasErrors)

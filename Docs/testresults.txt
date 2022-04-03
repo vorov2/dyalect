@@ -291,6 +291,7 @@ Tests/function.dy:
 [+] Right pipe 2
 [+] Left pipe 1
 [+] Left pipe 2
+[+] Complex nesting
 
 Tests/integer.dy:
 [+] Integer literal
@@ -688,4 +689,4 @@ Tests/variant.dy:
 [+] Mutable variant
 
 Total:
-636 passed, 0 failed in 25 file(s)
+637 passed, 0 failed in 25 file(s)

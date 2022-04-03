@@ -512,30 +512,27 @@ namespace Dyalect.Runtime
                                     goto CATCH;
                                 }
 
-                                ctx.Arguments.Push(new ArgContainer
-                                {
-                                    Locals = callFun.CreateLocals(ctx),
-                                    VarArgsIndex = -1
-                                });
+                                ctx.PushArguments(
+                                    locals: callFun.CreateLocals(ctx),
+                                    varArgsIndex: -1
+                                );
                             }
                             else
                             {
-                                ctx.Arguments.Push(new ArgContainer
-                                {
-                                    Locals = callFun.CreateLocals(ctx),
-                                    VarArgsIndex = callFun.VarArgIndex,
-                                    VarArgs = new DyObject[op.Data]
-                                });
+                                ctx.PushArguments(
+                                    locals: callFun.CreateLocals(ctx),
+                                    varArgsIndex: callFun.VarArgIndex,
+                                    varArgs: op.Data == 0 ? Array.Empty<DyObject>() : new DyObject[op.Data]
+                                );
                             }
                         }
                         break;
                     case OpCode.FunArgIx:
                         {
-                            var locs = ctx.Arguments.Peek();
+                            var locs = ctx.PeekArguments();
                             if (locs.VarArgsIndex > -1 && op.Data >= locs.VarArgsIndex)
                             {
-                                //locs.VarArgs!.Add(evalStack.Pop());
-                                locs.VarArgs[locs.VarArgsSize++] = evalStack.Pop();
+                                locs.VarArgs![locs.VarArgsSize++] = evalStack.Pop();
                                 break;
                             }
                             locs.Locals[op.Data] = evalStack.Pop();
@@ -543,14 +540,13 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.FunArgNm:
                         {
-                            var locs = ctx.Arguments.Peek();
+                            var locs = ctx.PeekArguments();
                             var idx = ((DyFunction)evalStack.Peek(2)).GetParameterIndex(unit.Strings[op.Data]);
                             if (idx == -1)
                             {
                                 if (locs.VarArgsIndex > -1 && locs.Locals.Length == 1)
                                 {
-                                    //locs.VarArgs!.Add(new DyLabel(unit.Strings[op.Data], evalStack.Pop()));
-                                    locs.VarArgs[locs.VarArgsSize++] = new DyLabel(unit.Strings[op.Data], evalStack.Pop());
+                                    locs.VarArgs![locs.VarArgsSize++] = new DyLabel(unit.Strings[op.Data], evalStack.Pop());
                                     break;
                                 }
 
@@ -583,7 +579,7 @@ namespace Dyalect.Runtime
 
                             if (op.Data != callFun.Parameters.Length || callFun.VarArgIndex > -1)
                             {
-                                FillDefaults(ctx.Arguments.Peek(), callFun, ctx);
+                                FillDefaults(ctx.PeekArguments(), callFun, ctx);
                                 if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                             }
 
@@ -593,7 +589,7 @@ namespace Dyalect.Runtime
                             if (!callFun.IsExternal)
                             {
                                 function = (DyNativeFunction)callFun;
-                                locals = ctx.Arguments.Pop().Locals;
+                                locals = ctx.PopArguments().Locals;
                                 goto PROLOGUE;
                             }
                             else
@@ -675,7 +671,7 @@ namespace Dyalect.Runtime
             }
         }
 
-        private static void Push(ArgContainer container, DyObject value, ExecutionContext ctx)
+        private static void Push(ExecutionContext.ArgContainer container, DyObject value, ExecutionContext ctx)
         {
             if (value.TypeId is DyType.Array)
             {
@@ -701,23 +697,15 @@ namespace Dyalect.Runtime
             }
             else
             {
-                container.VarArgs[container.VarArgsSize++] = value;
+                container.VarArgs![container.VarArgsSize++] = value;
             }
-        }
-
-        private static DyObject[] ResizeVarArgs(ArgContainer container, DyObject[] range, ExecutionContext ctx)
-        {
-            var arr = new DyObject[container.VarArgs.Length + range.Length];
-            Array.Copy(container.VarArgs, arr, container.VarArgs.Length);
-            Array.Copy(range, 0, arr, container.VarArgs.Length, range.Length);
-            return arr;
         }
 
         private static DyObject CallExternalFunction(DyFunction func, ExecutionContext ctx)
         {
             try
             {
-                return func.InternalCall(ctx, ctx.Arguments.Pop().Locals);
+                return func.InternalCall(ctx, ctx.PopArguments().Locals);
             }
             catch (IterationException)
             {
@@ -744,7 +732,7 @@ namespace Dyalect.Runtime
             return arr;
         }
 
-        private static void FillDefaults(ArgContainer cont, DyFunction callFun, ExecutionContext ctx)
+        private static void FillDefaults(ExecutionContext.ArgContainer cont, DyFunction callFun, ExecutionContext ctx)
         {
             var locals = cont.Locals;
 

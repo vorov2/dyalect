@@ -47,17 +47,15 @@ namespace Dyalect.Runtime.Types
 
         public DyObject[] ConvertToArray()
         {
-            var values = GetValues();
             var newArr = new DyObject[Count];
 
             for (var i = 0; i < newArr.Length; i++)
-                newArr[i] = values[i];
+                newArr[i] = GetValue(i);
 
             return newArr;
         }
 
-        public override IEnumerator<DyObject> GetEnumerator() =>
-            new DyCollectionEnumerator(GetValues(), 0, Count, this);
+        public override IEnumerator<DyObject> GetEnumerator() => new DyCollectionEnumerator(GetValues(), 0, Count, this);
 
         internal abstract DyObject GetValue(int index);
 
@@ -99,7 +97,11 @@ namespace Dyalect.Runtime.Types
 
         internal DyObject[] Concat(ExecutionContext ctx, DyObject right)
         {
-            var newArr = new List<DyObject>(GetValues());
+            var newArr = new List<DyObject>(DyIterator.ToEnumerable(ctx, this));
+
+            if (ctx.HasErrors)
+                return Array.Empty<DyObject>();
+
             var coll = DyIterator.ToEnumerable(ctx, right);
 
             if (ctx.HasErrors)
@@ -115,9 +117,8 @@ namespace Dyalect.Runtime.Types
                 return Array.Empty<DyObject>();
 
             var arr = new List<DyObject>();
-            var vals = ((DyTuple)values).GetValues();
 
-            foreach (var v in vals)
+            foreach (var v in (DyTuple)values)
             {
                 arr.AddRange(DyIterator.ToEnumerable(ctx, v));
 
