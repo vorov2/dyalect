@@ -20,12 +20,14 @@ Tests/array.dy:
 [+] Methods: AddRange
 [+] Methods: InsertRange
 [+] Methods: Reverse
+[+] Methods: Reverse 2
 [+] Methods: Swap
 [+] Methods: RemoveRangeAt
 [+] Methods: RemoveRange 1
 [+] Methods: RemoveRange 2
 [+] Methods: RemoveAll
-[+] Methods: static sort
+[+] Methods: static sort 1
+[+] Methods: static sort 2
 [+] Range indices
 [+] Ranges
 [+] Addition 1
@@ -686,4 +688,4 @@ Tests/variant.dy:
 [+] Mutable variant
 
 Total:
-634 passed, 0 failed in 25 file(s)
+636 passed, 0 failed in 25 file(s)

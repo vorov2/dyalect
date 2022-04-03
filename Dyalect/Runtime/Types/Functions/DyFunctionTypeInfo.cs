@@ -44,6 +44,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Apply(ExecutionContext ctx, DyObject self, DyObject obj)
         {
             var tup = (DyTuple)obj;
+            var tv = tup.UnsafeAccessValues();
             var fn = (DyFunction)self.Clone();
             var pars = new Par[fn.Parameters.Length];
 
@@ -58,10 +59,10 @@ namespace Dyalect.Runtime.Types
 
                 for (var j = 0; j < tup.Count; j++)
                 {
-                    var lab = tup.Values[j].GetLabel();
+                    var lab = tv[j].GetLabel();
 
                     if (p.Name == lab)
-                        val = tup.Values[j].GetTaggedValue();
+                        val = tv[j].GetTaggedValue();
                 }
 
                 pars[i] = new Par(p.Name, val, p.IsVarArg, p.TypeAnnotation);

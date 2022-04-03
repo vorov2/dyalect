@@ -39,9 +39,12 @@ namespace Dyalect.Runtime.Types
             if (t1.Count != t2.Count)
                 return DyBool.False;
 
+            var t1v = t1.UnsafeAccessValues();
+            var t2v = t2.UnsafeAccessValues();
+
             for (var i = 0; i < t1.Count; i++)
             {
-                if (t1.Values[i].NotEquals(t2.Values[i], ctx))
+                if (t1v[i].NotEquals(t2v[i], ctx))
                     return DyBool.False;
 
                 if (ctx.HasErrors)
@@ -126,7 +129,7 @@ namespace Dyalect.Runtime.Types
             var tup = (DyTuple)self;
             var comparer = new SortComparer(fun as DyFunction, ctx);
             var newArr = new DyObject[tup.Count];
-            Array.Copy(tup.Values, newArr, newArr.Length);
+            Array.Copy(tup.UnsafeAccessValues(), newArr, newArr.Length);
             Array.Sort(newArr, 0, newArr.Length, comparer);
             return new DyTuple(newArr);
         }
@@ -135,7 +138,7 @@ namespace Dyalect.Runtime.Types
         {
             var t = (DyTuple)self;
             var arr = new DyObject[t.Count + 1];
-            Array.Copy(t.Values, arr, t.Count);
+            Array.Copy(t.UnsafeAccessValues(), arr, t.Count);
             arr[^1] = item;
             return new DyTuple(arr);
         }
@@ -143,10 +146,11 @@ namespace Dyalect.Runtime.Types
         private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject item)
         {
             var t = (DyTuple)self;
+            var tv = t.UnsafeAccessValues();
 
-            for (var i = 0; i < t.Values.Length; i++)
+            for (var i = 0; i < tv.Length; i++)
             {
-                var e = t.Values[i].GetTaggedValue();
+                var e = tv[i].GetTaggedValue();
 
                 if (e.Equals(item, ctx))
                     return RemoveAt(ctx, t, i);
@@ -175,11 +179,12 @@ namespace Dyalect.Runtime.Types
         {
             var arr = new DyObject[self.Count - 1];
             var c = 0;
+            var sv = self.UnsafeAccessValues();
 
-            for (var i = 0; i < self.Values.Length; i++)
+            for (var i = 0; i < self.Count; i++)
             {
                 if (i != index)
-                    arr[c++] = self.Values[i];
+                    arr[c++] = sv[i];
             }
 
             return new DyTuple(arr);
@@ -202,13 +207,13 @@ namespace Dyalect.Runtime.Types
             arr[idx] = value;
 
             if (idx == 0)
-                Array.Copy(tuple.Values, 0, arr, 1, tuple.Count);
+                Array.Copy(tuple.UnsafeAccessValues(), 0, arr, 1, tuple.Count);
             else if (idx == tuple.Count)
-                Array.Copy(tuple.Values, 0, arr, 0, tuple.Count);
+                Array.Copy(tuple.UnsafeAccessValues(), 0, arr, 0, tuple.Count);
             else
             {
-                Array.Copy(tuple.Values, 0, arr, 0, idx);
-                Array.Copy(tuple.Values, idx, arr, idx + 1, tuple.Count - idx);
+                Array.Copy(tuple.UnsafeAccessValues(), 0, arr, 0, idx);
+                Array.Copy(tuple.UnsafeAccessValues(), idx, arr, idx + 1, tuple.Count - idx);
             }
 
             return new DyTuple(arr);
@@ -223,7 +228,7 @@ namespace Dyalect.Runtime.Types
         private DyObject ToArray(ExecutionContext ctx, DyObject self)
         {
             var tuple = (DyTuple)self;
-            return new DyArray(tuple.ConvertToPlainValues());
+            return new DyArray(tuple.GetValues());
         }
 
         private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)

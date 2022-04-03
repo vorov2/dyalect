@@ -72,7 +72,7 @@ namespace Dyalect.Runtime.Types
                 {
                     var arr = (DyArray)o;
                     arr.Compact();
-                    newLocals[VarArgIndex] = new DyTuple(arr.Values);
+                    newLocals[VarArgIndex] = new DyTuple(arr.UnsafeAccessValues(), arr.Count);
                 }
                 else if (o.TypeId != DyType.Tuple)
                     newLocals[VarArgIndex] = new DyTuple(new DyObject[] { o } );

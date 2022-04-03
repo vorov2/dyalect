@@ -47,7 +47,7 @@ namespace Dyalect.Library.Core
         private DyObject GetCursorPosition(ExecutionContext _)
         {
             var (left, top) = Console.GetCursorPosition();
-            return new DyTuple(new("left", left), new("top", top));
+            return DyTuple.Create(new("left", left), new("top", top));
         }
 
         private DyObject SetCursorPosition(ExecutionContext ctx, DyObject left, DyObject top)

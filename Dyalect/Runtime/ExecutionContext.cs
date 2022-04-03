@@ -78,10 +78,11 @@ namespace Dyalect.Runtime
         }
     }
 
-    internal struct ArgContainer
+    internal class ArgContainer
     {
         public DyObject[] Locals;
-        public FastList<DyObject>? VarArgs;
+        public DyObject[] VarArgs;
+        public int VarArgsSize;
         public int VarArgsIndex;
     }
 }

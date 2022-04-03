@@ -7,45 +7,45 @@ namespace Dyalect.Runtime.Types
     {
         private const int DEFAULT_SIZE = 4;
 
-        internal DyObject[] Values;
+        private DyObject[] values;
 
         public DyObject this[int index]
         {
-            get => Values[CorrectIndex(index)];
-            set => Values[CorrectIndex(index)] = value;
+            get => values[CorrectIndex(index)];
+            set => values[CorrectIndex(index)] = value;
         }
 
         public DyArray(DyObject[] values) : base(DyType.Array) => 
-            (Values, Count) = (values, values.Length);
+            (this.values, Count) = (values, values.Length);
 
         public void Compact()
         {
-            if (Count == Values.Length)
+            if (Count == values.Length)
                 return;
             var arr = new DyObject[Count];
-            Array.Copy(Values, arr, Count);
-            Values = arr;
+            Array.Copy(values, arr, Count);
+            values = arr;
         }
 
         public void RemoveRange(int start, int count)
         {
-            var lst = new List<DyObject>(Values);
+            var lst = new List<DyObject>(values);
             lst.RemoveRange(start, count);
-            Values = lst.ToArray();
-            Count = Values.Length;
+            values = lst.ToArray();
+            Count = values.Length;
             Version++;
         }
 
         public void Add(DyObject val)
         {
-            if (Count == Values.Length)
+            if (Count == values.Length)
             {
-                var dest = new DyObject[Values.Length == 0 ? DEFAULT_SIZE : Values.Length * 2];
-                Array.Copy(Values, 0, dest, 0, Count);
-                Values = dest;
+                var dest = new DyObject[values.Length == 0 ? DEFAULT_SIZE : values.Length * 2];
+                Array.Copy(values, 0, dest, 0, Count);
+                values = dest;
             }
 
-            Values[Count++] = val;
+            values[Count++] = val;
             Version++;
         }
 
@@ -56,33 +56,33 @@ namespace Dyalect.Runtime.Types
             if (index > Count)
                 throw new IndexOutOfRangeException();
 
-            if (index == Count && Values.Length > index)
+            if (index == Count && values.Length > index)
             {
-                Values[index] = item;
+                values[index] = item;
                 Count++;
                 Version++;
                 return;
             }
 
             EnsureSize(Count + 1);
-            Array.Copy(Values, index, Values, index + 1, Count - index);
-            Values[index] = item;
+            Array.Copy(values, index, values, index + 1, Count - index);
+            values[index] = item;
             Count++;
             Version++;
         }
 
         private void EnsureSize(int size)
         {
-            if (size > Values.Length)
+            if (size > values.Length)
             {
-                var exp = Values.Length * 2;
+                var exp = values.Length * 2;
 
                 if (size > exp)
                     exp = size;
 
                 var arr = new DyObject[exp];
-                Array.Copy(Values, arr, Values.Length);
-                Values = arr;
+                Array.Copy(values, arr, values.Length);
+                values = arr;
             }
         }
 
@@ -95,9 +95,9 @@ namespace Dyalect.Runtime.Types
                 Count--;
 
                 if (index < Count)
-                    Array.Copy(Values, index + 1, Values, index, Count - index);
+                    Array.Copy(values, index + 1, values, index, Count - index);
 
-                Values[Count] = null!;
+                values[Count] = null!;
                 Version++;
                 return true;
             }
@@ -118,7 +118,7 @@ namespace Dyalect.Runtime.Types
         public void Clear()
         {
             Count = 0;
-            Values = new DyObject[DEFAULT_SIZE];
+            values = new DyObject[DEFAULT_SIZE];
             Version++;
         }
 
@@ -126,7 +126,7 @@ namespace Dyalect.Runtime.Types
         {
             for (var i = 0; i < Count; i++)
             {
-                var e = Values[i];
+                var e = values[i];
 
                 if (e.Equals(elem, ctx))
                     return i;
@@ -142,9 +142,9 @@ namespace Dyalect.Runtime.Types
         {
             var index = -1;
 
-            for (var i = 0; i < Values.Length; i++)
+            for (var i = 0; i < values.Length; i++)
             {
-                var e = Values[i];
+                var e = values[i];
 
                 if (e.Equals(elem, ctx))
                     index = i;
@@ -164,13 +164,23 @@ namespace Dyalect.Runtime.Types
                 return ctx.IndexOutOfRange(index);
         }
 
-        protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) => Values[index];
+        protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) => values[index];
 
         protected override void CollectionSetItem(int index, DyObject obj, ExecutionContext ctx) =>
-            Values[index] = obj;
+            values[index] = obj;
 
-        internal override DyObject GetValue(int index) => Values[CorrectIndex(index)];
+        internal override DyObject GetValue(int index) => values[CorrectIndex(index)];
 
-        internal override DyObject[] GetValues() => Values;
+        internal override DyObject[] GetValues()
+        {
+            var arr = new DyObject[Count];
+
+            for (var i = 0; i < Count; i++)
+                arr[i] = values[i].GetTaggedValue();
+
+            return arr;
+        }
+
+        internal DyObject[] UnsafeAccessValues() => values;
     }
 }

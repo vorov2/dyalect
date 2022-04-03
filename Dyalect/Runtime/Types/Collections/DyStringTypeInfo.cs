@@ -170,7 +170,7 @@ namespace Dyalect.Runtime.Types
         private DyObject Split(ExecutionContext ctx, DyObject self, DyObject arg)
         {
             var allChars = true;
-            var values = ((DyTuple)arg).Values;
+            var values = ((DyTuple)arg).GetValues();
 
             for (var i = 0; i < values.Length; i++)
                 if (values[i].TypeId != DyType.Char)
@@ -296,7 +296,7 @@ namespace Dyalect.Runtime.Types
             if (arg.TypeId == DyType.String)
                 return arg.GetString().ToCharArray();
 
-            var values = ((DyTuple)arg).Values;
+            var values = ((DyTuple)arg).GetValues();
             var chs = new char[values.Length];
 
             for (var i = 0; i < values.Length; i++)
@@ -387,7 +387,7 @@ namespace Dyalect.Runtime.Types
             if (self.TypeId != DyType.String)
                 return ctx.InvalidType(DyType.String, self);
 
-            var vals = ((DyTuple)args).Values;
+            var vals = ((DyTuple)args).GetValues();
             var arr = new object[vals.Length];
 
             for (var i = 0; i < vals.Length; i++)
@@ -447,7 +447,7 @@ namespace Dyalect.Runtime.Types
         #region Statics
         private DyObject Concat(ExecutionContext ctx, DyObject tuple)
         {
-            var values = ((DyTuple)tuple).Values;
+            var values = ((DyTuple)tuple).GetValues();
             var arr = new List<string>();
 
             if (!Collect(ctx, values, arr))
@@ -486,7 +486,7 @@ namespace Dyalect.Runtime.Types
             if (separator.TypeId != DyType.String && separator.TypeId != DyType.Char)
                 return ctx.InvalidType(DyType.String, DyType.Char, separator);
 
-            var arr = ((DyTuple)values).Values;
+            var arr = ((DyTuple)values).GetValues();
             var strArr = new List<string>();
 
             if (!Collect(ctx, arr, strArr))

@@ -136,14 +136,16 @@ namespace Dyalect.Runtime.Types
         {
             var arr = (DyArray)self;
             var comparer = new SortComparer(fun as DyFunction, ctx);
-            Array.Sort(arr.Values, 0, arr.Count, comparer);
+            arr.Compact();
+            Array.Sort(arr.UnsafeAccessValues(), 0, arr.Count, comparer);
             return DyNil.Instance;
         }
 
         private DyObject Reverse(ExecutionContext ctx, DyObject self)
         {
             var arr = (DyArray)self;
-            Array.Reverse(arr.Values);
+            arr.Compact();
+            Array.Reverse(arr.UnsafeAccessValues());
             return DyNil.Instance;
         }
 
@@ -334,7 +336,7 @@ namespace Dyalect.Runtime.Types
                 _ => base.InitializeInstanceMember(self, name, ctx),
             };
 
-        private DyObject New(ExecutionContext ctx, DyObject tuple) => new DyArray(((DyTuple)tuple).Values);
+        private DyObject New(ExecutionContext ctx, DyObject tuple) => new DyArray(((DyTuple)tuple).GetValues());
 
         private DyObject Empty(ExecutionContext ctx, DyObject sizeObj, DyObject val)
         {
@@ -407,7 +409,7 @@ namespace Dyalect.Runtime.Types
             if (iDestIndex + iLen < 0 || iDestIndex + iLen > destArr.Count)
                 return ctx.IndexOutOfRange();
 
-            Array.Copy(sourceArr.Values, iSourceIndex, destArr.Values, iDestIndex, iLen);
+            Array.Copy(sourceArr.UnsafeAccessValues(), iSourceIndex, destArr.UnsafeAccessValues(), iDestIndex, iLen);
 
             if (iDestIndex != 0 && to == DyNil.Instance)
                 for (var i = 0; i < iDestIndex; i++)

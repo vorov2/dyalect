@@ -141,6 +141,21 @@
     assert([5,4,3,2,1], xs)
 #endregion
 
+#region "Methods: Reverse 2"
+    var xs = []
+    xs.Add(1)
+    xs.Add(2)
+    xs.Add(3)
+    xs.Add(4)
+    xs.Add(5)
+    xs.Add(6)
+    xs.Add(7)
+    xs.Add(8)
+    xs.Add(9)
+    xs.Reverse()
+    assert([9,8,7,6,5,4,3,2,1], xs)
+#endregion
+
 #region "Methods: Swap"
     var xs = [1,2,3]
     xs.Swap(1,2)
@@ -180,8 +195,20 @@
     assert([1,3,5,7,9], xs)
 #endregion
 
-#region "Methods: static sort"
+#region "Methods: static sort 1"
     var arr = [4,6,1,3,2,5]
+    Array.Sort(arr, (x,y) => x - y)
+    assert([1, 2, 3, 4, 5, 6], arr)
+#endregion
+
+#region "Methods: static sort 2"
+    var arr = []
+    arr.Add(4)
+    arr.Add(6)
+    arr.Add(1)
+    arr.Add(3)
+    arr.Add(2)
+    arr.Add(5)
     Array.Sort(arr, (x,y) => x - y)
     assert([1, 2, 3, 4, 5, 6], arr)
 #endregion

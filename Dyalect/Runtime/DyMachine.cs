@@ -4,6 +4,7 @@ using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dyalect.Runtime
 {
@@ -523,7 +524,7 @@ namespace Dyalect.Runtime
                                 {
                                     Locals = callFun.CreateLocals(ctx),
                                     VarArgsIndex = callFun.VarArgIndex,
-                                    VarArgs = new()
+                                    VarArgs = new DyObject[op.Data]
                                 });
                             }
                         }
@@ -533,7 +534,8 @@ namespace Dyalect.Runtime
                             var locs = ctx.Arguments.Peek();
                             if (locs.VarArgsIndex > -1 && op.Data >= locs.VarArgsIndex)
                             {
-                                locs.VarArgs!.Add(evalStack.Pop());
+                                //locs.VarArgs!.Add(evalStack.Pop());
+                                locs.VarArgs[locs.VarArgsSize++] = evalStack.Pop();
                                 break;
                             }
                             locs.Locals[op.Data] = evalStack.Pop();
@@ -547,7 +549,8 @@ namespace Dyalect.Runtime
                             {
                                 if (locs.VarArgsIndex > -1 && locs.Locals.Length == 1)
                                 {
-                                    locs.VarArgs!.Add(new DyLabel(unit.Strings[op.Data], evalStack.Pop()));
+                                    //locs.VarArgs!.Add(new DyLabel(unit.Strings[op.Data], evalStack.Pop()));
+                                    locs.VarArgs[locs.VarArgsSize++] = new DyLabel(unit.Strings[op.Data], evalStack.Pop());
                                     break;
                                 }
 
@@ -675,13 +678,39 @@ namespace Dyalect.Runtime
         private static void Push(ArgContainer container, DyObject value, ExecutionContext ctx)
         {
             if (value.TypeId is DyType.Array)
-                container.VarArgs!.AddRange((IEnumerable<DyObject>)value);
+            {
+                var xs = (DyCollection)value;
+                container.VarArgs = xs.GetValues();
+                container.VarArgsSize = container.VarArgs.Length;
+            }
             else if (value.TypeId is DyType.Tuple)
-                container.VarArgs!.AddRange(((DyTuple)value).Values);
+            {
+                var xs = (DyTuple)value;
+                container.VarArgs = xs.UnsafeAccessValues();
+                container.VarArgsSize = container.VarArgs.Length;
+            }
             else if (value.TypeId is DyType.Iterator)
-                container.VarArgs!.AddRange(DyIterator.ToEnumerable(ctx, value));
+            {
+                var xs = DyIterator.ToEnumerable(ctx, value).ToArray();
+
+                if (ctx.HasErrors)
+                    return;
+
+                container.VarArgs = xs;
+                container.VarArgsSize = xs.Length;
+            }
             else
-                container.VarArgs!.Add(value);
+            {
+                container.VarArgs[container.VarArgsSize++] = value;
+            }
+        }
+
+        private static DyObject[] ResizeVarArgs(ArgContainer container, DyObject[] range, ExecutionContext ctx)
+        {
+            var arr = new DyObject[container.VarArgs.Length + range.Length];
+            Array.Copy(container.VarArgs, arr, container.VarArgs.Length);
+            Array.Copy(range, 0, arr, container.VarArgs.Length, range.Length);
+            return arr;
         }
 
         private static DyObject CallExternalFunction(DyFunction func, ExecutionContext ctx)
@@ -720,8 +749,8 @@ namespace Dyalect.Runtime
             var locals = cont.Locals;
 
             if (callFun.VarArgIndex > -1)
-                locals[callFun.VarArgIndex] = cont.VarArgs is null ? DyTuple.Empty :
-                    new DyTuple(cont.VarArgs.ToArray() ?? Array.Empty<DyObject>());
+                locals[callFun.VarArgIndex] = cont.VarArgs is null ? DyTuple.Empty 
+                    : new DyTuple(cont.VarArgs, cont.VarArgsSize);
 
             FillDefaults(cont.Locals, callFun, ctx);
         }
