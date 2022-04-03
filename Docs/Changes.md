@@ -1,5 +1,5 @@
 # 0.35.8
-  * Change: _Virtual machine optimizations._
+  * Change: _Virtual machine and type system optimizations._
   * Fix: _Variadic function invocation error_ ([Issue #696](https://github.com/vorov2/dyalect/issues/696)).
 
 # 0.35.7
