@@ -220,7 +220,7 @@
     <value>No value provided for a mandatory function argument.</value>
   </data>
   <data name="TooManyArguments.0" xml:space="preserve">
-    <value>Too many arguments to function.</value>
+    <value>Too many arguments to a function.</value>
   </data>
   <data name="InvalidOverload.0" xml:space="preserve">
     <value>Unable to overload.</value>

@@ -673,6 +673,9 @@ namespace Dyalect.Runtime
 
         private static void Push(ExecutionContext.ArgContainer container, DyObject value, ExecutionContext ctx)
         {
+            if (container.VarArgsSize != 0)
+                ctx.TooManyArguments();
+            
             if (value.TypeId is DyType.Array)
             {
                 var xs = (DyCollection)value;

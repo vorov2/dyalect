@@ -1,5 +1,6 @@
 # 0.35.8
   * Change: _Virtual machine optimizations._
+  * Fix: _Variadic function invocation error_ ([Issue #696](https://github.com/vorov2/dyalect/issues/696)).
 
 # 0.35.7
   * Fix: _Several runtime error messages are corrected for better clarity._

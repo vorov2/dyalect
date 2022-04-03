@@ -502,7 +502,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Too many arguments to function..
+        ///   Looks up a localized string similar to Too many arguments to a function..
         /// </summary>
         internal static string TooManyArguments_0 {
             get {
