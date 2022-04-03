@@ -25,7 +25,7 @@ namespace Dyalect.Library.Core
                 "index" => capture.Index,
                 "length" => capture.Length,
                 "value" => capture.Value,
-                _ => null
+                _ => base.GetItem(key)
             };
     }
 }

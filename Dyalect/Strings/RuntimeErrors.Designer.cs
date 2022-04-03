@@ -349,7 +349,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multiple values provided for the same function argument..
+        ///   Looks up a localized string similar to Multiple values provided for the function argument..
         /// </summary>
         internal static string MultipleValuesForArgument_0 {
             get {
@@ -390,6 +390,15 @@ namespace Dyalect.Strings {
         internal static string OperationNotSupported_3 {
             get {
                 return ResourceManager.GetString("OperationNotSupported.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Static operation &quot;{0}&quot; is not supported by the type &quot;{1}&quot;..
+        /// </summary>
+        internal static string OperationNotSupported_4 {
+            get {
+                return ResourceManager.GetString("OperationNotSupported.4", resourceCulture);
             }
         }
         

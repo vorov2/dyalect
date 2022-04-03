@@ -1,3 +1,10 @@
+# 0.35.7
+  * Fix: _Several runtime error messages are corrected for better clarity._
+  * Fix: _Getting an item by index from some built-in type causes unnecessary conversions_ ([Issue #691](https://github.com/vorov2/dyalect/issues/691)).
+  * Fix: _Array created from tuple reuses the same internal array_ ([Issue #692](https://github.com/vorov2/dyalect/issues/692)).
+  * Fix: _Methods `Array.Reverse` and `Array.SortBy` can work incorrectly_ ([Issue #694](https://github.com/vorov2/dyalect/issues/694)).
+  * Fix: _Array.GetValues returns an internal array with nulls instead of a safe copy_ ([Issue #693](https://github.com/vorov2/dyalect/issues/693)).
+
 # 0.35.6
   * Change: _Virtual machine optimizations._
   * Fix: _Several runtime error messages are corrected for better clarity._

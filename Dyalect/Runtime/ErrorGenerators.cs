@@ -125,7 +125,15 @@ namespace Dyalect.Runtime
         public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, int typeId)
         {
             var typeName = ctx.RuntimeContext.Types[typeId].TypeName;
-            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), typeName);
+            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), typeName, 0, 0);
+            return DyNil.Instance;
+        }
+
+        public static DyObject StaticOperationNotSupported(this ExecutionContext ctx, string op, int typeId)
+        {
+            var typeName = ctx.RuntimeContext.Types[typeId].TypeName;
+            //small hack to get OperationNotSupported.4
+            ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), typeName, 0, 0);
             return DyNil.Instance;
         }
 

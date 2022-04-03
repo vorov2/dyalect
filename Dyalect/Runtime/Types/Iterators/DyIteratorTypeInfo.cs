@@ -169,7 +169,7 @@ namespace Dyalect.Runtime.Types
             DyIterator.ToEnumerable(ctx, self).LastOrDefault() ?? DyNil.Instance;
 
         private DyObject Concat(ExecutionContext ctx, DyObject tuple) =>
-            DyIterator.Create(new MultiPartEnumerable(ctx, ((DyTuple)tuple).Values));
+            DyIterator.Create(new MultiPartEnumerable(ctx, ((DyTuple)tuple).GetValues()));
 
         private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
         {

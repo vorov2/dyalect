@@ -9,15 +9,21 @@ namespace Dyalect.Runtime.Types
     public class DyTuple : DyCollection
     {
         public static readonly DyTuple Empty = new(Array.Empty<DyObject>());
-        
-        internal readonly DyObject[] Values;
 
-        public override int Count => Values.Length;
+        private readonly int length;
+        private readonly DyObject[] values;
 
-        public DyTuple(DyObject[] values) : base(DyType.Tuple) =>
-            Values = values ?? throw new DyException("Unable to create a tuple with no values.");
+        public override int Count => length;
 
-        public DyTuple(params DyLabel[] labels) : this((DyObject[])labels) { }
+        public DyTuple(DyObject[] values) : this(values, values.Length) { }
+
+        public DyTuple(DyObject[] values, int length) : base(DyType.Tuple)
+        {
+            this.length = length;
+            this.values = values ?? throw new DyException("Unable to create a tuple with no values.");
+        }
+
+        public static DyTuple Create(params DyLabel[] labels) => new DyTuple(labels, labels.Length);
 
         public Dictionary<DyObject, DyObject> ConvertToDictionary(ExecutionContext ctx)
         {
@@ -52,7 +58,7 @@ namespace Dyalect.Runtime.Types
                 return GetItem((int)index.GetInteger(), ctx);
 
             if (index.TypeId != DyType.String && index.TypeId != DyType.Char)
-                return ctx.InvalidType(DyType.String, index);
+                return ctx.IndexOutOfRange(index);
             
             return TryGetItem(index.GetString(), ctx, out var item)
                 ? item : ctx.IndexOutOfRange(index);
@@ -78,25 +84,25 @@ namespace Dyalect.Runtime.Types
 
         public virtual int GetOrdinal(ExecutionContext ctx, string name)
         {
-            for (var i = 0; i < Values.Length; i++)
-                if (Values[i].GetLabel() == name)
+            for (var i = 0; i < Count; i++)
+                if (values[i].GetLabel() == name)
                     return i;
 
             return -1;
         }
 
-        public virtual bool IsReadOnly(int index) => Values[index] is DyLabel lab && !lab.Mutable;
+        public virtual bool IsReadOnly(int index) => values[index] is DyLabel lab && !lab.Mutable;
 
         protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
-            Values[index].TypeId == DyType.Label ? Values[index].GetTaggedValue() : Values[index];
+            values[index].TypeId == DyType.Label ? values[index].GetTaggedValue() : values[index];
 
-        internal virtual string GetKey(int index) => Values[index].GetLabel()!;
+        internal virtual string GetKey(int index) => values[index].GetLabel()!;
 
         protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
         {
-            if (Values[index].TypeId == DyType.Label)
+            if (values[index].TypeId == DyType.Label)
             {
-                var lab = (DyLabel)Values[index];
+                var lab = (DyLabel)values[index];
 
                 if (!lab.Mutable)
                 {
@@ -127,33 +133,24 @@ namespace Dyalect.Runtime.Types
                 yield return GetValue(i);
         }
 
-        internal override DyObject GetValue(int index) => Values[index].GetTaggedValue();
+        internal override DyObject GetValue(int index) => values[index].GetTaggedValue();
 
         internal virtual void SetValue(int index, DyObject value)
         {
-            if (Values[index] is DyLabel lab)
+            if (values[index] is DyLabel lab)
                 lab.Value = value;
             else
-                Values[index] = value;
+                values[index] = value;
         }
 
-        internal virtual DyLabel? GetKeyInfo(int index) => Values[index] is DyLabel lab ? lab : null;
+        internal virtual DyLabel? GetKeyInfo(int index) => values[index] is DyLabel lab ? lab : null;
 
         internal override DyObject[] GetValues()
-        {
-            for (var i = 0; i < Count; i++)
-                if (Values[i].TypeId == DyType.Label)
-                    return ConvertToPlainValues();
-
-            return Values;
-        }
-
-        internal DyObject[] ConvertToPlainValues()
         {
             var arr = new DyObject[Count];
 
             for (var i = 0; i < Count; i++)
-                arr[i] = Values[i].GetTaggedValue();
+                arr[i] = values[i].GetTaggedValue();
 
             return arr;
         }
@@ -199,5 +196,7 @@ namespace Dyalect.Runtime.Types
             sb.Append(')');
             return new DyString(sb.ToString());
         }
+
+        internal DyObject[] UnsafeAccessValues() => values;
     }
 }

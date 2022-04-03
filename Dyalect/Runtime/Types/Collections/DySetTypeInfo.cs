@@ -143,10 +143,9 @@ namespace Dyalect.Runtime.Types
 
         private DyObject New(ExecutionContext ctx, DyObject arg)
         {
-            var xs = ((DyTuple)arg).Values;
             var set = new DySet();
 
-            foreach (var x in xs)
+            foreach (var x in (DyTuple)arg)
                 set.Add(x);
 
             return set;

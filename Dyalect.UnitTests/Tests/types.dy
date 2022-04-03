@@ -265,6 +265,9 @@
     var p = Record(values: (name: "John", age: 33))
     assert("John", p["name"])
     assert(33, p.age)
+    var p2 = Record(name: "John", age: 33)
+    assert("John", p2["name"])
+    assert(33, p2.age)
 #endregion
 
 #region "Read-only fields"

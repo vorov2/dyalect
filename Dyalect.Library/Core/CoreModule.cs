@@ -11,6 +11,8 @@ namespace Dyalect.Library.Core
         public DyResultTypeInfo Result { get; }
         public DyGuidTypeInfo Guid { get; }
         public DyConsoleTypeInfo Console { get; }
+        public DyDateTimeTypeInfo DateTime { get; }
+        public DyTimeDeltaTypeInfo TimeDelta { get; }
 
         public CoreModule()
         {
@@ -20,6 +22,8 @@ namespace Dyalect.Library.Core
             Result = AddType<DyResultTypeInfo>();
             Guid = AddType<DyGuidTypeInfo>();
             Console = AddType<DyConsoleTypeInfo>();
+            DateTime = AddType<DyDateTimeTypeInfo>();
+            TimeDelta = AddType<DyTimeDeltaTypeInfo>();
         }
     }
 }

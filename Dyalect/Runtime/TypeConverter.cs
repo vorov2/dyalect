@@ -57,7 +57,7 @@ namespace Dyalect.Runtime
                         return new DyArray(newArr);
                     }
                     else
-                        throw new Exception("Unable to convert type.");
+                        return DyNil.Instance;
             }
         }
 
