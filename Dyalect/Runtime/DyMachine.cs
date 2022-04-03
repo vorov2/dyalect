@@ -106,7 +106,7 @@ namespace Dyalect.Runtime
                         evalStack.Push(function.Self!);
                         break;
                     case OpCode.Unbox:
-                        evalStack.Push(function.Self!.Unbox());
+                        evalStack.Push(function.Self!.GetInitValue());
                         break;
                     case OpCode.Term:
                         if (evalStack.Size is > 1 or 0)
