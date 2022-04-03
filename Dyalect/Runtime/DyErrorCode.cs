@@ -30,7 +30,7 @@
 
         ArgumentNotFound = 613,
 
-        FormatException = 614,
+        // = 614,
 
         MatchFailed = 615,
 
@@ -54,6 +54,8 @@
 
         Timeout = 625,
 
-        ParsingFailed = 626
+        ParsingFailed = 626,
+
+        Overflow = 627
     }
 }

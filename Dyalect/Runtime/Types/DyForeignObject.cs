@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
         protected DyForeignObject(DyForeignTypeInfo typeInfo, string? ctor) : base(-1) =>
             (TypeInfo, Constructor) = (typeInfo, ctor);
 
-        public override string GetConstructor(ExecutionContext ctx) => Constructor ?? "";
+        public override string? GetConstructor() => Constructor;
 
         public override int GetHashCode() => HashCode.Combine(TypeId, Constructor);
     }

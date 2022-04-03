@@ -17,6 +17,8 @@ namespace Dyalect.Library.Core
 
         public override string ToString() => capture.Value;
 
+        public override bool Equals(DyObject? other) => other is DyRegexCapture c && c.capture == capture;
+
         protected internal override object? GetItem(string key) =>
             key switch
             {

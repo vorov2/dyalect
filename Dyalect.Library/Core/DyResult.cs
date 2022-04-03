@@ -10,5 +10,7 @@ namespace Dyalect.Library.Core
             Value = value;
 
         public override object ToObject() => Value.ToObject();
+
+        public override bool Equals(DyObject? other) => Value.Equals(other);
     }
 }

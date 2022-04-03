@@ -13,8 +13,7 @@ namespace Dyalect.Runtime
 
         internal DyObject Pop()
         {
-            --size;
-            var ret = array[size];
+            var ret = array[--size];
             array[size] = null!;
             return ret;
         }

@@ -333,8 +333,7 @@ namespace Dyalect.Runtime
                     case OpCode.Fail:
                         {
                             right = evalStack.Pop();
-                            if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                            ctx.Error = (DyVariant)right;
+                            if (ctx.Error is null) ctx.Error = (DyVariant)right;
                             ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                             goto CATCH;
                         }
@@ -356,6 +355,7 @@ namespace Dyalect.Runtime
                             evalStack.Replace(((DyTypeInfo)right).HasStaticMember(unit.Strings[op.Data], ctx));
                         else
                             evalStack.Replace(types[right.TypeId].HasInstanceMember(right, unit.Strings[op.Data], ctx));
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.GetMember:
                         right = evalStack.Peek();
@@ -452,10 +452,14 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.GetIter:
                         right = evalStack.Peek();
-                        if (right.TypeId != DyType.Iterator)
+                        if (right is DyIterator it)
+                            evalStack.Replace(it.GetIteratorFunction());
+                        else
+                        {
                             ctx.InvalidType(DyType.Iterator, right);
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        evalStack.Replace(((DyIterator)right).GetIteratorFunction());
+                            ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                            goto CATCH;
+                        }
                         break;
                     case OpCode.RgDI:
                         ctx.RgDI = op.Data;
@@ -498,18 +502,30 @@ namespace Dyalect.Runtime
 
                             callFun = (DyFunction)right;
 
-                            if (op.Data > callFun.Parameters.Length && callFun.VarArgIndex == -1)
+                            if (callFun.VarArgIndex == -1)
                             {
-                                ctx.TooManyArguments(callFun.FunctionName, callFun.Parameters.Length, op.Data);
-                                ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
-                                goto CATCH;
-                            }
+                                if (op.Data > callFun.Parameters.Length)
+                                {
+                                    ctx.TooManyArguments(callFun.FunctionName, callFun.Parameters.Length, op.Data);
+                                    ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                                    goto CATCH;
+                                }
 
-                            ctx.Arguments.Push(new ArgContainer {
-                                Locals = callFun.CreateLocals(ctx),
-                                VarArgsIndex = callFun.VarArgIndex,
-                                VarArgs = callFun.VarArgIndex > -1 ? new() : null
-                            });
+                                ctx.Arguments.Push(new ArgContainer
+                                {
+                                    Locals = callFun.CreateLocals(ctx),
+                                    VarArgsIndex = -1
+                                });
+                            }
+                            else
+                            {
+                                ctx.Arguments.Push(new ArgContainer
+                                {
+                                    Locals = callFun.CreateLocals(ctx),
+                                    VarArgsIndex = callFun.VarArgIndex,
+                                    VarArgs = new()
+                                });
+                            }
                         }
                         break;
                     case OpCode.FunArgIx:
@@ -591,7 +607,7 @@ namespace Dyalect.Runtime
                         }
                         break;
                     case OpCode.NewTuple:
-                        evalStack.Push(op.Data == 0 ? DyTuple.Empty : new DyTuple(MakeArray(ctx, evalStack, op.Data)));
+                        evalStack.Push(op.Data == 0 ? DyTuple.Empty : new DyTuple(MakeArray(evalStack, op.Data)));
                         break;
                     case OpCode.TypeCheck:
                         {
@@ -604,7 +620,7 @@ namespace Dyalect.Runtime
                     case OpCode.CtorCheck:
                         right = evalStack.Peek();
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                        evalStack.Replace(right.GetConstructor(ctx) == unit.Strings[op.Data]);
+                        evalStack.Replace(right.GetConstructor() == unit.Strings[op.Data]);
                         break;
                     case OpCode.Start:
                         {
@@ -633,8 +649,7 @@ namespace Dyalect.Runtime
                     case OpCode.NewCast:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
-                        ((DyTypeInfo)left).SetCastFunction(ctx, left, (DyTypeInfo)right, (DyFunction)evalStack.Pop());
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
+                        ((DyTypeInfo)left).SetCastFunction((DyTypeInfo)right, (DyFunction)evalStack.Pop());
                         break;
                     case OpCode.Cast:
                         left = evalStack.Pop();
@@ -659,11 +674,11 @@ namespace Dyalect.Runtime
 
         private static void Push(ArgContainer container, DyObject value, ExecutionContext ctx)
         {
-            if (value.TypeId == DyType.Array)
+            if (value.TypeId is DyType.Array)
                 container.VarArgs!.AddRange((IEnumerable<DyObject>)value);
-            else if (value.TypeId == DyType.Tuple)
+            else if (value.TypeId is DyType.Tuple)
                 container.VarArgs!.AddRange(((DyTuple)value).Values);
-            else if (value.TypeId == DyType.Iterator)
+            else if (value.TypeId is DyType.Iterator)
                 container.VarArgs!.AddRange(DyIterator.ToEnumerable(ctx, value));
             else
                 container.VarArgs!.Add(value);
@@ -689,7 +704,8 @@ namespace Dyalect.Runtime
                 return DyNil.Instance;
             }
         }
-        private static DyObject[] MakeArray(ExecutionContext ctx, EvalStack stack, int size)
+
+        private static DyObject[] MakeArray(EvalStack stack, int size)
         {
             var arr = new DyObject[size];
 
@@ -718,13 +734,15 @@ namespace Dyalect.Runtime
             {
                 if (locals[i] is null)
                 {
-                    locals[i] = pars[i].Value!;
+                    var v = pars[i].Value;
 
-                    if (locals[i] is null)
+                    if (v is null)
                     {
                         ctx.RequiredArgumentMissing(callFun.FunctionName, pars[i].Name);
                         return;
                     }
+
+                    locals[i] = v;
                 }
             }
         }

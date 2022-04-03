@@ -42,6 +42,7 @@ Tests/array.dy:
 [+] Complex equality
 [+] Conversion: as
 [+] Methods: ToLiteral
+[+] Operator in
 
 Tests/autos.dy:
 [+] Simple 1
@@ -172,6 +173,7 @@ Tests/dictionary.dy:
 [+] Methods: ContainsValue
 [+] Methods: GetAndRemove
 [+] Conversion: as
+[+] Operator in
 
 Tests/exceptions.dy:
 [+] Type error
@@ -231,7 +233,8 @@ Tests/function.dy:
 [+] Recursion 1
 [+] Recursion 2
 [+] Call
-[+] Call with named arguments
+[+] Call with named arguments 1
+[+] Call with named arguments 2
 [+] Call with optional arguments
 [+] Variadic call 1
 [+] Curried function
@@ -389,6 +392,7 @@ Tests/libcore.dy:
 [+] Guid: ToByteArray
 [+] Guid: FromByteArray
 [+] Guid: Empty, Default
+[+] Guid and Dictionary
 [+] Regex: GetType
 [+] Regex: Match 1
 [+] Regex: Match 2
@@ -539,6 +543,7 @@ Tests/set.dy:
 [+] Methods: IsSupersetOf
 [+] Methods: ToString
 [+] Conversion: as
+[+] Operator in
 
 Tests/string.dy:
 [+] String literal
@@ -620,6 +625,7 @@ Tests/tuple.dy:
 [+] Tuple as argument
 [+] Comparison 1
 [+] Comparison 2
+[+] Operator in
 
 Tests/types.dy:
 [+] Methods: GetType
@@ -679,4 +685,4 @@ Tests/variant.dy:
 [+] Mutable variant
 
 Total:
-627 passed, 0 failed in 25 file(s)
+633 passed, 0 failed in 25 file(s)

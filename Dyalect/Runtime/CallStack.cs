@@ -8,7 +8,7 @@ namespace Dyalect.Runtime
 {
     internal sealed class CallStack : IEnumerable<Caller>
     {
-        private const int DEFAULT_SIZE = 4;
+        private const int DEFAULT_SIZE = 6;
         private Caller[] array;
         private readonly int initialSize;
 

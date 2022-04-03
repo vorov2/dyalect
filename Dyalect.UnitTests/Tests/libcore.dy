@@ -103,6 +103,15 @@
     assert("{00000000-0000-0000-0000-000000000000}", g.ToString())
 #endregion
 
+#region "Guid and Dictionary"
+    let xs = Dictionary()
+    let k1 = Guid()
+    let k2 = Guid()
+    xs[k1] = 1
+    xs[k2] = 2
+    assert((1,2), (xs[Guid.Parse(k1.ToString())], xs[k2]))
+#endregion
+
 #region "Regex: GetType"
     let r = Regex("\\.")
     assert(Regex, r.GetType())

@@ -29,6 +29,8 @@
                 BitNot => "~~~",
                 BitAnd => "&&&",
                 BitOr => "|||",
+                Neg => "- (unary)",
+                Plus => "+ (unary)",
                 _ => op
             };
 

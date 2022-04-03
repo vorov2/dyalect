@@ -14,9 +14,21 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject Overflow(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.Overflow);
+            return DyNil.Instance;
+        }
+
         public static DyObject ParsingFailed(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.ParsingFailed);
+            return DyNil.Instance;
+        }
+
+        public static DyObject ParsingFailed(this ExecutionContext ctx, string detail)
+        {
+            ctx.Error = new(DyErrorCode.ParsingFailed, detail);
             return DyNil.Instance;
         }
 
@@ -89,12 +101,6 @@ namespace Dyalect.Runtime
         public static DyObject CollectionModified(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.CollectionModified);
-            return DyNil.Instance;
-        }
-
-        public static DyObject FormatException(this ExecutionContext ctx, string reason)
-        {
-            ctx.Error = new(DyErrorCode.FormatException, reason);
             return DyNil.Instance;
         }
 

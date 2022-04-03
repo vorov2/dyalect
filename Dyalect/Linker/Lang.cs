@@ -64,7 +64,7 @@ namespace Dyalect.Linker
                     Console.SetOut(consoleOutput);
             }
             else if (output is not DyFunction fn)
-                ctx.InvalidType(output);
+                ctx.InvalidType(DyType.Function, output);
             else
             {
                 if (consoleOutput is null)
@@ -79,19 +79,14 @@ namespace Dyalect.Linker
         [Function("rawget")]
         public DyObject RawGet(ExecutionContext ctx, DyObject values, DyObject index)
         {
-
-            if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, index);
-
+            if (!index.IsInteger(ctx)) return Default();
             return ctx.RuntimeContext.Types[values.TypeId].GetDirect(ctx, values, index);
         }
 
         [Function("rawset")]
         public DyObject RawSet(ExecutionContext ctx, DyObject values, DyObject index, DyObject value)
         {
-            if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, index);
-
+            if (!index.IsInteger(ctx)) return Default();
             ctx.RuntimeContext.Types[values.TypeId].SetDirect(ctx, values, index, value);
             return DyNil.Instance;
         }
@@ -193,7 +188,7 @@ namespace Dyalect.Linker
         public DyObject Sqrt(ExecutionContext ctx, DyObject x)
         {
             if (x.TypeId != DyType.Float && x.TypeId != DyType.Integer)
-                return ctx.InvalidType(x);
+                return ctx.InvalidType(DyType.Float, DyType.Integer, x);
 
             return new DyFloat(Math.Sqrt(x.GetFloat()));
         }
@@ -202,10 +197,10 @@ namespace Dyalect.Linker
         public DyObject Pow(ExecutionContext ctx, DyObject x, DyObject y)
         {
             if (x.TypeId != DyType.Float && x.TypeId != DyType.Integer)
-                return ctx.InvalidType(x);
+                return ctx.InvalidType(DyType.Float, DyType.Integer, x);
 
             if (y.TypeId != DyType.Float && y.TypeId != DyType.Integer)
-                return ctx.InvalidType(y);
+                return ctx.InvalidType(DyType.Float, DyType.Integer, y);
 
             return new DyFloat(Math.Pow(x.GetFloat(), y.GetFloat()));
         }
@@ -213,7 +208,7 @@ namespace Dyalect.Linker
         [Function("min")]
         public DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
         {
-            if (x.Lesser(y,ctx))
+            if (x.Lesser(y, ctx))
                 return x;
             else
                 return y;
@@ -231,12 +226,10 @@ namespace Dyalect.Linker
         [Function("abs")]
         public DyObject Abs(ExecutionContext ctx, DyObject value)
         {
-            if (value.TypeId == DyType.Integer)
-                return new DyInteger(Math.Abs(value.GetInteger()));
-            else if (value.TypeId == DyType.Float)
-                return new DyFloat(Math.Abs(value.GetFloat()));
-            else
-                return ctx.InvalidType(value);
+            if (value.Lesser(DyInteger.Zero, ctx))
+                return value.Negate(ctx);
+
+            return value;
         }
 
         [Function("round")]
@@ -265,38 +258,34 @@ namespace Dyalect.Linker
         [Function("parse")]
         public DyObject Parse(ExecutionContext ctx, DyObject expression)
         {
-            if (expression.TypeId != DyType.String)
-                return ctx.InvalidType(expression);
+            if (!expression.IsString(ctx)) return Default();
 
             try
             {
                 var res = DyParser.Parse(SourceBuffer.FromString(expression.GetString()));
 
                 if (!res.Success)
-                    return ctx.FormatException(res.Messages.First().ToString());
+                    return ctx.ParsingFailed(res.Messages.First().ToString());
 
                 if (res.Value!.Root is null || res.Value!.Root.Nodes.Count == 0)
-                    return ctx.FormatException("Empty expression.");
+                    return ctx.ParsingFailed("Empty expression.");
                 else if (res.Value!.Root.Nodes.Count > 1)
-                    return ctx.FormatException("Only single expressions allowed.");
+                    return ctx.ParsingFailed("Only single expressions allowed.");
 
                 return LiteralEvaluator.Eval(res.Value!.Root.Nodes[0]);
             }
             catch (Exception ex)
             {
-                return ctx.FormatException(ex.Message);
+                return ctx.ParsingFailed(ex.Message);
             }
         }
 
         [Function("eval")]
         public DyObject Eval(ExecutionContext ctx, DyObject source, DyObject args)
         {
-            if (source is not DyString strObj)
-                return ctx.InvalidType(source);
+            if (!source.IsString(ctx)) return Default();
 
             var tup = args as DyTuple;
-            var code = strObj.Value;
-
             var sb = new StringBuilder();
             sb.Append("func __x12(");
 
@@ -317,7 +306,7 @@ namespace Dyalect.Linker
             }
 
             sb.Append("){");
-            sb.Append(code);
+            sb.Append(source.GetString());
             sb.Append('}');
             sb.Append("__x12");
 

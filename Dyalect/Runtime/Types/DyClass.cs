@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => this;
 
-        public override string GetConstructor(ExecutionContext ctx) => Constructor;
+        public override string? GetConstructor() => Constructor;
 
         public override int GetHashCode() => HashCode.Combine(Constructor, Fields);
 

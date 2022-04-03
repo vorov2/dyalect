@@ -14,5 +14,9 @@ namespace Dyalect.Library.Core
         public override object ToObject() => Value;
 
         public override string ToString() => Value.ToString();
+
+        public override DyObject Clone() => this;
+
+        public override bool Equals(DyObject? other) => other is DyGuid g && g.Value == Value;
     }
 }

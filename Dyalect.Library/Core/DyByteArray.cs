@@ -29,6 +29,8 @@ namespace Dyalect.Library.Core
 
         public override object ToObject() => GetBytes();
 
+        public override int GetHashCode() => buffer.GetHashCode();
+
         public byte[] GetBytes() => Trim();
 
         public void Reset() => readPosition = 0;

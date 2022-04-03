@@ -27,5 +27,11 @@ namespace Dyalect.Library.Core
         public override object ToObject() => Regex;
 
         public override DyObject Clone() => this;
+
+        public override bool Equals(DyObject? other) => other is DyRegex r && r.Regex == Regex;
+
+        public override int GetHashCode() => Regex.GetHashCode();
+
+        public override string ToString() => Regex.ToString();
     }
 }

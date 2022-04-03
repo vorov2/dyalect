@@ -55,7 +55,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal virtual DyObject Unbox() => this;
 
-        public virtual string GetConstructor(ExecutionContext ctx) => "";
+        public virtual string? GetConstructor() => null;
 
         public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 

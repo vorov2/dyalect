@@ -144,9 +144,6 @@
   <data name="ArgumentNotFound.2" xml:space="preserve">
     <value>Function "{0}" doesn't have an argument "{1}".</value>
   </data>
-  <data name="FormatException.1" xml:space="preserve">
-    <value>lnvalid string format: {0}</value>
-  </data>
   <data name="MatchFailed.0" xml:space="preserve">
     <value>Match failed.</value>
   </data>
@@ -188,9 +185,6 @@
   </data>
   <data name="ExternalFunctionFailure.0" xml:space="preserve">
     <value>An unhandled exception occured during an execution of an external function.</value>
-  </data>
-  <data name="FormatException.0" xml:space="preserve">
-    <value>lnvalid string format.</value>
   </data>
   <data name="IndexOutOfRange.1" xml:space="preserve">
     <value>An index or field "{0}" is out of range.</value>
@@ -269,5 +263,11 @@
   </data>
   <data name="Failure.1" xml:space="preserve">
     <value>A failure occured: {0}</value>
+  </data>
+  <data name="Overflow.0" xml:space="preserve">
+    <value>The operation overflows.</value>
+  </data>
+  <data name="ParsingFailed.1" xml:space="preserve">
+    <value>Parsing failed: {0}</value>
   </data>
 </root>

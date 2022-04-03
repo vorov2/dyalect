@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Dyalect.Library.Core
 {
-    internal class DyDateTimeTypeInfo : DyForeignTypeInfo
+    public sealed class DyDateTimeTypeInfo : DyForeignTypeInfo
     {
         public override string TypeName => "DateTime";
 

@@ -33,5 +33,30 @@ namespace Dyalect.Runtime.Types
 
         public static string GetTypeName(this DyObject self, ExecutionContext ctx) =>
             ctx.RuntimeContext.Types[self.TypeId].TypeName;
+
+        public static DyObject Negate(this DyObject self, ExecutionContext ctx) =>
+            ctx.RuntimeContext.Types[self.TypeId].Neg(ctx, self);
+
+        public static bool IsInteger(this DyObject self, ExecutionContext ctx)
+        {
+            if (self.TypeId != DyType.Integer)
+            {
+                ctx.InvalidType(DyType.Integer, self);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsString(this DyObject self, ExecutionContext ctx)
+        {
+            if (self.TypeId != DyType.String)
+            {
+                ctx.InvalidType(DyType.String, self);
+                return false;
+            }
+
+            return true;
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (left.TypeId != right.TypeId || left.GetConstructor(ctx) != right.GetConstructor(ctx))
+            if (left.TypeId != right.TypeId || left.GetConstructor() != right.GetConstructor())
                 return DyBool.False;
 
             var (xs, ys) = ((DyVariant)left, (DyVariant)right);
