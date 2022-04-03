@@ -151,24 +151,6 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to lnvalid string format..
-        /// </summary>
-        internal static string FormatException_0 {
-            get {
-                return ResourceManager.GetString("FormatException.0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to lnvalid string format: {0}.
-        /// </summary>
-        internal static string FormatException_1 {
-            get {
-                return ResourceManager.GetString("FormatException.1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to An index is out of range..
         /// </summary>
         internal static string IndexOutOfRange_0 {
@@ -426,6 +408,15 @@ namespace Dyalect.Strings {
         internal static string ParsingFailed_0 {
             get {
                 return ResourceManager.GetString("ParsingFailed.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parsing failed: {0}.
+        /// </summary>
+        internal static string ParsingFailed_1 {
+            get {
+                return ResourceManager.GetString("ParsingFailed.1", resourceCulture);
             }
         }
         

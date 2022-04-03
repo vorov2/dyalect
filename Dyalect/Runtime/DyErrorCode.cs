@@ -30,7 +30,7 @@
 
         ArgumentNotFound = 613,
 
-        FormatException = 614,
+        // = 614,
 
         MatchFailed = 615,
 

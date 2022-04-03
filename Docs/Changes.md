@@ -1,6 +1,8 @@
 # 0.35.6
   * Change: _Virtual machine optimizations._
+  * Fix: _Several runtime error messages are corrected for better clarity._
   * Fix: _Equality and hash code calculation is not always correctly implemented for standard types_ ([Issue #688](https://github.com/vorov2/dyalect/issues/688)).
+  * Fix: _Function `abs` is not generic_ ([Issue #689](https://github.com/vorov2/dyalect/issues/689)).
 
 # 0.35.5
   * Change: _Minor optimizations in Dyalect runtime._
