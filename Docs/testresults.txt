@@ -291,6 +291,8 @@ Tests/function.dy:
 [+] Right pipe 2
 [+] Left pipe 1
 [+] Left pipe 2
+[+] Complex nesting
+[+] Varargs and too many arguments
 
 Tests/integer.dy:
 [+] Integer literal
@@ -629,6 +631,7 @@ Tests/tuple.dy:
 [+] Comparison 1
 [+] Comparison 2
 [+] Operator in
+[+] Variadic function and labels
 
 Tests/types.dy:
 [+] Methods: GetType
@@ -688,4 +691,4 @@ Tests/variant.dy:
 [+] Mutable variant
 
 Total:
-636 passed, 0 failed in 25 file(s)
+639 passed, 0 failed in 25 file(s)

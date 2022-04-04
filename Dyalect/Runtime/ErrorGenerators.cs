@@ -248,6 +248,12 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject TooManyArguments(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.TooManyArguments);
+            return DyNil.Instance;
+        }
+
         public static DyObject TooManyArguments(this ExecutionContext ctx, string functionName, int functionArguments, int passedArguments)
         {
             ctx.Error = new(DyErrorCode.TooManyArguments, functionName, functionArguments, passedArguments);

@@ -51,6 +51,8 @@ namespace Dyalect.Runtime.Types
             return false;
         }
 
+        protected internal override bool IsMutable() => Mutable;
+
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;
 
         public override int GetHashCode() => HashCode.Combine(Label, Value);

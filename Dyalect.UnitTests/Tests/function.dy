@@ -766,3 +766,47 @@
     let res = map(xs) << (\x + x)
     assert([2, 4, 6], res.ToArray())
 #endregion
+
+#region "Complex nesting"
+    func sum(x, y, z) => x + y + z
+
+    let res =
+        sum(
+            sum(
+                sum(1, 2, 3),
+                sum(4, 5, 6),
+                sum(7, 8, 9)
+            ),
+            sum(
+                sum(10, 20, 30),
+                sum(40, 50, 60),
+                sum(70, 80, 90)
+            ),
+            sum(
+                sum(100, 200, 300),
+                sum(400, 500, 600),
+                sum(700, 800, 900)
+            )
+        )
+    assert(4995, res)
+#endregion
+
+#region "Varargs and too many arguments"
+    func test(args...) {
+	    print(args)
+    }
+
+    try {
+        test(1, 2, args: (1,2,3))
+        assert(got: false)
+    } catch {
+        TooManyArguments() => assert(got: true)
+    }
+
+    try {
+        test(1, 2, args: 3)
+        assert(got: false)
+    } catch {
+        TooManyArguments() => assert(got: true)
+    }
+#endregion

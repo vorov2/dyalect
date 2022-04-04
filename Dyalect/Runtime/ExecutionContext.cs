@@ -60,8 +60,6 @@ namespace Dyalect.Runtime
 
         internal Stack<int>? Sections { get; set; }
 
-        internal Stack<ArgContainer> Arguments { get; } = new(6);
-
         internal int UnitId;
         internal int CallerUnitId;
 
@@ -76,13 +74,35 @@ namespace Dyalect.Runtime
                 throw new DyRuntimeException(ErrorGenerators.GetErrorDescription(err));
             }
         }
-    }
 
-    internal class ArgContainer
-    {
-        public DyObject[] Locals;
-        public DyObject[] VarArgs;
-        public int VarArgsSize;
-        public int VarArgsIndex;
+        #region ArgContainer
+        private int count;
+        private readonly List<ArgContainer> containers = new(2);
+
+        internal sealed class ArgContainer
+        {
+            public DyObject[] Locals = null!;
+            public DyObject[]? VarArgs;
+            public int VarArgsSize;
+            public int VarArgsIndex;
+        }
+
+        internal ArgContainer PushArguments(DyObject[] locals, int varArgsIndex, DyObject[]? varArgs = null)
+        {
+            if (containers.Count <= count)
+                containers.Add(new());
+
+            var ret = containers[count++];
+            ret.Locals = locals;
+            ret.VarArgsIndex = varArgsIndex;
+            ret.VarArgs = varArgs;
+            ret.VarArgsSize = 0;
+            return ret;
+        }
+
+        internal ArgContainer PopArguments() => containers[--count];
+
+        internal ArgContainer PeekArguments() => containers[count - 1];
+        #endregion
     }
 }
