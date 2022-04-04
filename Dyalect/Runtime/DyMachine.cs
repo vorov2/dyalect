@@ -541,7 +541,8 @@ namespace Dyalect.Runtime
                     case OpCode.FunArgNm:
                         {
                             var locs = ctx.PeekArguments();
-                            var idx = ((DyFunction)evalStack.Peek(2)).GetParameterIndex(unit.Strings[op.Data]);
+                            var fn = (DyFunction)evalStack.Peek(2);
+                            var idx = fn.GetParameterIndex(unit.Strings[op.Data]);
                             if (idx == -1)
                             {
                                 if (locs.VarArgsIndex > -1 && locs.Locals.Length == 1)
@@ -556,7 +557,7 @@ namespace Dyalect.Runtime
                             }
                             if (idx == locs.VarArgsIndex)
                             {
-                                Push(locs, evalStack.Pop(), ctx);
+                                Push(fn, locs, evalStack.Pop(), ctx);
                                 if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper))
                                     goto CATCH;
                             }
@@ -606,7 +607,7 @@ namespace Dyalect.Runtime
                         }
                         break;
                     case OpCode.NewTuple:
-                        evalStack.Push(op.Data == 0 ? DyTuple.Empty : new DyTuple(MakeArray(evalStack, op.Data)));
+                        evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(evalStack, op.Data));
                         break;
                     case OpCode.TypeCheck:
                         {
@@ -671,7 +672,7 @@ namespace Dyalect.Runtime
             }
         }
 
-        private static void Push(ExecutionContext.ArgContainer container, DyObject value, ExecutionContext ctx)
+        private static void Push(DyFunction fn, ExecutionContext.ArgContainer container, DyObject value, ExecutionContext ctx)
         {
             if (container.VarArgsSize != 0)
                 ctx.TooManyArguments();
@@ -685,7 +686,7 @@ namespace Dyalect.Runtime
             else if (value.TypeId is DyType.Tuple)
             {
                 var xs = (DyTuple)value;
-                container.VarArgs = xs.UnsafeAccessValues();
+                container.VarArgs = fn.VariantConstructor ? xs.UnsafeAccessValues() : xs.GetValuesWithLabels();
                 container.VarArgsSize = container.VarArgs.Length;
             }
             else if (value.TypeId is DyType.Iterator)
@@ -725,14 +726,21 @@ namespace Dyalect.Runtime
             }
         }
 
-        private static DyObject[] MakeArray(EvalStack stack, int size)
+        private static DyTuple MakeTuple(EvalStack stack, int size)
         {
             var arr = new DyObject[size];
+            var mutable = false;
 
             for (var i = 0; i < size; i++)
-                arr[arr.Length - i - 1] = stack.Pop();
+            {
+                var e = stack.Pop();
+                arr[arr.Length - i - 1] = e;
 
-            return arr;
+                if (!mutable && e.IsMutable())
+                    mutable = true;
+            }
+
+            return new DyTuple(arr, mutable);
         }
 
         private static void FillDefaults(ExecutionContext.ArgContainer cont, DyFunction callFun, ExecutionContext ctx)

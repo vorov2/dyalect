@@ -1,3 +1,6 @@
+# 0.35.9
+  * Fix: _Passing a tuple to a vararg function_ ([Issue #700](https://github.com/vorov2/dyalect/issues/700)).
+
 # 0.35.8
   * Change: _Virtual machine and type system optimizations._
   * Fix: _Variadic function invocation error_ ([Issue #696](https://github.com/vorov2/dyalect/issues/696)).

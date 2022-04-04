@@ -17,6 +17,7 @@ namespace Dyalect.Runtime.Types
 
         internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
         internal bool Private => (Attr & FunAttr.Priv) == FunAttr.Priv;
+        internal bool VariantConstructor => (Attr & FunAttr.Vari) == FunAttr.Vari;
 
         protected DyFunction(Par[] pars, int varArgIndex) : base(DyType.Function) =>
             (Parameters, VarArgIndex) = (pars, varArgIndex);

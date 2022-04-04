@@ -11,11 +11,15 @@ namespace Dyalect.Runtime.Types
         public static readonly DyTuple Empty = new(Array.Empty<DyObject>());
 
         private readonly int length;
+        private readonly bool? mutable;
         private readonly DyObject[] values;
 
         public override int Count => length;
 
         public DyTuple(DyObject[] values) : this(values, values.Length) { }
+
+        internal DyTuple(DyObject[] values, bool mutable) : this(values, values.Length) =>
+            this.mutable = mutable;
 
         public DyTuple(DyObject[] values, int length) : base(DyType.Tuple)
         {
@@ -159,6 +163,14 @@ namespace Dyalect.Runtime.Types
 
         internal DyObject[] GetValuesWithLabels()
         {
+            if (mutable != null)
+            {
+                if (!mutable.Value && Count == values.Length)
+                    return values;
+                else
+                    return CopyTupleWithLabels();
+            }
+
             if (Count != values.Length)
                 return CopyTupleWithLabels();
 
@@ -183,7 +195,7 @@ namespace Dyalect.Runtime.Types
             var arr = new DyObject[Count];
 
             for (var i = 0; i < Count; i++)
-                arr[i] = values[i];
+                arr[i] = values[i].MakeImmutable();
 
             return arr;
         }

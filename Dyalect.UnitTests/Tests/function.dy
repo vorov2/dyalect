@@ -800,13 +800,25 @@
         test(1, 2, args: (1,2,3))
         assert(got: false)
     } catch {
-        TooManyArguments() => assert(got: true)
+        @TooManyArguments => assert(got: true)
     }
 
     try {
         test(1, 2, args: 3)
         assert(got: false)
     } catch {
-        TooManyArguments() => assert(got: true)
+        @TooManyArguments => assert(got: true)
     }
+#endregion
+
+#region "Vararg and mutable tuple"
+    func test(args...) {
+	    try {
+            args.x = 24
+	        assert(got: false)
+        } catch {
+            @IndexReadOnly => assert(got: true)
+        }
+    }
+    test(args: (var x: 12))
 #endregion
