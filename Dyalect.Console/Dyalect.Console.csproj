@@ -34,7 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Dyalect.Library\Dyalect.Library.csproj" />
     <ProjectReference Include="..\Dyalect\Dyalect.csproj" />
   </ItemGroup>
 

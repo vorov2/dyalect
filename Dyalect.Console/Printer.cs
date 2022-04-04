@@ -3,9 +3,6 @@ using Dyalect.Runtime.Types;
 using Dyalect.Util;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Dyalect.Library.Json;
 using static System.Console;
 
 namespace Dyalect
@@ -90,12 +87,6 @@ namespace Dyalect
                 else
                     Information(m.ToString());
             }
-        }
-
-        public static void PrintErrors(IEnumerable<JsonError> messages)
-        {
-            foreach (var m in messages)
-                Error(m.ToString()!);
         }
     }
 }
