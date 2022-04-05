@@ -42,7 +42,7 @@ namespace Dyalect.Util
 
             if (!commands.TryGetValue(command, out var cmd))
             {
-                Printer.Error($"Unknown command .{command}.");
+                Printer.Error($"Unknown command #{command}.");
                 return;
             }
 
@@ -100,6 +100,7 @@ namespace Dyalect.Util
         [Binding("dump", Help = "Dumps global variables and prints their values.")]
         public void Dump(object _)
         {
+            Printer.LineFeed();
             Printer.Output("Dump of globals:");
 
             if (ctx.ExecutionContext == null)
