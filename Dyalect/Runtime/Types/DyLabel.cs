@@ -51,7 +51,9 @@ namespace Dyalect.Runtime.Types
             return false;
         }
 
-        protected internal override bool IsMutable() => Mutable;
+        internal override bool IsMutable() => Mutable;
+
+        internal override DyObject MakeImmutable() => new DyLabel(Label, Value);
 
         protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;
 

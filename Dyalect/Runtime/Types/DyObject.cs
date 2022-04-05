@@ -54,7 +54,9 @@ namespace Dyalect.Runtime.Types
 
         public virtual DyTypeInfo GetTypeInfo(ExecutionContext ctx) => ctx.RuntimeContext.Types[TypeId];
 
-        protected internal virtual bool IsMutable() => false;
+        internal virtual bool IsMutable() => false;
+
+        internal virtual DyObject MakeImmutable() => this;
 
         protected internal virtual string? GetLabel() => null;
 

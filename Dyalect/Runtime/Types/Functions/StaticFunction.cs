@@ -27,8 +27,8 @@ namespace Dyalect.Runtime.Types
     {
         private readonly Func<ExecutionContext, DyObject, DyObject> fun;
 
-        public StaticFunction1(string name, Func<ExecutionContext, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
-            : base(name, pars, varArgIndex) => this.fun = fun;
+        public StaticFunction1(string name, Func<ExecutionContext, DyObject, DyObject> fun, Par[] pars, int varArgIndex, int attrs = 0)
+            : base(name, pars, varArgIndex) => (this.fun, base.Attr) = (fun, attrs);
 
         internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, args[0]);
 

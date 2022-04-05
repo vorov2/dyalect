@@ -59,7 +59,7 @@ namespace Dyalect.Runtime.Types
             if (!char.IsUpper(name[0]))
                 return base.InitializeStaticMember(name, ctx);
 
-            return Func.Static(name, (_, args) => new DyVariant(name, (DyTuple)args), 0, new Par("values"));
+            return Func.Variant(name, (_, args) => new DyVariant(name, (DyTuple)args), 0, new Par("values"));
         }
 
         private DyObject GetTuple(ExecutionContext ctx, DyObject self)

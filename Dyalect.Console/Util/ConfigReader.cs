@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Linq;
-using Dyalect.Library.Json;
 
 namespace Dyalect.Util
 {
@@ -18,20 +18,22 @@ namespace Dyalect.Util
 
             try
             {
-                var json = new JsonParser(File.ReadAllText(path));
-                var dict = json.Parse() as IDictionary<string, object>;
+                using var doc = JsonDocument.Parse(File.ReadAllText(path));
 
-                if (!json.IsSuccess)
+                try
                 {
-                    Printer.PrintErrors(json.Errors!);
+                    var dict = doc.RootElement.EnumerateObject().ToDictionary(e => e.Name,
+                        e => e.Value.ValueKind == JsonValueKind.True ? true
+                            : e.Value.ValueKind == JsonValueKind.False ? false
+                            : e.Value.ValueKind == JsonValueKind.Number ? e.Value.GetDouble()
+                            : (object)(e.Value.GetString() ?? ""));
+                    return dict;
+                }
+                catch (ArgumentException)
+                {
+                    Printer.Error("Duplicate key in configuration file.");
                     return null;
                 }
-
-                if (dict is not null)
-                    return dict;
-                
-                Printer.Error("Invalid configuration file format.");
-                return null;
             }
             catch (Exception ex)
             {

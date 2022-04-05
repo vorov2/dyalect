@@ -1,4 +1,5 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System;
 
 namespace Dyalect.Runtime.Types
@@ -7,6 +8,8 @@ namespace Dyalect.Runtime.Types
     {
         public static DyFunction Compose(DyFunction first, DyFunction second) => new CompositionContainer(first, second);
 
+        public static DyFunction Variant(string name, Func<ExecutionContext, DyObject, DyObject> fun, int varArgIndex, params Par[] pars) => new StaticFunction1(name, fun, pars, varArgIndex, FunAttr.Vari);
+        
         public static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject[], DyObject> fun, int varArgIndex, params Par[] pars) => new MemberFunction(name, fun, pars, varArgIndex);
 
         public static DyFunction Member(string name, Func<ExecutionContext, DyObject, DyObject> fun) => new MemberFunction0(name, fun);
