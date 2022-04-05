@@ -87,7 +87,7 @@ namespace Dyalect
 
                     var key = attr.Names?.Length > 0 ? attr.Names[0] : "<file name>";
                     list.Add((key, byt ? ""
-                        : val is System.Collections.IEnumerable seq
+                        : !(val is string) && val is System.Collections.IEnumerable seq
                             ? string.Join(';', seq.OfType<object>().Select(v => v.ToString()))
                         : val.ToString()!));
                 }
