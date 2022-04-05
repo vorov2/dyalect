@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,10 +9,11 @@ namespace Dyalect.UnitTesting
     public static class TestFormatter
     {
         private const string HEADER = "Test session from {0:dd/MM/yyyy HH:mm}";
-        private const string SUBHEADER = "{0} test file(s):";
+        private const string FILEHEADER1 = "{0} test file(s):";
+        private const string FILEHEADER2 = "Test file(s):";
         private const string WARN = "Warnings:";
-        private const string REPORT = "Report";
-        private const string SUMMARY_HEADER = "Summary";
+        private const string REPORT = "Report:";
+        private const string SUMMARY_HEADER = "Summary:";
         private const string SUMMARY = "{0} passed, {1} failed in {2} file(s)";
 
         public static string Format(TestReport report, TestFormatFlags flags)
@@ -31,7 +32,15 @@ namespace Dyalect.UnitTesting
         {
             sb.AppendLine("# " + string.Format(HEADER, DateTime.Now));
             sb.AppendLine();
-            sb.AppendLine("## " + string.Format(SUBHEADER, report.TestFiles.Length));
+
+            sb.AppendLine("## " + SUMMARY_HEADER);
+            sb.AppendLine(string.Format(SUMMARY,
+                report.Results.Count(r => r.Error is null),
+                report.Results.Count(r => r.Error is not null).ToString() + (report.FailedFiles.Any() ? "1+" : ""),
+                report.TestFiles.Length
+            ));
+
+            sb.AppendLine("## " + FILEHEADER2);
             sb.AppendLine(string.Join(", ", report.TestFiles
                 .Select(f => "[" + Path.GetFileName(f) + "](" + Path.GetFullPath(f) + ")")));
             sb.AppendLine();
@@ -76,20 +85,13 @@ namespace Dyalect.UnitTesting
                     sb.AppendLine();
                 }
             }
-
-            sb.AppendLine("## " + SUMMARY_HEADER);
-            sb.AppendLine(string.Format(SUMMARY,
-                report.Results.Count(r => r.Error is null),
-                report.Results.Count(r => r.Error is not null).ToString() + (report.FailedFiles.Any() ? "1+" : ""),
-                report.TestFiles.Length
-            ));
         }
 
         private static void FormatText(StringBuilder sb, TestReport report, TestFormatFlags flags)
         {
             sb.AppendLine(string.Format(HEADER, DateTime.Now));
             sb.AppendLine();
-            sb.AppendLine(string.Format(SUBHEADER, report.TestFiles.Length));
+            sb.AppendLine(string.Format(FILEHEADER1, report.TestFiles.Length));
             sb.AppendLine(string.Join(", ", report.TestFiles.Select(Path.GetFileName)));
             sb.AppendLine();
 
