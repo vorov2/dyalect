@@ -42,8 +42,6 @@
     <None Update="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Remove="Unit\Parser.cs.old" />
-    <None Remove="Unit\Scanner.cs.old" />
   </ItemGroup>
 
 </Project>

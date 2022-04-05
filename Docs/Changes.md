@@ -1,3 +1,7 @@
+# 0.35.10
+  * Change: _Refactoring of unit test module in Dyalect Console._
+  * Add: _Add support for test result generation in Markdown_ ([Issue #702](https://github.com/vorov2/dyalect/issues/702)).
+
 # 0.35.9
   * Fix: _Passing a tuple to a vararg function_ ([Issue #700](https://github.com/vorov2/dyalect/issues/700)).
   * Change: _Dyalect console (dya) no longer has a reference to the Dyalect standard library and is using standard code for JSON parsing._

@@ -60,8 +60,8 @@ namespace Dyalect
         [Binding("testresults", Help = "Specifies a file to save test results. If file is not specified test results are only printed to console.", Category = TEST)]
         public string? SaveTestResults { get; set; }
 
-        [Binding("appveyor")]
-        public bool AppVeyour { get; set; }
+        [Binding("useMarkdown", Help = "Generate test results in Markdown format. This setting is only applied when test results are save to a file specified by \"testresults\" settings.", Category = TEST)]
+        public bool UseMarkdown { get; set; }
 
         [Binding("i", Help = "Stay in interactive mode after executing a file.", Category = GENERAL)]
         public bool StayInInteractive { get; set; }

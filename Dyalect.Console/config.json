@@ -1,5 +1,6 @@
 ﻿{
     "debug": true,
-    "onlyfailed": false,
-    "testresults": "..\\Docs\\testresults.txt"
+    "onlyfailed": true,
+    "testresults": "..\\Docs\\TestResult.md",
+    "useMarkdown":  true
 }
