@@ -8,3 +8,5 @@ https://github.com/Naereen/badges
 
 Download:
 https://img.shields.io/badge/Download-0.35.10-blue?style=for-the-badge&logo=github
+
+![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.35-royalblue.svg) 
