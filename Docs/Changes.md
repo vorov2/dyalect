@@ -1,5 +1,5 @@
 # 0.36.0
-  * Add: _Add `Console.ReadKey` method_ ([Issue #698](https://github.com/vorov2/dyalect/issues/698), [docs](https://github.com/vorov2/dyalect/wiki/Console#readKey)).
+  * Add: _Add `Console.ReadKey` method_ ([Issue #698](https://github.com/vorov2/dyalect/issues/698), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Console#readKey)).
   * Add: _No introspection on a constructor name_ ([Issue #680](https://github.com/vorov2/dyalect/issues/680), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#constructorName)).
 
 # 0.35.10
