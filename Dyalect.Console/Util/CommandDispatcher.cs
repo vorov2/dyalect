@@ -42,7 +42,7 @@ namespace Dyalect.Util
 
             if (!commands.TryGetValue(command, out var cmd))
             {
-                Printer.Error($"Unknown command .{command}.");
+                Printer.Error($"Unknown command #{command}.");
                 return;
             }
 
@@ -75,8 +75,10 @@ namespace Dyalect.Util
             var switches = HelpGenerator.Generate<DyaOptions>("-").TrimEnd('\r', '\n');
             var commands = HelpGenerator.Generate(typeof(CommandDispatcher), Prefix).TrimEnd('\r', '\n');
 
+            Printer.LineFeed();
             Printer.Output("Command line switches:");
             Printer.Output(switches);
+            Printer.LineFeed();
             Printer.Output("Commands:");
             Printer.Output(commands);
         }
@@ -90,6 +92,7 @@ namespace Dyalect.Util
         [Binding("options", Help = "Displays current console options.")]
         public void ShowOptions(object _)
         {
+            Printer.LineFeed();
             Printer.Output("Current options:");
             Printer.Output(ctx.Options.ToString());
         }
@@ -97,6 +100,7 @@ namespace Dyalect.Util
         [Binding("dump", Help = "Dumps global variables and prints their values.")]
         public void Dump(object _)
         {
+            Printer.LineFeed();
             Printer.Output("Dump of globals:");
 
             if (ctx.ExecutionContext == null)
