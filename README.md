@@ -1,4 +1,4 @@
-# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.35-royalblue.svg)
+# Dyalect [![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.35-royalblue.svg)](https://github.com/vorov2/dyalect/releases/tag/0.35.10)
 
 [![Build](https://github.com/vorov2/dyalect/actions/workflows/dotnet.yml/badge.svg)](https://github.com/vorov2/dyalect/blob/master/Docs/TestResult.md)
 
