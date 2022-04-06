@@ -1,5 +1,5 @@
 [![Build](https://github.com/vorov2/dyalect/actions/workflows/dotnet.yml/badge.svg)](https://github.com/vorov2/dyalect/actions/workflows/dotnet.yml)
-[![Tests](https://img.shields.io/badge/Tests-641-blue?logo=pytest)](https://github.com/vorov2/dyalect/blob/master/Docs/TestResult.md)
+[![Tests](https://img.shields.io/badge/Tests-passing-33CB56?style=flat&logo=pytest&labelColor=2E343A&logoColor=959DA5)](https://github.com/vorov2/dyalect/blob/master/Docs/TestResult.md)
 
 # Dyalect programming language 
 
