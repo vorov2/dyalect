@@ -76,6 +76,13 @@ namespace Dyalect.Linker
             return DyNil.Instance;
         }
 
+        [Function("constructorName")]
+        public DyObject GetConstructorName(ExecutionContext ctx, DyObject value)
+        {
+            var ctor = value.GetConstructor();
+            return ctor is null ? DyNil.Instance : new DyString(ctor);
+        }
+
         [Function("rawget")]
         public DyObject RawGet(ExecutionContext ctx, DyObject values, DyObject index)
         {

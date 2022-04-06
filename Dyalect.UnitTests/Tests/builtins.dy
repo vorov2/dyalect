@@ -126,3 +126,11 @@
         @IndexReadOnly => assert(got: true)
     }
 #endregion
+
+#region "constructorName"
+    type Foo = Foo() or Bar()
+    assert("Foo", constructorName(Foo()))
+    assert("Bar", constructorName(Foo.Bar()))
+    assert("FooBar", constructorName(@FooBar))
+    assert(nil, constructorName(12))
+#endregion
