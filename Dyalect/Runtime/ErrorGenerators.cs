@@ -20,6 +20,12 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject InvalidOperation(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.InvalidOperation);
+            return DyNil.Instance;
+        }
+
         public static DyObject ParsingFailed(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.ParsingFailed);

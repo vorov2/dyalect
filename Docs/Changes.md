@@ -1,3 +1,6 @@
+# 0.36.0
+  * Fix: _Add `Console.ReadKey` method_ ([Issue #698](https://github.com/vorov2/dyalect/issues/698), [docs](https://github.com/vorov2/dyalect/wiki/Console#readKey)).
+
 # 0.35.10
   * Change: _Refactoring of unit test module in Dyalect Console._
   * Add: _Add support for test result generation in Markdown_ ([Issue #702](https://github.com/vorov2/dyalect/issues/702)).

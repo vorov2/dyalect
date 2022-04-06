@@ -273,4 +273,7 @@
   <data name="OperationNotSupported.4" xml:space="preserve">
     <value>Static operation "{0}" is not supported by the type "{1}".</value>
   </data>
+  <data name="InvalidOperation.0" xml:space="preserve">
+    <value>An attempted operation is invalid in the current context.</value>
+  </data>
 </root>

@@ -3,6 +3,7 @@ using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace Dyalect.Library.Core
 {
@@ -156,6 +157,25 @@ namespace Dyalect.Library.Core
             return DyNil.Instance;
         }
 
+        private DyObject ReadKey(ExecutionContext ctx, DyObject intercept)
+        {
+            try
+            {
+                var ci = Console.ReadKey(intercept.IsTrue());
+                return DyTuple.Create(
+                    new("key", ci.Key.ToString()),
+                    new("keyChar", ci.KeyChar),
+                    new("alt", (ci.Modifiers & ConsoleModifiers.Alt) == ConsoleModifiers.Alt),
+                    new("shift", (ci.Modifiers & ConsoleModifiers.Shift) == ConsoleModifiers.Shift),
+                    new("ctrl", (ci.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control)
+                );
+            }
+            catch (InvalidOperationException)
+            {
+                return ctx.InvalidOperation();
+            }
+        }
+
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
@@ -163,6 +183,7 @@ namespace Dyalect.Library.Core
                 "WriteLine" => Func.Static(name, WriteLine, -1, new Par("value", DyString.Empty)),
                 "Read" => Func.Static(name, Read),
                 "ReadLine" => Func.Static(name, ReadLine),
+                "ReadKey" => Func.Static(name, ReadKey, -1, new Par("intercept", DyBool.False)),
                 "Clear" => Func.Static(name, Clear),
                 "ResetColor" => Func.Static(name, ResetColor),
                 "GetCursorPosition" => Func.Static(name, GetCursorPosition),
