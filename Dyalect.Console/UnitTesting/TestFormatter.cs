@@ -39,6 +39,7 @@ namespace Dyalect.UnitTesting
                 report.Results.Count(r => r.Error is not null).ToString() + (report.FailedFiles.Any() ? "1+" : ""),
                 report.TestFiles.Length
             ));
+            sb.AppendLine();
 
             sb.AppendLine("## " + FILEHEADER2);
             sb.AppendLine(string.Join(", ", report.TestFiles
