@@ -8,9 +8,11 @@
         public DyVariant(string constructor, DyTuple values) : base(DyType.Variant) =>
             (Constructor, Tuple) = (constructor, values);
 
-        internal DyVariant(DyErrorCode code, params object[] args) : base(DyType.Variant)
+        internal DyVariant(DyErrorCode code, params object[] args) : this(code.ToString(), args) { }
+
+        internal DyVariant(string code, params object[] args) : base(DyType.Variant)
         {
-            Constructor = code.ToString();
+            Constructor = code;
 
             if (args is not null && args.Length > 0)
             {

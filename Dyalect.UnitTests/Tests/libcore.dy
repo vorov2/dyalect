@@ -1,5 +1,6 @@
 ﻿#region "Initialize"
     import core
+    import io
 #endregion
 
 #region "StringBuilder: GetType"
@@ -289,4 +290,14 @@ fox is the red fox.]>
     assert("00:12:34", TimeDelta.Parse("00:12:34").ToString())
     assert("00:12:34", TimeDelta.Parse("00:12:34", "hh:mm:ss").ToString())
     assert("00:12:34", TimeDelta.Parse("00--12--34", "hh--mm--ss").ToString())
+#endregion
+
+#region "File: ReadText"
+    let str = File.ReadText("../Dyalect.UnitTests/Tests/refs/libtest.dy")
+    assert(true, str.StartsWith("func abs("))
+#endregion
+
+#region "File: ReadLines"
+    let lines = File.ReadLines("../Dyalect.UnitTests/Tests/refs/libtest.dy")
+    assert("func abs(x) {", lines[0])
 #endregion

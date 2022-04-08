@@ -8,6 +8,12 @@ namespace Dyalect.Runtime
 {
     public static class ErrorGenerators
     {
+        public static DyObject CustomError(this ExecutionContext ctx, string constructor)
+        {
+            ctx.Error = new(constructor);
+            return DyNil.Instance;
+        }
+
         public static DyObject Failure(this ExecutionContext ctx, string detail)
         {
             ctx.Error = new(DyErrorCode.Failure, detail);
