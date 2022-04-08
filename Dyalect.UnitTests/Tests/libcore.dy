@@ -1,6 +1,5 @@
 ﻿#region "Initialize"
     import core
-    import io
 #endregion
 
 #region "StringBuilder: GetType"

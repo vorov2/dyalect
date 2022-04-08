@@ -1,9 +1,14 @@
-﻿#region "File: ReadText"
-    let str = File.ReadText("../Dyalect.UnitTests/Tests/refs/libtest.dy")
-    assert(true, str.StartsWith("func abs("))
+﻿#region "Initialize"
+    import io
+#endregion
+
+#region "File: ReadText"
+    let str = File.ReadText("../Dyalect.UnitTests/Tests/data/foo.txt")
+    assert(true, str.StartsWith("First line"))
 #endregion
 
 #region "File: ReadLines"
-    let lines = File.ReadLines("../Dyalect.UnitTests/Tests/refs/libtest.dy")
-    assert("func abs(x) {", lines[0])
+    let lines = File.ReadLines("../Dyalect.UnitTests/Tests/data/foo.txt")
+    assert("First line", lines[0])
+    assert("Second line", lines[1])
 #endregion
