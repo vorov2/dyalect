@@ -115,6 +115,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid number of argument for an operator or built-in method..
+        /// </summary>
+        internal static string BuiltinWrongArguments {
+            get {
+                return ResourceManager.GetString("BuiltinWrongArguments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty code islands are not supported..
         /// </summary>
         internal static string CodeIslandEmpty {
@@ -156,6 +165,15 @@ namespace Dyalect.Strings {
         internal static string FunctionDeprecated {
             get {
                 return ResourceManager.GetString("FunctionDeprecated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid number of arguments for a property getter..
+        /// </summary>
+        internal static string GetterWrongArguments {
+            get {
+                return ResourceManager.GetString("GetterWrongArguments", resourceCulture);
             }
         }
         
@@ -426,6 +444,15 @@ namespace Dyalect.Strings {
         internal static string SelfCastNotAllowed {
             get {
                 return ResourceManager.GetString("SelfCastNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid number of arguments for a property setter..
+        /// </summary>
+        internal static string SetterWrongArguments {
+            get {
+                return ResourceManager.GetString("SetterWrongArguments", resourceCulture);
             }
         }
         

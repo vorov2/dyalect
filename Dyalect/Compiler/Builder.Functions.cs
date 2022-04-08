@@ -77,10 +77,24 @@ namespace Dyalect.Compiler
                             AddError(CompilerError.MemberNameCamel, node.Location);
 
                         if (!node.IsStatic)
-                            realName = GetMethodName(realName, node);
+                        {
+                            int argn;
+                            (realName, argn) = GetMethodName(realName, node);
+
+                            if (argn > -1 && argn != node.Parameters.Count)
+                                AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                        }
 
                         if (node.Setter && !node.IsIndexer)
+                        {
                             realName = Builtins.Setter(realName);
+
+                            if (node.Parameters.Count != 1)
+                                AddError(CompilerError.SetterWrongArguments, node.Location);
+                        }
+
+                        if (node.Getter && node.Parameters.Count > 0)
+                            AddError(CompilerError.GetterWrongArguments, node.Location);
 
                         if (node.Name is Builtins.Has || (!node.IsStatic && node.Name is Builtins.Type))
                             AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
@@ -112,26 +126,31 @@ namespace Dyalect.Compiler
 
         //Converts symbolic names (used when overriding operators) to special internal
         //names, e.g. "*" becomes "__op_mul"
-        private string GetMethodName(string name, DFunctionDeclaration node) =>
+        private (string name, int args) GetMethodName(string name, DFunctionDeclaration node) =>
             name switch
             {
-                "+" => node.Parameters.Count == 0 ? Builtins.Plus : Builtins.Add,
-                "-" => node.Parameters.Count == 0 ? Builtins.Neg : Builtins.Sub,
-                "*" => Builtins.Mul,
-                "/" => Builtins.Div,
-                "%" => Builtins.Rem,
-                "<<<" => Builtins.Shl,
-                ">>>" => Builtins.Shr,
-                "^^^" => Builtins.Xor,
-                "==" => Builtins.Eq,
-                "!=" => Builtins.Neq,
-                ">" => Builtins.Gt,
-                "<" => Builtins.Lt,
-                ">=" => Builtins.Gte,
-                "<=" => Builtins.Lte,
-                "!" => Builtins.Not,
-                "~~~" => Builtins.BitNot,
-                _ => name
+                "+" => node.Parameters.Count == 0 ? (Builtins.Plus, 0) : (Builtins.Add, 1),
+                "-" => node.Parameters.Count == 0 ? (Builtins.Neg, 0) : (Builtins.Sub, 1),
+                "*" => (Builtins.Mul, 1),
+                "/" => (Builtins.Div, 1),
+                "%" => (Builtins.Rem, 1),
+                "<<<" => (Builtins.Shl, 1),
+                ">>>" => (Builtins.Shr, 1),
+                "^^^" => (Builtins.Xor, 1),
+                "==" => (Builtins.Eq, 1),
+                "!=" => (Builtins.Neq, 1),
+                ">" => (Builtins.Gt, 1),
+                "<" => (Builtins.Lt, 1),
+                ">=" => (Builtins.Gte, 1),
+                "<=" => (Builtins.Lte, 1),
+                "!" => (Builtins.Not, 1),
+                "~~~" => (Builtins.BitNot, 1),
+                "Length" => (name, 0),
+                "ToLiteral" => (name, 0),
+                "Iterate" => (name, 0),
+                "Clone" => (name, 0),
+                "Dispose" => (name, 0),
+                _ => (name, -1)
             };
 
         //Compilation of function parameters with support for variable
