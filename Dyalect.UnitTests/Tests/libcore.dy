@@ -278,3 +278,15 @@ fox is the red fox.]>
     assert("12:03:12", td.ToString())
     assert("03-12-12", td.ToString(format: "mm-hh-ss"))
 #endregion
+
+#region "TimeDelta: Min, Max, Default"
+    assert(Integer.Min(), TimeDelta.Min().Ticks)
+    assert(Integer.Max(), TimeDelta.Max().Ticks)
+    assert(0, TimeDelta.Default().Ticks)
+#endregion
+
+#region "TimeDelta: Parse"
+    assert("00:12:34", TimeDelta.Parse("00:12:34").ToString())
+    assert("00:12:34", TimeDelta.Parse("00:12:34", "hh:mm:ss").ToString())
+    assert("00:12:34", TimeDelta.Parse("00--12--34", "hh--mm--ss").ToString())
+#endregion

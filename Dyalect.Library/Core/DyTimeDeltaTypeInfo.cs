@@ -132,24 +132,6 @@ namespace Dyalect.Library.Core
 
         private string FormatTimeSpan(TimeSpan timeSpan, string format) => timeSpan.ToString(GetFormatString(format), CI.Default);
 
-        public DyObject ToStringWithFormat(ExecutionContext ctx, DyObject self, DyObject format)
-        {
-            if (format.TypeId == DyType.Nil)
-                return new DyString(self.ToString());
-
-            if (!format.IsString(ctx)) return Default();
-
-            try
-            {
-                var res = FormatTimeSpan(((DyTimeDelta)self).Value, format.GetString());
-                return new DyString(res);
-            }
-            catch (FormatException)
-            {
-                return ctx.ParsingFailed();
-            }
-        }
-
         private DyObject InternalParse(ExecutionContext ctx, Func<TimeSpan> parser)
         {
             try
