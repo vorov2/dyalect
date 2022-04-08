@@ -36,7 +36,7 @@
             return DyBool.False;
         }
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {
             var cust = (DyClass)arg;
             var priv = cust.Fields;

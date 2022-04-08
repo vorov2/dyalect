@@ -220,3 +220,61 @@ fox is the red fox.]>
     assert(23, bar.Position())
     assert('D', bar.Read(Char))
 #endregion
+
+#region "TimeDelta: GetType"
+    let td = TimeDelta(days: 1)
+    assert(TimeDelta, td.GetType())
+    assert("TimeDelta", td.GetType().name)
+#endregion
+
+#region "TimeDelta: construction"
+    var td = TimeDelta(ticks: 12)
+    assert(12, td.Ticks)
+    td = TimeDelta(days: 1, hours: 12, minutes: 33, seconds: 3)
+    assert(1, td.Days)
+    assert(12, td.Hours)
+    assert(33, td.Minutes)
+    assert(3, td.Seconds)
+    td = TimeDelta(milliseconds: 1405)
+    assert(405, td.Milliseconds)
+    assert(1, td.Seconds)
+#endregion
+
+#region "TimeDelta: math"
+    let x = TimeDelta(minutes: 3, seconds: 12)
+    let y = TimeDelta(minutes: 1, seconds: 45)
+    assert("00:04:57", (x + y).ToString())
+    assert("00:01:27", (x - y).ToString())
+#endregion
+
+#region "TimeDelta: equality"
+    let x = TimeDelta(minutes: 3, seconds: 12)
+    let y = TimeDelta(minutes: 1, seconds: 45)
+    let z = TimeDelta(minutes: 3, seconds: 12)
+    assert(true, x == z)
+    assert(false, x == y)
+    assert(true, x != y)
+#endregion
+
+#region "TimeDelta: comparison"
+    let x = TimeDelta(minutes: 3, seconds: 12)
+    let y = TimeDelta(minutes: 1, seconds: 45)
+    let z = TimeDelta(minutes: 3, seconds: 12)
+    assert(true, x > y)
+    assert(true, x >= z)
+    assert(false, y > z)
+    assert(true, y < z)
+    assert(true, y <= z)
+    assert(true, x <= z)
+#endregion
+
+#region "TimeDelta: casting"
+    let td = TimeDelta(ticks: 1409)
+    assert(1409, td as Integer)
+#endregion
+
+#region "TimeDelta: ToString"
+    let td = TimeDelta(hours: 12, minutes: 3, seconds: 12)
+    assert("12:03:12", td.ToString())
+    assert("03-12-12", td.ToString(format: "mm-hh-ss"))
+#endregion

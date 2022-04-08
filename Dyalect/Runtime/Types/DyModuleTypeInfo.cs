@@ -14,7 +14,7 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeId => DyType.Module;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
             new DyString("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)

@@ -11,7 +11,7 @@ namespace Dyalect.Library.Core
 
         public override string TypeName => "Result";
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {
             var self = (DyResult)arg;
             return new DyString(self.Constructor + " ("

@@ -12,7 +12,7 @@ namespace Dyalect.Library.Core
 
         public DyStringBuilder Create(StringBuilder sb) => new(this, sb);
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
             new DyString(((DyStringBuilder)arg).ToString());
 
         protected override SupportedOperations GetSupportedOperations() =>

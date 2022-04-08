@@ -113,13 +113,13 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject PlusOp(DyObject arg, ExecutionContext ctx) => arg;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {
             var f = arg.GetFloat();
             return new DyString(f.ToString(CI.NumberFormat));
         }
 
-        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, ctx);
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
         #endregion
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>

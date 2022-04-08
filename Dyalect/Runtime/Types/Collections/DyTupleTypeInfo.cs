@@ -25,7 +25,7 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(len);
         }
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => ((DyTuple)arg).ToString(false, ctx);
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => ((DyTuple)arg).ToString(false, ctx);
 
         protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ((DyTuple)arg).ToString(true, ctx);
 

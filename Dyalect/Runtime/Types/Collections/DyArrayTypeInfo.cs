@@ -43,7 +43,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => ToStringOrLiteral(false, arg, ctx);
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => ToStringOrLiteral(false, arg, ctx);
 
         protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOrLiteral(true, arg, ctx);
 

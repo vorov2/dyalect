@@ -15,8 +15,21 @@ namespace Dyalect.Library.Core
             | SupportedOperations.Gt | SupportedOperations.Gte
             | SupportedOperations.Lt | SupportedOperations.Lte;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
-            new DyString(((DyDateTime)arg).Value.ToString(FORMAT, CI.Default));
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
+        {
+            if (format.TypeId == DyType.Nil)
+                return new DyString(((DyDateTime)arg).Value.ToString(FORMAT, CI.Default));
+
+            try
+            {
+                var res = ((DyDateTime)arg).Value.ToString(format.GetString(), CI.Default);
+                return new DyString(res);
+            }
+            catch (Exception)
+            {
+                return ctx.InvalidValue(format);
+            }
+        }
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
@@ -91,22 +104,6 @@ namespace Dyalect.Library.Core
             return ((DyDateTime)left).Value <= ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
         }
 
-        private DyObject ToString(ExecutionContext ctx, DyObject self, DyObject format)
-        {
-            if (format.TypeId == DyType.Nil)
-                return ToStringOp(self, ctx);
-
-            try
-            {
-                var res = ((DyDateTime)self).Value.ToString(format.GetString(), CI.Default);
-                return new DyString(res);
-            }
-            catch (Exception)
-            {
-                return ctx.InvalidValue(format);
-            }
-        }
-
         private DyObject AddTo(ExecutionContext ctx, DyObject self, DyObject ticks, DyObject ms, DyObject sec, 
             DyObject min, DyObject hrs, DyObject days, DyObject months, DyObject years)
         {
@@ -136,7 +133,6 @@ namespace Dyalect.Library.Core
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "ToString" => Func.Member(name, ToString, -1, new Par("format", DyNil.Instance)),
                 "Add" => Func.Member(name, AddTo, -1, new Par("ticks", DyNil.Instance), new Par("milliseconds", DyNil.Instance), new Par("seconds", DyNil.Instance),
                     new Par("minutes", DyNil.Instance), new Par("hours", DyNil.Instance), new Par("days", DyNil.Instance), new Par("months", DyNil.Instance),
                     new Par("years", DyNil.Instance)),

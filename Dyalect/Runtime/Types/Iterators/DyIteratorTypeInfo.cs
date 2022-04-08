@@ -19,7 +19,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => GetCount(ctx, arg);
 
-        protected override DyObject ToStringOp(DyObject self, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject self, DyObject format, ExecutionContext ctx)
         {
             var fn = ((DyIterator)self).GetIteratorFunction();
             fn.Reset(ctx);
