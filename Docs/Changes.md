@@ -1,6 +1,7 @@
 # 0.36.0
   * Add: _Add `Console.ReadKey` method_ ([Issue #698](https://github.com/vorov2/dyalect/issues/698), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Console#readKey)).
   * Add: _No introspection on a constructor name_ ([Issue #680](https://github.com/vorov2/dyalect/issues/680), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#constructorName)).
+  * Add: _Add a new `TimeDelta` type_ ([Issue #705](https://github.com/vorov2/dyalect/issues/705), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta)).
 
 # 0.35.10
   * Change: _Refactoring of unit test module in Dyalect Console._

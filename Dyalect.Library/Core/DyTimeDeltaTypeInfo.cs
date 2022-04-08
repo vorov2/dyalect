@@ -88,6 +88,13 @@ namespace Dyalect.Library.Core
 
             return ((DyTimeDelta)left).Value <= ((DyTimeDelta)right).Value ? DyBool.True : DyBool.False;
         }
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.ReflectedTypeId switch
+            {
+                DyType.Integer => DyInteger.Get(((DyTimeDelta)self).Value.Ticks),
+                _ => base.CastOp(self, targetType, ctx)
+            };
         #endregion
 
         private string GetFormatString(string format)
