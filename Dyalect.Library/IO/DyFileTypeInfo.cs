@@ -126,10 +126,10 @@ namespace Dyalect.Library.IO
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "ReadText" => Func.Static(name, ReadAllText, -1, new Par("path"), new Par("encoding", DyInteger.Zero)),
-                "ReadLines" => Func.Static(name, ReadAllLines, -1, new Par("path"), new Par("encoding", DyInteger.Zero)),
-                "WriteText" => Func.Static(name, WriteAllText, -1, new Par("path"), new Par("value"), new Par("encoding", DyInteger.Zero)),
-                "WriteAllLines" => Func.Static(name, WriteAllLines, -1, new Par("path"), new Par("value"), new Par("encoding", DyInteger.Zero)),
+                "ReadText" => Func.Static(name, ReadAllText, -1, new Par("path"), new Par("encoding", DyNil.Instance)),
+                "ReadLines" => Func.Static(name, ReadAllLines, -1, new Par("path"), new Par("encoding", DyNil.Instance)),
+                "WriteText" => Func.Static(name, WriteAllText, -1, new Par("path"), new Par("value"), new Par("encoding", DyNil.Instance)),
+                "WriteAllLines" => Func.Static(name, WriteAllLines, -1, new Par("path"), new Par("value"), new Par("encoding", DyNil.Instance)),
                 "ReadBytes" => Func.Static(name, ReadAllBytes, -1, new Par("path")),
                 "WriteBytes" => Func.Static(name, WriteAllBytes, -1, new Par("path"), new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)
