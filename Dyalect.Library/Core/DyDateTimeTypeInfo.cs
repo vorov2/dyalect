@@ -104,6 +104,13 @@ namespace Dyalect.Library.Core
             return ((DyDateTime)left).Value <= ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
         }
 
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.ReflectedTypeId switch
+            {
+                DyType.Integer => new DyInteger(((DyDateTime)self).Value.Ticks),
+                _ => base.CastOp(self, targetType, ctx)
+            };
+
         private DyObject AddTo(ExecutionContext ctx, DyObject self, DyObject ticks, DyObject ms, DyObject sec, 
             DyObject min, DyObject hrs, DyObject days, DyObject months, DyObject years)
         {
@@ -118,14 +125,21 @@ namespace Dyalect.Library.Core
             if (!months.NotNil() && !months.IsInteger(ctx)) return Default();
             if (!years.NotNil() && !years.IsInteger(ctx)) return Default();
 
-            if (!ticks.NotNil()) dt = dt.AddTicks(ticks.GetInteger());
-            if (!ms.NotNil()) dt = dt.AddMilliseconds(ms.GetFloat());
-            if (!sec.NotNil()) dt = dt.AddSeconds(sec.GetFloat());
-            if (!min.NotNil()) dt = dt.AddMinutes(min.GetFloat());
-            if (!hrs.NotNil()) dt = dt.AddHours(hrs.GetFloat());
-            if (!days.NotNil()) dt = dt.AddDays(days.GetFloat());
-            if (!months.NotNil()) dt = dt.AddMonths((int)months.GetInteger());
-            if (!years.NotNil()) dt = dt.AddYears((int)years.GetInteger());
+            try
+            {
+                if (!ticks.NotNil()) dt = dt.AddTicks(ticks.GetInteger());
+                if (!ms.NotNil()) dt = dt.AddMilliseconds(ms.GetFloat());
+                if (!sec.NotNil()) dt = dt.AddSeconds(sec.GetFloat());
+                if (!min.NotNil()) dt = dt.AddMinutes(min.GetFloat());
+                if (!hrs.NotNil()) dt = dt.AddHours(hrs.GetFloat());
+                if (!days.NotNil()) dt = dt.AddDays(days.GetFloat());
+                if (!months.NotNil()) dt = dt.AddMonths((int)months.GetInteger());
+                if (!years.NotNil()) dt = dt.AddYears((int)years.GetInteger());
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return ctx.Overflow();
+            }
 
             return new DyDateTime(this, dt);
         }
@@ -148,14 +162,16 @@ namespace Dyalect.Library.Core
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
-        private DyObject Parse(ExecutionContext ctx, DyObject format, DyObject value)
+        private DyObject Parse(ExecutionContext ctx, DyObject value, DyObject format)
         {
             if (!value.IsString(ctx)) return Default();
-            if (!format.IsString(ctx)) return Default();
+            if (format.NotNil() && !format.IsString(ctx)) return Default();
 
             try
             {
-                return new DyDateTime(this, DateTime.ParseExact(value.GetString(), format.GetString(), CI.Default));
+                return format.NotNil() 
+                    ? new DyDateTime(this, DateTime.ParseExact(value.GetString(), format.GetString(), CI.Default))
+                    : new DyDateTime(this, DateTime.Parse(value.GetString(), CI.Default));
             }
             catch (FormatException ex)
             {
@@ -204,7 +220,7 @@ namespace Dyalect.Library.Core
             name switch 
             {
                 "Now" => Func.Static(name, _ => new DyDateTime(this, DateTime.Now)),
-                "Parse" => Func.Static(name, Parse, -1, new Par("format"), new Par("value")),
+                "Parse" => Func.Static(name, Parse, -1, new Par("value"), new Par("format", DyNil.Instance)),
                 "DateTime" => Func.Static(name, New, -1, new Par("year", DyInteger.Zero), new Par("month", DyInteger.Zero), 
                     new Par("day", DyInteger.Zero), new Par("hour", DyInteger.Zero), new Par("minute", DyInteger.Zero),
                     new Par("second", DyInteger.Zero), new Par("millisecond", DyInteger.Zero)),
