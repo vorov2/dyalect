@@ -77,13 +77,7 @@ namespace Dyalect.Compiler
                             AddError(CompilerError.MemberNameCamel, node.Location);
 
                         if (!node.IsStatic)
-                        {
-                            int argn;
-                            (realName, argn) = GetMethodName(realName, node);
-
-                            if (argn > -1 && argn != node.Parameters.Count)
-                                AddError(CompilerError.BuiltinWrongArguments, node.Location);
-                        }
+                            realName = GetMethodName(realName, node);
 
                         if (node.Setter && !node.IsIndexer)
                         {
@@ -93,7 +87,7 @@ namespace Dyalect.Compiler
                                 AddError(CompilerError.SetterWrongArguments, node.Location);
                         }
 
-                        if (node.Getter && node.Parameters.Count > 0)
+                        if (node.Getter && !node.IsIndexer && node.Parameters.Count > 0)
                             AddError(CompilerError.GetterWrongArguments, node.Location);
 
                         if (node.Name is Builtins.Has || (!node.IsStatic && node.Name is Builtins.Type))
@@ -126,32 +120,76 @@ namespace Dyalect.Compiler
 
         //Converts symbolic names (used when overriding operators) to special internal
         //names, e.g. "*" becomes "__op_mul"
-        private (string name, int args) GetMethodName(string name, DFunctionDeclaration node) =>
-            name switch
+        private string GetMethodName(string name, DFunctionDeclaration node)
+        {
+            switch (name)
             {
-                "+" => node.Parameters.Count == 0 ? (Builtins.Plus, 0) : (Builtins.Add, 1),
-                "-" => node.Parameters.Count == 0 ? (Builtins.Neg, 0) : (Builtins.Sub, 1),
-                "*" => (Builtins.Mul, 1),
-                "/" => (Builtins.Div, 1),
-                "%" => (Builtins.Rem, 1),
-                "<<<" => (Builtins.Shl, 1),
-                ">>>" => (Builtins.Shr, 1),
-                "^^^" => (Builtins.Xor, 1),
-                "==" => (Builtins.Eq, 1),
-                "!=" => (Builtins.Neq, 1),
-                ">" => (Builtins.Gt, 1),
-                "<" => (Builtins.Lt, 1),
-                ">=" => (Builtins.Gte, 1),
-                "<=" => (Builtins.Lte, 1),
-                "!" => (Builtins.Not, 1),
-                "~~~" => (Builtins.BitNot, 1),
-                "Length" => (name, 0),
-                "ToLiteral" => (name, 0),
-                "Iterate" => (name, 0),
-                "Clone" => (name, 0),
-                "Dispose" => (name, 0),
-                _ => (name, -1)
-            };
+                case "+" when node.Parameters.Count == 0: return Builtins.Plus;
+                case "-" when node.Parameters.Count == 0: return Builtins.Neg;
+                case "!":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Not;
+                case "~~~":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.BitNot;
+                case "Length":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "ToLiteral":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "Iterate":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "Dispose":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "Clone":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "ToString":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "+": 
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Add;
+                case "-":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Sub;
+                case "*":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Mul;
+                case "/":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Div;
+                case "<<<":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Shl;
+                case ">>>":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Shr;
+                case "==":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Eq;
+                case "!=":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Neq;
+                case ">":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Gt;
+                case "<":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Lt;
+                case ">=":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Gte;
+                case "<=":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Lte;
+                default:
+                    return name;
+            }
+        }
 
         //Compilation of function parameters with support for variable
         //arguments and default values

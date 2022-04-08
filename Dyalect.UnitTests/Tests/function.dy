@@ -610,19 +610,13 @@
         @InvalidOverload() => assert(got: true)
     }
     try {
-        func set Array.Length() { }
-        assert(got: false)
-    } catch {
-        @InvalidOverload() => assert(got: true)
-    }
-    try {
         func get Array.ToString() { }
         assert(got: false)
     } catch {
         @InvalidOverload() => assert(got: true)
     }
     try {
-        func set Array.ToString() { }
+        func set Array.ToString(index) { }
         assert(got: false)
     } catch {
         @InvalidOverload() => assert(got: true)
@@ -632,7 +626,7 @@
 #region "Invalid overload (custom)"
     type Foo
     func get Foo.Index() { }
-    func set Foo.Index() { }
+    func set Foo.Index(idx) { }
     func Foo.Bar() { }
     static func get Foo.Bar() { }
 
@@ -643,7 +637,7 @@
         @InvalidOverload() => assert(got: true)
     }
     try {
-        func set Foo.Bar() { }
+        func set Foo.Bar(index) { }
         assert(got: false)
     } catch {
         @InvalidOverload() => assert(got: true)
