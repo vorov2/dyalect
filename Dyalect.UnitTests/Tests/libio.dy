@@ -90,3 +90,11 @@
     b = Directory.Exists("../Dyalect.UnitTests/Tests/data/foo.txt")
     assert(false, b)
 #endregion
+
+#region "Directory: Create and Delete"
+    let dir = "../Dyalect.UnitTests/Test/data/temp"
+    Directory.Create(dir)
+    assert(true, Directory.Exists(dir))
+    Directory.Delete(dir)
+    assert(false, Directory.Exists(dir))
+#endregion
