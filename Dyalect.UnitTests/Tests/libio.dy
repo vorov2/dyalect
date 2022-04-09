@@ -57,6 +57,25 @@
 #endregion
 
 #region "Path: Exists"
-    let b = Path.Exists("../Dyalect.UnitTests/Tests/data")
+    var b = Path.Exists("../Dyalect.UnitTests/Tests/data/")
     assert(true, b)
+    b = Path.Exists("../Dyalect.UnitTests/Tests/data/foo.txt")
+    assert(true, b)
+#endregion
+
+#region "Path: EnumerateFiles 1"
+    var arr = Path.EnumerateFiles("../Dyalect.UnitTests/Tests/refs/").ToArray()
+    assert("libtest.dy", Path.GetFileName(arr[0]))
+    assert("libtest1.dy", Path.GetFileName(arr[1]))
+#endregion
+
+#region "Path: EnumerateFiles 2"
+    var arr = Path.EnumerateFiles("../Dyalect.UnitTests/Tests/data/", "*.txt").ToArray()
+    assert("foo.txt", Path.GetFileName(arr[0]))
+#endregion
+
+#region "Path: EnumerateDirectories"
+    var arr = Path.EnumerateDirectories("../Dyalect.UnitTests/Tests/").ToArray()
+    assert("data", Path.GetFileName(arr[0]))
+    assert("refs", Path.GetFileName(arr[1]))
 #endregion

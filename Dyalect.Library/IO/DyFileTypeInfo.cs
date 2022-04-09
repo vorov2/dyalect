@@ -137,6 +137,25 @@ namespace Dyalect.Library.IO
             }
         }
 
+        private DyObject CreateFile(ExecutionContext ctx, DyObject path)
+        {
+            if (!path.IsString(ctx)) return Default();
+
+            try
+            {
+                File.Create(path.GetString());
+                return DyNil.Instance;
+            }
+            catch (ArgumentException)
+            {
+                return ctx.InvalidValue(path);
+            }
+            catch (Exception)
+            {
+                return ctx.CustomError("IOFailed");
+            }
+        }
+
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
@@ -147,6 +166,7 @@ namespace Dyalect.Library.IO
                 "ReadBytes" => Func.Static(name, ReadAllBytes, -1, new Par("path")),
                 "WriteBytes" => Func.Static(name, WriteAllBytes, -1, new Par("path"), new Par("value")),
                 "Exists" => Func.Static(name, FileExists, -1, new Par("path")),
+                "Create" => Func.Static(name, CreateFile, -1, new Par("path")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

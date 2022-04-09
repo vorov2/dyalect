@@ -3,6 +3,7 @@ using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace Dyalect.Library.IO
 {
@@ -52,8 +53,8 @@ namespace Dyalect.Library.IO
 
             try
             {
-                var dir = new DirectoryInfo(path.GetString());
-                return dir.Exists ? DyBool.True : DyBool.False;
+                var str = path.GetString();
+                return Directory.Exists(str) || File.Exists(str) ? DyBool.True : DyBool.False;
             }
             catch (ArgumentException)
             {
@@ -86,6 +87,50 @@ namespace Dyalect.Library.IO
             return new DyString(dir);
         }
 
+        private DyObject EnumerateFiles(ExecutionContext ctx, DyObject path, DyObject mask)
+        {
+            if (!path.IsString(ctx)) return Default();
+            if (mask.NotNil() && !mask.IsString(ctx)) return Default();
+            
+            try
+            {
+                var seq = mask.NotNil()
+                    ? Directory.EnumerateFiles(path.GetString(), mask.GetString())
+                    : Directory.EnumerateFiles(path.GetString());
+                return DyIterator.Create(seq.Select(s => new DyString(s)));
+            }
+            catch (ArgumentException)
+            {
+                return ctx.InvalidValue();
+            }
+            catch (Exception)
+            {
+                return ctx.CustomError("IOFailed");
+            }
+        }
+
+        private DyObject EnumerateDirectories(ExecutionContext ctx, DyObject path, DyObject mask)
+        {
+            if (!path.IsString(ctx)) return Default();
+            if (mask.NotNil() && !mask.IsString(ctx)) return Default();
+
+            try
+            {
+                var seq = mask.NotNil()
+                    ? Directory.EnumerateDirectories(path.GetString(), mask.GetString())
+                    : Directory.EnumerateDirectories(path.GetString());
+                return DyIterator.Create(seq.Select(s => new DyString(s)));
+            }
+            catch (ArgumentException)
+            {
+                return ctx.InvalidValue();
+            }
+            catch (Exception)
+            {
+                return ctx.CustomError("IOFailed");
+            }
+        }
+
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
@@ -98,6 +143,8 @@ namespace Dyalect.Library.IO
                 "Exists" => Func.Static(name, PathExists, -1, new Par("path")),
                 "GetFileNameWithoutExtension" => Func.Static(name, GetFileNameWithoutExtension, -1, new Par("path")),
                 "Combine" => Func.Static(name, Combine, -1, new Par("path"), new Par("other")),
+                "EnumerateFiles" => Func.Static(name, EnumerateFiles, -1, new Par("path"), new Par("mask", DyNil.Instance)),
+                "EnumerateDirectories" => Func.Static(name, EnumerateDirectories, -1, new Par("path"), new Par("mask", DyNil.Instance)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }
