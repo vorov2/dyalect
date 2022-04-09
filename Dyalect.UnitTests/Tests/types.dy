@@ -629,3 +629,26 @@
     assert(3, Expr.Function(3).args)
     assert(0, Expr.Function(-5).args)
 #endregion
+
+#region "Custom fields and pattern matching"
+    type Foo()
+    func get Foo[key] {
+	    match key {
+		    "id" => 42,
+		    "code" => "Code:Foo"
+	    }
+    }
+    func Foo.Contains(field) => field is "id" or "code"
+    let f = Foo()
+    assert(42, f.id)
+    assert("Code:Foo", f.code)
+    assert(true, "id" in f)
+
+    match f {
+	    (id: id_var, code: code_var) => {
+            assert(42, id_var)
+            assert("Code:Foo", code_var)
+        },
+        _ => assert(got: false)
+    }
+#endregion

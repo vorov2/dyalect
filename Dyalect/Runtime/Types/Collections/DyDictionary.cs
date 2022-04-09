@@ -90,7 +90,5 @@ namespace Dyalect.Runtime.Types
         public override IEnumerator<DyObject> GetEnumerator() => new DyDictionaryEnumerator(this);
 
         public override int GetHashCode() => Dictionary.GetHashCode();
-
-        protected internal override bool HasItem(string name, ExecutionContext ctx) => ContainsKey(new DyString(name));
     }
 }

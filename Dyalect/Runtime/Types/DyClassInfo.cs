@@ -51,6 +51,9 @@
                 return new DyString($"{TypeName}.{cust.Constructor}{priv.ToString(ctx)}");
         }
 
+        protected override DyObject ContainsOp(DyObject self, string field, ExecutionContext ctx) =>
+            ctx.RuntimeContext.Tuple.Contains(ctx, ((DyClass)self).Fields, field);
+
         protected override DyObject LengthOp(DyObject self, ExecutionContext ctx)
         {
             var cls = (DyClass)self;

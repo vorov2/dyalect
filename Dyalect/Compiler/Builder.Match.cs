@@ -445,7 +445,9 @@ namespace Dyalect.Compiler
             var bad = cw.DefineLabel();
             var skip = cw.DefineLabel();
             cw.Dup();
-            cw.HasField(node.Label);
+            
+            cw.Contains(node.Label);
+
             cw.Brfalse(bad);
 
             cw.Push(node.Label);

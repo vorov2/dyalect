@@ -150,6 +150,9 @@ namespace Dyalect.Compiler
                 case "ToString":
                     if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
                     return name;
+                case "Contains":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
                 case "+": 
                     if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
                     return Builtins.Add;

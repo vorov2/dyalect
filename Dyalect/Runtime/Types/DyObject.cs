@@ -44,13 +44,11 @@ namespace Dyalect.Runtime.Types
         protected internal virtual void SetItem(DyObject index, DyObject value, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Set, TypeId);
 
-        //These functions are used by default and can be utilized by object that expose a fixed set of
+        //These functions are used by default and can be utilized by objects that expose a fixed set of
         //read-only fields which are always obtained without any exceptions. Object with different behavior
         //should override GetItem(DyObject,ExecutionContext)
         protected internal virtual object? GetItem(string key) => null;
         protected internal virtual object? GetItem(long index) => null;
-
-        protected internal virtual bool HasItem(string name, ExecutionContext ctx) => false;
 
         public virtual DyTypeInfo GetTypeInfo(ExecutionContext ctx) => ctx.RuntimeContext.Types[TypeId];
 

@@ -79,7 +79,7 @@
             0,  //FunCall
 
             0,  //NewTuple **dynamic
-            0,  //HasField
+            0,  //Contains
             -2, //TypeCheck
             0,  //Start
             0,  //End

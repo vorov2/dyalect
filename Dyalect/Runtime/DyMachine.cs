@@ -390,9 +390,9 @@ namespace Dyalect.Runtime
                         types[right.TypeId].Set(ctx, right, left, evalStack.Pop());
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
-                    case OpCode.HasField:
+                    case OpCode.Contains:
                         right = evalStack.Peek();
-                        evalStack.Replace(right.HasItem(unit.Strings[op.Data], ctx));
+                        evalStack.Replace(types[right.TypeId].Contains(ctx, right, unit.Strings[op.Data]));
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Str:

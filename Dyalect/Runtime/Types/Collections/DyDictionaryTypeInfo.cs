@@ -60,6 +60,9 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
+        protected override DyObject ContainsOp(DyObject self, string field, ExecutionContext ctx) =>
+            ((DyDictionary)self).ContainsKey(new DyString(field)) ? DyBool.True : DyBool.False;
+
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
         protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)

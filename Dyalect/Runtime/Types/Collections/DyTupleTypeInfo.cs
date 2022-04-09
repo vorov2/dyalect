@@ -58,6 +58,9 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(false, left, right, ctx);
 
+        protected override DyObject ContainsOp(DyObject self, string field, ExecutionContext ctx) =>
+            ((DyTuple)self).GetOrdinal(field) is not -1 ? DyBool.True : DyBool.False;
+
         private DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (left.TypeId != right.TypeId)
@@ -239,8 +242,7 @@ namespace Dyalect.Runtime.Types
                 return ctx.InvalidType(DyType.String, item);
 
             var tuple = (DyTuple)self;
-
-            return tuple.HasItem(item.GetString(), ctx) ? DyBool.True : DyBool.False;
+            return tuple.HasItem(item.GetString()) ? DyBool.True : DyBool.False;
         }
 
         private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)

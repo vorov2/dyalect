@@ -398,6 +398,18 @@ namespace Dyalect.Runtime.Types
             conversions.Remove(type.ReflectedTypeId);
             conversions.Add(type.ReflectedTypeId, func);
         }
+
+        //HasField
+        private DyFunction? contains;
+        protected virtual DyObject ContainsOp(DyObject self, string field, ExecutionContext ctx) =>
+            ctx.OperationNotSupported(Builtins.Contains, self);
+        public DyObject Contains(ExecutionContext ctx, DyObject self, string field)
+        {
+            if (contains is not null)
+                return contains.BindToInstance(ctx, self).Call(ctx, new DyString(field));
+
+            return ContainsOp(self, field, ctx);
+        }
         #endregion
 
         #region Statics
@@ -569,6 +581,11 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Plus: plus = func; break;
                 case Builtins.Set: set = func; break;
                 case Builtins.Get: get = func; break;
+                case Builtins.Contains:
+                    if (func is not null && func.Auto)
+                        ctx.InvalidOverload(name);
+                    contains = func;
+                    break;
                 case Builtins.Len:
                     if (func is not null && func.Auto)
                         ctx.InvalidOverload(name);

@@ -191,6 +191,8 @@ namespace Dyalect.Compiler
             FunCall(0);
         }
 
+        public void Contains(string field) => Emit(new(OpCode.Contains, IndexString(field)));
+
         public void SetMember(string member) => Emit(new(OpCode.SetMember, IndexString(member)));
         public void SetMemberS(string member) => Emit(new(OpCode.SetMemberS, IndexString(member)));
 
@@ -218,7 +220,6 @@ namespace Dyalect.Compiler
         public void RgDI(string value) => Emit(new(OpCode.RgDI, IndexString(value)));
         public void RgDI(int data) => Emit(new(OpCode.RgDI, data));
         public void RgFI(int data) => Emit(new(OpCode.RgFI, data));
-        public void HasField(string field) => Emit(new(OpCode.HasField, IndexString(field)));
         public void Start(Label lab) => Emit(OpCode.Start, lab);
         public void NewObj(string ctor) => Emit(new(OpCode.NewObj, IndexString(ctor)));
         public void NewType(string name) => Emit(new(OpCode.NewType, IndexString(name)));
