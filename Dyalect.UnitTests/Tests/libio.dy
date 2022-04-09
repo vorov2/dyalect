@@ -2,6 +2,15 @@
     import io
 #endregion
 
+#region "File: GetType"
+    assert("File", File.name)
+#endregion
+
+#region "File: Exists"
+    let b = File.Exists("../Dyalect.UnitTests/Tests/data/foo.txt")
+    assert(true, b)
+#endregion
+
 #region "File: ReadText"
     let str = File.ReadText("../Dyalect.UnitTests/Tests/data/foo.txt")
     assert(true, str.StartsWith("First line"))
@@ -11,4 +20,43 @@
     let lines = File.ReadLines("../Dyalect.UnitTests/Tests/data/foo.txt")
     assert("First line", lines[0])
     assert("Second line", lines[1])
+#endregion
+
+#region "Path: GetType"
+    assert("Path", Path.name)
+#endregion
+
+#region "Path: GetDirectory"
+    let p = Path.GetDirectory("c:\\folder\\file.txt")
+    assert("c:\\folder", p)
+#endregion
+
+#region "Path: GetExtension"
+    let p = Path.GetExtension("c:\\folder\\file.txt")
+    assert(".txt", p)
+#endregion
+
+#region "Path: GetFileName"
+    let p = Path.GetFileName("c:\\folder\\file.txt")
+    assert("file.txt", p)
+#endregion
+
+#region "Path: GetFileNameWithoutExtension"
+    let p = Path.GetFileNameWithoutExtension("c:\\folder\\file.txt")
+    assert("file", p)
+#endregion
+
+#region "Path: GetPathRoot"
+    let p = Path.GetPathRoot("c:\\folder\\file.txt")
+    assert("c:\\", p)
+#endregion
+
+#region "Path: Combine"
+    let p = Path.Combine("c:\\folder", "sub1\\sub2\\file.txt")
+    assert("c:\\folder\\sub1\\sub2\\file.txt", p)
+#endregion
+
+#region "Path: Exists"
+    let b = Path.Exists("../Dyalect.UnitTests/Tests/data")
+    assert(true, b)
 #endregion
