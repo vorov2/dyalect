@@ -79,3 +79,14 @@
     assert("data", Path.GetFileName(arr[0]))
     assert("refs", Path.GetFileName(arr[1]))
 #endregion
+
+#region "Directory: GetType"
+    assert("Directory", Directory.name)
+#endregion
+
+#region "Directory: Exists"
+    var b = Directory.Exists("../Dyalect.UnitTests/Tests/data/")
+    assert(true, b)
+    b = Directory.Exists("../Dyalect.UnitTests/Tests/data/foo.txt")
+    assert(false, b)
+#endregion

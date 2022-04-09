@@ -7,6 +7,7 @@
   * Add: _Library: file IO_ ([Issue #329](https://github.com/vorov2/dyalect/issues/329), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.File)).
   * Add: _Add a `Path` type with static methods to deal with paths_ ([Issue #709](https://github.com/vorov2/dyalect/issues/709), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.Path)).
   * Add: _Library: `DateTime` data type_ ([Issue #332](https://github.com/vorov2/dyalect/issues/332), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.DateTime)).
+  * Add: _Add a `Directory` type with an ability to create new directories_ ([Issue #711](https://github.com/vorov2/dyalect/issues/711), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.Directory)).
   * Fix: _It is possible to override built-in with a wrong number of arguments_ ([Issue #707](https://github.com/vorov2/dyalect/issues/707)).
   * Fix: _A getter and setter can have any number of arguments_ ([Issue #708](https://github.com/vorov2/dyalect/issues/708)).
 

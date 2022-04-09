@@ -10,12 +10,14 @@ namespace Dyalect.Library.IO
 
         public DyFileTypeInfo File { get; }
         public DyPathTypeInfo Path { get; }
+        public DyDirectoryTypeInfo Directory { get; }
 
         public IOModule()
         {
             Core = AddReference<CoreModule>();
             File = AddType<DyFileTypeInfo>();
             Path = AddType<DyPathTypeInfo>();
+            Directory = AddType<DyDirectoryTypeInfo>();
         }
     }
 }
