@@ -269,7 +269,7 @@
     assert(125, x)
 #endregion
 
-#region "Folding a list"
+#region "Folding an array"
     func fold(xs, fn) {
         var accum = 0
         for x in xs {

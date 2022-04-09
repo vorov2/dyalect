@@ -276,4 +276,10 @@
   <data name="InvalidOperation.0" xml:space="preserve">
     <value>An attempted operation is invalid in the current context.</value>
   </data>
+  <data name="MethodNotFound.0" xml:space="preserve">
+    <value>Method not found.</value>
+  </data>
+  <data name="MethodNotFound.1" xml:space="preserve">
+    <value>Method "{0}" not found.</value>
+  </data>
 </root>
