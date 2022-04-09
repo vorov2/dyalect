@@ -9,11 +9,13 @@ namespace Dyalect.Library.IO
         public readonly Reference<CoreModule> Core;
 
         public DyFileTypeInfo File { get; }
+        public DyPathTypeInfo Path { get; }
 
         public IOModule()
         {
             Core = AddReference<CoreModule>();
             File = AddType<DyFileTypeInfo>();
+            Path = AddType<DyPathTypeInfo>();
         }
     }
 }
