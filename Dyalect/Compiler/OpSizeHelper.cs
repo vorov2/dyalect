@@ -78,7 +78,7 @@
             1, //FunArgNm
             1, //FunCall
             1, //NewTuple
-            1, //HasField
+            1, //Contains
             0, //TypeCheck
             1, //Start
             0, //End

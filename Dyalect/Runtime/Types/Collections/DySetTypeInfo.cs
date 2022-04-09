@@ -26,7 +26,7 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(self.Count);
         }
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {
             var self = (DySet)arg;
             var sb = new StringBuilder("Set (");

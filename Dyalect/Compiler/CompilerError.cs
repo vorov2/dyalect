@@ -114,6 +114,12 @@
 
         SelfCastNotAllowed = 255,
 
-        InvalidFunctionArgument = 256
+        InvalidFunctionArgument = 256,
+
+        BuiltinWrongArguments = 257,
+
+        SetterWrongArguments = 258,
+
+        GetterWrongArguments = 259
     }
 }

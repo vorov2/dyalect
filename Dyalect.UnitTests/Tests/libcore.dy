@@ -220,3 +220,174 @@ fox is the red fox.]>
     assert(23, bar.Position())
     assert('D', bar.Read(Char))
 #endregion
+
+#region "TimeDelta: GetType"
+    let td = TimeDelta(days: 1)
+    assert(TimeDelta, td.GetType())
+    assert("TimeDelta", td.GetType().name)
+#endregion
+
+#region "TimeDelta: construction"
+    var td = TimeDelta(ticks: 12)
+    assert(12, td.Ticks)
+    td = TimeDelta(days: 1, hours: 12, minutes: 33, seconds: 3)
+    assert(1, td.Days)
+    assert(12, td.Hours)
+    assert(33, td.Minutes)
+    assert(3, td.Seconds)
+    td = TimeDelta(milliseconds: 1405)
+    assert(405, td.Milliseconds)
+    assert(1, td.Seconds)
+#endregion
+
+#region "TimeDelta: math"
+    let x = TimeDelta(minutes: 3, seconds: 12)
+    let y = TimeDelta(minutes: 1, seconds: 45)
+    assert("00:04:57", (x + y).ToString())
+    assert("00:01:27", (x - y).ToString())
+#endregion
+
+#region "TimeDelta: equality"
+    let x = TimeDelta(minutes: 3, seconds: 12)
+    let y = TimeDelta(minutes: 1, seconds: 45)
+    let z = TimeDelta(minutes: 3, seconds: 12)
+    assert(true, x == z)
+    assert(false, x == y)
+    assert(true, x != y)
+#endregion
+
+#region "TimeDelta: comparison"
+    let x = TimeDelta(minutes: 3, seconds: 12)
+    let y = TimeDelta(minutes: 1, seconds: 45)
+    let z = TimeDelta(minutes: 3, seconds: 12)
+    assert(true, x > y)
+    assert(true, x >= z)
+    assert(false, y > z)
+    assert(true, y < z)
+    assert(true, y <= z)
+    assert(true, x <= z)
+#endregion
+
+#region "TimeDelta: casting"
+    let td = TimeDelta(ticks: 1409)
+    assert(1409, td as Integer)
+#endregion
+
+#region "TimeDelta: ToString"
+    let td = TimeDelta(hours: 12, minutes: 3, seconds: 12)
+    assert("12:03:12", td.ToString())
+    assert("03-12-12", td.ToString(format: "mm-hh-ss"))
+#endregion
+
+#region "TimeDelta: Min, Max, Default"
+    assert(Integer.Min(), TimeDelta.Min().Ticks)
+    assert(Integer.Max(), TimeDelta.Max().Ticks)
+    assert(0, TimeDelta.Default().Ticks)
+#endregion
+
+#region "TimeDelta: Parse"
+    assert("00:12:34", TimeDelta.Parse("00:12:34").ToString())
+    assert("00:12:34", TimeDelta.Parse("00:12:34", "hh:mm:ss").ToString())
+    assert("00:12:34", TimeDelta.Parse("00--12--34", "hh--mm--ss").ToString())
+#endregion
+
+#region "DateTime: GetType"
+    let dt = DateTime.Now()
+    assert(DateTime, dt.GetType())
+    assert("DateTime", dt.GetType().name)
+#endregion
+
+#region "DateTime: Min, Max and Default"
+    assert("0001-01-01T00:00:00.0000000+03:00", DateTime.Min().ToString())
+    assert("9999-12-31T23:59:59.9999999+03:00", DateTime.Max().ToString())
+    assert("0001-01-01T00:00:00.0000000+03:00", DateTime.Default().ToString())
+#endregion
+
+#region "DateTime: construction"
+    let dt = DateTime(year: 2012, month: 12, day: 12, hour: 9, minute: 34, second: 46, millisecond: 956)
+    assert(2012, dt.Year)
+    assert(12, dt.Month)
+    assert(12, dt.Day)
+    assert(9, dt.Hour)
+    assert(34, dt.Minute)
+    assert(46, dt.Second)
+    assert(956, dt.Millisecond)
+#endregion
+
+#region "DateTime: DayOfWeek"
+    let dt = DateTime(year: 2012, month: 12, day: 12, hour: 9, minute: 34, second: 46, millisecond: 956)
+    assert("Wednesday", dt.DayOfWeek)
+#endregion
+
+#region "DateTime: Ticks"
+    let dt = DateTime(year: 2012, month: 12, day: 12, hour: 9, minute: 34, second: 46, millisecond: 956)
+    assert(634909016869560000, dt.Ticks)
+#endregion
+
+#region "DateTime: FromTicks"
+    let dt = DateTime.FromTicks(634909016869560000)
+    assert(2012, dt.Year)
+    assert(12, dt.Month)
+    assert(12, dt.Day)
+    assert(9, dt.Hour)
+    assert(34, dt.Minute)
+    assert(46, dt.Second)
+    assert(956, dt.Millisecond)
+#endregion
+
+#region "DateTime: Parse"
+    var dt = DateTime.Parse("01/04/2020", format: "dd/MM/yyyy")
+    assert(2020, dt.Year)
+    assert(4, dt.Month)
+    assert(1, dt.Day)
+    dt = DateTime.Parse("2020-04-01", format: "yyyy-MM-dd")
+    assert(2020, dt.Year)
+    assert(4, dt.Month)
+    assert(1, dt.Day)
+    dt = DateTime.Parse("04.01.2020", format: "MM.dd.yyyy")
+    assert(2020, dt.Year)
+    assert(4, dt.Month)
+    assert(1, dt.Day)
+#endregion
+
+#region "DateTime: ToString"
+    var dt = DateTime.Parse("01/04/2020", format: "dd/MM/yyyy")
+    assert("01/04/2020", dt.ToString("dd/MM/yyyy"))
+    assert("2020-04-01", dt.ToString("yyyy-MM-dd"))
+    assert("04.01.2020", dt.ToString("MM.dd.yyyy"))
+#endregion
+
+#region "DateTime: Add"
+    let format = "dd/MM/yyyy"
+    var dt = DateTime.Parse("01/04/2020", format: "dd/MM/yyyy")
+    dt = dt.Add(years: 1)
+    assert("01/04/2021", dt.ToString(format))
+    dt = dt.Add(days: 9)
+    assert("10/04/2021", dt.ToString(format))
+    dt = dt.Add(months: 2)
+    assert("10/06/2021", dt.ToString(format))
+#endregion
+
+#region "DateTime: math"    
+    let dt1 = DateTime.Parse("01/04/2020", format: "dd/MM/yyyy")
+    let dt2 = DateTime.Parse("11/04/2020", format: "dd/MM/yyyy")
+    let td = dt2 - dt1
+    assert(10, td.Days)
+    let dt3 = dt1 + TimeDelta(days: 10)
+    assert("11/04/2020", dt3.ToString("dd/MM/yyyy"))
+    assert(true, dt2 == dt3)
+#endregion
+
+#region "DateTime: comparison"    
+    let dt1 = DateTime.Parse("01/04/2020", format: "dd/MM/yyyy")
+    let dt2 = DateTime.Parse("11/04/2020", format: "dd/MM/yyyy")
+    let dt3 = DateTime.Parse("01/04/2020", format: "dd/MM/yyyy")
+    assert(true, dt1 != dt2)
+    assert(false, dt1 == dt2)
+    assert(true, dt1 == dt3)
+    assert(false, dt1 != dt3)
+    assert(false, dt1 > dt2)
+    assert(true, dt1 < dt2)
+    assert(true, dt1 <= dt2)
+    assert(true, dt2 >= dt1)
+#endregion

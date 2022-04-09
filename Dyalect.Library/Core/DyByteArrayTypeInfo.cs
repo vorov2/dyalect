@@ -12,7 +12,7 @@ namespace Dyalect.Library.Core
 
         public DyByteArray Create(byte[]? buffer) => new(this, buffer);
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {
             var buffer = ((DyByteArray)arg).GetBytes();
             var strs = buffer.Select(b => "0x" + b.ToString("X").PadLeft(2, '0')).ToArray();

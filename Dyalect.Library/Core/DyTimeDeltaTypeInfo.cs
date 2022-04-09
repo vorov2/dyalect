@@ -16,11 +16,27 @@ namespace Dyalect.Library.Core
             | SupportedOperations.Gt | SupportedOperations.Gte | SupportedOperations.Lt
             | SupportedOperations.Lte | SupportedOperations.Eq | SupportedOperations.Neq;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.ToString());
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
+        {
+            if (format.TypeId == DyType.Nil)
+                return new DyString(arg.ToString());
+
+            if (!format.IsString(ctx)) return Default();
+
+            try
+            {
+                var res = FormatTimeSpan(((DyTimeDelta)arg).Value, format.GetString());
+                return new DyString(res);
+            }
+            catch (FormatException)
+            {
+                return ctx.ParsingFailed();
+            }
+        }
 
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == left.TypeId)
+            if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
             return new DyTimeDelta(this, ((DyTimeDelta)left).Value + ((DyTimeDelta)right).Value);
@@ -28,7 +44,7 @@ namespace Dyalect.Library.Core
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == left.TypeId)
+            if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
             try
@@ -43,23 +59,23 @@ namespace Dyalect.Library.Core
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == left.TypeId)
-                return ctx.InvalidType(left.TypeId, right);
+            if (right.TypeId != left.TypeId)
+                return DyBool.False;
 
             return ((DyTimeDelta)left).Value == ((DyTimeDelta)right).Value ? DyBool.True : DyBool.False;
         }
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == left.TypeId)
-                return ctx.InvalidType(left.TypeId, right);
+            if (right.TypeId != left.TypeId)
+                return DyBool.True ;
 
             return ((DyTimeDelta)left).Value != ((DyTimeDelta)right).Value ? DyBool.True : DyBool.False;
         }
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == left.TypeId)
+            if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
             return ((DyTimeDelta)left).Value > ((DyTimeDelta)right).Value ? DyBool.True : DyBool.False;
@@ -67,7 +83,7 @@ namespace Dyalect.Library.Core
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == left.TypeId)
+            if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
             return ((DyTimeDelta)left).Value < ((DyTimeDelta)right).Value ? DyBool.True : DyBool.False;
@@ -75,7 +91,7 @@ namespace Dyalect.Library.Core
 
         protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == left.TypeId)
+            if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
             return ((DyTimeDelta)left).Value >= ((DyTimeDelta)right).Value ? DyBool.True : DyBool.False;
@@ -83,11 +99,18 @@ namespace Dyalect.Library.Core
 
         protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
-            if (right.TypeId == left.TypeId)
+            if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
             return ((DyTimeDelta)left).Value <= ((DyTimeDelta)right).Value ? DyBool.True : DyBool.False;
         }
+
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.ReflectedTypeId switch
+            {
+                DyType.Integer => DyInteger.Get(((DyTimeDelta)self).Value.Ticks),
+                _ => base.CastOp(self, targetType, ctx)
+            };
         #endregion
 
         private string GetFormatString(string format)
@@ -108,24 +131,6 @@ namespace Dyalect.Library.Core
         }
 
         private string FormatTimeSpan(TimeSpan timeSpan, string format) => timeSpan.ToString(GetFormatString(format), CI.Default);
-
-        public DyObject ToStringWithFormat(ExecutionContext ctx, DyObject self, DyObject format)
-        {
-            if (format.TypeId == DyType.Nil)
-                return new DyString(self.ToString());
-
-            if (!format.IsString(ctx)) return Default();
-
-            try
-            {
-                var res = FormatTimeSpan(((DyTimeDelta)self).Value, format.GetString());
-                return new DyString(res);
-            }
-            catch (FormatException)
-            {
-                return ctx.ParsingFailed();
-            }
-        }
 
         private DyObject InternalParse(ExecutionContext ctx, Func<TimeSpan> parser)
         {

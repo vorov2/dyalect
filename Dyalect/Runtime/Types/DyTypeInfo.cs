@@ -273,10 +273,10 @@ namespace Dyalect.Runtime.Types
 
         //x.ToString
         private DyFunction? tos;
-        protected virtual DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(arg.ToString());
+        protected virtual DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => new DyString(arg.ToString());
         internal string? ToStringDirect(ExecutionContext ctx, DyObject arg)
         {
-            var res = ToStringOp(arg, ctx);
+            var res = ToStringOp(arg, Default(), ctx);
 
             if (ctx.HasErrors)
                 return null;
@@ -297,12 +297,23 @@ namespace Dyalect.Runtime.Types
                 return retval.TypeId == DyType.String ? retval : DyString.Empty;
             }
 
-            return ToStringOp(arg, ctx);
+            return ToStringOp(arg, Default(), ctx);
+        }
+        public DyObject ToStringWithFormat(ExecutionContext ctx, DyObject arg, DyObject format)
+        {
+            if (tos is not null)
+            {
+                var retval = tos.Parameters.Length == 0 ?
+                    tos.BindToInstance(ctx, arg).Call(ctx) : tos.BindToInstance(ctx, arg).Call(ctx, format);
+                return retval.TypeId == DyType.String ? retval : DyString.Empty;
+            }
+
+            return ToStringOp(arg, format, ctx);
         }
 
         //x.ToLiteral
         private DyFunction? tol;
-        protected virtual DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, ctx);
+        protected virtual DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
         internal string? ToLiteralDirect(ExecutionContext ctx, DyObject arg)
         {
             var res = ToLiteralOp(arg, ctx);
@@ -386,6 +397,18 @@ namespace Dyalect.Runtime.Types
         {
             conversions.Remove(type.ReflectedTypeId);
             conversions.Add(type.ReflectedTypeId, func);
+        }
+
+        //HasField
+        private DyFunction? contains;
+        protected virtual DyObject ContainsOp(DyObject self, string field, ExecutionContext ctx) =>
+            ctx.OperationNotSupported(Builtins.Contains, self);
+        public DyObject Contains(ExecutionContext ctx, DyObject self, string field)
+        {
+            if (contains is not null)
+                return contains.BindToInstance(ctx, self).Call(ctx, new DyString(field));
+
+            return ContainsOp(self, field, ctx);
         }
         #endregion
 
@@ -558,6 +581,11 @@ namespace Dyalect.Runtime.Types
                 case Builtins.Plus: plus = func; break;
                 case Builtins.Set: set = func; break;
                 case Builtins.Get: get = func; break;
+                case Builtins.Contains:
+                    if (func is not null && func.Auto)
+                        ctx.InvalidOverload(name);
+                    contains = func;
+                    break;
                 case Builtins.Len:
                     if (func is not null && func.Auto)
                         ctx.InvalidOverload(name);
@@ -617,7 +645,7 @@ namespace Dyalect.Runtime.Types
                 Builtins.Get => Support(self, SupportedOperations.Get) ? Func.Member(name, Get, -1, new Par("index")) : null,
                 Builtins.Set => Support(self, SupportedOperations.Set) ? Func.Member(name, Set, -1, new Par("index"), new Par("value")) : null,
                 Builtins.Len => Support(self, SupportedOperations.Len) ? Func.Member(name, Length) : null,
-                Builtins.ToStr => Func.Member(name, ToString),
+                Builtins.ToStr => Func.Member(name, ToStringWithFormat, -1, new Par("format", DyNil.Instance)),
                 Builtins.ToLit => Support(self, SupportedOperations.Lit) ? Func.Member(name, ToLiteral) : null,
                 Builtins.Iterator => Support(self, SupportedOperations.Iter) ? Func.Member(name, GetIterator) : null,
                 Builtins.Clone => Func.Member(name, Clone),

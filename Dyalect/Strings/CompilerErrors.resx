@@ -270,6 +270,9 @@
   <data name="IndexerWrongArguments" xml:space="preserve">
     <value>Invalid number of argument for an indexer method.</value>
   </data>
+  <data name="BuiltinWrongArguments" xml:space="preserve">
+    <value>Invalid number of argument for an operator or built-in method.</value>
+  </data>
   <data name="IndexerSetOrGet" xml:space="preserve">
     <value>Invalid definition of an indexer method - missing "set" or "get" modifier.</value>
   </data>
@@ -299,5 +302,11 @@
   </data>
   <data name="InvalidFunctionArgument" xml:space="preserve">
     <value>Invalid function argument, keyword "var" is not supported in this context.</value>
+  </data>
+  <data name="GetterWrongArguments" xml:space="preserve">
+    <value>Invalid number of arguments for a property getter.</value>
+  </data>
+  <data name="SetterWrongArguments" xml:space="preserve">
+    <value>Invalid number of arguments for a property setter.</value>
   </data>
 </root>

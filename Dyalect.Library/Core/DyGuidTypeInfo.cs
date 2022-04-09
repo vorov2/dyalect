@@ -11,7 +11,7 @@ namespace Dyalect.Library.Core
 
         public DyByteArray Create(byte[]? buffer) => new(this, buffer);
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
             new DyString("{" + arg.ToString().ToUpper() + "}");
 
         protected override SupportedOperations GetSupportedOperations() =>

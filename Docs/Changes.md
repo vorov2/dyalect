@@ -1,3 +1,16 @@
+# 0.36.0
+  * Change: _Standard method `ToString` should accept an optional `format` parameter_ ([Issue #706](https://github.com/vorov2/dyalect/issues/706)).
+  * Change: _Field check pattern is not overridable_ ([Issue #710](https://github.com/vorov2/dyalect/issues/710)).
+  * Add: _Add `Console.ReadKey` method_ ([Issue #698](https://github.com/vorov2/dyalect/issues/698), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Console#readKey)).
+  * Add: _No introspection on a constructor name_ ([Issue #680](https://github.com/vorov2/dyalect/issues/680), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#constructorName)).
+  * Add: _Add a new `TimeDelta` type_ ([Issue #705](https://github.com/vorov2/dyalect/issues/705), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta)).
+  * Add: _Library: file IO_ ([Issue #329](https://github.com/vorov2/dyalect/issues/329), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.File)).
+  * Add: _Add a `Path` type with static methods to deal with paths_ ([Issue #709](https://github.com/vorov2/dyalect/issues/709), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.Path)).
+  * Add: _Library: `DateTime` data type_ ([Issue #332](https://github.com/vorov2/dyalect/issues/332), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.DateTime)).
+  * Add: _Add a `Directory` type with an ability to create new directories_ ([Issue #711](https://github.com/vorov2/dyalect/issues/711), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.Directory)).
+  * Fix: _It is possible to override built-in with a wrong number of arguments_ ([Issue #707](https://github.com/vorov2/dyalect/issues/707)).
+  * Fix: _A getter and setter can have any number of arguments_ ([Issue #708](https://github.com/vorov2/dyalect/issues/708)).
+
 # 0.35.10
   * Change: _Refactoring of unit test module in Dyalect Console._
   * Add: _Add support for test result generation in Markdown_ ([Issue #702](https://github.com/vorov2/dyalect/issues/702)).

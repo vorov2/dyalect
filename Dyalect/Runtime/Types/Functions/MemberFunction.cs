@@ -127,4 +127,60 @@ namespace Dyalect.Runtime.Types
 
         internal override bool Equals(DyFunction func) => func is MemberFunction4 m && m.fun.Equals(fun);
     }
+
+    internal sealed class MemberFunction5 : DyForeignFunction
+    {
+        private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun;
+
+        public MemberFunction5(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+            : base(name, pars, varArgIndex) => this.fun = fun;
+
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0], args[1], args[2], args[3], args[4]);
+
+        protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction5(FunctionName, fun, Parameters, VarArgIndex);
+
+        internal override bool Equals(DyFunction func) => func is MemberFunction5 m && m.fun.Equals(fun);
+    }
+
+    internal sealed class MemberFunction6 : DyForeignFunction
+    {
+        private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun;
+
+        public MemberFunction6(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+            : base(name, pars, varArgIndex) => this.fun = fun;
+
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0], args[1], args[2], args[3], args[4], args[5]);
+
+        protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction6(FunctionName, fun, Parameters, VarArgIndex);
+
+        internal override bool Equals(DyFunction func) => func is MemberFunction6 m && m.fun.Equals(fun);
+    }
+
+    internal sealed class MemberFunction7 : DyForeignFunction
+    {
+        private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun;
+
+        public MemberFunction7(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+            : base(name, pars, varArgIndex) => this.fun = fun;
+
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+
+        protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction7(FunctionName, fun, Parameters, VarArgIndex);
+
+        internal override bool Equals(DyFunction func) => func is MemberFunction7 m && m.fun.Equals(fun);
+    }
+
+    internal sealed class MemberFunction8 : DyForeignFunction
+    {
+        private readonly Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun;
+
+        public MemberFunction8(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars, int varArgIndex)
+            : base(name, pars, varArgIndex) => this.fun = fun;
+
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+
+        protected override DyFunction Clone(ExecutionContext ctx) => new MemberFunction8(FunctionName, fun, Parameters, VarArgIndex);
+
+        internal override bool Equals(DyFunction func) => func is MemberFunction8 m && m.fun.Equals(fun);
+    }
 }

@@ -14,9 +14,9 @@
 
         protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => DyBool.True;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) => new DyString(DyNil.Literal);
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => new DyString(DyNil.Literal);
 
-        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, ctx);
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch

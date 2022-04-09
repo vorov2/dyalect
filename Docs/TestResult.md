@@ -1,10 +1,10 @@
-# Test session from 06/04/2022 14:29
+# Test session from 09/04/2022 18:32
 
 ## Summary:
-640 passed, 0 failed in 25 file(s)
+680 passed, 0 failed in 26 file(s)
 
 ## Test file(s):
-[array.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [iterator.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [match.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [modules.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
+[array.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [iterator.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [modules.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
 
 ## Report:
 
@@ -95,6 +95,7 @@
 * &#9745; **assert**
 * &#9745; **rawget and rawset**
 * &#9745; **rawset and read-only**
+* &#9745; **constructorName**
 
 ### Tests/char.dy::
 * &#9745; **Char literal**
@@ -416,6 +417,46 @@
 * &#9745; **Regex: IsMatch**
 * &#9745; **ByteArray: GetType**
 * &#9745; **ByteArray: read and write**
+* &#9745; **TimeDelta: GetType**
+* &#9745; **TimeDelta: construction**
+* &#9745; **TimeDelta: math**
+* &#9745; **TimeDelta: equality**
+* &#9745; **TimeDelta: comparison**
+* &#9745; **TimeDelta: casting**
+* &#9745; **TimeDelta: ToString**
+* &#9745; **TimeDelta: Min, Max, Default**
+* &#9745; **TimeDelta: Parse**
+* &#9745; **DateTime: GetType**
+* &#9745; **DateTime: Min, Max and Default**
+* &#9745; **DateTime: construction**
+* &#9745; **DateTime: DayOfWeek**
+* &#9745; **DateTime: Ticks**
+* &#9745; **DateTime: FromTicks**
+* &#9745; **DateTime: Parse**
+* &#9745; **DateTime: ToString**
+* &#9745; **DateTime: Add**
+* &#9745; **DateTime: math**
+* &#9745; **DateTime: comparison**
+
+### Tests/libio.dy::
+* &#9745; **File: GetType**
+* &#9745; **File: Exists**
+* &#9745; **File: ReadText**
+* &#9745; **File: ReadLines**
+* &#9745; **Path: GetType**
+* &#9745; **Path: GetDirectory**
+* &#9745; **Path: GetExtension**
+* &#9745; **Path: GetFileName**
+* &#9745; **Path: GetFileNameWithoutExtension**
+* &#9745; **Path: GetPathRoot**
+* &#9745; **Path: Combine**
+* &#9745; **Path: Exists**
+* &#9745; **Path: EnumerateFiles 1**
+* &#9745; **Path: EnumerateFiles 2**
+* &#9745; **Path: EnumerateDirectories**
+* &#9745; **Directory: GetType**
+* &#9745; **Directory: Exists**
+* &#9745; **Directory: Create**
 
 ### Tests/match.dy::
 * &#9745; **Patterns: tuple**
@@ -685,6 +726,7 @@
 * &#9745; **Type annotations 4**
 * &#9745; **Initialization blocks 1**
 * &#9745; **Initialization blocks 2**
+* &#9745; **Custom fields and pattern matching**
 
 ### Tests/variant.dy::
 * &#9745; **Literal**

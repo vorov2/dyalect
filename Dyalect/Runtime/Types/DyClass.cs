@@ -26,8 +26,6 @@ namespace Dyalect.Runtime.Types
             other is not null && DecType.TypeId == other.TypeId && other is DyClass t 
                 && t.Constructor == Constructor && t.Fields.Equals(Fields);
 
-        protected internal override bool HasItem(string name, ExecutionContext ctx) => Fields.HasItem(name, ctx);
-
         protected internal override DyObject GetInitValue() => Fields;
 
         public override DyObject Clone() => new DyClass(DecType, Constructor, Fields, DeclaringUnit);

@@ -37,11 +37,24 @@ namespace Dyalect.Runtime.Types
         public static DyObject Negate(this DyObject self, ExecutionContext ctx) =>
             ctx.RuntimeContext.Types[self.TypeId].Neg(ctx, self);
 
+        public static bool NotNil(this DyObject self) => !ReferenceEquals(self, DyNil.Instance);
+
         public static bool IsInteger(this DyObject self, ExecutionContext ctx)
         {
             if (self.TypeId != DyType.Integer)
             {
                 ctx.InvalidType(DyType.Integer, self);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsNumber(this DyObject self, ExecutionContext ctx)
+        {
+            if (self.TypeId != DyType.Integer && self.TypeId != DyType.Float)
+            {
+                ctx.InvalidType(DyType.Integer, DyType.Float, self);
                 return false;
             }
 

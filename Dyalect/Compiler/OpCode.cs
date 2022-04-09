@@ -77,7 +77,7 @@
         FunArgNm,   //-1
         FunCall,    //0
         NewTuple,   //Dynamic
-        HasField,   //0
+        Contains,   //0
         TypeCheck,  //-2
         Start,      //0
         End,        //0

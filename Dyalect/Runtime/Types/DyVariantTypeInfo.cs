@@ -26,7 +26,7 @@ namespace Dyalect.Runtime.Types
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             DyInteger.Get(((DyVariant)arg).Tuple.Count);
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {
             var self = (DyVariant)arg;
             var str = ctx.RuntimeContext.Tuple.ToStringDirect(ctx, self.Tuple);

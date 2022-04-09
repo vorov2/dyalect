@@ -55,8 +55,6 @@ namespace Dyalect.Runtime.Types
 
         internal override DyObject MakeImmutable() => new DyLabel(Label, Value);
 
-        protected internal override bool HasItem(string name, ExecutionContext ctx) => name == Label;
-
         public override int GetHashCode() => HashCode.Combine(Label, Value);
 
         public override bool Equals(DyObject? other)

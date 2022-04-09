@@ -10,7 +10,7 @@ namespace Dyalect.Library.Core
     {
         public override string TypeName => "Regex";
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {
             return new DyString(((DyRegex)arg).Regex.ToString());
         }

@@ -41,7 +41,7 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {
             var map = (DyDictionary)arg;
             var sb = new StringBuilder();
@@ -59,6 +59,9 @@ namespace Dyalect.Runtime.Types
             sb.Append(')');
             return new DyString(sb.ToString());
         }
+
+        protected override DyObject ContainsOp(DyObject self, string field, ExecutionContext ctx) =>
+            ((DyDictionary)self).ContainsKey(new DyString(field)) ? DyBool.True : DyBool.False;
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 

@@ -80,7 +80,15 @@ namespace Dyalect.Compiler
                             realName = GetMethodName(realName, node);
 
                         if (node.Setter && !node.IsIndexer)
+                        {
                             realName = Builtins.Setter(realName);
+
+                            if (node.Parameters.Count != 1)
+                                AddError(CompilerError.SetterWrongArguments, node.Location);
+                        }
+
+                        if (node.Getter && !node.IsIndexer && node.Parameters.Count > 0)
+                            AddError(CompilerError.GetterWrongArguments, node.Location);
 
                         if (node.Name is Builtins.Has || (!node.IsStatic && node.Name is Builtins.Type))
                             AddError(CompilerError.OverrideNotAllowed, node.Location, node.Name);
@@ -112,27 +120,79 @@ namespace Dyalect.Compiler
 
         //Converts symbolic names (used when overriding operators) to special internal
         //names, e.g. "*" becomes "__op_mul"
-        private string GetMethodName(string name, DFunctionDeclaration node) =>
-            name switch
+        private string GetMethodName(string name, DFunctionDeclaration node)
+        {
+            switch (name)
             {
-                "+" => node.Parameters.Count == 0 ? Builtins.Plus : Builtins.Add,
-                "-" => node.Parameters.Count == 0 ? Builtins.Neg : Builtins.Sub,
-                "*" => Builtins.Mul,
-                "/" => Builtins.Div,
-                "%" => Builtins.Rem,
-                "<<<" => Builtins.Shl,
-                ">>>" => Builtins.Shr,
-                "^^^" => Builtins.Xor,
-                "==" => Builtins.Eq,
-                "!=" => Builtins.Neq,
-                ">" => Builtins.Gt,
-                "<" => Builtins.Lt,
-                ">=" => Builtins.Gte,
-                "<=" => Builtins.Lte,
-                "!" => Builtins.Not,
-                "~~~" => Builtins.BitNot,
-                _ => name
-            };
+                case "+" when node.Parameters.Count == 0: return Builtins.Plus;
+                case "-" when node.Parameters.Count == 0: return Builtins.Neg;
+                case "!":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Not;
+                case "~~~":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.BitNot;
+                case "Length":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "ToLiteral":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "Iterate":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "Dispose":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "Clone":
+                    if (node.Parameters.Count > 0) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "ToString":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "Contains":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return name;
+                case "+": 
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Add;
+                case "-":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Sub;
+                case "*":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Mul;
+                case "/":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Div;
+                case "<<<":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Shl;
+                case ">>>":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Shr;
+                case "==":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Eq;
+                case "!=":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Neq;
+                case ">":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Gt;
+                case "<":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Lt;
+                case ">=":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Gte;
+                case "<=":
+                    if (node.Parameters.Count > 1) AddError(CompilerError.BuiltinWrongArguments, node.Location);
+                    return Builtins.Lte;
+                default:
+                    return name;
+            }
+        }
 
         //Compilation of function parameters with support for variable
         //arguments and default values

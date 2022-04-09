@@ -1,8 +1,11 @@
-# Dyalect ![GitHub tag (latest SemVer)](https://img.shields.io/badge/version-0.35-royalblue.svg)
+[![Build](https://github.com/vorov2/dyalect/actions/workflows/dotnet.yml/badge.svg)](https://github.com/vorov2/dyalect/actions/workflows/dotnet.yml)
+[![Tests](https://img.shields.io/badge/Tests-passing-33CB56?style=flat&logo=pytest&labelColor=2E343A&logoColor=959DA5)](https://github.com/vorov2/dyalect/blob/master/Docs/TestResult.md)
 
-[![Build](https://github.com/vorov2/dyalect/actions/workflows/dotnet.yml/badge.svg)](https://github.com/vorov2/dyalect/blob/master/Docs/TestResult.md)
+# Dyalect programming language 
 
 :blue_book: [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
+
+[![GitHub tag (latest SemVer)](https://img.shields.io/badge/Download-0.36.0-blue?style=for-the-badge&logo=github)](https://github.com/vorov2/dyalect/releases/latest)
 
 Dyalect is a dynamic programming language for .NET platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short) is

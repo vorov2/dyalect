@@ -11,7 +11,7 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeId => DyType.Function;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
             new DyString(arg.ToString());
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>

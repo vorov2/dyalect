@@ -30,7 +30,7 @@
 
         ArgumentNotFound = 613,
 
-        // = 614,
+        InvalidOperation = 614,
 
         MatchFailed = 615,
 

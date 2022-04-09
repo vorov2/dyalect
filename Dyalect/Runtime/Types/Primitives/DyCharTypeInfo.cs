@@ -15,7 +15,7 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeId => DyType.Char;
 
-        protected override DyObject ToStringOp(DyObject arg, ExecutionContext ctx) =>
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
             new DyString(arg.GetString());
 
         protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => new DyString(StringUtil.Escape(arg.GetString(), "'"));
