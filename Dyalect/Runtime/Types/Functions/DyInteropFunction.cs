@@ -91,7 +91,5 @@ namespace Dyalect.Runtime.Types
 
         internal override bool Equals(DyFunction func) => func is DyInteropFunction f
             && f.name == name && f.type.Equals(type);
-    }
-
-    
+    }    
 }

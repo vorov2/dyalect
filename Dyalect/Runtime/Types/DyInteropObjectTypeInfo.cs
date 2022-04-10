@@ -67,6 +67,10 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeId => (int)type.TypeHandle.Value;
 
+        internal override void SetStaticMember(ExecutionContext ctx, string name, DyFunction func) => ctx.InvalidOperation();
+
+        internal override void SetInstanceMember(ExecutionContext ctx, string name, DyFunction func) => ctx.InvalidOperation();
+
         public DyInteropSpecificObjectTypeInfo(System.Type type) => this.type = type;
 
         private DyObject CreateNew(ExecutionContext ctx, DyObject args)
