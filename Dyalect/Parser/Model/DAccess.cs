@@ -10,13 +10,19 @@ namespace Dyalect.Parser.Model
 
         public string Name { get; set; } = null!;
 
+        public bool SpecialName { get; set; }
+
         protected internal override string? GetName() => Name;
 
         internal override void ToString(StringBuilder sb)
         {
             Target.ToString(sb);
             sb.Append('.');
-            sb.Append(Name);
+
+            if (SpecialName)
+                sb.Append("[" + Name + "]");
+            else
+                sb.Append(Name);
         }
     }
 }

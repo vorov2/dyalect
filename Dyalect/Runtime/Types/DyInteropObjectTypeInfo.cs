@@ -32,10 +32,26 @@ namespace Dyalect.Runtime.Types
             return new DyInteropSpecificObjectTypeInfo(typeInfo);
         }
 
+        private DyObject LoadAssembly(ExecutionContext ctx, DyObject assembly)
+        {
+            if (!assembly.IsString(ctx)) return Default();
+            Assembly.Load(assembly.GetString());
+            return DyNil.Instance;
+        }
+
+        private DyObject LoadAssemblyFromFile(ExecutionContext ctx, DyObject path)
+        {
+            if (!path.IsString(ctx)) return Default();
+            Assembly.LoadFrom(path.GetString());
+            return DyNil.Instance;
+        }
+
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "Interop" => Func.Static(name, CreateInteropObject, -1, new Par("type")),
+                "LoadAssembly" => Func.Static(name, LoadAssembly, -1, new Par("assembly")),
+                "LoadAssemblyFromFile" => Func.Static(name, LoadAssemblyFromFile, -1, new Par("path")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
 

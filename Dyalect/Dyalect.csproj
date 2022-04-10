@@ -21,6 +21,7 @@
       <RepositoryType>git</RepositoryType>
       <AssemblyName>Dyalect</AssemblyName>
       <Nullable>enable</Nullable>
+	  <UseWindowsForms>false</UseWindowsForms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
