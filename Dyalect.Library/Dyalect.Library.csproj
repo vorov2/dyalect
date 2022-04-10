@@ -27,4 +27,8 @@
     <ProjectReference Include="..\Dyalect\Dyalect.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Core\DateTime\" />
+  </ItemGroup>
+
 </Project>

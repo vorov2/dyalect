@@ -3,11 +3,12 @@ using System;
 
 namespace Dyalect.Library.Core
 {
-    public sealed class DyDateTime : DyForeignObject
+    public class DyDateTime : DyForeignObject
     {
-        public readonly DateTime Value;
+        internal readonly DateTime Value;
+        internal readonly TimeSpan? Offset;
 
-        public DyDateTime(DyDateTimeTypeInfo typeInfo, DateTime value) : base(typeInfo) => 
+        internal DyDateTime(DyBaseDateTimeTypeInfo typeInfo, DateTime value) : base(typeInfo) =>
             Value = value;
 
         public override object ToObject() => Value;
@@ -19,5 +20,14 @@ namespace Dyalect.Library.Core
         public override int GetHashCode() => Value.GetHashCode();
 
         public override string ToString() => Value.ToString();
+
+        public long GetTicks()
+        {
+            if (Offset is null)
+                return Value.Ticks;
+
+            var tdo = new DateTimeOffset(Value, Offset.Value);
+            return tdo.Ticks;
+        }
     }
 }

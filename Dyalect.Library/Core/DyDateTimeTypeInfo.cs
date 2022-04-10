@@ -5,18 +5,17 @@ using System;
 
 namespace Dyalect.Library.Core
 {
-    public sealed class DyDateTimeTypeInfo : DyForeignTypeInfo<CoreModule>
+    public sealed class DyDateTimeTypeInfo : DyBaseDateTimeTypeInfo
     {
         private const string FORMAT = "yyyy-MM-dd HH\\:mm\\:ss.fffffff";
-        public override string TypeName => "DateTime";
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Sub | SupportedOperations.Add
             | SupportedOperations.Gt | SupportedOperations.Gte
             | SupportedOperations.Lt | SupportedOperations.Lte;
 
-        internal DyObject Format(DyDateTime dateTime, DyObject format, ExecutionContext ctx) =>
-            ToStringOp(dateTime, format, ctx);
+        public DyDateTimeTypeInfo() : base("DateTime") { }
+
+        protected override DyDateTime CreateDateTime(DateTime dateTime, TimeSpan? offset) => new DyDateTime(this, dateTime);
 
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {
@@ -75,112 +74,6 @@ namespace Dyalect.Library.Core
             return ctx.InvalidType(DeclaringUnit.TimeDelta.TypeId, right);
         }
 
-        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (right.TypeId != left.TypeId)
-                return ctx.InvalidType(left.TypeId, right);
-
-            return ((DyDateTime)left).Value == ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
-        }
-
-        protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (right.TypeId != left.TypeId)
-                return ctx.InvalidType(left.TypeId, right);
-
-            return ((DyDateTime)left).Value != ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
-        }
-
-        protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (right.TypeId != left.TypeId)
-                return ctx.InvalidType(left.TypeId, right);
-
-            return ((DyDateTime)left).Value > ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
-        }
-
-        protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (right.TypeId != left.TypeId)
-                return ctx.InvalidType(left.TypeId, right);
-
-            return ((DyDateTime)left).Value >= ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
-        }
-
-        protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (right.TypeId != left.TypeId)
-                return ctx.InvalidType(left.TypeId, right);
-
-            return ((DyDateTime)left).Value < ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
-        }
-
-        protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (right.TypeId != left.TypeId)
-                return ctx.InvalidType(left.TypeId, right);
-
-            return ((DyDateTime)left).Value <= ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
-        }
-
-        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-            targetType.ReflectedTypeId switch
-            {
-                DyType.Integer => new DyInteger(((DyDateTime)self).Value.Ticks),
-                _ => base.CastOp(self, targetType, ctx)
-            };
-
-        private DyObject AddTo(ExecutionContext ctx, DyObject self, DyObject ticks, DyObject ms, DyObject sec, 
-            DyObject min, DyObject hrs, DyObject days, DyObject months, DyObject years)
-        {
-            var dt = ((DyDateTime)self).Value;
-
-            if (!ticks.NotNil() && !ticks.IsInteger(ctx)) return Default();
-            if (!ms.NotNil() && !ms.IsInteger(ctx)) return Default();
-            if (!sec.NotNil() && !sec.IsInteger(ctx)) return Default();
-            if (!min.NotNil() && !min.IsInteger(ctx)) return Default();
-            if (!hrs.NotNil() && !hrs.IsInteger(ctx)) return Default();
-            if (!days.NotNil() && !days.IsInteger(ctx)) return Default();
-            if (!months.NotNil() && !months.IsInteger(ctx)) return Default();
-            if (!years.NotNil() && !years.IsInteger(ctx)) return Default();
-
-            try
-            {
-                if (ticks.NotNil()) dt = dt.AddTicks(ticks.GetInteger());
-                if (ms.NotNil()) dt = dt.AddMilliseconds(ms.GetFloat());
-                if (sec.NotNil()) dt = dt.AddSeconds(sec.GetFloat());
-                if (min.NotNil()) dt = dt.AddMinutes(min.GetFloat());
-                if (hrs.NotNil()) dt = dt.AddHours(hrs.GetFloat());
-                if (days.NotNil()) dt = dt.AddDays(days.GetFloat());
-                if (months.NotNil()) dt = dt.AddMonths((int)months.GetInteger());
-                if (years.NotNil()) dt = dt.AddYears((int)years.GetInteger());
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return ctx.Overflow();
-            }
-
-            return new DyDateTime(this, dt);
-        }
-
-        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-            name switch
-            {
-                "Add" => Func.Member(name, AddTo, -1, new Par("ticks", DyInteger.Zero), new Par("milliseconds", DyInteger.Zero), new Par("seconds", DyInteger.Zero),
-                    new Par("minutes", DyInteger.Zero), new Par("hours", DyInteger.Zero), new Par("days", DyInteger.Zero), new Par("months", DyInteger.Zero),
-                    new Par("years", DyInteger.Zero)),
-                "Ticks" => Func.Auto(name, _ => DyInteger.Get(((DyDateTime)self).Value.Ticks)),
-                "Millisecond" => Func.Auto(name, _ => DyInteger.Get(((DyDateTime)self).Value.Millisecond)),
-                "Second" => Func.Auto(name, _ => DyInteger.Get(((DyDateTime)self).Value.Second)),
-                "Minute" => Func.Auto(name, _ => DyInteger.Get(((DyDateTime)self).Value.Minute)),
-                "Hour" => Func.Auto(name, _ => DyInteger.Get(((DyDateTime)self).Value.Hour)),
-                "Day" => Func.Auto(name, _ => DyInteger.Get(((DyDateTime)self).Value.Day)),
-                "Month" => Func.Auto(name, _ => DyInteger.Get(((DyDateTime)self).Value.Month)),
-                "Year" => Func.Auto(name, _ => DyInteger.Get(((DyDateTime)self).Value.Year)),
-                "DayOfWeek" => Func.Auto(name, _ => new DyString(((DyDateTime)self).Value.DayOfWeek.ToString())),
-                _ => base.InitializeInstanceMember(self, name, ctx)
-            };
-
         private DyObject Parse(ExecutionContext ctx, DyObject value, DyObject format)
         {
             if (!value.IsString(ctx)) return Default();
@@ -188,7 +81,8 @@ namespace Dyalect.Library.Core
 
             try
             {
-                return new DyDateTime(this, DateTime.ParseExact(value.GetString(), format.GetString(), CI.Default));
+                var dt = DateTime.ParseExact(value.GetString(), format.GetString(), CI.Default);
+                return new DyDateTime(this, DateTime.SpecifyKind(dt, DateTimeKind.Utc));
             }
             catch (FormatException ex)
             {
@@ -196,50 +90,18 @@ namespace Dyalect.Library.Core
             }
         }
 
-        private DyObject New(ExecutionContext ctx, DyObject year, DyObject month, DyObject day, DyObject hour, DyObject minute, DyObject second, DyObject millisecond)
-        {
-            if (!year.IsInteger(ctx)) return Default();
-            if (!month.IsInteger(ctx)) return Default();
-            if (!day.IsInteger(ctx)) return Default();
-            if (!hour.IsInteger(ctx)) return Default();
-            if (!minute.IsInteger(ctx)) return Default();
-            if (!second.IsInteger(ctx)) return Default();
-            if (!millisecond.IsInteger(ctx)) return Default();
+        private DyObject New(ExecutionContext ctx, DyObject year, DyObject month, DyObject day, DyObject hour, DyObject minute, DyObject second, DyObject millisecond) =>
+            New(ctx, year, month, day, hour, minute, second, millisecond, null);
 
-            try
-            {
-                var dt = new DateTime((int)year.GetInteger(), (int)month.GetInteger(), (int)day.GetInteger(), (int)hour.GetInteger(),
-                    (int)minute.GetInteger(), (int)second.GetInteger(), (int)millisecond.GetInteger(), DateTimeKind.Utc);
-                return new DyDateTime(this, dt);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return ctx.InvalidValue();
-            }
-        }
-
-        private DyObject FromTicks(ExecutionContext ctx, DyObject ticks)
-        {
-            if (!ticks.IsInteger(ctx)) return Default();
-
-            try
-            {
-                var dt = new DateTime(ticks.GetInteger(), DateTimeKind.Utc);
-                return new DyDateTime(this, dt);
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return ctx.InvalidValue();
-            }
-        }
+        private DyObject FromTicks(ExecutionContext ctx, DyObject ticks) => FromTicks(ctx, ticks, null);
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch 
             {
                 "Now" => Func.Static(name, _ => new DyDateTime(this, DateTime.UtcNow)),
-                "Min" => Func.Static(name, _ => new DyDateTime(this, DateTime.MinValue)),
-                "Max" => Func.Static(name, _ => new DyDateTime(this, DateTime.MaxValue)),
-                "Default" => Func.Static(name, _ => new DyDateTime(this, DateTime.MinValue)),
+                "Min" => Func.Static(name, _ => new DyDateTime(this, DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc))),
+                "Max" => Func.Static(name, _ => new DyDateTime(this, DateTime.SpecifyKind(DateTime.MaxValue, DateTimeKind.Utc))),
+                "Default" => Func.Static(name, _ => new DyDateTime(this, DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc))),
                 "Parse" => Func.Static(name, Parse, -1, new Par("value"), new Par("format")),
                 "DateTime" => Func.Static(name, New, -1, new Par("year", DyInteger.Zero), new Par("month", DyInteger.Zero), 
                     new Par("day", DyInteger.Zero), new Par("hour", DyInteger.Zero), new Par("minute", DyInteger.Zero),
