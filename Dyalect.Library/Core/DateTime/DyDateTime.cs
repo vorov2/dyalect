@@ -11,6 +11,9 @@ namespace Dyalect.Library.Core
         internal DyDateTime(DyBaseDateTimeTypeInfo typeInfo, DateTime value) : base(typeInfo) =>
             Value = value;
 
+        protected DyDateTime(DyBaseDateTimeTypeInfo typeInfo, DateTime value, TimeSpan offset) : base(typeInfo) =>
+            (Value, Offset) = (value, offset);
+
         public override object ToObject() => Value;
 
         public override DyObject Clone() => this;

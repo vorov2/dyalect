@@ -7,7 +7,7 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyLocalDateTimeTypeInfo : DyBaseDateTimeTypeInfo
     {
-        private const string FORMAT = "yyyy-MM-dd HH\\:mm\\:ss.fffffffzzz";
+        private const string FORMAT = "yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz";
 
         public DyLocalDateTimeTypeInfo() : base("LocalDateTime") { }
 
@@ -98,6 +98,13 @@ namespace Dyalect.Library.Core
                 return ctx.ParsingFailed(ex.Message);
             }
         }
+
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+            name switch
+            {
+                "Offset" => Func.Auto(name, _ => new DyTimeDelta(DeclaringUnit.TimeDelta, ((DyDateTime)self).Offset!.Value)),
+                _ => base.InitializeInstanceMember(self, name, ctx)
+            };
 
         private bool TryGetOffset(ExecutionContext ctx, DyObject offset, out TimeSpan timeSpan)
         {

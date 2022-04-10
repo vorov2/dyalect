@@ -7,7 +7,7 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyDateTimeTypeInfo : DyBaseDateTimeTypeInfo
     {
-        private const string FORMAT = "yyyy-MM-dd HH\\:mm\\:ss.fffffff";
+        private const string FORMAT = "yyyy-MM-ddTHH\\:mm\\:ss.fffffff";
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Sub | SupportedOperations.Add
             | SupportedOperations.Gt | SupportedOperations.Gte
