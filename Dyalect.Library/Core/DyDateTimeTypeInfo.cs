@@ -7,13 +7,16 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyDateTimeTypeInfo : DyForeignTypeInfo<CoreModule>
     {
-        private const string FORMAT = "yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz";
+        private const string FORMAT = "yyyy-MM-dd HH\\:mm\\:ss.fffffff";
         public override string TypeName => "DateTime";
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Sub | SupportedOperations.Add
             | SupportedOperations.Gt | SupportedOperations.Gte
             | SupportedOperations.Lt | SupportedOperations.Lte;
+
+        internal DyObject Format(DyDateTime dateTime, DyObject format, ExecutionContext ctx) =>
+            ToStringOp(dateTime, format, ctx);
 
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {

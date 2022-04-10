@@ -13,6 +13,7 @@ namespace Dyalect.Library.Core
         public DyConsoleTypeInfo Console { get; }
         public DyDateTimeTypeInfo DateTime { get; }
         public DyTimeDeltaTypeInfo TimeDelta { get; }
+        public DyTimeZoneTypeInfo TimeZone { get; }
 
         public CoreModule()
         {
@@ -24,6 +25,7 @@ namespace Dyalect.Library.Core
             Console = AddType<DyConsoleTypeInfo>();
             DateTime = AddType<DyDateTimeTypeInfo>();
             TimeDelta = AddType<DyTimeDeltaTypeInfo>();
+            TimeZone = AddType<DyTimeZoneTypeInfo>();
         }
     }
 }

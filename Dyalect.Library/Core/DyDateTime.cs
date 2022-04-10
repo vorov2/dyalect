@@ -7,7 +7,8 @@ namespace Dyalect.Library.Core
     {
         public readonly DateTime Value;
 
-        public DyDateTime(DyDateTimeTypeInfo typeInfo, DateTime value) : base(typeInfo) => Value = value;
+        public DyDateTime(DyDateTimeTypeInfo typeInfo, DateTime value) : base(typeInfo) => 
+            Value = value;
 
         public override object ToObject() => Value;
 
