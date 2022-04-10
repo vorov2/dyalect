@@ -206,7 +206,7 @@ namespace Dyalect.Library.Core
             try
             {
                 var dt = new DateTime((int)year.GetInteger(), (int)month.GetInteger(), (int)day.GetInteger(), (int)hour.GetInteger(),
-                    (int)minute.GetInteger(), (int)second.GetInteger(), (int)millisecond.GetInteger(), DateTimeKind.Local);
+                    (int)minute.GetInteger(), (int)second.GetInteger(), (int)millisecond.GetInteger(), DateTimeKind.Utc);
                 return new DyDateTime(this, dt);
             }
             catch (ArgumentOutOfRangeException)
@@ -221,7 +221,7 @@ namespace Dyalect.Library.Core
 
             try
             {
-                var dt = new DateTime(ticks.GetInteger(), DateTimeKind.Local);
+                var dt = new DateTime(ticks.GetInteger(), DateTimeKind.Utc);
                 return new DyDateTime(this, dt);
             }
             catch (ArgumentOutOfRangeException)
@@ -233,7 +233,7 @@ namespace Dyalect.Library.Core
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch 
             {
-                "Now" => Func.Static(name, _ => new DyDateTime(this, DateTime.Now)),
+                "Now" => Func.Static(name, _ => new DyDateTime(this, DateTime.UtcNow)),
                 "Min" => Func.Static(name, _ => new DyDateTime(this, DateTime.MinValue)),
                 "Max" => Func.Static(name, _ => new DyDateTime(this, DateTime.MaxValue)),
                 "Default" => Func.Static(name, _ => new DyDateTime(this, DateTime.MinValue)),

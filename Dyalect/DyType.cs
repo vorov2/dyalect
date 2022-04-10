@@ -22,6 +22,7 @@ namespace Dyalect
         public const int Set = 15;
         public const int Variant = 16;
         public const int Object = 17;
+        public const int Interop = 18;
 
         internal static List<DyTypeInfo> GetAll() =>
             new()
@@ -43,7 +44,8 @@ namespace Dyalect
                 new DyDictionaryTypeInfo(),
                 new DySetTypeInfo(),
                 new DyVariantTypeInfo(),
-                new DyObjectTypeInfo()
+                new DyObjectTypeInfo(),
+                new DyInteropObjectTypeInfo(),
             };
 
         public static int GetTypeCodeByName(string name) =>
@@ -66,6 +68,7 @@ namespace Dyalect
                 DyTypeNames.Set => Set,
                 DyTypeNames.Variant => Variant,
                 DyTypeNames.Object => Object,
+                DyTypeNames.Interop => Interop,
                 _ => default
             }; 
 
@@ -89,6 +92,7 @@ namespace Dyalect
                 Set => DyTypeNames.Set,
                 Variant => DyTypeNames.Variant,
                 Object => DyTypeNames.Object,
+                Interop => DyTypeNames.Interop,
                 _ => code.ToString(),
             };
     }
@@ -114,7 +118,8 @@ namespace Dyalect
                 Dictionary,
                 Set,
                 Variant,
-                Object
+                Object,
+                Interop
             };
 
         public const string Nil = "Nil";
@@ -134,5 +139,6 @@ namespace Dyalect
         public const string Set = "Set";
         public const string Variant = "Variant";
         public const string Object = "Object";
+        public const string Interop = "Interop";
     }
 }

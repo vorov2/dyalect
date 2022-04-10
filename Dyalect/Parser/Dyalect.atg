@@ -104,6 +104,9 @@ PRODUCTIONS
 
     Identifier = lcaseToken | ucaseToken.
 
+    IdentifierOrKeyword = Identifier | "auto" | "var" | "let" | "lazy" | "func" | "return" | "private" | "continue"
+        | "break" | "yield" | "if" | "for" | "while" | "type" | "in" | "do".
+
     Qualident<out string name, out Qualident type> =
         (. type = null; string str1 = null; string str2 = null; string str3 = null; .)
         (
@@ -1265,13 +1268,11 @@ PRODUCTIONS
                 (
                     (
                         "."
-                        (. var ot = t; .)
-                        Identifier
-                        (.
-                            var fld = new DAccess(ot) { Target = node };
-                            fld.Name = t.val;
-                            node = fld;
-                        .)
+                        (. var fld = new DAccess(t) { Target = node }; node = fld; .)
+                        (
+                            Identifier (. fld.Name = t.val; .) 
+                            | "[" IdentifierOrKeyword (. fld.Name = t.val.TrimEnd('[', ']'); fld.SpecialName = true; .) "]" 
+                        )
                     )
                     |
                     (

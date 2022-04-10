@@ -42,7 +42,7 @@ namespace Dyalect.Library.IO
             }
             catch (Exception)
             {
-                return ctx.CustomError("IOFailed");
+                return ctx.IOFailed();
             }
         }
 
@@ -61,7 +61,7 @@ namespace Dyalect.Library.IO
             }
             catch (Exception)
             {
-                return ctx.CustomError("IOFailed");
+                return ctx.IOFailed();
             }
         }
 
@@ -81,7 +81,7 @@ namespace Dyalect.Library.IO
             }
             catch (Exception)
             {
-                return ctx.CustomError("IOFailed");
+                return ctx.IOFailed();
             }
         }
 
@@ -108,7 +108,7 @@ namespace Dyalect.Library.IO
             }
             catch (Exception)
             {
-                return ctx.CustomError("IOFailed");
+                return ctx.IOFailed();
             }
         }
 

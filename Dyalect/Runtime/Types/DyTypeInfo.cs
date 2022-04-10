@@ -449,7 +449,7 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        internal void SetStaticMember(ExecutionContext ctx, string name, DyFunction func)
+        internal virtual void SetStaticMember(ExecutionContext ctx, string name, DyFunction func)
         {
             if (Builtins.IsSetter(name))
             {
@@ -525,7 +525,7 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        internal void SetInstanceMember(ExecutionContext ctx, string name, DyFunction func)
+        internal virtual void SetInstanceMember(ExecutionContext ctx, string name, DyFunction func)
         {
             SetBuiltin(ctx, name, func);
 

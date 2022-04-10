@@ -21,6 +21,7 @@
       <RepositoryType>git</RepositoryType>
       <AssemblyName>Dyalect</AssemblyName>
       <Nullable>enable</Nullable>
+	  <UseWindowsForms>false</UseWindowsForms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -35,10 +36,6 @@
   <ItemGroup>
     <None Remove="Parser\Parser.cs.old" />
     <None Remove="Parser\Scanner.cs.old" />
-    <None Include="..\Common\dy.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   </ItemGroup>
 
   <ItemGroup>

@@ -1,14 +1,14 @@
-# Test session from 09/04/2022 18:32
+# Test session from 10/04/2022 23:04
 
 ## Summary:
 680 passed, 0 failed in 26 file(s)
 
 ## Test file(s):
-[array.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [iterator.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [modules.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
+[array.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [iterator.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [modules.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
 
 ## Report:
 
-### Tests/array.dy::
+### Tests/array.dy:
 * &#9745; **Array literal**
 * &#9745; **Constructor**
 * &#9745; **Methods: ToString**
@@ -53,7 +53,7 @@
 * &#9745; **Methods: ToLiteral**
 * &#9745; **Operator in**
 
-### Tests/autos.dy::
+### Tests/autos.dy:
 * &#9745; **Simple 1**
 * &#9745; **Simple 2**
 * &#9745; **Simple 3**
@@ -73,14 +73,14 @@
 * &#9745; **Autos in catch 2**
 * &#9745; **Autos in catch 3**
 
-### Tests/bool.dy::
+### Tests/bool.dy:
 * &#9745; **Constructor**
 * &#9745; **Methods: default**
 * &#9745; **Methods: getType**
 * &#9745; **Conversion: as**
 * &#9745; **Conversion to itself**
 
-### Tests/builtins.dy::
+### Tests/builtins.dy:
 * &#9745; **parse**
 * &#9745; **eval**
 * &#9745; **round**
@@ -97,7 +97,7 @@
 * &#9745; **rawset and read-only**
 * &#9745; **constructorName**
 
-### Tests/char.dy::
+### Tests/char.dy:
 * &#9745; **Char literal**
 * &#9745; **Constructor**
 * &#9745; **Methods: GetType**
@@ -115,7 +115,7 @@
 * &#9745; **Math with chars**
 * &#9745; **Conversion: as**
 
-### Tests/complex.dy::
+### Tests/complex.dy:
 * &#9745; **FizzBuzz**
 * &#9745; **Factorial**
 * &#9745; **Raise to power (recursion)**
@@ -129,7 +129,7 @@
 * &#9745; **GCD**
 * &#9745; **LCM**
 * &#9745; **Ackermann function**
-* &#9745; **Folding a list**
+* &#9745; **Folding an array**
 * &#9745; **Factors of an integer 1**
 * &#9745; **Factors of an integer 2**
 * &#9745; **Antiprime**
@@ -145,7 +145,7 @@
 * &#9745; **Sleeping beauty**
 * &#9745; **Complex iterator**
 
-### Tests/control.dy::
+### Tests/control.dy:
 * &#9745; **Guards 1**
 * &#9745; **Guards 2**
 * &#9745; **Guards 3**
@@ -163,7 +163,7 @@
 * &#9745; **Cycle: for with break**
 * &#9745; **Cycle: endless while**
 
-### Tests/dictionary.dy::
+### Tests/dictionary.dy:
 * &#9745; **Constructor 1**
 * &#9745; **Constructor 2**
 * &#9745; **Methods: GetType**
@@ -185,7 +185,7 @@
 * &#9745; **Conversion: as**
 * &#9745; **Operator in**
 
-### Tests/exceptions.dy::
+### Tests/exceptions.dy:
 * &#9745; **Type error**
 * &#9745; **Simple catch 1**
 * &#9745; **Simple catch 2**
@@ -217,7 +217,7 @@
 * &#9745; **Throw from override**
 * &#9745; **Data items**
 
-### Tests/float.dy::
+### Tests/float.dy:
 * &#9745; **Float literal**
 * &#9745; **Methods: Min and Max**
 * &#9745; **Methods: Inf and IsNaN**
@@ -228,7 +228,7 @@
 * &#9745; **Ranges**
 * &#9745; **Conversion: as**
 
-### Tests/function.dy::
+### Tests/function.dy:
 * &#9745; **Methods: ToString**
 * &#9745; **Methods: Clone**
 * &#9745; **Base variable 1**
@@ -303,7 +303,7 @@
 * &#9745; **Varargs and too many arguments**
 * &#9745; **Vararg and mutable tuple**
 
-### Tests/integer.dy::
+### Tests/integer.dy:
 * &#9745; **Integer literal**
 * &#9745; **Methods: Min and Max**
 * &#9745; **Constructor**
@@ -314,7 +314,7 @@
 * &#9745; **Ranges**
 * &#9745; **Conversion: as**
 
-### Tests/iterator.dy::
+### Tests/iterator.dy:
 * &#9745; **Iterator literal**
 * &#9745; **Constructor**
 * &#9745; **Methods: GetType**
@@ -369,7 +369,7 @@
 * &#9745; **Methods: all**
 * &#9745; **Methods: Contains**
 
-### Tests/lazy.dy::
+### Tests/lazy.dy:
 * &#9745; **Type info**
 * &#9745; **Simple 1**
 * &#9745; **Simple 2**
@@ -390,7 +390,7 @@
 * &#9745; **Convert lazy**
 * &#9745; **Overloaded operators**
 
-### Tests/libcore.dy::
+### Tests/libcore.dy:
 * &#9745; **StringBuilder: GetType**
 * &#9745; **StringBuilder: Append, AppendLine**
 * &#9745; **StringBuilder: Constructor, Length**
@@ -438,7 +438,7 @@
 * &#9745; **DateTime: math**
 * &#9745; **DateTime: comparison**
 
-### Tests/libio.dy::
+### Tests/libio.dy:
 * &#9745; **File: GetType**
 * &#9745; **File: Exists**
 * &#9745; **File: ReadText**
@@ -456,9 +456,9 @@
 * &#9745; **Path: EnumerateDirectories**
 * &#9745; **Directory: GetType**
 * &#9745; **Directory: Exists**
-* &#9745; **Directory: Create**
+* &#9745; **Directory: Create and Delete**
 
-### Tests/match.dy::
+### Tests/match.dy:
 * &#9745; **Patterns: tuple**
 * &#9745; **Patterns: tuple, array**
 * &#9745; **Patterns: tuple, array, type**
@@ -510,7 +510,7 @@
 * &#9745; **Patterns: not**
 * &#9745; **Patterns: comparison**
 
-### Tests/modules.dy::
+### Tests/modules.dy:
 * &#9745; **Methods: clone**
 * &#9745; **Methods: getType**
 * &#9745; **Member access 1**
@@ -532,14 +532,14 @@
 * &#9745; **Match external type**
 * &#9745; **Test external type**
 
-### Tests/nil.dy::
+### Tests/nil.dy:
 * &#9745; **Literal and initialization**
 * &#9745; **Constructor**
 * &#9745; **Methods: default**
 * &#9745; **Methods: getType**
 * &#9745; **Conversion: as**
 
-### Tests/operators.dy::
+### Tests/operators.dy:
 * &#9745; **Simple math**
 * &#9745; **Float math 1**
 * &#9745; **Float math 2**
@@ -565,7 +565,7 @@
 * &#9745; **In 2**
 * &#9745; **As**
 
-### Tests/ranges.dy::
+### Tests/ranges.dy:
 * &#9745; **Simple range**
 * &#9745; **Range with a step**
 * &#9745; **Range in cycle**
@@ -579,7 +579,7 @@
 * &#9745; **Slicing 4**
 * &#9745; **Exclusive range**
 
-### Tests/set.dy::
+### Tests/set.dy:
 * &#9745; **Constructor**
 * &#9745; **Methods: Clone**
 * &#9745; **Methods: GetType**
@@ -598,7 +598,7 @@
 * &#9745; **Conversion: as**
 * &#9745; **Operator in**
 
-### Tests/string.dy::
+### Tests/string.dy:
 * &#9745; **String literal**
 * &#9745; **Constructor**
 * &#9745; **Methods: Default**
@@ -639,7 +639,7 @@
 * &#9745; **Format 2**
 * &#9745; **Operator in**
 
-### Tests/tuple.dy::
+### Tests/tuple.dy:
 * &#9745; **Methods: ToString**
 * &#9745; **Methods: Clone**
 * &#9745; **Methods: GetType**
@@ -682,7 +682,7 @@
 * &#9745; **Operator in**
 * &#9745; **Variadic function and labels**
 
-### Tests/types.dy::
+### Tests/types.dy:
 * &#9745; **Methods: GetType**
 * &#9745; **Methods: Clone**
 * &#9745; **Methods: ToString**
@@ -728,7 +728,7 @@
 * &#9745; **Initialization blocks 2**
 * &#9745; **Custom fields and pattern matching**
 
-### Tests/variant.dy::
+### Tests/variant.dy:
 * &#9745; **Literal**
 * &#9745; **Methods: GetType**
 * &#9745; **Methods: ToString, ToLiteral**

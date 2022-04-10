@@ -358,6 +358,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Method not found..
+        /// </summary>
+        internal static string MethodNotFound_0 {
+            get {
+                return ResourceManager.GetString("MethodNotFound.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &quot;{0}&quot; not found..
+        /// </summary>
+        internal static string MethodNotFound_1 {
+            get {
+                return ResourceManager.GetString("MethodNotFound.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Multiple values provided for the function argument..
         /// </summary>
         internal static string MultipleValuesForArgument_0 {

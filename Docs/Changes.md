@@ -1,3 +1,8 @@
+# 0.36.1
+  * Change: _Exception generation logic is corrected in Dyalect standard library._
+  * Change: _Standard function assert should specify a type of an operand when assert fails_ ([Issue #713](https://github.com/vorov2/dyalect/issues/713)).
+  * Change: _`DateTime` data type corrections._
+
 # 0.36.0
   * Change: _Standard method `ToString` should accept an optional `format` parameter_ ([Issue #706](https://github.com/vorov2/dyalect/issues/706)).
   * Change: _Field check pattern is not overridable_ ([Issue #710](https://github.com/vorov2/dyalect/issues/710)).

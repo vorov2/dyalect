@@ -56,6 +56,8 @@
 
         ParsingFailed = 626,
 
-        Overflow = 627
+        Overflow = 627,
+
+        MethodNotFound = 628
     }
 }

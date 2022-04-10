@@ -57,7 +57,7 @@ namespace Dyalect.Library.IO
             }
             catch (Exception)
             {
-                return ctx.CustomError("IOFailed");
+                return ctx.IOFailed();
             }
         }
         private DyObject Handle(ExecutionContext ctx, Action action)
@@ -68,7 +68,7 @@ namespace Dyalect.Library.IO
             }
             catch (Exception)
             {
-                ctx.CustomError("IOFailed");
+                ctx.IOFailed();
             }
 
             return Default();
@@ -152,7 +152,7 @@ namespace Dyalect.Library.IO
             }
             catch (Exception)
             {
-                return ctx.CustomError("IOFailed");
+                return ctx.IOFailed();
             }
         }
 

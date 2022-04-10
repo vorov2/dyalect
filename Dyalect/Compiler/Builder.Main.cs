@@ -492,7 +492,7 @@ namespace Dyalect.Compiler
             Build(node.Target, push, ctx);
 
             //A method access
-            if (char.IsUpper(node.Name[0]))
+            if (char.IsUpper(node.Name[0]) || node.SpecialName)
             {
                 AddLinePragma(node);
                 cw.GetMember(node.Name);

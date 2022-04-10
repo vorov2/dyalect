@@ -71,7 +71,7 @@ namespace Dyalect.UnitTesting
 
                 foreach (var group in results.GroupBy(r => r.FileName))
                 {
-                    sb.AppendLine("### " + GetShortFileName(group.Key) + ":");
+                    sb.AppendLine("### " + GetShortFileName(group.Key));
 
                     foreach (var f in group)
                     {

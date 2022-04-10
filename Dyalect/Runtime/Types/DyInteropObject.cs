@@ -1,0 +1,19 @@
+﻿using System;
+
+namespace Dyalect.Runtime.Types
+{
+    public sealed class DyInteropObject : DyObject
+    {
+        internal readonly Type Type;
+        internal readonly object Object;
+
+        public DyInteropObject(Type type, object obj) : base(DyType.Interop) =>
+            (Type, Object) = (type, obj);
+
+        public override int GetHashCode() => Object.GetHashCode();
+
+        public override object ToObject() => Object;
+
+        public override string ToString() => Object.ToString() ?? "";
+    }
+}
