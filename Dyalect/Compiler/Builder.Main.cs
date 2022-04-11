@@ -309,6 +309,7 @@ namespace Dyalect.Compiler
             }
 
             Build(node.Catch, hints.Append(Catch), ctx);
+
             ctx.Errors.Pop();
             EndScope();
 
@@ -1026,7 +1027,7 @@ namespace Dyalect.Compiler
             var hasLast = hints.Has(Last);
             hints = hints.Remove(Last);
 
-            if ((node.Nodes is null || node.Nodes.Count is 0) && !hints.Has(Catch))
+            if (node.Nodes is null || node.Nodes.Count is 0)
             {
                 if (hints.Has(Push))
                     cw.PushNil();

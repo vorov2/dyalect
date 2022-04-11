@@ -1,6 +1,7 @@
 # 0.38.0
   * Change: _Optimizations in virtual machine and type system refactoring._
   * Add: _Consider implementation of mixins_ ([Issue #724](https://github.com/vorov2/dyalect/issues/724), [docs](https://github.com/vorov2/dyalect/wiki/Mixins)).
+  * Fix: _An empty catch statement may cause stack corruption_ ([Issue #727](https://github.com/vorov2/dyalect/issues/727)).
 
 # 0.37.0
   * Change: _Refactor current `DateTime` implementation_ ([Issue #721](https://github.com/vorov2/dyalect/issues/721)).
