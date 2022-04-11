@@ -5,79 +5,28 @@ using System;
 
 namespace Dyalect.Library.Core
 {
-    public sealed class DyDateTimeTypeInfo : DyForeignTypeInfo<CoreModule>
+    public abstract class DyBaseDateTimeTypeInfo : DyForeignTypeInfo<CoreModule>
     {
-        private const string FORMAT = "yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz";
-        public override string TypeName => "DateTime";
+        public override string TypeName { get; }
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Sub | SupportedOperations.Add
             | SupportedOperations.Gt | SupportedOperations.Gte
             | SupportedOperations.Lt | SupportedOperations.Lte;
 
-        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
-        {
-            if (format.TypeId == DyType.Nil)
-                return new DyString(((DyDateTime)arg).Value.ToString(FORMAT, CI.Default));
+        protected DyBaseDateTimeTypeInfo(string typeName) => TypeName = typeName;
 
-            try
-            {
-                var res = ((DyDateTime)arg).Value.ToString(format.GetString(), CI.Default);
-                return new DyString(res);
-            }
-            catch (Exception)
-            {
-                return ctx.InvalidValue(format);
-            }
-        }
+        protected abstract DyDateTime CreateDateTime(DateTime dateTime, TimeSpan? offset);
 
-        protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (right is DyDateTime dt)
-                try
-                {
-                    return new DyTimeDelta(DeclaringUnit.TimeDelta, ((DyDateTime)left).Value - dt.Value);
-                }
-                catch (Exception)
-                {
-                    return ctx.InvalidValue(right);
-                }
-            else if (right is DyTimeDelta td)
-                try
-                {
-                    return new DyDateTime(this, ((DyDateTime)left).Value - td.Value);
-                }
-                catch (Exception)
-                {
-                    return ctx.InvalidValue(right);
-                }
-
-            return ctx.InvalidType(DeclaringUnit.DateTime.TypeId, DeclaringUnit.TimeDelta.TypeId, right);
-        }
-
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (right is DyTimeDelta td)
-            {
-                try
-                {
-                    return new DyDateTime(this, ((DyDateTime)left).Value + td.Value);
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return ctx.InvalidValue(right);
-                }
-            }
-
-            return ctx.InvalidType(DeclaringUnit.TimeDelta.TypeId, right);
-        }
+        internal DyObject Format(DyDateTime dateTime, DyObject format, ExecutionContext ctx) =>
+            ToStringOp(dateTime, format, ctx);
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
             if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
-            return ((DyDateTime)left).Value == ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
+            return ((DyDateTime)left).GetTicks() == ((DyDateTime)right).GetTicks() ? DyBool.True : DyBool.False;
         }
 
         protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -85,7 +34,7 @@ namespace Dyalect.Library.Core
             if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
-            return ((DyDateTime)left).Value != ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
+            return ((DyDateTime)left).GetTicks() != ((DyDateTime)right).GetTicks() ? DyBool.True : DyBool.False;
         }
 
         protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -93,7 +42,7 @@ namespace Dyalect.Library.Core
             if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
-            return ((DyDateTime)left).Value > ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
+            return ((DyDateTime)left).GetTicks() > ((DyDateTime)right).GetTicks() ? DyBool.True : DyBool.False;
         }
 
         protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -101,7 +50,7 @@ namespace Dyalect.Library.Core
             if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
-            return ((DyDateTime)left).Value >= ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
+            return ((DyDateTime)left).GetTicks() >= ((DyDateTime)right).GetTicks() ? DyBool.True : DyBool.False;
         }
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -109,7 +58,7 @@ namespace Dyalect.Library.Core
             if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
-            return ((DyDateTime)left).Value < ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
+            return ((DyDateTime)left).GetTicks() < ((DyDateTime)right).GetTicks() ? DyBool.True : DyBool.False;
         }
 
         protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -117,20 +66,21 @@ namespace Dyalect.Library.Core
             if (right.TypeId != left.TypeId)
                 return ctx.InvalidType(left.TypeId, right);
 
-            return ((DyDateTime)left).Value <= ((DyDateTime)right).Value ? DyBool.True : DyBool.False;
+            return ((DyDateTime)left).GetTicks() <= ((DyDateTime)right).GetTicks() ? DyBool.True : DyBool.False;
         }
 
         protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
             targetType.ReflectedTypeId switch
             {
-                DyType.Integer => new DyInteger(((DyDateTime)self).Value.Ticks),
+                DyType.Integer => new DyInteger(((DyDateTime)self).GetTicks()),
                 _ => base.CastOp(self, targetType, ctx)
             };
 
-        private DyObject AddTo(ExecutionContext ctx, DyObject self, DyObject ticks, DyObject ms, DyObject sec, 
+        private DyObject AddTo(ExecutionContext ctx, DyObject self, DyObject ticks, DyObject ms, DyObject sec,
             DyObject min, DyObject hrs, DyObject days, DyObject months, DyObject years)
         {
-            var dt = ((DyDateTime)self).Value;
+            var dateTime = (DyDateTime)self;
+            var dt = dateTime.Value;
 
             if (!ticks.NotNil() && !ticks.IsInteger(ctx)) return Default();
             if (!ms.NotNil() && !ms.IsInteger(ctx)) return Default();
@@ -157,7 +107,7 @@ namespace Dyalect.Library.Core
                 return ctx.Overflow();
             }
 
-            return new DyDateTime(this, dt);
+            return CreateDateTime(dt, dateTime.Offset);
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -178,22 +128,7 @@ namespace Dyalect.Library.Core
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
-        private DyObject Parse(ExecutionContext ctx, DyObject value, DyObject format)
-        {
-            if (!value.IsString(ctx)) return Default();
-            if (!format.IsString(ctx)) return Default();
-
-            try
-            {
-                return new DyDateTime(this, DateTime.ParseExact(value.GetString(), format.GetString(), CI.Default));
-            }
-            catch (FormatException ex)
-            {
-                return ctx.ParsingFailed(ex.Message);
-            }
-        }
-
-        private DyObject New(ExecutionContext ctx, DyObject year, DyObject month, DyObject day, DyObject hour, DyObject minute, DyObject second, DyObject millisecond)
+        protected DyObject New(ExecutionContext ctx, DyObject year, DyObject month, DyObject day, DyObject hour, DyObject minute, DyObject second, DyObject millisecond, TimeSpan? offset = null)
         {
             if (!year.IsInteger(ctx)) return Default();
             if (!month.IsInteger(ctx)) return Default();
@@ -206,8 +141,9 @@ namespace Dyalect.Library.Core
             try
             {
                 var dt = new DateTime((int)year.GetInteger(), (int)month.GetInteger(), (int)day.GetInteger(), (int)hour.GetInteger(),
-                    (int)minute.GetInteger(), (int)second.GetInteger(), (int)millisecond.GetInteger(), DateTimeKind.Utc);
-                return new DyDateTime(this, dt);
+                    (int)minute.GetInteger(), (int)second.GetInteger(), (int)millisecond.GetInteger(),
+                    offset is null ? DateTimeKind.Utc : DateTimeKind.Local);
+                return CreateDateTime(dt, offset);
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -215,34 +151,19 @@ namespace Dyalect.Library.Core
             }
         }
 
-        private DyObject FromTicks(ExecutionContext ctx, DyObject ticks)
+        protected DyObject FromTicks(ExecutionContext ctx, DyObject ticks, TimeSpan? offset)
         {
             if (!ticks.IsInteger(ctx)) return Default();
 
             try
             {
-                var dt = new DateTime(ticks.GetInteger(), DateTimeKind.Utc);
-                return new DyDateTime(this, dt);
+                var dt = new DateTime(ticks.GetInteger(), offset is null ? DateTimeKind.Utc : DateTimeKind.Local);
+                return CreateDateTime(dt, offset);
             }
             catch (ArgumentOutOfRangeException)
             {
                 return ctx.InvalidValue();
             }
         }
-
-        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-            name switch 
-            {
-                "Now" => Func.Static(name, _ => new DyDateTime(this, DateTime.UtcNow)),
-                "Min" => Func.Static(name, _ => new DyDateTime(this, DateTime.MinValue)),
-                "Max" => Func.Static(name, _ => new DyDateTime(this, DateTime.MaxValue)),
-                "Default" => Func.Static(name, _ => new DyDateTime(this, DateTime.MinValue)),
-                "Parse" => Func.Static(name, Parse, -1, new Par("value"), new Par("format")),
-                "DateTime" => Func.Static(name, New, -1, new Par("year", DyInteger.Zero), new Par("month", DyInteger.Zero), 
-                    new Par("day", DyInteger.Zero), new Par("hour", DyInteger.Zero), new Par("minute", DyInteger.Zero),
-                    new Par("second", DyInteger.Zero), new Par("millisecond", DyInteger.Zero)),
-                "FromTicks" => Func.Static(name, FromTicks, -1, new Par("value")),
-                _ => base.InitializeStaticMember(name, ctx)
-            };
     }
 }

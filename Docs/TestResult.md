@@ -1,10 +1,10 @@
-# Test session from 10/04/2022 23:04
+# Test session from 11/04/2022 13:02
 
 ## Summary:
-680 passed, 0 failed in 26 file(s)
+692 passed, 0 failed in 26 file(s)
 
 ## Test file(s):
-[array.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [iterator.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [modules.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
+[array.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [iterator.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [modules.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
 
 ## Report:
 
@@ -437,6 +437,18 @@
 * &#9745; **DateTime: Add**
 * &#9745; **DateTime: math**
 * &#9745; **DateTime: comparison**
+* &#9745; **LocalDateTime: GetType**
+* &#9745; **LocalDateTime: ToString**
+* &#9745; **LocalDateTime: LocalOffset**
+* &#9745; **LocalDateTime: Parse**
+* &#9745; **LocalDateTime: FromTicks**
+* &#9745; **LocalDateTime: LocalOffset**
+* &#9745; **LocalDateTime: FromDateTime**
+* &#9745; **Calendar: GetType**
+* &#9745; **Calendar: DaysInMonth**
+* &#9745; **Calendar: IsLeapYear and DaysInYear**
+* &#9745; **Calendar: FirstDayOfMonth**
+* &#9745; **Calendar: LastDayOfMonth**
 
 ### Tests/libio.dy:
 * &#9745; **File: GetType**

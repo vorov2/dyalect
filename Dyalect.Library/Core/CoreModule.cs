@@ -12,7 +12,9 @@ namespace Dyalect.Library.Core
         public DyGuidTypeInfo Guid { get; }
         public DyConsoleTypeInfo Console { get; }
         public DyDateTimeTypeInfo DateTime { get; }
+        public DyLocalDateTimeTypeInfo LocalDateTime { get; }
         public DyTimeDeltaTypeInfo TimeDelta { get; }
+        public DyCalendarTypeInfo Calendar { get; }
 
         public CoreModule()
         {
@@ -23,7 +25,9 @@ namespace Dyalect.Library.Core
             Guid = AddType<DyGuidTypeInfo>();
             Console = AddType<DyConsoleTypeInfo>();
             DateTime = AddType<DyDateTimeTypeInfo>();
+            LocalDateTime = AddType<DyLocalDateTimeTypeInfo>();
             TimeDelta = AddType<DyTimeDeltaTypeInfo>();
+            Calendar = AddType<DyCalendarTypeInfo>();
         }
     }
 }
