@@ -686,7 +686,8 @@ namespace Dyalect.Compiler
                     cw.RunMod(unit.UnitIds.Count);
                     unit.UnitIds.Add(-1); //Real handles are added by a linker
 
-                    var addr = AddVariable(node.Alias ?? node.ModuleName, node.Location, VarFlags.Module | VarFlags.Const);
+                    var addr = AddVariable(node.Alias ?? node.ModuleName, node.Location,
+                        VarFlags.Module | VarFlags.Const | VarFlags.Private);
                     cw.PopVar(addr);
                 }
             }
