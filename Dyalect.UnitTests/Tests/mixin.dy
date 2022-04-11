@@ -102,3 +102,14 @@
 	assert(true, y is Bar)
 	assert(true, y is Num)
 #endregion
+
+#region "Implement Collection"
+	type Foo() with Collection
+	let x = Foo()
+	try {
+		x.Length()
+		assert(got: false)
+	} catch {
+		@NotImplemented => assert(got: true)
+	}
+#endregion

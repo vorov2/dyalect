@@ -42,7 +42,16 @@ namespace Dyalect.Compiler
                 foreach (var m in node.Mixins)
                 {
                     cw.PushVar(new ScopeVar(typeVar));
-                    PushTypeInfo(ctx, m, node.Location);
+                    var code = PushTypeInfo(ctx, m, node.Location);
+
+                    if (code < 0)
+                    {
+                        var abs = -code;
+
+                        if (abs is not DyType.Collection and not DyType.Number and not DyType.Comparable)
+                            AddError(CompilerError.InvalidMixin, node.Location, m.Local.ToString());
+                    }
+                
                     cw.Mixin();
                 }
             }

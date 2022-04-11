@@ -120,6 +120,8 @@
 
         SetterWrongArguments = 258,
 
-        GetterWrongArguments = 259
+        GetterWrongArguments = 259,
+
+        InvalidMixin = 260
     }
 }
