@@ -124,6 +124,8 @@
 
         InvalidMixin = 260,
 
-        MixinAlreadySpecified = 261
+        MixinAlreadySpecified = 261,
+
+        MixinSameAsType = 262
     }
 }

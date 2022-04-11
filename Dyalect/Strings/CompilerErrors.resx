@@ -315,4 +315,7 @@
   <data name="MixinAlreadySpecified" xml:space="preserve">
     <value>Mixin "{0}" is specified more than once.</value>
   </data>
+  <data name="MixinSameAsType" xml:space="preserve">
+    <value>Mixin "{0}" is the same as type.</value>
+  </data>
 </root>

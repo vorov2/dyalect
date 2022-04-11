@@ -49,6 +49,9 @@ namespace Dyalect.Compiler
                     else
                         set.Add(m);
 
+                    if (m.Parent is null && m.Local == node.Name)
+                        AddError(CompilerError.MixinSameAsType, node.Location, m.ToString());
+
                     cw.PushVar(new ScopeVar(typeVar));
                     var code = PushTypeInfo(ctx, m, node.Location);
 
