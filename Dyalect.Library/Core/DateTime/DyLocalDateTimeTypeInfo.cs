@@ -115,7 +115,7 @@ namespace Dyalect.Library.Core
                 timeSpan = TimeZoneInfo.Local.BaseUtcOffset;
             else if (offset.TypeId != DeclaringUnit.TimeDelta.ReflectedTypeId)
             {
-                ctx.InvalidType(DeclaringUnit.TimeDelta.TypeId, offset);
+                ctx.InvalidType(DeclaringUnit.TimeDelta.ReflectedTypeId, offset);
                 return false;
             }
             else

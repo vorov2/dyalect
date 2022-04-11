@@ -10,5 +10,8 @@ namespace Dyalect.Library.Core
 
         public override bool Equals(DyObject? other) => other is DyLocalDateTime dt
             && dt.Value == Value && dt.Offset == Offset;
+
+        internal override DyDateTime ChangeDay(int day) => new DyLocalDateTime((DyBaseDateTimeTypeInfo)TypeInfo,
+            new DateTime(Value.Year, Value.Month, day, Value.Hour, Value.Minute, Value.Second, Value.Millisecond, DateTimeKind.Local), Offset!.Value);
     }
 }

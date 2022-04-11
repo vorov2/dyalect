@@ -439,3 +439,37 @@ fox is the red fox.]>
     let loc = LocalDateTime.FromDateTime(dt, offset: TimeDelta(hours: -2))
     assert("2012-02-03 10:30", loc.ToString("yyyy-MM-dd hh:mm"))
 #endregion
+
+#region "Calendar: GetType"
+    assert("Calendar", Calendar.name)
+#endregion
+
+#region "Calendar: DaysInMonth"
+    assert(28, Calendar.DaysInMonth(2022, 2))
+    assert(29, Calendar.DaysInMonth(2020, 2))
+#endregion
+
+#region "Calendar: IsLeapYear and DaysInYear"
+    assert(false, Calendar.IsLeapYear(2022))
+    assert(true, Calendar.IsLeapYear(2020))
+    assert(365, Calendar.DaysInYear(2022))
+    assert(366, Calendar.DaysInYear(2020))
+#endregion
+
+#region "Calendar: FirstDayOfMonth"
+    let utc1 = DateTime(year: 2020, month: 2, day: 15, hour: 12, minute: 30)
+    let utc2 = Calendar.FirstDayOfMonth(utc1)
+    assert(DateTime(year: 2020, month: 2, day: 1, hour: 12, minute: 30), utc2)
+    let loc1 = LocalDateTime(year: 2020, month: 2, day: 15, hour: 12, minute: 30, offset: TimeDelta(hours: -1))
+    let loc2 = Calendar.FirstDayOfMonth(loc1)
+    assert(LocalDateTime(year: 2020, month: 2, day: 1, hour: 12, minute: 30, offset: TimeDelta(hours: -1)), loc2)
+#endregion
+
+#region "Calendar: LastDayOfMonth"
+    let utc1 = DateTime(year: 2020, month: 2, day: 15, hour: 12, minute: 30)
+    let utc2 = Calendar.LastDayOfMonth(utc1)
+    assert(DateTime(year: 2020, month: 2, day: 29, hour: 12, minute: 30), utc2)
+    let loc1 = LocalDateTime(year: 2020, month: 2, day: 15, hour: 12, minute: 30, offset: TimeDelta(hours: -1))
+    let loc2 = Calendar.LastDayOfMonth(loc1)
+    assert(LocalDateTime(year: 2020, month: 2, day: 29, hour: 12, minute: 30, offset: TimeDelta(hours: -1)), loc2)
+#endregion

@@ -32,5 +32,8 @@ namespace Dyalect.Library.Core
             var tdo = new DateTimeOffset(DateTime.SpecifyKind(Value, DateTimeKind.Unspecified), Offset.Value);
             return tdo.Ticks;
         }
+
+        internal virtual DyDateTime ChangeDay(int day) => new((DyBaseDateTimeTypeInfo)TypeInfo, 
+            new DateTime(Value.Year, Value.Month, day, Value.Hour, Value.Minute, Value.Second, Value.Millisecond, DateTimeKind.Utc));
     }
 }
