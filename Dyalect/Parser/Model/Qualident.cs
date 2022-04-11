@@ -1,4 +1,6 @@
-﻿namespace Dyalect.Parser.Model
+﻿using System;
+
+namespace Dyalect.Parser.Model
 {
     public sealed class Qualident
     {
@@ -19,5 +21,10 @@
         }
 
         public override string ToString() => Parent is null ? Local : Parent + "." + Local;
+
+        public override int GetHashCode() => HashCode.Combine(Parent, Local);
+
+        public override bool Equals(object? obj) => obj is Qualident q
+            && Parent == q.Parent && Local == q.Local;
     }
 }
