@@ -18,7 +18,7 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeId => DyType.String;
 
-        public DyStringTypeInfo() => AddMixin(DyType.Collection);
+        public DyStringTypeInfo() => AddMixin(DyType.Collection, DyType.Comparable);
 
         #region Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)

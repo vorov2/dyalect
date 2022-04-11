@@ -15,6 +15,8 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeId => DyType.Char;
 
+        public DyCharTypeInfo() => AddMixin(DyType.Comparable);
+
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
             new DyString(arg.GetString());
 
