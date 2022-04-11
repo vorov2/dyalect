@@ -1,6 +1,7 @@
 # 0.38.1
   * Fix: _It is possible to specify one mixin several times_ ([Issue #729](https://github.com/vorov2/dyalect/issues/729)).
   * Fix: _It is possible to specify the type itself as a mixin_ ([Issue #730](https://github.com/vorov2/dyalect/issues/730)).
+  * Fix: _It is possible to redefine module variable_ ([Issue #731](https://github.com/vorov2/dyalect/issues/731)).
 
 # 0.38.0
   * Change: _Optimizations in virtual machine and type system refactoring._
