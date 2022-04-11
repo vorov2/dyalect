@@ -525,6 +525,20 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
+        private readonly HashSet<int> mixins = new();
+        internal void Mixin(ExecutionContext ctx, DyTypeInfo typeInfo)
+        {
+            foreach (var kv in typeInfo.Members)
+            {
+                SetBuiltin(ctx, kv.Key, kv.Value);
+                Members[kv.Key] = kv.Value;
+            }
+
+            mixins.Add(typeInfo.ReflectedTypeId);
+        }
+
+        internal bool CheckType(DyTypeInfo typeInfo) => ReflectedTypeId == typeInfo.ReflectedTypeId || mixins.Contains(typeInfo.ReflectedTypeId);
+
         internal virtual void SetInstanceMember(ExecutionContext ctx, string name, DyFunction func)
         {
             SetBuiltin(ctx, name, func);

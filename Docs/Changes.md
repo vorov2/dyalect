@@ -1,3 +1,6 @@
+# 0.38.0
+  * Change: _Optimizations in virtual machine._
+
 # 0.37.0
   * Change: _Refactor current `DateTime` implementation_ ([Issue #721](https://github.com/vorov2/dyalect/issues/721)).
   * Add: _Add `LocalDateTime` type_ ([Issue #720](https://github.com/vorov2/dyalect/issues/720), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.LocalDateTime)).
