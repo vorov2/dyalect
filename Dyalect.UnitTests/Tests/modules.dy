@@ -3,18 +3,17 @@
     import lib1 = refs/libtest1
 #endregion
 
-#region "Methods: clone"
+#region "Methods: Clone"
     let xs = lib
     assert(true, xs == xs)
     assert(true, xs.Clone() == xs)
 #endregion
 
-#region "Methods: getType"
+#region "Methods: GetType"
     let x = lib
     assert(true, TypeInfo(x) == Module)
     assert(true, x.GetType() == Module)
     var t = TypeInfo(x)
-    assert(10, t.code)
     assert("Module", t.name)
 #endregion
 

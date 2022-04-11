@@ -14,12 +14,11 @@
     assert(nil, Nil.Default())
 #endregion
 
-#region "Methods: getType"
+#region "Methods: GetType"
     let x = nil
     assert(true, TypeInfo(x) == Nil)
     assert(true, x.GetType() == Nil)
     var t = TypeInfo(x)
-    assert(1, t.code)
     assert("Nil", t.name)
 #endregion
 

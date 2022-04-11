@@ -269,5 +269,6 @@ namespace Dyalect.Compiler
         public void TypeCheck() => Emit(Op.TypeCheck);
         public void NewCast() => Emit(Op.NewCast);
         public void Cast() => Emit(Op.Cast);
+        public void Mixin() => Emit(Op.Mixin);
     }
 }

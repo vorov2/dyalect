@@ -17,9 +17,10 @@ namespace Dyalect.Runtime.Types
             | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
             | SupportedOperations.Iter | SupportedOperations.Lit;
 
+        public DyArrayTypeInfo() => AddMixin(DyType.Collection);
+
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
             DyInteger.Get(((DyArray)arg).Count);
-
 
         private DyString ToStringOrLiteral(bool literal, DyObject arg, ExecutionContext ctx)
         {

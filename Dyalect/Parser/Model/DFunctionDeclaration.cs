@@ -15,6 +15,8 @@ namespace Dyalect.Parser.Model
 
         internal bool IsStatic { get; set; }
 
+        internal bool IsAbstract { get; set; }
+
         internal bool IsIndexer { get; set; }
 
         internal bool IsConstructor { get; set; }
@@ -54,6 +56,9 @@ namespace Dyalect.Parser.Model
                 sb.Append(')');
                 return;
             }
+
+            if (IsAbstract)
+                sb.Append("abstract ");
 
             if (IsStatic)
                 sb.Append("static ");

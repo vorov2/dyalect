@@ -16,6 +16,8 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeId => DyType.Tuple;
 
+        public DyTupleTypeInfo() => AddMixin(DyType.Collection, DyType.Comparable);
+
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
             new DyTuple(((DyCollection)left).Concat(ctx, right));
 

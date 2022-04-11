@@ -16,6 +16,8 @@ namespace Dyalect.Runtime.Types
             | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
             | SupportedOperations.Iter;
 
+        public DyDictionaryTypeInfo() => AddMixin(DyType.Collection);
+
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {
             var len = ((DyDictionary)arg).Count;

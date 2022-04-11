@@ -1,0 +1,115 @@
+﻿#region "Number"
+	func test(Number n, pattern) {
+		assert(pattern, n)
+	}
+	test(42, 42)
+	test(12.2, 12.2)
+#endregion
+
+#region "Number: GetType"
+	assert("Number", Number.name)
+#endregion
+
+#region "Collection"
+	func elementAt(Collection xs, index) => xs[index]
+	func length(Collection xs) => xs.Length()
+	let arr = [1..10]
+	let xs = (1..10,)
+	let tab = Dictionary(x: 1, y: 2)
+	let str = "abcdef"
+	assert(3, elementAt(arr, 2))
+	assert(10, length(arr))
+	assert(3, elementAt(xs, 2))
+	assert(10, length(arr))
+	assert(2, elementAt(tab, "y"))
+	assert(2, length(tab))
+	assert('d', elementAt(str, 3))
+	assert(6, length(str))
+#endregion
+
+#region "Collection: GetType"
+	assert("Collection", Collection.name)
+#endregion
+
+#region "Comparable"
+	func gte(Comparable x, Comparable y) => x > y
+	assert(true, gte(12, 2))
+	assert(true, gte(12.0456, 2.0023))
+	assert(true, gte('d', 'a'))
+	assert(true, gte("dahoo", "boo"))
+#endregion
+
+#region "Comparable: GetType"
+	assert("Comparable", Comparable.name)
+#endregion
+
+#region "Object: GetType"
+	assert("Object", Object.name)
+#endregion
+
+#region "Custom type"
+	type Bar
+	func get Bar.First() => ini[0]
+	func get Bar.Last() => ini[ini.Length() - 1]
+	type Foo(x, y) with Bar
+	let f = Foo(12, 34)
+	assert(12, f.First)
+	assert(34, f.Last)
+	assert(true, f is Foo)
+	assert(true, f is Bar)
+#endregion
+
+#region "Closed type"
+	type Bar
+	type Foo() with Bar
+	try {
+		func Bar.Test() { }
+		assert(got: false)
+	} catch {
+		@TypeClosed => assert(got: true)
+	}
+#endregion
+
+#region "Multiple mixins"
+	type Bar1
+	func get Bar1.First() => ini[0]
+	type Bar2
+	func get Bar2.Last() => ini[ini.Length() - 1]
+	type Foo(x, y) with Bar1, Bar2
+	let f = Foo(12, 34)
+	assert(12, f.First)
+	assert(34, f.Last)
+	assert(true, f is Foo)
+	assert(true, f is Bar1)
+	assert(true, f is Bar2)
+#endregion
+
+#region "Mixin with operators"
+	type Bar
+	func Bar + (other) {
+		ini[0] + other[0]
+	}
+	func Bar - (other) {
+		ini[0] - other[0]
+	}
+	type Num(x) with Bar
+	let x = Num(12)
+	let y = Num(24)
+	assert(-12, x - y)
+	assert(36, x + y)
+	assert(true, x is Bar)
+	assert(true, x is Num)
+	assert(true, y is Bar)
+	assert(true, y is Num)
+#endregion
+
+#region "Implement Collection"
+	type Foo() with Collection
+	let x = Foo()
+	try {
+		x.Length()
+		assert(got: false)
+	} catch {
+		@NotImplemented => assert(got: true)
+	}
+#endregion

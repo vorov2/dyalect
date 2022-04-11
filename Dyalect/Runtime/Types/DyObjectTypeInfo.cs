@@ -9,7 +9,6 @@
 
         public override int ReflectedTypeId => DyType.Object;
 
-        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
-            new DyString(arg.ToString()!);
+        public DyObjectTypeInfo() => Closed = true;
     }
 }

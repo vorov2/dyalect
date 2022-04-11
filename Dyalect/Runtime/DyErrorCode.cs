@@ -58,6 +58,10 @@
 
         Overflow = 627,
 
-        MethodNotFound = 628
+        MethodNotFound = 628,
+
+        TypeClosed = 629,
+
+        NotImplemented = 630
     }
 }

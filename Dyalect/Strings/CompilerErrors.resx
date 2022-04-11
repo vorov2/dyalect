@@ -309,4 +309,7 @@
   <data name="SetterWrongArguments" xml:space="preserve">
     <value>Invalid number of arguments for a property setter.</value>
   </data>
+  <data name="InvalidMixin" xml:space="preserve">
+    <value>Unable to use type "{0}" as mixin.</value>
+  </data>
 </root>

@@ -6,29 +6,33 @@ namespace Dyalect
     public static class DyType
     {
         public const int Nil = 1;
-        public const int Integer = 2;
-        public const int Float = 3;
-        public const int Bool = 4;
-        public const int Char = 5;
-        public const int String = 6;
-        public const int Function = 7;
-        public const int Label = 8;
-        public const int TypeInfo = 9;
-        public const int Module = 10;
-        public const int Array = 11;
-        public const int Iterator = 12;
-        public const int Tuple = 13;
-        public const int Dictionary = 14;
-        public const int Set = 15;
-        public const int Variant = 16;
-        public const int Object = 17;
+        public const int Object = 2;
+        public const int Integer = 3;
+        public const int Float = 4;
+        public const int Bool = 5;
+        public const int Char = 6;
+        public const int String = 7;
+        public const int Function = 8;
+        public const int Label = 9;
+        public const int TypeInfo = 10;
+        public const int Module = 11;
+        public const int Array = 12;
+        public const int Iterator = 13;
+        public const int Tuple = 14;
+        public const int Dictionary = 15;
+        public const int Set = 16;
+        public const int Variant = 17;
         public const int Interop = 18;
+        public const int Number = 19;
+        public const int Collection = 20;
+        public const int Comparable = 21;
 
         internal static List<DyTypeInfo> GetAll() =>
             new()
             {
                 null!,
                 new DyNilTypeInfo(),
+                new DyObjectTypeInfo(),
                 new DyIntegerTypeInfo(),
                 new DyFloatTypeInfo(),
                 new DyBoolTypeInfo(),
@@ -44,14 +48,17 @@ namespace Dyalect
                 new DyDictionaryTypeInfo(),
                 new DySetTypeInfo(),
                 new DyVariantTypeInfo(),
-                new DyObjectTypeInfo(),
                 new DyInteropObjectTypeInfo(),
+                new DyNumberTypeInfo(),
+                new DyCollTypeInfo(),
+                new DyComparableTypeInfo()
             };
 
         public static int GetTypeCodeByName(string name) =>
             name switch
             {
                 DyTypeNames.Nil => Nil,
+                DyTypeNames.Object => Object,
                 DyTypeNames.Integer => Integer,
                 DyTypeNames.Float => Float,
                 DyTypeNames.Bool => Bool,
@@ -67,8 +74,10 @@ namespace Dyalect
                 DyTypeNames.Dictionary => Dictionary,
                 DyTypeNames.Set => Set,
                 DyTypeNames.Variant => Variant,
-                DyTypeNames.Object => Object,
                 DyTypeNames.Interop => Interop,
+                DyTypeNames.Number => Number,
+                DyTypeNames.Collection => Collection,
+                DyTypeNames.Comparable => Comparable,
                 _ => default
             }; 
 
@@ -76,6 +85,7 @@ namespace Dyalect
             code switch
             {
                 Nil => DyTypeNames.Nil,
+                Object => DyTypeNames.Object,
                 Integer => DyTypeNames.Integer,
                 Float => DyTypeNames.Float,
                 Bool => DyTypeNames.Bool,
@@ -91,8 +101,10 @@ namespace Dyalect
                 Dictionary => DyTypeNames.Dictionary,
                 Set => DyTypeNames.Set,
                 Variant => DyTypeNames.Variant,
-                Object => DyTypeNames.Object,
                 Interop => DyTypeNames.Interop,
+                Number => DyTypeNames.Number,
+                Collection => DyTypeNames.Collection,
+                Comparable => DyTypeNames.Comparable,
                 _ => code.ToString(),
             };
     }
@@ -103,6 +115,7 @@ namespace Dyalect
             new[]
             {
                 Nil,
+                Object,
                 Integer,
                 Float,
                 Bool,
@@ -118,11 +131,14 @@ namespace Dyalect
                 Dictionary,
                 Set,
                 Variant,
-                Object,
-                Interop
+                Interop,
+                Number,
+                Collection,
+                Comparable
             };
 
         public const string Nil = "Nil";
+        public const string Object = "Object";
         public const string Integer = "Integer";
         public const string Float = "Float";
         public const string Bool = "Bool";
@@ -138,7 +154,9 @@ namespace Dyalect
         public const string Dictionary = "Dictionary";
         public const string Set = "Set";
         public const string Variant = "Variant";
-        public const string Object = "Object";
         public const string Interop = "Interop";
+        public const string Number = "Number";
+        public const string Collection = "Collection";
+        public const string Comparable = "Comparable";
     }
 }

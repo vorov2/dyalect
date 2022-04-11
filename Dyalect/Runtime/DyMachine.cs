@@ -3,7 +3,6 @@ using Dyalect.Linker;
 using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Dyalect.Runtime
@@ -378,6 +377,12 @@ namespace Dyalect.Runtime
                         ((DyTypeInfo)left).SetInstanceMember(ctx, unit.Strings[op.Data], (DyFunction)right);
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
+                    case OpCode.Mixin:
+                        left = evalStack.Pop();
+                        right = evalStack.Pop();
+                        ((DyTypeInfo)right).Mixin(ctx, (DyTypeInfo)left);
+                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
+                        break;
                     case OpCode.Get:
                         left = evalStack.Pop();
                         right = evalStack.Pop();
@@ -613,13 +618,12 @@ namespace Dyalect.Runtime
                         {
                             left = evalStack.Pop();
                             right = evalStack.Pop();
-                            if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
-                            evalStack.Push(((DyTypeInfo)left).ReflectedTypeId == right.TypeId);
+                            //evalStack.Push(((DyTypeInfo)left).ReflectedTypeId == right.TypeId);
+                            evalStack.Push(types[right.TypeId].CheckType((DyTypeInfo)left));
                         }
                         break;
                     case OpCode.CtorCheck:
                         right = evalStack.Peek();
-                        if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         evalStack.Replace(right.GetConstructor() == unit.Strings[op.Data]);
                         break;
                     case OpCode.Start:

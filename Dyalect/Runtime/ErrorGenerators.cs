@@ -21,6 +21,12 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject TypeClosed(this ExecutionContext ctx, DyTypeInfo typeInfo)
+        {
+            ctx.Error = new(DyErrorCode.TypeClosed, typeInfo.TypeName);
+            return DyNil.Instance;
+        }
+
         public static DyObject Overflow(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.Overflow);
@@ -30,6 +36,12 @@ namespace Dyalect.Runtime
         public static DyObject InvalidOperation(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.InvalidOperation);
+            return DyNil.Instance;
+        }
+
+        public static DyObject NotImplemented(this ExecutionContext ctx, string op)
+        {
+            ctx.Error = new(DyErrorCode.NotImplemented, Builtins.Translate(op));
             return DyNil.Instance;
         }
 

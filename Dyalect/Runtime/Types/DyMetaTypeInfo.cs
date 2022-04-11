@@ -14,9 +14,8 @@
             if (index.TypeId == DyType.String)
                 return index.GetString() switch
                 {
-                    "code" => DyInteger.Get(((DyTypeInfo)self).ReflectedTypeId),
                     "name" => new DyString(((DyTypeInfo)self).TypeName),
-                    _ => ctx.IndexOutOfRange()
+                    _ => ctx.IndexOutOfRange(index)
                 };
 
             return ctx.IndexOutOfRange();

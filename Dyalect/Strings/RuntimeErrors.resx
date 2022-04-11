@@ -282,4 +282,16 @@
   <data name="MethodNotFound.1" xml:space="preserve">
     <value>Method "{0}" not found.</value>
   </data>
+  <data name="TypeClosed.0" xml:space="preserve">
+    <value>Type is closed and cannot be extended.</value>
+  </data>
+  <data name="TypeClosed.1" xml:space="preserve">
+    <value>Type "{0}" is closed and cannot be extended.</value>
+  </data>
+  <data name="NotImplemented.0" xml:space="preserve">
+    <value>Operation is not implemented.</value>
+  </data>
+  <data name="NotImplemented.1" xml:space="preserve">
+    <value>Operation "{0}" is not implemented.</value>
+  </data>
 </root>

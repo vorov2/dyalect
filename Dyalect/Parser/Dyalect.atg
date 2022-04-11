@@ -105,7 +105,7 @@ PRODUCTIONS
     Identifier = lcaseToken | ucaseToken.
 
     IdentifierOrKeyword = Identifier | "auto" | "var" | "let" | "lazy" | "func" | "return" | "private" | "continue"
-        | "break" | "yield" | "if" | "for" | "while" | "type" | "in" | "do".
+        | "static" | "break" | "yield" | "if" | "for" | "while" | "type" | "in" | "do" | "with".
 
     Qualident<out string name, out Qualident type> =
         (. type = null; string str1 = null; string str2 = null; string str3 = null; .)
@@ -240,6 +240,12 @@ PRODUCTIONS
                 "="
                 Constructor<typ> { "or" Constructor<typ> }
             )
+        ]
+        [
+            "with"
+            (. typ.Mixins = new(); .)
+            TypeName<out var qual> (. typ.Mixins.Add(qual); .)            
+            { "," TypeName<out qual> (. typ.Mixins.Add(qual); .) }
         ].
 
     Constructor<DTypeDeclaration typ> =
@@ -394,8 +400,8 @@ PRODUCTIONS
     Function<out DNode node> =
         (. node = null; var st = false; DRecursiveBlock rec = null; .)
         (
-            [ "static" (. st = true; .) ] "func"
-            FunctionBody<st, out node>
+            [ "static" (. st = true; .) ] 
+            "func" FunctionBody<st, out node>
         )
         {
             (.
