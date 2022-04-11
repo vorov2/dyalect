@@ -13,6 +13,8 @@ namespace Dyalect.Parser.Model
 
         public List<DFunctionDeclaration> Constructors { get; } = new();
 
+        public List<Qualident>? Mixins { get; internal set; }
+
         internal override void ToString(StringBuilder sb)
         {
             sb.Append("type ");
@@ -32,6 +34,18 @@ namespace Dyalect.Parser.Model
                 sb.Append('(');
                 c.Parameters.ToString(sb);
                 sb.Append(')');
+            }
+
+            if (Mixins is not null)
+            {
+                sb.Append(" with ");
+                for (var i = 0; i < Mixins.Count; i++)
+                {
+                    if (i > 0)
+                        sb.Append(',');
+                    
+                    sb.Append(Mixins[i].ToString());
+                }
             }
         }
     }

@@ -8,8 +8,5 @@
         public override string TypeName => DyTypeNames.Object;
 
         public override int ReflectedTypeId => DyType.Object;
-
-        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
-            new DyString(arg.ToString()!);
     }
 }

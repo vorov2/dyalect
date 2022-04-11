@@ -52,7 +52,7 @@
     func fmt(res) {
         "result=\(res)"
     }
-    let fun = sum.Compose(with: fmt)
+    let fun = sum.Compose(fmt)
     let res = fun(13, 14)
     assert(res, "result=27")
 #endregion

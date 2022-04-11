@@ -17,6 +17,7 @@ namespace Dyalect.Compiler
 
             var unitId = unit.UnitIds.Count - 1;
             var ti = new TypeInfo(node, new(unitId, unit));
+            var typeVar = 0;
 
             if (types.ContainsKey(node.Name))
             {
@@ -25,9 +26,9 @@ namespace Dyalect.Compiler
             }
             else
             {
-                var av = AddVariable(node.Name, node.Location, VarFlags.Type | VarFlags.Const);
+                typeVar = AddVariable(node.Name, node.Location, VarFlags.Type | VarFlags.Const);
                 cw.NewType(node.Name);
-                cw.PopVar(av);
+                cw.PopVar(typeVar);
             }
 
             types.Add(node.Name, ti);
@@ -35,6 +36,16 @@ namespace Dyalect.Compiler
 
             foreach (var c in node.Constructors)
                 Build(c, nh, ctx);
+
+            if (node.Mixins is not null)
+            {
+                foreach (var m in node.Mixins)
+                {
+                    cw.PushVar(new ScopeVar(typeVar));
+                    PushTypeInfo(ctx, m, node.Location);
+                    cw.Mixin();
+                }
+            }
 
             PushIf(hints);
         }

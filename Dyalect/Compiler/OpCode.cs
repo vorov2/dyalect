@@ -91,5 +91,6 @@
         FunAttr,    //0
         NewCast,    //-3
         Cast,       //0
+        Mixin,      //-2
     }
 }

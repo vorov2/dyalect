@@ -93,6 +93,7 @@
             0,  //FunAttr
             -3, //NewCast
             0,  //Cast
+            -2, //Mixin
         };
     }
 }
