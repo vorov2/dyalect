@@ -5,16 +5,15 @@
     assert(true, Bool([]))
 #endregion
 
-#region "Methods: default"
+#region "Methods: Default"
     assert(false, Bool.Default())
 #endregion
 
-#region "Methods: getType"
+#region "Methods: GetType"
     let x = false
     assert(true, TypeInfo(x) == Bool)
     assert(true, x.GetType() == Bool)
     var t = TypeInfo(x)
-    assert(4, t.code)
     assert("Bool", t.name)
 #endregion
 

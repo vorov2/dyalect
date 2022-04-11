@@ -60,6 +60,8 @@
 
         MethodNotFound = 628,
 
-        TypeClosed = 629
+        TypeClosed = 629,
+
+        NotImplemented = 630
     }
 }

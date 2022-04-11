@@ -400,8 +400,8 @@ PRODUCTIONS
     Function<out DNode node> =
         (. node = null; var st = false; DRecursiveBlock rec = null; .)
         (
-            [ "static" (. st = true; .) ] "func"
-            FunctionBody<st, out node>
+            [ "static" (. st = true; .) ] 
+            "func" FunctionBody<st, out node>
         )
         {
             (.

@@ -15,6 +15,9 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeId => DyType.Float;
 
+        public DyFloatTypeInfo() => AddMixin(DyType.Number);
+
+
         #region Binary Operations
         protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
         {

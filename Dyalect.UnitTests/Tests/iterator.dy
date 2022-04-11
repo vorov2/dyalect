@@ -19,7 +19,6 @@
     assert(true, TypeInfo(x) == Iterator)
     assert(true, x.GetType() == Iterator)
     var t = TypeInfo(x)
-    assert(12, t.code)
     assert("Iterator", t.name)
 #endregion
 

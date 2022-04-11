@@ -25,12 +25,11 @@
     assert(0.0, Float.Default())
 #endregion
 
-#region "Methods: getType"
+#region "Methods: GetType"
     let x = 42.42
     assert(true, TypeInfo(x) == Float)
     assert(true, x.GetType() == Float)
     var t = TypeInfo(x)
-    assert(3, t.code)
     assert("Float", t.name)
 #endregion
 

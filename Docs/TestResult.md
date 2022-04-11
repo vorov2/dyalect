@@ -1,4 +1,4 @@
-# Test session from 11/04/2022 14:56
+# Test session from 11/04/2022 18:03
 
 ## Summary:
 692 passed, 0 failed in 26 file(s)
@@ -75,8 +75,8 @@
 
 ### Tests/bool.dy:
 * &#9745; **Constructor**
-* &#9745; **Methods: default**
-* &#9745; **Methods: getType**
+* &#9745; **Methods: Default**
+* &#9745; **Methods: GetType**
 * &#9745; **Conversion: as**
 * &#9745; **Conversion to itself**
 
@@ -223,7 +223,7 @@
 * &#9745; **Methods: Inf and IsNaN**
 * &#9745; **Constructor**
 * &#9745; **Methods: Default**
-* &#9745; **Methods: getType**
+* &#9745; **Methods: GetType**
 * &#9745; **Methods: Parse**
 * &#9745; **Ranges**
 * &#9745; **Conversion: as**
@@ -523,8 +523,8 @@
 * &#9745; **Patterns: comparison**
 
 ### Tests/modules.dy:
-* &#9745; **Methods: clone**
-* &#9745; **Methods: getType**
+* &#9745; **Methods: Clone**
+* &#9745; **Methods: GetType**
 * &#9745; **Member access 1**
 * &#9745; **Member access 2**
 * &#9745; **Match module**
@@ -548,7 +548,7 @@
 * &#9745; **Literal and initialization**
 * &#9745; **Constructor**
 * &#9745; **Methods: default**
-* &#9745; **Methods: getType**
+* &#9745; **Methods: GetType**
 * &#9745; **Conversion: as**
 
 ### Tests/operators.dy:
@@ -615,7 +615,7 @@
 * &#9745; **Constructor**
 * &#9745; **Methods: Default**
 * &#9745; **Methods: GetType**
-* &#9745; **Methods: Len**
+* &#9745; **Methods: Length**
 * &#9745; **Methods: IndexOf, LastIndexOf**
 * &#9745; **Comparison**
 * &#9745; **Methods: Split**

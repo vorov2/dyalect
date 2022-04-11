@@ -22,7 +22,7 @@ namespace Dyalect.Runtime.Types
 
         public abstract int ReflectedTypeId { get; }
 
-        protected DyTypeInfo() : base(DyType.TypeInfo) { }
+        protected DyTypeInfo() : base(DyType.TypeInfo) => AddMixin(DyType.Object);
 
         #region Binary Operations
         //x + y
@@ -530,6 +530,9 @@ namespace Dyalect.Runtime.Types
         private readonly HashSet<int> mixins = new();
         internal void Mixin(ExecutionContext ctx, DyTypeInfo typeInfo)
         {
+            if (mixins.Contains(typeInfo.ReflectedTypeId))
+                return;
+
             foreach (var kv in typeInfo.Members)
             {
                 SetBuiltin(ctx, kv.Key, kv.Value);
@@ -538,6 +541,19 @@ namespace Dyalect.Runtime.Types
 
             mixins.Add(typeInfo.ReflectedTypeId);
             typeInfo.Closed = true;
+        }
+
+        protected void AddMixin(int typeId) => mixins.Add(typeId);
+
+        protected void AddDefaultMixin1(string name)
+        {
+            Members.Add(name, Func.Member(name, (ctx, _) => ctx.NotImplemented(name)));
+        }
+
+        protected void AddDefaultMixin2(string name, string p1)
+        {
+            Members.Add(name, Func.Member(name, 
+                (ExecutionContext ctx, DyObject _, DyObject _) => ctx.NotImplemented(name), -1, new Par(p1)));
         }
 
         internal bool CheckType(DyTypeInfo typeInfo) => ReflectedTypeId == typeInfo.ReflectedTypeId || mixins.Contains(typeInfo.ReflectedTypeId);

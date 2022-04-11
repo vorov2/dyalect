@@ -39,6 +39,12 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject NotImplemented(this ExecutionContext ctx, string op)
+        {
+            ctx.Error = new(DyErrorCode.NotImplemented, op);
+            return DyNil.Instance;
+        }
+
         public static DyObject ParsingFailed(this ExecutionContext ctx)
         {
             ctx.Error = new(DyErrorCode.ParsingFailed);

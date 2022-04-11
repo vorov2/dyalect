@@ -394,6 +394,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Operation is not implemented..
+        /// </summary>
+        internal static string NotImplemented_0 {
+            get {
+                return ResourceManager.GetString("NotImplemented.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation &quot;{0}&quot; is not implemented..
+        /// </summary>
+        internal static string NotImplemented_1 {
+            get {
+                return ResourceManager.GetString("NotImplemented.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation is not supported..
         /// </summary>
         internal static string OperationNotSupported_0 {

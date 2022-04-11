@@ -2,17 +2,17 @@
 
 namespace Dyalect.Runtime.Types
 {
-    public sealed class DyVariantTypeInfo : DyTypeInfo
+    internal sealed class DyVariantTypeInfo : DyTypeInfo
     {
         public override string TypeName => DyTypeNames.Variant;
 
         public override int ReflectedTypeId => DyType.Variant;
 
-        internal DyVariantTypeInfo() { }
-
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
             | SupportedOperations.Len | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Lit;
+
+        public DyVariantTypeInfo() => AddMixin(DyType.Collection);
 
         protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
