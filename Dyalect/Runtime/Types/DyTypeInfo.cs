@@ -7,6 +7,8 @@ namespace Dyalect.Runtime.Types
 {
     public abstract class DyTypeInfo : DyObject
     {
+        internal bool Closed { get; set; }
+
         protected abstract SupportedOperations GetSupportedOperations();
 
         private bool Support(DyObject self, SupportedOperations op) =>
@@ -535,12 +537,19 @@ namespace Dyalect.Runtime.Types
             }
 
             mixins.Add(typeInfo.ReflectedTypeId);
+            typeInfo.Closed = true;
         }
 
         internal bool CheckType(DyTypeInfo typeInfo) => ReflectedTypeId == typeInfo.ReflectedTypeId || mixins.Contains(typeInfo.ReflectedTypeId);
 
         internal virtual void SetInstanceMember(ExecutionContext ctx, string name, DyFunction func)
         {
+            if (Closed)
+            {
+                ctx.TypeClosed(this);
+                return;
+            }
+
             SetBuiltin(ctx, name, func);
 
             if (Builtins.IsSetter(name))

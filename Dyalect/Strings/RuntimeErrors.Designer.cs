@@ -19,7 +19,7 @@ namespace Dyalect.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class RuntimeErrors {
@@ -543,6 +543,24 @@ namespace Dyalect.Strings {
         internal static string TooManyArguments_3 {
             get {
                 return ResourceManager.GetString("TooManyArguments.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type is closed and cannot be extended..
+        /// </summary>
+        internal static string TypeClosed_0 {
+            get {
+                return ResourceManager.GetString("TypeClosed.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type &quot;{0}&quot; is closed and cannot be extended..
+        /// </summary>
+        internal static string TypeClosed_1 {
+            get {
+                return ResourceManager.GetString("TypeClosed.1", resourceCulture);
             }
         }
         
