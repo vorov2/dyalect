@@ -99,7 +99,7 @@ namespace Dyalect.Library.Core
             name switch 
             {
                 "Now" => Func.Static(name, _ => new DyDateTime(this, DateTime.UtcNow)),
-                "Today" => Func.Static(name, _ => new DyDateTime(this, DateTime.UtcNow)),
+                "Today" => Func.Static(name, _ => new DyDateTime(this, DateTime.UtcNow.Date)),
                 "Min" => Func.Static(name, _ => new DyDateTime(this, DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc))),
                 "Max" => Func.Static(name, _ => new DyDateTime(this, DateTime.SpecifyKind(DateTime.MaxValue, DateTimeKind.Utc))),
                 "Default" => Func.Static(name, _ => new DyDateTime(this, DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc))),

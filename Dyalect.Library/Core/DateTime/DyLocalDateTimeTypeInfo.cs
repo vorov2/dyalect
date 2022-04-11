@@ -173,6 +173,7 @@ namespace Dyalect.Library.Core
             {
                 "FromDateTime" => Func.Static(name, GetLocalDateTime, -1, new Par("value"), new Par("offset", DyNil.Instance)),
                 "Now" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.Now, TimeZoneInfo.Local.BaseUtcOffset)),
+                "Today" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.Now, TimeZoneInfo.Local.BaseUtcOffset)),
                 "Min" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.MinValue, TimeZoneInfo.Local.BaseUtcOffset)),
                 "Max" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.MaxValue, TimeZoneInfo.Local.BaseUtcOffset)),
                 "Default" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.MinValue, TimeZoneInfo.Local.BaseUtcOffset)),
