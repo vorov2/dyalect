@@ -8,5 +8,7 @@
         public override string TypeName => DyTypeNames.Object;
 
         public override int ReflectedTypeId => DyType.Object;
+
+        public DyObjectTypeInfo() => Closed = true;
     }
 }

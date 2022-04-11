@@ -12,6 +12,7 @@ namespace Dyalect.Runtime.Types
 
         public DyCollTypeInfo()
         {
+            Closed = true;
             AddDefaultMixin2(Builtins.Get, "index");
             AddDefaultMixin1(Builtins.Len);
         }

@@ -12,6 +12,7 @@ namespace Dyalect.Runtime.Types
 
         public DyComparableTypeInfo()
         {
+            Closed = true;
             AddDefaultMixin2(Builtins.Gt, "other");
             AddDefaultMixin2(Builtins.Lt, "other");
             AddDefaultMixin2(Builtins.Gte, "other");

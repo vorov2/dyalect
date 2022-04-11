@@ -12,6 +12,7 @@ namespace Dyalect.Runtime.Types
 
         public DyNumberTypeInfo()
         {
+            Closed = true;
             AddDefaultMixin2(Builtins.Add, "other");
             AddDefaultMixin2(Builtins.Sub, "other");
             AddDefaultMixin2(Builtins.Mul, "other");
