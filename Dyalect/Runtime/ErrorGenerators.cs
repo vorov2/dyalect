@@ -41,7 +41,7 @@ namespace Dyalect.Runtime
 
         public static DyObject NotImplemented(this ExecutionContext ctx, string op)
         {
-            ctx.Error = new(DyErrorCode.NotImplemented, op);
+            ctx.Error = new(DyErrorCode.NotImplemented, Builtins.Translate(op));
             return DyNil.Instance;
         }
 
