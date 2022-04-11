@@ -23,8 +23,9 @@ namespace Dyalect.Library.Core
 
             try
             {
-                var dto = new DateTimeOffset(local.Value, local.Offset!.Value).ToString(formatStr, CI.Default);
-                return new DyString(dto);
+                var dto = new DateTimeOffset(DateTime.SpecifyKind(local.Value, DateTimeKind.Unspecified), local.Offset!.Value);
+                var str = dto.ToString(formatStr, CI.Default);
+                return new DyString(str);
             }
             catch (Exception)
             {
@@ -112,7 +113,7 @@ namespace Dyalect.Library.Core
 
             if (!offset.NotNil())
                 timeSpan = TimeZoneInfo.Local.BaseUtcOffset;
-            else if (offset.TypeId != DeclaringUnit.TimeDelta.TypeId)
+            else if (offset.TypeId != DeclaringUnit.TimeDelta.ReflectedTypeId)
             {
                 ctx.InvalidType(DeclaringUnit.TimeDelta.TypeId, offset);
                 return false;
@@ -140,9 +141,37 @@ namespace Dyalect.Library.Core
             return FromTicks(ctx, ticks, timeSpan);
         }
 
+        private bool CheckValues(ExecutionContext ctx, DyObject dateTime, DyObject timeZone)
+        {
+            if (dateTime.TypeId != DeclaringUnit.DateTime.ReflectedTypeId)
+            {
+                ctx.InvalidType(DeclaringUnit.DateTime.ReflectedTypeId, dateTime);
+                return false;
+            }
+
+            if (timeZone.NotNil() && timeZone.TypeId != DeclaringUnit.TimeDelta.ReflectedTypeId)
+            {
+                ctx.InvalidType(DeclaringUnit.TimeDelta.ReflectedTypeId, timeZone);
+                return false;
+            }
+
+            return true;
+        }
+
+        private DyObject GetLocalDateTime(ExecutionContext ctx, DyObject dateTime, DyObject timeZone)
+        {
+            if (!CheckValues(ctx, dateTime, timeZone)) return Default();
+            var (dt, td) = (((DyDateTime)dateTime).Value, ((DyTimeDelta)timeZone).Value);
+            var targetZone = TimeZoneInfo.CreateCustomTimeZone(Guid.NewGuid().ToString(), td, null, null);
+            var tzz = timeZone.NotNil() ? targetZone : TimeZoneInfo.Local;
+            var dat = TimeZoneInfo.ConvertTimeFromUtc(dt, tzz);
+            return new DyLocalDateTime(DeclaringUnit.LocalDateTime, dat, tzz.BaseUtcOffset);
+        }
+
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
+                "FromDateTime" => Func.Static(name, GetLocalDateTime, -1, new Par("value"), new Par("offset", DyNil.Instance)),
                 "Now" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.Now, TimeZoneInfo.Local.BaseUtcOffset)),
                 "Min" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.MinValue, TimeZoneInfo.Local.BaseUtcOffset)),
                 "Max" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.MaxValue, TimeZoneInfo.Local.BaseUtcOffset)),
@@ -152,6 +181,7 @@ namespace Dyalect.Library.Core
                     new Par("day", DyInteger.Zero), new Par("hour", DyInteger.Zero), new Par("minute", DyInteger.Zero),
                     new Par("second", DyInteger.Zero), new Par("millisecond", DyInteger.Zero), new Par("offset", DyNil.Instance)),
                 "FromTicks" => Func.Static(name, FromTicks, -1, new Par("value"), new Par("offset", DyNil.Instance)),
+                "LocalOffset" => Func.Auto(name, _ => new DyTimeDelta(DeclaringUnit.TimeDelta, TimeZoneInfo.Local.BaseUtcOffset)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

@@ -1,5 +1,7 @@
 # 0.37.0
-
+  * Change: _Refactor current `DateTime` implementation_ ([Issue #721](https://github.com/vorov2/dyalect/issues/721)).
+  * Add: _Add `LocalDateTime` type_ ([Issue #720](https://github.com/vorov2/dyalect/issues/720), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.LocalDateTime)).
+  
 # 0.36.1
   * Change: _Exception generation logic is corrected in Dyalect standard library._
   * Change: _Standard function assert should specify a type of an operand when assert fails_ ([Issue #713](https://github.com/vorov2/dyalect/issues/713)).

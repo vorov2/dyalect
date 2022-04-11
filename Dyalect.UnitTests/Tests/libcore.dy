@@ -391,3 +391,51 @@ fox is the red fox.]>
     assert(true, dt1 <= dt2)
     assert(true, dt2 >= dt1)
 #endregion
+
+#region "LocalDateTime: GetType"
+    let dt = LocalDateTime.Now()
+    assert(LocalDateTime, dt.GetType())
+    assert("LocalDateTime", dt.GetType().name)
+#endregion
+
+#region "LocalDateTime: ToString"
+    let dt = LocalDateTime(offset: TimeDelta(hours: -3), year: 2012, month: 3, day: 21,
+        hour: 15, minute: 33, second: 59)
+    assert("2012-03-21T15:33:59.0000000-03:00", dt.ToString())
+#endregion
+
+#region "LocalDateTime: LocalOffset"
+    let dt = LocalDateTime(offset: TimeDelta(hours: -3), year: 2012, month: 3, day: 21,
+        hour: 15, minute: 33, second: 59)
+    assert(-3, dt.Offset.Hours)
+#endregion
+
+#region "LocalDateTime: Parse"
+    let dt1 = LocalDateTime.Parse("2012-03-21T15:33:59.0000000-03:00", "yyyy-MM-ddTHH:mm:ss.fffffffzzz")
+    let dt2 = LocalDateTime(offset: TimeDelta(hours: -3), year: 2012, month: 3, day: 21,
+        hour: 15, minute: 33, second: 59)
+    assert(true, dt1 == dt2)
+    assert(-3, dt1.Offset.Hours)
+#endregion
+
+#region "LocalDateTime: FromTicks"
+    let dt = LocalDateTime(offset: TimeDelta(hours: -3), year: 2012, month: 3, day: 21,
+        hour: 15, minute: 33, second: 59)
+    let ticks = dt.Ticks
+    let ndt = LocalDateTime.FromTicks(ticks, offset: TimeDelta(hours: -3))
+    assert(true, dt == ndt)
+    assert(true, dt.Ticks == ndt.Ticks)
+#endregion
+
+#region "LocalDateTime: LocalOffset"
+    let offset = LocalDateTime.LocalOffset
+    assert(true, offset.Hours != 0)
+    let dt = LocalDateTime.Now()
+    assert(true, offset == dt.Offset)
+#endregion
+
+#region "LocalDateTime: FromDateTime"
+    let dt = DateTime(year: 2012, month: 2, day: 3, hour: 12, minute: 30)
+    let loc = LocalDateTime.FromDateTime(dt, offset: TimeDelta(hours: -2))
+    assert("2012-02-03 10:30", loc.ToString("yyyy-MM-dd hh:mm"))
+#endregion

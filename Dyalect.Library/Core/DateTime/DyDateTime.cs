@@ -29,7 +29,7 @@ namespace Dyalect.Library.Core
             if (Offset is null)
                 return Value.Ticks;
 
-            var tdo = new DateTimeOffset(Value, Offset.Value);
+            var tdo = new DateTimeOffset(DateTime.SpecifyKind(Value, DateTimeKind.Unspecified), Offset.Value);
             return tdo.Ticks;
         }
     }

@@ -14,7 +14,6 @@ namespace Dyalect.Library.Core
         public DyDateTimeTypeInfo DateTime { get; }
         public DyLocalDateTimeTypeInfo LocalDateTime { get; }
         public DyTimeDeltaTypeInfo TimeDelta { get; }
-        public DyTimeZoneTypeInfo TimeZone { get; }
 
         public CoreModule()
         {
@@ -27,7 +26,6 @@ namespace Dyalect.Library.Core
             DateTime = AddType<DyDateTimeTypeInfo>();
             LocalDateTime = AddType<DyLocalDateTimeTypeInfo>();
             TimeDelta = AddType<DyTimeDeltaTypeInfo>();
-            TimeZone = AddType<DyTimeZoneTypeInfo>();
         }
     }
 }
