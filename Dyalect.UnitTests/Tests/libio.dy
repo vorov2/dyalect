@@ -22,6 +22,36 @@
     assert("Second line", lines[1])
 #endregion
 
+#region "File: Create and Delete"
+    let file = "../Dyalect.UnitTests/Tests/data/file.tmp"
+    File.Create(file)
+    assert(true, File.Exists(file))
+    File.Delete(file)
+    assert(false, File.Exists(file))
+#endregion
+
+#region "File: Copy"
+    let file1 = "../Dyalect.UnitTests/Tests/data/foo.txt"
+    let file2 = "../Dyalect.UnitTests/Tests/data/foo2.txt"
+    assert(false, File.Exists(file2))
+    File.Copy(file1, file2)
+    assert(true, File.Exists(file2))
+    File.Delete(file2)
+    assert(false, File.Exists(file2))
+#endregion
+
+#region "File: Move"
+    let file1 = "../Dyalect.UnitTests/Tests/data/foo2.txt"
+    let file2 = "../Dyalect.UnitTests/Tests/data/new_foo.txt"
+    File.Create(file1)
+    assert(true, File.Exists(file1))
+    assert(false, File.Exists(file2))
+    File.Move(file1, file2)
+    assert(false, File.Exists(file1))
+    assert(true, File.Exists(file2))
+    File.Delete(file2)
+#endregion
+
 #region "Path: GetType"
     assert("Path", Path.name)
 #endregion
@@ -92,9 +122,31 @@
 #endregion
 
 #region "Directory: Create and Delete"
-    let dir = "../Dyalect.UnitTests/Test/data/temp"
+    let dir = "../Dyalect.UnitTests/Tests/data/temp"
     Directory.Create(dir)
     assert(true, Directory.Exists(dir))
     Directory.Delete(dir)
     assert(false, Directory.Exists(dir))
+#endregion
+
+#region "Drive: GetType"
+    assert("Drive", Drive.name)
+#endregion
+
+#region "Drive: GetDrives"
+    let xs = Drive.GetDrives()
+    assert(true, xs is Array)
+    assert(true, xs.Length() > 0)
+#endregion
+
+#region "Drive: properties"
+    let drv = Drive.GetDrives().Iterate().First()
+    assert(true, drv.TotalSize > 0)
+    assert(true, drv.TotalFreeSize > 0)
+    assert(true, drv.AvailableFreeSpace is Integer)
+    assert(true, drv.Format is String)
+    assert(true, drv.Label is String)
+    assert(true, drv.Root is String)
+    assert(true, drv.Type is String)
+    assert(true, drv.IsReady is true or false)
 #endregion

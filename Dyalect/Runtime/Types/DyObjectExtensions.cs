@@ -71,5 +71,16 @@ namespace Dyalect.Runtime.Types
 
             return true;
         }
+
+        public static bool IsTuple(this DyObject self, ExecutionContext ctx)
+        {
+            if (self.TypeId != DyType.Tuple)
+            {
+                ctx.InvalidType(DyType.Tuple, self);
+                return false;
+            }
+
+            return true;
+        }
     }
 }
