@@ -44,7 +44,7 @@ namespace Dyalect.Runtime.Types
             return dict;
         }
 
-        internal bool TryGetItem(string name, ExecutionContext ctx, out DyObject item)
+        internal bool TryGetItem(string name, out DyObject item)
         {
             item = null!;
             var i = GetOrdinal(name);
@@ -52,7 +52,7 @@ namespace Dyalect.Runtime.Types
             if (i is -1)
                 return false;
 
-            item = GetItem(i, ctx);
+            item = CollectionGetItem(i, null!);
             return true;
         }
 
@@ -64,7 +64,7 @@ namespace Dyalect.Runtime.Types
             if (index.TypeId != DyType.String && index.TypeId != DyType.Char)
                 return ctx.IndexOutOfRange(index);
 
-            return TryGetItem(index.GetString(), ctx, out var item)
+            return TryGetItem(index.GetString(),out var item)
                 ? item : ctx.IndexOutOfRange(index);
         }
 

@@ -177,6 +177,78 @@ namespace Dyalect.Library.IO
             }
         }
 
+        private DyObject GetAttributes(ExecutionContext ctx, DyObject path)
+        {
+            if (!path.IsString(ctx)) return Default();
+
+            try
+            {
+                var attr = File.GetAttributes(path.GetString());
+                return DyTuple.Create(
+                    new("readOnly", (DyBool)attr.HasFlag(FileAttributes.ReadOnly)),
+                    new("hidden", (DyBool)attr.HasFlag(FileAttributes.Hidden)),
+                    new("system", (DyBool)attr.HasFlag(FileAttributes.System)),
+                    new("directory", (DyBool)attr.HasFlag(FileAttributes.Directory)),
+                    new("archive", (DyBool)attr.HasFlag(FileAttributes.Archive)),
+                    new("device", (DyBool)attr.HasFlag(FileAttributes.Device)),
+                    new("normal", (DyBool)attr.HasFlag(FileAttributes.Normal)),
+                    new("temporary", (DyBool)attr.HasFlag(FileAttributes.Temporary)),
+                    new("sparseFile", (DyBool)attr.HasFlag(FileAttributes.SparseFile)),
+                    new("reparsePoint", (DyBool)attr.HasFlag(FileAttributes.ReparsePoint)),
+                    new("compressed", (DyBool)attr.HasFlag(FileAttributes.Compressed)),
+                    new("offline", (DyBool)attr.HasFlag(FileAttributes.Offline)),
+                    new("notContentIndexed", (DyBool)attr.HasFlag(FileAttributes.NotContentIndexed)),
+                    new("encrypted", (DyBool)attr.HasFlag(FileAttributes.Encrypted)),
+                    new("integrityStream", (DyBool)attr.HasFlag(FileAttributes.IntegrityStream)),
+                    new("noScrubData", (DyBool)attr.HasFlag(FileAttributes.NoScrubData))
+                );
+            }
+            catch (ArgumentException)
+            {
+                return ctx.InvalidValue(path);
+            }
+            catch (Exception)
+            {
+                return ctx.IOFailed();
+            }
+        }
+
+
+
+        private DyObject SetAttributes(ExecutionContext ctx, DyObject path, DyObject attributes)
+        {
+            if (!path.IsString(ctx)) return Default();
+            var tup = (DyTuple)attributes;
+
+            try
+            {
+                FileAttributes attr = default;
+
+                foreach (var t in tup)
+                {
+                    if (!t.IsString(ctx)) return Default();
+
+                    if (!Enum.TryParse<FileAttributes>(t.GetString(), out var fa))
+                        return ctx.InvalidValue(t);
+
+                    attr |= fa;
+                }
+
+                if (attr != default)
+                    File.SetAttributes(path.GetString(), attr);
+
+                return DyNil.Instance;
+            }
+            catch (ArgumentException)
+            {
+                return ctx.InvalidValue(path);
+            }
+            catch (Exception)
+            {
+                return ctx.IOFailed();
+            }
+        }
+
         private DyObject CopyFile(ExecutionContext ctx, DyObject source, DyObject destination, DyObject overwrite)
         {
             if (!source.IsString(ctx)) return Default();
@@ -229,6 +301,8 @@ namespace Dyalect.Library.IO
                 "Exists" => Func.Static(name, FileExists, -1, new Par("path")),
                 "Create" => Func.Static(name, CreateFile, -1, new Par("path")),
                 "Delete" => Func.Static(name, DeleteFile, -1, new Par("path")),
+                "GetAttributes" => Func.Static(name, GetAttributes, -1, new Par("path")),
+                "SetAttributes" => Func.Static(name, SetAttributes, 1, new Par("path"), new Par("values")),
                 "Move" => Func.Static(name, MoveFile, -1, new Par("source"), new Par("destination"), new Par("overwrite", DyBool.False)),
                 "Copy" => Func.Static(name, CopyFile, -1, new Par("source"), new Par("destination"), new Par("overwrite", DyBool.False)),
                 _ => base.InitializeStaticMember(name, ctx)
