@@ -11,6 +11,7 @@ namespace Dyalect.Library.IO
         public DyFileTypeInfo File { get; }
         public DyPathTypeInfo Path { get; }
         public DyDirectoryTypeInfo Directory { get; }
+        public DyDriveTypeInfo Drive { get; }
 
         public IOModule()
         {
@@ -18,6 +19,7 @@ namespace Dyalect.Library.IO
             File = AddType<DyFileTypeInfo>();
             Path = AddType<DyPathTypeInfo>();
             Directory = AddType<DyDirectoryTypeInfo>();
+            Drive = AddType<DyDriveTypeInfo>();
         }
     }
 }

@@ -128,3 +128,25 @@
     Directory.Delete(dir)
     assert(false, Directory.Exists(dir))
 #endregion
+
+#region "Drive: GetType"
+    assert("Drive", Drive.name)
+#endregion
+
+#region "Drive: GetDrives"
+    let xs = Drive.GetDrives()
+    assert(true, xs is Array)
+    assert(true, xs.Length() > 0)
+#endregion
+
+#region "Drive: properties"
+    let drv = Drive.GetDrives().Iterate().First()
+    assert(true, drv.TotalSize > 0)
+    assert(true, drv.TotalFreeSize > 0)
+    assert(true, drv.AvailableFreeSpace is Integer)
+    assert(true, drv.Format is String)
+    assert(true, drv.Label is String)
+    assert(true, drv.Root is String)
+    assert(true, drv.Type is String)
+    assert(true, drv.IsReady is true or false)
+#endregion

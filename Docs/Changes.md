@@ -3,6 +3,7 @@
   * Add: _Add an ability to Copy and Move files_ ([Issue #725](https://github.com/vorov2/dyalect/issues/725), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.File#copy)).
   * Add: _Add an ability to get and set file attributes_ ([Issue #734](https://github.com/vorov2/dyalect/issues/734), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.File#getAttributes)).
   * Add: _An ability to set/get various file related time stamps_ ([Issue #735](https://github.com/vorov2/dyalect/issues/735), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.File#getCreationTime)).
+  * Add: _Add a new `Drive` type_ ([Issue #736](https://github.com/vorov2/dyalect/issues/736), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.Drive)).
   
 # 0.38.1
   * Fix: _It is possible to specify one mixin several times_ ([Issue #729](https://github.com/vorov2/dyalect/issues/729)).
