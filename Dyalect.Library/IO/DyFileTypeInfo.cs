@@ -143,12 +143,73 @@ namespace Dyalect.Library.IO
 
             try
             {
-                File.Create(path.GetString());
+                File.Create(path.GetString()).Dispose();
                 return DyNil.Instance;
             }
             catch (ArgumentException)
             {
                 return ctx.InvalidValue(path);
+            }
+            catch (Exception)
+            {
+                return ctx.IOFailed();
+            }
+        }
+
+        private DyObject DeleteFile(ExecutionContext ctx, DyObject path)
+        {
+            if (!path.IsString(ctx)) return Default();
+
+            try
+            {
+                var p = path.GetString();
+                File.SetAttributes(p, FileAttributes.Normal);
+                File.Delete(p);
+                return DyNil.Instance;
+            }
+            catch (ArgumentException)
+            {
+                return ctx.InvalidValue(path);
+            }
+            catch (Exception)
+            {
+                return ctx.IOFailed();
+            }
+        }
+
+        private DyObject CopyFile(ExecutionContext ctx, DyObject source, DyObject destination, DyObject overwrite)
+        {
+            if (!source.IsString(ctx)) return Default();
+            if (!destination.IsString(ctx)) return Default();
+
+            try
+            {
+                File.Copy(source.GetString(), destination.GetString(), overwrite.IsTrue());
+                return DyNil.Instance;
+            }
+            catch (ArgumentException)
+            {
+                return ctx.InvalidValue(source);
+            }
+            catch (Exception)
+            {
+                return ctx.IOFailed();
+            }
+        }
+
+        private DyObject MoveFile(ExecutionContext ctx, DyObject source, DyObject destination, DyObject overwrite)
+        {
+            if (!source.IsString(ctx)) return Default();
+            if (!destination.IsString(ctx)) return Default();
+
+            try
+            {
+                File.Move(source.GetString(), destination.GetString(), overwrite.IsTrue());
+                return DyNil.Instance;
+            }
+            catch (ArgumentException)
+            {
+                return ctx.InvalidValue(source);
             }
             catch (Exception)
             {
@@ -167,6 +228,9 @@ namespace Dyalect.Library.IO
                 "WriteBytes" => Func.Static(name, WriteAllBytes, -1, new Par("path"), new Par("value")),
                 "Exists" => Func.Static(name, FileExists, -1, new Par("path")),
                 "Create" => Func.Static(name, CreateFile, -1, new Par("path")),
+                "Delete" => Func.Static(name, DeleteFile, -1, new Par("path")),
+                "Move" => Func.Static(name, MoveFile, -1, new Par("source"), new Par("destination"), new Par("overwrite", DyBool.False)),
+                "Copy" => Func.Static(name, CopyFile, -1, new Par("source"), new Par("destination"), new Par("overwrite", DyBool.False)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }
