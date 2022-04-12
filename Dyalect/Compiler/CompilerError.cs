@@ -122,6 +122,10 @@
 
         GetterWrongArguments = 259,
 
-        InvalidMixin = 260
+        InvalidMixin = 260,
+
+        MixinAlreadySpecified = 261,
+
+        MixinSameAsType = 262
     }
 }

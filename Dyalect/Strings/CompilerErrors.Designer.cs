@@ -331,6 +331,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mixin &quot;{0}&quot; is specified more than once..
+        /// </summary>
+        internal static string MixinAlreadySpecified {
+            get {
+                return ResourceManager.GetString("MixinAlreadySpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mixin &quot;{0}&quot; is the same as type..
+        /// </summary>
+        internal static string MixinSameAsType {
+            get {
+                return ResourceManager.GetString("MixinSameAsType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Named argument &quot;{0}&quot; cannot be specified multiple times..
         /// </summary>
         internal static string NamedArgumentMultipleTimes {

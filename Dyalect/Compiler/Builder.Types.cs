@@ -1,5 +1,6 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
+using System.Collections.Generic;
 using static Dyalect.Compiler.Hints;
 
 namespace Dyalect.Compiler
@@ -39,10 +40,20 @@ namespace Dyalect.Compiler
 
             if (node.Mixins is not null)
             {
+                var set = new HashSet<int>();
+
                 foreach (var m in node.Mixins)
                 {
+                    if (m.Parent is null && m.Local == node.Name)
+                        AddError(CompilerError.MixinSameAsType, node.Location, m.ToString());
+
                     cw.PushVar(new ScopeVar(typeVar));
                     var code = PushTypeInfo(ctx, m, node.Location);
+                    
+                    if (set.Contains(code))
+                        AddError(CompilerError.MixinAlreadySpecified, node.Location, m.ToString());
+                    else
+                        set.Add(code);
 
                     if (code < 0)
                     {
