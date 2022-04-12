@@ -1,3 +1,6 @@
+# 0.40.0
+  * 
+
 # 0.39.0
   * Add: _Add an ability to delete files_ ([Issue #733](https://github.com/vorov2/dyalect/issues/733), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.File#delete)).
   * Add: _Add an ability to Copy and Move files_ ([Issue #725](https://github.com/vorov2/dyalect/issues/725), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.File#copy)).
