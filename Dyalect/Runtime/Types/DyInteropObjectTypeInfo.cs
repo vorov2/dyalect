@@ -25,7 +25,7 @@ namespace Dyalect.Runtime.Types
         {
             if (!type.IsString(ctx)) return Default();
 
-            var typeInfo = System.Type.GetType(type.GetString(), throwOnError: false);
+            var typeInfo = Type.GetType(type.GetString(), throwOnError: false);
 
             if (typeInfo is null)
                 return ctx.InvalidValue(type);
@@ -47,51 +47,47 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject CreateTypedArray(ExecutionContext ctx, DyObject arr, DyObject type)
-        {
-            if (arr is not DyCollection coll)
-                return ctx.InvalidType(DyType.Array, DyType.Tuple, arr);
-
-            if (type is not DyInteropObject interop || interop.Object is not System.Type typ)
-                return ctx.InvalidType(DyType.Interop, type);
-
-            if (!TypeConverter.TryCreateTypedArray(coll.GetValues(), typ, out var ret))
-                return ctx.InvalidCast(arr.GetTypeName(ctx), typ.FullName ?? typ.Name);
-
-            return new DyInteropObject(ret!.GetType(), ret!);
-        }
-
         private System.Collections.Generic.Dictionary<string, DyInteropObject> types = new()
             {
-                { "Int32", new DyInteropObject(typeof(int), typeof(int).GetType()) },
-                { "Int64", new DyInteropObject(typeof(long), typeof(long).GetType()) },
-                { "UInt32", new DyInteropObject(typeof(uint), typeof(uint).GetType()) },
-                { "UInt64", new DyInteropObject(typeof(ulong), typeof(uint).GetType()) },
-                { "Byte", new DyInteropObject(typeof(byte), typeof(byte).GetType()) },
-                { "SByte", new DyInteropObject(typeof(sbyte), typeof(sbyte).GetType()) },
-                { "Char", new DyInteropObject(typeof(char), typeof(char).GetType()) },
-                { "String", new DyInteropObject(typeof(string), typeof(string).GetType()) },
-                { "Boolean", new DyInteropObject(typeof(bool), typeof(bool).GetType()) },
-                { "Double", new DyInteropObject(typeof(double), typeof(double).GetType()) },
-                { "Single", new DyInteropObject(typeof(float), typeof(float).GetType()) },
-                { "Decimal", new DyInteropObject(typeof(decimal), typeof(decimal).GetType()) },
+                { "Int32", new DyInteropObject(typeof(int).GetType(), typeof(int)) },
+                { "Int64", new DyInteropObject(typeof(long).GetType(), typeof(long)) },
+                { "UInt32", new DyInteropObject(typeof(uint).GetType(), typeof(uint)) },
+                { "UInt64", new DyInteropObject(typeof(uint).GetType(), typeof(ulong)) },
+                { "Byte", new DyInteropObject(typeof(byte).GetType(), typeof(byte)) },
+                { "SByte", new DyInteropObject(typeof(sbyte).GetType(), typeof(sbyte)) },
+                { "Char", new DyInteropObject(typeof(char).GetType(), typeof(char)) },
+                { "String", new DyInteropObject(typeof(string).GetType(), typeof(string)) },
+                { "Boolean", new DyInteropObject(typeof(bool).GetType(), typeof(bool)) },
+                { "Double", new DyInteropObject(typeof(double).GetType(), typeof(double)) },
+                { "Single", new DyInteropObject(typeof(float).GetType(), typeof(float)) },
+                { "Decimal", new DyInteropObject(typeof(decimal).GetType(), typeof(decimal)) },
+                { "Type", new DyInteropObject(typeof(Type).GetType(), typeof(Type)) },
+                { "Array", new DyInteropObject(typeof(Array).GetType(), typeof(Array)) },
         };
-        private DyObject GetTypeInstance(ExecutionContext ctx, DyObject name)
+        private DyFunction? GetTypeInstance(ExecutionContext ctx, string name)
         {
-            if (!name.IsString(ctx)) return Default();
+            if (!types.TryGetValue(name, out var typ))
+                return base.InitializeStaticMember(name, ctx);
 
-            if (!types.TryGetValue(name.GetString(), out var typ))
-                return ctx.InvalidValue(name);
-
-            return typ;
+            return Func.Auto(name, _ => typ);
         }
 
-        private DyObject Convert(ExecutionContext ctx, DyObject value, DyObject type)
+        private DyObject CreateArray(ExecutionContext ctx, DyObject type, DyObject size)
         {
-            if (type is not DyInteropSpecificObjectTypeInfo obj)
+            if (type is not DyInteropObject obj || obj.Object is not Type typ)
                 return ctx.InvalidType(type);
 
-            var ret = TypeConverter.ConvertTo(ctx, value, obj.Type);
+            if (!size.IsInteger(ctx)) return Default();
+            var arr = Array.CreateInstance(typ, (int)size.GetInteger());
+            return new DyInteropObject(arr.GetType(), arr);
+        }
+
+        private DyObject ConvertTo(ExecutionContext ctx, DyObject value, DyObject type)
+        {
+            if (type is not DyInteropObject obj || obj.Object is not Type typ)
+                return ctx.InvalidType(type);
+
+            var ret = TypeConverter.ConvertTo(ctx, value, typ);
 
             if (ret is null)
                 return Default();
@@ -99,16 +95,24 @@ namespace Dyalect.Runtime.Types
             return new DyInteropObject(ret.GetType(), ret);
         }
 
+        private DyObject ConvertFrom(ExecutionContext ctx, DyObject obj)
+        {
+            if (obj is not DyInteropObject interop)
+                return ctx.InvalidType(obj);
+
+            return TypeConverter.ConvertFrom(interop.Object) ?? obj;
+        }
+
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "Interop" => Func.Static(name, CreateInteropObject, -1, new Par("type")),
-                "CreateTypedArray" => Func.Static(name, CreateTypedArray, -1, new Par("arr"), new Par("type")),
                 "LoadAssembly" => Func.Static(name, LoadAssembly, -1, new Par("assembly")),
                 "LoadAssemblyFromFile" => Func.Static(name, LoadAssemblyFromFile, -1, new Par("path")),
-                "GetSystemType" => Func.Static(name, GetTypeInstance, -1, new Par("name")),
-                "Convert" => Func.Static(name, Convert, -1, new Par("value"), new Par("type")),
-                _ => base.InitializeStaticMember(name, ctx)
+                "ConvertTo" => Func.Static(name, ConvertTo, -1, new Par("type"), new Par("value")),
+                "ConvertFrom" => Func.Static(name, ConvertFrom, -1, new Par("value")),
+                "CreateArray" => Func.Static(name, CreateArray, -1, new Par("type"), new Par("size")),
+                _ => GetTypeInstance(ctx, name)
             };
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -122,6 +126,8 @@ namespace Dyalect.Runtime.Types
         public override string TypeName => Type.Name;
  
         public override int ReflectedTypeId => (int)Type.TypeHandle.Value;
+
+        protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
         internal override void SetStaticMember(ExecutionContext ctx, string name, DyFunction func) => ctx.InvalidOperation();
 
@@ -152,7 +158,5 @@ namespace Dyalect.Runtime.Types
                 "new" => Func.Static(name, CreateNew, 0, new Par("args")),
                 _ => new DyInteropFunction(name, Type, BindingFlags.Public | BindingFlags.Static)
             };
-
-        protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
     }
 }

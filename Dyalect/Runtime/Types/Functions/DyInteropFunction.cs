@@ -53,10 +53,7 @@ namespace Dyalect.Runtime.Types
 
                     if (ret is null)
                         result = DyNil.Instance;
-
-                    result = TypeConverter.ConvertFrom(ret);
-
-                    if (result is DyNil && ret is not null)
+                    else
                         result = new DyInteropObject(ret.GetType(), ret);
 
                     return true;

@@ -1,20 +1,29 @@
 ﻿#region "Uri"
 	let _Uri = Interop("System.Uri,System")
 	let uri = _Uri.[new]("http://dyalect.dy/wiki")
-	assert("dyalect.dy", uri.[get_Host]())
+	assert("dyalect.dy", Interop.ConvertFrom << uri.[get_Host]())
+#endregion
+
+#region "Version"
+	let _Version = Interop("System.Version,mscorlib")
+	let v = _Version.[new]("12.0.34.1")
+	let res = v.[get_Major]()
+	assert("Interop", res.GetType().name)
+	assert("Integer", Interop.ConvertFrom(res).GetType().name)
+	assert(12, Interop.ConvertFrom << res)
 #endregion
 
 #region "List<int>"
-	let _List = Interop("System.Collections.Generic.List`1[System.Object],mscorlib")
+	let _List = Interop("System.Collections.Generic.List`1[System.Int32],mscorlib")
 	let xs = _List.[new]()
 	xs.Add(12)
 	xs.Add(34)
-	assert(2, xs.[get_Count]())
-	assert(12, xs.[get_Item](0))
-	assert(34, xs.[get_Item](1))
+	assert(2, Interop.ConvertFrom << xs.[get_Count]())
+	assert(12, Interop.ConvertFrom << xs.[get_Item](0))
+	assert(34, Interop.ConvertFrom << xs.[get_Item](1))
 	xs.Add(144)
-	assert(144, xs.[get_Item](2))
-	assert(3, xs.[get_Count]())
+	assert(144, Interop.ConvertFrom << xs.[get_Item](2))
+	assert(3, Interop.ConvertFrom << xs.[get_Count]())
 #endregion
 
 #region "Json"
@@ -28,15 +37,15 @@
 		"age": 33
 	}]>, options)
 	let root = doc.[get_RootElement]();
-	assert("John", root.GetProperty("name").GetString())
-	assert("Doe", root.GetProperty("surname").GetString())
-	assert(33, root.GetProperty("age").GetInt32())
+	assert("John", Interop.ConvertFrom << root.GetProperty("name").GetString())
+	assert("Doe", Interop.ConvertFrom << root.GetProperty("surname").GetString())
+	assert(33, Interop.ConvertFrom << root.GetProperty("age").GetInt32())
 #endregion
 
 #region "OSVersion"
 	let _OS = Interop("System.Environment,System.Runtime")
 	let ver = _OS.[get_OSVersion]()
-	let str = ver.[get_VersionString]()
+	let str = Interop.ConvertFrom << ver.[get_VersionString]()
 	assert(true, str is String && str.Length() > 0)
 #endregion
 
@@ -45,15 +54,16 @@
 	let _Type = Interop("System.Type,mscorlib")
 	let _Char = _Type.GetType("System.Char")
 	let arr = _Array.CreateInstance(_Char, 3)
-	arr[0] = 'f'
-	arr[1] = 'o'
-	arr[2] = 'o'
+	arr.SetValue('f', 0)
+	arr.SetValue('o', 1)
+	arr.SetValue('o', 2)
 	let _String = Interop("System.String,mscorlib")
-	let str = _String.[new](arr >> Interop.CreateTypedArray(_Char))
-	assert("foo", str)
+	let str = _String.[new](arr)
+	assert("foo", Interop.ConvertFrom << str)
 #endregion
 
 #region "Conversion"
+	let _Type = Interop("System.Type,mscorlib")
 	let _String = Interop("System.String,mscorlib")
 	var str
 
@@ -63,7 +73,17 @@
 		@MethodNotFound => assert(got: true)
 	}
 
-	let _CharArray = Interop("System.Char[]")
-	str = _String.[new](Interop.Convert(["f","o","o"], _CharArray))
-	assert("foo", str.ToString())
+	let _CharArrayType = _Type.GetType("System.Char[]")
+	str = _String.[new](Interop.ConvertTo(["f","o","o"], _CharArrayType))
+	assert("foo", Interop.ConvertFrom << str)
+#endregion
+
+#region "CreateArray"
+	let arr = Interop.CreateArray(Interop.Int64, 3)
+	arr.SetValue(0, 0)
+	arr.SetValue(1, 1)
+	arr.SetValue(2, 2)
+	assert(0, Interop.ConvertFrom << arr.GetValue(0))
+	assert(1, Interop.ConvertFrom << arr.GetValue(1))
+	assert(2, Interop.ConvertFrom << arr.GetValue(2))
 #endregion
