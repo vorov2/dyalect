@@ -45,7 +45,17 @@ namespace Dyalect.Runtime.Types
 
         public IList<object> ConvertToList() => new List<object>(ConvertToArray());
 
-        public DyObject[] ConvertToArray()
+        public object[] ConvertToArray()
+        {
+            var newArr = new object[Count];
+
+            for (var i = 0; i < newArr.Length; i++)
+                newArr[i] = GetValue(i).ToObject();
+
+            return newArr;
+        }
+
+        public DyObject[] Trim()
         {
             var newArr = new DyObject[Count];
 

@@ -126,7 +126,7 @@ namespace Dyalect.Runtime
                     break;
             }
 
-            throw new InvalidCastException();
+            return ctx.InvalidCast();
         }
     }
 }

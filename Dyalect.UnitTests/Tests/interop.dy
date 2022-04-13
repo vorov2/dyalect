@@ -1,0 +1,54 @@
+﻿#region "Uri"
+	let _Uri = Interop("System.Uri,System")
+	let uri = _Uri.[new]("http://dyalect.dy/wiki")
+	assert("dyalect.dy", uri.[get_Host]())
+#endregion
+
+#region "List<int>"
+	let _List = Interop("System.Collections.Generic.List`1[System.Object],mscorlib")
+	let xs = _List.[new]()
+	xs.Add(12)
+	xs.Add(34)
+	assert(2, xs.[get_Count]())
+	assert(12, xs.[get_Item](0))
+	assert(34, xs.[get_Item](1))
+	xs.Add(144)
+	assert(144, xs.[get_Item](2))
+	assert(3, xs.[get_Count]())
+#endregion
+
+#region "Json"
+	let _Json = Interop("System.Text.Json.JsonDocument,System.Text.Json")
+	let _JsonOptions = Interop("System.Text.Json.JsonDocumentOptions,System.Text.Json")
+	let options = _JsonOptions.[new]()
+	let doc = _Json.Parse(<[
+	{
+		"name": "John",
+		"surname": "Doe",
+		"age": 33
+	}]>, options)
+	let root = doc.[get_RootElement]();
+	assert("John", root.GetProperty("name").GetString())
+	assert("Doe", root.GetProperty("surname").GetString())
+	assert(33, root.GetProperty("age").GetInt32())
+#endregion
+
+#region "OSVersion"
+	let _OS = Interop("System.Environment,System.Runtime")
+	let ver = _OS.[get_OSVersion]()
+	let str = ver.[get_VersionString]()
+	assert(true, str is String && str.Length() > 0)
+#endregion
+
+#region "Typed array"
+	let _Array = Interop("System.Array,mscorlib")
+	let _Type = Interop("System.Type,mscorlib")
+	let _Char = _Type.GetType("System.Char")
+	let arr = _Array.CreateInstance(_Char, 3)
+	arr[0] = 'f'
+	arr[1] = 'o'
+	arr[2] = 'o'
+	let _String = Interop("System.String,mscorlib")
+	let str = _String.[new](arr >> Interop.CreateTypedArray(_Char))
+	assert("foo", str)
+#endregion
