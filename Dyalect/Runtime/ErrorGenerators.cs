@@ -310,7 +310,7 @@ namespace Dyalect.Runtime
                 if (i > 0)
                     sb.Append(',');
 
-                sb.Append(args[i].GetTypeName(ctx));
+                sb.Append(args[i].ToObject().GetType().Name);
             }
 
             sb.Append(')');

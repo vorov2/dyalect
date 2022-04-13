@@ -43,10 +43,16 @@ namespace Dyalect.Runtime.Types
 
         public override object ToObject() => ConvertToArray();
 
-        public IList<object> ConvertToList() => new List<object>(ConvertToArray());
-
-        public object[] ConvertToArray()
+        public Array ConvertToArray()
         {
+            if (Count == 0)
+                return Array.Empty<object>();
+
+            var fe = GetValue(0);
+
+            if (TypeConverter.TryCreateTypedArray(GetValues(), fe.ToObject().GetType(), out var result))
+                return result!;
+
             var newArr = new object[Count];
 
             for (var i = 0; i < newArr.Length; i++)

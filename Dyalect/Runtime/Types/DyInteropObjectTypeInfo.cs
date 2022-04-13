@@ -1,4 +1,5 @@
 ﻿using Dyalect.Debug;
+using System;
 using System.Linq;
 using System.Reflection;
 
@@ -54,20 +55,11 @@ namespace Dyalect.Runtime.Types
             if (type is not DyInteropObject interop || interop.Object is not System.Type typ)
                 return ctx.InvalidType(DyType.Interop, type);
 
-            var objArr = coll.GetValues();
-            var xs = System.Array.CreateInstance(typ, coll.Count);
+            if (!TypeConverter.TryCreateTypedArray(coll.GetValues(), typ, out var ret))
+                return ctx.InvalidCast(arr.GetTypeName(ctx), typ.FullName ?? typ.Name);
 
-            for (var i = 0; i < coll.Count; i++)
-            {
-                xs.SetValue(TypeConverter.ConvertTo(ctx, objArr[i], typ), i);
-
-                if (ctx.HasErrors)
-                    return Default();
-            }
-
-            return new DyInteropObject(xs.GetType(), xs);
+            return new DyInteropObject(ret!.GetType(), ret!);
         }
-
 
         private System.Collections.Generic.Dictionary<string, DyInteropObject> types = new()
             {
@@ -94,6 +86,19 @@ namespace Dyalect.Runtime.Types
             return typ;
         }
 
+        private DyObject Convert(ExecutionContext ctx, DyObject value, DyObject type)
+        {
+            if (type is not DyInteropSpecificObjectTypeInfo obj)
+                return ctx.InvalidType(type);
+
+            var ret = TypeConverter.ConvertTo(ctx, value, obj.Type);
+
+            if (ret is null)
+                return Default();
+
+            return new DyInteropObject(ret.GetType(), ret);
+        }
+
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
@@ -102,6 +107,7 @@ namespace Dyalect.Runtime.Types
                 "LoadAssembly" => Func.Static(name, LoadAssembly, -1, new Par("assembly")),
                 "LoadAssemblyFromFile" => Func.Static(name, LoadAssemblyFromFile, -1, new Par("path")),
                 "GetSystemType" => Func.Static(name, GetTypeInstance, -1, new Par("name")),
+                "Convert" => Func.Static(name, Convert, -1, new Par("value"), new Par("type")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
 
@@ -111,29 +117,40 @@ namespace Dyalect.Runtime.Types
 
     internal sealed class DyInteropSpecificObjectTypeInfo : DyTypeInfo
     {
-        private readonly System.Type type;
+        internal readonly Type Type;
 
-        public override string TypeName => type.Name;
-
-        public override int ReflectedTypeId => (int)type.TypeHandle.Value;
+        public override string TypeName => Type.Name;
+ 
+        public override int ReflectedTypeId => (int)Type.TypeHandle.Value;
 
         internal override void SetStaticMember(ExecutionContext ctx, string name, DyFunction func) => ctx.InvalidOperation();
 
         internal override void SetInstanceMember(ExecutionContext ctx, string name, DyFunction func) => ctx.InvalidOperation();
 
-        public DyInteropSpecificObjectTypeInfo(System.Type type) => this.type = type;
+        public DyInteropSpecificObjectTypeInfo(Type type) => this.Type = type;
 
         private DyObject CreateNew(ExecutionContext ctx, DyObject args)
         {
-            return new DyInteropObject(type, System.Activator.CreateInstance(type, 
-                ((DyTuple)args).UnsafeAccessValues().Select(o => o.ToObject()).ToArray())!);
+            var values = ((DyTuple)args).UnsafeAccessValues();
+            var arr = values.Select(o => o.ToObject()).ToArray();
+            object instance;
+
+            try
+            {
+                instance = Activator.CreateInstance(Type, arr)!;
+                return new DyInteropObject(Type, instance);
+            }
+            catch (Exception)
+            {
+                return ctx.MethodNotFound("new", Type, values);
+            }
         }
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
                 "new" => Func.Static(name, CreateNew, 0, new Par("args")),
-                _ => new DyInteropFunction(name, type, BindingFlags.Public | BindingFlags.Static)
+                _ => new DyInteropFunction(name, Type, BindingFlags.Public | BindingFlags.Static)
             };
 
         protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;

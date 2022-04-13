@@ -52,3 +52,18 @@
 	let str = _String.[new](arr >> Interop.CreateTypedArray(_Char))
 	assert("foo", str)
 #endregion
+
+#region "Conversion"
+	let _String = Interop("System.String,mscorlib")
+	var str
+
+	try {
+		str = _String.[new](["f","o","o"])
+	} catch {
+		@MethodNotFound => assert(got: true)
+	}
+
+	let _CharArray = Interop("System.Char[]")
+	str = _String.[new](Interop.Convert(["f","o","o"], _CharArray))
+	assert("foo", str.ToString())
+#endregion
