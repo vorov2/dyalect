@@ -34,9 +34,9 @@ namespace Dyalect
         public static readonly Type Type = typeof(Type);
         public static readonly Type DyObject = typeof(DyObject);
 
-        public static List<MethodInfo> GetOverloadedMethod(this Type type, string name, BindingFlags flags)
+        public static List<MethodInfo>? GetOverloadedMethod(this Type type, string name, BindingFlags flags)
         {
-            List<MethodInfo> xs = default;
+            List<MethodInfo>? xs = default;
 
             foreach (var mi in type.GetMethods(flags))
                 if (mi.Name == name)

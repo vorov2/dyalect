@@ -30,13 +30,13 @@ namespace Dyalect.Runtime.Types
             return base.BindOrRun(ctx, arg);
         }
 
-        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => CallInteropMethod(ctx, Self, args);
+        internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => CallInteropMethod(ctx, Self!, args);
 
-        private DyObject CallInteropMethod(ExecutionContext ctx, DyObject? self, DyObject[] args)
+        private DyObject CallInteropMethod(ExecutionContext ctx, DyObject self, DyObject[] args)
         {
             var tupleArgs = args.Length > 0 ? ((DyTuple)args[0]).UnsafeAccessValues() : null;
             var arguments = tupleArgs is null ? Array.Empty<object>() : tupleArgs.Select(a => a.ToObject()).ToArray();
-            var argumentTypes = tupleArgs is null ? Array.Empty<Type>() : arguments.Select(a => a.GetType()).ToArray();
+            var argumentTypes = tupleArgs is null ? Array.Empty<Type>() : arguments.Select(a => a is null ? DyNil.Instance.GetType() : a.GetType()).ToArray();
 
             if (!ResolveMethod(self, arguments, argumentTypes, false, out var result))
                 if (!ResolveMethod(self, arguments, argumentTypes, true, out result))
@@ -45,7 +45,7 @@ namespace Dyalect.Runtime.Types
             return result;
         }
 
-        private bool ResolveMethod(DyObject? self, object[] arguments, Type[] argumentTypes, bool generalize, out DyObject result)
+        private bool ResolveMethod(DyObject self, object[] arguments, Type[] argumentTypes, bool generalize, out DyObject result)
         {
             result = DyNil.Instance;
 
@@ -58,17 +58,7 @@ namespace Dyalect.Runtime.Types
                     if (pars.Length != arguments.Length || !CheckArguments(arguments, argumentTypes, generalize, pars))
                         continue;
 
-                    object? @this = self;
-
-                    if (@this is not null)
-                    {
-                        if (self is DyInteropObject obj)
-                            @this = obj.Object;
-                        else if (self is DyInteropSpecificObjectTypeInfo spec)
-                            @this = spec.Type;
-                    }
-
-                    var ret = m.Invoke(@this, arguments);
+                    var ret = m.Invoke(m.IsStatic ? null : self.ToObject(), arguments);
                     
                     if (ret is null)
                         result = DyNil.Instance;
@@ -98,21 +88,13 @@ namespace Dyalect.Runtime.Types
 
         private bool CheckArguments(object[] arguments, Type[] argumentTypes, bool generalize, ParameterInfo[] pars)
         {
-            Span<int> checks = stackalloc int[arguments.Length];
-
             for (var i = 0; i < arguments.Length; i++)
             {
                 var (pt, at) = (pars[i].ParameterType, argumentTypes[i]);
 
-                if (at == longType && pt == intType)
-                    checks[i] = 1;
-                else if (!at.Equals(pt) && (!generalize || !pt.IsAssignableFrom(at)))
+                if (!at.Equals(pt) && (!generalize || !pt.IsAssignableFrom(at)) && (arguments[i] is not null || !pt.IsClass))
                     return false;
             }
-
-            for (var i = 0; i < checks.Length; i++)
-                if (checks[i] == 1)
-                    arguments[i] = (int)(long)arguments[i];
 
             return true;
         }

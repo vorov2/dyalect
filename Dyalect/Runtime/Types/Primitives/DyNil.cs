@@ -13,7 +13,7 @@ namespace Dyalect.Runtime.Types
 
         private DyNil() : base(DyType.Nil) { }
 
-        public override object ToObject() => this;
+        public override object ToObject() => null;
 
         public override string ToString() => Literal;
 

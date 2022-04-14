@@ -48,9 +48,9 @@ namespace Dyalect.Runtime.Types
             if (Count == 0)
                 return Array.Empty<object>();
 
-            var fe = GetValue(0);
+            var fe = GetValue(0).ToObject();
 
-            if (TypeConverter.TryCreateTypedArray(GetValues(), fe.ToObject().GetType(), out var result))
+            if (fe is not null && TypeConverter.TryCreateTypedArray(GetValues(), fe.GetType(), out var result))
                 return result!;
 
             var newArr = new object[Count];

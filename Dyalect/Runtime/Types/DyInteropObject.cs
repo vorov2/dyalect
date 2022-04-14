@@ -10,6 +10,9 @@ namespace Dyalect.Runtime.Types
         public DyInteropObject(Type type, object obj) : base(DyType.Interop) =>
             (Type, Object) = (type, obj);
 
+        public DyInteropObject(Type obj) : base(DyType.Interop) =>
+            (Type, Object) = (obj, obj);
+
         public override int GetHashCode() => Object.GetHashCode();
 
         public override object ToObject() => Object;

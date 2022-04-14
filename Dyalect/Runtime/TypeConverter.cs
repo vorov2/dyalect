@@ -56,6 +56,8 @@ namespace Dyalect.Runtime
                             newArr[i] = ConvertFrom(arr.GetValue(i));
                         return new DyArray(newArr);
                     }
+                    else if (BCL.Type.IsAssignableFrom(type))
+                        return new DyInteropObject((Type)obj);
                     else
                         return new DyInteropObject(type, obj);
             }
@@ -79,17 +81,45 @@ namespace Dyalect.Runtime
             result = default;
             long i8; double r8; string str;
 
-            if (type == Dyalect.BCL.DyObject)
+            if (obj.TypeId == DyType.Interop)
+            {
+                var interop = (DyInteropObject)obj;
+
+                if (BCL.Type.IsAssignableFrom(interop.Type)) //We have a type info here
+                {
+                    if (BCL.Type.IsAssignableFrom(type)) //Type info is what we need
+                    {
+                        result = interop.Object;
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+                else
+                {
+                    try
+                    {
+                        result = Convert.ChangeType(interop.Object, type);
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if (type == BCL.DyObject)
             {
                 result = obj;
                 return true;
             }
-            else if (type == Dyalect.BCL.Object)
+            else if (type == BCL.Object)
             {
                 result = obj.ToObject();
                 return true;
             }
-            else if (Dyalect.BCL.DyObject.IsAssignableFrom(type))
+            else if (BCL.DyObject.IsAssignableFrom(type))
             {
                 result = Convert.ChangeType(obj, type);
                 return true;
@@ -257,11 +287,6 @@ namespace Dyalect.Runtime
                             result = Activator.CreateInstance(targetType, arr);
                             return true;
                         }
-                    }
-                    else if (obj is DyInteropSpecificObjectTypeInfo tif && BCL.Type.IsAssignableFrom(type))
-                    {
-                        result = tif.Type;
-                        return true;
                     }
                     break;
             }
