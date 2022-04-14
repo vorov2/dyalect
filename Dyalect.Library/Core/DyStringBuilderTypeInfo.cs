@@ -68,16 +68,11 @@ namespace Dyalect.Library.Core
 
         private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject index, DyObject len)
         {
+            if (!index.IsInteger(ctx)) return Default();
+            if (!len.IsInteger(ctx)) return Default();
             var sb = ((DyStringBuilder)self).Builder;
-
-            if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(index);
-
-            if (len.TypeId != DyType.Integer)
-                return ctx.InvalidType(len);
-
-            var i = (long)index.ToObject();
-            var ln = (long)len.ToObject();
+            var i = index.GetInteger();
+            var ln = len.GetInteger();
 
             if (i + ln >= sb.Length)
                 return ctx.IndexOutOfRange();
@@ -88,12 +83,10 @@ namespace Dyalect.Library.Core
 
         private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
+            if (!index.IsInteger(ctx)) return Default();
             var sb = ((DyStringBuilder)self).Builder;
 
-            if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(index);
-
-            var i = (long)index.ToObject();
+            var i = index.GetInteger();
             var str = DyString.ToString(value, ctx);
 
             if (ctx.HasErrors)

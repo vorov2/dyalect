@@ -419,7 +419,7 @@ namespace Dyalect.Runtime.Types
 
         internal bool HasStaticMember(string name, ExecutionContext ctx) => LookupStaticMember(name, ctx) is not null;
 
-        internal DyObject GetStaticMember(string name, ExecutionContext ctx)
+        internal virtual DyObject GetStaticMember(string name, ExecutionContext ctx)
         {
             var ret = LookupStaticMember(name, ctx);
 

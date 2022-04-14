@@ -297,7 +297,7 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject MethodNotFound(this ExecutionContext ctx, string name, Type type, DyObject[] args)
+        public static DyObject MethodNotFound(this ExecutionContext ctx, string name, Type type, DyObject[]? args)
         {
             var sb = new StringBuilder();
             sb.Append(type.Name);
@@ -305,13 +305,14 @@ namespace Dyalect.Runtime
             sb.Append(name);
             sb.Append('(');
 
-            for (var i = 0; i < args.Length; i++)
-            {
-                if (i > 0)
-                    sb.Append(',');
+            if (args is not null)
+                for (var i = 0; i < args.Length; i++)
+                {
+                    if (i > 0)
+                        sb.Append(',');
 
-                sb.Append(args[i].ToObject().GetType().Name);
-            }
+                    sb.Append(args[i].ToObject().GetType().Name);
+                }
 
             sb.Append(')');
             ctx.Error = new(DyErrorCode.MethodNotFound, sb.ToString());

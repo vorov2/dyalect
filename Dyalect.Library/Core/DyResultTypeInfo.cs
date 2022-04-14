@@ -31,7 +31,7 @@ namespace Dyalect.Library.Core
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
         {
             if (index.TypeId is DyType.Integer)
-                return (long)index.ToObject() is 0 ? ((DyResult)self).Value : ctx.IndexOutOfRange(index);
+                return index.GetInteger() is 0 ? ((DyResult)self).Value : ctx.IndexOutOfRange(index);
 
             if (index.TypeId is DyType.String)
             {

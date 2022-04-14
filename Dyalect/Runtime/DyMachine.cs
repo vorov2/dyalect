@@ -719,6 +719,11 @@ namespace Dyalect.Runtime
             {
                 return ctx.CollectionModified();
             }
+            catch (System.Reflection.TargetInvocationException ex)
+            {
+                var msg = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
+                return ctx.ExternalFunctionFailure(func.FunctionName, msg);
+            }
             catch (Exception ex)
             {
                 var dy = GetCodeException(ex);

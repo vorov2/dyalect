@@ -57,7 +57,7 @@ namespace Dyalect.Runtime
                         return new DyArray(newArr);
                     }
                     else
-                        return DyNil.Instance;
+                        return new DyInteropObject(type, obj);
             }
         }
 
@@ -79,17 +79,17 @@ namespace Dyalect.Runtime
             result = default;
             long i8; double r8; string str;
 
-            if (type == Dyalect.Types.DyObject)
+            if (type == Dyalect.BCL.DyObject)
             {
                 result = obj;
                 return true;
             }
-            else if (type == Dyalect.Types.Object)
+            else if (type == Dyalect.BCL.Object)
             {
                 result = obj.ToObject();
                 return true;
             }
-            else if (Dyalect.Types.DyObject.IsAssignableFrom(type))
+            else if (Dyalect.BCL.DyObject.IsAssignableFrom(type))
             {
                 result = Convert.ChangeType(obj, type);
                 return true;
@@ -257,6 +257,11 @@ namespace Dyalect.Runtime
                             result = Activator.CreateInstance(targetType, arr);
                             return true;
                         }
+                    }
+                    else if (obj is DyInteropSpecificObjectTypeInfo tif && BCL.Type.IsAssignableFrom(type))
+                    {
+                        result = tif.Type;
+                        return true;
                     }
                     break;
             }

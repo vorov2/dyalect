@@ -1,16 +1,15 @@
 ﻿#region "Uri"
 	let _Uri = Interop("System.Uri,System")
 	let uri = _Uri.[new]("http://dyalect.dy/wiki")
-	assert("dyalect.dy", Interop.ConvertFrom << uri.[get_Host]())
+	assert("dyalect.dy", uri.[get_Host]())
 #endregion
 
 #region "Version"
 	let _Version = Interop("System.Version,mscorlib")
 	let v = _Version.[new]("12.0.34.1")
 	let res = v.[get_Major]()
-	assert("Interop", res.GetType().name)
-	assert("Integer", Interop.ConvertFrom(res).GetType().name)
-	assert(12, Interop.ConvertFrom << res)
+	assert("Integer", res.GetType().name)
+	assert(12, res)
 #endregion
 
 #region "List<int>"
@@ -18,12 +17,12 @@
 	let xs = _List.[new]()
 	xs.Add(12)
 	xs.Add(34)
-	assert(2, Interop.ConvertFrom << xs.[get_Count]())
-	assert(12, Interop.ConvertFrom << xs.[get_Item](0))
-	assert(34, Interop.ConvertFrom << xs.[get_Item](1))
+	assert(2, xs.[get_Count]())
+	assert(12, xs.[get_Item](0))
+	assert(34, xs.[get_Item](1))
 	xs.Add(144)
-	assert(144, Interop.ConvertFrom << xs.[get_Item](2))
-	assert(3, Interop.ConvertFrom << xs.[get_Count]())
+	assert(144, xs.[get_Item](2))
+	assert(3, xs.[get_Count]())
 #endregion
 
 #region "Json"
@@ -37,15 +36,15 @@
 		"age": 33
 	}]>, options)
 	let root = doc.[get_RootElement]();
-	assert("John", Interop.ConvertFrom << root.GetProperty("name").GetString())
-	assert("Doe", Interop.ConvertFrom << root.GetProperty("surname").GetString())
-	assert(33, Interop.ConvertFrom << root.GetProperty("age").GetInt32())
+	assert("John", root.GetProperty("name").GetString())
+	assert("Doe", root.GetProperty("surname").GetString())
+	assert(33, root.GetProperty("age").GetInt32())
 #endregion
 
 #region "OSVersion"
 	let _OS = Interop("System.Environment,System.Runtime")
 	let ver = _OS.[get_OSVersion]()
-	let str = Interop.ConvertFrom << ver.[get_VersionString]()
+	let str = ver.[get_VersionString]()
 	assert(true, str is String && str.Length() > 0)
 #endregion
 
@@ -59,7 +58,7 @@
 	arr.SetValue('o', 2)
 	let _String = Interop("System.String,mscorlib")
 	let str = _String.[new](arr)
-	assert("foo", Interop.ConvertFrom << str)
+	assert("foo", str)
 #endregion
 
 #region "Conversion"
@@ -74,8 +73,8 @@
 	}
 
 	let _CharArrayType = _Type.GetType("System.Char[]")
-	str = _String.[new](Interop.ConvertTo(["f","o","o"], _CharArrayType))
-	assert("foo", Interop.ConvertFrom << str)
+	str = _String.[new](Interop.ConvertTo(_CharArrayType, ["f","o","o"]))
+	assert("foo", str)
 #endregion
 
 #region "CreateArray"
@@ -83,7 +82,20 @@
 	arr.SetValue(0, 0)
 	arr.SetValue(1, 1)
 	arr.SetValue(2, 2)
-	assert(0, Interop.ConvertFrom << arr.GetValue(0))
-	assert(1, Interop.ConvertFrom << arr.GetValue(1))
-	assert(2, Interop.ConvertFrom << arr.GetValue(2))
+	assert(0, arr.GetValue(0))
+	assert(1, arr.GetValue(1))
+	assert(2, arr.GetValue(2))
+#endregion
+
+#region "Generic method"
+	let _Tuple = Interop.Type.GetType("System.Tuple,mscorlib")
+	var tuple
+	for mi in Interop.ConvertFrom << _Tuple.GetMethods() {
+		if (mi.Name == "Create" && mi.GetGenericArguments().Length == 2) {
+			let gen = mi.MakeGenericMethod([Interop.Int32, Interop.String])
+			tuple = gen.Invoke(nil, [42, "foobar"])
+		}
+	}
+	assert(42, tuple.Item1)
+	assert("foobar", tuple.Item2)
 #endregion
