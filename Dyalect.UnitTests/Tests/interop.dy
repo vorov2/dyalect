@@ -2,7 +2,7 @@
 	let _Uri = Interop("System.Uri,System")
 	let uri = _Uri.[new]("http://dyalect.dy/wiki")
 	assert("dyalect.dy", uri.[get_Host]())
-#endregion
+#endregion 
 
 #region "Version"
 	let _Version = Interop("System.Version")
