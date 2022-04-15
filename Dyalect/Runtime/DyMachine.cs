@@ -550,7 +550,7 @@ namespace Dyalect.Runtime
                             var idx = fn.GetParameterIndex((string)unit.Strings[op.Data]);
                             if (idx == -1)
                             {
-                                if (locs.VarArgsIndex > -1 && locs.Locals.Length == 1)
+                                if (locs.VarArgsIndex > -1 && fn.Parameters.Length == 1)
                                 {
                                     locs.VarArgs![locs.VarArgsSize++] = new DyLabel((string)unit.Strings[op.Data], evalStack.Pop());
                                     break;
