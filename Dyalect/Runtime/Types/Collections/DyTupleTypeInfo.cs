@@ -60,8 +60,8 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(false, left, right, ctx);
 
-        protected override DyObject ContainsOp(DyObject self, string field, ExecutionContext ctx) =>
-            ((DyTuple)self).GetOrdinal(field) is not -1 ? DyBool.True : DyBool.False;
+        protected override DyObject ContainsOp(DyObject self, HashString field, ExecutionContext ctx) =>
+            ((DyTuple)self).GetOrdinal((string)field) is not -1 ? DyBool.True : DyBool.False;
 
         private DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
         {
@@ -182,7 +182,7 @@ namespace Dyalect.Runtime.Types
             return RemoveAt(ctx, t, idx);
         }
 
-        private static DyTuple RemoveAt(ExecutionContext ctx, DyTuple self, int index)
+        private static DyTuple RemoveAt(ExecutionContext _, DyTuple self, int index)
         {
             var arr = new DyObject[self.Count - 1];
             var c = 0;

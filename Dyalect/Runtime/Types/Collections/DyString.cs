@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Dyalect.Compiler;
 
 namespace Dyalect.Runtime.Types
 {
@@ -14,6 +15,8 @@ namespace Dyalect.Runtime.Types
 
         public DyString(string str) : base(DyType.String) => Value = str;
 
+        public DyString(HashString str) : base(DyType.String) => (Value, hashCode) = ((string)str, str.LookupHash());
+        
         internal override DyObject GetValue(int index) => new DyChar(Value[index]);
 
         internal override DyObject[] GetValues()

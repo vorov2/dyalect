@@ -9,13 +9,10 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class DyInteropFunction : DyForeignFunction
     {
-        private readonly static Type objectType = typeof(object);
-        private readonly static Type intType = typeof(int);
-        private readonly static Type longType = typeof(long);
         private readonly static Par[] pars = new Par[] { new Par("args", isVarArg: true) };
         private readonly string name;
         private readonly Type type;
-        private List<MethodInfo> methods;
+        private readonly List<MethodInfo> methods;
 
         public override string FunctionName => name;
 

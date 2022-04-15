@@ -18,9 +18,9 @@ namespace Dyalect.Runtime.Types
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
             new DyString(arg.ToString()!);
 
-        internal override void SetStaticMember(ExecutionContext ctx, string name, DyFunction func) => ctx.InvalidOperation();
+        internal override void SetStaticMember(ExecutionContext ctx, HashString name, DyFunction func) => ctx.InvalidOperation();
 
-        internal override void SetInstanceMember(ExecutionContext ctx, string name, DyFunction func) => ctx.InvalidOperation();
+        internal override void SetInstanceMember(ExecutionContext ctx, HashString name, DyFunction func) => ctx.InvalidOperation();
 
         private DyObject CreateInteropObject(ExecutionContext ctx, DyObject type)
         {
@@ -48,7 +48,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private System.Collections.Generic.Dictionary<string, DyInteropObject> types = new()
+        private readonly System.Collections.Generic.Dictionary<string, DyInteropObject> types = new()
             {
                 { "Int32", new DyInteropObject(BCL.Int32) },
                 { "Int64", new DyInteropObject(BCL.Int64) },
@@ -161,8 +161,9 @@ namespace Dyalect.Runtime.Types
         private DyObject Wrap(ExecutionContext ctx, DyObject obj) =>
             new DyInteropObject(obj.GetType(), obj);
 
-        internal override DyObject GetStaticMember(string name, ExecutionContext ctx)
+        internal override DyObject GetStaticMember(HashString nameStr, ExecutionContext ctx)
         {
+            var name = (string)nameStr;
             var func = name switch
             {
                 "Interop" => Func.Static(name, CreateInteropObject, -1, new Par("type")),
@@ -204,10 +205,11 @@ namespace Dyalect.Runtime.Types
             }
         }
 
-        internal override DyObject GetInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        internal override DyObject GetInstanceMember(DyObject self, HashString nameStr, ExecutionContext ctx)
         {
             var interop = (DyInteropObject)self;
             DyFunction? func = null;
+            var name = (string)nameStr;
 
             if (name == "new")
                 func = Func.Member(name, CreateNew, 0, new Par("args"));

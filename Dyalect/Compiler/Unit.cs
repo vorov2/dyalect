@@ -59,6 +59,6 @@ namespace Dyalect.Compiler
 
         public List<MemoryLayout> Layouts { get; }
 
-        public Dictionary<string, ScopeVar> ExportList { get; }
+        public Dictionary<HashString, ScopeVar> ExportList { get; }
     }
 }
