@@ -8,6 +8,8 @@ namespace Dyalect.Runtime.Types
 
         internal readonly string Value;
 
+        private int hashCode;
+
         public override int Count => Value.Length;
 
         public DyString(string str) : base(DyType.String) => Value = str;
@@ -28,7 +30,7 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => Value;
 
-        public override int GetHashCode() => Value.GetHashCode();
+        public override int GetHashCode() => hashCode = Value.GetHashCode();
 
         public override bool Equals(DyObject? obj) =>
             obj is DyString s ? Value == s.Value : base.Equals(obj);
