@@ -45,7 +45,7 @@ namespace Dyalect.Compiler
 
         internal List<int> UnitIds { get; }
 
-        internal List<string> Strings { get; }
+        internal List<HashString> Strings { get; }
 
         internal List<DyObject> Objects { get; }
 

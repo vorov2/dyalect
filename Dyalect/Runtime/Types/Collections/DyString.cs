@@ -30,7 +30,13 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => Value;
 
-        public override int GetHashCode() => hashCode = Value.GetHashCode();
+        public override int GetHashCode()
+        {
+            if (hashCode == 0)
+                hashCode = Value.GetHashCode();
+
+            return hashCode;
+        }
 
         public override bool Equals(DyObject? obj) =>
             obj is DyString s ? Value == s.Value : base.Equals(obj);
