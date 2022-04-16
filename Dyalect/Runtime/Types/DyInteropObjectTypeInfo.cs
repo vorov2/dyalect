@@ -118,7 +118,7 @@ namespace Dyalect.Runtime.Types
             return new DyInteropObject(BCL.Type, typeInfo);
         }
 
-        private DyObject GetGenericMethod(ExecutionContext ctx, DyObject type, DyObject name, DyObject pars, DyObject typeArgs)
+        private DyObject GetMethod(ExecutionContext ctx, DyObject type, DyObject name, DyObject pars, DyObject typeArgs)
         {
             if (type is not DyInteropObject obj || obj.Object is not Type typ)
                 return ctx.InvalidType(type);
@@ -173,7 +173,7 @@ namespace Dyalect.Runtime.Types
                 "ConvertTo" => Func.Static(name, ConvertTo, -1, new Par("type"), new Par("value")),
                 "ConvertFrom" => Func.Static(name, ConvertFrom, -1, new Par("value")),
                 "CreateArray" => Func.Static(name, CreateArray, -1, new Par("type"), new Par("size")),
-                "GetGenericMethod" => Func.Static(name, GetGenericMethod, 3, new Par("type"), new Par("name"), new Par("count"), new Par("types", true)),
+                "GetMethod" => Func.Static(name, GetMethod, 3, new Par("type"), new Par("name"), new Par("count"), new Par("types", true)),
                 _ => GetTypeInstance(ctx, name)
             };
 
