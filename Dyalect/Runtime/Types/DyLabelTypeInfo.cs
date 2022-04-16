@@ -1,4 +1,6 @@
-﻿namespace Dyalect.Runtime.Types
+﻿using Dyalect.Compiler;
+
+namespace Dyalect.Runtime.Types
 {
     internal sealed class DyLabelTypeInfo : DyTypeInfo
     {
@@ -9,8 +11,8 @@
 
         public override int ReflectedTypeId => DyType.Label;
 
-        protected override DyObject ContainsOp(DyObject self, string field, ExecutionContext ctx) =>
-            self.GetLabel() == field ? DyBool.True : DyBool.False;
+        protected override DyObject ContainsOp(DyObject self, HashString field, ExecutionContext ctx) =>
+            self.GetLabel() == (string)field ? DyBool.True : DyBool.False;
 
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {

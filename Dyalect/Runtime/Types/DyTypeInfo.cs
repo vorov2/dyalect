@@ -403,9 +403,9 @@ namespace Dyalect.Runtime.Types
 
         //HasField
         private DyFunction? contains;
-        protected virtual DyObject ContainsOp(DyObject self, string field, ExecutionContext ctx) =>
+        protected virtual DyObject ContainsOp(DyObject self, HashString field, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Contains, self);
-        public DyObject Contains(ExecutionContext ctx, DyObject self, string field)
+        public DyObject Contains(ExecutionContext ctx, DyObject self, HashString field)
         {
             if (contains is not null)
                 return contains.BindToInstance(ctx, self).Call(ctx, new DyString(field));
@@ -415,16 +415,16 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Statics
-        private readonly Dictionary<string, DyFunction> staticMembers = new();
+        private readonly Dictionary<HashString, DyFunction> staticMembers = new();
 
-        internal bool HasStaticMember(string name, ExecutionContext ctx) => LookupStaticMember(name, ctx) is not null;
+        internal bool HasStaticMember(HashString name, ExecutionContext ctx) => LookupStaticMember(name, ctx) is not null;
 
-        internal virtual DyObject GetStaticMember(string name, ExecutionContext ctx)
+        internal virtual DyObject GetStaticMember(HashString name, ExecutionContext ctx)
         {
             var ret = LookupStaticMember(name, ctx);
 
             if (ret is null)
-                return ctx.StaticOperationNotSupported(name, ReflectedTypeId);
+                return ctx.StaticOperationNotSupported((string)name, ReflectedTypeId);
 
             if (ret is DyFunction f)
             {
@@ -438,11 +438,11 @@ namespace Dyalect.Runtime.Types
             return ret;
         }
 
-        private DyObject? LookupStaticMember(string name, ExecutionContext ctx)
+        private DyObject? LookupStaticMember(HashString name, ExecutionContext ctx)
         {
             if (!staticMembers.TryGetValue(name, out var value))
             {
-                value = InitializeStaticMembers(name, ctx);
+                value = InitializeStaticMembers((string)name, ctx);
 
                 if (value is not null)
                     staticMembers.Add(name, value);
@@ -451,7 +451,7 @@ namespace Dyalect.Runtime.Types
             return value;
         }
 
-        internal virtual void SetStaticMember(ExecutionContext ctx, string name, DyFunction func)
+        internal virtual void SetStaticMember(ExecutionContext ctx, HashString name, DyFunction func)
         {
             if (Builtins.IsSetter(name))
             {
@@ -499,26 +499,26 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Instance
-        protected readonly Dictionary<string, DyFunction> Members = new();
+        protected readonly Dictionary<HashString, DyFunction> Members = new();
 
-        internal virtual bool HasInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-            LookupInstanceMember(self, GetBuiltinName(name), ctx) is not null;
+        internal virtual bool HasInstanceMember(DyObject self, HashString name, ExecutionContext ctx) =>
+            LookupInstanceMember(self, GetBuiltinName((string)name), ctx) is not null;
 
-        internal virtual DyObject GetInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        internal virtual DyObject GetInstanceMember(DyObject self, HashString name, ExecutionContext ctx)
         {
             var value = LookupInstanceMember(self, name, ctx);
 
             if (value is not null)
                 return value.BindOrRun(ctx, self);
             
-            return ctx.OperationNotSupported(name, self);
+            return ctx.OperationNotSupported((string)name, self);
         }
 
-        private DyFunction? LookupInstanceMember(DyObject self, string name, ExecutionContext ctx)
+        private DyFunction? LookupInstanceMember(DyObject self, HashString name, ExecutionContext ctx)
         {
             if (!Members.TryGetValue(name, out var value))
             {
-                value = InitializeInstanceMembers(self, name, ctx);
+                value = InitializeInstanceMembers(self, (string)name, ctx);
 
                 if (value is not null)
                     Members.Add(name, value);
@@ -535,7 +535,7 @@ namespace Dyalect.Runtime.Types
 
             foreach (var kv in typeInfo.Members)
             {
-                SetBuiltin(ctx, kv.Key, kv.Value);
+                SetBuiltin(ctx, (string)kv.Key, kv.Value);
                 Members[kv.Key] = kv.Value;
             }
 
@@ -563,7 +563,7 @@ namespace Dyalect.Runtime.Types
 
         internal bool CheckType(DyTypeInfo typeInfo) => ReflectedTypeId == typeInfo.ReflectedTypeId || mixins.Contains(typeInfo.ReflectedTypeId);
 
-        internal virtual void SetInstanceMember(ExecutionContext ctx, string name, DyFunction func)
+        internal virtual void SetInstanceMember(ExecutionContext ctx, HashString name, DyFunction func)
         {
             if (Closed)
             {
@@ -571,7 +571,7 @@ namespace Dyalect.Runtime.Types
                 return;
             }
 
-            SetBuiltin(ctx, name, func);
+            SetBuiltin(ctx, (string)name, func);
 
             if (Builtins.IsSetter(name))
             {

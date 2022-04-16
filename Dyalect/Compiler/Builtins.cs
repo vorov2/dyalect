@@ -8,6 +8,8 @@
         public static string Getter(string name) => $"{GET}{name}";
         public static bool IsSetter(string name) => name.StartsWith(SET);
         public static string GetSetterName(string name) => name[SET.Length..];
+        public static bool IsSetter(HashString name) => ((string)name).StartsWith(SET);
+        public static string GetSetterName(HashString name) => ((string)name)[SET.Length..];
         public static string Translate(string op) =>
             op switch
             {

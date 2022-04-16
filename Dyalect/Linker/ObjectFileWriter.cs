@@ -67,7 +67,7 @@ namespace Dyalect.Linker
             writer.Write(unit.Strings.Count);
 
             foreach (var s in unit.Strings)
-                writer.Write(s);
+                writer.Write((string)s);
 
             writer.Write(unit.Objects.Count);
 
@@ -99,13 +99,13 @@ namespace Dyalect.Linker
             }
         }
 
-        private static void WriteExportList(BinaryWriter writer, Dictionary<string, ScopeVar> list)
+        private static void WriteExportList(BinaryWriter writer, Dictionary<HashString, ScopeVar> list)
         {
             writer.Write(list.Count);
 
             foreach (var kv in list)
             {
-                writer.Write(kv.Key);
+                writer.Write((string)kv.Key);
                 writer.Write(kv.Value.Address);
                 writer.Write(kv.Value.Data);
             }

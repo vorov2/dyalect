@@ -1,7 +1,9 @@
 # 0.40.0
+  * Change: _Optimizations in string hashing._
   * Change: _Refactor and enhance type conversion between Dyalect and .Net_ ([Issue #738](https://github.com/vorov2/dyalect/issues/738)).
   * Add: _Implement .NET interoperability_ ([Issue #714](https://github.com/vorov2/dyalect/issues/714), [docs](https://github.com/vorov2/dyalect/wiki/Interop)).
-  
+  * Fix: _Tuple expansion in function call doesn't always work correctly_ ([Issue #742](https://github.com/vorov2/dyalect/issues/742)).
+
 # 0.39.0
   * Add: _Add an ability to delete files_ ([Issue #733](https://github.com/vorov2/dyalect/issues/733), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.File#delete)).
   * Add: _Add an ability to Copy and Move files_ ([Issue #725](https://github.com/vorov2/dyalect/issues/725), [docs](https://github.com/vorov2/dyalect/wiki/Library.IO.File#copy)).

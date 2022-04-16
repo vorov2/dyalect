@@ -418,7 +418,7 @@ namespace Dyalect.Runtime
                         ((DyLabel)right).AddTypeAnnotation((DyTypeInfo)left);
                         break;
                     case OpCode.Tag:
-                        evalStack.Replace(new DyLabel(unit.Strings[op.Data], evalStack.Peek()));
+                        evalStack.Replace(new DyLabel((string)unit.Strings[op.Data], evalStack.Peek()));
                         break;
                     case OpCode.Yield:
                         function.PreviousOffset = offset++;
@@ -547,16 +547,16 @@ namespace Dyalect.Runtime
                         {
                             var locs = ctx.PeekArguments();
                             var fn = (DyFunction)evalStack.Peek(2);
-                            var idx = fn.GetParameterIndex(unit.Strings[op.Data]);
+                            var idx = fn.GetParameterIndex((string)unit.Strings[op.Data]);
                             if (idx == -1)
                             {
-                                if (locs.VarArgsIndex > -1 && locs.Locals.Length == 1)
+                                if (locs.VarArgsIndex > -1 && fn.Parameters.Length == 1)
                                 {
-                                    locs.VarArgs![locs.VarArgsSize++] = new DyLabel(unit.Strings[op.Data], evalStack.Pop());
+                                    locs.VarArgs![locs.VarArgsSize++] = new DyLabel((string)unit.Strings[op.Data], evalStack.Pop());
                                     break;
                                 }
 
-                                ctx.ArgumentNotFound(((DyFunction)evalStack.Peek(2)).FunctionName, unit.Strings[op.Data]);
+                                ctx.ArgumentNotFound(((DyFunction)evalStack.Peek(2)).FunctionName, (string)unit.Strings[op.Data]);
                                 ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                                 goto CATCH;
                             }
@@ -570,7 +570,7 @@ namespace Dyalect.Runtime
                             {
                                 if (locs.Locals[idx] is not null)
                                 {
-                                    ctx.MultipleValuesForArgument(((DyFunction)evalStack.Peek(2)).FunctionName, unit.Strings[op.Data]);
+                                    ctx.MultipleValuesForArgument(((DyFunction)evalStack.Peek(2)).FunctionName, (string)unit.Strings[op.Data]);
                                     if (ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper))
                                         goto CATCH;
                                 }
@@ -618,13 +618,12 @@ namespace Dyalect.Runtime
                         {
                             left = evalStack.Pop();
                             right = evalStack.Pop();
-                            //evalStack.Push(((DyTypeInfo)left).ReflectedTypeId == right.TypeId);
                             evalStack.Push(types[right.TypeId].CheckType((DyTypeInfo)left));
                         }
                         break;
                     case OpCode.CtorCheck:
                         right = evalStack.Peek();
-                        evalStack.Replace(right.GetConstructor() == unit.Strings[op.Data]);
+                        evalStack.Replace(right.GetConstructor() == (string)unit.Strings[op.Data]);
                         break;
                     case OpCode.Start:
                         {
@@ -640,10 +639,10 @@ namespace Dyalect.Runtime
                     case OpCode.NewObj:
                         right = evalStack.Pop();
                         left = evalStack.Pop();
-                        evalStack.Push(new DyClass((DyClassInfo)right, unit.Strings[op.Data], (DyTuple)left, unit));
+                        evalStack.Push(new DyClass((DyClassInfo)right, (string)unit.Strings[op.Data], (DyTuple)left, unit));
                         break;
                     case OpCode.NewType:
-                        cls = new DyClassInfo(unit.Strings[op.Data], types.Count);
+                        cls = new DyClassInfo((string)unit.Strings[op.Data], types.Count);
                         types.Add(cls);
                         evalStack.Push(cls);
                         break;
