@@ -1,6 +1,7 @@
 # 0.40.1
   * Change: _Parser errors corrected according to language changes._
   * Change: _Corrections and optimizations in standard library._
+  * Change: _Parameters year, month and day in constructors for DateTime and LocalDateTime shouldn't be optional_ ([Issue #774](https://github.com/vorov2/dyalect/issues/774)).
 
 # 0.40.0
   * Change: _Optimizations in string hashing._
