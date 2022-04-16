@@ -2,7 +2,7 @@
   * Change: _Parser errors corrected according to language changes._
   * Change: _Corrections and optimizations in standard library._
   * Change: _Parameters `year`, `month` and `day` in constructors for `DateTime` and `LocalDateTime` shouldn't be optional_ ([Issue #744](https://github.com/vorov2/dyalect/issues/744)).
-  * Fix: _LocalDateTime is not correctly translated into .NET objects_ ([Issue #745](https://github.com/vorov2/dyalect/issues/745)).
+  * Fix: _`LocalDateTime` is not correctly translated into .NET objects_ ([Issue #745](https://github.com/vorov2/dyalect/issues/745)).
 
 # 0.40.0
   * Change: _Optimizations in string hashing._
