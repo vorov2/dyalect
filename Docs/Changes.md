@@ -1,5 +1,6 @@
 # 0.40.1
   * Change: _Parser errors corrected according to language changes._
+  * Change: _Corrections and optimizations in standard library._
 
 # 0.40.0
   * Change: _Optimizations in string hashing._

@@ -104,8 +104,7 @@ namespace Dyalect.Library.Core
                 "Max" => Func.Static(name, _ => new DyDateTime(this, DateTime.SpecifyKind(DateTime.MaxValue, DateTimeKind.Utc))),
                 "Default" => Func.Static(name, _ => new DyDateTime(this, DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc))),
                 "Parse" => Func.Static(name, Parse, -1, new Par("value"), new Par("format")),
-                "DateTime" => Func.Static(name, New, -1, new Par("year", DyInteger.Zero), new Par("month", DyInteger.Zero), 
-                    new Par("day", DyInteger.Zero), new Par("hour", DyInteger.Zero), new Par("minute", DyInteger.Zero),
+                "DateTime" => Func.Static(name, New, -1, new Par("year"), new Par("month"), new Par("day"), new Par("hour", DyInteger.Zero), new Par("minute", DyInteger.Zero),
                     new Par("second", DyInteger.Zero), new Par("millisecond", DyInteger.Zero)),
                 "FromTicks" => Func.Static(name, FromTicks, -1, new Par("value")),
                 _ => base.InitializeStaticMember(name, ctx)

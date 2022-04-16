@@ -40,8 +40,7 @@ namespace Dyalect.Library.Core
 
         private DyObject Parse(ExecutionContext ctx, DyObject arg)
         {
-            if (arg.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, arg);
+            if (!arg.IsString(ctx)) return Default();
 
             try
             {
