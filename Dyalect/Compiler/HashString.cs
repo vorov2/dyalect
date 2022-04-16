@@ -5,11 +5,9 @@ namespace Dyalect.Compiler
     public struct HashString : IEquatable<HashString>
     {
         private readonly string value;
-        private int hashCode = 0;
+        private int hashCode;
 
-        public HashString(string value) => this.value = value;
-
-        public HashString() => this.value = string.Empty;
+        public HashString(string value) => (this.value, this.hashCode) = (value, 0);
 
         public override bool Equals(object? obj) => obj is HashString str && Equals(str);
 

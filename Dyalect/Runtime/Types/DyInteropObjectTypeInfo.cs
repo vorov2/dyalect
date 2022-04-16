@@ -166,10 +166,10 @@ namespace Dyalect.Runtime.Types
             var name = (string)nameStr;
             var func = name switch
             {
-                "Interop" => Func.Static(name, CreateInteropObject, -1, new Par("type")),
-                "GetType" => Func.Static(name, GetSystemType, -1, new Par("type")),
+                "Interop" => Func.Static(name, CreateInteropObject, -1, new Par("typeName")),
+                "GetType" => Func.Static(name, GetSystemType, -1, new Par("typeName")),
                 "Wrap" => Func.Static(name, Wrap, -1, new Par("value")),
-                "LoadAssembly" => Func.Static(name, LoadAssembly, -1, new Par("assembly")),
+                "LoadAssembly" => Func.Static(name, LoadAssembly, -1, new Par("name")),
                 "LoadAssemblyFromFile" => Func.Static(name, LoadAssemblyFromFile, -1, new Par("path")),
                 "ConvertTo" => Func.Static(name, ConvertTo, -1, new Par("type"), new Par("value")),
                 "ConvertFrom" => Func.Static(name, ConvertFrom, -1, new Par("value")),
