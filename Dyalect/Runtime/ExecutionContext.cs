@@ -11,7 +11,7 @@ namespace Dyalect.Runtime
         internal int RgFI; //RgFI register
         internal int CallCnt; //Call counter
 
-        public static readonly ExecutionContext External = new ExternalExecutionContext();
+        public static ExecutionContext External { get; } = new ExternalExecutionContext();
 
         private sealed class ExternalExecutionContext : ExecutionContext
         {

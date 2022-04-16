@@ -40,7 +40,7 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyObject ContainsOp(DyObject self, string field, ExecutionContext ctx)
+        protected override DyObject ContainsOp(DyObject self, HashString field, ExecutionContext ctx)
         {
             var mod = (DyModule)self;
 

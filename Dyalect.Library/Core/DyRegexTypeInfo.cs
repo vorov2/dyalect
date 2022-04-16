@@ -26,12 +26,8 @@ namespace Dyalect.Library.Core
 
         private DyObject Replace(ExecutionContext ctx, DyObject self, DyObject input, DyObject replacement)
         {
-            if (input.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, input);
-
-            if (replacement.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, replacement);
-
+            if (!input.IsString(ctx)) return Default();
+            if (!replacement.IsString(ctx)) return Default();
             var rx = ((DyRegex)self).Regex;
 
             try
@@ -47,18 +43,12 @@ namespace Dyalect.Library.Core
 
         private DyObject Split(ExecutionContext ctx, DyObject self, DyObject input, DyObject count, DyObject index)
         {
-            if (input.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, input);
-
-            if (count.TypeId != DyType.Integer && count.TypeId != DyType.Nil)
-                return ctx.InvalidType(DyType.Integer, DyType.Nil, count);
-
-            if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, index);
-
+            if (!input.IsString(ctx)) return Default();
+            if (count.NotNil() && !count.IsInteger(ctx)) return Default();
+            if (!index.IsInteger(ctx)) return Default();
             var icount = int.MaxValue;
 
-            if (count.TypeId == DyType.Integer)
+            if (count.NotNil())
                 icount = (int)count.GetInteger();
 
             var idx = (int)index.GetInteger();
@@ -88,12 +78,10 @@ namespace Dyalect.Library.Core
 
         private DyObject Match(ExecutionContext ctx, DyObject self, DyObject input, DyObject index, DyObject count)
         {
-            if (input.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, input);
-
+            if (!input.IsString(ctx)) return Default();
             var str = input.GetString();
-            var istart = (int)(long)index.ToObject();
-            var ilen = count.TypeId == DyType.Nil ? str.Length : (int)(long)count.ToObject();
+            var istart = (int)index.GetInteger();
+            var ilen = count.TypeId == DyType.Nil ? str.Length : (int)count.GetInteger();
             var rx = ((DyRegex)self).Regex;
 
             if (istart + ilen > str.Length)
@@ -112,12 +100,8 @@ namespace Dyalect.Library.Core
 
         private DyObject Matches(ExecutionContext ctx, DyObject self, DyObject input, DyObject index)
         {
-            if (input.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, input);
-
-            if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, index);
-
+            if (!input.IsString(ctx)) return Default();
+            if (!index.IsInteger(ctx)) return Default();
             var str = input.GetString();
             var idx = (int)index.GetInteger();
             var rx = ((DyRegex)self).Regex;
@@ -136,12 +120,8 @@ namespace Dyalect.Library.Core
 
         private DyObject IsMatch(ExecutionContext ctx, DyObject self, DyObject input, DyObject index)
         {
-            if (input.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, input);
-
-            if (index.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, index);
-
+            if (!input.IsString(ctx)) return Default();
+            if (!index.IsInteger(ctx)) return Default();
             var idx = (int)index.GetInteger();
             var str = input.GetString();
 
@@ -173,9 +153,7 @@ namespace Dyalect.Library.Core
 
         private DyObject New(ExecutionContext ctx, DyObject arg, DyObject ignoreCase, DyObject singleline, DyObject multiline, DyObject removeEmptyEntries)
         {
-            if (arg.TypeId != DyType.String)
-                return ctx.InvalidType(arg);
-
+            if (!arg.IsString(ctx)) return Default();
             return new DyRegex(this, arg.GetString(), ignoreCase.IsTrue(), singleline.IsTrue(), multiline.IsTrue(), removeEmptyEntries.IsTrue());
         }
 

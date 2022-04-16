@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Dyalect.Compiler;
 
 namespace Dyalect.Runtime.Types
 {
@@ -8,10 +9,14 @@ namespace Dyalect.Runtime.Types
 
         internal readonly string Value;
 
+        private int hashCode;
+
         public override int Count => Value.Length;
 
         public DyString(string str) : base(DyType.String) => Value = str;
 
+        public DyString(HashString str) : base(DyType.String) => (Value, hashCode) = ((string)str, str.LookupHash());
+        
         internal override DyObject GetValue(int index) => new DyChar(Value[index]);
 
         internal override DyObject[] GetValues()
@@ -28,7 +33,13 @@ namespace Dyalect.Runtime.Types
 
         public override string ToString() => Value;
 
-        public override int GetHashCode() => Value.GetHashCode();
+        public override int GetHashCode()
+        {
+            if (hashCode == 0)
+                hashCode = Value.GetHashCode();
+
+            return hashCode;
+        }
 
         public override bool Equals(DyObject? obj) =>
             obj is DyString s ? Value == s.Value : base.Equals(obj);

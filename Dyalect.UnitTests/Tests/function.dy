@@ -804,7 +804,7 @@
     }
 #endregion
 
-#region "Vararg and mutable tuple"
+#region "Varargs and mutable tuple"
     func test(args...) {
 	    try {
             args.x = 24
@@ -814,4 +814,13 @@
         }
     }
     test(args: (var x: 12))
+#endregion
+
+#region "Varargs and tuple expansion"
+    func test(args...) {
+	    assert((1,2),args)
+    }
+
+    let xs = (1,2)
+    test(x: 1, y: 2)
 #endregion

@@ -1,0 +1,142 @@
+﻿#region "Uri"
+	let _Uri = Interop("System.Uri,System")
+	let uri = _Uri.[new]("http://dyalect.dy/wiki")
+	assert("dyalect.dy", uri.[get_Host]())
+#endregion 
+
+#region "Version"
+	let _Version = Interop("System.Version")
+	let v = _Version.[new]("12.0.34.1")
+	let res = v.[get_Major]()
+	assert("Integer", res.GetType().name)
+	assert(12, res)
+#endregion
+
+#region "List<int>"
+	let _List = Interop("System.Collections.Generic.List`1[System.Int32]")
+	let xs = _List.[new]()
+	xs.Add(12)
+	xs.Add(34)
+	assert(2, xs.[get_Count]())
+	assert(12, xs.[get_Item](0))
+	assert(34, xs.[get_Item](1))
+	xs.Add(144)
+	assert(144, xs.[get_Item](2))
+	assert(3, xs.[get_Count]())
+#endregion
+
+#region "Json"
+	let _Json = Interop("System.Text.Json.JsonDocument,System.Text.Json")
+	let _JsonOptions = Interop("System.Text.Json.JsonDocumentOptions,System.Text.Json")
+	let options = _JsonOptions.[new]()
+	let doc = _Json.Parse(<[
+	{
+		"name": "John",
+		"surname": "Doe",
+		"age": 33
+	}]>, options)
+	let root = doc.[get_RootElement]();
+	assert("John", root.GetProperty("name").GetString())
+	assert("Doe", root.GetProperty("surname").GetString())
+	assert(33, root.GetProperty("age").GetInt32())
+#endregion
+
+#region "OSVersion"
+	let _OS = Interop("System.Environment,System.Runtime")
+	let ver = _OS.[get_OSVersion]()
+	let str = ver.[get_VersionString]()
+	assert(true, str is String && str.Length() > 0)
+#endregion
+
+#region "Typed array"
+	let _Array = Interop("System.Array")
+	let _Type = Interop("System.Type")
+	let _Char = _Type.GetType("System.Char")
+	let arr = _Array.CreateInstance(_Char, 3)
+	arr.SetValue('f', 0)
+	arr.SetValue('o', 1)
+	arr.SetValue('o', 2)
+	let _String = Interop("System.String")
+	let str = _String.[new](arr)
+	assert("foo", str)
+#endregion
+
+#region "Conversion"
+	let _Type = Interop("System.Type")
+	let _String = Interop("System.String")
+	var str
+
+	try {
+		str = _String.[new](["f","o","o"])
+	} catch {
+		@MethodNotFound => assert(got: true)
+	}
+
+	let _CharArrayType = _Type.GetType("System.Char[]")
+	str = _String.[new](Interop.ConvertTo(_CharArrayType, ["f","o","o"]))
+	assert("foo", str)
+#endregion
+
+#region "CreateArray"
+	let arr = Interop.CreateArray(Interop.GetType(Interop.Int64), 3)
+	arr.SetValue(0, 0)
+	arr.SetValue(1, 1)
+	arr.SetValue(2, 2)
+	assert(0, arr.GetValue(0))
+	assert(1, arr.GetValue(1))
+	assert(2, arr.GetValue(2))
+#endregion
+
+#region "GetMethod"
+	let mi = Interop.GetMethod(Interop.GetType("System.DateTime"), "Parse", 0, Interop.String)
+	let dt = mi.Invoke(nil, ["2012-12-12"])
+	assert("2012-12-12", dt.ToString("yyyy-MM-dd"))
+#endregion
+
+#region "Generic method 1"
+	let _Tuple = Interop.GetType("System.Tuple")
+	var tuple
+	for mi in Interop.ConvertFrom << _Tuple.GetMethods() {
+		if (mi.Name == "Create" && mi.GetGenericArguments().Length == 2) {
+			let gen = mi.MakeGenericMethod([Interop.GetType(Interop.Int32), Interop.GetType(Interop.String)])
+			tuple = gen.Invoke(nil, [42, "foobar"])
+		}
+	}
+	assert(42, tuple.Item1)
+	assert("foobar", tuple.Item2)
+#endregion
+
+#region "Generic method 2"
+	let _Tuple = Interop.GetType("System.Tuple")
+	let mi = Interop.GetMethod(_Tuple, "Create", 2)
+	let gen = mi.MakeGenericMethod([Interop.GetType(Interop.Int32), Interop.GetType(Interop.String)])
+	var tuple = gen.Invoke(nil, [42, "foobar"])
+	assert(42, tuple.Item1)
+	assert("foobar", tuple.Item2)
+#endregion
+
+#region "Generic method 3"
+	let _Converter = Interop.GetType("Dyalect.Runtime.TypeConverter, Dyalect")
+	let _ExecutionContext = Interop.GetType("Dyalect.Runtime.ExecutionContext, Dyalect")
+	let _DyObject = Interop.GetType("Dyalect.Runtime.Types.DyObject, Dyalect")
+
+	let mi = Interop.GetMethod(_Converter, "ConvertTo", 1, _ExecutionContext, _DyObject)
+	let gen = mi.MakeGenericMethod << [Interop.GetType("System.Int32[]")]
+
+	let xs = gen.Invoke(nil, 
+		[Interop("Dyalect.Runtime.ExecutionContext, Dyalect").External, Interop.Wrap([1, 2, 3]) ])
+
+	assert(true, xs is Interop)
+	assert([1,2,3], Interop.ConvertFrom << xs)
+#endregion
+
+#region "Static Int32 methods"
+	var hset = Set()
+	for x in Interop.ConvertFrom << Interop.GetType("System.Int32,mscorlib").GetMethods() {
+		hset.Add(x.Name)
+	}
+	assert(
+		["CompareTo", "Equals", "GetHashCode", "ToString", "TryFormat", "Parse", "TryParse", "GetTypeCode", "GetType"],
+		hset.ToArray()
+	)
+#endregion

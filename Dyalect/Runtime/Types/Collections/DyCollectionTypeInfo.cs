@@ -68,8 +68,8 @@ namespace Dyalect.Runtime.Types
         protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
             targetType.ReflectedTypeId switch
             {
-                DyType.Tuple => new DyTuple(((DyCollection)self).ConvertToArray()),
-                DyType.Array => new DyArray(((DyCollection)self).ConvertToArray()),
+                DyType.Tuple => new DyTuple(((DyCollection)self).Trim()),
+                DyType.Array => new DyArray(((DyCollection)self).Trim()),
                 DyType.Iterator => DyIterator.Create((DyCollection)self),
                 _ => base.CastOp(self, targetType, ctx)
             };

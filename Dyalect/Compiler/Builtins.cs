@@ -3,9 +3,13 @@
     internal static class Builtins
     {
         private const string SET = "set_";
+        private const string GET = "get_";
         public static string Setter(string name) => $"{SET}{name}";
+        public static string Getter(string name) => $"{GET}{name}";
         public static bool IsSetter(string name) => name.StartsWith(SET);
         public static string GetSetterName(string name) => name[SET.Length..];
+        public static bool IsSetter(HashString name) => ((string)name).StartsWith(SET);
+        public static string GetSetterName(HashString name) => ((string)name)[SET.Length..];
         public static string Translate(string op) =>
             op switch
             {

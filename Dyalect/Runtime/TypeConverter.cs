@@ -16,7 +16,7 @@ namespace Dyalect.Runtime
         {
             if (obj is null)
                 return DyNil.Instance;
-            
+
             if (obj is DyObject retval)
                 return retval;
 
@@ -56,8 +56,10 @@ namespace Dyalect.Runtime
                             newArr[i] = ConvertFrom(arr.GetValue(i));
                         return new DyArray(newArr);
                     }
+                    else if (BCL.Type.IsAssignableFrom(type))
+                        return new DyInteropObject((Type)obj);
                     else
-                        return DyNil.Instance;
+                        return new DyInteropObject(type, obj);
             }
         }
 
@@ -65,68 +67,294 @@ namespace Dyalect.Runtime
 
         public static object? ConvertTo(ExecutionContext ctx, DyObject obj, Type type)
         {
-            if (type == Dyalect.Types.DyObject)
-                return obj;
-            else if (type == Dyalect.Types.Object)
-                return obj.ToObject();
-            else if (Dyalect.Types.DyObject.IsAssignableFrom(type))
-                return Convert.ChangeType(obj, type);
+            if (!TryConvert(obj, type, out var result))
+            {
+                ctx.InvalidCast(obj.GetTypeName(ctx), type.FullName ?? type.Name);
+                return null;
+            }
+
+            return result; 
+        }
+
+        public static bool TryConvert(DyObject obj, Type type, out object? result)
+        {
+            result = default;
+            long i8; double r8; string str;
+
+            if (obj.TypeId == DyType.Interop)
+            {
+                var interop = (DyInteropObject)obj;
+
+                if (BCL.Type.IsAssignableFrom(interop.Type)) //We have a type info here
+                {
+                    if (BCL.Type.IsAssignableFrom(type)) //Type info is what we need
+                    {
+                        result = interop.Object;
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+                else
+                {
+                    try
+                    {
+                        result = Convert.ChangeType(interop.Object, type);
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if (type == BCL.DyObject)
+            {
+                result = obj;
+                return true;
+            }
+            else if (type == BCL.Object)
+            {
+                result = obj.ToObject();
+                return true;
+            }
+            else if (BCL.DyObject.IsAssignableFrom(type))
+            {
+                result = Convert.ChangeType(obj, type);
+                return true;
+            }
 
             switch (Type.GetTypeCode(type))
             {
-                case TypeCode.Boolean: return obj.IsTrue();
-                case TypeCode.Byte: return (byte)obj.GetInteger();
-                case TypeCode.Int16: return (short)obj.GetInteger();
-                case TypeCode.Int32: return (int)obj.GetInteger();
-                case TypeCode.Int64: return obj.GetInteger();
-                case TypeCode.SByte: return (sbyte)obj.GetInteger();
-                case TypeCode.UInt16: return (ushort)obj.GetInteger();
-                case TypeCode.UInt32: return (uint)obj.GetInteger();
-                case TypeCode.UInt64: return (ulong)obj.GetInteger();
-                case TypeCode.String: return obj.GetString();
-                case TypeCode.Char:
+                case TypeCode.Boolean:
+                    result = obj.IsTrue();
+                    return true;
+                case TypeCode.Byte:
+                    if (TryGetInteger(obj, out i8))
                     {
-                        var str = obj.GetString();
-                        return string.IsNullOrEmpty(str) ? '\0' : str[0];
+                        result = (byte)i8;
+                        return true;
                     }
-                case TypeCode.Single: return (float)obj.GetFloat();
-                case TypeCode.Double: return obj.GetFloat();
-                case TypeCode.Decimal: return (decimal)obj.GetFloat();
-                case TypeCode.Empty: return null;
+                    return false;
+                case TypeCode.Int16:
+                    if (TryGetInteger(obj, out i8))
+                    {
+                        result = (short)i8;
+                        return true;
+                    }
+                    return false;
+                case TypeCode.Int32:
+                    if (TryGetInteger(obj, out i8))
+                    {
+                        result = (int)i8;
+                        return true;
+                    }
+                    return false;
+                case TypeCode.Int64:
+                    if (TryGetInteger(obj, out i8))
+                    {
+                        result = i8;
+                        return true;
+                    }
+                    return false;
+                case TypeCode.SByte:
+                    if (TryGetInteger(obj, out i8))
+                    {
+                        result = (sbyte)i8;
+                        return true;
+                    }
+                    return false;
+                case TypeCode.UInt16:
+                    if (TryGetInteger(obj, out i8))
+                    {
+                        result = (ushort)i8;
+                        return true;
+                    }
+                    return false;
+                case TypeCode.UInt32:
+                    if (TryGetInteger(obj, out i8))
+                    {
+                        result = (uint)i8;
+                        return true;
+                    }
+                    return false;
+                case TypeCode.UInt64:
+                    if (TryGetInteger(obj, out i8))
+                    {
+                        result = (ulong)i8;
+                        return true;
+                    }
+                    return false;
+                case TypeCode.String:
+                    if (TryGetString(obj, out str))
+                    {
+                        result = str;
+                        return true;
+                    }
+                    return false;
+                case TypeCode.Char:
+                    if (TryGetString(obj, out str))
+                    {
+                        result = string.IsNullOrEmpty(str) ? '\0' : str[0];
+                        return true;
+                    }
+                    return false;
+                case TypeCode.Single:
+                    if (TryGetFloat(obj, out r8))
+                    {
+                        result = (float)r8;
+                        return true;
+                    }
+                    return false;
+                case TypeCode.Double:
+                    if (TryGetFloat(obj, out r8))
+                    {
+                        result = r8;
+                        return true;
+                    }
+                    return false;
+                case TypeCode.Decimal:
+                    if (TryGetFloat(obj, out r8))
+                    {
+                        result = (decimal)r8;
+                        return true;
+                    }
+                    return false;
+                case TypeCode.Empty:
+                    result = null;
+                    return true;
                 default:
                     if (obj is DyDictionary map)
                     {
-                        var ret = new Dictionary<object, object>();
+                        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                        {
+                            var genargs = type.GetGenericArguments();
+                            var (keyType, valueType) = (genargs[0], genargs[1]);
+                            var targetType = typeof(Dictionary<,>).MakeGenericType(keyType, valueType);
+                            var ret = (IDictionary)Activator.CreateInstance(targetType)!;
+                            foreach (var kv in map.Dictionary) 
+                                ret[kv.Key.ToObject()] = kv.Value.ToObject();
+                            result = ret;
+                            return true;
 
-                        foreach (var kv in map.Dictionary)
-                            ret[kv.Key.ToObject()] = kv.Value.ToObject();
-
-                        return ret;
+                        }
+                        else if (type == typeof(Hashtable))
+                        {
+                            var ret = new Hashtable();
+                            foreach (var kv in map.Dictionary)
+                                ret[kv.Key.ToObject()] = kv.Value.ToObject();
+                            result = ret;
+                            return true;
+                        }
                     }
-                    else if (obj is DyCollection coll)
+                    else if (obj is DyEnumerable enu)
                     {
-                        if (type == typeof(object[]))
-                            return coll.ConvertToArray();
-                        else if (type == typeof(List<object>))
-                            return coll.ConvertToList();
-                        else if (type.IsArray)
+                        if (type.IsArray)
                         {
                             var et = type.GetElementType();
-                            var arr = Array.CreateInstance(et!, coll.Count);
+                            if (!TryCreateTypedArray(enu.ToArray(), et!, out var res))
+                                return false;
+                            result = res;
+                            return true;
+                        }
 
-                            for (var i = 0; i < coll.Count; i++)
-                            {
-                                var c = coll.GetValue(i);
-                                arr.SetValue(ConvertTo(ctx, c, et!), i);
-                            }
+                        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                        {
+                            var et = type.GetGenericArguments()[0];
+                            if (!TryCreateTypedArray(enu.ToArray(), et!, out var res))
+                                return false;
+                            result = res;
+                            return true;
+                        }
 
-                            return arr;
+                        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                        {
+                            var et = type.GetGenericArguments()[0];
+                            if (!TryCreateTypedArray(enu.ToArray(), et!, out var arr))
+                                return false;
+                            var targetType = typeof(List<>).MakeGenericType(et!);
+                            result = Activator.CreateInstance(targetType, arr);
+                            return true;
+                        }
+
+                        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(HashSet<>))
+                        {
+                            var et = type.GetGenericArguments()[0];
+                            if (!TryCreateTypedArray(enu.ToArray(), et!, out var arr))
+                                return false;
+                            var targetType = typeof(HashSet<>).MakeGenericType(et!);
+                            result = Activator.CreateInstance(targetType, arr);
+                            return true;
                         }
                     }
                     break;
             }
 
-            throw new InvalidCastException();
+            return false;
+        }
+
+        private static bool TryGetFloat(DyObject obj, out double result)
+        {
+            if (obj.TypeId is DyType.Integer or DyType.Float)
+            {
+                result = obj.GetFloat();
+                return true;
+            }
+            else if (obj.TypeId is DyType.Char)
+            {
+                result = obj.GetChar();
+                return true;
+            }
+
+            result = default;
+            return false;
+        }
+
+        private static bool TryGetInteger(DyObject obj, out long result)
+        {
+            if (obj.TypeId is DyType.Integer or DyType.Float)
+            {
+                result = obj.GetInteger();
+                return true;
+            }
+            else if (obj.TypeId is DyType.Char)
+            {
+                result = obj.GetChar();
+                return true;
+            }
+
+            result = default;
+            return false;
+        }
+
+        private static bool TryGetString(DyObject obj, out string result)
+        {
+            if (obj.TypeId is DyType.String or DyType.Char)
+            {
+                result = obj.GetString();
+                return true;
+            }
+
+            result = string.Empty;
+            return false;
+        }
+
+        public static bool TryCreateTypedArray(DyObject[] arr, Type type, out Array? result)
+        {
+            var xs = Array.CreateInstance(type, arr.Length);
+            result = default;
+
+            for (var i = 0; i < arr.Length; i++)
+            {
+                if (!TryConvert(arr[i], type, out var obj))
+                    return false;
+
+                xs.SetValue(obj, i);
+            }
+
+            result = xs;
+            return true;
         }
     }
 }

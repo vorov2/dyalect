@@ -116,7 +116,7 @@ namespace Dyalect.Linker
 
                 var p = pars[i];
 
-                if (p.ParameterType != Dyalect.Types.DyObject)
+                if (p.ParameterType != BCL.DyObject)
                     simpleSignature = false;
 
                 var va = false;
@@ -159,7 +159,16 @@ namespace Dyalect.Linker
 
                 if (parsMeta.Length == 5)
                     return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>) mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
-                
+
+                if (parsMeta.Length == 6)
+                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>) mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
+
+                if (parsMeta.Length == 7)
+                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>)mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
+
+                if (parsMeta.Length == 8)
+                    return Func.Static(name, (Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>) mi.CreateDelegate(typeof(Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject, DyObject>), this), varArgIndex, parsMeta);
+
                 throw new DyException(LinkerErrors.TooManyParameters.Format(mi.Name));
             }
             else

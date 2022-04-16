@@ -34,7 +34,7 @@ namespace Dyalect.Runtime.Types
 
         public override bool Equals(DyObject? obj) => obj is DyInteger i && value == i.value;
 
-        public override object ToObject() => value;
+        public override object ToObject() => value == (int)value ? System.Convert.ChangeType(value, BCL.Int32) : value;
 
         protected internal override double GetFloat() => value;
 

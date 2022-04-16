@@ -82,5 +82,16 @@ namespace Dyalect.Runtime.Types
 
             return true;
         }
+
+        public static bool IsArray(this DyObject self, ExecutionContext ctx)
+        {
+            if (self.TypeId != DyType.Array)
+            {
+                ctx.InvalidType(DyType.Array, self);
+                return false;
+            }
+
+            return true;
+        }
     }
 }
