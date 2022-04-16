@@ -207,4 +207,7 @@
   <data name="InvalidApplicationOperator" xml:space="preserve">
     <value>Invalid application operator.</value>
   </data>
+  <data name="InvalidIndex" xml:space="preserve">
+    <value>Invalid indexing expression.</value>
+  </data>
 </root>

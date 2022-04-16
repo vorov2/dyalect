@@ -1,3 +1,6 @@
+# 0.40.1
+  * Change: _Parser errors corrected according to language changes._
+
 # 0.40.0
   * Change: _Optimizations in string hashing._
   * Change: _Refactor and enhance type conversion between Dyalect and .Net_ ([Issue #738](https://github.com/vorov2/dyalect/issues/738)).
