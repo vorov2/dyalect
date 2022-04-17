@@ -1,5 +1,4 @@
-﻿using Dyalect.Runtime.Types;
-using Dyalect.Linker;
+﻿using Dyalect.Linker;
 using Dyalect.Parser.Model;
 using System;
 using System.Collections.Generic;
@@ -59,10 +58,10 @@ namespace Dyalect.Compiler
             pdb = builder.pdb.Clone();
             unit = builder.unit.Clone(pdb.Symbols);
             cw = builder.cw.Clone(unit);
-            globalLazy = builder.globalLazy;
-            globalScope = unit.GlobalScope!;
+            globalLazy = new(builder.globalLazy);
+            globalScope = builder.globalScope.Clone();//unit.GlobalScope!;
             currentScope = builder.currentScope != builder.globalScope
-                ? builder.currentScope.Clone() : globalScope;
+                ? builder.currentScope.Clone() : globalScope.Clone();
             isDebug = builder.isDebug;
             lastLocation = builder.lastLocation;
             Messages = new();

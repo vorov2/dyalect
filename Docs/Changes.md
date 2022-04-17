@@ -1,3 +1,6 @@
+# 0.40.3
+  * Fix: _Interactive environment keeps declared variable even in a case of exception_ ([Issue #749](https://github.com/vorov2/dyalect/issues/749)).
+
 # 0.40.2
   * Fix: _Convertion of `LocalDateTime` to .NET type fails_ ([Issue #750](https://github.com/vorov2/dyalect/issues/750)).
   * Fix: _Unable to retrieve Dyalect assembly location under Linux_ ([Issue #748](https://github.com/vorov2/dyalect/issues/748)).
