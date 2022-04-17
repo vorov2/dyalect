@@ -190,10 +190,10 @@ namespace Dyalect
         {
             try
             {
-                var config = ConfigReader.Read(Path.Combine(FS.GetStartupPath(), "config.json"))!;
+                var config = ConfigReader.Read(Path.Combine(FileProbe.GetExecutableDirectory(), "config.json"))!;
                 options = CommandLineReader.Read<DyaOptions>(args, config);
             }
-            catch (DyaException ex)
+            catch (Exception ex)
             {
                 Printer.Header();
                 Printer.LineFeed();

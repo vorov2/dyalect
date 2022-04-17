@@ -25,15 +25,7 @@ namespace Dyalect.Linker
 
         public static FileLookup Create(string startupPath, string[]? additionalPaths = null)
         {
-            var asm = typeof(FileLookup).Assembly;
-            var codeBase = asm.Location;
-            var uri = new UriBuilder(codeBase);
-            var systemPath = Uri.UnescapeDataString(uri.Path);
-
-            if (!File.Exists(systemPath))
-                systemPath = asm.Location;
-
-            systemPath = Path.GetDirectoryName(systemPath)!;
+            var systemPath = FileProbe.GetExecutableDirectory();
             var systemPaths = new string[] { systemPath, Path.Combine(systemPath, LIBDIR) };
             var startupPaths = startupPath != null ? new string[] { startupPath, Path.Combine(startupPath, LIBDIR) }
                 : Array.Empty<string>();
@@ -66,8 +58,10 @@ namespace Dyalect.Linker
             path = null;
 
             foreach (var p in dirs)
+            {
                 if (File.Exists(path = Path.Combine(p, fileName)))
                     return true;
+            }
 
             return false;
         }
