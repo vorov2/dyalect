@@ -1,3 +1,6 @@
+# 0.40.2
+  *
+
 # 0.40.1
   * Change: _Parser errors corrected according to language changes._
   * Change: _Corrections and optimizations in standard library._
