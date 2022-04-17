@@ -124,7 +124,7 @@ namespace Dyalect
 
         public bool Eval(bool measureTime)
         {
-#if !DEBUGs
+#if !DEBUG
             try
 #endif
             {
@@ -138,7 +138,7 @@ namespace Dyalect
                 Linker.Commit();
                 return true;
             }
-#if !DEBUGs
+#if !DEBUG
             catch (DyCodeException ex)
             {
                 Linker.Rollback();
