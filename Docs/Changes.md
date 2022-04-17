@@ -1,3 +1,7 @@
+# 0.40.2
+  * Fix: _Convertion of `LocalDateTime` to .NET type fails_ ([Issue #750](https://github.com/vorov2/dyalect/issues/750)).
+  * Fix: _Unable to retrieve Dyalect assembly location under Linux_ ([Issue #748](https://github.com/vorov2/dyalect/issues/748)).
+
 # 0.40.1
   * Change: _Parser errors corrected according to language changes._
   * Change: _Corrections and optimizations in standard library._
