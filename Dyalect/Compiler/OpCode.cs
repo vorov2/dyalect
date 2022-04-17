@@ -92,5 +92,10 @@
         NewCast,    //-3
         Cast,       //0
         Mixin,      //-2
+
+        StdCall_0,  //0
+        StdCall_1,  //-1
+        StdCall_2,  //-2
+        StdCall_3,  //-3
     }
 }

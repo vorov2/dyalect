@@ -738,7 +738,7 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-            //This is a special optimization for the 'toString', 'has' and 'len' methods
+            //This is a special optimization for the 'ToString', 'Has' and 'Len' methods
             //If we see that it is called directly we can emit a direct op code
             if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations
                 && node.Target is DAccess meth && meth.Target is not null)
@@ -796,24 +796,47 @@ namespace Dyalect.Compiler
             else
             {
                 Build(node.Target, newHints.Append(Push), ctx);
-                BuildApplicationArguments(node.Location, node.Arguments, newHints, ctx);
+
+                if ((sv.Data & VarFlags.StdCall_0) == VarFlags.StdCall_0 && IsSimpleArgumentList(0, node.Arguments))
+                    cw.StdCall_0();
+                else if ((sv.Data & VarFlags.StdCall_1) == VarFlags.StdCall_1 && IsSimpleArgumentList(1, node.Arguments))
+                {
+                    Build(node.Arguments[0], hints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.StdCall_1();
+                }
+                else if ((sv.Data & VarFlags.StdCall_2) == VarFlags.StdCall_2 && IsSimpleArgumentList(2, node.Arguments))
+                {
+                    Build(node.Arguments[1], hints.Append(Push), ctx);
+                    Build(node.Arguments[0], hints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.StdCall_2();
+                }
+                else if ((sv.Data & VarFlags.StdCall_3) == VarFlags.StdCall_3 && IsSimpleArgumentList(3, node.Arguments))
+                {
+                    Build(node.Arguments[2], hints.Append(Push), ctx);
+                    Build(node.Arguments[1], hints.Append(Push), ctx);
+                    Build(node.Arguments[0], hints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.StdCall_3();
+                }
+                else
+                    BuildApplicationArguments(node.Location, node.Arguments, newHints, ctx);
             }
 
             PopIf(hints);
         }
 
-        private bool IsVariantConstructor(DNode node)
+        private bool IsSimpleArgumentList(int count, List<DNode> nodes)
         {
-            if (node.NodeType != NodeType.Name)
+            if (nodes.Count != count)
                 return false;
 
-            var name = node.GetName();
+            for (var i = 0; i < count; i++)
+                if (nodes[i].NodeType == NodeType.Label)
+                    return false;
 
-            if (name is null || name.Length == 0 || !char.IsUpper(name[0]))
-                return false;
-
-            var err = GetVariable(name, out var _);
-            return err == CompilerError.UndefinedVariable && DyType.GetTypeCodeByName(name) == 0;
+            return true;
         }
 
         private void BuildApplicationArguments(Location loc, List<DNode> arguments, Hints hints, CompilerContext ctx)

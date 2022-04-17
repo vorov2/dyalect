@@ -14,5 +14,10 @@
         public const int PreInit = 0x100;
         public const int Type = 0x200;
         public const int Lazy = 0x400;
+
+        public const int StdCall_0 = 0x800;
+        public const int StdCall_1 = 0x1000;
+        public const int StdCall_2 = 0x2000;
+        public const int StdCall_3 = 0x4000;
     }
 }

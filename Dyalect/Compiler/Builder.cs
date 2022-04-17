@@ -61,7 +61,7 @@ namespace Dyalect.Compiler
             globalLazy = new(builder.globalLazy);
             globalScope = builder.globalScope.Clone();//unit.GlobalScope!;
             currentScope = builder.currentScope != builder.globalScope
-                ? builder.currentScope.Clone() : globalScope.Clone();
+                ? builder.currentScope.Clone() : globalScope;
             isDebug = builder.isDebug;
             lastLocation = builder.lastLocation;
             Messages = new();

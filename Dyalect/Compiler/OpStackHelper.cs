@@ -94,6 +94,11 @@
             -3, //NewCast
             0,  //Cast
             -2, //Mixin
+
+            0, //StdCall_0
+            -1, //StdCall_1
+            -2, //StdCall_2
+            -3, //StdCall_3
         };
     }
 }

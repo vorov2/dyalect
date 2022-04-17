@@ -579,6 +579,40 @@ namespace Dyalect.Runtime
                             }
                         }
                         break;
+                    case OpCode.StdCall_0:
+                        ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
+                        function = (DyNativeFunction)evalStack.Pop();
+                        locals = function.CreateLocals(ctx);
+                        goto PROLOGUE;
+                    case OpCode.StdCall_1:
+                        ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
+                        right = evalStack.Pop();
+                        function = (DyNativeFunction)evalStack.Pop();
+                        locals = function.CreateLocals(ctx);
+                        locals[0] = right;
+                        goto PROLOGUE;
+                    case OpCode.StdCall_2:
+                        ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
+                        left = evalStack.Pop();
+                        right = evalStack.Pop();
+                        function = (DyNativeFunction)evalStack.Pop();
+                        locals = function.CreateLocals(ctx);
+                        locals[0] = left;
+                        locals[1] = right;
+                        goto PROLOGUE;
+                    case OpCode.StdCall_3:
+                        {
+                            ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
+                            left = evalStack.Pop();
+                            right = evalStack.Pop();
+                            var third = evalStack.Pop();
+                            function = (DyNativeFunction)evalStack.Pop();
+                            locals = function.CreateLocals(ctx);
+                            locals[0] = left;
+                            locals[1] = right;
+                            locals[2] = third;
+                            goto PROLOGUE;
+                        }
                     case OpCode.FunCall:
                         {
                             callFun = (DyFunction)evalStack.Pop();
