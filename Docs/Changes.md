@@ -1,4 +1,5 @@
 # 0.40.3
+  * Change: _Optimize initialization of a new `Set` with predefined values_ ([Issue #754](https://github.com/vorov2/dyalect/issues/754)).
   * Fix: _Interactive environment keeps declared variable even in a case of exception_ ([Issue #749](https://github.com/vorov2/dyalect/issues/749)).
 
 # 0.40.2

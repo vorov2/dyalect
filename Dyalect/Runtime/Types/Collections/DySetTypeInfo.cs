@@ -143,15 +143,7 @@ namespace Dyalect.Runtime.Types
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
-        private DyObject New(ExecutionContext ctx, DyObject arg)
-        {
-            var set = new DySet();
-
-            foreach (var x in (DyTuple)arg)
-                set.Add(x);
-
-            return set;
-        }
+        private DyObject New(ExecutionContext ctx, DyObject arg) => new DySet(((DyTuple)arg).GetValues());
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
