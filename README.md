@@ -14,8 +14,7 @@ libraries, which means that it can seamlessly run on Windows, MacOS
 and Linux. Moreover you can use the same binaries on any of these 
 platforms!
 
-Dy doesn't utilize DLR nor does it compile to IL (.NET assembly). Instead
-it runs on the top of its own high performance virtual machine. It
+Dy runs on the top of its own high performance virtual machine. It
 compiles fast and can be used as an embeddable language or as a
 scripting language of your choice. It is also a good language to learn
 programming.
@@ -23,7 +22,7 @@ programming.
 Dyalect offers modern syntax, inspired by such languages as C#, Swift,
 Go and Rust, first class functions, coroutines, expressive modules,
 a dynamic type system with an ability to extend existing types with
-new functions and much more.
+new methods and much more.
 
 A taste of Dy:
 
