@@ -5,7 +5,7 @@
 
 :blue_book: [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
 
-[![GitHub tag (latest SemVer)](https://img.shields.io/badge/Download-0.40.0-blue?style=for-the-badge&logo=github)](https://github.com/vorov2/dyalect/releases/latest)
+[![GitHub tag (latest SemVer)](https://img.shields.io/badge/Download-0.40.1-blue?style=for-the-badge&logo=github)](https://github.com/vorov2/dyalect/releases/latest)
 
 Dyalect is a dynamic programming language for .NET platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short) is
@@ -14,8 +14,7 @@ libraries, which means that it can seamlessly run on Windows, MacOS
 and Linux. Moreover you can use the same binaries on any of these 
 platforms!
 
-Dy doesn't utilize DLR nor does it compile to IL (.NET assembly). Instead
-it runs on the top of its own high performance virtual machine. It
+Dy runs on the top of its own high performance virtual machine. It
 compiles fast and can be used as an embeddable language or as a
 scripting language of your choice. It is also a good language to learn
 programming.
@@ -23,7 +22,7 @@ programming.
 Dyalect offers modern syntax, inspired by such languages as C#, Swift,
 Go and Rust, first class functions, coroutines, expressive modules,
 a dynamic type system with an ability to extend existing types with
-new functions and much more.
+new methods and much more.
 
 A taste of Dy:
 

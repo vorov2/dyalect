@@ -152,11 +152,10 @@ namespace Dyalect.Library.Core
         {
             if (!input.IsString(ctx)) return Default();
 
-            if (format.TypeId == DyType.Nil)
+            if (!format.NotNil())
                 return InternalParse(ctx, () => TimeSpan.Parse(input.GetString()));
 
             if (!format.IsString(ctx)) return Default();
-
             return InternalParse(ctx, () => TimeSpan.ParseExact(input.GetString(), GetFormatString(format.GetString()), CI.Default));
         }
 

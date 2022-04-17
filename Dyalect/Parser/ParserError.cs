@@ -62,6 +62,8 @@
 
         InvalidIdentifier = 39,
 
-        InvalidApplicationOperator = 40
+        InvalidApplicationOperator = 40,
+
+        InvalidIndex = 41
     }
 }

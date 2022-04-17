@@ -14,6 +14,7 @@ namespace Dyalect.Parser
                  { "invalid StandardOperators", InvalidStandardOperators }
                 ,{ "invalid FunctionName", InvalidFunctionName}
                 ,{ "invalid Identifier", InvalidIdentifier }
+                ,{ "invalid IdentifierOrKeyword", InvalidIdentifier }
                 ,{ "invalid Qualident", InvalidIdentifier }
                 ,{ "invalid ImportToken", InvalidImport }
                 ,{ "invalid Region", InvalidRegion }
@@ -25,6 +26,7 @@ namespace Dyalect.Parser
                 ,{ "invalid If", InvalidIf }
                 ,{ "invalid Loops", InvalidStatement }
                 ,{ "invalid Expr", InvalidExpression }
+                ,{ "invalid StatementExpr", InvalidExpression }
                 ,{ "invalid FunctionBody", InvalidFunction}
                 ,{ "invalid FunctionStatement", InvalidFunction}
                 ,{ "invalid Pattern", InvalidPattern }
@@ -39,6 +41,7 @@ namespace Dyalect.Parser
                 ,{ "invalid RightPipe", InvalidApplicationOperator }
                 ,{ "invalid Range", InvalidRange }
                 ,{ "invalid Unary", InvalidUnary }
+                ,{ "invalid Index", InvalidIndex }
                 ,{ "invalid Literal", InvalidLiteral }
                 ,{ "invalid ApplicationArguments", InvalidApplicationArguments }
                 ,{ "invalid Label", InvalidLabel }
@@ -50,7 +53,6 @@ namespace Dyalect.Parser
 
                 ,{ "invalid Assignment", InvalidStatement }
                 ,{ "invalid Ternary", InvalidExpression }
-                ,{ "invalid Index", InvalidExpression }
                 ,{ "invalid IndexBody", InvalidExpression }
                 ,{ "invalid NullaryLambda", InvalidFunctionExpression }
                 ,{ "invalid CtorPattern", InvalidPattern }

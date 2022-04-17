@@ -3,7 +3,6 @@ using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
 using System.IO;
-using System.Linq;
 
 namespace Dyalect.Library.Core
 {
@@ -53,11 +52,8 @@ namespace Dyalect.Library.Core
 
         private DyObject SetCursorPosition(ExecutionContext ctx, DyObject left, DyObject top)
         {
-            if (left.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, left);
-
-            if (top.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, top);
+            if (!left.IsInteger(ctx)) return Default();
+            if (!top.IsInteger(ctx)) return Default();
 
             try
             {
@@ -74,8 +70,7 @@ namespace Dyalect.Library.Core
 
         private DyObject SetBackColor(ExecutionContext ctx, DyObject color)
         {
-            if (color.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, color);
+            if (!color.IsString(ctx)) return Default();
 
             if (!Enum.TryParse<ConsoleColor>(color.ToString(), true, out var res))
                 return ctx.InvalidValue(color);
@@ -88,8 +83,7 @@ namespace Dyalect.Library.Core
 
         private DyObject SetForeColor(ExecutionContext ctx, DyObject color)
         {
-            if (color.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, color);
+            if (!color.IsString(ctx)) return Default();
 
             if (!Enum.TryParse<ConsoleColor>(color.ToString(), true, out var res))
                 return ctx.InvalidValue(color);
@@ -100,9 +94,7 @@ namespace Dyalect.Library.Core
 
         private DyObject SetTitle(ExecutionContext ctx, DyObject value)
         {
-            if (value.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, value);
-
+            if (!value.IsString(ctx)) return Default();
             Console.Title = value.GetString();
             return DyNil.Instance;
         }
