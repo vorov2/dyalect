@@ -1,3 +1,6 @@
+# 0.40.5
+  *
+
 # 0.40.4
   * Change: _Runtime error messages are corrected for better clarity for `Interop` objects and external functions._
   * Change: _Optimizations for .Net interop_ ([Issue #746](https://github.com/vorov2/dyalect/issues/746)).
