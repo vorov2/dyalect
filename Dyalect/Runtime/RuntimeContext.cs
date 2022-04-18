@@ -24,8 +24,7 @@ namespace Dyalect.Runtime
             var newUnits = new DyObject[Composition.Units.Count][];
             for (var i = 0; i < Units.Length; i++)
                 newUnits[i] = Units[i];
-            Units = newUnits;
-            
+            Units = newUnits;            
             Layouts = Composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
         }
 
