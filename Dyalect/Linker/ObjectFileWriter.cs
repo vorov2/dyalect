@@ -39,7 +39,7 @@ namespace Dyalect.Linker
             writer.Write(CalculateChecksum(unit.Ops));
         }
 
-        private static int CalculateChecksum(List<Op> ops)
+        private static int CalculateChecksum(FastList<Op> ops)
         {
             var checksum = 0;
 
@@ -54,7 +54,7 @@ namespace Dyalect.Linker
             return checksum;
         }
 
-        private static void WriteOps(BinaryWriter writer, List<Op> ops)
+        private static void WriteOps(BinaryWriter writer, FastList<Op> ops)
         {
             writer.Write(ops.Count);
 
@@ -75,7 +75,7 @@ namespace Dyalect.Linker
                 o.Serialize(writer);
         }
 
-        private static void WriteMemoryLayouts(BinaryWriter writer, List<MemoryLayout> layouts)
+        private static void WriteMemoryLayouts(BinaryWriter writer, FastList<MemoryLayout> layouts)
         {
             writer.Write(layouts.Count);
 
@@ -111,7 +111,7 @@ namespace Dyalect.Linker
             }
         }
 
-        private static void WriteReferences(BinaryWriter writer, List<Reference> refs)
+        private static void WriteReferences(BinaryWriter writer, FastList<Reference> refs)
         {
             writer.Write(refs.Count);
 

@@ -454,7 +454,7 @@ namespace Dyalect.Compiler
                 if (err is CompilerError.None
                     && (sv.Data & VarFlags.Module) == VarFlags.Module && referencedUnits.TryGetValue(nm, out var ru))
                 {
-                    if (ru.Unit.ExportList.TryGetValue(node.Name, out var var))
+                    if (ru.ExportList.TryGetValue(node.Name, out var var))
                     {
                         if ((var.Data & VarFlags.Private) == VarFlags.Private)
                             AddError(CompilerError.PrivateNameAccess, node.Location, node.Name);
@@ -674,7 +674,7 @@ namespace Dyalect.Compiler
             if (res.Success)
             {
                 r.Checksum = res.Value!.Checksum;
-                var referencedUnit = new UnitInfo(unit.UnitIds.Count, res.Value);
+                var referencedUnit = new UnitInfo(unit.UnitIds.Count, res.Value.ExportList);
                 unit.References.Add(r);
                 var key = node.Alias ?? node.ModuleName;
 

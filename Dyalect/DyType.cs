@@ -1,4 +1,5 @@
-﻿using Dyalect.Runtime.Types;
+﻿using Dyalect.Runtime;
+using Dyalect.Runtime.Types;
 using System.Collections.Generic;
 
 namespace Dyalect
@@ -27,7 +28,7 @@ namespace Dyalect
         public const int Collection = 20;
         public const int Comparable = 21;
 
-        internal static List<DyTypeInfo> GetAll() =>
+        internal static FastList<DyTypeInfo> GetAll() =>
             new()
             {
                 null!,

@@ -1,16 +1,15 @@
-﻿using System.Collections.Generic;
-using Dyalect.Runtime;
-using Dyalect.Runtime.Types;
+﻿using Dyalect.Runtime.Types;
+using System.Collections.Generic;
 
 namespace Dyalect.Compiler
 {
     internal sealed class CodeWriter
     {
-        private readonly List<Op> ops;
+        private readonly FastList<Op> ops;
         private readonly Stack<StackSize> locals;
         private readonly Unit frame;
-        private readonly List<int> labels;
-        private readonly List<int> fixups;
+        private readonly FastList<int> labels;
+        private readonly FastList<int> fixups;
         private readonly Dictionary<string, int> strings;
         private readonly Dictionary<DyObject, int> objects;
 

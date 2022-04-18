@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
-namespace Dyalect.Runtime
+namespace Dyalect
 {
     public sealed class FastList<T> : IEnumerable<T>
     {
@@ -141,7 +142,9 @@ namespace Dyalect.Runtime
 
         public T this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => array[index];
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal set => array[index] = value;
         }
     }

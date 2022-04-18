@@ -1,6 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Runtime.Types;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace Dyalect.Runtime
 {
@@ -9,6 +9,7 @@ namespace Dyalect.Runtime
         internal RuntimeContext(UnitComposition composition)
         {
             (Composition, Units) = (composition, new DyObject[composition.Units.Length][]);
+            Layouts = composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
             Types = DyType.GetAll();
             String = (DyStringTypeInfo)Types[DyType.String];
             Char = (DyCharTypeInfo)Types[DyType.Char];
@@ -23,9 +24,11 @@ namespace Dyalect.Runtime
         internal readonly DyTupleTypeInfo Tuple;
         internal readonly DyArrayTypeInfo Array;
 
-        internal readonly List<DyTypeInfo> Types; 
+        internal readonly FastList<DyTypeInfo> Types; 
 
         internal DyObject[][] Units { get; }
+
+        internal MemoryLayout[][] Layouts { get; }
 
         public UnitComposition Composition { get; }
     }

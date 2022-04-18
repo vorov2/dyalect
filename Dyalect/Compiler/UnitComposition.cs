@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Dyalect.Compiler
+﻿namespace Dyalect.Compiler
 {
     public sealed class UnitComposition
     {

@@ -61,8 +61,8 @@ namespace Dyalect.Linker
 
         protected override Result<UnitComposition> Make(Unit unit)
         {
-            composition ??= new(Units.ToArray());
             Units[0] = unit;
+            composition ??= new(Units.ToArray());
             ProcessUnits();
             return Result.Create(composition, Messages);
         }

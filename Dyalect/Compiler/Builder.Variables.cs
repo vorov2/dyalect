@@ -408,7 +408,7 @@ namespace Dyalect.Compiler
         {
             foreach (var u in referencedUnits.Values)
             {
-                if (u.Unit.ExportList.TryGetValue(name, out sv))
+                if (u.ExportList.TryGetValue(name, out sv))
                 {
                     moduleHandle = u.Handle;
                     return true;
