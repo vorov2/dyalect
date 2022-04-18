@@ -13,11 +13,12 @@ namespace Dyalect.Runtime.Types
         private readonly string name;
         private readonly Type type;
         private readonly List<MethodInfo> methods;
+        private readonly ParameterInfo[][] parameters;
 
         public override string FunctionName => name;
 
         public DyInteropFunction(string name, Type type, List<MethodInfo> methods, bool auto) : base(name, pars, 0) =>
-            (this.name, this.type, this.methods, Attr) = (name, type, methods, auto ? FunAttr.Auto : FunAttr.None);
+            (this.name, this.type, this.methods, Attr, parameters) = (name, type, methods, auto ? FunAttr.Auto : FunAttr.None, new ParameterInfo[methods.Count][]);
 
         internal override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
         {
@@ -46,38 +47,37 @@ namespace Dyalect.Runtime.Types
         {
             result = DyNil.Instance;
 
-            foreach (var m in methods)
+            for (var i = 0; i < methods.Count; i++)
             {
-                if (m.Name == name)
-                {
-                    var pars = m.GetParameters();
+                var m = methods[i];
+                var pars = parameters[i] is null
+                    ? parameters[i] = m.GetParameters() : parameters[i];
 
-                    if (pars.Length != arguments.Length || !CheckArguments(arguments, argumentTypes, generalize, pars))
-                        continue;
+                if (pars.Length != arguments.Length || !CheckArguments(arguments, argumentTypes, generalize, pars))
+                    continue;
 
-                    var ret = m.Invoke(m.IsStatic ? null : self.ToObject(), arguments);
+                var ret = m.Invoke(m.IsStatic ? null : self.ToObject(), arguments);
                     
-                    if (ret is null)
-                        result = DyNil.Instance;
-                    else if (ret is int i)
-                        result = DyInteger.Get(i);
-                    else if (ret is long l)
-                        result = DyInteger.Get(l);
-                    else if (ret is char c)
-                        result = new DyChar(c);
-                    else if (ret is string s)
-                        result = new DyString(s);
-                    else if (ret is bool b)
-                        result = b ? DyBool.True : DyBool.False;
-                    else if (ret is double d)
-                        result = new DyFloat(d);
-                    else if (ret is float f)
-                        result = new DyFloat(f);
-                    else
-                        result = new DyInteropObject(ret.GetType(), ret);
+                if (ret is null)
+                    result = DyNil.Instance;
+                else if (ret is int i4)
+                    result = DyInteger.Get(i4);
+                else if (ret is long i8)
+                    result = DyInteger.Get(i8);
+                else if (ret is char c)
+                    result = new DyChar(c);
+                else if (ret is string s)
+                    result = new DyString(s);
+                else if (ret is bool i1)
+                    result = i1 ? DyBool.True : DyBool.False;
+                else if (ret is double r8)
+                    result = new DyFloat(r8);
+                else if (ret is float r4)
+                    result = new DyFloat(r4);
+                else
+                    result = new DyInteropObject(ret.GetType(), ret);
 
-                    return true;
-                }
+                return true;
             }
 
             return false;

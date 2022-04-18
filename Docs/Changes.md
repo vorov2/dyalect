@@ -1,3 +1,6 @@
+# 0.40.4
+  * Change: _Optimizations for .Net interop_ ([Issue #746](https://github.com/vorov2/dyalect/issues/746)).
+
 # 0.40.3
   * Change: _Function call optimizations for simple cases._
   * Change: _Optimize initialization of a new `Set` with predefined values_ ([Issue #754](https://github.com/vorov2/dyalect/issues/754)).
