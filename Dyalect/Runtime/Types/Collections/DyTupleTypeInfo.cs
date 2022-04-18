@@ -319,7 +319,7 @@ namespace Dyalect.Runtime.Types
                 Method.ToArray => Func.Member(name, ToArray),
                 Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("key")),
-                Method.Alter => Func.Member(name, Alter, -1, new Par("values")),
+                Method.Alter => Func.Member(name, Alter, 0, new Par("values", true)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
