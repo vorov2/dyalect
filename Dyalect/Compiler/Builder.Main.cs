@@ -775,10 +775,10 @@ namespace Dyalect.Compiler
 
             //Tail recursion optimization
             if (!options.NoOptimizations && hints.Has(Last)
-                && !sv.IsEmpty() && ctx.Function is not null && ctx.Function.TypeName is null && !ctx.Function.IsIterator 
-                && name == ctx.Function.Name && node.Arguments.Count == ctx.Function.Parameters.Count 
-                && (ctx.FunctionAddress >> 8) == (sv.Address >> 8) 
-                && (ctx.FunctionAddress & byte.MaxValue) == (counters.Count - (sv.Address & byte.MaxValue)) 
+                && !sv.IsEmpty() && ctx.Function is not null && ctx.Function.TypeName is null && !ctx.Function.IsIterator
+                && name == ctx.Function.Name && node.Arguments.Count == ctx.Function.Parameters.Count
+                && (ctx.FunctionAddress >> 8) == (sv.Address >> 8)
+                && (ctx.FunctionAddress & byte.MaxValue) == (counters.Count - (sv.Address & byte.MaxValue))
                 && !ctx.Function.IsVariadic() && !HasLabels(node.Arguments))
             {
                 for (var i = 0; i < node.Arguments.Count; i++)
@@ -793,22 +793,19 @@ namespace Dyalect.Compiler
                 AddLinePragma(node);
                 cw.Br(ctx.FunctionStart);
             }
+            else if (IsStdCall(sv, node))
+            {
+                for (var i = 0; i < node.Arguments.Count; i++)
+                    Build(node.Arguments[node.Arguments.Count - i - 1], hints.Append(Push), ctx);
+
+                Build(node.Target, newHints.Append(Push), ctx);
+                AddLinePragma(node);
+                cw.StdCall(node.Arguments.Count);
+            }
             else
             {
-                if (IsStdCall(sv, node))
-                {
-                    for (var i = 0; i < node.Arguments.Count; i++)
-                        Build(node.Arguments[node.Arguments.Count - i - 1], hints.Append(Push), ctx);
-                    
-                    Build(node.Target, newHints.Append(Push), ctx);
-                    AddLinePragma(node);
-                    cw.StdCall(node.Arguments.Count);
-                }
-                else
-                {
-                    Build(node.Target, newHints.Append(Push), ctx);
-                    BuildApplicationArguments(node.Location, node.Arguments, newHints, ctx);
-                }
+                Build(node.Target, newHints.Append(Push), ctx);
+                BuildApplicationArguments(node.Location, node.Arguments, newHints, ctx);
             }
 
             PopIf(hints);
@@ -816,15 +813,10 @@ namespace Dyalect.Compiler
 
         private bool IsStdCall(ScopeVar sv, DApplication app)
         {
-            if ((sv.Data & VarFlags.StdCall) != VarFlags.StdCall
-                || sv.Args != app.Arguments.Count)
+            if ((sv.Data & VarFlags.StdCall) != VarFlags.StdCall || sv.Args != app.Arguments.Count)
                 return false;
 
-            for (var i = 0; i < app.Arguments.Count; i++)
-                if (app.Arguments[i].NodeType == NodeType.Label)
-                    return false;
-
-            return true;
+            return !HasLabels(app.Arguments);
         }
 
         private void BuildApplicationArguments(Location loc, List<DNode> arguments, Hints hints, CompilerContext ctx)
