@@ -190,6 +190,16 @@ namespace Dyalect.Compiler
             FunCall(0);
         }
 
+        public void StdCall(int args)
+        {
+            if (args == 0)
+                Emit(Op.StdCall_0);
+            else if (args == 1)
+                Emit(Op.StdCall_1);
+            else
+                Emit(new(OpCode.StdCall, args), -args);
+        }
+
         public void Contains(string field) => Emit(new(OpCode.Contains, IndexString(field)));
 
         public void SetMember(string member) => Emit(new(OpCode.SetMember, IndexString(member)));
@@ -223,10 +233,6 @@ namespace Dyalect.Compiler
         public void NewObj(string ctor) => Emit(new(OpCode.NewObj, IndexString(ctor)));
         public void NewType(string name) => Emit(new(OpCode.NewType, IndexString(name)));
 
-        public void StdCall_0() => Emit(Op.StdCall_0);
-        public void StdCall_1() => Emit(Op.StdCall_1);
-        public void StdCall_2() => Emit(Op.StdCall_2);
-        public void StdCall_3() => Emit(Op.StdCall_3);
         public void GetIter() => Emit(Op.GetIter);
         public void End() => Emit(Op.End);
         public void Yield() => Emit(Op.Yield);

@@ -8,9 +8,13 @@
 
         public readonly int Data;
 
-        public ScopeVar(int address) : this(address, 0) { }
+        public readonly int Args;
 
-        public ScopeVar(int address, int data) => (Address, Data) = (address, data);
+        public ScopeVar(int address) : this(address, 0, 0) { }
+
+        public ScopeVar(int address, int data) : this(address, data, 0) { }
+
+        public ScopeVar(int address, int data, int args) => (Address, Data, Args) = (address, data, args);
 
         public bool IsEmpty() => Address == -1;
     }

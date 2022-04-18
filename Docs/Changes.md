@@ -1,5 +1,5 @@
 # 0.40.5
-  *
+  * Change: _Various virtual machine and compiler optimizations._
 
 # 0.40.4
   * Change: _Runtime error messages are corrected for better clarity for `Interop` objects and external functions._

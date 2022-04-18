@@ -795,34 +795,14 @@ namespace Dyalect.Compiler
             }
             else
             {
-                if (IsStdCall(0, sv, node))
+                if (IsStdCall(sv, node))
                 {
-                    Build(node.Target, newHints.Append(Push), ctx);
-                    cw.StdCall_0();
-                }
-                else if (IsStdCall(1, sv, node))
-                {
-                    Build(node.Arguments[0], hints.Append(Push), ctx);
+                    for (var i = 0; i < node.Arguments.Count; i++)
+                        Build(node.Arguments[node.Arguments.Count - i - 1], hints.Append(Push), ctx);
+                    
                     Build(node.Target, newHints.Append(Push), ctx);
                     AddLinePragma(node);
-                    cw.StdCall_1();
-                }
-                else if (IsStdCall(2, sv, node))
-                {
-                    Build(node.Arguments[1], hints.Append(Push), ctx);
-                    Build(node.Arguments[0], hints.Append(Push), ctx);
-                    Build(node.Target, newHints.Append(Push), ctx);
-                    AddLinePragma(node);
-                    cw.StdCall_2();
-                }
-                else if (IsStdCall(3, sv, node))
-                {
-                    Build(node.Arguments[2], hints.Append(Push), ctx);
-                    Build(node.Arguments[1], hints.Append(Push), ctx);
-                    Build(node.Arguments[0], hints.Append(Push), ctx);
-                    Build(node.Target, newHints.Append(Push), ctx);
-                    AddLinePragma(node);
-                    cw.StdCall_3();
+                    cw.StdCall(node.Arguments.Count);
                 }
                 else
                 {
@@ -834,20 +814,13 @@ namespace Dyalect.Compiler
             PopIf(hints);
         }
 
-        private bool IsStdCall(int count, ScopeVar sv, DApplication app)
+        private bool IsStdCall(ScopeVar sv, DApplication app)
         {
-            if (app.Arguments.Count != count)
+            if ((sv.Data & VarFlags.StdCall) != VarFlags.StdCall
+                || sv.Args != app.Arguments.Count)
                 return false;
 
-            var flag = count == 0 ? VarFlags.StdCall_0
-                : count == 1 ? VarFlags.StdCall_1
-                : count == 2 ? VarFlags.StdCall_2
-                : VarFlags.StdCall_3;
-
-            if ((sv.Data & flag) != flag)
-                return false;
-
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < app.Arguments.Count; i++)
                 if (app.Arguments[i].NodeType == NodeType.Label)
                     return false;
 

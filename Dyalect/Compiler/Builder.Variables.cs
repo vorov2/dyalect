@@ -261,16 +261,21 @@ namespace Dyalect.Compiler
             }
         }
 
+
         //Add a regular named variable
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int AddVariable(string name, Location loc, int data)
+        private int AddVariable(string name, Location loc, int data) => AddVariable(name, loc, data, 0);
+
+        //Add a regular named variable
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private int AddVariable(string name, Location loc, int data, int args)
         {
             //Check if we already have such a variable in the local scope
             if (currentScope.Locals.TryGetValue(name, out var exist))
             {
                 if ((exist.Data & VarFlags.PreInit) == VarFlags.PreInit && (data & VarFlags.Function) == VarFlags.Function)
                 {
-                    currentScope.Locals[name] = new ScopeVar(exist.Address, exist.Data ^ VarFlags.PreInit);
+                    currentScope.Locals[name] = new ScopeVar(exist.Address, exist.Data ^ VarFlags.PreInit, args);
                     return (0 | exist.Address << 8);
                 }
                 else
@@ -280,7 +285,7 @@ namespace Dyalect.Compiler
                 }
             }
 
-            currentScope.Locals.Add(name, new(currentCounter, data));
+            currentScope.Locals.Add(name, new(currentCounter, data, args));
 
             //An extended debug info is generated only in debug mode
             if (isDebug && !loc.IsEmpty)
@@ -298,7 +303,7 @@ namespace Dyalect.Compiler
                     data |= VarFlags.Private;
 
                 unit.ExportList.Remove(name);
-                unit.ExportList.Add(name, new(retval, data));
+                unit.ExportList.Add(name, new(retval, data, args));
             }
 
             return retval;

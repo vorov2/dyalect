@@ -60,8 +60,6 @@ namespace Dyalect.Compiler
 
         public static readonly Op StdCall_0 = new(OpCode.StdCall_0);
         public static readonly Op StdCall_1 = new(OpCode.StdCall_1);
-        public static readonly Op StdCall_2 = new(OpCode.StdCall_2);
-        public static readonly Op StdCall_3 = new(OpCode.StdCall_3);
 
         internal static readonly Dictionary<OpCode, Op> Ops = new();
 
