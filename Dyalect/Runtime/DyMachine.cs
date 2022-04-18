@@ -579,6 +579,32 @@ namespace Dyalect.Runtime
                             }
                         }
                         break;
+                    case OpCode.StdCall_0:
+                        ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
+                        function = (DyNativeFunction)evalStack.Pop();
+                        locals = function.CreateLocals(ctx);
+                        goto PROLOGUE;
+                    case OpCode.StdCall_1:
+                        ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
+                        function = (DyNativeFunction)evalStack.Pop();
+                        locals = function.CreateLocals(ctx);
+                        locals[0] = evalStack.Pop();
+                        goto PROLOGUE;
+                    case OpCode.StdCall_2:
+                        ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
+                        function = (DyNativeFunction)evalStack.Pop();
+                        locals = function.CreateLocals(ctx);
+                        locals[0] = evalStack.Pop();
+                        locals[1] = evalStack.Pop();
+                        goto PROLOGUE;
+                    case OpCode.StdCall_3:
+                        ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
+                        function = (DyNativeFunction)evalStack.Pop();
+                        locals = function.CreateLocals(ctx);
+                        locals[0] = evalStack.Pop();
+                        locals[1] = evalStack.Pop();
+                        locals[2] = evalStack.Pop();
+                        goto PROLOGUE;
                     case OpCode.FunCall:
                         {
                             callFun = (DyFunction)evalStack.Pop();

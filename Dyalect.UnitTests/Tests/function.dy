@@ -824,3 +824,25 @@
     let xs = (1,2)
     test(x: 1, y: 2)
 #endregion
+
+#region "StdCall"
+    func test0() {
+        assert(got: true)
+    }
+    func test1(x) {
+        assert(1, x)
+    }
+    func test2(x, y) {
+        assert(1, x)
+        assert(22, y)
+    }
+    func test3(x, y, z) {
+        assert(1, x)
+        assert(22, y)
+        assert(333, z)
+    }
+    test0()
+    test1(1)
+    test2(1, 22)
+    test3(1, 22, 333)
+#endregion

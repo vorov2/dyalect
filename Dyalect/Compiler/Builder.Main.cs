@@ -738,7 +738,7 @@ namespace Dyalect.Compiler
                     return;
                 }
 
-            //This is a special optimization for the 'toString', 'has' and 'len' methods
+            //This is a special optimization for the 'ToString', 'Has' and 'Len' methods
             //If we see that it is called directly we can emit a direct op code
             if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations
                 && node.Target is DAccess meth && meth.Target is not null)
@@ -795,25 +795,63 @@ namespace Dyalect.Compiler
             }
             else
             {
-                Build(node.Target, newHints.Append(Push), ctx);
-                BuildApplicationArguments(node.Location, node.Arguments, newHints, ctx);
+                if (IsStdCall(0, sv, node))
+                {
+                    Build(node.Target, newHints.Append(Push), ctx);
+                    cw.StdCall_0();
+                }
+                else if (IsStdCall(1, sv, node))
+                {
+                    Build(node.Arguments[0], hints.Append(Push), ctx);
+                    Build(node.Target, newHints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.StdCall_1();
+                }
+                else if (IsStdCall(2, sv, node))
+                {
+                    Build(node.Arguments[1], hints.Append(Push), ctx);
+                    Build(node.Arguments[0], hints.Append(Push), ctx);
+                    Build(node.Target, newHints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.StdCall_2();
+                }
+                else if (IsStdCall(3, sv, node))
+                {
+                    Build(node.Arguments[2], hints.Append(Push), ctx);
+                    Build(node.Arguments[1], hints.Append(Push), ctx);
+                    Build(node.Arguments[0], hints.Append(Push), ctx);
+                    Build(node.Target, newHints.Append(Push), ctx);
+                    AddLinePragma(node);
+                    cw.StdCall_3();
+                }
+                else
+                {
+                    Build(node.Target, newHints.Append(Push), ctx);
+                    BuildApplicationArguments(node.Location, node.Arguments, newHints, ctx);
+                }
             }
 
             PopIf(hints);
         }
 
-        private bool IsVariantConstructor(DNode node)
+        private bool IsStdCall(int count, ScopeVar sv, DApplication app)
         {
-            if (node.NodeType != NodeType.Name)
+            if (app.Arguments.Count != count)
                 return false;
 
-            var name = node.GetName();
+            var flag = count == 0 ? VarFlags.StdCall_0
+                : count == 1 ? VarFlags.StdCall_1
+                : count == 2 ? VarFlags.StdCall_2
+                : VarFlags.StdCall_3;
 
-            if (name is null || name.Length == 0 || !char.IsUpper(name[0]))
+            if ((sv.Data & flag) != flag)
                 return false;
 
-            var err = GetVariable(name, out var _);
-            return err == CompilerError.UndefinedVariable && DyType.GetTypeCodeByName(name) == 0;
+            for (var i = 0; i < count; i++)
+                if (app.Arguments[i].NodeType == NodeType.Label)
+                    return false;
+
+            return true;
         }
 
         private void BuildApplicationArguments(Location loc, List<DNode> arguments, Hints hints, CompilerContext ctx)

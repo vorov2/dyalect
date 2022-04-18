@@ -44,7 +44,7 @@ namespace Dyalect
 
         public ExecutionContext? ExecutionContext { get; private set; }
 
-        public DyLinker Linker { get; private set; }
+        public DyIncrementalLinker Linker { get; private set; }
 
         public DyaOptions Options { get; set; }
 
@@ -135,22 +135,26 @@ namespace Dyalect
                 if (measureTime)
                     Printer.SupplementaryOutput($"Time taken: {DateTime.Now - dt}");
 
+                Linker.Commit();
                 return true;
             }
 #if !DEBUG
             catch (DyCodeException ex)
             {
+                Linker.Rollback();
                 Printer.Error(ex.ToString());
                 return false;
             }
             catch (DyRuntimeException ex)
             {
+                Linker.Rollback();
                 Printer.Error(ex.Message);
                 return false;
             }
             catch (Exception ex)
             {
-                Printer.Error($"Critical failure: {Environment.NewLine}{ex}");
+                Linker.Rollback();
+                Printer.Error($"Unexpected failure: {Environment.NewLine}{ex}");
                 return false;
             }
 #endif

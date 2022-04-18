@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Dyalect.Runtime.Types
 {
@@ -25,8 +26,7 @@ namespace Dyalect.Runtime.Types
 
         private readonly long value;
 
-        public DyInteger(long value) : base(DyType.Integer) =>
-            this.value = value;
+        public DyInteger(long value) : base(DyType.Integer) => this.value = value;
 
         public override int GetHashCode() => value.GetHashCode();
 

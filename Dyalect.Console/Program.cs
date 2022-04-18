@@ -139,29 +139,37 @@ namespace Dyalect
         private static void RunInteractive()
         {
             var sb = new StringBuilder();
-            var balance = 0;
+            var expect = false;
 
             while (true)
             {
-                if (balance == 0)
+                if (!expect)
                     Printer.LineFeed();
 
-                Printer.Prefix(balance == 0 ? "dy>" : "-->");
+                Printer.Prefix(!expect ? "dy>" : "-->");
                 var line = Console.ReadLine()?.Trim();
 
                 if (line is null || TryRunCommand(line))
                     continue;
 
                 sb.AppendLine(line);
-                balance += line.Count(c => c == '{');
-                balance -= line.Count(c => c == '}');
-
-                if (balance > 0)
+                
+                if (line.Trim().Length > 0 && !TryParse(sb.ToString()))
+                {
+                    expect = true;
                     continue;
+                }
 
+                expect = false;
                 ctx.Eval(sb.ToString());
                 sb.Clear();
             }
+        }
+
+        private static bool TryParse(string str)
+        {
+            var res = Parser.DyParser.Parse(Parser.SourceBuffer.FromString(str));
+            return res.Success;
         }
 
         private static bool TryRunCommand(string cmd)

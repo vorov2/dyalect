@@ -10,6 +10,7 @@ namespace Dyalect.Linker
     public sealed class DyIncrementalLinker : DyLinker
     {
         private DyCompiler? compiler;
+        private DyCompiler? oldCompiler;
         private UnitComposition? composition;
         private int? startOffset;
 
@@ -30,9 +31,12 @@ namespace Dyalect.Linker
 
         protected override void Complete(bool failed)
         {
-            if (!failed)
-                return;
-            
+            if (failed)
+                Rollback();
+        }
+
+        public void Rollback()
+        {
             if (backupUnitMap is not null)
                 UnitMap = backupUnitMap;
 
@@ -43,9 +47,16 @@ namespace Dyalect.Linker
 
             if (backupUnits is null)
                 return;
-            
+
             for (var i = 0; i < backupUnits.Count; i++)
                 Units.Add(backupUnits[i]);
+
+            compiler = oldCompiler;
+        }
+
+        public void Commit()
+        {
+            oldCompiler = compiler;
         }
 
         protected override Result<UnitComposition> Make(Unit unit)
@@ -62,14 +73,14 @@ namespace Dyalect.Linker
                 return base.CompileNodes(codeModel, root);
             
             Messages.Clear();
-            var oldCompiler = compiler;
 
             if (compiler is null)
                 compiler = new(BuilderOptions, this);
             else
             {
                 compiler = new(compiler);
-                startOffset = composition!.Units[0].Ops.Count;
+                var ops = composition!.Units[0]?.Ops;
+                startOffset = ops is null ? 0 : ops.Count;
             }
 
             var res = compiler.Compile(codeModel);

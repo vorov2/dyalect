@@ -16,12 +16,37 @@ namespace Dyalect.Compiler
             BuildFunctionDeclaration(node, hints.Remove(IteratorBody), ctx);
         }
 
+        private int GetStdCall(DFunctionDeclaration node)
+        {
+            if (options.NoOptimizations)
+                return -1;
+            
+            if (node.TargetTypeName is not null || node.Parameters.Count > 3)
+                return -1;
+
+            for (var i = 0; i < node.Parameters.Count; i++)
+                if (node.Parameters[i].DefaultValue is not null
+                    || node.Parameters[i].TypeAnnotation is not null
+                    || node.Parameters[i].IsVarArgs)
+                    return -1;
+
+            return node.Parameters.Count == 0 ? VarFlags.StdCall_0
+                : node.Parameters.Count == 1 ? VarFlags.StdCall_1
+                : node.Parameters.Count == 2 ? VarFlags.StdCall_2
+                : VarFlags.StdCall_3;
+        }
+
         private void BuildFunctionDeclaration(DFunctionDeclaration node, Hints hints, CompilerContext ctx)
         {
             if (node.Name is not null || node.TargetTypeName is not null)
             {
                 var flags = VarFlags.Const | VarFlags.Function;
                 var addr = 0;
+
+                var addFlag = GetStdCall(node);
+
+                if (addFlag >= 0)
+                    flags |= addFlag;
 
                 if (node.TypeName is null && node.Name is not null)
                     addr = AddVariable(node.Name, node.Location, flags);
