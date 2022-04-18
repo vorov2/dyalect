@@ -42,6 +42,9 @@ namespace Dyalect
         [Binding("nolang", Help = "Do not import \"lang\" module that includes basic primitives and operations.", Category = COMPILER)]
         public bool NoLang { get; set; }
 
+        [Binding("linklog", Help = "Specifies a file where linker would log information loading of modules and assemblies. If a file is not specified logging is not performed. This settings seriously affects performance.", Category = LINKER)]
+        public string? LinkerLog { get; set; }
+
         [Binding("path", Help = "A path where linker would look for referenced modules. You can specify this switch multiple times.", Category = LINKER)]
         public string[]? Paths { get; set; }
 

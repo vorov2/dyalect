@@ -1,6 +1,7 @@
 # 0.40.4
   * Change: _Runtime error messages are corrected for better clarity for `Interop` objects and external functions._
   * Change: _Optimizations for .Net interop_ ([Issue #746](https://github.com/vorov2/dyalect/issues/746)).
+  * Add: _Add an ability to log assembly and module loading by linker_ ([Issue #751](https://github.com/vorov2/dyalect/issues/751)).
 
 # 0.40.3
   * Change: _Function call optimizations for simple cases._

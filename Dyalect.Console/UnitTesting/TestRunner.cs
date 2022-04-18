@@ -153,7 +153,7 @@ namespace Dyalect.UnitTesting
                     ast = new DyCodeModel(root, imports, ast.FileName);
                 }
 
-                var linker = new DyLinker(FileLookup.Create(Path.GetDirectoryName(fileName)!), builderOptions);
+                var linker = new DyLinker(FileLookup.Create(builderOptions, Path.GetDirectoryName(fileName)!), builderOptions);
                 var cres = linker.Make(ast);
                 warns.AddRange(cres.Messages.Where(m => m.Type == BuildMessageType.Warning));
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dyalect.Compiler;
+using System;
 using System.IO;
 
 namespace Dyalect.Linker
@@ -7,23 +8,25 @@ namespace Dyalect.Linker
     {
         private const string LIBDIR = "lib";
 
+        private readonly BuilderOptions options;
         private readonly string[] startupPaths;
         private readonly string[] standardPaths;
         private readonly string[] systemPaths;
         private readonly string[] additionalPaths;
 
-        internal static readonly FileLookup Default = new(Array.Empty<string>(), Array.Empty<string>(), 
-            Array.Empty<string>(), Array.Empty<string>());
+        internal static readonly FileLookup Default = new(BuilderOptions.Default(), Array.Empty<string>(),
+            Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>());
 
-        private FileLookup(string[] startupPaths, string[] standardPaths, string[] systemPaths, string[] additionalPaths)
+        private FileLookup(BuilderOptions options, string[] startupPaths, string[] standardPaths, string[] systemPaths, string[] additionalPaths)
         {
+            this.options = options;
             this.startupPaths = startupPaths;
             this.standardPaths = standardPaths;
             this.systemPaths = systemPaths;
             this.additionalPaths = additionalPaths;
         }
 
-        public static FileLookup Create(string startupPath, string[]? additionalPaths = null)
+        public static FileLookup Create(BuilderOptions options, string startupPath, string[]? additionalPaths = null)
         {
             var systemPath = FileProbe.GetExecutableDirectory();
             var systemPaths = new string[] { systemPath, Path.Combine(systemPath, LIBDIR) };
@@ -32,6 +35,7 @@ namespace Dyalect.Linker
 
             return new
             (
+                options,
                 startupPaths,
                 GetBasePaths(),
                 systemPaths,
@@ -41,14 +45,31 @@ namespace Dyalect.Linker
 
         public bool Find(string? currentPath, string fileName, out string fullPath)
         {
+            if (options.LinkerLog is not null)
+            {
+                WriteToLog(new string('=', 80));
+                WriteToLog($"Resolving module or assembly \"{fileName}\":");
+            }
+
             if (currentPath is not null && File.Exists(fullPath = Path.Combine(currentPath, fileName)))
+            {
+                if (options.LinkerLog is not null)
+                {
+                    WriteToLog($"Found");
+                    WriteToLog($"Load from \"{fullPath}\"");
+                }
+
                 return true;
+            }
 
             if (LookIn(fileName, startupPaths, out fullPath!)
                 || LookIn(fileName, standardPaths, out fullPath!)
                 || LookIn(fileName, systemPaths, out fullPath!)
                 || LookIn(fileName, additionalPaths, out fullPath!))
                 return true;
+
+            if (options.LinkerLog is not null)
+                WriteToLog($"Not found");
 
             return false;
         }
@@ -59,8 +80,21 @@ namespace Dyalect.Linker
 
             foreach (var p in dirs)
             {
-                if (File.Exists(path = Path.Combine(p, fileName)))
+                path = Path.Combine(p, fileName);
+
+                if (options.LinkerLog is not null)
+                    WriteToLog($"Probing {path}");
+
+                if (File.Exists(path))
+                {
+                    if (options.LinkerLog is not null)
+                    {
+                        WriteToLog($"Found");
+                        WriteToLog($"Load from \"{path}\"");
+                    }
+
                     return true;
+                }
             }
 
             return false;
@@ -74,6 +108,33 @@ namespace Dyalect.Linker
                 return Array.Empty<string>();
             
             return var.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private void WriteToLog(string str)
+        {
+            var fn = options.LinkerLog!;
+
+            if (!Path.IsPathRooted(fn))
+                fn = Path.Combine(Environment.CurrentDirectory, fn);
+
+            try
+            {
+                File.AppendAllText(fn, str + Environment.NewLine);
+            }
+            catch (Exception ex)
+            {
+                //Attempt to log this error
+                try
+                {
+                    File.AppendAllLines(Path.Combine(Environment.CurrentDirectory, "dyalect_error.log"),
+                        new[] {
+                            new string('=', 80),
+                            $"Unable to write log file \"{fn}\" because of an error:",
+                            ex.Message
+                        });
+                }
+                catch { }                
+            }
         }
     }
 }
