@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using System;
 using System.IO;
 
 namespace Dyalect.Runtime.Types
@@ -17,7 +18,23 @@ namespace Dyalect.Runtime.Types
         public DyModuleTypeInfo() => AddMixin(DyType.Collection);
 
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
-            new DyString("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
+            new DyString("{" + GetModuleName((DyModule)arg) + "}");
+
+        private string GetModuleName(DyModule arg)
+        {
+            if (arg.Unit is Linker.Lang)
+                return arg.Unit.FileName!;
+            else if (arg.Unit is Linker.ForeignUnit)
+            {
+                var type = arg.Unit.GetType();
+                var nam = Attribute.GetCustomAttribute(type,
+                    typeof(Linker.DyUnitAttribute)) is not Linker.DyUnitAttribute attr ? type.Name : attr.Name;
+                return "foreign." + nam + "," + Path.GetFileNameWithoutExtension(arg.Unit.FileName);
+            }
+            else
+                return "dyalect." + (arg.Unit.FileName is null ? "#memory#"
+                    : Path.GetFileNameWithoutExtension(arg.Unit.FileName));
+        }
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {

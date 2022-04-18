@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Dyalect.Util
@@ -109,8 +110,26 @@ namespace Dyalect.Util
                 return;
             }
 
-            foreach (var rv in DyMachine.DumpVariables(ctx.ExecutionContext))
-                Printer.Output($"{rv.Name} = {Printer.Format(rv.Value, ctx.ExecutionContext)}");
+            var xs = DyMachine.DumpVariables(ctx.ExecutionContext).ToList();
+            var vals = new string[xs.Count];
+            var types = new string[xs.Count];
+            var (keyLen, valLen) = (0, 0);
+
+            for (var i = 0; i < xs.Count; i++)
+            {
+                var rv = xs[i];
+                vals[i] = Printer.Format(rv.Value, ctx.ExecutionContext, notype: true, maxLen: 32);
+                types[i] = rv.Value.GetTypeInfo(ctx.ExecutionContext).TypeName;
+
+                if (keyLen < rv.Name.Length) keyLen = rv.Name.Length;
+                if (valLen < vals[i].Length) valLen = vals[i].Length;
+            }
+
+            for (var i = 0; i < xs.Count; i++)
+            {
+                var rv = xs[i];
+                Printer.Output($"{rv.Name}{new string(' ', keyLen - rv.Name.Length)} | {vals[i]}{new string(' ', valLen - vals[i].Length)} | {types[i]}");
+            }
         }
 
         [Binding("eval", Help = "Evaluates a given file in a current interactive session.")]

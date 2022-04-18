@@ -96,8 +96,7 @@
 
             0, //StdCall_0
             0, //StdCall_1
-            0, //StdCall_2
-            0, //StdCall_3
+            1, //StdCall
         };
     }
 }

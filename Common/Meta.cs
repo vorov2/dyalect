@@ -4,7 +4,7 @@ namespace Dyalect
     {
         public static readonly System.DateTime Epoch = new(2019, 4, 17);
 
-        public const string Version = "0.40.4";
+        public const string Version = "0.40.5";
 
         public const string Product = "Dyalect";
 

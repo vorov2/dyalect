@@ -17,7 +17,7 @@ namespace Dyalect.Compiler
                 AddError(CompilerError.TypesOnlyGlobalScope, node.Location);
 
             var unitId = unit.UnitIds.Count - 1;
-            var ti = new TypeInfo(node, new(unitId, unit));
+            var ti = new TypeInfo(node, new(unitId, unit.ExportList));
             var typeVar = 0;
 
             if (types.ContainsKey(node.Name))
@@ -154,7 +154,7 @@ namespace Dyalect.Compiler
         private int PushTypeInfo(CompilerContext ctx, UnitInfo info, string name, Location loc)
         {
             //Can't find type in the module
-            if (!info.Unit.ExportList.TryGetValue(name, out var sv))
+            if (!info.ExportList.TryGetValue(name, out var sv))
             {
                 AddError(CompilerError.UndefinedType, loc, name);
                 return default;

@@ -1,6 +1,5 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Runtime.Types;
-using System;
 using System.Collections.Generic;
 
 namespace Dyalect.Compiler
@@ -41,15 +40,15 @@ namespace Dyalect.Compiler
 
         internal int Id { get; set; }
 
-        internal List<Reference> References { get; }
+        internal FastList<Reference> References { get; }
 
-        internal List<int> UnitIds { get; }
+        internal FastList<int> UnitIds { get; }
 
-        internal List<HashString> Strings { get; }
+        internal FastList<HashString> Strings { get; }
 
-        internal List<DyObject> Objects { get; }
+        internal FastList<DyObject> Objects { get; }
 
-        internal List<Op> Ops { get; }
+        internal FastList<Op> Ops { get; }
 
         public string? FileName { get; internal set; }
 
@@ -57,7 +56,7 @@ namespace Dyalect.Compiler
 
         public Scope? GlobalScope { get; internal set; }
 
-        public List<MemoryLayout> Layouts { get; }
+        public FastList<MemoryLayout> Layouts { get; }
 
         public Dictionary<HashString, ScopeVar> ExportList { get; }
     }

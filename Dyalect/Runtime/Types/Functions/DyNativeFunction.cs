@@ -108,11 +108,11 @@ namespace Dyalect.Runtime.Types
             }
         }
 
-        internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId];
+        internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.RuntimeContext.Layouts[UnitId][FunctionId];
 
         internal override DyObject[] CreateLocals(ExecutionContext ctx)
         {
-            var size = GetLayout(ctx).Size;
+            var size = ctx.RuntimeContext.Layouts[UnitId][FunctionId].Size;
             return size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
         }
 

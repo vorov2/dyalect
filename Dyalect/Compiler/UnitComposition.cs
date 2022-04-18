@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace Dyalect.Compiler
+﻿namespace Dyalect.Compiler
 {
     public sealed class UnitComposition
     {
-        public List<Unit> Units { get; }
+        public FastList<Unit> Units { get; }
 
-        public UnitComposition(List<Unit> units) => Units = units;
+        public UnitComposition(FastList<Unit> units) => Units = units;
     }
 }

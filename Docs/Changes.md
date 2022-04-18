@@ -1,3 +1,11 @@
+# 0.40.5
+  * Change: _Various virtual machine and compiler optimizations._
+  * Change: _Representation of modules as string is refactored and now contains more information._
+  * Change: _Dump of variables in dya is rewritten and reformatted._
+  * Change: _Errors generated in standard library now contain more information._
+  * Fix: _Interactive mode is broken, globals are not refreshed between inputs_ ([Issue #761](https://github.com/vorov2/dyalect/issues/761)).
+  * Fix: _Module import in interactive mode do not always work correctly_ ([Issue #762](https://github.com/vorov2/dyalect/issues/762)).
+
 # 0.40.4
   * Change: _Runtime error messages are corrected for better clarity for `Interop` objects and external functions._
   * Change: _Optimizations for .Net interop_ ([Issue #746](https://github.com/vorov2/dyalect/issues/746)).
