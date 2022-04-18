@@ -4,8 +4,8 @@ namespace Dyalect.Compiler
 {
     public sealed class UnitComposition
     {
-        public List<Unit> Units { get; }
+        public Unit[] Units { get; }
 
-        public UnitComposition(List<Unit> units) => Units = units;
+        public UnitComposition(Unit[] units) => Units = units;
     }
 }

@@ -210,12 +210,12 @@ namespace Dyalect.Linker
         protected virtual Result<UnitComposition> Make(Unit unit)
         {
             Units[0] = unit;
-            var asm = new UnitComposition(Units!);
-            ProcessUnits(asm);
+            var asm = new UnitComposition(Units.ToArray());
+            ProcessUnits();
             return Result.Create(asm, Messages);
         }
 
-        protected void ProcessUnits(UnitComposition composition)
+        protected void ProcessUnits()
         {
             for (var uid = 0; uid < Units.Count; uid++)
             {
