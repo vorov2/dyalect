@@ -30,7 +30,6 @@ namespace Dyalect.Linker
             return null;
         }
 
-
         private Dictionary<string, ForeignUnit>? LookupAssembly(Unit self, string dll, Reference? @ref = null)
         {
             if (!AssemblyMap.TryGetValue(dll, out var dict))
@@ -39,7 +38,9 @@ namespace Dyalect.Linker
                     return null;
 
                 dict = LoadAssembly(path, @ref ?? Reference.Empty);
-                AssemblyMap.Add(dll, dict);
+
+                if (dict is not null)
+                    AssemblyMap.Add(dll, dict);
 
                 if (dll == DYALECTLIB)
                     dyalectLib = dict;
