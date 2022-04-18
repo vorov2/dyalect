@@ -300,4 +300,7 @@
   <data name="ConstructorFailed.3" xml:space="preserve">
     <value>Constructor "{0}" on type "{1}" has failed: {2}</value>
   </data>
+  <data name="IOFailed.0" xml:space="preserve">
+    <value>Cannot complete an IO operation.</value>
+  </data>
 </root>

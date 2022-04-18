@@ -21,6 +21,12 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject IOFailed(this ExecutionContext ctx)
+        {
+            ctx.Error = new(DyErrorCode.IOFailed);
+            return DyNil.Instance;
+        }
+
         public static DyObject TypeClosed(this ExecutionContext ctx, DyTypeInfo typeInfo)
         {
             ctx.Error = new(DyErrorCode.TypeClosed, typeInfo.TypeName);

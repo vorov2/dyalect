@@ -64,6 +64,8 @@
 
         NotImplemented = 630,
 
-        ConstructorFailed = 631
+        ConstructorFailed = 631,
+
+        IOFailed = 632
     }
 }
