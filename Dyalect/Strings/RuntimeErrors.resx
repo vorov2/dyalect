@@ -277,10 +277,10 @@
     <value>An attempted operation is invalid in the current context.</value>
   </data>
   <data name="MethodNotFound.0" xml:space="preserve">
-    <value>Method not found.</value>
+    <value>Method overload not found.</value>
   </data>
   <data name="MethodNotFound.1" xml:space="preserve">
-    <value>Method "{0}" not found.</value>
+    <value>Method overload "{0}" not found.</value>
   </data>
   <data name="TypeClosed.0" xml:space="preserve">
     <value>Type is closed and cannot be extended.</value>
@@ -293,5 +293,11 @@
   </data>
   <data name="NotImplemented.1" xml:space="preserve">
     <value>Operation "{0}" is not implemented.</value>
+  </data>
+  <data name="ConstructorFailed.0" xml:space="preserve">
+    <value>Constructor has failed.</value>
+  </data>
+  <data name="ConstructorFailed.3" xml:space="preserve">
+    <value>Constructor "{0}" on type "{1}" has failed: {2}</value>
   </data>
 </root>

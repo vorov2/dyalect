@@ -106,6 +106,24 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Constructor has failed..
+        /// </summary>
+        internal static string ConstructorFailed_0 {
+            get {
+                return ResourceManager.GetString("ConstructorFailed.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Constructor &quot;{0}&quot; on type &quot;{1}&quot; has failed: {2}.
+        /// </summary>
+        internal static string ConstructorFailed_3 {
+            get {
+                return ResourceManager.GetString("ConstructorFailed.3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Division by zero..
         /// </summary>
         internal static string DivideByZero_0 {
@@ -358,7 +376,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method not found..
+        ///   Looks up a localized string similar to Method overload not found..
         /// </summary>
         internal static string MethodNotFound_0 {
             get {
@@ -367,7 +385,7 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &quot;{0}&quot; not found..
+        ///   Looks up a localized string similar to Method overload &quot;{0}&quot; not found..
         /// </summary>
         internal static string MethodNotFound_1 {
             get {

@@ -1,6 +1,7 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -48,7 +49,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private readonly System.Collections.Generic.Dictionary<string, DyInteropObject> types = new()
+        private readonly Dictionary<string, DyInteropObject> types = new()
             {
                 { "Int32", new DyInteropObject(BCL.Int32) },
                 { "Int64", new DyInteropObject(BCL.Int64) },
@@ -202,15 +203,16 @@ namespace Dyalect.Runtime.Types
             var values = ((DyTuple)args).UnsafeAccessValues();
             var arr = values.Select(o => o.ToObject()).ToArray();
             object instance;
+            var type = interop.Object as Type ?? interop.Type;
 
             try
             {
-                instance = Activator.CreateInstance(interop.Object as Type ?? interop.Type, arr)!;
+                instance = Activator.CreateInstance(type, arr)!;
                 return new DyInteropObject(instance.GetType(), instance);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return ctx.MethodNotFound("new", interop.Type, values);
+                return ctx.ConstructorFailed(arr, type, ex);
             }
         }
 

@@ -69,7 +69,7 @@
 	try {
 		str = _String.[new](["f","o","o"])
 	} catch {
-		@MethodNotFound => assert(got: true)
+		@ConstructorFailed => assert(got: true)
 	}
 
 	let _CharArrayType = _Type.GetType("System.Char[]")

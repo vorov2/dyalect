@@ -81,6 +81,16 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
+        public static DyObject ConstructorFailed(this ExecutionContext ctx, object[]? args, Type type, Exception ex)
+        {
+            var sb = new StringBuilder();
+            sb.Append("new(");
+            ProcessArguments(sb, args);
+            sb.Append(')');
+            ctx.Error = new(DyErrorCode.ConstructorFailed, sb.ToString(), type.FullName ?? type.Name, ex.Message);
+            return DyNil.Instance;
+        }
+
         public static DyObject InvalidValue(this ExecutionContext ctx, object val1)
         {
             ctx.Error = new(DyErrorCode.InvalidValue, val1);
@@ -302,20 +312,11 @@ namespace Dyalect.Runtime
         public static DyObject MethodNotFound(this ExecutionContext ctx, string name, Type type, DyObject[]? args)
         {
             var sb = new StringBuilder();
-            sb.Append(type.Name);
+            sb.Append(type.FullName ?? type.Name);
             sb.Append('.');
             sb.Append(name);
             sb.Append('(');
-
-            if (args is not null)
-                for (var i = 0; i < args.Length; i++)
-                {
-                    if (i > 0)
-                        sb.Append(',');
-
-                    sb.Append(args[i].ToObject().GetType().Name);
-                }
-
+            ProcessArguments(sb, args);
             sb.Append(')');
             ctx.Error = new(DyErrorCode.MethodNotFound, sb.ToString());
             return DyNil.Instance;
@@ -351,6 +352,23 @@ namespace Dyalect.Runtime
             }
 
             return str;
+        }
+
+        private static void ProcessArguments(StringBuilder sb, object[]? args)
+        {
+            if (args is not null)
+                for (var i = 0; i < args.Length; i++)
+                {
+                    if (i > 0)
+                        sb.Append(',');
+
+                    var tt = (args[i] is DyObject obj ? obj.ToObject() : args[i])?.GetType();
+
+                    if (tt is null)
+                        sb.Append("<null>");
+                    else
+                        sb.Append(tt.FullName ?? tt.Name);
+                }
         }
     }
 }
