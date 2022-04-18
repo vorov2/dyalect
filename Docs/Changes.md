@@ -2,6 +2,7 @@
   * Change: _Runtime error messages are corrected for better clarity for `Interop` objects and external functions._
   * Change: _Optimizations for .Net interop_ ([Issue #746](https://github.com/vorov2/dyalect/issues/746)).
   * Add: _Add an ability to log assembly and module loading by linker_ ([Issue #751](https://github.com/vorov2/dyalect/issues/751)).
+  * Fix: _Linker would look for .obj file first even for the startup module_ ([Issue #757](https://github.com/vorov2/dyalect/issues/757)).
 
 # 0.40.3
   * Change: _Function call optimizations for simple cases._

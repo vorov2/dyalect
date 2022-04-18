@@ -94,13 +94,26 @@ namespace Dyalect.Linker
         public Result<UnitComposition> Make(string filePath)
         {
             Messages.Clear();
+            var ext = Path.GetFileNameWithoutExtension(filePath);
+            string fullPath;
 
-            if (!Lookup.Find(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + OBJ, out var fullPath))
+            if (!string.IsNullOrEmpty(ext))
+            {
                 if (!Lookup.Find(Path.GetDirectoryName(filePath), Path.GetFileName(filePath), out fullPath))
                 {
                     AddError(LinkerError.ModuleNotFound, filePath, default, filePath);
                     return Result.Create(default(UnitComposition), Messages);
                 }
+            }
+            else
+            {
+                if (!Lookup.Find(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + OBJ, out fullPath)
+                    && !Lookup.Find(Path.GetDirectoryName(filePath), Path.GetFileName(filePath) + EXT, out fullPath))
+                {
+                    AddError(LinkerError.ModuleNotFound, filePath, default, filePath);
+                    return Result.Create(default(UnitComposition), Messages);
+                }
+            }
 
             if (fullPath.EndsWith(OBJ, StringComparison.OrdinalIgnoreCase))
             {
