@@ -25,11 +25,15 @@ A taste of Dy:
 
 ```swift
 func fib(n) {
-    n < 2 ? n : fib(n - 1) + fib(n - 2)
+    func fib(a = 0, b = 1, c) {
+        return a when c is 0
+        fib(b, a + b, c - 1)
+    }
+    fib(c: n)
 }
 
 //Calculate the n-th fibonacci number
-fib(34) 
+fib(50) 
 ```
 
 Extending standard types:
@@ -48,7 +52,6 @@ func Float.Pow(n) {
 
     result
 }
-
 
 20.12.Pow(3) //Output: 8144.865728
 ```
