@@ -1,6 +1,7 @@
 # 0.40.5
   * Change: _Various virtual machine and compiler optimizations._
-  * Add: _Interactive mode is broken, globals are not refreshed between inputs_ ([Issue #761](https://github.com/vorov2/dyalect/issues/761)).
+  * Fix: _Interactive mode is broken, globals are not refreshed between inputs_ ([Issue #761](https://github.com/vorov2/dyalect/issues/761)).
+  * Fix: _Module import in interactive mode do not always work correctly_ ([Issue #762](https://github.com/vorov2/dyalect/issues/762)).
 
 # 0.40.4
   * Change: _Runtime error messages are corrected for better clarity for `Interop` objects and external functions._

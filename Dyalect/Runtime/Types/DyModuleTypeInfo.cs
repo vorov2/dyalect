@@ -17,7 +17,7 @@ namespace Dyalect.Runtime.Types
         public DyModuleTypeInfo() => AddMixin(DyType.Collection);
 
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
-            new DyString("[module " + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
+            new DyString("[" + Path.GetFileName(((DyModule)arg).Unit.FileName) + "]");
 
         protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
         {

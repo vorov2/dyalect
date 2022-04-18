@@ -107,7 +107,7 @@ namespace Dyalect.Compiler
                     BuildImport(imp);
 
                 //This is a self-reference to simplify type resolution
-                unit.UnitIds.Add(0);
+                //unit.UnitIds.Add(0);
                 var root = codeModel.Root;
 
                 //What if we have no code, just imports? We shouldn't crush in this case

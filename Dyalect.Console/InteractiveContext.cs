@@ -67,6 +67,8 @@ namespace Dyalect
 
             if (ExecutionContext == null)
                 ExecutionContext = DyMachine.CreateExecutionContext(made.Value!);
+            else
+                ExecutionContext.RuntimeContext.Refresh();
 
             return Eval(measureTime: false);
         }

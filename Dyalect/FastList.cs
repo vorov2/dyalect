@@ -9,7 +9,7 @@ namespace Dyalect
     {
         internal static readonly FastList<T> Empty = new();
         private T[] array;
-        private const int DEFAULT_SIZE = 4;
+        private const int DEFAULT_SIZE = 6;
         private int size;
         private int initialSize;
 
