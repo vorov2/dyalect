@@ -2,6 +2,7 @@
 using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dyalect.Runtime.Types
 {
@@ -275,6 +276,34 @@ namespace Dyalect.Runtime.Types
             return new DyTuple(xs.ToArray());
         }
 
+        private DyObject Alter(ExecutionContext ctx, DyObject self, DyObject newTuple)
+        {
+            if (newTuple is DyTuple tup)
+            {
+                var xs = new List<DyObject>(((DyTuple)self).UnsafeAccessValues());
+
+                foreach (var o in tup.UnsafeAccessValues())
+                {
+                    if (o is DyLabel lab)
+                    {
+                        var exist = xs.FirstOrDefault(i => i.GetLabel() == lab.Label) as DyLabel;
+
+                        if (exist is not null)
+                        {
+                            exist.Value = lab.Value;
+                            continue;
+                        }
+                    }
+
+                    xs.Add(o);
+                }
+
+                return new DyTuple(xs.ToArray());
+            }
+
+            return ctx.InvalidType(DyType.Tuple, newTuple);
+        }
+
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -290,6 +319,7 @@ namespace Dyalect.Runtime.Types
                 Method.ToArray => Func.Member(name, ToArray),
                 Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("key")),
+                Method.Alter => Func.Member(name, Alter, -1, new Par("values")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

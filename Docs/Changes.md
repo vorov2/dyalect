@@ -1,3 +1,6 @@
+# 0.40.6
+  * Fix: _Duplicate fields in `Tuple`_ ([Issue #764](https://github.com/vorov2/dyalect/issues/764)).
+
 # 0.40.5
   * Change: _Various virtual machine and compiler optimizations._
   * Change: _Representation of modules as string is refactored and now contains more information._

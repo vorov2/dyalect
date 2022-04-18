@@ -142,6 +142,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate tuple label &quot;{0}&quot;..
+        /// </summary>
+        internal static string DuplicateLabel {
+            get {
+                return ResourceManager.GetString("DuplicateLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A module with alias &quot;{0}&quot; is already referenced..
         /// </summary>
         internal static string DuplicateModuleAlias {

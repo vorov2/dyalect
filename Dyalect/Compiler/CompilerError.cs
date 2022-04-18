@@ -126,6 +126,8 @@
 
         MixinAlreadySpecified = 261,
 
-        MixinSameAsType = 262
+        MixinSameAsType = 262,
+
+        DuplicateLabel = 263
     }
 }

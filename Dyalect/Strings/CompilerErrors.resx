@@ -318,4 +318,7 @@
   <data name="MixinSameAsType" xml:space="preserve">
     <value>Mixin "{0}" is the same as type.</value>
   </data>
+  <data name="DuplicateLabel" xml:space="preserve">
+    <value>Duplicate tuple label "{0}".</value>
+  </data>
 </root>

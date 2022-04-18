@@ -532,10 +532,12 @@ namespace Dyalect.Compiler
 
         private void BuildTupleElements(List<DNode> elements, Location loc, Hints hints, CompilerContext ctx)
         {
+            var set = new HashSet<string>();
+            
             for (var i = 0; i < elements.Count; i++)
             {
                 var el = elements[i];
-
+                
                 if (el.NodeType == NodeType.Label)
                 {
                     var label = (DLabelLiteral)el;
@@ -544,6 +546,11 @@ namespace Dyalect.Compiler
 
                     if (char.IsUpper(label.Label[0]) && !label.FromString)
                         AddError(CompilerError.LabelOnlyCamel, label.Location);
+
+                    if (set.Contains(label.Label))
+                        AddError(CompilerError.DuplicateLabel, label.Location, label.Label);
+                    else
+                        set.Add(label.Label);
 
                     if (label.Mutable)
                         cw.Mut();
