@@ -7,6 +7,13 @@ using System.Reflection;
 
 namespace Dyalect.Runtime.Types
 {
+    public static class Foobar
+    {
+        public static void Execute(int i) {
+            throw new Exception("What the fuck!");
+        }
+    }
+
     internal sealed class DyInteropFunction : DyForeignFunction
     {
         private readonly static Par[] pars = new Par[] { new Par("args", isVarArg: true) };

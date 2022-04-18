@@ -261,8 +261,10 @@ namespace Dyalect.Runtime
             return DyNil.Instance;
         }
 
-        public static DyObject ExternalFunctionFailure(this ExecutionContext ctx, string functionName, string error)
+        public static DyObject ExternalFunctionFailure(this ExecutionContext ctx, DyFunction func, string error)
         {
+            var functionName = func.Self is null ? func.FunctionName
+                : $"{func.Self.GetTypeName(ctx)}.{func.FunctionName}";
             ctx.Error = new(DyErrorCode.ExternalFunctionFailure, functionName, error);
             return DyNil.Instance;
         }

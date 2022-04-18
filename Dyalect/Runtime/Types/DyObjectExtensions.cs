@@ -31,8 +31,13 @@ namespace Dyalect.Runtime.Types
         public static bool Greater(this DyObject left, DyObject right, ExecutionContext ctx) =>
             ctx.RuntimeContext.Types[left.TypeId].Gt(ctx, left, right).IsTrue();
 
-        public static string GetTypeName(this DyObject self, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Types[self.TypeId].TypeName;
+        public static string GetTypeName(this DyObject self, ExecutionContext ctx)
+        {
+            if (self is DyInteropObject io)
+                return $"{DyTypeNames.Interop}<{io.Type.FullName ?? io.Type.Name}>";
+            else
+                return ctx.RuntimeContext.Types[self.TypeId].TypeName;
+        }
 
         public static DyObject Negate(this DyObject self, ExecutionContext ctx) =>
             ctx.RuntimeContext.Types[self.TypeId].Neg(ctx, self);

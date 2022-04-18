@@ -747,7 +747,7 @@ namespace Dyalect.Runtime
             catch (System.Reflection.TargetInvocationException ex)
             {
                 var msg = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
-                return ctx.ExternalFunctionFailure(func.FunctionName, msg);
+                return ctx.ExternalFunctionFailure(func, msg);
             }
             catch (Exception ex)
             {
@@ -755,7 +755,7 @@ namespace Dyalect.Runtime
                 if (dy is not null)
                     ctx.Error = dy.Error;
                 else
-                    ctx.ExternalFunctionFailure(func.FunctionName, ex.Message);
+                    ctx.ExternalFunctionFailure(func, ex.Message);
                 return DyNil.Instance;
             }
         }
