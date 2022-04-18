@@ -38,7 +38,7 @@ namespace Dyalect
             Output(fmt);
         }
 
-        public static string Format(DyObject obj, ExecutionContext ctx, bool notype = false)
+        public static string Format(DyObject obj, ExecutionContext ctx, bool notype = false, int maxLen = 0)
         {
             string fmt;
 
@@ -46,10 +46,13 @@ namespace Dyalect
             {
                 fmt = obj.ToLiteral(ctx).ToString();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return $"[Error evaluating result value: {ex.Message}]";
+                fmt = obj.ToString();
             }
+
+            if (maxLen > 0 && fmt.Length > maxLen)
+                fmt = fmt.Substring(0, maxLen) + "...";
 
             return notype ? fmt : fmt + " :: " + obj.GetTypeInfo(ctx).TypeName;
         }

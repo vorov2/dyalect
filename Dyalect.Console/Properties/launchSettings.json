@@ -2,7 +2,7 @@
   "profiles": {
     "Run file": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\temp\\dyalect\\main.dy -time --arg arg0 --foo foobar --arg arg1 -linklog \"c:/temp/dylinker.txt\""
+      "commandLineArgs": "C:\\temp\\dyalect\\main.dy -time -i"
     },
     "Run tests": {
       "commandName": "Project",
