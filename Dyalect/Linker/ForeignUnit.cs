@@ -11,6 +11,7 @@ namespace Dyalect.Linker
 {
     public abstract class ForeignUnit : Unit
     {
+        private bool initialized;
         private readonly Dictionary<Type, DyForeignTypeInfo> typeInfos = new();
 
         internal List<DyForeignTypeInfo> Types { get; }
@@ -69,7 +70,12 @@ namespace Dyalect.Linker
             }
 
             RuntimeContext = ctx.RuntimeContext;
-            Execute(ctx);
+
+            if (!initialized)
+            {
+                Execute(ctx);
+                initialized = true;
+            }
         }
 
         protected virtual void Execute(ExecutionContext ctx) { }

@@ -38,9 +38,7 @@ namespace Dyalect.Compiler
 
         internal Unit Clone(DebugInfo di) => new(this, di);
 
-        internal int Id { get; 
-            set; 
-        }
+        internal int Id { get; set; }
 
         internal FastList<Reference> References { get; }
 

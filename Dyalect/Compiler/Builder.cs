@@ -11,7 +11,6 @@ namespace Dyalect.Compiler
     {
         private const int ERROR_LIMIT = 100;
 
-        private readonly bool iterative; //Compilation is performed in interactive mode
         private readonly BuilderOptions options; //Build options
         private readonly CodeWriter cw; //Helper for byte code emit
         private readonly Scope globalScope; //Global scope (for variables) of the current unit
@@ -49,7 +48,6 @@ namespace Dyalect.Compiler
 
         public Builder(Builder builder)
         {
-            iterative = true;
             linker = builder.linker;
             types = builder.types;
             referencedUnits = builder.referencedUnits;
@@ -100,14 +98,12 @@ namespace Dyalect.Compiler
             {
                 var ctx = new CompilerContext();
 
-                if (!options.NoLangModule && !iterative)
+                if (!options.NoLangModule && unit.UnitIds.Count == 0)
                     BuildImport(defaultInclude);
 
                 foreach (var imp in codeModel.Imports)
                     BuildImport(imp);
 
-                //This is a self-reference to simplify type resolution
-                //unit.UnitIds.Add(0);
                 var root = codeModel.Root;
 
                 //What if we have no code, just imports? We shouldn't crush in this case

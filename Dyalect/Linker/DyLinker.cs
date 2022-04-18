@@ -226,9 +226,6 @@ namespace Dyalect.Linker
                     var r = u.References[i];
                     u.UnitIds[i] = UnitMap[r.Id].Id;
                 }
-
-                //if (u.References.Count > 0)
-                //    u.UnitIds[u.References.Count] = uid;
             }
         }
 
