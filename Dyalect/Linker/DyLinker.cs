@@ -21,9 +21,9 @@ namespace Dyalect.Linker
         protected Dictionary<string, Dictionary<string, ForeignUnit>> AssemblyMap { get; set; } = 
             new Dictionary<string, Dictionary<string, ForeignUnit>>(StringComparer.OrdinalIgnoreCase);
 
-        protected List<Unit> Units { get; set; } = new();
+        protected FastList<Unit> Units { get; set; } = new();
 
-        protected List<BuildMessage> Messages { get; } = new List<BuildMessage>();
+        protected FastList<BuildMessage> Messages { get; } = new();
 
         public BuilderOptions BuilderOptions { get; }
 
@@ -210,7 +210,7 @@ namespace Dyalect.Linker
         protected virtual Result<UnitComposition> Make(Unit unit)
         {
             Units[0] = unit;
-            var asm = new UnitComposition(Units.ToArray());
+            var asm = new UnitComposition(Units);
             ProcessUnits();
             return Result.Create(asm, Messages);
         }

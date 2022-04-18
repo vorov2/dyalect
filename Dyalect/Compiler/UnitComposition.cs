@@ -2,8 +2,8 @@
 {
     public sealed class UnitComposition
     {
-        public Unit[] Units { get; }
+        public FastList<Unit> Units { get; }
 
-        public UnitComposition(Unit[] units) => Units = units;
+        public UnitComposition(FastList<Unit> units) => Units = units;
     }
 }

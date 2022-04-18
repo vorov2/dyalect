@@ -8,7 +8,7 @@ namespace Dyalect.Runtime
     {
         internal RuntimeContext(UnitComposition composition)
         {
-            (Composition, Units) = (composition, new DyObject[composition.Units.Length][]);
+            (Composition, Units) = (composition, new DyObject[composition.Units.Count][]);
             Layouts = composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
             Types = DyType.GetAll();
             String = (DyStringTypeInfo)Types[DyType.String];

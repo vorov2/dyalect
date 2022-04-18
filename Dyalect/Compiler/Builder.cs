@@ -59,7 +59,7 @@ namespace Dyalect.Compiler
             unit = builder.unit.Clone(pdb.Symbols);
             cw = builder.cw.Clone(unit);
             globalLazy = new(builder.globalLazy);
-            globalScope = builder.globalScope.Clone();//unit.GlobalScope!;
+            globalScope = unit.GlobalScope!;//builder.globalScope.Clone();
             currentScope = builder.currentScope != builder.globalScope
                 ? builder.currentScope.Clone() : globalScope;
             isDebug = builder.isDebug;
