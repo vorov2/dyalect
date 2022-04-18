@@ -27,5 +27,7 @@ namespace Dyalect.Compiler
         public bool NoOptimizations { get; set; }
 
         public bool LinkerSkipChecksum { get; set; }
+
+        public string? LinkerLog { get; set; }
     }
 }

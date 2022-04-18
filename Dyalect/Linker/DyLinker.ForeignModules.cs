@@ -33,16 +33,17 @@ namespace Dyalect.Linker
 
         private Dictionary<string, ForeignUnit>? LookupAssembly(Unit self, string dll, Reference? @ref = null)
         {
-            if (!Lookup.Find(Path.GetDirectoryName(self.FileName), dll, out var path))
-                return null;
+            if (!AssemblyMap.TryGetValue(dll, out var dict))
+            {
+                if (!Lookup.Find(Path.GetDirectoryName(self.FileName), dll, out var path))
+                    return null;
 
-            path = path.Replace('\\', '/');
+                dict = LoadAssembly(path, @ref ?? Reference.Empty);
+                AssemblyMap.Add(dll, dict);
 
-            if (!AssemblyMap.TryGetValue(path!, out var dict))
-                dict = LoadAssembly(path!, @ref ?? Reference.Empty);
-
-            if (dll == DYALECTLIB)
-                dyalectLib = dict;
+                if (dll == DYALECTLIB)
+                    dyalectLib = dict;
+            }
 
             return dict;
         }
@@ -98,7 +99,6 @@ namespace Dyalect.Linker
                 dict.Add(attr.Name, unit);
             }
 
-            AssemblyMap.Add(path, dict);
             return dict;
         }
     }

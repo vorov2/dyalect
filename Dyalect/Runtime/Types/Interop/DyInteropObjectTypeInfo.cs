@@ -1,6 +1,7 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -48,7 +49,7 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private readonly System.Collections.Generic.Dictionary<string, DyInteropObject> types = new()
+        private readonly Dictionary<string, DyInteropObject> types = new()
             {
                 { "Int32", new DyInteropObject(BCL.Int32) },
                 { "Int64", new DyInteropObject(BCL.Int64) },
@@ -164,7 +165,25 @@ namespace Dyalect.Runtime.Types
         internal override DyObject GetStaticMember(HashString nameStr, ExecutionContext ctx)
         {
             var name = (string)nameStr;
-            var func = name switch
+            if (!StaticMembers.TryGetValue(name, out var func))
+            {
+                func = LookupStatic(name, ctx);
+
+                if (func is not null)
+                    StaticMembers.Add(name, func);
+            }
+
+            if (func is null)
+                return ctx.StaticOperationNotSupported(name, ReflectedTypeId);
+
+            if (func.Auto)
+                return func.BindOrRun(ctx, this);
+
+            return func;
+        }
+
+        private DyFunction? LookupStatic(string name, ExecutionContext ctx) =>
+            name switch
             {
                 "Interop" => Func.Static(name, CreateInteropObject, -1, new Par("typeName")),
                 "GetType" => Func.Static(name, GetSystemType, -1, new Par("typeName")),
@@ -178,49 +197,50 @@ namespace Dyalect.Runtime.Types
                 _ => GetTypeInstance(ctx, name)
             };
 
-            if (func is null)
-                return ctx.StaticOperationNotSupported(name, ReflectedTypeId);
-
-            if (func.Auto)
-                return func.BindOrRun(ctx, this);
-
-            return func;
-        }
-
         private DyObject CreateNew(ExecutionContext ctx, DyObject self, DyObject args)
         {
             var interop = (DyInteropObject)self;
             var values = ((DyTuple)args).UnsafeAccessValues();
             var arr = values.Select(o => o.ToObject()).ToArray();
             object instance;
+            var type = interop.Object as Type ?? interop.Type;
 
             try
             {
-                instance = Activator.CreateInstance(interop.Object as Type ?? interop.Type, arr)!;
+                instance = Activator.CreateInstance(type, arr)!;
                 return new DyInteropObject(instance.GetType(), instance);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return ctx.MethodNotFound("new", interop.Type, values);
+                return ctx.ConstructorFailed(arr, type, ex);
             }
         }
 
         internal override DyObject GetInstanceMember(DyObject self, HashString nameStr, ExecutionContext ctx)
         {
             var interop = (DyInteropObject)self;
-            DyFunction? func = null;
             var name = (string)nameStr;
 
-            if (name == "new")
-                func = Func.Member(name, CreateNew, 0, new Par("args"));
-            else
-                func = GetInteropFunction(interop, name, ctx);
+            if (!Members.TryGetValue(name, out var func))
+            {
+                func = LookupInstance(name, interop, ctx);
+
+                if (func is not null)
+                    Members.Add(name, func);
+            }
             
             if (func is not null)
                 return func.BindOrRun(ctx, self);
 
             return ctx.OperationNotSupported(name, self);
         }
+
+        private DyFunction? LookupInstance(string name, DyInteropObject self, ExecutionContext ctx) =>
+            name switch
+            {
+                "new" => Func.Member(name, CreateNew, 0, new Par("args")),
+                _ => GetInteropFunction(self, name, ctx)
+            };
 
         private DyFunction? GetInteropFunction(DyInteropObject self, string name, ExecutionContext ctx)
         {
@@ -236,7 +256,7 @@ namespace Dyalect.Runtime.Types
             }
 
             if (methods is null)
-                return base.InitializeInstanceMember(self, name, ctx);
+                return null;
 
             return new DyInteropFunction(name, type, methods, auto);
         }

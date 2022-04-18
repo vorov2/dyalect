@@ -16,7 +16,7 @@ namespace Dyalect
             BuildOptions = CreateBuildOptions(options);
             var nofn = options.FileNames is null || options.FileNames.Length == 0 || string.IsNullOrWhiteSpace(options.FileNames[0]);
 
-            var lookup = FileLookup.Create(
+            var lookup = FileLookup.Create(BuildOptions,
                 nofn ? Environment.CurrentDirectory! : Path.GetDirectoryName(options.FileNames![0])!, options.Paths);
             Linker = new DyIncrementalLinker(lookup, BuildOptions, options.UserArguments);
         }
@@ -26,6 +26,7 @@ namespace Dyalect
             var ret = new BuilderOptions
             {
                 Debug = options.Debug,
+                LinkerLog = options.LinkerLog,
                 NoOptimizations = options.NoOptimizations,
                 NoLangModule = options.NoLang,
                 NoWarnings = options.NoWarnings,

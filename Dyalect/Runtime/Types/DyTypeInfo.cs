@@ -415,7 +415,7 @@ namespace Dyalect.Runtime.Types
         #endregion
 
         #region Statics
-        private readonly Dictionary<HashString, DyFunction> staticMembers = new();
+        protected readonly Dictionary<HashString, DyFunction> StaticMembers = new();
 
         internal bool HasStaticMember(HashString name, ExecutionContext ctx) => LookupStaticMember(name, ctx) is not null;
 
@@ -440,12 +440,12 @@ namespace Dyalect.Runtime.Types
 
         private DyObject? LookupStaticMember(HashString name, ExecutionContext ctx)
         {
-            if (!staticMembers.TryGetValue(name, out var value))
+            if (!StaticMembers.TryGetValue(name, out var value))
             {
                 value = InitializeStaticMembers((string)name, ctx);
 
                 if (value is not null)
-                    staticMembers.Add(name, value);
+                    StaticMembers.Add(name, value);
             }
 
             return value;
@@ -464,7 +464,7 @@ namespace Dyalect.Runtime.Types
                 }
             }
 
-            if (staticMembers.TryGetValue(name, out var oldfun))
+            if (StaticMembers.TryGetValue(name, out var oldfun))
             {
                 if (oldfun.Auto != func.Auto)
                 {
@@ -472,10 +472,10 @@ namespace Dyalect.Runtime.Types
                     return;
                 }
 
-                staticMembers.Remove(name);
+                StaticMembers.Remove(name);
             }
 
-            staticMembers.Add(name, func);
+            StaticMembers.Add(name, func);
         }
 
         private DyFunction? InitializeStaticMembers(string name, ExecutionContext ctx) =>
@@ -489,7 +489,7 @@ namespace Dyalect.Runtime.Types
                         var nm = strObj.GetString();
                         SetBuiltin(ctx, nm, null);
                         Members.Remove(name);
-                        staticMembers.Remove(name);
+                        StaticMembers.Remove(name);
                         return Default();
                     }, -1, new Par("name")),
                 _ => InitializeStaticMember(name, ctx)

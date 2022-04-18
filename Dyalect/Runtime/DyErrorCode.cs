@@ -62,6 +62,8 @@
 
         TypeClosed = 629,
 
-        NotImplemented = 630
+        NotImplemented = 630,
+
+        ConstructorFailed = 631
     }
 }
