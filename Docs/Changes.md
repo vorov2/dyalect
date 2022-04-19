@@ -3,6 +3,8 @@
   * Add: _Add an ability to modify fields in read-only tuples through creating new tuple instances_ ([Issue #741](https://github.com/vorov2/dyalect/issues/741), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#alter)).
   * Add: _Add `Iterator.ForEach` method_ ([Issue #765](https://github.com/vorov2/dyalect/issues/765), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#forEach)).
   * Add: _Type Module should support `Contains` method_ ([Issue #772](https://github.com/vorov2/dyalect/issues/772), [docs](https://github.com/vorov2/dyalect/wiki/Modules#contains)).
+  * Add: _Add `Iterator.Distinct` method_ ([Issue #739](https://github.com/vorov2/dyalect/issues/739), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#distinct)).
+  * Change: _Parameter `predicate` of `Iterator.Count` method should be optional_ ([Issue #774](https://github.com/vorov2/dyalect/issues/774), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#count)).
   * Fix: _`ToLiteral` is not supported by the type `Set`_ ([Issue #768](https://github.com/vorov2/dyalect/issues/768)).
   * Fix: _`Set` is not recognized as a element sequence when you pass it to vararg function_ ([Issue #771](https://github.com/vorov2/dyalect/issues/771)).
   * Fix: _Refactoring of incorrect `Contains` built-in method implementation._

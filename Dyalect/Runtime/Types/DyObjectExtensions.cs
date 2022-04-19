@@ -98,5 +98,21 @@ namespace Dyalect.Runtime.Types
 
             return true;
         }
+
+        public static DyObject Invoke(this DyObject self, ExecutionContext ctx, params DyObject[] args)
+        {
+            if (self is DyFunction func)
+                return func.Call(ctx, args);
+
+            var functor = ctx.RuntimeContext.Types[self.TypeId].GetInstanceMember(self, Builtins.Call, ctx);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            if (functor.TypeId != DyType.Function)
+                return ctx.InvalidType(functor);
+
+            return functor.Invoke(ctx, args);
+        }
     }
 }

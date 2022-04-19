@@ -484,6 +484,8 @@
     let refs = yields {3,5,1,6,2,4}
     let c = refs.Count(x => x % 2 == 0)
     assert(3, c)
+    let c2 = refs.Count()
+    assert(6, c2)
 #endregion
 
 #region "Methods: Map"
@@ -647,4 +649,17 @@
     let outp = []
     xs.ForEach(outp.Add)
     assert([1,2,3,4,5], outp)
+#endregion
+
+#region "Methods: Distinct"
+    let xs = yields {1,1,1,2,3,3,3,4,4,5}
+    assert([1..5], xs.Distinct().ToArray())
+    assert([1..5], xs.Distinct(\x).ToArray())
+    let ys = yields {
+        (id: 1, stub: "F"),
+        (id: 2, stub: "R"),
+        (id: 2, stub: "Z")
+    }
+    assert(3, ys.Distinct().Count())
+    assert(2, ys.Distinct(\x.id).Count())    
 #endregion

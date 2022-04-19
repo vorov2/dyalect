@@ -45,6 +45,7 @@
         public const string Format = "Format";
         public const string ForEach = "ForEach";
         public const string Alter = "Alter";
+        public const string Distinct = "Distinct";
         public const string Join = "Join";
         public const string Repeat = "Repeat";
         public const string ContainsValue = "ContainsValue";
