@@ -65,7 +65,7 @@ namespace Dyalect.Library.Core
                 defaultBackColor = Console.BackgroundColor;
             
             if (backColor.NotNil() && !backColor.IsString(ctx)) return Default();
-            Console.BackgroundColor = backColor.NotNil() ? defaultBackColor.Value : GetColor(backColor);
+            Console.BackgroundColor = backColor.NotNil() ? GetColor(backColor) : defaultBackColor.Value;
             Console.Clear();
             return DyNil.Instance;
         }
