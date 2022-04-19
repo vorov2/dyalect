@@ -464,12 +464,8 @@ namespace Dyalect.Compiler
                         PopIf(hints);
                         return;
                     }
-                    else if (char.IsUpper(node.Name[0])) //If true, it's a type
-                    {
-                        AddLinePragma(node);
-                        PushTypeInfo(ctx, ru, node.Name, node.Location);
+                    else if (char.IsUpper(node.Name[0]) && TryPushTypeInfo(ru, node.Name, node.Location)) //If true, it's a type
                         return;
-                    }
                 }
             }
 

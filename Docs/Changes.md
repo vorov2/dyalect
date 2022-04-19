@@ -1,5 +1,6 @@
 # 0.40.6
   * Fix: _Duplicate fields in `Tuple`_ ([Issue #764](https://github.com/vorov2/dyalect/issues/764)).
+  * Fix: _It is not possible to invoke type members on a module instance directly_ ([Issue #767](https://github.com/vorov2/dyalect/issues/767)).
 
 # 0.40.5
   * Change: _Various virtual machine and compiler optimizations._
