@@ -12,7 +12,7 @@ namespace Dyalect.Runtime.Types
 
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Len | SupportedOperations.Iter;
+            | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.Lit;
 
         public DySetTypeInfo() => AddMixin(DyType.Collection);
 
@@ -28,10 +28,14 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(self.Count);
         }
 
-        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
+        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => ToLiteralOrString(arg, ctx, literal: false);
+
+        protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToLiteralOrString(arg, ctx, literal: true);
+
+        private DyObject ToLiteralOrString(DyObject arg, ExecutionContext ctx, bool literal)
         {
             var self = (DySet)arg;
-            var sb = new StringBuilder("Set (");
+            var sb = new StringBuilder("Set(");
             var c = 0;
 
             foreach (var v in self)
@@ -39,7 +43,7 @@ namespace Dyalect.Runtime.Types
                 if (c++ > 0)
                     sb.Append(", ");
 
-                sb.Append(v.ToString(ctx));
+                sb.Append(literal ? v.ToLiteral(ctx) : v.ToString(ctx));
 
                 if (ctx.HasErrors)
                     return DyNil.Instance;

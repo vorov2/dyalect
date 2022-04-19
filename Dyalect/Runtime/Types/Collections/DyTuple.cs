@@ -158,6 +158,24 @@ namespace Dyalect.Runtime.Types
             return values;
         }
 
+        internal override IEnumerable<DyObject> GetValuesIterator()
+        {
+            if (Count != values.Length)
+                return IterateTuple();
+
+            for (var i = 0; i < Count; i++)
+                if (values[i].TypeId == DyType.Label)
+                    return IterateTuple();
+
+            return values;
+        }
+
+        private IEnumerable<DyObject> IterateTuple()
+        {
+            for (var i = 0; i < Count; i++)
+                yield return values[i].GetTaggedValue();
+        }
+
         internal DyObject[] GetValuesWithLabels()
         {
             if (mutable != null)

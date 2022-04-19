@@ -60,6 +60,7 @@
         public const string ToDictionary = "ToDictionary";
         public const string ToArray = "ToArray";
         public const string ToTuple = "ToTuple";
+        public const string ToSet = "ToSet";
         public const string Pair = "Pair";
         public const string Triple = "Triple";
         public const string Tuple = "Tuple";

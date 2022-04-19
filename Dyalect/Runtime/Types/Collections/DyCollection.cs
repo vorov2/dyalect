@@ -77,6 +77,8 @@ namespace Dyalect.Runtime.Types
 
         internal abstract DyObject[] GetValues();
 
+        internal abstract IEnumerable<DyObject> GetValuesIterator();
+
         public override int GetHashCode()
         {
             unchecked

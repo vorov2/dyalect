@@ -183,6 +183,12 @@ namespace Dyalect.Runtime.Types
             return arr;
         }
 
+        internal override IEnumerable<DyObject> GetValuesIterator()
+        {
+            for (var i = 0; i < Count; i++)
+                yield return values[i].GetTaggedValue();
+        }
+
         internal DyObject[] UnsafeAccessValues() => values;
     }
 }

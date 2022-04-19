@@ -57,11 +57,20 @@ namespace Dyalect.Runtime.Types
             return DyIterator.Create(Iterate());
         }
 
+        private DyObject ToSet(ExecutionContext ctx, DyObject self)
+        {
+            var vals = ((DyCollection)self).GetValuesIterator();
+            var set = new HashSet<DyObject>();
+            set.UnionWith(vals);
+            return new DySet(set);
+        }
+
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 Method.Indices => Func.Member(name, GetIndices),
                 Method.Slice => Func.Member(name, GetSlice, -1, new Par("index", DyInteger.Zero), new Par("size", DyNil.Instance)),
+                Method.ToSet => Func.Member(name, ToSet),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

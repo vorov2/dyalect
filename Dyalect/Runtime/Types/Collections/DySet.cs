@@ -9,6 +9,8 @@ namespace Dyalect.Runtime.Types
         public DySet() : base(DyType.Set) => Set = new();
 
         public DySet(params DyObject[] args) : base(DyType.Set) => Set = new(args);
+
+        internal DySet(HashSet<DyObject> set) : base(DyType.Set) => Set = set;
         
         public override IEnumerator<DyObject> GetEnumerator() => new DySetEnumerator(this);
 
