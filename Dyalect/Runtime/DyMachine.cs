@@ -699,7 +699,7 @@ namespace Dyalect.Runtime
         {
             if (container.VarArgsSize != 0)
                 ctx.TooManyArguments();
-            
+
             if (value.TypeId is DyType.Array)
             {
                 var xs = (DyCollection)value;
@@ -712,7 +712,7 @@ namespace Dyalect.Runtime
                 container.VarArgs = fn.VariantConstructor ? xs.UnsafeAccessValues() : xs.GetValuesWithLabels();
                 container.VarArgsSize = container.VarArgs.Length;
             }
-            else if (value.TypeId is DyType.Iterator)
+            else if (value.TypeId is DyType.Iterator or DyType.Set)
             {
                 var xs = DyIterator.ToEnumerable(ctx, value).ToArray();
 

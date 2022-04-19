@@ -276,3 +276,9 @@
     assert(false, 'B' in "bar")
     assert(true, "ello" in "Hello, world")
 #endregion
+
+#region "Methods: ToSet"
+    let xs = "Hello,world!"
+    let ys = String(values: xs.ToSet())
+    assert("Helo,wrd!", ys)
+#endregion

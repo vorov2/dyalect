@@ -517,8 +517,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                Method.String => Func.Static(name, Concat, 0, new Par("values", true)),
-                Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
+                Method.String or Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
                 Method.Join => Func.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(","))),
                 Method.Default => Func.Static(name, ctx => DyString.Empty),
                 Method.Repeat => Func.Static(name, Repeat, -1, new Par("value"), new Par("count")),

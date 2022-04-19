@@ -35,7 +35,7 @@ namespace Dyalect.Runtime.Types
         private DyObject ToLiteralOrString(DyObject arg, ExecutionContext ctx, bool literal)
         {
             var self = (DySet)arg;
-            var sb = new StringBuilder("Set(");
+            var sb = new StringBuilder("Set (");
             var c = 0;
 
             foreach (var v in self)

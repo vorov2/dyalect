@@ -1,7 +1,7 @@
-# Test session from 19/04/2022 12:31
+# Test session from 19/04/2022 14:45
 
 ## Summary:
-726 passed, 0 failed in 28 file(s)
+733 passed, 0 failed in 28 file(s)
 
 ## Test file(s):
 [array.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [interop.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\interop.dy), [iterator.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [mixin.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\mixin.dy), [modules.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
@@ -52,6 +52,7 @@
 * &#9745; **Conversion: as**
 * &#9745; **Methods: ToLiteral**
 * &#9745; **Operator in**
+* &#9745; **Methods: ToSet**
 
 ### Tests/autos.dy:
 * &#9745; **Simple 1**
@@ -385,6 +386,7 @@
 * &#9745; **Methods: Any**
 * &#9745; **Methods: all**
 * &#9745; **Methods: Contains**
+* &#9745; **Methods: ToSet**
 
 ### Tests/lazy.dy:
 * &#9745; **Type info**
@@ -647,6 +649,7 @@
 * &#9745; **Methods: ToString**
 * &#9745; **Conversion: as**
 * &#9745; **Operator in**
+* &#9745; **Set and vararg function**
 
 ### Tests/string.dy:
 * &#9745; **String literal**
@@ -688,6 +691,7 @@
 * &#9745; **Format 1**
 * &#9745; **Format 2**
 * &#9745; **Operator in**
+* &#9745; **Methods: ToSet**
 
 ### Tests/tuple.dy:
 * &#9745; **Methods: ToString**
@@ -731,6 +735,9 @@
 * &#9745; **Comparison 2**
 * &#9745; **Operator in**
 * &#9745; **Variadic function and labels**
+* &#9745; **Methods: ToSet**
+* &#9745; **Tuple: Alter 1**
+* &#9745; **Tuple: Alter 2**
 
 ### Tests/types.dy:
 * &#9745; **Methods: GetType**

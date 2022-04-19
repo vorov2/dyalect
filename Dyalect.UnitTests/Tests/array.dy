@@ -343,3 +343,9 @@
     assert(true, 5 in xs)
     assert(false, 0 in xs)
 #endregion
+
+#region "Methods: ToSet"
+    let xs = [1,2,2,2,3,4,4,5,5,5]
+    let ys = xs.ToSet()
+    assert("Set (1, 2, 3, 4, 5)", ys.ToString())
+#endregion

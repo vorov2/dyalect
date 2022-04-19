@@ -635,3 +635,9 @@
     assert(true, xs.Contains(1))
     assert(false, xs.Contains(101))
 #endregion
+
+#region "Methods: ToSet"
+    let xs = yields { 1,2,2,2,3,4,4,5,5,5 }
+    let ys = xs.ToSet()
+    assert("Set (1, 2, 3, 4, 5)", ys.ToString())
+#endregion

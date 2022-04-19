@@ -387,6 +387,14 @@ namespace Dyalect.Runtime.Types
             return Default();
         }
 
+        private DyObject ToSet(ExecutionContext ctx, DyObject self)
+        {
+            var seq = DyIterator.ToEnumerable(ctx, self);
+            var set = new HashSet<DyObject>();
+            set.UnionWith(seq);
+            return new DySet(set);
+        }
+
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -412,6 +420,7 @@ namespace Dyalect.Runtime.Types
                 Method.All => Func.Member(name, All, -1, new Par("predicate")),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("value")),
                 Method.ForEach => Func.Member(name, ForEach, -1, new Par("action")),
+                Method.ToSet => Func.Member(name, ToSet),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
