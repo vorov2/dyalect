@@ -3,6 +3,11 @@
     import lib1 = refs/libtest1
 #endregion
 
+#region "Methods: ToString"
+    let str = lib.ToString()
+    assert(true, str is String)
+#endregion
+
 #region "Methods: Clone"
     let xs = lib
     assert(true, xs == xs)

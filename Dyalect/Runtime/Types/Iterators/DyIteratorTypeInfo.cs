@@ -364,6 +364,29 @@ namespace Dyalect.Runtime.Types
             return seq.Any(o => o.Equals(item, ctx)) ? DyBool.True : DyBool.False;
         }
 
+        private DyObject ForEach(ExecutionContext ctx, DyObject self, DyObject funObj)
+        {
+            if (funObj.TypeId != DyType.Function)
+                return ctx.InvalidType(DyType.Function, funObj);
+
+            var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            var fun = (DyFunction)funObj;
+
+            foreach (var o in seq)
+            {
+                fun.Call(ctx, o);
+
+                if (ctx.HasErrors)
+                    return Default();
+            }
+
+            return Default();
+        }
+
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
@@ -388,6 +411,7 @@ namespace Dyalect.Runtime.Types
                 Method.Any => Func.Member(name, Any, -1, new Par("predicate")),
                 Method.All => Func.Member(name, All, -1, new Par("predicate")),
                 Method.Contains => Func.Member(name, Contains, -1, new Par("value")),
+                Method.ForEach => Func.Member(name, ForEach, -1, new Par("action")),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

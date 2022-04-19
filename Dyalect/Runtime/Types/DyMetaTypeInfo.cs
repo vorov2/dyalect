@@ -22,6 +22,6 @@
         }
 
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
-            new DyString("TypeInfo (" + ((DyTypeInfo)arg).TypeName + ")");
+            new DyString("TypeInfo<" + ((DyTypeInfo)arg).TypeName + ">");
     }
 }

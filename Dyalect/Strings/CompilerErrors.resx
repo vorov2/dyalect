@@ -193,7 +193,7 @@
     <value>Methods cannot be declared inside a "private" scope.</value>
   </data>
   <data name="UnableToLinkModule" xml:space="preserve">
-    <value>Unable to link module '{0}". Compilation terminated.</value>
+    <value>Unable to link module "{0}". Compilation terminated.</value>
   </data>
   <data name="PatternNeverMatch" xml:space="preserve">
     <value>Pattern "{0}" would never match.</value>
@@ -317,5 +317,8 @@
   </data>
   <data name="MixinSameAsType" xml:space="preserve">
     <value>Mixin "{0}" is the same as type.</value>
+  </data>
+  <data name="DuplicateLabel" xml:space="preserve">
+    <value>Duplicate tuple label "{0}".</value>
   </data>
 </root>

@@ -167,5 +167,20 @@ namespace Dyalect.Compiler
             cw.PushVar(new(info.Handle | (sv.Address >> 8) << 8, sv.Data | VarFlags.External));
             return info.Handle | (sv.Address >> 8) << 8;
         }
+
+        private bool TryPushTypeInfo(UnitInfo info, string name, Location loc)
+        {
+            //Can't find type in the module
+            if (!info.ExportList.TryGetValue(name, out var sv))
+                return false;
+
+            //A type is declared inside a private block
+            if ((sv.Data & VarFlags.Private) == VarFlags.Private)
+                AddError(CompilerError.PrivateNameAccess, loc, name);
+
+            AddLinePragma(loc);
+            cw.PushVar(new(info.Handle | (sv.Address >> 8) << 8, sv.Data | VarFlags.External));
+            return true;
+        }
     }
 }

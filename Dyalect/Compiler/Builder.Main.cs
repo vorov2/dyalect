@@ -464,12 +464,8 @@ namespace Dyalect.Compiler
                         PopIf(hints);
                         return;
                     }
-                    else if (char.IsUpper(node.Name[0])) //If true, it's a type
-                    {
-                        AddLinePragma(node);
-                        PushTypeInfo(ctx, ru, node.Name, node.Location);
+                    else if (char.IsUpper(node.Name[0]) && TryPushTypeInfo(ru, node.Name, node.Location)) //If true, it's a type
                         return;
-                    }
                 }
             }
 
@@ -532,10 +528,12 @@ namespace Dyalect.Compiler
 
         private void BuildTupleElements(List<DNode> elements, Location loc, Hints hints, CompilerContext ctx)
         {
+            var set = new HashSet<string>();
+            
             for (var i = 0; i < elements.Count; i++)
             {
                 var el = elements[i];
-
+                
                 if (el.NodeType == NodeType.Label)
                 {
                     var label = (DLabelLiteral)el;
@@ -544,6 +542,11 @@ namespace Dyalect.Compiler
 
                     if (char.IsUpper(label.Label[0]) && !label.FromString)
                         AddError(CompilerError.LabelOnlyCamel, label.Location);
+
+                    if (set.Contains(label.Label))
+                        AddError(CompilerError.DuplicateLabel, label.Location, label.Label);
+                    else
+                        set.Add(label.Label);
 
                     if (label.Mutable)
                         cw.Mut();
