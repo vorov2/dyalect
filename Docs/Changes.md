@@ -1,9 +1,9 @@
 # 0.41.0
-  * Add: _Add ToSet method to collections_ ([Issue #770](https://github.com/vorov2/dyalect/issues/770)).
+  * Add: _Add `ToSet` method to collections_ ([Issue #770](https://github.com/vorov2/dyalect/issues/770)).
   * Add: _Add an ability to modify fields in read-only tuples through creating new tuple instances_ ([Issue #741](https://github.com/vorov2/dyalect/issues/741), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#alter)).
+  * Add: _Add `Iterator.ForEach` method_ ([Issue #765](https://github.com/vorov2/dyalect/issues/765), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#forEach)).
   * Fix: _`ToLiteral` is not supported by the type `Set`_ ([Issue #768](https://github.com/vorov2/dyalect/issues/768)).
   * Fix: _`Set` is not recognized as a element sequence when you pass it to vararg function_ ([Issue #771](https://github.com/vorov2/dyalect/issues/771)).
-
 
 # 0.40.6
   * Fix: _Duplicate fields in `Tuple`_ ([Issue #764](https://github.com/vorov2/dyalect/issues/764)).

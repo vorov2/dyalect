@@ -641,3 +641,10 @@
     let ys = xs.ToSet()
     assert("Set (1, 2, 3, 4, 5)", ys.ToString())
 #endregion
+
+#region "Methods: ForEach"
+    let xs = yields { 1..5 }
+    let outp = []
+    xs.ForEach(outp.Add)
+    assert([1,2,3,4,5], outp)
+#endregion
