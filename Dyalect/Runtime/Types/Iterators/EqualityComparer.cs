@@ -14,9 +14,9 @@ namespace Dyalect.Runtime.Types
         public bool Equals(DyObject? x, DyObject? y)
         {
             var fst = func.Invoke(ctx, x!);
-            if (ctx.HasErrors) throw new BreakException();
+            ctx.ThrowIf();
             var snd = func.Invoke(ctx, y!);
-            if (ctx.HasErrors) throw new BreakException();
+            ctx.ThrowIf();
             return ctx.RuntimeContext.Types[fst.TypeId].Eq(ctx, fst, snd).IsTrue();
         }
 

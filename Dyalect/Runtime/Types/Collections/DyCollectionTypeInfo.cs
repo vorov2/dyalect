@@ -12,11 +12,8 @@ namespace Dyalect.Runtime.Types
             var coll = (DyCollection)self;
             var arr = coll.GetValues();
 
-            if (fromElem.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, fromElem);
-
-            if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, DyType.Nil, toElem);
+            if (!fromElem.IsInteger(ctx)) return Default();
+            if (toElem.NotNil() && !toElem.IsInteger(ctx)) return Default();
 
             var beg = (int)fromElem.GetInteger();
             var end = ReferenceEquals(toElem, DyNil.Instance) ? coll.Count - 1 : (int)toElem.GetInteger();

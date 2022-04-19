@@ -59,9 +59,9 @@ namespace Dyalect.Runtime.Types
             return arr;
         }
         
-        public DyArray ToArray(ExecutionContext ctx) => new(InternalToArray());
+        public DyArray ToArray(ExecutionContext _) => new(InternalToArray());
 
-        public DyTuple ToTuple(ExecutionContext ctx) => new(InternalToArray());
+        public DyTuple ToTuple(ExecutionContext _) => new(InternalToArray());
 
         public void IntersectWith(ExecutionContext ctx, DyObject other)
         {

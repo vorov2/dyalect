@@ -27,28 +27,20 @@ namespace Dyalect.Runtime.Types
             if (functor.NotNil())
             {
                 var ret = functor.Invoke(ctx, x, y);
-
-                if (ctx.HasErrors)
-                    throw new BreakException();
-
+                ctx.ThrowIf();
                 return ret.TypeId != DyType.Integer
                     ? (ret.TypeId == DyType.Float ? (int)ret.GetFloat() : 0)
                     : (int)ret.GetInteger();
             }
 
             var res = x.Greater(y, ctx);
-
-            if (ctx.HasErrors)
-                throw new BreakException();
+            ctx.ThrowIf();
             
             if (res)
                 return 1;
 
             res = x.Equals(y, ctx);
-
-            if (ctx.HasErrors)
-                throw new BreakException();
-            
+            ctx.ThrowIf();
             return res ? 0 : -1;
         }
     }

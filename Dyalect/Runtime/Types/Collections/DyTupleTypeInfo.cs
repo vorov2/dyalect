@@ -242,20 +242,16 @@ namespace Dyalect.Runtime.Types
             return new DyArray(tuple.GetValues());
         }
 
-        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
+        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject functor)
         {
-            if (funObj.TypeId != DyType.Function && funObj.TypeId != DyType.Nil)
-                return ctx.InvalidType(DyType.Function, DyType.Nil, funObj);
-
-            var fun = funObj as DyFunction;
             var seq = (DyTuple)self;
             var xs = new List<DyObject>();
 
             foreach (var val in seq.GetValues())
             {
-                if (fun is not null)
+                if (functor.NotNil())
                 {
-                    var res = fun.Call(ctx, val);
+                    var res = functor.Invoke(ctx, val);
 
                     if (ctx.HasErrors)
                         return DyNil.Instance;

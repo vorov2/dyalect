@@ -136,6 +136,20 @@ namespace Dyalect.Runtime.Types
             return true;
         }
 
+        public static DyFunction? ToFunction(this DyObject self, ExecutionContext ctx)
+        {
+            if (self is DyFunction func)
+                return func;
+
+            var typ = ctx.RuntimeContext.Types[self.TypeId];
+
+            if (typ.HasInstanceMember(self, Builtins.Call, ctx))
+                return typ.GetInstanceMember(self, Builtins.Call, ctx) as DyFunction;
+
+            ctx.InvalidType(DyType.Function, self);
+            return null;
+        }
+
         public static DyObject Invoke(this DyObject self, ExecutionContext ctx, params DyObject[] args)
         {
             if (self is DyFunction func)

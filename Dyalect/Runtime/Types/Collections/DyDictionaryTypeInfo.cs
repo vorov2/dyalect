@@ -1,6 +1,4 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Debug;
-using Dyalect.Parser;
+﻿using Dyalect.Debug;
 using System.Collections.Generic;
 using System.Text;
 
@@ -107,19 +105,15 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
+        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject functor)
         {
-            if (funObj.TypeId != DyType.Function && funObj.TypeId != DyType.Nil)
-                return ctx.InvalidType(DyType.Function, DyType.Nil, funObj);
-
-            var fun = funObj as DyFunction;
             var map = (DyDictionary)self;
 
             foreach (var (key, value) in map.Dictionary)
             {
-                if (fun is not null)
+                if (functor.NotNil())
                 {
-                    var res = fun.Call(ctx, value);
+                    var res = functor.Invoke(ctx, value);
 
                     if (ctx.HasErrors)
                         return DyNil.Instance;

@@ -22,7 +22,7 @@ namespace Dyalect.Runtime
                 set
                 {
                     base.Error = value;
-                    ThrowIf();
+                    ThrowRuntimeException();
                 }
             }
         }
@@ -65,6 +65,16 @@ namespace Dyalect.Runtime
         public DyVariant? GetError() => Error;
 
         public void ThrowIf()
+        {
+            if (Error is not null)
+            {
+                var err = Error;
+                Error = null;
+                throw new BreakException(err);
+            }
+        }
+
+        public void ThrowRuntimeException()
         {
             if (Error is not null)
             {

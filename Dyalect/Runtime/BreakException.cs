@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Dyalect.Runtime.Types;
+using System;
 
 namespace Dyalect.Runtime
 {
-    public sealed class BreakException : Exception
+    internal sealed class BreakException : Exception
     {
+        public DyVariant Error { get; }
+
+        public BreakException(DyVariant error) => Error = error;
     }
 }

@@ -24,11 +24,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
         {
-            if (obj.TypeId !=  DyType.Integer)
-            {
-                ctx.InvalidType(obj);
-                return;
-            }
+            if (!obj.IsInteger(ctx)) return;
 
             var index = CorrectIndex((int)obj.GetInteger());
 

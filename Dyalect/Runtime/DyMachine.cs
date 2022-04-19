@@ -738,10 +738,20 @@ namespace Dyalect.Runtime
             {
                 return ctx.CollectionModified();
             }
+            catch (BreakException ex)
+            {
+                ctx.Error = ex.Error;
+                return DyNil.Instance;
+            }
             catch (System.Reflection.TargetInvocationException ex)
             {
                 var msg = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
                 return ctx.ExternalFunctionFailure(func, msg);
+            }
+            catch (Exception ex) when (ex.InnerException is BreakException be)
+            {
+                ctx.Error = be.Error;
+                return DyNil.Instance;
             }
             catch (Exception ex)
             {

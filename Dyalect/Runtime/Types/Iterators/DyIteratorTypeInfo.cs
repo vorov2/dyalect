@@ -224,17 +224,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
 
             var comparer = new SortComparer(functor, ctx);
-            IOrderedEnumerable<DyObject> sorted;
-            
-            try
-            {
-                sorted = seq.OrderBy(dy => dy, comparer);
-            }
-            catch (BreakException)
-            {
-                return Default();
-            }
-
+            var sorted = seq.OrderBy(dy => dy, comparer);
             return DyIterator.Create(sorted);
         }
 
@@ -246,17 +236,7 @@ namespace Dyalect.Runtime.Types
                 return DyNil.Instance;
             
             var rnd = new Random();
-            IOrderedEnumerable<DyObject> sorted;
-            
-            try
-            {
-                sorted = seq.OrderBy(_ => rnd.Next());
-            } 
-            catch (BreakException)
-            {
-                return Default();
-            }
-
+            var sorted = seq.OrderBy(_ => rnd.Next());
             return DyIterator.Create(sorted);
         }
 
@@ -266,22 +246,15 @@ namespace Dyalect.Runtime.Types
 
             if (functor.NotNil())
             {
-                try
+                return DyInteger.Get(seq.Count(dy =>
                 {
-                    return DyInteger.Get(seq.Count(dy =>
-                    {
-                        var res = functor.Invoke(ctx, dy);
+                    var res = functor.Invoke(ctx, dy);
 
-                        if (ctx.HasErrors)
-                            throw new BreakException();
+                    if (ctx.HasErrors)
+                        throw new BreakException(ctx.Error!);
 
-                        return res.IsTrue();
-                    }));
-                }
-                catch (BreakException)
-                {
-                    return Default();
-                }
+                    return res.IsTrue();
+                }));
             }
             else
                 return DyInteger.Get(seq.Count());
@@ -294,17 +267,7 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            IEnumerable<DyObject> xs;
-
-            try
-            {
-                xs = seq.Select(dy => functor.Invoke(ctx, dy));
-            }
-            catch (BreakException)
-            {
-                return Default();
-            }
-
+            var xs = seq.Select(dy => functor.Invoke(ctx, dy));
             return DyIterator.Create(xs);
         }
 
@@ -315,17 +278,7 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            IEnumerable<DyObject> xs;
-            
-            try
-            {
-                xs = seq.TakeWhile(o => functor.Invoke(ctx, o).IsTrue());
-            }
-            catch (BreakException)
-            {
-                return Default();
-            }
-
+            var xs = seq.TakeWhile(o => functor.Invoke(ctx, o).IsTrue());
             return DyIterator.Create(xs);
         }
 
@@ -336,17 +289,7 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            IEnumerable<DyObject> xs;
-            
-            try
-            {
-                xs = seq.SkipWhile(o => functor.Invoke(ctx, o).IsTrue());
-            }
-            catch (BreakException)
-            {
-                return Default();
-            }
-
+            var xs = seq.SkipWhile(o => functor.Invoke(ctx, o).IsTrue());
             return DyIterator.Create(xs);
         }
 
@@ -357,17 +300,7 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            IEnumerable<DyObject> xs;
-
-            try
-            {
-                xs = seq.Where(o => functor.Invoke(ctx, o).IsTrue());
-            }
-            catch (BreakException)
-            {
-                return Default();
-            }
-
+            var xs = seq.Where(o => functor.Invoke(ctx, o).IsTrue());
             return DyIterator.Create(xs);
         }
 
@@ -378,18 +311,7 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            DyObject res;
-
-            try
-            {
-                res = seq.Aggregate(initial, (x, y) => functor.Invoke(ctx, x, y));
-            }
-            catch (BreakException)
-            {
-                return Default();
-            }
-            
-            return res;
+            return seq.Aggregate(initial, (x, y) => functor.Invoke(ctx, x, y));
         }
 
         private DyObject Any(ExecutionContext ctx, DyObject self, DyObject functor)
@@ -399,17 +321,7 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            bool res;
-            
-            try
-            {
-                res = seq.Any(o => functor.Invoke(ctx, o).IsTrue());
-            }
-            catch (BreakException)
-            {
-                return Default();
-            }
-
+            var res = seq.Any(o => functor.Invoke(ctx, o).IsTrue());
             return res ? DyBool.True : DyBool.False;
         }
 
@@ -420,17 +332,7 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            bool res;
-            
-            try
-            {
-                res = seq.All(o => functor.Invoke(ctx, o).IsTrue());
-            }
-            catch (BreakException)
-            {
-                return Default();
-            }
-
+            var res = seq.All(o => functor.Invoke(ctx, o).IsTrue());
             return res ? DyBool.True : DyBool.False;
         }
 
@@ -474,21 +376,9 @@ namespace Dyalect.Runtime.Types
             IEnumerable<DyObject> res;
 
             if (functor.NotNil())
-            {
-                try
-                {
-                    res = seq.Distinct(new EqualityComparer(ctx, functor));
-                }
-                catch (BreakException)
-                {
-                    return Default();
-                }
-            }
+                res = seq.Distinct(new EqualityComparer(ctx, functor));
             else
                 res = seq.Distinct();
-
-            if (ctx.HasErrors)
-                return Default();
 
             return DyIterator.Create(res);
         }
