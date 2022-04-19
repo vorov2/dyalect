@@ -57,11 +57,12 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
-        protected override DyObject ContainsOp(DyObject self, HashString field, ExecutionContext ctx)
+        protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
         {
+            if (!field.IsString(ctx)) return Default();
             var mod = (DyModule)self;
 
-            if (!mod.Unit.ExportList.TryGetValue(field, out var sv))
+            if (!mod.Unit.ExportList.TryGetValue(field.GetString(), out var sv))
                 return DyBool.False;
 
             return (sv.Data & VarFlags.Private) != VarFlags.Private ? DyBool.True : DyBool.False;

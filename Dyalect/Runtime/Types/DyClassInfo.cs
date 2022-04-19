@@ -53,7 +53,7 @@ namespace Dyalect.Runtime.Types
                 return new DyString($"{TypeName}.{cust.Constructor}{priv.ToString(ctx)}");
         }
 
-        protected override DyObject ContainsOp(DyObject self, HashString field, ExecutionContext ctx) =>
+        protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx) =>
             ctx.RuntimeContext.Tuple.Contains(ctx, ((DyClass)self).Fields, field);
 
         protected override DyObject LengthOp(DyObject self, ExecutionContext ctx)

@@ -61,8 +61,11 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(false, left, right, ctx);
 
-        protected override DyObject ContainsOp(DyObject self, HashString field, ExecutionContext ctx) =>
-            ((DyTuple)self).GetOrdinal((string)field) is not -1 ? DyBool.True : DyBool.False;
+        protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
+        {
+            if (!field.IsString(ctx)) return Default();
+            return ((DyTuple)self).GetOrdinal(field.GetString()) is not -1 ? DyBool.True : DyBool.False;
+        }
 
         private DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
         {
@@ -239,15 +242,6 @@ namespace Dyalect.Runtime.Types
             return new DyArray(tuple.GetValues());
         }
 
-        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
-        {
-            if (item.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, item);
-
-            var tuple = (DyTuple)self;
-            return tuple.HasItem(item.GetString()) ? DyBool.True : DyBool.False;
-        }
-
         private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
             if (funObj.TypeId != DyType.Function && funObj.TypeId != DyType.Nil)
@@ -318,7 +312,6 @@ namespace Dyalect.Runtime.Types
                 Method.ToDictionary => Func.Member(name, ToDictionary),
                 Method.ToArray => Func.Member(name, ToArray),
                 Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
-                Method.Contains => Func.Member(name, Contains, -1, new Par("key")),
                 Method.Alter => Func.Member(name, Alter, 0, new Par("values", true)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };

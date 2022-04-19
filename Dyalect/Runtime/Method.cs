@@ -43,7 +43,6 @@
         public const string Replace = "Replace";
         public const string ToCharArray = "ToCharArray";
         public const string Format = "Format";
-        public const string Contains = "Contains";
         public const string ForEach = "ForEach";
         public const string Alter = "Alter";
         public const string Join = "Join";

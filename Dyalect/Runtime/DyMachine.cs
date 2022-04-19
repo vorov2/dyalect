@@ -397,7 +397,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Contains:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].Contains(ctx, right, unit.Strings[op.Data]));
+                        evalStack.Replace(types[right.TypeId].Contains(ctx, right, unit.Objects[op.Data]));
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Str:

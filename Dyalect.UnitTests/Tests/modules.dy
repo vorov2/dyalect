@@ -168,3 +168,10 @@
     assert("Acer41", c.model+c.memory+c.rank)
     assert(true, c is lib1.Asset)
 #endregion
+
+#region "Methods: Contains"
+    assert(false, "foobar" in lib1)
+    assert(true, "pi" in lib1)
+    assert(true,  lib1.Contains("Asset"))
+    assert(true,  lib1.Contains("double"))
+#endregion

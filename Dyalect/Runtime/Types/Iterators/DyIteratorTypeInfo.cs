@@ -81,6 +81,12 @@ namespace Dyalect.Runtime.Types
             }
         }
 
+        protected override DyObject ContainsOp(DyObject self, DyObject item, ExecutionContext ctx)
+        {
+            var seq = DyIterator.ToEnumerable(ctx, self);
+            return seq.Any(o => o.Equals(item, ctx)) ? DyBool.True : DyBool.False;
+        }
+
         private DyObject ToMap(ExecutionContext ctx, DyObject self, DyObject keySelectorObj, DyObject valueSelectorObj)
         {
             if (keySelectorObj.TypeId != DyType.Function)
@@ -358,12 +364,6 @@ namespace Dyalect.Runtime.Types
             return res ? DyBool.True : DyBool.False;
         }
 
-        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
-        {
-            var seq = DyIterator.ToEnumerable(ctx, self);
-            return seq.Any(o => o.Equals(item, ctx)) ? DyBool.True : DyBool.False;
-        }
-
         private DyObject ForEach(ExecutionContext ctx, DyObject self, DyObject funObj)
         {
             if (funObj.TypeId != DyType.Function)
@@ -418,7 +418,6 @@ namespace Dyalect.Runtime.Types
                 Method.Reduce => Func.Member(name, Reduce, -1, new Par("converter"), new Par("initial", DyInteger.Zero)),
                 Method.Any => Func.Member(name, Any, -1, new Par("predicate")),
                 Method.All => Func.Member(name, All, -1, new Par("predicate")),
-                Method.Contains => Func.Member(name, Contains, -1, new Par("value")),
                 Method.ForEach => Func.Member(name, ForEach, -1, new Par("action")),
                 Method.ToSet => Func.Member(name, ToSet),
                 _ => base.InitializeInstanceMember(self, name, ctx)

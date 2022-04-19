@@ -401,14 +401,14 @@ namespace Dyalect.Runtime.Types
             conversions.Add(type.ReflectedTypeId, func);
         }
 
-        //HasField
+        //Contains
         private DyFunction? contains;
-        protected virtual DyObject ContainsOp(DyObject self, HashString field, ExecutionContext ctx) =>
+        protected virtual DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx) =>
             ctx.OperationNotSupported(Builtins.Contains, self);
-        public DyObject Contains(ExecutionContext ctx, DyObject self, HashString field)
+        public DyObject Contains(ExecutionContext ctx, DyObject self, DyObject field)
         {
             if (contains is not null)
-                return contains.BindToInstance(ctx, self).Call(ctx, new DyString(field));
+                return contains.BindToInstance(ctx, self).Call(ctx, field);
 
             return ContainsOp(self, field, ctx);
         }
@@ -695,6 +695,7 @@ namespace Dyalect.Runtime.Types
                 Builtins.Clone => Func.Member(name, Clone),
                 Builtins.Has => Func.Member(name, Has, -1, new Par("member")),
                 Builtins.Type => Func.Member(name, (ct, o) => ct.RuntimeContext.Types[o.TypeId]),
+                Builtins.Contains => Func.Member(name, Contains, -1, new Par("value")),
                 _ => InitializeInstanceMember(self, name, ctx)
             };
 
