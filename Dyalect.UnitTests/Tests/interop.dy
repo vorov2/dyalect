@@ -119,13 +119,9 @@
 	let _Converter = Interop.GetType("Dyalect.Runtime.TypeConverter, Dyalect")
 	let _ExecutionContext = Interop.GetType("Dyalect.Runtime.ExecutionContext, Dyalect")
 	let _DyObject = Interop.GetType("Dyalect.Runtime.Types.DyObject, Dyalect")
-
 	let mi = Interop.GetMethod(_Converter, "ConvertTo", 1, _ExecutionContext, _DyObject)
 	let gen = mi.MakeGenericMethod << [Interop.GetType("System.Int32[]")]
-
-	let xs = gen.Invoke(nil, 
-		[Interop("Dyalect.Runtime.ExecutionContext, Dyalect").External, Interop.Wrap([1, 2, 3]) ])
-
+	let xs = gen.Invoke(nil, [nil, Interop.Wrap([1, 2, 3]) ])
 	assert(true, xs is Interop)
 	assert([1,2,3], Interop.ConvertFrom << xs)
 #endregion
