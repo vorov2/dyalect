@@ -139,10 +139,10 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(i);
         }
 
-        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject fun)
+        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject functor)
         {
             var arr = (DyArray)self;
-            var comparer = new SortComparer(fun as DyFunction, ctx);
+            var comparer = new SortComparer(functor, ctx);
             arr.Compact();
             Array.Sort(arr.UnsafeAccessValues(), 0, arr.Count, comparer);
             return DyNil.Instance;

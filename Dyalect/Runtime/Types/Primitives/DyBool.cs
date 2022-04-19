@@ -31,7 +31,7 @@ namespace Dyalect.Runtime.Types
 
         public static explicit operator DyBool(bool v) => v ? True : False;
 
-        public static DyBool Equals(ExecutionContext ctx, DyObject x, DyObject y)
+        public static DyBool Equals(ExecutionContext _, DyObject x, DyObject y)
         {
             if (ReferenceEquals(x, y))
                 return True;

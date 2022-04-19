@@ -20,7 +20,7 @@ namespace Dyalect.Runtime.Types
 
         private static IEnumerable<DyObject> InternalRun(ExecutionContext ctx, DyObject val)
         {
-            var iter = GetIterator(ctx, val)!;
+            var iter = val.GetIterator(ctx)!;
 
             if (ctx.HasErrors)
                 yield break;
@@ -43,47 +43,6 @@ namespace Dyalect.Runtime.Types
                     yield break;
                 }
             }
-        }
-
-        private static DyFunction? GetIterator(ExecutionContext ctx, DyObject val)
-        {
-            DyFunction? iter;
-
-            if (val.TypeId == DyType.Iterator)
-                iter = ((DyIterator)val).GetIteratorFunction();
-            else if (val.TypeId == DyType.Function)
-            {
-                var obj = ((DyFunction)val).Call(ctx);
-                iter = obj as DyFunction;
-
-                if (ctx.HasErrors)
-                    return null;
-
-                if (iter is null)
-                {
-                    ctx.InvalidType(DyType.Function, obj);
-                    return null;
-                }
-            }
-            else
-            {
-                var obj = val.GetIterator(ctx) as DyIterator;
-
-                if (ctx.HasErrors)
-                    return null;
-
-                iter = obj?.GetIteratorFunction();
-
-                if (iter is null)
-                {
-                    ctx.InvalidType(DyType.Iterator, val);
-                    return null;
-                }
-
-                iter = iter.Call(ctx) as DyFunction;
-            }
-
-            return iter;
         }
     }
 }

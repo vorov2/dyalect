@@ -135,10 +135,10 @@ namespace Dyalect.Runtime.Types
         private DyObject GetSecond(ExecutionContext ctx, DyObject self) =>
             self.GetItem(DyInteger.One, ctx);
 
-        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject fun)
+        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject functor)
         {
             var tup = (DyTuple)self;
-            var comparer = new SortComparer(fun as DyFunction, ctx);
+            var comparer = new SortComparer(functor, ctx);
             var newArr = new DyObject[tup.Count];
             Array.Copy(tup.UnsafeAccessValues(), newArr, newArr.Length);
             Array.Sort(newArr, 0, newArr.Length, comparer);
