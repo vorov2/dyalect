@@ -4,12 +4,14 @@
   * Add: _Add `Iterator.ForEach` method_ ([Issue #765](https://github.com/vorov2/dyalect/issues/765), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#forEach)).
   * Add: _Type Module should support `Contains` method_ ([Issue #772](https://github.com/vorov2/dyalect/issues/772), [docs](https://github.com/vorov2/dyalect/wiki/Modules#contains)).
   * Add: _Add `Iterator.Distinct` method_ ([Issue #739](https://github.com/vorov2/dyalect/issues/739), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#distinct)).
+  * Add: _Support casting of an `Iterator` to `Set`_ ([Issue #776](https://github.com/vorov2/dyalect/issues/776)).
   * Change: _Parameter `predicate` of `Iterator.Count` method should be optional_ ([Issue #774](https://github.com/vorov2/dyalect/issues/774), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#count)).
   * Change: _Refactor `Console` class to better support colors_ ([Issue #775](https://github.com/vorov2/dyalect/issues/775), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Console)).
   * Change: _All foreign high order functions should accept objects with `Call` method as well as regular functions_ ([Issue #773](https://github.com/vorov2/dyalect/issues/773)).
   * Fix: _`ToLiteral` is not supported by the type `Set`_ ([Issue #768](https://github.com/vorov2/dyalect/issues/768)).
   * Fix: _`Set` is not recognized as a element sequence when you pass it to vararg function_ ([Issue #771](https://github.com/vorov2/dyalect/issues/771)).
   * Fix: _Refactoring of incorrect `Contains` built-in method implementation._
+  * Fix: _Iterators may raise a NullReferenceException_ ([Issue #777](https://github.com/vorov2/dyalect/issues/777)).
 
 # 0.40.6
   * Fix: _Duplicate fields in `Tuple`_ ([Issue #764](https://github.com/vorov2/dyalect/issues/764)).

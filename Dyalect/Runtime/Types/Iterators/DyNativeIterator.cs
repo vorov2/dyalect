@@ -17,9 +17,9 @@ namespace Dyalect.Runtime.Types
 
         public override DyFunction GetIteratorFunction() => new DyNativeIteratorFunction(unitId, handle, captures);
 
-        public override object ToObject() => ToEnumerable();
+        public override object ToObject() => this;
 
-        public override IEnumerable<DyObject> ToEnumerable() => new MultiPartEnumerable(ExecutionContext.External, GetIteratorFunction());
+        public override IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx) => new MultiPartEnumerable(ctx, GetIteratorFunction());
 
         public override int GetHashCode() => HashCode.Combine(unitId, handle, captures);
     }

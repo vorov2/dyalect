@@ -17,6 +17,9 @@ namespace Dyalect.Runtime.Types
 
             if (self.TypeId == DyType.Function)
             {
+                if (self is DyNativeIteratorFunction)
+                    return (DyFunction)self;
+
                 var obj = ((DyFunction)self).Call(ctx);
                 var ret = obj as DyFunction;
 

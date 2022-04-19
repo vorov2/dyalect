@@ -614,7 +614,7 @@
     assert(true, ys.Any(x => x is not nil))
 #endregion
 
-#region "Methods: all"
+#region "Methods: All"
     let xs = yields { 10,2,3,1,4,5,6 }
     assert(true, xs.All(x => x > 0))
     assert(false, xs.All(x => x > 1))
@@ -662,4 +662,11 @@
     }
     assert(3, ys.Distinct().Count())
     assert(2, ys.Distinct(\x.id).Count())    
+#endregion
+
+#region "Casting"
+    let xs = yields { 1,2,3 }
+    assert((1,2,3), xs as Tuple)
+    assert([1,2,3], xs as Array)
+    assert(Set(1,2,3).ToString(), (xs as Set).ToString())
 #endregion
