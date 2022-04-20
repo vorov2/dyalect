@@ -119,37 +119,33 @@ namespace Dyalect.Runtime.Types
             return new DyInteropObject(BCL.Type, typeInfo);
         }
 
-        private DyObject GetMethod(ExecutionContext ctx, DyObject type, DyObject name, DyObject pars, DyObject typeArgs)
+        private DyObject GetMethod(ExecutionContext ctx, DyObject type, DyObject name, DyObject parTypes, DyObject genericParsCount)
         {
             if (type is not DyInteropObject obj || obj.Object is not Type typ)
                 return ctx.InvalidType(type);
 
-            if (!name.IsString(ctx)) return Default();
-            if (!pars.IsInteger(ctx)) return Default();
+            if (parTypes is not DyCollection coll)
+                coll = null!;
 
-            var types = ((DyTuple)typeArgs).UnsafeAccessValues();
-            var (nam, p) = (name.GetString(), pars.GetInteger());
+            if (parTypes.NotNil() && coll is null)
+                return ctx.InvalidType(parTypes);
+
+            if (!name.IsString(ctx)) return Default();
+            if (!genericParsCount.IsInteger(ctx)) return Default();
+
+            var types = coll?.GetValues();
+            var (nam, p) = (name.GetString(), genericParsCount.GetInteger());
 
             foreach (var mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
             {
                 if (mi.Name == nam && mi.GetGenericArguments().Length == p)
                 {
-                    if (types.Length > 0)
+                    if (types is not null)
                     {
                         var mpars = mi.GetParameters();
 
-                        for (var i = 0; i < mpars.Length; i++)
-                        {
-                            var rf = types.Length > i ? types[i] : null;
-
-                            if (rf is null)
-                                continue;
-
-                            var t = rf.ToObject();
-
-                            if (t is not Type tt || mpars[i].ParameterType.IsAssignableFrom(tt))
-                                continue;
-                        }
+                        if (types.Length != mpars.Length || MatchParameters(mpars, types))
+                            continue;
                     }
 
                     return new DyInteropObject(typeof(MethodInfo), mi);
@@ -157,6 +153,19 @@ namespace Dyalect.Runtime.Types
             }
 
             return DyNil.Instance;
+        }
+
+        private bool MatchParameters(ParameterInfo[] mpars, DyObject[] types)
+        {
+            for (var i = 0; i < mpars.Length; i++)
+            {
+                var t = types[i].ToObject();
+
+                if (t is not Type tt || mpars[i].ParameterType.IsAssignableFrom(tt))
+                    return false;
+            }
+
+            return true;
         }
 
         private DyObject Wrap(ExecutionContext ctx, DyObject obj) =>
@@ -178,7 +187,7 @@ namespace Dyalect.Runtime.Types
 
             if (func.Auto)
                 return func.BindOrRun(ctx, this);
-
+            
             return func;
         }
 
@@ -193,7 +202,7 @@ namespace Dyalect.Runtime.Types
                 "ConvertTo" => Func.Static(name, ConvertTo, -1, new Par("type"), new Par("value")),
                 "ConvertFrom" => Func.Static(name, ConvertFrom, -1, new Par("value")),
                 "CreateArray" => Func.Static(name, CreateArray, -1, new Par("type"), new Par("size")),
-                "GetMethod" => Func.Static(name, GetMethod, 3, new Par("type"), new Par("name"), new Par("count"), new Par("types", true)),
+                "GetMethod" => Func.Static(name, GetMethod, -1, new Par("type"), new Par("name"), new Par("parameterTypes", DyNil.Instance), new Par("typeArguments", DyInteger.Zero)),
                 _ => GetTypeInstance(ctx, name)
             };
 

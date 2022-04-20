@@ -392,6 +392,12 @@ fox is the red fox.]>
     assert(true, dt2 >= dt1)
 #endregion
 
+#region "DateTime: Date and Time"
+    let dt = DateTime(year: 2012, month: 12, day: 3, hour: 12, minute: 43)
+    assert(DateTime(year: 2012, month: 12, day: 3), dt.Date)
+    assert(TimeDelta(hours: 12, minutes: 43), dt.Time)
+#endregion
+
 #region "LocalDateTime: GetType"
     let dt = LocalDateTime.Now()
     assert(LocalDateTime, dt.GetType())
@@ -438,6 +444,12 @@ fox is the red fox.]>
     let dt = DateTime(year: 2012, month: 2, day: 3, hour: 12, minute: 30)
     let loc = LocalDateTime.FromDateTime(dt, offset: TimeDelta(hours: -2))
     assert("2012-02-03 10:30", loc.ToString("yyyy-MM-dd hh:mm"))
+#endregion
+
+#region "LocalDateTime: Date and Time"
+    let dt = LocalDateTime(year: 2012, month: 12, day: 3, hour: 12, minute: 43, offset: TimeDelta(hours: -3))
+    assert(LocalDateTime(year: 2012, month: 12, day: 3, offset: TimeDelta(hours: -3)), dt.Date)
+    assert(TimeDelta(hours: 12, minutes: 43), dt.Time)
 #endregion
 
 #region "Calendar: GetType"

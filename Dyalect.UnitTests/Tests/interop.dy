@@ -88,7 +88,7 @@
 #endregion
 
 #region "GetMethod"
-	let mi = Interop.GetMethod(Interop.GetType("System.DateTime"), "Parse", 0, Interop.String)
+	let mi = Interop.GetMethod(Interop.GetType("System.DateTime"), "Parse", [Interop.String])
 	let dt = mi.Invoke(nil, ["2012-12-12"])
 	assert("2012-12-12", dt.ToString("yyyy-MM-dd"))
 #endregion
@@ -108,7 +108,7 @@
 
 #region "Generic method 2"
 	let _Tuple = Interop.GetType("System.Tuple")
-	let mi = Interop.GetMethod(_Tuple, "Create", 2)
+	let mi = Interop.GetMethod(_Tuple, "Create", nil, 2)
 	let gen = mi.MakeGenericMethod([Interop.GetType(Interop.Int32), Interop.GetType(Interop.String)])
 	var tuple = gen.Invoke(nil, [42, "foobar"])
 	assert(42, tuple.Item1)
@@ -119,7 +119,7 @@
 	let _Converter = Interop.GetType("Dyalect.Runtime.TypeConverter, Dyalect")
 	let _ExecutionContext = Interop.GetType("Dyalect.Runtime.ExecutionContext, Dyalect")
 	let _DyObject = Interop.GetType("Dyalect.Runtime.Types.DyObject, Dyalect")
-	let mi = Interop.GetMethod(_Converter, "ConvertTo", 1, _ExecutionContext, _DyObject)
+	let mi = Interop.GetMethod(_Converter, "ConvertTo", [_ExecutionContext, _DyObject], 1)
 	let gen = mi.MakeGenericMethod << [Interop.GetType("System.Int32[]")]
 	let xs = gen.Invoke(nil, [nil, Interop.Wrap([1, 2, 3]) ])
 	assert(true, xs is Interop)
