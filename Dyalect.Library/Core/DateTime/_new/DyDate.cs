@@ -5,17 +5,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dyalect.Library.Core.DateTime
+namespace Dyalect.Library.Core
 {
-    public sealed class DyTime //: DyForeignObject
+    public sealed class DyDate
     {
-        private const int DaysPer400Years = DaysPer100Years * 4 + 1;
-        private const int DaysPer100Years = DaysPer4Years * 25 - 1;
-        private const int DaysPer4Years = DaysPerYear * 4 + 1;
-        private const int DaysPerYear = 365;
+        private readonly int days;
 
-        private const long TicksPerYear = DaysPerYear * TicksPerDay;
+        public int Year => new DateTime(days * DateHelper.TicksPerDay).Year;
 
+        public int Month => new DateTime(days * DateHelper.TicksPerDay).Month;
+
+        public int Day => new DateTime(days * DateHelper.TicksPerDay).Day;
+    }
+
+    public sealed class DyTime
+    {
+        private readonly long ticks;
+        
+        public int Tick => (int)(ticks % 10_000_000);
+
+        public int Microsecond => (int)(ticks / DateHelper.TicksPerMicrosecond % 1_000_000);
+
+        public int Millisecond => (int)(ticks / DateHelper.TicksPerMillisecond % 1000);
+
+        public int Second => (int)(ticks / DateHelper.TicksPerSecond % 60);
+
+        public int Minute => (int)(ticks / DateHelper.TicksPerMinute % 60);
+
+        public int Hour => (int)(ticks / DateHelper.TicksPerHour % 24);
+    }
+
+    public sealed class DyTestDateTime //: DyForeignObject
+    {
         private const long TicksPerDay = 24 * TicksPerHour;
         private const long TicksPerHour = 60 * TicksPerMinute;
         private const long TicksPerMinute = 60 * TicksPerSecond;
@@ -43,6 +64,8 @@ namespace Dyalect.Library.Core.DateTime
 
         private readonly long ticks;
 
+        public DyTestDateTime(long ticks) => this.ticks = ticks;
+
         public int Tick => (int)(ticks % 10_000_000);
 
         public int Microsecond => (int)(ticks / TicksPerMicrosecond % 1_000_000);
@@ -67,81 +90,12 @@ namespace Dyalect.Library.Core.DateTime
 
         public long TotalHours => ticks / TicksPerHour;
 
-        public int Year => GetYear(ticks);
+        public int TotalDays => (int)(ticks / TicksPerDay);
 
-        public int Month 
-        {
-            get
-            {
-                GetMonth(ticks, out var month, out _);
-                return month;
-            }
-        }
+        public int Year => DateOnly.FromDayNumber(TotalDays).Year;
 
-        public int Day
-        {
-            get
-            {
-                GetMonth(ticks, out _, out var day);
-                return day;
-            }
-        }
+        public int Month => DateOnly.FromDayNumber(TotalDays).Month;
 
-        public bool IsLeapYear => Year % 4 == 0;
-
-        private int GetYear(long ticks)
-        {
-            var total4s = (ticks + TicksPerYear + TicksPerDay) / (DaysPer4Years * TicksPerDay);
-
-            var total100s = ticks / (DaysPer100Years * TicksPerDay);
-            var total400s = ticks / (DaysPer400Years * TicksPerDay);
-            var totalLeaps = total4s - (total100s - total400s);
-
-            var primeYears = (int)(totalLeaps * 4);
-            var primeTicks = primeYears * TicksPerYear + totalLeaps * TicksPerDay;
-            var leftTicks = ticks - primeTicks;
-            return (int)(leftTicks / TicksPerYear + primeYears + 1);
-        }
-
-        private long GetYearTicks(long ticks)
-        {
-
-            var total4s = (ticks + TicksPerYear + TicksPerDay) / (DaysPer4Years * TicksPerDay);
-
-            var total100s = ticks / (DaysPer100Years * TicksPerDay);
-            var total400s = ticks / (DaysPer400Years * TicksPerDay);
-            var totalLeaps = total4s - (total100s - total400s);
-
-            var primeYears = (int)(totalLeaps * 4);
-            var primeTicks = primeYears * TicksPerYear + totalLeaps * TicksPerDay;
-            var leftTicks = ticks - primeTicks;
-            return (leftTicks / TicksPerYear) * TicksPerYear + primeTicks;
-        }
-
-        private void GetMonth(long ticks, out int month, out int day)
-        {
-            var days = (int)((ticks - GetYearTicks(ticks)) / TicksPerDay);
-            month = 0;
-            day = 0;
-
-            for (var i = 0; i < daysInMonths.Length; i++)
-            {
-                var dim = daysInMonths[i];
-
-                if (i == 1 && IsLeapYear)
-                    dim++;
-
-                days -= dim;
-
-                if (days < 0)
-                {
-                    month = i + 1;
-                    day = days + dim + 1;
-                    return;
-                }
-            }
-
-            throw new InvalidOperationException();
-        }
+        public int Day => DateOnly.FromDayNumber(TotalDays).Day;
     }
 }
