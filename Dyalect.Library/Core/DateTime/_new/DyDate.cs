@@ -13,7 +13,7 @@ namespace Dyalect.Library.Core.DateTime
         private const int DaysPer100Years = DaysPer4Years * 25 - 1;
         private const int DaysPer4Years = DaysPerYear * 4 + 1;
         private const int DaysPerYear = 365;
-        
+
         private const long TicksPerYear = DaysPerYear * TicksPerDay;
 
         private const long TicksPerDay = 24 * TicksPerHour;
@@ -69,15 +69,30 @@ namespace Dyalect.Library.Core.DateTime
 
         public int Year => GetYear(ticks);
 
-        public int Month => GetMonth(ticks);
+        public int Month 
+        {
+            get
+            {
+                GetMonth(ticks, out var month, out _);
+                return month;
+            }
+        }
 
-        public int Day => GetDay(ticks);
+        public int Day
+        {
+            get
+            {
+                GetMonth(ticks, out _, out var day);
+                return day;
+            }
+        }
 
         public bool IsLeapYear => Year % 4 == 0;
 
         private int GetYear(long ticks)
         {
-            var total4s = ticks / (DaysPer4Years * TicksPerDay);
+            var total4s = (ticks + TicksPerYear + TicksPerDay) / (DaysPer4Years * TicksPerDay);
+
             var total100s = ticks / (DaysPer100Years * TicksPerDay);
             var total400s = ticks / (DaysPer400Years * TicksPerDay);
             var totalLeaps = total4s - (total100s - total400s);
@@ -90,21 +105,24 @@ namespace Dyalect.Library.Core.DateTime
 
         private long GetYearTicks(long ticks)
         {
-            GetYearParts(ticks, out var primeTicks, out var leftTicks, out var _);
+
+            var total4s = (ticks + TicksPerYear + TicksPerDay) / (DaysPer4Years * TicksPerDay);
+
+            var total100s = ticks / (DaysPer100Years * TicksPerDay);
+            var total400s = ticks / (DaysPer400Years * TicksPerDay);
+            var totalLeaps = total4s - (total100s - total400s);
+
+            var primeYears = (int)(totalLeaps * 4);
+            var primeTicks = primeYears * TicksPerYear + totalLeaps * TicksPerDay;
+            var leftTicks = ticks - primeTicks;
             return (leftTicks / TicksPerYear) * TicksPerYear + primeTicks;
         }
 
-        private void GetYearParts(long ticks, out long primeTicks, out long leftTicks, out int primeYears)
+        private void GetMonth(long ticks, out int month, out int day)
         {
-            var total4s = ticks / (DaysPer4Years * TicksPerDay);
-            primeYears = (int)(total4s * 4);
-            primeTicks = primeYears * TicksPerYear + total4s * TicksPerDay;
-            leftTicks = ticks - primeTicks;
-        }
-
-        private int GetMonth(long ticks)
-        {
-            var days = (ticks - GetYearTicks(ticks)) / TicksPerDay;
+            var days = (int)((ticks - GetYearTicks(ticks)) / TicksPerDay);
+            month = 0;
+            day = 0;
 
             for (var i = 0; i < daysInMonths.Length; i++)
             {
@@ -116,18 +134,14 @@ namespace Dyalect.Library.Core.DateTime
                 days -= dim;
 
                 if (days < 0)
-                    return i + 1;
+                {
+                    month = i + 1;
+                    day = days + dim + 1;
+                    return;
+                }
             }
 
             throw new InvalidOperationException();
-        }
-
-        private int GetDay(long ticks)
-        {
-            var yt = GetYearTicks(ticks);
-            var mt = ((ticks - GetYearTicks(ticks)) / TicksPerDay) * TicksPerDay;
-            var day = (int)((ticks - yt - mt) / TicksPerDay);
-            return day + 1;
         }
     }
 }
