@@ -1,4 +1,5 @@
 # 0.41.0
+  * _Project migrated to .NET 6.0_
   * Add: _Add `ToSet` method to collections_ ([Issue #770](https://github.com/vorov2/dyalect/issues/770)).
   * Add: _Add an ability to modify fields in read-only tuples through creating new tuple instances_ ([Issue #741](https://github.com/vorov2/dyalect/issues/741), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#alter)).
   * Add: _Add `Iterator.ForEach` method_ ([Issue #765](https://github.com/vorov2/dyalect/issues/765), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#forEach)).
