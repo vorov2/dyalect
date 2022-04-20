@@ -77,7 +77,14 @@ namespace Dyalect.Library.Core.DateTime
 
         private int GetYear(long ticks)
         {
-            GetYearParts(ticks, out var primeTicks, out var leftTicks, out var primeYears);
+            var total4s = ticks / (DaysPer4Years * TicksPerDay);
+            var total100s = ticks / (DaysPer100Years * TicksPerDay);
+            var total400s = ticks / (DaysPer400Years * TicksPerDay);
+            var totalLeaps = total4s - (total100s - total400s);
+
+            var primeYears = (int)(totalLeaps * 4);
+            var primeTicks = primeYears * TicksPerYear + totalLeaps * TicksPerDay;
+            var leftTicks = ticks - primeTicks;
             return (int)(leftTicks / TicksPerYear + primeYears + 1);
         }
 
