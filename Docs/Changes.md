@@ -7,6 +7,7 @@
   * Add: _Add `Iterator.Distinct` method_ ([Issue #739](https://github.com/vorov2/dyalect/issues/739), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#distinct)).
   * Add: _Support casting of an `Iterator` to `Set`_ ([Issue #776](https://github.com/vorov2/dyalect/issues/776)).
   * Add: _Add properties `Date` and `Time` to `DateTime` and `LocalDateTime`_ ([Issue #758](https://github.com/vorov2/dyalect/issues/758), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.DateTime#date)).
+  * Add: _Add method `GetField` to `Interop` type_  ([Issue #779](https://github.com/vorov2/dyalect/issues/779), [docs](https://github.com/vorov2/dyalect/wiki/Interop#getField)).
   * Change: _Parameter `predicate` of `Iterator.Count` method should be optional_ ([Issue #774](https://github.com/vorov2/dyalect/issues/774), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#count)).
   * Change: _Refactor `Console` class to better support colors_ ([Issue #775](https://github.com/vorov2/dyalect/issues/775), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Console)).
   * Change: _All foreign high order functions should accept objects with `Call` method as well as regular functions_ ([Issue #773](https://github.com/vorov2/dyalect/issues/773)).

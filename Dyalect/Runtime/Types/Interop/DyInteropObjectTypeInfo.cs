@@ -9,6 +9,9 @@ namespace Dyalect.Runtime.Types
 {
     internal class DyInteropObjectTypeInfo : DyTypeInfo
     {
+        private const BindingFlags BINDING_FLAGS = BindingFlags.NonPublic | BindingFlags.Public 
+            | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
+
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
@@ -136,7 +139,7 @@ namespace Dyalect.Runtime.Types
             var types = coll?.GetValues();
             var (nam, p) = (name.GetString(), genericParsCount.GetInteger());
 
-            foreach (var mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
+            foreach (var mi in typ.GetMethods(BINDING_FLAGS))
             {
                 if (mi.Name == nam && mi.GetGenericArguments().Length == p)
                 {
@@ -152,7 +155,17 @@ namespace Dyalect.Runtime.Types
                 }
             }
 
-            return DyNil.Instance;
+            return ctx.MethodNotFound(nam, typ, types);
+        }
+
+        private DyObject GetField(ExecutionContext ctx, DyObject type, DyObject name)
+        {
+            if (type is not DyInteropObject obj || obj.Object is not Type typ)
+                return ctx.InvalidType(type);
+
+            if (!name.IsString(ctx)) return Default();
+            var ret = typ.GetField(name.GetString());
+            return ret is not null ? new DyInteropObject(typeof(FieldInfo), ret) : DyNil.Instance;
         }
 
         private bool MatchParameters(ParameterInfo[] mpars, DyObject[] types)
@@ -168,8 +181,7 @@ namespace Dyalect.Runtime.Types
             return true;
         }
 
-        private DyObject Wrap(ExecutionContext ctx, DyObject obj) =>
-            new DyInteropObject(obj.GetType(), obj);
+        private DyObject Wrap(ExecutionContext ctx, DyObject obj) => new DyInteropObject(obj.GetType(), obj);
 
         internal override DyObject GetStaticMember(HashString nameStr, ExecutionContext ctx)
         {
@@ -203,6 +215,7 @@ namespace Dyalect.Runtime.Types
                 "ConvertFrom" => Func.Static(name, ConvertFrom, -1, new Par("value")),
                 "CreateArray" => Func.Static(name, CreateArray, -1, new Par("type"), new Par("size")),
                 "GetMethod" => Func.Static(name, GetMethod, -1, new Par("type"), new Par("name"), new Par("parameterTypes", DyNil.Instance), new Par("typeArguments", DyInteger.Zero)),
+                "GetField" => Func.Static(name, GetField, -1, new Par("type"), new Par("name")),
                 _ => GetTypeInstance(ctx, name)
             };
 

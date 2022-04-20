@@ -136,3 +136,19 @@
 		hset.ToArray()
 	)
 #endregion
+
+#region "GetField 1"
+	let _AT = Interop("System.AttributeTargets")
+	let fi = Interop.GetField(_AT, "Assembly")
+	let str = fi.GetValue(nil).ToString()
+	assert("Assembly", str)
+#endregion
+
+#region "GetField 2"
+	Interop.LoadAssembly("System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
+	let _Point = Interop("System.Drawing.Point,System.Drawing")
+	let p = _Point.[new](0, 0)
+	let fld = Interop.GetField(_Point, "Empty")
+	let p2 = fld.GetValue(nil)
+	assert(got: p.Equals(p2))
+#endregion
