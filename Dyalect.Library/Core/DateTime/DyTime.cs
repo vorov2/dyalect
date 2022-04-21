@@ -24,7 +24,7 @@ namespace Dyalect.Library.Core
 
         public int Minutes => (int)(ticks / DT.TicksPerMinute % 60);
 
-        public int Hours => (int)(ticks / DT.TicksPerHour % 24);
+        public int Hours => (int)(ticks / DT.TicksPerHour);
 
         public override object ToObject() => new TimeOnly(ticks);
 

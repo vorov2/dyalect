@@ -511,3 +511,69 @@ fox is the red fox.]>
     let loc2 = Calendar.LastDayOfMonth(loc1)
     assert(LocalDateTime(year: 2020, month: 2, day: 29, hour: 12, minute: 30, offset: -TimeDelta(hours: 1)), loc2)
 #endregion
+
+#region "Time: GetType"
+    let td = Time(hours: 1)
+    assert(Time, td.GetType())
+    assert("Time", td.GetType().name)
+#endregion
+
+#region "Time: construction"
+    var td = Time.FromTicks(12)
+    assert(12, td.Ticks)
+    td = Time(hours: 12, minutes: 33, seconds: 3)
+    assert(12, td.Hours)
+    assert(33, td.Minutes)
+    assert(3, td.Seconds)
+    td = Time(milliseconds: 1405)
+    assert(405, td.Milliseconds)
+    assert(1, td.Seconds)
+#endregion
+
+#region "Time: equality"
+    let x = Time(minutes: 3, seconds: 12)
+    let y = Time(minutes: 1, seconds: 45)
+    let z = Time(minutes: 3, seconds: 12)
+    assert(true, x == z)
+    assert(false, x == y)
+    assert(true, x != y)
+#endregion
+
+#region "Time: comparison"
+    let x = Time(minutes: 3, seconds: 12)
+    let y = Time(minutes: 1, seconds: 45)
+    let z = Time(minutes: 3, seconds: 12)
+    assert(true, x > y)
+    assert(true, x >= z)
+    assert(false, y > z)
+    assert(true, y < z)
+    assert(true, y <= z)
+    assert(true, x <= z)
+#endregion
+
+#region "Time: casting"
+    let td = TimeDelta.FromTicks(1409)
+    assert(1409, td as Integer)
+#endregion
+
+#region "Time: ToString 1"
+    let td = Time(hours: 12, minutes: 3, seconds: 12)
+    assert("12:03:12.00", td.ToString())
+    assert("03-12-12", td.ToString(format: "mm-hh-ss"))
+#endregion
+
+#region "Time: ToString 2"
+    let td = Time(hours: 12, minutes: 3, seconds: 12)
+    assert("03+12+12", td.ToString(format: "mm\\+hh\\+ss"))
+#endregion
+
+#region "Time: Min, Max, Default"
+    assert(Integer.Min(), Time.Min().TotalTicks)
+    assert(Integer.Max(), Time.Max().TotalTicks)
+    assert(0, Time.Default().Ticks)
+#endregion
+
+#region "Time: Parse"
+    assert("00:12:34", Time.Parse("00:12:34", "hh:mm:ss").ToString("hh:mm:ss"))
+    assert("00:12:34", Time.Parse("00--12--34", "hh--mm--ss").ToString("hh:mm:ss"))
+#endregion
