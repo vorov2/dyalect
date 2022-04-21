@@ -1,13 +1,10 @@
 ﻿using Dyalect.Runtime.Types;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Dyalect.Library.Core
 {
-    public sealed class DyTime : DyForeignObject, ITime
+    public sealed class DyTime : DyForeignObject, ITime, IFormattable
     {
         private const string DEFAULT_FORMAT = "hh:mm:ss.fffffff";
 
@@ -43,11 +40,9 @@ namespace Dyalect.Library.Core
             return new(typeInfo, ticks);
         }
 
-        public override string ToString() => ToString(DEFAULT_FORMAT);
-
-        public string ToString(string format)
+        public string ToString(string? format, IFormatProvider? _ = null)
         {
-            var formats = FormatParser.TimeParser.ParseSpecifiers(format);
+            var formats = FormatParser.TimeParser.ParseSpecifiers(format ?? DEFAULT_FORMAT);
             var sb = new StringBuilder();
 
             foreach (var f in formats)
@@ -55,5 +50,7 @@ namespace Dyalect.Library.Core
 
             return sb.ToString();
         }
+
+        public override string ToString() => ToString(DEFAULT_FORMAT);
     }
 }

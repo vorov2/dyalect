@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Dyalect.Library.Core
 {
-    public sealed class DyTimeDelta : DyForeignObject, IInterval
+    public sealed class DyTimeDelta : DyForeignObject, IInterval, IFormattable
     {
         private const string DEFAULT_FORMAT = "+d.hh:mm:ss.fffffff";
 
@@ -42,9 +42,9 @@ namespace Dyalect.Library.Core
             return new(typeInfo, ticks);
         }
 
-        public string ToString(string format)
+        public string ToString(string? format, IFormatProvider? _ = null)
         {
-            var formats = FormatParser.TimeDeltaParser.ParseSpecifiers(format);
+            var formats = FormatParser.TimeDeltaParser.ParseSpecifiers(format ?? DEFAULT_FORMAT);
             var sb = new StringBuilder();
 
             foreach (var f in formats)

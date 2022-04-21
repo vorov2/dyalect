@@ -1,4 +1,5 @@
 # 0.42.0
+  * Change: _`TimeDelta` data type is refactored._
   * Add: _`TimeDelta` type should support `Comparable` mixin_ ([Issue #789](https://github.com/vorov2/dyalect/issues/789), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta)).
 
 # 0.41.0

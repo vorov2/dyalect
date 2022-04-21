@@ -12,6 +12,7 @@ public interface ITime
     int Milliseconds { get; }
     int Microseconds { get; }
     int Ticks { get; }
+    long TotalTicks { get; }
 }
 
 public interface IDate
@@ -34,8 +35,6 @@ public interface IZonedDateTime : IDateTime
 public interface IInterval : ITime
 {
     int Days { get; }
-
-    long TotalTicks { get; }
 }
 
 internal static class DT
