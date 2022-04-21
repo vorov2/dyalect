@@ -397,7 +397,7 @@ namespace Dyalect.Runtime
                         break;
                     case OpCode.Contains:
                         right = evalStack.Peek();
-                        evalStack.Replace(types[right.TypeId].Contains(ctx, right, unit.Strings[op.Data]));
+                        evalStack.Replace(types[right.TypeId].Contains(ctx, right, unit.Objects[op.Data]));
                         if (ctx.Error is not null && ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper)) goto CATCH;
                         break;
                     case OpCode.Str:
@@ -699,7 +699,7 @@ namespace Dyalect.Runtime
         {
             if (container.VarArgsSize != 0)
                 ctx.TooManyArguments();
-            
+
             if (value.TypeId is DyType.Array)
             {
                 var xs = (DyCollection)value;
@@ -712,7 +712,7 @@ namespace Dyalect.Runtime
                 container.VarArgs = fn.VariantConstructor ? xs.UnsafeAccessValues() : xs.GetValuesWithLabels();
                 container.VarArgsSize = container.VarArgs.Length;
             }
-            else if (value.TypeId is DyType.Iterator)
+            else if (value.TypeId is DyType.Iterator or DyType.Set)
             {
                 var xs = DyIterator.ToEnumerable(ctx, value).ToArray();
 
@@ -738,10 +738,20 @@ namespace Dyalect.Runtime
             {
                 return ctx.CollectionModified();
             }
+            catch (BreakException ex)
+            {
+                ctx.Error = ex.Error;
+                return DyNil.Instance;
+            }
             catch (System.Reflection.TargetInvocationException ex)
             {
                 var msg = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
                 return ctx.ExternalFunctionFailure(func, msg);
+            }
+            catch (Exception ex) when (ex.InnerException is BreakException be)
+            {
+                ctx.Error = be.Error;
+                return DyNil.Instance;
             }
             catch (Exception ex)
             {

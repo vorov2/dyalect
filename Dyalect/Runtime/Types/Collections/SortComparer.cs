@@ -4,12 +4,12 @@ namespace Dyalect.Runtime.Types
 {
     internal sealed class SortComparer : IComparer<DyObject>
     {
-        private readonly DyFunction? fun;
+        private readonly DyObject functor;
         private readonly ExecutionContext ctx;
 
-        public SortComparer(DyFunction? fun, ExecutionContext ctx)
+        public SortComparer(DyObject functor, ExecutionContext ctx)
         {
-            this.fun = fun;
+            this.functor = functor;
             this.ctx = ctx;
         }
 
@@ -24,31 +24,23 @@ namespace Dyalect.Runtime.Types
             if (y.TypeId == DyType.Label)
                 y = y.GetTaggedValue();
 
-            if (fun is not null)
+            if (functor.NotNil())
             {
-                var ret = fun.Call(ctx, x, y);
-
-                if (ctx.HasErrors)
-                    return 0;
-
+                var ret = functor.Invoke(ctx, x, y);
+                ctx.ThrowIf();
                 return ret.TypeId != DyType.Integer
                     ? (ret.TypeId == DyType.Float ? (int)ret.GetFloat() : 0)
                     : (int)ret.GetInteger();
             }
 
             var res = x.Greater(y, ctx);
-
-            if (ctx.HasErrors)
-                return 0;
+            ctx.ThrowIf();
             
             if (res)
                 return 1;
 
             res = x.Equals(y, ctx);
-
-            if (ctx.HasErrors)
-                return 0;
-            
+            ctx.ThrowIf();
             return res ? 0 : -1;
         }
     }

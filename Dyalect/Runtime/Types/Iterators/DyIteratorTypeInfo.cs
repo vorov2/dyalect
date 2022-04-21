@@ -21,7 +21,11 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject ToStringOp(DyObject self, DyObject format, ExecutionContext ctx)
         {
-            var fn = ((DyIterator)self).GetIteratorFunction();
+            var fn = self.GetIterator(ctx)!;
+
+            if (ctx.HasErrors)
+                return Default();
+
             fn.Reset(ctx);
 
             if (ctx.HasErrors)
@@ -79,6 +83,12 @@ namespace Dyalect.Runtime.Types
             {
                 return ctx.IndexOutOfRange();
             }
+        }
+
+        protected override DyObject ContainsOp(DyObject self, DyObject item, ExecutionContext ctx)
+        {
+            var seq = DyIterator.ToEnumerable(ctx, self);
+            return seq.Any(o => o.Equals(item, ctx)) ? DyBool.True : DyBool.False;
         }
 
         private DyObject ToMap(ExecutionContext ctx, DyObject self, DyObject keySelectorObj, DyObject valueSelectorObj)
@@ -178,11 +188,8 @@ namespace Dyalect.Runtime.Types
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            if (fromElem.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, fromElem);
-
-            if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, DyType.Nil, toElem);
+            if (!fromElem.IsInteger(ctx)) return Default();
+            if (toElem.NotNil() && !toElem.IsInteger(ctx)) return Default();
 
             var beg = (int)fromElem.GetInteger();
             int? count = null;
@@ -190,7 +197,7 @@ namespace Dyalect.Runtime.Types
             if (beg < 0)
                 beg = (count ??= seq.Count()) + beg;
 
-            if (ReferenceEquals(toElem, DyNil.Instance))
+            if (toElem.IsNil())
             {
                 if (beg == 0)
                     return self;
@@ -209,17 +216,14 @@ namespace Dyalect.Runtime.Types
         private DyObject Reverse(ExecutionContext ctx, DyObject self) =>
             DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Reverse());
         
-        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject funObj)
+        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject functor)
         {
             var seq = DyIterator.ToEnumerable(ctx, self);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            if (funObj.TypeId != DyType.Function && funObj.TypeId != DyType.Nil)
-                return ctx.InvalidType(DyType.Function, DyType.Nil, funObj);
-
-            var comparer = new SortComparer(funObj as DyFunction, ctx);
+            var comparer = new SortComparer(functor, ctx);
             var sorted = seq.OrderBy(dy => dy, comparer);
             return DyIterator.Create(sorted);
         }
@@ -236,155 +240,147 @@ namespace Dyalect.Runtime.Types
             return DyIterator.Create(sorted);
         }
 
-        private DyObject CountBy(ExecutionContext ctx, DyObject self, DyObject funObj)
+        private DyObject CountBy(ExecutionContext ctx, DyObject self, DyObject functor)
         {
-            if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(DyType.Function, funObj);
-
             var seq = DyIterator.ToEnumerable(ctx, self);
-            
-            if (ctx.HasErrors)
-                return DyNil.Instance;
 
-            var fun = (DyFunction)funObj;
-            return DyInteger.Get(seq.Count(dy => fun.Call(ctx, dy).IsTrue()));
+            if (functor.NotNil())
+            {
+                return DyInteger.Get(seq.Count(dy =>
+                {
+                    var res = functor.Invoke(ctx, dy);
+
+                    if (ctx.HasErrors)
+                        throw new BreakException(ctx.Error!);
+
+                    return res.IsTrue();
+                }));
+            }
+            else
+                return DyInteger.Get(seq.Count());
         }
 
-        private DyObject Map(ExecutionContext ctx, DyObject self, DyObject funObj)
+        private DyObject Map(ExecutionContext ctx, DyObject self, DyObject functor)
         {
-            if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(DyType.Function, funObj);
-
             var seq = DyIterator.ToEnumerable(ctx, self);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            var fun = (DyFunction)funObj;
-            return DyIterator.Create(seq.Select(dy => fun.Call(ctx, dy)));
-        }
-
-        private DyObject TakeWhile(ExecutionContext ctx, DyObject self, DyObject funObj)
-        {
-            if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(DyType.Function, funObj);
-
-            var seq = DyIterator.ToEnumerable(ctx, self);
-
-            if (ctx.HasErrors)
-                return DyNil.Instance;
-
-            var fun = (DyFunction)funObj;
-            var xs = seq.TakeWhile(o => fun.Call(ctx, o).IsTrue());
+            var xs = seq.Select(dy => functor.Invoke(ctx, dy));
             return DyIterator.Create(xs);
         }
 
-        private DyObject SkipWhile(ExecutionContext ctx, DyObject self, DyObject funObj)
+        private DyObject TakeWhile(ExecutionContext ctx, DyObject self, DyObject functor)
         {
-            if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(DyType.Function, funObj);
-
             var seq = DyIterator.ToEnumerable(ctx, self);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            var fun = (DyFunction)funObj;
-            var xs = seq.SkipWhile(o => fun.Call(ctx, o).IsTrue());
+            var xs = seq.TakeWhile(o => functor.Invoke(ctx, o).IsTrue());
             return DyIterator.Create(xs);
         }
 
-        private DyObject Filter(ExecutionContext ctx, DyObject self, DyObject funObj)
+        private DyObject SkipWhile(ExecutionContext ctx, DyObject self, DyObject functor)
         {
-            if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(DyType.Function, funObj);
-
             var seq = DyIterator.ToEnumerable(ctx, self);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            var fun = (DyFunction)funObj;
-            var xs = seq.Where(o => fun.Call(ctx, o).IsTrue());
+            var xs = seq.SkipWhile(o => functor.Invoke(ctx, o).IsTrue());
             return DyIterator.Create(xs);
         }
 
-        private DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject funObj, DyObject initial)
+        private DyObject Filter(ExecutionContext ctx, DyObject self, DyObject functor)
         {
-            if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(DyType.Function, funObj);
-
             var seq = DyIterator.ToEnumerable(ctx, self);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            var fun = (DyFunction)funObj;
-            var res = seq.Aggregate(initial, (x,y) => fun.Call(ctx, x, y));
-
-            if (ctx.HasErrors)
-                return DyNil.Instance;
-            
-            return res;
+            var xs = seq.Where(o => functor.Invoke(ctx, o).IsTrue());
+            return DyIterator.Create(xs);
         }
 
-        private DyObject Any(ExecutionContext ctx, DyObject self, DyObject funObj)
+        private DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject functor, DyObject initial)
         {
-            if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(DyType.Function, funObj);
-
             var seq = DyIterator.ToEnumerable(ctx, self);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            var fun = (DyFunction)funObj;
-            var res = seq.Any(o => fun.Call(ctx, o).IsTrue());
+            return seq.Aggregate(initial, (x, y) => functor.Invoke(ctx, x, y));
+        }
+
+        private DyObject Any(ExecutionContext ctx, DyObject self, DyObject functor)
+        {
+            var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            var res = seq.Any(o => functor.Invoke(ctx, o).IsTrue());
             return res ? DyBool.True : DyBool.False;
         }
 
-        private DyObject All(ExecutionContext ctx, DyObject self, DyObject funObj)
+        private DyObject All(ExecutionContext ctx, DyObject self, DyObject functor)
         {
-            if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(DyType.Function, funObj);
-
             var seq = DyIterator.ToEnumerable(ctx, self);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
 
-            var fun = (DyFunction)funObj;
-            var res = seq.All(o => fun.Call(ctx, o).IsTrue());
+            var res = seq.All(o => functor.Invoke(ctx, o).IsTrue());
             return res ? DyBool.True : DyBool.False;
         }
 
-        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
+        private DyObject ForEach(ExecutionContext ctx, DyObject self, DyObject functor)
         {
-            var seq = DyIterator.ToEnumerable(ctx, self);
-            return seq.Any(o => o.Equals(item, ctx)) ? DyBool.True : DyBool.False;
-        }
-
-        private DyObject ForEach(ExecutionContext ctx, DyObject self, DyObject funObj)
-        {
-            if (funObj.TypeId != DyType.Function)
-                return ctx.InvalidType(DyType.Function, funObj);
-
             var seq = DyIterator.ToEnumerable(ctx, self);
 
             if (ctx.HasErrors)
                 return DyNil.Instance;
-
-            var fun = (DyFunction)funObj;
 
             foreach (var o in seq)
             {
-                fun.Call(ctx, o);
+                functor.Invoke(ctx, o);
 
                 if (ctx.HasErrors)
                     return Default();
             }
 
             return Default();
+        }
+
+        private DyObject ToSet(ExecutionContext ctx, DyObject self)
+        {
+            var seq = DyIterator.ToEnumerable(ctx, self);
+            
+            if (ctx.HasErrors)
+                return Default();
+
+            var set = new HashSet<DyObject>();
+            set.UnionWith(seq);
+            return new DySet(set);
+        }
+
+        private DyObject Distinct(ExecutionContext ctx, DyObject self, DyObject functor)
+        {
+            var seq = DyIterator.ToEnumerable(ctx, self);
+
+            if (ctx.HasErrors)
+                return Default();
+
+            IEnumerable<DyObject> res;
+
+            if (functor.NotNil())
+                res = seq.Distinct(new EqualityComparer(ctx, functor));
+            else
+                res = seq.Distinct();
+
+            return DyIterator.Create(res);
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -402,7 +398,7 @@ namespace Dyalect.Runtime.Types
                 Method.ElementAt => Func.Member(name, ElementAt, -1, new Par("index")),
                 Method.Sort => Func.Member(name, SortBy, -1, new Par("comparer", DyNil.Instance)),
                 Method.Shuffle => Func.Member(name, Shuffle),
-                Method.Count => Func.Member(name, CountBy, -1, new Par("predicate")),
+                Method.Count => Func.Member(name, CountBy, -1, new Par("predicate", DyNil.Instance)),
                 Method.Map => Func.Member(name, Map, -1, new Par("converter")),
                 Method.Filter => Func.Member(name, Filter, -1, new Par("predicate")),
                 Method.TakeWhile => Func.Member(name, TakeWhile, -1, new Par("predicate")),
@@ -410,8 +406,9 @@ namespace Dyalect.Runtime.Types
                 Method.Reduce => Func.Member(name, Reduce, -1, new Par("converter"), new Par("initial", DyInteger.Zero)),
                 Method.Any => Func.Member(name, Any, -1, new Par("predicate")),
                 Method.All => Func.Member(name, All, -1, new Par("predicate")),
-                Method.Contains => Func.Member(name, Contains, -1, new Par("value")),
                 Method.ForEach => Func.Member(name, ForEach, -1, new Par("action")),
+                Method.ToSet => Func.Member(name, ToSet),
+                Method.Distinct => Func.Member(name, Distinct, -1, new Par("selector", DyNil.Instance)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
@@ -500,8 +497,9 @@ namespace Dyalect.Runtime.Types
         protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
             targetType.ReflectedTypeId switch
             {
-                DyType.Tuple => new DyTuple(((DyIterator)self).ToEnumerable().ToArray()),
-                DyType.Array => new DyArray(((DyIterator)self).ToEnumerable().ToArray()),
+                DyType.Tuple => new DyTuple(((DyIterator)self).ToEnumerable(ctx).ToArray()),
+                DyType.Array => new DyArray(((DyIterator)self).ToEnumerable(ctx).ToArray()),
+                DyType.Set => ToSet(ctx, self),
                 _ => base.CastOp(self, targetType, ctx)
             };
     }

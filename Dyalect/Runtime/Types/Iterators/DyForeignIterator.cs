@@ -10,7 +10,7 @@ namespace Dyalect.Runtime.Types
 
         public override DyFunction GetIteratorFunction() => new DyIteratorFunction(seq);
 
-        public override IEnumerable<DyObject> ToEnumerable() => seq;
+        public override IEnumerable<DyObject> ToEnumerable(ExecutionContext _) => seq;
 
         public override object ToObject() => seq;
 

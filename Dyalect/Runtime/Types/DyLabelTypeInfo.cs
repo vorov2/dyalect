@@ -11,8 +11,8 @@ namespace Dyalect.Runtime.Types
 
         public override int ReflectedTypeId => DyType.Label;
 
-        protected override DyObject ContainsOp(DyObject self, HashString field, ExecutionContext ctx) =>
-            self.GetLabel() == (string)field ? DyBool.True : DyBool.False;
+        protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx) =>
+            field.TypeId == DyType.String && self.GetLabel() == field.GetString() ? DyBool.True : DyBool.False;
 
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {

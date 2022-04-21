@@ -125,6 +125,8 @@ namespace Dyalect.Library.Core
                 "Month" => Func.Auto(name, _ => DyInteger.Get(((DyDateTime)self).Value.Month)),
                 "Year" => Func.Auto(name, _ => DyInteger.Get(((DyDateTime)self).Value.Year)),
                 "DayOfWeek" => Func.Auto(name, _ => new DyString(((DyDateTime)self).Value.DayOfWeek.ToString())),
+                "Date" => Func.Auto(name, _ => CreateDateTime(((DyDateTime)self).Value.Date, ((DyDateTime)self).Offset)),
+                "Time" => Func.Auto(name, _ => new DyTimeDelta(DeclaringUnit.TimeDelta, ((DyDateTime)self).Value.TimeOfDay)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

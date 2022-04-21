@@ -9,6 +9,8 @@ namespace Dyalect.Runtime.Types
         public DySet() : base(DyType.Set) => Set = new();
 
         public DySet(params DyObject[] args) : base(DyType.Set) => Set = new(args);
+
+        internal DySet(HashSet<DyObject> set) : base(DyType.Set) => Set = set;
         
         public override IEnumerator<DyObject> GetEnumerator() => new DySetEnumerator(this);
 
@@ -57,9 +59,9 @@ namespace Dyalect.Runtime.Types
             return arr;
         }
         
-        public DyArray ToArray(ExecutionContext ctx) => new(InternalToArray());
+        public DyArray ToArray(ExecutionContext _) => new(InternalToArray());
 
-        public DyTuple ToTuple(ExecutionContext ctx) => new(InternalToArray());
+        public DyTuple ToTuple(ExecutionContext _) => new(InternalToArray());
 
         public void IntersectWith(ExecutionContext ctx, DyObject other)
         {

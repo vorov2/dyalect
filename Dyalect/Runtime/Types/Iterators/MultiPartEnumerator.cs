@@ -28,10 +28,7 @@ namespace Dyalect.Runtime.Types
                 {
                     var it = DyIterator.ToEnumerable(ctx, iterators[nextIterator]);
                     nextIterator++;
-
-                    if (ctx.HasErrors)
-                        return false;
-
+                    ctx.ThrowIf();
                     current = it.GetEnumerator();
                     return current.MoveNext();
                 }

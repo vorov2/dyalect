@@ -61,8 +61,11 @@ namespace Dyalect.Runtime.Types
 
         protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(false, left, right, ctx);
 
-        protected override DyObject ContainsOp(DyObject self, HashString field, ExecutionContext ctx) =>
-            ((DyTuple)self).GetOrdinal((string)field) is not -1 ? DyBool.True : DyBool.False;
+        protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
+        {
+            if (!field.IsString(ctx)) return Default();
+            return ((DyTuple)self).GetOrdinal(field.GetString()) is not -1 ? DyBool.True : DyBool.False;
+        }
 
         private DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
         {
@@ -132,10 +135,10 @@ namespace Dyalect.Runtime.Types
         private DyObject GetSecond(ExecutionContext ctx, DyObject self) =>
             self.GetItem(DyInteger.One, ctx);
 
-        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject fun)
+        private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject functor)
         {
             var tup = (DyTuple)self;
-            var comparer = new SortComparer(fun as DyFunction, ctx);
+            var comparer = new SortComparer(functor, ctx);
             var newArr = new DyObject[tup.Count];
             Array.Copy(tup.UnsafeAccessValues(), newArr, newArr.Length);
             Array.Sort(newArr, 0, newArr.Length, comparer);
@@ -239,29 +242,16 @@ namespace Dyalect.Runtime.Types
             return new DyArray(tuple.GetValues());
         }
 
-        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject item)
+        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject functor)
         {
-            if (item.TypeId != DyType.String)
-                return ctx.InvalidType(DyType.String, item);
-
-            var tuple = (DyTuple)self;
-            return tuple.HasItem(item.GetString()) ? DyBool.True : DyBool.False;
-        }
-
-        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
-        {
-            if (funObj.TypeId != DyType.Function && funObj.TypeId != DyType.Nil)
-                return ctx.InvalidType(DyType.Function, DyType.Nil, funObj);
-
-            var fun = funObj as DyFunction;
             var seq = (DyTuple)self;
             var xs = new List<DyObject>();
 
             foreach (var val in seq.GetValues())
             {
-                if (fun is not null)
+                if (functor.NotNil())
                 {
-                    var res = fun.Call(ctx, val);
+                    var res = functor.Invoke(ctx, val);
 
                     if (ctx.HasErrors)
                         return DyNil.Instance;
@@ -318,7 +308,6 @@ namespace Dyalect.Runtime.Types
                 Method.ToDictionary => Func.Member(name, ToDictionary),
                 Method.ToArray => Func.Member(name, ToArray),
                 Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
-                Method.Contains => Func.Member(name, Contains, -1, new Par("key")),
                 Method.Alter => Func.Member(name, Alter, 0, new Par("values", true)),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };

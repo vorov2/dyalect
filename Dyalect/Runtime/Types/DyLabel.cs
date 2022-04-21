@@ -35,7 +35,7 @@ namespace Dyalect.Runtime.Types
 
         internal void AddTypeAnnotation(DyTypeInfo ti)
         {
-            typeAnnotations = typeAnnotations ?? new();
+            typeAnnotations ??= new();
             typeAnnotations.Add(ti);
         }
 

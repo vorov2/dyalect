@@ -484,6 +484,8 @@
     let refs = yields {3,5,1,6,2,4}
     let c = refs.Count(x => x % 2 == 0)
     assert(3, c)
+    let c2 = refs.Count()
+    assert(6, c2)
 #endregion
 
 #region "Methods: Map"
@@ -612,7 +614,7 @@
     assert(true, ys.Any(x => x is not nil))
 #endregion
 
-#region "Methods: all"
+#region "Methods: All"
     let xs = yields { 10,2,3,1,4,5,6 }
     assert(true, xs.All(x => x > 0))
     assert(false, xs.All(x => x > 1))
@@ -634,4 +636,37 @@
     assert(true, xs.Contains(10))
     assert(true, xs.Contains(1))
     assert(false, xs.Contains(101))
+#endregion
+
+#region "Methods: ToSet"
+    let xs = yields { 1,2,2,2,3,4,4,5,5,5 }
+    let ys = xs.ToSet()
+    assert("Set (1, 2, 3, 4, 5)", ys.ToString())
+#endregion
+
+#region "Methods: ForEach"
+    let xs = yields { 1..5 }
+    let outp = []
+    xs.ForEach(outp.Add)
+    assert([1,2,3,4,5], outp)
+#endregion
+
+#region "Methods: Distinct"
+    let xs = yields {1,1,1,2,3,3,3,4,4,5}
+    assert([1..5], xs.Distinct().ToArray())
+    assert([1..5], xs.Distinct(\x).ToArray())
+    let ys = yields {
+        (id: 1, stub: "F"),
+        (id: 2, stub: "R"),
+        (id: 2, stub: "Z")
+    }
+    assert(3, ys.Distinct().Count())
+    assert(2, ys.Distinct(\x.id).Count())    
+#endregion
+
+#region "Casting"
+    let xs = yields { 1,2,3 }
+    assert((1,2,3), xs as Tuple)
+    assert([1,2,3], xs as Array)
+    assert(Set(1,2,3).ToString(), (xs as Set).ToString())
 #endregion

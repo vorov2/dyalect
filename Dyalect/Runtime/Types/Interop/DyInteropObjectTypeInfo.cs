@@ -9,6 +9,9 @@ namespace Dyalect.Runtime.Types
 {
     internal class DyInteropObjectTypeInfo : DyTypeInfo
     {
+        private const BindingFlags BINDING_FLAGS = BindingFlags.NonPublic | BindingFlags.Public 
+            | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
+
         protected override SupportedOperations GetSupportedOperations() =>
             SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
@@ -119,48 +122,66 @@ namespace Dyalect.Runtime.Types
             return new DyInteropObject(BCL.Type, typeInfo);
         }
 
-        private DyObject GetMethod(ExecutionContext ctx, DyObject type, DyObject name, DyObject pars, DyObject typeArgs)
+        private DyObject GetMethod(ExecutionContext ctx, DyObject type, DyObject name, DyObject parTypes, DyObject genericParsCount)
         {
             if (type is not DyInteropObject obj || obj.Object is not Type typ)
                 return ctx.InvalidType(type);
 
+            if (parTypes is not DyCollection coll)
+                coll = null!;
+
+            if (parTypes.NotNil() && coll is null)
+                return ctx.InvalidType(parTypes);
+
             if (!name.IsString(ctx)) return Default();
-            if (!pars.IsInteger(ctx)) return Default();
+            if (!genericParsCount.IsInteger(ctx)) return Default();
 
-            var types = ((DyTuple)typeArgs).UnsafeAccessValues();
-            var (nam, p) = (name.GetString(), pars.GetInteger());
+            var types = coll?.GetValues();
+            var (nam, p) = (name.GetString(), genericParsCount.GetInteger());
 
-            foreach (var mi in typ.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
+            foreach (var mi in typ.GetMethods(BINDING_FLAGS))
             {
                 if (mi.Name == nam && mi.GetGenericArguments().Length == p)
                 {
-                    if (types.Length > 0)
+                    if (types is not null)
                     {
                         var mpars = mi.GetParameters();
 
-                        for (var i = 0; i < mpars.Length; i++)
-                        {
-                            var rf = types.Length > i ? types[i] : null;
-
-                            if (rf is null)
-                                continue;
-
-                            var t = rf.ToObject();
-
-                            if (t is not Type tt || mpars[i].ParameterType.IsAssignableFrom(tt))
-                                continue;
-                        }
+                        if (types.Length != mpars.Length || MatchParameters(mpars, types))
+                            continue;
                     }
 
                     return new DyInteropObject(typeof(MethodInfo), mi);
                 }
             }
 
-            return DyNil.Instance;
+            return ctx.MethodNotFound(nam, typ, types);
         }
 
-        private DyObject Wrap(ExecutionContext ctx, DyObject obj) =>
-            new DyInteropObject(obj.GetType(), obj);
+        private DyObject GetField(ExecutionContext ctx, DyObject type, DyObject name)
+        {
+            if (type is not DyInteropObject obj || obj.Object is not Type typ)
+                return ctx.InvalidType(type);
+
+            if (!name.IsString(ctx)) return Default();
+            var ret = typ.GetField(name.GetString());
+            return ret is not null ? new DyInteropObject(typeof(FieldInfo), ret) : DyNil.Instance;
+        }
+
+        private bool MatchParameters(ParameterInfo[] mpars, DyObject[] types)
+        {
+            for (var i = 0; i < mpars.Length; i++)
+            {
+                var t = types[i].ToObject();
+
+                if (t is not Type tt || mpars[i].ParameterType.IsAssignableFrom(tt))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private DyObject Wrap(ExecutionContext ctx, DyObject obj) => new DyInteropObject(obj.GetType(), obj);
 
         internal override DyObject GetStaticMember(HashString nameStr, ExecutionContext ctx)
         {
@@ -178,7 +199,7 @@ namespace Dyalect.Runtime.Types
 
             if (func.Auto)
                 return func.BindOrRun(ctx, this);
-
+            
             return func;
         }
 
@@ -193,7 +214,8 @@ namespace Dyalect.Runtime.Types
                 "ConvertTo" => Func.Static(name, ConvertTo, -1, new Par("type"), new Par("value")),
                 "ConvertFrom" => Func.Static(name, ConvertFrom, -1, new Par("value")),
                 "CreateArray" => Func.Static(name, CreateArray, -1, new Par("type"), new Par("size")),
-                "GetMethod" => Func.Static(name, GetMethod, 3, new Par("type"), new Par("name"), new Par("count"), new Par("types", true)),
+                "GetMethod" => Func.Static(name, GetMethod, -1, new Par("type"), new Par("name"), new Par("parameterTypes", DyNil.Instance), new Par("typeArguments", DyInteger.Zero)),
+                "GetField" => Func.Static(name, GetField, -1, new Par("type"), new Par("name")),
                 _ => GetTypeInstance(ctx, name)
             };
 

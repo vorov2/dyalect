@@ -1,3 +1,28 @@
+# 0.41.0
+  * _Project migrated to .NET 6.0_
+  * Add: _Add `ToSet` method to collections_ ([Issue #770](https://github.com/vorov2/dyalect/issues/770)).
+  * Add: _Add an ability to modify fields in read-only tuples through creating new tuple instances_ ([Issue #741](https://github.com/vorov2/dyalect/issues/741), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#alter)).
+  * Add: _Add `Iterator.ForEach` method_ ([Issue #765](https://github.com/vorov2/dyalect/issues/765), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#forEach)).
+  * Add: _Type Module should support `Contains` method_ ([Issue #772](https://github.com/vorov2/dyalect/issues/772), [docs](https://github.com/vorov2/dyalect/wiki/Modules#contains)).
+  * Add: _Add `Iterator.Distinct` method_ ([Issue #739](https://github.com/vorov2/dyalect/issues/739), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#distinct)).
+  * Add: _Support casting of an `Iterator` to `Set`_ ([Issue #776](https://github.com/vorov2/dyalect/issues/776)).
+  * Add: _Add properties `Date` and `Time` to `DateTime` and `LocalDateTime`_ ([Issue #758](https://github.com/vorov2/dyalect/issues/758), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.DateTime#date)).
+  * Add: _Add method `GetField` to `Interop` type_  ([Issue #779](https://github.com/vorov2/dyalect/issues/779), [docs](https://github.com/vorov2/dyalect/wiki/Interop#getField)).
+  * Add: _Add `TimeDelta.FromTicks` method_ ([Issue #785](https://github.com/vorov2/dyalect/issues/785), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta#fromTicks)).
+  * Add: _`TimeDelta` to support both `Ticks` and `TotalTicks` properties_ ([Issue #784](https://github.com/vorov2/dyalect/issues/784), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta#totalTicks)).
+  * Add: _`Add support for negation operator to `TimeDelta`_ ([Issue #783](https://github.com/vorov2/dyalect/issues/783), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta#operators)).
+  * Change: _Implement custom parser for `TimeDelta`_ ([Issue #782](https://github.com/vorov2/dyalect/issues/782)).
+  * Change: _Refactor `TimeDelta` formatting to a string_ ([Issue #781](https://github.com/vorov2/dyalect/issues/781)).
+  * Change: _Disallow negative numbers on `TimeDelta` constructor_ ([Issue #786](https://github.com/vorov2/dyalect/issues/786)).
+  * Change: _Parameter `predicate` of `Iterator.Count` method should be optional_ ([Issue #774](https://github.com/vorov2/dyalect/issues/774), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#count)).
+  * Change: _Refactor `Console` class to better support colors_ ([Issue #775](https://github.com/vorov2/dyalect/issues/775), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Console)).
+  * Change: _All foreign high order functions should accept objects with `Call` method as well as regular functions_ ([Issue #773](https://github.com/vorov2/dyalect/issues/773)).
+  * Fix: _`ToLiteral` is not supported by the type `Set`_ ([Issue #768](https://github.com/vorov2/dyalect/issues/768)).
+  * Fix: _`Set` is not recognized as a element sequence when you pass it to vararg function_ ([Issue #771](https://github.com/vorov2/dyalect/issues/771)).
+  * Fix: _Refactoring of incorrect `Contains` built-in method implementation._
+  * Fix: _Iterators may raise a NullReferenceException_ ([Issue #777](https://github.com/vorov2/dyalect/issues/777)).
+  * Fix: _`Interop.GetMethod` can return incorrect method overload because of the error in logic_ ([Issue #780](https://github.com/vorov2/dyalect/issues/780)).
+
 # 0.40.6
   * Fix: _Duplicate fields in `Tuple`_ ([Issue #764](https://github.com/vorov2/dyalect/issues/764)).
   * Fix: _It is not possible to invoke type members on a module instance directly_ ([Issue #767](https://github.com/vorov2/dyalect/issues/767)).

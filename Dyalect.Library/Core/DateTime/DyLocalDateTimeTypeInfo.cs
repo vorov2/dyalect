@@ -52,7 +52,7 @@ namespace Dyalect.Library.Core
             else if (right is DyTimeDelta td)
                 try
                 {
-                    return new DyLocalDateTime(this, self.Value - td.Value, self.Offset!.Value);
+                    return new DyLocalDateTime(this, new DateTime(self.Value.Ticks - td.TotalTicks), self.Offset!.Value);
                 }
                 catch (Exception)
                 {
@@ -70,10 +70,10 @@ namespace Dyalect.Library.Core
             {
                 try
                 {
-                    if (self.Offset != td.Value)
+                    if (self.Offset!.Value.Ticks != td.TotalTicks)
                         return ctx.InvalidValue(right);
 
-                    return new DyLocalDateTime(this, self.Value + td.Value, self.Offset!.Value);
+                    return new DyLocalDateTime(this, new DateTime(self.Value.Ticks + td.TotalTicks), self.Offset!.Value);
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -119,7 +119,7 @@ namespace Dyalect.Library.Core
                 return false;
             }
             else
-                timeSpan = ((DyTimeDelta)offset).Value;
+                timeSpan = ((DyTimeDelta)offset).ToTimeSpan();
 
             return true;
         }
@@ -161,7 +161,7 @@ namespace Dyalect.Library.Core
         private DyObject GetLocalDateTime(ExecutionContext ctx, DyObject dateTime, DyObject timeZone)
         {
             if (!CheckValues(ctx, dateTime, timeZone)) return Default();
-            var (dt, td) = (((DyDateTime)dateTime).Value, ((DyTimeDelta)timeZone).Value);
+            var (dt, td) = (((DyDateTime)dateTime).Value, ((DyTimeDelta)timeZone).ToTimeSpan());
             var targetZone = TimeZoneInfo.CreateCustomTimeZone(Guid.NewGuid().ToString(), td, null, null);
             var tzz = timeZone.NotNil() ? targetZone : TimeZoneInfo.Local;
             var dat = TimeZoneInfo.ConvertTimeFromUtc(dt, tzz);

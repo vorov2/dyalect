@@ -200,7 +200,7 @@ namespace Dyalect.Compiler
                 Emit(new(OpCode.StdCall, args), -args);
         }
 
-        public void Contains(string field) => Emit(new(OpCode.Contains, IndexString(field)));
+        public void Contains(string field) => Emit(new(OpCode.Contains, IndexObject(new DyString(field))));
 
         public void SetMember(string member) => Emit(new(OpCode.SetMember, IndexString(member)));
         public void SetMemberS(string member) => Emit(new(OpCode.SetMemberS, IndexString(member)));

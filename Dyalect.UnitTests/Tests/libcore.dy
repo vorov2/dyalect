@@ -1,5 +1,8 @@
 ﻿#region "Initialize"
     import core
+    func testParseAndFormat(format, value) {
+        assert(value, TimeDelta.Parse(value, format).ToString(value))
+    }
 #endregion
 
 #region "StringBuilder: GetType"
@@ -228,7 +231,7 @@ fox is the red fox.]>
 #endregion
 
 #region "TimeDelta: construction"
-    var td = TimeDelta(ticks: 12)
+    var td = TimeDelta.FromTicks(12)
     assert(12, td.Ticks)
     td = TimeDelta(days: 1, hours: 12, minutes: 33, seconds: 3)
     assert(1, td.Days)
@@ -243,8 +246,8 @@ fox is the red fox.]>
 #region "TimeDelta: math"
     let x = TimeDelta(minutes: 3, seconds: 12)
     let y = TimeDelta(minutes: 1, seconds: 45)
-    assert("00:04:57", (x + y).ToString())
-    assert("00:01:27", (x - y).ToString())
+    assert("+0.00:04:57.00", (x + y).ToString())
+    assert("+0.00:01:27.00", (x - y).ToString())
 #endregion
 
 #region "TimeDelta: equality"
@@ -269,26 +272,49 @@ fox is the red fox.]>
 #endregion
 
 #region "TimeDelta: casting"
-    let td = TimeDelta(ticks: 1409)
+    let td = TimeDelta.FromTicks(1409)
     assert(1409, td as Integer)
 #endregion
 
-#region "TimeDelta: ToString"
+#region "TimeDelta: ToString 1"
     let td = TimeDelta(hours: 12, minutes: 3, seconds: 12)
-    assert("12:03:12", td.ToString())
+    assert("+0.12:03:12.00", td.ToString())
     assert("03-12-12", td.ToString(format: "mm-hh-ss"))
 #endregion
 
+#region "TimeDelta: ToString 2"
+    let td = TimeDelta(hours: 12, minutes: 3, seconds: 12)
+    assert("03+12+12", td.ToString(format: "mm\\+hh\\+ss"))
+#endregion
+
 #region "TimeDelta: Min, Max, Default"
-    assert(Integer.Min(), TimeDelta.Min().Ticks)
-    assert(Integer.Max(), TimeDelta.Max().Ticks)
+    assert(Integer.Min(), TimeDelta.Min().TotalTicks)
+    assert(Integer.Max(), TimeDelta.Max().TotalTicks)
     assert(0, TimeDelta.Default().Ticks)
 #endregion
 
-#region "TimeDelta: Parse"
-    assert("00:12:34", TimeDelta.Parse("00:12:34").ToString())
-    assert("00:12:34", TimeDelta.Parse("00:12:34", "hh:mm:ss").ToString())
-    assert("00:12:34", TimeDelta.Parse("00--12--34", "hh--mm--ss").ToString())
+#region "TimeDelta: Parse 1"
+    assert("00:12:34", TimeDelta.Parse("00:12:34", "hh:mm:ss").ToString("hh:mm:ss"))
+    assert("00:12:34", TimeDelta.Parse("00--12--34", "hh--mm--ss").ToString("hh:mm:ss"))
+#endregion
+
+#region "TimeDelta: Parse 2"
+    let format = "d-h:mm:ss.f"
+    let value = "341-12:34:45.9"
+    testParseAndFormat(format, value)
+#endregion
+
+#region "TimeDelta: Parse 3"
+    let format = "+d.hh:mm"
+    let value = "+3.12:34"
+    testParseAndFormat(format, value)
+#endregion
+
+#region "TimeDelta: negation"
+    let td = TimeDelta(hours: 3, minutes: 30)
+    let format = "+hh:mm"
+    assert("+03:30", td.ToString(format))
+    assert("-03:30", (-td).ToString(format))
 #endregion
 
 #region "DateTime: GetType"
@@ -392,6 +418,12 @@ fox is the red fox.]>
     assert(true, dt2 >= dt1)
 #endregion
 
+#region "DateTime: Date and Time"
+    let dt = DateTime(year: 2012, month: 12, day: 3, hour: 12, minute: 43)
+    assert(DateTime(year: 2012, month: 12, day: 3), dt.Date)
+    assert(TimeDelta(hours: 12, minutes: 43), dt.Time)
+#endregion
+
 #region "LocalDateTime: GetType"
     let dt = LocalDateTime.Now()
     assert(LocalDateTime, dt.GetType())
@@ -399,30 +431,30 @@ fox is the red fox.]>
 #endregion
 
 #region "LocalDateTime: ToString"
-    let dt = LocalDateTime(offset: TimeDelta(hours: -3), year: 2012, month: 3, day: 21,
+    let dt = LocalDateTime(offset: -TimeDelta(hours: 3), year: 2012, month: 3, day: 21,
         hour: 15, minute: 33, second: 59)
     assert("2012-03-21T15:33:59.0000000-03:00", dt.ToString())
 #endregion
 
 #region "LocalDateTime: LocalOffset"
-    let dt = LocalDateTime(offset: TimeDelta(hours: -3), year: 2012, month: 3, day: 21,
+    let dt = LocalDateTime(offset: -TimeDelta(hours: 3), year: 2012, month: 3, day: 21,
         hour: 15, minute: 33, second: 59)
     assert(-3, dt.Offset.Hours)
 #endregion
 
 #region "LocalDateTime: Parse"
     let dt1 = LocalDateTime.Parse("2012-03-21T15:33:59.0000000-03:00", "yyyy-MM-ddTHH:mm:ss.fffffffzzz")
-    let dt2 = LocalDateTime(offset: TimeDelta(hours: -3), year: 2012, month: 3, day: 21,
+    let dt2 = LocalDateTime(offset: -TimeDelta(hours: 3), year: 2012, month: 3, day: 21,
         hour: 15, minute: 33, second: 59)
     assert(true, dt1 == dt2)
     assert(-3, dt1.Offset.Hours)
 #endregion
 
 #region "LocalDateTime: FromTicks"
-    let dt = LocalDateTime(offset: TimeDelta(hours: -3), year: 2012, month: 3, day: 21,
+    let dt = LocalDateTime(offset: -TimeDelta(hours: 3), year: 2012, month: 3, day: 21,
         hour: 15, minute: 33, second: 59)
     let ticks = dt.Ticks
-    let ndt = LocalDateTime.FromTicks(ticks, offset: TimeDelta(hours: -3))
+    let ndt = LocalDateTime.FromTicks(ticks, offset: -TimeDelta(hours: 3))
     assert(true, dt == ndt)
     assert(true, dt.Ticks == ndt.Ticks)
 #endregion
@@ -436,8 +468,14 @@ fox is the red fox.]>
 
 #region "LocalDateTime: FromDateTime"
     let dt = DateTime(year: 2012, month: 2, day: 3, hour: 12, minute: 30)
-    let loc = LocalDateTime.FromDateTime(dt, offset: TimeDelta(hours: -2))
+    let loc = LocalDateTime.FromDateTime(dt, offset: -TimeDelta(hours: 2))
     assert("2012-02-03 10:30", loc.ToString("yyyy-MM-dd hh:mm"))
+#endregion
+
+#region "LocalDateTime: Date and Time"
+    let dt = LocalDateTime(year: 2012, month: 12, day: 3, hour: 12, minute: 43, offset: -TimeDelta(hours: 3))
+    assert(LocalDateTime(year: 2012, month: 12, day: 3, offset: -TimeDelta(hours: 3)), dt.Date)
+    assert(TimeDelta(hours: 12, minutes: 43), dt.Time)
 #endregion
 
 #region "Calendar: GetType"
@@ -460,16 +498,16 @@ fox is the red fox.]>
     let utc1 = DateTime(year: 2020, month: 2, day: 15, hour: 12, minute: 30)
     let utc2 = Calendar.FirstDayOfMonth(utc1)
     assert(DateTime(year: 2020, month: 2, day: 1, hour: 12, minute: 30), utc2)
-    let loc1 = LocalDateTime(year: 2020, month: 2, day: 15, hour: 12, minute: 30, offset: TimeDelta(hours: -1))
+    let loc1 = LocalDateTime(year: 2020, month: 2, day: 15, hour: 12, minute: 30, offset: -TimeDelta(hours: 1))
     let loc2 = Calendar.FirstDayOfMonth(loc1)
-    assert(LocalDateTime(year: 2020, month: 2, day: 1, hour: 12, minute: 30, offset: TimeDelta(hours: -1)), loc2)
+    assert(LocalDateTime(year: 2020, month: 2, day: 1, hour: 12, minute: 30, offset: -TimeDelta(hours: 1)), loc2)
 #endregion
 
 #region "Calendar: LastDayOfMonth"
     let utc1 = DateTime(year: 2020, month: 2, day: 15, hour: 12, minute: 30)
     let utc2 = Calendar.LastDayOfMonth(utc1)
     assert(DateTime(year: 2020, month: 2, day: 29, hour: 12, minute: 30), utc2)
-    let loc1 = LocalDateTime(year: 2020, month: 2, day: 15, hour: 12, minute: 30, offset: TimeDelta(hours: -1))
+    let loc1 = LocalDateTime(year: 2020, month: 2, day: 15, hour: 12, minute: 30, offset: -TimeDelta(hours: 1))
     let loc2 = Calendar.LastDayOfMonth(loc1)
-    assert(LocalDateTime(year: 2020, month: 2, day: 29, hour: 12, minute: 30, offset: TimeDelta(hours: -1)), loc2)
+    assert(LocalDateTime(year: 2020, month: 2, day: 29, hour: 12, minute: 30, offset: -TimeDelta(hours: 1)), loc2)
 #endregion

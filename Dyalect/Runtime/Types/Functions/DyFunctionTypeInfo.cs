@@ -84,17 +84,11 @@ namespace Dyalect.Runtime.Types
 
         private DyObject Compose(ExecutionContext ctx, DyObject first, DyObject second)
         {
-            if (first is DyFunction f1)
-            {
-                if (second is DyFunction f2)
-                    return Func.Compose(f1, f2);
-                else
-                    ctx.InvalidType(second);
-            }
-            else
-                ctx.InvalidType(first);
-
-            return DyNil.Instance;
+            var f1 = first.ToFunction(ctx);
+            if (f1 is null) return Default();
+            var f2 = second.ToFunction(ctx);
+            if (f2 is null) return Default();
+            return Func.Compose(f1, f2);
         }
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>

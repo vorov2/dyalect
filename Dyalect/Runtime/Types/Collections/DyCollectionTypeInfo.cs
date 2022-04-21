@@ -12,11 +12,8 @@ namespace Dyalect.Runtime.Types
             var coll = (DyCollection)self;
             var arr = coll.GetValues();
 
-            if (fromElem.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, fromElem);
-
-            if (toElem.TypeId != DyType.Nil && toElem.TypeId != DyType.Integer)
-                return ctx.InvalidType(DyType.Integer, DyType.Nil, toElem);
+            if (!fromElem.IsInteger(ctx)) return Default();
+            if (toElem.NotNil() && !toElem.IsInteger(ctx)) return Default();
 
             var beg = (int)fromElem.GetInteger();
             var end = ReferenceEquals(toElem, DyNil.Instance) ? coll.Count - 1 : (int)toElem.GetInteger();
@@ -57,11 +54,20 @@ namespace Dyalect.Runtime.Types
             return DyIterator.Create(Iterate());
         }
 
+        private DyObject ToSet(ExecutionContext ctx, DyObject self)
+        {
+            var vals = ((DyCollection)self).GetValuesIterator();
+            var set = new HashSet<DyObject>();
+            set.UnionWith(vals);
+            return new DySet(set);
+        }
+
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
                 Method.Indices => Func.Member(name, GetIndices),
                 Method.Slice => Func.Member(name, GetSlice, -1, new Par("index", DyInteger.Zero), new Par("size", DyNil.Instance)),
+                Method.ToSet => Func.Member(name, ToSet),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

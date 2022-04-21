@@ -47,7 +47,7 @@ namespace Dyalect.Library.Core
             else if (right is DyTimeDelta td)
                 try
                 {
-                    return new DyDateTime(this, ((DyDateTime)left).Value - td.Value);
+                    return new DyDateTime(this, new DateTime(((DyDateTime)left).Value.Ticks - td.TotalTicks, DateTimeKind.Utc));
                 }
                 catch (Exception)
                 {
@@ -63,7 +63,7 @@ namespace Dyalect.Library.Core
             {
                 try
                 {
-                    return new DyDateTime(this, ((DyDateTime)left).Value + td.Value);
+                    return new DyDateTime(this, new DateTime(((DyDateTime)left).Value.Ticks + td.TotalTicks, DateTimeKind.Utc));
                 }
                 catch (ArgumentOutOfRangeException)
                 {

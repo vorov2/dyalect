@@ -13,14 +13,14 @@ namespace Dyalect.Runtime.Types
 
         public abstract DyFunction GetIteratorFunction();
 
-        public abstract IEnumerable<DyObject> ToEnumerable();
+        public abstract IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx);
 
         public static IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx, DyObject val) =>
             val is IEnumerable<DyObject> seq ? seq : InternalRun(ctx, val);
 
         private static IEnumerable<DyObject> InternalRun(ExecutionContext ctx, DyObject val)
         {
-            var iter = GetIterator(ctx, val)!;
+            var iter = val.GetIterator(ctx)!;
 
             if (ctx.HasErrors)
                 yield break;
@@ -43,47 +43,6 @@ namespace Dyalect.Runtime.Types
                     yield break;
                 }
             }
-        }
-
-        private static DyFunction? GetIterator(ExecutionContext ctx, DyObject val)
-        {
-            DyFunction? iter;
-
-            if (val.TypeId == DyType.Iterator)
-                iter = ((DyIterator)val).GetIteratorFunction();
-            else if (val.TypeId == DyType.Function)
-            {
-                var obj = ((DyFunction)val).Call(ctx);
-                iter = obj as DyFunction;
-
-                if (ctx.HasErrors)
-                    return null;
-
-                if (iter is null)
-                {
-                    ctx.InvalidType(DyType.Function, obj);
-                    return null;
-                }
-            }
-            else
-            {
-                var obj = val.GetIterator(ctx) as DyIterator;
-
-                if (ctx.HasErrors)
-                    return null;
-
-                iter = obj?.GetIteratorFunction();
-
-                if (iter is null)
-                {
-                    ctx.InvalidType(DyType.Iterator, val);
-                    return null;
-                }
-
-                iter = iter.Call(ctx) as DyFunction;
-            }
-
-            return iter;
         }
     }
 }

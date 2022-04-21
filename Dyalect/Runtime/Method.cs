@@ -43,9 +43,9 @@
         public const string Replace = "Replace";
         public const string ToCharArray = "ToCharArray";
         public const string Format = "Format";
-        public const string Contains = "Contains";
         public const string ForEach = "ForEach";
         public const string Alter = "Alter";
+        public const string Distinct = "Distinct";
         public const string Join = "Join";
         public const string Repeat = "Repeat";
         public const string ContainsValue = "ContainsValue";
@@ -60,6 +60,7 @@
         public const string ToDictionary = "ToDictionary";
         public const string ToArray = "ToArray";
         public const string ToTuple = "ToTuple";
+        public const string ToSet = "ToSet";
         public const string Pair = "Pair";
         public const string Triple = "Triple";
         public const string Tuple = "Tuple";
@@ -68,6 +69,7 @@
         public const string Dictionary = "Dictionary";
         public const string Set = "Set";
         public const string FromTuple = "FromTuple";
+        public const string FromTicks = "FromTicks";
         public const string Default = "Default";
         public const string String = "String";
         public const string Bool = "Bool";

@@ -24,11 +24,7 @@ namespace Dyalect.Runtime.Types
 
         protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
         {
-            if (obj.TypeId !=  DyType.Integer)
-            {
-                ctx.InvalidType(obj);
-                return;
-            }
+            if (!obj.IsInteger(ctx)) return;
 
             var index = CorrectIndex((int)obj.GetInteger());
 
@@ -76,6 +72,8 @@ namespace Dyalect.Runtime.Types
         internal abstract DyObject GetValue(int index);
 
         internal abstract DyObject[] GetValues();
+
+        internal abstract IEnumerable<DyObject> GetValuesIterator();
 
         public override int GetHashCode()
         {

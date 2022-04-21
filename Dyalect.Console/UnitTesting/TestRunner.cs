@@ -173,7 +173,8 @@ namespace Dyalect.UnitTesting
                 try
                 {
                     DyMachine.Execute(ctx);
-                    ctx.ThrowIf();
+                    ctx.ThrowRuntimeException();
+
                     report.Results.Add(new TestResult
                     {
                         Name = bi.Block.Name,

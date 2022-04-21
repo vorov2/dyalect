@@ -10,23 +10,6 @@ namespace Dyalect.Runtime
         internal int RgFI; //RgFI register
         internal int CallCnt; //Call counter
 
-        public static ExecutionContext External { get; } = new ExternalExecutionContext();
-
-        private sealed class ExternalExecutionContext : ExecutionContext
-        {
-            internal ExternalExecutionContext() : base(null!, null!) { }
-
-            internal override DyVariant? Error
-            {
-                get => base.Error;
-                set
-                {
-                    base.Error = value;
-                    ThrowIf();
-                }
-            }
-        }
-
         internal ExecutionContext(CallStack callStack, RuntimeContext rtx)
         {
             CallStack = callStack;
@@ -65,6 +48,16 @@ namespace Dyalect.Runtime
         public DyVariant? GetError() => Error;
 
         public void ThrowIf()
+        {
+            if (Error is not null)
+            {
+                var err = Error;
+                Error = null;
+                throw new BreakException(err);
+            }
+        }
+
+        public void ThrowRuntimeException()
         {
             if (Error is not null)
             {

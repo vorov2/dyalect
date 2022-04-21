@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Dyalect.Compiler;
 
 namespace Dyalect.Runtime.Types
@@ -27,6 +28,12 @@ namespace Dyalect.Runtime.Types
                 arr[i] = new DyChar(Value[i]);
 
             return arr;
+        }
+
+        internal override IEnumerable<DyObject> GetValuesIterator()
+        {
+            for (var i = 0; i < Value.Length; i++)
+                yield return new DyChar(Value[i]);
         }
 
         public override object ToObject() => Value;

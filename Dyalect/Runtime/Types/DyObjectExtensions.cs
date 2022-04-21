@@ -10,8 +10,46 @@ namespace Dyalect.Runtime.Types
         internal static bool IsFalse(this DyObject self) =>
             ReferenceEquals(self, DyBool.False) || ReferenceEquals(self, DyNil.Instance);
 
-        internal static DyObject GetIterator(this DyObject self, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Types[self.TypeId].GetInstanceMember(self, Builtins.Iterator, ctx);
+        internal static DyFunction? GetIterator(this DyObject self, ExecutionContext ctx)
+        {
+            if (self.TypeId == DyType.Iterator)
+                return ((DyIterator)self).GetIteratorFunction();
+
+            if (self.TypeId == DyType.Function)
+            {
+                if (self is DyNativeIteratorFunction)
+                    return (DyFunction)self;
+
+                var obj = ((DyFunction)self).Call(ctx);
+                var ret = obj as DyFunction;
+
+                if (ret is null)
+                    ctx.InvalidType();
+
+                return ret;
+            }
+
+            var type = ctx.RuntimeContext.Types[self.TypeId];
+
+            if (type.HasInstanceMember(self, Builtins.Iterator, ctx))
+            {
+                var inst = type.GetInstanceMember(self, Builtins.Iterator, ctx);
+                return inst.GetIterator(ctx);                
+            }
+            else
+            {
+                var member = type.GetInstanceMember(self, Builtins.Call, ctx);
+
+                if (ctx.HasErrors)
+                {
+                    ctx.Error = null;
+                    ctx.OperationNotSupported(Builtins.Iterator, self);
+                    return null;
+                }
+
+                return member.GetIterator(ctx);
+            }
+        }
 
         public static DyString ToString(this DyObject self, ExecutionContext ctx) => 
             (DyString)ctx.RuntimeContext.Types[self.TypeId].ToString(ctx, self);
@@ -44,6 +82,23 @@ namespace Dyalect.Runtime.Types
 
         public static bool NotNil(this DyObject self) => !ReferenceEquals(self, DyNil.Instance);
 
+        public static bool IsNil(this DyObject self) => ReferenceEquals(self, DyNil.Instance);
+
+        public static bool NotNat(this DyObject self, ExecutionContext ctx)
+        {
+            if (!IsInteger(self, ctx))
+                return true;
+            if (self.GetInteger() < 0)
+            {
+                ctx.InvalidValue(self);
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool NotInteger(this DyObject self, ExecutionContext ctx) => !IsInteger(self, ctx);
+        
         public static bool IsInteger(this DyObject self, ExecutionContext ctx)
         {
             if (self.TypeId != DyType.Integer)
@@ -65,6 +120,8 @@ namespace Dyalect.Runtime.Types
 
             return true;
         }
+
+        public static bool NotString(this DyObject self, ExecutionContext ctx) => !IsString(self, ctx);
 
         public static bool IsString(this DyObject self, ExecutionContext ctx)
         {
@@ -97,6 +154,36 @@ namespace Dyalect.Runtime.Types
             }
 
             return true;
+        }
+
+        public static DyFunction? ToFunction(this DyObject self, ExecutionContext ctx)
+        {
+            if (self is DyFunction func)
+                return func;
+
+            var typ = ctx.RuntimeContext.Types[self.TypeId];
+
+            if (typ.HasInstanceMember(self, Builtins.Call, ctx))
+                return typ.GetInstanceMember(self, Builtins.Call, ctx) as DyFunction;
+
+            ctx.InvalidType(DyType.Function, self);
+            return null;
+        }
+
+        public static DyObject Invoke(this DyObject self, ExecutionContext ctx, params DyObject[] args)
+        {
+            if (self is DyFunction func)
+                return func.Call(ctx, args);
+
+            var functor = ctx.RuntimeContext.Types[self.TypeId].GetInstanceMember(self, Builtins.Call, ctx);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            if (functor.TypeId != DyType.Function)
+                return ctx.InvalidType(functor);
+
+            return functor.Invoke(ctx, args);
         }
     }
 }

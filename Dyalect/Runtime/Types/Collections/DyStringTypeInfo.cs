@@ -66,6 +66,18 @@ namespace Dyalect.Runtime.Types
             return DyInteger.Get(len);
         }
 
+        protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
+        {
+            var str = self.GetString();
+
+            if (field.TypeId == DyType.String)
+                return str.Contains(field.GetString()) ? DyBool.True : DyBool.False;
+            else if (field.TypeId == DyType.Char)
+                return str.Contains(field.GetChar()) ? DyBool.True : DyBool.False;
+            else
+                return ctx.InvalidType(DyType.String, DyType.Char, field);
+        }
+
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => new DyString(arg.GetString());
 
         protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => new DyString(StringUtil.Escape(arg.GetString()));
@@ -115,18 +127,6 @@ namespace Dyalect.Runtime.Types
                 return DyString.Empty;
 
             return new DyString(str.Value.Substring(beg, len));
-        }
-
-        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject value)
-        {
-            var str = self.GetString();
-
-            if (value.TypeId == DyType.String)
-                return str.Contains(value.GetString()) ? DyBool.True : DyBool.False;
-            else if (value.TypeId == DyType.Char)
-                return str.Contains(value.GetChar()) ? DyBool.True : DyBool.False;
-            else
-                return ctx.InvalidType(DyType.String, DyType.Char, value);
         }
 
         private DyObject IndexOf(ExecutionContext ctx, DyObject self, DyObject value, DyObject fromIndex, DyObject count)
@@ -415,7 +415,6 @@ namespace Dyalect.Runtime.Types
                     new Par("index", DyInteger.Zero), new Par("count", DyNil.Instance)),
                 Method.LastIndexOf => Func.Member(name, LastIndexOf, -1, new Par("value"),
                     new Par("index", DyNil.Instance), new Par("count", DyNil.Instance)),
-                Method.Contains => Func.Member(name, Contains, -1, new Par("value")),
                 Method.Split => Func.Member(name, Split, 0, new Par("separators", true)),
                 Method.Upper => Func.Member(name, Upper),
                 Method.Lower => Func.Member(name, Lower),
@@ -517,8 +516,7 @@ namespace Dyalect.Runtime.Types
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                Method.String => Func.Static(name, Concat, 0, new Par("values", true)),
-                Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
+                Method.String or Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
                 Method.Join => Func.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(","))),
                 Method.Default => Func.Static(name, ctx => DyString.Empty),
                 Method.Repeat => Func.Static(name, Repeat, -1, new Par("value"), new Par("count")),

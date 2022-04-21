@@ -338,3 +338,21 @@
     }
     test(args: (x: 1, y: 2))
 #endregion
+
+#region "Methods: ToSet"
+    let xs = (1,2,2,2,3,4,4,5,5,5)
+    let ys = xs.ToSet()
+    assert("Set (1, 2, 3, 4, 5)", ys.ToString())
+#endregion
+
+#region "Tuple: Alter 1"
+    let xs = (x: 1, y: 2)
+    let ys = xs.Alter(y: 22, z: 3)
+    assert((x: 1, y: 22, z: 3), ys)
+#endregion
+
+#region "Tuple: Alter 2"
+    let xs = (x: 1, y: 2)
+    let ys = xs.Alter('f', 'o', 'o', y: 22, z: 3)
+    assert((x: 1, y: 22, 'f', 'o', 'o', z: 3), ys)
+#endregion

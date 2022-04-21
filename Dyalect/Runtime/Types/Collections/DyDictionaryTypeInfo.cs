@@ -1,6 +1,4 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Debug;
-using Dyalect.Parser;
+﻿using Dyalect.Debug;
 using System.Collections.Generic;
 using System.Text;
 
@@ -63,8 +61,8 @@ namespace Dyalect.Runtime.Types
             return new DyString(sb.ToString());
         }
 
-        protected override DyObject ContainsOp(DyObject self, HashString field, ExecutionContext ctx) =>
-            ((DyDictionary)self).ContainsKey(new DyString(field)) ? DyBool.True : DyBool.False;
+        protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx) =>
+            ((DyDictionary)self).ContainsKey(field) ? DyBool.True : DyBool.False;
 
         protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
@@ -107,19 +105,15 @@ namespace Dyalect.Runtime.Types
             return DyNil.Instance;
         }
 
-        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject funObj)
+        private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject functor)
         {
-            if (funObj.TypeId != DyType.Function && funObj.TypeId != DyType.Nil)
-                return ctx.InvalidType(DyType.Function, DyType.Nil, funObj);
-
-            var fun = funObj as DyFunction;
             var map = (DyDictionary)self;
 
             foreach (var (key, value) in map.Dictionary)
             {
-                if (fun is not null)
+                if (functor.NotNil())
                 {
-                    var res = fun.Call(ctx, value);
+                    var res = functor.Invoke(ctx, value);
 
                     if (ctx.HasErrors)
                         return DyNil.Instance;
@@ -150,12 +144,6 @@ namespace Dyalect.Runtime.Types
 
         private DyObject ToTuple(ExecutionContext ctx, DyObject self) => new DyTuple(GetArray(self));
 
-        private DyObject Contains(ExecutionContext ctx, DyObject self, DyObject key)
-        {
-            var map = (DyDictionary)self;
-            return map.ContainsKey(key) ? DyBool.True : DyBool.False;
-        }
-
         private DyObject ContainsValue(ExecutionContext ctx, DyObject self, DyObject value)
         {
             var map = (DyDictionary)self;
@@ -179,7 +167,6 @@ namespace Dyalect.Runtime.Types
                 Method.Clear => Func.Member(name, ClearItems),
                 Method.ToTuple => Func.Member(name, ToTuple),
                 Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
-                Method.Contains => Func.Member(name, Contains, -1, new Par("key")),
                 Method.ContainsValue => Func.Member(name, ContainsValue, -1, new Par("value")),
                 Method.GetAndRemove => Func.Member(name, GetAndRemove, -1, new Par("value")),
                 _ => base.InitializeInstanceMember(self, name, ctx),
