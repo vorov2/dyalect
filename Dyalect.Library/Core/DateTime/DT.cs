@@ -114,6 +114,9 @@ internal static class DT
             case Day:
                 builder.Append(Format(self.Day, elem));
                 return true;
+            case Literal:
+                builder.Append(elem.Value);
+                return true;
             default:
                 return false;
         }

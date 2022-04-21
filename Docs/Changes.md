@@ -1,5 +1,6 @@
 # 0.42.0
   * Change: _`TimeDelta` data type is refactored._
+  * Change: _Refactoring in virtual machine and runtime error handling layer._
   * Add: _`TimeDelta` type should support `Comparable` mixin_ ([Issue #789](https://github.com/vorov2/dyalect/issues/789), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta)).
   * Add: _Add `Time` date type_ ([Issue #787](https://github.com/vorov2/dyalect/issues/787), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Time)).
   * Add: _Add `Date` date type_ ([Issue #791](https://github.com/vorov2/dyalect/issues/791), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Date)).

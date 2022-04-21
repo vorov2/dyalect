@@ -108,13 +108,13 @@ namespace Dyalect.Runtime
                 yield return new(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
         }
 
-        private static DyCodeException? GetCodeException(Exception ex)
+        private static IError? GetInnerException(Exception ex)
         {
-            if (ex is DyCodeException dy)
-                return dy;
-            
+            if (ex is IError err)
+                return err;
+
             if (ex.InnerException is not null)
-                return GetCodeException(ex.InnerException);
+                return GetInnerException(ex.InnerException);
 
             return null;
         }

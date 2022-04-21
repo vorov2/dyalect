@@ -16,6 +16,7 @@ namespace Dyalect.Library.Core
         public DyTimeDeltaTypeInfo TimeDelta { get; }
         public DyCalendarTypeInfo Calendar { get; }
         public DyTimeTypeInfo Time { get; }
+        public DyDateTypeInfo Date { get; }
 
         public CoreModule()
         {
@@ -30,6 +31,7 @@ namespace Dyalect.Library.Core
             TimeDelta = AddType<DyTimeDeltaTypeInfo>();
             Calendar = AddType<DyCalendarTypeInfo>();
             Time = AddType<DyTimeTypeInfo>();
+            Date = AddType<DyDateTypeInfo>();
         }
     }
 }

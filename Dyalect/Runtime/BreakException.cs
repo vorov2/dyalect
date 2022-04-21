@@ -3,7 +3,7 @@ using System;
 
 namespace Dyalect.Runtime
 {
-    internal sealed class BreakException : Exception
+    internal sealed class BreakException : Exception, IError
     {
         public DyVariant Error { get; }
 

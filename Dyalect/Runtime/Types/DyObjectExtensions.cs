@@ -1,189 +1,204 @@
 ﻿using Dyalect.Compiler;
 
-namespace Dyalect.Runtime.Types
+namespace Dyalect.Runtime.Types;
+
+public static class DyObjectExtensions
 {
-    public static class DyObjectExtensions
+    internal static bool IsTrue(this DyObject self) =>
+        !ReferenceEquals(self, DyBool.False) && !ReferenceEquals(self, DyNil.Instance);
+
+    internal static bool IsFalse(this DyObject self) =>
+        ReferenceEquals(self, DyBool.False) || ReferenceEquals(self, DyNil.Instance);
+
+    internal static DyFunction? GetIterator(this DyObject self, ExecutionContext ctx)
     {
-        internal static bool IsTrue(this DyObject self) =>
-            !ReferenceEquals(self, DyBool.False) && !ReferenceEquals(self, DyNil.Instance);
+        if (self.TypeId == DyType.Iterator)
+            return ((DyIterator)self).GetIteratorFunction();
 
-        internal static bool IsFalse(this DyObject self) =>
-            ReferenceEquals(self, DyBool.False) || ReferenceEquals(self, DyNil.Instance);
-
-        internal static DyFunction? GetIterator(this DyObject self, ExecutionContext ctx)
+        if (self.TypeId == DyType.Function)
         {
-            if (self.TypeId == DyType.Iterator)
-                return ((DyIterator)self).GetIteratorFunction();
+            if (self is DyNativeIteratorFunction)
+                return (DyFunction)self;
 
-            if (self.TypeId == DyType.Function)
-            {
-                if (self is DyNativeIteratorFunction)
-                    return (DyFunction)self;
+            var obj = ((DyFunction)self).Call(ctx);
+            var ret = obj as DyFunction;
 
-                var obj = ((DyFunction)self).Call(ctx);
-                var ret = obj as DyFunction;
+            if (ret is null)
+                ctx.InvalidType();
 
-                if (ret is null)
-                    ctx.InvalidType();
-
-                return ret;
-            }
-
-            var type = ctx.RuntimeContext.Types[self.TypeId];
-
-            if (type.HasInstanceMember(self, Builtins.Iterator, ctx))
-            {
-                var inst = type.GetInstanceMember(self, Builtins.Iterator, ctx);
-                return inst.GetIterator(ctx);                
-            }
-            else
-            {
-                var member = type.GetInstanceMember(self, Builtins.Call, ctx);
-
-                if (ctx.HasErrors)
-                {
-                    ctx.Error = null;
-                    ctx.OperationNotSupported(Builtins.Iterator, self);
-                    return null;
-                }
-
-                return member.GetIterator(ctx);
-            }
+            return ret;
         }
 
-        public static DyString ToString(this DyObject self, ExecutionContext ctx) => 
-            (DyString)ctx.RuntimeContext.Types[self.TypeId].ToString(ctx, self);
+        var type = ctx.RuntimeContext.Types[self.TypeId];
 
-        public static DyString ToLiteral(this DyObject self, ExecutionContext ctx) =>
-            (DyString)ctx.RuntimeContext.Types[self.TypeId].ToLiteral(ctx, self);
-
-        public static bool Equals(this DyObject left, DyObject right, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Types[left.TypeId].Eq(ctx, left, right).IsTrue();
-
-        public static bool NotEquals(this DyObject left, DyObject right, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Types[left.TypeId].Neq(ctx, left, right).IsTrue();
-        
-        public static bool Lesser(this DyObject left, DyObject right, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Types[left.TypeId].Lt(ctx, left, right).IsTrue();
-
-        public static bool Greater(this DyObject left, DyObject right, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Types[left.TypeId].Gt(ctx, left, right).IsTrue();
-
-        public static string GetTypeName(this DyObject self, ExecutionContext ctx)
+        if (type.HasInstanceMember(self, Builtins.Iterator, ctx))
         {
-            if (self is DyInteropObject io)
-                return $"{DyTypeNames.Interop}<{io.Type.FullName ?? io.Type.Name}>";
-            else
-                return ctx.RuntimeContext.Types[self.TypeId].TypeName;
+            var inst = type.GetInstanceMember(self, Builtins.Iterator, ctx);
+            return inst.GetIterator(ctx);
         }
-
-        public static DyObject Negate(this DyObject self, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Types[self.TypeId].Neg(ctx, self);
-
-        public static bool NotNil(this DyObject self) => !ReferenceEquals(self, DyNil.Instance);
-
-        public static bool IsNil(this DyObject self) => ReferenceEquals(self, DyNil.Instance);
-
-        public static bool NotNat(this DyObject self, ExecutionContext ctx)
+        else
         {
-            if (!IsInteger(self, ctx))
-                return true;
-            if (self.GetInteger() < 0)
+            var member = type.GetInstanceMember(self, Builtins.Call, ctx);
+
+            if (ctx.HasErrors)
             {
-                ctx.InvalidValue(self);
-                return true;
+                ctx.Error = null;
+                ctx.OperationNotSupported(Builtins.Iterator, self);
+                return null;
             }
 
+            return member.GetIterator(ctx);
+        }
+    }
+
+    public static DyString ToString(this DyObject self, ExecutionContext ctx) =>
+        (DyString)ctx.RuntimeContext.Types[self.TypeId].ToString(ctx, self);
+
+    public static DyString ToLiteral(this DyObject self, ExecutionContext ctx) =>
+        (DyString)ctx.RuntimeContext.Types[self.TypeId].ToLiteral(ctx, self);
+
+    public static bool Equals(this DyObject left, DyObject right, ExecutionContext ctx) =>
+        ctx.RuntimeContext.Types[left.TypeId].Eq(ctx, left, right).IsTrue();
+
+    public static bool NotEquals(this DyObject left, DyObject right, ExecutionContext ctx) =>
+        ctx.RuntimeContext.Types[left.TypeId].Neq(ctx, left, right).IsTrue();
+
+    public static bool Lesser(this DyObject left, DyObject right, ExecutionContext ctx) =>
+        ctx.RuntimeContext.Types[left.TypeId].Lt(ctx, left, right).IsTrue();
+
+    public static bool Greater(this DyObject left, DyObject right, ExecutionContext ctx) =>
+        ctx.RuntimeContext.Types[left.TypeId].Gt(ctx, left, right).IsTrue();
+
+    public static string GetTypeName(this DyObject self, ExecutionContext ctx)
+    {
+        if (self is DyInteropObject io)
+            return $"{DyTypeNames.Interop}<{io.Type.FullName ?? io.Type.Name}>";
+        else
+            return ctx.RuntimeContext.Types[self.TypeId].TypeName;
+    }
+
+    public static DyObject Negate(this DyObject self, ExecutionContext ctx) =>
+        ctx.RuntimeContext.Types[self.TypeId].Neg(ctx, self);
+
+    public static bool NotNil(this DyObject self) => !ReferenceEquals(self, DyNil.Instance);
+
+    public static bool IsNil(this DyObject self) => ReferenceEquals(self, DyNil.Instance);
+
+    public static bool NotNat(this DyObject self, ExecutionContext ctx)
+    {
+        if (!IsInteger(self, ctx))
+            return true;
+        if (self.GetInteger() < 0)
+        {
+            ctx.InvalidValue(self);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static bool NotInteger(this DyObject self, ExecutionContext ctx) => !IsInteger(self, ctx);
+
+    public static bool IsInteger(this DyObject self, ExecutionContext ctx)
+    {
+        if (self.TypeId != DyType.Integer)
+        {
+            ctx.InvalidType(DyType.Integer, self);
             return false;
         }
 
-        public static bool NotInteger(this DyObject self, ExecutionContext ctx) => !IsInteger(self, ctx);
-        
-        public static bool IsInteger(this DyObject self, ExecutionContext ctx)
-        {
-            if (self.TypeId != DyType.Integer)
-            {
-                ctx.InvalidType(DyType.Integer, self);
-                return false;
-            }
+        return true;
+    }
 
+    public static bool NotNatNumber(this DyObject self, ExecutionContext ctx)
+    {
+        if (!IsNumber(self, ctx))
+            return true;
+
+        if (self.GetFloat() == 0)
+        {
+            ctx.InvalidValue(self);
             return true;
         }
 
-        public static bool IsNumber(this DyObject self, ExecutionContext ctx)
-        {
-            if (self.TypeId != DyType.Integer && self.TypeId != DyType.Float)
-            {
-                ctx.InvalidType(DyType.Integer, DyType.Float, self);
-                return false;
-            }
+        return false;
+    }
 
-            return true;
+    public static bool NotNumber(this DyObject self, ExecutionContext ctx) => !IsNumber(self, ctx);
+
+    public static bool IsNumber(this DyObject self, ExecutionContext ctx)
+    {
+        if (self.TypeId != DyType.Integer && self.TypeId != DyType.Float)
+        {
+            ctx.InvalidType(DyType.Integer, DyType.Float, self);
+            return false;
         }
 
-        public static bool NotString(this DyObject self, ExecutionContext ctx) => !IsString(self, ctx);
+        return true;
+    }
 
-        public static bool IsString(this DyObject self, ExecutionContext ctx)
+    public static bool NotString(this DyObject self, ExecutionContext ctx) => !IsString(self, ctx);
+
+    public static bool IsString(this DyObject self, ExecutionContext ctx)
+    {
+        if (self.TypeId != DyType.String)
         {
-            if (self.TypeId != DyType.String)
-            {
-                ctx.InvalidType(DyType.String, self);
-                return false;
-            }
-
-            return true;
+            ctx.InvalidType(DyType.String, self);
+            return false;
         }
 
-        public static bool IsTuple(this DyObject self, ExecutionContext ctx)
-        {
-            if (self.TypeId != DyType.Tuple)
-            {
-                ctx.InvalidType(DyType.Tuple, self);
-                return false;
-            }
+        return true;
+    }
 
-            return true;
+    public static bool IsTuple(this DyObject self, ExecutionContext ctx)
+    {
+        if (self.TypeId != DyType.Tuple)
+        {
+            ctx.InvalidType(DyType.Tuple, self);
+            return false;
         }
 
-        public static bool IsArray(this DyObject self, ExecutionContext ctx)
-        {
-            if (self.TypeId != DyType.Array)
-            {
-                ctx.InvalidType(DyType.Array, self);
-                return false;
-            }
+        return true;
+    }
 
-            return true;
+    public static bool IsArray(this DyObject self, ExecutionContext ctx)
+    {
+        if (self.TypeId != DyType.Array)
+        {
+            ctx.InvalidType(DyType.Array, self);
+            return false;
         }
 
-        public static DyFunction? ToFunction(this DyObject self, ExecutionContext ctx)
-        {
-            if (self is DyFunction func)
-                return func;
+        return true;
+    }
 
-            var typ = ctx.RuntimeContext.Types[self.TypeId];
+    public static DyFunction? ToFunction(this DyObject self, ExecutionContext ctx)
+    {
+        if (self is DyFunction func)
+            return func;
 
-            if (typ.HasInstanceMember(self, Builtins.Call, ctx))
-                return typ.GetInstanceMember(self, Builtins.Call, ctx) as DyFunction;
+        var typ = ctx.RuntimeContext.Types[self.TypeId];
 
-            ctx.InvalidType(DyType.Function, self);
-            return null;
-        }
+        if (typ.HasInstanceMember(self, Builtins.Call, ctx))
+            return typ.GetInstanceMember(self, Builtins.Call, ctx) as DyFunction;
 
-        public static DyObject Invoke(this DyObject self, ExecutionContext ctx, params DyObject[] args)
-        {
-            if (self is DyFunction func)
-                return func.Call(ctx, args);
+        ctx.InvalidType(DyType.Function, self);
+        return null;
+    }
 
-            var functor = ctx.RuntimeContext.Types[self.TypeId].GetInstanceMember(self, Builtins.Call, ctx);
+    public static DyObject Invoke(this DyObject self, ExecutionContext ctx, params DyObject[] args)
+    {
+        if (self is DyFunction func)
+            return func.Call(ctx, args);
 
-            if (ctx.HasErrors)
-                return DyNil.Instance;
+        var functor = ctx.RuntimeContext.Types[self.TypeId].GetInstanceMember(self, Builtins.Call, ctx);
 
-            if (functor.TypeId != DyType.Function)
-                return ctx.InvalidType(functor);
+        if (ctx.HasErrors)
+            return DyNil.Instance;
 
-            return functor.Invoke(ctx, args);
-        }
+        if (functor.TypeId != DyType.Function)
+            return ctx.InvalidType(functor);
+
+        return functor.Invoke(ctx, args);
     }
 }
