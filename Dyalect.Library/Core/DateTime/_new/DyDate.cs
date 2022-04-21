@@ -18,22 +18,7 @@ namespace Dyalect.Library.Core
         public int Day => new DateTime(days * DT.TicksPerDay).Day;
     }
 
-    public sealed class DyTime
-    {
-        private readonly long ticks;
-        
-        public int Tick => (int)(ticks % 10_000_000);
-
-        public int Microsecond => (int)(ticks / DT.TicksPerMicrosecond % 1_000_000);
-
-        public int Millisecond => (int)(ticks / DT.TicksPerMillisecond % 1000);
-
-        public int Second => (int)(ticks / DT.TicksPerSecond % 60);
-
-        public int Minute => (int)(ticks / DT.TicksPerMinute % 60);
-
-        public int Hour => (int)(ticks / DT.TicksPerHour % 24);
-    }
+    
 
     public sealed class DyTestDateTime //: DyForeignObject
     {

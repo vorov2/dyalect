@@ -276,10 +276,15 @@ fox is the red fox.]>
     assert(1409, td as Integer)
 #endregion
 
-#region "TimeDelta: ToString"
+#region "TimeDelta: ToString 1"
     let td = TimeDelta(hours: 12, minutes: 3, seconds: 12)
     assert("+0.12:03:12.00", td.ToString())
     assert("03-12-12", td.ToString(format: "mm-hh-ss"))
+#endregion
+
+#region "TimeDelta: ToString 2"
+    let td = TimeDelta(hours: 12, minutes: 3, seconds: 12)
+    assert("03+12+12", td.ToString(format: "mm\\+hh\\+ss"))
 #endregion
 
 #region "TimeDelta: Min, Max, Default"

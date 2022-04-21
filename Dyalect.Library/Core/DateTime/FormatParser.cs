@@ -146,6 +146,9 @@ internal sealed class FormatParser
 
         for (var i = 0; i < input.Length; i++)
         {
+            if (input[i] == '\\')
+                i += 1;
+
             var spc = CheckSpecifiers(input, ref i);
 
             if (spc is not null)
