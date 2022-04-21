@@ -1,7 +1,6 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 
 namespace Dyalect.Library.Core
 {
@@ -9,7 +8,7 @@ namespace Dyalect.Library.Core
     {
         private const string Time = "Time";
 
-        public DyTimeTypeInfo() : base(Time) => AddMixin(DyType.Comparable);
+        public DyTimeTypeInfo() : base(Time) { }
 
         private DyObject New(ExecutionContext ctx, DyObject hours, DyObject minutes, DyObject sec, DyObject ms) =>
             CreateNew(ctx, DyInteger.Zero, hours, minutes, sec, ms);

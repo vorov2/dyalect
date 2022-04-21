@@ -4,39 +4,6 @@ using static Dyalect.Library.Core.FormatElementKind;
 
 namespace Dyalect.Library.Core;
 
-public interface ITime
-{
-    int Hours { get; }
-    int Minutes { get; }
-    int Seconds { get; }
-    int Milliseconds { get; }
-    int Microseconds { get; }
-    int Ticks { get; }
-    long TotalTicks { get; }
-}
-
-public interface IDate
-{
-    int Year { get; }
-    int Month { get; }  
-    int Day { get; }
-}
-
-public interface IDateTime : IDate, ITime
-{
-
-}
-
-public interface IZonedDateTime : IDateTime
-{
-    IInterval Interval { get; }
-}
-
-public interface IInterval : ITime
-{
-    int Days { get; }
-}
-
 internal static class DT
 {
     public const long TicksPerDay = 24 * TicksPerHour;

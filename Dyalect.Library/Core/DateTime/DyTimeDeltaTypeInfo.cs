@@ -9,7 +9,7 @@ namespace Dyalect.Library.Core
     {
         private const string TimeDelta = "TimeDelta";
 
-        public DyTimeDeltaTypeInfo() : base(TimeDelta) => AddMixin(DyType.Comparable);
+        public DyTimeDeltaTypeInfo() : base(TimeDelta) { }
 
         protected override SupportedOperations GetSupportedOperations() =>
             base.GetSupportedOperations() | SupportedOperations.Add | SupportedOperations.Sub | SupportedOperations.Neg;
