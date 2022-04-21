@@ -7,19 +7,6 @@ using System.Threading.Tasks;
 
 namespace Dyalect.Library.Core
 {
-    public sealed class DyDate
-    {
-        private readonly int days;
-
-        public int Year => new DateTime(days * DT.TicksPerDay).Year;
-
-        public int Month => new DateTime(days * DT.TicksPerDay).Month;
-
-        public int Day => new DateTime(days * DT.TicksPerDay).Day;
-    }
-
-    
-
     public sealed class DyTestDateTime //: DyForeignObject
     {
         private const long TicksPerDay = 24 * TicksPerHour;
