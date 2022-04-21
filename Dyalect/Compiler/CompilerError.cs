@@ -1,133 +1,132 @@
-﻿namespace Dyalect.Compiler
+﻿namespace Dyalect.Compiler;
+
+public enum CompilerError
 {
-    public enum CompilerError
-    {
-        None = 0,
+    None = 0,
 
-        TooManyErrors = 201,
+    TooManyErrors = 201,
 
-        VariableAlreadyDeclared = 202,
+    VariableAlreadyDeclared = 202,
 
-        UndefinedVariable = 203,
+    UndefinedVariable = 203,
 
-        UnableAssignExpression = 204,
+    UnableAssignExpression = 204,
 
-        UnableAssignConstant = 205,
+    UnableAssignConstant = 205,
 
-        NoEnclosingLoop = 206,
+    NoEnclosingLoop = 206,
 
-        UndefinedType = 207,
+    UndefinedType = 207,
 
-        UndefinedModule = 208,
+    UndefinedModule = 208,
 
-        ReturnNotAllowed = 209,
+    ReturnNotAllowed = 209,
 
-        NestedMethod = 210,
+    NestedMethod = 210,
 
-        ExpressionNoName = 211,
+    ExpressionNoName = 211,
 
-        PrivateNameAccess = 212,
+    PrivateNameAccess = 212,
 
-        UndefinedBaseVariable = 213,
+    UndefinedBaseVariable = 213,
 
-        BaseNotAllowed = 214,
+    BaseNotAllowed = 214,
 
-        StaticOnlyMethods = 215,
+    StaticOnlyMethods = 215,
 
-        ReturnInIterator = 216,
+    ReturnInIterator = 216,
 
-        CodeIslandEmpty = 217,
+    CodeIslandEmpty = 217,
 
-        CodeIslandInvalid = 218,
+    CodeIslandInvalid = 218,
 
-        VarArgNoDefaultValue = 219,
+    VarArgNoDefaultValue = 219,
 
-        VarArgOnlyOne = 220,
+    VarArgOnlyOne = 220,
 
-        InvalidDefaultValue = 221,
+    InvalidDefaultValue = 221,
 
-        PatternNotSupported = 222,
+    PatternNotSupported = 222,
 
-        SliceNotSupported = 223,
+    SliceNotSupported = 223,
 
-        NamedArgumentMultipleTimes = 224,
+    NamedArgumentMultipleTimes = 224,
 
-        OverrideNotAllowed = 225,
+    OverrideNotAllowed = 225,
 
-        TypeAlreadyDeclared = 226,
+    TypeAlreadyDeclared = 226,
 
-        PrivateScopeOnlyGlobal = 227,
+    PrivateScopeOnlyGlobal = 227,
 
-        PrivateScopeNested = 228,
+    PrivateScopeNested = 228,
 
-        MemberNameCamel = 229,
+    MemberNameCamel = 229,
 
-        PrivateMethod = 230,
+    PrivateMethod = 230,
 
-        TypesOnlyGlobalScope = 231,
+    TypesOnlyGlobalScope = 231,
 
-        UnableToLinkModule = 232,
+    UnableToLinkModule = 232,
 
-        BindingPatternNoInit = 233,
+    BindingPatternNoInit = 233,
 
-        InvalidLabel = 234,
+    InvalidLabel = 234,
 
-        UnknownDirective = 235,
+    UnknownDirective = 235,
 
-        InvalidDirective = 236,
-        
-        InvalidSlice = 237,
+    InvalidDirective = 236,
+    
+    InvalidSlice = 237,
 
-        InvalidRethrow = 238,
+    InvalidRethrow = 238,
 
-        LabelOnlyCamel = 239,
+    LabelOnlyCamel = 239,
 
-        PositionalArgumentAfterKeyword = 240,
+    PositionalArgumentAfterKeyword = 240,
 
-        IndexerStatic = 241,
+    IndexerStatic = 241,
 
-        IndexerWrongArguments = 242,
+    IndexerWrongArguments = 242,
 
-        IndexerSetOrGet = 243,
+    IndexerSetOrGet = 243,
 
-        TypeNameCamel = 244,
+    TypeNameCamel = 244,
 
-        AccessorOnlyMethod = 245,
+    AccessorOnlyMethod = 245,
 
-        AutoNotAllowed = 246,
+    AutoNotAllowed = 246,
 
-        InvalidTypeDefaultValue = 247,
+    InvalidTypeDefaultValue = 247,
 
-        GuardOnBinding = 248,
+    GuardOnBinding = 248,
 
-        MethodNotRecursive = 249,
+    MethodNotRecursive = 249,
 
-        DuplicateModuleAlias = 250,
+    DuplicateModuleAlias = 250,
 
-        InvalidLazyBinding = 251,
+    InvalidLazyBinding = 251,
 
-        InvalidCast = 252,
+    InvalidCast = 252,
 
-        YieldNotAllowed = 253,
+    YieldNotAllowed = 253,
 
-        BoolCastNotAllowed = 254,
+    BoolCastNotAllowed = 254,
 
-        SelfCastNotAllowed = 255,
+    SelfCastNotAllowed = 255,
 
-        InvalidFunctionArgument = 256,
+    InvalidFunctionArgument = 256,
 
-        BuiltinWrongArguments = 257,
+    BuiltinWrongArguments = 257,
 
-        SetterWrongArguments = 258,
+    SetterWrongArguments = 258,
 
-        GetterWrongArguments = 259,
+    GetterWrongArguments = 259,
 
-        InvalidMixin = 260,
+    InvalidMixin = 260,
 
-        MixinAlreadySpecified = 261,
+    MixinAlreadySpecified = 261,
 
-        MixinSameAsType = 262,
+    MixinSameAsType = 262,
 
-        DuplicateLabel = 263
-    }
+    DuplicateLabel = 263
 }
