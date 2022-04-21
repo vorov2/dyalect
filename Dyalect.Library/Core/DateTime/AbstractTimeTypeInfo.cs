@@ -10,6 +10,13 @@ namespace Dyalect.Library.Core
     {
         protected AbstractTimeTypeInfo(string typeName) : base(typeName) { }
 
+        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+            targetType.ReflectedTypeId switch
+            {
+                DyType.Integer => DyInteger.Get(((T)self).TotalTicks),
+                _ => base.CastOp(self, targetType, ctx)
+            };
+
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {

@@ -570,10 +570,81 @@ fox is the red fox.]>
 #region "Time: Min, Max, Default"
     assert(Integer.Min(), Time.Min().TotalTicks)
     assert(Integer.Max(), Time.Max().TotalTicks)
-    assert(0, Time.Default().Ticks)
+    assert(0, Time.Default().TotalTicks)
 #endregion
 
 #region "Time: Parse"
     assert("00:12:34", Time.Parse("00:12:34", "hh:mm:ss").ToString("hh:mm:ss"))
     assert("00:12:34", Time.Parse("00--12--34", "hh--mm--ss").ToString("hh:mm:ss"))
+#endregion
+
+#region "Date: GetType"
+    let td = Date(year: 2012, month: 12, day: 12)
+    assert(Date, td.GetType())
+    assert("Date", td.GetType().name)
+#endregion
+
+#region "Date: construction"
+    var td = Date(year: 2012, month: 12, day: 3)
+    assert(2012, td.Year)
+    assert(12, td.Month)
+    assert(3, td.Day)
+#endregion
+
+#region "Date: equality"
+    let x = Date(year: 2012, month: 12, day: 3)
+    let y = Date(year: 2012, month: 12, day: 1)
+    let z = Date(year: 2012, month: 12, day: 3)
+    assert(true, x == z)
+    assert(false, x == y)
+    assert(true, x != y)
+#endregion
+
+#region "Date: comparison"
+    let x = Date(year: 2012, month: 12, day: 3)
+    let y = Date(year: 2012, month: 12, day: 1)
+    let z = Date(year: 2012, month: 12, day: 3)
+    assert(true, x > y)
+    assert(true, x >= z)
+    assert(false, y > z)
+    assert(true, y < z)
+    assert(true, y <= z)
+    assert(true, x <= z)
+#endregion
+
+#region "Date: casting"
+    let td = Date(year: 2012, month: 12, day: 3)
+    assert(734839, td as Integer)
+#endregion
+
+#region "Date: ToString 1"
+    let td = Date(year: 2012, month: 12, day: 3)
+    assert("2012-12-03", td.ToString())
+    assert("03-12-12", td.ToString(format: "dd-MM-yy"))
+#endregion
+
+#region "Date: ToString 2"
+    let td = Date(year: 2012, month: 12, day: 3)
+    assert("03+12+12", td.ToString(format: "dd\\+MM\\+yy"))
+#endregion
+
+#region "Date: Min, Max, Default"
+    assert(0, Date.Min() as Integer)
+    assert(3652058, Date.Max() as Integer)
+    assert(0, Time.Default() as Integer)
+#endregion
+
+#region "Date: Parse"
+    assert("2024-03-12", Date.Parse("12:03:2024", "dd:MM:yyyy").ToString())
+    assert("03/12/24", Date.Parse("12--03--2024", "dd--MM--yyyy").ToString("MM/dd/yy"))
+#endregion
+
+#region "Date: AddMonths, AddDays, AddYears"
+    var dt = Date(year: 2022, month: 1, day: 30)
+    dt = dt.AddMonths(1)
+    assert("2022-02-28", dt.ToString())
+    dt = dt.AddMonths(1)
+    assert("2022-03-28", dt.ToString())
+    dt = dt.AddDays(3)
+    assert("2022-03-31", dt.ToString())
 #endregion

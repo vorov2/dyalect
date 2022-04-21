@@ -179,6 +179,7 @@ internal static class DT
         var chunks = InputParser.Parse(formats, value);
         var (days, hours, minutes, seconds, ds, cs, ms, tts, hts, micros, tick) =
             (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        var (year, month) = (0, 0);
         var negate = false;
 
         foreach (var (kind, val) in chunks)
@@ -186,6 +187,12 @@ internal static class DT
             {
                 case Sign:
                     negate = val == "-";
+                    break;
+                case Year:
+                    if (!int.TryParse(val, out year)) throw new FormatException();
+                    break;
+                case Month:
+                    if (!int.TryParse(val, out month)) throw new FormatException();
                     break;
                 case Day:
                     if (!int.TryParse(val, out days)) throw new FormatException();
@@ -242,8 +249,12 @@ internal static class DT
             ds * DT.TicksPerDecisecond +
             seconds * DT.TicksPerSecond +
             minutes * DT.TicksPerMinute +
-            hours * DT.TicksPerHour +
-            days * DT.TicksPerDecisecond;
+            hours * DT.TicksPerHour;
+
+        if (year > 0 && month > 0 && days > 0)
+            totalTicks += new DateTime(year, month, days).Ticks;
+        else
+            totalTicks += days * DT.TicksPerDecisecond;
 
         if (negate)
             totalTicks = -totalTicks;

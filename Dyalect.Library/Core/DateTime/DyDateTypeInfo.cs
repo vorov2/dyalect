@@ -13,6 +13,13 @@ public sealed class DyDateTypeInfo : AbstractSpanTypeInfo<DyDate>
 
     protected override SupportedOperations GetSupportedOperations() => base.GetSupportedOperations();
 
+    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+        targetType.ReflectedTypeId switch
+        {
+            DyType.Integer => DyInteger.Get(((DyDate)self).TotalTicks / DT.TicksPerDay),
+            _ => base.CastOp(self, targetType, ctx)
+        };
+
     private DyObject AddDays(ExecutionContext ctx, DyObject self, DyObject days)
     {
         if (days.NotNat(ctx)) return Default();

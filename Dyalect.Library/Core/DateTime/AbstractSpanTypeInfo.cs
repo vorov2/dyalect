@@ -84,13 +84,6 @@ namespace Dyalect.Library.Core
             return ((T)left).TotalTicks <= ((T)right).TotalTicks ? DyBool.True : DyBool.False;
         }
 
-        protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-            targetType.ReflectedTypeId switch
-            {
-                DyType.Integer => DyInteger.Get(((T)self).TotalTicks),
-                _ => base.CastOp(self, targetType, ctx)
-            };
-
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
