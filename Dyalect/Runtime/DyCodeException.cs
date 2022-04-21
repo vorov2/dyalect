@@ -1,7 +1,6 @@
 ﻿using System;
 using Dyalect.Debug;
 using Dyalect.Runtime.Types;
-
 namespace Dyalect.Runtime;
 
 public sealed class DyCodeException : DyRuntimeException, IError

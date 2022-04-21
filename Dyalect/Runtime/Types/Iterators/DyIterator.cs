@@ -1,47 +1,45 @@
 ﻿using System.Collections.Generic;
+namespace Dyalect.Runtime.Types;
 
-namespace Dyalect.Runtime.Types
+public abstract class DyIterator : DyObject
 {
-    public abstract class DyIterator : DyObject
+    protected DyIterator() : base(DyType.Iterator) { }
+
+    internal static DyIterator Create(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) =>
+        new DyNativeIterator(unitId, handle, captures, locals);
+
+    public static DyIterator Create(IEnumerable<DyObject> seq) => new DyForeignIterator(seq);
+
+    public abstract DyFunction GetIteratorFunction();
+
+    public abstract IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx);
+
+    public static IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx, DyObject val) =>
+        val is IEnumerable<DyObject> seq ? seq : InternalRun(ctx, val);
+
+    private static IEnumerable<DyObject> InternalRun(ExecutionContext ctx, DyObject val)
     {
-        protected DyIterator() : base(DyType.Iterator) { }
+        var iter = val.GetIterator(ctx)!;
 
-        internal static DyIterator Create(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) =>
-            new DyNativeIterator(unitId, handle, captures, locals);
+        if (ctx.HasErrors)
+            yield break;
 
-        public static DyIterator Create(IEnumerable<DyObject> seq) => new DyForeignIterator(seq);
-
-        public abstract DyFunction GetIteratorFunction();
-
-        public abstract IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx);
-
-        public static IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx, DyObject val) =>
-            val is IEnumerable<DyObject> seq ? seq : InternalRun(ctx, val);
-
-        private static IEnumerable<DyObject> InternalRun(ExecutionContext ctx, DyObject val)
+        while (true)
         {
-            var iter = val.GetIterator(ctx)!;
+            var res = iter.Call(ctx);
 
             if (ctx.HasErrors)
-                yield break;
-
-            while (true)
             {
-                var res = iter.Call(ctx);
+                iter.Reset(ctx);
+                yield break;
+            }
 
-                if (ctx.HasErrors)
-                {
-                    iter.Reset(ctx);
-                    yield break;
-                }
-
-                if (!ReferenceEquals(res, DyNil.Terminator))
-                    yield return res;
-                else
-                {
-                    iter.Reset(ctx);
-                    yield break;
-                }
+            if (!ReferenceEquals(res, DyNil.Terminator))
+                yield return res;
+            else
+            {
+                iter.Reset(ctx);
+                yield break;
             }
         }
     }

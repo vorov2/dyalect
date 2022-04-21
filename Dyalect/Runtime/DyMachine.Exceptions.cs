@@ -2,121 +2,119 @@
 using Dyalect.Runtime.Types;
 using System;
 using System.Collections.Generic;
+namespace Dyalect.Runtime;
 
-namespace Dyalect.Runtime
+partial class DyMachine
 {
-    partial class DyMachine
+    private static bool ProcessError(ExecutionContext ctx, int offset, ref DyNativeFunction function,
+        ref DyObject[] locals, ref EvalStack evalStack, ref int jumper)
     {
-        private static bool ProcessError(ExecutionContext ctx, int offset, ref DyNativeFunction function,
-            ref DyObject[] locals, ref EvalStack evalStack, ref int jumper)
+        jumper = ThrowIf(ctx.Error!, ctx.ErrorDump, offset, function.UnitId, ref function, ref locals, ref evalStack, ctx);
+        return jumper > -1;
+    }
+
+    private static int ThrowIf(DyVariant err, Stack<StackPoint>? dump, int offset, int moduleHandle, ref DyNativeFunction function,
+        ref DyObject[] locals, ref EvalStack evalStack, ExecutionContext ctx)
+    {
+        if (dump is null)
         {
-            jumper = ThrowIf(ctx.Error!, ctx.ErrorDump, offset, function.UnitId, ref function, ref locals, ref evalStack, ctx);
-            return jumper > -1;
+            dump = Dump(ctx.CallStack.Clone());
+            dump.Push(new(offset, moduleHandle));
         }
 
-        private static int ThrowIf(DyVariant err, Stack<StackPoint>? dump, int offset, int moduleHandle, ref DyNativeFunction function,
-            ref DyObject[] locals, ref EvalStack evalStack, ExecutionContext ctx)
+        int jumper;
+
+        if ((jumper = FindCatch(ctx, ref function, ref locals, ref evalStack)) > -1)
         {
-            if (dump is null)
-            {
-                dump = Dump(ctx.CallStack.Clone());
-                dump.Push(new(offset, moduleHandle));
-            }
+            ctx.ErrorDump = dump;
+            return jumper;
+        }
+        else
+        {
+            ctx.Error = null;
+            ctx.ErrorDump = null;
+            var deb = new DyDebugger(ctx.RuntimeContext.Composition);
+            var cs = deb.BuildCallStack(dump);
+            throw new DyCodeException(err, cs, null);
+        }
+    }
 
-            int jumper;
+    private static int FindCatch(ExecutionContext ctx, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
+    {
+        CatchMark mark = default;
+        Stack<CatchMark> cm;
+        var idx = 1;
 
-            if ((jumper = FindCatch(ctx, ref function, ref locals, ref evalStack)) > -1)
+        while (ctx.CatchMarks.TryPeek(idx++, out cm))
+        {
+            if (cm is not null && cm.Count > 0)
             {
-                ctx.ErrorDump = dump;
-                return jumper;
-            }
-            else
-            {
-                ctx.Error = null;
-                ctx.ErrorDump = null;
-                var deb = new DyDebugger(ctx.RuntimeContext.Composition);
-                var cs = deb.BuildCallStack(dump);
-                throw new DyCodeException(err, cs, null);
+                mark = cm.Peek();
+                break;
             }
         }
 
-        private static int FindCatch(ExecutionContext ctx, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
+        if (mark.Offset == 0)
+            return -1;
+
+        Caller? cp = null;
+
+        while (ctx.CallStack.Count > mark.StackOffset)
         {
-            CatchMark mark = default;
-            Stack<CatchMark> cm;
-            var idx = 1;
+            cp = ctx.CallStack.Pop();
 
-            while (ctx.CatchMarks.TryPeek(idx++, out cm))
-            {
-                if (cm is not null && cm.Count > 0)
-                {
-                    mark = cm.Peek();
-                    break;
-                }
-            }
-
-            if (mark.Offset == 0)
+            //It means that this function was called from an external
+            //context and we have to terminate our search
+            if (ReferenceEquals(cp, Caller.External))
                 return -1;
-
-            Caller? cp = null;
-
-            while (ctx.CallStack.Count > mark.StackOffset)
-            {
-                cp = ctx.CallStack.Pop();
-
-                //It means that this function was called from an external
-                //context and we have to terminate our search
-                if (ReferenceEquals(cp, Caller.External))
-                    return -1;
-            }
-
-            cm.Pop();
-
-            if (cp is not null)
-            {
-                function = cp.Function;
-                locals = cp.Locals;
-                evalStack = cp.EvalStack;
-            }
-
-            return mark.Offset;
         }
 
-        private static Stack<StackPoint> Dump(CallStack callStack)
+        cm.Pop();
+
+        if (cp is not null)
         {
-            var st = new Stack<StackPoint>();
-
-            for (var i = 0; i < callStack.Count; i++)
-            {
-                var cm = callStack[i];
-
-                if (ReferenceEquals(cm, Caller.Root))
-                    continue;
-
-                if (ReferenceEquals(cm, Caller.External))
-                    st.Push(new(external: true));
-                else
-                    st.Push(new(cm.Offset, cm.Function.UnitId));
-            }
-
-            return st;
+            function = cp.Function;
+            locals = cp.Locals;
+            evalStack = cp.EvalStack;
         }
 
-        public static IEnumerable<RuntimeVar> DumpVariables(ExecutionContext ctx)
+        return mark.Offset;
+    }
+
+    private static Stack<StackPoint> Dump(CallStack callStack)
+    {
+        var st = new Stack<StackPoint>();
+
+        for (var i = 0; i < callStack.Count; i++)
         {
-            foreach (var v in ctx.RuntimeContext.Composition.Units[0].GlobalScope!.EnumerateVars())
-                yield return new(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
+            var cm = callStack[i];
+
+            if (ReferenceEquals(cm, Caller.Root))
+                continue;
+
+            if (ReferenceEquals(cm, Caller.External))
+                st.Push(new(external: true));
+            else
+                st.Push(new(cm.Offset, cm.Function.UnitId));
         }
 
-        private static IError? GetInnerException(Exception ex)
-        {
-            if (ex is IError err)
-                return err;
+        return st;
+    }
 
-            if (ex.InnerException is not null)
-                return GetInnerException(ex.InnerException);
+    public static IEnumerable<RuntimeVar> DumpVariables(ExecutionContext ctx)
+    {
+        foreach (var v in ctx.RuntimeContext.Composition.Units[0].GlobalScope!.EnumerateVars())
+            yield return new(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
+    }
 
-            return null;
-        }
+    private static IError? GetInnerException(Exception ex)
+    {
+        if (ex is IError err)
+            return err;
+
+        if (ex.InnerException is not null)
+            return GetInnerException(ex.InnerException);
+
+        return null;
     }
 }

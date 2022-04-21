@@ -1,11 +1,10 @@
-﻿namespace Dyalect.Runtime
+﻿namespace Dyalect.Runtime;
+
+public enum TerminationReason
 {
-    public enum TerminationReason
-    {
-        Complete = 0,
+    Complete = 0,
 
-        Abort = 1,
+    Abort = 1,
 
-        Exception = 2
-    }
+    Exception = 2
 }

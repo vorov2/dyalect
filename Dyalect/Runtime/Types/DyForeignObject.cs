@@ -1,22 +1,20 @@
 ﻿using System;
+namespace Dyalect.Runtime.Types;
 
-namespace Dyalect.Runtime.Types
+public abstract class DyForeignObject : DyObject
 {
-    public abstract class DyForeignObject : DyObject
-    {
-        public override int TypeId => TypeInfo.ReflectedTypeId;
+    public override int TypeId => TypeInfo.ReflectedTypeId;
 
-        public DyTypeInfo TypeInfo { get; }
+    public DyTypeInfo TypeInfo { get; }
 
-        public string? Constructor { get; }
+    public string? Constructor { get; }
 
-        protected DyForeignObject(DyForeignTypeInfo typeInfo) : this(typeInfo, null) { }
+    protected DyForeignObject(DyForeignTypeInfo typeInfo) : this(typeInfo, null) { }
 
-        protected DyForeignObject(DyForeignTypeInfo typeInfo, string? ctor) : base(-1) =>
-            (TypeInfo, Constructor) = (typeInfo, ctor);
+    protected DyForeignObject(DyForeignTypeInfo typeInfo, string? ctor) : base(-1) =>
+        (TypeInfo, Constructor) = (typeInfo, ctor);
 
-        public override string? GetConstructor() => Constructor;
+    public override string? GetConstructor() => Constructor;
 
-        public override int GetHashCode() => HashCode.Combine(TypeId, Constructor);
-    }
+    public override int GetHashCode() => HashCode.Combine(TypeId, Constructor);
 }

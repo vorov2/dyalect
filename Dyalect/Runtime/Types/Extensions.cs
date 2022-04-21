@@ -1,8 +1,7 @@
 ﻿using Dyalect.Compiler;
-
 namespace Dyalect.Runtime.Types;
 
-public static class DyObjectExtensions
+public static class Extensions
 {
     internal static bool IsTrue(this DyObject self) =>
         !ReferenceEquals(self, DyBool.False) && !ReferenceEquals(self, DyNil.Instance);

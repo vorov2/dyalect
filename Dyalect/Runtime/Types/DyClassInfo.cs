@@ -1,90 +1,87 @@
-﻿using Dyalect.Compiler;
+﻿namespace Dyalect.Runtime.Types;
 
-namespace Dyalect.Runtime.Types
+internal sealed class DyClassInfo : DyTypeInfo
 {
-    internal sealed class DyClassInfo : DyTypeInfo
+    private readonly bool privateCons;
+
+    public override string TypeName { get; }
+
+    public override int ReflectedTypeId { get; }
+
+    public DyClassInfo(string typeName, int typeCode)
     {
-        private readonly bool privateCons;
+        TypeName = typeName;
+        ReflectedTypeId = typeCode;
+        privateCons = !string.IsNullOrEmpty(typeName) && typeName.Length > 0 && char.IsLower(typeName[0]);
+    }
 
-        public override string TypeName { get; }
+    protected override SupportedOperations GetSupportedOperations() =>
+        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
+        | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
 
-        public override int ReflectedTypeId { get; }
+    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    {
+        var self = (DyClass)left;
 
-        public DyClassInfo(string typeName, int typeCode)
+        if (self.TypeId == right.TypeId && right is DyClass t && t.Constructor == self.Constructor)
         {
-            TypeName = typeName;
-            ReflectedTypeId = typeCode;
-            privateCons = !string.IsNullOrEmpty(typeName) && typeName.Length > 0 && char.IsLower(typeName[0]);
+            var res = self.Fields.Equals(t.Fields, ctx);
+
+            if (ctx.HasErrors)
+                return DyNil.Instance;
+
+            return res ? DyBool.True : DyBool.False;
         }
 
-        protected override SupportedOperations GetSupportedOperations() =>
-            SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-            | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
+        return DyBool.False;
+    }
 
-        protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            var self = (DyClass)left;
+    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
+    {
+        var cust = (DyClass)arg;
+        var priv = cust.Fields;
 
-            if (self.TypeId == right.TypeId && right is DyClass t && t.Constructor == self.Constructor)
-            {
-                var res = self.Fields.Equals(t.Fields, ctx);
+        if (TypeName == cust.Constructor && priv.Count == 0)
+            return new DyString($"{TypeName}()");
+        else if (TypeName == cust.Constructor)
+            return new DyString($"{TypeName}{priv.ToString(ctx)}");
+        else if (priv.Count == 0)
+            return new DyString($"{TypeName}.{cust.Constructor}()");
+        else
+            return new DyString($"{TypeName}.{cust.Constructor}{priv.ToString(ctx)}");
+    }
 
-                if (ctx.HasErrors)
-                    return DyNil.Instance;
+    protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx) =>
+        ctx.RuntimeContext.Tuple.Contains(ctx, ((DyClass)self).Fields, field);
 
-                return res ? DyBool.True : DyBool.False;
-            }
+    protected override DyObject LengthOp(DyObject self, ExecutionContext ctx)
+    {
+        var cls = (DyClass)self;
 
-            return DyBool.False;
-        }
+        if (privateCons && ctx.UnitId != cls.DeclaringUnit.Id)
+            return base.LengthOp(self, ctx);
 
-        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
-        {
-            var cust = (DyClass)arg;
-            var priv = cust.Fields;
+        return DyInteger.Get(cls.Fields.Count);
+    }
 
-            if (TypeName == cust.Constructor && priv.Count == 0)
-                return new DyString($"{TypeName}()");
-            else if (TypeName == cust.Constructor)
-                return new DyString($"{TypeName}{priv.ToString(ctx)}");
-            else if (priv.Count == 0)
-                return new DyString($"{TypeName}.{cust.Constructor}()");
-            else
-                return new DyString($"{TypeName}.{cust.Constructor}{priv.ToString(ctx)}");
-        }
+    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+    {
+        var cls = (DyClass)self;
 
-        protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx) =>
-            ctx.RuntimeContext.Tuple.Contains(ctx, ((DyClass)self).Fields, field);
+        if (privateCons && ctx.UnitId != cls.DeclaringUnit.Id)
+            return base.GetOp(self, index, ctx);
 
-        protected override DyObject LengthOp(DyObject self, ExecutionContext ctx)
-        {
-            var cls = (DyClass)self;
+        return cls.Fields.GetItem(index, ctx);
+    }
 
-            if (privateCons && ctx.UnitId != cls.DeclaringUnit.Id)
-                return base.LengthOp(self, ctx);
+    protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+    {
+        var cls = (DyClass)self;
 
-            return DyInteger.Get(cls.Fields.Count);
-        }
+        if (privateCons && ctx.UnitId != cls.DeclaringUnit.Id)
+            return base.SetOp(self, index, value, ctx);
 
-        protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
-        {
-            var cls = (DyClass)self;
-
-            if (privateCons && ctx.UnitId != cls.DeclaringUnit.Id)
-                return base.GetOp(self, index, ctx);
-
-            return cls.Fields.GetItem(index, ctx);
-        }
-
-        protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
-        {
-            var cls = (DyClass)self;
-
-            if (privateCons && ctx.UnitId != cls.DeclaringUnit.Id)
-                return base.SetOp(self, index, value, ctx);
-
-            cls.Fields.SetItem(index, value, ctx);
-            return DyNil.Instance;
-        }
+        cls.Fields.SetItem(index, value, ctx);
+        return DyNil.Instance;
     }
 }

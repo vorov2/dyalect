@@ -5,7 +5,6 @@ using Dyalect.Strings;
 using System;
 using System.Linq;
 using System.Reflection;
-
 namespace Dyalect.Runtime;
 
 public static partial class DyMachine

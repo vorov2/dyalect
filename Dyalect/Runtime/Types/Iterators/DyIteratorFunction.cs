@@ -2,26 +2,24 @@
 using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
+namespace Dyalect.Runtime.Types;
 
-namespace Dyalect.Runtime.Types
+internal sealed class DyIteratorFunction : DyForeignFunction
 {
-    internal sealed class DyIteratorFunction : DyForeignFunction
-    {
-        private readonly IEnumerable<DyObject> enumerable;
-        private IEnumerator<DyObject>? enumerator;
+    private readonly IEnumerable<DyObject> enumerable;
+    private IEnumerator<DyObject>? enumerator;
 
-        public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), -1) =>
-            this.enumerable = enumerable;
+    public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), -1) =>
+        this.enumerable = enumerable;
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) =>
-            (enumerator ??= enumerable.GetEnumerator()).MoveNext() ? enumerator.Current : DyNil.Terminator;
+    internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) =>
+        (enumerator ??= enumerable.GetEnumerator()).MoveNext() ? enumerator.Current : DyNil.Terminator;
 
-        internal override void Reset(ExecutionContext ctx) => enumerator = null;
+    internal override void Reset(ExecutionContext ctx) => enumerator = null;
 
-        public override int GetHashCode() => enumerable.GetHashCode();
+    public override int GetHashCode() => enumerable.GetHashCode();
 
-        internal override bool Equals(DyFunction func) => func is DyIteratorFunction f && f.enumerable.Equals(enumerator);
+    internal override bool Equals(DyFunction func) => func is DyIteratorFunction f && f.enumerable.Equals(enumerator);
 
-        public override DyObject Clone() => new DyIteratorFunction(enumerable);
-    }
+    public override DyObject Clone() => new DyIteratorFunction(enumerable);
 }
