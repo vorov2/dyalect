@@ -2,13 +2,14 @@
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
-using System.Text;
 
 namespace Dyalect.Library.Core
 {
     public sealed class DyTimeDeltaTypeInfo : DyForeignTypeInfo
     {
         public override string TypeName => "TimeDelta";
+
+        public DyTimeDeltaTypeInfo() => AddMixin(DyType.Comparable);
 
         #region Standard operations
         protected override SupportedOperations GetSupportedOperations() =>

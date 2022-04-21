@@ -1,3 +1,6 @@
+# 0.42.0
+  * Add: _`TimeDelta` type should support `Comparable` mixin_ ([Issue #789](https://github.com/vorov2/dyalect/issues/789), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta)).
+
 # 0.41.0
   * _Project migrated to .NET 6.0_
   * Add: _Add `ToSet` method to collections_ ([Issue #770](https://github.com/vorov2/dyalect/issues/770)).
