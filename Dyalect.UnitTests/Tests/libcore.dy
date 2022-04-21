@@ -1,5 +1,8 @@
 ﻿#region "Initialize"
     import core
+    func testParseAndFormat(format, value) {
+        assert(value, TimeDelta.Parse(value, format).ToString(value))
+    }
 #endregion
 
 #region "StringBuilder: GetType"
@@ -285,9 +288,21 @@ fox is the red fox.]>
     assert(0, TimeDelta.Default().Ticks)
 #endregion
 
-#region "TimeDelta: Parse"
+#region "TimeDelta: Parse 1"
     assert("00:12:34", TimeDelta.Parse("00:12:34", "hh:mm:ss").ToString("hh:mm:ss"))
     assert("00:12:34", TimeDelta.Parse("00--12--34", "hh--mm--ss").ToString("hh:mm:ss"))
+#endregion
+
+#region "TimeDelta: Parse 2"
+    let format = "d-h:mm:ss.f"
+    let value = "341-12:34:45.9"
+    testParseAndFormat(format, value)
+#endregion
+
+#region "TimeDelta: Parse 3"
+    let format = "+d.hh:mm"
+    let value = "+3.12:34"
+    testParseAndFormat(format, value)
 #endregion
 
 #region "TimeDelta: negation"
