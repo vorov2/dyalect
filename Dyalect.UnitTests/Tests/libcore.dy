@@ -648,3 +648,9 @@ fox is the red fox.]>
     dt = dt.AddDays(3)
     assert("2022-03-31", dt.ToString())
 #endregion
+
+#region "Date: DayOfWeek, DayOfYear"
+    let dt = Date(year: 2022, month: 1, day: 30)
+    assert("Sunday", dt.DayOfWeek)
+    assert(30, dt.DayOfYear)
+#endregion
