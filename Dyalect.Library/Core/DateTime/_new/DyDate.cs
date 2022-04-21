@@ -11,11 +11,11 @@ namespace Dyalect.Library.Core
     {
         private readonly int days;
 
-        public int Year => new DateTime(days * DateHelper.TicksPerDay).Year;
+        public int Year => new DateTime(days * DT.TicksPerDay).Year;
 
-        public int Month => new DateTime(days * DateHelper.TicksPerDay).Month;
+        public int Month => new DateTime(days * DT.TicksPerDay).Month;
 
-        public int Day => new DateTime(days * DateHelper.TicksPerDay).Day;
+        public int Day => new DateTime(days * DT.TicksPerDay).Day;
     }
 
     public sealed class DyTime
@@ -24,15 +24,15 @@ namespace Dyalect.Library.Core
         
         public int Tick => (int)(ticks % 10_000_000);
 
-        public int Microsecond => (int)(ticks / DateHelper.TicksPerMicrosecond % 1_000_000);
+        public int Microsecond => (int)(ticks / DT.TicksPerMicrosecond % 1_000_000);
 
-        public int Millisecond => (int)(ticks / DateHelper.TicksPerMillisecond % 1000);
+        public int Millisecond => (int)(ticks / DT.TicksPerMillisecond % 1000);
 
-        public int Second => (int)(ticks / DateHelper.TicksPerSecond % 60);
+        public int Second => (int)(ticks / DT.TicksPerSecond % 60);
 
-        public int Minute => (int)(ticks / DateHelper.TicksPerMinute % 60);
+        public int Minute => (int)(ticks / DT.TicksPerMinute % 60);
 
-        public int Hour => (int)(ticks / DateHelper.TicksPerHour % 24);
+        public int Hour => (int)(ticks / DT.TicksPerHour % 24);
     }
 
     public sealed class DyTestDateTime //: DyForeignObject
@@ -43,7 +43,9 @@ namespace Dyalect.Library.Core
         private const long TicksPerSecond = 10 * TicksPerDecisecond;
         private const long TicksPerDecisecond = 10 * TicksPerCentisecond;
         private const long TicksPerCentisecond = 10 * TicksPerMillisecond;
-        private const long TicksPerMillisecond = 1000 * TicksPerMicrosecond;
+        private const long TicksPerMillisecond = 10 * TicksPerTenthThousandth;
+        private const long TicksPerTenthThousandth = 10 * TicksPerHundredthThousandth;
+        private const long TicksPerHundredthThousandth = 10 * TicksPerMicrosecond;
         private const long TicksPerMicrosecond = 10L;
 
         private readonly int[] daysInMonths = new[]
@@ -71,7 +73,7 @@ namespace Dyalect.Library.Core
         public int Microsecond => (int)(ticks / TicksPerMicrosecond % 1_000_000);
 
         public int Millisecond => (int)(ticks / TicksPerMillisecond % 1000);
-
+        
         public int Second => (int)(ticks / TicksPerSecond % 60);
 
         public int Minute => (int)(ticks / TicksPerMinute % 60);
@@ -80,11 +82,8 @@ namespace Dyalect.Library.Core
 
         public long TotalTicks => ticks;
 
-        public long TotalMicroseconds => ticks / TicksPerMicrosecond;
 
-        public long TotalMilliseconds => ticks / TicksPerMillisecond;
 
-        public long TotalSeconds => ticks / TicksPerSecond;
 
         public long TotalMinutes => ticks / TicksPerMinute;
 

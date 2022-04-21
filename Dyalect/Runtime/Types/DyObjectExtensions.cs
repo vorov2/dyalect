@@ -83,6 +83,21 @@ namespace Dyalect.Runtime.Types
         public static bool NotNil(this DyObject self) => !ReferenceEquals(self, DyNil.Instance);
 
         public static bool IsNil(this DyObject self) => ReferenceEquals(self, DyNil.Instance);
+
+        public static bool NotNat(this DyObject self, ExecutionContext ctx)
+        {
+            if (!IsInteger(self, ctx))
+                return true;
+            if (self.GetInteger() < 0)
+            {
+                ctx.InvalidValue(self);
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool NotInteger(this DyObject self, ExecutionContext ctx) => !IsInteger(self, ctx);
         
         public static bool IsInteger(this DyObject self, ExecutionContext ctx)
         {
@@ -105,6 +120,8 @@ namespace Dyalect.Runtime.Types
 
             return true;
         }
+
+        public static bool NotString(this DyObject self, ExecutionContext ctx) => !IsString(self, ctx);
 
         public static bool IsString(this DyObject self, ExecutionContext ctx)
         {

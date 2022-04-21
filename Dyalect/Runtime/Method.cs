@@ -69,6 +69,7 @@
         public const string Dictionary = "Dictionary";
         public const string Set = "Set";
         public const string FromTuple = "FromTuple";
+        public const string FromTicks = "FromTicks";
         public const string Default = "Default";
         public const string String = "String";
         public const string Bool = "Bool";
