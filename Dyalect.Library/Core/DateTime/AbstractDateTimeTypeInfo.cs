@@ -14,9 +14,9 @@ public abstract class AbstractDateTimeTypeInfo<T> : AbstractDateTypeInfo<T>
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx)
     {
         if (targetType.ReflectedTypeId == DeclaringUnit.Date.ReflectedTypeId)
-            return ((T)self).GetDate();
+            return ((T)self).GetDate(DeclaringUnit.Date);
         else if (targetType.ReflectedTypeId == DeclaringUnit.Time.ReflectedTypeId)
-            return ((T)self).GetTime();
+            return ((T)self).GetTime(DeclaringUnit.Time);
 
         return base.CastOp(self, targetType, ctx);
     }

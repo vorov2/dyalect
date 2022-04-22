@@ -15,7 +15,7 @@ namespace Dyalect.Library.Core
 
         public DyDateTimeTypeInfo() : base("DateTime") { }
 
-        protected override DyDateTime CreateDateTime(DateTime dateTime, TimeSpan? offset) => new DyDateTime(this, dateTime);
+        protected override DyDateTime CreateDateTime(DateTime dateTime, TimeSpan? offset) => new(this, dateTime);
 
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {

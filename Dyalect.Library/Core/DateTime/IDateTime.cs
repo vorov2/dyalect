@@ -3,9 +3,9 @@ namespace Dyalect.Library.Core;
 
 public interface IDateTime : IDate, ITime
 {
-    DyObject GetDate();
+    DyObject GetDate(DyDateTypeInfo typeInfo);
 
-    DyObject GetTime();
+    DyObject GetTime(DyTimeTypeInfo typeInfo);
 
     void AddHours(double value);
 
