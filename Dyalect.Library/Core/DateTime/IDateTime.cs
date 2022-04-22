@@ -1,6 +1,19 @@
-﻿namespace Dyalect.Library.Core;
+﻿using Dyalect.Runtime.Types;
+namespace Dyalect.Library.Core;
 
 public interface IDateTime : IDate, ITime
 {
+    DyObject GetDate();
 
+    DyObject GetTime();
+
+    void AddHours(double value);
+
+    void AddMinutes(double value);
+
+    void AddSeconds(double value);
+
+    void AddMilliseconds(double value);
+
+    void AddTicks(long value);
 }

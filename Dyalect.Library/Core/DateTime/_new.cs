@@ -17,5 +17,6 @@ public class DateTimeInf
         DateOnly dot;
         TimeOnly tot;
         DateTime dt;
+        TimeSpan ds;
     }
 }

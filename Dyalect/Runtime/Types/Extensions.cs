@@ -96,6 +96,14 @@ public static class Extensions
         return false;
     }
 
+    public static bool NotIntOrNil(this DyObject self, ExecutionContext ctx)
+    {
+        if (self.IsNil())
+            return false;
+
+        return self.NotInteger(ctx);
+    }
+
     public static bool NotInteger(this DyObject self, ExecutionContext ctx) => !IsInteger(self, ctx);
 
     public static bool IsInteger(this DyObject self, ExecutionContext ctx)

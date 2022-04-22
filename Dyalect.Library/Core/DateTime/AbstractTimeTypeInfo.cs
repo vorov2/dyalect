@@ -17,17 +17,11 @@ namespace Dyalect.Library.Core
                 _ => base.CastOp(self, targetType, ctx)
             };
 
-        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-            name switch
-            {
-                "ToString" => Func.Member(name, ToStringWithFormat, -1, new Par("format", DyNil.Instance)),
-                "Hours" => Func.Auto(name, (_, self) => new DyInteger(((T)self).Hours)),
-                "Minutes" => Func.Auto(name, (_, self) => new DyInteger(((T)self).Minutes)),
-                "Seconds" => Func.Auto(name, (_, self) => new DyInteger(((T)self).Seconds)),
-                "Milliseconds" => Func.Auto(name, (_, self) => new DyInteger(((T)self).Milliseconds)),
-                "Ticks" => Func.Auto(name, (_, self) => new DyInteger(((T)self).Ticks)),
-                _ => base.InitializeInstanceMember(self, name, ctx)
-            };
+        protected DyObject GetHours(ExecutionContext _, DyObject self) => new DyInteger(((T)self).Hours);
+        protected DyObject GetMinutes(ExecutionContext _, DyObject self) => new DyInteger(((T)self).Minutes);
+        protected DyObject GetSeconds(ExecutionContext _, DyObject self) => new DyInteger(((T)self).Seconds);
+        protected DyObject GetMilliseconds(ExecutionContext _, DyObject self) => new DyInteger(((T)self).Milliseconds);
+        protected DyObject GetTicks(ExecutionContext _, DyObject self) => new DyInteger(((T)self).Ticks);
 
         protected DyObject CreateNew(ExecutionContext ctx, DyObject days, DyObject hours, DyObject minutes, DyObject sec, DyObject ms)
         {

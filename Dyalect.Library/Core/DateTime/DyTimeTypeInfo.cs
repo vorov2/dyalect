@@ -10,6 +10,17 @@ namespace Dyalect.Library.Core
 
         public DyTimeTypeInfo() : base(Time) { }
 
+        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
+            name switch
+            {
+                "Hour" => Func.Auto(name, GetHours),
+                "Minute" => Func.Auto(name, GetMinutes),
+                "Second" => Func.Auto(name, GetSeconds),
+                "Millisecond" => Func.Auto(name, GetMilliseconds),
+                "Tick" => Func.Auto(name, GetTicks),
+                _ => base.InitializeInstanceMember(self, name, ctx)
+            };
+
         private DyObject New(ExecutionContext ctx, DyObject hours, DyObject minutes, DyObject sec, DyObject ms) =>
             CreateNew(ctx, DyInteger.Zero, hours, minutes, sec, ms);
 
@@ -20,9 +31,9 @@ namespace Dyalect.Library.Core
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                Time => Func.Static(name, New, -1, new Par("hours", DyInteger.Zero),
-                    new Par("minutes", DyInteger.Zero), new Par("seconds", DyInteger.Zero), new Par("milliseconds", DyInteger.Zero),
-                    new Par("ticks", DyInteger.Zero)),
+                Time => Func.Static(name, New, -1, new Par("hour", DyInteger.Zero),
+                    new Par("minute", DyInteger.Zero), new Par("second", DyInteger.Zero), new Par("millisecond", DyInteger.Zero),
+                    new Par("tick", DyInteger.Zero)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

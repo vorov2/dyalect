@@ -22,6 +22,8 @@ namespace Dyalect.Debug
 
         public Par(string name) => (Name, Value, IsVarArg, TypeAnnotation) = (name, null, false, null);
 
+        public Par(string name, int value) => (Name, Value, IsVarArg, TypeAnnotation) = (name, DyInteger.Get(value), false, null);
+
         public override string ToString() => Name;
     }
 }

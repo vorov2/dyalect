@@ -514,36 +514,36 @@ fox is the red fox.]>
 #endregion
 
 #region "Time: GetType"
-    let td = Time(hours: 1)
+    let td = Time(hour: 1)
     assert(Time, td.GetType())
     assert("Time", td.GetType().name)
 #endregion
 
 #region "Time: construction"
     var td = Time.FromTicks(12)
-    assert(12, td.Ticks)
-    td = Time(hours: 12, minutes: 33, seconds: 3)
-    assert(12, td.Hours)
-    assert(33, td.Minutes)
-    assert(3, td.Seconds)
-    td = Time(milliseconds: 1405)
-    assert(405, td.Milliseconds)
-    assert(1, td.Seconds)
+    assert(12, td.Tick)
+    td = Time(hour: 12, minute: 33, second: 3)
+    assert(12, td.Hour)
+    assert(33, td.Minute)
+    assert(3, td.Second)
+    td = Time(millisecond: 1405)
+    assert(405, td.Millisecond)
+    assert(1, td.Second)
 #endregion
 
 #region "Time: equality"
-    let x = Time(minutes: 3, seconds: 12)
-    let y = Time(minutes: 1, seconds: 45)
-    let z = Time(minutes: 3, seconds: 12)
+    let x = Time(minute: 3, second: 12)
+    let y = Time(minute: 1, second: 45)
+    let z = Time(minute: 3, second: 12)
     assert(true, x == z)
     assert(false, x == y)
     assert(true, x != y)
 #endregion
 
 #region "Time: comparison"
-    let x = Time(minutes: 3, seconds: 12)
-    let y = Time(minutes: 1, seconds: 45)
-    let z = Time(minutes: 3, seconds: 12)
+    let x = Time(minute: 3, second: 12)
+    let y = Time(minute: 1, second: 45)
+    let z = Time(minute: 3, second: 12)
     assert(true, x > y)
     assert(true, x >= z)
     assert(false, y > z)
@@ -558,13 +558,13 @@ fox is the red fox.]>
 #endregion
 
 #region "Time: ToString 1"
-    let td = Time(hours: 12, minutes: 3, seconds: 12)
+    let td = Time(hour: 12, minute: 3, second: 12)
     assert("12:03:12.00", td.ToString())
     assert("03-12-12", td.ToString(format: "mm-hh-ss"))
 #endregion
 
 #region "Time: ToString 2"
-    let td = Time(hours: 12, minutes: 3, seconds: 12)
+    let td = Time(hour: 12, minute: 3, second: 12)
     assert("03+12+12", td.ToString(format: "mm\\+hh\\+ss"))
 #endregion
 
@@ -646,12 +646,14 @@ fox is the red fox.]>
 #endregion
 
 #region "Date: AddMonths, AddDays, AddYears"
-    var dt = Date(year: 2022, month: 1, day: 30)
-    dt = dt.AddMonths(1)
+    var dt = Date(year: 2019, month: 1, day: 30)
+    dt = dt.Add(months: 1)
+    assert("2019-02-28", dt.ToString())
+    dt = dt.Add(years: 3)
     assert("2022-02-28", dt.ToString())
-    dt = dt.AddMonths(1)
+    dt = dt.Add(months: 1)
     assert("2022-03-28", dt.ToString())
-    dt = dt.AddDays(3)
+    dt = dt.Add(days: 3)
     assert("2022-03-31", dt.ToString())
 #endregion
 
