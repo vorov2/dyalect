@@ -6,6 +6,7 @@
   * Add: _Add `Date` date type_ ([Issue #791](https://github.com/vorov2/dyalect/issues/791), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Date)).
   * Add: _`Guid` should support comparison operations_ ([Issue #799](https://github.com/vorov2/dyalect/issues/799)).
   * Add: _`Guid` should implement `Comparable` mixin_ ([Issue #796](https://github.com/vorov2/dyalect/issues/796)).
+  * Add: _Add `TimeDelta.Negate` method_ ([Issue #800](https://github.com/vorov2/dyalect/issues/800), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta#negate)).
   * Fix: _Escape codes in Date/Time format specifiers do not work correctly_ ([Issue #795](https://github.com/vorov2/dyalect/issues/795)).
 
 # 0.41.0

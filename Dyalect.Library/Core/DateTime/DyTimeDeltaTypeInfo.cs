@@ -43,6 +43,7 @@ namespace Dyalect.Library.Core
             name switch
             {
                 "Days" => Func.Auto(name, (_, self) => new DyInteger(((DyTimeDelta)self).Days)),
+                "Negate" => Func.Member(name, (_, self) => ((DyTimeDelta)self).Negate()),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 

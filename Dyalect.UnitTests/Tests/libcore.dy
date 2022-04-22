@@ -315,6 +315,7 @@ fox is the red fox.]>
     let format = "+hh:mm"
     assert("+03:30", td.ToString(format))
     assert("-03:30", (-td).ToString(format))
+    assert("-03:30", td.Negate().ToString(format))
 #endregion
 
 #region "DateTime: GetType"
