@@ -6,7 +6,7 @@ namespace Dyalect.Library.Core;
 
 internal static class InputParser
 {
-    public static long Parse(FormatParser formatParser, string format, string value)
+    public static (long ticks, int offset) Parse(FormatParser formatParser, string format, string value)
     {
         var formats = formatParser.ParseSpecifiers(format);
         var chunks = Parse(formats, value);
@@ -103,7 +103,7 @@ internal static class InputParser
         if (negate)
             totalTicks = -totalTicks;
 
-        return totalTicks;
+        return (totalTicks, offset);
     }
 
     public static List<(FormatElementKind kind, string val)> Parse(List<FormatElement> formats, string input)

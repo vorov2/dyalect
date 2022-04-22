@@ -40,7 +40,7 @@ public sealed class DyDate : DyForeignObject, IDate, ISpan, IFormattable
 
     public static DyDate Parse(DyDateTypeInfo typeInfo, string format, string value)
     {
-        var ticks = InputParser.Parse(FormatParser.DateParser, format, value);
+        var (ticks, _) = InputParser.Parse(FormatParser.DateParser, format, value);
         return new(typeInfo, (int)(ticks / DT.TicksPerDay));
     }
 

@@ -38,7 +38,7 @@ namespace Dyalect.Library.Core
 
         public static DyTimeDelta Parse(DyTimeDeltaTypeInfo typeInfo, string format, string value)
         {
-            var ticks = InputParser.Parse(FormatParser.TimeDeltaParser, format, value);
+            var (ticks, _) = InputParser.Parse(FormatParser.TimeDeltaParser, format, value);
             return new(typeInfo, ticks);
         }
 
