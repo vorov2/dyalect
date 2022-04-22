@@ -34,11 +34,11 @@ namespace Dyalect.Library.Core
 
         public TimeSpan ToTimeSpan() => TimeSpan.FromTicks(ticks);
 
-        public DyTimeDelta Negate() => new DyTimeDelta((DyTimeDeltaTypeInfo)TypeInfo, -ticks);
+        public DyTimeDelta Negate() => new((DyTimeDeltaTypeInfo)TypeInfo, -ticks);
 
         public static DyTimeDelta Parse(DyTimeDeltaTypeInfo typeInfo, string format, string value)
         {
-            var ticks = DT.Parse(FormatParser.TimeDeltaParser, format, value);
+            var ticks = InputParser.Parse(FormatParser.TimeDeltaParser, format, value);
             return new(typeInfo, ticks);
         }
 

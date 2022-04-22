@@ -36,7 +36,7 @@ namespace Dyalect.Library.Core
         
         public static DyTime Parse(DyTimeTypeInfo typeInfo, string format, string value)
         {
-            var ticks = DT.Parse(FormatParser.TimeParser, format, value);
+            var ticks = InputParser.Parse(FormatParser.TimeParser, format, value);
             return new(typeInfo, ticks);
         }
 
