@@ -27,4 +27,8 @@ public struct HashString : IEquatable<HashString>
     public static explicit operator string(HashString str) => str.value;
 
     public static implicit operator HashString(string str) => new(str);
+
+    public static bool operator ==(HashString left, HashString right) => left.Equals(right);
+
+    public static bool operator !=(HashString left, HashString right) => !left.Equals(right);
 }
