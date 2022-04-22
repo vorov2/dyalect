@@ -5,40 +5,21 @@ using System;
 
 namespace Dyalect.Library.Core;
 
-public sealed class DyDateTimeTypeInfo : DyBaseDateTimeTypeInfo
+public sealed class DyDateTimeTypeInfo : AbstractDateTimeTypeInfo<DyDateTime>
 {
-    private const string FORMAT = "yyyy-MM-ddTHH\\:mm\\:ss.fffffff";
+    private const string DateTimeType = "DateTime";
+
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Sub | SupportedOperations.Add
-        | SupportedOperations.Gt | SupportedOperations.Gte
-        | SupportedOperations.Lt | SupportedOperations.Lte;
+        base.GetSupportedOperations() | SupportedOperations.Sub | SupportedOperations.Add;
 
-    public DyDateTimeTypeInfo() : base("DateTime") { }
-
-    protected override DyDateTime CreateDateTime(DateTime dateTime, TimeSpan? offset) => new(this, dateTime);
-
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
-    {
-        if (format.TypeId == DyType.Nil)
-            return new DyString(((DyDateTime)arg).Value.ToString(FORMAT, CI.Default));
-
-        try
-        {
-            var res = ((DyDateTime)arg).Value.ToString(format.GetString(), CI.Default);
-            return new DyString(res);
-        }
-        catch (Exception)
-        {
-            return ctx.InvalidValue(format);
-        }
-    }
+    public DyDateTimeTypeInfo() : base(DateTimeType) { }
 
     protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
         if (right is DyDateTime dt)
             try
             {
-                return new DyTimeDelta(DeclaringUnit.TimeDelta, ((DyDateTime)left).Value - dt.Value);
+                return new DyTimeDelta(DeclaringUnit.TimeDelta, ((DyDateTime)left).Ticks - dt.Ticks);
             }
             catch (Exception)
             {
@@ -47,7 +28,7 @@ public sealed class DyDateTimeTypeInfo : DyBaseDateTimeTypeInfo
         else if (right is DyTimeDelta td)
             try
             {
-                return new DyDateTime(this, new DateTime(((DyDateTime)left).Value.Ticks - td.TotalTicks, DateTimeKind.Utc));
+                return new DyDateTime(this, ((DyDateTime)left).Ticks - td.TotalTicks);
             }
             catch (Exception)
             {
@@ -63,7 +44,7 @@ public sealed class DyDateTimeTypeInfo : DyBaseDateTimeTypeInfo
         {
             try
             {
-                return new DyDateTime(this, new DateTime(((DyDateTime)left).Value.Ticks + td.TotalTicks, DateTimeKind.Utc));
+                return new DyDateTime(this, ((DyDateTime)left).Ticks + td.TotalTicks);
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -74,38 +55,29 @@ public sealed class DyDateTimeTypeInfo : DyBaseDateTimeTypeInfo
         return ctx.InvalidType(DeclaringUnit.TimeDelta.TypeId, right);
     }
 
-    private DyObject Parse(ExecutionContext ctx, DyObject value, DyObject format)
-    {
-        if (!value.IsString(ctx)) return Default();
-        if (!format.IsString(ctx)) return Default();
+    protected override DyObject Parse(string format, string input) => DyDateTime.Parse(this, format, input);
 
-        try
-        {
-            var dt = DateTime.ParseExact(value.GetString(), format.GetString(), CI.Default);
-            return new DyDateTime(this, DateTime.SpecifyKind(dt, DateTimeKind.Utc));
-        }
-        catch (FormatException ex)
-        {
-            return ctx.ParsingFailed(ex.Message);
-        }
-    }
+    protected override DyObject Create(long ticks, DyTimeDelta? offset) => new DyDateTime(this, ticks);
 
-    private DyObject New(ExecutionContext ctx, DyObject year, DyObject month, DyObject day, DyObject hour, DyObject minute, DyObject second, DyObject millisecond) =>
+    private DyObject CreateNew(ExecutionContext ctx, DyObject year, DyObject month, DyObject day, DyObject hour, DyObject minute, DyObject second, DyObject millisecond) =>
         New(ctx, year, month, day, hour, minute, second, millisecond, null);
 
-    private DyObject FromTicks(ExecutionContext ctx, DyObject ticks) => FromTicks(ctx, ticks, null);
+    private DyObject FromTicks(ExecutionContext ctx, DyObject ticks)
+    {
+        if (ticks.NotNat(ctx)) return Default();
+        return new DyDateTime(this, ticks.GetInteger());
+    }
+
+    protected override DyDateTime GetMax(ExecutionContext ctx) => new(this, DateTime.MaxValue.Ticks);
+
+    protected override DyDateTime GetMin(ExecutionContext ctx) => new(this, DateTime.MinValue.Ticks);
 
     protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
         name switch 
         {
-            "Now" => Func.Static(name, _ => new DyDateTime(this, DateTime.UtcNow)),
-            "Today" => Func.Static(name, _ => new DyDateTime(this, DateTime.UtcNow.Date)),
-            "Min" => Func.Static(name, _ => new DyDateTime(this, DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc))),
-            "Max" => Func.Static(name, _ => new DyDateTime(this, DateTime.SpecifyKind(DateTime.MaxValue, DateTimeKind.Utc))),
-            "Default" => Func.Static(name, _ => new DyDateTime(this, DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc))),
-            "Parse" => Func.Static(name, Parse, -1, new Par("value"), new Par("format")),
-            "DateTime" => Func.Static(name, New, -1, new Par("year"), new Par("month"), new Par("day"), new Par("hour", DyInteger.Zero), new Par("minute", DyInteger.Zero),
-                new Par("second", DyInteger.Zero), new Par("millisecond", DyInteger.Zero)),
+            DateTimeType => Func.Static(name, CreateNew, -1, new Par("year"), new Par("month"), new Par("day"), new Par("hour", 0),
+                new Par("minute", 0), new Par("second", 0), new Par("millisecond", 0)),
+            "Now" => Func.Static(name, _ => new DyDateTime(this, DateTime.UtcNow.Ticks)),
             "FromTicks" => Func.Static(name, FromTicks, -1, new Par("value")),
             _ => base.InitializeStaticMember(name, ctx)
         };

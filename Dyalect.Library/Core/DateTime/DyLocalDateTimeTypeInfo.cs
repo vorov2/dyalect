@@ -5,33 +5,11 @@ using System;
 
 namespace Dyalect.Library.Core
 {
-    public sealed class DyLocalDateTimeTypeInfo : DyBaseDateTimeTypeInfo
+    public sealed class DyLocalDateTimeTypeInfo : AbstractDateTimeTypeInfo<DyDateTime>
     {
-        private const string FORMAT = "yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz";
+        private const string LocalDateTime = "DateTime";
 
-        public DyLocalDateTimeTypeInfo() : base("LocalDateTime") { }
-
-        protected override DyDateTime CreateDateTime(DateTime dateTime, TimeSpan? offset) =>
-            new DyLocalDateTime(this, dateTime, offset!.Value);
-
-        protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
-        {
-            if (format.NotNil() && !format.IsString(ctx)) return Default();
-
-            var local = (DyLocalDateTime)arg;
-            var formatStr = format.NotNil() ? format.GetString() : FORMAT;
-
-            try
-            {
-                var dto = new DateTimeOffset(DateTime.SpecifyKind(local.Value, DateTimeKind.Unspecified), local.Offset!.Value);
-                var str = dto.ToString(formatStr, CI.Default);
-                return new DyString(str);
-            }
-            catch (Exception)
-            {
-                return ctx.InvalidValue(format);
-            }
-        }
+        public DyLocalDateTimeTypeInfo() : base(LocalDateTime) { }
 
         protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
         {
@@ -40,10 +18,10 @@ namespace Dyalect.Library.Core
             if (right is DyLocalDateTime dt)
                 try
                 {
-                    if (self.Offset != dt.Offset)
+                    if (!self.Offset.Equals(dt.Offset))
                         return ctx.InvalidValue(right);
 
-                    return new DyTimeDelta(DeclaringUnit.TimeDelta, self.Value - dt.Value);
+                    return new DyTimeDelta(DeclaringUnit.TimeDelta, self.Ticks - dt.Ticks);
                 }
                 catch (Exception)
                 {
@@ -52,7 +30,7 @@ namespace Dyalect.Library.Core
             else if (right is DyTimeDelta td)
                 try
                 {
-                    return new DyLocalDateTime(this, new DateTime(self.Value.Ticks - td.TotalTicks), self.Offset!.Value);
+                    return new DyLocalDateTime(this, self.Ticks - td.TotalTicks, self.Offset);
                 }
                 catch (Exception)
                 {
@@ -70,10 +48,10 @@ namespace Dyalect.Library.Core
             {
                 try
                 {
-                    if (self.Offset!.Value.Ticks != td.TotalTicks)
+                    if (self.Offset.Ticks != td.TotalTicks)
                         return ctx.InvalidValue(right);
 
-                    return new DyLocalDateTime(this, new DateTime(self.Value.Ticks + td.TotalTicks), self.Offset!.Value);
+                    return new DyLocalDateTime(this, self.Ticks + td.TotalTicks, self.Offset);
                 }
                 catch (ArgumentOutOfRangeException)
                 {
@@ -84,61 +62,49 @@ namespace Dyalect.Library.Core
             return ctx.InvalidType(DeclaringUnit.TimeDelta.TypeId, right);
         }
 
-        private DyObject Parse(ExecutionContext ctx, DyObject value, DyObject format)
-        {
-            if (!value.IsString(ctx)) return Default();
-            if (!format.IsString(ctx)) return Default();
-
-            try
-            {
-                var dt = DateTimeOffset.ParseExact(value.GetString(), format.GetString(), CI.Default);
-                return new DyLocalDateTime(this, dt.DateTime, dt.Offset);
-            }
-            catch (FormatException ex)
-            {
-                return ctx.ParsingFailed(ex.Message);
-            }
-        }
-
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
             name switch
             {
-                "Offset" => Func.Auto(name, _ => new DyTimeDelta(DeclaringUnit.TimeDelta, ((DyDateTime)self).Offset!.Value)),
+                "Offset" => Func.Auto(name, _ => ((DyLocalDateTime)self).Offset),
                 _ => base.InitializeInstanceMember(self, name, ctx)
             };
 
-        private bool TryGetOffset(ExecutionContext ctx, DyObject offset, out TimeSpan timeSpan)
+        private DyTimeDelta? TryGetOffset(ExecutionContext ctx, DyObject offset)
         {
-            timeSpan = default;
-
-            if (!offset.NotNil())
-                timeSpan = TimeZoneInfo.Local.BaseUtcOffset;
+            if (offset.IsNil())
+                return new DyTimeDelta(DeclaringUnit.TimeDelta, TimeZoneInfo.Local.BaseUtcOffset.Ticks);
             else if (offset.TypeId != DeclaringUnit.TimeDelta.ReflectedTypeId)
             {
                 ctx.InvalidType(DeclaringUnit.TimeDelta.ReflectedTypeId, offset);
-                return false;
+                return null;
             }
             else
-                timeSpan = ((DyTimeDelta)offset).ToTimeSpan();
-
-            return true;
+                return (DyTimeDelta)offset;
         }
 
-        private DyObject New(ExecutionContext ctx, DyObject year, DyObject month, DyObject day, DyObject hour, DyObject minute, DyObject second, DyObject millisecond,
+        protected override DyObject Parse(string format, string input) => DyLocalDateTime.Parse(this, format, input);
+
+        protected override DyObject Create(long ticks, DyTimeDelta? offset) => new DyLocalDateTime(this, ticks, offset!);
+        
+        private DyObject CreateNew(ExecutionContext ctx, DyObject year, DyObject month, DyObject day, DyObject hour, DyObject minute, DyObject second, DyObject millisecond,
             DyObject offset)
         {
-            if (!TryGetOffset(ctx, offset, out var timeSpan))
+            var delta = TryGetOffset(ctx, offset);
+
+            if (delta is null)
                 return Default();
 
-            return New(ctx, year, month, day, hour, minute, second, millisecond, timeSpan);
+            return New(ctx, year, month, day, hour, minute, second, millisecond, delta);
         }
 
         private DyObject FromTicks(ExecutionContext ctx, DyObject ticks, DyObject offset)
         {
-            if (!TryGetOffset(ctx, offset, out var timeSpan))
+            var delta = TryGetOffset(ctx, offset);
+
+            if (delta is null)
                 return Default();
 
-            return FromTicks(ctx, ticks, timeSpan);
+            return FromTicks(ctx, ticks, delta);
         }
 
         private bool CheckValues(ExecutionContext ctx, DyObject dateTime, DyObject timeZone)
@@ -161,28 +127,27 @@ namespace Dyalect.Library.Core
         private DyObject GetLocalDateTime(ExecutionContext ctx, DyObject dateTime, DyObject timeZone)
         {
             if (!CheckValues(ctx, dateTime, timeZone)) return Default();
-            var (dt, td) = (((DyDateTime)dateTime).Value, ((DyTimeDelta)timeZone).ToTimeSpan());
+            var (dt, td) = (((DyDateTime)dateTime).ToDateTime(), ((DyTimeDelta)timeZone).ToTimeSpan());
             var targetZone = TimeZoneInfo.CreateCustomTimeZone(Guid.NewGuid().ToString(), td, null, null);
             var tzz = timeZone.NotNil() ? targetZone : TimeZoneInfo.Local;
             var dat = TimeZoneInfo.ConvertTimeFromUtc(dt, tzz);
-            return new DyLocalDateTime(DeclaringUnit.LocalDateTime, dat, tzz.BaseUtcOffset);
+            return new DyLocalDateTime(DeclaringUnit.LocalDateTime, dat.Ticks,
+                new DyTimeDelta(DeclaringUnit.TimeDelta, tzz.BaseUtcOffset));
         }
+
+        protected override DyDateTime GetMax(ExecutionContext ctx) => new(this, DateTime.MaxValue.Ticks);
+
+        protected override DyDateTime GetMin(ExecutionContext ctx) => new(this, DateTime.MinValue.Ticks);
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "FromDateTime" => Func.Static(name, GetLocalDateTime, -1, new Par("value"), new Par("offset", DyNil.Instance)),
-                "Now" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.Now, TimeZoneInfo.Local.BaseUtcOffset)),
-                "Today" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.Now, TimeZoneInfo.Local.BaseUtcOffset)),
-                "Min" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.MinValue, TimeZoneInfo.Local.BaseUtcOffset)),
-                "Max" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.MaxValue, TimeZoneInfo.Local.BaseUtcOffset)),
-                "Default" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.MinValue, TimeZoneInfo.Local.BaseUtcOffset)),
-                "Parse" => Func.Static(name, Parse, -1, new Par("value"), new Par("format")),
-                "LocalDateTime" => Func.Static(name, New, -1, new Par("year"), new Par("month"), new Par("day"),
+                LocalDateTime => Func.Static(name, CreateNew, -1, new Par("year"), new Par("month"), new Par("day"),
                     new Par("hour", DyInteger.Zero), new Par("minute", DyInteger.Zero),
                     new Par("second", DyInteger.Zero), new Par("millisecond", DyInteger.Zero), new Par("offset", DyNil.Instance)),
+                "FromDateTime" => Func.Static(name, GetLocalDateTime, -1, new Par("value"), new Par("offset", DyNil.Instance)),
                 "FromTicks" => Func.Static(name, FromTicks, -1, new Par("value"), new Par("offset", DyNil.Instance)),
-                "LocalOffset" => Func.Auto(name, _ => new DyTimeDelta(DeclaringUnit.TimeDelta, TimeZoneInfo.Local.BaseUtcOffset)),
+                "Offset" => Func.Auto(name, _ => new DyTimeDelta(DeclaringUnit.TimeDelta, TimeZoneInfo.Local.BaseUtcOffset)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

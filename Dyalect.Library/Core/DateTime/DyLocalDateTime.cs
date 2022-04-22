@@ -1,19 +1,43 @@
 ﻿using Dyalect.Runtime.Types;
 using System;
+using System.Text;
 
 namespace Dyalect.Library.Core
 {
     public sealed class DyLocalDateTime : DyDateTime
     {
-        internal DyLocalDateTime(DyBaseDateTimeTypeInfo typeInfo, DateTime value, TimeSpan offset)
-            : base(typeInfo, value, offset) { }
+        private const string FORMAT = "yyyy-MM-dd HH:mm:ss.fffffff zzz";
+        
+        public DyTimeDelta Offset { get; }
+
+        internal DyLocalDateTime(DyLocalDateTimeTypeInfo typeInfo, long ticks, DyTimeDelta offset)
+            : base(typeInfo, ticks) => this.Offset = offset;
 
         public override bool Equals(DyObject? other) => other is DyLocalDateTime dt
-            && dt.Value == Value && dt.Offset == Offset;
+            && dt.ticks == ticks && dt.Offset.Equals(Offset);
 
-        public override object ToObject() => new DateTimeOffset(DateTime.SpecifyKind(Value, DateTimeKind.Unspecified), Offset ?? default);
+        public static new DyDateTime Parse(DyForeignTypeInfo typeInfo, string format, string value)
+        {
+            var (ticks, _) = InputParser.Parse(FormatParser.LocalDateTimeParser, format, value);
+            return new((AbstractDateTimeTypeInfo<DyDateTime>)typeInfo, ticks);
+        }
 
-        internal override DyDateTime ChangeDay(int day) => new DyLocalDateTime((DyBaseDateTimeTypeInfo)TypeInfo,
-            new DateTime(Value.Year, Value.Month, day, Value.Hour, Value.Minute, Value.Second, Value.Millisecond, DateTimeKind.Local), Offset!.Value);
+        public override DyObject Clone() => 
+            new DyLocalDateTime((DyLocalDateTimeTypeInfo)TypeInfo, ticks, Offset);
+
+        public override int GetHashCode() => ticks.GetHashCode();
+
+        public override string ToString(string? format, IFormatProvider? _ = null)
+        {
+            var formats = FormatParser.DateTimeParser.ParseSpecifiers(format ?? FORMAT);
+            var sb = new StringBuilder();
+
+            foreach (var f in formats)
+                Formatter.FormatDateTime(this, sb, f);
+
+            return sb.ToString();
+        }
+
+        public override object ToObject() => new DateTimeOffset(new DateTime(ticks, DateTimeKind.Unspecified), Offset.ToTimeSpan());
     }
 }
