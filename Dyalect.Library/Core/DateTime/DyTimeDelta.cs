@@ -48,7 +48,7 @@ namespace Dyalect.Library.Core
             var sb = new StringBuilder();
 
             foreach (var f in formats)
-                DT.FormatInterval(this, sb, f);
+                Formatter.FormatInterval(this, sb, f);
 
             return sb.ToString();
         }

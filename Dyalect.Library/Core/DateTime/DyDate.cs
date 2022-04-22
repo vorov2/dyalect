@@ -50,7 +50,7 @@ public sealed class DyDate : DyForeignObject, IDate, ISpan, IFormattable
         var sb = new StringBuilder();
 
         foreach (var f in formats)
-            DT.FormatDate(this, sb, f);
+            Formatter.FormatDate(this, sb, f);
 
         return sb.ToString();
     }
