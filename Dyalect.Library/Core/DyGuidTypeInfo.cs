@@ -9,6 +9,8 @@ namespace Dyalect.Library.Core
     {
         public override string TypeName => "Guid";
 
+        public DyGuidTypeInfo() => AddMixin(DyType.Comparable);
+
         public DyByteArray Create(byte[]? buffer) => new(this, buffer);
 
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
@@ -29,6 +31,38 @@ namespace Dyalect.Library.Core
                 return DyBool.False;
 
             return ((DyGuid)left).Value == ((DyGuid)right).Value ? DyBool.True : DyBool.False;
+        }
+
+        protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (left.TypeId != right.TypeId)
+                return ctx.InvalidType(left.TypeId, right);
+
+            return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) > 0);
+        }
+
+        protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (left.TypeId != right.TypeId)
+                return ctx.InvalidType(left.TypeId, right);
+
+            return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) >= 0);
+        }
+
+        protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (left.TypeId != right.TypeId)
+                return ctx.InvalidType(left.TypeId, right);
+
+            return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) < 0);
+        }
+
+        protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (left.TypeId != right.TypeId)
+                return ctx.InvalidType(left.TypeId, right);
+
+            return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) <= 0);
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
