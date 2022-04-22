@@ -578,6 +578,11 @@ fox is the red fox.]>
     assert("00:12:34", Time.Parse("00--12--34", "hh--mm--ss").ToString("hh:mm:ss"))
 #endregion
 
+#region "Time: Escape codes"
+    let res = Time.Parse("12+12s01", "hh\\+mm\\sss").ToString("hh:mm:ss")
+    assert("12:12:01", res)
+#endregion
+
 #region "Date: GetType"
     let td = Date(year: 2012, month: 12, day: 12)
     assert(Date, td.GetType())

@@ -148,13 +148,15 @@ internal sealed class FormatParser
         {
             if (input[i] == '\\')
                 i += 1;
-
-            var spc = CheckSpecifiers(input, ref i);
-
-            if (spc is not null)
+            else
             {
-                ret.Add(spc);
-                continue;
+                var spc = CheckSpecifiers(input, ref i);
+
+                if (spc is not null)
+                {
+                    ret.Add(spc);
+                    continue;
+                }
             }
 
             ret.Add(new FormatElement(Literal, input[i].ToString()));

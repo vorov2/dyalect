@@ -4,6 +4,7 @@
   * Add: _`TimeDelta` type should support `Comparable` mixin_ ([Issue #789](https://github.com/vorov2/dyalect/issues/789), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta)).
   * Add: _Add `Time` date type_ ([Issue #787](https://github.com/vorov2/dyalect/issues/787), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Time)).
   * Add: _Add `Date` date type_ ([Issue #791](https://github.com/vorov2/dyalect/issues/791), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Date)).
+  * Fix: _Escape codes in Date/Time format specifiers do not work correctly_ ([Issue #795](https://github.com/vorov2/dyalect/issues/795)).
 
 # 0.41.0
   * _Project migrated to .NET 6.0_
