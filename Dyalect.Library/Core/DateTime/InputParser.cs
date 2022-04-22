@@ -106,6 +106,14 @@ internal static class InputParser
         return (totalTicks, offset);
     }
 
+    private static string FetchOne(string input, int idx)
+    {
+        if (input.Length > idx + 1 && char.IsNumber(input[idx + 1]))
+            throw new FormatException();
+
+        return input[idx].ToString();
+    }
+
     public static List<(FormatElementKind kind, string val)> Parse(List<FormatElement> formats, string input)
     {
         var idx = 0;
@@ -139,20 +147,28 @@ internal static class InputParser
                     throw new FormatException();
 
                 idx++;
-                len = f.Padding is 1 or 2 ? 2 : 5;
+
+                if (f.Padding is 1)
+                {
+                    var one = FetchOne(input, idx);
+                    idx++;
+                    xs.Add((f.Kind, one));
+                    continue;
+                }
+
+                len = f.Padding is 2 ? 2 : 5;
 
                 if (idx + len > input.Length)
                     throw new FormatException();
 
-                var fst = input[idx..];
+                var fst = input.Substring(idx, 2);
                 idx += 2;
 
                 if (f.Padding is 1 or 2)
                     xs.Add(new(f.Kind, fst));
                 else
                 {
-                    idx += 1;
-                    xs.Add(new(f.Kind, fst + ":" + input[idx..]));
+                    xs.Add(new(f.Kind, fst + ":" + input.Substring(++idx, 2)));
                     idx += 2;
                 }
 
@@ -176,7 +192,7 @@ internal static class InputParser
                 var val = input.Substring(idx, len);
                 var next = formats[i + 1];
 
-                if (f.Kind != Literal && next.Kind == Literal)
+                if (next.Kind == Literal)
                 {
                     var j = idx + len;
 
