@@ -1,5 +1,6 @@
 ﻿using Dyalect.Parser.Model;
 using Dyalect.Runtime.Types;
+using System;
 
 namespace Dyalect.Debug
 {
@@ -18,12 +19,18 @@ namespace Dyalect.Debug
 
         public Par(string name, bool isVarArg) => (Name, Value, IsVarArg, TypeAnnotation) = (name, null, isVarArg, null);
 
-        public Par(string name, DyObject? value) => (Name, Value, IsVarArg, TypeAnnotation) = (name, value, false, null);
+        public Par(string name, DyObject? value)
+        {
+            value ??= DyNil.Instance;
+            (Name, Value, IsVarArg, TypeAnnotation) = (name, value, false, null);
+        }
 
         public Par(string name) => (Name, Value, IsVarArg, TypeAnnotation) = (name, null, false, null);
 
         public Par(string name, int value) => (Name, Value, IsVarArg, TypeAnnotation) = (name, DyInteger.Get(value), false, null);
 
         public override string ToString() => Name;
+
+        public static implicit operator Par(string name) => new(name);
     }
 }

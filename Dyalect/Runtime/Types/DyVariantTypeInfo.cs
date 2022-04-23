@@ -3,7 +3,7 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyVariantTypeInfo : DyTypeInfo
 {
-    public override string TypeName => DyTypeNames.Variant;
+    public override string ReflectedTypeName => DyTypeNames.Variant;
 
     public override int ReflectedTypeId => DyType.Variant;
 
@@ -33,7 +33,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
         if (ctx.HasErrors)
             return DyNil.Instance;
 
-        return new DyString($"{TypeName}.{self.Constructor}{str}");
+        return new DyString($"{ReflectedTypeName}.{self.Constructor}{str}");
     }
 
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx)
@@ -66,7 +66,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
         var v = (DyVariant)self;
 
         if (v.Tuple.Count == 0)
-            return ctx.InvalidCast(TypeName, DyTypeNames.Tuple);
+            return ctx.InvalidCast(ReflectedTypeName, DyTypeNames.Tuple);
 
         return v.Tuple;
     }

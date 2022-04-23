@@ -123,7 +123,7 @@ namespace Dyalect.Library.Core
                 DyType.Bool => ReadBool(ctx),
                 DyType.Char => ReadChar(ctx),
                 DyType.String => ReadString(ctx),
-                _ => ctx.InvalidType(type.TypeName)
+                _ => ctx.InvalidType(type.ReflectedTypeName)
             };
 
         private DyObject ReadInt64(ExecutionContext ctx)

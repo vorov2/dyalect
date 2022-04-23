@@ -8,7 +8,7 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyStringBuilderTypeInfo : DyForeignTypeInfo
     {
-        public override string TypeName => "StringBuilder";
+        public override string ReflectedTypeName => "StringBuilder";
 
         public DyStringBuilder Create(StringBuilder sb) => new(this, sb);
 

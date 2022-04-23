@@ -13,7 +13,7 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
         | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.Lit;
 
-    public override string TypeName => DyTypeNames.String;
+    public override string ReflectedTypeName => DyTypeNames.String;
 
     public override int ReflectedTypeId => DyType.String;
 

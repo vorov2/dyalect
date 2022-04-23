@@ -9,6 +9,18 @@ public abstract class DyForeignFunction : DyFunction
     protected DyForeignFunction(string? name, Par[] pars, int varArgIndex)
         : base(pars, varArgIndex) => this.name = name ?? DefaultName;
 
+    protected DyForeignFunction(string? name, Par[] pars) : base(pars, -1)
+    {
+        this.name = name ?? DefaultName;
+
+        for (var i = 0; i < pars.Length; i++)
+            if (pars[i].IsVarArg)
+            {
+                VarArgIndex = i;
+                break;
+            }
+    }
+
     public override string FunctionName => name;
 
     public override bool IsExternal => true;
@@ -26,4 +38,33 @@ public abstract class DyForeignFunction : DyFunction
         Parameters.Length == 0 ? Array.Empty<DyObject>() : new DyObject[Parameters.Length];
 
     internal override DyObject InternalCall(ExecutionContext ctx) => InternalCall(ctx, Array.Empty<DyObject>());
+
+    internal override bool Equals(DyFunction func) => ReferenceEquals(this, func);
+
+    protected T? Cast<T>(int index, DyObject[] args) where T : DyObject
+    {
+        try
+        {
+            if (args[index].IsNil() && Parameters[index].Value.IsNil())
+                return default;
+
+            return (T)args[index];
+        }
+        catch (InvalidCastException)
+        {
+            throw new DyErrorException(new(DyErrorCode.InvalidType, args[index].TypeName));
+        }
+    }
+
+    protected T? Cast<T>() where T : DyObject
+    {
+        try
+        {
+            return (T)Self!;
+        }
+        catch (InvalidCastException)
+        {
+            throw new DyErrorException(new(DyErrorCode.InvalidType, Self!.TypeName));
+        }
+    }
 }

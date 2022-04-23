@@ -1,3 +1,7 @@
+# 0.42.1
+  * Change: _Runtime type system refactoring._
+  * Fix: _Methods `Directory.Copy` and `Directory.Move` do not work_ ([Issue #803](https://github.com/vorov2/dyalect/issues/803)).
+
 # 0.42.0
   * Change: _`TimeDelta` data type is refactored._
   * Change: _Refactoring in virtual machine and runtime error handling layer._

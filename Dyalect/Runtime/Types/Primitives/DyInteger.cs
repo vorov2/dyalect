@@ -1,7 +1,7 @@
 ﻿using System.IO;
 namespace Dyalect.Runtime.Types;
 
-public sealed class DyInteger : DyObject
+public sealed class DyInteger : DyNumber
 {
     public static readonly DyInteger Zero = new(0L);
     public static readonly DyInteger MinusOne = new(-1L);
@@ -11,6 +11,8 @@ public sealed class DyInteger : DyObject
     public static readonly DyInteger Max = new(long.MaxValue);
     public static readonly DyInteger Min = new(long.MinValue);
 
+    public override string TypeName => DyTypeNames.Integer; 
+    
     public static DyInteger Get(long i) =>
         i switch
         {
@@ -22,27 +24,27 @@ public sealed class DyInteger : DyObject
             _ => new DyInteger(i)
         };
 
-    private readonly long value;
+    internal readonly long Value;
 
-    public DyInteger(long value) : base(DyType.Integer) => this.value = value;
+    public DyInteger(long value) : base(DyType.Integer) => this.Value = value;
 
-    public override int GetHashCode() => value.GetHashCode();
+    public override int GetHashCode() => Value.GetHashCode();
 
-    public override string ToString() => value.ToString(CI.Default);
+    public override string ToString() => Value.ToString(CI.Default);
 
-    public override bool Equals(DyObject? obj) => obj is DyInteger i && value == i.value;
+    public override bool Equals(DyObject? obj) => obj is DyInteger i && Value == i.Value;
 
-    public override object ToObject() => value == (int)value ? System.Convert.ChangeType(value, BCL.Int32) : value;
+    public override object ToObject() => Value == (int)Value ? System.Convert.ChangeType(Value, BCL.Int32) : Value;
 
-    protected internal override double GetFloat() => value;
+    protected internal override double GetFloat() => Value;
 
-    protected internal override long GetInteger() => value;
+    protected internal override long GetInteger() => Value;
 
     public override DyObject Clone() => this;
 
     internal override void Serialize(BinaryWriter writer)
     {
         writer.Write(TypeId);
-        writer.Write(value);
+        writer.Write(Value);
     }
 }

@@ -5,7 +5,7 @@ internal sealed class DyNilTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Lit;
 
-    public override string TypeName => DyTypeNames.Nil;
+    public override string ReflectedTypeName => DyTypeNames.Nil;
 
     public override int ReflectedTypeId => DyType.Nil;
 

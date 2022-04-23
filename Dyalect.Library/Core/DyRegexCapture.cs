@@ -7,6 +7,8 @@ namespace Dyalect.Library.Core
     {
         private readonly Capture capture;
 
+        public override string TypeName => DyTypeNames.Object;
+
         public DyRegexCapture(Capture capture) : base(DyType.Object) => this.capture = capture;
 
         public override SupportedOperations Supports() => SupportedOperations.Get;

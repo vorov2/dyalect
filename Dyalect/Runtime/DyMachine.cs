@@ -480,7 +480,7 @@ public static partial class DyMachine
                         {
                             if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti)
                             {
-                                right = ti.GetStaticMember(ti.TypeName, ctx);
+                                right = ti.GetStaticMember(ti.ReflectedTypeName, ctx);
 
                                 if (ctx.HasErrors)
                                 {

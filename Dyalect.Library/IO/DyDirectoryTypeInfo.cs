@@ -8,7 +8,7 @@ namespace Dyalect.Library.IO
 {
     public sealed class DyDirectoryTypeInfo : DyForeignTypeInfo<IOModule>
     {
-        public override string TypeName => "Directory";
+        public override string ReflectedTypeName => "Directory";
 
         protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
@@ -118,8 +118,8 @@ namespace Dyalect.Library.IO
                 "Exists" => Func.Static(name, Exists, -1, new Par("path")),
                 "Create" => Func.Static(name, Create, -1, new Par("path")),
                 "Delete" => Func.Static(name, Delete, -1, new Par("path"), new Par("recursive", DyBool.False)),
-                "Copy" => Func.Static(name, Delete, -1, new Par("path"), new Par("other")),
-                "Move" => Func.Static(name, Delete, -1, new Par("path"), new Par("other")),
+                "Copy" => Func.Static(name, Copy, -1, new Par("path"), new Par("other")),
+                "Move" => Func.Static(name, Move, -1, new Par("path"), new Par("other")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

@@ -7,7 +7,7 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
 {
-    public override string TypeName => DyTypeNames.Array;
+    public override string ReflectedTypeName => DyTypeNames.Array;
 
     public override int ReflectedTypeId => DyType.Array;
 

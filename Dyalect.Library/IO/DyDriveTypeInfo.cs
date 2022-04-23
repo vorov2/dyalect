@@ -9,7 +9,7 @@ namespace Dyalect.Library.IO
 {
     public sealed class DyDriveTypeInfo : DyForeignTypeInfo<IOModule>
     {
-        public override string TypeName => "Drive";
+        public override string ReflectedTypeName => "Drive";
 
         protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 

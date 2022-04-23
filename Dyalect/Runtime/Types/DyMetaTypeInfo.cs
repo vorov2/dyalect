@@ -5,7 +5,7 @@ internal sealed class DyMetaTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-    public override string TypeName => DyTypeNames.TypeInfo;
+    public override string ReflectedTypeName => DyTypeNames.TypeInfo;
 
     public override int ReflectedTypeId => DyType.TypeInfo;
 
@@ -14,7 +14,7 @@ internal sealed class DyMetaTypeInfo : DyTypeInfo
         if (index.TypeId == DyType.String)
             return index.GetString() switch
             {
-                "name" => new DyString(((DyTypeInfo)self).TypeName),
+                "name" => new DyString(((DyTypeInfo)self).ReflectedTypeName),
                 _ => ctx.IndexOutOfRange(index)
             };
 
@@ -22,5 +22,5 @@ internal sealed class DyMetaTypeInfo : DyTypeInfo
     }
 
     protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
-        new DyString("TypeInfo<" + ((DyTypeInfo)arg).TypeName + ">");
+        new DyString("TypeInfo<" + ((DyTypeInfo)arg).ReflectedTypeName + ">");
 }

@@ -14,7 +14,7 @@ internal class DyInteropObjectTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-    public override string TypeName => DyTypeNames.Interop;
+    public override string ReflectedTypeName => DyTypeNames.Interop;
 
     public override int ReflectedTypeId => DyType.Interop;
 

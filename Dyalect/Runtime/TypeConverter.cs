@@ -68,7 +68,7 @@ public static class TypeConverter
     {
         if (!TryConvert(obj, type, out var result))
         {
-            ctx.InvalidCast(obj.GetTypeName(ctx), type.FullName ?? type.Name);
+            ctx.InvalidCast(obj.TypeName, type.FullName ?? type.Name);
             return null;
         }
 

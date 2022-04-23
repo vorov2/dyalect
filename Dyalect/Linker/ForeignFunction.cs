@@ -26,7 +26,7 @@ namespace Dyalect.Linker
                 }
                 catch (Exception)
                 {
-                    return ctx.InvalidType(args[i].GetTypeInfo(ctx).TypeName);
+                    return ctx.InvalidType(args[i].GetTypeInfo(ctx).ReflectedTypeName);
                 }
             }
 

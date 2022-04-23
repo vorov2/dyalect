@@ -10,7 +10,7 @@ internal sealed class DyFloatTypeInfo : DyTypeInfo
         | SupportedOperations.Sub | SupportedOperations.Div | SupportedOperations.Mul | SupportedOperations.Rem
         | SupportedOperations.Neg | SupportedOperations.Plus | SupportedOperations.Lit;
 
-    public override string TypeName => DyTypeNames.Float;
+    public override string ReflectedTypeName => DyTypeNames.Float;
 
     public override int ReflectedTypeId => DyType.Float;
 

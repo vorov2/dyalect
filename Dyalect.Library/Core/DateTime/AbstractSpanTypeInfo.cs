@@ -8,11 +8,11 @@ namespace Dyalect.Library.Core
     public abstract class AbstractSpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
         where T : DyObject, ISpan, IFormattable
     {
-        public override string TypeName { get; }
+        public override string ReflectedTypeName { get; }
 
         protected AbstractSpanTypeInfo(string typeName)
         {
-            TypeName = typeName;
+            ReflectedTypeName = typeName;
             AddMixin(DyType.Comparable);
         }
 

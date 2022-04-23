@@ -7,7 +7,7 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyCalendarTypeInfo : DyForeignTypeInfo<CoreModule>
     {
-        public override string TypeName => "Calendar";
+        public override string ReflectedTypeName => "Calendar";
 
         protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
