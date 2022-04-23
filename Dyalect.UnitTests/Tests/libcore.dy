@@ -506,13 +506,30 @@ fox is the red fox.]>
     assert("Calendar", Calendar.name)
 #endregion
 
-#region "Calendar: ParseDateTime"
+#region "Calendar: ParseDateTime 1"
     let res1 = Calendar.ParseDateTime("2012-12-12 16:44:12 -11:30", "yyyy-MM-dd HH:mm:ss zzz")
     assert(true, res1 is LocalDateTime)
     assert("2012-12-12 16:44:12.0000000-11:30", res1.ToString())
     let res2 = Calendar.ParseDateTime("2012-12-12 16:44:12", "yyyy-MM-dd HH:mm:ss")
     assert(true, res2 is DateTime)
     assert("2012-12-12 16:44:12.0000000", res2.ToString())
+#endregion
+
+#region "Calendar: ParseDateTime 2"
+    let xs = [
+        (val: "5/1/2009 6:32:00 PM", fmt: "M/d/yyyy h:mm:ss tt"),
+        (val: "5/01/2009 6:32 PM", fmt: "M/dd/yyyy h:mm tt"),
+        (val: "05/01/2009 6:32:00", fmt: "MM/dd/yyyy h:mm:ss"),
+        (val: "5/1/2009 6:32", fmt: "M/d/yyyy h:mm"),
+        (val: "5/1/2009 06:32 PM", fmt: "M/d/yyyy hh:mm tt"),
+        (val: "05/01/2009 06 PM", fmt: "MM/dd/yyyy hh tt"),
+        (val: "08/28/2015 16:17:39.125", fmt: "MM/dd/yyyy HH:mm:ss.fff"),
+        (val: "08/28/2015 16:17:39.125000",  fmt: "MM/dd/yyyy HH:mm:ss.ffffff")
+    ]
+    for x in xs {
+        let dt = Calendar.ParseDateTime(x.val, x.fmt)
+        assert(x.val, dt.ToString(x.fmt))
+    }
 #endregion
 
 #region "Calendar: DaysInMonth"
