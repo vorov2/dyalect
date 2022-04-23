@@ -231,7 +231,7 @@ namespace Dyalect.Library.IO
         private DyObject GetCreationTime(ExecutionContext ctx, DyObject path)
         {
             if (!path.IsString(ctx)) return Default();
-            return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetCreationTimeUtc(path.GetString())), path);
+            return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetCreationTimeUtc(path.GetString()).Ticks), path);
         }
 
         private DyObject SetCreationTime(ExecutionContext ctx, DyObject path, DyObject date)
@@ -241,7 +241,7 @@ namespace Dyalect.Library.IO
                 return ctx.InvalidType(date);
             return Handle(ctx, () =>
             {
-                File.SetCreationTimeUtc(path.GetString(), ((DyDateTime)date).Value);
+                File.SetCreationTimeUtc(path.GetString(), new DateTime(((DyDateTime)date).Ticks));
                 return Default();
             }, path);
         }
@@ -249,7 +249,7 @@ namespace Dyalect.Library.IO
         private DyObject GetLastAccessTime(ExecutionContext ctx, DyObject path)
         {
             if (!path.IsString(ctx)) return Default();
-            return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetLastAccessTimeUtc(path.GetString())), path);
+            return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetLastAccessTimeUtc(path.GetString()).Ticks), path);
         }
 
         private DyObject SetLastAccessTime(ExecutionContext ctx, DyObject path, DyObject date)
@@ -259,7 +259,7 @@ namespace Dyalect.Library.IO
                 return ctx.InvalidType(date);
             return Handle(ctx, () =>
             {
-                File.SetLastAccessTimeUtc(path.GetString(), ((DyDateTime)date).Value);
+                File.SetLastAccessTimeUtc(path.GetString(), new DateTime(((DyDateTime)date).Ticks));
                 return Default();
             }, path);
         }
@@ -267,7 +267,7 @@ namespace Dyalect.Library.IO
         private DyObject GetLastWriteTime(ExecutionContext ctx, DyObject path)
         {
             if (!path.IsString(ctx)) return Default();
-            return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetLastWriteTimeUtc(path.GetString())), path);
+            return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetLastWriteTimeUtc(path.GetString()).Ticks), path);
         }
 
         private DyObject SetLastWriteTime(ExecutionContext ctx, DyObject path, DyObject date)
@@ -277,7 +277,7 @@ namespace Dyalect.Library.IO
                 return ctx.InvalidType(date);
             return Handle(ctx, () =>
             {
-                File.SetLastWriteTimeUtc(path.GetString(), ((DyDateTime)date).Value);
+                File.SetLastWriteTimeUtc(path.GetString(), new DateTime(((DyDateTime)date).Ticks));
                 return Default();
             }, path);
         }

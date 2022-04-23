@@ -12,7 +12,7 @@ internal static class Formatter
         if (fe.Padding == 0 && val == 0)
             return string.Empty;
 
-        return fe.Padding > 1 ? val.ToString().PadLeft(2, '0') : val.ToString();
+        return fe.Padding > 1 ? val.ToString().PadLeft(fe.Padding, '0') : val.ToString();
     }
 
     public static bool FormatInterval(this IInterval self, StringBuilder builder, FormatElement elem)
@@ -33,7 +33,7 @@ internal static class Formatter
         }
     }
 
-    public static bool FormatZonedDateTime(this IZonedDateTime self, StringBuilder builder, FormatElement elem)
+    public static bool FormatLocalDateTime(this ILocalDateTime self, StringBuilder builder, FormatElement elem)
     {
         if (!FormatDate(self, builder, elem))
             if (!FormatTime(self, builder, elem))
@@ -49,19 +49,19 @@ internal static class Formatter
 
                     if (elem.Padding == 1)
                     {
-                        builder.Append(self.Interval.Hours);
+                        builder.Append(Math.Abs(self.Interval.Hours));
                         return true;
                     }
                     else if (elem.Padding == 2)
                     {
-                        builder.Append(self.Interval.Hours.ToString().PadLeft(2, '0'));
+                        builder.Append(Math.Abs(self.Interval.Hours).ToString().PadLeft(2, '0'));
                         return true;
                     }
                     else if (elem.Padding == 3)
                     {
-                        builder.Append(self.Interval.Hours.ToString().PadLeft(2, '0'));
+                        builder.Append(Math.Abs(self.Interval.Hours).ToString().PadLeft(2, '0'));
                         builder.Append(CI.UI.DateTimeFormat.TimeSeparator);
-                        builder.Append(self.Interval.Minutes.ToString().PadLeft(2, '0'));
+                        builder.Append(Math.Abs(self.Interval.Minutes).ToString().PadLeft(2, '0'));
                         return true;
                     }
                 }

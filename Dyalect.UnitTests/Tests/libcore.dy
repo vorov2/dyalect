@@ -246,8 +246,8 @@ fox is the red fox.]>
 #region "TimeDelta: math"
     let x = TimeDelta(minutes: 3, seconds: 12)
     let y = TimeDelta(minutes: 1, seconds: 45)
-    assert("+0.00:04:57.00", (x + y).ToString())
-    assert("+0.00:01:27.00", (x - y).ToString())
+    assert("+0.00:04:57.0000000", (x + y).ToString())
+    assert("+0.00:01:27.0000000", (x - y).ToString())
 #endregion
 
 #region "TimeDelta: equality"
@@ -278,7 +278,7 @@ fox is the red fox.]>
 
 #region "TimeDelta: ToString 1"
     let td = TimeDelta(hours: 12, minutes: 3, seconds: 12)
-    assert("+0.12:03:12.00", td.ToString())
+    assert("+0.12:03:12.0000000", td.ToString())
     assert("03-12-12", td.ToString(format: "mm-hh-ss"))
 #endregion
 
@@ -325,9 +325,9 @@ fox is the red fox.]>
 #endregion
 
 #region "DateTime: Min, Max and Default"
-    assert("0001-01-01T00:00:00.0000000", DateTime.Min().ToString())
-    assert("9999-12-31T23:59:59.9999999", DateTime.Max().ToString())
-    assert("0001-01-01T00:00:00.0000000", DateTime.Default().ToString())
+    assert("0001-01-01 00:00:00.0000000", DateTime.Min().ToString())
+    assert("9999-12-31 23:59:59.9999999", DateTime.Max().ToString())
+    assert("0001-01-01 00:00:00.0000000", DateTime.Default().ToString())
 #endregion
 
 #region "DateTime: construction"
@@ -346,9 +346,9 @@ fox is the red fox.]>
     assert("Wednesday", dt.DayOfWeek)
 #endregion
 
-#region "DateTime: Ticks"
+#region "DateTime: TotalTicks"
     let dt = DateTime(year: 2012, month: 12, day: 12, hour: 9, minute: 34, second: 46, millisecond: 956)
-    assert(634909016869560000, dt.Ticks)
+    assert(634909016869560000, dt.TotalTicks)
 #endregion
 
 #region "DateTime: FromTicks"
@@ -405,7 +405,7 @@ fox is the red fox.]>
     assert(true, dt2 == dt3)
 #endregion
 
-#region "DateTime: comparison"    
+#region "DateTime: comparison"
     let dt1 = DateTime.Parse("01/04/2020", format: "dd/MM/yyyy")
     let dt2 = DateTime.Parse("11/04/2020", format: "dd/MM/yyyy")
     let dt3 = DateTime.Parse("01/04/2020", format: "dd/MM/yyyy")
@@ -421,8 +421,8 @@ fox is the red fox.]>
 
 #region "DateTime: Date and Time"
     let dt = DateTime(year: 2012, month: 12, day: 3, hour: 12, minute: 43)
-    assert(DateTime(year: 2012, month: 12, day: 3), dt.Date)
-    assert(TimeDelta(hours: 12, minutes: 43), dt.Time)
+    assert(Date(year: 2012, month: 12, day: 3), dt.Date)
+    assert(Time(hour: 12, minute: 43), dt.Time)
 #endregion
 
 #region "LocalDateTime: GetType"
@@ -434,7 +434,7 @@ fox is the red fox.]>
 #region "LocalDateTime: ToString"
     let dt = LocalDateTime(offset: -TimeDelta(hours: 3), year: 2012, month: 3, day: 21,
         hour: 15, minute: 33, second: 59)
-    assert("2012-03-21T15:33:59.0000000-03:00", dt.ToString())
+    assert("2012-03-21 15:33:59.0000000-03:00", dt.ToString())
 #endregion
 
 #region "LocalDateTime: LocalOffset"
@@ -444,7 +444,7 @@ fox is the red fox.]>
 #endregion
 
 #region "LocalDateTime: Parse"
-    let dt1 = LocalDateTime.Parse("2012-03-21T15:33:59.0000000-03:00", "yyyy-MM-ddTHH:mm:ss.fffffffzzz")
+    let dt1 = LocalDateTime.Parse("2012-03-21 15:33:59.0000000-03:00", "yyyy-MM-dd hh:mm:ss.fffffffzzz")
     let dt2 = LocalDateTime(offset: -TimeDelta(hours: 3), year: 2012, month: 3, day: 21,
         hour: 15, minute: 33, second: 59)
     assert(true, dt1 == dt2)
@@ -454,10 +454,10 @@ fox is the red fox.]>
 #region "LocalDateTime: FromTicks"
     let dt = LocalDateTime(offset: -TimeDelta(hours: 3), year: 2012, month: 3, day: 21,
         hour: 15, minute: 33, second: 59)
-    let ticks = dt.Ticks
+    let ticks = dt.TotalTicks
     let ndt = LocalDateTime.FromTicks(ticks, offset: -TimeDelta(hours: 3))
     assert(true, dt == ndt)
-    assert(true, dt.Ticks == ndt.Ticks)
+    assert(true, dt.TotalTicks == ndt.TotalTicks)
 #endregion
 
 #region "LocalDateTime: LocalOffset"
@@ -475,8 +475,8 @@ fox is the red fox.]>
 
 #region "LocalDateTime: Date and Time"
     let dt = LocalDateTime(year: 2012, month: 12, day: 3, hour: 12, minute: 43, offset: -TimeDelta(hours: 3))
-    assert(LocalDateTime(year: 2012, month: 12, day: 3, offset: -TimeDelta(hours: 3)), dt.Date)
-    assert(TimeDelta(hours: 12, minutes: 43), dt.Time)
+    assert(Date(year: 2012, month: 12, day: 3), dt.Date)
+    assert(Time(hour: 12, minute: 43), dt.Time)
 #endregion
 
 #region "Calendar: GetType"
@@ -559,7 +559,7 @@ fox is the red fox.]>
 
 #region "Time: ToString 1"
     let td = Time(hour: 12, minute: 3, second: 12)
-    assert("12:03:12.00", td.ToString())
+    assert("12:03:12.0000000", td.ToString())
     assert("03-12-12", td.ToString(format: "mm-hh-ss"))
 #endregion
 

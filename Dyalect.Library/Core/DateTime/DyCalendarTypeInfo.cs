@@ -21,7 +21,7 @@ namespace Dyalect.Library.Core
         private DyObject FirstDayOfMonth(ExecutionContext ctx, DyObject value)
         {
             if (value is DyDateTime dt)
-                return dt.ChangeDay(1);
+                return dt.FirstDayOfMonth();
             else
                 return ctx.InvalidType(DeclaringUnit.DateTime.TypeId, DeclaringUnit.LocalDateTime.TypeId, value);
         }
@@ -29,7 +29,7 @@ namespace Dyalect.Library.Core
         private DyObject LastDayOfMonth(ExecutionContext ctx, DyObject value)
         {
             if (value is DyDateTime dt)
-                return dt.ChangeDay(DateTime.DaysInMonth(dt.Value.Year, dt.Value.Month));
+                return dt.LastDayOfMonth();
             else
                 return ctx.InvalidType(DeclaringUnit.DateTime.TypeId, DeclaringUnit.LocalDateTime.TypeId, value);
         }

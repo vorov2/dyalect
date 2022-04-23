@@ -130,6 +130,9 @@ internal sealed class FormatParser
         new(Decisecond, "f"),
         new(PmAm, "tt", 2),
         new(PmAm, "t"),
+        new(Offset, "zzz", 3),
+        new(Offset, "zz", 2),
+        new(Offset, "z"),
     };
     public static FormatParser TimeDeltaParser { get; } = new FormatParser(timeDeltaElements);
     public static FormatParser TimeParser { get; } = new FormatParser(timeElements);

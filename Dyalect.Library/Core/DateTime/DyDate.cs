@@ -12,6 +12,8 @@ public sealed class DyDate : DyForeignObject, IDate, IFormattable
 
     public DyDate(DyDateTypeInfo typeInfo, int days) : base(typeInfo) => this.days = days;
 
+    public DyDate(DyDateTypeInfo typeInfo, DateTime dateTime) : this(typeInfo, DateOnly.FromDateTime(dateTime).DayNumber) { }
+
     public long TotalTicks => days * DT.TicksPerDay;
 
     public int Year => new DateTime(TotalTicks).Year;
@@ -55,7 +57,7 @@ public sealed class DyDate : DyForeignObject, IDate, IFormattable
         return sb.ToString();
     }
 
-    private void SetDays(DateTime dt) => days = (int)(dt.Ticks / DT.TicksPerDay);
+    private void SetDays(DateTime dt) => days = DateOnly.FromDateTime(dt).DayNumber;
 
     public override string ToString() => ToString(DEFAULT_FORMAT);
 }

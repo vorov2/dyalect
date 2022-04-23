@@ -4,11 +4,13 @@ using System.Text;
 
 namespace Dyalect.Library.Core
 {
-    public sealed class DyLocalDateTime : DyDateTime
+    public sealed class DyLocalDateTime : DyDateTime, ILocalDateTime
     {
-        private const string FORMAT = "yyyy-MM-dd HH:mm:ss.fffffff zzz";
+        private const string FORMAT = "yyyy-MM-dd hh:mm:ss.fffffffzzz";
         
         public DyTimeDelta Offset { get; }
+
+        IInterval ILocalDateTime.Interval => Offset;
 
         internal DyLocalDateTime(DyLocalDateTimeTypeInfo typeInfo, long ticks, DyTimeDelta offset)
             : base(typeInfo, ticks) => this.Offset = offset;
@@ -18,8 +20,10 @@ namespace Dyalect.Library.Core
 
         public static new DyDateTime Parse(DyForeignTypeInfo typeInfo, string format, string value)
         {
-            var (ticks, _) = InputParser.Parse(FormatParser.LocalDateTimeParser, format, value);
-            return new((AbstractDateTimeTypeInfo<DyDateTime>)typeInfo, ticks);
+            var ti = (DyLocalDateTimeTypeInfo)typeInfo;
+            var (ticks, offset) = InputParser.Parse(FormatParser.LocalDateTimeParser, format, value);
+            return new DyLocalDateTime(ti, ticks,
+                new DyTimeDelta(ti.TypeDeltaTypeInfo, offset == 0 ? TimeZoneInfo.Local.BaseUtcOffset : TimeSpan.FromTicks(offset)));
         }
 
         public override DyObject Clone() => 
@@ -27,17 +31,31 @@ namespace Dyalect.Library.Core
 
         public override int GetHashCode() => ticks.GetHashCode();
 
+        public override string ToString() => ToString(FORMAT);
+
         public override string ToString(string? format, IFormatProvider? _ = null)
         {
-            var formats = FormatParser.DateTimeParser.ParseSpecifiers(format ?? FORMAT);
+            var formats = FormatParser.LocalDateTimeParser.ParseSpecifiers(format ?? FORMAT);
             var sb = new StringBuilder();
 
             foreach (var f in formats)
-                Formatter.FormatDateTime(this, sb, f);
+                Formatter.FormatLocalDateTime(this, sb, f);
 
             return sb.ToString();
         }
 
         public override object ToObject() => new DateTimeOffset(new DateTime(ticks, DateTimeKind.Unspecified), Offset.ToTimeSpan());
+
+        public override DyDateTime FirstDayOfMonth()
+        {
+            var dt = new DateTime(ticks, DateTimeKind.Unspecified);
+            return new DyLocalDateTime((DyLocalDateTimeTypeInfo)TypeInfo, dt.AddDays(-dt.Day + 1).Ticks, Offset);
+        }
+
+        public override DyDateTime LastDayOfMonth()
+        {
+            var dt = new DateTime(ticks, DateTimeKind.Unspecified);
+            return new DyLocalDateTime((DyLocalDateTimeTypeInfo)TypeInfo, dt.AddDays(DateTime.DaysInMonth(dt.Year, dt.Month) - dt.Day).Ticks, Offset);
+        }
     }
 }

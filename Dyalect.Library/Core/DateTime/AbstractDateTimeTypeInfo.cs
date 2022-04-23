@@ -63,6 +63,8 @@ public abstract class AbstractDateTimeTypeInfo<T> : AbstractDateTypeInfo<T>
            "Second" => Func.Auto(name, (_, s) => new DyInteger(((T)s).Seconds)),
            "Millisecond" => Func.Auto(name, (_, s) => new DyInteger(((T)s).Milliseconds)),
            "Tick" => Func.Auto(name, (_, s) => new DyInteger(((T)s).Ticks)),
+           "Date" => Func.Auto(name, (_, s) => new DyDate(DeclaringUnit.Date, new DateTime(((T)s).TotalTicks))),
+           "Time" => Func.Auto(name, (_, s) => new DyTime(DeclaringUnit.Time, TimeOnly.FromDateTime(new DateTime(((T)s).TotalTicks)).Ticks)),
            _ => base.InitializeInstanceMember(self, name, ctx)
        };
 

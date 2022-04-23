@@ -7,7 +7,9 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyLocalDateTimeTypeInfo : AbstractDateTimeTypeInfo<DyDateTime>
     {
-        private const string LocalDateTime = "DateTime";
+        private const string LocalDateTime = "LocalDateTime";
+
+        public DyTimeDeltaTypeInfo TypeDeltaTypeInfo => DeclaringUnit.TimeDelta;
 
         public DyLocalDateTimeTypeInfo() : base(LocalDateTime) { }
 
@@ -99,12 +101,13 @@ namespace Dyalect.Library.Core
 
         private DyObject FromTicks(ExecutionContext ctx, DyObject ticks, DyObject offset)
         {
+            if (ticks.NotInteger(ctx)) return Default();
             var delta = TryGetOffset(ctx, offset);
 
             if (delta is null)
                 return Default();
 
-            return FromTicks(ctx, ticks, delta);
+            return new DyLocalDateTime(this, ticks.GetInteger(), delta);
         }
 
         private bool CheckValues(ExecutionContext ctx, DyObject dateTime, DyObject timeZone)
@@ -139,6 +142,8 @@ namespace Dyalect.Library.Core
 
         protected override DyDateTime GetMin(ExecutionContext ctx) => new(this, DateTime.MinValue.Ticks);
 
+        private DyTimeDelta LocalOffset() => new DyTimeDelta(DeclaringUnit.TimeDelta, TimeZoneInfo.Local.BaseUtcOffset);
+
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
@@ -147,7 +152,8 @@ namespace Dyalect.Library.Core
                     new Par("second", DyInteger.Zero), new Par("millisecond", DyInteger.Zero), new Par("offset", DyNil.Instance)),
                 "FromDateTime" => Func.Static(name, GetLocalDateTime, -1, new Par("value"), new Par("offset", DyNil.Instance)),
                 "FromTicks" => Func.Static(name, FromTicks, -1, new Par("value"), new Par("offset", DyNil.Instance)),
-                "Offset" => Func.Auto(name, _ => new DyTimeDelta(DeclaringUnit.TimeDelta, TimeZoneInfo.Local.BaseUtcOffset)),
+                "Now" => Func.Static(name, _ => new DyLocalDateTime(this, DateTime.Now.Ticks, LocalOffset())),
+                "LocalOffset" => Func.Auto(name, _ => LocalOffset()),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

@@ -5,7 +5,7 @@ namespace Dyalect.Library.Core;
 
 public class DyDateTime : DyForeignObject, IDateTime, IFormattable
 {
-    private const string FORMAT = "yyyy-MM-dd HH:mm:ss.fffffff";
+    private const string FORMAT = "yyyy-MM-dd hh:mm:ss.fffffff";
 
     protected long ticks;
 
@@ -41,6 +41,18 @@ public class DyDateTime : DyForeignObject, IDateTime, IFormattable
             Formatter.FormatDateTime(this, sb, f);
 
         return sb.ToString();
+    }
+
+    public virtual DyDateTime FirstDayOfMonth()
+    {
+        var dt = new DateTime(ticks, DateTimeKind.Unspecified);
+        return new DyDateTime((AbstractDateTimeTypeInfo<DyDateTime>)TypeInfo, dt.AddDays(-dt.Day + 1).Ticks);
+    }
+
+    public virtual DyDateTime LastDayOfMonth()
+    {
+        var dt = new DateTime(ticks, DateTimeKind.Unspecified);
+        return new DyDateTime((AbstractDateTimeTypeInfo<DyDateTime>)TypeInfo, dt.AddDays(DateTime.DaysInMonth(dt.Year, dt.Month) - dt.Day).Ticks);
     }
 
     #region DateTime

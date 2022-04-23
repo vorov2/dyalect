@@ -6,14 +6,14 @@ namespace Dyalect.Library.Core;
 
 internal static class InputParser
 {
-    public static (long ticks, int offset) Parse(FormatParser formatParser, string format, string value)
+    public static (long ticks, long offset) Parse(FormatParser formatParser, string format, string value)
     {
         var formats = formatParser.ParseSpecifiers(format);
         var chunks = Parse(formats, value);
         var (days, hours, minutes, seconds, ds, cs, ms, tts, hts, micros, tick) =
             (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         var (year, month) = (0, 0);
-        var offset = 0;
+        var offset = 0L;
         var negate = false;
 
         foreach (var (kind, val) in chunks)
@@ -23,15 +23,29 @@ internal static class InputParser
                     negate = val == "-";
                     break;
                 case Offset:
-                    if (val.Length > 2 && int.TryParse(val[..2], out var hrs) 
-                        && int.TryParse(val[3..], out var mins))
-                        offset = hrs * 60 + mins;
-                    else if (int.TryParse(val, out hrs))
                     {
-                        offset = hrs * 60;
-                        break;
+                        if (val.Length == 0)
+                            throw new FormatException();
+
+                        var sign = val[0];
+                        var sval = val[1..];
+
+                        if (sval.Length > 3 && int.TryParse(sval[..2], out var hrs)
+                            && int.TryParse(sval[3..], out var mins))
+                        {
+                            offset = hrs * DT.TicksPerHour + mins * DT.TicksPerMinute;
+                            if (sign == '-') offset = -offset;
+                            break;
+                        }
+                        else if (int.TryParse(sval, out hrs))
+                        {
+                            offset = hrs * DT.TicksPerHour;
+                            if (sign == '-') offset = -offset;
+                            break;
+                        }
+
+                        throw new FormatException();
                     }
-                    throw new FormatException();
                 case Year:
                     if (!int.TryParse(val, out year)) throw new FormatException();
                     break;
@@ -141,7 +155,7 @@ internal static class InputParser
 
             if (f.Kind == Offset )
             {
-                var s = input[0];
+                var s = input[idx];
 
                 if (s is not '+' and not '-')
                     throw new FormatException();
@@ -165,10 +179,10 @@ internal static class InputParser
                 idx += 2;
 
                 if (f.Padding is 1 or 2)
-                    xs.Add(new(f.Kind, fst));
+                    xs.Add(new(f.Kind, s + fst));
                 else
                 {
-                    xs.Add(new(f.Kind, fst + ":" + input.Substring(++idx, 2)));
+                    xs.Add(new(f.Kind, s + fst + ":" + input.Substring(++idx, 2)));
                     idx += 2;
                 }
 
