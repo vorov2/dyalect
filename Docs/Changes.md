@@ -3,6 +3,9 @@
   * Change: _Refactoring in virtual machine and runtime error handling layer._
   * Change: _Refactor `DateTime` and `LocalDateTime` to be based on `Date` and `Time`_ ([Issue #794](https://github.com/vorov2/dyalect/issues/794)).
   * Change: _`DateType` types should return instances of `Time` and `Date` from properties of the same name_ ([Issue #790](https://github.com/vorov2/dyalect/issues/790)).
+  * Change: _Use new engine for `DateTime` and `LocalDateTime` formatting_ ([Issue #792](https://github.com/vorov2/dyalect/issues/792)).
+  * Change: _Use new engine for `DateTime` and `LocalDateTime` parsing_ ([Issue #793](https://github.com/vorov2/dyalect/issues/793)).
+  * Change: _Refactor `DateTime` and `LocalDateTime` to be based on `Date` and `Time`_ ([Issue #794](https://github.com/vorov2/dyalect/issues/794)).
   * Add: _`TimeDelta` type should support `Comparable` mixin_ ([Issue #789](https://github.com/vorov2/dyalect/issues/789), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta)).
   * Add: _Add `Time` date type_ ([Issue #787](https://github.com/vorov2/dyalect/issues/787), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Time)).
   * Add: _Add `Date` date type_ ([Issue #791](https://github.com/vorov2/dyalect/issues/791), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Date)).
