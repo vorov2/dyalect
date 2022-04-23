@@ -89,7 +89,7 @@ public static class Func
         where P4 : DyObject
     => new InstanceMethod<P1, P2, P3, P4>(name, fun!, par1, par2, par3);
 
-    public static DyFunction Method<P1, P2, P3, P4, P5>(string name, Func<ExecutionContext, P1, P2, P3, P4, P5, DyObject?> fun, Par par1, Par par2, Par par3, Par par4)
+    public static DyFunction Instance<P1, P2, P3, P4, P5>(string name, Func<ExecutionContext, P1, P2, P3, P4, P5, DyObject?> fun, Par par1, Par par2, Par par3, Par par4)
         where P1 : DyObject
         where P2 : DyObject
         where P3 : DyObject

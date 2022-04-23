@@ -729,6 +729,8 @@ public abstract class DyTypeInfo : DyObject
 
     protected DyObject Default() => DyNil.Instance;
 
+    protected DyObject Nil => DyNil.Instance;
+
     private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();
 
     private DyObject GetIterator(ExecutionContext ctx, DyObject self) => self is IEnumerable<DyObject> en 

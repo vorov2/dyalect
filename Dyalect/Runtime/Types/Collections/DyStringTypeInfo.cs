@@ -88,7 +88,9 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         self.SetItem(index, value, ctx);
         return DyNil.Instance;
     }
+    #endregion
 
+    #region Instance
     protected override DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
     {
         var str = (DyString)self;
@@ -128,31 +130,25 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         return new DyString(str.Value.Substring(beg, len));
     }
 
-    private DyObject IndexOf(ExecutionContext ctx, DyObject self, DyObject value, DyObject fromIndex, DyObject count)
+    private DyObject IndexOf(ExecutionContext ctx, DyString self, DyStringLike value, DyInteger fromIndex, DyInteger? count)
     {
-        var str = self.GetString();
-        var ifrom = (int)fromIndex.GetInteger();
-        var icount = count.TypeId == DyType.Nil ? str.Length - ifrom : (int)count.GetInteger();
+        var str = self.Value;
+        var icount = (int)(count is null ? str.Length - fromIndex.Value : count.Value);
 
-        if (ifrom < 0 || ifrom > str.Length)
+        if (fromIndex.Value < 0 || fromIndex.Value > str.Length)
             return ctx.IndexOutOfRange();
 
-        if (icount < 0 || icount > str.Length - ifrom)
+        if (icount < 0 || icount > str.Length - fromIndex.Value)
             return ctx.IndexOutOfRange();
 
-        if (value.TypeId == DyType.String)
-            return DyInteger.Get(str.IndexOf(value.GetString(), ifrom, icount));
-        else if (value.TypeId == DyType.Char)
-            return DyInteger.Get(str.IndexOf(value.GetChar(), ifrom, icount));
-        else
-            return ctx.InvalidType(DyType.String, DyType.Char, value);
+        return DyInteger.Get(str.IndexOf(value.GetString(), (int)fromIndex.Value, icount));
     }
 
-    private DyObject LastIndexOf(ExecutionContext ctx, DyObject self, DyObject value, DyObject fromIndex, DyObject count)
+    private DyObject LastIndexOf(ExecutionContext ctx, DyString self, DyStringLike value, DyInteger? fromIndex, DyInteger? count)
     {
-        var str = self.GetString();
-        var ifrom = fromIndex.TypeId == DyType.Nil ? str.Length - 1 : (int)fromIndex.GetInteger();
-        var icount = count.TypeId == DyType.Nil ? ifrom + 1 : (int)count.GetInteger();
+        var str = self.Value;
+        var ifrom = fromIndex is null ? str.Length - 1 : (int)fromIndex.Value;
+        var icount = count is null ? ifrom + 1 : (int)count.Value;
 
         if (ifrom < 0 || ifrom > str.Length)
             return ctx.IndexOutOfRange();
@@ -160,18 +156,13 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         if (icount < 0 || ifrom - icount + 1 < 0)
             return ctx.IndexOutOfRange();
 
-        if (value.TypeId == DyType.String)
-            return DyInteger.Get(str.LastIndexOf(value.GetString(), ifrom, icount));
-        else if (value.TypeId == DyType.Char)
-            return DyInteger.Get(str.LastIndexOf(value.GetChar(), ifrom, icount));
-        else
-            return ctx.InvalidType(DyType.String, DyType.Char, value);
+        return DyInteger.Get(str.LastIndexOf(value.GetString(), ifrom, icount));
     }
 
-    private DyObject Split(ExecutionContext ctx, DyObject self, DyObject arg)
+    private DyObject Split(ExecutionContext ctx, DyString self, DyTuple tuple)
     {
         var allChars = true;
-        var values = ((DyTuple)arg).GetValues();
+        var values = tuple.GetValues();
 
         for (var i = 0; i < values.Length; i++)
             if (values[i].TypeId != DyType.Char)
@@ -183,7 +174,7 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         return allChars ? SplitByChars(ctx, self, values) : SplitByStrings(ctx, self, values);
     }
 
-    private static DyObject SplitByStrings(ExecutionContext ctx, DyObject self, DyObject[] args)
+    private static DyObject SplitByStrings(ExecutionContext ctx, DyString self, DyObject[] args)
     {
         var xs = new string[args.Length];
 
@@ -195,7 +186,7 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
             xs[i] = args[i].GetString();
         }
 
-        var arr = self.GetString().Split(xs, StringSplitOptions.RemoveEmptyEntries);
+        var arr = self.Value.Split(xs, StringSplitOptions.RemoveEmptyEntries);
         var list = new DyObject[arr.Length];
 
         for (var i = 0; i < arr.Length; i++)
@@ -204,14 +195,14 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         return new DyArray(list);
     }
 
-    private static DyObject SplitByChars(ExecutionContext ctx, DyObject self, DyObject[] args)
+    private static DyObject SplitByChars(ExecutionContext _, DyString self, DyObject[] args)
     {
         var xs = new char[args.Length];
 
         for (var i = 0; i < args.Length; i++)
             xs[i] = args[i].GetChar();
 
-        var arr = self.GetString().Split(xs, StringSplitOptions.RemoveEmptyEntries);
+        var arr = self.Value.Split(xs, StringSplitOptions.RemoveEmptyEntries);
         var list = new DyObject[arr.Length];
 
         for (var i = 0; i < arr.Length; i++)
@@ -220,40 +211,21 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         return new DyArray(list);
     }
 
-    private DyObject Capitalize(ExecutionContext ctx, DyObject self)
+    private DyObject Capitalize(ExecutionContext ctx, DyString self)
     {
-        var str = self.GetString();
-        return str.Length == 0 ? DyString.Empty
-            : new DyString(char.ToUpper(str[0]) + str[1..].ToLower());
+        var str = self.Value;
+        return str.Length == 0 ? DyString.Empty : new DyString(char.ToUpper(str[0]) + str[1..].ToLower());
     }
 
-    private DyObject Upper(ExecutionContext ctx, DyObject self) =>
-        new DyString(self.GetString().ToUpper());
+    private DyObject Upper(ExecutionContext _, DyString self) => new DyString(self.Value.ToUpper());
 
-    private DyObject Lower(ExecutionContext ctx, DyObject self) =>
-        new DyString(self.GetString().ToLower());
+    private DyObject Lower(ExecutionContext _, DyString self) => new DyString(self.Value.ToLower());
 
-    private DyObject StartsWith(ExecutionContext ctx, DyObject self, DyObject a)
-    {
-        if (a.TypeId == DyType.String)
-            return self.GetString().StartsWith(a.GetString()) ? DyBool.True : DyBool.False;
+    private DyObject StartsWith(ExecutionContext _, DyString self, DyStringLike a) =>
+        self.Value.StartsWith(a.GetString()) ? DyBool.True : DyBool.False;
 
-        if (a.TypeId == DyType.Char)
-            return self.GetString().StartsWith(a.GetChar()) ? DyBool.True : DyBool.False;
-
-        return ctx.InvalidType(DyType.String, DyType.Char, a);
-    }
-
-    private DyObject EndsWith(ExecutionContext ctx, DyObject self, DyObject a)
-    {
-        if (a.TypeId == DyType.String)
-            return self.GetString().EndsWith(a.GetString()) ? DyBool.True : DyBool.False;
-
-        if (a.TypeId == DyType.Char)
-            return self.GetString().EndsWith(a.GetChar()) ? DyBool.True : DyBool.False;
-
-        return ctx.InvalidType(DyType.String, DyType.Char, a);
-    }
+    private DyObject EndsWith(ExecutionContext _, DyString self, DyStringLike a) =>
+        self.Value.EndsWith(a.GetString()) ? DyBool.True : DyBool.False;
 
     private DyObject Substring(ExecutionContext ctx, DyObject self, DyObject from, DyObject to)
     {
@@ -313,15 +285,17 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         return chs;
     }
 
-    private DyObject IsEmpty(ExecutionContext ctx, DyObject self) =>
+    private DyObject IsEmpty(ExecutionContext _, DyObject self) =>
         string.IsNullOrWhiteSpace(self.GetString()) ? DyBool.True : DyBool.False;
 
-    private DyObject Reverse(ExecutionContext ctx, DyObject self)
+    private DyObject Reverse(ExecutionContext _, DyString self)
     {
-        var str = self.GetString();
+        var str = self.Value;
         var sb = new StringBuilder(str.Length);
+
         for (var i = 0; i < str.Length; i++)
             sb.Append(str[str.Length - i - 1]);
+        
         return new DyString(sb.ToString());
     }
 
@@ -383,12 +357,9 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         return new DyString(str.Remove(fri, c));
     }
 
-    private DyObject Format(ExecutionContext ctx, DyObject self, DyObject args)
+    private DyObject Format(ExecutionContext ctx, DyString self, DyTuple args)
     {
-        if (self.TypeId != DyType.String)
-            return ctx.InvalidType(DyType.String, self);
-
-        var vals = ((DyTuple)args).GetValues();
+        var vals = args.GetValues();
         var arr = new object[vals.Length];
 
         for (var i = 0; i < vals.Length; i++)
@@ -404,23 +375,21 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         return new DyString(self.GetString().Format(arr));
     }
 
-    private DyObject ToCharArray(ExecutionContext ctx, DyObject self) =>
-        new DyArray(self.GetString().ToCharArray().Select(c => new DyChar(c)).ToArray());
+    private DyObject ToCharArray(ExecutionContext _, DyString self) =>
+        new DyArray(self.Value.ToCharArray().Select(c => new DyChar(c)).ToArray());
 
     protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
         name switch
         {
-            Method.IndexOf => Func.Member(name, IndexOf, -1, new Par("value"),
-                new Par("index", DyInteger.Zero), new Par("count", DyNil.Instance)),
-            Method.LastIndexOf => Func.Member(name, LastIndexOf, -1, new Par("value"),
-                new Par("index", DyNil.Instance), new Par("count", DyNil.Instance)),
-            Method.Split => Func.Member(name, Split, 0, new Par("separators", true)),
-            Method.Upper => Func.Member(name, Upper),
-            Method.Lower => Func.Member(name, Lower),
-            Method.StartsWith => Func.Member(name, StartsWith, -1, new Par("value")),
-            Method.EndsWith => Func.Member(name, EndsWith, -1, new Par("value")),
+            Method.IndexOf => Func.Instance<DyString, DyStringLike, DyInteger, DyInteger>(name, IndexOf, "value", new("index", 0), new("count", Nil)),
+            Method.LastIndexOf => Func.Instance<DyString, DyStringLike, DyInteger, DyInteger>(name, LastIndexOf, "value", new("index", Nil), new("count", Nil)),
+            Method.Split => Func.Instance<DyString, DyTuple>(name, Split, new("separators", true)),
+            Method.Upper => Func.Instance<DyString>(name, Upper),
+            Method.Lower => Func.Instance<DyString>(name, Lower),
+            Method.StartsWith => Func.Instance<DyString, DyStringLike>(name, StartsWith, "value"),
+            Method.EndsWith => Func.Instance<DyString, DyStringLike>(name, EndsWith, "value"),
             Method.Substring => Func.Member(name, Substring, -1, new Par("index"), new Par("count", DyNil.Instance)),
-            Method.Capitalize => Func.Member(name, Capitalize),
+            Method.Capitalize => Func.Instance<DyString>(name, Capitalize),
             Method.Trim => Func.Member(name, Trim, 0, new Par("chars", true)),
             Method.TrimStart => Func.Member(name, TrimStart, 0, new Par("chars", true)),
             Method.TrimEnd => Func.Member(name, TrimEnd, 0, new Par("chars", true)),
@@ -429,28 +398,27 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
             Method.PadRight => Func.Member(name, PadRight, -1, new Par("width"), new Par("char", DyChar.WhiteSpace)),
             Method.Replace => Func.Member(name, Replace, -1, new Par("value"), new Par("other"), new Par("ignoreCase", DyBool.False)),
             Method.Remove => Func.Member(name, Remove, -1, new Par("index"), new Par("count", DyNil.Instance)),
-            Method.Reverse => Func.Member(name, Reverse),
-            Method.ToCharArray => Func.Member(name, ToCharArray),
-            Method.Format => Func.Member(name, Format, 0, new Par("values", true)),
+            Method.Reverse => Func.Instance<DyString>(name, Reverse),
+            Method.ToCharArray => Func.Instance<DyString>(name, ToCharArray),
+            Method.Format => Func.Instance<DyString, DyTuple>(name, Format, new("values", true)),
             _ => base.InitializeInstanceMember(self, name, ctx),
         };
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
-            DyType.Integer => long.TryParse(self.GetString(), out var i8) ? DyInteger.Get(i8) : DyInteger.Zero,
+            DyType.Integer => long.TryParse(self.GetString(), out var i8) ? new DyInteger(i8) : DyInteger.Zero,
             DyType.Float => double.TryParse(self.GetString(), out var r8) ? new DyFloat(r8) : DyFloat.Zero,
             _ => base.CastOp(self, targetType, ctx)
         };
     #endregion
 
     #region Statics
-    private DyObject Concat(ExecutionContext ctx, DyObject tuple)
+    private DyObject Concat(ExecutionContext ctx, DyTuple tuple)
     {
-        var values = ((DyTuple)tuple).GetValues();
         var arr = new List<string>();
 
-        if (!Collect(ctx, values, arr))
+        if (!Collect(ctx, tuple.GetValues(), arr))
             return DyNil.Instance;
 
         return new DyString(string.Concat(arr));
@@ -481,33 +449,23 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         return true;
     }
 
-    private static DyObject Join(ExecutionContext ctx, DyObject values, DyObject separator)
+    private static DyObject Join(ExecutionContext ctx, DyTuple tuple, DyStringLike separator)
     {
-        if (separator.TypeId != DyType.String && separator.TypeId != DyType.Char)
-            return ctx.InvalidType(DyType.String, DyType.Char, separator);
-
-        var arr = ((DyTuple)values).GetValues();
         var strArr = new List<string>();
 
-        if (!Collect(ctx, arr, strArr))
+        if (!Collect(ctx, tuple.GetValues(), strArr))
             return DyNil.Instance;
 
         return new DyString(string.Join(separator.GetString(), strArr));
     }
 
-    private static DyObject Repeat(ExecutionContext ctx, DyObject value, DyObject count)
+    private static DyObject Repeat(ExecutionContext ctx, DyStringLike value, DyInteger count)
     {
-        if (count.TypeId != DyType.Integer)
-            return ctx.InvalidType(DyType.Integer, count);
-
-        if (value.TypeId != DyType.Char && value.TypeId != DyType.String)
-            return ctx.InvalidType(DyType.String, DyType.Char, value);
-
-        var c = (int)count.GetInteger();
         var sb = new StringBuilder();
+        var str = value.GetString();
 
-        for (var i = 0; i < c; i++)
-            sb.Append(value.GetString());
+        for (var i = 0; i < count.Value; i++)
+            sb.Append(str);
 
         return new DyString(sb.ToString());
     }
@@ -515,11 +473,11 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
     protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
         name switch
         {
-            Method.String or Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
-            Method.Join => Func.Static(name, Join, 0, new Par("values", true), new Par("separator", new DyString(","))),
-            Method.Default => Func.Static(name, ctx => DyString.Empty),
-            Method.Repeat => Func.Static(name, Repeat, -1, new Par("value"), new Par("count")),
-            Method.Format => Func.Static(name, Format, 1, new Par("template"), new Par("values", true)),
+            Method.String or Method.Concat => Func.Static<DyTuple>(name, Concat, new("values", true)),
+            Method.Join => Func.Static<DyTuple, DyStringLike>(name, Join, new("values", true), new("separator", ",")),
+            Method.Default => Func.Static(name, _ => DyString.Empty),
+            Method.Repeat => Func.Static<DyStringLike, DyInteger>(name, Repeat, "value", "count"),
+            Method.Format => Func.Static<DyString, DyTuple>(name, Format, "template", new("values", true)),
             _ => base.InitializeStaticMember(name, ctx),
         };
     #endregion
