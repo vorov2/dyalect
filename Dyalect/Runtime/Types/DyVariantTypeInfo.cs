@@ -58,24 +58,21 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
         if (!char.IsUpper(name[0]))
             return base.InitializeStaticMember(name, ctx);
 
-        //return Func.Variant(name, (_, args) => new DyVariant(name, (DyTuple)args), 0, new Par("values"));
-        return Func.Constructor<DyTuple>(name, (_, args) => new DyVariant(name, args), new Par("values", true));
+        return Func.Constructor(name, (DyTuple args) => new DyVariant(name, args), new("values", true));
     }
 
-    private DyObject GetTuple(ExecutionContext ctx, DyObject self)
+    private DyObject GetTuple(ExecutionContext ctx, DyVariant self)
     {
-        var v = (DyVariant)self;
-
-        if (v.Tuple.Count == 0)
+        if (self.Tuple.Count == 0)
             return ctx.InvalidCast(ReflectedTypeName, DyTypeNames.Tuple);
 
-        return v.Tuple;
+        return self.Tuple;
     }
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
-            DyType.Tuple => GetTuple(ctx, self),
+            DyType.Tuple => GetTuple(ctx, (DyVariant)self),
             _ => base.CastOp(self, targetType, ctx)
         };
 }

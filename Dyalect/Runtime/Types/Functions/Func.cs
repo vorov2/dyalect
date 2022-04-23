@@ -57,6 +57,10 @@ public static class Func
         where P1 : DyObject
         => new Constructor<P1>(name, fun!, par);
 
+    public static DyFunction Constructor<P1>(string name, Func<P1, DyObject?> fun, Par par)
+        where P1 : DyObject
+        => new ConstructorNoContext<P1>(name, fun!, par);
+
     public static DyFunction Property(string name, Func<ExecutionContext, DyObject> fun) => new StaticProperty(name, fun);
 
     public static DyFunction Property<P1>(string name, Func<ExecutionContext, P1, DyObject> fun)

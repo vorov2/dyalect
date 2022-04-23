@@ -13,8 +13,7 @@ internal sealed class StaticMethod : DyForeignFunction
         var ret = fun(ctx);
         return ret ?? DyNil.Instance;
     }
-
-    protected override DyFunction Clone(ExecutionContext ctx) => new StaticMethod(FunctionName, fun);
+    protected override DyFunction Clone(ExecutionContext ctx) => this;
 }
 
 internal sealed class StaticMethod<P1> : DyForeignFunction
@@ -30,7 +29,7 @@ internal sealed class StaticMethod<P1> : DyForeignFunction
         return ret ?? DyNil.Instance;
     }
 
-    protected override DyFunction Clone(ExecutionContext ctx) => new StaticMethod<P1>(FunctionName, fun, Parameters);
+    protected override DyFunction Clone(ExecutionContext ctx) => this;
 }
 
 internal sealed class StaticMethod<P1, P2> : DyForeignFunction
@@ -47,7 +46,7 @@ internal sealed class StaticMethod<P1, P2> : DyForeignFunction
         return ret ?? DyNil.Instance;
     }
 
-    protected override DyFunction Clone(ExecutionContext ctx) => new StaticMethod<P1, P2>(FunctionName, fun, Parameters);
+    protected override DyFunction Clone(ExecutionContext ctx) => this;
 }
 
 internal sealed class StaticMethod<P1, P2, P3> : DyForeignFunction
@@ -65,7 +64,7 @@ internal sealed class StaticMethod<P1, P2, P3> : DyForeignFunction
         return ret ?? DyNil.Instance;
     }
 
-    protected override DyFunction Clone(ExecutionContext ctx) => new StaticMethod<P1, P2, P3>(FunctionName, fun, Parameters);
+    protected override DyFunction Clone(ExecutionContext ctx) => this;
 }
 
 internal sealed class StaticMethod<P1, P2, P3, P4> : DyForeignFunction
@@ -84,7 +83,7 @@ internal sealed class StaticMethod<P1, P2, P3, P4> : DyForeignFunction
         return ret ?? DyNil.Instance;
     }
 
-    protected override DyFunction Clone(ExecutionContext ctx) => new StaticMethod<P1, P2, P3, P4>(FunctionName, fun, Parameters);
+    protected override DyFunction Clone(ExecutionContext ctx) => this;
 }
 
 internal sealed class StaticMethod<P1, P2, P3, P4, P5> : DyForeignFunction
@@ -104,7 +103,7 @@ internal sealed class StaticMethod<P1, P2, P3, P4, P5> : DyForeignFunction
         return ret ?? DyNil.Instance;
     }
 
-    protected override DyFunction Clone(ExecutionContext ctx) => new StaticMethod<P1, P2, P3, P4, P5>(FunctionName, fun, Parameters);
+    protected override DyFunction Clone(ExecutionContext ctx) => this;
 }
 
 internal sealed class StaticMethod<P1, P2, P3, P4, P5, P6> : DyForeignFunction
@@ -125,7 +124,7 @@ internal sealed class StaticMethod<P1, P2, P3, P4, P5, P6> : DyForeignFunction
         return ret ?? DyNil.Instance;
     }
 
-    protected override DyFunction Clone(ExecutionContext ctx) => new StaticMethod<P1, P2, P3, P4, P5, P6>(FunctionName, fun, Parameters);
+    protected override DyFunction Clone(ExecutionContext ctx) => this;
 }
 
 internal sealed class StaticMethod<P1, P2, P3, P4, P5, P6, P7> : DyForeignFunction
@@ -147,7 +146,7 @@ internal sealed class StaticMethod<P1, P2, P3, P4, P5, P6, P7> : DyForeignFuncti
         return ret ?? DyNil.Instance;
     }
 
-    protected override DyFunction Clone(ExecutionContext ctx) => new StaticMethod<P1, P2, P3, P4, P5, P6, P7>(FunctionName, fun, Parameters);
+    protected override DyFunction Clone(ExecutionContext ctx) => this;
 }
 
 internal sealed class StaticMethod<P1, P2, P3, P4, P5, P6, P7, P8> : DyForeignFunction
@@ -170,7 +169,7 @@ internal sealed class StaticMethod<P1, P2, P3, P4, P5, P6, P7, P8> : DyForeignFu
         return ret ?? DyNil.Instance;
     }
 
-    protected override DyFunction Clone(ExecutionContext ctx) => new StaticMethod<P1, P2, P3, P4, P5, P6, P7, P8>(FunctionName, fun, Parameters);
+    protected override DyFunction Clone(ExecutionContext ctx) => this;
 }
 
 internal sealed class StaticMethod<P1, P2, P3, P4, P5, P6, P7, P8, P9> : DyForeignFunction
@@ -194,5 +193,5 @@ internal sealed class StaticMethod<P1, P2, P3, P4, P5, P6, P7, P8, P9> : DyForei
         return ret ?? DyNil.Instance;
     }
 
-    protected override DyFunction Clone(ExecutionContext ctx) => new StaticMethod<P1, P2, P3, P4, P5, P6, P7, P8, P9>(FunctionName, fun, Parameters);
+    protected override DyFunction Clone(ExecutionContext ctx) => this;
 }
