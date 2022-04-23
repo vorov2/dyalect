@@ -1,7 +1,7 @@
-# Test session from 21/04/2022 15:54
+# Test session from 23/04/2022 20:37
 
 ## Summary:
-745 passed, 0 failed in 28 file(s)
+772 passed, 0 failed in 28 file(s)
 
 ## Test file(s):
 [array.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [interop.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\interop.dy), [iterator.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [mixin.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\mixin.dy), [modules.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
@@ -458,27 +458,54 @@
 * &#9745; **DateTime: Min, Max and Default**
 * &#9745; **DateTime: construction**
 * &#9745; **DateTime: DayOfWeek**
-* &#9745; **DateTime: Ticks**
+* &#9745; **DateTime: TotalTicks**
 * &#9745; **DateTime: FromTicks**
-* &#9745; **DateTime: Parse**
+* &#9745; **DateTime: Parse 1**
+* &#9745; **DateTime: Parse 2**
 * &#9745; **DateTime: ToString**
 * &#9745; **DateTime: Add**
 * &#9745; **DateTime: math**
 * &#9745; **DateTime: comparison**
+* &#9745; **DateTime: casting 1**
+* &#9745; **DateTime: casting 2**
 * &#9745; **DateTime: Date and Time**
 * &#9745; **LocalDateTime: GetType**
 * &#9745; **LocalDateTime: ToString**
 * &#9745; **LocalDateTime: LocalOffset**
-* &#9745; **LocalDateTime: Parse**
+* &#9745; **LocalDateTime: Parse 1**
+* &#9745; **LocalDateTime: Parse 2**
 * &#9745; **LocalDateTime: FromTicks**
 * &#9745; **LocalDateTime: LocalOffset**
 * &#9745; **LocalDateTime: FromDateTime**
 * &#9745; **LocalDateTime: Date and Time**
 * &#9745; **Calendar: GetType**
+* &#9745; **Calendar: ParseDateTime 1**
+* &#9745; **Calendar: ParseDateTime 2**
 * &#9745; **Calendar: DaysInMonth**
 * &#9745; **Calendar: IsLeapYear and DaysInYear**
 * &#9745; **Calendar: FirstDayOfMonth**
 * &#9745; **Calendar: LastDayOfMonth**
+* &#9745; **Time: GetType**
+* &#9745; **Time: construction**
+* &#9745; **Time: equality**
+* &#9745; **Time: comparison**
+* &#9745; **Time: casting**
+* &#9745; **Time: ToString 1**
+* &#9745; **Time: ToString 2**
+* &#9745; **Time: Min, Max, Default**
+* &#9745; **Time: Parse**
+* &#9745; **Time: Escape codes**
+* &#9745; **Date: GetType**
+* &#9745; **Date: construction**
+* &#9745; **Date: equality**
+* &#9745; **Date: comparison**
+* &#9745; **Date: casting**
+* &#9745; **Date: ToString 1**
+* &#9745; **Date: ToString 2**
+* &#9745; **Date: Min, Max, Default**
+* &#9745; **Date: Parse**
+* &#9745; **Date: AddMonths, AddDays, AddYears**
+* &#9745; **Date: DayOfWeek, DayOfYear**
 
 ### Tests/libio.dy:
 * &#9745; **File: GetType**

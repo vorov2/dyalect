@@ -1,13 +1,12 @@
-﻿namespace Dyalect.Runtime.Types
+﻿namespace Dyalect.Runtime.Types;
+
+internal sealed class DyNativeIteratorFunction : DyNativeFunction
 {
-    internal sealed class DyNativeIteratorFunction : DyNativeFunction
-    {
-        public override string FunctionName => "iterate";
+    public override string FunctionName => "iterate";
 
-        public DyNativeIteratorFunction(int unitId, int funcId, FastList<DyObject[]> captures)
-            : base(null, unitId, funcId, captures, -1) { }
+    public DyNativeIteratorFunction(int unitId, int funcId, FastList<DyObject[]> captures)
+        : base(null, unitId, funcId, captures, -1) { }
 
-        internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) =>
-            new DyNativeIteratorFunction(UnitId, FunctionId, Captures) { Self = arg };
-    }
+    internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg) =>
+        new DyNativeIteratorFunction(UnitId, FunctionId, Captures) { Self = arg };
 }

@@ -1,48 +1,46 @@
 ﻿using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System.IO;
+namespace Dyalect;
 
-namespace Dyalect
+public sealed class ConsoleTextReader : TextReader
 {
-    public sealed class ConsoleTextReader : TextReader
+    private readonly DyFunction read;
+    private readonly DyFunction readLine;
+    private readonly ExecutionContext ctx;
+
+    public ConsoleTextReader(ExecutionContext ctx, DyFunction read, DyFunction readLine) =>
+        (this.ctx, this.read, this.readLine) = (ctx, read, readLine);
+
+    public override int Read()
     {
-        private readonly DyFunction read;
-        private readonly DyFunction readLine;
-        private readonly ExecutionContext ctx;
+        var ret = read.Call(ctx);
 
-        public ConsoleTextReader(ExecutionContext ctx, DyFunction read, DyFunction readLine) =>
-            (this.ctx, this.read, this.readLine) = (ctx, read, readLine);
-
-        public override int Read()
+        if (ret.TypeId == DyType.Integer)
+            return (int)ret.GetInteger();
+        else if (ret.TypeId == DyType.Char)
+            return ret.GetChar();
+        else
         {
-            var ret = read.Call(ctx);
-
-            if (ret.TypeId == DyType.Integer)
-                return (int)ret.GetInteger();
-            else if (ret.TypeId == DyType.Char)
-                return ret.GetChar();
-            else
-            {
-                ctx.InvalidType(DyType.Char, ret);
-                return 0;
-            }
+            ctx.InvalidType(DyType.Char, ret);
+            return 0;
         }
+    }
 
-        public override string? ReadLine()
+    public override string? ReadLine()
+    {
+        var ret = readLine.Call(ctx);
+
+        if (ret.TypeId == DyType.String)
+            return ret.GetString();
+        else
         {
-            var ret = readLine.Call(ctx);
+            var str = ret.ToString(ctx);
 
-            if (ret.TypeId == DyType.String)
-                return ret.GetString();
-            else
-            {
-                var str = ret.ToString(ctx);
+            if (ctx.HasErrors)
+                return null;
 
-                if (ctx.HasErrors)
-                    return null;
-
-                return str.GetString();
-            }
+            return str.GetString();
         }
     }
 }

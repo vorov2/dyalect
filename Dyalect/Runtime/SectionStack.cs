@@ -1,79 +1,76 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using CatchMarks = System.Collections.Generic.Stack<Dyalect.Runtime.CatchMark>;
+namespace Dyalect.Runtime;
 
-namespace Dyalect.Runtime
+internal sealed class SectionStack : IEnumerable<CatchMarks>
 {
-    using CatchMarks = Stack<CatchMark>;
+    private const int DEFAULT_SIZE = 4;
+    private CatchMarks[] array;
+    private readonly int initialSize;
+    public int Count;
 
-    internal sealed class SectionStack : IEnumerable<CatchMarks>
+    public SectionStack() : this(DEFAULT_SIZE) { }
+
+    public SectionStack(int size)
     {
-        private const int DEFAULT_SIZE = 4;
-        private CatchMarks[] array;
-        private readonly int initialSize;
-        public int Count;
+        initialSize = size;
+        array = new CatchMarks[size];
+    }
 
-        public SectionStack() : this(DEFAULT_SIZE) { }
+    public IEnumerator<CatchMarks> GetEnumerator()
+    {
+        var c = Count;
 
-        public SectionStack(int size)
+        while (c > 0)
+            yield return array[--c];
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public void Clear()
+    {
+        Count = 0;
+        array = new CatchMarks[initialSize];
+    }
+
+    public CatchMarks Pop() => Count == 0 ? throw new IndexOutOfRangeException() : array[--Count];
+
+    public CatchMarks Peek() => array[Count - 1];
+
+    public bool TryPeek(int i, out CatchMarks val)
+    {
+        if (Count - i < 0)
         {
-            initialSize = size;
-            array = new CatchMarks[size];
+            val = default!;
+            return false;
         }
 
-        public IEnumerator<CatchMarks> GetEnumerator()
-        {
-            var c = Count;
+        val = array[Count - i];
+        return true;
+    }
 
-            while (c > 0)
-                yield return array[--c];
+    public void Push(CatchMarks val)
+    {
+        if (Count == array.Length)
+        {
+            var dest = new CatchMarks[array.Length * 2];
+
+            for (var i = 0; i < Count; i++)
+                dest[i] = array[i];
+
+            array = dest;
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        array[Count++] = val;
+    }
 
-        public void Clear()
-        {
-            Count = 0;
-            array = new CatchMarks[initialSize];
-        }
+    public void Replace(CatchMarks val) => array[Count - 1] = val;
 
-        public CatchMarks Pop() => Count == 0 ? throw new IndexOutOfRangeException() : array[--Count];
-
-        public CatchMarks Peek() => array[Count - 1];
-
-        public bool TryPeek(int i, out CatchMarks val)
-        {
-            if (Count - i < 0)
-            {
-                val = default!;
-                return false;
-            }
-
-            val = array[Count - i];
-            return true;
-        }
-
-        public void Push(CatchMarks val)
-        {
-            if (Count == array.Length)
-            {
-                var dest = new CatchMarks[array.Length * 2];
-
-                for (var i = 0; i < Count; i++)
-                    dest[i] = array[i];
-
-                array = dest;
-            }
-
-            array[Count++] = val;
-        }
-
-        public void Replace(CatchMarks val) => array[Count - 1] = val;
-
-        public CatchMarks this[int index]
-        {
-            get => array[index];
-            set => array[index] = value;
-        }
+    public CatchMarks this[int index]
+    {
+        get => array[index];
+        set => array[index] = value;
     }
 }

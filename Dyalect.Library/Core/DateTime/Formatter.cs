@@ -1,54 +1,10 @@
 ﻿using System;
 using System.Text;
 using static Dyalect.Library.Core.FormatElementKind;
-
 namespace Dyalect.Library.Core;
 
-public interface ITime
+internal static class Formatter
 {
-    int Hours { get; }
-    int Minutes { get; }
-    int Seconds { get; }
-    int Milliseconds { get; }
-    int Microseconds { get; }
-    int Ticks { get; }
-}
-
-public interface IDate
-{
-    int Year { get; }
-    int Month { get; }  
-    int Day { get; }
-}
-
-public interface IDateTime : IDate, ITime
-{
-
-}
-
-public interface IZonedDateTime : IDateTime
-{
-    IInterval Interval { get; }
-}
-
-public interface IInterval : ITime
-{
-    int Days { get; }
-
-    long TotalTicks { get; }
-}
-
-internal static class DT
-{
-    public const long TicksPerDay = 24 * TicksPerHour;
-    public const long TicksPerHour = 60 * TicksPerMinute;
-    public const long TicksPerMinute = 60 * TicksPerSecond;
-    public const long TicksPerSecond = 10 * TicksPerDecisecond;
-    public const long TicksPerDecisecond = 10 * TicksPerCentisecond;
-    public const long TicksPerCentisecond = 10 * TicksPerMillisecond;
-    public const long TicksPerMillisecond = 1000 * TicksPerMicrosecond;
-    public const long TicksPerMicrosecond = 10L;
-
     public static string Format(long val, FormatElement fe)
     {
         val = Math.Abs(val);
@@ -56,7 +12,7 @@ internal static class DT
         if (fe.Padding == 0 && val == 0)
             return string.Empty;
 
-        return fe.Padding > 1 ? val.ToString().PadLeft(2, '0') : val.ToString();
+        return fe.Padding > 1 ? val.ToString().PadLeft(fe.Padding, '0') : val.ToString();
     }
 
     public static bool FormatInterval(this IInterval self, StringBuilder builder, FormatElement elem)
@@ -77,7 +33,7 @@ internal static class DT
         }
     }
 
-    public static bool FormatZonedDateTime(this IZonedDateTime self, StringBuilder builder, FormatElement elem)
+    public static bool FormatLocalDateTime(this ILocalDateTime self, StringBuilder builder, FormatElement elem)
     {
         if (!FormatDate(self, builder, elem))
             if (!FormatTime(self, builder, elem))
@@ -93,19 +49,19 @@ internal static class DT
 
                     if (elem.Padding == 1)
                     {
-                        builder.Append(self.Interval.Hours);
+                        builder.Append(Math.Abs(self.Interval.Hours));
                         return true;
                     }
                     else if (elem.Padding == 2)
                     {
-                        builder.Append(self.Interval.Hours.ToString().PadLeft(2, '0'));
+                        builder.Append(Math.Abs(self.Interval.Hours).ToString().PadLeft(2, '0'));
                         return true;
                     }
                     else if (elem.Padding == 3)
                     {
-                        builder.Append(self.Interval.Hours.ToString().PadLeft(2, '0'));
+                        builder.Append(Math.Abs(self.Interval.Hours).ToString().PadLeft(2, '0'));
                         builder.Append(CI.UI.DateTimeFormat.TimeSeparator);
-                        builder.Append(self.Interval.Minutes.ToString().PadLeft(2, '0'));
+                        builder.Append(Math.Abs(self.Interval.Minutes).ToString().PadLeft(2, '0'));
                         return true;
                     }
                 }
@@ -148,6 +104,9 @@ internal static class DT
             case Day:
                 builder.Append(Format(self.Day, elem));
                 return true;
+            case Literal:
+                builder.Append(elem.Value);
+                return true;
             default:
                 return false;
         }
@@ -157,9 +116,18 @@ internal static class DT
     {
         switch (elem.Kind)
         {
-            case Hour:
+            case Hour24:
                 builder.Append(Format(self.Hours, elem));
                 return true;
+            case Hour:
+                {
+                    var dt = new DateTime(1, 1, 1, self.Hours, self.Minutes, self.Seconds);
+                    if (elem.Padding == 1)
+                        builder.Append(dt.ToString("%h", CI.UI));
+                    else if (elem.Padding == 2)
+                        builder.Append(dt.ToString("hh", CI.UI));
+                    return true;
+                }
             case Minute:
                 builder.Append(Format(self.Minutes, elem));
                 return true;
@@ -189,11 +157,10 @@ internal static class DT
                 return true;
             case PmAm:
                 {
-                    var dt = new DateTime(1, 1, 1, self.Hours, self.Minutes, self.Seconds);
-                    if (elem.Padding == 1)
-                        builder.Append(dt.ToString("t", CI.UI));
-                    else if (elem.Padding == 2)
-                        builder.Append(dt.ToString("tt", CI.UI));
+                    if (self.Hours >= 12)
+                        builder.Append(elem.Padding == 1 ? "P" : "PM");
+                    else
+                        builder.Append(elem.Padding == 1 ? "A" : "AM");
                     return true;
                 }
             case Literal:

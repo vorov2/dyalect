@@ -1,15 +1,14 @@
-﻿namespace Dyalect.Compiler
+﻿namespace Dyalect.Compiler;
+
+public enum CompilerWarning
 {
-    public enum CompilerWarning
-    {
-        UserWarning = 300,
+    UserWarning = 300,
 
-        FunctionDeprecated = 301,
+    FunctionDeprecated = 301,
 
-        UnreachableMatchEntry = 302,
+    UnreachableMatchEntry = 302,
 
-        PatternNeverMatch = 303,
+    PatternNeverMatch = 303,
 
-        AssignmentSameVariable = 304
-    }
+    AssignmentSameVariable = 304
 }

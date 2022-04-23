@@ -21,7 +21,7 @@ namespace Dyalect.Library.Core
         private DyObject FirstDayOfMonth(ExecutionContext ctx, DyObject value)
         {
             if (value is DyDateTime dt)
-                return dt.ChangeDay(1);
+                return dt.FirstDayOfMonth();
             else
                 return ctx.InvalidType(DeclaringUnit.DateTime.TypeId, DeclaringUnit.LocalDateTime.TypeId, value);
         }
@@ -29,7 +29,7 @@ namespace Dyalect.Library.Core
         private DyObject LastDayOfMonth(ExecutionContext ctx, DyObject value)
         {
             if (value is DyDateTime dt)
-                return dt.ChangeDay(DateTime.DaysInMonth(dt.Value.Year, dt.Value.Month));
+                return dt.LastDayOfMonth();
             else
                 return ctx.InvalidType(DeclaringUnit.DateTime.TypeId, DeclaringUnit.LocalDateTime.TypeId, value);
         }
@@ -46,6 +46,19 @@ namespace Dyalect.Library.Core
             return DateTime.IsLeapYear((int)year.GetInteger()) ? DyBool.True : DyBool.False;
         }
 
+        private DyObject ParseDateTime(ExecutionContext ctx, DyObject input, DyObject format)
+        {
+            if (input.NotString(ctx)) return Default();
+            if (format.NotString(ctx)) return Default();
+            var (ticks, offset) = InputParser.Parse(FormatParser.LocalDateTimeParser, format.GetString(), input.GetString());
+            
+            if (offset is 0)
+                return new DyDateTime(DeclaringUnit.DateTime, ticks);
+            else
+                return new DyLocalDateTime(DeclaringUnit.LocalDateTime, ticks,
+                        new DyTimeDelta(DeclaringUnit.TimeDelta, offset));
+        }
+
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
@@ -54,6 +67,7 @@ namespace Dyalect.Library.Core
                 "LastDayOfMonth" => Func.Static(name, LastDayOfMonth, -1, new Par("value")),
                 "DaysInYear" => Func.Static(name, DaysInYear, -1, new Par("year")),
                 "IsLeapYear" => Func.Static(name, IsLeapYear, -1, new Par("year")),
+                "ParseDateTime" => Func.Static(name, ParseDateTime, -1, new Par("input"), new Par("format")),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

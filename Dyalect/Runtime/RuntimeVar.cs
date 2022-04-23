@@ -1,12 +1,10 @@
 ﻿using Dyalect.Runtime.Types;
+namespace Dyalect.Runtime;
 
-namespace Dyalect.Runtime
+public struct RuntimeVar
 {
-    public struct RuntimeVar
-    {
-        public readonly string Name;
-        public readonly DyObject Value;
+    public readonly string Name;
+    public readonly DyObject Value;
 
-        public RuntimeVar(string name, DyObject value) => (Name, Value) = (name, value);
-    }
+    public RuntimeVar(string name, DyObject value) => (Name, Value) = (name, value);
 }

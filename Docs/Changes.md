@@ -1,3 +1,21 @@
+# 0.42.0
+  * Change: _`TimeDelta` data type is refactored._
+  * Change: _Refactoring in virtual machine and runtime error handling layer._
+  * Change: _Refactor `DateTime` and `LocalDateTime` to be based on `Date` and `Time`_ ([Issue #794](https://github.com/vorov2/dyalect/issues/794)).
+  * Change: _`DateType` types should return instances of `Time` and `Date` from properties of the same name_ ([Issue #790](https://github.com/vorov2/dyalect/issues/790)).
+  * Change: _Use new engine for `DateTime` and `LocalDateTime` formatting_ ([Issue #792](https://github.com/vorov2/dyalect/issues/792)).
+  * Change: _Use new engine for `DateTime` and `LocalDateTime` parsing_ ([Issue #793](https://github.com/vorov2/dyalect/issues/793)).
+  * Change: _Refactor `DateTime` and `LocalDateTime` to be based on `Date` and `Time`_ ([Issue #794](https://github.com/vorov2/dyalect/issues/794)).
+  * Add: _`TimeDelta` type should support `Comparable` mixin_ ([Issue #789](https://github.com/vorov2/dyalect/issues/789), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta)).
+  * Add: _Add `Time` date type_ ([Issue #787](https://github.com/vorov2/dyalect/issues/787), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Time)).
+  * Add: _Add `Date` date type_ ([Issue #791](https://github.com/vorov2/dyalect/issues/791), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Date)).
+  * Add: _`Guid` should support comparison operations_ ([Issue #799](https://github.com/vorov2/dyalect/issues/799)).
+  * Add: _`Guid` should implement `Comparable` mixin_ ([Issue #796](https://github.com/vorov2/dyalect/issues/796)).
+  * Add: _Add `TimeDelta.Negate` method_ ([Issue #800](https://github.com/vorov2/dyalect/issues/800), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta#negate)).
+  * Add: _Add method `Calendar.ParseDateTime`_ ([Issue #798](https://github.com/vorov2/dyalect/issues/798), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Calendar#parseDateTime)).
+  * Fix: _Escape codes in Date/Time format specifiers do not work correctly_ ([Issue #795](https://github.com/vorov2/dyalect/issues/795)).
+  * Fix: _`TimeDelta` formatting can do incorrect padding for output values_ ([Issue #801](https://github.com/vorov2/dyalect/issues/801)).
+
 # 0.41.0
   * _Project migrated to .NET 6.0_
   * Add: _Add `ToSet` method to collections_ ([Issue #770](https://github.com/vorov2/dyalect/issues/770)).

@@ -1,24 +1,22 @@
 ﻿using Dyalect.Runtime.Types;
+namespace Dyalect.Runtime;
 
-namespace Dyalect.Runtime
+public sealed class ExecutionResult
 {
-    public sealed class ExecutionResult
-    {
-        private ExecutionResult(long ticks, DyObject? value, ExecutionContext ctx, TerminationReason reason) =>
-            (Ticks, Value, Context, Reason) = (ticks, value, ctx, reason);
+    private ExecutionResult(long ticks, DyObject? value, ExecutionContext ctx, TerminationReason reason) =>
+        (Ticks, Value, Context, Reason) = (ticks, value, ctx, reason);
 
-        internal static ExecutionResult Fetch(long ticks, DyObject? value, ExecutionContext ctx) =>
-            new(ticks, value, ctx, TerminationReason.Complete);
+    internal static ExecutionResult Fetch(long ticks, DyObject? value, ExecutionContext ctx) =>
+        new(ticks, value, ctx, TerminationReason.Complete);
 
-        internal static ExecutionResult Abort(long ticks, ExecutionContext ctx) =>
-            new(ticks, null, ctx, TerminationReason.Abort);
+    internal static ExecutionResult Abort(long ticks, ExecutionContext ctx) =>
+        new(ticks, null, ctx, TerminationReason.Abort);
 
-        public long Ticks { get; }
+    public long Ticks { get; }
 
-        public DyObject? Value { get; }
+    public DyObject? Value { get; }
 
-        public ExecutionContext Context { get; }
+    public ExecutionContext Context { get; }
 
-        public TerminationReason Reason { get; }
-    }
+    public TerminationReason Reason { get; }
 }

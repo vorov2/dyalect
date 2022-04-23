@@ -11,6 +11,8 @@ internal sealed class FormatParser
         new(Sign, "+"),
         new(Day, "dd", 2),
         new(Day, "d"),
+        new(Hour24, "HH", 2),
+        new(Hour24, "H"),
         new(Hour, "hh", 2),
         new(Hour, "h"),
         new(Minute, "mm", 2),
@@ -27,6 +29,8 @@ internal sealed class FormatParser
     };
     private static readonly FormatElement[] timeElements = new FormatElement[]
     {
+        new(Hour24, "HH", 2),
+        new(Hour24, "H"),
         new(Hour, "hh", 2),
         new(Hour, "h"),
         new(Minute, "mm", 2),
@@ -68,6 +72,8 @@ internal sealed class FormatParser
         new(Month,"M", 1),
         new(Day, "dd", 2),
         new(Day, "d"),
+        new(Hour24, "HH", 2),
+        new(Hour24, "H"),
         new(Hour, "hh", 2),
         new(Hour, "h"),
         new(Minute, "mm", 2),
@@ -115,6 +121,8 @@ internal sealed class FormatParser
         new(Offset, "zzz", 3),
         new(Offset, "zz", 2),
         new(Offset, "z"),
+        new(Hour24, "HH", 2),
+        new(Hour24, "H"),
         new(Hour, "hh", 2),
         new(Hour, "h"),
         new(Minute, "mm", 2),
@@ -130,6 +138,9 @@ internal sealed class FormatParser
         new(Decisecond, "f"),
         new(PmAm, "tt", 2),
         new(PmAm, "t"),
+        new(Offset, "zzz", 3),
+        new(Offset, "zz", 2),
+        new(Offset, "z"),
     };
     public static FormatParser TimeDeltaParser { get; } = new FormatParser(timeDeltaElements);
     public static FormatParser TimeParser { get; } = new FormatParser(timeElements);
@@ -148,13 +159,15 @@ internal sealed class FormatParser
         {
             if (input[i] == '\\')
                 i += 1;
-
-            var spc = CheckSpecifiers(input, ref i);
-
-            if (spc is not null)
+            else
             {
-                ret.Add(spc);
-                continue;
+                var spc = CheckSpecifiers(input, ref i);
+
+                if (spc is not null)
+                {
+                    ret.Add(spc);
+                    continue;
+                }
             }
 
             ret.Add(new FormatElement(Literal, input[i].ToString()));

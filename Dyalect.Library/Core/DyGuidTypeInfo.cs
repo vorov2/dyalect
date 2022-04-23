@@ -7,7 +7,11 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
     {
-        public override string TypeName => "Guid";
+        private const string GuidType = "Guid";
+
+        public override string TypeName => GuidType;
+
+        public DyGuidTypeInfo() => AddMixin(DyType.Comparable);
 
         public DyByteArray Create(byte[]? buffer) => new(this, buffer);
 
@@ -29,6 +33,38 @@ namespace Dyalect.Library.Core
                 return DyBool.False;
 
             return ((DyGuid)left).Value == ((DyGuid)right).Value ? DyBool.True : DyBool.False;
+        }
+
+        protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (left.TypeId != right.TypeId)
+                return ctx.InvalidType(left.TypeId, right);
+
+            return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) > 0);
+        }
+
+        protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (left.TypeId != right.TypeId)
+                return ctx.InvalidType(left.TypeId, right);
+
+            return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) >= 0);
+        }
+
+        protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (left.TypeId != right.TypeId)
+                return ctx.InvalidType(left.TypeId, right);
+
+            return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) < 0);
+        }
+
+        protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
+        {
+            if (left.TypeId != right.TypeId)
+                return ctx.InvalidType(left.TypeId, right);
+
+            return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) <= 0);
         }
 
         protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
@@ -59,7 +95,7 @@ namespace Dyalect.Library.Core
 
             try
             {
-                return new DyGuid(this, new Guid(arr.GetBytes()));
+                return new DyGuid(this, new(arr.GetBytes()));
             }
             catch (ArgumentException)
             {
@@ -70,7 +106,7 @@ namespace Dyalect.Library.Core
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                "Guid" => Func.Static(name, _ => new DyGuid(this, Guid.NewGuid())),
+                GuidType => Func.Static(name, _ => new DyGuid(this, Guid.NewGuid())),
                 "Empty" => Func.Static(name, _ => new DyGuid(this, Guid.Empty)),
                 "Parse" => Func.Static(name, Parse, -1, new Par("value")),
                 "FromByteArray" => Func.Static(name, FromByteArray, -1, new Par("value")),

@@ -1,73 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
+namespace Dyalect.Runtime.Types;
 
-namespace Dyalect.Runtime.Types
+public sealed class DyLabel : DyObject
 {
-    public sealed class DyLabel : DyObject
+    private List<DyTypeInfo>? typeAnnotations;
+
+    internal bool Mutable;
+
+    public string Label { get; }
+
+    public DyObject Value { get; internal set; }
+
+    public DyLabel(string label, DyObject value, bool mutable = false) : base(DyType.Label) =>
+        (Label, Value, Mutable) = (label, value, mutable);
+
+    public DyLabel(string label, object value, bool mutable = false) : base(DyType.Label) =>
+        (Label, Value, Mutable) = (label, TypeConverter.ConvertFrom(value), mutable);
+
+    public override object ToObject() => Value.ToObject();
+
+    protected internal override string GetLabel() => Label;
+
+    protected internal override DyObject GetTaggedValue() => Value;
+
+    protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        private List<DyTypeInfo>? typeAnnotations;
+        if ((index.TypeId == DyType.Integer && index.GetInteger() == 0) || (index.TypeId == DyType.String && index.GetString() == Label))
+            return Value;
+        else
+            return ctx.IndexOutOfRange(index);
+    }
 
-        internal bool Mutable;
+    internal void AddTypeAnnotation(DyTypeInfo ti)
+    {
+        typeAnnotations ??= new();
+        typeAnnotations.Add(ti);
+    }
 
-        public string Label { get; }
+    internal bool VerifyType(int tid)
+    {
+        if (typeAnnotations is null)
+            return true;
 
-        public DyObject Value { get; internal set; }
-
-        public DyLabel(string label, DyObject value, bool mutable = false) : base(DyType.Label) =>
-            (Label, Value, Mutable) = (label, value, mutable);
-
-        public DyLabel(string label, object value, bool mutable = false) : base(DyType.Label) =>
-            (Label, Value, Mutable) = (label, TypeConverter.ConvertFrom(value), mutable);
-
-        public override object ToObject() => Value.ToObject();
-
-        protected internal override string GetLabel() => Label;
-
-        protected internal override DyObject GetTaggedValue() => Value;
-
-        protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
-        {
-            if ((index.TypeId == DyType.Integer && index.GetInteger() == 0) || (index.TypeId == DyType.String && index.GetString() == Label))
-                return Value;
-            else
-                return ctx.IndexOutOfRange(index);
-        }
-
-        internal void AddTypeAnnotation(DyTypeInfo ti)
-        {
-            typeAnnotations ??= new();
-            typeAnnotations.Add(ti);
-        }
-
-        internal bool VerifyType(int tid)
-        {
-            if (typeAnnotations is null)
+        foreach (var t in typeAnnotations)
+            if (t.ReflectedTypeId == tid)
                 return true;
 
-            foreach (var t in typeAnnotations)
-                if (t.ReflectedTypeId == tid)
-                    return true;
-
-            return false;
-        }
-
-        internal override bool IsMutable() => Mutable;
-
-        internal override DyObject MakeImmutable() => new DyLabel(Label, Value);
-
-        public override int GetHashCode() => HashCode.Combine(Label, Value);
-
-        public override bool Equals(DyObject? other)
-        {
-            if (other is not DyLabel lab)
-                return false;
-
-            if (lab.Label != Label)
-                return false;
-
-            return ReferenceEquals(lab.Value, Value) || lab.Value.Equals(Value);
-        }
-
-        public override DyObject Clone() => new DyLabel(Label, Value.Clone(), Mutable);
+        return false;
     }
+
+    internal override bool IsMutable() => Mutable;
+
+    internal override DyObject MakeImmutable() => new DyLabel(Label, Value);
+
+    public override int GetHashCode() => HashCode.Combine(Label, Value);
+
+    public override bool Equals(DyObject? other)
+    {
+        if (other is not DyLabel lab)
+            return false;
+
+        if (lab.Label != Label)
+            return false;
+
+        return ReferenceEquals(lab.Value, Value) || lab.Value.Equals(Value);
+    }
+
+    public override DyObject Clone() => new DyLabel(Label, Value.Clone(), Mutable);
 }

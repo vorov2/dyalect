@@ -1,13 +1,12 @@
-﻿namespace Dyalect
+﻿namespace Dyalect;
+
+public enum BuildMessageType
 {
-    public enum BuildMessageType
-    {
-        None,
+    None,
 
-        Hint,
+    Hint,
 
-        Warning,
+    Warning,
 
-        Error
-    }
+    Error
 }

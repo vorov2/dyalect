@@ -17,10 +17,6 @@ namespace Dyalect
 
         public static int Main(string[] args)
         {
-
-            var dt = DateTime.Now;
-            var d2 = new Library.Core.DyTestDateTime(dt.Ticks);
-
             if (!Prepare(args, out var options))
                 return ERR;
 
