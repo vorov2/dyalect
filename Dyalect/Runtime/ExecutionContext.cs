@@ -52,7 +52,7 @@ public class ExecutionContext
         {
             var err = Error;
             Error = null;
-            throw new BreakException(err);
+            throw new DyErrorException(err);
         }
     }
 

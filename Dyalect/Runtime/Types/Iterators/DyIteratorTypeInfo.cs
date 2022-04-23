@@ -250,7 +250,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
                 var res = functor.Invoke(ctx, dy);
 
                 if (ctx.HasErrors)
-                    throw new BreakException(ctx.Error!);
+                    throw new DyErrorException(ctx.Error!);
 
                 return res.IsTrue();
             }));
