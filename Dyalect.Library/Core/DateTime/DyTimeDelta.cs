@@ -6,7 +6,7 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyTimeDelta : DyForeignObject, IInterval, IFormattable
     {
-        private const string DEFAULT_FORMAT = "+d.hh:mm:ss.fffffff";
+        private const string DEFAULT_FORMAT = "+d.HH:mm:ss.fffffff";
 
         private readonly long ticks;
 

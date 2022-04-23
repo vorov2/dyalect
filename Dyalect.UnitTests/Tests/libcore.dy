@@ -294,8 +294,8 @@ fox is the red fox.]>
 #endregion
 
 #region "TimeDelta: Parse 1"
-    assert("00:12:34", TimeDelta.Parse("00:12:34", "hh:mm:ss").ToString("hh:mm:ss"))
-    assert("00:12:34", TimeDelta.Parse("00--12--34", "hh--mm--ss").ToString("hh:mm:ss"))
+    assert("12:12:34", TimeDelta.Parse("00:12:34", "hh:mm:ss").ToString("hh:mm:ss"))
+    assert("12:12:34", TimeDelta.Parse("00--12--34", "hh--mm--ss").ToString("hh:mm:ss"))
 #endregion
 
 #region "TimeDelta: Parse 2"
@@ -312,7 +312,7 @@ fox is the red fox.]>
 
 #region "TimeDelta: negation"
     let td = TimeDelta(hours: 3, minutes: 30)
-    let format = "+hh:mm"
+    let format = "+HH:mm"
     assert("+03:30", td.ToString(format))
     assert("-03:30", (-td).ToString(format))
     assert("-03:30", td.Negate().ToString(format))
@@ -378,9 +378,9 @@ fox is the red fox.]>
 #endregion
 
 #region "DateTime: Parse 2"
-    var dt = DateTime.Parse("12/3/2023 16:34", "M/d/yyyy hh:mm")
+    var dt = DateTime.Parse("12/3/2023 16:34", "M/d/yyyy HH:mm")
     assert("2023-12-03 16:34:00.0000000", dt.ToString())
-    dt = DateTime.Parse("3/12/2023 16:34", "M/d/yyyy hh:mm")
+    dt = DateTime.Parse("3/12/2023 16:34", "M/d/yyyy HH:mm")
     assert("2023-03-12 16:34:00.0000000", dt.ToString())
 #endregion
 
@@ -451,7 +451,7 @@ fox is the red fox.]>
 #endregion
 
 #region "LocalDateTime: Parse 1"
-    let dt1 = LocalDateTime.Parse("2012-03-21 15:33:59.0000000-03:00", "yyyy-MM-dd hh:mm:ss.fffffffzzz")
+    let dt1 = LocalDateTime.Parse("2012-03-21 15:33:59.0000000-03:00", "yyyy-MM-dd HH:mm:ss.fffffffzzz")
     let dt2 = LocalDateTime(offset: -TimeDelta(hours: 3), year: 2012, month: 3, day: 21,
         hour: 15, minute: 33, second: 59)
     assert(true, dt1 == dt2)
@@ -459,7 +459,7 @@ fox is the red fox.]>
 #endregion
 
 #region "LocalDateTime: Parse 2"
-    let dt = LocalDateTime.Parse("08/12/2022 05:15:23 PM -03:30", "MM/dd/yyyy hh:mm:ss tt zzz")
+    let dt = LocalDateTime.Parse("08/12/2022 05:15:23 PM -03:30", "MM/dd/yyyy HH:mm:ss tt zzz")
     assert("2022-08-12 17:15:23.0000000-03:30", dt.ToString())
 #endregion
 
@@ -587,8 +587,8 @@ fox is the red fox.]>
 #endregion
 
 #region "Time: Parse"
-    assert("00:12:34", Time.Parse("00:12:34", "hh:mm:ss").ToString("hh:mm:ss"))
-    assert("00:12:34", Time.Parse("00--12--34", "hh--mm--ss").ToString("hh:mm:ss"))
+    assert("00:12:34", Time.Parse("00:12:34", "HH:mm:ss").ToString("HH:mm:ss"))
+    assert("12:12:34", Time.Parse("00--12--34", "hh--mm--ss").ToString("hh:mm:ss"))
 #endregion
 
 #region "Time: Escape codes"

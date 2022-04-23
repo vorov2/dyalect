@@ -5,7 +5,7 @@ namespace Dyalect.Library.Core;
 
 public class DyDateTime : DyForeignObject, IDateTime, IFormattable
 {
-    private const string FORMAT = "yyyy-MM-dd hh:mm:ss.fffffff";
+    private const string FORMAT = "yyyy-MM-dd HH:mm:ss.fffffff";
 
     protected long ticks;
 

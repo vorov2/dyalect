@@ -116,9 +116,18 @@ internal static class Formatter
     {
         switch (elem.Kind)
         {
-            case Hour:
+            case Hour24:
                 builder.Append(Format(self.Hours, elem));
                 return true;
+            case Hour:
+                {
+                    var dt = new DateTime(1, 1, 1, self.Hours, self.Minutes, self.Seconds);
+                    if (elem.Padding == 1)
+                        builder.Append(dt.ToString("%h", CI.UI));
+                    else if (elem.Padding == 2)
+                        builder.Append(dt.ToString("hh", CI.UI));
+                    return true;
+                }
             case Minute:
                 builder.Append(Format(self.Minutes, elem));
                 return true;
@@ -150,7 +159,7 @@ internal static class Formatter
                 {
                     var dt = new DateTime(1, 1, 1, self.Hours, self.Minutes, self.Seconds);
                     if (elem.Padding == 1)
-                        builder.Append(dt.ToString("t", CI.UI));
+                        builder.Append(dt.ToString("%t", CI.UI));
                     else if (elem.Padding == 2)
                         builder.Append(dt.ToString("tt", CI.UI));
                     return true;

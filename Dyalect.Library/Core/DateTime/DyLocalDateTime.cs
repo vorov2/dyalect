@@ -6,7 +6,7 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyLocalDateTime : DyDateTime, ILocalDateTime
     {
-        private const string FORMAT = "yyyy-MM-dd hh:mm:ss.fffffffzzz";
+        private const string FORMAT = "yyyy-MM-dd HH:mm:ss.fffffffzzz";
         
         public DyTimeDelta Offset { get; }
 

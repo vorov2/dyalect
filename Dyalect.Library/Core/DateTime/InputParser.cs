@@ -57,7 +57,11 @@ internal static class InputParser
                     break;
                 case Hour:
                     if (!int.TryParse(val, out hours)) throw new FormatException();
-                    if (hours is < 0 or > 23) throw new OverflowException();
+                    if (hours is < 0 or > 12) throw new OverflowException();
+                    break;
+                case Hour24:
+                    if (!int.TryParse(val, out hours)) throw new FormatException();
+                    if (hours is < 0 or > 24) throw new OverflowException();
                     break;
                 case Minute:
                     if (!int.TryParse(val, out minutes)) throw new FormatException();

@@ -10,6 +10,7 @@ internal enum FormatElementKind
     MonthName,
     Day,
     Hour,
+    Hour24,
     Minute,
     Second,
     Decisecond,

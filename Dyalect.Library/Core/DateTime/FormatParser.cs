@@ -11,6 +11,8 @@ internal sealed class FormatParser
         new(Sign, "+"),
         new(Day, "dd", 2),
         new(Day, "d"),
+        new(Hour24, "HH", 2),
+        new(Hour24, "H"),
         new(Hour, "hh", 2),
         new(Hour, "h"),
         new(Minute, "mm", 2),
@@ -27,6 +29,8 @@ internal sealed class FormatParser
     };
     private static readonly FormatElement[] timeElements = new FormatElement[]
     {
+        new(Hour24, "HH", 2),
+        new(Hour24, "H"),
         new(Hour, "hh", 2),
         new(Hour, "h"),
         new(Minute, "mm", 2),
@@ -68,6 +72,8 @@ internal sealed class FormatParser
         new(Month,"M", 1),
         new(Day, "dd", 2),
         new(Day, "d"),
+        new(Hour24, "HH", 2),
+        new(Hour24, "H"),
         new(Hour, "hh", 2),
         new(Hour, "h"),
         new(Minute, "mm", 2),
@@ -115,6 +121,8 @@ internal sealed class FormatParser
         new(Offset, "zzz", 3),
         new(Offset, "zz", 2),
         new(Offset, "z"),
+        new(Hour24, "HH", 2),
+        new(Hour24, "H"),
         new(Hour, "hh", 2),
         new(Hour, "h"),
         new(Minute, "mm", 2),
