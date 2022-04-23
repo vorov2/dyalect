@@ -31,9 +31,8 @@ namespace Dyalect.Library.Core
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                Time => Func.Static(name, New, -1, new Par("hour", DyInteger.Zero),
-                    new Par("minute", DyInteger.Zero), new Par("second", DyInteger.Zero), new Par("millisecond", DyInteger.Zero),
-                    new Par("tick", DyInteger.Zero)),
+                Time => Func.Static(name, New, -1, new Par("hour", 0), new Par("minute", 0), new Par("second", 0),
+                    new Par("millisecond", 0), new Par("tick", 0)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }

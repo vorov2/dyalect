@@ -12,6 +12,7 @@
   * Add: _`Guid` should support comparison operations_ ([Issue #799](https://github.com/vorov2/dyalect/issues/799)).
   * Add: _`Guid` should implement `Comparable` mixin_ ([Issue #796](https://github.com/vorov2/dyalect/issues/796)).
   * Add: _Add `TimeDelta.Negate` method_ ([Issue #800](https://github.com/vorov2/dyalect/issues/800), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.TimeDelta#negate)).
+  * Add: _Add method `Calendar.ParseDateTime`_ ([Issue #798](https://github.com/vorov2/dyalect/issues/798), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Calendar#parseDateTime)).
   * Fix: _Escape codes in Date/Time format specifiers do not work correctly_ ([Issue #795](https://github.com/vorov2/dyalect/issues/795)).
   * Fix: _`TimeDelta` formatting can do incorrect padding for output values_ ([Issue #801](https://github.com/vorov2/dyalect/issues/801)).
 

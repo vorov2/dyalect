@@ -402,7 +402,7 @@ fox is the red fox.]>
     assert("10/06/2021", dt.ToString(format))
 #endregion
 
-#region "DateTime: math"    
+#region "DateTime: math"
     let dt1 = DateTime.Parse("01/04/2020", format: "dd/MM/yyyy")
     let dt2 = DateTime.Parse("11/04/2020", format: "dd/MM/yyyy")
     let td = dt2 - dt1
@@ -424,6 +424,17 @@ fox is the red fox.]>
     assert(true, dt1 < dt2)
     assert(true, dt1 <= dt2)
     assert(true, dt2 >= dt1)
+#endregion
+
+#region "DateTime: casting 1"
+    let dt = DateTime.FromTicks(10235352352)
+    assert(10235352352, dt as Integer)
+#endregion
+
+#region "DateTime: casting 2"
+    let dt = DateTime.Parse("12/3/2023 16:34", "M/d/yyyy HH:mm")
+    assert(Time(hour: 16, minute: 34), dt as Time)
+    assert(Date(year: 2023, month: 12, day: 3), dt as Date)
 #endregion
 
 #region "DateTime: Date and Time"
@@ -493,6 +504,15 @@ fox is the red fox.]>
 
 #region "Calendar: GetType"
     assert("Calendar", Calendar.name)
+#endregion
+
+#region "Calendar: ParseDateTime"
+    let res1 = Calendar.ParseDateTime("2012-12-12 16:44:12 -11:30", "yyyy-MM-dd HH:mm:ss zzz")
+    assert(true, res1 is LocalDateTime)
+    assert("2012-12-12 16:44:12.0000000-11:30", res1.ToString())
+    let res2 = Calendar.ParseDateTime("2012-12-12 16:44:12", "yyyy-MM-dd HH:mm:ss")
+    assert(true, res2 is DateTime)
+    assert("2012-12-12 16:44:12.0000000", res2.ToString())
 #endregion
 
 #region "Calendar: DaysInMonth"

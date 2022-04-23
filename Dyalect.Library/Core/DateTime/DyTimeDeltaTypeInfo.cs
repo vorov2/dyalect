@@ -62,9 +62,9 @@ namespace Dyalect.Library.Core
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch
             {
-                TimeDelta => Func.Static(name, New, -1, new Par("days", DyInteger.Zero), new Par("hours", DyInteger.Zero),
-                    new Par("minutes", DyInteger.Zero), new Par("seconds", DyInteger.Zero), new Par("milliseconds", DyInteger.Zero),
-                    new Par("ticks", DyInteger.Zero)),
+                TimeDelta => Func.Static(name, New, -1, new Par("days", 0), new Par("hours", 0),
+                    new Par("minutes", 0), new Par("seconds", 0), new Par("milliseconds", 0),
+                    new Par("ticks", 0)),
                 _ => base.InitializeStaticMember(name, ctx)
             };
     }
