@@ -10,8 +10,8 @@ internal static class InputParser
     {
         var formats = formatParser.ParseSpecifiers(format);
         var chunks = Parse(formats, value);
-        var (days, hours, minutes, seconds, ds, cs, ms, tts, hts, micros, tick) =
-            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        var (days, hours, minutes, seconds, ds, cs, ms, tts, hts, micros, tick, pm) =
+            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, false);
         var (year, month) = (0, 0);
         var offset = 0L;
         var negate = false;
@@ -95,7 +95,13 @@ internal static class InputParser
                     if (!int.TryParse(val, out tick)) throw new FormatException();
                     if (tick is < 0 or > 9_999_999) throw new OverflowException();
                     break;
+                case PmAm:
+                    pm = val == "PM";
+                    break;
             }
+
+        if (pm)
+            hours += 12;
 
         var totalTicks =
             tick +

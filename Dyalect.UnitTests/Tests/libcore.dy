@@ -362,7 +362,7 @@ fox is the red fox.]>
     assert(956, dt.Millisecond)
 #endregion
 
-#region "DateTime: Parse"
+#region "DateTime: Parse 1"
     var dt = DateTime.Parse("01/04/2020", format: "dd/MM/yyyy")
     assert(2020, dt.Year)
     assert(4, dt.Month)
@@ -375,6 +375,13 @@ fox is the red fox.]>
     assert(2020, dt.Year)
     assert(4, dt.Month)
     assert(1, dt.Day)
+#endregion
+
+#region "DateTime: Parse 2"
+    var dt = DateTime.Parse("12/3/2023 16:34", "M/d/yyyy hh:mm")
+    assert("2023-12-03 16:34:00.0000000", dt.ToString())
+    dt = DateTime.Parse("3/12/2023 16:34", "M/d/yyyy hh:mm")
+    assert("2023-03-12 16:34:00.0000000", dt.ToString())
 #endregion
 
 #region "DateTime: ToString"
@@ -443,12 +450,17 @@ fox is the red fox.]>
     assert(-3, dt.Offset.Hours)
 #endregion
 
-#region "LocalDateTime: Parse"
+#region "LocalDateTime: Parse 1"
     let dt1 = LocalDateTime.Parse("2012-03-21 15:33:59.0000000-03:00", "yyyy-MM-dd hh:mm:ss.fffffffzzz")
     let dt2 = LocalDateTime(offset: -TimeDelta(hours: 3), year: 2012, month: 3, day: 21,
         hour: 15, minute: 33, second: 59)
     assert(true, dt1 == dt2)
     assert(-3, dt1.Offset.Hours)
+#endregion
+
+#region "LocalDateTime: Parse 2"
+    let dt = LocalDateTime.Parse("08/12/2022 05:15:23 PM -03:30", "MM/dd/yyyy hh:mm:ss tt zzz")
+    assert("2022-08-12 17:15:23.0000000-03:30", dt.ToString())
 #endregion
 
 #region "LocalDateTime: FromTicks"
