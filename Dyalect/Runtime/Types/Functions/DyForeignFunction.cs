@@ -1,5 +1,7 @@
 ﻿using Dyalect.Debug;
 using System;
+using System.Runtime.CompilerServices;
+
 namespace Dyalect.Runtime.Types;
 
 public abstract class DyForeignFunction : DyFunction
@@ -41,6 +43,7 @@ public abstract class DyForeignFunction : DyFunction
 
     internal override bool Equals(DyFunction func) => ReferenceEquals(this, func);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected T? Cast<T>(int index, DyObject[] args) where T : DyObject
     {
         try
@@ -53,18 +56,6 @@ public abstract class DyForeignFunction : DyFunction
         catch (InvalidCastException)
         {
             throw new DyErrorException(new(DyErrorCode.InvalidType, args[index].TypeName));
-        }
-    }
-
-    protected T? Cast<T>() where T : DyObject
-    {
-        try
-        {
-            return (T)Self!;
-        }
-        catch (InvalidCastException)
-        {
-            throw new DyErrorException(new(DyErrorCode.InvalidType, Self!.TypeName));
         }
     }
 }

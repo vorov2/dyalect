@@ -199,6 +199,16 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
 
     private DyObject IsMultiple(ExecutionContext ctx, DyInteger self, DyInteger other) => (self.Value % other.Value) == 0 ? DyBool.True : DyBool.False;
 
+    private DyObject IsMultipleOld(ExecutionContext ctx, DyObject self, DyObject other)
+    {
+        if (other.TypeId != DyType.Integer)
+            return ctx.InvalidType(DyType.Integer, other);
+
+        var a = self.GetInteger();
+        var b = other.GetInteger();
+        return (a % b) == 0 ? DyBool.True : DyBool.False;
+    }
+
     private DyObject? TestTyped(ExecutionContext ctx, DyInteger self, DyStringLike str)
     {
         System.Console.WriteLine(self.ToString(ctx) + "::" + self.TypeName);
@@ -211,8 +221,9 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
     protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
         name switch
         {
-            Method.IsMultiple => Func.Method<DyInteger, DyInteger>(name, IsMultiple, new Par("of")),
-            "TestTyped" => Func.Method<DyInteger, DyStringLike>(name, TestTyped, "value"),
+            Method.IsMultiple => Func.Instance<DyInteger, DyInteger>(name, IsMultiple, new Par("of")),
+            "IsMultipleOld" => Func.Member(name, IsMultipleOld, -1, new Par("of")),
+            "TestTyped" => Func.Instance<DyInteger, DyStringLike>(name, TestTyped, "value"),
             _ => base.InitializeInstanceMember(self, name, ctx)
         };
 

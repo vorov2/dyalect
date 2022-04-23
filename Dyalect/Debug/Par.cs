@@ -1,6 +1,5 @@
 ﻿using Dyalect.Parser.Model;
 using Dyalect.Runtime.Types;
-using System;
 
 namespace Dyalect.Debug
 {
