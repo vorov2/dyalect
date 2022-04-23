@@ -316,7 +316,7 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
             Method.IndexOf => Func.Member(name, IndexOf, -1, new Par("value")),
             Method.LastIndexOf => Func.Member(name, LastIndexOf, -1, new Par("value")),
             Method.Sort => Func.Member(name, SortBy, -1, new Par("comparer", DyNil.Instance)),
-            Method.Swap => Func.Member(name, Swap, -1, new Par("value"), new Par("other")),
+            Method.Swap => Func.Member(name, Swap, -1, new Par("index"), new Par("other")),
             Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
             Method.Reverse => Func.Member(name, Reverse),
             _ => base.InitializeInstanceMember(self, name, ctx),
