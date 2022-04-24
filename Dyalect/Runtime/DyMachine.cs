@@ -495,7 +495,7 @@ public static partial class DyMachine
                             right = types[right.TypeId].GetInstanceMember(right, Builtins.Call, ctx);
 
                             if (!ctx.HasErrors && right.TypeId != DyType.Function)
-                                ctx.InvalidType(right);
+                                ctx.InvalidType(DyType.Function, right);
 
                             if (ctx.HasErrors)
                             {
