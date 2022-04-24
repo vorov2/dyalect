@@ -25,6 +25,8 @@ internal sealed class DyBoolTypeInfo : DyTypeInfo
         {
             Method.Bool => Func.Static(name, Convert, -1, new Par("value")),
             Method.Default => Func.Static(name, _ => DyBool.False),
+            Method.Min => Func.Static(name, _ => DyBool.False),
+            Method.Max => Func.Static(name, _ => DyBool.True),
             _ => base.InitializeStaticMember(name, ctx)
         };
 
