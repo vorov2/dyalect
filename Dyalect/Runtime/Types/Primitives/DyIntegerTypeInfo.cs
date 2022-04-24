@@ -15,7 +15,7 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => DyType.Integer;
 
-    public DyIntegerTypeInfo() => AddMixin(DyType.Number, DyType.Comparable);
+    public DyIntegerTypeInfo() => AddMixin(DyType.Number, DyType.Comparable, DyType.Bounded);
 
     #region Binary Operations
     protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)

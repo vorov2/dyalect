@@ -10,6 +10,8 @@ internal sealed class DyBoolTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => DyType.Bool;
 
+    public DyBoolTypeInfo() => AddMixin(DyType.Bounded);
+
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
         ReferenceEquals(left, right) ? DyBool.True : DyBool.False;
 

@@ -14,7 +14,7 @@ internal sealed class DyFloatTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => DyType.Float;
 
-    public DyFloatTypeInfo() => AddMixin(DyType.Number, DyType.Comparable);
+    public DyFloatTypeInfo() => AddMixin(DyType.Number, DyType.Comparable, DyType.Bounded);
 
     #region Binary Operations
     protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)

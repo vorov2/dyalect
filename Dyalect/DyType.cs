@@ -24,6 +24,7 @@ public static class DyType
     public const int Number = 19;
     public const int Collection = 20;
     public const int Comparable = 21;
+    public const int Bounded = 22;
 
     internal static FastList<DyTypeInfo> GetAll() =>
         new()
@@ -49,7 +50,8 @@ public static class DyType
             new DyInteropObjectTypeInfo(),
             new DyNumberTypeInfo(),
             new DyCollTypeInfo(),
-            new DyComparableTypeInfo()
+            new DyComparableTypeInfo(),
+            new DyBoundedTypeInfo()
         };
 
     public static int GetTypeCodeByName(string name) =>
@@ -76,6 +78,7 @@ public static class DyType
             DyTypeNames.Number => Number,
             DyTypeNames.Collection => Collection,
             DyTypeNames.Comparable => Comparable,
+            DyTypeNames.Bounded => Bounded,
             _ => default
         }; 
 
@@ -103,6 +106,7 @@ public static class DyType
             Number => DyTypeNames.Number,
             Collection => DyTypeNames.Collection,
             Comparable => DyTypeNames.Comparable,
+            Bounded => DyTypeNames.Bounded,
             _ => code.ToString(),
         };
 }
@@ -132,7 +136,8 @@ internal static class DyTypeNames
             Interop,
             Number,
             Collection,
-            Comparable
+            Comparable,
+            Bounded
         };
 
     public const string Nil = "Nil";
@@ -156,4 +161,5 @@ internal static class DyTypeNames
     public const string Number = "Number";
     public const string Collection = "Collection";
     public const string Comparable = "Comparable";
+    public const string Bounded = "Bounded";
 }

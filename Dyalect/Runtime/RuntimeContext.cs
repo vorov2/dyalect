@@ -23,7 +23,7 @@ public sealed class RuntimeContext
         var newUnits = new DyObject[Composition.Units.Count][];
         for (var i = 0; i < Units.Length; i++)
             newUnits[i] = Units[i];
-        Units = newUnits;            
+        Units = newUnits;
         Layouts = Composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
     }
 
@@ -33,7 +33,7 @@ public sealed class RuntimeContext
     internal readonly DyTupleTypeInfo Tuple;
     internal readonly DyArrayTypeInfo Array;
 
-    internal readonly FastList<DyTypeInfo> Types; 
+    internal readonly FastList<DyTypeInfo> Types;
 
     internal DyObject[][] Units { get; private set; }
 

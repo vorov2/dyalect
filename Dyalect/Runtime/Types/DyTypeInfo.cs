@@ -550,6 +550,12 @@ public abstract class DyTypeInfo : DyObject
         mixins.Add(typeId1);
         mixins.Add(typeId2);
     }
+    protected void AddMixin(int typeId1, int typeId2, int typeId3)
+    {
+        mixins.Add(typeId1);
+        mixins.Add(typeId2);
+        mixins.Add(typeId3);
+    }
 
     protected void AddDefaultMixin1(string name)
     {

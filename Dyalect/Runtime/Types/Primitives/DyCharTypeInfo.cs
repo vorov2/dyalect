@@ -14,7 +14,7 @@ internal sealed class DyCharTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => DyType.Char;
 
-    public DyCharTypeInfo() => AddMixin(DyType.Comparable);
+    public DyCharTypeInfo() => AddMixin(DyType.Comparable, DyType.Bounded);
 
     protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
         new DyString(arg.GetString());

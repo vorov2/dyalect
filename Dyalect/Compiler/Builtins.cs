@@ -71,6 +71,8 @@ internal static class Builtins
     public const string ToArray     = "ToArray";
     public const string Iterator    = "Iterate";
     public const string Clone       = "Clone";
+    public const string Max         = "Max";
+    public const string Min         = "Min";
     public const string Has         = "Has";
     public const string Type        = "GetType";
     public const string Call        = "Call";
