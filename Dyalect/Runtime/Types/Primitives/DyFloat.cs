@@ -14,7 +14,7 @@ public sealed class DyFloat : DyNumber
 
     private readonly double value;
 
-    public override string TypeName => DyTypeNames.Float; 
+    public override string TypeName => nameof(DyType.Float); 
 
     public DyFloat(double value) : base(DyType.Float) =>
         this.value = value;

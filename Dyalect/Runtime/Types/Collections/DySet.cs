@@ -5,7 +5,7 @@ public class DySet : DyEnumerable
 {
     internal readonly HashSet<DyObject> Set;
 
-    public override string TypeName => DyTypeNames.Set;
+    public override string TypeName => nameof(DyType.Set);
     
     public DySet() : base(DyType.Set) => Set = new();
 

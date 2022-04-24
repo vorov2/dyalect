@@ -12,7 +12,7 @@ public sealed class DyChar : DyStringLike
 
     private readonly char value;
 
-    public override string TypeName => DyTypeNames.Char; 
+    public override string TypeName => nameof(DyType.Char); 
 
     public DyChar(char value) : base(DyType.Char) => this.value = value;
 

@@ -10,7 +10,7 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
         | SupportedOperations.Get | SupportedOperations.Len
         | SupportedOperations.Iter;
 
-    public override string ReflectedTypeName => DyTypeNames.Module;
+    public override string ReflectedTypeName => nameof(DyType.Module);
 
     public override int ReflectedTypeId => DyType.Module;
 

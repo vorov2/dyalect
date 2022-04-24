@@ -150,7 +150,7 @@ partial class Builder
         }
     }
 
-    private int PushTypeInfo(CompilerContext ctx, UnitInfo info, string name, Location loc)
+    private int PushTypeInfo(CompilerContext _, UnitInfo info, string name, Location loc)
     {
         //Can't find type in the module
         if (!info.ExportList.TryGetValue(name, out var sv))

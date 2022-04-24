@@ -10,7 +10,7 @@ internal sealed class DyCharTypeInfo : DyTypeInfo
         | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
         | SupportedOperations.Lit;
 
-    public override string ReflectedTypeName => DyTypeNames.Char;
+    public override string ReflectedTypeName => nameof(DyType.Char);
 
     public override int ReflectedTypeId => DyType.Char;
 
@@ -131,7 +131,7 @@ internal sealed class DyCharTypeInfo : DyTypeInfo
         if (obj.TypeId == DyType.Float)
             return new DyChar((char)obj.GetFloat());
 
-        return ctx.InvalidCast(obj.GetTypeInfo(ctx).ReflectedTypeName, DyTypeNames.Char);
+        return ctx.InvalidCast(obj.GetTypeInfo(ctx).ReflectedTypeName, ReflectedTypeName);
     }
 
     protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>

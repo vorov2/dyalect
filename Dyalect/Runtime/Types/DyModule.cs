@@ -10,7 +10,7 @@ public sealed class DyModule : DyObject, IEnumerable<DyObject>
 
     internal Unit Unit { get; }
 
-    public override string TypeName => DyTypeNames.Module;
+    public override string TypeName => nameof(DyType.Module);
     
     public DyModule(Unit unit, DyObject[] globals) : base(DyType.Module)
     {

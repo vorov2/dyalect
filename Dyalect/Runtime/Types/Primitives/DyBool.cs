@@ -6,7 +6,7 @@ public abstract class DyBool : DyObject
     public static readonly DyBool True = new DyBoolTrue();
     public static readonly DyBool False = new DyBoolFalse();
 
-    public override string TypeName => DyTypeNames.Bool; 
+    public override string TypeName => nameof(DyType.Bool); 
     
     private sealed class DyBoolTrue: DyBool
     {

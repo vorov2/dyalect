@@ -12,6 +12,7 @@
       <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
       <AssemblyName>Dyalect.Library</AssemblyName>
       <Nullable>enable</Nullable>
+      <Configurations>Debug;Release;DebugGenerators</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -19,6 +20,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\bin\</OutputPath>
+    <NoWarn>1701;1702;CA1822</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGenerators|AnyCPU'">
     <OutputPath>..\bin\</OutputPath>
     <NoWarn>1701;1702;CA1822</NoWarn>
   </PropertyGroup>

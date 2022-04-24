@@ -3,7 +3,7 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyVariantTypeInfo : DyTypeInfo
 {
-    public override string ReflectedTypeName => DyTypeNames.Variant;
+    public override string ReflectedTypeName => nameof(DyType.Variant);
 
     public override int ReflectedTypeId => DyType.Variant;
 
@@ -64,7 +64,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     private DyObject GetTuple(ExecutionContext ctx, DyVariant self)
     {
         if (self.Tuple.Count == 0)
-            return ctx.InvalidCast(ReflectedTypeName, DyTypeNames.Tuple);
+            return ctx.InvalidCast(ReflectedTypeName, nameof(DyType.Tuple));
 
         return self.Tuple;
     }

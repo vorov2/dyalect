@@ -11,7 +11,7 @@ public sealed class DyInteger : DyNumber
     public static readonly DyInteger Max = new(long.MaxValue);
     public static readonly DyInteger Min = new(long.MinValue);
 
-    public override string TypeName => DyTypeNames.Integer; 
+    public override string TypeName => nameof(DyType.Integer); 
     
     public static DyInteger Get(long i) =>
         i switch

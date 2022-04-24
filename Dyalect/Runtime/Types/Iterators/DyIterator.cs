@@ -3,7 +3,7 @@ namespace Dyalect.Runtime.Types;
 
 public abstract class DyIterator : DyObject
 {
-    public override string TypeName => DyTypeNames.Iterator; 
+    public override string TypeName => nameof(DyType.Iterator); 
     
     protected DyIterator() : base(DyType.Iterator) { }
 

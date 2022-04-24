@@ -12,7 +12,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
         | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
 
-    public override string ReflectedTypeName => DyTypeNames.Iterator;
+    public override string ReflectedTypeName => nameof(DyType.Iterator);
 
     public override int ReflectedTypeId => DyType.Iterator;
 

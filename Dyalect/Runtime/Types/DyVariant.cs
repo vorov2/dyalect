@@ -5,7 +5,7 @@ public sealed class DyVariant : DyObject
     internal readonly string Constructor;
     internal readonly DyTuple Tuple;
 
-    public override string TypeName => DyTypeNames.Variant;
+    public override string TypeName => nameof(DyType.Variant);
     
     public DyVariant(string constructor, DyTuple values) : base(DyType.Variant) =>
         (Constructor, Tuple) = (constructor, values);

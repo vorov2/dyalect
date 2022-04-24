@@ -11,7 +11,7 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
         | SupportedOperations.Neg | SupportedOperations.Plus | SupportedOperations.And | SupportedOperations.Or
         | SupportedOperations.Xor | SupportedOperations.BitNot | SupportedOperations.Shl | SupportedOperations.Shr;
 
-    public override string ReflectedTypeName => DyTypeNames.Integer;
+    public override string ReflectedTypeName => nameof(DyType.Integer);
 
     public override int ReflectedTypeId => DyType.Integer;
 
@@ -198,16 +198,6 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
     #endregion
 
     private DyObject IsMultipleOf(ExecutionContext ctx, DyInteger self, DyInteger other) => (self.Value % other.Value) == 0 ? DyBool.True : DyBool.False;
-
-    private DyObject IsMultipleOld(ExecutionContext ctx, DyObject self, DyObject other)
-    {
-        if (other.TypeId != DyType.Integer)
-            return ctx.InvalidType(DyType.Integer, other);
-
-        var a = self.GetInteger();
-        var b = other.GetInteger();
-        return (a % b) == 0 ? DyBool.True : DyBool.False;
-    }
 
     private DyObject? TestTyped(ExecutionContext ctx, DyInteger self, DyStringLike str)
     {

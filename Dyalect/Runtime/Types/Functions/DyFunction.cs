@@ -18,7 +18,7 @@ public abstract class DyFunction : DyObject
     internal bool Private => (Attr & FunAttr.Priv) == FunAttr.Priv;
     internal bool VariantConstructor => (Attr & FunAttr.Vari) == FunAttr.Vari;
 
-    public override string TypeName => DyTypeNames.Function;
+    public override string TypeName => nameof(DyType.Function);
 
     protected DyFunction(Par[] pars, int varArgIndex) : base(DyType.Function) =>
         (Parameters, VarArgIndex) = (pars, varArgIndex);

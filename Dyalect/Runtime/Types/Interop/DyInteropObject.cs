@@ -6,7 +6,7 @@ public sealed class DyInteropObject : DyObject
     internal readonly Type Type;
     internal readonly object Object;
 
-    public override string TypeName => $"{DyTypeNames.Interop}<{Type.FullName ?? Type.Name}>";
+    public override string TypeName => $"{nameof(DyType.Interop)}<{Type.FullName ?? Type.Name}>";
     
     public DyInteropObject(Type type, object obj) : base(DyType.Interop) =>
         (Type, Object) = (type, obj);

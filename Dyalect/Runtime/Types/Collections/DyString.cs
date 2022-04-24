@@ -7,7 +7,7 @@ public sealed class DyString : DyStringLike
 {
     public static readonly DyString Empty = new("");
 
-    public override string TypeName => DyTypeNames.String;
+    public override string TypeName => nameof(DyType.String);
     
     internal readonly string Value;
 

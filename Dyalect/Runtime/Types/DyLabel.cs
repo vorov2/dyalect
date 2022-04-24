@@ -8,7 +8,7 @@ public sealed class DyLabel : DyObject
 
     internal bool Mutable;
 
-    public override string TypeName => DyTypeNames.Label;
+    public override string TypeName => nameof(DyType.Label);
     
     public string Label { get; }
 

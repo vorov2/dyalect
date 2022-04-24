@@ -3,7 +3,7 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyBoundedTypeInfo : DyTypeInfo
 {
-    public override string ReflectedTypeName => DyTypeNames.Bounded;
+    public override string ReflectedTypeName => nameof(DyType.Bounded);
 
     public override int ReflectedTypeId => DyType.Bounded;
 

@@ -9,7 +9,7 @@ public class DyTuple : DyCollection
 {
     public static readonly DyTuple Empty = new(Array.Empty<DyObject>());
 
-    public override string TypeName => DyTypeNames.Tuple;
+    public override string TypeName => nameof(DyType.Tuple);
     
     private readonly int length;
     private readonly bool? mutable;

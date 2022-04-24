@@ -8,7 +8,7 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     private DyObject[] values;
 
-    public override string TypeName => DyTypeNames.Array;
+    public override string TypeName => nameof(DyType.Array);
     
     public DyObject this[int index]
     {

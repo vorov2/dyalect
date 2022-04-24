@@ -5,7 +5,7 @@ public class DyDictionary : DyEnumerable
 {
     internal readonly Dictionary<DyObject, DyObject> Dictionary;
 
-    public override string TypeName => DyTypeNames.Dictionary;
+    public override string TypeName => nameof(DyType.Dictionary);
     
     public override int Count => Dictionary.Count;
 

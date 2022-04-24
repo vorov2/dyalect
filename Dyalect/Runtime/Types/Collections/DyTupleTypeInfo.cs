@@ -12,7 +12,7 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
         | SupportedOperations.Add | SupportedOperations.Iter | SupportedOperations.Lit;
 
-    public override string ReflectedTypeName => DyTypeNames.Tuple;
+    public override string ReflectedTypeName => nameof(DyType.Tuple);
 
     public override int ReflectedTypeId => DyType.Tuple;
 

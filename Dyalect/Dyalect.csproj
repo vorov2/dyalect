@@ -22,6 +22,7 @@
       <AssemblyName>Dyalect</AssemblyName>
       <Nullable>enable</Nullable>
 	  <UseWindowsForms>false</UseWindowsForms>
+	  <Configurations>Debug;Release;DebugGenerators</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -33,6 +34,11 @@
     <NoWarn>1701;1702;CA1822</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGenerators|AnyCPU'">
+    <OutputPath>..\bin\</OutputPath>
+    <NoWarn>1701;1702;CA1822</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Parser\Parser.cs.old" />
     <None Remove="Parser\Scanner.cs.old" />
@@ -40,6 +46,10 @@
 
   <ItemGroup>
     <Compile Include="..\Common\Meta.cs" Link="Properties\Meta.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dyalect.Generators\Dyalect.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
     
     <ItemGroup>

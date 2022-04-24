@@ -18,6 +18,7 @@
       <PackageProjectUrl>https://github.com/vorov2/dyalect</PackageProjectUrl>
       <PackageLicenseExpression>MIT</PackageLicenseExpression>
       <Nullable>enable</Nullable>
+      <Configurations>Debug;Release;DebugGenerators</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -26,6 +27,10 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\bin\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGenerators|AnyCPU'">
     <OutputPath>..\bin\</OutputPath>
   </PropertyGroup>
 

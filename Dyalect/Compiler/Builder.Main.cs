@@ -577,7 +577,7 @@ partial class Builder
         else
         {
             cw.Type(DyType.Array);
-            cw.GetMember(DyTypeNames.Array);
+            cw.GetMember(nameof(DyType.Array));
             cw.FunPrep(node.Elements.Count);
 
             for (var i = 0; i < node.Elements.Count; i++)
@@ -661,7 +661,7 @@ partial class Builder
             if (idx != -1)
             {
                 dll = localPath[(idx + 1)..];
-                localPath = localPath.Substring(0, idx);
+                localPath = localPath[..idx];
             }
             else
             {

@@ -8,7 +8,7 @@ public abstract class DyTypeInfo : DyObject
 {
     internal bool Closed { get; set; }
 
-    public override string TypeName => DyTypeNames.TypeInfo;
+    public override string TypeName => nameof(DyType.TypeInfo);
     
     protected abstract SupportedOperations GetSupportedOperations();
 
