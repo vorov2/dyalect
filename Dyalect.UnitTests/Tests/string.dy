@@ -251,6 +251,8 @@
     assert(12, str as Integer)
     assert(12.0, str as Float)
     assert(true, str as Bool)
+    assert(('1','2'), str as Tuple)
+    assert(['1','2'], str as Array)
 #endregion
 
 #region "Conversion: as 2"
