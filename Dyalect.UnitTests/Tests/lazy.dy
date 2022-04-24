@@ -82,8 +82,8 @@
 
 #region "Invoke members"
     lazy x = 2 + 13
-    assert(got: x.IsMultiple(of: 5))
-    assert(got: x.IsMultiple(of: 3))
+    assert(got: x.IsMultipleOf(5))
+    assert(got: x.IsMultipleOf(value: 3))
     lazy str = "Hello" + ", " + "world"
     assert("Helloworld", str.Replace(", ", ""))
     lazy c = 'A'

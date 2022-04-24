@@ -28,10 +28,10 @@
 
 
 #region "Methods: IsMultiple"
-    assert(true, 12.IsMultiple(3))
-    assert(true, 12.IsMultiple(of: 2))
-    assert(true, 340.IsMultiple(of: 10))
-    assert(false, 340.IsMultiple(of: 13))
+    assert(true, 12.IsMultipleOf(3))
+    assert(true, 12.IsMultipleOf(2))
+    assert(true, 340.IsMultipleOf(value: 10))
+    assert(false, 340.IsMultipleOf(13))
 #endregion
 
 #region "Methods: Parse"

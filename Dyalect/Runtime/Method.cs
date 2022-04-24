@@ -89,7 +89,7 @@ internal static class Method
     public const string Float = "Float";
     public const string Integer = "Integer";
     public const string Parse = "Parse";
-    public const string IsMultiple = "IsMultiple";
+    public const string IsMultipleOf = "IsMultipleOf";
     public const string Nil = "Nil";
     public const string Compose = "Compose";
     public const string Apply = "Apply";

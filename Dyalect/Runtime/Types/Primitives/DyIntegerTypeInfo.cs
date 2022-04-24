@@ -197,7 +197,7 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
     #endregion
 
-    private DyObject IsMultiple(ExecutionContext ctx, DyInteger self, DyInteger other) => (self.Value % other.Value) == 0 ? DyBool.True : DyBool.False;
+    private DyObject IsMultipleOf(ExecutionContext ctx, DyInteger self, DyInteger other) => (self.Value % other.Value) == 0 ? DyBool.True : DyBool.False;
 
     private DyObject IsMultipleOld(ExecutionContext ctx, DyObject self, DyObject other)
     {
@@ -221,8 +221,7 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
     protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
         name switch
         {
-            Method.IsMultiple => Func.Instance<DyInteger, DyInteger>(name, IsMultiple, new Par("of")),
-            "IsMultipleOld" => Func.Member(name, IsMultipleOld, -1, new Par("of")),
+            Method.IsMultipleOf => Func.Instance<DyInteger, DyInteger>(name, IsMultipleOf, "value"),
             "TestTyped" => Func.Instance<DyInteger, DyStringLike>(name, TestTyped, "value"),
             _ => base.InitializeInstanceMember(self, name, ctx)
         };
