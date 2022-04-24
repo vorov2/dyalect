@@ -1,7 +1,9 @@
 ﻿using Dyalect.Debug;
+using Dyalect.Runtime.Codegen;
 namespace Dyalect.Runtime.Types;
 
-internal sealed class DyBoolTypeInfo : DyTypeInfo
+[GeneratedType]
+internal sealed partial class DyBoolTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Lit;

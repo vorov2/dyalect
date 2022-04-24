@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 
 namespace Dyalect.Generators
@@ -8,15 +8,30 @@ namespace Dyalect.Generators
     [Generator]
     public class DyTypeGenerator : ISourceGenerator
     {
+        private void TraverseNamespaces(INamespaceSymbol ns, List<INamedTypeSymbol> types)
+        {
+            foreach (var cns in ns.GetNamespaceMembers())
+                TraverseNamespaces(cns, types);
+
+            foreach (INamedTypeSymbol t in ns.GetMembers().OfType<INamedTypeSymbol>())
+            {
+                if (t.GetAttributes().Any(a => a.AttributeClass.Name == "GeneratedTypeAttribute"))
+                    types.Add(t);
+            }
+        }
+
         public void Execute(GeneratorExecutionContext context)
         {
             var ep = context.Compilation.GetEntryPoint(context.CancellationToken);
-            var type = context.Compilation.Assembly.GetTypeByMetadataName("Dyalect.DyType");
+            var xs = new List<INamedTypeSymbol>();
+            TraverseNamespaces(context.Compilation.GlobalNamespace, xs);
+
+             var type = context.Compilation.Assembly.GetTypeByMetadataName("Dyalect.DyType");
             var dyTypeInfos = new List<(int,string)>();
 
             if (type is not null)
             {
-                string GetClassName(string name) =>
+                static string GetClassName(string name) =>
                     name switch
                     {
                         "TypeInfo" => "DyMetaTypeInfo",
