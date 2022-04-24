@@ -1,7 +1,9 @@
 ﻿using Dyalect.Debug;
+using Dyalect.Runtime.Codegen;
 using System.Globalization;
 namespace Dyalect.Runtime.Types;
 
+[GeneratedType]
 internal sealed class DyIntegerTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
@@ -199,20 +201,13 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
 
     private DyObject IsMultipleOf(ExecutionContext ctx, DyInteger self, DyInteger other) => (self.Value % other.Value) == 0 ? DyBool.True : DyBool.False;
 
-    private DyObject? TestTyped(ExecutionContext ctx, DyInteger self, DyStringLike str)
-    {
-        System.Console.WriteLine(self.ToString(ctx) + "::" + self.TypeName);
-        
-        if (str is not null)
-            System.Console.WriteLine(str.ToString(ctx) + "::" + str.TypeName);
-        return null;
-    }
+    [InstanceMethod(Name = "IsMultipleOf")]
+    private bool IsMultipleOf2(ExecutionContext ctx, long self, long other) { return (self % other) == 0; }
 
     protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
         name switch
         {
             Method.IsMultipleOf => Func.Instance<DyInteger, DyInteger>(name, IsMultipleOf, "value"),
-            "TestTyped" => Func.Instance<DyInteger, DyStringLike>(name, TestTyped, "value"),
             _ => base.InitializeInstanceMember(self, name, ctx)
         };
 
