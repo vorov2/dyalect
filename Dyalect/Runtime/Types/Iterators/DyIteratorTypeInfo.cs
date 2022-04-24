@@ -498,6 +498,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         {
             DyType.Tuple => new DyTuple(((DyIterator)self).ToEnumerable(ctx).ToArray()),
             DyType.Array => new DyArray(((DyIterator)self).ToEnumerable(ctx).ToArray()),
+            DyType.Function => ((DyIterator)self).GetIteratorFunction(),
             DyType.Set => ToSet(ctx, self),
             _ => base.CastOp(self, targetType, ctx)
         };

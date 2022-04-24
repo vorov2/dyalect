@@ -1,5 +1,6 @@
 # 0.42.0
   * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).
+  * Add: _An ability to convert an iterator to a stateful function_ ([Issue #807](https://github.com/vorov2/dyalect/issues/807), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).
   * Change: _Static `Array.Sort` to support other data types_ ([Issue #815](https://github.com/vorov2/dyalect/issues/815), [docs](https://github.com/vorov2/dyalect/wiki/Array#ssort)).
   * Fix: _Static `Array.Sort` fails with a wrong exception when a type is invalid_ ([Issue #814](https://github.com/vorov2/dyalect/issues/814)).
 
