@@ -3,6 +3,8 @@ namespace Dyalect.Runtime.Types;
 
 public abstract class DyIterator : DyObject
 {
+    public override string TypeName => DyTypeNames.Iterator; 
+    
     protected DyIterator() : base(DyType.Iterator) { }
 
     internal static DyIterator Create(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) =>

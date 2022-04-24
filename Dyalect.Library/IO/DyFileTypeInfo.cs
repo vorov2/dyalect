@@ -11,7 +11,7 @@ namespace Dyalect.Library.IO
 {
     public sealed class DyFileTypeInfo : DyForeignTypeInfo<IOModule>
     {
-        public override string TypeName => "File";
+        public override string ReflectedTypeName => "File";
 
         protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 

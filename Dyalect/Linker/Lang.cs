@@ -77,7 +77,7 @@ namespace Dyalect.Linker
         }
 
         [Function("constructorName")]
-        public DyObject GetConstructorName(ExecutionContext ctx, DyObject value)
+        public DyObject GetConstructorName(ExecutionContext _, DyObject value)
         {
             var ctor = value.GetConstructor();
             return ctor is null ? DyNil.Instance : new DyString(ctor);
@@ -121,7 +121,7 @@ namespace Dyalect.Linker
         }
 
         [Function("readLine")]
-        public DyObject Read(ExecutionContext ctx) => new DyString(Console.ReadLine() ?? "");
+        public DyObject Read(ExecutionContext _) => new DyString(Console.ReadLine() ?? "");
 
         [Function("rnd")]
         public DyObject Randomize(ExecutionContext ctx, [Default(0)]DyObject min, [Default(int.MaxValue)]DyObject max, [Default]DyObject seed)
@@ -155,7 +155,7 @@ namespace Dyalect.Linker
                 if (errorText.TypeId == DyType.String)
                     return ctx.AssertionFailed(errorText.GetString());
 
-                return ctx.AssertionFailed($"Expected \"{expect.ToString(ctx)}\" :: {expect.GetTypeName(ctx)}, got \"{got.ToString(ctx)}\" :: {got.GetTypeName(ctx)}.");
+                return ctx.AssertionFailed($"Expected \"{expect.ToString(ctx)}\" :: {expect.TypeName}, got \"{got.ToString(ctx)}\" :: {got.TypeName}.");
             }
 
             return DyNil.Instance;

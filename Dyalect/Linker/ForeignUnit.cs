@@ -42,7 +42,7 @@ namespace Dyalect.Linker
             var t = new T();
             typeInfos.Add(typeof(T), t);
             Types.Add(t);
-            Add(t.TypeName, t);
+            Add(t.ReflectedTypeName, t);
             t.DeclaringUnit = this;
             return t;
         }

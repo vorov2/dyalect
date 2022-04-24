@@ -8,7 +8,7 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyByteArrayTypeInfo : DyForeignTypeInfo
     {
-        public override string TypeName => "ByteArray";
+        public override string ReflectedTypeName => "ByteArray";
 
         public DyByteArray Create(byte[]? buffer) => new(this, buffer);
 

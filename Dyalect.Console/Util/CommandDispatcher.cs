@@ -119,7 +119,7 @@ namespace Dyalect.Util
             {
                 var rv = xs[i];
                 vals[i] = Printer.Format(rv.Value, ctx.ExecutionContext, notype: true, maxLen: 32);
-                types[i] = rv.Value.GetTypeInfo(ctx.ExecutionContext).TypeName;
+                types[i] = rv.Value.GetTypeInfo(ctx.ExecutionContext).ReflectedTypeName;
 
                 if (keyLen < rv.Name.Length) keyLen = rv.Name.Length;
                 if (valLen < vals[i].Length) valLen = vals[i].Length;

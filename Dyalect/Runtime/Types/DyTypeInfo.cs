@@ -8,6 +8,8 @@ public abstract class DyTypeInfo : DyObject
 {
     internal bool Closed { get; set; }
 
+    public override string TypeName => DyTypeNames.TypeInfo;
+    
     protected abstract SupportedOperations GetSupportedOperations();
 
     private bool Support(DyObject self, SupportedOperations op) =>
@@ -15,9 +17,9 @@ public abstract class DyTypeInfo : DyObject
 
     public override object ToObject() => this;
 
-    public override string ToString() => "{" + TypeName + "}";
+    public override string ToString() => "{" + ReflectedTypeName + "}";
 
-    public abstract string TypeName { get; }
+    public abstract string ReflectedTypeName { get; }
 
     public abstract int ReflectedTypeId { get; }
 
@@ -377,7 +379,7 @@ public abstract class DyTypeInfo : DyObject
             DyType.String => ToString(ctx, self),
             DyType.Char => new DyChar((ToString(ctx, self)?.GetString() ?? "\0")[0]),
             _ when targetType.ReflectedTypeId == self.TypeId => self,
-            _ => ctx.InvalidCast(self.GetTypeInfo(ctx).TypeName, targetType.TypeName)
+            _ => ctx.InvalidCast(self.GetTypeInfo(ctx).ReflectedTypeName, targetType.ReflectedTypeName)
         };
     public DyObject Cast(ExecutionContext ctx, DyObject self, DyObject targetType)
     {
@@ -727,10 +729,12 @@ public abstract class DyTypeInfo : DyObject
 
     protected DyObject Default() => DyNil.Instance;
 
+    protected DyObject Nil => DyNil.Instance;
+
     private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();
 
     private DyObject GetIterator(ExecutionContext ctx, DyObject self) => self is IEnumerable<DyObject> en 
         ? DyIterator.Create(en) : ctx.OperationNotSupported(Builtins.Iterator, self);
 
-    public override int GetHashCode() => HashCode.Combine(TypeId, TypeId, TypeName);
+    public override int GetHashCode() => HashCode.Combine(TypeId, TypeId, ReflectedTypeName);
 }

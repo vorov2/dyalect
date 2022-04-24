@@ -9,6 +9,8 @@ public class DyTuple : DyCollection
 {
     public static readonly DyTuple Empty = new(Array.Empty<DyObject>());
 
+    public override string TypeName => DyTypeNames.Tuple;
+    
     private readonly int length;
     private readonly bool? mutable;
     private readonly DyObject[] values;
@@ -26,9 +28,9 @@ public class DyTuple : DyCollection
         this.values = values ?? throw new DyException("Unable to create a tuple with no values.");
     }
 
-    public static DyTuple Create(params DyLabel[] labels) => new DyTuple(labels, labels.Length);
+    public static DyTuple Create(params DyLabel[] labels) => new(labels, labels.Length);
 
-    public Dictionary<DyObject, DyObject> ConvertToDictionary(ExecutionContext ctx)
+    public Dictionary<DyObject, DyObject> ConvertToDictionary(ExecutionContext _)
     {
         var dict = new Dictionary<DyObject, DyObject>();
 

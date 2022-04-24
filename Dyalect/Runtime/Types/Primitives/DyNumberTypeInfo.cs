@@ -3,7 +3,7 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyNumberTypeInfo : DyTypeInfo
 {
-    public override string TypeName => DyTypeNames.Number;
+    public override string ReflectedTypeName => DyTypeNames.Number;
 
     public override int ReflectedTypeId => DyType.Number;
 

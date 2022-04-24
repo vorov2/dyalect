@@ -11,7 +11,7 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
         | SupportedOperations.Neg | SupportedOperations.Plus | SupportedOperations.And | SupportedOperations.Or
         | SupportedOperations.Xor | SupportedOperations.BitNot | SupportedOperations.Shl | SupportedOperations.Shr;
 
-    public override string TypeName => DyTypeNames.Integer;
+    public override string ReflectedTypeName => DyTypeNames.Integer;
 
     public override int ReflectedTypeId => DyType.Integer;
 
@@ -197,7 +197,9 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
     #endregion
 
-    private DyObject IsMultiple(ExecutionContext ctx, DyObject self, DyObject other)
+    private DyObject IsMultiple(ExecutionContext ctx, DyInteger self, DyInteger other) => (self.Value % other.Value) == 0 ? DyBool.True : DyBool.False;
+
+    private DyObject IsMultipleOld(ExecutionContext ctx, DyObject self, DyObject other)
     {
         if (other.TypeId != DyType.Integer)
             return ctx.InvalidType(DyType.Integer, other);
@@ -207,10 +209,21 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
         return (a % b) == 0 ? DyBool.True : DyBool.False;
     }
 
+    private DyObject? TestTyped(ExecutionContext ctx, DyInteger self, DyStringLike str)
+    {
+        System.Console.WriteLine(self.ToString(ctx) + "::" + self.TypeName);
+        
+        if (str is not null)
+            System.Console.WriteLine(str.ToString(ctx) + "::" + str.TypeName);
+        return null;
+    }
+
     protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
         name switch
         {
-            Method.IsMultiple => Func.Member(name, IsMultiple, -1, new Par("of")),
+            Method.IsMultiple => Func.Instance<DyInteger, DyInteger>(name, IsMultiple, new Par("of")),
+            "IsMultipleOld" => Func.Member(name, IsMultipleOld, -1, new Par("of")),
+            "TestTyped" => Func.Instance<DyInteger, DyStringLike>(name, TestTyped, "value"),
             _ => base.InitializeInstanceMember(self, name, ctx)
         };
 

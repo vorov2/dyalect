@@ -9,7 +9,7 @@ namespace Dyalect.Library.Core
         private const string SUCCESS = "Success";
         private const string FAILURE = "Failure";
 
-        public override string TypeName => "Result";
+        public override string ReflectedTypeName => "Result";
 
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {

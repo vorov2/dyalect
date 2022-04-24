@@ -326,10 +326,15 @@
     assert([FooInArray(2), FooInArray(3), FooInArray(4)], xs)
 #endregion
 
-#region "Conversion: as"
+#region "Conversion: as 1"
     let xs = [1..3]
     assert((1,2,3), xs as Tuple)
     assert("[1, 2, 3]", xs as String)
+#endregion
+
+#region "Conversion: as 2"
+    let xs = [1,2,2,3,4,4,4,5]
+    assert((1,2,3,4,5), (xs as Set).ToTuple())
 #endregion
 
 #region "Methods: ToLiteral"

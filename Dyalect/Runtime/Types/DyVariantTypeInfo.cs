@@ -3,7 +3,7 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyVariantTypeInfo : DyTypeInfo
 {
-    public override string TypeName => DyTypeNames.Variant;
+    public override string ReflectedTypeName => DyTypeNames.Variant;
 
     public override int ReflectedTypeId => DyType.Variant;
 
@@ -33,7 +33,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
         if (ctx.HasErrors)
             return DyNil.Instance;
 
-        return new DyString($"{TypeName}.{self.Constructor}{str}");
+        return new DyString($"{ReflectedTypeName}.{self.Constructor}{str}");
     }
 
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx)
@@ -58,23 +58,21 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
         if (!char.IsUpper(name[0]))
             return base.InitializeStaticMember(name, ctx);
 
-        return Func.Variant(name, (_, args) => new DyVariant(name, (DyTuple)args), 0, new Par("values"));
+        return Func.Constructor(name, (DyTuple args) => new DyVariant(name, args), new("values", true));
     }
 
-    private DyObject GetTuple(ExecutionContext ctx, DyObject self)
+    private DyObject GetTuple(ExecutionContext ctx, DyVariant self)
     {
-        var v = (DyVariant)self;
+        if (self.Tuple.Count == 0)
+            return ctx.InvalidCast(ReflectedTypeName, DyTypeNames.Tuple);
 
-        if (v.Tuple.Count == 0)
-            return ctx.InvalidCast(TypeName, DyTypeNames.Tuple);
-
-        return v.Tuple;
+        return self.Tuple;
     }
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
-            DyType.Tuple => GetTuple(ctx, self),
+            DyType.Tuple => GetTuple(ctx, (DyVariant)self),
             _ => base.CastOp(self, targetType, ctx)
         };
 }

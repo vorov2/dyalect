@@ -8,7 +8,7 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyConsoleTypeInfo : DyForeignTypeInfo
     {
-        public override string TypeName => "Console";
+        public override string ReflectedTypeName => "Console";
         private TextWriter? consoleOutput;
         private TextReader? consoleInput;
 

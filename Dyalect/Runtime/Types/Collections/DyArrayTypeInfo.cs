@@ -7,7 +7,7 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
 {
-    public override string TypeName => DyTypeNames.Array;
+    public override string ReflectedTypeName => DyTypeNames.Array;
 
     public override int ReflectedTypeId => DyType.Array;
 
@@ -316,7 +316,7 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
             Method.IndexOf => Func.Member(name, IndexOf, -1, new Par("value")),
             Method.LastIndexOf => Func.Member(name, LastIndexOf, -1, new Par("value")),
             Method.Sort => Func.Member(name, SortBy, -1, new Par("comparer", DyNil.Instance)),
-            Method.Swap => Func.Member(name, Swap, -1, new Par("value"), new Par("other")),
+            Method.Swap => Func.Member(name, Swap, -1, new Par("index"), new Par("other")),
             Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
             Method.Reverse => Func.Member(name, Reverse),
             _ => base.InitializeInstanceMember(self, name, ctx),
@@ -401,12 +401,5 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
                 new Par("index", DyInteger.Zero), new Par("destination", DyNil.Instance),
                 new Par("destinationIndex", DyInteger.Zero), new Par("count", DyNil.Instance)),
             _ => base.InitializeStaticMember(name, ctx)
-        };
-
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-        targetType.ReflectedTypeId switch
-        {
-            DyType.Tuple => new DyTuple(((DyArray)self).ToArray()),
-            _ => base.CastOp(self, targetType, ctx)
         };
 }

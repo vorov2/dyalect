@@ -6,7 +6,7 @@ internal sealed class DyBoolTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Lit;
 
-    public override string TypeName => DyTypeNames.Bool;
+    public override string ReflectedTypeName => DyTypeNames.Bool;
 
     public override int ReflectedTypeId => DyType.Bool;
 

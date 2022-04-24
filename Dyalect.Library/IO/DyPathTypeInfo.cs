@@ -9,7 +9,7 @@ namespace Dyalect.Library.IO
 {
     public sealed class DyPathTypeInfo : DyForeignTypeInfo<IOModule>
     {
-        public override string TypeName => "Path";
+        public override string ReflectedTypeName => "Path";
 
         protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 

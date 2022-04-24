@@ -5,7 +5,7 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DySetTypeInfo : DyTypeInfo
 {
-    public override string TypeName => DyTypeNames.Set;
+    public override string ReflectedTypeName => DyTypeNames.Set;
 
     public override int ReflectedTypeId => DyType.Set;
 

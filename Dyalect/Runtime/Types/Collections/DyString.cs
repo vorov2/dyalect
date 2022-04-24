@@ -3,10 +3,12 @@ using System.IO;
 using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-public sealed class DyString : DyCollection
+public sealed class DyString : DyStringLike
 {
     public static readonly DyString Empty = new("");
 
+    public override string TypeName => DyTypeNames.String;
+    
     internal readonly string Value;
 
     private int hashCode;

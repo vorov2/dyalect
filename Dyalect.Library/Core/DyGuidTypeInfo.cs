@@ -9,7 +9,7 @@ namespace Dyalect.Library.Core
     {
         private const string GuidType = "Guid";
 
-        public override string TypeName => GuidType;
+        public override string ReflectedTypeName => GuidType;
 
         public DyGuidTypeInfo() => AddMixin(DyType.Comparable);
 

@@ -7,7 +7,9 @@ public class DyNil : DyObject
     internal const string Literal = "nil";
     public static readonly DyNil Instance = new();
     internal static readonly DyNil Terminator = new DyNilTerminator();
-    
+
+    public override string TypeName => DyTypeNames.Nil; 
+
     private sealed class DyNilTerminator : DyNil { }
 
     private DyNil() : base(DyType.Nil) { }

@@ -54,7 +54,7 @@ namespace Dyalect
             if (maxLen > 0 && fmt.Length > maxLen)
                 fmt = fmt.Substring(0, maxLen) + "...";
 
-            return notype ? fmt : fmt + " :: " + obj.GetTypeInfo(ctx).TypeName;
+            return notype ? fmt : fmt + " :: " + obj.GetTypeInfo(ctx).ReflectedTypeName;
         }
 
         public static void SupplementaryOutput(string data) => WriteLine(data);

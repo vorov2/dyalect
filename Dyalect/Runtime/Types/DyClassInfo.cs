@@ -4,13 +4,13 @@ internal sealed class DyClassInfo : DyTypeInfo
 {
     private readonly bool privateCons;
 
-    public override string TypeName { get; }
+    public override string ReflectedTypeName { get; }
 
     public override int ReflectedTypeId { get; }
 
     public DyClassInfo(string typeName, int typeCode)
     {
-        TypeName = typeName;
+        ReflectedTypeName = typeName;
         ReflectedTypeId = typeCode;
         privateCons = !string.IsNullOrEmpty(typeName) && typeName.Length > 0 && char.IsLower(typeName[0]);
     }
@@ -41,14 +41,14 @@ internal sealed class DyClassInfo : DyTypeInfo
         var cust = (DyClass)arg;
         var priv = cust.Fields;
 
-        if (TypeName == cust.Constructor && priv.Count == 0)
-            return new DyString($"{TypeName}()");
-        else if (TypeName == cust.Constructor)
-            return new DyString($"{TypeName}{priv.ToString(ctx)}");
+        if (ReflectedTypeName == cust.Constructor && priv.Count == 0)
+            return new DyString($"{ReflectedTypeName}()");
+        else if (ReflectedTypeName == cust.Constructor)
+            return new DyString($"{ReflectedTypeName}{priv.ToString(ctx)}");
         else if (priv.Count == 0)
-            return new DyString($"{TypeName}.{cust.Constructor}()");
+            return new DyString($"{ReflectedTypeName}.{cust.Constructor}()");
         else
-            return new DyString($"{TypeName}.{cust.Constructor}{priv.ToString(ctx)}");
+            return new DyString($"{ReflectedTypeName}.{cust.Constructor}{priv.ToString(ctx)}");
     }
 
     protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx) =>

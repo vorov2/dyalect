@@ -76,6 +76,7 @@ internal abstract class DyCollectionTypeInfo : DyTypeInfo
             DyType.Tuple => new DyTuple(((DyCollection)self).Trim()),
             DyType.Array => new DyArray(((DyCollection)self).Trim()),
             DyType.Iterator => DyIterator.Create((DyCollection)self),
+            DyType.Set => new DySet(new HashSet<DyObject>(((DyCollection)self).Trim())),
             _ => base.CastOp(self, targetType, ctx)
         };
 }

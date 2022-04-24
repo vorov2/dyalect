@@ -8,7 +8,7 @@ namespace Dyalect.Library.Core
 {
     public sealed class DyRegexTypeInfo : DyForeignTypeInfo
     {
-        public override string TypeName => "Regex";
+        public override string ReflectedTypeName => "Regex";
 
         protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
         {

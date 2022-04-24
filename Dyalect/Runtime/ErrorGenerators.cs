@@ -28,7 +28,7 @@ public static class ErrorGenerators
 
     public static DyObject TypeClosed(this ExecutionContext ctx, DyTypeInfo typeInfo)
     {
-        ctx.Error = new(DyErrorCode.TypeClosed, typeInfo.TypeName);
+        ctx.Error = new(DyErrorCode.TypeClosed, typeInfo.ReflectedTypeName);
         return DyNil.Instance;
     }
 
@@ -158,20 +158,20 @@ public static class ErrorGenerators
 
     public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj)
     {
-        ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), obj.GetTypeName(ctx));
+        ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), obj.TypeName);
         return DyNil.Instance;
     }
 
     public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, int typeId)
     {
-        var typeName = ctx.RuntimeContext.Types[typeId].TypeName;
+        var typeName = ctx.RuntimeContext.Types[typeId].ReflectedTypeName;
         ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), typeName, 0, 0);
         return DyNil.Instance;
     }
 
     public static DyObject StaticOperationNotSupported(this ExecutionContext ctx, string op, int typeId)
     {
-        var typeName = ctx.RuntimeContext.Types[typeId].TypeName;
+        var typeName = ctx.RuntimeContext.Types[typeId].ReflectedTypeName;
         //small hack to get OperationNotSupported.4
         ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), typeName, 0, 0);
         return DyNil.Instance;
@@ -179,8 +179,7 @@ public static class ErrorGenerators
 
     public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj1, DyObject obj2)
     {
-        ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op),
-            obj1.GetTypeName(ctx), obj2.GetTypeName(ctx));
+        ctx.Error = new(DyErrorCode.OperationNotSupported, Builtins.Translate(op), obj1.TypeName, obj2.TypeName);
         return DyNil.Instance;
     }
 
@@ -240,33 +239,33 @@ public static class ErrorGenerators
 
     public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
     {
-        ctx.Error = new(DyErrorCode.InvalidType, value.GetTypeName(ctx));
+        ctx.Error = new(DyErrorCode.InvalidType, value.TypeName);
         return DyNil.Instance;
     }
 
     public static DyObject InvalidType(this ExecutionContext ctx, int expected, DyObject got)
     {
-        ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected].TypeName, got.GetTypeName(ctx));
+        ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected].ReflectedTypeName, got.TypeName);
         return DyNil.Instance;
     }
 
     public static DyObject InvalidType(this ExecutionContext ctx, int expected1, int exptected2, DyObject got)
     {
-        ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected1].TypeName, ctx.RuntimeContext.Types[exptected2].TypeName, ctx.RuntimeContext.Types[got.TypeId].TypeName);
+        ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected1].ReflectedTypeName, ctx.RuntimeContext.Types[exptected2].ReflectedTypeName, ctx.RuntimeContext.Types[got.TypeId].ReflectedTypeName);
         return DyNil.Instance;
     }
 
     public static DyObject InvalidType(this ExecutionContext ctx, int expected1, int exptected2, int expected3, DyObject got)
     {
-        ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected1].TypeName, ctx.RuntimeContext.Types[exptected2].TypeName,
-            ctx.RuntimeContext.Types[expected3].TypeName, got.GetTypeName(ctx));
+        ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected1].ReflectedTypeName, ctx.RuntimeContext.Types[exptected2].ReflectedTypeName,
+            ctx.RuntimeContext.Types[expected3].ReflectedTypeName, got.TypeName);
         return DyNil.Instance;
     }
 
     public static DyObject InvalidType(this ExecutionContext ctx, int expected1, int exptected2, int expected3, int expected4, DyObject got)
     {
-        ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected1].TypeName, ctx.RuntimeContext.Types[exptected2].TypeName,
-            ctx.RuntimeContext.Types[expected3].TypeName, ctx.RuntimeContext.Types[expected4].TypeName, got.GetTypeName(ctx));
+        ctx.Error = new(DyErrorCode.InvalidType, ctx.RuntimeContext.Types[expected1].ReflectedTypeName, ctx.RuntimeContext.Types[exptected2].ReflectedTypeName,
+            ctx.RuntimeContext.Types[expected3].ReflectedTypeName, ctx.RuntimeContext.Types[expected4].ReflectedTypeName, got.TypeName);
         return DyNil.Instance;
     }
 
@@ -279,7 +278,7 @@ public static class ErrorGenerators
     public static DyObject ExternalFunctionFailure(this ExecutionContext ctx, DyFunction func, string error)
     {
         var functionName = func.Self is null ? func.FunctionName
-            : $"{func.Self.GetTypeName(ctx)}.{func.FunctionName}";
+            : $"{func.Self.TypeName}.{func.FunctionName}";
         ctx.Error = new(DyErrorCode.ExternalFunctionFailure, functionName, error);
         return DyNil.Instance;
     }
@@ -346,7 +345,7 @@ public static class ErrorGenerators
         if (str is not null && err.Tuple.Count > 0)
             {
             var vals = err.Tuple.GetValues()
-                .Select(v => v is DyTypeInfo t ? t.TypeName : (v.ToString() ?? ""))
+                .Select(v => v is DyTypeInfo t ? t.ReflectedTypeName : (v.ToString() ?? ""))
                 .ToArray();
             str = str.Format(vals);
         }

@@ -8,6 +8,8 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     private DyObject[] values;
 
+    public override string TypeName => DyTypeNames.Array;
+    
     public DyObject this[int index]
     {
         get => values[CorrectIndex(index)];

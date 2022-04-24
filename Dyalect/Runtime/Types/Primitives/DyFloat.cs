@@ -1,7 +1,7 @@
 ﻿using System.IO;
 namespace Dyalect.Runtime.Types;
 
-public sealed class DyFloat : DyObject
+public sealed class DyFloat : DyNumber
 {
     public static readonly DyFloat Zero = new(0D);
     public static readonly DyFloat One = new(1D);
@@ -13,6 +13,8 @@ public sealed class DyFloat : DyObject
     public static readonly DyFloat Max = new(double.MaxValue);
 
     private readonly double value;
+
+    public override string TypeName => DyTypeNames.Float; 
 
     public DyFloat(double value) : base(DyType.Float) =>
         this.value = value;

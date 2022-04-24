@@ -6,7 +6,7 @@ internal sealed class DyFunctionTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-    public override string TypeName => DyTypeNames.Function;
+    public override string ReflectedTypeName => DyTypeNames.Function;
 
     public override int ReflectedTypeId => DyType.Function;
 
