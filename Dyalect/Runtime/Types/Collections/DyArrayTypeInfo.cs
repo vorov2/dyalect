@@ -144,7 +144,7 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
         var comparer = new SortComparer(functor, ctx);
         arr.Compact();
         Array.Sort(arr.UnsafeAccessValues(), 0, arr.Count, comparer);
-        return DyNil.Instance;
+        return Nil;
     }
 
     private DyObject Reverse(ExecutionContext ctx, DyObject self)
@@ -152,7 +152,7 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
         var arr = (DyArray)self;
         arr.Compact();
         Array.Reverse(arr.UnsafeAccessValues());
-        return DyNil.Instance;
+        return Nil;
     }
 
     private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject functor)
@@ -390,11 +390,27 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
         return destArr;
     }
 
+    private DyObject StaticSortBy(ExecutionContext ctx, DyObject self, DyObject functor)
+    {
+        var arr = self;
+
+        if (self.TypeId != DyType.Array)
+        {
+            arr = ctx.RuntimeContext.Types[self.TypeId].Cast(ctx, self, ctx.RuntimeContext.Array);
+
+            if (ctx.HasErrors)
+                return Nil;
+        }
+
+        SortBy(ctx, arr, functor);
+        return arr;
+    }
+
     protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
         name switch
         {
             Method.Array => Func.Static(name, New, 0, new Par("values", true)),
-            Method.Sort => Func.Static(name, SortBy, -1, new Par("values"), new Par("comparer", DyNil.Instance)),
+            Method.Sort => Func.Static(name, StaticSortBy, -1, new Par("values"), new Par("comparer", DyNil.Instance)),
             Method.Empty => Func.Static(name, Empty, -1, new Par("count"), new Par("default", DyNil.Instance)),
             Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
             Method.Copy => Func.Static(name, Copy, -1, new Par("source"),
