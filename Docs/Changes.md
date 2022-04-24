@@ -1,3 +1,6 @@
+# 0.42.0
+  * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).
+
 # 0.42.1
   * Change: _Runtime type system refactoring._
   * Fix: _Methods `Directory.Copy` and `Directory.Move` do not work_ ([Issue #803](https://github.com/vorov2/dyalect/issues/803)).

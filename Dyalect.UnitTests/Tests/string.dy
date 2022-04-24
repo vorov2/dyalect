@@ -245,12 +245,18 @@
     assert("'F'", str[0].ToLiteral())
 #endregion
 
-#region "Conversion: as"
+#region "Conversion: as 1"
     let str = "12"
     assert('1', str as Char)
     assert(12, str as Integer)
     assert(12.0, str as Float)
     assert(true, str as Bool)
+#endregion
+
+#region "Conversion: as 2"
+    let xs = "Hello,world!"
+    let ys = String(values: xs as Set)
+    assert("Helo,wrd!", ys)
 #endregion
 
 #region "Format 1"

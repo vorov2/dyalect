@@ -290,11 +290,16 @@
     }
 #endregion
 
-#region "Conversion: as"
+#region "Conversion: as 1"
     let xs = (1,2,3)
     assert([1,2,3], xs as Array)
     assert("(1, 2, 3)", xs as String)
     assert(true, xs as Bool)
+#endregion
+
+#region "Conversion: as 2"
+    let xs = (1,2,2,3,3)
+    assert((1,2,3), (xs as Array).ToSet().ToTuple())
 #endregion
 
 #region "Tuple as argument"
