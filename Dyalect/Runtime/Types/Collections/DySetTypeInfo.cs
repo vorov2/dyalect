@@ -110,7 +110,7 @@ internal sealed class DySetTypeInfo : DyTypeInfo
         return DyNil.Instance;
     }
     
-    private DyObject Overlaps(ExecutionContext ctx, DyObject self, DyObject value)
+    private DyObject OverlapsWith(ExecutionContext ctx, DyObject self, DyObject value)
     {
         var set = (DySet)self;
         return set.Overlaps(ctx, value) ? DyBool.True : DyBool.False;
@@ -139,7 +139,7 @@ internal sealed class DySetTypeInfo : DyTypeInfo
             Method.ExceptOf => Func.Member(name, ExceptOf, -1, new Par("other")),
             Method.IntersectWith => Func.Member(name, IntersectWith, -1, new Par("other")),
             Method.UnionWith => Func.Member(name, UnionWith, -1, new Par("other")),
-            Method.OverlapsWith => Func.Member(name, Overlaps, -1, new Par("other")),
+            Method.OverlapsWith => Func.Member(name, OverlapsWith, -1, new Par("other")),
             Method.IsSubsetOf => Func.Member(name, IsSubsetOf, -1, new Par("other")),
             Method.IsSupersetOf => Func.Member(name, IsSupersetOf, -1, new Par("other")),
             _ => base.InitializeInstanceMember(self, name, ctx)
