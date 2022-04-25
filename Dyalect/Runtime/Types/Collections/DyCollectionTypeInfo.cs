@@ -1,74 +1,63 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Codegen;
 using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
-internal abstract class DyCollectionTypeInfo : DyTypeInfo
+[GeneratedType]
+internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
 {
     protected DyCollectionTypeInfo() { }
 
-    protected virtual DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
+    [InstanceMethod(Method.Indices)]
+    internal static DyObject GetIndices(DyCollection self)
     {
-        var coll = (DyCollection)self;
-        var arr = coll.GetValues();
-
-        if (!fromElem.IsInteger(ctx)) return Nil;
-        if (toElem.NotNil() && !toElem.IsInteger(ctx)) return Nil;
-
-        var beg = (int)fromElem.GetInteger();
-        var end = ReferenceEquals(toElem, DyNil.Instance) ? coll.Count - 1 : (int)toElem.GetInteger();
-
-        if (beg == 0 && end == coll.Count - 1)
-            return self;
-
-        if (beg < 0)
-            beg = coll.Count + beg;
-
-        if (beg >= coll.Count)
-            return ctx.IndexOutOfRange();
-
-        if (end < 0)
-            end = coll.Count + end - 1;
-
-        if (end >= coll.Count || end < 0)
-            return ctx.IndexOutOfRange();
-
-        var len = end - beg + 1;
-
-        if (len < 0)
-            return ctx.IndexOutOfRange();
-
-        return DyIterator.Create(new DyCollectionEnumerable(arr, beg, len, coll));
-    }
-
-    protected DyObject GetIndices(ExecutionContext ctx, DyObject self)
-    {
-        var arr = (DyCollection)self;
-
         IEnumerable<DyObject> Iterate()
         {
-            for (var i = 0; i < arr.Count; i++)
+            for (var i = 0; i < self.Count; i++)
                 yield return DyInteger.Get(i);
         }
 
         return DyIterator.Create(Iterate());
     }
 
-    private DyObject ToSet(ExecutionContext ctx, DyObject self)
+    [InstanceMethod(Method.Slice)]
+    internal static DyObject GetSlice(ExecutionContext ctx, DyCollection self, int index, [Default]int? size)
     {
-        var vals = ((DyCollection)self).GetValuesIterator();
+        var arr = self.GetValues();
+
+        if (size is null)
+            size = self.Count - 1;
+
+        if (index == 0 && size == arr.Length - 1)
+            return self;
+
+        if (index < 0)
+            index = self.Count + index;
+
+        if (index >= self.Count)
+            return ctx.IndexOutOfRange();
+
+        if (size < 0)
+            size = self.Count + size - 1;
+
+        if (size >= self.Count || size < 0)
+            return ctx.IndexOutOfRange();
+
+        var len = size.Value - index + 1;
+
+        if (len < 0)
+            return ctx.IndexOutOfRange();
+
+        return DyIterator.Create(new DyCollectionEnumerable(arr, index, len, self));
+    }
+
+    [InstanceMethod(Method.ToSet)]
+    internal static DyObject ToSet(ExecutionContext ctx, DyCollection self)
+    {
+        var vals = self.GetValuesIterator();
         var set = new HashSet<DyObject>();
         set.UnionWith(vals);
         return new DySet(set);
     }
-
-    protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Indices => Func.Member(name, GetIndices),
-            Method.Slice => Func.Member(name, GetSlice, -1, new Par("index", DyInteger.Zero), new Par("size", DyNil.Instance)),
-            Method.ToSet => Func.Member(name, ToSet),
-            _ => base.InitializeInstanceMember(self, name, ctx)
-        };
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch

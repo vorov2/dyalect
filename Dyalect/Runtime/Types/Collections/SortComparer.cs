@@ -3,10 +3,10 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class SortComparer : IComparer<DyObject>
 {
-    private readonly DyObject functor;
+    private readonly DyObject? functor;
     private readonly ExecutionContext ctx;
 
-    public SortComparer(DyObject functor, ExecutionContext ctx)
+    public SortComparer(DyObject? functor, ExecutionContext ctx)
     {
         this.functor = functor;
         this.ctx = ctx;
@@ -23,7 +23,7 @@ internal sealed class SortComparer : IComparer<DyObject>
         if (y.TypeId == DyType.Label)
             y = y.GetTaggedValue();
 
-        if (functor.NotNil())
+        if (functor is not null && functor.NotNil())
         {
             var ret = functor.Invoke(ctx, x, y);
             ctx.ThrowIf();

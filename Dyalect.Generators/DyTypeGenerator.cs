@@ -1,8 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
-using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace Dyalect.Generators
 {

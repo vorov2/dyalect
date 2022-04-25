@@ -132,8 +132,29 @@ public class TypeInfoGenerator : SourceGenerator
         { $"{Types.DyObject}", name => $"return {name};"}
     };
 
+    public override void Initialize(GeneratorInitializationContext ctx)
+    {
+        ctx.RegisterForSyntaxNotifications(() => new DyTypeGeneratorSyntaxReceiver());
+    }
+
+    private Dictionary<string, int> standardTypes;
     public override void Execute(GeneratorExecutionContext ctx)
     {
+        var syntaxReceiver = (DyTypeGeneratorSyntaxReceiver)ctx.SyntaxReceiver;
+        var userClass = syntaxReceiver.Class;
+        standardTypes = userClass.Members
+            .OfType<FieldDeclarationSyntax>()
+            .SelectMany(f => f.Declaration.Variables.Select(v => (ctx.Compilation.GetSemanticModel(f.SyntaxTree), v)))
+            .Select(kv => kv.Item1.GetDeclaredSymbol(kv.v))
+            .OfType<IFieldSymbol>()
+            .Where(m => m.IsConst && m.ConstantValue is int)
+            .Select(f => ((int)f.ConstantValue, f.Name))
+            .ToDictionary(kv => $"Dyalect.Runtime.Types.Dy{kv.Name}", kv => kv.Item1);
+        standardTypes.Remove("Comparable");
+        standardTypes.Remove("Collection");
+        standardTypes.Remove("Number");
+        standardTypes.Remove("Bounded");
+
         var xs = FindTypesByAttributes(ctx.Compilation.GlobalNamespace, "GeneratedTypeAttribute");
 
         foreach (var (_, t) in xs)
@@ -157,36 +178,45 @@ public class TypeInfoGenerator : SourceGenerator
 
             if (methods.Count > 0)
             {
+                var instanceMethods = methods.Where(kv => kv.instance).ToList();
+                var staticMethods = methods.Where(kv => !kv.instance).ToList();
+
                 builder.AppendLine();
                 builder.AppendLine($"partial class {t.Name}");
                 builder.StartBlock();
 
-                builder.AppendLine($"protected override {Types.DyFunction} InitializeInstanceMember({Types.DyObject} self, string name, {Types.ExecutionContext} ctx) =>");
-                builder.Indent();
-                builder.AppendLine("name switch");
-                builder.StartBlock();
-                foreach (var (im,_) in methods.Where(kv => kv.instance))
-                    builder.AppendLine($"\"{im}\" => new {t.Name}_{im}_WrapperFunction(),");
-                builder.AppendLine("_ => base.InitializeInstanceMember(self, name, ctx)");
-                builder.Outdent();
-                builder.AppendLine("};");
-                builder.Outdent();
+                if (instanceMethods.Count > 0)
+                {
+                    builder.AppendLine($"protected override {Types.DyFunction} InitializeInstanceMember({Types.DyObject} self, string name, {Types.ExecutionContext} ctx) =>");
+                    builder.Indent();
+                    builder.AppendLine("name switch");
+                    builder.StartBlock();
+                    foreach (var (im, _) in instanceMethods)
+                        builder.AppendLine($"\"{im}\" => new in_{t.Name}_{im}_WrapperFunction(),");
+                    builder.AppendLine("_ => base.InitializeInstanceMember(self, name, ctx)");
+                    builder.Outdent();
+                    builder.AppendLine("};");
+                    builder.Outdent();
+                }
 
-                builder.AppendLine($"protected override {Types.DyFunction} InitializeStaticMember(string name, {Types.ExecutionContext} ctx) =>");
-                builder.Indent();
-                builder.AppendLine("name switch");
-                builder.StartBlock();
-                foreach (var (im,_) in methods.Where(kv => !kv.instance))
-                    builder.AppendLine($"\"{im}\" => new {t.Name}_{im}_WrapperFunction(),");
-                builder.AppendLine("_ => base.InitializeStaticMember(name, ctx)");
-                builder.Outdent();
-                builder.AppendLine("};");
-                builder.Outdent();
+                if (staticMethods.Count > 0)
+                {
+                    builder.AppendLine($"protected override {Types.DyFunction} InitializeStaticMember(string name, {Types.ExecutionContext} ctx) =>");
+                    builder.Indent();
+                    builder.AppendLine("name switch");
+                    builder.StartBlock();
+                    foreach (var (im, _) in staticMethods)
+                        builder.AppendLine($"\"{im}\" => new st_{t.Name}_{im}_WrapperFunction(),");
+                    builder.AppendLine("_ => base.InitializeStaticMember(name, ctx)");
+                    builder.Outdent();
+                    builder.AppendLine("};");
+                    builder.Outdent();
+                }
 
                 builder.EndBlock();
             }
 
-            System.IO.File.WriteAllText($"C:\\temp\\{t.Name}.generated.{DateTime.Now.Ticks}.cs", builder.ToString());
+            //System.IO.File.WriteAllText($"C:\\temp\\{t.Name}.generated.{DateTime.Now.Ticks}.cs", builder.ToString());
             ctx.AddSource($"{t.Name}.generated.cs", builder.ToString());
         }
     }
@@ -228,8 +258,9 @@ public class TypeInfoGenerator : SourceGenerator
     {
         var hasContext = m.Parameters.Length > 0 && m.Parameters[0].Type.ToString() == Types.ExecutionContext;
         var isStatic = (implFlags & MethodFlags.Static) == MethodFlags.Static;
+        var prefix = isStatic ? "st" : "in";
 
-        builder.AppendLine($"internal sealed class {t.Name}_{methodName}_WrapperFunction : {Types.DyForeignFunction}");
+        builder.AppendLine($"internal sealed class {prefix}_{t.Name}_{methodName}_WrapperFunction : {Types.DyForeignFunction}");
         builder.StartBlock();
         builder.AppendLine($"internal override {Types.DyObject} InternalCall({Types.ExecutionContext} ctx, {Types.DyObject}[] args)");
         builder.StartBlock();
@@ -239,6 +270,11 @@ public class TypeInfoGenerator : SourceGenerator
         for (var i = 0; i < m.Parameters.Length; i++)
         {
             var mp = m.Parameters[i];
+            var parName = mp.Name;
+            var parNameAttr = m.Parameters[i].GetAttributes().FirstOrDefault(a => a.AttributeClass.Name == "ParameterNameAttribute");
+
+            if (parNameAttr is not null)
+                parName = parNameAttr.ConstructorArguments[0].Value.ToString();
 
             if (hasContext && i == 0) //First parameter is a context
             {
@@ -270,7 +306,7 @@ public class TypeInfoGenerator : SourceGenerator
             var sourceParName = firstParam && !isStatic ? "Self" : $"args[{i + indexShift}]";
 
             if (isStatic || !firstParam)
-                pars.Add((mp.Name, def, vararg));
+                pars.Add((parName, def, vararg));
 
             var flags = vararg ? ParFlags.VarArg : ParFlags.None;
             if (nullable) flags |= ParFlags.Nullable;
@@ -281,12 +317,17 @@ public class TypeInfoGenerator : SourceGenerator
             {
                 var elementType = arr.ElementType;
                 var res = ParamCheckArray(sourceParName, mp.Name, flags, mp.Type, builder);
-                
+
                 if (!res)
                     return Error(ctx, $"Parameter type \"{typeName}\" is not supported.");
             }
             else if (IsDyObject(mp.Type))
-                ConvertToDyObject(builder, typeName, sourceParName, mp.Name);
+            {
+                if (firstParam && !isStatic)
+                    builder.AppendLine($"var {mp.Name} = ({typeName}){sourceParName};");
+                else
+                    ConvertToDyObject(builder, typeName, sourceParName, mp.Name, nullable);
+            }
             else
                 return Error(ctx, $"Parameter type \"{typeName}\" is not supported.");
         }
@@ -310,7 +351,7 @@ public class TypeInfoGenerator : SourceGenerator
 
         builder.EndBlock();
         builder.AppendLine();
-        builder.AppendLine($"public {t.Name}_{methodName}_WrapperFunction() : base(\"{methodName}\", new {Types.Par}[]{{{pars.ToString($"new {Types.Par}({{0}})", p => $"\"{p.name}\"{(p.vararg ? $", {Types.ParKind}.VarArg" : "")}{(p.def is not null ? $", {(ReferenceEquals(p.def, nil) ? $"{Types.DyNil}.Instance" : p.def)}" : "")}")}}}, {varArgIndex})");
+        builder.AppendLine($"public {prefix}_{t.Name}_{methodName}_WrapperFunction() : base(\"{methodName}\", new {Types.Par}[]{{{pars.ToString($"new {Types.Par}({{0}})", p => $"\"{p.name}\"{(p.vararg ? $", {Types.ParKind}.VarArg" : "")}{(p.def is not null ? $", {(ReferenceEquals(p.def, nil) ? $"{Types.DyNil}.Instance" : p.def)}" : "")}")}}}, {varArgIndex})");
         builder.StartBlock();
 
         if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
@@ -318,25 +359,47 @@ public class TypeInfoGenerator : SourceGenerator
 
         builder.EndBlock();
         builder.AppendLine();
-        builder.AppendLine($"protected override {Types.DyFunction} Clone({Types.ExecutionContext} ctx) => new {t.Name}_{methodName}_WrapperFunction();");
+        builder.AppendLine($"protected override {Types.DyFunction} Clone({Types.ExecutionContext} ctx) => new {prefix}_{t.Name}_{methodName}_WrapperFunction();");
         builder.EndBlock();
 
         return true;
     }
 
-    private void ConvertToDyObject(SourceBuilder builder, string targetType, string oldVar, string newVar = "return")
+    private void ConvertToDyObject(SourceBuilder builder, string targetType, string oldVar, string newVar = "return", bool nullable = false)
     {
         if (newVar != "return")
             builder.AppendLine($"{targetType} {newVar};");
 
-        builder.AppendLine("try");
-        
-        if (newVar != "return")
-            builder.AppendInBlock($"{newVar} = ({targetType}){oldVar};");
-        else
-            builder.AppendInBlock($"return ({targetType}){oldVar};");
+        if (nullable)
+        {
+            builder.AppendLine($"if ({oldVar}.TypeId == {Types.DyType}.Nil)");
+            builder.AppendInBlock(newVar != "return" ? $"{newVar} = null;" : "return null;");
+            builder.AppendLine("else");
+            builder.StartBlock();
+        }
 
-        builder.AppendLine($"catch (System.InvalidCastException)");
-        builder.AppendInBlock($"return ctx.InvalidType({oldVar});");
+        if (standardTypes.TryGetValue(targetType, out var sid))
+        {
+            builder.AppendLine($"if ({oldVar}.TypeId != {sid}) return ctx.InvalidType({oldVar});");
+            if (newVar != "return")
+                builder.AppendLine($"{newVar} = ({targetType}){oldVar};");
+            else
+                builder.AppendLine($"return ({targetType}){oldVar};");
+        }
+        else
+        {
+            builder.AppendLine("try");
+
+            if (newVar != "return")
+                builder.AppendInBlock($"{newVar} = ({targetType}){oldVar};");
+            else
+                builder.AppendInBlock($"return ({targetType}){oldVar};");
+
+            builder.AppendLine($"catch (System.InvalidCastException)");
+            builder.AppendInBlock($"return ctx.InvalidType({oldVar});");
+        }
+
+        if (nullable)
+            builder.EndBlock();
     }
 }

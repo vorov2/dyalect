@@ -733,7 +733,7 @@ public abstract class DyTypeInfo : DyObject
     protected virtual DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) => null;
     #endregion
 
-    protected DyObject Nil => DyNil.Instance;
+    protected static DyObject Nil => DyNil.Instance;
 
     private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();
 

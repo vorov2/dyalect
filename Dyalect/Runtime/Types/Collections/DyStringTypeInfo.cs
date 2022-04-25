@@ -91,7 +91,7 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
     #endregion
 
     #region Instance
-    protected override DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
+    private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
     {
         var str = (DyString)self;
 
@@ -401,6 +401,7 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
             Method.Reverse => Func.Instance<DyString>(name, Reverse),
             Method.ToCharArray => Func.Instance<DyString>(name, ToCharArray),
             Method.Format => Func.Instance<DyString, DyTuple>(name, Format, new("values", ParKind.VarArg)),
+            Method.Slice => Func.Member(name, GetSlice, -1, new Par("index", DyInteger.Zero), new Par("size", DyNil.Instance)), 
             _ => base.InitializeInstanceMember(self, name, ctx),
         };
 
