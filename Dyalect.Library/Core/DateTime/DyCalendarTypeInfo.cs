@@ -13,8 +13,8 @@ namespace Dyalect.Library.Core
 
         private DyObject DaysInMonth(ExecutionContext ctx, DyObject year, DyObject month)
         {
-            if (!year.IsInteger(ctx)) return Default();
-            if (!month.IsInteger(ctx)) return Default();
+            if (!year.IsInteger(ctx)) return Nil;
+            if (!month.IsInteger(ctx)) return Nil;
             return new DyInteger(DateTime.DaysInMonth((int)year.GetInteger(), (int)month.GetInteger()));
         }
 
@@ -36,20 +36,20 @@ namespace Dyalect.Library.Core
 
         private DyObject DaysInYear(ExecutionContext ctx, DyObject year)
         {
-            if (!year.IsInteger(ctx)) return Default();
+            if (!year.IsInteger(ctx)) return Nil;
             return new DyInteger(DateTime.IsLeapYear((int)year.GetInteger()) ? 366 : 365);
         }
 
         private DyObject IsLeapYear(ExecutionContext ctx, DyObject year)
         {
-            if (!year.IsInteger(ctx)) return Default();
+            if (!year.IsInteger(ctx)) return Nil;
             return DateTime.IsLeapYear((int)year.GetInteger()) ? DyBool.True : DyBool.False;
         }
 
         private DyObject ParseDateTime(ExecutionContext ctx, DyObject input, DyObject format)
         {
-            if (input.NotString(ctx)) return Default();
-            if (format.NotString(ctx)) return Default();
+            if (input.NotString(ctx)) return Nil;
+            if (format.NotString(ctx)) return Nil;
             var (ticks, offset) = InputParser.Parse(FormatParser.LocalDateTimeParser, format.GetString(), input.GetString());
             
             if (offset is 0)

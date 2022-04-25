@@ -58,7 +58,7 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
 
     protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
     {
-        if (!field.IsString(ctx)) return Default();
+        if (!field.IsString(ctx)) return Nil;
         var mod = (DyModule)self;
 
         if (!mod.Unit.ExportList.TryGetValue(field.GetString(), out var sv))

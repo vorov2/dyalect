@@ -383,16 +383,16 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
         {
             Method.IndexOf => Func.Instance<DyString, DyStringLike, DyInteger, DyInteger>(name, IndexOf, "value", new("index", 0), new("count", Nil)),
             Method.LastIndexOf => Func.Instance<DyString, DyStringLike, DyInteger, DyInteger>(name, LastIndexOf, "value", new("index", Nil), new("count", Nil)),
-            Method.Split => Func.Instance<DyString, DyTuple>(name, Split, new("separators", true)),
+            Method.Split => Func.Instance<DyString, DyTuple>(name, Split, new("separators", ParKind.VarArg)),
             Method.Upper => Func.Instance<DyString>(name, Upper),
             Method.Lower => Func.Instance<DyString>(name, Lower),
             Method.StartsWith => Func.Instance<DyString, DyStringLike>(name, StartsWith, "value"),
             Method.EndsWith => Func.Instance<DyString, DyStringLike>(name, EndsWith, "value"),
             Method.Substring => Func.Member(name, Substring, -1, new Par("index"), new Par("count", DyNil.Instance)),
             Method.Capitalize => Func.Instance<DyString>(name, Capitalize),
-            Method.Trim => Func.Member(name, Trim, 0, new Par("chars", true)),
-            Method.TrimStart => Func.Member(name, TrimStart, 0, new Par("chars", true)),
-            Method.TrimEnd => Func.Member(name, TrimEnd, 0, new Par("chars", true)),
+            Method.Trim => Func.Member(name, Trim, 0, new Par("chars", ParKind.VarArg)),
+            Method.TrimStart => Func.Member(name, TrimStart, 0, new Par("chars", ParKind.VarArg)),
+            Method.TrimEnd => Func.Member(name, TrimEnd, 0, new Par("chars", ParKind.VarArg)),
             Method.IsEmpty => Func.Member(name, IsEmpty),
             Method.PadLeft => Func.Member(name, PadLeft, -1, new Par("width"), new Par("char", DyChar.WhiteSpace)),
             Method.PadRight => Func.Member(name, PadRight, -1, new Par("width"), new Par("char", DyChar.WhiteSpace)),
@@ -400,7 +400,7 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
             Method.Remove => Func.Member(name, Remove, -1, new Par("index"), new Par("count", DyNil.Instance)),
             Method.Reverse => Func.Instance<DyString>(name, Reverse),
             Method.ToCharArray => Func.Instance<DyString>(name, ToCharArray),
-            Method.Format => Func.Instance<DyString, DyTuple>(name, Format, new("values", true)),
+            Method.Format => Func.Instance<DyString, DyTuple>(name, Format, new("values", ParKind.VarArg)),
             _ => base.InitializeInstanceMember(self, name, ctx),
         };
 
@@ -473,11 +473,11 @@ internal sealed class DyStringTypeInfo : DyCollectionTypeInfo
     protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
         name switch
         {
-            Method.String or Method.Concat => Func.Static<DyTuple>(name, Concat, new("values", true)),
-            Method.Join => Func.Static<DyTuple, DyStringLike>(name, Join, new("values", true), new("separator", ",")),
+            Method.String or Method.Concat => Func.Static<DyTuple>(name, Concat, new("values", ParKind.VarArg)),
+            Method.Join => Func.Static<DyTuple, DyStringLike>(name, Join, new("values", ParKind.VarArg), new("separator", ",")),
             Method.Default => Func.Static(name, _ => DyString.Empty),
             Method.Repeat => Func.Static<DyStringLike, DyInteger>(name, Repeat, "value", "count"),
-            Method.Format => Func.Static<DyString, DyTuple>(name, Format, "template", new("values", true)),
+            Method.Format => Func.Static<DyString, DyTuple>(name, Format, "template", new("values", ParKind.VarArg)),
             _ => base.InitializeStaticMember(name, ctx),
         };
     #endregion

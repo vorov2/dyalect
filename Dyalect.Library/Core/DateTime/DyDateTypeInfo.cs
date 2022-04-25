@@ -13,9 +13,9 @@ public sealed class DyDateTypeInfo : AbstractDateTypeInfo<DyDate>
 
     private DyObject AddTo(ExecutionContext ctx, DyObject self, DyObject years, DyObject months, DyObject days)
     {
-        if (days.NotIntOrNil(ctx)) return Default();
-        if (months.NotIntOrNil(ctx)) return Default();
-        if (years.NotIntOrNil(ctx)) return Default();
+        if (days.NotIntOrNil(ctx)) return Nil;
+        if (months.NotIntOrNil(ctx)) return Nil;
+        if (years.NotIntOrNil(ctx)) return Nil;
         var s = (DyDate)self.Clone();
 
         try
@@ -43,9 +43,9 @@ public sealed class DyDateTypeInfo : AbstractDateTypeInfo<DyDate>
 
     private DyObject New(ExecutionContext ctx, DyObject year, DyObject month, DyObject day)
     {
-        if (year.NotNat(ctx)) return Default();
-        if (month.NotNat(ctx)) return Default();
-        if (day.NotNat(ctx)) return Default();
+        if (year.NotNat(ctx)) return Nil;
+        if (month.NotNat(ctx)) return Nil;
+        if (day.NotNat(ctx)) return Nil;
 
         if (year.GetInteger() == 0) return ctx.InvalidValue(year);
         if (month.GetInteger() == 0) return ctx.InvalidValue(year);

@@ -76,7 +76,7 @@ namespace Dyalect.Library.Core
 
         private DyObject Parse(ExecutionContext ctx, DyObject arg)
         {
-            if (!arg.IsString(ctx)) return Default();
+            if (!arg.IsString(ctx)) return Nil;
 
             try
             {

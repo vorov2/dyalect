@@ -24,7 +24,7 @@ namespace Dyalect.Library.Core
             if (format.IsNil())
                 return new DyString(arg.ToString());
 
-            if (format.NotString(ctx)) return Default();
+            if (format.NotString(ctx)) return Nil;
 
             try
             {
@@ -96,8 +96,8 @@ namespace Dyalect.Library.Core
 
         private DyObject Parse(ExecutionContext ctx, DyObject input, DyObject format)
         {
-            if (input.NotString(ctx)) return Default();
-            if (format.NotString(ctx)) return Default();
+            if (input.NotString(ctx)) return Nil;
+            if (format.NotString(ctx)) return Nil;
 
             try
             {

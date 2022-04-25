@@ -279,7 +279,7 @@ public abstract class DyTypeInfo : DyObject
     protected virtual DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => new DyString(arg.ToString());
     internal string? ToStringDirect(ExecutionContext ctx, DyObject arg)
     {
-        var res = ToStringOp(arg, Default(), ctx);
+        var res = ToStringOp(arg, Nil, ctx);
 
         if (ctx.HasErrors)
             return null;
@@ -300,7 +300,7 @@ public abstract class DyTypeInfo : DyObject
             return retval.TypeId == DyType.String ? retval : DyString.Empty;
         }
 
-        return ToStringOp(arg, Default(), ctx);
+        return ToStringOp(arg, Nil, ctx);
     }
     public DyObject ToStringWithFormat(ExecutionContext ctx, DyObject arg, DyObject format)
     {
@@ -491,7 +491,7 @@ public abstract class DyTypeInfo : DyObject
                     SetBuiltin(ctx, nm, null);
                     Members.Remove(name);
                     StaticMembers.Remove(name);
-                    return Default();
+                    return Nil;
                 }, -1, new Par("name")),
             _ => InitializeStaticMember(name, ctx)
         };
@@ -732,8 +732,6 @@ public abstract class DyTypeInfo : DyObject
 
     protected virtual DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) => null;
     #endregion
-
-    protected DyObject Default() => DyNil.Instance;
 
     protected DyObject Nil => DyNil.Instance;
 

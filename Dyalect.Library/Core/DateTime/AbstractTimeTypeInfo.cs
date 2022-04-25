@@ -25,11 +25,11 @@ namespace Dyalect.Library.Core
 
         protected DyObject CreateNew(ExecutionContext ctx, DyObject days, DyObject hours, DyObject minutes, DyObject sec, DyObject ms)
         {
-            if (days.NotNat(ctx)) return Default();
-            if (hours.NotNat(ctx)) return Default();
-            if (minutes.NotNat(ctx)) return Default();
-            if (sec.NotNat(ctx)) return Default();
-            if (ms.NotNat(ctx)) return Default();
+            if (days.NotNat(ctx)) return Nil;
+            if (hours.NotNat(ctx)) return Nil;
+            if (minutes.NotNat(ctx)) return Nil;
+            if (sec.NotNat(ctx)) return Nil;
+            if (ms.NotNat(ctx)) return Nil;
 
             var totalTicks =
                 days.GetInteger() * TimeSpan.TicksPerDay
@@ -45,7 +45,7 @@ namespace Dyalect.Library.Core
 
         private DyObject FromTicks(ExecutionContext ctx, DyObject ticks)
         {
-            if (ticks.NotNat(ctx)) return Default();
+            if (ticks.NotNat(ctx)) return Nil;
             return Create(ticks.GetInteger());
         }
 

@@ -26,8 +26,8 @@ namespace Dyalect.Library.Core
 
         private DyObject Replace(ExecutionContext ctx, DyObject self, DyObject input, DyObject replacement)
         {
-            if (!input.IsString(ctx)) return Default();
-            if (!replacement.IsString(ctx)) return Default();
+            if (!input.IsString(ctx)) return Nil;
+            if (!replacement.IsString(ctx)) return Nil;
             var rx = ((DyRegex)self).Regex;
 
             try
@@ -43,9 +43,9 @@ namespace Dyalect.Library.Core
 
         private DyObject Split(ExecutionContext ctx, DyObject self, DyObject input, DyObject count, DyObject index)
         {
-            if (!input.IsString(ctx)) return Default();
-            if (count.NotNil() && !count.IsInteger(ctx)) return Default();
-            if (!index.IsInteger(ctx)) return Default();
+            if (!input.IsString(ctx)) return Nil;
+            if (count.NotNil() && !count.IsInteger(ctx)) return Nil;
+            if (!index.IsInteger(ctx)) return Nil;
             var icount = int.MaxValue;
 
             if (count.NotNil())
@@ -78,7 +78,7 @@ namespace Dyalect.Library.Core
 
         private DyObject Match(ExecutionContext ctx, DyObject self, DyObject input, DyObject index, DyObject count)
         {
-            if (!input.IsString(ctx)) return Default();
+            if (!input.IsString(ctx)) return Nil;
             var str = input.GetString();
             var istart = (int)index.GetInteger();
             var ilen = count.TypeId == DyType.Nil ? str.Length : (int)count.GetInteger();
@@ -100,8 +100,8 @@ namespace Dyalect.Library.Core
 
         private DyObject Matches(ExecutionContext ctx, DyObject self, DyObject input, DyObject index)
         {
-            if (!input.IsString(ctx)) return Default();
-            if (!index.IsInteger(ctx)) return Default();
+            if (!input.IsString(ctx)) return Nil;
+            if (!index.IsInteger(ctx)) return Nil;
             var str = input.GetString();
             var idx = (int)index.GetInteger();
             var rx = ((DyRegex)self).Regex;
@@ -120,8 +120,8 @@ namespace Dyalect.Library.Core
 
         private DyObject IsMatch(ExecutionContext ctx, DyObject self, DyObject input, DyObject index)
         {
-            if (!input.IsString(ctx)) return Default();
-            if (!index.IsInteger(ctx)) return Default();
+            if (!input.IsString(ctx)) return Nil;
+            if (!index.IsInteger(ctx)) return Nil;
             var idx = (int)index.GetInteger();
             var str = input.GetString();
 
@@ -153,7 +153,7 @@ namespace Dyalect.Library.Core
 
         private DyObject New(ExecutionContext ctx, DyObject arg, DyObject ignoreCase, DyObject singleline, DyObject multiline, DyObject removeEmptyEntries)
         {
-            if (!arg.IsString(ctx)) return Default();
+            if (!arg.IsString(ctx)) return Nil;
             return new DyRegex(this, arg.GetString(), ignoreCase.IsTrue(), singleline.IsTrue(), multiline.IsTrue(), removeEmptyEntries.IsTrue());
         }
 

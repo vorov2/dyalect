@@ -8,7 +8,7 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyInteropFunction : DyForeignFunction
 {
-    private readonly static Par[] pars = new Par[] { new Par("args", isVarArg: true) };
+    private readonly static Par[] pars = new Par[] { new Par("args", ParKind.VarArg) };
     private readonly string name;
     private readonly Type type;
     private readonly List<MethodInfo> methods;

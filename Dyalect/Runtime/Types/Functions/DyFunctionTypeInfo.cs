@@ -31,7 +31,7 @@ internal sealed class DyFunctionTypeInfo : DyTypeInfo
                     new[] {
                         new DyLabel("name", new DyString(p.Name)),
                         new DyLabel("hasDefault", p.Value is not null ? DyBool.True : DyBool.False),
-                        new DyLabel("default", p.Value != null ? p.Value : DyNil.Instance),
+                        new DyLabel("default", p.Value ?? DyNil.Instance),
                         new DyLabel("varArg", fn.VarArgIndex == i ? DyBool.True : DyBool.False)
                     }
                 );
@@ -84,9 +84,9 @@ internal sealed class DyFunctionTypeInfo : DyTypeInfo
     private DyObject Compose(ExecutionContext ctx, DyObject first, DyObject second)
     {
         var f1 = first.ToFunction(ctx);
-        if (f1 is null) return Default();
+        if (f1 is null) return Nil;
         var f2 = second.ToFunction(ctx);
-        if (f2 is null) return Default();
+        if (f2 is null) return Nil;
         return Func.Compose(f1, f2);
     }
 

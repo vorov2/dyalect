@@ -64,7 +64,7 @@ public sealed class DyDateTimeTypeInfo : AbstractDateTimeTypeInfo<DyDateTime>
 
     private DyObject FromTicks(ExecutionContext ctx, DyObject ticks)
     {
-        if (ticks.NotNat(ctx)) return Default();
+        if (ticks.NotNat(ctx)) return Nil;
         return new DyDateTime(this, ticks.GetInteger());
     }
 

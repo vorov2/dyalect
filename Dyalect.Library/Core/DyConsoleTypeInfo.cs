@@ -27,10 +27,10 @@ namespace Dyalect.Library.Core
             var str = value.ToString(ctx);
 
             if (ctx.HasErrors)
-                return Default();
+                return Nil;
 
-            if (color.NotNil() && !color.IsString(ctx)) return Default();
-            if (backColor.NotNil() && !backColor.IsString(ctx)) return Default();
+            if (color.NotNil() && !color.IsString(ctx)) return Nil;
+            if (backColor.NotNil() && !backColor.IsString(ctx)) return Nil;
 
             var oldColor = Console.ForegroundColor;
             var oldBackColor = Console.BackgroundColor;
@@ -64,7 +64,7 @@ namespace Dyalect.Library.Core
             if (defaultBackColor is null)
                 defaultBackColor = Console.BackgroundColor;
             
-            if (backColor.NotNil() && !backColor.IsString(ctx)) return Default();
+            if (backColor.NotNil() && !backColor.IsString(ctx)) return Nil;
             Console.BackgroundColor = backColor.NotNil() ? GetColor(backColor) : defaultBackColor.Value;
             Console.Clear();
             return DyNil.Instance;
@@ -78,8 +78,8 @@ namespace Dyalect.Library.Core
 
         private DyObject SetCursorPosition(ExecutionContext ctx, DyObject left, DyObject top)
         {
-            if (!left.IsInteger(ctx)) return Default();
-            if (!top.IsInteger(ctx)) return Default();
+            if (!left.IsInteger(ctx)) return Nil;
+            if (!top.IsInteger(ctx)) return Nil;
 
             try
             {
@@ -94,7 +94,7 @@ namespace Dyalect.Library.Core
 
         private DyObject SetTitle(ExecutionContext ctx, DyObject value)
         {
-            if (!value.IsString(ctx)) return Default();
+            if (!value.IsString(ctx)) return Nil;
             Console.Title = value.GetString();
             return DyNil.Instance;
         }

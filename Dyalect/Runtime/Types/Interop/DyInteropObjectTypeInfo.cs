@@ -27,7 +27,7 @@ internal class DyInteropObjectTypeInfo : DyTypeInfo
 
     private DyObject CreateInteropObject(ExecutionContext ctx, DyObject type)
     {
-        if (!type.IsString(ctx)) return Default();
+        if (!type.IsString(ctx)) return Nil;
 
         var typeInfo = Type.GetType(type.GetString(), throwOnError: false);
 
@@ -39,14 +39,14 @@ internal class DyInteropObjectTypeInfo : DyTypeInfo
 
     private DyObject LoadAssembly(ExecutionContext ctx, DyObject assembly)
     {
-        if (!assembly.IsString(ctx)) return Default();
+        if (!assembly.IsString(ctx)) return Nil;
         Assembly.Load(assembly.GetString());
         return DyNil.Instance;
     }
 
     private DyObject LoadAssemblyFromFile(ExecutionContext ctx, DyObject path)
     {
-        if (!path.IsString(ctx)) return Default();
+        if (!path.IsString(ctx)) return Nil;
         Assembly.LoadFrom(path.GetString());
         return DyNil.Instance;
     }
@@ -81,7 +81,7 @@ internal class DyInteropObjectTypeInfo : DyTypeInfo
         if (type is not DyInteropObject obj || obj.Object is not Type t)
             return ctx.InvalidType(type);
 
-        if (!size.IsInteger(ctx)) return Default();
+        if (!size.IsInteger(ctx)) return Nil;
         var arr = Array.CreateInstance(t, (int)size.GetInteger());
         return new DyInteropObject(arr.GetType(), arr);
     }
@@ -94,7 +94,7 @@ internal class DyInteropObjectTypeInfo : DyTypeInfo
         var ret = TypeConverter.ConvertTo(ctx, value, typ);
 
         if (ret is null)
-            return Default();
+            return Nil;
 
         return new DyInteropObject(typ, ret);
     }
@@ -132,8 +132,8 @@ internal class DyInteropObjectTypeInfo : DyTypeInfo
         if (parTypes.NotNil() && coll is null)
             return ctx.InvalidType(parTypes);
 
-        if (!name.IsString(ctx)) return Default();
-        if (!genericParsCount.IsInteger(ctx)) return Default();
+        if (!name.IsString(ctx)) return Nil;
+        if (!genericParsCount.IsInteger(ctx)) return Nil;
 
         var types = coll?.GetValues();
         var (nam, p) = (name.GetString(), genericParsCount.GetInteger());
@@ -162,7 +162,7 @@ internal class DyInteropObjectTypeInfo : DyTypeInfo
         if (type is not DyInteropObject obj || obj.Object is not Type typ)
             return ctx.InvalidType(type);
 
-        if (!name.IsString(ctx)) return Default();
+        if (!name.IsString(ctx)) return Nil;
         var ret = typ.GetField(name.GetString());
         return ret is not null ? new DyInteropObject(typeof(FieldInfo), ret) : DyNil.Instance;
     }
@@ -263,7 +263,7 @@ internal class DyInteropObjectTypeInfo : DyTypeInfo
             _ => GetInteropFunction(self, name, ctx)
         };
 
-    private DyFunction? GetInteropFunction(DyInteropObject self, string name, ExecutionContext ctx)
+    private DyFunction? GetInteropFunction(DyInteropObject self, string name, ExecutionContext _)
     {
         var type = self.Type;
         var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;

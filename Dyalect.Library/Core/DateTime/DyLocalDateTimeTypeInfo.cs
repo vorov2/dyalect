@@ -94,18 +94,18 @@ namespace Dyalect.Library.Core
             var delta = TryGetOffset(ctx, offset);
 
             if (delta is null)
-                return Default();
+                return Nil;
 
             return New(ctx, year, month, day, hour, minute, second, millisecond, delta);
         }
 
         private DyObject FromTicks(ExecutionContext ctx, DyObject ticks, DyObject offset)
         {
-            if (ticks.NotInteger(ctx)) return Default();
+            if (ticks.NotInteger(ctx)) return Nil;
             var delta = TryGetOffset(ctx, offset);
 
             if (delta is null)
-                return Default();
+                return Nil;
 
             return new DyLocalDateTime(this, ticks.GetInteger(), delta);
         }
@@ -129,7 +129,7 @@ namespace Dyalect.Library.Core
 
         private DyObject GetLocalDateTime(ExecutionContext ctx, DyObject dateTime, DyObject timeZone)
         {
-            if (!CheckValues(ctx, dateTime, timeZone)) return Default();
+            if (!CheckValues(ctx, dateTime, timeZone)) return Nil;
             var (dt, td) = (((DyDateTime)dateTime).ToDateTime(), ((DyTimeDelta)timeZone).ToTimeSpan());
             var targetZone = TimeZoneInfo.CreateCustomTimeZone(Guid.NewGuid().ToString(), td, null, null);
             var tzz = timeZone.NotNil() ? targetZone : TimeZoneInfo.Local;
@@ -142,7 +142,7 @@ namespace Dyalect.Library.Core
 
         protected override DyDateTime GetMin(ExecutionContext ctx) => new(this, DateTime.MinValue.Ticks);
 
-        private DyTimeDelta LocalOffset() => new DyTimeDelta(DeclaringUnit.TimeDelta, TimeZoneInfo.Local.BaseUtcOffset);
+        private DyTimeDelta LocalOffset() => new(DeclaringUnit.TimeDelta, TimeZoneInfo.Local.BaseUtcOffset);
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch

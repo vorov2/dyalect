@@ -123,10 +123,16 @@ internal sealed class DyFloatTypeInfo : DyTypeInfo
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
     #endregion
 
+    private DyObject IsMultipleOf(ExecutionContext ctx, DyObject self, DyObject other)
+    {
+        if (other.TypeId != DyType.Float) return ctx.InvalidType(DyType.Float, other);
+        return ((long)self.GetFloat() % (long)other.GetFloat()) == 0 ? DyBool.True : DyBool.False;
+    }
     protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
         name switch 
         {
             Method.IsNaN => Func.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
+            "IsMultipleOf" => Func.Member(name, IsMultipleOf, -1, "other"),
             _ => base.InitializeInstanceMember(self, name, ctx)
         };
 

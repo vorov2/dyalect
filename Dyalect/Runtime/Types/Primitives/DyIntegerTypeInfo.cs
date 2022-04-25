@@ -1,10 +1,10 @@
-﻿using Dyalect.Debug;
+﻿#pragma warning disable IDE0051
 using Dyalect.Runtime.Codegen;
 using System.Globalization;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
-internal sealed class DyIntegerTypeInfo : DyTypeInfo
+internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
@@ -199,19 +199,11 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
     #endregion
 
-    private DyObject IsMultipleOf(ExecutionContext ctx, DyInteger self, DyInteger other) => (self.Value % other.Value) == 0 ? DyBool.True : DyBool.False;
+    [InstanceMethod("IsMultipleOf")]
+    private bool IsMultipleOf(long self, long value) => (self % value) == 0;
 
-    [InstanceMethod(Name = "IsMultipleOf")]
-    private bool IsMultipleOf2(ExecutionContext ctx, long self, long other) { return (self % other) == 0; }
-
-    protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.IsMultipleOf => Func.Instance<DyInteger, DyInteger>(name, IsMultipleOf, "value"),
-            _ => base.InitializeInstanceMember(self, name, ctx)
-        };
-
-    private DyObject Convert(ExecutionContext ctx, DyObject obj)
+    [StaticMethod]
+    private DyObject Integer(ExecutionContext ctx, DyObject obj)
     {
         if (obj.TypeId == DyType.Integer)
             return obj;
@@ -228,7 +220,8 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
         return ctx.InvalidType(DyType.Integer, DyType.Float, obj);
     }
 
-    private DyObject Parse(ExecutionContext ctx, DyObject obj)
+    [StaticMethod]
+    private DyObject Parse(DyObject obj)
     {
         if (obj.TypeId == DyType.Integer)
             return obj;
@@ -243,16 +236,11 @@ internal sealed class DyIntegerTypeInfo : DyTypeInfo
         return DyNil.Instance;
     }
 
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Max => Func.Static(name, _ => DyInteger.Max),
-            Method.Min => Func.Static(name, _ => DyInteger.Min),
-            Method.Default => Func.Static(name, _ => DyInteger.Zero),
-            Method.Parse => Func.Static(name, Parse, -1, new Par("value")),
-            Method.Integer => Func.Static(name, Convert, -1, new Par("value")),
-            _ => base.InitializeStaticMember(name, ctx)
-        };
+    [StaticMethod] DyInteger Max() => DyInteger.Max;
+
+    [StaticMethod] DyInteger Min() => DyInteger.Min;
+
+    [StaticMethod] DyInteger Default() => DyInteger.Zero;
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch

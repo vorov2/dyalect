@@ -14,7 +14,7 @@ namespace Dyalect.Library.IO
 
         private DyObject Exists(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
 
             try
             {
@@ -29,7 +29,7 @@ namespace Dyalect.Library.IO
 
         private DyObject Create(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
 
             try
             {
@@ -48,7 +48,7 @@ namespace Dyalect.Library.IO
 
         private DyObject Delete(ExecutionContext ctx, DyObject path, DyObject recursive)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
 
             try
             {
@@ -67,8 +67,8 @@ namespace Dyalect.Library.IO
 
         private DyObject Move(ExecutionContext ctx, DyObject path, DyObject other)
         {
-            if (!path.IsString(ctx)) return Default();
-            if (!other.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
+            if (!other.IsString(ctx)) return Nil;
 
             try
             {
@@ -87,8 +87,8 @@ namespace Dyalect.Library.IO
 
         private DyObject Copy(ExecutionContext ctx, DyObject path, DyObject other)
         {
-            if (!path.IsString(ctx)) return Default();
-            if (!other.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
+            if (!other.IsString(ctx)) return Nil;
 
             try
             {

@@ -210,7 +210,7 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
 
     private DyObject InsertRange(ExecutionContext ctx, DyObject self, DyObject index, DyObject range)
     {
-        if (!index.IsInteger(ctx)) return Default();
+        if (!index.IsInteger(ctx)) return Nil;
         var arr = (DyArray)self;
         var idx = (int)index.GetInteger();
 
@@ -251,8 +251,8 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
 
     private DyObject RemoveRangeAt(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
     {
-        if (!start.IsInteger(ctx)) return Default();
-        if (len.NotNil() && !len.IsInteger(ctx)) return Default();
+        if (!start.IsInteger(ctx)) return Nil;
+        if (len.NotNil() && !len.IsInteger(ctx)) return Nil;
         var arr = (DyArray)self;
         var sti = (int)start.GetInteger();
 
@@ -409,10 +409,10 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
     protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
         name switch
         {
-            Method.Array => Func.Static(name, New, 0, new Par("values", true)),
+            Method.Array => Func.Static(name, New, 0, new Par("values", ParKind.VarArg)),
             Method.Sort => Func.Static(name, StaticSortBy, -1, new Par("values"), new Par("comparer", DyNil.Instance)),
             Method.Empty => Func.Static(name, Empty, -1, new Par("count"), new Par("default", DyNil.Instance)),
-            Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
+            Method.Concat => Func.Static(name, Concat, 0, new Par("values", ParKind.VarArg)),
             Method.Copy => Func.Static(name, Copy, -1, new Par("source"),
                 new Par("index", DyInteger.Zero), new Par("destination", DyNil.Instance),
                 new Par("destinationIndex", DyInteger.Zero), new Par("count", DyNil.Instance)),

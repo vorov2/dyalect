@@ -68,73 +68,73 @@ namespace Dyalect.Library.IO
         private DyObject ReadAllText(ExecutionContext ctx, DyObject path, DyObject encoding)
         {
             var (enc, spath) = (GetEncoding(ctx, encoding), GetPath(ctx, path));
-            if (ctx.HasErrors) return Default();
+            if (ctx.HasErrors) return Nil;
             return Handle(ctx, () => new DyString(File.ReadAllText(spath!, enc)), path);
         }
 
         private DyObject ReadAllLines(ExecutionContext ctx, DyObject path, DyObject encoding)
         {
             var (enc, spath) = (GetEncoding(ctx, encoding), GetPath(ctx, path));
-            if (ctx.HasErrors) return Default();
+            if (ctx.HasErrors) return Nil;
             return Handle(ctx, () => new DyArray(File.ReadAllLines(spath!, enc).Select(l => new DyString(l)).ToArray()), path);
         }
 
         public DyObject WriteAllText(ExecutionContext ctx, DyObject path, DyObject data, DyObject encoding)
         {
             var (enc, spath) = (GetEncoding(ctx, encoding), GetPath(ctx, path));
-            if (ctx.HasErrors) return Default();
-            if (!data.IsString(ctx)) return Default();
+            if (ctx.HasErrors) return Nil;
+            if (!data.IsString(ctx)) return Nil;
             return Handle(ctx, () =>
             {
                 File.WriteAllText(spath!, data.GetString(), enc);
-                return Default();
+                return Nil;
             }, data);
         }
 
         public DyObject WriteAllLines(ExecutionContext ctx, DyObject path, DyObject data, DyObject encoding)
         {
             var (enc, spath) = (GetEncoding(ctx, encoding), GetPath(ctx, path));
-            if (ctx.HasErrors) return Default();
+            if (ctx.HasErrors) return Nil;
             var seq = DyIterator.ToEnumerable(ctx, data).ToArray();
-            if (ctx.HasErrors) return Default();
+            if (ctx.HasErrors) return Nil;
             var strings = seq.Select(s => s.ToString(ctx).GetString()).ToArray();
-            if (ctx.HasErrors) return Default();
+            if (ctx.HasErrors) return Nil;
             return Handle(ctx, () =>
             {
                 File.WriteAllLines(spath!, strings, enc);
-                return Default();
+                return Nil;
             });
         }
 
         public DyObject ReadAllBytes(ExecutionContext ctx, DyObject path)
         {
             var spath = GetPath(ctx, path);
-            if (ctx.HasErrors) return Default();
+            if (ctx.HasErrors) return Nil;
             return Handle(ctx, () => DeclaringUnit.Core.Value.ByteArray.Create(File.ReadAllBytes(spath!)), path);
         }
 
         public DyObject WriteAllBytes(ExecutionContext ctx, DyObject path, DyObject arr)
         {
             var spath = GetPath(ctx, path);
-            if (ctx.HasErrors) return Default();
+            if (ctx.HasErrors) return Nil;
             if (arr.TypeId != DeclaringUnit.Core.Value.ByteArray.TypeId)
                 return ctx.InvalidType(DeclaringUnit.Core.Value.ByteArray.TypeId, arr);
             return Handle(ctx, () =>
             {
                 File.WriteAllBytes(spath!, ((DyByteArray)arr).GetBytes());
-                return Default();
+                return Nil;
             }, path);
         }
 
         private DyObject FileExists(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             return Handle(ctx, () => File.Exists(path.GetString()) ? DyBool.True : DyBool.False, path);
         }
 
         private DyObject CreateFile(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             return Handle(ctx, () =>
             {
                 File.Create(path.GetString()).Dispose();
@@ -144,7 +144,7 @@ namespace Dyalect.Library.IO
 
         private DyObject DeleteFile(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             return Handle(ctx, () =>
             {
                 var p = path.GetString();
@@ -156,7 +156,7 @@ namespace Dyalect.Library.IO
 
         private DyObject GetAttributes(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             return Handle(ctx, () =>
             {
                 var attr = File.GetAttributes(path.GetString());
@@ -183,7 +183,7 @@ namespace Dyalect.Library.IO
 
         private DyObject SetAttributes(ExecutionContext ctx, DyObject path, DyObject attributes)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             var tup = (DyTuple)attributes;
             return Handle(ctx, () =>
             {
@@ -191,7 +191,7 @@ namespace Dyalect.Library.IO
 
                 foreach (var t in tup)
                 {
-                    if (!t.IsString(ctx)) return Default();
+                    if (!t.IsString(ctx)) return Nil;
 
                     if (!Enum.TryParse<FileAttributes>(t.GetString(), out var fa))
                         return ctx.InvalidValue(t);
@@ -208,8 +208,8 @@ namespace Dyalect.Library.IO
 
         private DyObject CopyFile(ExecutionContext ctx, DyObject source, DyObject destination, DyObject overwrite)
         {
-            if (!source.IsString(ctx)) return Default();
-            if (!destination.IsString(ctx)) return Default();
+            if (!source.IsString(ctx)) return Nil;
+            if (!destination.IsString(ctx)) return Nil;
             return Handle(ctx, () =>
             {
                 File.Copy(source.GetString(), destination.GetString(), overwrite.IsTrue());
@@ -219,8 +219,8 @@ namespace Dyalect.Library.IO
 
         private DyObject MoveFile(ExecutionContext ctx, DyObject source, DyObject destination, DyObject overwrite)
         {
-            if (!source.IsString(ctx)) return Default();
-            if (!destination.IsString(ctx)) return Default();
+            if (!source.IsString(ctx)) return Nil;
+            if (!destination.IsString(ctx)) return Nil;
             return Handle(ctx, () =>
             {
                 File.Move(source.GetString(), destination.GetString(), overwrite.IsTrue());
@@ -230,55 +230,55 @@ namespace Dyalect.Library.IO
 
         private DyObject GetCreationTime(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetCreationTimeUtc(path.GetString()).Ticks), path);
         }
 
         private DyObject SetCreationTime(ExecutionContext ctx, DyObject path, DyObject date)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             if (date.TypeId != DeclaringUnit.Core.Value.DateTime.TypeId)
                 return ctx.InvalidType(date);
             return Handle(ctx, () =>
             {
                 File.SetCreationTimeUtc(path.GetString(), new DateTime(((DyDateTime)date).Ticks));
-                return Default();
+                return Nil;
             }, path);
         }
 
         private DyObject GetLastAccessTime(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetLastAccessTimeUtc(path.GetString()).Ticks), path);
         }
 
         private DyObject SetLastAccessTime(ExecutionContext ctx, DyObject path, DyObject date)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             if (date.TypeId != DeclaringUnit.Core.Value.DateTime.TypeId)
                 return ctx.InvalidType(date);
             return Handle(ctx, () =>
             {
                 File.SetLastAccessTimeUtc(path.GetString(), new DateTime(((DyDateTime)date).Ticks));
-                return Default();
+                return Nil;
             }, path);
         }
 
         private DyObject GetLastWriteTime(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetLastWriteTimeUtc(path.GetString()).Ticks), path);
         }
 
         private DyObject SetLastWriteTime(ExecutionContext ctx, DyObject path, DyObject date)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             if (date.TypeId != DeclaringUnit.Core.Value.DateTime.TypeId)
                 return ctx.InvalidType(date);
             return Handle(ctx, () =>
             {
                 File.SetLastWriteTimeUtc(path.GetString(), new DateTime(((DyDateTime)date).Ticks));
-                return Default();
+                return Nil;
             }, path);
         }
 

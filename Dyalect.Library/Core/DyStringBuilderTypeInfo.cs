@@ -68,8 +68,8 @@ namespace Dyalect.Library.Core
 
         private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject index, DyObject len)
         {
-            if (!index.IsInteger(ctx)) return Default();
-            if (!len.IsInteger(ctx)) return Default();
+            if (!index.IsInteger(ctx)) return Nil;
+            if (!len.IsInteger(ctx)) return Nil;
             var sb = ((DyStringBuilder)self).Builder;
             var i = index.GetInteger();
             var ln = len.GetInteger();
@@ -83,7 +83,7 @@ namespace Dyalect.Library.Core
 
         private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
         {
-            if (!index.IsInteger(ctx)) return Default();
+            if (!index.IsInteger(ctx)) return Nil;
             var sb = ((DyStringBuilder)self).Builder;
 
             var i = index.GetInteger();

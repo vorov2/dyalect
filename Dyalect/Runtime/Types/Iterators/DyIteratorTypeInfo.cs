@@ -23,7 +23,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         var fn = self.GetIterator(ctx)!;
 
         if (ctx.HasErrors)
-            return Default();
+            return Nil;
 
         fn.Reset(ctx);
 
@@ -187,8 +187,8 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         if (ctx.HasErrors)
             return DyNil.Instance;
 
-        if (!fromElem.IsInteger(ctx)) return Default();
-        if (toElem.NotNil() && !toElem.IsInteger(ctx)) return Default();
+        if (!fromElem.IsInteger(ctx)) return Nil;
+        if (toElem.NotNil() && !toElem.IsInteger(ctx)) return Nil;
 
         var beg = (int)fromElem.GetInteger();
         int? count = null;
@@ -347,10 +347,10 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
             functor.Invoke(ctx, o);
 
             if (ctx.HasErrors)
-                return Default();
+                return Nil;
         }
 
-        return Default();
+        return Nil;
     }
 
     private DyObject ToSet(ExecutionContext ctx, DyObject self)
@@ -358,7 +358,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         var seq = DyIterator.ToEnumerable(ctx, self);
         
         if (ctx.HasErrors)
-            return Default();
+            return Nil;
 
         var set = new HashSet<DyObject>();
         set.UnionWith(seq);
@@ -370,7 +370,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         var seq = DyIterator.ToEnumerable(ctx, self);
 
         if (ctx.HasErrors)
-            return Default();
+            return Nil;
 
         IEnumerable<DyObject> res;
 
@@ -485,7 +485,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
     protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
         name switch
         {
-            Method.Iterator or Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
+            Method.Iterator or Method.Concat => Func.Static(name, Concat, 0, new Par("values", ParKind.VarArg)),
             Method.Range => Func.Static(name, MakeRange, -1, new Par("start", DyInteger.Zero), new Par("end", DyNil.Instance),
                 new Par("step", DyInteger.One), new Par("exclusive", DyBool.False)),
             Method.Empty => Func.Static(name, Empty),

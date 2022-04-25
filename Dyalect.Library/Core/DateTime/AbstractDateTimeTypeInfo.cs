@@ -24,14 +24,14 @@ public abstract class AbstractDateTimeTypeInfo<T> : AbstractDateTypeInfo<T>
     private DyObject AddTo(ExecutionContext ctx, DyObject self, DyObject years, DyObject months, DyObject days,
          DyObject hrs, DyObject min, DyObject sec, DyObject ms, DyObject ticks)
     {
-        if (ticks.NotIntOrNil(ctx)) return Default();
-        if (ms.NotIntOrNil(ctx)) return Default();
-        if (sec.NotIntOrNil(ctx)) return Default();
-        if (min.NotIntOrNil(ctx)) return Default();
-        if (hrs.NotIntOrNil(ctx)) return Default();
-        if (days.NotIntOrNil(ctx)) return Default();
-        if (months.NotIntOrNil(ctx)) return Default();
-        if (years.NotIntOrNil(ctx)) return Default();
+        if (ticks.NotIntOrNil(ctx)) return Nil;
+        if (ms.NotIntOrNil(ctx)) return Nil;
+        if (sec.NotIntOrNil(ctx)) return Nil;
+        if (min.NotIntOrNil(ctx)) return Nil;
+        if (hrs.NotIntOrNil(ctx)) return Nil;
+        if (days.NotIntOrNil(ctx)) return Nil;
+        if (months.NotIntOrNil(ctx)) return Nil;
+        if (years.NotIntOrNil(ctx)) return Nil;
         var s = (T)self.Clone();
 
         try
@@ -72,13 +72,13 @@ public abstract class AbstractDateTimeTypeInfo<T> : AbstractDateTypeInfo<T>
 
     protected DyObject New(ExecutionContext ctx, DyObject year, DyObject month, DyObject day, DyObject hour, DyObject minute, DyObject second, DyObject millisecond, DyObject? offset = null)
     {
-        if (year.NotInteger(ctx)) return Default();
-        if (month.NotInteger(ctx)) return Default();
-        if (day.NotInteger(ctx)) return Default();
-        if (hour.NotInteger(ctx)) return Default();
-        if (minute.NotInteger(ctx)) return Default();
-        if (second.NotInteger(ctx)) return Default();
-        if (millisecond.NotInteger(ctx)) return Default();
+        if (year.NotInteger(ctx)) return Nil;
+        if (month.NotInteger(ctx)) return Nil;
+        if (day.NotInteger(ctx)) return Nil;
+        if (hour.NotInteger(ctx)) return Nil;
+        if (minute.NotInteger(ctx)) return Nil;
+        if (second.NotInteger(ctx)) return Nil;
+        if (millisecond.NotInteger(ctx)) return Nil;
 
         if (offset is not null && offset is not DyTimeDelta)
             return ctx.InvalidType(DeclaringUnit.TimeDelta.ReflectedTypeId, offset);

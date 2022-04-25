@@ -11,8 +11,8 @@ internal abstract class DyCollectionTypeInfo : DyTypeInfo
         var coll = (DyCollection)self;
         var arr = coll.GetValues();
 
-        if (!fromElem.IsInteger(ctx)) return Default();
-        if (toElem.NotNil() && !toElem.IsInteger(ctx)) return Default();
+        if (!fromElem.IsInteger(ctx)) return Nil;
+        if (toElem.NotNil() && !toElem.IsInteger(ctx)) return Nil;
 
         var beg = (int)fromElem.GetInteger();
         var end = ReferenceEquals(toElem, DyNil.Instance) ? coll.Count - 1 : (int)toElem.GetInteger();

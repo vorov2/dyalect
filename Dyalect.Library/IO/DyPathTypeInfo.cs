@@ -15,41 +15,41 @@ namespace Dyalect.Library.IO
 
         private DyObject GetFullPath(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             return new DyString(Path.GetFullPath(path.GetString()));
         }
 
         private DyObject GetParentDirectory(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             var dir = Path.GetDirectoryName(path.GetString());
             return dir is null ? DyNil.Instance : new DyString(dir);
         }
 
         private DyObject GetExtension(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             var dir = Path.GetExtension(path.GetString());
             return dir is null ? DyNil.Instance : new DyString(dir);
         }
 
         private DyObject GetFileName(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             var dir = Path.GetFileName(path.GetString());
             return dir is null ? DyNil.Instance : new DyString(dir);
         }
 
         private DyObject GetPathRoot(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             var dir = Path.GetPathRoot(path.GetString());
             return dir is null ? DyNil.Instance : new DyString(dir);
         }
 
         private DyObject PathExists(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
 
             try
             {
@@ -64,15 +64,15 @@ namespace Dyalect.Library.IO
 
         private DyObject GetFileNameWithoutExtension(ExecutionContext ctx, DyObject path)
         {
-            if (!path.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
             var dir = Path.GetFileNameWithoutExtension(path.GetString());
             return dir is null ? DyNil.Instance : new DyString(dir);
         }
 
         private DyObject Combine(ExecutionContext ctx, DyObject path1, DyObject path2)
         {
-            if (!path1.IsString(ctx)) return Default();
-            if (!path2.IsString(ctx)) return Default();
+            if (!path1.IsString(ctx)) return Nil;
+            if (!path2.IsString(ctx)) return Nil;
             string dir;
             
             try
@@ -89,8 +89,8 @@ namespace Dyalect.Library.IO
 
         private DyObject EnumerateFiles(ExecutionContext ctx, DyObject path, DyObject mask)
         {
-            if (!path.IsString(ctx)) return Default();
-            if (mask.NotNil() && !mask.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
+            if (mask.NotNil() && !mask.IsString(ctx)) return Nil;
             
             try
             {
@@ -111,8 +111,8 @@ namespace Dyalect.Library.IO
 
         private DyObject EnumerateDirectories(ExecutionContext ctx, DyObject path, DyObject mask)
         {
-            if (!path.IsString(ctx)) return Default();
-            if (mask.NotNil() && !mask.IsString(ctx)) return Default();
+            if (!path.IsString(ctx)) return Nil;
+            if (mask.NotNil() && !mask.IsString(ctx)) return Nil;
 
             try
             {

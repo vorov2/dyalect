@@ -62,7 +62,7 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
 
     protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
     {
-        if (!field.IsString(ctx)) return Default();
+        if (!field.IsString(ctx)) return Nil;
         return ((DyTuple)self).GetOrdinal(field.GetString()) is not -1 ? DyBool.True : DyBool.False;
     }
 
@@ -307,7 +307,7 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
             Method.ToDictionary => Func.Member(name, ToDictionary),
             Method.ToArray => Func.Member(name, ToArray),
             Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
-            Method.Alter => Func.Member(name, Alter, 0, new Par("values", true)),
+            Method.Alter => Func.Member(name, Alter, 0, new Par("values", ParKind.VarArg)),
             _ => base.InitializeInstanceMember(self, name, ctx)
         };
 
@@ -325,7 +325,7 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
             Method.Sort => Func.Static(name, SortBy, -1, new Par("value"), new Par("comparer", DyNil.Instance)),
             Method.Pair => Func.Static(name, GetPair, -1, new Par("first"), new Par("second")),
             Method.Triple => Func.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
-            Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
+            Method.Concat => Func.Static(name, Concat, 0, new Par("values", ParKind.VarArg)),
             Method.Tuple => Func.Static(name, MakeNew, 0, new Par("values")),
             _ => base.InitializeStaticMember(name, ctx)
         };
