@@ -1,9 +1,11 @@
 ﻿using Dyalect.Debug;
 using System.Collections.Generic;
 using System.Text;
+using Dyalect.Codegen;
 namespace Dyalect.Runtime.Types;
 
-internal sealed class DyDictionaryTypeInfo : DyTypeInfo
+[GeneratedType]
+internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
 {
     public override string ReflectedTypeName => nameof(DyType.Dictionary);
 
@@ -71,63 +73,56 @@ internal sealed class DyDictionaryTypeInfo : DyTypeInfo
         return DyNil.Instance;
     }
 
-    private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject key, DyObject value)
+    [InstanceMethod(Method.Add)]
+    internal static void AddItem(ExecutionContext ctx, DyDictionary self, DyObject key, DyObject value)
     {
-        var map = (DyDictionary)self;
-        if (!map.TryAdd(key, value))
-            return ctx.KeyAlreadyPresent(key);
-        return DyNil.Instance;
+        if (!self.TryAdd(key, value))
+            ctx.KeyAlreadyPresent(key);
     }
 
-    private DyObject TryAddItem(ExecutionContext ctx, DyObject self, DyObject key, DyObject value)
+    [InstanceMethod(Method.TryAdd)]
+    internal static bool TryAddItem(DyDictionary self, DyObject key, DyObject value) => 
+        self.TryAdd(key, value);
+
+    [InstanceMethod(Method.TryGet)]
+    internal static DyObject? TryGetItem(DyDictionary self, DyObject key)
     {
-        var map = (DyDictionary)self;
-        if (!map.TryAdd(key, value))
-            return DyBool.False;
-        return DyBool.True;
+        if (!self.TryGet(key, out var value))
+            return null;
+        return value;
     }
 
-    private DyObject TryGetItem(ExecutionContext ctx, DyObject self, DyObject key)
+    [InstanceMethod(Method.Remove)]
+    internal static bool RemoveItem(DyDictionary self, DyObject key) =>
+        self.Remove(key);
+
+    [InstanceMethod(Method.Clear)]
+    internal static void ClearItems(DyDictionary self) => self.Clear();
+
+    [InstanceMethod(Method.ToTuple)]
+    internal static DyObject ToTuple(DyObject self) => new DyTuple(GetArray(self));
+
+    [InstanceMethod(Method.Compact)]
+    internal static void Compact(ExecutionContext ctx, DyDictionary self, [Default]DyObject predicate)
     {
-        var map = (DyDictionary)self;
-        if (!map.TryGet(key, out var value))
-            return DyNil.Instance;
-        return value!;
-    }
-
-    private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject key) =>
-        ((DyDictionary)self).Remove(key) ? DyBool.True : DyBool.False;
-
-    private DyObject ClearItems(ExecutionContext ctx, DyObject self)
-    {
-        ((DyDictionary)self).Clear();
-        return DyNil.Instance;
-    }
-
-    private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject functor)
-    {
-        var map = (DyDictionary)self;
-
-        foreach (var (key, value) in map.Dictionary)
+        foreach (var (key, value) in self.Dictionary)
         {
-            if (functor.NotNil())
+            if (predicate is not null)
             {
-                var res = functor.Invoke(ctx, value);
+                var res = predicate.Invoke(ctx, value);
 
                 if (ctx.HasErrors)
-                    return DyNil.Instance;
+                    return;
 
                 if (ReferenceEquals(res, DyBool.True))
-                    map.Dictionary.Remove(key);
+                    self.Dictionary.Remove(key);
             }
             else if (ReferenceEquals(value, DyNil.Instance))
-                map.Dictionary.Remove(key);
+                self.Dictionary.Remove(key);
         }
-
-        return DyNil.Instance;
     }
 
-    private DyObject[] GetArray(DyObject self)
+    private static DyObject[] GetArray(DyObject self)
     {
         var map = ((DyDictionary)self).Dictionary;
         var xs = new List<DyLabel>();
@@ -141,61 +136,33 @@ internal sealed class DyDictionaryTypeInfo : DyTypeInfo
         return xs.ToArray();
     }
 
-    private DyObject ToTuple(ExecutionContext ctx, DyObject self) => new DyTuple(GetArray(self));
+    [InstanceMethod(Method.ContainsValue)]
+    internal static bool ContainsValue(DyDictionary self, DyObject value) =>
+        self.ContainsValue(value);
+    
+    [InstanceMethod(Method.GetAndRemove)]
+    internal static DyObject GetAndRemove(DyDictionary self, DyObject key) =>
+        self.GetAndRemove(key);
 
-    private DyObject ContainsValue(ExecutionContext ctx, DyObject self, DyObject value)
+    [StaticMethod(Method.Dictionary)]
+    internal static DyObject New(ExecutionContext ctx, [VarArg]DyTuple values)
     {
-        var map = (DyDictionary)self;
-        return map.ContainsValue(value) ? DyBool.True : DyBool.False;
-    }
-
-    private DyObject GetAndRemove(ExecutionContext ctx, DyObject self, DyObject key)
-    {
-        var map = (DyDictionary)self;
-        return map.GetAndRemove(key);
-    }
-
-    protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx)
-    {
-        return name switch
-        {
-            Method.Add => Func.Member(name, AddItem, -1, new Par("key"), new Par("value")),
-            Method.TryAdd => Func.Member(name, TryAddItem, -1, new Par("key"), new Par("value")),
-            Method.TryGet => Func.Member(name, TryGetItem, -1, new Par("key")),
-            Method.Remove => Func.Member(name, RemoveItem, -1, new Par("key")),
-            Method.Clear => Func.Member(name, ClearItems),
-            Method.ToTuple => Func.Member(name, ToTuple),
-            Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
-            Method.ContainsValue => Func.Member(name, ContainsValue, -1, new Par("value")),
-            Method.GetAndRemove => Func.Member(name, GetAndRemove, -1, new Par("value")),
-            _ => base.InitializeInstanceMember(self, name, ctx),
-        };
-    }
-
-    private DyObject New(ExecutionContext ctx, DyObject values)
-    {
-        if (ReferenceEquals(values, DyNil.Instance))
+        if (values.Count == 0)
             return new DyDictionary();
 
-        var xs = (DyTuple)values;
-
-        if (xs.Count == 1)
+        if (values.Count == 1)
         {
-            var el = xs.GetValue(0);
+            var el = values.GetValue(0);
 
             if (el is DyTuple t)
                 return new DyDictionary(t.ConvertToDictionary(ctx));
         }
 
-        return new DyDictionary(xs.ConvertToDictionary(ctx));
+        return new DyDictionary(values.ConvertToDictionary(ctx));
     }
 
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Dictionary or Method.FromTuple => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
-            _ => base.InitializeStaticMember(name, ctx)
-        };
+    [StaticMethod(Method.FromTuple)]
+    internal static DyObject FromTuple(ExecutionContext ctx, [VarArg]DyTuple values) => New(ctx, values);
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch

@@ -527,7 +527,7 @@ public static partial class DyMachine
                             ctx.PushArguments(
                                 locals: callFun.CreateLocals(ctx),
                                 varArgsIndex: callFun.VarArgIndex,
-                                varArgs: op.Data == 0 ? Array.Empty<DyObject>() : new DyObject[op.Data]
+                                varArgs: op.Data == 0 ? null : new DyObject[op.Data]
                             );
                         }
                     }

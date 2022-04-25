@@ -18,6 +18,12 @@ namespace Dyalect.Debug
 
         public Par(string name, ParKind kind) => (Name, Value, IsVarArg, TypeAnnotation) = (name, null, kind == ParKind.VarArg, null);
 
+        public Par(string name, ParKind kind, DyObject? value)
+        {
+            value ??= DyNil.Instance;
+            (Name, Value, IsVarArg, TypeAnnotation) = (name, value, kind == ParKind.VarArg, null);
+        }
+
         public Par(string name, DyObject? value)
         {
             value ??= DyNil.Instance;

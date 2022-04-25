@@ -82,15 +82,11 @@ public class TypeInfoGenerator : SourceGenerator
         {
             sb.AppendLine($"var __{par} = {getValues}");
             sb.AppendLine($"var {par} = new {ati.ElementType}[__{par}.Length];");
-            sb.AppendLine("try");
-            sb.AppendLine("{");
-            sb.Indent();
             sb.AppendLine($"for (var __index = 0; __index < __{par}.Length; __index++)");
-            sb.AppendInBlock($"{par}[__index] = ({ati.ElementType})__{par}[__index];");
-            sb.Outdent();
-            sb.AppendLine("}");
-            sb.AppendLine($"catch ({Types.InvalidCastException})"); 
-            sb.AppendInBlock($"return ctx.InvalidType({input});");
+            sb.StartBlock();
+            sb.AppendLine($"if (__{par}[__index] is not {ati.ElementType} __et) return ctx.InvalidType({input});");
+            sb.AppendLine($"{par}[__index] = __et;");
+            sb.EndBlock();
             return true;
         }
 
@@ -129,7 +125,7 @@ public class TypeInfoGenerator : SourceGenerator
         { "single?", name => $"return new {name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyFloat}({name});" },
         { "bool", name => $"return {name} ? {Types.DyBool}.True : {Types.DyBool}.False;" },
         { "bool?", name => $"return {name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : ({name} ? {Types.DyBool}.True : {Types.DyBool}.False);" },
-        { $"{Types.DyObject}", name => $"return {name};"}
+        { $"{Types.DyObject}", name => $"return {name} ?? {Types.DyNil}.Instance;"}
     };
 
     public override void Initialize(GeneratorInitializationContext ctx)
@@ -137,24 +133,8 @@ public class TypeInfoGenerator : SourceGenerator
         ctx.RegisterForSyntaxNotifications(() => new DyTypeGeneratorSyntaxReceiver());
     }
 
-    private Dictionary<string, int> standardTypes;
     public override void Execute(GeneratorExecutionContext ctx)
     {
-        var syntaxReceiver = (DyTypeGeneratorSyntaxReceiver)ctx.SyntaxReceiver;
-        var userClass = syntaxReceiver.Class;
-        standardTypes = userClass.Members
-            .OfType<FieldDeclarationSyntax>()
-            .SelectMany(f => f.Declaration.Variables.Select(v => (ctx.Compilation.GetSemanticModel(f.SyntaxTree), v)))
-            .Select(kv => kv.Item1.GetDeclaredSymbol(kv.v))
-            .OfType<IFieldSymbol>()
-            .Where(m => m.IsConst && m.ConstantValue is int)
-            .Select(f => ((int)f.ConstantValue, f.Name))
-            .ToDictionary(kv => $"Dyalect.Runtime.Types.Dy{kv.Name}", kv => kv.Item1);
-        standardTypes.Remove("Comparable");
-        standardTypes.Remove("Collection");
-        standardTypes.Remove("Number");
-        standardTypes.Remove("Bounded");
-
         var xs = FindTypesByAttributes(ctx.Compilation.GlobalNamespace, "GeneratedTypeAttribute");
 
         foreach (var (_, t) in xs)
@@ -216,7 +196,7 @@ public class TypeInfoGenerator : SourceGenerator
                 builder.EndBlock();
             }
 
-            //System.IO.File.WriteAllText($"C:\\temp\\{t.Name}.generated.{DateTime.Now.Ticks}.cs", builder.ToString());
+            System.IO.File.WriteAllText($"C:\\temp\\{t.Name}.generated.{DateTime.Now.Ticks}.cs", builder.ToString());
             ctx.AddSource($"{t.Name}.generated.cs", builder.ToString());
         }
     }
@@ -334,14 +314,19 @@ public class TypeInfoGenerator : SourceGenerator
 
         if (m.ReturnType.ToString() != "void")
         {
+            var returnTypeName = m.ReturnType.ToString();
+
+            if (m.ReturnType.NullableAnnotation == NullableAnnotation.Annotated && m.ReturnType.IsReferenceType)
+                returnTypeName = m.ReturnType.OriginalDefinition.ToString();
+
             builder.AppendLine($"var __ret = {t.Name}.{m.Name}({m.Parameters.ToString("{0}", p => p.Name)});");
 
-            if (returnTypeConversions.TryGetValue(m.ReturnType.ToString(), out var conv2))
+            if (returnTypeConversions.TryGetValue(returnTypeName, out var conv2))
                 builder.AppendLine(conv2("__ret"));
             else if (IsDyObject(m.ReturnType))
                 builder.AppendLine("return __ret;");
             else
-                return Error(ctx, $"Return type \"{m.ReturnType}\" is not supported.");
+                return Error(ctx, $"Return type \"{returnTypeName}\" is not supported.");
         }
         else
         {
@@ -365,41 +350,19 @@ public class TypeInfoGenerator : SourceGenerator
         return true;
     }
 
-    private void ConvertToDyObject(SourceBuilder builder, string targetType, string oldVar, string newVar = "return", bool nullable = false)
+    private void ConvertToDyObject(SourceBuilder builder, string targetType, string oldVar, string newVar, bool nullable = false)
     {
-        if (newVar != "return")
-            builder.AppendLine($"{targetType} {newVar};");
-
-        if (nullable)
+        if (!nullable)
         {
-            builder.AppendLine($"if ({oldVar}.TypeId == {Types.DyType}.Nil)");
-            builder.AppendInBlock(newVar != "return" ? $"{newVar} = null;" : "return null;");
-            builder.AppendLine("else");
-            builder.StartBlock();
+            builder.AppendLine($"if ({oldVar} is not {targetType} {newVar}) return ctx.InvalidType({oldVar});");
+            return;
         }
 
-        if (standardTypes.TryGetValue(targetType, out var sid))
-        {
-            builder.AppendLine($"if ({oldVar}.TypeId != {sid}) return ctx.InvalidType({oldVar});");
-            if (newVar != "return")
-                builder.AppendLine($"{newVar} = ({targetType}){oldVar};");
-            else
-                builder.AppendLine($"return ({targetType}){oldVar};");
-        }
-        else
-        {
-            builder.AppendLine("try");
-
-            if (newVar != "return")
-                builder.AppendInBlock($"{newVar} = ({targetType}){oldVar};");
-            else
-                builder.AppendInBlock($"return ({targetType}){oldVar};");
-
-            builder.AppendLine($"catch (System.InvalidCastException)");
-            builder.AppendInBlock($"return ctx.InvalidType({oldVar});");
-        }
-
-        if (nullable)
-            builder.EndBlock();
+        builder.AppendLine($"{targetType} {newVar} = default;");
+        builder.AppendLine($"if ({oldVar}.TypeId != {Types.DyType}.Nil)");
+        builder.StartBlock();
+        builder.AppendLine($"if ({oldVar} is not {targetType} __tmp_{newVar}) return ctx.InvalidType({oldVar});");
+        builder.AppendLine($"{newVar} = __tmp_{newVar};");
+        builder.EndBlock();
     }
 }
