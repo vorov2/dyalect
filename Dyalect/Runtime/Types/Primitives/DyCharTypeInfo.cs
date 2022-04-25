@@ -1,8 +1,9 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Codegen;
 using Dyalect.Parser;
 namespace Dyalect.Runtime.Types;
 
-internal sealed class DyCharTypeInfo : DyTypeInfo
+[GeneratedType]
+internal sealed partial class DyCharTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -98,51 +99,52 @@ internal sealed class DyCharTypeInfo : DyTypeInfo
     }
     #endregion
 
-    protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.IsLower => Func.Member(name, (_, c) => char.IsLower(c.GetChar()) ? DyBool.True : DyBool.False),
-            Method.IsUpper => Func.Member(name, (_, c) => char.IsUpper(c.GetChar()) ? DyBool.True : DyBool.False),
-            Method.IsControl => Func.Member(name, (_, c) => char.IsControl(c.GetChar()) ? DyBool.True : DyBool.False),
-            Method.IsDigit => Func.Member(name, (_, c) => char.IsDigit(c.GetChar())? DyBool.True : DyBool.False),
-            Method.IsLetter => Func.Member(name, (_, c) => char.IsLetter(c.GetChar())? DyBool.True : DyBool.False),
-            Method.IsLetterOrDigit => Func.Member(name, (_, c) => char.IsLetterOrDigit(c.GetChar())? DyBool.True : DyBool.False),
-            Method.IsWhiteSpace => Func.Member(name, (_, c) => char.IsWhiteSpace(c.GetChar())? DyBool.True : DyBool.False),
-            Method.Lower => Func.Member(name, (_, c) => new DyChar(char.ToLower(c.GetChar()))),
-            Method.Upper => Func.Member(name, (_, c) => new DyChar(char.ToUpper(c.GetChar()))),
-            Method.Order => Func.Member(name, (_, c) => DyInteger.Get(c.GetChar())),
-            _ => base.InitializeInstanceMember(self, name, ctx),
-        };
+    [InstanceMethod] internal static bool IsLower(char self) => char.IsLower(self);
+    
+    [InstanceMethod] internal static bool IsUpper(char self) => char.IsUpper(self);
+    
+    [InstanceMethod] internal static bool IsControl(char self) => char.IsControl(self);
+    
+    [InstanceMethod] internal static bool IsDigit(char self) => char.IsDigit(self);
+    
+    [InstanceMethod] internal static bool IsLetter(char self) => char.IsLetter(self);
+    
+    [InstanceMethod] internal static bool IsLetterOrDigit(char self) => char.IsLetterOrDigit(self);
+    
+    [InstanceMethod] internal static bool IsWhiteSpace(char self) => char.IsWhiteSpace(self);
+    
+    [InstanceMethod] internal static char Lower(char self) => char.ToLower(self);
+    
+    [InstanceMethod] internal static char Upper(char self) => char.ToUpper(self);
 
-    private DyObject CreateChar(ExecutionContext ctx, DyObject obj)
+    [InstanceMethod] internal static int Order(char self) => self;
+
+    [StaticMethod("Char")]
+    internal static DyObject CreateChar(ExecutionContext ctx, DyObject value)
     {
-        if (obj.TypeId == DyType.Char)
-            return obj;
+        if (value.TypeId == DyType.Char)
+            return value;
 
-        if (obj.TypeId == DyType.String)
+        if (value.TypeId == DyType.String)
         {
-            var str = obj.ToString();
+            var str = value.ToString();
             return str is not null && str.Length > 0 ? new(str[0]) : DyChar.Empty;
         }
 
-        if (obj.TypeId == DyType.Integer)
-            return new DyChar((char)obj.GetInteger());
+        if (value.TypeId == DyType.Integer)
+            return new DyChar((char)value.GetInteger());
 
-        if (obj.TypeId == DyType.Float)
-            return new DyChar((char)obj.GetFloat());
+        if (value.TypeId == DyType.Float)
+            return new DyChar((char)value.GetFloat());
 
-        return ctx.InvalidCast(obj.GetTypeInfo(ctx).ReflectedTypeName, ReflectedTypeName);
+        return ctx.InvalidCast(value.GetTypeInfo(ctx).ReflectedTypeName, nameof(DyType.Char));
     }
 
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Max => Func.Static(name, _ => DyChar.Max),
-            Method.Min => Func.Static(name, _ => DyChar.Min),
-            Method.Default => Func.Static(name, _ => DyChar.Empty),
-            Method.Char => Func.Static(name, CreateChar, -1, new Par("value")),
-            _ => base.InitializeStaticMember(name, ctx)
-        };
+    [StaticMethod] internal static DyChar Max() => DyChar.Max;
+    
+    [StaticMethod] internal static DyChar Min() => DyChar.Min;
+
+    [StaticMethod] internal static DyChar Default() => DyChar.Empty;
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch

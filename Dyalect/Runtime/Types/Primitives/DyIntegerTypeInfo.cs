@@ -1,5 +1,4 @@
-﻿#pragma warning disable IDE0051
-using Dyalect.Runtime.Codegen;
+﻿using Dyalect.Codegen;
 using System.Globalization;
 namespace Dyalect.Runtime.Types;
 
@@ -200,10 +199,10 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
     #endregion
 
     [InstanceMethod("IsMultipleOf")]
-    private bool IsMultipleOf(long self, long value) => (self % value) == 0;
+    internal static bool IsMultipleOf(long self, long value) => (self % value) == 0;
 
     [StaticMethod]
-    private DyObject Integer(ExecutionContext ctx, DyObject obj)
+    internal static DyObject Integer(ExecutionContext ctx, DyObject obj)
     {
         if (obj.TypeId == DyType.Integer)
             return obj;
@@ -221,7 +220,7 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
     }
 
     [StaticMethod]
-    private DyObject Parse(DyObject obj)
+    internal static DyObject Parse(DyObject obj)
     {
         if (obj.TypeId == DyType.Integer)
             return obj;
@@ -236,11 +235,11 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
         return DyNil.Instance;
     }
 
-    [StaticMethod] DyInteger Max() => DyInteger.Max;
+    [StaticMethod] internal static DyInteger Max() => DyInteger.Max;
 
-    [StaticMethod] DyInteger Min() => DyInteger.Min;
+    [StaticMethod] internal static DyInteger Min() => DyInteger.Min;
 
-    [StaticMethod] DyInteger Default() => DyInteger.Zero;
+    [StaticMethod] internal static DyInteger Default() => DyInteger.Zero;
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch

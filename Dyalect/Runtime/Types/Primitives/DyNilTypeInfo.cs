@@ -1,6 +1,8 @@
-﻿namespace Dyalect.Runtime.Types;
+﻿using Dyalect.Codegen;
+namespace Dyalect.Runtime.Types;
 
-internal sealed class DyNilTypeInfo : DyTypeInfo
+[GeneratedType]
+internal sealed partial class DyNilTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Lit;
@@ -18,12 +20,9 @@ internal sealed class DyNilTypeInfo : DyTypeInfo
 
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
 
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Nil or Method.Default => Func.Static(name, _ => DyNil.Instance),
-            _ => base.InitializeStaticMember(name, ctx)
-        };
+    [StaticMethod("Nil")] internal static DyNil GetNil() => DyNil.Instance;
+
+    [StaticMethod] internal static DyNil Default() => DyNil.Instance;
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch

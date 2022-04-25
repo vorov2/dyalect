@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Dyalect.Runtime.Codegen;
+namespace Dyalect.Codegen;
 
 public abstract class MethodAttribute : Attribute
 {

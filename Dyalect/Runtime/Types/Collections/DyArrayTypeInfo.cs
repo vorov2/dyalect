@@ -1,11 +1,13 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Codegen;
+using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 namespace Dyalect.Runtime.Types;
 
-internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
+[GeneratedType]
+internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
 {
     public override string ReflectedTypeName => nameof(DyType.Array);
 
@@ -31,7 +33,7 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
         {
             if (i > 0)
                 sb.Append(", ");
-            var str = literal ? arr[i].ToLiteral(ctx) :arr[i].ToString(ctx);
+            var str = literal ? arr[i].ToLiteral(ctx) : arr[i].ToString(ctx);
 
             if (ctx.Error != null)
                 return DyString.Empty;
@@ -64,11 +66,8 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
         return arr.IndexOf(ctx, item) != -1 ? DyBool.True : DyBool.False;
     }
 
-    private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject arg)
-    {
-        ((DyArray)self).Add(arg);
-        return DyNil.Instance;
-    }
+    [InstanceMethod("Add")]
+    internal static void AddItem(DyArray self, DyObject value) => self.Add(value);
 
     private DyObject InsertItem(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
@@ -303,7 +302,7 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
     protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
         name switch
         {
-            Method.Add => Func.Member(name, AddItem, -1, new Par("value")),
+            //Method.Add => Func.Member(name, AddItem, -1, new Par("value")),
             Method.Insert => Func.Member(name, InsertItem, -1, new Par("index"), new Par("value")),
             Method.InsertRange => Func.Member(name, InsertRange, -1, new Par("index"), new Par("values")),
             Method.AddRange => Func.Member(name, AddRange, -1, new Par("values")),

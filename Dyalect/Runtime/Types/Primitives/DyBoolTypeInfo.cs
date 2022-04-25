@@ -1,5 +1,4 @@
-﻿using Dyalect.Debug;
-using Dyalect.Runtime.Codegen;
+﻿using Dyalect.Codegen;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -22,23 +21,14 @@ internal sealed partial class DyBoolTypeInfo : DyTypeInfo
 
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
 
-    [StaticMethod] bool Bool(bool val) => val;
+    [StaticMethod("Bool")] 
+    internal static bool CreateBool(bool val) => val;
 
-    [StaticMethod] DyBool Default() => DyBool.False;
+    [StaticMethod] internal static DyBool Default() => DyBool.False;
 
-    [StaticMethod] DyBool Max() => DyBool.True;
+    [StaticMethod] internal static DyBool Max() => DyBool.True;
 
-    [StaticMethod] DyBool Min() => DyBool.False;
-
-    //protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-    //    name switch
-    //    {
-    //        Method.Bool => Func.Static(name, Convert, -1, new Par("value")),
-    //        Method.Default => Func.Static(name, _ => DyBool.False),
-    //        Method.Min => Func.Static(name, _ => DyBool.False),
-    //        Method.Max => Func.Static(name, _ => DyBool.True),
-    //        _ => base.InitializeStaticMember(name, ctx)
-    //    };
+    [StaticMethod] internal static DyBool Min() => DyBool.False;
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
