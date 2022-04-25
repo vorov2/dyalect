@@ -110,8 +110,8 @@ namespace Dyalect.Generators
             { "float?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(float?){0}.GetFloat()", flag, "Float") },
             { "string", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetString()", flag, "String", "Char") },
             { "char", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetChar()", flag, "Char", "String") },
-            { "bool", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"!ReferenceEquals({{0}}, {Types.DyBool}.False)", flag) },
-            { "bool?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(bool?)!ReferenceEquals({{0}}, {Types.DyBool}.False)", flag) },
+            { "bool", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"!ReferenceEquals({{0}}, {Types.DyBool}.False) && !ReferenceEquals({{0}}, {Types.DyNil}.Instance)", flag) },
+            { "bool?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(bool?)!ReferenceEquals({{0}}, {Types.DyBool}.False) && !ReferenceEquals({{0}}, {Types.DyNil}.Instance)", flag) },
             { $"{Types.DyObject}", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}", flag) },
         }; 
         
@@ -153,7 +153,7 @@ namespace Dyalect.Generators
                 var methods = new List<(string name, bool instance)>();
 
                 foreach (IMethodSymbol m in t.GetMembers().OfType<IMethodSymbol>())
-                    ProcessMethod(ctx, m, builder, methods);
+                    ProcessMethod(ctx, t, m, builder, methods);
 
                 if (methods.Count > 0)
                 {
@@ -166,7 +166,7 @@ namespace Dyalect.Generators
                     builder.AppendLine("name switch");
                     builder.StartBlock();
                     foreach (var (im,_) in methods.Where(kv => kv.instance))
-                        builder.AppendLine($"\"{im}\" => new {im}_WrapperFunction(),");
+                        builder.AppendLine($"\"{im}\" => new {t.Name}_{im}_WrapperFunction(),");
                     builder.AppendLine("_ => base.InitializeInstanceMember(self, name, ctx)");
                     builder.Outdent();
                     builder.AppendLine("};");
@@ -177,7 +177,7 @@ namespace Dyalect.Generators
                     builder.AppendLine("name switch");
                     builder.StartBlock();
                     foreach (var (im,_) in methods.Where(kv => !kv.instance))
-                        builder.AppendLine($"\"{im}\" => new {im}_WrapperFunction(),");
+                        builder.AppendLine($"\"{im}\" => new {t.Name}_{im}_WrapperFunction(),");
                     builder.AppendLine("_ => base.InitializeStaticMember(name, ctx)");
                     builder.Outdent();
                     builder.AppendLine("};");
@@ -191,7 +191,7 @@ namespace Dyalect.Generators
             }
         }
 
-        private void ProcessMethod(GeneratorExecutionContext ctx, IMethodSymbol m, SourceBuilder builder, List<(string name, bool instance)> methods)
+        private void ProcessMethod(GeneratorExecutionContext ctx, INamedTypeSymbol t, IMethodSymbol m, SourceBuilder builder, List<(string name, bool instance)> methods)
         {
             var attr = m.GetAttributes().FirstOrDefault(a => a.AttributeClass.BaseType.ToString() == Types.MethodAttribute);
 
@@ -206,17 +206,17 @@ namespace Dyalect.Generators
                 var isProperty = attr.AttributeClass.ToString() is Types.InstancePropertyAttribute or Types.StaticPropertyAttribute;
                 var flags = (!isInstance ? MethodFlags.Static : MethodFlags.None) | (isProperty ? MethodFlags.Property : MethodFlags.None);
 
-                if (ProcessMethod(ctx, m, builder, methodName, flags))
+                if (ProcessMethod(ctx, t, m, builder, methodName, flags))
                     methods.Add((methodName, isInstance));
             }
         }
 
-        private bool ProcessMethod(GeneratorExecutionContext ctx, IMethodSymbol m, SourceBuilder builder, string methodName, MethodFlags implFlags)
+        private bool ProcessMethod(GeneratorExecutionContext ctx, INamedTypeSymbol t, IMethodSymbol m, SourceBuilder builder, string methodName, MethodFlags implFlags)
         {
             var hasContext = m.Parameters.Length > 0 && m.Parameters[0].Type.ToString() == Types.ExecutionContext;
             var isStatic = (implFlags & MethodFlags.Static) == MethodFlags.Static;
 
-            builder.AppendLine($"internal sealed class {methodName}_WrapperFunction : {Types.DyForeignFunction}");
+            builder.AppendLine($"internal sealed class {t.Name}_{methodName}_WrapperFunction : {Types.DyForeignFunction}");
             builder.StartBlock();
             builder.AppendLine($"internal override {Types.DyObject} InternalCall({Types.ExecutionContext} ctx, {Types.DyObject}[] args)");
             builder.StartBlock();
@@ -311,7 +311,7 @@ namespace Dyalect.Generators
 
             builder.EndBlock();
             builder.AppendLine();
-            builder.AppendLine($"public {methodName}_WrapperFunction() : base(\"{methodName}\", new {Types.Par}[]{{{pars.ToString($"new {Types.Par}({{0}})", p => $"\"{p.name}\"{(p.vararg ? $", {Types.ParKind}.VarArg" : "")}{(p.def is not null ? $", {(ReferenceEquals(p.def, nil) ? $"{Types.DyNil}.Instance" : p.def)}" : "")}")}}}, {varArgIndex})");
+            builder.AppendLine($"public {t.Name}_{methodName}_WrapperFunction() : base(\"{methodName}\", new {Types.Par}[]{{{pars.ToString($"new {Types.Par}({{0}})", p => $"\"{p.name}\"{(p.vararg ? $", {Types.ParKind}.VarArg" : "")}{(p.def is not null ? $", {(ReferenceEquals(p.def, nil) ? $"{Types.DyNil}.Instance" : p.def)}" : "")}")}}}, {varArgIndex})");
             builder.StartBlock();
 
             if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
@@ -319,7 +319,7 @@ namespace Dyalect.Generators
 
             builder.EndBlock();
             builder.AppendLine();
-            builder.AppendLine($"protected override {Types.DyFunction} Clone({Types.ExecutionContext} ctx) => new {methodName}_WrapperFunction();");
+            builder.AppendLine($"protected override {Types.DyFunction} Clone({Types.ExecutionContext} ctx) => new {t.Name}_{methodName}_WrapperFunction();");
             builder.EndBlock();
 
             return true;

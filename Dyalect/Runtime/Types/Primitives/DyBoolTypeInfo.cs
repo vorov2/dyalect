@@ -22,17 +22,23 @@ internal sealed partial class DyBoolTypeInfo : DyTypeInfo
 
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
 
-    private DyObject Convert(ExecutionContext ctx, DyObject val) => val.IsFalse() ? DyBool.False : DyBool.True;
+    [StaticMethod] bool Bool(bool val) => val;
 
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Bool => Func.Static(name, Convert, -1, new Par("value")),
-            Method.Default => Func.Static(name, _ => DyBool.False),
-            Method.Min => Func.Static(name, _ => DyBool.False),
-            Method.Max => Func.Static(name, _ => DyBool.True),
-            _ => base.InitializeStaticMember(name, ctx)
-        };
+    [StaticMethod] DyBool Default() => DyBool.False;
+
+    [StaticMethod] DyBool Max() => DyBool.True;
+
+    [StaticMethod] DyBool Min() => DyBool.False;
+
+    //protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
+    //    name switch
+    //    {
+    //        Method.Bool => Func.Static(name, Convert, -1, new Par("value")),
+    //        Method.Default => Func.Static(name, _ => DyBool.False),
+    //        Method.Min => Func.Static(name, _ => DyBool.False),
+    //        Method.Max => Func.Static(name, _ => DyBool.True),
+    //        _ => base.InitializeStaticMember(name, ctx)
+    //    };
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
