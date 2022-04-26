@@ -128,13 +128,13 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         return DyIterator.Create(Iterate());
     }
 
-    private DyObject GetFirst(ExecutionContext ctx, DyObject self) =>
+    internal static DyObject GetFirst(ExecutionContext ctx, DyObject self) =>
         self.GetItem(DyInteger.Zero, ctx);
 
-    private DyObject GetSecond(ExecutionContext ctx, DyObject self) =>
+    internal static DyObject GetSecond(ExecutionContext ctx, DyObject self) =>
         self.GetItem(DyInteger.One, ctx);
 
-    private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject functor)
+    internal static DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var tup = (DyTuple)self;
         var comparer = new SortComparer(functor, ctx);
@@ -144,7 +144,7 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         return new DyTuple(newArr);
     }
 
-    private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject item)
+    internal static DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject item)
     {
         var t = (DyTuple)self;
         var arr = new DyObject[t.Count + 1];
@@ -153,7 +153,7 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         return new DyTuple(arr);
     }
 
-    private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject item)
+    internal static DyObject Remove(ExecutionContext ctx, DyObject self, DyObject item)
     {
         var t = (DyTuple)self;
         var tv = t.UnsafeAccessValues();
@@ -169,7 +169,7 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         return self;
     }
 
-    private DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
+    internal static DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
     {
         if (index.TypeId != DyType.Integer)
             return ctx.InvalidType(DyType.Integer, index);
@@ -185,7 +185,7 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         return RemoveAt(ctx, t, idx);
     }
 
-    private static DyTuple RemoveAt(ExecutionContext _, DyTuple self, int index)
+    internal static DyTuple RemoveAt(ExecutionContext _, DyTuple self, int index)
     {
         var arr = new DyObject[self.Count - 1];
         var c = 0;
@@ -200,7 +200,7 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         return new DyTuple(arr);
     }
 
-    private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
+    internal static DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         if (index.TypeId != DyType.Integer)
             return ctx.InvalidType(DyType.Integer, index);
@@ -229,19 +229,19 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         return new DyTuple(arr);
     }
 
-    private DyObject ToDictionary(ExecutionContext ctx, DyObject self)
+    internal static DyObject ToDictionary(ExecutionContext ctx, DyObject self)
     {
         var tuple = (DyTuple)self;
         return new DyDictionary(tuple.ConvertToDictionary(ctx));
     }
 
-    private DyObject ToArray(ExecutionContext ctx, DyObject self)
+    internal static DyObject ToArray(ExecutionContext ctx, DyObject self)
     {
         var tuple = (DyTuple)self;
         return new DyArray(tuple.GetValues());
     }
 
-    private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject functor)
+    internal static DyObject Compact(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var seq = (DyTuple)self;
         var xs = new List<DyObject>();
@@ -265,7 +265,7 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         return new DyTuple(xs.ToArray());
     }
 
-    private DyObject Alter(ExecutionContext ctx, DyObject self, DyObject newTuple)
+    internal static DyObject Alter(ExecutionContext ctx, DyObject self, DyObject newTuple)
     {
         if (newTuple is DyTuple tup)
         {
@@ -311,13 +311,13 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
             _ => base.InitializeInstanceMember(self, name, ctx)
         };
 
-    private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
+    internal static DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
         new DyTuple(new[] { fst, snd });
 
-    private DyObject GetTriple(ExecutionContext ctx, DyObject fst, DyObject snd, DyObject thd) =>
+    internal static DyObject GetTriple(ExecutionContext ctx, DyObject fst, DyObject snd, DyObject thd) =>
         new DyTuple(new[] { fst, snd, thd });
 
-    private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
+    internal static DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
 
     protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
         name switch

@@ -168,6 +168,18 @@ internal sealed class DyFloatTypeInfo : DyTypeInfo
         return DyNil.Instance;
     }
 
+    private DyObject Triple(ExecutionContext ctx, DyObject a, DyObject b, DyObject c, DyObject values)
+    {
+        if (a.NotInteger(ctx)) return Nil;
+        if (b.NotInteger(ctx)) return Nil;
+        if (c.NotInteger(ctx)) return Nil;
+
+        var vals = ((DyTuple)values).GetValues();
+
+
+        return Nil;
+    }
+
     protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
         name switch
         {
@@ -177,6 +189,7 @@ internal sealed class DyFloatTypeInfo : DyTypeInfo
             Method.Default => Func.Static(name, _ => DyFloat.Zero),
             Method.Parse => Func.Static(name, Parse, -1, new Par("value")),
             Method.Float => Func.Static(name, Convert, -1, new Par("value")),
+            "Triple" => Func.Static(name, Triple, 3, "a", "b", "c", new Par("values", ParKind.VarArg)),
             _ => base.InitializeStaticMember(name, ctx)
         };
 

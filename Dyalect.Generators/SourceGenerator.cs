@@ -18,7 +18,9 @@ public abstract class SourceGenerator : ISourceGenerator
         public const string DyFloat = "Dyalect.Runtime.Types.DyFloat";
         public const string DyChar = "Dyalect.Runtime.Types.DyChar";
         public const string DyString = "Dyalect.Runtime.Types.DyString";
+        public const string DyArray = "Dyalect.Runtime.Types.DyArray";
         public const string DyBool = "Dyalect.Runtime.Types.DyBool";
+        public const string DyCollection = "Dyalect.Runtime.Types.DyCollection";
         public const string Par = "Dyalect.Debug.Par";
         public const string ParKind = "Dyalect.Debug.ParKind";
         public const string TypeConverter = "Dyalect.Runtime.TypeConverter";

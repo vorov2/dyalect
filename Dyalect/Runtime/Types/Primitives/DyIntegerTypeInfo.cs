@@ -241,6 +241,11 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
 
     [StaticMethod] internal static DyInteger Default() => DyInteger.Zero;
 
+    [StaticMethod]
+    internal static void Triple(int a, int b, int c, [VarArg]DyObject[] values)
+    {
+    }
+
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
