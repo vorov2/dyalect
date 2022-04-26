@@ -66,7 +66,7 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         return ((DyTuple)self).GetOrdinal(field.GetString()) is not -1 ? DyBool.True : DyBool.False;
     }
 
-    private DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
+    private static DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
     {
         if (left.TypeId != right.TypeId)
             return ctx.OperationNotSupported(gt ? Builtins.Gt : Builtins.Lt, left, right);

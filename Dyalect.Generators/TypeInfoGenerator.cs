@@ -144,36 +144,19 @@ public class TypeInfoGenerator : SourceGenerator
     private readonly Dictionary<string, Func<string, string>> returnTypeConversions = new()
     {
         { "long", name => $"new {Types.DyInteger}({name})" },
-        { "long?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : new {Types.DyInteger}({name}))" },
+        { "long?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : new {Types.DyInteger}({name}.Value))" },
         { "int", name => $"new {Types.DyInteger}({name})" },
-        { "int?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyInteger}({name}))" },
+        { "int?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : new {Types.DyInteger}({name}.Value))" },
         { "string", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : new {Types.DyString}({name}))" },
         { "char", name => $"new {Types.DyChar}({name})" },
-        { "char?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyChar}({name}))" },
+        { "char?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : new {Types.DyChar}({name}.Value))" },
         { "double", name => $"new {Types.DyFloat}({name})" },
-        { "double?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyFloat}({name}))" },
+        { "double?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : new {Types.DyFloat}({name}.Value))" },
         { "single", name => $"new {Types.DyFloat}({name})" },
-        { "single?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyFloat}({name}))" },
+        { "single?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : new {Types.DyFloat}({name}.Value))" },
         { "bool", name => $"({name} ? {Types.DyBool}.True : {Types.DyBool}.False)" },
         { "bool?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : ({name} ? {Types.DyBool}.True : {Types.DyBool}.False))" },
         { $"{Types.DyObject}", name => $"({name} ?? {Types.DyNil}.Instance)"}
-    };
-
-    private readonly Dictionary<string, Func<string, string>> arratTypeConversions = new()
-    {
-        { "long", name => $"new {Types.DyInteger}({name})" },
-        { "long?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : new {Types.DyInteger}({name}))" },
-        { "int", name => $"new {Types.DyInteger}({name})" },
-        { "int?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyInteger}({name}))" },
-        { "string", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : new {Types.DyString}({name}))" },
-        { "char", name => $"new {Types.DyChar}({name})" },
-        { "char?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyChar}({name}))" },
-        { "double", name => $"new {Types.DyFloat}({name})" },
-        { "double?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyFloat}({name}))" },
-        { "single", name => $"new {Types.DyFloat}({name})" },
-        { "single?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyFloat}({name}))" },
-        { "bool", name => $"({name} ? {Types.DyBool}.True : {Types.DyBool}.False)" },
-        { "bool?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : ({name} ? {Types.DyBool}.True : {Types.DyBool}.False))" },
     };
 
     public override void Execute(GeneratorExecutionContext ctx)
