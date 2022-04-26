@@ -7,6 +7,7 @@ public abstract class SourceGenerator : ISourceGenerator
 {
     internal static class Types
     {
+        public const string Array = "System.Array";
         public const string ExecutionContext = "Dyalect.Runtime.ExecutionContext";
         public const string DyObject = "Dyalect.Runtime.Types.DyObject";
         public const string DyFunction = "Dyalect.Runtime.Types.DyFunction";

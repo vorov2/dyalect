@@ -244,7 +244,7 @@ public class TypeInfoGenerator : SourceGenerator
             if (methodNameData is null || methodNameData is not string methodName)
                 methodName = m.Name;
 
-            var isInstance = attr.AttributeClass.ToString() == Types.InstanceMethodAttribute;
+            var isInstance = attr.AttributeClass.ToString() is Types.InstanceMethodAttribute or Types.InstancePropertyAttribute;
             var isProperty = attr.AttributeClass.ToString() is Types.InstancePropertyAttribute or Types.StaticPropertyAttribute;
             var flags = (!isInstance ? MethodFlags.Static : MethodFlags.None) | (isProperty ? MethodFlags.Property : MethodFlags.None);
 
@@ -262,7 +262,6 @@ public class TypeInfoGenerator : SourceGenerator
 
     private bool ProcessMethod(GeneratorExecutionContext ctx, INamedTypeSymbol t, IMethodSymbol m, SourceBuilder builder, string methodName, MethodFlags implFlags)
     {
-        var hasContext = m.Parameters.Length > 0 && m.Parameters[0].Type.ToString() == Types.ExecutionContext;
         var isStatic = (implFlags & MethodFlags.Static) == MethodFlags.Static;
         var prefix = isStatic ? "st" : "in";
 
@@ -270,8 +269,76 @@ public class TypeInfoGenerator : SourceGenerator
         builder.StartBlock();
         builder.AppendLine($"internal override {Types.DyObject} InternalCall({Types.ExecutionContext} ctx, {Types.DyObject}[] args)");
         builder.StartBlock();
+
+        //Start function body
+        var pars = EmitParameters(ctx, builder, t, m, isStatic, false, out var varArgIndex);
+
+        if (pars is null)
+            return false;
+
+        if (!EmitReturnType(ctx, builder, t, m))
+            return false;
+
+        builder.EndBlock();
+        builder.AppendLine();
+
+        var sb = new StringBuilder();
+
+        if (pars.Count > 0)
+        {
+            sb.Append($"new {Types.Par}[] {{");
+
+            for (var i = 0; i < pars.Count; i++)
+            {
+                if (i > 0)
+                    sb.Append(", ");
+
+                var (name, def, vararg) = pars[i];
+                sb.Append($"new {Types.Par}(\"{name}\"");
+
+                if (vararg)
+                    sb.Append($", {Types.ParKind}.VarArg)");
+                else if (def is not null)
+                    sb.Append($", {def})");
+                else
+                    sb.Append($")");
+            }
+
+            sb.Append(" }");
+        }
+        else
+            sb.Append($"{Types.Array}.Empty<{Types.Par}>()");
+
+        builder.AppendLine($"public {prefix}_{t.Name}_{methodName}_WrapperFunction() : base(\"{methodName}\", {sb}, {varArgIndex})");
+        builder.StartBlock();
+
+        if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
+            builder.AppendLine($"Attr |= {Types.FunAttr}.Auto;");
+
+        builder.EndBlock();
+        builder.AppendLine();
+        builder.AppendLine($"protected override {Types.DyFunction} Clone({Types.ExecutionContext} ctx) => new {prefix}_{t.Name}_{methodName}_WrapperFunction();");
+
+        if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
+        {
+            builder.AppendLine();
+            builder.AppendLine($"internal override DyObject BindOrRun({Types.ExecutionContext} ctx, {Types.DyObject} arg)");
+            builder.StartBlock();
+            EmitParameters(ctx, builder, t, m, isStatic, true, out _);
+            EmitReturnType(ctx, builder, t, m);
+            builder.EndBlock();
+        }
+
+        builder.EndBlock();
+
+        return true;
+    }
+
+    private List<(string name, string def, bool vararg)> EmitParameters(GeneratorExecutionContext ctx, SourceBuilder builder, ITypeSymbol t, IMethodSymbol m, bool isStatic, bool specialCall, out int varArgIndex)
+    {
+        var hasContext = m.Parameters.Length > 0 && m.Parameters[0].Type.ToString() == Types.ExecutionContext;
         var pars = new List<(string name, string def, bool vararg)>();
-        var varArgIndex = -1;
+        varArgIndex = -1;
 
         for (var i = 0; i < m.Parameters.Length; i++)
         {
@@ -307,10 +374,16 @@ public class TypeInfoGenerator : SourceGenerator
                 varArgIndex = i + indexShift;
 
             if (nullable && neverNulls.Contains(typeName))
-                return Error(ctx, $"Type of parameter \"{typeName}\" is not nullable (type {t.Name}, method {m.Name}).");
+            {
+                Error(ctx, $"Type of parameter \"{typeName}\" is not nullable (type {t.Name}, method {m.Name}).");
+                return null;
+            }
 
             var firstParam = i == 1 && hasContext || i == 0 && !hasContext;
             var sourceParName = firstParam && !isStatic ? "Self" : $"args[{i + indexShift}]";
+
+            if (specialCall)
+                sourceParName = "arg";
 
             if (isStatic || !firstParam)
                 pars.Add((parName, def.ToLiteral(), vararg));
@@ -326,7 +399,10 @@ public class TypeInfoGenerator : SourceGenerator
                 var res = ParamCheckArray(sourceParName, mp.Name, flags, mp.Type, builder);
 
                 if (!res)
-                    return Error(ctx, $"Parameter type \"{typeName}\" is not supported.");
+                {
+                    Error(ctx, $"Parameter type \"{typeName}\" is not supported.");
+                    return null;
+                }
             }
             else if (IsDyObject(mp.Type))
             {
@@ -336,9 +412,17 @@ public class TypeInfoGenerator : SourceGenerator
                     ConvertToDyObject(builder, typeName, sourceParName, mp.Name, nullable);
             }
             else
-                return Error(ctx, $"Parameter type \"{typeName}\" is not supported.");
+            {
+                Error(ctx, $"Parameter type \"{typeName}\" is not supported.");
+                return null;
+            }
         }
 
+        return pars;
+    }
+
+    private bool EmitReturnType(GeneratorExecutionContext ctx, SourceBuilder builder, ITypeSymbol t, IMethodSymbol m)
+    {
         if (m.ReturnType.ToString() != "void")
         {
             var returnTypeName = m.ReturnType.GetSafeName();
@@ -369,48 +453,15 @@ public class TypeInfoGenerator : SourceGenerator
             }
             else
                 return Error(ctx, $"Return type \"{returnTypeName}\" is not supported.");
+
+            return true;
         }
         else
         {
             builder.AppendLine($"{t.Name}.{m.Name}({m.Parameters.ToString("{0}", p => p.Name)});");
             builder.AppendLine($"return {Types.DyNil}.Instance;");
+            return true;
         }
-
-        builder.EndBlock();
-        builder.AppendLine();
-
-        var sb = new StringBuilder();
-        sb.Append($"new {Types.Par}[] {{");
-
-        for (var i = 0; i < pars.Count; i++)
-        {
-            if (i > 0)
-                sb.Append(", ");
-
-            var (name, def, vararg) = pars[i];
-            sb.Append($"new {Types.Par}(\"{name}\"");
-
-            if (vararg)
-                sb.Append($", {Types.ParKind}.VarArg)");
-            else if (def is not null)
-                sb.Append($", {def})");
-            else
-                sb.Append($")");
-        }
-
-        sb.Append(" }");
-        builder.AppendLine($"public {prefix}_{t.Name}_{methodName}_WrapperFunction() : base(\"{methodName}\", {sb}, {varArgIndex})");
-        builder.StartBlock();
-
-        if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
-            builder.AppendLine($"Attr |= {Types.FunAttr}.Auto;");
-
-        builder.EndBlock();
-        builder.AppendLine();
-        builder.AppendLine($"protected override {Types.DyFunction} Clone({Types.ExecutionContext} ctx) => new {prefix}_{t.Name}_{methodName}_WrapperFunction();");
-        builder.EndBlock();
-
-        return true;
     }
 
     private void ConvertToDyObject(SourceBuilder builder, string targetType, string oldVar, string newVar, bool nullable = false)
