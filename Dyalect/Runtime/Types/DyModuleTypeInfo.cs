@@ -16,6 +16,7 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
 
     public DyModuleTypeInfo() => AddMixin(DyType.Collection);
 
+    #region Operations
     protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
         new DyString("{" + GetModuleName((DyModule)arg) + "}");
 
@@ -66,4 +67,5 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
 
         return (sv.Data & VarFlags.Private) != VarFlags.Private ? DyBool.True : DyBool.False;
     }
+    #endregion
 }

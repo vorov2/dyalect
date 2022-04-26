@@ -13,6 +13,7 @@ internal sealed partial class DyBoolTypeInfo : DyTypeInfo
 
     public DyBoolTypeInfo() => AddMixin(DyType.Bounded);
 
+    #region Operations
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
         ReferenceEquals(left, right) ? DyBool.True : DyBool.False;
 
@@ -21,19 +22,20 @@ internal sealed partial class DyBoolTypeInfo : DyTypeInfo
 
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
 
-    [StaticMethod("Bool")] 
-    internal static bool CreateBool(bool val) => val;
-
-    [StaticMethod] internal static DyBool Default() => DyBool.False;
-
-    [StaticMethod] internal static DyBool Max() => DyBool.True;
-
-    [StaticMethod] internal static DyBool Min() => DyBool.False;
-
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
             DyType.Integer => ReferenceEquals(self, DyBool.True) ? DyInteger.One : DyInteger.Zero,
             _ => base.CastOp(self, targetType, ctx)
         };
+    #endregion
+
+    [StaticMethod(Method.Bool)] 
+    internal static bool CreateBool(DyObject value) => value.IsTrue();
+
+    [StaticMethod] internal static DyBool Default() => DyBool.False;
+
+    [StaticMethod] internal static DyBool Max() => DyBool.True;
+
+    [StaticMethod] internal static DyBool Min() => DyBool.False;
 }

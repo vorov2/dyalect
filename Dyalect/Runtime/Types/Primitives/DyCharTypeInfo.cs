@@ -17,11 +17,6 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
 
     public DyCharTypeInfo() => AddMixin(DyType.Comparable, DyType.Bounded);
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
-        new DyString(arg.GetString());
-
-    protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => new DyString(StringUtil.Escape(arg.GetString(), "'"));
-
     #region Operations
     protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
@@ -97,6 +92,19 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
 
         return base.LtOp(left, right, ctx);
     }
+
+    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+        targetType.ReflectedTypeId switch
+        {
+            DyType.Integer => DyInteger.Get(self.GetChar()),
+            DyType.Float => new DyFloat(self.GetChar()),
+            _ => base.CastOp(self, targetType, ctx)
+        };
+
+    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
+        new DyString(arg.GetString());
+
+    protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => new DyString(StringUtil.Escape(arg.GetString(), "'"));
     #endregion
 
     [InstanceMethod] internal static bool IsLower(char self) => char.IsLower(self);
@@ -119,7 +127,7 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
 
     [InstanceMethod] internal static int Order(char self) => self;
 
-    [StaticMethod("Char")]
+    [StaticMethod(Method.Char)]
     internal static DyObject CreateChar(ExecutionContext ctx, DyObject value)
     {
         if (value.TypeId == DyType.Char)
@@ -140,17 +148,12 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
         return ctx.InvalidCast(value.GetTypeInfo(ctx).ReflectedTypeName, nameof(DyType.Char));
     }
 
-    [StaticMethod] internal static DyChar Max() => DyChar.Max;
-    
-    [StaticMethod] internal static DyChar Min() => DyChar.Min;
+    [StaticMethod]
+    internal static DyChar Max() => DyChar.Max;
 
-    [StaticMethod] internal static DyChar Default() => DyChar.Empty;
+    [StaticMethod]
+    internal static DyChar Min() => DyChar.Min;
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-        targetType.ReflectedTypeId switch
-        {
-            DyType.Integer => DyInteger.Get(self.GetChar()),
-            DyType.Float => new DyFloat(self.GetChar()),
-            _ => base.CastOp(self, targetType, ctx)
-        };
+    [StaticMethod]
+    internal static DyChar Default() => DyChar.Empty;
 }

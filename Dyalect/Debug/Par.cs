@@ -34,7 +34,11 @@ namespace Dyalect.Debug
 
         public Par(string name, int value) => (Name, Value, IsVarArg, TypeAnnotation) = (name, DyInteger.Get(value), false, null);
 
+        public Par(string name, double value) => (Name, Value, IsVarArg, TypeAnnotation) = (name, new DyFloat(value), false, null);
+
         public Par(string name, string value) => (Name, Value, IsVarArg, TypeAnnotation) = (name, new DyString(value), false, null);
+
+        public Par(string name, char value) => (Name, Value, IsVarArg, TypeAnnotation) = (name, new DyChar(value), false, null);
 
         public Par(string name, bool value) => (Name, Value, IsVarArg, TypeAnnotation) = (name, value ? DyBool.True : DyBool.False, false, null);
 

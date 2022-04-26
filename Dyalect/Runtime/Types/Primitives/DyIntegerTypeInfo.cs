@@ -184,9 +184,7 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
 
         return base.LteOp(left, right, ctx);
     }
-    #endregion
 
-    #region Unary Operations
     protected override DyObject NegOp(DyObject arg, ExecutionContext ctx) => new DyInteger(-arg.GetInteger());
 
     protected override DyObject PlusOp(DyObject arg, ExecutionContext ctx) => arg;
@@ -196,9 +194,16 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
     protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
         new DyString(arg.GetInteger().ToString(CI.NumberFormat));
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
+
+    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+        targetType.ReflectedTypeId switch
+        {
+            DyType.Float => new DyFloat(self.GetInteger()),
+            _ => base.CastOp(self, targetType, ctx)
+        };
     #endregion
 
-    [InstanceMethod("IsMultipleOf")]
+    [InstanceMethod]
     internal static bool IsMultipleOf(long self, long value) => (self % value) == 0;
 
     [StaticMethod]
@@ -235,16 +240,12 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
         return DyNil.Instance;
     }
 
-    [StaticMethod] internal static DyInteger Max() => DyInteger.Max;
+    [StaticMethod] 
+    internal static DyInteger Max() => DyInteger.Max;
 
-    [StaticMethod] internal static DyInteger Min() => DyInteger.Min;
+    [StaticMethod] 
+    internal static DyInteger Min() => DyInteger.Min;
 
-    [StaticMethod] internal static DyInteger Default() => DyInteger.Zero;
-
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-        targetType.ReflectedTypeId switch
-        {
-            DyType.Float => new DyFloat(self.GetInteger()),
-            _ => base.CastOp(self, targetType, ctx)
-        };
+    [StaticMethod] 
+    internal static DyInteger Default() => DyInteger.Zero;
 }

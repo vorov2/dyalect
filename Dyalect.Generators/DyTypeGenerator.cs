@@ -71,9 +71,7 @@ partial class DyType
         public void Initialize(GeneratorInitializationContext ctx)
         {
             //if (!System.Diagnostics.Debugger.IsAttached)
-            //{
-            //    System.Diagnostics.Debugger.Launch();
-            //}
+                //System.Diagnostics.Debugger.Launch();
 
             ctx.RegisterForSyntaxNotifications(() => new DyTypeGeneratorSyntaxReceiver());
         }

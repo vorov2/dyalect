@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using System.Text;
+using Dyalect.Codegen;
 using Dyalect.Debug;
 namespace Dyalect.Runtime.Types;
 
-internal sealed class DySetTypeInfo : DyTypeInfo
+[GeneratedType]
+internal sealed partial class DySetTypeInfo : DyTypeInfo
 {
     public override string ReflectedTypeName => nameof(DyType.Set);
 
@@ -15,6 +17,7 @@ internal sealed class DySetTypeInfo : DyTypeInfo
 
     public DySetTypeInfo() => AddMixin(DyType.Collection);
 
+    #region Operations
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
         var self = (DySet)left;
@@ -58,102 +61,6 @@ internal sealed class DySetTypeInfo : DyTypeInfo
         return new DyString(sb.ToString());
     }
 
-    private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject value)
-    {
-        var set = (DySet)self;
-        return set.Add(value) ? DyBool.True : DyBool.False;
-    }
-    
-    private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject value)
-    {
-        var set = (DySet)self;
-        return set.Remove(value) ? DyBool.True : DyBool.False;
-    }
-    
-    private DyObject Clear(ExecutionContext ctx, DyObject self)
-    {
-        var set = (DySet)self;
-        set.Clear();
-        return DyNil.Instance;
-    }
-    
-    private DyObject ToArray(ExecutionContext ctx, DyObject self)
-    {
-        var set = (DySet)self;
-        return set.ToArray(ctx);
-    }
-    
-    private DyObject ToTuple(ExecutionContext ctx, DyObject self)
-    {
-        var set = (DySet)self;
-        return set.ToTuple(ctx);
-    }
-    
-    private DyObject IntersectWith(ExecutionContext ctx, DyObject self, DyObject value)
-    {
-        var set = (DySet)self;
-        set.IntersectWith(ctx, value);
-        return DyNil.Instance;
-    }
-    
-    private DyObject UnionWith(ExecutionContext ctx, DyObject self, DyObject value)
-    {
-        var set = (DySet)self;
-        set.UnionWith(ctx, value);
-        return DyNil.Instance;
-    }
-    
-    private DyObject ExceptOf(ExecutionContext ctx, DyObject self, DyObject value)
-    {
-        var set = (DySet)self;
-        set.ExceptWith(ctx, value);
-        return DyNil.Instance;
-    }
-    
-    private DyObject OverlapsWith(ExecutionContext ctx, DyObject self, DyObject value)
-    {
-        var set = (DySet)self;
-        return set.Overlaps(ctx, value) ? DyBool.True : DyBool.False;
-    }
-
-    private DyObject IsSubsetOf(ExecutionContext ctx, DyObject self, DyObject other)
-    {
-        var seq = (DySet)self;
-        return seq.IsSubsetOf(ctx, other) ? DyBool.True : DyBool.False;
-    }
-
-    private DyObject IsSupersetOf(ExecutionContext ctx, DyObject self, DyObject other)
-    {
-        var seq = (DySet)self;
-        return seq.IsSupersetOf(ctx, other) ? DyBool.True : DyBool.False;
-    }
-    
-    protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Add => Func.Member(name, AddItem, -1, new Par("value")),
-            Method.Remove => Func.Member(name, Remove, -1, new Par("value")),
-            Method.Clear => Func.Member(name, Clear),
-            Method.ToArray => Func.Member(name, ToArray),
-            Method.ToTuple => Func.Member(name, ToTuple),
-            Method.ExceptOf => Func.Member(name, ExceptOf, -1, new Par("other")),
-            Method.IntersectWith => Func.Member(name, IntersectWith, -1, new Par("other")),
-            Method.UnionWith => Func.Member(name, UnionWith, -1, new Par("other")),
-            Method.OverlapsWith => Func.Member(name, OverlapsWith, -1, new Par("other")),
-            Method.IsSubsetOf => Func.Member(name, IsSubsetOf, -1, new Par("other")),
-            Method.IsSupersetOf => Func.Member(name, IsSupersetOf, -1, new Par("other")),
-            _ => base.InitializeInstanceMember(self, name, ctx)
-        };
-
-    private DyObject New(ExecutionContext ctx, DyObject arg) => new DySet(((DyTuple)arg).GetValues());
-
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Set => Func.Static(name, New, 0, new Par("values", DyNil.Instance)),
-            _ => base.InitializeStaticMember(name, ctx)
-        };
-
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
@@ -161,4 +68,47 @@ internal sealed class DySetTypeInfo : DyTypeInfo
             DyType.Tuple => new DyTuple(((DySet)self).ToArray()),
             _ => base.CastOp(self, targetType, ctx)
         };
+    #endregion
+
+    [InstanceMethod(Method.Add)]
+    internal static bool AddItem(DySet self, DyObject value) => self.Add(value);
+
+    [InstanceMethod]
+    internal static bool Remove(DySet self, DyObject value) => self.Remove(value);
+
+    [InstanceMethod]
+    internal static void Clear(DySet self) => self.Clear();
+
+    [InstanceMethod]
+    internal static DyObject ToArray(ExecutionContext ctx, DySet self) => self.ToArray(ctx);
+
+    [InstanceMethod]
+    internal static DyObject ToTuple(ExecutionContext ctx, DySet self) => self.ToTuple(ctx);
+
+    [InstanceMethod]
+    internal static void IntersectWith(ExecutionContext ctx, DySet self, DyObject other) =>
+        self.IntersectWith(ctx, other);
+
+    [InstanceMethod]
+    internal static void UnionWith(ExecutionContext ctx, DySet self, DyObject other) =>
+        self.UnionWith(ctx, other);
+
+    [InstanceMethod]
+    internal static void ExceptOf(ExecutionContext ctx, DySet self, DyObject other) =>
+        self.ExceptWith(ctx, other);
+
+    [InstanceMethod]
+    internal static bool OverlapsWith(ExecutionContext ctx, DySet self, DyObject other) =>
+        self.Overlaps(ctx, other);
+
+    [InstanceMethod]
+    internal static bool IsSubsetOf(ExecutionContext ctx, DySet self, DyObject other) =>
+        self.IsSubsetOf(ctx, other);
+
+    [InstanceMethod]
+    internal static bool IsSupersetOf(ExecutionContext ctx, DySet self, DyObject other) =>
+        self.IsSupersetOf(ctx, other);
+
+    [StaticMethod(Method.Set)]
+    internal static DyObject New([VarArg]DyObject values) => new DySet(((DyTuple)values).GetValues());
 }

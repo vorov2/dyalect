@@ -1,8 +1,9 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Codegen;
 using System.Globalization;
 namespace Dyalect.Runtime.Types;
 
-internal sealed class DyFloatTypeInfo : DyTypeInfo
+[GeneratedType]
+internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
@@ -107,9 +108,7 @@ internal sealed class DyFloatTypeInfo : DyTypeInfo
 
         return base.LteOp(left, right, ctx);
     }
-    #endregion
 
-    #region Unary Operations
     protected override DyObject NegOp(DyObject arg, ExecutionContext ctx) => new DyFloat(-arg.GetFloat());
 
     protected override DyObject PlusOp(DyObject arg, ExecutionContext ctx) => arg;
@@ -121,64 +120,6 @@ internal sealed class DyFloatTypeInfo : DyTypeInfo
     }
 
     protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
-    #endregion
-
-    private DyObject IsMultipleOf(ExecutionContext ctx, DyObject self, DyObject other)
-    {
-        if (other.TypeId != DyType.Float) return ctx.InvalidType(DyType.Float, other);
-        return ((long)self.GetFloat() % (long)other.GetFloat()) == 0 ? DyBool.True : DyBool.False;
-    }
-    protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-        name switch 
-        {
-            Method.IsNaN => Func.Member(name, (c, o) => double.IsNaN(o.GetFloat()) ? DyBool.True : DyBool.False),
-            "IsMultipleOf" => Func.Member(name, IsMultipleOf, -1, "other"),
-            _ => base.InitializeInstanceMember(self, name, ctx)
-        };
-
-    private DyObject Convert(ExecutionContext ctx, DyObject obj)
-    {
-        if (obj.TypeId == DyType.Float)
-            return obj;
-
-        if (obj.TypeId == DyType.Integer)
-            return new DyFloat(obj.GetInteger());
-
-        if (obj.TypeId == DyType.Char || obj.TypeId == DyType.String)
-        {
-            _ = double.TryParse(obj.GetString(), NumberStyles.Float, CI.NumberFormat, out var i);
-            return new DyFloat(i);
-        }
-
-        return ctx.InvalidType(DyType.Float, DyType.Integer, DyType.Char, DyType.String, obj);
-    }
-
-    private DyObject Parse(ExecutionContext ctx, DyObject obj)
-    {
-        if (obj.TypeId == DyType.Integer)
-            return new DyFloat(obj.GetInteger());
-
-        if (obj.TypeId == DyType.Float)
-            return obj;
-
-        if ((obj.TypeId == DyType.Char || obj.TypeId == DyType.String) && double.TryParse(obj.GetString(),
-            NumberStyles.Float, CI.NumberFormat, out var i))
-            return new DyFloat(i);
-
-        return DyNil.Instance;
-    }
-
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Max => Func.Static(name, _ => DyFloat.Max),
-            Method.Min => Func.Static(name, _ => DyFloat.Min),
-            Method.Inf => Func.Static(name, _ => DyFloat.PositiveInfinity),
-            Method.Default => Func.Static(name, _ => DyFloat.Zero),
-            Method.Parse => Func.Static(name, Parse, -1, new Par("value")),
-            Method.Float => Func.Static(name, Convert, -1, new Par("value")),
-            _ => base.InitializeStaticMember(name, ctx)
-        };
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
@@ -186,4 +127,44 @@ internal sealed class DyFloatTypeInfo : DyTypeInfo
             DyType.Integer => DyInteger.Get((long)self.GetFloat()),
             _ => base.CastOp(self, targetType, ctx)
         };
+    #endregion
+
+    [InstanceMethod]
+    internal static bool IsNaN(double self) => double.IsNaN(self);
+
+    [StaticMethod]
+    internal static DyObject Max() => DyFloat.Max;
+
+    [StaticMethod]
+    internal static DyObject Min() => DyFloat.Min;
+
+    [StaticMethod]
+    internal static DyObject Inf() => DyFloat.PositiveInfinity;
+
+    [StaticMethod]
+    internal static DyObject Default() => DyFloat.Zero;
+
+    [StaticMethod]
+    internal static double? Parse(string value)
+    {
+        if (double.TryParse(value, NumberStyles.Float, CI.NumberFormat, out var i))
+            return i;
+        return null;
+    }
+
+    [StaticMethod(Method.Float)]
+    internal static double? Convert(ExecutionContext ctx, DyObject value)
+    {
+        if (value.TypeId is DyType.Float)
+            return value.GetFloat();
+
+        if (value.TypeId is DyType.Integer)
+            return value.GetInteger();
+
+        if (value.TypeId is DyType.Char or DyType.String)
+            return Parse(value.GetString());
+
+        ctx.InvalidType(DyType.Float, DyType.Integer, DyType.Char, DyType.String, value);
+        return default;
+    }
 }
