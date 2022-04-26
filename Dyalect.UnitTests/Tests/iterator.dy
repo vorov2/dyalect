@@ -366,13 +366,14 @@
     assert([1,2,3], seq.Take(3).ToArray())
 #endregion
 
-#region "Methods: Element"
+#region "Methods: ElementAt"
     let seq = yields { 1..10 }
     assert(2, seq.ElementAt(1))
     assert(2, seq.ElementAt(index: 1))
     assert(10, seq.ElementAt(9))
     assert(10, seq.ElementAt(index: 9))
-    assert(9, seq.ElementAt(-1))
+    assert(10, seq.ElementAt(-1))
+    assert(9, seq.ElementAt(-2))
     assert(2, seq[1])
     assert(2, seq[1])
     assert(10, seq[9])

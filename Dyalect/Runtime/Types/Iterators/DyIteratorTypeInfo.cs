@@ -1,4 +1,5 @@
-﻿using Dyalect.Compiler;
+﻿using Dyalect.Codegen;
+using Dyalect.Compiler;
 using Dyalect.Debug;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,8 @@ using System.Linq;
 using System.Text;
 namespace Dyalect.Runtime.Types;
 
-internal sealed class DyIteratorTypeInfo : DyTypeInfo
+[GeneratedType]
+internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
@@ -16,6 +18,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => DyType.Iterator;
 
+    #region Operations
     protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) => GetCount(ctx, arg);
 
     protected override DyObject ToStringOp(DyObject self, DyObject format, ExecutionContext ctx)
@@ -69,14 +72,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         try
         {
             var iter = DyIterator.ToEnumerable(ctx, self);
-
-            if (i < 0)
-            {
-                iter = iter.Reverse();
-                i = -i;
-            }
-
-            return iter.ElementAt(i);
+            return i < 0 ? iter.ElementAt(^-i) : iter.ElementAt(i);
         }
         catch (IndexOutOfRangeException)
         {
@@ -90,7 +86,18 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return seq.Any(o => o.Equals(item, ctx)) ? DyBool.True : DyBool.False;
     }
 
-    private DyObject ToMap(ExecutionContext ctx, DyObject self, DyObject keySelectorObj, DyObject valueSelectorObj)
+    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+        targetType.ReflectedTypeId switch
+        {
+            DyType.Tuple => new DyTuple(((DyIterator)self).ToEnumerable(ctx).ToArray()),
+            DyType.Array => new DyArray(((DyIterator)self).ToEnumerable(ctx).ToArray()),
+            DyType.Function => ((DyIterator)self).GetIteratorFunction(),
+            DyType.Set => ToSet(ctx, self),
+            _ => base.CastOp(self, targetType, ctx)
+        };
+    #endregion
+
+    internal static DyObject ToMap(ExecutionContext ctx, DyObject self, DyObject keySelectorObj, DyObject valueSelectorObj)
     {
         if (keySelectorObj.TypeId != DyType.Function)
             return ctx.InvalidType(DyType.Function, keySelectorObj);
@@ -125,27 +132,43 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return ctx.HasErrors ? null : seq.ToList();
     }
 
-    private DyObject ToArray(ExecutionContext ctx, DyObject self)
+    internal static DyObject ToArray(ExecutionContext ctx, DyObject self)
     {
         var res = ConvertToArray(ctx, self);
         return res is null ? DyNil.Instance : new DyArray(res.ToArray());
     }
 
-    private DyObject ToTuple(ExecutionContext ctx, DyObject self)
+    internal static DyObject ToTuple(ExecutionContext ctx, DyObject self)
     {
         var res = ConvertToArray(ctx, self);
         return res is null ? DyNil.Instance : new DyTuple(res.ToArray());
     }
 
-    private static DyObject GetCount(ExecutionContext ctx, DyObject self)
+    internal static DyObject GetCount(ExecutionContext ctx, DyObject self)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
         return ctx.HasErrors ? DyNil.Instance : DyInteger.Get(seq.Count());
     }
 
-    private DyObject ElementAt(ExecutionContext ctx, DyObject self, DyObject index) => GetOp(self, index, ctx);
+    internal static DyObject ElementAt(ExecutionContext ctx, DyObject self, DyObject index)
+    {
+        if (index.TypeId != DyType.Integer)
+            return ctx.InvalidType(DyType.Integer, index);
 
-    private DyObject Take(ExecutionContext ctx, DyObject self, DyObject count)
+        var i = (int)index.GetInteger();
+
+        try
+        {
+            var iter = DyIterator.ToEnumerable(ctx, self);
+            return i < 0 ? iter.ElementAt(^-i) : iter.ElementAt(i);
+        }
+        catch (IndexOutOfRangeException)
+        {
+            return ctx.IndexOutOfRange();
+        }
+    }
+
+    internal static DyObject Take(ExecutionContext ctx, DyObject self, DyObject count)
     {
         if (count.TypeId != DyType.Integer)
             return ctx.InvalidType(DyType.Integer, self);
@@ -158,7 +181,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Take(i));
     }
 
-    private DyObject Skip(ExecutionContext ctx, DyObject self, DyObject count)
+    internal static DyObject Skip(ExecutionContext ctx, DyObject self, DyObject count)
     {
         if (count.TypeId != DyType.Integer)
             return ctx.InvalidType(DyType.Integer, self);
@@ -171,16 +194,16 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Skip(i));
     }
 
-    private DyObject First(ExecutionContext ctx, DyObject self) =>
+    internal static DyObject First(ExecutionContext ctx, DyObject self) =>
         DyIterator.ToEnumerable(ctx, self).FirstOrDefault() ?? DyNil.Instance;
 
-    private DyObject Last(ExecutionContext ctx, DyObject self) =>
+    internal static DyObject Last(ExecutionContext ctx, DyObject self) =>
         DyIterator.ToEnumerable(ctx, self).LastOrDefault() ?? DyNil.Instance;
 
-    private DyObject Concat(ExecutionContext ctx, DyObject tuple) =>
+    internal static DyObject Concat(ExecutionContext ctx, DyObject tuple) =>
         DyIterator.Create(new MultiPartEnumerable(ctx, ((DyTuple)tuple).GetValues()));
 
-    private DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
+    internal static DyObject GetSlice(ExecutionContext ctx, DyObject self, DyObject fromElem, DyObject toElem)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -212,10 +235,10 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return DyIterator.Create(seq.Skip(beg).Take(end - beg + 1));
     }
 
-    private DyObject Reverse(ExecutionContext ctx, DyObject self) =>
+    internal static DyObject Reverse(ExecutionContext ctx, DyObject self) =>
         DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Reverse());
-    
-    private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject functor)
+
+    internal static DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -227,19 +250,29 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return DyIterator.Create(sorted);
     }
 
-    private DyObject Shuffle(ExecutionContext ctx, DyObject self)
+    internal static DyObject Shuffle(ExecutionContext ctx, DyObject self)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
         if (ctx.HasErrors)
             return DyNil.Instance;
-        
+
         var rnd = new Random();
-        var sorted = seq.OrderBy(_ => rnd.Next());
+        var last = 0;
+
+        int sorter(DyObject _)
+        {
+            var n = rnd.Next();
+            if (last != 0 && n > last) n = -n;
+            last = n;
+            return n;
+        }
+
+        var sorted = seq.OrderBy(sorter);
         return DyIterator.Create(sorted);
     }
 
-    private DyObject CountBy(ExecutionContext ctx, DyObject self, DyObject functor)
+    internal static DyObject CountBy(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -259,7 +292,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
             return DyInteger.Get(seq.Count());
     }
 
-    private DyObject Map(ExecutionContext ctx, DyObject self, DyObject functor)
+    internal static DyObject Map(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -270,7 +303,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return DyIterator.Create(xs);
     }
 
-    private DyObject TakeWhile(ExecutionContext ctx, DyObject self, DyObject functor)
+    internal static DyObject TakeWhile(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -281,7 +314,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return DyIterator.Create(xs);
     }
 
-    private DyObject SkipWhile(ExecutionContext ctx, DyObject self, DyObject functor)
+    internal static DyObject SkipWhile(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -292,7 +325,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return DyIterator.Create(xs);
     }
 
-    private DyObject Filter(ExecutionContext ctx, DyObject self, DyObject functor)
+    internal static DyObject Filter(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -303,7 +336,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return DyIterator.Create(xs);
     }
 
-    private DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject functor, DyObject initial)
+    internal static DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject functor, DyObject initial)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -313,7 +346,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return seq.Aggregate(initial, (x, y) => functor.Invoke(ctx, x, y));
     }
 
-    private DyObject Any(ExecutionContext ctx, DyObject self, DyObject functor)
+    internal static DyObject Any(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -324,7 +357,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return res ? DyBool.True : DyBool.False;
     }
 
-    private DyObject All(ExecutionContext ctx, DyObject self, DyObject functor)
+    internal static DyObject All(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -335,7 +368,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return res ? DyBool.True : DyBool.False;
     }
 
-    private DyObject ForEach(ExecutionContext ctx, DyObject self, DyObject functor)
+    internal static DyObject ForEach(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -353,7 +386,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return Nil;
     }
 
-    private DyObject ToSet(ExecutionContext ctx, DyObject self)
+    internal static DyObject ToSet(ExecutionContext ctx, DyObject self)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
         
@@ -365,7 +398,7 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         return new DySet(set);
     }
 
-    private DyObject Distinct(ExecutionContext ctx, DyObject self, DyObject functor)
+    internal static DyObject Distinct(ExecutionContext ctx, DyObject self, DyObject functor)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -411,6 +444,13 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
             _ => base.InitializeInstanceMember(self, name, ctx)
         };
 
+    [StaticMethod(Method.Concat)]
+    internal static DyObject StaticConcat(ExecutionContext ctx, params DyObject[] values) =>
+        DyIterator.Create(new MultiPartEnumerable(ctx, values));
+
+    [StaticMethod(Method.Iterator)]
+    internal static DyObject Iterator(ExecutionContext ctx, params DyObject[] values) => StaticConcat(ctx, values);
+
     private static IEnumerable<DyObject> GenerateRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, bool exclusive)
     {
         var elem = from;
@@ -448,10 +488,12 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         }
     }
 
-    private static DyObject MakeRange(ExecutionContext ctx, DyObject from, DyObject to, DyObject step, DyObject exclusive) =>
-        DyIterator.Create(GenerateRange(ctx, from, to, step, exclusive.IsTrue()));
+    [StaticMethod]
+    internal static DyObject Range(ExecutionContext ctx, [Default(0)]DyObject start, [Default]DyObject end, [Default(1)]DyObject step, bool exclusive = false) =>
+        DyIterator.Create(GenerateRange(ctx, start, end ?? Nil, step, exclusive));
 
-    private static DyObject Empty(ExecutionContext ctx) => DyIterator.Create(Enumerable.Empty<DyObject>());
+    [StaticMethod]
+    internal static DyObject Empty() => DyIterator.Create(Enumerable.Empty<DyObject>());
 
     private static IEnumerable<DyObject> Repeater(ExecutionContext ctx, DyObject val)
     {
@@ -480,26 +522,6 @@ internal sealed class DyIteratorTypeInfo : DyTypeInfo
         }
     }
 
-    private static DyObject Repeat(ExecutionContext ctx, DyObject val) => DyIterator.Create(Repeater(ctx, val));
-
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Iterator or Method.Concat => Func.Static(name, Concat, 0, new Par("values", ParKind.VarArg)),
-            Method.Range => Func.Static(name, MakeRange, -1, new Par("start", DyInteger.Zero), new Par("end", DyNil.Instance),
-                new Par("step", DyInteger.One), new Par("exclusive", DyBool.False)),
-            Method.Empty => Func.Static(name, Empty),
-            Method.Repeat => Func.Static(name, Repeat, -1, new Par("value")),
-            _ => base.InitializeStaticMember(name, ctx)
-        };
-
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-        targetType.ReflectedTypeId switch
-        {
-            DyType.Tuple => new DyTuple(((DyIterator)self).ToEnumerable(ctx).ToArray()),
-            DyType.Array => new DyArray(((DyIterator)self).ToEnumerable(ctx).ToArray()),
-            DyType.Function => ((DyIterator)self).GetIteratorFunction(),
-            DyType.Set => ToSet(ctx, self),
-            _ => base.CastOp(self, targetType, ctx)
-        };
+    [StaticMethod]
+    internal static DyObject Repeat(ExecutionContext ctx, DyObject value) => DyIterator.Create(Repeater(ctx, value));
 }

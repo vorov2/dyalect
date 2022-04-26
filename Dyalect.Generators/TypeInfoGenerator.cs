@@ -264,7 +264,7 @@ public class TypeInfoGenerator : SourceGenerator
             }
 
             var attrs = mp.GetAttributes();
-            var vararg = attrs.Any(a => a.AttributeClass.Name == "VarArgAttribute");
+            var vararg = attrs.Any(a => a.AttributeClass.Name == "VarArgAttribute") || mp.IsParams;
             var def = attrs.Where(a => a.AttributeClass.Name == "DefaultAttribute")
                 .Select(a => a.ConstructorArguments.Length > 0 ? a.ConstructorArguments[0].Value : nil)
                 .FirstOrDefault();
