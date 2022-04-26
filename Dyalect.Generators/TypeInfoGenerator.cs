@@ -222,7 +222,7 @@ public class TypeInfoGenerator : SourceGenerator
                 builder.EndBlock();
             }
 
-            System.IO.File.WriteAllText($"C:\\temp\\{t.Name}.generated.{DateTime.Now.Ticks}.cs", builder.ToString());
+            //System.IO.File.WriteAllText($"C:\\temp\\gen\\{t.Name}.generated.{DateTime.Now.Ticks}.cs", builder.ToString());
             ctx.AddSource($"{t.Name}.generated.cs", builder.ToString());
         }
     }
@@ -270,7 +270,6 @@ public class TypeInfoGenerator : SourceGenerator
         builder.AppendLine($"internal override {Types.DyObject} InternalCall({Types.ExecutionContext} ctx, {Types.DyObject}[] args)");
         builder.StartBlock();
 
-        //Start function body
         var pars = EmitParameters(ctx, builder, t, m, isStatic, false, out var varArgIndex);
 
         if (pars is null)
