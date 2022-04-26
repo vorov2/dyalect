@@ -296,7 +296,7 @@ public class TypeInfoGenerator : SourceGenerator
                 .FirstOrDefault();
 
             if (mp.HasExplicitDefaultValue && def is null)
-                def = mp.ExplicitDefaultValue;
+                def = mp.ExplicitDefaultValue ?? Nil;
 
             var nullable = ReferenceEquals(def, Nil);
             var typeName = mp.Type.GetSafeName();

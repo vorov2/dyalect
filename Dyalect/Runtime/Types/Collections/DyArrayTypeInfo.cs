@@ -19,6 +19,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
 
     public DyArrayTypeInfo() => AddMixin(DyType.Collection);
 
+    #region Operations
     protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
         DyInteger.Get(((DyArray)arg).Count);
 
@@ -64,6 +65,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
         var arr = (DyArray)self;
         return arr.IndexOf(ctx, item) != -1 ? DyBool.True : DyBool.False;
     }
+    #endregion
 
     [InstanceMethod(Method.Add)]
     internal static void AddItem(DyArray self, DyObject value) => self.Add(value);

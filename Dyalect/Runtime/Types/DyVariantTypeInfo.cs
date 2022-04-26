@@ -13,6 +13,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
 
     public DyVariantTypeInfo() => AddMixin(DyType.Collection);
 
+    #region Operations
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
         if (left.TypeId != right.TypeId || left.GetConstructor() != right.GetConstructor())
@@ -53,13 +54,12 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx) =>
         ctx.RuntimeContext.Tuple.Set(ctx, ((DyVariant)self).Tuple, index, value);
 
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
-    {
-        if (!char.IsUpper(name[0]))
-            return base.InitializeStaticMember(name, ctx);
-
-        return new Constructor<DyTuple>(name, (_, args) => new DyVariant(name, args), new("values", ParKind.VarArg));
-    }
+    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+        targetType.ReflectedTypeId switch
+        {
+            DyType.Tuple => GetTuple(ctx, (DyVariant)self),
+            _ => base.CastOp(self, targetType, ctx)
+        };
 
     private DyObject GetTuple(ExecutionContext ctx, DyVariant self)
     {
@@ -68,11 +68,13 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
 
         return self.Tuple;
     }
+    #endregion
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-        targetType.ReflectedTypeId switch
-        {
-            DyType.Tuple => GetTuple(ctx, (DyVariant)self),
-            _ => base.CastOp(self, targetType, ctx)
-        };
+    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)
+    {
+        if (!char.IsUpper(name[0]))
+            return base.InitializeStaticMember(name, ctx);
+
+        return new Constructor<DyTuple>(name, (_, args) => new DyVariant(name, args), new("values", ParKind.VarArg));
+    }
 }

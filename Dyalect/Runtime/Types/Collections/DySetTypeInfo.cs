@@ -17,6 +17,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
 
     public DySetTypeInfo() => AddMixin(DyType.Collection);
 
+    #region Operations
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
         var self = (DySet)left;
@@ -60,6 +61,15 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
         return new DyString(sb.ToString());
     }
 
+    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+        targetType.ReflectedTypeId switch
+        {
+            DyType.Array => new DyArray(((DySet)self).ToArray()),
+            DyType.Tuple => new DyTuple(((DySet)self).ToArray()),
+            _ => base.CastOp(self, targetType, ctx)
+        };
+    #endregion
+
     [InstanceMethod(Method.Add)]
     internal static bool AddItem(DySet self, DyObject value) => self.Add(value);
 
@@ -101,12 +111,4 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
 
     [StaticMethod(Method.Set)]
     internal static DyObject New([VarArg]DyObject values) => new DySet(((DyTuple)values).GetValues());
-
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-        targetType.ReflectedTypeId switch
-        {
-            DyType.Array => new DyArray(((DySet)self).ToArray()),
-            DyType.Tuple => new DyTuple(((DySet)self).ToArray()),
-            _ => base.CastOp(self, targetType, ctx)
-        };
 }

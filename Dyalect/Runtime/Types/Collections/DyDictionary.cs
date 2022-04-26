@@ -3,6 +3,7 @@ namespace Dyalect.Runtime.Types;
 
 public class DyDictionary : DyEnumerable
 {
+    //TODO: consider making private
     internal readonly Dictionary<DyObject, DyObject> Dictionary;
 
     public override string TypeName => nameof(DyType.Dictionary);
@@ -86,6 +87,19 @@ public class DyDictionary : DyEnumerable
             return false;
 
         return d.Dictionary.Equals(Dictionary);
+    }
+
+    internal DyObject[] GetArrayOfLabels()
+    {
+        var xs = new List<DyLabel>();
+
+        foreach (var (key, value) in Dictionary)
+        {
+            if (key.TypeId == DyType.String)
+                xs.Add(new DyLabel(key.GetString(), value));
+        }
+
+        return xs.ToArray();
     }
 
     public override IEnumerator<DyObject> GetEnumerator() => new DyDictionaryEnumerator(this);

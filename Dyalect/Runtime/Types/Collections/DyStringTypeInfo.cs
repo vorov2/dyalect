@@ -90,9 +90,16 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         self.SetItem(index, value, ctx);
         return DyNil.Instance;
     }
+
+    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+        targetType.ReflectedTypeId switch
+        {
+            DyType.Integer => long.TryParse(self.GetString(), out var i8) ? new DyInteger(i8) : DyInteger.Zero,
+            DyType.Float => double.TryParse(self.GetString(), out var r8) ? new DyFloat(r8) : DyFloat.Zero,
+            _ => base.CastOp(self, targetType, ctx)
+        };
     #endregion
 
-    #region Instance
     [InstanceMethod]
     internal static DyObject Slice(ExecutionContext ctx, DyString self, int index = 0, [Default]int? size = null)
     {
@@ -274,17 +281,6 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
 
         return self.Format(arr);
     }
-
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-        targetType.ReflectedTypeId switch
-        {
-            DyType.Integer => long.TryParse(self.GetString(), out var i8) ? new DyInteger(i8) : DyInteger.Zero,
-            DyType.Float => double.TryParse(self.GetString(), out var r8) ? new DyFloat(r8) : DyFloat.Zero,
-            _ => base.CastOp(self, targetType, ctx)
-        };
-    #endregion
-
-    #region Statics
     [StaticMethod]
     internal static string? Concat(ExecutionContext ctx, params DyObject[] values)
     {
@@ -354,5 +350,4 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
 
     [StaticMethod(Method.Format)]
     internal static string? StaticFormat(ExecutionContext ctx, string template, params DyObject[] values) => Format(ctx, template, values);
-    #endregion
 }

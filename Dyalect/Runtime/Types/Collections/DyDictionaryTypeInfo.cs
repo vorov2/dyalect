@@ -1,7 +1,5 @@
-﻿using Dyalect.Debug;
-using System.Collections.Generic;
+﻿using Dyalect.Codegen;
 using System.Text;
-using Dyalect.Codegen;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -18,6 +16,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
 
     public DyDictionaryTypeInfo() => AddMixin(DyType.Collection);
 
+    #region Operations
     protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
     {
         var len = ((DyDictionary)arg).Count;
@@ -72,6 +71,13 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
         self.SetItem(index, value, ctx);
         return DyNil.Instance;
     }
+    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+        targetType.ReflectedTypeId switch
+        {
+            DyType.Tuple => new DyTuple(((DyDictionary)self).GetArrayOfLabels()),
+            _ => base.CastOp(self, targetType, ctx)
+        };
+    #endregion
 
     [InstanceMethod(Method.Add)]
     internal static void AddItem(ExecutionContext ctx, DyDictionary self, DyObject key, DyObject value)
@@ -100,7 +106,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
     internal static void ClearItems(DyDictionary self) => self.Clear();
 
     [InstanceMethod(Method.ToTuple)]
-    internal static DyObject ToTuple(DyObject self) => new DyTuple(GetArray(self));
+    internal static DyObject ToTuple(DyDictionary self) => new DyTuple(self.GetArrayOfLabels());
 
     [InstanceMethod(Method.Compact)]
     internal static void Compact(ExecutionContext ctx, DyDictionary self, [Default]DyObject predicate)
@@ -120,20 +126,6 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
             else if (ReferenceEquals(value, DyNil.Instance))
                 self.Dictionary.Remove(key);
         }
-    }
-
-    private static DyObject[] GetArray(DyObject self)
-    {
-        var map = ((DyDictionary)self).Dictionary;
-        var xs = new List<DyLabel>();
-
-        foreach (var (key, value) in map)
-        {
-            if (key.TypeId == DyType.String)
-                xs.Add(new DyLabel(key.GetString(), value));
-        }
-
-        return xs.ToArray();
     }
 
     [InstanceMethod(Method.ContainsValue)]
@@ -163,11 +155,4 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
 
     [StaticMethod(Method.FromTuple)]
     internal static DyObject FromTuple(ExecutionContext ctx, [VarArg]DyTuple values) => New(ctx, values);
-
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-        targetType.ReflectedTypeId switch
-        {
-            DyType.Tuple => new DyTuple(GetArray(self)),
-            _ => base.CastOp(self, targetType, ctx)
-        };
 }

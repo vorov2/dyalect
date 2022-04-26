@@ -5,7 +5,17 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
 {
-    protected DyCollectionTypeInfo() { }
+    #region Operations
+    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+        targetType.ReflectedTypeId switch
+        {
+            DyType.Tuple => new DyTuple(((DyCollection)self).Trim()),
+            DyType.Array => new DyArray(((DyCollection)self).Trim()),
+            DyType.Iterator => DyIterator.Create((DyCollection)self),
+            DyType.Set => new DySet(new HashSet<DyObject>(((DyCollection)self).Trim())),
+            _ => base.CastOp(self, targetType, ctx)
+        };
+    #endregion
 
     [InstanceMethod(Method.Indices)]
     internal static DyObject GetIndices(DyCollection self)
@@ -58,14 +68,4 @@ internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
         set.UnionWith(vals);
         return new DySet(set);
     }
-
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
-        targetType.ReflectedTypeId switch
-        {
-            DyType.Tuple => new DyTuple(((DyCollection)self).Trim()),
-            DyType.Array => new DyArray(((DyCollection)self).Trim()),
-            DyType.Iterator => DyIterator.Create((DyCollection)self),
-            DyType.Set => new DySet(new HashSet<DyObject>(((DyCollection)self).Trim())),
-            _ => base.CastOp(self, targetType, ctx)
-        };
 }
