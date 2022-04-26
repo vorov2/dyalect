@@ -281,6 +281,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
 
         return self.Format(arr);
     }
+
     [StaticMethod]
     internal static string? Concat(ExecutionContext ctx, params DyObject[] values)
     {
