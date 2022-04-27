@@ -23,9 +23,9 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
         if (left.TypeId != right.TypeId)
-            return DyBool.False;
+            return False;
 
-        return ((DyGuid)left).Value == ((DyGuid)right).Value ? DyBool.True : DyBool.False;
+        return ((DyGuid)left).Value == ((DyGuid)right).Value ? True : False;
     }
 
     protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)

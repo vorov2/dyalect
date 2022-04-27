@@ -26,7 +26,7 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
     {
         var a = ((DyStringBuilder)left).Builder;
         var b = ((DyStringBuilder)right).Builder;
-        return a.ToString() == b.ToString() ? DyBool.True : DyBool.False;
+        return a.ToString() == b.ToString() ? True : False;
     }
     #endregion
 

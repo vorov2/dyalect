@@ -21,8 +21,7 @@ public sealed partial class DyRegexTypeInfo : DyForeignTypeInfo
 
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
-        return left is DyRegex a && right is DyRegex b && a.Regex.ToString() == b.Regex.ToString()
-            ? DyBool.True : DyBool.False;
+        return left is DyRegex a && right is DyRegex b && a.Regex.ToString() == b.Regex.ToString() ? True : False;
     }
     #endregion
 

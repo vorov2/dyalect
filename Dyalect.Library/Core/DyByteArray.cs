@@ -152,7 +152,7 @@ public sealed class DyByteArray : DyForeignObject
 
         var cz = buffer[readPosition];
         readPosition++;
-        return cz is 1 ? DyBool.True : DyBool.False;
+        return cz is 1 ? True : False;
     }
 
     private DyObject ReadChar(ExecutionContext ctx)
