@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Linq;
+using Dyalect.Codegen;
 
 namespace Dyalect.Library.IO
 {
@@ -49,7 +50,7 @@ namespace Dyalect.Library.IO
             return pathStr;
         }
 
-        private DyObject Handle(ExecutionContext ctx, Func<DyObject> action, DyObject? arg = null)
+        private static DyObject Handle(ExecutionContext ctx, Func<DyObject> action, object? arg = default)
         {
             try
             {
@@ -228,59 +229,44 @@ namespace Dyalect.Library.IO
             });
         }
 
-        private DyObject GetCreationTime(ExecutionContext ctx, DyObject path)
-        {
-            if (!path.IsString(ctx)) return Nil;
-            return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetCreationTimeUtc(path.GetString()).Ticks), path);
-        }
+        [StaticMethod]
+        internal static DyObject GetCreationTime(ExecutionContext ctx, string path) =>
+            Handle(ctx, () => new DyDateTime(ctx.Type<DyDateTimeTypeInfo>(), File.GetCreationTimeUtc(path).Ticks), path);
 
-        private DyObject SetCreationTime(ExecutionContext ctx, DyObject path, DyObject date)
-        {
-            if (!path.IsString(ctx)) return Nil;
-            if (date.TypeId != DeclaringUnit.Core.Value.DateTime.TypeId)
-                return ctx.InvalidType(date);
-            return Handle(ctx, () =>
+        [StaticMethod]
+        internal static DyObject SetCreationTime(ExecutionContext ctx, string path, DyDateTime value) =>
+            Handle(ctx, () =>
             {
-                File.SetCreationTimeUtc(path.GetString(), new DateTime(((DyDateTime)date).Ticks));
+                File.SetCreationTimeUtc(path, GetDateTimeUtc(value));
                 return Nil;
             }, path);
-        }
 
-        private DyObject GetLastAccessTime(ExecutionContext ctx, DyObject path)
-        {
-            if (!path.IsString(ctx)) return Nil;
-            return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetLastAccessTimeUtc(path.GetString()).Ticks), path);
-        }
+        [StaticMethod]
+        internal static DyObject GetLastAccessTime(ExecutionContext ctx, string path) =>
+            Handle(ctx, () => new DyDateTime(ctx.Type<DyDateTimeTypeInfo>(), File.GetLastAccessTimeUtc(path).Ticks), path);
 
-        private DyObject SetLastAccessTime(ExecutionContext ctx, DyObject path, DyObject date)
-        {
-            if (!path.IsString(ctx)) return Nil;
-            if (date.TypeId != DeclaringUnit.Core.Value.DateTime.TypeId)
-                return ctx.InvalidType(date);
-            return Handle(ctx, () =>
+        [StaticMethod]
+        internal static DyObject SetLastAccessTime(ExecutionContext ctx, string path, DyDateTime value) =>
+            Handle(ctx, () =>
             {
-                File.SetLastAccessTimeUtc(path.GetString(), new DateTime(((DyDateTime)date).Ticks));
+                File.SetLastAccessTimeUtc(path, GetDateTimeUtc(value));
                 return Nil;
             }, path);
-        }
 
-        private DyObject GetLastWriteTime(ExecutionContext ctx, DyObject path)
-        {
-            if (!path.IsString(ctx)) return Nil;
-            return Handle(ctx, () => new DyDateTime(DeclaringUnit.Core.Value.DateTime, File.GetLastWriteTimeUtc(path.GetString()).Ticks), path);
-        }
+        [StaticMethod]
+        internal static DyObject GetLastWriteTime(ExecutionContext ctx, string path) => 
+            Handle(ctx, () => new DyDateTime(ctx.Type<DyDateTimeTypeInfo>(), File.GetLastWriteTimeUtc(path).Ticks), path);
 
-        private DyObject SetLastWriteTime(ExecutionContext ctx, DyObject path, DyObject date)
-        {
-            if (!path.IsString(ctx)) return Nil;
-            if (date.TypeId != DeclaringUnit.Core.Value.DateTime.TypeId)
-                return ctx.InvalidType(date);
-            return Handle(ctx, () =>
+        [StaticMethod]
+        internal static DyObject SetLastWriteTime(ExecutionContext ctx, string path, DyDateTime value) =>
+            Handle(ctx, () =>
             {
-                File.SetLastWriteTimeUtc(path.GetString(), new DateTime(((DyDateTime)date).Ticks));
+                File.SetLastWriteTimeUtc(path, GetDateTimeUtc(value));
                 return Nil;
             }, path);
-        }
+
+        private static DateTime GetDateTimeUtc(DyDateTime value) =>
+            value is DyLocalDateTime loc ? loc.ToDateTimeOffset().ToUniversalTime().DateTime : value.ToDateTime();
 
         protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
             name switch

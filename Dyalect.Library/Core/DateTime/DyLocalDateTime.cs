@@ -44,7 +44,9 @@ namespace Dyalect.Library.Core
             return sb.ToString();
         }
 
-        public override object ToObject() => new DateTimeOffset(new DateTime(ticks, DateTimeKind.Unspecified), Offset.ToTimeSpan());
+        public override object ToObject() => ToDateTimeOffset();
+
+        public DateTimeOffset ToDateTimeOffset() => new(new DateTime(ticks, DateTimeKind.Unspecified), Offset.ToTimeSpan());
 
         public override DyDateTime FirstDayOfMonth()
         {

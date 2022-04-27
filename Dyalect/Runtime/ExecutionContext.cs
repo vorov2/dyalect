@@ -1,6 +1,8 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Runtime.Types;
 using System.Collections.Generic;
+using System.Linq;
+
 namespace Dyalect.Runtime;
 
 public class ExecutionContext
@@ -82,6 +84,8 @@ public class ExecutionContext
     }
 
     public bool HasContextVariable(string key) => contextVariables.ContainsKey(key);
+
+    public T Type<T>() where T : DyTypeInfo => RuntimeContext.Types.OfType<T>().First();
 
     #region ArgContainer
     private int count;
