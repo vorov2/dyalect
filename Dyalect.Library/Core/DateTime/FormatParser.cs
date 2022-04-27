@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using static Dyalect.Library.Core.FormatElementKind;
-
 namespace Dyalect.Library.Core;
 
 internal sealed class FormatParser

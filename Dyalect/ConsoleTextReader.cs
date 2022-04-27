@@ -5,16 +5,16 @@ namespace Dyalect;
 
 public sealed class ConsoleTextReader : TextReader
 {
-    private readonly DyFunction read;
-    private readonly DyFunction readLine;
+    private readonly DyObject read;
+    private readonly DyObject readLine;
     private readonly ExecutionContext ctx;
 
-    public ConsoleTextReader(ExecutionContext ctx, DyFunction read, DyFunction readLine) =>
+    public ConsoleTextReader(ExecutionContext ctx, DyObject read, DyObject readLine) =>
         (this.ctx, this.read, this.readLine) = (ctx, read, readLine);
 
     public override int Read()
     {
-        var ret = read.Call(ctx);
+        var ret = read.Invoke(ctx);
 
         if (ret.TypeId == DyType.Integer)
             return (int)ret.GetInteger();
@@ -29,7 +29,7 @@ public sealed class ConsoleTextReader : TextReader
 
     public override string? ReadLine()
     {
-        var ret = readLine.Call(ctx);
+        var ret = readLine.Invoke(ctx);
 
         if (ret.TypeId == DyType.String)
             return ret.GetString();

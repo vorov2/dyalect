@@ -1,33 +1,31 @@
 ﻿using Dyalect.Runtime.Types;
 using System.Text.RegularExpressions;
+namespace Dyalect.Library.Core;
 
-namespace Dyalect.Library.Core
+public class DyRegexCapture : DyObject
 {
-    public class DyRegexCapture : DyObject
-    {
-        private readonly Capture capture;
+    private readonly Capture capture;
 
-        public override string TypeName => nameof(DyType.Object);
+    public override string TypeName => nameof(DyType.Object);
 
-        public DyRegexCapture(Capture capture) : base(DyType.Object) => this.capture = capture;
+    public DyRegexCapture(Capture capture) : base(DyType.Object) => this.capture = capture;
 
-        public override SupportedOperations Supports() => SupportedOperations.Get;
+    public override SupportedOperations Supports() => SupportedOperations.Get;
 
-        public override int GetHashCode() => capture.GetHashCode();
+    public override int GetHashCode() => capture.GetHashCode();
 
-        public override object ToObject() => capture;
+    public override object ToObject() => capture;
 
-        public override string ToString() => capture.Value;
+    public override string ToString() => capture.Value;
 
-        public override bool Equals(DyObject? other) => other is DyRegexCapture c && c.capture == capture;
+    public override bool Equals(DyObject? other) => other is DyRegexCapture c && c.capture == capture;
 
-        protected internal override object? GetItem(string key) =>
-            key switch
-            {
-                "index" => capture.Index,
-                "length" => capture.Length,
-                "value" => capture.Value,
-                _ => base.GetItem(key)
-            };
-    }
+    protected internal override object? GetItem(string key) =>
+        key switch
+        {
+            "index" => capture.Index,
+            "length" => capture.Length,
+            "value" => capture.Value,
+            _ => base.GetItem(key)
+        };
 }

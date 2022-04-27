@@ -1,28 +1,27 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Codegen;
+using Dyalect.Debug;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
-
 namespace Dyalect.Library.Core;
 
-public sealed class DyDateTypeInfo : AbstractDateTypeInfo<DyDate>
+[GeneratedType]
+public sealed partial class DyDateTypeInfo : SpanTypeInfo<DyDate>
 {
-    private const string Date = "Date";
+    private const string Date = nameof(Date);
 
     public DyDateTypeInfo() : base(Date) { }
 
-    private DyObject AddTo(ExecutionContext ctx, DyObject self, DyObject years, DyObject months, DyObject days)
+    [InstanceMethod("Add")]
+    internal static DyObject AddTo(ExecutionContext ctx, DyObject self, int years = 0, int months = 0, int days = 0)
     {
-        if (days.NotIntOrNil(ctx)) return Nil;
-        if (months.NotIntOrNil(ctx)) return Nil;
-        if (years.NotIntOrNil(ctx)) return Nil;
         var s = (DyDate)self.Clone();
 
         try
         {
-            if (days.NotNil()) s.AddDays((int)days.GetInteger());
-            if (months.NotNil()) s.AddMonths((int)months.GetInteger());
-            if (years.NotNil()) s.AddYears((int)years.GetInteger());
+            if (days != 0) s.AddDays(days);
+            if (months != 0) s.AddMonths(months);
+            if (years != 0) s.AddYears(years);
         }
         catch (ArgumentOutOfRangeException)
         {
@@ -32,47 +31,61 @@ public sealed class DyDateTypeInfo : AbstractDateTypeInfo<DyDate>
         return s;
     }
 
-    protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-       name switch
-       {
-           "Add" => Func.Member(name, AddTo, -1, new Par("years", 0), new Par("months", 0), new Par("days", 0)),
-           _ => base.InitializeInstanceMember(self, name, ctx)
-       };
+    [InstanceProperty]
+    internal static int Year(DyDate self) => self.Year;
 
-    protected override DyObject Parse(string format, string input) => DyDate.Parse(this, format, input);
+    [InstanceProperty]
+    internal static int Month(DyDate self) => self.Month;
 
-    private DyObject New(ExecutionContext ctx, DyObject year, DyObject month, DyObject day)
+    [InstanceProperty]
+    internal static int Day(DyDate self) => self.Day;
+
+    [InstanceProperty]
+    internal static string DayOfWeek(DyDate self) => self.DayOfWeek;
+
+    [InstanceProperty]
+    internal static int DayOfYear(DyDate self) => self.DayOfYear;
+
+    [StaticMethod]
+    internal static DyObject Parse(ExecutionContext ctx, string input, string format)
     {
-        if (year.NotNat(ctx)) return Nil;
-        if (month.NotNat(ctx)) return Nil;
-        if (day.NotNat(ctx)) return Nil;
+        try
+        {
+            return DyDate.Parse(ctx.Type<DyDateTypeInfo>(), format, input);
+        }
+        catch (FormatException)
+        {
+            return ctx.ParsingFailed();
+        }
+        catch (OverflowException)
+        {
+            return ctx.Overflow();
+        }
+    }
 
-        if (year.GetInteger() == 0) return ctx.InvalidValue(year);
-        if (month.GetInteger() == 0) return ctx.InvalidValue(year);
-        if (day.GetInteger() == 0) return ctx.InvalidValue(year);
-
+    [StaticMethod(Date)]
+    internal static DyObject CreateNew(ExecutionContext ctx, int year, int month, int day)
+    {
         DateTime dt;
 
         try
         {
-            dt = new DateTime((int)year.GetInteger(), (int)month.GetInteger(), (int)day.GetInteger()).Date;
+            dt = new DateTime(year, month, day).Date;
         }
         catch (Exception)
         {
             return ctx.Overflow();
         }
 
-        return new DyDate(this, (int)(dt.Ticks / DT.TicksPerDay));
+        return new DyDate(ctx.Type<DyDateTypeInfo>(), (int)(dt.Ticks / DT.TicksPerDay));
     }
 
-    protected override DyDate GetMin(ExecutionContext ctx) => new(this, (int)(DateTime.MinValue.Date.Ticks / DT.TicksPerDay));
+    [StaticMethod]
+    internal static DyDate Default(ExecutionContext ctx) => Min(ctx);
+    
+    [StaticMethod]
+    internal static DyDate Min(ExecutionContext ctx) => new(ctx.Type<DyDateTypeInfo>(), (int)(DateTime.MinValue.Date.Ticks / DT.TicksPerDay));
 
-    protected override DyDate GetMax(ExecutionContext ctx) => new(this, (int)(DateTime.MaxValue.Date.Ticks / DT.TicksPerDay));
-
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-      name switch
-      {
-          Date => Func.Static(name, New, -1, new Par("year"), new Par("month"), new Par("day")),
-          _ => base.InitializeStaticMember(name, ctx)
-      };
+    [StaticMethod]
+    internal static DyDate Max(ExecutionContext ctx) => new(ctx.Type<DyDateTypeInfo>(), (int)(DateTime.MaxValue.Date.Ticks / DT.TicksPerDay));
 }

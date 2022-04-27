@@ -1,182 +1,152 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
 using System.IO;
+namespace Dyalect.Library.Core;
 
-namespace Dyalect.Library.Core
+[GeneratedType]
+public sealed partial class DyConsoleTypeInfo : DyForeignTypeInfo
 {
-    public sealed class DyConsoleTypeInfo : DyForeignTypeInfo
+    private const string VAR_CONSOLEOUTPUT = "sys.ConsoleOutput";
+    private const string VAR_CONSOLEINPUT = "sys.ConsoleInput";
+    private const string VAR_DEFAULTBACKCOLOR = "sys.DefaultBackColor";
+
+    public override string ReflectedTypeName => "Console";
+
+    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
+
+    private static ConsoleColor GetColor(string color)
     {
-        public override string ReflectedTypeName => "Console";
-        private TextWriter? consoleOutput;
-        private TextReader? consoleInput;
+        if (Enum.TryParse<ConsoleColor>(color, true, out var value))
+            return value;
 
-        protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
+        return ConsoleColor.Black;
+    }
 
-        private ConsoleColor GetColor(DyObject obj)
+    private static void WriteToConsole(ExecutionContext ctx, DyObject value, string? color, string? backColor, bool newLine)
+    {
+        var str = value.ToString(ctx);
+
+        if (ctx.HasErrors)
+            return;
+
+        var oldColor = Console.ForegroundColor;
+        var oldBackColor = Console.BackgroundColor;
+
+        if (color is not null) Console.ForegroundColor = GetColor(color);
+        if (backColor is not null) Console.BackgroundColor = GetColor(backColor);
+
+        if (newLine)
+            Console.Write(str.GetString() + Environment.NewLine);
+        else
+            Console.Write(str.GetString());
+
+        Console.ForegroundColor = oldColor;
+        Console.BackgroundColor = oldBackColor;
+    }
+
+    [StaticMethod]
+    internal static void WriteLine(ExecutionContext ctx, [Default]DyObject value, string? color = null, string? backColor = null) =>
+        WriteToConsole(ctx, value, color, backColor, newLine: true);
+
+    [StaticMethod]
+    internal static void Write(ExecutionContext ctx, DyObject value, string? color = null, string? backColor = null) =>
+       WriteToConsole(ctx, value, color, backColor, newLine: false);
+
+    [StaticMethod]
+    internal static char Read() => (char)Console.Read();
+
+    [StaticMethod]
+    internal static string ReadLine() => Console.ReadLine() ?? "";
+
+    [StaticMethod]
+    internal static void Clear(ExecutionContext ctx, string? backColor = null)
+    {
+        if (!ctx.HasContextVariable(VAR_DEFAULTBACKCOLOR))
+            ctx.SetContextVariable(VAR_DEFAULTBACKCOLOR, Console.BackgroundColor);
+
+        Console.BackgroundColor = backColor is not null ? GetColor(backColor)
+            : ctx.GetContextVariable<ConsoleColor>(VAR_DEFAULTBACKCOLOR);
+        Console.Clear();
+    }
+
+    [StaticMethod]
+    internal static DyObject GetCursorPosition()
+    {
+        var (left, top) = Console.GetCursorPosition();
+        return DyTuple.Create(new("left", left), new("top", top));
+    }
+
+    [StaticMethod]
+    internal static void SetCursorPosition(ExecutionContext ctx, int left, int top)
+    {
+        try
         {
-            if (Enum.TryParse<ConsoleColor>(obj.GetString(), true, out var value))
-                return value;
-
-            return ConsoleColor.Black;
+            Console.SetCursorPosition(left, top);
         }
-
-        private DyObject WriteToConsole(ExecutionContext ctx, DyObject value, DyObject color, DyObject backColor, bool newLine)
+        catch (ArgumentOutOfRangeException)
         {
-            var str = value.ToString(ctx);
-
-            if (ctx.HasErrors)
-                return Nil;
-
-            if (color.NotNil() && !color.IsString(ctx)) return Nil;
-            if (backColor.NotNil() && !backColor.IsString(ctx)) return Nil;
-
-            var oldColor = Console.ForegroundColor;
-            var oldBackColor = Console.BackgroundColor;
-
-            if (color.NotNil()) Console.ForegroundColor = GetColor(color);
-            if (backColor.NotNil()) Console.BackgroundColor = GetColor(backColor);
-
-            if (newLine)
-                Console.Write(str.GetString() + Environment.NewLine);
-            else
-                Console.Write(str.GetString());
-
-            Console.ForegroundColor = oldColor;
-            Console.BackgroundColor = oldBackColor;
-            return DyNil.Instance;
+            ctx.InvalidValue();
         }
+    }
 
-        private DyObject WriteLine(ExecutionContext ctx, DyObject value, DyObject color, DyObject backColor) =>
-            WriteToConsole(ctx, value, color, backColor, newLine: true);
+    [StaticMethod]
+    internal static void SetTitle(string value) => Console.Title = value;
 
-        private DyObject Write(ExecutionContext ctx, DyObject value, DyObject color, DyObject backColor) =>
-           WriteToConsole(ctx, value, color, backColor, newLine: false);
-
-        private DyObject Read(ExecutionContext _) => new DyChar((char)Console.Read());
-
-        private DyObject ReadLine(ExecutionContext _) => new DyString(Console.ReadLine() ?? "");
-
-        private ConsoleColor? defaultBackColor;
-        private DyObject Clear(ExecutionContext ctx, DyObject backColor)
+    [StaticMethod]
+    internal static void SetOutput(ExecutionContext ctx, DyObject? write = null, DyObject? writeLine = null)
+    {
+        if (write is null || writeLine is null)
         {
-            if (defaultBackColor is null)
-                defaultBackColor = Console.BackgroundColor;
-            
-            if (backColor.NotNil() && !backColor.IsString(ctx)) return Nil;
-            Console.BackgroundColor = backColor.NotNil() ? GetColor(backColor) : defaultBackColor.Value;
-            Console.Clear();
-            return DyNil.Instance;
+            var outputWriter = ctx.GetContextVariable<TextWriter>(VAR_CONSOLEOUTPUT);
+            if (outputWriter is not null)
+                Console.SetOut(outputWriter);
         }
-
-        private DyObject GetCursorPosition(ExecutionContext _)
+        else
         {
-            var (left, top) = Console.GetCursorPosition();
-            return DyTuple.Create(new("left", left), new("top", top));
-        }
+            if (!ctx.HasContextVariable(VAR_CONSOLEOUTPUT))
+                ctx.SetContextVariable(VAR_CONSOLEOUTPUT, Console.Out);
 
-        private DyObject SetCursorPosition(ExecutionContext ctx, DyObject left, DyObject top)
+            Console.SetOut(new ConsoleTextWriter(ctx, write!, writeLine));
+        }
+    }
+
+    [StaticMethod]
+    internal static void SetInput(ExecutionContext ctx, DyObject? read = null, DyObject? readLine = null)
+    {
+        if (read is null || readLine is null)
         {
-            if (!left.IsInteger(ctx)) return Nil;
-            if (!top.IsInteger(ctx)) return Nil;
-
-            try
-            {
-                Console.SetCursorPosition((int)left.GetInteger(), (int)top.GetInteger());
-                return DyNil.Instance;
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return ctx.InvalidValue();
-            }
+            var consoleInput = ctx.GetContextVariable<TextReader>(VAR_CONSOLEINPUT);
+            if (consoleInput is not null)
+                Console.SetIn(consoleInput);
         }
-
-        private DyObject SetTitle(ExecutionContext ctx, DyObject value)
+        else
         {
-            if (!value.IsString(ctx)) return Nil;
-            Console.Title = value.GetString();
-            return DyNil.Instance;
-        }
+            if (!ctx.HasContextVariable(VAR_CONSOLEINPUT))
+                ctx.SetContextVariable(VAR_CONSOLEINPUT, Console.In);
 
-        private DyObject SetOutput(ExecutionContext ctx, DyObject write, DyObject writeLine)
+            Console.SetIn(new ConsoleTextReader(ctx, read, readLine));
+        }
+    }
+
+    [StaticMethod]
+    internal static DyObject ReadKey(ExecutionContext ctx, bool intercept = false)
+    {
+        try
         {
-            if (write is DyNil && writeLine is DyNil)
-            {
-                if (consoleOutput is not null)
-                    Console.SetOut(consoleOutput);
-            }
-            else if (write is not DyFunction writeFn)
-                ctx.InvalidType(write);
-            else if (writeLine is not DyFunction writeLineFn)
-                ctx.InvalidType(writeLine);
-            else
-            {
-                if (consoleOutput is null)
-                    consoleOutput = Console.Out;
-
-                Console.SetOut(new ConsoleTextWriter(ctx, writeFn, writeLineFn));
-            }
-
-            return DyNil.Instance;
+            var ci = Console.ReadKey(intercept);
+            return DyTuple.Create(
+                new("key", ci.Key.ToString()),
+                new("keyChar", ci.KeyChar),
+                new("alt", (ci.Modifiers & ConsoleModifiers.Alt) == ConsoleModifiers.Alt),
+                new("shift", (ci.Modifiers & ConsoleModifiers.Shift) == ConsoleModifiers.Shift),
+                new("ctrl", (ci.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control)
+            );
         }
-
-        private DyObject SetInput(ExecutionContext ctx, DyObject read, DyObject readLine)
+        catch (InvalidOperationException)
         {
-            if (read is DyNil && readLine is DyNil)
-            {
-                if (consoleInput is not null)
-                    Console.SetIn(consoleInput);
-            }
-            else if (read is not DyFunction readFn)
-                ctx.InvalidType(read);
-            else if (readLine is not DyFunction readLineFn)
-                ctx.InvalidType(readLine);
-            else
-            {
-                if (consoleInput is null)
-                    consoleInput = Console.In;
-
-                Console.SetIn(new ConsoleTextReader(ctx, readFn, readLineFn));
-            }
-
-            return DyNil.Instance;
+            return ctx.InvalidOperation();
         }
-
-        private DyObject ReadKey(ExecutionContext ctx, DyObject intercept)
-        {
-            try
-            {
-                var ci = Console.ReadKey(intercept.IsTrue());
-                return DyTuple.Create(
-                    new("key", ci.Key.ToString()),
-                    new("keyChar", ci.KeyChar),
-                    new("alt", (ci.Modifiers & ConsoleModifiers.Alt) == ConsoleModifiers.Alt),
-                    new("shift", (ci.Modifiers & ConsoleModifiers.Shift) == ConsoleModifiers.Shift),
-                    new("ctrl", (ci.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control)
-                );
-            }
-            catch (InvalidOperationException)
-            {
-                return ctx.InvalidOperation();
-            }
-        }
-
-        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-            name switch
-            {
-                "Write" => Func.Static(name, Write, -1, new Par("value"), new Par("color", DyNil.Instance), new Par("backColor", DyNil.Instance)),
-                "WriteLine" => Func.Static(name, WriteLine, -1, new Par("value", DyString.Empty), new Par("color", DyNil.Instance), new Par("backColor", DyNil.Instance)),
-                "Read" => Func.Static(name, Read),
-                "ReadLine" => Func.Static(name, ReadLine),
-                "ReadKey" => Func.Static(name, ReadKey, -1, new Par("intercept", DyBool.False)),
-                "Clear" => Func.Static(name, Clear, -1, new Par("backColor", DyNil.Instance)),
-                "GetCursorPosition" => Func.Static(name, GetCursorPosition),
-                "SetCursorPosition" => Func.Static(name, SetCursorPosition, -1, new Par("left"), new Par("right")),
-                "SetTitle" => Func.Static(name, SetTitle, -1, new Par("value")),
-                "SetOutput" => Func.Static(name, SetOutput, -1, new Par("write", DyNil.Instance), new Par("writeLine", DyNil.Instance)),
-                "SetInput" => Func.Static(name, SetInput, -1, new Par("read", DyNil.Instance), new Par("readLine", DyNil.Instance)),
-                _ => base.InitializeStaticMember(name, ctx)
-            };
     }
 }

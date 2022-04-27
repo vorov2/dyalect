@@ -54,7 +54,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("setOut")]
-    internal static void SetOutput(ExecutionContext ctx, [Default]DyObject? output = null)
+    internal static void SetOutput(ExecutionContext ctx, DyObject? output = null)
     {
         if (output is null)
         {

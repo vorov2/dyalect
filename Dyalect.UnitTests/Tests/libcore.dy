@@ -39,6 +39,12 @@
     assert("Hello, John Doe! How do you do?", sb)
 #endregion
 
+#region "StringBuilder: Remove"
+    let sb = StringBuilder("This is a text!")
+    sb.Remove(5, 5)
+    assert("This text!", sb.ToString())
+#endregion
+
 #region "Result: GetType"
     assert(Result, Result.Success(true).GetType())
     assert("Result", Result.Success(true).GetType().name)
@@ -618,8 +624,8 @@ fox is the red fox.]>
 #endregion
 
 #region "Time: Min, Max, Default"
-    assert(Integer.Min(), Time.Min().TotalTicks)
-    assert(Integer.Max(), Time.Max().TotalTicks)
+    assert(0, Time.Min().TotalTicks)
+    assert(863999999999, Time.Max().TotalTicks)
     assert(0, Time.Default().TotalTicks)
 #endregion
 

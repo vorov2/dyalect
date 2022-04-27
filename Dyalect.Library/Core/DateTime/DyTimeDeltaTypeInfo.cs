@@ -1,71 +1,105 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
+namespace Dyalect.Library.Core;
 
-namespace Dyalect.Library.Core
+[GeneratedType]
+public sealed partial class DyTimeDeltaTypeInfo : SpanTypeInfo<DyTimeDelta>
 {
-    public sealed class DyTimeDeltaTypeInfo : AbstractTimeTypeInfo<DyTimeDelta>
+    private const string TimeDelta = nameof(TimeDelta);
+
+    public DyTimeDeltaTypeInfo() : base(TimeDelta) { }
+
+    protected override SupportedOperations GetSupportedOperations() =>
+        base.GetSupportedOperations() | SupportedOperations.Add | SupportedOperations.Sub | SupportedOperations.Neg;
+
+    #region Operations
+    protected override DyObject NegOp(DyObject arg, ExecutionContext ctx) => ((DyTimeDelta)arg).Negate();
+
+    protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
-        private const string TimeDelta = "TimeDelta";
+        if (right.TypeId != left.TypeId)
+            return ctx.InvalidType(left.TypeId, right);
 
-        public DyTimeDeltaTypeInfo() : base(TimeDelta) { }
-
-        protected override SupportedOperations GetSupportedOperations() =>
-            base.GetSupportedOperations() | SupportedOperations.Add | SupportedOperations.Sub | SupportedOperations.Neg;
-
-        protected override DyObject NegOp(DyObject arg, ExecutionContext ctx) => ((DyTimeDelta)arg).Negate();
-
-        protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (right.TypeId != left.TypeId)
-                return ctx.InvalidType(left.TypeId, right);
-
-            return new DyTimeDelta(this, ((DyTimeDelta)left).TotalTicks + ((DyTimeDelta)right).TotalTicks);
-        }
-
-        protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
-        {
-            if (right.TypeId != left.TypeId)
-                return ctx.InvalidType(left.TypeId, right);
-
-            try
-            {
-                return new DyTimeDelta(this, ((DyTimeDelta)left).TotalTicks - ((DyTimeDelta)right).TotalTicks);
-            }
-            catch (OverflowException)
-            {
-                return ctx.Overflow();
-            }
-        }
-
-        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-            name switch
-            {
-                "Days" => Func.Auto(name, (_, self) => new DyInteger(((DyTimeDelta)self).Days)),
-                "Hours" => Func.Auto(name, GetHours),
-                "Minutes" => Func.Auto(name, GetMinutes),
-                "Seconds" => Func.Auto(name, GetSeconds),
-                "Milliseconds" => Func.Auto(name, GetMilliseconds),
-                "Ticks" => Func.Auto(name, GetTicks),
-                "Negate" => Func.Member(name, (_, self) => ((DyTimeDelta)self).Negate()),
-                _ => base.InitializeInstanceMember(self, name, ctx)
-            };
-
-        protected override DyObject Parse(string format, string input) => DyTimeDelta.Parse(this, format, input);
-
-        protected override DyObject Create(long ticks) => new DyTimeDelta(this, ticks);
-
-        private DyObject New(ExecutionContext ctx, DyObject days, DyObject hours, DyObject minutes, DyObject sec, DyObject ms) =>
-            CreateNew(ctx, days, hours, minutes, sec, ms);
-
-        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-            name switch
-            {
-                TimeDelta => Func.Static(name, New, -1, new Par("days", 0), new Par("hours", 0),
-                    new Par("minutes", 0), new Par("seconds", 0), new Par("milliseconds", 0),
-                    new Par("ticks", 0)),
-                _ => base.InitializeStaticMember(name, ctx)
-            };
+        return new DyTimeDelta(this, ((DyTimeDelta)left).TotalTicks + ((DyTimeDelta)right).TotalTicks);
     }
+
+    protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
+    {
+        if (right.TypeId != left.TypeId)
+            return ctx.InvalidType(left.TypeId, right);
+
+        try
+        {
+            return new DyTimeDelta(this, ((DyTimeDelta)left).TotalTicks - ((DyTimeDelta)right).TotalTicks);
+        }
+        catch (OverflowException)
+        {
+            return ctx.Overflow();
+        }
+    }
+    #endregion
+
+    [InstanceProperty]
+    internal static int Days(DyTimeDelta self) => self.Days;
+
+    [InstanceProperty]
+    internal static int Hours(DyTimeDelta self) => self.Hours;
+
+    [InstanceProperty]
+    internal static int Minutes(DyTimeDelta self) => self.Minutes;
+
+    [InstanceProperty]
+    internal static int Seconds(DyTimeDelta self) => self.Seconds;
+
+    [InstanceProperty]
+    internal static int Milliseconds(DyTimeDelta self) => self.Milliseconds;
+
+    [InstanceProperty]
+    internal static int Ticks(DyTimeDelta self) => self.Ticks;
+
+    [InstanceProperty]
+    internal static long TotalTicks(DyTimeDelta self) => self.TotalTicks;
+
+    [InstanceMethod]
+    internal static DyObject Negate(DyTimeDelta self) => self.Negate();
+
+    [StaticMethod]
+    internal static DyObject FromTicks(ExecutionContext ctx, long ticks) =>
+        new DyTimeDelta(ctx.Type<DyTimeDeltaTypeInfo>(), ticks);
+
+    [StaticMethod]
+    internal static DyObject Parse(ExecutionContext ctx, string input, string format)
+    {
+        try
+        {
+            return DyTimeDelta.Parse(ctx.Type<DyTimeDeltaTypeInfo>(), format, input);
+        }
+        catch (FormatException)
+        {
+            return ctx.ParsingFailed();
+        }
+        catch (OverflowException)
+        {
+            return ctx.Overflow();
+        }
+    }
+
+    [StaticMethod(TimeDelta)]
+    internal static DyObject New(ExecutionContext ctx, int days = 0, int hours = 0, int minutes = 0,
+        int seconds = 0, int milliseconds = 0, long ticks = 0)
+    {
+        ticks += DT.Sum(days, hours, minutes, seconds, milliseconds);
+        return new DyTimeDelta(ctx.Type<DyTimeDeltaTypeInfo>(), ticks);
+    }
+
+    [StaticMethod]
+    internal static DyTimeDelta Default(ExecutionContext ctx) => new(ctx.Type<DyTimeDeltaTypeInfo>(), TimeSpan.Zero.Ticks);
+
+    [StaticMethod]
+    internal static DyTimeDelta Min(ExecutionContext ctx) => new(ctx.Type<DyTimeDeltaTypeInfo>(), TimeSpan.MinValue.Ticks);
+
+    [StaticMethod]
+    internal static DyTimeDelta Max(ExecutionContext ctx) => new(ctx.Type<DyTimeDeltaTypeInfo>(), TimeSpan.MaxValue.Ticks);
 }
