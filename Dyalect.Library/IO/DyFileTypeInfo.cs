@@ -155,12 +155,11 @@ namespace Dyalect.Library.IO
             }, path);
         }
 
-        private DyObject GetAttributes(ExecutionContext ctx, DyObject path)
-        {
-            if (!path.IsString(ctx)) return Nil;
-            return Handle(ctx, () =>
+        [StaticMethod]
+        internal static DyObject GetAttributes(ExecutionContext ctx, string path) =>
+            Handle(ctx, () =>
             {
-                var attr = File.GetAttributes(path.GetString());
+                var attr = File.GetAttributes(path);
                 return DyTuple.Create(
                     new("readOnly", (DyBool)attr.HasFlag(FileAttributes.ReadOnly)),
                     new("hidden", (DyBool)attr.HasFlag(FileAttributes.Hidden)),
@@ -180,17 +179,14 @@ namespace Dyalect.Library.IO
                     new("noScrubData", (DyBool)attr.HasFlag(FileAttributes.NoScrubData))
                 );
             }, path);
-        }
 
-        private DyObject SetAttributes(ExecutionContext ctx, DyObject path, DyObject attributes)
-        {
-            if (!path.IsString(ctx)) return Nil;
-            var tup = (DyTuple)attributes;
-            return Handle(ctx, () =>
+        [StaticMethod]
+        internal static DyObject SetAttributes(ExecutionContext ctx, string path, DyTuple attributes) =>
+            Handle(ctx, () =>
             {
                 FileAttributes attr = default;
 
-                foreach (var t in tup)
+                foreach (var t in attributes)
                 {
                     if (!t.IsString(ctx)) return Nil;
 
@@ -201,33 +197,26 @@ namespace Dyalect.Library.IO
                 }
 
                 if (attr != default)
-                    File.SetAttributes(path.GetString(), attr);
+                    File.SetAttributes(path, attr);
 
                 return DyNil.Instance;
             }, path);
-        }
 
-        private DyObject CopyFile(ExecutionContext ctx, DyObject source, DyObject destination, DyObject overwrite)
-        {
-            if (!source.IsString(ctx)) return Nil;
-            if (!destination.IsString(ctx)) return Nil;
-            return Handle(ctx, () =>
+        [StaticMethod]
+        internal static DyObject CopyFile(ExecutionContext ctx, string source, string destination, bool overwrite = false) =>
+            Handle(ctx, () =>
             {
-                File.Copy(source.GetString(), destination.GetString(), overwrite.IsTrue());
-                return DyNil.Instance;
+                File.Copy(source, destination, overwrite);
+                return Nil;
             });
-        }
 
-        private DyObject MoveFile(ExecutionContext ctx, DyObject source, DyObject destination, DyObject overwrite)
-        {
-            if (!source.IsString(ctx)) return Nil;
-            if (!destination.IsString(ctx)) return Nil;
-            return Handle(ctx, () =>
+        [StaticMethod]
+        internal static DyObject MoveFile(ExecutionContext ctx, string source, string destination, bool overwrite = false) =>
+            Handle(ctx, () =>
             {
-                File.Move(source.GetString(), destination.GetString(), overwrite.IsTrue());
-                return DyNil.Instance;
+                File.Move(source, destination, overwrite);
+                return Nil;
             });
-        }
 
         [StaticMethod]
         internal static DyObject GetCreationTime(ExecutionContext ctx, string path) =>
