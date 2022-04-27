@@ -19,7 +19,7 @@ public class Unit
 
     private Unit(Unit unit, DebugInfo di)
     {
-        Ops = new(unit.Ops.ToArray());
+        Ops = unit.Ops;//new(unit.Ops.ToArray());
         Symbols = di;
 
         if (unit.GlobalScope is not null)
