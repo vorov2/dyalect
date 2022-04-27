@@ -483,17 +483,17 @@ public abstract class DyTypeInfo : DyObject
     private DyFunction? InitializeStaticMembers(string name, ExecutionContext ctx) =>
         name switch
         {
-            "TypeInfo" => Func.Static(name, (c, obj) => c.RuntimeContext.Types[obj.TypeId], -1, new Par("value")),
-            Builtins.Has => Func.Member(name, Has, -1, new Par("member")),
-            Builtins.DelMember => Func.Static(name,
-                (context, strObj) =>
+            "TypeInfo" => Binary(name, (c, _, obj) => c.RuntimeContext.Types[obj.TypeId], "value"),
+            Builtins.Has => Binary(name, Has, "member"),
+            Builtins.DelMember => Binary(name,
+                (context, _, strObj) =>
                 {
                     var nm = strObj.GetString();
                     SetBuiltin(ctx, nm, null);
                     Members.Remove(name);
                     StaticMembers.Remove(name);
                     return Nil;
-                }, -1, new Par("name")),
+                }, "name"),
             _ => InitializeStaticMember(name, ctx)
         };
 
@@ -670,40 +670,48 @@ public abstract class DyTypeInfo : DyObject
         
         return HasInstanceMember(self, name, ctx) ? DyBool.True : DyBool.False;
     }
+    private DyFunction Ternary(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par par1, Par par2) =>
+        new DyTernaryFunction(name, fun, par1, par2);
+
+    private DyFunction Binary(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par par = default) =>
+        new DyBinaryFunction(name, fun, par.Name is null ? new Par("other") : par);
+    
+    private DyFunction Unary(string name, Func<ExecutionContext, DyObject, DyObject> fun) =>
+        new DyUnaryFunction(name, fun);
 
     private DyFunction? InitializeInstanceMembers(DyObject self, string name, ExecutionContext ctx) =>
         name switch
         {
-            Builtins.Add => Support(self, SupportedOperations.Add) ? Func.Member(name, Add, -1, "other") : null,
-            Builtins.Sub => Support(self, SupportedOperations.Sub) ? Func.Member(name, Sub, -1, "other") : null,
-            Builtins.Mul => Support(self, SupportedOperations.Mul) ? Func.Member(name, Mul, -1, "other") : null,
-            Builtins.Div => Support(self, SupportedOperations.Div) ? Func.Member(name, Div, -1, "other") : null,
-            Builtins.Rem => Support(self, SupportedOperations.Rem) ? Func.Member(name, Rem, -1, "other") : null,
-            Builtins.Shl => Support(self, SupportedOperations.Shl) ? Func.Member(name, ShiftLeft, -1, "other") : null,
-            Builtins.Shr => Support(self, SupportedOperations.Shr) ? Func.Member(name, ShiftRight, -1, "other") : null,
-            Builtins.And => Support(self, SupportedOperations.And) ? Func.Member(name, And, -1, "other") : null,
-            Builtins.Or => Support(self, SupportedOperations.Or) ? Func.Member(name, Or, -1, "other") : null,
-            Builtins.Xor => Support(self, SupportedOperations.Xor) ? Func.Member(name, Xor, -1, "other") : null,
-            Builtins.Eq => Func.Member(name, Eq, -1, "other"),
-            Builtins.Neq => Func.Member(name, Neq, -1, "other"),
-            Builtins.Gt => Support(self, SupportedOperations.Gt) ? Func.Member(name, Gt, -1, "other") : null,
-            Builtins.Lt => Support(self, SupportedOperations.Lt) ? Func.Member(name, Lt, -1, "other") : null,
-            Builtins.Gte => Support(self, SupportedOperations.Gte) ? Func.Member(name, Gte, -1, "other") : null,
-            Builtins.Lte => Support(self, SupportedOperations.Lte) ? Func.Member(name, Lte, -1, "other") : null,
-            Builtins.Neg => Support(self, SupportedOperations.Neg) ? Func.Member(name, Neg) : null,
-            Builtins.Not => Func.Member(name, Not),
-            Builtins.BitNot => Support(self, SupportedOperations.BitNot) ? Func.Member(name, BitwiseNot) : null,
-            Builtins.Plus => Support(self, SupportedOperations.Plus) ? Func.Member(name, Plus) : null,
-            Builtins.Get => Support(self, SupportedOperations.Get) ? Func.Member(name, Get, -1, "index") : null,
-            Builtins.Set => Support(self, SupportedOperations.Set) ? Func.Member(name, Set, -1, "index", "value") : null,
-            Builtins.Len => Support(self, SupportedOperations.Len) ? Func.Member(name, Length) : null,
-            Builtins.ToStr => Func.Member(name, ToStringWithFormat, -1, new Par("format", DyNil.Instance)),
-            Builtins.ToLit => Support(self, SupportedOperations.Lit) ? Func.Member(name, ToLiteral) : null,
-            Builtins.Iterator => Support(self, SupportedOperations.Iter) ? Func.Member(name, GetIterator) : null,
-            Builtins.Clone => Func.Member(name, Clone),
-            Builtins.Has => Func.Member(name, Has, -1, "member"),
-            Builtins.Type => Func.Member(name, (ct, o) => ct.RuntimeContext.Types[o.TypeId]),
-            Builtins.Contains => Func.Member(name, Contains, -1, "value"),
+            Builtins.Add => Support(self, SupportedOperations.Add) ? Binary(name, Add) : null,
+            Builtins.Sub => Support(self, SupportedOperations.Sub) ? Binary(name, Sub) : null,
+            Builtins.Mul => Support(self, SupportedOperations.Mul) ? Binary(name, Mul) : null,
+            Builtins.Div => Support(self, SupportedOperations.Div) ? Binary(name, Div) : null,
+            Builtins.Rem => Support(self, SupportedOperations.Rem) ? Binary(name, Rem) : null,
+            Builtins.Shl => Support(self, SupportedOperations.Shl) ? Binary(name, ShiftLeft) : null,
+            Builtins.Shr => Support(self, SupportedOperations.Shr) ? Binary(name, ShiftRight) : null,
+            Builtins.And => Support(self, SupportedOperations.And) ? Binary(name, And) : null,
+            Builtins.Or => Support(self, SupportedOperations.Or) ? Binary(name, Or) : null,
+            Builtins.Xor => Support(self, SupportedOperations.Xor) ? Binary(name, Xor) : null,
+            Builtins.Eq => Binary(name, Eq),
+            Builtins.Neq => Binary(name, Neq),
+            Builtins.Gt => Support(self, SupportedOperations.Gt) ?   Binary(name, Gt) : null,
+            Builtins.Lt => Support(self, SupportedOperations.Lt) ?   Binary(name, Lt) : null,
+            Builtins.Gte => Support(self, SupportedOperations.Gte) ? Binary(name, Gte) : null,
+            Builtins.Lte => Support(self, SupportedOperations.Lte) ? Binary(name, Lte) : null,
+            Builtins.Neg => Support(self, SupportedOperations.Neg) ? Unary(name, Neg) : null,
+            Builtins.Not => Unary(name, Not),
+            Builtins.BitNot => Support(self, SupportedOperations.BitNot) ? Unary(name, BitwiseNot) : null,
+            Builtins.Plus => Support(self, SupportedOperations.Plus) ? Unary(name, Plus) : null,
+            Builtins.Get => Support(self, SupportedOperations.Get) ? Binary(name, Get, "index") : null,
+            Builtins.Set => Support(self, SupportedOperations.Set) ? Ternary(name, Set, "index", "value") : null,
+            Builtins.Len => Support(self, SupportedOperations.Len) ? Unary(name, Length) : null,
+            Builtins.ToStr => Binary(name, ToStringWithFormat, new Par("format", Nil)),
+            Builtins.ToLit => Support(self, SupportedOperations.Lit) ? Unary(name, ToLiteral) : null,
+            Builtins.Iterator => Support(self, SupportedOperations.Iter) ? Unary(name, GetIterator) : null,
+            Builtins.Clone => Unary(name, Clone),
+            Builtins.Has => Binary(name, Has, "member"),
+            Builtins.Type => Unary(name, (ct, o) => ct.RuntimeContext.Types[o.TypeId]),
+            Builtins.Contains => Binary(name, Contains, "value"),
             _ => InitializeInstanceMember(self, name, ctx)
         };
 

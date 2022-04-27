@@ -115,6 +115,8 @@
 #region "Function comparison"
     assert(true, "".ToString == "".ToString)
     assert(false, "".ToString == '\0'.ToString)
+    assert(true, 12.ToString == 12.ToString)
+    assert(false, 12.ToString == 24.ToString)
 #endregion
 
 #region "Coalesce"

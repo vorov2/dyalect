@@ -39,20 +39,23 @@ public abstract class SourceGenerator : ISourceGenerator
 
     public abstract void Execute(GeneratorExecutionContext context);
 
-    protected List<(string attr, INamedTypeSymbol type)> FindTypesByAttributes(INamespaceSymbol ns, params string[] names)
+    protected List<(string attr, INamedTypeSymbol type)> FindTypesByAttributes(GeneratorExecutionContext ctx, params string[] names)
     {
         var types = new List<(string, INamedTypeSymbol)>();
-        FindTypesByAttributes(ns, types, names);
+        FindTypesByAttributes(ctx, ctx.Compilation.GlobalNamespace, types, names);
         return types;
     }
 
-    private void FindTypesByAttributes(INamespaceSymbol ns, List<(string, INamedTypeSymbol)> types, params string[] names)
+    private void FindTypesByAttributes(GeneratorExecutionContext ctx, INamespaceSymbol ns, List<(string, INamedTypeSymbol)> types, params string[] names)
     {
         foreach (var cns in ns.GetNamespaceMembers())
-            FindTypesByAttributes(cns, types, names);
+            FindTypesByAttributes(ctx, cns, types, names);
 
         foreach (INamedTypeSymbol t in ns.GetMembers().OfType<INamedTypeSymbol>())
         {
+            if (t.ContainingAssembly.Name != ctx.Compilation.AssemblyName)
+                continue;
+
             var attrs = t.GetAttributes();
 
             foreach (var name in names)

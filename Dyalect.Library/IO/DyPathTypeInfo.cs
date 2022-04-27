@@ -1,151 +1,105 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
 using System.IO;
 using System.Linq;
+namespace Dyalect.Library.IO;
 
-namespace Dyalect.Library.IO
+[GeneratedType]
+public sealed partial class DyPathTypeInfo : DyForeignTypeInfo<IOModule>
 {
-    public sealed class DyPathTypeInfo : DyForeignTypeInfo<IOModule>
+    public override string ReflectedTypeName => "Path";
+
+    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
+
+    [StaticMethod]
+    internal static string? GetFullPath(string path) => Path.GetFullPath(path);
+
+    [StaticMethod]
+    internal static string? GetDirectory(string path) => Path.GetDirectoryName(path);
+
+    [StaticMethod]
+    internal static string? GetExtension(string path) => Path.GetExtension(path);
+
+    [StaticMethod]
+    internal static string? GetFileName(string path) => Path.GetFileName(path);
+
+    [StaticMethod]
+    internal static string? GetPathRoot(string path) => Path.GetPathRoot(path);
+
+    [StaticMethod]
+    internal static bool Exists(ExecutionContext ctx, string path)
     {
-        public override string ReflectedTypeName => "Path";
-
-        protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
-
-        private DyObject GetFullPath(ExecutionContext ctx, DyObject path)
+        try
         {
-            if (!path.IsString(ctx)) return Nil;
-            return new DyString(Path.GetFullPath(path.GetString()));
+            return Directory.Exists(path) || File.Exists(path);
         }
-
-        private DyObject GetParentDirectory(ExecutionContext ctx, DyObject path)
+        catch (ArgumentException)
         {
-            if (!path.IsString(ctx)) return Nil;
-            var dir = Path.GetDirectoryName(path.GetString());
-            return dir is null ? DyNil.Instance : new DyString(dir);
+            ctx.InvalidValue(path);
+            return default;
         }
+    }
 
-        private DyObject GetExtension(ExecutionContext ctx, DyObject path)
+    [StaticMethod]
+    internal static string? GetFileNameWithoutExtension(string path) => Path.GetFileNameWithoutExtension(path);
+
+    [StaticMethod]
+    internal static string? Combine(ExecutionContext ctx, string path, string other)
+    {
+        string dir;
+        
+        try
         {
-            if (!path.IsString(ctx)) return Nil;
-            var dir = Path.GetExtension(path.GetString());
-            return dir is null ? DyNil.Instance : new DyString(dir);
+            dir = Path.Combine(path, other);
         }
-
-        private DyObject GetFileName(ExecutionContext ctx, DyObject path)
+        catch (ArgumentException)
         {
-            if (!path.IsString(ctx)) return Nil;
-            var dir = Path.GetFileName(path.GetString());
-            return dir is null ? DyNil.Instance : new DyString(dir);
+            ctx.InvalidValue();
+            return default;
         }
+        
+        return dir;
+    }
 
-        private DyObject GetPathRoot(ExecutionContext ctx, DyObject path)
+    [StaticMethod]
+    internal static DyObject EnumerateFiles(ExecutionContext ctx, string path, string? mask = null)
+    {
+        try
         {
-            if (!path.IsString(ctx)) return Nil;
-            var dir = Path.GetPathRoot(path.GetString());
-            return dir is null ? DyNil.Instance : new DyString(dir);
+            var seq = mask is not null
+                ? Directory.EnumerateFiles(path, mask)
+                : Directory.EnumerateFiles(path);
+            return DyIterator.Create(seq.Select(s => new DyString(s)));
         }
-
-        private DyObject PathExists(ExecutionContext ctx, DyObject path)
+        catch (ArgumentException)
         {
-            if (!path.IsString(ctx)) return Nil;
-
-            try
-            {
-                var str = path.GetString();
-                return Directory.Exists(str) || File.Exists(str) ? DyBool.True : DyBool.False;
-            }
-            catch (ArgumentException)
-            {
-                return ctx.InvalidValue(path);
-            }
+            return ctx.InvalidValue();
         }
-
-        private DyObject GetFileNameWithoutExtension(ExecutionContext ctx, DyObject path)
+        catch (Exception)
         {
-            if (!path.IsString(ctx)) return Nil;
-            var dir = Path.GetFileNameWithoutExtension(path.GetString());
-            return dir is null ? DyNil.Instance : new DyString(dir);
+            return ctx.IOFailed();
         }
+    }
 
-        private DyObject Combine(ExecutionContext ctx, DyObject path1, DyObject path2)
+    [StaticMethod]
+    internal static DyObject EnumerateDirectories(ExecutionContext ctx, string path, string? mask = null)
+    {
+        try
         {
-            if (!path1.IsString(ctx)) return Nil;
-            if (!path2.IsString(ctx)) return Nil;
-            string dir;
-            
-            try
-            {
-                dir = Path.Combine(path1.GetString(), path2.GetString());
-            }
-            catch (ArgumentException)
-            {
-                return ctx.InvalidValue();
-            }
-            
-            return new DyString(dir);
+            var seq = mask is not null
+                ? Directory.EnumerateDirectories(path, mask)
+                : Directory.EnumerateDirectories(path);
+            return DyIterator.Create(seq.Select(s => new DyString(s)));
         }
-
-        private DyObject EnumerateFiles(ExecutionContext ctx, DyObject path, DyObject mask)
+        catch (ArgumentException)
         {
-            if (!path.IsString(ctx)) return Nil;
-            if (mask.NotNil() && !mask.IsString(ctx)) return Nil;
-            
-            try
-            {
-                var seq = mask.NotNil()
-                    ? Directory.EnumerateFiles(path.GetString(), mask.GetString())
-                    : Directory.EnumerateFiles(path.GetString());
-                return DyIterator.Create(seq.Select(s => new DyString(s)));
-            }
-            catch (ArgumentException)
-            {
-                return ctx.InvalidValue();
-            }
-            catch (Exception)
-            {
-                return ctx.IOFailed();
-            }
+            return ctx.InvalidValue();
         }
-
-        private DyObject EnumerateDirectories(ExecutionContext ctx, DyObject path, DyObject mask)
+        catch (Exception)
         {
-            if (!path.IsString(ctx)) return Nil;
-            if (mask.NotNil() && !mask.IsString(ctx)) return Nil;
-
-            try
-            {
-                var seq = mask.NotNil()
-                    ? Directory.EnumerateDirectories(path.GetString(), mask.GetString())
-                    : Directory.EnumerateDirectories(path.GetString());
-                return DyIterator.Create(seq.Select(s => new DyString(s)));
-            }
-            catch (ArgumentException)
-            {
-                return ctx.InvalidValue();
-            }
-            catch (Exception)
-            {
-                return ctx.IOFailed();
-            }
+            return ctx.IOFailed();
         }
-
-        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-            name switch
-            {
-                "GetCurrentDirectory" => Func.Static(name, _ => new DyString(Environment.CurrentDirectory)),
-                "GetFullPath" => Func.Static(name, GetFullPath, -1, new Par("path")),
-                "GetDirectory" => Func.Static(name, GetParentDirectory, -1, new Par("path")),
-                "GetExtension" => Func.Static(name, GetExtension, -1, new Par("path")),
-                "GetFileName" => Func.Static(name, GetFileName, -1, new Par("path")),
-                "GetPathRoot" => Func.Static(name, GetPathRoot, -1, new Par("path")),
-                "Exists" => Func.Static(name, PathExists, -1, new Par("path")),
-                "GetFileNameWithoutExtension" => Func.Static(name, GetFileNameWithoutExtension, -1, new Par("path")),
-                "Combine" => Func.Static(name, Combine, -1, new Par("path"), new Par("other")),
-                "EnumerateFiles" => Func.Static(name, EnumerateFiles, -1, new Par("path"), new Par("mask", DyNil.Instance)),
-                "EnumerateDirectories" => Func.Static(name, EnumerateDirectories, -1, new Par("path"), new Par("mask", DyNil.Instance)),
-                _ => base.InitializeStaticMember(name, ctx)
-            };
     }
 }

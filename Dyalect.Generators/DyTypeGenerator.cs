@@ -10,6 +10,10 @@ namespace Dyalect.Generators
         public void Execute(GeneratorExecutionContext ctx)
         {
             var syntaxReceiver = (DyTypeGeneratorSyntaxReceiver)ctx.SyntaxReceiver;
+
+            if (syntaxReceiver.Class is null)
+                return;
+
             var userClass = syntaxReceiver.Class;
             var dyTypes = userClass.Members
                 .OfType<FieldDeclarationSyntax>()
@@ -71,7 +75,7 @@ partial class DyType
         public void Initialize(GeneratorInitializationContext ctx)
         {
             //if (!System.Diagnostics.Debugger.IsAttached)
-                //System.Diagnostics.Debugger.Launch();
+            //    System.Diagnostics.Debugger.Launch();
 
             ctx.RegisterForSyntaxNotifications(() => new DyTypeGeneratorSyntaxReceiver());
         }

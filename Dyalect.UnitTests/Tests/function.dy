@@ -8,8 +8,6 @@
     let fn = (x, y) => x + y
     assert(true, fn == fn)
     assert(true, fn.Clone() == fn)
-    assert(true, fn.ToString.Clone() == fn.ToString)
-    assert(false, fn.ToString.Clone() == fn)
 #endregion
 
 #region "Base variable 1"

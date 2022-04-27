@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 namespace Dyalect.Generators;
 public static class Extensions
 {
@@ -38,9 +37,8 @@ internal enum MethodFlags
     Property = 0x02
 }
 
-
 [Generator]
-public class TypeInfoGenerator : SourceGenerator
+public class MethodGenerator : SourceGenerator
 {
     internal static readonly object Nil = new();
     private static readonly string[] neverNulls = new[] { "int", "long", "float", "double", "char", "bool" };
@@ -172,7 +170,7 @@ public class TypeInfoGenerator : SourceGenerator
 
     public override void Execute(GeneratorExecutionContext ctx)
     {
-        var xs = FindTypesByAttributes(ctx.Compilation.GlobalNamespace, "GeneratedTypeAttribute", "GeneratedModuleAttribute");
+        var xs = FindTypesByAttributes(ctx, "GeneratedTypeAttribute", "GeneratedModuleAttribute");
 
         foreach (var (attr, t) in xs)
         {
@@ -298,8 +296,9 @@ public class TypeInfoGenerator : SourceGenerator
     {
         var isStatic = (implFlags & MethodFlags.Static) == MethodFlags.Static;
         var prefix = isStatic ? "st" : "in";
+        var className = $"{prefix}_{t.Name}_{methodName}_WrapperFunction";
 
-        builder.AppendLine($"internal sealed class {prefix}_{t.Name}_{methodName}_WrapperFunction : {Types.DyForeignFunction}");
+        builder.AppendLine($"internal sealed class {className} : {Types.DyForeignFunction}");
         builder.StartBlock();
         builder.AppendLine($"internal override {Types.DyObject} InternalCall({Types.ExecutionContext} __ctx, {Types.DyObject}[] __args)");
         builder.StartBlock();
@@ -342,7 +341,7 @@ public class TypeInfoGenerator : SourceGenerator
         else
             sb.Append($"{Types.Array}.Empty<{Types.Par}>()");
 
-        builder.AppendLine($"public {prefix}_{t.Name}_{methodName}_WrapperFunction() : base(\"{methodName}\", {sb}, {varArgIndex})");
+        builder.AppendLine($"public {className}() : base(\"{methodName}\", {sb}, {varArgIndex})");
         builder.StartBlock();
 
         if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
@@ -362,6 +361,8 @@ public class TypeInfoGenerator : SourceGenerator
             builder.EndBlock();
         }
 
+        builder.AppendLine();
+        builder.AppendLine($"internal override bool Equals({Types.DyFunction} func) => func is {className} cn && (ReferenceEquals(cn.Self, Self) || (cn.Self is not null && cn.Self.Equals(Self)));");
         builder.EndBlock();
 
         return true;

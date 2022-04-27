@@ -38,7 +38,7 @@ namespace Dyalect.Generators
                 return $"new {SourceGenerator.Types.DyFloat}({d.ToString(CultureInfo.InvariantCulture)})";
             else if (obj is float f)
                 return $"new {SourceGenerator.Types.DyFloat}({f.ToString(CultureInfo.InvariantCulture)})";
-            else if (ReferenceEquals(obj, TypeInfoGenerator.Nil))
+            else if (ReferenceEquals(obj, MethodGenerator.Nil))
                 return SourceGenerator.Types.DyNil + ".Instance";
             else
                 return obj?.ToString();

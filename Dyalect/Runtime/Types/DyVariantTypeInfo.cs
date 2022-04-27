@@ -75,6 +75,6 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
         if (!char.IsUpper(name[0]))
             return base.InitializeStaticMember(name, ctx);
 
-        return new Constructor<DyTuple>(name, (_, args) => new DyVariant(name, args), new("values", ParKind.VarArg));
+        return new DyConstructor<DyTuple>(name, (_, args) => new DyVariant(name, args), new("values", ParKind.VarArg));
     }
 }
