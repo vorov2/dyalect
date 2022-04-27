@@ -256,7 +256,7 @@ public class TypeInfoGenerator : SourceGenerator
                 builder.EndBlock();
             }
 
-            System.IO.File.WriteAllText($"C:\\temp\\gen\\{t.Name}.generated.{DateTime.Now.Ticks}.cs", builder.ToString());
+            //System.IO.File.WriteAllText($"C:\\temp\\gen\\{t.Name}.generated.{DateTime.Now.Ticks}.cs", builder.ToString());
             ctx.AddSource($"{t.Name}.generated.cs", builder.ToString());
         }
     }
