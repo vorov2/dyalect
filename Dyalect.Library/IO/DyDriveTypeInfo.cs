@@ -1,67 +1,45 @@
-﻿using Dyalect.Compiler;
+﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 using System.IO;
 using System.Linq;
+namespace Dyalect.Library.IO;
 
-namespace Dyalect.Library.IO
+[GeneratedType]
+public sealed partial class DyDriveTypeInfo : DyForeignTypeInfo<IOModule>
 {
-    public sealed class DyDriveTypeInfo : DyForeignTypeInfo<IOModule>
-    {
-        public override string ReflectedTypeName => "Drive";
+    public override string ReflectedTypeName => "Drive";
 
-        protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
+    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
-        private DyFunction Handle<T>(string name, DyObject self, Func<DriveInfo, T> func)
-        {
-            var drv = ((DyDrive)self).Value;
+    [InstanceProperty]
+    internal static string? Name(ExecutionContext ctx, DyDrive self) => ctx.Handle(() => self.Value.Name);
 
-            return Func.Auto(name, (ctx, _) =>
-            {
-                try
-                {
-                    return TypeConverter.ConvertFrom(func(drv));
-                }
-                catch (Exception)
-                {
-                    return ctx.IOFailed();
-                }
-            });
-        }
+    [InstanceProperty]
+    internal static long TotalSize(ExecutionContext ctx, DyDrive self) => ctx.Handle(() => self.Value.TotalSize);
+    
+    [InstanceProperty]
+    internal static long TotalFreeSpace(ExecutionContext ctx, DyDrive self) => ctx.Handle(() => self.Value.TotalFreeSpace);
 
-        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-            name switch 
-            {
-                "Name" => Handle(name, self, drv => drv.Name),
-                "TotalSize" => Handle(name, self, drv => drv.TotalSize),
-                "TotalFreeSize" => Handle(name, self, drv => drv.TotalFreeSpace),
-                "AvailableFreeSpace" => Handle(name, self, drv => drv.AvailableFreeSpace),
-                "Format" => Handle(name, self, drv => drv.DriveFormat),
-                "Root" => Handle(name, self, drv => drv.RootDirectory.FullName),
-                "Type" => Handle(name, self, drv => drv.DriveType.ToString()),
-                "IsReady" => Handle(name, self, drv => drv.IsReady),
-                "Label" => Handle(name, self, drv => drv.VolumeLabel),
-                _ => base.InitializeInstanceMember(self, name, ctx)
-            };
+    [InstanceProperty]
+    internal static long AvailableFreeSpace(ExecutionContext ctx, DyDrive self) => ctx.Handle(() => self.Value.AvailableFreeSpace);
 
-        private DyObject GetDrives(ExecutionContext ctx)
-        {
-            try
-            {
-                return new DyArray(DriveInfo.GetDrives().Select(d => new DyDrive(this, d)).ToArray());
-            }
-            catch (Exception)
-            {
-                return ctx.IOFailed();
-            }
-        }
+    [InstanceProperty]
+    internal static string? Format(ExecutionContext ctx, DyDrive self) => ctx.Handle(() => self.Value.DriveFormat);
 
-        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-            name switch
-            {
-                "GetDrives" => Func.Static(name, GetDrives),
-                _ => base.InitializeStaticMember(name, ctx)
-            };
-    }
+    [InstanceProperty]
+    internal static string? Root(ExecutionContext ctx, DyDrive self) => ctx.Handle(() => self.Value.RootDirectory.FullName);
+
+    [InstanceProperty]
+    internal static string? Type(ExecutionContext ctx, DyDrive self) => ctx.Handle(() => self.Value.DriveType.ToString());
+
+    [InstanceProperty]
+    internal static bool IsReady(ExecutionContext ctx, DyDrive self) => ctx.Handle(() => self.Value.IsReady);
+
+    [InstanceProperty]
+    internal static string? Label(ExecutionContext ctx, DyDrive self) => ctx.Handle(() => self.Value.VolumeLabel);
+
+    [StaticMethod]
+    internal static DyObject[]? GetDrives(ExecutionContext ctx) =>
+        ctx.Handle(() => DriveInfo.GetDrives().Select(d => new DyDrive(ctx.Type<DyDriveTypeInfo>(), d)).ToArray());
 }

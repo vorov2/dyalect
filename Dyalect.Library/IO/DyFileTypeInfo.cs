@@ -1,285 +1,184 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Codegen;
 using Dyalect.Library.Core;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System;
 using System.IO;
-using System.Text;
 using System.Linq;
-using Dyalect.Codegen;
+using System.Text;
+namespace Dyalect.Library.IO;
 
-namespace Dyalect.Library.IO
+[GeneratedType]
+public sealed partial class DyFileTypeInfo : DyForeignTypeInfo<IOModule>
 {
-    public sealed class DyFileTypeInfo : DyForeignTypeInfo<IOModule>
+    public override string ReflectedTypeName => "File";
+
+    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
+
+    private static Encoding GetEncoding(ExecutionContext ctx, int? encoding)
     {
-        public override string ReflectedTypeName => "File";
+        var enc = Encoding.UTF8.CodePage;
 
-        protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
+        if (encoding is not null)
+            enc = encoding.Value;
 
-        private Encoding GetEncoding(ExecutionContext ctx, DyObject encoding)
+        try
         {
-            var enc = Encoding.UTF8.CodePage;
-
-            if (encoding.NotNil() && encoding.IsInteger(ctx))
-                enc = (int)encoding.GetInteger();
-
-            try
-            {
-                return Encoding.GetEncoding(enc);
-            }
-            catch (Exception)
-            {
+            return Encoding.GetEncoding(enc);
+        }
+        catch (Exception)
+        {
+            if (encoding is not null)
                 ctx.InvalidValue(encoding);
-                return Encoding.UTF8;
-            }
-        }
 
-        private string? GetPath(ExecutionContext ctx, DyObject path)
+            return Encoding.UTF8;
+        }
+    }
+
+    [StaticMethod]
+    internal static DyObject? ReadText(ExecutionContext ctx, string path, int? encoding = null)
+    {
+        var enc = GetEncoding(ctx, encoding);
+
+        if (ctx.HasErrors)
+            return Nil;
+
+        return ctx.Handle(() => new DyString(File.ReadAllText(path, enc)));
+    }
+
+    [StaticMethod]
+    internal static DyObject? ReadLines(ExecutionContext ctx, string path, int? encoding = null)
+    {
+        var enc = GetEncoding(ctx, encoding);
+
+        if (ctx.HasErrors)
+            return Nil;
+
+        return ctx.Handle(() => new DyArray(File.ReadAllLines(path, enc).Select(l => new DyString(l)).ToArray()));
+    }
+
+    [StaticMethod]
+    internal static void WriteAllText(ExecutionContext ctx, string path, DyObject data, int? encoding = null)
+    {
+        var enc = GetEncoding(ctx, encoding);
+
+        if (ctx.HasErrors)
+            return;
+
+        ctx.Handle(() => File.WriteAllText(path, data.GetString(), enc));
+    }
+
+    [StaticMethod]
+    internal static void WriteAllLines(ExecutionContext ctx, string path, DyObject value, int? encoding = null)
+    {
+        var enc = GetEncoding(ctx, encoding);
+        var seq = DyIterator.ToEnumerable(ctx, value).ToArray();
+
+        if (ctx.HasErrors)
+            return;
+
+        var strings = seq.Select(s => s.ToString(ctx).GetString()).ToArray();
+
+        if (ctx.HasErrors)
+            return;
+
+        ctx.Handle(() => File.WriteAllLines(path, strings, enc));
+    }
+
+    [StaticMethod]
+    internal static DyObject? ReadAllBytes(ExecutionContext ctx, string path) => ctx.Handle(() => ctx.Type<DyByteArrayTypeInfo>().Create(File.ReadAllBytes(path)));
+
+    [StaticMethod]
+    internal static void WriteAllBytes(ExecutionContext ctx, string path, DyByteArray value) => ctx.Handle(() => File.WriteAllBytes(path, value.GetBytes()));
+
+    [StaticMethod]
+    internal static bool Exists(ExecutionContext ctx, string path) => ctx.Handle(() => File.Exists(path));
+
+    [StaticMethod]
+    internal static void Create(ExecutionContext ctx, string path) => ctx.Handle(() => File.Create(path).Dispose());
+
+    [StaticMethod]
+    internal static void Delete(ExecutionContext ctx, string path) =>
+        ctx.Handle(() =>
         {
-            if (!path.IsString(ctx))
-                return null;
+            File.SetAttributes(path, FileAttributes.Normal);
+            File.Delete(path);
+        });
 
-            var pathStr = path.GetString();
-
-            if (string.IsNullOrWhiteSpace(pathStr))
-            {
-                ctx.InvalidValue(path);
-                return null;
-            }
-
-            return pathStr;
-        }
-
-        private static DyObject Handle(ExecutionContext ctx, Func<DyObject> action, object? arg = default)
+    [StaticMethod]
+    internal static DyObject? GetAttributes(ExecutionContext ctx, string path) =>
+        ctx.Handle(() =>
         {
-            try
-            {
-                return action();
-            }
-            catch (ArgumentException)
-            {
-                return arg is null ? ctx.InvalidValue() : ctx.InvalidValue(arg);
-            }
-            catch (Exception)
-            {
-                return ctx.IOFailed();
-            }
-        }
+            var attr = File.GetAttributes(path);
+            return DyTuple.Create(
+                new("readOnly", (DyBool)attr.HasFlag(FileAttributes.ReadOnly)),
+                new("hidden", (DyBool)attr.HasFlag(FileAttributes.Hidden)),
+                new("system", (DyBool)attr.HasFlag(FileAttributes.System)),
+                new("directory", (DyBool)attr.HasFlag(FileAttributes.Directory)),
+                new("archive", (DyBool)attr.HasFlag(FileAttributes.Archive)),
+                new("device", (DyBool)attr.HasFlag(FileAttributes.Device)),
+                new("normal", (DyBool)attr.HasFlag(FileAttributes.Normal)),
+                new("temporary", (DyBool)attr.HasFlag(FileAttributes.Temporary)),
+                new("sparseFile", (DyBool)attr.HasFlag(FileAttributes.SparseFile)),
+                new("reparsePoint", (DyBool)attr.HasFlag(FileAttributes.ReparsePoint)),
+                new("compressed", (DyBool)attr.HasFlag(FileAttributes.Compressed)),
+                new("offline", (DyBool)attr.HasFlag(FileAttributes.Offline)),
+                new("notContentIndexed", (DyBool)attr.HasFlag(FileAttributes.NotContentIndexed)),
+                new("encrypted", (DyBool)attr.HasFlag(FileAttributes.Encrypted)),
+                new("integrityStream", (DyBool)attr.HasFlag(FileAttributes.IntegrityStream)),
+                new("noScrubData", (DyBool)attr.HasFlag(FileAttributes.NoScrubData))
+            );
+        });
 
-        private DyObject ReadAllText(ExecutionContext ctx, DyObject path, DyObject encoding)
+    [StaticMethod]
+    internal static void SetAttributes(ExecutionContext ctx, string path, string[] attributes) =>
+        ctx.Handle(() =>
         {
-            var (enc, spath) = (GetEncoding(ctx, encoding), GetPath(ctx, path));
-            if (ctx.HasErrors) return Nil;
-            return Handle(ctx, () => new DyString(File.ReadAllText(spath!, enc)), path);
-        }
+            FileAttributes attr = default;
 
-        private DyObject ReadAllLines(ExecutionContext ctx, DyObject path, DyObject encoding)
-        {
-            var (enc, spath) = (GetEncoding(ctx, encoding), GetPath(ctx, path));
-            if (ctx.HasErrors) return Nil;
-            return Handle(ctx, () => new DyArray(File.ReadAllLines(spath!, enc).Select(l => new DyString(l)).ToArray()), path);
-        }
-
-        public DyObject WriteAllText(ExecutionContext ctx, DyObject path, DyObject data, DyObject encoding)
-        {
-            var (enc, spath) = (GetEncoding(ctx, encoding), GetPath(ctx, path));
-            if (ctx.HasErrors) return Nil;
-            if (!data.IsString(ctx)) return Nil;
-            return Handle(ctx, () =>
+            foreach (var t in attributes)
             {
-                File.WriteAllText(spath!, data.GetString(), enc);
-                return Nil;
-            }, data);
-        }
-
-        public DyObject WriteAllLines(ExecutionContext ctx, DyObject path, DyObject data, DyObject encoding)
-        {
-            var (enc, spath) = (GetEncoding(ctx, encoding), GetPath(ctx, path));
-            if (ctx.HasErrors) return Nil;
-            var seq = DyIterator.ToEnumerable(ctx, data).ToArray();
-            if (ctx.HasErrors) return Nil;
-            var strings = seq.Select(s => s.ToString(ctx).GetString()).ToArray();
-            if (ctx.HasErrors) return Nil;
-            return Handle(ctx, () =>
-            {
-                File.WriteAllLines(spath!, strings, enc);
-                return Nil;
-            });
-        }
-
-        public DyObject ReadAllBytes(ExecutionContext ctx, DyObject path)
-        {
-            var spath = GetPath(ctx, path);
-            if (ctx.HasErrors) return Nil;
-            return Handle(ctx, () => DeclaringUnit.Core.Value.ByteArray.Create(File.ReadAllBytes(spath!)), path);
-        }
-
-        public DyObject WriteAllBytes(ExecutionContext ctx, DyObject path, DyObject arr)
-        {
-            var spath = GetPath(ctx, path);
-            if (ctx.HasErrors) return Nil;
-            if (arr.TypeId != DeclaringUnit.Core.Value.ByteArray.TypeId)
-                return ctx.InvalidType(DeclaringUnit.Core.Value.ByteArray.TypeId, arr);
-            return Handle(ctx, () =>
-            {
-                File.WriteAllBytes(spath!, ((DyByteArray)arr).GetBytes());
-                return Nil;
-            }, path);
-        }
-
-        private DyObject FileExists(ExecutionContext ctx, DyObject path)
-        {
-            if (!path.IsString(ctx)) return Nil;
-            return Handle(ctx, () => File.Exists(path.GetString()) ? DyBool.True : DyBool.False, path);
-        }
-
-        private DyObject CreateFile(ExecutionContext ctx, DyObject path)
-        {
-            if (!path.IsString(ctx)) return Nil;
-            return Handle(ctx, () =>
-            {
-                File.Create(path.GetString()).Dispose();
-                return DyNil.Instance;
-            }, path);
-        }
-
-        private DyObject DeleteFile(ExecutionContext ctx, DyObject path)
-        {
-            if (!path.IsString(ctx)) return Nil;
-            return Handle(ctx, () =>
-            {
-                var p = path.GetString();
-                File.SetAttributes(p, FileAttributes.Normal);
-                File.Delete(p);
-                return DyNil.Instance;
-            }, path);
-        }
-
-        [StaticMethod]
-        internal static DyObject GetAttributes(ExecutionContext ctx, string path) =>
-            Handle(ctx, () =>
-            {
-                var attr = File.GetAttributes(path);
-                return DyTuple.Create(
-                    new("readOnly", (DyBool)attr.HasFlag(FileAttributes.ReadOnly)),
-                    new("hidden", (DyBool)attr.HasFlag(FileAttributes.Hidden)),
-                    new("system", (DyBool)attr.HasFlag(FileAttributes.System)),
-                    new("directory", (DyBool)attr.HasFlag(FileAttributes.Directory)),
-                    new("archive", (DyBool)attr.HasFlag(FileAttributes.Archive)),
-                    new("device", (DyBool)attr.HasFlag(FileAttributes.Device)),
-                    new("normal", (DyBool)attr.HasFlag(FileAttributes.Normal)),
-                    new("temporary", (DyBool)attr.HasFlag(FileAttributes.Temporary)),
-                    new("sparseFile", (DyBool)attr.HasFlag(FileAttributes.SparseFile)),
-                    new("reparsePoint", (DyBool)attr.HasFlag(FileAttributes.ReparsePoint)),
-                    new("compressed", (DyBool)attr.HasFlag(FileAttributes.Compressed)),
-                    new("offline", (DyBool)attr.HasFlag(FileAttributes.Offline)),
-                    new("notContentIndexed", (DyBool)attr.HasFlag(FileAttributes.NotContentIndexed)),
-                    new("encrypted", (DyBool)attr.HasFlag(FileAttributes.Encrypted)),
-                    new("integrityStream", (DyBool)attr.HasFlag(FileAttributes.IntegrityStream)),
-                    new("noScrubData", (DyBool)attr.HasFlag(FileAttributes.NoScrubData))
-                );
-            }, path);
-
-        [StaticMethod]
-        internal static DyObject SetAttributes(ExecutionContext ctx, string path, DyTuple attributes) =>
-            Handle(ctx, () =>
-            {
-                FileAttributes attr = default;
-
-                foreach (var t in attributes)
+                if (!Enum.TryParse<FileAttributes>(t, out var fa))
                 {
-                    if (!t.IsString(ctx)) return Nil;
-
-                    if (!Enum.TryParse<FileAttributes>(t.GetString(), out var fa))
-                        return ctx.InvalidValue(t);
-
-                    attr |= fa;
+                    ctx.InvalidValue(t);
+                    return;
                 }
 
-                if (attr != default)
-                    File.SetAttributes(path, attr);
+                attr |= fa;
+            }
 
-                return DyNil.Instance;
-            }, path);
+            if (attr != default)
+                File.SetAttributes(path, attr);
+        });
 
-        [StaticMethod]
-        internal static DyObject CopyFile(ExecutionContext ctx, string source, string destination, bool overwrite = false) =>
-            Handle(ctx, () =>
-            {
-                File.Copy(source, destination, overwrite);
-                return Nil;
-            });
+    [StaticMethod]
+    internal static void Copy(ExecutionContext ctx, string source, string destination, bool overwrite = false) =>
+        ctx.Handle(() => File.Copy(source, destination, overwrite));
 
-        [StaticMethod]
-        internal static DyObject MoveFile(ExecutionContext ctx, string source, string destination, bool overwrite = false) =>
-            Handle(ctx, () =>
-            {
-                File.Move(source, destination, overwrite);
-                return Nil;
-            });
+    [StaticMethod]
+    internal static void Move(ExecutionContext ctx, string source, string destination, bool overwrite = false) => ctx.Handle(() => File.Move(source, destination, overwrite));
 
-        [StaticMethod]
-        internal static DyObject GetCreationTime(ExecutionContext ctx, string path) =>
-            Handle(ctx, () => new DyDateTime(ctx.Type<DyDateTimeTypeInfo>(), File.GetCreationTimeUtc(path).Ticks), path);
+    [StaticMethod]
+    internal static DyObject? GetCreationTime(ExecutionContext ctx, string path) =>
+        ctx.Handle(() => new DyDateTime(ctx.Type<DyDateTimeTypeInfo>(), File.GetCreationTimeUtc(path).Ticks));
 
-        [StaticMethod]
-        internal static DyObject SetCreationTime(ExecutionContext ctx, string path, DyDateTime value) =>
-            Handle(ctx, () =>
-            {
-                File.SetCreationTimeUtc(path, GetDateTimeUtc(value));
-                return Nil;
-            }, path);
+    [StaticMethod]
+    internal static void SetCreationTime(ExecutionContext ctx, string path, DyDateTime value) => ctx.Handle(() => File.SetCreationTimeUtc(path, GetDateTimeUtc(value)));
 
-        [StaticMethod]
-        internal static DyObject GetLastAccessTime(ExecutionContext ctx, string path) =>
-            Handle(ctx, () => new DyDateTime(ctx.Type<DyDateTimeTypeInfo>(), File.GetLastAccessTimeUtc(path).Ticks), path);
+    [StaticMethod]
+    internal static DyObject? GetLastAccessTime(ExecutionContext ctx, string path) =>
+        ctx.Handle(() => new DyDateTime(ctx.Type<DyDateTimeTypeInfo>(), File.GetLastAccessTimeUtc(path).Ticks));
 
-        [StaticMethod]
-        internal static DyObject SetLastAccessTime(ExecutionContext ctx, string path, DyDateTime value) =>
-            Handle(ctx, () =>
-            {
-                File.SetLastAccessTimeUtc(path, GetDateTimeUtc(value));
-                return Nil;
-            }, path);
+    [StaticMethod]
+    internal static void SetLastAccessTime(ExecutionContext ctx, string path, DyDateTime value) => ctx.Handle(() => File.SetLastAccessTimeUtc(path, GetDateTimeUtc(value)));
 
-        [StaticMethod]
-        internal static DyObject GetLastWriteTime(ExecutionContext ctx, string path) => 
-            Handle(ctx, () => new DyDateTime(ctx.Type<DyDateTimeTypeInfo>(), File.GetLastWriteTimeUtc(path).Ticks), path);
+    [StaticMethod]
+    internal static DyObject? GetLastWriteTime(ExecutionContext ctx, string path) => 
+        ctx.Handle(() => new DyDateTime(ctx.Type<DyDateTimeTypeInfo>(), File.GetLastWriteTimeUtc(path).Ticks));
 
-        [StaticMethod]
-        internal static DyObject SetLastWriteTime(ExecutionContext ctx, string path, DyDateTime value) =>
-            Handle(ctx, () =>
-            {
-                File.SetLastWriteTimeUtc(path, GetDateTimeUtc(value));
-                return Nil;
-            }, path);
+    [StaticMethod]
+    internal static void SetLastWriteTime(ExecutionContext ctx, string path, DyDateTime value) => ctx.Handle(() => File.SetLastWriteTimeUtc(path, GetDateTimeUtc(value)));
 
-        private static DateTime GetDateTimeUtc(DyDateTime value) =>
-            value is DyLocalDateTime loc ? loc.ToDateTimeOffset().ToUniversalTime().DateTime : value.ToDateTime();
-
-        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-            name switch
-            {
-                "ReadText" => Func.Static(name, ReadAllText, -1, new Par("path"), new Par("encoding", DyNil.Instance)),
-                "ReadLines" => Func.Static(name, ReadAllLines, -1, new Par("path"), new Par("encoding", DyNil.Instance)),
-                "WriteText" => Func.Static(name, WriteAllText, -1, new Par("path"), new Par("value"), new Par("encoding", DyNil.Instance)),
-                "WriteAllLines" => Func.Static(name, WriteAllLines, -1, new Par("path"), new Par("value"), new Par("encoding", DyNil.Instance)),
-                "ReadBytes" => Func.Static(name, ReadAllBytes, -1, new Par("path")),
-                "WriteBytes" => Func.Static(name, WriteAllBytes, -1, new Par("path"), new Par("value")),
-                "Exists" => Func.Static(name, FileExists, -1, new Par("path")),
-                "Create" => Func.Static(name, CreateFile, -1, new Par("path")),
-                "Delete" => Func.Static(name, DeleteFile, -1, new Par("path")),
-                "GetAttributes" => Func.Static(name, GetAttributes, -1, new Par("path")),
-                "SetAttributes" => Func.Static(name, SetAttributes, 1, new Par("path"), new Par("values")),
-                "Move" => Func.Static(name, MoveFile, -1, new Par("source"), new Par("destination"), new Par("overwrite", DyBool.False)),
-                "Copy" => Func.Static(name, CopyFile, -1, new Par("source"), new Par("destination"), new Par("overwrite", DyBool.False)),
-                "GetCreationTime" => Func.Static(name, GetCreationTime, -1, new Par("path")),
-                "GetLastAccessTime" => Func.Static(name, GetLastAccessTime, -1, new Par("path")),
-                "GetLastWriteTime" => Func.Static(name, GetLastWriteTime, -1, new Par("path")),
-                "SetCreationTime" => Func.Static(name, SetCreationTime, -1, new Par("path"), new Par("value")),
-                "SetLastAccessTime" => Func.Static(name, SetLastAccessTime, -1, new Par("path"), new Par("value")),
-                "SetLastWriteTime" => Func.Static(name, SetLastWriteTime, -1, new Par("path"), new Par("value")),
-                _ => base.InitializeStaticMember(name, ctx)
-            };
-    }
+    private static DateTime GetDateTimeUtc(DyDateTime value) =>
+        value is DyLocalDateTime loc ? loc.ToDateTimeOffset().ToUniversalTime().DateTime : value.ToDateTime();
 }
