@@ -1,8 +1,6 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Compiler;
-using Dyalect.Debug;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 namespace Dyalect.Runtime.Types;
@@ -89,7 +87,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
     private DyFunction? GetInteropFunction(DyInteropObject self, string name, ExecutionContext _)
     {
         if (name == "new")
-            return new MemberFunction1(name, CreateNew, new Par[] { new Par("args", ParKind.VarArg) }, 0);
+            return new DyForeignConstructor(CreateNew);
 
         var type = self.Type;
         var flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
