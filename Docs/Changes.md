@@ -1,4 +1,4 @@
-# 0.42.0
+# 0.43.0
   * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).
   * Add: _An ability to convert an iterator to a stateful function_ ([Issue #807](https://github.com/vorov2/dyalect/issues/807), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).
   * Add: _`Bool` to support `Min` and `Max`_ ([Issue #817](https://github.com/vorov2/dyalect/issues/817), [docs](https://github.com/vorov2/dyalect/wiki/Bool#min)).
