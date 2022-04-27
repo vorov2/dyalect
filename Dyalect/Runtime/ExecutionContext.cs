@@ -66,6 +66,23 @@ public class ExecutionContext
         }
     }
 
+    private readonly object syncRoot = new();
+    private readonly Dictionary<string, object> contextVariables = new();
+    public void SetContextVariable(string key, object val)
+    {
+        lock (syncRoot)
+            contextVariables[key] = val;
+    }
+
+    public T? GetContextVariable<T>(string key)
+    {
+        if (!contextVariables.TryGetValue(key, out var val))
+            return default;
+        return (T)val;
+    }
+
+    public bool HasContextVariable(string key) => contextVariables.ContainsKey(key);
+
     #region ArgContainer
     private int count;
     private readonly List<ArgContainer> containers = new(2);

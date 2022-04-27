@@ -63,7 +63,7 @@ public class TypeInfoGenerator : SourceGenerator
             if ((flags & ParFlags.Nullable) == ParFlags.Nullable)
                 sb.Append($" and not {Types.DyType}.Nil");
 
-            sb.Append($") return ctx.InvalidType({dyTypes.ToString("DyType.{0}")}, {input});");
+            sb.Append($") return __ctx.InvalidType({dyTypes.ToString("DyType.{0}")}, {input});");
             sb.AppendLine();
         }
 
@@ -106,7 +106,7 @@ public class TypeInfoGenerator : SourceGenerator
             sb.AppendLine($"var {par} = new {ati.ElementType}[{arr}.Length];");
             sb.AppendLine($"for (var {index} = 0; {index} < {arr}.Length; {index}++)");
             sb.StartBlock();
-            sb.AppendLine($"if ({arr}[{index}] is not {ati.ElementType} {elem}) return ctx.InvalidType({input});");
+            sb.AppendLine($"if ({arr}[{index}] is not {ati.ElementType} {elem}) return __ctx.InvalidType({input});");
             sb.AppendLine($"{par}[{index}] = {elem};");
             sb.EndBlock();
             return true;
@@ -130,10 +130,10 @@ public class TypeInfoGenerator : SourceGenerator
         { "long?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(long?){0}.GetInteger()", flag, "Integer") },
         { "int", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(int){0}.GetInteger()", flag, "Integer") },
         { "int?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(int?){0}.GetInteger()", flag, "Integer") },
-        { "double", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetFloat()", flag, "Float") },
-        { "double?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(double?){0}.GetFloat()", flag, "Float") },
-        { "float", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(float){0}.GetFloat()", flag, "Float") },
-        { "float?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(float?){0}.GetFloat()", flag, "Float") },
+        { "double", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetFloat()", flag, "Float", "Integer") },
+        { "double?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(double?){0}.GetFloat()", flag, "Float", "Integer") },
+        { "float", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(float){0}.GetFloat()", flag, "Float", "Integer") },
+        { "float?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(float?){0}.GetFloat()", flag, "Float", "Integer") },
         { "string", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetString()", flag, "String", "Char") },
         { "char", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetChar()", flag, "Char", "String") },
         { "bool", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"!ReferenceEquals({{0}}, {Types.DyBool}.False) && !ReferenceEquals({{0}}, {Types.DyNil}.Instance)", flag) },
@@ -161,9 +161,9 @@ public class TypeInfoGenerator : SourceGenerator
 
     public override void Execute(GeneratorExecutionContext ctx)
     {
-        var xs = FindTypesByAttributes(ctx.Compilation.GlobalNamespace, "GeneratedTypeAttribute");
+        var xs = FindTypesByAttributes(ctx.Compilation.GlobalNamespace, "GeneratedTypeAttribute", "GeneratedModuleAttribute");
 
-        foreach (var (_, t) in xs)
+        foreach (var (attr, t) in xs)
         {
             var builder = new SourceBuilder();
             var unit = t.DeclaringSyntaxReferences.FirstOrDefault().SyntaxTree.GetRoot() as CompilationUnitSyntax;
@@ -182,7 +182,7 @@ public class TypeInfoGenerator : SourceGenerator
                 if (!ProcessMethod(ctx, t, m, builder, methods))
                     return;
 
-            if (methods.Count > 0)
+            if (methods.Count > 0 && attr == "GeneratedTypeAttribute")
             {
                 var instanceMethods = methods.Where(kv => kv.instance).ToList();
                 var staticMethods = methods.Where(kv => !kv.instance).ToList();
@@ -219,6 +219,29 @@ public class TypeInfoGenerator : SourceGenerator
                     builder.Outdent();
                 }
 
+                builder.EndBlock();
+            }
+            else if (methods.Count > 0 && attr == "GeneratedModuleAttribute")
+            {
+                var staticMethods = methods.Where(kv => !kv.instance).Select(kv => kv.name).ToList();
+
+                if (staticMethods.Count == 0)
+                {
+                    Error(ctx, "Only static methods are supported in modules.");
+                    return;
+                }
+
+                builder.AppendLine();
+                builder.AppendLine($"partial class {t.Name}");
+                builder.StartBlock();
+
+                builder.AppendLine($"protected override void InitializeMembers()");
+                builder.StartBlock();
+
+                foreach (var m in staticMethods)
+                    builder.AppendLine($"Add(\"{m}\", new st_{t.Name}_{m}_WrapperFunction());");
+
+                builder.EndBlock();
                 builder.EndBlock();
             }
 
@@ -267,7 +290,7 @@ public class TypeInfoGenerator : SourceGenerator
 
         builder.AppendLine($"internal sealed class {prefix}_{t.Name}_{methodName}_WrapperFunction : {Types.DyForeignFunction}");
         builder.StartBlock();
-        builder.AppendLine($"internal override {Types.DyObject} InternalCall({Types.ExecutionContext} ctx, {Types.DyObject}[] args)");
+        builder.AppendLine($"internal override {Types.DyObject} InternalCall({Types.ExecutionContext} __ctx, {Types.DyObject}[] __args)");
         builder.StartBlock();
 
         var pars = EmitParameters(ctx, builder, t, m, isStatic, false, out var varArgIndex);
@@ -321,7 +344,7 @@ public class TypeInfoGenerator : SourceGenerator
         if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
         {
             builder.AppendLine();
-            builder.AppendLine($"internal override DyObject BindOrRun({Types.ExecutionContext} ctx, {Types.DyObject} arg)");
+            builder.AppendLine($"internal override DyObject BindOrRun({Types.ExecutionContext} __ctx, {Types.DyObject} __arg)");
             builder.StartBlock();
             EmitParameters(ctx, builder, t, m, isStatic, true, out _);
             EmitReturnType(ctx, builder, t, m);
@@ -350,8 +373,7 @@ public class TypeInfoGenerator : SourceGenerator
 
             if (hasContext && i == 0) //First parameter is a context
             {
-                if (mp.Name != "ctx")
-                    builder.AppendLine($"var {mp.Name} = ctx;");
+                builder.AppendLine($"var {mp.Name} = __ctx;");
                 continue;
             }
 
@@ -379,10 +401,10 @@ public class TypeInfoGenerator : SourceGenerator
             }
 
             var firstParam = i == 1 && hasContext || i == 0 && !hasContext;
-            var sourceParName = firstParam && !isStatic ? "Self" : $"args[{i + indexShift}]";
+            var sourceParName = firstParam && !isStatic ? "Self" : $"__args[{i + indexShift}]";
 
             if (specialCall)
-                sourceParName = "arg";
+                sourceParName = "__arg";
 
             if (isStatic || !firstParam)
                 pars.Add((parName, def.ToLiteral(), vararg));
@@ -405,7 +427,7 @@ public class TypeInfoGenerator : SourceGenerator
             }
             else if (IsDyObject(mp.Type))
             {
-                if (firstParam && !isStatic)
+                if ((firstParam && !isStatic) || (vararg && typeName == Types.DyTuple))
                     builder.AppendLine($"var {mp.Name} = ({typeName}){sourceParName};");
                 else
                     ConvertToDyObject(builder, typeName, sourceParName, mp.Name, nullable);
@@ -467,14 +489,14 @@ public class TypeInfoGenerator : SourceGenerator
     {
         if (!nullable)
         {
-            builder.AppendLine($"if ({oldVar} is not {targetType} {newVar}) return ctx.InvalidType({oldVar});");
+            builder.AppendLine($"if ({oldVar} is not {targetType} {newVar}) return __ctx.InvalidType({oldVar});");
             return;
         }
 
         builder.AppendLine($"{targetType} {newVar} = default;");
         builder.AppendLine($"if ({oldVar}.TypeId != {Types.DyType}.Nil)");
         builder.StartBlock();
-        builder.AppendLine($"if ({oldVar} is not {targetType} __tmp_{newVar}) return ctx.InvalidType({oldVar});");
+        builder.AppendLine($"if ({oldVar} is not {targetType} __tmp_{newVar}) return __ctx.InvalidType({oldVar});");
         builder.AppendLine($"{newVar} = __tmp_{newVar};");
         builder.EndBlock();
     }

@@ -1,6 +1,5 @@
 ﻿using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using Dyalect.Util;
 using System;
 using System.Collections.Generic;
 using static System.Console;

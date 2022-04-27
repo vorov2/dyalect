@@ -14,13 +14,13 @@ public sealed class RuntimeContext
         Nil = (DyNilTypeInfo)Types[DyType.Nil];
         Tuple = (DyTupleTypeInfo)Types[DyType.Tuple];
         Array = (DyArrayTypeInfo)Types[DyType.Array];
-        Units = new DyObject[Composition.Units.Count][];
+        Units = new DyObject[Composition.Units.Length][];
         Layouts = Composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
     }
 
     public void Refresh()
     {
-        var newUnits = new DyObject[Composition.Units.Count][];
+        var newUnits = new DyObject[Composition.Units.Length][];
         for (var i = 0; i < Units.Length; i++)
             newUnits[i] = Units[i];
         Units = newUnits;
