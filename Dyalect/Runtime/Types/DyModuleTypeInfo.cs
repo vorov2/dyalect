@@ -10,11 +10,11 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
         | SupportedOperations.Get | SupportedOperations.Len
         | SupportedOperations.Iter;
 
-    public override string ReflectedTypeName => nameof(DyType.Module);
+    public override string ReflectedTypeName => nameof(Dy.Module);
 
-    public override int ReflectedTypeId => DyType.Module;
+    public override int ReflectedTypeId => Dy.Module;
 
-    public DyModuleTypeInfo() => AddMixin(DyType.Collection);
+    public DyModuleTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
     protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
@@ -50,22 +50,24 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
         if (right is DyModule mod)
-            return ((DyModule)left).Unit.Id == mod.Unit.Id ? DyBool.True : DyBool.False;
+            return ((DyModule)left).Unit.Id == mod.Unit.Id ? True : False;
 
-        return DyBool.False;
+        return False;
     }
 
     protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
     protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
     {
-        if (!field.IsString(ctx)) return Nil;
+        if (!field.Is(ctx, Dy.String))
+            return Nil;
+
         var mod = (DyModule)self;
 
         if (!mod.Unit.ExportList.TryGetValue(field.GetString(), out var sv))
-            return DyBool.False;
+            return False;
 
-        return (sv.Data & VarFlags.Private) != VarFlags.Private ? DyBool.True : DyBool.False;
+        return (sv.Data & VarFlags.Private) != VarFlags.Private ? True : False;
     }
     #endregion
 }

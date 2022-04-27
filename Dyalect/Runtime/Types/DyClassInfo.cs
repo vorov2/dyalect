@@ -28,12 +28,12 @@ internal sealed class DyClassInfo : DyTypeInfo
             var res = self.Fields.Equals(t.Fields, ctx);
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return Nil;
 
-            return res ? DyBool.True : DyBool.False;
+            return res ? True : False;
         }
 
-        return DyBool.False;
+        return False;
     }
 
     protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
@@ -82,6 +82,6 @@ internal sealed class DyClassInfo : DyTypeInfo
             return base.SetOp(self, index, value, ctx);
 
         cls.Fields.SetItem(index, value, ctx);
-        return DyNil.Instance;
+        return Nil;
     }
 }

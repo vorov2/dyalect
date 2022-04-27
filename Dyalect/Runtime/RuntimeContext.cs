@@ -8,12 +8,12 @@ public sealed class RuntimeContext
     internal RuntimeContext(UnitComposition composition)
     {
         Composition = composition;
-        Types = DyType.GetAll();
-        String = (DyStringTypeInfo)Types[DyType.String];
-        Char = (DyCharTypeInfo)Types[DyType.Char];
-        Nil = (DyNilTypeInfo)Types[DyType.Nil];
-        Tuple = (DyTupleTypeInfo)Types[DyType.Tuple];
-        Array = (DyArrayTypeInfo)Types[DyType.Array];
+        Types = Dy.GetAll();
+        String = (DyStringTypeInfo)Types[Dy.String];
+        Char = (DyCharTypeInfo)Types[Dy.Char];
+        Nil = (DyNilTypeInfo)Types[Dy.Nil];
+        Tuple = (DyTupleTypeInfo)Types[Dy.Tuple];
+        Array = (DyArrayTypeInfo)Types[Dy.Array];
         Units = new DyObject[Composition.Units.Length][];
         Layouts = Composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
     }

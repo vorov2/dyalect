@@ -8,16 +8,16 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-    public override string ReflectedTypeName => nameof(DyType.Function);
+    public override string ReflectedTypeName => nameof(Dy.Function);
 
-    public override int ReflectedTypeId => DyType.Function;
+    public override int ReflectedTypeId => Dy.Function;
 
     #region Operations
     protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
         new DyString(arg.ToString());
 
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-        left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? DyBool.True : DyBool.False;
+        left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? True : False;
     #endregion
 
     [InstanceMethod]
@@ -58,7 +58,7 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
         if (f1 is null) return Nil;
         var f2 = other.ToFunction(ctx);
         if (f2 is null) return Nil;
-        return Func.Compose(f1, f2);
+        return new CompositionContainer(f1, f2);
     }
 
     [InstanceProperty("Name")]
@@ -75,9 +75,9 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
             arr[i] = new DyTuple(
                     new DyLabel[] {
                         new("name", new DyString(p.Name)),
-                        new("hasDefault", p.Value is not null ? DyBool.True : DyBool.False),
+                        new("hasDefault", p.Value is not null ? True : False),
                         new("default", p.Value ?? Nil),
-                        new("varArg", self.VarArgIndex == i ? DyBool.True : DyBool.False)
+                        new("varArg", self.VarArgIndex == i ? True : False)
                     }
                 );
         }

@@ -40,7 +40,7 @@ namespace Dyalect.Debug
 
         public Par(string name, char value) => (Name, Value, IsVarArg, TypeAnnotation) = (name, new DyChar(value), false, null);
 
-        public Par(string name, bool value) => (Name, Value, IsVarArg, TypeAnnotation) = (name, value ? DyBool.True : DyBool.False, false, null);
+        public Par(string name, bool value) => (Name, Value, IsVarArg, TypeAnnotation) = (name, value ? True : False, false, null);
 
         public override string ToString() => Name;
 

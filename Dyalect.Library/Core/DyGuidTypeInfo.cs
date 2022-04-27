@@ -11,7 +11,7 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
 
     public override string ReflectedTypeName => GuidType;
 
-    public DyGuidTypeInfo() => AddMixin(DyType.Comparable);
+    public DyGuidTypeInfo() => AddMixin(Dy.Comparable);
 
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
@@ -62,7 +62,7 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx)
     {
-        if (targetType.ReflectedTypeId == DyType.String)
+        if (targetType.ReflectedTypeId == Dy.String)
             return self.ToString(ctx);
         else if (targetType.ReflectedTypeId == DeclaringUnit.ByteArray.ReflectedTypeId)
             return ToByteArray(ctx, (DyGuid)self);

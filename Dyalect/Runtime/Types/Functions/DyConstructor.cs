@@ -1,18 +1,16 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
 using System;
-
 namespace Dyalect.Runtime.Types;
 
-internal sealed class DyConstructor<P1> : DyForeignFunction
-    where P1 : DyObject
+internal sealed class DyConstructor : DyForeignFunction
 {
-    private readonly Func<ExecutionContext, P1, DyObject> fun;
+    private readonly Func<ExecutionContext, DyTuple, DyObject> fun;
 
-    public DyConstructor(string name, Func<ExecutionContext, P1, DyObject> fun, Par par)
+    public DyConstructor(string name, Func<ExecutionContext, DyTuple, DyObject> fun, Par par)
         : base(name, new[] { par }) => (this.fun, Attr) = (fun, FunAttr.Vari);
 
-    internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Cast<P1>(0, args)!);
+    internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, (DyTuple)args[0]);
 
     protected override DyFunction Clone(ExecutionContext ctx) => this;
 }

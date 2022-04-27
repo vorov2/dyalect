@@ -16,13 +16,13 @@ public sealed class ConsoleTextReader : TextReader
     {
         var ret = read.Invoke(ctx);
 
-        if (ret.TypeId == DyType.Integer)
+        if (ret.TypeId == Dy.Integer)
             return (int)ret.GetInteger();
-        else if (ret.TypeId == DyType.Char)
+        else if (ret.TypeId == Dy.Char)
             return ret.GetChar();
         else
         {
-            ctx.InvalidType(DyType.Char, ret);
+            ctx.InvalidType(Dy.Char, ret);
             return 0;
         }
     }
@@ -31,7 +31,7 @@ public sealed class ConsoleTextReader : TextReader
     {
         var ret = readLine.Invoke(ctx);
 
-        if (ret.TypeId == DyType.String)
+        if (ret.TypeId == Dy.String)
             return ret.GetString();
         else
         {

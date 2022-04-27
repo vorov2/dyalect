@@ -147,7 +147,7 @@ partial class Builder
 
     private void Build(DVariant node, Hints hints, CompilerContext ctx)
     {
-        cw.Type(DyType.Variant);
+        cw.Type(Dy.Variant);
         cw.GetMember(node.Name);
         cw.FunPrep(1);
         BuildTupleElements(node.Arguments, node.Location, hints, ctx);
@@ -354,7 +354,7 @@ partial class Builder
 
     private void Build(DRange range, Hints hints, CompilerContext ctx)
     {
-        cw.Type(DyType.Iterator);
+        cw.Type(Dy.Iterator);
         cw.GetMember(Builtins.Range);
         cw.FunPrep(4);
 
@@ -576,8 +576,8 @@ partial class Builder
         }
         else
         {
-            cw.Type(DyType.Array);
-            cw.GetMember(nameof(DyType.Array));
+            cw.Type(Dy.Array);
+            cw.GetMember(nameof(Dy.Array));
             cw.FunPrep(node.Elements.Count);
 
             for (var i = 0; i < node.Elements.Count; i++)
@@ -910,7 +910,7 @@ partial class Builder
 
         if (node.Chunks is not null)
         {
-            cw.Type(DyType.String);
+            cw.Type(Dy.String);
             cw.GetMember(Builtins.Concat);
             cw.FunPrep(node.Chunks.Count);
 
@@ -1358,7 +1358,7 @@ partial class Builder
                 if (name is not null)
                 {
                     var err = VariableExists(name);
-                    if (err is not CompilerError.None && DyType.GetTypeCodeByName(name) == 0)
+                    if (err is not CompilerError.None && Dy.GetTypeCodeByName(name) == 0)
                         AddError(err, node.Location, name);
                 }
 
@@ -1378,7 +1378,7 @@ partial class Builder
 
     private void ThrowErrorProlog(DyErrorCode code, int pars)
     {
-        cw.Type(DyType.Variant);
+        cw.Type(Dy.Variant);
         cw.GetMember(code.ToString());
         cw.FunPrep(pars);
     }

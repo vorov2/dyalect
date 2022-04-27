@@ -13,7 +13,7 @@ namespace Dyalect.Linker
                 NodeType.Integer => DyInteger.Get(((DIntegerLiteral)node).Value),
                 NodeType.Float => new DyFloat(((DFloatLiteral)node).Value),
                 NodeType.Char => new DyChar(((DCharLiteral)node).Value),
-                NodeType.Boolean => ((DBooleanLiteral)node).Value ? DyBool.True : DyBool.False,
+                NodeType.Boolean => ((DBooleanLiteral)node).Value ? True : False,
                 NodeType.Nil => DyNil.Instance,
                 NodeType.Tuple => new DyTuple(GetArray(((DTupleLiteral)node).Elements, allowLabels: true)),
                 NodeType.Array => new DyArray(GetArray(((DArrayLiteral)node).Elements, allowLabels: false)),

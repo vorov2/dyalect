@@ -29,9 +29,9 @@ public abstract class DyObject : IEquatable<DyObject>
     {
         object? retval;
         
-        if (index.TypeId == DyType.Integer)
+        if (index.TypeId == Dy.Integer)
             retval = GetItem(index.GetInteger());
-        else if (index.TypeId == DyType.String)
+        else if (index.TypeId == Dy.String)
             retval = GetItem(index.GetString());
         else
             return ctx.IndexOutOfRange(index);

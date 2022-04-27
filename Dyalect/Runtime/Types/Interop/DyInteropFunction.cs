@@ -44,7 +44,7 @@ internal sealed class DyInteropFunction : DyForeignFunction
 
     private bool ResolveMethod(DyObject self, object[] arguments, Type[] argumentTypes, bool generalize, out DyObject result)
     {
-        result = DyNil.Instance;
+        result = Nil;
 
         for (var i = 0; i < methods.Count; i++)
         {
@@ -58,7 +58,7 @@ internal sealed class DyInteropFunction : DyForeignFunction
             var ret = m.Invoke(m.IsStatic ? null : self.ToObject(), arguments);
                 
             if (ret is null)
-                result = DyNil.Instance;
+                result = Nil;
             else if (ret is int i4)
                 result = DyInteger.Get(i4);
             else if (ret is long i8)
@@ -68,7 +68,7 @@ internal sealed class DyInteropFunction : DyForeignFunction
             else if (ret is string s)
                 result = new DyString(s);
             else if (ret is bool i1)
-                result = i1 ? DyBool.True : DyBool.False;
+                result = i1 ? True : False;
             else if (ret is double r8)
                 result = new DyFloat(r8);
             else if (ret is float r4)
@@ -99,4 +99,4 @@ internal sealed class DyInteropFunction : DyForeignFunction
 
     internal override bool Equals(DyFunction func) => func is DyInteropFunction f
         && f.name == name && f.type.Equals(type);
-}    
+}

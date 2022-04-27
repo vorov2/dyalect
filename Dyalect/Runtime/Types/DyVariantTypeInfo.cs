@@ -3,15 +3,15 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyVariantTypeInfo : DyTypeInfo
 {
-    public override string ReflectedTypeName => nameof(DyType.Variant);
+    public override string ReflectedTypeName => nameof(Dy.Variant);
 
-    public override int ReflectedTypeId => DyType.Variant;
+    public override int ReflectedTypeId => Dy.Variant;
 
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
         | SupportedOperations.Len | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Lit;
 
-    public DyVariantTypeInfo() => AddMixin(DyType.Collection);
+    public DyVariantTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
@@ -57,14 +57,14 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
-            DyType.Tuple => GetTuple(ctx, (DyVariant)self),
+            Dy.Tuple => GetTuple(ctx, (DyVariant)self),
             _ => base.CastOp(self, targetType, ctx)
         };
 
     private DyObject GetTuple(ExecutionContext ctx, DyVariant self)
     {
         if (self.Tuple.Count == 0)
-            return ctx.InvalidCast(ReflectedTypeName, nameof(DyType.Tuple));
+            return ctx.InvalidCast(ReflectedTypeName, nameof(Dy.Tuple));
 
         return self.Tuple;
     }
@@ -75,6 +75,6 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
         if (!char.IsUpper(name[0]))
             return base.InitializeStaticMember(name, ctx);
 
-        return new DyConstructor<DyTuple>(name, (_, args) => new DyVariant(name, args), new("values", ParKind.VarArg));
+        return new DyConstructor(name, (_, args) => new DyVariant(name, args), new("values", ParKind.VarArg));
     }
 }

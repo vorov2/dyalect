@@ -1,5 +1,4 @@
 ﻿using Dyalect.Codegen;
-using Dyalect.Debug;
 using Dyalect.Parser;
 using System;
 using System.Collections.Generic;
@@ -15,49 +14,49 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
         | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.Lit;
 
-    public override string ReflectedTypeName => nameof(DyType.String);
+    public override string ReflectedTypeName => nameof(Dy.String);
 
-    public override int ReflectedTypeId => DyType.String;
+    public override int ReflectedTypeId => Dy.String;
 
-    public DyStringTypeInfo() => AddMixin(DyType.Collection, DyType.Comparable);
+    public DyStringTypeInfo() => AddMixin(Dy.Collection, Dy.Comparable);
 
     #region Operations
     protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
-        var str1 = left.TypeId == DyType.String || left.TypeId == DyType.Char ? left.GetString() : left.ToString(ctx).Value;
+        var str1 = left.TypeId == Dy.String || left.TypeId == Dy.Char ? left.GetString() : left.ToString(ctx).Value;
 
         if (ctx.HasErrors)
-            return DyNil.Instance;
+            return Nil;
 
-        var str2 = right.TypeId == DyType.String || right.TypeId == DyType.Char ? right.GetString() : right.ToString(ctx).Value;
+        var str2 = right.TypeId == Dy.String || right.TypeId == Dy.Char ? right.GetString() : right.ToString(ctx).Value;
         return new DyString(str1 + str2);
     }
 
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
-        if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
-            return left.GetString() == right.GetString() ? DyBool.True : DyBool.False;
+        if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
+            return left.GetString() == right.GetString() ? True : False;
         return base.EqOp(left, right, ctx); //Important! Should redirect to base
     }
 
     protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
-        if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
-            return left.GetString() != right.GetString() ? DyBool.True : DyBool.False;
+        if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
+            return left.GetString() != right.GetString() ? True : False;
         return base.NeqOp(left, right, ctx); //Important! Should redirect to base
     }
 
     protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
-        if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
-            return left.GetString().CompareTo(right.GetString()) > 0 ? DyBool.True : DyBool.False;
+        if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
+            return left.GetString().CompareTo(right.GetString()) > 0 ? True : False;
         return base.GtOp(left, right, ctx);
     }
 
     protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
-        if (left.TypeId == right.TypeId || right.TypeId == DyType.Char)
-            return left.GetString().CompareTo(right.GetString()) < 0 ? DyBool.True : DyBool.False;
+        if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
+            return left.GetString().CompareTo(right.GetString()) < 0 ? True : False;
         return base.LtOp(left, right, ctx);
     }
 
@@ -71,12 +70,12 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     {
         var str = self.GetString();
 
-        if (field.TypeId == DyType.String)
-            return str.Contains(field.GetString()) ? DyBool.True : DyBool.False;
-        else if (field.TypeId == DyType.Char)
-            return str.Contains(field.GetChar()) ? DyBool.True : DyBool.False;
+        if (field.TypeId == Dy.String)
+            return str.Contains(field.GetString()) ? True : False;
+        else if (field.TypeId == Dy.Char)
+            return str.Contains(field.GetChar()) ? True : False;
         else
-            return ctx.InvalidType(DyType.String, DyType.Char, field);
+            return ctx.InvalidType(Dy.String, Dy.Char, field);
     }
 
     protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => new DyString(arg.GetString());
@@ -88,14 +87,14 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
     {
         self.SetItem(index, value, ctx);
-        return DyNil.Instance;
+        return Nil;
     }
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
-            DyType.Integer => long.TryParse(self.GetString(), out var i8) ? new DyInteger(i8) : DyInteger.Zero,
-            DyType.Float => double.TryParse(self.GetString(), out var r8) ? new DyFloat(r8) : DyFloat.Zero,
+            Dy.Integer => long.TryParse(self.GetString(), out var i8) ? new DyInteger(i8) : DyInteger.Zero,
+            Dy.Float => double.TryParse(self.GetString(), out var r8) ? new DyFloat(r8) : DyFloat.Zero,
             _ => base.CastOp(self, targetType, ctx)
         };
     #endregion
@@ -305,7 +304,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         {
             var a = values[i];
 
-            if (a.TypeId == DyType.String || a.TypeId == DyType.Char)
+            if (a.TypeId == Dy.String || a.TypeId == Dy.Char)
                 arr.Add(a.GetString());
             else
             {

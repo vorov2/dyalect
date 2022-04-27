@@ -18,9 +18,9 @@ public abstract class DyFunction : DyObject
     internal bool Private => (Attr & FunAttr.Priv) == FunAttr.Priv;
     internal bool VariantConstructor => (Attr & FunAttr.Vari) == FunAttr.Vari;
 
-    public override string TypeName => nameof(DyType.Function);
+    public override string TypeName => nameof(Dy.Function);
 
-    protected DyFunction(Par[] pars, int varArgIndex) : base(DyType.Function) =>
+    protected DyFunction(Par[] pars, int varArgIndex) : base(Dy.Function) =>
         (Parameters, VarArgIndex) = (pars, varArgIndex);
 
     public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
@@ -38,7 +38,7 @@ public abstract class DyFunction : DyObject
         var newArgs = PrepareArguments(ctx, args);
 
         if (ctx.HasErrors)
-            return DyNil.Instance;
+            return Nil;
 
         return InternalCall(ctx, newArgs);
     }
@@ -68,15 +68,15 @@ public abstract class DyFunction : DyObject
         if (VarArgIndex > -1)
         {
             var o = newLocals[VarArgIndex];
-            if (o.TypeId == DyType.Nil)
+            if (o.TypeId == Dy.Nil)
                 newLocals[VarArgIndex] = DyTuple.Empty;
-            else if (o.TypeId == DyType.Array)
+            else if (o.TypeId == Dy.Array)
             {
                 var arr = (DyArray)o;
                 arr.Compact();
                 newLocals[VarArgIndex] = new DyTuple(arr.UnsafeAccessValues(), arr.Count);
             }
-            else if (o.TypeId != DyType.Tuple)
+            else if (o.TypeId != Dy.Tuple)
                 newLocals[VarArgIndex] = new DyTuple(new DyObject[] { o } );
         }
 

@@ -73,19 +73,19 @@ public sealed class DyByteArray : DyForeignObject
 
         switch (obj.TypeId)
         {
-            case DyType.Integer:
+            case Dy.Integer:
                 Write(obj.GetInteger());
                 break;
-            case DyType.Float:
+            case Dy.Float:
                 Write(obj.GetFloat());
                 break;
-            case DyType.Bool:
+            case Dy.Bool:
                 Write(obj.IsTrue());
                 break;
-            case DyType.Char:
+            case Dy.Char:
                 Write(obj.GetString());
                 break;
-            case DyType.String:
+            case Dy.String:
                 Write(obj.GetString());
                 break;
             default:
@@ -117,11 +117,11 @@ public sealed class DyByteArray : DyForeignObject
     public DyObject Read(ExecutionContext ctx, DyTypeInfo type) =>
         type.ReflectedTypeId switch
         {
-            DyType.Integer => ReadInt64(ctx),
-            DyType.Float => ReadDouble(ctx),
-            DyType.Bool => ReadBool(ctx),
-            DyType.Char => ReadChar(ctx),
-            DyType.String => ReadString(ctx),
+            Dy.Integer => ReadInt64(ctx),
+            Dy.Float => ReadDouble(ctx),
+            Dy.Bool => ReadBool(ctx),
+            Dy.Char => ReadChar(ctx),
+            Dy.String => ReadString(ctx),
             _ => ctx.InvalidType(type.ReflectedTypeName)
         };
 

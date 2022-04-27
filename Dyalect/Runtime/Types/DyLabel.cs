@@ -8,16 +8,16 @@ public sealed class DyLabel : DyObject
 
     internal bool Mutable;
 
-    public override string TypeName => nameof(DyType.Label);
+    public override string TypeName => nameof(Dy.Label);
     
     public string Label { get; }
 
     public DyObject Value { get; internal set; }
 
-    public DyLabel(string label, DyObject value, bool mutable = false) : base(DyType.Label) =>
+    public DyLabel(string label, DyObject value, bool mutable = false) : base(Dy.Label) =>
         (Label, Value, Mutable) = (label, value, mutable);
 
-    public DyLabel(string label, object value, bool mutable = false) : base(DyType.Label) =>
+    public DyLabel(string label, object value, bool mutable = false) : base(Dy.Label) =>
         (Label, Value, Mutable) = (label, TypeConverter.ConvertFrom(value), mutable);
 
     public override object ToObject() => Value.ToObject();
@@ -28,7 +28,7 @@ public sealed class DyLabel : DyObject
 
     protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        if ((index.TypeId == DyType.Integer && index.GetInteger() == 0) || (index.TypeId == DyType.String && index.GetString() == Label))
+        if ((index.TypeId == Dy.Integer && index.GetInteger() == 0) || (index.TypeId == Dy.String && index.GetString() == Label))
             return Value;
         else
             return ctx.IndexOutOfRange(index);

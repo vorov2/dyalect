@@ -13,12 +13,12 @@ namespace Dyalect.Linker
             reader.ReadInt32() switch
             {
                 -1 => null,
-                DyType.Nil => DyNil.Instance,
-                DyType.Integer => DyInteger.Get(reader.ReadInt32()),
-                DyType.Float => new DyFloat(reader.ReadDouble()),
-                DyType.String => new DyString(reader.ReadString()),
-                DyType.Char => new DyChar(reader.ReadChar()),
-                DyType.Bool => reader.ReadBoolean() ? DyBool.True : DyBool.False,
+                Dy.Nil => DyNil.Instance,
+                Dy.Integer => DyInteger.Get(reader.ReadInt32()),
+                Dy.Float => new DyFloat(reader.ReadDouble()),
+                Dy.String => new DyString(reader.ReadString()),
+                Dy.Char => new DyChar(reader.ReadChar()),
+                Dy.Bool => reader.ReadBoolean() ? True : False,
                 _ => throw new NotSupportedException(),
             };
     }

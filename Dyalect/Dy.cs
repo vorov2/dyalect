@@ -1,7 +1,7 @@
 ﻿using Dyalect.Runtime.Types;
 namespace Dyalect;
 
-public static partial class DyType
+public static partial class Dy
 {
     public const int Nil = 1;
     public const int Object = 2;
@@ -49,4 +49,11 @@ public static partial class DyType
         return name;
     }
     static partial void GetTypeNameByCodeGenerated(int code, ref string name);
+}
+
+public class DyTypes
+{
+    public readonly static DyNil Nil = DyNil.Instance;
+    public readonly static DyBool True = DyBool.True;
+    public readonly static DyBool False = DyBool.False;
 }

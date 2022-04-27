@@ -33,9 +33,9 @@ public sealed class EvalStack
 
     internal void Replace(DyObject val) => array[size - 1] = val;
 
-    internal void Push(bool val) => array[size++] = val ? DyBool.True : DyBool.False;
+    internal void Push(bool val) => array[size++] = val ? True : False;
 
-    internal void Replace(bool val) => array[size - 1] = val ? DyBool.True : DyBool.False;
+    internal void Replace(bool val) => array[size - 1] = val ? True : False;
 
     internal int Size => size;
 }

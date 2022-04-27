@@ -8,16 +8,16 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
 {
-    public override string ReflectedTypeName => nameof(DyType.Array);
+    public override string ReflectedTypeName => nameof(Dy.Array);
 
-    public override int ReflectedTypeId => DyType.Array;
+    public override int ReflectedTypeId => Dy.Array;
 
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
         | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
         | SupportedOperations.Iter | SupportedOperations.Lit;
 
-    public DyArrayTypeInfo() => AddMixin(DyType.Collection);
+    public DyArrayTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
     protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
@@ -57,13 +57,13 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
     {
         self.SetItem(index, value, ctx);
-        return DyNil.Instance;
+        return Nil;
     }
 
     protected override DyObject ContainsOp(DyObject self, DyObject item, ExecutionContext ctx)
     {
         var arr = (DyArray)self;
-        return arr.IndexOf(ctx, item) != -1 ? DyBool.True : DyBool.False;
+        return arr.IndexOf(ctx, item) != -1 ? True : False;
     }
     #endregion
 
@@ -245,7 +245,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
                 flag = res.IsTrue();
             }
             else
-                flag = e.IsNil();
+                flag = e.Is(Dy.Nil);
 
             if (flag)
                 self.RemoveAt(idx);
@@ -269,7 +269,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     {
         var arr = values;
 
-        if (values.TypeId != DyType.Array)
+        if (values.TypeId != Dy.Array)
         {
             arr = ctx.RuntimeContext.Types[values.TypeId].Cast(ctx, values, ctx.RuntimeContext.Array);
 
@@ -287,7 +287,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
         var arr = new DyObject[count];
         def ??= Nil;
 
-        if (def.TypeId == DyType.Iterator)
+        if (def.TypeId == Dy.Iterator)
             def = ((DyIterator)def).GetIteratorFunction();
 
         if (def is DyFunction func)
@@ -297,7 +297,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
                 var res = func.Call(ctx);
 
                 if (ctx.HasErrors)
-                    return DyNil.Instance;
+                    return Nil;
 
                 arr[i] = res;
             }

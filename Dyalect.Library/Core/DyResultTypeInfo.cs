@@ -20,21 +20,21 @@ public sealed partial class DyResultTypeInfo : DyForeignTypeInfo
     {
         var self = (DyResult)arg;
         return new DyString(self.Constructor + " ("
-            + (self.Value.TypeId is not DyType.Nil ? self.Value.ToString(ctx) : "") + ")");
+            + (self.Value.TypeId is not Dy.Nil ? self.Value.ToString(ctx) : "") + ")");
     }
 
     protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
     {
         var self = (DyResult)arg;
-        return DyInteger.Get(self.Value.TypeId is DyType.Nil ? 0 : 1);
+        return DyInteger.Get(self.Value.TypeId is Dy.Nil ? 0 : 1);
     }
 
     protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
     {
-        if (index.TypeId is DyType.Integer)
+        if (index.TypeId is Dy.Integer)
             return index.GetInteger() is 0 ? ((DyResult)self).Value : ctx.IndexOutOfRange(index);
 
-        if (index.TypeId is DyType.String)
+        if (index.TypeId is Dy.String)
         {
             var str = index.GetString();
             var s = (DyResult)self;

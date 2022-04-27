@@ -5,16 +5,16 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
 {
-    public override string ReflectedTypeName => nameof(DyType.Dictionary);
+    public override string ReflectedTypeName => nameof(Dy.Dictionary);
 
-    public override int ReflectedTypeId => DyType.Dictionary;
+    public override int ReflectedTypeId => Dy.Dictionary;
 
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
         | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
         | SupportedOperations.Iter;
 
-    public DyDictionaryTypeInfo() => AddMixin(DyType.Collection);
+    public DyDictionaryTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
     protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
@@ -62,19 +62,19 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
     }
 
     protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx) =>
-        ((DyDictionary)self).ContainsKey(field) ? DyBool.True : DyBool.False;
+        ((DyDictionary)self).ContainsKey(field) ? True : False;
 
     protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
 
     protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
     {
         self.SetItem(index, value, ctx);
-        return DyNil.Instance;
+        return Nil;
     }
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
-            DyType.Tuple => new DyTuple(((DyDictionary)self).GetArrayOfLabels()),
+            Dy.Tuple => new DyTuple(((DyDictionary)self).GetArrayOfLabels()),
             _ => base.CastOp(self, targetType, ctx)
         };
     #endregion
@@ -120,10 +120,10 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
                 if (ctx.HasErrors)
                     return;
 
-                if (ReferenceEquals(res, DyBool.True))
+                if (ReferenceEquals(res, True))
                     self.Dictionary.Remove(key);
             }
-            else if (ReferenceEquals(value, DyNil.Instance))
+            else if (value.Is(Dy.Nil))
                 self.Dictionary.Remove(key);
         }
     }

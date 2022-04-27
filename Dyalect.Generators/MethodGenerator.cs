@@ -55,20 +55,20 @@ public class MethodGenerator : SourceGenerator
                 if (i > 0)
                     sb.Append(" and ");
 
-                sb.Append($"not {Types.DyType}.{dyTypes[i]}");
+                sb.Append($"not {Types.Dy}.{dyTypes[i]}");
             }
 
             if ((flags & ParFlags.Nullable) == ParFlags.Nullable)
-                sb.Append($" and not {Types.DyType}.Nil");
+                sb.Append($" and not {Types.Dy}.Nil");
 
-            sb.Append($") return __ctx.InvalidType({dyTypes.ToString("DyType.{0}")}, {input});");
+            sb.Append($") return __ctx.InvalidType({dyTypes.ToString($"{Types.Dy}.{{0}}")}, {input});");
             sb.AppendLine();
         }
 
         var app = (flags & ParFlags.NoVar) != ParFlags.NoVar ? "var " : "";
 
         if ((flags & ParFlags.Nullable) == ParFlags.Nullable)
-            sb.AppendLine($"{app}{par} = {input}.TypeId == {Types.DyType}.Nil ? null : {string.Format(conversion, input)};");
+            sb.AppendLine($"{app}{par} = {input}.TypeId == {Types.Dy}.Nil ? null : {string.Format(conversion, input)};");
         else
             sb.AppendLine($"{app}{par} = {string.Format(conversion, input)};");
     }
@@ -92,7 +92,7 @@ public class MethodGenerator : SourceGenerator
             
             if (nullable)
             {
-                sb.AppendLine($"else if ({input}.TypeId == {Types.DyType}.Nil)");
+                sb.AppendLine($"else if ({input}.TypeId == {Types.Dy}.Nil)");
                 sb.AppendInBlock($"{arr} = null;");
             }
 
@@ -183,76 +183,86 @@ public class MethodGenerator : SourceGenerator
                     builder.Append(us.ToFullString());
             }
 
-            builder.AppendLine($"namespace {t.ContainingNamespace};");
-            builder.AppendLine();
+            builder.AppendLine($"namespace {t.ContainingNamespace}.Internal");
+            builder.StartBlock();
             var methods = new List<(string name, bool instance)>();
 
             foreach (IMethodSymbol m in t.GetMembers().OfType<IMethodSymbol>())
                 if (!ProcessMethod(ctx, t, m, builder, methods))
                     return;
 
-            if (methods.Count > 0 && attr == "GeneratedTypeAttribute")
+            builder.EndBlock();
+            builder.AppendLine($"namespace {t.ContainingNamespace}");
+            builder.StartBlock();
+            builder.AppendLine($"using {t.ContainingNamespace}.Internal;");
+
+            if (methods.Count > 0)
             {
-                var instanceMethods = methods.Where(kv => kv.instance).ToList();
-                var staticMethods = methods.Where(kv => !kv.instance).ToList();
-
-                builder.AppendLine();
-                builder.AppendLine($"partial class {t.Name}");
-                builder.StartBlock();
-
-                if (instanceMethods.Count > 0)
+                if (attr == "GeneratedTypeAttribute")
                 {
-                    builder.AppendLine($"protected override {Types.DyFunction} InitializeInstanceMember({Types.DyObject} self, string name, {Types.ExecutionContext} ctx) =>");
-                    builder.Indent();
-                    builder.AppendLine("name switch");
+                    var instanceMethods = methods.Where(kv => kv.instance).ToList();
+                    var staticMethods = methods.Where(kv => !kv.instance).ToList();
+
+                    builder.AppendLine();
+                    builder.AppendLine($"partial class {t.Name}");
                     builder.StartBlock();
-                    foreach (var (im, _) in instanceMethods)
-                        builder.AppendLine($"\"{im}\" => new in_{t.Name}_{im}_WrapperFunction(),");
-                    builder.AppendLine("_ => base.InitializeInstanceMember(self, name, ctx)");
-                    builder.Outdent();
-                    builder.AppendLine("};");
-                    builder.Outdent();
-                }
 
-                if (staticMethods.Count > 0)
+                    if (instanceMethods.Count > 0)
+                    {
+                        builder.AppendLine($"protected override {Types.DyFunction} InitializeInstanceMember({Types.DyObject} self, string name, {Types.ExecutionContext} ctx) =>");
+                        builder.Indent();
+                        builder.AppendLine("name switch");
+                        builder.StartBlock();
+                        foreach (var (im, _) in instanceMethods)
+                            builder.AppendLine($"\"{im}\" => new in_{t.Name}_{im}_WrapperFunction(),");
+                        builder.AppendLine("_ => base.InitializeInstanceMember(self, name, ctx)");
+                        builder.Outdent();
+                        builder.AppendLine("};");
+                        builder.Outdent();
+                    }
+
+                    if (staticMethods.Count > 0)
+                    {
+                        builder.AppendLine($"protected override {Types.DyFunction} InitializeStaticMember(string name, {Types.ExecutionContext} ctx) =>");
+                        builder.Indent();
+                        builder.AppendLine("name switch");
+                        builder.StartBlock();
+                        foreach (var (im, _) in staticMethods)
+                            builder.AppendLine($"\"{im}\" => new st_{t.Name}_{im}_WrapperFunction(),");
+                        builder.AppendLine("_ => base.InitializeStaticMember(name, ctx)");
+                        builder.Outdent();
+                        builder.AppendLine("};");
+                        builder.Outdent();
+                    }
+
+                    builder.EndBlock();
+                }
+                else if (attr == "GeneratedModuleAttribute")
                 {
-                    builder.AppendLine($"protected override {Types.DyFunction} InitializeStaticMember(string name, {Types.ExecutionContext} ctx) =>");
-                    builder.Indent();
-                    builder.AppendLine("name switch");
+                    var staticMethods = methods.Where(kv => !kv.instance).Select(kv => kv.name).ToList();
+
+                    if (staticMethods.Count == 0)
+                    {
+                        Error(ctx, "Only static methods are supported in modules.");
+                        return;
+                    }
+
+                    builder.AppendLine();
+                    builder.AppendLine($"partial class {t.Name}");
                     builder.StartBlock();
-                    foreach (var (im, _) in staticMethods)
-                        builder.AppendLine($"\"{im}\" => new st_{t.Name}_{im}_WrapperFunction(),");
-                    builder.AppendLine("_ => base.InitializeStaticMember(name, ctx)");
-                    builder.Outdent();
-                    builder.AppendLine("};");
-                    builder.Outdent();
+
+                    builder.AppendLine($"protected override void InitializeMembers()");
+                    builder.StartBlock();
+
+                    foreach (var m in staticMethods)
+                        builder.AppendLine($"Add(\"{m}\", new st_{t.Name}_{m}_WrapperFunction());");
+
+                    builder.EndBlock();
+                    builder.EndBlock();
                 }
-
-                builder.EndBlock();
             }
-            else if (methods.Count > 0 && attr == "GeneratedModuleAttribute")
-            {
-                var staticMethods = methods.Where(kv => !kv.instance).Select(kv => kv.name).ToList();
 
-                if (staticMethods.Count == 0)
-                {
-                    Error(ctx, "Only static methods are supported in modules.");
-                    return;
-                }
-
-                builder.AppendLine();
-                builder.AppendLine($"partial class {t.Name}");
-                builder.StartBlock();
-
-                builder.AppendLine($"protected override void InitializeMembers()");
-                builder.StartBlock();
-
-                foreach (var m in staticMethods)
-                    builder.AppendLine($"Add(\"{m}\", new st_{t.Name}_{m}_WrapperFunction());");
-
-                builder.EndBlock();
-                builder.EndBlock();
-            }
+            builder.EndBlock();
 
             //System.IO.File.WriteAllText($"C:\\temp\\gen\\{t.Name}.generated.{DateTime.Now.Ticks}.cs", builder.ToString());
             ctx.AddSource($"{t.Name}.generated.cs", builder.ToString());
@@ -506,7 +516,7 @@ public class MethodGenerator : SourceGenerator
         }
 
         builder.AppendLine($"{targetType} {newVar} = default;");
-        builder.AppendLine($"if ({oldVar}.TypeId != {Types.DyType}.Nil)");
+        builder.AppendLine($"if ({oldVar}.TypeId != {Types.Dy}.Nil)");
         builder.StartBlock();
         builder.AppendLine($"if ({oldVar} is not {targetType} __tmp_{newVar}) return __ctx.InvalidType({oldVar});");
         builder.AppendLine($"{newVar} = __tmp_{newVar};");

@@ -3,9 +3,9 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyComparableTypeInfo : DyTypeInfo
 {
-    public override string ReflectedTypeName => nameof(DyType.Comparable);
+    public override string ReflectedTypeName => nameof(Dy.Comparable);
 
-    public override int ReflectedTypeId => DyType.Comparable;
+    public override int ReflectedTypeId => Dy.Comparable;
 
     protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 

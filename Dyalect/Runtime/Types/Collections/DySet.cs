@@ -5,13 +5,13 @@ public class DySet : DyEnumerable
 {
     internal readonly HashSet<DyObject> Set;
 
-    public override string TypeName => nameof(DyType.Set);
+    public override string TypeName => nameof(Dy.Set);
     
-    public DySet() : base(DyType.Set) => Set = new();
+    public DySet() : base(Dy.Set) => Set = new();
 
-    public DySet(params DyObject[] args) : base(DyType.Set) => Set = new(args);
+    public DySet(params DyObject[] args) : base(Dy.Set) => Set = new(args);
 
-    internal DySet(HashSet<DyObject> set) : base(DyType.Set) => Set = set;
+    internal DySet(HashSet<DyObject> set) : base(Dy.Set) => Set = set;
     
     public override IEnumerator<DyObject> GetEnumerator() => new DySetEnumerator(this);
 

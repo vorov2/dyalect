@@ -7,21 +7,21 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal sealed partial class DySetTypeInfo : DyTypeInfo
 {
-    public override string ReflectedTypeName => nameof(DyType.Set);
+    public override string ReflectedTypeName => nameof(Dy.Set);
 
-    public override int ReflectedTypeId => DyType.Set;
+    public override int ReflectedTypeId => Dy.Set;
 
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
         | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.Lit;
 
-    public DySetTypeInfo() => AddMixin(DyType.Collection);
+    public DySetTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
         var self = (DySet)left;
-        return self.Equals(ctx, right) ? DyBool.True : DyBool.False;
+        return self.Equals(ctx, right) ? True : False;
     }
 
     protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
@@ -33,7 +33,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
     protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
     {
         var set = (DySet)self;
-        return set.Contains(field) ? DyBool.True : DyBool.False;
+        return set.Contains(field) ? True : False;
     }
 
     protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => ToLiteralOrString(arg, ctx, literal: false);
@@ -54,7 +54,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
             sb.Append(literal ? v.ToLiteral(ctx) : v.ToString(ctx));
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return Nil;
         }
 
         sb.Append(')');
@@ -64,8 +64,8 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
-            DyType.Array => new DyArray(((DySet)self).ToArray()),
-            DyType.Tuple => new DyTuple(((DySet)self).ToArray()),
+            Dy.Array => new DyArray(((DySet)self).ToArray()),
+            Dy.Tuple => new DyTuple(((DySet)self).ToArray()),
             _ => base.CastOp(self, targetType, ctx)
         };
     #endregion

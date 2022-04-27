@@ -20,10 +20,10 @@ internal sealed class DyDictionaryEnumerator : IEnumerator<DyObject>
         get
         {
             var obj = (KeyValuePair<DyObject, DyObject>)enumerator.Current;
-            return new DyTuple(new DyObject[] {
-                    new DyLabel("key", obj.Key),
-                    new DyLabel("value", obj.Value)
-                    });
+            return new DyTuple(new DyLabel[] {
+                new("key", obj.Key),
+                new("value", obj.Value)
+            });
         }
     }
 

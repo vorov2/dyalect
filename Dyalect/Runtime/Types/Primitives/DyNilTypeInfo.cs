@@ -7,9 +7,9 @@ internal sealed partial class DyNilTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Lit;
 
-    public override string ReflectedTypeName => nameof(DyType.Nil);
+    public override string ReflectedTypeName => nameof(Dy.Nil);
 
-    public override int ReflectedTypeId => DyType.Nil;
+    public override int ReflectedTypeId => Dy.Nil;
 
     #region Operations
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
@@ -24,7 +24,7 @@ internal sealed partial class DyNilTypeInfo : DyTypeInfo
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
-            DyType.Bool => DyBool.False,
+            Dy.Bool => DyBool.False,
             _ => base.CastOp(self, targetType, ctx)
         };
     #endregion

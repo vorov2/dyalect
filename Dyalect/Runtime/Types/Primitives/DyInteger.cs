@@ -1,7 +1,7 @@
 ﻿using System.IO;
 namespace Dyalect.Runtime.Types;
 
-public sealed class DyInteger : DyNumber
+public sealed class DyInteger : DyObject
 {
     public static readonly DyInteger Zero = new(0L);
     public static readonly DyInteger MinusOne = new(-1L);
@@ -11,7 +11,7 @@ public sealed class DyInteger : DyNumber
     public static readonly DyInteger Max = new(long.MaxValue);
     public static readonly DyInteger Min = new(long.MinValue);
 
-    public override string TypeName => nameof(DyType.Integer); 
+    public override string TypeName => nameof(Dy.Integer); 
     
     public static DyInteger Get(long i) =>
         i switch
@@ -26,7 +26,7 @@ public sealed class DyInteger : DyNumber
 
     internal readonly long Value;
 
-    public DyInteger(long value) : base(DyType.Integer) => this.Value = value;
+    public DyInteger(long value) : base(Dy.Integer) => this.Value = value;
 
     public override int GetHashCode() => Value.GetHashCode();
 

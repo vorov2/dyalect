@@ -58,7 +58,7 @@ partial class Builder
                 {
                     var abs = -code;
 
-                    if (abs is not DyType.Collection and not DyType.Number and not DyType.Comparable)
+                    if (abs is not Dy.Collection and not Dy.Number and not Dy.Comparable)
                         AddError(CompilerError.InvalidMixin, node.Location, m.Local.ToString());
                 }
             

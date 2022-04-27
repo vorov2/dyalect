@@ -16,7 +16,7 @@ internal sealed class CompositionContainer : DyForeignFunction
         var res = first.Call(ctx, args);
 
         if (ctx.HasErrors)
-            return DyNil.Instance;
+            return Nil;
 
         return second.Call(ctx, res);
     }

@@ -69,13 +69,13 @@ namespace Dyalect.Linker
             {
                 var typeId = reader.ReadInt32();
 
-                if (typeId == DyType.Integer)
+                if (typeId == Dy.Integer)
                     unit.Objects.Add(new DyInteger(reader.ReadInt64()));
-                else if (typeId == DyType.Float)
+                else if (typeId == Dy.Float)
                     unit.Objects.Add(new DyFloat(reader.ReadDouble()));
-                else if (typeId == DyType.String)
+                else if (typeId == Dy.String)
                     unit.Objects.Add(new DyString(reader.ReadString()));
-                else if (typeId == DyType.Char)
+                else if (typeId == Dy.Char)
                     unit.Objects.Add(new DyChar(reader.ReadChar()));
             }
         }

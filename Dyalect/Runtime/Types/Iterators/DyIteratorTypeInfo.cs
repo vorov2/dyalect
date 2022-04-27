@@ -12,15 +12,15 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
         | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
 
-    public override string ReflectedTypeName => nameof(DyType.Iterator);
+    public override string ReflectedTypeName => nameof(Dy.Iterator);
 
-    public override int ReflectedTypeId => DyType.Iterator;
+    public override int ReflectedTypeId => Dy.Iterator;
 
     #region Operations
     protected override DyObject LengthOp(DyObject self, ExecutionContext ctx)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
-        return ctx.HasErrors ? DyNil.Instance : DyInteger.Get(seq.Count());
+        return ctx.HasErrors ? Nil : DyInteger.Get(seq.Count());
     }
 
     protected override DyObject ToStringOp(DyObject self, DyObject format, ExecutionContext ctx)
@@ -33,7 +33,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         fn.Reset(ctx);
 
         if (ctx.HasErrors)
-            return DyNil.Instance;
+            return Nil;
 
         var seq = DyIterator.ToEnumerable(ctx, self);
 
@@ -66,8 +66,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 
     protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
     {
-        if (index.TypeId != DyType.Integer)
-            return ctx.InvalidType(DyType.Integer, index);
+        if (!index.Is(Dy.Integer)) return Nil;
 
         var i = (int)index.GetInteger();
 
@@ -85,16 +84,16 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     protected override DyObject ContainsOp(DyObject self, DyObject item, ExecutionContext ctx)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
-        return seq.Any(o => o.Equals(item, ctx)) ? DyBool.True : DyBool.False;
+        return seq.Any(o => o.Equals(item, ctx)) ? True : False;
     }
 
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
-            DyType.Tuple => new DyTuple(((DyIterator)self).ToEnumerable(ctx).ToArray()),
-            DyType.Array => new DyArray(((DyIterator)self).ToEnumerable(ctx).ToArray()),
-            DyType.Function => ((DyIterator)self).GetIteratorFunction(),
-            DyType.Set => ToSet(ctx, self),
+            Dy.Tuple => new DyTuple(((DyIterator)self).ToEnumerable(ctx).ToArray()),
+            Dy.Array => new DyArray(((DyIterator)self).ToEnumerable(ctx).ToArray()),
+            Dy.Function => ((DyIterator)self).GetIteratorFunction(),
+            Dy.Set => ToSet(ctx, self),
             _ => base.CastOp(self, targetType, ctx)
         };
     #endregion
@@ -144,18 +143,14 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     [InstanceMethod]
     internal static DyObject Take(ExecutionContext ctx, DyObject self, int count)
     {
-        if (count < 0)
-            count = 0;
-
+        if (count < 0) count = 0;
         return DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Take(count));
     }
 
     [InstanceMethod]
     internal static DyObject Skip(ExecutionContext ctx, DyObject self, int count)
     {
-        if (count < 0)
-            count = 0;
-
+        if (count < 0) count = 0;
         return DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Skip(count));
     }
 
@@ -416,7 +411,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     private static IEnumerable<DyObject> GenerateRange(ExecutionContext ctx, DyObject start, DyObject end, DyObject step, bool exclusive)
     {
         var elem = start;
-        var inf = end.TypeId == DyType.Nil;
+        var inf = end.Is(Dy.Nil);
         var types = ctx.RuntimeContext.Types;
 
         if (inf)
@@ -431,7 +426,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
             }
         }
 
-        var up = ReferenceEquals(types[step.TypeId].Gt(ctx, step, DyInteger.Zero), DyBool.True);
+        var up = ReferenceEquals(types[step.TypeId].Gt(ctx, step, DyInteger.Zero), True);
 
         if (ctx.HasErrors)
             yield break;
@@ -440,7 +435,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
                 ? types[start.TypeId].Lt : up ? types[start.TypeId].Lte : exclusive
                 ? types[start.TypeId].Gt : types[start.TypeId].Gte;
 
-        while (ReferenceEquals(predicate(ctx, elem, end), DyBool.True))
+        while (ReferenceEquals(predicate(ctx, elem, end), True))
         {
             yield return elem;
             elem = types[elem.TypeId].Add(ctx, elem, step);
@@ -458,7 +453,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 
     private static IEnumerable<DyObject> Repeater(ExecutionContext ctx, DyObject val)
     {
-        if (val.TypeId == DyType.Iterator)
+        if (val.TypeId == Dy.Iterator)
             val = ((DyIterator)val).GetIteratorFunction();
 
         if (val is DyFunction func)

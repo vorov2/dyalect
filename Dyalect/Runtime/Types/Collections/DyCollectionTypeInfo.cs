@@ -9,10 +9,10 @@ internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
         targetType.ReflectedTypeId switch
         {
-            DyType.Tuple => new DyTuple(((DyCollection)self).Trim()),
-            DyType.Array => new DyArray(((DyCollection)self).Trim()),
-            DyType.Iterator => DyIterator.Create((DyCollection)self),
-            DyType.Set => new DySet(new HashSet<DyObject>(((DyCollection)self).Trim())),
+            Dy.Tuple => new DyTuple(((DyCollection)self).Trim()),
+            Dy.Array => new DyArray(((DyCollection)self).Trim()),
+            Dy.Iterator => DyIterator.Create((DyCollection)self),
+            Dy.Set => new DySet(new HashSet<DyObject>(((DyCollection)self).Trim())),
             _ => base.CastOp(self, targetType, ctx)
         };
     #endregion

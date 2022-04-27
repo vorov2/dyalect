@@ -59,7 +59,7 @@ internal class DyNativeFunction : DyFunction
             catch (DyCodeException ex)
             {
                 ctx.Error = ex.Error;
-                return DyNil.Instance;
+                return Nil;
             }
         }
 
@@ -89,7 +89,7 @@ internal class DyNativeFunction : DyFunction
         catch (DyCodeException ex)
         {
             ctx.Error = ex.Error;
-            return DyNil.Instance;
+            return Nil;
         }
     }
 
@@ -103,7 +103,7 @@ internal class DyNativeFunction : DyFunction
         catch (DyCodeException ex)
         {
             ctx.Error = ex.Error;
-            return DyNil.Instance;
+            return Nil;
         }
     }
 

@@ -26,7 +26,7 @@ public abstract class SourceGenerator : ISourceGenerator
         public const string ParKind = "Dyalect.Debug.ParKind";
         public const string TypeConverter = "Dyalect.Runtime.TypeConverter";
         public const string InvalidCastException = "System.InvalidCastException";
-        public const string DyType = "Dyalect.DyType";
+        public const string Dy = "Dyalect.Dy";
         public const string FunAttr = "Dyalect.Compiler.FunAttr";
         public const string MethodAttribute = "Dyalect.Codegen.MethodAttribute";
         public const string StaticMethodAttribute = "Dyalect.Codegen.StaticMethodAttribute";

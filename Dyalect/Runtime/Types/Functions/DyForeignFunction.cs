@@ -42,20 +42,4 @@ public abstract class DyForeignFunction : DyFunction
     internal override DyObject InternalCall(ExecutionContext ctx) => InternalCall(ctx, Array.Empty<DyObject>());
 
     internal override bool Equals(DyFunction func) => ReferenceEquals(this, func);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected T? Cast<T>(int index, DyObject[] args) where T : DyObject
-    {
-        try
-        {
-            if (args[index].IsNil() && Parameters[index].Value.IsNil())
-                return default;
-
-            return (T)args[index];
-        }
-        catch (InvalidCastException)
-        {
-            throw new DyErrorException(new(DyErrorCode.InvalidType, args[index].TypeName));
-        }
-    }
 }

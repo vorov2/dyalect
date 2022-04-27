@@ -38,7 +38,7 @@ internal sealed partial class Lang : ForeignUnit
             if (!fst && !string.IsNullOrEmpty(separator))
                 Console.Write(separator);
 
-            if (a.TypeId is DyType.String)
+            if (a.TypeId is Dy.String)
                 Console.Write(a.GetString());
             else
                 Console.Write(a.ToString(ctx));
@@ -49,7 +49,7 @@ internal sealed partial class Lang : ForeignUnit
                 break;
         }
 
-        if (terminator.TypeId is DyType.String)
+        if (terminator.TypeId is Dy.String)
             Console.Write(terminator.GetString());
     }
 
@@ -203,7 +203,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("round")]
-    internal static double Round(ExecutionContext ctx, double number, int digits = 2) => Math.Round(number, digits);
+    internal static double Round(double number, int digits = 2) => Math.Round(number, digits);
     
     [StaticMethod("sign")]
     internal static DyObject Sign(ExecutionContext ctx, DyObject x)

@@ -3,9 +3,9 @@ namespace Dyalect.Runtime.Types;
 
 public abstract class DyIterator : DyObject
 {
-    public override string TypeName => nameof(DyType.Iterator); 
+    public override string TypeName => nameof(Dy.Iterator); 
     
-    protected DyIterator() : base(DyType.Iterator) { }
+    protected DyIterator() : base(Dy.Iterator) { }
 
     internal static DyIterator Create(int unitId, int handle, FastList<DyObject[]> captures, DyObject[] locals) =>
         new DyNativeIterator(unitId, handle, captures, locals);

@@ -147,7 +147,7 @@ partial class Builder
 
             if (char.IsUpper(name[0]))
             {
-                var ti = DyType.GetTypeCodeByName(name);
+                var ti = Dy.GetTypeCodeByName(name);
 
                 if (ti != 0)
                 {

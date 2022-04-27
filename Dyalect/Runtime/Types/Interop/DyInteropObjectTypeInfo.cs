@@ -14,9 +14,9 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-    public override string ReflectedTypeName => nameof(DyType.Interop);
+    public override string ReflectedTypeName => nameof(Dy.Interop);
 
-    public override int ReflectedTypeId => DyType.Interop;
+    public override int ReflectedTypeId => Dy.Interop;
 
     #region Operations
     protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
@@ -123,8 +123,8 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
     {
         if (typeName is DyInteropObject obj)
             return new DyInteropObject(BCL.Type, obj.Type);
-        else if (typeName.TypeId != DyType.String)
-            return ctx.InvalidType(DyType.Interop, DyType.String, typeName);
+        else if (typeName.TypeId != Dy.String)
+            return ctx.InvalidType(Dy.Interop, Dy.String, typeName);
 
         var typeInfo = Type.GetType(typeName.GetString(), throwOnError: false);
 

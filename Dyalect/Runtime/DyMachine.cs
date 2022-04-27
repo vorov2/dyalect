@@ -128,10 +128,10 @@ public static partial class DyMachine
                     evalStack.Push(unit.Objects[op.Data]);
                     break;
                 case OpCode.PushI1_1:
-                    evalStack.Push(DyBool.True);
+                    evalStack.Push(True);
                     break;
                 case OpCode.PushI1_0:
-                    evalStack.Push(DyBool.False);
+                    evalStack.Push(False);
                     break;
                 case OpCode.PushI8_1:
                     evalStack.Push(DyInteger.One);
@@ -351,7 +351,7 @@ public static partial class DyMachine
                     break;
                 case OpCode.HasMember:
                     right = evalStack.Peek();
-                    if (right.TypeId == DyType.TypeInfo)
+                    if (right.TypeId == Dy.TypeInfo)
                         evalStack.Replace(((DyTypeInfo)right).HasStaticMember(unit.Strings[op.Data], ctx));
                     else
                         evalStack.Replace(types[right.TypeId].HasInstanceMember(right, unit.Strings[op.Data], ctx));
@@ -359,7 +359,7 @@ public static partial class DyMachine
                     break;
                 case OpCode.GetMember:
                     right = evalStack.Peek();
-                    if (right.TypeId == DyType.TypeInfo)
+                    if (right.TypeId == Dy.TypeInfo)
                         evalStack.Replace(((DyTypeInfo)right).GetStaticMember(unit.Strings[op.Data], ctx));
                     else
                         evalStack.Replace(types[right.TypeId].GetInstanceMember(right, unit.Strings[op.Data], ctx));
@@ -453,7 +453,7 @@ public static partial class DyMachine
                         offset = op.Data;
                     break;
                 case OpCode.Briter:
-                    if (evalStack.Peek().TypeId == DyType.Iterator)
+                    if (evalStack.Peek().TypeId == Dy.Iterator)
                         offset = op.Data;
                     break;
                 case OpCode.GetIter:
@@ -462,7 +462,7 @@ public static partial class DyMachine
                         evalStack.Replace(it.GetIteratorFunction());
                     else
                     {
-                        ctx.InvalidType(DyType.Iterator, right);
+                        ctx.InvalidType(Dy.Iterator, right);
                         ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                         goto CATCH;
                     }
@@ -476,9 +476,9 @@ public static partial class DyMachine
                 case OpCode.FunPrep:
                     {
                         right = evalStack.Peek();
-                        if (right.TypeId != DyType.Function)
+                        if (right.TypeId != Dy.Function)
                         {
-                            if (right.TypeId == DyType.TypeInfo && right is DyTypeInfo ti)
+                            if (right.TypeId == Dy.TypeInfo && right is DyTypeInfo ti)
                             {
                                 right = ti.GetStaticMember(ti.ReflectedTypeName, ctx);
 
@@ -494,8 +494,8 @@ public static partial class DyMachine
 
                             right = types[right.TypeId].GetInstanceMember(right, Builtins.Call, ctx);
 
-                            if (!ctx.HasErrors && right.TypeId != DyType.Function)
-                                ctx.InvalidType(DyType.Function, right);
+                            if (!ctx.HasErrors && right.TypeId != Dy.Function)
+                                ctx.InvalidType(Dy.Function, right);
 
                             if (ctx.HasErrors)
                             {
@@ -700,19 +700,19 @@ public static partial class DyMachine
         if (container.VarArgsSize != 0)
             ctx.TooManyArguments();
 
-        if (value.TypeId is DyType.Array)
+        if (value.TypeId is Dy.Array)
         {
             var xs = (DyCollection)value;
             container.VarArgs = xs.GetValues();
             container.VarArgsSize = container.VarArgs.Length;
         }
-        else if (value.TypeId is DyType.Tuple)
+        else if (value.TypeId is Dy.Tuple)
         {
             var xs = (DyTuple)value;
             container.VarArgs = fn.VariantConstructor ? xs.UnsafeAccessValues() : xs.GetValuesWithLabels();
             container.VarArgsSize = container.VarArgs.Length;
         }
-        else if (value.TypeId is DyType.Iterator or DyType.Set)
+        else if (value.TypeId is Dy.Iterator or Dy.Set)
         {
             var xs = DyIterator.ToEnumerable(ctx, value).ToArray();
 

@@ -39,7 +39,7 @@ namespace Dyalect.Generators
 using Dyalect.Runtime.Types;
 namespace Dyalect;
 
-partial class DyType
+partial class Dy
 {{
     static partial void GetAllGenerated(FastList<DyTypeInfo> types)
     {{
@@ -69,7 +69,7 @@ partial class DyType
         }};
     }}
 }}";
-            ctx.AddSource($"DyType.generated.cs", source);
+            ctx.AddSource($"Dy.generated.cs", source);
         }
 
         public void Initialize(GeneratorInitializationContext ctx)
@@ -87,7 +87,7 @@ partial class DyType
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
-            if (syntaxNode is ClassDeclarationSyntax cds && cds.Identifier.ValueText == "DyType")
+            if (syntaxNode is ClassDeclarationSyntax cds && cds.Identifier.ValueText == "Dy")
                 Class = cds;
         }
     }

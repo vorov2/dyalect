@@ -13,11 +13,11 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
         | SupportedOperations.Add | SupportedOperations.Iter | SupportedOperations.Lit;
 
-    public override string ReflectedTypeName => nameof(DyType.Tuple);
+    public override string ReflectedTypeName => nameof(Dy.Tuple);
 
-    public override int ReflectedTypeId => DyType.Tuple;
+    public override int ReflectedTypeId => Dy.Tuple;
 
-    public DyTupleTypeInfo() => AddMixin(DyType.Collection, DyType.Comparable);
+    public DyTupleTypeInfo() => AddMixin(Dy.Collection, Dy.Comparable);
 
     #region Operations
     protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
@@ -36,12 +36,12 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
         if (left.TypeId != right.TypeId)
-            return DyBool.False;
+            return False;
 
         var (t1, t2) = ((DyTuple)left, (DyTuple)right);
 
         if (t1.Count != t2.Count)
-            return DyBool.False;
+            return False;
 
         var t1v = t1.UnsafeAccessValues();
         var t2v = t2.UnsafeAccessValues();
@@ -49,13 +49,13 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         for (var i = 0; i < t1.Count; i++)
         {
             if (t1v[i].NotEquals(t2v[i], ctx))
-                return DyBool.False;
+                return False;
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return Nil;
         }
 
-        return DyBool.True;
+        return True;
     }
 
     protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(true, left, right, ctx);
@@ -64,8 +64,10 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 
     protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
     {
-        if (!field.IsString(ctx)) return Nil;
-        return ((DyTuple)self).GetOrdinal(field.GetString()) is not -1 ? DyBool.True : DyBool.False;
+        if (!field.Is(ctx, Dy.String))
+            return Nil;
+
+        return ((DyTuple)self).GetOrdinal(field.GetString()) is not -1 ? True : False;
     }
 
     private static DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
@@ -86,21 +88,21 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
             var res = gt ? x.Greater(y, ctx) : x.Lesser(y, ctx);
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return Nil;
 
             if (res)
-                return DyBool.True;
+                return True;
 
             res = x.Equals(y, ctx);
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return Nil;
 
             if (!res)
-                return DyBool.False;
+                return False;
         }
 
-        return DyBool.False;
+        return False;
     }
 
     protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
@@ -108,7 +110,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
     {
         self.SetItem(index, value, ctx);
-        return DyNil.Instance;
+        return Nil;
     }
     #endregion
 
@@ -244,12 +246,12 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
                 var res = predicate.Invoke(ctx, val);
 
                 if (ctx.HasErrors)
-                    return DyNil.Instance;
+                    return Nil;
 
-                if (ReferenceEquals(res, DyBool.False))
+                if (res.IsFalse())
                     xs.Add(val);
             }
-            else if (!ReferenceEquals(val, DyNil.Instance))
+            else if (!val.Is(Dy.Nil))
                 xs.Add(val);
         }
 

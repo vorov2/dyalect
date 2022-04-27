@@ -11,7 +11,7 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
     protected SpanTypeInfo(string typeName)
     {
         ReflectedTypeName = typeName;
-        AddMixin(DyType.Comparable);
+        AddMixin(Dy.Comparable);
     }
 
     protected override SupportedOperations GetSupportedOperations() =>
@@ -20,10 +20,11 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
     #region Operations
     protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
     {
-        if (format.IsNil())
+        if (format.Is(Dy.Nil))
             return new DyString(arg.ToString());
 
-        if (format.NotString(ctx)) return Nil;
+        if (!format.Is(ctx, Dy.String))
+            return Nil;
 
         try
         {
@@ -86,7 +87,7 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
     protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
        targetType.ReflectedTypeId switch
        {
-           DyType.Integer => DyInteger.Get(((T)self).ToInteger()),
+           Dy.Integer => DyInteger.Get(((T)self).ToInteger()),
            _ => base.CastOp(self, targetType, ctx)
        };
     #endregion

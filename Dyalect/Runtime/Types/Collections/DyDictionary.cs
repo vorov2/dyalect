@@ -6,7 +6,7 @@ public class DyDictionary : DyEnumerable
     //TODO: consider making private
     internal readonly Dictionary<DyObject, DyObject> Dictionary;
 
-    public override string TypeName => nameof(DyType.Dictionary);
+    public override string TypeName => nameof(Dy.Dictionary);
     
     public override int Count => Dictionary.Count;
 
@@ -16,12 +16,12 @@ public class DyDictionary : DyEnumerable
         set => Dictionary[key] = value;
     }
 
-    internal DyDictionary() : base(DyType.Dictionary)
+    internal DyDictionary() : base(Dy.Dictionary)
     {
         Dictionary = new Dictionary<DyObject, DyObject>();
     }
 
-    internal DyDictionary(Dictionary<DyObject, DyObject> dict) : base(DyType.Dictionary)
+    internal DyDictionary(Dictionary<DyObject, DyObject> dict) : base(Dy.Dictionary)
     {
         Dictionary = dict;
     }
@@ -44,7 +44,7 @@ public class DyDictionary : DyEnumerable
     public DyObject GetAndRemove(DyObject key)
     {
         Dictionary.Remove(key, out var value);
-        return value ?? DyNil.Instance;
+        return value ?? Nil;
     }
 
     public bool Remove(DyObject key)
@@ -95,8 +95,8 @@ public class DyDictionary : DyEnumerable
 
         foreach (var (key, value) in Dictionary)
         {
-            if (key.TypeId == DyType.String)
-                xs.Add(new DyLabel(key.GetString(), value));
+            if (key.TypeId == Dy.String)
+                xs.Add(new(key.GetString(), value));
         }
 
         return xs.ToArray();

@@ -8,7 +8,7 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     private DyObject[] values;
 
-    public override string TypeName => nameof(DyType.Array);
+    public override string TypeName => nameof(Dy.Array);
     
     public DyObject this[int index]
     {
@@ -16,7 +16,7 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
         set => values[CorrectIndex(index)] = value;
     }
 
-    public DyArray(DyObject[] values) : base(DyType.Array) => 
+    public DyArray(DyObject[] values) : base(Dy.Array) => 
         (this.values, Count) = (values, values.Length);
 
     public void Compact()
@@ -159,7 +159,7 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        if (index.TypeId == DyType.Integer)
+        if (index.Is(Dy.Integer))
             return GetItem((int)index.GetInteger(), ctx);
         else
             return ctx.IndexOutOfRange(index);

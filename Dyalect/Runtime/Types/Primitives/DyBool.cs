@@ -6,7 +6,7 @@ public abstract class DyBool : DyObject
     public static readonly DyBool True = new DyBoolTrue();
     public static readonly DyBool False = new DyBoolFalse();
 
-    public override string TypeName => nameof(DyType.Bool); 
+    public override string TypeName => nameof(Dy.Bool); 
     
     private sealed class DyBoolTrue: DyBool
     {
@@ -22,7 +22,7 @@ public abstract class DyBool : DyObject
         public override int GetHashCode() => false.GetHashCode();
     }
 
-    private DyBool() : base(DyType.Bool) { }
+    private DyBool() : base(Dy.Bool) { }
 
     public override object ToObject() => this is DyBoolTrue;
 

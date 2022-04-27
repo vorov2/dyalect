@@ -6,9 +6,9 @@ public class DyRegexCapture : DyObject
 {
     private readonly Capture capture;
 
-    public override string TypeName => nameof(DyType.Object);
+    public override string TypeName => nameof(Dy.Object);
 
-    public DyRegexCapture(Capture capture) : base(DyType.Object) => this.capture = capture;
+    public DyRegexCapture(Capture capture) : base(Dy.Object) => this.capture = capture;
 
     public override SupportedOperations Supports() => SupportedOperations.Get;
 
