@@ -75,13 +75,15 @@ public class TypeInfoGenerator : SourceGenerator
             sb.AppendLine($"{app}{par} = {string.Format(conversion, input)};");
     }
 
-    private bool ParamCheckArray(string input, string par, ParFlags flags, ITypeSymbol ti, SourceBuilder sb)
+    private bool ParamCheckArray(string input, string par, ParFlags flags, ITypeSymbol ti, SourceBuilder sb, bool nullable)
     {
         var ati = (IArrayTypeSymbol)ti;
-        var (arr, elem, index) = ($"__arr_{par}", $"__elem_{par}", $"__index_{par}");
+        var (arr, elem, index, len) = ($"__arr_{par}", $"__elem_{par}", $"__index_{par}", $"__len_{par}");
         var elementTypeName = ati.ElementType.GetSafeName();
 
         sb.AppendLine($"{Types.DyObject}[] {arr};");
+
+
 
         if ((flags & ParFlags.VarArg) == ParFlags.VarArg)
             sb.AppendLine($"{arr} = (({Types.DyTuple}){input}).GetValues();");
@@ -89,6 +91,13 @@ public class TypeInfoGenerator : SourceGenerator
         {
             sb.AppendLine($"if ({input} is {Types.DyCollection} __coll)");
             sb.AppendInBlock($"{arr} = __coll.GetValues();");
+            
+            if (nullable)
+            {
+                sb.AppendLine($"else if ({input}.TypeId == {Types.DyType}.Nil)");
+                sb.AppendInBlock($"{arr} = null;");
+            }
+
             sb.AppendLine("else");
             sb.StartBlock();
             sb.AppendLine($"{arr} = {Types.DyIterator}.ToEnumerable(ctx, {input}).ToArray();");
@@ -103,8 +112,9 @@ public class TypeInfoGenerator : SourceGenerator
         }
         else if (IsDyObject(ati.ElementType))
         {
-            sb.AppendLine($"var {par} = new {ati.ElementType}[{arr}.Length];");
-            sb.AppendLine($"for (var {index} = 0; {index} < {arr}.Length; {index}++)");
+            sb.AppendLine($"{ati.ElementType}[] {par} = {arr} is null ? null : new {ati.ElementType}[{arr}.Length];");
+            sb.AppendLine($"var {len} = {arr} is null ? 0 : {arr}.Length;");
+            sb.AppendLine($"for (var {index} = 0; {index} < {len}; {index}++)");
             sb.StartBlock();
             sb.AppendLine($"if ({arr}[{index}] is not {ati.ElementType} {elem}) return __ctx.InvalidType({input});");
             sb.AppendLine($"{par}[{index}] = {elem};");
@@ -113,8 +123,9 @@ public class TypeInfoGenerator : SourceGenerator
         }
         else if (typeConversions.TryGetValue(elementTypeName, out var conv))
         {
-            sb.AppendLine($"var {par} = new {ati.ElementType}[{arr}.Length];");
-            sb.AppendLine($"for (var {index} = 0; {index} < {arr}.Length; {index}++)");
+            sb.AppendLine($"{ati.ElementType}[] {par} = {arr} is null ? null : new {ati.ElementType}[{arr}.Length];");
+            sb.AppendLine($"var {len} = {arr} is null ? 0 : {arr}.Length;");
+            sb.AppendLine($"for (var {index} = 0; {index} < {len}; {index}++)");
             sb.StartBlock();
             conv(sb, $"{arr}[{index}]", $"{par}[{index}]", ParFlags.NoVar, ati.ElementType);
             sb.EndBlock();
@@ -245,7 +256,7 @@ public class TypeInfoGenerator : SourceGenerator
                 builder.EndBlock();
             }
 
-            //System.IO.File.WriteAllText($"C:\\temp\\gen\\{t.Name}.generated.{DateTime.Now.Ticks}.cs", builder.ToString());
+            System.IO.File.WriteAllText($"C:\\temp\\gen\\{t.Name}.generated.{DateTime.Now.Ticks}.cs", builder.ToString());
             ctx.AddSource($"{t.Name}.generated.cs", builder.ToString());
         }
     }
@@ -417,7 +428,7 @@ public class TypeInfoGenerator : SourceGenerator
             else if (mp.Type is IArrayTypeSymbol arr)
             {
                 var elementType = arr.ElementType;
-                var res = ParamCheckArray(sourceParName, mp.Name, flags, mp.Type, builder);
+                var res = ParamCheckArray(sourceParName, mp.Name, flags, mp.Type, builder, nullable);
 
                 if (!res)
                 {
