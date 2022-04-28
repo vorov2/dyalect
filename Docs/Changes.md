@@ -4,6 +4,7 @@
   * Add: _`Bool` to support `Min` and `Max`_ ([Issue #817](https://github.com/vorov2/dyalect/issues/817), [docs](https://github.com/vorov2/dyalect/wiki/Bool#min)).
   * Add: _Consider a special mixin (e.g. `Bounded`) for `Max` and `Min` methods_ ([Issue #817](https://github.com/vorov2/dyalect/issues/817), [docs](https://github.com/vorov2/dyalect/wiki/Mixins#bounded)).
   * Add: _An ability to change working directory in `Dya`_ ([Issue #827](https://github.com/vorov2/dyalect/issues/827), [docs](https://github.com/vorov2/dyalect/wiki/Dyalect-console#commands)).
+  * Add: _Use `+` for function composition_ ([Issue #812](https://github.com/vorov2/dyalect/issues/12), [docs](https://github.com/vorov2/dyalect/wiki/Functions#operators)).
   * Change: _Static `Array.Sort` to support other data types_ ([Issue #797](https://github.com/vorov2/dyalect/issues/797), [docs](https://github.com/vorov2/dyalect/wiki/Array#ssort)).
   * Change: _Change `Integer.IsMultiple(of)` to `Integer.IsMultipleOf(value)`_ ([Issue #804](https://github.com/vorov2/dyalect/issues/804), [docs](https://github.com/vorov2/dyalect/wiki/Integer#isMultipleOf)).
   * Fix: _Static `Array.Sort` fails with a wrong exception when a type is invalid_ ([Issue #814](https://github.com/vorov2/dyalect/issues/814)).

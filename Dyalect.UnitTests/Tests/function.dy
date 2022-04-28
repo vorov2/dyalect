@@ -55,6 +55,18 @@
     assert(res, "result=27")
 #endregion
 
+#region "Composition 3"
+    func sum(x, y) {
+        x + y
+    }
+    func fmt(res) {
+        "result=\(res)"
+    }
+    let fun = sum + fmt
+    let res = fun(13, 14)
+    assert(res, "result=27")
+#endregion
+
 #region "Methods: GetType"
     let x = x => x
     assert(true, TypeInfo(x) == Function)

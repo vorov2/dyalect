@@ -18,6 +18,14 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
 
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
         left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? True : False;
+
+    protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+    {
+        if (right.TypeId == Dy.String)
+            return ctx.RuntimeContext.String.Add(ctx, left, right);
+
+        return Compose(ctx, left, right);
+    }
     #endregion
 
     [InstanceMethod]
