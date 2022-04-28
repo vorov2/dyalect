@@ -23,7 +23,11 @@ public abstract class DyCollection : DyEnumerable
 
     protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
     {
-        if (!obj.IsInteger(ctx)) return;
+        if (obj.TypeId != Dy.Integer)
+        {
+            ctx.InvalidType(Dy.Integer, obj);
+            return;
+        }
 
         var index = CorrectIndex((int)obj.GetInteger());
 
@@ -93,7 +97,7 @@ public abstract class DyCollection : DyEnumerable
 
     public override bool Equals(DyObject? other)
     {
-        if (other is not DyCollection arr)
+        if (other is null || other is not DyCollection arr || other.TypeId != TypeId)
             return false;
 
         var c = Count;

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 namespace Dyalect.Runtime.Types;
 
-public sealed class DyFloat : DyNumber
+public sealed class DyFloat : DyObject
 {
     public static readonly DyFloat Zero = new(0D);
     public static readonly DyFloat One = new(1D);
@@ -14,9 +14,9 @@ public sealed class DyFloat : DyNumber
 
     private readonly double value;
 
-    public override string TypeName => DyTypeNames.Float; 
+    public override string TypeName => nameof(Dy.Float); 
 
-    public DyFloat(double value) : base(DyType.Float) =>
+    public DyFloat(double value) : base(Dy.Float) =>
         this.value = value;
 
     public override int GetHashCode() => value.GetHashCode();

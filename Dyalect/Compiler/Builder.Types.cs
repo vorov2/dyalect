@@ -58,7 +58,7 @@ partial class Builder
                 {
                     var abs = -code;
 
-                    if (abs is not DyType.Collection and not DyType.Number and not DyType.Comparable)
+                    if (abs is not Dy.Collection and not Dy.Number and not Dy.Comparable)
                         AddError(CompilerError.InvalidMixin, node.Location, m.Local.ToString());
                 }
             
@@ -150,7 +150,7 @@ partial class Builder
         }
     }
 
-    private int PushTypeInfo(CompilerContext ctx, UnitInfo info, string name, Location loc)
+    private int PushTypeInfo(CompilerContext _, UnitInfo info, string name, Location loc)
     {
         //Can't find type in the module
         if (!info.ExportList.TryGetValue(name, out var sv))

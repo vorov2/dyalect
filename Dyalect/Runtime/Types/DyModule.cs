@@ -10,9 +10,9 @@ public sealed class DyModule : DyObject, IEnumerable<DyObject>
 
     internal Unit Unit { get; }
 
-    public override string TypeName => DyTypeNames.Module;
+    public override string TypeName => nameof(Dy.Module);
     
-    public DyModule(Unit unit, DyObject[] globals) : base(DyType.Module)
+    public DyModule(Unit unit, DyObject[] globals) : base(Dy.Module)
     {
         Unit = unit;
         Globals = globals;
@@ -27,7 +27,7 @@ public sealed class DyModule : DyObject, IEnumerable<DyObject>
 
     protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        if (index.TypeId != DyType.String)
+        if (index.TypeId != Dy.String)
             return ctx.IndexOutOfRange(index);
 
         if (!TryGetMember(index.GetString(), ctx, out var value))

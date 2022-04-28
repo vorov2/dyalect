@@ -21,7 +21,7 @@ public static class TypeConverter
 
         switch (Type.GetTypeCode(type))
         {
-            case TypeCode.Boolean: return (bool)obj ? DyBool.True : DyBool.False;
+            case TypeCode.Boolean: return (bool)obj ? True : False;
             case TypeCode.Byte: return new DyInteger((byte)obj);
             case TypeCode.Int16: return new DyInteger((short)obj);
             case TypeCode.Int32: return new DyInteger((int)obj);
@@ -80,7 +80,7 @@ public static class TypeConverter
         result = default;
         long i8; double r8; string str;
 
-        if (obj.TypeId == DyType.Interop)
+        if (obj.TypeId == Dy.Interop)
         {
             var interop = (DyInteropObject)obj;
 
@@ -295,12 +295,12 @@ public static class TypeConverter
 
     private static bool TryGetFloat(DyObject obj, out double result)
     {
-        if (obj.TypeId is DyType.Integer or DyType.Float)
+        if (obj.TypeId is Dy.Integer or Dy.Float)
         {
             result = obj.GetFloat();
             return true;
         }
-        else if (obj.TypeId is DyType.Char)
+        else if (obj.TypeId is Dy.Char)
         {
             result = obj.GetChar();
             return true;
@@ -312,12 +312,12 @@ public static class TypeConverter
 
     private static bool TryGetInteger(DyObject obj, out long result)
     {
-        if (obj.TypeId is DyType.Integer or DyType.Float)
+        if (obj.TypeId is Dy.Integer or Dy.Float)
         {
             result = obj.GetInteger();
             return true;
         }
-        else if (obj.TypeId is DyType.Char)
+        else if (obj.TypeId is Dy.Char)
         {
             result = obj.GetChar();
             return true;
@@ -329,7 +329,7 @@ public static class TypeConverter
 
     private static bool TryGetString(DyObject obj, out string result)
     {
-        if (obj.TypeId is DyType.String or DyType.Char)
+        if (obj.TypeId is Dy.String or Dy.Char)
         {
             result = obj.GetString();
             return true;

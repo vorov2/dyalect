@@ -8,11 +8,11 @@ public class DyNil : DyObject
     public static readonly DyNil Instance = new();
     internal static readonly DyNil Terminator = new DyNilTerminator();
 
-    public override string TypeName => DyTypeNames.Nil; 
+    public override string TypeName => nameof(Dy.Nil); 
 
     private sealed class DyNilTerminator : DyNil { }
 
-    private DyNil() : base(DyType.Nil) { }
+    private DyNil() : base(Dy.Nil) { }
 
     public override object ToObject() => null!;
 
@@ -25,5 +25,5 @@ public class DyNil : DyObject
 
     internal override void Serialize(BinaryWriter writer) => writer.Write(TypeId);
 
-    public override int GetHashCode() => HashCode.Combine(DyTypeNames.Nil, TypeId);
+    public override int GetHashCode() => HashCode.Combine(TypeName, TypeId);
 }

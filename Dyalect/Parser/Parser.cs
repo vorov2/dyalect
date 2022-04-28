@@ -1646,14 +1646,55 @@ namespace Dyalect.Parser
 	}
 
 	void LeftPipe(out DNode node) {
-		node = null; 
+		node = null; DNode cnode = null; List<DNode> xs = null; 
 		RightPipe(out node);
 		while (la.kind == 68) {
-			var app = node.NodeType == NodeType.Application ? (DApplication)node : new DApplication(node, t); 
 			Get();
-			RightPipe(out node);
-			app.Arguments.Add(node); node = app; 
+			RightPipe(out cnode);
+			if (cnode is not null)
+			{
+			   if (xs is null)
+			   {
+			       xs = new();
+			       xs.Add(node);
+			   }
+			
+			   xs.Add(cnode);
+			}
+			else
+			   AddError(ParserError.InvalidApplicationOperator, t.GetLocation());
+			
 		}
+		if (xs != null)
+		{
+		   DApplication app = null;
+		   DNode root = null;
+		
+		   for (var i = 0; i < xs.Count; i++)
+		   {
+		       if (i == xs.Count - 1)
+		       {
+		           app.Arguments.Add(xs[i]);
+		           break;
+		       }
+		
+		       var locapp = xs[i].NodeType != NodeType.Application
+		           ? new DApplication(xs[i], xs[i].Location) : (DApplication)xs[i];
+		       if (app is not null)
+		       {
+		           app.Arguments.Add(locapp);
+		           app = locapp;
+		       }
+		       else
+		       {
+		           app = locapp;
+		           root = app;
+		       }
+		   }
+		
+		   node = root;
+		}
+		
 	}
 
 	void Ternary(DNode parent, out DNode node) {

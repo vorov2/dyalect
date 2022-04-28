@@ -1,6 +1,5 @@
 ﻿using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using Dyalect.Util;
 using System;
 using System.Collections.Generic;
 using static System.Console;
@@ -52,7 +51,7 @@ namespace Dyalect
             }
 
             if (maxLen > 0 && fmt.Length > maxLen)
-                fmt = fmt.Substring(0, maxLen) + "...";
+                fmt = fmt[..maxLen] + "...";
 
             return notype ? fmt : fmt + " :: " + obj.GetTypeInfo(ctx).ReflectedTypeName;
         }

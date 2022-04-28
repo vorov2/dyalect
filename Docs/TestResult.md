@@ -1,7 +1,7 @@
-# Test session from 24/04/2022 12:33
+# Test session from 28/04/2022 18:53
 
 ## Summary:
-773 passed, 0 failed in 28 file(s)
+784 passed, 0 failed in 28 file(s)
 
 ## Test file(s):
 [array.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [interop.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\interop.dy), [iterator.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [mixin.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\mixin.dy), [modules.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
@@ -41,11 +41,11 @@
 * &#9745; **Addition 2**
 * &#9745; **Insert into empty array**
 * &#9745; **Complex sort**
-* &#9745; **Methods: copy 1**
-* &#9745; **Methods: copy 2**
-* &#9745; **Methods: copy 3**
-* &#9745; **Methods: copy 4**
-* &#9745; **Methods: copy 4**
+* &#9745; **Methods: Copy 1**
+* &#9745; **Methods: Copy 2**
+* &#9745; **Methods: Copy 3**
+* &#9745; **Methods: Copy 4**
+* &#9745; **Methods: Copy 5**
 * &#9745; **Methods: Contains**
 * &#9745; **Negative indices**
 * &#9745; **Complex equality**
@@ -78,6 +78,7 @@
 ### Tests/bool.dy:
 * &#9745; **Constructor**
 * &#9745; **Methods: Default**
+* &#9745; **Methods: Min and Max**
 * &#9745; **Methods: GetType**
 * &#9745; **Conversion: as**
 * &#9745; **Conversion to itself**
@@ -237,6 +238,7 @@
 * &#9745; **Base variable 2**
 * &#9745; **Composition 1**
 * &#9745; **Composition 2**
+* &#9745; **Composition 3**
 * &#9745; **Methods: GetType**
 * &#9745; **Properties**
 * &#9745; **Tail recursion 1**
@@ -299,8 +301,10 @@
 * &#9745; **Methods: Apply**
 * &#9745; **Right pipe 1**
 * &#9745; **Right pipe 2**
+* &#9745; **Right pipe 3**
 * &#9745; **Left pipe 1**
 * &#9745; **Left pipe 2**
+* &#9745; **Left pipe 3**
 * &#9745; **Complex nesting**
 * &#9745; **Varargs and too many arguments**
 * &#9745; **Varargs and mutable tuple**
@@ -366,7 +370,7 @@
 * &#9745; **Slicing**
 * &#9745; **Iterator and range**
 * &#9745; **Iterator state 1**
-* &#9745; **Methods: Element**
+* &#9745; **Methods: ElementAt**
 * &#9745; **Methods: Empty**
 * &#9745; **Methods: Repeat 1**
 * &#9745; **Methods: repeat 2**
@@ -393,6 +397,7 @@
 * &#9745; **Methods: ForEach**
 * &#9745; **Methods: Distinct**
 * &#9745; **Casting**
+* &#9745; **Iterator as function**
 
 ### Tests/lazy.dy:
 * &#9745; **Type info**
@@ -421,6 +426,7 @@
 * &#9745; **StringBuilder: Constructor, Length**
 * &#9745; **StringBuilder: Insert**
 * &#9745; **StringBuilder: Replace**
+* &#9745; **StringBuilder: Remove**
 * &#9745; **Result: GetType**
 * &#9745; **Result: Length and indexer**
 * &#9745; **Result: matching 1**
@@ -644,7 +650,10 @@
 * &#9745; **Comparison**
 * &#9745; **Comparison and coersion**
 * &#9745; **Comparison and bool**
-* &#9745; **Function comparison**
+* &#9745; **Function comparison 1**
+* &#9745; **Function comparison 2**
+* &#9745; **Function comparison 3**
+* &#9745; **Function comparison 4**
 * &#9745; **Coalesce**
 * &#9745; **Member check 1**
 * &#9745; **nameof**
@@ -727,7 +736,8 @@
 * &#9745; **Methods: ToCharArray**
 * &#9745; **Methods: Repeat**
 * &#9745; **Methods: ToLiteral**
-* &#9745; **Conversion: as**
+* &#9745; **Conversion: as 1**
+* &#9745; **Conversion: as 2**
 * &#9745; **Format 1**
 * &#9745; **Format 2**
 * &#9745; **Operator in**
@@ -769,7 +779,8 @@
 * &#9745; **Methods: ToLiteral**
 * &#9745; **Methods: Compact**
 * &#9745; **Exceptions with tuples**
-* &#9745; **Conversion: as**
+* &#9745; **Conversion: as 1**
+* &#9745; **Conversion: as 2**
 * &#9745; **Tuple as argument**
 * &#9745; **Comparison 1**
 * &#9745; **Comparison 2**

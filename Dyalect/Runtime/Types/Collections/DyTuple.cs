@@ -9,7 +9,7 @@ public class DyTuple : DyCollection
 {
     public static readonly DyTuple Empty = new(Array.Empty<DyObject>());
 
-    public override string TypeName => DyTypeNames.Tuple;
+    public override string TypeName => nameof(Dy.Tuple);
     
     private readonly int length;
     private readonly bool? mutable;
@@ -22,7 +22,7 @@ public class DyTuple : DyCollection
     internal DyTuple(DyObject[] values, bool mutable) : this(values, values.Length) =>
         this.mutable = mutable;
 
-    public DyTuple(DyObject[] values, int length) : base(DyType.Tuple)
+    public DyTuple(DyObject[] values, int length) : base(Dy.Tuple)
     {
         this.length = length;
         this.values = values ?? throw new DyException("Unable to create a tuple with no values.");
@@ -59,10 +59,10 @@ public class DyTuple : DyCollection
 
     protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        if (index.TypeId == DyType.Integer)
+        if (index.TypeId == Dy.Integer)
             return GetItem((int)index.GetInteger(), ctx);
 
-        if (index.TypeId != DyType.String && index.TypeId != DyType.Char)
+        if (index.TypeId != Dy.String && index.TypeId != Dy.Char)
             return ctx.IndexOutOfRange(index);
 
         return TryGetItem(index.GetString(),out var item)
@@ -71,7 +71,7 @@ public class DyTuple : DyCollection
 
     protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
     {
-        if (index.TypeId == DyType.String)
+        if (index.TypeId == Dy.String)
         {
             var i = GetOrdinal(index.GetString());
 
@@ -99,13 +99,13 @@ public class DyTuple : DyCollection
     public virtual bool IsReadOnly(int index) => values[index] is DyLabel lab && !lab.Mutable;
 
     protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
-        values[index].TypeId == DyType.Label ? values[index].GetTaggedValue() : values[index];
+        values[index].TypeId == Dy.Label ? values[index].GetTaggedValue() : values[index];
 
     internal virtual string GetKey(int index) => values[index].GetLabel()!;
 
     protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
     {
-        if (values[index].TypeId == DyType.Label)
+        if (values[index].TypeId == Dy.Label)
         {
             var lab = (DyLabel)values[index];
 
@@ -153,7 +153,7 @@ public class DyTuple : DyCollection
             return CopyTuple();
 
         for (var i = 0; i < Count; i++)
-            if (values[i].TypeId == DyType.Label)
+            if (values[i].TypeId == Dy.Label)
                 return CopyTuple();
 
         return values;
@@ -165,7 +165,7 @@ public class DyTuple : DyCollection
             return IterateTuple();
 
         for (var i = 0; i < Count; i++)
-            if (values[i].TypeId == DyType.Label)
+            if (values[i].TypeId == Dy.Label)
                 return IterateTuple();
 
         return values;
@@ -251,7 +251,7 @@ public class DyTuple : DyCollection
             var str = literal ? v.ToLiteral(ctx) : v.ToString(ctx);
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return Nil;
 
             sb.Append(str);
         }

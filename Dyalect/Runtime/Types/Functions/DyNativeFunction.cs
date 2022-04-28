@@ -59,7 +59,7 @@ internal class DyNativeFunction : DyFunction
             catch (DyCodeException ex)
             {
                 ctx.Error = ex.Error;
-                return DyNil.Instance;
+                return Nil;
             }
         }
 
@@ -89,7 +89,7 @@ internal class DyNativeFunction : DyFunction
         catch (DyCodeException ex)
         {
             ctx.Error = ex.Error;
-            return DyNil.Instance;
+            return Nil;
         }
     }
 
@@ -103,7 +103,7 @@ internal class DyNativeFunction : DyFunction
         catch (DyCodeException ex)
         {
             ctx.Error = ex.Error;
-            return DyNil.Instance;
+            return Nil;
         }
     }
 
@@ -115,6 +115,7 @@ internal class DyNativeFunction : DyFunction
         return size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
     }
 
-    internal override bool Equals(DyFunction func) => func is DyNativeFunction m
-        && m.UnitId == UnitId && m.FunctionId == FunctionId;
+    internal override bool Equals(DyFunction func) => 
+           func is DyNativeFunction m && m.UnitId == UnitId && m.FunctionId == FunctionId 
+        && IsSameInstance(this, func);
 }

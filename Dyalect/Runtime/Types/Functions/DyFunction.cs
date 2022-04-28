@@ -2,6 +2,7 @@
 using Dyalect.Debug;
 using Dyalect.Parser;
 using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 namespace Dyalect.Runtime.Types;
 
@@ -14,13 +15,19 @@ public abstract class DyFunction : DyObject
     internal int Attr;
     internal int DeclaringUnitId;
 
+    public override string TypeName => nameof(Dy.Function);
+
+    public abstract string FunctionName { get; }
+
+    public abstract bool IsExternal { get; }
+
     internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
+    
     internal bool Private => (Attr & FunAttr.Priv) == FunAttr.Priv;
+    
     internal bool VariantConstructor => (Attr & FunAttr.Vari) == FunAttr.Vari;
 
-    public override string TypeName => DyTypeNames.Function;
-
-    protected DyFunction(Par[] pars, int varArgIndex) : base(DyType.Function) =>
+    protected DyFunction(Par[] pars, int varArgIndex) : base(Dy.Function) =>
         (Parameters, VarArgIndex) = (pars, varArgIndex);
 
     public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
@@ -38,7 +45,7 @@ public abstract class DyFunction : DyObject
         var newArgs = PrepareArguments(ctx, args);
 
         if (ctx.HasErrors)
-            return DyNil.Instance;
+            return Nil;
 
         return InternalCall(ctx, newArgs);
     }
@@ -68,15 +75,15 @@ public abstract class DyFunction : DyObject
         if (VarArgIndex > -1)
         {
             var o = newLocals[VarArgIndex];
-            if (o.TypeId == DyType.Nil)
+            if (o.TypeId == Dy.Nil)
                 newLocals[VarArgIndex] = DyTuple.Empty;
-            else if (o.TypeId == DyType.Array)
+            else if (o.TypeId == Dy.Array)
             {
                 var arr = (DyArray)o;
                 arr.Compact();
                 newLocals[VarArgIndex] = new DyTuple(arr.UnsafeAccessValues(), arr.Count);
             }
-            else if (o.TypeId != DyType.Tuple)
+            else if (o.TypeId != Dy.Tuple)
                 newLocals[VarArgIndex] = new DyTuple(new DyObject[] { o } );
         }
 
@@ -84,6 +91,7 @@ public abstract class DyFunction : DyObject
         return newLocals;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal int GetParameterIndex(string name)
     {
         for (var i = 0; i < Parameters.Length; i++)
@@ -136,9 +144,8 @@ public abstract class DyFunction : DyObject
         return ret;
     }
 
-    public abstract string FunctionName { get; }
-
-    public abstract bool IsExternal { get; }
+    public static bool IsSameInstance(DyFunction first, DyFunction second) =>
+        ReferenceEquals(first.Self, second.Self) || (first.Self is not null && first.Self.Equals(second.Self));
 
     internal virtual MemoryLayout? GetLayout(ExecutionContext ctx) => null;
 

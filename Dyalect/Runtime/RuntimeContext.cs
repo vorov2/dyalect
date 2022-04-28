@@ -7,23 +7,27 @@ public sealed class RuntimeContext
 {
     internal RuntimeContext(UnitComposition composition)
     {
+        Types = Dy.GetAll();
+        String = (DyStringTypeInfo)Types[Dy.String];
+        Char = (DyCharTypeInfo)Types[Dy.Char];
+        Nil = (DyNilTypeInfo)Types[Dy.Nil];
+        Tuple = (DyTupleTypeInfo)Types[Dy.Tuple];
+        Array = (DyArrayTypeInfo)Types[Dy.Array];
         Composition = composition;
-        Types = DyType.GetAll();
-        String = (DyStringTypeInfo)Types[DyType.String];
-        Char = (DyCharTypeInfo)Types[DyType.Char];
-        Nil = (DyNilTypeInfo)Types[DyType.Nil];
-        Tuple = (DyTupleTypeInfo)Types[DyType.Tuple];
-        Array = (DyArrayTypeInfo)Types[DyType.Array];
-        Units = new DyObject[Composition.Units.Count][];
+        Units = new DyObject[Composition.Units.Length][];
         Layouts = Composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
     }
 
-    public void Refresh()
+    public void Refresh(UnitComposition composition)
     {
-        var newUnits = new DyObject[Composition.Units.Count][];
+        Composition = composition;
+
+        //Take into account new modules
+        var newUnits = new DyObject[Composition.Units.Length][];
         for (var i = 0; i < Units.Length; i++)
             newUnits[i] = Units[i];
-        Units = newUnits;            
+
+        Units = newUnits;
         Layouts = Composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
     }
 
@@ -33,11 +37,11 @@ public sealed class RuntimeContext
     internal readonly DyTupleTypeInfo Tuple;
     internal readonly DyArrayTypeInfo Array;
 
-    internal readonly FastList<DyTypeInfo> Types; 
+    internal readonly FastList<DyTypeInfo> Types;
 
     internal DyObject[][] Units { get; private set; }
 
     internal MemoryLayout[][] Layouts { get; private set; }
 
-    public UnitComposition Composition { get; }
+    public UnitComposition Composition { get; private set; }
 }

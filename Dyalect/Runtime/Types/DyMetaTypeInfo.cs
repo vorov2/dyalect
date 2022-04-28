@@ -5,13 +5,13 @@ internal sealed class DyMetaTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
-    public override string ReflectedTypeName => DyTypeNames.TypeInfo;
+    public override string ReflectedTypeName => nameof(Dy.TypeInfo);
 
-    public override int ReflectedTypeId => DyType.TypeInfo;
+    public override int ReflectedTypeId => Dy.TypeInfo;
 
     protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
     {
-        if (index.TypeId == DyType.String)
+        if (index.TypeId == Dy.String)
             return index.GetString() switch
             {
                 "name" => new DyString(((DyTypeInfo)self).ReflectedTypeName),

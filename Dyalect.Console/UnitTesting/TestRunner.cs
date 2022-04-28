@@ -14,9 +14,10 @@ namespace Dyalect.UnitTesting
     {
         private readonly DyaOptions dyaOptions;
         private readonly BuilderOptions buildOptions;
+        private readonly TextWriter stdOut;
 
         public TestRunner(BuilderOptions buildOptions, DyaOptions dyaOptions) =>
-            (this.buildOptions, this.dyaOptions) = (buildOptions, dyaOptions);
+            (this.buildOptions, this.dyaOptions, this.stdOut) = (buildOptions, dyaOptions, Console.Out);
 
         public bool RunTests(IEnumerable<string> fileNames)
         {
@@ -183,6 +184,7 @@ namespace Dyalect.UnitTesting
                 }
                 catch (Exception ex)
                 {
+                    Console.SetOut(stdOut);
                     report.Results.Add(new TestResult
                     {
                         Name = bi.Block.Name,

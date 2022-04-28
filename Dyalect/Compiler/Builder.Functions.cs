@@ -63,7 +63,7 @@ partial class Builder
 
                     var t1 = PushTypeInfo(ctx, node.TargetTypeName, node.Location);
 
-                    if (t1 < 0 && -t1 == DyType.Bool)
+                    if (t1 < 0 && -t1 == Dy.Bool)
                         AddError(CompilerError.BoolCastNotAllowed, node.Location);
 
                     var t2 = PushTypeInfo(ctx, node.TypeName, node.Location);
@@ -262,32 +262,32 @@ partial class Builder
                     {
                         case NodeType.Integer:
                             val = new DyInteger(((DIntegerLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyType.Integer, p.TypeAnnotation))
+                            if (!CheckRestriction(Dy.Integer, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Float:
                             val = new DyFloat(((DFloatLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyType.Float, p.TypeAnnotation))
+                            if (!CheckRestriction(Dy.Float, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Char:
                             val = new DyChar(((DCharLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyType.Char, p.TypeAnnotation))
+                            if (!CheckRestriction(Dy.Char, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Boolean:
-                            val = ((DBooleanLiteral)p.DefaultValue).Value ? DyBool.True : DyBool.False;
-                            if (!CheckRestriction(DyType.Bool, p.TypeAnnotation))
+                            val = ((DBooleanLiteral)p.DefaultValue).Value ? True : False;
+                            if (!CheckRestriction(Dy.Bool, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.String:
                             val = new DyString(((DStringLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(DyType.String, p.TypeAnnotation))
+                            if (!CheckRestriction(Dy.String, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.Nil:
                             val = DyNil.Instance;
-                            if (!CheckRestriction(DyType.Nil, p.TypeAnnotation))
+                            if (!CheckRestriction(Dy.Nil, p.TypeAnnotation))
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         default:
@@ -311,7 +311,7 @@ partial class Builder
             return true;
 
         foreach (var q in restriction)
-            if (q.Parent is not null || code != DyType.GetTypeCodeByName(q.Local))
+            if (q.Parent is not null || code != Dy.GetTypeCodeByName(q.Local))
                 return false;
 
         return true;

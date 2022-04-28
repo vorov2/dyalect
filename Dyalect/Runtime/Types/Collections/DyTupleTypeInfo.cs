@@ -1,23 +1,25 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Debug;
+﻿using Dyalect.Codegen;
+using Dyalect.Compiler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 namespace Dyalect.Runtime.Types;
 
-internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
+[GeneratedType]
+internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
         | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
         | SupportedOperations.Add | SupportedOperations.Iter | SupportedOperations.Lit;
 
-    public override string ReflectedTypeName => DyTypeNames.Tuple;
+    public override string ReflectedTypeName => nameof(Dy.Tuple);
 
-    public override int ReflectedTypeId => DyType.Tuple;
+    public override int ReflectedTypeId => Dy.Tuple;
 
-    public DyTupleTypeInfo() => AddMixin(DyType.Collection, DyType.Comparable);
+    public DyTupleTypeInfo() => AddMixin(Dy.Collection, Dy.Comparable);
 
+    #region Operations
     protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
         new DyTuple(((DyCollection)left).Concat(ctx, right));
 
@@ -34,12 +36,12 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
     protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
     {
         if (left.TypeId != right.TypeId)
-            return DyBool.False;
+            return False;
 
         var (t1, t2) = ((DyTuple)left, (DyTuple)right);
 
         if (t1.Count != t2.Count)
-            return DyBool.False;
+            return False;
 
         var t1v = t1.UnsafeAccessValues();
         var t2v = t2.UnsafeAccessValues();
@@ -47,13 +49,13 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         for (var i = 0; i < t1.Count; i++)
         {
             if (t1v[i].NotEquals(t2v[i], ctx))
-                return DyBool.False;
+                return False;
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return Nil;
         }
 
-        return DyBool.True;
+        return True;
     }
 
     protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(true, left, right, ctx);
@@ -62,11 +64,13 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
 
     protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
     {
-        if (!field.IsString(ctx)) return Default();
-        return ((DyTuple)self).GetOrdinal(field.GetString()) is not -1 ? DyBool.True : DyBool.False;
+        if (!field.Is(ctx, Dy.String))
+            return Nil;
+
+        return ((DyTuple)self).GetOrdinal(field.GetString()) is not -1 ? True : False;
     }
 
-    private DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
+    private static DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
     {
         if (left.TypeId != right.TypeId)
             return ctx.OperationNotSupported(gt ? Builtins.Gt : Builtins.Lt, left, right);
@@ -84,21 +88,21 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
             var res = gt ? x.Greater(y, ctx) : x.Lesser(y, ctx);
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return Nil;
 
             if (res)
-                return DyBool.True;
+                return True;
 
             res = x.Equals(y, ctx);
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return Nil;
 
             if (!res)
-                return DyBool.False;
+                return False;
         }
 
-        return DyBool.False;
+        return False;
     }
 
     protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
@@ -106,86 +110,47 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
     protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
     {
         self.SetItem(index, value, ctx);
-        return DyNil.Instance;
+        return Nil;
     }
+    #endregion
 
-    internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
-        new DyTuple(DyCollection.ConcatValues(ctx, values));
-
-    private DyObject GetKeys(ExecutionContext ctx, DyObject self)
+    [InstanceMethod(Method.Add)]
+    internal static DyObject AddItem(DyTuple self, DyObject value)
     {
-        IEnumerable<DyObject> Iterate()
-        {
-            var tup = (DyTuple)self;
-            for (var i = 0; i < tup.Count; i++)
-            {
-                var k = tup.GetKey(i);
-                if (k is not null)
-                    yield return new DyString(k);
-            }
-        }
-
-        return DyIterator.Create(Iterate());
-    }
-
-    private DyObject GetFirst(ExecutionContext ctx, DyObject self) =>
-        self.GetItem(DyInteger.Zero, ctx);
-
-    private DyObject GetSecond(ExecutionContext ctx, DyObject self) =>
-        self.GetItem(DyInteger.One, ctx);
-
-    private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject functor)
-    {
-        var tup = (DyTuple)self;
-        var comparer = new SortComparer(functor, ctx);
-        var newArr = new DyObject[tup.Count];
-        Array.Copy(tup.UnsafeAccessValues(), newArr, newArr.Length);
-        Array.Sort(newArr, 0, newArr.Length, comparer);
-        return new DyTuple(newArr);
-    }
-
-    private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject item)
-    {
-        var t = (DyTuple)self;
-        var arr = new DyObject[t.Count + 1];
-        Array.Copy(t.UnsafeAccessValues(), arr, t.Count);
-        arr[^1] = item;
+        var arr = new DyObject[self.Count + 1];
+        Array.Copy(self.UnsafeAccessValues(), arr, self.Count);
+        arr[^1] = value;
         return new DyTuple(arr);
     }
 
-    private DyObject Remove(ExecutionContext ctx, DyObject self, DyObject item)
+    [InstanceMethod]
+    internal static DyObject Remove(ExecutionContext ctx, DyTuple self, DyObject value)
     {
-        var t = (DyTuple)self;
-        var tv = t.UnsafeAccessValues();
+        var tv = self.UnsafeAccessValues();
 
         for (var i = 0; i < tv.Length; i++)
         {
             var e = tv[i].GetTaggedValue();
 
-            if (e.Equals(item, ctx))
-                return RemoveAt(ctx, t, i);
+            if (e.Equals(value, ctx))
+                return RemoveAt(self, i);
         }
 
         return self;
     }
 
-    private DyObject RemoveAt(ExecutionContext ctx, DyObject self, DyObject index)
+    [InstanceMethod]
+    internal static DyObject RemoveAt(ExecutionContext ctx, DyTuple self, int index)
     {
-        if (index.TypeId != DyType.Integer)
-            return ctx.InvalidType(DyType.Integer, index);
+        index = index < 0 ? self.Count + index : index;
 
-        var t = (DyTuple)self;
+        if (index < 0 || index >= self.Count)
+            return ctx.IndexOutOfRange(index);
 
-        var idx = (int)index.GetInteger();
-        idx = idx < 0 ? t.Count + idx : idx;
-
-        if (idx < 0 || idx >= t.Count)
-            return ctx.IndexOutOfRange();
-
-        return RemoveAt(ctx, t, idx);
+        return RemoveAt(self, index);
     }
 
-    private static DyTuple RemoveAt(ExecutionContext _, DyTuple self, int index)
+    internal static DyTuple RemoveAt(DyTuple self, int index)
     {
         var arr = new DyObject[self.Count - 1];
         var c = 0;
@@ -200,133 +165,139 @@ internal sealed class DyTupleTypeInfo : DyCollectionTypeInfo
         return new DyTuple(arr);
     }
 
-    private DyObject Insert(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
+    [InstanceMethod]
+    internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
+        new DyTuple(DyCollection.ConcatValues(ctx, values));
+
+    [InstanceMethod]
+    internal static DyObject Insert(ExecutionContext ctx, DyTuple self, int index, DyObject value)
     {
-        if (index.TypeId != DyType.Integer)
-            return ctx.InvalidType(DyType.Integer, index);
+        index = index < 0 ? self.Count + index : index;
 
-        var tuple = (DyTuple)self;
+        if (index < 0 || index > self.Count)
+            return ctx.IndexOutOfRange(index);
 
-        var idx = (int)index.GetInteger();
-        idx = idx < 0 ? tuple.Count + idx : idx;
+        var arr = new DyObject[self.Count + 1];
+        arr[index] = value;
 
-        if (idx < 0 || idx > tuple.Count)
-            return ctx.IndexOutOfRange();
-
-        var arr = new DyObject[tuple.Count + 1];
-        arr[idx] = value;
-
-        if (idx == 0)
-            Array.Copy(tuple.UnsafeAccessValues(), 0, arr, 1, tuple.Count);
-        else if (idx == tuple.Count)
-            Array.Copy(tuple.UnsafeAccessValues(), 0, arr, 0, tuple.Count);
+        if (index == 0)
+            Array.Copy(self.UnsafeAccessValues(), 0, arr, 1, self.Count);
+        else if (index == self.Count)
+            Array.Copy(self.UnsafeAccessValues(), 0, arr, 0, self.Count);
         else
         {
-            Array.Copy(tuple.UnsafeAccessValues(), 0, arr, 0, idx);
-            Array.Copy(tuple.UnsafeAccessValues(), idx, arr, idx + 1, tuple.Count - idx);
+            Array.Copy(self.UnsafeAccessValues(), 0, arr, 0, index);
+            Array.Copy(self.UnsafeAccessValues(), index, arr, index + 1, self.Count - index);
         }
 
         return new DyTuple(arr);
     }
 
-    private DyObject ToDictionary(ExecutionContext ctx, DyObject self)
+    [InstanceMethod]
+    internal static DyObject Keys(DyTuple self)
     {
-        var tuple = (DyTuple)self;
-        return new DyDictionary(tuple.ConvertToDictionary(ctx));
+        IEnumerable<DyObject> Iterate()
+        {
+            for (var i = 0; i < self.Count; i++)
+            {
+                var k = self.GetKey(i);
+                if (k is not null)
+                    yield return new DyString(k);
+            }
+        }
+
+        return DyIterator.Create(Iterate());
     }
 
-    private DyObject ToArray(ExecutionContext ctx, DyObject self)
+    [InstanceMethod]
+    internal static DyObject First(ExecutionContext ctx, DyObject self) =>
+        self.GetItem(DyInteger.Zero, ctx);
+
+    [InstanceMethod]
+    internal static DyObject Second(ExecutionContext ctx, DyObject self) =>
+        self.GetItem(DyInteger.One, ctx);
+
+    [InstanceMethod]
+    internal static DyObject Sort(ExecutionContext ctx, DyTuple self, DyObject? comparer = null)
     {
-        var tuple = (DyTuple)self;
-        return new DyArray(tuple.GetValues());
+        var sortComparer = new SortComparer(comparer, ctx);
+        var newArr = new DyObject[self.Count];
+        Array.Copy(self.UnsafeAccessValues(), newArr, newArr.Length);
+        Array.Sort(newArr, 0, newArr.Length, sortComparer);
+        return new DyTuple(newArr);
     }
 
-    private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject functor)
+    [InstanceMethod]
+    internal static DyObject ToDictionary(ExecutionContext ctx, DyTuple self) =>
+        new DyDictionary(self.ConvertToDictionary(ctx));
+
+    [InstanceMethod]
+    internal static DyObject ToArray(DyTuple self) => new DyArray(self.GetValues());
+
+    [InstanceMethod]
+    internal static DyObject Compact(ExecutionContext ctx, DyTuple self, DyObject? predicate = null)
     {
-        var seq = (DyTuple)self;
         var xs = new List<DyObject>();
 
-        foreach (var val in seq.GetValues())
+        foreach (var val in self.GetValues())
         {
-            if (functor.NotNil())
+            if (predicate is not null)
             {
-                var res = functor.Invoke(ctx, val);
+                var res = predicate.Invoke(ctx, val);
 
                 if (ctx.HasErrors)
-                    return DyNil.Instance;
+                    return Nil;
 
-                if (ReferenceEquals(res, DyBool.False))
+                if (res.IsFalse())
                     xs.Add(val);
             }
-            else if (!ReferenceEquals(val, DyNil.Instance))
+            else if (!val.Is(Dy.Nil))
                 xs.Add(val);
         }
 
         return new DyTuple(xs.ToArray());
     }
 
-    private DyObject Alter(ExecutionContext ctx, DyObject self, DyObject newTuple)
+    [InstanceMethod]
+    internal static DyObject Alter(DyTuple self, [VarArg]DyTuple values)
     {
-        if (newTuple is DyTuple tup)
+        var xs = new List<DyObject>(self.UnsafeAccessValues());
+
+        foreach (var o in values.UnsafeAccessValues())
         {
-            var xs = new List<DyObject>(((DyTuple)self).UnsafeAccessValues());
-
-            foreach (var o in tup.UnsafeAccessValues())
+            if (o is DyLabel lab)
             {
-                if (o is DyLabel lab)
+                var exist = xs.FirstOrDefault(i => i.GetLabel() == lab.Label) as DyLabel;
+
+                if (exist is not null)
                 {
-                    var exist = xs.FirstOrDefault(i => i.GetLabel() == lab.Label) as DyLabel;
-
-                    if (exist is not null)
-                    {
-                        exist.Value = lab.Value;
-                        continue;
-                    }
+                    exist.Value = lab.Value;
+                    continue;
                 }
-
-                xs.Add(o);
             }
 
-            return new DyTuple(xs.ToArray());
+            xs.Add(o);
         }
 
-        return ctx.InvalidType(DyType.Tuple, newTuple);
+        return new DyTuple(xs.ToArray());
     }
 
-    protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Add => Func.Member(name, AddItem, -1, new Par("value")),
-            Method.Remove => Func.Member(name, Remove, -1, new Par("value")),
-            Method.RemoveAt => Func.Member(name, RemoveAt, -1, new Par("index")),
-            Method.Insert => Func.Member(name, Insert, -1, new Par("index"), new Par("value")),
-            Method.Keys => Func.Member(name, GetKeys),
-            Method.First => Func.Member(name, GetFirst),
-            Method.Second => Func.Member(name, GetSecond),
-            Method.Sort => Func.Member(name, SortBy, -1, new Par("comparer", DyNil.Instance)),
-            Method.ToDictionary => Func.Member(name, ToDictionary),
-            Method.ToArray => Func.Member(name, ToArray),
-            Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
-            Method.Alter => Func.Member(name, Alter, 0, new Par("values", true)),
-            _ => base.InitializeInstanceMember(self, name, ctx)
-        };
+    [StaticMethod(Method.Sort)]
+    internal static DyObject StaticSort(ExecutionContext ctx, DyTuple value, DyObject? comparer = null) =>
+        Sort(ctx, value, comparer);
 
-    private DyObject GetPair(ExecutionContext ctx, DyObject fst, DyObject snd) =>
-        new DyTuple(new[] { fst, snd });
+    [StaticMethod]
+    internal static DyObject Pair(DyObject first, DyObject second) =>
+        new DyTuple(new[] { first, second });
 
-    private DyObject GetTriple(ExecutionContext ctx, DyObject fst, DyObject snd, DyObject thd) =>
-        new DyTuple(new[] { fst, snd, thd });
+    [StaticMethod]
+    internal static DyObject Triple(DyObject first, DyObject second, DyObject third) =>
+        new DyTuple(new[] { first, second, third });
 
-    private DyObject MakeNew(ExecutionContext ctx, DyObject obj) => obj;
+    [StaticMethod(Method.Concat)]
+    internal static DyObject StaticConcat(ExecutionContext ctx, [VarArg]DyObject values) =>
+        new DyTuple(DyCollection.ConcatValues(ctx, values));
 
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Sort => Func.Static(name, SortBy, -1, new Par("value"), new Par("comparer", DyNil.Instance)),
-            Method.Pair => Func.Static(name, GetPair, -1, new Par("first"), new Par("second")),
-            Method.Triple => Func.Static(name, GetTriple, -1, new Par("first"), new Par("second"), new Par("third")),
-            Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
-            Method.Tuple => Func.Static(name, MakeNew, 0, new Par("values")),
-            _ => base.InitializeStaticMember(name, ctx)
-        };
+    [StaticMethod(Method.Tuple)]
+    internal static DyObject MakeNew([VarArg]DyObject values) => values;
 }

@@ -1,16 +1,14 @@
 ﻿using Dyalect.Runtime.Types;
+namespace Dyalect.Library.Core;
 
-namespace Dyalect.Library.Core
+public sealed class DyResult : DyForeignObject
 {
-    public sealed class DyResult : DyForeignObject
-    {
-        internal readonly DyObject Value;
+    internal readonly DyObject Value;
 
-        public DyResult(DyForeignTypeInfo typeInfo, string ctor, DyObject value) : base(typeInfo, ctor) =>
-            Value = value;
+    public DyResult(DyForeignTypeInfo typeInfo, string ctor, DyObject value) : base(typeInfo, ctor) =>
+        Value = value;
 
-        public override object ToObject() => Value.ToObject();
+    public override object ToObject() => Value.ToObject();
 
-        public override bool Equals(DyObject? other) => Value.Equals(other);
-    }
+    public override bool Equals(DyObject? other) => Value.Equals(other);
 }

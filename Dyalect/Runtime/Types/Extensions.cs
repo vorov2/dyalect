@@ -7,17 +7,30 @@ namespace Dyalect.Runtime.Types;
 public static class Extensions
 {
     internal static bool IsTrue(this DyObject self) =>
-        !ReferenceEquals(self, DyBool.False) && !ReferenceEquals(self, DyNil.Instance);
+        !ReferenceEquals(self, False) && !ReferenceEquals(self, Nil);
 
     internal static bool IsFalse(this DyObject self) =>
-        ReferenceEquals(self, DyBool.False) || ReferenceEquals(self, DyNil.Instance);
+        ReferenceEquals(self, False) || ReferenceEquals(self, Nil);
+
+    public static bool Is(this DyObject self, int typeId) => self.TypeId == typeId;
+
+    public static bool Is(this DyObject self, ExecutionContext ctx, int typeId)
+    {
+        if (self.TypeId != typeId)
+        {
+            ctx.InvalidType(typeId, self);
+            return false;
+        }
+
+        return true;
+    }
 
     internal static DyFunction? GetIterator(this DyObject self, ExecutionContext ctx)
     {
-        if (self.TypeId == DyType.Iterator)
+        if (self.TypeId == Dy.Iterator)
             return ((DyIterator)self).GetIteratorFunction();
 
-        if (self.TypeId == DyType.Function)
+        if (self.TypeId == Dy.Function)
         {
             if (self is DyNativeIteratorFunction)
                 return (DyFunction)self;
@@ -74,106 +87,6 @@ public static class Extensions
     public static DyObject Negate(this DyObject self, ExecutionContext ctx) =>
         ctx.RuntimeContext.Types[self.TypeId].Neg(ctx, self);
 
-    public static bool NotNil(this DyObject self) => !ReferenceEquals(self, DyNil.Instance);
-
-    public static bool IsNil(this DyObject? self) => ReferenceEquals(self, DyNil.Instance);
-
-    public static bool NotNat(this DyObject self, ExecutionContext ctx)
-    {
-        if (!IsInteger(self, ctx))
-            return true;
-        if (self.GetInteger() < 0)
-        {
-            ctx.InvalidValue(self);
-            return true;
-        }
-
-        return false;
-    }
-
-    public static bool NotIntOrNil(this DyObject self, ExecutionContext ctx)
-    {
-        if (self.IsNil())
-            return false;
-
-        return self.NotInteger(ctx);
-    }
-
-    public static bool NotInteger(this DyObject self, ExecutionContext ctx) => !IsInteger(self, ctx);
-
-    public static bool IsInteger(this DyObject self, ExecutionContext ctx)
-    {
-        if (self.TypeId != DyType.Integer)
-        {
-            ctx.InvalidType(DyType.Integer, self);
-            return false;
-        }
-
-        return true;
-    }
-
-    public static bool NotNatNumber(this DyObject self, ExecutionContext ctx)
-    {
-        if (!IsNumber(self, ctx))
-            return true;
-
-        if (self.GetFloat() == 0)
-        {
-            ctx.InvalidValue(self);
-            return true;
-        }
-
-        return false;
-    }
-
-    public static bool NotNumber(this DyObject self, ExecutionContext ctx) => !IsNumber(self, ctx);
-
-    public static bool IsNumber(this DyObject self, ExecutionContext ctx)
-    {
-        if (self.TypeId != DyType.Integer && self.TypeId != DyType.Float)
-        {
-            ctx.InvalidType(DyType.Integer, DyType.Float, self);
-            return false;
-        }
-
-        return true;
-    }
-
-    public static bool NotString(this DyObject self, ExecutionContext ctx) => !IsString(self, ctx);
-
-    public static bool IsString(this DyObject self, ExecutionContext ctx)
-    {
-        if (self.TypeId != DyType.String)
-        {
-            ctx.InvalidType(DyType.String, self);
-            return false;
-        }
-
-        return true;
-    }
-
-    public static bool IsTuple(this DyObject self, ExecutionContext ctx)
-    {
-        if (self.TypeId != DyType.Tuple)
-        {
-            ctx.InvalidType(DyType.Tuple, self);
-            return false;
-        }
-
-        return true;
-    }
-
-    public static bool IsArray(this DyObject self, ExecutionContext ctx)
-    {
-        if (self.TypeId != DyType.Array)
-        {
-            ctx.InvalidType(DyType.Array, self);
-            return false;
-        }
-
-        return true;
-    }
-
     public static DyFunction? ToFunction(this DyObject self, ExecutionContext ctx)
     {
         if (self is DyFunction func)
@@ -184,7 +97,7 @@ public static class Extensions
         if (typ.HasInstanceMember(self, Builtins.Call, ctx))
             return typ.GetInstanceMember(self, Builtins.Call, ctx) as DyFunction;
 
-        ctx.InvalidType(DyType.Function, self);
+        ctx.InvalidType(Dy.Function, self);
         return null;
     }
 
@@ -198,7 +111,7 @@ public static class Extensions
         if (ctx.HasErrors)
             return DyNil.Instance;
 
-        if (functor.TypeId != DyType.Function)
+        if (functor.TypeId != Dy.Function)
             return ctx.InvalidType(functor);
 
         return functor.Invoke(ctx, args);

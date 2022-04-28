@@ -16,11 +16,12 @@ internal sealed class CompositionContainer : DyForeignFunction
         var res = first.Call(ctx, args);
 
         if (ctx.HasErrors)
-            return DyNil.Instance;
+            return Nil;
 
         return second.Call(ctx, res);
     }
 
-    internal override bool Equals(DyFunction func) => func is CompositionContainer cc
+    internal override bool Equals(DyFunction func) => 
+           func is CompositionContainer cc
         && cc.first.Equals(first) && cc.second.Equals(second);
 }

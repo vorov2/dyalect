@@ -1,23 +1,25 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Codegen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 namespace Dyalect.Runtime.Types;
 
-internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
+[GeneratedType]
+internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
 {
-    public override string ReflectedTypeName => DyTypeNames.Array;
+    public override string ReflectedTypeName => nameof(Dy.Array);
 
-    public override int ReflectedTypeId => DyType.Array;
+    public override int ReflectedTypeId => Dy.Array;
 
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
         | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
         | SupportedOperations.Iter | SupportedOperations.Lit;
 
-    public DyArrayTypeInfo() => AddMixin(DyType.Collection);
+    public DyArrayTypeInfo() => AddMixin(Dy.Collection);
 
+    #region Operations
     protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
         DyInteger.Get(((DyArray)arg).Count);
 
@@ -31,7 +33,7 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
         {
             if (i > 0)
                 sb.Append(", ");
-            var str = literal ? arr[i].ToLiteral(ctx) :arr[i].ToString(ctx);
+            var str = literal ? arr[i].ToLiteral(ctx) : arr[i].ToString(ctx);
 
             if (ctx.Error != null)
                 return DyString.Empty;
@@ -55,235 +57,123 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
     protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
     {
         self.SetItem(index, value, ctx);
-        return DyNil.Instance;
+        return Nil;
     }
 
     protected override DyObject ContainsOp(DyObject self, DyObject item, ExecutionContext ctx)
     {
         var arr = (DyArray)self;
-        return arr.IndexOf(ctx, item) != -1 ? DyBool.True : DyBool.False;
+        return arr.IndexOf(ctx, item) != -1 ? True : False;
+    }
+    #endregion
+
+    [InstanceMethod(Method.Add)]
+    internal static void AddItem(DyArray self, DyObject value) => self.Add(value);
+
+    [InstanceMethod(Method.Insert)]
+    internal static void InsertItem(ExecutionContext ctx, DyArray self, int index, DyObject value)
+    {
+        if (index < 0 || index > self.Count)
+            ctx.IndexOutOfRange();
+        else
+            self.Insert(index, value);
     }
 
-    private DyObject AddItem(ExecutionContext ctx, DyObject self, DyObject arg)
+    [InstanceMethod]
+    internal static void AddRange(ExecutionContext ctx, DyArray self, DyObject values)
     {
-        ((DyArray)self).Add(arg);
-        return DyNil.Instance;
-    }
-
-    private DyObject InsertItem(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
-    {
-        var arr = (DyArray)self;
-
-        if (index.TypeId != DyType.Integer)
-            return ctx.InvalidType(DyType.Integer, index);
-
-        var i = (int)index.GetInteger();
-
-        if (i < 0 || i > arr.Count)
-            return ctx.IndexOutOfRange();
-
-        arr.Insert(i, value);
-        return DyNil.Instance;
-    }
-
-    private DyObject AddRange(ExecutionContext ctx, DyObject self, DyObject val)
-    {
-        var arr = (DyArray)self;
-
-        foreach (var o in DyIterator.ToEnumerable(ctx, val))
+        foreach (var o in DyIterator.ToEnumerable(ctx, values))
         {
             if (ctx.HasErrors)
                 break;
-            arr.Add(o);
+            self.Add(o);
         }
-
-        return DyNil.Instance;
     }
 
-    private DyObject RemoveItem(ExecutionContext ctx, DyObject self, DyObject val) =>
-        ((DyArray)self).Remove(ctx, val) ? DyBool.True : DyBool.False;
-
-    private DyObject RemoveItemAt(ExecutionContext ctx, DyObject self, DyObject index)
+    [InstanceMethod]
+    internal static void InsertRange(ExecutionContext ctx, DyArray self, int index, DyObject values)
     {
-        if (index.TypeId != DyType.Integer)
-            return ctx.InvalidType(DyType.Integer, index);
-
-        var idx = (int)index.GetInteger();
-        var arr = (DyArray)self;
-
-        if (idx < 0 || idx >= arr.Count)
-            return ctx.IndexOutOfRange();
-
-        arr.RemoveAt(idx);
-        return DyNil.Instance;
-    }
-
-    private DyObject ClearItems(ExecutionContext ctx, DyObject self)
-    {
-        ((DyArray)self).Clear();
-        return DyNil.Instance;
-    }
-
-    private DyObject IndexOf(ExecutionContext ctx, DyObject self, DyObject val)
-    {
-        var arr = (DyArray)self;
-        var i = arr.IndexOf(ctx, val);
-        return DyInteger.Get(i);
-    }
-
-    private DyObject LastIndexOf(ExecutionContext ctx, DyObject self, DyObject val)
-    {
-        var arr = (DyArray)self;
-        var i = arr.LastIndexOf(ctx, val);
-        return DyInteger.Get(i);
-    }
-
-    private DyObject SortBy(ExecutionContext ctx, DyObject self, DyObject functor)
-    {
-        var arr = (DyArray)self;
-        var comparer = new SortComparer(functor, ctx);
-        arr.Compact();
-        Array.Sort(arr.UnsafeAccessValues(), 0, arr.Count, comparer);
-        return DyNil.Instance;
-    }
-
-    private DyObject Reverse(ExecutionContext ctx, DyObject self)
-    {
-        var arr = (DyArray)self;
-        arr.Compact();
-        Array.Reverse(arr.UnsafeAccessValues());
-        return DyNil.Instance;
-    }
-
-    private DyObject Compact(ExecutionContext ctx, DyObject self, DyObject functor)
-    {
-        var arr = (DyArray)self;
-
-        if (arr.Count == 0)
-            return DyNil.Instance;
-
-        var idx = 0;
-
-        while (idx < arr.Count)
+        if (index < 0 || index > self.Count)
         {
-            var e = arr[idx];
-            bool flag;
-
-            if (functor.NotNil())
-            {
-                var res = functor.Invoke(ctx, e);
-
-                if (ctx.HasErrors)
-                    return DyNil.Instance;
-
-                flag = res.IsTrue();
-            }
-            else
-                flag = e.IsNil();
-
-            if (flag)
-                arr.RemoveAt(idx);
-            else
-                idx++;
+            ctx.IndexOutOfRange();
+            return;
         }
 
-        return DyNil.Instance;
+        var coll = DyIterator.ToEnumerable(ctx, values);
+
+        if (!ctx.HasErrors)
+        {
+            foreach (var e in coll)
+                self.Insert(index++, e);
+        }
     }
 
-    private DyObject Swap(ExecutionContext ctx, DyObject self, DyObject idx1, DyObject idx2)
+    [InstanceMethod(Method.Remove)]
+    internal static bool RemoveItem(ExecutionContext ctx, DyArray self, DyObject value) => self.Remove(ctx, value);
+
+    [InstanceMethod(Method.RemoveAt)]
+    internal static void RemoveItemAt(ExecutionContext ctx, DyArray self, int index)
     {
-        var arr = (DyArray)self;
-        var fst = arr.GetItem(idx1, ctx);
+        if (index < 0 || index >= self.Count)
+        {
+            ctx.IndexOutOfRange(index);
+            return;
+        }
 
-        if (ctx.HasErrors)
-            return DyNil.Instance;
-
-        var snd = arr.GetItem(idx2, ctx);
-
-        if (ctx.HasErrors)
-            return DyNil.Instance;
-
-        arr.SetItem(idx1, snd, ctx);
-        arr.SetItem(idx2, fst, ctx);
-        return DyNil.Instance;
+        self.RemoveAt(index);
     }
 
-    private DyObject InsertRange(ExecutionContext ctx, DyObject self, DyObject index, DyObject range)
+    [InstanceMethod(Method.RemoveRange)]
+    internal static void RemoveRange(ExecutionContext ctx, DyArray self, DyObject values)
     {
-        if (!index.IsInteger(ctx)) return Default();
-        var arr = (DyArray)self;
-        var idx = (int)index.GetInteger();
-
-        if (idx < 0 || idx > arr.Count)
-            return ctx.IndexOutOfRange();
-
-        var coll = DyIterator.ToEnumerable(ctx, range);
+        var coll = DyIterator.ToEnumerable(ctx, values);
 
         if (ctx.HasErrors)
-            return DyNil.Instance;
-
-        foreach (var e in coll)
-            arr.Insert(idx++, e);
-
-        return DyNil.Instance;
-    }
-
-    private DyObject RemoveRange(ExecutionContext ctx, DyObject self, DyObject items)
-    {
-        var arr = (DyArray)self;
-        var coll = DyIterator.ToEnumerable(ctx, items);
-
-        if (ctx.HasErrors)
-            return DyNil.Instance;
+            return;
 
         var strict = coll.ToArray();
 
         foreach (var e in strict)
         {
-            arr.Remove(ctx, e);
+            self.Remove(ctx, e);
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                break;
+        }
+    }
+
+    [InstanceMethod(Method.RemoveRangeAt)]
+    internal static void RemoveRangeAt(ExecutionContext ctx, DyArray self, int index, [Default]int? count)
+    {
+        if (index < 0 || index >= self.Count)
+        {
+            ctx.IndexOutOfRange(index);
+            return;
         }
 
-        return DyNil.Instance;
+        if (count is null)
+            count = self.Count - index;
+
+        if (index + count > self.Count)
+        {
+            ctx.IndexOutOfRange();
+            return;
+        }
+
+        self.RemoveRange(index, count.Value);
     }
 
-    private DyObject RemoveRangeAt(ExecutionContext ctx, DyObject self, DyObject start, DyObject len)
+    [InstanceMethod]
+    internal static void RemoveAll(ExecutionContext ctx, DyArray self, DyObject predicate)
     {
-        if (!start.IsInteger(ctx)) return Default();
-        if (len.NotNil() && !len.IsInteger(ctx)) return Default();
-        var arr = (DyArray)self;
-        var sti = (int)start.GetInteger();
-
-        if (sti < 0 || sti >= arr.Count)
-            return ctx.IndexOutOfRange();
-
-        int le;
-
-        if (len.IsNil())
-            le = arr.Count - sti;
-        else
-            le = (int)len.GetInteger();
-
-        if (sti + le > arr.Count)
-            return ctx.IndexOutOfRange();
-
-        arr.RemoveRange(sti, le);
-        return DyNil.Instance;
-    }
-
-    private DyObject RemoveAll(ExecutionContext ctx, DyObject self, DyObject functor)
-    {
-        var arr = (DyArray)self;
         var toDelete = new List<DyObject>();
 
-        foreach (var o in arr)
+        foreach (var o in self)
         {
-            var res = functor.Invoke(ctx, o);
+            var res = predicate.Invoke(ctx, o);
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return;
 
             if (!res.IsFalse())
                 toDelete.Add(o);
@@ -291,115 +181,161 @@ internal sealed class DyArrayTypeInfo : DyCollectionTypeInfo
 
         foreach (var o in toDelete)
         {
-            arr.Remove(ctx, o);
+            self.Remove(ctx, o);
 
             if (ctx.HasErrors)
-                return DyNil.Instance;
+                return;
         }
-
-        return DyNil.Instance;
     }
 
-    protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Add => Func.Member(name, AddItem, -1, new Par("value")),
-            Method.Insert => Func.Member(name, InsertItem, -1, new Par("index"), new Par("value")),
-            Method.InsertRange => Func.Member(name, InsertRange, -1, new Par("index"), new Par("values")),
-            Method.AddRange => Func.Member(name, AddRange, -1, new Par("values")),
-            Method.Remove => Func.Member(name, RemoveItem, -1, new Par("value")),
-            Method.RemoveAt => Func.Member(name, RemoveItemAt, -1, new Par("index")),
-            Method.RemoveRange => Func.Member(name, RemoveRange, -1, new Par("values")),
-            Method.RemoveRangeAt => Func.Member(name, RemoveRangeAt, -1, new Par("index"), new Par("count", DyNil.Instance)),
-            Method.RemoveAll => Func.Member(name, RemoveAll, -1, new Par("predicate")),
-            Method.Clear => Func.Member(name, ClearItems),
-            Method.IndexOf => Func.Member(name, IndexOf, -1, new Par("value")),
-            Method.LastIndexOf => Func.Member(name, LastIndexOf, -1, new Par("value")),
-            Method.Sort => Func.Member(name, SortBy, -1, new Par("comparer", DyNil.Instance)),
-            Method.Swap => Func.Member(name, Swap, -1, new Par("index"), new Par("other")),
-            Method.Compact => Func.Member(name, Compact, -1, new Par("predicate", DyNil.Instance)),
-            Method.Reverse => Func.Member(name, Reverse),
-            _ => base.InitializeInstanceMember(self, name, ctx),
-        };
+    [InstanceMethod(Method.Clear)]
+    internal static void ClearItems(DyArray self) => self.Clear();
 
-    private DyObject New(ExecutionContext ctx, DyObject tuple) => new DyArray(((DyTuple)tuple).GetValues());
+    [InstanceMethod]
+    internal static int IndexOf(ExecutionContext ctx, DyArray self, DyObject value) => self.IndexOf(ctx, value);
 
-    private DyObject Empty(ExecutionContext ctx, DyObject sizeObj, DyObject val)
+    [InstanceMethod]
+    internal static int LastIndexOf(ExecutionContext ctx, DyArray self, DyObject value) => self.LastIndexOf(ctx, value);
+
+    [InstanceMethod(Method.Sort)]
+    internal static void SortBy(ExecutionContext ctx, DyArray self, [Default]DyObject comparer)
     {
-        var size = sizeObj.GetInteger();
-        var arr = new DyObject[size];
+        var sortComparer = new SortComparer(comparer, ctx);
+        self.Compact();
+        Array.Sort(self.UnsafeAccessValues(), 0, self.Count, sortComparer);
+    }
 
-        if (val.TypeId == DyType.Iterator)
-            val = ((DyIterator)val).GetIteratorFunction();
+    [InstanceMethod]
+    internal static void Swap(ExecutionContext ctx, DyArray self, DyObject index, DyObject other)
+    {
+        var fst = self.GetItem(index, ctx);
 
-        if (val is DyFunction func)
+        if (ctx.HasErrors)
+            return;
+
+        var snd = self.GetItem(other, ctx);
+
+        if (ctx.HasErrors)
+            return;
+
+        self.SetItem(index, snd, ctx);
+        self.SetItem(other, fst, ctx);
+    }
+
+    [InstanceMethod]
+    internal static void Compact(ExecutionContext ctx, DyArray self, [Default]DyObject predicate)
+    {
+        if (self.Count == 0)
+            return;
+
+        var idx = 0;
+
+        while (idx < self.Count)
         {
-            for (var i = 0; i < size; i++)
+            var e = self[idx];
+            bool flag;
+
+            if (predicate is not null)
+            {
+                var res = predicate.Invoke(ctx, e);
+
+                if (ctx.HasErrors)
+                    return;
+
+                flag = res.IsTrue();
+            }
+            else
+                flag = e.Is(Dy.Nil);
+
+            if (flag)
+                self.RemoveAt(idx);
+            else
+                idx++;
+        }
+    }
+
+    [InstanceMethod]
+    internal static void Reverse(DyArray self)
+    {
+        self.Compact();
+        Array.Reverse(self.UnsafeAccessValues());
+    }
+
+    [StaticMethod(Method.Array)]
+    internal static DyObject New([VarArg]DyObject[] values) => new DyArray(values);
+
+    [StaticMethod(Method.Sort)]
+    internal static DyObject StaticSortBy(ExecutionContext ctx, DyObject values, DyObject comparer)
+    {
+        var arr = values;
+
+        if (values.TypeId != Dy.Array)
+        {
+            arr = ctx.RuntimeContext.Types[values.TypeId].Cast(ctx, values, ctx.RuntimeContext.Array);
+
+            if (ctx.HasErrors)
+                return Nil;
+        }
+
+        SortBy(ctx, (DyArray)arr, comparer);
+        return arr;
+    }
+
+    [StaticMethod]
+    internal static DyObject Empty(ExecutionContext ctx, int count, [Default][ParameterName("default")]DyObject def)
+    {
+        var arr = new DyObject[count];
+        def ??= Nil;
+
+        if (def.TypeId == Dy.Iterator)
+            def = ((DyIterator)def).GetIteratorFunction();
+
+        if (def is DyFunction func)
+        {
+            for (var i = 0; i < count; i++)
             {
                 var res = func.Call(ctx);
 
                 if (ctx.HasErrors)
-                    return DyNil.Instance;
+                    return Nil;
 
                 arr[i] = res;
             }
         }
         else
         {
-            for (var i = 0; i < size; i++)
-                arr[i] = val;
+            for (var i = 0; i < count; i++)
+                arr[i] = def;
         }
 
         return new DyArray(arr);
     }
 
-    private static DyObject Concat(ExecutionContext ctx, DyObject values) =>
+    [StaticMethod]
+    internal static DyObject Concat(ExecutionContext ctx, [VarArg]DyObject values) =>
         new DyArray(DyCollection.ConcatValues(ctx, values));
 
-    private static DyObject Copy(ExecutionContext ctx, DyObject from, DyObject sourceIndex, DyObject to, DyObject destIndex, DyObject length)
+    [StaticMethod]
+    internal static DyObject Copy(ExecutionContext ctx, DyArray source, [Default(0)]int index, [Default]DyArray destination, [Default(0)]int destinationIndex, [Default]int? count)
     {
-        if (!sourceIndex.IsInteger(ctx)) return DyNil.Instance;
-        var iSourceIndex = sourceIndex.GetInteger();
-        if (!destIndex.IsInteger(ctx)) return DyNil.Instance;
-        var iDestIndex = destIndex.GetInteger();
-        if (!from.IsArray(ctx)) return DyNil.Instance;
-        var sourceArr = (DyArray)from;
-        if (length.NotNil() && !length.IsInteger(ctx)) return DyNil.Instance;
-        var iLen = length.TypeId == DyType.Nil ? sourceArr.Count : length.GetInteger();
-        if (to.NotNil() && !to.IsArray(ctx)) return DyNil.Instance;
-        var destArr = to == DyNil.Instance ? new DyArray(new DyObject[iDestIndex + iLen]) : (DyArray)to;
+        if (count is null)
+            count = source.Count;
 
-        if (iSourceIndex < 0 || iSourceIndex >= sourceArr.Count)
+        destination ??= new DyArray(new DyObject[destinationIndex + count.Value]);
+
+        if (index < 0 || index >= source.Count)
             return ctx.IndexOutOfRange();
 
-        if (iDestIndex < 0 || iDestIndex >= destArr.Count)
+        if (destinationIndex < 0 || destinationIndex >= destination.Count)
             return ctx.IndexOutOfRange();
 
-        if (iSourceIndex + iLen < 0 || iSourceIndex + iLen > sourceArr.Count)
+        if (index + count < 0 || index + count > source.Count)
             return ctx.IndexOutOfRange();
 
-        if (iDestIndex + iLen < 0 || iDestIndex + iLen > destArr.Count)
+        if (destinationIndex + count < 0 || destinationIndex + count > destination.Count)
             return ctx.IndexOutOfRange();
 
-        Array.Copy(sourceArr.UnsafeAccessValues(), iSourceIndex, destArr.UnsafeAccessValues(), iDestIndex, iLen);
-
-        if (iDestIndex != 0 && to == DyNil.Instance)
-            for (var i = 0; i < iDestIndex; i++)
-                destArr[i] = DyNil.Instance;
-
-        return destArr;
+        Array.Copy(source.UnsafeAccessValues(), index, destination.UnsafeAccessValues(), destinationIndex, count.Value);
+        return destination;
     }
-
-    protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-        name switch
-        {
-            Method.Array => Func.Static(name, New, 0, new Par("values", true)),
-            Method.Sort => Func.Static(name, SortBy, -1, new Par("values"), new Par("comparer", DyNil.Instance)),
-            Method.Empty => Func.Static(name, Empty, -1, new Par("count"), new Par("default", DyNil.Instance)),
-            Method.Concat => Func.Static(name, Concat, 0, new Par("values", true)),
-            Method.Copy => Func.Static(name, Copy, -1, new Par("source"),
-                new Par("index", DyInteger.Zero), new Par("destination", DyNil.Instance),
-                new Par("destinationIndex", DyInteger.Zero), new Par("count", DyNil.Instance)),
-            _ => base.InitializeStaticMember(name, ctx)
-        };
 }

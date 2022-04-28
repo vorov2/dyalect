@@ -366,13 +366,14 @@
     assert([1,2,3], seq.Take(3).ToArray())
 #endregion
 
-#region "Methods: Element"
+#region "Methods: ElementAt"
     let seq = yields { 1..10 }
     assert(2, seq.ElementAt(1))
     assert(2, seq.ElementAt(index: 1))
     assert(10, seq.ElementAt(9))
     assert(10, seq.ElementAt(index: 9))
-    assert(9, seq.ElementAt(-1))
+    assert(10, seq.ElementAt(-1))
+    assert(9, seq.ElementAt(-2))
     assert(2, seq[1])
     assert(2, seq[1])
     assert(10, seq[9])
@@ -669,4 +670,16 @@
     assert((1,2,3), xs as Tuple)
     assert([1,2,3], xs as Array)
     assert(Set(1,2,3).ToString(), (xs as Set).ToString())
+#endregion
+
+#region "Iterator as function"
+    func iter() {
+        yield 1
+        yield 2
+        yield 3
+    }
+    let fn = iter() as Function
+    assert(1, fn())
+    assert(2, fn())
+    assert(3, fn())
 #endregion

@@ -1,39 +1,67 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
+using System;
+namespace Dyalect.Library.Core;
 
-namespace Dyalect.Library.Core
+[GeneratedType]
+public sealed partial class DyTimeTypeInfo : SpanTypeInfo<DyTime>
 {
-    public sealed class DyTimeTypeInfo : AbstractTimeTypeInfo<DyTime>
+    private const string Time = nameof(Time);
+
+    public DyTimeTypeInfo() : base(Time) { }
+
+    [InstanceProperty]
+    internal static int Hour(DyTime self) => self.Hours;
+
+    [InstanceProperty]
+    internal static int Minute(DyTime self) => self.Minutes;
+
+    [InstanceProperty]
+    internal static int Second(DyTime self) => self.Seconds;
+
+    [InstanceProperty]
+    internal static int Millisecond(DyTime self) => self.Milliseconds;
+
+    [InstanceProperty]
+    internal static int Tick(DyTime self) => self.Ticks;
+
+    [InstanceProperty]
+    internal static long TotalTicks(DyTime self) => self.TotalTicks;
+
+    [StaticMethod(Time)]
+    internal static DyObject CreateNew(ExecutionContext ctx, int hour = 0, int minute = 0, int second = 0, int millisecond = 0, int tick = 0)
     {
-        private const string Time = "Time";
-
-        public DyTimeTypeInfo() : base(Time) { }
-
-        protected override DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) =>
-            name switch
-            {
-                "Hour" => Func.Auto(name, GetHours),
-                "Minute" => Func.Auto(name, GetMinutes),
-                "Second" => Func.Auto(name, GetSeconds),
-                "Millisecond" => Func.Auto(name, GetMilliseconds),
-                "Tick" => Func.Auto(name, GetTicks),
-                _ => base.InitializeInstanceMember(self, name, ctx)
-            };
-
-        private DyObject New(ExecutionContext ctx, DyObject hours, DyObject minutes, DyObject sec, DyObject ms) =>
-            CreateNew(ctx, DyInteger.Zero, hours, minutes, sec, ms);
-
-        protected override DyObject Parse(string format, string input) => DyTime.Parse(this, format, input);
-
-        protected override DyObject Create(long ticks) => new DyTime(this, ticks);
-
-        protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx) =>
-            name switch
-            {
-                Time => Func.Static(name, New, -1, new Par("hour", 0), new Par("minute", 0), new Par("second", 0),
-                    new Par("millisecond", 0), new Par("tick", 0)),
-                _ => base.InitializeStaticMember(name, ctx)
-            };
+        var ticks = tick + DT.Sum(0, hour, minute, second, millisecond);
+        return new DyTime(ctx.Type<DyTimeTypeInfo>(), ticks);
     }
+
+    [StaticMethod]
+    internal static DyObject FromTicks(ExecutionContext ctx, long ticks) => new DyTime(ctx.Type<DyTimeTypeInfo>(), ticks);
+
+    [StaticMethod]
+    internal static DyObject Parse(ExecutionContext ctx, string input, string format)
+    {
+        try
+        {
+            return DyTime.Parse(ctx.Type<DyTimeTypeInfo>(), format, input);
+        }
+        catch (FormatException)
+        {
+            return ctx.ParsingFailed();
+        }
+        catch (OverflowException)
+        {
+            return ctx.Overflow();
+        }
+    }
+
+    [StaticMethod]
+    internal static DyTime Default(ExecutionContext ctx) => Min(ctx);
+
+    [StaticMethod]
+    internal static DyTime Min(ExecutionContext ctx) => new(ctx.Type<DyTimeTypeInfo>(), DateTime.MinValue.TimeOfDay.Ticks);
+
+    [StaticMethod]
+    internal static DyTime Max(ExecutionContext ctx) => new(ctx.Type<DyTimeTypeInfo>(), DateTime.MaxValue.TimeOfDay.Ticks);
 }

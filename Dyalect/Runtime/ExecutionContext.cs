@@ -1,6 +1,8 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Runtime.Types;
 using System.Collections.Generic;
+using System.Linq;
+
 namespace Dyalect.Runtime;
 
 public class ExecutionContext
@@ -65,6 +67,25 @@ public class ExecutionContext
             throw new DyRuntimeException(ErrorGenerators.GetErrorDescription(err));
         }
     }
+
+    private readonly object syncRoot = new();
+    private readonly Dictionary<string, object> contextVariables = new();
+    public void SetContextVariable(string key, object val)
+    {
+        lock (syncRoot)
+            contextVariables[key] = val;
+    }
+
+    public T? GetContextVariable<T>(string key)
+    {
+        if (!contextVariables.TryGetValue(key, out var val))
+            return default;
+        return (T)val;
+    }
+
+    public bool HasContextVariable(string key) => contextVariables.ContainsKey(key);
+
+    public T Type<T>() where T : DyTypeInfo => RuntimeContext.Types.OfType<T>().First();
 
     #region ArgContainer
     private int count;

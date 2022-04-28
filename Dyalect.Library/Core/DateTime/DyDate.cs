@@ -1,7 +1,6 @@
 ﻿using Dyalect.Runtime.Types;
 using System;
 using System.Text;
-
 namespace Dyalect.Library.Core;
 
 public sealed class DyDate : DyForeignObject, IDate, IFormattable
@@ -27,6 +26,8 @@ public sealed class DyDate : DyForeignObject, IDate, IFormattable
     public int DayOfYear => new DateTime(TotalTicks).DayOfYear;
 
     public override object ToObject() => new DateOnly(Year, Month, Day);
+
+    public long ToInteger() => days;
 
     public override DyObject Clone() => new DyDate((DyDateTypeInfo)TypeInfo, days);
 

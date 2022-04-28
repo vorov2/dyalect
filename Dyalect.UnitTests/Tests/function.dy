@@ -8,8 +8,6 @@
     let fn = (x, y) => x + y
     assert(true, fn == fn)
     assert(true, fn.Clone() == fn)
-    assert(true, fn.ToString.Clone() == fn.ToString)
-    assert(false, fn.ToString.Clone() == fn)
 #endregion
 
 #region "Base variable 1"
@@ -53,6 +51,18 @@
         "result=\(res)"
     }
     let fun = sum.Compose(fmt)
+    let res = fun(13, 14)
+    assert(res, "result=27")
+#endregion
+
+#region "Composition 3"
+    func sum(x, y) {
+        x + y
+    }
+    func fmt(res) {
+        "result=\(res)"
+    }
+    let fun = sum + fmt
     let res = fun(13, 14)
     assert(res, "result=27")
 #endregion
@@ -742,6 +752,20 @@
     assert([2,4,6], res)
 #endregion
 
+#region "Right pipe 3"
+    func sum(x, y) {
+        x + y
+    }
+    func sub(x, y) {
+        x - y
+    }
+    func double(x) => x + x
+    func toString(x) => "result is \(x)"
+    let res = 12 >> sub(3) >> sum(10) >> double >> toString
+    assert("result is 38", res)
+    assert(toString(double(sum(sub(12, 3), 10))), res)
+#endregion
+
 #region "Left pipe 1"
     func double(x) => x + x
     let x = double << 12
@@ -758,6 +782,20 @@
     let xs = [1, 2, 3]
     let res = map(xs) << (\x + x)
     assert([2, 4, 6], res.ToArray())
+#endregion
+
+#region "Left pipe 3"
+    func sum(x, y) {
+        x + y
+    }
+    func sub(x, y) {
+        x - y
+    }
+    func double(x) => x + x
+    func toString(x) => "result is \(x)"
+    let res = toString << double << sum(10) << sub(3) << 12
+    assert("result is 2", res)
+    assert(toString(double(sum(10, sub(3, 12)))), res)
 #endregion
 
 #region "Complex nesting"

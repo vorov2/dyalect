@@ -1,3 +1,25 @@
+# 0.43.0
+  * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).
+  * Add: _An ability to convert an iterator to a stateful function_ ([Issue #807](https://github.com/vorov2/dyalect/issues/807), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).
+  * Add: _`Bool` to support `Min` and `Max`_ ([Issue #817](https://github.com/vorov2/dyalect/issues/817), [docs](https://github.com/vorov2/dyalect/wiki/Bool#min)).
+  * Add: _Consider a special mixin (e.g. `Bounded`) for `Max` and `Min` methods_ ([Issue #817](https://github.com/vorov2/dyalect/issues/817), [docs](https://github.com/vorov2/dyalect/wiki/Mixins#bounded)).
+  * Add: _An ability to change working directory in `Dya`_ ([Issue #827](https://github.com/vorov2/dyalect/issues/827), [docs](https://github.com/vorov2/dyalect/wiki/Dyalect-console#commands)).
+  * Add: _Use `+` for function composition_ ([Issue #812](https://github.com/vorov2/dyalect/issues/812), [docs](https://github.com/vorov2/dyalect/wiki/Functions#operators)).
+  * Add: _Add `Object` property to functions_ ([Issue #810](https://github.com/vorov2/dyalect/issues/810), [docs](https://github.com/vorov2/dyalect/wiki/Functions#object)).
+  * Change: _Static `Array.Sort` to support other data types_ ([Issue #797](https://github.com/vorov2/dyalect/issues/797), [docs](https://github.com/vorov2/dyalect/wiki/Array#ssort)).
+  * Change: _Change `Integer.IsMultiple(of)` to `Integer.IsMultipleOf(value)`_ ([Issue #804](https://github.com/vorov2/dyalect/issues/804), [docs](https://github.com/vorov2/dyalect/wiki/Integer#isMultipleOf)).
+  * Change: _Refactor date and time API internals_ ([Issue #825](https://github.com/vorov2/dyalect/issues/825)).
+  * Change: _Use source generators to aid implementation of types and modules_ ([Issue #826](https://github.com/vorov2/dyalect/issues/826)).
+  * Fix: _Static `Array.Sort` fails with a wrong exception when a type is invalid_ ([Issue #814](https://github.com/vorov2/dyalect/issues/814)).
+  * Fix: _Interactive console crush when invoking a function_ ([Issue #828](https://github.com/vorov2/dyalect/issues/828)).
+  * Fix: _`Time` returns incorrect values for `Min` and `Max`_ ([Issue #824](https://github.com/vorov2/dyalect/issues/824)).
+  * Fix: _Function comparison_ ([Issue #821](https://github.com/vorov2/dyalect/issues/821)).
+  * Fix: _`Drive.TotalFreeSpace` property is incorrectly named `Drive.TotalFreeSize`_ ([Issue #822](https://github.com/vorov2/dyalect/issues/822)).
+  * Fix: _`Iterator.Shuffle` can return the same sequence as before in rare cases_ ([Issue #820](https://github.com/vorov2/dyalect/issues/820)).
+  * Fix: _Invalid names of parameters for `SetCursorPosition` function_ ([Issue #823](https://github.com/vorov2/dyalect/issues/823)).
+  * Fix: _Associativity of operator `<<`_ ([Issue #829](https://github.com/vorov2/dyalect/issues/829), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#apps)).
+  * Fix: _Fix the behavior of negative indices_ ([Issue #819](https://github.com/vorov2/dyalect/issues/819)).
+
 # 0.42.1
   * Change: _Runtime type system refactoring._
   * Fix: _Methods `Directory.Copy` and `Directory.Move` do not work_ ([Issue #803](https://github.com/vorov2/dyalect/issues/803)).

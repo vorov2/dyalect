@@ -62,13 +62,13 @@ namespace Dyalect
             if (made.Messages.Any())
                 Printer.PrintErrors(made.Messages);
 
-            if (!made.Success)
+            if (!made.Success || made.Value is null)
                 return false;
 
             if (ExecutionContext == null)
-                ExecutionContext = DyMachine.CreateExecutionContext(made.Value!);
+                ExecutionContext = DyMachine.CreateExecutionContext(made.Value);
             else
-                ExecutionContext.RuntimeContext.Refresh();
+                ExecutionContext.RuntimeContext.Refresh(made.Value);
 
             return Eval(measureTime: false);
         }
@@ -127,7 +127,7 @@ namespace Dyalect
 
         public bool Eval(bool measureTime)
         {
-#if !DEBUGs
+#if !DEBUG
             try
 #endif
             {
@@ -141,7 +141,7 @@ namespace Dyalect
                 Linker.Commit();
                 return true;
             }
-#if !DEBUGs
+#if !DEBUG
             catch (DyCodeException ex)
             {
                 Linker.Rollback();

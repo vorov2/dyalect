@@ -142,7 +142,7 @@
 #region "Drive: properties"
     let drv = Drive.GetDrives().Iterate().First()
     assert(true, drv.TotalSize > 0)
-    assert(true, drv.TotalFreeSize > 0)
+    assert(true, drv.TotalFreeSpace > 0)
     assert(true, drv.AvailableFreeSpace is Integer)
     assert(true, drv.Format is String)
     assert(true, drv.Label is String)

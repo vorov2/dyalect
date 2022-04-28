@@ -255,34 +255,34 @@
     assert(1.0, xs[0].s)
 #endregion
 
-#region "Methods: copy 1"
+#region "Methods: Copy 1"
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = Array.Empty(3)
     Array.Copy(xs, 1, ys, 0, 3)
     assert([2,3,4], ys)
 #endregion
 
-#region "Methods: copy 2"
+#region "Methods: Copy 2"
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = Array.Copy(source: xs, index: 1, count: 3)
     assert([2,3,4], ys)
 #endregion
 
-#region "Methods: copy 3"
+#region "Methods: Copy 3"
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = [999, 999, 0, 0, 0]
     ys = Array.Copy(xs, 1, ys, 2, 3)
     assert([999,999,2,3,4], ys)
 #endregion
 
-#region "Methods: copy 4"
+#region "Methods: Copy 4"
     let xs = [1, 2, 3]
     let ys = [0, 0, 0, 0]
     Array.Copy(xs, destination: ys, destinationIndex: 1)
     assert([0, 1, 2, 3], ys)
 #endregion
 
-#region "Methods: copy 4"
+#region "Methods: Copy 5"
     var xs = [1, 2, 3, 4, 5, 6]
     var ys = Array.Copy(xs, count: 3)
     assert([1,2,3], ys)

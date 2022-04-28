@@ -3,11 +3,11 @@ using System.IO;
 using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-public sealed class DyString : DyStringLike
+public sealed class DyString : DyCollection
 {
     public static readonly DyString Empty = new("");
 
-    public override string TypeName => DyTypeNames.String;
+    public override string TypeName => nameof(Dy.String);
     
     internal readonly string Value;
 
@@ -15,9 +15,9 @@ public sealed class DyString : DyStringLike
 
     public override int Count => Value.Length;
 
-    public DyString(string str) : base(DyType.String) => Value = str;
+    public DyString(string str) : base(Dy.String) => Value = str;
 
-    public DyString(HashString str) : base(DyType.String) => (Value, hashCode) = ((string)str, str.LookupHash());
+    public DyString(HashString str) : base(Dy.String) => (Value, hashCode) = ((string)str, str.LookupHash());
     
     internal override DyObject GetValue(int index) => new DyChar(Value[index]);
 
@@ -62,12 +62,12 @@ public sealed class DyString : DyStringLike
     {
         var res = value;
 
-        while (res.TypeId != DyType.String && res.TypeId != DyType.Char)
+        while (res.TypeId is not Dy.String and not Dy.Char)
         {
             res = res.ToString(ctx);
 
             if (ctx.HasErrors)
-                return null!;
+                return default!;
         }
 
         return res.GetString();
@@ -75,7 +75,7 @@ public sealed class DyString : DyStringLike
 
     protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        if (index.TypeId != DyType.Integer)
+        if (index.TypeId != Dy.Integer)
             return ctx.IndexOutOfRange(index);
 
         return GetItem((int)index.GetInteger(), ctx);
@@ -84,7 +84,7 @@ public sealed class DyString : DyStringLike
     protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) => new DyChar(Value[idx]);
 
     protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx) =>
-        ctx.OperationNotSupported("set", DyType.String);
+        ctx.OperationNotSupported("set", Dy.String);
 
     internal override void Serialize(BinaryWriter writer)
     {
