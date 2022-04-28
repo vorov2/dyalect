@@ -8,6 +8,7 @@
   * Add: _Add `Object` property to functions_ ([Issue #810](https://github.com/vorov2/dyalect/issues/810), [docs](https://github.com/vorov2/dyalect/wiki/Functions#object)).
   * Change: _Static `Array.Sort` to support other data types_ ([Issue #797](https://github.com/vorov2/dyalect/issues/797), [docs](https://github.com/vorov2/dyalect/wiki/Array#ssort)).
   * Change: _Change `Integer.IsMultiple(of)` to `Integer.IsMultipleOf(value)`_ ([Issue #804](https://github.com/vorov2/dyalect/issues/804), [docs](https://github.com/vorov2/dyalect/wiki/Integer#isMultipleOf)).
+  * Change: _Refactor date and time API internals_ ([Issue #825](https://github.com/vorov2/dyalect/issues/825)).
   * Fix: _Static `Array.Sort` fails with a wrong exception when a type is invalid_ ([Issue #814](https://github.com/vorov2/dyalect/issues/814)).
   * Fix: _Interactive console crush when invoking a function_ ([Issue #828](https://github.com/vorov2/dyalect/issues/828)).
   * Fix: _`Time` returns incorrect values for `Min` and `Max`_ ([Issue #824](https://github.com/vorov2/dyalect/issues/824)).
