@@ -13,6 +13,9 @@ internal class DyUnaryFunction : DyForeignFunction
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyUnaryFunction(FunctionName, fun);
 
-    internal override bool Equals(DyFunction func) => func is DyUnaryFunction bin && ReferenceEquals(bin.fun, fun)
-        && (ReferenceEquals(bin.Self, Self) || (bin.Self is not null && bin.Self.Equals(Self)));
+    public override object ToObject() => fun;
+
+    internal override bool Equals(DyFunction func) => 
+           func is DyUnaryFunction bin && ReferenceEquals(bin.fun, fun)
+        && IsSameInstance(this, func);
 }

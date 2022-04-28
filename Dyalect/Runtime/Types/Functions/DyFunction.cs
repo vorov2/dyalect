@@ -2,6 +2,7 @@
 using Dyalect.Debug;
 using Dyalect.Parser;
 using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 namespace Dyalect.Runtime.Types;
 
@@ -14,11 +15,17 @@ public abstract class DyFunction : DyObject
     internal int Attr;
     internal int DeclaringUnitId;
 
-    internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
-    internal bool Private => (Attr & FunAttr.Priv) == FunAttr.Priv;
-    internal bool VariantConstructor => (Attr & FunAttr.Vari) == FunAttr.Vari;
-
     public override string TypeName => nameof(Dy.Function);
+
+    public abstract string FunctionName { get; }
+
+    public abstract bool IsExternal { get; }
+
+    internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
+    
+    internal bool Private => (Attr & FunAttr.Priv) == FunAttr.Priv;
+    
+    internal bool VariantConstructor => (Attr & FunAttr.Vari) == FunAttr.Vari;
 
     protected DyFunction(Par[] pars, int varArgIndex) : base(Dy.Function) =>
         (Parameters, VarArgIndex) = (pars, varArgIndex);
@@ -84,6 +91,7 @@ public abstract class DyFunction : DyObject
         return newLocals;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal int GetParameterIndex(string name)
     {
         for (var i = 0; i < Parameters.Length; i++)
@@ -136,9 +144,8 @@ public abstract class DyFunction : DyObject
         return ret;
     }
 
-    public abstract string FunctionName { get; }
-
-    public abstract bool IsExternal { get; }
+    public static bool IsSameInstance(DyFunction first, DyFunction second) =>
+        ReferenceEquals(first.Self, second.Self) || (first.Self is not null && first.Self.Equals(second.Self));
 
     internal virtual MemoryLayout? GetLayout(ExecutionContext ctx) => null;
 

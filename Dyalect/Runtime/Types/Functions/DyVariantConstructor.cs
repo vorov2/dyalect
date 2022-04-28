@@ -14,5 +14,7 @@ internal sealed class DyVariantConstructor : DyForeignFunction
 
     protected override DyFunction Clone(ExecutionContext ctx) => this;
 
+    public override object ToObject() => fun;
+
     internal override bool Equals(DyFunction func) => func is DyVariantConstructor c && c.fun.Equals(fun);
 }

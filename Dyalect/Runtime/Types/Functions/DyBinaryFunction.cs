@@ -16,6 +16,8 @@ internal sealed class DyBinaryFunction : DyForeignFunction
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyBinaryFunction(FunctionName, fun, Parameters);
 
-    internal override bool Equals(DyFunction func) => func is DyBinaryFunction bin && ReferenceEquals(bin.fun, fun)
-        && (ReferenceEquals(bin.Self, Self) || (bin.Self is not null && bin.Self.Equals(Self)));
+    public override object ToObject() => fun;
+
+    internal override bool Equals(DyFunction func) => 
+           func is DyBinaryFunction bin && ReferenceEquals(bin.fun, fun) && IsSameInstance(this, func);
 }

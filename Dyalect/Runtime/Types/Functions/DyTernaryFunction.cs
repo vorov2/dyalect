@@ -16,6 +16,9 @@ internal sealed class DyTernaryFunction : DyForeignFunction
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyTernaryFunction(FunctionName, fun, Parameters);
 
-    internal override bool Equals(DyFunction func) => func is DyTernaryFunction ter && ReferenceEquals(ter.fun, fun)
-        && (ReferenceEquals(ter.Self, Self) || (ter.Self is not null && ter.Self.Equals(Self)));
+    public override object ToObject() => fun;
+
+    internal override bool Equals(DyFunction func) =>
+           func is DyTernaryFunction ter && ReferenceEquals(ter.fun, fun)
+        && IsSameInstance(this, func);
 }

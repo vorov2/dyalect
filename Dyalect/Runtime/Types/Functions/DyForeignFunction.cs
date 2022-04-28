@@ -1,30 +1,27 @@
-﻿using Dyalect.Debug;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 using System;
-
 namespace Dyalect.Runtime.Types;
 
 public abstract class DyForeignFunction : DyFunction
 {
-    private readonly string name;
-
-    protected DyForeignFunction(string? name, Par[] pars, int varArgIndex)
-        : base(pars, varArgIndex) => this.name = name ?? DefaultName;
-
-    protected DyForeignFunction(string? name, Par[] pars) : base(pars, -1)
-    {
-        this.name = name ?? DefaultName;
-
-        for (var i = 0; i < pars.Length; i++)
-            if (pars[i].IsVarArg)
-            {
-                VarArgIndex = i;
-                break;
-            }
-    }
-
-    public override string FunctionName => name;
+    public override string FunctionName { get; }
 
     public override bool IsExternal => true;
+
+    protected DyForeignFunction(string? name, Par[] pars, int varArgIndex)
+        : base(pars, varArgIndex) => FunctionName = name ?? DefaultName;
+
+    protected DyForeignFunction(string? name, Par[] pars) : this(name, pars, GetVarArgIndex(pars)) { }
+
+    private static int GetVarArgIndex(Par[] pars)
+    {
+        for (var i = 0; i < pars.Length; i++)
+            if (pars[i].IsVarArg)
+                return i;
+
+        return -1;
+    }
 
     internal override DyFunction BindToInstance(ExecutionContext ctx, DyObject arg)
     {
@@ -40,5 +37,5 @@ public abstract class DyForeignFunction : DyFunction
 
     internal override DyObject InternalCall(ExecutionContext ctx) => InternalCall(ctx, Array.Empty<DyObject>());
 
-    //internal override bool Equals(DyFunction func) => ReferenceEquals(this, func);
+    internal sealed override MemoryLayout? GetLayout(ExecutionContext ctx) => throw new NotSupportedException();
 }

@@ -84,10 +84,23 @@ namespace Dyalect.Util
             Printer.Output(commands);
         }
 
-        [Binding("dir", Help = "Shows current working directory")]
-        public void Directory(object _)
+        [Binding("dir", Help = "Shows (if invoked without argument) or sets current working directory.")]
+        public void Directory(object val)
         {
-            Printer.Output(Environment.CurrentDirectory);
+            if (val is null)
+                Printer.Output(Environment.CurrentDirectory);
+            else
+            {
+                try
+                {
+                    System.IO.Directory.SetCurrentDirectory(val.ToString()!);
+                    Printer.Output($"Current directory set to: {Environment.CurrentDirectory}");
+                }
+                catch (Exception)
+                {
+                    Printer.Error($"Unable to set current directory to: {val}");
+                }
+            }
         }
 
         [Binding("options", Help = "Displays current console options.")]
