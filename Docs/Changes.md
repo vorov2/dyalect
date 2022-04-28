@@ -1,3 +1,6 @@
+# 0.44.0
+  *
+
 # 0.43.0
   * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).
   * Add: _An ability to convert an iterator to a stateful function_ ([Issue #807](https://github.com/vorov2/dyalect/issues/807), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).
