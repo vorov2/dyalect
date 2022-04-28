@@ -4,6 +4,7 @@
   * Change: _Make method `Float.Inf` property and rename it to `Infinity`_ ([Issue #833](https://github.com/vorov2/dyalect/issues/833)).
   * Change: _Make methods `Min`, `Max` and `Default` properties_ ([Issue #832](https://github.com/vorov2/dyalect/issues/832)).
   * Change: _Convert `ByteArray.Position` method to property_ ([Issue #835](https://github.com/vorov2/dyalect/issues/835)).
+  * Change: _Optimize cloning behavior for tuples_ ([Issue #838](https://github.com/vorov2/dyalect/issues/838)).
   * Fix: _Regression: incorrect type name in some type related errors_ ([Issue #836](https://github.com/vorov2/dyalect/issues/836)).
 
 # 0.43.0

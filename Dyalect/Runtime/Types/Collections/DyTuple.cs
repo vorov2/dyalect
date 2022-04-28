@@ -1,5 +1,4 @@
 ﻿using Dyalect.Parser;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +11,7 @@ public class DyTuple : DyCollection
     public override string TypeName => nameof(Dy.Tuple);
     
     private readonly int length;
-    private readonly bool? mutable;
+    private bool? mutable;
     private readonly DyObject[] values;
 
     public override int Count => length;
@@ -26,6 +25,14 @@ public class DyTuple : DyCollection
     {
         this.length = length;
         this.values = values ?? throw new DyException("Unable to create a tuple with no values.");
+    }
+
+    public override DyObject Clone()
+    {
+        if (IsMutable())
+            return base.Clone();
+
+        return this;
     }
 
     public static DyTuple Create(params DyLabel[] labels) => new(labels, labels.Length);
@@ -190,9 +197,8 @@ public class DyTuple : DyCollection
         if (Count != values.Length)
             return CopyTupleWithLabels();
 
-        for (var i = 0; i < Count; i++)
-            if (values[i].IsMutable())
-                return CopyTupleWithLabels();
+        if (IsMutable())
+            return CopyTupleWithLabels();
 
         return values;
     }
@@ -206,6 +212,23 @@ public class DyTuple : DyCollection
 
         return arr;
     }
+
+    private bool IsMutable()
+    {
+        if (mutable is not null)
+            return mutable.Value;
+
+        for (var i = 0; i < Count; i++)
+            if (values[i].IsMutable())
+            {
+                mutable = true;
+                return true;
+            }
+
+        mutable = false;
+        return false;
+    }
+
     private DyObject[] CopyTupleWithLabels()
     {
         var arr = new DyObject[Count];
