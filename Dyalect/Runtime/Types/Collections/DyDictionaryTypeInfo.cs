@@ -17,13 +17,13 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
     public DyDictionaryTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
     {
         var len = ((DyDictionary)arg).Count;
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx)
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg)
     {
         var map = (DyDictionary)arg;
         var sb = new StringBuilder();
@@ -42,7 +42,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
         return new DyString(sb.ToString());
     }
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         var map = (DyDictionary)arg;
         var sb = new StringBuilder();
@@ -61,21 +61,21 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
         return new DyString(sb.ToString());
     }
 
-    protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx) =>
+    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>
         ((DyDictionary)self).ContainsKey(field) ? True : False;
 
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
 
-    protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+    protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         self.SetItem(index, value, ctx);
         return Nil;
     }
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
             Dy.Tuple => new DyTuple(((DyDictionary)self).GetArrayOfLabels()),
-            _ => base.CastOp(self, targetType, ctx)
+            _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
 

@@ -1,5 +1,5 @@
 # 0.44.0
-  *
+  * Change: _Mixin Bounded contains only static properties_ ([Issue #831](https://github.com/vorov2/dyalect/issues/831)).
 
 # 0.43.0
   * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).

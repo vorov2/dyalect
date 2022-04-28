@@ -20,10 +20,31 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     public DyArrayTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>
         DyInteger.Get(((DyArray)arg).Count);
 
-    private DyString ToStringOrLiteral(bool literal, DyObject arg, ExecutionContext ctx)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToStringOrLiteral(false, arg, ctx);
+
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOrLiteral(true, arg, ctx);
+
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right) =>
+        new DyArray(((DyCollection)left).Concat(ctx, right));
+
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
+
+    protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
+    {
+        self.SetItem(index, value, ctx);
+        return Nil;
+    }
+
+    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject item)
+    {
+        var arr = (DyArray)self;
+        return arr.IndexOf(ctx, item) != -1 ? True : False;
+    }
+
+    private static DyString ToStringOrLiteral(bool literal, DyObject arg, ExecutionContext ctx)
     {
         var arr = (DyArray)arg;
         var sb = new StringBuilder();
@@ -43,27 +64,6 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
 
         sb.Append(']');
         return new DyString(sb.ToString());
-    }
-
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => ToStringOrLiteral(false, arg, ctx);
-
-    protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOrLiteral(true, arg, ctx);
-
-    protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
-        new DyArray(((DyCollection)left).Concat(ctx, right));
-
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
-
-    protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
-    {
-        self.SetItem(index, value, ctx);
-        return Nil;
-    }
-
-    protected override DyObject ContainsOp(DyObject self, DyObject item, ExecutionContext ctx)
-    {
-        var arr = (DyArray)self;
-        return arr.IndexOf(ctx, item) != -1 ? True : False;
     }
     #endregion
 

@@ -740,7 +740,7 @@ partial class Builder
                 return;
             }
 
-        //This is a special optimization for the 'ToString', 'Has' and 'Len' methods
+        //This is a special optimization for the 'ToString', 'Has' and 'Length' methods
         //If we see that it is called directly we can emit a direct op code
         if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations
             && node.Target is DAccess meth && meth.Target is not null)

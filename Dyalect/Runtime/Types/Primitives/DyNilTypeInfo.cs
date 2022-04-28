@@ -12,20 +12,20 @@ internal sealed partial class DyNilTypeInfo : DyTypeInfo
     public override int ReflectedTypeId => Dy.Nil;
 
     #region Operations
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         left.TypeId == right.TypeId ? True : False;
 
-    protected override DyObject NotOp(DyObject arg, ExecutionContext ctx) => True;
+    protected override DyObject NotOp(ExecutionContext ctx, DyObject arg) => True;
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => new DyString(DyNil.Literal);
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => new DyString(DyNil.Literal);
 
-    protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOp(ctx, arg, DyNil.Instance);
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
             Dy.Bool => False,
-            _ => base.CastOp(self, targetType, ctx)
+            _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
 

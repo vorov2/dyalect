@@ -99,7 +99,7 @@
     assert([4, 5, 6], arr)
 #endregion
 
-#region "Methods: Len"
+#region "Methods: Length"
     var arr = [1,2,3,4]
     assert(4, arr.Length())
 #endregion

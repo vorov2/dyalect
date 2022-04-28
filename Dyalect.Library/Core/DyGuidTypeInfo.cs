@@ -17,10 +17,10 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
     #region Operations
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString("{" + arg.ToString().ToUpper() + "}");
 
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return False;
@@ -28,7 +28,7 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         return ((DyGuid)left).Value == ((DyGuid)right).Value ? True : False;
     }
 
-    protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -36,7 +36,7 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) > 0);
     }
 
-    protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject GteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -44,7 +44,7 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) >= 0);
     }
 
-    protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -52,7 +52,7 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) < 0);
     }
 
-    protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject LteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -60,14 +60,14 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) <= 0);
     }
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx)
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType)
     {
         if (targetType.ReflectedTypeId == Dy.String)
             return self.ToString(ctx);
         else if (targetType.ReflectedTypeId == DeclaringUnit.ByteArray.ReflectedTypeId)
             return ToByteArray(ctx, (DyGuid)self);
         else
-            return base.CastOp(self, targetType, ctx);
+            return base.CastOp(ctx, self, targetType);
     }
     #endregion
 

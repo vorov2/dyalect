@@ -18,7 +18,7 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
        SupportedOperations.Gt | SupportedOperations.Gte | SupportedOperations.Lt | SupportedOperations.Lte;
 
     #region Operations
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         if (format.Is(Dy.Nil))
             return new DyString(arg.ToString());
@@ -36,7 +36,7 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
         }
     }
 
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId != left.TypeId)
             return DyBool.False;
@@ -44,7 +44,7 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
         return ((T)left).TotalTicks == ((T)right).TotalTicks ? True : False;
     }
 
-    protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject NeqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId != left.TypeId)
             return DyBool.True;
@@ -52,7 +52,7 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
         return ((T)left).TotalTicks != ((T)right).TotalTicks ? True : False;
     }
 
-    protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId != left.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -60,7 +60,7 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
         return ((T)left).TotalTicks > ((T)right).TotalTicks ? True : False;
     }
 
-    protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId != left.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -68,7 +68,7 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
         return ((T)left).TotalTicks < ((T)right).TotalTicks ? True : False;
     }
 
-    protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject GteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId != left.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -76,7 +76,7 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
         return ((T)left).TotalTicks >= ((T)right).TotalTicks ? True : False;
     }
 
-    protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject LteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId != left.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -84,11 +84,11 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
         return ((T)left).TotalTicks <= ((T)right).TotalTicks ? True : False;
     }
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
        targetType.ReflectedTypeId switch
        {
            Dy.Integer => DyInteger.Get(((T)self).ToInteger()),
-           _ => base.CastOp(self, targetType, ctx)
+           _ => base.CastOp(ctx, self, targetType)
        };
     #endregion
 }

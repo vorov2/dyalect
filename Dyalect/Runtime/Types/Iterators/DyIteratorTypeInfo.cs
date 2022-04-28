@@ -17,13 +17,13 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     public override int ReflectedTypeId => Dy.Iterator;
 
     #region Operations
-    protected override DyObject LengthOp(DyObject self, ExecutionContext ctx)
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject self)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
         return ctx.HasErrors ? Nil : DyInteger.Get(seq.Count());
     }
 
-    protected override DyObject ToStringOp(DyObject self, DyObject format, ExecutionContext ctx)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject self, DyObject format)
     {
         var fn = self.GetIterator(ctx)!;
 
@@ -64,7 +64,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         return new DyString(sb.ToString());
     }
 
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
         if (!index.Is(Dy.Integer)) return Nil;
 
@@ -81,20 +81,20 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         }
     }
 
-    protected override DyObject ContainsOp(DyObject self, DyObject item, ExecutionContext ctx)
+    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject item)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
         return seq.Any(o => o.Equals(item, ctx)) ? True : False;
     }
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
             Dy.Tuple => new DyTuple(((DyIterator)self).ToEnumerable(ctx).ToArray()),
             Dy.Array => new DyArray(((DyIterator)self).ToEnumerable(ctx).ToArray()),
             Dy.Function => ((DyIterator)self).GetIteratorFunction(),
             Dy.Set => ToSet(ctx, self),
-            _ => base.CastOp(self, targetType, ctx)
+            _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
 

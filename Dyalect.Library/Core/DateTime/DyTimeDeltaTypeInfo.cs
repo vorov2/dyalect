@@ -15,9 +15,9 @@ public sealed partial class DyTimeDeltaTypeInfo : SpanTypeInfo<DyTimeDelta>
         base.GetSupportedOperations() | SupportedOperations.Add | SupportedOperations.Sub | SupportedOperations.Neg;
 
     #region Operations
-    protected override DyObject NegOp(DyObject arg, ExecutionContext ctx) => ((DyTimeDelta)arg).Negate();
+    protected override DyObject NegOp(ExecutionContext ctx, DyObject arg) => ((DyTimeDelta)arg).Negate();
 
-    protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId != left.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -25,7 +25,7 @@ public sealed partial class DyTimeDeltaTypeInfo : SpanTypeInfo<DyTimeDelta>
         return new DyTimeDelta(this, ((DyTimeDelta)left).TotalTicks + ((DyTimeDelta)right).TotalTicks);
     }
 
-    protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject SubOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId != left.TypeId)
             return ctx.InvalidType(left.TypeId, right);

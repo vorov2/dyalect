@@ -1,7 +1,5 @@
-﻿using Dyalect.Codegen;
-using Dyalect.Compiler;
+﻿using Dyalect.Compiler;
 using Dyalect.Debug;
-using System;
 using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
@@ -20,6 +18,8 @@ public abstract class DyTypeInfo : DyObject
 
     public override string ToString() => "{" + ReflectedTypeName + "}";
 
+    public override int GetHashCode() => HashCode.Combine(TypeId, ReflectedTypeId);
+
     public abstract string ReflectedTypeName { get; }
 
     public abstract int ReflectedTypeId { get; }
@@ -29,7 +29,7 @@ public abstract class DyTypeInfo : DyObject
     #region Binary Operations
     //x + y
     private DyFunction? add;
-    protected virtual DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected virtual DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId == Dy.String && left.TypeId != Dy.String)
             return ctx.RuntimeContext.String.Add(ctx, left, right);
@@ -40,111 +40,111 @@ public abstract class DyTypeInfo : DyObject
         if (add is not null)
             return add.BindToInstance(ctx, left).Call(ctx, right);
 
-        return AddOp(left, right, ctx);
+        return AddOp(ctx, left, right);
     }
 
     //x - y
     private DyFunction? sub;
-    protected virtual DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject SubOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ctx.OperationNotSupported(Builtins.Sub, left, right);
     public DyObject Sub(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (sub is not null)
             return sub.BindToInstance(ctx, left).Call(ctx, right);
-        return SubOp(left, right, ctx);
+        return SubOp(ctx, left, right);
     }
 
     //x * y
     private DyFunction? mul;
-    protected virtual DyObject MulOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject MulOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ctx.OperationNotSupported(Builtins.Mul, left, right);
     public DyObject Mul(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (mul is not null)
             return mul.BindToInstance(ctx, left).Call(ctx, right);
-        return MulOp(left, right, ctx);
+        return MulOp(ctx, left, right);
     }
 
     //x / y
     private DyFunction? div;
-    protected virtual DyObject DivOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject DivOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ctx.OperationNotSupported(Builtins.Div, left, right);
     public DyObject Div(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (div is not null)
             return div.BindToInstance(ctx, left).Call(ctx, right);
-        return DivOp(left, right, ctx);
+        return DivOp(ctx, left, right);
     }
 
     //x % y
     private DyFunction? rem;
-    protected virtual DyObject RemOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject RemOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ctx.OperationNotSupported(Builtins.Rem, left, right);
     public DyObject Rem(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (rem is not null)
             return rem.BindToInstance(ctx, left).Call(ctx, right);
-        return RemOp(left, right, ctx);
+        return RemOp(ctx, left, right);
     }
 
     //x <<< y
     private DyFunction? shl;
-    protected virtual DyObject ShiftLeftOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject ShiftLeftOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ctx.OperationNotSupported(Builtins.Shl, left, right);
     public DyObject ShiftLeft(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (shl is not null)
             return shl.BindToInstance(ctx, left).Call(ctx, right);
-        return ShiftLeftOp(left, right, ctx);
+        return ShiftLeftOp(ctx, left, right);
     }
 
     //x >>> y
     private DyFunction? shr;
-    protected virtual DyObject ShiftRightOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject ShiftRightOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ctx.OperationNotSupported(Builtins.Shr, left, right);
     public DyObject ShiftRight(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (shr is not null)
             return shr.BindToInstance(ctx, left).Call(ctx, right);
-        return ShiftRightOp(left, right, ctx);
+        return ShiftRightOp(ctx, left, right);
     }
 
     //x &&& y
     private DyFunction? and;
-    protected virtual DyObject AndOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject AndOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ctx.OperationNotSupported(Builtins.And, left, right);
     public DyObject And(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (and is not null)
             return and.BindToInstance(ctx, left).Call(ctx, right);
-        return AndOp(left, right, ctx);
+        return AndOp(ctx, left, right);
     }
 
     //x ||| y
     private DyFunction? or;
-    protected virtual DyObject OrOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject OrOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ctx.OperationNotSupported(Builtins.Or, left, right);
     public DyObject Or(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (or is not null)
             return or.BindToInstance(ctx, left).Call(ctx, right);
-        return OrOp(left, right, ctx);
+        return OrOp(ctx, left, right);
     }
 
     //x ^^^ y
     private DyFunction? xor;
-    protected virtual DyObject XorOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject XorOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ctx.OperationNotSupported(Builtins.Xor, left, right);
     public DyObject Xor(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (xor is not null)
             return xor.BindToInstance(ctx, left).Call(ctx, right);
-        return XorOp(left, right, ctx);
+        return XorOp(ctx, left, right);
     }
 
     //x == y
     private DyFunction? eq;
-    protected virtual DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ReferenceEquals(left, right) ? True : False;
     public DyObject Eq(ExecutionContext ctx, DyObject left, DyObject right)
     {
@@ -152,45 +152,45 @@ public abstract class DyTypeInfo : DyObject
             return eq.BindToInstance(ctx, left).Call(ctx, right);
         if (right.TypeId == Dy.Bool)
             return ReferenceEquals(left, right) ? True : False;
-        return EqOp(left, right, ctx);
+        return EqOp(ctx, left, right);
     }
 
     //x != y
     private DyFunction? neq;
-    protected virtual DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject NeqOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         Eq(ctx, left, right).IsFalse() ? True : False;
     public DyObject Neq(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (neq is not null)
             return neq.BindToInstance(ctx, left).Call(ctx, right);
-        return NeqOp(left, right, ctx);
+        return NeqOp(ctx, left, right);
     }
 
     //x > y
     private DyFunction? gt;
-    protected virtual DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ctx.OperationNotSupported(Builtins.Gt, left, right);
     public DyObject Gt(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (gt is not null)
             return gt.BindToInstance(ctx, left).Call(ctx, right);
-        return GtOp(left, right, ctx);
+        return GtOp(ctx, left, right);
     }
 
     //x < y
     private DyFunction? lt;
-    protected virtual DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected virtual DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ctx.OperationNotSupported(Builtins.Lt, left, right);
     public DyObject Lt(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (lt is not null)
             return lt.BindToInstance(ctx, left).Call(ctx, right);
-        return LtOp(left, right, ctx);
+        return LtOp(ctx, left, right);
     }
 
     //x >= y
     private DyFunction? gte;
-    protected virtual DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected virtual DyObject GteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         var ret = ReferenceEquals(Gt(ctx, left, right), True)
             || ReferenceEquals(Eq(ctx, left, right), True);
@@ -200,12 +200,12 @@ public abstract class DyTypeInfo : DyObject
     {
         if (gte is not null)
             return gte.BindToInstance(ctx, left).Call(ctx, right);
-        return GteOp(left, right, ctx);
+        return GteOp(ctx, left, right);
     }
 
     //x <= y
     private DyFunction? lte;
-    protected virtual DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected virtual DyObject LteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         var ret = ReferenceEquals(Lt(ctx, left, right), True)
             || ReferenceEquals(Eq(ctx, left, right), True);
@@ -215,72 +215,72 @@ public abstract class DyTypeInfo : DyObject
     {
         if (lte is not null)
             return lte.BindToInstance(ctx, left).Call(ctx, right);
-        return LteOp(left, right, ctx);
+        return LteOp(ctx, left, right);
     }
     #endregion
 
     #region Unary Operations
     //-x
     private DyFunction? neg;
-    protected virtual DyObject NegOp(DyObject arg, ExecutionContext ctx) =>
+    protected virtual DyObject NegOp(ExecutionContext ctx, DyObject arg) =>
         ctx.OperationNotSupported(Builtins.Neg, arg);
     public DyObject Neg(ExecutionContext ctx, DyObject arg)
     {
         if (neg is not null)
             return neg.BindToInstance(ctx, arg).Call(ctx);
-        return NegOp(arg, ctx);
+        return NegOp(ctx, arg);
     }
 
     //+x
     private DyFunction? plus;
-    protected virtual DyObject PlusOp(DyObject arg, ExecutionContext ctx) =>
+    protected virtual DyObject PlusOp(ExecutionContext ctx, DyObject arg) =>
         ctx.OperationNotSupported(Builtins.Plus, arg);
     public DyObject Plus(ExecutionContext ctx, DyObject arg)
     {
         if (plus is not null)
             return plus.BindToInstance(ctx, arg).Call(ctx);
-        return PlusOp(arg, ctx);
+        return PlusOp(ctx, arg);
     }
 
     //!x
     private DyFunction? not;
-    protected virtual DyObject NotOp(DyObject arg, ExecutionContext ctx) =>
+    protected virtual DyObject NotOp(ExecutionContext ctx, DyObject arg) =>
         arg.IsFalse() ? True : False;
     public DyObject Not(ExecutionContext ctx, DyObject arg)
     {
         if (not is not null)
             return not.BindToInstance(ctx, arg).Call(ctx);
-        return NotOp(arg, ctx);
+        return NotOp(ctx, arg);
     }
 
     //~x
     private DyFunction? bitnot;
-    protected virtual DyObject BitwiseNotOp(DyObject arg, ExecutionContext ctx) =>
+    protected virtual DyObject BitwiseNotOp(ExecutionContext ctx, DyObject arg) =>
         ctx.OperationNotSupported(Builtins.BitNot, arg);
     public DyObject BitwiseNot(ExecutionContext ctx, DyObject arg)
     {
         if (bitnot is not null)
             return bitnot.BindToInstance(ctx, arg).Call(ctx);
-        return BitwiseNotOp(arg, ctx);
+        return BitwiseNotOp(ctx, arg);
     }
 
     //x.Length
     private DyFunction? len;
-    protected virtual DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+    protected virtual DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>
         ctx.OperationNotSupported(Builtins.Len, arg);
     public DyObject Length(ExecutionContext ctx, DyObject arg)
     {
         if (len is not null)
             return len.BindToInstance(ctx, arg).Call(ctx);
-        return LengthOp(arg, ctx);
+        return LengthOp(ctx, arg);
     }
 
     //x.ToString
     private DyFunction? tos;
-    protected virtual DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => new DyString(arg.ToString());
+    protected virtual DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => new DyString(arg.ToString());
     internal string? ToStringDirect(ExecutionContext ctx, DyObject arg)
     {
-        var res = ToStringOp(arg, Nil, ctx);
+        var res = ToStringOp(ctx, arg, Nil);
 
         if (ctx.HasErrors)
             return null;
@@ -301,7 +301,7 @@ public abstract class DyTypeInfo : DyObject
             return retval.TypeId == Dy.String ? retval : DyString.Empty;
         }
 
-        return ToStringOp(arg, Nil, ctx);
+        return ToStringOp(ctx, arg, Nil);
     }
     public DyObject ToStringWithFormat(ExecutionContext ctx, DyObject arg, DyObject format)
     {
@@ -312,15 +312,15 @@ public abstract class DyTypeInfo : DyObject
             return retval.TypeId == Dy.String ? retval : DyString.Empty;
         }
 
-        return ToStringOp(arg, format, ctx);
+        return ToStringOp(ctx, arg, format);
     }
 
     //x.ToLiteral
     private DyFunction? tol;
-    protected virtual DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
+    protected virtual DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOp(ctx, arg, DyNil.Instance);
     internal string? ToLiteralDirect(ExecutionContext ctx, DyObject arg)
     {
-        var res = ToLiteralOp(arg, ctx);
+        var res = ToLiteralOp(ctx, arg);
 
         if (ctx.HasErrors)
             return null;
@@ -341,39 +341,46 @@ public abstract class DyTypeInfo : DyObject
             return retval.Is(Dy.String) ? retval : DyString.Empty;
         }
 
-        return ToLiteralOp(arg, ctx);
+        return ToLiteralOp(ctx, arg);
     }
+
+    //Clone
+    private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();
+
+    //Iterate
+    private DyObject GetIterator(ExecutionContext ctx, DyObject self) => self is IEnumerable<DyObject> en
+        ? DyIterator.Create(en) : ctx.OperationNotSupported(Builtins.Iterator, self);
     #endregion
 
     #region Other Operations
     //x[y]
     private DyFunction? get;
-    protected virtual DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
-    internal DyObject GetDirect(ExecutionContext ctx, DyObject self, DyObject index) => GetOp(self, index, ctx);
+    protected virtual DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
+    internal DyObject GetDirect(ExecutionContext ctx, DyObject self, DyObject index) => GetOp(ctx, self, index);
     public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
     {
         if (get is not null)
             return get.BindToInstance(ctx, self).Call(ctx, index);
 
-        return GetOp(self, index, ctx);
+        return GetOp(ctx, self, index);
     }
 
     //x[y] = z
     private DyFunction? set;
-    protected virtual DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx) =>
+    protected virtual DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) =>
         ctx.OperationNotSupported(Builtins.Set, self);
-    internal DyObject SetDirect(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) => SetOp(self, index, value, ctx);
+    internal DyObject SetDirect(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) => SetOp(ctx, self, index, value);
     public DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         if (set is not null)
             return set.BindToInstance(ctx, self).Call(ctx, index, value);
 
-        return SetOp(self, index, value, ctx);
+        return SetOp(ctx, self, index, value);
     }
 
     //as
     private readonly Dictionary<int, DyFunction> conversions = new();
-    protected virtual DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+    protected virtual DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
             Dy.Bool => self.IsFalse() ? False : True,
@@ -395,7 +402,7 @@ public abstract class DyTypeInfo : DyObject
         if (conversions.TryGetValue(ti.ReflectedTypeId, out var func))
             return func.BindToInstance(ctx, self).Call(ctx);
 
-        return CastOp(self, (DyTypeInfo)targetType, ctx);
+        return CastOp(ctx, self, (DyTypeInfo)targetType);
     }
     public void SetCastFunction(DyTypeInfo type, DyFunction func)
     {
@@ -405,14 +412,14 @@ public abstract class DyTypeInfo : DyObject
 
     //Contains
     private DyFunction? contains;
-    protected virtual DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx) =>
+    protected virtual DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>
         ctx.OperationNotSupported(Builtins.Contains, self);
     public DyObject Contains(ExecutionContext ctx, DyObject self, DyObject field)
     {
         if (contains is not null)
             return contains.BindToInstance(ctx, self).Call(ctx, field);
 
-        return ContainsOp(self, field, ctx);
+        return ContainsOp(ctx, self, field);
     }
     #endregion
 
@@ -502,7 +509,7 @@ public abstract class DyTypeInfo : DyObject
 
     #region Instance
     protected readonly Dictionary<HashString, DyFunction> Members = new();
-
+    
     internal virtual bool HasInstanceMember(DyObject self, HashString name, ExecutionContext ctx) =>
         LookupInstanceMember(self, GetBuiltinName((string)name), ctx) is not null;
 
@@ -528,43 +535,6 @@ public abstract class DyTypeInfo : DyObject
 
         return value;
     }
-
-    private readonly HashSet<int> mixins = new();
-    internal void Mixin(ExecutionContext ctx, DyTypeInfo typeInfo)
-    {
-        if (mixins.Contains(typeInfo.ReflectedTypeId))
-            return;
-
-        foreach (var kv in typeInfo.Members)
-        {
-            SetBuiltin(ctx, (string)kv.Key, kv.Value);
-            Members[kv.Key] = kv.Value;
-        }
-
-        mixins.Add(typeInfo.ReflectedTypeId);
-        typeInfo.Closed = true;
-    }
-
-    protected void AddMixin(int typeId) => mixins.Add(typeId);
-    protected void AddMixin(int typeId1, int typeId2)
-    {
-        mixins.Add(typeId1);
-        mixins.Add(typeId2);
-    }
-    protected void AddMixin(int typeId1, int typeId2, int typeId3)
-    {
-        mixins.Add(typeId1);
-        mixins.Add(typeId2);
-        mixins.Add(typeId3);
-    }
-
-    protected void AddDefaultMixin1(string name) =>
-        Members.Add(name, new DyUnaryFunction(name, (ctx, _) => ctx.NotImplemented(name)));
-
-    protected void AddDefaultMixin2(string name, string p1) =>
-        Members.Add(name, new DyBinaryFunction(name, (ctx, _, _) => ctx.NotImplemented(name), p1));
-
-    internal bool CheckType(DyTypeInfo typeInfo) => ReflectedTypeId == typeInfo.ReflectedTypeId || mixins.Contains(typeInfo.ReflectedTypeId);
 
     internal virtual void SetInstanceMember(ExecutionContext ctx, HashString name, DyFunction func)
     {
@@ -665,13 +635,14 @@ public abstract class DyTypeInfo : DyObject
         
         return HasInstanceMember(self, name, ctx) ? True : False;
     }
-    private DyFunction Ternary(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par par1, Par par2) =>
+
+    private static DyFunction Ternary(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par par1, Par par2) =>
         new DyTernaryFunction(name, fun, par1, par2);
 
-    private DyFunction Binary(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par par = default) =>
+    private static DyFunction Binary(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par par = default) =>
         new DyBinaryFunction(name, fun, par.Name is null ? new Par("other") : par);
-    
-    private DyFunction Unary(string name, Func<ExecutionContext, DyObject, DyObject> fun) =>
+
+    private static DyFunction Unary(string name, Func<ExecutionContext, DyObject, DyObject> fun) =>
         new DyUnaryFunction(name, fun);
 
     private DyFunction? InitializeInstanceMembers(DyObject self, string name, ExecutionContext ctx) =>
@@ -689,8 +660,8 @@ public abstract class DyTypeInfo : DyObject
             Builtins.Xor => Support(self, SupportedOperations.Xor) ? Binary(name, Xor) : null,
             Builtins.Eq => Binary(name, Eq),
             Builtins.Neq => Binary(name, Neq),
-            Builtins.Gt => Support(self, SupportedOperations.Gt) ?   Binary(name, Gt) : null,
-            Builtins.Lt => Support(self, SupportedOperations.Lt) ?   Binary(name, Lt) : null,
+            Builtins.Gt => Support(self, SupportedOperations.Gt) ? Binary(name, Gt) : null,
+            Builtins.Lt => Support(self, SupportedOperations.Lt) ? Binary(name, Lt) : null,
             Builtins.Gte => Support(self, SupportedOperations.Gte) ? Binary(name, Gte) : null,
             Builtins.Lte => Support(self, SupportedOperations.Lte) ? Binary(name, Lte) : null,
             Builtins.Neg => Support(self, SupportedOperations.Neg) ? Unary(name, Neg) : null,
@@ -710,7 +681,7 @@ public abstract class DyTypeInfo : DyObject
             _ => InitializeInstanceMember(self, name, ctx)
         };
 
-    private string GetBuiltinName(string name) =>
+    private static string GetBuiltinName(string name) =>
         name switch
         {
             "+" => Builtins.Add,
@@ -737,10 +708,48 @@ public abstract class DyTypeInfo : DyObject
     protected virtual DyFunction? InitializeInstanceMember(DyObject self, string name, ExecutionContext ctx) => null;
     #endregion
 
-    private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();
+    #region Mixins
+    private readonly HashSet<int> mixins = new();
+    internal void Mixin(ExecutionContext ctx, DyTypeInfo typeInfo)
+    {
+        if (mixins.Contains(typeInfo.ReflectedTypeId))
+            return;
 
-    private DyObject GetIterator(ExecutionContext ctx, DyObject self) => self is IEnumerable<DyObject> en 
-        ? DyIterator.Create(en) : ctx.OperationNotSupported(Builtins.Iterator, self);
+        foreach (var kv in typeInfo.Members)
+        {
+            SetBuiltin(ctx, (string)kv.Key, kv.Value);
+            Members[kv.Key] = kv.Value;
+        }
 
-    public override int GetHashCode() => HashCode.Combine(TypeId, TypeId, ReflectedTypeName);
+        mixins.Add(typeInfo.ReflectedTypeId);
+        typeInfo.Closed = true;
+    }
+
+    protected void AddMixin(int typeId) => mixins.Add(typeId);
+
+    protected void AddMixin(int typeId1, int typeId2)
+    {
+        mixins.Add(typeId1);
+        mixins.Add(typeId2);
+    }
+
+    protected void AddMixin(int typeId1, int typeId2, int typeId3)
+    {
+        mixins.Add(typeId1);
+        mixins.Add(typeId2);
+        mixins.Add(typeId3);
+    }
+
+    protected void AddDefaultMixin1(string name) =>
+        Members.Add(name, new DyUnaryFunction(name, (ctx, _) => ctx.NotImplemented(name)));
+
+    protected void AddDefaultMixin2(string name, string p1) =>
+        Members.Add(name, new DyBinaryFunction(name, (ctx, _, _) => ctx.NotImplemented(name), p1));
+
+    protected void AddDefaultPropertyMixin(string name) =>
+        Members.Add(name, new DyUnaryFunction(name, (ctx, _) => ctx.NotImplemented(name), isPropertyGetter: true));
+
+    internal bool CheckType(DyTypeInfo typeInfo) =>
+        ReflectedTypeId == typeInfo.ReflectedTypeId || mixins.Contains(typeInfo.ReflectedTypeId);
+    #endregion
 }

@@ -16,13 +16,13 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
     #region Operations
     public DyStringBuilder Create(StringBuilder sb) => new(this, sb);
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString(((DyStringBuilder)arg).ToString());
 
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>
         DyInteger.Get(((DyStringBuilder)arg).Builder.Length);
 
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         var a = ((DyStringBuilder)left).Builder;
         var b = ((DyStringBuilder)right).Builder;

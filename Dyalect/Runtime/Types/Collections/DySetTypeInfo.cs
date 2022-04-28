@@ -18,27 +18,27 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
     public DySetTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         var self = (DySet)left;
         return self.Equals(ctx, right) ? True : False;
     }
 
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
     {
         var self = (DySet)arg;
         return DyInteger.Get(self.Count);
     }
 
-    protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
+    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
         var set = (DySet)self;
         return set.Contains(field) ? True : False;
     }
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => ToLiteralOrString(arg, ctx, literal: false);
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToLiteralOrString(arg, ctx, literal: false);
 
-    protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToLiteralOrString(arg, ctx, literal: true);
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToLiteralOrString(arg, ctx, literal: true);
 
     private DyObject ToLiteralOrString(DyObject arg, ExecutionContext ctx, bool literal)
     {
@@ -61,12 +61,12 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
         return new DyString(sb.ToString());
     }
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
             Dy.Array => new DyArray(((DySet)self).ToArray()),
             Dy.Tuple => new DyTuple(((DySet)self).ToArray()),
-            _ => base.CastOp(self, targetType, ctx)
+            _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
 

@@ -9,7 +9,7 @@ internal sealed class DyMetaTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.TypeInfo;
 
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
         if (index.TypeId == Dy.String)
             return index.GetString() switch
@@ -21,6 +21,6 @@ internal sealed class DyMetaTypeInfo : DyTypeInfo
         return ctx.IndexOutOfRange();
     }
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString("TypeInfo<" + ((DyTypeInfo)arg).ReflectedTypeName + ">");
 }

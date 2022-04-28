@@ -19,7 +19,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
     public override int ReflectedTypeId => Dy.Interop;
 
     #region Operations
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString(arg.ToString()!);
 
     internal override void SetStaticMember(ExecutionContext ctx, HashString name, DyFunction func) => ctx.InvalidOperation();

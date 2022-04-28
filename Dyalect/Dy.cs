@@ -24,7 +24,6 @@ public static partial class Dy
     public const int Number = 19;
     public const int Collection = 20;
     public const int Comparable = 21;
-    public const int Bounded = 22;
 
     internal static FastList<DyTypeInfo> GetAll()
     {

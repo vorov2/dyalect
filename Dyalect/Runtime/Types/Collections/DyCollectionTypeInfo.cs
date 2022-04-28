@@ -6,14 +6,14 @@ namespace Dyalect.Runtime.Types;
 internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
 {
     #region Operations
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
             Dy.Tuple => new DyTuple(((DyCollection)self).Trim()),
             Dy.Array => new DyArray(((DyCollection)self).Trim()),
             Dy.Iterator => DyIterator.Create((DyCollection)self),
             Dy.Set => new DySet(new HashSet<DyObject>(((DyCollection)self).Trim())),
-            _ => base.CastOp(self, targetType, ctx)
+            _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
 

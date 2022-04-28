@@ -20,20 +20,20 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     public DyTupleTypeInfo() => AddMixin(Dy.Collection, Dy.Comparable);
 
     #region Operations
-    protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         new DyTuple(((DyCollection)left).Concat(ctx, right));
 
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
     {
         var len = ((DyTuple)arg).Count;
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => ((DyTuple)arg).ToString(false, ctx);
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ((DyTuple)arg).ToString(false, ctx);
 
-    protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ((DyTuple)arg).ToString(true, ctx);
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ((DyTuple)arg).ToString(true, ctx);
 
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return False;
@@ -58,11 +58,11 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return True;
     }
 
-    protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(true, left, right, ctx);
+    protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right) => Compare(true, left, right, ctx);
 
-    protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(false, left, right, ctx);
+    protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right) => Compare(false, left, right, ctx);
 
-    protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
+    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
         if (!field.Is(ctx, Dy.String))
             return Nil;
@@ -105,9 +105,9 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return False;
     }
 
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
 
-    protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+    protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         self.SetItem(index, value, ctx);
         return Nil;

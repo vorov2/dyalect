@@ -18,14 +18,14 @@ public sealed partial class DyByteArrayTypeInfo : DyForeignTypeInfo
     #region Operations
     public DyByteArray Create(byte[]? buffer) => new(this, buffer);
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         var buffer = ((DyByteArray)arg).GetBytes();
         var strs = buffer.Select(b => "0x" + b.ToString("X").PadLeft(2, '0')).ToArray();
         return new DyString("{" + string.Join(",", strs) + "}");
     }
 
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>
         DyInteger.Get(((DyByteArray)arg).Count);
     #endregion
 

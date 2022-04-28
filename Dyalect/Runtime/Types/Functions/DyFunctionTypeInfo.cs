@@ -13,13 +13,13 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
     public override int ReflectedTypeId => Dy.Function;
 
     #region Operations
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString(arg.ToString());
 
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? True : False;
 
-    protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId == Dy.String)
             return ctx.RuntimeContext.String.Add(ctx, left, right);
