@@ -7,22 +7,26 @@ public sealed class RuntimeContext
 {
     internal RuntimeContext(UnitComposition composition)
     {
-        Composition = composition;
         Types = Dy.GetAll();
         String = (DyStringTypeInfo)Types[Dy.String];
         Char = (DyCharTypeInfo)Types[Dy.Char];
         Nil = (DyNilTypeInfo)Types[Dy.Nil];
         Tuple = (DyTupleTypeInfo)Types[Dy.Tuple];
         Array = (DyArrayTypeInfo)Types[Dy.Array];
+        Composition = composition;
         Units = new DyObject[Composition.Units.Length][];
         Layouts = Composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
     }
 
-    public void Refresh()
+    public void Refresh(UnitComposition composition)
     {
+        Composition = composition;
+
+        //Take into account new modules
         var newUnits = new DyObject[Composition.Units.Length][];
         for (var i = 0; i < Units.Length; i++)
             newUnits[i] = Units[i];
+
         Units = newUnits;
         Layouts = Composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
     }
@@ -39,5 +43,5 @@ public sealed class RuntimeContext
 
     internal MemoryLayout[][] Layouts { get; private set; }
 
-    public UnitComposition Composition { get; }
+    public UnitComposition Composition { get; private set; }
 }
