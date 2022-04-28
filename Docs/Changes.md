@@ -10,6 +10,7 @@
   * Fix: _Interactive console crush when invoking a function_ ([Issue #828](https://github.com/vorov2/dyalect/issues/828)).
   * Fix: _`Time` returns incorrect values for `Min` and `Max`_ ([Issue #824](https://github.com/vorov2/dyalect/issues/824)).
   * Fix: _Function comparison_ ([Issue #821](https://github.com/vorov2/dyalect/issues/821)).
+  * Fix: _`Drive.TotalFreeSpace` property is incorrectly named `Drive.TotalFreeSize`_ ([Issue #822](https://github.com/vorov2/dyalect/issues/822)).
 
 # 0.42.1
   * Change: _Runtime type system refactoring._
