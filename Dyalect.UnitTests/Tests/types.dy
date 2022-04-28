@@ -21,6 +21,15 @@
     assert("Foo(x: 1, y: 2, z: 3)", str)
 #endregion
 
+#region "Statics"
+    try {
+        Integer.ToString()
+        assert(got: false)
+    } catch {
+        @OperationNotSupported => assert(got: true)
+    }
+#endregion
+
 #region "Generated members"
     type Foo(x)
     var f = Foo(42)
