@@ -36,10 +36,10 @@ public sealed partial class DyByteArrayTypeInfo : DyForeignTypeInfo
     internal static void Write(ExecutionContext ctx, DyByteArray self, DyObject value) => self.Write(ctx, value);
 
     [InstanceMethod]
-    internal static int Position(DyByteArray self) => self.Position;
-
-    [InstanceMethod]
     internal static void Reset(DyByteArray self) => self.Reset();
+
+    [InstanceProperty]
+    internal static int Position(DyByteArray self) => self.Position;
 
     [StaticMethod]
     internal static DyObject Concat(ExecutionContext ctx, DyByteArray first, DyByteArray second)

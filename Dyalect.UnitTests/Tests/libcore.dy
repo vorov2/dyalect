@@ -222,11 +222,11 @@ fox is the red fox.]>
     bar.Write("Coed")
     bar.Write('D')
     assert(24, bar.Read(Integer))
-    assert(8, bar.Position())
+    assert(8, bar.Position)
     assert("foo", bar.Read(String))
-    assert(15, bar.Position())
+    assert(15, bar.Position)
     assert("Coed", bar.Read(String))
-    assert(23, bar.Position())
+    assert(23, bar.Position)
     assert('D', bar.Read(Char))
 #endregion
 
