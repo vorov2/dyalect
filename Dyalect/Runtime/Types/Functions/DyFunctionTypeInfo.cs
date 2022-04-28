@@ -69,6 +69,9 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
         return new CompositionContainer(f1, f2);
     }
 
+    [InstanceProperty("Object")]
+    internal static DyObject GetObject(DyFunction self) => self.Self ?? Nil;
+
     [InstanceProperty("Name")]
     internal static string GetName(DyFunction self) => self.FunctionName;
 
