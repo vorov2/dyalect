@@ -745,7 +745,7 @@ partial class Builder
         if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations
             && node.Target is DAccess meth && meth.Target is not null)
         {
-            if (meth.Name == Builtins.ToStr && node.Arguments.Count is 0)
+            if (meth.Name == Builtins.ToString && node.Arguments.Count is 0)
             {
                 Build(meth.Target, newHints.Append(Push), ctx);
                 AddLinePragma(node);
@@ -754,7 +754,7 @@ partial class Builder
                 return;
             }
 
-            if (meth.Name == Builtins.Len && node.Arguments.Count is 0)
+            if (meth.Name == Builtins.Length && node.Arguments.Count is 0)
             {
                 Build(meth.Target, newHints.Append(Push), ctx);
                 AddLinePragma(node);

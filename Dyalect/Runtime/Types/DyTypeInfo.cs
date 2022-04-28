@@ -16,7 +16,7 @@ public abstract class DyTypeInfo : DyObject
 
     public override object ToObject() => this;
 
-    public override string ToString() => "{" + ReflectedTypeName + "}";
+    public override string ToString() => $"TypeInfo<{ReflectedTypeName}>";
 
     public override int GetHashCode() => HashCode.Combine(TypeId, ReflectedTypeId);
 
@@ -267,7 +267,7 @@ public abstract class DyTypeInfo : DyObject
     //x.Length
     private DyFunction? len;
     protected virtual DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>
-        ctx.OperationNotSupported(Builtins.Len, arg);
+        ctx.OperationNotSupported(Builtins.Length, arg);
     public DyObject Length(ExecutionContext ctx, DyObject arg)
     {
         if (len is not null)
@@ -550,8 +550,8 @@ public abstract class DyTypeInfo : DyObject
         {
             var set = Builtins.GetSetterName(name);
 
-            if ((set == Builtins.Len & (GetSupportedOperations() & SupportedOperations.Len) == SupportedOperations.Len)
-                || set == Builtins.ToStr || (Members.TryGetValue(set, out var get) && !get.Auto))
+            if ((set == Builtins.Length & (GetSupportedOperations() & SupportedOperations.Len) == SupportedOperations.Len)
+                || set == Builtins.ToString || (Members.TryGetValue(set, out var get) && !get.Auto))
             {
                 ctx.InvalidOverload(set);
                 return;
@@ -603,12 +603,12 @@ public abstract class DyTypeInfo : DyObject
                     ctx.InvalidOverload(name);
                 contains = func;
                 break;
-            case Builtins.Len:
+            case Builtins.Length:
                 if (func is not null && func.Auto)
                     ctx.InvalidOverload(name);
                 len = func;
                 break;
-            case Builtins.ToStr:
+            case Builtins.ToString:
                 if (func is not null && func.Auto)
                     ctx.InvalidOverload(name);
                 tos = func; 
@@ -670,8 +670,8 @@ public abstract class DyTypeInfo : DyObject
             Builtins.Plus => Support(self, SupportedOperations.Plus) ? Unary(name, Plus) : null,
             Builtins.Get => Support(self, SupportedOperations.Get) ? Binary(name, Get, "index") : null,
             Builtins.Set => Support(self, SupportedOperations.Set) ? Ternary(name, Set, "index", "value") : null,
-            Builtins.Len => Support(self, SupportedOperations.Len) ? Unary(name, Length) : null,
-            Builtins.ToStr => Binary(name, ToStringWithFormat, new Par("format", Nil)),
+            Builtins.Length => Support(self, SupportedOperations.Len) ? Unary(name, Length) : null,
+            Builtins.ToString => Binary(name, ToStringWithFormat, new Par("format", Nil)),
             Builtins.ToLit => Support(self, SupportedOperations.Lit) ? Unary(name, ToLiteral) : null,
             Builtins.Iterator => Support(self, SupportedOperations.Iter) ? Unary(name, GetIterator) : null,
             Builtins.Clone => Unary(name, Clone),

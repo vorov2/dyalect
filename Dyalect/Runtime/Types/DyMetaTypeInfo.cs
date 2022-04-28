@@ -1,4 +1,6 @@
-﻿namespace Dyalect.Runtime.Types;
+﻿using Dyalect.Compiler;
+
+namespace Dyalect.Runtime.Types;
 
 internal sealed class DyMetaTypeInfo : DyTypeInfo
 {
@@ -21,6 +23,23 @@ internal sealed class DyMetaTypeInfo : DyTypeInfo
         return ctx.IndexOutOfRange();
     }
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
-        new DyString("TypeInfo<" + ((DyTypeInfo)arg).ReflectedTypeName + ">");
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
+    {
+        var ret = ctx.RuntimeContext.Types[((DyTypeInfo)arg).ReflectedTypeId].GetStaticMember(Builtins.ToString, ctx);
+
+        if (ctx.HasErrors || ret is null)
+            return Nil;
+
+        return ret.Invoke(ctx);
+    }
+
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
+    {
+        var ret = ctx.RuntimeContext.Types[((DyTypeInfo)arg).ReflectedTypeId].GetStaticMember(Builtins.Length, ctx);
+
+        if (ctx.HasErrors || ret is null)
+            return Nil;
+
+        return ret.Invoke(ctx);
+    }
 }

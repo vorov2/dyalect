@@ -13,6 +13,6 @@ internal sealed class DyCollTypeInfo : DyTypeInfo
     {
         Closed = true;
         AddDefaultMixin2(Builtins.Get, "index");
-        AddDefaultMixin1(Builtins.Len);
+        AddDefaultMixin1(Builtins.Length);
     }
 }

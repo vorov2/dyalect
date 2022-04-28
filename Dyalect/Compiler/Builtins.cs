@@ -64,8 +64,8 @@ internal static class Builtins
     public const string BitOr       = "op_bitor";
     public const string Get         = "op_get";
     public const string Set         = "op_set";
-    public const string Len         = "Length";
-    public const string ToStr       = "ToString";
+    public const string Length         = "Length";
+    public const string ToString       = "ToString";
     public const string ToLit       = "ToLiteral";
     public const string ToTuple     = "ToTuple";
     public const string ToArray     = "ToArray";

@@ -392,7 +392,7 @@ partial class Builder
         if (!onlyLabels)
         {
             cw.Dup(); //2 objs
-            cw.HasMember(Builtins.Len);
+            cw.HasMember(Builtins.Length);
             cw.Brfalse(skip); //1 obj left to pop
         }
 
