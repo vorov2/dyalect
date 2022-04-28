@@ -13,6 +13,7 @@
   * Fix: _`Drive.TotalFreeSpace` property is incorrectly named `Drive.TotalFreeSize`_ ([Issue #822](https://github.com/vorov2/dyalect/issues/822)).
   * Fix: _`Iterator.Shuffle` can return the same sequence as before in rare cases_ ([Issue #820](https://github.com/vorov2/dyalect/issues/820)).
   * Fix: _Invalid names of parameters for `SetCursorPosition` function_ ([Issue #823](https://github.com/vorov2/dyalect/issues/823)).
+  * Fix: _Associativity of operator `<<`_ ([Issue #829](https://github.com/vorov2/dyalect/issues/829), [docs](https://github.com/vorov2/dyalect/wiki/Standard-operators#apps)).
 
 # 0.42.1
   * Change: _Runtime type system refactoring._
