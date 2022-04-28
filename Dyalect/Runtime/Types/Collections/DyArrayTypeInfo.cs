@@ -1,5 +1,4 @@
 ﻿using Dyalect.Codegen;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -143,7 +142,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod(Method.RemoveRangeAt)]
-    internal static void RemoveRangeAt(ExecutionContext ctx, DyArray self, int index, [Default]int? count)
+    internal static void RemoveRangeAt(ExecutionContext ctx, DyArray self, int index, int? count = null)
     {
         if (index < 0 || index >= self.Count)
         {
@@ -198,7 +197,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     internal static int LastIndexOf(ExecutionContext ctx, DyArray self, DyObject value) => self.LastIndexOf(ctx, value);
 
     [InstanceMethod(Method.Sort)]
-    internal static void SortBy(ExecutionContext ctx, DyArray self, [Default]DyObject comparer)
+    internal static void SortBy(ExecutionContext ctx, DyArray self, DyObject? comparer = null)
     {
         var sortComparer = new SortComparer(comparer, ctx);
         self.Compact();
@@ -223,7 +222,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
-    internal static void Compact(ExecutionContext ctx, DyArray self, [Default]DyObject predicate)
+    internal static void Compact(ExecutionContext ctx, DyArray self, DyObject? predicate = null)
     {
         if (self.Count == 0)
             return;
@@ -262,7 +261,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     }
 
     [StaticMethod(Method.Array)]
-    internal static DyObject New([VarArg]DyObject[] values) => new DyArray(values);
+    internal static DyObject New(params DyObject[] values) => new DyArray(values);
 
     [StaticMethod(Method.Sort)]
     internal static DyObject StaticSortBy(ExecutionContext ctx, DyObject values, DyObject comparer)
@@ -282,7 +281,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     }
 
     [StaticMethod]
-    internal static DyObject Empty(ExecutionContext ctx, int count, [Default][ParameterName("default")]DyObject def)
+    internal static DyObject Empty(ExecutionContext ctx, int count, [ParameterName("default")] DyObject? def = null)
     {
         var arr = new DyObject[count];
         def ??= Nil;
@@ -316,7 +315,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
         new DyArray(DyCollection.ConcatValues(ctx, values));
 
     [StaticMethod]
-    internal static DyObject Copy(ExecutionContext ctx, DyArray source, [Default(0)]int index, [Default]DyArray destination, [Default(0)]int destinationIndex, [Default]int? count)
+    internal static DyObject Copy(ExecutionContext ctx, DyArray source, int index = 0, DyArray? destination = null, int destinationIndex = 0, int? count = null)
     {
         if (count is null)
             count = source.Count;

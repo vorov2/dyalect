@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
 public class DyArray : DyCollection, IEnumerable<DyObject>
 {
-    private const int DEFAULT_SIZE = 4;
+    private const int DefaultSize = 4;
 
     private DyObject[] values;
 
@@ -23,9 +22,11 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
     {
         if (Count == values.Length)
             return;
+
         var arr = new DyObject[Count];
         Array.Copy(values, arr, Count);
         values = arr;
+        Version++;
     }
 
     public void RemoveRange(int start, int count)
@@ -41,7 +42,7 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
     {
         if (Count == values.Length)
         {
-            var dest = new DyObject[values.Length == 0 ? DEFAULT_SIZE : values.Length * 2];
+            var dest = new DyObject[values.Length == 0 ? DefaultSize : values.Length * 2];
             Array.Copy(values, 0, dest, 0, Count);
             values = dest;
         }
@@ -70,20 +71,20 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
         values[index] = item;
         Count++;
         Version++;
-    }
 
-    private void EnsureSize(int size)
-    {
-        if (size > values.Length)
+        void EnsureSize(int size)
         {
-            var exp = values.Length * 2;
+            if (size > values.Length)
+            {
+                var exp = values.Length * 2;
 
-            if (size > exp)
-                exp = size;
+                if (size > exp)
+                    exp = size;
 
-            var arr = new DyObject[exp];
-            Array.Copy(values, arr, values.Length);
-            values = arr;
+                var arr = new DyObject[exp];
+                Array.Copy(values, arr, values.Length);
+                values = arr;
+            }
         }
     }
 
@@ -119,7 +120,7 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
     public void Clear()
     {
         Count = 0;
-        values = new DyObject[DEFAULT_SIZE];
+        values = new DyObject[DefaultSize];
         Version++;
     }
 
