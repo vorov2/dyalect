@@ -183,7 +183,7 @@ namespace Dyalect
                 if ((idx = command.IndexOf(' ')) != -1)
                 {
                     var str = command;
-                    command = command.Substring(0, idx);
+                    command = command[..idx];
                     argument = str.Substring(idx + 1, str.Length - idx - 1);
                 }
 

@@ -116,5 +116,5 @@ internal class DyNativeFunction : DyFunction
     }
 
     internal override bool Equals(DyFunction func) => func is DyNativeFunction m
-        && m.UnitId == UnitId && m.FunctionId == FunctionId;
+        && m.UnitId == UnitId && m.FunctionId == FunctionId && (ReferenceEquals(Self, m.Self) || (m.Self is not null && m.Self.Equals(Self)));
 }

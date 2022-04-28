@@ -97,7 +97,7 @@ public abstract class DyCollection : DyEnumerable
 
     public override bool Equals(DyObject? other)
     {
-        if (other is not DyCollection arr)
+        if (other is null || other is not DyCollection arr || other.TypeId != TypeId)
             return false;
 
         var c = Count;

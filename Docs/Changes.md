@@ -8,6 +8,7 @@
   * Fix: _Static `Array.Sort` fails with a wrong exception when a type is invalid_ ([Issue #814](https://github.com/vorov2/dyalect/issues/814)).
   * Fix: _Interactive console crush when invoking a function_ ([Issue #828](https://github.com/vorov2/dyalect/issues/828)).
   * Fix: _`Time` returns incorrect values for `Min` and `Max`_ ([Issue #824](https://github.com/vorov2/dyalect/issues/824)).
+  * Fix: _Function comparison_ ([Issue #821](https://github.com/vorov2/dyalect/issues/821)).
 
 # 0.42.1
   * Change: _Runtime type system refactoring._

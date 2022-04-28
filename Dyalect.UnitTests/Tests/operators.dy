@@ -112,11 +112,36 @@
     assert(false, true == false)
 #endregion
 
-#region "Function comparison"
+#region "Function comparison 1"
     assert(true, "".ToString == "".ToString)
     assert(false, "".ToString == '\0'.ToString)
     assert(true, 12.ToString == 12.ToString)
     assert(false, 12.ToString == 24.ToString)
+#endregion
+
+#region "Function comparison 2"
+    let xs = [1,2,3]
+    let ys = [4,5,6]
+    assert(true, xs.LastIndexOf == xs.LastIndexOf)
+    assert(false, xs.LastIndexOf == ys.LastIndexOf)
+#endregion
+
+#region "Function comparison 3"
+    type Foo()
+    func Foo.DoSomething(x, y) => (x,y)
+    let f1 = Foo()
+    let f2 = Foo()
+    assert(true, f1.DoSomething == f1.DoSomething)
+    assert(false, f1.DoSomething == f2.DoSomething)
+#endregion
+
+#region "Function comparison 4"
+    let xs = (1,2,3)
+    let ys = (4,5,6)
+    assert(true, xs.First == xs.First)
+    assert(false, xs.First == ys.First)
+    let zs = (1,2,3)
+    assert(true, xs.First == zs.First)
 #endregion
 
 #region "Coalesce"

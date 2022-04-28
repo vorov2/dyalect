@@ -1,6 +1,5 @@
 ﻿using Dyalect.Debug;
 using System;
-using System.Runtime.CompilerServices;
 
 namespace Dyalect.Runtime.Types;
 
@@ -41,5 +40,5 @@ public abstract class DyForeignFunction : DyFunction
 
     internal override DyObject InternalCall(ExecutionContext ctx) => InternalCall(ctx, Array.Empty<DyObject>());
 
-    internal override bool Equals(DyFunction func) => ReferenceEquals(this, func);
+    //internal override bool Equals(DyFunction func) => ReferenceEquals(this, func);
 }
