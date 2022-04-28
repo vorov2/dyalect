@@ -80,12 +80,12 @@ public sealed partial class DyDateTypeInfo : SpanTypeInfo<DyDate>
         return new DyDate(ctx.Type<DyDateTypeInfo>(), (int)(dt.Ticks / DT.TicksPerDay));
     }
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyDate Default(ExecutionContext ctx) => Min(ctx);
     
-    [StaticMethod]
+    [StaticProperty]
     internal static DyDate Min(ExecutionContext ctx) => new(ctx.Type<DyDateTypeInfo>(), (int)(DateTime.MinValue.Date.Ticks / DT.TicksPerDay));
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyDate Max(ExecutionContext ctx) => new(ctx.Type<DyDateTypeInfo>(), (int)(DateTime.MaxValue.Date.Ticks / DT.TicksPerDay));
 }

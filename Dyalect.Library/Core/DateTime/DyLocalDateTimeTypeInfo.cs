@@ -152,10 +152,6 @@ public sealed partial class DyLocalDateTimeTypeInfo : SpanTypeInfo<DyDateTime>
             return offset;
     }
 
-    [StaticProperty]
-    internal static DyTimeDelta LocalOffset(ExecutionContext ctx) =>
-        new(ctx.Type<DyTimeDeltaTypeInfo>(), TimeZoneInfo.Local.BaseUtcOffset);
-
     [StaticMethod]
     internal static DyObject Parse(ExecutionContext ctx, string input, string format)
     {
@@ -201,17 +197,21 @@ public sealed partial class DyLocalDateTimeTypeInfo : SpanTypeInfo<DyDateTime>
     }
 
     [StaticMethod]
+    internal static DyLocalDateTime Now(ExecutionContext ctx) =>
+        new(ctx.Type<DyLocalDateTimeTypeInfo>(), DateTime.Now.Ticks, GetOffset(ctx, null));
+
+    [StaticProperty]
+    internal static DyTimeDelta LocalOffset(ExecutionContext ctx) =>
+        new(ctx.Type<DyTimeDeltaTypeInfo>(), TimeZoneInfo.Local.BaseUtcOffset);
+
+    [StaticProperty]
     internal static DyLocalDateTime Default(ExecutionContext ctx) => Min(ctx);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyLocalDateTime Min(ExecutionContext ctx) =>
         new(ctx.Type<DyLocalDateTimeTypeInfo>(), DateTime.MinValue.Ticks, GetOffset(ctx, null));
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyLocalDateTime Max(ExecutionContext ctx) =>
         new(ctx.Type<DyLocalDateTimeTypeInfo>(), DateTime.MaxValue.Ticks, GetOffset(ctx, null));
-
-    [StaticMethod]
-    internal static DyLocalDateTime Now(ExecutionContext ctx) =>
-        new(ctx.Type<DyLocalDateTimeTypeInfo>(), DateTime.Now.Ticks, GetOffset(ctx, null));
 }

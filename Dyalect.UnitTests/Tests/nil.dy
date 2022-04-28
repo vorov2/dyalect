@@ -11,7 +11,7 @@
 #endregion
 
 #region "Methods: default"
-    assert(nil, Nil.Default())
+    assert(nil, Nil.Default)
 #endregion
 
 #region "Methods: GetType"

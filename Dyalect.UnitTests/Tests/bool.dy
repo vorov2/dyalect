@@ -6,12 +6,12 @@
 #endregion
 
 #region "Methods: Default"
-    assert(false, Bool.Default())
+    assert(false, Bool.Default)
 #endregion
 
 #region "Methods: Min and Max"
-    assert(false, Bool.Min())
-    assert(true, Bool.Max())
+    assert(false, Bool.Min)
+    assert(true, Bool.Max)
 #endregion
 
 #region "Methods: GetType"

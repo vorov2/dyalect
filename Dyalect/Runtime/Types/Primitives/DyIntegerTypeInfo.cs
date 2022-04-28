@@ -240,12 +240,12 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
         return DyNil.Instance;
     }
 
-    [StaticMethod] 
+    [StaticProperty] 
     internal static DyInteger Max() => DyInteger.Max;
 
-    [StaticMethod] 
+    [StaticProperty] 
     internal static DyInteger Min() => DyInteger.Min;
 
-    [StaticMethod] 
+    [StaticProperty] 
     internal static DyInteger Default() => DyInteger.Zero;
 }

@@ -48,7 +48,7 @@
 #endregion
 
 #region "Methods: IsNaN"
-    lazy d = Float.Inf() + (-Float.Inf())
+    lazy d = Float.Infinity + (-Float.Infinity)
     assert(true, d.IsNaN())
 #endregion
 

@@ -1,7 +1,7 @@
-# Test session from 28/04/2022 21:52
+# Test session from 28/04/2022 22:23
 
 ## Summary:
-782 passed, 2 failed in 28 file(s)
+784 passed, 0 failed in 28 file(s)
 
 ## Test file(s):
 [array.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [interop.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\interop.dy), [iterator.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [mixin.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\mixin.dy), [modules.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
@@ -77,8 +77,8 @@
 
 ### Tests/bool.dy:
 * &#9745; **Constructor**
-* &#9746; **Methods: Default**: Operation "Call" is not supported by the type "Bool".
-* &#9746; **Methods: Min and Max**: Operation "Call" is not supported by the type "Bool".
+* &#9745; **Methods: Default**
+* &#9745; **Methods: Min and Max**
 * &#9745; **Methods: GetType**
 * &#9745; **Conversion: as**
 * &#9745; **Conversion to itself**
@@ -223,7 +223,7 @@
 ### Tests/float.dy:
 * &#9745; **Float literal**
 * &#9745; **Methods: Min and Max**
-* &#9745; **Methods: Inf and IsNaN**
+* &#9745; **Methods: Infinity and IsNaN**
 * &#9745; **Constructor**
 * &#9745; **Methods: Default**
 * &#9745; **Methods: GetType**

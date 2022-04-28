@@ -20,13 +20,13 @@
 #endregion
 
 #region "Methods: Default"
-    assert('\0', Char.Default())
+    assert('\0', Char.Default)
 #endregion
 
 #region "Methods: Min and Max"
-    assert('\0', Char.Min())
-    assert('\uffff', Char.Max())
-    assert(true, Char.Default() == Char.Min())
+    assert('\0', Char.Min)
+    assert('\uffff', Char.Max)
+    assert(true, Char.Default == Char.Min)
 #endregion
 
 #region "Ranges"

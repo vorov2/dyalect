@@ -107,8 +107,8 @@
 #endregion
 
 #region "Guid: Empty, Default"
-    let g = Guid.Empty()
-    assert(Guid.Default(), g)
+    let g = Guid.Empty
+    assert(Guid.Default, g)
     assert("{00000000-0000-0000-0000-000000000000}", g.ToString())
 #endregion
 
@@ -294,9 +294,9 @@ fox is the red fox.]>
 #endregion
 
 #region "TimeDelta: Min, Max, Default"
-    assert(Integer.Min(), TimeDelta.Min().TotalTicks)
-    assert(Integer.Max(), TimeDelta.Max().TotalTicks)
-    assert(0, TimeDelta.Default().Ticks)
+    assert(Integer.Min, TimeDelta.Min.TotalTicks)
+    assert(Integer.Max, TimeDelta.Max.TotalTicks)
+    assert(0, TimeDelta.Default.Ticks)
 #endregion
 
 #region "TimeDelta: Parse 1"
@@ -331,9 +331,9 @@ fox is the red fox.]>
 #endregion
 
 #region "DateTime: Min, Max and Default"
-    assert("0001-01-01 00:00:00.0000000", DateTime.Min().ToString())
-    assert("9999-12-31 23:59:59.9999999", DateTime.Max().ToString())
-    assert("0001-01-01 00:00:00.0000000", DateTime.Default().ToString())
+    assert("0001-01-01 00:00:00.0000000", DateTime.Min.ToString())
+    assert("9999-12-31 23:59:59.9999999", DateTime.Max.ToString())
+    assert("0001-01-01 00:00:00.0000000", DateTime.Default.ToString())
 #endregion
 
 #region "DateTime: construction"
@@ -624,9 +624,9 @@ fox is the red fox.]>
 #endregion
 
 #region "Time: Min, Max, Default"
-    assert(0, Time.Min().TotalTicks)
-    assert(863999999999, Time.Max().TotalTicks)
-    assert(0, Time.Default().TotalTicks)
+    assert(0, Time.Min.TotalTicks)
+    assert(863999999999, Time.Max.TotalTicks)
+    assert(0, Time.Default.TotalTicks)
 #endregion
 
 #region "Time: Parse"
@@ -690,9 +690,9 @@ fox is the red fox.]>
 #endregion
 
 #region "Date: Min, Max, Default"
-    assert(0, Date.Min() as Integer)
-    assert(3652058, Date.Max() as Integer)
-    assert(0, Time.Default() as Integer)
+    assert(0, Date.Min as Integer)
+    assert(3652058, Date.Max as Integer)
+    assert(0, Date.Default as Integer)
 #endregion
 
 #region "Date: Parse"

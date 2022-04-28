@@ -132,16 +132,16 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
     [InstanceMethod]
     internal static bool IsNaN(double self) => double.IsNaN(self);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyObject Max() => DyFloat.Max;
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyObject Min() => DyFloat.Min;
 
-    [StaticMethod]
-    internal static DyObject Inf() => DyFloat.PositiveInfinity;
+    [StaticProperty]
+    internal static DyObject Infinity() => DyFloat.PositiveInfinity;
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyObject Default() => DyFloat.Zero;
 
     [StaticMethod]

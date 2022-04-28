@@ -6,12 +6,12 @@
 #endregion
 
 #region "Methods: Min and Max"
-    assert(1.7976931348623157E+308, Float.Max())
-    assert(-1.7976931348623157E+308, Float.Min())
+    assert(1.7976931348623157E+308, Float.Max)
+    assert(-1.7976931348623157E+308, Float.Min)
 #endregion
 
-#region "Methods: Inf and IsNaN"
-    var d = Float.Inf() + (-Float.Inf())
+#region "Methods: Infinity and IsNaN"
+    var d = Float.Infinity + (-Float.Infinity)
     assert(true, d.IsNaN())
 #endregion
 
@@ -22,7 +22,7 @@
 #endregion
 
 #region "Methods: Default"
-    assert(0.0, Float.Default())
+    assert(0.0, Float.Default)
 #endregion
 
 #region "Methods: GetType"

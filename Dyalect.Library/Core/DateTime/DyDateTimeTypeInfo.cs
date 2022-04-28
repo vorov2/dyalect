@@ -160,13 +160,13 @@ public sealed partial class DyDateTimeTypeInfo : SpanTypeInfo<DyDateTime>
     internal static DyObject FromTicks(ExecutionContext ctx, long ticks) =>
         new DyDateTime(ctx.Type<DyDateTimeTypeInfo>(), ticks);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyDateTime Default(ExecutionContext ctx) => Min(ctx);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyDateTime Min(ExecutionContext ctx) => new(ctx.Type<DyDateTimeTypeInfo>(), DateTime.MinValue.Ticks);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyDateTime Max(ExecutionContext ctx) => new(ctx.Type<DyDateTimeTypeInfo>(), DateTime.MaxValue.Ticks);
 
     [StaticMethod]

@@ -331,10 +331,10 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         return string.Join(separator, strArr);
     }
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyObject Empty() => DyString.Empty;
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyObject Default() => DyString.Empty;
 
     [StaticMethod]

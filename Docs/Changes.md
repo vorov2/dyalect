@@ -1,5 +1,8 @@
 # 0.44.0
   * Change: _Mixin Bounded contains only static properties_ ([Issue #831](https://github.com/vorov2/dyalect/issues/831)).
+  * Change: _Make method `String.Empty` property_ ([Issue #834](https://github.com/vorov2/dyalect/issues/834)).
+  * Change: _Make method `Float.Inf` property and rename it to `Infinity`_ ([Issue #833](https://github.com/vorov2/dyalect/issues/833)).
+  * Change: _Make methods `Min`, `Max` and `Default` properties_ ([Issue #832](https://github.com/vorov2/dyalect/issues/832)).
 
 # 0.43.0
   * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).

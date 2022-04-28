@@ -94,12 +94,12 @@ public sealed partial class DyTimeDeltaTypeInfo : SpanTypeInfo<DyTimeDelta>
         return new DyTimeDelta(ctx.Type<DyTimeDeltaTypeInfo>(), ticks);
     }
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyTimeDelta Default(ExecutionContext ctx) => new(ctx.Type<DyTimeDeltaTypeInfo>(), TimeSpan.Zero.Ticks);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyTimeDelta Min(ExecutionContext ctx) => new(ctx.Type<DyTimeDeltaTypeInfo>(), TimeSpan.MinValue.Ticks);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyTimeDelta Max(ExecutionContext ctx) => new(ctx.Type<DyTimeDeltaTypeInfo>(), TimeSpan.MaxValue.Ticks);
 }

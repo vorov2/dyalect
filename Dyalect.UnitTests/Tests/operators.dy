@@ -65,7 +65,7 @@
 
 #region "Inf"
     var x = 2.0 / 0
-    assert(true, x == Float.Inf())
+    assert(true, x == Float.Infinity)
 #endregion
 
 #region "NaN"

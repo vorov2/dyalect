@@ -8,7 +8,9 @@ namespace Dyalect.Library.Core;
 [GeneratedType]
 public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
 {
-    public override string ReflectedTypeName => "StringBuilder";
+    private const string StringBuilder = nameof(StringBuilder);
+
+    public override string ReflectedTypeName => StringBuilder;
 
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Eq | SupportedOperations.Neg | SupportedOperations.Not | SupportedOperations.Len;
@@ -92,7 +94,7 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
         return self;
     }
 
-    [StaticMethod("StringBuilder")]
+    [StaticMethod(StringBuilder)]
     internal static DyObject New(ExecutionContext ctx, [VarArg]DyTuple values)
     {
         if (values.Count > 0)

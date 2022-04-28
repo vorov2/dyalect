@@ -148,12 +148,12 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
         return ctx.InvalidCast(value.GetTypeInfo(ctx).ReflectedTypeName, nameof(Dy.Char));
     }
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyChar Max() => DyChar.Max;
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyChar Min() => DyChar.Min;
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyChar Default() => DyChar.Empty;
 }

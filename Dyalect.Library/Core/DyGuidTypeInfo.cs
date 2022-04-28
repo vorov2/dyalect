@@ -101,12 +101,12 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         }
     }
 
-    [StaticMethod]
-    internal static DyObject Default(ExecutionContext ctx) => new DyGuid(ctx.Type<DyGuidTypeInfo>(), Guid.Empty);
-
-    [StaticMethod]
-    internal static DyObject Empty(ExecutionContext ctx) => Default(ctx);
-
     [StaticMethod(GuidType)]
     internal static DyObject NewGuid(ExecutionContext ctx) => new DyGuid(ctx.Type<DyGuidTypeInfo>(), Guid.NewGuid());
+
+    [StaticProperty]
+    internal static DyObject Default(ExecutionContext ctx) => new DyGuid(ctx.Type<DyGuidTypeInfo>(), Guid.Empty);
+
+    [StaticProperty]
+    internal static DyObject Empty(ExecutionContext ctx) => Default(ctx);
 }

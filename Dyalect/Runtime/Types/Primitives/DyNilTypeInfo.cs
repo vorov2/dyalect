@@ -32,6 +32,6 @@ internal sealed partial class DyNilTypeInfo : DyTypeInfo
     [StaticMethod(Method.Nil)] 
     internal static DyNil GetNil() => Nil;
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyNil Default() => Nil;
 }
