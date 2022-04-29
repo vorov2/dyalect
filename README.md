@@ -1,7 +1,5 @@
 # Dyalect programming language 
 
-[![GitHub tag (latest SemVer)](https://img.shields.io/badge/Download-0.43.0-blue?style=for-the-badge&logo=github)](https://github.com/vorov2/dyalect/releases/latest)
-
 Dyalect is a dynamic programming language for .NET platform.
 It is lightweight, fast and modern. Dyalect (or Dy for short)
 supports Windows, MacOS and Linux.
@@ -79,6 +77,6 @@ Please refer to [wiki](https://github.com/vorov2/dyalect/wiki) for more informat
 ## Links
 
 * [Quick start guide](https://github.com/vorov2/dyalect/wiki/Language-overview)
-* [SourceForge page](https://sourceforge.net/projects/dyalect/)
+* [Download latest version](https://github.com/vorov2/dyalect/releases/latest)
 * [Dyalect at RosettaCode](http://rosettacode.org/wiki/Category:Dyalect)
 
