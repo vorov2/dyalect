@@ -56,9 +56,9 @@ internal sealed class Op
     public static readonly Op NewCast = new(OpCode.NewCast);
     public static readonly Op Cast = new(OpCode.Cast);
     public static readonly Op Mixin = new(OpCode.Mixin);
-
     public static readonly Op StdCall_0 = new(OpCode.StdCall_0);
     public static readonly Op StdCall_1 = new(OpCode.StdCall_1);
+    public static readonly Op Debug = new(OpCode.Debug);
 
     internal static readonly Dictionary<OpCode, Op> Ops = new();
 

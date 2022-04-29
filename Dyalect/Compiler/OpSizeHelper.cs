@@ -72,7 +72,6 @@ internal static class OpSizeHelper
         1, //Briter
         1, //RgDI
         1, //RgFI
-
         1, //FunPrep
         1, //FunArgIx
         1, //FunArgNm
@@ -93,9 +92,9 @@ internal static class OpSizeHelper
         0, //NewCast
         0, //Cast
         0, //Mixin
-
         0, //StdCall_0
         0, //StdCall_1
         1, //StdCall
+        0, //Debug
     };
 }

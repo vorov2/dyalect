@@ -101,6 +101,8 @@ public static partial class DyMachine
             {
                 case OpCode.Nop:
                     break;
+                case OpCode.Debug:
+                    break;
                 case OpCode.This:
                     evalStack.Push(function.Self!);
                     break;

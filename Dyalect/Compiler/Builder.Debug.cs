@@ -94,6 +94,7 @@ partial class Builder
     {
         lastLocation = node.Location;
         pdb.AddLineSym(cw.Offset, Line(lastLocation), Col(lastLocation));
+        //cw.Debug();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -101,6 +102,7 @@ partial class Builder
     {
         lastLocation = loc;
         pdb.AddLineSym(cw.Offset, Line(loc), Col(loc));
+        //cw.Debug();
     }
 
     //Used only when extended debug info is generated
