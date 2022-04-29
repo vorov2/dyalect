@@ -93,7 +93,7 @@ partial class DyMachine
                 continue;
 
             if (ReferenceEquals(cm, Caller.External))
-                st.Push(new(external: true));
+                st.Push(StackPoint.External);
             else
                 st.Push(new(cm.Offset, cm.Function.UnitId));
         }
