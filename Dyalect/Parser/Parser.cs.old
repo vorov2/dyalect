@@ -1185,7 +1185,9 @@ namespace Dyalect.Parser
 		node = null; 
 		Pattern(out node);
 		if (la.kind == 1 || la.kind == 2) {
+			if (la.AfterEol) return;
 			var asp = new DAsPattern(t) { Pattern = node }; 
+			
 			Identifier();
 			asp.Name = t.val; node = asp; 
 		}
@@ -2163,7 +2165,11 @@ namespace Dyalect.Parser
 		node = null; 
 		if (la.kind == 7) {
 			Get();
-			node = ParseString(); 
+			var str = ParseString(); node = str; 
+			while (la.kind == 7) {
+				Get();
+				ParseStringChunk(); 
+			}
 		} else if (la.kind == 9) {
 			Get();
 			node = ParseVerbatimString(); 

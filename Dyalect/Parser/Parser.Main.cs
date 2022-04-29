@@ -301,7 +301,25 @@ namespace Dyalect.Parser
             if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
                 return null;
 
-            return new DStringLiteral(t) { Value = result ?? "", Chunks = chunks };
+            return new DStringLiteral(t) { Value = result, Chunks = chunks };
+        }
+
+        private void ParseStringChunk(DStringLiteral lit)
+        {
+            if (lit is null || !EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
+                return;
+
+            if (lit.Chunks is null) 
+            {
+                lit.Chunks = new();
+                lit.Chunks.Add(new PlainStringChunk(lit.Value!));
+                lit.Value = null;
+            }
+
+            if (result is not null)
+                lit.Chunks.Add(new PlainStringChunk(result));
+            else
+                lit.Chunks.AddRange(chunks!);
         }
 
         private DStringLiteral ParseVerbatimString()

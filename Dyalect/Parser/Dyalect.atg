@@ -1495,7 +1495,10 @@ PRODUCTIONS
     String<out DNode node> =
         (. node = null; .)
         (
-            stringToken (. node = ParseString(); .)
+            (
+                stringToken (. var str = ParseString(); node = str; .)
+                { stringToken (. ParseStringChunk(str); .) }
+            )
             | verbatimStringToken (. node = ParseVerbatimString(); .)
         ).
 

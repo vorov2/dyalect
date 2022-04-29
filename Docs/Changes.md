@@ -15,6 +15,7 @@
   * Add: _Support concatenation with + for iterators_ ([Issue #809](https://github.com/vorov2/dyalect/issues/809), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#typeName)).
   * Add: _Add a way to enforce reference comparison_ ([Issue #839](https://github.com/vorov2/dyalect/issues/839), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#referenceEquals)).
   * Add: _Add `Iterator.Single` method_ ([Issue #818](https://github.com/vorov2/dyalect/issues/818), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#single)).
+  * Add: _Concatenate strings using juxtaposition_ ([Issue #842](https://github.com/vorov2/dyalect/issues/842), [docs](https://github.com/vorov2/dyalect/wiki/String#concatenation)).
   * Fix: _Regression: incorrect type name in some type related errors_ ([Issue #836](https://github.com/vorov2/dyalect/issues/836)).
   * Fix: _Different behavior with optimizer turned on_ ([Issue #840](https://github.com/vorov2/dyalect/issues/840)).
   * Fix: _Stack trace incorrectly reporting global scope_ ([Issue #843](https://github.com/vorov2/dyalect/issues/843)).

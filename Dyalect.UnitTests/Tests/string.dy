@@ -228,6 +228,14 @@
     assert("!dummy!str", str)
 #endregion
 
+#region "Concatenation 3"
+    let str = 
+        "first"
+        "second"
+        "third"
+    assert("firstsecondthird", str)
+#endregion
+
 #region "Methods: ToCharArray"
     let str = "Hello"
     let arr = str.ToCharArray()

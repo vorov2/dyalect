@@ -2165,7 +2165,11 @@ namespace Dyalect.Parser
 		node = null; 
 		if (la.kind == 7) {
 			Get();
-			node = ParseString(); 
+			var str = ParseString(); node = str; 
+			while (la.kind == 7) {
+				Get();
+				ParseStringChunk(str); 
+			}
 		} else if (la.kind == 9) {
 			Get();
 			node = ParseVerbatimString(); 
