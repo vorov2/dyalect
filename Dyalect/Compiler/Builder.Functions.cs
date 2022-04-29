@@ -281,9 +281,17 @@ partial class Builder
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.String:
-                            val = new DyString(((DStringLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(Dy.String, p.TypeAnnotation))
-                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                            {
+                                var lit = (DStringLiteral)p.DefaultValue;
+
+                                if (lit.Chunks is not null)
+                                    AddError(CompilerError.InterpolatedStringDefaultValue, lit.Location);
+
+                                val = DyString.Get(((DStringLiteral)p.DefaultValue).Value!);
+
+                                if (!CheckRestriction(Dy.String, p.TypeAnnotation))
+                                    AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                            }
                             break;
                         case NodeType.Nil:
                             val = DyNil.Instance;

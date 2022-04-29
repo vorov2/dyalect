@@ -26,6 +26,7 @@
   * Fix: _Interpolated strings do not work correctly inside pattern ranges_ ([Issue #856](https://github.com/vorov2/dyalect/issues/856)).
   * Fix: _Parsers optimizations doesn't work in escape code parser _ ([Issue #857](https://github.com/vorov2/dyalect/issues/857)).
   * Fix: _Invalid compilation of range pattern with interpolated strings_ ([Issue #854](https://github.com/vorov2/dyalect/issues/854)).
+  * Fix: _Incorrect behavior of interpolated strings as default values_ ([Issue #858](https://github.com/vorov2/dyalect/issues/858)).
 
 # 0.43.0
   * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).
