@@ -31,7 +31,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
         var str = ctx.RuntimeContext.Tuple.ToStringDirect(ctx, self.Tuple);
 
         if (ctx.HasErrors)
-            return DyNil.Instance;
+            return Nil;
 
         return new DyString($"{ReflectedTypeName}.{self.Constructor}{str}");
     }
@@ -42,7 +42,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
         var str = ctx.RuntimeContext.Tuple.ToLiteralDirect(ctx, self.Tuple);
 
         if (ctx.HasErrors)
-            return DyNil.Instance;
+            return Nil;
 
         return new DyString($"@{self.Constructor}{str}");
     }

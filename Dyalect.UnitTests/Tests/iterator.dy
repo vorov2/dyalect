@@ -22,6 +22,16 @@
     assert("Iterator", typeName(t))
 #endregion
 
+#region "Methods: ToString"
+    let seq = yields { 1, 'c', "str" }
+    assert("{1, c, str}", seq.ToString())
+#endregion
+
+#region "Methods: ToLiteral"
+    let seq = yields { 1, 'c', "str" }
+    assert("yields {1, 'c', \"str\"}", seq.ToLiteral())
+#endregion
+
 #region "Methods: Clone"
     let xs = yields {1,2,3}
     assert(true, xs == xs)
@@ -658,7 +668,7 @@
 #region "Methods: ToSet"
     let xs = yields { 1,2,2,2,3,4,4,5,5,5 }
     let ys = xs.ToSet()
-    assert("Set (1, 2, 3, 4, 5)", ys.ToString())
+    assert("Set(1, 2, 3, 4, 5)", ys.ToString())
 #endregion
 
 #region "Methods: ForEach"
@@ -678,7 +688,7 @@
         (id: 2, stub: "Z")
     }
     assert(3, ys.Distinct().Count())
-    assert(2, ys.Distinct(\x.id).Count())    
+    assert(2, ys.Distinct(\x.id).Count())
 #endregion
 
 #region "Casting"

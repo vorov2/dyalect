@@ -241,47 +241,5 @@ public class DyTuple : DyCollection
 
     internal bool HasItem(string name) => GetOrdinal(name) is not -1;
 
-    internal DyObject ToString(bool literal, ExecutionContext ctx)
-    {
-        var sb = new StringBuilder();
-        sb.Append('(');
-
-        for (var i = 0; i < Count; i++)
-        {
-            if (i > 0)
-            {
-                sb.Append(',');
-                sb.Append(' ');
-            }
-
-            var v = GetValue(i);
-            var ki = GetKeyInfo(i);
-
-            if (ki is not null)
-            {
-                if (ki.Mutable)
-                    sb.Append("var ");
-
-                if (ki.Label.Length > 0 && char.IsLower(ki.Label[0]) && ki.Label.All(char.IsLetter))
-                    sb.Append(ki.Label);
-                else
-                    sb.Append(StringUtil.Escape(ki.Label));
-
-                sb.Append(':');
-                sb.Append(' ');
-            }
-
-            var str = literal ? v.ToLiteral(ctx) : v.ToString(ctx);
-
-            if (ctx.HasErrors)
-                return Nil;
-
-            sb.Append(str);
-        }
-
-        sb.Append(')');
-        return new DyString(sb.ToString());
-    }
-
     internal DyObject[] UnsafeAccessValues() => values;
 }

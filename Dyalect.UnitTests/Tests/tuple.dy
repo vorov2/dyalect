@@ -354,7 +354,7 @@
 #region "Methods: ToSet"
     let xs = (1,2,2,2,3,4,4,5,5,5)
     let ys = xs.ToSet()
-    assert("Set (1, 2, 3, 4, 5)", ys.ToString())
+    assert("Set(1, 2, 3, 4, 5)", ys.ToString())
 #endregion
 
 #region "Tuple: Alter 1"

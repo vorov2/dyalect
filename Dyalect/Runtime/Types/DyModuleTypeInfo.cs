@@ -1,5 +1,4 @@
 ﻿using Dyalect.Compiler;
-using System;
 using System.IO;
 namespace Dyalect.Runtime.Types;
 
@@ -16,7 +15,7 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
-        new DyString("{" + GetModuleName((DyModule)arg) + "}");
+        new DyString("<" + GetModuleName((DyModule)arg) + ">");
 
     private string GetModuleName(DyModule arg)
     {

@@ -21,37 +21,29 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg)
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) =>
+        ToStringOrLiteral(ctx, arg, literal: true);
+
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
+        ToStringOrLiteral(ctx, arg, literal: false);
+
+    private DyObject ToStringOrLiteral(ExecutionContext ctx, DyObject arg, bool literal)
     {
         var map = (DyDictionary)arg;
         var sb = new StringBuilder();
-        sb.Append("Dictionary (");
+        sb.Append("Dictionary(");
         var i = 0;
 
         foreach (var kv in map.Dictionary)
         {
             if (i > 0)
                 sb.Append(", ");
-            sb.Append(kv.Key.ToLiteral(ctx) + ": " + kv.Value.ToLiteral(ctx));
-            i++;
-        }
 
-        sb.Append(')');
-        return new DyString(sb.ToString());
-    }
+            if (literal)
+                sb.Append(kv.Key.ToLiteral(ctx) + ": " + kv.Value.ToLiteral(ctx));
+            else
+                sb.Append(kv.Key.ToString(ctx) + ": " + kv.Value.ToString(ctx));
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
-    {
-        var map = (DyDictionary)arg;
-        var sb = new StringBuilder();
-        sb.Append("Dictionary (");
-        var i = 0;
-
-        foreach (var kv in map.Dictionary)
-        {
-            if (i > 0)
-                sb.Append(", ");
-            sb.Append(kv.Key.ToString(ctx) + ": " + kv.Value.ToString(ctx));
             i++;
         }
 

@@ -1,7 +1,10 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Compiler;
+using Dyalect.Parser;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -27,9 +30,51 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ((DyTuple)arg).ToString(false, ctx);
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToStringOrLiteral(ctx, (DyTuple)arg, false);
 
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ((DyTuple)arg).ToString(true, ctx);
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOrLiteral(ctx, (DyTuple)arg, true);
+
+    private DyObject ToStringOrLiteral(ExecutionContext ctx, DyTuple value, bool literal)
+    {
+        var sb = new StringBuilder();
+        sb.Append('(');
+
+        for (var i = 0; i < value.Count; i++)
+        {
+            if (i > 0)
+            {
+                sb.Append(',');
+                sb.Append(' ');
+            }
+
+            var v = value.GetValue(i);
+            var ki = value.GetKeyInfo(i);
+
+            if (ki is not null)
+            {
+                if (ki.Mutable)
+                    sb.Append("var ");
+
+                if (ki.Label.Length > 0 && char.IsLower(ki.Label[0]) && ki.Label.All(char.IsLetter))
+                    sb.Append(ki.Label);
+                else
+                    sb.Append(StringUtil.Escape(ki.Label));
+
+                sb.Append(':');
+                sb.Append(' ');
+            }
+
+            var str = literal ? v.ToLiteral(ctx) : v.ToString(ctx);
+
+            if (ctx.HasErrors)
+                return Nil;
+
+            sb.Append(str);
+        }
+
+        sb.Append(')');
+        return new DyString(sb.ToString());
+    }
 
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {

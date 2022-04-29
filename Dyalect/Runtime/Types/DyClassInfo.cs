@@ -35,7 +35,13 @@ internal sealed class DyClassInfo : DyTypeInfo
         return False;
     }
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
+        ToStringOrLiteral(ctx, arg, false);
+
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) =>
+        ToStringOrLiteral(ctx, arg, true);
+
+    private DyObject ToStringOrLiteral(ExecutionContext ctx, DyObject arg, bool literal)
     {
         var cust = (DyClass)arg;
         var priv = cust.Fields;
@@ -43,11 +49,11 @@ internal sealed class DyClassInfo : DyTypeInfo
         if (ReflectedTypeName == cust.Constructor && priv.Count == 0)
             return new DyString($"{ReflectedTypeName}()");
         else if (ReflectedTypeName == cust.Constructor)
-            return new DyString($"{ReflectedTypeName}{priv.ToString(ctx)}");
+            return new DyString($"{ReflectedTypeName}{(literal ? priv.ToLiteral(ctx) : priv.ToString(ctx))}");
         else if (priv.Count == 0)
             return new DyString($"{ReflectedTypeName}.{cust.Constructor}()");
         else
-            return new DyString($"{ReflectedTypeName}.{cust.Constructor}{priv.ToString(ctx)}");
+            return new DyString($"{ReflectedTypeName}.{cust.Constructor}{(literal ? priv.ToLiteral(ctx) : priv.ToString(ctx))}");
     }
 
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>

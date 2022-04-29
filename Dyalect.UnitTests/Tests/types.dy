@@ -21,6 +21,13 @@
     assert("Foo(x: 1, y: 2, z: 3)", str)
 #endregion
 
+#region "Methods: ToString"
+    type Foo(x, y, z)
+    let xs = Foo(1, 'c', "string")
+    let str = xs.ToLiteral()
+    assert("Foo(x: 1, y: 'c', z: \"string\")", str)
+#endregion
+
 #region "Statics"
     try {
         Integer.ToString()

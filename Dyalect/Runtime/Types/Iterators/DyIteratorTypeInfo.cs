@@ -22,8 +22,14 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         var seq = DyIterator.ToEnumerable(ctx, self);
         return ctx.HasErrors ? Nil : DyInteger.Get(seq.Count());
     }
+    
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject self, DyObject format) =>
+        ToStringOrLiteral(ctx, self, false);
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject self, DyObject format)
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject self) =>
+        ToStringOrLiteral(ctx, self, true);
+
+    private DyObject ToStringOrLiteral(ExecutionContext ctx, DyObject self, bool literal)
     {
         var fn = self.GetIterator(ctx)!;
 
@@ -41,6 +47,10 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
             return DyString.Empty;
 
         var sb = new StringBuilder();
+
+        if (literal)
+            sb.Append("yields ");
+
         sb.Append('{');
         var c = 0;
 
@@ -48,7 +58,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         {
             if (c > 0)
                 sb.Append(", ");
-            var str = e.ToString(ctx);
+            var str = literal ? e.ToLiteral(ctx) : e.ToString(ctx);
 
             if (ctx.Error is not null)
                 return DyString.Empty;
