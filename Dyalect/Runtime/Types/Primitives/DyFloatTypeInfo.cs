@@ -6,10 +6,9 @@ namespace Dyalect.Runtime.Types;
 internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
-        | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
+        SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
         | SupportedOperations.Sub | SupportedOperations.Div | SupportedOperations.Mul | SupportedOperations.Rem
-        | SupportedOperations.Neg | SupportedOperations.Plus | SupportedOperations.Lit;
+        | SupportedOperations.Neg | SupportedOperations.Plus;
 
     public override string ReflectedTypeName => nameof(Dy.Float);
 
@@ -116,10 +115,14 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         var f = arg.GetFloat();
-        return new DyString(f.ToString(CI.NumberFormat));
+        return new DyString(f.ToString(SystemCulture.NumberFormat));
     }
 
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOp(ctx, arg, DyNil.Instance);
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg)
+    {
+        var f = arg.GetFloat();
+        return new DyString(f.ToString(InvariantCulture.NumberFormat));
+    }
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
@@ -147,7 +150,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
     [StaticMethod]
     internal static double? Parse(string value)
     {
-        if (double.TryParse(value, NumberStyles.Float, CI.NumberFormat, out var i))
+        if (double.TryParse(value, NumberStyles.Float, InvariantCulture.NumberFormat, out var i))
             return i;
         return null;
     }

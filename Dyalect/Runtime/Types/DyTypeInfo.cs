@@ -9,7 +9,7 @@ public abstract class DyTypeInfo : DyObject
 
     public override string TypeName => nameof(Dy.TypeInfo);
     
-    protected abstract SupportedOperations GetSupportedOperations();
+    protected virtual SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
     private bool Support(DyObject self, SupportedOperations op) =>
         (GetSupportedOperations() & op) == op || (self.Supports() & op) == op;
@@ -613,7 +613,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.InvalidOverload(name);
                 tos = func; 
                 break;
-            case Builtins.ToLit:
+            case Builtins.ToLiteral:
                 if (func is not null && func.Auto)
                     ctx.InvalidOverload(name);
                 tol = func;
@@ -672,7 +672,7 @@ public abstract class DyTypeInfo : DyObject
             Builtins.Set => Support(self, SupportedOperations.Set) ? Ternary(name, Set, "index", "value") : null,
             Builtins.Length => Support(self, SupportedOperations.Len) ? Unary(name, Length) : null,
             Builtins.String => Binary(name, ToStringWithFormat, new Par("format", Nil)),
-            Builtins.ToLit => Support(self, SupportedOperations.Lit) ? Unary(name, ToLiteral) : null,
+            Builtins.ToLiteral => Unary(name, ToLiteral),
             Builtins.Iterator => Support(self, SupportedOperations.Iter) ? Unary(name, GetIterator) : null,
             Builtins.Clone => Unary(name, Clone),
             Builtins.Has => Binary(name, Has, "member"),

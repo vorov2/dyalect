@@ -4,9 +4,6 @@ namespace Dyalect.Runtime.Types;
 
 internal sealed class DyMetaTypeInfo : DyTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
-
     public override string ReflectedTypeName => nameof(Dy.TypeInfo);
 
     public override int ReflectedTypeId => Dy.TypeInfo;

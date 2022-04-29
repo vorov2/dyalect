@@ -144,6 +144,7 @@ public abstract class DyFunction : DyObject
         return ret;
     }
 
+    //Checks if two functions are members of the same instance
     public static bool IsSameInstance(DyFunction first, DyFunction second) =>
         ReferenceEquals(first.Self, second.Self) || (first.Self is not null && first.Self.Equals(second.Self));
 

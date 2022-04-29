@@ -6,8 +6,7 @@ namespace Dyalect.Runtime.Types;
 internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
-        | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
+        SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
         | SupportedOperations.Sub | SupportedOperations.Div | SupportedOperations.Mul | SupportedOperations.Rem
         | SupportedOperations.Neg | SupportedOperations.Plus | SupportedOperations.And | SupportedOperations.Or
         | SupportedOperations.Xor | SupportedOperations.BitNot | SupportedOperations.Shl | SupportedOperations.Shr;
@@ -192,8 +191,10 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
     protected override DyObject BitwiseNotOp(ExecutionContext ctx, DyObject arg) => new DyInteger(~arg.GetInteger());
 
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
-        new DyString(arg.GetInteger().ToString(CI.NumberFormat));
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOp(ctx, arg, DyNil.Instance);
+        new DyString(arg.GetInteger().ToString(SystemCulture.NumberFormat));
+
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) =>
+        new DyString(arg.GetInteger().ToString(InvariantCulture.NumberFormat));
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
@@ -207,37 +208,27 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
     internal static bool IsMultipleOf(long self, long value) => (self % value) == 0;
 
     [StaticMethod]
-    internal static DyObject Integer(ExecutionContext ctx, DyObject obj)
+    internal static long? Parse(string value)
     {
-        if (obj.TypeId == Dy.Integer)
-            return obj;
-
-        if (obj.TypeId == Dy.Float)
-            return DyInteger.Get((long)obj.GetFloat());
-
-        if (obj.TypeId == Dy.Char || obj.TypeId == Dy.String)
-        {
-            _ = long.TryParse(obj.GetString(), NumberStyles.Float, CI.NumberFormat, out var i);
-            return DyInteger.Get(i);
-        }
-
-        return ctx.InvalidType(Dy.Integer, Dy.Float, obj);
+        if (long.TryParse(value, NumberStyles.Integer, InvariantCulture.NumberFormat, out var i))
+            return i;
+        return default;
     }
 
-    [StaticMethod]
-    internal static DyObject Parse(DyObject obj)
+    [StaticMethod(Method.Integer)]
+    internal static long? CreateNew(ExecutionContext ctx, DyObject value)
     {
-        if (obj.TypeId == Dy.Integer)
-            return obj;
+        if (value.TypeId is Dy.Integer)
+            return value.GetInteger();
 
-        if (obj.TypeId == Dy.Float)
-            return DyInteger.Get((long)obj.GetFloat());
+        if (value.TypeId is Dy.Float)
+            return (long)value.GetFloat();
 
-        if ((obj.TypeId == Dy.Char || obj.TypeId == Dy.String) &&
-            long.TryParse(obj.GetString(), NumberStyles.Float, CI.NumberFormat, out var i))
-            return DyInteger.Get(i);
+        if (value.TypeId is Dy.Char or Dy.String)
+            return Parse(value.GetString());
 
-        return DyNil.Instance;
+        ctx.InvalidType(Dy.Integer, Dy.Float, value);
+        return default;
     }
 
     [StaticProperty] 

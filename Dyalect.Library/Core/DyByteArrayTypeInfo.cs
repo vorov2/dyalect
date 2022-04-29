@@ -1,7 +1,6 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 using System.Linq;
 namespace Dyalect.Library.Core;
 
@@ -12,8 +11,7 @@ public sealed partial class DyByteArrayTypeInfo : DyForeignTypeInfo
 
     public override string ReflectedTypeName => ByteArray;
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Len;
+    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.Len;
 
     #region Operations
     public DyByteArray Create(byte[]? buffer) => new(this, buffer);

@@ -8,6 +8,7 @@ namespace Dyalect.Parser.Model
 
         public double Value { get; set; }
 
-        internal override void ToString(StringBuilder sb) => sb.Append(Value.ToString(CI.NumberFormat));
+        internal override void ToString(StringBuilder sb) =>
+            sb.Append(Value.ToString(InvariantCulture.NumberFormat));
     }
 }

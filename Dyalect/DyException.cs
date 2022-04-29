@@ -1,5 +1,4 @@
-﻿using System;
-namespace Dyalect;
+﻿namespace Dyalect;
 
 public class DyException : Exception
 {

@@ -16,8 +16,7 @@ internal sealed class DyClassInfo : DyTypeInfo
     }
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
+        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
 
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {

@@ -60,7 +60,7 @@ internal static class Formatter
                     else if (elem.Padding == 3)
                     {
                         builder.Append(Math.Abs(self.Interval.Hours).ToString().PadLeft(2, '0'));
-                        builder.Append(CI.UI.DateTimeFormat.TimeSeparator);
+                        builder.Append(SystemCulture.DateTimeFormat.TimeSeparator);
                         builder.Append(Math.Abs(self.Interval.Minutes).ToString().PadLeft(2, '0'));
                         return true;
                     }
@@ -93,10 +93,10 @@ internal static class Formatter
                     builder.Append(self.Year.ToString().PadLeft(4, '0'));
                 return true;
             case MonthAbbrev:
-                builder.Append(new DateTime(self.Year, self.Month, self.Day).ToString("MMM", CI.UI));
+                builder.Append(new DateTime(self.Year, self.Month, self.Day).ToString("MMM", SystemCulture));
                 return true;
             case MonthName:
-                builder.Append(new DateTime(self.Year, self.Month, self.Day).ToString("MMMM", CI.UI));
+                builder.Append(new DateTime(self.Year, self.Month, self.Day).ToString("MMMM", SystemCulture));
                 return true;
             case Month:
                 builder.Append(Format(self.Month, elem));
@@ -123,9 +123,9 @@ internal static class Formatter
                 {
                     var dt = new DateTime(1, 1, 1, self.Hours, self.Minutes, self.Seconds);
                     if (elem.Padding == 1)
-                        builder.Append(dt.ToString("%h", CI.UI));
+                        builder.Append(dt.ToString("%h", SystemCulture));
                     else if (elem.Padding == 2)
-                        builder.Append(dt.ToString("hh", CI.UI));
+                        builder.Append(dt.ToString("hh", SystemCulture));
                     return true;
                 }
             case Minute:

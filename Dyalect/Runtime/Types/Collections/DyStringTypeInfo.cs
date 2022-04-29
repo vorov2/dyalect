@@ -10,9 +10,9 @@ namespace Dyalect.Runtime.Types;
 internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
-        | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
-        | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.Lit;
+        SupportedOperations.Add | SupportedOperations.Gt | SupportedOperations.Lt
+        | SupportedOperations.Gte | SupportedOperations.Lte | SupportedOperations.Get
+        | SupportedOperations.Len | SupportedOperations.Iter;
 
     public override string ReflectedTypeName => nameof(Dy.String);
 
@@ -278,7 +278,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
             arr[i] = o;
         }
 
-        return self.Format(arr);
+        return string.Format(self, arr);
     }
 
     [StaticMethod]

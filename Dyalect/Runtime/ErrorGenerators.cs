@@ -1,7 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Runtime.Types;
 using Dyalect.Strings;
-using System;
 using System.Linq;
 using System.Text;
 namespace Dyalect.Runtime;
@@ -352,7 +351,7 @@ public static class ErrorGenerators
             var vals = err.Tuple.GetValues()
                 .Select(v => v is DyTypeInfo t ? t.ReflectedTypeName : (v.ToString() ?? ""))
                 .ToArray();
-            str = str.Format(vals);
+            str = string.Format(str, vals);
         }
         else if (str is null)
             str = RuntimeErrors.ResourceManager.GetString(err.Constructor + ".0");

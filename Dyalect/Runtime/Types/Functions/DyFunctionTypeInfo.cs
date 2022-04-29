@@ -5,9 +5,6 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
-
     public override string ReflectedTypeName => nameof(Dy.Function);
 
     public override int ReflectedTypeId => Dy.Function;

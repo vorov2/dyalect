@@ -15,7 +15,7 @@ public sealed class RuntimeContext
         Array = (DyArrayTypeInfo)Types[Dy.Array];
         Composition = composition;
         Units = new DyObject[Composition.Units.Length][];
-        Layouts = Composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
+        Layouts = Composition.Units.Select(u => u.Layouts.UnsafeGetArray()).ToArray();
     }
 
     public void Refresh(UnitComposition composition)

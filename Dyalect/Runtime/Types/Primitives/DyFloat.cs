@@ -23,7 +23,7 @@ public sealed class DyFloat : DyObject
 
     public override bool Equals(DyObject? obj) => obj is DyFloat f && value == f.value;
 
-    public override string ToString() => value.ToString(CI.NumberFormat);
+    public override string ToString() => value.ToString(InvariantCulture.NumberFormat);
 
     public override object ToObject() => value;
 

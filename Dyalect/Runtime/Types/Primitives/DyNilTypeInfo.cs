@@ -4,9 +4,6 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal sealed partial class DyNilTypeInfo : DyTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Lit;
-
     public override string ReflectedTypeName => nameof(Dy.Nil);
 
     public override int ReflectedTypeId => Dy.Nil;

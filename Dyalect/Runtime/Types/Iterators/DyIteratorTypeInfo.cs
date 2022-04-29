@@ -1,5 +1,4 @@
 ﻿using Dyalect.Codegen;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +8,7 @@ namespace Dyalect.Runtime.Types;
 internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
+        SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
 
     public override string ReflectedTypeName => nameof(Dy.Iterator);
 

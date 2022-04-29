@@ -1,6 +1,5 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Compiler;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 namespace Dyalect.Runtime.Types;
@@ -9,9 +8,8 @@ namespace Dyalect.Runtime.Types;
 internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
-        | SupportedOperations.Add | SupportedOperations.Iter | SupportedOperations.Lit;
+        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
+        | SupportedOperations.Add | SupportedOperations.Iter;
 
     public override string ReflectedTypeName => nameof(Dy.Tuple);
 

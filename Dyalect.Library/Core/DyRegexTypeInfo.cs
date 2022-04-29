@@ -10,9 +10,6 @@ public sealed partial class DyRegexTypeInfo : DyForeignTypeInfo
 {
     public override string ReflectedTypeName => "Regex";
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
-
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {

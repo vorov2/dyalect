@@ -31,7 +31,7 @@ namespace Dyalect.Parser.Model
 
                 sb.Append(StringUtil.Escape(newSb.ToString()));
             }
-            else
+            else if (Value is not null)
                 sb.Append(StringUtil.Escape(Value));
         }
     }

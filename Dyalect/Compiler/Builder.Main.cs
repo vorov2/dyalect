@@ -769,7 +769,7 @@ partial class Builder
             {
                 Build(meth.Target, newHints.Append(Push), ctx);
                 AddLinePragma(node);
-                cw.HasMember(str.Value);
+                cw.HasMember(str.Value!);
                 PopIf(hints);
                 return;
             }
@@ -952,7 +952,7 @@ partial class Builder
         else
         {
             AddLinePragma(node);
-            cw.Push(node.Value);
+            cw.Push(node.Value!);
         }
 
         PopIf(hints);

@@ -6,10 +6,8 @@ namespace Dyalect.Runtime.Types;
 internal sealed partial class DyCharTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Add | SupportedOperations.Sub
-        | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
-        | SupportedOperations.Lit;
+        SupportedOperations.Add | SupportedOperations.Sub | SupportedOperations.Gt
+        | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte;
 
     public override string ReflectedTypeName => nameof(Dy.Char);
 

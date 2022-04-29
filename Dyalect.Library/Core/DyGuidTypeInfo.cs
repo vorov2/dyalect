@@ -1,7 +1,6 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 namespace Dyalect.Library.Core;
 
 [GeneratedType]
@@ -12,9 +11,6 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
     public override string ReflectedTypeName => GuidType;
 
     public DyGuidTypeInfo() => AddMixin(Dy.Comparable);
-
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>

@@ -22,6 +22,10 @@
   * Fix: _Strange behavior of `Iterator.Concat`_ ([Issue #845](https://github.com/vorov2/dyalect/issues/845)).
   * Fix: _Compiler may report similar errors twice_ ([Issue #848](https://github.com/vorov2/dyalect/issues/848)).
   * Fix: _Correct formatting to a string of several patterns_ ([Issue #851](https://github.com/vorov2/dyalect/issues/851)).
+  * Fix: _Function `parse` works incorrectly with interpolated strings_ ([Issue #853](https://github.com/vorov2/dyalect/issues/853)).
+  * Fix: _Interpolated strings do not work correctly inside pattern ranges_ ([Issue #856](https://github.com/vorov2/dyalect/issues/856)).
+  * Fix: _Parsers optimizations doesn't work in escape code parser _ ([Issue #857](https://github.com/vorov2/dyalect/issues/857)).
+  * Fix: _Invalid compilation of range pattern with interpolated strings_ ([Issue #854](https://github.com/vorov2/dyalect/issues/854)).
 
 # 0.43.0
   * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).

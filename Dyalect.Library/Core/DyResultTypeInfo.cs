@@ -12,8 +12,7 @@ public sealed partial class DyResultTypeInfo : DyForeignTypeInfo
     public override string ReflectedTypeName => "Result";
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Get | SupportedOperations.Len;
+        SupportedOperations.Get | SupportedOperations.Len;
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)

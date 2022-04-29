@@ -12,9 +12,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     public override int ReflectedTypeId => Dy.Array;
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
-        | SupportedOperations.Iter | SupportedOperations.Lit;
+        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter;
 
     public DyArrayTypeInfo() => AddMixin(Dy.Collection);
 

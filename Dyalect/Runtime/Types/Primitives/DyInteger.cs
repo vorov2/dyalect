@@ -30,7 +30,7 @@ public sealed class DyInteger : DyObject
 
     public override int GetHashCode() => Value.GetHashCode();
 
-    public override string ToString() => Value.ToString(CI.Default);
+    public override string ToString() => Value.ToString(InvariantCulture);
 
     public override bool Equals(DyObject? obj) => obj is DyInteger i && Value == i.Value;
 

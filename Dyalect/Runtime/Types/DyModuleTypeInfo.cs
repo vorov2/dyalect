@@ -6,9 +6,7 @@ namespace Dyalect.Runtime.Types;
 internal sealed class DyModuleTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Get | SupportedOperations.Len
-        | SupportedOperations.Iter;
+        SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
 
     public override string ReflectedTypeName => nameof(Dy.Module);
 

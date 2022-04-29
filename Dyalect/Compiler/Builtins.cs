@@ -66,7 +66,7 @@ internal static class Builtins
     public const string Set         = "op_set";
     public const string Length      = "Length";
     public const string String      = "ToString";
-    public const string ToLit       = "ToLiteral";
+    public const string ToLiteral   = "ToLiteral";
     public const string ToTuple     = "ToTuple";
     public const string ToArray     = "ToArray";
     public const string Iterator    = "Iterate";

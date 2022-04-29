@@ -104,7 +104,7 @@ public sealed class DyDebugger
     //    return true;
     //}
 
-    internal List<Breakpoint> Breakpoints { get; }
+    //internal List<Breakpoint> Breakpoints { get; }
 
     internal UnitComposition Composition { get; }
 }

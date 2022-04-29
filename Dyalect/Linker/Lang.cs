@@ -230,24 +230,17 @@ internal sealed partial class Lang : ForeignUnit
     [StaticMethod("parse")]
     internal static DyObject Parse(ExecutionContext ctx, string expression)
     {
-        try
-        {
-            var res = DyParser.Parse(SourceBuffer.FromString(expression));
+        var res = DyParser.Parse(SourceBuffer.FromString(expression));
 
-            if (!res.Success)
-                return ctx.ParsingFailed(res.Messages.First().ToString());
+        if (!res.Success)
+            return ctx.ParsingFailed(res.Messages.First().ToString());
 
-            if (res.Value!.Root is null || res.Value!.Root.Nodes.Count == 0)
-                return ctx.ParsingFailed("Empty expression.");
-            else if (res.Value!.Root.Nodes.Count > 1)
-                return ctx.ParsingFailed("Only single expressions allowed.");
+        if (res.Value!.Root is null || res.Value!.Root.Nodes.Count == 0)
+            return ctx.ParsingFailed("Empty expression.");
+        else if (res.Value!.Root.Nodes.Count > 1)
+            return ctx.ParsingFailed("Only single expressions allowed.");
 
-            return LiteralEvaluator.Eval(res.Value!.Root.Nodes[0]);
-        }
-        catch (Exception ex)
-        {
-            return ctx.ParsingFailed(ex.Message);
-        }
+        return LiteralEvaluator.Eval(res.Value!.Root.Nodes[0]);
     }
 
     [StaticMethod("eval")]

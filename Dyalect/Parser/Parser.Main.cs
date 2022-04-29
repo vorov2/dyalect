@@ -78,16 +78,6 @@ namespace Dyalect.Parser
             AddError(ParserError.SemanticError, new Location(line, col), s);
         }
 
-        private void Warning(int line, int col, string s)
-        {
-
-        }
-
-        private void Warning(string s)
-        {
-
-        }
-
         private void Expect(int n)
         {
             if (la.kind == n)
@@ -188,35 +178,6 @@ namespace Dyalect.Parser
 
             scanner.ResetPeek();
             return scanner.Peek().kind == _colonToken;
-        }
-
-        private bool IsIterator()
-        {
-            if (la.kind != _curlyLeftToken)
-                return false;
-
-            scanner.ResetPeek();
-            var x = la;
-            var balance = 0;
-
-            while (true)
-            {
-                if (x.kind == _commaToken && balance == 1)
-                    return true;
-
-                if (x.kind == _parenLeftToken || x.kind == _curlyLeftToken || x.kind == _squareLeftToken)
-                    balance++;
-                else if (x.kind == _parenRightToken || x.kind == _curlyRightToken || x.kind == _squareRightToken)
-                {
-                    balance--;
-                    if (balance == 0)
-                        break;
-                }
-
-                x = scanner.Peek();
-            }
-
-            return false;
         }
 
         private bool IsTuple(bool allowFields = true)
@@ -367,9 +328,9 @@ namespace Dyalect.Parser
             var c = t.val[^1];
 
             if (c == 'f' || c == 'F')
-                return double.Parse(t.val[0..^1], CI.NumberFormat);
+                return double.Parse(t.val[0..^1], InvariantCulture.NumberFormat);
 
-            return double.Parse(t.val, CI.NumberFormat);
+            return double.Parse(t.val, InvariantCulture.NumberFormat);
         }
     }
 }

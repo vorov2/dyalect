@@ -1,7 +1,6 @@
-﻿using System.Linq;
+﻿using Dyalect.Codegen;
+using System.Linq;
 using System.Text;
-using Dyalect.Codegen;
-using Dyalect.Debug;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -12,8 +11,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
     public override int ReflectedTypeId => Dy.Set;
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.Lit;
+        SupportedOperations.Len | SupportedOperations.Iter;
 
     public DySetTypeInfo() => AddMixin(Dy.Collection);
 

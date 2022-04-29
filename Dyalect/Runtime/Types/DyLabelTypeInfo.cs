@@ -2,9 +2,6 @@
 
 internal sealed class DyLabelTypeInfo : DyTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
-
     public override string ReflectedTypeName => nameof(Dy.Label);
 
     public override int ReflectedTypeId => Dy.Label;

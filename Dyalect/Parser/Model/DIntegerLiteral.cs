@@ -9,6 +9,6 @@ namespace Dyalect.Parser.Model
         public long Value { get; set; }
 
         internal override void ToString(StringBuilder sb) =>
-            sb.Append(Value.ToString(CI.NumberFormat));
+            sb.Append(Value.ToString(InvariantCulture.NumberFormat));
     }
 }

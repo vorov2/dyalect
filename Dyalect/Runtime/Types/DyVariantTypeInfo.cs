@@ -8,8 +8,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     public override int ReflectedTypeId => Dy.Variant;
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Len | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Lit;
+        SupportedOperations.Len | SupportedOperations.Get | SupportedOperations.Set;
 
     public DyVariantTypeInfo() => AddMixin(Dy.Collection);
 
