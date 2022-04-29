@@ -4,6 +4,8 @@ public sealed class FunSym
 {
     public string Name { get; }
 
+    public string? TypeName { get; init; }
+
     public Par[]? Parameters { get; init; }
 
     public int StartOffset { get; init; }
@@ -14,5 +16,6 @@ public sealed class FunSym
 
     internal FunSym(string name) => Name = name;
 
-    internal FunSym(string name, int offset, Par[] pars) => (Name, StartOffset, Parameters) = (name, offset, pars);
+    internal FunSym(string name, string? typeName, int offset, Par[] pars) =>
+        (Name, TypeName, StartOffset, Parameters) = (name, typeName, offset, pars);
 }

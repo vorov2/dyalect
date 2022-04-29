@@ -185,7 +185,8 @@ public static class ObjectFileReader
                 Handle = reader.ReadInt32(),
                 StartOffset = reader.ReadInt32(),
                 EndOffset = reader.ReadInt32(),
-                Parameters = new Par[reader.ReadInt32()]
+                TypeName = reader.ReadBoolean() ? reader.ReadString() : null,
+                Parameters = new Par[reader.ReadInt32()],
             };
 
             for (var j = 0; j < f.Parameters.Length; j++)

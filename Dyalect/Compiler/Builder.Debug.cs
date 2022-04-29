@@ -38,10 +38,10 @@ partial class Builder
 
     //Call this to generate the first part of FunSym
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void StartFun(string name, Par[] pars)
+    private void StartFun(string name, string? typeName, Par[] pars)
     {
         cw.StartFrame();
-        pdb.StartFunction(name, cw.Offset, pars);
+        pdb.StartFunction(name, cw.Offset, typeName, pars);
     }
 
     //Call this to finalized generation of FunSym

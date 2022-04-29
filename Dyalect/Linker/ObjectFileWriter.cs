@@ -170,6 +170,8 @@ namespace Dyalect.Linker
                 writer.Write(f.Handle);
                 writer.Write(f.StartOffset);
                 writer.Write(f.EndOffset);
+                writer.Write(f.TypeName is not null);
+                writer.Write(f.TypeName ?? "");
                 writer.Write(f.Parameters is null ? 0 : f.Parameters.Length);
                 if (f.Parameters is not null)
                     foreach (var p in f.Parameters)

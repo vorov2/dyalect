@@ -108,7 +108,7 @@ public class DyTuple : DyCollection
     protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
         values[index].TypeId == Dy.Label ? values[index].GetTaggedValue() : values[index];
 
-    internal virtual string GetKey(int index) => values[index].GetLabel()!;
+    internal virtual string? GetKey(int index) => values[index].GetLabel();
 
     protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
     {

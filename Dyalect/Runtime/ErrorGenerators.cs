@@ -337,25 +337,27 @@ public static class ErrorGenerators
     public static string GetErrorDescription(DyVariant err)
     {
         if (!Enum.TryParse<DyErrorCode>(err.Constructor, true, out var res))
+        {
+            if (err.Tuple.Count > 0)
+                return err.Tuple.GetValue(0).ToString() ?? err.Constructor;
+
             return err.Constructor;
+        }
 
         var idx = err.Tuple.Count;
         var str = RuntimeErrors.ResourceManager.GetString(err.Constructor + "." + idx);
 
         if (str is not null && err.Tuple.Count > 0)
-            {
+        {
             var vals = err.Tuple.GetValues()
                 .Select(v => v is DyTypeInfo t ? t.ReflectedTypeName : (v.ToString() ?? ""))
                 .ToArray();
             str = str.Format(vals);
         }
         else if (str is null)
-        {
             str = RuntimeErrors.ResourceManager.GetString(err.Constructor + ".0");
-            str ??= err.Constructor;
-        }
 
-        return str;
+        return str ?? err.Constructor;
     }
 
     private static void ProcessArguments(StringBuilder sb, object[]? args)

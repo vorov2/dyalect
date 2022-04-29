@@ -4,7 +4,7 @@ namespace Dyalect.Debug;
 
 public sealed class DyDebugger
 {
-    private const string Func = "<func>";
+    private const string DefaultName = "<func>";
     private const string Unknown = "<unknown>";
     private const string Global = "<global>";
 
@@ -61,7 +61,10 @@ public sealed class DyDebugger
 
             if (funSym != null)
             {
-                codeBlockName = funSym.Name ?? Func;
+                codeBlockName = funSym.Name ?? DefaultName;
+
+                if (funSym.TypeName is not null)
+                    codeBlockName = funSym.TypeName + "." + codeBlockName;
 
                 if (funSym.Parameters is not null)
                     codeBlockName += "(" + string.Join(",", funSym.Parameters) + ")";
@@ -101,7 +104,7 @@ public sealed class DyDebugger
     //    return true;
     //}
 
-    //internal List<Breakpoint> Breakpoints { get; }
+    internal List<Breakpoint> Breakpoints { get; }
 
     internal UnitComposition Composition { get; }
 }

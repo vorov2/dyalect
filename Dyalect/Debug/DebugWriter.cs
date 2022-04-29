@@ -26,8 +26,8 @@ public sealed class DebugWriter
 
     public DebugWriter Clone() => new(this);
 
-    public void StartFunction(string name, int offset, Par[]? pars = null) =>
-        funs.Push(new(name, offset, pars ?? Array.Empty<Par>()));
+    public void StartFunction(string name, int offset, string? typeName, Par[]? pars = null) =>
+        funs.Push(new(name, typeName, offset, pars ?? Array.Empty<Par>()));
     
     public void EndFunction(int handle, int offset)
     {

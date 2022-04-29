@@ -371,7 +371,7 @@ partial class Builder
     {
         var iterBody = hints.Has(IteratorBody);
         var args = CompileFunctionParameters(node);
-        StartFun(node.Setter ? Builtins.Setter(node.Name!) : node.Name!, args);
+        StartFun(node.Setter ? Builtins.Setter(node.Name!) : node.Name!, node.TypeName is not null ? node.TypeName.Local : null, args);
 
         if (node.IsStatic && node.TypeName is null)
             AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);
