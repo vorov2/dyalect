@@ -2,7 +2,6 @@
 using Dyalect.Linker;
 using Dyalect.Runtime.Types;
 using Dyalect.Strings;
-using System;
 using System.Linq;
 using System.Reflection;
 namespace Dyalect.Runtime;

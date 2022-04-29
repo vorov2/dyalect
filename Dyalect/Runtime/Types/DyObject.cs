@@ -1,5 +1,4 @@
 ﻿using Dyalect.Compiler;
-using System;
 using System.IO;
 namespace Dyalect.Runtime.Types;
 

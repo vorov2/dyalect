@@ -1,7 +1,5 @@
 # 0.44.0
-  * Add: _Remove name field from `TypeInfo`, add `getTypeName` function_ ([Issue #813](https://github.com/vorov2/dyalect/issues/813), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).
-  * Add: _Support concatenation with + for iterators_ ([Issue #809](https://github.com/vorov2/dyalect/issues/809), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#typeName)).
-  * Add: _Add a way to enforce reference comparison_ ([Issue #839](https://github.com/vorov2/dyalect/issues/839), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#referenceEquals)).
+  * Change: _Refactorings and optimizations._
   * Change: _Mixin Bounded contains only static properties_ ([Issue #831](https://github.com/vorov2/dyalect/issues/831)).
   * Change: _Make method `String.Empty` property_ ([Issue #834](https://github.com/vorov2/dyalect/issues/834)).
   * Change: _Make method `Float.Inf` property and rename it to `Infinity`_ ([Issue #833](https://github.com/vorov2/dyalect/issues/833)).
@@ -11,11 +9,15 @@
   * Change: _Optimize cloning behavior for variants_ ([Issue #841](https://github.com/vorov2/dyalect/issues/841)).
   * Change: _Dyalect Console "swallows" errors thrown during formatting of output to a string_ ([Issue #846](https://github.com/vorov2/dyalect/issues/846)).
   * Change: _Rename `Result.Value` method to `Result.GetValue`_ ([Issue #847](https://github.com/vorov2/dyalect/issues/847)).
+  * Add: _Remove name field from `TypeInfo`, add `getTypeName` function_ ([Issue #813](https://github.com/vorov2/dyalect/issues/813), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).
+  * Add: _Support concatenation with + for iterators_ ([Issue #809](https://github.com/vorov2/dyalect/issues/809), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#typeName)).
+  * Add: _Add a way to enforce reference comparison_ ([Issue #839](https://github.com/vorov2/dyalect/issues/839), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#referenceEquals)).
   * Fix: _Regression: incorrect type name in some type related errors_ ([Issue #836](https://github.com/vorov2/dyalect/issues/836)).
   * Fix: _Different behavior with optimizer turned on_ ([Issue #840](https://github.com/vorov2/dyalect/issues/840)).
   * Fix: _Stack trace incorrectly reporting global scope_ ([Issue #843](https://github.com/vorov2/dyalect/issues/843)).
   * Fix: _Strange behavior of `Iterator.Concat`_ ([Issue #845](https://github.com/vorov2/dyalect/issues/845)).
-  
+  * Fix: _Compiler may report similar errors twice_ ([Issue #848](https://github.com/vorov2/dyalect/issues/848)).
+
 # 0.43.0
   * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).
   * Add: _An ability to convert an iterator to a stateful function_ ([Issue #807](https://github.com/vorov2/dyalect/issues/807), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).

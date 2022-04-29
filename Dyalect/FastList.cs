@@ -71,7 +71,7 @@ public sealed class FastList<T> : IEnumerable<T>
 
     public int IndexOf(T elem) => Array.IndexOf(array, elem);
 
-    internal T[] GetRawArray() => array;
+    internal T[] UnsafeGetArray() => array;
 
     internal void Clear()
     {

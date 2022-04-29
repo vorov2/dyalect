@@ -11,8 +11,10 @@ public sealed class DyInteger : DyObject
     public static readonly DyInteger Max = new(long.MaxValue);
     public static readonly DyInteger Min = new(long.MinValue);
 
-    public override string TypeName => nameof(Dy.Integer); 
-    
+    public override string TypeName => nameof(Dy.Integer);
+
+    internal readonly long Value;
+
     public static DyInteger Get(long i) =>
         i switch
         {
@@ -23,8 +25,6 @@ public sealed class DyInteger : DyObject
             3 => Three,
             _ => new DyInteger(i)
         };
-
-    internal readonly long Value;
 
     public DyInteger(long value) : base(Dy.Integer) => this.Value = value;
 
