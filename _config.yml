@@ -1,7 +1,7 @@
 theme: jekyll-theme-hacker
 title: Dyalect
-description: Dyalect, a dynamic language for .NET Core
-show_downloads: false
+description: Dyalect, a dynamic language for .NET
+show_downloads: true
 github:
-      zip_url: http://example.com/download.zip
-      tar_url: http://example.com/download.tar.gz
+      zip_url: https://github.com/vorov2/dyalect/releases/
+      tar_url: https://github.com/vorov2/dyalect/releases/
