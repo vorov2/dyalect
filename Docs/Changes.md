@@ -12,6 +12,7 @@
   * Change: _Stack trace doesn't print the name of the type for member functions_ ([Issue #849](https://github.com/vorov2/dyalect/issues/849)).
   * Change: _Change patterns priority_ ([Issue #850](https://github.com/vorov2/dyalect/issues/850)).
   * Change: _Use system UI culture for formatting to string_ ([Issue #852](https://github.com/vorov2/dyalect/issues/852)).
+  * Change: _ToLiteral can raise an exception if it is not explicitly supported_ ([Issue #766](https://github.com/vorov2/dyalect/issues/766)).
   * Add: _Remove name field from `TypeInfo`, add `getTypeName` function_ ([Issue #813](https://github.com/vorov2/dyalect/issues/813), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).
   * Add: _Support concatenation with + for iterators_ ([Issue #809](https://github.com/vorov2/dyalect/issues/809), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#typeName)).
   * Add: _Add a way to enforce reference comparison_ ([Issue #839](https://github.com/vorov2/dyalect/issues/839), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#referenceEquals)).
