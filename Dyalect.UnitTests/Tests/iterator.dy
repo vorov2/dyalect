@@ -42,7 +42,7 @@
     assert(10, seq.First())
 #endregion
 
-#region "Methods: First, Last, Len"
+#region "Methods: First, Last, Length"
     var xs = yields { 1, 2, 3, 4, 5 }
     assert(5, xs.Length())
     assert(5, xs.Length())
@@ -50,6 +50,15 @@
     assert(5, xs.Length())
     xs.Last()
     assert(5, xs.Length())
+#endregion
+
+#region "Methods: Single"
+    var xs = yields { 1, 2, 3, 4, 5 }
+    assert(nil, xs.Single())
+    xs = yields { 42 }
+    assert(42, xs.Single())
+    xs = yields { }
+    assert(nil, xs.Single())
 #endregion
 
 #region "Iterator as argument"

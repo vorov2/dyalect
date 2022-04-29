@@ -130,7 +130,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 
         try
         {
-            var map = 
+            var map =
                 valueSelector is not null
                 ? seq.ToDictionary(dy => keySelector.Invoke(ctx, dy), dy => valueSelector.Invoke(ctx, dy))
                 : seq.ToDictionary(dy => keySelector.Invoke(ctx, dy));
@@ -159,6 +159,22 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     [InstanceMethod]
     internal static DyObject First(ExecutionContext ctx, DyObject self) =>
         DyIterator.ToEnumerable(ctx, self).FirstOrDefault() ?? Nil;
+
+    [InstanceMethod]
+    internal static DyObject Single(ExecutionContext ctx, DyObject self)
+    {
+        var seq = DyIterator.ToEnumerable(ctx, self);
+
+        if (ctx.HasErrors)
+            return Nil;
+
+        var two = seq.Take(2).ToList();
+
+        if (two.Count > 1 || two.Count == 0)
+            return Nil;
+
+        return two[0];
+    }
 
     [InstanceMethod]
     internal static DyObject Last(ExecutionContext ctx, DyObject self) =>
