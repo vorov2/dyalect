@@ -53,7 +53,7 @@
 #region "Result: Length and indexer"
     let x = Result.Success(42)
     assert(1, x.Length())
-    assert(42, x.Value())
+    assert(42, x.GetValue())
     assert(42, x.value)
     assert(42, x[0])
 #endregion

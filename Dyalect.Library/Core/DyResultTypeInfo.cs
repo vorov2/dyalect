@@ -47,8 +47,8 @@ public sealed partial class DyResultTypeInfo : DyForeignTypeInfo
     }
     #endregion
 
-    [InstanceMethod("Value")]
-    internal static DyObject TryGet(ExecutionContext ctx, DyResult self)
+    [InstanceMethod]
+    internal static DyObject GetValue(ExecutionContext ctx, DyResult self)
     {
         if (self.Constructor is not FAILURE)
             return self.Value;

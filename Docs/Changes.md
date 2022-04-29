@@ -9,6 +9,7 @@
   * Change: _Optimize cloning behavior for tuples_ ([Issue #838](https://github.com/vorov2/dyalect/issues/838)).
   * Change: _Optimize cloning behavior for variants_ ([Issue #841](https://github.com/vorov2/dyalect/issues/841)).
   * Change: _Dyalect Console "swallows" errors thrown during formatting of output to a string_ ([Issue #846](https://github.com/vorov2/dyalect/issues/846)).
+  * Change: _Rename `Result.Value` method to `Result.GetValue`_ ([Issue #847](https://github.com/vorov2/dyalect/issues/847)).
   * Fix: _Regression: incorrect type name in some type related errors_ ([Issue #836](https://github.com/vorov2/dyalect/issues/836)).
   * Fix: _Different behavior with optimizer turned on_ ([Issue #840](https://github.com/vorov2/dyalect/issues/840)).
   * Fix: _Stack trace incorrectly reporting global scope_ ([Issue #843](https://github.com/vorov2/dyalect/issues/843)).
