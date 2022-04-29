@@ -17,10 +17,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     public override int ReflectedTypeId => Dy.Iterator;
 
     #region Operations
-    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
-    {
-        return base.AddOp(ctx, left, right);
-    }
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right) => Concat(ctx, left, right);
 
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject self)
     {

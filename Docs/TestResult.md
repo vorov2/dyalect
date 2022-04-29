@@ -1,7 +1,7 @@
-# Test session from 29/04/2022 12:00
+# Test session from 29/04/2022 12:03
 
 ## Summary:
-787 passed, 0 failed in 28 file(s)
+788 passed, 0 failed in 28 file(s)
 
 ## Test file(s):
 [array.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [interop.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\interop.dy), [iterator.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [mixin.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\mixin.dy), [modules.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
@@ -358,6 +358,7 @@
 * &#9745; **Iterator as method**
 * &#9745; **Breaking iteration**
 * &#9745; **Methods: Concat**
+* &#9745; **Methods: Concat with +**
 * &#9745; **Yield many 1**
 * &#9745; **Yield many 2**
 * &#9745; **Yield many 3**

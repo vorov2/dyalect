@@ -205,6 +205,13 @@
     assert([1..10], res.ToArray())
 #endregion
 
+#region "Methods: Concat with +"
+    var xs = 1..5
+    var ys = 6..10
+    var res = xs + ys
+    assert([1..10], res.ToArray())
+#endregion
+
 #region "Yield many 1"
     func bar() {
         yield 4
