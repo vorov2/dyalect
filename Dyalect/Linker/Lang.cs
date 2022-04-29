@@ -3,13 +3,11 @@ using Dyalect.Compiler;
 using Dyalect.Parser;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
 namespace Dyalect.Linker;
 
 [GeneratedModule]
@@ -27,6 +25,9 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     protected override void Execute(ExecutionContext ctx) => Add("args", startupArguments ?? Nil);
+
+    [StaticMethod("referenceEquals")]
+    internal static bool Equals(DyObject value, DyObject other) => ReferenceEquals(value, other);
 
     [StaticMethod("print")]
     internal static void Print(ExecutionContext ctx, [VarArg] DyTuple values, [Default(",")]string separator, [Default("\n")]DyObject terminator)

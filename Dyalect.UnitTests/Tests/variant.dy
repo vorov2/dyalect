@@ -31,6 +31,19 @@
     }
 #endregion
 
+#region "Methods: Clone 1"
+    let x = @Foo(1,2,3)
+    assert(true, x == @Foo(1,2,3))
+    assert(true, x == x.Clone())
+#endregion
+
+#region "Methods: Clone 2"
+    let x = @Foo(1,2,3)
+    assert(true, referenceEquals(x, x.Clone()))
+    let y = @Foo(var x: 1,2,3)
+    assert(false, referenceEquals(y, y.Clone()))
+#endregion
+
 #region "Equality"
     let x = @Foo(1, 2, 3)
     let y = @Foo(1, 2, 3)

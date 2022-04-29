@@ -9,10 +9,17 @@
     assert("(x: 42, y: foo)", res)
 #endregion
 
-#region "Methods: Clone"
+#region "Methods: Clone 1"
     let xs = (1,2,3)
     assert(true, xs == xs)
     assert(true, xs.Clone() == xs)
+#endregion
+
+#region "Methods: Clone 2"
+    let xs = (1,2,3)
+    assert(true, referenceEquals(xs.Clone(), xs))
+    let ys = (var x: 1, 2, 3)
+    assert(false, referenceEquals(ys.Clone(), ys))
 #endregion
 
 #region "Methods: GetType"

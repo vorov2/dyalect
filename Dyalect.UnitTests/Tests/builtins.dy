@@ -144,3 +144,17 @@
     assert("Char", typeName << 'c'.GetType())
     assert("Char", typeName('c'))
 #endregion
+
+#region "equals 1"
+    var x = 2
+    var y = 1 + 1
+    assert(true, x == y)
+    assert(false, referenceEquals(x, y))
+#endregion
+
+#region "equals 2"
+    let xs = (1,2,3)
+    let ys = (1,2,3)
+    assert(true, xs == ys)
+    assert(false, referenceEquals(xs, ys))
+#endregion

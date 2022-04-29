@@ -24,6 +24,7 @@
 
 #region "Methods: Clone"
     assert(true, nil == nil.Clone())
+    assert(true, referenceEquals(nil, nil.Clone()))
 #endregion
 
 #region "Conversion: as"
