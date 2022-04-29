@@ -213,7 +213,7 @@ public class DyTuple : DyCollection
         return arr;
     }
 
-    private bool IsMutable()
+    internal override bool IsMutable()
     {
         if (mutable is not null)
             return mutable.Value;

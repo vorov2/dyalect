@@ -13,7 +13,7 @@ internal sealed class DyMetaTypeInfo : DyTypeInfo
 
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
-        var ret = ctx.RuntimeContext.Types[((DyTypeInfo)arg).ReflectedTypeId].GetStaticMember(Builtins.ToString, ctx);
+        var ret = ctx.RuntimeContext.Types[((DyTypeInfo)arg).ReflectedTypeId].GetStaticMember(Builtins.String, ctx);
 
         if (ctx.HasErrors || ret is null)
             return Nil;

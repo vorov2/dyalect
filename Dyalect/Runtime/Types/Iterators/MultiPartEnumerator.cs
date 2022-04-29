@@ -29,7 +29,9 @@ internal sealed class MultiPartEnumerator : IEnumerator<DyObject>
                 nextIterator++;
                 ctx.ThrowIf();
                 current = it.GetEnumerator();
-                return current.MoveNext();
+                var ret = current.MoveNext();
+                ctx.ThrowIf();
+                return ret;
             }
             else
                 return false;

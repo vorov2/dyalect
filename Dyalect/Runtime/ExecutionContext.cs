@@ -54,7 +54,7 @@ public class ExecutionContext
         {
             var err = Error;
             Error = null;
-            throw new DyErrorException(err);
+            throw new DyCodeException(err);
         }
     }
 

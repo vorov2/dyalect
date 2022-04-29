@@ -551,7 +551,7 @@ public abstract class DyTypeInfo : DyObject
             var set = Builtins.GetSetterName(name);
 
             if ((set == Builtins.Length & (GetSupportedOperations() & SupportedOperations.Len) == SupportedOperations.Len)
-                || set == Builtins.ToString || (Members.TryGetValue(set, out var get) && !get.Auto))
+                || set == Builtins.String || (Members.TryGetValue(set, out var get) && !get.Auto))
             {
                 ctx.InvalidOverload(set);
                 return;
@@ -608,7 +608,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.InvalidOverload(name);
                 len = func;
                 break;
-            case Builtins.ToString:
+            case Builtins.String:
                 if (func is not null && func.Auto)
                     ctx.InvalidOverload(name);
                 tos = func; 
@@ -671,7 +671,7 @@ public abstract class DyTypeInfo : DyObject
             Builtins.Get => Support(self, SupportedOperations.Get) ? Binary(name, Get, "index") : null,
             Builtins.Set => Support(self, SupportedOperations.Set) ? Ternary(name, Set, "index", "value") : null,
             Builtins.Length => Support(self, SupportedOperations.Len) ? Unary(name, Length) : null,
-            Builtins.ToString => Binary(name, ToStringWithFormat, new Par("format", Nil)),
+            Builtins.String => Binary(name, ToStringWithFormat, new Par("format", Nil)),
             Builtins.ToLit => Support(self, SupportedOperations.Lit) ? Unary(name, ToLiteral) : null,
             Builtins.Iterator => Support(self, SupportedOperations.Iter) ? Unary(name, GetIterator) : null,
             Builtins.Clone => Unary(name, Clone),

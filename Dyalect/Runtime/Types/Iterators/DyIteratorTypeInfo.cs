@@ -17,6 +17,11 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     public override int ReflectedTypeId => Dy.Iterator;
 
     #region Operations
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
+    {
+        return base.AddOp(ctx, left, right);
+    }
+
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject self)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
@@ -255,7 +260,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
                 var res = predicate.Invoke(ctx, dy);
 
                 if (ctx.HasErrors)
-                    throw new DyErrorException(ctx.Error!);
+                    throw new DyCodeException(ctx.Error!);
 
                 return res.IsTrue();
             });

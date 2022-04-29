@@ -746,7 +746,7 @@ public static partial class DyMachine
         {
             return ctx.Timeout();
         }
-        catch (DyErrorException ex)
+        catch (DyCodeException ex)
         {
             ctx.Error = ex.Error;
             return DyNil.Instance;
