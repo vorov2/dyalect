@@ -482,3 +482,12 @@
     res = y is <=1 or >5
     assert(false, res)
 #endregion
+
+#region "Not nil pattern"
+    let x = 12
+    if x is not nil y {
+        assert(12, y)
+    } else {
+        assert(got: false)
+    }
+#endregion

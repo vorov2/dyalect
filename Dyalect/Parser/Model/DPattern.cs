@@ -92,7 +92,11 @@ namespace Dyalect.Parser.Model
     {
         public DNotPattern(Location loc) : base(loc, NodeType.NotPattern) { }
 
-        internal override void ToString(StringBuilder sb) => sb.Append("not");
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append("not ");
+            Pattern.ToString(sb);
+        }
 
         public DPattern Pattern { get; set; } = null!;
 
@@ -210,7 +214,7 @@ namespace Dyalect.Parser.Model
         internal override void ToString(StringBuilder sb)
         {
             Pattern?.ToString(sb);
-            sb.Append(" as " + Name);
+            sb.Append(" " + Name);
         }
     }
 

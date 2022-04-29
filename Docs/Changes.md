@@ -10,6 +10,7 @@
   * Change: _Dyalect Console "swallows" errors thrown during formatting of output to a string_ ([Issue #846](https://github.com/vorov2/dyalect/issues/846)).
   * Change: _Rename `Result.Value` method to `Result.GetValue`_ ([Issue #847](https://github.com/vorov2/dyalect/issues/847)).
   * Change: _Stack trace doesn't print the name of the type for member functions_ ([Issue #849](https://github.com/vorov2/dyalect/issues/849)).
+  * Change: _Change patterns priority_ ([Issue #850](https://github.com/vorov2/dyalect/issues/850)).
   * Add: _Remove name field from `TypeInfo`, add `getTypeName` function_ ([Issue #813](https://github.com/vorov2/dyalect/issues/813), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).
   * Add: _Support concatenation with + for iterators_ ([Issue #809](https://github.com/vorov2/dyalect/issues/809), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#typeName)).
   * Add: _Add a way to enforce reference comparison_ ([Issue #839](https://github.com/vorov2/dyalect/issues/839), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#referenceEquals)).
@@ -18,6 +19,7 @@
   * Fix: _Stack trace incorrectly reporting global scope_ ([Issue #843](https://github.com/vorov2/dyalect/issues/843)).
   * Fix: _Strange behavior of `Iterator.Concat`_ ([Issue #845](https://github.com/vorov2/dyalect/issues/845)).
   * Fix: _Compiler may report similar errors twice_ ([Issue #848](https://github.com/vorov2/dyalect/issues/848)).
+  * Fix: _Correct formatting to a string of several patterns_ ([Issue #851](https://github.com/vorov2/dyalect/issues/851)).
 
 # 0.43.0
   * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).
