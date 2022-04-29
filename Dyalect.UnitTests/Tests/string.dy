@@ -20,7 +20,7 @@
     assert(true, TypeInfo(x) == String)
     assert(true, x.GetType() == String)
     var t = TypeInfo(x)
-    assert("String", t.name)
+    assert("String", typeName(t))
 #endregion
 
 #region "Methods: Length"

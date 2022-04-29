@@ -11,18 +11,6 @@ internal sealed class DyMetaTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.TypeInfo;
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
-    {
-        if (index.TypeId == Dy.String)
-            return index.GetString() switch
-            {
-                "name" => new DyString(((DyTypeInfo)self).ReflectedTypeName),
-                _ => ctx.IndexOutOfRange(index)
-            };
-
-        return ctx.IndexOutOfRange();
-    }
-
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         var ret = ctx.RuntimeContext.Types[((DyTypeInfo)arg).ReflectedTypeId].GetStaticMember(Builtins.ToString, ctx);

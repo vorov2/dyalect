@@ -3,7 +3,7 @@
 #endregion
 
 #region "File: GetType"
-    assert("File", File.name)
+    assert("File", typeName(File))
 #endregion
 
 #region "File: Exists"
@@ -53,7 +53,7 @@
 #endregion
 
 #region "Path: GetType"
-    assert("Path", Path.name)
+    assert("Path", typeName(Path))
 #endregion
 
 #region "Path: GetDirectory"
@@ -111,7 +111,7 @@
 #endregion
 
 #region "Directory: GetType"
-    assert("Directory", Directory.name)
+    assert("Directory", typeName(Directory))
 #endregion
 
 #region "Directory: Exists"
@@ -130,7 +130,7 @@
 #endregion
 
 #region "Drive: GetType"
-    assert("Drive", Drive.name)
+    assert("Drive", typeName(Drive))
 #endregion
 
 #region "Drive: GetDrives"

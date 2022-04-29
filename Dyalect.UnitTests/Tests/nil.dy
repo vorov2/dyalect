@@ -19,7 +19,7 @@
     assert(true, TypeInfo(x) == Nil)
     assert(true, x.GetType() == Nil)
     var t = TypeInfo(x)
-    assert("Nil", t.name)
+    assert("Nil", typeName(t))
 #endregion
 
 #region "Methods: Clone"

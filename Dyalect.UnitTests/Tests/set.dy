@@ -14,7 +14,7 @@
     assert(true, TypeInfo(x) == Set)
     assert(true, x.GetType() == Set)
     var t = TypeInfo(x)
-    assert("Set", t.name)
+    assert("Set", typeName(t))
 #endregion
 
 #region "Methods: Add, Len"

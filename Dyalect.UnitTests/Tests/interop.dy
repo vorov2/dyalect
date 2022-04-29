@@ -8,7 +8,8 @@
 	let _Version = Interop("System.Version")
 	let v = _Version.[new]("12.0.34.1")
 	let res = v.[get_Major]()
-	assert("Integer", res.GetType().name)
+	assert("Integer", typeName << res.GetType())
+	assert("Integer", typeName << res)
 	assert(12, res)
 #endregion
 

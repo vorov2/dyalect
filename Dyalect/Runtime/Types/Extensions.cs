@@ -67,7 +67,7 @@ public static class Extensions
     }
 
     public static DyString ToString(this DyObject self, ExecutionContext ctx) =>
-        (DyString)ctx.RuntimeContext.Types[self.TypeId].ToString(ctx, self);
+        self.Is(Dy.TypeInfo) ? new DyString(self.ToString()) : (DyString)ctx.RuntimeContext.Types[self.TypeId].ToString(ctx, self);
 
     public static DyString ToLiteral(this DyObject self, ExecutionContext ctx) =>
         (DyString)ctx.RuntimeContext.Types[self.TypeId].ToLiteral(ctx, self);

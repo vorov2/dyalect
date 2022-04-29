@@ -19,7 +19,7 @@
     assert(true, TypeInfo(x) == Iterator)
     assert(true, x.GetType() == Iterator)
     var t = TypeInfo(x)
-    assert("Iterator", t.name)
+    assert("Iterator", typeName(t))
 #endregion
 
 #region "Methods: Clone"

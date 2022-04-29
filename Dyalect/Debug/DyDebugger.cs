@@ -70,7 +70,7 @@ namespace Dyalect.Debug
 
                 frames.Add(new(
                     moduleName: unit.FileName,
-                    codeBlockName: codeBlockName ?? "<unknown>",
+                    codeBlockName: codeBlockName ?? "<global>",
                     offset: offset,
                     lineSym: line ?? new LineSym(offset)));
             }

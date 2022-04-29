@@ -16,7 +16,7 @@
     assert(true, TypeInfo(x) == Char)
     assert(true, x.GetType() == Char)
     let t = TypeInfo(x)
-    assert("Char", t.name)
+    assert("Char", typeName(t))
 #endregion
 
 #region "Methods: Default"

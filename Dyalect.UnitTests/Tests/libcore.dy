@@ -8,7 +8,7 @@
 #region "StringBuilder: GetType"
     let sb = StringBuilder()
     assert(StringBuilder, sb.GetType())
-    assert("StringBuilder", sb.GetType().name)
+    assert("StringBuilder", typeName << sb.GetType())
 #endregion
 
 #region "StringBuilder: Append, AppendLine"
@@ -47,7 +47,7 @@
 
 #region "Result: GetType"
     assert(Result, Result.Success(true).GetType())
-    assert("Result", Result.Success(true).GetType().name)
+    assert("Result", typeName << Result.Success(true).GetType())
 #endregion
 
 #region "Result: Length and indexer"
@@ -86,7 +86,7 @@
 #region "Guid: GetType"
     let g = Guid()
     assert(Guid, g.GetType())
-    assert("Guid", g.GetType().name)
+    assert("Guid", typeName << g.GetType())
 #endregion
 
 #region "Guid: Parse"
@@ -124,7 +124,7 @@
 #region "Regex: GetType"
     let r = Regex("\\.")
     assert(Regex, r.GetType())
-    assert("Regex", r.GetType().name)
+    assert("Regex", typeName << r.GetType())
 #endregion
 
 #region "Regex: Match 1"
@@ -212,7 +212,7 @@ fox is the red fox.]>
 #region "ByteArray: GetType"
     let barr = ByteArray()
     assert(ByteArray, barr.GetType())
-    assert("ByteArray", barr.GetType().name)
+    assert("ByteArray", typeName << barr.GetType())
 #endregion
 
 #region "ByteArray: read and write"
@@ -233,7 +233,7 @@ fox is the red fox.]>
 #region "TimeDelta: GetType"
     let td = TimeDelta(days: 1)
     assert(TimeDelta, td.GetType())
-    assert("TimeDelta", td.GetType().name)
+    assert("TimeDelta", typeName << td.GetType())
 #endregion
 
 #region "TimeDelta: construction"
@@ -327,7 +327,7 @@ fox is the red fox.]>
 #region "DateTime: GetType"
     let dt = DateTime.Now()
     assert(DateTime, dt.GetType())
-    assert("DateTime", dt.GetType().name)
+    assert("DateTime", typeName << dt.GetType())
 #endregion
 
 #region "DateTime: Min, Max and Default"
@@ -452,7 +452,7 @@ fox is the red fox.]>
 #region "LocalDateTime: GetType"
     let dt = LocalDateTime.Now()
     assert(LocalDateTime, dt.GetType())
-    assert("LocalDateTime", dt.GetType().name)
+    assert("LocalDateTime", typeName << dt.GetType())
 #endregion
 
 #region "LocalDateTime: ToString"
@@ -509,7 +509,7 @@ fox is the red fox.]>
 #endregion
 
 #region "Calendar: GetType"
-    assert("Calendar", Calendar.name)
+    assert("Calendar", typeName(Calendar))
 #endregion
 
 #region "Calendar: ParseDateTime 1"
@@ -571,7 +571,7 @@ fox is the red fox.]>
 #region "Time: GetType"
     let td = Time(hour: 1)
     assert(Time, td.GetType())
-    assert("Time", td.GetType().name)
+    assert("Time", typeName << td.GetType())
 #endregion
 
 #region "Time: construction"
@@ -642,7 +642,7 @@ fox is the red fox.]>
 #region "Date: GetType"
     let td = Date(year: 2012, month: 12, day: 12)
     assert(Date, td.GetType())
-    assert("Date", td.GetType().name)
+    assert("Date", typeName << td.GetType())
 #endregion
 
 #region "Date: construction"

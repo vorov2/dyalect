@@ -72,7 +72,7 @@
     assert(true, TypeInfo(x) == Function)
     assert(true, x.GetType() == Function)
     var t = TypeInfo(x)
-    assert("Function", t.name)
+    assert("Function", typeName(t))
 #endregion
 
 #region "Properties"

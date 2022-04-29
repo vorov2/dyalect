@@ -7,7 +7,7 @@
 #endregion
 
 #region "Number: GetType"
-	assert("Number", Number.name)
+	assert("Number", typeName(Number))
 #endregion
 
 #region "Collection"
@@ -28,7 +28,7 @@
 #endregion
 
 #region "Collection: GetType"
-	assert("Collection", Collection.name)
+	assert("Collection", typeName(Collection))
 #endregion
 
 #region "Comparable"
@@ -40,11 +40,11 @@
 #endregion
 
 #region "Comparable: GetType"
-	assert("Comparable", Comparable.name)
+	assert("Comparable", typeName(Comparable))
 #endregion
 
 #region "Object: GetType"
-	assert("Object", Object.name)
+	assert("Object", typeName(Object))
 #endregion
 
 #region "Custom type"

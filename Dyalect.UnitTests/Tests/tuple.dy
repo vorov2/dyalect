@@ -20,7 +20,7 @@
     assert(true, TypeInfo(x) == Tuple)
     assert(true, x.GetType() == Tuple)
     var t = TypeInfo(x)
-    assert("Tuple", t.name)
+    assert("Tuple", typeName(t))
 #endregion
 
 #region "Tuple literal 1"

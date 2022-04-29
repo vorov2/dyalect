@@ -23,7 +23,7 @@
     assert(true, TypeInfo(x) == Integer)
     assert(true, x.GetType() == Integer)
     let t = TypeInfo(x)
-    assert("Integer", t.name)
+    assert("Integer", typeName(t))
 #endregion
 
 

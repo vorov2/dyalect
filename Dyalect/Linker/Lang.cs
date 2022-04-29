@@ -38,7 +38,7 @@ internal sealed partial class Lang : ForeignUnit
             if (!fst && !string.IsNullOrEmpty(separator))
                 Console.Write(separator);
 
-            if (a.TypeId is Dy.String)
+            if (a.Is(Dy.String))
                 Console.Write(a.GetString());
             else
                 Console.Write(a.ToString(ctx));
@@ -73,6 +73,15 @@ internal sealed partial class Lang : ForeignUnit
 
     [StaticMethod("constructorName")]
     internal static string? GetConstructorName(DyObject value) => value.GetConstructor();
+
+    [StaticMethod("typeName")]
+    internal static string GetTypeName(DyObject value)
+    {
+        if (value.Is(Dy.TypeInfo))
+            return ((DyTypeInfo)value).ReflectedTypeName;
+        else
+            return value.TypeName;
+    }
 
     [StaticMethod("rawget")]
     internal static DyObject RawGet(ExecutionContext ctx, DyObject values, DyInteger index) =>

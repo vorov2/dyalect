@@ -134,3 +134,13 @@
     assert("FooBar", constructorName(@FooBar))
     assert(nil, constructorName(12))
 #endregion
+
+#region "typeName"
+    type Bar()
+    assert("Bar", typeName << Bar())
+    assert("Bar", typeName << Bar().GetType())
+    assert("Variant", typeName << @Foo)
+    assert("Variant", typeName << @Foo.GetType())
+    assert("Char", typeName << 'c'.GetType())
+    assert("Char", typeName('c'))
+#endregion

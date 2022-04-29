@@ -1,4 +1,5 @@
 # 0.44.0
+  * Add: _Remove name field from `TypeInfo`, add `getTypeName` function_ ([Issue #809](https://github.com/vorov2/dyalect/issues/809), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#typeName)).
   * Change: _Mixin Bounded contains only static properties_ ([Issue #831](https://github.com/vorov2/dyalect/issues/831)).
   * Change: _Make method `String.Empty` property_ ([Issue #834](https://github.com/vorov2/dyalect/issues/834)).
   * Change: _Make method `Float.Inf` property and rename it to `Infinity`_ ([Issue #833](https://github.com/vorov2/dyalect/issues/833)).
@@ -8,6 +9,7 @@
   * Change: _Optimize cloning behavior for variants_ ([Issue #841](https://github.com/vorov2/dyalect/issues/841)).
   * Fix: _Regression: incorrect type name in some type related errors_ ([Issue #836](https://github.com/vorov2/dyalect/issues/836)).
   * Fix: _Different behavior with optimizer turned on_ ([Issue #840](https://github.com/vorov2/dyalect/issues/840)).
+  * Fix: _Stack trace incorrectly reporting global scope_ ([Issue #843](https://github.com/vorov2/dyalect/issues/843)).
 
 # 0.43.0
   * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).

@@ -27,7 +27,7 @@
     assert(true, TypeInfo(x) == Array)
     assert(true, x.GetType() == Array)
     var t = TypeInfo(x)
-    assert("Array", t.name)
+    assert("Array", typeName(t))
 #endregion
 
 #region "Methods: Add, AddRange, Remove, RemoveAt"
