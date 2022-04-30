@@ -39,7 +39,6 @@ public abstract class DyTypeInfo : DyObject
     {
         if (add is not null)
             return add.BindToInstance(ctx, left).Call(ctx, right);
-
         return AddOp(ctx, left, right);
     }
 

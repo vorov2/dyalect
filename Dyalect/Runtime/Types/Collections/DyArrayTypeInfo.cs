@@ -41,7 +41,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
         return arr.IndexOf(ctx, item) != -1 ? True : False;
     }
 
-    private static DyString ToStringOrLiteral(bool literal, DyObject arg, ExecutionContext ctx)
+    private static DyObject ToStringOrLiteral(bool literal, DyObject arg, ExecutionContext ctx)
     {
         var arr = (DyArray)arg;
         var sb = new StringBuilder();
@@ -53,8 +53,8 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
                 sb.Append(", ");
             var str = literal ? arr[i].ToLiteral(ctx) : arr[i].ToString(ctx);
 
-            if (ctx.Error != null)
-                return DyString.Empty;
+            if (ctx.Error is not null)
+                return Nil;
 
             sb.Append(str.GetString());
         }
