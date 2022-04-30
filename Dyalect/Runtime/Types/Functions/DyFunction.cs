@@ -62,11 +62,13 @@ public abstract class DyFunction : DyObject
         }
 
         DyObject[] newLocals;
+        var needDefaults = false;
 
         if (args.Length == Parameters.Length)
             newLocals = args;
         else
         {
+            needDefaults = true;
             newLocals = new DyObject[Parameters.Length];
             if (args.Length > 0)
                 Array.Copy(args, newLocals, args.Length);
@@ -84,10 +86,12 @@ public abstract class DyFunction : DyObject
                 newLocals[VarArgIndex] = new DyTuple(arr.UnsafeAccessValues(), arr.Count);
             }
             else if (o.TypeId != Dy.Tuple)
-                newLocals[VarArgIndex] = new DyTuple(new DyObject[] { o } );
+                newLocals[VarArgIndex] = new DyTuple(new[] { o });
         }
 
-        DyMachine.FillDefaults(newLocals, this, ctx);
+        if (needDefaults)
+            DyMachine.FillDefaults(newLocals, this, ctx);
+
         return newLocals;
     }
 
