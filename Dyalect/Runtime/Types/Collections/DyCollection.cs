@@ -7,7 +7,21 @@ public abstract class DyCollection : DyEnumerable
     protected DyCollection(int typeCode) : base(typeCode) { }
 
     #region Indexing
-    protected int CorrectIndex(int index) => index < 0 ? Count + index : index;
+    internal int CorrectIndex(int index) => index < 0 ? Count + index : index;
+
+    internal bool CorrectIndex(ExecutionContext ctx, ref int index)
+    {
+        var newIndex = CorrectIndex(index);
+
+        if (newIndex < 0 || newIndex > Count - 1)
+        {
+            ctx.IndexOutOfRange(index);
+            return false;
+        }
+
+        index = newIndex;
+        return true;
+    }
 
     internal DyObject GetItem(int index, ExecutionContext ctx)
     {
@@ -128,16 +142,16 @@ public abstract class DyCollection : DyEnumerable
         return newArr.ToArray();
     }
 
-    internal static DyObject[] ConcatValues(ExecutionContext ctx, DyObject values)
+    internal static DyObject[] ConcatValues(ExecutionContext ctx, DyObject[] values)
     {
         if (values is null)
             return Array.Empty<DyObject>();
 
         var arr = new List<DyObject>();
 
-        foreach (var v in (DyTuple)values)
+        for (var i = 0; i < values.Length; i++)
         {
-            arr.AddRange(DyIterator.ToEnumerable(ctx, v));
+            arr.AddRange(DyIterator.ToEnumerable(ctx, values[i]));
 
             if (ctx.HasErrors)
                 break;

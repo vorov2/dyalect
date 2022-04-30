@@ -209,7 +209,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
-    internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
+    internal static DyObject Concat(ExecutionContext ctx, params DyObject[] values) =>
         new DyTuple(DyCollection.ConcatValues(ctx, values));
 
     [InstanceMethod]
@@ -338,7 +338,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         new DyTuple(new[] { first, second, third });
 
     [StaticMethod(Method.Concat)]
-    internal static DyObject StaticConcat(ExecutionContext ctx, [VarArg]DyObject values) =>
+    internal static DyObject StaticConcat(ExecutionContext ctx, params DyObject[] values) =>
         new DyTuple(DyCollection.ConcatValues(ctx, values));
 
     [StaticMethod(Method.Tuple)]
