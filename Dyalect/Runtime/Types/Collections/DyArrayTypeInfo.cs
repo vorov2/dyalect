@@ -195,7 +195,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     internal static int LastIndexOf(ExecutionContext ctx, DyArray self, DyObject value) => self.LastIndexOf(ctx, value);
 
     [InstanceMethod(Method.Sort)]
-    internal static void SortBy(ExecutionContext ctx, DyArray self, DyObject? comparer = null)
+    internal static void SortBy(ExecutionContext ctx, DyArray self, DyFunction? comparer = null)
     {
         var sortComparer = new SortComparer(comparer, ctx);
         self.Compact();
@@ -262,7 +262,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     internal static DyObject New(params DyObject[] values) => new DyArray(values);
 
     [StaticMethod(Method.Sort)]
-    internal static DyObject StaticSortBy(ExecutionContext ctx, DyObject values, DyObject comparer)
+    internal static DyObject StaticSortBy(ExecutionContext ctx, DyObject values, DyFunction comparer)
     {
         var arr = values;
 

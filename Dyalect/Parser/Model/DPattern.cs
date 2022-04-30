@@ -85,7 +85,7 @@ namespace Dyalect.Parser.Model
 
         internal bool IsSimpleValue() => Value.Chunks is null;
 
-        internal string SimpleValue => Value.Value;
+        internal string SimpleValue => Value.Value!;
 
         internal override void ToString(StringBuilder sb) => Value.ToString(sb);
 

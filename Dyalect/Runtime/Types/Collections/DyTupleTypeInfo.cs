@@ -261,7 +261,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         self.GetItem(DyInteger.One, ctx);
 
     [InstanceMethod]
-    internal static DyObject Sort(ExecutionContext ctx, DyTuple self, DyObject? comparer = null)
+    internal static DyObject Sort(ExecutionContext ctx, DyTuple self, DyFunction? comparer = null)
     {
         var sortComparer = new SortComparer(comparer, ctx);
         var newArr = new DyObject[self.Count];
@@ -326,7 +326,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     }
 
     [StaticMethod(Method.Sort)]
-    internal static DyObject StaticSort(ExecutionContext ctx, DyTuple value, DyObject? comparer = null) =>
+    internal static DyObject StaticSort(ExecutionContext ctx, DyTuple value, DyFunction? comparer = null) =>
         Sort(ctx, value, comparer);
 
     [StaticMethod]

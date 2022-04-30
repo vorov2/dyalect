@@ -1,5 +1,6 @@
 # 0.44.0
-  * Change: _Refactorings and optimizations._
+  * Change: _Refactorings and optimizations in virtual machine and runtime environment._
+  * Change: _Enhancements and optimizations to source generators for types and modules._
   * Change: _Mixin Bounded contains only static properties_ ([Issue #831](https://github.com/vorov2/dyalect/issues/831)).
   * Change: _Make method `String.Empty` property_ ([Issue #834](https://github.com/vorov2/dyalect/issues/834)).
   * Change: _Make method `Float.Inf` property and rename it to `Infinity`_ ([Issue #833](https://github.com/vorov2/dyalect/issues/833)).
