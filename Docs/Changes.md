@@ -13,6 +13,7 @@
   * Change: _Change patterns priority_ ([Issue #850](https://github.com/vorov2/dyalect/issues/850)).
   * Change: _Use system UI culture for formatting to string_ ([Issue #852](https://github.com/vorov2/dyalect/issues/852)).
   * Change: _ToLiteral can raise an exception if it is not explicitly supported_ ([Issue #766](https://github.com/vorov2/dyalect/issues/766)).
+  * Change: _A typeinfo instance (if it implements a static function of the same name) should be a substitute for a function_ ([Issue #860](https://github.com/vorov2/dyalect/issues/860)).
   * Add: _Remove name field from `TypeInfo`, add `getTypeName` function_ ([Issue #813](https://github.com/vorov2/dyalect/issues/813), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).
   * Add: _Support concatenation with + for iterators_ ([Issue #809](https://github.com/vorov2/dyalect/issues/809), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#typeName)).
   * Add: _Add a way to enforce reference comparison_ ([Issue #839](https://github.com/vorov2/dyalect/issues/839), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#referenceEquals)).

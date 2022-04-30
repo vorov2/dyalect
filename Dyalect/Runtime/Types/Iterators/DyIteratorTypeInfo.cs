@@ -29,7 +29,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject self) =>
         ToStringOrLiteral(ctx, self, true);
 
-    private DyObject ToStringOrLiteral(ExecutionContext ctx, DyObject self, bool literal)
+    private static DyObject ToStringOrLiteral(ExecutionContext ctx, DyObject self, bool literal)
     {
         var fn = self.GetIterator(ctx)!;
 
@@ -298,7 +298,12 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         if (ctx.HasErrors)
             return Nil;
 
-        var xs = seq.Select(dy => converter.Invoke(ctx, dy));
+        var func = converter.ToFunction(ctx);
+
+        if (ctx.HasErrors || func is null)
+            return Nil;
+
+        var xs = seq.Select(dy => func.Call(ctx, dy));
         return DyIterator.Create(xs);
     }
 

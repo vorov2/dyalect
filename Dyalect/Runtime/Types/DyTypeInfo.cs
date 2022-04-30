@@ -447,6 +447,24 @@ public abstract class DyTypeInfo : DyObject
         return ret;
     }
 
+    internal bool TryGetStaticMember(ExecutionContext ctx, HashString name, out DyObject? value)
+    {
+        var func = LookupStaticMember(name, ctx);
+
+        if (func is not null)
+        {
+            if (func is DyFunction f && f.Auto)
+                value = f.BindOrRun(ctx, this);
+            else
+                value = func;
+            
+            return true;
+        }
+
+        value = null;
+        return false;
+    }
+
     private DyObject? LookupStaticMember(HashString name, ExecutionContext ctx)
     {
         if (!StaticMembers.TryGetValue(name, out var value))
@@ -521,6 +539,20 @@ public abstract class DyTypeInfo : DyObject
             return value.BindOrRun(ctx, self);
         
         return ctx.OperationNotSupported((string)name, self);
+    }
+
+    internal bool TryGetInstanceMember(ExecutionContext ctx, DyObject self, HashString name, out DyObject? value)
+    {
+        var func = LookupInstanceMember(self, name, ctx);
+
+        if (func is not null)
+        {
+            value = func.BindOrRun(ctx, self);
+            return true;
+        }
+
+        value = null;
+        return false;
     }
 
     private DyFunction? LookupInstanceMember(DyObject self, HashString name, ExecutionContext ctx)

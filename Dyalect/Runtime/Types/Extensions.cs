@@ -107,13 +107,23 @@ public static class Extensions
         if (self is DyFunction func)
             return func;
 
-        var typ = ctx.RuntimeContext.Types[self.TypeId];
+        if (self.Is(Dy.TypeInfo))
+        {
+            var ti = (DyTypeInfo)self;
 
-        if (typ.HasInstanceMember(self, Builtins.Call, ctx))
-            return typ.GetInstanceMember(self, Builtins.Call, ctx) as DyFunction;
+            if (ti.TryGetStaticMember(ctx, ti.ReflectedTypeName, out var value))
+                return value as DyFunction;
+        }
+        else
+        {
+            var typ = ctx.RuntimeContext.Types[self.TypeId];
+
+            if (typ.TryGetInstanceMember(ctx, self, Builtins.Call, out var value))
+                return value as DyFunction;
+        }
 
         ctx.InvalidType(Dy.Function, self);
-        return null;
+        return default;
     }
 
     //Invokes a function obtained from "ToFunction"
