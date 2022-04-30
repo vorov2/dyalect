@@ -1,4 +1,4 @@
-# Test session from 30/04/2022 18:53
+# Test session from 30/04/2022 20:47
 
 ## Summary:
 803 passed, 0 failed in 28 file(s)
@@ -573,7 +573,7 @@
 * &#9745; **Pattern in cycle 5**
 * &#9745; **Patterns: range 1**
 * &#9745; **Patterns: range 2**
-* &#9745; **Patterns: member check 3**
+* &#9745; **Patterns: member check 1**
 * &#9745; **Patterns: member check 2**
 * &#9745; **Patterns: member check 3**
 * &#9745; **Match in set 1**

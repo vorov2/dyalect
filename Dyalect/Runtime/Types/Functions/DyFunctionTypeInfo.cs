@@ -21,7 +21,11 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
         if (right.TypeId == Dy.String)
             return ctx.RuntimeContext.String.Add(ctx, left, right);
 
-        return Compose(ctx, left, right);
+        var f1 = left.ToFunction(ctx);
+        if (ctx.HasErrors) return Nil;
+        var f2 = right.ToFunction(ctx);
+        if (ctx.HasErrors) return Nil;
+        return new CompositionContainer(f1!, f2!);
     }
     #endregion
 
@@ -57,14 +61,7 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
     }
 
     [InstanceMethod]
-    internal static DyObject Compose(ExecutionContext ctx, DyObject self, DyObject other)
-    {
-        var f1 = self.ToFunction(ctx);
-        if (f1 is null) return Nil;
-        var f2 = other.ToFunction(ctx);
-        if (f2 is null) return Nil;
-        return new CompositionContainer(f1, f2);
-    }
+    internal static DyObject Compose(DyFunction self, DyFunction other) => new CompositionContainer(self, other);
 
     [InstanceProperty("Object")]
     internal static DyObject GetObject(DyFunction self) => self.Self ?? Nil;
@@ -94,6 +91,5 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
     }
 
     [StaticMethod("Compose")]
-    internal static DyObject StaticCompose(ExecutionContext ctx, DyObject first, DyObject second) =>
-        Compose(ctx, first, second);
+    internal static DyObject StaticCompose(DyFunction first, DyFunction second) => new CompositionContainer(first, second);
 }

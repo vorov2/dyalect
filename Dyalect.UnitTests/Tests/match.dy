@@ -224,7 +224,7 @@
     assert(144, res)
 #endregion
 
-#region "Patterns: member check 3"
+#region "Patterns: member check 1"
     var res = match 12 {
         .foo => false,
         .(*) => true
