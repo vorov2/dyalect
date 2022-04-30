@@ -27,7 +27,8 @@ internal enum ParFlags
     None,
     Nullable = 0x01,
     VarArg = 0x02,
-    NoVar = 0x04
+    NoVar = 0x04,
+    CheckErr = 0x08
 }
 
 internal enum MethodFlags
@@ -71,6 +72,9 @@ public class MethodGenerator : SourceGenerator
             sb.AppendLine($"{app}{par} = {input}.TypeId == {Types.Dy}.Nil ? null : {string.Format(conversion, input)};");
         else
             sb.AppendLine($"{app}{par} = {string.Format(conversion, input)};");
+
+        if ((flags & ParFlags.CheckErr) == ParFlags.CheckErr)
+            sb.AppendLine($"if (__ctx.HasErrors) return {Types.DyNil}.Instance;");
     }
 
     private bool ParamCheckArray(string input, string par, ParFlags flags, ITypeSymbol ti, SourceBuilder sb, bool nullable)
@@ -148,6 +152,8 @@ public class MethodGenerator : SourceGenerator
         { "bool", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"!ReferenceEquals({{0}}, {Types.DyBool}.False) && !ReferenceEquals({{0}}, {Types.DyNil}.Instance)", flag) },
         { "bool?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(bool?)!ReferenceEquals({{0}}, {Types.DyBool}.False) && !ReferenceEquals({{0}}, {Types.DyNil}.Instance)", flag) },
         { $"{Types.DyObject}", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}", flag) },
+        { $"{Types.DyFunction}", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"{Types.Extensions}.ToFunction({{0}}, __ctx)", flag | ParFlags.CheckErr)},
+        { $"{Types.Enumerable}", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"{Types.DyIterator}.ToEnumerable(__ctx, {{0}})", flag | ParFlags.CheckErr)}
     }; 
     
     private readonly Dictionary<string, Func<string, string>> returnTypeConversions = new()
@@ -165,7 +171,9 @@ public class MethodGenerator : SourceGenerator
         { "single?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : new {Types.DyFloat}({name}.Value))" },
         { "bool", name => $"({name} ? {Types.DyBool}.True : {Types.DyBool}.False)" },
         { "bool?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : ({name} ? {Types.DyBool}.True : {Types.DyBool}.False))" },
-        { $"{Types.DyObject}", name => $"({name} ?? {Types.DyNil}.Instance)"}
+        { $"{Types.DyObject}", name => $"({name} ?? {Types.DyNil}.Instance)" },
+        { $"{Types.Enumerable}", name => $"{Types.DyIterator}.Create({name})" },
+        { $"{Types.Enumerable}?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyIterator}.Create({name})" }
     };
 
     public override void Execute(GeneratorExecutionContext ctx)

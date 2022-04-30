@@ -10,9 +10,9 @@ namespace Dyalect.Runtime.Types;
 internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Add
-        | SupportedOperations.Gt | SupportedOperations.Lt | SupportedOperations.Gte | SupportedOperations.Lte
-        | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.Lit;
+        SupportedOperations.Add | SupportedOperations.Gt | SupportedOperations.Lt
+        | SupportedOperations.Gte | SupportedOperations.Lte | SupportedOperations.Get
+        | SupportedOperations.Len | SupportedOperations.Iter;
 
     public override string ReflectedTypeName => nameof(Dy.String);
 
@@ -21,7 +21,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     public DyStringTypeInfo() => AddMixin(Dy.Collection, Dy.Comparable);
 
     #region Operations
-    protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         var str1 = left.TypeId == Dy.String || left.TypeId == Dy.Char ? left.GetString() : left.ToString(ctx).Value;
 
@@ -32,41 +32,41 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         return new DyString(str1 + str2);
     }
 
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
             return left.GetString() == right.GetString() ? True : False;
-        return base.EqOp(left, right, ctx); //Important! Should redirect to base
+        return base.EqOp(ctx, left, right); //Important! Should redirect to base
     }
 
-    protected override DyObject NeqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject NeqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
             return left.GetString() != right.GetString() ? True : False;
-        return base.NeqOp(left, right, ctx); //Important! Should redirect to base
+        return base.NeqOp(ctx, left, right); //Important! Should redirect to base
     }
 
-    protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
             return left.GetString().CompareTo(right.GetString()) > 0 ? True : False;
-        return base.GtOp(left, right, ctx);
+        return base.GtOp(ctx, left, right);
     }
 
-    protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
             return left.GetString().CompareTo(right.GetString()) < 0 ? True : False;
-        return base.LtOp(left, right, ctx);
+        return base.LtOp(ctx, left, right);
     }
 
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
     {
         var len = arg.GetString().Length;
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
+    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
         var str = self.GetString();
 
@@ -78,24 +78,24 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
             return ctx.InvalidType(Dy.String, Dy.Char, field);
     }
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => new DyString(arg.GetString());
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => new DyString(arg.GetString());
 
-    protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => new DyString(StringUtil.Escape(arg.GetString()));
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(arg.GetString()));
 
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
 
-    protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+    protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         self.SetItem(index, value, ctx);
         return Nil;
     }
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
             Dy.Integer => long.TryParse(self.GetString(), out var i8) ? new DyInteger(i8) : DyInteger.Zero,
             Dy.Float => double.TryParse(self.GetString(), out var r8) ? new DyFloat(r8) : DyFloat.Zero,
-            _ => base.CastOp(self, targetType, ctx)
+            _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
 
@@ -278,7 +278,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
             arr[i] = o;
         }
 
-        return self.Format(arr);
+        return string.Format(self, arr);
     }
 
     [StaticMethod]
@@ -331,10 +331,10 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         return string.Join(separator, strArr);
     }
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyObject Empty() => DyString.Empty;
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyObject Default() => DyString.Empty;
 
     [StaticMethod]

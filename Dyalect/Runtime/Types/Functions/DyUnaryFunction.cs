@@ -1,5 +1,5 @@
-﻿using Dyalect.Debug;
-using System;
+﻿using Dyalect.Compiler;
+using Dyalect.Debug;
 namespace Dyalect.Runtime.Types;
 
 internal class DyUnaryFunction : DyForeignFunction
@@ -9,7 +9,22 @@ internal class DyUnaryFunction : DyForeignFunction
     public DyUnaryFunction(string name, Func<ExecutionContext, DyObject, DyObject> fun)
         : base(name, Array.Empty<Par>(), -1) => this.fun = fun;
 
+    public DyUnaryFunction(string name, Func<ExecutionContext, DyObject, DyObject> fun, bool isPropertyGetter)
+        : this(name, fun)
+    {
+        if (isPropertyGetter)
+            Attr |= FunAttr.Auto;
+    }
+
     internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!);
+
+    internal override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
+    {
+        if (!Auto)
+            return BindToInstance(ctx, arg);
+
+        return fun(ctx, arg);
+    }
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyUnaryFunction(FunctionName, fun);
 

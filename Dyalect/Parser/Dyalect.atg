@@ -580,30 +580,41 @@ PRODUCTIONS
 
     RangePattern<out DPattern node> =
         (. node = null; .)
-        Pattern<out node>
+        AsPattern<out node>
         [
             (. var r = new DRangePattern(t) { From = node }; .)
             ".." Pattern<out node>
             (. r.To = node; node = r; .)
         ].
 
+    AsPattern<out DPattern node> =
+        (. node = null; .)
+        Pattern<out node>
+        [
+            (.
+                if (la.AfterEol) return;
+                var asp = new DAsPattern(t) { Pattern = node }; 
+            .)
+            Identifier (. asp.Name = t.val; node = asp; .)
+        ].
+
     Pattern<out DPattern node> =
         (. node = null; .)
         (
-              NamePattern<out node> [ AsPattern<node, out node> ]
-            | VariantPattern<out node> [ AsPattern<node, out node> ]
-            | IntegerPattern<out node> [ AsPattern<node, out node> ]
-            | FloatPattern<out node> [ AsPattern<node, out node> ]
-            | CharPattern<out node> [ AsPattern<node, out node> ]
-            | StringPattern<out node> [ AsPattern<node, out node> ]
-            | BooleanPattern<out node> [ AsPattern<node, out node> ]
-            | NilPattern<out node> [ AsPattern<node, out node> ]
-            | IF (IsTuple(allowFields: true)) TuplePattern<out node> [ AsPattern<node, out node> ]
-            | GroupPattern<out node> [ AsPattern<node, out node> ]
-            | ArrayPattern<out node> [ AsPattern<node, out node> ]
-            | MethodCheckPattern<out node> [ AsPattern<node, out node> ]
-            | NotPattern<out node>
-            | ComparisonPattern<out node>
+             NamePattern<out node>
+           | VariantPattern<out node>
+           | IntegerPattern<out node>
+           | FloatPattern<out node>
+           | CharPattern<out node>
+           | StringPattern<out node>
+           | BooleanPattern<out node>
+           | NilPattern<out node>
+           | IF (IsTuple(allowFields: true)) TuplePattern<out node>
+           | GroupPattern<out node>
+           | ArrayPattern<out node>
+           | MethodCheckPattern<out node>
+           | ComparisonPattern<out node>
+           | NotPattern<out node>
         ).
 
     ComparisonPattern<out DPattern node> =
@@ -629,16 +640,6 @@ PRODUCTIONS
     NotPattern<out DPattern node> =
         "not" (. var np = new DNotPattern(t); .)
         Pattern<out node> (. np.Pattern = node; node = np; .).
-
-    AsPattern<DPattern target, out DPattern node> =
-        (. node = null; .)
-        (
-            (.
-                if (la.AfterEol) { node = target; return; }
-                var asp = new DAsPattern(t) { Pattern = target };
-            .)
-            Identifier (. asp.Name = t.val; node = asp; .)
-        ).
 
     MethodCheckPattern<out DPattern node> =
         (
@@ -1494,7 +1495,10 @@ PRODUCTIONS
     String<out DNode node> =
         (. node = null; .)
         (
-            stringToken (. node = ParseString(); .)
+            (
+                stringToken (. var str = ParseString(); node = str; .)
+                { stringToken (. ParseStringChunk(str); .) }
+            )
             | verbatimStringToken (. node = ParseVerbatimString(); .)
         ).
 

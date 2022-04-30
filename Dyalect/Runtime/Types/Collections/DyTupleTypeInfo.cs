@@ -1,17 +1,18 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Compiler;
-using System;
+using Dyalect.Parser;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
 internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
-        | SupportedOperations.Add | SupportedOperations.Iter | SupportedOperations.Lit;
+        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
+        | SupportedOperations.Add | SupportedOperations.Iter;
 
     public override string ReflectedTypeName => nameof(Dy.Tuple);
 
@@ -20,20 +21,62 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     public DyTupleTypeInfo() => AddMixin(Dy.Collection, Dy.Comparable);
 
     #region Operations
-    protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         new DyTuple(((DyCollection)left).Concat(ctx, right));
 
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
     {
         var len = ((DyTuple)arg).Count;
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) => ((DyTuple)arg).ToString(false, ctx);
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToStringOrLiteral(ctx, (DyTuple)arg, false);
 
-    protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ((DyTuple)arg).ToString(true, ctx);
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOrLiteral(ctx, (DyTuple)arg, true);
 
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    private DyObject ToStringOrLiteral(ExecutionContext ctx, DyTuple value, bool literal)
+    {
+        var sb = new StringBuilder();
+        sb.Append('(');
+
+        for (var i = 0; i < value.Count; i++)
+        {
+            if (i > 0)
+            {
+                sb.Append(',');
+                sb.Append(' ');
+            }
+
+            var v = value.GetValue(i);
+            var ki = value.GetKeyInfo(i);
+
+            if (ki is not null)
+            {
+                if (ki.Mutable)
+                    sb.Append("var ");
+
+                if (ki.Label.Length > 0 && char.IsLower(ki.Label[0]) && ki.Label.All(char.IsLetter))
+                    sb.Append(ki.Label);
+                else
+                    sb.Append(StringUtil.Escape(ki.Label));
+
+                sb.Append(':');
+                sb.Append(' ');
+            }
+
+            var str = literal ? v.ToLiteral(ctx) : v.ToString(ctx);
+
+            if (ctx.HasErrors)
+                return Nil;
+
+            sb.Append(str);
+        }
+
+        sb.Append(')');
+        return new DyString(sb.ToString());
+    }
+
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return False;
@@ -58,11 +101,11 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return True;
     }
 
-    protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(true, left, right, ctx);
+    protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right) => Compare(true, left, right, ctx);
 
-    protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx) => Compare(false, left, right, ctx);
+    protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right) => Compare(false, left, right, ctx);
 
-    protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
+    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
         if (!field.Is(ctx, Dy.String))
             return Nil;
@@ -105,9 +148,9 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return False;
     }
 
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
 
-    protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+    protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         self.SetItem(index, value, ctx);
         return Nil;
@@ -166,7 +209,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
-    internal static DyObject Concat(ExecutionContext ctx, DyObject values) =>
+    internal static DyObject Concat(ExecutionContext ctx, params DyObject[] values) =>
         new DyTuple(DyCollection.ConcatValues(ctx, values));
 
     [InstanceMethod]
@@ -218,7 +261,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         self.GetItem(DyInteger.One, ctx);
 
     [InstanceMethod]
-    internal static DyObject Sort(ExecutionContext ctx, DyTuple self, DyObject? comparer = null)
+    internal static DyObject Sort(ExecutionContext ctx, DyTuple self, DyFunction? comparer = null)
     {
         var sortComparer = new SortComparer(comparer, ctx);
         var newArr = new DyObject[self.Count];
@@ -283,7 +326,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     }
 
     [StaticMethod(Method.Sort)]
-    internal static DyObject StaticSort(ExecutionContext ctx, DyTuple value, DyObject? comparer = null) =>
+    internal static DyObject StaticSort(ExecutionContext ctx, DyTuple value, DyFunction? comparer = null) =>
         Sort(ctx, value, comparer);
 
     [StaticMethod]
@@ -295,7 +338,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         new DyTuple(new[] { first, second, third });
 
     [StaticMethod(Method.Concat)]
-    internal static DyObject StaticConcat(ExecutionContext ctx, [VarArg]DyObject values) =>
+    internal static DyObject StaticConcat(ExecutionContext ctx, params DyObject[] values) =>
         new DyTuple(DyCollection.ConcatValues(ctx, values));
 
     [StaticMethod(Method.Tuple)]

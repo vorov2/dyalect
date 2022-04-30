@@ -8,21 +8,23 @@ namespace Dyalect.Library.Core;
 [GeneratedType]
 public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
 {
-    public override string ReflectedTypeName => "StringBuilder";
+    private const string StringBuilder = nameof(StringBuilder);
+
+    public override string ReflectedTypeName => StringBuilder;
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neg | SupportedOperations.Not | SupportedOperations.Len;
+        SupportedOperations.Neg | SupportedOperations.Len;
 
     #region Operations
     public DyStringBuilder Create(StringBuilder sb) => new(this, sb);
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString(((DyStringBuilder)arg).ToString());
 
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>
         DyInteger.Get(((DyStringBuilder)arg).Builder.Length);
 
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         var a = ((DyStringBuilder)left).Builder;
         var b = ((DyStringBuilder)right).Builder;
@@ -92,7 +94,7 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
         return self;
     }
 
-    [StaticMethod("StringBuilder")]
+    [StaticMethod(StringBuilder)]
     internal static DyObject New(ExecutionContext ctx, [VarArg]DyTuple values)
     {
         if (values.Count > 0)

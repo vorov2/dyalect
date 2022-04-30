@@ -37,5 +37,13 @@ public sealed class DyVariant : DyObject
 
     public override bool Equals(DyObject? other) => other is DyVariant v && v.Constructor == Constructor && v.Tuple.Equals(Tuple);
 
-    public override DyObject Clone() => new DyVariant(Constructor, (DyTuple)Tuple.Clone());
+    public override DyObject Clone()
+    {
+        var tup = Tuple.Clone();
+
+        if (ReferenceEquals(tup, Tuple))
+            return this;
+
+        return new DyVariant(Constructor, tup);
+    }
 }

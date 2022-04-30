@@ -10,8 +10,8 @@
     assert(nil, Nil())
 #endregion
 
-#region "Methods: default"
-    assert(nil, Nil.Default())
+#region "Methods: Default"
+    assert(nil, Nil.Default)
 #endregion
 
 #region "Methods: GetType"
@@ -19,7 +19,12 @@
     assert(true, TypeInfo(x) == Nil)
     assert(true, x.GetType() == Nil)
     var t = TypeInfo(x)
-    assert("Nil", t.name)
+    assert("Nil", typeName(t))
+#endregion
+
+#region "Methods: Clone"
+    assert(true, nil == nil.Clone())
+    assert(true, referenceEquals(nil, nil.Clone()))
 #endregion
 
 #region "Conversion: as"

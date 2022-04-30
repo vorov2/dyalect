@@ -10,16 +10,13 @@ public sealed partial class DyRegexTypeInfo : DyForeignTypeInfo
 {
     public override string ReflectedTypeName => "Regex";
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
-
     #region Operations
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         return new DyString(((DyRegex)arg).Regex.ToString());
     }
 
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         return left is DyRegex a && right is DyRegex b && a.Regex.ToString() == b.Regex.ToString() ? True : False;
     }

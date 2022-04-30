@@ -99,7 +99,10 @@ partial class Builder
         Build(node.Target, hints.Append(Push), ctx);
         Build(node.Value, hints.Append(Push), ctx);
         EmitBinaryOp(node.AutoAssign!.Value);
-        Build(node.Target, hints.Append(Pop), ctx);
+
+        if (ErrorCount == 0) //To avoid double error reporting
+            Build(node.Target, hints.Append(Pop), ctx);
+
         PushIf(hints);
         return true;
     }

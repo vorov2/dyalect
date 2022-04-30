@@ -740,12 +740,12 @@ partial class Builder
                 return;
             }
 
-        //This is a special optimization for the 'ToString', 'Has' and 'Len' methods
+        //This is a special optimization for the 'ToString', 'Has' and 'Length' methods
         //If we see that it is called directly we can emit a direct op code
         if (node.Target.NodeType == NodeType.Access && !options.NoOptimizations
             && node.Target is DAccess meth && meth.Target is not null)
         {
-            if (meth.Name == Builtins.ToStr && node.Arguments.Count is 0)
+            if (meth.Name == Builtins.String && node.Arguments.Count is 0)
             {
                 Build(meth.Target, newHints.Append(Push), ctx);
                 AddLinePragma(node);
@@ -754,7 +754,7 @@ partial class Builder
                 return;
             }
 
-            if (meth.Name == Builtins.Len && node.Arguments.Count is 0)
+            if (meth.Name == Builtins.Length && node.Arguments.Count is 0)
             {
                 Build(meth.Target, newHints.Append(Push), ctx);
                 AddLinePragma(node);
@@ -769,7 +769,7 @@ partial class Builder
             {
                 Build(meth.Target, newHints.Append(Push), ctx);
                 AddLinePragma(node);
-                cw.HasMember(str.Value);
+                cw.HasMember(str.Value!);
                 PopIf(hints);
                 return;
             }
@@ -952,7 +952,7 @@ partial class Builder
         else
         {
             AddLinePragma(node);
-            cw.Push(node.Value);
+            cw.Push(node.Value!);
         }
 
         PopIf(hints);

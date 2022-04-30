@@ -1,3 +1,38 @@
+# 0.44.0
+  * Change: _Refactorings and optimizations in virtual machine and runtime environment._
+  * Change: _Enhancements and optimizations to source generators for types and modules._
+  * Change: _Mixin Bounded contains only static properties_ ([Issue #831](https://github.com/vorov2/dyalect/issues/831)).
+  * Change: _Make method `String.Empty` property_ ([Issue #834](https://github.com/vorov2/dyalect/issues/834)).
+  * Change: _Make method `Float.Inf` property and rename it to `Infinity`_ ([Issue #833](https://github.com/vorov2/dyalect/issues/833)).
+  * Change: _Make methods `Min`, `Max` and `Default` properties_ ([Issue #832](https://github.com/vorov2/dyalect/issues/832)).
+  * Change: _Convert `ByteArray.Position` method to property_ ([Issue #835](https://github.com/vorov2/dyalect/issues/835)).
+  * Change: _Optimize cloning behavior for tuples_ ([Issue #838](https://github.com/vorov2/dyalect/issues/838)).
+  * Change: _Optimize cloning behavior for variants_ ([Issue #841](https://github.com/vorov2/dyalect/issues/841)).
+  * Change: _Dyalect Console "swallows" errors thrown during formatting of output to a string_ ([Issue #846](https://github.com/vorov2/dyalect/issues/846)).
+  * Change: _Rename `Result.Value` method to `Result.GetValue`_ ([Issue #847](https://github.com/vorov2/dyalect/issues/847)).
+  * Change: _Stack trace doesn't print the name of the type for member functions_ ([Issue #849](https://github.com/vorov2/dyalect/issues/849)).
+  * Change: _Change patterns priority_ ([Issue #850](https://github.com/vorov2/dyalect/issues/850)).
+  * Change: _Use system UI culture for formatting to string_ ([Issue #852](https://github.com/vorov2/dyalect/issues/852)).
+  * Change: _ToLiteral can raise an exception if it is not explicitly supported_ ([Issue #766](https://github.com/vorov2/dyalect/issues/766)).
+  * Change: _A typeinfo instance (if it implements a static function of the same name) should be a substitute for a function_ ([Issue #860](https://github.com/vorov2/dyalect/issues/860)).
+  * Add: _Remove name field from `TypeInfo`, add `getTypeName` function_ ([Issue #813](https://github.com/vorov2/dyalect/issues/813), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).
+  * Add: _Support concatenation with + for iterators_ ([Issue #809](https://github.com/vorov2/dyalect/issues/809), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#typeName)).
+  * Add: _Add a way to enforce reference comparison_ ([Issue #839](https://github.com/vorov2/dyalect/issues/839), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#referenceEquals)).
+  * Add: _Add `Iterator.Single` method_ ([Issue #818](https://github.com/vorov2/dyalect/issues/818), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#single)).
+  * Add: _Concatenate strings using juxtaposition_ ([Issue #842](https://github.com/vorov2/dyalect/issues/842), [docs](https://github.com/vorov2/dyalect/wiki/String#concatenation)).
+  * Add: _All types should implicitly support ToLiteral_ ([Issue #859](https://github.com/vorov2/dyalect/issues/859)).
+  * Fix: _Regression: incorrect type name in some type related errors_ ([Issue #836](https://github.com/vorov2/dyalect/issues/836)).
+  * Fix: _Different behavior with optimizer turned on_ ([Issue #840](https://github.com/vorov2/dyalect/issues/840)).
+  * Fix: _Stack trace incorrectly reporting global scope_ ([Issue #843](https://github.com/vorov2/dyalect/issues/843)).
+  * Fix: _Strange behavior of `Iterator.Concat`_ ([Issue #845](https://github.com/vorov2/dyalect/issues/845)).
+  * Fix: _Compiler may report similar errors twice_ ([Issue #848](https://github.com/vorov2/dyalect/issues/848)).
+  * Fix: _Correct formatting to a string of several patterns_ ([Issue #851](https://github.com/vorov2/dyalect/issues/851)).
+  * Fix: _Function `parse` works incorrectly with interpolated strings_ ([Issue #853](https://github.com/vorov2/dyalect/issues/853)).
+  * Fix: _Interpolated strings do not work correctly inside pattern ranges_ ([Issue #856](https://github.com/vorov2/dyalect/issues/856)).
+  * Fix: _Parsers optimizations doesn't work in escape code parser_ ([Issue #857](https://github.com/vorov2/dyalect/issues/857)).
+  * Fix: _Invalid compilation of range pattern with interpolated strings_ ([Issue #854](https://github.com/vorov2/dyalect/issues/854)).
+  * Fix: _Incorrect behavior of interpolated strings as default values_ ([Issue #858](https://github.com/vorov2/dyalect/issues/858)).
+
 # 0.43.0
   * Add: _All collection types should support casting to `Set`_ ([Issue #806](https://github.com/vorov2/dyalect/issues/806)).
   * Add: _An ability to convert an iterator to a stateful function_ ([Issue #807](https://github.com/vorov2/dyalect/issues/807), [docs](https://github.com/vorov2/dyalect/wiki/Iterators#operators)).

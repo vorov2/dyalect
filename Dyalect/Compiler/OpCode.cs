@@ -3,7 +3,6 @@
 public enum OpCode
 {
     Nop = 0,    //0
-
     Str,        //0
     This,       //+1
     Unbox,      //+1
@@ -71,7 +70,6 @@ public enum OpCode
     Briter,     //0
     RgDI,       //0
     RgFI,       //0
-
     FunPrep,    //0
     FunArgIx,   //-1
     FunArgNm,   //-1
@@ -92,8 +90,8 @@ public enum OpCode
     NewCast,    //-3
     Cast,       //0
     Mixin,      //-2
-
     StdCall_0,  //0
     StdCall_1,  //-1
     StdCall,    //Dynamic
+    Debug,      //0
 }

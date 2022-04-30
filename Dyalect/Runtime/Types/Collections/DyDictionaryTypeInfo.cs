@@ -10,31 +10,40 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
     public override int ReflectedTypeId => Dy.Dictionary;
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
-        | SupportedOperations.Iter;
+        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter;
 
     public DyDictionaryTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
     {
         var len = ((DyDictionary)arg).Count;
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx)
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) =>
+        ToStringOrLiteral(ctx, arg, literal: true);
+
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
+        ToStringOrLiteral(ctx, arg, literal: false);
+
+    private DyObject ToStringOrLiteral(ExecutionContext ctx, DyObject arg, bool literal)
     {
         var map = (DyDictionary)arg;
         var sb = new StringBuilder();
-        sb.Append("Dictionary (");
+        sb.Append("Dictionary(");
         var i = 0;
 
         foreach (var kv in map.Dictionary)
         {
             if (i > 0)
                 sb.Append(", ");
-            sb.Append(kv.Key.ToLiteral(ctx) + ": " + kv.Value.ToLiteral(ctx));
+
+            if (literal)
+                sb.Append(kv.Key.ToLiteral(ctx) + ": " + kv.Value.ToLiteral(ctx));
+            else
+                sb.Append(kv.Key.ToString(ctx) + ": " + kv.Value.ToString(ctx));
+
             i++;
         }
 
@@ -42,40 +51,21 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
         return new DyString(sb.ToString());
     }
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
-    {
-        var map = (DyDictionary)arg;
-        var sb = new StringBuilder();
-        sb.Append("Dictionary (");
-        var i = 0;
-
-        foreach (var kv in map.Dictionary)
-        {
-            if (i > 0)
-                sb.Append(", ");
-            sb.Append(kv.Key.ToString(ctx) + ": " + kv.Value.ToString(ctx));
-            i++;
-        }
-
-        sb.Append(')');
-        return new DyString(sb.ToString());
-    }
-
-    protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx) =>
+    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>
         ((DyDictionary)self).ContainsKey(field) ? True : False;
 
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
 
-    protected override DyObject SetOp(DyObject self, DyObject index, DyObject value, ExecutionContext ctx)
+    protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         self.SetItem(index, value, ctx);
         return Nil;
     }
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
             Dy.Tuple => new DyTuple(((DyDictionary)self).GetArrayOfLabels()),
-            _ => base.CastOp(self, targetType, ctx)
+            _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
 

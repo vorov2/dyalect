@@ -15,7 +15,7 @@ public sealed partial class DyDateTimeTypeInfo : SpanTypeInfo<DyDateTime>
         base.GetSupportedOperations() | SupportedOperations.Sub | SupportedOperations.Add;
 
     #region Operations
-    protected override DyObject SubOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject SubOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right is DyDateTime dt)
             try
@@ -39,7 +39,7 @@ public sealed partial class DyDateTimeTypeInfo : SpanTypeInfo<DyDateTime>
         return ctx.InvalidType(DeclaringUnit.DateTime.TypeId, DeclaringUnit.TimeDelta.TypeId, right);
     }
 
-    protected override DyObject AddOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right is DyTimeDelta td)
         {
@@ -56,14 +56,14 @@ public sealed partial class DyDateTimeTypeInfo : SpanTypeInfo<DyDateTime>
         return ctx.InvalidType(DeclaringUnit.TimeDelta.TypeId, right);
     }
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx)
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType)
     {
         if (targetType.ReflectedTypeId == DeclaringUnit.Date.ReflectedTypeId)
             return ((DyDateTime)self).GetDate(DeclaringUnit.Date);
         else if (targetType.ReflectedTypeId == DeclaringUnit.Time.ReflectedTypeId)
             return ((DyDateTime)self).GetTime(DeclaringUnit.Time);
 
-        return base.CastOp(self, targetType, ctx);
+        return base.CastOp(ctx, self, targetType);
     }
     #endregion
 
@@ -160,13 +160,13 @@ public sealed partial class DyDateTimeTypeInfo : SpanTypeInfo<DyDateTime>
     internal static DyObject FromTicks(ExecutionContext ctx, long ticks) =>
         new DyDateTime(ctx.Type<DyDateTimeTypeInfo>(), ticks);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyDateTime Default(ExecutionContext ctx) => Min(ctx);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyDateTime Min(ExecutionContext ctx) => new(ctx.Type<DyDateTimeTypeInfo>(), DateTime.MinValue.Ticks);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyDateTime Max(ExecutionContext ctx) => new(ctx.Type<DyDateTimeTypeInfo>(), DateTime.MaxValue.Ticks);
 
     [StaticMethod]

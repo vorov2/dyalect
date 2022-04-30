@@ -78,16 +78,6 @@ namespace Dyalect.Parser
             AddError(ParserError.SemanticError, new Location(line, col), s);
         }
 
-        private void Warning(int line, int col, string s)
-        {
-
-        }
-
-        private void Warning(string s)
-        {
-
-        }
-
         private void Expect(int n)
         {
             if (la.kind == n)
@@ -190,35 +180,6 @@ namespace Dyalect.Parser
             return scanner.Peek().kind == _colonToken;
         }
 
-        private bool IsIterator()
-        {
-            if (la.kind != _curlyLeftToken)
-                return false;
-
-            scanner.ResetPeek();
-            var x = la;
-            var balance = 0;
-
-            while (true)
-            {
-                if (x.kind == _commaToken && balance == 1)
-                    return true;
-
-                if (x.kind == _parenLeftToken || x.kind == _curlyLeftToken || x.kind == _squareLeftToken)
-                    balance++;
-                else if (x.kind == _parenRightToken || x.kind == _curlyRightToken || x.kind == _squareRightToken)
-                {
-                    balance--;
-                    if (balance == 0)
-                        break;
-                }
-
-                x = scanner.Peek();
-            }
-
-            return false;
-        }
-
         private bool IsTuple(bool allowFields = true)
         {
             if (la.kind != _parenLeftToken)
@@ -301,7 +262,25 @@ namespace Dyalect.Parser
             if (!EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
                 return null;
 
-            return new DStringLiteral(t) { Value = result ?? "", Chunks = chunks };
+            return new DStringLiteral(t) { Value = result, Chunks = chunks };
+        }
+
+        private void ParseStringChunk(DStringLiteral lit)
+        {
+            if (lit is null || !EscapeCodeParser.Parse(scanner.Buffer.FileName, t, t.val, Errors, out var result, out var chunks))
+                return;
+
+            if (lit.Chunks is null) 
+            {
+                lit.Chunks = new();
+                lit.Chunks.Add(new PlainStringChunk(lit.Value!));
+                lit.Value = null;
+            }
+
+            if (result is not null)
+                lit.Chunks.Add(new PlainStringChunk(result));
+            else
+                lit.Chunks.AddRange(chunks!);
         }
 
         private DStringLiteral ParseVerbatimString()
@@ -349,9 +328,9 @@ namespace Dyalect.Parser
             var c = t.val[^1];
 
             if (c == 'f' || c == 'F')
-                return double.Parse(t.val[0..^1], CI.NumberFormat);
+                return double.Parse(t.val[0..^1], InvariantCulture.NumberFormat);
 
-            return double.Parse(t.val, CI.NumberFormat);
+            return double.Parse(t.val, InvariantCulture.NumberFormat);
         }
     }
 }

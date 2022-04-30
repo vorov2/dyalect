@@ -22,7 +22,7 @@ public sealed class ConsoleTextReader : TextReader
             return ret.GetChar();
         else
         {
-            ctx.InvalidType(Dy.Char, ret);
+            ctx.InvalidType(Dy.Integer, Dy.Char, ret);
             return 0;
         }
     }

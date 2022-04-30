@@ -27,7 +27,7 @@
     assert(true, TypeInfo(x) == Array)
     assert(true, x.GetType() == Array)
     var t = TypeInfo(x)
-    assert("Array", t.name)
+    assert("Array", typeName(t))
 #endregion
 
 #region "Methods: Add, AddRange, Remove, RemoveAt"
@@ -99,7 +99,7 @@
     assert([4, 5, 6], arr)
 #endregion
 
-#region "Methods: Len"
+#region "Methods: Length"
     var arr = [1,2,3,4]
     assert(4, arr.Length())
 #endregion
@@ -352,5 +352,5 @@
 #region "Methods: ToSet"
     let xs = [1,2,2,2,3,4,4,5,5,5]
     let ys = xs.ToSet()
-    assert("Set (1, 2, 3, 4, 5)", ys.ToString())
+    assert("Set(1, 2, 3, 4, 5)", ys.ToString())
 #endregion

@@ -8,7 +8,7 @@ public sealed class DyString : DyCollection
     public static readonly DyString Empty = new("");
 
     public override string TypeName => nameof(Dy.String);
-    
+
     internal readonly string Value;
 
     private int hashCode;
@@ -18,6 +18,8 @@ public sealed class DyString : DyCollection
     public DyString(string str) : base(Dy.String) => Value = str;
 
     public DyString(HashString str) : base(Dy.String) => (Value, hashCode) = ((string)str, str.LookupHash());
+
+    public static DyString Get(string? val) => string.IsNullOrEmpty(val) ? Empty : new(val);
     
     internal override DyObject GetValue(int index) => new DyChar(Value[index]);
 

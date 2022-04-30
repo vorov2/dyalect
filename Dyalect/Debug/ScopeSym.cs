@@ -1,32 +1,35 @@
-﻿namespace Dyalect.Debug
+﻿namespace Dyalect.Debug;
+
+public sealed class ScopeSym
 {
-    public sealed class ScopeSym
+    public int Index { get; init; }
+
+    public int ParentIndex { get; init; }
+
+    public int StartOffset { get; init; }
+
+    public int EndOffset { get; internal set; }
+
+    public int StartLine { get; init; }
+
+    public int StartColumn { get; init; }
+
+    public int EndLine { get; internal set; }
+
+    public int EndColumn { get; internal set; }
+
+    public ScopeSym() { }
+
+    public ScopeSym(int index, int parentIndex, int startOffset, int endOffset, int startLine,
+        int startColumn, int endLine, int endColumn)
     {
-        public ScopeSym() { }
-
-        public ScopeSym(int index, int parentIndex, int startOffset, int startLine, int startColumn)
-        {
-            Index = index;
-            ParentIndex = parentIndex;
-            StartOffset = startOffset;
-            StartLine = startLine;
-            StartColumn = startColumn;
-        }
-
-        public int Index { get; set; }
-
-        public int ParentIndex { get; set; }
-
-        public int StartOffset { get; set; }
-
-        public int EndOffset { get; set; }
-
-        public int StartLine { get; set; }
-
-        public int StartColumn { get; set; }
-
-        public int EndLine { get; set; }
-
-        public int EndColumn { get; set; }
+        Index = index;
+        ParentIndex = parentIndex;
+        StartOffset = startOffset;
+        EndOffset = endOffset;
+        StartLine = startLine;
+        StartColumn = startColumn;
+        EndLine = endLine;
+        EndColumn = endColumn;
     }
 }

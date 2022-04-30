@@ -72,7 +72,7 @@
     assert(true, TypeInfo(x) == Function)
     assert(true, x.GetType() == Function)
     var t = TypeInfo(x)
-    assert("Function", t.name)
+    assert("Function", typeName(t))
 #endregion
 
 #region "Properties"
@@ -883,4 +883,10 @@
     test1(1)
     test2(1, 22)
     test3(1, 22, 333)
+#endregion
+
+#region "Type invocation"
+    let xs = [1..3]
+    let ys = xs.Iterate().Map(String).ToArray()
+    assert(["1","2","3"], ys)
 #endregion

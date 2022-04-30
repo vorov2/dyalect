@@ -56,12 +56,12 @@ public sealed partial class DyTimeTypeInfo : SpanTypeInfo<DyTime>
         }
     }
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyTime Default(ExecutionContext ctx) => Min(ctx);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyTime Min(ExecutionContext ctx) => new(ctx.Type<DyTimeTypeInfo>(), DateTime.MinValue.TimeOfDay.Ticks);
 
-    [StaticMethod]
+    [StaticProperty]
     internal static DyTime Max(ExecutionContext ctx) => new(ctx.Type<DyTimeTypeInfo>(), DateTime.MaxValue.TimeOfDay.Ticks);
 }

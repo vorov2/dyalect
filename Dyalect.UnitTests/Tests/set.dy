@@ -14,7 +14,7 @@
     assert(true, TypeInfo(x) == Set)
     assert(true, x.GetType() == Set)
     var t = TypeInfo(x)
-    assert("Set", t.name)
+    assert("Set", typeName(t))
 #endregion
 
 #region "Methods: Add, Len"
@@ -109,7 +109,12 @@
 
 #region "Methods: ToString"
     let xs = Set(1, 2, 3)
-    assert("Set (1, 2, 3)", xs.ToString())
+    assert("Set(1, 2, 3)", xs.ToString())
+#endregion
+
+#region "Methods: ToLiteral"
+    let xs = Set(1, 'a', "foo")
+    assert("Set(1, 'a', \"foo\")", xs.ToLiteral())
 #endregion
 
 #region "Conversion: as"
@@ -128,7 +133,7 @@
 
 #region "Set and vararg function"
     var str = String(Set('a', 'b', 'c'))
-    assert("Set (a, b, c)", str)
+    assert("Set(a, b, c)", str)
     str = String(values: Set('a', 'b', 'c'))
     assert("abc", str)
 #endregion

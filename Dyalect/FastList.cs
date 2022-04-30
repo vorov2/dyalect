@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 namespace Dyalect;
 
 public sealed class FastList<T> : IEnumerable<T>
 {
+    private const int DefaultSize = 6;
+
     internal static readonly FastList<T> Empty = new();
     private T[] array;
-    private const int DEFAULT_SIZE = 6;
     private int size;
     private int initialSize;
 
-    public FastList() : this(DEFAULT_SIZE) { }
+    public FastList() : this(DefaultSize) { }
 
     internal FastList(int size)
     {
@@ -42,25 +42,13 @@ public sealed class FastList<T> : IEnumerable<T>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public FastList<T> Clone()
-    {
-        var list = new FastList<T>
+    public FastList<T> Clone() =>
+        new()
         {
             array = (T[])array.Clone(),
             size = size,
             initialSize = initialSize
         };
-        return list;
-    }
-
-    public bool Contains(T val)
-    {
-        for (var i = 0; i < size; i++)
-            if (array[i]!.Equals(val))
-                return true;
-
-        return false;
-    }
 
     public T[] ToArray()
     {
@@ -69,9 +57,7 @@ public sealed class FastList<T> : IEnumerable<T>
         return arr;
     }
 
-    public int IndexOf(T elem) => Array.IndexOf(array, elem);
-
-    internal T[] GetRawArray() => array;
+    internal T[] UnsafeGetArray() => array;
 
     internal void Clear()
     {
@@ -85,12 +71,6 @@ public sealed class FastList<T> : IEnumerable<T>
             Add(s);
     }
 
-    internal void AddRange(FastList<T> arr, int start, int end)
-    {
-        for (var i = start; i < end; i++)
-            Add(arr[i]);
-    }
-
     internal void AddRange(T[] arr, int start, int end)
     {
         for (var i = start; i < end; i++)
@@ -101,40 +81,12 @@ public sealed class FastList<T> : IEnumerable<T>
     {
         if (size == array.Length)
         {
-            var dest = new T[array.Length == 0 ? DEFAULT_SIZE : array.Length * 2];
+            var dest = new T[array.Length == 0 ? DefaultSize : array.Length * 2];
             Array.Copy(array, 0, dest, 0, size);
             array = dest;
         }
 
         array[size++] = val;
-    }
-
-    internal bool RemoveAt(int index)
-    {
-        if (index >= 0 && index < size)
-        {
-            size--;
-
-            if (index < size)
-                Array.Copy(array, index + 1, array, index, size - index);
-
-            array[size] = default!;
-            return true;
-        }
-
-        return false;
-    }
-
-    internal bool Remove(T val) => RemoveAt(Array.IndexOf(array, val));
-
-    internal void Trim()
-    {
-        if (array.Length > size)
-        {
-            var newArr = new T[size];
-            Array.Copy(array, newArr, size);
-            array = newArr;
-        }
     }
 
     public int Count => size;

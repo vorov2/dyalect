@@ -4,7 +4,7 @@
     assert(true, TypeInfo(x) == Foo)
     assert(true, x.GetType() == Foo)
     var t = TypeInfo(x)
-    assert("Foo", t.name)
+    assert("Foo", typeName(t))
 #endregion
 
 #region "Methods: Clone"
@@ -19,6 +19,22 @@
     let xs = Foo(1, 2, 3)
     let str = xs.ToString()
     assert("Foo(x: 1, y: 2, z: 3)", str)
+#endregion
+
+#region "Methods: ToString"
+    type Foo(x, y, z)
+    let xs = Foo(1, 'c', "string")
+    let str = xs.ToLiteral()
+    assert("Foo(x: 1, y: 'c', z: \"string\")", str)
+#endregion
+
+#region "Statics"
+    try {
+        Integer.ToString()
+        assert(got: false)
+    } catch {
+        @OperationNotSupported => assert(got: true)
+    }
 #endregion
 
 #region "Generated members"

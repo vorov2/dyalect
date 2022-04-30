@@ -2,7 +2,6 @@
 using Dyalect.Linker;
 using Dyalect.Runtime.Types;
 using Dyalect.Strings;
-using System;
 using System.Linq;
 using System.Reflection;
 namespace Dyalect.Runtime;
@@ -101,6 +100,8 @@ public static partial class DyMachine
             switch (op.Code)
             {
                 case OpCode.Nop:
+                    break;
+                case OpCode.Debug:
                     break;
                 case OpCode.This:
                     evalStack.Push(function.Self!);
@@ -746,7 +747,7 @@ public static partial class DyMachine
         {
             return ctx.Timeout();
         }
-        catch (DyErrorException ex)
+        catch (DyCodeException ex)
         {
             ctx.Error = ex.Error;
             return DyNil.Instance;

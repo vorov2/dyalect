@@ -4,38 +4,36 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal sealed partial class DyBoolTypeInfo : DyTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Lit;
-
     public override string ReflectedTypeName => nameof(Dy.Bool);
 
     public override int ReflectedTypeId => Dy.Bool;
 
-    public DyBoolTypeInfo() => AddMixin(Dy.Bounded);
-
     #region Operations
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx) =>
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         ReferenceEquals(left, right) ? True : False;
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString(ReferenceEquals(arg, True) ? "true" : "false");
 
-    protected override DyObject ToLiteralOp(DyObject arg, ExecutionContext ctx) => ToStringOp(arg, DyNil.Instance, ctx);
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOp(ctx, arg, DyNil.Instance);
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
             Dy.Integer => ReferenceEquals(self, True) ? DyInteger.One : DyInteger.Zero,
-            _ => base.CastOp(self, targetType, ctx)
+            _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
 
     [StaticMethod(Method.Bool)] 
     internal static bool CreateBool(DyObject value) => value.IsTrue();
 
-    [StaticMethod] internal static DyBool Default() => False;
+    [StaticProperty]
+    internal static DyBool Default() => False;
 
-    [StaticMethod] internal static DyBool Max() => True;
+    [StaticProperty]
+    internal static DyBool Max() => True;
 
-    [StaticMethod] internal static DyBool Min() => False;
+    [StaticProperty]
+    internal static DyBool Min() => False;
 }

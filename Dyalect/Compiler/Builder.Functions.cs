@@ -281,9 +281,17 @@ partial class Builder
                                 AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
                             break;
                         case NodeType.String:
-                            val = new DyString(((DStringLiteral)p.DefaultValue).Value);
-                            if (!CheckRestriction(Dy.String, p.TypeAnnotation))
-                                AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                            {
+                                var lit = (DStringLiteral)p.DefaultValue;
+
+                                if (lit.Chunks is not null)
+                                    AddError(CompilerError.InterpolatedStringDefaultValue, lit.Location);
+
+                                val = DyString.Get(((DStringLiteral)p.DefaultValue).Value!);
+
+                                if (!CheckRestriction(Dy.String, p.TypeAnnotation))
+                                    AddError(CompilerError.InvalidTypeDefaultValue, p.DefaultValue.Location);
+                            }
                             break;
                         case NodeType.Nil:
                             val = DyNil.Instance;
@@ -371,7 +379,7 @@ partial class Builder
     {
         var iterBody = hints.Has(IteratorBody);
         var args = CompileFunctionParameters(node);
-        StartFun(node.Setter ? Builtins.Setter(node.Name!) : node.Name!, args);
+        StartFun(node.Setter ? Builtins.Setter(node.Name!) : node.Name!, node.TypeName is not null ? node.TypeName.Local : null, args);
 
         if (node.IsStatic && node.TypeName is null)
             AddError(CompilerError.StaticOnlyMethods, node.Location, node.Name!);

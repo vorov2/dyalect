@@ -38,10 +38,10 @@ partial class Builder
 
     //Call this to generate the first part of FunSym
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void StartFun(string name, Par[] pars)
+    private void StartFun(string name, string? typeName, Par[] pars)
     {
         cw.StartFrame();
-        pdb.StartFunction(name, cw.Offset, pars);
+        pdb.StartFunction(name, cw.Offset, typeName, pars);
     }
 
     //Call this to finalized generation of FunSym
@@ -94,6 +94,7 @@ partial class Builder
     {
         lastLocation = node.Location;
         pdb.AddLineSym(cw.Offset, Line(lastLocation), Col(lastLocation));
+        //cw.Debug();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -101,6 +102,7 @@ partial class Builder
     {
         lastLocation = loc;
         pdb.AddLineSym(cw.Offset, Line(loc), Col(loc));
+        //cw.Debug();
     }
 
     //Used only when extended debug info is generated

@@ -17,7 +17,7 @@ public sealed class ConsoleTextWriter : TextWriter
     public ConsoleTextWriter(ExecutionContext ctx, DyObject write, DyObject? writeLine) =>
         (this.ctx, this.write, this.writeLine) = (ctx, write, writeLine);
 
-    public override void Write(string? value) => write.Invoke(ctx, new DyString(value ?? ""));
+    public override void Write(string? value) => write.Invoke(ctx, DyString.Get(value));
 
-    public override void WriteLine(string? value) => (writeLine ?? write).Invoke(ctx, new DyString(value ?? ""));
+    public override void WriteLine(string? value) => (writeLine ?? write).Invoke(ctx, DyString.Get(value));
 }

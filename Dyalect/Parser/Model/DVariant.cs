@@ -14,7 +14,7 @@ namespace Dyalect.Parser.Model
 
         internal override void ToString(StringBuilder sb)
         {
-            sb.Append('`');
+            sb.Append('@');
             sb.Append(Name);
             sb.Append('(');
             Arguments.ToString(sb);

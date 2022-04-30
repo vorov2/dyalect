@@ -5,7 +5,7 @@ public abstract class DyForeignObject : DyObject
 {
     public override int TypeId => TypeInfo.ReflectedTypeId;
 
-    public override string TypeName => TypeInfo.TypeName;
+    public override string TypeName => TypeInfo.ReflectedTypeName;
 
     public DyForeignTypeInfo TypeInfo { get; }
 

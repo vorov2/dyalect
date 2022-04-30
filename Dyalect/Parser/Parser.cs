@@ -1172,7 +1172,7 @@ namespace Dyalect.Parser
 
 	void RangePattern(out DPattern node) {
 		node = null; 
-		Pattern(out node);
+		AsPattern(out node);
 		if (la.kind == 86) {
 			var r = new DRangePattern(t) { From = node }; 
 			Get();
@@ -1181,82 +1181,49 @@ namespace Dyalect.Parser
 		}
 	}
 
+	void AsPattern(out DPattern node) {
+		node = null; 
+		Pattern(out node);
+		if (la.kind == 1 || la.kind == 2) {
+			if (la.AfterEol) return;
+			var asp = new DAsPattern(t) { Pattern = node }; 
+			
+			Identifier();
+			asp.Name = t.val; node = asp; 
+		}
+	}
+
 	void Pattern(out DPattern node) {
 		node = null; 
 		if (la.kind == 1 || la.kind == 2) {
 			NamePattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
 		} else if (la.kind == 3) {
 			VariantPattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
 		} else if (la.kind == 5) {
 			IntegerPattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
 		} else if (la.kind == 6) {
 			FloatPattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
 		} else if (la.kind == 8) {
 			CharPattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
 		} else if (la.kind == 7) {
 			StringPattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
 		} else if (la.kind == 79 || la.kind == 80) {
 			BooleanPattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
 		} else if (la.kind == 88) {
 			NilPattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
 		} else if (IsTuple(allowFields: true)) {
 			TuplePattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
 		} else if (la.kind == 32) {
 			GroupPattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
 		} else if (la.kind == 36) {
 			ArrayPattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
 		} else if (la.kind == 27) {
 			MethodCheckPattern(out node);
-			if (la.kind == 1 || la.kind == 2) {
-				AsPattern(node, out node);
-			}
-		} else if (la.kind == 87) {
-			NotPattern(out node);
 		} else if (StartOf(12)) {
 			ComparisonPattern(out node);
+		} else if (la.kind == 87) {
+			NotPattern(out node);
 		} else SynErr(123);
-	}
-
-	void AsPattern(DPattern target, out DPattern node) {
-		node = null; 
-		if (la.AfterEol) { node = target; return; }
-		var asp = new DAsPattern(t) { Pattern = target };
-		
-		Identifier();
-		asp.Name = t.val; node = asp; 
 	}
 
 	void VariantPattern(out DPattern node) {
@@ -1436,13 +1403,6 @@ namespace Dyalect.Parser
 		node = new DMethodCheckPattern(t) { Name = name }; 
 	}
 
-	void NotPattern(out DPattern node) {
-		Expect(87);
-		var np = new DNotPattern(t); 
-		Pattern(out node);
-		np.Pattern = node; node = np; 
-	}
-
 	void ComparisonPattern(out DPattern node) {
 		node = null; BinaryOperator op = default; Token ot = default; 
 		if (la.kind == 61) {
@@ -1486,6 +1446,13 @@ namespace Dyalect.Parser
 		default: SynErr(129); break;
 		}
 		node = new DComparisonPattern(ot) { Operator = op, Pattern = node }; 
+	}
+
+	void NotPattern(out DPattern node) {
+		Expect(87);
+		var np = new DNotPattern(t); 
+		Pattern(out node);
+		np.Pattern = node; node = np; 
 	}
 
 	void LabelPattern(out DPattern node) {
@@ -2198,7 +2165,11 @@ namespace Dyalect.Parser
 		node = null; 
 		if (la.kind == 7) {
 			Get();
-			node = ParseString(); 
+			var str = ParseString(); node = str; 
+			while (la.kind == 7) {
+				Get();
+				ParseStringChunk(str); 
+			}
 		} else if (la.kind == 9) {
 			Get();
 			node = ParseVerbatimString(); 

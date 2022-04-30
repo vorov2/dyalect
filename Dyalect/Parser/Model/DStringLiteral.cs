@@ -7,7 +7,7 @@ namespace Dyalect.Parser.Model
     {
         public DStringLiteral(Location loc) : base(NodeType.String, loc) { }
 
-        public string Value { get; set; } = null!;
+        public string? Value { get; set; }
 
         public List<StringChunk>? Chunks { get; set; }
 
@@ -31,7 +31,7 @@ namespace Dyalect.Parser.Model
 
                 sb.Append(StringUtil.Escape(newSb.ToString()));
             }
-            else
+            else if (Value is not null)
                 sb.Append(StringUtil.Escape(Value));
         }
     }

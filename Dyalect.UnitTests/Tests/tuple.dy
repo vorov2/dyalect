@@ -9,10 +9,17 @@
     assert("(x: 42, y: foo)", res)
 #endregion
 
-#region "Methods: Clone"
+#region "Methods: Clone 1"
     let xs = (1,2,3)
     assert(true, xs == xs)
     assert(true, xs.Clone() == xs)
+#endregion
+
+#region "Methods: Clone 2"
+    let xs = (1,2,3)
+    assert(true, referenceEquals(xs.Clone(), xs))
+    let ys = (var x: 1, 2, 3)
+    assert(false, referenceEquals(ys.Clone(), ys))
 #endregion
 
 #region "Methods: GetType"
@@ -20,7 +27,7 @@
     assert(true, TypeInfo(x) == Tuple)
     assert(true, x.GetType() == Tuple)
     var t = TypeInfo(x)
-    assert("Tuple", t.name)
+    assert("Tuple", typeName(t))
 #endregion
 
 #region "Tuple literal 1"
@@ -347,7 +354,7 @@
 #region "Methods: ToSet"
     let xs = (1,2,2,2,3,4,4,5,5,5)
     let ys = xs.ToSet()
-    assert("Set (1, 2, 3, 4, 5)", ys.ToString())
+    assert("Set(1, 2, 3, 4, 5)", ys.ToString())
 #endregion
 
 #region "Tuple: Alter 1"

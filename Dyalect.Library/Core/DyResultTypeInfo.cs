@@ -12,24 +12,23 @@ public sealed partial class DyResultTypeInfo : DyForeignTypeInfo
     public override string ReflectedTypeName => "Result";
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Get | SupportedOperations.Len;
+        SupportedOperations.Get | SupportedOperations.Len;
 
     #region Operations
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         var self = (DyResult)arg;
         return new DyString(self.Constructor + " ("
             + (self.Value.TypeId is not Dy.Nil ? self.Value.ToString(ctx) : "") + ")");
     }
 
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
     {
         var self = (DyResult)arg;
         return DyInteger.Get(self.Value.TypeId is Dy.Nil ? 0 : 1);
     }
 
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
         if (index.TypeId is Dy.Integer)
             return index.GetInteger() is 0 ? ((DyResult)self).Value : ctx.IndexOutOfRange(index);
@@ -47,8 +46,8 @@ public sealed partial class DyResultTypeInfo : DyForeignTypeInfo
     }
     #endregion
 
-    [InstanceMethod("Value")]
-    internal static DyObject TryGet(ExecutionContext ctx, DyResult self)
+    [InstanceMethod]
+    internal static DyObject GetValue(ExecutionContext ctx, DyResult self)
     {
         if (self.Constructor is not FAILURE)
             return self.Value;

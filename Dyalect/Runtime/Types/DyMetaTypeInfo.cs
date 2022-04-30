@@ -1,26 +1,30 @@
-﻿namespace Dyalect.Runtime.Types;
+﻿using Dyalect.Compiler;
+
+namespace Dyalect.Runtime.Types;
 
 internal sealed class DyMetaTypeInfo : DyTypeInfo
 {
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
-
     public override string ReflectedTypeName => nameof(Dy.TypeInfo);
 
     public override int ReflectedTypeId => Dy.TypeInfo;
 
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
-        if (index.TypeId == Dy.String)
-            return index.GetString() switch
-            {
-                "name" => new DyString(((DyTypeInfo)self).ReflectedTypeName),
-                _ => ctx.IndexOutOfRange(index)
-            };
+        var ret = ctx.RuntimeContext.Types[((DyTypeInfo)arg).ReflectedTypeId].GetStaticMember(Builtins.String, ctx);
 
-        return ctx.IndexOutOfRange();
+        if (ctx.HasErrors || ret is null)
+            return Nil;
+
+        return ret.Invoke(ctx);
     }
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
-        new DyString("TypeInfo<" + ((DyTypeInfo)arg).ReflectedTypeName + ">");
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
+    {
+        var ret = ctx.RuntimeContext.Types[((DyTypeInfo)arg).ReflectedTypeId].GetStaticMember(Builtins.Length, ctx);
+
+        if (ctx.HasErrors || ret is null)
+            return Nil;
+
+        return ret.Invoke(ctx);
+    }
 }

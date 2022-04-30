@@ -1,18 +1,17 @@
-﻿namespace Dyalect.Debug
+﻿namespace Dyalect.Debug;
+
+public sealed class LineSym
 {
-    public sealed class LineSym
-    {
-        public LineSym() { }
+    internal static readonly LineSym Empty = new(0);
 
-        public LineSym(int offset) => Offset = offset;
+    public int Offset { get; }
 
-        public LineSym(int offset, int line, int column) => 
-            (Offset, Line, Column) = (offset, line, column);
+    public int Line { get; }
 
-        public int Offset { get; set; }
+    public int Column { get; }
 
-        public int Line { get; set; }
+    internal LineSym(int offset) => Offset = offset;
 
-        public int Column { get; set; }
-    }
+    internal LineSym(int offset, int line, int column) => 
+        (Offset, Line, Column) = (offset, line, column);
 }

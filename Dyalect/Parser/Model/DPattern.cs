@@ -29,7 +29,8 @@ namespace Dyalect.Parser.Model
 
         public long Value { get; set; }
 
-        internal override void ToString(StringBuilder sb) => sb.Append(Value.ToString(CI.NumberFormat));
+        internal override void ToString(StringBuilder sb) =>
+            sb.Append(Value.ToString(InvariantCulture.NumberFormat));
 
         public override int GetHashCode() => Value.GetHashCode();
 
@@ -42,7 +43,8 @@ namespace Dyalect.Parser.Model
 
         public double Value { get; set; }
 
-        internal override void ToString(StringBuilder sb) => sb.Append(Value.ToString(CI.NumberFormat));
+        internal override void ToString(StringBuilder sb) =>
+            sb.Append(Value.ToString(InvariantCulture.NumberFormat));
 
         public override int GetHashCode() => Value.GetHashCode();
 
@@ -81,6 +83,10 @@ namespace Dyalect.Parser.Model
 
         public DStringLiteral Value { get; set; } = null!;
 
+        internal bool IsSimpleValue() => Value.Chunks is null;
+
+        internal string SimpleValue => Value.Value!;
+
         internal override void ToString(StringBuilder sb) => Value.ToString(sb);
 
         public override int GetHashCode() => Value.GetHashCode();
@@ -92,7 +98,11 @@ namespace Dyalect.Parser.Model
     {
         public DNotPattern(Location loc) : base(loc, NodeType.NotPattern) { }
 
-        internal override void ToString(StringBuilder sb) => sb.Append("not");
+        internal override void ToString(StringBuilder sb)
+        {
+            sb.Append("not ");
+            Pattern.ToString(sb);
+        }
 
         public DPattern Pattern { get; set; } = null!;
 
@@ -210,7 +220,7 @@ namespace Dyalect.Parser.Model
         internal override void ToString(StringBuilder sb)
         {
             Pattern?.ToString(sb);
-            sb.Append(" as " + Name);
+            sb.Append(" " + Name);
         }
     }
 

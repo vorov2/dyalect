@@ -115,7 +115,7 @@ partial class Builder
                 cw.Eq();
                 break;
             case NodeType.RangePattern:
-                BuildRange((DRangePattern)node);
+                BuildRange(ctx, (DRangePattern)node);
                 break;
             case NodeType.WildcardPattern:
                 cw.Pop();
@@ -312,7 +312,7 @@ partial class Builder
         cw.Nop();
     }
 
-    private void BuildRange(DRangePattern node)
+    private void BuildRange(CompilerContext ctx, DRangePattern node)
     {
         var skip = cw.DefineLabel();
         var exit = cw.DefineLabel();
@@ -326,12 +326,12 @@ partial class Builder
         cw.Brfalse(skip); //1 left
 
         cw.Dup(); //2 objs
-        BuildRangeElement(node.From);
+        BuildRangeElement(ctx, node.From);
         cw.GtEq();
         cw.Brfalse(skip); //1 left
 
         cw.Dup(); //2 objs
-        BuildRangeElement(node.To);
+        BuildRangeElement(ctx, node.To);
         cw.LtEq();
         cw.Brfalse(skip); //1 left
 
@@ -347,7 +347,7 @@ partial class Builder
         cw.Nop();
     }
 
-    private void BuildRangeElement(DPattern node)
+    private void BuildRangeElement(CompilerContext ctx, DPattern node)
     {
         switch (node.NodeType)
         {
@@ -364,7 +364,7 @@ partial class Builder
                 cw.Push(((DCharPattern)node).Value);
                 break;
             case NodeType.StringPattern:
-                cw.Push(((DStringPattern)node).Value.Value);
+                Build(((DStringPattern)node).Value, Push, ctx);
                 break;
             case NodeType.NilPattern:
                 cw.PushNil();
@@ -392,7 +392,7 @@ partial class Builder
         if (!onlyLabels)
         {
             cw.Dup(); //2 objs
-            cw.HasMember(Builtins.Len);
+            cw.HasMember(Builtins.Length);
             cw.Brfalse(skip); //1 obj left to pop
         }
 
@@ -641,11 +641,14 @@ partial class Builder
 
     private bool CanFollow(DStringPattern now, DSequencePattern prev)
     {
+        if (!now.IsSimpleValue())
+            return true;
+
         for (var i = 0; i < prev.Elements.Count; i++)
         {
             var t = prev.Elements[i];
 
-            if (t.NodeType != NodeType.CharPattern || ((DCharPattern)t).Value != now.Value.Value[i])
+            if (t.NodeType != NodeType.CharPattern || ((DCharPattern)t).Value != now.SimpleValue[i])
                 return true;
         }
 
@@ -690,8 +693,11 @@ partial class Builder
                     {
                         var str = (DStringPattern)now;
 
-                        if ((prevSeq.NodeType == NodeType.TuplePattern && prevSeq.Elements.Count != str.Value.Value.Length)
-                            || (prevSeq.NodeType == NodeType.ArrayPattern && prevSeq.Elements.Count > str.Value.Value.Length))
+                        if (!str.IsSimpleValue())
+                            return true;
+
+                        if ((prevSeq.NodeType == NodeType.TuplePattern && prevSeq.Elements.Count != str.SimpleValue.Length)
+                            || (prevSeq.NodeType == NodeType.ArrayPattern && prevSeq.Elements.Count > str.SimpleValue.Length))
                             return true;
 
                         return CanFollow(str, prevSeq);
@@ -738,19 +744,20 @@ partial class Builder
                     if (now.NodeType == NodeType.StringPattern)
                     {
                         var str = (DStringPattern)now;
-                        return str.Value.Value != prevStr.Value.Value;
+                        return !str.IsSimpleValue() || !prevStr.IsSimpleValue() 
+                            || str.SimpleValue != prevStr.SimpleValue;
                     }
                     else if (now.NodeType == NodeType.TuplePattern)
                     {
                         var tup = (DTuplePattern)now;
-                        if (tup.Elements.Count != prevStr.Value.Value.Length)
+                        if (!prevStr.IsSimpleValue() || tup.Elements.Count != prevStr.SimpleValue.Length)
                             return true;
                         return CanFollow(prevStr, tup);
                     }
                     else if (now.NodeType == NodeType.ArrayPattern)
                     {
                         var arr = (DArrayPattern)now;
-                        if (arr.Elements.Count > prevStr.Value.Value.Length)
+                        if (!prevStr.IsSimpleValue() || arr.Elements.Count > prevStr.SimpleValue.Length)
                             return true;
                         return CanFollow(prevStr, arr);
                     }

@@ -3,13 +3,11 @@ using Dyalect.Compiler;
 using Dyalect.Parser;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
 namespace Dyalect.Linker;
 
 [GeneratedModule]
@@ -28,6 +26,9 @@ internal sealed partial class Lang : ForeignUnit
 
     protected override void Execute(ExecutionContext ctx) => Add("args", startupArguments ?? Nil);
 
+    [StaticMethod("referenceEquals")]
+    internal static bool Equals(DyObject value, DyObject other) => ReferenceEquals(value, other);
+
     [StaticMethod("print")]
     internal static void Print(ExecutionContext ctx, [VarArg] DyTuple values, [Default(",")]string separator, [Default("\n")]DyObject terminator)
     {
@@ -38,7 +39,7 @@ internal sealed partial class Lang : ForeignUnit
             if (!fst && !string.IsNullOrEmpty(separator))
                 Console.Write(separator);
 
-            if (a.TypeId is Dy.String)
+            if (a.Is(Dy.String))
                 Console.Write(a.GetString());
             else
                 Console.Write(a.ToString(ctx));
@@ -73,6 +74,15 @@ internal sealed partial class Lang : ForeignUnit
 
     [StaticMethod("constructorName")]
     internal static string? GetConstructorName(DyObject value) => value.GetConstructor();
+
+    [StaticMethod("typeName")]
+    internal static string GetTypeName(DyObject value)
+    {
+        if (value.Is(Dy.TypeInfo))
+            return ((DyTypeInfo)value).ReflectedTypeName;
+        else
+            return value.TypeName;
+    }
 
     [StaticMethod("rawget")]
     internal static DyObject RawGet(ExecutionContext ctx, DyObject values, DyInteger index) =>
@@ -220,24 +230,17 @@ internal sealed partial class Lang : ForeignUnit
     [StaticMethod("parse")]
     internal static DyObject Parse(ExecutionContext ctx, string expression)
     {
-        try
-        {
-            var res = DyParser.Parse(SourceBuffer.FromString(expression));
+        var res = DyParser.Parse(SourceBuffer.FromString(expression));
 
-            if (!res.Success)
-                return ctx.ParsingFailed(res.Messages.First().ToString());
+        if (!res.Success)
+            return ctx.ParsingFailed(res.Messages.First().ToString());
 
-            if (res.Value!.Root is null || res.Value!.Root.Nodes.Count == 0)
-                return ctx.ParsingFailed("Empty expression.");
-            else if (res.Value!.Root.Nodes.Count > 1)
-                return ctx.ParsingFailed("Only single expressions allowed.");
+        if (res.Value!.Root is null || res.Value!.Root.Nodes.Count == 0)
+            return ctx.ParsingFailed("Empty expression.");
+        else if (res.Value!.Root.Nodes.Count > 1)
+            return ctx.ParsingFailed("Only single expressions allowed.");
 
-            return LiteralEvaluator.Eval(res.Value!.Root.Nodes[0]);
-        }
-        catch (Exception ex)
-        {
-            return ctx.ParsingFailed(ex.Message);
-        }
+        return LiteralEvaluator.Eval(res.Value!.Root.Nodes[0]);
     }
 
     [StaticMethod("eval")]

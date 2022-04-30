@@ -1,10 +1,10 @@
-# Test session from 28/04/2022 18:53
+# Test session from 30/04/2022 21:48
 
 ## Summary:
-784 passed, 0 failed in 28 file(s)
+803 passed, 0 failed in 28 file(s)
 
 ## Test file(s):
-[array.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [interop.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\interop.dy), [iterator.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [mixin.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\mixin.dy), [modules.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
+[array.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [interop.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\interop.dy), [iterator.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [mixin.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\mixin.dy), [modules.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
 
 ## Report:
 
@@ -21,7 +21,7 @@
 * &#9745; **Methods: IndexOf, LastIndexOf**
 * &#9745; **Methods: Indices**
 * &#9745; **Methods: Compact**
-* &#9745; **Methods: Len**
+* &#9745; **Methods: Length**
 * &#9745; **Methods: Empty**
 * &#9745; **Methods: Concat**
 * &#9745; **Methods: AddRange**
@@ -99,6 +99,9 @@
 * &#9745; **rawget and rawset**
 * &#9745; **rawset and read-only**
 * &#9745; **constructorName**
+* &#9745; **typeName**
+* &#9745; **equals 1**
+* &#9745; **equals 2**
 
 ### Tests/char.dy:
 * &#9745; **Char literal**
@@ -172,6 +175,8 @@
 * &#9745; **Methods: GetType**
 * &#9745; **Methods: Clone**
 * &#9745; **Methods: FromTuple**
+* &#9745; **Methods: ToString**
+* &#9745; **Methods: ToLiteral**
 * &#9745; **Methods: Add**
 * &#9745; **Indexing**
 * &#9745; **Methods: TryAdd, TryGet**
@@ -223,7 +228,7 @@
 ### Tests/float.dy:
 * &#9745; **Float literal**
 * &#9745; **Methods: Min and Max**
-* &#9745; **Methods: Inf and IsNaN**
+* &#9745; **Methods: Infinity and IsNaN**
 * &#9745; **Constructor**
 * &#9745; **Methods: Default**
 * &#9745; **Methods: GetType**
@@ -310,6 +315,7 @@
 * &#9745; **Varargs and mutable tuple**
 * &#9745; **Varargs and tuple expansion**
 * &#9745; **StdCall**
+* &#9745; **Type invocation**
 
 ### Tests/integer.dy:
 * &#9745; **Integer literal**
@@ -343,10 +349,13 @@
 * &#9745; **Iterator literal**
 * &#9745; **Constructor**
 * &#9745; **Methods: GetType**
+* &#9745; **Methods: ToString**
+* &#9745; **Methods: ToLiteral**
 * &#9745; **Methods: Clone**
 * &#9745; **Methods: Len**
 * &#9745; **Variable capture**
-* &#9745; **Methods: First, Last, Len**
+* &#9745; **Methods: First, Last, Length**
+* &#9745; **Methods: Single**
 * &#9745; **Iterator as argument**
 * &#9745; **Iterator function**
 * &#9745; **Running iterator 1**
@@ -357,6 +366,7 @@
 * &#9745; **Iterator as method**
 * &#9745; **Breaking iteration**
 * &#9745; **Methods: Concat**
+* &#9745; **Methods: Concat with +**
 * &#9745; **Yield many 1**
 * &#9745; **Yield many 2**
 * &#9745; **Yield many 3**
@@ -563,7 +573,7 @@
 * &#9745; **Pattern in cycle 5**
 * &#9745; **Patterns: range 1**
 * &#9745; **Patterns: range 2**
-* &#9745; **Patterns: member check 3**
+* &#9745; **Patterns: member check 1**
 * &#9745; **Patterns: member check 2**
 * &#9745; **Patterns: member check 3**
 * &#9745; **Match in set 1**
@@ -591,6 +601,7 @@
 * &#9745; **Match in let 6**
 * &#9745; **Patterns: not**
 * &#9745; **Patterns: comparison**
+* &#9745; **Not nil pattern**
 
 ### Tests/mixin.dy:
 * &#9745; **Number**
@@ -633,8 +644,9 @@
 ### Tests/nil.dy:
 * &#9745; **Literal and initialization**
 * &#9745; **Constructor**
-* &#9745; **Methods: default**
+* &#9745; **Methods: Default**
 * &#9745; **Methods: GetType**
+* &#9745; **Methods: Clone**
 * &#9745; **Conversion: as**
 
 ### Tests/operators.dy:
@@ -696,6 +708,7 @@
 * &#9745; **Methods: IsSubsetOf**
 * &#9745; **Methods: IsSupersetOf**
 * &#9745; **Methods: ToString**
+* &#9745; **Methods: ToLiteral**
 * &#9745; **Conversion: as**
 * &#9745; **Operator in**
 * &#9745; **Set and vararg function**
@@ -733,6 +746,7 @@
 * &#9745; **Interpolation 3**
 * &#9745; **Concatenation 1**
 * &#9745; **Concatenation 2**
+* &#9745; **Concatenation 3**
 * &#9745; **Methods: ToCharArray**
 * &#9745; **Methods: Repeat**
 * &#9745; **Methods: ToLiteral**
@@ -745,7 +759,8 @@
 
 ### Tests/tuple.dy:
 * &#9745; **Methods: ToString**
-* &#9745; **Methods: Clone**
+* &#9745; **Methods: Clone 1**
+* &#9745; **Methods: Clone 2**
 * &#9745; **Methods: GetType**
 * &#9745; **Tuple literal 1**
 * &#9745; **Tuple literal 2**
@@ -794,6 +809,8 @@
 * &#9745; **Methods: GetType**
 * &#9745; **Methods: Clone**
 * &#9745; **Methods: ToString**
+* &#9745; **Methods: ToString**
+* &#9745; **Statics**
 * &#9745; **Generated members**
 * &#9745; **Empty variant**
 * &#9745; **Multiple productions**
@@ -841,6 +858,8 @@
 * &#9745; **Methods: GetType**
 * &#9745; **Methods: ToString, ToLiteral**
 * &#9745; **Methods: Length**
+* &#9745; **Methods: Clone 1**
+* &#9745; **Methods: Clone 2**
 * &#9745; **Equality**
 * &#9745; **Conversion (as)**
 * &#9745; **Pass as value**

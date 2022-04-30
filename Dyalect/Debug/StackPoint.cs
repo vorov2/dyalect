@@ -1,17 +1,20 @@
-﻿namespace Dyalect.Debug
+﻿namespace Dyalect.Debug;
+
+public readonly struct StackPoint
 {
-    public struct StackPoint
-    {
-        internal StackPoint(int breakAddress, int unitHandle) => 
-            (BreakAddress, UnitHandle, External) = (breakAddress, unitHandle, false);
+    public static readonly StackPoint External = new(external: true);
 
-        internal StackPoint(bool external) => 
-            (BreakAddress, UnitHandle, External) = (0, 0, external);
+    private readonly bool external;
 
-        internal readonly bool External;
+    public readonly int BreakAddress;
 
-        internal readonly int BreakAddress;
+    public readonly int UnitHandle;
 
-        internal readonly int UnitHandle;
-    }
+    internal StackPoint(int breakAddress, int unitHandle) => 
+        (BreakAddress, UnitHandle, external) = (breakAddress, unitHandle, false);
+
+    private StackPoint(bool external) =>
+        (BreakAddress, UnitHandle, this.external) = (0, 0, external);
+
+    public bool IsExternal => external;
 }

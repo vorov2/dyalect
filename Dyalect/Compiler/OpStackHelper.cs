@@ -72,12 +72,10 @@ internal static class OpStackHelper
         0,  //Briter
         0,  //RgDI
         0,  //RgFI
-
         0,  //FunPrep
         -1, //FunArgIx
         -1, //FunArgNm
         0,  //FunCall
-
         0,  //NewTuple **dynamic
         0,  //Contains
         -2, //TypeCheck
@@ -94,9 +92,9 @@ internal static class OpStackHelper
         -3, //NewCast
         0,  //Cast
         -2, //Mixin
-
-        0, //StdCall_0
+        0,  //StdCall_0
         -1, //StdCall_1
-        0, //StdCall **dynamic
+        0,  //StdCall **dynamic
+        0,  //Debug
     };
 }

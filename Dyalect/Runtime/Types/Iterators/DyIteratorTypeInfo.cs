@@ -1,5 +1,4 @@
 ﻿using Dyalect.Codegen;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,21 +8,28 @@ namespace Dyalect.Runtime.Types;
 internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
+        SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
 
     public override string ReflectedTypeName => nameof(Dy.Iterator);
 
     public override int ReflectedTypeId => Dy.Iterator;
 
     #region Operations
-    protected override DyObject LengthOp(DyObject self, ExecutionContext ctx)
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right) => DyIterator.Create(Concat(ctx, left, right));
+
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject self)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
         return ctx.HasErrors ? Nil : DyInteger.Get(seq.Count());
     }
+    
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject self, DyObject format) =>
+        ToStringOrLiteral(ctx, self, false);
 
-    protected override DyObject ToStringOp(DyObject self, DyObject format, ExecutionContext ctx)
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject self) =>
+        ToStringOrLiteral(ctx, self, true);
+
+    private static DyObject ToStringOrLiteral(ExecutionContext ctx, DyObject self, bool literal)
     {
         var fn = self.GetIterator(ctx)!;
 
@@ -41,6 +47,10 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
             return DyString.Empty;
 
         var sb = new StringBuilder();
+
+        if (literal)
+            sb.Append("yields ");
+
         sb.Append('{');
         var c = 0;
 
@@ -48,7 +58,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         {
             if (c > 0)
                 sb.Append(", ");
-            var str = e.ToString(ctx);
+            var str = literal ? e.ToLiteral(ctx) : e.ToString(ctx);
 
             if (ctx.Error is not null)
                 return DyString.Empty;
@@ -64,7 +74,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         return new DyString(sb.ToString());
     }
 
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx)
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
         if (!index.Is(Dy.Integer)) return Nil;
 
@@ -81,57 +91,48 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         }
     }
 
-    protected override DyObject ContainsOp(DyObject self, DyObject item, ExecutionContext ctx)
+    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject item)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
         return seq.Any(o => o.Equals(item, ctx)) ? True : False;
     }
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx) =>
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
             Dy.Tuple => new DyTuple(((DyIterator)self).ToEnumerable(ctx).ToArray()),
             Dy.Array => new DyArray(((DyIterator)self).ToEnumerable(ctx).ToArray()),
             Dy.Function => ((DyIterator)self).GetIteratorFunction(),
-            Dy.Set => ToSet(ctx, self),
-            _ => base.CastOp(self, targetType, ctx)
+            Dy.Set => ConvertToSet(ctx, self),
+            _ => base.CastOp(ctx, self, targetType)
         };
-    #endregion
 
-    [InstanceMethod]
-    internal static DyObject ToArray(ExecutionContext ctx, DyObject self)
-    {
-        var res = ConvertToArray(ctx, self);
-        return res is null ? Nil : new DyArray(res.ToArray());
-    }
-
-    [InstanceMethod]
-    internal static DyObject ToTuple(ExecutionContext ctx, DyObject self)
-    {
-        var res = ConvertToArray(ctx, self);
-        return res is null ? Nil : new DyTuple(res.ToArray());
-    }
-
-    private static List<DyObject>? ConvertToArray(ExecutionContext ctx, DyObject self)
-    {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-        return ctx.HasErrors ? null : seq.ToList();
-    }
-
-    [InstanceMethod]
-    internal static DyObject ToDictionary(ExecutionContext ctx, DyObject self, DyObject keySelector, DyObject? valueSelector = null)
+    private DyObject ConvertToSet(ExecutionContext ctx, DyObject self)
     {
         var seq = DyIterator.ToEnumerable(ctx, self);
 
         if (ctx.HasErrors)
             return Nil;
 
+        return ToSet(ctx, seq);
+    }
+    #endregion
+
+    [InstanceMethod]
+    internal static DyObject ToArray(IEnumerable<DyObject> self) => new DyArray(self.ToArray());
+
+    [InstanceMethod]
+    internal static DyObject ToTuple(IEnumerable<DyObject> self) => new DyTuple(self.ToArray());
+
+    [InstanceMethod]
+    internal static DyObject ToDictionary(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction keySelector, DyFunction? valueSelector = null)
+    {
         try
         {
-            var map = 
+            var map =
                 valueSelector is not null
-                ? seq.ToDictionary(dy => keySelector.Invoke(ctx, dy), dy => valueSelector.Invoke(ctx, dy))
-                : seq.ToDictionary(dy => keySelector.Invoke(ctx, dy));
+                ? self.ToDictionary(dy => keySelector.Call(ctx, dy), dy => valueSelector.Call(ctx, dy))
+                : self.ToDictionary(dy => keySelector.Call(ctx, dy));
             return new DyDictionary(map);
         }
         catch (ArgumentException)
@@ -141,65 +142,60 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     }
 
     [InstanceMethod]
-    internal static DyObject Take(ExecutionContext ctx, DyObject self, int count)
-    {
-        if (count < 0) count = 0;
-        return DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Take(count));
-    }
+    internal static IEnumerable<DyObject> Take(IEnumerable<DyObject> self, int count) => self.Take(count < 0 ? 0 : count);
 
     [InstanceMethod]
-    internal static DyObject Skip(ExecutionContext ctx, DyObject self, int count)
-    {
-        if (count < 0) count = 0;
-        return DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Skip(count));
-    }
+    internal static IEnumerable<DyObject> Skip(IEnumerable<DyObject> self, int count) => self.Skip(count < 0 ? 0 : count);
 
     [InstanceMethod]
-    internal static DyObject First(ExecutionContext ctx, DyObject self) =>
-        DyIterator.ToEnumerable(ctx, self).FirstOrDefault() ?? Nil;
+    internal static DyObject First(IEnumerable<DyObject> self) => self.FirstOrDefault() ?? Nil;
+
+    [InstanceMethod]
+    internal static DyObject Single(IEnumerable<DyObject> self)
+    {
+        var two = self.Take(2).ToList();
+
+        if (two.Count > 1 || two.Count == 0)
+            return Nil;
+
+        return two[0];
+    }
 
     [InstanceMethod]
     internal static DyObject Last(ExecutionContext ctx, DyObject self) =>
         DyIterator.ToEnumerable(ctx, self).LastOrDefault() ?? Nil;
 
     [InstanceMethod]
-    internal static DyObject Reverse(ExecutionContext ctx, DyObject self) =>
-        DyIterator.Create(DyIterator.ToEnumerable(ctx, self).Reverse());
+    internal static IEnumerable<DyObject> Reverse(IEnumerable<DyObject> self) => self.Reverse();
 
     [InstanceMethod]
-    internal static DyObject Slice(ExecutionContext ctx, DyObject self, int index = 0, int? endIndex = null)
+    internal static IEnumerable<DyObject> Slice(IEnumerable<DyObject> self, int index = 0, int? endIndex = null)
     {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return Nil;
-
         int? count = null;
 
         if (index < 0)
-            index = (count ??= seq.Count()) + index;
+            index = (count ??= self.Count()) + index;
 
         if (endIndex is null)
         {
             if (index == 0)
                 return self;
 
-            return DyIterator.Create(seq.Skip(index));
+            return self.Skip(index);
         }
 
         if (endIndex < 0)
-            endIndex = (count ?? seq.Count()) + endIndex - 1;
+            endIndex = (count ?? self.Count()) + endIndex - 1;
 
-        return DyIterator.Create(seq.Skip(index).Take(endIndex.Value - index + 1));
+        return self.Skip(index).Take(endIndex.Value - index + 1);
     }
 
     [InstanceMethod]
-    internal static DyObject ElementAt(ExecutionContext ctx, DyObject self, int index)
+    internal static DyObject ElementAt(ExecutionContext ctx, IEnumerable<DyObject> self, int index)
     {
         try
         {
-            var iter = DyIterator.ToEnumerable(ctx, self);
-            return index < 0 ? iter.ElementAt(^-index) : iter.ElementAt(index);
+            return index < 0 ? self.ElementAt(^-index) : self.ElementAt(index);
         }
         catch (IndexOutOfRangeException)
         {
@@ -208,26 +204,15 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     }
 
     [InstanceMethod]
-    internal static DyObject Sort(ExecutionContext ctx, DyObject self, DyObject? comparer = null)
+    internal static IEnumerable<DyObject> Sort(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction? comparer = null)
     {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return Nil;
-
         var sortComparer = new SortComparer(comparer, ctx);
-        var sorted = seq.OrderBy(dy => dy, sortComparer);
-        return DyIterator.Create(sorted);
+        return self.OrderBy(dy => dy, sortComparer);
     }
 
     [InstanceMethod]
-    internal static DyObject Shuffle(ExecutionContext ctx, DyObject self)
+    internal static IEnumerable<DyObject> Shuffle(IEnumerable<DyObject> self)
     {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return Nil;
-
         var rnd = new Random();
         var last = 0;
 
@@ -239,174 +224,95 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
             return n;
         }
 
-        var sorted = seq.OrderBy(sorter);
-        return DyIterator.Create(sorted);
+        return self.OrderBy(sorter);
     }
 
     [InstanceMethod]
-    internal static int Count(ExecutionContext ctx, DyObject self, DyObject? predicate = null)
+    internal static int Count(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction? predicate = null)
     {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
         if (predicate is not null)
         {
-            return seq.Count(dy =>
+            return self.Count(dy =>
             {
-                var res = predicate.Invoke(ctx, dy);
+                var res = predicate.Call(ctx, dy);
 
                 if (ctx.HasErrors)
-                    throw new DyErrorException(ctx.Error!);
+                    throw new DyCodeException(ctx.Error!);
 
                 return res.IsTrue();
             });
         }
         else
-            return seq.Count();
+            return self.Count();
     }
 
     [InstanceMethod]
-    internal static DyObject Map(ExecutionContext ctx, DyObject self, DyObject converter)
-    {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return Nil;
-
-        var xs = seq.Select(dy => converter.Invoke(ctx, dy));
-        return DyIterator.Create(xs);
-    }
+    internal static IEnumerable<DyObject> Map(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction converter) =>
+        self.Select(dy => converter.Call(ctx, dy));
 
     [InstanceMethod]
-    internal static DyObject Filter(ExecutionContext ctx, DyObject self, DyObject predicate)
-    {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return Nil;
-
-        var xs = seq.Where(o => predicate.Invoke(ctx, o).IsTrue());
-        return DyIterator.Create(xs);
-    }
+    internal static IEnumerable<DyObject> Filter(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction predicate) =>
+        self.Where(o => predicate.Call(ctx, o).IsTrue());
 
     [InstanceMethod]
-    internal static DyObject TakeWhile(ExecutionContext ctx, DyObject self, DyObject predicate)
-    {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return Nil;
-
-        var xs = seq.TakeWhile(o => predicate.Invoke(ctx, o).IsTrue());
-        return DyIterator.Create(xs);
-    }
+    internal static IEnumerable<DyObject> TakeWhile(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction predicate) =>
+        self.TakeWhile(o => predicate.Call(ctx, o).IsTrue());
 
     [InstanceMethod]
-    internal static DyObject SkipWhile(ExecutionContext ctx, DyObject self, DyObject predicate)
-    {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return Nil;
-
-        var xs = seq.SkipWhile(o => predicate.Invoke(ctx, o).IsTrue());
-        return DyIterator.Create(xs);
-    }
+    internal static IEnumerable<DyObject> SkipWhile(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction predicate) =>
+        self.SkipWhile(o => predicate.Call(ctx, o).IsTrue());
 
     [InstanceMethod]
-    internal static DyObject Reduce(ExecutionContext ctx, DyObject self, DyObject converter, [Default(0)]DyObject initial)
-    {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return Nil;
-
-        return seq.Aggregate(initial, (x, y) => converter.Invoke(ctx, x, y));
-    }
+    internal static DyObject Reduce(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction converter, [Default(0)]DyObject initial) =>
+        self.Aggregate(initial, (x, y) => converter.Call(ctx, x, y));
 
     [InstanceMethod]
-    internal static bool Any(ExecutionContext ctx, DyObject self, DyObject predicate)
-    {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return false;
-
-        var res = seq.Any(o => predicate.Invoke(ctx, o).IsTrue());
-        return res;
-    }
+    internal static bool Any(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction predicate) =>
+        self.Any(o => predicate.Call(ctx, o).IsTrue());
 
     [InstanceMethod]
-    internal static bool All(ExecutionContext ctx, DyObject self, DyObject predicate)
-    {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return false;
-
-        var res = seq.All(o => predicate.Invoke(ctx, o).IsTrue());
-        return res;
-    }
+    internal static bool All(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction predicate) =>
+        self.All(o => predicate.Call(ctx, o).IsTrue());
 
     [InstanceMethod]
-    internal static DyObject ForEach(ExecutionContext ctx, DyObject self, DyObject action)
+    internal static void ForEach(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction action)
     {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return Nil;
-
-        foreach (var o in seq)
+        foreach (var o in self)
         {
-            action.Invoke(ctx, o);
+            action.Call(ctx, o);
 
             if (ctx.HasErrors)
-                return Nil;
+                return;
         }
-
-        return Nil;
     }
 
     [InstanceMethod]
-    internal static DyObject ToSet(ExecutionContext ctx, DyObject self)
+    internal static DyObject ToSet(ExecutionContext ctx, IEnumerable<DyObject> self)
     {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return Nil;
-
         var set = new HashSet<DyObject>();
-        set.UnionWith(seq);
+        set.UnionWith(self);
         return new DySet(set);
     }
 
     [InstanceMethod]
-    internal static DyObject Distinct(ExecutionContext ctx, DyObject self, DyObject? selector = null)
+    internal static IEnumerable<DyObject> Distinct(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction? selector = null)
     {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return Nil;
-
-        IEnumerable<DyObject> res;
-
         if (selector is not null)
-            res = seq.Distinct(new EqualityComparer(ctx, selector));
+            return self.Distinct(new EqualityComparer(ctx, selector));
         else
-            res = seq.Distinct();
-
-        return DyIterator.Create(res);
+            return self.Distinct();
     }
 
     [StaticMethod]
-    internal static DyObject Concat(ExecutionContext ctx, params DyObject[] values) =>
-        DyIterator.Create(new MultiPartEnumerable(ctx, values));
+    internal static IEnumerable<DyObject> Concat(ExecutionContext ctx, params DyObject[] values) =>
+        new MultiPartEnumerable(ctx, values);
 
     [StaticMethod(Method.Iterator)]
-    internal static DyObject Iterator(ExecutionContext ctx, params DyObject[] values) => Concat(ctx, values);
+    internal static IEnumerable<DyObject> Iterator(ExecutionContext ctx, params DyObject[] values) => Concat(ctx, values);
 
     [StaticMethod]
-    internal static DyObject Range(ExecutionContext ctx, [Default(0)]DyObject start, [Default]DyObject end, [Default(1)]DyObject step, bool exclusive = false) =>
-        DyIterator.Create(GenerateRange(ctx, start, end ?? Nil, step, exclusive));
+    internal static IEnumerable<DyObject> Range(ExecutionContext ctx, [Default(0)]DyObject start, [Default]DyObject end, [Default(1)]DyObject step, bool exclusive = false) =>
+        GenerateRange(ctx, start, end ?? Nil, step, exclusive);
 
     private static IEnumerable<DyObject> GenerateRange(ExecutionContext ctx, DyObject start, DyObject end, DyObject step, bool exclusive)
     {
@@ -446,10 +352,10 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     }
 
     [StaticMethod]
-    internal static DyObject Empty() => DyIterator.Create(Enumerable.Empty<DyObject>());
+    internal static IEnumerable<DyObject> Empty() => Enumerable.Empty<DyObject>();
 
     [StaticMethod]
-    internal static DyObject Repeat(ExecutionContext ctx, DyObject value) => DyIterator.Create(Repeater(ctx, value));
+    internal static IEnumerable<DyObject> Repeat(ExecutionContext ctx, DyObject value) => Repeater(ctx, value);
 
     private static IEnumerable<DyObject> Repeater(ExecutionContext ctx, DyObject val)
     {

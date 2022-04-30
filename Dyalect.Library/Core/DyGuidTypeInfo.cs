@@ -1,7 +1,6 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 namespace Dyalect.Library.Core;
 
 [GeneratedType]
@@ -13,14 +12,11 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
 
     public DyGuidTypeInfo() => AddMixin(Dy.Comparable);
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
-
     #region Operations
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString("{" + arg.ToString().ToUpper() + "}");
 
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return False;
@@ -28,7 +24,7 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         return ((DyGuid)left).Value == ((DyGuid)right).Value ? True : False;
     }
 
-    protected override DyObject GtOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -36,7 +32,7 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) > 0);
     }
 
-    protected override DyObject GteOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject GteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -44,7 +40,7 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) >= 0);
     }
 
-    protected override DyObject LtOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -52,7 +48,7 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) < 0);
     }
 
-    protected override DyObject LteOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject LteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId)
             return ctx.InvalidType(left.TypeId, right);
@@ -60,14 +56,14 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         return (DyBool)(((DyGuid)left).Value.CompareTo(((DyGuid)right).Value) <= 0);
     }
 
-    protected override DyObject CastOp(DyObject self, DyTypeInfo targetType, ExecutionContext ctx)
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType)
     {
         if (targetType.ReflectedTypeId == Dy.String)
             return self.ToString(ctx);
         else if (targetType.ReflectedTypeId == DeclaringUnit.ByteArray.ReflectedTypeId)
             return ToByteArray(ctx, (DyGuid)self);
         else
-            return base.CastOp(self, targetType, ctx);
+            return base.CastOp(ctx, self, targetType);
     }
     #endregion
 
@@ -101,12 +97,12 @@ public sealed partial class DyGuidTypeInfo : DyForeignTypeInfo<CoreModule>
         }
     }
 
-    [StaticMethod]
-    internal static DyObject Default(ExecutionContext ctx) => new DyGuid(ctx.Type<DyGuidTypeInfo>(), Guid.Empty);
-
-    [StaticMethod]
-    internal static DyObject Empty(ExecutionContext ctx) => Default(ctx);
-
     [StaticMethod(GuidType)]
     internal static DyObject NewGuid(ExecutionContext ctx) => new DyGuid(ctx.Type<DyGuidTypeInfo>(), Guid.NewGuid());
+
+    [StaticProperty]
+    internal static DyObject Default(ExecutionContext ctx) => new DyGuid(ctx.Type<DyGuidTypeInfo>(), Guid.Empty);
+
+    [StaticProperty]
+    internal static DyObject Empty(ExecutionContext ctx) => Default(ctx);
 }

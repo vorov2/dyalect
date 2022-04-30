@@ -397,7 +397,7 @@
 
 #region "Bubb"
     let res =
-        for i in 2..Integer.Max() {
+        for i in 2..Integer.Max {
             if i * i % 1000000 == 269696 {
                 break i
             }

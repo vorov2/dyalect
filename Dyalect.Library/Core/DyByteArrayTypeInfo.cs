@@ -1,7 +1,6 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
-using System;
 using System.Linq;
 namespace Dyalect.Library.Core;
 
@@ -12,20 +11,19 @@ public sealed partial class DyByteArrayTypeInfo : DyForeignTypeInfo
 
     public override string ReflectedTypeName => ByteArray;
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not | SupportedOperations.Len;
+    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.Len;
 
     #region Operations
     public DyByteArray Create(byte[]? buffer) => new(this, buffer);
 
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         var buffer = ((DyByteArray)arg).GetBytes();
         var strs = buffer.Select(b => "0x" + b.ToString("X").PadLeft(2, '0')).ToArray();
         return new DyString("{" + string.Join(",", strs) + "}");
     }
 
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx) =>
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>
         DyInteger.Get(((DyByteArray)arg).Count);
     #endregion
 
@@ -36,10 +34,10 @@ public sealed partial class DyByteArrayTypeInfo : DyForeignTypeInfo
     internal static void Write(ExecutionContext ctx, DyByteArray self, DyObject value) => self.Write(ctx, value);
 
     [InstanceMethod]
-    internal static int Position(DyByteArray self) => self.Position;
-
-    [InstanceMethod]
     internal static void Reset(DyByteArray self) => self.Reset();
+
+    [InstanceProperty]
+    internal static int Position(DyByteArray self) => self.Position;
 
     [StaticMethod]
     internal static DyObject Concat(ExecutionContext ctx, DyByteArray first, DyByteArray second)

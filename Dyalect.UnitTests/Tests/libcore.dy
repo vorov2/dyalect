@@ -8,7 +8,7 @@
 #region "StringBuilder: GetType"
     let sb = StringBuilder()
     assert(StringBuilder, sb.GetType())
-    assert("StringBuilder", sb.GetType().name)
+    assert("StringBuilder", typeName << sb.GetType())
 #endregion
 
 #region "StringBuilder: Append, AppendLine"
@@ -47,13 +47,13 @@
 
 #region "Result: GetType"
     assert(Result, Result.Success(true).GetType())
-    assert("Result", Result.Success(true).GetType().name)
+    assert("Result", typeName << Result.Success(true).GetType())
 #endregion
 
 #region "Result: Length and indexer"
     let x = Result.Success(42)
     assert(1, x.Length())
-    assert(42, x.Value())
+    assert(42, x.GetValue())
     assert(42, x.value)
     assert(42, x[0])
 #endregion
@@ -86,7 +86,7 @@
 #region "Guid: GetType"
     let g = Guid()
     assert(Guid, g.GetType())
-    assert("Guid", g.GetType().name)
+    assert("Guid", typeName << g.GetType())
 #endregion
 
 #region "Guid: Parse"
@@ -107,8 +107,8 @@
 #endregion
 
 #region "Guid: Empty, Default"
-    let g = Guid.Empty()
-    assert(Guid.Default(), g)
+    let g = Guid.Empty
+    assert(Guid.Default, g)
     assert("{00000000-0000-0000-0000-000000000000}", g.ToString())
 #endregion
 
@@ -124,7 +124,7 @@
 #region "Regex: GetType"
     let r = Regex("\\.")
     assert(Regex, r.GetType())
-    assert("Regex", r.GetType().name)
+    assert("Regex", typeName << r.GetType())
 #endregion
 
 #region "Regex: Match 1"
@@ -212,7 +212,7 @@ fox is the red fox.]>
 #region "ByteArray: GetType"
     let barr = ByteArray()
     assert(ByteArray, barr.GetType())
-    assert("ByteArray", barr.GetType().name)
+    assert("ByteArray", typeName << barr.GetType())
 #endregion
 
 #region "ByteArray: read and write"
@@ -222,18 +222,18 @@ fox is the red fox.]>
     bar.Write("Coed")
     bar.Write('D')
     assert(24, bar.Read(Integer))
-    assert(8, bar.Position())
+    assert(8, bar.Position)
     assert("foo", bar.Read(String))
-    assert(15, bar.Position())
+    assert(15, bar.Position)
     assert("Coed", bar.Read(String))
-    assert(23, bar.Position())
+    assert(23, bar.Position)
     assert('D', bar.Read(Char))
 #endregion
 
 #region "TimeDelta: GetType"
     let td = TimeDelta(days: 1)
     assert(TimeDelta, td.GetType())
-    assert("TimeDelta", td.GetType().name)
+    assert("TimeDelta", typeName << td.GetType())
 #endregion
 
 #region "TimeDelta: construction"
@@ -294,9 +294,9 @@ fox is the red fox.]>
 #endregion
 
 #region "TimeDelta: Min, Max, Default"
-    assert(Integer.Min(), TimeDelta.Min().TotalTicks)
-    assert(Integer.Max(), TimeDelta.Max().TotalTicks)
-    assert(0, TimeDelta.Default().Ticks)
+    assert(Integer.Min, TimeDelta.Min.TotalTicks)
+    assert(Integer.Max, TimeDelta.Max.TotalTicks)
+    assert(0, TimeDelta.Default.Ticks)
 #endregion
 
 #region "TimeDelta: Parse 1"
@@ -327,13 +327,13 @@ fox is the red fox.]>
 #region "DateTime: GetType"
     let dt = DateTime.Now()
     assert(DateTime, dt.GetType())
-    assert("DateTime", dt.GetType().name)
+    assert("DateTime", typeName << dt.GetType())
 #endregion
 
 #region "DateTime: Min, Max and Default"
-    assert("0001-01-01 00:00:00.0000000", DateTime.Min().ToString())
-    assert("9999-12-31 23:59:59.9999999", DateTime.Max().ToString())
-    assert("0001-01-01 00:00:00.0000000", DateTime.Default().ToString())
+    assert("0001-01-01 00:00:00.0000000", DateTime.Min.ToString())
+    assert("9999-12-31 23:59:59.9999999", DateTime.Max.ToString())
+    assert("0001-01-01 00:00:00.0000000", DateTime.Default.ToString())
 #endregion
 
 #region "DateTime: construction"
@@ -452,7 +452,7 @@ fox is the red fox.]>
 #region "LocalDateTime: GetType"
     let dt = LocalDateTime.Now()
     assert(LocalDateTime, dt.GetType())
-    assert("LocalDateTime", dt.GetType().name)
+    assert("LocalDateTime", typeName << dt.GetType())
 #endregion
 
 #region "LocalDateTime: ToString"
@@ -509,7 +509,7 @@ fox is the red fox.]>
 #endregion
 
 #region "Calendar: GetType"
-    assert("Calendar", Calendar.name)
+    assert("Calendar", typeName(Calendar))
 #endregion
 
 #region "Calendar: ParseDateTime 1"
@@ -571,7 +571,7 @@ fox is the red fox.]>
 #region "Time: GetType"
     let td = Time(hour: 1)
     assert(Time, td.GetType())
-    assert("Time", td.GetType().name)
+    assert("Time", typeName << td.GetType())
 #endregion
 
 #region "Time: construction"
@@ -624,9 +624,9 @@ fox is the red fox.]>
 #endregion
 
 #region "Time: Min, Max, Default"
-    assert(0, Time.Min().TotalTicks)
-    assert(863999999999, Time.Max().TotalTicks)
-    assert(0, Time.Default().TotalTicks)
+    assert(0, Time.Min.TotalTicks)
+    assert(863999999999, Time.Max.TotalTicks)
+    assert(0, Time.Default.TotalTicks)
 #endregion
 
 #region "Time: Parse"
@@ -642,7 +642,7 @@ fox is the red fox.]>
 #region "Date: GetType"
     let td = Date(year: 2012, month: 12, day: 12)
     assert(Date, td.GetType())
-    assert("Date", td.GetType().name)
+    assert("Date", typeName << td.GetType())
 #endregion
 
 #region "Date: construction"
@@ -690,9 +690,9 @@ fox is the red fox.]>
 #endregion
 
 #region "Date: Min, Max, Default"
-    assert(0, Date.Min() as Integer)
-    assert(3652058, Date.Max() as Integer)
-    assert(0, Time.Default() as Integer)
+    assert(0, Date.Min as Integer)
+    assert(3652058, Date.Max as Integer)
+    assert(0, Date.Default as Integer)
 #endregion
 
 #region "Date: Parse"

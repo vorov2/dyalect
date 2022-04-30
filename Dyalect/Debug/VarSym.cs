@@ -1,29 +1,20 @@
-﻿namespace Dyalect.Debug
+﻿namespace Dyalect.Debug;
+
+public sealed class VarSym
 {
-    public sealed class VarSym
-    {
-        public VarSym(string name, int address, int offset, int scope, int flags, int data)
-        {
-            Name = name;
-            Address = address;
-            Offset = offset;
-            Scope = scope;
-            Flags = flags;
-            Data = data;
-        }
+    public string Name { get; init; } = null!;
 
-        public override string ToString() => Name;
+    public int Address { get; init; }
 
-        public string Name { get; set; }
+    public int Offset { get; init; }
 
-        public int Address { get; set; }
+    public int Scope { get; init; }
 
-        public int Offset { get; set; }
+    public int Flags { get; init; }
 
-        public int Scope { get; set; }
+    public int Data { get; init; }
 
-        public int Flags { get; set; }
+    public VarSym() { }
 
-        public int Data { get; set; }
-    }
+    public override string ToString() => Name;
 }

@@ -6,12 +6,12 @@
 #endregion
 
 #region "Methods: Default"
-    assert(false, Bool.Default())
+    assert(false, Bool.Default)
 #endregion
 
 #region "Methods: Min and Max"
-    assert(false, Bool.Min())
-    assert(true, Bool.Max())
+    assert(false, Bool.Min)
+    assert(true, Bool.Max)
 #endregion
 
 #region "Methods: GetType"
@@ -19,7 +19,7 @@
     assert(true, TypeInfo(x) == Bool)
     assert(true, x.GetType() == Bool)
     var t = TypeInfo(x)
-    assert("Bool", t.name)
+    assert("Bool", typeName(t))
 #endregion
 
 #region "Conversion: as"

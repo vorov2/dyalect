@@ -10,9 +10,9 @@ namespace Dyalect.Parser
     {
         public static bool Parse(string? fileName, Location loc, string str, List<BuildMessage> messages, out string? value, out List<StringChunk>? chunks)
         {
-            if (str is null || str.Length < 2)
+            if (str is null || str.Length < 4)
             {
-                value = str;
+                value = str?[1..^1];
                 chunks = null;
                 return true;
             }
@@ -93,7 +93,7 @@ namespace Dyalect.Parser
                                         if (ns[0] == ' ' || ns[0] == '\t' || ns[3] == ' ' || ns[3] == '\t')
                                             return InvalidLiteral(messages, loc, fileName, i);
 
-                                        if (!int.TryParse(ns, NumberStyles.HexNumber, CI.Default.NumberFormat, out var ci))
+                                        if (!int.TryParse(ns, NumberStyles.HexNumber, InvariantCulture.NumberFormat, out var ci))
                                             return InvalidLiteral(messages, loc, fileName, i);
                                         else
                                         {
@@ -116,10 +116,11 @@ namespace Dyalect.Parser
                     sb.Append(c);
             }
 
-            if (chunks != null && sb.Length > 0)
+            if (chunks is not null && sb.Length > 0)
                 chunks.Add(new PlainStringChunk(sb.ToString()));
             else
                 value = sb.ToString();
+
             return true;
         }
 

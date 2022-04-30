@@ -1,19 +1,21 @@
-﻿namespace Dyalect.Debug
+﻿namespace Dyalect.Debug;
+
+public sealed class FunSym
 {
-    public sealed class FunSym
-    {
-        public FunSym(string name) => Name = name;
+    public string Name { get; }
 
-        public FunSym(string name, int offset, Par[] pars) => (Name, StartOffset, Parameters) = (name, offset, pars);
+    public string? TypeName { get; init; }
 
-        public string Name { get; set; }
+    public Par[]? Parameters { get; init; }
 
-        public Par[]? Parameters { get; set; }
+    public int StartOffset { get; init; }
 
-        public int Handle { get; set; }
+    public int EndOffset { get; internal set; }
 
-        public int StartOffset { get; set; }
+    public int Handle { get; internal set; }
 
-        public int EndOffset { get; set; }
-    }
+    internal FunSym(string name) => Name = name;
+
+    internal FunSym(string name, string? typeName, int offset, Par[] pars) =>
+        (Name, TypeName, StartOffset, Parameters) = (name, typeName, offset, pars);
 }

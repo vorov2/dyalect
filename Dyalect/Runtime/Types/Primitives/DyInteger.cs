@@ -11,8 +11,10 @@ public sealed class DyInteger : DyObject
     public static readonly DyInteger Max = new(long.MaxValue);
     public static readonly DyInteger Min = new(long.MinValue);
 
-    public override string TypeName => nameof(Dy.Integer); 
-    
+    public override string TypeName => nameof(Dy.Integer);
+
+    internal readonly long Value;
+
     public static DyInteger Get(long i) =>
         i switch
         {
@@ -24,13 +26,11 @@ public sealed class DyInteger : DyObject
             _ => new DyInteger(i)
         };
 
-    internal readonly long Value;
-
     public DyInteger(long value) : base(Dy.Integer) => this.Value = value;
 
     public override int GetHashCode() => Value.GetHashCode();
 
-    public override string ToString() => Value.ToString(CI.Default);
+    public override string ToString() => Value.ToString(InvariantCulture);
 
     public override bool Equals(DyObject? obj) => obj is DyInteger i && Value == i.Value;
 

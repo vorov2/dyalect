@@ -1,8 +1,8 @@
-﻿namespace Dyalect.Debug
+﻿namespace Dyalect.Debug;
+
+public enum ParKind
 {
-    public enum ParKind
-    {
-        NotSpecified,
-        VarArg
-    }
+    NotSpecified = 0,
+
+    VarArg
 }

@@ -394,7 +394,7 @@
 #region "Throwing 2"
     var x
     try {
-        throw @InvalidType(0.GetType().name)
+        throw @InvalidType(typeName << 0.GetType())
     } catch {
         @InvalidType(tn) when tn == "Integer"  => { x = true }
     }

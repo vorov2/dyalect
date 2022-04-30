@@ -1,39 +1,36 @@
-﻿namespace Dyalect.Debug
+﻿namespace Dyalect.Debug;
+
+public class CallFrame
 {
-    public class CallFrame
+    private const string Format = "\tat {0} in {1}, line {2}, column {3}";
+    private const string ShortFormat = "\tat {0} in {1}, offset {2}";
+    private const string ExternalPoint = "\tat <external code>";
+    private const string Global = "<global>";
+
+    internal static readonly CallFrame External = new ExternalCallFrame();
+
+    private string GetName() => CodeBlockName ?? Global;
+
+    public string? CodeBlockName { get; }
+
+    public string? ModuleName { get; }
+
+    public int Offset { get; }
+
+    public LineSym? LinePragma { get; }
+
+    sealed class ExternalCallFrame : CallFrame
     {
-        private const string FORMAT_LNG = "\tat {0} in {1}, line {2}, column {3}";
-        private const string FORMAT_SHT = "\tat {0} in {1}, offset {2}";
-        internal static readonly CallFrame External = new ExternalCallFrame();
+        internal ExternalCallFrame() : base("", "", 0, LineSym.Empty) { }
 
-        sealed class ExternalCallFrame : CallFrame
-        {
-            internal ExternalCallFrame() : base("", "", 0, new LineSym()) { }
-
-            public override string ToString() => "\tat <external code>";
-        }
-
-        internal CallFrame(string? moduleName, string codeBlockName, int offset, LineSym lineSym)
-        {
-            CodeBlockName = codeBlockName;
-            ModuleName = moduleName;
-            Offset = offset;
-            LinePragma = lineSym;
-        }
-
-        public override string ToString() =>
-            LinePragma != null
-                ? string.Format(FORMAT_LNG, GetName(), ModuleName, LinePragma.Line, LinePragma.Column)
-                : string.Format(FORMAT_SHT, GetName(), ModuleName, Offset);
-
-        private string GetName() => CodeBlockName ?? "<global>";
-
-        public string CodeBlockName { get; }
-
-        public string? ModuleName { get; }
-
-        public int Offset { get; }
-
-        public LineSym LinePragma { get; }
+        public override string ToString() => ExternalPoint;
     }
+
+    internal CallFrame(string? moduleName, string codeBlockName, int offset, LineSym lineSym) =>
+        (CodeBlockName, ModuleName, Offset, LinePragma) = (moduleName, codeBlockName, offset, lineSym);
+
+    public override string ToString() =>
+        LinePragma != null
+            ? string.Format(Format, GetName(), ModuleName, LinePragma.Line, LinePragma.Column)
+            : string.Format(ShortFormat, GetName(), ModuleName, Offset);
 }

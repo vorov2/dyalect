@@ -1,6 +1,5 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Compiler;
-using System;
 using System.Linq;
 using System.Reflection;
 namespace Dyalect.Runtime.Types;
@@ -8,18 +7,15 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal partial class DyInteropObjectTypeInfo : DyTypeInfo
 {
-    private const BindingFlags BINDING_FLAGS = BindingFlags.NonPublic | BindingFlags.Public 
+    private const BindingFlags AllBindingFlags = BindingFlags.NonPublic | BindingFlags.Public 
         | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy;
-
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not;
 
     public override string ReflectedTypeName => nameof(Dy.Interop);
 
     public override int ReflectedTypeId => Dy.Interop;
 
     #region Operations
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString(arg.ToString()!);
 
     internal override void SetStaticMember(ExecutionContext ctx, HashString name, DyFunction func) => ctx.InvalidOperation();
@@ -182,7 +178,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
         if (type.Object is not Type typ)
             return ctx.InvalidType(type);
 
-        foreach (var mi in typ.GetMethods(BINDING_FLAGS))
+        foreach (var mi in typ.GetMethods(AllBindingFlags))
         {
             if (mi.Name == name && mi.GetGenericArguments().Length == typeArguments)
             {

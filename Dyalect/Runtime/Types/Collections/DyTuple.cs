@@ -1,5 +1,4 @@
 ﻿using Dyalect.Parser;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +11,7 @@ public class DyTuple : DyCollection
     public override string TypeName => nameof(Dy.Tuple);
     
     private readonly int length;
-    private readonly bool? mutable;
+    private bool? mutable;
     private readonly DyObject[] values;
 
     public override int Count => length;
@@ -26,6 +25,14 @@ public class DyTuple : DyCollection
     {
         this.length = length;
         this.values = values ?? throw new DyException("Unable to create a tuple with no values.");
+    }
+
+    public override DyObject Clone()
+    {
+        if (IsMutable())
+            return base.Clone();
+
+        return this;
     }
 
     public static DyTuple Create(params DyLabel[] labels) => new(labels, labels.Length);
@@ -101,7 +108,7 @@ public class DyTuple : DyCollection
     protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
         values[index].TypeId == Dy.Label ? values[index].GetTaggedValue() : values[index];
 
-    internal virtual string GetKey(int index) => values[index].GetLabel()!;
+    internal virtual string? GetKey(int index) => values[index].GetLabel();
 
     protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
     {
@@ -190,9 +197,8 @@ public class DyTuple : DyCollection
         if (Count != values.Length)
             return CopyTupleWithLabels();
 
-        for (var i = 0; i < Count; i++)
-            if (values[i].IsMutable())
-                return CopyTupleWithLabels();
+        if (IsMutable())
+            return CopyTupleWithLabels();
 
         return values;
     }
@@ -206,6 +212,23 @@ public class DyTuple : DyCollection
 
         return arr;
     }
+
+    internal override bool IsMutable()
+    {
+        if (mutable is not null)
+            return mutable.Value;
+
+        for (var i = 0; i < Count; i++)
+            if (values[i].IsMutable())
+            {
+                mutable = true;
+                return true;
+            }
+
+        mutable = false;
+        return false;
+    }
+
     private DyObject[] CopyTupleWithLabels()
     {
         var arr = new DyObject[Count];
@@ -217,48 +240,6 @@ public class DyTuple : DyCollection
     }
 
     internal bool HasItem(string name) => GetOrdinal(name) is not -1;
-
-    internal DyObject ToString(bool literal, ExecutionContext ctx)
-    {
-        var sb = new StringBuilder();
-        sb.Append('(');
-
-        for (var i = 0; i < Count; i++)
-        {
-            if (i > 0)
-            {
-                sb.Append(',');
-                sb.Append(' ');
-            }
-
-            var v = GetValue(i);
-            var ki = GetKeyInfo(i);
-
-            if (ki is not null)
-            {
-                if (ki.Mutable)
-                    sb.Append("var ");
-
-                if (ki.Label.Length > 0 && char.IsLower(ki.Label[0]) && ki.Label.All(char.IsLetter))
-                    sb.Append(ki.Label);
-                else
-                    sb.Append(StringUtil.Escape(ki.Label));
-
-                sb.Append(':');
-                sb.Append(' ');
-            }
-
-            var str = literal ? v.ToLiteral(ctx) : v.ToString(ctx);
-
-            if (ctx.HasErrors)
-                return Nil;
-
-            sb.Append(str);
-        }
-
-        sb.Append(')');
-        return new DyString(sb.ToString());
-    }
 
     internal DyObject[] UnsafeAccessValues() => values;
 }

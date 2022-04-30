@@ -1,14 +1,11 @@
 ﻿using Dyalect.Compiler;
-using System;
 using System.IO;
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyModuleTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Eq | SupportedOperations.Neq | SupportedOperations.Not
-        | SupportedOperations.Get | SupportedOperations.Len
-        | SupportedOperations.Iter;
+        SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
 
     public override string ReflectedTypeName => nameof(Dy.Module);
 
@@ -17,8 +14,8 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
     public DyModuleTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
-    protected override DyObject ToStringOp(DyObject arg, DyObject format, ExecutionContext ctx) =>
-        new DyString("{" + GetModuleName((DyModule)arg) + "}");
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
+        new DyString("<" + GetModuleName((DyModule)arg) + ">");
 
     private string GetModuleName(DyModule arg)
     {
@@ -36,7 +33,7 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
                 : Path.GetFileNameWithoutExtension(arg.Unit.FileName));
     }
 
-    protected override DyObject LengthOp(DyObject arg, ExecutionContext ctx)
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
     {
         var count = 0;
 
@@ -47,7 +44,7 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
         return DyInteger.Get(count);
     }
 
-    protected override DyObject EqOp(DyObject left, DyObject right, ExecutionContext ctx)
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right is DyModule mod)
             return ((DyModule)left).Unit.Id == mod.Unit.Id ? True : False;
@@ -55,9 +52,9 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
         return False;
     }
 
-    protected override DyObject GetOp(DyObject self, DyObject index, ExecutionContext ctx) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
 
-    protected override DyObject ContainsOp(DyObject self, DyObject field, ExecutionContext ctx)
+    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
         if (!field.Is(ctx, Dy.String))
             return Nil;

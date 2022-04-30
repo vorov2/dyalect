@@ -128,5 +128,7 @@ public enum CompilerError
 
     MixinSameAsType = 262,
 
-    DuplicateLabel = 263
+    DuplicateLabel = 263,
+
+    InterpolatedStringDefaultValue = 264
 }

@@ -12,7 +12,7 @@
 #endregion
 
 #region "Methods: Default"
-    assert("", String.Default())
+    assert("", String.Default)
 #endregion
 
 #region "Methods: GetType"
@@ -20,7 +20,7 @@
     assert(true, TypeInfo(x) == String)
     assert(true, x.GetType() == String)
     var t = TypeInfo(x)
-    assert("String", t.name)
+    assert("String", typeName(t))
 #endregion
 
 #region "Methods: Length"
@@ -226,6 +226,14 @@
     assert("str!dummy!", str)
     str = x + "str"
     assert("!dummy!str", str)
+#endregion
+
+#region "Concatenation 3"
+    let str = 
+        "first"
+        "second"
+        "third"
+    assert("firstsecondthird", str)
 #endregion
 
 #region "Methods: ToCharArray"

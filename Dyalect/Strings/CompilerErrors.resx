@@ -321,4 +321,7 @@
   <data name="DuplicateLabel" xml:space="preserve">
     <value>Duplicate tuple label "{0}".</value>
   </data>
+  <data name="InterpolatedStringDefaultValue" xml:space="preserve">
+    <value>Interpolated strings are not supported as default values.</value>
+  </data>
 </root>
