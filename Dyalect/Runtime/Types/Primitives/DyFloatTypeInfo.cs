@@ -23,7 +23,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
             return new DyFloat(left.GetFloat() + right.GetFloat());
 
         if (right.TypeId == Dy.String)
-            return ctx.RuntimeContext.Types[Dy.String].Add(ctx, left, right);
+            return left.Concat(right, ctx);
 
         return base.AddOp(ctx, left, right);
     }

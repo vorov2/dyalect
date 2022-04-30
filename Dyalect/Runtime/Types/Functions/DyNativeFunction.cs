@@ -93,20 +93,6 @@ internal class DyNativeFunction : DyFunction
         }
     }
 
-    internal override DyObject InternalCall(ExecutionContext ctx)
-    {
-        try
-        {
-            ctx.CallStack.Push(Caller.External);
-            return DyMachine.ExecuteWithData(this, CreateLocals(ctx), ctx);
-        }
-        catch (DyCodeException ex)
-        {
-            ctx.Error = ex.Error;
-            return Nil;
-        }
-    }
-
     internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.RuntimeContext.Layouts[UnitId][FunctionId];
 
     internal override DyObject[] CreateLocals(ExecutionContext ctx)

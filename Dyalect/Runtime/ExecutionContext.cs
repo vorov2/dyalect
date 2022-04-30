@@ -28,6 +28,16 @@ public class ExecutionContext
 
     internal SectionStack CatchMarks { get; }
 
+    internal DyFunction? EtaFunction { get; set; }
+
+    internal DyObject InvokeEtaFunction(params DyObject[] args)
+    {
+        var fn = EtaFunction!;
+        EtaFunction = null;
+        Error = null;
+        return fn.InternalCall(this, args);
+    }
+
     private DyVariant? _error;
     internal virtual DyVariant? Error
     {

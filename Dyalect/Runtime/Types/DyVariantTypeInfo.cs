@@ -19,7 +19,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
             return DyBool.False;
 
         var (xs, ys) = ((DyVariant)left, (DyVariant)right);
-        return ctx.RuntimeContext.Tuple.Eq(ctx, xs.Tuple, ys.Tuple);
+        return xs.Tuple.Equals(ys.Tuple, ctx) ? True : False;
     }
 
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>

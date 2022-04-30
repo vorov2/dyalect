@@ -16,7 +16,7 @@ public sealed class EqualityComparer : IEqualityComparer<DyObject>
         ctx.ThrowIf();
         var snd = func.Invoke(ctx, y!);
         ctx.ThrowIf();
-        return ctx.RuntimeContext.Types[fst.TypeId].Eq(ctx, fst, snd).IsTrue();
+        return fst.Equals(snd, ctx);
     }
 
     public int GetHashCode([DisallowNull] DyObject obj)

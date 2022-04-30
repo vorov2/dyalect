@@ -1,7 +1,6 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
 using Dyalect.Parser;
-using System;
 using System.Runtime.CompilerServices;
 using System.Text;
 namespace Dyalect.Runtime.Types;
@@ -32,13 +31,24 @@ public abstract class DyFunction : DyObject
 
     public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal DyObject PrepareFunction(ExecutionContext ctx, DyObject arg)
+    {
+        var func = BindToInstance(ctx, arg);
+
+        if (func.IsExternal)
+            return ctx.NotImplemented(func.FunctionName);
+
+        ctx.EtaFunction = func;
+        ctx.Error = DyVariant.Eta;
+        return Nil;
+    }
+
     internal abstract DyFunction BindToInstance(ExecutionContext ctx, DyObject arg);
 
     internal virtual DyObject BindOrRun(ExecutionContext ctx, DyObject arg) => BindToInstance(ctx, arg);
     
     internal abstract DyObject InternalCall(ExecutionContext ctx, DyObject[] args);
-
-    internal abstract DyObject InternalCall(ExecutionContext ctx);
 
     public DyObject Call(ExecutionContext ctx, params DyObject[] args)
     {

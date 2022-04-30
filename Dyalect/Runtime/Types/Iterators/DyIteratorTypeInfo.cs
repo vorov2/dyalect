@@ -325,26 +325,29 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
             while (true)
             {
                 yield return elem;
-                elem = types[elem.TypeId].Add(ctx, elem, step);
+                elem = elem.Add(step, ctx);
 
                 if (ctx.HasErrors)
                     yield break;
             }
         }
 
-        var up = ReferenceEquals(types[step.TypeId].Gt(ctx, step, DyInteger.Zero), True);
+        var up = step.Greater(DyInteger.Zero, ctx);
 
         if (ctx.HasErrors)
             yield break;
 
-        Func<ExecutionContext, DyObject, DyObject, DyObject> predicate = up && exclusive
-                ? types[start.TypeId].Lt : up ? types[start.TypeId].Lte : exclusive
-                ? types[start.TypeId].Gt : types[start.TypeId].Gte;
-
-        while (ReferenceEquals(predicate(ctx, elem, end), True))
+        Func<DyObject, DyObject, ExecutionContext, bool> predicate =
+            up && exclusive ? Extensions.Lesser :
+                (
+                    up ? Extensions.LesserOrEquals
+                    : exclusive ? Extensions.Greater : Extensions.GreaterOrEquals
+                );
+        
+        while (predicate(elem, end, ctx))
         {
             yield return elem;
-            elem = types[elem.TypeId].Add(ctx, elem, step);
+            elem = elem.Add(step, ctx);
 
             if (ctx.HasErrors)
                 yield break;

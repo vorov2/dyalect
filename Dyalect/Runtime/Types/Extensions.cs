@@ -75,31 +75,132 @@ public static class Extensions
 
     //Calls a native implementation of "ToString" for a given object with an exception
     //for string and TypeInfo (no native implementation of ToString for TypeInfo)
-    public static DyString ToString(this DyObject self, ExecutionContext ctx) =>
-        self.TypeId switch
+    public static DyString ToString(this DyObject self, ExecutionContext ctx)
+    {
+        if (self.Is(Dy.String))
+            return (DyString)self;
+        else if (self.Is(Dy.TypeInfo))
+            return new DyString(self.ToString());
+        else
         {
-            Dy.String => (DyString)self,
-            Dy.TypeInfo => new DyString(self.ToString()),
-            _ => (DyString)ctx.RuntimeContext.Types[self.TypeId].ToString(ctx, self)
-        };
+            var ret = ctx.RuntimeContext.Types[self.TypeId].ToString(ctx, self);
 
-    public static DyString ToLiteral(this DyObject self, ExecutionContext ctx) =>
-        (DyString)ctx.RuntimeContext.Types[self.TypeId].ToLiteral(ctx, self);
+            if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+                ret = ctx.InvokeEtaFunction();
 
-    public static bool Equals(this DyObject left, DyObject right, ExecutionContext ctx) =>
-        ctx.RuntimeContext.Types[left.TypeId].Eq(ctx, left, right).IsTrue();
+            return ret as DyString ?? DyString.Empty;
+        }
+    }
 
-    public static bool NotEquals(this DyObject left, DyObject right, ExecutionContext ctx) =>
-        ctx.RuntimeContext.Types[left.TypeId].Neq(ctx, left, right).IsTrue();
+    public static DyString ToLiteral(this DyObject self, ExecutionContext ctx)
+    {
+        var type = ctx.RuntimeContext.Types[self.TypeId];
+        var ret = type.ToLiteral(ctx, self);
 
-    public static bool Lesser(this DyObject left, DyObject right, ExecutionContext ctx) =>
-        ctx.RuntimeContext.Types[left.TypeId].Lt(ctx, left, right).IsTrue();
+        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+            ret = ctx.InvokeEtaFunction();
 
-    public static bool Greater(this DyObject left, DyObject right, ExecutionContext ctx) =>
-        ctx.RuntimeContext.Types[left.TypeId].Gt(ctx, left, right).IsTrue();
+        return ret as DyString ?? DyString.Empty;
+    }
 
-    public static DyObject Negate(this DyObject self, ExecutionContext ctx) =>
-        ctx.RuntimeContext.Types[self.TypeId].Neg(ctx, self);
+    public static bool Equals(this DyObject left, DyObject right, ExecutionContext ctx)
+    {
+        var type = ctx.RuntimeContext.Types[left.TypeId];
+        var ret = type.Eq(ctx, left, right);
+
+        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+            ret = ctx.InvokeEtaFunction(right);
+
+        return ret.IsTrue();
+    }
+
+    public static bool NotEquals(this DyObject left, DyObject right, ExecutionContext ctx)
+    {
+        var type = ctx.RuntimeContext.Types[left.TypeId];
+        var ret = type.Neq(ctx, left, right);
+
+        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+            ret = ctx.InvokeEtaFunction(right);
+
+        return ret.IsTrue();
+    }
+
+    public static bool Lesser(this DyObject left, DyObject right, ExecutionContext ctx)
+    {
+        var type = ctx.RuntimeContext.Types[left.TypeId];
+        var ret = type.Lt(ctx, left, right);
+
+        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+            ret = ctx.InvokeEtaFunction(right);
+
+        return ret.IsTrue();
+    }
+
+    public static bool LesserOrEquals(this DyObject left, DyObject right, ExecutionContext ctx)
+    {
+        var type = ctx.RuntimeContext.Types[left.TypeId];
+        var ret = type.Lte(ctx, left, right);
+
+        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+            ret = ctx.InvokeEtaFunction(right);
+
+        return ret.IsTrue();
+    }
+
+    public static bool Greater(this DyObject left, DyObject right, ExecutionContext ctx)
+    {
+        var type = ctx.RuntimeContext.Types[left.TypeId];
+        var ret = type.Gt(ctx, left, right);
+
+        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+            ret = ctx.InvokeEtaFunction(right);
+
+        return ret.IsTrue();
+    }
+
+    public static bool GreaterOrEquals(this DyObject left, DyObject right, ExecutionContext ctx)
+    {
+        var type = ctx.RuntimeContext.Types[left.TypeId];
+        var ret = type.Gte(ctx, left, right);
+
+        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+            ret = ctx.InvokeEtaFunction(right);
+
+        return ret.IsTrue();
+    }
+
+    public static DyObject Concat(this DyObject left, DyObject right, ExecutionContext ctx)
+    {
+        var type = ctx.RuntimeContext.String;
+        var ret = type.Add(ctx, left, right);
+
+        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+            ret = ctx.InvokeEtaFunction(right);
+
+        return ret;
+    }
+
+    public static DyObject Add(this DyObject left, DyObject right, ExecutionContext ctx)
+    {
+        var type = ctx.RuntimeContext.Types[left.TypeId];
+        var ret = type.Add(ctx, left, right);
+
+        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+            ret = ctx.InvokeEtaFunction(right);
+
+        return ret;
+    }
+
+    public static DyObject Negate(this DyObject self, ExecutionContext ctx)
+    {
+        var type = ctx.RuntimeContext.Types[self.TypeId];
+        var ret = type.Neg(ctx, self);
+
+        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+            ret = ctx.InvokeEtaFunction();
+
+        return ret;
+    }
 
     //Returns a function if an objects is a function or implements "Call" method
     public static DyFunction? ToFunction(this DyObject self, ExecutionContext ctx)

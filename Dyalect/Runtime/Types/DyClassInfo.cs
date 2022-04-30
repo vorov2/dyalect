@@ -57,7 +57,7 @@ internal sealed class DyClassInfo : DyTypeInfo
     }
 
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>
-        ctx.RuntimeContext.Tuple.Contains(ctx, ((DyClass)self).Fields, field);
+        ((DyClass)self).Fields.GetOrdinal(field.GetString()) is not -1 ? True : False;
 
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject self)
     {
