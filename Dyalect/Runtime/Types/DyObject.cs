@@ -24,6 +24,7 @@ public abstract class DyObject : IEquatable<DyObject>
 
     public virtual SupportedOperations Supports() => SupportedOperations.None;
 
+    //TODO: move to separate class
     protected internal virtual DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
         object? retval;
@@ -51,28 +52,39 @@ public abstract class DyObject : IEquatable<DyObject>
     protected virtual object? GetItem(string key) => null;
     protected virtual object? GetItem(long index) => null;
 
+    //TODO: review
     public virtual DyTypeInfo GetTypeInfo(ExecutionContext ctx) => ctx.RuntimeContext.Types[TypeId];
 
+    //TODO: review
     internal virtual bool IsMutable() => false;
 
+    //TODO: review
     internal virtual DyObject MakeImmutable() => this;
 
+    //TODO: review
     protected internal virtual string? GetLabel() => null;
 
+    //TODO: review
     protected internal virtual DyObject GetTaggedValue() => this;
 
+    //TODO: review
     protected internal virtual DyObject GetInitValue() => this;
 
+    //TODO: review
     public virtual string? GetConstructor() => null;
 
     public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 
     //It's OK to leave this unimplemented as soon as serialization is normally supported by built-in types.
+    //TODO: review - if serialization is supported by a fixed set of types there is no need in this method, we need a PrimitiveTypeSerializer class
     internal virtual void Serialize(BinaryWriter writer) => throw new NotSupportedException();
 
     //These methods are used by hash tables
+    //TODO: review if these default implementations are actually needed
     public virtual bool Equals(DyObject? other) => ReferenceEquals(this, other);
     public sealed override bool Equals(object? obj) => obj is DyObject dyo && Equals(dyo);
     public abstract override int GetHashCode();
+
+    //TODO: review
     protected int CalculateSimpleHashCode() => base.GetHashCode();
 }
