@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 namespace Dyalect.Runtime.Types;
 
 public class DyNil : DyObject
@@ -19,9 +18,6 @@ public class DyNil : DyObject
     public override string ToString() => Literal;
 
     public override DyObject Clone() => this;
-
-    protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx) =>
-        ctx.IndexOutOfRange(index);
 
     internal override void Serialize(BinaryWriter writer) => writer.Write(TypeId);
 

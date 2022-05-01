@@ -26,12 +26,10 @@ internal sealed class MultiPartEnumerator : IEnumerator<DyObject>
             if (iterators.Length > nextIterator)
             {
                 var it = DyIterator.ToEnumerable(ctx, iterators[nextIterator]);
+                ctx.ThrowIf();
                 nextIterator++;
-                ctx.ThrowIf();
                 current = it.GetEnumerator();
-                var ret = current.MoveNext();
-                ctx.ThrowIf();
-                return ret;
+                return current.MoveNext();
             }
             else
                 return false;

@@ -16,8 +16,7 @@ public sealed class DyFloat : DyObject
 
     public override string TypeName => nameof(Dy.Float); 
 
-    public DyFloat(double value) : base(Dy.Float) =>
-        this.value = value;
+    public DyFloat(double value) : base(Dy.Float) => this.value = value;
 
     public override int GetHashCode() => value.GetHashCode();
 

@@ -2168,7 +2168,7 @@ namespace Dyalect.Parser
 			var str = ParseString(); node = str; 
 			while (la.kind == 7) {
 				Get();
-				ParseStringChunk(); 
+				ParseStringChunk(str); 
 			}
 		} else if (la.kind == 9) {
 			Get();

@@ -30,11 +30,11 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToStringOrLiteral(ctx, (DyTuple)arg, false);
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => MakeString(ctx, (DyTuple)arg, false);
 
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOrLiteral(ctx, (DyTuple)arg, true);
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => MakeString(ctx, (DyTuple)arg, true);
 
-    private DyObject ToStringOrLiteral(ExecutionContext ctx, DyTuple value, bool literal)
+    internal static DyObject MakeString(ExecutionContext ctx, DyTuple value, bool literal = false)
     {
         var sb = new StringBuilder();
         sb.Append('(');

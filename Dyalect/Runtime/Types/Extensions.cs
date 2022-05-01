@@ -42,10 +42,10 @@ public static class Extensions
     //"Iterator" method
     internal static DyFunction? GetIterator(this DyObject self, ExecutionContext ctx)
     {
-        if (self.TypeId == Dy.Iterator)
+        if (self.TypeId is Dy.Iterator)
             return ((DyIterator)self).GetIteratorFunction();
 
-        if (self.TypeId == Dy.Function)
+        if (self.TypeId is Dy.Function)
         {
             if (self is DyNativeIteratorFunction)
                 return (DyFunction)self;

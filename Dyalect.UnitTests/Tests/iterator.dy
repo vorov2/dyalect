@@ -678,6 +678,25 @@
     assert([1,2,3,4,5], outp)
 #endregion
 
+#region "Methods: ForEach with exception"
+    func iter() {
+        yield 1
+        yield 2
+        throw @Error(42)
+        yield 3
+    }
+
+    let xs = iter()
+    let outp = []
+    try {
+        xs.ForEach(outp.Add)
+        assert(got: false)
+    } catch {
+        @Error(x) => assert(42, x)
+    }
+    assert([1, 2], outp)
+#endregion
+
 #region "Methods: Distinct"
     let xs = yields {1,1,1,2,3,3,3,4,4,5}
     assert([1..5], xs.Distinct().ToArray())

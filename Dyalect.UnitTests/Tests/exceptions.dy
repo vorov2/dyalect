@@ -442,3 +442,33 @@
         assert("Variant.Foo(1, Foo, true)", e.ToString())
     }
 #endregion
+
+#region "Implicit operator and exceptions"
+    type Foo(x)
+    func Foo == (other) {
+        throw @Error("I told you!")
+    }
+
+    let x = Foo(12)
+    let y = Foo(12)
+
+    try {
+        x != y
+        assert(got: false)
+    } catch _ {
+        assert(got: true)
+    }
+
+#endregion
+
+#region "ToString exceptions"
+    func Integer.ToString() {
+        throw @Error("Oops!")
+    }
+    try {
+        [1,2,3].ToString()
+        assert(got: false)
+    } catch e {
+        assert(got: true)
+    }
+#endregion

@@ -31,16 +31,6 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 
     private static DyObject ToStringOrLiteral(ExecutionContext ctx, DyObject self, bool literal)
     {
-        var fn = self.GetIterator(ctx)!;
-
-        if (ctx.HasErrors)
-            return Nil;
-
-        fn.Reset(ctx);
-
-        if (ctx.HasErrors)
-            return Nil;
-
         var seq = DyIterator.ToEnumerable(ctx, self);
 
         if (ctx.HasErrors)
@@ -76,10 +66,10 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
-        if (!index.Is(Dy.Integer)) return Nil;
-
+        if (index.TypeId is not Dy.Integer) return Nil;
         var i = (int)index.GetInteger();
 
+        //Validate logic
         try
         {
             var iter = DyIterator.ToEnumerable(ctx, self);
@@ -87,7 +77,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         }
         catch (IndexOutOfRangeException)
         {
-            return ctx.IndexOutOfRange();
+            return ctx.IndexOutOfRange(index);
         }
     }
 
@@ -114,7 +104,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         if (ctx.HasErrors)
             return Nil;
 
-        return ToSet(ctx, seq);
+        return ToSet(seq);
     }
     #endregion
 
@@ -193,13 +183,14 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     [InstanceMethod]
     internal static DyObject ElementAt(ExecutionContext ctx, IEnumerable<DyObject> self, int index)
     {
+        //TODO: validate logic
         try
         {
             return index < 0 ? self.ElementAt(^-index) : self.ElementAt(index);
         }
         catch (IndexOutOfRangeException)
         {
-            return ctx.IndexOutOfRange();
+            return ctx.IndexOutOfRange(index);
         }
     }
 
@@ -231,17 +222,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     internal static int Count(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction? predicate = null)
     {
         if (predicate is not null)
-        {
-            return self.Count(dy =>
-            {
-                var res = predicate.Call(ctx, dy);
-
-                if (ctx.HasErrors)
-                    throw new DyCodeException(ctx.Error!);
-
-                return res.IsTrue();
-            });
-        }
+            return self.Count(dy => predicate.Call(ctx, dy).IsTrue());
         else
             return self.Count();
     }
@@ -278,16 +259,11 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     internal static void ForEach(ExecutionContext ctx, IEnumerable<DyObject> self, DyFunction action)
     {
         foreach (var o in self)
-        {
             action.Call(ctx, o);
-
-            if (ctx.HasErrors)
-                return;
-        }
     }
 
     [InstanceMethod]
-    internal static DyObject ToSet(ExecutionContext ctx, IEnumerable<DyObject> self)
+    internal static DyObject ToSet(IEnumerable<DyObject> self)
     {
         var set = new HashSet<DyObject>();
         set.UnionWith(self);
@@ -317,7 +293,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
     private static IEnumerable<DyObject> GenerateRange(ExecutionContext ctx, DyObject start, DyObject end, DyObject step, bool exclusive)
     {
         var elem = start;
-        var inf = end.Is(Dy.Nil);
+        var inf = end.TypeId is Dy.Nil;
         var types = ctx.RuntimeContext.Types;
 
         if (inf)
@@ -326,17 +302,10 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
             {
                 yield return elem;
                 elem = elem.Add(step, ctx);
-
-                if (ctx.HasErrors)
-                    yield break;
             }
         }
 
         var up = step.Greater(DyInteger.Zero, ctx);
-
-        if (ctx.HasErrors)
-            yield break;
-
         Func<DyObject, DyObject, ExecutionContext, bool> predicate =
             up && exclusive ? Extensions.Lesser :
                 (
@@ -348,9 +317,6 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         {
             yield return elem;
             elem = elem.Add(step, ctx);
-
-            if (ctx.HasErrors)
-                yield break;
         }
     }
 
@@ -362,21 +328,14 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 
     private static IEnumerable<DyObject> Repeater(ExecutionContext ctx, DyObject val)
     {
-        if (val.TypeId == Dy.Iterator)
+        if (val.TypeId is Dy.Iterator)
             val = ((DyIterator)val).GetIteratorFunction();
 
         if (val is DyFunction func)
         {
-            if (ctx.HasErrors)
-                yield break;
-
             while (true)
             {
                 var res = func.Call(ctx);
-
-                if (ctx.HasErrors)
-                    yield break;
-
                 yield return res;
             }
         }

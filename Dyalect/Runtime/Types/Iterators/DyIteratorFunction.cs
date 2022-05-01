@@ -1,6 +1,5 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
-using System;
 using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
@@ -12,10 +11,17 @@ internal sealed class DyIteratorFunction : DyForeignFunction
     public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), -1) =>
         this.enumerable = enumerable;
 
-    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, params DyObject[] args) =>
-        (enumerator ??= enumerable.GetEnumerator()).MoveNext() ? enumerator.Current : DyNil.Terminator;
+    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, params DyObject[] args)
+    {
+        if (enumerator is null)
+            enumerator = enumerable.GetEnumerator();
 
-    internal override void Reset(ExecutionContext ctx) => enumerator = null;
+        if (enumerator.MoveNext())
+            return enumerator.Current;
+
+        enumerator = null;
+        return DyNil.Terminator;
+    }
 
     public override int GetHashCode() => enumerable.GetHashCode();
 

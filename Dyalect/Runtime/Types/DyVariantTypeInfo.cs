@@ -16,7 +16,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId != right.TypeId || left.GetConstructor() != right.GetConstructor())
-            return DyBool.False;
+            return False;
 
         var (xs, ys) = ((DyVariant)left, (DyVariant)right);
         return xs.Tuple.Equals(ys.Tuple, ctx) ? True : False;
@@ -28,7 +28,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         var self = (DyVariant)arg;
-        var str = ctx.RuntimeContext.Tuple.ToStringDirect(ctx, self.Tuple);
+        var str = DyTupleTypeInfo.MakeString(ctx, self.Tuple);
 
         if (ctx.HasErrors)
             return Nil;
@@ -36,6 +36,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
         return new DyString($"{ReflectedTypeName}.{self.Constructor}{str}");
     }
 
+    [Obsolete]
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg)
     {
         var self = (DyVariant)arg;
@@ -48,7 +49,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     }
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
-        ctx.RuntimeContext.Tuple.GetDirect(ctx, ((DyVariant)self).Tuple, index);
+        ((DyVariant)self).Tuple.GetItem(index, ctx);
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) =>
         ctx.RuntimeContext.Tuple.Set(ctx, ((DyVariant)self).Tuple, index, value);
@@ -56,17 +57,9 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
-            Dy.Tuple => GetTuple(ctx, (DyVariant)self),
+            Dy.Tuple => self is DyVariant v && v.Tuple.Count > 0 ? v.Tuple : Nil,
             _ => base.CastOp(ctx, self, targetType)
         };
-
-    private DyObject GetTuple(ExecutionContext ctx, DyVariant self)
-    {
-        if (self.Tuple.Count == 0)
-            return ctx.InvalidCast(ReflectedTypeName, nameof(Dy.Tuple));
-
-        return self.Tuple;
-    }
     #endregion
 
     protected override DyFunction? InitializeStaticMember(string name, ExecutionContext ctx)

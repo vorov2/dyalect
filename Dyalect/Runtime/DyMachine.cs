@@ -72,7 +72,6 @@ public static partial class DyMachine
         DyFunction callFun;
 
         PROLOGUE:
-        var jumper = -1;
         var unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
         ctx.CallerUnitId = ctx.UnitId;
         ctx.UnitId = function.UnitId;
