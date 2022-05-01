@@ -56,7 +56,12 @@ public class ExecutionContext
     internal int UnitId;
     internal int CallerUnitId;
 
-    public DyVariant? GetError() => Error;
+    public DyVariant? PopError()
+    {
+        var err = Error;
+        Error = null;
+        return err;
+    }
 
     public void ThrowIf()
     {
@@ -68,16 +73,9 @@ public class ExecutionContext
         }
     }
 
-    public void ThrowRuntimeException()
-    {
-        if (Error is not null)
-        {
-            var err = Error;
-            Error = null;
-            throw new DyRuntimeException(ErrorGenerators.GetErrorDescription(err));
-        }
-    }
+    public T Type<T>() where T : DyTypeInfo => RuntimeContext.Types.OfType<T>().First();
 
+    #region Context variables
     private readonly object syncRoot = new();
     private readonly Dictionary<string, object> contextVariables = new();
     public void SetContextVariable(string key, object val)
@@ -94,8 +92,7 @@ public class ExecutionContext
     }
 
     public bool HasContextVariable(string key) => contextVariables.ContainsKey(key);
-
-    public T Type<T>() where T : DyTypeInfo => RuntimeContext.Types.OfType<T>().First();
+    #endregion
 
     #region ArgContainer
     private int count;

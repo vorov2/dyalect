@@ -174,7 +174,10 @@ namespace Dyalect.UnitTesting
                 try
                 {
                     DyMachine.Execute(ctx);
-                    ctx.ThrowRuntimeException();
+                    var err = ctx.PopError();
+
+                    if (err is not null)
+                        throw new DyRuntimeException(ErrorGenerators.GetErrorDescription(err));
 
                     report.Results.Add(new TestResult
                     {

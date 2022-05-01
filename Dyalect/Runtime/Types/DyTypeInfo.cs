@@ -682,7 +682,7 @@ public abstract class DyTypeInfo : DyObject
             Builtins.Clone => Unary(name, Clone),
             Builtins.Has => Binary(name, Has, "member"),
             Builtins.Type => Unary(name, (ct, o) => ct.RuntimeContext.Types[o.TypeId]),
-            Builtins.Contains => contains is null ? Binary(name, ContainsOp, "value") : contains,
+            Builtins.Contains => Support(self, SupportedOperations.In) ? (contains is null ? Binary(name, ContainsOp, "value") : contains) : null,
             _ => InitializeInstanceMember(self, name, ctx)
         };
 

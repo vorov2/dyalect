@@ -1,5 +1,4 @@
 ﻿using Dyalect.Runtime.Types;
-using System;
 namespace Dyalect.Runtime;
 
 internal sealed class Caller
@@ -19,11 +18,6 @@ internal sealed class Caller
         Function = new(null, 0, 0, FastList<DyObject[]>.Empty, 0);
     }
 
-    public Caller(DyNativeFunction function, int offset, EvalStack evalStack, DyObject[] locals)
-    {
-        Function = function;
-        Offset = offset;
-        EvalStack = evalStack;
-        Locals = locals;
-    }
+    public Caller(DyNativeFunction function, int offset, EvalStack evalStack, DyObject[] locals) =>
+        (Function, Offset, EvalStack, Locals) = (function, offset, evalStack, locals);
 }

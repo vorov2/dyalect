@@ -3,7 +3,6 @@ using Dyalect.Linker;
 using Dyalect.Runtime.Types;
 using Dyalect.Strings;
 using System.Linq;
-using System.Reflection;
 namespace Dyalect.Runtime;
 
 public static partial class DyMachine

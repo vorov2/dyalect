@@ -5,6 +5,19 @@ namespace Dyalect.Runtime;
 
 public sealed class RuntimeContext
 {
+    internal readonly DyStringTypeInfo String;
+    internal readonly DyCharTypeInfo Char;
+    internal readonly DyNilTypeInfo Nil;
+    internal readonly DyTupleTypeInfo Tuple;
+    internal readonly DyArrayTypeInfo Array;
+    internal readonly FastList<DyTypeInfo> Types;
+
+    internal DyObject[][] Units { get; private set; }
+
+    internal MemoryLayout[][] Layouts { get; private set; }
+
+    public UnitComposition Composition { get; private set; }
+
     internal RuntimeContext(UnitComposition composition)
     {
         Types = Dy.GetAll();
@@ -30,18 +43,4 @@ public sealed class RuntimeContext
         Units = newUnits;
         Layouts = Composition.Units.Select(u => u.Layouts.ToArray()).ToArray();
     }
-
-    internal readonly DyStringTypeInfo String;
-    internal readonly DyCharTypeInfo Char;
-    internal readonly DyNilTypeInfo Nil;
-    internal readonly DyTupleTypeInfo Tuple;
-    internal readonly DyArrayTypeInfo Array;
-
-    internal readonly FastList<DyTypeInfo> Types;
-
-    internal DyObject[][] Units { get; private set; }
-
-    internal MemoryLayout[][] Layouts { get; private set; }
-
-    public UnitComposition Composition { get; private set; }
 }

@@ -1,5 +1,4 @@
 ﻿using Dyalect.Compiler;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
@@ -57,9 +56,9 @@ public sealed class DyModule : DyObject, IEnumerable<DyObject>
         foreach (var (key, sv) in Unit.ExportList)
         {
             if ((sv.Data & VarFlags.Private) != VarFlags.Private)
-                yield return new DyTuple(new DyObject[] {
-                    new DyLabel("key", new DyString(key)),
-                    new DyLabel("value", Globals[sv.Address >> 9])
+                yield return new DyTuple(new DyLabel[] {
+                    new("key", new DyString(key)),
+                    new("value", Globals[sv.Address >> 9])
                     });
         }
     }

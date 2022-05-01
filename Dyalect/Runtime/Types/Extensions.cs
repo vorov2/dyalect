@@ -32,7 +32,7 @@ public static class Extensions
         if (self is DyVariant v)
             return v;
 
-        return new DyVariant(DyErrorCode.Failure, self);
+        return new DyVariant(DyError.Failure, self);
     }
 
     //Returns a function encapsulated by an iterator, accepts: an iterator, a function

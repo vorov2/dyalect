@@ -8,7 +8,7 @@ namespace Dyalect.Runtime.Types;
 internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter;
+        SupportedOperations.Get | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
     public override string ReflectedTypeName => nameof(Dy.Iterator);
 

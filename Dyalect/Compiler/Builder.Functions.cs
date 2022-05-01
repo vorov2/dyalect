@@ -359,7 +359,7 @@ partial class Builder
                     //We fall in here if all checks are not successful
                     //Here we try to obtain some additional info to generate nice
                     //error message
-                    ThrowErrorProlog(DyErrorCode.InvalidType, 1);
+                    ThrowErrorProlog(DyError.InvalidType, 1);
                     cw.PushVar(new ScopeVar(sys));
                     cw.CallNullaryMember(Builtins.Type);
                     cw.FunArgIx(0);

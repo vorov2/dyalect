@@ -1,6 +1,6 @@
 ﻿namespace Dyalect.Runtime;
 
-public enum DyErrorCode
+public enum DyError
 {
     None,
 

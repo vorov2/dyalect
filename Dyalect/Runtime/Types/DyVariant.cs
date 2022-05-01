@@ -11,7 +11,7 @@ public sealed class DyVariant : DyObject
     public DyVariant(string constructor, DyTuple values) : base(Dy.Variant) =>
         (Constructor, Tuple) = (constructor, values);
 
-    internal DyVariant(DyErrorCode code, params object[] args) : this(code.ToString(), args) { }
+    internal DyVariant(DyError code, params object[] args) : this(code.ToString(), args) { }
 
     internal DyVariant(string code, params object[] args) : base(Dy.Variant)
     {

@@ -25,5 +25,6 @@ public enum SupportedOperations
     Get    = 0x40000,
     Set    = 0x80000,
     Len    = 0x100000,
-    Iter   = 0x200000
+    Iter   = 0x200000,
+    In     = 0x400000
 }

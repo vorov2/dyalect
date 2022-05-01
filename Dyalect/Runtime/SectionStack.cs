@@ -6,12 +6,13 @@ namespace Dyalect.Runtime;
 
 internal sealed class SectionStack : IEnumerable<CatchMarks>
 {
-    private const int DEFAULT_SIZE = 4;
+    private const int DefaultSize = 4;
     private CatchMarks[] array;
     private readonly int initialSize;
-    public int Count;
 
-    public SectionStack() : this(DEFAULT_SIZE) { }
+    public int Count { get; private set; }
+
+    public SectionStack() : this(DefaultSize) { }
 
     public SectionStack(int size)
     {

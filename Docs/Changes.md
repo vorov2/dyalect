@@ -1,3 +1,7 @@
+# 0.44.2
+  * Fix: _It is possible to obtain a reference to `Contains` even if an object doesn't implement it_ ([Issue #867](https://github.com/vorov2/dyalect/issues/867)).
+  * Fix: _VM crashes when calling `Contains` on an instance of custom type_ ([Issue #866](https://github.com/vorov2/dyalect/issues/866)).
+
 # 0.44.1
   * Change: _Optimizations and refactoring of exception handling logic._
   * Change: _Global refactoring of internal mechanism of member function invocation._

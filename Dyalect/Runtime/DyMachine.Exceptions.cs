@@ -132,6 +132,6 @@ partial class DyMachine
 
         var functionName = func.Self is null ? func.FunctionName
             : $"{func.Self.TypeName}.{func.FunctionName}";
-        return new(DyErrorCode.ExternalFunctionFailure, functionName, ex.Message);
+        return new(DyError.ExternalFunctionFailure, functionName, ex.Message);
     }
 }

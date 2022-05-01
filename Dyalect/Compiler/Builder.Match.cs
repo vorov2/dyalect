@@ -33,7 +33,7 @@ partial class Builder
         //only if this match is inside try/catch
         if (node.Expression != null)
         {
-            ThrowError(DyErrorCode.MatchFailed);
+            ThrowError(DyError.MatchFailed);
             cw.Fail();
         }
         else

@@ -18,7 +18,7 @@ public abstract class DyObject : IEquatable<DyObject>
 
     protected internal virtual char GetChar() => throw new InvalidCastException();
 
-    protected internal virtual string GetString() => throw new InvalidCastException();
+    protected internal virtual string GetString() => ToString();
 
     public abstract object ToObject();
 

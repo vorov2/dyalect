@@ -6,6 +6,8 @@ internal sealed class DyLabelTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Label;
 
+    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.In;
+
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>
         field.TypeId == Dy.String && self.GetLabel() == field.GetString() ? DyBool.True : DyBool.False;
 

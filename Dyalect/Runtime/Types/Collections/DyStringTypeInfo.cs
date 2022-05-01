@@ -12,7 +12,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Add | SupportedOperations.Gt | SupportedOperations.Lt
         | SupportedOperations.Gte | SupportedOperations.Lte | SupportedOperations.Get
-        | SupportedOperations.Len | SupportedOperations.Iter;
+        | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
     public override string ReflectedTypeName => nameof(Dy.String);
 

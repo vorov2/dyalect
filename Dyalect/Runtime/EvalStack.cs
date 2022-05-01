@@ -6,6 +6,8 @@ public sealed class EvalStack
     private readonly DyObject[] array;
     private int size;
 
+    internal int Size => size;
+
     public EvalStack(int size) => array = new DyObject[size];
 
     internal void Dup() => array[size++] = array[size - 2];
@@ -29,16 +31,11 @@ public sealed class EvalStack
 
     internal DyObject Peek(int n) => array[size - n];
 
-    internal void Push(DyObject val)
-    {
-        array[size++] = val;
-    }
+    internal void Push(DyObject val) => array[size++] = val;
 
     internal void Replace(DyObject val) => array[size - 1] = val;
 
     internal void Push(bool val) => array[size++] = val ? True : False;
 
     internal void Replace(bool val) => array[size - 1] = val ? True : False;
-
-    internal int Size => size;
 }

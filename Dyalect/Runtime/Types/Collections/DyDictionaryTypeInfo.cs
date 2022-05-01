@@ -10,7 +10,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
     public override int ReflectedTypeId => Dy.Dictionary;
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter;
+        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
     public DyDictionaryTypeInfo() => AddMixin(Dy.Collection);
 
