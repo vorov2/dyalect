@@ -1,5 +1,4 @@
-﻿using System;
-namespace Dyalect.Runtime.Types;
+﻿namespace Dyalect.Runtime.Types;
 
 public sealed class DyInteropObject : DyObject
 {
@@ -8,11 +7,9 @@ public sealed class DyInteropObject : DyObject
 
     public override string TypeName => $"{nameof(Dy.Interop)}<{Type.FullName ?? Type.Name}>";
     
-    public DyInteropObject(Type type, object obj) : base(Dy.Interop) =>
-        (Type, Object) = (type, obj);
+    public DyInteropObject(Type type, object obj) : base(Dy.Interop) => (Type, Object) = (type, obj);
 
-    public DyInteropObject(Type obj) : base(Dy.Interop) =>
-        (Type, Object) = (obj, obj);
+    public DyInteropObject(Type obj) : base(Dy.Interop) => (Type, Object) = (obj, obj);
 
     public override int GetHashCode() => Object.GetHashCode();
 

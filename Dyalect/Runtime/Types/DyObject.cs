@@ -45,10 +45,11 @@ public abstract class DyObject : IEquatable<DyObject>
         ctx.OperationNotSupported(Builtins.Set, TypeId);
 
     //These functions are used by default and can be utilized by objects that expose a fixed set of
-    //read-only fields which are always obtained without any exceptions. Object with different behavior
+    //read-only fields which are always obtained without any exceptions. Objects with different behavior
     //should override GetItem(DyObject,ExecutionContext)
-    protected internal virtual object? GetItem(string key) => null;
-    protected internal virtual object? GetItem(long index) => null;
+    //TODO: Consider moving to a separate class
+    protected virtual object? GetItem(string key) => null;
+    protected virtual object? GetItem(long index) => null;
 
     public virtual DyTypeInfo GetTypeInfo(ExecutionContext ctx) => ctx.RuntimeContext.Types[TypeId];
 

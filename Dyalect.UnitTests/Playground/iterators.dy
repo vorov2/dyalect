@@ -1,0 +1,11 @@
+﻿func iter() {
+    yield 1
+    yield 2
+    yield 3
+}
+
+let xs = yields { 1, 2, 3 }
+
+print << xs.First()
+print << xs.Skip(2)
+print << xs.Take(4)

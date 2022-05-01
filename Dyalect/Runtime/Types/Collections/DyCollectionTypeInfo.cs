@@ -9,10 +9,10 @@ internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
-            Dy.Tuple => new DyTuple(((DyCollection)self).Trim()),
-            Dy.Array => new DyArray(((DyCollection)self).Trim()),
+            Dy.Tuple => new DyTuple(((DyCollection)self).GetValues()),
+            Dy.Array => new DyArray(((DyCollection)self).GetValues()),
             Dy.Iterator => DyIterator.Create((DyCollection)self),
-            Dy.Set => new DySet(new HashSet<DyObject>(((DyCollection)self).Trim())),
+            Dy.Set => new DySet(new HashSet<DyObject>(((DyCollection)self).GetValues())),
             _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
@@ -61,11 +61,10 @@ internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
     }
 
     [InstanceMethod(Method.ToSet)]
-    internal static DyObject ToSet(ExecutionContext ctx, DyCollection self)
+    internal static DyObject ToSet(DyCollection self)
     {
-        var vals = self.GetValuesIterator();
         var set = new HashSet<DyObject>();
-        set.UnionWith(vals);
+        set.UnionWith(self.GetValues());
         return new DySet(set);
     }
 }

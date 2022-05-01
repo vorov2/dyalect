@@ -19,11 +19,6 @@ public sealed class DyModule : DyObject, IEnumerable<DyObject>
 
     public override object ToObject() => Unit;
 
-    protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
-    {
-        base.SetItem(index, value, ctx);
-    }
-
     protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
         if (index.TypeId != Dy.String)

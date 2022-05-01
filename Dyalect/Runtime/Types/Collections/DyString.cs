@@ -33,12 +33,14 @@ public sealed class DyString : DyCollection
         return arr;
     }
 
-    internal override IEnumerable<DyObject> GetValuesIterator()
+    private IEnumerable<DyChar> Iterate()
     {
         for (var i = 0; i < Value.Length; i++)
             yield return new DyChar(Value[i]);
     }
 
+    public override IEnumerator<DyObject> GetEnumerator() => Iterate().GetEnumerator();
+    
     public override object ToObject() => Value;
 
     public override string ToString() => Value;

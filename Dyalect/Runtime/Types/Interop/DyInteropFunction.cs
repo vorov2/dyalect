@@ -1,6 +1,5 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;

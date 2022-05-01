@@ -728,3 +728,18 @@
     assert(2, fn())
     assert(3, fn())
 #endregion
+
+#region "Exception in yields"
+    let xs = yields {
+        1, 2, 3,
+        throw @UnexpectedError(4),
+        5, 6, 8
+    }
+    assert([1,2,3], xs.Take(3).ToArray())
+    try {
+        xs.Skip(4).ToArray()
+        assert(got: false)
+    } catch {
+        @UnexpectedError(x) => assert(4, x)
+    }
+#endregion

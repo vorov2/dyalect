@@ -1,7 +1,4 @@
-﻿using Dyalect.Parser;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
 public class DyTuple : DyCollection
@@ -27,12 +24,45 @@ public class DyTuple : DyCollection
         this.values = values ?? throw new DyException("Unable to create a tuple with no values.");
     }
 
+    public override IEnumerator<DyObject> GetEnumerator() => new DyCollectionEnumerator(values, 0, Count, this);
+
     public override DyObject Clone()
     {
         if (IsMutable())
             return base.Clone();
 
         return this;
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            var hash = 17;
+
+            for (var i = 0; i < length; i++)
+            {
+                var v = values[i];
+                hash = hash * 31 + v.GetHashCode();
+            }
+
+            return hash;
+        }
+    }
+
+    public override bool Equals(DyObject? other)
+    {
+        if (other is null || other is not DyTuple xs)
+            return false;
+
+        if (xs.Count != length)
+            return false;
+
+        for (var i = 0; i < length; i++)
+            if (!values[i].Equals(xs.values[i]))
+                return false;
+
+        return true;
     }
 
     public static DyTuple Create(params DyLabel[] labels) => new(labels, labels.Length);
@@ -136,12 +166,6 @@ public class DyTuple : DyCollection
 
     private static string DefaultKey() => Guid.NewGuid().ToString();
 
-    public override IEnumerator<DyObject> GetEnumerator()
-    {
-        for (var i = 0; i < Count; i++)
-            yield return GetValue(i);
-    }
-
     internal override DyObject GetValue(int index) => values[index].GetTaggedValue();
 
     internal virtual void SetValue(int index, DyObject value)
@@ -164,24 +188,6 @@ public class DyTuple : DyCollection
                 return CopyTuple();
 
         return values;
-    }
-
-    internal override IEnumerable<DyObject> GetValuesIterator()
-    {
-        if (Count != values.Length)
-            return IterateTuple();
-
-        for (var i = 0; i < Count; i++)
-            if (values[i].TypeId == Dy.Label)
-                return IterateTuple();
-
-        return values;
-    }
-
-    private IEnumerable<DyObject> IterateTuple()
-    {
-        for (var i = 0; i < Count; i++)
-            yield return values[i].GetTaggedValue();
     }
 
     internal DyObject[] GetValuesWithLabels()

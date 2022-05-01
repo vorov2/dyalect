@@ -185,11 +185,5 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
         return arr;
     }
 
-    internal override IEnumerable<DyObject> GetValuesIterator()
-    {
-        for (var i = 0; i < Count; i++)
-            yield return values[i].GetTaggedValue();
-    }
-
     internal DyObject[] UnsafeAccessValues() => values;
 }

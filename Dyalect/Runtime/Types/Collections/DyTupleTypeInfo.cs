@@ -21,8 +21,14 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     public DyTupleTypeInfo() => AddMixin(Dy.Collection, Dy.Comparable);
 
     #region Operations
-    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right) =>
-        new DyTuple(((DyCollection)left).Concat(ctx, right));
+    //TODO: reconsider logic
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
+    {
+        var arr = new List<DyObject>();
+        arr.AddRange(DyIterator.ToEnumerable(ctx, left));
+        arr.AddRange(DyIterator.ToEnumerable(ctx, right));
+        return new DyTuple(arr.ToArray());
+    }
 
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
     {
@@ -209,6 +215,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
+    //TODO: candidate for removal
     internal static DyObject Concat(ExecutionContext ctx, params DyObject[] values) =>
         new DyTuple(DyCollection.ConcatValues(ctx, values));
 
@@ -261,6 +268,8 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         self.GetItem(DyInteger.One, ctx);
 
     [InstanceMethod]
+    
+    //TODO: candidate for removal
     internal static DyObject Sort(ExecutionContext ctx, DyTuple self, DyFunction? comparer = null)
     {
         var sortComparer = new SortComparer(comparer, ctx);
@@ -338,6 +347,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         new DyTuple(new[] { first, second, third });
 
     [StaticMethod(Method.Concat)]
+    //TODO: candidate for removal
     internal static DyObject StaticConcat(ExecutionContext ctx, params DyObject[] values) =>
         new DyTuple(DyCollection.ConcatValues(ctx, values));
 
