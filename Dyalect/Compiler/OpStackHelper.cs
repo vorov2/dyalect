@@ -61,7 +61,7 @@ internal static class OpStackHelper
         0,  //HasMember
         -2, //SetMemberS
         -1, //Get
-        -3, //Set
+        -2, //Set
         1,  //RunMod
         1,  //Type
         0,  //Tag

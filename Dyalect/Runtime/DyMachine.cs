@@ -334,8 +334,7 @@ public static partial class DyMachine
                 case OpCode.Fail:
                     {
                         second = evalStack.Pop();
-                        if (ctx.Error is null) ctx.Error = (DyVariant)second;
-                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
+                        if (ctx.Error is null) ctx.Error = second.ToError();
                         goto CATCH;
                     }
                 case OpCode.NewIter:
@@ -356,7 +355,7 @@ public static partial class DyMachine
                         evalStack.Replace(((DyTypeInfo)second).HasStaticMember(unit.Strings[op.Data], ctx));
                     else
                         evalStack.Replace(types[second.TypeId].HasInstanceMember(second, unit.Strings[op.Data], ctx));
-                    if (ctx.Error is not null) goto HANDLE_ERR;
+                    if (ctx.Error is not null) goto CATCH;
                     break;
                 case OpCode.GetMember:
                     second = evalStack.Peek();
@@ -364,25 +363,25 @@ public static partial class DyMachine
                         evalStack.Replace(((DyTypeInfo)second).GetStaticMember(unit.Strings[op.Data], ctx));
                     else
                         evalStack.Replace(types[second.TypeId].GetInstanceMember(second, unit.Strings[op.Data], ctx));
-                    if (ctx.Error is not null) goto HANDLE_ERR;
+                    if (ctx.Error is not null) goto CATCH;
                     break;
                 case OpCode.SetMemberS:
                     first = evalStack.Pop();
                     second = evalStack.Pop();
                     ((DyTypeInfo)first).SetStaticMember(ctx, unit.Strings[op.Data], (DyFunction)second);
-                    if (ctx.Error is not null) goto HANDLE_ERR;
+                    if (ctx.Error is not null) goto CATCH;
                     break;
                 case OpCode.SetMember:
                     first = evalStack.Pop();
                     second = evalStack.Pop();
                     ((DyTypeInfo)first).SetInstanceMember(ctx, unit.Strings[op.Data], (DyFunction)second);
-                    if (ctx.Error is not null) goto HANDLE_ERR;
+                    if (ctx.Error is not null) goto CATCH;
                     break;
                 case OpCode.Mixin:
                     first = evalStack.Pop();
                     second = evalStack.Pop();
                     ((DyTypeInfo)second).Mixin(ctx, (DyTypeInfo)first);
-                    if (ctx.Error is not null) goto HANDLE_ERR;
+                    if (ctx.Error is not null) goto CATCH;
                     break;
                 case OpCode.Get:
                     second = evalStack.Pop();
@@ -394,8 +393,8 @@ public static partial class DyMachine
                     second = evalStack.Pop();
                     first = evalStack.Pop();
                     third = evalStack.Pop();
-                    types[first.TypeId].Set(ctx, first, second, third);
-                    if (ctx.Error is not null) goto HANDLE_ERR;
+                    evalStack.Push(types[first.TypeId].Set(ctx, first, second, third));
+                    if (ctx.Error is not null) goto HANDLE;
                     break;
                 case OpCode.Contains:
                     first = evalStack.Peek();
@@ -469,7 +468,6 @@ public static partial class DyMachine
                     else
                     {
                         ctx.InvalidType(Dy.Iterator, second);
-                        ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
                         goto CATCH;
                     }
                     break;
@@ -487,7 +485,7 @@ public static partial class DyMachine
                             if (second.TypeId == Dy.TypeInfo && second is DyTypeInfo ti)
                             {
                                 second = ti.GetStaticMember(ti.ReflectedTypeName, ctx);
-                                if (ctx.Error is not null) goto HANDLE_ERR;
+                                if (ctx.Error is not null) goto CATCH;
                                 evalStack.Replace(second);
                                 goto case OpCode.FunPrep;
                             }
@@ -497,7 +495,7 @@ public static partial class DyMachine
                             if (!ctx.HasErrors && second.TypeId != Dy.Function)
                                 ctx.InvalidType(Dy.Function, second);
 
-                            if (ctx.Error is not null) goto HANDLE_ERR;
+                            if (ctx.Error is not null) goto CATCH;
                             evalStack.Replace(second);
                         }
 
@@ -508,7 +506,7 @@ public static partial class DyMachine
                             if (op.Data > callFun.Parameters.Length)
                             {
                                 ctx.TooManyArguments(callFun.FunctionName, callFun.Parameters.Length, op.Data);
-                                goto HANDLE_ERR;
+                                goto CATCH;
                             }
 
                             ctx.PushArguments(
@@ -551,19 +549,19 @@ public static partial class DyMachine
                             }
 
                             ctx.ArgumentNotFound(((DyFunction)evalStack.Peek(2)).FunctionName, (string)unit.Strings[op.Data]);
-                            goto HANDLE_ERR;
+                            goto CATCH;
                         }
                         if (idx == locs.VarArgsIndex)
                         {
                             Push(fn, locs, evalStack.Pop(), ctx);
-                            if (ctx.Error is not null) goto HANDLE_ERR;
+                            if (ctx.Error is not null) goto CATCH;
                         }
                         else
                         {
                             if (locs.Locals[idx] is not null)
                             {
                                 ctx.MultipleValuesForArgument(((DyFunction)evalStack.Peek(2)).FunctionName, (string)unit.Strings[op.Data]);
-                                goto HANDLE_ERR;
+                                goto CATCH;
                             }
 
                             locs.Locals[idx] = evalStack.Pop();
@@ -597,7 +595,7 @@ public static partial class DyMachine
                         if (op.Data != callFun.Parameters.Length || callFun.VarArgIndex > -1)
                         {
                             FillDefaults(ctx.PeekArguments(), callFun, ctx);
-                            if (ctx.Error is not null) goto HANDLE_ERR;
+                            if (ctx.Error is not null) goto CATCH;
                         }
 
                         var cp = new Caller(function, offset, evalStack, locals);
@@ -613,7 +611,7 @@ public static partial class DyMachine
                         {
                             second = CallExternalFunction(callFun, ctx);
                             if (ctx.Error is not null)
-                                goto HANDLE_ERR;
+                                goto CATCH;
                             else
                             {
                                 evalStack.Push(second);
@@ -667,7 +665,7 @@ public static partial class DyMachine
                     first = evalStack.Pop();
                     second = evalStack.Peek();
                     evalStack.Replace(types[first.TypeId].Cast(ctx, first, second));
-                    if (ctx.Error is not null) goto HANDLE_ERR;
+                    if (ctx.Error is not null) goto CATCH;
                     break;
             }
         }
@@ -676,11 +674,9 @@ public static partial class DyMachine
         evalStack.Pop();
         if (TryCall(ctx, offset, ref second, ref third, ref function, ref locals, ref evalStack))
             goto PROLOGUE;
-    HANDLE_ERR:
-        ProcessError(ctx, offset, ref function, ref locals, ref evalStack, ref jumper);
     CATCH:
+        offset = ThrowIf(ctx, offset, ref function, ref locals, ref evalStack);
         evalStack.Clear();
-        offset = jumper;
         unit = ctx.RuntimeContext.Composition.Units[function.UnitId];
         ops = unit.Ops;
         evalStack.Push(ctx.Error!);
@@ -723,9 +719,12 @@ public static partial class DyMachine
 
     private static DyObject CallExternalFunction(DyFunction func, ExecutionContext ctx)
     {
+        if (ctx.CallCnt > 1)
+            return func.CallWithMemoryLayout(ctx, ctx.PopArguments().Locals);
+
         try
         {
-            return func.InternalCall(ctx, ctx.PopArguments().Locals);
+            return func.CallWithMemoryLayout(ctx, ctx.PopArguments().Locals);
         }
         catch (IterationException)
         {
@@ -739,34 +738,10 @@ public static partial class DyMachine
         {
             return ctx.Timeout();
         }
-        catch (DyCodeException ex)
-        {
-            ctx.Error = ex.Error;
-            return DyNil.Instance;
-        }
-        catch (ArgumentException ex)
-        {
-            if (!string.IsNullOrEmpty(ex.ParamName))
-                return ctx.InvalidValue(ex.ParamName);
-            else
-                return ctx.InvalidValue();
-        }
-        catch (TargetInvocationException ex)
-        {
-            var msg = ex.InnerException is not null ? ex.InnerException.Message : ex.Message;
-            return ctx.ExternalFunctionFailure(func, msg);
-        }
         catch (Exception ex)
         {
-            var err = GetInnerException(ex);
-
-            if (err is not null)
-            {
-                ctx.Error = err.Error;
-                return DyNil.Instance;
-            }
-
-            return ctx.ExternalFunctionFailure(func, ex.Message);
+            ctx.Error = GetErrorInformation(func, ex);
+            return Nil;
         }
     }
 

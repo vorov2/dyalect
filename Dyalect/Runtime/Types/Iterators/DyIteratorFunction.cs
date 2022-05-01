@@ -12,7 +12,7 @@ internal sealed class DyIteratorFunction : DyForeignFunction
     public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), -1) =>
         this.enumerable = enumerable;
 
-    internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args) =>
+    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, params DyObject[] args) =>
         (enumerator ??= enumerable.GetEnumerator()).MoveNext() ? enumerator.Current : DyNil.Terminator;
 
     internal override void Reset(ExecutionContext ctx) => enumerator = null;

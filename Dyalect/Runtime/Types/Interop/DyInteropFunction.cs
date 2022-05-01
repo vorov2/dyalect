@@ -27,7 +27,7 @@ internal sealed class DyInteropFunction : DyForeignFunction
         return base.BindOrRun(ctx, arg);
     }
 
-    internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => CallInteropMethod(ctx, Self!, args);
+    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => CallInteropMethod(ctx, Self!, args);
 
     private DyObject CallInteropMethod(ExecutionContext ctx, DyObject self, DyObject[] args)
     {

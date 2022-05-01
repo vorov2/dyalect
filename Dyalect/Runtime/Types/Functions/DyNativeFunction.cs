@@ -51,7 +51,7 @@ internal class DyNativeFunction : DyFunction
         {
             try
             {
-                var size = GetLayout(ctx).Size;
+                var size = GetMemoryCells(ctx);
                 var locals = size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
                 ctx.CallStack.Push(Caller.External);
                 return DyMachine.ExecuteWithData((DyNativeFunction)BindToInstance(ctx, arg), locals, ctx);
@@ -66,34 +66,13 @@ internal class DyNativeFunction : DyFunction
         return BindToInstance(ctx, arg);
     }
 
-    internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args)
+    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] locals)
     {
-        try
-        {
-            var size = GetLayout(ctx).Size;
-            DyObject[] locals;
-
-            if (size == args.Length)
-                locals = args;
-            else
-            {
-                locals = size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
-
-                for (var i = 0; i < args.Length; i++)
-                    locals[i] = args[i];
-            }
-
-            ctx.CallStack.Push(Caller.External);
-            return DyMachine.ExecuteWithData(this, locals, ctx);
-        }
-        catch (DyCodeException ex)
-        {
-            ctx.Error = ex.Error;
-            return Nil;
-        }
+        ctx.CallStack.Push(Caller.External);
+        return DyMachine.ExecuteWithData(this, locals, ctx);
     }
 
-    internal override MemoryLayout GetLayout(ExecutionContext ctx) => ctx.RuntimeContext.Layouts[UnitId][FunctionId];
+    internal override int GetMemoryCells(ExecutionContext ctx) => ctx.RuntimeContext.Layouts[UnitId][FunctionId].Size;
 
     internal override DyObject[] CreateLocals(ExecutionContext ctx)
     {

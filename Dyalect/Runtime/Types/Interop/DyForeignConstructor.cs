@@ -11,7 +11,7 @@ internal sealed class DyForeignConstructor : DyForeignFunction
 
     private DyForeignConstructor(Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars) : base("new", pars, 0) => this.fun = fun;
 
-    internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0]);
+    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0]);
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyForeignConstructor(fun, Parameters);
     

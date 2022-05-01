@@ -2,12 +2,15 @@
 using Dyalect.Runtime.Types;
 namespace Dyalect.Runtime;
 
-public sealed class DyCodeException : DyRuntimeException, IError
+public sealed class DyCodeException : DyRuntimeException
 {
     internal DyCodeException(DyVariant err, CallStackTrace cs, Exception? innerException)
         : base(null!, innerException) => (Error, CallTrace) = (err, cs);
 
-    internal DyCodeException(DyVariant err) : base(null!, null) => Error = err;
+    public DyCodeException(DyVariant err) : base(null!, null) => Error = err;
+
+    public DyCodeException(DyErrorCode errorCode, params object[] args) : base(null!, null) =>
+        Error = new DyVariant(errorCode, args);
 
     public override string Message => ErrorGenerators.GetErrorDescription(Error);
 

@@ -35,7 +35,7 @@ public class ExecutionContext
         var fn = EtaFunction!;
         EtaFunction = null;
         Error = null;
-        return fn.InternalCall(this, args);
+        return fn.Call(this, args);
     }
 
     private DyVariant? _error;

@@ -35,5 +35,5 @@ public abstract class DyForeignFunction : DyFunction
     internal override DyObject[] CreateLocals(ExecutionContext ctx) =>
         Parameters.Length == 0 ? Array.Empty<DyObject>() : new DyObject[Parameters.Length];
 
-    internal sealed override MemoryLayout? GetLayout(ExecutionContext ctx) => throw new NotSupportedException();
+    internal sealed override int GetMemoryCells(ExecutionContext ctx) => Parameters.Length;
 }

@@ -27,6 +27,14 @@ public static class Extensions
         return true;
     }
 
+    internal static DyVariant ToError(this DyObject self)
+    {
+        if (self is DyVariant v)
+            return v;
+
+        return new DyVariant(DyErrorCode.Failure, self);
+    }
+
     //Returns a function encapsulated by an iterator, accepts: an iterator, a function
     //which is already an iterator function, a function that might return an iterator function,
     //an object that implements built-in "Iterator" method, an object that implements

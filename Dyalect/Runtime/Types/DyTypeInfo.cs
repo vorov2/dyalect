@@ -346,7 +346,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         if (set is not null)
-            return set.BindToInstance(ctx, self).Call(ctx, index, value);
+            return set.PrepareFunction(ctx, self);
 
         return SetOp(ctx, self, index, value);
     }

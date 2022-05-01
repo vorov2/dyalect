@@ -48,23 +48,20 @@ public abstract class DyFunction : DyObject
 
     internal virtual DyObject BindOrRun(ExecutionContext ctx, DyObject arg) => BindToInstance(ctx, arg);
     
-    internal abstract DyObject InternalCall(ExecutionContext ctx, DyObject[] args);
+    internal abstract DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args);
 
     public DyObject Call(ExecutionContext ctx, params DyObject[] args)
     {
-        var newArgs = PrepareArguments(ctx, args);
+        var newArgs = PrepareMemoryLayout(ctx, args);
 
         if (ctx.HasErrors)
             return Nil;
 
-        return InternalCall(ctx, newArgs);
+        return CallWithMemoryLayout(ctx, newArgs);
     }
 
-    protected DyObject[] PrepareArguments(ExecutionContext ctx, DyObject[] args)
+    protected DyObject[] PrepareMemoryLayout(ExecutionContext ctx, DyObject[] args)
     {
-        if (Parameters.Length == 0 && args.Length == 0)
-            return args;
-
         if (args.Length > Parameters.Length)
         {
             ctx.TooManyArguments(FunctionName, Parameters.Length, args.Length);
@@ -73,13 +70,14 @@ public abstract class DyFunction : DyObject
 
         DyObject[] newLocals;
         var needDefaults = false;
+        var memorySize = GetMemoryCells(ctx);
 
-        if (args.Length == Parameters.Length)
+        if (args.Length == memorySize)
             newLocals = args;
         else
         {
             needDefaults = true;
-            newLocals = new DyObject[Parameters.Length];
+            newLocals = new DyObject[memorySize];
             if (args.Length > 0)
                 Array.Copy(args, newLocals, args.Length);
         }
@@ -105,7 +103,6 @@ public abstract class DyFunction : DyObject
         return newLocals;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal int GetParameterIndex(string name)
     {
         for (var i = 0; i < Parameters.Length; i++)
@@ -162,7 +159,7 @@ public abstract class DyFunction : DyObject
     public static bool IsSameInstance(DyFunction first, DyFunction second) =>
         ReferenceEquals(first.Self, second.Self) || (first.Self is not null && first.Self.Equals(second.Self));
 
-    internal virtual MemoryLayout? GetLayout(ExecutionContext ctx) => null;
+    internal abstract int GetMemoryCells(ExecutionContext ctx);
 
     internal abstract DyObject[] CreateLocals(ExecutionContext ctx);
 

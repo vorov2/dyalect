@@ -11,7 +11,7 @@ internal sealed class CompositionContainer : DyForeignFunction
         this.second = second;
     }
 
-    internal override DyObject InternalCall(ExecutionContext ctx, DyObject[] args)
+    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args)
     {
         var res = first.Call(ctx, args);
 
