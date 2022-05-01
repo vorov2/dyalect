@@ -77,15 +77,10 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
-    internal static void AddRange(ExecutionContext ctx, DyArray self, IEnumerable<DyObject> values)
+    internal static void AddRange(DyArray self, IEnumerable<DyObject> values)
     {
         foreach (var o in values)
-        {
-            if (ctx.HasErrors)
-                break;
-
             self.Add(o);
-        }
     }
 
     [InstanceMethod]

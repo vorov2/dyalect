@@ -1,7 +1,6 @@
 ﻿using Dyalect.Parser;
 using Dyalect.Parser.Model;
 using Dyalect.Runtime;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using static Dyalect.Compiler.Hints;
@@ -500,12 +499,11 @@ partial class Builder
             AddLinePragma(node);
             cw.Push(node.Name);
             if (!hints.Has(Pop))
-            {
                 cw.Get();
-                PopIf(hints);
-            }
             else
                 cw.Set();
+
+            PopIf(hints);
         }
     }
 
@@ -633,12 +631,11 @@ partial class Builder
             AddLinePragma(node);
 
             if (!hints.Has(Pop))
-            {
                 cw.Get();
-                PopIf(hints);
-            }
             else
                 cw.Set();
+
+            PopIf(hints);
         }
     }
 

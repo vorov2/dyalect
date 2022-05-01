@@ -1,21 +1,36 @@
 ﻿using Dyalect.Debug;
 using Dyalect.Runtime.Types;
-using System;
 using System.Collections.Generic;
 namespace Dyalect.Runtime;
 
 partial class DyMachine
 {
-    private static bool ProcessError(ExecutionContext ctx, int offset, ref DyNativeFunction function,
-        ref DyObject[] locals, ref EvalStack evalStack, ref int jumper)
+    private static bool TryCall(ExecutionContext ctx, int offset, ref DyObject? arg1, ref DyObject? arg2,
+        ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
     {
-        jumper = ThrowIf(ctx.Error!, ctx.ErrorDump, offset, function.UnitId, ref function, ref locals, ref evalStack, ctx);
-        return jumper > -1;
+        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
+        {
+            ctx.CallStack.Push(new Caller(function, offset, evalStack, locals));
+            function = (DyNativeFunction)ctx.EtaFunction!;
+            ctx.EtaFunction = null;
+            ctx.Error = null;
+            locals = function.CreateLocals(ctx);
+            if (arg1 is not null) locals[0] = arg1;
+            if (arg2 is not null) locals[1] = arg2;
+            arg1 = null;
+            arg2 = null;
+            return true;
+        }
+
+        return false;
     }
 
-    private static int ThrowIf(DyVariant err, Stack<StackPoint>? dump, int offset, int moduleHandle, ref DyNativeFunction function,
-        ref DyObject[] locals, ref EvalStack evalStack, ExecutionContext ctx)
+    private static int ThrowIf(ExecutionContext ctx, int offset, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
     {
+        var err = ctx.Error!;
+        var dump = ctx.ErrorDump;
+        var moduleHandle = function.UnitId;
+
         if (dump is null)
         {
             dump = Dump(ctx.CallStack.Clone());
@@ -107,14 +122,16 @@ partial class DyMachine
             yield return new(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
     }
 
-    private static IError? GetInnerException(Exception ex)
+    private static DyVariant GetErrorInformation(DyFunction func, Exception ex)
     {
-        if (ex is IError err)
-            return err;
+        if (ex is DyCodeException err)
+            return err.Error;
 
         if (ex.InnerException is not null)
-            return GetInnerException(ex.InnerException);
+            return GetErrorInformation(func, ex.InnerException);
 
-        return null;
+        var functionName = func.Self is null ? func.FunctionName
+            : $"{func.Self.TypeName}.{func.FunctionName}";
+        return new(DyErrorCode.ExternalFunctionFailure, functionName, ex.Message);
     }
 }

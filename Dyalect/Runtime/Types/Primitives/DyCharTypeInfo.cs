@@ -25,7 +25,7 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
             return new DyString(left.GetString() + right.GetString());
 
         if (right.TypeId == Dy.String)
-            return ctx.RuntimeContext.String.Add(ctx, left, right);
+            return left.Concat(right, ctx);
 
         return base.AddOp(ctx, left, right);
     }

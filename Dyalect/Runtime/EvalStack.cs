@@ -29,7 +29,10 @@ public sealed class EvalStack
 
     internal DyObject Peek(int n) => array[size - n];
 
-    internal void Push(DyObject val) => array[size++] = val;
+    internal void Push(DyObject val)
+    {
+        array[size++] = val;
+    }
 
     internal void Replace(DyObject val) => array[size - 1] = val;
 

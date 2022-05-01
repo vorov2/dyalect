@@ -318,7 +318,7 @@ public class MethodGenerator : SourceGenerator
 
         builder.AppendLine($"internal sealed class {className} : {Types.DyForeignFunction}");
         builder.StartBlock();
-        builder.AppendLine($"internal override {Types.DyObject} InternalCall({Types.ExecutionContext} __ctx, {Types.DyObject}[] __args)");
+        builder.AppendLine($"internal override {Types.DyObject} CallWithMemoryLayout({Types.ExecutionContext} __ctx, {Types.DyObject}[] __args)");
         builder.StartBlock();
 
         var pars = EmitParameters(ctx, builder, t, m, isStatic, false, out var varArgIndex);

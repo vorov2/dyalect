@@ -1,3 +1,8 @@
+# 0.44.1
+  * Change: _Optimizations and refactoring of exception handling logic._
+  * Change: _Global refactoring of internal mechanism of member function invocation._
+  * Fix: _`throw` with a value other than variant crashes VM_ ([Issue #834](https://github.com/vorov2/dyalect/issues/834)).
+
 # 0.44.0
   * Change: _Refactorings and optimizations in virtual machine and runtime environment._
   * Change: _Enhancements and optimizations to source generators for types and modules._

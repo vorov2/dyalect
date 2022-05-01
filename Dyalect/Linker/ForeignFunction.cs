@@ -16,7 +16,7 @@ namespace Dyalect.Linker
             this.expectContext = expectContext;
         }
 
-        internal override DyObject InternalCall(ExecutionContext ctx, params DyObject[] args)
+        internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, params DyObject[] args)
         {
             dynamic val(int i)
             {

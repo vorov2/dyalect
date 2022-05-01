@@ -27,7 +27,7 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
             return new DyFloat(left.GetFloat() + right.GetFloat());
 
         if (right.TypeId == Dy.String)
-            return ctx.RuntimeContext.String.Add(ctx, left, right);
+            return left.Concat(right, ctx);
 
         return base.AddOp(ctx, left, right);
     }

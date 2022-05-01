@@ -16,14 +16,20 @@ public abstract class DyIterator : DyObject
 
     public abstract IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx);
 
-    public static IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx, DyObject val) =>
-        val is IEnumerable<DyObject> seq ? seq : InternalRun(ctx, val);
-
-    private static IEnumerable<DyObject> InternalRun(ExecutionContext ctx, DyObject val)
+    public static IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx, DyObject val)
     {
-        var iter = val.GetIterator(ctx)!;
+        if (val is IEnumerable<DyObject> seq)
+            return seq;
+        else
+        {
+            var iter = val.GetIterator(ctx);
+            return InternalRun(ctx, iter);
+        }
+    }
 
-        if (ctx.HasErrors)
+    private static IEnumerable<DyObject> InternalRun(ExecutionContext ctx, DyFunction? iter)
+    {
+        if (iter is null)
             yield break;
 
         while (true)

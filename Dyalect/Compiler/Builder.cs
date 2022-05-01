@@ -56,7 +56,7 @@ internal sealed partial class Builder
         unit = builder.unit.Clone(pdb.Symbols);
         cw = builder.cw.Clone(unit);
         globalLazy = new(builder.globalLazy);
-        globalScope = unit.GlobalScope!;//builder.globalScope.Clone();
+        globalScope = unit.GlobalScope!;
         currentScope = builder.currentScope != builder.globalScope
             ? builder.currentScope.Clone() : globalScope;
         isDebug = builder.isDebug;
