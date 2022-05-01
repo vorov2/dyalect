@@ -1,6 +1,7 @@
 # 0.44.2
   * Fix: _It is possible to obtain a reference to `Contains` even if an object doesn't implement it_ ([Issue #867](https://github.com/vorov2/dyalect/issues/867)).
   * Fix: _VM crashes when calling `Contains` on an instance of custom type_ ([Issue #866](https://github.com/vorov2/dyalect/issues/866)).
+  * Fix: _Error stack trace is not always accurate_ ([Issue #871](https://github.com/vorov2/dyalect/issues/871)).
 
 # 0.44.1
   * Change: _Optimizations and refactoring of exception handling logic._

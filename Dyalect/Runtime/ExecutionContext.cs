@@ -51,6 +51,8 @@ public class ExecutionContext
 
     internal Stack<StackPoint>? ErrorDump { get; set; }
 
+    internal CallStackTrace? Trace { get; set; }
+
     internal Stack<int>? Sections { get; set; }
 
     internal int UnitId;

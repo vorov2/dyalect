@@ -717,9 +717,6 @@ public static partial class DyMachine
 
     private static DyObject CallExternalFunction(DyFunction func, ExecutionContext ctx)
     {
-        if (ctx.CallCnt > 1)
-            return func.CallWithMemoryLayout(ctx, ctx.PopArguments().Locals);
-
         try
         {
             return func.CallWithMemoryLayout(ctx, ctx.PopArguments().Locals);
@@ -738,7 +735,7 @@ public static partial class DyMachine
         }
         catch (Exception ex)
         {
-            ctx.Error = GetErrorInformation(func, ex);
+            (ctx.Error, ctx.Trace) = GetErrorInformation(func, ex);
             return Nil;
         }
     }
