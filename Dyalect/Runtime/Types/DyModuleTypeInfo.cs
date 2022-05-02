@@ -52,7 +52,7 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
         return False;
     }
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => ((DyModule)self).GetItem(index, ctx);
 
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
     {

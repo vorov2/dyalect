@@ -54,11 +54,11 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>
         ((DyDictionary)self).ContainsKey(field) ? True : False;
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => ((DyDictionary)self).GetItem(index, ctx);
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
-        self.SetItem(index, value, ctx);
+        ((DyDictionary)self).SetItem(index, value, ctx);
         return Nil;
     }
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>

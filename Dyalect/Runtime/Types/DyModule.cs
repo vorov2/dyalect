@@ -21,7 +21,7 @@ public sealed class DyModule : DyObject, IEnumerable<DyObject>
 
     public override bool Equals(DyObject? other) => other is DyModule m && ReferenceEquals(m.Unit, Unit);
 
-    protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
+    internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
         if (index.TypeId != Dy.String)
             return ctx.IndexOutOfRange(index);

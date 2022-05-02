@@ -34,7 +34,7 @@ public abstract class DyCollection : DyEnumerable
 
     protected abstract DyObject CollectionGetItem(int index, ExecutionContext ctx);
 
-    protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
+    internal virtual void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
     {
         if (obj.TypeId is not Dy.Integer)
         {

@@ -76,7 +76,7 @@ public sealed class DyString : DyCollection
         return res.GetString();
     }
 
-    protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
+    internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
         if (index.TypeId != Dy.Integer)
             return ctx.IndexOutOfRange(index);

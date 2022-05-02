@@ -631,7 +631,7 @@ public static partial class DyMachine
                     break;
                 case OpCode.CtorCheck:
                     second = evalStack.Peek();
-                    evalStack.Replace(second.GetConstructor() == (string)unit.Strings[op.Data]);
+                    evalStack.Replace(second is IConstructor cc && cc.Constructor == unit.Strings[op.Data]);
                     break;
                 case OpCode.Start:
                     {

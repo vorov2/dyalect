@@ -8,14 +8,7 @@ public abstract class DyForeignObject : DyObject
 
     public DyForeignTypeInfo TypeInfo { get; }
 
-    public string? Constructor { get; }
+    protected DyForeignObject(DyForeignTypeInfo typeInfo) : base(-1) => TypeInfo = typeInfo;
 
-    protected DyForeignObject(DyForeignTypeInfo typeInfo) : this(typeInfo, null) { }
-
-    protected DyForeignObject(DyForeignTypeInfo typeInfo, string? ctor) : base(-1) =>
-        (TypeInfo, Constructor) = (typeInfo, ctor);
-
-    public override string? GetConstructor() => Constructor;
-
-    public override int GetHashCode() => HashCode.Combine(TypeId, Constructor);
+    public override int GetHashCode() => HashCode.Combine(TypeId, TypeName);
 }

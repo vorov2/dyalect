@@ -65,7 +65,7 @@ public class DyDictionary : DyEnumerable
 
     public override object ToObject() => Dictionary;
 
-    protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
+    internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
         if (!Dictionary.TryGetValue(index, out var value))
             return ctx.KeyNotFound(index);
@@ -73,7 +73,7 @@ public class DyDictionary : DyEnumerable
             return value;
     }
 
-    protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
+    internal void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
     {
         if (!Dictionary.TryAdd(index, value))
             Dictionary[index] = value;

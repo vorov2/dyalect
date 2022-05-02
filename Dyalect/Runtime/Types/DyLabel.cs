@@ -21,7 +21,7 @@ public sealed class DyLabel : DyObject
 
     public override object ToObject() => Value.ToObject();
 
-    protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
+    internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
         if ((index.TypeId == Dy.Integer && index.GetInteger() == 0) || (index.TypeId == Dy.String && index.GetString() == Label))
             return Value;

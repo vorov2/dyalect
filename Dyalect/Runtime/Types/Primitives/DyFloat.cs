@@ -12,23 +12,23 @@ public sealed class DyFloat : DyObject
     public static readonly DyFloat Min = new(double.MinValue);
     public static readonly DyFloat Max = new(double.MaxValue);
 
-    private readonly double value;
+    internal readonly double Value;
 
     public override string TypeName => nameof(Dy.Float); 
 
-    public DyFloat(double value) : base(Dy.Float) => this.value = value;
+    public DyFloat(double value) : base(Dy.Float) => this.Value = value;
 
-    public override int GetHashCode() => value.GetHashCode();
+    public override int GetHashCode() => Value.GetHashCode();
 
-    public override bool Equals(DyObject? obj) => obj is DyFloat f && value == f.value;
+    public override bool Equals(DyObject? obj) => obj is DyFloat f && Value == f.Value;
 
-    public override string ToString() => value.ToString(InvariantCulture.NumberFormat);
+    public override string ToString() => Value.ToString(InvariantCulture.NumberFormat);
 
-    public override object ToObject() => value;
+    public override object ToObject() => Value;
 
-    protected internal override double GetFloat() => value;
+    protected internal override double GetFloat() => Value;
 
-    protected internal override long GetInteger() => (long)value;
+    protected internal override long GetInteger() => (long)Value;
 
     public override DyObject Clone() => this;
 }

@@ -36,4 +36,5 @@ using Dyalect;
 [assembly: AssemblyVersion(Meta.Version)]
 [assembly: AssemblyFileVersion(Meta.Version)]
 
-[assembly: InternalsVisibleTo("Dyalect.Library")] 
+[assembly: InternalsVisibleTo("Dyalect.Library")]
+[assembly: InternalsVisibleTo("dya")] 

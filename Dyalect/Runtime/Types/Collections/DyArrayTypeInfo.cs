@@ -32,11 +32,12 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
         return new DyArray(arr.ToArray());
     }
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
+        ((DyArray)self).GetItem(index, ctx);
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
-        self.SetItem(index, value, ctx);
+        ((DyArray)self).SetItem(index, value, ctx);
         return Nil;
     }
 

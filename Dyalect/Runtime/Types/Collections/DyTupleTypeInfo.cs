@@ -154,11 +154,11 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return False;
     }
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => ((DyTuple)self).GetItem(index, ctx);
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
-        self.SetItem(index, value, ctx);
+        ((DyTuple)self).SetItem(index, value, ctx);
         return Nil;
     }
     #endregion
@@ -260,11 +260,11 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
-    internal static DyObject First(ExecutionContext ctx, DyObject self) =>
+    internal static DyObject First(ExecutionContext ctx, DyTuple self) =>
         self.GetItem(DyInteger.Zero, ctx);
 
     [InstanceMethod]
-    internal static DyObject Second(ExecutionContext ctx, DyObject self) =>
+    internal static DyObject Second(ExecutionContext ctx, DyTuple self) =>
         self.GetItem(DyInteger.One, ctx);
 
     [InstanceMethod]

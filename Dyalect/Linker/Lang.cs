@@ -73,7 +73,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("constructorName")]
-    internal static string? GetConstructorName(DyObject value) => value.GetConstructor();
+    internal static string? GetConstructorName(DyObject value) => value is IConstructor c ? c.Constructor : null;
 
     [StaticMethod("typeName")]
     internal static string GetTypeName(DyObject value)

@@ -96,7 +96,7 @@ public class DyTuple : DyCollection
         return true;
     }
 
-    protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
+    internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
         if (index.TypeId == Dy.Integer)
             return GetItem((int)index.GetInteger(), ctx);
@@ -108,7 +108,7 @@ public class DyTuple : DyCollection
             ? item : ctx.IndexOutOfRange(index);
     }
 
-    protected internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
+    internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
     {
         if (index.TypeId == Dy.String)
         {

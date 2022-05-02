@@ -82,13 +82,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
 
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(arg.GetString()));
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
-
-    protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
-    {
-        self.SetItem(index, value, ctx);
-        return Nil;
-    }
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => ((DyString)self).GetItem(index, ctx);
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch

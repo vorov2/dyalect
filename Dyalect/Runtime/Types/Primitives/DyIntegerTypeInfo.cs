@@ -20,22 +20,22 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
     #region Binary Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Integer)
-            return new DyInteger(left.GetInteger() + right.GetInteger());
+        if (right is DyInteger i8)
+            return new DyInteger(((DyInteger)left).Value + i8.Value);
 
-        if (right.TypeId is Dy.Float)
-            return new DyFloat(left.GetFloat() + right.GetFloat());
+        if (right is DyFloat r8)
+            return new DyFloat(((DyInteger)left).Value + r8.Value);
 
         return base.AddOp(ctx, left, right);
     }
 
     protected override DyObject SubOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Integer)
-            return new DyInteger(left.GetInteger() - right.GetInteger());
+        if (right is DyInteger i8)
+            return new DyInteger(((DyInteger)left).Value - i8.Value);
 
-        if (right.TypeId is Dy.Float)
-            return new DyFloat(left.GetFloat() - right.GetFloat());
+        if (right is DyFloat r8)
+            return new DyFloat(((DyInteger)left).Value - r8.Value);
 
         return base.SubOp(ctx, left, right);
     }

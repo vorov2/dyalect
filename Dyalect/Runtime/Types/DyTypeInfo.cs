@@ -1,6 +1,8 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+
 namespace Dyalect.Runtime.Types;
 
 public abstract class DyTypeInfo : DyObject
@@ -11,8 +13,8 @@ public abstract class DyTypeInfo : DyObject
     
     protected virtual SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
-    private bool Support(DyObject self, SupportedOperations op) =>
-        (GetSupportedOperations() & op) == op || (self.Supports() & op) == op;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool Support(SupportedOperations op) => (GetSupportedOperations() & op) == op;
 
     public override object ToObject() => this;
 
@@ -339,7 +341,8 @@ public abstract class DyTypeInfo : DyObject
     #region Other Operations
     //x[y]
     private DyFunction? get;
-    protected virtual DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
+    protected virtual DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
+        ctx.OperationNotSupported(Builtins.Get, self);
     [Obsolete]
     internal DyObject GetDirect(ExecutionContext ctx, DyObject self, DyObject index) => GetOp(ctx, self, index);
     public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
@@ -666,36 +669,36 @@ public abstract class DyTypeInfo : DyObject
     private DyFunction? InitializeInstanceMembers(DyObject self, string name, ExecutionContext ctx) =>
         name switch
         {
-            Builtins.Add => Support(self, SupportedOperations.Add) ? (add is null ? Binary(name, AddOp) : add) : null,
-            Builtins.Sub => Support(self, SupportedOperations.Sub) ? (sub is null ? Binary(name, SubOp) : sub) : null,
-            Builtins.Mul => Support(self, SupportedOperations.Mul) ? (mul is null ? Binary(name, MulOp) : mul) : null,
-            Builtins.Div => Support(self, SupportedOperations.Div) ? (div is null ? Binary(name, DivOp) : div) : null,
-            Builtins.Rem => Support(self, SupportedOperations.Rem) ? (rem is null ? Binary(name, RemOp) : rem) : null,
-            Builtins.Shl => Support(self, SupportedOperations.Shl) ? (shl is null ? Binary(name, ShiftLeftOp) : shl) : null,
-            Builtins.Shr => Support(self, SupportedOperations.Shr) ? (shr is null ? Binary(name, ShiftRightOp) : shr) : null,
-            Builtins.And => Support(self, SupportedOperations.And) ? (and is null ? Binary(name, AndOp) : and) : null,
-            Builtins.Or => Support(self, SupportedOperations.Or) ? (or is null ? Binary(name, OrOp) : or) : null,
-            Builtins.Xor => Support(self, SupportedOperations.Xor) ? (xor is null ? Binary(name, XorOp) : xor) : null,
+            Builtins.Add => Support(SupportedOperations.Add) ? (add is null ? Binary(name, AddOp) : add) : null,
+            Builtins.Sub => Support(SupportedOperations.Sub) ? (sub is null ? Binary(name, SubOp) : sub) : null,
+            Builtins.Mul => Support(SupportedOperations.Mul) ? (mul is null ? Binary(name, MulOp) : mul) : null,
+            Builtins.Div => Support(SupportedOperations.Div) ? (div is null ? Binary(name, DivOp) : div) : null,
+            Builtins.Rem => Support(SupportedOperations.Rem) ? (rem is null ? Binary(name, RemOp) : rem) : null,
+            Builtins.Shl => Support(SupportedOperations.Shl) ? (shl is null ? Binary(name, ShiftLeftOp) : shl) : null,
+            Builtins.Shr => Support(SupportedOperations.Shr) ? (shr is null ? Binary(name, ShiftRightOp) : shr) : null,
+            Builtins.And => Support(SupportedOperations.And) ? (and is null ? Binary(name, AndOp) : and) : null,
+            Builtins.Or => Support(SupportedOperations.Or) ? (or is null ? Binary(name, OrOp) : or) : null,
+            Builtins.Xor => Support(SupportedOperations.Xor) ? (xor is null ? Binary(name, XorOp) : xor) : null,
             Builtins.Eq => eq is null ? Binary(name, EqOp) : eq,
             Builtins.Neq => neq is null ? Binary(name, NeqOp) : neq,
-            Builtins.Gt => Support(self, SupportedOperations.Gt) ? (gt is null ? Binary(name, GtOp) : gt) : null,
-            Builtins.Lt => Support(self, SupportedOperations.Lt) ? (lt is null ? Binary(name, LtOp) : lt) : null,
-            Builtins.Gte => Support(self, SupportedOperations.Gte) ? (gte is null ? Binary(name, GteOp) : gte) : null,
-            Builtins.Lte => Support(self, SupportedOperations.Lte) ? (lte is null ? Binary(name, LteOp) : lte) : null,
-            Builtins.Neg => Support(self, SupportedOperations.Neg) ? (neg is null ? Unary(name, NegOp) : neg) : null,
+            Builtins.Gt => Support(SupportedOperations.Gt) ? (gt is null ? Binary(name, GtOp) : gt) : null,
+            Builtins.Lt => Support(SupportedOperations.Lt) ? (lt is null ? Binary(name, LtOp) : lt) : null,
+            Builtins.Gte => Support(SupportedOperations.Gte) ? (gte is null ? Binary(name, GteOp) : gte) : null,
+            Builtins.Lte => Support(SupportedOperations.Lte) ? (lte is null ? Binary(name, LteOp) : lte) : null,
+            Builtins.Neg => Support(SupportedOperations.Neg) ? (neg is null ? Unary(name, NegOp) : neg) : null,
             Builtins.Not => not is null ? Unary(name, NotOp) : not,
-            Builtins.BitNot => Support(self, SupportedOperations.BitNot) ? (bitnot is null ? Unary(name, BitwiseNotOp) : bitnot) : null,
-            Builtins.Plus => Support(self, SupportedOperations.Plus) ? (plus is null ? Unary(name, PlusOp) : plus) : null,
-            Builtins.Get => Support(self, SupportedOperations.Get) ? (get is null ? Binary(name, GetOp, "index") : get) : null,
-            Builtins.Set => Support(self, SupportedOperations.Set) ? (set is null ? Ternary(name, SetOp, "index", "value") : set) : null,
-            Builtins.Length => Support(self, SupportedOperations.Len) ? (len is null ? Unary(name, LengthOp) : len) : null,
+            Builtins.BitNot => Support(SupportedOperations.BitNot) ? (bitnot is null ? Unary(name, BitwiseNotOp) : bitnot) : null,
+            Builtins.Plus => Support(SupportedOperations.Plus) ? (plus is null ? Unary(name, PlusOp) : plus) : null,
+            Builtins.Get => Support(SupportedOperations.Get) ? (get is null ? Binary(name, GetOp, "index") : get) : null,
+            Builtins.Set => Support(SupportedOperations.Set) ? (set is null ? Ternary(name, SetOp, "index", "value") : set) : null,
+            Builtins.Length => Support(SupportedOperations.Len) ? (len is null ? Unary(name, LengthOp) : len) : null,
             Builtins.String => tos is null ? Binary(name, ToStringOp, new Par("format", Nil)) : tos,
             Builtins.ToLiteral => lit is null ? Unary(name, ToLiteralOp) : lit,
-            Builtins.Iterator => Support(self, SupportedOperations.Iter) ? Unary(name, GetIterator) : null,
+            Builtins.Iterator => Support(SupportedOperations.Iter) ? Unary(name, GetIterator) : null,
             Builtins.Clone => Unary(name, Clone),
             Builtins.Has => Binary(name, Has, "member"),
             Builtins.Type => Unary(name, (ct, o) => ct.RuntimeContext.Types[o.TypeId]),
-            Builtins.Contains => Support(self, SupportedOperations.In) ? (contains is null ? Binary(name, ContainsOp, "value") : contains) : null,
+            Builtins.Contains => Support(SupportedOperations.In) ? (contains is null ? Binary(name, ContainsOp, "value") : contains) : null,
             _ => InitializeInstanceMember(self, name, ctx)
         };
 

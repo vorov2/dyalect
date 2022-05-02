@@ -1,11 +1,11 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-public sealed class DyClass : DyObject
+public sealed class DyClass : DyObject, IConstructor
 {
-    internal Unit DeclaringUnit { get; }
+    public string Constructor { get; }
 
-    internal string Constructor { get; }
+    internal Unit DeclaringUnit { get; }
 
     internal DyTuple Fields { get; }
 
@@ -17,8 +17,6 @@ public sealed class DyClass : DyObject
         (DecType, Constructor, Fields, DeclaringUnit) = (type, ctor, privates, unit);
 
     public override object ToObject() => this;
-
-    public override string? GetConstructor() => Constructor;
 
     public override int GetHashCode() => HashCode.Combine(Constructor, Fields);
 
