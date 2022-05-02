@@ -52,7 +52,7 @@ internal static class Printer
         if (maxLen > 0 && fmt.Length > maxLen)
             fmt = fmt[..maxLen] + "...";
 
-        return notype ? fmt : fmt + " :: " + obj.GetTypeInfo(ctx).ReflectedTypeName;
+        return notype ? fmt : fmt + " :: " + obj.TypeName;
     }
 
     public static void SupplementaryOutput(string data) => WriteLine(data);

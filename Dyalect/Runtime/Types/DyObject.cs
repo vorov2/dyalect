@@ -53,9 +53,6 @@ public abstract class DyObject : IEquatable<DyObject>
     protected virtual object? GetItem(long index) => null;
 
     //TODO: review
-    public virtual DyTypeInfo GetTypeInfo(ExecutionContext ctx) => ctx.RuntimeContext.Types[TypeId];
-
-    //TODO: review
     internal virtual bool IsMutable() => false;
 
     //TODO: review

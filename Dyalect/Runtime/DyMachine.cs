@@ -551,7 +551,7 @@ public static partial class DyMachine
                         }
                         if (idx == locs.VarArgsIndex)
                         {
-                            Push(fn, locs, evalStack.Pop(), ctx);
+                            Push(locs, evalStack.Pop(), ctx);
                             if (ctx.Error is not null) goto CATCH;
                         }
                         else
@@ -618,8 +618,11 @@ public static partial class DyMachine
                         }
                     }
                     break;
+                case OpCode.NewArgs:
+                    evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(evalStack, op.Data, true));
+                    break;
                 case OpCode.NewTuple:
-                    evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(evalStack, op.Data));
+                    evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(evalStack, op.Data, false));
                     break;
                 case OpCode.TypeCheck:
                     first = evalStack.Pop();
@@ -682,7 +685,7 @@ public static partial class DyMachine
         goto CYCLE;
     }
 
-    private static void Push(DyFunction fn, ExecutionContext.ArgContainer container, DyObject value, ExecutionContext ctx)
+    private static void Push(ExecutionContext.ArgContainer container, DyObject value, ExecutionContext ctx)
     {
         if (container.VarArgsSize != 0)
             ctx.TooManyArguments();
@@ -696,7 +699,7 @@ public static partial class DyMachine
         else if (value.TypeId is Dy.Tuple)
         {
             var xs = (DyTuple)value;
-            container.VarArgs = fn.VariantConstructor ? xs.UnsafeAccessValues() : xs.GetValuesWithLabels();
+            container.VarArgs = xs.IsVarArg ? xs.UnsafeAccessValues() : xs.GetValuesWithLabels();
             container.VarArgsSize = container.VarArgs.Length;
         }
         else if (value.TypeId is Dy.Iterator or Dy.Set)
@@ -740,7 +743,7 @@ public static partial class DyMachine
         }
     }
 
-    private static DyTuple MakeTuple(EvalStack stack, int size)
+    private static DyTuple MakeTuple(EvalStack stack, int size, bool vararg)
     {
         var arr = new DyObject[size];
         var mutable = false;
@@ -754,7 +757,7 @@ public static partial class DyMachine
                 mutable = true;
         }
 
-        return new DyTuple(arr, mutable);
+        return new DyTuple(arr, mutable, vararg);
     }
 
     private static void FillDefaults(ExecutionContext.ArgContainer cont, DyFunction callFun, ExecutionContext ctx)

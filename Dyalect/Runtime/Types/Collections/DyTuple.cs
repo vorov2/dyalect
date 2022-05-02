@@ -6,17 +6,19 @@ public class DyTuple : DyCollection
     public static readonly DyTuple Empty = new(Array.Empty<DyObject>());
 
     public override string TypeName => nameof(Dy.Tuple);
-    
+
     private readonly int length;
     private bool? mutable;
     private readonly DyObject[] values;
 
     public override int Count => length;
 
+    public bool IsVarArg { get; }
+
     public DyTuple(DyObject[] values) : this(values, values.Length) { }
 
-    internal DyTuple(DyObject[] values, bool mutable) : this(values, values.Length) =>
-        this.mutable = mutable;
+    internal DyTuple(DyObject[] values, bool mutable, bool vararg) : this(values, values.Length) =>
+        (this.mutable, IsVarArg) = (mutable, vararg);
 
     public DyTuple(DyObject[] values, int length) : base(Dy.Tuple)
     {
@@ -240,7 +242,7 @@ public class DyTuple : DyCollection
         var arr = new DyObject[Count];
 
         for (var i = 0; i < Count; i++)
-            arr[i] = values[i].MakeImmutable();
+            arr[i] = values[i] is DyLabel la ? new DyLabel(la.Label, la.Value) : values[i];
 
         return arr;
     }

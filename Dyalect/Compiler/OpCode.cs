@@ -94,4 +94,5 @@ public enum OpCode
     StdCall_1,  //-1
     StdCall,    //Dynamic
     Debug,      //0
+    NewArgs,    //Dynamic
 }

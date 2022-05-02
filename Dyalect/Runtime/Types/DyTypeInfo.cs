@@ -371,7 +371,7 @@ public abstract class DyTypeInfo : DyObject
             Dy.Bool => self.IsFalse() ? False : True,
             Dy.String => self.ToString(ctx),
             Dy.Char => new DyChar(self.ToString(ctx).GetString()[0]),
-            _ => ctx.InvalidCast(self.GetTypeInfo(ctx).ReflectedTypeName, targetType.ReflectedTypeName)
+            _ => ctx.InvalidCast(self.TypeName, targetType.ReflectedTypeName)
         };
     public DyObject Cast(ExecutionContext ctx, DyObject self, DyObject targetType)
     {

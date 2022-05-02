@@ -1,3 +1,6 @@
+# 0.44.3
+  * Fix: _Passing arguments to a variant, undesirable side effects_ ([Issue #874](https://github.com/vorov2/dyalect/issues/874)).
+
 # 0.44.2
   * Fix: _It is possible to obtain a reference to `Contains` even if an object doesn't implement it_ ([Issue #867](https://github.com/vorov2/dyalect/issues/867)).
   * Fix: _VM crashes when calling `Contains` on an instance of custom type_ ([Issue #866](https://github.com/vorov2/dyalect/issues/866)).

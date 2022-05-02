@@ -96,5 +96,6 @@ internal static class OpSizeHelper
         0, //StdCall_1
         1, //StdCall
         0, //Debug
+        1, //NewArgs
     };
 }
