@@ -30,7 +30,7 @@ internal class DyUnaryFunction : DyForeignFunction
 
     public override object ToObject() => fun;
 
-    internal override bool Equals(DyFunction func) => 
+    protected override bool Equals(DyFunction func) => 
            func is DyUnaryFunction bin && ReferenceEquals(bin.fun, fun)
         && IsSameInstance(this, func);
 }

@@ -380,7 +380,7 @@ public class MethodGenerator : SourceGenerator
         }
 
         builder.AppendLine();
-        builder.AppendLine($"internal override bool Equals({Types.DyFunction} func) => func is {className} cn && (ReferenceEquals(cn.Self, Self) || (cn.Self is not null && cn.Self.Equals(Self)));");
+        builder.AppendLine($"protected override bool Equals({Types.DyFunction} func) => func is {className} cn && (ReferenceEquals(cn.Self, Self) || (cn.Self is not null && cn.Self.Equals(Self)));");
         builder.EndBlock();
 
         return true;

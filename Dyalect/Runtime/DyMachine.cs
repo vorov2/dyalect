@@ -67,7 +67,7 @@ public static partial class DyMachine
             throw new DyRuntimeException(RuntimeErrors.StackOverflow_0);
         
         DyObject? first, second = null, third = null;
-        DyClassInfo cls;
+        DyClassInfo clsInfo;
         Op op;
         DyFunction callFun;
 
@@ -105,7 +105,7 @@ public static partial class DyMachine
                     evalStack.Push(function.Self!);
                     break;
                 case OpCode.Unbox:
-                    evalStack.Push(function.Self!.GetInitValue());
+                    evalStack.Push(function.Self is DyClass c ? c.Fields : function.Self!);
                     break;
                 case OpCode.Term:
                     if (evalStack.Size is > 1 or 0)
@@ -650,9 +650,9 @@ public static partial class DyMachine
                     evalStack.Push(new DyClass((DyClassInfo)second, (string)unit.Strings[op.Data], (DyTuple)first, unit));
                     break;
                 case OpCode.NewType:
-                    cls = new DyClassInfo((string)unit.Strings[op.Data], types.Count);
-                    types.Add(cls);
-                    evalStack.Push(cls);
+                    clsInfo = new DyClassInfo((string)unit.Strings[op.Data], types.Count);
+                    types.Add(clsInfo);
+                    evalStack.Push(clsInfo);
                     break;
                 case OpCode.Mut:
                     ((DyLabel)evalStack.Peek()).Mutable = true;
@@ -753,7 +753,7 @@ public static partial class DyMachine
             var e = stack.Pop();
             arr[arr.Length - i - 1] = e;
 
-            if (!mutable && e.IsMutable())
+            if (!mutable && e is DyLabel la && la.Mutable)
                 mutable = true;
         }
 

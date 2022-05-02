@@ -1,1 +1,5 @@
-﻿Dictionary(x: 1, y: 2)
+﻿func Integer.Some() {
+	print(ini.GetType(), ini)
+}
+
+12.Some()

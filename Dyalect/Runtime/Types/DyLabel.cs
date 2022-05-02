@@ -21,10 +21,6 @@ public sealed class DyLabel : DyObject
 
     public override object ToObject() => Value.ToObject();
 
-    protected internal override string GetLabel() => Label;
-
-    protected internal override DyObject GetTaggedValue() => Value;
-
     protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
         if ((index.TypeId == Dy.Integer && index.GetInteger() == 0) || (index.TypeId == Dy.String && index.GetString() == Label))
@@ -50,10 +46,6 @@ public sealed class DyLabel : DyObject
 
         return false;
     }
-
-    internal override bool IsMutable() => Mutable;
-
-    internal override DyObject MakeImmutable() => new DyLabel(Label, Value);
 
     public override int GetHashCode() => HashCode.Combine(Label, Value);
 

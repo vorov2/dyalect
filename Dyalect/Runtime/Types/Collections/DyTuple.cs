@@ -26,6 +26,8 @@ public class DyTuple : DyCollection
         this.values = values ?? throw new DyException("Unable to create a tuple with no values.");
     }
 
+    public static DyTuple Create(params DyLabel[] values) => new(values, values.Length);
+
     public override IEnumerator<DyObject> GetEnumerator() => new DyCollectionEnumerator(values, 0, Count, this);
 
     public override DyObject Clone()
@@ -66,8 +68,6 @@ public class DyTuple : DyCollection
 
         return true;
     }
-
-    public static DyTuple Create(params DyLabel[] labels) => new(labels, labels.Length);
 
     public Dictionary<DyObject, DyObject> ConvertToDictionary(ExecutionContext _)
     {
@@ -129,7 +129,7 @@ public class DyTuple : DyCollection
     public virtual int GetOrdinal(string name)
     {
         for (var i = 0; i < Count; i++)
-            if (values[i].GetLabel() == name)
+            if (values[i] is DyLabel la && la.Label == name)
                 return i;
 
         return -1;
@@ -138,9 +138,9 @@ public class DyTuple : DyCollection
     public virtual bool IsReadOnly(int index) => values[index] is DyLabel lab && !lab.Mutable;
 
     protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
-        values[index].TypeId == Dy.Label ? values[index].GetTaggedValue() : values[index];
+        values[index] is DyLabel la ? la.Value : values[index];
 
-    internal virtual string? GetKey(int index) => values[index].GetLabel();
+    internal virtual string? GetKey(int index) => values[index] is DyLabel la ? la.Label : null;
 
     protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
     {
@@ -168,7 +168,7 @@ public class DyTuple : DyCollection
 
     private static string DefaultKey() => Guid.NewGuid().ToString();
 
-    internal override DyObject GetValue(int index) => values[index].GetTaggedValue();
+    internal override DyObject GetValue(int index) => values[index] is DyLabel la ? la.Value : values[index];
 
     internal virtual void SetValue(int index, DyObject value)
     {
@@ -216,18 +216,18 @@ public class DyTuple : DyCollection
         var arr = new DyObject[Count];
 
         for (var i = 0; i < Count; i++)
-            arr[i] = values[i].GetTaggedValue();
+            arr[i] = values[i] is DyLabel la ? la.Value : values[i];
 
         return arr;
     }
 
-    internal override bool IsMutable()
+    private bool IsMutable()
     {
         if (mutable is not null)
             return mutable.Value;
 
         for (var i = 0; i < Count; i++)
-            if (values[i].IsMutable())
+            if (values[i] is DyLabel la && la.Mutable)
             {
                 mutable = true;
                 return true;

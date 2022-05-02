@@ -1,6 +1,5 @@
 ﻿using Dyalect.Compiler;
 using Dyalect.Debug;
-using System;
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyVariantConstructor : DyForeignFunction
@@ -16,5 +15,5 @@ internal sealed class DyVariantConstructor : DyForeignFunction
 
     public override object ToObject() => fun;
 
-    internal override bool Equals(DyFunction func) => func is DyVariantConstructor c && c.fun.Equals(fun);
+    protected override bool Equals(DyFunction func) => func is DyVariantConstructor c && c.fun.Equals(fun);
 }

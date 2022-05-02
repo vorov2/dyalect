@@ -15,10 +15,14 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (left.TypeId != right.TypeId || left.GetConstructor() != right.GetConstructor())
+        if (left.TypeId != right.TypeId)
             return False;
 
         var (xs, ys) = ((DyVariant)left, (DyVariant)right);
+
+        if (xs.Constructor != ys.Constructor)
+            return False;
+
         return xs.Tuple.Equals(ys.Tuple, ctx) ? True : False;
     }
 

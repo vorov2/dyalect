@@ -1,5 +1,4 @@
 ﻿using Dyalect.Debug;
-using System;
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyBinaryFunction : DyForeignFunction
@@ -18,6 +17,6 @@ internal sealed class DyBinaryFunction : DyForeignFunction
 
     public override object ToObject() => fun;
 
-    internal override bool Equals(DyFunction func) => 
+    protected override bool Equals(DyFunction func) => 
            func is DyBinaryFunction bin && ReferenceEquals(bin.fun, fun) && IsSameInstance(this, func);
 }

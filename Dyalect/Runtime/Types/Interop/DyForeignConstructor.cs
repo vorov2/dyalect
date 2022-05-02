@@ -15,6 +15,6 @@ internal sealed class DyForeignConstructor : DyForeignFunction
     internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0]);
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyForeignConstructor(fun, Parameters);
-    
-    internal override bool Equals(DyFunction func) => func is DyForeignConstructor c && c.fun.Equals(fun);
+
+    protected override bool Equals(DyFunction func) => func is DyForeignConstructor c && c.fun.Equals(fun);
 }

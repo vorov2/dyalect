@@ -26,7 +26,5 @@ public sealed class DyClass : DyObject
         other is not null && DecType.TypeId == other.TypeId && other is DyClass t 
             && t.Constructor == Constructor && t.Fields.Equals(Fields);
 
-    protected internal override DyObject GetInitValue() => Fields;
-
     public override DyObject Clone() => new DyClass(DecType, Constructor, Fields, DeclaringUnit);
 }

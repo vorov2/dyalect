@@ -18,6 +18,8 @@ public abstract class DyTypeInfo : DyObject
 
     public override string ToString() => $"TypeInfo<{ReflectedTypeName}>";
 
+    public sealed override bool Equals(DyObject? other) => ReferenceEquals(this, other);
+
     public override int GetHashCode() => HashCode.Combine(TypeId, ReflectedTypeId);
 
     public abstract string ReflectedTypeName { get; }

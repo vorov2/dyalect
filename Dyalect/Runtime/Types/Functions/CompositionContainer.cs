@@ -21,7 +21,7 @@ internal sealed class CompositionContainer : DyForeignFunction
         return second.Call(ctx, res);
     }
 
-    internal override bool Equals(DyFunction func) => 
+    protected override bool Equals(DyFunction func) => 
            func is CompositionContainer cc
         && cc.first.Equals(first) && cc.second.Equals(second);
 }

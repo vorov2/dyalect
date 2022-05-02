@@ -25,7 +25,7 @@ internal sealed class DyIteratorFunction : DyForeignFunction
 
     public override int GetHashCode() => enumerable.GetHashCode();
 
-    internal override bool Equals(DyFunction func) => func is DyIteratorFunction f && f.enumerable.Equals(enumerator);
+    protected override bool Equals(DyFunction func) => func is DyIteratorFunction f && f.enumerable.Equals(enumerator);
 
     public override DyObject Clone() => new DyIteratorFunction(enumerable);
 }

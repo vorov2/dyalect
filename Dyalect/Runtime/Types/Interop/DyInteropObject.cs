@@ -16,4 +16,6 @@ public sealed class DyInteropObject : DyObject
     public override object ToObject() => Object;
 
     public override string ToString() => Object.ToString() ?? "";
+
+    public override bool Equals(DyObject? other) => other is DyInteropObject i && ReferenceEquals(Object, i.Object);
 }

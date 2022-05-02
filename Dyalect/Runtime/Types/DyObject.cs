@@ -12,13 +12,13 @@ public abstract class DyObject : IEquatable<DyObject>
 
     public override string ToString() => $"[type:{TypeId}]";
 
-    protected internal virtual long GetInteger() => throw new InvalidCastException();
+    protected internal virtual long GetInteger() => throw new NotSupportedException();
 
-    protected internal virtual double GetFloat() => throw new InvalidCastException();
+    protected internal virtual double GetFloat() => throw new NotSupportedException();
 
-    protected internal virtual char GetChar() => throw new InvalidCastException();
+    protected internal virtual char GetChar() => throw new NotSupportedException();
 
-    protected internal virtual string GetString() => ToString();
+    protected internal virtual string GetString() => throw new NotSupportedException();
 
     public abstract object ToObject();
 
@@ -52,36 +52,13 @@ public abstract class DyObject : IEquatable<DyObject>
     protected virtual object? GetItem(string key) => null;
     protected virtual object? GetItem(long index) => null;
 
-    //TODO: review
-    internal virtual bool IsMutable() => false;
-
-    //TODO: review
-    internal virtual DyObject MakeImmutable() => this;
-
-    //TODO: review
-    protected internal virtual string? GetLabel() => null;
-
-    //TODO: review
-    protected internal virtual DyObject GetTaggedValue() => this;
-
-    //TODO: review
-    protected internal virtual DyObject GetInitValue() => this;
-
-    //TODO: review
     public virtual string? GetConstructor() => null;
 
     public virtual DyObject Clone() => (DyObject)MemberwiseClone();
 
-    //It's OK to leave this unimplemented as soon as serialization is normally supported by built-in types.
-    //TODO: review - if serialization is supported by a fixed set of types there is no need in this method, we need a PrimitiveTypeSerializer class
-    internal virtual void Serialize(BinaryWriter writer) => throw new NotSupportedException();
+    public abstract bool Equals(DyObject? other);
 
-    //These methods are used by hash tables
-    //TODO: review if these default implementations are actually needed
-    public virtual bool Equals(DyObject? other) => ReferenceEquals(this, other);
     public sealed override bool Equals(object? obj) => obj is DyObject dyo && Equals(dyo);
-    public abstract override int GetHashCode();
 
-    //TODO: review
-    protected int CalculateSimpleHashCode() => base.GetHashCode();
+    public abstract override int GetHashCode();
 }

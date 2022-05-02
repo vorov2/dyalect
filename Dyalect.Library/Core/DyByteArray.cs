@@ -30,6 +30,8 @@ public sealed class DyByteArray : DyForeignObject
 
     public override int GetHashCode() => buffer.GetHashCode();
 
+    public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
+
     public byte[] GetBytes() => Trim();
 
     public void Reset() => readPosition = 0;

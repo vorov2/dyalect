@@ -41,10 +41,4 @@ public sealed class DyInteger : DyObject
     protected internal override long GetInteger() => value;
 
     public override DyObject Clone() => this;
-
-    internal override void Serialize(BinaryWriter writer)
-    {
-        writer.Write(TypeId);
-        writer.Write(value);
-    }
 }

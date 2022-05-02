@@ -18,6 +18,8 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
     public DyArray(DyObject[] values) : base(Dy.Array) => 
         (this.values, Count) = (values, values.Length);
 
+    public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
+
     public void Compact()
     {
         if (Count == values.Length)
@@ -180,7 +182,7 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
         var arr = new DyObject[Count];
 
         for (var i = 0; i < Count; i++)
-            arr[i] = values[i].GetTaggedValue();
+            arr[i] = values[i];
 
         return arr;
     }

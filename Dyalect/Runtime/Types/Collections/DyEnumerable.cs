@@ -14,5 +14,5 @@ public abstract class DyEnumerable : DyObject, IEnumerable<DyObject>
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public override int GetHashCode() => base.CalculateSimpleHashCode();
+    public override int GetHashCode() => HashCode.Combine(TypeId, Count, Version);
 }

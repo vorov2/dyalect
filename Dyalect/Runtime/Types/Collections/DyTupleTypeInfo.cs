@@ -179,7 +179,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 
         for (var i = 0; i < tv.Length; i++)
         {
-            var e = tv[i].GetTaggedValue();
+            var e = tv[i] is DyLabel la ? la.Value : tv[i];
 
             if (e.Equals(value, ctx))
                 return RemoveAt(self, i);
@@ -319,7 +319,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         {
             if (o is DyLabel lab)
             {
-                var exist = xs.FirstOrDefault(i => i.GetLabel() == lab.Label) as DyLabel;
+                var exist = xs.OfType<DyLabel>().FirstOrDefault(i => i.Label == lab.Label);
 
                 if (exist is not null)
                 {

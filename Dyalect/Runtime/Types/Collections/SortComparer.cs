@@ -17,11 +17,11 @@ internal sealed class SortComparer : IComparer<DyObject>
         if (x is null || y is null)
             return 0;
 
-        if (x.Is(Dy.Label))
-            x = x.GetTaggedValue();
+        if (x is DyLabel la1)
+            x = la1.Value;
 
-        if (y.Is(Dy.Label))
-            y = y.GetTaggedValue();
+        if (y is DyLabel la2)
+            y = la2.Value;
 
         if (func is not null)
         {

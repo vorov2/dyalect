@@ -19,6 +19,8 @@ public sealed class DyModule : DyObject, IEnumerable<DyObject>
 
     public override object ToObject() => Unit;
 
+    public override bool Equals(DyObject? other) => other is DyModule m && ReferenceEquals(m.Unit, Unit);
+
     protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
         if (index.TypeId != Dy.String)

@@ -30,7 +30,7 @@ public sealed class DyExternalFunction : DyForeignFunction
 
     public override object ToObject() => func;
 
-    internal override bool Equals(DyFunction func) =>
+    protected override bool Equals(DyFunction func) =>
            FunctionName == func.FunctionName
         && func is DyExternalFunction fn && fn.func.Equals(func)
         && IsSameInstance(this, func);

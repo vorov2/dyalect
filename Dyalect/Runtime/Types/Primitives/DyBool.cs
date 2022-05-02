@@ -32,17 +32,13 @@ public abstract class DyBool : DyObject
 
     public static explicit operator DyBool(bool v) => v ? True : False;
 
+    public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
+
     public static DyBool Equals(ExecutionContext _, DyObject x, DyObject y)
     {
         if (ReferenceEquals(x, y))
             return True;
 
         return False;
-    }
-
-    internal override void Serialize(BinaryWriter writer)
-    {
-        writer.Write(TypeId);
-        writer.Write(this is DyBoolTrue);
     }
 }

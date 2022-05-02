@@ -96,6 +96,5 @@ internal sealed class DyInteropFunction : DyForeignFunction
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyInteropFunction(name, type, methods, Attr == FunAttr.Auto);
 
-    internal override bool Equals(DyFunction func) => func is DyInteropFunction f
-        && f.name == name && f.type.Equals(type);
+    protected override bool Equals(DyFunction func) => func is DyInteropFunction f && f.name == name && f.type.Equals(type);
 }

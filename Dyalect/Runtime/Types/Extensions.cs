@@ -96,7 +96,7 @@ public static class Extensions
             if (ReferenceEquals(ctx.Error, DyVariant.Eta))
                 ret = ctx.InvokeEtaFunction();
 
-            return ret as DyString ?? DyString.Empty;
+            return ret is DyString str? str : new DyString(ret.ToString());
         }
     }
 

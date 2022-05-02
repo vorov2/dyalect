@@ -9,7 +9,7 @@ internal sealed class DyLabelTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() => SupportedOperations.In;
 
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>
-        field.TypeId == Dy.String && self.GetLabel() == field.GetString() ? DyBool.True : DyBool.False;
+        field.TypeId == Dy.String && ((DyLabel)self).Label == field.GetString() ? True : False;
 
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {

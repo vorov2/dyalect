@@ -72,7 +72,7 @@ internal class DyNativeFunction : DyFunction
         return size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
     }
 
-    internal override bool Equals(DyFunction func) => 
+    protected override bool Equals(DyFunction func) => 
            func is DyNativeFunction m && m.UnitId == UnitId && m.FunctionId == FunctionId 
         && IsSameInstance(this, func);
 }

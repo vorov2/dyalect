@@ -173,7 +173,9 @@ public abstract class DyFunction : DyObject
 
     internal abstract DyObject[] CreateLocals(ExecutionContext ctx);
 
-    internal abstract bool Equals(DyFunction func);
+    protected abstract bool Equals(DyFunction func);
+
+    public sealed override bool Equals(DyObject? other) => other is DyFunction func && Equals(func);
 
     public override int GetHashCode() => HashCode.Combine(TypeId, FunctionName ?? DefaultName, Parameters, Self);
 }

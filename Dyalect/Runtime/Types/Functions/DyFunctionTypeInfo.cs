@@ -47,10 +47,8 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
 
             for (var j = 0; j < parameters.Count; j++)
             {
-                var lab = tv[j].GetLabel();
-
-                if (p.Name == lab)
-                    val = tv[j].GetTaggedValue();
+                if (tv[j] is DyLabel la && la.Label == p.Name)
+                    val = la.Value;
             }
 
             pars[i] = new Par(p.Name, val, p.IsVarArg, p.TypeAnnotation);

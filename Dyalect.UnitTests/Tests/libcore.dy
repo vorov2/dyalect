@@ -149,7 +149,7 @@ fox is the red fox.]>
     let ma = rx.Match(content)
     assert(got: ma.success)
     assert(1, ma.captures.Length())
-    assert("Foxes", ma.captures.First().value)
+    assert("Foxes", ma.captures[0].value)
 #endregion
 
 #region "Regex: Matches 1"

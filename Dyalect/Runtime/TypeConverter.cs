@@ -30,7 +30,7 @@ public static class TypeConverter
             case TypeCode.UInt32: return new DyInteger((uint)obj);
             case TypeCode.UInt64: return new DyInteger((long)(ulong)obj);
             case TypeCode.String:
-            case TypeCode.Char: return new DyString(obj.ToString() ?? "");
+            case TypeCode.Char: return DyString.Get(obj.ToString());
             case TypeCode.Single: return new DyFloat((float)obj);
             case TypeCode.Double: return new DyFloat((double)obj);
             case TypeCode.Decimal: return new DyFloat((double)(decimal)obj);

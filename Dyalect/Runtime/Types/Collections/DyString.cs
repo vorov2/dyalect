@@ -53,8 +53,7 @@ public sealed class DyString : DyCollection
         return hashCode;
     }
 
-    public override bool Equals(DyObject? obj) =>
-        obj is DyString s ? Value == s.Value : base.Equals(obj);
+    public override bool Equals(DyObject? obj) => obj is DyString s && Value == s.Value;
 
     public override DyObject Clone() => this;
 
@@ -89,10 +88,4 @@ public sealed class DyString : DyCollection
 
     protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx) =>
         ctx.OperationNotSupported("set", Dy.String);
-
-    internal override void Serialize(BinaryWriter writer)
-    {
-        writer.Write(TypeId);
-        writer.Write(Value);
-    }
 }
