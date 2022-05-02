@@ -35,7 +35,7 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
     [InstanceMethod]
     internal static DyObject Append(ExecutionContext ctx, DyStringBuilder self, DyObject value)
     {
-        var str = DyString.ToString(value, ctx);
+        var str = value.ToString(ctx).Value;
 
         if (ctx.HasErrors)
             return Nil;
@@ -47,7 +47,7 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
     [InstanceMethod]
     internal static DyObject AppendLine(ExecutionContext ctx, DyStringBuilder self, [Default("")]DyObject value)
     {
-        var str = DyString.ToString(value, ctx);
+        var str = value.ToString(ctx).Value;
 
         if (ctx.HasErrors)
             return Nil;
@@ -59,8 +59,8 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
     [InstanceMethod]
     internal static DyObject Replace(ExecutionContext ctx, DyStringBuilder self, DyObject value, DyObject other)
     {
-        var a = DyString.ToString(value, ctx);
-        var b = DyString.ToString(other, ctx);
+        var a = value.ToString(ctx).Value;
+        var b = other.ToString(ctx).Value;
 
         if (ctx.HasErrors)
             return Nil;
@@ -82,7 +82,7 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
     [InstanceMethod]
     internal static DyObject Insert(ExecutionContext ctx, DyStringBuilder self, int index, DyObject value)
     {
-        var str = DyString.ToString(value, ctx);
+        var str = value.ToString(ctx).Value;
 
         if (ctx.HasErrors)
             return Nil;
@@ -100,7 +100,7 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
         if (values.Count > 0)
         {
             var vals = DyIterator.ToEnumerable(ctx, values);
-            var arr = vals.Select(o => DyString.ToString(o, ctx)).ToArray();
+            var arr = vals.Select(o => o.ToString(ctx).Value).ToArray();
             var sb = new StringBuilder(string.Join("", arr));
             return new DyStringBuilder(ctx.Type<DyStringBuilderTypeInfo>(), sb);
         }

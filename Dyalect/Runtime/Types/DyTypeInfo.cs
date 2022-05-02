@@ -314,13 +314,13 @@ public abstract class DyTypeInfo : DyObject
         if (ctx.HasErrors)
             return null;
 
-        if (res.TypeId != Dy.String)
+        if (res.TypeId is not Dy.String)
         {
             ctx.InvalidType(Dy.String, res);
             return null;
         }
 
-        return res.GetString();
+        return ((DyString)res).Value;
     }
     [Obsolete]
     public DyObject ToLiteral(ExecutionContext ctx, DyObject arg)
@@ -375,7 +375,7 @@ public abstract class DyTypeInfo : DyObject
             _ when targetType.ReflectedTypeId == self.TypeId => self,
             Dy.Bool => self.IsFalse() ? False : True,
             Dy.String => self.ToString(ctx),
-            Dy.Char => new DyChar(self.ToString(ctx).GetString()[0]),
+            Dy.Char => new DyChar(self.ToString(ctx).Value[0]),
             _ => ctx.InvalidCast(self.TypeName, targetType.ReflectedTypeName)
         };
     public DyObject Cast(ExecutionContext ctx, DyObject self, DyObject targetType)
@@ -502,7 +502,7 @@ public abstract class DyTypeInfo : DyObject
             Builtins.DelMember => Binary(name,
                 (context, _, strObj) =>
                 {
-                    var nm = strObj.GetString();
+                    var nm = strObj.ToString();
                     SetBuiltin(ctx, nm, null);
                     Members.Remove(name);
                     StaticMembers.Remove(name);
@@ -644,10 +644,10 @@ public abstract class DyTypeInfo : DyObject
 
     private DyObject Has(ExecutionContext ctx, DyObject self, DyObject member)
     {
-        if (member.TypeId != Dy.String)
+        if (member.TypeId is not Dy.String and not Dy.Char)
             return ctx.InvalidType(member);
 
-        var name = member.GetString();
+        var name = member.ToString();
 
         //We're calling against type itself, it means that we need to check
         // a presence of a static member

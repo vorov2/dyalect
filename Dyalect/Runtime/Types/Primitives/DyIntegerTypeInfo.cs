@@ -43,7 +43,7 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
     protected override DyObject MulOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId is Dy.Integer)
-            return new DyInteger(left.GetInteger() * right.GetInteger());
+            return new DyInteger(left.GetInt() * right.GetInt());
 
         if (right.TypeId is Dy.Float)
             return new DyFloat(left.GetFloat() * right.GetFloat());
@@ -222,7 +222,7 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
             return (long)value.GetFloat();
 
         if (value.TypeId is Dy.Char or Dy.String)
-            return Parse(value.GetString());
+            return Parse(value.ToString());
 
         ctx.InvalidType(Dy.Integer, Dy.Float, value);
         return default;

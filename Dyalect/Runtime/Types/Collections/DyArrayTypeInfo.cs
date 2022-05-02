@@ -28,7 +28,9 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     {
         var arr = new List<DyObject>();
         arr.AddRange(DyIterator.ToEnumerable(ctx, left));
+        if (ctx.HasErrors) return Nil;
         arr.AddRange(DyIterator.ToEnumerable(ctx, right));
+        if (ctx.HasErrors) return Nil;
         return new DyArray(arr.ToArray());
     }
 
@@ -62,7 +64,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
             if (ctx.Error is not null)
                 return Nil;
 
-            sb.Append(str.GetString());
+            sb.Append(str.Value);
         }
 
         sb.Append(']');

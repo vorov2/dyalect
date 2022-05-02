@@ -17,8 +17,6 @@ public sealed class DyStringBuilder : DyForeignObject
 
     public override int GetHashCode() => Builder.GetHashCode();
 
-    protected internal override string GetString() => Builder.ToString();
-
     public override DyObject Clone()
     {
         var clone = (DyStringBuilder)MemberwiseClone();

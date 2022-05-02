@@ -1,5 +1,9 @@
-﻿func Integer.Some() {
-	print(ini.GetType(), ini)
+﻿func Integer.ToString() {
+	throw "Error from Integer"
 }
 
-12.Some()
+try {
+	let res = "12" + 12
+} catch e {
+	print(e)
+}

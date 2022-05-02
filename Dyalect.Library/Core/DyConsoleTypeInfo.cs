@@ -26,7 +26,7 @@ public sealed partial class DyConsoleTypeInfo : DyForeignTypeInfo
 
     private static void WriteToConsole(ExecutionContext ctx, DyObject value, string? color, string? backColor, bool newLine)
     {
-        var str = value.ToString(ctx);
+        var str = value.ToString(ctx).Value;
 
         if (ctx.HasErrors)
             return;
@@ -38,9 +38,9 @@ public sealed partial class DyConsoleTypeInfo : DyForeignTypeInfo
         if (backColor is not null) Console.BackgroundColor = GetColor(backColor);
 
         if (newLine)
-            Console.Write(str.GetString() + Environment.NewLine);
+            Console.Write(str + Environment.NewLine);
         else
-            Console.Write(str.GetString());
+            Console.Write(str);
 
         Console.ForegroundColor = oldColor;
         Console.BackgroundColor = oldBackColor;

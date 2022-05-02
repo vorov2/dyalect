@@ -23,72 +23,75 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        var str1 = left.TypeId == Dy.String || left.TypeId == Dy.Char ? left.GetString() : left.ToString(ctx).Value;
-
-        if (ctx.HasErrors)
+        try
+        {
+            var other = right.TypeId == Dy.String || right.TypeId == Dy.Char ? right.ToString() : right.ToString(ctx).Value;
+            return new DyString(((DyString)left).Value + other);
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
             return Nil;
-
-        var str2 = right.TypeId == Dy.String || right.TypeId == Dy.Char ? right.GetString() : right.ToString(ctx).Value;
-        return new DyString(str1 + str2);
+        }
     }
 
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
-            return left.GetString() == right.GetString() ? True : False;
-        return base.EqOp(ctx, left, right); //Important! Should redirect to base
+            return ((DyString)left).Value == right.ToString() ? True : False;
+        return base.EqOp(ctx, left, right);
     }
 
     protected override DyObject NeqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
-            return left.GetString() != right.GetString() ? True : False;
+            return ((DyString)left).Value != right.ToString() ? True : False;
         return base.NeqOp(ctx, left, right); //Important! Should redirect to base
     }
 
     protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
-            return left.GetString().CompareTo(right.GetString()) > 0 ? True : False;
+            return ((DyString)left).Value.CompareTo(right.ToString()) > 0 ? True : False;
         return base.GtOp(ctx, left, right);
     }
 
     protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
-            return left.GetString().CompareTo(right.GetString()) < 0 ? True : False;
+            return ((DyString)left).Value.CompareTo(right.ToString()) < 0 ? True : False;
         return base.LtOp(ctx, left, right);
     }
 
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
     {
-        var len = arg.GetString().Length;
+        var len = ((DyString)arg).Value.Length;
         return DyInteger.Get(len);
     }
 
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
-        var str = self.GetString();
+        var str = ((DyString)self).Value;
 
-        if (field.TypeId == Dy.String)
-            return str.Contains(field.GetString()) ? True : False;
-        else if (field.TypeId == Dy.Char)
-            return str.Contains(field.GetChar()) ? True : False;
+        if (field is DyString s)
+            return str.Contains(s.Value) ? True : False;
+        else if (field is DyChar c)
+            return str.Contains(c.Value) ? True : False;
         else
             return ctx.InvalidType(Dy.String, Dy.Char, field);
     }
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => new DyString(arg.GetString());
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => new DyString(((DyString)arg).Value);
 
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(arg.GetString()));
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(((DyString)arg).Value));
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => ((DyString)self).GetItem(index, ctx);
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
-            Dy.Integer => long.TryParse(self.GetString(), out var i8) ? new DyInteger(i8) : DyInteger.Zero,
-            Dy.Float => double.TryParse(self.GetString(), out var r8) ? new DyFloat(r8) : DyFloat.Zero,
+            Dy.Integer => long.TryParse(self.ToString(), out var i8) ? new DyInteger(i8) : DyInteger.Zero,
+            Dy.Float => double.TryParse(self.ToString(), out var r8) ? new DyFloat(r8) : DyFloat.Zero,
             _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
@@ -299,15 +302,15 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
             var a = values[i];
 
             if (a.TypeId == Dy.String || a.TypeId == Dy.Char)
-                arr.Add(a.GetString());
+                arr.Add(a.ToString());
             else
             {
-                var res = DyString.ToString(a, ctx);
+                var res = a.ToString(ctx);
 
                 if (ctx.HasErrors)
                     return false;
 
-                arr.Add(res);
+                arr.Add(res.Value);
             }
         }
 

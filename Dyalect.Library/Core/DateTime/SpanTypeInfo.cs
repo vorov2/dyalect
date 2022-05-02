@@ -23,12 +23,12 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
         if (format.Is(Dy.Nil))
             return new DyString(arg.ToString());
 
-        if (!format.Is(ctx, Dy.String))
+        if (format.TypeId is not Dy.String and not Dy.Char)
             return Nil;
 
         try
         {
-            return new DyString(((T)arg).ToString(format.GetString(), null));
+            return new DyString(((T)arg).ToString(format.ToString(), null));
         }
         catch (FormatException)
         {

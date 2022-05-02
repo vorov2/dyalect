@@ -14,10 +14,6 @@ public abstract class DyObject : IEquatable<DyObject>
 
     protected internal virtual double GetFloat() => throw new NotSupportedException();
 
-    protected internal virtual char GetChar() => throw new NotSupportedException();
-
-    protected internal virtual string GetString() => throw new NotSupportedException();
-
     public abstract object ToObject();
 
     public virtual DyObject Clone() => (DyObject)MemberwiseClone();

@@ -119,10 +119,10 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
     {
         if (typeName is DyInteropObject obj)
             return new DyInteropObject(BCL.Type, obj.Type);
-        else if (typeName.TypeId != Dy.String)
+        else if (typeName.TypeId is not Dy.String or Dy.Char)
             return ctx.InvalidType(Dy.Interop, Dy.String, typeName);
 
-        var typeInfo = Type.GetType(typeName.GetString(), throwOnError: false);
+        var typeInfo = Type.GetType(typeName.ToString(), throwOnError: false);
 
         if (typeInfo is null)
             return ctx.InvalidValue(typeName);

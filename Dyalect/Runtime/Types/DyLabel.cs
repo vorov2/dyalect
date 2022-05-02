@@ -23,7 +23,8 @@ public sealed class DyLabel : DyObject
 
     internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        if ((index.TypeId == Dy.Integer && index.GetInteger() == 0) || (index.TypeId == Dy.String && index.GetString() == Label))
+        if ((index.TypeId is Dy.Integer && ((DyInteger)index).Value == 0) 
+            || (index.TypeId is Dy.String or Dy.Char && index.ToString() == Label))
             return Value;
         else
             return ctx.IndexOutOfRange(index);

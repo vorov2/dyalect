@@ -16,10 +16,10 @@ public sealed class ConsoleTextReader : TextReader
     {
         var ret = read.Invoke(ctx);
 
-        if (ret.TypeId == Dy.Integer)
-            return (int)ret.GetInteger();
-        else if (ret.TypeId == Dy.Char)
-            return ret.GetChar();
+        if (ret is DyInteger i)
+            return (int)i.Value;
+        else if (ret is DyChar c)
+            return c.Value;
         else
         {
             ctx.InvalidType(Dy.Integer, Dy.Char, ret);
@@ -31,8 +31,8 @@ public sealed class ConsoleTextReader : TextReader
     {
         var ret = readLine.Invoke(ctx);
 
-        if (ret.TypeId == Dy.String)
-            return ret.GetString();
+        if (ret is DyString s)
+            return s.Value;
         else
         {
             var str = ret.ToString(ctx);
@@ -40,7 +40,7 @@ public sealed class ConsoleTextReader : TextReader
             if (ctx.HasErrors)
                 return null;
 
-            return str.GetString();
+            return str.Value;
         }
     }
 }

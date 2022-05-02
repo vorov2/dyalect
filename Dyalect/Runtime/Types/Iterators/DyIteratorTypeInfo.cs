@@ -53,7 +53,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
             if (ctx.Error is not null)
                 return DyString.Empty;
 
-            sb.Append(str.GetString());
+            sb.Append(str.Value);
             c++;
         }
 

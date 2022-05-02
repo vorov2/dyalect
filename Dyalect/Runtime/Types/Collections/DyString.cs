@@ -57,24 +57,7 @@ public sealed class DyString : DyCollection
 
     public override DyObject Clone() => this;
 
-    protected internal override string GetString() => Value;
-
     public static explicit operator string(DyString str) => str.Value;
-
-    public static string ToString(DyObject value, ExecutionContext ctx)
-    {
-        var res = value;
-
-        while (res.TypeId is not Dy.String and not Dy.Char)
-        {
-            res = res.ToString(ctx);
-
-            if (ctx.HasErrors)
-                return default!;
-        }
-
-        return res.GetString();
-    }
 
     internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {

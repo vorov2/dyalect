@@ -23,10 +23,10 @@ public sealed class DyModule : DyObject, IEnumerable<DyObject>
 
     internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        if (index.TypeId != Dy.String)
+        if (index.TypeId is not Dy.String and not Dy.Char)
             return ctx.IndexOutOfRange(index);
 
-        if (!TryGetMember(index.GetString(), ctx, out var value))
+        if (!TryGetMember(index.ToString(), ctx, out var value))
             return ctx.IndexOutOfRange(index);
 
         return value!;

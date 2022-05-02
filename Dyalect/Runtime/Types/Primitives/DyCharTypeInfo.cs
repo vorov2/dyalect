@@ -18,11 +18,11 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Integer)
-            return new DyChar((char)(left.GetChar() + right.GetInteger()));
+        if (right is DyInteger i)
+            return new DyChar((char)(((DyChar)left).Value + i.Value));
 
         if (right.TypeId is Dy.Char)
-            return new DyString(left.GetString() + right.GetString());
+            return new DyString(left.ToString() + right.ToString());
 
         return base.AddOp(ctx, left, right);
     }
@@ -30,7 +30,7 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
     protected override DyObject SubOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId is Dy.Integer or Dy.Char)
-            return new DyChar((char)(left.GetChar() - right.GetInteger()));
+            return new DyChar((char)(((DyChar)left).Value - right.GetInteger()));
 
         return base.SubOp(ctx, left, right);
     }
@@ -38,27 +38,21 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId)
-            return left.GetChar() == right.GetChar() ? True : False;
+            return ((DyChar)left).Value == ((DyChar)right).Value ? True : False;
 
-        if (right.TypeId == Dy.String)
-        {
-            var str = right.GetString();
-            return str.Length == 1 && left.GetChar() == str[0] ? True : False;
-        }
-
+        if (right is DyString str)
+            return str.Value.Length == 1 && ((DyChar)left).Value == str.Value[0] ? True : False;
+        
         return base.EqOp(ctx, left, right);
     }
 
     protected override DyObject NeqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId)
-            return left.GetChar() != right.GetChar() ? True : False;
+            return ((DyChar)left).Value != ((DyChar)right).Value ? True : False;
 
-        if (right.TypeId == Dy.String)
-        {
-            var str = right.GetString();
-            return str.Length != 1 || left.GetChar() != str[0] ? True : False;
-        }
+        if (right is DyString str)
+            return str.Value.Length != 1 || ((DyChar)left).Value != str.Value[0] ? True : False;
 
         return base.NeqOp(ctx, left, right);
     }
@@ -66,10 +60,10 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
     protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId)
-            return left.GetChar().CompareTo(right.GetChar()) > 0 ? True : False;
+            return ((DyChar)left).Value.CompareTo(((DyChar)right).Value) > 0 ? True : False;
 
-        if (right.TypeId == Dy.String)
-            return left.GetString().CompareTo(right.GetString()) > 0 ? True : False;
+        if (right is DyString str)
+            return ((DyChar)left).Value.ToString().CompareTo(str.Value) > 0 ? True : False;
 
         return base.GtOp(ctx, left, right);
     }
@@ -77,10 +71,10 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
     protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (left.TypeId == right.TypeId)
-            return left.GetChar().CompareTo(right.GetChar()) < 0 ? True : False;
+            return ((DyChar)left).Value.CompareTo(((DyChar)right).Value) < 0 ? True : False;
 
-        if (right.TypeId == Dy.String)
-            return left.GetString().CompareTo(right.GetString()) < 0 ? True : False;
+        if (right is DyString str)
+            return ((DyChar)left).Value.ToString().CompareTo(str.Value) < 0 ? True : False;
 
         return base.LtOp(ctx, left, right);
     }
@@ -88,15 +82,15 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
-            Dy.Integer => DyInteger.Get(self.GetChar()),
-            Dy.Float => new DyFloat(self.GetChar()),
+            Dy.Integer => DyInteger.Get(((DyChar)self).Value),
+            Dy.Float => new DyFloat(((DyChar)self).Value),
             _ => base.CastOp(ctx, self, targetType)
         };
 
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
-        new DyString(arg.GetString());
+        new DyString(arg.ToString());
 
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(arg.GetString(), "'"));
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(arg.ToString(), "'"));
     #endregion
 
     [InstanceMethod] internal static bool IsLower(char self) => char.IsLower(self);
@@ -125,17 +119,14 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
         if (value.TypeId is Dy.Char)
             return value;
 
-        if (value.TypeId is Dy.String)
-        {
-            var str = value.GetString();
-            return str.Length > 0 ? new(str[0]) : DyChar.Empty;
-        }
+        if (value is DyString str)
+            return str.Value.Length > 0 ? new(str.Value[0]) : DyChar.Empty;
 
-        if (value.TypeId is Dy.Integer)
-            return new DyChar((char)value.GetInteger());
+        if (value is DyInteger i)
+            return new DyChar((char)i.Value);
 
-        if (value.TypeId is Dy.Float)
-            return new DyChar((char)value.GetFloat());
+        if (value is DyFloat f)
+            return new DyChar((char)f.Value);
 
         return ctx.InvalidCast(value.TypeName, nameof(Dy.Char));
     }

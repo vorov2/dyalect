@@ -26,7 +26,9 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     {
         var arr = new List<DyObject>();
         arr.AddRange(DyIterator.ToEnumerable(ctx, left));
+        if (ctx.HasErrors) return Nil;
         arr.AddRange(DyIterator.ToEnumerable(ctx, right));
+        if (ctx.HasErrors) return Nil;
         return new DyTuple(arr.ToArray());
     }
 
@@ -113,10 +115,10 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
-        if (!field.Is(ctx, Dy.String))
-            return Nil;
+        if (field.TypeId is not Dy.String and not Dy.Char)
+            return ctx.InvalidType(Dy.String, field);
 
-        return ((DyTuple)self).GetOrdinal(field.GetString()) is not -1 ? True : False;
+        return ((DyTuple)self).GetOrdinal(field.ToString()) is not -1 ? True : False;
     }
 
     private static DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)

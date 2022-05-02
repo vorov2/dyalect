@@ -10,22 +10,22 @@ internal static class ObjectSerializer
         {
             case Dy.String:
                 writer.Write(obj.TypeId);
-                writer.Write(obj.GetString());
+                writer.Write(((DyString)obj).Value);
                 break;
             case Dy.Nil:
                 writer.Write(obj.TypeId);
                 break;
             case Dy.Integer:
                 writer.Write(obj.TypeId);
-                writer.Write(obj.GetInteger());
+                writer.Write(((DyInteger)obj).Value);
                 break;
             case Dy.Float:
                 writer.Write(obj.TypeId);
-                writer.Write(obj.GetFloat());
+                writer.Write(((DyFloat)obj).Value);
                 break;
             case Dy.Char:
                 writer.Write(obj.TypeId);
-                writer.Write(obj.GetChar());
+                writer.Write(((DyChar)obj).Value);
                 break;
             case Dy.Bool:
                 writer.Write(obj.TypeId);

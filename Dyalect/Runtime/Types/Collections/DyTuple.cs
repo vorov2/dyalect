@@ -104,7 +104,7 @@ public class DyTuple : DyCollection
         if (index.TypeId != Dy.String && index.TypeId != Dy.Char)
             return ctx.IndexOutOfRange(index);
 
-        return TryGetItem(index.GetString(),out var item)
+        return TryGetItem(index.ToString(),out var item)
             ? item : ctx.IndexOutOfRange(index);
     }
 
@@ -112,7 +112,7 @@ public class DyTuple : DyCollection
     {
         if (index.TypeId == Dy.String)
         {
-            var i = GetOrdinal(index.GetString());
+            var i = GetOrdinal(((DyString)index).Value);
 
             if (i is -1)
             {

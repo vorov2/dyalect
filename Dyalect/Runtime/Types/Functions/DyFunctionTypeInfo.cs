@@ -18,8 +18,8 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
 
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.String)
-            return new DyString(left.ToString(ctx) + right.GetString());
+        if (right.TypeId is Dy.String)
+            return base.AddOp(ctx, left, right);
 
         var f1 = left.ToFunction(ctx);
         if (ctx.HasErrors) return Nil;

@@ -85,10 +85,8 @@ public sealed class DyByteArray : DyForeignObject
                 Write(obj.IsTrue());
                 break;
             case Dy.Char:
-                Write(obj.GetString());
-                break;
             case Dy.String:
-                Write(obj.GetString());
+                Write(obj.ToString());
                 break;
             default:
                 ctx.InvalidType(obj);

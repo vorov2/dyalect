@@ -95,8 +95,8 @@ public class DyDictionary : DyEnumerable
 
         foreach (var (key, value) in Dictionary)
         {
-            if (key.TypeId == Dy.String)
-                xs.Add(new(key.GetString(), value));
+            if (key is DyString s)
+                xs.Add(new(s.Value, value));
         }
 
         return xs.ToArray();
