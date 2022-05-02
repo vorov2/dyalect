@@ -66,8 +66,10 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
-        if (index.TypeId is not Dy.Integer) return Nil;
-        var i = (int)index.GetInteger();
+        if (index is not DyInteger ix)
+            return Nil;
+
+        var i = (int)ix.Value;
 
         //Validate logic
         try

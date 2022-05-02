@@ -98,8 +98,8 @@ public class DyTuple : DyCollection
 
     internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        if (index.TypeId == Dy.Integer)
-            return GetItem((int)index.GetInteger(), ctx);
+        if (index is DyInteger ix)
+            return GetItem((int)ix.Value, ctx);
 
         if (index.TypeId != Dy.String && index.TypeId != Dy.Char)
             return ctx.IndexOutOfRange(index);

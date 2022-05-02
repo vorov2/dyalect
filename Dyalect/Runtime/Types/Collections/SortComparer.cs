@@ -27,9 +27,8 @@ internal sealed class SortComparer : IComparer<DyObject>
         {
             var ret = func.Call(ctx, x, y);
             ctx.ThrowIf();
-            return !ret.Is(Dy.Integer)
-                ? (ret.Is(Dy.Float) ? (int)ret.GetFloat() : 0)
-                : (int)ret.GetInteger();
+            return ret is DyInteger i ? (int)i.Value
+                : (ret is DyFloat f ? (int)f.Value : 0);
         }
 
         var res = x.Greater(y, ctx);

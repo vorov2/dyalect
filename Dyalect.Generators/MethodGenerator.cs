@@ -139,10 +139,10 @@ public class MethodGenerator : SourceGenerator
 
     private readonly Dictionary<string, Action<SourceBuilder, string, string, ParFlags, ITypeSymbol>> typeConversions = new()
     {
-        { "long", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetInteger()", flag, "Integer") },
-        { "long?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(long?){0}.GetInteger()", flag, "Integer") },
-        { "int", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(int){0}.GetInteger()", flag, "Integer") },
-        { "int?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(int?){0}.GetInteger()", flag, "Integer") },
+        { "long", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(({Types.DyInteger}){{0}}).Value", flag, "Integer") },
+        { "long?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(long?)(({Types.DyInteger}){{0}}).Value", flag, "Integer") },
+        { "int", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(int)(({Types.DyInteger}){{0}}).Value", flag, "Integer") },
+        { "int?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(int?)(({Types.DyInteger}){{0}}).Value", flag, "Integer") },
         { "double", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetFloat()", flag, "Float", "Integer") },
         { "double?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(double?){0}.GetFloat()", flag, "Float", "Integer") },
         { "float", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(float){0}.GetFloat()", flag, "Float", "Integer") },

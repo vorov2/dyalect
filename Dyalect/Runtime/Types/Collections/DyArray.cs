@@ -162,8 +162,8 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        if (index.Is(Dy.Integer))
-            return GetItem((int)index.GetInteger(), ctx);
+        if (index is DyInteger i)
+            return GetItem((int)i.Value, ctx);
         else
             return ctx.IndexOutOfRange(index);
     }

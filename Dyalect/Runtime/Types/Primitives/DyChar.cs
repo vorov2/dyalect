@@ -16,8 +16,6 @@ public sealed class DyChar : DyObject
 
     public override object ToObject() => Value;
 
-    protected internal override long GetInteger() => Value;
-
     public override string ToString() => Value.ToString();
 
     public override DyObject Clone() => this;

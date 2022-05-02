@@ -29,9 +29,12 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
 
     protected override DyObject SubOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Integer or Dy.Char)
-            return new DyChar((char)(((DyChar)left).Value - right.GetInteger()));
+        if (right is DyInteger i)
+            return new DyChar((char)(((DyChar)left).Value - i.Value));
 
+        if (right is DyChar c)
+            return new DyChar((char)(((DyChar)left).Value - c.Value));
+        
         return base.SubOp(ctx, left, right);
     }
 

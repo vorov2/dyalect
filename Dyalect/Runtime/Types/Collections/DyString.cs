@@ -61,10 +61,10 @@ public sealed class DyString : DyCollection
 
     internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        if (index.TypeId != Dy.Integer)
+        if (index is not DyInteger ix)
             return ctx.IndexOutOfRange(index);
 
-        return GetItem((int)index.GetInteger(), ctx);
+        return GetItem((int)ix.Value, ctx);
     }
 
     protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) => new DyChar(Value[idx]);

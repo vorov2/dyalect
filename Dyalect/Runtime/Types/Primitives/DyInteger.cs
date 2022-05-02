@@ -38,7 +38,5 @@ public sealed class DyInteger : DyObject
 
     protected internal override double GetFloat() => Value;
 
-    protected internal override long GetInteger() => Value;
-
     public override DyObject Clone() => this;
 }

@@ -36,13 +36,13 @@ public abstract class DyCollection : DyEnumerable
 
     internal virtual void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
     {
-        if (obj.TypeId is not Dy.Integer)
+        if (obj is not DyInteger ix)
         {
             ctx.InvalidType(Dy.Integer, obj);
             return;
         }
 
-        var index = CorrectIndex((int)obj.GetInteger());
+        var index = CorrectIndex((int)ix.Value);
 
         if (index >= Count)
             ctx.IndexOutOfRange(index);

@@ -76,10 +76,10 @@ public sealed class DyByteArray : DyForeignObject
         switch (obj.TypeId)
         {
             case Dy.Integer:
-                Write(obj.GetInteger());
+                Write(((DyInteger)obj).Value);
                 break;
             case Dy.Float:
-                Write(obj.GetFloat());
+                Write(((DyFloat)obj).Value);
                 break;
             case Dy.Bool:
                 Write(obj.IsTrue());
