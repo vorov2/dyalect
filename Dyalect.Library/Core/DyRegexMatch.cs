@@ -23,7 +23,7 @@ public sealed class DyRegexMatch : DyRegexCapture
         return new DyTuple(xs.ToArray());
     }
 
-    protected internal override object? GetItem(string key) =>
+    protected override object? GetItem(string key) =>
         key switch
         {
             "name" => match.Name,

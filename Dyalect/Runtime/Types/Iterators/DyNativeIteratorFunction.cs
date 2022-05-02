@@ -2,7 +2,7 @@
 
 internal sealed class DyNativeIteratorFunction : DyNativeFunction
 {
-    public override string FunctionName => "iterate";
+    public override string FunctionName => "Iterate";
 
     public DyNativeIteratorFunction(int unitId, int funcId, FastList<DyObject[]> captures)
         : base(null, unitId, funcId, captures, -1) { }

@@ -1,5 +1,4 @@
-﻿using System;
-namespace Dyalect.Runtime.Types;
+﻿namespace Dyalect.Runtime.Types;
 
 public abstract class DyForeignObject : DyObject
 {

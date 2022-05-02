@@ -20,7 +20,7 @@ public class DyRegexCapture : DyObject
 
     public override bool Equals(DyObject? other) => other is DyRegexCapture c && c.capture == capture;
 
-    protected internal override object? GetItem(string key) =>
+    protected override object? GetItem(string key) =>
         key switch
         {
             "index" => capture.Index,

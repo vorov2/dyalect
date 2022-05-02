@@ -5,23 +5,25 @@ namespace Dyalect.Runtime.Types;
 public sealed class EqualityComparer : IEqualityComparer<DyObject>
 {
     private readonly ExecutionContext ctx;
-    private readonly DyObject func;
+    private readonly DyFunction func;
 
-    public EqualityComparer(ExecutionContext ctx, DyObject func) => 
-        (this.ctx, this.func) = (ctx, func);
+    public EqualityComparer(ExecutionContext ctx, DyObject functor)
+    {
+        this.ctx = ctx;
+        func = functor.ToFunction(ctx)!;
+        ctx.ThrowIf();
+    }
 
     public bool Equals(DyObject? x, DyObject? y)
     {
-        var fst = func.Invoke(ctx, x!);
-        ctx.ThrowIf();
-        var snd = func.Invoke(ctx, y!);
-        ctx.ThrowIf();
+        var fst = func.Call(ctx, x!);
+        var snd = func.Call(ctx, y!);
         return fst.Equals(snd, ctx);
     }
 
     public int GetHashCode([DisallowNull] DyObject obj)
     {
-        var x = func.Invoke(ctx, obj);
+        var x = func.Call(ctx, obj);
         return x.GetHashCode();
     }
 }

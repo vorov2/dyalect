@@ -1429,8 +1429,19 @@ PRODUCTIONS
             "["
                 (. var arr = new DArrayLiteral(t); .)
                 [
-                    Control<out node> (. arr.Elements.Add(node); .)
-                    { "," Control<out node> (. arr.Elements.Add(node); .) }
+                    (
+                          IF (IsLabel()) Label<out node>
+                        | Control<out node>
+                    )
+                    (. arr.Elements.Add(node); .)
+                    {
+                        "," 
+                        (
+                              IF (IsLabel()) Label<out node>
+                            | Control<out node>
+                        )
+                        (. arr.Elements.Add(node); .)
+                    }
                 ]
                 (. node = arr; .)
             "]"

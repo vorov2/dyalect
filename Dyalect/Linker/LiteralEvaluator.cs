@@ -17,13 +17,13 @@ internal static class LiteralEvaluator
             NodeType.Boolean => ((DBooleanLiteral)node).Value ? True : False,
             NodeType.Tuple => new DyTuple(GetArray(((DTupleLiteral)node).Elements, allowLabels: true)),
             NodeType.Array => new DyArray(GetArray(((DArrayLiteral)node).Elements, allowLabels: false)),
-            _ => new DyVariant(DyErrorCode.ParsingFailed, $"Node of type \"{node.NodeType}\" is not supported.")
+            _ => new DyVariant(DyError.ParsingFailed, $"Node of type \"{node.NodeType}\" is not supported.")
         };
 
     private static DyObject GetStringValue(DStringLiteral lit)
     {
         if (lit.Chunks is not null || lit.Value is null)
-            throw new DyCodeException(new DyVariant(DyErrorCode.ParsingFailed, $"Interpolated strings are not supported."));
+            throw new DyCodeException(new DyVariant(DyError.ParsingFailed, $"Interpolated strings are not supported."));
 
         return DyString.Get(lit.Value);
     }

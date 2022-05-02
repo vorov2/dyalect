@@ -18,25 +18,19 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Integer)
             return new DyChar((char)(left.GetChar() + right.GetInteger()));
 
-        if (right.TypeId == Dy.Char)
+        if (right.TypeId is Dy.Char)
             return new DyString(left.GetString() + right.GetString());
-
-        if (right.TypeId == Dy.String)
-            return left.Concat(right, ctx);
 
         return base.AddOp(ctx, left, right);
     }
 
     protected override DyObject SubOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Integer or Dy.Char)
             return new DyChar((char)(left.GetChar() - right.GetInteger()));
-
-        if (right.TypeId == Dy.Char)
-            return DyInteger.Get(left.GetChar() - right.GetChar());
 
         return base.SubOp(ctx, left, right);
     }
@@ -52,7 +46,7 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
             return str.Length == 1 && left.GetChar() == str[0] ? True : False;
         }
 
-        return base.EqOp(ctx, left, right); //Important! Should redirect to base
+        return base.EqOp(ctx, left, right);
     }
 
     protected override DyObject NeqOp(ExecutionContext ctx, DyObject left, DyObject right)
@@ -66,7 +60,7 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
             return str.Length != 1 || left.GetChar() != str[0] ? True : False;
         }
 
-        return base.NeqOp(ctx, left, right); //Important! Should redirect to base
+        return base.NeqOp(ctx, left, right);
     }
 
     protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right)
@@ -128,19 +122,19 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
     [StaticMethod(Method.Char)]
     internal static DyObject CreateChar(ExecutionContext ctx, DyObject value)
     {
-        if (value.TypeId == Dy.Char)
+        if (value.TypeId is Dy.Char)
             return value;
 
-        if (value.TypeId == Dy.String)
+        if (value.TypeId is Dy.String)
         {
-            var str = value.ToString();
-            return str is not null && str.Length > 0 ? new(str[0]) : DyChar.Empty;
+            var str = value.GetString();
+            return str.Length > 0 ? new(str[0]) : DyChar.Empty;
         }
 
-        if (value.TypeId == Dy.Integer)
+        if (value.TypeId is Dy.Integer)
             return new DyChar((char)value.GetInteger());
 
-        if (value.TypeId == Dy.Float)
+        if (value.TypeId is Dy.Float)
             return new DyChar((char)value.GetFloat());
 
         return ctx.InvalidCast(value.GetTypeInfo(ctx).ReflectedTypeName, nameof(Dy.Char));

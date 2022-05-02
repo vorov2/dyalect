@@ -92,8 +92,8 @@
 
 #region "Complex keys"
     var map = Dictionary()
-    map[[1,2,3]] = [4,5,6]
-    assert([4,5,6], map[[1,2,3]])
+    map[@Key(1,2,3)] = [4,5,6]
+    assert([4,5,6], map[@Key(1,2,3)])
 #endregion
 
 #region "Field access"
@@ -162,7 +162,7 @@
 #endregion
 
 #region "Methods: Contains"
-    var map = Dictionary.FromTuple ((x: 1, y: 2))
+    var map = Dictionary.FromTuple((x: 1, y: 2))
     assert(true, map.Contains("x"))
     assert(false, map.Contains("X"))
     map[(1,2)] = true

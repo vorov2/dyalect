@@ -1155,7 +1155,7 @@ partial class Builder
             BuildPattern(node.Pattern, nh, ctx);
             var skip = cw.DefineLabel();
             cw.Brtrue(skip);
-            ThrowError(DyErrorCode.MatchFailed);
+            ThrowError(DyError.MatchFailed);
             cw.Fail();
             cw.MarkLabel(skip);
             cw.Nop();
@@ -1172,7 +1172,7 @@ partial class Builder
             BuildPattern(node.Pattern, hints.Append(Rebind), ctx);
             var skip = cw.DefineLabel();
             cw.Brtrue(skip);
-            ThrowError(DyErrorCode.MatchFailed);
+            ThrowError(DyError.MatchFailed);
             cw.Fail();
             cw.MarkLabel(skip);
             cw.Nop();
@@ -1373,14 +1373,14 @@ partial class Builder
         }
     }
 
-    private void ThrowErrorProlog(DyErrorCode code, int pars)
+    private void ThrowErrorProlog(DyError code, int pars)
     {
         cw.Type(Dy.Variant);
         cw.GetMember(code.ToString());
         cw.FunPrep(pars);
     }
 
-    private void ThrowError(DyErrorCode code)
+    private void ThrowError(DyError code)
     {
         ThrowErrorProlog(code, 0);
         cw.FunCall(0);

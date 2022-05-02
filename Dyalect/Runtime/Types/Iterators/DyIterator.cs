@@ -36,19 +36,10 @@ public abstract class DyIterator : DyObject
         {
             var res = iter.Call(ctx);
 
-            if (ctx.HasErrors)
-            {
-                iter.Reset(ctx);
-                yield break;
-            }
-
             if (!ReferenceEquals(res, DyNil.Terminator))
                 yield return res;
             else
-            {
-                iter.Reset(ctx);
                 yield break;
-            }
         }
     }
 }

@@ -103,3 +103,10 @@
         @IndexReadOnly => assert(got: true)
     }
 #endregion
+
+#region "Casting"
+    let x = @Foo(1, 2, 3)
+    assert((1,2,3), x as Tuple)
+    let y = @Bar
+    assert(nil, y as Tuple)
+#endregion

@@ -19,18 +19,15 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
     #region Binary Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Float || right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Float or Dy.Integer)
             return new DyFloat(left.GetFloat() + right.GetFloat());
-
-        if (right.TypeId == Dy.String)
-            return left.Concat(right, ctx);
 
         return base.AddOp(ctx, left, right);
     }
 
     protected override DyObject SubOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Float || right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Float or Dy.Integer)
             return new DyFloat(left.GetFloat() - right.GetFloat());
 
         return base.SubOp(ctx, left, right);
@@ -38,7 +35,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject MulOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Float || right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Float or Dy.Integer)
             return new DyFloat(left.GetFloat() * right.GetFloat());
 
         return base.MulOp(ctx, left, right);
@@ -46,7 +43,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject DivOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Float || right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Float or Dy.Integer)
             return new DyFloat(left.GetFloat() / right.GetFloat());
 
         return base.DivOp(ctx, left, right);
@@ -54,7 +51,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject RemOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Float || right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Float or Dy.Integer)
             return new DyFloat(left.GetFloat() % right.GetFloat());
 
         return base.RemOp(ctx, left, right);
@@ -62,7 +59,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Float || right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Float or Dy.Integer)
             return left.GetFloat() == right.GetFloat() ? True : False;
 
         return base.EqOp(ctx, left, right); //Important! Should redirect to base
@@ -70,7 +67,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject NeqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Float || right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Float or Dy.Integer)
             return left.GetFloat() != right.GetFloat() ? True : False;
 
         return base.NeqOp(ctx, left, right); //Important! Should redirect to base
@@ -78,7 +75,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Float || right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Float or Dy.Integer)
             return left.GetFloat() > right.GetFloat() ? True : False;
 
         return base.GtOp(ctx, left, right);
@@ -86,7 +83,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Float || right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Float or Dy.Integer)
             return left.GetFloat() < right.GetFloat() ? True : False;
 
         return base.LtOp(ctx, left, right);
@@ -94,7 +91,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject GteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Float || right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Float or Dy.Integer)
             return left.GetFloat() >= right.GetFloat() ? True : False;
 
         return base.GteOp(ctx, left, right);
@@ -102,7 +99,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject LteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.Float || right.TypeId == Dy.Integer)
+        if (right.TypeId is Dy.Float or Dy.Integer)
             return left.GetFloat() <= right.GetFloat() ? True : False;
 
         return base.LteOp(ctx, left, right);
@@ -112,17 +109,11 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject PlusOp(ExecutionContext ctx, DyObject arg) => arg;
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
-    {
-        var f = arg.GetFloat();
-        return new DyString(f.ToString(SystemCulture.NumberFormat));
-    }
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
+        new DyString(arg.GetFloat().ToString(SystemCulture.NumberFormat));
 
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg)
-    {
-        var f = arg.GetFloat();
-        return new DyString(f.ToString(InvariantCulture.NumberFormat));
-    }
+    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) =>
+        new DyString(arg.GetFloat().ToString(InvariantCulture.NumberFormat));
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
@@ -152,7 +143,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
     {
         if (double.TryParse(value, NumberStyles.Float, InvariantCulture.NumberFormat, out var i))
             return i;
-        return null;
+        return default;
     }
 
     [StaticMethod(Method.Float)]

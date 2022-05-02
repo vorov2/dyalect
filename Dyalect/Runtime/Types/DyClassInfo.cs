@@ -16,8 +16,9 @@ internal sealed class DyClassInfo : DyTypeInfo
     }
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len;
+        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.In;
 
+    #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         var self = (DyClass)left;
@@ -89,4 +90,5 @@ internal sealed class DyClassInfo : DyTypeInfo
         cls.Fields.SetItem(index, value, ctx);
         return Nil;
     }
+    #endregion
 }

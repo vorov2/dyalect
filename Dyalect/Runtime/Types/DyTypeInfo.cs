@@ -31,8 +31,20 @@ public abstract class DyTypeInfo : DyObject
     private DyFunction? add;
     protected virtual DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
+        //TODO: validate logic
         if (right.TypeId == Dy.String && left.TypeId != Dy.String)
-            return ctx.RuntimeContext.String.Add(ctx, left, right);
+        {
+            try
+            {
+                return left.Concat(right, ctx);
+            }
+            catch (DyCodeException ex)
+            {
+                ctx.Error = ex.Error;
+                return Nil;
+            }
+        }
+
         return ctx.OperationNotSupported(Builtins.Add, left, right);
     }
     public DyObject Add(ExecutionContext ctx, DyObject left, DyObject right)
@@ -157,7 +169,7 @@ public abstract class DyTypeInfo : DyObject
     //x != y
     private DyFunction? neq;
     protected virtual DyObject NeqOp(ExecutionContext ctx, DyObject left, DyObject right) =>
-        left.Equals(right, ctx) ? False : True;
+        EqOp(ctx, left, right).IsFalse() ? True : False;
     public DyObject Neq(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (neq is not null)
@@ -269,32 +281,28 @@ public abstract class DyTypeInfo : DyObject
     //x.ToString
     private DyFunction? tos;
     protected virtual DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => new DyString(arg.ToString());
-    internal string? ToStringDirect(ExecutionContext ctx, DyObject arg)
-    {
-        var res = ToStringOp(ctx, arg, Nil);
-
-        if (ctx.HasErrors)
-            return null;
-
-        if (res.TypeId != Dy.String)
-        {
-            ctx.InvalidType(Dy.String, res);
-            return null;
-        }
-
-        return res.GetString();
-    }
     public DyObject ToString(ExecutionContext ctx, DyObject arg)
     {
         if (tos is not null)
             return tos.PrepareFunction(ctx, arg);
 
-        return ToStringOp(ctx, arg, Nil);
+        //Validate logic
+        try
+        {
+            return ToStringOp(ctx, arg, Nil);
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
     }
 
     //x.ToLiteral
     private DyFunction? lit;
+    [Obsolete]
     protected virtual DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOp(ctx, arg, DyNil.Instance);
+    [Obsolete]
     internal string? ToLiteralDirect(ExecutionContext ctx, DyObject arg)
     {
         var res = ToLiteralOp(ctx, arg);
@@ -310,6 +318,7 @@ public abstract class DyTypeInfo : DyObject
 
         return res.GetString();
     }
+    [Obsolete]
     public DyObject ToLiteral(ExecutionContext ctx, DyObject arg)
     {
         if (lit is not null)
@@ -329,6 +338,7 @@ public abstract class DyTypeInfo : DyObject
     //x[y]
     private DyFunction? get;
     protected virtual DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
+    [Obsolete]
     internal DyObject GetDirect(ExecutionContext ctx, DyObject self, DyObject index) => GetOp(ctx, self, index);
     public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
     {
@@ -342,6 +352,7 @@ public abstract class DyTypeInfo : DyObject
     private DyFunction? set;
     protected virtual DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) =>
         ctx.OperationNotSupported(Builtins.Set, self);
+    [Obsolete]
     internal DyObject SetDirect(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) => SetOp(ctx, self, index, value);
     public DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
@@ -356,10 +367,10 @@ public abstract class DyTypeInfo : DyObject
     protected virtual DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
+            _ when targetType.ReflectedTypeId == self.TypeId => self,
             Dy.Bool => self.IsFalse() ? False : True,
             Dy.String => self.ToString(ctx),
             Dy.Char => new DyChar(self.ToString(ctx).GetString()[0]),
-            _ when targetType.ReflectedTypeId == self.TypeId => self,
             _ => ctx.InvalidCast(self.GetTypeInfo(ctx).ReflectedTypeName, targetType.ReflectedTypeName)
         };
     public DyObject Cast(ExecutionContext ctx, DyObject self, DyObject targetType)
@@ -682,7 +693,7 @@ public abstract class DyTypeInfo : DyObject
             Builtins.Clone => Unary(name, Clone),
             Builtins.Has => Binary(name, Has, "member"),
             Builtins.Type => Unary(name, (ct, o) => ct.RuntimeContext.Types[o.TypeId]),
-            Builtins.Contains => contains is null ? Binary(name, ContainsOp, "value") : contains,
+            Builtins.Contains => Support(self, SupportedOperations.In) ? (contains is null ? Binary(name, ContainsOp, "value") : contains) : null,
             _ => InitializeInstanceMember(self, name, ctx)
         };
 

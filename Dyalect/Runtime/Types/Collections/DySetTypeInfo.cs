@@ -11,7 +11,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
     public override int ReflectedTypeId => Dy.Set;
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Len | SupportedOperations.Iter;
+        SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
     public DySetTypeInfo() => AddMixin(Dy.Collection);
 

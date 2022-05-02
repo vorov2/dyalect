@@ -28,37 +28,29 @@ partial class DyMachine
     private static int ThrowIf(ExecutionContext ctx, int offset, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
     {
         var err = ctx.Error!;
-        var dump = ctx.ErrorDump;
-        var moduleHandle = function.UnitId;
 
-        if (dump is null)
+        if (FindCatch(ctx, ref function, ref locals, ref evalStack, out var address))
         {
-            dump = Dump(ctx.CallStack.Clone());
-            dump.Push(new(offset, moduleHandle));
-        }
-
-        int jumper;
-
-        if ((jumper = FindCatch(ctx, ref function, ref locals, ref evalStack)) > -1)
-        {
-            ctx.ErrorDump = dump;
-            return jumper;
+            ctx.ErrorDump = Dump(ctx, offset, function);
+            return address;
         }
         else
         {
+            var dump = Dump(ctx, offset, function);
+            var cs = ctx.Trace ?? new DyDebugger(ctx.RuntimeContext.Composition).BuildCallStack(dump);
             ctx.Error = null;
             ctx.ErrorDump = null;
-            var deb = new DyDebugger(ctx.RuntimeContext.Composition);
-            var cs = deb.BuildCallStack(dump);
+            ctx.Trace = null;
             throw new DyCodeException(err, cs, null);
         }
     }
 
-    private static int FindCatch(ExecutionContext ctx, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack)
+    private static bool FindCatch(ExecutionContext ctx, ref DyNativeFunction function, ref DyObject[] locals, ref EvalStack evalStack, out int offset)
     {
         CatchMark mark = default;
         Stack<CatchMark> cm;
         var idx = 1;
+        offset = 0;
 
         while (ctx.CatchMarks.TryPeek(idx++, out cm))
         {
@@ -70,7 +62,7 @@ partial class DyMachine
         }
 
         if (mark.Offset == 0)
-            return -1;
+            return false;
 
         Caller? cp = null;
 
@@ -81,7 +73,7 @@ partial class DyMachine
             //It means that this function was called from an external
             //context and we have to terminate our search
             if (ReferenceEquals(cp, Caller.External))
-                return -1;
+                return false;
         }
 
         cm.Pop();
@@ -93,27 +85,37 @@ partial class DyMachine
             evalStack = cp.EvalStack;
         }
 
-        return mark.Offset;
+        offset = mark.Offset;
+        return true;
     }
 
-    private static Stack<StackPoint> Dump(CallStack callStack)
+    private static Stack<StackPoint> Dump(ExecutionContext ctx, int offset, DyNativeFunction function)
     {
-        var st = new Stack<StackPoint>();
+        var dump = ctx.ErrorDump;
 
-        for (var i = 0; i < callStack.Count; i++)
+        if (dump is null)
         {
-            var cm = callStack[i];
 
-            if (ReferenceEquals(cm, Caller.Root))
-                continue;
+            var callStack = ctx.CallStack.Clone();
+            dump = new Stack<StackPoint>();
 
-            if (ReferenceEquals(cm, Caller.External))
-                st.Push(StackPoint.External);
-            else
-                st.Push(new(cm.Offset, cm.Function.UnitId));
+            for (var i = 0; i < callStack.Count; i++)
+            {
+                var cm = callStack[i];
+
+                if (ReferenceEquals(cm, Caller.Root))
+                    continue;
+
+                if (ReferenceEquals(cm, Caller.External))
+                    dump.Push(StackPoint.External);
+                else
+                    dump.Push(new(cm.Offset, cm.Function.UnitId));
+            }
+
+            dump.Push(new(offset, function.UnitId));
         }
 
-        return st;
+        return dump;
     }
 
     public static IEnumerable<RuntimeVar> DumpVariables(ExecutionContext ctx)
@@ -122,16 +124,16 @@ partial class DyMachine
             yield return new(v.Key, ctx.RuntimeContext.Units[0][v.Value.Address]);
     }
 
-    private static DyVariant GetErrorInformation(DyFunction func, Exception ex)
+    private static (DyVariant err, CallStackTrace? trace) GetErrorInformation(DyFunction func, Exception ex)
     {
         if (ex is DyCodeException err)
-            return err.Error;
+            return (err.Error, err.CallTrace);
 
         if (ex.InnerException is not null)
             return GetErrorInformation(func, ex.InnerException);
 
         var functionName = func.Self is null ? func.FunctionName
             : $"{func.Self.TypeName}.{func.FunctionName}";
-        return new(DyErrorCode.ExternalFunctionFailure, functionName, ex.Message);
+        return (new(DyError.ExternalFunctionFailure, functionName, ex.Message), null);
     }
 }

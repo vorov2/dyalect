@@ -32,7 +32,7 @@ public static class Extensions
         if (self is DyVariant v)
             return v;
 
-        return new DyVariant(DyErrorCode.Failure, self);
+        return new DyVariant(DyError.Failure, self);
     }
 
     //Returns a function encapsulated by an iterator, accepts: an iterator, a function
@@ -42,10 +42,10 @@ public static class Extensions
     //"Iterator" method
     internal static DyFunction? GetIterator(this DyObject self, ExecutionContext ctx)
     {
-        if (self.TypeId == Dy.Iterator)
+        if (self.TypeId is Dy.Iterator)
             return ((DyIterator)self).GetIteratorFunction();
 
-        if (self.TypeId == Dy.Function)
+        if (self.TypeId is Dy.Function)
         {
             if (self is DyNativeIteratorFunction)
                 return (DyFunction)self;

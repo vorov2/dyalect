@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
 public sealed class DyLabel : DyObject

@@ -2236,12 +2236,20 @@ namespace Dyalect.Parser
 		node = null; 
 		Expect(36);
 		var arr = new DArrayLiteral(t); 
-		if (StartOf(14)) {
-			Control(out node);
+		if (StartOf(19)) {
+			if (IsLabel()) {
+				Label(out node);
+			} else {
+				Control(out node);
+			}
 			arr.Elements.Add(node); 
 			while (la.kind == 28) {
 				Get();
-				Control(out node);
+				if (IsLabel()) {
+					Label(out node);
+				} else if (StartOf(14)) {
+					Control(out node);
+				} else SynErr(148);
 				arr.Elements.Add(node); 
 			}
 		}
@@ -2293,7 +2301,7 @@ namespace Dyalect.Parser
 			Import(out var node);
 			Imports.Add(node); 
 			Separator();
-		} else SynErr(148);
+		} else SynErr(149);
 	}
 
 	void Dyalect() {
@@ -2493,7 +2501,8 @@ namespace Dyalect.Parser
 			case 145: s = "invalid String"; break;
 			case 146: s = "invalid Bool"; break;
 			case 147: s = "invalid Tuple"; break;
-			case 148: s = "invalid DyalectItem"; break;
+			case 148: s = "invalid Array"; break;
+			case 149: s = "invalid DyalectItem"; break;
 
                 default:
                     s = "unknown " + n;

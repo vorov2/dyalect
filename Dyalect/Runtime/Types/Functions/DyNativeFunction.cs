@@ -1,6 +1,4 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Debug;
-using System;
+﻿using Dyalect.Debug;
 using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
@@ -17,12 +15,6 @@ internal class DyNativeFunction : DyFunction
     public override string FunctionName => sym?.Name != null ? sym.Name : DefaultName;
 
     public override bool IsExternal => false;
-
-    internal override void Reset(ExecutionContext ctx)
-    {
-        Locals = null;
-        PreviousOffset = ctx.RuntimeContext.Composition.Units[UnitId].Layouts[FunctionId].Size;
-    }
 
     internal DyNativeFunction(FunSym? sym, int unitId, int funcId, FastList<DyObject[]> captures, int varArgIndex) :
         base(sym?.Parameters ?? Array.Empty<Par>(), varArgIndex)

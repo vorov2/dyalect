@@ -12,7 +12,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     public override int ReflectedTypeId => Dy.Array;
 
     protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter;
+        SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
     public DyArrayTypeInfo() => AddMixin(Dy.Collection);
 
@@ -24,8 +24,13 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
 
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOrLiteral(true, arg, ctx);
 
-    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right) =>
-        new DyArray(((DyCollection)left).Concat(ctx, right));
+    protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
+    {
+        var arr = new List<DyObject>();
+        arr.AddRange(DyIterator.ToEnumerable(ctx, left));
+        arr.AddRange(DyIterator.ToEnumerable(ctx, right));
+        return new DyArray(arr.ToArray());
+    }
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
 

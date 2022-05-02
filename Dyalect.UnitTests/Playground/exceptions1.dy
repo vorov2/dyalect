@@ -1,0 +1,25 @@
+﻿type Foo()
+
+let f = Foo()
+
+func Foo.LetItCrash() {
+	throw @Error("What the..?")
+}
+
+static func Foo.Bar(x, y = 3) {
+	f.LetItCrash()
+}
+
+func bar(x = 2) {
+	Foo.Bar(x)
+}
+
+func foo() {
+	bar()
+}
+
+try { 
+	foo()
+} catch e {
+	print("foo()", e)
+}

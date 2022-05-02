@@ -255,3 +255,18 @@
         Foo(y) => assert(42, y)
     }
 #endregion
+
+#region "Operation 'in' with exception"
+    try {
+        1 in 12
+        assert(got: false)
+    } catch {
+        @OperationNotSupported => assert(got: true)
+    }
+    try {
+        1.Contains
+        assert(got: false)
+    } catch {
+        @OperationNotSupported => assert(got: true)
+    }
+#endregion

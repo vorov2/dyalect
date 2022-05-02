@@ -1,0 +1,16 @@
+﻿func Integer * (other) {
+	throw @MyError("What a downer...")
+}
+
+func iter() {
+	yield 1
+	yield 2 * 5
+}
+
+let xs = []
+
+try {
+	xs.AddRange(iter())
+} catch e {
+	print("xs.AddRange(iter())", e)
+}

@@ -50,6 +50,16 @@ public abstract class DyFunction : DyObject
     
     internal abstract DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args);
 
+    public DyObject Call(ExecutionContext ctx)
+    {
+        var newArgs = PrepareMemoryLayout(ctx, Array.Empty<DyObject>());
+
+        if (ctx.HasErrors)
+            return Nil;
+
+        return CallWithMemoryLayout(ctx, newArgs);
+    }
+
     public DyObject Call(ExecutionContext ctx, params DyObject[] args)
     {
         var newArgs = PrepareMemoryLayout(ctx, args);
@@ -166,6 +176,4 @@ public abstract class DyFunction : DyObject
     internal abstract bool Equals(DyFunction func);
 
     public override int GetHashCode() => HashCode.Combine(TypeId, FunctionName ?? DefaultName, Parameters, Self);
-
-    internal virtual void Reset(ExecutionContext ctx) { }
 }
