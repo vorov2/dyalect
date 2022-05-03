@@ -10,8 +10,6 @@ public abstract class DyObject : IEquatable<DyObject>
 
     public override string ToString() => $"[type:{TypeId}]";
 
-    protected internal virtual double GetFloat() => throw new NotSupportedException();
-
     public abstract object ToObject();
 
     public virtual DyObject Clone() => (DyObject)MemberwiseClone();

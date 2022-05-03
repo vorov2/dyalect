@@ -36,7 +36,5 @@ public sealed class DyInteger : DyObject
 
     public override object ToObject() => Value == (int)Value ? System.Convert.ChangeType(Value, BCL.Int32) : Value;
 
-    protected internal override double GetFloat() => Value;
-
     public override DyObject Clone() => this;
 }

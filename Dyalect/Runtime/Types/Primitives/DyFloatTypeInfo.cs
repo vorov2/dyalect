@@ -19,88 +19,123 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
     #region Binary Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Float or Dy.Integer)
-            return new DyFloat(((DyFloat)left).Value + right.GetFloat());
+        if (right.TypeId is Dy.Float)
+            return new DyFloat(((DyFloat)left).Value + ((DyFloat)right).Value);
+
+        if (right.TypeId is Dy.Integer)
+            return new DyFloat(((DyFloat)left).Value + ((DyInteger)right).Value);
 
         return base.AddOp(ctx, left, right);
     }
 
     protected override DyObject SubOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Float or Dy.Integer)
-            return new DyFloat(((DyFloat)left).Value - right.GetFloat());
+        if (right.TypeId is Dy.Float)
+            return new DyFloat(((DyFloat)left).Value - ((DyFloat)right).Value);
+
+        if (right.TypeId is Dy.Integer)
+            return new DyFloat(((DyFloat)left).Value - ((DyInteger)right).Value);
 
         return base.SubOp(ctx, left, right);
     }
 
     protected override DyObject MulOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Float or Dy.Integer)
-            return new DyFloat(((DyFloat)left).Value * right.GetFloat());
+        if (right.TypeId is Dy.Float)
+            return new DyFloat(((DyFloat)left).Value * ((DyFloat)right).Value);
+
+        if (right.TypeId is Dy.Integer)
+            return new DyFloat(((DyFloat)left).Value * ((DyInteger)right).Value);
 
         return base.MulOp(ctx, left, right);
     }
 
     protected override DyObject DivOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Float or Dy.Integer)
-            return new DyFloat(((DyFloat)left).Value / right.GetFloat());
+        if (right.TypeId is Dy.Float)
+            return new DyFloat(((DyFloat)left).Value / ((DyFloat)right).Value);
+
+        if (right.TypeId is Dy.Integer)
+            return new DyFloat(((DyFloat)left).Value / ((DyInteger)right).Value);
 
         return base.DivOp(ctx, left, right);
     }
 
     protected override DyObject RemOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Float or Dy.Integer)
-            return new DyFloat(((DyFloat)left).Value % right.GetFloat());
+        if (right.TypeId is Dy.Float)
+            return new DyFloat(((DyFloat)left).Value % ((DyFloat)right).Value);
+
+        if (right.TypeId is Dy.Integer)
+            return new DyFloat(((DyFloat)left).Value % ((DyInteger)right).Value);
 
         return base.RemOp(ctx, left, right);
     }
 
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Float or Dy.Integer)
-            return ((DyFloat)left).Value == right.GetFloat() ? True : False;
+        if (right.TypeId is Dy.Float)
+            return ((DyFloat)left).Value == ((DyFloat)right).Value ? True : False;
 
-        return base.EqOp(ctx, left, right); //Important! Should redirect to base
+        if (right.TypeId is Dy.Integer)
+            return ((DyFloat)left).Value == ((DyInteger)right).Value ? True : False;
+        
+        return base.EqOp(ctx, left, right);
     }
 
     protected override DyObject NeqOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Float or Dy.Integer)
-            return ((DyFloat)left).Value != right.GetFloat() ? True : False;
+        if (right.TypeId is Dy.Float)
+            return ((DyFloat)left).Value != ((DyFloat)right).Value ? True : False;
 
-        return base.NeqOp(ctx, left, right); //Important! Should redirect to base
+        if (right.TypeId is Dy.Integer)
+            return ((DyFloat)left).Value != ((DyInteger)right).Value ? True : False;
+
+
+        return base.NeqOp(ctx, left, right);
     }
 
     protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Float or Dy.Integer)
-            return ((DyFloat)left).Value > right.GetFloat() ? True : False;
+        if (right.TypeId is Dy.Float)
+            return ((DyFloat)left).Value > ((DyFloat)right).Value ? True : False;
+
+        if (right.TypeId is Dy.Integer)
+            return ((DyFloat)left).Value > ((DyInteger)right).Value ? True : False;
 
         return base.GtOp(ctx, left, right);
     }
 
     protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Float or Dy.Integer)
-            return ((DyFloat)left).Value < right.GetFloat() ? True : False;
+        if (right.TypeId is Dy.Float)
+            return ((DyFloat)left).Value < ((DyFloat)right).Value ? True : False;
+
+        if (right.TypeId is Dy.Integer)
+            return ((DyFloat)left).Value < ((DyInteger)right).Value ? True : False;
+
 
         return base.LtOp(ctx, left, right);
     }
 
     protected override DyObject GteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Float or Dy.Integer)
-            return ((DyFloat)left).Value >= right.GetFloat() ? True : False;
+        if (right.TypeId is Dy.Float)
+            return ((DyFloat)left).Value >= ((DyFloat)right).Value ? True : False;
+
+        if (right.TypeId is Dy.Integer)
+            return ((DyFloat)left).Value >= ((DyInteger)right).Value ? True : False;
 
         return base.GteOp(ctx, left, right);
     }
 
     protected override DyObject LteOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId is Dy.Float or Dy.Integer)
-            return ((DyFloat)left).Value <= right.GetFloat() ? True : False;
+        if (right.TypeId is Dy.Float)
+            return ((DyFloat)left).Value <= ((DyFloat)right).Value ? True : False;
+
+        if (right.TypeId is Dy.Integer)
+            return ((DyFloat)left).Value <= ((DyInteger)right).Value ? True : False;
 
         return base.LteOp(ctx, left, right);
     }

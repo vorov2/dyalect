@@ -26,7 +26,5 @@ public sealed class DyFloat : DyObject
 
     public override object ToObject() => Value;
 
-    protected internal override double GetFloat() => Value;
-
     public override DyObject Clone() => this;
 }
