@@ -53,7 +53,7 @@ internal sealed partial class Lang : ForeignUnit
         if (terminator.TypeId is Dy.String or Dy.Char)
             Console.Write(terminator.ToString());
         else if (terminator.TypeId is not Dy.Nil)
-            ctx.InvalidType(Dy.String, terminator);
+            throw new DyCodeException(DyError.InvalidType, terminator);
     }
 
     [StaticMethod("setOut")]

@@ -44,18 +44,18 @@ internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
             index = self.Count + index;
 
         if (index >= self.Count)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         if (size < 0)
             size = self.Count + size - 1;
 
         if (size >= self.Count || size < 0)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         var len = size.Value - index + 1;
 
         if (len < 0)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         return DyIterator.Create(new DyCollectionEnumerable(arr, index, len, self));
     }

@@ -62,7 +62,7 @@ public sealed class DyString : DyCollection
     internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
         if (index is not DyInteger ix)
-            return ctx.IndexOutOfRange(index);
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
         return GetItem((int)ix.Value, ctx);
     }

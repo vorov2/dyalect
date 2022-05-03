@@ -77,8 +77,8 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
             return str.Contains(s.Value) ? True : False;
         else if (field is DyChar c)
             return str.Contains(c.Value) ? True : False;
-        else
-            return ctx.InvalidType(Dy.String, Dy.Char, field);
+
+        throw new DyCodeException(DyError.InvalidType, field);
     }
 
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => new DyString(((DyString)arg).Value);
@@ -109,18 +109,18 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
             index = self.Count + index;
 
         if (index >= self.Count)
-            return ctx.IndexOutOfRange(index);
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
         if (size < 0)
             size = self.Count + size - 1;
 
         if (size >= self.Count)
-            return ctx.IndexOutOfRange(size);
+            throw new DyCodeException(DyError.IndexOutOfRange, size);
 
         var len = size.Value - index + 1;
 
         if (len < 0)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         if (len == 0)
             return DyString.Empty;

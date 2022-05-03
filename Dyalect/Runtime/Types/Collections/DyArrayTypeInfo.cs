@@ -314,16 +314,16 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
         destination ??= new DyArray(new DyObject[destinationIndex + count.Value]);
 
         if (index < 0 || index >= source.Count)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         if (destinationIndex < 0 || destinationIndex >= destination.Count)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         if (index + count < 0 || index + count > source.Count)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         if (destinationIndex + count < 0 || destinationIndex + count > destination.Count)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         Array.Copy(source.UnsafeAccessValues(), index, destination.UnsafeAccessValues(), destinationIndex, count.Value);
         return destination;

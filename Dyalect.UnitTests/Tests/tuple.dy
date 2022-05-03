@@ -288,12 +288,12 @@
     try {
         xs[2]
     } catch {
-        @IndexOutOfRange() => assert(got: true)
+        @IndexOutOfRange => assert(got: true)
     }
     try {
         xs.z
     } catch {
-        @IndexOutOfRange() => assert(got: true)
+        @IndexOutOfRange => assert(got: true)
     }
 #endregion
 

@@ -141,7 +141,7 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
         if (value is DyFloat f)
             return new DyChar((char)f.Value);
 
-        return ctx.InvalidCast(value.TypeName, nameof(Dy.Char));
+        throw new DyCodeException(DyError.InvalidCast, value.TypeName, nameof(Dy.Char));
     }
 
     [StaticProperty]

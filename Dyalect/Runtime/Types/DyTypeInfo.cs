@@ -381,7 +381,10 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Cast(ExecutionContext ctx, DyObject self, DyObject targetType)
     {
         if (targetType.TypeId != Dy.TypeInfo)
-            return ctx.InvalidType(Dy.TypeInfo, targetType);
+        {
+            ctx.Error = new (DyError.InvalidType, Dy.TypeInfo, targetType);
+            return Nil;
+        }
 
         var ti = (DyTypeInfo)targetType;
 
@@ -645,7 +648,10 @@ public abstract class DyTypeInfo : DyObject
     private DyObject Has(ExecutionContext ctx, DyObject self, DyObject member)
     {
         if (member.TypeId is not Dy.String and not Dy.Char)
-            return ctx.InvalidType(member);
+        {
+            ctx.Error = new (DyError.InvalidType, member);
+            return Nil;
+        }
 
         var name = member.ToString();
 

@@ -104,8 +104,10 @@ public class DyTuple : DyCollection
         if (index.TypeId != Dy.String && index.TypeId != Dy.Char)
             return ctx.IndexOutOfRange(index);
 
-        return TryGetItem(index.ToString(),out var item)
-            ? item : ctx.IndexOutOfRange(index);
+        if (TryGetItem(index.ToString(), out var item))
+            return item;
+
+        return ctx.IndexOutOfRange(index);
     }
 
     internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)

@@ -116,7 +116,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
         if (field.TypeId is not Dy.String and not Dy.Char)
-            return ctx.InvalidType(Dy.String, field);
+            return ctx.InvalidType(field);
 
         return ((DyTuple)self).GetOrdinal(field.ToString()) is not -1 ? True : False;
     }
@@ -184,24 +184,24 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
             var e = tv[i] is DyLabel la ? la.Value : tv[i];
 
             if (e.Equals(value, ctx))
-                return RemoveAt(self, i);
+                return InternalRemoveAt(self, i);
         }
 
         return self;
     }
 
     [InstanceMethod]
-    internal static DyObject RemoveAt(ExecutionContext ctx, DyTuple self, int index)
+    internal static DyObject RemoveAt(DyTuple self, int index)
     {
         index = index < 0 ? self.Count + index : index;
 
         if (index < 0 || index >= self.Count)
-            return ctx.IndexOutOfRange(index);
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
-        return RemoveAt(self, index);
+        return InternalRemoveAt(self, index);
     }
 
-    internal static DyTuple RemoveAt(DyTuple self, int index)
+    internal static DyTuple InternalRemoveAt(DyTuple self, int index)
     {
         var arr = new DyObject[self.Count - 1];
         var c = 0;
@@ -222,12 +222,12 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         new DyTuple(DyCollection.ConcatValues(ctx, values));
 
     [InstanceMethod]
-    internal static DyObject Insert(ExecutionContext ctx, DyTuple self, int index, DyObject value)
+    internal static DyObject Insert(DyTuple self, int index, DyObject value)
     {
         index = index < 0 ? self.Count + index : index;
 
         if (index < 0 || index > self.Count)
-            return ctx.IndexOutOfRange(index);
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
         var arr = new DyObject[self.Count + 1];
         arr[index] = value;

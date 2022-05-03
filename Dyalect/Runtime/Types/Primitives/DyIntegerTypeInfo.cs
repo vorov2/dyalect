@@ -222,8 +222,7 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
         if (value.TypeId is Dy.Char or Dy.String)
             return Parse(value.ToString());
 
-        ctx.InvalidType(Dy.Integer, Dy.Float, value);
-        return default;
+        throw new DyCodeException(DyError.InvalidType, value);
     }
 
     [StaticProperty] 
