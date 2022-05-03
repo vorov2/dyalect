@@ -182,7 +182,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
     }
 
     [StaticMethod(Method.Float)]
-    internal static double? Convert(ExecutionContext ctx, DyObject value)
+    internal static double? Convert(DyObject value)
     {
         if (value is DyFloat f)
             return f.Value;

@@ -127,7 +127,7 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
     internal static int Order(char self) => self;
 
     [StaticMethod(Method.Char)]
-    internal static DyObject CreateChar(ExecutionContext ctx, DyObject value)
+    internal static DyObject CreateChar(DyObject value)
     {
         if (value.TypeId is Dy.Char)
             return value;

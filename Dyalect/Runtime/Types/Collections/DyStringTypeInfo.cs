@@ -46,7 +46,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     {
         if (left.TypeId == right.TypeId || right.TypeId == Dy.Char)
             return ((DyString)left).Value != right.ToString() ? True : False;
-        return base.NeqOp(ctx, left, right); //Important! Should redirect to base
+        return base.NeqOp(ctx, left, right);
     }
 
     protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right)
@@ -97,7 +97,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     #endregion
 
     [InstanceMethod]
-    internal static DyObject Slice(ExecutionContext ctx, DyString self, int index = 0, [Default]int? size = null)
+    internal static DyObject Slice(DyString self, int index = 0, [Default]int? size = null)
     {
         if (size is null)
             size = self.Count - 1;
@@ -129,22 +129,19 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
-    internal static int IndexOf(ExecutionContext ctx, string self, string value, int index = 0, [Default]int? count = null)
+    internal static int IndexOf(string self, string value, int index = 0, [Default]int? count = null)
     {
         if (count is null)
             count = self.Length - index;
 
         if (index < 0 || index > self.Length || count < 0 || count > self.Length - index)
-        {
-            ctx.IndexOutOfRange();
-            return default;
-        }
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         return self.IndexOf(value, index, count.Value);
     }
 
     [InstanceMethod]
-    internal static int LastIndexOf(ExecutionContext ctx, string self, string value, [Default]int? index = null, [Default]int? count = null)
+    internal static int LastIndexOf(string self, string value, [Default]int? index = null, [Default]int? count = null)
     {
         if (index is null)
             index = self.Length - 1;
@@ -152,12 +149,8 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         if (count is null)
             count = index + 1;
 
-        if (index < 0 || index > self.Length || count < 0
-            || index - count + 1 < 0)
-        {
-            ctx.IndexOutOfRange();
-            return default;
-        }
+        if (index < 0 || index > self.Length || count < 0 || index - count + 1 < 0)
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         return self.LastIndexOf(value, index.Value, count.Value);
     }
@@ -167,8 +160,8 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         self.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
     [InstanceMethod]
-    internal static string Capitalize(string self) => self.Length == 0
-        ? "" : char.ToUpper(self[0]) + self[1..].ToLower();
+    internal static string Capitalize(string self) =>
+        self.Length == 0 ? "" : char.ToUpper(self[0]) + self[1..].ToLower();
 
     [InstanceMethod]
     internal static string Upper(DyString self) => self.Value.ToUpper();
@@ -183,47 +176,41 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     internal static bool EndsWith(string self, string value) => self.EndsWith(value);
 
     [InstanceMethod]
-    internal static string? Substring(ExecutionContext ctx, string self, int index, [Default]int? count = null)
+    internal static string? Substring(string self, int index, [Default]int? count = null)
     {
         if (index < 0)
             index = self.Length + index;
 
         if (index >= self.Length)
-        {
-            ctx.IndexOutOfRange();
-            return default;
-        }
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         if (count is null)
             return self[index..];
 
         if (count < 0 || count + index > self.Length)
-        {
-            ctx.IndexOutOfRange();
-            return default;
-        }
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         return self.Substring(index, count.Value);
     }
 
     [InstanceMethod]
-    internal static string Trim(string self, [VarArg]char[] chars) => self.Trim(chars);
+    internal static string Trim(string self, [VarArg] char[] chars) => self.Trim(chars);
 
     [InstanceMethod]
-    internal static string TrimStart(string self, [VarArg]char[] chars) => self.TrimStart(chars);
+    internal static string TrimStart(string self, [VarArg] char[] chars) => self.TrimStart(chars);
 
     [InstanceMethod]
-    internal static string TrimEnd(string self, [VarArg]char[] chars) => self.TrimEnd(chars);
+    internal static string TrimEnd(string self, [VarArg] char[] chars) => self.TrimEnd(chars);
 
     [InstanceMethod]
     internal static bool IsEmpty(string self) => string.IsNullOrWhiteSpace(self);
 
     [InstanceMethod]
-    internal static string PadLeft(string self, int width, [ParameterName("char")]char c = ' ') =>
+    internal static string PadLeft(string self, int width, [ParameterName("char")] char c = ' ') =>
         self.PadLeft(width, c);
 
     [InstanceMethod]
-    internal static string PadRight(string self, int width, [ParameterName("char")]char c = ' ') =>
+    internal static string PadRight(string self, int width, [ParameterName("char")] char c = ' ') =>
         self.PadRight(width, c);
 
     [InstanceMethod]
@@ -231,16 +218,13 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         self.Replace(value, other, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
     [InstanceMethod]
-    internal static string? Remove(ExecutionContext ctx, string self, int index, [Default]int? count = null)
+    internal static string? Remove(string self, int index, [Default]int? count = null)
     {
         if (count is null)
             count = self.Length - index;
 
         if (index + count > self.Length)
-        {
-            ctx.IndexOutOfRange();
-            return default;
-        }
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         return self.Remove(index, count.Value);
     }
@@ -266,14 +250,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         var arr = new object[values.Length];
 
         for (var i = 0; i < values.Length; i++)
-        {
-            var o = values[i].ToString(ctx);
-
-            if (ctx.HasErrors)
-                return default;
-
-            arr[i] = o;
-        }
+            arr[i] = values[i].ToString(ctx);
 
         return string.Format(self, arr);
     }
@@ -294,9 +271,6 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
 
     private static bool Collect(ExecutionContext ctx, DyObject[] values, List<string> arr)
     {
-        if (ctx.HasErrors)
-            return false;
-
         for (var i = 0; i < values.Length; i++)
         {
             var a = values[i];
@@ -306,10 +280,6 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
             else
             {
                 var res = a.ToString(ctx);
-
-                if (ctx.HasErrors)
-                    return false;
-
                 arr.Add(res.Value);
             }
         }

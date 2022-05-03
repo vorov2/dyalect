@@ -211,7 +211,7 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
     }
 
     [StaticMethod(Method.Integer)]
-    internal static long? CreateNew(ExecutionContext ctx, DyObject value)
+    internal static long? CreateNew(DyObject value)
     {
         if (value is DyInteger i8)
             return i8.Value;
