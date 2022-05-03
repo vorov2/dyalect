@@ -5,11 +5,11 @@ namespace Dyalect.Runtime.Types;
 public static class Extensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool IsTrue(this DyObject self) =>
+    public static bool IsTrue(this DyObject self) =>
         !ReferenceEquals(self, False) && !ReferenceEquals(self, Nil);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool IsFalse(this DyObject self) =>
+    public static bool IsFalse(this DyObject self) =>
         ReferenceEquals(self, False) || ReferenceEquals(self, Nil);
 
     //Doesn't generate an error if type check fails

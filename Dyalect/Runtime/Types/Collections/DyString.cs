@@ -9,7 +9,7 @@ public sealed class DyString : DyCollection
 
     public override string TypeName => nameof(Dy.String);
 
-    internal readonly string Value;
+    public readonly string Value;
 
     private int hashCode;
 
@@ -23,7 +23,7 @@ public sealed class DyString : DyCollection
     
     internal override DyObject GetValue(int index) => new DyChar(Value[index]);
 
-    internal override DyObject[] GetValues()
+    public override DyObject[] GetValues()
     {
         var arr = new DyObject[Value.Length];
 

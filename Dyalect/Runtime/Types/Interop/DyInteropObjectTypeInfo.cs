@@ -37,7 +37,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
             return ctx.StaticOperationNotSupported(name, ReflectedTypeId);
 
         if (func.Auto)
-            return func.BindOrRun(ctx, this);
+            return func.TryInvokeProperty(ctx, this);
 
         return func;
     }
@@ -75,7 +75,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
         }
 
         if (func is not null)
-            return func.BindOrRun(ctx, self);
+            return func.TryInvokeProperty(ctx, self);
 
         return ctx.OperationNotSupported(name, self);
     }

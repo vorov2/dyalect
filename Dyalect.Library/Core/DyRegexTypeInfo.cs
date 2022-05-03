@@ -90,7 +90,7 @@ public sealed partial class DyRegexTypeInfo : DyForeignTypeInfo
             return ctx.IndexOutOfRange();
 
         var ms = self.Regex.Matches(input, index);
-        var xs = new FastList<DyTuple>();
+        var xs = new List<DyTuple>();
 
         for (var i = 0; i < ms.Count; i++)
             xs.Add(CreateMatch(ms[i]));

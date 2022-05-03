@@ -319,7 +319,7 @@ public class MethodGenerator : SourceGenerator
 
         builder.AppendLine($"internal sealed class {className} : {Types.DyForeignFunction}");
         builder.StartBlock();
-        builder.AppendLine($"internal override {Types.DyObject} CallWithMemoryLayout({Types.ExecutionContext} __ctx, {Types.DyObject}[] __args)");
+        builder.AppendLine($"protected override {Types.DyObject} CallWithMemoryLayout({Types.ExecutionContext} __ctx, {Types.DyObject}[] __args)");
         builder.StartBlock();
 
         var pars = EmitParameters(ctx, builder, t, m, isStatic, false, out var varArgIndex);
@@ -364,7 +364,7 @@ public class MethodGenerator : SourceGenerator
         builder.StartBlock();
 
         if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
-            builder.AppendLine($"Attr |= {Types.FunAttr}.Auto;");
+            builder.AppendLine($"Attr |= 0x01;");
 
         builder.EndBlock();
         builder.AppendLine();
@@ -373,7 +373,7 @@ public class MethodGenerator : SourceGenerator
         if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
         {
             builder.AppendLine();
-            builder.AppendLine($"internal override DyObject BindOrRun({Types.ExecutionContext} __ctx, {Types.DyObject} __arg)");
+            builder.AppendLine($"protected override DyObject BindOrRun({Types.ExecutionContext} __ctx, {Types.DyObject} __arg)");
             builder.StartBlock();
             EmitParameters(ctx, builder, t, m, isStatic, true, out _);
             EmitReturnType(ctx, builder, t, m);

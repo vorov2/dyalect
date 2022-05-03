@@ -1,5 +1,4 @@
-﻿using System;
-namespace Dyalect.Compiler;
+﻿namespace Dyalect;
 
 public struct HashString : IEquatable<HashString>
 {

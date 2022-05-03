@@ -631,7 +631,7 @@ public static partial class DyMachine
                     break;
                 case OpCode.CtorCheck:
                     second = evalStack.Peek();
-                    evalStack.Replace(second is IConstructor cc && cc.Constructor == unit.Strings[op.Data]);
+                    evalStack.Replace(second is IProduction cc && cc.Constructor == unit.Strings[op.Data]);
                     break;
                 case OpCode.Start:
                     {
@@ -722,7 +722,7 @@ public static partial class DyMachine
     {
         try
         {
-            return func.CallWithMemoryLayout(ctx, ctx.PopArguments().Locals);
+            return func.FastCall(ctx, ctx.PopArguments().Locals);
         }
         catch (IterationException)
         {

@@ -180,7 +180,7 @@ public class DyTuple : DyCollection
 
     internal virtual DyLabel? GetKeyInfo(int index) => values[index] is DyLabel lab ? lab : null;
 
-    internal override DyObject[] GetValues()
+    public override DyObject[] GetValues()
     {
         if (Count != values.Length)
             return CopyTuple();

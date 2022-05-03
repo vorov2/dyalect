@@ -1,7 +1,7 @@
 ﻿using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
-public sealed class DyClass : DyObject, IConstructor
+public sealed class DyClass : DyObject, IProduction
 {
     public string Constructor { get; }
 

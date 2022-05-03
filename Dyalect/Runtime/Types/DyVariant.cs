@@ -1,6 +1,6 @@
 ﻿namespace Dyalect.Runtime.Types;
 
-public sealed class DyVariant : DyObject, IConstructor
+public sealed class DyVariant : DyObject, IProduction
 {
     internal static readonly DyVariant Eta = new(string.Empty, DyTuple.Empty);
     internal readonly DyTuple Tuple;

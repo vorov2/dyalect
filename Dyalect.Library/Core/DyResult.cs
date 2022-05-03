@@ -2,7 +2,7 @@
 using Dyalect.Runtime.Types;
 namespace Dyalect.Library.Core;
 
-public sealed class DyResult : DyForeignObject, IConstructor
+public sealed class DyResult : DyForeignObject, IProduction
 {
     internal readonly DyObject Value;
 

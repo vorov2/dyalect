@@ -76,7 +76,7 @@ public abstract class DyCollection : DyEnumerable
 
     internal abstract DyObject GetValue(int index);
 
-    internal abstract DyObject[] GetValues();
+    public abstract DyObject[] GetValues();
 
     internal static DyObject[] ConcatValues(ExecutionContext ctx, params DyObject[] values)
     {

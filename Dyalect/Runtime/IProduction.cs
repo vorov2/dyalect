@@ -1,6 +1,6 @@
 ﻿namespace Dyalect.Runtime;
 
-public interface IConstructor
+public interface IProduction
 {
     string Constructor { get; }
 }

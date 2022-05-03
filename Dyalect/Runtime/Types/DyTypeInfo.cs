@@ -430,7 +430,7 @@ public abstract class DyTypeInfo : DyObject
                 return ctx.PrivateNameAccess(f.FunctionName);
 
             if (f.Auto)
-                ret = f.BindOrRun(ctx, this);
+                ret = f.TryInvokeProperty(ctx, this);
         }
 
         return ret;
@@ -443,7 +443,7 @@ public abstract class DyTypeInfo : DyObject
         if (func is not null)
         {
             if (func is DyFunction f && f.Auto)
-                value = f.BindOrRun(ctx, this);
+                value = f.TryInvokeProperty(ctx, this);
             else
                 value = func;
             
@@ -525,7 +525,7 @@ public abstract class DyTypeInfo : DyObject
         var value = LookupInstanceMember(self, name, ctx);
 
         if (value is not null)
-            return value.BindOrRun(ctx, self);
+            return value.TryInvokeProperty(ctx, self);
         
         return ctx.OperationNotSupported((string)name, self);
     }
@@ -536,7 +536,7 @@ public abstract class DyTypeInfo : DyObject
 
         if (func is not null)
         {
-            value = func.BindOrRun(ctx, self);
+            value = func.TryInvokeProperty(ctx, self);
             return true;
         }
 

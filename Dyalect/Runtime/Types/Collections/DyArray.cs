@@ -177,7 +177,7 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     internal override DyObject GetValue(int index) => values[CorrectIndex(index)];
 
-    internal override DyObject[] GetValues()
+    public override DyObject[] GetValues()
     {
         var arr = new DyObject[Count];
 
