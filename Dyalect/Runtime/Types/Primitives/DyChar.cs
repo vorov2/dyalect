@@ -1,5 +1,4 @@
-﻿using System.IO;
-namespace Dyalect.Runtime.Types;
+﻿namespace Dyalect.Runtime.Types;
 
 public sealed class DyChar : DyObject
 {

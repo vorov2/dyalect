@@ -1,12 +1,11 @@
-﻿using System.IO;
-namespace Dyalect.Runtime.Types;
+﻿namespace Dyalect.Runtime.Types;
 
 public abstract class DyBool : DyObject
 {
     public static readonly DyBool True = new DyBoolTrue();
     public static readonly DyBool False = new DyBoolFalse();
 
-    public override string TypeName => nameof(Dy.Bool); 
+    public override string TypeName => nameof(Dy.Bool);
     
     private sealed class DyBoolTrue: DyBool
     {
@@ -34,11 +33,5 @@ public abstract class DyBool : DyObject
 
     public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
 
-    public static DyBool Equals(ExecutionContext _, DyObject x, DyObject y)
-    {
-        if (ReferenceEquals(x, y))
-            return True;
-
-        return False;
-    }
+    public static DyBool Equals(ExecutionContext _, DyObject x, DyObject y) => ReferenceEquals(x, y) ? True : False;
 }

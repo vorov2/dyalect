@@ -96,25 +96,35 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(arg.ToString(), "'"));
     #endregion
 
-    [InstanceMethod] internal static bool IsLower(char self) => char.IsLower(self);
-    
-    [InstanceMethod] internal static bool IsUpper(char self) => char.IsUpper(self);
-    
-    [InstanceMethod] internal static bool IsControl(char self) => char.IsControl(self);
-    
-    [InstanceMethod] internal static bool IsDigit(char self) => char.IsDigit(self);
-    
-    [InstanceMethod] internal static bool IsLetter(char self) => char.IsLetter(self);
-    
-    [InstanceMethod] internal static bool IsLetterOrDigit(char self) => char.IsLetterOrDigit(self);
-    
-    [InstanceMethod] internal static bool IsWhiteSpace(char self) => char.IsWhiteSpace(self);
-    
-    [InstanceMethod] internal static char Lower(char self) => char.ToLower(self);
-    
-    [InstanceMethod] internal static char Upper(char self) => char.ToUpper(self);
+    [InstanceMethod]
+    internal static bool IsLower(char self) => char.IsLower(self);
 
-    [InstanceMethod] internal static int Order(char self) => self;
+    [InstanceMethod]
+    internal static bool IsUpper(char self) => char.IsUpper(self);
+
+    [InstanceMethod]
+    internal static bool IsControl(char self) => char.IsControl(self);
+
+    [InstanceMethod]
+    internal static bool IsDigit(char self) => char.IsDigit(self);
+
+    [InstanceMethod]
+    internal static bool IsLetter(char self) => char.IsLetter(self);
+
+    [InstanceMethod]
+    internal static bool IsLetterOrDigit(char self) => char.IsLetterOrDigit(self);
+
+    [InstanceMethod]
+    internal static bool IsWhiteSpace(char self) => char.IsWhiteSpace(self);
+
+    [InstanceMethod]
+    internal static char Lower(char self) => char.ToLower(self);
+
+    [InstanceMethod]
+    internal static char Upper(char self) => char.ToUpper(self);
+
+    [InstanceMethod]
+    internal static int Order(char self) => self;
 
     [StaticMethod(Method.Char)]
     internal static DyObject CreateChar(ExecutionContext ctx, DyObject value)
