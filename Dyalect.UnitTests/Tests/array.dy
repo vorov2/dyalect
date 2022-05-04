@@ -40,6 +40,13 @@
     assert([1, 1, 2], arr)
 #endregion
 
+#region "Methods: RemoveAt"
+    var arr = [1,2,3,4,5]
+    arr.RemoveAt(3)
+    assert(4, arr.Length())
+    assert([1,2,3,5], arr)
+#endregion
+
 #region "Methods: Add, Clear, Insert, Remove"
     let arr = [1,2,3,4,5]
     arr.Clear()

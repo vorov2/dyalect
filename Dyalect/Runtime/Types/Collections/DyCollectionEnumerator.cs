@@ -22,7 +22,6 @@ internal sealed class DyCollectionEnumerable : IEnumerable<DyObject>
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 
-
 internal sealed class DyCollectionEnumerator : IEnumerator<DyObject>
 {
     private readonly DyObject[] arr;

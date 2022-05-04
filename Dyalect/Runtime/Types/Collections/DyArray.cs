@@ -20,6 +20,8 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
 
+    private int CorrectIndex(int index) => index < 0 ? values.Length + index : index;
+
     public void Compact()
     {
         if (Count == values.Length)
@@ -33,9 +35,9 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     public void RemoveRange(int start, int count)
     {
-        var lst = new List<DyObject>(values);
-        lst.RemoveRange(start, count);
-        values = lst.ToArray();
+        var xs = new List<DyObject>(values);
+        xs.RemoveRange(start, count);
+        values = xs.ToArray();
         Count = values.Length;
         Version++;
     }
@@ -55,6 +57,8 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     public void Insert(int index, DyObject item)
     {
+        index = CorrectIndex(index);
+
         if (index < 0 || index > Count)
             throw new DyCodeException(DyError.IndexOutOfRange, index);
 
@@ -66,13 +70,13 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
             return;
         }
 
-        EnsureSize(Count + 1);
+        values = EnsureSize(Count + 1, values);
         Array.Copy(values, index, values, index + 1, Count - index);
         values[index] = item;
         Count++;
         Version++;
 
-        void EnsureSize(int size)
+        static DyObject[] EnsureSize(int size, DyObject[] values)
         {
             if (size > values.Length)
             {
@@ -83,13 +87,17 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
                 var arr = new DyObject[exp];
                 Array.Copy(values, arr, values.Length);
-                values = arr;
+                return arr;
             }
+
+            return values;
         }
     }
 
     public void RemoveAt(int index)
     {
+        index = CorrectIndex(index);
+
         if (index < 0 || index >= Count)
             throw new IndexOutOfRangeException();
         
@@ -106,20 +114,20 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
         Version++;
     }
 
-    internal int IndexOf(ExecutionContext ctx, DyObject elem)
+    internal int IndexOf(ExecutionContext ctx, DyObject value)
     {
         for (var i = 0; i < Count; i++)
         {
             var e = values[i];
 
-            if (e.Equals(elem, ctx))
+            if (e.Equals(value, ctx))
                 return i;
         }
 
         return -1;
     }
     
-    public int LastIndexOf(ExecutionContext ctx, DyObject elem)
+    public int LastIndexOf(ExecutionContext ctx, DyObject value)
     {
         var index = -1;
 
@@ -127,7 +135,7 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
         {
             var e = values[i];
 
-            if (e.Equals(elem, ctx))
+            if (e.Equals(value, ctx))
                 index = i;
 
             if (ctx.HasErrors)
