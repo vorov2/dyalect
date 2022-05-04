@@ -57,8 +57,13 @@ internal sealed class DyClassInfo : DyTypeInfo
             return new DyString($"{ReflectedTypeName}.{cust.Constructor}{(literal ? priv.ToLiteral(ctx) : priv.ToString(ctx))}");
     }
 
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>
-        ((DyClass)self).Fields.GetOrdinal(field.GetString()) is not -1 ? True : False;
+    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
+    {
+        if (field.TypeId is not Dy.String and not Dy.Char)
+            return False;
+
+        return ((DyClass)self).Fields.GetOrdinal(field.ToString()) is not -1 ? True : False;
+    }
 
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject self)
     {

@@ -58,14 +58,14 @@ public sealed partial class DyFileTypeInfo : DyForeignTypeInfo<IOModule>
     }
 
     [StaticMethod]
-    internal static void WriteAllText(ExecutionContext ctx, string path, DyObject data, int? encoding = null)
+    internal static void WriteAllText(ExecutionContext ctx, string path, string data, int? encoding = null)
     {
         var enc = GetEncoding(ctx, encoding);
 
         if (ctx.HasErrors)
             return;
 
-        ctx.Handle(() => File.WriteAllText(path, data.GetString(), enc));
+        ctx.Handle(() => File.WriteAllText(path, data, enc));
     }
 
     [StaticMethod]
@@ -77,7 +77,7 @@ public sealed partial class DyFileTypeInfo : DyForeignTypeInfo<IOModule>
         if (ctx.HasErrors)
             return;
 
-        var strings = seq.Select(s => s.ToString(ctx).GetString()).ToArray();
+        var strings = seq.Select(s => s.ToString(ctx).Value).ToArray();
 
         if (ctx.HasErrors)
             return;

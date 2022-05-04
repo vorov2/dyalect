@@ -3,11 +3,21 @@ using Dyalect.UnitTesting;
 using Dyalect.Util;
 using System;
 using System.IO;
-using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Dyalect
 {
+    public static class Ext
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long GetInt(this Runtime.Types.DyObject self)
+        {
+            return self is Runtime.Types.DyInteger i8 ? i8.Value
+                : self is Runtime.Types.DyFloat r8 ? (long)r8.Value : throw new Exception();
+        }
+    }
+
     public static class Program
     {
         private const int ERR = -1;

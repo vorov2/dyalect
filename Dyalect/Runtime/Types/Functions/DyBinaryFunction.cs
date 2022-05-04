@@ -1,5 +1,4 @@
 ﻿using Dyalect.Debug;
-using System;
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyBinaryFunction : DyForeignFunction
@@ -12,12 +11,12 @@ internal sealed class DyBinaryFunction : DyForeignFunction
     private DyBinaryFunction(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars)
         : base(name, pars, -1) => this.fun = fun;
 
-    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0]);
+    protected override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0]);
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyBinaryFunction(FunctionName, fun, Parameters);
 
     public override object ToObject() => fun;
 
-    internal override bool Equals(DyFunction func) => 
+    protected override bool Equals(DyFunction func) => 
            func is DyBinaryFunction bin && ReferenceEquals(bin.fun, fun) && IsSameInstance(this, func);
 }

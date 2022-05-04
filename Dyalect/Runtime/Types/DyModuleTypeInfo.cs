@@ -52,16 +52,16 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
         return False;
     }
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => ((DyModule)self).GetMember(ctx, index);
 
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
-        if (!field.Is(ctx, Dy.String))
+        if (field.TypeId is not Dy.String and not Dy.Char)
             return Nil;
 
         var mod = (DyModule)self;
 
-        if (!mod.Unit.ExportList.TryGetValue(field.GetString(), out var sv))
+        if (!mod.Unit.ExportList.TryGetValue(field.ToString(), out var sv))
             return False;
 
         return (sv.Data & VarFlags.Private) != VarFlags.Private ? True : False;

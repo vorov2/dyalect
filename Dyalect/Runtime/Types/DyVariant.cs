@@ -1,10 +1,11 @@
 ﻿namespace Dyalect.Runtime.Types;
 
-public sealed class DyVariant : DyObject
+public sealed class DyVariant : DyObject, IProduction
 {
     internal static readonly DyVariant Eta = new(string.Empty, DyTuple.Empty);
-    internal readonly string Constructor;
     internal readonly DyTuple Tuple;
+
+    public string Constructor { get; }
 
     public override string TypeName => nameof(Dy.Variant);
     
@@ -29,8 +30,6 @@ public sealed class DyVariant : DyObject
         else
             Tuple = DyTuple.Empty;
     }
-
-    public override string? GetConstructor() => Constructor;
 
     public override int GetHashCode() => Constructor.GetHashCode();
 

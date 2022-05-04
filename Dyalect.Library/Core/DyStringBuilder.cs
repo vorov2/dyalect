@@ -9,8 +9,7 @@ public sealed class DyStringBuilder : DyForeignObject
     public DyStringBuilder(DyForeignTypeInfo typeInfo, StringBuilder builder) : base(typeInfo) => Builder = builder;
 
     public override bool Equals(DyObject? other) =>
-        other is DyString || other is DyStringBuilder ? Builder.ToString() == other.ToString()
-        : base.Equals(other);
+        other is DyString || other is DyStringBuilder && Builder.ToString() == other.ToString();
 
     public override object ToObject() => Builder.ToString();
 

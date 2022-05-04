@@ -14,4 +14,6 @@ internal sealed class DyForeignIterator : DyIterator
     public override object ToObject() => seq;
 
     public override int GetHashCode() => seq.GetHashCode();
+
+    public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
 }

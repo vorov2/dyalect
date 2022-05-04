@@ -1,12 +1,11 @@
-﻿using System.IO;
-namespace Dyalect.Runtime.Types;
+﻿namespace Dyalect.Runtime.Types;
 
 public abstract class DyBool : DyObject
 {
     public static readonly DyBool True = new DyBoolTrue();
     public static readonly DyBool False = new DyBoolFalse();
 
-    public override string TypeName => nameof(Dy.Bool); 
+    public override string TypeName => nameof(Dy.Bool);
     
     private sealed class DyBoolTrue: DyBool
     {
@@ -32,17 +31,7 @@ public abstract class DyBool : DyObject
 
     public static explicit operator DyBool(bool v) => v ? True : False;
 
-    public static DyBool Equals(ExecutionContext _, DyObject x, DyObject y)
-    {
-        if (ReferenceEquals(x, y))
-            return True;
+    public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
 
-        return False;
-    }
-
-    internal override void Serialize(BinaryWriter writer)
-    {
-        writer.Write(TypeId);
-        writer.Write(this is DyBoolTrue);
-    }
+    public static DyBool Equals(ExecutionContext _, DyObject x, DyObject y) => ReferenceEquals(x, y) ? True : False;
 }

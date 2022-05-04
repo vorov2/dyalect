@@ -37,7 +37,7 @@ internal class DyNativeFunction : DyFunction
             Self = arg
         };
 
-    internal override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
+    protected override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
     {
         if (Auto)
         {
@@ -58,7 +58,7 @@ internal class DyNativeFunction : DyFunction
         return BindToInstance(ctx, arg);
     }
 
-    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] locals)
+    protected override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] locals)
     {
         ctx.CallStack.Push(Caller.External);
         return DyMachine.ExecuteWithData(this, locals, ctx);
@@ -72,7 +72,7 @@ internal class DyNativeFunction : DyFunction
         return size == 0 ? Array.Empty<DyObject>() : new DyObject[size];
     }
 
-    internal override bool Equals(DyFunction func) => 
+    protected override bool Equals(DyFunction func) => 
            func is DyNativeFunction m && m.UnitId == UnitId && m.FunctionId == FunctionId 
         && IsSameInstance(this, func);
 }

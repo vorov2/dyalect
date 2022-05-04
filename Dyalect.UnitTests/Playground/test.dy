@@ -1,0 +1,6 @@
+﻿let xs = (x: 1, y: 2)
+try {
+    xs[2]
+} catch {
+    @IndexOutOfRange => assert(got: true)
+}

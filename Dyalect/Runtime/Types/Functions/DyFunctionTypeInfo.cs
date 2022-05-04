@@ -18,8 +18,8 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
 
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
-        if (right.TypeId == Dy.String)
-            return new DyString(left.ToString(ctx) + right.GetString());
+        if (right.TypeId is Dy.String)
+            return base.AddOp(ctx, left, right);
 
         var f1 = left.ToFunction(ctx);
         if (ctx.HasErrors) return Nil;
@@ -47,10 +47,8 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
 
             for (var j = 0; j < parameters.Count; j++)
             {
-                var lab = tv[j].GetLabel();
-
-                if (p.Name == lab)
-                    val = tv[j].GetTaggedValue();
+                if (tv[j] is DyLabel la && la.Label == p.Name)
+                    val = la.Value;
             }
 
             pars[i] = new Par(p.Name, val, p.IsVarArg, p.TypeAnnotation);

@@ -1,6 +1,4 @@
-﻿using Dyalect.Compiler;
-using Dyalect.Debug;
-using System;
+﻿using Dyalect.Debug;
 namespace Dyalect.Runtime.Types;
 
 public abstract class DyForeignFunction : DyFunction

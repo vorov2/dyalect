@@ -20,4 +20,6 @@ internal sealed class DyNativeIterator : DyIterator
     public override IEnumerable<DyObject> ToEnumerable(ExecutionContext ctx) => new MultiPartEnumerable(ctx, GetIteratorFunction());
 
     public override int GetHashCode() => HashCode.Combine(unitId, handle, captures);
+
+    public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
 }

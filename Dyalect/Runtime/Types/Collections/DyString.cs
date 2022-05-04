@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
 public sealed class DyString : DyCollection
@@ -9,7 +7,7 @@ public sealed class DyString : DyCollection
 
     public override string TypeName => nameof(Dy.String);
 
-    internal readonly string Value;
+    public readonly string Value;
 
     private int hashCode;
 
@@ -23,7 +21,7 @@ public sealed class DyString : DyCollection
     
     internal override DyObject GetValue(int index) => new DyChar(Value[index]);
 
-    internal override DyObject[] GetValues()
+    public override DyObject[] GetValues()
     {
         var arr = new DyObject[Value.Length];
 
@@ -53,46 +51,22 @@ public sealed class DyString : DyCollection
         return hashCode;
     }
 
-    public override bool Equals(DyObject? obj) =>
-        obj is DyString s ? Value == s.Value : base.Equals(obj);
+    public override bool Equals(DyObject? obj) => obj is DyString s && Value == s.Value;
 
     public override DyObject Clone() => this;
 
-    protected internal override string GetString() => Value;
-
     public static explicit operator string(DyString str) => str.Value;
 
-    public static string ToString(DyObject value, ExecutionContext ctx)
+    internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        var res = value;
+        if (index is not DyInteger ix)
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
-        while (res.TypeId is not Dy.String and not Dy.Char)
-        {
-            res = res.ToString(ctx);
-
-            if (ctx.HasErrors)
-                return default!;
-        }
-
-        return res.GetString();
-    }
-
-    protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
-    {
-        if (index.TypeId != Dy.Integer)
-            return ctx.IndexOutOfRange(index);
-
-        return GetItem((int)index.GetInteger(), ctx);
+        return GetItem((int)ix.Value, ctx);
     }
 
     protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) => new DyChar(Value[idx]);
 
     protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx) =>
         ctx.OperationNotSupported("set", Dy.String);
-
-    internal override void Serialize(BinaryWriter writer)
-    {
-        writer.Write(TypeId);
-        writer.Write(Value);
-    }
 }

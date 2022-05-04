@@ -19,18 +19,21 @@ public sealed class DyModule : DyObject, IEnumerable<DyObject>
 
     public override object ToObject() => Unit;
 
-    protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
-    {
-        if (index.TypeId != Dy.String)
-            return ctx.IndexOutOfRange(index);
+    public override bool Equals(DyObject? other) => other is DyModule m && ReferenceEquals(m.Unit, Unit);
 
-        if (!TryGetMember(index.GetString(), ctx, out var value))
-            return ctx.IndexOutOfRange(index);
+    internal DyObject GetMember(ExecutionContext ctx, DyObject index)
+    {
+        if (index.TypeId is not Dy.String and not Dy.Char
+            || !TryGetMember(ctx, index.ToString(), out var value))
+        {
+            ctx.Error = new (DyError.IndexOutOfRange, index);
+            return Nil;
+        }
 
         return value!;
     }
 
-    internal bool TryGetMember(string name, ExecutionContext ctx, out DyObject? value)
+    internal bool TryGetMember(ExecutionContext ctx, string name, out DyObject? value)
     {
         value = null;
 

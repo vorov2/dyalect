@@ -39,8 +39,8 @@ internal sealed partial class Lang : ForeignUnit
             if (!fst && !string.IsNullOrEmpty(separator))
                 Console.Write(separator);
 
-            if (a.Is(Dy.String))
-                Console.Write(a.GetString());
+            if (a is DyString s)
+                Console.Write(s.Value);
             else
                 Console.Write(a.ToString(ctx));
 
@@ -50,8 +50,10 @@ internal sealed partial class Lang : ForeignUnit
                 break;
         }
 
-        if (terminator.TypeId is Dy.String)
-            Console.Write(terminator.GetString());
+        if (terminator.TypeId is Dy.String or Dy.Char)
+            Console.Write(terminator.ToString());
+        else if (terminator.TypeId is not Dy.Nil)
+            throw new DyCodeException(DyError.InvalidType, terminator);
     }
 
     [StaticMethod("setOut")]
@@ -73,7 +75,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("constructorName")]
-    internal static string? GetConstructorName(DyObject value) => value.GetConstructor();
+    internal static string? GetConstructorName(DyObject value) => value is IProduction c ? c.Constructor : null;
 
     [StaticMethod("typeName")]
     internal static string GetTypeName(DyObject value)

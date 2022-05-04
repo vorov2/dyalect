@@ -26,7 +26,9 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     {
         var arr = new List<DyObject>();
         arr.AddRange(DyIterator.ToEnumerable(ctx, left));
+        if (ctx.HasErrors) return Nil;
         arr.AddRange(DyIterator.ToEnumerable(ctx, right));
+        if (ctx.HasErrors) return Nil;
         return new DyTuple(arr.ToArray());
     }
 
@@ -113,10 +115,10 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
-        if (!field.Is(ctx, Dy.String))
-            return Nil;
+        if (field.TypeId is not Dy.String and not Dy.Char)
+            return ctx.InvalidType(field);
 
-        return ((DyTuple)self).GetOrdinal(field.GetString()) is not -1 ? True : False;
+        return ((DyTuple)self).GetOrdinal(field.ToString()) is not -1 ? True : False;
     }
 
     private static DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
@@ -154,11 +156,12 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return False;
     }
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
+        ((DyTuple)self).GetItem(index, ctx);
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
-        self.SetItem(index, value, ctx);
+        ((DyTuple)self).SetItem(index, value, ctx);
         return Nil;
     }
     #endregion
@@ -179,27 +182,27 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 
         for (var i = 0; i < tv.Length; i++)
         {
-            var e = tv[i].GetTaggedValue();
+            var e = tv[i] is DyLabel la ? la.Value : tv[i];
 
             if (e.Equals(value, ctx))
-                return RemoveAt(self, i);
+                return InternalRemoveAt(self, i);
         }
 
         return self;
     }
 
     [InstanceMethod]
-    internal static DyObject RemoveAt(ExecutionContext ctx, DyTuple self, int index)
+    internal static DyObject RemoveAt(DyTuple self, int index)
     {
         index = index < 0 ? self.Count + index : index;
 
         if (index < 0 || index >= self.Count)
-            return ctx.IndexOutOfRange(index);
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
-        return RemoveAt(self, index);
+        return InternalRemoveAt(self, index);
     }
 
-    internal static DyTuple RemoveAt(DyTuple self, int index)
+    internal static DyTuple InternalRemoveAt(DyTuple self, int index)
     {
         var arr = new DyObject[self.Count - 1];
         var c = 0;
@@ -220,12 +223,12 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         new DyTuple(DyCollection.ConcatValues(ctx, values));
 
     [InstanceMethod]
-    internal static DyObject Insert(ExecutionContext ctx, DyTuple self, int index, DyObject value)
+    internal static DyObject Insert(DyTuple self, int index, DyObject value)
     {
         index = index < 0 ? self.Count + index : index;
 
         if (index < 0 || index > self.Count)
-            return ctx.IndexOutOfRange(index);
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
         var arr = new DyObject[self.Count + 1];
         arr[index] = value;
@@ -260,12 +263,20 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
-    internal static DyObject First(ExecutionContext ctx, DyObject self) =>
-        self.GetItem(DyInteger.Zero, ctx);
+    internal static DyObject First(ExecutionContext ctx, DyTuple self)
+    {
+        var ret = self.GetItem(0, ctx);
+        ctx.ThrowIf();
+        return ret;
+    }
 
     [InstanceMethod]
-    internal static DyObject Second(ExecutionContext ctx, DyObject self) =>
-        self.GetItem(DyInteger.One, ctx);
+    internal static DyObject Second(ExecutionContext ctx, DyTuple self)
+    {
+        var ret = self.GetItem(1, ctx);
+        ctx.ThrowIf();
+        return ret;
+    }
 
     [InstanceMethod]
     
@@ -319,7 +330,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         {
             if (o is DyLabel lab)
             {
-                var exist = xs.FirstOrDefault(i => i.GetLabel() == lab.Label) as DyLabel;
+                var exist = xs.OfType<DyLabel>().FirstOrDefault(i => i.Label == lab.Label);
 
                 if (exist is not null)
                 {

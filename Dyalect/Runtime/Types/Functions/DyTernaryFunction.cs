@@ -1,5 +1,4 @@
 ﻿using Dyalect.Debug;
-using System;
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyTernaryFunction : DyForeignFunction
@@ -12,13 +11,13 @@ internal sealed class DyTernaryFunction : DyForeignFunction
     private DyTernaryFunction(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars)
         : base(name, pars, -1) => this.fun = fun;
 
-    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0], args[1]);
+    protected override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0], args[1]);
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyTernaryFunction(FunctionName, fun, Parameters);
 
     public override object ToObject() => fun;
 
-    internal override bool Equals(DyFunction func) =>
+    protected override bool Equals(DyFunction func) =>
            func is DyTernaryFunction ter && ReferenceEquals(ter.fun, fun)
         && IsSameInstance(this, func);
 }

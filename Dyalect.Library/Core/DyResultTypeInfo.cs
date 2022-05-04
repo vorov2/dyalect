@@ -30,15 +30,14 @@ public sealed partial class DyResultTypeInfo : DyForeignTypeInfo
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
-        if (index.TypeId is Dy.Integer)
-            return index.GetInteger() is 0 ? ((DyResult)self).Value : ctx.IndexOutOfRange(index);
+        if (index is DyInteger i)
+            return i.Value is 0 ? ((DyResult)self).Value : ctx.IndexOutOfRange(index);
 
-        if (index.TypeId is Dy.String)
+        if (index is DyString str)
         {
-            var str = index.GetString();
             var s = (DyResult)self;
-            return str is "value" && s.Constructor is SUCCESS ? s.Value
-                : str is "detail" && s.Constructor is FAILURE ? s.Value
+            return str.Value is "value" && s.Constructor is SUCCESS ? s.Value
+                : str.Value is "detail" && s.Constructor is FAILURE ? s.Value
                 : ctx.IndexOutOfRange(str);
         }
 

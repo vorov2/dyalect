@@ -2,6 +2,7 @@
 using Dyalect.Runtime;
 using Dyalect.Runtime.Types;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 namespace Dyalect.Library.Core;
 
@@ -74,7 +75,7 @@ public sealed partial class DyRegexTypeInfo : DyForeignTypeInfo
         try
         {
             var m = self.Regex.Match(input, index, count.Value);
-            return new DyRegexMatch(m);
+            return CreateMatch(m);
         }
         catch (RegexMatchTimeoutException)
         {
@@ -89,12 +90,12 @@ public sealed partial class DyRegexTypeInfo : DyForeignTypeInfo
             return ctx.IndexOutOfRange();
 
         var ms = self.Regex.Matches(input, index);
-        var xs = new FastList<DyRegexMatch>();
+        var xs = new List<DyTuple>();
 
         for (var i = 0; i < ms.Count; i++)
-            xs.Add(new DyRegexMatch(ms[i]));
+            xs.Add(CreateMatch(ms[i]));
 
-        return new DyTuple(xs.ToArray());
+        return new DyArray(xs.ToArray());
     }
 
     [InstanceMethod] 
@@ -116,6 +117,26 @@ public sealed partial class DyRegexTypeInfo : DyForeignTypeInfo
             return default;
         }
     }
+
+    private static DyTuple CreateCapture(Capture capture) =>
+        DyTuple.Create
+        (
+            new ("index", DyInteger.Get(capture.Index)),
+            new ("length", DyInteger.Get(capture.Length)),
+            new ("value", DyString.Get(capture.Value))
+        );
+
+    private static DyTuple CreateMatch(Match match) =>
+        DyTuple.Create
+        (
+            new ("name", DyString.Get(match.Name)),
+            new ("success", match.Success ? True : False),
+            new ("captures", new DyArray(match.Captures.Select(CreateCapture).ToArray())),
+            new ("index", DyInteger.Get(match.Index)),
+            new ("length", DyInteger.Get(match.Length)),
+            new ("value", DyString.Get(match.Value))
+        );
+
 
     [StaticMethod("Regex")]
     internal static DyObject New(ExecutionContext ctx, string pattern, bool ignoreCase = false, bool singleline = false, bool multiline = false, bool removeEmptyEntries = false)

@@ -24,25 +24,21 @@ public abstract class DyCollection : DyEnumerable
 
     internal DyObject GetItem(int index, ExecutionContext ctx)
     {
-        index = CorrectIndex(index);
-        
-        if (index >= Count)
-            return ctx.IndexOutOfRange(index);
-        
+        CorrectIndex(ctx, ref index);
         return CollectionGetItem(index, ctx);
     }
 
     protected abstract DyObject CollectionGetItem(int index, ExecutionContext ctx);
 
-    protected internal override void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
+    internal virtual void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
     {
-        if (obj.TypeId is not Dy.Integer)
+        if (obj is not DyInteger ix)
         {
             ctx.InvalidType(Dy.Integer, obj);
             return;
         }
 
-        var index = CorrectIndex((int)obj.GetInteger());
+        var index = CorrectIndex((int)ix.Value);
 
         if (index >= Count)
             ctx.IndexOutOfRange(index);
@@ -76,7 +72,7 @@ public abstract class DyCollection : DyEnumerable
 
     internal abstract DyObject GetValue(int index);
 
-    internal abstract DyObject[] GetValues();
+    public abstract DyObject[] GetValues();
 
     internal static DyObject[] ConcatValues(ExecutionContext ctx, params DyObject[] values)
     {

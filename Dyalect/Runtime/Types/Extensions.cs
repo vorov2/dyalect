@@ -5,11 +5,11 @@ namespace Dyalect.Runtime.Types;
 public static class Extensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool IsTrue(this DyObject self) =>
+    public static bool IsTrue(this DyObject self) =>
         !ReferenceEquals(self, False) && !ReferenceEquals(self, Nil);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static bool IsFalse(this DyObject self) =>
+    public static bool IsFalse(this DyObject self) =>
         ReferenceEquals(self, False) || ReferenceEquals(self, Nil);
 
     //Doesn't generate an error if type check fails
@@ -85,10 +85,10 @@ public static class Extensions
     //for string and TypeInfo (no native implementation of ToString for TypeInfo)
     public static DyString ToString(this DyObject self, ExecutionContext ctx)
     {
-        if (self.Is(Dy.String))
-            return (DyString)self;
-        else if (self.Is(Dy.TypeInfo))
-            return new DyString(self.ToString());
+        if (self is DyString str)
+            return str;
+        else if (self is DyTypeInfo ti)
+            return new DyString(ti.ReflectedTypeName);
         else
         {
             var ret = ctx.RuntimeContext.Types[self.TypeId].ToString(ctx, self);
@@ -96,7 +96,7 @@ public static class Extensions
             if (ReferenceEquals(ctx.Error, DyVariant.Eta))
                 ret = ctx.InvokeEtaFunction();
 
-            return ret as DyString ?? DyString.Empty;
+            return ret is DyString s ? s : new DyString(ret.ToString());
         }
     }
 
@@ -179,8 +179,9 @@ public static class Extensions
 
     public static DyObject Concat(this DyObject left, DyObject right, ExecutionContext ctx)
     {
+        var self = left.ToString(ctx);
         var type = ctx.RuntimeContext.String;
-        var ret = type.Add(ctx, left, right);
+        var ret = type.Add(ctx, self, right);
 
         if (ReferenceEquals(ctx.Error, DyVariant.Eta))
             ret = ctx.InvokeEtaFunction(right);

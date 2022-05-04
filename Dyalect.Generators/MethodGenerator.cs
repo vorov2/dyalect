@@ -44,6 +44,8 @@ public class MethodGenerator : SourceGenerator
     internal static readonly object Nil = new();
     private static readonly string[] neverNulls = new[] { "int", "long", "float", "double", "char", "bool" };
 
+    private static string Error(string value) => $"__ctx.InvalidType({value})";
+
     private static void ParamCheck(SourceBuilder sb, string input, string par, string conversion, ParFlags flags, params string[] dyTypes)
     {
         if (dyTypes.Length > 0)
@@ -62,7 +64,7 @@ public class MethodGenerator : SourceGenerator
             if ((flags & ParFlags.Nullable) == ParFlags.Nullable)
                 sb.Append($" and not {Types.Dy}.Nil");
 
-            sb.Append($") return __ctx.InvalidType({dyTypes.ToString($"{Types.Dy}.{{0}}")}, {input});");
+            sb.Append($") return {Error(input)};");
             sb.AppendLine();
         }
 
@@ -118,7 +120,7 @@ public class MethodGenerator : SourceGenerator
             sb.AppendLine($"var {len} = {arr} is null ? 0 : {arr}.Length;");
             sb.AppendLine($"for (var {index} = 0; {index} < {len}; {index}++)");
             sb.StartBlock();
-            sb.AppendLine($"if ({arr}[{index}] is not {ati.ElementType} {elem}) return __ctx.InvalidType({input});");
+            sb.AppendLine($"if ({arr}[{index}] is not {ati.ElementType} {elem}) return {Error(input)};");
             sb.AppendLine($"{par}[{index}] = {elem};");
             sb.EndBlock();
             return true;
@@ -139,16 +141,17 @@ public class MethodGenerator : SourceGenerator
 
     private readonly Dictionary<string, Action<SourceBuilder, string, string, ParFlags, ITypeSymbol>> typeConversions = new()
     {
-        { "long", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetInteger()", flag, "Integer") },
-        { "long?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(long?){0}.GetInteger()", flag, "Integer") },
-        { "int", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(int){0}.GetInteger()", flag, "Integer") },
-        { "int?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(int?){0}.GetInteger()", flag, "Integer") },
+        { "long", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(({Types.DyInteger}){{0}}).Value", flag, "Integer") },
+        { "long?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(long?)(({Types.DyInteger}){{0}}).Value", flag, "Integer") },
+        { "int", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(int)(({Types.DyInteger}){{0}}).Value", flag, "Integer") },
+        { "int?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(int?)(({Types.DyInteger}){{0}}).Value", flag, "Integer") },
         { "double", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetFloat()", flag, "Float", "Integer") },
         { "double?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(double?){0}.GetFloat()", flag, "Float", "Integer") },
         { "float", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(float){0}.GetFloat()", flag, "Float", "Integer") },
         { "float?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(float?){0}.GetFloat()", flag, "Float", "Integer") },
-        { "string", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetString()", flag, "String", "Char") },
+        { "string", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.ToString()", flag, "String", "Char") },
         { "char", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}.GetChar()", flag, "Char", "String") },
+        { "char?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "(char?){0}.GetChar()", flag, "Char", "String") },
         { "bool", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"!ReferenceEquals({{0}}, {Types.DyBool}.False) && !ReferenceEquals({{0}}, {Types.DyNil}.Instance)", flag) },
         { "bool?", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, $"(bool?)!ReferenceEquals({{0}}, {Types.DyBool}.False) && !ReferenceEquals({{0}}, {Types.DyNil}.Instance)", flag) },
         { $"{Types.DyObject}", (sb, oname, name, flag, ti) => ParamCheck(sb, oname, name, "{0}", flag) },
@@ -318,7 +321,7 @@ public class MethodGenerator : SourceGenerator
 
         builder.AppendLine($"internal sealed class {className} : {Types.DyForeignFunction}");
         builder.StartBlock();
-        builder.AppendLine($"internal override {Types.DyObject} CallWithMemoryLayout({Types.ExecutionContext} __ctx, {Types.DyObject}[] __args)");
+        builder.AppendLine($"protected override {Types.DyObject} CallWithMemoryLayout({Types.ExecutionContext} __ctx, {Types.DyObject}[] __args)");
         builder.StartBlock();
 
         var pars = EmitParameters(ctx, builder, t, m, isStatic, false, out var varArgIndex);
@@ -363,7 +366,7 @@ public class MethodGenerator : SourceGenerator
         builder.StartBlock();
 
         if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
-            builder.AppendLine($"Attr |= {Types.FunAttr}.Auto;");
+            builder.AppendLine($"Attr |= 0x01;");
 
         builder.EndBlock();
         builder.AppendLine();
@@ -372,7 +375,7 @@ public class MethodGenerator : SourceGenerator
         if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
         {
             builder.AppendLine();
-            builder.AppendLine($"internal override DyObject BindOrRun({Types.ExecutionContext} __ctx, {Types.DyObject} __arg)");
+            builder.AppendLine($"protected override DyObject BindOrRun({Types.ExecutionContext} __ctx, {Types.DyObject} __arg)");
             builder.StartBlock();
             EmitParameters(ctx, builder, t, m, isStatic, true, out _);
             EmitReturnType(ctx, builder, t, m);
@@ -380,7 +383,7 @@ public class MethodGenerator : SourceGenerator
         }
 
         builder.AppendLine();
-        builder.AppendLine($"internal override bool Equals({Types.DyFunction} func) => func is {className} cn && (ReferenceEquals(cn.Self, Self) || (cn.Self is not null && cn.Self.Equals(Self)));");
+        builder.AppendLine($"protected override bool Equals({Types.DyFunction} func) => func is {className} cn && (ReferenceEquals(cn.Self, Self) || (cn.Self is not null && cn.Self.Equals(Self)));");
         builder.EndBlock();
 
         return true;
@@ -519,14 +522,14 @@ public class MethodGenerator : SourceGenerator
     {
         if (!nullable)
         {
-            builder.AppendLine($"if ({oldVar} is not {targetType} {newVar}) return __ctx.InvalidType({oldVar});");
+            builder.AppendLine($"if ({oldVar} is not {targetType} {newVar}) return {Error(oldVar)};");
             return;
         }
 
         builder.AppendLine($"{targetType} {newVar} = default;");
         builder.AppendLine($"if ({oldVar}.TypeId != {Types.Dy}.Nil)");
         builder.StartBlock();
-        builder.AppendLine($"if ({oldVar} is not {targetType} __tmp_{newVar}) return __ctx.InvalidType({oldVar});");
+        builder.AppendLine($"if ({oldVar} is not {targetType} __tmp_{newVar}) return {Error(oldVar)};");
         builder.AppendLine($"{newVar} = __tmp_{newVar};");
         builder.EndBlock();
     }

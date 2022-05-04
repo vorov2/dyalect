@@ -67,7 +67,7 @@ public static partial class DyMachine
             throw new DyRuntimeException(RuntimeErrors.StackOverflow_0);
         
         DyObject? first, second = null, third = null;
-        DyClassInfo cls;
+        DyClassInfo clsInfo;
         Op op;
         DyFunction callFun;
 
@@ -105,7 +105,7 @@ public static partial class DyMachine
                     evalStack.Push(function.Self!);
                     break;
                 case OpCode.Unbox:
-                    evalStack.Push(function.Self!.GetInitValue());
+                    evalStack.Push(function.Self is DyClass c ? c.Fields : function.Self!);
                     break;
                 case OpCode.Term:
                     if (evalStack.Size is > 1 or 0)
@@ -551,7 +551,7 @@ public static partial class DyMachine
                         }
                         if (idx == locs.VarArgsIndex)
                         {
-                            Push(fn, locs, evalStack.Pop(), ctx);
+                            Push(locs, evalStack.Pop(), ctx);
                             if (ctx.Error is not null) goto CATCH;
                         }
                         else
@@ -618,8 +618,11 @@ public static partial class DyMachine
                         }
                     }
                     break;
+                case OpCode.NewArgs:
+                    evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(evalStack, op.Data, true));
+                    break;
                 case OpCode.NewTuple:
-                    evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(evalStack, op.Data));
+                    evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(evalStack, op.Data, false));
                     break;
                 case OpCode.TypeCheck:
                     first = evalStack.Pop();
@@ -628,7 +631,7 @@ public static partial class DyMachine
                     break;
                 case OpCode.CtorCheck:
                     second = evalStack.Peek();
-                    evalStack.Replace(second.GetConstructor() == (string)unit.Strings[op.Data]);
+                    evalStack.Replace(second is IProduction cc && cc.Constructor == unit.Strings[op.Data]);
                     break;
                 case OpCode.Start:
                     {
@@ -647,9 +650,9 @@ public static partial class DyMachine
                     evalStack.Push(new DyClass((DyClassInfo)second, (string)unit.Strings[op.Data], (DyTuple)first, unit));
                     break;
                 case OpCode.NewType:
-                    cls = new DyClassInfo((string)unit.Strings[op.Data], types.Count);
-                    types.Add(cls);
-                    evalStack.Push(cls);
+                    clsInfo = new DyClassInfo((string)unit.Strings[op.Data], types.Count);
+                    types.Add(clsInfo);
+                    evalStack.Push(clsInfo);
                     break;
                 case OpCode.Mut:
                     ((DyLabel)evalStack.Peek()).Mutable = true;
@@ -682,7 +685,7 @@ public static partial class DyMachine
         goto CYCLE;
     }
 
-    private static void Push(DyFunction fn, ExecutionContext.ArgContainer container, DyObject value, ExecutionContext ctx)
+    private static void Push(ExecutionContext.ArgContainer container, DyObject value, ExecutionContext ctx)
     {
         if (container.VarArgsSize != 0)
             ctx.TooManyArguments();
@@ -696,7 +699,7 @@ public static partial class DyMachine
         else if (value.TypeId is Dy.Tuple)
         {
             var xs = (DyTuple)value;
-            container.VarArgs = fn.VariantConstructor ? xs.UnsafeAccessValues() : xs.GetValuesWithLabels();
+            container.VarArgs = xs.IsVarArg ? xs.UnsafeAccessValues() : xs.GetValuesWithLabels();
             container.VarArgsSize = container.VarArgs.Length;
         }
         else if (value.TypeId is Dy.Iterator or Dy.Set)
@@ -719,7 +722,7 @@ public static partial class DyMachine
     {
         try
         {
-            return func.CallWithMemoryLayout(ctx, ctx.PopArguments().Locals);
+            return func.FastCall(ctx, ctx.PopArguments().Locals);
         }
         catch (IterationException)
         {
@@ -740,7 +743,7 @@ public static partial class DyMachine
         }
     }
 
-    private static DyTuple MakeTuple(EvalStack stack, int size)
+    private static DyTuple MakeTuple(EvalStack stack, int size, bool vararg)
     {
         var arr = new DyObject[size];
         var mutable = false;
@@ -750,11 +753,11 @@ public static partial class DyMachine
             var e = stack.Pop();
             arr[arr.Length - i - 1] = e;
 
-            if (!mutable && e.IsMutable())
+            if (!mutable && e is DyLabel la && la.Mutable)
                 mutable = true;
         }
 
-        return new DyTuple(arr, mutable);
+        return new DyTuple(arr, mutable, vararg);
     }
 
     private static void FillDefaults(ExecutionContext.ArgContainer cont, DyFunction callFun, ExecutionContext ctx)

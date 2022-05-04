@@ -1,5 +1,4 @@
-﻿using System.IO;
-namespace Dyalect.Runtime.Types;
+﻿namespace Dyalect.Runtime.Types;
 
 public class DyNil : DyObject
 {
@@ -17,9 +16,9 @@ public class DyNil : DyObject
 
     public override string ToString() => Literal;
 
-    public override DyObject Clone() => this;
+    public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
 
-    internal override void Serialize(BinaryWriter writer) => writer.Write(TypeId);
+    public override DyObject Clone() => this;
 
     public override int GetHashCode() => HashCode.Combine(TypeName, TypeId);
 }

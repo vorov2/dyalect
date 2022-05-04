@@ -18,6 +18,8 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
     public DyArray(DyObject[] values) : base(Dy.Array) => 
         (this.values, Count) = (values, values.Length);
 
+    public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
+
     public void Compact()
     {
         if (Count == values.Length)
@@ -158,12 +160,12 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
         return index;
     }
 
-    protected internal override DyObject GetItem(DyObject index, ExecutionContext ctx)
+    internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
-        if (index.Is(Dy.Integer))
-            return GetItem((int)index.GetInteger(), ctx);
-        else
-            return ctx.IndexOutOfRange(index);
+        if (index is DyInteger i)
+            return GetItem((int)i.Value, ctx);
+
+        throw new DyCodeException(DyError.IndexOutOfRange, index);
     }
 
     protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) => values[index];
@@ -175,12 +177,12 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     internal override DyObject GetValue(int index) => values[CorrectIndex(index)];
 
-    internal override DyObject[] GetValues()
+    public override DyObject[] GetValues()
     {
         var arr = new DyObject[Count];
 
         for (var i = 0; i < Count; i++)
-            arr[i] = values[i].GetTaggedValue();
+            arr[i] = values[i];
 
         return arr;
     }

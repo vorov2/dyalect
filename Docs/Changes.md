@@ -1,3 +1,10 @@
+# 0.44.3
+  * Change: _Type system refactoring._
+  * Change: _Refactor `Regex` to use tuples for the results_ ([Issue #872](https://github.com/vorov2/dyalect/issues/872), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Regex)).
+  * Fix: _Passing arguments to a variant, undesirable side effects_ ([Issue #874](https://github.com/vorov2/dyalect/issues/874)).
+  * Fix: _Implicit conversions from string to char can crash VM_ ([Issue #876](https://github.com/vorov2/dyalect/issues/876)).
+  * Fix: _An exception from iterator indexer can crush VM_ ([Issue #877](https://github.com/vorov2/dyalect/issues/877)).
+
 # 0.44.2
   * Fix: _It is possible to obtain a reference to `Contains` even if an object doesn't implement it_ ([Issue #867](https://github.com/vorov2/dyalect/issues/867)).
   * Fix: _VM crashes when calling `Contains` on an instance of custom type_ ([Issue #866](https://github.com/vorov2/dyalect/issues/866)).

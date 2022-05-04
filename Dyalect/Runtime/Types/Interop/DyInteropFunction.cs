@@ -18,7 +18,7 @@ internal sealed class DyInteropFunction : DyForeignFunction
     public DyInteropFunction(string name, Type type, List<MethodInfo> methods, bool auto) : base(name, pars, 0) =>
         (this.name, this.type, this.methods, Attr, parameters) = (name, type, methods, auto ? FunAttr.Auto : FunAttr.None, new ParameterInfo[methods.Count][]);
 
-    internal override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
+    protected override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
     {
         if (Auto)
             return CallInteropMethod(ctx, arg, Array.Empty<DyObject>());
@@ -26,7 +26,7 @@ internal sealed class DyInteropFunction : DyForeignFunction
         return base.BindOrRun(ctx, arg);
     }
 
-    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => CallInteropMethod(ctx, Self!, args);
+    protected override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => CallInteropMethod(ctx, Self!, args);
 
     private DyObject CallInteropMethod(ExecutionContext ctx, DyObject self, DyObject[] args)
     {
@@ -96,6 +96,5 @@ internal sealed class DyInteropFunction : DyForeignFunction
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyInteropFunction(name, type, methods, Attr == FunAttr.Auto);
 
-    internal override bool Equals(DyFunction func) => func is DyInteropFunction f
-        && f.name == name && f.type.Equals(type);
+    protected override bool Equals(DyFunction func) => func is DyInteropFunction f && f.name == name && f.type.Equals(type);
 }

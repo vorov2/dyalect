@@ -30,7 +30,7 @@ public static class TypeConverter
             case TypeCode.UInt32: return new DyInteger((uint)obj);
             case TypeCode.UInt64: return new DyInteger((long)(ulong)obj);
             case TypeCode.String:
-            case TypeCode.Char: return new DyString(obj.ToString() ?? "");
+            case TypeCode.Char: return DyString.Get(obj.ToString());
             case TypeCode.Single: return new DyFloat((float)obj);
             case TypeCode.Double: return new DyFloat((double)obj);
             case TypeCode.Decimal: return new DyFloat((double)(decimal)obj);
@@ -294,14 +294,19 @@ public static class TypeConverter
 
     private static bool TryGetFloat(DyObject obj, out double result)
     {
-        if (obj.TypeId is Dy.Integer or Dy.Float)
+        if (obj is DyFloat f)
         {
-            result = obj.GetFloat();
+            result = f.Value;
             return true;
         }
-        else if (obj.TypeId is Dy.Char)
+        else if (obj is DyInteger i)
         {
-            result = obj.GetChar();
+            result = i.Value;
+            return true;
+        }
+        else if (obj is DyChar c)
+        {
+            result = c.Value;
             return true;
         }
 
@@ -311,14 +316,19 @@ public static class TypeConverter
 
     private static bool TryGetInteger(DyObject obj, out long result)
     {
-        if (obj.TypeId is Dy.Integer or Dy.Float)
+        if (obj is DyInteger i)
         {
-            result = obj.GetInteger();
+            result = i.Value;
             return true;
         }
-        else if (obj.TypeId is Dy.Char)
+        else if (obj is DyFloat f)
         {
-            result = obj.GetChar();
+            result = (long)f.Value;
+            return true;
+        }
+        else if (obj is DyChar c)
+        {
+            result = c.Value;
             return true;
         }
 
@@ -328,9 +338,14 @@ public static class TypeConverter
 
     private static bool TryGetString(DyObject obj, out string result)
     {
-        if (obj.TypeId is Dy.String or Dy.Char)
+        if (obj is DyString s)
         {
-            result = obj.GetString();
+            result = s.Value;
+            return true;
+        }
+        else if (obj is DyChar c)
+        {
+            result = c.Value.ToString();
             return true;
         }
 

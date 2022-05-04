@@ -30,6 +30,8 @@ public sealed class DyByteArray : DyForeignObject
 
     public override int GetHashCode() => buffer.GetHashCode();
 
+    public override bool Equals(DyObject? other) => ReferenceEquals(this, other);
+
     public byte[] GetBytes() => Trim();
 
     public void Reset() => readPosition = 0;
@@ -74,19 +76,17 @@ public sealed class DyByteArray : DyForeignObject
         switch (obj.TypeId)
         {
             case Dy.Integer:
-                Write(obj.GetInteger());
+                Write(((DyInteger)obj).Value);
                 break;
             case Dy.Float:
-                Write(obj.GetFloat());
+                Write(((DyFloat)obj).Value);
                 break;
             case Dy.Bool:
                 Write(obj.IsTrue());
                 break;
             case Dy.Char:
-                Write(obj.GetString());
-                break;
             case Dy.String:
-                Write(obj.GetString());
+                Write(obj.ToString());
                 break;
             default:
                 ctx.InvalidType(obj);

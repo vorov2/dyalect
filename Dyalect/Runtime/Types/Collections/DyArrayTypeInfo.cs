@@ -28,15 +28,18 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     {
         var arr = new List<DyObject>();
         arr.AddRange(DyIterator.ToEnumerable(ctx, left));
+        if (ctx.HasErrors) return Nil;
         arr.AddRange(DyIterator.ToEnumerable(ctx, right));
+        if (ctx.HasErrors) return Nil;
         return new DyArray(arr.ToArray());
     }
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => self.GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
+        ((DyArray)self).GetItem(index, ctx);
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
-        self.SetItem(index, value, ctx);
+        ((DyArray)self).SetItem(index, value, ctx);
         return Nil;
     }
 
@@ -61,7 +64,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
             if (ctx.Error is not null)
                 return Nil;
 
-            sb.Append(str.GetString());
+            sb.Append(str.Value);
         }
 
         sb.Append(']');
@@ -311,16 +314,16 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
         destination ??= new DyArray(new DyObject[destinationIndex + count.Value]);
 
         if (index < 0 || index >= source.Count)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         if (destinationIndex < 0 || destinationIndex >= destination.Count)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         if (index + count < 0 || index + count > source.Count)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         if (destinationIndex + count < 0 || destinationIndex + count > destination.Count)
-            return ctx.IndexOutOfRange();
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         Array.Copy(source.UnsafeAccessValues(), index, destination.UnsafeAccessValues(), destinationIndex, count.Value);
         return destination;

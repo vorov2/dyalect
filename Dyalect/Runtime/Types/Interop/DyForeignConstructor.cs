@@ -12,9 +12,9 @@ internal sealed class DyForeignConstructor : DyForeignFunction
 
     private DyForeignConstructor(Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars) : base(Name, pars, 0) => this.fun = fun;
 
-    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0]);
+    protected override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0]);
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyForeignConstructor(fun, Parameters);
-    
-    internal override bool Equals(DyFunction func) => func is DyForeignConstructor c && c.fun.Equals(fun);
+
+    protected override bool Equals(DyFunction func) => func is DyForeignConstructor c && c.fun.Equals(fun);
 }

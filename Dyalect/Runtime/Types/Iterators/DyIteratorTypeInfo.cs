@@ -53,7 +53,7 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
             if (ctx.Error is not null)
                 return DyString.Empty;
 
-            sb.Append(str.GetString());
+            sb.Append(str.Value);
             c++;
         }
 
@@ -66,18 +66,20 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
-        if (index.TypeId is not Dy.Integer) return Nil;
-        var i = (int)index.GetInteger();
+        if (index is not DyInteger ix)
+            return Nil;
 
-        //Validate logic
+        var i = (int)ix.Value;
+
         try
         {
             var iter = DyIterator.ToEnumerable(ctx, self);
             return i < 0 ? iter.ElementAt(^-i) : iter.ElementAt(i);
         }
-        catch (IndexOutOfRangeException)
+        catch (ArgumentOutOfRangeException)
         {
-            return ctx.IndexOutOfRange(index);
+            ctx.Error = new(DyError.IndexOutOfRange, index);
+            return Nil;
         }
     }
 
@@ -188,9 +190,9 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         {
             return index < 0 ? self.ElementAt(^-index) : self.ElementAt(index);
         }
-        catch (IndexOutOfRangeException)
+        catch (ArgumentOutOfRangeException)
         {
-            return ctx.IndexOutOfRange(index);
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
         }
     }
 

@@ -17,10 +17,10 @@ public sealed class DyExternalFunction : DyForeignFunction
 
     public override DyObject Clone() => new DyExternalFunction(FunctionName, (Attr & FunAttr.Auto) == FunAttr.Auto, func, Parameters);
 
-    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) =>
+    protected override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) =>
         func(ctx, Self, args);
 
-    internal override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
+    protected override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
     {
         if (!Auto)
             return BindToInstance(ctx, arg);
@@ -30,7 +30,7 @@ public sealed class DyExternalFunction : DyForeignFunction
 
     public override object ToObject() => func;
 
-    internal override bool Equals(DyFunction func) =>
+    protected override bool Equals(DyFunction func) =>
            FunctionName == func.FunctionName
         && func is DyExternalFunction fn && fn.func.Equals(func)
         && IsSameInstance(this, func);

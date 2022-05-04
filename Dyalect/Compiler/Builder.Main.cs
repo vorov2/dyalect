@@ -150,6 +150,8 @@ partial class Builder
         cw.GetMember(node.Name);
         cw.FunPrep(1);
         BuildTupleElements(node.Arguments, node.Location, hints, ctx);
+        AddLinePragma(node.Location);
+        cw.NewArgs(node.Arguments.Count);
         cw.FunArgNm("values");
         cw.FunCall(1);
     }
@@ -518,7 +520,11 @@ partial class Builder
             cw.FunCall(0);
         }
         else
+        {
             BuildTupleElements(node.Elements, node.Location, hints, ctx);
+            AddLinePragma(node.Location);
+            cw.NewTuple(node.Elements.Count);
+        }
 
         PopIf(hints);
     }
@@ -557,9 +563,6 @@ partial class Builder
                     cw.Tag(name);
             }
         }
-
-        AddLinePragma(loc);
-        cw.NewTuple(elements.Count);
     }
 
     private void Build(DArrayLiteral node, Hints hints, CompilerContext ctx)
