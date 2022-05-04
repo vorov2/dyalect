@@ -32,12 +32,6 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return new DyTuple(arr.ToArray());
     }
 
-    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
-    {
-        var len = ((DyTuple)arg).Count;
-        return DyInteger.Get(len);
-    }
-
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => MakeString(ctx, (DyTuple)arg, false);
 
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => MakeString(ctx, (DyTuple)arg, true);

@@ -17,9 +17,6 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     public DyArrayTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
-    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>
-        DyInteger.Get(((DyArray)arg).Count);
-
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToStringOrLiteral(false, arg, ctx);
 
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOrLiteral(true, arg, ctx);
