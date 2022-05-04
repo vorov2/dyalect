@@ -1,4 +1,7 @@
-﻿import core
-var dt = DateTime(year: 2012, month: 12, day: 3)
-let s = String.Format("x is {0:yyyy.MM.dd}", dt)
-print("result", s)
+﻿type Foo(x)
+
+func Foo.ToString() => "Foo." + this.x
+func Integer.ToString() => (this as Float) + "I"
+
+let xs = [12, Foo(3), 34.3]
+print(xs.ToString())
