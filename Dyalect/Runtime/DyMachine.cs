@@ -693,7 +693,7 @@ public static partial class DyMachine
         if (value.TypeId is Dy.Array)
         {
             var xs = (DyCollection)value;
-            container.VarArgs = xs.GetValues();
+            container.VarArgs = xs.ToArray();
             container.VarArgsSize = container.VarArgs.Length;
         }
         else if (value.TypeId is Dy.Tuple)

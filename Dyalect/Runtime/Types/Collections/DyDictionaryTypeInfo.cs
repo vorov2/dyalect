@@ -134,7 +134,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
 
         if (values.Count == 1)
         {
-            var el = values.GetValue(0);
+            var el = values[0];
 
             if (el is DyTuple t)
                 return new DyDictionary(t.ConvertToDictionary(ctx));

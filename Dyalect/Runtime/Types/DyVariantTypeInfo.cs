@@ -53,7 +53,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     }
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
-        ((DyVariant)self).Tuple.GetItem(index, ctx);
+        ((DyVariant)self).Tuple.GetItem(ctx, index);
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) =>
         ctx.RuntimeContext.Tuple.Set(ctx, ((DyVariant)self).Tuple, index, value);

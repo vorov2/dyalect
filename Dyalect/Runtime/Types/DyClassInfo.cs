@@ -82,7 +82,7 @@ internal sealed class DyClassInfo : DyTypeInfo
         if (privateCons && ctx.UnitId != cls.DeclaringUnit.Id)
             return base.GetOp(ctx, self, index);
 
-        return cls.Fields.GetItem(index, ctx);
+        return cls.Fields.GetItem(ctx, index);
     }
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
@@ -92,7 +92,7 @@ internal sealed class DyClassInfo : DyTypeInfo
         if (privateCons && ctx.UnitId != cls.DeclaringUnit.Id)
             return base.SetOp(ctx, self, index, value);
 
-        cls.Fields.SetItem(index, value, ctx);
+        cls.Fields.SetItem(ctx, index, value);
         return Nil;
     }
     #endregion

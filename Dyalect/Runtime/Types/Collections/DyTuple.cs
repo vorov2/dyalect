@@ -15,6 +15,11 @@ public class DyTuple : DyCollection
 
     public bool IsVarArg { get; }
 
+    public DyObject this[int index]
+    {
+        get => values[index] is DyLabel la ? la.Value : values[index];
+    }
+
     public DyTuple(DyObject[] values) : this(values, values.Length) { }
 
     internal DyTuple(DyObject[] values, bool mutable, bool vararg) : this(values, values.Length) =>
@@ -76,7 +81,7 @@ public class DyTuple : DyCollection
         for (var i = 0; i < Count; i++)
         {
             var ki = GetKeyInfo(i);
-            var v = GetValue(i);
+            var v = this[i];
             var key = new DyString(ki is null ? DefaultKey() : ki.Label);
             dict[key] = v;
         }
@@ -92,40 +97,67 @@ public class DyTuple : DyCollection
         if (i is -1)
             return false;
 
-        item = CollectionGetItem(i, null!);
+        item = this[i];
+
+        if (item is DyLabel lab)
+            item = lab.Value;
+
         return true;
     }
 
-    internal DyObject GetItem(DyObject index, ExecutionContext ctx)
+    internal DyObject GetItem(ExecutionContext ctx, DyObject index)
     {
         if (index is DyInteger ix)
-            return GetItem((int)ix.Value, ctx);
+            return GetItem(ctx, (int)ix.Value);
 
-        if (index.TypeId != Dy.String && index.TypeId != Dy.Char)
-            return ctx.IndexOutOfRange(index);
-
-        if (TryGetItem(index.ToString(), out var item))
+        if (index.TypeId is Dy.String or Dy.Char && TryGetItem(index.ToString(), out var item))
             return item;
 
         return ctx.IndexOutOfRange(index);
     }
 
-    internal override void SetItem(DyObject index, DyObject value, ExecutionContext ctx)
+    internal DyObject GetItem(ExecutionContext ctx, int index)
     {
-        if (index.TypeId == Dy.String)
-        {
-            var i = GetOrdinal(((DyString)index).Value);
+        index = index < 0 ? Count + index : index;
 
-            if (i is -1)
+        if (index < 0 || index >= Count)
+            return ctx.IndexOutOfRange(index);
+
+        var item = values[index];
+
+        if (item is DyLabel lab)
+            item = lab.Value;
+
+        return item;
+    }
+
+    internal void SetItem(ExecutionContext ctx, DyObject index, DyObject value)
+    {
+        int ix = -1;
+
+        if (index.TypeId is Dy.String or Dy.Char)
+            ix = GetOrdinal(index.ToString());
+        else if (index is DyInteger i)
+            ix = (int)(i.Value < 0 ? Count + i.Value : i.Value);
+
+        if (ix < 0 || ix >= Count)
+        {
+            ctx.IndexOutOfRange(index);
+            return;
+        }
+
+        if (values[ix] is DyLabel lab && lab.Mutable)
+        {
+            if (!lab.VerifyType(value.TypeId))
             {
-                ctx.IndexOutOfRange(index);
+                ctx.InvalidType(value);
                 return;
             }
 
-            CollectionSetItem(i, value, ctx);
+            lab.Value = value;
         }
         else
-            base.SetItem(index, value, ctx);
+            ctx.IndexReadOnly(index);
     }
 
     public virtual int GetOrdinal(string name)
@@ -139,38 +171,9 @@ public class DyTuple : DyCollection
 
     public virtual bool IsReadOnly(int index) => values[index] is DyLabel lab && !lab.Mutable;
 
-    protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) =>
-        values[index] is DyLabel la ? la.Value : values[index];
-
     internal virtual string? GetKey(int index) => values[index] is DyLabel la ? la.Label : null;
 
-    protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx)
-    {
-        if (values[index].TypeId == Dy.Label)
-        {
-            var lab = (DyLabel)values[index];
-
-            if (!lab.Mutable)
-            {
-                ctx.IndexReadOnly(lab.Label);
-                return;
-            }
-
-            if (!lab.VerifyType(value.TypeId))
-            {
-                ctx.InvalidType(value);
-                return;
-            }
-
-            lab.Value = value;
-        }
-        else
-            ctx.IndexReadOnly();
-    }
-
     private static string DefaultKey() => Guid.NewGuid().ToString();
-
-    internal override DyObject GetValue(int index) => values[index] is DyLabel la ? la.Value : values[index];
 
     internal virtual void SetValue(int index, DyObject value)
     {
@@ -182,7 +185,7 @@ public class DyTuple : DyCollection
 
     internal virtual DyLabel? GetKeyInfo(int index) => values[index] is DyLabel lab ? lab : null;
 
-    public override DyObject[] GetValues()
+    public override DyObject[] ToArray()
     {
         if (Count != values.Length)
             return CopyTuple();

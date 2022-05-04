@@ -1,3 +1,7 @@
+# 0.44.4
+  * Change: _Refactoring of built-in collection types._
+  * Fix: _Regression: invalid index for tuple indexer causes a crash_ ([Issue #880](https://github.com/vorov2/dyalect/issues/880)).
+
 # 0.44.3
   * Change: _Type system refactoring._
   * Change: _Refactor `Regex` to use tuples for the results_ ([Issue #872](https://github.com/vorov2/dyalect/issues/872), [docs](https://github.com/vorov2/dyalect/wiki/Library.Core.Regex)).

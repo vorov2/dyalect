@@ -338,7 +338,7 @@ public static class ErrorGenerators
         if (!Enum.TryParse<DyError>(err.Constructor, true, out var res))
         {
             if (err.Tuple.Count > 0)
-                return err.Tuple.GetValue(0).ToString() ?? err.Constructor;
+                return err.Tuple[0].ToString() ?? err.Constructor;
 
             return err.Constructor;
         }
@@ -348,7 +348,7 @@ public static class ErrorGenerators
 
         if (str is not null && err.Tuple.Count > 0)
         {
-            var vals = err.Tuple.GetValues()
+            var vals = err.Tuple.ToArray()
                 .Select(v => v is DyTypeInfo t ? t.ReflectedTypeName : (v.ToString() ?? ""))
                 .ToArray();
             str = string.Format(str, vals);

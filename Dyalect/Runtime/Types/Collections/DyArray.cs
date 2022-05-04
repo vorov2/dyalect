@@ -11,8 +11,8 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
     
     public DyObject this[int index]
     {
-        get => values[CorrectIndex(index)];
-        set => values[CorrectIndex(index)] = value;
+        get => values[index];
+        set => values[index] = value;
     }
 
     public DyArray(DyObject[] values) : base(Dy.Array) => 
@@ -55,10 +55,8 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     public void Insert(int index, DyObject item)
     {
-        index = CorrectIndex(index);
-
-        if (index > Count)
-            throw new IndexOutOfRangeException();
+        if (index < 0 || index > Count)
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
         if (index == Count && values.Length > index)
         {
@@ -90,33 +88,15 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
         }
     }
 
-    public bool RemoveAt(int index)
+    public void RemoveAt(int index)
     {
-        index = CorrectIndex(index);
-
-        if (index >= 0 && index < Count)
-        {
-            Count--;
-
-            if (index < Count)
-                Array.Copy(values, index + 1, values, index, Count - index);
-
-            values[Count] = null!;
-            Version++;
-            return true;
-        }
-
-        return false;
-    }
-
-    public bool Remove(ExecutionContext ctx, DyObject val)
-    {
-        var index = IndexOf(ctx, val);
-
-        if (index < 0)
-            return false;
-
-        return RemoveAt(index);
+        if (index < 0 || index >= Count)
+            throw new IndexOutOfRangeException();
+        
+        Count--;
+        Array.Copy(values, index + 1, values, index, Count - index);
+        values[Count] = null!;
+        Version++;
     }
 
     public void Clear()
@@ -134,9 +114,6 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
             if (e.Equals(elem, ctx))
                 return i;
-
-            if (ctx.HasErrors)
-                return -1;
         }
 
         return -1;
@@ -160,24 +137,9 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
         return index;
     }
 
-    internal DyObject GetItem(DyObject index, ExecutionContext ctx)
-    {
-        if (index is DyInteger i)
-            return GetItem((int)i.Value, ctx);
-
-        throw new DyCodeException(DyError.IndexOutOfRange, index);
-    }
-
-    protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) => values[index];
-
-    protected override void CollectionSetItem(int index, DyObject obj, ExecutionContext ctx) =>
-        values[index] = obj;
-
     public override IEnumerator<DyObject> GetEnumerator() => new DyCollectionEnumerator(values, 0, Count, this);
 
-    internal override DyObject GetValue(int index) => values[CorrectIndex(index)];
-
-    public override DyObject[] GetValues()
+    public override DyObject[] ToArray()
     {
         var arr = new DyObject[Count];
 

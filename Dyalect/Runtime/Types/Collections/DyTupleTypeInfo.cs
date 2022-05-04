@@ -55,7 +55,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
                 sb.Append(' ');
             }
 
-            var v = value.GetValue(i);
+            var v = value[i];
             var ki = value.GetKeyInfo(i);
 
             if (ki is not null)
@@ -157,11 +157,11 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     }
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
-        ((DyTuple)self).GetItem(index, ctx);
+        ((DyTuple)self).GetItem(ctx, index);
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
-        ((DyTuple)self).SetItem(index, value, ctx);
+        ((DyTuple)self).SetItem(ctx, index, value);
         return Nil;
     }
     #endregion
@@ -265,7 +265,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     [InstanceMethod]
     internal static DyObject First(ExecutionContext ctx, DyTuple self)
     {
-        var ret = self.GetItem(0, ctx);
+        var ret = self.GetItem(ctx, 0);
         ctx.ThrowIf();
         return ret;
     }
@@ -273,13 +273,12 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     [InstanceMethod]
     internal static DyObject Second(ExecutionContext ctx, DyTuple self)
     {
-        var ret = self.GetItem(1, ctx);
+        var ret = self.GetItem(ctx, 1);
         ctx.ThrowIf();
         return ret;
     }
 
     [InstanceMethod]
-    
     //TODO: candidate for removal
     internal static DyObject Sort(ExecutionContext ctx, DyTuple self, DyFunction? comparer = null)
     {
@@ -295,14 +294,14 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         new DyDictionary(self.ConvertToDictionary(ctx));
 
     [InstanceMethod]
-    internal static DyObject ToArray(DyTuple self) => new DyArray(self.GetValues());
+    internal static DyObject ToArray(DyTuple self) => new DyArray(self.ToArray());
 
     [InstanceMethod]
     internal static DyObject Compact(ExecutionContext ctx, DyTuple self, DyObject? predicate = null)
     {
         var xs = new List<DyObject>();
 
-        foreach (var val in self.GetValues())
+        foreach (var val in self.ToArray())
         {
             if (predicate is not null)
             {

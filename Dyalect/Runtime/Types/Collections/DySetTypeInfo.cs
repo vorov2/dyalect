@@ -108,5 +108,5 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
         self.IsSupersetOf(ctx, other);
 
     [StaticMethod(Method.Set)]
-    internal static DyObject New([VarArg]DyObject values) => new DySet(((DyTuple)values).GetValues());
+    internal static DyObject New([VarArg]DyObject values) => new DySet(((DyTuple)values).ToArray());
 }

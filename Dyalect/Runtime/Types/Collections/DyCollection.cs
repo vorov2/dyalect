@@ -5,58 +5,14 @@ public abstract class DyCollection : DyEnumerable
 {
     protected DyCollection(int typeCode) : base(typeCode) { }
 
-    #region Indexing
-    internal int CorrectIndex(int index) => index < 0 ? Count + index : index;
+    public override object ToObject() => ToTypedArray();
 
-    internal bool CorrectIndex(ExecutionContext ctx, ref int index)
-    {
-        var newIndex = CorrectIndex(index);
-
-        if (newIndex < 0 || newIndex > Count - 1)
-        {
-            ctx.IndexOutOfRange(index);
-            return false;
-        }
-
-        index = newIndex;
-        return true;
-    }
-
-    internal DyObject GetItem(int index, ExecutionContext ctx)
-    {
-        CorrectIndex(ctx, ref index);
-        return CollectionGetItem(index, ctx);
-    }
-
-    protected abstract DyObject CollectionGetItem(int index, ExecutionContext ctx);
-
-    internal virtual void SetItem(DyObject obj, DyObject value, ExecutionContext ctx)
-    {
-        if (obj is not DyInteger ix)
-        {
-            ctx.InvalidType(Dy.Integer, obj);
-            return;
-        }
-
-        var index = CorrectIndex((int)ix.Value);
-
-        if (index >= Count)
-            ctx.IndexOutOfRange(index);
-        else
-            CollectionSetItem(index, value, ctx);
-    }
-
-    protected abstract void CollectionSetItem(int index, DyObject value, ExecutionContext ctx);
-    #endregion
-
-    public override object ToObject() => ConvertToArray();
-
-    public Array ConvertToArray()
+    private Array ToTypedArray()
     {
         if (Count is 0)
             return Array.Empty<object>();
 
-        var xs = GetValues();
+        var xs = ToArray();
         var fe = xs[0].ToObject();
 
         if (fe is not null && TypeConverter.TryCreateTypedArray(xs, fe.GetType(), out var result))
@@ -70,9 +26,7 @@ public abstract class DyCollection : DyEnumerable
         return newArr;
     }
 
-    internal abstract DyObject GetValue(int index);
-
-    public abstract DyObject[] GetValues();
+    public abstract DyObject[] ToArray();
 
     internal static DyObject[] ConcatValues(ExecutionContext ctx, params DyObject[] values)
     {
