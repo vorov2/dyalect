@@ -97,5 +97,6 @@ internal static class OpStackHelper
         0,  //StdCall **dynamic
         0,  //Debug
         0,  //NewArgs **dynamic
+        0,  //NewDict **dynamic
     };
 }
