@@ -26,8 +26,8 @@ internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
     }
     #endregion
 
-    [InstanceMethod(Method.Indices)]
-    internal static IEnumerable<DyObject> GetIndices(DyCollection self)
+    [InstanceMethod]
+    internal static IEnumerable<DyObject> Indices(DyCollection self)
     {
         IEnumerable<DyObject> Iterate()
         {
@@ -38,8 +38,8 @@ internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
         return Iterate();
     }
 
-    [InstanceMethod(Method.Slice)]
-    internal static IEnumerable<DyObject> GetSlice(DyCollection self, int index, [Default]int? size)
+    [InstanceMethod]
+    internal static IEnumerable<DyObject> Slice(DyCollection self, int index, [Default]int? size)
     {
         var arr = self.ToArray();
 
@@ -69,6 +69,6 @@ internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
         return new DyCollectionEnumerable(arr, index, len, self);
     }
 
-    [InstanceMethod(Method.ToSet)]
+    [InstanceMethod]
     internal static HashSet<DyObject> ToSet(DyCollection self) => new (self.ToArray());
 }
