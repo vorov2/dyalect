@@ -1,2 +1,4 @@
-﻿let v = @Production(var x: 12, y: "Foo")
-print << toLiteral(v)
+﻿import core
+var dt = DateTime(year: 2012, month: 12, day: 3)
+let s = String.Format("x is {0:yyyy.MM.dd}", dt)
+print("result", s)

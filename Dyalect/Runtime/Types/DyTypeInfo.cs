@@ -301,6 +301,21 @@ public abstract class DyTypeInfo : DyObject
             return Nil;
         }
     }
+    internal DyObject ToStringWithFormat(ExecutionContext ctx, DyObject arg, DyString format)
+    {
+        if (tos is not null)
+            return tos.PrepareFunction(ctx, arg);
+
+        try
+        {
+            return ToStringOp(ctx, arg, format);
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
+    }
 
     //x.ToLiteral
     private DyFunction? lit;

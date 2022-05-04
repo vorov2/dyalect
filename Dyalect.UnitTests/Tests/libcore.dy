@@ -330,6 +330,12 @@ fox is the red fox.]>
     assert("DateTime", typeName << dt.GetType())
 #endregion
 
+#region "DateTime: Format"
+    var dt = DateTime(year: 2012, month: 12, day: 3)
+    let s = String.Format("x is {0:yyyy.MM.dd}", dt)
+    assert("x is 2012.12.03", s)
+#endregion
+
 #region "DateTime: Min, Max and Default"
     assert("0001-01-01 00:00:00.0000000", DateTime.Min.ToString())
     assert("9999-12-31 23:59:59.9999999", DateTime.Max.ToString())

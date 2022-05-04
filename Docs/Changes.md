@@ -2,6 +2,7 @@
   * Change: _Refactoring of built-in collection types._
   * Fix: _Regression: invalid index for tuple indexer causes a crash_ ([Issue #880](https://github.com/vorov2/dyalect/issues/880)).
   * Fix: _`Slice` for arrays and tuples does unnecessary allocations_ ([Issue #881](https://github.com/vorov2/dyalect/issues/881)).
+  * Fix: _Method `Format` doesn't take into account format strings_ ([Issue #882](https://github.com/vorov2/dyalect/issues/882)).
 
 # 0.44.3
   * Change: _Type system refactoring._
