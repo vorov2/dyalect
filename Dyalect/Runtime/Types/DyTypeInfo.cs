@@ -343,8 +343,7 @@ public abstract class DyTypeInfo : DyObject
     private DyFunction? get;
     protected virtual DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
         ctx.OperationNotSupported(Builtins.Get, self);
-    [Obsolete]
-    internal DyObject GetDirect(ExecutionContext ctx, DyObject self, DyObject index) => GetOp(ctx, self, index);
+    internal DyObject RawGet(ExecutionContext ctx, DyObject self, DyObject index) => GetOp(ctx, self, index);
     public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
     {
         if (get is not null)
@@ -357,8 +356,7 @@ public abstract class DyTypeInfo : DyObject
     private DyFunction? set;
     protected virtual DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) =>
         ctx.OperationNotSupported(Builtins.Set, self);
-    [Obsolete]
-    internal DyObject SetDirect(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) => SetOp(ctx, self, index, value);
+    internal DyObject RawSet(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) => SetOp(ctx, self, index, value);
     public DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         if (set is not null)

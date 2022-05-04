@@ -18,6 +18,14 @@ public sealed class DyClass : DyObject, IProduction
 
     public override object ToObject() => this;
 
+    public override string ToString()
+    {
+        if (Fields.Count == 0)
+            return Constructor;
+        else
+            return Constructor + Fields.ToString();
+    }
+
     public override int GetHashCode() => HashCode.Combine(Constructor, Fields);
 
     public override bool Equals(DyObject? other) =>

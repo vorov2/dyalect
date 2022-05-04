@@ -23,16 +23,16 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
         if (xs.Constructor != ys.Constructor)
             return False;
 
-        return xs.Tuple.Equals(ys.Tuple, ctx) ? True : False;
+        return xs.Fields.Equals(ys.Fields, ctx) ? True : False;
     }
 
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>
-        DyInteger.Get(((DyVariant)arg).Tuple.Count);
+        DyInteger.Get(((DyVariant)arg).Fields.Count);
 
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         var self = (DyVariant)arg;
-        var str = DyTupleTypeInfo.MakeString(ctx, self.Tuple);
+        var str = DyTupleTypeInfo.MakeString(ctx, self.Fields);
 
         if (ctx.HasErrors)
             return Nil;
@@ -44,7 +44,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg)
     {
         var self = (DyVariant)arg;
-        var str = ctx.RuntimeContext.Tuple.ToLiteralDirect(ctx, self.Tuple);
+        var str = ctx.RuntimeContext.Tuple.ToLiteralDirect(ctx, self.Fields);
 
         if (ctx.HasErrors)
             return Nil;
@@ -53,15 +53,15 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     }
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
-        ((DyVariant)self).Tuple.GetItem(ctx, index);
+        ((DyVariant)self).Fields.GetItem(ctx, index);
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) =>
-        ctx.RuntimeContext.Tuple.Set(ctx, ((DyVariant)self).Tuple, index, value);
+        ctx.RuntimeContext.Tuple.Set(ctx, ((DyVariant)self).Fields, index, value);
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
-            Dy.Tuple => self is DyVariant v && v.Tuple.Count > 0 ? v.Tuple : Nil,
+            Dy.Tuple => self is DyVariant v && v.Fields.Count > 0 ? v.Fields : Nil,
             _ => base.CastOp(ctx, self, targetType)
         };
     #endregion

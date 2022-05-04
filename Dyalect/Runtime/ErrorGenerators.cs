@@ -337,18 +337,18 @@ public static class ErrorGenerators
     {
         if (!Enum.TryParse<DyError>(err.Constructor, true, out var res))
         {
-            if (err.Tuple.Count > 0)
-                return err.Tuple[0].ToString() ?? err.Constructor;
+            if (err.Fields.Count > 0)
+                return err.Fields[0].ToString() ?? err.Constructor;
 
             return err.Constructor;
         }
 
-        var idx = err.Tuple.Count;
+        var idx = err.Fields.Count;
         var str = RuntimeErrors.ResourceManager.GetString(err.Constructor + "." + idx);
 
-        if (str is not null && err.Tuple.Count > 0)
+        if (str is not null && err.Fields.Count > 0)
         {
-            var vals = err.Tuple.ToArray()
+            var vals = err.Fields.ToArray()
                 .Select(v => v is DyTypeInfo t ? t.ReflectedTypeName : (v.ToString() ?? ""))
                 .ToArray();
             str = string.Format(str, vals);

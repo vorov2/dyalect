@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Dyalect.Parser;
+using System.Collections.Generic;
+using System.Text;
+
 namespace Dyalect.Runtime.Types;
 
 public sealed class DyLabel : DyObject
@@ -39,6 +42,13 @@ public sealed class DyLabel : DyObject
         return false;
     }
 
+    internal IEnumerable<DyTypeInfo> EnumerateAnnotations()
+    {
+        if (typeAnnotations is not null)
+            foreach (var ta in typeAnnotations)
+                yield return ta;
+    }
+
     public override int GetHashCode() => HashCode.Combine(Label, Value);
 
     public override bool Equals(DyObject? other)
@@ -53,4 +63,6 @@ public sealed class DyLabel : DyObject
     }
 
     public override DyObject Clone() => new DyLabel(Label, Value.Clone(), Mutable);
+
+    
 }

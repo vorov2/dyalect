@@ -3,14 +3,14 @@
 public sealed class DyVariant : DyObject, IProduction
 {
     internal static readonly DyVariant Eta = new(string.Empty, DyTuple.Empty);
-    internal readonly DyTuple Tuple;
+    internal readonly DyTuple Fields;
 
     public string Constructor { get; }
 
     public override string TypeName => nameof(Dy.Variant);
     
     public DyVariant(string constructor, DyTuple values) : base(Dy.Variant) =>
-        (Constructor, Tuple) = (constructor, values);
+        (Constructor, Fields) = (constructor, values);
 
     internal DyVariant(DyError code, params object[] args) : this(code.ToString(), args) { }
 
@@ -25,23 +25,23 @@ public sealed class DyVariant : DyObject, IProduction
             for (var i = 0; i < args.Length; i++)
                 arr[i] = TypeConverter.ConvertFrom(args[i]);
 
-            Tuple = new DyTuple(arr);
+            Fields = new DyTuple(arr);
         }
         else
-            Tuple = DyTuple.Empty;
+            Fields = DyTuple.Empty;
     }
 
     public override int GetHashCode() => Constructor.GetHashCode();
 
-    public override object ToObject() => Tuple.ToObject();
+    public override object ToObject() => Fields.ToObject();
 
-    public override bool Equals(DyObject? other) => other is DyVariant v && v.Constructor == Constructor && v.Tuple.Equals(Tuple);
+    public override bool Equals(DyObject? other) => other is DyVariant v && v.Constructor == Constructor && v.Fields.Equals(Fields);
 
     public override DyObject Clone()
     {
-        var tup = Tuple.Clone();
+        var tup = Fields.Clone();
 
-        if (ReferenceEquals(tup, Tuple))
+        if (ReferenceEquals(tup, Fields))
             return this;
 
         return new DyVariant(Constructor, tup);

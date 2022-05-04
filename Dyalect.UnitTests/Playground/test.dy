@@ -1,12 +1,2 @@
-﻿type Bar
-func Bar + (other) {
-	ini[0] + other[0]
-}
-func Bar - (other) {
-	print("Bar -", ini[0].GetType(), other[0].GetType())
-	ini[0] - other[0]
-}
-type Num(x) with Bar
-let x = Num(12)
-let y = Num(24)
-assert(-12, x - y)
+﻿let v = @Production(var x: 12, y: "Foo")
+print << toLiteral(v)
