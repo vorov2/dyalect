@@ -1,7 +1,12 @@
-﻿type Foo(x)
+﻿static func Integer.MissingMethod(methodName, args) {
+	print(methodName, args, args.Length())
+}
+func Integer.MissingMethod(methodName, args) {
+	print(methodName, args, args.Length())
+}
+func Integer.Foobar1(args...) {
+	print(args)
+}
 
-func Foo.ToString() => "Foo." + this.x
-func Integer.ToString() => (this as Float) + "I"
-
-let xs = [12, Foo(3), 34.3]
-print(xs.ToString())
+Integer.Zan()
+12.Foobar(12, x: 44, zed: "editor")

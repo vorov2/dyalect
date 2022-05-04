@@ -438,7 +438,15 @@ public abstract class DyTypeInfo : DyObject
         var ret = LookupStaticMember(name, ctx);
 
         if (ret is null)
+        {
+            if (name != DyMissingMethod.Name)
+            {
+                if (TryGetStaticMember(ctx, DyMissingMethod.Name, out var meth))
+                    return new DyMissingMethod((string)name, (DyNativeFunction)meth!);
+            }
+
             return ctx.StaticOperationNotSupported((string)name, ReflectedTypeId);
+        }
 
         if (ret is DyFunction f)
         {
@@ -542,7 +550,13 @@ public abstract class DyTypeInfo : DyObject
 
         if (value is not null)
             return value.TryInvokeProperty(ctx, self);
-        
+
+        if (name != DyMissingMethod.Name)
+        {
+            if (TryGetInstanceMember(ctx, self, DyMissingMethod.Name, out var meth))
+                return new DyMissingMethod((string)name, (DyNativeFunction)meth!);
+        }
+
         return ctx.OperationNotSupported((string)name, self);
     }
 
