@@ -18,6 +18,13 @@ public class DyTuple : DyCollection
     public DyObject this[int index]
     {
         get => values[index] is DyLabel la ? la.Value : values[index];
+        set
+        {
+            if (values[index] is DyLabel la)
+                la.Value = value;
+
+            values[index] = value;
+        }
     }
 
     public DyTuple(DyObject[] values) : this(values, values.Length) { }
