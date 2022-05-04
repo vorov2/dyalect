@@ -104,7 +104,7 @@ public abstract class DyFunction : DyObject
             {
                 var arr = (DyArray)o;
                 arr.Compact();
-                newLocals[VarArgIndex] = new DyTuple(arr.UnsafeAccessValues(), arr.Count);
+                newLocals[VarArgIndex] = new DyTuple(arr.UnsafeAccess(), arr.Count);
             }
             else if (o.TypeId != Dy.Tuple)
                 newLocals[VarArgIndex] = new DyTuple(new[] { o });

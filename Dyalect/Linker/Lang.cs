@@ -372,7 +372,7 @@ internal sealed partial class Lang : ForeignUnit
         
         if (args is not null)
         {
-            var tv = args.UnsafeAccessValues();
+            var tv = args.UnsafeAccess();
             
             for (var i = 0; i < args.Count; i++)
             {
@@ -407,7 +407,7 @@ internal sealed partial class Lang : ForeignUnit
         if (args is null)
             return func!.Invoke(newctx, argsList.ToArray());
         
-        var tvv = args.UnsafeAccessValues();
+        var tvv = args.UnsafeAccess();
 
         for (var i = 0; i < args.Count; i++)
         {

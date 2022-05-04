@@ -54,4 +54,6 @@ public sealed class DyString : DyCollection
     public override DyObject Clone() => this;
 
     public static explicit operator string(DyString str) => str.Value;
+
+    protected internal override DyObject[] UnsafeAccess() => throw new NotImplementedException();
 }

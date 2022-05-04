@@ -28,6 +28,8 @@ public abstract class DyCollection : DyEnumerable
 
     public abstract DyObject[] ToArray();
 
+    internal protected abstract DyObject[] UnsafeAccess();
+
     internal static DyObject[] ConcatValues(ExecutionContext ctx, params DyObject[] values)
     {
         if (values is null)

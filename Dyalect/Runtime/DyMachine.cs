@@ -699,7 +699,7 @@ public static partial class DyMachine
         else if (value.TypeId is Dy.Tuple)
         {
             var xs = (DyTuple)value;
-            container.VarArgs = xs.IsVarArg ? xs.UnsafeAccessValues() : xs.GetValuesWithLabels();
+            container.VarArgs = xs.IsVarArg ? xs.UnsafeAccess() : xs.GetValuesWithLabels();
             container.VarArgsSize = container.VarArgs.Length;
         }
         else if (value.TypeId is Dy.Iterator or Dy.Set)

@@ -32,7 +32,7 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
     [InstanceMethod]
     internal static DyObject Apply(DyFunction self, [VarArg]DyTuple parameters)
     {
-        var tv = parameters.UnsafeAccessValues();
+        var tv = parameters.UnsafeAccess();
         var fn = (DyFunction)self.Clone();
         var pars = new Par[fn.Parameters.Length];
 

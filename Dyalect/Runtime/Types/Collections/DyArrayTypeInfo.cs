@@ -225,7 +225,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     {
         var sortComparer = new SortComparer(comparer, ctx);
         self.Compact();
-        Array.Sort(self.UnsafeAccessValues(), 0, self.Count, sortComparer);
+        Array.Sort(self.UnsafeAccess(), 0, self.Count, sortComparer);
     }
 
     [InstanceMethod]
@@ -275,7 +275,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     internal static void Reverse(DyArray self)
     {
         self.Compact();
-        Array.Reverse(self.UnsafeAccessValues());
+        Array.Reverse(self.UnsafeAccess());
     }
 
     [StaticMethod(Method.Array)]
@@ -352,7 +352,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
         if (destinationIndex + count < 0 || destinationIndex + count > destination.Count)
             throw new DyCodeException(DyError.IndexOutOfRange);
 
-        Array.Copy(source.UnsafeAccessValues(), index, destination.UnsafeAccessValues(), destinationIndex, count.Value);
+        Array.Copy(source.UnsafeAccess(), index, destination.UnsafeAccess(), destinationIndex, count.Value);
         return destination;
     }
 }

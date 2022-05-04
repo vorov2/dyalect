@@ -157,5 +157,5 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
         return arr;
     }
 
-    internal DyObject[] UnsafeAccessValues() => values;
+    internal protected override DyObject[] UnsafeAccess() => values;
 }

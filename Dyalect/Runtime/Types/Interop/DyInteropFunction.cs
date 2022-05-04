@@ -30,7 +30,7 @@ internal sealed class DyInteropFunction : DyForeignFunction
 
     private DyObject CallInteropMethod(ExecutionContext ctx, DyObject self, DyObject[] args)
     {
-        var tupleArgs = args.Length > 0 ? ((DyTuple)args[0]).UnsafeAccessValues() : null;
+        var tupleArgs = args.Length > 0 ? ((DyTuple)args[0]).UnsafeAccess() : null;
         var arguments = tupleArgs is null ? Array.Empty<object>() : tupleArgs.Select(a => a.ToObject()).ToArray();
         var argumentTypes = tupleArgs is null ? Array.Empty<Type>() : arguments.Select(a => a is null ? DyNil.Instance.GetType() : a.GetType()).ToArray();
 

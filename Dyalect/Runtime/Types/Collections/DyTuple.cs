@@ -261,5 +261,5 @@ public class DyTuple : DyCollection
 
     internal bool HasItem(string name) => GetOrdinal(name) is not -1;
 
-    internal DyObject[] UnsafeAccessValues() => values;
+    internal protected override DyObject[] UnsafeAccess() => values;
 }

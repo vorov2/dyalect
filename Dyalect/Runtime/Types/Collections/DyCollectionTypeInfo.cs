@@ -41,7 +41,7 @@ internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
     [InstanceMethod]
     internal static IEnumerable<DyObject> Slice(DyCollection self, int index, [Default]int? size)
     {
-        var arr = self.ToArray();
+        var arr = self.UnsafeAccess();
 
         if (size is null)
             size = self.Count - 1;

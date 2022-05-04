@@ -45,7 +45,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
     private DyObject CreateNew(ExecutionContext ctx, DyObject self, DyObject args)
     {
         var interop = (DyInteropObject)self;
-        var values = ((DyTuple)args).UnsafeAccessValues();
+        var values = ((DyTuple)args).UnsafeAccess();
         var arr = values.Select(o => o.ToObject()).ToArray();
         object instance;
         var type = interop.Object as Type ?? interop.Type;
