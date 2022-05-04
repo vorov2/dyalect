@@ -1,5 +1,4 @@
-﻿using System.IO;
-namespace Dyalect.Runtime.Types;
+﻿namespace Dyalect.Runtime.Types;
 
 public sealed class DyInteger : DyObject
 {
@@ -11,7 +10,7 @@ public sealed class DyInteger : DyObject
     public static readonly DyInteger Max = new(long.MaxValue);
     public static readonly DyInteger Min = new(long.MinValue);
 
-    internal readonly long Value;
+    public readonly long Value;
 
     public override string TypeName => nameof(Dy.Integer);
 
@@ -34,7 +33,7 @@ public sealed class DyInteger : DyObject
 
     public override bool Equals(DyObject? obj) => obj is DyInteger i && Value == i.Value;
 
-    public override object ToObject() => Value == (int)Value ? System.Convert.ChangeType(Value, BCL.Int32) : Value;
+    public override object ToObject() => Value == (int)Value ? Convert.ChangeType(Value, BCL.Int32) : Value;
 
     public override DyObject Clone() => this;
 }

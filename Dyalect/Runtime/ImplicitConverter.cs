@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 namespace Dyalect.Runtime;
 
-internal static class ImplicitConverter
+public static class ImplicitConverter
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static double GetFloat(this DyObject self)

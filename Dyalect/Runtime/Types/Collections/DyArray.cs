@@ -164,8 +164,8 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
     {
         if (index is DyInteger i)
             return GetItem((int)i.Value, ctx);
-        else
-            return ctx.IndexOutOfRange(index);
+
+        throw new DyCodeException(DyError.IndexOutOfRange, index);
     }
 
     protected override DyObject CollectionGetItem(int index, ExecutionContext ctx) => values[index];
@@ -177,7 +177,7 @@ public class DyArray : DyCollection, IEnumerable<DyObject>
 
     internal override DyObject GetValue(int index) => values[CorrectIndex(index)];
 
-    internal override DyObject[] GetValues()
+    public override DyObject[] GetValues()
     {
         var arr = new DyObject[Count];
 

@@ -8,11 +8,10 @@ namespace Dyalect.Runtime.Types;
 public abstract class DyFunction : DyObject
 {
     internal const string DefaultName = "<func>";
-    internal DyObject? Self;
+    internal protected DyObject? Self;
     internal Par[] Parameters;
-    internal int VarArgIndex;
-    internal int Attr;
-    internal int DeclaringUnitId;
+    internal protected int VarArgIndex;
+    internal protected int Attr;
 
     public override string TypeName => nameof(Dy.Function);
 
@@ -46,9 +45,13 @@ public abstract class DyFunction : DyObject
 
     internal abstract DyFunction BindToInstance(ExecutionContext ctx, DyObject arg);
 
-    internal virtual DyObject BindOrRun(ExecutionContext ctx, DyObject arg) => BindToInstance(ctx, arg);
-    
-    internal abstract DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args);
+    internal DyObject TryInvokeProperty(ExecutionContext ctx, DyObject arg) => BindOrRun(ctx, arg);
+
+    protected virtual DyObject BindOrRun(ExecutionContext ctx, DyObject arg) => BindToInstance(ctx, arg);
+
+    internal DyObject FastCall(ExecutionContext ctx, DyObject[] args) => CallWithMemoryLayout(ctx, args);
+
+    protected abstract DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args);
 
     public DyObject Call(ExecutionContext ctx)
     {

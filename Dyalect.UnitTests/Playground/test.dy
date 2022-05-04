@@ -1,9 +1,6 @@
-﻿func Integer.ToString() {
-	throw "Error from Integer"
-}
-
+﻿let xs = (x: 1, y: 2)
 try {
-	let res = "12" + 12
-} catch e {
-	print(e)
+    xs[2]
+} catch {
+    @IndexOutOfRange => assert(got: true)
 }

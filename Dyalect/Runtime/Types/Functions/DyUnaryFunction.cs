@@ -16,9 +16,9 @@ internal class DyUnaryFunction : DyForeignFunction
             Attr |= FunAttr.Auto;
     }
 
-    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!);
+    protected override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!);
 
-    internal override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
+    protected override DyObject BindOrRun(ExecutionContext ctx, DyObject arg)
     {
         if (!Auto)
             return BindToInstance(ctx, arg);

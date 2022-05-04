@@ -24,11 +24,7 @@ public abstract class DyCollection : DyEnumerable
 
     internal DyObject GetItem(int index, ExecutionContext ctx)
     {
-        index = CorrectIndex(index);
-        
-        if (index >= Count)
-            return ctx.IndexOutOfRange(index);
-        
+        CorrectIndex(ctx, ref index);
         return CollectionGetItem(index, ctx);
     }
 
@@ -76,7 +72,7 @@ public abstract class DyCollection : DyEnumerable
 
     internal abstract DyObject GetValue(int index);
 
-    internal abstract DyObject[] GetValues();
+    public abstract DyObject[] GetValues();
 
     internal static DyObject[] ConcatValues(ExecutionContext ctx, params DyObject[] values)
     {

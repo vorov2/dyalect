@@ -1,5 +1,4 @@
-﻿using System.IO;
-namespace Dyalect.Runtime.Types;
+﻿namespace Dyalect.Runtime.Types;
 
 public sealed class DyFloat : DyObject
 {
@@ -12,11 +11,11 @@ public sealed class DyFloat : DyObject
     public static readonly DyFloat Min = new(double.MinValue);
     public static readonly DyFloat Max = new(double.MaxValue);
 
-    internal readonly double Value;
+    public readonly double Value;
 
     public override string TypeName => nameof(Dy.Float); 
 
-    public DyFloat(double value) : base(Dy.Float) => this.Value = value;
+    public DyFloat(double value) : base(Dy.Float) => Value = value;
 
     public override int GetHashCode() => Value.GetHashCode();
 

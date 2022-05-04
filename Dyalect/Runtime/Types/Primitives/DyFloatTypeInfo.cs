@@ -182,7 +182,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
     }
 
     [StaticMethod(Method.Float)]
-    internal static double? Convert(ExecutionContext ctx, DyObject value)
+    internal static double? Convert(DyObject value)
     {
         if (value is DyFloat f)
             return f.Value;
@@ -193,7 +193,6 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
         if (value.TypeId is Dy.Char or Dy.String)
             return Parse(value.ToString());
 
-        ctx.InvalidType(Dy.Float, Dy.Integer, Dy.Char, Dy.String, value);
-        return default;
+        throw new DyCodeException(DyError.InvalidType, value);
     }
 }

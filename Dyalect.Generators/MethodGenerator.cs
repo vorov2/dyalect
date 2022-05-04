@@ -44,6 +44,8 @@ public class MethodGenerator : SourceGenerator
     internal static readonly object Nil = new();
     private static readonly string[] neverNulls = new[] { "int", "long", "float", "double", "char", "bool" };
 
+    private static string Error(string value) => $"__ctx.InvalidType({value})";
+
     private static void ParamCheck(SourceBuilder sb, string input, string par, string conversion, ParFlags flags, params string[] dyTypes)
     {
         if (dyTypes.Length > 0)
@@ -62,7 +64,7 @@ public class MethodGenerator : SourceGenerator
             if ((flags & ParFlags.Nullable) == ParFlags.Nullable)
                 sb.Append($" and not {Types.Dy}.Nil");
 
-            sb.Append($") return __ctx.InvalidType({dyTypes.ToString($"{Types.Dy}.{{0}}")}, {input});");
+            sb.Append($") return {Error(input)};");
             sb.AppendLine();
         }
 
@@ -118,7 +120,7 @@ public class MethodGenerator : SourceGenerator
             sb.AppendLine($"var {len} = {arr} is null ? 0 : {arr}.Length;");
             sb.AppendLine($"for (var {index} = 0; {index} < {len}; {index}++)");
             sb.StartBlock();
-            sb.AppendLine($"if ({arr}[{index}] is not {ati.ElementType} {elem}) return __ctx.InvalidType({input});");
+            sb.AppendLine($"if ({arr}[{index}] is not {ati.ElementType} {elem}) return {Error(input)};");
             sb.AppendLine($"{par}[{index}] = {elem};");
             sb.EndBlock();
             return true;
@@ -319,7 +321,7 @@ public class MethodGenerator : SourceGenerator
 
         builder.AppendLine($"internal sealed class {className} : {Types.DyForeignFunction}");
         builder.StartBlock();
-        builder.AppendLine($"internal override {Types.DyObject} CallWithMemoryLayout({Types.ExecutionContext} __ctx, {Types.DyObject}[] __args)");
+        builder.AppendLine($"protected override {Types.DyObject} CallWithMemoryLayout({Types.ExecutionContext} __ctx, {Types.DyObject}[] __args)");
         builder.StartBlock();
 
         var pars = EmitParameters(ctx, builder, t, m, isStatic, false, out var varArgIndex);
@@ -364,7 +366,7 @@ public class MethodGenerator : SourceGenerator
         builder.StartBlock();
 
         if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
-            builder.AppendLine($"Attr |= {Types.FunAttr}.Auto;");
+            builder.AppendLine($"Attr |= 0x01;");
 
         builder.EndBlock();
         builder.AppendLine();
@@ -373,7 +375,7 @@ public class MethodGenerator : SourceGenerator
         if ((implFlags & MethodFlags.Property) == MethodFlags.Property)
         {
             builder.AppendLine();
-            builder.AppendLine($"internal override DyObject BindOrRun({Types.ExecutionContext} __ctx, {Types.DyObject} __arg)");
+            builder.AppendLine($"protected override DyObject BindOrRun({Types.ExecutionContext} __ctx, {Types.DyObject} __arg)");
             builder.StartBlock();
             EmitParameters(ctx, builder, t, m, isStatic, true, out _);
             EmitReturnType(ctx, builder, t, m);
@@ -520,14 +522,14 @@ public class MethodGenerator : SourceGenerator
     {
         if (!nullable)
         {
-            builder.AppendLine($"if ({oldVar} is not {targetType} {newVar}) return __ctx.InvalidType({oldVar});");
+            builder.AppendLine($"if ({oldVar} is not {targetType} {newVar}) return {Error(oldVar)};");
             return;
         }
 
         builder.AppendLine($"{targetType} {newVar} = default;");
         builder.AppendLine($"if ({oldVar}.TypeId != {Types.Dy}.Nil)");
         builder.StartBlock();
-        builder.AppendLine($"if ({oldVar} is not {targetType} __tmp_{newVar}) return __ctx.InvalidType({oldVar});");
+        builder.AppendLine($"if ({oldVar} is not {targetType} __tmp_{newVar}) return {Error(oldVar)};");
         builder.AppendLine($"{newVar} = __tmp_{newVar};");
         builder.EndBlock();
     }

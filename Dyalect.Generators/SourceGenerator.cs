@@ -7,6 +7,7 @@ public abstract class SourceGenerator : ISourceGenerator
 {
     internal static class Types
     {
+        public const string DyError = "Dyalect.Runtime.DyError";
         public const string Array = "System.Array";
         public const string ExecutionContext = "Dyalect.Runtime.ExecutionContext";
         public const string Extensions = "Dyalect.Runtime.Types.Extensions";
@@ -15,6 +16,7 @@ public abstract class SourceGenerator : ISourceGenerator
         public const string DyFunction = "Dyalect.Runtime.Types.DyFunction";
         public const string DyForeignFunction = "Dyalect.Runtime.Types.DyForeignFunction";
         public const string DyTuple = "Dyalect.Runtime.Types.DyTuple";
+        public const string DyVariant = "Dyalect.Runtime.Types.DyVariant";
         public const string DyIterator = "Dyalect.Runtime.Types.DyIterator";
         public const string DyInteger = "Dyalect.Runtime.Types.DyInteger";
         public const string DyNil = "Dyalect.Runtime.Types.DyNil";
@@ -29,7 +31,6 @@ public abstract class SourceGenerator : ISourceGenerator
         public const string TypeConverter = "Dyalect.Runtime.TypeConverter";
         public const string InvalidCastException = "System.InvalidCastException";
         public const string Dy = "Dyalect.Dy";
-        public const string FunAttr = "Dyalect.Compiler.FunAttr";
         public const string MethodAttribute = "Dyalect.Codegen.MethodAttribute";
         public const string StaticMethodAttribute = "Dyalect.Codegen.StaticMethodAttribute";
         public const string InstanceMethodAttribute = "Dyalect.Codegen.InstanceMethodAttribute";

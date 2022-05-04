@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using Dyalect.Compiler;
 namespace Dyalect.Runtime.Types;
 
 public sealed class DyString : DyCollection
@@ -9,7 +7,7 @@ public sealed class DyString : DyCollection
 
     public override string TypeName => nameof(Dy.String);
 
-    internal readonly string Value;
+    public readonly string Value;
 
     private int hashCode;
 
@@ -23,7 +21,7 @@ public sealed class DyString : DyCollection
     
     internal override DyObject GetValue(int index) => new DyChar(Value[index]);
 
-    internal override DyObject[] GetValues()
+    public override DyObject[] GetValues()
     {
         var arr = new DyObject[Value.Length];
 
@@ -62,7 +60,7 @@ public sealed class DyString : DyCollection
     internal DyObject GetItem(DyObject index, ExecutionContext ctx)
     {
         if (index is not DyInteger ix)
-            return ctx.IndexOutOfRange(index);
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
         return GetItem((int)ix.Value, ctx);
     }

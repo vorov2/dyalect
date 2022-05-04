@@ -21,15 +21,6 @@ public sealed class DyLabel : DyObject
 
     public override object ToObject() => Value.ToObject();
 
-    internal DyObject GetItem(DyObject index, ExecutionContext ctx)
-    {
-        if ((index.TypeId is Dy.Integer && ((DyInteger)index).Value == 0) 
-            || (index.TypeId is Dy.String or Dy.Char && index.ToString() == Label))
-            return Value;
-        else
-            return ctx.IndexOutOfRange(index);
-    }
-
     internal void AddTypeAnnotation(DyTypeInfo ti)
     {
         typeAnnotations ??= new();

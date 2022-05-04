@@ -11,7 +11,7 @@ internal sealed class DyIteratorFunction : DyForeignFunction
     public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), -1) =>
         this.enumerable = enumerable;
 
-    internal override DyObject CallWithMemoryLayout(ExecutionContext ctx, params DyObject[] args)
+    protected override DyObject CallWithMemoryLayout(ExecutionContext ctx, params DyObject[] args)
     {
         if (enumerator is null)
             enumerator = enumerable.GetEnumerator();

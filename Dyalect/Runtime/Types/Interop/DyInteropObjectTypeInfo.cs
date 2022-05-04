@@ -37,7 +37,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
             return ctx.StaticOperationNotSupported(name, ReflectedTypeId);
 
         if (func.Auto)
-            return func.BindOrRun(ctx, this);
+            return func.TryInvokeProperty(ctx, this);
 
         return func;
     }
@@ -75,7 +75,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
         }
 
         if (func is not null)
-            return func.BindOrRun(ctx, self);
+            return func.TryInvokeProperty(ctx, self);
 
         return ctx.OperationNotSupported(name, self);
     }
@@ -120,7 +120,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
         if (typeName is DyInteropObject obj)
             return new DyInteropObject(BCL.Type, obj.Type);
         else if (typeName.TypeId is not Dy.String or Dy.Char)
-            return ctx.InvalidType(Dy.Interop, Dy.String, typeName);
+            throw new DyCodeException(DyError.InvalidType, typeName);
 
         var typeInfo = Type.GetType(typeName.ToString(), throwOnError: false);
 
@@ -143,7 +143,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
     internal static DyObject ConvertTo(ExecutionContext ctx, DyInteropObject type, DyObject value)
     {
         if (type.Object is not Type typ)
-            return ctx.InvalidType(type);
+            throw new DyCodeException(DyError.InvalidType, type);
 
         var ret = TypeConverter.ConvertTo(ctx, value, typ);
 
@@ -166,7 +166,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
     internal static DyObject CreateArray(ExecutionContext ctx, DyInteropObject type, int size)
     {
         if (type.Object is not Type t)
-            return ctx.InvalidType(type);
+            throw new DyCodeException(DyError.InvalidType, type);
 
         var arr = Array.CreateInstance(t, size);
         return new DyInteropObject(arr.GetType(), arr);
@@ -176,7 +176,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
     internal static DyObject GetMethod(ExecutionContext ctx, DyInteropObject type, string name, DyObject[]? parameterTypes = null, int typeArguments = 0)
     {
         if (type.Object is not Type typ)
-            return ctx.InvalidType(type);
+            throw new DyCodeException(DyError.InvalidType, type);
 
         foreach (var mi in typ.GetMethods(AllBindingFlags))
         {
@@ -214,7 +214,7 @@ internal partial class DyInteropObjectTypeInfo : DyTypeInfo
     internal static DyObject GetField(ExecutionContext ctx, DyInteropObject type, string name)
     {
         if (type.Object is not Type typ)
-            return ctx.InvalidType(type);
+            throw new DyCodeException(DyError.InvalidType, type);
 
         var ret = typ.GetField(name);
         return ret is not null ? new DyInteropObject(typeof(FieldInfo), ret) : Nil;
