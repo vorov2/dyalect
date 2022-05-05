@@ -1,19 +1,9 @@
-﻿type Foo(var x, var y, var z) with Collection
+﻿func runFunctor(Functor fn) => fn()
 
-func get Foo[index] {
-    match index {
-        >2 or <0 => @IndexOutOfRange(index),
-        _ => rawget(this, index)
-    }
-}
-func set Foo[index, value] {
-    match index {
-        >2 or <0 => @IndexOutOfRange(index),
-        _ => rawset(this, index, value)
-    }
-}
+type Foo() with Functor
 
-let f = Foo(1, 2, 3)
-assert(2, f[1])
-f[1] = 1024
-assert(1024, f[1])
+func Foo.Call() => "Foo"
+func ff() => "ff"
+
+print << runFunctor(ff)
+print << runFunctor(Foo())

@@ -9,6 +9,8 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Function;
 
+    public DyFunctionTypeInfo() => AddMixins(Dy.Functor);
+
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString(arg.ToString());
@@ -27,6 +29,9 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
         if (ctx.HasErrors) return Nil;
         return new CompositionContainer(f1!, f2!);
     }
+
+    internal override DyObject GetInstanceMember(DyObject self, HashString name, ExecutionContext ctx) =>
+        name == "Call" ? self : base.GetInstanceMember(self, name, ctx);
     #endregion
 
     [InstanceMethod]

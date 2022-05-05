@@ -30,6 +30,7 @@ public static partial class Dy
     public const int Equatable = 24;
     public const int Sequence = 25;
     public const int Identity = 26;
+    public const int Functor = 27;
 
     internal static FastList<DyTypeInfo> GetAll()
     {
