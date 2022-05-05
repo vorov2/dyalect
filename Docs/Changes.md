@@ -9,6 +9,7 @@
   * Add: _Add literal for a `Dictionary`_ ([Issue #304](https://github.com/vorov2/dyalect/issues/304), [docs](https://github.com/vorov2/dyalect/wiki/Dictionary)).
   * Add: _Add `toString` function to invoke original "to string" implementation_ ([Issue #884](https://github.com/vorov2/dyalect/issues/884), [docs](https://github.com/vorov2/dyalect/wiki/Standard-functions#toString)).
   * Add: _Custom type automatic conversion to tuples and dictionaries_ ([Issue #868](https://github.com/vorov2/dyalect/issues/868), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types#overview)).
+  * Add: _Add `Tuple.RemoveField` method_ ([Issue #875](https://github.com/vorov2/dyalect/issues/875), [docs](https://github.com/vorov2/dyalect/wiki/Tuple#removeField)).
   * Fix: _Stack corruption because of indexer_ ([Issue #863](https://github.com/vorov2/dyalect/issues/863)).
   * Fix: _When InvalidOverload error is generated an overload is still done_ ([Issue #891](https://github.com/vorov2/dyalect/issues/891)).
   * Fix: _Tuple is incorrectly transformed to an iterator_ ([Issue #890](https://github.com/vorov2/dyalect/issues/890)).

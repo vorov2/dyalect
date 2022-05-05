@@ -148,6 +148,20 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
     }
 
     [InstanceMethod]
+    internal static DyObject RemoveField(DyTuple self, string field)
+    {
+        var tv = self.UnsafeAccess();
+
+        for (var i = 0; i < tv.Length; i++)
+        {
+            if (tv[i] is DyLabel la && la.Label == field)
+                return InternalRemoveAt(self, i);
+        }
+
+        return self;
+    }
+
+    [InstanceMethod]
     internal static DyObject RemoveAt(DyTuple self, int index)
     {
         index = index < 0 ? self.Count + index : index;

@@ -157,6 +157,12 @@
     assert((1,2,4), xs)
 #endregion
 
+#region "Methods: RemoveField"
+    var xs = (x: 1, y: 2, z: 3)
+    xs = xs.RemoveField("y")
+    assert((x: 1, z: 3), xs)
+#endregion
+
 #region "Methods: RemoveAt"
     var xs = (1,2,3,4)
     xs = xs.RemoveAt(3)
