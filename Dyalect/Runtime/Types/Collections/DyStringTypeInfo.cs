@@ -29,7 +29,7 @@ internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
 
     public override int ReflectedTypeId => Dy.String;
 
-    public DyStringTypeInfo() => AddMixin(Dy.Lookup, Dy.Comparable);
+    public DyStringTypeInfo() => AddMixins(Dy.Lookup, Dy.Order, Dy.Equatable);
 
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
@@ -80,18 +80,6 @@ internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
-    {
-        var str = ((DyString)self).Value;
-
-        if (field is DyString s)
-            return str.Contains(s.Value) ? True : False;
-        else if (field is DyChar c)
-            return str.Contains(c.Value) ? True : False;
-
-        throw new DyCodeException(DyError.InvalidType, field);
-    }
-
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => new DyString(((DyString)arg).Value);
 
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(((DyString)arg).Value));
@@ -121,6 +109,9 @@ internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
     #endregion
 
     private static int CorrectIndex(int index, string str) => index < 0 ? index + str.Length : index;
+
+    [InstanceMethod]
+    internal static bool Contains(string self, string field) => self.Contains(field);
 
     [InstanceMethod]
     internal static DyObject Slice(DyString self, int index = 0, int? size = null)

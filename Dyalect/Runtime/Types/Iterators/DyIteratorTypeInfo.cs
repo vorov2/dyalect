@@ -83,12 +83,6 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         }
     }
 
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject item)
-    {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-        return seq.Any(o => o.Equals(item, ctx)) ? True : False;
-    }
-
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {
@@ -109,6 +103,10 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         return ToSet(seq);
     }
     #endregion
+
+    [InstanceMethod]
+    internal static bool Contains(ExecutionContext ctx, IEnumerable<DyObject> self, DyObject item) =>
+        self.Any(o => o.Equals(item, ctx));
 
     [InstanceMethod]
     internal static DyObject ToArray(IEnumerable<DyObject> self) => new DyArray(self.ToArray());

@@ -1,5 +1,5 @@
 ﻿#region "Initialize"
-    type Box(key)
+    type Box(key) with Lookup
     let boxCollector = []
     func Box.Dispose() => boxCollector.Add(this.key)
 #endregion

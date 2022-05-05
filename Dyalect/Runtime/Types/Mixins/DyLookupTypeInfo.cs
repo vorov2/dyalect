@@ -11,13 +11,22 @@ internal class DyLookupTypeInfo : DyMixin
 
     public DyLookupTypeInfo()
     {
-        Members.Add(Builtins.Length, Unary(Builtins.Length, LengthOp));
-        Members.Add(Builtins.Get, Binary(Builtins.Get, GetOp, "index"));
+        Members.Add(Builtins.Length, Unary(Builtins.Length, GetLength));
+        Members.Add(Builtins.Get, Binary(Builtins.Get, Getter, "index"));
+        Members.Add(Builtins.In, Binary(Builtins.In, IsIn, "value"));
     }
 
-    protected override DyObject LengthOp(ExecutionContext ctx, DyObject self) =>
+    private static DyObject GetLength(ExecutionContext ctx, DyObject self) =>
         DyInteger.Get(((DyClass)self).Fields.Count);
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
+    private static DyObject Getter(ExecutionContext ctx, DyObject self, DyObject index) =>
         ((DyClass)self).Fields.GetItem(ctx, index);
+
+    private static DyObject IsIn(ExecutionContext ctx, DyObject self, DyObject field)
+    {
+        if (field.TypeId is not Dy.String and not Dy.Char)
+            return False;
+
+        return ((DyClass)self).Fields.GetOrdinal(field.ToString()) is not -1 ? True : False;
+    }
 }

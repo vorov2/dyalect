@@ -124,13 +124,6 @@
     assert(true, xs as Bool)
 #endregion
 
-#region "Operator in"
-    let xs = Set(1, 2, 3)
-    assert(true, 1 in xs)
-    assert(true, 2 in xs)
-    assert(false, 4 in xs)
-#endregion
-
 #region "Set and vararg function"
     var str = String(Set('a', 'b', 'c'))
     assert("Set(a, b, c)", str)

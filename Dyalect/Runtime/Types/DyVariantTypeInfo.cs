@@ -10,7 +10,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Len | SupportedOperations.Get | SupportedOperations.Set;
 
-    public DyVariantTypeInfo() => AddMixin(Dy.Lookup);
+    public DyVariantTypeInfo() => AddMixins(Dy.Lookup);
 
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)

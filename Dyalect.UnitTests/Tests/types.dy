@@ -8,24 +8,17 @@
 #endregion
 
 #region "Methods: Clone"
-    type Foo()
+    type Foo() with Identity, Equatable
     let xs = Foo()
     assert(true, xs == xs)
     assert(true, xs.Clone() == xs)
 #endregion
 
 #region "Methods: ToString"
-    type Foo(x, y, z)
+    type Foo(x, y, z) with Show
     let xs = Foo(1, 2, 3)
     let str = xs.ToString()
     assert("Foo(x: 1, y: 2, z: 3)", str)
-#endregion
-
-#region "Methods: ToString"
-    type Foo(x, y, z)
-    let xs = Foo(1, 'c', "string")
-    let str = xs.ToLiteral()
-    assert("Foo(x: 1, y: 'c', z: \"string\")", str)
 #endregion
 
 #region "Statics"
@@ -37,8 +30,8 @@
     }
 #endregion
 
-#region "Generated members"
-    type Foo(x)
+#region "Standard mixins"
+    type Foo(x) with Lookup
     var f = Foo(42)
     assert(42, f.x)
     assert(42, f[0])
@@ -49,7 +42,7 @@
 #endregion
 
 #region "Empty variant"
-    type Void()
+    type Void() with Lookup, Show
     var f = Void()
     assert(0, f.Length())
     match f {
@@ -60,6 +53,7 @@
 
 #region "Multiple productions"
     type Asset = Computer(model, memory, rank) or Phone(model, memory) or Modem(model)
+        with Lookup, Show
     var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
     var a2 = Asset.Phone("1+", 8)
     var a3 = Asset.Modem("Zyxel")
@@ -76,6 +70,7 @@
 
 #region "Pattern match 1"
     type Asset = Computer(model, memory, rank) or Phone(model, memory) or Modem(model)
+        with Lookup
     var a1 = Asset.Computer(model: "Lenovo", memory: 16, rank: 3)
     var a2 = Asset.Phone("1+", 8)
     func mem(a) {
@@ -108,7 +103,7 @@
 #endregion
 
 #region "Maybe or Some"
-    type Maybe = None() or Some(x)
+    type Maybe = None() or Some(x) with Lookup
     var x = Maybe.Some(42)
     var y = Maybe.None()
     func doMatch(x) {
@@ -122,7 +117,7 @@
 #endregion
 
 #region "Pattern match 2"
-    type Foo = Bar(x, y, z)
+    type Foo = Bar(x, y, z) with Lookup
     var f = Foo.Bar(12, "foobar", 3)
     var res = match f {
         Bar(x: xx, y: yy, z: zz) => "\(xx),\(yy)",
@@ -133,7 +128,7 @@
 #endregion
 
 #region "Point variant"
-    type Point(x, y)
+    type Point(x, y) with Lookup
     var p = Point(12, 43)
     assert(12, p[0])
     assert(43, p[1])
@@ -142,7 +137,7 @@
 #endregion
 
 #region "Natural number 1"
-    type Nat = private PrivateNat(var val)
+    type Nat = private PrivateNat(var val) with Lookup
     func fetch(x) {
         x >= 0 ? Nat(x) : x
     }
@@ -178,7 +173,7 @@
 #endregion
 
 #region "Either"
-    type Either = Left(x) or Right(x)
+    type Either = Left(x) or Right(x) with Lookup
     var x = Either.Left(12)
     var y = Either.Right(24)
     func doMatch(obj) {
@@ -221,7 +216,7 @@
 #endregion
 
 #region "Linked list"
-    type List = Cons(x, next) or Empty()
+    type List = Cons(x, next) or Empty() with Lookup
     func List.ToString() {
         func walk(xs) {
             match xs {
@@ -237,7 +232,7 @@
 #endregion
 
 #region "Generate linked list"
-    type List = Cons(x, next) or Empty()
+    type List = Cons(x, next) or Empty() with Lookup
     func List.ToString() {
         func walk(xs) {
             match xs {
@@ -259,7 +254,7 @@
     assert("[4,3,2,1]", xs.ToString())
 #endregion
 
-#region "Custom toString"
+#region "Custom ToString"
     type Foo()
     var x = Foo()
     func Foo.ToString() {
@@ -287,7 +282,7 @@
 #endregion
 
 #region "Read-only fields"
-    type UserInfo(name,age)
+    type UserInfo(name,age) with Collection
     var u = UserInfo("Jon", 17)
     assert(17, u.age)
     try {
@@ -299,7 +294,7 @@
 #endregion
 
 #region "Default values"
-    type Foo(a, b = 12, c = 33)
+    type Foo(a, b = 12, c = 33) with Lookup
     var t = Foo(1)
     assert(1, t.a)
     assert(12, t.b)
@@ -315,7 +310,7 @@
 #endregion
 
 #region "Mutable Point"
-    type Point = private Make(var x, var y)
+    type Point = private Make(var x, var y) with Collection
     static func Point.Point(x, y) {
         Point.Make(x, y)
     }
@@ -361,7 +356,7 @@
 #region "Callable type 1"
     type Julia(x)
     func Julia.Call(y, z) {
-        this.x + y * z 
+        ini.x + y * z 
     }
     var x = Julia(12)
     var res = x(44.5, 67.07)
@@ -386,7 +381,7 @@
 #endregion
 
 #region "Pattern match: inside method"
-    type Option = Some(x) or None()
+    type Option = Some(x) or None() with Lookup
     func Option.ExtractValue() {
         if this is Some(x) {
             x
@@ -397,7 +392,7 @@
 #endregion
 
 #region "String builder"
-    type StringBuilder = private Builder(buffer)
+    type StringBuilder = private Builder(buffer) with Lookup
 
     static func StringBuilder.StringBuilder() {
         StringBuilder.Builder([])
@@ -432,8 +427,7 @@
 #endregion
 
 #region "Natural number 2"
-    type RealNat = private Nat(var num)
-
+    type RealNat = private Nat(var num) with Lookup
     static func RealNat.RealNat(x) {
         throw @InvalidType(x.GetType()) when x is not Integer
         RealNat.Nat(x)
@@ -454,7 +448,7 @@
 #endregion
 
 #region "Mutable variant 1"
-    type Foo(var x, y)
+    type Foo(var x, y) with Collection
     let t = Foo(12, 24)
     t.x = 120
     assert(120, t.x)
@@ -467,7 +461,7 @@
 #endregion
 
 #region "Mutable variant 2"
-    type Foo(var Integer x, y)
+    type Foo(var Integer x, y) with Collection
     let t = Foo(12, 24)
     t.x = 1
     assert(1, t.x)
@@ -480,7 +474,7 @@
 #endregion
 
 #region "Custom constructor with constraints"
-    type Foo = private PrivateFoo(var data)
+    type Foo = private PrivateFoo(var data) with Collection
     static func Foo.Foo(Integer x) {
         Foo.PrivateFoo(x)
     }
@@ -509,6 +503,7 @@
 
 #region "Variant members"
     type Expr = Literal(var Float value) or Unary(var op, var Expr left)
+        with Collection
     let a = Expr.Literal(12.2)
     assert(12.2, a.value)
     a.value = 44.4
@@ -523,7 +518,7 @@
 #endregion
 
 #region "Properties 1"
-    type Foo = private Make(var status)
+    type Foo = private Make(var status) with Collection
     static func Foo.Foo(value) => Foo.Make(value)
     func get Foo.Status() => this.status
     func set Foo.Status(value) => this.status = value
@@ -540,8 +535,8 @@
     static func Foo.Foo() {
         Foo.Make(nil)
     }
-    func get Foo.Box() => this.box
-    func set Foo.Box(value) => this.box = value
+    func get Foo.Box() => ini.box
+    func set Foo.Box(value) => ini.box = value
     let f = Foo()
     assert(42, f.Box ?? 42)
     f.Box ??= 144
@@ -552,7 +547,7 @@
 
 #region "Custom conversion"
     type Foo(Integer x)
-    func Foo as Integer { this.x }
+    func Foo as Integer { ini.x }
     func Foo as String { "Foo" }
     let f = Foo(42)
     assert("Foo", f as String)
@@ -583,7 +578,7 @@
 #endregion
 
 #region "Type annotations 3"
-    type Foo(var Integer value)
+    type Foo(var Integer value) with Collection
     let x = Foo(12)
     assert(12, x.value)
     x.value = 122
@@ -597,7 +592,7 @@
 #endregion
 
 #region "Type annotations 4"
-    type Foo(var Integer|Char value)
+    type Foo(var Integer|Char value) with Collection
     let x = Foo(12)
     assert(12, x.value)
     x.value = 'A'
@@ -615,7 +610,7 @@
         throw @InvalidValue(x) when x == 0
         x = -x when x < 0 
     }
-    func Nat as Integer => this.x
+    func Nat as Integer => ini.x
     var x = Nat(12)
     assert(12, x as Integer)
     x = Nat(-24)
@@ -640,6 +635,7 @@
                 args = 0
             }
         }
+        with Lookup
     assert("num", Expr.Literal("num").typ)
     assert("nil", Expr.Literal("char").typ)
     assert(3, Expr.Function(3).args)
@@ -654,7 +650,7 @@
 		    "code" => "Code:Foo"
 	    }
     }
-    func Foo.Contains(field) => field is "id" or "code"
+    func Foo.In(field) => field is "id" or "code"
     let f = Foo()
     assert(42, f.id)
     assert("Code:Foo", f.code)

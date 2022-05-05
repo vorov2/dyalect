@@ -219,22 +219,7 @@
     assert(0 - 42, x)
 #endregion
 
-#region "In 1" 
-    var xs = [1..10]
-    assert(true, 1 in xs)
-    assert(true, 10 in xs)
-    assert(false, 101 in xs)
-    xs = (1..10)
-    assert(true, 1 in xs)
-    assert(true, 10 in xs)
-    assert(false, 101 in xs)
-    xs = yields {1..10}
-    assert(true, 1 in xs)
-    assert(true, 10 in xs)
-    assert(false, 101 in xs)
-#endregion
-
-#region "In 2"
+#region "In"
     var xs = (x: 12, y: 24)
     assert(true, "x" in xs)
     assert(true, "y" in xs)
@@ -246,7 +231,7 @@
 #endregion
 
 #region "As"
-    type Foo(x)
+    type Foo(x) with Lookup
     func Integer as Char { this.ToString()[0] }
     func Integer as Foo { Foo(this) }
     let x = 42

@@ -11,7 +11,7 @@ public abstract class SpanTypeInfo<T> : DyForeignTypeInfo<CoreModule>
     protected SpanTypeInfo(string typeName)
     {
         ReflectedTypeName = typeName;
-        AddMixin(Dy.Comparable);
+        AddMixins(Dy.Order);
     }
 
     protected override SupportedOperations GetSupportedOperations() =>

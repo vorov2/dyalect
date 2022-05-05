@@ -533,7 +533,6 @@
 
 #region "Type annotations 2"
     import lib = refs/libtest1
-
     func assetToString(lib.Asset ass) {
         ass.ToString()
     }

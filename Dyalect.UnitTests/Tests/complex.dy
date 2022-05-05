@@ -520,7 +520,7 @@
 
 
 #region "Employee salary"
-    type Employee(name,id,salary,department)
+    type Employee(name,id,salary,department) with Lookup
 
     func Employee.ToString() {
         "$\(this.salary) name: \(this.name), id: \(this.id), department: \(this.department)"
@@ -592,7 +592,7 @@
 		    cur = next(cur)
 	    }
     }
-    type List = Cons(value, List next) or Empty()
+    type List = Cons(value, List next) or Empty() with Lookup
     func get List.HasValue() => this is not Empty()
     func List.Reverse() {
 	    var xs = List.Empty()

@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using System.Collections.Generic;
 using System.IO;
 namespace Dyalect.Runtime.Types;
 
@@ -11,7 +12,7 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Module;
 
-    public DyModuleTypeInfo() => AddMixin(Dy.Lookup);
+    public DyModuleTypeInfo() => AddMixins(Dy.Lookup);
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
@@ -32,6 +33,9 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
             return "dyalect." + (arg.Unit.FileName is null ? "#memory#"
                 : Path.GetFileNameWithoutExtension(arg.Unit.FileName));
     }
+
+    protected override DyObject IterateOp(ExecutionContext ctx, DyObject self) =>
+        DyIterator.Create((IEnumerable<DyObject>)self);
 
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
     {
@@ -54,7 +58,7 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => ((DyModule)self).GetMember(ctx, index);
 
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
+    protected override DyObject InOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
         if (field.TypeId is not Dy.String and not Dy.Char)
             return Nil;

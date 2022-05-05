@@ -61,9 +61,9 @@ public static class Extensions
 
         var type = ctx.RuntimeContext.Types[self.TypeId];
 
-        if (type.HasInstanceMember(self, Builtins.Iterator, ctx))
+        if (type.HasInstanceMember(self, Builtins.Iterate, ctx))
         {
-            var inst = type.GetInstanceMember(self, Builtins.Iterator, ctx);
+            var inst = type.GetInstanceMember(self, Builtins.Iterate, ctx);
             return inst.GetIterator(ctx);
         }
         else
@@ -73,7 +73,7 @@ public static class Extensions
             if (ctx.HasErrors)
             {
                 ctx.Error = null;
-                ctx.OperationNotSupported(Builtins.Iterator, self);
+                ctx.OperationNotSupported(Builtins.Iterate, self);
                 return null;
             }
 

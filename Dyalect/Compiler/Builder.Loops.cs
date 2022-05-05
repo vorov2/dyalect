@@ -86,7 +86,7 @@ partial class Builder
         var initSkip = cw.DefineLabel();
         Build(node.Target, hints.Append(Push), ctx);
         cw.Briter(initSkip);
-        cw.GetMember(Builtins.Iterator);
+        cw.GetMember(Builtins.Iterate);
         cw.CallNullaryFunction();
 
         cw.MarkLabel(initSkip);

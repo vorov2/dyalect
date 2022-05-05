@@ -1,8 +1,19 @@
-﻿/*type Foo(x, var y, z) with Collection
+﻿type Foo(var x, var y, var z) with Collection
+
+func get Foo[index] {
+    match index {
+        >2 or <0 => @IndexOutOfRange(index),
+        _ => rawget(this, index)
+    }
+}
+func set Foo[index, value] {
+    match index {
+        >2 or <0 => @IndexOutOfRange(index),
+        _ => rawset(this, index, value)
+    }
+}
 
 let f = Foo(1, 2, 3)
-print(f.Length())
-print(f[1])
-f[1] = 123*/
-let xs = [1,2,3]
-xs[1] = 123
+assert(2, f[1])
+f[1] = 1024
+assert(1024, f[1])

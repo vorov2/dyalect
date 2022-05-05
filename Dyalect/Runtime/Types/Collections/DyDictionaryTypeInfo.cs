@@ -12,7 +12,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
-    public DyDictionaryTypeInfo() => AddMixin(Dy.Lookup);
+    public DyDictionaryTypeInfo() => AddMixins(Dy.Lookup, Dy.Collection);
 
     #region Operations
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
@@ -20,6 +20,8 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
         var len = ((DyDictionary)arg).Count;
         return DyInteger.Get(len);
     }
+
+    protected override DyObject IterateOp(ExecutionContext ctx, DyObject self) => DyIterator.Create((DyDictionary)self);
 
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) =>
         ToStringOrLiteral(ctx, arg, literal: true);
@@ -51,7 +53,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
         return new DyString(sb.ToString());
     }
 
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>
+    protected override DyObject InOp(ExecutionContext ctx, DyObject self, DyObject field) =>
         ((DyDictionary)self).ContainsKey(field) ? True : False;
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => ((DyDictionary)self).GetItem(index, ctx);
@@ -118,13 +120,14 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
         }
     }
 
-    [InstanceMethod(Method.ContainsValue)]
-    internal static bool ContainsValue(DyDictionary self, DyObject value) =>
-        self.ContainsValue(value);
+    [InstanceMethod]
+    internal static bool ContainsKey(DyDictionary self, DyObject key) => self.ContainsKey(key);
+
+    [InstanceMethod]
+    internal static bool ContainsValue(DyDictionary self, DyObject value) => self.ContainsValue(value);
     
     [InstanceMethod(Method.GetAndRemove)]
-    internal static DyObject GetAndRemove(DyDictionary self, DyObject key) =>
-        self.GetAndRemove(key);
+    internal static DyObject GetAndRemove(DyDictionary self, DyObject key) => self.GetAndRemove(key);
 
     [StaticMethod(Method.Dictionary)]
     internal static DyObject New(ExecutionContext ctx, [VarArg]DyTuple values)

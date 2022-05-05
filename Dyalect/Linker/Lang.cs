@@ -206,12 +206,22 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("rawget")]
-    public static DyObject RawGet(ExecutionContext ctx, DyObject values, DyInteger index) =>
-        ctx.RuntimeContext.Types[values.TypeId].RawGet(ctx, values, index);
+    public static DyObject RawGet(ExecutionContext ctx, DyObject values, DyInteger index)
+    {
+        if (values is DyClass cls)
+            return cls.Fields.GetItem(ctx, index);
+
+        return ctx.RuntimeContext.Types[values.TypeId].RawGet(ctx, values, index);
+    }
 
     [StaticMethod("rawset")]
-    public static void RawSet(ExecutionContext ctx, DyObject values, DyInteger index, DyObject value) =>
-        ctx.RuntimeContext.Types[values.TypeId].RawSet(ctx, values, index, value);
+    public static void RawSet(ExecutionContext ctx, DyObject values, DyInteger index, DyObject value)
+    {
+        if (values is DyClass cls)
+            cls.Fields.SetItem(ctx, index, value);
+        else
+            ctx.RuntimeContext.Types[values.TypeId].RawSet(ctx, values, index, value);
+    }
 
     [StaticMethod("caller")]
     public static DyObject Caller(ExecutionContext ctx)

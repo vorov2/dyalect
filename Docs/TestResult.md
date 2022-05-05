@@ -1,7 +1,7 @@
-# Test session from 05/05/2022 13:00
+# Test session from 05/05/2022 18:03
 
 ## Summary:
-750 passed, 61 failed in 28 file(s)
+816 passed, 0 failed in 28 file(s)
 
 ## Test file(s):
 [array.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\array.dy), [autos.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\autos.dy), [bool.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\bool.dy), [builtins.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\builtins.dy), [char.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\char.dy), [complex.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\complex.dy), [control.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\control.dy), [dictionary.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\dictionary.dy), [exceptions.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\exceptions.dy), [float.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\float.dy), [function.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\function.dy), [integer.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\integer.dy), [interop.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\interop.dy), [iterator.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\iterator.dy), [lazy.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\lazy.dy), [libcore.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libcore.dy), [libio.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\libio.dy), [match.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\match.dy), [mixin.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\mixin.dy), [modules.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\modules.dy), [nil.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\nil.dy), [operators.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\operators.dy), [ranges.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\ranges.dy), [set.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\set.dy), [string.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\string.dy), [tuple.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\tuple.dy), [types.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\types.dy), [variant.dy](C:\repos\source\Dyalect\feature\Dyalect.UnitTests\Tests\variant.dy)
@@ -53,28 +53,27 @@
 * &#9745; **Conversion: as 1**
 * &#9745; **Conversion: as 2**
 * &#9745; **Methods: ToLiteral**
-* &#9745; **Operator in**
 * &#9745; **Methods: ToSet**
 
 ### Tests/autos.dy:
-* &#9746; **Simple 1**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Simple 2**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Simple 3**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Simple 4**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Simple 5**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Autos in functions 1**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Autos in functions 2**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Autos in functions 3**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Autos in functions 4**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Autos in functions 5**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Autos and exceptions 1**: Assertion failed. Expected "[12]" :: Array, got "[]" :: Array.
-* &#9746; **Autos and exceptions 2**: Assertion failed. Expected "Error" :: String, got "op_get" :: String.
-* &#9746; **Autos and exceptions 3**: Assertion failed. Expected "[42, 84]" :: Array, got "[op_get]" :: Array.
-* &#9746; **Autos and exceptions 4**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Autos and exceptions 5**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Autos in catch 1**: Operation "op_get" is not supported by the type "Box".
-* &#9746; **Autos in catch 2**: Assertion failed. Expected "op_get" :: String, got "err" :: String.
-* &#9746; **Autos in catch 3**: Assertion failed. Expected "b" :: Char, got "op_get" :: String.
+* &#9745; **Simple 1**
+* &#9745; **Simple 2**
+* &#9745; **Simple 3**
+* &#9745; **Simple 4**
+* &#9745; **Simple 5**
+* &#9745; **Autos in functions 1**
+* &#9745; **Autos in functions 2**
+* &#9745; **Autos in functions 3**
+* &#9745; **Autos in functions 4**
+* &#9745; **Autos in functions 5**
+* &#9745; **Autos and exceptions 1**
+* &#9745; **Autos and exceptions 2**
+* &#9745; **Autos and exceptions 3**
+* &#9745; **Autos and exceptions 4**
+* &#9745; **Autos and exceptions 5**
+* &#9745; **Autos in catch 1**
+* &#9745; **Autos in catch 2**
+* &#9745; **Autos in catch 3**
 
 ### Tests/bool.dy:
 * &#9745; **Constructor**
@@ -97,7 +96,7 @@
 * &#9745; **pow**
 * &#9745; **setOut**
 * &#9745; **assert**
-* &#9746; **rawget and rawset**: Operation "op_get" is not supported by the type "Foo".
+* &#9745; **rawget and rawset**
 * &#9745; **rawset and read-only**
 * &#9745; **constructorName**
 * &#9745; **typeName**
@@ -148,9 +147,9 @@
 * &#9745; **Caesar cypher**
 * &#9745; **Count coins**
 * &#9745; **Consolidation**
-* &#9746; **Employee salary**: Operation "op_get" is not supported by the type "Employee".
+* &#9745; **Employee salary**
 * &#9745; **Sleeping beauty**
-* &#9746; **Complex iterator**: Operation "op_get" is not supported by the type "List".
+* &#9745; **Complex iterator**
 
 ### Tests/control.dy:
 * &#9745; **Guards 1**
@@ -188,7 +187,7 @@
 * &#9745; **Methods: Compact**
 * &#9745; **Methods: ToTuple**
 * &#9745; **Pattern matching**
-* &#9745; **Methods: Contains**
+* &#9745; **Methods: ContainsKey**
 * &#9745; **Methods: ContainsValue**
 * &#9745; **Methods: GetAndRemove**
 * &#9745; **Conversion: as**
@@ -291,7 +290,7 @@
 * &#9745; **Defaults and foreign call 5**
 * &#9745; **External call**
 * &#9745; **Type annotations 1**
-* &#9746; **Type annotations 2**: Assertion failed. Expected "Asset.Phone(model: 1+, memory: 8)" :: String, got "Phone[type:Tuple]" :: String.
+* &#9745; **Type annotations 2**
 * &#9745; **Type annotations 3**
 * &#9745; **Complex type annotations 1**
 * &#9745; **Complex type annotations 2**
@@ -300,7 +299,7 @@
 * &#9745; **Invalid overload (builtins)**
 * &#9745; **Invalid overload (custom)**
 * &#9745; **Conversion: as**
-* &#9746; **Complex definition 1**: Operation "op_get" is not supported by the type "Foo".
+* &#9745; **Complex definition 1**
 * &#9745; **Parameterless lambda 1**
 * &#9745; **Parameterless lambda 2**
 * &#9745; **Parameterless lambda 2**
@@ -610,18 +609,28 @@
 * &#9745; **Not nil pattern**
 
 ### Tests/mixin.dy:
-* &#9745; **Number**
 * &#9745; **Number: GetType**
-* &#9746; **Collection**: Type "Array" is unexpected.
+* &#9745; **Number**
+* &#9745; **Lookup: GetType**
+* &#9745; **Lookup**
 * &#9745; **Collection: GetType**
-* &#9745; **Comparable**
-* &#9745; **Comparable: GetType**
+* &#9745; **Collection**
+* &#9745; **Equatable: GetType**
+* &#9745; **Equatable**
+* &#9745; **Identity: GetType**
+* &#9745; **Identity**
+* &#9745; **Order: GetType**
+* &#9745; **Order**
+* &#9745; **Sequence: GetType**
+* &#9745; **Sequence**
 * &#9745; **Object: GetType**
 * &#9745; **Custom type**
 * &#9745; **Closed type**
 * &#9745; **Multiple mixins**
-* &#9746; **Mixin with operators**: Operation "op_get" is not supported by the type "Num".
-* &#9746; **Implement Collection**: Assertion failed. Expected "true" :: Bool, got "false" :: Bool.
+* &#9745; **Mixin with operators**
+* &#9745; **Implement mixin**
+* &#9745; **Array mixins**
+* &#9745; **Mixin inheritance**
 
 ### Tests/modules.dy:
 * &#9745; **Methods: ToString**
@@ -635,17 +644,17 @@
 * &#9745; **Qualification 2**
 * &#9745; **Module as tuple 1**
 * &#9745; **Module as tuple 2**
-* &#9746; **Types from module**: Operation "op_get" is not supported by the type "Foobar".
-* &#9746; **Types from module (qual)**: Operation "op_get" is not supported by the type "Foobar".
+* &#9745; **Types from module**
+* &#9745; **Types from module (qual)**
 * &#9745; **Extending external type**
 * &#9745; **Extending external type (qual)**
 * &#9745; **External type name**
 * &#9745; **External type name (qual)**
 * &#9745; **Constants**
 * &#9745; **Iterating module**
-* &#9746; **Match external type**: Match failed.
-* &#9746; **Test external type**: Operation "op_get" is not supported by the type "Asset".
-* &#9745; **Methods: Contains**
+* &#9745; **Match external type**
+* &#9745; **Test external type**
+* &#9745; **Methods: in**
 
 ### Tests/nil.dy:
 * &#9745; **Literal and initialization**
@@ -680,9 +689,8 @@
 * &#9745; **Has 3**
 * &#9745; **Ternary**
 * &#9745; **Unary minus**
-* &#9745; **In 1**
-* &#9745; **In 2**
-* &#9746; **As**: Match failed.
+* &#9745; **In**
+* &#9745; **As**
 * &#9745; **Operation 'in' with exception**
 
 ### Tests/ranges.dy:
@@ -717,7 +725,6 @@
 * &#9745; **Methods: ToString**
 * &#9745; **Methods: ToLiteral**
 * &#9745; **Conversion: as**
-* &#9745; **Operator in**
 * &#9745; **Set and vararg function**
 
 ### Tests/string.dy:
@@ -761,7 +768,6 @@
 * &#9745; **Conversion: as 2**
 * &#9745; **Format 1**
 * &#9745; **Format 2**
-* &#9745; **Operator in**
 * &#9745; **Methods: ToSet**
 
 ### Tests/tuple.dy:
@@ -814,50 +820,49 @@
 
 ### Tests/types.dy:
 * &#9745; **Methods: GetType**
-* &#9746; **Methods: Clone**: Assertion failed. Expected "true" :: Bool, got "false" :: Bool.
-* &#9746; **Methods: ToString**: Assertion failed. Expected "Foo(x: 1, y: 2, z: 3)" :: String, got "Foo[type:Tuple]" :: String.
-* &#9746; **Methods: ToString**: Assertion failed. Expected "Foo(x: 1, y: 'c', z: "string")" :: String, got "Foo[type:Tuple]" :: String.
+* &#9745; **Methods: Clone**
+* &#9745; **Methods: ToString**
 * &#9745; **Statics**
-* &#9746; **Generated members**: Operation "op_get" is not supported by the type "Foo".
-* &#9746; **Empty variant**: Operation "Length" is not supported by the type "Void".
-* &#9746; **Multiple productions**: Operation "Length" is not supported by the type "Asset".
-* &#9746; **Pattern match 1**: Match failed.
+* &#9745; **Standard mixins**
+* &#9745; **Empty variant**
+* &#9745; **Multiple productions**
+* &#9745; **Pattern match 1**
 * &#9745; **Extending type 1**
-* &#9746; **Maybe or Some**: Match failed.
-* &#9746; **Pattern match 2**: Assertion failed. Expected "12,foobar" :: String, got "not quite" :: String.
-* &#9746; **Point variant**: Operation "op_get" is not supported by the type "Point".
-* &#9746; **Natural number 1**: Operation "op_get" is not supported by the type "Nat".
-* &#9746; **Either**: Match failed.
+* &#9745; **Maybe or Some**
+* &#9745; **Pattern match 2**
+* &#9745; **Point variant**
+* &#9745; **Natural number 1**
+* &#9745; **Either**
 * &#9745; **Reference cell**
-* &#9746; **Linked list**: Match failed.
-* &#9746; **Generate linked list**: Match failed.
-* &#9745; **Custom toString**
+* &#9745; **Linked list**
+* &#9745; **Generate linked list**
+* &#9745; **Custom ToString**
 * &#9745; **Record**
-* &#9746; **Read-only fields**: Operation "op_get" is not supported by the type "UserInfo".
-* &#9746; **Default values**: Operation "op_get" is not supported by the type "Foo".
+* &#9745; **Read-only fields**
+* &#9745; **Default values**
 * &#9745; **Mutable Point**
 * &#9745; **Member check 1**
 * &#9745; **Member check 2**
 * &#9745; **Member check 3**
-* &#9746; **Callable type 1**: Operation "op_get" is not supported by the type "Julia".
+* &#9745; **Callable type 1**
 * &#9745; **Callable type 2**
 * &#9745; **Pattern match: is**
-* &#9746; **Pattern match: inside method**: Assertion failed. Expected "42" :: Integer, got "nil" :: Nil.
-* &#9746; **String builder**: Operation "op_get" is not supported by the type "StringBuilder".
-* &#9746; **Natural number 2**: Operation "op_get" is not supported by the type "RealNat".
-* &#9746; **Mutable variant 1**: Operation "op_set" is not supported by the type "Foo".
-* &#9746; **Mutable variant 2**: Operation "op_set" is not supported by the type "Foo".
+* &#9745; **Pattern match: inside method**
+* &#9745; **String builder**
+* &#9745; **Natural number 2**
+* &#9745; **Mutable variant 1**
+* &#9745; **Mutable variant 2**
 * &#9745; **Custom constructor with constraints**
-* &#9746; **Variant members**: Operation "op_get" is not supported by the type "Expr".
-* &#9746; **Properties 1**: Operation "op_get" is not supported by the type "Foo".
-* &#9746; **Properties 2**: Operation "op_get" is not supported by the type "Foo".
-* &#9746; **Custom conversion**: Operation "op_get" is not supported by the type "Foo".
+* &#9745; **Variant members**
+* &#9745; **Properties 1**
+* &#9745; **Properties 2**
+* &#9745; **Custom conversion**
 * &#9745; **Type annotations 1**
 * &#9745; **Type annotations 2**
-* &#9746; **Type annotations 3**: Operation "op_get" is not supported by the type "Foo".
-* &#9746; **Type annotations 4**: Operation "op_get" is not supported by the type "Foo".
-* &#9746; **Initialization blocks 1**: Operation "op_get" is not supported by the type "Nat".
-* &#9746; **Initialization blocks 2**: Operation "op_get" is not supported by the type "Expr".
+* &#9745; **Type annotations 3**
+* &#9745; **Type annotations 4**
+* &#9745; **Initialization blocks 1**
+* &#9745; **Initialization blocks 2**
 * &#9745; **Custom fields and pattern matching**
 
 ### Tests/variant.dy:

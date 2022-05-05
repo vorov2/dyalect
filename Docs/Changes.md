@@ -1,5 +1,9 @@
 # 0.45.0
+  * Change: _It is not possible to implement `Iterate` method for custom types_ ([Issue #889](https://github.com/vorov2/dyalect/issues/889)).
+  * Change: _Consider separating operator `in` and `Contains` method_ ([Issue #888](https://github.com/vorov2/dyalect/issues/888)).
   * Fix: _Stack corruption because of indexer_ ([Issue #887](https://github.com/vorov2/dyalect/issues/887)).
+  * Fix: _When InvalidOverload error is generated an overload is still done_ ([Issue #891](https://github.com/vorov2/dyalect/issues/891)).
+  * Fix: _Tuple is incorrectly transformed to an iterator_ ([Issue #890](https://github.com/vorov2/dyalect/issues/890)).
 
 # 0.44.4
   * Change: _Refactoring of built-in collection types._

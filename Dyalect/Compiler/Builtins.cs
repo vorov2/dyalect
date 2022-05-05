@@ -69,7 +69,7 @@ internal static class Builtins
     public const string ToLiteral   = "ToLiteral";
     public const string ToTuple     = "ToTuple";
     public const string ToArray     = "ToArray";
-    public const string Iterator    = "Iterate";
+    public const string Iterate    = "Iterate";
     public const string Clone       = "Clone";
     public const string Max         = "Max";
     public const string Min         = "Min";
@@ -80,6 +80,6 @@ internal static class Builtins
     public const string Slice       = "Slice";
     public const string Concat      = "Concat";
     public const string Dispose     = "Dispose";
-    public const string Contains    = "Contains";
+    public const string In          = "In";
     public const string DelMember   = "DeleteMember";
 }

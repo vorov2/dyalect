@@ -349,13 +349,6 @@
     assert("[1, 2, 'c', \"True\", false]", xs.ToLiteral())
 #endregion
 
-#region "Operator in"
-    let xs = [1..5]
-    assert(true, 1 in xs)
-    assert(true, 5 in xs)
-    assert(false, 0 in xs)
-#endregion
-
 #region "Methods: ToSet"
     let xs = [1,2,2,2,3,4,4,5,5,5]
     let ys = xs.ToSet()

@@ -9,6 +9,14 @@ internal abstract partial class DyCollTypeInfo : DyTypeInfo
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject self) =>
         DyInteger.Get(((DyEnumerable)self).Count);
 
+    protected override DyObject IterateOp(ExecutionContext ctx, DyObject self)
+    {
+        if (self is IEnumerable<DyObject> seq)
+            return DyIterator.Create(seq);
+
+        return Nil;
+    }
+
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType)
     {
         if (targetType.ReflectedTypeId == self.TypeId)

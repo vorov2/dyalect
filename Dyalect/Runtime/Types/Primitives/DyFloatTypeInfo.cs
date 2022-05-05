@@ -14,7 +14,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Float;
 
-    public DyFloatTypeInfo() => AddMixin(Dy.Number, Dy.Comparable);
+    public DyFloatTypeInfo() => AddMixins(Dy.Number, Dy.Order);
 
     #region Binary Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)

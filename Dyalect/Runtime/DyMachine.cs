@@ -396,7 +396,7 @@ public static partial class DyMachine
                     break;
                 case OpCode.Contains:
                     first = evalStack.Peek();
-                    evalStack.Replace(types[first.TypeId].Contains(ctx, first, unit.Objects[op.Data]));
+                    evalStack.Replace(types[first.TypeId].In(ctx, first, unit.Objects[op.Data]));
                     if (ctx.Error is not null)
                     {
                         second = unit.Objects[op.Data];

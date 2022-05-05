@@ -161,12 +161,12 @@
     }
 #endregion
 
-#region "Methods: Contains"
+#region "Methods: ContainsKey"
     var map = Dictionary.FromTuple((x: 1, y: 2))
-    assert(true, map.Contains("x"))
-    assert(false, map.Contains("X"))
+    assert(true, map.ContainsKey("x"))
+    assert(false, map.ContainsKey("X"))
     map[(1,2)] = true
-    assert(true, map.Contains((1,2)))
+    assert(true, map.ContainsKey((1,2)))
 #endregion
 
 #region "Methods: ContainsValue"

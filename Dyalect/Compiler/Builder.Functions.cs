@@ -482,7 +482,7 @@ partial class Builder
                 cw.NewFun(funHandle);
         }
         
-        if (node.Getter)
+        if (node.Getter && !node.IsIndexer)
             cw.FunAttr(FunAttr.Auto);
 
         if (node.IsPrivate)

@@ -258,12 +258,12 @@
 
 #region "Methods: Contains"
     let xs = (name: "Vasily", age: 41, gender: "Male")
-    assert(true, xs.Contains("name"))
-    assert(true, xs.Contains("age"))
-    assert(true, xs.Contains("gender"))
-    assert(false, xs.Contains("NAME"))
+    assert(true, xs.ContainsField("name"))
+    assert(true, xs.ContainsField("age"))
+    assert(true, xs.ContainsField("gender"))
+    assert(false, xs.ContainsField("NAME"))
     try {
-        assert(true, xs.Contains(42))
+        assert(true, xs.ContainsField(42))
         assert(got: false)
     } catch {
         @InvalidType() => assert(got: true)

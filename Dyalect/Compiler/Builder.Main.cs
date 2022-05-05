@@ -408,7 +408,7 @@ partial class Builder
 
         Build(node.Expression, hints.Append(Push), ctx);
         cw.Briter(initSkip);
-        cw.GetMember(Builtins.Iterator);
+        cw.GetMember(Builtins.Iterate);
         cw.FunPrep(0);
         cw.FunCall(0);
 
@@ -1337,7 +1337,7 @@ partial class Builder
                 {
                     Build(node.Right, hints.Remove(Last).Append(Push), ctx);
                     AddLinePragma(node);
-                    cw.GetMember(Builtins.Contains);
+                    cw.GetMember(Builtins.In);
                     cw.FunPrep(1);
                     Build(node.Left, hints.Remove(Last).Append(Push), ctx);
                     AddLinePragma(node);

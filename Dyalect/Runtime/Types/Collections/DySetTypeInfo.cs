@@ -13,7 +13,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
-    public DySetTypeInfo() => AddMixin(Dy.Lookup);
+    public DySetTypeInfo() => AddMixins(Dy.Lookup);
 
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
@@ -26,12 +26,6 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
     {
         var self = (DySet)arg;
         return DyInteger.Get(self.Count);
-    }
-
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
-    {
-        var set = (DySet)self;
-        return set.Contains(field) ? True : False;
     }
 
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToLiteralOrString(arg, ctx, literal: false);
@@ -67,6 +61,10 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
             _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
+
+
+    [InstanceMethod]
+    internal static bool Contains(DySet self, DyObject field) => self.Contains(field);
 
     [InstanceMethod(Method.Add)]
     internal static bool AddItem(DySet self, DyObject value) => self.Add(value);

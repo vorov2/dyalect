@@ -14,7 +14,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
-    public DyArrayTypeInfo() => AddMixin(Dy.Lookup);
+    public DyArrayTypeInfo() => AddMixins(Dy.Lookup, Dy.Collection);
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToStringOrLiteral(false, arg, ctx);
@@ -64,12 +64,6 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
         return ctx.InvalidType(index);
     }
 
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject item)
-    {
-        var arr = (DyArray)self;
-        return arr.IndexOf(ctx, item) != -1 ? True : False;
-    }
-
     private static DyObject ToStringOrLiteral(bool literal, DyObject arg, ExecutionContext ctx)
     {
         var arr = (DyArray)arg;
@@ -103,6 +97,9 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
 
         return true;
     }
+
+    [InstanceMethod]
+    internal static bool Contains(ExecutionContext ctx, DyArray self, DyObject item) => self.IndexOf(ctx, item) != -1;
 
     [InstanceMethod(Method.Add)]
     internal static void AddItem(DyArray self, DyObject value) => self.Add(value);

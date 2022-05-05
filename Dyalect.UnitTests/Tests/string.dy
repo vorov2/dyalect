@@ -287,12 +287,6 @@
     assert("Foo                                 Boo                  Bar        Zar       ", data)
 #endregion
 
-#region "Operator in"
-    assert(true, 'o' in "foo")
-    assert(false, 'B' in "bar")
-    assert(true, "ello" in "Hello, world")
-#endregion
-
 #region "Methods: ToSet"
     let xs = "Hello,world!"
     let ys = String(values: xs.ToSet())

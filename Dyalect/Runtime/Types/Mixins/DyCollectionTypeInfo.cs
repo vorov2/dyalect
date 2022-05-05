@@ -12,11 +12,11 @@ internal sealed class DyCollectionTypeInfo : DyLookupTypeInfo
 
     public DyCollectionTypeInfo()
     {
-        AddMixin(Dy.Lookup);
-        Members.Add(Builtins.Set, Ternary(Builtins.Set, SetOp, "index", "value"));
+        AddMixins(Dy.Lookup);
+        Members.Add(Builtins.Set, Ternary(Builtins.Set, Setter, "index", "value"));
     }
 
-    protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
+    private static DyObject Setter(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         ((DyClass)self).Fields.SetItem(ctx, index, value);
         return Nil;
