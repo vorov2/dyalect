@@ -14,6 +14,8 @@ public sealed partial class DyResultTypeInfo : DyForeignTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Get | SupportedOperations.Len;
 
+    public DyResultTypeInfo() => AddMixins(Dy.Lookup);
+
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {

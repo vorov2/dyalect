@@ -12,15 +12,11 @@ public sealed partial class DyRegexTypeInfo : DyForeignTypeInfo
     public override string ReflectedTypeName => "Regex";
 
     #region Operations
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
-    {
-        return new DyString(((DyRegex)arg).Regex.ToString());
-    }
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
+        new DyString(((DyRegex)arg).Regex.ToString());
 
-    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
-    {
-        return left is DyRegex a && right is DyRegex b && a.Regex.ToString() == b.Regex.ToString() ? True : False;
-    }
+    protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right) =>
+        left is DyRegex a && right is DyRegex b && a.Regex.ToString() == b.Regex.ToString() ? True : False;
     #endregion
 
     [InstanceMethod]

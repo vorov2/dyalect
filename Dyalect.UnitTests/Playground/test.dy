@@ -1,21 +1,5 @@
-﻿type Lazy(var lambda, var cache)
+﻿import core
 
-func defer(fn) {
-    return Lazy(fn, nil)
-}
-
-func Lazy.Value() {
-    if ini.lambda {
-        ini.cache = ini.lambda()
-        ini.lambda = nil //We no longer need it
-    }
-    return ini.cache
-}
-
-let thunk = defer(() => {
-    print("Calculating...")
-    2 + 2
-})
-
-print(thunk.Value())
-print(thunk.Value())
+let sb = StringBuilder()
+sb.Append("sss")
+print(sb as String)
