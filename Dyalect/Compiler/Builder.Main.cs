@@ -535,7 +535,7 @@ partial class Builder
 
         for (var i = 0; i < elements.Count; i++)
         {
-            var el = elements[i];
+            var el = elements[elements.Count - i - 1];
 
             if (el is DLabelLiteral label)
             {
@@ -548,18 +548,13 @@ partial class Builder
                     set.Add(label.Label);
 
                 if (label.Mutable)
-                {
-                    //AddError(CompilerError.InvalidDictionary, el.Location);
-                }
+                    AddError(CompilerError.InvalidDictionary, el.Location);
             }
             else
-            {
-                //AddError(CompilerError.InvalidDictionary, el.Location);
-            }
+                AddError(CompilerError.InvalidDictionary, el.Location);
         }
 
         cw.NewDict(elements.Count);
-        PopIf(hints);
     }
 
     private void BuildTupleElements(List<DNode> elements, Location loc, Hints hints, CompilerContext ctx)
@@ -608,6 +603,8 @@ partial class Builder
             AddLinePragma(node);
             cw.FunCall(0);
         }
+        else if (node.Elements.Count > 0 && node.Elements[0].NodeType == NodeType.Label)
+            BuildDictionary(node.Elements, node.Location, hints, ctx);
         else
         {
             cw.Type(Dy.Array);

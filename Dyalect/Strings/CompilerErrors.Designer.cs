@@ -250,6 +250,15 @@ namespace Dyalect.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid dictionary literal..
+        /// </summary>
+        internal static string InvalidDictionary {
+            get {
+                return ResourceManager.GetString("InvalidDictionary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid format for preprocessor directive &quot;{0}&quot;..
         /// </summary>
         internal static string InvalidDirective {

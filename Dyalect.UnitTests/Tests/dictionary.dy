@@ -1,4 +1,11 @@
-﻿#region "Constructor 1"
+﻿#region "Literal"
+    let xs = [x: 1, y: 2, "long key": 33]
+    assert(1, xs.x)
+    assert(2, xs.y)
+    assert(33, xs["long key"])
+#endregion
+
+#region "Constructor 1"
     let xs = Dictionary(
         (x: 1, y: 2, z: "foo")
     )
