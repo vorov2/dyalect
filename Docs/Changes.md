@@ -1,4 +1,6 @@
 # 0.45.0
+  * Change: _Now it is not possible to use keyword `private` as identifier._
+  * Change: _Parser grammer refactoring._
   * Change: _It is not possible to implement `Iterate` method for custom types_ ([Issue #889](https://github.com/vorov2/dyalect/issues/889)).
   * Change: _Consider separating operator `in` and `Contains` method_ ([Issue #888](https://github.com/vorov2/dyalect/issues/888)).
   * Change: _Remove `ToLiteral` method, generalize `ToString`_ ([Issue #888](https://github.com/vorov2/dyalect/issues/888)).

@@ -1,5 +1,17 @@
-﻿import core
+﻿var x = 100
 
-let sb = StringBuilder()
-sb.Append("sss")
-print(sb as String)
+if x < 100 => throw @ValueError(x)
+      else => print(x*2)
+
+match x {
+    < 100 => throw @ValueError(x)
+    _     => print(x*2)
+}
+
+if x < 100 {
+    throw @ValueError(x)
+} else {
+    print(x*2)
+}
+
+
