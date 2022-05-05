@@ -23,13 +23,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
 
     protected override DyObject IterateOp(ExecutionContext ctx, DyObject self) => DyIterator.Create((DyDictionary)self);
 
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) =>
-        ToStringOrLiteral(ctx, arg, literal: true);
-
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
-        ToStringOrLiteral(ctx, arg, literal: false);
-
-    private DyObject ToStringOrLiteral(ExecutionContext ctx, DyObject arg, bool literal)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         var map = (DyDictionary)arg;
         var sb = new StringBuilder();
@@ -41,10 +35,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
             if (i > 0)
                 sb.Append(", ");
 
-            if (literal)
-                sb.Append(kv.Key.ToLiteral(ctx) + ": " + kv.Value.ToLiteral(ctx));
-            else
-                sb.Append(kv.Key.ToString(ctx) + ": " + kv.Value.ToString(ctx));
+            sb.Append(kv.Key.ToLiteral(ctx) + ": " + kv.Value.ToLiteral(ctx));
 
             i++;
         }

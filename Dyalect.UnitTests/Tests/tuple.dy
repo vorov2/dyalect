@@ -6,7 +6,7 @@
     res = (x: 12, 44.4, y: (1, 2)).ToString()
     assert("(x: 12, 44.4, y: (1, 2))", res)
     res = (x: 42,y: "foo").ToString()
-    assert("(x: 42, y: foo)", res)
+    assert("(x: 42, y: \"foo\")", res)
 #endregion
 
 #region "Methods: Clone 1"
@@ -268,11 +268,6 @@
     } catch {
         @InvalidType() => assert(got: true)
     }
-#endregion
-
-#region "Methods: ToLiteral"
-    let xs = (x: 1, "Fo obj": 'c')
-    assert("(x: 1, \"Fo obj\": 'c')", xs.ToLiteral())
 #endregion
 
 #region "Methods: Compact"

@@ -80,9 +80,7 @@ internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => new DyString(((DyString)arg).Value);
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(((DyString)arg).Value));
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => arg;
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {

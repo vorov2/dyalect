@@ -63,9 +63,9 @@
     assert("Lenovo"+16+3, a1.model+a1.memory+a1.rank)
     assert("1+"+8, a2.model+a2.memory)
     assert("Zyxel", a3.model)
-    assert("Asset.Computer(model: Lenovo, memory: 16, rank: 3)", a1.ToString())
-    assert("Asset.Phone(model: 1+, memory: 8)", a2.ToString())
-    assert("Asset.Modem(model: Zyxel)", a3.ToString())
+    assert("Asset.Computer(model: \"Lenovo\", memory: 16, rank: 3)", a1.ToString())
+    assert("Asset.Phone(model: \"1+\", memory: 8)", a2.ToString())
+    assert("Asset.Modem(model: \"Zyxel\")", a3.ToString())
 #endregion
 
 #region "Pattern match 1"

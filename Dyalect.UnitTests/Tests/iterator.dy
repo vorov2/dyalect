@@ -24,12 +24,8 @@
 
 #region "Methods: ToString"
     let seq = yields { 1, 'c', "str" }
-    assert("{1, c, str}", seq.ToString())
-#endregion
-
-#region "Methods: ToLiteral"
-    let seq = yields { 1, 'c', "str" }
-    assert("yields {1, 'c', \"str\"}", seq.ToLiteral())
+    assert("[type:Iterator]", seq.ToString())
+    assert("[1, 'c', \"str\"]", seq.ToArray().ToString())
 #endregion
 
 #region "Methods: Clone"

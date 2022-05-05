@@ -14,8 +14,6 @@ internal sealed partial class DyNilTypeInfo : DyTypeInfo
 
     protected override DyObject NotOp(ExecutionContext ctx, DyObject arg) => True;
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => new DyString(DyNil.Literal);
-
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {

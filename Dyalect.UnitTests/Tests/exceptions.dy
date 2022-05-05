@@ -439,7 +439,7 @@
         throw @Foo(1, "Foo", true)
         assert(got: false)
     } catch e {
-        assert("Variant.Foo(1, Foo, true)", e.ToString())
+        assert("@Foo(1, \"Foo\", true)", e.ToString())
     }
 #endregion
 

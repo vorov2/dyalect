@@ -12,9 +12,6 @@ internal sealed partial class DyFunctionTypeInfo : DyTypeInfo
     public DyFunctionTypeInfo() => AddMixins(Dy.Functor);
 
     #region Operations
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
-        new DyString(arg.ToString());
-
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right) =>
         left.TypeId == right.TypeId && ((DyFunction)left).Equals((DyFunction)right) ? True : False;
 

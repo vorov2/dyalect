@@ -41,12 +41,7 @@
 
 #region "Methods: ToString"
     let xs = Dictionary(x: 12, b: 'c', foo: "bar")
-    assert("Dictionary(x: 12, b: c, foo: bar)", xs.ToString())
-#endregion
-
-#region "Methods: ToLiteral"
-    let xs = Dictionary(x: 12, b: 'c', foo: "bar")
-    assert("Dictionary(\"x\": 12, \"b\": 'c', \"foo\": \"bar\")", xs.ToLiteral())
+    assert("Dictionary(\"x\": 12, \"b\": 'c', \"foo\": \"bar\")", xs.ToString())
 #endregion
 
 #region "Methods: Add"
@@ -184,7 +179,7 @@
 
 #region "Conversion: as"
     let xs = Dictionary.FromTuple ((x: 1, y: 2))
-    assert("Dictionary(x: 1, y: 2)", xs as String)
+    assert("Dictionary(\"x\": 1, \"y\": 2)", xs as String)
     assert((x: 1, y: 2), xs as Tuple)
 #endregion
 

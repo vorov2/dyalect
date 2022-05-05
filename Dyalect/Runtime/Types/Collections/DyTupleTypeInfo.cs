@@ -1,10 +1,7 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Compiler;
-using Dyalect.Parser;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
@@ -32,50 +29,25 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
         return new DyTuple(arr.ToArray());
     }
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => MakeString(ctx, (DyTuple)arg, false);
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => MakeString(ctx, (DyTuple)arg, true);
-
-    internal static DyObject MakeString(ExecutionContext ctx, DyTuple value, bool literal = false)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
-        var sb = new StringBuilder();
-        sb.Append('(');
-
-        for (var i = 0; i < value.Count; i++)
+        IEnumerable<DyObject> Iterate()
         {
-            if (i > 0)
-            {
-                sb.Append(',');
-                sb.Append(' ');
-            }
-
-            var v = value[i];
-            var ki = value.GetKeyInfo(i);
-
-            if (ki is not null)
-            {
-                if (ki.Mutable)
-                    sb.Append("var ");
-
-                if (ki.Label.Length > 0 && char.IsLower(ki.Label[0]) && ki.Label.All(char.IsLetter))
-                    sb.Append(ki.Label);
-                else
-                    sb.Append(StringUtil.Escape(ki.Label));
-
-                sb.Append(':');
-                sb.Append(' ');
-            }
-
-            var str = literal ? v.ToLiteral(ctx) : v.ToString(ctx);
-
-            if (ctx.HasErrors)
-                return Nil;
-
-            sb.Append(str);
+            var tuple = (DyTuple)arg;
+            var xs = tuple.UnsafeAccess();
+            for (var i = 0; i < tuple.Count; i++)
+                yield return xs[i];
         }
 
-        sb.Append(')');
-        return new DyString(sb.ToString());
+        try
+        {
+            return new DyString("(" + Iterate().ToLiteral(ctx) + ")");
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
     }
 
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)

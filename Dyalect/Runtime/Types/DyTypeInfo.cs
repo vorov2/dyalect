@@ -318,34 +318,6 @@ public abstract class DyTypeInfo : DyObject
         }
     }
 
-    //x.ToLiteral
-    private DyFunction? lit;
-    [Obsolete]
-    protected virtual DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOp(ctx, arg, DyNil.Instance);
-    [Obsolete]
-    internal string? ToLiteralDirect(ExecutionContext ctx, DyObject arg)
-    {
-        var res = ToLiteralOp(ctx, arg);
-
-        if (ctx.HasErrors)
-            return null;
-
-        if (res.TypeId is not Dy.String)
-        {
-            ctx.InvalidType(Dy.String, res);
-            return null;
-        }
-
-        return ((DyString)res).Value;
-    }
-    [Obsolete]
-    public DyObject ToLiteral(ExecutionContext ctx, DyObject arg)
-    {
-        if (lit is not null)
-            return lit.PrepareFunction(ctx, arg);
-        return ToLiteralOp(ctx, arg);
-    }
-
     //x.Clone
     private DyFunction? clone;
     protected virtual DyObject CloneOp(ExecutionContext ctx, DyObject self) => self.Clone();
@@ -770,14 +742,6 @@ public abstract class DyTypeInfo : DyObject
                 }
                 tos = func;
                 break;
-            case Builtins.ToLiteral:
-                if (func is not null && func.Auto)
-                {
-                    ctx.InvalidOverload(name);
-                    break;
-                }
-                lit = func;
-                break;
         }
     }
 
@@ -835,7 +799,6 @@ public abstract class DyTypeInfo : DyObject
             Builtins.Set => Support(SupportedOperations.Set) ? (set is null ? Ternary(name, SetOp, "index", "value") : set) : null,
             Builtins.Length => Support(SupportedOperations.Len) ? (len is null ? Unary(name, LengthOp) : len) : null,
             Builtins.String => tos is null ? Binary(name, ToStringOp, new Par("format", Nil)) : tos,
-            Builtins.ToLiteral => lit is null ? Unary(name, ToLiteralOp) : lit,
             Builtins.Iterate => Support(SupportedOperations.Iter) ? (iter is null ? Unary(name, GetIterator) : iter) : null,
             Builtins.Clone => clone is null ? Unary(name, Clone) : clone,
             Builtins.Has => Binary(name, Has, "member"),

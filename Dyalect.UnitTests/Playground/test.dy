@@ -1,9 +1,7 @@
-﻿func runFunctor(Functor fn) => fn()
+﻿func test(args...) {
+	for x in args {
+		print(x)
+	}
+}
 
-type Foo() with Functor
-
-func Foo.Call() => "Foo"
-func ff() => "ff"
-
-print << runFunctor(ff)
-print << runFunctor(Foo())
+test(x: 1, y: 2, z:"foo")

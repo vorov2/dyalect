@@ -15,8 +15,6 @@ internal sealed partial class DyBoolTypeInfo : DyTypeInfo
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString(ReferenceEquals(arg, True) ? "true" : "false");
 
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOp(ctx, arg, Nil);
-
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
         {

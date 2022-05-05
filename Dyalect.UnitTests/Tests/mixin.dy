@@ -45,6 +45,41 @@
 	assert(11, tab["x"])
 #endregion
 
+#region "Functor: GetType"
+	assert("Functor", typeName(Functor))
+#endregion
+
+#region "Functor"
+	func test(Functor fn, arg) {
+		assert("hello, user!", fn(arg))
+	}
+	func hello(arg) => "hello, " + arg + "!"
+	type Foo() with Functor
+	func Foo.Call(arg) => "hello, " + arg + "!"
+	test(hello, "user")
+	test(Foo(), "user")
+#endregion
+
+#region "Disposable: GetType"
+	assert("Disposable", typeName(Disposable))
+#endregion
+
+#region "Functor"
+	func test(Disposable o) {
+		assert(got: true)
+	}
+	var msg
+	type Foo() with Disposable
+	func Foo.Dispose() {
+		msg = "Disposed!"
+	}
+	{
+		auto f = Foo()
+		test(f)
+	}
+	assert("Disposed!", msg)
+#endregion
+
 #region "Equatable: GetType"
 	assert("Equatable", typeName(Equatable))
 #endregion

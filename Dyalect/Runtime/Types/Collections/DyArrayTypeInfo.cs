@@ -17,9 +17,18 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
     public DyArrayTypeInfo() => AddMixins(Dy.Lookup, Dy.Collection);
 
     #region Operations
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToStringOrLiteral(false, arg, ctx);
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOrLiteral(true, arg, ctx);
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
+    {
+        try
+        {
+            return new DyString("[" + ((IEnumerable<DyObject>)arg).ToLiteral(ctx) + "]");
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
+    }
 
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
@@ -62,28 +71,6 @@ internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
         }
 
         return ctx.InvalidType(index);
-    }
-
-    private static DyObject ToStringOrLiteral(bool literal, DyObject arg, ExecutionContext ctx)
-    {
-        var arr = (DyArray)arg;
-        var sb = new StringBuilder();
-        sb.Append('[');
-
-        for (var i = 0; i < arr.Count; i++)
-        {
-            if (i > 0)
-                sb.Append(", ");
-            var str = literal ? arr[i].ToLiteral(ctx) : arr[i].ToString(ctx);
-
-            if (ctx.Error is not null)
-                return Nil;
-
-            sb.Append(str.Value);
-        }
-
-        sb.Append(']');
-        return new DyString(sb.ToString());
     }
     #endregion
 

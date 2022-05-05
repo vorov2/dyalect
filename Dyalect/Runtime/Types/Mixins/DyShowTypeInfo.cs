@@ -1,4 +1,5 @@
 ﻿using Dyalect.Compiler;
+using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
 internal class DyShowTypeInfo : DyMixin
@@ -15,15 +16,29 @@ internal class DyShowTypeInfo : DyMixin
     private static DyObject Show(ExecutionContext ctx, DyObject arg)
     {
         var cust = (DyClass)arg;
-        var priv = cust.Fields;
 
-        if (arg.TypeName == cust.Constructor && priv.Count == 0)
-            return new DyString($"{arg.TypeName}()");
-        else if (arg.TypeName == cust.Constructor)
-            return new DyString($"{arg.TypeName}{(priv.ToString(ctx))}");
-        else if (priv.Count == 0)
-            return new DyString($"{arg.TypeName}.{cust.Constructor}()");
-        else
-            return new DyString($"{arg.TypeName}.{cust.Constructor}{(priv.ToString(ctx))}");
+        IEnumerable<DyObject> Iterate()
+        {
+            var xs = cust.Fields.UnsafeAccess();
+            for (var i = 0; i < cust.Fields.Count; i++)
+                yield return xs[i];
+        }
+
+        try
+        {
+            if (arg.TypeName == cust.Constructor && cust.Fields.Count == 0)
+                return new DyString($"{arg.TypeName}()");
+            else if (arg.TypeName == cust.Constructor)
+                return new DyString($"{arg.TypeName}({(Iterate().ToLiteral(ctx))})");
+            else if (cust.Fields.Count == 0)
+                return new DyString($"{arg.TypeName}.{cust.Constructor}()");
+            else
+                return new DyString($"{arg.TypeName}.{cust.Constructor}({(Iterate().ToLiteral(ctx))})");
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
     }
 }

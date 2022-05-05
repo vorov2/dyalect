@@ -1,4 +1,5 @@
 ﻿using Dyalect.Codegen;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 namespace Dyalect.Runtime.Types;
@@ -28,9 +29,18 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
         return DyInteger.Get(self.Count);
     }
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToLiteralOrString(arg, ctx, literal: false);
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToLiteralOrString(arg, ctx, literal: true);
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
+    {
+        try
+        {
+            return new DyString("Set(" + ((IEnumerable<DyObject>)arg).ToLiteral(ctx) + ")");
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
+    }
 
     private DyObject ToLiteralOrString(DyObject arg, ExecutionContext ctx, bool literal)
     {

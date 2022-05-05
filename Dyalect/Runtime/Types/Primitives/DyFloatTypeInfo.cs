@@ -16,7 +16,7 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     public DyFloatTypeInfo() => AddMixins(Dy.Number, Dy.Order);
 
-    #region Binary Operations
+    #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right.TypeId is Dy.Float)
@@ -146,9 +146,6 @@ internal sealed partial class DyFloatTypeInfo : DyTypeInfo
 
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject self, DyObject format) =>
         new DyString(((DyFloat)self).Value.ToString(SystemCulture.NumberFormat));
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject self) =>
-        new DyString(((DyFloat)self).Value.ToString(InvariantCulture.NumberFormat));
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch

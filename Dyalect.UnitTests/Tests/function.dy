@@ -305,7 +305,7 @@
         var str = "x=" + y + ";y=" + y + ";other=["
         var count = 0
         for x in args {
-            if count > 1 {
+            if count > 0 {
                 str += ","
             }
             str += x
@@ -315,7 +315,7 @@
         str
     }
     var x = takeItAll(12, 33.4, "oops", true, [1], (x: 0.33, y: 1))
-    assert("x=33.4;y=33.4;other=[oopstrue,[1],(x: 0.33, y: 1)]", x)
+    assert("x=33.4;y=33.4;other=[oops,true,[1],(x: 0.33, y: 1)]", x)
 #endregion
 
 #region "Variadic arguments to string"
@@ -439,13 +439,13 @@
     var i = 0
     for p in tt.Parameters {
         if i == 0 {
-            assert("(name: x, hasDefault: false, default: nil, varArg: false)", p.ToString())
+            assert("(name: \"x\", hasDefault: false, default: nil, varArg: false)", p.ToString())
         } else if i == 1 {
-            assert("(name: y, hasDefault: false, default: nil, varArg: false)", p.ToString())
+            assert("(name: \"y\", hasDefault: false, default: nil, varArg: false)", p.ToString())
         } else if i == 2 {
-            assert("(name: z, hasDefault: true, default: 3, varArg: false)", p.ToString())
+            assert("(name: \"z\", hasDefault: true, default: 3, varArg: false)", p.ToString())
         } else if i == 3 {
-            assert("(name: extras, hasDefault: false, default: nil, varArg: true)", p.ToString())
+            assert("(name: \"extras\", hasDefault: false, default: nil, varArg: true)", p.ToString())
         }
         i += 1
     }
@@ -536,7 +536,7 @@
     func assetToString(lib.Asset ass) {
         ass.ToString()
     }
-    assert("Asset.Phone(model: 1+, memory: 8)", assetToString(Asset.Phone("1+", 8)))
+    assert("Asset.Phone(model: \"1+\", memory: 8)", assetToString(Asset.Phone("1+", 8)))
     try {
         assetToString(12)
         assert(got: false)

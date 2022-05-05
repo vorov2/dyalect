@@ -105,17 +105,6 @@ public static class Extensions
         }
     }
 
-    public static DyString ToLiteral(this DyObject self, ExecutionContext ctx)
-    {
-        var type = ctx.RuntimeContext.Types[self.TypeId];
-        var ret = type.ToLiteral(ctx, self);
-
-        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-            ret = ctx.InvokeEtaFunction();
-
-        return ret as DyString ?? DyString.Empty;
-    }
-
     public static bool Equals(this DyObject left, DyObject right, ExecutionContext ctx)
     {
         var type = ctx.RuntimeContext.Types[left.TypeId];
@@ -253,7 +242,18 @@ public static class Extensions
     }
 
     private static readonly char[] invalidChars = new[] { ' ', '\t', '\n', '\r', '\'', '"' };
-    internal static string ToString(this IEnumerable<DyObject> seq, ExecutionContext ctx)
+
+    public static string ToLiteral(this DyObject obj, ExecutionContext ctx)
+    {
+        if (obj.TypeId is Dy.Char)
+            return StringUtil.Escape(obj.ToString(ctx).ToString(), "'");
+        else if (obj.TypeId is Dy.String)
+            return StringUtil.Escape(obj.ToString(ctx).ToString());
+        else
+            return obj.ToString(ctx).ToString();
+    }
+
+    public static string ToLiteral(this IEnumerable<DyObject> seq, ExecutionContext ctx)
     {
         var c = 0;
         var sb = new StringBuilder();
@@ -263,11 +263,7 @@ public static class Extensions
             if (c > 0)
                 sb.Append(", ");
 
-            if (o.TypeId is Dy.Char)
-                sb.Append(StringUtil.Escape(o.ToString(ctx).ToString(), "'"));
-            else if (o.TypeId is Dy.String)
-                sb.Append(StringUtil.Escape(o.ToString(ctx).ToString()));
-            else if (o is DyLabel lab)
+            if (o is DyLabel lab)
             {
                 if (lab.Mutable)
                     sb.Append("var ");
@@ -278,21 +274,17 @@ public static class Extensions
                     sb.Append(' ');
                 }
 
-                if (lab.Label.IndexOfAny(invalidChars) != -1)
+                if (!char.IsLower(lab.Label[0]) || lab.Label.IndexOfAny(invalidChars) != -1)
                     sb.Append(StringUtil.Escape(lab.Label));
                 else
                     sb.Append(lab.Label);
 
                 sb.Append(':');
                 sb.Append(' ');
-
-                if (lab.Value.TypeId is Dy.Char)
-                    sb.Append(StringUtil.Escape(lab.Value.ToString(ctx).ToString(), "'"));
-                else if (lab.Value.TypeId is Dy.String)
-                    sb.Append(StringUtil.Escape(lab.Value.ToString(ctx).ToString()));
+                sb.Append(lab.Value.ToLiteral(ctx));
             }
             else
-                sb.Append(o.ToString(ctx).ToString());
+                sb.Append(o.ToLiteral(ctx));
 
             c++;
         }
