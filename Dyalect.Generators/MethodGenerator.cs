@@ -90,11 +90,11 @@ public class MethodGenerator : SourceGenerator
 
 
         if ((flags & ParFlags.VarArg) == ParFlags.VarArg)
-            sb.AppendLine($"{arr} = (({Types.DyTuple}){input}).GetValues();");
+            sb.AppendLine($"{arr} = (({Types.DyTuple}){input}).ToArray();");
         else
         {
             sb.AppendLine($"if ({input} is {Types.DyCollection} __coll)");
-            sb.AppendInBlock($"{arr} = __coll.GetValues();");
+            sb.AppendInBlock($"{arr} = __coll.ToArray();");
             
             if (nullable)
             {
@@ -176,7 +176,9 @@ public class MethodGenerator : SourceGenerator
         { "bool?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : ({name} ? {Types.DyBool}.True : {Types.DyBool}.False))" },
         { $"{Types.DyObject}", name => $"({name} ?? {Types.DyNil}.Instance)" },
         { $"{Types.Enumerable}", name => $"{Types.DyIterator}.Create({name})" },
-        { $"{Types.Enumerable}?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyIterator}.Create({name})" }
+        { $"{Types.Enumerable}?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : {Types.DyIterator}.Create({name})" },
+        { $"{Types.HashSet}", name => $"new {Types.DySet}({name})"},
+        { $"{Types.HashSet}?", name => $"({name} is null ? ({Types.DyObject}){Types.DyNil}.Instance : new {Types.DySet}({name})" }
     };
 
     public override void Execute(GeneratorExecutionContext ctx)

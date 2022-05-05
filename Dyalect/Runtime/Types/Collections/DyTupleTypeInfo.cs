@@ -32,12 +32,6 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return new DyTuple(arr.ToArray());
     }
 
-    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
-    {
-        var len = ((DyTuple)arg).Count;
-        return DyInteger.Get(len);
-    }
-
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => MakeString(ctx, (DyTuple)arg, false);
 
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => MakeString(ctx, (DyTuple)arg, true);
@@ -55,7 +49,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
                 sb.Append(' ');
             }
 
-            var v = value.GetValue(i);
+            var v = value[i];
             var ki = value.GetKeyInfo(i);
 
             if (ki is not null)
@@ -94,8 +88,8 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         if (t1.Count != t2.Count)
             return False;
 
-        var t1v = t1.UnsafeAccessValues();
-        var t2v = t2.UnsafeAccessValues();
+        var t1v = t1.UnsafeAccess();
+        var t2v = t2.UnsafeAccess();
 
         for (var i = 0; i < t1.Count; i++)
         {
@@ -128,8 +122,8 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 
         var xs = (DyTuple)left;
         var ys = (DyTuple)right;
-        var xsv = xs.UnsafeAccessValues();
-        var ysv = ys.UnsafeAccessValues();
+        var xsv = xs.UnsafeAccess();
+        var ysv = ys.UnsafeAccess();
         var len = xs.Count > ys.Count ? ys.Count : xs.Count;
 
         for (var i = 0; i < len; i++)
@@ -157,11 +151,11 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     }
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
-        ((DyTuple)self).GetItem(index, ctx);
+        ((DyTuple)self).GetItem(ctx, index);
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
-        ((DyTuple)self).SetItem(index, value, ctx);
+        ((DyTuple)self).SetItem(ctx, index, value);
         return Nil;
     }
     #endregion
@@ -170,7 +164,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     internal static DyObject AddItem(DyTuple self, DyObject value)
     {
         var arr = new DyObject[self.Count + 1];
-        Array.Copy(self.UnsafeAccessValues(), arr, self.Count);
+        Array.Copy(self.UnsafeAccess(), arr, self.Count);
         arr[^1] = value;
         return new DyTuple(arr);
     }
@@ -178,7 +172,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     [InstanceMethod]
     internal static DyObject Remove(ExecutionContext ctx, DyTuple self, DyObject value)
     {
-        var tv = self.UnsafeAccessValues();
+        var tv = self.UnsafeAccess();
 
         for (var i = 0; i < tv.Length; i++)
         {
@@ -206,7 +200,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     {
         var arr = new DyObject[self.Count - 1];
         var c = 0;
-        var sv = self.UnsafeAccessValues();
+        var sv = self.UnsafeAccess();
 
         for (var i = 0; i < self.Count; i++)
         {
@@ -234,13 +228,13 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         arr[index] = value;
 
         if (index == 0)
-            Array.Copy(self.UnsafeAccessValues(), 0, arr, 1, self.Count);
+            Array.Copy(self.UnsafeAccess(), 0, arr, 1, self.Count);
         else if (index == self.Count)
-            Array.Copy(self.UnsafeAccessValues(), 0, arr, 0, self.Count);
+            Array.Copy(self.UnsafeAccess(), 0, arr, 0, self.Count);
         else
         {
-            Array.Copy(self.UnsafeAccessValues(), 0, arr, 0, index);
-            Array.Copy(self.UnsafeAccessValues(), index, arr, index + 1, self.Count - index);
+            Array.Copy(self.UnsafeAccess(), 0, arr, 0, index);
+            Array.Copy(self.UnsafeAccess(), index, arr, index + 1, self.Count - index);
         }
 
         return new DyTuple(arr);
@@ -265,7 +259,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     [InstanceMethod]
     internal static DyObject First(ExecutionContext ctx, DyTuple self)
     {
-        var ret = self.GetItem(0, ctx);
+        var ret = self.GetItem(ctx, 0);
         ctx.ThrowIf();
         return ret;
     }
@@ -273,19 +267,18 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     [InstanceMethod]
     internal static DyObject Second(ExecutionContext ctx, DyTuple self)
     {
-        var ret = self.GetItem(1, ctx);
+        var ret = self.GetItem(ctx, 1);
         ctx.ThrowIf();
         return ret;
     }
 
     [InstanceMethod]
-    
     //TODO: candidate for removal
     internal static DyObject Sort(ExecutionContext ctx, DyTuple self, DyFunction? comparer = null)
     {
         var sortComparer = new SortComparer(comparer, ctx);
         var newArr = new DyObject[self.Count];
-        Array.Copy(self.UnsafeAccessValues(), newArr, newArr.Length);
+        Array.Copy(self.UnsafeAccess(), newArr, newArr.Length);
         Array.Sort(newArr, 0, newArr.Length, sortComparer);
         return new DyTuple(newArr);
     }
@@ -294,15 +287,15 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     internal static DyObject ToDictionary(ExecutionContext ctx, DyTuple self) =>
         new DyDictionary(self.ConvertToDictionary(ctx));
 
-    [InstanceMethod]
-    internal static DyObject ToArray(DyTuple self) => new DyArray(self.GetValues());
+    [InstanceMethod(Method.ToArray)]
+    internal static DyObject[] ToArray(DyCollection self) => self.ToArray();
 
     [InstanceMethod]
     internal static DyObject Compact(ExecutionContext ctx, DyTuple self, DyObject? predicate = null)
     {
         var xs = new List<DyObject>();
 
-        foreach (var val in self.GetValues())
+        foreach (var val in self.ToArray())
         {
             if (predicate is not null)
             {
@@ -324,9 +317,9 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
     [InstanceMethod]
     internal static DyObject Alter(DyTuple self, [VarArg]DyTuple values)
     {
-        var xs = new List<DyObject>(self.UnsafeAccessValues());
+        var xs = new List<DyObject>(self.UnsafeAccess());
 
-        foreach (var o in values.UnsafeAccessValues())
+        foreach (var o in values.UnsafeAccess())
         {
             if (o is DyLabel lab)
             {

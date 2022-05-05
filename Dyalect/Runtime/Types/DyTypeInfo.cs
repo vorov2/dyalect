@@ -301,6 +301,21 @@ public abstract class DyTypeInfo : DyObject
             return Nil;
         }
     }
+    internal DyObject ToStringWithFormat(ExecutionContext ctx, DyObject arg, DyString format)
+    {
+        if (tos is not null)
+            return tos.PrepareFunction(ctx, arg);
+
+        try
+        {
+            return ToStringOp(ctx, arg, format);
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
+    }
 
     //x.ToLiteral
     private DyFunction? lit;
@@ -343,8 +358,7 @@ public abstract class DyTypeInfo : DyObject
     private DyFunction? get;
     protected virtual DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
         ctx.OperationNotSupported(Builtins.Get, self);
-    [Obsolete]
-    internal DyObject GetDirect(ExecutionContext ctx, DyObject self, DyObject index) => GetOp(ctx, self, index);
+    internal DyObject RawGet(ExecutionContext ctx, DyObject self, DyObject index) => GetOp(ctx, self, index);
     public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
     {
         if (get is not null)
@@ -357,8 +371,7 @@ public abstract class DyTypeInfo : DyObject
     private DyFunction? set;
     protected virtual DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) =>
         ctx.OperationNotSupported(Builtins.Set, self);
-    [Obsolete]
-    internal DyObject SetDirect(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) => SetOp(ctx, self, index, value);
+    internal DyObject RawSet(ExecutionContext ctx, DyObject self, DyObject index, DyObject value) => SetOp(ctx, self, index, value);
     public DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         if (set is not null)
@@ -425,7 +438,15 @@ public abstract class DyTypeInfo : DyObject
         var ret = LookupStaticMember(name, ctx);
 
         if (ret is null)
+        {
+            if (name != DyMissingMethod.Name)
+            {
+                if (TryGetStaticMember(ctx, DyMissingMethod.Name, out var meth))
+                    return new DyMissingMethod((string)name, (DyNativeFunction)meth!);
+            }
+
             return ctx.StaticOperationNotSupported((string)name, ReflectedTypeId);
+        }
 
         if (ret is DyFunction f)
         {
@@ -529,7 +550,13 @@ public abstract class DyTypeInfo : DyObject
 
         if (value is not null)
             return value.TryInvokeProperty(ctx, self);
-        
+
+        if (name != DyMissingMethod.Name)
+        {
+            if (TryGetInstanceMember(ctx, self, DyMissingMethod.Name, out var meth))
+                return new DyMissingMethod((string)name, (DyNativeFunction)meth!);
+        }
+
         return ctx.OperationNotSupported((string)name, self);
     }
 

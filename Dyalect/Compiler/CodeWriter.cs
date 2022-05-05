@@ -213,6 +213,7 @@ internal sealed class CodeWriter
     public void CtorCheck(string ctor) => Emit(new(OpCode.CtorCheck, IndexString(ctor)));
 
     public void NewArgs(int len) => Emit(new(OpCode.NewArgs, len), -len + 1);
+    public void NewDict(int len) => Emit(new(OpCode.NewDict, len), -len + 1);
     public void NewTuple(int len) => Emit(new(OpCode.NewTuple, len), -len + 1);
     public void NewFun(int funHandle) => Emit(new(OpCode.NewFun, funHandle));
     public void NewFunV(int funHandle) => Emit(new(OpCode.NewFunV, funHandle));

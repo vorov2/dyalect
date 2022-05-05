@@ -1,6 +1,5 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Parser;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +8,18 @@ namespace Dyalect.Runtime.Types;
 [GeneratedType]
 internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
 {
+    readonly struct FormatData : IFormattable
+    {
+        public readonly DyObject Object;
+        public readonly ExecutionContext Context;
+
+        public FormatData(DyObject obj, ExecutionContext ctx) =>
+            (Object, Context) = (obj, ctx);
+
+        public string ToString(string? format, IFormatProvider? formatProvider) =>
+            Object.ToString(Context, DyString.Get(format)).ToString();
+    }
+
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Add | SupportedOperations.Gt | SupportedOperations.Lt
         | SupportedOperations.Gte | SupportedOperations.Lte | SupportedOperations.Get
@@ -85,7 +96,20 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
 
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(((DyString)arg).Value));
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => ((DyString)self).GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
+    {
+        if (index.TypeId != Dy.Integer)
+            return ctx.InvalidType(index);
+
+        var str = (DyString)self;
+        var i = (DyInteger)index;
+        var ix = (int)(i.Value < 0 ? str.Count + i.Value : i.Value);
+
+        if (ix < 0 || ix >= str.Count)
+            return ctx.IndexOutOfRange(index);
+
+        return new DyChar(str.Value[ix]);
+    }
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch
@@ -96,17 +120,18 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         };
     #endregion
 
+    private static int CorrectIndex(int index, string str) => index < 0 ? index + str.Length : index;
+
     [InstanceMethod]
-    internal static DyObject Slice(DyString self, int index = 0, [Default]int? size = null)
+    internal static DyObject Slice(DyString self, int index = 0, int? size = null)
     {
+        index = CorrectIndex(index, self.Value);
+
         if (size is null)
             size = self.Count - 1;
 
         if (index == 0 && size == self.Count - 1)
             return self;
-
-        if (index < 0)
-            index = self.Count + index;
 
         if (index >= self.Count)
             throw new DyCodeException(DyError.IndexOutOfRange, index);
@@ -129,8 +154,10 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
-    internal static int IndexOf(string self, string value, int index = 0, [Default]int? count = null)
+    internal static int IndexOf(string self, string value, int index = 0, int? count = null)
     {
+        index = CorrectIndex(index, self);
+
         if (count is null)
             count = self.Length - index;
 
@@ -141,10 +168,12 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
-    internal static int LastIndexOf(string self, string value, [Default]int? index = null, [Default]int? count = null)
+    internal static int LastIndexOf(string self, string value, int? index = null, int? count = null)
     {
         if (index is null)
             index = self.Length - 1;
+
+        index = CorrectIndex(index.Value, self);
 
         if (count is null)
             count = index + 1;
@@ -164,10 +193,10 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         self.Length == 0 ? "" : char.ToUpper(self[0]) + self[1..].ToLower();
 
     [InstanceMethod]
-    internal static string Upper(DyString self) => self.Value.ToUpper();
+    internal static string Upper(string self) => self.ToUpper();
 
     [InstanceMethod]
-    internal static string Lower(DyString self) => self.Value.ToLower();
+    internal static string Lower(string self) => self.ToLower();
 
     [InstanceMethod]
     internal static bool StartsWith(string self, string value) => self.StartsWith(value);
@@ -176,10 +205,9 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     internal static bool EndsWith(string self, string value) => self.EndsWith(value);
 
     [InstanceMethod]
-    internal static string? Substring(string self, int index, [Default]int? count = null)
+    internal static string? Substring(string self, int index, int? count = null)
     {
-        if (index < 0)
-            index = self.Length + index;
+        index = CorrectIndex(index, self);
 
         if (index >= self.Length)
             throw new DyCodeException(DyError.IndexOutOfRange);
@@ -194,13 +222,13 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
-    internal static string Trim(string self, [VarArg] char[] chars) => self.Trim(chars);
+    internal static string Trim(string self, params char[] chars) => self.Trim(chars);
 
     [InstanceMethod]
-    internal static string TrimStart(string self, [VarArg] char[] chars) => self.TrimStart(chars);
+    internal static string TrimStart(string self, params char[] chars) => self.TrimStart(chars);
 
     [InstanceMethod]
-    internal static string TrimEnd(string self, [VarArg] char[] chars) => self.TrimEnd(chars);
+    internal static string TrimEnd(string self, params char[] chars) => self.TrimEnd(chars);
 
     [InstanceMethod]
     internal static bool IsEmpty(string self) => string.IsNullOrWhiteSpace(self);
@@ -218,7 +246,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         self.Replace(value, other, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
     [InstanceMethod]
-    internal static string? Remove(string self, int index, [Default]int? count = null)
+    internal static string? Remove(string self, int index, int? count = null)
     {
         if (count is null)
             count = self.Length - index;
@@ -250,7 +278,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         var arr = new object[values.Length];
 
         for (var i = 0; i < values.Length; i++)
-            arr[i] = values[i].ToString(ctx);
+            arr[i] = new FormatData(values[i], ctx);
 
         return string.Format(self, arr);
     }
@@ -258,44 +286,36 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     [StaticMethod]
     internal static string? Concat(ExecutionContext ctx, params DyObject[] values)
     {
-        var arr = new List<string>();
-
-        if (!Collect(ctx, values, arr))
-            return default;
-
-        return string.Concat(arr);
+        var xs = new List<string>();
+        Collect(ctx, values, xs);
+        return string.Concat(xs);
     }
 
     [StaticMethod(Method.String)]
     internal static string? New(ExecutionContext ctx, params DyObject[] values) => Concat(ctx, values);
 
-    private static bool Collect(ExecutionContext ctx, DyObject[] values, List<string> arr)
+    private static void Collect(ExecutionContext ctx, DyObject[] values, List<string> xs)
     {
         for (var i = 0; i < values.Length; i++)
         {
             var a = values[i];
 
-            if (a.TypeId == Dy.String || a.TypeId == Dy.Char)
-                arr.Add(a.ToString());
+            if (a.TypeId is Dy.String or Dy.Char)
+                xs.Add(a.ToString());
             else
             {
                 var res = a.ToString(ctx);
-                arr.Add(res.Value);
+                xs.Add(res.Value);
             }
         }
-
-        return true;
     }
 
     [StaticMethod]
     internal static string? Join(ExecutionContext ctx, [VarArg]DyObject[] values, string separator = ",")
     {
-        var strArr = new List<string>();
-
-        if (!Collect(ctx, values, strArr))
-            return default;
-
-        return string.Join(separator, strArr);
+        var xs = new List<string>();
+        Collect(ctx, values, xs);
+        return string.Join(separator, xs);
     }
 
     [StaticProperty]

@@ -83,7 +83,7 @@ public static class Extensions
 
     //Calls a native implementation of "ToString" for a given object with an exception
     //for string and TypeInfo (no native implementation of ToString for TypeInfo)
-    public static DyString ToString(this DyObject self, ExecutionContext ctx)
+    public static DyString ToString(this DyObject self, ExecutionContext ctx, DyString? format = null)
     {
         if (self is DyString str)
             return str;
@@ -91,10 +91,11 @@ public static class Extensions
             return new DyString(ti.ReflectedTypeName);
         else
         {
-            var ret = ctx.RuntimeContext.Types[self.TypeId].ToString(ctx, self);
+            var t = ctx.RuntimeContext.Types[self.TypeId];
+            var ret = format is null ? t.ToString(ctx, self) : t.ToStringWithFormat(ctx, self, format);
 
             if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-                ret = ctx.InvokeEtaFunction();
+                ret = format is null ? ctx.InvokeEtaFunction() : ctx.InvokeEtaFunction(format);
 
             return ret is DyString s ? s : new DyString(ret.ToString());
         }

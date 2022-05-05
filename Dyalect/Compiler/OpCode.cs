@@ -95,4 +95,5 @@ public enum OpCode
     StdCall,    //Dynamic
     Debug,      //0
     NewArgs,    //Dynamic
+    NewDict,    //Dynamic
 }

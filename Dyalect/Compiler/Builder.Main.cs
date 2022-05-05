@@ -529,6 +529,39 @@ partial class Builder
         PopIf(hints);
     }
 
+    private void BuildDictionary(List<DNode> elements, Location loc, Hints hints, CompilerContext ctx)
+    {
+        var set = new HashSet<string>();
+
+        for (var i = 0; i < elements.Count; i++)
+        {
+            var el = elements[i];
+
+            if (el is DLabelLiteral label)
+            {
+                Build(label.Expression, hints.Append(Push), ctx);
+                cw.Tag(label.Label);
+
+                if (set.Contains(label.Label))
+                    AddError(CompilerError.DuplicateLabel, label.Location, label.Label);
+                else
+                    set.Add(label.Label);
+
+                if (label.Mutable)
+                {
+                    //AddError(CompilerError.InvalidDictionary, el.Location);
+                }
+            }
+            else
+            {
+                //AddError(CompilerError.InvalidDictionary, el.Location);
+            }
+        }
+
+        cw.NewDict(elements.Count);
+        PopIf(hints);
+    }
+
     private void BuildTupleElements(List<DNode> elements, Location loc, Hints hints, CompilerContext ctx)
     {
         var set = new HashSet<string>();

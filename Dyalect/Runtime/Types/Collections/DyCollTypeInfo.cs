@@ -7,8 +7,6 @@ internal sealed class DyCollTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Collection;
 
-    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.None;
-
     public DyCollTypeInfo()
     {
         Closed = true;

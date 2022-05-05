@@ -13,6 +13,8 @@ namespace Dyalect.Linker;
 [GeneratedModule]
 internal sealed partial class Lang : ForeignUnit
 {
+    private static readonly char[] invalidChars = new[] { ' ', '\t', '\n', '\r', '\'', '"' };
+
     private readonly DyTuple? startupArguments;
     private const string VAR_CONSOLEOUTPUT = "sys.ConsoleOutput";
 
@@ -26,11 +28,128 @@ internal sealed partial class Lang : ForeignUnit
 
     protected override void Execute(ExecutionContext ctx) => Add("args", startupArguments ?? Nil);
 
+    private static void Process(StringBuilder sb, IEnumerable<DyObject> seq)
+    {
+        var c = 0;
+
+        foreach (DyObject o in seq)
+        {
+            if (c > 0)
+                sb.Append(", ");
+
+            Process(sb, o);
+            c++;
+        }
+    }
+
+    private static void Process(StringBuilder sb, DyLabel lab)
+    {
+        if (lab.Mutable)
+            sb.Append("var ");
+
+        foreach (var ta in lab.EnumerateAnnotations())
+        {
+            sb.Append(ta.ToString());
+            sb.Append(' ');
+        }
+
+        if (lab.Label.IndexOfAny(invalidChars) != -1)
+            sb.Append(StringUtil.Escape(lab.Label));
+        else
+            sb.Append(lab.Label);
+
+        sb.Append(':');
+        sb.Append(' ');
+        Process(sb, lab.Value);
+    }
+
+    private static void Process(StringBuilder sb, DyObject obj)
+    {
+        switch (obj.TypeId)
+        {
+            case Dy.Array:
+                sb.Append('[');
+                Process(sb, (IEnumerable<DyObject>)obj);
+                sb.Append(']');
+                break;
+            case Dy.Tuple:
+                sb.Append('(');
+                Process(sb, (IEnumerable<DyObject>)obj);
+                if (((DyTuple)obj).Count == 1)
+                    sb.Append(',');
+                sb.Append(')');
+                break;
+            case Dy.Dictionary:
+                {
+                    sb.Append('[');
+                    var c = 0;
+
+                    foreach (var (k, v) in ((DyDictionary)obj).Dictionary)
+                    {
+                        if (c > 0)
+                            sb.Append(',');
+
+                        Process(sb, k);
+                        sb.Append(": ");
+                        Process(sb, v);
+                        c++;
+                    }
+
+                    sb.Append(']');
+                }
+                break;
+            case Dy.Set:
+                sb.Append("Set(");
+                Process(sb, (IEnumerable<DyObject>)obj);
+                sb.Append(')');
+                break;
+            case Dy.Char:
+                sb.Append(StringUtil.Escape(obj.ToString(), "'"));
+                break;
+            case Dy.String:
+                sb.Append(StringUtil.Escape(obj.ToString()));
+                break;
+            case Dy.Label:
+                Process(sb, (DyLabel)obj);
+                break;
+            case Dy.Variant:
+                var dyv = (DyVariant)obj;
+                sb.Append('@');
+                sb.Append(dyv.Constructor);
+                if (dyv.Fields.Count > 0)
+                {
+                    sb.Append('(');
+                    Process(sb, (IEnumerable<DyObject>)dyv.Fields);
+                    sb.Append(')');
+                }
+                break;
+            default:
+                if (obj is DyClass cls)
+                {
+                    sb.Append(cls.Constructor);
+                    sb.Append('(');
+                    Process(sb, (IEnumerable<DyObject>)cls.Fields);
+                    sb.Append(')');
+                }
+                else
+                    sb.Append(obj);
+                break;
+        }
+    }
+
+    [StaticMethod("toLiteral")]
+    public static string ToLiteral(DyObject value)
+    {
+        var sb = new StringBuilder();
+        Process(sb, value);
+        return sb.ToString();
+    }
+
     [StaticMethod("referenceEquals")]
-    internal static bool Equals(DyObject value, DyObject other) => ReferenceEquals(value, other);
+    public static bool Equals(DyObject value, DyObject other) => ReferenceEquals(value, other);
 
     [StaticMethod("print")]
-    internal static void Print(ExecutionContext ctx, [VarArg] DyTuple values, [Default(",")]string separator, [Default("\n")]DyObject terminator)
+    public static void Print(ExecutionContext ctx, [VarArg] DyTuple values, [Default(",")]string separator, [Default("\n")]DyObject terminator)
     {
         var fst = true;
         
@@ -57,7 +176,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("setOut")]
-    internal static void SetOutput(ExecutionContext ctx, DyObject? output = null)
+    public static void SetOutput(ExecutionContext ctx, DyObject? output = null)
     {
         if (output is null)
         {
@@ -75,27 +194,27 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("constructorName")]
-    internal static string? GetConstructorName(DyObject value) => value is IProduction c ? c.Constructor : null;
+    public static string? GetConstructorName(DyObject value) => value is IProduction c ? c.Constructor : null;
 
     [StaticMethod("typeName")]
-    internal static string GetTypeName(DyObject value)
+    public static string GetTypeName(DyObject value)
     {
-        if (value.Is(Dy.TypeInfo))
+        if (value.TypeId is Dy.TypeInfo)
             return ((DyTypeInfo)value).ReflectedTypeName;
         else
             return value.TypeName;
     }
 
     [StaticMethod("rawget")]
-    internal static DyObject RawGet(ExecutionContext ctx, DyObject values, DyInteger index) =>
-        ctx.RuntimeContext.Types[values.TypeId].GetDirect(ctx, values, index);
+    public static DyObject RawGet(ExecutionContext ctx, DyObject values, DyInteger index) =>
+        ctx.RuntimeContext.Types[values.TypeId].RawGet(ctx, values, index);
 
     [StaticMethod("rawset")]
-    internal static void RawSet(ExecutionContext ctx, DyObject values, DyInteger index, DyObject value) =>
-        ctx.RuntimeContext.Types[values.TypeId].SetDirect(ctx, values, index, value);
+    public static void RawSet(ExecutionContext ctx, DyObject values, DyInteger index, DyObject value) =>
+        ctx.RuntimeContext.Types[values.TypeId].RawSet(ctx, values, index, value);
 
     [StaticMethod("caller")]
-    internal static DyObject Caller(ExecutionContext ctx)
+    public static DyObject Caller(ExecutionContext ctx)
     {
         if (ctx.CallStack.Count > 2)
         {
@@ -108,7 +227,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("current")]
-    internal static DyObject Current(ExecutionContext ctx)
+    public static DyObject Current(ExecutionContext ctx)
     {
         if (ctx.CallStack.Count > 1)
             return ctx.CallStack.Peek().Function;
@@ -117,10 +236,10 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("readLine")]
-    internal static string Read() => Console.ReadLine() ?? "";
+    public static string Read() => Console.ReadLine() ?? "";
 
     [StaticMethod("rnd")]
-    internal static int Randomize(ExecutionContext ctx, int min = 0, int max = int.MaxValue, int? seed = null)
+    public static int Randomize(ExecutionContext ctx, int min = 0, int max = int.MaxValue, int? seed = null)
     {
         if (seed is null)
         {
@@ -140,7 +259,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("assert")]
-    internal static void Assert(ExecutionContext ctx, [Default(true)]DyObject expect, DyObject got, string? errorText = null)
+    public static void Assert(ExecutionContext ctx, [Default(true)]DyObject expect, DyObject got, string? errorText = null)
     {
         if (!Eq(ctx, expect.ToObject(), got.ToObject()))
         {
@@ -182,13 +301,13 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("sqrt")]
-    internal static double Sqrt(double x) => Math.Sqrt(x);
+    public static double Sqrt(double x) => Math.Sqrt(x);
 
     [StaticMethod("pow")]
-    internal static double Pow(double x, double y) => Math.Pow(x, y);
+    public static double Pow(double x, double y) => Math.Pow(x, y);
 
     [StaticMethod("min")]
-    internal static DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
+    public static DyObject Min(ExecutionContext ctx, DyObject x, DyObject y)
     {
         if (x.Lesser(y, ctx))
             return x;
@@ -197,7 +316,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("max")]
-    internal static DyObject Max(ExecutionContext ctx, DyObject x, DyObject y)
+    public static DyObject Max(ExecutionContext ctx, DyObject x, DyObject y)
     {
         if (x.Greater(y, ctx))
             return x;
@@ -206,7 +325,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("abs")]
-    internal static DyObject Abs(ExecutionContext ctx, DyObject value)
+    public static DyObject Abs(ExecutionContext ctx, DyObject value)
     {
         if (value.Lesser(DyInteger.Zero, ctx))
             return value.Negate(ctx);
@@ -215,10 +334,10 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("round")]
-    internal static double Round(double number, int digits = 2) => Math.Round(number, digits);
+    public static double Round(double number, int digits = 2) => Math.Round(number, digits);
     
     [StaticMethod("sign")]
-    internal static DyObject Sign(ExecutionContext ctx, DyObject x)
+    public static DyObject Sign(ExecutionContext ctx, DyObject x)
     {
         if (ReferenceEquals(x, DyInteger.Zero)) 
             return DyInteger.Zero;
@@ -230,7 +349,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("parse")]
-    internal static DyObject Parse(ExecutionContext ctx, string expression)
+    public static DyObject Parse(ExecutionContext ctx, string expression)
     {
         var res = DyParser.Parse(SourceBuffer.FromString(expression));
 
@@ -246,14 +365,14 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("eval")]
-    internal static DyObject Eval(string source, DyTuple? args = null)
+    public static DyObject Eval(string source, DyTuple? args = null)
     {
         var sb = new StringBuilder();
         sb.Append("func __x12(");
         
         if (args is not null)
         {
-            var tv = args.UnsafeAccessValues();
+            var tv = args.UnsafeAccess();
             
             for (var i = 0; i < args.Count; i++)
             {
@@ -288,7 +407,7 @@ internal sealed partial class Lang : ForeignUnit
         if (args is null)
             return func!.Invoke(newctx, argsList.ToArray());
         
-        var tvv = args.UnsafeAccessValues();
+        var tvv = args.UnsafeAccess();
 
         for (var i = 0; i < args.Count; i++)
         {
@@ -302,5 +421,5 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("__invoke")]
-    internal static DyObject Invoke(ExecutionContext ctx, DyObject functor, params DyObject[] values) => functor.Invoke(ctx, values);
+    public static DyObject Invoke(ExecutionContext ctx, DyObject functor, params DyObject[] values) => functor.Invoke(ctx, values);
 }

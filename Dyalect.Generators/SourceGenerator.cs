@@ -9,6 +9,7 @@ public abstract class SourceGenerator : ISourceGenerator
     {
         public const string DyError = "Dyalect.Runtime.DyError";
         public const string Array = "System.Array";
+        public const string HashSet = "System.Collections.Generic.HashSet<Dyalect.Runtime.Types.DyObject>";
         public const string ExecutionContext = "Dyalect.Runtime.ExecutionContext";
         public const string Extensions = "Dyalect.Runtime.Types.Extensions";
         public const string Enumerable = "System.Collections.Generic.IEnumerable<Dyalect.Runtime.Types.DyObject>";
@@ -25,6 +26,7 @@ public abstract class SourceGenerator : ISourceGenerator
         public const string DyString = "Dyalect.Runtime.Types.DyString";
         public const string DyArray = "Dyalect.Runtime.Types.DyArray";
         public const string DyBool = "Dyalect.Runtime.Types.DyBool";
+        public const string DySet = "Dyalect.Runtime.Types.DySet";
         public const string DyCollection = "Dyalect.Runtime.Types.DyCollection";
         public const string Par = "Dyalect.Debug.Par";
         public const string ParKind = "Dyalect.Debug.ParKind";

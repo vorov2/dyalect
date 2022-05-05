@@ -17,9 +17,6 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     public DyArrayTypeInfo() => AddMixin(Dy.Collection);
 
     #region Operations
-    protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg) =>
-        DyInteger.Get(((DyArray)arg).Count);
-
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToStringOrLiteral(false, arg, ctx);
 
     protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOrLiteral(true, arg, ctx);
@@ -34,13 +31,37 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
         return new DyArray(arr.ToArray());
     }
 
-    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
-        ((DyArray)self).GetItem(index, ctx);
+    protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
+    {
+        if (index is DyInteger i)
+        {
+            var arr = (DyArray)self;
+            var ix = (int)i.Value;
+
+            if (!CorrectIndex(arr, ref ix, insert: false))
+                return ctx.IndexOutOfRange(index);
+
+            return arr[ix];
+        }
+
+        return ctx.InvalidType(index);
+    }
 
     protected override DyObject SetOp(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
-        ((DyArray)self).SetItem(index, value, ctx);
-        return Nil;
+        if (index is DyInteger i)
+        {
+            var arr = (DyArray)self;
+            var ix = (int)i.Value;
+
+            if (!CorrectIndex(arr, ref ix, insert: false))
+                return ctx.IndexOutOfRange(index);
+
+            arr[ix] = value;
+            return Nil;
+        }
+
+        return ctx.InvalidType(index);
     }
 
     protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject item)
@@ -72,16 +93,27 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     }
     #endregion
 
+    internal static bool CorrectIndex(DyArray arr, ref int index, bool insert = false)
+    {
+        index = index < 0 ? arr.Count + index : index;
+        var max = insert ? arr.Count : arr.Count - 1;
+
+        if (index < 0 || index > max)
+            return false;
+
+        return true;
+    }
+
     [InstanceMethod(Method.Add)]
     internal static void AddItem(DyArray self, DyObject value) => self.Add(value);
 
     [InstanceMethod(Method.Insert)]
-    internal static void InsertItem(ExecutionContext ctx, DyArray self, int index, DyObject value)
+    internal static void InsertItem(DyArray self, int index, DyObject value)
     {
-        if (index < 0 || index > self.Count)
-            ctx.IndexOutOfRange();
-        else
-            self.Insert(index, value);
+        if (!CorrectIndex(self, ref index, insert: true))
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
+    
+        self.Insert(index, value);
     }
 
     [InstanceMethod]
@@ -92,28 +124,32 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     }
 
     [InstanceMethod]
-    internal static void InsertRange(ExecutionContext ctx, DyArray self, int index, IEnumerable<DyObject> values)
+    internal static void InsertRange(DyArray self, int index, IEnumerable<DyObject> values)
     {
-        if (!self.CorrectIndex(ctx, ref index))
-            return;
+        if (!CorrectIndex(self, ref index, insert: true))
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
         foreach (var e in values)
-        {
-            if (ctx.HasErrors)
-                return;
-
             self.Insert(index++, e);
-        }
     }
 
     [InstanceMethod(Method.Remove)]
-    internal static bool RemoveItem(ExecutionContext ctx, DyArray self, DyObject value) => self.Remove(ctx, value);
+    internal static bool RemoveItem(ExecutionContext ctx, DyArray self, DyObject value)
+    {
+        var ix = self.IndexOf(ctx, value);
+
+        if (ctx.HasErrors || ix == -1)
+            return false;
+
+        self.RemoveAt(ix);
+        return true;
+    }
 
     [InstanceMethod(Method.RemoveAt)]
     internal static void RemoveItemAt(ExecutionContext ctx, DyArray self, int index)
     {
-        if (!self.CorrectIndex(ctx, ref index))
-            return;
+        if (!CorrectIndex(self, ref index, insert: true))
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
         self.RemoveAt(index);
     }
@@ -123,32 +159,28 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     {
         var strict = values.ToArray();
 
-        if (ctx.HasErrors)
-            return;
-
         foreach (var e in strict)
         {
-            self.Remove(ctx, e);
+            var ix = self.IndexOf(ctx, e);
 
             if (ctx.HasErrors)
                 break;
+
+            self.RemoveAt(ix);
         }
     }
 
     [InstanceMethod(Method.RemoveRangeAt)]
-    internal static void RemoveRangeAt(ExecutionContext ctx, DyArray self, int index, int? count = null)
+    internal static void RemoveRangeAt(DyArray self, int index, int? count = null)
     {
-        if (!self.CorrectIndex(ctx, ref index))
-            return;
+        if (!CorrectIndex(self, ref index))
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
         if (count is null)
             count = self.Count - index;
 
         if (index + count > self.Count)
-        {
-            ctx.IndexOutOfRange();
-            return;
-        }
+            throw new DyCodeException(DyError.IndexOutOfRange);
 
         self.RemoveRange(index, count.Value);
     }
@@ -156,25 +188,23 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     [InstanceMethod]
     internal static void RemoveAll(ExecutionContext ctx, DyArray self, DyFunction predicate)
     {
-        var toDelete = new List<DyObject>();
+        var toDelete = new List<int>();
 
-        foreach (var o in self)
+        for (var i = 0; i < self.Count; i++)
         {
+            var o = self[i];
             var res = predicate.Call(ctx, o);
 
-            if (ctx.HasErrors)
-                return;
-
             if (!res.IsFalse())
-                toDelete.Add(o);
+                toDelete.Add(i);
         }
 
-        foreach (var o in toDelete)
-        {
-            self.Remove(ctx, o);
+        var shift = 0;
 
-            if (ctx.HasErrors)
-                return;
+        foreach (var ix in toDelete)
+        {
+            self.RemoveAt(ix + shift);
+            shift--;
         }
     }
 
@@ -192,22 +222,20 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     {
         var sortComparer = new SortComparer(comparer, ctx);
         self.Compact();
-        Array.Sort(self.UnsafeAccessValues(), 0, self.Count, sortComparer);
+        Array.Sort(self.UnsafeAccess(), 0, self.Count, sortComparer);
     }
 
     [InstanceMethod]
-    internal static void Swap(ExecutionContext ctx, DyArray self, int index, int other)
+    internal static void Swap(DyArray self, int index, int other)
     {
-        var fst = self.GetItem(index, ctx);
+        if (!CorrectIndex(self, ref index))
+            throw new DyCodeException(DyError.IndexOutOfRange, index);
 
-        if (ctx.HasErrors)
-            return;
+        if (!CorrectIndex(self, ref other))
+            throw new DyCodeException(DyError.IndexOutOfRange, other);
 
-        var snd = self.GetItem(other, ctx);
-
-        if (ctx.HasErrors)
-            return;
-
+        var fst = self[index];
+        var snd = self[other];
         self[index] = snd;
         self[other] = fst;
     }
@@ -228,14 +256,10 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
             if (predicate is not null)
             {
                 var res = predicate.Call(ctx, e);
-
-                if (ctx.HasErrors)
-                    return;
-
                 flag = res.IsTrue();
             }
             else
-                flag = e.Is(Dy.Nil);
+                flag = e.TypeId == Dy.Nil;
 
             if (flag)
                 self.RemoveAt(idx);
@@ -248,7 +272,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     internal static void Reverse(DyArray self)
     {
         self.Compact();
-        Array.Reverse(self.UnsafeAccessValues());
+        Array.Reverse(self.UnsafeAccess());
     }
 
     [StaticMethod(Method.Array)]
@@ -325,7 +349,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
         if (destinationIndex + count < 0 || destinationIndex + count > destination.Count)
             throw new DyCodeException(DyError.IndexOutOfRange);
 
-        Array.Copy(source.UnsafeAccessValues(), index, destination.UnsafeAccessValues(), destinationIndex, count.Value);
+        Array.Copy(source.UnsafeAccess(), index, destination.UnsafeAccess(), destinationIndex, count.Value);
         return destination;
     }
 }

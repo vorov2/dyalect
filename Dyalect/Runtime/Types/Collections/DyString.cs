@@ -18,10 +18,8 @@ public sealed class DyString : DyCollection
     public DyString(HashString str) : base(Dy.String) => (Value, hashCode) = ((string)str, str.LookupHash());
 
     public static DyString Get(string? val) => string.IsNullOrEmpty(val) ? Empty : new(val);
-    
-    internal override DyObject GetValue(int index) => new DyChar(Value[index]);
 
-    public override DyObject[] GetValues()
+    public override DyObject[] ToArray()
     {
         var arr = new DyObject[Value.Length];
 
@@ -57,16 +55,5 @@ public sealed class DyString : DyCollection
 
     public static explicit operator string(DyString str) => str.Value;
 
-    internal DyObject GetItem(DyObject index, ExecutionContext ctx)
-    {
-        if (index is not DyInteger ix)
-            throw new DyCodeException(DyError.IndexOutOfRange, index);
-
-        return GetItem((int)ix.Value, ctx);
-    }
-
-    protected override DyObject CollectionGetItem(int idx, ExecutionContext ctx) => new DyChar(Value[idx]);
-
-    protected override void CollectionSetItem(int index, DyObject value, ExecutionContext ctx) =>
-        ctx.OperationNotSupported("set", Dy.String);
+    protected internal override DyObject[] UnsafeAccess() => throw new NotImplementedException();
 }

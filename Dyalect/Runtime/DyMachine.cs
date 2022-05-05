@@ -624,6 +624,9 @@ public static partial class DyMachine
                 case OpCode.NewTuple:
                     evalStack.Push(op.Data == 0 ? DyTuple.Empty : MakeTuple(evalStack, op.Data, false));
                     break;
+                case OpCode.NewDict:
+                    evalStack.Push(MakeDictionary(evalStack, op.Data));
+                    break;
                 case OpCode.TypeCheck:
                     first = evalStack.Pop();
                     second = evalStack.Pop();
@@ -693,13 +696,13 @@ public static partial class DyMachine
         if (value.TypeId is Dy.Array)
         {
             var xs = (DyCollection)value;
-            container.VarArgs = xs.GetValues();
+            container.VarArgs = xs.ToArray();
             container.VarArgsSize = container.VarArgs.Length;
         }
         else if (value.TypeId is Dy.Tuple)
         {
             var xs = (DyTuple)value;
-            container.VarArgs = xs.IsVarArg ? xs.UnsafeAccessValues() : xs.GetValuesWithLabels();
+            container.VarArgs = xs.IsVarArg ? xs.UnsafeAccess() : xs.GetValuesWithLabels();
             container.VarArgsSize = container.VarArgs.Length;
         }
         else if (value.TypeId is Dy.Iterator or Dy.Set)
@@ -743,7 +746,7 @@ public static partial class DyMachine
         }
     }
 
-    private static DyTuple MakeTuple(EvalStack stack, int size, bool vararg)
+    private static DyObject MakeTuple(EvalStack stack, int size, bool vararg)
     {
         var arr = new DyObject[size];
         var mutable = false;
@@ -758,6 +761,19 @@ public static partial class DyMachine
         }
 
         return new DyTuple(arr, mutable, vararg);
+    }
+
+    private static DyObject MakeDictionary(EvalStack stack, int size)
+    {
+        var dict = new DyDictionary();
+
+        for (var i = 0; i < size; i++)
+        {
+            if (stack.Pop() is DyLabel lab)
+                dict[new DyString(lab.Label)] = lab.Value;
+        }
+
+        return dict;
     }
 
     private static void FillDefaults(ExecutionContext.ArgContainer cont, DyFunction callFun, ExecutionContext ctx)

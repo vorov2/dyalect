@@ -8,7 +8,7 @@ public abstract class DyObject : IEquatable<DyObject>
 
     protected DyObject(int typeCode) => TypeId = typeCode;
 
-    public override string ToString() => $"[type:{TypeId}]";
+    public override string ToString() => $"[type:{TypeName}]";
 
     public abstract object ToObject();
 

@@ -6,19 +6,28 @@ namespace Dyalect.Runtime.Types;
 internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
 {
     #region Operations
-    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
-        targetType.ReflectedTypeId switch
+    protected override DyObject LengthOp(ExecutionContext ctx, DyObject self) =>
+        DyInteger.Get(((DyEnumerable)self).Count);
+
+    protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType)
+    {
+        if (targetType.ReflectedTypeId == self.TypeId)
+            return self;
+        
+        var xs = (DyCollection)self;
+        return targetType.ReflectedTypeId switch
         {
-            Dy.Tuple => new DyTuple(((DyCollection)self).GetValues()),
-            Dy.Array => new DyArray(((DyCollection)self).GetValues()),
-            Dy.Iterator => DyIterator.Create((DyCollection)self),
-            Dy.Set => new DySet(new HashSet<DyObject>(((DyCollection)self).GetValues())),
+            Dy.Tuple => new DyTuple(xs.ToArray()),
+            Dy.Array => new DyArray(xs.ToArray()),
+            Dy.Iterator => DyIterator.Create(xs),
+            Dy.Set => new DySet(new HashSet<DyObject>(xs.ToArray())),
             _ => base.CastOp(ctx, self, targetType)
         };
+    }
     #endregion
 
-    [InstanceMethod(Method.Indices)]
-    internal static DyObject GetIndices(DyCollection self)
+    [InstanceMethod]
+    internal static IEnumerable<DyObject> Indices(DyCollection self)
     {
         IEnumerable<DyObject> Iterate()
         {
@@ -26,13 +35,13 @@ internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
                 yield return DyInteger.Get(i);
         }
 
-        return DyIterator.Create(Iterate());
+        return Iterate();
     }
 
-    [InstanceMethod(Method.Slice)]
-    internal static DyObject GetSlice(ExecutionContext ctx, DyCollection self, int index, [Default]int? size)
+    [InstanceMethod]
+    internal static IEnumerable<DyObject> Slice(DyCollection self, int index, [Default]int? size)
     {
-        var arr = self.GetValues();
+        var arr = self.UnsafeAccess();
 
         if (size is null)
             size = self.Count - 1;
@@ -57,14 +66,9 @@ internal abstract partial class DyCollectionTypeInfo : DyTypeInfo
         if (len < 0)
             throw new DyCodeException(DyError.IndexOutOfRange);
 
-        return DyIterator.Create(new DyCollectionEnumerable(arr, index, len, self));
+        return new DyCollectionEnumerable(arr, index, len, self);
     }
 
-    [InstanceMethod(Method.ToSet)]
-    internal static DyObject ToSet(DyCollection self)
-    {
-        var set = new HashSet<DyObject>();
-        set.UnionWith(self.GetValues());
-        return new DySet(set);
-    }
+    [InstanceMethod]
+    internal static HashSet<DyObject> ToSet(DyCollection self) => new (self.ToArray());
 }

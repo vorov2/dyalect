@@ -4,7 +4,7 @@ namespace Dyalect.Runtime.Types;
 
 public abstract class DyEnumerable : DyObject, IEnumerable<DyObject>
 {
-    public int Version { get; protected set; }
+    internal protected int Version { get; protected set; }
 
     public virtual int Count { get; protected set; }
 
