@@ -117,7 +117,7 @@
 #endregion
 
 #region "Pattern match 2"
-    type Foo = Bar(x, y, z) with Lookup
+    type Foo = Bar(x, y, z) with Lookup, Container
     var f = Foo.Bar(12, "foobar", 3)
     var res = match f {
         Bar(x: xx, y: yy, z: zz) => "\(xx),\(yy)",

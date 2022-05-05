@@ -15,7 +15,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
 
     public override int ReflectedTypeId => Dy.Tuple;
 
-    public DyTupleTypeInfo() => AddMixins(Dy.Lookup, Dy.Order, Dy.Collection, Dy.Equatable);
+    public DyTupleTypeInfo() => AddMixins(Dy.Lookup, Dy.Container, Dy.Order, Dy.Collection, Dy.Equatable);
 
     #region Operations
     //TODO: reconsider logic

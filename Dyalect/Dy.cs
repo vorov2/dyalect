@@ -32,6 +32,7 @@ public static partial class Dy
     public const int Identity = 26;
     public const int Functor = 27;
     public const int Disposable = 28;
+    public const int Container = 29;
 
     internal static FastList<DyTypeInfo> GetAll()
     {
