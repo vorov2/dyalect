@@ -13,7 +13,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
-    public DySetTypeInfo() => AddMixin(Dy.Collection);
+    public DySetTypeInfo() => AddMixin(Dy.Lookup);
 
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)

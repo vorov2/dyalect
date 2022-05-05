@@ -13,8 +13,8 @@ public sealed class DyClass : DyObject, IProduction
 
     public override string TypeName => DecType.ReflectedTypeName;
     
-    internal DyClass(DyTypeInfo type, string ctor, DyTuple privates, Unit unit) : base(type.ReflectedTypeId) =>
-        (DecType, Constructor, Fields, DeclaringUnit) = (type, ctor, privates, unit);
+    internal DyClass(DyTypeInfo type, string ctor, DyTuple field, Unit unit) : base(type.ReflectedTypeId) =>
+        (DecType, Constructor, Fields, DeclaringUnit) = (type, ctor, field, unit);
 
     public override object ToObject() => this;
 

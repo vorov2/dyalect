@@ -1,5 +1,4 @@
-﻿using System;
-namespace Dyalect.Codegen;
+﻿namespace Dyalect.Codegen;
 
 [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false)]
 public sealed class VarArgAttribute : Attribute { }

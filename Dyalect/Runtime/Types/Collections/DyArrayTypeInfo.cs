@@ -5,7 +5,7 @@ using System.Text;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
-internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
+internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
 {
     public override string ReflectedTypeName => nameof(Dy.Array);
 
@@ -14,7 +14,7 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
-    public DyArrayTypeInfo() => AddMixin(Dy.Collection);
+    public DyArrayTypeInfo() => AddMixin(Dy.Lookup);
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToStringOrLiteral(false, arg, ctx);

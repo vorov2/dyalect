@@ -110,7 +110,7 @@ partial class Builder
     private bool BuildAssignment(DAssignment node, Hints hints, CompilerContext ctx)
     {
         Build(node.Value, hints.Append(Push), ctx);
-        Build(node.Target, hints.Append(Pop), ctx);
+        Build(node.Target, hints.Remove(Push).Append(Pop), ctx);
         PushIf(hints);
         return true;
     }

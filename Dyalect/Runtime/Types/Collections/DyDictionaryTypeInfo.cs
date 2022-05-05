@@ -12,7 +12,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
-    public DyDictionaryTypeInfo() => AddMixin(Dy.Collection);
+    public DyDictionaryTypeInfo() => AddMixin(Dy.Lookup);
 
     #region Operations
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)

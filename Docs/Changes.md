@@ -1,3 +1,6 @@
+# 0.45.0
+  * Fix: _Stack corruption because of indexer_ ([Issue #887](https://github.com/vorov2/dyalect/issues/887)).
+
 # 0.44.4
   * Change: _Refactoring of built-in collection types._
   * Fix: _Regression: invalid index for tuple indexer causes a crash_ ([Issue #880](https://github.com/vorov2/dyalect/issues/880)).

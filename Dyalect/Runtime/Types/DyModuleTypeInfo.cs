@@ -11,7 +11,7 @@ internal sealed class DyModuleTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Module;
 
-    public DyModuleTypeInfo() => AddMixin(Dy.Collection);
+    public DyModuleTypeInfo() => AddMixin(Dy.Lookup);
 
     #region Operations
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>

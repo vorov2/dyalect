@@ -1,0 +1,12 @@
+﻿static func Integer.MissingMethod(methodName, args) {
+	print(methodName, args, args.Length())
+}
+func Integer.MissingMethod(methodName, args) {
+	print(methodName, args, args.Length())
+}
+func Integer.Foobar1(args...) {
+	print(args)
+}
+
+Integer.Zan()
+12.Foobar(12, x: 44, zed: "editor")

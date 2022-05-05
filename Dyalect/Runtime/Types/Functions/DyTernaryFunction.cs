@@ -11,6 +11,8 @@ internal sealed class DyTernaryFunction : DyForeignFunction
     private DyTernaryFunction(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par[] pars)
         : base(name, pars, -1) => this.fun = fun;
 
+    internal DyObject CallTernary(ExecutionContext ctx, DyObject self, DyObject arg1, DyObject arg2) => fun(ctx, self, arg1, arg2);
+
     protected override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0], args[1]);
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyTernaryFunction(FunctionName, fun, Parameters);

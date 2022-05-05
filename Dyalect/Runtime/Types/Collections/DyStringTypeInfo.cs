@@ -6,7 +6,7 @@ using System.Text;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
-internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
+internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
 {
     readonly struct FormatData : IFormattable
     {
@@ -29,7 +29,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
 
     public override int ReflectedTypeId => Dy.String;
 
-    public DyStringTypeInfo() => AddMixin(Dy.Collection, Dy.Comparable);
+    public DyStringTypeInfo() => AddMixin(Dy.Lookup, Dy.Comparable);
 
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)

@@ -8,7 +8,7 @@ using System.Text;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
-internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
+internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
@@ -18,7 +18,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 
     public override int ReflectedTypeId => Dy.Tuple;
 
-    public DyTupleTypeInfo() => AddMixin(Dy.Collection, Dy.Comparable);
+    public DyTupleTypeInfo() => AddMixin(Dy.Lookup, Dy.Comparable);
 
     #region Operations
     //TODO: reconsider logic

@@ -21,9 +21,11 @@ public static partial class Dy
     public const int Set = 16;
     public const int Variant = 17;
     public const int Interop = 18;
+
     public const int Number = 19;
-    public const int Collection = 20;
-    public const int Comparable = 21;
+    public const int Comparable = 20;
+    public const int Lookup = 21;
+    public const int Collection = 22;
 
     internal static FastList<DyTypeInfo> GetAll()
     {
