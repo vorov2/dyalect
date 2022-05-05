@@ -27,7 +27,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
     {
         var map = (DyDictionary)arg;
         var sb = new StringBuilder();
-        sb.Append("Dictionary(");
+        sb.Append('[');
         var i = 0;
 
         foreach (var kv in map.Dictionary)
@@ -40,7 +40,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
             i++;
         }
 
-        sb.Append(')');
+        sb.Append(']');
         return new DyString(sb.ToString());
     }
 
@@ -121,7 +121,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
     internal static DyObject GetAndRemove(DyDictionary self, DyObject key) => self.GetAndRemove(key);
 
     [StaticMethod(Method.Dictionary)]
-    internal static DyObject New(ExecutionContext ctx, [VarArg]DyTuple values)
+    internal static DyObject New([VarArg]DyTuple values)
     {
         if (values.Count == 0)
             return new DyDictionary();
@@ -131,12 +131,12 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
             var el = values[0];
 
             if (el is DyTuple t)
-                return new DyDictionary(t.ConvertToDictionary(ctx));
+                return new DyDictionary(t.ConvertToDictionary());
         }
 
-        return new DyDictionary(values.ConvertToDictionary(ctx));
+        return new DyDictionary(values.ConvertToDictionary());
     }
 
     [StaticMethod(Method.FromTuple)]
-    internal static DyObject FromTuple(ExecutionContext ctx, [VarArg]DyTuple values) => New(ctx, values);
+    internal static DyObject FromTuple([VarArg]DyTuple values) => New(values);
 }

@@ -247,7 +247,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
 
     [InstanceMethod]
     internal static DyObject ToDictionary(ExecutionContext ctx, DyTuple self) =>
-        new DyDictionary(self.ConvertToDictionary(ctx));
+        new DyDictionary(self.ConvertToDictionary());
 
     [InstanceMethod(Method.ToArray)]
     internal static DyObject[] ToArray(DyCollection self) => self.ToArray();

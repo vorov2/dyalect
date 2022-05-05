@@ -82,7 +82,7 @@ public class DyTuple : DyCollection
         return true;
     }
 
-    public Dictionary<DyObject, DyObject> ConvertToDictionary(ExecutionContext _)
+    public Dictionary<DyObject, DyObject> ConvertToDictionary()
     {
         var dict = new Dictionary<DyObject, DyObject>();
 

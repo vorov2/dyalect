@@ -1,3 +1,21 @@
-﻿func Integer.ToString() => "Nothing here!"
+﻿type Lazy(var lambda, var cache)
 
-    assert("Nothing here!", 12.ToString())
+func defer(fn) {
+    return Lazy(fn, nil)
+}
+
+func Lazy.Value() {
+    if ini.lambda {
+        ini.cache = ini.lambda()
+        ini.lambda = nil //We no longer need it
+    }
+    return ini.cache
+}
+
+let thunk = defer(() => {
+    print("Calculating...")
+    2 + 2
+})
+
+print(thunk.Value())
+print(thunk.Value())
