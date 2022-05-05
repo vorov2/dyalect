@@ -1,5 +1,9 @@
 ﻿using Dyalect.Compiler;
+using Dyalect.Parser;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Text;
+
 namespace Dyalect.Runtime.Types;
 
 public static class Extensions
@@ -246,5 +250,53 @@ public static class Extensions
             return Nil;
 
         return func.Call(ctx, args);
+    }
+
+    private static readonly char[] invalidChars = new[] { ' ', '\t', '\n', '\r', '\'', '"' };
+    internal static string ToString(this IEnumerable<DyObject> seq, ExecutionContext ctx)
+    {
+        var c = 0;
+        var sb = new StringBuilder();
+
+        foreach (DyObject o in seq)
+        {
+            if (c > 0)
+                sb.Append(", ");
+
+            if (o.TypeId is Dy.Char)
+                sb.Append(StringUtil.Escape(o.ToString(ctx).ToString(), "'"));
+            else if (o.TypeId is Dy.String)
+                sb.Append(StringUtil.Escape(o.ToString(ctx).ToString()));
+            else if (o is DyLabel lab)
+            {
+                if (lab.Mutable)
+                    sb.Append("var ");
+
+                foreach (var ta in lab.EnumerateAnnotations())
+                {
+                    sb.Append(ta.ToString());
+                    sb.Append(' ');
+                }
+
+                if (lab.Label.IndexOfAny(invalidChars) != -1)
+                    sb.Append(StringUtil.Escape(lab.Label));
+                else
+                    sb.Append(lab.Label);
+
+                sb.Append(':');
+                sb.Append(' ');
+
+                if (lab.Value.TypeId is Dy.Char)
+                    sb.Append(StringUtil.Escape(lab.Value.ToString(ctx).ToString(), "'"));
+                else if (lab.Value.TypeId is Dy.String)
+                    sb.Append(StringUtil.Escape(lab.Value.ToString(ctx).ToString()));
+            }
+            else
+                sb.Append(o.ToString(ctx).ToString());
+
+            c++;
+        }
+
+        return sb.ToString();
     }
 }
