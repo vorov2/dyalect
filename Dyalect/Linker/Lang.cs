@@ -13,8 +13,6 @@ namespace Dyalect.Linker;
 [GeneratedModule]
 internal sealed partial class Lang : ForeignUnit
 {
-    private static readonly char[] invalidChars = new[] { ' ', '\t', '\n', '\r', '\'', '"' };
-
     private readonly DyTuple? startupArguments;
     private const string VAR_CONSOLEOUTPUT = "sys.ConsoleOutput";
 
@@ -28,122 +26,8 @@ internal sealed partial class Lang : ForeignUnit
 
     protected override void Execute(ExecutionContext ctx) => Add("args", startupArguments ?? Nil);
 
-    private static void Process(StringBuilder sb, IEnumerable<DyObject> seq)
-    {
-        var c = 0;
-
-        foreach (DyObject o in seq)
-        {
-            if (c > 0)
-                sb.Append(", ");
-
-            Process(sb, o);
-            c++;
-        }
-    }
-
-    private static void Process(StringBuilder sb, DyLabel lab)
-    {
-        if (lab.Mutable)
-            sb.Append("var ");
-
-        foreach (var ta in lab.EnumerateAnnotations())
-        {
-            sb.Append(ta.ToString());
-            sb.Append(' ');
-        }
-
-        if (lab.Label.IndexOfAny(invalidChars) != -1)
-            sb.Append(StringUtil.Escape(lab.Label));
-        else
-            sb.Append(lab.Label);
-
-        sb.Append(':');
-        sb.Append(' ');
-        Process(sb, lab.Value);
-    }
-
-    private static void Process(StringBuilder sb, DyObject obj)
-    {
-        switch (obj.TypeId)
-        {
-            case Dy.Array:
-                sb.Append('[');
-                Process(sb, (IEnumerable<DyObject>)obj);
-                sb.Append(']');
-                break;
-            case Dy.Tuple:
-                sb.Append('(');
-                Process(sb, (IEnumerable<DyObject>)obj);
-                if (((DyTuple)obj).Count == 1)
-                    sb.Append(',');
-                sb.Append(')');
-                break;
-            case Dy.Dictionary:
-                {
-                    sb.Append('[');
-                    var c = 0;
-
-                    foreach (var (k, v) in ((DyDictionary)obj).Dictionary)
-                    {
-                        if (c > 0)
-                            sb.Append(',');
-
-                        Process(sb, k);
-                        sb.Append(": ");
-                        Process(sb, v);
-                        c++;
-                    }
-
-                    sb.Append(']');
-                }
-                break;
-            case Dy.Set:
-                sb.Append("Set(");
-                Process(sb, (IEnumerable<DyObject>)obj);
-                sb.Append(')');
-                break;
-            case Dy.Char:
-                sb.Append(StringUtil.Escape(obj.ToString(), "'"));
-                break;
-            case Dy.String:
-                sb.Append(StringUtil.Escape(obj.ToString()));
-                break;
-            case Dy.Label:
-                Process(sb, (DyLabel)obj);
-                break;
-            case Dy.Variant:
-                var dyv = (DyVariant)obj;
-                sb.Append('@');
-                sb.Append(dyv.Constructor);
-                if (dyv.Fields.Count > 0)
-                {
-                    sb.Append('(');
-                    Process(sb, (IEnumerable<DyObject>)dyv.Fields);
-                    sb.Append(')');
-                }
-                break;
-            default:
-                if (obj is DyClass cls)
-                {
-                    sb.Append(cls.Constructor);
-                    sb.Append('(');
-                    Process(sb, (IEnumerable<DyObject>)cls.Fields);
-                    sb.Append(')');
-                }
-                else
-                    sb.Append(obj);
-                break;
-        }
-    }
-
-    [StaticMethod("toLiteral")]
-    public static string ToLiteral(DyObject value)
-    {
-        var sb = new StringBuilder();
-        Process(sb, value);
-        return sb.ToString();
-    }
+    [StaticMethod("toString")]
+    public static string DirectToString(DyObject value) => value.ToString();
 
     [StaticMethod("referenceEquals")]
     public static bool Equals(DyObject value, DyObject other) => ReferenceEquals(value, other);
