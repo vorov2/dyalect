@@ -90,7 +90,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("rawget")]
-    public static DyObject RawGet(ExecutionContext ctx, DyObject values, DyInteger index)
+    public static DyObject RawGet(ExecutionContext ctx, DyObject values, DyObject index)
     {
         if (values is DyClass cls)
             return cls.Fields.GetItem(ctx, index);
@@ -99,7 +99,7 @@ internal sealed partial class Lang : ForeignUnit
     }
 
     [StaticMethod("rawset")]
-    public static void RawSet(ExecutionContext ctx, DyObject values, DyInteger index, DyObject value)
+    public static void RawSet(ExecutionContext ctx, DyObject values, DyObject index, DyObject value)
     {
         if (values is DyClass cls)
             cls.Fields.SetItem(ctx, index, value);

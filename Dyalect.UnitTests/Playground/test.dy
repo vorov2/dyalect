@@ -1,17 +1,39 @@
-﻿var x = 100
-
-if x < 100 => throw @ValueError(x)
-      else => print(x*2)
-
-match x {
-    < 100 => throw @ValueError(x)
-    _     => print(x*2)
+﻿type Foo(x) {
+    x += x
+    var y = 1.03
+    let z = 3
+    if z is not nil zed {
+        var foo = 'b'
+    }
 }
 
-if x < 100 {
-    throw @ValueError(x)
-} else {
-    print(x*2)
+func Foo.Test() {
+    ini.y += ini.y
+    ini.z = 100
+    print("y=\(ini.y),z=\(ini.z)")
 }
 
+type Maybe = {
+        let pi = 3.14
+    }
+    Some(x) {
+        x *= pi
+    } or
+    None()
+    with Lookup
+
+//let f = Foo(42)
+//f.Test()
+
+func Maybe.PrintPi() {
+    print(this!pi)
+}
+
+let s = Maybe.Some(4)
+if s is Some(x) {
+    print(x)
+}
+
+s.PrintPi()
+print(s!pi)
 

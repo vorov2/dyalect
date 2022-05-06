@@ -133,9 +133,9 @@
 
 #region "Custom type"
 	type Bar
-	func get Bar.First() => ini[0]
-	func get Bar.Last() => ini[ini.Length() - 1]
-	type Foo(x, y) with Bar
+	func get Bar.First() => this[0]
+	func get Bar.Last() => this[this.Length() - 1]
+	type Foo(x, y) with Bar, Lookup
 	let f = Foo(12, 34)
 	assert(12, f.First)
 	assert(34, f.Last)
@@ -156,10 +156,10 @@
 
 #region "Multiple mixins"
 	type Bar1
-	func get Bar1.First() => ini[0]
+	func get Bar1.First() => this[0]
 	type Bar2
-	func get Bar2.Last() => ini[ini.Length() - 1]
-	type Foo(x, y) with Bar1, Bar2
+	func get Bar2.Last() => this[this.Length() - 1]
+	type Foo(x, y) with Bar1, Bar2, Lookup
 	let f = Foo(12, 34)
 	assert(12, f.First)
 	assert(34, f.Last)
@@ -171,10 +171,10 @@
 #region "Mixin with operators"
 	type Bar
 	func Bar + (other) {
-		ini[0] + other[0]
+		this[0] + other[0]
 	}
 	func Bar - (other) {
-		ini[0] - other[0]
+		this[0] - other[0]
 	}
 	type Num(x) with Bar, Lookup
 	let x = Num(12)

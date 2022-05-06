@@ -84,9 +84,8 @@
 #endregion
 
 #region "Extending type 1"
-    type Bar = private PrivateBar(data)
-    static func Bar.Bar(args...) {
-        Bar.PrivateBar(args)
+    type Bar(args...) {
+        let data = args
     }
     func Bar.Length() {
         ini.data.Length()
@@ -137,31 +136,29 @@
 #endregion
 
 #region "Natural number 1"
-    type Nat = private PrivateNat(var val) with Lookup
+    type Nat(value) {
+        throw @Error("Negative number.") when value < 0
+    } with Lookup
     func fetch(x) {
         x >= 0 ? Nat(x) : x
     }
-    static func Nat.Nat(x) {
-        throw @Error("Negative number.") when x < 0
-        Nat.PrivateNat(x)
-    }
     func Nat.ToInteger() {
-        val when this is Nat.nat(val)
+        val when this is Nat(val)
     }
     func Nat + (other) {
-        fetch(this.val + other.val)
+        fetch(this.value + other.value)
     }
     func Nat - (other) {
-        fetch(this.val - other.val)
+        fetch(this.value - other.value)
     }
     func Nat * (other) {
-        fetch(this.val * other.val)
+        fetch(this.value * other.value)
     }
     func Nat / (other) {
-        fetch(this.val / other.val)
+        fetch(this.value / other.value)
     }
     func Nat == (other) {
-        this.val == other.val
+        this.value == other.value
     }
     var n = Nat(12)
     assert(Nat(24), n + Nat(12))
@@ -187,24 +184,21 @@
 #endregion
 
 #region "Reference cell"
-    type Cell = private MakeCell(var val)
-    func ref(value) {
-        Cell.MakeCell(value)
+    type Cell(value) {
+        var internal = value
     }
-    static func Cell.Cell(value) {
-        Cell.MakeCell(value)
-    }
+    let ref = Cell.Cell
     func Cell.SetValue(value) {
-        ini.val = value
+        ini.internal = value
     }
     func Cell.GetValue() {
-        ini.val
+        ini.internal
     }
     func get Cell[index] {
         if index is not 0 {
             throw @IndexOutOfRange()
         }
-        ini.val
+        ini.internal
     }
     func Cell.Length() {
         1
@@ -266,14 +260,11 @@
 #endregion
 
 #region "Record"
-    type Record = private Make(fields)
-    static func Record.Record(values...) {
-        Record.Make(values)
+    type Record(fields...) {
+        let data = fields
     }
-    func get Record[index] {
-        ini.fields[index]
-    }
-    var p = Record(values: (name: "John", age: 33))
+    func get Record[index] => ini.data[index]
+    var p = Record(name: "John", age: 33)
     assert("John", p["name"])
     assert(33, p.age)
     var p2 = Record(name: "John", age: 33)
@@ -310,21 +301,18 @@
 #endregion
 
 #region "Mutable Point"
-    type Point = private Make(var x, var y) with Collection
-    static func Point.Point(x, y) {
-        Point.Make(x, y)
-    }
+    type Point(var x, var y) with Collection
     func get Point[index] {
         match index {
-            0 or "x" => ini.x,
-            1 or "y" => ini.y,
+            0 or "x" => rawget(this, "x"),
+            1 or "y" => rawget(this, "y"),
             _ => throw @IndexOutOfRange()
         }
     }
     func set Point[index, value] {
         match index {
-            0 or "x" => ini.x = value,
-            1 or "y" => ini.y = value,
+            0 or "x" => rawset(this, "x", value),
+            1 or "y" => rawset(this, "y", value),
             _ => throw @IndexOutOfRange()
         }
     }
@@ -354,9 +342,9 @@
 #endregion
 
 #region "Callable type 1"
-    type Julia(x)
+    type Julia(x) with Lookup
     func Julia.Call(y, z) {
-        ini.x + y * z 
+        this.x + y * z 
     }
     var x = Julia(12)
     var res = x(44.5, 67.07)
@@ -392,23 +380,16 @@
 #endregion
 
 #region "String builder"
-    type StringBuilder = private Builder(buffer) with Lookup
+    type StringBuilder() {
+        let buffer = []
+    } with Lookup
 
-    static func StringBuilder.StringBuilder() {
-        StringBuilder.Builder([])
-    }
-    func StringBuilder.Append(val) {
-        this.buffer.Add(val.ToString())
-    }
-    func StringBuilder.Clear() {
-        this.buffer.Clear()
-    }
-    func StringBuilder.ToString() {
-        String.Concat(values: this.buffer)
-    }
+    func StringBuilder.Append(val) => ini.buffer.Add(val.ToString())
+    func StringBuilder.Clear() => ini.buffer.Clear()
+    func StringBuilder.ToString() => String.Concat(values: ini.buffer)
     func StringBuilder.Length() {
         var count = 0
-        for x in this.buffer {
+        for x in ini.buffer {
             count += x.Length()
         }
         return count
@@ -427,11 +408,9 @@
 #endregion
 
 #region "Natural number 2"
-    type RealNat = private Nat(var num) with Lookup
-    static func RealNat.RealNat(x) {
-        throw @InvalidType(x.GetType()) when x is not Integer
-        RealNat.Nat(x)
-    }
+    type RealNat(num) {
+        throw @InvalidType(num) when num is not Integer
+    } with Lookup
     func RealNat + (other) {
         let res = match other {
             RealNat => this.num + other.num,
@@ -474,19 +453,16 @@
 #endregion
 
 #region "Custom constructor with constraints"
-    type Foo = private PrivateFoo(var data) with Collection
-    static func Foo.Foo(Integer x) {
-        Foo.PrivateFoo(x)
-    }
+    type Foo(var data)
     func get Foo[field] {
         match field {
-            "x" => ini.data,
+            "x" => rawget(this, "data"),
             _ => throw @IndexOutOfRange(field)
         }
     }
     func set Foo[field, Integer value] {
         match field {
-            "x" => ini.data = value,
+            "x" => rawset(this, "data", value),
             _ => throw @IndexOutOfRange(field)
         }
     }
@@ -518,8 +494,8 @@
 #endregion
 
 #region "Properties 1"
-    type Foo = private Make(var status) with Collection
-    static func Foo.Foo(value) => Foo.Make(value)
+    type Foo(var status) with Collection
+
     func get Foo.Status() => this.status
     func set Foo.Status(value) => this.status = value
     let f = Foo(10)
@@ -531,12 +507,13 @@
 #endregion
 
 #region "Properties 2"
-    type Foo = private Make(var box)
-    static func Foo.Foo() {
-        Foo.Make(nil)
+    type Foo() {
+        var box
     }
+
     func get Foo.Box() => ini.box
     func set Foo.Box(value) => ini.box = value
+
     let f = Foo()
     assert(42, f.Box ?? 42)
     f.Box ??= 144
@@ -546,8 +523,8 @@
 #endregion
 
 #region "Custom conversion"
-    type Foo(Integer x)
-    func Foo as Integer { ini.x }
+    type Foo(Integer x) with Lookup
+    func Foo as Integer { this.x }
     func Foo as String { "Foo" }
     let f = Foo(42)
     assert("Foo", f as String)
@@ -608,9 +585,9 @@
 #region "Initialization blocks 1"
     type Nat(x) {
         throw @InvalidValue(x) when x == 0
-        x = -x when x < 0 
-    }
-    func Nat as Integer => ini.x
+        let num = abs(x)
+    } with Lookup
+    func Nat as Integer => ini.num
     var x = Nat(12)
     assert(12, x as Integer)
     x = Nat(-24)

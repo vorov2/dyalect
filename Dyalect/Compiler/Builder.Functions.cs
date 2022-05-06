@@ -484,8 +484,5 @@ partial class Builder
         
         if (node.Getter && !node.IsIndexer)
             cw.FunAttr(FunAttr.Auto);
-
-        if (node.IsPrivate)
-            cw.FunAttr(FunAttr.Priv);
     }
 }

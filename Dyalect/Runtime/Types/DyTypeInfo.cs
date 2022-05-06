@@ -435,14 +435,8 @@ public abstract class DyTypeInfo : DyObject
             return ctx.StaticOperationNotSupported((string)name, ReflectedTypeId);
         }
 
-        if (ret is DyFunction f)
-        {
-            if (f.Private && f is DyNativeFunction n && n.UnitId != ctx.UnitId)
-                return ctx.PrivateNameAccess(f.FunctionName);
-
-            if (f.Auto)
-                ret = f.TryInvokeProperty(ctx, this);
-        }
+        if (ret is DyFunction f && f.Auto)
+            ret = f.TryInvokeProperty(ctx, this);
 
         return ret;
     }

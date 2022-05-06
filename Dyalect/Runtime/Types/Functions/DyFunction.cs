@@ -21,8 +21,6 @@ public abstract class DyFunction : DyObject
 
     internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
     
-    internal bool Private => (Attr & FunAttr.Priv) == FunAttr.Priv;
-    
     internal bool VariantConstructor => (Attr & FunAttr.Vari) == FunAttr.Vari;
 
     protected DyFunction(Par[] pars, int varArgIndex) : base(Dy.Function) =>

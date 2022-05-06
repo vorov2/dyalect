@@ -105,7 +105,10 @@ public static partial class DyMachine
                     evalStack.Push(function.Self!);
                     break;
                 case OpCode.Unbox:
-                    evalStack.Push(function.Self is DyClass c ? c.Fields : function.Self!);
+                    evalStack.Push(function.Self is DyClass c ? c.Inits : DyTuple.Empty);
+                    break;
+                case OpCode.Privates:
+                    evalStack.Replace(evalStack.Peek() is DyClass c1 ? c1.Inits : DyTuple.Empty);
                     break;
                 case OpCode.Term:
                     if (evalStack.Size is > 1 or 0)
@@ -650,7 +653,8 @@ public static partial class DyMachine
                 case OpCode.NewObj:
                     second = evalStack.Pop();
                     first = evalStack.Pop();
-                    evalStack.Push(new DyClass((DyClassInfo)second, (string)unit.Strings[op.Data], (DyTuple)first, unit));
+                    third = evalStack.Pop();
+                    evalStack.Push(new DyClass((DyClassInfo)second, (string)unit.Strings[op.Data], (DyTuple)first, (DyTuple)third, unit));
                     break;
                 case OpCode.NewType:
                     clsInfo = new DyClassInfo((string)unit.Strings[op.Data], types.Count);

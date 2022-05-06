@@ -446,7 +446,8 @@ partial class Builder
     private void Build(DAccess node, Hints hints, CompilerContext ctx)
     {
         //An access expression can be a reference to a module (and can be optimized away)
-        if (node.Target.NodeType == NodeType.Name && !hints.Has(Pop) && !options.NoOptimizations)
+        if (node.Target.NodeType == NodeType.Name && !node.PrivateAccess
+            && !hints.Has(Pop) && !options.NoOptimizations)
         {
             var nm = node.Target.GetName()!;
             var err = GetVariable(nm, out var sv);
@@ -489,7 +490,7 @@ partial class Builder
         Build(node.Target, push, ctx);
 
         //A method access
-        if (char.IsUpper(node.Name[0]) || node.SpecialName)
+        if ((char.IsUpper(node.Name[0]) || node.SpecialName) && !node.PrivateAccess)
         {
             AddLinePragma(node);
             cw.GetMember(node.Name);
@@ -498,6 +499,9 @@ partial class Builder
         //An indexer
         else
         {
+            if (node.PrivateAccess)
+                cw.Privates();
+
             AddLinePragma(node);
             cw.Push(node.Name);
             if (!hints.Has(Pop))

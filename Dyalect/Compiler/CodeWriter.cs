@@ -281,4 +281,5 @@ internal sealed class CodeWriter
     public void Cast() => Emit(Op.Cast);
     public void Mixin() => Emit(Op.Mixin);
     public void Debug() => Emit(Op.Debug);
+    public void Privates() => Emit(Op.Privates);
 }

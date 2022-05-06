@@ -9,12 +9,14 @@ public sealed class DyClass : DyObject, IProduction
 
     internal DyTuple Fields { get; }
 
+    internal DyTuple Inits { get; }
+
     internal DyTypeInfo DecType { get; }
 
     public override string TypeName => DecType.ReflectedTypeName;
     
-    internal DyClass(DyTypeInfo type, string ctor, DyTuple field, Unit unit) : base(type.ReflectedTypeId) =>
-        (DecType, Constructor, Fields, DeclaringUnit) = (type, ctor, field, unit);
+    internal DyClass(DyTypeInfo type, string ctor, DyTuple fields, DyTuple inits, Unit unit) : base(type.ReflectedTypeId) =>
+        (DecType, Constructor, Fields, Inits, DeclaringUnit) = (type, ctor, fields, inits, unit);
 
     public override object ToObject() => this;
 
@@ -24,5 +26,5 @@ public sealed class DyClass : DyObject, IProduction
         other is not null && DecType.TypeId == other.TypeId && other is DyClass t 
             && t.Constructor == Constructor && t.Fields.Equals(Fields);
 
-    public override DyObject Clone() => new DyClass(DecType, Constructor, Fields, DeclaringUnit);
+    public override DyObject Clone() => new DyClass(DecType, Constructor, Fields, Inits, DeclaringUnit);
 }

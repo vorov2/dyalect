@@ -81,7 +81,7 @@ internal static class OpStackHelper
         -2, //TypeCheck
         0,  //Start
         0,  //End
-        -1, //NewObj
+        -2, //NewObj
         1,  //NewType
         0,  //CtorCheck
         0,  //IsNull
@@ -98,5 +98,6 @@ internal static class OpStackHelper
         0,  //Debug
         0,  //NewArgs **dynamic
         0,  //NewDict **dynamic
+        0,  //Privates
     };
 }

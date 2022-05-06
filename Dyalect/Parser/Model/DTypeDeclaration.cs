@@ -27,9 +27,6 @@ namespace Dyalect.Parser.Model
                 if (!fst)
                     sb.Append(" or ");
 
-                if (c.IsPrivate)
-                    sb.Append("private ");
-
                 sb.Append(c.Name);
                 sb.Append('(');
                 c.Parameters.ToString(sb);

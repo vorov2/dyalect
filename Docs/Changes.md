@@ -4,6 +4,8 @@
   * Change: _It is not possible to implement `Iterate` method for custom types_ ([Issue #889](https://github.com/vorov2/dyalect/issues/889)).
   * Change: _Consider separating operator `in` and `Contains` method_ ([Issue #888](https://github.com/vorov2/dyalect/issues/888)).
   * Change: _Remove `ToLiteral` method, generalize `ToString`_ ([Issue #888](https://github.com/vorov2/dyalect/issues/888)).
+  * Change: _Reconsider private constructors for custom types_ ([Issue #895](https://github.com/vorov2/dyalect/issues/895)).
+  * Change: _Global initialization blocks for all custom type constructors_ ([Issue #896](https://github.com/vorov2/dyalect/issues/896)).
   * Add: _Add `Disposable` mixin_ ([Issue #894](https://github.com/vorov2/dyalect/issues/894), [docs](https://github.com/vorov2/dyalect/wiki/Mixins#disposable)).
   * Add: _Add `Functor` mixin_ ([Issue #893](https://github.com/vorov2/dyalect/issues/893), [docs](https://github.com/vorov2/dyalect/wiki/Mixins#functor)).
   * Add: _Redesign standard mixins_ ([Issue #892](https://github.com/vorov2/dyalect/issues/892), [docs](https://github.com/vorov2/dyalect/wiki/Mixins)).
@@ -15,6 +17,7 @@
   * Fix: _Stack corruption because of indexer_ ([Issue #863](https://github.com/vorov2/dyalect/issues/863)).
   * Fix: _When InvalidOverload error is generated an overload is still done_ ([Issue #891](https://github.com/vorov2/dyalect/issues/891)).
   * Fix: _Tuple is incorrectly transformed to an iterator_ ([Issue #890](https://github.com/vorov2/dyalect/issues/890)).
+  * Fix: _`rawset` and `rawget` only accept integer indices_ ([Issue #897](https://github.com/vorov2/dyalect/issues/897)).
 
 # 0.44.4
   * Change: _Refactoring of built-in collection types._

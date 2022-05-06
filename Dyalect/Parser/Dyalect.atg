@@ -237,34 +237,47 @@ PRODUCTIONS
             )
             |
             (
-                "="
-                Constructor<typ> { "or" Constructor<typ> }
+                "=" (. DNode init = null; .)
+                [ Block<out init> ]
+                Constructor<init, typ> { "or" Constructor<init, typ> }
             )
         ]
         [
             "with"
             (. typ.Mixins = new(); .)
-            TypeName<out var qual> (. typ.Mixins.Add(qual); .)            
+            TypeName<out var qual> (. typ.Mixins.Add(qual); .)
             { "," TypeName<out qual> (. typ.Mixins.Add(qual); .) }
         ].
 
-    Constructor<DTypeDeclaration typ> =
-        (. var priv = false; .)
+    Constructor<DNode init, DTypeDeclaration typ> =
         (
-            [ "private" (. priv = true; .) ]
             Identifier
             (.
                 var f = new DFunctionDeclaration(t) {
                     Name = t.val,
-                    IsPrivate = priv,
                     IsStatic = true, 
                     IsConstructor = true,
                     TypeName = new Qualident(typ.Name) 
                 }; 
                 typ.Constructors.Add(f);
+
+                if (init is not null)
+                {
+                    var blk = new DBlock(init.Location);
+                    blk.Nodes.AddRange(((DBlock)init).Nodes);
+                    f.Body = blk;
+                }
             .) 
             TypeArguments<f>
-            [ Block<out var b> (. f.Body = b; .) ]
+            [
+                Block<out var b>
+                (.
+                    if (f.Body is not null)
+                        ((DBlock)f.Body).Nodes.AddRange(((DBlock)b).Nodes);
+                    else
+                        f.Body = b;
+                .)
+            ]
         ).
 
     TypeName<out Qualident qual> =
@@ -1315,8 +1328,9 @@ PRODUCTIONS
             {
                 (
                     (
-                        "."
-                        (. var fld = new DAccess(t) { Target = node }; node = fld; .)
+                        (. var pa = false; .)
+                        ( "." | "!" (. pa = true; .) )
+                        (. var fld = new DAccess(t) { Target = node, PrivateAccess = pa }; node = fld; .)
                         (
                             Identifier (. fld.Name = t.val; .) 
                             | "[" IdentifierOrKeyword (. fld.Name = t.val.TrimEnd('[', ']'); fld.SpecialName = true; .) "]" 

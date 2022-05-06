@@ -54,13 +54,8 @@ partial class Builder
                 else
                     set.Add(code);
 
-                if (code < 0)
-                {
-                    var abs = -code;
-
-                    //if (abs is not Dy.Lookup and not Dy.Number and not Dy.Comparable)
-                    //    AddError(CompilerError.InvalidMixin, node.Location, m.Local.ToString());
-                }
+                if (code < 0 && -code < Dy.Number)
+                    AddError(CompilerError.InvalidMixin, node.Location, m.Local.ToString());
             
                 cw.Mixin();
             }
@@ -72,32 +67,32 @@ partial class Builder
     private void GenerateConstructor(DFunctionDeclaration func, CompilerContext ctx)
     {
         if (func.Body is not null)
+        {
             Build(func.Body, NoScope, new());
+            var count = 0;
+
+            foreach (var (k, v) in currentScope.Locals)
+            {
+                if ((v.Data & VarFlags.Argument) != VarFlags.Argument)
+                {
+                    count++;
+                    DirectPushScopeVar(k, new ScopeVar(0 | (v.Address << 8), v.Data));
+                    cw.Tag(k);
+
+                    if ((v.Data & VarFlags.Const) != VarFlags.Const)
+                        cw.Mut();
+                }
+            }
+
+            cw.NewTuple(count);
+        }
+        else
+            cw.NewTuple(0);
 
         if (func.Parameters.Count == 0)
         {
             AddLinePragma(func);
             cw.NewTuple(0);
-        }
-        else if (func.Parameters.Count == 1)
-        {
-            var p = func.Parameters[0];
-            PushVariable(ctx, p.Name, p.Location);
-            cw.Tag(p.Name);
-
-            if (p.TypeAnnotation is not null)
-            {
-                foreach (var q in p.TypeAnnotation)
-                {
-                    PushTypeInfo(ctx, q, p.Location);
-                    cw.Annot();
-                }
-            }
-            
-            if (p is DTypeParameter { Mutable: true })
-                cw.Mut();
-            
-            cw.NewTuple(1);
         }
         else
         {
@@ -124,12 +119,8 @@ partial class Builder
             cw.NewTuple(func.Parameters.Count);
         }
 
-        //Just because compiler wants it, it is always not null here
-        if (func.TypeName is not null)
-        {
-            PushTypeInfo(ctx, func.TypeName, func.Location);
-            cw.NewObj(func.Name!);
-        }
+        PushTypeInfo(ctx, func.TypeName!, func.Location);
+        cw.NewObj(func.Name!);
     }
 
     private int PushTypeInfo(CompilerContext ctx, Qualident qual, Location loc)
