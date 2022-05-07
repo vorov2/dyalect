@@ -10,3 +10,13 @@ func Integer.Foobar1(args...) {
 
 Integer.Zan()
 12.Foobar(12, x: 44, zed: "editor")
+
+
+type Foo()
+
+func Foo.MissingMethod(methodName, args...) {
+    print(methodName, args)
+}
+
+let f = Foo()
+print << f.Bar(10, 20) //prints "Bar, (10, 20)"
