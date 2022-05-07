@@ -6,6 +6,7 @@
   * Change: _Remove `ToLiteral` method, generalize `ToString`_ ([Issue #888](https://github.com/vorov2/dyalect/issues/888)).
   * Change: _Reconsider private constructors for custom types_ ([Issue #895](https://github.com/vorov2/dyalect/issues/895)).
   * Change: _Global initialization blocks for all custom type constructors_ ([Issue #896](https://github.com/vorov2/dyalect/issues/896)).
+  * Change: _Redesign of access to custom type internals_ ([Issue #899](https://github.com/vorov2/dyalect/issues/899), [docs](https://github.com/vorov2/dyalect/wiki/Custom-types)).
   * Add: _Add `Disposable` mixin_ ([Issue #894](https://github.com/vorov2/dyalect/issues/894), [docs](https://github.com/vorov2/dyalect/wiki/Mixins#disposable)).
   * Add: _Add `Functor` mixin_ ([Issue #893](https://github.com/vorov2/dyalect/issues/893), [docs](https://github.com/vorov2/dyalect/wiki/Mixins#functor)).
   * Add: _Redesign standard mixins_ ([Issue #892](https://github.com/vorov2/dyalect/issues/892), [docs](https://github.com/vorov2/dyalect/wiki/Mixins)).
