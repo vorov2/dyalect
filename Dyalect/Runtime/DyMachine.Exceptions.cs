@@ -95,9 +95,9 @@ partial class DyMachine
 
         if (dump is null)
         {
-
             var callStack = ctx.CallStack.Clone();
             dump = new Stack<StackPoint>();
+            var sp = StackPoint.Empty;
 
             for (var i = 0; i < callStack.Count; i++)
             {
@@ -107,12 +107,15 @@ partial class DyMachine
                     continue;
 
                 if (ReferenceEquals(cm, Caller.External))
-                    dump.Push(StackPoint.External);
+                    sp = StackPoint.External;
                 else
-                    dump.Push(new(cm.Offset, cm.Function.UnitId));
+                    sp = new(cm.Offset, cm.Function.UnitId);
+
+                dump.Push(sp);
             }
 
-            //dump.Push(new(offset, function.UnitId));
+            if (sp.IsEmpty || sp.Offset != offset || sp.UnitId != function.UnitId)
+                dump.Push(new(offset, function.UnitId));
         }
 
         return dump;

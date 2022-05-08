@@ -590,9 +590,14 @@ public abstract class DyTypeInfo : DyObject
             }
         }
 
-        //TODO: ValidateLogic
         if (Members.TryGetValue(name, out var oldfun))
         {
+            if (oldfun.Final)
+            {
+                ctx.UnableOverload(this, (string)name);
+                return;
+            }
+
             if (oldfun.Auto != func.Auto)
             {
                 ctx.InvalidOverload(name);
@@ -611,87 +616,197 @@ public abstract class DyTypeInfo : DyObject
         switch (name)
         {
             case Builtins.Add:
+                if (add is not null && add.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Add;
                 add = func;
                 break;
             case Builtins.Sub:
+                if (sub is not null && sub.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Sub;
                 sub = func;
                 break;
             case Builtins.Mul:
+                if (mul is not null && mul.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Mul;
                 mul = func;
                 break;
             case Builtins.Div:
+                if (div is not null && div.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Div;
                 div = func;
                 break;
             case Builtins.Rem:
+                if (rem is not null && rem.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Rem;
                 rem = func;
                 break;
             case Builtins.Shl:
+                if (shl is not null && shl.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Shl;
                 shl = func;
                 break;
             case Builtins.Shr:
+                if (shr is not null && shr.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Shr;
                 shr = func;
                 break;
             case Builtins.And:
+                if (and is not null && and.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.And;
                 and = func;
                 break;
             case Builtins.Or:
+                if (or is not null && or.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Or;
                 or = func;
                 break;
             case Builtins.Xor:
+                if (xor is not null && xor.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Xor;
                 xor = func;
                 break;
-            case Builtins.Eq: 
-                eq = func; 
+            case Builtins.Eq:
+                if (eq is not null && eq.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
+                eq = func;
                 break;
             case Builtins.Neq:
+                if (neq is not null && neq.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 neq = func;
                 break;
             case Builtins.Gt:
+                if (gt is not null && gt.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Gt;
                 gt = func;
                 break;
             case Builtins.Lt:
+                if (lt is not null && lt.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Lt;
                 lt = func;
                 break;
             case Builtins.Gte:
+                if (gte is not null && gte.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Gte;
                 gte = func;
                 break;
             case Builtins.Lte:
+                if (lte is not null && lte.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Lte;
                 lte = func;
                 break;
             case Builtins.Neg:
+                if (neg is not null && neg.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Neg;
                 neg = func;
                 break;
             case Builtins.Not:
+                if (not is not null && not.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 not = func;
                 break;
             case Builtins.BitNot:
+                if (bitnot is not null && bitnot.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.BitNot;
                 bitnot = func;
                 break;
             case Builtins.Plus:
+                if (plus is not null && plus.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Plus;
                 plus = func;
                 break;
             case Builtins.Set:
+                if (set is not null && set.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Set;
                 set = func;
                 break;
             case Builtins.Get:
+                if (get is not null && get.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.Get;
                 get = func;
                 break;
@@ -700,6 +815,11 @@ public abstract class DyTypeInfo : DyObject
                 {
                     ctx.InvalidOverload(name);
                     break;
+                }
+                if (iter is not null && iter.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
                 }
                 ops |= SupportedOperations.Iter;
                 iter = func;
@@ -710,6 +830,11 @@ public abstract class DyTypeInfo : DyObject
                     ctx.InvalidOverload(name);
                     break;
                 }
+                if (@in is not null && @in.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 ops |= SupportedOperations.In;
                 @in = func;
                 break;
@@ -719,6 +844,11 @@ public abstract class DyTypeInfo : DyObject
                     ctx.InvalidOverload(name);
                     break;
                 }
+                if (clone is not null && clone.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
+                }
                 clone = func;
                 break;
             case Builtins.Length:
@@ -726,6 +856,11 @@ public abstract class DyTypeInfo : DyObject
                 {
                     ctx.InvalidOverload(name);
                     break;
+                }
+                if (len is not null && len.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
                 }
                 ops |= SupportedOperations.Len;
                 len = func;
@@ -735,6 +870,11 @@ public abstract class DyTypeInfo : DyObject
                 {
                     ctx.InvalidOverload(name);
                     break;
+                }
+                if (tos is not null && tos.Final)
+                {
+                    ctx.UnableOverload(this, name);
+                    return;
                 }
                 tos = func;
                 break;

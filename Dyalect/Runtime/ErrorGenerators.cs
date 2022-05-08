@@ -10,79 +10,85 @@ public static class ErrorGenerators
     public static DyObject CustomError(this ExecutionContext ctx, string constructor)
     {
         ctx.Error = new(constructor);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject Failure(this ExecutionContext ctx, string detail)
     {
         ctx.Error = new(DyError.Failure, detail);
-        return DyNil.Instance;
+        return Nil;
+    }
+
+    public static DyObject UnableOverload(this ExecutionContext ctx, DyTypeInfo typeInfo, string name)
+    {
+        ctx.Error = new(DyError.UnableOverload, typeInfo.ReflectedTypeName, name);
+        return Nil;
     }
 
     public static DyObject IOFailed(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.IOFailed);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject TypeClosed(this ExecutionContext ctx, DyTypeInfo typeInfo)
     {
         ctx.Error = new(DyError.TypeClosed, typeInfo.ReflectedTypeName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject Overflow(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.Overflow);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidOperation(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.InvalidOperation);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject NotImplemented(this ExecutionContext ctx, string op)
     {
         ctx.Error = new(DyError.NotImplemented, Builtins.Translate(op));
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject ParsingFailed(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.ParsingFailed);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject ParsingFailed(this ExecutionContext ctx, string detail)
     {
         ctx.Error = new(DyError.ParsingFailed, detail);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject Timeout(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.Timeout);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject ValueMissing(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.ValueMissing);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidOverload(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.InvalidOverload);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidOverload(this ExecutionContext ctx, object func)
     {
         ctx.Error = new(DyError.InvalidOverload, func);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject ConstructorFailed(this ExecutionContext ctx, object[]? args, Type type, Exception ex)
@@ -92,80 +98,80 @@ public static class ErrorGenerators
         ProcessArguments(sb, args);
         sb.Append(')');
         ctx.Error = new(DyError.ConstructorFailed, sb.ToString(), type.FullName ?? type.Name, ex.Message);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidValue(this ExecutionContext ctx, object val1)
     {
         ctx.Error = new(DyError.InvalidValue, val1);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidValue(this ExecutionContext ctx, object val1, object val2)
     {
         ctx.Error = new(DyError.InvalidValue, val1, val2);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidValue(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.InvalidValue);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject PrivateAccess(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.PrivateAccess);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject IndexReadOnly(this ExecutionContext ctx, object obj)
     {
         ctx.Error = new(DyError.IndexReadOnly, obj);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject IndexReadOnly(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.IndexReadOnly);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject MultipleValuesForArgument(this ExecutionContext ctx, string funName, string argName)
     {
         ctx.Error = new(DyError.MultipleValuesForArgument, funName, argName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject CollectionModified(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.CollectionModified);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject AssertionFailed(this ExecutionContext ctx, string reason)
     {
         ctx.Error = new(DyError.AssertionFailed, reason);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject PrivateNameAccess(this ExecutionContext ctx, string name)
     {
         ctx.Error = new(DyError.PrivateNameAccess, name);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj)
     {
         ctx.Error = new(DyError.OperationNotSupported, Builtins.Translate(op), obj.TypeName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, int typeId)
     {
         var typeName = ctx.RuntimeContext.Types[typeId].ReflectedTypeName;
         ctx.Error = new(DyError.OperationNotSupported, Builtins.Translate(op), typeName, 0, 0);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject StaticOperationNotSupported(this ExecutionContext ctx, string op, int typeId)
@@ -173,105 +179,105 @@ public static class ErrorGenerators
         var typeName = ctx.RuntimeContext.Types[typeId].ReflectedTypeName;
         //small hack to get OperationNotSupported.4
         ctx.Error = new(DyError.OperationNotSupported, Builtins.Translate(op), typeName, 0, 0);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject OperationNotSupported(this ExecutionContext ctx, string op, DyObject obj1, DyObject obj2)
     {
         ctx.Error = new(DyError.OperationNotSupported, Builtins.Translate(op), obj1.TypeName, obj2.TypeName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidCast(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.InvalidCast);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidCast(this ExecutionContext ctx, string type1, string type2)
     {
         ctx.Error = new(DyError.InvalidCast, type1, type2);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject IndexOutOfRange(this ExecutionContext ctx, object obj)
     {
         ctx.Error = new(DyError.IndexOutOfRange, obj);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject IndexOutOfRange(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.IndexOutOfRange);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject KeyNotFound(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.KeyNotFound);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject KeyNotFound(this ExecutionContext ctx, object key)
     {
         ctx.Error = new(DyError.KeyNotFound, key);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject KeyAlreadyPresent(this ExecutionContext ctx, object key)
     {
         ctx.Error = new(DyError.KeyAlreadyPresent, key);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject KeyAlreadyPresent(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.KeyAlreadyPresent);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidType(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.InvalidType);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidType(this ExecutionContext ctx, DyObject value)
     {
         ctx.Error = new(DyError.InvalidType, value.TypeName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidType(this ExecutionContext ctx, int expected, DyObject got)
     {
         ctx.Error = new(DyError.InvalidType, ctx.RuntimeContext.Types[expected].ReflectedTypeName, got.TypeName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidType(this ExecutionContext ctx, int expected1, int exptected2, DyObject got)
     {
         ctx.Error = new(DyError.InvalidType, ctx.RuntimeContext.Types[expected1].ReflectedTypeName, ctx.RuntimeContext.Types[exptected2].ReflectedTypeName, ctx.RuntimeContext.Types[got.TypeId].ReflectedTypeName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidType(this ExecutionContext ctx, int expected1, int exptected2, int expected3, DyObject got)
     {
         ctx.Error = new(DyError.InvalidType, ctx.RuntimeContext.Types[expected1].ReflectedTypeName, ctx.RuntimeContext.Types[exptected2].ReflectedTypeName,
             ctx.RuntimeContext.Types[expected3].ReflectedTypeName, got.TypeName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidType(this ExecutionContext ctx, int expected1, int exptected2, int expected3, int expected4, DyObject got)
     {
         ctx.Error = new(DyError.InvalidType, ctx.RuntimeContext.Types[expected1].ReflectedTypeName, ctx.RuntimeContext.Types[exptected2].ReflectedTypeName,
             ctx.RuntimeContext.Types[expected3].ReflectedTypeName, ctx.RuntimeContext.Types[expected4].ReflectedTypeName, got.TypeName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject InvalidType(this ExecutionContext ctx, string typeName)
     {
         ctx.Error = new(DyError.InvalidType, typeName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject ExternalFunctionFailure(this ExecutionContext ctx, DyFunction func, string error)
@@ -279,37 +285,37 @@ public static class ErrorGenerators
         var functionName = func.Self is null ? func.FunctionName
             : $"{func.Self.TypeName}.{func.FunctionName}";
         ctx.Error = new(DyError.ExternalFunctionFailure, functionName, error);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject DivideByZero(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.DivideByZero);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject TooManyArguments(this ExecutionContext ctx)
     {
         ctx.Error = new(DyError.TooManyArguments);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject TooManyArguments(this ExecutionContext ctx, string functionName, int functionArguments, int passedArguments)
     {
         ctx.Error = new(DyError.TooManyArguments, functionName, functionArguments, passedArguments);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject RequiredArgumentMissing(this ExecutionContext ctx, string functionName, string argumentName)
     {
         ctx.Error = new(DyError.RequiredArgumentMissing, functionName, argumentName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject ArgumentNotFound(this ExecutionContext ctx, string functionName, string argumentName)
     {
         ctx.Error = new(DyError.ArgumentNotFound, functionName, argumentName);
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyObject MethodNotFound(this ExecutionContext ctx, string name, Type type, DyObject[]? args)
@@ -322,7 +328,7 @@ public static class ErrorGenerators
         ProcessArguments(sb, args);
         sb.Append(')');
         ctx.Error = new(DyError.MethodNotFound, sb.ToString());
-        return DyNil.Instance;
+        return Nil;
     }
 
     public static DyError GetErrorCode(DyVariant err)

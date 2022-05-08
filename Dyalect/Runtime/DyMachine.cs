@@ -109,9 +109,6 @@ public static partial class DyMachine
                 case OpCode.Unbox:
                     evalStack.Push(function.Self is DyClass c ? c.Inits : DyTuple.Empty);
                     break;
-                case OpCode.Privates:
-                    evalStack.Replace(evalStack.Peek() is DyClass c1 ? c1.Inits : DyTuple.Empty);
-                    break;
                 case OpCode.Term:
                     if (evalStack.Size is > 1 or 0)
                         throw new DyRuntimeException(RuntimeErrors.StackCorrupted_0);

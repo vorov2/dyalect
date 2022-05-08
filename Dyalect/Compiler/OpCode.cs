@@ -96,7 +96,6 @@ public enum OpCode
     Debug,      //0
     NewArgs,    //Dynamic
     NewDict,    //Dynamic
-    Privates,   //0
     GetPriv,    //0
     SetPriv,    //-1
 }

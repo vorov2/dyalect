@@ -116,6 +116,17 @@ internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
         ((DyTuple)self).SetItem(ctx, index, value);
         return Nil;
     }
+
+    internal override void SetInstanceMember(ExecutionContext ctx, HashString name, DyFunction func)
+    {
+        if ((string)name is Builtins.Get or Builtins.Set or Builtins.Length)
+        {
+            ctx.UnableOverload(this, (string)name);
+            return;
+        }
+
+        base.SetInstanceMember(ctx, name, func);
+    }
     #endregion
 
     [InstanceMethod]

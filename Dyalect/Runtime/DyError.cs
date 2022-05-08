@@ -66,5 +66,7 @@ public enum DyError
 
     ConstructorFailed = 631,
 
-    IOFailed = 632
+    IOFailed = 632,
+
+    UnableOverload = 633
 }
