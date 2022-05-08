@@ -611,79 +611,81 @@ public abstract class DyTypeInfo : DyObject
         switch (name)
         {
             case Builtins.Add:
-                ops |= SupportedOperations.Add; 
-                add = func; 
+                ops |= SupportedOperations.Add;
+                add = func;
                 break;
             case Builtins.Sub:
-                ops |= SupportedOperations.Sub; 
-                sub = func; 
+                ops |= SupportedOperations.Sub;
+                sub = func;
                 break;
             case Builtins.Mul:
-                ops |= SupportedOperations.Mul; 
-                mul = func; 
+                ops |= SupportedOperations.Mul;
+                mul = func;
                 break;
             case Builtins.Div:
-                ops |= SupportedOperations.Div; 
-                div = func; 
+                ops |= SupportedOperations.Div;
+                div = func;
                 break;
             case Builtins.Rem:
-                ops |= SupportedOperations.Rem; 
-                rem = func; 
+                ops |= SupportedOperations.Rem;
+                rem = func;
                 break;
             case Builtins.Shl:
-                ops |= SupportedOperations.Shl; 
-                shl = func; 
+                ops |= SupportedOperations.Shl;
+                shl = func;
                 break;
             case Builtins.Shr:
-                ops |= SupportedOperations.Shr; 
-                shr = func; 
+                ops |= SupportedOperations.Shr;
+                shr = func;
                 break;
             case Builtins.And:
-                ops |= SupportedOperations.And; 
-                and = func; 
+                ops |= SupportedOperations.And;
+                and = func;
                 break;
             case Builtins.Or:
-                ops |= SupportedOperations.Or; 
-                or = func; 
+                ops |= SupportedOperations.Or;
+                or = func;
                 break;
             case Builtins.Xor:
-                ops |= SupportedOperations.Xor; 
+                ops |= SupportedOperations.Xor;
                 xor = func;
                 break;
             case Builtins.Eq: 
                 eq = func; 
                 break;
             case Builtins.Neq:
-                neq = func; break;
+                neq = func;
+                break;
             case Builtins.Gt:
-                ops |= SupportedOperations.Gt; 
-                gt = func; 
+                ops |= SupportedOperations.Gt;
+                gt = func;
                 break;
             case Builtins.Lt:
-                ops |= SupportedOperations.Lt; 
-                lt = func; 
+                ops |= SupportedOperations.Lt;
+                lt = func;
                 break;
             case Builtins.Gte:
-                ops |= SupportedOperations.Gte; 
-                gte = func; 
+                ops |= SupportedOperations.Gte;
+                gte = func;
                 break;
             case Builtins.Lte:
-                ops |= SupportedOperations.Lte; 
-                lte = func; 
+                ops |= SupportedOperations.Lte;
+                lte = func;
                 break;
             case Builtins.Neg:
-                ops |= SupportedOperations.Neg; 
-                neg = func; break;
+                ops |= SupportedOperations.Neg;
+                neg = func;
+                break;
             case Builtins.Not:
-                not = func; 
+                not = func;
                 break;
             case Builtins.BitNot:
-                ops |= SupportedOperations.BitNot; 
-                bitnot = func; 
+                ops |= SupportedOperations.BitNot;
+                bitnot = func;
                 break;
             case Builtins.Plus:
-                ops |= SupportedOperations.Plus; 
-                plus = func; 
+                ops |= SupportedOperations.Plus;
+                plus = func;
                 break;
             case Builtins.Set:
                 ops |= SupportedOperations.Set;
@@ -699,7 +701,7 @@ public abstract class DyTypeInfo : DyObject
                     ctx.InvalidOverload(name);
                     break;
                 }
-                ops |= SupportedOperations.Iter; 
+                ops |= SupportedOperations.Iter;
                 iter = func;
                 break;
             case Builtins.In:
@@ -708,8 +710,8 @@ public abstract class DyTypeInfo : DyObject
                     ctx.InvalidOverload(name);
                     break;
                 }
-                ops |= SupportedOperations.In; 
-                @in = func; 
+                ops |= SupportedOperations.In;
+                @in = func;
                 break;
             case Builtins.Clone:
                 if (func is not null && func.Auto)
@@ -723,7 +725,7 @@ public abstract class DyTypeInfo : DyObject
                 if (func is not null && func.Auto)
                 {
                     ctx.InvalidOverload(name);
-                    ops |= SupportedOperations.Set;
+                    break;
                 }
                 ops |= SupportedOperations.Len;
                 len = func;
