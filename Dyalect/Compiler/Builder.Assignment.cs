@@ -9,7 +9,7 @@ partial class Builder
     {
         ValidateAssignment(node);
 
-        if (node.Target.NodeType is NodeType.Access && node.AutoAssign is BinaryOperator.Coalesce)
+        if (node.Target.NodeType is NodeType.Access && IsMemberAccess(node.Target) && node.AutoAssign is BinaryOperator.Coalesce)
             return BuildSetterCoalesce(node, hints, ctx);
 
         if (node.Target.NodeType is NodeType.Access && IsMemberAccess(node.Target) && node.AutoAssign is not null)

@@ -99,5 +99,7 @@ internal static class OpSizeHelper
         1, //NewArgs
         1, //NewDict
         0, //Privates
+        1, //GetPriv
+        1, //SetPriv
     };
 }

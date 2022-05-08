@@ -500,14 +500,22 @@ partial class Builder
         else
         {
             if (node.PrivateAccess)
-                cw.Privates();
-
-            AddLinePragma(node);
-            cw.Push(node.Name);
-            if (!hints.Has(Pop))
-                cw.Get();
+            {
+                AddLinePragma(node);
+                if (!hints.Has(Pop))
+                    cw.GetPrivate(node.Name);
+                else
+                    cw.SetPrivate(node.Name);
+            }
             else
-                cw.Set();
+            {
+                AddLinePragma(node);
+                cw.Push(node.Name);
+                if (!hints.Has(Pop))
+                    cw.Get();
+                else
+                    cw.Set();
+            }
 
             PopIf(hints);
         }

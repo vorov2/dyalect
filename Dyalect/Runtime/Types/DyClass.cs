@@ -27,4 +27,22 @@ public sealed class DyClass : DyObject, IProduction
             && t.Constructor == Constructor && t.Fields.Equals(Fields);
 
     public override DyObject Clone() => new DyClass(DecType, Constructor, Fields, Inits, DeclaringUnit);
+
+    internal DyObject GetPrivate(ExecutionContext ctx, string field)
+    {
+        if (!Inits.TryGetItem(field, out var item))
+            if (!Fields.TryGetItem(field, out item))
+                return ctx.IndexOutOfRange(field);
+
+        return item;
+    }
+
+    internal DyObject SetPrivate(ExecutionContext ctx, string field, DyObject value)
+    {
+        if (!Inits.TrySetItem(field, value))
+            if (!Fields.TrySetItem(field, value))
+                return ctx.IndexOutOfRange(field);
+
+        return Nil;
+    }
 }

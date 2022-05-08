@@ -1,4 +1,4 @@
-﻿type Foo(x) {
+﻿/*type Foo(x) {
     x += x
     var y = 1.03
     let z = 3
@@ -35,19 +35,5 @@ if s is Some(x) {
 }
 
 s.PrintPi()
-print(s!pi)
+print(s!pi)*/
 
-type Lazy(Function fn) {
-    var cache
-}
-
-func Lazy.GetValue() {
-    if this!cache {
-        return this!cache
-    }
-    //Get private and set private should
-    //work directly through the type
-    this!cache = this!fn()
-    this!fn = nil
-    return this!cache
-}

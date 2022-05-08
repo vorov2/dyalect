@@ -199,6 +199,9 @@ internal sealed class CodeWriter
             Emit(new(OpCode.StdCall, args), -args);
     }
 
+    public void GetPrivate(string name) => Emit(new(OpCode.GetPriv, IndexString(name)));
+    public void SetPrivate(string name) => Emit(new(OpCode.SetPriv, IndexString(name)));
+
     public void Contains(string field) => Emit(new(OpCode.Contains, IndexObject(new DyString(field))));
 
     public void SetMember(string member) => Emit(new(OpCode.SetMember, IndexString(member)));
@@ -281,5 +284,4 @@ internal sealed class CodeWriter
     public void Cast() => Emit(Op.Cast);
     public void Mixin() => Emit(Op.Mixin);
     public void Debug() => Emit(Op.Debug);
-    public void Privates() => Emit(Op.Privates);
 }

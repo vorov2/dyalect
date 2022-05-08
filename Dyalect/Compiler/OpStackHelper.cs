@@ -99,5 +99,7 @@ internal static class OpStackHelper
         0,  //NewArgs **dynamic
         0,  //NewDict **dynamic
         0,  //Privates
+        0,  //GetPriv
+        -1, //SetPriv
     };
 }

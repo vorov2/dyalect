@@ -106,9 +106,22 @@ public class DyTuple : DyCollection
             return false;
 
         item = this[i];
+        return true;
+    }
+
+    internal bool TrySetItem(string name, DyObject value)
+    {
+        var i = GetOrdinal(name);
+
+        if (i is -1)
+            return false;
+
+        var item = values[i];
 
         if (item is DyLabel lab)
-            item = lab.Value;
+            lab.Value = value;
+        else
+            values[i] = value;
 
         return true;
     }

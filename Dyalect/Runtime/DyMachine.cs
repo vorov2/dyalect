@@ -390,12 +390,33 @@ public static partial class DyMachine
                     evalStack.Push(types[first.TypeId].Get(ctx, first, second));
                     if (ctx.Error is not null) goto HANDLE;
                     break;
+                case OpCode.GetPriv:
+                    {
+                        second = evalStack.Peek();
+                        if (second is DyClass c2)
+                            evalStack.Replace(c2.GetPrivate(ctx, (string)unit.Strings[op.Data]));
+                        else
+                            ctx.IndexOutOfRange(unit.Strings[op.Data]);
+                        if (ctx.Error is not null) goto HANDLE;
+                    }
+                    break;
                 case OpCode.Set:
                     second = evalStack.Pop();
                     first = evalStack.Pop();
                     third = evalStack.Pop();
                     evalStack.Push(types[first.TypeId].Set(ctx, first, second, third));
                     if (ctx.Error is not null) goto HANDLE;
+                    break;
+                case OpCode.SetPriv:
+                    {
+                        second = evalStack.Pop();
+                        first = evalStack.Peek();
+                        if (second is DyClass c2)
+                            evalStack.Replace(c2.SetPrivate(ctx, (string)unit.Strings[op.Data], first));
+                        else
+                            ctx.IndexOutOfRange(unit.Strings[op.Data]);
+                        if (ctx.Error is not null) goto HANDLE;
+                    }
                     break;
                 case OpCode.Contains:
                     first = evalStack.Peek();
