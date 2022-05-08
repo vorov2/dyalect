@@ -12,8 +12,7 @@ public sealed partial class DyStringBuilderTypeInfo : DyForeignTypeInfo
 
     public override string ReflectedTypeName => StringBuilder;
 
-    protected override SupportedOperations GetSupportedOperations() =>
-        SupportedOperations.Neg | SupportedOperations.Len;
+    protected override SupportedOperations GetSupportedOperations() => SupportedOperations.Len;
 
     #region Operations
     public DyStringBuilder Create(StringBuilder sb) => new(this, sb);

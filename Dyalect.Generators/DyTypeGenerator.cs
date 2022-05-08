@@ -29,10 +29,8 @@ namespace Dyalect.Generators
             static string GetClassName(string name) =>
                 name switch
                 {
-                    "TypeInfo" => "DyMetaTypeInfo",
-                    "Interop" => "DyInteropObjectTypeInfo",
-                    "Collection" => "DyCollTypeInfo",
-                    _ => $"Dy{name}TypeInfo"
+                    "TypeInfo" => "new DyMetaTypeInfo()",
+                    _ => $"new Dy{name}TypeInfo()"
                 };
 
             var source = $@"using System;
@@ -45,7 +43,7 @@ partial class Dy
     {{
         types.AddRange
         (
-            new DyTypeInfo[] {{ null!, {string.Join(", ", dyTypes.Select(s => $"new {GetClassName(s)}()"))} }},
+            new DyTypeInfo[] {{ null!, {string.Join(", ", dyTypes.Select(d => GetClassName(d)))} }},
             0,
             {dyTypes.Length + 1}
         );

@@ -12,7 +12,7 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
-    public DyDictionaryTypeInfo() => AddMixin(Dy.Collection);
+    public DyDictionaryTypeInfo() => AddMixins(Dy.Lookup, Dy.Collection, Dy.Container);
 
     #region Operations
     protected override DyObject LengthOp(ExecutionContext ctx, DyObject arg)
@@ -21,17 +21,13 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) =>
-        ToStringOrLiteral(ctx, arg, literal: true);
+    protected override DyObject IterateOp(ExecutionContext ctx, DyObject self) => DyIterator.Create((DyDictionary)self);
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
-        ToStringOrLiteral(ctx, arg, literal: false);
-
-    private DyObject ToStringOrLiteral(ExecutionContext ctx, DyObject arg, bool literal)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         var map = (DyDictionary)arg;
         var sb = new StringBuilder();
-        sb.Append("Dictionary(");
+        sb.Append('[');
         var i = 0;
 
         foreach (var kv in map.Dictionary)
@@ -39,19 +35,16 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
             if (i > 0)
                 sb.Append(", ");
 
-            if (literal)
-                sb.Append(kv.Key.ToLiteral(ctx) + ": " + kv.Value.ToLiteral(ctx));
-            else
-                sb.Append(kv.Key.ToString(ctx) + ": " + kv.Value.ToString(ctx));
+            sb.Append(kv.Key.ToLiteral(ctx) + ": " + kv.Value.ToLiteral(ctx));
 
             i++;
         }
 
-        sb.Append(')');
+        sb.Append(']');
         return new DyString(sb.ToString());
     }
 
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>
+    protected override DyObject InOp(ExecutionContext ctx, DyObject self, DyObject field) =>
         ((DyDictionary)self).ContainsKey(field) ? True : False;
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) => ((DyDictionary)self).GetItem(index, ctx);
@@ -118,16 +111,17 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
         }
     }
 
-    [InstanceMethod(Method.ContainsValue)]
-    internal static bool ContainsValue(DyDictionary self, DyObject value) =>
-        self.ContainsValue(value);
+    [InstanceMethod]
+    internal static bool ContainsKey(DyDictionary self, DyObject key) => self.ContainsKey(key);
+
+    [InstanceMethod]
+    internal static bool ContainsValue(DyDictionary self, DyObject value) => self.ContainsValue(value);
     
     [InstanceMethod(Method.GetAndRemove)]
-    internal static DyObject GetAndRemove(DyDictionary self, DyObject key) =>
-        self.GetAndRemove(key);
+    internal static DyObject GetAndRemove(DyDictionary self, DyObject key) => self.GetAndRemove(key);
 
     [StaticMethod(Method.Dictionary)]
-    internal static DyObject New(ExecutionContext ctx, [VarArg]DyTuple values)
+    internal static DyObject New([VarArg]DyTuple values)
     {
         if (values.Count == 0)
             return new DyDictionary();
@@ -137,12 +131,12 @@ internal sealed partial class DyDictionaryTypeInfo : DyTypeInfo
             var el = values[0];
 
             if (el is DyTuple t)
-                return new DyDictionary(t.ConvertToDictionary(ctx));
+                return new DyDictionary(t.ConvertToDictionary());
         }
 
-        return new DyDictionary(values.ConvertToDictionary(ctx));
+        return new DyDictionary(values.ConvertToDictionary());
     }
 
     [StaticMethod(Method.FromTuple)]
-    internal static DyObject FromTuple(ExecutionContext ctx, [VarArg]DyTuple values) => New(ctx, values);
+    internal static DyObject FromTuple([VarArg]DyTuple values) => New(values);
 }

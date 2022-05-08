@@ -1,4 +1,6 @@
 ﻿using Dyalect.Debug;
+using System.Collections.Generic;
+
 namespace Dyalect.Runtime.Types;
 
 internal sealed class DyVariantTypeInfo : DyTypeInfo
@@ -10,7 +12,7 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Len | SupportedOperations.Get | SupportedOperations.Set;
 
-    public DyVariantTypeInfo() => AddMixin(Dy.Collection);
+    public DyVariantTypeInfo() => AddMixins(Dy.Lookup);
 
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
@@ -32,24 +34,23 @@ internal sealed class DyVariantTypeInfo : DyTypeInfo
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
         var self = (DyVariant)arg;
-        var str = DyTupleTypeInfo.MakeString(ctx, self.Fields);
 
-        if (ctx.HasErrors)
+        IEnumerable<DyObject> Iterate()
+        {
+            var xs = self.Fields.UnsafeAccess();
+            for (var i = 0; i < self.Fields.Count; i++)
+                yield return xs[i];
+        }
+
+        try
+        {
+            return new DyString("@" + self.Constructor + "(" + Iterate().ToLiteral(ctx) + ")");
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
             return Nil;
-
-        return new DyString($"{ReflectedTypeName}.{self.Constructor}{str}");
-    }
-
-    [Obsolete]
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg)
-    {
-        var self = (DyVariant)arg;
-        var str = ctx.RuntimeContext.Tuple.ToLiteralDirect(ctx, self.Fields);
-
-        if (ctx.HasErrors)
-            return Nil;
-
-        return new DyString($"@{self.Constructor}{str}");
+        }
     }
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>

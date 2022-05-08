@@ -73,7 +73,7 @@ internal sealed class DyInteropFunction : DyForeignFunction
             else if (ret is float r4)
                 result = new DyFloat(r4);
             else
-                result = new DyInteropObject(ret.GetType(), ret);
+                result = new DyInterop(ret.GetType(), ret);
 
             return true;
         }

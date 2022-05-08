@@ -22,47 +22,6 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         var seq = DyIterator.ToEnumerable(ctx, self);
         return ctx.HasErrors ? Nil : DyInteger.Get(seq.Count());
     }
-    
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject self, DyObject format) =>
-        ToStringOrLiteral(ctx, self, false);
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject self) =>
-        ToStringOrLiteral(ctx, self, true);
-
-    private static DyObject ToStringOrLiteral(ExecutionContext ctx, DyObject self, bool literal)
-    {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-
-        if (ctx.HasErrors)
-            return DyString.Empty;
-
-        var sb = new StringBuilder();
-
-        if (literal)
-            sb.Append("yields ");
-
-        sb.Append('{');
-        var c = 0;
-
-        foreach (var e in seq)
-        {
-            if (c > 0)
-                sb.Append(", ");
-            var str = literal ? e.ToLiteral(ctx) : e.ToString(ctx);
-
-            if (ctx.Error is not null)
-                return DyString.Empty;
-
-            sb.Append(str.Value);
-            c++;
-        }
-
-        if (c == 1)
-            sb.Append(", ");
-
-        sb.Append('}');
-        return new DyString(sb.ToString());
-    }
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
@@ -81,12 +40,6 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
             ctx.Error = new(DyError.IndexOutOfRange, index);
             return Nil;
         }
-    }
-
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject item)
-    {
-        var seq = DyIterator.ToEnumerable(ctx, self);
-        return seq.Any(o => o.Equals(item, ctx)) ? True : False;
     }
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
@@ -109,6 +62,10 @@ internal sealed partial class DyIteratorTypeInfo : DyTypeInfo
         return ToSet(seq);
     }
     #endregion
+
+    [InstanceMethod]
+    internal static bool Contains(ExecutionContext ctx, IEnumerable<DyObject> self, DyObject item) =>
+        self.Any(o => o.Equals(item, ctx));
 
     [InstanceMethod]
     internal static DyObject ToArray(IEnumerable<DyObject> self) => new DyArray(self.ToArray());

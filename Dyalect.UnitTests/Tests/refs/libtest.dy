@@ -44,8 +44,8 @@ func userName(name) {
     "User " + name
 }
 
-type Foobar(x, y)
+type Foobar(x, y) with Lookup
 
-type Foo(x)
+type Foo(x) with Lookup
 
 let pi = 3.14

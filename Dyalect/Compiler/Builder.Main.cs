@@ -408,7 +408,7 @@ partial class Builder
 
         Build(node.Expression, hints.Append(Push), ctx);
         cw.Briter(initSkip);
-        cw.GetMember(Builtins.Iterator);
+        cw.GetMember(Builtins.Iterate);
         cw.FunPrep(0);
         cw.FunCall(0);
 
@@ -446,7 +446,8 @@ partial class Builder
     private void Build(DAccess node, Hints hints, CompilerContext ctx)
     {
         //An access expression can be a reference to a module (and can be optimized away)
-        if (node.Target.NodeType == NodeType.Name && !hints.Has(Pop) && !options.NoOptimizations)
+        if (node.Target.NodeType == NodeType.Name && !node.PrivateAccess
+            && !hints.Has(Pop) && !options.NoOptimizations)
         {
             var nm = node.Target.GetName()!;
             var err = GetVariable(nm, out var sv);
@@ -489,7 +490,7 @@ partial class Builder
         Build(node.Target, push, ctx);
 
         //A method access
-        if (char.IsUpper(node.Name[0]) || node.SpecialName)
+        if ((char.IsUpper(node.Name[0]) || node.SpecialName) && !node.PrivateAccess)
         {
             AddLinePragma(node);
             cw.GetMember(node.Name);
@@ -498,12 +499,23 @@ partial class Builder
         //An indexer
         else
         {
-            AddLinePragma(node);
-            cw.Push(node.Name);
-            if (!hints.Has(Pop))
-                cw.Get();
+            if (node.PrivateAccess)
+            {
+                AddLinePragma(node);
+                if (!hints.Has(Pop))
+                    cw.GetPrivate(node.Name);
+                else
+                    cw.SetPrivate(node.Name);
+            }
             else
-                cw.Set();
+            {
+                AddLinePragma(node);
+                cw.Push(node.Name);
+                if (!hints.Has(Pop))
+                    cw.Get();
+                else
+                    cw.Set();
+            }
 
             PopIf(hints);
         }
@@ -535,7 +547,7 @@ partial class Builder
 
         for (var i = 0; i < elements.Count; i++)
         {
-            var el = elements[i];
+            var el = elements[elements.Count - i - 1];
 
             if (el is DLabelLiteral label)
             {
@@ -548,18 +560,13 @@ partial class Builder
                     set.Add(label.Label);
 
                 if (label.Mutable)
-                {
-                    //AddError(CompilerError.InvalidDictionary, el.Location);
-                }
+                    AddError(CompilerError.InvalidDictionary, el.Location);
             }
             else
-            {
-                //AddError(CompilerError.InvalidDictionary, el.Location);
-            }
+                AddError(CompilerError.InvalidDictionary, el.Location);
         }
 
         cw.NewDict(elements.Count);
-        PopIf(hints);
     }
 
     private void BuildTupleElements(List<DNode> elements, Location loc, Hints hints, CompilerContext ctx)
@@ -608,6 +615,8 @@ partial class Builder
             AddLinePragma(node);
             cw.FunCall(0);
         }
+        else if (node.Elements.Count > 0 && node.Elements[0].NodeType == NodeType.Label)
+            BuildDictionary(node.Elements, node.Location, hints, ctx);
         else
         {
             cw.Type(Dy.Array);
@@ -1337,7 +1346,7 @@ partial class Builder
                 {
                     Build(node.Right, hints.Remove(Last).Append(Push), ctx);
                     AddLinePragma(node);
-                    cw.GetMember(Builtins.Contains);
+                    cw.GetMember(Builtins.In);
                     cw.FunPrep(1);
                     Build(node.Left, hints.Remove(Last).Append(Push), ctx);
                     AddLinePragma(node);

@@ -105,7 +105,10 @@ public static partial class DyMachine
                     evalStack.Push(function.Self!);
                     break;
                 case OpCode.Unbox:
-                    evalStack.Push(function.Self is DyClass c ? c.Fields : function.Self!);
+                    evalStack.Push(function.Self is DyClass c ? c.Inits : DyTuple.Empty);
+                    break;
+                case OpCode.Privates:
+                    evalStack.Replace(evalStack.Peek() is DyClass c1 ? c1.Inits : DyTuple.Empty);
                     break;
                 case OpCode.Term:
                     if (evalStack.Size is > 1 or 0)
@@ -387,6 +390,16 @@ public static partial class DyMachine
                     evalStack.Push(types[first.TypeId].Get(ctx, first, second));
                     if (ctx.Error is not null) goto HANDLE;
                     break;
+                case OpCode.GetPriv:
+                    {
+                        second = evalStack.Peek();
+                        if (second is DyClass c2)
+                            evalStack.Replace(c2.GetPrivate(ctx, (string)unit.Strings[op.Data]));
+                        else
+                            ctx.IndexOutOfRange(unit.Strings[op.Data]);
+                        if (ctx.Error is not null) goto HANDLE;
+                    }
+                    break;
                 case OpCode.Set:
                     second = evalStack.Pop();
                     first = evalStack.Pop();
@@ -394,9 +407,20 @@ public static partial class DyMachine
                     evalStack.Push(types[first.TypeId].Set(ctx, first, second, third));
                     if (ctx.Error is not null) goto HANDLE;
                     break;
+                case OpCode.SetPriv:
+                    {
+                        second = evalStack.Pop();
+                        first = evalStack.Peek();
+                        if (second is DyClass c2)
+                            evalStack.Replace(c2.SetPrivate(ctx, (string)unit.Strings[op.Data], first));
+                        else
+                            ctx.IndexOutOfRange(unit.Strings[op.Data]);
+                        if (ctx.Error is not null) goto HANDLE;
+                    }
+                    break;
                 case OpCode.Contains:
                     first = evalStack.Peek();
-                    evalStack.Replace(types[first.TypeId].Contains(ctx, first, unit.Objects[op.Data]));
+                    evalStack.Replace(types[first.TypeId].In(ctx, first, unit.Objects[op.Data]));
                     if (ctx.Error is not null)
                     {
                         second = unit.Objects[op.Data];
@@ -650,7 +674,8 @@ public static partial class DyMachine
                 case OpCode.NewObj:
                     second = evalStack.Pop();
                     first = evalStack.Pop();
-                    evalStack.Push(new DyClass((DyClassInfo)second, (string)unit.Strings[op.Data], (DyTuple)first, unit));
+                    third = evalStack.Pop();
+                    evalStack.Push(new DyClass((DyClassInfo)second, (string)unit.Strings[op.Data], (DyTuple)first, (DyTuple)third, unit));
                     break;
                 case OpCode.NewType:
                     clsInfo = new DyClassInfo((string)unit.Strings[op.Data], types.Count);

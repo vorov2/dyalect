@@ -8,7 +8,7 @@ internal sealed class DyIteratorFunction : DyForeignFunction
     private readonly IEnumerable<DyObject> enumerable;
     private IEnumerator<DyObject>? enumerator;
 
-    public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterator, Array.Empty<Par>(), -1) =>
+    public DyIteratorFunction(IEnumerable<DyObject> enumerable) : base(Builtins.Iterate, Array.Empty<Par>(), -1) =>
         this.enumerable = enumerable;
 
     protected override DyObject CallWithMemoryLayout(ExecutionContext ctx, params DyObject[] args)

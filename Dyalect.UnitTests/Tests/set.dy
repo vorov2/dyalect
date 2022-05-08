@@ -110,11 +110,8 @@
 #region "Methods: ToString"
     let xs = Set(1, 2, 3)
     assert("Set(1, 2, 3)", xs.ToString())
-#endregion
-
-#region "Methods: ToLiteral"
-    let xs = Set(1, 'a', "foo")
-    assert("Set(1, 'a', \"foo\")", xs.ToLiteral())
+    let ys = Set(1, 'a', "foo")
+    assert("Set(1, 'a', \"foo\")", ys.ToString())
 #endregion
 
 #region "Conversion: as"
@@ -124,16 +121,9 @@
     assert(true, xs as Bool)
 #endregion
 
-#region "Operator in"
-    let xs = Set(1, 2, 3)
-    assert(true, 1 in xs)
-    assert(true, 2 in xs)
-    assert(false, 4 in xs)
-#endregion
-
 #region "Set and vararg function"
     var str = String(Set('a', 'b', 'c'))
-    assert("Set(a, b, c)", str)
+    assert("Set('a', 'b', 'c')", str)
     str = String(values: Set('a', 'b', 'c'))
     assert("abc", str)
 #endregion

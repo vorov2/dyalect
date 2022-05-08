@@ -55,9 +55,9 @@ public static class TypeConverter
                     return new DyArray(newArr);
                 }
                 else if (BCL.Type.IsAssignableFrom(type))
-                    return new DyInteropObject((Type)obj);
+                    return new DyInterop((Type)obj);
                 else
-                    return new DyInteropObject(type, obj);
+                    return new DyInterop(type, obj);
         }
     }
 
@@ -81,7 +81,7 @@ public static class TypeConverter
 
         if (obj.TypeId == Dy.Interop)
         {
-            var interop = (DyInteropObject)obj;
+            var interop = (DyInterop)obj;
 
             if (BCL.Type.IsAssignableFrom(interop.Type)) //We have a type info here
             {

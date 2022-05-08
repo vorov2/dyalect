@@ -59,6 +59,7 @@ internal sealed class Op
     public static readonly Op StdCall_0 = new(OpCode.StdCall_0);
     public static readonly Op StdCall_1 = new(OpCode.StdCall_1);
     public static readonly Op Debug = new(OpCode.Debug);
+    public static readonly Op Privates = new(OpCode.Privates);
 
     internal static readonly Dictionary<OpCode, Op> Ops = new();
 

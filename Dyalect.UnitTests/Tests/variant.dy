@@ -13,10 +13,9 @@
     assert(true, v.GetType() == Variant)
 #endregion
 
-#region "Methods: ToString, ToLiteral"
+#region "Methods: ToString"
     let v = @Foo(name: "John", age: 14)
-    assert("Variant.Foo(name: John, age: 14)", v.ToString())
-    assert("@Foo(name: \"John\", age: 14)", v.ToLiteral())
+    assert("@Foo(name: \"John\", age: 14)", v.ToString())
 #endregion
 
 #region "Methods: Length"

@@ -247,12 +247,6 @@
     assert("hahahahaha", str)
 #endregion
 
-#region "Methods: ToLiteral"
-    let str = "Foo"
-    assert("\"Foo\"", str.ToLiteral())
-    assert("'F'", str[0].ToLiteral())
-#endregion
-
 #region "Conversion: as 1"
     let str = "12"
     assert('1', str as Char)
@@ -285,12 +279,6 @@
 #region "Format 2"
     let data = String.Format("{0,-35} {1,-20} {2,-10} {3, -10}", "Foo", "Boo", "Bar", "Zar")
     assert("Foo                                 Boo                  Bar        Zar       ", data)
-#endregion
-
-#region "Operator in"
-    assert(true, 'o' in "foo")
-    assert(false, 'B' in "bar")
-    assert(true, "ello" in "Hello, world")
 #endregion
 
 #region "Methods: ToSet"

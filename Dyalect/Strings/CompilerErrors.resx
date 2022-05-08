@@ -324,4 +324,7 @@
   <data name="InterpolatedStringDefaultValue" xml:space="preserve">
     <value>Interpolated strings are not supported as default values.</value>
   </data>
+  <data name="InvalidDictionary" xml:space="preserve">
+    <value>Invalid dictionary literal.</value>
+  </data>
 </root>

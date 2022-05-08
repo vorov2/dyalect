@@ -1,5 +1,9 @@
 ﻿using Dyalect.Compiler;
+using Dyalect.Parser;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Text;
+
 namespace Dyalect.Runtime.Types;
 
 public static class Extensions
@@ -61,9 +65,9 @@ public static class Extensions
 
         var type = ctx.RuntimeContext.Types[self.TypeId];
 
-        if (type.HasInstanceMember(self, Builtins.Iterator, ctx))
+        if (type.HasInstanceMember(self, Builtins.Iterate, ctx))
         {
-            var inst = type.GetInstanceMember(self, Builtins.Iterator, ctx);
+            var inst = type.GetInstanceMember(self, Builtins.Iterate, ctx);
             return inst.GetIterator(ctx);
         }
         else
@@ -73,7 +77,7 @@ public static class Extensions
             if (ctx.HasErrors)
             {
                 ctx.Error = null;
-                ctx.OperationNotSupported(Builtins.Iterator, self);
+                ctx.OperationNotSupported(Builtins.Iterate, self);
                 return null;
             }
 
@@ -99,17 +103,6 @@ public static class Extensions
 
             return ret is DyString s ? s : new DyString(ret.ToString());
         }
-    }
-
-    public static DyString ToLiteral(this DyObject self, ExecutionContext ctx)
-    {
-        var type = ctx.RuntimeContext.Types[self.TypeId];
-        var ret = type.ToLiteral(ctx, self);
-
-        if (ReferenceEquals(ctx.Error, DyVariant.Eta))
-            ret = ctx.InvokeEtaFunction();
-
-        return ret as DyString ?? DyString.Empty;
     }
 
     public static bool Equals(this DyObject left, DyObject right, ExecutionContext ctx)
@@ -246,5 +239,56 @@ public static class Extensions
             return Nil;
 
         return func.Call(ctx, args);
+    }
+
+    private static readonly char[] invalidChars = new[] { ' ', '\t', '\n', '\r', '\'', '"' };
+
+    public static string ToLiteral(this DyObject obj, ExecutionContext ctx)
+    {
+        if (obj.TypeId is Dy.Char)
+            return StringUtil.Escape(obj.ToString(ctx).ToString(), "'");
+        else if (obj.TypeId is Dy.String)
+            return StringUtil.Escape(obj.ToString(ctx).ToString());
+        else
+            return obj.ToString(ctx).ToString();
+    }
+
+    public static string ToLiteral(this IEnumerable<DyObject> seq, ExecutionContext ctx)
+    {
+        var c = 0;
+        var sb = new StringBuilder();
+
+        foreach (DyObject o in seq)
+        {
+            if (c > 0)
+                sb.Append(", ");
+
+            if (o is DyLabel lab)
+            {
+                if (lab.Mutable)
+                    sb.Append("var ");
+
+                foreach (var ta in lab.EnumerateAnnotations())
+                {
+                    sb.Append(ta.ToString());
+                    sb.Append(' ');
+                }
+
+                if (!char.IsLower(lab.Label[0]) || lab.Label.IndexOfAny(invalidChars) != -1)
+                    sb.Append(StringUtil.Escape(lab.Label));
+                else
+                    sb.Append(lab.Label);
+
+                sb.Append(':');
+                sb.Append(' ');
+                sb.Append(lab.Value.ToLiteral(ctx));
+            }
+            else
+                sb.Append(o.ToLiteral(ctx));
+
+            c++;
+        }
+
+        return sb.ToString();
     }
 }

@@ -2,11 +2,12 @@
 using Dyalect.Debug;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-
 namespace Dyalect.Runtime.Types;
 
 public abstract class DyTypeInfo : DyObject
 {
+    protected SupportedOperations ops;
+
     internal bool Closed { get; set; }
 
     public override string TypeName => nameof(Dy.TypeInfo);
@@ -14,7 +15,7 @@ public abstract class DyTypeInfo : DyObject
     protected virtual SupportedOperations GetSupportedOperations() => SupportedOperations.None;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private bool Support(SupportedOperations op) => (GetSupportedOperations() & op) == op;
+    private bool Support(SupportedOperations op) => ((GetSupportedOperations() | ops) & op) == op ;
 
     public override object ToObject() => this;
 
@@ -28,7 +29,7 @@ public abstract class DyTypeInfo : DyObject
 
     public abstract int ReflectedTypeId { get; }
 
-    protected DyTypeInfo() : base(Dy.TypeInfo) => AddMixin(Dy.Object);
+    protected DyTypeInfo() : base(Dy.TypeInfo) => AddMixins(Dy.Object);
 
     #region Binary Operations
     //x + y
@@ -54,7 +55,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Add(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (add is not null)
-            return add.PrepareFunction(ctx, left);
+            return add.PrepareFunction(ctx, left, right);
         return AddOp(ctx, left, right);
     }
 
@@ -65,7 +66,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Sub(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (sub is not null)
-            return sub.PrepareFunction(ctx, left);
+            return sub.PrepareFunction(ctx, left, right);
         return SubOp(ctx, left, right);
     }
 
@@ -76,7 +77,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Mul(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (mul is not null)
-            return mul.PrepareFunction(ctx, left);
+            return mul.PrepareFunction(ctx, left, right);
         return MulOp(ctx, left, right);
     }
 
@@ -87,7 +88,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Div(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (div is not null)
-            return div.PrepareFunction(ctx, left);
+            return div.PrepareFunction(ctx, left, right);
         return DivOp(ctx, left, right);
     }
 
@@ -98,7 +99,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Rem(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (rem is not null)
-            return rem.PrepareFunction(ctx, left);
+            return rem.PrepareFunction(ctx, left, right);
         return RemOp(ctx, left, right);
     }
 
@@ -109,7 +110,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject ShiftLeft(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (shl is not null)
-            return shl.PrepareFunction(ctx, left);
+            return shl.PrepareFunction(ctx, left, right);
         return ShiftLeftOp(ctx, left, right);
     }
 
@@ -120,7 +121,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject ShiftRight(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (shr is not null)
-            return shr.PrepareFunction(ctx, left);
+            return shr.PrepareFunction(ctx, left, right);
         return ShiftRightOp(ctx, left, right);
     }
 
@@ -131,7 +132,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject And(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (and is not null)
-            return and.PrepareFunction(ctx, left);
+            return and.PrepareFunction(ctx, left, right);
         return AndOp(ctx, left, right);
     }
 
@@ -142,7 +143,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Or(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (or is not null)
-            return or.PrepareFunction(ctx, left);
+            return or.PrepareFunction(ctx, left, right);
         return OrOp(ctx, left, right);
     }
 
@@ -153,7 +154,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Xor(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (xor is not null)
-            return xor.PrepareFunction(ctx, left);
+            return xor.PrepareFunction(ctx, left, right);
         return XorOp(ctx, left, right);
     }
 
@@ -164,7 +165,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Eq(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (eq is not null)
-            return eq.PrepareFunction(ctx, left);
+            return eq.PrepareFunction(ctx, left, right);
         if (right.TypeId == Dy.Bool)
             return ReferenceEquals(left, right) ? True : False;
         return EqOp(ctx, left, right);
@@ -177,7 +178,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Neq(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (neq is not null)
-            return neq.PrepareFunction(ctx, left);
+            return neq.PrepareFunction(ctx, left, right);
         return NeqOp(ctx, left, right);
     }
 
@@ -188,7 +189,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Gt(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (gt is not null)
-            return gt.PrepareFunction(ctx, left);
+            return gt.PrepareFunction(ctx, left, right);
         return GtOp(ctx, left, right);
     }
 
@@ -199,7 +200,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Lt(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (lt is not null)
-            return lt.PrepareFunction(ctx, left);
+            return lt.PrepareFunction(ctx, left, right);
         return LtOp(ctx, left, right);
     }
 
@@ -210,7 +211,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Gte(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (gte is not null)
-            return gte.PrepareFunction(ctx, left);
+            return gte.PrepareFunction(ctx, left, right);
         return GteOp(ctx, left, right);
     }
 
@@ -221,7 +222,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Lte(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (lte is not null)
-            return lte.PrepareFunction(ctx, left);
+            return lte.PrepareFunction(ctx, left, right);
         return LteOp(ctx, left, right);
     }
     #endregion
@@ -317,40 +318,26 @@ public abstract class DyTypeInfo : DyObject
         }
     }
 
-    //x.ToLiteral
-    private DyFunction? lit;
-    [Obsolete]
-    protected virtual DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOp(ctx, arg, DyNil.Instance);
-    [Obsolete]
-    internal string? ToLiteralDirect(ExecutionContext ctx, DyObject arg)
+    //x.Clone
+    private DyFunction? clone;
+    protected virtual DyObject CloneOp(ExecutionContext ctx, DyObject self) => self.Clone();
+    private DyObject Clone(ExecutionContext ctx, DyObject self)
     {
-        var res = ToLiteralOp(ctx, arg);
-
-        if (ctx.HasErrors)
-            return null;
-
-        if (res.TypeId is not Dy.String)
-        {
-            ctx.InvalidType(Dy.String, res);
-            return null;
-        }
-
-        return ((DyString)res).Value;
-    }
-    [Obsolete]
-    public DyObject ToLiteral(ExecutionContext ctx, DyObject arg)
-    {
-        if (lit is not null)
-            return lit.PrepareFunction(ctx, arg);
-        return ToLiteralOp(ctx, arg);
+        if (clone is not null)
+            return clone.PrepareFunction(ctx, self);
+        return CloneOp(ctx, self);
     }
 
-    //Clone
-    private DyObject Clone(ExecutionContext ctx, DyObject obj) => obj.Clone();
-
-    //Iterate
-    private DyObject GetIterator(ExecutionContext ctx, DyObject self) =>
-        self is IEnumerable<DyObject> en ? DyIterator.Create(en) : ctx.OperationNotSupported(Builtins.Iterator, self);
+    //x.Iterate
+    private DyFunction? iter;
+    protected virtual DyObject IterateOp(ExecutionContext ctx, DyObject self) =>
+        ctx.OperationNotSupported(Builtins.Iterate, self);
+    private DyObject GetIterator(ExecutionContext ctx, DyObject self)
+    {
+        if (iter is not null)
+            return iter.PrepareFunction(ctx, self);
+        return IterateOp(ctx, self);
+    }
     #endregion
 
     #region Other Operations
@@ -362,7 +349,7 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Get(ExecutionContext ctx, DyObject self, DyObject index)
     {
         if (get is not null)
-            return get.PrepareFunction(ctx, self);
+            return get.PrepareFunction(ctx, self, index);
 
         return GetOp(ctx, self, index);
     }
@@ -375,9 +362,21 @@ public abstract class DyTypeInfo : DyObject
     public DyObject Set(ExecutionContext ctx, DyObject self, DyObject index, DyObject value)
     {
         if (set is not null)
-            return set.PrepareFunction(ctx, self);
+            return set.PrepareFunction(ctx, self, index, value);
 
         return SetOp(ctx, self, index, value);
+    }
+
+    //Contains
+    private DyFunction? @in;
+    protected virtual DyObject InOp(ExecutionContext ctx, DyObject self, DyObject field) =>
+        ctx.OperationNotSupported(Builtins.In, self);
+    public DyObject In(ExecutionContext ctx, DyObject self, DyObject field)
+    {
+        if (@in is not null)
+            return @in.PrepareFunction(ctx, self, field);
+
+        return InOp(ctx, self, field);
     }
 
     //as
@@ -414,18 +413,6 @@ public abstract class DyTypeInfo : DyObject
         conversions.Remove(type.ReflectedTypeId);
         conversions.Add(type.ReflectedTypeId, func);
     }
-
-    //Contains
-    private DyFunction? contains;
-    protected virtual DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field) =>
-        ctx.OperationNotSupported(Builtins.Contains, self);
-    public DyObject Contains(ExecutionContext ctx, DyObject self, DyObject field)
-    {
-        if (contains is not null)
-            return contains.PrepareFunction(ctx, self);
-
-        return ContainsOp(ctx, self, field);
-    }
     #endregion
 
     #region Statics
@@ -448,14 +435,8 @@ public abstract class DyTypeInfo : DyObject
             return ctx.StaticOperationNotSupported((string)name, ReflectedTypeId);
         }
 
-        if (ret is DyFunction f)
-        {
-            if (f.Private && f is DyNativeFunction n && n.UnitId != ctx.UnitId)
-                return ctx.PrivateNameAccess(f.FunctionName);
-
-            if (f.Auto)
-                ret = f.TryInvokeProperty(ctx, this);
-        }
+        if (ret is DyFunction f && f.Auto)
+            ret = f.TryInvokeProperty(ctx, this);
 
         return ret;
     }
@@ -609,6 +590,7 @@ public abstract class DyTypeInfo : DyObject
             }
         }
 
+        //TODO: ValidateLogic
         if (Members.TryGetValue(name, out var oldfun))
         {
             if (oldfun.Auto != func.Auto)
@@ -620,6 +602,7 @@ public abstract class DyTypeInfo : DyObject
             Members.Remove(name);
         }
 
+        Members.Remove(name);
         Members[name] = func;
     }
 
@@ -627,47 +610,131 @@ public abstract class DyTypeInfo : DyObject
     {
         switch (name)
         {
-            case Builtins.Add: add = func; break;
-            case Builtins.Sub: sub = func; break;
-            case Builtins.Mul: mul = func; break;
-            case Builtins.Div: div = func; break;
-            case Builtins.Rem: rem = func; break;
-            case Builtins.Shl: shl = func; break;
-            case Builtins.Shr: shr = func; break;
-            case Builtins.And: and = func; break;
-            case Builtins.Or: or = func; break;
-            case Builtins.Xor: xor = func; break;
-            case Builtins.Eq: eq = func; break;
-            case Builtins.Neq: neq = func; break;
-            case Builtins.Gt: gt = func; break;
-            case Builtins.Lt: lt = func; break;
-            case Builtins.Gte: gte = func; break;
-            case Builtins.Lte: lte = func; break;
-            case Builtins.Neg: neg = func; break;
-            case Builtins.Not: not = func; break;
-            case Builtins.BitNot: bitnot = func; break;
-            case Builtins.Plus: plus = func; break;
-            case Builtins.Set: set = func; break;
-            case Builtins.Get: get = func; break;
-            case Builtins.Contains:
+            case Builtins.Add:
+                ops |= SupportedOperations.Add; 
+                add = func; 
+                break;
+            case Builtins.Sub:
+                ops |= SupportedOperations.Sub; 
+                sub = func; 
+                break;
+            case Builtins.Mul:
+                ops |= SupportedOperations.Mul; 
+                mul = func; 
+                break;
+            case Builtins.Div:
+                ops |= SupportedOperations.Div; 
+                div = func; 
+                break;
+            case Builtins.Rem:
+                ops |= SupportedOperations.Rem; 
+                rem = func; 
+                break;
+            case Builtins.Shl:
+                ops |= SupportedOperations.Shl; 
+                shl = func; 
+                break;
+            case Builtins.Shr:
+                ops |= SupportedOperations.Shr; 
+                shr = func; 
+                break;
+            case Builtins.And:
+                ops |= SupportedOperations.And; 
+                and = func; 
+                break;
+            case Builtins.Or:
+                ops |= SupportedOperations.Or; 
+                or = func; 
+                break;
+            case Builtins.Xor:
+                ops |= SupportedOperations.Xor; 
+                xor = func;
+                break;
+            case Builtins.Eq: 
+                eq = func; 
+                break;
+            case Builtins.Neq:
+                neq = func; break;
+            case Builtins.Gt:
+                ops |= SupportedOperations.Gt; 
+                gt = func; 
+                break;
+            case Builtins.Lt:
+                ops |= SupportedOperations.Lt; 
+                lt = func; 
+                break;
+            case Builtins.Gte:
+                ops |= SupportedOperations.Gte; 
+                gte = func; 
+                break;
+            case Builtins.Lte:
+                ops |= SupportedOperations.Lte; 
+                lte = func; 
+                break;
+            case Builtins.Neg:
+                ops |= SupportedOperations.Neg; 
+                neg = func; break;
+            case Builtins.Not:
+                not = func; 
+                break;
+            case Builtins.BitNot:
+                ops |= SupportedOperations.BitNot; 
+                bitnot = func; 
+                break;
+            case Builtins.Plus:
+                ops |= SupportedOperations.Plus; 
+                plus = func; 
+                break;
+            case Builtins.Set:
+                ops |= SupportedOperations.Set;
+                set = func;
+                break;
+            case Builtins.Get:
+                ops |= SupportedOperations.Get;
+                get = func;
+                break;
+            case Builtins.Iterate:
                 if (func is not null && func.Auto)
+                {
                     ctx.InvalidOverload(name);
-                contains = func;
+                    break;
+                }
+                ops |= SupportedOperations.Iter; 
+                iter = func;
+                break;
+            case Builtins.In:
+                if (func is not null && func.Auto)
+                {
+                    ctx.InvalidOverload(name);
+                    break;
+                }
+                ops |= SupportedOperations.In; 
+                @in = func; 
+                break;
+            case Builtins.Clone:
+                if (func is not null && func.Auto)
+                {
+                    ctx.InvalidOverload(name);
+                    break;
+                }
+                clone = func;
                 break;
             case Builtins.Length:
                 if (func is not null && func.Auto)
+                {
                     ctx.InvalidOverload(name);
+                    ops |= SupportedOperations.Set;
+                }
+                ops |= SupportedOperations.Len;
                 len = func;
                 break;
             case Builtins.String:
                 if (func is not null && func.Auto)
+                {
                     ctx.InvalidOverload(name);
-                tos = func; 
-                break;
-            case Builtins.ToLiteral:
-                if (func is not null && func.Auto)
-                    ctx.InvalidOverload(name);
-                lit = func;
+                    break;
+                }
+                tos = func;
                 break;
         }
     }
@@ -690,13 +757,13 @@ public abstract class DyTypeInfo : DyObject
         return HasInstanceMember(self, name, ctx) ? True : False;
     }
 
-    private static DyFunction Ternary(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par par1, Par par2) =>
+    protected static DyFunction Ternary(string name, Func<ExecutionContext, DyObject, DyObject, DyObject, DyObject> fun, Par par1, Par par2) =>
         new DyTernaryFunction(name, fun, par1, par2);
 
-    private static DyFunction Binary(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par par = default) =>
+    protected static DyFunction Binary(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par par = default) =>
         new DyBinaryFunction(name, fun, par.Name is null ? new Par("other") : par);
 
-    private static DyFunction Unary(string name, Func<ExecutionContext, DyObject, DyObject> fun) =>
+    protected static DyFunction Unary(string name, Func<ExecutionContext, DyObject, DyObject> fun) =>
         new DyUnaryFunction(name, fun);
 
     private DyFunction? InitializeInstanceMembers(DyObject self, string name, ExecutionContext ctx) =>
@@ -726,12 +793,11 @@ public abstract class DyTypeInfo : DyObject
             Builtins.Set => Support(SupportedOperations.Set) ? (set is null ? Ternary(name, SetOp, "index", "value") : set) : null,
             Builtins.Length => Support(SupportedOperations.Len) ? (len is null ? Unary(name, LengthOp) : len) : null,
             Builtins.String => tos is null ? Binary(name, ToStringOp, new Par("format", Nil)) : tos,
-            Builtins.ToLiteral => lit is null ? Unary(name, ToLiteralOp) : lit,
-            Builtins.Iterator => Support(SupportedOperations.Iter) ? Unary(name, GetIterator) : null,
-            Builtins.Clone => Unary(name, Clone),
+            Builtins.Iterate => Support(SupportedOperations.Iter) ? (iter is null ? Unary(name, GetIterator) : iter) : null,
+            Builtins.Clone => clone is null ? Unary(name, Clone) : clone,
             Builtins.Has => Binary(name, Has, "member"),
             Builtins.Type => Unary(name, (ct, o) => ct.RuntimeContext.Types[o.TypeId]),
-            Builtins.Contains => Support(SupportedOperations.In) ? (contains is null ? Binary(name, ContainsOp, "value") : contains) : null,
+            Builtins.In => Support(SupportedOperations.In) ? (@in is null ? Binary(name, InOp, "value") : @in) : null,
             _ => InitializeInstanceMember(self, name, ctx)
         };
 
@@ -775,23 +841,16 @@ public abstract class DyTypeInfo : DyObject
             Members[kv.Key] = kv.Value;
         }
 
+        ops |= typeInfo.GetSupportedOperations();
         mixins.Add(typeInfo.ReflectedTypeId);
         typeInfo.Closed = true;
+        mixins.UnionWith(typeInfo.mixins);
     }
 
-    protected void AddMixin(int typeId) => mixins.Add(typeId);
-
-    protected void AddMixin(int typeId1, int typeId2)
+    protected void AddMixins(params int[] typeInfos)
     {
-        mixins.Add(typeId1);
-        mixins.Add(typeId2);
-    }
-
-    protected void AddMixin(int typeId1, int typeId2, int typeId3)
-    {
-        mixins.Add(typeId1);
-        mixins.Add(typeId2);
-        mixins.Add(typeId3);
+        for (var i = 0; i < typeInfos.Length; i++)
+            mixins.Add(typeInfos[i]);
     }
 
     protected void AddDefaultMixin1(string name) =>

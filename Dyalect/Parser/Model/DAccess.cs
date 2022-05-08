@@ -12,12 +12,18 @@ namespace Dyalect.Parser.Model
 
         public bool SpecialName { get; set; }
 
+        public bool PrivateAccess { get; set; }
+
         protected internal override string? GetName() => Name;
 
         internal override void ToString(StringBuilder sb)
         {
             Target.ToString(sb);
-            sb.Append('.');
+
+            if (PrivateAccess)
+                sb.Append('!');
+            else
+                sb.Append('.');
 
             if (SpecialName)
                 sb.Append("[" + Name + "]");

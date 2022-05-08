@@ -237,34 +237,47 @@ PRODUCTIONS
             )
             |
             (
-                "="
-                Constructor<typ> { "or" Constructor<typ> }
+                "=" (. DNode init = null; .)
+                [ Block<out init> ]
+                Constructor<init, typ> { "or" Constructor<init, typ> }
             )
         ]
         [
             "with"
             (. typ.Mixins = new(); .)
-            TypeName<out var qual> (. typ.Mixins.Add(qual); .)            
+            TypeName<out var qual> (. typ.Mixins.Add(qual); .)
             { "," TypeName<out qual> (. typ.Mixins.Add(qual); .) }
         ].
 
-    Constructor<DTypeDeclaration typ> =
-        (. var priv = false; .)
+    Constructor<DNode init, DTypeDeclaration typ> =
         (
-            [ "private" (. priv = true; .) ]
             Identifier
             (.
                 var f = new DFunctionDeclaration(t) {
                     Name = t.val,
-                    IsPrivate = priv,
                     IsStatic = true, 
                     IsConstructor = true,
                     TypeName = new Qualident(typ.Name) 
                 }; 
                 typ.Constructors.Add(f);
+
+                if (init is not null)
+                {
+                    var blk = new DBlock(init.Location);
+                    blk.Nodes.AddRange(((DBlock)init).Nodes);
+                    f.Body = blk;
+                }
             .) 
             TypeArguments<f>
-            [ Block<out var b> (. f.Body = b; .) ]
+            [
+                Block<out var b>
+                (.
+                    if (f.Body is not null)
+                        ((DBlock)f.Body).Nodes.AddRange(((DBlock)b).Nodes);
+                    else
+                        f.Body = b;
+                .)
+            ]
         ).
 
     TypeName<out Qualident qual> =
@@ -304,25 +317,35 @@ PRODUCTIONS
     Statement<out DNode node> =
         (. node = null; .)
         (
-              Binding<out node> [ Guard<node, out node> ] Separator
-            | Rebinding<out node> [ Guard<node, out node> ] Separator
-            | ControlFlow<out node> [ Guard<node, out node> ] Separator
-            | Type<out node> Separator
-            | Match<out node> [ Guard<node, out node> Separator ]
-            | IF (IsPrivateScope()) PrivateScope<out node>
-            | Assignment<out node> [ Guard<node, out node> ] Separator
-            | If<out node> [ Guard<node, out node> ] Separator
-            | Loops<out node> [ Guard<node, out node> Separator ]
+              Type<out node> Separator
+            | PrivateScope<out node>
+            | GuardedStatement<out node>
             | Function<out node>
             | Directive<out node> Separator
             | Region<out node>
+        ).
+
+    GuardedStatement<out DNode node> =
+        (. node = null; .)
+        (
+            (
+                  Binding<out node>
+                | Rebinding<out node>
+                | ControlFlow<out node>
+                | Match<out node>
+                | Assignment<out node>
+                | If<out node>
+                | Loops<out node>
+            )
+            [ Guard<node, out node> ]
+            Separator
         ).
 
     Guard<DNode src, out DNode node> =
         (. node = src; .)
         (
             (. var ot = t; .)
-            "when" Expr<out var cnode>
+            "when" Expr<out var cnode> Separator
             (. var @if = new DIf(ot) { Condition = cnode, True = src }; node = @if; .)
         ).
 
@@ -460,24 +483,12 @@ PRODUCTIONS
                     TypeName<out var qual> (. f.TargetTypeName = qual; .)
                 )
             )
-            ( Block<out node> | "=>" FunctionStatement<out node> )
+            ( Block<out node> | "=>" GuardedStatement<out node> )
             (.
                 f.Body = node;
                 node = f;
                 functions.Pop();
             .)
-        ).
-
-    FunctionStatement<out DNode node> =
-        (. node = null; .)
-        (
-              Binding<out node> [ Guard<node, out node> ] Separator
-            | Rebinding<out node> [ Guard<node, out node> ] Separator
-            | ControlFlow<out node> [ Guard<node, out node> ] Separator
-            | Match<out node> [ Guard<node, out node> Separator ]
-            | Assignment<out node> [ Guard<node, out node> ] Separator
-            | If<out node> [ Guard<node, out node> Separator ]
-            | Loops<out node> [ Guard<node, out node> Separator ]
         ).
 
     FunctionParameter<out DParameter arg> =
@@ -797,7 +808,7 @@ PRODUCTIONS
             "if"
             (. var @if = new DIf(t); .)
             Control<out node> (. @if.Condition = node; .)
-            Block<out node>  (. @if.True = node; .)
+            Block<out node> (. @if.True = node; .)
             [
                 "else"
                 (
@@ -1317,8 +1328,9 @@ PRODUCTIONS
             {
                 (
                     (
-                        "."
-                        (. var fld = new DAccess(t) { Target = node }; node = fld; .)
+                        (. var pa = false; .)
+                        ( "." | "!" (. pa = true; .) )
+                        (. var fld = new DAccess(t) { Target = node, PrivateAccess = pa }; node = fld; .)
                         (
                             Identifier (. fld.Name = t.val; .) 
                             | "[" IdentifierOrKeyword (. fld.Name = t.val.TrimEnd('[', ']'); fld.SpecialName = true; .) "]" 
@@ -1479,7 +1491,7 @@ PRODUCTIONS
 
     Name<out DNode node> =
         (
-            (Identifier | "private")
+            Identifier
             (. node = new DName(t) { Value = t.val }; .)
         ).
 

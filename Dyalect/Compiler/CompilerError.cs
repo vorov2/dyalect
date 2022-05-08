@@ -130,5 +130,7 @@ public enum CompilerError
 
     DuplicateLabel = 263,
 
-    InterpolatedStringDefaultValue = 264
+    InterpolatedStringDefaultValue = 264,
+
+    InvalidDictionary = 265
 }

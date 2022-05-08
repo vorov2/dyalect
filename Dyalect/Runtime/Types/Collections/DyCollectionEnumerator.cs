@@ -40,7 +40,7 @@ internal sealed class DyCollectionEnumerator : IEnumerator<DyObject>
         version = obj.Version;
     }
 
-    public DyObject Current => arr[index + start];
+    public DyObject Current => arr[index + start] is DyLabel lab ? lab.Value : arr[index + start];
 
     object IEnumerator.Current => Current;
 

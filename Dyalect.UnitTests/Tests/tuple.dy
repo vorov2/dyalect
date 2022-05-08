@@ -6,7 +6,7 @@
     res = (x: 12, 44.4, y: (1, 2)).ToString()
     assert("(x: 12, 44.4, y: (1, 2))", res)
     res = (x: 42,y: "foo").ToString()
-    assert("(x: 42, y: foo)", res)
+    assert("(x: 42, y: \"foo\")", res)
 #endregion
 
 #region "Methods: Clone 1"
@@ -157,6 +157,12 @@
     assert((1,2,4), xs)
 #endregion
 
+#region "Methods: RemoveField"
+    var xs = (x: 1, y: 2, z: 3)
+    xs = xs.RemoveField("y")
+    assert((x: 1, z: 3), xs)
+#endregion
+
 #region "Methods: RemoveAt"
     var xs = (1,2,3,4)
     xs = xs.RemoveAt(3)
@@ -258,21 +264,16 @@
 
 #region "Methods: Contains"
     let xs = (name: "Vasily", age: 41, gender: "Male")
-    assert(true, xs.Contains("name"))
-    assert(true, xs.Contains("age"))
-    assert(true, xs.Contains("gender"))
-    assert(false, xs.Contains("NAME"))
+    assert(true, xs.ContainsField("name"))
+    assert(true, xs.ContainsField("age"))
+    assert(true, xs.ContainsField("gender"))
+    assert(false, xs.ContainsField("NAME"))
     try {
-        assert(true, xs.Contains(42))
+        assert(true, xs.ContainsField(42))
         assert(got: false)
     } catch {
         @InvalidType() => assert(got: true)
     }
-#endregion
-
-#region "Methods: ToLiteral"
-    let xs = (x: 1, "Fo obj": 'c')
-    assert("(x: 1, \"Fo obj\": 'c')", xs.ToLiteral())
 #endregion
 
 #region "Methods: Compact"

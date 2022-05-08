@@ -21,14 +21,12 @@ namespace Dyalect.Parser.Model
 
         internal bool IsConstructor { get; set; }
 
-        internal bool IsPrivate { get; set; }
-
         internal bool IsNullary { get; set; }
 
         public bool Getter { get; set; }
 
         public bool Setter { get; set; }
-        
+
         public bool IsIterator { get; set; }
 
         public List<DParameter> Parameters { get; } = new();

@@ -21,8 +21,6 @@ public abstract class DyFunction : DyObject
 
     internal bool Auto => (Attr & FunAttr.Auto) == FunAttr.Auto;
     
-    internal bool Private => (Attr & FunAttr.Priv) == FunAttr.Priv;
-    
     internal bool VariantConstructor => (Attr & FunAttr.Vari) == FunAttr.Vari;
 
     protected DyFunction(Par[] pars, int varArgIndex) : base(Dy.Function) =>
@@ -31,13 +29,36 @@ public abstract class DyFunction : DyObject
     public override object ToObject() => (Func<ExecutionContext, DyObject[], DyObject>)Call;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal DyObject PrepareFunction(ExecutionContext ctx, DyObject arg)
+    internal DyObject PrepareFunction(ExecutionContext ctx, DyObject self)
     {
-        var func = BindToInstance(ctx, arg);
+        if (IsExternal)
+            return ((DyUnaryFunction)this).CallUnary(ctx, self);
 
-        if (func.IsExternal)
-            return ctx.NotImplemented(func.FunctionName);
+        var func = BindToInstance(ctx, self);
+        ctx.EtaFunction = func;
+        ctx.Error = DyVariant.Eta;
+        return Nil;
+    }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal DyObject PrepareFunction(ExecutionContext ctx, DyObject self, DyObject arg)
+    {
+        if (IsExternal)
+            return ((DyBinaryFunction)this).CallBinary(ctx, self, arg);
+
+        var func = BindToInstance(ctx, self);
+        ctx.EtaFunction = func;
+        ctx.Error = DyVariant.Eta;
+        return Nil;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal DyObject PrepareFunction(ExecutionContext ctx, DyObject self, DyObject arg1, DyObject arg2)
+    {
+        if (IsExternal)
+            return ((DyTernaryFunction)this).CallTernary(ctx, self, arg1, arg2);
+
+        var func = BindToInstance(ctx, self);
         ctx.EtaFunction = func;
         ctx.Error = DyVariant.Eta;
         return Nil;

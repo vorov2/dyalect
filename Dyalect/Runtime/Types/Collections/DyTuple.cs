@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Dyalect.Compiler;
+using System.Collections.Generic;
 namespace Dyalect.Runtime.Types;
 
 public class DyTuple : DyCollection
@@ -81,7 +82,7 @@ public class DyTuple : DyCollection
         return true;
     }
 
-    public Dictionary<DyObject, DyObject> ConvertToDictionary(ExecutionContext _)
+    public Dictionary<DyObject, DyObject> ConvertToDictionary()
     {
         var dict = new Dictionary<DyObject, DyObject>();
 
@@ -105,9 +106,22 @@ public class DyTuple : DyCollection
             return false;
 
         item = this[i];
+        return true;
+    }
+
+    internal bool TrySetItem(string name, DyObject value)
+    {
+        var i = GetOrdinal(name);
+
+        if (i is -1)
+            return false;
+
+        var item = values[i];
 
         if (item is DyLabel lab)
-            item = lab.Value;
+            lab.Value = value;
+        else
+            values[i] = value;
 
         return true;
     }
@@ -262,4 +276,52 @@ public class DyTuple : DyCollection
     internal bool HasItem(string name) => GetOrdinal(name) is not -1;
 
     internal protected override DyObject[] UnsafeAccess() => values;
+
+    private static DyObject Compare(bool gt, DyTuple xs, DyTuple ys, ExecutionContext ctx)
+    {
+        var xsv = xs.UnsafeAccess();
+        var ysv = ys.UnsafeAccess();
+        var len = xs.Count > ys.Count ? ys.Count : xs.Count;
+
+        for (var i = 0; i < len; i++)
+        {
+            var x = xsv[i] is DyLabel lx ? lx.Value : xsv[i];
+            var y = ysv[i] is DyLabel ly ? ly.Value : ysv[i];
+            var res = gt ? x.Greater(y, ctx) : x.Lesser(y, ctx);
+
+            if (res)
+                return True;
+
+            res = x.Equals(y, ctx);
+
+            if (!res)
+                return False;
+        }
+
+        return False;
+    }
+
+    internal static DyObject Greater(ExecutionContext ctx, DyTuple xs, DyTuple ys) => Compare(true, xs, ys, ctx);
+
+    internal static DyObject Lesser(ExecutionContext ctx, DyTuple xs, DyTuple ys) => Compare(false, xs, ys, ctx);
+
+    internal static DyObject Equals(ExecutionContext ctx, DyTuple xs, DyTuple ys)
+    {
+        if (xs.Count != ys.Count)
+            return False;
+
+        var t1v = xs.UnsafeAccess();
+        var t2v = ys.UnsafeAccess();
+
+        for (var i = 0; i < xs.Count; i++)
+        {
+            var x = t1v[i] is DyLabel lx ? lx.Value : t1v[i];
+            var y = t2v[i] is DyLabel ly ? ly.Value : t2v[i];
+
+            if (x.NotEquals(y, ctx))
+                return False;
+        }
+
+        return True;
+    }
 }

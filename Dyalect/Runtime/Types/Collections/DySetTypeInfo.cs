@@ -1,4 +1,5 @@
 ﻿using Dyalect.Codegen;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 namespace Dyalect.Runtime.Types;
@@ -13,7 +14,7 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
-    public DySetTypeInfo() => AddMixin(Dy.Collection);
+    public DySetTypeInfo() => AddMixins(Dy.Lookup);
 
     #region Operations
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
@@ -28,15 +29,18 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
         return DyInteger.Get(self.Count);
     }
 
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
-        var set = (DySet)self;
-        return set.Contains(field) ? True : False;
+        try
+        {
+            return new DyString("Set(" + ((IEnumerable<DyObject>)arg).ToLiteral(ctx) + ")");
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
     }
-
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToLiteralOrString(arg, ctx, literal: false);
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToLiteralOrString(arg, ctx, literal: true);
 
     private DyObject ToLiteralOrString(DyObject arg, ExecutionContext ctx, bool literal)
     {
@@ -67,6 +71,10 @@ internal sealed partial class DySetTypeInfo : DyTypeInfo
             _ => base.CastOp(ctx, self, targetType)
         };
     #endregion
+
+
+    [InstanceMethod]
+    internal static bool Contains(DySet self, DyObject field) => self.Contains(field);
 
     [InstanceMethod(Method.Add)]
     internal static bool AddItem(DySet self, DyObject value) => self.Add(value);

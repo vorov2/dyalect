@@ -9,7 +9,7 @@ partial class Builder
     {
         ValidateAssignment(node);
 
-        if (node.Target.NodeType is NodeType.Access && node.AutoAssign is BinaryOperator.Coalesce)
+        if (node.Target.NodeType is NodeType.Access && IsMemberAccess(node.Target) && node.AutoAssign is BinaryOperator.Coalesce)
             return BuildSetterCoalesce(node, hints, ctx);
 
         if (node.Target.NodeType is NodeType.Access && IsMemberAccess(node.Target) && node.AutoAssign is not null)
@@ -110,7 +110,7 @@ partial class Builder
     private bool BuildAssignment(DAssignment node, Hints hints, CompilerContext ctx)
     {
         Build(node.Value, hints.Append(Push), ctx);
-        Build(node.Target, hints.Append(Pop), ctx);
+        Build(node.Target, hints.Remove(Push).Append(Pop), ctx);
         PushIf(hints);
         return true;
     }

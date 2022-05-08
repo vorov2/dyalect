@@ -82,11 +82,6 @@
     assert(54, '6'.Order())
 #endregion
 
-#region "Methods: ToLiteral"
-    assert("'a'", 'a'.ToLiteral())
-    assert("'B'", "Bar"[0].ToLiteral())
-#endregion
-
 #region "Math with chars"
     let a = 'a'
     let b = 'b'

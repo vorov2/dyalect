@@ -13,7 +13,7 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Char;
 
-    public DyCharTypeInfo() => AddMixin(Dy.Comparable);
+    public DyCharTypeInfo() => AddMixins(Dy.Order);
 
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
@@ -89,11 +89,6 @@ internal sealed partial class DyCharTypeInfo : DyTypeInfo
             Dy.Float => new DyFloat(((DyChar)self).Value),
             _ => base.CastOp(ctx, self, targetType)
         };
-
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
-        new DyString(arg.ToString());
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(arg.ToString(), "'"));
     #endregion
 
     [InstanceMethod]

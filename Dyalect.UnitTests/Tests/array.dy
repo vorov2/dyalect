@@ -11,7 +11,7 @@
 
 #region "Methods: ToString"
     var res = [12.2, "string", true].ToString()
-    assert("[12.2, string, true]", res)
+    assert("[12.2, \"string\", true]", res)
     res = [(1,2), 4, 5].ToString()
     assert("[(1, 2), 4, 5]", res)
 #endregion
@@ -342,18 +342,6 @@
 #region "Conversion: as 2"
     let xs = [1,2,2,3,4,4,4,5]
     assert((1,2,3,4,5), (xs as Set).ToTuple())
-#endregion
-
-#region "Methods: ToLiteral"
-    let xs = [1, 2, 'c', "True", false]
-    assert("[1, 2, 'c', \"True\", false]", xs.ToLiteral())
-#endregion
-
-#region "Operator in"
-    let xs = [1..5]
-    assert(true, 1 in xs)
-    assert(true, 5 in xs)
-    assert(false, 0 in xs)
 #endregion
 
 #region "Methods: ToSet"

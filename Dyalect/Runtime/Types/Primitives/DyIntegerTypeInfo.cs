@@ -15,9 +15,9 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
 
     public override int ReflectedTypeId => Dy.Integer;
 
-    public DyIntegerTypeInfo() => AddMixin(Dy.Number, Dy.Comparable);
+    public DyIntegerTypeInfo() => AddMixins(Dy.Number, Dy.Order);
 
-    #region Binary Operations
+    #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
         if (right is DyInteger i8)
@@ -187,9 +187,6 @@ internal sealed partial class DyIntegerTypeInfo : DyTypeInfo
 
     protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) =>
         new DyString(((DyInteger)arg).Value.ToString(SystemCulture.NumberFormat));
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) =>
-        new DyString(((DyInteger)arg).Value.ToString(InvariantCulture.NumberFormat));
 
     protected override DyObject CastOp(ExecutionContext ctx, DyObject self, DyTypeInfo targetType) =>
         targetType.ReflectedTypeId switch

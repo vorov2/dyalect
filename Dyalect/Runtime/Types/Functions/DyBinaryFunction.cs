@@ -11,6 +11,8 @@ internal sealed class DyBinaryFunction : DyForeignFunction
     private DyBinaryFunction(string name, Func<ExecutionContext, DyObject, DyObject, DyObject> fun, Par[] pars)
         : base(name, pars, -1) => this.fun = fun;
 
+    internal DyObject CallBinary(ExecutionContext ctx, DyObject self, DyObject arg) => fun(ctx, self, arg);
+
     protected override DyObject CallWithMemoryLayout(ExecutionContext ctx, DyObject[] args) => fun(ctx, Self!, args[0]);
 
     protected override DyFunction Clone(ExecutionContext ctx) => new DyBinaryFunction(FunctionName, fun, Parameters);

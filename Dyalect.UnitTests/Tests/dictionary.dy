@@ -1,4 +1,11 @@
-﻿#region "Constructor 1"
+﻿#region "Literal"
+    let xs = [x: 1, y: 2, "long key": 33]
+    assert(1, xs.x)
+    assert(2, xs.y)
+    assert(33, xs["long key"])
+#endregion
+
+#region "Constructor 1"
     let xs = Dictionary(
         (x: 1, y: 2, z: "foo")
     )
@@ -41,12 +48,7 @@
 
 #region "Methods: ToString"
     let xs = Dictionary(x: 12, b: 'c', foo: "bar")
-    assert("Dictionary(x: 12, b: c, foo: bar)", xs.ToString())
-#endregion
-
-#region "Methods: ToLiteral"
-    let xs = Dictionary(x: 12, b: 'c', foo: "bar")
-    assert("Dictionary(\"x\": 12, \"b\": 'c', \"foo\": \"bar\")", xs.ToLiteral())
+    assert("[\"x\": 12, \"b\": 'c', \"foo\": \"bar\"]", xs.ToString())
 #endregion
 
 #region "Methods: Add"
@@ -161,12 +163,12 @@
     }
 #endregion
 
-#region "Methods: Contains"
+#region "Methods: ContainsKey"
     var map = Dictionary.FromTuple((x: 1, y: 2))
-    assert(true, map.Contains("x"))
-    assert(false, map.Contains("X"))
+    assert(true, map.ContainsKey("x"))
+    assert(false, map.ContainsKey("X"))
     map[(1,2)] = true
-    assert(true, map.Contains((1,2)))
+    assert(true, map.ContainsKey((1,2)))
 #endregion
 
 #region "Methods: ContainsValue"
@@ -183,8 +185,8 @@
 #endregion
 
 #region "Conversion: as"
-    let xs = Dictionary.FromTuple ((x: 1, y: 2))
-    assert("Dictionary(x: 1, y: 2)", xs as String)
+    let xs = [x: 1, y: 2]
+    assert("[\"x\": 1, \"y\": 2]", xs as String)
     assert((x: 1, y: 2), xs as Tuple)
 #endregion
 

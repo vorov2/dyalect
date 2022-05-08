@@ -6,7 +6,7 @@ using System.Text;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
-internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
+internal sealed partial class DyStringTypeInfo : DyCollTypeInfo
 {
     readonly struct FormatData : IFormattable
     {
@@ -29,7 +29,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
 
     public override int ReflectedTypeId => Dy.String;
 
-    public DyStringTypeInfo() => AddMixin(Dy.Collection, Dy.Comparable);
+    public DyStringTypeInfo() => AddMixins(Dy.Lookup, Dy.Order, Dy.Equatable);
 
     #region Operations
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
@@ -80,21 +80,7 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
         return DyInteger.Get(len);
     }
 
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
-    {
-        var str = ((DyString)self).Value;
-
-        if (field is DyString s)
-            return str.Contains(s.Value) ? True : False;
-        else if (field is DyChar c)
-            return str.Contains(c.Value) ? True : False;
-
-        throw new DyCodeException(DyError.InvalidType, field);
-    }
-
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => new DyString(((DyString)arg).Value);
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => new DyString(StringUtil.Escape(((DyString)arg).Value));
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => arg;
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index)
     {
@@ -121,6 +107,9 @@ internal sealed partial class DyStringTypeInfo : DyCollectionTypeInfo
     #endregion
 
     private static int CorrectIndex(int index, string str) => index < 0 ? index + str.Length : index;
+
+    [InstanceMethod]
+    internal static bool Contains(string self, string field) => self.Contains(field);
 
     [InstanceMethod]
     internal static DyObject Slice(DyString self, int index = 0, int? size = null)

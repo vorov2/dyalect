@@ -5,7 +5,7 @@ using System.Text;
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
-internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
+internal sealed partial class DyArrayTypeInfo : DyCollTypeInfo
 {
     public override string ReflectedTypeName => nameof(Dy.Array);
 
@@ -14,12 +14,21 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len | SupportedOperations.Iter | SupportedOperations.In;
 
-    public DyArrayTypeInfo() => AddMixin(Dy.Collection);
+    public DyArrayTypeInfo() => AddMixins(Dy.Lookup, Dy.Collection);
 
     #region Operations
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => ToStringOrLiteral(false, arg, ctx);
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => ToStringOrLiteral(true, arg, ctx);
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
+    {
+        try
+        {
+            return new DyString("[" + ((IEnumerable<DyObject>)arg).ToLiteral(ctx) + "]");
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
+    }
 
     protected override DyObject AddOp(ExecutionContext ctx, DyObject left, DyObject right)
     {
@@ -63,34 +72,6 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
 
         return ctx.InvalidType(index);
     }
-
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject item)
-    {
-        var arr = (DyArray)self;
-        return arr.IndexOf(ctx, item) != -1 ? True : False;
-    }
-
-    private static DyObject ToStringOrLiteral(bool literal, DyObject arg, ExecutionContext ctx)
-    {
-        var arr = (DyArray)arg;
-        var sb = new StringBuilder();
-        sb.Append('[');
-
-        for (var i = 0; i < arr.Count; i++)
-        {
-            if (i > 0)
-                sb.Append(", ");
-            var str = literal ? arr[i].ToLiteral(ctx) : arr[i].ToString(ctx);
-
-            if (ctx.Error is not null)
-                return Nil;
-
-            sb.Append(str.Value);
-        }
-
-        sb.Append(']');
-        return new DyString(sb.ToString());
-    }
     #endregion
 
     internal static bool CorrectIndex(DyArray arr, ref int index, bool insert = false)
@@ -103,6 +84,9 @@ internal sealed partial class DyArrayTypeInfo : DyCollectionTypeInfo
 
         return true;
     }
+
+    [InstanceMethod]
+    internal static bool Contains(ExecutionContext ctx, DyArray self, DyObject item) => self.IndexOf(ctx, item) != -1;
 
     [InstanceMethod(Method.Add)]
     internal static void AddItem(DyArray self, DyObject value) => self.Add(value);

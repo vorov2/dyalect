@@ -1,14 +1,11 @@
 ﻿using Dyalect.Codegen;
 using Dyalect.Compiler;
-using Dyalect.Parser;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 namespace Dyalect.Runtime.Types;
 
 [GeneratedType]
-internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
+internal sealed partial class DyTupleTypeInfo : DyCollTypeInfo
 {
     protected override SupportedOperations GetSupportedOperations() =>
         SupportedOperations.Get | SupportedOperations.Set | SupportedOperations.Len
@@ -18,7 +15,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 
     public override int ReflectedTypeId => Dy.Tuple;
 
-    public DyTupleTypeInfo() => AddMixin(Dy.Collection, Dy.Comparable);
+    public DyTupleTypeInfo() => AddMixins(Dy.Lookup, Dy.Container, Dy.Order, Dy.Collection, Dy.Equatable);
 
     #region Operations
     //TODO: reconsider logic
@@ -32,50 +29,25 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return new DyTuple(arr.ToArray());
     }
 
-    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format) => MakeString(ctx, (DyTuple)arg, false);
-
-    protected override DyObject ToLiteralOp(ExecutionContext ctx, DyObject arg) => MakeString(ctx, (DyTuple)arg, true);
-
-    internal static DyObject MakeString(ExecutionContext ctx, DyTuple value, bool literal = false)
+    protected override DyObject ToStringOp(ExecutionContext ctx, DyObject arg, DyObject format)
     {
-        var sb = new StringBuilder();
-        sb.Append('(');
-
-        for (var i = 0; i < value.Count; i++)
+        IEnumerable<DyObject> Iterate()
         {
-            if (i > 0)
-            {
-                sb.Append(',');
-                sb.Append(' ');
-            }
-
-            var v = value[i];
-            var ki = value.GetKeyInfo(i);
-
-            if (ki is not null)
-            {
-                if (ki.Mutable)
-                    sb.Append("var ");
-
-                if (ki.Label.Length > 0 && char.IsLower(ki.Label[0]) && ki.Label.All(char.IsLetter))
-                    sb.Append(ki.Label);
-                else
-                    sb.Append(StringUtil.Escape(ki.Label));
-
-                sb.Append(':');
-                sb.Append(' ');
-            }
-
-            var str = literal ? v.ToLiteral(ctx) : v.ToString(ctx);
-
-            if (ctx.HasErrors)
-                return Nil;
-
-            sb.Append(str);
+            var tuple = (DyTuple)arg;
+            var xs = tuple.UnsafeAccess();
+            for (var i = 0; i < tuple.Count; i++)
+                yield return xs[i];
         }
 
-        sb.Append(')');
-        return new DyString(sb.ToString());
+        try
+        {
+            return new DyString("(" + Iterate().ToLiteral(ctx) + ")");
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
     }
 
     protected override DyObject EqOp(ExecutionContext ctx, DyObject left, DyObject right)
@@ -83,71 +55,57 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         if (left.TypeId != right.TypeId)
             return False;
 
-        var (t1, t2) = ((DyTuple)left, (DyTuple)right);
-
-        if (t1.Count != t2.Count)
-            return False;
-
-        var t1v = t1.UnsafeAccess();
-        var t2v = t2.UnsafeAccess();
-
-        for (var i = 0; i < t1.Count; i++)
+        var (xs, ys) = ((DyTuple)left, (DyTuple)right);
+        
+        try
         {
-            if (t1v[i].NotEquals(t2v[i], ctx))
-                return False;
-
-            if (ctx.HasErrors)
-                return Nil;
+            return DyTuple.Equals(ctx, xs, ys);
         }
-
-        return True;
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
     }
 
-    protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right) => Compare(true, left, right, ctx);
+    protected override DyObject GtOp(ExecutionContext ctx, DyObject left, DyObject right)
+    {
+        if (left.TypeId != right.TypeId)
+            return ctx.OperationNotSupported(Builtins.Gt, left, right);
 
-    protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right) => Compare(false, left, right, ctx);
+        try
+        {
+            return DyTuple.Greater(ctx, (DyTuple)left, (DyTuple)right);
+        }
+        catch (DyCodeException ex)
+        {
+            ctx.Error = ex.Error;
+            return Nil;
+        }
+    }
 
-    protected override DyObject ContainsOp(ExecutionContext ctx, DyObject self, DyObject field)
+    protected override DyObject LtOp(ExecutionContext ctx, DyObject left, DyObject right)
+    {
+        if (left.TypeId != right.TypeId)
+            return ctx.OperationNotSupported(Builtins.Lt, left, right);
+
+        try
+        {
+            return DyTuple.Lesser(ctx, (DyTuple)left, (DyTuple)right);
+        }
+        catch (DyCodeException e)
+        {
+            ctx.Error = e.Error;
+            return Nil;
+        }
+    }
+
+    protected override DyObject InOp(ExecutionContext ctx, DyObject self, DyObject field)
     {
         if (field.TypeId is not Dy.String and not Dy.Char)
             return ctx.InvalidType(field);
 
         return ((DyTuple)self).GetOrdinal(field.ToString()) is not -1 ? True : False;
-    }
-
-    private static DyObject Compare(bool gt, DyObject left, DyObject right, ExecutionContext ctx)
-    {
-        if (left.TypeId != right.TypeId)
-            return ctx.OperationNotSupported(gt ? Builtins.Gt : Builtins.Lt, left, right);
-
-        var xs = (DyTuple)left;
-        var ys = (DyTuple)right;
-        var xsv = xs.UnsafeAccess();
-        var ysv = ys.UnsafeAccess();
-        var len = xs.Count > ys.Count ? ys.Count : xs.Count;
-
-        for (var i = 0; i < len; i++)
-        {
-            var x = xsv[i];
-            var y = ysv[i];
-            var res = gt ? x.Greater(y, ctx) : x.Lesser(y, ctx);
-
-            if (ctx.HasErrors)
-                return Nil;
-
-            if (res)
-                return True;
-
-            res = x.Equals(y, ctx);
-
-            if (ctx.HasErrors)
-                return Nil;
-
-            if (!res)
-                return False;
-        }
-
-        return False;
     }
 
     protected override DyObject GetOp(ExecutionContext ctx, DyObject self, DyObject index) =>
@@ -159,6 +117,10 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
         return Nil;
     }
     #endregion
+
+    [InstanceMethod]
+    internal static bool ContainsField(ExecutionContext ctx, DyTuple self, string field) =>
+        self.GetOrdinal(field.ToString()) is not -1;
 
     [InstanceMethod(Method.Add)]
     internal static DyObject AddItem(DyTuple self, DyObject value)
@@ -179,6 +141,20 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
             var e = tv[i] is DyLabel la ? la.Value : tv[i];
 
             if (e.Equals(value, ctx))
+                return InternalRemoveAt(self, i);
+        }
+
+        return self;
+    }
+
+    [InstanceMethod]
+    internal static DyObject RemoveField(DyTuple self, string field)
+    {
+        var tv = self.UnsafeAccess();
+
+        for (var i = 0; i < tv.Length; i++)
+        {
+            if (tv[i] is DyLabel la && la.Label == field)
                 return InternalRemoveAt(self, i);
         }
 
@@ -285,7 +261,7 @@ internal sealed partial class DyTupleTypeInfo : DyCollectionTypeInfo
 
     [InstanceMethod]
     internal static DyObject ToDictionary(ExecutionContext ctx, DyTuple self) =>
-        new DyDictionary(self.ConvertToDictionary(ctx));
+        new DyDictionary(self.ConvertToDictionary());
 
     [InstanceMethod(Method.ToArray)]
     internal static DyObject[] ToArray(DyCollection self) => self.ToArray();
