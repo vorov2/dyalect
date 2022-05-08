@@ -1,3 +1,6 @@
+# 0.45.1
+  * Fix: _Lines in exception stack trace can be duplicated_ ([Issue #902](https://github.com/vorov2/dyalect/issues/902)).
+
 # 0.45.0
   * Change: _Now it is not possible to use keyword `private` as identifier._
   * Change: _Parser grammer refactoring._

@@ -52,7 +52,7 @@
 #region "Typed array"
 	let _Array = Interop("System.Array")
 	let _Type = Interop("System.Type")
-	let _Char = _Type.GetType("System.Char")
+	let _Char = _Type.GetType("System.Char", true)
 	let arr = _Array.CreateInstance(_Char, 3)
 	arr.SetValue('f', 0)
 	arr.SetValue('o', 1)
@@ -73,7 +73,7 @@
 		@ConstructorFailed => assert(got: true)
 	}
 
-	let _CharArrayType = _Type.GetType("System.Char[]")
+	let _CharArrayType = _Type.GetType("System.Char[]", true)
 	str = _String.[new](Interop.ConvertTo(_CharArrayType, ["f","o","o"]))
 	assert("foo", str)
 #endregion

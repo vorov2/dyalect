@@ -14,6 +14,8 @@ public static partial class DyMachine
     public static ExecutionContext CreateExecutionContext(UnitComposition composition) =>
         new(new(), new(composition));
 
+    public static ExecutionContext CreateExecutionContext(RuntimeContext rtx) => new(new(), rtx);
+
     public static ExecutionResult Execute(ExecutionContext ctx)
     {
         var res = ExecuteModule(0, ctx);
